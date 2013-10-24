@@ -33,8 +33,7 @@ const QString DEFAULT_THEME("Ubuntu.Components.Themes.Ambiance");
 
 UCThemeSettings::UCThemeSettings(QObject *parent) :
     QObject(parent),
-    m_settings(SETTINGS_FILE_FORMAT.arg(QDir::homePath()), QSettings::IniFormat),
-    m_themeName("")
+    m_settings(SETTINGS_FILE_FORMAT.arg(QDir::homePath()), QSettings::IniFormat)
 {
     // check if there is a theme settings file, if not, create one
     if (!QFile::exists(m_settings.fileName())) {
@@ -65,7 +64,7 @@ QString UCThemeSettings::themeName() const
     return m_themeName;
 }
 
-void UCThemeSettings::setThemeName(QString themeName)
+void UCThemeSettings::setThemeName(const QString &themeName)
 {
     if (themeName != m_themeName) {
         m_themeName = themeName;

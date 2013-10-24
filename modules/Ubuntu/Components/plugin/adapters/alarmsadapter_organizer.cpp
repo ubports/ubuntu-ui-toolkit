@@ -139,7 +139,7 @@ void AlarmsAdapter::saveAlarms()
     }
     QDataStream out(&file);
 
-    Q_FOREACH(AlarmData alarm, alarmList) {
+    Q_FOREACH(const AlarmData &alarm, alarmList) {
         out << alarm.message
             << alarm.date
             << alarm.sound

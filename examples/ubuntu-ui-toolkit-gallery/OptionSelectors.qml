@@ -27,46 +27,85 @@ Template {
             anchors.right: parent.right
             spacing: units.gu(3)
 
-           OptionSelector {
+            OptionSelector {
                objectName: "optionselector_collapsed"
                text: i18n.tr("Collapsed")
-               model: [i18n.tr("Value 1"),
-                       i18n.tr("Value 2"),
-                       i18n.tr("Value 3"),
-                       i18n.tr("Value 4")]
-           }
-
-           OptionSelector {
-                objectName: "optionselector_expanded"
-                text: i18n.tr("Epanded")
-                expanded: true
                 model: [i18n.tr("Value 1"),
-                         i18n.tr("Value 2"),
-                         i18n.tr("Value 3"),
-                         i18n.tr("Value 4")]
-           }
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4")]
+            }
 
-           OptionSelector {
+            OptionSelector {
+                objectName: "optionselector_expanded"
+                text: i18n.tr("Expanded")
+                alwaysExpanded: true
+                model: [i18n.tr("Value 1"),
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4")]
+            }
+
+            OptionSelector {
+                objectName: "optionselector_multipleselection"
+                text: i18n.tr("Multiple Selection")
+                alwaysExpanded: false
+                multiSelection: true
+                model: [i18n.tr("Value 1"),
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4")]
+            }
+
+            OptionSelector {
                objectName: "optionselector_custommodel"
                text: i18n.tr("Custom Model")
-               model: customModel
-               expanded: true
-               colourImage: true
-               delegate: selectorDelegate
-           }
+                model: customModel
+                alwaysExpanded: true
+                colourImage: true
+                delegate: selectorDelegate
+            }
 
-           Component {
-               id: selectorDelegate
-               OptionSelectorDelegate { text: name; subText: description; icon: image }
-           }
+            Component {
+                id: selectorDelegate
+                OptionSelectorDelegate { text: name; subText: description; icon: image }
+            }
 
-           ListModel {
-               id: customModel
-               ListElement { name: "Name 1"; description: "Description 1"; image: "images.png" }
-               ListElement { name: "Name 2"; description: "Description 2"; image: "images.png" }
-               ListElement { name: "Name 3"; description: "Description 3"; image: "images.png" }
-               ListElement { name: "Name 4"; description: "Description 4"; image: "images.png" }
-           }
+            ListModel {
+                id: customModel
+                ListElement { name: "Name 1"; description: "Description 1"; image: "images.png" }
+                ListElement { name: "Name 2"; description: "Description 2"; image: "images.png" }
+                ListElement { name: "Name 3"; description: "Description 3"; image: "images.png" }
+                ListElement { name: "Name 4"; description: "Description 4"; image: "images.png" }
+            }
+
+            OptionSelector {
+                text: i18n.tr("Label")
+                model: [i18n.tr("Value 1"),
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4"),
+                        i18n.tr("Value 5"),
+                        i18n.tr("Value 6"),
+                        i18n.tr("Value 7"),
+                        i18n.tr("Value 8")]
+                containerHeight: itemHeight * 4
+            }
+
+            OptionSelector {
+                text: i18n.tr("Label")
+                alwaysExpanded: true
+                selectedIndex: -1
+                model: [i18n.tr("Value 1"),
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4"),
+                        i18n.tr("Value 5"),
+                        i18n.tr("Value 6"),
+                        i18n.tr("Value 7"),
+                        i18n.tr("Value 8")]
+                containerHeight: itemHeight * 4
+            }
         }
     }
 }
