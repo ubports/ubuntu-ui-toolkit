@@ -1,6 +1,6 @@
 unix {
     CONFIG += link_pkgconfig
-    PKGCONFIG += gio-2.0 dbus-1 libnih-dbus
+    PKGCONFIG += gio-2.0 thumbnailer dbus-1 libnih-dbus
 }
 
 TEMPLATE = lib
@@ -30,7 +30,6 @@ HEADERS += plugin.h \
     ucunits.h \
     ucqquickimageextension.h \
     quickutils.h \
-    giconprovider.h \
     shapeitemtexture.h \
     shapeitem.h \
     inversemouseareatype.h \
@@ -49,6 +48,7 @@ HEADERS += plugin.h \
     alarmmanager_p.h \
     ucalarmmodel.h \
     unitythemeiconprovider.h \
+    thumbnailgenerator.h \
     alarmrequest_p.h \
     alarmrequest_p_p.h \
     adapters/alarmsadapter_p.h \
@@ -66,7 +66,6 @@ SOURCES += plugin.cpp \
     ucunits.cpp \
     ucqquickimageextension.cpp \
     quickutils.cpp \
-    giconprovider.cpp \
     shapeitem.cpp \
     inversemouseareatype.cpp \
     bottombarvisibilitycommunicator.cpp \
@@ -81,6 +80,7 @@ SOURCES += plugin.cpp \
     alarmmanager_p.cpp \
     ucalarmmodel.cpp \
     unitythemeiconprovider.cpp \
+    thumbnailgenerator.cpp \
     alarmrequest_p.cpp \
     ucstatesaver.cpp \
     statesaverbackend_p.cpp \

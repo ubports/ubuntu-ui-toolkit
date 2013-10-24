@@ -29,7 +29,7 @@ QPixmap UnityThemeIconProvider::requestPixmap(const QString &id, QSize *realSize
 {
     QIcon icon;
 
-    Q_FOREACH (QString name, id.split(",", QString::SkipEmptyParts)) {
+    Q_FOREACH (const QString &name, id.split(",", QString::SkipEmptyParts)) {
         icon = QIcon::fromTheme(name);
         if (!icon.isNull()) {
             if (requestedSize.isValid()) {

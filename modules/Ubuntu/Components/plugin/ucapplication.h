@@ -45,7 +45,7 @@ public:
 
     // setter
     void setContext(QQmlContext* context);
-    void setApplicationName(QString applicationName);
+    void setApplicationName(const QString& applicationName);
 
 private:
     QQmlContext* m_context;
