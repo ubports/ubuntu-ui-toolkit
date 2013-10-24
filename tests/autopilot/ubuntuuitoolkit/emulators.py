@@ -57,7 +57,10 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
     def get_header(self):
         """Return the Header emulator of the MainView."""
-        return self.select_single('Header', objectName='MainView_Header')
+        try:
+            return self.select_single('Header', objectName='MainView_Header')
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException('The main view has no header.')
 
     def get_toolbar(self):
         """Return the Toolbar emulator of the MainView."""
@@ -109,10 +112,10 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         :raise ToolkitEmulatorException: If the main view has no tabs.
 
         """
-        tabs = self.select_single(Tabs)
-        if tabs is None:
+        try:
+            return self.select_single(Tabs)
+        except dbus.StateNotFoundError:
             raise ToolkitEmulatorException(_NO_TABS_ERROR)
-        return tabs
 
     def switch_to_next_tab(self):
         """Open the next tab.
@@ -214,8 +217,9 @@ class Header(UbuntuUIToolkitEmulatorBase):
         :raise ToolkitEmulatorException: If the main view has no tabs.
 
         """
-        tab_bar = self.select_single(TabBar)
-        if tab_bar is None:
+        try:
+            tab_bar = self.select_single(TabBar)
+        except dbus.StateNotFoundError:
             raise ToolkitEmulatorException(_NO_TABS_ERROR)
         tab_bar.switch_to_next_tab()
 
@@ -234,8 +238,9 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
             name.
 
         """
-        button = self._get_button(object_name)
-        if button is None:
+        try:
+            button = self._get_button(object_name)
+        except dbus.StateNotFoundError:
             raise ToolkitEmulatorException(
                 'Button with objectName "{0}" not found.'.format(object_name))
         self.pointing_device.click_object(button)
