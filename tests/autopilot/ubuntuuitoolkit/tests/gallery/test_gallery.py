@@ -20,6 +20,7 @@ from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 
+
 class GenericTests(GalleryTestCase):
     """Generic tests for the Gallery"""
 
