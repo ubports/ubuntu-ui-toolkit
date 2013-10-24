@@ -32,7 +32,7 @@ class UbuntuComponentsPlugin : public QQmlExtensionPlugin
 public:
     void registerTypes(const char *uri);
     void initializeEngine(QQmlEngine *engine, const char *uri);
-    QUrl baseUrl(QStringList importPathList, const char* uri);
+    QUrl baseUrl(const QStringList& importPathList, const char* uri);
     void registerQmlSingletonType(QQmlEngine *engine, const char* uri, const char* typeName, const char* qmlFile);
 
 private Q_SLOTS:
