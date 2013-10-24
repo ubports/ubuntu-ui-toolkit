@@ -359,7 +359,7 @@ class Empty(UbuntuUIToolkitEmulatorBase):
             if (direction == 'right'):
                 self.pointing_device.drag(tx, ty, w, ty)
             elif (direction == 'left'):
-                self.pointing_device.drag(w, ty, x, ty)
+                self.pointing_device.drag(w - (w*0.1), ty, x, ty)
             else:
                 raise ToolkitEmulatorException(
                     'Invalid direction "{0}" used on swipe to delete function'
