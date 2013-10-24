@@ -104,7 +104,11 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.drag(line_x, start_y, line_x, stop_y)
 
     def get_tabs(self):
-        """Return the Tabs emulator of the MainView."""
+        """Return the Tabs emulator of the MainView.
+
+        :raise ToolkitEmulatorException: If the main view has no tabs.
+
+        """
         tabs = self.select_single(Tabs)
         if tabs is None:
             raise ToolkitEmulatorException(_NO_TABS_ERROR)
@@ -127,6 +131,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
         :parameter index: The index of the tab to open.
         :return: The newly opened tab.
+        :raise ToolkitEmulatorException: If the tab index is out of range.
 
         """
         logger.debug('Switch to tab with index {0}.'.format(index))
@@ -166,6 +171,8 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
         :parameter object_name: The QML objectName property of the tab.
         :return: The newly opened tab.
+        :raise ToolkitEmulatorException: If there is no tab with that object
+            name.
 
         """
         tabs = self.get_tabs()
@@ -202,7 +209,11 @@ class Header(UbuntuUIToolkitEmulatorBase):
         return tab_bar_style.animating
 
     def switch_to_next_tab(self):
-        """Open the next tab."""
+        """Open the next tab.
+
+        :raise ToolkitEmulatorException: If the main view has no tabs.
+
+        """
         tab_bar = self.select_single(TabBar)
         if tab_bar is None:
             raise ToolkitEmulatorException(_NO_TABS_ERROR)
@@ -218,7 +229,9 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
     def click_button(self, object_name):
         """Click a button of the toolbar.
 
-        :param object_name: The QML objectName property of the button.
+        :parameter object_name: The QML objectName property of the button.
+        :raise ToolkitEmulatorException: If there is no button with that object
+            name.
 
         """
         button = self._get_button(object_name)
@@ -310,6 +323,7 @@ class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
         --elopio - 2013-07-25
 
         :parameter text: The text of the button.
+        :raise ToolkitEmulatorException: If the popover is not open.
 
         """
         if not self.visible:
