@@ -205,8 +205,6 @@ class Header(UbuntuUIToolkitEmulatorBase):
         tab_bar = self.select_single(TabBar)
         assert tab_bar is not None, _NO_TABS_ERROR
         tab_bar.switch_to_next_tab()
-
-        # Sleep while the animation finishes.
         self._get_animating().wait_for(False)
 
 
@@ -262,15 +260,17 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
 
     def switch_to_next_tab(self):
         """Open the next tab."""
-        # Click the tab bar to switch to selection mode.
-        logger.debug('Click the tab bar to enable selection mode.')
-        self.pointing_device.click_object(self)
-        if not self.selectionMode:
-            logger.debug('Selection mode not enabled, try again.')
-            # in case someone stole the click, like the open toolbar
-            self.pointing_device.click_object(self)
+        self._activate_tab_bar()
         logger.debug('Click the next tab bar button.')
         self.pointing_device.click_object(self._get_next_tab_button())
+
+    def _activate_tab_bar(self):
+        if self.selectionMode:
+            logger.debug('Already in selection mode.')
+        else:
+            # Click the tab bar to switch to selection mode.
+            logger.debug('Click the tab bar to enable selection mode.')
+            self.pointing_device.click_object(self)
 
     def _get_next_tab_button(self):
         current_index = self._get_selected_button_index()
