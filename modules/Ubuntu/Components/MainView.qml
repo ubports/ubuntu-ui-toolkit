@@ -271,6 +271,10 @@ PageTreeNode {
             }
         }
 
+        Toolbar {
+            id: toolbarItem
+        }
+
         /*!
           The header of the MainView. Can be used to obtain the height of the header
           in \l Page to determine the area for the \l Page to fill.
@@ -284,9 +288,6 @@ PageTreeNode {
             property real bottomY: headerItem.y + headerItem.height
         }
 
-        Toolbar {
-            id: toolbarItem
-        }
     }
 
     /*!
