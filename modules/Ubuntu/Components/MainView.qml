@@ -287,7 +287,6 @@ PageTreeNode {
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
         }
-
     }
 
     /*!
