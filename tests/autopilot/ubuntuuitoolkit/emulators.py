@@ -15,7 +15,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-#import time
 
 from autopilot import input, platform
 from autopilot.introspection import dbus
@@ -291,7 +290,6 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
         buttons = self._get_tab_buttons()
         for button in buttons:
             if button.buttonIndex == index:
-                print("returning  with index "+str(index))
                 return button
         else:
             raise ToolkitEmulatorException(
