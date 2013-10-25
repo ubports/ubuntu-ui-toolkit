@@ -25,6 +25,7 @@ namespace C {
 
 #include <QtQml>
 #include <stdlib.h>
+#include <locale.h>
 
 /*!
  * \qmltype i18n
@@ -54,7 +55,7 @@ namespace C {
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
     m_domain = "";
-    m_language = QString(getenv("LANGUAGE"));
+    m_language = setlocale(LC_ALL, "");
 }
 
 /*!
@@ -105,7 +106,7 @@ void UbuntuI18n::setDomain(const QString& domain) {
 
 void UbuntuI18n::setLanguage(const QString &lang) {
     m_language = lang;
-    setenv("LANGUAGE",lang.toUtf8() ,1);
+    setlocale(LC_ALL, lang.toUtf8());
     Q_EMIT languageChanged();
 }
 

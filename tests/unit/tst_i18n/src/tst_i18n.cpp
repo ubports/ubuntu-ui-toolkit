@@ -142,7 +142,7 @@ private Q_SLOTS:
         QVERIFY(localeA.waitForFinished());
         QVERIFY(QString(localeA.readAll()).split("\n").contains("en_US.utf8"));
 
-        i18n->setLanguage("en_US");
+        i18n->setLanguage("en_US.utf8");
         QSignalSpy spy(i18n, SIGNAL(languageChanged()));
         spy.wait();
 
