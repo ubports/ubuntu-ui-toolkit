@@ -61,7 +61,7 @@ TestCase {
              enabled: true
              name: "check"
              text: "Check"
-             parameterType: UnityActions.Action.Type.Boolean
+             parameterType: UnityActions.Action.Boolean
          }
      }
 
