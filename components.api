@@ -613,6 +613,7 @@ plugins.qmltypes
     prototype: "QQuickMouseArea"
     exports: ["InverseMouseArea 0.1"]
     Property { name: "sensingArea"; type: "QQuickItem"; isPointer: true }
+    Property { name: "topmostItem"; type: "bool" }
     Method {
     name: "contains"
     Parameter { name: "point"; type: "QPointF" }

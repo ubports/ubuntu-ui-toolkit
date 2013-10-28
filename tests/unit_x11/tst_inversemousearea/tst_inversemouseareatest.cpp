@@ -152,18 +152,101 @@ private Q_SLOTS:
         InverseMouseAreaType *area = testArea("InverseMouseAreaOnTop.qml");
         QVERIFY(area);
         quickView->show();
+        QTest::qWaitForWindowExposed(quickView);
 
+        QQuickItem *ma2 = quickView->rootObject()->findChild<QQuickItem*>("MA2");
+        QVERIFY(ma2);
+
+        QSignalSpy imaSpy(area, SIGNAL(pressed(QQuickMouseEvent*)));
         QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 10));
         QTest::waitForEvents();
-        QCOMPARE(quickView->rootObject()->property("log").toString(), QString("IMA"));
+        QCOMPARE(imaSpy.count(), 1);
 
         QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 65));
         QTest::waitForEvents();
-        QCOMPARE(quickView->rootObject()->property("log").toString(), QString("IMA"));
+        QCOMPARE(imaSpy.count(), 2);
 
-        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(20, 75));
+        QSignalSpy ma2Spy(ma2, SIGNAL(pressed(QQuickMouseEvent*)));
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(25, 80));
         QTest::waitForEvents();
-        QCOMPARE(quickView->rootObject()->property("log").toString(), QString("MA2"));
+        QCOMPARE(ma2Spy.count(), 1);
+    }
+
+    void testCase_InverseMouseAreaSignals()
+    {
+        InverseMouseAreaType *area = testArea("InverseMouseAreaSignals.qml");
+        QVERIFY(area);
+        quickView->show();
+        QTest::qWaitForWindowExposed(quickView);
+
+        QSignalSpy pressSpy(area, SIGNAL(pressed(QQuickMouseEvent*)));
+        QSignalSpy releaseSpy(area, SIGNAL(released(QQuickMouseEvent*)));
+        QSignalSpy clickSpy(area, SIGNAL(clicked(QQuickMouseEvent*)));
+        QSignalSpy enteredSpy(area, SIGNAL(entered()));
+        QSignalSpy exitedSpy(area, SIGNAL(exited()));
+
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(5, 5));
+        QCOMPARE(pressSpy.count(), 1);
+        QCOMPARE(releaseSpy.count(), 1);
+        QCOMPARE(clickSpy.count(), 1);
+        QCOMPARE(enteredSpy.count(), 1);
+        QCOMPARE(exitedSpy.count(), 1);
+
+        QSignalSpy doubleClickSpy(area, SIGNAL(doubleClicked(QQuickMouseEvent*)));
+        QTest::mouseDClick(quickView, Qt::LeftButton, 0, QPoint(5, 5));
+        QCOMPARE(doubleClickSpy.count(), 1);
+    }
+
+    void testCase_InverseMouseAreaNormalEventStack()
+    {
+        InverseMouseAreaType *ima = testArea("InverseMouseAreaNormalEventStack.qml");
+        QVERIFY(ima);
+        quickView->show();
+        QTest::qWaitForWindowExposed(quickView);
+
+        QQuickItem *ma = quickView->rootObject()->findChild<QQuickItem*>("MA");
+        QVERIFY(ma);
+
+        QSignalSpy imaSpy(ima, SIGNAL(pressed(QQuickMouseEvent*)));
+        QSignalSpy maSpy(ma, SIGNAL(pressed(QQuickMouseEvent*)));
+
+        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(15, 15));
+        QCOMPARE(imaSpy.count(), 0);
+        QCOMPARE(maSpy.count(), 0);
+
+        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(115, 15));
+        QCOMPARE(imaSpy.count(), 0);
+        QCOMPARE(maSpy.count(), 1);
+
+        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(115, 115));
+        QCOMPARE(imaSpy.count(), 1);
+        QCOMPARE(maSpy.count(), 1);
+    }
+
+    void testCase_InverseMouseAreaTopmost()
+    {
+        InverseMouseAreaType *ima = testArea("InverseMouseAreaTopmostItem.qml");
+        QVERIFY(ima);
+        quickView->show();
+        QTest::qWaitForWindowExposed(quickView);
+
+        QQuickItem *ma = quickView->rootObject()->findChild<QQuickItem*>("MA");
+        QVERIFY(ma);
+
+        QSignalSpy imaSpy(ima, SIGNAL(pressed(QQuickMouseEvent*)));
+        QSignalSpy maSpy(ma, SIGNAL(pressed(QQuickMouseEvent*)));
+
+        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(15, 15));
+        QCOMPARE(imaSpy.count(), 0);
+        QCOMPARE(maSpy.count(), 0);
+
+        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(115, 15));
+        QCOMPARE(imaSpy.count(), 1);
+        QCOMPARE(maSpy.count(), 0);
+
+        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(115, 115));
+        QCOMPARE(imaSpy.count(), 2);
+        QCOMPARE(maSpy.count(), 0);
     }
 
 };

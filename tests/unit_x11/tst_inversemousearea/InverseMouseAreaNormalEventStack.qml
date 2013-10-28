@@ -17,56 +17,28 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Rectangle {
-    id: page
+Item {
     width: 300
     height: 300
-    color: "lightgray"
-
     objectName: "ROOT"
 
     Rectangle {
-        id: label
-        objectName: "RECT1"
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
-        height: 40
-        width: parent.width
-        color: Qt.rgba(1, 0, 0, 0.4)
-
-        MouseArea {
-            objectName: "MA1"
+        x: 10; y: 10
+        width: 100; height: 100
+        color: "blue"
+        InverseMouseArea {
             anchors.fill: parent
-            z: 1
+            objectName: "IMA"
         }
     }
 
     Rectangle {
-        anchors.top: label.bottom
-        anchors.topMargin: 20
-        anchors.horizontalCenter: parent.horizontalCenter
-        height: 60
-        width: parent.width
-        color: Qt.rgba(0, 0, 1, 0.4)
-        objectName: "RECT2"
-
-        Button {
-            id: button
-            objectName: "button"
-            x: 20
-            y: 10
-            text: "I'm a button, I do nothing."
-        }
-
+        x: 110; y: 10
+        width: 100; height: 100
+        color: "red"
         MouseArea {
-            objectName: "MA2"
             anchors.fill: parent
+            objectName: "MA"
         }
-
-        InverseMouseArea {
-            objectName: "IMA"
-            anchors.fill: button
-        }
-
     }
 }
