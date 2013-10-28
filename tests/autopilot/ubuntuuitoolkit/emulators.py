@@ -340,3 +340,71 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
         if self.checked:
             self.pointing_device.click_object(self)
             self.checked.wait_for(False)
+
+
+class Empty(UbuntuUIToolkitEmulatorBase):
+    """Base class to emulate swipe to delete"""
+
+    def _get_confirm_button(self):
+        return self.select_single(
+            'QQuickItem', objectName='confirmRemovalDialog')
+
+    def swipe_to_delete(self, direction='right'):
+        """ Swipe the item in a specific direction """
+        if (self.removable):
+            x, y, w, h = self.globalRect
+            tx = x + (w / 8)
+            ty = y + (h / 2)
+
+            if (direction == 'right'):
+                self.pointing_device.drag(tx, ty, w, ty)
+            elif (direction == 'left'):
+                self.pointing_device.drag(w - (w*0.1), ty, x, ty)
+            else:
+                raise ToolkitEmulatorException(
+                    'Invalid direction "{0}" used on swipe to delete function'
+                    .format(direction))
+
+            self.waitingConfirmationForRemoval.wait_for(True)
+        else:
+            raise ToolkitEmulatorException(
+                'The item "{0}" is not removable'.format(self.objectName))
+
+    def confirm_removal(self):
+        """ Comfirm item removal if this was already swiped """
+        if (self.waitingConfirmationForRemoval):
+            deleteButton = self._get_confirm_button()
+            self.pointing_device.click_object(deleteButton)
+            self.implicitHeight.wait_for(0)
+        else:
+            raise ToolkitEmulatorException(
+                'The item "{0}" is not waiting for removal confirmation'.
+                format(self.objectName))
+
+
+class Base(Empty):
+    pass
+
+
+class Standard(Empty):
+    pass
+
+
+class ItemSelector(Empty):
+    pass
+
+
+class SingleControl(Empty):
+    pass
+
+
+class MultiValue(Base):
+    pass
+
+
+class SingleValue(Base):
+    pass
+
+
+class Subtitled(Base):
+    pass
