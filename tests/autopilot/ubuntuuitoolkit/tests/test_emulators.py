@@ -193,7 +193,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 MainView {
-    width: units.gu(48)
+    width: units.gu(70)
     height: units.gu(60)
 
     Tabs {
@@ -456,6 +456,98 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
         with mock.patch.object(input.Pointer, 'click_object') as mock_click:
             self.toggle.uncheck()
         self.assertFalse(mock_click.called)
+
+
+class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1
+
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(300)
+
+    Column {
+        width: parent.width
+
+        Standard {
+            objectName: "listitem_standard"
+            confirmRemoval: true
+            removable: true
+            width: parent.width
+            text: 'Slide to remove'
+        }
+        Empty {
+            objectName: "listitem_empty"
+            width: parent.width
+        }
+    }
+}
+""")
+
+    def setUp(self):
+        super(SwipeToDeleteTestCase, self).setUp()
+        self._item = self.main_view.select_single(
+            emulators.Standard, objectName='listitem_standard')
+
+    def test_supported_class(self):
+        self.assertTrue(issubclass(
+            emulators.Base, emulators.Empty))
+        self.assertTrue(issubclass(
+            emulators.ItemSelector, emulators.Empty))
+        self.assertTrue(issubclass(
+            emulators.Standard, emulators.Empty))
+        self.assertTrue(issubclass(
+            emulators.SingleControl, emulators.Empty))
+        self.assertTrue(issubclass(
+            emulators.MultiValue, emulators.Base))
+        self.assertTrue(issubclass(
+            emulators.SingleValue, emulators.Base))
+        self.assertTrue(issubclass(
+            emulators.Subtitled, emulators.Base))
+
+    def test_standard_emulator(self):
+        self.assertIsInstance(self._item, emulators.Standard)
+
+    def test_swipe_item(self):
+        self._item.swipe_to_delete()
+        self.assertTrue(self._item.waitingConfirmationForRemoval)
+
+    def test_swipe_item_to_right(self):
+        self._item.swipe_to_delete('right')
+        self.assertTrue(self._item.waitingConfirmationForRemoval)
+
+    def test_swipe_item_to_left(self):
+        self._item.swipe_to_delete('left')
+        self.assertTrue(self._item.waitingConfirmationForRemoval)
+
+    def test_swipe_item_to_wrong_direction(self):
+        self.assertRaises(
+            emulators.ToolkitEmulatorException,
+            self._item.swipe_to_delete, 'up')
+
+    def test_delete_item_moving_right(self):
+        self._item.swipe_to_delete('right')
+        self._item.confirm_removal()
+        self.assertEqual(self._item.implicitHeight, 0)
+
+    def test_delete_item_moving_left(self):
+        self._item.swipe_to_delete('left')
+        self._item.confirm_removal()
+        self.assertEqual(self._item.implicitHeight, 0)
+
+    def test_delete_non_removable_item(self):
+        self._item = self.main_view.select_single(
+            emulators.Empty, objectName='listitem_empty')
+        self.assertRaises(
+            emulators.ToolkitEmulatorException, self._item.swipe_to_delete)
+
+    def test_confirm_removal_when_item_was_not_swiped(self):
+        self.assertRaises(
+            emulators.ToolkitEmulatorException, self._item.confirm_removal)
 
 
 class PageStackTestCase(tests.QMLStringAppTestCase):
