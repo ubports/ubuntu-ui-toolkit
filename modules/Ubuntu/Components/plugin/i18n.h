@@ -48,11 +48,11 @@ public:
     Q_INVOKABLE QString dtr(const QString& domain, const QString& singular, const QString& plural, int n);
 
     // getter
-    QString domain();
-    QString language();
+    QString domain() const;
+    QString language() const;
 
     // setter
-    void setDomain(QString domain);
+    void setDomain(const QString& domain);
     void setLanguage(const QString& lang);
 
 Q_SIGNALS:

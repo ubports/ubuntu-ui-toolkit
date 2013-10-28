@@ -51,6 +51,7 @@ TestCase {
          compare(i18n.language,testValue,"can set/get language");
      }
 
+     /*
      function test_0_dtr() {
          expectFail("","a directory structure change is required in the project tree")
 //TODO: add call to bindtextdomain
@@ -60,6 +61,7 @@ TestCase {
          var testFIValue = "Bellen";
          compare(readValue,testFIValue,"can use dtr");
      }
+     */
 
      SignalSpy {
          id: signalSpy

@@ -38,7 +38,7 @@ Template {
 
             OptionSelector {
                 objectName: "optionselector_expanded"
-                text: i18n.tr("Epanded")
+                text: i18n.tr("Expanded")
                 alwaysExpanded: true
                 model: [i18n.tr("Value 1"),
                         i18n.tr("Value 2"),

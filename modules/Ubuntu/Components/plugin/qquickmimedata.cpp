@@ -224,7 +224,7 @@ void QQuickMimeData::setMimeData(const QVariant &mimeData)
         // every 2k+1 defines the data
         QVariantList mlist= mimeData.toList();
         if (mlist[0].type() == QVariant::List) {
-            Q_FOREACH(QVariant item, mlist) {
+            Q_FOREACH(const QVariant &item, mlist) {
                 // should not have more than two elements
                 QVariantList block = item.toList();
                 if (setMimeType(m_mimeData, block))
@@ -235,7 +235,7 @@ void QQuickMimeData::setMimeData(const QVariant &mimeData)
             if (!url.scheme().isEmpty()) {
                 // we have a list or URLs, push them
                 QList<QUrl> ulist;
-                Q_FOREACH(QVariant v, mlist) {
+                Q_FOREACH(const QVariant &v, mlist) {
                     ulist << v.toUrl();
                 }
                 setUrls(ulist);
