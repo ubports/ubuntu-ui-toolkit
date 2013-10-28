@@ -58,7 +58,10 @@ MainView {
     def test_toolbar_custom_emulator(self):
         toolbar = self.main_view.get_toolbar()
         self.assertIsInstance(toolbar, emulators.Toolbar)
-        self.assertFalse(toolbar.opened)
+
+    def test_open_toolbar_returns_the_toolbar(self):
+        toolbar = self.main_view.open_toolbar()
+        self.assertIsInstance(toolbar, emulators.Toolbar)
 
     def test_get_tabs_without_tabs(self):
         error = self.assertRaises(
@@ -107,6 +110,11 @@ MainView {
     width: units.gu(50)
     height: units.gu(50)
 
+    // Make sure that for these tests the toolbar starts closed.
+    Component.onCompleted: {
+        __propagated.toolbar.close();
+    }
+
     Page {
 
         Label {
@@ -124,32 +132,35 @@ MainView {
                     onTriggered: label.text = "Button clicked."
                 }
             }
-            locked: false
-            opened: false
         }
     }
 }
 """)
 
+    def setUp(self):
+        super(ToolbarTestCase, self).setUp()
+        self.toolbar = self.main_view.get_toolbar()
+        self.assertFalse(self.toolbar.opened)
+
     def test_open_toolbar(self):
-        toolbar = self.main_view.open_toolbar()
-        self.assertTrue(toolbar.opened)
-        self.assertFalse(toolbar.animating)
+        self.main_view.open_toolbar()
+        self.assertTrue(self.toolbar.opened)
+        self.assertFalse(self.toolbar.animating)
 
     def test_opened_toolbar_is_not_opened_again(self):
-        toolbar = self.main_view.open_toolbar()
+        self.main_view.open_toolbar()
         with mock.patch.object(
                 self.main_view.pointing_device, 'drag') as mock_drag:
             self.main_view.open_toolbar()
 
         self.assertFalse(mock_drag.called)
-        self.assertTrue(toolbar.opened)
+        self.assertTrue(self.toolbar.opened)
 
     def test_close_toolbar(self):
-        toolbar = self.main_view.open_toolbar()
+        self.main_view.open_toolbar()
         self.main_view.close_toolbar()
-        self.assertFalse(toolbar.opened)
-        self.assertFalse(toolbar.animating)
+        self.assertFalse(self.toolbar.opened)
+        self.assertFalse(self.toolbar.animating)
 
     def test_closed_toolbar_is_not_closed_again(self):
         with mock.patch.object(
@@ -157,19 +168,19 @@ MainView {
             self.main_view.close_toolbar()
 
         self.assertFalse(mock_drag.called)
-        self.assertFalse(self.main_view.get_toolbar().opened)
+        self.assertFalse(self.toolbar.opened)
 
     def test_click_toolbar_button(self):
         label = self.app.select_single('Label', objectName='clicked_label')
         self.assertNotEqual(label.text, 'Button clicked.')
-        toolbar = self.main_view.open_toolbar()
-        toolbar.click_button('buttonName')
+        self.main_view.open_toolbar()
+        self.toolbar.click_button('buttonName')
         self.assertEqual(label.text, 'Button clicked.')
 
     def test_click_unexisting_button(self):
-        toolbar = self.main_view.open_toolbar()
+        self.main_view.open_toolbar()
         error = self.assertRaises(
-            ValueError, toolbar.click_button, 'unexisting')
+            ValueError, self.toolbar.click_button, 'unexisting')
         self.assertEqual(
             error.message, 'Button with objectName "unexisting" not found.')
 
@@ -182,7 +193,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 MainView {
-    width: units.gu(48)
+    width: units.gu(70)
     height: units.gu(60)
 
     Tabs {

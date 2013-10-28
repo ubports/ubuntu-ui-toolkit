@@ -43,7 +43,14 @@ StyledItem {
       An inactive tab bar only displays the currently selected tab,
       and an active tab bar can be interacted with to select a tab.
      */
-    property bool selectionMode: alwaysSelectionMode
+    property bool selectionMode: false
+
+    /*!
+      When all components are completed, enable selection mode
+     */
+    Component.onCompleted: {
+        tabBar.selectionMode = true;
+    }
 
     /*!
       Do not deactivate the tab bar after a specified idle time or when the user selects a new tab.

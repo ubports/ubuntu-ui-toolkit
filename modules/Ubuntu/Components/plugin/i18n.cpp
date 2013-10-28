@@ -52,7 +52,6 @@ namespace C {
  */
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
-    m_domain = "";
     m_language = QString(getenv("LANGUAGE"));
 }
 
@@ -64,7 +63,7 @@ UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
  * Use dtr() functions instead of tr() to use a different domain for a single translation
  * that ignores i18n.domain.
  */
-QString UbuntuI18n::domain() {
+QString UbuntuI18n::domain() const {
     return m_domain;
 }
 
@@ -74,7 +73,7 @@ QString UbuntuI18n::domain() {
  * environment variable LANGUAGE at the time when the QML application is started.
  * The value can be a list, for example "de_DE eo en".
  */
-QString UbuntuI18n::language() {
+QString UbuntuI18n::language() const {
     return m_language;
 }
 
@@ -88,7 +87,7 @@ void UbuntuI18n::bindtextdomain(const QString& domain_name, const QString& dir_n
     Q_EMIT domainChanged();
 }
 
-void UbuntuI18n::setDomain(QString domain) {
+void UbuntuI18n::setDomain(const QString &domain) {
     m_domain = domain;
     C::textdomain(domain.toUtf8().constData());
     Q_EMIT domainChanged();
