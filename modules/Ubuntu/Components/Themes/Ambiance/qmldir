@@ -13,7 +13,7 @@ internal SelectionCursorStyle SelectionCursorStyle.qml
 internal SheetForegroundStyle SheetForegroundStyle.qml
 internal SliderStyle SliderStyle.qml
 internal SwitchStyle SwitchStyle.qml
-internal TabBarStyle TabBarStyle.qml
+TabBarStyle 0.1 TabBarStyle.qml
 TextAreaStyle 0.1 TextAreaStyle.qml
 internal TextCursorStyle TextCursorStyle.qml
 TextFieldStyle 0.1 TextFieldStyle.qml
@@ -22,3 +22,5 @@ internal ToolbarStyle ToolbarStyle.qml
 internal BubbleShape BubbleShape.qml
 PickerStyle 0.1 PickerStyle.qml
 PickerDelegateStyle 0.1 PickerDelegateStyle.qml
+DialerStyle 0.1 DialerStyle.qml
+DialerHandStyle 0.1 DialerHandStyle.qml

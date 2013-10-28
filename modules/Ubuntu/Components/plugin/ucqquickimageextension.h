@@ -45,9 +45,9 @@ protected Q_SLOTS:
     void reloadSource();
 
 protected:
-    bool rewriteSciFile(QString sciFilePath, QString scaleFactor, QTextStream& output);
-    QString scaledBorder(QString border, QString scaleFactor);
-    QString scaledSource(QString source, QString sciFilePath, QString scaleFactor);
+    bool rewriteSciFile(const QString &sciFilePath, const QString &scaleFactor, QTextStream& output);
+    QString scaledBorder(const QString &border, const QString &scaleFactor);
+    QString scaledSource(QString source, const QString &sciFilePath, const QString &scaleFactor);
 
 private:
     QQuickImageBase* m_image;

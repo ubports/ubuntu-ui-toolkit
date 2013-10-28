@@ -10,8 +10,7 @@ SUBDIRS += testparser
 # https://bugs.launchpad.net/qemu-linaro/+bug/1084148
 #######################################
 #!contains(QMAKE_HOST.arch,armv7l) {
-    SUBDIRS += tst_theme_engine \
-        tst_components \
+    SUBDIRS += tst_components \
         tst_components_benchmark
 #}
 
@@ -20,6 +19,7 @@ SUBDIRS += tst_units \
     tst_qquick_image_extension \
     tst_performance \
     tst_ubuntu_shape \
+    tst_mainview \
     tst_arguments \
     tst_argument \
     tst_layouts \

@@ -133,6 +133,10 @@ PageTreeNode {
       \preliminary
       The property holds the application's name, which must be the same as the
       desktop file's name.
+      The name also sets the name of the QCoreApplication and defaults for data
+      and cache folders that work on the desktop and under confinement.
+      C++ code that writes files may use QStandardPaths::writableLocation with
+      QStandardPaths::DataLocation or QStandardPaths::CacheLocation.
       */
     property string applicationName: ""
 
@@ -247,7 +251,12 @@ PageTreeNode {
             clip: headerItem.bottomY > 0 && activePage && activePage.flickable
                   && -activePage.flickable.contentY < headerItem.bottomY
 
-            property Page activePage: mainView.activeLeafNode
+            property Page activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
+
+            function isPage(item) {
+                return item.hasOwnProperty("__isPageTreeNode") && item.__isPageTreeNode &&
+                        item.hasOwnProperty("title") && item.hasOwnProperty("tools");
+            }
 
             Item {
                 id: contents
@@ -262,6 +271,10 @@ PageTreeNode {
             }
         }
 
+        Toolbar {
+            id: toolbarItem
+        }
+
         /*!
           The header of the MainView. Can be used to obtain the height of the header
           in \l Page to determine the area for the \l Page to fill.
@@ -273,10 +286,6 @@ PageTreeNode {
             objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
-        }
-
-        Toolbar {
-            id: toolbarItem
         }
     }
 
@@ -334,6 +343,7 @@ PageTreeNode {
     onApplicationNameChanged: {
         if (applicationName !== "") {
             i18n.domain = applicationName;
+            UbuntuApplication.applicationName = applicationName
         }
     }
 }

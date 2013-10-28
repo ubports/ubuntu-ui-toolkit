@@ -553,6 +553,8 @@ Item {
         //position will always be in the range 0..size, where position==0 means spread, position==size means hidden.
         property real position: panel.opened ? 0 : size
 
+        onPositionChanged: bottomBarVisibilityCommunicator.position = size - position
+
         y: internal.align === Qt.AlignTop ? -position : internal.align === Qt.AlignBottom ? position : 0
         x: internal.align === Qt.AlignLeft ? -position : internal.align === Qt.AlignRight ? position : 0
     }

@@ -16,81 +16,132 @@
 
 """Ubuntu UI Toolkit autopilot tests."""
 
-from os import remove
-import os.path
-from tempfile import mktemp
-import subprocess
+import os
+import tempfile
 
-from autopilot.input import Mouse, Touch, Pointer
+from autopilot.input import Pointer
 from autopilot.matchers import Eventually
-from autopilot.platform import model
 from testtools.matchers import Is, Not, Equals
-from autopilot.testcase import AutopilotTestCase
 
-from ubuntuuitoolkit import emulators
+from ubuntuuitoolkit import base, emulators
 
 
-def get_module_include_path():
+_DESKTOP_FILE_CONTENTS = ("""[Desktop Entry]
+Type=Application
+Exec=Not important
+Path=Not important
+Name=Test app
+Icon=Not important
+""")
+
+
+def _write_test_desktop_file():
+    desktop_file_dir = get_local_desktop_file_directory()
+    if not os.path.exists(desktop_file_dir):
+        os.makedirs(desktop_file_dir)
+    desktop_file = tempfile.NamedTemporaryFile(
+        suffix='.desktop', dir=desktop_file_dir, delete=False)
+    desktop_file.write(_DESKTOP_FILE_CONTENTS)
+    desktop_file.close()
+    return desktop_file.name
+
+
+def get_local_desktop_file_directory():
+    return os.path.join(os.environ['HOME'], '.local', 'share', 'applications')
+
+
+def _get_module_include_path():
+    return os.path.join(get_path_to_source_root(), 'modules')
+
+
+def get_path_to_source_root():
     return os.path.abspath(
         os.path.join(
-            os.path.dirname(__file__),
-            '..',
-            '..',
-            '..',
-            '..',
-            'modules')
-    )
+            os.path.dirname(__file__), '..', '..', '..', '..'))
 
 
-def get_input_device_scenarios():
-    """Return the scenarios with the right input device for the platform."""
-    if model() == 'Desktop':
-        scenarios = [('with mouse', dict(input_device_class=Mouse))]
-    else:
-        scenarios = [('with touch', dict(input_device_class=Touch))]
-    return scenarios
+class QMLStringAppTestCase(base.UbuntuUIToolkitAppTestCase):
+    """Base test case for self tests that define the QML on an string."""
 
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
 
-class UbuntuUiToolkitTestCase(AutopilotTestCase):
-    """Common test case class for SDK tests."""
-
-    scenarios = get_input_device_scenarios()
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+}
+""")
 
     def setUp(self):
+        super(QMLStringAppTestCase, self).setUp()
         self.pointing_device = Pointer(self.input_device_class.create())
-        super(UbuntuUiToolkitTestCase, self).setUp()
-        self.launch_test_qml()
+        self.launch_application()
 
-    def launch_test_qml(self):
-        # If the test class has defined a 'test_qml' class attribute then we
-        # write it to disk and launch it inside the Qml Viewer. If not, then we
-        # silently do nothing (presumably the test has something else planned).
-        arch = subprocess.check_output(
-            ["dpkg-architecture", "-qDEB_HOST_MULTIARCH"]).strip()
-        if hasattr(self, 'test_qml') and isinstance(self.test_qml, basestring):
-            qml_path = mktemp(suffix='.qml')
-            open(qml_path, 'w').write(self.test_qml)
-            self.addCleanup(remove, qml_path)
-
-            self.app = self.launch_test_application(
-                "/usr/lib/" + arch + "/qt5/bin/qmlscene",
-                "-I" + get_module_include_path(),
-                qml_path,
-                emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
-                app_type='qt')
-
-        if (hasattr(self, 'test_qml_file') and
-                isinstance(self.test_qml_file, basestring)):
-            qml_path = self.test_qml_file
-            self.app = self.launch_test_application(
-                "/usr/lib/" + arch + "/qt5/bin/qmlscene",
-                "-I" + get_module_include_path(),
-                qml_path,
-                emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
-                app_type='qt')
+    def launch_application(self):
+        qml_file_path = self._write_test_qml_file()
+        self.addCleanup(os.remove, qml_file_path)
+        desktop_file_path = _write_test_desktop_file()
+        self.addCleanup(os.remove, desktop_file_path)
+        self.app = self.launch_test_application(
+            base.get_qmlscene_launch_command(),
+            '-I' + _get_module_include_path(),
+            qml_file_path,
+            '--desktop_file_hint={0}'.format(desktop_file_path),
+            emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
+            app_type='qt')
 
         self.assertThat(
             self.main_view.visible, Eventually(Equals(True)))
+
+    def _write_test_qml_file(self):
+        qml_file = tempfile.NamedTemporaryFile(suffix='.qml', delete=False)
+        qml_file.write(self.test_qml)
+        qml_file.close()
+        return qml_file.name
+
+    @property
+    def main_view(self):
+        return self.app.select_single(emulators.MainView)
+
+
+class FlickDirection:
+    """Enum for flick or scroll direction."""
+
+    UP, DOWN, LEFT, RIGHT = range(0, 4)
+
+
+class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
+    """Base test case for self tests that launch a QML file."""
+
+    test_qml_file_path = '/path/to/file.qml'
+    desktop_file_path = None
+
+    def setUp(self):
+        super(QMLFileAppTestCase, self).setUp()
+        self.pointing_device = Pointer(self.input_device_class.create())
+        self.launch_application()
+
+    def launch_application(self):
+        desktop_file_path = self._get_desktop_file_path()
+        self.app = self.launch_test_application(
+            base.get_qmlscene_launch_command(),
+            "-I" + _get_module_include_path(),
+            self.test_qml_file_path,
+            '--desktop_file_hint={0}'.format(desktop_file_path),
+            emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
+            app_type='qt')
+
+        self.assertThat(
+            self.main_view.visible, Eventually(Equals(True)))
+
+    def _get_desktop_file_path(self):
+        if self.desktop_file_path is None:
+            desktop_file_path = _write_test_desktop_file()
+            self.addCleanup(os.remove, desktop_file_path)
+            return desktop_file_path
+        else:
+            self.desktop_file_path
 
     @property
     def main_view(self):
@@ -137,6 +188,32 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
         self.pointing_device.move_to_object(itemTo)
         self.pointing_device.release()
 
+    def reveal_item_by_flick(self, item, flickable, direction):
+        x1, y1, w1, h1 = item.globalRect
+        x2, y2, w2, h2 = flickable.globalRect
+        if direction is FlickDirection.UP:
+            while y1 + h1 > y2 + h2:
+                self.flick(flickable, direction)
+                x1, y1, w1, h1 = item.globalRect
+        elif direction is FlickDirection.DOWN:
+            while y1 < y2:
+                self.flick(flickable, direction)
+                x1, y1, w1, h1 = item.globalRect
+
+    def flick(self, flickable, direction, delta=40):
+        """This funcito flicks the page from middle to the given direction."""
+        x, y, w, h = flickable.globalRect
+        if direction == FlickDirection.UP:
+            self.pointing_device.drag(x + w / 2, y + h / 2, x + w / 2,
+                                      y + h / 2 - delta)
+            flickable.flicking.wait_for(False)
+        elif direction == FlickDirection.DOWN:
+            self.pointing_device.drag(x + w / 2, y + h / 2, x + w / 2,
+                                      y + h / 2 + delta)
+            flickable.flicking.wait_for(False)
+        else:
+            raise ValueError("Invalid direction or not implementd yet")
+
     def selectItem(self, itemText):
         item = self.getListItem(itemText)
         x1, y1, w1, h1 = item.globalRect
@@ -165,6 +242,7 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
         orientationHelper = self.getOrientationHelper()
         header = orientationHelper.select_many("Header", title=pageTitle)[0]
         self.assertThat(header, Not(Is(None)))
+        self.assertThat(header.visible, Eventually(Equals(True)))
         return header
 
     def getObject(self, objectName):
@@ -193,7 +271,9 @@ class UbuntuUiToolkitTestCase(AutopilotTestCase):
 
     def tap_clearButton(self, objectName):
         textField = self.getObject(objectName)
-        self.assertThat(textField.hasClearButton, Equals(True))
+        self.assertIsNotNone(textField)
+        self.pointing_device.click_object(textField)
+        self.assertThat(textField.hasClearButton, Eventually(Equals(True)))
         btn = textField.select_single("AbstractButton")
-        self.pointing_device.move_to_object(btn)
-        self.pointing_device.click()
+        self.assertIsNotNone(btn)
+        self.pointing_device.click_object(btn)

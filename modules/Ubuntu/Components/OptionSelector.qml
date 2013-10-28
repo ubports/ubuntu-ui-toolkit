@@ -20,51 +20,93 @@ import Ubuntu.Components 0.1 as Toolkit
 
 /*!
     \qmltype OptionSelector
-    \inqmlmodule Components.Components 0.1
+    \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu-components
-    \brief Component displaying a single selected value with and optional image and subtext when not expanded, where expanding
-    it opens a listing of all the possible values for selection with an additional option of always being expanded.
+    \brief Component displaying either a single selected value or expanded multiple choice with an optional image and subtext when not expanded, when expanding it opens a
+    listing of all the possible values for selection with an additional option of always being expanded. If multiple choice is selected the list is expanded automatically.
 
     \b{This component is under heavy development.}
 
     Examples:
     \qml
-        import Components.Components 0.1
+        import Ubuntu.Components 0.1
         Column {
-            width: 250
+            spacing: units.gu(3)
+
             OptionSelector {
-                text: "Standard"
-                model: ["Value 1", "Value 2", "Value 3", "Value 4"]
+                text: i18n.tr("Label")
+                model: [i18n.tr("Value 1"),
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4")]
             }
+
             OptionSelector {
-                text: "Disabled"
-                model: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                enabled: false
+                text: i18n.tr("Label")
+                alwaysExpanded: true
+                model: [i18n.tr("Value 1"),
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4")]
             }
+
             OptionSelector {
-                text: "Expanded"
-                model: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                expanded: true
+                objectName: "optionselector_multipleselection"
+                text: i18n.tr("Multiple Selection")
+                alwaysExpanded: false
+                multiSelection: true
+                model: [i18n.tr("Value 1"),
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4")]
             }
-            OptionSelector {
-                text: "Icon"
-                icon: Qt.resolvedUrl("icon.png")
-                values: ["Value 1", "Value 2", "Value 3", "Value 4"]
-                selectedIndex: 2
-            }
+
             OptionSelector {
                 text: i18n.tr("Label")
                 model: customModel
-                expanded: true
+                alwaysExpanded: true
                 colourImage: true
-                delegate: OptionSelectorDelegate { text: name; subText: description; icon: image }
+                delegate: selectorDelegate
             }
+
+            Component {
+                id: selectorDelegate
+                OptionSelectorDelegate { text: name; subText: description; icon: image }
+            }
+
             ListModel {
                 id: customModel
                 ListElement { name: "Name 1"; description: "Description 1"; image: "images.png" }
                 ListElement { name: "Name 2"; description: "Description 2"; image: "images.png" }
                 ListElement { name: "Name 3"; description: "Description 3"; image: "images.png" }
                 ListElement { name: "Name 4"; description: "Description 4"; image: "images.png" }
+            }
+
+            OptionSelector {
+                text: i18n.tr("Label")
+                model: [i18n.tr("Value 1"),
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4"),
+                        i18n.tr("Value 5"),
+                        i18n.tr("Value 6"),
+                        i18n.tr("Value 7"),
+                        i18n.tr("Value 8")]
+                containerHeight: itemHeight * 4
+            }
+
+            OptionSelector {
+                text: i18n.tr("Label")
+                alwaysExpanded: true
+                model: [i18n.tr("Value 1"),
+                        i18n.tr("Value 2"),
+                        i18n.tr("Value 3"),
+                        i18n.tr("Value 4"),
+                        i18n.tr("Value 5"),
+                        i18n.tr("Value 6"),
+                        i18n.tr("Value 7"),
+                        i18n.tr("Value 8")]
+                containerHeight: itemHeight * 4
             }
         }
     \endqml
@@ -84,7 +126,13 @@ ListItem.Empty {
       \preliminary
       Specifies whether the list is always expanded.
      */
-    property bool expanded: false
+    property bool alwaysExpanded: false
+
+    /*!
+      \preliminary
+      If the list is expanded, multiple choice selection is enabled.
+     */
+    property bool multiSelection: false
 
     /*!
       \preliminary
@@ -111,9 +159,35 @@ ListItem.Empty {
     property alias selectedIndex: list.currentIndex
 
     /*!
+      \qmlproperty bool expanded
+      Is our list currently expanded?
+     */
+    readonly property alias expanded: listContainer.expanded
+
+    /*!
+      \qmlproperty real itemHeight
+      Height of an individual list item.
+     */
+    readonly property alias itemHeight: list.itemHeight
+
+    /*!
       Called when delegate is clicked.
      */
     signal delegateClicked(int index)
+
+    /*!
+      Called when the selector has finished expanding or collapsing.
+     */
+    signal expansionCompleted()
+
+     /*!
+      \internal
+      Trigger the action, passing the current index.
+     */
+    onDelegateClicked: {
+        if (action)
+            action.triggered(index)
+    }
 
     showDivider: false
 
@@ -127,6 +201,8 @@ ListItem.Empty {
         }
 
         Label {
+            id : label
+
             text: optionSelector.text
             visible: optionSelector.text !== "" ? true : false
         }
@@ -139,24 +215,24 @@ ListItem.Empty {
             readonly property url tick: __styleInstance.tick
             readonly property color themeColour: Theme.palette.selected.fieldText
             readonly property alias colourImage: optionSelector.colourImage
-            property bool isExpanded: expanded
+            property bool expanded: alwaysExpanded || multiSelection
 
             anchors {
                 left: parent.left
                 right: parent.right
             }
-            state: optionSelector.expanded ? state = "expanded" : state = "collapsed"
+            state: optionSelector.alwaysExpanded ? state = "expanded" : state = "collapsed"
             style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
             states: [ State {
                     name: "expanded"
-                    when: listContainer.isExpanded
+                    when: listContainer.expanded
                     PropertyChanges {
                         target: listContainer
                         height: list.contentHeight < containerHeight ? list.contentHeight : containerHeight
                     }
                 }, State {
                     name: "collapsed"
-                    when: !listContainer.isExpanded
+                    when: !listContainer.expanded
                     PropertyChanges {
                         target: listContainer
                         height: list.itemHeight
@@ -172,13 +248,8 @@ ListItem.Empty {
                         }
                         ScriptAction {
                             script: {
-                                //Nudge the list up if we're able to scroll.
-                                if (listContainer.isExpanded && !list.atYBeginning && !list.atYBeginning && !list.atYEnd) {
-                                    list.contentY += list.itemHeight / 2
-                                }
-                                //On collapse if we've selected the same index nudge it back down again.
-                                else if (!listContainer.isExpanded && list.previousIndex === list.currentIndex && !list.atYBeginning && !list.atYEnd) {
-                                    list.contentY -= list.itemHeight / 2
+                                if (listContainer.expanded) {
+                                    expansionCompleted();
                                 }
                             }
                         }
@@ -190,14 +261,14 @@ ListItem.Empty {
                 id: list
 
                 property int previousIndex: -1
-                readonly property alias expanded: optionSelector.expanded
+                readonly property alias alwaysExpanded: optionSelector.alwaysExpanded
+                readonly property alias multiSelection: optionSelector.multiSelection
                 readonly property alias container: listContainer
                 property real itemHeight
                 signal delegateClicked(int index)
 
                 onDelegateClicked: optionSelector.delegateClicked(index);
-                boundsBehavior: Flickable.StopAtBounds
-                interactive: listContainer.height !== list.contentHeight && listContainer.isExpanded ? true : false
+                interactive: listContainer.height !== list.contentHeight && listContainer.expanded ? true : false
                 clip: true
                 currentIndex: 0
                 model: optionSelector.model

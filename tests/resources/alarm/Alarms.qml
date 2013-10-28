@@ -31,7 +31,14 @@ MainView {
 
     Alarm {
         id: alarm
-        onStatusChanged: print("alarm status= " + status + ", error=" + error)
+        onStatusChanged: {
+            print("operation " + operation + ", status= " + status + ", error=" + error);
+            if (status !== Alarm.Ready)
+                return;
+            if ((operation > Alarm.NoOperation) && (operation < Alarm.Reseting)) {
+                reset();
+            }
+        }
     }
 
     Column {
@@ -66,8 +73,9 @@ MainView {
                 objectName: "alarm_enabled"
                 checked: alarm.enabled
                 onCheckedChanged: {
-                    if (checked != alarm.enabled)
+                    if (checked != alarm.enabled) {
                         alarm.enabled = checked;
+                    }
                 }
             }
         }
@@ -127,10 +135,18 @@ MainView {
             control: Button {
                 text: "Save"
                 onClicked: {
-                    alarm.message = message.text
-                    alarm.date = new Date(date.text)
+                    alarm.message = message.text;
+                    alarm.date = new Date(date.text);
                     alarm.save();
-                    if (alarm.error == Alarm.NoError) alarm.reset();
+                }
+            }
+        }
+        Standard {
+            text: "Alarm count: " + alarmModel.count
+            control: Button {
+                text: "Reset"
+                onClicked: {
+                    alarm.reset();
                 }
             }
         }

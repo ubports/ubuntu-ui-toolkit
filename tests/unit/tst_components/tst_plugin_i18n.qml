@@ -29,19 +29,25 @@ TestCase {
 
      function test_1_bindtextdomain() {
          var testValue = "../../../examples/ubuntu-ui-toolkit-gallery/po/";
+         signalSpy.signalName = "domainChanged";
          i18n.bindtextdomain("gallery",testValue);
+         signalSpy.wait()
      }
 
      function test_0_domain() {
          compare(i18n.domain,"","domain is empty by default");
          var testValue = "gallery";
+         signalSpy.signalName = "domainChanged";
          i18n.domain = testValue;
+         signalSpy.wait()
          compare(i18n.domain,testValue,"can set/get domain");
      }
 
      function test_0_language() {
          var testValue = "fi";
+         signalSpy.signalName = "languageChanged";
          i18n.language = testValue;
+         signalSpy.wait()
          compare(i18n.language,testValue,"can set/get language");
      }
 
@@ -53,16 +59,6 @@ TestCase {
          var readValue = i18n.dtr("gallery",testENValue);
          var testFIValue = "Bellen";
          compare(readValue,testFIValue,"can use dtr");
-     }
-
-     function test_domainChanged() {
-        signalSpy.signalName = "domainChanged";
-        compare(signalSpy.valid,true,"domainChanged signal exists")
-     }
-
-     function test_languageChanged() {
-         signalSpy.signalName = "languageChanged";
-         compare(signalSpy.valid,true,"languageChanged signal exists");
      }
 
      SignalSpy {

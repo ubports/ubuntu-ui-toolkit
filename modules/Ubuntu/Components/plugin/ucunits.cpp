@@ -113,18 +113,18 @@ float UCUnits::gu(float value)
 QString UCUnits::resolveResource(const QUrl& url)
 {
     if (url.isEmpty()) {
-        return "";
+        return QString();
     }
 
     QString path = QQmlFile::urlToLocalFileOrQrc(url);
 
     if (path.isEmpty()) {
-        return "";
+        return QString();
     }
 
     QFileInfo fileInfo(path);
     if (fileInfo.exists() && !fileInfo.isFile()) {
-        return "";
+        return QString();
     }
 
     QString prefix = fileInfo.dir().absolutePath() + QDir::separator() + fileInfo.baseName();
@@ -162,7 +162,7 @@ QString UCUnits::resolveResource(const QUrl& url)
     if (!files.empty()) {
         float selectedGridUnitSuffix = gridUnitSuffixFromFileName(files.first());
 
-        Q_FOREACH (QString fileName, files) {
+        Q_FOREACH (const QString& fileName, files) {
             float gridUnitSuffix = gridUnitSuffixFromFileName(fileName);
             if ((selectedGridUnitSuffix >= m_gridUnit && gridUnitSuffix >= m_gridUnit && gridUnitSuffix < selectedGridUnitSuffix)
                 || (selectedGridUnitSuffix < m_gridUnit && gridUnitSuffix > selectedGridUnitSuffix)) {
@@ -180,7 +180,7 @@ QString UCUnits::resolveResource(const QUrl& url)
         return QString("1") + "/" + path;
     }
 
-    return "";
+    return QString();
 }
 
 QString UCUnits::suffixForGridUnit(float gridUnit)
@@ -188,7 +188,7 @@ QString UCUnits::suffixForGridUnit(float gridUnit)
     return "@" + QString::number(gridUnit);
 }
 
-float UCUnits::gridUnitSuffixFromFileName(QString fileName)
+float UCUnits::gridUnitSuffixFromFileName(const QString& fileName)
 {
     QRegularExpression re("^.*@([0-9]*).*$");
     QRegularExpressionMatch match = re.match(fileName);

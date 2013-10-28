@@ -113,7 +113,7 @@ void UCQQuickImageExtension::reloadSource()
     }
 }
 
-bool UCQQuickImageExtension::rewriteSciFile(QString sciFilePath, QString scaleFactor, QTextStream& output)
+bool UCQQuickImageExtension::rewriteSciFile(const QString &sciFilePath, const QString &scaleFactor, QTextStream& output)
 {
     QFile sciFile(sciFilePath);
     if (sciFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -134,7 +134,7 @@ bool UCQQuickImageExtension::rewriteSciFile(QString sciFilePath, QString scaleFa
     }
 }
 
-QString UCQQuickImageExtension::scaledBorder(QString border, QString scaleFactor)
+QString UCQQuickImageExtension::scaledBorder(const QString &border, const QString &scaleFactor)
 {
     // Rewrite the border line with a scaled border value
     QStringList parts = border.split(":");
@@ -142,7 +142,7 @@ QString UCQQuickImageExtension::scaledBorder(QString border, QString scaleFactor
     return parts[0] + ": " + QString::number(qRound(scaledValue));
 }
 
-QString UCQQuickImageExtension::scaledSource(QString source, QString sciFilePath, QString scaleFactor)
+QString UCQQuickImageExtension::scaledSource(QString source, const QString &sciFilePath, const QString &scaleFactor)
 {
     // Rewrite the source line by prepending "image://scaling" to the source value
     QString sciDirectory = QFileInfo(sciFilePath).dir().path() + QDir::separator();
