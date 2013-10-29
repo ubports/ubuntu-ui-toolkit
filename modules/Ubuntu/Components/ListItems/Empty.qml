@@ -109,6 +109,12 @@ AbstractButton {
      */
     readonly property alias swipingState: backgroundIndicator.state
 
+    /*!
+      \preliminary
+      \qmlproperty bool waitingConfirmationForRemoval
+      Defines if the item is waiting for the user interaction during the swipe to delete
+     */
+    readonly property alias waitingConfirmationForRemoval: confirmRemovalDialog.waitingForConfirmation
 
     /*!
       \preliminary
@@ -161,6 +167,15 @@ AbstractButton {
       The spacing inside the list item.
      */
     property real __contentsMargins: units.gu(2)
+
+    /*!
+      \preliminary
+      Cancel item romoval
+     */
+    function cancelItemRemoval()
+    {
+        priv.resetDrag()
+    }
 
     width: parent ? parent.width : units.gu(31)
     implicitHeight: priv.removed ? 0 : __height + bottomDividerLine.height
@@ -218,6 +233,7 @@ AbstractButton {
             Resets the item dragging state
          */
         function resetDrag() {
+            confirmRemovalDialog.waitingForConfirmation = false
             body.x = 0
             pressedPosition = -1
             __mouseArea.drag.target = null
@@ -304,6 +320,7 @@ AbstractButton {
                     }
                     ScriptAction {
                          script: {
+                             confirmRemovalDialog.waitingForConfirmation = true
                              priv.commitDrag()
                         }
                     }
@@ -333,9 +350,13 @@ AbstractButton {
 
             Item {
                 id: confirmRemovalDialog
+                objectName: "confirmRemovalDialog"
+
+                property bool waitingForConfirmation: false
 
                 visible: false
                 width: units.gu(15)
+                x: body.x - width - units.gu(2)
                 anchors {
                     top: parent.top
                     bottom: parent.bottom
@@ -374,6 +395,7 @@ AbstractButton {
                 }
 
                 MouseArea {
+                    visible: confirmRemovalDialog.waitingForConfirmation
                     anchors.fill: parent
                     onClicked: removeItemAnimation.start()
                 }
