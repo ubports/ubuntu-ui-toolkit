@@ -285,7 +285,6 @@ QEvent *InverseMouseAreaType::mapEventToArea(QObject *target, QEvent *event)
                                    ev->windowPos(),
                                    ev->screenPos(),
                                    ev->button(), ev->buttons(), ev->modifiers());
-            mev->setAccepted(event->type() == QEvent::MouseButtonDblClick);
             return mev;
         }
         break;
@@ -294,7 +293,6 @@ QEvent *InverseMouseAreaType::mapEventToArea(QObject *target, QEvent *event)
             QWheelEvent *ev = static_cast<QWheelEvent*>(event);
             QWheelEvent *wev = new QWheelEvent(mapFromScene(ev->globalPos()), ev->globalPos(),
                                                ev->delta(), ev->buttons(), ev->modifiers(), ev->orientation());
-            wev->setAccepted(false);
             return wev;
         }
         break;
@@ -310,7 +308,6 @@ QEvent *InverseMouseAreaType::mapEventToArea(QObject *target, QEvent *event)
                                                mapFromScene(spos),
                                                mapFromScene(sopos),
                                                ev->modifiers());
-            hev->setAccepted(false);
             return hev;
         }
         } break;
@@ -374,6 +371,12 @@ void InverseMouseAreaType::mousePressEvent(QMouseEvent *event)
     // happens inside the "hole"
     if (!m_topmostItem || (m_topmostItem && contains(event->localPos()))) {
         QQuickMouseArea::mousePressEvent(event);
+    } else {
+        // we do not consume the mouse event
+        // this is not the same as setting the accepted flag in the signal handler
+        // as in this way we only tell to the event handling that the event can be
+        // propagated to other filters
+        event->setAccepted(false);
     }
 }
 
@@ -382,6 +385,12 @@ void InverseMouseAreaType::mouseDoubleClickEvent(QMouseEvent *event)
     // same as with mousePressEvent
     if (!m_topmostItem || (m_topmostItem && contains(event->localPos()))) {
         QQuickMouseArea::mouseDoubleClickEvent(event);
+    } else {
+        // we do not consume the mouse event
+        // this is not the same as setting the accepted flag in the signal handler
+        // as in this way we only tell to the event handling that the event can be
+        // propagated to other filters
+        event->setAccepted(false);
     }
 }
 

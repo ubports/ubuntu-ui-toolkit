@@ -70,7 +70,7 @@ Rectangle {
         InverseMouseArea {
             objectName: "IMA"
             anchors.fill: button
-            onPressed: print("IMA")
+            onPressed: {mouse.accepted = false; print("IMA")}
             onDoubleClicked: print("DIMA")
         }
     }
