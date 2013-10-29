@@ -67,6 +67,5 @@ Rectangle {
             objectName: "IMA"
             anchors.fill: button
         }
-
     }
 }

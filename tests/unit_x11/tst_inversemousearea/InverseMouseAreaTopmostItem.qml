@@ -17,70 +17,29 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-//Item {
-//    width: 300
-//    height: 300
-//    objectName: "ROOT"
-
-//    Rectangle {
-//        x: 10; y: 10
-//        width: 100; height: 100
-//        color: "blue"
-//        InverseMouseArea {
-//            anchors.fill: parent
-//            objectName: "IMA"
-//            topmostItem: true
-//        }
-//    }
-
-//    Rectangle {
-//        x: 110; y: 10
-//        width: 100; height: 100
-//        color: "red"
-//        MouseArea {
-//            anchors.fill: parent
-//            objectName: "MA"
-//        }
-//    }
-//}
-
 Item {
-    width: units.gu(40)
-    height: units.gu(71)
+    width: 300
+    height: 300
+    objectName: "ROOT"
 
     Rectangle {
-        id: firstRect
-        anchors {
-            left: parent.left
-            top: parent.top
-            leftMargin: units.gu(10)
-            topMargin: units.gu(10)
-        }
-        width: units.gu(15)
-        height: width
-
+        x: 10; y: 10
+        width: 100; height: 100
         color: "blue"
         InverseMouseArea {
             anchors.fill: parent
             objectName: "IMA"
             topmostItem: true
-            onPressed: print("IMA")
         }
     }
 
     Rectangle {
-        anchors {
-            left: firstRect.right
-            top: firstRect.bottom
-        }
-
-        width: units.gu(10)
-        height: width
+        x: 110; y: 10
+        width: 100; height: 100
         color: "red"
         MouseArea {
             anchors.fill: parent
             objectName: "MA"
-            onPressed: print("MA")
         }
     }
 }

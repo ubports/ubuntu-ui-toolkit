@@ -16,7 +16,6 @@
 
 #include "inversemouseareatype.h"
 #include <QtGui/QGuiApplication>
-#include <QtQuick/QQuickItem>
 #include "quickutils.h"
 
 /*!

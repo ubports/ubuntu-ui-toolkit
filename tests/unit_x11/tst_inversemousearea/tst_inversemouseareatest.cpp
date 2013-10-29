@@ -22,7 +22,6 @@
 #include <QtQuick/QQuickItem>
 
 #include "inversemouseareatype.h"
-#include "ucunits.h"
 
 class tst_InverseMouseAreaTest : public QObject
 {
