@@ -12,4 +12,5 @@ OTHER_FILES += \
     InverseMouseAreaOnTop.qml \
     InverseMouseAreaSignals.qml \
     InverseMouseAreaNormalEventStack.qml \
-    InverseMouseAreaTopmostItem.qml
+    InverseMouseAreaTopmostItem.qml \
+    InverseMouseAreaSensingArea.qml

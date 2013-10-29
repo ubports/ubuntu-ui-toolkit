@@ -22,6 +22,7 @@
 #include <QtQuick/QQuickItem>
 
 #include "inversemouseareatype.h"
+#include "ucunits.h"
 
 class tst_InverseMouseAreaTest : public QObject
 {
@@ -247,6 +248,32 @@ private Q_SLOTS:
         QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(115, 115));
         QCOMPARE(imaSpy.count(), 2);
         QCOMPARE(maSpy.count(), 0);
+    }
+
+    void testCase_InverseMouseAreaSensingArea()
+    {
+        InverseMouseAreaType *ima = testArea("InverseMouseAreaSensingArea.qml");
+        QVERIFY(ima);
+        quickView->show();
+        QTest::qWaitForWindowExposed(quickView);
+
+        QQuickItem *ma = quickView->rootObject()->findChild<QQuickItem*>("MA");
+        QVERIFY(ma);
+
+        QSignalSpy maSpy(ma, SIGNAL(clicked(QQuickMouseEvent*)));
+        QSignalSpy imaSpy(ima, SIGNAL(clicked(QQuickMouseEvent*)));
+
+        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(75, 75));
+        QCOMPARE(maSpy.count(), 0);
+        QCOMPARE(imaSpy.count(), 1);
+
+        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(25, 25));
+        QCOMPARE(maSpy.count(), 1);
+        QCOMPARE(imaSpy.count(), 1);
+
+        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(175, 175));
+        QCOMPARE(maSpy.count(), 2);
+        QCOMPARE(imaSpy.count(), 1);
     }
 
 };
