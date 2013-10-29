@@ -21,7 +21,7 @@ _CMD=""
 _TARGET=$1
 _TESTFILE=$2
 _ARG_XML="-o ../../test_$_TARGET_$_TESTFILE.xml,xunitxml -o -,txt"
-_ARGS="-platform minimal $_ARG_XML"
+_ARGS=""
 set +e
 
 function create_test_cmd {
@@ -49,15 +49,4 @@ function execute_test_cmd {
 create_test_cmd
 execute_test_cmd
 RESULT=$?
-if [ $RESULT -eq 2 ]; then
-  echo "FAILURE: Failed to execute test with -platform minimal, lets try without"
-  _ARGS="$_ARG_XML"
-  execute_test_cmd
-  RESULT=$?
-  if [ $RESULT -eq 2 ]; then
-   echo "FAILURE: Failed to execute test."
-   set -e
-   exit -2
-  fi
-fi
 exit $RESULT
