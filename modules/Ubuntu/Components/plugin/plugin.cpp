@@ -32,7 +32,6 @@
 #include "ucscalingimageprovider.h"
 #include "ucqquickimageextension.h"
 #include "quickutils.h"
-#include "giconprovider.h"
 #include "shapeitem.h"
 #include "inversemouseareatype.h"
 #include "qquickclipboard.h"
@@ -85,7 +84,7 @@ static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
     return uriHandler;
 }
 
-QUrl UbuntuComponentsPlugin::baseUrl(QStringList importPathList, const char* uri)
+QUrl UbuntuComponentsPlugin::baseUrl(const QStringList& importPathList, const char* uri)
 {
     /* FIXME: remove when migrating to Qt 5.1 and use QQmlExtensionPlugin::baseUrl()
        http://doc-snapshot.qt-project.org/qt5-stable/qtqml/qqmlextensionplugin.html#baseUrl
@@ -213,8 +212,7 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 
-    // register icon providers
-    engine->addImageProvider(QLatin1String("gicon"), new GIconProvider);
+    // register icon provider
     engine->addImageProvider(QLatin1String("theme"), new UnityThemeIconProvider);
 
     try {

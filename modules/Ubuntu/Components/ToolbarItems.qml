@@ -137,6 +137,7 @@ Item {
         \endqml
      */
     property Item back: ToolbarButton {
+        objectName: "back_toolbar_button"
         iconSource: Qt.resolvedUrl("artwork/back.png")
         text: i18n.tr("Back")
         visible: toolbarItems.pageStack && toolbarItems.pageStack.depth > 1
@@ -154,7 +155,10 @@ Item {
     property Item pageStack: null
 
     /*!
-      The toolbar is opened
+      The toolbar is opened.
+      When the toolbar is not locked, this value is automatically updated
+      when the toolbar is opened/closed by user interaction or by other events (such as changing
+      the active \l Page).
      */
     property bool opened: false
 

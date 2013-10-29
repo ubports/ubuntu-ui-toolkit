@@ -34,7 +34,7 @@ public:
 
     // getter/setters
     QString themeName() const;
-    void setThemeName(QString themeName);
+    void setThemeName(const QString &themeName);
 
 Q_SIGNALS:
     void themeNameChanged();

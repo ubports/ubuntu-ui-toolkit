@@ -105,6 +105,12 @@ MainView {
         return self.app.select_single(emulators.MainView)
 
 
+class FlickDirection:
+    """Enum for flick or scroll direction."""
+
+    UP, DOWN, LEFT, RIGHT = range(0, 4)
+
+
 class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
     """Base test case for self tests that launch a QML file."""
 
@@ -182,6 +188,32 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         self.pointing_device.move_to_object(itemTo)
         self.pointing_device.release()
 
+    def reveal_item_by_flick(self, item, flickable, direction):
+        x1, y1, w1, h1 = item.globalRect
+        x2, y2, w2, h2 = flickable.globalRect
+        if direction is FlickDirection.UP:
+            while y1 + h1 > y2 + h2:
+                self.flick(flickable, direction)
+                x1, y1, w1, h1 = item.globalRect
+        elif direction is FlickDirection.DOWN:
+            while y1 < y2:
+                self.flick(flickable, direction)
+                x1, y1, w1, h1 = item.globalRect
+
+    def flick(self, flickable, direction, delta=40):
+        """This funcito flicks the page from middle to the given direction."""
+        x, y, w, h = flickable.globalRect
+        if direction == FlickDirection.UP:
+            self.pointing_device.drag(x + w / 2, y + h / 2, x + w / 2,
+                                      y + h / 2 - delta)
+            flickable.flicking.wait_for(False)
+        elif direction == FlickDirection.DOWN:
+            self.pointing_device.drag(x + w / 2, y + h / 2, x + w / 2,
+                                      y + h / 2 + delta)
+            flickable.flicking.wait_for(False)
+        else:
+            raise ValueError("Invalid direction or not implementd yet")
+
     def selectItem(self, itemText):
         item = self.getListItem(itemText)
         x1, y1, w1, h1 = item.globalRect
@@ -210,6 +242,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         orientationHelper = self.getOrientationHelper()
         header = orientationHelper.select_many("Header", title=pageTitle)[0]
         self.assertThat(header, Not(Is(None)))
+        self.assertThat(header.visible, Eventually(Equals(True)))
         return header
 
     def getObject(self, objectName):
