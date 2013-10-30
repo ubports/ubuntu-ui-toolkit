@@ -21,6 +21,15 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 MainView {
     width: 800
     height: 600
+
+    Component {
+        id: dynamicTab
+        Tab {
+            title: "Template"
+            page: Page {}
+        }
+    }
+
     Tabs {
         id: tabs
         selectedTabIndex: 0
@@ -54,6 +63,21 @@ MainView {
                         iconSource: "call_icon.png"
                         onTriggered: print("action triggered")
                     }
+                    ToolbarButton {
+                        text: "new tab"
+                        iconSource: "call_icon.png"
+                        onTriggered: tabs.addTab("Dynamic Tab", dynamicTab)
+                    }
+                    ToolbarButton {
+                        text: "new tab source"
+                        iconSource: "call_icon.png"
+                        onTriggered: tabs.addTab("External Tab", Qt.resolvedUrl("MyCustomPage.qml"))
+                    }
+                    ToolbarButton {
+                        text: "remove last"
+                        iconSource: "call_icon.png"
+                        onTriggered: tabs.removeTab(tabs.count - 1)
+                    }
                 }
             }
         }
@@ -62,6 +86,14 @@ MainView {
             Tab {
                 title: "Extra " + index
                 page: Page {
+                    tools: ToolbarItems {
+                        ToolbarButton {
+                            text: "move to 0"
+                            iconSource: "call_icon.png"
+                            onTriggered: tabs.moveTab(index, 0);
+                        }
+                    }
+
                     Column {
                         anchors.centerIn: parent
                         width: units.gu(40)

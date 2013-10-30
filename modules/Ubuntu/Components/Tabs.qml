@@ -161,8 +161,8 @@ PageTreeNode {
       \preliminary
       The currently selected tab.
      */
-    readonly property Tab selectedTab: (selectedTabIndex < 0) || (__tabs.length <= selectedTabIndex) ?
-                                           null : __tabs[selectedTabIndex]
+    readonly property Tab selectedTab: (selectedTabIndex < 0) || (__tabs.count <= selectedTabIndex) ?
+                                           null : __tabs.get(selectedTabIndex).tab
 
     /*!
       The page of the currently selected tab.
@@ -189,6 +189,7 @@ PageTreeNode {
       \qmlproperty list<Item> tabChildren
      */
     default property alias tabChildren: tabsModel.children
+//    default property alias tabChildren: tabsModel.data
 
     /*!
       Used by the tabs style to update the tabs header with the titles of all the tabs.
@@ -198,29 +199,156 @@ PageTreeNode {
     signal modelChanged()
 
     /*!
+      Contains the number of tabs in the Tabs component.
+      */
+    readonly property alias count: tabListModel.count
+
+    /*!
+      Appends a Tab dynamically to the list of tabs. The 'a title specifies the
+      title of the Tab. The \a component can be either a Component or a URL to
+      the Tab component to be loaded. The Tab's title will be replaced with the
+      given \a title, unless if the given value is empty or undefined. The optional
+      \a params defines parameters passed to the Tab.
+      Returns the instance of the created Tab.
+      */
+    function addTab(tabTitle, tab, params) {
+        return tabsModel.insert(count, tabTitle, tab, params);
+    }
+    /*!
+      Inserts a Tab at the given index. If the \a index is less than 0, the Tab will
+      be added to the front, and to the end if the \a index is greater than \l count.
+      \a title, \a component and \a params are used in the same way as in \l addTab().
+      Returns the instance of the created Tab.
+      */
+    function insertTab(index, tabTitle, tab, params) {
+        return tabsModel.insert(index, tabTitle, tab, params);
+    }
+
+    /*!
+      Moves the tab from the given \a from position to the position given in \a to.
+      Returns true if the indexes were in [0..\a count) boundary and if the operation
+      succeeds, and false otherwise.
+      */
+    function moveTab(from, to) {
+        return tabsModel.move(from, to);
+    }
+
+    /*!
+      Removes the Tab from the given \a index. Returns true if the \a index falls
+      into [0..\a count) boundary and the operation succeeds, and false on error.
+      */
+    function removeTab(index) {
+        return tabsModel.remove(index);
+    }
+
+
+    /*!
       \internal
       required by TabsStyle
      */
+    ListModel {
+        id: tabListModel
+    }
+
     Item {
         anchors.fill: parent
         id: tabsModel
 
-        property var tabList: []
+        property bool internalUpdate: false
+
+        property ListModel tabList: tabListModel
         onChildrenChanged: {
             updateTabList();
         }
 
+        Loader {
+            id: loader
+            anchors.fill: parent
+            asynchronous: false
+        }
+
         function updateTabList() {
-            var list = [];
-            var index = 0;
-            for (var i=0; i < children.length; i++) {
+            if (internalUpdate) return;
+            tabList.clear();
+            for (var i in tabsModel.children) {
                 if (isTab(tabsModel.children[i])) {
-                    tabsModel.children[i].__protected.index = index++;
-                    list.push(tabsModel.children[i]);
+                    tabList.append({"tab": tabsModel.children[i], "title": tabsModel.children[i].title});
+                    tabsModel.children[i].__protected.index = tabList.count - 1;
                 }
             }
-            tabList = list;
-            tabs.modelChanged();
+        }
+
+        // reorders the Tabs children due to insertion, move or remove
+        function reorderTabList() {
+            for (var i = 0; i < tabList.count; i++) {
+                if (isTab(tabList.get(i).tab)) {
+                    tabsModel.children[i] = tabList.get(i).tab;
+                    print(tabList.get(i).tab)
+                    tabList.get(i).tab.__protected.index = i;
+                }
+            }
+        }
+
+        function insert(index, title, tabObject, params) {
+            internalUpdate = true;
+            // create tab instance
+//            var component = null;
+//            if (tabObject.createObject) {
+//                component = tabObject;
+//            } else if (typeof tabObject === "string") {
+//                component = Qt.createComponent(tabObject);
+//            } else {
+//                console.error("\"" + tabObject + "\" is not a component or a URL");
+//                return null;
+//            }
+//            var tab = null;
+//            print("insert::"+tabObject + "//" + tab)
+//            if (component && component.status === Component.Ready) {
+//                tab = component.createObject(tabs, params);
+//                if (!tab) {
+//                    console.error("Error creating dynamic tab");
+//                    return null;
+//                }
+//            }
+            if (typeof tabObject === "string") {
+                loader.source = tabObject;
+            } else {
+                loader.sourceComponent = tabObject;
+            }
+            var tab = loader.item;
+
+            // fix title
+            if (title !== undefined || title !== "") {
+                tab.title = title;
+            } else {
+                title = tab.title;
+            }
+
+            // insert the created tab into the model
+            index = MathUtils.clamp(index, 0, count);
+            tabList.insert(index, {"title": title, "tab" : tab});
+            reorderTabList();
+
+            internalUpdate = false;
+            return tab;
+        }
+
+        function move(from, to) {
+            if (from < 0 || from >= count || to < 0 || to >= count || from === to) return false;
+            internalUpdate = true;
+            tabList.move(from, to, 1);
+            reorderTabList();
+            internalUpdate = false;
+            return true;
+        }
+
+        function remove(index) {
+            if (index < 0 || index > count) return false;
+            internalUpdate = true;
+            tabList.remove(index);
+            reorderTabList();
+            internalUpdate = false;
+            return true;
         }
 
         function isTab(item) {
