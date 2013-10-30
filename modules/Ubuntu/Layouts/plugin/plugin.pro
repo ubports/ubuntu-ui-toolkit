@@ -3,7 +3,7 @@ TARGET = ../UbuntuLayouts
 QT += qml quick
 CONFIG += qt plugin no_keywords
 
-QMAKE_CXXFLAGS_DEBUG += -Werror
+QMAKE_CXXFLAGS += -Werror
 
 QT += quick-private
 QT += qml-private core-private v8-private
