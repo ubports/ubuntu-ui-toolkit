@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Author: Zsombor Egri <zsombor.egri@canonical.com>
+ * Author: Christian Dywan <christian.dywan@canonical.com>
  */
 
 #include <QtTest/QtTest>
