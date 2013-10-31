@@ -19,6 +19,7 @@ from ubuntuuitoolkit.tests import gallery
 
 from testtools.matchers import Equals
 
+
 class EnabledTogglesTestCase(gallery.GalleryTestCase):
 
     scenarios = [
@@ -45,7 +46,7 @@ class EnabledTogglesTestCase(gallery.GalleryTestCase):
         self.assertThat(toggle.enabled, Equals(True))
         self.assertThat(toggle.checked, Equals(self.initial_state))
 
-        toggle.change_state()
+        toggle.change_state(time_out=1)
         self.assertThat(toggle.checked, Equals(not self.initial_state))
 
 
