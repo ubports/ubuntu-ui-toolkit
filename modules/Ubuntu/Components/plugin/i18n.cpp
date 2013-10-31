@@ -54,6 +54,15 @@ namespace C {
  */
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
+    /*
+     * setlocale
+     * category = LC_ALL: All types of i18n: LC_MESSAGES, LC_NUMERIC, LC_TIME
+     * locale = "": Lookup the environment for $LC_ALL, $LC_* and $LANG in that order
+     * Returns: for example en_US.utf8, da_DK or POSIX
+     *
+     * Note: $LANGUAGE is implicitly respected by gettext() calls and
+     *   defines the order of multiple locales
+     */
     m_language = setlocale(LC_ALL, "");
 }
 
@@ -105,6 +114,10 @@ void UbuntuI18n::setDomain(const QString &domain) {
 
 void UbuntuI18n::setLanguage(const QString &lang) {
     m_language = lang;
+    /*
+     The inverse form of setlocale as used in the constructor, passing
+     a valid locale string updates all category type defaults.
+     */
     setlocale(LC_ALL, lang.toUtf8());
     Q_EMIT languageChanged();
 }
