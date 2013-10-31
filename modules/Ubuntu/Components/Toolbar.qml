@@ -99,7 +99,12 @@ Panel {
                 toolbar.close();
             }
         }
-        onLockedChanged: toolbar.locked = tools.locked;
+        onLockedChanged: {
+            toolbar.locked = tools.locked;
+            // open the toolbar when it becomes unlocked
+            // (may be because a new page was pushed to the page stack)
+            if (!toolbar.locked) toolbar.open();
+        }
     }
 
     QtObject {
