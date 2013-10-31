@@ -257,7 +257,7 @@ PageTreeNode {
         // This mouse area will be on top of the page contents, but
         // under the toolbar and header.
         // It is used for detecting interaction with the page contents
-        // which can close the toolbar take a tab bar out of selection mode.
+        // which can close the toolbar and take a tab bar out of selection mode.
 
         property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ?
                                       page.__propagated.toolbar : null
