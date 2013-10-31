@@ -80,9 +80,9 @@ QString UbuntuI18n::domain() const {
 
 /*!
  * \qmlproperty string i18n::language
- * The language that is used for the translation. The default value is the value of
- * environment variable LANGUAGE at the time when the QML application is started.
- * The value can be a list, for example "de_DE eo en".
+ * The language that is used for the translation. The default value is
+ * the user's locale dending on $LC_ALL, $LC_MESSAGES and $LANG at the time
+ * of running the application. See the gettext manual for details.
  */
 QString UbuntuI18n::language() const {
     return m_language;
