@@ -25,4 +25,10 @@ Item {
         objectName: "helper"
         orientationAngle: 90
     }
+
+    Item {
+        objectName: "checkpoint"
+        property int contentOrientation: window.contentOrientation
+        property int orientation: Screen.Orientation
+    }
 }

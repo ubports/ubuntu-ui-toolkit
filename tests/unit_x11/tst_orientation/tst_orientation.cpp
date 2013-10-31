@@ -91,6 +91,13 @@ private Q_SLOTS:
         // No warning about "window" being undefined must appear
         QCOMPARE(spy->count(), 0);
         QCOMPARE(helper->property("orientationAngle").toInt(), 90);
+        // Verify expected values
+        QQuickItem *checkpoint = view->rootObject()->findChild<QQuickItem*>("checkpoint");
+        QVERIFY(checkpoint);
+        // window.contentOrientation 
+        QCOMPARE(checkpoint->property("contentOrientation").toInt(), helper->property("orientationAngle").toInt());
+        // Screen.Orientation
+        QCOMPARE(checkpoint->property("orientation").toInt(), helper->property("orientationAngle").toInt());
         delete view;
     }
 };
