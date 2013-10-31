@@ -341,6 +341,17 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
             self.pointing_device.click_object(self)
             self.checked.wait_for(False)
 
+    def change_state(self):
+        """Change the state of a CheckBox.
+
+        If it is checked, it will be unchecked. If it is unchecked, it will be
+        checked.
+
+        """
+        original_state = self.checked
+        self.pointing_device.click_object(self)
+        self.checked.wait_for(not original_state)
+
 
 class Empty(UbuntuUIToolkitEmulatorBase):
     """Base class to emulate swipe to delete"""

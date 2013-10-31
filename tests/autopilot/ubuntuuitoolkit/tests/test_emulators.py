@@ -432,12 +432,12 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
         super(ToggleTestCase, self).setUp()
         self.toggle = self.main_view.select_single(
             emulators.CheckBox, objectName=self.objectName)
+        self.assertFalse(self.toggle.checked)
 
     def test_toggle_emulator(self):
         self.assertIsInstance(self.toggle, emulators.CheckBox)
 
     def test_check_toggle(self):
-        self.assertFalse(self.toggle.checked)
         self.toggle.check()
         self.assertTrue(self.toggle.checked)
 
@@ -456,6 +456,15 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
         with mock.patch.object(input.Pointer, 'click_object') as mock_click:
             self.toggle.uncheck()
         self.assertFalse(mock_click.called)
+
+    def test_change_state_from_checked(self):
+        self.toggle.check()
+        self.toggle.change_state()
+        self.assertFalse(self.toggle.checked)
+
+    def test_change_state_from_unchecked(self):
+        self.toggle.change_state()
+        self.assertTrue(self.toggle.checked)
 
 
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
