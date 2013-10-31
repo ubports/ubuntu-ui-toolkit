@@ -76,4 +76,3 @@ class DisabledTogglesTestCase(gallery.GalleryTestCase):
         self.assertThat(toggle.checked, Equals(self.initial_state))
 
         self.assertRaises(AssertionError, toggle.change_state, time_out=1)
-
