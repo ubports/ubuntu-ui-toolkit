@@ -86,7 +86,8 @@ Panel {
         if (tools && tools.hasOwnProperty("opened")) {
             tools.opened = toolbar.opened;
         }
-        if (!toolbar.locked) hideTimer.restart()
+        console.log("restarting timer!");
+        if (!toolbar.locked) hideTimer.restart();
     }
 
     Connections {
