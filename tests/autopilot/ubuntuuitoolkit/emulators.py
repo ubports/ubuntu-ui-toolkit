@@ -332,14 +332,12 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
     def check(self):
         """Check a CheckBox, if its not already checked."""
         if not self.checked:
-            self.pointing_device.click_object(self)
-            self.checked.wait_for(True)
+            self.change_state()
 
     def uncheck(self):
         """Uncheck a CheckBox, if its not already unchecked."""
         if self.checked:
-            self.pointing_device.click_object(self)
-            self.checked.wait_for(False)
+            self.change_state()
 
     def change_state(self):
         """Change the state of a CheckBox.
