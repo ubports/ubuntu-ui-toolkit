@@ -23,6 +23,7 @@ class InverseMouseAreaType : public QQuickMouseArea
 {
     Q_OBJECT
     Q_PROPERTY(QQuickItem *sensingArea READ sensingArea WRITE setSensingArea NOTIFY sensingAreaChanged)
+    Q_PROPERTY(bool topmostItem READ topmostItem WRITE setTopmostItem NOTIFY topmostItemChanged)
 public:
     explicit InverseMouseAreaType(QQuickItem *parent = 0);
     ~InverseMouseAreaType();
@@ -31,19 +32,30 @@ public:
 
 protected:
     void componentComplete();
+    bool eventFilter(QObject *, QEvent *);
+
+    // override mouse events
+    void mousePressEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
+
 
 private: // getter/setter
     QQuickItem *sensingArea() const;
     void setSensingArea(QQuickItem *sensing);
+    bool topmostItem() const;
+    void setTopmostItem(bool value);
+    QEvent * mapEventToArea(QObject *target, QEvent *event);
 
 Q_SIGNALS:
     void sensingAreaChanged();
+    void topmostItemChanged();
 
 private Q_SLOTS:
     void update();
     
 private:
     bool m_ready;
+    bool m_topmostItem;
     QQuickItem *m_sensingArea;
 };
 
