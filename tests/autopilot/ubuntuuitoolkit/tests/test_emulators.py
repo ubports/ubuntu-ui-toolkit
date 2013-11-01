@@ -14,10 +14,12 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import mock
+import time
 import unittest
 
-import mock
 from autopilot import input, platform
+from testtools.matchers import GreaterThan, LessThan
 
 from ubuntuuitoolkit import emulators, tests
 
@@ -465,6 +467,30 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
     def test_change_state_from_unchecked(self):
         self.toggle.change_state()
         self.assertTrue(self.toggle.checked)
+
+    def test_check_with_timeout(self):
+        with mock.patch.object(
+                emulators.CheckBox, 'change_state') as mock_change:
+            self.toggle.check(time_out=5)
+
+        mock_change.assert_called_once_with(5)
+
+    def test_uncheck_with_timeout(self):
+        with mock.patch.object(
+                emulators.CheckBox, 'change_state') as mock_change:
+            self.toggle.uncheck(time_out=5)
+
+        mock_change.assert_called_once_with(5)
+
+    def test_change_state_with_timeout(self):
+        with mock.patch.object(self.toggle, 'pointing_device'):
+             # mock the pointing device so the checkbox is not clicked.
+             timestamp_before_call = time.time()
+             self.assertRaises(AssertionError, self.toggle.change_state, 1)
+
+        waiting_time = time.time() - timestamp_before_call
+        self.assertThat(waiting_time, GreaterThan(1))
+        self.assertThat(waiting_time, LessThan(2))
 
 
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
