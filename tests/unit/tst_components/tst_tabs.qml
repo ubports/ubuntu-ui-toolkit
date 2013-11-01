@@ -85,8 +85,49 @@ TestCase {
         compare(tabFlickLoader.index, 5, "tabFlickLoader is at 5");
     }
 
+    function test_z_addTab() {
+        var newTab = tabs.addTab("Dynamic Tab", dynamicTab);
+        compare((newTab !== null), true, "tab added");
+        compare(newTab.active, false, "the inserted tab is inactive");
+    }
+
+    function test_z_insertTab() {
+        var newTab = tabs.insertTab(0, "Inserted tab", dynamicTab);
+        compare((newTab !== null), true, "tab inserted");
+        compare(newTab.active, false, "the inserted tab is inactive");
+    }
+
+    function test_z_insertTabAndActivate() {
+        var newTab = tabs.insertTab(tabs.count, "Inserted tab", dynamicTab);
+        compare((newTab !== null), true, "tab inserted");
+        compare(newTab.active, false, "the inserted tab is inactive");
+        print(newTab.index)
+        tabs.selectedTabIndex = newTab.index;
+        compare(tabs.selectedTab, newTab, "the inserted tab is active");
+    }
+
+    function test_z_insertTabFail() {
+        compare(tabs.inserTab(-1, "TabTitle", dynamicTab), null, "tab insertion failure");
+        compare(tabs.inserTab(tabs.count, "TabTitle", dynamicTab), null, "tab insertion failure");
+    }
+
+    function test_z_moveTab() {
+        compare(tabs.moveTab(0, tabs.count - 1), true, "first tab moved to last");
+        tabs.selectedTabIndex = 0;
+        compare(tabs.moveTab(tabs.selectedTabIndex, tabs.selectedTabIndex + 1), true, "selected tab moved as next");
+    }
+
+    function test_z_removeTab() {
+        compare(true, false)
+    }
+
     Tabs {
         id: emptyTabs
+    }
+
+    Component {
+        id: dynamicTab
+        Tab{}
     }
 
     MainView {

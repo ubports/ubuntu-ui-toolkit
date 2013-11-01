@@ -192,6 +192,7 @@ PageTreeNode {
     default property alias tabChildren: tabsModel.children
 
     /*!
+      \qmlproperty int count
       Contains the number of tabs in the Tabs component.
       */
     readonly property alias count: tabsListModel.count
