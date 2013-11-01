@@ -37,41 +37,6 @@ class GenericTests(GalleryTestCase):
         self.loadItem(item)
         self.checkPageHeader(item)
 
-    def test_toggles(self):
-        item = "Toggles"
-        self.checkListItem(item)
-        self.loadItem(item)
-        self.checkPageHeader(item)
-
-        # check default states
-        item_data = [
-            ["checkbox_unchecked", False, True],
-            ["checkbox_checked", True, True],
-            ["checkbox_disabled_unchecked", False, False],
-            ["checkbox_disabled_checked", True, False],
-            ["switch_unchecked", False, True],
-            ["switch_checked", True, True],
-            ["switch_disabled_unchecked", False, False],
-            ["switch_disabled_checked", True, False]
-        ]
-
-        for data in item_data:
-            objName = data[0]
-            objChecked = data[1]
-            objEnabled = data[2]
-
-            obj = self.getObject(objName)
-            self.assertThat(obj.checked, Equals(objChecked))
-            self.assertThat(obj.enabled, Equals(objEnabled))
-
-            # try to interact with objects
-            self.tap(objName)
-
-            if (obj.enabled):
-                self.assertThat(obj.checked, Not(Equals(objChecked)))
-            else:
-                self.assertThat(obj.checked, Equals(objChecked))
-
     def test_slider(self):
         item = "Slider"
         self.loadItem(item)
