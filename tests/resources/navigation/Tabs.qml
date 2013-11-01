@@ -25,7 +25,6 @@ MainView {
     Component {
         id: dynamicTab
         Tab {
-            title: "Template"
             page: Page {}
         }
     }
@@ -38,7 +37,9 @@ MainView {
         }
 
         Tab {
+            id: simpleTab
             title: i18n.tr("Simple page")
+            onIndexChanged: print(title + " index= " + index)
             page: Page {
                 title: "This title is not visible"
                 Row {
@@ -64,19 +65,27 @@ MainView {
                         onTriggered: print("action triggered")
                     }
                     ToolbarButton {
-                        text: "new tab"
+                        text: "ADD"
                         iconSource: "call_icon.png"
-                        onTriggered: tabs.addTab("Dynamic Tab", dynamicTab)
+                        onTriggered: tabs.addTab("ADDED", dynamicTab)
                     }
                     ToolbarButton {
-                        text: "new tab source"
+                        text: "INSERT"
                         iconSource: "call_icon.png"
-                        onTriggered: tabs.addTab("External Tab", Qt.resolvedUrl("MyCustomPage.qml"))
+                        onTriggered: tabs.insertTab(1, "INSERTED", dynamicTab)
                     }
                     ToolbarButton {
-                        text: "remove last"
+                        text: "move me next"
                         iconSource: "call_icon.png"
-                        onTriggered: tabs.removeTab(tabs.count - 1)
+                        onTriggered: {
+                            var i = simpleTab.index;
+                            tabs.moveTab(i, i + 1);
+                        }
+                    }
+                    ToolbarButton {
+                        text: "delete 0"
+                        iconSource: "call_icon.png"
+                        onTriggered: tabs.removeTab(0)
                     }
                 }
             }
@@ -86,14 +95,6 @@ MainView {
             Tab {
                 title: "Extra " + index
                 page: Page {
-                    tools: ToolbarItems {
-                        ToolbarButton {
-                            text: "move to 0"
-                            iconSource: "call_icon.png"
-                            onTriggered: tabs.moveTab(index, 0);
-                        }
-                    }
-
                     Column {
                         anchors.centerIn: parent
                         width: units.gu(40)

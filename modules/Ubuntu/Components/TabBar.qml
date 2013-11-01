@@ -40,6 +40,19 @@ StyledItem {
     property Item tabsItem
 
     /*!
+      The tab model having the following roles defined:
+      \list
+      \li \b title - mandatory, specifying the title of the tab
+      \li \b tab - optional, the Tab or other Item to be displayed when activated;
+            if specified the component will be activated when selected; otherwise
+            the index will be used to activate the item
+      \li \b imageSource - optional, specifies the URL of the image to be displayed
+      \li \b icon - optional, specifies the themed icon to be shown
+      \endlist
+      */
+    property ListModel model
+
+    /*!
       An inactive tab bar only displays the currently selected tab,
       and an active tab bar can be interacted with to select a tab.
      */

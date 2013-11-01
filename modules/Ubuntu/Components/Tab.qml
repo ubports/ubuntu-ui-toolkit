@@ -88,5 +88,7 @@ PageTreeNode {
     QtObject {
         id: internal
         property int index: -1
+        property bool inserted: false
+        property bool dynamic: false
     }
 }

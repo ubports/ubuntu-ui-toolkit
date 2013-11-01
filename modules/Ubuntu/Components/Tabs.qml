@@ -155,14 +155,14 @@ PageTreeNode {
       The first tab is 0, and -1 means that no tab is selected.
       The initial value is 0 if Tabs has contents, or -1 otherwise.
      */
-    property int selectedTabIndex: tabs.__tabs.length > 0 ? 0 : -1
+    property int selectedTabIndex: tabsListModel.count > 0 ? 0 : -1
 
     /*!
       \preliminary
       The currently selected tab.
      */
-    readonly property Tab selectedTab: (selectedTabIndex < 0) || (__tabs.count <= selectedTabIndex) ?
-                                           null : __tabs.get(selectedTabIndex).tab
+    readonly property Tab selectedTab: (selectedTabIndex < 0) || (tabsListModel.count <= selectedTabIndex) ?
+                                           null : tabsListModel.get(selectedTabIndex).tab
 
     /*!
       The page of the currently selected tab.
@@ -175,6 +175,7 @@ PageTreeNode {
      */
     property TabBar tabBar: TabBar {
         tabsItem: tabs
+        model: tabsListModel
         visible: tabs.active
     }
 
@@ -182,14 +183,18 @@ PageTreeNode {
       \internal
       Used by the style to create the tabs header.
     */
-    property alias __tabs: tabsModel.tabList
+//    property alias __tabs: tabsListModel
 
     /*!
       Children are placed in a separate item that has functionality to extract the Tab items.
       \qmlproperty list<Item> tabChildren
      */
     default property alias tabChildren: tabsModel.children
-//    default property alias tabChildren: tabsModel.data
+
+    /*!
+      Contains the number of tabs in the Tabs component.
+      */
+    readonly property alias count: tabsListModel.count
 
     /*!
       Used by the tabs style to update the tabs header with the titles of all the tabs.
@@ -199,11 +204,6 @@ PageTreeNode {
     signal modelChanged()
 
     /*!
-      Contains the number of tabs in the Tabs component.
-      */
-    readonly property alias count: tabListModel.count
-
-    /*!
       Appends a Tab dynamically to the list of tabs. The 'a title specifies the
       title of the Tab. The \a component can be either a Component or a URL to
       the Tab component to be loaded. The Tab's title will be replaced with the
@@ -211,8 +211,8 @@ PageTreeNode {
       \a params defines parameters passed to the Tab.
       Returns the instance of the created Tab.
       */
-    function addTab(tabTitle, tab, params) {
-        return tabsModel.insert(count, tabTitle, tab, params);
+    function addTab(title, component, params) {
+        return insertTab(count, title, component, params);
     }
     /*!
       Inserts a Tab at the given index. If the \a index is less than 0, the Tab will
@@ -220,8 +220,37 @@ PageTreeNode {
       \a title, \a component and \a params are used in the same way as in \l addTab().
       Returns the instance of the created Tab.
       */
-    function insertTab(index, tabTitle, tab, params) {
-        return tabsModel.insert(index, tabTitle, tab, params);
+    function insertTab(index, title, component, params) {
+        var tabComponent = null;
+        if (typeof component === "string") {
+            tabComponent = Qt.createComponent(component);
+        } else {
+            tabComponent = component;
+        }
+        if (tabComponent.status === Component.Error) {
+            print(tabComponent.errorString());
+            return null;
+        }
+        var tab = tabComponent.createObject();
+
+        // fix title
+        if (title !== undefined || title !== "") {
+            tab.title = title;
+        } else {
+            title = tab.title;
+        }
+
+        // insert the created tab into the model
+        index = MathUtils.clamp(index, 0, count);
+        tab.active = false;
+        tab.__protected.inserted = true;
+        tab.__protected.index = index;
+        tab.__protected.dynamic = true;
+        tabsListModel.insert(index, tabsListModel.listModel(tab));
+        tabsListModel.reindex(index);
+        tab.parent = tabsModel;
+        tabs.modelChanged();
+        return tab;
     }
 
     /*!
@@ -230,7 +259,25 @@ PageTreeNode {
       succeeds, and false otherwise.
       */
     function moveTab(from, to) {
-        return tabsModel.move(from, to);
+        if (from < 0 || from >= count || to < 0 || to >= count || from === to) return false;
+        var tabFrom = tabsListModel.get(from).tab;
+        var tabTo = tabsListModel.get(to).tab;
+        tabFrom.__protected.index = to;
+        tabTo.__protected.index = from;
+
+        // check if the active one is about to be moved
+        var activeIndex = (selectedTabIndex === from) ? from : ((selectedTabIndex === to) ? to : -1);
+
+        // move tab
+        tabsListModel.move(from, to, 1);
+        tabsListModel.reindex();
+        if (activeIndex >= 0) {
+            selectedTabIndex = to;
+        } else {
+            tabs.modelChanged();
+        }
+
+        return true;
     }
 
     /*!
@@ -238,118 +285,98 @@ PageTreeNode {
       into [0..\a count) boundary and the operation succeeds, and false on error.
       */
     function removeTab(index) {
-        return tabsModel.remove(index);
-    }
+        print("remove " +index)
+        if (index < 0 || index >= count) return false;
+        var tab = tabsListModel.get(index).tab;
+        var activeIndex = (selectedTabIndex === index) ? MathUtils.clamp(selectedTabIndex, 0, count - 1) : -1;
 
+        print(activeIndex + ", " + selectedTabIndex + ":" + index)
+        tabsListModel.remove(index);
+        tabsListModel.reindex();
+        if (tab.__protected.dynamic) tab.destroy();
+        if (activeIndex > 0) {
+            selectedTabIndex = activeIndex;
+        } else {
+            selectedTabIndex--;
+        }
+        return true;
+    }
 
     /*!
       \internal
       required by TabsStyle
      */
     ListModel {
-        id: tabListModel
+        id: tabsListModel
+
+        function listModel(tab) {
+            return {"title": tab.title, "tab": tab};
+        }
+
+        function updateTabList(tabsList) {
+            for (var i in tabsList) {
+                var tab = tabsList[i];
+                if (internal.isTab(tab)) {
+                    if (tab.parent === tabs) {
+                        // tabs parented to Tabs should be removed
+                        tab.parent = tabsModel;
+                        tab.Component.onDestroyed.connect(tabsModel.dynamicRemove.bind(tab));
+                    }
+
+                    print("update " + tab.title + ", inserted=" + tab.__protected.inserted)
+                    if (!tab.__protected.inserted) {
+                        tab.__protected.index = count;
+                        tab.__protected.inserted = true;
+                        append(listModel(tab));
+                    } else {
+                        print("update tab @" + tab.index);
+                        get(tab.index).title = tab.title;
+                    }
+                }
+            }
+            tabs.modelChanged();
+        }
+
+        function reindex(from) {
+            var start = 0;
+            if (from !== undefined) {
+                start = from + 1;
+            }
+
+            for (var i = start; i < count; i++) {
+                var tab = get(i).tab;
+                tab.__protected.index = i;
+                print("reindexed tab @" + i + ": " + tab.title)
+            }
+        }
+
     }
 
     Item {
         anchors.fill: parent
         id: tabsModel
 
-        property bool internalUpdate: false
+        onChildrenChanged: tabsListModel.updateTabList(children)
 
-        property ListModel tabList: tabListModel
-        onChildrenChanged: {
-            updateTabList();
-        }
-
-        Loader {
-            id: loader
-            anchors.fill: parent
-            asynchronous: false
-        }
-
-        function updateTabList() {
-            if (internalUpdate) return;
-            tabList.clear();
+        function dymanicRemove() {
             for (var i in tabsModel.children) {
-                if (isTab(tabsModel.children[i])) {
-                    tabList.append({"tab": tabsModel.children[i], "title": tabsModel.children[i].title});
-                    tabsModel.children[i].__protected.index = tabList.count - 1;
+                if (this === tabsModel.children[i]) {
+                    tabs.removeTab(i);
+                    break;
                 }
             }
         }
+    }
 
-        // reorders the Tabs children due to insertion, move or remove
-        function reorderTabList() {
-            for (var i = 0; i < tabList.count; i++) {
-                if (isTab(tabList.get(i).tab)) {
-                    tabsModel.children[i] = tabList.get(i).tab;
-                    print(tabList.get(i).tab)
-                    tabList.get(i).tab.__protected.index = i;
-                }
-            }
-        }
+    /*! \internal */
+    onChildrenChanged: tabsModel.updateTabList(children)
 
-        function insert(index, title, tabObject, params) {
-            internalUpdate = true;
-            // create tab instance
-//            var component = null;
-//            if (tabObject.createObject) {
-//                component = tabObject;
-//            } else if (typeof tabObject === "string") {
-//                component = Qt.createComponent(tabObject);
-//            } else {
-//                console.error("\"" + tabObject + "\" is not a component or a URL");
-//                return null;
-//            }
-//            var tab = null;
-//            print("insert::"+tabObject + "//" + tab)
-//            if (component && component.status === Component.Ready) {
-//                tab = component.createObject(tabs, params);
-//                if (!tab) {
-//                    console.error("Error creating dynamic tab");
-//                    return null;
-//                }
-//            }
-            if (typeof tabObject === "string") {
-                loader.source = tabObject;
-            } else {
-                loader.sourceComponent = tabObject;
-            }
-            var tab = loader.item;
+    /*! \internal */
+    onModelChanged: if (tabs.active && internal.header) internal.header.show()
 
-            // fix title
-            if (title !== undefined || title !== "") {
-                tab.title = title;
-            } else {
-                title = tab.title;
-            }
-
-            // insert the created tab into the model
-            index = MathUtils.clamp(index, 0, count);
-            tabList.insert(index, {"title": title, "tab" : tab});
-            reorderTabList();
-
-            internalUpdate = false;
-            return tab;
-        }
-
-        function move(from, to) {
-            if (from < 0 || from >= count || to < 0 || to >= count || from === to) return false;
-            internalUpdate = true;
-            tabList.move(from, to, 1);
-            reorderTabList();
-            internalUpdate = false;
-            return true;
-        }
-
-        function remove(index) {
-            if (index < 0 || index > count) return false;
-            internalUpdate = true;
-            tabList.remove(index);
-            reorderTabList();
-            internalUpdate = false;
-            return true;
-        }
+    QtObject {
+        id: internal
+        property Header header: tabs.__propagated ? tabs.__propagated.header : null
 
         function isTab(item) {
             if (item && item.hasOwnProperty("__isPageTreeNode")
@@ -360,14 +387,6 @@ PageTreeNode {
                 return false;
             }
         }
-    }
-
-    /*! \internal */
-    onModelChanged: if (tabs.active && internal.header) internal.header.show()
-
-    QtObject {
-        id: internal
-        property Header header: tabs.__propagated ? tabs.__propagated.header : null
     }
 
     Binding {
