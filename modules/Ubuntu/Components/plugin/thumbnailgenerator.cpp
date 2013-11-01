@@ -60,7 +60,7 @@ QImage ThumbnailGenerator::requestImage(const QString &id, QSize *realSize,
 
 QImage ThumbnailGenerator::getFallbackImage(const QString &id, QSize *size,
         const QSize &requestedSize) {
-    Q_UNUSED(requestedSize)
+    Q_UNUSED(requestedSize);
     QMimeDatabase db;
     QMimeType mime = db.mimeTypeForFile(id);
     QImage result;
