@@ -476,6 +476,7 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
         mock_change.assert_called_once_with(1)
 
     def test_uncheck_with_timeout(self):
+        self.toggle.check()
         with mock.patch.object(
                 emulators.CheckBox, 'change_state') as mock_change:
             self.toggle.uncheck(timeout=1)
