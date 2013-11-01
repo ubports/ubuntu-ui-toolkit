@@ -329,27 +329,27 @@ class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
 class CheckBox(UbuntuUIToolkitEmulatorBase):
     """CheckBox Autopilot emulator."""
 
-    def check(self, time_out=10):
+    def check(self, timeout=10):
         """Check a CheckBox, if its not already checked.
 
-        :parameter time_out: number of seconds to wait for the CheckBox to be
+        :parameter timeout: number of seconds to wait for the CheckBox to be
             checked. Default is 10.
 
         """
         if not self.checked:
-            self.change_state(time_out)
+            self.change_state(timeout)
 
-    def uncheck(self, time_out=10):
+    def uncheck(self, timeout=10):
         """Uncheck a CheckBox, if its not already unchecked.
 
-        :parameter time_out: number of seconds to wait for the CheckBox to be
+        :parameter timeout: number of seconds to wait for the CheckBox to be
             unchecked. Default is 10.
 
         """
         if self.checked:
-            self.change_state(time_out)
+            self.change_state(timeout)
 
-    def change_state(self, time_out=10):
+    def change_state(self, timeout=10):
         """Change the state of a CheckBox.
 
         If it is checked, it will be unchecked. If it is unchecked, it will be
@@ -361,7 +361,7 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
         """
         original_state = self.checked
         self.pointing_device.click_object(self)
-        self.checked.wait_for(not original_state, time_out)
+        self.checked.wait_for(not original_state, timeout)
 
 
 class Empty(UbuntuUIToolkitEmulatorBase):

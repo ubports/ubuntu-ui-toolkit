@@ -46,7 +46,7 @@ class EnabledTogglesTestCase(gallery.GalleryTestCase):
         self.assertThat(toggle.enabled, Equals(True))
         self.assertThat(toggle.checked, Equals(self.initial_state))
 
-        toggle.change_state(time_out=1)
+        toggle.change_state(timeout=1)
         self.assertThat(toggle.checked, Equals(not self.initial_state))
 
 
@@ -76,4 +76,4 @@ class DisabledTogglesTestCase(gallery.GalleryTestCase):
         self.assertThat(toggle.enabled, Equals(False))
         self.assertThat(toggle.checked, Equals(self.initial_state))
 
-        self.assertRaises(AssertionError, toggle.change_state, time_out=1)
+        self.assertRaises(AssertionError, toggle.change_state, timeout=1)
