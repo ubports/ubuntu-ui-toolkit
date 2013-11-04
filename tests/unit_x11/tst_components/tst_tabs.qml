@@ -37,6 +37,7 @@ Item {
                 page: Page {
                     id: page1
                     Rectangle {
+                        id: centerRect
                         width: units.gu(10)
                         height: units.gu(5)
                         color: "navy"
@@ -174,8 +175,16 @@ Item {
         function test_deactivateByTimeout() {
             tabs.tabBar.selectionMode = true;
             compare(tabs.tabBar.selectionMode, true, "Tab bar can be put into selection mode");
+            compare(tabs.tabBar.__styleInstance.deactivateTime > 0, true, "There is a positive deactivate time");
             wait(tabs.tabBar.__styleInstance.deactivateTime + 500); // add 500 ms margin
             compare(tabs.tabBar.selectionMode, false, "Tab bar automatically leaves selection mode after a timeout.");
+        }
+
+        function test_deactivateByAppInteraction() {
+            tabs.tabBar.selectionMode = true;
+            compare(tabs.tabBar.selectionMode, true, "Tab bar can be put into selection mode");
+            mouseClick(centerRect, units.gu(1), units.gu(1), Qt.LeftButton);
+            compare(tabs.tabBar.selectionMode, false, "Tab bar deactivated by interactiong with the page contents");
         }
     }
 }
