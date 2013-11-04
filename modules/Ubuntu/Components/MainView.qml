@@ -254,7 +254,7 @@ PageTreeNode {
             property Page activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
 
             function isPage(item) {
-                return item.hasOwnProperty("__isPageTreeNode") && item.__isPageTreeNode &&
+                return item && item.hasOwnProperty("__isPageTreeNode") && item.__isPageTreeNode &&
                         item.hasOwnProperty("title") && item.hasOwnProperty("tools");
             }
 
