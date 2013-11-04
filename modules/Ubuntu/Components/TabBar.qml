@@ -71,5 +71,4 @@ StyledItem {
     property bool animate: true
 
     style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
-    onStyleChanged: print("tabBar style = "+style)
 }
