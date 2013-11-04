@@ -89,36 +89,78 @@ TestCase {
         var newTab = tabs.addTab("Dynamic Tab", dynamicTab);
         compare((newTab !== null), true, "tab added");
         compare(newTab.active, false, "the inserted tab is inactive");
+        compare(newTab.index, tabs.count - 1, "the tab is the last one");
     }
 
     function test_z_insertTab() {
         var newTab = tabs.insertTab(0, "Inserted tab", dynamicTab);
         compare((newTab !== null), true, "tab inserted");
         compare(newTab.active, false, "the inserted tab is inactive");
+        compare(newTab.index, 0, "this is the first tab");
     }
 
     function test_z_insertTabAndActivate() {
         var newTab = tabs.insertTab(tabs.count, "Inserted tab", dynamicTab);
         compare((newTab !== null), true, "tab inserted");
         compare(newTab.active, false, "the inserted tab is inactive");
-        print(newTab.index)
+        compare(newTab.index, tabs.count - 1, "the tab is the last one");
         tabs.selectedTabIndex = newTab.index;
         compare(tabs.selectedTab, newTab, "the inserted tab is active");
     }
 
-    function test_z_insertTabFail() {
-        compare(tabs.inserTab(-1, "TabTitle", dynamicTab), null, "tab insertion failure");
-        compare(tabs.inserTab(tabs.count, "TabTitle", dynamicTab), null, "tab insertion failure");
+    function test_z_insertTabAtEnds() {
+        var newTab = tabs.insertTab(-1, "PreTab", dynamicTab);
+        compare(newTab !== null, true, "pre-tab inserted");
+        compare(newTab.index, 0, "this is the new first tab");
+        newTab = tabs.insertTab(tabs.count, "PostTab", dynamicTab);
+        compare(newTab !== null, true, "post-tab inserted");
+        compare(newTab.index, tabs.count - 1, "thsi is the new last tab");
     }
 
     function test_z_moveTab() {
+        tabs.selectedTabIndex = tabs.count - 1;
         compare(tabs.moveTab(0, tabs.count - 1), true, "first tab moved to last");
         tabs.selectedTabIndex = 0;
         compare(tabs.moveTab(tabs.selectedTabIndex, tabs.selectedTabIndex + 1), true, "selected tab moved as next");
     }
 
+    function test_z_moveSelectedTab() {
+        tabs.selectedTabIndex = 0;
+        tabs.moveTab(0, 1);
+        compare(tabs.selectedTabIndex, 1, "selected tab moved");
+    }
+
+    function test_z_moveTabFail() {
+        compare(tabs.moveTab(-1, tabs.count - 1), false, "from-parameter out of range");
+        compare(tabs.moveTab(0, tabs.count), false, "to-parameter out of range");
+    }
+
     function test_z_removeTab() {
-        compare(true, false)
+        compare(tabs.removeTab(tabs.count - 1), true, "last tab removed");
+        tabs.selectedTabIndex = 0;
+        compare(tabs.removeTab(0), true, "active tab removed");
+        compare(tabs.selectedTabIndex, 0, "the next tab is selected")
+    }
+
+    function test_z_removeTabAfterActiveTab() {
+        var activeTab = tabs.count - 2;
+        tabs.selectedTabIndex = activeTab;
+        compare(tabs.removeTab(tabs.count - 1), true, "last tab removed");
+        compare(tabs.selectedTabIndex, activeTab, "the selected tab wasn't moved");
+    }
+
+    function test_z_removeActiveTab() {
+        tabs.selectedTabIndex = 1;
+        compare(tabs.removeTab(1), true, "selected tab removed");
+        compare(tabs.selectedTabIndex, 1, "selected tab is next");
+
+        tabs.selectedTabIndex = tabs.count - 1;
+        compare(tabs.removeTab(tabs.count - 1), true, "last tab removed");
+        compare(tabs.selectedTabIndex, tabs.count - 1, "selected tab moved to last item");
+    }
+
+    function test_z_z() {
+        compare(true, false, "STOP");
     }
 
     Tabs {

@@ -189,7 +189,7 @@ PageTreeNode {
       Children are placed in a separate item that has functionality to extract the Tab items.
       \qmlproperty list<Item> tabChildren
      */
-    default property alias tabChildren: tabsModel.children
+    default property alias tabChildren: tabStack.children
 
     /*!
       \qmlproperty int count
@@ -249,7 +249,7 @@ PageTreeNode {
         tab.__protected.dynamic = true;
         tabsListModel.insert(index, tabsListModel.listModel(tab));
         tabsListModel.reindex(index);
-        tab.parent = tabsModel;
+        tab.parent = tabStack;
         tabs.modelChanged();
         return tab;
     }
@@ -263,8 +263,6 @@ PageTreeNode {
         if (from < 0 || from >= count || to < 0 || to >= count || from === to) return false;
         var tabFrom = tabsListModel.get(from).tab;
         var tabTo = tabsListModel.get(to).tab;
-        tabFrom.__protected.index = to;
-        tabTo.__protected.index = from;
 
         // check if the active one is about to be moved
         var activeIndex = (selectedTabIndex === from) ? from : ((selectedTabIndex === to) ? to : -1);
@@ -272,8 +270,13 @@ PageTreeNode {
         // move tab
         tabsListModel.move(from, to, 1);
         tabsListModel.reindex();
-        if (activeIndex >= 0) {
+
+        // fix selected tab
+        // TODO
+        if (selectedTabIndex === from) {
             selectedTabIndex = to;
+        } else if (selectedTabIndex === to) {
+            selectedTabIndex = (to > 0) ? to - 1 : ;
         } else {
             tabs.modelChanged();
         }
@@ -289,16 +292,20 @@ PageTreeNode {
         print("remove " +index)
         if (index < 0 || index >= count) return false;
         var tab = tabsListModel.get(index).tab;
-        var activeIndex = (selectedTabIndex === index) ? MathUtils.clamp(selectedTabIndex, 0, count - 1) : -1;
+        var activeIndex = (selectedTabIndex >= index) ? MathUtils.clamp(selectedTabIndex, 0, count - 2) : -1;
+
+        // move active tab first if needed
+        if (activeIndex >= 0) {
+            print("SELECTED TAB IS NOW " + activeIndex)
+            selectedTabIndex = activeIndex;
+        }
 
         print(activeIndex + ", " + selectedTabIndex + ":" + index)
         tabsListModel.remove(index);
         tabsListModel.reindex();
         if (tab.__protected.dynamic) tab.destroy();
-        if (activeIndex > 0) {
-            selectedTabIndex = activeIndex;
-        } else {
-            selectedTabIndex--;
+        if (activeIndex < 0) {
+            tabs.modelChanged();
         }
         return true;
     }
@@ -320,8 +327,8 @@ PageTreeNode {
                 if (internal.isTab(tab)) {
                     if (tab.parent === tabs) {
                         // tabs parented to Tabs should be removed
-                        tab.parent = tabsModel;
-                        tab.Component.onDestroyed.connect(tabsModel.dynamicRemove.bind(tab));
+                        tab.parent = tabStack;
+                        tab.Component.onDestroyed.connect(tabStack.dynamicRemove.bind(tab));
                     }
 
                     print("update " + tab.title + ", inserted=" + tab.__protected.inserted)
@@ -355,13 +362,13 @@ PageTreeNode {
 
     Item {
         anchors.fill: parent
-        id: tabsModel
+        id: tabStack
 
         onChildrenChanged: tabsListModel.updateTabList(children)
 
         function dymanicRemove() {
-            for (var i in tabsModel.children) {
-                if (this === tabsModel.children[i]) {
+            for (var i in tabStack.children) {
+                if (this === tabStack.children[i]) {
                     tabs.removeTab(i);
                     break;
                 }
@@ -370,7 +377,7 @@ PageTreeNode {
     }
 
     /*! \internal */
-    onChildrenChanged: tabsModel.updateTabList(children)
+    onChildrenChanged: tabStack.updateTabList(children)
 
     /*! \internal */
     onModelChanged: if (tabs.active && internal.header) internal.header.show()
