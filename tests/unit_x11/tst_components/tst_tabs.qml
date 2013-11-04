@@ -39,7 +39,7 @@ Item {
                     Rectangle {
                         width: units.gu(10)
                         height: units.gu(5)
-                        color: "red"
+                        color: "navy"
                         anchors.centerIn: parent
                     }
                 }
@@ -174,13 +174,7 @@ Item {
         function test_deactivateByTimeout() {
             tabs.tabBar.selectionMode = true;
             compare(tabs.tabBar.selectionMode, true, "Tab bar can be put into selection mode");
-            console.log("tabs = "+tabs);
-            console.log("tabbar = "+tabs.tabBar);
-            console.log("style = "+tabs.tabBar.style);
-            console.log("deactivateTime = "+tabs.tabBar.style.deactivateTime);
-            console.log("time = "+tabs.tabBar.style.headerFontSize);
-//            wait(tabs.tabBar.style.deactivateTime + 500); // add 500 ms margin
-            wait(6000);
+            wait(tabs.tabBar.__styleInstance.deactivateTime + 500); // add 500 ms margin
             compare(tabs.tabBar.selectionMode, false, "Tab bar automatically leaves selection mode after a timeout.");
         }
     }
