@@ -93,6 +93,14 @@ Item {
     Component.onCompleted: orientationTransition.enabled = transitionEnabled
 
     /*!
+      Technically 'window' is defined by QML automatically however this can
+      happen very late. We define it here so there's no race condition.
+     */
+    Window {
+        id: window
+    }
+
+    /*!
       \internal
 
       Report the current orientation of the application via QWindow::contentOrientation.
