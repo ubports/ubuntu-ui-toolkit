@@ -14,10 +14,12 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import mock
+import time
 import unittest
 
-import mock
 from autopilot import input, platform
+from testtools.matchers import GreaterThan, LessThan
 
 from ubuntuuitoolkit import emulators, tests
 
@@ -432,12 +434,12 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
         super(ToggleTestCase, self).setUp()
         self.toggle = self.main_view.select_single(
             emulators.CheckBox, objectName=self.objectName)
+        self.assertFalse(self.toggle.checked)
 
     def test_toggle_emulator(self):
         self.assertIsInstance(self.toggle, emulators.CheckBox)
 
     def test_check_toggle(self):
-        self.assertFalse(self.toggle.checked)
         self.toggle.check()
         self.assertTrue(self.toggle.checked)
 
@@ -456,6 +458,40 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
         with mock.patch.object(input.Pointer, 'click_object') as mock_click:
             self.toggle.uncheck()
         self.assertFalse(mock_click.called)
+
+    def test_change_state_from_checked(self):
+        self.toggle.check()
+        self.toggle.change_state()
+        self.assertFalse(self.toggle.checked)
+
+    def test_change_state_from_unchecked(self):
+        self.toggle.change_state()
+        self.assertTrue(self.toggle.checked)
+
+    def test_check_with_timeout(self):
+        with mock.patch.object(
+                emulators.CheckBox, 'change_state') as mock_change:
+            self.toggle.check(timeout=1)
+
+        mock_change.assert_called_once_with(1)
+
+    def test_uncheck_with_timeout(self):
+        self.toggle.check()
+        with mock.patch.object(
+                emulators.CheckBox, 'change_state') as mock_change:
+            self.toggle.uncheck(timeout=1)
+
+        mock_change.assert_called_once_with(1)
+
+    def test_change_state_with_timeout(self):
+        with mock.patch.object(self.toggle, 'pointing_device'):
+            # mock the pointing device so the checkbox is not clicked.
+            timestamp_before_call = time.time()
+            self.assertRaises(AssertionError, self.toggle.change_state, 1)
+
+        waiting_time = time.time() - timestamp_before_call
+        self.assertThat(waiting_time, GreaterThan(1))
+        self.assertThat(waiting_time, LessThan(2))
 
 
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
