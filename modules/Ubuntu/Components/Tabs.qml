@@ -181,15 +181,16 @@ PageTreeNode {
 
     /*!
       \internal
+      \deprecated
       Used by the style to create the tabs header.
     */
-//    property alias __tabs: tabsModel
+    property alias __tabs: tabsModel
 
     /*!
       Children are placed in a separate item that has functionality to extract the Tab items.
       \qmlproperty list<Item> tabChildren
      */
-    default property alias tabChildren: tabStack.children
+    default property alias tabChildren: tabStack.data
 
     /*!
       \qmlproperty int count
@@ -216,6 +217,7 @@ PageTreeNode {
     function addTab(title, component, params) {
         return insertTab(count, title, component, params);
     }
+
     /*!
       Inserts a Tab at the given index. If the \a index is less than 0, the Tab
       will be added to the front, and to the end of the tab stack if the \a index
