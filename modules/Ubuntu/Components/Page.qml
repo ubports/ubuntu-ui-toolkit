@@ -120,7 +120,7 @@ PageTreeNode {
       of the header by scrolling in the Flickable. In cases where a flickable should control the header,
       but it is not automatically detected, the flickable property can be set.
      */
-    property Flickable flickable: internal.getFlickableChild(page)
+    property Flickable flickable: internal.getFlickableChild(contentsItem)
 
     /*! \internal */
     onActiveChanged: {
@@ -216,7 +216,7 @@ PageTreeNode {
                 for (var i=0; i < item.children.length; i++) {
                     var child = item.children[i];
                     if (internal.isVerticalFlickable(child)) {
-                        if (child.anchors.top === page.top || child.anchors.fill === page) {
+                        if (child.anchors.top === contentsItem.top || child.anchors.fill === contentsItem) {
                             return item.children[i];
                         }
                     }
@@ -239,5 +239,44 @@ PageTreeNode {
                 page.flickable.contentY = -headerHeight;
             }
         }
+    }
+
+    /*!
+      \internal
+      The contents of the page.
+     */
+    default property alias pageContents: contentsItem.data
+    Item {
+        id: contentsItem
+        anchors.fill: parent
+    }
+
+    MouseArea {
+        id: contentsArea
+        anchors.fill: contentsItem
+        // This mouse area will be on top of the page contents, but
+        // under the toolbar and header.
+        // It is used for detecting interaction with the page contents
+        // which can close the toolbar and take a tab bar out of selection mode.
+
+        property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ?
+                                      page.__propagated.toolbar : null
+
+        property TabBar tabBar: page.__propagated && page.__propagated.header &&
+                                page.__propagated.header.contents &&
+                                page.__propagated.header.contents.hasOwnProperty("selectionMode") &&
+                                page.__propagated.header.contents.hasOwnProperty("alwaysSelectionMode") ?
+                                    page.__propagated.header.contents : null
+
+        onPressed: {
+            mouse.accepted = false;
+            if (contentsArea.toolbar && !toolbar.locked) {
+                contentsArea.toolbar.close();
+                }
+            if (contentsArea.tabBar && !contentsArea.tabBar.alwaysSelectionMode) {
+                contentsArea.tabBar.selectionMode = false;
+            }
+        }
+        propagateComposedEvents: true
     }
 }

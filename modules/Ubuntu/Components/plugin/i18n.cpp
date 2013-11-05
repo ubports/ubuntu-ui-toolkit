@@ -17,6 +17,7 @@
  */
 
 #include "i18n.h"
+#include <QtCore/QStandardPaths>
 
 namespace C {
 #include <libintl.h>
@@ -24,6 +25,7 @@ namespace C {
 
 #include <QtQml>
 #include <stdlib.h>
+#include <locale.h>
 
 /*!
  * \qmltype i18n
@@ -52,7 +54,16 @@ namespace C {
  */
 UbuntuI18n::UbuntuI18n(QObject* parent) : QObject(parent)
 {
-    m_language = QString(getenv("LANGUAGE"));
+    /*
+     * setlocale
+     * category = LC_ALL: All types of i18n: LC_MESSAGES, LC_NUMERIC, LC_TIME
+     * locale = "": Lookup the environment for $LC_ALL, $LC_* and $LANG in that order
+     * Returns: for example en_US.utf8, da_DK or POSIX
+     *
+     * Note: $LANGUAGE is implicitly respected by gettext() calls and
+     *   defines the order of multiple locales
+     */
+    m_language = setlocale(LC_ALL, "");
 }
 
 /*!
@@ -69,9 +80,9 @@ QString UbuntuI18n::domain() const {
 
 /*!
  * \qmlproperty string i18n::language
- * The language that is used for the translation. The default value is the value of
- * environment variable LANGUAGE at the time when the QML application is started.
- * The value can be a list, for example "de_DE eo en".
+ * The language that is used for the translation. The default value is
+ * the user's locale dending on $LC_ALL, $LC_MESSAGES and $LANG at the time
+ * of running the application. See the gettext manual for details.
  */
 QString UbuntuI18n::language() const {
     return m_language;
@@ -89,13 +100,25 @@ void UbuntuI18n::bindtextdomain(const QString& domain_name, const QString& dir_n
 
 void UbuntuI18n::setDomain(const QString &domain) {
     m_domain = domain;
-    C::textdomain(domain.toUtf8().constData());
+    C::textdomain(domain.toUtf8());
+    /*
+     Look for locale folder as per XDG basedir spec
+     The default is /usr/share/locale if we don't set a folder
+     */
+    QString localePath (QStandardPaths::locate(QStandardPaths::GenericDataLocation,
+        "locale", QStandardPaths::LocateDirectory));
+    if (!localePath.isEmpty())
+        C::bindtextdomain(domain.toUtf8(), localePath.toUtf8());
     Q_EMIT domainChanged();
 }
 
 void UbuntuI18n::setLanguage(const QString &lang) {
     m_language = lang;
-    setenv("LANGUAGE",lang.toUtf8().constData(),1);
+    /*
+     The inverse form of setlocale as used in the constructor, passing
+     a valid locale string updates all category type defaults.
+     */
+    setlocale(LC_ALL, lang.toUtf8());
     Q_EMIT languageChanged();
 }
 
