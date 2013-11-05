@@ -205,9 +205,10 @@ PageTreeNode {
     signal modelChanged()
 
     /*!
-      Appends a Tab dynamically to the list of tabs. The 'a title specifies the
-      title of the Tab. The \a component can be either a Component or a URL to
-      the Tab component to be loaded. The Tab's title will be replaced with the
+      Appends a Tab dynamically to the list of tabs. The \a title specifies the
+      title of the Tab. The \a component can be either a Component, a URL to
+      the Tab component to be loaded or an instance of a pre-declared tab that has
+      been previously removed. The Tab's title will be replaced with the
       given \a title, unless if the given value is empty or undefined. The optional
       \a params defines parameters passed to the Tab.
       Returns the instance of the created Tab.
@@ -222,20 +223,37 @@ PageTreeNode {
       Returns the instance of the created Tab.
       */
     function insertTab(index, title, component, params) {
-        var tabComponent = null;
-        if (typeof component === "string") {
-            tabComponent = Qt.createComponent(component);
+        // check if the given component is a Tab instance
+        var tab = null;
+        if (component && component.hasOwnProperty("page") && component.hasOwnProperty("__protected")) {
+            // dynamically added components are destroyed upon removal, so
+            // in case we get a Tab as parameter, we can only have a predeclared one
+            // therefore we simply restore the default state of the removedFromTabs property
+            // and return the instance
+            if (!component.__protected.removedFromTabs) {
+                // exit if the Tab is not removed
+                return null;
+            }
+
+            component.__protected.removedFromTabs = false;
+            tab = component;
         } else {
-            tabComponent = component;
+            var tabComponent = null;
+            if (typeof component === "string") {
+                tabComponent = Qt.createComponent(component);
+            } else {
+                tabComponent = component;
+            }
+            if (tabComponent.status === Component.Error) {
+                console.error(tabComponent.errorString());
+                return null;
+            }
+            tab = tabComponent.createObject();
+            tab.__protected.dynamic = true;
         }
-        if (tabComponent.status === Component.Error) {
-            print(tabComponent.errorString());
-            return null;
-        }
-        var tab = tabComponent.createObject();
 
         // fix title
-        if (title !== undefined || title !== "") {
+        if (title !== undefined && title !== "") {
             tab.title = title;
         } else {
             title = tab.title;
@@ -243,14 +261,17 @@ PageTreeNode {
 
         // insert the created tab into the model
         index = MathUtils.clamp(index, 0, count);
-        tab.active = false;
         tab.__protected.inserted = true;
         tab.__protected.index = index;
-        tab.__protected.dynamic = true;
         tabsListModel.insert(index, tabsListModel.listModel(tab));
         tabsListModel.reindex(index);
         tab.parent = tabStack;
-        tabs.modelChanged();
+        if (tabs.selectedTabIndex >= index) {
+            // move the selected index to the next index
+            tabs.selectedTabIndex += 1;
+        } else {
+            tabs.modelChanged();
+        }
         return tab;
     }
 
@@ -264,19 +285,15 @@ PageTreeNode {
         var tabFrom = tabsListModel.get(from).tab;
         var tabTo = tabsListModel.get(to).tab;
 
-        // check if the active one is about to be moved
-        var activeIndex = (selectedTabIndex === from) ? from : ((selectedTabIndex === to) ? to : -1);
-
         // move tab
         tabsListModel.move(from, to, 1);
         tabsListModel.reindex();
 
         // fix selected tab
-        // TODO
         if (selectedTabIndex === from) {
             selectedTabIndex = to;
-        } else if (selectedTabIndex === to) {
-            selectedTabIndex = (to > 0) ? to - 1 : ;
+        } else if (selectedTabIndex <= to && selectedTabIndex >= from) {
+            selectedTabIndex -= 1;
         } else {
             tabs.modelChanged();
         }
@@ -287,23 +304,30 @@ PageTreeNode {
     /*!
       Removes the Tab from the given \a index. Returns true if the \a index falls
       into [0..\a count) boundary and the operation succeeds, and false on error.
+      The function removes also the pre-declared tabs. These can be added back using
+      \l addTab or \l insertTab by specifying the instance of the Tab to be added as
+      component.
       */
     function removeTab(index) {
-        print("remove " +index)
         if (index < 0 || index >= count) return false;
         var tab = tabsListModel.get(index).tab;
         var activeIndex = (selectedTabIndex >= index) ? MathUtils.clamp(selectedTabIndex, 0, count - 2) : -1;
 
-        // move active tab first if needed
+        tabsListModel.remove(index);
+        tabsListModel.reindex();
+        // move active tab if needed
         if (activeIndex >= 0) {
-            print("SELECTED TAB IS NOW " + activeIndex)
             selectedTabIndex = activeIndex;
         }
 
-        print(activeIndex + ", " + selectedTabIndex + ":" + index)
-        tabsListModel.remove(index);
-        tabsListModel.reindex();
-        if (tab.__protected.dynamic) tab.destroy();
+        if (tab.__protected.dynamic) {
+            tab.destroy();
+        } else {
+            // pre-declared tab, mark it as removed, so we don't update it next time
+            // the tabs stack children is updated
+            tab.__protected.removedFromTabs = true;
+        }
+
         if (activeIndex < 0) {
             tabs.modelChanged();
         }
@@ -331,13 +355,11 @@ PageTreeNode {
                         tab.Component.onDestroyed.connect(tabStack.dynamicRemove.bind(tab));
                     }
 
-                    print("update " + tab.title + ", inserted=" + tab.__protected.inserted)
                     if (!tab.__protected.inserted) {
                         tab.__protected.index = count;
                         tab.__protected.inserted = true;
                         append(listModel(tab));
-                    } else {
-                        print("update tab @" + tab.index);
+                    } else if (!tab.__protected.removedFromTabs && tabsListModel.count > tab.index) {
                         get(tab.index).title = tab.title;
                     }
                 }
@@ -354,7 +376,6 @@ PageTreeNode {
             for (var i = start; i < count; i++) {
                 var tab = get(i).tab;
                 tab.__protected.index = i;
-                print("reindexed tab @" + i + ": " + tab.title)
             }
         }
 

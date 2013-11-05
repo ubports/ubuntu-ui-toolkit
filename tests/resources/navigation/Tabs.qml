@@ -25,6 +25,7 @@ MainView {
     Component {
         id: dynamicTab
         Tab {
+            title: "Original Title"
             page: Page {}
         }
     }
@@ -67,7 +68,7 @@ MainView {
                     ToolbarButton {
                         text: "ADD"
                         iconSource: "call_icon.png"
-                        onTriggered: tabs.addTab("ADDED", dynamicTab)
+                        onTriggered: tabs.addTab("", dynamicTab)
                     }
                     ToolbarButton {
                         text: "INSERT"
@@ -93,7 +94,8 @@ MainView {
         Repeater {
             model: 3
             Tab {
-                title: "Extra " + index
+                id: tab
+                title: "Extra " + tab.index
                 page: Page {
                     Column {
                         anchors.centerIn: parent
