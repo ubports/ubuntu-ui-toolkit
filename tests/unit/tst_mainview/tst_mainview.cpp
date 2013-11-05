@@ -144,11 +144,11 @@ private Q_SLOTS:
     }
 
     void testNoWarnings_bug186065() {
-        QQuickItem *root = loadTest("AppName.qml"); // An empty MainView would suffice
-        QVERIFY(root);
-
         QSignalSpy spy(view->engine(), SIGNAL(warnings(QList<QQmlError>)));
         spy.setParent(view);
+
+        QQuickItem *root = loadTest("AppName.qml"); // An empty MainView would suffice
+        QVERIFY(root);
 
         // No warnings from QML
         QCOMPARE(spy.count(), 0);
