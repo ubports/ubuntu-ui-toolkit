@@ -180,13 +180,6 @@ PageTreeNode {
     }
 
     /*!
-      \internal
-      \deprecated
-      Used by the style to create the tabs header.
-    */
-    property alias __tabs: tabsModel
-
-    /*!
       Children are placed in a separate item that has functionality to extract the Tab items.
       \qmlproperty list<Item> tabChildren
      */
