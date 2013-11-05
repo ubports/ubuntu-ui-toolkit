@@ -96,8 +96,6 @@ private Q_SLOTS:
         QVERIFY(checkpoint);
         // window.contentOrientation 
         QCOMPARE(checkpoint->property("contentOrientation").toInt(), helper->property("orientationAngle").toInt());
-        // Screen.Orientation
-        QCOMPARE(checkpoint->property("orientation").toInt(), helper->property("orientationAngle").toInt());
         delete view;
     }
 };
