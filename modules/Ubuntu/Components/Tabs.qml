@@ -155,14 +155,14 @@ PageTreeNode {
       The first tab is 0, and -1 means that no tab is selected.
       The initial value is 0 if Tabs has contents, or -1 otherwise.
      */
-    property int selectedTabIndex: tabsListModel.count > 0 ? 0 : -1
+    property int selectedTabIndex: tabsModel.count > 0 ? 0 : -1
 
     /*!
       \preliminary
       The currently selected tab.
      */
-    readonly property Tab selectedTab: (selectedTabIndex < 0) || (tabsListModel.count <= selectedTabIndex) ?
-                                           null : tabsListModel.get(selectedTabIndex).tab
+    readonly property Tab selectedTab: (selectedTabIndex < 0) || (tabsModel.count <= selectedTabIndex) ?
+                                           null : tabsModel.get(selectedTabIndex).tab
 
     /*!
       The page of the currently selected tab.
@@ -175,7 +175,7 @@ PageTreeNode {
      */
     property TabBar tabBar: TabBar {
         tabsItem: tabs
-        model: tabsListModel
+        model: tabsModel
         visible: tabs.active
     }
 
@@ -183,7 +183,7 @@ PageTreeNode {
       \internal
       Used by the style to create the tabs header.
     */
-//    property alias __tabs: tabsListModel
+//    property alias __tabs: tabsModel
 
     /*!
       Children are placed in a separate item that has functionality to extract the Tab items.
@@ -195,7 +195,7 @@ PageTreeNode {
       \qmlproperty int count
       Contains the number of tabs in the Tabs component.
       */
-    readonly property alias count: tabsListModel.count
+    readonly property alias count: tabsModel.count
 
     /*!
       Used by the tabs style to update the tabs header with the titles of all the tabs.
@@ -207,9 +207,9 @@ PageTreeNode {
     /*!
       Appends a Tab dynamically to the list of tabs. The \a title specifies the
       title of the Tab. The \a component can be either a Component, a URL to
-      the Tab component to be loaded or an instance of a pre-declared tab that has
-      been previously removed. The Tab's title will be replaced with the
-      given \a title, unless if the given value is empty or undefined. The optional
+      the Tab component to be loaded or an instance of a pre-declared tab that
+      has been previously removed. The Tab's title will be replaced with the given
+      \a title, unless if the given value is empty or undefined. The optional
       \a params defines parameters passed to the Tab.
       Returns the instance of the created Tab.
       */
@@ -217,10 +217,10 @@ PageTreeNode {
         return insertTab(count, title, component, params);
     }
     /*!
-      Inserts a Tab at the given index. If the \a index is less than 0, the Tab will
-      be added to the front, and to the end if the \a index is greater than \l count.
-      \a title, \a component and \a params are used in the same way as in \l addTab().
-      Returns the instance of the created Tab.
+      Inserts a Tab at the given index. If the \a index is less than 0, the Tab
+      will be added to the front, and to the end of the tab stack if the \a index
+      is greater than \l count. \a title, \a component and \a params are used in
+      the same way as in \l addTab(). Returns the instance of the created Tab.
       */
     function insertTab(index, title, component, params) {
         // check if the given component is a Tab instance
@@ -255,16 +255,14 @@ PageTreeNode {
         // fix title
         if (title !== undefined && title !== "") {
             tab.title = title;
-        } else {
-            title = tab.title;
         }
 
         // insert the created tab into the model
         index = MathUtils.clamp(index, 0, count);
         tab.__protected.inserted = true;
         tab.__protected.index = index;
-        tabsListModel.insert(index, tabsListModel.listModel(tab));
-        tabsListModel.reindex(index);
+        tabsModel.insert(index, tabsModel.listModel(tab));
+        tabsModel.reindex(index);
         tab.parent = tabStack;
         if (tabs.selectedTabIndex >= index) {
             // move the selected index to the next index
@@ -277,17 +275,19 @@ PageTreeNode {
 
     /*!
       Moves the tab from the given \a from position to the position given in \a to.
-      Returns true if the indexes were in [0..\a count) boundary and if the operation
-      succeeds, and false otherwise.
+      Returns true if the indexes were in 0..\l count - 1 boundary and if the operation
+      succeeds, and false otherwise. The \l selectedTabIndex is updated if it is
+      affected by the move (it is equal with \a from or falls between \a from and
+      \a to indexes).
       */
     function moveTab(from, to) {
         if (from < 0 || from >= count || to < 0 || to >= count || from === to) return false;
-        var tabFrom = tabsListModel.get(from).tab;
-        var tabTo = tabsListModel.get(to).tab;
+        var tabFrom = tabsModel.get(from).tab;
+        var tabTo = tabsModel.get(to).tab;
 
         // move tab
-        tabsListModel.move(from, to, 1);
-        tabsListModel.reindex();
+        tabsModel.move(from, to, 1);
+        tabsModel.reindex();
 
         // fix selected tab
         if (selectedTabIndex === from) {
@@ -303,18 +303,19 @@ PageTreeNode {
 
     /*!
       Removes the Tab from the given \a index. Returns true if the \a index falls
-      into [0..\a count) boundary and the operation succeeds, and false on error.
+      into 0..\l count - 1 boundary and the operation succeeds, and false on error.
       The function removes also the pre-declared tabs. These can be added back using
       \l addTab or \l insertTab by specifying the instance of the Tab to be added as
-      component.
+      component. The \l selectedTabIndex is updated if is affected by the removal
+      (it is identical or greater than the tab index to be removed).
       */
     function removeTab(index) {
         if (index < 0 || index >= count) return false;
-        var tab = tabsListModel.get(index).tab;
+        var tab = tabsModel.get(index).tab;
         var activeIndex = (selectedTabIndex >= index) ? MathUtils.clamp(selectedTabIndex, 0, count - 2) : -1;
 
-        tabsListModel.remove(index);
-        tabsListModel.reindex();
+        tabsModel.remove(index);
+        tabsModel.reindex();
         // move active tab if needed
         if (activeIndex >= 0) {
             selectedTabIndex = activeIndex;
@@ -339,7 +340,7 @@ PageTreeNode {
       required by TabsStyle
      */
     ListModel {
-        id: tabsListModel
+        id: tabsModel
 
         function listModel(tab) {
             return {"title": tab.title, "tab": tab};
@@ -359,7 +360,7 @@ PageTreeNode {
                         tab.__protected.index = count;
                         tab.__protected.inserted = true;
                         append(listModel(tab));
-                    } else if (!tab.__protected.removedFromTabs && tabsListModel.count > tab.index) {
+                    } else if (!tab.__protected.removedFromTabs && tabsModel.count > tab.index) {
                         get(tab.index).title = tab.title;
                     }
                 }
@@ -385,7 +386,7 @@ PageTreeNode {
         anchors.fill: parent
         id: tabStack
 
-        onChildrenChanged: tabsListModel.updateTabList(children)
+        onChildrenChanged: tabsModel.updateTabList(children)
 
         function dymanicRemove() {
             for (var i in tabStack.children) {
