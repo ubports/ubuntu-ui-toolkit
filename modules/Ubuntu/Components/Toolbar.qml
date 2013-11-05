@@ -33,6 +33,9 @@ Panel {
     }
     height: background.height
 
+    // Closing of the toolbar on app contents ineraction is handled by the Page.
+    __closeOnContentsClicks: false
+
     /*!
       \preliminary
       The list of \l Actions to be shown on the toolbar
@@ -63,6 +66,7 @@ Panel {
             if (tools && tools.hasOwnProperty("opened")) {
                 tools.opened = toolbar.opened;
             }
+            hideTimer.restart();
         } else { // no tools
             locked = true;
             toolbar.close();
@@ -83,7 +87,7 @@ Panel {
         if (tools && tools.hasOwnProperty("opened")) {
             tools.opened = toolbar.opened;
         }
-        if (!toolbar.locked) hideTimer.restart()
+        if (!toolbar.locked) hideTimer.restart();
     }
 
     Connections {
@@ -96,7 +100,12 @@ Panel {
                 toolbar.close();
             }
         }
-        onLockedChanged: toolbar.locked = tools.locked;
+        onLockedChanged: {
+            toolbar.locked = tools.locked;
+            // open the toolbar when it becomes unlocked
+            // (may be because a new page was pushed to the page stack)
+            if (!toolbar.locked) toolbar.open();
+        }
     }
 
     QtObject {
