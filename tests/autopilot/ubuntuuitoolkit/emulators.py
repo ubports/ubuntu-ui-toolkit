@@ -251,6 +251,12 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
         except dbus.StateNotFoundError:
             raise ToolkitEmulatorException(
                 'Button with objectName "{0}" not found.'.format(object_name))
+        # ensure the toolbar is open
+        self.open()
+        self.pointing_device.move_to_object(button)
+        # ensure the toolbar is still open (may have closed due to timeout)
+        self.open()
+        # click the button
         self.pointing_device.click_object(button)
 
     def _get_button(self, object_name):
