@@ -18,10 +18,28 @@ import mock
 import time
 import unittest
 
+import autopilot
 from autopilot import input, platform
 from testtools.matchers import GreaterThan, LessThan
 
 from ubuntuuitoolkit import emulators, tests
+
+
+class CheckAutopilotVersionTestCase(unittest.TestCase):
+
+    def test_lower_version_should_raise_exception(self):
+        with mock.patch.object(autopilot, 'version', '1.3'):
+            self.assertRaises(
+                emulators.ToolkitEmulatorException,
+                emulators.check_autopilot_version)
+
+    def test_required_version_should_succeed(self):
+        with mock.patch.object(autopilot, 'version', '1.4'):
+            emulators.check_autopilot_version()
+
+    def test_higher_version_should_succeed(self):
+        with mock.patch.object(autopilot, 'version', '1.5'):
+            emulators.check_autopilot_version()
 
 
 class UbuntuUIToolkitEmulatorBaseTestCase(tests.QMLStringAppTestCase):
@@ -36,6 +54,14 @@ class UbuntuUIToolkitEmulatorBaseTestCase(tests.QMLStringAppTestCase):
     @unittest.skipIf(platform.model() == 'Desktop', 'Phablet only')
     def test_pointing_device_in_phablet(self):
         self.assertIsInstance(self.app.pointing_device._device, input.Touch)
+
+    def test_emulators_should_check_version_on_init(self):
+        check_name = 'ubuntuuitoolkit.emulators.check_autopilot_version'
+        with mock.patch(check_name) as mock_check:
+            # Instantiate any emulator.
+            self.main_view
+
+        mock_check.assert_called_one_with()
 
 
 class MainViewTestCase(tests.QMLStringAppTestCase):
