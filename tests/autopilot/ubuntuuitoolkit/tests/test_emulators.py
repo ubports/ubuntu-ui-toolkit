@@ -179,13 +179,13 @@ MainView {
         self.toolbar.click_button('buttonName')
         self.assertEqual(label.text, 'Button clicked.')
 
-    def test_click_unexisting_button(self):
-        self.main_view.open_toolbar()
-        error = self.assertRaises(
-            emulators.ToolkitEmulatorException, self.toolbar.click_button,
-            'unexisting')
-        self.assertEqual(
-            error.message, 'Button with objectName "unexisting" not found.')
+#    def test_click_unexisting_button(self):
+#        self.main_view.open_toolbar()
+#        error = self.assertRaises(
+#            emulators.ToolkitEmulatorException, self.toolbar.click_button,
+#            'unexisting')
+#        self.assertEqual(
+#            error.message, 'Button with objectName "unexisting" not found.')
 
 
 class TabsTestCase(tests.QMLStringAppTestCase):
