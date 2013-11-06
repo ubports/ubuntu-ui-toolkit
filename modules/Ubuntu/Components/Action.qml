@@ -42,9 +42,36 @@ UnityActions.Action {
     /*!
       The image associated with the action.
       \qmlproperty url iconSource
+
+      This is a URL to any image file.
+      In order to use an icon from the Ubuntu theme, use the iconName property instead.
      */
     // TODO: Move iconSource to unity action if possible
-    property url iconSource
+    property url iconSource: iconName ? "image://theme/" + iconName : ""
+
+    /*!
+      The icon associated with the action.
+      \qmlproperty string iconName
+
+      This is the name of the icon in the theme.
+      If both iconSource and iconName are defined, iconName will be ignored.
+
+      Example:
+      \qml
+          Action {
+              iconName: "compose"
+          }
+      \endqml
+
+      \note The complete list of icons available in Ubuntu is not published yet.
+            For now please refer to the folders where the icon themes are installed:
+            \list
+              \li Ubuntu Touch: \l file:/usr/share/icons/ubuntu-mobile
+              \li Ubuntu Desktop: \l file:/usr/share/icons/ubuntu-mono-dark
+            \endlist
+            These 2 separate icon themes will be merged soon.
+    */
+    property string iconName
 
     /*!
       Called when the action is triggered.

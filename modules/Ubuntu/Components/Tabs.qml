@@ -61,7 +61,6 @@ import QtQuick 2.0
                 Tab {
                     id: externalTab
                     title: i18n.tr("External")
-                    iconSource: "call_icon.png"
                     page: Loader {
                         parent: externalTab
                         anchors.fill: parent
@@ -76,7 +75,7 @@ import QtQuick 2.0
                             anchors.fill: parent
                             model: 20
                             delegate: ListItem.Standard {
-                                icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                                iconName: "compose"
                                 text: "Item "+modelData
                             }
                         }

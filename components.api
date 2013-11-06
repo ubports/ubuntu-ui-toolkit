@@ -9,6 +9,7 @@ ActionItem
 modules/Ubuntu/Components/Action.qml
 UnityActions.Action
     property url iconSource
+    property string iconName
     property bool visible
     property Component itemHint
 modules/Ubuntu/Components/ActionItem.qml
@@ -16,6 +17,7 @@ StyledItem
     property Action action
     property string text
     property url iconSource
+    property string iconName
     signal triggered(var value)
     function trigger(value)
 modules/Ubuntu/Components/ActionList.qml
@@ -114,6 +116,8 @@ ListItem.Standard
     property string text
     property string subText
     property url icon
+    property url iconSource
+    property string iconName
     property bool constrainImage
     property bool colourImage
     property color assetColour
@@ -391,7 +395,10 @@ QtObject
 modules/Ubuntu/Components/ListItems/Base.qml
 Empty
     property variant icon
+    property url iconSource
+    property string iconName
     property url fallbackIconSource
+    property string fallbackIconName
     property bool progression
     property bool iconFrame
     property real __iconWidth
@@ -430,6 +437,7 @@ modules/Ubuntu/Components/ListItems/IconVisual.qml
 Item
     property url source
     property url fallbackSource
+    property string fallbackIconName
     property bool hasFrame
 modules/Ubuntu/Components/ListItems/ImageWithFallback.qml
 Image
@@ -473,7 +481,10 @@ Base
 modules/Ubuntu/Components/ListItems/Standard.qml
 Empty
     property variant icon
+    property url iconSource
+    property string iconName
     property url fallbackIconSource
+    property string fallbackIconName
     property bool progression
     property real __iconWidth
     property real __iconHeight
@@ -493,7 +504,10 @@ Image
 modules/Ubuntu/Components/ListItems/ValueSelector.qml
 Empty
     property variant icon
+    property url iconSource
+    property string iconName
     property url fallbackIconSource
+    property string fallbackIconName
     property real __iconWidth
     property real __iconHeight
     property real __leftIconMargin

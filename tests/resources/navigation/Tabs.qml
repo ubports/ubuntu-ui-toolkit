@@ -101,7 +101,7 @@ MainView {
                     anchors.fill: parent
                     model: 20
                     delegate: ListItem.Standard {
-                        icon: Qt.resolvedUrl("call_icon.png")
+                        iconSource: Qt.resolvedUrl("call_icon.png")
                         text: "Item "+modelData
                     }
                 }
