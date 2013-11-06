@@ -29,7 +29,8 @@ if len(sys.argv) < 2 or '-h' in sys.argv or '--help' in sys.argv:
         'Usage:\n  env BUILTINS=foo,bar %s FILENAME [FILENAME2..N]\n\n'
         '  Generate a QML API file\n'
         'Example:\n'
-        '  env BUILTINS=QQuick,QQml,U1db:: %s modules/Ubuntu/Components/*.qml plugins.qmltypes'
+        '  env BUILTINS=QQuick,QQml,U1db:: '
+        '%s modules/Ubuntu/Components/*.qml plugins.qmltypes'
         ' > components.api.new\n'
         '  diff -Fqml -u components.api{,.new}\n' % (basename, basename))
     sys.exit(1)
