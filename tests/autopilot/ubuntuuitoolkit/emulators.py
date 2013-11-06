@@ -72,39 +72,11 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         :return: The toolbar.
 
         """
-        toolbar = self.get_toolbar()
-        toolbar.animating.wait_for(False)
-        if not toolbar.opened:
-            self._drag_to_open_toolbar()
-            toolbar.opened.wait_for(True)
-            toolbar.animating.wait_for(False)
-
-        return toolbar
-
-    def _drag_to_open_toolbar(self):
-        x, y, _, _ = self.globalRect
-        line_x = x + self.width * 0.50
-        start_y = y + self.height - 1
-        stop_y = y + self.height - self.get_toolbar().height
-
-        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+        return self.get_toolbar().open()
 
     def close_toolbar(self):
         """Close the toolbar if it's opened."""
-        toolbar = self.get_toolbar()
-        toolbar.animating.wait_for(False)
-        if toolbar.opened:
-            self._drag_to_close_toolbar()
-            toolbar.opened.wait_for(False)
-            toolbar.animating.wait_for(False)
-
-    def _drag_to_close_toolbar(self):
-        x, y, _, _ = self.globalRect
-        line_x = x + self.width * 0.50
-        start_y = y + self.height - self.get_toolbar().height
-        stop_y = y + self.height - 1
-
-        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+        return  self.get_toolbar().close()
 
     def get_tabs(self):
         """Return the Tabs emulator of the MainView.
@@ -227,6 +199,44 @@ class Header(UbuntuUIToolkitEmulatorBase):
 
 class Toolbar(UbuntuUIToolkitEmulatorBase):
     """Toolbar Autopilot emulator."""
+
+    def open(self):
+        """Open the toolbar if it's not already opened.
+
+        :return: The toolbar.
+
+        """
+        self.animating.wait_for(False)
+        if not self.opened:
+            self._drag_to_open()
+            self.opened.wait_for(True)
+            self.animating.wait_for(False)
+
+            return self
+
+    def _drag_to_open(self):
+        x, y, _, _ = self.globalRect
+        line_x = x + self.width * 0.50
+        start_y = y + self.height - 1
+        stop_y = y
+
+        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+
+    def close(self):
+        """Close the toolbar if it's opened."""
+        self.animating.wait_for(False)
+        if self.opened:
+            self._drag_to_close()
+            self.opened.wait_for(False)
+            self.animating.wait_for(False)
+
+    def _drag_to_close(self):
+        x, y, _, _ = self.globalRect
+        line_x = x + self.width * 0.50
+        start_y = y
+        stop_y = y + self.height - 1
+
+        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
 
     def click_button(self, object_name):
         """Click a button of the toolbar.
