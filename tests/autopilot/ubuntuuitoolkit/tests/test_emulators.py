@@ -57,11 +57,11 @@ class UbuntuUIToolkitEmulatorBaseTestCase(tests.QMLStringAppTestCase):
 
     def test_emulators_should_check_version_on_init(self):
         check_name = 'ubuntuuitoolkit.emulators.check_autopilot_version'
-        with mock.patch(check_name) as mock_check:
+        with mock.patch(check_name, autospec=True) as mock_check:
             # Instantiate any emulator.
             self.main_view
 
-        mock_check.assert_called_one_with()
+        mock_check.assert_called_once_with()
 
 
 class MainViewTestCase(tests.QMLStringAppTestCase):
