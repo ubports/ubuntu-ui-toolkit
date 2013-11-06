@@ -1,3 +1,13 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20131106-0ubuntu1) trusty; urgency=low
+
+  [ Leo Arias ]
+  * Update the tests to work with autopilot 1.4.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 822
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 06 Nov 2013 05:08:45 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20131105.1-0ubuntu1) trusty; urgency=low
 
   [ Albert Astals ]
