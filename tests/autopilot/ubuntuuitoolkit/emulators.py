@@ -15,6 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+import time
 from distutils import version
 
 import autopilot
@@ -468,3 +469,36 @@ class SingleValue(Base):
 
 class Subtitled(Base):
     pass
+
+
+class ComposerSheet(UbuntuUIToolkitEmulatorBase):
+    """ComposerSheet Autopilot emulator."""
+
+    def __init__(self, *args):
+        super(ComposerSheet, self).__init__(*args)
+        self.parent = self.get_parent()
+
+    def confirm(self):
+        """Confirm the composer sheet."""
+        button = self.select_single('Button', objectName='confirmButton')
+        self.pointing_device.click_object(button)
+        wait_select_single_fail(self.parent, ComposerSheet)
+
+    def cancel(self):
+        """Cancel the composer sheet."""
+        button = self.select_single('Button', objectName='cancelButton')
+        self.pointing_device.click_object(button)
+        wait_select_single_fail(self.parent, ComposerSheet)
+
+
+def wait_select_single_fail(parent, type_name='*', **kwargs):
+    for i in range(10):
+        try:
+            child = parent.select_single(type_name, **kwargs)
+            time.sleep(1)
+        except dbus.StateNotFoundError:
+            return
+    else:
+        raise ToolkitEmulatorException(
+            'After 10 seconds, %s still has a child %s.' %
+            (parent.__class__.__name__, child.__class__.__name__))

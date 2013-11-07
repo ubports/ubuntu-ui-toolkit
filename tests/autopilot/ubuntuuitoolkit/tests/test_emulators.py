@@ -20,6 +20,7 @@ import unittest
 
 import autopilot
 from autopilot import input, platform
+from autopilot.introspection import dbus
 from testtools.matchers import GreaterThan, LessThan
 
 from ubuntuuitoolkit import emulators, tests
@@ -670,3 +671,79 @@ MainView {
         self._go_to_page1()
         self.main_view.go_back()
         self.assertEqual(self.header.title, 'Page 0')
+
+
+class ComposerSheetTestCase(tests.QMLStringAppTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+import Ubuntu.Components.Popups 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Button {
+        objectName: "openComposerSheetButton"
+        text: "Open Composer Sheet"
+        onClicked: PopupUtils.open(testComposerSheet);
+    }
+
+    Label {
+        id: "label"
+        objectName: "actionLabel"
+        anchors.centerIn: parent
+        text: "No action taken."
+    }
+
+    Component {
+        id: testComposerSheet
+        ComposerSheet {
+            id: sheet
+            objectName: "testComposerSheet"
+            onCancelClicked: {
+                label.text = "Cancel selected."
+            }
+            onConfirmClicked: {
+                label.text = "Confirm selected."
+            }
+        }
+    }
+}
+""")
+
+    def setUp(self):
+        super(ComposerSheetTestCase, self).setUp()
+        self.label = self.main_view.select_single(
+            'Label', objectName='actionLabel')
+        self.assertEqual(self.label.text, 'No action taken.')
+        self._open_composer_sheet()
+        self.composer_sheet = self._select_composer_sheet()
+
+    def _open_composer_sheet(self):
+        button = self.main_view.select_single(
+            'Button', objectName='openComposerSheetButton')
+        self.pointing_device.click_object(button)
+
+    def _select_composer_sheet(self):
+        return self.main_view.select_single(
+            emulators.ComposerSheet, objectName='testComposerSheet')
+
+    def test_select_composer_sheet_custom_emulator(self):
+        self.assertIsInstance(self.composer_sheet, emulators.ComposerSheet)
+
+    def test_confirm_composer_sheet(self):
+        self.composer_sheet.confirm()
+        self.assertEqual(self.label.text, 'Confirm selected.')
+        self._assert_composer_sheet_is_closed()
+
+    def _assert_composer_sheet_is_closed(self):
+        self.assertRaises(
+            dbus.StateNotFoundError, self._select_composer_sheet)
+
+    def test_cancel_composer_sheet(self):
+        self.composer_sheet.cancel()
+        self.assertEqual(self.label.text, 'Cancel selected.')
+        self._assert_composer_sheet_is_closed()
+
