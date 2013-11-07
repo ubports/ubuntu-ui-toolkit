@@ -11,9 +11,7 @@ DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
            
 override_dh_auto_test:
 	mkdir -p debian/tmp/home/run
-	# xvfb-run can't load gl drivers, Xvfb can
-	Xvfb :5 -screen 0 1280x1024x24 &
-	env DISPLAY=:5 dh_auto_test && kill -9 `pidof -s Xvfb`
+	tests/xvfb.sh dh_auto_test || exit $?
 
 override_dh_install:
 	dh_auto_build -- docs
