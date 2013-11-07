@@ -180,7 +180,7 @@ Item {
                             baseline: parent.bottom
                             baselineOffset: -headerTextBottomMargin
                         }
-                        text: title !== "" ? title : (tab !== undefined && tab.hasOwnProperty("title")) ? tab.title : ""
+                        text: (tab && tab.hasOwnProperty("title")) ? tab.title : title
                         fontSize: headerFontSize
                         font.weight: headerFontWeight
                     }
