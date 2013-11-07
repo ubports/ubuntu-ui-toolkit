@@ -243,6 +243,10 @@ Empty {
      */
     onIconChanged: {
         if (icon == undefined) return;
+        if (icon != iconSource) {
+            console.warn("WARNING: ListItems.Standard.icon is DEPRECATED. " +
+                         "Use iconName and iconSource instead.")
+        }
         if (typeof icon == "string" || typeof icon == typeof iconSource) {
             // icon is the url of an image
             iconHelper.source = icon;

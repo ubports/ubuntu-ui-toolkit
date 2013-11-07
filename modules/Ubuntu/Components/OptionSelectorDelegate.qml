@@ -70,6 +70,10 @@ ListItem.Standard {
       Left icon url.
      */
     property url icon: iconSource
+    onIconChanged: if (icon != iconSource) {
+                       console.warn("WARNING: OptionSelectorDelegate.icon is DEPRECATED. " +
+                                     "Use iconName and iconSource instead.")
+                   }
 
     /*!
       The image shown for that option.
