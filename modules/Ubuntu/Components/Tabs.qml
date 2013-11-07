@@ -203,7 +203,7 @@ PageTreeNode {
       title of the Tab. The \a component can be either a Component, a URL to
       the Tab component to be loaded or an instance of a pre-declared tab that
       has been previously removed. The Tab's title will be replaced with the given
-      \a title, unless if the given value is empty or undefined. The optional
+      \a title, unless if the given value is empty string or undefined. The optional
       \a params defines parameters passed to the Tab.
       Returns the instance of the created Tab.
       */
