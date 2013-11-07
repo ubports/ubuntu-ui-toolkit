@@ -40,13 +40,11 @@ StyledItem {
     property Item tabsItem
 
     /*!
-      The tab model having the following roles defined:
-      \list
-      \li \b title - mandatory, specifying the title of the tab
-      \li \b tab - optional, the Tab or other Item to be displayed when activated;
-            if specified the component will be activated when selected; otherwise
-            the index will be used to activate the item
-      \endlist
+      The model containing the tabs to be controlled by the TabBar. The tabs are
+      visualized by the style, displaying controlling elements based on the data
+      specified by the roles. The default style mandates the existence of the \b
+      title role, but different styles may require to have other roles (e.g. image,
+      color).
       */
     property ListModel model
 
