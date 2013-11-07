@@ -145,29 +145,29 @@ MainView {
         self.assertFalse(self.toolbar.opened)
 
     def test_open_toolbar(self):
-        self.main_view.open_toolbar()
+        self.toolbar.open()
         self.assertTrue(self.toolbar.opened)
         self.assertFalse(self.toolbar.animating)
 
     def test_opened_toolbar_is_not_opened_again(self):
-        self.main_view.open_toolbar()
+        self.toolbar.open()
         with mock.patch.object(
                 self.main_view.pointing_device, 'drag') as mock_drag:
-            self.main_view.open_toolbar()
+            self.toolbar.open()
 
         self.assertFalse(mock_drag.called)
         self.assertTrue(self.toolbar.opened)
 
     def test_close_toolbar(self):
-        self.main_view.open_toolbar()
-        self.main_view.close_toolbar()
+        self.toolbar.open()
+        self.toolbar.close()
         self.assertFalse(self.toolbar.opened)
         self.assertFalse(self.toolbar.animating)
 
     def test_closed_toolbar_is_not_closed_again(self):
         with mock.patch.object(
                 self.main_view.pointing_device, 'drag') as mock_drag:
-            self.main_view.close_toolbar()
+            self.toolbar.close()
 
         self.assertFalse(mock_drag.called)
         self.assertFalse(self.toolbar.opened)
@@ -175,7 +175,6 @@ MainView {
     def test_click_toolbar_button(self):
         label = self.app.select_single('Label', objectName='clicked_label')
         self.assertNotEqual(label.text, 'Button clicked.')
-        self.main_view.open_toolbar()
         self.toolbar.click_button('buttonName')
         self.assertEqual(label.text, 'Button clicked.')
 
