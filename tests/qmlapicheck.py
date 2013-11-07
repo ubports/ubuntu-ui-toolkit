@@ -22,8 +22,6 @@ import fileinput
 import os
 
 if len(sys.argv) < 2 or '-h' in sys.argv or '--help' in sys.argv:
-    import os
-
     basename = os.path.basename(sys.argv[0])
     print (
         'Usage:\n  env BUILTINS=foo,bar %s FILENAME [FILENAME2..N]\n\n'
