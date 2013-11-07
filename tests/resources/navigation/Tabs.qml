@@ -25,8 +25,21 @@ MainView {
     Component {
         id: dynamicTab
         Tab {
-            title: "Original Title"
-            page: Page {}
+            title: "Original Title #" + index
+            page: Page {
+                Row {
+                    anchors.centerIn: parent
+                    spacing: 5
+                    Button {
+                        text: "Delete"
+                        onClicked: tabs.removeTab(index)
+                    }
+                    Button {
+                        text: "Move to 0"
+                        onClicked: tabs.moveTab(index, 0)
+                    }
+                }
+            }
         }
     }
 
@@ -39,8 +52,7 @@ MainView {
 
         Tab {
             id: simpleTab
-            title: i18n.tr("Simple page")
-            onIndexChanged: print(title + " index= " + index)
+            title: i18n.tr("Simple page #" + index)
             page: Page {
                 title: "This title is not visible"
                 Row {
@@ -95,7 +107,7 @@ MainView {
             model: 3
             Tab {
                 id: tab
-                title: "Extra " + tab.index
+                title: "Extra #" + tab.index
                 page: Page {
                     Column {
                         anchors.centerIn: parent
@@ -121,7 +133,7 @@ MainView {
         }
         Tab {
             id: externalTab
-            title: i18n.tr("External")
+            title: i18n.tr("External #" + index)
             page: Loader {
                 parent: externalTab
                 anchors.fill: parent
@@ -129,7 +141,7 @@ MainView {
             }
         }
         Tab {
-            title: i18n.tr("List view")
+            title: i18n.tr("List view #" + index)
             page: Page {
                 ListView {
                     clip: true
