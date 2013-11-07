@@ -21,6 +21,8 @@ from distutils import version
 import autopilot
 from autopilot import input, platform
 from autopilot.introspection import dbus
+from autopilot.matchers import Eventually
+from testtools.matchers import raises
 
 _NO_TABS_ERROR = 'The MainView has no Tabs.'
 
@@ -488,8 +490,9 @@ class ComposerSheet(UbuntuUIToolkitEmulatorBase):
         """Cancel the composer sheet."""
         button = self.select_single('Button', objectName='cancelButton')
         self.pointing_device.click_object(button)
-        wait_select_single_fail(self.parent, ComposerSheet)
-
+        #wait_select_single_fail(self.parent, ComposerSheet)
+        Eventually(raises(dbus.StateNotFoundError)).match(
+            lambda: self.refresh_state)
 
 def wait_select_single_fail(parent, type_name='*', **kwargs):
     for i in range(10):
