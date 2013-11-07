@@ -394,9 +394,6 @@ PageTreeNode {
     }
 
     /*! \internal */
-    onChildrenChanged: tabStack.updateTabList(children)
-
-    /*! \internal */
     onModelChanged: if (tabs.active && internal.header) internal.header.show()
 
     QtObject {
