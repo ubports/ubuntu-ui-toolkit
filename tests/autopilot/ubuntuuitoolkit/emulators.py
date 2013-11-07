@@ -76,7 +76,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
     def close_toolbar(self):
         """Close the toolbar if it's opened."""
-        return  self.get_toolbar().close()
+        self.get_toolbar().close()
 
     def get_tabs(self):
         """Return the Tabs emulator of the MainView.
