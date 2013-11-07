@@ -35,7 +35,7 @@ class OptionSelectorTests(GalleryTestCase):
 
         self.assertThat(collapsed.selectedIndex, Equals(0))
         self.pointing_device.click_object(collapsed)
-        self.assertThat(styleditem.alwaysExpanded, Eventually(Equals(True)))
+        self.assertThat(styleditem.expanded, Eventually(Equals(True)))
         #try to search the following list entry few times
         #as it may not be available immediately.
         for t in range(0, 9):
