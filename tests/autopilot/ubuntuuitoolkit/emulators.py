@@ -239,7 +239,8 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.drag(line_x, start_y, line_x, stop_y)
 
     def click_button(self, object_name):
-        """Click a button of the toolbar.
+        """Click a button of the toolbar. If the toolbar is not opened already,
+        it will be opened first before clicking.
 
         :parameter object_name: The QML objectName property of the button.
         :raise ToolkitEmulatorException: If there is no button with that object
