@@ -205,17 +205,18 @@ PageTreeNode {
       has been previously removed. The Tab's title will be replaced with the given
       \a title, unless if the given value is empty string or undefined. The optional
       \a params defines parameters passed to the Tab.
-      Returns the instance of the created Tab.
+      Returns the instance of the added Tab.
       */
     function addTab(title, component, params) {
         return insertTab(count, title, component, params);
     }
 
     /*!
-      Inserts a Tab at the given index. If the \a index is less than 0, the Tab
-      will be added to the front, and to the end of the tab stack if the \a index
-      is greater than \l count. \a title, \a component and \a params are used in
-      the same way as in \l addTab(). Returns the instance of the created Tab.
+      Inserts a Tab at the given index. If the \a index is less or equal than 0,
+      the Tab will be added to the front, and to the end of the tab stack if the
+      \a index is greater than \l count. \a title, \a component and \a params
+      are used in the same way as in \l addTab(). Returns the instance of the
+      inserted Tab.
       */
     function insertTab(index, title, component, params) {
         // check if the given component is a Tab instance
