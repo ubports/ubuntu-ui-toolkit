@@ -87,9 +87,30 @@ PageTreeNode {
     property alias __protected: internal
     QtObject {
         id: internal
+        /*
+          Specifies the index of the Tab in Tabs.
+          */
         property int index: -1
+
+        /*
+          Specifies whether the Tab has already been inserted in Tabs model or not.
+          Pre-declared tabs are added one by one automatically before Tabs component
+          completion, therefore we need this flag to exclude adding those Tab elements
+          again which were already added.
+          */
         property bool inserted: false
+
+        /*
+          Specifies whether the Tab was created dynamically or not. A dynamically created
+          Tab is destroyed upon removal.
+          */
         property bool dynamic: false
+
+        /*
+          This flag is used by the Tabs to determine whether the pre-declared Tab was removed
+          from the Tabs model or not. The flag guards adding back pre-declared tabs upon Tabs
+          component stack  (children) change.
+          */
         property bool removedFromTabs: false
     }
 }
