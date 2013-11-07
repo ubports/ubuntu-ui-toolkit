@@ -15,14 +15,11 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-import time
 from distutils import version
 
 import autopilot
 from autopilot import input, platform
 from autopilot.introspection import dbus
-from autopilot.matchers import Eventually
-from testtools.matchers import raises
 
 _NO_TABS_ERROR = 'The MainView has no Tabs.'
 
@@ -478,30 +475,17 @@ class ComposerSheet(UbuntuUIToolkitEmulatorBase):
 
     def __init__(self, *args):
         super(ComposerSheet, self).__init__(*args)
-        self.parent = self.get_parent()
 
     def confirm(self):
         """Confirm the composer sheet."""
         button = self.select_single('Button', objectName='confirmButton')
         self.pointing_device.click_object(button)
-        wait_select_single_fail(self.parent, ComposerSheet)
+        # TODO wait for the composer sheet to be destroyed.
+        # See bug https://bugs.launchpad.net/autopilot/+bug/1248782
 
     def cancel(self):
         """Cancel the composer sheet."""
         button = self.select_single('Button', objectName='cancelButton')
         self.pointing_device.click_object(button)
-        #wait_select_single_fail(self.parent, ComposerSheet)
-        Eventually(raises(dbus.StateNotFoundError)).match(
-            lambda: self.refresh_state)
-
-def wait_select_single_fail(parent, type_name='*', **kwargs):
-    for i in range(10):
-        try:
-            child = parent.select_single(type_name, **kwargs)
-            time.sleep(1)
-        except dbus.StateNotFoundError:
-            return
-    else:
-        raise ToolkitEmulatorException(
-            'After 10 seconds, %s still has a child %s.' %
-            (parent.__class__.__name__, child.__class__.__name__))
+        # TODO wait for the composer sheet to be destroyed.
+        # See bug https://bugs.launchpad.net/autopilot/+bug/1248782
