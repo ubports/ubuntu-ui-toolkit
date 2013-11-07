@@ -346,11 +346,8 @@ PageTreeNode {
             for (var i in tabsList) {
                 var tab = tabsList[i];
                 if (internal.isTab(tab)) {
-                    if (tab.parent === tabs) {
-                        // tabs parented to Tabs should be removed
-                        tab.parent = tabStack;
-                        tab.Component.onDestroyed.connect(tabStack.dynamicRemove.bind(tab));
-                    }
+                    // make sure we have the right parent
+                    tab.parent = tabStack;
 
                     if (!tab.__protected.inserted) {
                         tab.__protected.index = count;
@@ -383,15 +380,6 @@ PageTreeNode {
         id: tabStack
 
         onChildrenChanged: tabsModel.updateTabList(children)
-
-        function dymanicRemove() {
-            for (var i in tabStack.children) {
-                if (this === tabStack.children[i]) {
-                    tabs.removeTab(i);
-                    break;
-                }
-            }
-        }
     }
 
     /*! \internal */
