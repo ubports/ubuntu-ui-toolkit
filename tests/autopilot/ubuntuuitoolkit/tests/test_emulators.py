@@ -175,6 +175,7 @@ MainView {
     def test_click_toolbar_button(self):
         label = self.app.select_single('Label', objectName='clicked_label')
         self.assertNotEqual(label.text, 'Button clicked.')
+        self.toolbar.open()
         self.toolbar.click_button('buttonName')
         self.assertEqual(label.text, 'Button clicked.')
 
