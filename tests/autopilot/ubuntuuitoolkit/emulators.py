@@ -424,18 +424,23 @@ class Empty(UbuntuUIToolkitEmulatorBase):
                 raise ToolkitEmulatorException(
                     'Invalid direction "{0}" used on swipe to delete function'
                     .format(direction))
-
-            self.waitingConfirmationForRemoval.wait_for(True)
+            if self.confirmRemoval:
+                self.waitingConfirmationForRemoval.wait_for(True)
+            else:
+                self._wait_until_deleted()
         else:
             raise ToolkitEmulatorException(
                 'The item "{0}" is not removable'.format(self.objectName))
 
+    def _wait_until_deleted(self):
+        self.implicitHeight.wait_for(0)
+        
     def confirm_removal(self):
         """ Comfirm item removal if this was already swiped """
         if (self.waitingConfirmationForRemoval):
             deleteButton = self._get_confirm_button()
             self.pointing_device.click_object(deleteButton)
-            self.implicitHeight.wait_for(0)
+            self._wait_until_deleted()
         else:
             raise ToolkitEmulatorException(
                 'The item "{0}" is not waiting for removal confirmation'.

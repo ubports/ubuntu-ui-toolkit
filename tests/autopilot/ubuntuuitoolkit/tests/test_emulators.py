@@ -535,7 +535,7 @@ import Ubuntu.Components.ListItems 0.1
 
 MainView {
     width: units.gu(48)
-    height: units.gu(300)
+    height: units.gu(60)
 
     Column {
         width: parent.width
@@ -550,6 +550,12 @@ MainView {
         Empty {
             objectName: "listitem_empty"
             width: parent.width
+        }
+        Standard {
+            objectName: "listitem_without_confirm"
+            confirmRemoval: false
+            removable: true
+            text: "Item without delete confirmation"
         }
     }
 }
@@ -615,6 +621,11 @@ MainView {
     def test_confirm_removal_when_item_was_not_swiped(self):
         self.assertRaises(
             emulators.ToolkitEmulatorException, self._item.confirm_removal)
+
+    def test_delete_item_without_confirm(self):
+        item = self.main_view.select_single(
+            emulators.Standard, objectName='listitem_without_confirm')
+        item.swipe_to_delete()
 
 
 class PageStackTestCase(tests.QMLStringAppTestCase):
