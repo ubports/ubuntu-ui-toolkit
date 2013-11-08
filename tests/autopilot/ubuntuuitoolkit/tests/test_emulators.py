@@ -87,6 +87,18 @@ MainView {
         toolbar = self.main_view.get_toolbar()
         self.assertIsInstance(toolbar, emulators.Toolbar)
 
+    def test_open_toolbar(self):
+        with mock.patch.object(emulators.Toolbar, 'open') as mock_open:
+            self.main_view.open_toolbar()
+
+        mock_open.assert_called_once_with()
+
+    def test_close_toolbar(self):
+        with mock.patch.object(emulators.Toolbar, 'close') as mock_close:
+            self.main_view.close_toolbar()
+
+        mock_close.assert_called_once_with()
+
     def test_open_toolbar_returns_the_toolbar(self):
         toolbar = self.main_view.open_toolbar()
         self.assertIsInstance(toolbar, emulators.Toolbar)
@@ -171,29 +183,29 @@ MainView {
         self.assertFalse(self.toolbar.opened)
 
     def test_open_toolbar(self):
-        self.main_view.open_toolbar()
+        self.toolbar.open()
         self.assertTrue(self.toolbar.opened)
         self.assertFalse(self.toolbar.animating)
 
     def test_opened_toolbar_is_not_opened_again(self):
-        self.main_view.open_toolbar()
+        self.toolbar.open()
         with mock.patch.object(
                 self.main_view.pointing_device, 'drag') as mock_drag:
-            self.main_view.open_toolbar()
+            self.toolbar.open()
 
         self.assertFalse(mock_drag.called)
         self.assertTrue(self.toolbar.opened)
 
     def test_close_toolbar(self):
-        self.main_view.open_toolbar()
-        self.main_view.close_toolbar()
+        self.toolbar.open()
+        self.toolbar.close()
         self.assertFalse(self.toolbar.opened)
         self.assertFalse(self.toolbar.animating)
 
     def test_closed_toolbar_is_not_closed_again(self):
         with mock.patch.object(
                 self.main_view.pointing_device, 'drag') as mock_drag:
-            self.main_view.close_toolbar()
+            self.toolbar.close()
 
         self.assertFalse(mock_drag.called)
         self.assertFalse(self.toolbar.opened)
@@ -201,7 +213,7 @@ MainView {
     def test_click_toolbar_button(self):
         label = self.app.select_single('Label', objectName='clicked_label')
         self.assertNotEqual(label.text, 'Button clicked.')
-        self.main_view.open_toolbar()
+        self.toolbar.open()
         self.toolbar.click_button('buttonName')
         self.assertEqual(label.text, 'Button clicked.')
 
@@ -212,6 +224,14 @@ MainView {
             'unexisting')
         self.assertEqual(
             error.message, 'Button with objectName "unexisting" not found.')
+
+    def test_click_button_on_closed_toolbar(self):
+        error = self.assertRaises(
+            emulators.ToolkitEmulatorException, self.toolbar.click_button,
+            'buttonName')
+        self.assertEqual(
+            error.message,
+            'Toolbar must be opened before calling click_button().')
 
 
 class TabsTestCase(tests.QMLStringAppTestCase):
