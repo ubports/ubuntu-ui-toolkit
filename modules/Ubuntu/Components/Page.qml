@@ -120,7 +120,7 @@ PageTreeNode {
       of the header by scrolling in the Flickable. In cases where a flickable should control the header,
       but it is not automatically detected, the flickable property can be set.
      */
-    property Flickable flickable: internal.getFlickableChild(contentsItem)
+    property Flickable flickable: internal.getFlickableChild(page)
 
     /*! \internal */
     onActiveChanged: {
@@ -147,6 +147,11 @@ PageTreeNode {
 
     Object {
         id: internal
+
+        // A very large real number that is used as the z-value for an item
+        // that should go on top of its siblings.
+        // FIXME: Expose this variable to all components of the toolkit
+        property real maxStackingOrder: 200000
 
         UnityActions.ActionContext {
             id: actionContext
@@ -216,7 +221,7 @@ PageTreeNode {
                 for (var i=0; i < item.children.length; i++) {
                     var child = item.children[i];
                     if (internal.isVerticalFlickable(child)) {
-                        if (child.anchors.top === contentsItem.top || child.anchors.fill === contentsItem) {
+                        if (child.anchors.top === page.top || child.anchors.fill === page) {
                             return item.children[i];
                         }
                     }
@@ -241,19 +246,10 @@ PageTreeNode {
         }
     }
 
-    /*!
-      \internal
-      The contents of the page.
-     */
-    default property alias pageContents: contentsItem.data
-    Item {
-        id: contentsItem
-        anchors.fill: parent
-    }
-
     MouseArea {
         id: contentsArea
-        anchors.fill: contentsItem
+        anchors.fill: page
+        z: internal.maxStackingOrder
         // This mouse area will be on top of the page contents, but
         // under the toolbar and header.
         // It is used for detecting interaction with the page contents
