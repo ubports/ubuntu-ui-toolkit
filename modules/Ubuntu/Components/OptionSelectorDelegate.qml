@@ -115,7 +115,7 @@ ListItem.Standard {
         right: parent.right
     }
     onClicked: {
-        if (listView.container.expanded) {
+        if (listView.container.currentlyExpanded) {
             listView.delegateClicked(index);
 
             if (!listView.multiSelection) {
@@ -126,8 +126,8 @@ ListItem.Standard {
             }
         }
 
-        if (!listView.alwaysExpanded && !listView.multiSelection) {
-            listView.container.expanded = !listView.container.expanded;
+        if (!listView.expanded && !listView.multiSelection) {
+            listView.container.currentlyExpanded = !listView.container.currentlyExpanded;
         }
     }
 
@@ -168,14 +168,14 @@ ListItem.Standard {
     resources: [
         Connections {
             target: listView.container
-            onExpandedChanged: {
+            onCurrentlyExpandedChanged: {
                 optionExpansion.stop();
                 imageExpansion.stop();
                 optionCollapse.stop();
                 selectedImageCollapse.stop();
                 deselectedImageCollapse.stop();
 
-                if (listView.container.expanded === true) {
+                if (listView.container.currentlyExpanded === true) {
                     if (!option.selected) {
                         optionExpansion.start();
 
@@ -341,7 +341,7 @@ ListItem.Standard {
 
         width: units.gu(2)
         height: units.gu(2)
-        source: listView.alwaysExpanded || listView.multiSelection ? listView.container.tick : listView.container.chevron
+        source: listView.expanded || listView.multiSelection ? listView.container.tick : listView.container.chevron
         opacity: option.selected ? 1.0 : 0.0
         anchors {
             right: parent.right
@@ -351,7 +351,7 @@ ListItem.Standard {
 
         //Our behaviour is only enabled for our expanded list due to flickering bugs in relation to all this other animations running on the expanding version.
         Behavior on opacity {
-            enabled: listView.alwaysExpanded
+            enabled: listView.expanded
 
             Toolkit.UbuntuNumberAnimation {
                 properties: "opacity"

@@ -15,7 +15,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+from distutils import version
 
+import autopilot
 from autopilot import input, platform
 from autopilot.introspection import dbus
 
@@ -42,10 +44,24 @@ def get_pointing_device():
     return input.Pointer(device=input_device_class.create())
 
 
+def check_autopilot_version():
+    """Check that the Autopilot installed version matches the one required.
+
+    :raise ToolkitEmulatorException: If the installed Autopilot version does't
+        match the required by the emulators.
+
+    """
+    installed_version = version.LooseVersion(autopilot.version)
+    if installed_version < version.LooseVersion('1.4'):
+        raise ToolkitEmulatorException(
+            'The emulators need Autopilot 1.4 or higher.')
+
+
 class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
     """A base class for all the Ubuntu UI Toolkit emulators."""
 
     def __init__(self, *args):
+        check_autopilot_version()
         super(UbuntuUIToolkitEmulatorBase, self).__init__(*args)
         self.pointing_device = get_pointing_device()
         # TODO it would be nice to have access to the screen keyboard if we are
