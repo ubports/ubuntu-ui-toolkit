@@ -239,11 +239,12 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.drag(line_x, start_y, line_x, stop_y)
 
     def click_button(self, object_name):
-        """Click a button of the toolbar. The toolbar should be opened before
-        clicking the button, or an exception will be raised. If the toolbar
-        is closed for some reason (e.g., timer finishes) after moving the mouse cursor
-        and before clicking the button, it is re-opened automatically by
-        this function.
+        """Click a button of the toolbar.
+
+        The toolbar should be opened before clicking the button, or an
+        exception will be raised. If the toolbar is closed for some reason
+        (e.g., timer finishes) after moving the mouse cursor and before
+        clicking the button, it is re-opened automatically by this function.
 
         :parameter object_name: The QML objectName property of the button.
         :raise ToolkitEmulatorException: If there is no button with that object
