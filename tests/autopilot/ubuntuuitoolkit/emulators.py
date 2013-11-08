@@ -88,39 +88,11 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         :return: The toolbar.
 
         """
-        toolbar = self.get_toolbar()
-        toolbar.animating.wait_for(False)
-        if not toolbar.opened:
-            self._drag_to_open_toolbar()
-            toolbar.opened.wait_for(True)
-            toolbar.animating.wait_for(False)
-
-        return toolbar
-
-    def _drag_to_open_toolbar(self):
-        x, y, _, _ = self.globalRect
-        line_x = x + self.width * 0.50
-        start_y = y + self.height - 1
-        stop_y = y + self.height - self.get_toolbar().height
-
-        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+        return self.get_toolbar().open()
 
     def close_toolbar(self):
         """Close the toolbar if it's opened."""
-        toolbar = self.get_toolbar()
-        toolbar.animating.wait_for(False)
-        if toolbar.opened:
-            self._drag_to_close_toolbar()
-            toolbar.opened.wait_for(False)
-            toolbar.animating.wait_for(False)
-
-    def _drag_to_close_toolbar(self):
-        x, y, _, _ = self.globalRect
-        line_x = x + self.width * 0.50
-        start_y = y + self.height - self.get_toolbar().height
-        stop_y = y + self.height - 1
-
-        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+        self.get_toolbar().close()
 
     def get_tabs(self):
         """Return the Tabs emulator of the MainView.
@@ -244,8 +216,51 @@ class Header(UbuntuUIToolkitEmulatorBase):
 class Toolbar(UbuntuUIToolkitEmulatorBase):
     """Toolbar Autopilot emulator."""
 
+    def open(self):
+        """Open the toolbar if it's not already opened.
+
+        :return: The toolbar.
+
+        """
+        self.animating.wait_for(False)
+        if not self.opened:
+            self._drag_to_open()
+            self.opened.wait_for(True)
+            self.animating.wait_for(False)
+
+        return self
+
+    def _drag_to_open(self):
+        x, y, _, _ = self.globalRect
+        line_x = x + self.width * 0.50
+        start_y = y + self.height - 1
+        stop_y = y
+
+        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+
+    def close(self):
+        """Close the toolbar if it's opened."""
+        self.animating.wait_for(False)
+        if self.opened:
+            self._drag_to_close()
+            self.opened.wait_for(False)
+            self.animating.wait_for(False)
+
+    def _drag_to_close(self):
+        x, y, _, _ = self.globalRect
+        line_x = x + self.width * 0.50
+        start_y = y
+        stop_y = y + self.height - 1
+
+        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+
     def click_button(self, object_name):
         """Click a button of the toolbar.
+
+        The toolbar should be opened before clicking the button, or an
+        exception will be raised. If the toolbar is closed for some reason
+        (e.g., timer finishes) after moving the mouse cursor and before
+        clicking the button, it is re-opened automatically by this function.
 
         :parameter object_name: The QML objectName property of the button.
         :raise ToolkitEmulatorException: If there is no button with that object
@@ -257,6 +272,14 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
         except dbus.StateNotFoundError:
             raise ToolkitEmulatorException(
                 'Button with objectName "{0}" not found.'.format(object_name))
+        # ensure the toolbar is open
+        if not self.opened:
+            raise ToolkitEmulatorException(
+                'Toolbar must be opened before calling click_button().')
+        self.pointing_device.move_to_object(button)
+        # ensure the toolbar is still open (may have closed due to timeout)
+        self.open()
+        # click the button
         self.pointing_device.click_object(button)
 
     def _get_button(self, object_name):
