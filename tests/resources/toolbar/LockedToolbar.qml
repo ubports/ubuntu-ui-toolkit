@@ -22,10 +22,6 @@ MainView {
     height: units.gu(80)
     id: mainView
 
-    PageStack {
-        id: pageStack
-    }
-
     Page {
         id: page
         title: "test page"
@@ -38,18 +34,19 @@ MainView {
             ToolbarButton {
                 text: "action1"
             }
-            locked: true
-            opened: true
         }
     }
 
-    Page {
-        id: emptyPage
+    ToolbarItems {
+        id: lockedTools
+        ToolbarButton {
+            text: "locked"
+        }
+        locked: true
+        opened: true
     }
 
     Component.onCompleted: {
-        pageStack.push(page);
-        pageStack.push(emptyPage);
-        pageStack.pop();
+        page.tools = lockedTools;
     }
 }
