@@ -260,7 +260,6 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
         if not self.opened:
             raise ToolkitEmulatorException(
                 'Toolbar must be opened before calling click_button().')
-        self.open()
         self.pointing_device.move_to_object(button)
         # ensure the toolbar is still open (may have closed due to timeout)
         self.open()
