@@ -212,7 +212,7 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
             self.opened.wait_for(True)
             self.animating.wait_for(False)
 
-            return self
+        return self
 
     def _drag_to_open(self):
         x, y, _, _ = self.globalRect
