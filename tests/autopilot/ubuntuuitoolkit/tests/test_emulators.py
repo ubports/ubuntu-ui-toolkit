@@ -199,6 +199,14 @@ MainView {
         self.assertEqual(
             error.message, 'Button with objectName "unexisting" not found.')
 
+    def test_click_button_on_closed_toolbar(self):
+        error = self.assertRaises(
+            emulators.ToolkitEmulatorException, self.toolbar.click_button,
+            'buttonName')
+        self.assertEqual(
+            error.message,
+            'Toolbar must be opened before calling click_button().')
+
 
 class TabsTestCase(tests.QMLStringAppTestCase):
 
