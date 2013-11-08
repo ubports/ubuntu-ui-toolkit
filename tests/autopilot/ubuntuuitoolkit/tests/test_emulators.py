@@ -18,10 +18,28 @@ import mock
 import time
 import unittest
 
+import autopilot
 from autopilot import input, platform
 from testtools.matchers import GreaterThan, LessThan
 
 from ubuntuuitoolkit import emulators, tests
+
+
+class CheckAutopilotVersionTestCase(unittest.TestCase):
+
+    def test_lower_version_should_raise_exception(self):
+        with mock.patch.object(autopilot, 'version', '1.3'):
+            self.assertRaises(
+                emulators.ToolkitEmulatorException,
+                emulators.check_autopilot_version)
+
+    def test_required_version_should_succeed(self):
+        with mock.patch.object(autopilot, 'version', '1.4'):
+            emulators.check_autopilot_version()
+
+    def test_higher_version_should_succeed(self):
+        with mock.patch.object(autopilot, 'version', '1.5'):
+            emulators.check_autopilot_version()
 
 
 class UbuntuUIToolkitEmulatorBaseTestCase(tests.QMLStringAppTestCase):
@@ -36,6 +54,14 @@ class UbuntuUIToolkitEmulatorBaseTestCase(tests.QMLStringAppTestCase):
     @unittest.skipIf(platform.model() == 'Desktop', 'Phablet only')
     def test_pointing_device_in_phablet(self):
         self.assertIsInstance(self.app.pointing_device._device, input.Touch)
+
+    def test_emulators_should_check_version_on_init(self):
+        check_name = 'ubuntuuitoolkit.emulators.check_autopilot_version'
+        with mock.patch(check_name, autospec=True) as mock_check:
+            # Instantiate any emulator.
+            self.main_view
+
+        mock_check.assert_called_once_with()
 
 
 class MainViewTestCase(tests.QMLStringAppTestCase):
@@ -67,14 +93,14 @@ MainView {
 
     def test_get_tabs_without_tabs(self):
         error = self.assertRaises(
-            AssertionError, self.main_view.get_tabs)
+            emulators.ToolkitEmulatorException, self.main_view.get_tabs)
         self.assertEqual(
             error.message, 'The MainView has no Tabs.')
 
     def test_switch_to_next_tab_without_tabs(self):
         header = self.main_view.get_header()
         error = self.assertRaises(
-            AssertionError, header.switch_to_next_tab)
+            emulators.ToolkitEmulatorException, header.switch_to_next_tab)
         self.assertEqual(
             error.message, 'The MainView has no Tabs.')
 
@@ -182,7 +208,8 @@ MainView {
     def test_click_unexisting_button(self):
         self.main_view.open_toolbar()
         error = self.assertRaises(
-            ValueError, self.toolbar.click_button, 'unexisting')
+            emulators.ToolkitEmulatorException, self.toolbar.click_button,
+            'unexisting')
         self.assertEqual(
             error.message, 'Button with objectName "unexisting" not found.')
 
@@ -283,7 +310,8 @@ MainView {
     def test_swith_to_tab_by_index_out_of_range(self):
         last_tab_index = self.main_view.get_tabs().get_number_of_tabs() - 1
         error = self.assertRaises(
-            IndexError, self.main_view.switch_to_tab_by_index,
+            emulators.ToolkitEmulatorException,
+            self.main_view.switch_to_tab_by_index,
             last_tab_index + 1)
         self.assertEqual(error.message, 'Tab index out of range.')
 
@@ -306,7 +334,8 @@ MainView {
 
     def test_switch_to_unexisting_tab(self):
         error = self.assertRaises(
-            ValueError, self.main_view.switch_to_tab, 'unexisting')
+            emulators.ToolkitEmulatorException, self.main_view.switch_to_tab,
+            'unexisting')
         self.assertEqual(
             error.message, 'Tab with objectName "unexisting" not found.')
 
@@ -372,7 +401,8 @@ MainView {
         popover = self.main_view.get_action_selection_popover(
             'test_actions_popover')
         error = self.assertRaises(
-            ValueError, popover.click_button_by_text, 'unexisting')
+            emulators.ToolkitEmulatorException, popover.click_button_by_text,
+            'unexisting')
         self.assertEqual(
             error.message, 'Button with text "unexisting" not found.')
 
@@ -380,7 +410,8 @@ MainView {
         popover = self.main_view.get_action_selection_popover(
             'test_actions_popover')
         error = self.assertRaises(
-            AssertionError, popover.click_button_by_text, 'Action one')
+            emulators.ToolkitEmulatorException, popover.click_button_by_text,
+            'Action one')
         self.assertEqual(
             error.message, 'The popover is not open.')
 

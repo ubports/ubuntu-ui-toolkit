@@ -1,3 +1,86 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20131106-0ubuntu1) trusty; urgency=low
+
+  [ Leo Arias ]
+  * Update the tests to work with autopilot 1.4.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 822
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 06 Nov 2013 05:08:45 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20131105.1-0ubuntu1) trusty; urgency=low
+
+  [ Albert Astals ]
+  * Minor optimzations Add const & to foreach to save copies of
+    "complex" types Remove initializations of QStrings to "" since they
+    do nothing Return QString instead of "" since its faster Pass
+    "complex" types as const & instead of copy to functions Not an
+    optimization: Added const qualifier to two functions .
+
+  [ Lars Uebernickel ]
+  * Remove GIconProvider Use urls for file and data icons and the theme
+    image provider (image://theme/) for themed icons.
+
+  [ Kaleo ]
+  * [visual design] Updated tabs chevron asset.
+
+  [ Christian Dywan ]
+  * Install translations for UI toolkit and gallery. (LP: #1239627)
+  * Support checkbox used with an action.
+  * Install autopilot modules in qmake not debian packaging.
+  * Drop the $$ from system calls where output isn't needed.
+  * Look for locale folder as per XDG basedir spec and rewrite test The
+    new test case covers the whole range of changing languages, checking
+    the strings from both QML and C++ and binding to a folder. (LP:
+    #1175726, #1233071)
+  * Define window within OrientationHelper to avoid a race condition.
+    (LP: #1239760)
+
+  [ Zsombor Egri ]
+  * Support for taking themes from XDG_DATA_DIRS as well as from
+    ~/.local/share. These paths are also added as import paths.
+    UBUNTU_UI_TOOLKIT_THEMES_PATH overrules these import paths, and can
+    have more than one path specified, each separated with column. (LP:
+    #1221813)
+  * Warnings treated as errors in all types of builds (debug or
+    release). (LP: #1246290)
+  * Introducing topmostItem property to drive whether InverseMouseArea
+    should filter sensingArea events or to stay in the normal z-
+    order/stack order of its parent. (LP: #1240460)
+
+  [ Leo Arias ]
+  * Added the go back method to the autopilot emulators. (LP: #1239751)
+  * On the autopilot emulator, drag the toolbar to its full height. (LP:
+    #1235060)
+  * Initially show toolbar, but automatically hide after timeout. (LP:
+    #1207369)
+  * Added the change_state method to the CheckBox autopilot emulator.
+    Cleaned up the autopilot gallery toggles tests.
+  * Added the objectNames to the ComposerSheet buttons. (LP: #1244518)
+
+  [ tpeeters ]
+  * Update CrossFadeImage API so that sourceSize can be set by the
+    applications. CHANGED in CrossFadeImage: readonly property size
+    sourceSize TO property size sourceSize. (LP: #1227783)
+  * Initially show toolbar, but automatically hide after timeout. (LP:
+    #1207369)
+  * Put tab bar in selection mode when apps are launched. (LP: #1223597)
+  * Close tabbar and toolbar when user interacts with app contents. (LP:
+    #1223604)
+
+  [ Nicolas d'Offay ]
+  * Added multiSelection bool and supporting code to OptionSelector and
+    ItemSelector. This turns either component into a multiple choice
+    selector. Fixed linked bugs. (LP: #1231936)
+
+  [ Renato Araujo Oliveira Filho ]
+  * Implemented emulator for swipe to remove. (LP: #1236464)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 820
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 05 Nov 2013 16:51:13 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20131011.2-0ubuntu1) saucy; urgency=low
 
   [ Zsombor Egri ]

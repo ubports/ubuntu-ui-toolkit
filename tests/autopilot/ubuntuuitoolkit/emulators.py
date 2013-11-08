@@ -15,7 +15,9 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+from distutils import version
 
+import autopilot
 from autopilot import input, platform
 from autopilot.introspection import dbus
 
@@ -42,10 +44,24 @@ def get_pointing_device():
     return input.Pointer(device=input_device_class.create())
 
 
+def check_autopilot_version():
+    """Check that the Autopilot installed version matches the one required.
+
+    :raise ToolkitEmulatorException: If the installed Autopilot version does't
+        match the required by the emulators.
+
+    """
+    installed_version = version.LooseVersion(autopilot.version)
+    if installed_version < version.LooseVersion('1.4'):
+        raise ToolkitEmulatorException(
+            'The emulators need Autopilot 1.4 or higher.')
+
+
 class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
     """A base class for all the Ubuntu UI Toolkit emulators."""
 
     def __init__(self, *args):
+        check_autopilot_version()
         super(UbuntuUIToolkitEmulatorBase, self).__init__(*args)
         self.pointing_device = get_pointing_device()
         # TODO it would be nice to have access to the screen keyboard if we are
@@ -57,7 +73,10 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
     def get_header(self):
         """Return the Header emulator of the MainView."""
-        return self.select_single('Header', objectName='MainView_Header')
+        try:
+            return self.select_single('Header', objectName='MainView_Header')
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException('The main view has no header.')
 
     def get_toolbar(self):
         """Return the Toolbar emulator of the MainView."""
@@ -104,10 +123,15 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.drag(line_x, start_y, line_x, stop_y)
 
     def get_tabs(self):
-        """Return the Tabs emulator of the MainView."""
-        tabs = self.select_single(Tabs)
-        assert tabs is not None, _NO_TABS_ERROR
-        return tabs
+        """Return the Tabs emulator of the MainView.
+
+        :raise ToolkitEmulatorException: If the main view has no tabs.
+
+        """
+        try:
+            return self.select_single(Tabs)
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException(_NO_TABS_ERROR)
 
     def switch_to_next_tab(self):
         """Open the next tab.
@@ -126,13 +150,14 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
         :parameter index: The index of the tab to open.
         :return: The newly opened tab.
+        :raise ToolkitEmulatorException: If the tab index is out of range.
 
         """
         logger.debug('Switch to tab with index {0}.'.format(index))
         tabs = self.get_tabs()
         number_of_tabs = tabs.get_number_of_tabs()
         if index >= number_of_tabs:
-            raise IndexError('Tab index out of range.')
+            raise ToolkitEmulatorException('Tab index out of range.')
         current_tab = tabs.get_current_tab()
         number_of_switches = 0
         while not tabs.selectedTabIndex == index:
@@ -165,13 +190,15 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
         :parameter object_name: The QML objectName property of the tab.
         :return: The newly opened tab.
+        :raise ToolkitEmulatorException: If there is no tab with that object
+            name.
 
         """
         tabs = self.get_tabs()
         for index, tab in enumerate(tabs.select_many('Tab')):
             if tab.objectName == object_name:
                 return self.switch_to_tab_by_index(tab.index)
-        raise ValueError(
+        raise ToolkitEmulatorException(
             'Tab with objectName "{0}" not found.'.format(object_name))
 
     def get_action_selection_popover(self, object_name):
@@ -201,9 +228,15 @@ class Header(UbuntuUIToolkitEmulatorBase):
         return tab_bar_style.animating
 
     def switch_to_next_tab(self):
-        """Open the next tab."""
-        tab_bar = self.select_single(TabBar)
-        assert tab_bar is not None, _NO_TABS_ERROR
+        """Open the next tab.
+
+        :raise ToolkitEmulatorException: If the main view has no tabs.
+
+        """
+        try:
+            tab_bar = self.select_single(TabBar)
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException(_NO_TABS_ERROR)
         tab_bar.switch_to_next_tab()
         self._get_animating().wait_for(False)
 
@@ -214,12 +247,15 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
     def click_button(self, object_name):
         """Click a button of the toolbar.
 
-        :param object_name: The QML objectName property of the button.
+        :parameter object_name: The QML objectName property of the button.
+        :raise ToolkitEmulatorException: If there is no button with that object
+            name.
 
         """
-        button = self._get_button(object_name)
-        if button is None:
-            raise ValueError(
+        try:
+            button = self._get_button(object_name)
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException(
                 'Button with objectName "{0}" not found.'.format(object_name))
         self.pointing_device.click_object(button)
 
@@ -308,12 +344,14 @@ class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
         --elopio - 2013-07-25
 
         :parameter text: The text of the button.
+        :raise ToolkitEmulatorException: If the popover is not open.
 
         """
-        assert self.visible, 'The popover is not open.'
+        if not self.visible:
+            raise ToolkitEmulatorException('The popover is not open.')
         button = self._get_button(text)
         if button is None:
-            raise ValueError(
+            raise ToolkitEmulatorException(
                 'Button with text "{0}" not found.'.format(text))
         self.pointing_device.click_object(button)
         if self.autoClose:
