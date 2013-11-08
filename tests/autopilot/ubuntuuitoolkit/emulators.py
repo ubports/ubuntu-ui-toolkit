@@ -412,18 +412,7 @@ class Empty(UbuntuUIToolkitEmulatorBase):
     def swipe_to_delete(self, direction='right'):
         """ Swipe the item in a specific direction """
         if (self.removable):
-            x, y, w, h = self.globalRect
-            tx = x + (w / 8)
-            ty = y + (h / 2)
-
-            if (direction == 'right'):
-                self.pointing_device.drag(tx, ty, w, ty)
-            elif (direction == 'left'):
-                self.pointing_device.drag(w - (w*0.1), ty, x, ty)
-            else:
-                raise ToolkitEmulatorException(
-                    'Invalid direction "{0}" used on swipe to delete function'
-                    .format(direction))
+            self._drag_pointing_device_to_delete(self, direction)
             if self.confirmRemoval:
                 self.waitingConfirmationForRemoval.wait_for(True)
             else:
@@ -431,6 +420,20 @@ class Empty(UbuntuUIToolkitEmulatorBase):
         else:
             raise ToolkitEmulatorException(
                 'The item "{0}" is not removable'.format(self.objectName))
+
+    def _drag_pointing_device_to_delete(self, direction):
+        x, y, w, h = self.globalRect
+        tx = x + (w / 8)
+        ty = y + (h / 2)
+ 
+        if (direction == 'right'):
+            self.pointing_device.drag(tx, ty, w, ty)
+        elif (direction == 'left'):
+            self.pointing_device.drag(w - (w*0.1), ty, x, ty)
+        else:
+            raise ToolkitEmulatorException(
+                'Invalid direction "{0}" used on swipe to delete function'
+                .format(direction))
 
     def _wait_until_deleted(self):
         self.implicitHeight.wait_for(0)
