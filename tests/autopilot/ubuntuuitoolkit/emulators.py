@@ -241,7 +241,7 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
     def click_button(self, object_name):
         """Click a button of the toolbar. The toolbar should be opened before
         clicking the button, or an exception will be raised. If the toolbar
-        is closed for some reason (e.g., timer finishes) after moving the mouse
+        is closed for some reason (e.g., timer finishes) after moving the mouse cursor
         and before clicking the button, it is re-opened automatically by
         this function.
 
