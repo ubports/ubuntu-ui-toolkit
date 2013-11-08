@@ -53,6 +53,9 @@
 #include <unistd.h>
 #include <stdexcept>
 
+// Needed for unit tests
+Q_DECLARE_METATYPE(QList<QQmlError>)
+
 /*
  * Type registration functions.
  */
@@ -160,6 +163,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCStateSaver>(uri, 0, 1, "StateSaver");
     qmlRegisterType<UCStateSaverAttached>();
     qmlRegisterSingletonType<UCUriHandler>(uri, 0, 1, "UriHandler", registerUriHandler);
+    // Needed for unit tests
+    qRegisterMetaType<QList <QQmlError> >();
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
