@@ -416,7 +416,7 @@ class Empty(UbuntuUIToolkitEmulatorBase):
             'QQuickItem', objectName='confirmRemovalDialog')
 
     def swipe_to_delete(self, direction='right'):
-        """Swipe the item in a specific direction. """
+        """Swipe the item in a specific direction."""
         if (self.removable):
             self._drag_pointing_device_to_delete(direction)
             if self.confirmRemoval:
