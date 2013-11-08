@@ -148,6 +148,11 @@ PageTreeNode {
     Object {
         id: internal
 
+        // A very large real number that is used as the z-value for an item
+        // that should go on top of its siblings.
+        // FIXME: Expose this variable to all components of the toolkit
+        property real maxStackingOrder: 200000
+
         UnityActions.ActionContext {
             id: actionContext
 
@@ -244,6 +249,7 @@ PageTreeNode {
     MouseArea {
         id: contentsArea
         anchors.fill: page
+        z: internal.maxStackingOrder
         // This mouse area will be on top of the page contents, but
         // under the toolbar and header.
         // It is used for detecting interaction with the page contents
