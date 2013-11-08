@@ -83,7 +83,11 @@ Panel {
         id: hideTimer
         interval: toolbar.hideTimeout
         running: toolbar.opened && !toolbar.locked
-        onTriggered: toolbar.close()
+        onTriggered: {
+            if (!toolbar.locked) {
+                toolbar.close();
+            }
+        }
     }
 
     onOpenedChanged: {
