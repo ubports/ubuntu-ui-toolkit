@@ -24,8 +24,6 @@ Item {
 
     MainView {
         anchors.fill: parent
-        width: units.gu(50)
-        height: units.gu(80)
         id: mainView
 
         Page {
