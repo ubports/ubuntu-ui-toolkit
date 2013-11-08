@@ -100,12 +100,12 @@ QtObject
 modules/Ubuntu/Components/OptionSelector.qml
 ListItem.Empty
     property var model
-    property bool alwaysExpanded
+    property bool expanded
     property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    readonly property bool expanded
+    readonly property bool currentlyExpanded
     readonly property real itemHeight
     signal delegateClicked(int index)
     signal expansionCompleted()
@@ -441,12 +441,12 @@ Image
 modules/Ubuntu/Components/ListItems/ItemSelector.qml
 ListItem.Empty
     property var model
-    property bool alwaysExpanded
+    property bool expanded
     property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    readonly property bool expanded
+    readonly property bool currentlyExpanded
     readonly property real itemHeight
     signal delegateClicked(int index)
     signal expansionCompleted()
