@@ -537,26 +537,58 @@ MainView {
     width: units.gu(48)
     height: units.gu(60)
 
-    Column {
-        width: parent.width
+    Page {
 
-        Standard {
-            objectName: "listitem_standard"
-            confirmRemoval: true
-            removable: true
-            width: parent.width
-            text: 'Slide to remove'
+        ListModel {
+            id: testModel
+
+            ListElement {
+                name: "listitem_destroyed_on_remove_with_confirm"
+                label: "Item destroyed on remove with confirmation"
+                confirm: true
+            }
+            ListElement {
+                name: "listitem_destroyed_on_remove_without_confirm"
+                label: "Item destroyed on remove without confirmation"
+                confirm: false
+            }
         }
-        Empty {
-            objectName: "listitem_empty"
-            width: parent.width
-        }
-        Standard {
-            objectName: "listitem_without_confirm"
-            confirmRemoval: false
-            removable: true
-            text: "Item without delete confirmation"
-        }
+
+        Column {
+            anchors { fill: parent }
+
+            Standard {
+                objectName: "listitem_standard"
+                confirmRemoval: true
+                removable: true
+                text: 'Slide to remove'
+            }
+
+            Empty {
+                objectName: "listitem_empty"
+            }
+
+            Standard {
+                objectName: "listitem_without_confirm"
+                confirmRemoval: false
+                removable: true
+                text: "Item without delete confirmation"
+            }
+
+            ListView {
+                anchors { left: parent.left; right: parent.right }
+                height: childrenRect.height
+                model: testModel
+
+                delegate: Standard {
+                    removable: true
+                    confirmRemoval: confirm
+                    onItemRemoved: testModel.remove(index)
+                    text: label
+                    objectName: name
+                }
+            }
+        }        
     }
 }
 """)
@@ -565,6 +597,7 @@ MainView {
         super(SwipeToDeleteTestCase, self).setUp()
         self._item = self.main_view.select_single(
             emulators.Standard, objectName='listitem_standard')
+        self.assertTrue(self._item.exists())
 
     def test_supported_class(self):
         self.assertTrue(issubclass(
@@ -605,12 +638,12 @@ MainView {
     def test_delete_item_moving_right(self):
         self._item.swipe_to_delete('right')
         self._item.confirm_removal()
-        self.assertEqual(self._item.implicitHeight, 0)
+        self.assertFalse(self._item.exists())
 
     def test_delete_item_moving_left(self):
         self._item.swipe_to_delete('left')
         self._item.confirm_removal()
-        self.assertEqual(self._item.implicitHeight, 0)
+        self.assertFalse(self._item.exists())
 
     def test_delete_non_removable_item(self):
         self._item = self.main_view.select_single(
@@ -626,6 +659,22 @@ MainView {
         item = self.main_view.select_single(
             emulators.Standard, objectName='listitem_without_confirm')
         item.swipe_to_delete()
+        self.assertFalse(item.exists())
+
+    def test_delete_item_with_confirmation_that_will_be_destroyed(self):
+        item = self.main_view.select_single(
+            emulators.Standard,
+            objectName='listitem_destroyed_on_remove_with_confirm')
+        item.swipe_to_delete()
+        item.confirm_removal()
+        self.assertFalse(item.exists())
+
+    def test_delete_item_without_confirmation_that_will_be_destroyed(self):
+        item = self.main_view.select_single(
+            emulators.Standard,
+            objectName='listitem_destroyed_on_remove_without_confirm')
+        item.swipe_to_delete()
+        self.assertFalse(item.exists())
 
 
 class PageStackTestCase(tests.QMLStringAppTestCase):

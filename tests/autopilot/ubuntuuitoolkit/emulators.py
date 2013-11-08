@@ -405,6 +405,12 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
 class Empty(UbuntuUIToolkitEmulatorBase):
     """Base class to emulate swipe to delete."""
 
+    def exists(self):
+        try:
+            return self.implicitHeight > 0
+        except dbus.StateNotFoundError:
+            return False
+
     def _get_confirm_button(self):
         return self.select_single(
             'QQuickItem', objectName='confirmRemovalDialog')
@@ -412,7 +418,7 @@ class Empty(UbuntuUIToolkitEmulatorBase):
     def swipe_to_delete(self, direction='right'):
         """Swipe the item in a specific direction. """
         if (self.removable):
-            self._drag_pointing_device_to_delete(self, direction)
+            self._drag_pointing_device_to_delete(direction)
             if self.confirmRemoval:
                 self.waitingConfirmationForRemoval.wait_for(True)
             else:
@@ -436,7 +442,12 @@ class Empty(UbuntuUIToolkitEmulatorBase):
                 .format(direction))
 
     def _wait_until_deleted(self):
-        self.implicitHeight.wait_for(0)
+        try:
+            # The item was hidden.
+            self.implicitHeight.wait_for(0)
+        except dbus.StateNotFoundError:
+            # The item was destroyed.
+            pass
         
     def confirm_removal(self):
         """Comfirm item removal if this was already swiped."""
