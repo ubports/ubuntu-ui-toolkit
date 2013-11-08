@@ -61,6 +61,18 @@ MainView {
         toolbar = self.main_view.get_toolbar()
         self.assertIsInstance(toolbar, emulators.Toolbar)
 
+    def test_open_toolbar(self):
+        with mock.patch.object(emulators.Toolbar, 'open') as mock_open:
+            self.main_view.open_toolbar()
+
+        mock_open.assert_called_once_with()
+
+    def test_close_toolbar(self):
+        with mock.patch.object(emulators.Toolbar, 'close') as mock_close:
+            self.main_view.close_toolbar()
+
+        mock_close.assert_called_once_with()
+
     def test_open_toolbar_returns_the_toolbar(self):
         toolbar = self.main_view.open_toolbar()
         self.assertIsInstance(toolbar, emulators.Toolbar)
@@ -186,6 +198,14 @@ MainView {
             'unexisting')
         self.assertEqual(
             error.message, 'Button with objectName "unexisting" not found.')
+
+    def test_click_button_on_closed_toolbar(self):
+        error = self.assertRaises(
+            emulators.ToolkitEmulatorException, self.toolbar.click_button,
+            'buttonName')
+        self.assertEqual(
+            error.message,
+            'Toolbar must be opened before calling click_button().')
 
 
 class TabsTestCase(tests.QMLStringAppTestCase):
