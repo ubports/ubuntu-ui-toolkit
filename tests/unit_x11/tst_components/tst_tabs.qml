@@ -184,7 +184,7 @@ Item {
             tabs.tabBar.selectionMode = true;
             compare(tabs.tabBar.selectionMode, true, "Tab bar can be put into selection mode");
             mouseClick(centerRect, units.gu(1), units.gu(1), Qt.LeftButton);
-            compare(tabs.tabBar.selectionMode, false, "Tab bar deactivated by interactiong with the page contents");
+            compare(tabs.tabBar.selectionMode, false, "Tab bar deactivated by interacting with the page contents");
         }
     }
 }
