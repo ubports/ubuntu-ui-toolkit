@@ -588,7 +588,7 @@ MainView {
                     objectName: name
                 }
             }
-        }        
+        }
     }
 }
 """)

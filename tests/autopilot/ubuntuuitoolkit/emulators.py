@@ -431,7 +431,7 @@ class Empty(UbuntuUIToolkitEmulatorBase):
         x, y, w, h = self.globalRect
         tx = x + (w / 8)
         ty = y + (h / 2)
- 
+
         if (direction == 'right'):
             self.pointing_device.drag(tx, ty, w, ty)
         elif (direction == 'left'):
@@ -448,7 +448,7 @@ class Empty(UbuntuUIToolkitEmulatorBase):
         except dbus.StateNotFoundError:
             # The item was destroyed.
             pass
-        
+
     def confirm_removal(self):
         """Comfirm item removal if this was already swiped."""
         if (self.waitingConfirmationForRemoval):
