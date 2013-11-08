@@ -27,6 +27,7 @@ Item {
         width: units.gu(50)
         height: units.gu(80)
         id: mainView
+
         Page {
             id: page
             title: "test page"
@@ -40,6 +41,15 @@ Item {
                     text: "action1"
                 }
             }
+        }
+
+        ToolbarItems {
+            id: lockedTools
+            ToolbarButton {
+                text: "locked"
+            }
+            locked: true
+            opened: true
         }
     }
 
@@ -92,6 +102,15 @@ Item {
             compare(toolbarItems.opened, true, "opening the toolbar updates toolbarItems.opened");
             toolbarItems.opened = false;
             compare(mainView.__propagated.toolbar.opened, false, "setting toolbarActions.opened to false closes the toolbar");
+        }
+
+        function test_dont_hide_locked_toolbar_bug1248759() {
+            page.tools = lockedTools;
+            compare(mainView.__propagated.toolbar.tools.locked, true, "Setting locked tools locks the toolbar");
+            wait(mainView.__propagated.toolbar.hideTimeout + 500);
+            compare(mainView.__propagated.toolbar.opened, true, "Don't auto-hide locked toolbar after timeout");
+            // revert original tools for other tests:
+            page.tools = toolbarItems;
         }
     }
 }
