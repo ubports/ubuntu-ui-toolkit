@@ -746,4 +746,3 @@ MainView {
         self.composer_sheet.cancel()
         self.assertEqual(self.label.text, 'Cancel selected.')
         self._assert_composer_sheet_is_closed()
-

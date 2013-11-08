@@ -480,12 +480,10 @@ class ComposerSheet(UbuntuUIToolkitEmulatorBase):
         """Confirm the composer sheet."""
         button = self.select_single('Button', objectName='confirmButton')
         self.pointing_device.click_object(button)
-        # TODO wait for the composer sheet to be destroyed.
-        # See bug https://bugs.launchpad.net/autopilot/+bug/1248782
+        self.wait_until_destroyed()
 
     def cancel(self):
         """Cancel the composer sheet."""
         button = self.select_single('Button', objectName='cancelButton')
         self.pointing_device.click_object(button)
-        # TODO wait for the composer sheet to be destroyed.
-        # See bug https://bugs.launchpad.net/autopilot/+bug/1248782
+        self.wait_until_destroyed()
