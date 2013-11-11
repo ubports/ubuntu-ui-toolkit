@@ -45,6 +45,8 @@ Picker {
     delegate: PickerDelegate {
         Label {
             text: item.model.text(picker.date, modelData, format);
+            color: highlighted ? "red" : Theme.palette.normal.backgroundText
+            scale: highlighted ? 1.3 : 1
             anchors{
                 verticalCenter: parent.verticalCenter
                 left: parent.left

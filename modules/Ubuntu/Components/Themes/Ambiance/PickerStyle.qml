@@ -16,25 +16,26 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1
 
-Rectangle {
+Item {
     id: control
     // style properties
     property color frameColor: UbuntuColors.warmGrey
     property real frameWidth: 1
-    property color backgroundColor: "#00000000"
-    property bool overlay: true
-    property color overlayColor: UbuntuColors.warmGrey
+    property real transparency: 0.1
 
     // private properties
     property bool completed: false
 
-    border {
-        width: frameWidth
-        color: frameColor
-    }
-    color: backgroundColor
     anchors.fill: parent
+
+    // background
+    Rectangle {
+        anchors.fill: parent
+        color: "#000000"
+        opacity: transparency
+    }
 
     function modelSize() {
         return loader.item.model.hasOwnProperty("count") ? loader.item.model.count : loader.item.model.length;
@@ -55,8 +56,15 @@ Rectangle {
 
     Component {
         id: highlightComponent
-        Item {
-            width: parent ? parent.width : 0
+        Rectangle {
+            color: "white"
+            ThinDivider {
+                anchors.top: parent.top
+            }
+            ThinDivider {
+                anchors.top: parent.bottom
+            }
+            width: control.width
             height: (parent && parent.currentItem) ? parent.currentItem.height : units.gu(4);
         }
     }
@@ -120,7 +128,7 @@ Rectangle {
         asynchronous: false
         anchors {
             fill: parent
-            margins: units.gu(0.2)
+//            margins: units.gu(0.2)
         }
         sourceComponent: (styledItem.circular) ? wrapAround : linear
 
@@ -163,33 +171,5 @@ Rectangle {
                 moveToIndex(styledItem.selectedIndex);
             }
         }
-
-        // overlay
-        Rectangle {
-            visible: control.overlay
-            gradient: Gradient {
-                GradientStop {
-                    position: 0
-                    color: control.overlayColor
-                }
-
-                GradientStop {
-                    position: 0.40
-                    color: "#ffffff"
-                }
-
-                GradientStop {
-                    position: 0.63
-                    color: "#ffffff"
-                }
-
-                GradientStop {
-                    position: 1
-                    color: control.overlayColor
-                }
-            }
-            anchors.fill: parent
-        }
     }
-
 }

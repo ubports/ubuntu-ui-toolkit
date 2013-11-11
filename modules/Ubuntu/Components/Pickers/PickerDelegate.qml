@@ -30,6 +30,13 @@ import "../" 0.1
 AbstractButton {
     id: pickerDelegate
 
+    /*!
+      \qmlproperty bool highlighted
+      \readonly
+      The property notifies whether the current item is the highlighted one or not.
+      */
+    readonly property alias highlighted: internal.highlighted
+
     implicitHeight: units.gu(4)
     implicitWidth: parent.width
 
@@ -42,10 +49,23 @@ AbstractButton {
 
     style: Theme.createStyleComponent("PickerDelegateStyle.qml", pickerDelegate)
 
+    // get the content into this component
+    /*! \internal */
+    default property alias content: body.data
+    Item {
+        id: body
+        anchors {
+            fill: parent
+            margins: units.gu(0.2)
+        }
+    }
+
     QtObject {
         id: internal
         property bool inListView: QuickUtils.className(pickerDelegate.parent) !== "QQuickPathView"
         property Item tumblerItem: !inListView ? pickerDelegate.parent : pickerDelegate.parent.parent
         property Item tumbler: tumblerItem ? tumblerItem.tumbler : null
+
+        property bool highlighted: tumblerItem.currentIndex === index;
     }
 }
