@@ -248,7 +248,7 @@ PageTreeNode {
                 bottom: parent.bottom
             }
             // only clip when necessary
-            clip: headerItem.visible && headerItem.bottomY > 0 && activePage && activePage.flickable
+            clip: headerItem.bottomY > 0 && activePage && activePage.flickable
                   && -activePage.flickable.contentY < headerItem.bottomY
 
             property Page activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
