@@ -66,7 +66,10 @@ Panel {
             if (tools && tools.hasOwnProperty("opened")) {
                 tools.opened = toolbar.opened;
             }
-            hideTimer.restart();
+
+            if (!toolbar.locked) {
+                hideTimer.restart();
+            }
         } else { // no tools
             locked = true;
             toolbar.close();
@@ -80,7 +83,11 @@ Panel {
         id: hideTimer
         interval: toolbar.hideTimeout
         running: toolbar.opened && !toolbar.locked
-        onTriggered: toolbar.close()
+        onTriggered: {
+            if (!toolbar.locked) {
+                toolbar.close();
+            }
+        }
     }
 
     onOpenedChanged: {
