@@ -30,6 +30,7 @@
 #include <QtCore/QThread>
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
+#include <QCryptographicHash>
 
 #include "ucapplication.h"
 #include "ucunits.h"
@@ -124,6 +125,33 @@ private Q_SLOTS:
             QProcessEnvironment::systemEnvironment().value("HOME") + "/.cache"));
         QString expectedCacheFolder(xdgCacheHome + "/" + appName);
         QCOMPARE(cacheFolder, expectedCacheFolder);
+    }
+
+    void testLocalStorage() {
+        QQuickItem *root = loadTest("LocalStorage.qml");
+        QVERIFY(root);
+        QQuickItem *mainView = root;
+        QString applicationName(mainView->property("applicationName").toString());
+        QCOMPARE(applicationName, QString("tv.island.pacific"));
+        QCOMPARE(applicationName, QCoreApplication::applicationName());
+        QCOMPARE(QString(""), QCoreApplication::organizationName());
+        QString dataFolder(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
+        QString databaseFolder(dataFolder + "/Databases");
+        QVERIFY(QFile::exists(databaseFolder));
+        QString hash(QCryptographicHash::hash("pacific.island.tv", QCryptographicHash::Md5).toHex());
+        QString database(databaseFolder + "/" + hash + ".sqlite");
+        QVERIFY(QFile::exists(database));
+    }
+
+    void testNoWarnings_bug186065() {
+        QSignalSpy spy(view->engine(), SIGNAL(warnings(QList<QQmlError>)));
+        spy.setParent(view);
+
+        QQuickItem *root = loadTest("AppName.qml"); // An empty MainView would suffice
+        QVERIFY(root);
+
+        // No warnings from QML
+        QCOMPARE(spy.count(), 0);
     }
 };
 

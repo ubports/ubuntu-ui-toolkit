@@ -14,10 +14,16 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import logging
+from distutils import version
+
+import autopilot
 from autopilot import input, platform
 from autopilot.introspection import dbus
 
 _NO_TABS_ERROR = 'The MainView has no Tabs.'
+
+logger = logging.getLogger(__name__)
 
 
 class ToolkitEmulatorException(Exception):
@@ -38,10 +44,24 @@ def get_pointing_device():
     return input.Pointer(device=input_device_class.create())
 
 
+def check_autopilot_version():
+    """Check that the Autopilot installed version matches the one required.
+
+    :raise ToolkitEmulatorException: If the installed Autopilot version does't
+        match the required by the emulators.
+
+    """
+    installed_version = version.LooseVersion(autopilot.version)
+    if installed_version < version.LooseVersion('1.4'):
+        raise ToolkitEmulatorException(
+            'The emulators need Autopilot 1.4 or higher.')
+
+
 class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
     """A base class for all the Ubuntu UI Toolkit emulators."""
 
     def __init__(self, *args):
+        check_autopilot_version()
         super(UbuntuUIToolkitEmulatorBase, self).__init__(*args)
         self.pointing_device = get_pointing_device()
         # TODO it would be nice to have access to the screen keyboard if we are
@@ -53,7 +73,10 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
     def get_header(self):
         """Return the Header emulator of the MainView."""
-        return self.select_single('Header', objectName='MainView_Header')
+        try:
+            return self.select_single('Header', objectName='MainView_Header')
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException('The main view has no header.')
 
     def get_toolbar(self):
         """Return the Toolbar emulator of the MainView."""
@@ -65,45 +88,22 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         :return: The toolbar.
 
         """
-        toolbar = self.get_toolbar()
-        toolbar.animating.wait_for(False)
-        if not toolbar.opened:
-            self._drag_to_open_toolbar()
-            toolbar.opened.wait_for(True)
-            toolbar.animating.wait_for(False)
-
-        return toolbar
-
-    def _drag_to_open_toolbar(self):
-        x, y, _, _ = self.globalRect
-        line_x = x + self.width * 0.50
-        start_y = y + self.height - 1
-        stop_y = y + self.height * 0.95
-
-        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+        return self.get_toolbar().open()
 
     def close_toolbar(self):
         """Close the toolbar if it's opened."""
-        toolbar = self.get_toolbar()
-        toolbar.animating.wait_for(False)
-        if toolbar.opened:
-            self._drag_to_close_toolbar()
-            toolbar.opened.wait_for(False)
-            toolbar.animating.wait_for(False)
-
-    def _drag_to_close_toolbar(self):
-        x, y, _, _ = self.globalRect
-        line_x = x + self.width * 0.50
-        start_y = y + self.height * 0.95
-        stop_y = y + self.height - 1
-
-        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+        self.get_toolbar().close()
 
     def get_tabs(self):
-        """Return the Tabs emulator of the MainView."""
-        tabs = self.select_single(Tabs)
-        assert tabs is not None, _NO_TABS_ERROR
-        return tabs
+        """Return the Tabs emulator of the MainView.
+
+        :raise ToolkitEmulatorException: If the main view has no tabs.
+
+        """
+        try:
+            return self.select_single(Tabs)
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException(_NO_TABS_ERROR)
 
     def switch_to_next_tab(self):
         """Open the next tab.
@@ -111,6 +111,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         :return: The newly opened tab.
 
         """
+        logger.debug('Switch to next tab.')
         self.get_header().switch_to_next_tab()
         current_tab = self.get_tabs().get_current_tab()
         current_tab.visible.wait_for(True)
@@ -121,15 +122,19 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
         :parameter index: The index of the tab to open.
         :return: The newly opened tab.
+        :raise ToolkitEmulatorException: If the tab index is out of range.
 
         """
+        logger.debug('Switch to tab with index {0}.'.format(index))
         tabs = self.get_tabs()
         number_of_tabs = tabs.get_number_of_tabs()
         if index >= number_of_tabs:
-            raise IndexError('Tab index out of range.')
+            raise ToolkitEmulatorException('Tab index out of range.')
         current_tab = tabs.get_current_tab()
         number_of_switches = 0
         while not tabs.selectedTabIndex == index:
+            logger.debug(
+                'Current tab index: {0}.'.format(tabs.selectedTabIndex))
             if number_of_switches >= number_of_tabs - 1:
                 # This prevents a loop. But if this error is ever raised, it's
                 # likely there's a bug on the emulator or on the QML Tab.
@@ -157,13 +162,15 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
         :parameter object_name: The QML objectName property of the tab.
         :return: The newly opened tab.
+        :raise ToolkitEmulatorException: If there is no tab with that object
+            name.
 
         """
         tabs = self.get_tabs()
         for index, tab in enumerate(tabs.select_many('Tab')):
             if tab.objectName == object_name:
-                return self.switch_to_tab_by_index(index)
-        raise ValueError(
+                return self.switch_to_tab_by_index(tab.index)
+        raise ToolkitEmulatorException(
             'Tab with objectName "{0}" not found.'.format(object_name))
 
     def get_action_selection_popover(self, object_name):
@@ -174,6 +181,11 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         """
         return self.select_single(
             ActionSelectionPopover, objectName=object_name)
+
+    def go_back(self):
+        """Go to the previous page."""
+        toolbar = self.open_toolbar()
+        toolbar.click_back_button()
 
 
 class Header(UbuntuUIToolkitEmulatorBase):
@@ -188,32 +200,94 @@ class Header(UbuntuUIToolkitEmulatorBase):
         return tab_bar_style.animating
 
     def switch_to_next_tab(self):
-        """Open the next tab."""
-        tab_bar = self.select_single(TabBar)
-        assert tab_bar is not None, _NO_TABS_ERROR
-        tab_bar.switch_to_next_tab()
+        """Open the next tab.
 
-        # Sleep while the animation finishes.
+        :raise ToolkitEmulatorException: If the main view has no tabs.
+
+        """
+        try:
+            tab_bar = self.select_single(TabBar)
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException(_NO_TABS_ERROR)
+        tab_bar.switch_to_next_tab()
         self._get_animating().wait_for(False)
 
 
 class Toolbar(UbuntuUIToolkitEmulatorBase):
     """Toolbar Autopilot emulator."""
 
+    def open(self):
+        """Open the toolbar if it's not already opened.
+
+        :return: The toolbar.
+
+        """
+        self.animating.wait_for(False)
+        if not self.opened:
+            self._drag_to_open()
+            self.opened.wait_for(True)
+            self.animating.wait_for(False)
+
+        return self
+
+    def _drag_to_open(self):
+        x, y, _, _ = self.globalRect
+        line_x = x + self.width * 0.50
+        start_y = y + self.height - 1
+        stop_y = y
+
+        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+
+    def close(self):
+        """Close the toolbar if it's opened."""
+        self.animating.wait_for(False)
+        if self.opened:
+            self._drag_to_close()
+            self.opened.wait_for(False)
+            self.animating.wait_for(False)
+
+    def _drag_to_close(self):
+        x, y, _, _ = self.globalRect
+        line_x = x + self.width * 0.50
+        start_y = y
+        stop_y = y + self.height - 1
+
+        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+
     def click_button(self, object_name):
         """Click a button of the toolbar.
 
-        :param object_name: The QML objectName property of the button.
+        The toolbar should be opened before clicking the button, or an
+        exception will be raised. If the toolbar is closed for some reason
+        (e.g., timer finishes) after moving the mouse cursor and before
+        clicking the button, it is re-opened automatically by this function.
+
+        :parameter object_name: The QML objectName property of the button.
+        :raise ToolkitEmulatorException: If there is no button with that object
+            name.
 
         """
-        button = self._get_button(object_name)
-        if button is None:
-            raise ValueError(
+        try:
+            button = self._get_button(object_name)
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException(
                 'Button with objectName "{0}" not found.'.format(object_name))
+        # ensure the toolbar is open
+        if not self.opened:
+            raise ToolkitEmulatorException(
+                'Toolbar must be opened before calling click_button().')
+        self.pointing_device.move_to_object(button)
+        # ensure the toolbar is still open (may have closed due to timeout)
+        self.open()
+        # click the button
         self.pointing_device.click_object(button)
 
     def _get_button(self, object_name):
         return self.select_single('ActionItem', objectName=object_name)
+
+    def click_back_button(self):
+        """Click the back button of the toolbar."""
+        self.click_button('back_toolbar_button')
 
 
 class Tabs(UbuntuUIToolkitEmulatorBase):
@@ -221,11 +295,23 @@ class Tabs(UbuntuUIToolkitEmulatorBase):
 
     def get_current_tab(self):
         """Return the currently selected tab."""
-        return self.select_many('Tab')[self.selectedTabIndex]
+        return self._get_tab(self.selectedTabIndex)
+
+    def _get_tab(self, index):
+        tabs = self._get_tabs()
+        for tab in tabs:
+            if tab.index == index:
+                return tab
+        else:
+            raise ToolkitEmulatorException(
+                'There is no tab with index {0}.'.format(index))
+
+    def _get_tabs(self):
+        return self.select_many('Tab')
 
     def get_number_of_tabs(self):
         """Return the number of tabs."""
-        return len(self.select_many('Tab'))
+        return len(self._get_tabs())
 
 
 class TabBar(UbuntuUIToolkitEmulatorBase):
@@ -233,17 +319,22 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
 
     def switch_to_next_tab(self):
         """Open the next tab."""
-        # Click the tab bar to switch to selection mode.
-        self.pointing_device.click_object(self)
-        if not self.selectionMode:
-            # in case someone stole the click, like the open toolbar
-            self.pointing_device.click_object(self)
+        self._activate_tab_bar()
+        logger.debug('Click the next tab bar button.')
         self.pointing_device.click_object(self._get_next_tab_button())
+
+    def _activate_tab_bar(self):
+        if self.selectionMode:
+            logger.debug('Already in selection mode.')
+        else:
+            # Click the tab bar to switch to selection mode.
+            logger.debug('Click the tab bar to enable selection mode.')
+            self.pointing_device.click_object(self)
 
     def _get_next_tab_button(self):
         current_index = self._get_selected_button_index()
         next_index = (current_index + 1) % self._get_number_of_tab_buttons()
-        return self._get_tab_buttons()[next_index]
+        return self._get_tab_button(next_index)
 
     def _get_selected_button_index(self):
         return self.select_single('QQuickPathView').selectedButtonIndex
@@ -253,6 +344,15 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
 
     def _get_tab_buttons(self):
         return self.select_many('AbstractButton')
+
+    def _get_tab_button(self, index):
+        buttons = self._get_tab_buttons()
+        for button in buttons:
+            if button.buttonIndex == index:
+                return button
+        else:
+            raise ToolkitEmulatorException(
+                'There is no tab button with index {0}.'.format(index))
 
 
 class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
@@ -267,12 +367,14 @@ class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
         --elopio - 2013-07-25
 
         :parameter text: The text of the button.
+        :raise ToolkitEmulatorException: If the popover is not open.
 
         """
-        assert self.visible, 'The popover is not open.'
+        if not self.visible:
+            raise ToolkitEmulatorException('The popover is not open.')
         button = self._get_button(text)
         if button is None:
-            raise ValueError(
+            raise ToolkitEmulatorException(
                 'Button with text "{0}" not found.'.format(text))
         self.pointing_device.click_object(button)
         if self.autoClose:
@@ -288,14 +390,104 @@ class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
 class CheckBox(UbuntuUIToolkitEmulatorBase):
     """CheckBox Autopilot emulator."""
 
-    def check(self):
-        """Check a CheckBox, if its not already checked."""
-        if not self.checked:
-            self.pointing_device.click_object(self)
-            self.checked.wait_for(True)
+    def check(self, timeout=10):
+        """Check a CheckBox, if its not already checked.
 
-    def uncheck(self):
-        """Uncheck a CheckBox, if its not already unchecked."""
+        :parameter timeout: number of seconds to wait for the CheckBox to be
+            checked. Default is 10.
+
+        """
+        if not self.checked:
+            self.change_state(timeout)
+
+    def uncheck(self, timeout=10):
+        """Uncheck a CheckBox, if its not already unchecked.
+
+        :parameter timeout: number of seconds to wait for the CheckBox to be
+            unchecked. Default is 10.
+
+        """
         if self.checked:
-            self.pointing_device.click_object(self)
-            self.checked.wait_for(False)
+            self.change_state(timeout)
+
+    def change_state(self, timeout=10):
+        """Change the state of a CheckBox.
+
+        If it is checked, it will be unchecked. If it is unchecked, it will be
+        checked.
+
+        :parameter time_out: number of seconds to wait for the CheckBox state
+            to change. Default is 10.
+
+        """
+        original_state = self.checked
+        self.pointing_device.click_object(self)
+        self.checked.wait_for(not original_state, timeout)
+
+
+class Empty(UbuntuUIToolkitEmulatorBase):
+    """Base class to emulate swipe to delete"""
+
+    def _get_confirm_button(self):
+        return self.select_single(
+            'QQuickItem', objectName='confirmRemovalDialog')
+
+    def swipe_to_delete(self, direction='right'):
+        """ Swipe the item in a specific direction """
+        if (self.removable):
+            x, y, w, h = self.globalRect
+            tx = x + (w / 8)
+            ty = y + (h / 2)
+
+            if (direction == 'right'):
+                self.pointing_device.drag(tx, ty, w, ty)
+            elif (direction == 'left'):
+                self.pointing_device.drag(w - (w*0.1), ty, x, ty)
+            else:
+                raise ToolkitEmulatorException(
+                    'Invalid direction "{0}" used on swipe to delete function'
+                    .format(direction))
+
+            self.waitingConfirmationForRemoval.wait_for(True)
+        else:
+            raise ToolkitEmulatorException(
+                'The item "{0}" is not removable'.format(self.objectName))
+
+    def confirm_removal(self):
+        """ Comfirm item removal if this was already swiped """
+        if (self.waitingConfirmationForRemoval):
+            deleteButton = self._get_confirm_button()
+            self.pointing_device.click_object(deleteButton)
+            self.implicitHeight.wait_for(0)
+        else:
+            raise ToolkitEmulatorException(
+                'The item "{0}" is not waiting for removal confirmation'.
+                format(self.objectName))
+
+
+class Base(Empty):
+    pass
+
+
+class Standard(Empty):
+    pass
+
+
+class ItemSelector(Empty):
+    pass
+
+
+class SingleControl(Empty):
+    pass
+
+
+class MultiValue(Base):
+    pass
+
+
+class SingleValue(Base):
+    pass
+
+
+class Subtitled(Base):
+    pass

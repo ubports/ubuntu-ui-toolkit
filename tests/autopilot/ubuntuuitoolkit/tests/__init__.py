@@ -22,7 +22,6 @@ import tempfile
 from autopilot.input import Pointer
 from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
-import subprocess
 
 from ubuntuuitoolkit import base, emulators
 
@@ -80,14 +79,12 @@ MainView {
         self.launch_application()
 
     def launch_application(self):
-        arch = subprocess.check_output(
-            ["dpkg-architecture", "-qDEB_HOST_MULTIARCH"]).strip()
         qml_file_path = self._write_test_qml_file()
         self.addCleanup(os.remove, qml_file_path)
         desktop_file_path = _write_test_desktop_file()
         self.addCleanup(os.remove, desktop_file_path)
         self.app = self.launch_test_application(
-            '/usr/lib/' + arch + '/qt5/bin/qmlscene',
+            base.get_qmlscene_launch_command(),
             '-I' + _get_module_include_path(),
             qml_file_path,
             '--desktop_file_hint={0}'.format(desktop_file_path),
@@ -108,6 +105,12 @@ MainView {
         return self.app.select_single(emulators.MainView)
 
 
+class FlickDirection:
+    """Enum for flick or scroll direction."""
+
+    UP, DOWN, LEFT, RIGHT = range(0, 4)
+
+
 class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
     """Base test case for self tests that launch a QML file."""
 
@@ -120,11 +123,9 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         self.launch_application()
 
     def launch_application(self):
-        arch = subprocess.check_output(
-            ["dpkg-architecture", "-qDEB_HOST_MULTIARCH"]).strip()
         desktop_file_path = self._get_desktop_file_path()
         self.app = self.launch_test_application(
-            '/usr/lib/' + arch + '/qt5/bin/qmlscene',
+            base.get_qmlscene_launch_command(),
             "-I" + _get_module_include_path(),
             self.test_qml_file_path,
             '--desktop_file_hint={0}'.format(desktop_file_path),
@@ -187,6 +188,32 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         self.pointing_device.move_to_object(itemTo)
         self.pointing_device.release()
 
+    def reveal_item_by_flick(self, item, flickable, direction):
+        x1, y1, w1, h1 = item.globalRect
+        x2, y2, w2, h2 = flickable.globalRect
+        if direction is FlickDirection.UP:
+            while y1 + h1 > y2 + h2:
+                self.flick(flickable, direction)
+                x1, y1, w1, h1 = item.globalRect
+        elif direction is FlickDirection.DOWN:
+            while y1 < y2:
+                self.flick(flickable, direction)
+                x1, y1, w1, h1 = item.globalRect
+
+    def flick(self, flickable, direction, delta=40):
+        """This funcito flicks the page from middle to the given direction."""
+        x, y, w, h = flickable.globalRect
+        if direction == FlickDirection.UP:
+            self.pointing_device.drag(x + w / 2, y + h / 2, x + w / 2,
+                                      y + h / 2 - delta)
+            flickable.flicking.wait_for(False)
+        elif direction == FlickDirection.DOWN:
+            self.pointing_device.drag(x + w / 2, y + h / 2, x + w / 2,
+                                      y + h / 2 + delta)
+            flickable.flicking.wait_for(False)
+        else:
+            raise ValueError("Invalid direction or not implementd yet")
+
     def selectItem(self, itemText):
         item = self.getListItem(itemText)
         x1, y1, w1, h1 = item.globalRect
@@ -215,6 +242,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         orientationHelper = self.getOrientationHelper()
         header = orientationHelper.select_many("Header", title=pageTitle)[0]
         self.assertThat(header, Not(Is(None)))
+        self.assertThat(header.visible, Eventually(Equals(True)))
         return header
 
     def getObject(self, objectName):
@@ -243,7 +271,9 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
 
     def tap_clearButton(self, objectName):
         textField = self.getObject(objectName)
-        self.assertThat(textField.hasClearButton, Equals(True))
+        self.assertIsNotNone(textField)
+        self.pointing_device.click_object(textField)
+        self.assertThat(textField.hasClearButton, Eventually(Equals(True)))
         btn = textField.select_single("AbstractButton")
-        self.pointing_device.move_to_object(btn)
-        self.pointing_device.click()
+        self.assertIsNotNone(btn)
+        self.pointing_device.click_object(btn)

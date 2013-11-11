@@ -9,7 +9,6 @@ message(" Project Name: $$PROJECTNAME ")
 message(" Source Code: $$SOURCECODE ")
 message("")
 message(" run 'make pot' to generate the pot file from source code. ")
-message(" run 'make mo' to generate the mo files from po files. ")
 message(" run 'qmake; make install' to install the mo files. ")
 message("")
 
@@ -18,19 +17,16 @@ potfile.target = pot
 potfile.commands = ./update-pot.sh
 QMAKE_EXTRA_TARGETS += potfile
 
-## generate mo files 'make mo'
-mofiles.target = mo
-mofiles.commands = ./generate_mo.sh
-QMAKE_EXTRA_TARGETS += mofiles
-
 ## Installation steps for mo files. 'make install'
-MO_FILES = $$system(ls locale/*/LC_MESSAGES/*.mo)
+MO_FILES = $$system(ls *.po)
 
 install_mo_commands =
-for(mo_file, MO_FILES) {
+for(po_file, MO_FILES) {
+  mo_file = $$replace(po_file,.po,.mo)
+  system(msgfmt $$po_file -o $$mo_file)
   mo_name = $$replace(mo_file,.mo,)
-  mo_targetpath_prefix = $(INSTALL_ROOT)/usr/share
-  mo_target = $${mo_targetpath_prefix}/$${mo_file}
+  mo_targetpath = $(INSTALL_ROOT)/usr/share/locale/$${mo_name}/LC_MESSAGES
+  mo_target = $${mo_targetpath}/ubuntu-ui-toolkit.mo
   !isEmpty(install_mo_commands): install_mo_commands += &&
   install_mo_commands += test -d $$mo_targetpath || mkdir -p $$mo_targetpath
   install_mo_commands += && cp $$mo_file $$mo_target

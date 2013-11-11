@@ -59,7 +59,7 @@ public:
     QString borderSource() const { return borderSource_; }
     void setBorderSource(const QString& borderSource);
     QVariant image() const { return QVariant::fromValue(image_); }
-    void setImage(QVariant image);
+    void setImage(const QVariant& image);
     bool stretched() const { return stretched_; }
     void setStretched(bool stretched);
     HAlignment horizontalAlignment() const { return hAlignment_; }

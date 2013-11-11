@@ -97,11 +97,24 @@ AbstractButton {
 
     /*!
       \preliminary
+      Defines if the item needs confirmation before removing by swiping.
+      \qmlproperty bool confirmRemoval
+     */
+    property alias confirmRemoval: confirmRemovalDialog.visible
+
+    /*!
+      \preliminary
       \qmlproperty string swipingState
       The current swiping state ("SwipingLeft", "SwipingRight", "")
      */
     readonly property alias swipingState: backgroundIndicator.state
 
+    /*!
+      \preliminary
+      \qmlproperty bool waitingConfirmationForRemoval
+      Defines if the item is waiting for the user interaction during the swipe to delete
+     */
+    readonly property alias waitingConfirmationForRemoval: confirmRemovalDialog.waitingForConfirmation
 
     /*!
       \preliminary
@@ -155,6 +168,15 @@ AbstractButton {
      */
     property real __contentsMargins: units.gu(2)
 
+    /*!
+      \preliminary
+      Cancel item romoval
+     */
+    function cancelItemRemoval()
+    {
+        priv.resetDrag()
+    }
+
     width: parent ? parent.width : units.gu(31)
     implicitHeight: priv.removed ? 0 : __height + bottomDividerLine.height
     __mouseArea.drag.axis: Drag.XAxis
@@ -174,7 +196,7 @@ AbstractButton {
         /*! \internal
           Defines the offset limit to consider the item removed
          */
-        readonly property int itemMoveOffset: width * 0.3
+        readonly property int itemMoveOffset: confirmRemoval ?  width * 0.5 : width * 0.3
 
         /*! \internal
           Defines the inital pressed possition
@@ -211,10 +233,14 @@ AbstractButton {
             Resets the item dragging state
          */
         function resetDrag() {
+            confirmRemovalDialog.waitingForConfirmation = false
+            body.x = 0
             pressedPosition = -1
             __mouseArea.drag.target = null
             held = false
             removeItem = false
+            backgroundIndicator.opacity = 0.0
+            backgroundIndicator.visible = false
             backgroundIndicator.state = ""
         }
 
@@ -223,7 +249,9 @@ AbstractButton {
         */
         function commitDrag() {
             if (removeItem) {
-                removeItemAnimation.start()
+                if (!confirmRemoval) {
+                    removeItemAnimation.start()
+                }
             } else {
                 resetDrag()
             }
@@ -244,10 +272,14 @@ AbstractButton {
             } else if (held == true) {
                 held = false
                 removeItem = true
+                var finalX = body.width
+                if (emptyListItem.confirmRemoval) {
+                    finalX = itemMoveOffset
+                }
                 if (body.x > 0) {
-                    body.x = body.width
+                    body.x = finalX
                 } else {
-                    body.x = body.width * -1
+                    body.x = -finalX
                 }
             }
         }
@@ -288,6 +320,7 @@ AbstractButton {
                     }
                     ScriptAction {
                          script: {
+                             confirmRemovalDialog.waitingForConfirmation = true
                              priv.commitDrag()
                         }
                     }
@@ -307,6 +340,7 @@ AbstractButton {
             id: backgroundIndicator
 
             opacity: 0.0
+            visible: false
             anchors {
                 left: parent.left
                 right: parent.right
@@ -314,17 +348,78 @@ AbstractButton {
                 bottom: parent.bottom
             }
 
+            Item {
+                id: confirmRemovalDialog
+                objectName: "confirmRemovalDialog"
+
+                property bool waitingForConfirmation: false
+
+                visible: false
+                width: units.gu(15)
+                x: body.x - width - units.gu(2)
+                anchors {
+                    top: parent.top
+                    bottom: parent.bottom
+                }
+
+                Row {
+                    anchors {
+                        top: parent.top
+                        bottom:  parent.bottom
+                        left: parent.left
+                        right: parent.right
+                        leftMargin: units.gu(2)
+                        rightMargin: units.gu(2)
+                    }
+
+                    spacing: units.gu(2)
+                    Image {
+                        source: "artwork/delete.png"
+                        fillMode: Image.Pad
+                        anchors {
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
+                        width: units.gu(5)
+                    }
+                    Label {
+                        text: i18n.tr("Delete")
+                        verticalAlignment: Text.AlignVCenter
+                        anchors {
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
+                        width: units.gu(7)
+                        fontSize: "medium"
+                    }
+                }
+
+                MouseArea {
+                    visible: confirmRemovalDialog.waitingForConfirmation
+                    anchors.fill: parent
+                    onClicked: removeItemAnimation.start()
+                }
+            }
+
+
             states: [
                 State {
                     name: "SwipingRight"
+
                     AnchorChanges {
                         target: backgroundIndicator
                         anchors.left: parent.left
                         anchors.right: body.left
                     }
+
                     PropertyChanges {
                         target: backgroundIndicator
                         opacity: 1.0
+                    }
+
+                    PropertyChanges {
+                        target: confirmRemovalDialog
+                        x: body.x - confirmRemovalDialog.width - units.gu(2)
                     }
                 },
                 State {
@@ -334,9 +429,15 @@ AbstractButton {
                         anchors.left: body.right
                         anchors.right: parent.right
                     }
+
                     PropertyChanges {
                         target: backgroundIndicator
                         opacity: 1.0
+                    }
+
+                    PropertyChanges {
+                        target: confirmRemovalDialog
+                        x: units.gu(2)
                     }
                 }
             ]
@@ -375,12 +476,17 @@ AbstractButton {
             }
         }
 
+        onClicked: {
+            if (body.x != 0) {
+                priv.resetDrag()
+            }
+        }
+
         onReleased: {
             priv.endDrag();
         }
 
         onCanceled: {
-
             priv.endDrag();
         }
     }

@@ -42,7 +42,7 @@ Item
     property int fillMode
     property int fadeDuration
     readonly property bool running
-    readonly property size sourceSize
+    property size sourceSize
     readonly property int status
 modules/Ubuntu/Components/DraggingArea.qml
 MouseArea
@@ -101,10 +101,14 @@ modules/Ubuntu/Components/OptionSelector.qml
 ListItem.Empty
     property var model
     property bool expanded
+    property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
+    readonly property bool currentlyExpanded
+    readonly property real itemHeight
     signal delegateClicked(int index)
+    signal expansionCompleted()
 modules/Ubuntu/Components/OptionSelectorDelegate.qml
 ListItem.Standard
     property string text
@@ -164,6 +168,7 @@ Item
     property real hintSize
     property real triggerSize
     readonly property bool animating
+    property bool __closeOnContentsClicks
 modules/Ubuntu/Components/ProgressBar.qml
 AnimatedItem
     property bool indeterminate
@@ -197,6 +202,8 @@ PageTreeNode
     property string title
     property url iconSource
     property Item page
+    readonly property int index
+    property internal __protected
 modules/Ubuntu/Components/TabBar.qml
 StyledItem
     property Item tabsItem
@@ -281,7 +288,7 @@ StyledItem
     property var popover
     function openPopover()
 modules/Ubuntu/Components/TextField.qml
-StyledItem
+ActionItem
     property bool highlighted
     property string placeholderText
     property bool hasClearButton
@@ -351,6 +358,7 @@ ActionSelectionPopover
 modules/Ubuntu/Components/Toolbar.qml
 Panel
     property Item tools
+    property int hideTimeout
 modules/Ubuntu/Components/ToolbarButton.qml
 ActionItem
 modules/Ubuntu/Components/ToolbarItems.qml
@@ -401,7 +409,9 @@ AbstractButton
     property bool selected
     property bool highlightWhenPressed
     property bool removable
+    property bool confirmRemoval
     readonly property string swipingState
+    readonly property bool waitingConfirmationForRemoval
     signal itemRemoved
     property int __height
     property bool showDivider
@@ -410,6 +420,7 @@ AbstractButton
     property list<Item> backgroundIndicator
     property ThinDivider divider
     property real __contentsMargins
+    function cancelItemRemoval()
 modules/Ubuntu/Components/ListItems/Header.qml
 Item
     property string text
@@ -430,10 +441,14 @@ modules/Ubuntu/Components/ListItems/ItemSelector.qml
 ListItem.Empty
     property var model
     property bool expanded
+    property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
+    readonly property bool currentlyExpanded
+    readonly property real itemHeight
     signal delegateClicked(int index)
+    signal expansionCompleted()
 modules/Ubuntu/Components/ListItems/LabelVisual.qml
 Label
     property bool selected
@@ -601,6 +616,7 @@ plugins.qmltypes
     prototype: "QQuickMouseArea"
     exports: ["InverseMouseArea 0.1"]
     Property { name: "sensingArea"; type: "QQuickItem"; isPointer: true }
+    Property { name: "topmostItem"; type: "bool" }
     Method {
     name: "contains"
     Parameter { name: "point"; type: "QPointF" }
@@ -735,6 +751,12 @@ plugins.qmltypes
     Method {
     name: "gu"
     Parameter { name: "value"; type: "float" }
+    name: "UCUriHandler"
+    prototype: "QObject"
+    exports: ["UriHandler 0.1"]
+    Signal {
+    name: "opened"
+    Parameter { name: "uris"; type: "QStringList" }
     name: "UbuntuI18n"
     prototype: "QObject"
     exports: ["i18n 0.1"]

@@ -44,7 +44,11 @@ public:
     QString applicationName();
 
     // setter
-    void setApplicationName(QString applicationName);
+    void setContext(QQmlContext* context);
+    void setApplicationName(const QString& applicationName);
+
+private:
+    QQmlContext* m_context;
 
 Q_SIGNALS:
     void applicationNameChanged();

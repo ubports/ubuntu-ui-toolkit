@@ -18,3 +18,4 @@ usr/lib/*/qt5/qml/Ubuntu/Components/Pickers/*.js
 usr/lib/*/qt5/qml/Ubuntu/Components/Pickers/qmldir
 usr/lib/*/qt5/qml/Ubuntu/Components/Colors/*.qml
 usr/lib/*/qt5/qml/Ubuntu/Test
+usr/share/locale/*/LC_MESSAGES/ubuntu-ui-toolkit.mo

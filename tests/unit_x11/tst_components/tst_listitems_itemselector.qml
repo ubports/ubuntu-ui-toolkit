@@ -35,7 +35,6 @@ Item {
             text: "TEST"
             delegate: selectorDelegate
             model: customModel
-            expanded: true
         }
 
         OptionSelectorDelegate {
@@ -67,12 +66,6 @@ Item {
         ListElement { name: "Name 4"; description: "Description 4"; image: "../../resources/optionselector/test.png" }
     }
 
-    SignalSpy {
-        id: clickedSignal
-        target: selector
-        signalName: "delegateClicked"
-    }
-
     UbuntuTestCase {
          name: "ItemSelectorAPI"
          when: windowShown
@@ -81,11 +74,11 @@ Item {
              var listContainer = findChild(selector, "listContainer");
 
              selector.expanded = false;
-             compare(listContainer.isExpanded, false, "isExpanded should be true if list is an expanded one");
+             compare(listContainer.currentlyExpanded, false, "expanded should be true if list is an expanded one");
              compare(listContainer.state, "collapsed", "state should be collapsed");
 
              selector.expanded = true;
-             compare(listContainer.isExpanded, true, "isExpanded should be false if list is an expanded one");
+             compare(listContainer.currentlyExpanded, true, "expanded should be false if list is an expanded one");
              compare(listContainer.state, "expanded", "state should be expanded");
          }
 
@@ -114,13 +107,6 @@ Item {
          function test_image_constraint() {
             var image = findChild(testDelegate, "icon");
             compare(image.height, testDelegate.height);
-         }
-
-         function test_signal() {
-             mouseMove(selector, 100, 100);
-             mouseClick(selector, 100, 100, Qt.LeftButton);
-             wait(100)
-             compare(clickedSignal.count, 1, "Clicked not emitted.");
          }
     }
 }

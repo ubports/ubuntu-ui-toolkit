@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import QtFeedback 5.0
 
 /*!
     \qmlabstract AbstractButton
@@ -26,6 +27,7 @@ import QtQuick 2.0
 
     This class defines the behavior of the button: it defines the MouseArea
     and the states.
+    All components deriving from this class support haptic feedback out of the box.
 */
 ActionItem {
     id: button
@@ -80,6 +82,16 @@ ActionItem {
      */
     property alias __mouseArea: mouseArea
 
+    HapticsEffect {
+        id: pressEffect
+        attackIntensity: 0.0
+        attackTime: 250
+        intensity: 1.0
+        duration: 100
+        fadeTime: 250
+        fadeIntensity: 0.0
+    }
+
     MouseArea {
         id: mouseArea
         anchors.fill: parent
@@ -89,6 +101,7 @@ ActionItem {
 
         onClicked: {
             if (button.__acceptEvents) {
+                pressEffect.start()
                 button.clicked()
             }
         }
