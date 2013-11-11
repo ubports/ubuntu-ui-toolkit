@@ -60,33 +60,4 @@ TestCase {
         mainView.actions = [];
         compare(mainView.actions.length, 0, "Page action list can be cleared");
     }
-
-    MainView {
-        id: mainViewHeader
-        width: 400
-        height: 600
-
-        Page {
-            title: "listview"
-
-            ListView {
-                anchors.fill: parent
-                id: listView
-
-                header: Rectangle {
-                    color: "red"
-                    width: parent.width
-                    height: units.gu(5)
-                }
-                model: 500
-                delegate: Label {
-                    text: "number " +index
-                }
-            }
-        }
-    }
-    function test_ListViewHeaderAlignment_bug1202277() {
-        compare(listView.contentY, -listView.headerItem.height - mainViewHeader.__propagated.header.height,
-                "ListView header is aligned with the MainView header");
-    }
 }
