@@ -1,3 +1,13 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20131108.4-0ubuntu1) trusty; urgency=low
+
+  [ Robert Bruce Park ]
+  * (no message)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 830
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 08 Nov 2013 23:11:13 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20131108.3-0ubuntu1) trusty; urgency=low
 
   [ Leo Arias ]
