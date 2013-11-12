@@ -99,7 +99,7 @@ Item {
                         top: parent.top
                         bottom: parent.bottom
                     }
-                    width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
+                    width: text.paintedWidth + text.anchors.leftMargin + text.anchors.rightMargin
 
                     // When the tab bar is in selection mode, show both buttons corresponing to
                     // the tab index as selected, but when it is not in selection mode only one
@@ -257,7 +257,7 @@ Item {
 
         // Select the closest of the two buttons that represent the given tab index
         function selectButton(tabIndex) {
-            if (!tabsModel || (tabsModel && (tabIndex < 0 || tabIndex >= tabsModel.count))) return;
+            if (!tabsModel || tabIndex < 0 || tabIndex >= tabsModel.count) return;
             if (buttonView.buttonRow1 && buttonView.buttonRow2) {
                 var b1 = buttonView.buttonRow1.children[tabIndex];
                 var b2 = buttonView.buttonRow2.children[tabIndex];
