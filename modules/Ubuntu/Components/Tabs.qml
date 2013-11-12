@@ -398,7 +398,9 @@ PageTreeNode {
         }
 
         function sync() {
-            tabBar.sync();
+            if (tabBar && tabBar.__styleInstance && tabBar.__styleInstance.hasOwnProperty("sync")) {
+                tabBar.__styleInstance.sync();
+            }
             if (tabs.active && internal.header) internal.header.show();
             // deprecated, however use it till we remove it completely
             tabs.modelChanged();

@@ -84,20 +84,6 @@ StyledItem {
       */
     property bool animate: true
 
-    /*!
-      The function should be used to synchronize the TabBar visuals when the
-      attached \l model is updated by having an item added, moved or removed from
-      it. In these cases the selected item must be updated manually as the model
-      content update is not directly notified by the change signal of the \l model
-      property. Style components should also have a \a sync() function implemented
-      to react on content syncing.
-      */
-    function sync() {
-        if (__styleInstance && __styleInstance.sync) {
-            __styleInstance.sync();
-        }
-    }
-
     implicitHeight: units.gu(7.5)
 
     style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
