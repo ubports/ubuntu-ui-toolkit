@@ -16,26 +16,21 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1
 
 Item {
     id: control
     // style properties
     property color frameColor: UbuntuColors.warmGrey
     property real frameWidth: 1
-    property real transparency: 0.1
+    property color backgroundColor: "#FFFFFFFF"
+    property real backgroundOpacity: 1.0
+    property bool overlay: true
+    property color overlayColor: UbuntuColors.warmGrey
+    property real tumblerMargins: units.gu(0.2)
+    property Component highlight: highlightComponent
 
     // private properties
     property bool completed: false
-
-    anchors.fill: parent
-
-    // background
-    Rectangle {
-        anchors.fill: parent
-        color: "#000000"
-        opacity: transparency
-    }
 
     function modelSize() {
         return loader.item.model.hasOwnProperty("count") ? loader.item.model.count : loader.item.model.length;
@@ -54,17 +49,23 @@ Item {
         }
     }
 
+    // background
+    Rectangle {
+        border {
+            width: frameWidth
+            color: frameColor
+        }
+        color: backgroundColor
+        opacity: backgroundOpacity
+        anchors.fill: parent
+
+    }
+
+    // default highlight
     Component {
         id: highlightComponent
-        Rectangle {
-            color: "white"
-            ThinDivider {
-                anchors.top: parent.top
-            }
-            ThinDivider {
-                anchors.top: parent.bottom
-            }
-            width: control.width
+        Item {
+            width: parent ? parent.width : 0
             height: (parent && parent.currentItem) ? parent.currentItem.height : units.gu(4);
         }
     }
@@ -80,7 +81,7 @@ Item {
 
             model: styledItem.model
             delegate: styledItem.delegate
-            highlight: highlightComponent
+            highlight: control.highlight
             // put the currentItem to the center of the view
             preferredHighlightBegin: 0.5
             preferredHighlightEnd: 0.5
@@ -114,7 +115,7 @@ Item {
             model: styledItem.model
             delegate: styledItem.delegate
 
-            highlight: highlightComponent
+            highlight: control.highlight
             preferredHighlightBegin: highlightItem ? (height - highlightItem.height) / 2 : 0
             preferredHighlightEnd: highlightItem ? (preferredHighlightBegin + highlightItem.height) : 0
             highlightRangeMode: ListView.StrictlyEnforceRange
@@ -126,10 +127,7 @@ Item {
     Loader {
         id: loader
         asynchronous: false
-        anchors {
-            fill: parent
-//            margins: units.gu(0.2)
-        }
+        anchors.fill: parent
         sourceComponent: (styledItem.circular) ? wrapAround : linear
 
         // to avoid binding loop
@@ -171,5 +169,38 @@ Item {
                 moveToIndex(styledItem.selectedIndex);
             }
         }
+
+        // overlay
+        Rectangle {
+            visible: control.overlay
+            // disable rendering when not visible
+            opacity: visible ? 1.0 : 0.0
+            gradient: Gradient {
+                GradientStop {
+                    position: 0
+                    color: control.overlayColor
+                }
+
+                GradientStop {
+                    position: 0.40
+                    color: "#ffffff"
+                }
+
+                GradientStop {
+                    position: 0.63
+                    color: "#ffffff"
+                }
+
+                GradientStop {
+                    position: 1
+                    color: control.overlayColor
+                }
+            }
+            anchors {
+                fill: parent
+                margins: tumblerMargins
+            }
+        }
     }
+
 }

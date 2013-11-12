@@ -53,7 +53,6 @@ ListModel {
             if (to < 0 || to > 11) to = 11;
             from = (to < 11) ? minimum.getMonth() : 0;
             // fill the model
-            print(modelDate);
             for (var i = from; i <= from + to; i++) {
                 modelDate.setMonth(i);
                 append({"month": modelDate.getMonth()});
@@ -68,7 +67,6 @@ ListModel {
     function dateFromModel(date, index) {
         if (mode === "Week") {
             // update date to the first day of the week
-            print(index + 1);
             return date.midDateOfWeek(index + 1);
         } else {
             var newDate = new Date(date);

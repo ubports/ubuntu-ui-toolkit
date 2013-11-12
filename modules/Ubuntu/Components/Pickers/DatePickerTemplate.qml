@@ -39,19 +39,22 @@ Picker {
     property string format: limits ? limits.format(width) : "long"
     property var limits: null
 
+    style: Theme.createStyleComponent("FlatPickerStyle.qml", item)
+
     enabled: model.count > 1
     live: picker.live
     circular: model.circular
+
     delegate: PickerDelegate {
+        style: Item{}
         Label {
             text: item.model.text(picker.date, modelData, format);
             color: highlighted ? "red" : Theme.palette.normal.backgroundText
-            scale: highlighted ? 1.3 : 1
-            anchors{
-                verticalCenter: parent.verticalCenter
-                left: parent.left
-                leftMargin: units.gu(0.3)
-            }
+            scale: highlighted ? 1.1 : 1
+            smooth: true
+            anchors.fill: parent
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
         }
         Component.onCompleted: {
             if (model && model.hasOwnProperty("autoExtend") && model.autoExtend && (index === (model.count - 1))) {
@@ -59,6 +62,7 @@ Picker {
             }
         }
     }
+
     Binding {
         target: parent
         property: "style"
