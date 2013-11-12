@@ -207,10 +207,13 @@ PageTreeNode
 modules/Ubuntu/Components/TabBar.qml
 StyledItem
     property Item tabsItem
+    onTabsItemChanged
     property ListModel model
     property bool selectionMode
+    property int selectedIndex
     property bool alwaysSelectionMode
     property bool animate
+    function sync()
 modules/Ubuntu/Components/Tabs.qml
 PageTreeNode
     property int selectedTabIndex
