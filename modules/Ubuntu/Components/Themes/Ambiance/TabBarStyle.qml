@@ -99,7 +99,7 @@ Item {
                         top: parent.top
                         bottom: parent.bottom
                     }
-                    width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
+                    width: text.paintedWidth + text.anchors.leftMargin + text.anchors.rightMargin
 
                     // When the tab bar is in selection mode, show both buttons corresponing to
                     // the tab index as selected, but when it is not in selection mode only one
