@@ -690,3 +690,85 @@ MainView {
         self._go_to_page1()
         self.main_view.go_back()
         self.assertEqual(self.header.title, 'Page 0')
+
+
+class OptionSelectorCollapsedTestCase(tests.QMLStringAppTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Column {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        spacing: units.gu(3)
+
+      OptionSelector {
+          objectName: "test_option_selector_collapsed"
+          text: "Collapsed"
+          model: ["Value 1",
+                  "Value 2",
+                  "Value 3",
+                  "Value 4",
+                  "Value 5"]
+      }
+   }
+}
+""")
+
+    def setUp(self):
+        super(OptionSelectorCollapsedTestCase, self).setUp()
+        self.option_selector = self.main_view.select_single(
+            emulators.OptionSelector,
+            objectName="test_option_selector_collapsed")
+
+    def test_get_option_count(self):
+        """get_option_count() must return number of options"""
+        self.assertEqual(self.option_selector.get_option_count(), 5)
+
+    def test_expand(self):
+        """expand() must expand a collapsed option elector"""
+        self.assertFalse(self.option_selector.expanded)
+        self.option_selector.expand()
+        self.assertTrue(self.option_selector.expanded)
+
+    def test_negative_select_text(self):
+        """select_text() must raise a ValueError if text does not exist"""
+        error = self.assertRaises(
+            emulators.ToolkitEmulatorException,
+            lambda: self.option_selector.select_option(
+                "Label",
+                text="this should fail"
+            )
+        )
+        self.assertEqual(
+            error.message,
+            "could not find delegate with options args ('Label',) kwargs"
+            " [('text', 'this should fail')]")
+
+    def test_select_option(self):
+        """select_text() must select the text in the OptionSelector"""
+        self.option_selector.select_option("Label", text="Value 3")
+        self.assertEqual(2, self.option_selector.selectedIndex)
+
+    def test_get_current_selected_text(self):
+        """get_current_selected_text() must return the text selected item"""
+        self.option_selector.select_option("Label", text="Value 2")
+        self.assertEqual(1, self.option_selector.selectedIndex)
+        self.assertEqual(
+            self.option_selector.get_current_selected_text(), "Value 2")
+
+    def test_same_item_2_times(self):
+        """Emulator must be able to select 2 items in a row"""
+        self.option_selector.select_option("Label", text="Value 3")
+        self.assertEqual(
+            self.option_selector.get_current_selected_text(), "Value 3")
+        self.assertEqual(2, self.option_selector.selectedIndex)
+        self.option_selector.select_option("Label", text="Value 3")
+        self.assertEqual(
+            self.option_selector.get_current_selected_text(), "Value 3")
+        self.assertEqual(2, self.option_selector.selectedIndex)
