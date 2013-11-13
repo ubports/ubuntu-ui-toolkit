@@ -31,9 +31,9 @@ class TextInputTests(GalleryTestCase):
         textfield_standard = self.getObject('textfield_standard')
         self.pointing_device.click_object(textfield_standard)
         self.assertThat(textfield_standard.focus, Eventually(Equals(True)))
-        self.type_string(u'Hello World')
+        self.type_string('Hello World')
         self.assertThat(textfield_standard.text,
-                        Eventually(Equals(u'Hello World')))
+                        Eventually(Equals('Hello World')))
 
     def test_textfield_password(self):
         item = "Text Field"
@@ -46,9 +46,9 @@ class TextInputTests(GalleryTestCase):
         self.tap_clearButton('textfield_password')
         self.assertThat(textfield_password.text, Eventually(Equals('')))
 
-        self.type_string(u'abcdefgh123')
+        self.type_string('abcdefgh123')
         self.assertThat(textfield_password.text,
-                        Eventually(Equals(u'abcdefgh123')))
+                        Eventually(Equals('abcdefgh123')))
 
     def test_textfield_numbers(self):
         item = "Text Field"
