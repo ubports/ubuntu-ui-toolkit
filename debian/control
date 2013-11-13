@@ -28,6 +28,7 @@ Build-Depends: debhelper (>= 9.0.0),
          qtsvg5-doc-html,
          qtscript5-doc-html,
          qtmultimedia5-doc-html,
+         unity-action-doc,
                devscripts,
                libqt5organizer5,
                qtpim5-dev,
@@ -89,6 +90,7 @@ Depends: ${misc:Depends},
          qtsvg5-doc-html,
          qtscript5-doc-html,
          qtmultimedia5-doc-html,
+         unity-action-doc,
 Conflicts: qt-components-ubuntu-doc
 Replaces: qt-components-ubuntu-doc
 Provides: qt-components-ubuntu-doc

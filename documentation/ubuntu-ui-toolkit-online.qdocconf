@@ -9,6 +9,7 @@ indexes = \
     /usr/share/qt5/doc/qtsvg/qtsvg.index \
     /usr/share/qt5/doc/qtscript/qtscript.index \
     /usr/share/qt5/doc/qtmultimedia/qtmultimedia.index \
+    /usr/share/doc/unity-action/qml/unity-action-qml-api.index \
 
 HTML.nobreadcrumbs = "false"
 
