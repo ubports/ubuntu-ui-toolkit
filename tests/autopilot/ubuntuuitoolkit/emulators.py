@@ -430,12 +430,12 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
     """OptionSelector Autopilot emulator"""
 
     def get_option_count(self):
-        """Gets the number of items in the option selector"""
+        """Return the number of items in the option selector"""
         self.list_view = self.select_single("QQuickListView")
         return self.list_view.count
 
     def get_current_index(self):
-        """Gets the current selected index of the QQuickListView"""
+        """Return the current selected index of the QQuickListView"""
         self.list_view = self.select_single("QQuickListView")
         return self.list_view.currentIndex
 
