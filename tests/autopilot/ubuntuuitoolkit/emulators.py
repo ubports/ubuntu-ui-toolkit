@@ -468,7 +468,7 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
         )
 
     def get_current_selected_text(self):
-        """gets the text of the currently selected item"""
+        """Return the text of the currently selected item"""
         option_selector_delegate = self.select_single(
             'OptionSelectorDelegate', focus='True')
         current_label = option_selector_delegate.select_single(
@@ -476,9 +476,7 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
         return current_label.text
 
     def select_option(self, *args, **kwargs):
-        """Select delegate in option selector
-
-        """
+        """Select delegate in option selector"""
         select_object = self._get_delegate(*args, **kwargs)
         self.expand()
         self.pointing_device.click_object(select_object)
