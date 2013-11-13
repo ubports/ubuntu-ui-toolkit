@@ -736,8 +736,9 @@ MainView {
         self.option_selector.expand()
         self.assertTrue(self.option_selector.expanded)
 
-    def test_negative_select_text(self):
-        """select_text() must raise a ValueError if text does not exist"""
+    def test_negative_select_option(self):
+        """select_option() must raise a ToolkitEmulatorException if text
+        does not exist"""
         error = self.assertRaises(
             emulators.ToolkitEmulatorException,
             lambda: self.option_selector.select_option(
@@ -751,7 +752,8 @@ MainView {
             " [('text', 'this should fail')]")
 
     def test_select_option(self):
-        """select_text() must select the text in the OptionSelector"""
+        """select_option() must select the Label with text Value 3 in the
+        OptionSelector"""
         self.option_selector.select_option("Label", text="Value 3")
         self.assertEqual(2, self.option_selector.selectedIndex)
 
