@@ -430,12 +430,12 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
     """OptionSelector Autopilot emulator"""
 
     def get_option_count(self):
-        """Return the number of items in the option selector"""
+        """Gets the number of items in the option selector"""
         self.list_view = self.select_single("QQuickListView")
         return self.list_view.count
 
-    def get_current_index(self):
-        """Return the current selected index of the QQuickListView"""
+    def get_selected_index(self):
+        """Gets the current selected index of the QQuickListView"""
         self.list_view = self.select_single("QQuickListView")
         return self.list_view.currentIndex
 
@@ -444,9 +444,9 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
         #if just collapsed it can think that the item is expanded
         # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1240288
         sleep(1)
-        if not self.alwaysExpanded and not self.expanded:
+        if not self.expanded and not self.currentlyExpanded:
             self.pointing_device.click_object(self)
-            self.expanded.wait_for(True)
+            self.currentlyExpanded.wait_for(True)
             #selecting the same item too quickly after expand
             #causes the wrong item to be selected
             #https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1231939
@@ -454,7 +454,16 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
 
     def _get_delegate(self, *args, **kwargs):
         delegates = self.select_many('OptionSelectorDelegate')
+
+        object_name = kwargs.get('objectName', None)
+
         for delegate in delegates:
+            if (
+                object_name is not None
+                and len(args) == 0
+                and delegate.objectName == object_name
+            ):
+                return delegate
             try:
                 if delegate.select_single(*args, **kwargs):
                     return delegate
@@ -467,8 +476,8 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
             )
         )
 
-    def get_current_selected_text(self):
-        """Return the text of the currently selected item"""
+    def get_selected_text(self):
+        """gets the text of the currently selected item"""
         option_selector_delegate = self.select_single(
             'OptionSelectorDelegate', focus='True')
         current_label = option_selector_delegate.select_single(
@@ -476,7 +485,24 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
         return current_label.text
 
     def select_option(self, *args, **kwargs):
-        """Select delegate in option selector"""
+        """Select delegate in option selector
+
+        Example usage::
+            select_option(objectName="myOptionSelectorDelegate")
+            #selects and optionDelectorDelegate with the objectName
+            #    property equal to myOptionSelectorDelegate
+
+            select_option('Label', text="first value")
+            #selects the optionSelectorDelegate with a child object
+            #    Label with the property equal to "first value"
+
+
+        :parameter args: string used to find object in option selector
+            delegate
+        :parameter kwargs: keywords used to find property(s) of object in
+            option selector
+
+                """
         select_object = self._get_delegate(*args, **kwargs)
         self.expand()
         self.pointing_device.click_object(select_object)

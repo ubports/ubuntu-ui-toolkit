@@ -707,15 +707,31 @@ MainView {
         anchors.right: parent.right
         spacing: units.gu(3)
 
-      OptionSelector {
-          objectName: "test_option_selector_collapsed"
-          text: "Collapsed"
-          model: ["Value 1",
-                  "Value 2",
-                  "Value 3",
-                  "Value 4",
-                  "Value 5"]
-      }
+        Component {
+            id: valueSelectorDelegate
+            OptionSelectorDelegate {
+            text: label
+            objectName: name
+            }
+        }
+
+        ListModel {
+            id: valueModel
+            ListElement { name: "one"; label: "Value 1" }
+            ListElement { name: "two"; label: "Value 2" }
+            ListElement { name: "three"; label: "Value 3" }
+            ListElement { name: "four"; label: "Value 4" }
+            ListElement { name: "five"; label: "Value 5" }
+        }
+
+        OptionSelector {
+            id: valueSelector
+            objectName: "test_option_selector_collapsed"
+            text: "Collapsed"
+            delegate: valueSelectorDelegate
+            model: valueModel
+        }
+
    }
 }
 """)
@@ -732,13 +748,12 @@ MainView {
 
     def test_expand(self):
         """expand() must expand a collapsed option elector"""
-        self.assertFalse(self.option_selector.expanded)
+        self.assertFalse(self.option_selector.currentlyExpanded)
         self.option_selector.expand()
-        self.assertTrue(self.option_selector.expanded)
+        self.assertTrue(self.option_selector.currentlyExpanded)
 
-    def test_negative_select_option(self):
-        """select_option() must raise a ToolkitEmulatorException if text
-        does not exist"""
+    def test_negative_select_text(self):
+        """select_text() must raise a ValueError if text does not exist"""
         error = self.assertRaises(
             emulators.ToolkitEmulatorException,
             lambda: self.option_selector.select_option(
@@ -752,25 +767,24 @@ MainView {
             " [('text', 'this should fail')]")
 
     def test_select_option(self):
-        """select_option() must select the Label with text Value 3 in the
-        OptionSelector"""
-        self.option_selector.select_option("Label", text="Value 3")
+        """select_text() must select the text in the OptionSelector"""
+        self.option_selector.select_option(objectName="three")
         self.assertEqual(2, self.option_selector.selectedIndex)
 
-    def test_get_current_selected_text(self):
-        """get_current_selected_text() must return the text selected item"""
-        self.option_selector.select_option("Label", text="Value 2")
+    def test_get_selected_text(self):
+        """get_selected_text() must return the text selected item"""
+        self.option_selector.select_option(text="Value 2")
         self.assertEqual(1, self.option_selector.selectedIndex)
         self.assertEqual(
-            self.option_selector.get_current_selected_text(), "Value 2")
+            self.option_selector.get_selected_text(), "Value 2")
 
     def test_same_item_2_times(self):
         """Emulator must be able to select 2 items in a row"""
-        self.option_selector.select_option("Label", text="Value 3")
+        self.option_selector.select_option(text="Value 3")
         self.assertEqual(
-            self.option_selector.get_current_selected_text(), "Value 3")
+            self.option_selector.get_selected_text(), "Value 3")
         self.assertEqual(2, self.option_selector.selectedIndex)
-        self.option_selector.select_option("Label", text="Value 3")
+        self.option_selector.select_option(text="Value 3")
         self.assertEqual(
-            self.option_selector.get_current_selected_text(), "Value 3")
+            self.option_selector.get_selected_text(), "Value 3")
         self.assertEqual(2, self.option_selector.selectedIndex)
