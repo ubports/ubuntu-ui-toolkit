@@ -213,7 +213,6 @@ StyledItem
     property int selectedIndex
     property bool alwaysSelectionMode
     property bool animate
-    function sync()
 modules/Ubuntu/Components/Tabs.qml
 PageTreeNode
     property int selectedTabIndex
