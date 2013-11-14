@@ -27,11 +27,12 @@ Item {
     property bool overlay: true
     property color overlayColor: UbuntuColors.warmGrey
     property real tumblerMargins: units.gu(0.2)
+    property real highlightThickness: units.gu(5)
 
     property Component highlight: highlightComponent
     readonly property Item highlightItem: loader.item.highlightItem
     property Component pickerDelegate: (styledItem.circular) ? wrapAround : linear
-    readonly property Item currentItem: loader.item
+    readonly property Item list: loader.item
 
     // private properties
     property bool completed: false
@@ -70,7 +71,7 @@ Item {
         id: highlightComponent
         Item {
             width: parent ? parent.width : 0
-            height: (parent && parent.currentItem) ? parent.currentItem.height : units.gu(4);
+            height: highlightThickness;
         }
     }
 
@@ -80,6 +81,7 @@ Item {
         PathView {
             id: pView
             property Item tumbler: styledItem
+            property real delegateHeight: highlightItem.height
             anchors.fill: parent
             clip: true
 
@@ -90,11 +92,11 @@ Item {
             preferredHighlightBegin: 0.5
             preferredHighlightEnd: 0.5
 
-            pathItemCount: pView.height / highlightItem.height + 1
+            pathItemCount: pView.height / delegateHeight + 1
             snapMode: PathView.SnapToItem
             flickDeceleration: 100
 
-            property int contentHeight: pathItemCount * highlightItem.height
+            property int contentHeight: pathItemCount * delegateHeight
             path: Path {
                 startX: pView.width / 2
                 startY: -(pView.contentHeight - pView.height) / 2

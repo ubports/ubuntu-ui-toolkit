@@ -37,7 +37,7 @@ AbstractButton {
       */
     readonly property alias highlighted: internal.highlighted
 
-    implicitHeight: units.gu(4)
+    implicitHeight: units.gu(5)
     implicitWidth: parent.width
 
     /*! \internal */

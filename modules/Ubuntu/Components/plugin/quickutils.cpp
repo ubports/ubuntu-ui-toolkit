@@ -209,6 +209,7 @@ qreal QuickUtils::modelDelegateHeight(QQmlComponent *delegate, const QVariant &m
  */
 QString QuickUtils::className(QObject *item)
 {
+    if (!item) return QString();
     QString result = item->metaObject()->className();
     return result.left(result.indexOf("_QML"));
 }

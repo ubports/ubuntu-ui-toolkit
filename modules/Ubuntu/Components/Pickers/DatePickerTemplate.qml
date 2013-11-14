@@ -46,11 +46,11 @@ Picker {
     circular: model.circular
 
     delegate: PickerDelegate {
+        property color labelColor: Theme.palette.normal.backgroundText // highlighted ? "red" : Theme.palette.normal.backgroundText
         style: Item{}
         Label {
             text: item.model.text(picker.date, modelData, format);
-//            color: highlighted ? "red" : Theme.palette.normal.backgroundText
-//            scale: highlighted ? 1.1 : 1
+            color: labelColor
             smooth: true
             anchors.fill: parent
             verticalAlignment: Text.AlignVCenter

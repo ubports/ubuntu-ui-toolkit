@@ -45,17 +45,17 @@ ShaderEffect {
     property real targetWidth: 0
     property real targetHeight: 0
 
-    property real radius: 50.0
+    property real radius: 100.0
     property real diffractionIndex: 0.5
 
     // Transform slider values, and bind result to shader uniforms
     property real posX: targetWidth / 2
     property real posY: targetHeight / 2
 
-    fragmentShader: d.fragmentShaderCommon
+    fragmentShader: d.fragmentShader
     QtObject {
         id: d
-        property string fragmentShaderCommon: "
+        property string fragmentShader: "
             #ifdef GL_ES
                 precision mediump float;
             #else

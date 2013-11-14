@@ -25,29 +25,65 @@ PickerStyle {
     backgroundOpacity: 0.2
     overlay: false
 
-    highlight: highlightComponent
-    Component {
-        id: highlightComponent
-        Rectangle {
-            color: "white"
-            width: parent ? parent.width : 0
-            height: (parent && parent.currentItem) ? parent.currentItem.height : units.gu(4);
-            ThinDivider { anchors.top: parent.top }
-            ThinDivider { anchors.top: parent.bottom }
+    Item {
+        id: hItem
+        y: (styleItem.height - highlightThickness) / 2
+        height: highlightThickness
+        width: parent.width
 
-            Magnifier {
-                anchors.fill: parent
-                targetWidth: parent.width
-                targetHeight: parent.height
-//                posX: targetWidth / 2
-//                posY: targetHeight / 2
-                source: shaderSource
+        ThinDivider { id: topDivider; anchors.top: parent.top }
+        ThinDivider { id: bottomDivider; anchors.top: parent.bottom }
+
+        Rectangle {
+            anchors {
+                top: topDivider.bottom
+                bottom: bottomDivider.top
+                left: parent.left
+                right: parent.right
             }
-            ShaderEffectSource {
-                id: shaderSource
-                anchors.fill: parent
-                sourceItem: highlightItem
-            }
+            color: "white"
+        }
+        // the PathView is not good, I cannot link with the underlaying List- or PathView so they
+        // can be scrolled both the same time when either ot those is moved.
+//        PathView {
+//            id: pView
+//            property Item tumbler: styledItem
+//            anchors.fill: parent
+//            clip: true
+
+//            model: styledItem.model
+//            delegate: styledItem.delegate
+//            onCurrentItemChanged: currentItem.labelColor = "red"
+//            // put the currentItem to the center of the view
+//            preferredHighlightBegin: 0.5
+//            preferredHighlightEnd: 0.5
+
+//            pathItemCount: 2
+//            snapMode: PathView.SnapToItem
+//            flickDeceleration: 100
+
+//            property int contentHeight: pathItemCount * highlightThickness
+//            path: Path {
+//                startX: pView.width / 2
+//                startY: -(pView.contentHeight - pView.height) / 2
+//                PathLine {
+//                    x: pView.width / 2
+//                    y: pView.height + (pView.contentHeight - pView.height) / 2
+//                }
+//            }
+//        }
+
+        Magnifier {
+            anchors.fill: parent
+            targetWidth: parent.width
+            targetHeight: parent.height
+            source: shaderSource
+        }
+        ShaderEffectSource {
+            id: shaderSource
+            anchors.fill: parent
+            sourceItem: list ? list.currentItem : null
         }
     }
+
 }
