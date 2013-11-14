@@ -36,8 +36,10 @@ private Q_SLOTS:
     void testCreateStyleComponent();
     void testCreateStyleComponent_data();
     void testThemesRelativePath();
+/* FIXME: https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1248982
     void testThemesRelativePathWithParent();
     void testThemesRelativePathWithParentXDGDATA();
+*/
     void testThemesRelativePathWithParentNoVariablesSet();
     void testThemesRelativePathWithParentOneXDGPathSet();
 };
@@ -112,6 +114,7 @@ void tst_UCTheme::testThemesRelativePath()
     QCOMPARE(component->status(), QQmlComponent::Ready);
 }
 
+/* FIXME: https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1248982
 void tst_UCTheme::testThemesRelativePathWithParent()
 {
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "../../resources/themes:../../resources/themes/TestModule");
@@ -144,6 +147,7 @@ void tst_UCTheme::testThemesRelativePathWithParentXDGDATA()
     QCOMPARE(component != NULL, true);
     QCOMPARE(component->status(), QQmlComponent::Ready);
 }
+*/
 
 void tst_UCTheme::testThemesRelativePathWithParentNoVariablesSet()
 {
