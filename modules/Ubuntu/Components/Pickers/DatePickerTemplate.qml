@@ -49,8 +49,8 @@ Picker {
         style: Item{}
         Label {
             text: item.model.text(picker.date, modelData, format);
-            color: highlighted ? "red" : Theme.palette.normal.backgroundText
-            scale: highlighted ? 1.1 : 1
+//            color: highlighted ? "red" : Theme.palette.normal.backgroundText
+//            scale: highlighted ? 1.1 : 1
             smooth: true
             anchors.fill: parent
             verticalAlignment: Text.AlignVCenter

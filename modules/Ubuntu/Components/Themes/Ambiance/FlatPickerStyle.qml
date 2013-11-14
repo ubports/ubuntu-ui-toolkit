@@ -19,20 +19,35 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1
 
 PickerStyle {
+    id: styleItem
 //    frameWidth: 0
     backgroundColor: "#00000000"
     backgroundOpacity: 0.2
     overlay: false
-    highlight: Rectangle {
-        color: "white"
-        width: parent ? parent.width : 0
-        height: (parent && parent.currentItem) ? parent.currentItem.height : units.gu(4);
 
-        ThinDivider {
-            anchors.top: parent.top
-        }
-        ThinDivider {
-            anchors.top: parent.bottom
+    highlight: highlightComponent
+    Component {
+        id: highlightComponent
+        Rectangle {
+            color: "white"
+            width: parent ? parent.width : 0
+            height: (parent && parent.currentItem) ? parent.currentItem.height : units.gu(4);
+            ThinDivider { anchors.top: parent.top }
+            ThinDivider { anchors.top: parent.bottom }
+
+            Magnifier {
+                anchors.fill: parent
+                targetWidth: parent.width
+                targetHeight: parent.height
+//                posX: targetWidth / 2
+//                posY: targetHeight / 2
+                source: shaderSource
+            }
+            ShaderEffectSource {
+                id: shaderSource
+                anchors.fill: parent
+                sourceItem: highlightItem
+            }
         }
     }
 }

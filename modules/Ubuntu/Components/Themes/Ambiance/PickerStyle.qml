@@ -27,7 +27,11 @@ Item {
     property bool overlay: true
     property color overlayColor: UbuntuColors.warmGrey
     property real tumblerMargins: units.gu(0.2)
+
     property Component highlight: highlightComponent
+    readonly property Item highlightItem: loader.item.highlightItem
+    property Component pickerDelegate: (styledItem.circular) ? wrapAround : linear
+    readonly property Item currentItem: loader.item
 
     // private properties
     property bool completed: false
@@ -128,7 +132,7 @@ Item {
         id: loader
         asynchronous: false
         anchors.fill: parent
-        sourceComponent: (styledItem.circular) ? wrapAround : linear
+        sourceComponent: pickerDelegate
 
         // to avoid binding loop
         Connections {
