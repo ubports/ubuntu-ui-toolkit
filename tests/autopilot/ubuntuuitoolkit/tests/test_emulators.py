@@ -756,15 +756,13 @@ MainView {
         """select_text() must raise a ValueError if text does not exist"""
         error = self.assertRaises(
             emulators.ToolkitEmulatorException,
-            lambda: self.option_selector.select_option(
-                "Label",
-                text="this should fail"
-            )
+            lambda: self.option_selector.select_option(text="this should fail")
         )
         self.assertEqual(
             error.message,
-            "could not find delegate with options args ('Label',) kwargs"
-            " [('text', 'this should fail')]")
+            "OptionSelectorDelegate with kwargs {'text': 'this should fail'}"
+            " not found"
+        )
 
     def test_select_option(self):
         """select_text() must select the text in the OptionSelector"""

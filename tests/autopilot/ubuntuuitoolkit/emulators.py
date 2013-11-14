@@ -452,30 +452,6 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
             #https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1231939
             sleep(1)
 
-    def _get_delegate(self, *args, **kwargs):
-        delegates = self.select_many('OptionSelectorDelegate')
-
-        object_name = kwargs.get('objectName', None)
-
-        for delegate in delegates:
-            if (
-                object_name is not None
-                and len(args) == 0
-                and delegate.objectName == object_name
-            ):
-                return delegate
-            try:
-                if delegate.select_single(*args, **kwargs):
-                    return delegate
-            except dbus.StateNotFoundError:
-                pass
-        raise ToolkitEmulatorException(
-            'could not find delegate with options args {} kwargs {}'.format(
-                args,
-                kwargs.items(),
-            )
-        )
-
     def get_selected_text(self):
         """gets the text of the currently selected item"""
         option_selector_delegate = self.select_single(
@@ -484,26 +460,26 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
             'Label', visible='True')
         return current_label.text
 
-    def select_option(self, *args, **kwargs):
+    def select_option(self, **kwargs):
         """Select delegate in option selector
 
         Example usage::
             select_option(objectName="myOptionSelectorDelegate")
-            #selects and optionDelectorDelegate with the objectName
-            #    property equal to myOptionSelectorDelegate
 
-            select_option('Label', text="first value")
-            #selects the optionSelectorDelegate with a child object
-            #    Label with the property equal to "first value"
-
-
-        :parameter args: string used to find object in option selector
-            delegate
-        :parameter kwargs: keywords used to find property(s) of object in
+        :parameter kwargs: keywords used to find property(s) of delegate in
             option selector
 
                 """
-        select_object = self._get_delegate(*args, **kwargs)
+        try:
+            select_object = self.select_single(
+                'OptionSelectorDelegate',
+                **kwargs
+            )
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException(
+                'OptionSelectorDelegate with kwargs {} not found'.format(
+                    kwargs)
+            )
         self.expand()
         self.pointing_device.click_object(select_object)
 
