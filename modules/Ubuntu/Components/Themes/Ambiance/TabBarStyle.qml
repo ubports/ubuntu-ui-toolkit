@@ -93,7 +93,7 @@ Item {
                 id: repeater
                 model: tabsModel
 
-                AbstractButton {
+                TabButton {
                     id: button
                     anchors {
                         top: parent.top
