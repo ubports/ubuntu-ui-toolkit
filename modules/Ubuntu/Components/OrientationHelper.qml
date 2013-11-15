@@ -92,12 +92,15 @@ Item {
     Component.onCompleted: orientationTransition.enabled = transitionEnabled
 
     /*!
-      Technically 'window' is defined by QML automatically however this can
-      happen very late. We define it here so there's no race condition.
+      \internal
+
+      'window' is defined by QML between startup and showing on the screen.
+      There is no signal for when it becomes available and re-declaring it is not safe.
+
+      http://qt-project.org/doc/qt-5.1/qtqml/qml-qtqml2-qt.html
+      http://qt-project.org/doc/qt-5.1/qtquick/qmlmodule-qtquick-window2-qtquick-window-2.html
      */
-    Window {
-        id: window
-    }
+    property bool __windowActive: typeof window != 'undefined' ? true : false
 
     /*!
       \internal
@@ -105,7 +108,20 @@ Item {
       Report the current orientation of the application via QWindow::contentOrientation.
       http://qt-project.org/doc/qt-5.0/qtgui/qwindow.html#contentOrientation-prop
      */
-    onOrientationAngleChanged: window.contentOrientation = Screen.orientation
+    function applyOrientation() {
+        if (__windowActive)
+            window.contentOrientation = Screen.orientation
+    }
+
+    /*!
+      \internal
+     */
+    onOrientationAngleChanged: applyOrientation()
+
+    /*!
+      \internal
+     */
+    on__WindowActiveChanged: applyOrientation()
 
     Item {
         id: stateWrapper
