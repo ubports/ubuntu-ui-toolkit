@@ -91,37 +91,35 @@ Item {
 
     Component.onCompleted: orientationTransition.enabled = transitionEnabled
 
-    /*!
-      \internal
+    Object {
+        id: internal
 
-      'window' is defined by QML between startup and showing on the screen.
-      There is no signal for when it becomes available and re-declaring it is not safe.
+        /*!
+          'window' is defined by QML between startup and showing on the screen.
+          There is no signal for when it becomes available and re-declaring it is not safe.
 
-      http://qt-project.org/doc/qt-5.1/qtqml/qml-qtqml2-qt.html
-      http://qt-project.org/doc/qt-5.1/qtquick/qmlmodule-qtquick-window2-qtquick-window-2.html
-     */
-    property bool __windowActive: typeof window != 'undefined' ? true : false
+          http://qt-project.org/doc/qt-5.1/qtqml/qml-qtqml2-qt.html
+          http://qt-project.org/doc/qt-5.1/qtquick/qmlmodule-qtquick-window2-qtquick-window-2.html
+         */
+        property bool windowActive: typeof window != 'undefined' ? true : false
 
-    /*!
-      \internal
+        /*!
+          Report the current orientation of the application via QWindow::contentOrientation.
+          http://qt-project.org/doc/qt-5.0/qtgui/qwindow.html#contentOrientation-prop
+         */
+        function applyOrientation() {
+            if (windowActive)
+                window.contentOrientation = Screen.orientation
+        }
 
-      Report the current orientation of the application via QWindow::contentOrientation.
-      http://qt-project.org/doc/qt-5.0/qtgui/qwindow.html#contentOrientation-prop
-     */
-    function applyOrientation() {
-        if (__windowActive)
-            window.contentOrientation = Screen.orientation
+        onWindowActiveChanged: applyOrientation()
     }
 
-    /*!
-      \internal
-     */
-    onOrientationAngleChanged: applyOrientation()
 
     /*!
       \internal
      */
-    on__WindowActiveChanged: applyOrientation()
+    onOrientationAngleChanged: internal.applyOrientation()
 
     Item {
         id: stateWrapper
