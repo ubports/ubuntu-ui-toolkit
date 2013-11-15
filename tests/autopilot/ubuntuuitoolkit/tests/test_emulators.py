@@ -107,14 +107,14 @@ MainView {
         error = self.assertRaises(
             emulators.ToolkitEmulatorException, self.main_view.get_tabs)
         self.assertEqual(
-            error.message, 'The MainView has no Tabs.')
+            str(error), 'The MainView has no Tabs.')
 
     def test_switch_to_next_tab_without_tabs(self):
         header = self.main_view.get_header()
         error = self.assertRaises(
             emulators.ToolkitEmulatorException, header.switch_to_next_tab)
         self.assertEqual(
-            error.message, 'The MainView has no Tabs.')
+            str(error), 'The MainView has no Tabs.')
 
 
 class PageTestCase(tests.QMLStringAppTestCase):
@@ -223,14 +223,14 @@ MainView {
             emulators.ToolkitEmulatorException, self.toolbar.click_button,
             'unexisting')
         self.assertEqual(
-            error.message, 'Button with objectName "unexisting" not found.')
+            str(error), 'Button with objectName "unexisting" not found.')
 
     def test_click_button_on_closed_toolbar(self):
         error = self.assertRaises(
             emulators.ToolkitEmulatorException, self.toolbar.click_button,
             'buttonName')
         self.assertEqual(
-            error.message,
+            str(error),
             'Toolbar must be opened before calling click_button().')
 
 
@@ -333,7 +333,7 @@ MainView {
             emulators.ToolkitEmulatorException,
             self.main_view.switch_to_tab_by_index,
             last_tab_index + 1)
-        self.assertEqual(error.message, 'Tab index out of range.')
+        self.assertEqual(str(error), 'Tab index out of range.')
 
     def test_switch_to_previous_tab_from_first(self):
         current_tab = self.main_view.switch_to_previous_tab()
@@ -357,7 +357,7 @@ MainView {
             emulators.ToolkitEmulatorException, self.main_view.switch_to_tab,
             'unexisting')
         self.assertEqual(
-            error.message, 'Tab with objectName "unexisting" not found.')
+            str(error), 'Tab with objectName "unexisting" not found.')
 
 
 class ActionSelectionPopoverTestCase(tests.QMLStringAppTestCase):
@@ -424,7 +424,7 @@ MainView {
             emulators.ToolkitEmulatorException, popover.click_button_by_text,
             'unexisting')
         self.assertEqual(
-            error.message, 'Button with text "unexisting" not found.')
+            str(error), 'Button with text "unexisting" not found.')
 
     def test_click_button_with_closed_popover(self):
         popover = self.main_view.get_action_selection_popover(
@@ -433,7 +433,7 @@ MainView {
             emulators.ToolkitEmulatorException, popover.click_button_by_text,
             'Action one')
         self.assertEqual(
-            error.message, 'The popover is not open.')
+            str(error), 'The popover is not open.')
 
 
 TEST_QML_WITH_CHECKBOX = ("""
