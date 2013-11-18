@@ -87,7 +87,7 @@ for line in fileinput.input():
         words = declaration.strip().split(' ')
         # Don't consider the qml variable name as a keyword
         if filetype == 'qml':
-            words.pop ()
+            words.pop()
         if filetype == 'qmltypes' and in_block > 1:
             keywords.append('name')
             keywords.append('Parameter')
