@@ -14,8 +14,18 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+#~  Usage:
+#~    update-pot.sh [DOMAIN] [SOURCE_DIR] [PO_DIR]
+#~
+#~  Example:
+#~    update-pot.sh ubuntu-ui-toolkit modules po
 
 set -e
+if [ -z "$3" ]; then
+    grep -e '^#~' $0 | sed s/#~//
+    exit 0
+fi
+
 DOMAIN=$1
 SOURCE_DIR=$(readlink -f $2)
 PO_DIR=$(readlink -f $3)
