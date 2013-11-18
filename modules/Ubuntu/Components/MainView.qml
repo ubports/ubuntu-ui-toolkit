@@ -248,8 +248,9 @@ PageTreeNode {
                 bottom: parent.bottom
             }
             // only clip when necessary
+            // ListView headers may be positioned at the top, not dependent from
+            // flickable.contentY, so do not clip depending on activePage.flickable.contentY.
             clip: headerItem.bottomY > 0 && activePage && activePage.flickable
-                  && -activePage.flickable.contentY < headerItem.bottomY
 
             property Page activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
 
