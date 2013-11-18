@@ -31,7 +31,7 @@ find \( -name '*.cpp' -o -name '*.qml' -o -name '*.js' -o -name '*.desktop' \) \
 > $GETTEXT_FILES
 
 # Generate pot from our list
-echo xgettext \
+xgettext \
     --output $PO_DIR/$DOMAIN.pot \
     --files-from $GETTEXT_FILES \
     --qt --c++ \
