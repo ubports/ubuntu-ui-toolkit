@@ -159,10 +159,10 @@ ListItem.Empty {
     property alias selectedIndex: list.currentIndex
 
     /*!
-      \qmlproperty bool expanded
+      \qmlproperty bool currentlyExpanded
       Is our list currently expanded?
      */
-    readonly property alias currentlyExpanded: listContainer.currentlyExpanded
+    property alias currentlyExpanded: listContainer.currentlyExpanded
 
     /*!
       \qmlproperty real itemHeight
