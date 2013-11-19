@@ -50,5 +50,5 @@ Image {
         right: (parent) ? parent.right : null
     }
     height: (visible) ? units.dp(2) : 0
-    source: Qt.resolvedUrl("artwork/ListItemDividerHorizontal.png")
+    source: "artwork/ListItemDividerHorizontal.png"
 }
