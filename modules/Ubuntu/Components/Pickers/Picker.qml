@@ -92,9 +92,19 @@ StyledItem {
     property var model
 
     /*!
-      The delegate visualizing the model elements.
+      The delegate visualizing the model elements. Any kind of component can be
+      used as delegate, however it is recommended to use \l PickerDelegate, which
+      integrates selection functionality into the Picker.
       */
     property Component delegate
+
+    /*!
+      The component shown for the highlight. The same \l PickerDelegate or any
+      other component can be used for highlight. If not set, the Picker will use
+      the delegate as highlight. Note that opposite to the other views, the highlight
+      stays over the view items.
+      */
+    property Component highlight
 
     /*!
       The property holds the index of the selected item

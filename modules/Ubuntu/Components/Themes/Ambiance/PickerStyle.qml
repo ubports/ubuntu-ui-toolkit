@@ -16,23 +16,39 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1
 
 Item {
     id: control
     // style properties
-    property color frameColor: UbuntuColors.warmGrey
-    property real frameWidth: 1
-    property color backgroundColor: "#FFFFFFFF"
-    property real backgroundOpacity: 1.0
-    property bool overlay: true
-    property color overlayColor: UbuntuColors.warmGrey
-    property real tumblerMargins: units.gu(0.2)
+    /*!
+      Specifies whether to have a frame circumventing the tumbler or not.
+      */
+    property bool hasFrame: true
+    /*!
+      Specifies the background color
+      */
+    property color backgroundColor: "#00000000"
+    /*!
+      BackgroundColor
+      */
+    property color highlightBackgroundColor: "#ffffffff"
+    /*!
+      Scale of the highlight item
+      */
+    property real highlightScale: 1.2
+    /*!
+      Thickness of teh highlight component
+      */
     property real highlightThickness: units.gu(5)
-
-    property Component highlight: highlightComponent
-    readonly property Item highlightItem: loader.item.highlightItem
-    property Component pickerDelegate: (styledItem.circular) ? wrapAround : linear
-    readonly property Item list: loader.item
+    /*!
+      Color for the overlay. The overlay is a gradient which turns to white over the highlight.
+      */
+    property color overlayColor: UbuntuColors.warmGrey
+    /*!
+      Margins of the tumbler from the edges
+      */
+    property real tumblerMargins: units.gu(0.2)
 
     // private properties
     property bool completed: false
@@ -54,24 +70,12 @@ Item {
         }
     }
 
-    // background
-    Rectangle {
-        border {
-            width: frameWidth
-            color: frameColor
-        }
-        color: backgroundColor
-        opacity: backgroundOpacity
-        anchors.fill: parent
-
-    }
-
-    // default highlight
+    // highlight component used for calculations
     Component {
         id: highlightComponent
         Item {
             width: parent ? parent.width : 0
-            height: highlightThickness;
+            height: highlightThickness
         }
     }
 
@@ -81,22 +85,24 @@ Item {
         PathView {
             id: pView
             property Item tumbler: styledItem
-            property real delegateHeight: highlightItem.height
-            anchors.fill: parent
+            anchors {
+                fill: parent
+                margins: tumblerMargins
+            }
             clip: true
 
             model: styledItem.model
             delegate: styledItem.delegate
-            highlight: control.highlight
+            highlight: highlightComponent
             // put the currentItem to the center of the view
             preferredHighlightBegin: 0.5
             preferredHighlightEnd: 0.5
 
-            pathItemCount: pView.height / delegateHeight + 1
+            pathItemCount: pView.height / highlightItem.height + 1
             snapMode: PathView.SnapToItem
             flickDeceleration: 100
 
-            property int contentHeight: pathItemCount * delegateHeight
+            property int contentHeight: pathItemCount * highlightItem.height
             path: Path {
                 startX: pView.width / 2
                 startY: -(pView.contentHeight - pView.height) / 2
@@ -115,13 +121,17 @@ Item {
             id: lView
             property Item tumbler: styledItem
 
-            anchors.fill: parent
+            anchors {
+                fill: parent
+                margins: tumblerMargins
+            }
             clip: true
 
             model: styledItem.model
-            delegate: styledItem.delegate
+            // do not set delegate otherwise the changed one will not be used for the already
+            // created items
+            highlight: highlightComponent
 
-            highlight: control.highlight
             preferredHighlightBegin: highlightItem ? (height - highlightItem.height) / 2 : 0
             preferredHighlightEnd: highlightItem ? (preferredHighlightBegin + highlightItem.height) : 0
             highlightRangeMode: ListView.StrictlyEnforceRange
@@ -130,83 +140,162 @@ Item {
         }
     }
 
-    Loader {
-        id: loader
-        asynchronous: false
+    // frame
+    UbuntuShape {
         anchors.fill: parent
-        sourceComponent: pickerDelegate
+        radius: "medium"
+        color: Theme.palette.normal.overlay
+        image: shapeSource
+        clip: true
+        enabled: hasFrame
+    }
 
-        // to avoid binding loop
-        Connections {
-            target: styledItem
-            onSelectedIndexChanged: loader.item.currentIndex = styledItem.selectedIndex
-        }
+    ShaderEffectSource {
+        id: shapeSource
+        sourceItem: content
+        hideSource: hasFrame
+        // FIXME: visible: false prevents rendering so make it a nearly
+        // transparent 1x1 pixel instead
+        opacity: 0.01
+        width: 1
+        height: 1
+    }
 
-        // live selectedIndex updater
-        Binding {
-            target: styledItem
-            property: "selectedIndex"
-            value: loader.item.currentIndex
-            when: completed && (styledItem.model !== undefined) && styledItem.live
-        }
-        // non-live selectedIndex updater
-        Connections {
-            target: loader.item
-            ignoreUnknownSignals: true
-            onMovementEnded: {
-                if (!styledItem.live) styledItem.selectedIndex = loader.item.currentIndex;
-            }
-            onCurrentIndexChanged: {
-                if (!styledItem.live && styledItem.__clickedIndex === loader.item.currentIndex) {
-                    styledItem.selectedIndex = loader.item.currentIndex;
-                    styledItem.__clickedIndex = -1;
+    Rectangle {
+        id: content
+        anchors.fill: parent
+
+        // background
+        color: backgroundColor
+
+        // tumbler
+        Loader {
+            id: loader
+            asynchronous: false
+            anchors.fill: parent
+            sourceComponent: (styledItem.circular) ? wrapAround : linear
+            onStatusChanged: {
+                if (status === Loader.Ready && item) {
+                    item.delegate = styledItem.delegate;
                 }
             }
-            onModelChanged: {
-                moveToIndex((completed) ? 0 : styledItem.selectedIndex);
-                if (completed && !styledItem.live) styledItem.selectedIndex = 0;
+
+            // to avoid binding loop
+            Connections {
+                target: styledItem
+                onSelectedIndexChanged: loader.item.currentIndex = styledItem.selectedIndex
+            }
+
+            // live selectedIndex updater
+            Binding {
+                target: styledItem
+                property: "selectedIndex"
+                value: loader.item.currentIndex
+                when: completed && (styledItem.model !== undefined) && styledItem.live
+            }
+            // non-live selectedIndex updater
+            Connections {
+                target: loader.item
+                ignoreUnknownSignals: true
+                onMovementEnded: {
+                    if (!styledItem.live) styledItem.selectedIndex = loader.item.currentIndex;
+                }
+                onCurrentIndexChanged: {
+                    if (!styledItem.live && styledItem.__clickedIndex === loader.item.currentIndex) {
+                        styledItem.selectedIndex = loader.item.currentIndex;
+                        styledItem.__clickedIndex = -1;
+                    }
+                }
+                onModelChanged: {
+                    moveToIndex((completed) ? 0 : styledItem.selectedIndex);
+                    if (completed && !styledItem.live) styledItem.selectedIndex = 0;
+                }
+            }
+
+            Component.onCompleted: {
+                completed = true;
+                if (item) {
+                    loader.item.currentIndex = styledItem.selectedIndex;
+                    moveToIndex(styledItem.selectedIndex);
+                }
+            }
+
+            // overlay
+            Rectangle {
+                opacity: control.overlayColor !== "#00000000" ? 1.0 : 0.0
+                gradient: Gradient {
+                    GradientStop {
+                        position: 0
+                        color: control.overlayColor
+                    }
+
+                    GradientStop {
+                        position: 0.40
+                        color: "#00000000"
+                    }
+
+                    GradientStop {
+                        position: 0.63
+                        color: "#00000000"
+                    }
+
+                    GradientStop {
+                        position: 1
+                        color: control.overlayColor
+                    }
+                }
+                anchors.fill: parent
             }
         }
 
-        Component.onCompleted: {
-            completed = true;
-            if (item) {
-                loader.item.currentIndex = styledItem.selectedIndex;
-                moveToIndex(styledItem.selectedIndex);
-            }
-        }
-
-        // overlay
+        // highlight tumbler
+        // FIXME use Magnifier once it gets landed
         Rectangle {
-            visible: control.overlay
-            // disable rendering when not visible
-            opacity: visible ? 1.0 : 0.0
-            gradient: Gradient {
-                GradientStop {
-                    position: 0
-                    color: control.overlayColor
+            y: (loader.height - control.highlightThickness) / 2
+            width: loader.width
+            height: control.highlightThickness
+            color: control.highlightBackgroundColor
+
+            ThinDivider { id: topDivider; anchors.top: parent.top; width: parent.width }
+            ThinDivider { id: bottomDivider; anchors.bottom: parent.bottom; width: parent.width }
+
+            Loader {
+                id: highlightLoader
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    top: topDivider.bottom
+                    bottom: bottomDivider.top
                 }
 
-                GradientStop {
-                    position: 0.40
-                    color: "#ffffff"
+                asynchronous: false
+                sourceComponent: (styledItem.circular) ? wrapAround : linear
+                onStatusChanged: {
+                    if (status === Loader.Ready && item) {
+                        item.delegate = styledItem.highlight ? styledItem.highlight : styledItem.delegate;
+                        item.scale = control.highlightScale;
+                        item.smooth = true;
+                        // disable so we can only drive the tumbler underneath
+                        item.enabled = false;
+                    }
                 }
 
-                GradientStop {
-                    position: 0.63
-                    color: "#ffffff"
+                // connect the tumblers underneath to keep the highlight in sync
+                // PathView
+                Binding {
+                    target: highlightLoader.item
+                    when: (loader.item && highlightLoader.item)
+                    property: "offset"
+                    value: loader.item.offset
                 }
-
-                GradientStop {
-                    position: 1
-                    color: control.overlayColor
+                // ListView
+                Binding {
+                    target: highlightLoader.item
+                    when: (loader.item && highlightLoader.item)
+                    property: "contentY"
+                    value: loader.item.contentY - loader.item.originY
                 }
-            }
-            anchors {
-                fill: parent
-                margins: tumblerMargins
             }
         }
     }
-
 }

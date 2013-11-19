@@ -20,6 +20,7 @@ import Ubuntu.Components 0.1
 Item {
     property real minFade: 0.25
     property real maxFade: 0.95
+    property bool fadingEnabled: true
 
     property bool fadeContent: true
     property bool inListView: QuickUtils.className(styledItem.parent) !== "QQuickPathView"
@@ -29,6 +30,7 @@ Item {
 
     Binding {
         target: styledItem
+        when: fadingEnabled
         property: "opacity"
         value: opacityCalc()
         when: fadeContent

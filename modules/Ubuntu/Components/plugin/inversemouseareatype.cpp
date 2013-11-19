@@ -319,6 +319,9 @@ QEvent *InverseMouseAreaType::mapEventToArea(QObject *target, QEvent *event)
 
 bool InverseMouseAreaType::eventFilter(QObject *object, QEvent *event)
 {
+    if (!isEnabled())
+        return false;
+
     if (object != this)
     {
         bool captured = true;

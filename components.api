@@ -207,6 +207,7 @@ PageTreeNode
 modules/Ubuntu/Components/TabBar.qml
 StyledItem
     property Item tabsItem
+    property ListModel model
     property bool selectionMode
     property bool alwaysSelectionMode
     property bool animate
@@ -216,9 +217,13 @@ PageTreeNode
     readonly property Tab selectedTab
     readonly property Item currentPage
     property TabBar tabBar
-    property internal __tabs
     default property list<Item> tabChildren
+    readonly property int count
     signal modelChanged()
+    function addTab(title, component, params)
+    function insertTab(index, title, component, params)
+    function moveTab(from, to)
+    function removeTab(index)
 modules/Ubuntu/Components/TextArea.qml
 StyledItem
     property bool highlighted
@@ -531,6 +536,7 @@ StyledItem
     property bool circular
     property var model
     property Component delegate
+    property Component highlight
     property int selectedIndex
     property bool live
     property int __clickedIndex

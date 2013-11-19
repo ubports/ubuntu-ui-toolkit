@@ -30,13 +30,6 @@ import "../" 0.1
 AbstractButton {
     id: pickerDelegate
 
-    /*!
-      \qmlproperty bool highlighted
-      \readonly
-      The property notifies whether the current item is the highlighted one or not.
-      */
-    readonly property alias highlighted: internal.highlighted
-
     implicitHeight: units.gu(5)
     implicitWidth: parent.width
 
