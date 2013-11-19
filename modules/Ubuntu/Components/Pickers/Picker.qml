@@ -99,9 +99,10 @@ StyledItem {
     property Component delegate
 
     /*!
-      The component shown for the highlight. This component overrides the one defined
-      by the style. The same \l PickerDelegate or any other component can be used as
-      highlight.
+      The component shown for the highlight. The same \l PickerDelegate or any
+      other component can be used for highlight. If not set, the Picker will use
+      the delegate as highlight. Note that opposite to the other views, the highlight
+      stays over the view items.
       */
     property Component highlight
 
