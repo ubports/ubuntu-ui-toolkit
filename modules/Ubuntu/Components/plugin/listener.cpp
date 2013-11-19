@@ -15,7 +15,8 @@
  */
 
 #include "listener.h"
-#include <QtQml>
+
+#include <QQmlContext>
 
 ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context, const QString &contextProperty) :
     QObject(context),

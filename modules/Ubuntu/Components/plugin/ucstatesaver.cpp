@@ -21,7 +21,9 @@
 #include "statesaverbackend_p.h"
 #include "i18n.h"
 #include "quickutils.h"
+#include <QtQml/QQmlComponent>
 #include <QtQml/QQmlInfo>
+#include <QtQml/QQmlProperty>
 #include <QtGui/QGuiApplication>
 #include "private/qqmldata_p.h"
 #include "private/qqmlcontext_p.h"
