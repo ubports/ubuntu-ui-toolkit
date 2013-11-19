@@ -41,6 +41,7 @@ Item {
       The set of tabs this tab bar belongs to
      */
     property Tabs tabs: styledItem ? styledItem.tabsItem : null
+    property ListModel tabsModel : styledItem ? styledItem.model : null
 
     Connections {
         target: styledItem
@@ -90,7 +91,7 @@ Item {
 
             Repeater {
                 id: repeater
-                model: tabs.__tabs
+                model: tabsModel
 
                 AbstractButton {
                     id: button
@@ -123,7 +124,7 @@ Item {
 
                         // When we don't need scrolling, we want to avoid showing a button that is fading
                         // while sliding in from the right side when a new button was selected
-                        var numTabs = tabs.__tabs.length;
+                        var numTabs = tabsModel.count;
                         var minimum = buttonView.selectedButtonIndex;
                         var maximum = buttonView.selectedButtonIndex + numTabs - 1;
                         if (MathUtils.clamp(buttonIndex, minimum, maximum) === buttonIndex) return true;
@@ -179,7 +180,7 @@ Item {
                             baseline: parent.bottom
                             baselineOffset: -headerTextBottomMargin
                         }
-                        text: modelData.title
+                        text: (tab && tab.hasOwnProperty("title")) ? tab.title : title
                         fontSize: headerFontSize
                         font.weight: headerFontWeight
                     }
@@ -254,7 +255,7 @@ Item {
 
         // Select the closest of the two buttons that represent the given tab index
         function selectButton(tabIndex) {
-            if (tabIndex < 0 || tabIndex >= tabs.__tabs.length) return;
+            if (tabIndex < 0 || tabIndex >= tabsModel.count) return;
             if (buttonView.buttonRow1 && buttonView.buttonRow2) {
                 var b1 = buttonView.buttonRow1.children[tabIndex];
                 var b2 = buttonView.buttonRow2.children[tabIndex];

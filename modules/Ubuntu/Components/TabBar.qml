@@ -40,6 +40,17 @@ StyledItem {
     property Item tabsItem
 
     /*!
+      The model containing the tabs to be controlled by the TabBar. The tabs are
+      visualized by the style, displaying controlling elements based on the data
+      specified by the roles. The default style mandates the existence of either
+      the \b title or \b tab role, but different styles may require to have other
+      roles (e.g. image, color). The order the role existence is checked is also
+      determined by the style component, Default style checks the existence of the
+      \b tab role first, and if not defined will use the \b title role.
+      */
+    property ListModel model
+
+    /*!
       An inactive tab bar only displays the currently selected tab,
       and an active tab bar can be interacted with to select a tab.
      */
