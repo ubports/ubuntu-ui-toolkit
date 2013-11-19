@@ -35,6 +35,13 @@ Template {
                         anchors.verticalCenter: parent.verticalCenter
                     }
                 }
+                highlight: PickerDelegate {
+                    Label {
+                        text: modelData
+                        color: "red"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
 
                 onSelectedIndexChanged: print("index=" + selectedIndex)
             }
@@ -46,6 +53,13 @@ Template {
                 delegate: PickerDelegate {
                     Label {
                         text: modelData
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
+                highlight: PickerDelegate {
+                    Label {
+                        text: modelData
+                        color: "red"
                         anchors.verticalCenter: parent.verticalCenter
                     }
                 }

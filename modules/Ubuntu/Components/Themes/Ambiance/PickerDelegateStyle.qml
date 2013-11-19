@@ -20,6 +20,7 @@ import Ubuntu.Components 0.1
 Item {
     property real minFade: 0.25
     property real maxFade: 0.95
+    property bool fadingEnabled: true
 
     property bool inListView: QuickUtils.className(styledItem.parent) !== "QQuickPathView"
     property Item tumblerItem: !inListView ? styledItem.parent : styledItem.parent.parent
@@ -28,6 +29,7 @@ Item {
 
     Binding {
         target: styledItem
+        when: fadingEnabled
         property: "opacity"
         value: opacityCalc()
     }

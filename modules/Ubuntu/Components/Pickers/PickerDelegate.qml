@@ -30,7 +30,7 @@ import "../" 0.1
 AbstractButton {
     id: pickerDelegate
 
-    implicitHeight: units.gu(4)
+    implicitHeight: units.gu(5)
     implicitWidth: parent.width
 
     /*! \internal */
