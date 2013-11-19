@@ -110,6 +110,7 @@ Item {
                                                 buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
                     onOffsetChanged: {
+                        print("offset "+buttonIndex+" = "+offset)
                         if (selected) {
                             buttonView.updateOffset(button.offset);
                         }
@@ -184,7 +185,7 @@ Item {
                             baseline: parent.bottom
                             baselineOffset: -headerTextBottomMargin
                         }
-                        text: (model.hasOwnProperty("tab") && tab.hasOwnProperty("title")) ? tab.title : title
+                        text: (model.hasOwnProperty("tab") && tab.hasOwnProperty("title")) ? tab.title +">"+button.buttonIndex: title
                         fontSize: headerFontSize
                         font.weight: headerFontWeight
                         style: headerTextStyle
@@ -248,6 +249,7 @@ Item {
                 x: buttonView.buttonRowWidth*1.5
             }
         }
+        onOffsetChanged: print("updating offset to "+offset)
 
         // x - y (mod a), for (x - y) <= a
         function cyclicDistance(x, y, a) {
@@ -287,6 +289,7 @@ Item {
         }
 
         Component.onCompleted: {
+            print("initial offset = "+offset);
             selectButton(styledItem.selectedIndex);
         }
 
