@@ -36,7 +36,7 @@ Item {
     /*!
       Scale of the highlight item
       */
-    property real highlightScale: 1.2
+    property real highlightScaleFactor: 1.2
     /*!
       Thickness of teh highlight component
       */
@@ -146,20 +146,23 @@ Item {
         radius: "medium"
         color: Theme.palette.normal.overlay
         image: shapeSource
-        clip: true
-        enabled: hasFrame
+        visible: hasFrame
+        opacity: visible ? 1.0 : 0.0
     }
 
     ShaderEffectSource {
         id: shapeSource
-        sourceItem: content
-        hideSource: hasFrame
+        sourceItem: hasFrame ? content : nullItem
+        hideSource: true
         // FIXME: visible: false prevents rendering so make it a nearly
         // transparent 1x1 pixel instead
         opacity: 0.01
         width: 1
         height: 1
     }
+
+    // null item
+    Item { id: nullItem }
 
     Rectangle {
         id: content
@@ -273,7 +276,7 @@ Item {
                 onStatusChanged: {
                     if (status === Loader.Ready && item) {
                         item.delegate = styledItem.highlight ? styledItem.highlight : styledItem.delegate;
-                        item.scale = control.highlightScale;
+                        item.scale = control.highlightScaleFactor;
                         item.smooth = true;
                         // disable so we can only drive the tumbler underneath
                         item.enabled = false;
