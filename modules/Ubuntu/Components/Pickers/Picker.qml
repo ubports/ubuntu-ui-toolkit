@@ -99,14 +99,6 @@ StyledItem {
     property Component delegate
 
     /*!
-      The component shown for the highlight. The same \l PickerDelegate or any
-      other component can be used for highlight. If not set, the Picker will use
-      the delegate as highlight. Note that opposite to the other views, the highlight
-      stays over the view items.
-      */
-    property Component highlight
-
-    /*!
       The property holds the index of the selected item
       */
     property int selectedIndex

@@ -30,25 +30,29 @@ Item {
       */
     property color backgroundColor: "#00000000"
     /*!
-      BackgroundColor
+      Background color for highlight.
       */
     property color highlightBackgroundColor: "#ffffffff"
+    /*!
+      Highlight color.
+      */
+    property color highlightColor: "red"
     /*!
       Scale of the highlight item
       */
     property real highlightScaleFactor: 1.2
     /*!
-      Thickness of teh highlight component
+      Thickness of the highlight component
       */
     property real highlightThickness: units.gu(5)
+    /*!
+      Holds the height for the delegate items.
+      */
+    property real itemHeight: units.gu(4)
     /*!
       Color for the overlay. The overlay is a gradient which turns to white over the highlight.
       */
     property color overlayColor: UbuntuColors.warmGrey
-    /*!
-      Margins of the tumbler from the edges
-      */
-    property real tumblerMargins: units.gu(0.2)
 
     // private properties
     property bool completed: false
@@ -85,10 +89,8 @@ Item {
         PathView {
             id: pView
             property Item tumbler: styledItem
-            anchors {
-                fill: parent
-                margins: tumblerMargins
-            }
+            property real itemHeight: control.itemHeight
+            anchors.fill: parent
             clip: true
 
             model: styledItem.model
@@ -98,11 +100,11 @@ Item {
             preferredHighlightBegin: 0.5
             preferredHighlightEnd: 0.5
 
-            pathItemCount: pView.height / highlightItem.height + 1
+            pathItemCount: pView.height / control.itemHeight + 1
             snapMode: PathView.SnapToItem
             flickDeceleration: 100
 
-            property int contentHeight: pathItemCount * highlightItem.height
+            property int contentHeight: pathItemCount * control.itemHeight
             path: Path {
                 startX: pView.width / 2
                 startY: -(pView.contentHeight - pView.height) / 2
@@ -120,16 +122,12 @@ Item {
         ListView {
             id: lView
             property Item tumbler: styledItem
-
-            anchors {
-                fill: parent
-                margins: tumblerMargins
-            }
+            property real itemHeight: control.itemHeight
+            anchors.fill: parent
             clip: true
 
             model: styledItem.model
-            // do not set delegate otherwise the changed one will not be used for the already
-            // created items
+            delegate: styledItem.delegate
             highlight: highlightComponent
 
             preferredHighlightBegin: highlightItem ? (height - highlightItem.height) / 2 : 0
@@ -177,11 +175,6 @@ Item {
             asynchronous: false
             anchors.fill: parent
             sourceComponent: (styledItem.circular) ? wrapAround : linear
-            onStatusChanged: {
-                if (status === Loader.Ready && item) {
-                    item.delegate = styledItem.delegate;
-                }
-            }
 
             // to avoid binding loop
             Connections {
@@ -250,55 +243,36 @@ Item {
                 anchors.fill: parent
             }
         }
-
-        // highlight tumbler
-        // FIXME use Magnifier once it gets landed
+        // highlight
         Rectangle {
+            id: highlightItem
             y: (loader.height - control.highlightThickness) / 2
-            width: loader.width
-            height: control.highlightThickness
-            color: control.highlightBackgroundColor
-
-            ThinDivider { id: topDivider; anchors.top: parent.top; width: parent.width }
-            ThinDivider { id: bottomDivider; anchors.bottom: parent.bottom; width: parent.width }
-
-            Loader {
-                id: highlightLoader
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                    top: topDivider.bottom
-                    bottom: bottomDivider.top
-                }
-
-                asynchronous: false
-                sourceComponent: (styledItem.circular) ? wrapAround : linear
-                onStatusChanged: {
-                    if (status === Loader.Ready && item) {
-                        item.delegate = styledItem.highlight ? styledItem.highlight : styledItem.delegate;
-                        item.scale = control.highlightScaleFactor;
-                        item.smooth = true;
-                        // disable so we can only drive the tumbler underneath
-                        item.enabled = false;
-                    }
-                }
-
-                // connect the tumblers underneath to keep the highlight in sync
-                // PathView
-                Binding {
-                    target: highlightLoader.item
-                    when: (loader.item && highlightLoader.item)
-                    property: "offset"
-                    value: loader.item.offset
-                }
-                // ListView
-                Binding {
-                    target: highlightLoader.item
-                    when: (loader.item && highlightLoader.item)
-                    property: "contentY"
-                    value: loader.item.contentY - loader.item.originY
-                }
+            anchors {
+                left: loader.left
+                right: loader.right
             }
+            height: control.highlightThickness
+        }
+        ThinDivider {
+            anchors {
+                left: loader.left
+                right: loader.right
+                bottom: highlightItem.top
+            }
+        }
+        ThinDivider {
+            anchors {
+                left: loader.left
+                right: loader.right
+                top: highlightItem.bottom
+            }
+        }
+
+        HighlightMagnifier {
+            sourceItem: loader.item
+            anchors.fill: highlightItem
+            scaleFactor: control.highlightScaleFactor
+            outputColor: control.highlightColor
         }
     }
 }
