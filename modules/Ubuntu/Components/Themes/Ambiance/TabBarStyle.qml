@@ -110,7 +110,6 @@ Item {
                                                 buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
                     onOffsetChanged: {
-                        print("offset "+buttonIndex+" = "+offset)
                         if (selected) {
                             buttonView.updateOffset(button.offset);
                         }
@@ -185,7 +184,7 @@ Item {
                             baseline: parent.bottom
                             baselineOffset: -headerTextBottomMargin
                         }
-                        text: (model.hasOwnProperty("tab") && tab.hasOwnProperty("title")) ? tab.title +">"+button.buttonIndex: title
+                        text: (model.hasOwnProperty("tab") && tab.hasOwnProperty("title")) ? tab.title : title
                         fontSize: headerFontSize
                         font.weight: headerFontWeight
                         style: headerTextStyle
