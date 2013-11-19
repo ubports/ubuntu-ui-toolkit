@@ -46,12 +46,10 @@ Picker {
     circular: model.circular
 
     delegate: PickerDelegate {
-        property color labelColor: Theme.palette.normal.backgroundText // highlighted ? "red" : Theme.palette.normal.backgroundText
         style: Item{}
         Label {
             text: item.model.text(picker.date, modelData, format);
-            color: labelColor
-            smooth: true
+            color: Theme.palette.normal.backgroundText
             anchors.fill: parent
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
@@ -63,11 +61,20 @@ Picker {
         }
     }
 
-    Binding {
-        target: parent
-        property: "style"
-        value: picker.pickerStyle
-        when: (picker.pickerStyle !== null)
+    highlight: PickerDelegate {
+        style: Item{}
+        Label {
+            text: item.model.text(picker.date, modelData, format);
+            color: "red"
+            anchors.fill: parent
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+        }
+        Component.onCompleted: {
+            if (model && model.hasOwnProperty("autoExtend") && model.autoExtend && (index === (model.count - 1))) {
+                model.extend(modelData + 1);
+            }
+        }
     }
 
     onSelectedIndexChanged: {

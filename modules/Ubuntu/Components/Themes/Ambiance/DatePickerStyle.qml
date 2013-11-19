@@ -26,10 +26,8 @@ Item {
     UbuntuShape {
         anchors.fill: parent
         radius: "medium"
-//        borderSource: "none"
         color: Theme.palette.normal.overlay
         image: shapeSource
-        clip: true
     }
 
     ShaderEffectSource {

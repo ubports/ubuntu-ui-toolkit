@@ -150,10 +150,6 @@ import "../" 0.1
     The component's default height is the same asthe on-screen input's height. If
     the environment does not have on-screen input, the height will be set to 20GUs.
     The width is the full width of the phone, 40 GUs.
-
-    The Picker element style used by the DatePicker can be changed through the \l
-    pickerStyle property. The Pickers will take the default style as those were
-    defined by the current theme.
   */
 StyledItem {
     id: datePicker
@@ -219,11 +215,6 @@ StyledItem {
       updated live.
       */
     property bool live: false
-
-    /*!
-      Property to override the style of the Pickers
-      */
-    property Component pickerStyle
 
     style: Theme.createStyleComponent("DatePickerStyle.qml", datePicker)
 
