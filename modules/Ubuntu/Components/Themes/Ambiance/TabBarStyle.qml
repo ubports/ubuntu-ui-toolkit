@@ -119,7 +119,7 @@ Item {
 
                     // Use opacity 0 to hide instead of setting visibility to false in order to
                     // make fading work well, and not to mess up width/offset computations
-                    opacity: isVisible() ? 1.0 : 0.0
+                    opacity: isVisible() ? 1.0 : 0.3
                     function isVisible() {
                         if (selected) return true;
                         if (!styledItem.selectionMode) return false;
@@ -276,6 +276,8 @@ Item {
         }
 
         function updateOffset(newOffset) {
+            print("new offset = "+newOffset);
+            if (!newOffset) return;
             if (offset - newOffset < -1) newOffset = newOffset - 2;
             offset = newOffset;
         }
