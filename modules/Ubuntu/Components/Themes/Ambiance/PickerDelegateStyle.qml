@@ -22,7 +22,6 @@ Item {
     property real maxFade: 0.95
     property bool fadingEnabled: true
 
-    property bool fadeContent: true
     property bool inListView: QuickUtils.className(styledItem.parent) !== "QQuickPathView"
     property Item tumblerItem: !inListView ? styledItem.parent : styledItem.parent.parent
     property Item tumbler: tumblerItem ? tumblerItem.tumbler : null
@@ -33,7 +32,6 @@ Item {
         when: fadingEnabled
         property: "opacity"
         value: opacityCalc()
-        when: fadeContent
     }
 
     function opacityCalc() {
