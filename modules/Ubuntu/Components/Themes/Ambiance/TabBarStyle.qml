@@ -119,7 +119,7 @@ Item {
 
                     // Use opacity 0 to hide instead of setting visibility to false in order to
                     // make fading work well, and not to mess up width/offset computations
-                    opacity: isVisible() ? 1.0 : 0.3
+                    opacity: isVisible() ? 1.0 : 0.0
                     function isVisible() {
                         if (selected) return true;
                         if (!styledItem.selectionMode) return false;
@@ -249,7 +249,6 @@ Item {
                 x: buttonView.buttonRowWidth*1.5
             }
         }
-        onOffsetChanged: print("updating offset to "+offset)
 
         // x - y (mod a), for (x - y) <= a
         function cyclicDistance(x, y, a) {
@@ -276,7 +275,6 @@ Item {
         }
 
         function updateOffset(newOffset) {
-            print("new offset = "+newOffset);
             if (!newOffset) return;
             if (offset - newOffset < -1) newOffset = newOffset - 2;
             offset = newOffset;
@@ -291,7 +289,6 @@ Item {
         }
 
         Component.onCompleted: {
-            print("initial offset = "+offset);
             selectButton(styledItem.selectedIndex);
         }
 
