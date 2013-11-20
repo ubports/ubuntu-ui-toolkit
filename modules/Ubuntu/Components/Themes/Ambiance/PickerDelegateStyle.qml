@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    property real minFade: 0.15
+    property real minFade: 0.10
     property real maxFade: 0.95
     property bool fadingEnabled: true
 
