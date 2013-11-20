@@ -426,39 +426,58 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
 
 
 class Empty(UbuntuUIToolkitEmulatorBase):
-    """Base class to emulate swipe to delete"""
+    """Base class to emulate swipe to delete."""
+
+    def exists(self):
+        try:
+            return self.implicitHeight > 0
+        except dbus.StateNotFoundError:
+            return False
 
     def _get_confirm_button(self):
         return self.select_single(
             'QQuickItem', objectName='confirmRemovalDialog')
 
     def swipe_to_delete(self, direction='right'):
-        """ Swipe the item in a specific direction """
+        """Swipe the item in a specific direction."""
         if (self.removable):
-            x, y, w, h = self.globalRect
-            tx = x + (w / 8)
-            ty = y + (h / 2)
-
-            if (direction == 'right'):
-                self.pointing_device.drag(tx, ty, w, ty)
-            elif (direction == 'left'):
-                self.pointing_device.drag(w - (w*0.1), ty, x, ty)
+            self._drag_pointing_device_to_delete(direction)
+            if self.confirmRemoval:
+                self.waitingConfirmationForRemoval.wait_for(True)
             else:
-                raise ToolkitEmulatorException(
-                    'Invalid direction "{0}" used on swipe to delete function'
-                    .format(direction))
-
-            self.waitingConfirmationForRemoval.wait_for(True)
+                self._wait_until_deleted()
         else:
             raise ToolkitEmulatorException(
                 'The item "{0}" is not removable'.format(self.objectName))
 
+    def _drag_pointing_device_to_delete(self, direction):
+        x, y, w, h = self.globalRect
+        tx = x + (w / 8)
+        ty = y + (h / 2)
+
+        if (direction == 'right'):
+            self.pointing_device.drag(tx, ty, w, ty)
+        elif (direction == 'left'):
+            self.pointing_device.drag(w - (w*0.1), ty, x, ty)
+        else:
+            raise ToolkitEmulatorException(
+                'Invalid direction "{0}" used on swipe to delete function'
+                .format(direction))
+
+    def _wait_until_deleted(self):
+        try:
+            # The item was hidden.
+            self.implicitHeight.wait_for(0)
+        except dbus.StateNotFoundError:
+            # The item was destroyed.
+            pass
+
     def confirm_removal(self):
-        """ Comfirm item removal if this was already swiped """
+        """Comfirm item removal if this was already swiped."""
         if (self.waitingConfirmationForRemoval):
             deleteButton = self._get_confirm_button()
             self.pointing_device.click_object(deleteButton)
-            self.implicitHeight.wait_for(0)
+            self._wait_until_deleted()
         else:
             raise ToolkitEmulatorException(
                 'The item "{0}" is not waiting for removal confirmation'.
