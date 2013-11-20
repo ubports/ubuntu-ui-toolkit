@@ -47,10 +47,6 @@ Date.prototype.daysTo = function(target) {
     return !target.isValid() ? 0 : Math.ceil((target - this) / Date.msPerDay);
 }
 
-Date.prototype.weeksTo = function(target) {
-    return Math.ceil(this.daysTo(target) / 7);
-}
-
 Date.prototype.getWeek = function() {
     // Copy date so don't modify original
     var date = new Date(this);
@@ -64,22 +60,4 @@ Date.prototype.getWeek = function() {
     var weekNo = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
     // Return array of year and week number
     return weekNo;
-}
-
-Date.prototype.startDateOfWeek = function(week) {
-    var year = this.getFullYear();
-    var simple = new Date(year, 0, 1 + (week - 1) * 7);
-    var dow = simple.getDay();
-    var ISOweekStart = simple;
-    if (dow <= 4)
-        ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
-    else
-        ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
-    return ISOweekStart;
-}
-
-Date.prototype.midDateOfWeek = function(week) {
-    var date = this.startDateOfWeek(week);
-    date.setDate(date.getDate() + 3);
-    return date;
 }
