@@ -293,10 +293,6 @@ Item {
             }
         }
 
-        Component.onCompleted: {
-            selectButton(styledItem.selectedIndex);
-        }
-
         onDragEnded: activatingTimer.stop()
 
         // deactivate the tab bar after inactivity
@@ -323,5 +319,9 @@ Item {
             styledItem.selectionMode = true;
             mouse.accepted = false;
         }
+    }
+
+    Component.onCompleted: {
+        buttonView.selectButton(styledItem.selectedIndex);
     }
 }
