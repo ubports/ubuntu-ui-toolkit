@@ -17,10 +17,10 @@
 import QtQuick 2.0
 
 ListModel {
-    property bool completed
     property bool circular: true
-    property real minimumTextWidth: 0.0
-    property real maximumTextWidth: 0.0
+    property real narrowFormatLimit: 0.0
+    property real shortFormatLimit: 0.0
+    property real longFormatLimit: 0.0
 
     // ommit minimum and maximum date values
     function reset(date) {
@@ -30,8 +30,19 @@ ListModel {
         }
     }
 
+    function updateLimits(label, margin, locale) {
+        label.text = '9999';
+        narrowFormatLimit = label.paintedWidth + 2 * margin;
+        shortFormatLimit = longFormatLimit = 0.0;
+        for (var day = 1; day <= 7; day++) {
+            label.text = '99 ' + locale.dayName(day, Locale.ShortFormat)
+            shortFormatLimit = Math.max(label.paintedWidth + 2 * margin, shortFormatLimit);
+            label.text = '99 ' + locale.dayName(day, Locale.LongFormat)
+            longFormatLimit = Math.max(label.paintedWidth + 2 * margin, longFormatLimit);
+        }
+    }
+
     function update(date) {
-        print(1)
         var newDaysCount = date.daysInMonth(year, month);
         var modelCount = count;
         var daysDiff = newDaysCount - modelCount;
@@ -45,26 +56,26 @@ ListModel {
     }
 
     function indexOf(date) {
-        print("getIndexTo "+date.getDate())
         return date.getDate() - 1;
     }
 
-    function dateFromModel(date, index) {
+    function dateFromIndex(date, index) {
         var newDate = new Date(date);
         newDate.setDate(index + 1);
         return newDate;
     }
 
-    function text(date, value, format, locale) {
+    function text(date, value, width, locale) {
         var thisDate = new Date(date);
         thisDate.setDate(value + 1);
-        switch (format) {
-        case "long":
+
+        if (width >= longFormatLimit) {
             return Qt.formatDate(thisDate, "dd ") + locale.dayName(thisDate.getDay(), Locale.LongFormat);
-        case "short":
-            return Qt.formatDate(thisDate, "dd ") + locale.dayName(thisDate.getDay(), Locale.ShortFormat);
-        default:
-            return Qt.formatDate(thisDate, "dd");
         }
+
+        if (width >= shortFormatLimit) {
+            return Qt.formatDate(thisDate, "dd ") + locale.dayName(thisDate.getDay(), Locale.ShortFormat);
+        }
+        return Qt.formatDate(thisDate, "dd");
     }
 }

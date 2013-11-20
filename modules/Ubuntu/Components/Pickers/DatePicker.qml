@@ -22,8 +22,7 @@ import "../" 0.1
     \qmltype DatePicker
     \inqmlmodule Ubuntu.Components.Pickers 0.1
     \ingroup ubuntu-pickers
-    \brief DatePicker component provides full date, month or week number picking
-    functionality.
+    \brief DatePicker component provides full date or month picking functionality.
 
     DatePicker combines up to three Picker elements providing different date value
     selection possibilities. It can be used to select full date (year, month, day
@@ -155,8 +154,8 @@ StyledItem {
     id: datePicker
 
     /*!
-      Specifies the picker mode, whether it should be used for date ("Date"),
-      month ("Month") or week ("Week") picking.
+      Specifies the picker mode, whether it should be used for date ("Date") or
+      month ("Month") picking.
       The default value is "Date".
       */
     property string mode: "Date"
@@ -179,9 +178,8 @@ StyledItem {
       zero year value set. If the distance between maximum and minimum is zero
       years, the year picker will be shown disabled.
 
-      The mid picker (for month and week value picking) will be circular if the
-      distance between maximum and minimum is at least one year, or if the maximum
-      date value is zero.
+      The month picker will be circular if the distance between maximum and minimum
+      is at least one year, or if the maximum date value is zero.
 
       The default values are the current date for the minimum, and zero value
       for maximum.
@@ -222,20 +220,19 @@ StyledItem {
       by setting a different Locale object.
       \qml
       DatePicker {
-           locale: Qt.locale("de_DE")
+           locale: Qt.locale("hu_HU")
       }
       \endqml
       */
-    property var locale: Qt.locale("hu_HU")
+    property var locale: Qt.locale()
 
     style: Theme.createStyleComponent("DatePickerStyle.qml", datePicker)
 
-    implicitWidth: units.gu(40)
+    implicitWidth: units.gu(36)
     implicitHeight: {
         var h = Qt.inputMethod.keyboardRectangle.height;
         return (h > 0) ? h : units.gu(20);
     }
-
 
     /*! \internal */
     onLocaleChanged: internals.resetPickers()
@@ -245,9 +242,13 @@ StyledItem {
     onMaximumChanged: { internals.resetPickers() }
     /*! \internal */
     onWidthChanged: {
-        // clamp to 3 (or 2) times the minimum Picker width
-        var tumblers = 2 + ((mode === "Date") ? 1 : 0);
-        width = Math.max(width, tumblers * internals.minimumWidth);
+        // use dayPicker narrowFormatLimit even if the dayPicker is hidden
+        // and clamp the width so it cannot have less width that the sum of
+        // the three tumblers' narrowFormatLimit
+        var minWidth = yearPicker.model.narrowFormatLimit +
+                monthPicker.model.narrowFormatLimit +
+                dayPicker.model.narrowFormatLimit;
+        width = Math.max(width, minWidth);
     }
     /*! \internal */
     onModeChanged: internals.resetPickers();
@@ -257,7 +258,6 @@ StyledItem {
         internals.arrangeTumblers();
         internals.completed = true;
         internals.resetPickers();
-        internals.initializeLimits();
     }
 
     // tumblers, will be reparented under Positioner on completion depending
@@ -268,7 +268,7 @@ StyledItem {
         completed: internals.completed
         model: YearModel{}
         updatePickerWhenChanged: dayPicker
-        width: internals.minimumWidth
+        width: Math.max(parent.width * 0.24, model.narrowFormatLimit)
     }
 
     DatePickerTemplate {
@@ -276,10 +276,8 @@ StyledItem {
         picker: datePicker
         completed: internals.completed
         updatePickerWhenChanged: dayPicker
-        model: MonthModel {
-            mode: datePicker.mode
-        }
-        width: Math.max(datePicker.width - yearPicker.width - dayPicker.width, internals.minimumWidth)
+        model: MonthModel {}
+        width: Math.max(parent.width - yearPicker.width - dayPicker.width, model.narrowFormatLimit)
     }
 
     DatePickerTemplate {
@@ -288,7 +286,16 @@ StyledItem {
         visible: datePicker.mode === "Date"
         completed: internals.completed
         model: DayModel{}
-        width: (visible) ? internals.minimumWidth : 0
+        width: {
+            if (!visible) {
+                return 0;
+            }
+            var w = Math.max(parent.width * 0.37, model.narrowFormatLimit);
+            if (w < model.longFormatLimit && w >= model.shortFormatLimit) {
+                return model.shortFormatLimit;
+            }
+            return w;
+        }
     }
 
     // tumbler positioner
@@ -305,18 +312,6 @@ StyledItem {
         property bool completed: false
         property real margin: units.gu(1.5)
 
-        property int minimumWidth
-        property int minimumTextWidth
-        /*
-          * No month number beside the month name.
-          * Use month number if the name short month name does not fit.
-          * ~27% for year picker
-          ~35% for month picker
-          the rest for day picker
-
-          * drop WeekPicker for now
-          */
-
         /*
           Resets the pickers. Pickers will update their models with the given date,
           minimum and maximum values.
@@ -325,33 +320,10 @@ StyledItem {
             if (!completed) return;
             // turn off completion for a while
             completed = false;
-            yearPicker.resetModel(textSizer);
-            monthPicker.resetModel(textSizer);
-            dayPicker.resetModel(textSizer);
+            yearPicker.resetModel(textSizer, margin);
+            monthPicker.resetModel(textSizer, margin);
+            dayPicker.resetModel(textSizer, margin);
             completed = true;
-        }
-
-        /*
-          Initializes the size limits and formats.
-          */
-        function initializeLimits() {
-            // Date mode has ~27% proportion for Year and Day pickers, and the rest for Month picker;
-            // for Month and Week modes is split in between 27% and 73% in between Year and Month/Week
-            // pickers
-//            if (datePicker.mode === "Date") {
-//                yearPicker.limits = new DateUtils.PickerSize(textSizer, "Years", margin, 0.27);
-//                monthPicker.limits = new DateUtils.PickerSize(textSizer, "Months", margin, 0.46);
-//                yearPicker.limits = new DateUtils.PickerSize(textSizer, "Days", margin, 0.27);
-//            } else {
-//                yearPicker.limits = new DateUtils.PickerSize(textSizer, "Years", margin, 0.27);
-//                monthPicker.limits = new DateUtils.PickerSize(textSizer, (datePicker.mode == "Week" ? "Weeks" : "Months"), margin, 0.73);
-//            }
-
-            textSizer.text = "9999"
-            minimumWidth = textSizer.paintedWidth + 2 * margin;
-            yearPicker.limits = new DateUtils.PickerLimits(textSizer, "Years", margin, minimumWidth);
-            monthPicker.limits = new DateUtils.PickerLimits(textSizer, (mode == "Week" ? "Weeks" : "Months"), margin, minimumWidth);
-            dayPicker.limits = new DateUtils.PickerLimits(textSizer, "Days", margin, minimumWidth);
         }
 
         /*

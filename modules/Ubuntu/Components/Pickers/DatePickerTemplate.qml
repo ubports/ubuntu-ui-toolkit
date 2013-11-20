@@ -19,20 +19,34 @@ import "dateUtils.js" as DateUtils
 import "../" 0.1
 
 /*
-  Picker template for DatePicker
-  It is expected from the model to have the following API:
+  Picker template component for DatePicker
+  It is expected from the model used to have the following API:
   ListModel {
+
       property bool circular: to specify whether the model data is made for circular Picker
-      property real minimumTextWidth:
-      property real maximumTextWidth: specify the minimum and maximum width the model's text
-                    size can be
-      [property bool autoExtend: to specify whether the model can extend itself (non-circular model only)]
-      function reset(date, minimum, maximum) - reset model with the given date
-      function updateLimits(label, locale) - updates the minimum and maximum width using a Label and locale
+
+      property real narrowFormatLimit:
+      property real shortFormatLimit:
+      property real longFormatLimit: specifies the text width for the narrow, short and long
+                    formats
+
+      [property bool autoExtend: to specify whether the model can extend itself (non-circular
+                    model only)]
+
+      function reset(date, minimum, maximum) - reset model with the given date, minimum and
+                    maximum date values
+
+      function updateLimits(label, locale) - updates the minimum and maximum width using a
+                    Label and locale
+
       function indexOf(date) - returns the model index of the date
-      function dateFromModel(date, index) - creates a Date object from the model index, relative to the date
-      function text(date, value, format) - returns the string of the model index relative to the date,
-                    using the specified format (long, short, narrow)
+
+      function dateFromIndex(date, index) - creates a Date object from the model index, relative
+                    to the date
+
+      function text(date, value, width, locale) - returns the date string for the value relative
+                    to the date, which fits into the given width. Uses the locale to fetch the
+                    localized date string.
   }
   */
 Picker {
@@ -40,8 +54,6 @@ Picker {
     property Item picker
     property bool completed: false
     property var updatePickerWhenChanged: null
-    property string format: limits ? limits.format(width) : "long"
-    property var limits: null
     property int pickerIndex: Positioner.index
 
     style: Theme.createStyleComponent("FlatPickerStyle.qml", item)
@@ -51,9 +63,8 @@ Picker {
     circular: model.circular
 
     delegate: PickerDelegate {
-        style: Item{}
         Label {
-            text: item.model.text(picker.date, modelData, format, picker.locale);
+            text: item.model.text(picker.date, modelData, item.width, picker.locale);
             color: Theme.palette.normal.backgroundText
             anchors.fill: parent
             verticalAlignment: Text.AlignVCenter
@@ -68,17 +79,20 @@ Picker {
 
     onSelectedIndexChanged: {
         if (!completed || !visible) return;
-        picker.date = model.dateFromModel(picker.date, selectedIndex);
+        picker.date = model.dateFromIndex(picker.date, selectedIndex);
         if (updatePickerWhenChanged) {
             updatePickerWhenChanged.update(picker.date);
         }
     }
 
-    function resetModel(textSizer) {
+    /*
+      Resets the Picker model and updates the new format limits.
+      */
+    function resetModel(label, margin) {
         if (!visible) return;
 
         model.reset(picker.date, picker.minimum, picker.maximum);
-//        model.updateLimits(textSizer, picker.locale);
+        model.updateLimits(label, margin, picker.locale);
         selectedIndex = model.indexOf(picker.date);
     }
 }

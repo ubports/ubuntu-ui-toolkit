@@ -17,12 +17,15 @@
 import QtQuick 2.0
 
 ListModel {
+    property bool circular: false
+    property real narrowFormatLimit: 0.0
+    property real shortFormatLimit: 0.0
+    property real longFormatLimit: 0.0
+
+    // local properties
     property int from
     property int to
     property bool autoExtend
-    property bool circular: false
-    property real minimumTextWidth: 0.0
-    property real maximumTextWidth: 0.0
 
     function reset(date, minimum, maximum) {
         clear();
@@ -33,9 +36,9 @@ ListModel {
     }
 
     // ommit locale, we don't need that yet
-    function updateLimits(textSizer) {
+    function updateLimits(textSizer, margin) {
         textSizer.text = "9999";
-        minimumTextWidth = maximumTextWidth = textSizer.paintedWidth;
+        narrowFormatLimit = shortFormatLimit = longFormatLimit = textSizer.paintedWidth + 2 * margin;
     }
 
     function extend(baseYear, items) {
@@ -55,13 +58,14 @@ ListModel {
         return date.getFullYear() - from;
     }
 
-    function dateFromModel(date, index) {
+    function dateFromIndex(date, index) {
         var newDate = new Date(date);
         newDate.setFullYear(index + from);
         return newDate;
     }
 
-    function text(date, value, format) {
+    // ommit format
+    function text(date, value) {
         return value;
     }
 }

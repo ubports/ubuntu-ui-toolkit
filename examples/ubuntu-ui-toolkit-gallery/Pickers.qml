@@ -187,7 +187,8 @@ Template {
                     minimum: new Date(2013, 8)
                     maximum: new Date(2014, 0)
                     date: new Date(2013, 9, 1)
-//                    mode: "Week"
+//                    mode: "Month"
+                    locale: Qt.locale("hu_HU")
                     onDateChanged: print("picked date="+date)
                 }
                 Slider {
