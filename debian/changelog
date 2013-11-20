@@ -1,3 +1,29 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20131118-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * Support for dynamically inserting/moving/removing tabs in Tabs. .
+    (LP: #1124071)
+
+  [ Leo Arias ]
+  * Fixes for swipe_to_delete on autopilot list items emulator: Take
+    into account items without confirmation. Take into account items
+    that are destroyed on removal. (LP: #1245651, #1249221)
+
+  [ Albert Astals ]
+  * InverseMouseArea: Do not filter events if disabled.
+
+  [ Robert Bruce Park ]
+  * Support both Python 2 and 3 in the autopilot tests.
+
+  [ Christian Dywan ]
+  * Track magic window with a property signal instead of defining it.
+    (LP: #1251436)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 837
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 18 Nov 2013 17:13:33 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20131108.4-0ubuntu1) trusty; urgency=low
 
   [ Robert Bruce Park ]
