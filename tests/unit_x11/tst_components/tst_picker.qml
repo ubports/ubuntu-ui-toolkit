@@ -120,9 +120,6 @@ Item {
         function test_0_delegate() {
             compare(picker.delegate, null, "default delegate");
         }
-        function test_0_highlight() {
-            compare(picker.highlight, null, "default highlight");
-        }
         function test_0_selectedIndex() {
             compare(picker.selectedIndex, 0, "default selectedIndex");
         }

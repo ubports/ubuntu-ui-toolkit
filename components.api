@@ -536,7 +536,6 @@ StyledItem
     property bool circular
     property var model
     property Component delegate
-    property Component highlight
     property int selectedIndex
     property bool live
     property int __clickedIndex
