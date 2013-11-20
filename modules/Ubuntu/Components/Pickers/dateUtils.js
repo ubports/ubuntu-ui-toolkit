@@ -15,6 +15,7 @@
  */
 
 .pragma library
+.import QtQuick 2.0 as Quick
 
 /*
   Extending Date with few prototypes
@@ -143,6 +144,80 @@ function PickerLimits(label, contentType, margin, minimumWidth) {
         stack.push({width: this.getTextSize("99 Wednesday"), format: "long"})
         stack.push({width: this.getTextSize("99 Wed"), format: "short"})
         stack.push({width: this.getTextSize("99"), format: "narrow"})
+        break;
+    }
+}
+
+// Calculate text format based on width fitting into the tumbler
+// the contentType parameter can be "Years", "Months", "Weeks" or "Days"
+function PickerSize(labelHelper, contentType, margin, proportion) {
+    var min = 0.0;
+    var max = 0.0;
+    var stack = new Array(0);
+
+    // the function returns the date string based on the amount can fit into
+    // the size
+    this.fitText = function(theDate, proposedSize) {
+        // try the maximum text
+        switch (contentType) {
+        case "Years":
+            return theDate.getFullyear();
+        case "Months":
+
+            break;
+        case "Weeks":
+            break;
+        case "Days":
+            break;
+        default:
+            return undefined;
+        }
+    }
+
+    function monthFormat(format) {
+        switch (format) {
+        case Quick.Locale.NarrowFormat:
+            return "MM";
+        case Quick.Locale.ShortFormat:
+            return "MMMM";
+        default:
+            return "MM MMMM";
+        }
+    }
+
+    function monthText(month, format) {
+        if (format === Quick.Locale.NarrowFormat) {
+            return Quick.Qt.locale().monthName(month, Quick.Locale.ShortFormat);
+        }
+        return '99' + Quick.Qt.locale().monthName(month, format);
+    }
+
+    function monthSizes(format) {
+        max = Number.MAX_VALUE;
+        var date = new Date();
+        for (var month = 0; month < 12; month++) {
+            date.setMonth(month, 1);
+            labelHelper.text = Quick.Qt.formatDate(date, monthFormat(Quick.Locale.NarrowFormat));
+            print(labelHelper.text)
+            min = Math.max(labelHelper.paintedWidth + 2 * margin, min);
+            labelHelper.text = Quick.Qt.formatDate(date, monthFormat(Quick.Locale.LongFormat));
+            print(labelHelper.text)
+            max = Math.min(labelHelper.paintedWidth + 2 * margin, max);
+        }
+    }
+
+    switch (contentType) {
+    case "Years":
+        labelHelper.text = '9999';
+        min = max = labelHelper.paintedWidth + 2 * margin;
+        break;
+    case "Months":
+        min = monthSizes(Quick.Locale.NarrowFormat);
+        max = monthSizes(Quick.Locale.LongFormat);
+        break;
+    case "Weeks":
+        break;
+    case "Days":
         break;
     }
 }

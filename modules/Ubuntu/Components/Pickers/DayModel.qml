@@ -52,14 +52,14 @@ ListModel {
         return newDate;
     }
 
-    function text(date, value, format) {
+    function text(date, value, format, locale) {
         var thisDate = new Date(date);
         thisDate.setDate(value + 1);
         switch (format) {
         case "long":
-            return Qt.formatDate(thisDate, "dd ") + Qt.locale().dayName(thisDate.getDay(), Locale.LongFormat);
+            return Qt.formatDate(thisDate, "dd ") + locale.dayName(thisDate.getDay(), Locale.LongFormat);
         case "short":
-            return Qt.formatDate(thisDate, "dd ") + Qt.locale().dayName(thisDate.getDay(), Locale.ShortFormat);
+            return Qt.formatDate(thisDate, "dd ") + locale.dayName(thisDate.getDay(), Locale.ShortFormat);
         default:
             return Qt.formatDate(thisDate, "dd");
         }

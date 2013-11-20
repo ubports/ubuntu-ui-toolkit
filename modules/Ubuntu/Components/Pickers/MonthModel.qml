@@ -83,7 +83,8 @@ ListModel {
         }
     }
 
-    function text(date, value, format) {
+    function text(date, value, format, locale) {
+        print(locale)
         if (mode === "Week") {
             value++;
             var startDate = date.startDateOfWeek(value);
@@ -108,11 +109,11 @@ ListModel {
                 var delegateDate = new Date(date);
                 delegateDate.setDate(1);
                 delegateDate.setMonth(value);
-                return Qt.formatDate(delegateDate, "MM ") + Qt.locale().standaloneMonthName(value, Locale.LongFormat);
+                return Qt.formatDate(delegateDate, "MM ") + locale.monthName(value, Locale.LongFormat);
             case "short":
-                return Qt.locale().standaloneMonthName(value, Locale.LongFormat);
+                return locale.monthName(value, Locale.LongFormat);
             default:
-                return Qt.locale().standaloneMonthName(value, Locale.ShortFormat);
+                return locale.monthName(value, Locale.ShortFormat);
             }
         }
     }

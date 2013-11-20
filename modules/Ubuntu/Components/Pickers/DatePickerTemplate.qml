@@ -49,7 +49,7 @@ Picker {
     delegate: PickerDelegate {
         style: Item{}
         Label {
-            text: item.model.text(picker.date, modelData, format);
+            text: item.model.text(picker.date, modelData, format, picker.locale);
             color: Theme.palette.normal.backgroundText
             anchors.fill: parent
             verticalAlignment: Text.AlignVCenter

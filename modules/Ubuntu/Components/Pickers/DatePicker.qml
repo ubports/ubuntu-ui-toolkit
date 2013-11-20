@@ -216,6 +216,18 @@ StyledItem {
       */
     property bool live: false
 
+    /*
+      \qmlproperty Locale locale
+      The property defines the locale used in the picker. This can be overridden
+      by setting a different Locale object.
+      \qml
+      DatePicker {
+           locale: Qt.locale("de_DE")
+      }
+      \endqml
+      */
+    property var locale: Qt.locale()
+
     style: Theme.createStyleComponent("DatePickerStyle.qml", datePicker)
 
     implicitWidth: units.gu(40)
@@ -225,6 +237,8 @@ StyledItem {
     }
 
 
+    /*! \internal */
+    onLocaleChanged: internals.resetPickers()
     /*! \internal */
     onMinimumChanged: { internals.resetPickers() }
     /*! \internal */
@@ -286,11 +300,11 @@ StyledItem {
     }
 
     // component to calculate text fitting
-    Label { id: textSizer; visible: false }
+    Label { id: textSizer; visible: false; scale: 1.2 }
     QtObject {
         id: internals
         property bool completed: false
-        property real margin: units.gu(0.5)
+        property real margin: units.gu(0.8)
 
         property int minimumWidth
         property int minimumTextWidth
@@ -313,36 +327,44 @@ StyledItem {
           Initializes the size limits and formats.
           */
         function initializeLimits() {
+            // Date mode has ~27% proportion for Year and Day pickers, and the rest for Month picker;
+            // for Month and Week modes is split in between 27% and 73% in between Year and Month/Week
+            // pickers
+//            if (datePicker.mode === "Date") {
+//                yearPicker.limits = new DateUtils.PickerSize(textSizer, "Years", margin, 0.27);
+//                monthPicker.limits = new DateUtils.PickerSize(textSizer, "Months", margin, 0.46);
+//                yearPicker.limits = new DateUtils.PickerSize(textSizer, "Days", margin, 0.27);
+//            } else {
+//                yearPicker.limits = new DateUtils.PickerSize(textSizer, "Years", margin, 0.27);
+//                monthPicker.limits = new DateUtils.PickerSize(textSizer, (datePicker.mode == "Week" ? "Weeks" : "Months"), margin, 0.73);
+//            }
+
             textSizer.text = "9999"
             minimumWidth = textSizer.paintedWidth + 2 * margin;
+            yearPicker.limits = new DateUtils.PickerLimits(textSizer, "Years", margin, minimumWidth);
             monthPicker.limits = new DateUtils.PickerLimits(textSizer, (mode == "Week" ? "Weeks" : "Months"), margin, minimumWidth);
             dayPicker.limits = new DateUtils.PickerLimits(textSizer, "Days", margin, minimumWidth);
         }
 
         /*
             Detects the tumbler order from the date format of the locale
-            Examples: English 'dddd, MMMM d, yyyy', Finnish 'dddd d. MMMM yyyy'
-            Hungarian 'yyyy. MMMM d., dddd'
           */
         function arrangeTumblers() {
-            var format = Qt.locale().dateFormat();
-            // replace all whitespaces with comma to ease separation
-            format = format.replace(/\s/g, ",");
-            format = format.split(',');
-
-            // loop through the format and consider only two-lettered format specifiers
-            // to decide the position of the tumbler
+            // use short format to exclude any extra characters
+            print(datePicker.locale + " " + datePicker.locale.dateFormat(Locale.ShortFormat));
+            var format = datePicker.locale.dateFormat(Locale.ShortFormat).split(/\W/g);
+            // loop through the format to decide the position of the tumbler
             for (var i in format) {
                 if (!format[i].length) continue;
                 // check the first two characters
-                switch (format[i].substr(0, 2).toLowerCase()) {
-                case 'yy':
+                switch (format[i].substr(0, 1).toLowerCase()) {
+                case 'y':
                     yearPicker.parent = positioner;
                     break;
-                case 'mm':
+                case 'm':
                     monthPicker.parent = positioner;
                     break;
-                case 'dd':
+                case 'd':
                     dayPicker.parent = positioner;
                     break;
                 }
