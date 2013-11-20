@@ -38,6 +38,12 @@ Item {
     // The time of inactivity before leaving selection mode automatically
     property int deactivateTime: 5000
 
+    /*
+      The function assures the visuals stay on the selected tab. This can be called
+      by the stack components holding the tabs (i.e. Tabs, ListView, etc) and only
+      when the changes happen on the list element values, which is not reported
+      automaytically through ListModel changes.
+      */
     function sync() {
         buttonView.selectButton(styledItem.selectedIndex);
     }
