@@ -38,7 +38,7 @@ Picker {
     property var updatePickerWhenChanged: null
     property string format: limits ? limits.format(width) : "long"
     property var limits: null
-    property int pickerIndex: 0
+    property int pickerIndex: Positioner.index
 
     style: Theme.createStyleComponent("FlatPickerStyle.qml", item)
 

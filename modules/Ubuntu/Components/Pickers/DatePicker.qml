@@ -326,30 +326,24 @@ StyledItem {
           */
         function arrangeTumblers() {
             var format = Qt.locale().dateFormat();
-            print(format)
             // replace all whitespaces with comma to ease separation
             format = format.replace(/\s/g, ",");
-            print(format.split(','))
             format = format.split(',');
 
             // loop through the format and consider only two-lettered format specifiers
             // to decide the position of the tumbler
-            var pickerIndex = 0;
             for (var i in format) {
                 if (!format[i].length) continue;
                 // check the first two characters
                 switch (format[i].substr(0, 2).toLowerCase()) {
                 case 'yy':
                     yearPicker.parent = positioner;
-                    yearPicker.pickerIndex = pickerIndex++;
                     break;
                 case 'mm':
                     monthPicker.parent = positioner;
-                    monthPicker.pickerIndex = pickerIndex++;
                     break;
                 case 'dd':
                     dayPicker.parent = positioner;
-                    dayPicker.pickerIndex = pickerIndex++;
                     break;
                 }
             }
