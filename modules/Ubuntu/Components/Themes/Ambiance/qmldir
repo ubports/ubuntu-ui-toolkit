@@ -26,3 +26,4 @@ DialerStyle 0.1 DialerStyle.qml
 DialerHandStyle 0.1 DialerHandStyle.qml
 DatePickerStyle 0.1 DatePickerStyle.qml
 FlatPickerStyle 0.1 FlatPickerStyle.qml
+internal HighlightMagnifier HighlightMagnifier.qml
