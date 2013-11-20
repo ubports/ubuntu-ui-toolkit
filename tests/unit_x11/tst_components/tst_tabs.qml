@@ -199,6 +199,13 @@ Item {
             compare(newTab.index, tabs.count - 1, "the tab is the last one");
         }
 
+        function test_z_addExternalTab() {
+            var newTab = tabs.addTab("External Tab", Qt.resolvedUrl("ExternalTab.qml"));
+            compare((newTab !== null), true, "tab added");
+            compare(newTab.active, false, "the inserted tab is inactive");
+            compare(newTab.index, tabs.count - 1, "the tab is the last one");
+        }
+
         function test_z_addTabWithDefaultTitle() {
             var newTab = tabs.addTab("", dynamicTab);
             compare((newTab !== null), true, "tab added");
@@ -208,6 +215,14 @@ Item {
         function test_z_insertTab() {
             var tabIndex = Math.ceil(tabs.count / 2);
             var newTab = tabs.insertTab(tabIndex, "Inserted tab", dynamicTab);
+            compare((newTab !== null), true, "tab inserted");
+            compare(newTab.index, tabIndex, "this is the first tab");
+            compare(tabs.selectedTab !== newTab, true, "the new tab is not the active one");
+        }
+
+        function test_z_insertExternalTab() {
+            var tabIndex = Math.ceil(tabs.count / 2);
+            var newTab = tabs.insertTab(tabIndex, "Inserted External tab", Qt.resolvedUrl("ExternalTab.qml"));
             compare((newTab !== null), true, "tab inserted");
             compare(newTab.index, tabIndex, "this is the first tab");
             compare(tabs.selectedTab !== newTab, true, "the new tab is not the active one");

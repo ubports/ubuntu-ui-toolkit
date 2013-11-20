@@ -23,7 +23,6 @@ namespace C {
 #include <libintl.h>
 }
 
-#include <QtQml>
 #include <stdlib.h>
 #include <locale.h>
 

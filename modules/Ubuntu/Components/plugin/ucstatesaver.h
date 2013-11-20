@@ -20,7 +20,7 @@
 #define UCSTATESAVER_H
 
 #include <QtCore/QObject>
-#include <QtQml>
+#include <QtQml/qqml.h>
 
 class UCStateSaverAttachedPrivate;
 class UCStateSaverAttached : public QObject
