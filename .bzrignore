@@ -11,4 +11,6 @@ tests/tst_*.qml.xml
 tests/unit*/tst_*/tst_[^.]*
 tests/unit*/testparser/testparser
 plugins.qmltypes
+po/*.mo
 examples/ubuntu-ui-toolkit-gallery/po/*.mo
+tests/unit/tst_i18n/locale/en/LC_MESSAGES/*.mo
