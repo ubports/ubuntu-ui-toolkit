@@ -36,7 +36,7 @@ Item {
     /*!
       Highlight color.
       */
-    property color highlightColor: "red"
+    property color highlightColor: UbuntuColors.orange
     /*!
       Scale of the highlight item
       */
@@ -49,10 +49,6 @@ Item {
       Holds the height for the delegate items.
       */
     property real itemHeight: units.gu(4)
-    /*!
-      Color for the overlay. The overlay is a gradient which turns to white over the highlight.
-      */
-    property color overlayColor: UbuntuColors.warmGrey
 
     // private properties
     property bool completed: false
@@ -214,33 +210,6 @@ Item {
                     loader.item.currentIndex = styledItem.selectedIndex;
                     moveToIndex(styledItem.selectedIndex);
                 }
-            }
-
-            // overlay
-            Rectangle {
-                opacity: control.overlayColor !== "#00000000" ? 1.0 : 0.0
-                gradient: Gradient {
-                    GradientStop {
-                        position: 0
-                        color: control.overlayColor
-                    }
-
-                    GradientStop {
-                        position: 0.40
-                        color: "#00000000"
-                    }
-
-                    GradientStop {
-                        position: 0.63
-                        color: "#00000000"
-                    }
-
-                    GradientStop {
-                        position: 1
-                        color: control.overlayColor
-                    }
-                }
-                anchors.fill: parent
             }
         }
         // highlight
