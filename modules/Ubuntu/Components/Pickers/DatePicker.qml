@@ -226,7 +226,7 @@ StyledItem {
       }
       \endqml
       */
-    property var locale: Qt.locale()
+    property var locale: Qt.locale("hu_HU")
 
     style: Theme.createStyleComponent("DatePickerStyle.qml", datePicker)
 
@@ -279,7 +279,7 @@ StyledItem {
         model: MonthModel {
             mode: datePicker.mode
         }
-        width: Math.max(parent.width - yearPicker.width - dayPicker.width, internals.minimumWidth)
+        width: Math.max(datePicker.width - yearPicker.width - dayPicker.width, internals.minimumWidth)
     }
 
     DatePickerTemplate {
@@ -288,8 +288,7 @@ StyledItem {
         visible: datePicker.mode === "Date"
         completed: internals.completed
         model: DayModel{}
-        width: (visible && limits && (desiredWidth > 0.0)) ? limits.clampWidth(desiredWidth) : 0
-        property real desiredWidth: (datePicker.width - yearPicker.width) * 40 / 100
+        width: (visible) ? internals.minimumWidth : 0
     }
 
     // tumbler positioner
@@ -304,10 +303,19 @@ StyledItem {
     QtObject {
         id: internals
         property bool completed: false
-        property real margin: units.gu(0.8)
+        property real margin: units.gu(1.5)
 
         property int minimumWidth
         property int minimumTextWidth
+        /*
+          * No month number beside the month name.
+          * Use month number if the name short month name does not fit.
+          * ~27% for year picker
+          ~35% for month picker
+          the rest for day picker
+
+          * drop WeekPicker for now
+          */
 
         /*
           Resets the pickers. Pickers will update their models with the given date,
@@ -317,9 +325,9 @@ StyledItem {
             if (!completed) return;
             // turn off completion for a while
             completed = false;
-            yearPicker.resetModel();
-            monthPicker.resetModel();
-            dayPicker.resetModel();
+            yearPicker.resetModel(textSizer);
+            monthPicker.resetModel(textSizer);
+            dayPicker.resetModel(textSizer);
             completed = true;
         }
 

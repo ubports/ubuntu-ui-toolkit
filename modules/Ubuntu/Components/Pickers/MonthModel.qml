@@ -22,6 +22,8 @@ ListModel {
     property int to
     property int distance
     property bool circular: (mode === "Week") ? (distance >= 52) : (distance >= 11)
+    property real minimumTextWidth: 0.0
+    property real maximumTextWidth: 0.0
 
     function reset(date, minimum, maximum) {
         clear();
@@ -56,6 +58,20 @@ ListModel {
             for (var i = from; i <= from + to; i++) {
                 modelDate.setMonth(i);
                 append({"month": modelDate.getMonth()});
+            }
+        }
+    }
+
+    function updateLimits(textSizer, locale) {
+        maximumTextWidth = Number.MAX_VALUE;
+        if (mode === "Week") {
+
+        } else {
+            for (var month = 0; month < 12; month++) {
+                textSizer.text = locale.monthName(month, Locale.ShortFormat);
+                minimumTextWidth = Math.max(textSizer.paintedWidth, minimumTextWidth);
+                textSizer.text = locale.monthName(month, Locale.LongFormat);
+                maximumTextWidth = Math.min(textSizer.paintedWidth, maximumTextWidth);
             }
         }
     }

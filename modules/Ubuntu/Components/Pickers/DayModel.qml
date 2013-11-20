@@ -19,7 +19,10 @@ import QtQuick 2.0
 ListModel {
     property bool completed
     property bool circular: true
+    property real minimumTextWidth: 0.0
+    property real maximumTextWidth: 0.0
 
+    // ommit minimum and maximum date values
     function reset(date) {
         clear();
         for (var i = 0; i < date.daysInMonth(); i++) {

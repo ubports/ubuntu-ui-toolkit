@@ -52,7 +52,7 @@ Item {
     /*!
       Color for the overlay. The overlay is a gradient which turns to white over the highlight.
       */
-    property color overlayColor: UbuntuColors.warmGrey
+    property color overlayColor: "#00000000"//UbuntuColors.warmGrey
 
     // private properties
     property bool completed: false

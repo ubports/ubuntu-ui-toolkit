@@ -23,8 +23,12 @@ import "../" 0.1
   It is expected from the model to have the following API:
   ListModel {
       property bool circular: to specify whether the model data is made for circular Picker
+      property real minimumTextWidth:
+      property real maximumTextWidth: specify the minimum and maximum width the model's text
+                    size can be
       [property bool autoExtend: to specify whether the model can extend itself (non-circular model only)]
-      function reset(date, minimum, maximum) - reset model with
+      function reset(date, minimum, maximum) - reset model with the given date
+      function updateLimits(label, locale) - updates the minimum and maximum width using a Label and locale
       function indexOf(date) - returns the model index of the date
       function dateFromModel(date, index) - creates a Date object from the model index, relative to the date
       function text(date, value, format) - returns the string of the model index relative to the date,
@@ -70,10 +74,11 @@ Picker {
         }
     }
 
-    function resetModel() {
+    function resetModel(textSizer) {
         if (!visible) return;
 
         model.reset(picker.date, picker.minimum, picker.maximum);
+//        model.updateLimits(textSizer, picker.locale);
         selectedIndex = model.indexOf(picker.date);
     }
 }

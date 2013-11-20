@@ -21,6 +21,8 @@ ListModel {
     property int to
     property bool autoExtend
     property bool circular: false
+    property real minimumTextWidth: 0.0
+    property real maximumTextWidth: 0.0
 
     function reset(date, minimum, maximum) {
         clear();
@@ -28,6 +30,12 @@ ListModel {
         to = (maximum < minimum) ? 0 : maximum.getFullYear();
         autoExtend = !maximum.isValid();
         extend(from, to - from);
+    }
+
+    // ommit locale, we don't need that yet
+    function updateLimits(textSizer) {
+        textSizer.text = "9999";
+        minimumTextWidth = maximumTextWidth = textSizer.paintedWidth;
     }
 
     function extend(baseYear, items) {

@@ -20,6 +20,5 @@ import Ubuntu.Components.ListItems 0.1
 
 PickerStyle {
     hasFrame: false
-    backgroundColor: (styledItem.pickerIndex % 2) ? Qt.rgba(0, 0, 0, 0.03) : Qt.rgba(0, 0, 0, 0.04)
-    overlayColor: "#00000000"
+    backgroundColor: (styledItem.pickerIndex % 2) ? Qt.rgba(0, 0, 0, 0.03) : Qt.rgba(0, 0, 0, 0.07)
 }
