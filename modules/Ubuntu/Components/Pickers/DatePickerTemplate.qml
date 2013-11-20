@@ -38,6 +38,7 @@ Picker {
     property var updatePickerWhenChanged: null
     property string format: limits ? limits.format(width) : "long"
     property var limits: null
+    property int pickerIndex: 0
 
     style: Theme.createStyleComponent("FlatPickerStyle.qml", item)
 
@@ -50,22 +51,6 @@ Picker {
         Label {
             text: item.model.text(picker.date, modelData, format);
             color: Theme.palette.normal.backgroundText
-            anchors.fill: parent
-            verticalAlignment: Text.AlignVCenter
-            horizontalAlignment: Text.AlignHCenter
-        }
-        Component.onCompleted: {
-            if (model && model.hasOwnProperty("autoExtend") && model.autoExtend && (index === (model.count - 1))) {
-                model.extend(modelData + 1);
-            }
-        }
-    }
-
-    highlight: PickerDelegate {
-        style: Item{}
-        Label {
-            text: item.model.text(picker.date, modelData, format);
-            color: "red"
             anchors.fill: parent
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter

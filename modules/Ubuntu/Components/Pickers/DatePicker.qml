@@ -226,9 +226,9 @@ StyledItem {
 
 
     /*! \internal */
-    onMinimumChanged: { internals.updateModels() }
+    onMinimumChanged: { internals.resetPickers() }
     /*! \internal */
-    onMaximumChanged: { internals.updateModels() }
+    onMaximumChanged: { internals.resetPickers() }
     /*! \internal */
     onWidthChanged: {
         // clamp to 3 (or 2) times the minimum Picker width
@@ -236,50 +236,53 @@ StyledItem {
         width = Math.max(width, tumblers * internals.minimumWidth);
     }
     /*! \internal */
-    onModeChanged: internals.updateModels();
+    onModeChanged: internals.resetPickers();
 
     Component.onCompleted: {
         if (minimum === undefined) minimum = date;
+        internals.arrangeTumblers();
         internals.completed = true;
-        internals.updateModels();
+        internals.resetPickers();
         internals.initializeLimits();
-        print(Qt.formatDate(new Date(), Qt.DefaultLocaleShortDate));
     }
 
-    // tumblers
+    // tumblers, will be reparented under Positioner on completion depending
+    // on the date format of the locale
+    DatePickerTemplate {
+        id: yearPicker
+        picker: datePicker
+        completed: internals.completed
+        model: YearModel{}
+        updatePickerWhenChanged: dayPicker
+        width: internals.minimumWidth
+    }
+
+    DatePickerTemplate {
+        id: monthPicker
+        picker: datePicker
+        completed: internals.completed
+        updatePickerWhenChanged: dayPicker
+        model: MonthModel {
+            mode: datePicker.mode
+        }
+        width: Math.max(parent.width - yearPicker.width - dayPicker.width, internals.minimumWidth)
+    }
+
+    DatePickerTemplate {
+        id: dayPicker
+        picker: datePicker
+        visible: datePicker.mode === "Date"
+        completed: internals.completed
+        model: DayModel{}
+        width: (visible && limits && (desiredWidth > 0.0)) ? limits.clampWidth(desiredWidth) : 0
+        property real desiredWidth: (datePicker.width - yearPicker.width) * 40 / 100
+    }
+
+    // tumbler positioner
     Row {
+        id: positioner
         parent: __styleInstance.hasOwnProperty("contentItem") ? __styleInstance.contentItem : datePicker
         anchors.fill: parent
-
-        DatePickerTemplate {
-            id: yearPicker
-            picker: datePicker
-            completed: internals.completed
-            model: YearModel{}
-            updatePickerWhenChanged: dayPicker
-            width: internals.minimumWidth
-        }
-
-        DatePickerTemplate {
-            id: monthPicker
-            picker: datePicker
-            completed: internals.completed
-            updatePickerWhenChanged: dayPicker
-            model: MonthModel {
-                mode: datePicker.mode
-            }
-            width: Math.max(parent.width - yearPicker.width - dayPicker.width, internals.minimumWidth)
-        }
-
-        DatePickerTemplate {
-            id: dayPicker
-            picker: datePicker
-            visible: datePicker.mode !== "Week"
-            completed: internals.completed
-            model: DayModel{}
-            width: (visible && limits && (desiredWidth > 0.0)) ? limits.clampWidth(desiredWidth) : 0
-            property real desiredWidth: (datePicker.width - yearPicker.width) * 40 / 100
-        }
     }
 
     // component to calculate text fitting
@@ -292,7 +295,11 @@ StyledItem {
         property int minimumWidth
         property int minimumTextWidth
 
-        function updateModels() {
+        /*
+          Resets the pickers. Pickers will update their models with the given date,
+          minimum and maximum values.
+          */
+        function resetPickers() {
             if (!completed) return;
             // turn off completion for a while
             completed = false;
@@ -301,11 +308,51 @@ StyledItem {
             dayPicker.resetModel();
             completed = true;
         }
+
+        /*
+          Initializes the size limits and formats.
+          */
         function initializeLimits() {
             textSizer.text = "9999"
             minimumWidth = textSizer.paintedWidth + 2 * margin;
             monthPicker.limits = new DateUtils.PickerLimits(textSizer, (mode == "Week" ? "Weeks" : "Months"), margin, minimumWidth);
             dayPicker.limits = new DateUtils.PickerLimits(textSizer, "Days", margin, minimumWidth);
+        }
+
+        /*
+            Detects the tumbler order from the date format of the locale
+            Examples: English 'dddd, MMMM d, yyyy', Finnish 'dddd d. MMMM yyyy'
+            Hungarian 'yyyy. MMMM d., dddd'
+          */
+        function arrangeTumblers() {
+            var format = Qt.locale().dateFormat();
+            print(format)
+            // replace all whitespaces with comma to ease separation
+            format = format.replace(/\s/g, ",");
+            print(format.split(','))
+            format = format.split(',');
+
+            // loop through the format and consider only two-lettered format specifiers
+            // to decide the position of the tumbler
+            var pickerIndex = 0;
+            for (var i in format) {
+                if (!format[i].length) continue;
+                // check the first two characters
+                switch (format[i].substr(0, 2).toLowerCase()) {
+                case 'yy':
+                    yearPicker.parent = positioner;
+                    yearPicker.pickerIndex = pickerIndex++;
+                    break;
+                case 'mm':
+                    monthPicker.parent = positioner;
+                    monthPicker.pickerIndex = pickerIndex++;
+                    break;
+                case 'dd':
+                    dayPicker.parent = positioner;
+                    dayPicker.pickerIndex = pickerIndex++;
+                    break;
+                }
+            }
         }
     }
 }
