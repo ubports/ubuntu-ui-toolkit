@@ -42,13 +42,16 @@ MainView {
         }
     }
 
-    TabBar {
-        id: tabBar
-        model: pages
-        anchors {
-            top: parent.top
-            left: parent.left
-            right: parent.right
+    Header {
+        id: header
+        contents: TabBar {
+            id: tabBar
+            model: pages
+            anchors {
+                top: parent.top
+                left: parent.left
+                right: parent.right
+            }
         }
     }
 
@@ -71,8 +74,12 @@ MainView {
     }
     ListView {
         id: list
-        anchors.fill: parent
-        anchors.topMargin: tabBar.height
+        anchors {
+            top: header.bottom
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+        }
         orientation: Qt.Horizontal
         model: pages
         delegate: tabComponent
