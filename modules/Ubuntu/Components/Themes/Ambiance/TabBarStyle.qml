@@ -277,7 +277,7 @@ Item {
         }
 
         function updateOffset(newOffset) {
-            if (!newOffset) return; // do not update the offset if its value is NaN
+            if (!newOffset) return; // do not update the offset when its value is NaN
             if (offset - newOffset < -1) newOffset = newOffset - 2;
             offset = newOffset;
         }
