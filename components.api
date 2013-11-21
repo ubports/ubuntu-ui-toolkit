@@ -207,7 +207,6 @@ PageTreeNode
 modules/Ubuntu/Components/TabBar.qml
 StyledItem
     property Item tabsItem
-    onTabsItemChanged
     property ListModel model
     property bool selectionMode
     property int selectedIndex
