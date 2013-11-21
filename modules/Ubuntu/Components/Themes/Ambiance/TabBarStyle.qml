@@ -317,6 +317,6 @@ Item {
     }
 
     Component.onCompleted: {
-        buttonView.selectButton(styledItem.selectedIndex);
+        tabBarStyle.sync();
     }
 }
