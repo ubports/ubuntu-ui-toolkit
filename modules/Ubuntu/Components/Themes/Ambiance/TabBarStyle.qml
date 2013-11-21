@@ -115,11 +115,6 @@ Item {
                                                 styledItem.selectedIndex === index :
                                                 buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
-                    onOffsetChanged: {
-                        if (selected) {
-                            buttonView.updateOffset(button.offset);
-                        }
-                    }
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
 
                     // Use opacity 0 to hide instead of setting visibility to false in order to
