@@ -493,6 +493,17 @@ void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* im
         radiusCoordinateWidth = radius / width;
     }
 
+    // Scale and translate coordinates of textures packed in an atlas.
+    if (texture && texture->isAtlasTexture()) {
+        const QRectF srcSubRect = texture->normalizedTextureSubRect();
+        topCoordinate = topCoordinate * srcSubRect.height() + srcSubRect.y();
+        bottomCoordinate = bottomCoordinate * srcSubRect.height() + srcSubRect.y();
+        leftCoordinate = leftCoordinate * srcSubRect.width() + srcSubRect.x();
+        rightCoordinate = rightCoordinate * srcSubRect.width() + srcSubRect.x();
+        radiusCoordinateHeight = radiusCoordinateHeight * srcSubRect.height() + srcSubRect.y();
+        radiusCoordinateWidth = radiusCoordinateWidth * srcSubRect.width() + srcSubRect.x();
+    }
+
     // Set top row of 4 vertices.
     vertices[0].position[0] = 0.0f;
     vertices[0].position[1] = 0.0f;
