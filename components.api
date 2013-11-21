@@ -209,6 +209,7 @@ StyledItem
     property Item tabsItem
     property ListModel model
     property bool selectionMode
+    property int selectedIndex
     property bool alwaysSelectionMode
     property bool animate
 modules/Ubuntu/Components/Tabs.qml

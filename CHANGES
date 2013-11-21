@@ -9,6 +9,8 @@ UNRELEASED
 
 API Changes
 ***********
+* ADDED IN: TabBar: property int selectedIndex
+* DEPRECATED IN TabBar: property Item tabsItem
 * ADDED IN: OptionSelector: readonly property bool currentlyExpanded
 * ADDED IN: ItemSelector: readonly property bool currentlyExpanded
 * ADDED IN: Tab: readonly property int index
