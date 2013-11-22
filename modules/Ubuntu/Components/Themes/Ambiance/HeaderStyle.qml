@@ -86,6 +86,12 @@ Item {
 
         Binding {
             target: styledItem.contents
+            property: "anchors.fill"
+            value: foreground
+            when: styledItem.contents
+        }
+        Binding {
+            target: styledItem.contents
             property: "parent"
             value: foreground
             when: styledItem.contents
