@@ -23,9 +23,7 @@ Item {
     property color headerTextColor: Theme.palette.normal.backgroundText
     property color headerTextSelectedColor: Theme.palette.selected.backgroundText
 
-    // animate is initialized in TabBar's onCompleted
-    property bool animate: false
-    property int headerTextFadeDuration: animate ? 350 : 0
+    property int headerTextFadeDuration: styledItem.animate ? 350 : 0
     property url indicatorImageSource: "artwork/chevron.png"
 
     property string headerFontSize: "x-large"
@@ -36,7 +34,7 @@ Item {
     property real headerTextRightMargin: units.gu(2)
     property real headerTextBottomMargin: units.gu(2)
 
-    property real buttonPositioningVelocity: animate ? 1.0 : -1
+    property real buttonPositioningVelocity: styledItem.animate ? 1.0 : -1
     // The time of inactivity before leaving selection mode automatically
     property int deactivateTime: 5000
 

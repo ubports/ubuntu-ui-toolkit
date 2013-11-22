@@ -77,21 +77,6 @@ StyledItem {
       */
     property bool animate: true
 
-    /*! \internal
-      Animation is only enabled after completion of the TabBar component to
-      avoid animating tabs when first showing them.
-     */
-     // FIXME: It would be better to deal with this in the style, but because
-     //  of the order the properties in the style implementation are updated,
-     //  that always resulted in some animation showing at startup.
-    Component.onCompleted: {
-        if (__styleInstance.hasOwnProperty("animate")) {
-            __styleInstance.animate = Qt.binding(function() {
-                return tabBar.animate;
-            });
-        }
-    }
-
     implicitHeight: units.gu(7.5)
 
     style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
