@@ -626,32 +626,6 @@ plugins.qmltypes
     Method {
     name: "contains"
     Parameter { name: "point"; type: "QPointF" }
-    name: "QQmlPropertyMap"
-    prototype: "QObject"
-    Signal {
-    name: "valueChanged"
-    Parameter { name: "key"; type: "string" }
-    Parameter { name: "value"; type: "QVariant" }
-    Method { name: "keys"; type: "QStringList" }
-    name: "QQuickClipboard"
-    prototype: "QObject"
-    exports: ["Clipboard 0.1"]
-    Property { name: "data"; type: "QQuickMimeData"; isReadonly: true; isPointer: true }
-    Method {
-    name: "push"
-    Parameter { name: "data"; type: "QVariant" }
-    Method { name: "clear" }
-    Method { name: "newData"; type: "QQuickMimeData*" }
-    name: "QQuickMimeData"
-    prototype: "QObject"
-    exports: ["MimeData 0.1"]
-    Property { name: "formats"; type: "QStringList"; isReadonly: true }
-    Property { name: "text"; type: "string" }
-    Property { name: "html"; type: "string" }
-    Property { name: "urls"; type: "QList<QUrl>" }
-    Property { name: "color"; type: "QColor" }
-    Property { name: "data"; type: "QVariant" }
-    Signal { name: "typeChanged" }
     name: "ShapeItem"
     prototype: "QQuickItem"
     exports: ["Shape 0.1"]
