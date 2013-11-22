@@ -108,11 +108,11 @@ Architecture: amd64 i386 armhf
 Depends: qmlscene,
          qtdeclarative5-ubuntu-ui-toolkit-plugin,
          ubuntu-ui-toolkit-theme,
-         ubuntu-ui-toolkit-doc,
          qtdeclarative5-xmllistmodel-plugin,
          ${misc:Depends},
          ${shlibs:Depends}
 Recommends: libqt5multimedia5-plugins
+Suggests: ubuntu-ui-toolkit-doc
 Conflicts: qt-components-ubuntu-examples, qt-components-ubuntu-demos
 Replaces: qt-components-ubuntu-examples, qt-components-ubuntu-demos
 Provides: qt-components-ubuntu-examples, qt-components-ubuntu-demos
