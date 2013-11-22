@@ -111,8 +111,7 @@ Depends: qmlscene,
          qtdeclarative5-xmllistmodel-plugin,
          ${misc:Depends},
          ${shlibs:Depends}
-Recommends: libqt5multimedia5-plugins
-Suggests: ubuntu-ui-toolkit-doc
+Recommends: libqt5multimedia5-plugins, ubuntu-ui-toolkit-doc
 Conflicts: qt-components-ubuntu-examples, qt-components-ubuntu-demos
 Replaces: qt-components-ubuntu-examples, qt-components-ubuntu-demos
 Provides: qt-components-ubuntu-examples, qt-components-ubuntu-demos
