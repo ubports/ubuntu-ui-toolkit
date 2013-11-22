@@ -522,6 +522,8 @@ class Empty(UbuntuUIToolkitEmulatorBase):
             self._drag_pointing_device_to_delete(direction)
             if self.confirmRemoval:
                 self.waitingConfirmationForRemoval.wait_for(True)
+            else:
+                self._wait_until_deleted()
         else:
             raise ToolkitEmulatorException(
                 'The item "{0}" is not removable'.format(self.objectName))
@@ -541,8 +543,12 @@ class Empty(UbuntuUIToolkitEmulatorBase):
                 .format(direction))
 
     def _wait_until_deleted(self):
+        try:
             # The item was hidden.
             self.implicitHeight.wait_for(0)
+        except dbus.StateNotFoundError:
+            # The item was destroyed.
+            pass
 
     def confirm_removal(self):
         """Comfirm item removal if this was already swiped."""
@@ -582,4 +588,3 @@ class SingleValue(Base):
 
 class Subtitled(Base):
     pass
->>>>>>> MERGE-SOURCE
