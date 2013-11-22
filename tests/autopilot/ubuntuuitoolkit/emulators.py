@@ -93,40 +93,12 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         :return: The toolbar.
 
         """
-        toolbar = self.get_toolbar()
-        toolbar.animating.wait_for(False)
-        if not toolbar.opened:
-            self._drag_to_open_toolbar()
-            toolbar.opened.wait_for(True)
-            toolbar.animating.wait_for(False)
-
-        return toolbar
-
-    def _drag_to_open_toolbar(self):
-        x, y, _, _ = self.globalRect
-        line_x = x + self.width * 0.50
-        start_y = y + self.height - 1
-        stop_y = y + self.height - self.get_toolbar().height
-
-        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+        return self.get_toolbar().open()
 
     @autopilot_logging.log_action(logger.info)
     def close_toolbar(self):
         """Close the toolbar if it's opened."""
-        toolbar = self.get_toolbar()
-        toolbar.animating.wait_for(False)
-        if toolbar.opened:
-            self._drag_to_close_toolbar()
-            toolbar.opened.wait_for(False)
-            toolbar.animating.wait_for(False)
-
-    def _drag_to_close_toolbar(self):
-        x, y, _, _ = self.globalRect
-        line_x = x + self.width * 0.50
-        start_y = y + self.height - self.get_toolbar().height
-        stop_y = y + self.height - 1
-
-        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+        self.get_toolbar().close()
 
     def get_tabs(self):
         """Return the Tabs emulator of the MainView.
@@ -257,8 +229,53 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
     """Toolbar Autopilot emulator."""
 
     @autopilot_logging.log_action(logger.info)
+    def open(self):
+        """Open the toolbar if it's not already opened.
+
+        :return: The toolbar.
+
+        """
+        self.animating.wait_for(False)
+        if not self.opened:
+            self._drag_to_open()
+            self.opened.wait_for(True)
+            self.animating.wait_for(False)
+
+        return self
+
+    def _drag_to_open(self):
+        x, y, _, _ = self.globalRect
+        line_x = x + self.width * 0.50
+        start_y = y + self.height - 1
+        stop_y = y
+
+        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+
+    @autopilot_logging.log_action(logger.info)
+    def close(self):
+        """Close the toolbar if it's opened."""
+        self.animating.wait_for(False)
+        if self.opened:
+            self._drag_to_close()
+            self.opened.wait_for(False)
+            self.animating.wait_for(False)
+
+    def _drag_to_close(self):
+        x, y, _, _ = self.globalRect
+        line_x = x + self.width * 0.50
+        start_y = y
+        stop_y = y + self.height - 1
+
+        self.pointing_device.drag(line_x, start_y, line_x, stop_y)
+
+    @autopilot_logging.log_action(logger.info)
     def click_button(self, object_name):
         """Click a button of the toolbar.
+
+        The toolbar should be opened before clicking the button, or an
+        exception will be raised. If the toolbar is closed for some reason
+        (e.g., timer finishes) after moving the mouse cursor and before
+        clicking the button, it is re-opened automatically by this function.
 
         :parameter object_name: The QML objectName property of the button.
         :raise ToolkitEmulatorException: If there is no button with that object
@@ -270,6 +287,14 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
         except dbus.StateNotFoundError:
             raise ToolkitEmulatorException(
                 'Button with objectName "{0}" not found.'.format(object_name))
+        # ensure the toolbar is open
+        if not self.opened:
+            raise ToolkitEmulatorException(
+                'Toolbar must be opened before calling click_button().')
+        self.pointing_device.move_to_object(button)
+        # ensure the toolbar is still open (may have closed due to timeout)
+        self.open()
+        # click the button
         self.pointing_device.click_object(button)
 
     def _get_button(self, object_name):
@@ -421,7 +446,13 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
 
 
 class Empty(UbuntuUIToolkitEmulatorBase):
-    """Base class to emulate swipe to delete"""
+    """Base class to emulate swipe to delete."""
+
+    def exists(self):
+        try:
+            return self.implicitHeight > 0
+        except dbus.StateNotFoundError:
+            return False
 
     def _get_confirm_button(self):
         return self.select_single(
@@ -429,33 +460,46 @@ class Empty(UbuntuUIToolkitEmulatorBase):
 
     @autopilot_logging.log_action(logger.info)
     def swipe_to_delete(self, direction='right'):
-        """ Swipe the item in a specific direction """
+        """Swipe the item in a specific direction."""
         if (self.removable):
-            x, y, w, h = self.globalRect
-            tx = x + (w / 8)
-            ty = y + (h / 2)
-
-            if (direction == 'right'):
-                self.pointing_device.drag(tx, ty, w, ty)
-            elif (direction == 'left'):
-                self.pointing_device.drag(w - (w*0.1), ty, x, ty)
+            self._drag_pointing_device_to_delete(direction)
+            if self.confirmRemoval:
+                self.waitingConfirmationForRemoval.wait_for(True)
             else:
-                raise ToolkitEmulatorException(
-                    'Invalid direction "{0}" used on swipe to delete function'
-                    .format(direction))
-
-            self.waitingConfirmationForRemoval.wait_for(True)
+                self._wait_until_deleted()
         else:
             raise ToolkitEmulatorException(
                 'The item "{0}" is not removable'.format(self.objectName))
 
+    def _drag_pointing_device_to_delete(self, direction):
+        x, y, w, h = self.globalRect
+        tx = x + (w / 8)
+        ty = y + (h / 2)
+
+        if (direction == 'right'):
+            self.pointing_device.drag(tx, ty, w, ty)
+        elif (direction == 'left'):
+            self.pointing_device.drag(w - (w*0.1), ty, x, ty)
+        else:
+            raise ToolkitEmulatorException(
+                'Invalid direction "{0}" used on swipe to delete function'
+                .format(direction))
+
+    def _wait_until_deleted(self):
+        try:
+            # The item was hidden.
+            self.implicitHeight.wait_for(0)
+        except dbus.StateNotFoundError:
+            # The item was destroyed.
+            pass
+
     @autopilot_logging.log_action(logger.info)
     def confirm_removal(self):
-        """ Comfirm item removal if this was already swiped """
+        """Comfirm item removal if this was already swiped."""
         if (self.waitingConfirmationForRemoval):
             deleteButton = self._get_confirm_button()
             self.pointing_device.click_object(deleteButton)
-            self.implicitHeight.wait_for(0)
+            self._wait_until_deleted()
         else:
             raise ToolkitEmulatorException(
                 'The item "{0}" is not waiting for removal confirmation'.

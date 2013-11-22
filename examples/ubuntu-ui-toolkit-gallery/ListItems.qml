@@ -95,7 +95,7 @@ Template {
 
             ListItem.ItemSelector {
                 text: i18n.tr("Expanded")
-                alwaysExpanded: true
+                expanded: true
                 model: [i18n.tr("Value 1"),
                         i18n.tr("Value 2"),
                         i18n.tr("Value 3"),
@@ -104,7 +104,7 @@ Template {
 
             ListItem.ItemSelector {
                 text: i18n.tr("Multiple Selection")
-                alwaysExpanded: false
+                expanded: false
                 multiSelection: true
                 model: [i18n.tr("Value 1"),
                         i18n.tr("Value 2"),
@@ -115,7 +115,7 @@ Template {
             ListItem.ItemSelector {
                 text: i18n.tr("Custom Model")
                 model: customModel
-                alwaysExpanded: true
+                expanded: true
                 colourImage: true
                 delegate: selectorDelegate
             }
@@ -148,7 +148,7 @@ Template {
 
             ListItem.ItemSelector {
                 text: i18n.tr("Label")
-                alwaysExpanded: true
+                expanded: true
                 selectedIndex: -1
                 model: [i18n.tr("Value 1"),
                         i18n.tr("Value 2"),
