@@ -16,7 +16,6 @@
  * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
  */
 
-#include <QtQml>
 #include <QtQuick/private/qquickimagebase_p.h>
 #include <QDBusConnection>
 #include <QtGui/QGuiApplication>
@@ -52,6 +51,9 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdexcept>
+
+// Needed for unit tests
+Q_DECLARE_METATYPE(QList<QQmlError>)
 
 /*
  * Type registration functions.
@@ -160,6 +162,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCStateSaver>(uri, 0, 1, "StateSaver");
     qmlRegisterType<UCStateSaverAttached>();
     qmlRegisterSingletonType<UCUriHandler>(uri, 0, 1, "UriHandler", registerUriHandler);
+    // Needed for unit tests
+    qRegisterMetaType<QList <QQmlError> >();
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

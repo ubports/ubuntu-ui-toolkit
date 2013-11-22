@@ -22,10 +22,10 @@ API Changes
 * ADDED IN: ListItems.Standard: property string iconName
 * ADDED IN: ListItems.Standard: property url iconSource
 * DEPRECATED IN: ListItems.Standard: property variant icon
-* CHANGED IN: OptionSelector: property bool expanded TO bool alwaysExpanded
-* CHANGED IN: ItemSelector: property bool expanded TO bool alwaysExpanded
-* ADDED IN: OptionSelector: readonly property bool expanded
-* ADDED IN: ItemSelector: readonly property bool expanded
+* ADDED IN: TabBar: property int selectedIndex
+* DEPRECATED IN TabBar: property Item tabsItem
+* ADDED IN: OptionSelector: readonly property bool currentlyExpanded
+* ADDED IN: ItemSelector: readonly property bool currentlyExpanded
 * ADDED IN: Tab: readonly property int index
 * ADDED IN: ListItem.Empty: property bool confirmRemoval
 * ADDED IN: OptionSelector: property bool multiSelection

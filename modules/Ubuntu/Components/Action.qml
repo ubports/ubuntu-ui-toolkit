@@ -27,12 +27,9 @@ import Ubuntu.Unity.Action 1.0 as UnityActions
 
     Examples: See \l Page
 */
+
 UnityActions.Action {
     id: action
-
-    // FIXME: the properties that are not defined here, but only documented using qmlproperty
-    //  do not show up in the documentation. Best is to replace these docs by a reference
-    //  to UnityActions.Action when they become available online.
 
     /*!
       The title of the action.

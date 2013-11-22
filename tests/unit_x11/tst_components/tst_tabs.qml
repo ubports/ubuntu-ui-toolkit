@@ -26,6 +26,13 @@ Item {
         id: emptyTabs
     }
 
+    Component {
+        id: dynamicTab
+        Tab{
+            title: "OriginalTitle"
+        }
+    }
+
     MainView {
         id: mainView
         anchors.fill: parent
@@ -36,12 +43,10 @@ Item {
                 title: "tab 1"
                 page: Page {
                     id: page1
-                    Rectangle {
-                        id: centerRect
-                        width: units.gu(10)
-                        height: units.gu(5)
-                        color: "navy"
+                    Button {
+                        id: button
                         anchors.centerIn: parent
+                        text: "click"
                     }
                 }
             }
@@ -183,8 +188,156 @@ Item {
         function test_deactivateByAppInteraction() {
             tabs.tabBar.selectionMode = true;
             compare(tabs.tabBar.selectionMode, true, "Tab bar can be put into selection mode");
-            mouseClick(centerRect, units.gu(1), units.gu(1), Qt.LeftButton);
-            compare(tabs.tabBar.selectionMode, false, "Tab bar deactivated by interactiong with the page contents");
+            mouseClick(button, units.gu(1), units.gu(1), Qt.LeftButton);
+            compare(tabs.tabBar.selectionMode, false, "Tab bar deactivated by interacting with the page contents");
+        }
+
+        function test_z_addTab() {
+            var newTab = tabs.addTab("Dynamic Tab", dynamicTab);
+            compare((newTab !== null), true, "tab added");
+            compare(newTab.active, false, "the inserted tab is inactive");
+            compare(newTab.index, tabs.count - 1, "the tab is the last one");
+        }
+
+        function test_z_addExternalTab() {
+            var newTab = tabs.addTab("External Tab", Qt.resolvedUrl("ExternalTab.qml"));
+            compare((newTab !== null), true, "tab added");
+            compare(newTab.active, false, "the inserted tab is inactive");
+            compare(newTab.index, tabs.count - 1, "the tab is the last one");
+        }
+
+        function test_z_addTabWithDefaultTitle() {
+            var newTab = tabs.addTab("", dynamicTab);
+            compare((newTab !== null), true, "tab added");
+            compare(newTab.title, "OriginalTitle", "tab created with original title");
+        }
+
+        function test_z_insertTab() {
+            var tabIndex = Math.ceil(tabs.count / 2);
+            var newTab = tabs.insertTab(tabIndex, "Inserted tab", dynamicTab);
+            compare((newTab !== null), true, "tab inserted");
+            compare(newTab.index, tabIndex, "this is the first tab");
+            compare(tabs.selectedTab !== newTab, true, "the new tab is not the active one");
+        }
+
+        function test_z_insertExternalTab() {
+            var tabIndex = Math.ceil(tabs.count / 2);
+            var newTab = tabs.insertTab(tabIndex, "Inserted External tab", Qt.resolvedUrl("ExternalTab.qml"));
+            compare((newTab !== null), true, "tab inserted");
+            compare(newTab.index, tabIndex, "this is the first tab");
+            compare(tabs.selectedTab !== newTab, true, "the new tab is not the active one");
+        }
+
+        function test_z_insertTabAtSelectedIndex() {
+            tabs.selectedTabIndex = 1;
+            var tabIndex = tabs.selectedTabIndex - 1;
+            var newTab = tabs.insertTab(tabIndex, "InsertedAtSelected tab", dynamicTab);
+            compare((newTab !== null), true, "tab inserted");
+            compare(newTab.index, tabIndex, "inserted at selected tab");
+            compare(tabs.selectedTabIndex != (tabIndex + 1), true, "it is not the selected tab");
+        }
+
+        function test_z_insertTabFront() {
+            var newTab = tabs.insertTab(-1, "PreTab", dynamicTab);
+            compare(newTab !== null, true, "pre-tab inserted");
+            compare(newTab.index, 0, "this is the new first tab");
+            compare(tabs.selectedTab !== newTab, true, "the new tab is not the active one");
+        }
+
+        function test_z_insertTabEnd() {
+            var newTab = tabs.insertTab(tabs.count, "PostTab", dynamicTab);
+            compare(newTab !== null, true, "post-tab inserted");
+            compare(newTab.index, tabs.count - 1, "thsi is the new last tab");
+            compare(tabs.selectedTab !== newTab, true, "the new tab is not the active one");
+        }
+
+        function test_z_insertTabAndActivate() {
+            var newTab = tabs.addTab("Inserted tab", dynamicTab);
+            compare((newTab !== null), true, "tab inserted");
+            compare(newTab.index, tabs.count - 1, "the tab is the last one");
+            tabs.selectedTabIndex = newTab.index;
+            compare(tabs.selectedTab, newTab, "the inserted tab is selected");
+            compare(newTab.active, true, "the new tab is active");
+        }
+
+        function test_z_moveTab() {
+            var selectedIndex = tabs.count - 1;
+            tabs.selectedTabIndex = selectedIndex;
+            compare(tabs.moveTab(0, selectedIndex), true, "first tab moved to last");
+            compare(tabs.selectedTabIndex, selectedIndex - 1, "the selected index moved backwards");
+            tabs.selectedTabIndex = selectedIndex = 0;
+            compare(tabs.moveTab(selectedIndex, selectedIndex + 1), true, "selected tab moved as next");
+            compare(tabs.selectedTabIndex, selectedIndex + 1, "the selected index moved forewards");
+        }
+
+        function test_z_moveSelectedTab() {
+            tabs.selectedTabIndex = 0;
+            tabs.moveTab(0, 1);
+            compare(tabs.selectedTabIndex, 1, "selected tab moved");
+        }
+
+        function test_z_moveTabFail() {
+            compare(tabs.moveTab(-1, tabs.count - 1), false, "from-parameter out of range");
+            compare(tabs.moveTab(0, tabs.count), false, "to-parameter out of range");
+        }
+
+        function test_z_removeTab() {
+            compare(tabs.removeTab(tabs.count - 1), true, "last tab removed");
+            tabs.selectedTabIndex = 0;
+            compare(tabs.removeTab(0), true, "active tab removed");
+            compare(tabs.selectedTabIndex, 0, "the next tab is selected")
+        }
+
+        function test_z_removeTabAfterActiveTab() {
+            var activeTab = tabs.count - 2;
+            tabs.selectedTabIndex = activeTab;
+            compare(tabs.removeTab(tabs.count - 1), true, "last tab removed");
+            compare(tabs.selectedTabIndex, activeTab, "the selected tab wasn't moved");
+        }
+
+        function test_z_removeTabBeforeActiveTab() {
+            var activeTab = tabs.count - 1;
+            tabs.selectedTabIndex = activeTab;
+            compare(tabs.removeTab(0), true, "first tab removed");
+            compare(tabs.selectedTabIndex, activeTab - 1, "the selected tab index decreased");
+        }
+
+        function test_z_removeActiveTab() {
+            tabs.selectedTabIndex = 1;
+            compare(tabs.removeTab(1), true, "selected tab removed");
+            compare(tabs.selectedTabIndex, 1, "selected tab is next");
+
+            tabs.selectedTabIndex = tabs.count - 1;
+            compare(tabs.removeTab(tabs.count - 1), true, "last tab removed");
+            compare(tabs.selectedTabIndex, tabs.count - 1, "selected tab moved to last item");
+        }
+
+        function test_zz_addTabAfterCleaningUpTabs() {
+            while (tabs.count > 1) {
+                tabs.removeTab(0);
+            }
+            compare(tabs.selectedTabIndex, 0, "the only tab is the selected one");
+            // add a new tab anc check the count (default added tas should not be added anymore
+            tabs.addTab("Second tab", dynamicTab);
+            compare(tabs.count, 2, "we have two tabs only");
+        }
+
+        function test_zz_addPredeclaredTab() {
+            while (tabs.count > 1) {
+                tabs.removeTab(0);
+            }
+            compare(tabs.selectedTabIndex, 0, "the only tab is the selected one");
+
+            // add a predeclared tab back with original title
+            compare(tabs.addTab("", tab1), tab1, "tab1 was added back");
+            compare(tab1.title, "tab 1", "with the original title");
+
+            // add a predeclared tab back with new title
+            compare(tabs.addTab("Original tab", tab2), tab2, "tab2 was added back");
+            compare(tab2.title, "Original tab", "with modified title");
+
+            // add a predeclared tab which was added already
+            compare(tabs.addTab("", tab1), null, "tab1 is already in tabs");
         }
     }
 }
