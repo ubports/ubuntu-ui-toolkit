@@ -100,12 +100,12 @@ QtObject
 modules/Ubuntu/Components/OptionSelector.qml
 ListItem.Empty
     property var model
-    property bool alwaysExpanded
+    property bool expanded
     property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    readonly property bool expanded
+    readonly property bool currentlyExpanded
     readonly property real itemHeight
     signal delegateClicked(int index)
     signal expansionCompleted()
@@ -168,6 +168,7 @@ Item
     property real hintSize
     property real triggerSize
     readonly property bool animating
+    property bool __closeOnContentsClicks
 modules/Ubuntu/Components/ProgressBar.qml
 AnimatedItem
     property bool indeterminate
@@ -206,7 +207,9 @@ PageTreeNode
 modules/Ubuntu/Components/TabBar.qml
 StyledItem
     property Item tabsItem
+    property ListModel model
     property bool selectionMode
+    property int selectedIndex
     property bool alwaysSelectionMode
     property bool animate
 modules/Ubuntu/Components/Tabs.qml
@@ -215,9 +218,13 @@ PageTreeNode
     readonly property Tab selectedTab
     readonly property Item currentPage
     property TabBar tabBar
-    property internal __tabs
     default property list<Item> tabChildren
+    readonly property int count
     signal modelChanged()
+    function addTab(title, component, params)
+    function insertTab(index, title, component, params)
+    function moveTab(from, to)
+    function removeTab(index)
 modules/Ubuntu/Components/TextArea.qml
 StyledItem
     property bool highlighted
@@ -410,6 +417,7 @@ AbstractButton
     property bool removable
     property bool confirmRemoval
     readonly property string swipingState
+    readonly property bool waitingConfirmationForRemoval
     signal itemRemoved
     property int __height
     property bool showDivider
@@ -418,6 +426,7 @@ AbstractButton
     property list<Item> backgroundIndicator
     property ThinDivider divider
     property real __contentsMargins
+    function cancelItemRemoval()
 modules/Ubuntu/Components/ListItems/Header.qml
 Item
     property string text
@@ -437,12 +446,12 @@ Image
 modules/Ubuntu/Components/ListItems/ItemSelector.qml
 ListItem.Empty
     property var model
-    property bool alwaysExpanded
+    property bool expanded
     property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    readonly property bool expanded
+    readonly property bool currentlyExpanded
     readonly property real itemHeight
     signal delegateClicked(int index)
     signal expansionCompleted()
@@ -613,35 +622,10 @@ plugins.qmltypes
     prototype: "QQuickMouseArea"
     exports: ["InverseMouseArea 0.1"]
     Property { name: "sensingArea"; type: "QQuickItem"; isPointer: true }
+    Property { name: "topmostItem"; type: "bool" }
     Method {
     name: "contains"
     Parameter { name: "point"; type: "QPointF" }
-    name: "QQmlPropertyMap"
-    prototype: "QObject"
-    Signal {
-    name: "valueChanged"
-    Parameter { name: "key"; type: "string" }
-    Parameter { name: "value"; type: "QVariant" }
-    Method { name: "keys"; type: "QStringList" }
-    name: "QQuickClipboard"
-    prototype: "QObject"
-    exports: ["Clipboard 0.1"]
-    Property { name: "data"; type: "QQuickMimeData"; isReadonly: true; isPointer: true }
-    Method {
-    name: "push"
-    Parameter { name: "data"; type: "QVariant" }
-    Method { name: "clear" }
-    Method { name: "newData"; type: "QQuickMimeData*" }
-    name: "QQuickMimeData"
-    prototype: "QObject"
-    exports: ["MimeData 0.1"]
-    Property { name: "formats"; type: "QStringList"; isReadonly: true }
-    Property { name: "text"; type: "string" }
-    Property { name: "html"; type: "string" }
-    Property { name: "urls"; type: "QList<QUrl>" }
-    Property { name: "color"; type: "QColor" }
-    Property { name: "data"; type: "QVariant" }
-    Signal { name: "typeChanged" }
     name: "ShapeItem"
     prototype: "QQuickItem"
     exports: ["Shape 0.1"]

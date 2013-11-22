@@ -54,7 +54,7 @@ void tst_UCTheme::cleanupTestCase()
 
 void tst_UCTheme::testInstance()
 {
-    UCTheme& theme = UCTheme::instance();
+    UCTheme::instance();
 }
 
 void tst_UCTheme::testNameDefault()

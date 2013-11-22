@@ -18,9 +18,13 @@
 
 #include "statesaverbackend_p.h"
 #include "ucapplication.h"
+#include <QtQml/QQmlContext>
 #include <QtQml/QQmlProperty>
-#include <QtQml>
+#include <QtQml/qqmlinfo.h>
+#include <QtQml/qqml.h>
 #include <QtCore/QCoreApplication>
+#include <QtCore/QFile>
+#include <QtCore/QStringList>
 #include "i18n.h"
 
 StateSaverBackend::StateSaverBackend(QObject *parent)

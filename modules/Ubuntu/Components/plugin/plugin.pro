@@ -8,9 +8,7 @@ TARGET = ../UbuntuComponents
 QT += core-private v8-private qml qml-private quick quick-private dbus
 CONFIG += qt plugin no_keywords
 
-CONFIG(debug) {
-  QMAKE_CXXFLAGS_DEBUG += -Werror
-}
+QMAKE_CXXFLAGS += -Werror
 
 # QOrganizer
 QT += organizer

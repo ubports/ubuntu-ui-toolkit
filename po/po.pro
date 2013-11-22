@@ -14,8 +14,11 @@ message("")
 
 ## generate pot file 'make pot'
 potfile.target = pot
-potfile.commands = ./update-pot.sh
+potfile.commands = ./update-pot.sh ubuntu-ui-toolkit ../modules .;
 QMAKE_EXTRA_TARGETS += potfile
+
+## generate pot file for gallery
+potfile.commands += ./update-pot.sh ubuntu-ui-toolkit-gallery ../examples/ubuntu-ui-toolkit-gallery ../examples/ubuntu-ui-toolkit-gallery/po;
 
 ## Installation steps for mo files. 'make install'
 MO_FILES = $$system(ls *.po)
@@ -23,7 +26,7 @@ MO_FILES = $$system(ls *.po)
 install_mo_commands =
 for(po_file, MO_FILES) {
   mo_file = $$replace(po_file,.po,.mo)
-  $$system(msgfmt $$po_file -o $$mo_file)
+  system(msgfmt $$po_file -o $$mo_file)
   mo_name = $$replace(mo_file,.mo,)
   mo_targetpath = $(INSTALL_ROOT)/usr/share/locale/$${mo_name}/LC_MESSAGES
   mo_target = $${mo_targetpath}/ubuntu-ui-toolkit.mo
