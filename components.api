@@ -100,12 +100,12 @@ QtObject
 modules/Ubuntu/Components/OptionSelector.qml
 ListItem.Empty
     property var model
-    property bool alwaysExpanded
+    property bool expanded
     property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    readonly property bool expanded
+    readonly property bool currentlyExpanded
     readonly property real itemHeight
     signal delegateClicked(int index)
     signal expansionCompleted()
@@ -131,7 +131,6 @@ PageTreeNode
     property string title
     property Flickable flickable
     property list<Action> actions
-    default property internal pageContents
 modules/Ubuntu/Components/PageStack.qml
 PageTreeNode
     property bool __showHeader
@@ -208,7 +207,9 @@ PageTreeNode
 modules/Ubuntu/Components/TabBar.qml
 StyledItem
     property Item tabsItem
+    property ListModel model
     property bool selectionMode
+    property int selectedIndex
     property bool alwaysSelectionMode
     property bool animate
 modules/Ubuntu/Components/Tabs.qml
@@ -217,9 +218,13 @@ PageTreeNode
     readonly property Tab selectedTab
     readonly property Item currentPage
     property TabBar tabBar
-    property internal __tabs
     default property list<Item> tabChildren
+    readonly property int count
     signal modelChanged()
+    function addTab(title, component, params)
+    function insertTab(index, title, component, params)
+    function moveTab(from, to)
+    function removeTab(index)
 modules/Ubuntu/Components/TextArea.qml
 StyledItem
     property bool highlighted
@@ -441,12 +446,12 @@ Image
 modules/Ubuntu/Components/ListItems/ItemSelector.qml
 ListItem.Empty
     property var model
-    property bool alwaysExpanded
+    property bool expanded
     property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    readonly property bool expanded
+    readonly property bool currentlyExpanded
     readonly property real itemHeight
     signal delegateClicked(int index)
     signal expansionCompleted()

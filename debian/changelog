@@ -1,3 +1,82 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20131118-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * Support for dynamically inserting/moving/removing tabs in Tabs. .
+    (LP: #1124071)
+
+  [ Leo Arias ]
+  * Fixes for swipe_to_delete on autopilot list items emulator: Take
+    into account items without confirmation. Take into account items
+    that are destroyed on removal. (LP: #1245651, #1249221)
+
+  [ Albert Astals ]
+  * InverseMouseArea: Do not filter events if disabled.
+
+  [ Robert Bruce Park ]
+  * Support both Python 2 and 3 in the autopilot tests.
+
+  [ Christian Dywan ]
+  * Track magic window with a property signal instead of defining it.
+    (LP: #1251436)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 837
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 18 Nov 2013 17:13:33 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20131108.4-0ubuntu1) trusty; urgency=low
+
+  [ Robert Bruce Park ]
+  * (no message)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 830
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 08 Nov 2013 23:11:13 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20131108.3-0ubuntu1) trusty; urgency=low
+
+  [ Leo Arias ]
+  * Add a check for the autopilot version on the emulator init. (LP:
+    #1248570)
+  * Ensure the toolbar is opened when clicking a toolbar in autopilot
+    tests. (LP: #1248487)
+
+  [ Nicolas d'Offay ]
+  * Reverted API break on the selectors. (LP: #1248646)
+
+  [ tpeeters ]
+  * Ensure the toolbar is opened when clicking a toolbar in autopilot
+    tests. (LP: #1248487)
+  * before fixing the actual bug, the test gives me these errors: QWARN
+    : tst_MainView::testNoWarnings_bug186065()
+    unity::action::ActionManager::ActionManager(QObject*): Could not
+    determine application identifier. HUD will not work properly.
+    Provide your application identifier in $APP_ID environment variable.
+    QWARN : tst_MainView::testNoWarnings_bug186065()
+    file:///home/tim/dev/ubuntu-ui-
+    toolkit/fix1244660/modules/Ubuntu/Components/MainView.qml:257:
+    TypeError: Cannot call method 'hasOwnProperty' of null **
+    (process:27191): CRITICAL **: Unable to get session bus: Operation
+    was cancelled QWARN : tst_MainView::testNoWarnings_bug186065() Don't
+    know how to handle 'QList<QQmlError>', use qRegisterMetaType to
+    register it. PASS : tst_MainView::testNoWarnings_bug186065() PASS :
+    tst_MainView::cleanupTestCase() Totals: 8 passed, 0 failed, 0
+    skipped ********* Finished testing of tst_MainView ********* I get
+    the same when I execute unit_x11/tst_orientation/tst_orientation:
+    QWARN : tst_OrientationTest::test_defaults() Don't know how to
+    handle 'QList<QQmlError>', use qRegisterMetaType to register it.
+    PASS : tst_OrientationTest::test_defaults() Should I execute the
+    tests in a different way?. (LP: #186065, #1244660)
+
+  [ Robert Bruce Park ]
+  * (no message)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 828
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 08 Nov 2013 22:02:57 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20131106-0ubuntu1) trusty; urgency=low
 
   [ Leo Arias ]

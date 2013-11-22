@@ -41,7 +41,7 @@ def _write_test_desktop_file():
         os.makedirs(desktop_file_dir)
     desktop_file = tempfile.NamedTemporaryFile(
         suffix='.desktop', dir=desktop_file_dir, delete=False)
-    desktop_file.write(_DESKTOP_FILE_CONTENTS)
+    desktop_file.write(_DESKTOP_FILE_CONTENTS.encode('utf-8'))
     desktop_file.close()
     return desktop_file.name
 
@@ -96,7 +96,7 @@ MainView {
 
     def _write_test_qml_file(self):
         qml_file = tempfile.NamedTemporaryFile(suffix='.qml', delete=False)
-        qml_file.write(self.test_qml)
+        qml_file.write(self.test_qml.encode('utf-8'))
         qml_file.close()
         return qml_file.name
 
