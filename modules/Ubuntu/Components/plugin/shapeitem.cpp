@@ -434,6 +434,8 @@ ShapeNode::ShapeNode(ShapeItem* item)
     memcpy(geometry_.indexData(), shapeMesh.indices,
            shapeMesh.indexCount * sizeOfType(shapeMesh.indexType));
     geometry_.setDrawingMode(GL_TRIANGLE_STRIP);
+    geometry_.setIndexDataPattern(QSGGeometry::StaticPattern);
+    geometry_.setVertexDataPattern(QSGGeometry::AlwaysUploadPattern);
     setGeometry(&geometry_);
     setMaterial(&coloredMaterial_);
     setFlag(UsePreprocess, false);
