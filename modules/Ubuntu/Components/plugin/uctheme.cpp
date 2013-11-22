@@ -23,11 +23,15 @@
 #include "i18n.h"
 
 #include <QtQml/qqml.h>
+#include <QtQml/qqmlinfo.h>
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlContext>
+#include <QtCore/QDebug>
+#include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 #include <QtCore/QLibraryInfo>
+#include <QtCore/QStandardPaths>
 
 /*!
     \qmltype Theme

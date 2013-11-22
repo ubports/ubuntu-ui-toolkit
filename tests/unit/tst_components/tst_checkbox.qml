@@ -17,6 +17,7 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 0.1
+import Ubuntu.Unity.Action 1.0 as UnityActions
 
 TestCase {
      name: "CheckBoxAPI"
@@ -36,7 +37,37 @@ TestCase {
         compare(checkbox.pressed,false,"Pressed is boolean and false by default")
      }
 
+     function test_triggered() {
+        checkbox.checked = false
+        checkbox.clicked()
+        signalSpy.wait()
+        compare(checkbox.checked, true, "click flipped from unchecked to checked")
+        checkbox.clicked()
+        signalSpy.wait()
+        compare(checkbox.checked, false, "click flipped from checked back to unchecked")
+
+        // clicked and trigger both flip the checked state
+        checkbox.trigger()
+        signalSpy.wait()
+        compare(checkbox.checked, true, "trigger flipped from unchecked to checked")
+        checkbox.trigger()
+        signalSpy.wait()
+        compare(checkbox.checked, false, "trigger flipped from checked back to unchecked")
+     }
+
      CheckBox {
          id: checkbox
+         action: Action {
+             enabled: true
+             name: "check"
+             text: "Check"
+             parameterType: UnityActions.Action.Boolean
+         }
+     }
+
+     SignalSpy {
+        id: signalSpy
+        signalName: "triggered"
+        target: checkbox
      }
 }

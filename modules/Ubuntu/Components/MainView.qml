@@ -248,13 +248,14 @@ PageTreeNode {
                 bottom: parent.bottom
             }
             // only clip when necessary
+            // ListView headers may be positioned at the top, independent from
+            // flickable.contentY, so do not clip depending on activePage.flickable.contentY.
             clip: headerItem.bottomY > 0 && activePage && activePage.flickable
-                  && -activePage.flickable.contentY < headerItem.bottomY
 
             property Page activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
 
             function isPage(item) {
-                return item.hasOwnProperty("__isPageTreeNode") && item.__isPageTreeNode &&
+                return item && item.hasOwnProperty("__isPageTreeNode") && item.__isPageTreeNode &&
                         item.hasOwnProperty("title") && item.hasOwnProperty("tools");
             }
 
@@ -271,6 +272,10 @@ PageTreeNode {
             }
         }
 
+        Toolbar {
+            id: toolbarItem
+        }
+
         /*!
           The header of the MainView. Can be used to obtain the height of the header
           in \l Page to determine the area for the \l Page to fill.
@@ -282,10 +287,6 @@ PageTreeNode {
             objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
-        }
-
-        Toolbar {
-            id: toolbarItem
         }
     }
 
