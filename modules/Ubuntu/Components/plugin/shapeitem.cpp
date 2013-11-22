@@ -500,8 +500,8 @@ void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* im
         bottomCoordinate = bottomCoordinate * srcSubRect.height() + srcSubRect.y();
         leftCoordinate = leftCoordinate * srcSubRect.width() + srcSubRect.x();
         rightCoordinate = rightCoordinate * srcSubRect.width() + srcSubRect.x();
-        radiusCoordinateHeight = radiusCoordinateHeight * srcSubRect.height() + srcSubRect.y();
-        radiusCoordinateWidth = radiusCoordinateWidth * srcSubRect.width() + srcSubRect.x();
+        radiusCoordinateHeight = radiusCoordinateHeight * srcSubRect.height();
+        radiusCoordinateWidth = radiusCoordinateWidth * srcSubRect.width();
     }
 
     // Set top row of 4 vertices.
@@ -515,7 +515,7 @@ void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* im
     vertices[1].position[1] = 0.0f;
     vertices[1].shapeCoordinate[0] = shapeCoordinate[1][0];
     vertices[1].shapeCoordinate[1] = shapeCoordinate[1][1];
-    vertices[1].imageCoordinate[0] = radiusCoordinateWidth;
+    vertices[1].imageCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
     vertices[1].imageCoordinate[1] = topCoordinate;
     vertices[2].position[0] = width - radius;
     vertices[2].position[1] = 0.0f;
