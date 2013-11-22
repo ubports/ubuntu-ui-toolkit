@@ -85,9 +85,11 @@ StyledItem {
      //  of the order the properties in the style implementation are updated,
      //  that always resulted in some animation showing at startup.
     Component.onCompleted: {
-        __styleInstance.animate = Qt.binding(function() {
-            return tabBar.animate;
-        });
+        if (__styleInstance.hasOwnProperty("animate")) {
+            __styleInstance.animate = Qt.binding(function() {
+                return tabBar.animate;
+            });
+        }
     }
 
     implicitHeight: units.gu(7.5)
