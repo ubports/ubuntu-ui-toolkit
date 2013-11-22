@@ -56,7 +56,7 @@ def get_keyboard():
 
 def check_autopilot_version():
     """Check that the Autopilot installed version matches the one required.
-    
+
     If the platform is `Desktop`, the keyboard will be the default created by
     autopilot. If not, it will be the on-screen keyboard.
 
