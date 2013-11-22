@@ -48,8 +48,8 @@ for line in fileinput.input():
             keywords = ['Signal',
                         'Property',
                         'Method',
-                        'prototype:',
-                        'exports:']
+                        'prototype',
+                        'exports']
         else:
             print('Unknown filetype %s' % fileinput.filename())
             sys.exit(1)
@@ -85,25 +85,31 @@ for line in fileinput.input():
 
     # Only root "Item {" is inspected for QML, otherwise all children
     if in_block == 1 or filetype == 'qmltypes':
-        words = line.strip().split(' ')
+        # Left hand side specifies a keyword, a type and a variable name
+        declaration = line.split(':')[0]
+        words = declaration.strip().split(' ')
         # Skip types with prefixes considered builtin
-        if len(words) > 1 and words[0] == 'name:':
+        if words[0] == 'name':
             found_builtin_type = False
             for builtin in builtins:
-                if words[1].startswith('"' + builtin):
+                if '"' + builtin in line:
                     found_builtin_type = True
                     break
             if found_builtin_type:
                 in_builtin_type = True
                 continue
 
+        # Don't consider the qml variable name as a keyword
+        if filetype == 'qml':
+            words.pop()
+
         if filetype == 'qmltypes' and in_block > 1:
-            keywords.append('name:')
+            keywords.append('name')
             keywords.append('Parameter')
         for word in words:
             if word in keywords:
                 if filetype == 'qml':
-                    signature = line.split(':')[0].split('{')[0].strip()
+                    signature = declaration.split('{')[0].strip()
                     if 'alias' in line:
                         if not annotated_type:
                             print('    %s' % (signature))

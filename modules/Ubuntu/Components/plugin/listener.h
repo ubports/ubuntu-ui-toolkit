@@ -17,7 +17,9 @@
 #ifndef UBUNTU_COMPONENTS_LISTENER_H
 #define UBUNTU_COMPONENTS_LISTENER_H
 
-#include <QtQml>
+#include <QObject>
+
+class QQmlContext;
 
 class ContextPropertyChangeListener : public QObject
 {
