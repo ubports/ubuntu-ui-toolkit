@@ -42,7 +42,7 @@ Template {
         className: "Standard"
         delegate: ListItem.Standard {
             text: i18n.tr("Label")
-            icon: Qt.resolvedUrl("avatar_contacts_list.png")
+            iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
         }
     }
 
@@ -122,7 +122,7 @@ Template {
 
             Component {
                 id: selectorDelegate
-                Toolkit.OptionSelectorDelegate { text: name; subText: description; icon: image }
+                Toolkit.OptionSelectorDelegate { text: name; subText: description; iconSource: image }
             }
 
             ListModel {
