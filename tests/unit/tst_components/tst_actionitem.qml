@@ -61,6 +61,17 @@ TestCase {
          compare(item1.iconSource, "", "iconSource can be unset")
      }
 
+     // NOTE: This test must be run AFTER test_action(), otherwise setting the action will
+     // will not update the iconName
+     function test_iconName() {
+         compare(item1.iconName, "", "iconName is empty string by default")
+         var newIconName = "compose"
+         item1.iconName = newIconName
+         compare(item1.iconName, newIconName, "iconName can be set")
+         item1.iconName = ""
+         compare(item1.iconName, "", "iconName can be unset")
+     }
+
      function test_signal_triggered() {
          signalSpy.signalName = "triggered";
          compare(signalSpy.valid,true,"triggered signal exists")

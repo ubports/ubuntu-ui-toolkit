@@ -9,6 +9,7 @@ ActionItem
 modules/Ubuntu/Components/Action.qml
 UnityActions.Action
     property url iconSource
+    property string iconName
     property bool visible
     property Component itemHint
 modules/Ubuntu/Components/ActionItem.qml
@@ -16,6 +17,7 @@ StyledItem
     property Action action
     property string text
     property url iconSource
+    property string iconName
     signal triggered(var value)
     function trigger(value)
 modules/Ubuntu/Components/ActionList.qml
@@ -100,12 +102,12 @@ QtObject
 modules/Ubuntu/Components/OptionSelector.qml
 ListItem.Empty
     property var model
-    property bool alwaysExpanded
+    property bool expanded
     property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    readonly property bool expanded
+    readonly property bool currentlyExpanded
     readonly property real itemHeight
     signal delegateClicked(int index)
     signal expansionCompleted()
@@ -114,6 +116,8 @@ ListItem.Standard
     property string text
     property string subText
     property url icon
+    property url iconSource
+    property string iconName
     property bool constrainImage
     property bool colourImage
     property color assetColour
@@ -131,7 +135,6 @@ PageTreeNode
     property string title
     property Flickable flickable
     property list<Action> actions
-    default property internal pageContents
 modules/Ubuntu/Components/PageStack.qml
 PageTreeNode
     property bool __showHeader
@@ -208,7 +211,9 @@ PageTreeNode
 modules/Ubuntu/Components/TabBar.qml
 StyledItem
     property Item tabsItem
+    property ListModel model
     property bool selectionMode
+    property int selectedIndex
     property bool alwaysSelectionMode
     property bool animate
 modules/Ubuntu/Components/Tabs.qml
@@ -217,9 +222,13 @@ PageTreeNode
     readonly property Tab selectedTab
     readonly property Item currentPage
     property TabBar tabBar
-    property internal __tabs
     default property list<Item> tabChildren
+    readonly property int count
     signal modelChanged()
+    function addTab(title, component, params)
+    function insertTab(index, title, component, params)
+    function moveTab(from, to)
+    function removeTab(index)
 modules/Ubuntu/Components/TextArea.qml
 StyledItem
     property bool highlighted
@@ -391,7 +400,10 @@ QtObject
 modules/Ubuntu/Components/ListItems/Base.qml
 Empty
     property variant icon
+    property url iconSource
+    property string iconName
     property url fallbackIconSource
+    property string fallbackIconName
     property bool progression
     property bool iconFrame
     property real __iconWidth
@@ -430,6 +442,7 @@ modules/Ubuntu/Components/ListItems/IconVisual.qml
 Item
     property url source
     property url fallbackSource
+    property string fallbackIconName
     property bool hasFrame
 modules/Ubuntu/Components/ListItems/ImageWithFallback.qml
 Image
@@ -441,12 +454,12 @@ Image
 modules/Ubuntu/Components/ListItems/ItemSelector.qml
 ListItem.Empty
     property var model
-    property bool alwaysExpanded
+    property bool expanded
     property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    readonly property bool expanded
+    readonly property bool currentlyExpanded
     readonly property real itemHeight
     signal delegateClicked(int index)
     signal expansionCompleted()
@@ -473,7 +486,10 @@ Base
 modules/Ubuntu/Components/ListItems/Standard.qml
 Empty
     property variant icon
+    property url iconSource
+    property string iconName
     property url fallbackIconSource
+    property string fallbackIconName
     property bool progression
     property real __iconWidth
     property real __iconHeight
@@ -493,7 +509,10 @@ Image
 modules/Ubuntu/Components/ListItems/ValueSelector.qml
 Empty
     property variant icon
+    property url iconSource
+    property string iconName
     property url fallbackIconSource
+    property string fallbackIconName
     property real __iconWidth
     property real __iconHeight
     property real __leftIconMargin
@@ -621,32 +640,6 @@ plugins.qmltypes
     Method {
     name: "contains"
     Parameter { name: "point"; type: "QPointF" }
-    name: "QQmlPropertyMap"
-    prototype: "QObject"
-    Signal {
-    name: "valueChanged"
-    Parameter { name: "key"; type: "string" }
-    Parameter { name: "value"; type: "QVariant" }
-    Method { name: "keys"; type: "QStringList" }
-    name: "QQuickClipboard"
-    prototype: "QObject"
-    exports: ["Clipboard 0.1"]
-    Property { name: "data"; type: "QQuickMimeData"; isReadonly: true; isPointer: true }
-    Method {
-    name: "push"
-    Parameter { name: "data"; type: "QVariant" }
-    Method { name: "clear" }
-    Method { name: "newData"; type: "QQuickMimeData*" }
-    name: "QQuickMimeData"
-    prototype: "QObject"
-    exports: ["MimeData 0.1"]
-    Property { name: "formats"; type: "QStringList"; isReadonly: true }
-    Property { name: "text"; type: "string" }
-    Property { name: "html"; type: "string" }
-    Property { name: "urls"; type: "QList<QUrl>" }
-    Property { name: "color"; type: "QColor" }
-    Property { name: "data"; type: "QVariant" }
-    Signal { name: "typeChanged" }
     name: "ShapeItem"
     prototype: "QQuickItem"
     exports: ["Shape 0.1"]

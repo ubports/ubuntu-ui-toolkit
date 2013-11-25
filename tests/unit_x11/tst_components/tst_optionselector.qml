@@ -35,7 +35,7 @@ MainView {
             text: "TEST"
             delegate: selectorDelegate
             model: customModel
-            alwaysExpanded: true
+            expanded: true
 
             action: {
                 enabled: true
@@ -50,7 +50,7 @@ MainView {
 
             text: "TEST"
             subText: "test"
-            icon: "../../resources/optionselector/test.png"
+            iconSource: "../../resources/optionselector/test.png"
             constrainImage: true
         }
     }
@@ -61,7 +61,7 @@ MainView {
         OptionSelectorDelegate {
             text: name
             subText: description
-            icon: image
+            iconSource: image
             constrainImage: true
         }
     }
@@ -99,12 +99,12 @@ MainView {
          function test_expanded() {
              var listContainer = findChild(selector, "listContainer");
 
-             selector.alwaysExpanded = false;
-             compare(listContainer.expanded, false, "expanded should be true if list is an expanded one");
+             selector.expanded = false;
+             compare(listContainer.currentlyExpanded, false, "expanded should be true if list is an expanded one");
              compare(listContainer.state, "collapsed", "state should be collapsed");
 
-             selector.alwaysExpanded = true;
-             compare(listContainer.expanded, true, "expanded should be false if list is an expanded one");
+             selector.expanded = true;
+             compare(listContainer.currentlyExpanded, true, "expanded should be false if list is an expanded one");
              compare(listContainer.state, "expanded", "state should be expanded");
          }
 

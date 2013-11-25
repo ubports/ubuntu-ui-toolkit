@@ -20,6 +20,7 @@ SUBDIRS += tst_units \
     tst_performance \
     tst_ubuntu_shape \
     tst_mainview \
+    tst_page \
     tst_i18n \
     tst_arguments \
     tst_argument \

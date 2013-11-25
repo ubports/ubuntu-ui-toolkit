@@ -14,19 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "listener.h"
+import QtQuick 2.0
+import Ubuntu.Components 0.1
 
-#include <QQmlContext>
-
-ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context, const QString &contextProperty) :
-    QObject(context),
-    m_context(context),
-    m_contextProperty(contextProperty)
-{
-}
-
-void ContextPropertyChangeListener::updateContextProperty()
-{
-    QVariant value = m_context->contextProperty(m_contextProperty);
-    m_context->setContextProperty(m_contextProperty, value);
+Tab {
 }

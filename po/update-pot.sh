@@ -14,30 +14,41 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+#~  Usage:
+#~    update-pot.sh [DOMAIN] [SOURCE_DIR] [PO_DIR]
+#~
+#~  Example:
+#~    update-pot.sh ubuntu-ui-toolkit modules po
 
 set -e
-cd $(dirname $0)
-PO_DIR=$PWD
+if [ -z "$3" ]; then
+    grep -e '^#~' $0 | sed s/#~//
+    exit 0
+fi
+
+DOMAIN=$1
+SOURCE_DIR=$(readlink -f $2)
+PO_DIR=$(readlink -f $3)
 
 PROGNAME=$(basename $0)
 
 # Create a list of files to scan
-GETTEXT_FILES=$(mktemp --tmpdir uitk-gallery.lst.XXXXX)
+GETTEXT_FILES=$(mktemp --tmpdir $DOMAIN.lst.XXXXX)
 trap 'rm -f "$GETTEXT_FILES"' EXIT
-cd ..
-find \( -name '*.cpp' -o -name '*.qml' -o -name '*.js' \) \
-    -a ! \( -path './debian/*' -o -path './build/*' -o -path './.bzr/*' \) | sort \
+cd $SOURCE_DIR
+find \( -name '*.cpp' -o -name '*.qml' -o -name '*.js' -o -name '*.desktop' \) \
+    -a ! \( -path './build/*' \) | sort \
 > $GETTEXT_FILES
 
 # Generate pot from our list
 xgettext \
-    --output $PO_DIR/ubuntu-ui-toolkit.pot \
+    --output $PO_DIR/$DOMAIN.pot \
     --files-from $GETTEXT_FILES \
     --qt --c++ \
     --add-comments=TRANSLATORS \
     --keyword=tr \
     --keyword=tr:1,2 \
-    --package-name ubuntu-ui-toolkit \
+    --package-name $DOMAIN \
     --copyright-holder "Canonical Ltd"
 
-echo "$PROGNAME: $PO_DIR/ubuntu-ui-toolkit.pot updated"
+echo "$PROGNAME: $PO_DIR/$DOMAIN.pot updated based on $SOURCE_DIR"
