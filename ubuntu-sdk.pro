@@ -8,7 +8,7 @@ tests/unit.depends = modules/ubuntu-ui-toolkit.pro
 # additional 'make test' target required by continuous integration system
 test.target = test
 test.commands = make check
-test.depends = license
+test.depends = license modules/ubuntu-ui-toolkit.pro
 QMAKE_EXTRA_TARGETS += test
 
 test_performance.target = test-performance

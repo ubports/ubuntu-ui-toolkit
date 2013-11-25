@@ -50,7 +50,7 @@ import Ubuntu.Components 0.1
             ListItem.Subtitled {
                 text: "Icon"
                 subText: "Secondary label"
-                icon: Qt.resolvedUrl("icon.png")
+                iconName: "compose"
             }
             ListItem.Subtitled {
                 text: "Multiple lines"
@@ -59,7 +59,7 @@ import Ubuntu.Components 0.1
             ListItem.Subtitled {
                 text: "Multiple lines"
                 subText: "It also works well with icons and progression."
-                icon: Qt.resolvedUrl("icon.png")
+                iconName: "compose"
                 progression: true
             }
         }

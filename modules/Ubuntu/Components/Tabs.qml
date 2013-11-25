@@ -61,7 +61,6 @@ import QtQuick 2.0
                 Tab {
                     id: externalTab
                     title: i18n.tr("External")
-                    iconSource: "call_icon.png"
                     page: Loader {
                         parent: externalTab
                         anchors.fill: parent
@@ -76,7 +75,7 @@ import QtQuick 2.0
                             anchors.fill: parent
                             model: 20
                             delegate: ListItem.Standard {
-                                icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                                iconName: "compose"
                                 text: "Item "+modelData
                             }
                         }
@@ -151,11 +150,12 @@ PageTreeNode {
 
     /*!
       \preliminary
+      \qmlproperty int selectedTabIndex
       The index of the currently selected tab.
       The first tab is 0, and -1 means that no tab is selected.
       The initial value is 0 if Tabs has contents, or -1 otherwise.
      */
-    property int selectedTabIndex: tabsModel.count > 0 ? 0 : -1
+    property alias selectedTabIndex: bar.selectedIndex
 
     /*!
       \preliminary
@@ -174,7 +174,7 @@ PageTreeNode {
       and provides scrollable tab buttons.
      */
     property TabBar tabBar: TabBar {
-        tabsItem: tabs
+        id: bar
         model: tabsModel
         visible: tabs.active
     }
@@ -192,6 +192,7 @@ PageTreeNode {
     readonly property alias count: tabsModel.count
 
     /*!
+      \deprecated
       Used by the tabs style to update the tabs header with the titles of all the tabs.
       This signal is used in an intermediate step in transitioning the tabs to a new
       implementation and may be removed in the future.
@@ -264,7 +265,7 @@ PageTreeNode {
             // move the selected index to the next index
             tabs.selectedTabIndex += 1;
         } else {
-            tabs.modelChanged();
+            internal.sync();
         }
         return tab;
     }
@@ -291,7 +292,7 @@ PageTreeNode {
         } else if (selectedTabIndex <= to && selectedTabIndex >= from) {
             selectedTabIndex -= 1;
         } else {
-            tabs.modelChanged();
+            internal.sync();
         }
 
         return true;
@@ -326,7 +327,7 @@ PageTreeNode {
         }
 
         if (activeIndex < 0) {
-            tabs.modelChanged();
+            internal.sync();
         }
         return true;
     }
@@ -358,7 +359,7 @@ PageTreeNode {
                     }
                 }
             }
-            tabs.modelChanged();
+            internal.sync();
         }
 
         function reindex(from) {
@@ -372,7 +373,6 @@ PageTreeNode {
                 tab.__protected.index = i;
             }
         }
-
     }
 
     Item {
@@ -381,9 +381,6 @@ PageTreeNode {
 
         onChildrenChanged: tabsModel.updateTabList(children)
     }
-
-    /*! \internal */
-    onModelChanged: if (tabs.active && internal.header) internal.header.show()
 
     QtObject {
         id: internal
@@ -397,6 +394,15 @@ PageTreeNode {
             } else {
                 return false;
             }
+        }
+
+        function sync() {
+            if (tabBar && tabBar.__styleInstance && tabBar.__styleInstance.hasOwnProperty("sync")) {
+                tabBar.__styleInstance.sync();
+            }
+            if (tabs.active && internal.header) internal.header.show();
+            // deprecated, however use it till we remove it completely
+            tabs.modelChanged();
         }
     }
 

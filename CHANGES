@@ -9,6 +9,21 @@ UNRELEASED
 
 API Changes
 ***********
+* ADDED IN: Action: property string iconName
+* ADDED IN: ActionItem: property string iconName
+* ADDED IN: OptionSelectorDelegate: property string iconName
+* ADDED IN: OptionSelectorDelegate: property url iconSource
+* DEPRECATED IN: OptionSelectorDelegate: property url icon
+* ADDED IN: ListItems.Base: property string fallbackIconName
+* ADDED IN: ListItems.Base: property string iconName
+* ADDED IN: ListItems.Base: property url iconSource
+* DEPRECATED IN: ListItems.Base: property variant icon
+* ADDED IN: ListItems.Standard: property string fallbackIconName
+* ADDED IN: ListItems.Standard: property string iconName
+* ADDED IN: ListItems.Standard: property url iconSource
+* DEPRECATED IN: ListItems.Standard: property variant icon
+* ADDED IN: TabBar: property int selectedIndex
+* DEPRECATED IN TabBar: property Item tabsItem
 * ADDED IN: OptionSelector: readonly property bool currentlyExpanded
 * ADDED IN: ItemSelector: readonly property bool currentlyExpanded
 * ADDED IN: Tab: readonly property int index
