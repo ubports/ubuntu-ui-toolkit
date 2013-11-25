@@ -109,20 +109,23 @@ Item {
 
     Tabs {
         id: tabsWithRepeater
-//        Tab {
-//            id: firstTab
-//            title: "tab -1"
-//        }
-
+        ListModel {
+            id: myModel
+            Component.onCompleted: {
+                append({ "name": "tab 1" });
+                insert(0, { "name": "tab 0" });
+                append({ "name": "tab 3" });
+                insert(2, { "name": "tab 2" });
+            }
+        }
         Repeater {
             id: tabsRepeater
-            model: 10
+            model: myModel
             Tab {
-                title: "tab "+index
+                title: name
             }
         }
     }
-
 
     TestCase {
         name: "TabsAPI"
@@ -131,15 +134,22 @@ Item {
         function test_tabOrder_bug1253804() {
             var tabsModel = tabsWithRepeater.tabBar.model;
 
-//            compare(tabsModel.count, tabsRepeater.count+1, "Incorrect number of tabs in TabBar");
             compare(tabsModel.count, tabsRepeater.count, "Incorrect number of tabs in TabBar");
             var tab;
             for (var i=0; i < tabsModel.count; i++) {
                 tab = tabsRepeater.itemAt(i);
                 compare(tab.hasOwnProperty("title"), true, "Repeater item is not a tab");
-                print("------------");
-                print("title from model = "+tabsModel.get(i).title);
-                print("title from tab = "+tab.title);
+                compare(tabsModel.get(i).title, tab.title, "Tab titles don't match");
+            }
+
+            // now shuffle to get reverse order
+            myModel.move(1, 2, 1);
+            myModel.move(3, 0, 1);
+            myModel.move(1, 3, 1);
+
+            for (var i=0; i < tabsModel.count; i++) {
+                tab = tabsRepeater.itemAt(i);
+                compare(tab.hasOwnProperty("title"), true, "Repeater item is not a tab");
                 compare(tabsModel.get(i).title, tab.title, "Tab titles don't match");
             }
         }
