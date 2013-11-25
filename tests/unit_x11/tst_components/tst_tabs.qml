@@ -100,11 +100,47 @@ Item {
         }
     }
 
-
+    Tabs {
+        id: tabsWithRepeater
+        ListModel {
+            id: inputModel
+            Component.onCompleted: {
+                append({ "name": "tab 1" });
+                insert(0, { "name": "tab 0" });
+                append({ "name": "tab 3" });
+                insert(2, { "name": "tab 2" });
+            }
+        }
+        Repeater {
+            id: tabsRepeater
+            model: inputModel
+            Tab {
+                title: name
+            }
+        }
+    }
 
     TestCase {
         name: "TabsAPI"
         when: windowShown
+
+        function test_tabOrder_bug1253804() {
+            var tabsModel = tabsWithRepeater.tabBar.model;
+
+            compare(tabsRepeater.count, inputModel.count, "Incorrect number of tabs in Tabs");
+            compare(tabsModel.count, tabsRepeater.count, "Incorrect number of tabs in TabBar");
+            for (var i=0; i < tabsModel.count; i++) {
+                compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles don't match for index "+i);
+            }
+
+            // now shuffle to get reverse order
+            inputModel.move(1, 2, 1);
+            inputModel.move(3, 0, 1);
+            inputModel.move(1, 3, 1);
+            for (i=0; i < tabsModel.count; i++) {
+                compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles after shuffling don't match for index "+i);
+            }
+        }
 
         function test_emptyTabs() {
             compare(emptyTabs.selectedTabIndex, -1, "The default value for selectedTabIndex is -1 when there are no tabs");
