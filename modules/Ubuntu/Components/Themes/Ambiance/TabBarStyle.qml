@@ -48,7 +48,7 @@ Item {
         buttonView.selectButton(styledItem.selectedIndex);
     }
 
-    property ListModel tabsModel : styledItem ? styledItem.model : null
+    property var tabsModel : styledItem ? styledItem.model : null
 
     Connections {
         target: styledItem

@@ -46,7 +46,7 @@ StyledItem {
       determined by the style component, Default style checks the existence of the
       \b tab role first, and if not defined will use the \b title role.
       */
-    property ListModel model
+    property var model: null
 
     /*!
       An inactive tab bar only displays the currently selected tab,
