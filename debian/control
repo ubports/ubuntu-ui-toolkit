@@ -12,6 +12,7 @@ Build-Depends: debhelper (>= 9.0.0),
                qtbase5-dev,
                qtbase5-private-dev,
                qttools5-dev-tools,
+# Starting with Qt5.2 'libqt5v8-5-private-dev' should be removed
                libqt5v8-5-private-dev,
                qtbase5-dev-tools,
                libqt5sql5-sqlite,
@@ -23,12 +24,20 @@ Build-Depends: debhelper (>= 9.0.0),
                qtdeclarative5-qtfeedback-plugin,
                qtdeclarative5-unity-action-plugin,
                qtdeclarative5-localstorage-plugin,
+         qtdeclarative5-doc-html,
+         qtwebkit5-doc-html,
+         qtsvg5-doc-html,
+         qtscript5-doc-html,
+         qtmultimedia5-doc-html,
+         unity-action-doc,
                devscripts,
                libqt5organizer5,
                qtpim5-dev,
+               language-pack-en-base,
                libthumbnailer-dev,
                libdbus-1-dev,
                libnih-dbus-dev,
+               locales,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 # If you aren't a member of ~ubuntu-sdk-team but need to upload packaging 
@@ -79,6 +88,12 @@ Multi-Arch: foreign
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: ${misc:Depends},
          ${shlibs:Depends},
+         qtdeclarative5-doc-html,
+         qtwebkit5-doc-html,
+         qtsvg5-doc-html,
+         qtscript5-doc-html,
+         qtmultimedia5-doc-html,
+         unity-action-doc,
 Conflicts: qt-components-ubuntu-doc
 Replaces: qt-components-ubuntu-doc
 Provides: qt-components-ubuntu-doc
@@ -94,11 +109,10 @@ Architecture: amd64 i386 armhf
 Depends: qmlscene,
          qtdeclarative5-ubuntu-ui-toolkit-plugin,
          ubuntu-ui-toolkit-theme,
-         ubuntu-ui-toolkit-doc,
          qtdeclarative5-xmllistmodel-plugin,
          ${misc:Depends},
          ${shlibs:Depends}
-Recommends: libqt5multimedia5-plugins
+Recommends: libqt5multimedia5-plugins, ubuntu-ui-toolkit-doc
 Conflicts: qt-components-ubuntu-examples, qt-components-ubuntu-demos
 Replaces: qt-components-ubuntu-examples, qt-components-ubuntu-demos
 Provides: qt-components-ubuntu-examples, qt-components-ubuntu-demos
@@ -116,7 +130,7 @@ Depends: ${misc:Depends},
          dpkg-dev,
          libqt5test5,
          libqt5widgets5,
-         python-autopilot (>= 1.3),
+         python-autopilot (>= 1.4),
          python-mock,
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
 Description: Test package for Ubuntu UI Toolkit

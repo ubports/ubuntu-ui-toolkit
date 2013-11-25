@@ -30,7 +30,7 @@
             OptionSelector {
                 text: i18n.tr("Label")
                 model: customModel
-                delegate: OptionSelectorDelegate { text: name; subText: description; icon: image }
+                delegate: OptionSelectorDelegate { text: name; subText: description; iconSource: image }
             }
             ListModel {
                 id: customModel
@@ -63,10 +63,43 @@ ListItem.Standard {
     property string subText
 
     /*!
-      \preliminary
+      \deprecated
+
+      \b{Use iconName or iconSource instead.}
+
       Left icon url.
      */
-    property url icon
+    property url icon: iconSource
+    onIconChanged: if (icon != iconSource) {
+                       console.warn("WARNING: OptionSelectorDelegate.icon is DEPRECATED. " +
+                                     "Use iconName and iconSource instead.")
+                   }
+
+    /*!
+      The image shown for that option.
+      \qmlproperty url iconSource
+
+      This is a URL to any image file.
+      In order to use an icon from the Ubuntu theme, use the iconName property instead.
+     */
+    property url iconSource: iconName ? "image://theme/" + iconName : ""
+
+    /*!
+      The icon shown for that option.
+
+      \qmlproperty string iconName
+
+      If both iconSource and iconName are defined, iconName will be ignored.
+
+      \note The complete list of icons available in Ubuntu is not published yet.
+            For now please refer to the folders where the icon themes are installed:
+            \list
+              \li Ubuntu Touch: \l file:/usr/share/icons/ubuntu-mobile
+              \li Ubuntu Desktop: \l file:/usr/share/icons/ubuntu-mono-dark
+            \endlist
+            These 2 separate icon themes will be merged soon.
+    */
+    property string iconName
 
     /*!
       \preliminary
@@ -115,7 +148,7 @@ ListItem.Standard {
         right: parent.right
     }
     onClicked: {
-        if (listView.container.expanded) {
+        if (listView.container.currentlyExpanded) {
             listView.delegateClicked(index);
 
             if (!listView.multiSelection) {
@@ -126,8 +159,8 @@ ListItem.Standard {
             }
         }
 
-        if (!listView.alwaysExpanded && !listView.multiSelection) {
-            listView.container.expanded = !listView.container.expanded;
+        if (!listView.expanded && !listView.multiSelection) {
+            listView.container.currentlyExpanded = !listView.container.currentlyExpanded;
         }
     }
 
@@ -168,14 +201,14 @@ ListItem.Standard {
     resources: [
         Connections {
             target: listView.container
-            onExpandedChanged: {
+            onCurrentlyExpandedChanged: {
                 optionExpansion.stop();
                 imageExpansion.stop();
                 optionCollapse.stop();
                 selectedImageCollapse.stop();
                 deselectedImageCollapse.stop();
 
-                if (listView.container.expanded === true) {
+                if (listView.container.currentlyExpanded === true) {
                     if (!option.selected) {
                         optionExpansion.start();
 
@@ -341,7 +374,7 @@ ListItem.Standard {
 
         width: units.gu(2)
         height: units.gu(2)
-        source: listView.alwaysExpanded || listView.multiSelection ? listView.container.tick : listView.container.chevron
+        source: listView.expanded || listView.multiSelection ? listView.container.tick : listView.container.chevron
         opacity: option.selected ? 1.0 : 0.0
         anchors {
             right: parent.right
@@ -351,7 +384,7 @@ ListItem.Standard {
 
         //Our behaviour is only enabled for our expanded list due to flickering bugs in relation to all this other animations running on the expanding version.
         Behavior on opacity {
-            enabled: listView.alwaysExpanded
+            enabled: listView.expanded
 
             Toolkit.UbuntuNumberAnimation {
                 properties: "opacity"

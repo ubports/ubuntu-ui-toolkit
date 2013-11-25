@@ -57,13 +57,13 @@ import Ubuntu.Unity.Action 1.0 as UnityActions
                 Button {
                     height: parent.height
                     width: height
-                    iconSource: "caps-lock.png"
+                    iconName: "compose"
                     onClicked: doSomething()
                 }
                 Button {
                     height: parent.height
                     width: height
-                    iconSource: "num-lock.png"
+                    iconName: "undo"
                     onClicked: doSomething()
                 }
             }

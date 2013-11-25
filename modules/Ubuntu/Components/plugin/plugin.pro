@@ -5,12 +5,15 @@ unix {
 
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
-QT += core-private v8-private qml qml-private quick quick-private dbus
+QT += core-private qml qml-private quick quick-private dbus
+
+equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
+    QT += v8-private
+}
+
 CONFIG += qt plugin no_keywords
 
-CONFIG(debug) {
-  QMAKE_CXXFLAGS_DEBUG += -Werror
-}
+QMAKE_CXXFLAGS += -Werror
 
 # QOrganizer
 QT += organizer

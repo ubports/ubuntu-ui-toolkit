@@ -35,7 +35,7 @@ class OptionSelectorTests(GalleryTestCase):
 
         self.assertThat(collapsed.selectedIndex, Equals(0))
         self.pointing_device.click_object(collapsed)
-        self.assertThat(styleditem.expanded, Eventually(Equals(True)))
+        self.assertThat(styleditem.currentlyExpanded, Eventually(Equals(True)))
         #try to search the following list entry few times
         #as it may not be available immediately.
         for t in range(0, 9):
@@ -48,7 +48,8 @@ class OptionSelectorTests(GalleryTestCase):
 
         self.pointing_device.click_object(selectedValue)
         self.assertThat(collapsed.selectedIndex, Eventually(Equals(3)))
-        self.assertThat(styleditem.expanded, Eventually(Equals(False)))
+        self.assertThat(styleditem.currentlyExpanded,
+                        Eventually(Equals(False)))
 
     def test_optionselector_expanded(self):
         item = "Option Selector"

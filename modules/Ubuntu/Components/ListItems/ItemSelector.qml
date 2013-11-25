@@ -45,7 +45,7 @@ import Ubuntu.Components 0.1
 
             ListItem.ItemSelector {
                 text: i18n.tr("Label")
-                alwaysExpanded: true
+                expanded: true
                 model: [i18n.tr("Value 1"),
                         i18n.tr("Value 2"),
                         i18n.tr("Value 3"),
@@ -55,7 +55,7 @@ import Ubuntu.Components 0.1
             ListItem.ItemSelector {
                 text: i18n.tr("Multiple Selection")
                 alwaysExpanded: false
-                multiSelection: true
+                expanded: true
                 model: [i18n.tr("Value 1"),
                         i18n.tr("Value 2"),
                         i18n.tr("Value 3"),
@@ -65,14 +65,14 @@ import Ubuntu.Components 0.1
             ListItem.ItemSelector {
                 text: i18n.tr("Label")
                 model: customModel
-                alwaysExpanded: true
+                expanded: true
                 colourImage: true
                 delegate: selectorDelegate
             }
 
             Component {
                 id: selectorDelegate
-                Toolkit.OptionSelectorDelegate { text: name; subText: description; icon: image }
+                Toolkit.OptionSelectorDelegate { text: name; subText: description; iconSource: image }
             }
 
             ListModel {
@@ -98,7 +98,7 @@ import Ubuntu.Components 0.1
 
             ListItem.ItemSelector {
                 text: i18n.tr("Label")
-                alwaysExpanded: true
+                expanded: true
                 model: [i18n.tr("Value 1"),
                         i18n.tr("Value 2"),
                         i18n.tr("Value 3"),
@@ -127,7 +127,7 @@ ListItem.Empty {
       \preliminary
       Specifies whether the list is always alwaysExpanded.
      */
-    property bool alwaysExpanded: false
+    property bool expanded: false
 
     /*!
       \preliminary
@@ -161,9 +161,9 @@ ListItem.Empty {
 
     /*!
       \qmlproperty bool expanded
-      Is our list currently alwaysExpanded?
+      Is our list currently expanded?
      */
-    readonly property alias expanded: listContainer.expanded
+    readonly property alias currentlyExpanded: listContainer.currentlyExpanded
 
     /*!
       \qmlproperty real itemHeight
@@ -204,25 +204,25 @@ ListItem.Empty {
             readonly property url tick: __styleInstance.tick
             readonly property color themeColour: Theme.palette.selected.fieldText
             readonly property alias colourImage: itemSelector.colourImage
-            property bool expanded: alwaysExpanded || multiSelection
+            property bool currentlyExpanded: expanded || multiSelection
 
             anchors {
                 left: parent.left
                 right: parent.right
             }
-            state: itemSelector.alwaysExpanded ? state = "alwaysExpanded" : state = "collapsed"
+            state: itemSelector.expanded ? state = "alwaysExpanded" : state = "collapsed"
             style: Theme.createStyleComponent("ListItemOptionSelectorStyle.qml", listContainer)
 
             states: [ State {
                     name: "expanded"
-                    when: listContainer.expanded
+                    when: listContainer.currentlyExpanded
                     PropertyChanges {
                         target: listContainer
                         height: list.contentHeight < containerHeight ? list.contentHeight : containerHeight
                     }
                 }, State {
                     name: "collapsed"
-                    when: !listContainer.expanded
+                    when: !listContainer.currentlyExpanded
                     PropertyChanges {
                         target: listContainer
                         height: list.itemHeight
@@ -238,7 +238,7 @@ ListItem.Empty {
                         }
                         ScriptAction {
                             script: {
-                                if (listContainer.expanded) {
+                                if (listContainer.currentlyExpanded) {
                                     expansionCompleted();
                                 }
                             }
@@ -252,14 +252,14 @@ ListItem.Empty {
                 objectName: "listView"
 
                 property int previousIndex: list.currentIndex
-                readonly property alias alwaysExpanded: itemSelector.alwaysExpanded
+                readonly property alias expanded: itemSelector.expanded
                 readonly property alias multiSelection: itemSelector.multiSelection
                 readonly property alias container: listContainer
                 property real itemHeight
                 signal delegateClicked(int index)
 
                 onDelegateClicked: itemSelector.delegateClicked(index);
-                interactive: listContainer.height !== list.contentHeight && listContainer.expanded ? true : false
+                interactive: listContainer.height !== list.contentHeight && listContainer.currentlyExpanded ? true : false
                 clip: true
                 currentIndex: 0
                 model: itemSelector.model

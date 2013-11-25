@@ -34,7 +34,7 @@ import QtQuick 2.0
             }
             ListItem.MultiValue {
                 text: "Label"
-                icon: Qt.resolvedUrl("icon.png")
+                iconName: "compose"
                 values: ["Value 1", "Value 2", "Value 3", "Value 4"]
                 progression: true
                 onClicked: print("clicked")

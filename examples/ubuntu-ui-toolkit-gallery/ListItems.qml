@@ -42,7 +42,7 @@ Template {
         className: "Standard"
         delegate: ListItem.Standard {
             text: i18n.tr("Label")
-            icon: Qt.resolvedUrl("avatar_contacts_list.png")
+            iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
         }
     }
 
@@ -95,7 +95,7 @@ Template {
 
             ListItem.ItemSelector {
                 text: i18n.tr("Expanded")
-                alwaysExpanded: true
+                expanded: true
                 model: [i18n.tr("Value 1"),
                         i18n.tr("Value 2"),
                         i18n.tr("Value 3"),
@@ -104,7 +104,7 @@ Template {
 
             ListItem.ItemSelector {
                 text: i18n.tr("Multiple Selection")
-                alwaysExpanded: false
+                expanded: false
                 multiSelection: true
                 model: [i18n.tr("Value 1"),
                         i18n.tr("Value 2"),
@@ -115,14 +115,14 @@ Template {
             ListItem.ItemSelector {
                 text: i18n.tr("Custom Model")
                 model: customModel
-                alwaysExpanded: true
+                expanded: true
                 colourImage: true
                 delegate: selectorDelegate
             }
 
             Component {
                 id: selectorDelegate
-                Toolkit.OptionSelectorDelegate { text: name; subText: description; icon: image }
+                Toolkit.OptionSelectorDelegate { text: name; subText: description; iconSource: image }
             }
 
             ListModel {
@@ -148,7 +148,7 @@ Template {
 
             ListItem.ItemSelector {
                 text: i18n.tr("Label")
-                alwaysExpanded: true
+                expanded: true
                 selectedIndex: -1
                 model: [i18n.tr("Value 1"),
                         i18n.tr("Value 2"),

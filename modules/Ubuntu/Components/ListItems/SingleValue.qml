@@ -33,7 +33,7 @@ import QtQuick 2.0
             }
             ListItem.SingleValue {
                 text: "Label"
-                icon: Qt.resolvedUrl("icon.png")
+                iconName: "compose"
                 value: "Parameter"
                 progression: true
                 onClicked: print("clicked")

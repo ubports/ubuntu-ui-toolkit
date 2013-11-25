@@ -32,12 +32,12 @@ import QtQuick 2.0
                 onClicked: print("clicked text-only Button")
             }
             Button {
-                iconSource: "icon.png"
+                iconName: "compose"
                 gradient: UbuntuColors.greyGradient
                 onClicked: print("clicked icon-only Button")
             }
             Button {
-                iconSource: "icon.png"
+                iconName: "compose"
                 text: "Icon on left"
                 iconPosition: "left"
                 onClicked: print("clicked text and icon Button")
@@ -51,7 +51,7 @@ import QtQuick 2.0
                 id: action1
                 text: "Click me"
                 onTriggered: print("action!")
-                iconSource: "icon.png"
+                iconName: "compose"
             }
             Button {
                 anchors.centerIn: parent
