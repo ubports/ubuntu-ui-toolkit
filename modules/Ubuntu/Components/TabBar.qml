@@ -57,7 +57,7 @@ StyledItem {
     /*!
       The property holds the index of the selected Tab item.
       */
-    property int selectedIndex: (model && model.count > 0) ? 0 : -1
+    property int selectedIndex: (model && model.hasOwnProperty("count") && model.count > 0) ? 0 : -1
 
     /*!
       Do not deactivate the tab bar after a specified idle time or when the user selects a new tab.
@@ -80,4 +80,13 @@ StyledItem {
     implicitHeight: units.gu(7.5)
 
     style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
+
+    onModelChanged: {
+        // Let's check it has the properties we need
+        if (model) {
+            if (!((model.hasOwnProperty("tab") && tab.hasOwnProperty("title")) || model.hasOwnProperty("title"))) {
+                console.error("TabBar:: model needs to provide either tab.title or title roles")
+            }
+        }
+    }
 }
