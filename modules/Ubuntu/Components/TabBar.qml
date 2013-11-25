@@ -80,13 +80,4 @@ StyledItem {
     implicitHeight: units.gu(7.5)
 
     style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
-
-    onModelChanged: {
-        // Let's check it has the properties we need
-        if (model) {
-            if (!((model.hasOwnProperty("tab") && tab.hasOwnProperty("title")) || model.hasOwnProperty("title"))) {
-                console.error("TabBar:: model needs to provide either tab.title or title roles")
-            }
-        }
-    }
 }
