@@ -344,19 +344,30 @@ PageTreeNode {
         }
 
         function updateTabList(tabsList) {
+            var offset = 0;
+            var tabIndex;
             for (var i in tabsList) {
                 var tab = tabsList[i];
                 if (internal.isTab(tab)) {
+                    tabIndex = i - offset;
                     // make sure we have the right parent
                     tab.parent = tabStack;
 
                     if (!tab.__protected.inserted) {
-                        tab.__protected.index = count;
+                        tab.__protected.index = tabIndex;
                         tab.__protected.inserted = true;
-                        append(listModel(tab));
+                        insert(tabIndex, listModel(tab));
                     } else if (!tab.__protected.removedFromTabs && tabsModel.count > tab.index) {
                         get(tab.index).title = tab.title;
                     }
+
+                    // always makes sure that tabsModel has the same order as tabsList
+                    move(tab.__protected.index, tabIndex, 1);
+                    reindex();
+                } else {
+                    // keep track of children that are not tabs so that we compute
+                    // the right index for actual tabs
+                    offset += 1;
                 }
             }
             internal.sync();
