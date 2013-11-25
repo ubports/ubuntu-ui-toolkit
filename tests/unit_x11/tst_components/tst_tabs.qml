@@ -107,11 +107,42 @@ Item {
         }
     }
 
+    Tabs {
+        id: tabsWithRepeater
+//        Tab {
+//            id: firstTab
+//            title: "tab -1"
+//        }
+
+        Repeater {
+            id: tabsRepeater
+            model: 10
+            Tab {
+                title: "tab "+index
+            }
+        }
+    }
 
 
     TestCase {
         name: "TabsAPI"
         when: windowShown
+
+        function test_tabOrder_bug1253804() {
+            var tabsModel = tabsWithRepeater.tabBar.model;
+
+//            compare(tabsModel.count, tabsRepeater.count+1, "Incorrect number of tabs in TabBar");
+            compare(tabsModel.count, tabsRepeater.count, "Incorrect number of tabs in TabBar");
+            var tab;
+            for (var i=0; i < tabsModel.count; i++) {
+                tab = tabsRepeater.itemAt(i);
+                compare(tab.hasOwnProperty("title"), true, "Repeater item is not a tab");
+                print("------------");
+                print("title from model = "+tabsModel.get(i).title);
+                print("title from tab = "+tab.title);
+                compare(tabsModel.get(i).title, tab.title, "Tab titles don't match");
+            }
+        }
 
         function test_emptyTabs() {
             compare(emptyTabs.selectedTabIndex, -1, "The default value for selectedTabIndex is -1 when there are no tabs");
