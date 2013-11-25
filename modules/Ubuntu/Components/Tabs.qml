@@ -257,7 +257,40 @@ PageTreeNode {
         anchors.fill: parent
         id: tabStack
 
-        onChildrenChanged: tabsModel.updateTabList(children)
+        onChildrenChanged: {
+            connectToRepeaters();
+            tabsModel.updateTabList(children)
+        }
+
+        /* When inserting a delegate into its parent the Repeater does it in 3
+           steps:
+           1) sets the parent of the delegate thus inserting it in the list of
+              children in a position that does not correspond to the position of
+              the corresponding item in the model. At that point the
+              childrenChanged() signal is emitted.
+           2) reorder the delegate to match the position of the corresponding item
+              in the model.
+           3) emits the itemAdded() signal.
+
+           We need to update the list of tabs (tabsModel) when the children are in the
+           adequate order hence the workaround below. It connects to the itemAdded()
+           signal of any repeater it finds and triggers an update of the tabsModel.
+
+           Somewhat related Qt bug report:
+           https://bugreports.qt-project.org/browse/QTBUG-32438
+        */
+        function onRepeaterItemAdded() {
+            tabsModel.updateTabList(children);
+        }
+
+        function connectToRepeaters() {
+            for (var i = 0; i <= children.length; i++) {
+                var child = children[i];
+                if (internal.isRepeater(child)) {
+                    child.itemAdded.connect(tabStack.onRepeaterItemAdded);
+                }
+            }
+        }
     }
 
     QtObject {
@@ -272,6 +305,10 @@ PageTreeNode {
             } else {
                 return false;
             }
+        }
+
+        function isRepeater(item) {
+            return (item && item.hasOwnProperty("itemAdded"))
         }
 
         function sync() {
