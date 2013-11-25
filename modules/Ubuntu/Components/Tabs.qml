@@ -284,7 +284,7 @@ PageTreeNode {
         }
 
         function connectToRepeaters() {
-            for (var i = 0; i <= children.length; i++) {
+            for (var i = 0; i < children.length; i++) {
                 var child = children[i];
                 if (internal.isRepeater(child)) {
                     child.itemAdded.connect(tabStack.onRepeaterItemAdded);
@@ -308,7 +308,7 @@ PageTreeNode {
         }
 
         function isRepeater(item) {
-            return (item && item.hasOwnProperty("itemAdded"))
+            return (item && item.hasOwnProperty("itemAdded"));
         }
 
         function sync() {
