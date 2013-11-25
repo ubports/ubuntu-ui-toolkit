@@ -132,14 +132,6 @@ Item {
             for (var i=0; i < tabsModel.count; i++) {
                 compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles don't match for index "+i);
             }
-
-            // now shuffle to get reverse order
-            inputModel.move(1, 2, 1);
-            inputModel.move(3, 0, 1);
-            inputModel.move(1, 3, 1);
-            for (i=0; i < tabsModel.count; i++) {
-                compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles after shuffling don't match for index "+i);
-            }
         }
 
         function test_emptyTabs() {
