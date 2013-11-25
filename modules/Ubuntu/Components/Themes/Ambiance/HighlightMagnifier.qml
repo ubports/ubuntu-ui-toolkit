@@ -64,8 +64,7 @@ Item {
             uniform highp vec4 outputColor;
 
             void main() {
-                vec2 tc = qt_TexCoord0;
-                lowp vec4 tex = texture2D(source, tc);
+                lowp vec4 tex = texture2D(source, qt_TexCoord0);
                 gl_FragColor = vec4(outputColor.rgb, outputColor.a*tex.a) * qt_Opacity;
             }
             "
