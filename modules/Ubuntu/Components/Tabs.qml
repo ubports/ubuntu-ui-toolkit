@@ -279,7 +279,7 @@ PageTreeNode {
            Somewhat related Qt bug report:
            https://bugreports.qt-project.org/browse/QTBUG-32438
         */
-        function onRepeaterItemAdded() {
+        function updateTabsModel() {
             tabsModel.updateTabList(children);
         }
 
@@ -287,7 +287,7 @@ PageTreeNode {
             for (var i = 0; i < children.length; i++) {
                 var child = children[i];
                 if (internal.isRepeater(child)) {
-                    child.itemAdded.connect(tabStack.onRepeaterItemAdded);
+                    child.itemAdded.connect(tabStack.updateTabsModel);
                 }
             }
         }
