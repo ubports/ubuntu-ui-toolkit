@@ -150,7 +150,7 @@ Item {
             for (var i=0; i < tabsModel.count; i++) {
                 tab = tabsRepeater.itemAt(i);
                 compare(tab.hasOwnProperty("title"), true, "Repeater item is not a tab");
-                compare(tabsModel.get(i).title, tab.title, "Tab titles don't match");
+                compare(tabsModel.get(i).title, tab.title, "Tab titles don't match after shuffling the model");
             }
         }
 
