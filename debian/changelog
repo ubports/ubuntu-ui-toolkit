@@ -1,3 +1,63 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20131126-0ubuntu1) trusty; urgency=low
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Informed renderer of index and vertex data patterns.
+  * [UbuntuShape] Transformed coordinates of textures packed in atlases.
+    (LP: #1252736)
+
+  [ Jani Monoses ]
+  * Avoid reference errors in OrientationHelper. (LP: #1244631)
+
+  [ Albert Astals ]
+  * Do not include the QtQml catch-all include header Include the
+    headers we need instead .
+  * Compile properly with make -j10 Otherwise tries to compile the tests
+    before the components.so is there and fails.
+
+  [ Christian Dywan ]
+  * Only inspect left hand for keywords and omit identifier. (LP:
+    #1250653)
+  * Merge pot update scripts and tweak 'make pot'. (LP: #1186250)
+  * Add dependencies and indexes to link Qt5 and Ubuntu.Unity.Action
+    docs. (LP: #1202561)
+  * Implement BUILTINS in qmlapicheck to exclude built-in types.
+  * Move ubuntu-ui-toolkit-doc dep from -examples to Recommends This way
+    it's possible to run autopilot tests without docs.
+
+  [ Zsombor Egri ]
+  * Tabs are controlled independently by TabBar from Tabs component.
+    (LP: #1246758)
+
+  [ Florian Boucault ]
+  * Conditionally disable v8-private dependency if Qt's version >= 5.2.
+  * TextArea: added missing MathUtils import. (LP: #1248731)
+  * Homogenized the icon related APIs. Everywhere where an icon can be
+    set 2 properties are defined: url iconSource: url of any image file
+    that can be used as the icon. string iconName: name of the icon in
+    the theme. Redundant APIs are now deprecated. Action, ActionItem,
+    OptionSelectorDelegate, ListItems.Base and ListItems.Standard have
+    been modified. (LP: #1191054)
+
+  [ Leo Arias ]
+  * Add the .py files to the qtcreator project. (LP: #1244615)
+  * Added logging for all the public methods on the autopilot emulators.
+
+  [ Robert Bruce Park ]
+  * Fix indicator tabs ordering.
+
+  [ Michael Zanetti ]
+  * fix typo in ListItems.Empty doc string.
+
+  [ tpeeters ]
+  * Align ListView header with MainView header. (LP: #1202403, #1202277)
+  * Support initial value of selectionMode that is not equal to false.
+    (LP: #1250194)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 859
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 26 Nov 2013 01:11:34 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20131118-0ubuntu1) trusty; urgency=low
 
   [ Zsombor Egri ]
