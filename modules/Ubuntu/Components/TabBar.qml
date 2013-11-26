@@ -57,7 +57,7 @@ StyledItem {
     /*!
       The property holds the index of the selected Tab item.
       */
-    property int selectedIndex: (model && modelChecked && model.count > 0) ? 0 : -1
+    property int selectedIndex: (model && internal.modelChecked && model.count > 0) ? 0 : -1
 
     /*!
       Do not deactivate the tab bar after a specified idle time or when the user selects a new tab.
