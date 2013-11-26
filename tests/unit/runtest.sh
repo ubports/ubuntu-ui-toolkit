@@ -25,7 +25,7 @@ _ARGS="-platform minimal $_ARG_XML"
 set +e
 
 function create_test_cmd {
-  _CMD="./$_TARGET -input $_TESTFILE -import \"../../../modules\" -maxwarnings 20"
+  _CMD="./$_TARGET -input $_TESTFILE -import \"../../../modules\" -maxwarnings 60"
 }
 
 function execute_test_cmd {

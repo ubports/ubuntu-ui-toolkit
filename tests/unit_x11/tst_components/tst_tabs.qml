@@ -120,6 +120,19 @@ Item {
         }
     }
 
+    Tabs {
+        id: repeaterTabs
+
+        Repeater {
+            id: repeater
+            Tab {
+                title: modelData
+            }
+        }
+    }
+
+    property var list: ["tab #0", "tab #1", "tab #2", "tab #3"];
+
     TestCase {
         name: "TabsAPI"
         when: windowShown
@@ -132,6 +145,33 @@ Item {
             for (var i=0; i < tabsModel.count; i++) {
                 compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles don't match for index "+i);
             }
+
+            //shufle
+            inputModel.move(1, 2, 1);
+            inputModel.move(3, 0, 1);
+            inputModel.move(1, 3, 1);
+            for (i=0; i < tabsModel.count; i++) {
+                compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles after shuffling don't match for index "+i);
+            }
+
+            // set it to null
+            tabsRepeater.model = null;
+            compare(tabsWithRepeater.tabBar.model.count, 0, "There are still tabs left after repeater model is reset");
+        }
+
+        function test_repeaterTabs() {
+            repeater.model = inputModel;
+            var tabsModel = repeaterTabs.tabBar.model;
+
+            compare(repeater.count, inputModel.count, "Incorrect number of tabs in Tabs");
+            compare(tabsModel.count, repeater.count, "Incorrect number of tabs in TabBar");
+            for (var i=0; i < tabsModel.count; i++) {
+                compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles don't match for index "+i);
+            }
+
+            // clear repeaterTabs
+            repeater.model = null;
+            compare(repeaterTabs.tabBar.model.count, 0, "There are still tabs left after repeater model is reset");
         }
 
         function test_emptyTabs() {
