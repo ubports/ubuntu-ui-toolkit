@@ -210,7 +210,7 @@ ListItem.Empty {
                 left: parent.left
                 right: parent.right
             }
-            state: itemSelector.expanded ? state = "expanded" : state = "collapsed"
+            state: itemSelector.expanded ? "expanded" : "collapsed"
             style: Theme.createStyleComponent("ListItemOptionSelectorStyle.qml", listContainer)
 
             states: [ State {
