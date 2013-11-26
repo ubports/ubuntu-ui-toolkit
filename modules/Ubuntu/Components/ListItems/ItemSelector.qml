@@ -240,6 +240,8 @@ ListItem.Empty {
                             script: {
                                 if (listContainer.currentlyExpanded) {
                                     expansionCompleted();
+                                } else {
+                                    list.positionViewAtIndex(selectedIndex, ListView.Beginning);
                                 }
                             }
                         }
