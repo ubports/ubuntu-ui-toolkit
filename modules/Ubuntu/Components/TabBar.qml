@@ -80,4 +80,52 @@ StyledItem {
     implicitHeight: units.gu(7.5)
 
     style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
+
+    QtObject {
+        id: internal
+
+        property bool modelChecked: true;
+
+        function checkRoles() {
+            modelChecked = true;
+            var f = tabBar.model.get(0);
+            if ((f.tab === undefined || t.fab.title === undefined) && f.title === undefined) {
+                console.error("TabBar model needs to provide either a tab.title role or a title one.");
+                tabBar.model = null;
+            }
+        }
+    }
+
+    Connections {
+        target: tabBar
+        onModelChanged: {
+            internal.modelChecked = true;
+
+            if (!model)
+                return;
+
+            if (!model.hasOwnProperty("count")) {
+                console.error("TabBar model needs to have a count property. Please provide it.");
+                tabBar.model = null;
+                return;
+            }
+
+            if (!model.hasOwnProperty("get")) {
+                console.error("TabBar model needs to have a get function. Please provide it.");
+                tabBar.model = null;
+                return;
+            }
+
+            if (model.count > 0) {
+                internal.checkRoles();
+            } else {
+                internal.modelChecked = false;
+            }
+        }
+    }
+
+    Connections {
+        target: !internal.modelChecked ? tabBar.model : null
+        onCountChanged: internal.checkRoles();
+    }
 }

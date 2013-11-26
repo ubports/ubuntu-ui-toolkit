@@ -17,6 +17,7 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 0.1
+import TestObjects 0.1
 
 Item {
     id: root
@@ -66,6 +67,14 @@ Item {
         ListElement {
             title: "Tab 5"
         }
+    }
+
+    ListModel {
+        id: pages2
+    }
+
+    TabsModel {
+        id: pages3
     }
 
     Label {
@@ -158,6 +167,20 @@ Item {
             // wait till the selection mode goes off by waiting ~1 second
             wait(bar.__styleInstance.headerTextFadeDuration);
             compare(bar.selectedIndex, data.selectedIndex, "the next tab is selected");
+        }
+
+        function test_addTabAfterShown2() {
+            bar.model = pages2;
+            wait(1000);
+            pages2.append({title:"Title 1"});
+            wait(10000);
+        }
+
+        function test_addTabAfterShown() {
+            bar.model = pages3;
+            wait(1000);
+            pages3.append("Title 1");
+            wait(10000);
         }
     }
 }
