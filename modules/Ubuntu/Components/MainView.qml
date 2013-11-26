@@ -308,7 +308,7 @@ PageTreeNode {
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
 
-            property var tabBar: null
+            property Item tabBar: null
             Binding {
                 target: headerItem
                 property: "tabBar"
