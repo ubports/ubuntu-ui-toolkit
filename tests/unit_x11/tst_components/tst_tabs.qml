@@ -174,6 +174,30 @@ Item {
             compare(repeaterTabs.tabBar.model.count, 0, "There are still tabs left after repeater model is reset");
         }
 
+        function test_repeaterTabs_listAsModel() {
+            repeater.model = list;
+            var tabsModel = repeaterTabs.tabBar.model;
+
+            compare(repeater.count, list.length, "Incorrect number of tabs in Tabs");
+            compare(tabsModel.count, repeater.count, "Incorrect number of tabs in TabBar");
+            for (var i=0; i < tabsModel.count; i++) {
+                compare(tabsModel.get(i).title, list[i], "Tab titles don't match for index "+i);
+            }
+
+            // move list elements
+            var x = list[2];
+            list[2] = list[1];
+            list[1] = x;
+            for (var i=0; i < tabsModel.count; i++) {
+                compare(tabsModel.get(i).title, list[i], "Tab titles don't match for index "+i);
+            }
+
+            // clear repeaterTabs
+            repeater.model = null;
+            compare(repeaterTabs.tabBar.model.count, 0, "There are still tabs left after repeater model is reset");
+
+        }
+
         function test_emptyTabs() {
             compare(emptyTabs.selectedTabIndex, -1, "The default value for selectedTabIndex is -1 when there are no tabs");
             compare(emptyTabs.selectedTab, null, "The default selected tab is null when there are no tabs");
