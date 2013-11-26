@@ -89,7 +89,7 @@ StyledItem {
         function checkRoles() {
             modelChecked = true;
             var f = tabBar.model.get(0);
-            if ((f.tab === undefined || t.fab.title === undefined) && f.title === undefined) {
+            if ((f.tab === undefined || f.tab.title === undefined) && f.title === undefined) {
                 console.error("TabBar model needs to provide either a tab.title role or a title one.");
                 tabBar.model = null;
             }
