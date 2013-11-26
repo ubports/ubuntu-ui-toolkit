@@ -16,7 +16,6 @@
  */
 
 #include "tabsmodel.h"
-#include <QDebug>
 
 TabsModel::TabsModel()
 {
