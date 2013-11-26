@@ -315,6 +315,7 @@ PageTreeNode {
                 value: headerItem.contents
                 when: headerItem.contents &&
                       headerItem.contents.hasOwnProperty("selectionMode") &&
+                      headerItem.contents.hasOwnProperty("alwaysSelectionMode") &&
                       headerItem.contents.hasOwnProperty("selectedIndex")
             }
         }
