@@ -274,7 +274,6 @@ PageTreeNode {
             MouseArea {
                 id: contentsArea
                 anchors.fill: contents
-                z: Number.MAX_VALUE
                 // This mouse area will be on top of the page contents, but
                 // under the toolbar and header.
                 // It is used for detecting interaction with the page contents
