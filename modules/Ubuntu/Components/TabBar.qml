@@ -118,8 +118,10 @@ StyledItem {
 
             if (model.count > 0) {
                 internal.checkRoles();
+                tabBar.selectedIndex = Math.min(tabBar.selectedIndex, model.count - 1);
             } else {
                 internal.modelChecked = false;
+                tabBar.selectedIndex = Qt.binding(function() { return (model && internal.modelChecked && model.count > 0) ? 0 : -1 })
             }
         }
     }

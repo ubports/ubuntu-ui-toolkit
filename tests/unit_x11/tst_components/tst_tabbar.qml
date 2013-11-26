@@ -70,11 +70,38 @@ Item {
     }
 
     ListModel {
-        id: pages2
+        id: invalidModel
+        ListElement {
+            fruit: "Pear"
+        }
+    }
+
+    ListModel {
+        id: invalidModelTab
+        ListElement {
+            tab: "Pear"
+        }
+    }
+
+    Item {
+        id: myTab
+        property string title: "Pear"
+    }
+
+    ListModel {
+        id: validModelTab
+    }
+
+    ListModel {
+        id: emptyModelWillBeInvalid
+    }
+
+    ListModel {
+        id: emptyModel
     }
 
     TabsModel {
-        id: pages3
+        id: pagesCpp
     }
 
     Label {
@@ -115,6 +142,7 @@ Item {
 
         function test_1_modelSet() {
             bar.model = pages;
+            compare(bar.model, pages);
             compare(bar.selectedIndex, 0, "selectedIndex defaults to 0 when model is defined");
         }
 
@@ -149,6 +177,7 @@ Item {
 
         function test_2_tabSelection(data) {
             bar.model = pages;
+            compare(bar.model, pages);
 
             if (bar.selectionMode) {
                 // wait till the TabBar goes off from selection mode, with an extra threshold
@@ -169,18 +198,44 @@ Item {
             compare(bar.selectedIndex, data.selectedIndex, "the next tab is selected");
         }
 
-        function test_addTabAfterShown2() {
-            bar.model = pages2;
-            wait(1000);
-            pages2.append({title:"Title 1"});
-            wait(10000);
+        function test_invalidModel() {
+            bar.model = invalidModel;
+            compare(bar.model, null, "the model has to be null when setting an invalid model");
         }
 
-        function test_addTabAfterShown() {
-            bar.model = pages3;
-            wait(1000);
-            pages3.append("Title 1");
-            wait(10000);
+        function test_invalidModelTab() {
+            bar.model = invalidModelTab;
+            compare(bar.model, null, "the model has to be null when setting an invalid model");
+        }
+
+        function test_validModelTab() {
+            bar.model = validModelTab;
+            compare(bar.model, validModelTab);
+            validModelTab.append({tab: myTab});
+            compare(bar.model, validModelTab);
+        }
+
+        function test_invalidModelEmptyAtTheBeginning() {
+            bar.model = emptyModelWillBeInvalid;
+            compare(bar.model, emptyModelWillBeInvalid);
+            emptyModelWillBeInvalid.append({fruit: "Pear"});
+            compare(bar.model, null, "the model has to be null when setting an invalid model");
+        }
+
+        function test_addTabAfterShownQML() {
+            bar.model = emptyModel;
+            compare(bar.model, emptyModel);
+            compare(bar.selectedIndex, -1);
+            emptyModel.append({title:"Title 1"});
+            compare(bar.selectedIndex, 0);
+        }
+
+        function test_addTabAfterShownCpp() {
+            bar.model = pagesCpp;
+            compare(bar.model, pagesCpp);
+            compare(bar.selectedIndex, -1);
+            pagesCpp.append("Title 1");
+            compare(bar.selectedIndex, 0);
         }
     }
 }
