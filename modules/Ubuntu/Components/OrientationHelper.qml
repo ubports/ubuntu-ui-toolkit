@@ -92,7 +92,15 @@ Item {
 
     Component.onCompleted: orientationTransition.enabled = transitionEnabled
 
-    Object {
+    /*!
+      \internal
+     */
+    onOrientationAngleChanged: internal.applyOrientation()
+
+    /*
+      This is an Item because Screen silently fails inside Object
+    */
+    Item {
         id: internal
 
         /*!
@@ -114,15 +122,6 @@ Item {
         }
 
         onWindowActiveChanged: applyOrientation()
-    }
-
-    /*!
-      \internal
-     */
-    onOrientationAngleChanged: internal.applyOrientation()
-
-    Item {
-        id: stateWrapper
 
         state: orientationAngle.toString()
 
