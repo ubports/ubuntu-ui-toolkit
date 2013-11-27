@@ -87,6 +87,9 @@ StyledItem {
         property bool modelChecked: true;
 
         function checkRoles() {
+            if (tabBar.model.count <= 0)
+                return;
+
             modelChecked = true;
             var f = tabBar.model.get(0);
             if (f.tab === undefined && f.title === undefined) {
