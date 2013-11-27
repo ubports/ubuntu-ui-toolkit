@@ -267,8 +267,8 @@ PageTreeNode {
 
     /*
       This timer is used when tabs are created using Repeaters. Repeater model
-      element moves (shufling) are causeing re-stacking of the tab stack children
-      which may not be realized at the time the rowsMoved/columnsMoved or layoutChnaged
+      element moves (shuffling) are causing re-stacking of the tab stack children
+      which may not be realized at the time the rowsMoved/columnsMoved or layoutChanged
       signals are triggered. Therefore we use an idle timer to update the tabs
       model, so the tab stack is re-stacked by then.
       */
@@ -295,7 +295,9 @@ PageTreeNode {
             if (tabBar && tabBar.__styleInstance && tabBar.__styleInstance.hasOwnProperty("sync")) {
                 tabBar.__styleInstance.sync();
             }
-            if (tabs.active && internal.header) internal.header.show();
+            if (tabs.active && internal.header) {
+                internal.header.show();
+            }
             // deprecated, however use it till we remove it completely
             tabs.modelChanged();
         }
@@ -401,7 +403,7 @@ PageTreeNode {
                 return;
             }
 
-            // other models are most likelly derived from QAbstractItemModel,
+            // other models are most likely derived from QAbstractItemModel,
             // therefore we can safely connect to the signals to get notified about refreshes
             repeater.model.rowsMoved.connect(updateTimer.restart);
             repeater.model.columnsMoved.connect(updateTimer.restart);

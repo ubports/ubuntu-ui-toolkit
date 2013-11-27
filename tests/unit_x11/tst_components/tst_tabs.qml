@@ -244,7 +244,7 @@ Item {
                 compare(tabsModel.get(i).title, testCase.listModel[i], "Tab titles don't match for index "+i);
             }
 
-            // shiufling elements in an array is not detectable in Repeater
+            // shuffling elements in an array is not detectable in Repeater
             var x = testCase.listModel[1];
             testCase.listModel[1] = testCase.listModel[0];
             testCase.listModel[0] = x;
@@ -285,7 +285,7 @@ Item {
                 }
             }
 
-            //shufle
+            //shuffle
             twinModel.move(1, 2, 1);
             twinModel.move(3, 0, 1);
             twinModel.move(1, 3, 1);
