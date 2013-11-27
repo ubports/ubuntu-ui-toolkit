@@ -30,6 +30,13 @@ Item {
         width: parent.width
     }
 
+    TabBar {
+        id: bar2
+        anchors.top: parent.top
+        width: parent.width
+        model: invalidModel
+    }
+
     ListView {
         anchors {
             fill: parent
@@ -206,6 +213,10 @@ Item {
         function test_invalidModelTab() {
             bar.model = invalidModelTab;
             compare(bar.model, null, "the model has to be null when setting an invalid model");
+        }
+
+        function test_invalidModelTab2() {
+            compare(bar2.model, null, "the model has to be null when setting an invalid model");
         }
 
         function test_validModelTab() {

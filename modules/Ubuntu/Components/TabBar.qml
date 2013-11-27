@@ -100,33 +100,31 @@ StyledItem {
         }
     }
 
-    Connections {
-        target: tabBar
-        onModelChanged: {
-            internal.modelChecked = true;
+    /*! \internal */
+    onModelChanged: {
+        internal.modelChecked = true;
 
-            if (!model)
-                return;
+        if (!model)
+            return;
 
-            if (!model.hasOwnProperty("count")) {
-                console.error("TabBar model must have count property defined.");
-                tabBar.model = null;
-                return;
-            }
+        if (!model.hasOwnProperty("count")) {
+            console.error("TabBar model must have count property defined.");
+            tabBar.model = null;
+            return;
+        }
 
-            if (!model.hasOwnProperty("get")) {
-                console.error("TabBar model must provide get() function.");
-                tabBar.model = null;
-                return;
-            }
+        if (!model.hasOwnProperty("get")) {
+            console.error("TabBar model must provide get() function.");
+            tabBar.model = null;
+            return;
+        }
 
-            if (model.count > 0) {
-                internal.checkRoles();
-                tabBar.selectedIndex = Math.min(tabBar.selectedIndex, model.count - 1);
-            } else {
-                internal.modelChecked = false;
-                tabBar.selectedIndex = Qt.binding(function() { return (model && internal.modelChecked && model.count > 0) ? 0 : -1 })
-            }
+        if (model.count > 0) {
+            internal.checkRoles();
+            tabBar.selectedIndex = Math.min(tabBar.selectedIndex, model.count - 1);
+        } else {
+            internal.modelChecked = false;
+            tabBar.selectedIndex = Qt.binding(function() { return (model && internal.modelChecked && model.count > 0) ? 0 : -1 })
         }
     }
 
