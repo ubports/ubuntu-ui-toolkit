@@ -318,6 +318,16 @@ PageTreeNode {
                       headerItem.contents.hasOwnProperty("alwaysSelectionMode") &&
                       headerItem.contents.hasOwnProperty("selectedIndex")
             }
+
+            Connections {
+                // no connections are made when target is null
+                target: headerItem.tabBar
+                onSelectionModeChanged: {
+                    if (headerItem.tabBar.selectionMode) {
+                        if (!toolbarItem.locked) toolbarItem.close();
+                    }
+                }
+            }
         }
     }
 
