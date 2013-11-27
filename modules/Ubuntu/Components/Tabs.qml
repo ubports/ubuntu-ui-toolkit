@@ -210,7 +210,7 @@ PageTreeNode {
             return {"title": tab.title, "tab": tab};
         }
 
-        function updateTabList(tabsList) {
+        function updateTabList(tabsList, opt) {
             var offset = 0;
             var tabIndex;
             for (var i in tabsList) {
@@ -226,6 +226,7 @@ PageTreeNode {
                         insert(tabIndex, listModel(tab));
                     } else if (!tab.__protected.removedFromTabs && tabsModel.count > tab.index) {
                         get(tab.index).title = tab.title;
+                        if (opt) print("tab updated @" + tab.index + "(" + tabIndex + ")" + tab.title)
                     }
 
                     // always makes sure that tabsModel has the same order as tabsList
@@ -279,7 +280,7 @@ PageTreeNode {
         /*
           List of connected Repeaters to avoid repeater "hammering".
           */
-        property var repeaters: new Array(0)
+        property var repeaters: []//new Array(0)
 
         Component.onDestruction: {
             // disconnect repeaters to avoid getting rogue removal signals
@@ -325,12 +326,14 @@ PageTreeNode {
             tabsModel.updateTabList(tabStack.children);
         }
         function updateAndSyncTabsModel(sourceParent, fromStart, fromEnd, destParent, to) {
-            tabsModel.updateTabList(tabStack.children);
+            tabsModel.updateTabList(tabStack.data, this);
+
+//            print(fromStart)
 
             // check if the selectedIndex was affected
             if ((tabs.tabBar.selectedIndex >= fromStart) || (tabs.tabBar.selectedIndex <= fromEnd) || tabs.tabBar.selectedIndex <= to) {
                 // TODO: need to update the selected index
-
+                sync();
             } else {
                 // sync the TabBar only
                 sync();
@@ -342,6 +345,7 @@ PageTreeNode {
           the same repeater avoiding in this way hammering.
           */
         function connectRepeater(repeater) {
+            console.log("connecting repeater " + repeater)
             // store repeater
             repeaters.push(repeater);
 
@@ -366,14 +370,14 @@ PageTreeNode {
           the Repeater.
           */
         function connectRepeaterModelChanges(repeater) {
-            if (repeater === undefined && this.hasOwnProperty("itemAdded")) {
+            if (repeater === undefined) {
                 repeater = this;
             }
 
             if (repeater !== undefined && repeater.model) {
                 // connect rowMoved signals to get notified about repeater model reordering
                 if (repeater.model.hasOwnProperty("rowsMoved")) {
-                    repeater.model.rowsMoved.connect(internal.updateAndSyncTabsModel);
+                    repeater.model.rowsMoved.connect(internal.updateAndSyncTabsModel.bind(repeater));
                 }
             }
         }

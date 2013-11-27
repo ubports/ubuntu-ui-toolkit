@@ -100,18 +100,20 @@ Item {
         }
     }
 
+    ListModel {
+        id: inputModel
+        Component.onCompleted: {
+            append({ "name": "tab 1" });
+            insert(0, { "name": "tab 0" });
+            append({ "name": "tab 3" });
+            insert(2, { "name": "tab 2" });
+        }
+    }
+
     Tabs {
         id: tabsWithRepeater
-        ListModel {
-            id: inputModel
-            Component.onCompleted: {
-                append({ "name": "tab 1" });
-                insert(0, { "name": "tab 0" });
-                append({ "name": "tab 3" });
-                insert(2, { "name": "tab 2" });
-            }
-        }
         Repeater {
+            objectName: "tabsRepeater"
             id: tabsRepeater
             model: inputModel
             Tab {
@@ -124,11 +126,33 @@ Item {
         id: repeaterTabs
 
         Repeater {
+            objectName: "repeater"
             id: repeater
             Tab {
                 title: modelData
             }
         }
+    }
+
+    Tabs {
+        id: twinRepeaters
+
+        Repeater {
+            objectName: "firstRepeater"
+            id: firstRepeater
+            model: inputModel
+            Tab {
+                title: name
+            }
+        }
+
+//        Repeater {
+//            id: secondRepeater
+//            model: list
+//            Tab {
+//                title: modelData
+//            }
+//        }
     }
 
     property var list: ["tab #0", "tab #1", "tab #2", "tab #3"];
@@ -139,11 +163,13 @@ Item {
 
         function test_tabOrder_bug1253804() {
             var tabsModel = tabsWithRepeater.tabBar.model;
+            var secondModel = twinRepeaters.tabBar.model
 
             compare(tabsRepeater.count, inputModel.count, "Incorrect number of tabs in Tabs");
             compare(tabsModel.count, tabsRepeater.count, "Incorrect number of tabs in TabBar");
             for (var i=0; i < tabsModel.count; i++) {
                 compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles don't match for index "+i);
+                compare(secondModel.get(i).title, inputModel.get(i).name, "Second Tab titles don't match for index "+i);
             }
 
             //shufle
@@ -152,6 +178,7 @@ Item {
             inputModel.move(1, 3, 1);
             for (i=0; i < tabsModel.count; i++) {
                 compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles after shuffling don't match for index "+i);
+                compare(secondModel.get(i).title, inputModel.get(i).name, "Second Tab titles don't match for index "+i);
             }
 
             // set it to null
@@ -174,7 +201,7 @@ Item {
             compare(repeaterTabs.tabBar.model.count, 0, "There are still tabs left after repeater model is reset");
         }
 
-        function test_repeaterTabs_listAsModel() {
+        function test_repeaterTabs_arrayAsModel() {
             repeater.model = list;
             var tabsModel = repeaterTabs.tabBar.model;
 
@@ -184,18 +211,31 @@ Item {
                 compare(tabsModel.get(i).title, list[i], "Tab titles don't match for index "+i);
             }
 
-            // move list elements
-            var x = list[2];
-            list[2] = list[1];
-            list[1] = x;
-            for (var i=0; i < tabsModel.count; i++) {
-                compare(tabsModel.get(i).title, list[i], "Tab titles don't match for index "+i);
-            }
+            // shiufling elements in an array is not detectable in Repeater
+            var x = list[1];
+            list[1] = list[0];
+            list[0] = x;
+            expectFailContinue("", "Array changes are not detected by repeaters");
+            compare(tabsModel.get(0).title, list[0], "Tab titles don't match for index 0");
 
             // clear repeaterTabs
             repeater.model = null;
             compare(repeaterTabs.tabBar.model.count, 0, "There are still tabs left after repeater model is reset");
 
+        }
+
+        function test_twinRepeaters() {
+            var tabsModel = twinRepeaters.tabBar.model;
+
+//            compare(tabsModel.count, firstRepeater.count + secondRepeater.count, "Incorrect number of tabs in TabBar");
+            for (var i = 0; i < firstRepeater.count; i++) {
+                print(tabsModel.get(i).title + " vs " + inputModel.get(i).name);
+                tryCompare(tabsModel.get(i), "title", inputModel.get(i).name, 100)//, "Tab titles don't match for index "+i);
+//                compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles don't match for index "+i);
+            }
+//            for (i = firstRepeater.count; i < firstRepeater.count + secondRepeater.count; i++) {
+//                tryCompare(tabsModel.get(i).title, list[i - firstRepeater.count], "Tab titles don't match for index "+i);
+//            }
         }
 
         function test_emptyTabs() {
