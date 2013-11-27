@@ -77,10 +77,6 @@ Item {
             return tabBar;
         }
 
-        function clickItem(item) {
-            testCase.mouseClick(item, item.width/2, item.height/2, Qt.LeftButton);
-        }
-
         function test_tabBar_selectionMode_closes_toolbar_bug1223600() {
             testCase.setTabBarSelectionMode(false);
             var toolbar = testCase.openToolbar();
