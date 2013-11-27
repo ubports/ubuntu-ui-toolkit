@@ -37,7 +37,6 @@ Item {
                         anchors.centerIn: parent
                         text: "click"
                     }
-
                     tools: ToolbarItems {
                         ToolbarButton {
                             id: toolbarButton
