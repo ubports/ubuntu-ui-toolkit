@@ -1,3 +1,22 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20131126.1-0ubuntu1) trusty; urgency=low
+
+  [ Nic ]
+  * Renamed state assignment to correct "expanded" instead of
+    "alwaysExpanded". (LP: #1252717)
+
+  [ Nicolas d'Offay ]
+  * Renamed state assignment to correct "expanded" instead of
+    "alwaysExpanded". (LP: #1252717)
+
+  [ Christian Dywan ]
+  * Merge stateWrapper and internal so Screen isn't used in an Object.
+    (LP: #1254888)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 862
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 26 Nov 2013 22:25:55 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20131126-0ubuntu1) trusty; urgency=low
 
   [ Loïc Molinari ]
