@@ -210,7 +210,7 @@ PageTreeNode {
             return {"title": tab.title, "tab": tab};
         }
 
-        function updateTabList(tabsList, opt) {
+        function updateTabList(tabsList) {
             var offset = 0;
             var tabIndex;
             for (var i in tabsList) {
@@ -226,7 +226,6 @@ PageTreeNode {
                         insert(tabIndex, listModel(tab));
                     } else if (!tab.__protected.removedFromTabs && tabsModel.count > tab.index) {
                         get(tab.index).title = tab.title;
-                        if (opt) print("tab updated @" + tab.index + "(" + tabIndex + ")" + tab.title)
                     }
 
                     // always makes sure that tabsModel has the same order as tabsList
@@ -254,22 +253,32 @@ PageTreeNode {
         }
     }
 
+    // FIXME: this component is not really needed, as it doesn't really bring any
+    // value; should be removed in a later MR
     Item {
         anchors.fill: parent
         id: tabStack
 
         onChildrenChanged: {
-            connectToRepeaters();
-            tabsModel.updateTabList(children)
+            internal.connectToRepeaters(tabStack.children);
+            tabsModel.updateTabList(tabStack.children);
         }
+    }
 
-        function connectToRepeaters() {
-            for (var i = 0; i < children.length; i++) {
-                var child = children[i];
-                if (internal.isRepeater(child) && (internal.repeaters.indexOf(child) < 0)) {
-                    internal.connectRepeater(child);
-                }
-            }
+    /*
+      This timer is used when tabs are created using Repeaters. Repeater model
+      element moves (shufling) are causeing re-stacking of the tab stack children
+      which may not be realized at the time the rowsMoved/columnsMoved or layoutChnaged
+      signals are triggered. Therefore we use an idle timer to update the tabs
+      model, so the tab stack is re-stacked by then.
+      */
+    Timer {
+        id: updateTimer
+        interval: 1
+        running: false
+        onTriggered: {
+            tabsModel.updateTabList(tabStack.children);
+            internal.sync();
         }
     }
 
@@ -278,17 +287,17 @@ PageTreeNode {
         property Header header: tabs.__propagated ? tabs.__propagated.header : null
 
         /*
-          List of connected Repeaters to avoid repeater "hammering".
+          List of connected Repeaters to avoid repeater "hammering" of itemAdded() signal.
           */
-        property var repeaters: []//new Array(0)
+        property var repeaters: []
 
-        Component.onDestruction: {
-            // disconnect repeaters to avoid getting rogue removal signals
-            for (var i in repeaters) {
-                var repeater = repeaters[i];
-                repeater.itemAdded.disconnect(internal.updateTabsModel);
-                repeater.itemRemoved.disconnect(internal.removeTabFromModel);
+        function sync() {
+            if (tabBar && tabBar.__styleInstance && tabBar.__styleInstance.hasOwnProperty("sync")) {
+                tabBar.__styleInstance.sync();
             }
+            if (tabs.active && internal.header) internal.header.show();
+            // deprecated, however use it till we remove it completely
+            tabs.modelChanged();
         }
 
         function isTab(item) {
@@ -305,6 +314,14 @@ PageTreeNode {
             return (item && item.hasOwnProperty("itemAdded"));
         }
 
+        function connectToRepeaters(children) {
+            for (var i = 0; i < children.length; i++) {
+                var child = children[i];
+                if (internal.isRepeater(child) && (internal.repeaters.indexOf(child) < 0)) {
+                    internal.connectRepeater(child);
+                }
+            }
+        }
         /* When inserting a delegate into its parent the Repeater does it in 3
            steps:
            1) sets the parent of the delegate thus inserting it in the list of
@@ -325,34 +342,20 @@ PageTreeNode {
         function updateTabsModel() {
             tabsModel.updateTabList(tabStack.children);
         }
-        function updateAndSyncTabsModel(sourceParent, fromStart, fromEnd, destParent, to) {
-            tabsModel.updateTabList(tabStack.data, this);
-
-//            print(fromStart)
-
-            // check if the selectedIndex was affected
-            if ((tabs.tabBar.selectedIndex >= fromStart) || (tabs.tabBar.selectedIndex <= fromEnd) || tabs.tabBar.selectedIndex <= to) {
-                // TODO: need to update the selected index
-                sync();
-            } else {
-                // sync the TabBar only
-                sync();
-            }
-        }
 
         /*
           Connects a Repeater and stores it so further connects will not happen to
           the same repeater avoiding in this way hammering.
           */
         function connectRepeater(repeater) {
-            console.log("connecting repeater " + repeater)
             // store repeater
             repeaters.push(repeater);
 
-            // connect repeater's itemAdded signal
-            repeater.itemAdded.connect(internal.updateTabsModel);
+            // connect destruction signal so we have a proper cleanup
+            repeater.Component.onDestruction.connect(internal.disconnectRepeater.bind(repeater));
 
-            // ...and itemRemoved signal so we can remove the tab from the model
+            // connect repeater's itemAdded and itemRemoved signals
+            repeater.itemAdded.connect(internal.updateTabsModel);
             repeater.itemRemoved.connect(internal.removeTabFromModel);
 
             // check if the repeater's model is set, if not, connect to modelChanged to catch that
@@ -361,6 +364,15 @@ PageTreeNode {
             } else {
                 connectRepeaterModelChanges(repeater);
             }
+        }
+
+        /*
+          Disconnects the given repeater signals.
+          */
+        function disconnectRepeater() {
+            this.itemAdded.disconnect(internal.updateTabsModel);
+            this.itemRemoved.disconnect(internal.removeTabFromModel);
+            this.modelChanged.disconnect(internal.connectRepeaterModelChanges);
         }
 
         /*
@@ -374,12 +386,26 @@ PageTreeNode {
                 repeater = this;
             }
 
-            if (repeater !== undefined && repeater.model) {
-                // connect rowMoved signals to get notified about repeater model reordering
-                if (repeater.model.hasOwnProperty("rowsMoved")) {
-                    repeater.model.rowsMoved.connect(internal.updateAndSyncTabsModel.bind(repeater));
-                }
+            /*
+              Omit model types which are not derived from object (i.e. are [object Number]
+              or [object Array] typed).
+
+              JS 'instanceof' operator does not return true for all types of arrays (i.e
+              for property var array: [....] it returns false). The safest way to detect
+              whether the model is really an object we use the toString() prototype of
+              the generic JS Object.
+
+              Inspired from http://perfectionkills.com/instanceof-considered-harmful-or-how-to-write-a-robust-isarray/
+              */
+            if (Object.prototype.toString.call(repeater.model) !== "[object Object]") {
+                return;
             }
+
+            // other models are most likelly derived from QAbstractItemModel,
+            // therefore we can safely connect to the signals to get notified about refreshes
+            repeater.model.rowsMoved.connect(updateTimer.restart);
+            repeater.model.columnsMoved.connect(updateTimer.restart);
+            repeater.model.layoutChanged.connect(updateTimer.restart);
         }
 
         // clean items removed trough a repeater
@@ -393,15 +419,6 @@ PageTreeNode {
                 }
             }
             tabsModel.reindex();
-        }
-
-        function sync() {
-            if (tabBar && tabBar.__styleInstance && tabBar.__styleInstance.hasOwnProperty("sync")) {
-                tabBar.__styleInstance.sync();
-            }
-            if (tabs.active && internal.header) internal.header.show();
-            // deprecated, however use it till we remove it completely
-            tabs.modelChanged();
         }
     }
 

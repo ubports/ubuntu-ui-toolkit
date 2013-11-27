@@ -24,23 +24,6 @@ MainView {
     width: units.gu(40)
     height: units.gu(71)
 
-//    property var colorModel: ["red", "green", "blue", "purple"]
-    ListModel {
-        id: colorModel
-        ListElement {
-            color: "red"
-        }
-        ListElement {
-            color: "green"
-        }
-        ListElement {
-            color: "blue"
-        }
-        ListElement {
-            color: "purple"
-        }
-    }
-
     ListModel {
         id: inputModel
         Component.onCompleted: {
@@ -66,27 +49,6 @@ MainView {
                         text: title
                         fontSize: "large"
                     }
-                    Item {
-                        Row {
-                            id: colorRow
-                            Repeater {
-                                model: colorModel
-                                Rectangle {
-                                    objectName: modelData
-                                    width: 40; height: 40
-                                    color: modelData
-                                }
-                            }
-                            Repeater {
-                                model: colorModel
-                                Rectangle {
-                                    objectName: modelData
-                                    width: 40; height: 40
-                                    color: modelData
-                                }
-                            }
-                        }
-                    }
 
                     tools: ToolbarItems {
                         ToolbarButton {
@@ -101,22 +63,6 @@ MainView {
                             text: "reset"
                             onTriggered: tabsRepeater.model = null;
                         }
-                        ToolbarButton {
-                            text: "recolorize"
-                            onTriggered: {
-//                                var x = list[2];
-//                                list[2] = list[1];
-//                                list[1] = x;
-//                                print("new list=" + list)
-                                colorModel.move(1, 2, 1);
-                                for (var i = 0; i < colorRow.children.length; i++) {
-                                    if (QuickUtils.className(colorRow.children[i]) === "QQuickRectangle")
-                                    {
-                                        print("row @" + i + " is" + colorRow.children[i].objectName)
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -124,7 +70,7 @@ MainView {
         Repeater {
             objectName: "second_repeater"
             id: secondRepeater
-            model: inputModel//listModel
+            model: root.listModel
             Tab {
                 title: "second" + modelData
                 page: Page { Label { text: title } }
