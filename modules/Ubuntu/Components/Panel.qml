@@ -422,7 +422,7 @@ Item {
 
     /*!
       The user presses on the opened toolbar, or when the toolbar is closed but
-      not locked, in the toolbar trigger area.
+      not locked, the user presses in the toolbar trigger area.
       \qmlproperty bool pressed
      */
     // This is a simple alias to draggingArea.pressed, but the documentation is accurate
