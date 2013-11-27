@@ -65,6 +65,7 @@ Item {
             var toolbar = mainView.__propagated.toolbar;
             toolbar.open();
             compare(toolbar.opened, true, "Cannot open toolbar using open()");
+            wait(UbuntuAnimation.FastDuration); // wait for the open animation to finish
             return toolbar;
         }
 
