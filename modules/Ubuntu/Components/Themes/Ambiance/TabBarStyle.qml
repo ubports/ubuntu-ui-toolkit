@@ -115,11 +115,6 @@ Item {
                                                 styledItem.selectedIndex === index :
                                                 buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
-                    onOffsetChanged: {
-                        if (selected) {
-                            buttonView.updateOffset(button.offset);
-                        }
-                    }
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
 
                     // Use opacity 0 to hide instead of setting visibility to false in order to
@@ -280,6 +275,7 @@ Item {
         }
 
         function updateOffset(newOffset) {
+            if (!newOffset) return; // do not update the offset when its value is NaN
             if (offset - newOffset < -1) newOffset = newOffset - 2;
             offset = newOffset;
         }
@@ -290,10 +286,6 @@ Item {
                 velocity: buttonPositioningVelocity
                 easing.type: Easing.InOutQuad
             }
-        }
-
-        Component.onCompleted: {
-            selectButton(styledItem.selectedIndex);
         }
 
         onDragEnded: activatingTimer.stop()
@@ -322,5 +314,9 @@ Item {
             styledItem.selectionMode = true;
             mouse.accepted = false;
         }
+    }
+
+    Component.onCompleted: {
+        tabBarStyle.sync();
     }
 }

@@ -37,7 +37,7 @@ import QtQuick 2.0
             Action {
                 id: action1
                 text: "action 1"
-                iconSource: Qt.resolvedUrl("icon1.png")
+                iconName: "compose"
                 onTriggered: print("one!")
             }
 
@@ -59,7 +59,7 @@ import QtQuick 2.0
                     ToolbarButton {
                         action: Action {
                             text: "Second action"
-                            iconSource: Qt.resolvedUrl("icon2.png")
+                            iconName: "add"
                             onTriggered: print("two!")
                         }
                         // override the text of the action:
@@ -68,7 +68,7 @@ import QtQuick 2.0
 
                     // no associated action:
                     ToolbarButton {
-                        iconSource: Qt.resolvedUrl("icon3.png")
+                        iconName: "cancel"
                         text: "button"
                         onTriggered: print("three!")
                     }

@@ -40,7 +40,7 @@ import Ubuntu.Components 0.1
                }
             ListItem.Standard {
                 text: "List item with icon"
-                icon: Qt.resolvedUrl("icon.png")
+                iconName: "compose"
             }
             ListItem.Standard {
                 text: "With a progression arrow"
@@ -63,14 +63,43 @@ Empty {
     id: listItem
 
     /*!
-      \preliminary
+      \deprecated
+
+      \b{Use iconName or iconSource instead.}
+
       The location of the icon to show in the list item (optional), or an Item that is
       shown on the left side inside the list item. The icon will automatically be
       anchored to the left side of the list item, and if its height is undefined, to the top
       and bottom of the list item.
       \qmlproperty variant icon
     */
-    property variant icon
+    property variant icon: iconSource != "" ? iconSource : undefined
+
+    /*!
+      The image shown in the list item.
+      \qmlproperty url iconSource
+
+      This is a URL to any image file.
+      In order to use an icon from the Ubuntu theme, use the iconName property instead.
+     */
+    property url iconSource: iconName ? "image://theme/" + iconName : ""
+
+    /*!
+      The icon shown in the list item.
+
+      \qmlproperty string iconName
+
+      If both iconSource and iconName are defined, iconName will be ignored.
+
+      \note The complete list of icons available in Ubuntu is not published yet.
+            For now please refer to the folders where the icon themes are installed:
+            \list
+              \li Ubuntu Touch: \l file:/usr/share/icons/ubuntu-mobile
+              \li Ubuntu Desktop: \l file:/usr/share/icons/ubuntu-mono-dark
+            \endlist
+            These 2 separate icon themes will be merged soon.
+    */
+    property string iconName
 
     /*!
       \preliminary
@@ -78,6 +107,23 @@ Empty {
       \qmlproperty url fallbackIconSource
      */
     property alias fallbackIconSource: iconHelper.fallbackSource
+
+    /*!
+      The icon shown in the list item if iconName failed to load (optional).
+
+      \qmlproperty string fallbackIconName
+
+      If both fallbackIconSource and fallbackIconName are defined, fallbackIconName will be ignored.
+
+      \note The complete list of icons available in Ubuntu is not published yet.
+            For now please refer to the folders where the icon themes are installed:
+            \list
+              \li Ubuntu Touch: \l file:/usr/share/icons/ubuntu-mobile
+              \li Ubuntu Desktop: \l file:/usr/share/icons/ubuntu-mono-dark
+            \endlist
+            These 2 separate icon themes will be merged soon.
+    */
+    property alias fallbackIconName: iconHelper.fallbackIconName
 
     /*!
       \preliminary
@@ -196,7 +242,12 @@ Empty {
       \internal
      */
     onIconChanged: {
-        if (typeof icon == "string") {
+        if (icon == undefined) return;
+        if (icon != iconSource) {
+            console.warn("WARNING: ListItems.Standard.icon is DEPRECATED. " +
+                         "Use iconName and iconSource instead.")
+        }
+        if (typeof icon == "string" || typeof icon == typeof iconSource) {
             // icon is the url of an image
             iconHelper.source = icon;
             __iconIsItem = false;
