@@ -253,15 +253,77 @@ PageTreeNode {
         }
     }
 
+    // FIXME: this component is not really needed, as it doesn't really bring any
+    // value; should be removed in a later MR
     Item {
         anchors.fill: parent
         id: tabStack
 
         onChildrenChanged: {
-            connectToRepeaters();
-            tabsModel.updateTabList(children)
+            internal.connectToRepeaters(tabStack.children);
+            tabsModel.updateTabList(tabStack.children);
+        }
+    }
+
+    /*
+      This timer is used when tabs are created using Repeaters. Repeater model
+      element moves (shuffling) are causing re-stacking of the tab stack children
+      which may not be realized at the time the rowsMoved/columnsMoved or layoutChanged
+      signals are triggered. Therefore we use an idle timer to update the tabs
+      model, so the tab stack is re-stacked by then.
+      */
+    Timer {
+        id: updateTimer
+        interval: 1
+        running: false
+        onTriggered: {
+            tabsModel.updateTabList(tabStack.children);
+            internal.sync();
+        }
+    }
+
+    QtObject {
+        id: internal
+        property Header header: tabs.__propagated ? tabs.__propagated.header : null
+
+        /*
+          List of connected Repeaters to avoid repeater "hammering" of itemAdded() signal.
+          */
+        property var repeaters: []
+
+        function sync() {
+            if (tabBar && tabBar.__styleInstance && tabBar.__styleInstance.hasOwnProperty("sync")) {
+                tabBar.__styleInstance.sync();
+            }
+            if (tabs.active && internal.header) {
+                internal.header.show();
+            }
+            // deprecated, however use it till we remove it completely
+            tabs.modelChanged();
         }
 
+        function isTab(item) {
+            if (item && item.hasOwnProperty("__isPageTreeNode")
+                    && item.__isPageTreeNode && item.hasOwnProperty("title")
+                    && item.hasOwnProperty("page")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function isRepeater(item) {
+            return (item && item.hasOwnProperty("itemAdded"));
+        }
+
+        function connectToRepeaters(children) {
+            for (var i = 0; i < children.length; i++) {
+                var child = children[i];
+                if (internal.isRepeater(child) && (internal.repeaters.indexOf(child) < 0)) {
+                    internal.connectRepeater(child);
+                }
+            }
+        }
         /* When inserting a delegate into its parent the Repeater does it in 3
            steps:
            1) sets the parent of the delegate thus inserting it in the list of
@@ -280,44 +342,85 @@ PageTreeNode {
            https://bugreports.qt-project.org/browse/QTBUG-32438
         */
         function updateTabsModel() {
-            tabsModel.updateTabList(children);
+            tabsModel.updateTabList(tabStack.children);
         }
 
-        function connectToRepeaters() {
-            for (var i = 0; i < children.length; i++) {
-                var child = children[i];
-                if (internal.isRepeater(child)) {
-                    child.itemAdded.connect(tabStack.updateTabsModel);
+        /*
+          Connects a Repeater and stores it so further connects will not happen to
+          the same repeater avoiding in this way hammering.
+          */
+        function connectRepeater(repeater) {
+            // store repeater
+            repeaters.push(repeater);
+
+            // connect destruction signal so we have a proper cleanup
+            repeater.Component.onDestruction.connect(internal.disconnectRepeater.bind(repeater));
+
+            // connect repeater's itemAdded and itemRemoved signals
+            repeater.itemAdded.connect(internal.updateTabsModel);
+            repeater.itemRemoved.connect(internal.removeTabFromModel);
+
+            // check if the repeater's model is set, if not, connect to modelChanged to catch that
+            if (repeater.model === undefined) {
+                repeater.modelChanged.connect(internal.connectRepeaterModelChanges.bind(repeater));
+            } else {
+                connectRepeaterModelChanges(repeater);
+            }
+        }
+
+        /*
+          Disconnects the given repeater signals.
+          */
+        function disconnectRepeater() {
+            this.itemAdded.disconnect(internal.updateTabsModel);
+            this.itemRemoved.disconnect(internal.removeTabFromModel);
+            this.modelChanged.disconnect(internal.connectRepeaterModelChanges);
+        }
+
+        /*
+          Connects a Repeater's model change signals so we get notified whenever those change.
+          This can be called either by the Repeater's modelChanged() signal, in which case the
+          parameter is undefined, or from the connectRepeater() in case the model is given for
+          the Repeater.
+          */
+        function connectRepeaterModelChanges(repeater) {
+            if (repeater === undefined) {
+                repeater = this;
+            }
+
+            /*
+              Omit model types which are not derived from object (i.e. are [object Number]
+              or [object Array] typed).
+
+              JS 'instanceof' operator does not return true for all types of arrays (i.e
+              for property var array: [....] it returns false). The safest way to detect
+              whether the model is really an object we use the toString() prototype of
+              the generic JS Object.
+
+              Inspired from http://perfectionkills.com/instanceof-considered-harmful-or-how-to-write-a-robust-isarray/
+              */
+            if (Object.prototype.toString.call(repeater.model) !== "[object Object]") {
+                return;
+            }
+
+            // other models are most likely derived from QAbstractItemModel,
+            // therefore we can safely connect to the signals to get notified about refreshes
+            repeater.model.rowsMoved.connect(updateTimer.restart);
+            repeater.model.columnsMoved.connect(updateTimer.restart);
+            repeater.model.layoutChanged.connect(updateTimer.restart);
+        }
+
+        // clean items removed trough a repeater
+        function removeTabFromModel(index, item) {
+            // cannot use index as that one is relative to the Repeater's model, therefore
+            // we need to look after the Tabs models' role to find out which item to remove
+            for (var i = 0; i < tabsModel.count; i++) {
+                if (tabsModel.get(i).tab === item) {
+                    tabsModel.remove(i);
+                    break;
                 }
             }
-        }
-    }
-
-    QtObject {
-        id: internal
-        property Header header: tabs.__propagated ? tabs.__propagated.header : null
-
-        function isTab(item) {
-            if (item && item.hasOwnProperty("__isPageTreeNode")
-                    && item.__isPageTreeNode && item.hasOwnProperty("title")
-                    && item.hasOwnProperty("page")) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        function isRepeater(item) {
-            return (item && item.hasOwnProperty("itemAdded"));
-        }
-
-        function sync() {
-            if (tabBar && tabBar.__styleInstance && tabBar.__styleInstance.hasOwnProperty("sync")) {
-                tabBar.__styleInstance.sync();
-            }
-            if (tabs.active && internal.header) internal.header.show();
-            // deprecated, however use it till we remove it completely
-            tabs.modelChanged();
+            tabsModel.reindex();
         }
     }
 
