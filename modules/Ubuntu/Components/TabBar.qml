@@ -89,8 +89,12 @@ StyledItem {
         function checkRoles() {
             modelChecked = true;
             var f = tabBar.model.get(0);
-            if ((f.tab === undefined || f.tab.title === undefined) && f.title === undefined) {
-                console.error("TabBar model needs to provide either a tab.title role or a title one.");
+            if (f.tab === undefined && f.title === undefined) {
+                console.error("TabBar model must provide either tab or title role.");
+                tabBar.model = null;
+            }
+            if (f.tab !== undefined && f.tab.title === undefined) {
+                console.error("TabBar model's tab role must have title property.");
                 tabBar.model = null;
             }
         }
@@ -105,13 +109,13 @@ StyledItem {
                 return;
 
             if (!model.hasOwnProperty("count")) {
-                console.error("TabBar model needs to have a count property. Please provide it.");
+                console.error("TabBar model must have count property defined.");
                 tabBar.model = null;
                 return;
             }
 
             if (!model.hasOwnProperty("get")) {
-                console.error("TabBar model needs to have a get function. Please provide it.");
+                console.error("TabBar model must provide get() function.");
                 tabBar.model = null;
                 return;
             }
