@@ -51,20 +51,23 @@ import "../" 0.1
   */
 Picker {
     id: item
-    property Item picker
+    property Item datePicker
     property bool completed: false
     property var updatePickerWhenChanged: null
     property int pickerIndex: Positioner.index
 
-    style: Theme.createStyleComponent("FlatPickerStyle.qml", item)
+    style: Rectangle {
+        anchors.fill: parent
+        color: (styledItem.pickerIndex % 2) ? Qt.rgba(0, 0, 0, 0.03) : Qt.rgba(0, 0, 0, 0.07)
+    }
 
     enabled: model.count > 1
-    live: picker.live
+    live: datePicker.live
     circular: model.circular
 
     delegate: PickerDelegate {
         Label {
-            text: item.model.text(picker.date, modelData, item.width, picker.locale);
+            text: item.model.text(datePicker.date, modelData, item.width, datePicker.locale);
             color: Theme.palette.normal.backgroundText
             anchors.fill: parent
             verticalAlignment: Text.AlignVCenter
@@ -79,9 +82,9 @@ Picker {
 
     onSelectedIndexChanged: {
         if (!completed || !visible) return;
-        picker.date = model.dateFromIndex(picker.date, selectedIndex);
+        datePicker.date = model.dateFromIndex(datePicker.date, selectedIndex);
         if (updatePickerWhenChanged) {
-            updatePickerWhenChanged.update(picker.date);
+            updatePickerWhenChanged.update(datePicker.date);
         }
     }
 
@@ -91,8 +94,8 @@ Picker {
     function resetModel(label, margin) {
         if (!visible) return;
 
-        model.reset(picker.date, picker.minimum, picker.maximum);
-        model.updateLimits(label, margin, picker.locale);
-        selectedIndex = model.indexOf(picker.date);
+        model.reset(datePicker.date, datePicker.minimum, datePicker.maximum);
+        model.updateLimits(label, margin, datePicker.locale);
+        selectedIndex = model.indexOf(datePicker.date);
     }
 }

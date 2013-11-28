@@ -150,7 +150,7 @@ import "../" 0.1
     the environment does not have on-screen input, the height will be set to 20GUs.
     The width is the full width of the phone, 40 GUs.
   */
-StyledItem {
+FocusScope {
     id: datePicker
 
     /*!
@@ -226,8 +226,6 @@ StyledItem {
       */
     property var locale: Qt.locale()
 
-    style: Theme.createStyleComponent("DatePickerStyle.qml", datePicker)
-
     implicitWidth: units.gu(36)
     implicitHeight: {
         var h = Qt.inputMethod.keyboardRectangle.height;
@@ -264,7 +262,7 @@ StyledItem {
     // on the date format of the locale
     DatePickerTemplate {
         id: yearPicker
-        picker: datePicker
+        datePicker: datePicker
         completed: internals.completed
         model: YearModel{}
         updatePickerWhenChanged: dayPicker
@@ -273,7 +271,7 @@ StyledItem {
 
     DatePickerTemplate {
         id: monthPicker
-        picker: datePicker
+        datePicker: datePicker
         completed: internals.completed
         updatePickerWhenChanged: dayPicker
         model: MonthModel {}
@@ -282,7 +280,7 @@ StyledItem {
 
     DatePickerTemplate {
         id: dayPicker
-        picker: datePicker
+        datePicker: datePicker
         visible: datePicker.mode === "Date"
         completed: internals.completed
         model: DayModel{}
@@ -299,10 +297,21 @@ StyledItem {
     }
 
     // tumbler positioner
-    Row {
-        id: positioner
-        parent: __styleInstance.hasOwnProperty("contentItem") ? __styleInstance.contentItem : datePicker
+    StyledItem {
+        id: holder
         anchors.fill: parent
+
+        //declare properties that will be used by the PickerStyle
+        property alias itemList: positioner
+        property Item highlightOverlay
+
+        style: Theme.createStyleComponent("PickerStyle.qml", holder)
+
+        Row {
+            id: positioner
+            parent: holder.__styleInstance.hasOwnProperty("tumblerHolder") ? holder.__styleInstance.tumblerHolder : holder
+            anchors.fill: parent
+        }
     }
 
     // component to calculate text fitting
