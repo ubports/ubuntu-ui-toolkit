@@ -232,6 +232,12 @@ Item {
     PathView {
         id: buttonView
         anchors.fill: parent
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: parent.left
+        }
+        width: needsScrolling ? parent.width : buttonRowWidth
 
         // set to the width of one tabButtonRow in Component.onCompleted.
         property real buttonRowWidth: buttonRow1 ? buttonRow1.width : 0
@@ -245,9 +251,8 @@ Item {
 
         delegate: tabButtonRow
         model: 2 // The second buttonRow shows the buttons that disappear on the left
-        property bool needsScrolling: buttonRowWidth > buttonView.width
+        property bool needsScrolling: buttonRowWidth > parent.width
         interactive: needsScrolling
-        width: needsScrolling ? buttonView.width : buttonRowWidth
         clip: needsScrolling
 
         highlightRangeMode: PathView.NoHighlightRange
