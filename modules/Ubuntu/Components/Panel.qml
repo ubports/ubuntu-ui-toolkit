@@ -420,6 +420,16 @@ Item {
         visible: panel.__closeOnContentsClicks && panel.locked == false && panel.state == "spread"
     }
 
+    /*!
+      The user presses on the opened toolbar, or when the toolbar is closed but
+      not locked, the user presses in the toolbar trigger area.
+      \qmlproperty bool pressed
+     */
+    // This is a simple alias to draggingArea.pressed, but the documentation is accurate
+    // because of the visible definition of draggingArea. Pressed is false when draggingArea
+    // is not visible.
+    property alias pressed: draggingArea.pressed
+
     DraggingArea {
         id: draggingArea
         orientation: internal.orientation === Qt.Horizontal ? Qt.Vertical : Qt.Horizontal
