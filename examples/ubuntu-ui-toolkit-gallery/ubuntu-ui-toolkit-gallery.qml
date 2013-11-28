@@ -85,6 +85,7 @@ MainView {
                     anchors.fill: parent
                     model: widgetsModel
                     delegate: ListItem.Standard {
+                        objectName: model.objectName
                         text: model.label
                         enabled: model.source != ""
                         progression: true

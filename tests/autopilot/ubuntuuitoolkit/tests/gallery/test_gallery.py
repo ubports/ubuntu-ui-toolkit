@@ -1,4 +1,4 @@
-# -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
+7# -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
 # Copyright (C) 2012, 2013 Canonical Ltd.
 #
@@ -18,10 +18,10 @@
 
 from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
-from ubuntuuitoolkit.tests.gallery import GalleryTestCase
+from ubuntuuitoolkit.tests import gallery
 
 
-class GenericTests(GalleryTestCase):
+class GenericTests(gallery.GalleryTestCase):
     """Generic tests for the Gallery"""
 
     def test_0_can_select_mainwindow(self):
@@ -92,7 +92,30 @@ class GenericTests(GalleryTestCase):
             objName = data[0]
             self.getObject(objName)
 
-    def test_all_pages_load(self):
+
+class OpenPagesTestCase(gallery.GalleryTestCase):
+
+    element_names = [
+        'navigationElement', 'togglesElement', 'buttonsElement',
+        'slidersElement', 'textfieldsElement', 'optionSelectorsElement',
+        'pickersElement', 'progressBarsElement', 'ubuntuShapesElement',
+        'iconsElement', 'labelsElement', 'listItemsElement', 'dialogsElement',
+        'popoversElement', 'sheetsElement', 'animationsElement'
+    ]
+
+    scenarios = [
+        (element_name, dict(element_name=element_name))
+        for element_name in element_names
+    ]
+
+    def test_open_page(self):
+        element = self.main_view.select_single(
+            "Standard", objectName=self.element_name)
+        self.pointing_device.click_object(element)
+        element.selected.wait_for(True)
+        self.checkPageHeader(element.text)
+            
+    def _test_all_pages_load(self):
         contentLoader, listView = self.getWidgetLoaderAndListView()
         for child in listView.select_many('Standard'):
             item = child.text
