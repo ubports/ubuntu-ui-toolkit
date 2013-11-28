@@ -21,6 +21,8 @@
 
 #include "ucstatesaver.h"
 
+#include <QStringList>
+
 class UCStateSaverAttachedPrivate
 {
     Q_DECLARE_PUBLIC(UCStateSaverAttached)

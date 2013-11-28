@@ -16,7 +16,6 @@
  * Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
  */
 
-#include <QtQml>
 #include <QtQuick/private/qquickimagebase_p.h>
 #include <QDBusConnection>
 #include <QtGui/QGuiApplication>

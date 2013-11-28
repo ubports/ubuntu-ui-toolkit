@@ -71,7 +71,7 @@ import Ubuntu.Components 0.1 as Toolkit
 
             Component {
                 id: selectorDelegate
-                OptionSelectorDelegate { text: name; subText: description; icon: image }
+                OptionSelectorDelegate { text: name; subText: description; iconSource: image }
             }
 
             ListModel {
@@ -221,7 +221,7 @@ ListItem.Empty {
                 left: parent.left
                 right: parent.right
             }
-            state: optionSelector.expanded ? state = "expanded" : state = "collapsed"
+            state: optionSelector.expanded ? "expanded" : "collapsed"
             style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
             states: [ State {
                     name: "expanded"

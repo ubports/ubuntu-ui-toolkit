@@ -18,7 +18,11 @@ import logging
 from distutils import version
 
 import autopilot
-from autopilot import input, platform
+from autopilot import (
+    input,
+    logging as autopilot_logging,
+    platform
+)
 from autopilot.introspection import dbus
 
 _NO_TABS_ERROR = 'The MainView has no Tabs.'
@@ -82,6 +86,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         """Return the Toolbar emulator of the MainView."""
         return self.select_single(Toolbar)
 
+    @autopilot_logging.log_action(logger.info)
     def open_toolbar(self):
         """Open the toolbar if it's not already opened.
 
@@ -90,6 +95,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         """
         return self.get_toolbar().open()
 
+    @autopilot_logging.log_action(logger.info)
     def close_toolbar(self):
         """Close the toolbar if it's opened."""
         self.get_toolbar().close()
@@ -105,6 +111,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         except dbus.StateNotFoundError:
             raise ToolkitEmulatorException(_NO_TABS_ERROR)
 
+    @autopilot_logging.log_action(logger.info)
     def switch_to_next_tab(self):
         """Open the next tab.
 
@@ -117,6 +124,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         current_tab.visible.wait_for(True)
         return current_tab
 
+    @autopilot_logging.log_action(logger.info)
     def switch_to_tab_by_index(self, index):
         """Open a tab.
 
@@ -144,6 +152,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
             number_of_switches += 1
         return current_tab
 
+    @autopilot_logging.log_action(logger.info)
     def switch_to_previous_tab(self):
         """Open the previous tab.
 
@@ -157,6 +166,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
             previous_tab_index = tabs.selectedTabIndex - 1
         return self.switch_to_tab_by_index(previous_tab_index)
 
+    @autopilot_logging.log_action(logger.info)
     def switch_to_tab(self, object_name):
         """Open a tab.
 
@@ -182,6 +192,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         return self.select_single(
             ActionSelectionPopover, objectName=object_name)
 
+    @autopilot_logging.log_action(logger.info)
     def go_back(self):
         """Go to the previous page."""
         toolbar = self.open_toolbar()
@@ -199,6 +210,7 @@ class Header(UbuntuUIToolkitEmulatorBase):
         tab_bar_style = self.select_single('TabBarStyle')
         return tab_bar_style.animating
 
+    @autopilot_logging.log_action(logger.info)
     def switch_to_next_tab(self):
         """Open the next tab.
 
@@ -216,6 +228,7 @@ class Header(UbuntuUIToolkitEmulatorBase):
 class Toolbar(UbuntuUIToolkitEmulatorBase):
     """Toolbar Autopilot emulator."""
 
+    @autopilot_logging.log_action(logger.info)
     def open(self):
         """Open the toolbar if it's not already opened.
 
@@ -238,6 +251,7 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
 
         self.pointing_device.drag(line_x, start_y, line_x, stop_y)
 
+    @autopilot_logging.log_action(logger.info)
     def close(self):
         """Close the toolbar if it's opened."""
         self.animating.wait_for(False)
@@ -254,6 +268,7 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
 
         self.pointing_device.drag(line_x, start_y, line_x, stop_y)
 
+    @autopilot_logging.log_action(logger.info)
     def click_button(self, object_name):
         """Click a button of the toolbar.
 
@@ -285,6 +300,7 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
     def _get_button(self, object_name):
         return self.select_single('ActionItem', objectName=object_name)
 
+    @autopilot_logging.log_action(logger.info)
     def click_back_button(self):
         """Click the back button of the toolbar."""
         self.click_button('back_toolbar_button')
@@ -317,6 +333,7 @@ class Tabs(UbuntuUIToolkitEmulatorBase):
 class TabBar(UbuntuUIToolkitEmulatorBase):
     """TabBar Autopilot emulator."""
 
+    @autopilot_logging.log_action(logger.info)
     def switch_to_next_tab(self):
         """Open the next tab."""
         self._activate_tab_bar()
@@ -390,6 +407,7 @@ class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
 class CheckBox(UbuntuUIToolkitEmulatorBase):
     """CheckBox Autopilot emulator."""
 
+    @autopilot_logging.log_action(logger.info)
     def check(self, timeout=10):
         """Check a CheckBox, if its not already checked.
 
@@ -400,6 +418,7 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
         if not self.checked:
             self.change_state(timeout)
 
+    @autopilot_logging.log_action(logger.info)
     def uncheck(self, timeout=10):
         """Uncheck a CheckBox, if its not already unchecked.
 
@@ -410,6 +429,7 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
         if self.checked:
             self.change_state(timeout)
 
+    @autopilot_logging.log_action(logger.info)
     def change_state(self, timeout=10):
         """Change the state of a CheckBox.
 
@@ -438,6 +458,7 @@ class Empty(UbuntuUIToolkitEmulatorBase):
         return self.select_single(
             'QQuickItem', objectName='confirmRemovalDialog')
 
+    @autopilot_logging.log_action(logger.info)
     def swipe_to_delete(self, direction='right'):
         """Swipe the item in a specific direction."""
         if (self.removable):
@@ -472,6 +493,7 @@ class Empty(UbuntuUIToolkitEmulatorBase):
             # The item was destroyed.
             pass
 
+    @autopilot_logging.log_action(logger.info)
     def confirm_removal(self):
         """Comfirm item removal if this was already swiped."""
         if (self.waitingConfirmationForRemoval):
@@ -510,3 +532,24 @@ class SingleValue(Base):
 
 class Subtitled(Base):
     pass
+
+
+class ComposerSheet(UbuntuUIToolkitEmulatorBase):
+    """ComposerSheet Autopilot emulator."""
+
+    def __init__(self, *args):
+        super(ComposerSheet, self).__init__(*args)
+
+    @autopilot_logging.log_action(logger.info)
+    def confirm(self):
+        """Confirm the composer sheet."""
+        button = self.select_single('Button', objectName='confirmButton')
+        self.pointing_device.click_object(button)
+        self.wait_until_destroyed()
+
+    @autopilot_logging.log_action(logger.info)
+    def cancel(self):
+        """Cancel the composer sheet."""
+        button = self.select_single('Button', objectName='cancelButton')
+        self.pointing_device.click_object(button)
+        self.wait_until_destroyed()

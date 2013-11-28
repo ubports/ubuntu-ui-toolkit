@@ -72,7 +72,7 @@ import Ubuntu.Components 0.1
 
             Component {
                 id: selectorDelegate
-                Toolkit.OptionSelectorDelegate { text: name; subText: description; icon: image }
+                Toolkit.OptionSelectorDelegate { text: name; subText: description; iconSource: image }
             }
 
             ListModel {
@@ -210,7 +210,7 @@ ListItem.Empty {
                 left: parent.left
                 right: parent.right
             }
-            state: itemSelector.expanded ? state = "alwaysExpanded" : state = "collapsed"
+            state: itemSelector.expanded ? "expanded" : "collapsed"
             style: Theme.createStyleComponent("ListItemOptionSelectorStyle.qml", listContainer)
 
             states: [ State {

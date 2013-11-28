@@ -26,18 +26,16 @@ import QtQuick 2.0
 */
 StyledItem {
     id: tabBar
-    anchors.fill: parent
-
-    // HeaderStyle binds parent when the TabBar should be visible
-    parent: null
-    // TabBar visibility is set in Tabs depending on whether the Tabs are active.
 
     /*!
+      \deprecated
       The \l Tabs item that tab bar belongs to.
       Will be automatically set by \l Tabs when the TabBar is created.
      */
     // tabsItem is of type Tabs, but using that type would cause an include loop
     property Item tabsItem
+    /*! \internal */
+    onTabsItemChanged: console.error("tabsItem property is deprecated. TabBar functionality no longer requires it.")
 
     /*!
       The model containing the tabs to be controlled by the TabBar. The tabs are
@@ -54,14 +52,12 @@ StyledItem {
       An inactive tab bar only displays the currently selected tab,
       and an active tab bar can be interacted with to select a tab.
      */
-    property bool selectionMode: false
+    property bool selectionMode: true
 
     /*!
-      When all components are completed, enable selection mode
-     */
-    Component.onCompleted: {
-        tabBar.selectionMode = true;
-    }
+      The property holds the index of the selected Tab item.
+      */
+    property int selectedIndex: (model && model.count > 0) ? 0 : -1
 
     /*!
       Do not deactivate the tab bar after a specified idle time or when the user selects a new tab.
@@ -80,6 +76,8 @@ StyledItem {
       Show animations when the state changes. Default: true.
       */
     property bool animate: true
+
+    implicitHeight: units.gu(7.5)
 
     style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
 }
