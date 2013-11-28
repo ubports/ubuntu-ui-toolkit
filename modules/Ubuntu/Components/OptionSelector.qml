@@ -130,7 +130,7 @@ ListItem.Empty {
 
     /*!
       \preliminary
-      If the list is expanded, multiple choice selection is enabled.
+      If the multiple choice selection is enabled the list is always expanded.
      */
     property bool multiSelection: false
 
