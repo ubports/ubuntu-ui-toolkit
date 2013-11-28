@@ -484,8 +484,29 @@ private Q_SLOTS:
 
 int main(int argc, char *argv[]) 
 {
+    int myArgc = argc;
+    char **myArgv = new char*[argc + 1];
+    // Eat -platform xyz, we're just using QCoreApplications here so
+    // no need to say the gui platform to use
+    // We are techically leaking the myArgv char** and it's strdup'ed contents
+    // but it happens the binary just finishes after, so not a problem
+    int j = 0;
+    for (int i = 0; i < argc; i++) {
+        if (argv[i] == QString("-platform")) {
+            if (i < argc) {
+                i++; // skip also the platform value
+                myArgc -= 2;
+            } else {
+                myArgc -= 1;
+            }
+        } else {
+            myArgv[j] = strdup(argv[i]);
+            j++;
+        }
+    }
+    myArgv[myArgc] = 0;
     tst_UCArguments tc;
-    return QTest::qExec(&tc, argc, argv);
+    return QTest::qExec(&tc, myArgc, myArgv);
 }
 
 #include "tst_arguments.moc"
