@@ -545,6 +545,54 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
         self.assertThat(waiting_time, LessThan(2))
 
 
+class QQuickListViewTestCase(tests.QMLStringAppTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Page {
+
+        ListModel {
+            id: testModel
+    
+            ListElement {
+                objectName: "testListElement"
+                label: "test list element"
+            }
+        }
+
+        ListView {
+            objectName: "testListView"
+            anchors { left: parent.left; right: parent.right }
+            height: childrenRect.height
+            model: testModel
+
+            delegate: Text {
+                text: model.label
+                objectName: model.objectName
+            }
+        }
+    }
+}
+""")
+
+    def setUp(self):
+        super(QQuickListViewTestCase, self).setUp()
+        self.list_view = self.main_view.select_single(
+            emulators.QQuickListView, objectName='testListView')
+
+    def test_qquicklistview_emulator(self):
+        self.assertIsInstance(self.list_view, emulators.QQuickListView)
+
+    def test_select_element(self):
+        self.list_view.select_element('testListElement')
+
+
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""

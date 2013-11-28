@@ -445,6 +445,14 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
         self.checked.wait_for(not original_state, timeout)
 
 
+class QQuickListView(UbuntuUIToolkitEmulatorBase):
+
+    @autopilot_logging.log_action(logger.info)
+    def select_element(self, objectName):
+        element = self.select_single(objectName=objectName)
+        self.pointing_device.click_object(element)
+
+
 class Empty(UbuntuUIToolkitEmulatorBase):
     """Base class to emulate swipe to delete."""
 
