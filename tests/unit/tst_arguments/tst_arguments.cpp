@@ -482,6 +482,10 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(tst_UCArguments)
+int main(int argc, char *argv[]) 
+{
+    tst_UCArguments tc;
+    return QTest::qExec(&tc, argc, argv);
+}
 
 #include "tst_arguments.moc"
