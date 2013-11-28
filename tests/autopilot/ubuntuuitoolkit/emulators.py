@@ -450,6 +450,13 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
 
     @autopilot_logging.log_action(logger.info)
     def click_element(self, objectName):
+        """Click an element from the list.
+
+        It swipes the element into view if it's not fully visible.
+
+        :parameter objectName: The objectName property of the element to click.
+
+        """
         self._swipe_element_into_view(objectName)
         element = self.select_single(objectName=objectName)
         self.pointing_device.click_object(element)
@@ -460,7 +467,7 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
         start_x = x + (width / 2)
         start_y = y + (height / 2)
 
-        while not self.is_element_visible(objectName):
+        while not self._is_element_fully_visible(objectName):
             # XXX The autopilot drag is done too fast, so it swipes many
             # items at once. --elopio - 2013-11-28
             self.pointing_device.move(start_x, start_y)
@@ -476,7 +483,7 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
 
             self.pointing_device.release()
 
-    def is_element_visible(self, objectName):
+    def _is_element_fully_visible(self, objectName):
         element = self.select_single(objectName=objectName)
         return (element.globalRect.y >= self.globalRect.y and
                 element.globalRect.y + element.globalRect.height <=
