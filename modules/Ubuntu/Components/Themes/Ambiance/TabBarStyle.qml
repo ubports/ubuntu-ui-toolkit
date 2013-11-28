@@ -245,9 +245,9 @@ Item {
 
         delegate: tabButtonRow
         model: 2 // The second buttonRow shows the buttons that disappear on the left
-        property bool needsScrolling: buttonRowWidth > tabBar.width
+        property bool needsScrolling: buttonRowWidth > buttonView.width
         interactive: needsScrolling
-        width: needsScrolling ? tabBar.width : buttonRowWidth
+        width: needsScrolling ? buttonView.width : buttonRowWidth
         clip: needsScrolling
 
         highlightRangeMode: PathView.NoHighlightRange
