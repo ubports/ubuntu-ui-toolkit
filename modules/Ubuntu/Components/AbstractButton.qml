@@ -35,7 +35,7 @@ ActionItem {
     /*!
       If an action is specified, the button's clicked signal will trigger the action.
       Subclasses of AbstractButton can use other properties of action (for example
-      the text and iconSource).
+      the text and iconName).
       \qmlproperty Action action
      */
 
