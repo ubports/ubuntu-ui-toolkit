@@ -173,6 +173,7 @@ Item
     property real triggerSize
     readonly property bool animating
     property bool __closeOnContentsClicks
+    property bool pressed
 modules/Ubuntu/Components/ProgressBar.qml
 AnimatedItem
     property bool indeterminate
@@ -225,10 +226,6 @@ PageTreeNode
     default property list<Item> tabChildren
     readonly property int count
     signal modelChanged()
-    function addTab(title, component, params)
-    function insertTab(index, title, component, params)
-    function moveTab(from, to)
-    function removeTab(index)
 modules/Ubuntu/Components/TextArea.qml
 StyledItem
     property bool highlighted
