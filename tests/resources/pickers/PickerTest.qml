@@ -18,20 +18,44 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.Pickers 0.1
 
-Picker {
-    height: units.gu(40)
-    model: ListModel{}
-    delegate: PickerDelegate {
-        Label {
-            anchors.fill: parent
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            text: modelData
+Row {
+    ListModel {
+        id: pickerModel
+        Component.onCompleted: {
+            for (var i = 0; i < 100; i++) {
+                append({"label": "Item #"+i});
+            }
         }
     }
-    Component.onCompleted: {
-        for (var i = 0; i < 100; i++) {
-            model.append({"label": "Item #"+i});
+
+    Picker {
+        height: units.gu(40)
+        model: pickerModel
+        delegate: PickerDelegate {
+            Label {
+                anchors.fill: parent
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                text: modelData
+            }
+        }
+        highlightOverlay: Label {
+            text: "yumm!!!"
+            color: "black"
+        }
+    }
+
+    Picker {
+        height: units.gu(40)
+        model: pickerModel
+        circular: false
+        delegate: PickerDelegate {
+            Label {
+                anchors.fill: parent
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                text: modelData
+            }
         }
     }
 }

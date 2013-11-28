@@ -23,9 +23,9 @@ Item {
     property bool fadingEnabled: true
 
     property bool inListView: QuickUtils.className(styledItem.parent) !== "QQuickPathView"
-    property Item tumblerItem: !inListView ? styledItem.parent : styledItem.parent.parent
-    property Item tumbler: tumblerItem ? tumblerItem.tumbler : null
-    property Item highlightItem: tumblerItem.highlightItem
+    property Item itemList: picker.itemList
+    property Item picker: styledItem.picker
+    property Item highlightItem: itemList.highlightItem
 
     Binding {
         target: styledItem
@@ -35,12 +35,12 @@ Item {
     }
 
     function opacityCalc() {
-        if (!tumbler || !highlightItem || (index === tumblerItem.currentIndex)) return 1.0;
+        if (!picker || !highlightItem || (index === itemList.currentIndex)) return 1.0;
         var highlightY = highlightItem.y;
         var delegateY = styledItem.y;
         if (inListView) {
-            highlightY -= tumblerItem.contentY;
-            delegateY -= tumblerItem.contentY;
+            highlightY -= itemList.contentY;
+            delegateY -= itemList.contentY;
         }
         var midY = (delegateY + styledItem.height) / 2
         if (delegateY < highlightY)  {
