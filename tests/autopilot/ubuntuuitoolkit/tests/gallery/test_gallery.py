@@ -1,4 +1,4 @@
-7# -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
+# -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
 # Copyright (C) 2012, 2013 Canonical Ltd.
 #
@@ -97,17 +97,17 @@ class GenericTests(gallery.GalleryTestCase):
 
 class OpenPagesTestCase(gallery.GalleryTestCase):
 
-    element_names = [
-        'navigationElement', 'togglesElement', 'buttonsElement',
-        'slidersElement', 'textfieldsElement', 'optionSelectorsElement',
-        'pickersElement', 'progressBarsElement', 'ubuntuShapesElement',
-        'iconsElement', 'labelsElement', 'listItemsElement', 'dialogsElement',
-        'popoversElement', 'sheetsElement', 'animationsElement'
+    names = [
+        'navigation', 'toggles', 'buttons', 'sliders', 'textfields',
+        'optionSelectors', 'pickers', 'progressBars', 'ubuntuShapes', 'icons',
+        'labels', 'listItems', 'dialogs', 'popovers', 'sheets', 'animations'
     ]
 
     scenarios = [
-        (element_name, dict(element_name=element_name))
-        for element_name in element_names
+        (name, dict(
+            element_name=name+'Element',
+            template_name=name+'Template'))
+        for name in names
     ]
 
     def test_open_page(self):
@@ -115,26 +115,13 @@ class OpenPagesTestCase(gallery.GalleryTestCase):
             emulators.QQuickListView, objectName="widgetList")
         list_view.click_element(self.element_name)
         element = self.main_view.select_single(
-            "Standard", objectName=self.element_name)
+            'Standard', objectName=self.element_name)
         element.selected.wait_for(True)
         self.checkPageHeader(element.text)
-            
-    def _test_all_pages_load(self):
-        contentLoader, listView = self.getWidgetLoaderAndListView()
-        for child in listView.select_many('Standard'):
-            item = child.text
-            # FIXME: Text Field doesn't work
-            if item == 'Text Field':
-                # select_many doesn't return anything
-                continue
-            # FIXME: Label doesn't work
-            if item == 'Label':
-                # More than one item was returned for query
-                continue
-            # FIXME: The following fail in loadItem in selectItem
-            if item in ['List Items', 'Label', 'Popover', 'Dialog', 'Animations', 'Sheet']:
-                continue
-            self.loadItem(item)
-            self.checkPageHeader(item)
-            assert len(self.app.select_many('Template')) > 0, \
-                ('%s can be loaded in gallery' % item)
+        if self.template_name == 'textfieldsTemplate':
+            page_type = 'TextInputs'
+        else:
+            page_type = 'Template'
+        self.main_view.wait_select_single(
+            page_type, objectName=self.template_name)
+        # TODO check that the template is visible. --elopio - 2013-11-28

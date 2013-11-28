@@ -19,6 +19,8 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.Pickers 0.1
 
 Template {
+    objectName: "pickersTemplate"
+
     TemplateSection {
         className: "Picker"
         documentation: "qml-ubuntu-components-pickers0-picker.html"
