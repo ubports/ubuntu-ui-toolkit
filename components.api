@@ -517,6 +517,37 @@ Empty
     property variant values
     property int selectedIndex
     property bool expanded
+modules/Ubuntu/Components/Pickers/DatePicker.qml
+FocusScope
+    property string mode
+    property date date
+    property date minimum
+    property date maximum
+    readonly property int year
+    readonly property int month
+    readonly property int day
+    readonly property int week
+    property bool live
+    property var locale
+modules/Ubuntu/Components/Pickers/DatePickerTemplate.qml
+Picker
+    property Item datePicker
+    property bool completed
+    property var updatePickerWhenChanged
+    property int pickerIndex
+    function resetModel(label, margin)
+modules/Ubuntu/Components/Pickers/DayModel.qml
+ListModel
+    property bool circular
+    property real narrowFormatLimit
+    property real shortFormatLimit
+    property real longFormatLimit
+    function reset(date)
+    function updateLimits(label, margin, locale)
+    function update(date)
+    function indexOf(date)
+    function dateFromIndex(date, index)
+    function text(date, value, width, locale)
 modules/Ubuntu/Components/Pickers/Dialer.qml
 StyledItem
     property real minimumValue
@@ -542,6 +573,20 @@ QtObject
     property bool draggable
     property bool visible
     property bool toCenterItem
+modules/Ubuntu/Components/Pickers/MonthModel.qml
+ListModel
+    property bool circular
+    property real narrowFormatLimit
+    property real shortFormatLimit
+    property real longFormatLimit
+    property int from
+    property int to
+    property int distance
+    function reset(date, minimum, maximum)
+    function updateLimits(label, margin, locale)
+    function indexOf(date)
+    function dateFromIndex(date, index)
+    function text(date, value, width, locale)
 modules/Ubuntu/Components/Pickers/Picker.qml
 StyledItem
     property bool circular
@@ -557,6 +602,23 @@ StyledItem
 modules/Ubuntu/Components/Pickers/PickerDelegate.qml
 AbstractButton
     readonly property Picker picker
+    default property internal content
+modules/Ubuntu/Components/Pickers/YearModel.qml
+ListModel
+    property bool circular
+    property real narrowFormatLimit
+    property real shortFormatLimit
+    property real longFormatLimit
+    property int from
+    property int to
+    property bool autoExtend
+    function reset(date, minimum, maximum)
+    function updateLimits(textSizer, margin)
+    function extend(baseYear, items)
+    function inModel(year)
+    function indexOf(date)
+    function dateFromIndex(date, index)
+    function text(date, value)
 modules/Ubuntu/Components/Popups/ActionSelectionPopover.qml
 Popover
     property Item target
