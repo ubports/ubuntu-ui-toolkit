@@ -18,6 +18,8 @@
 
 from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
+
+from ubuntuuitoolkit import emulators
 from ubuntuuitoolkit.tests import gallery
 
 
@@ -109,9 +111,11 @@ class OpenPagesTestCase(gallery.GalleryTestCase):
     ]
 
     def test_open_page(self):
+        list_view = self.main_view.select_single(
+            emulators.QQuickListView, objectName="widgetList")
+        list_view.click_element(self.element_name)
         element = self.main_view.select_single(
             "Standard", objectName=self.element_name)
-        self.pointing_device.click_object(element)
         element.selected.wait_for(True)
         self.checkPageHeader(element.text)
             
