@@ -606,6 +606,7 @@ MainView {
                     text: model.label
                     objectName: model.objectName
                     onClicked: clickedLabel.text = model.objectName
+                    height: units.gu(5)
                 }
             }
         }
