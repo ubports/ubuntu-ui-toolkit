@@ -23,8 +23,15 @@ Item {
     property color headerTextColor: Theme.palette.normal.backgroundText
     property color headerTextSelectedColor: Theme.palette.selected.backgroundText
 
-    // animate is initialized in TabBar's onCompleted
+    // Avoid starting transitions coming from selectionMode before
+    //  styledItem is completed. This fixes bug #1246792.
     property bool animate: false
+    Binding {
+        target: tabBarStyle
+        property: "animate"
+        when: styledItem.width > 0
+        value: styledItem.animate
+    }
     property int headerTextFadeDuration: animate ? 350 : 0
     property url indicatorImageSource: "artwork/chevron.png"
 
