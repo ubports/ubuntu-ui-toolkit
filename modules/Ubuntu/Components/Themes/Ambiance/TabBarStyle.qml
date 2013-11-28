@@ -231,7 +231,6 @@ Item {
 
     PathView {
         id: buttonView
-        anchors.fill: parent
         anchors {
             top: parent.top
             bottom: parent.bottom
