@@ -624,21 +624,21 @@ MainView {
     def test_qquicklistview_emulator(self):
         self.assertIsInstance(self.list_view, emulators.QQuickListView)
 
-    def test_is_element_fully_visible(self):
-        self.assertTrue(
-            self.list_view._is_element_fully_visible('testListElement1'))
-        self.assertFalse(
-            self.list_view._is_element_fully_visible('testListElement5'))
-
     def test_click_element(self):
         self.list_view.click_element('testListElement1')
         self.assertEqual(self.label.text, 'testListElement1')
 
     def test_click_element_outside_view_below(self):
+        self.assertFalse(
+            self.list_view._is_element_fully_visible('testListElement5'))
+
         self.list_view.click_element('testListElement5')
         self.assertEqual(self.label.text, 'testListElement5')
 
     def test_click_element_outside_view_above(self):
+        self.assertFalse(
+            self.list_view._is_element_fully_visible('testListElement5'))
+
         self.list_view.click_element('testListElement5')
         self.list_view.click_element('testListElement1')
         self.assertEqual(self.label.text, 'testListElement1')
