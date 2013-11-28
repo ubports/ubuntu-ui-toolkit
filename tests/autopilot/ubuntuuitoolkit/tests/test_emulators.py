@@ -560,7 +560,8 @@ MainView {
 
         Column {
             id: column
-            anchors.fill: parent
+            width: units.gu(48)
+            height: units.gu(20)
 
             Label {
                 id: clickedLabel
