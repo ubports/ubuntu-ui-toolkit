@@ -15,6 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+import time
 from distutils import version
 
 import autopilot
@@ -448,9 +449,38 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
 class QQuickListView(UbuntuUIToolkitEmulatorBase):
 
     @autopilot_logging.log_action(logger.info)
-    def select_element(self, objectName):
+    def click_element(self, objectName):
+        self._swipe_element_into_view(objectName)
         element = self.select_single(objectName=objectName)
         self.pointing_device.click_object(element)
+
+    def _swipe_element_into_view(self, objectName):
+        element = self.select_single(objectName=objectName)
+        x, y, width, height = self.globalRect
+        start_x = x + (width / 2)
+        start_y = y + (height / 2)
+
+        while not self.is_element_visible(objectName):
+            # XXX The autopilot drag is done too fast, so it swipes many
+            # items at once. --elopio - 2013-11-28
+            self.pointing_device.move(start_x, start_y)
+            self.pointing_device.press()
+            stop_x = start_x
+            if element.globalRect.y < self.globalRect.y:
+                stop_y = start_y + element.globalRect.height
+            else:
+                stop_y = start_y - element.globalRect.height
+
+            self.pointing_device.move(stop_x, stop_y)
+            time.sleep(0.25)
+
+            self.pointing_device.release()
+
+    def is_element_visible(self, objectName):
+        element = self.select_single(objectName=objectName)
+        return (element.globalRect.y >= self.globalRect.y and
+                element.globalRect.y + element.globalRect.height <=
+                self.globalRect.y + self.globalRect.height)
 
 
 class Empty(UbuntuUIToolkitEmulatorBase):

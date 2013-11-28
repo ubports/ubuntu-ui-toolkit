@@ -550,31 +550,63 @@ class QQuickListViewTestCase(tests.QMLStringAppTestCase):
     test_qml = ("""
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
 
 MainView {
     width: units.gu(48)
-    height: units.gu(60)
+    height: units.gu(20)
 
     Page {
 
-        ListModel {
-            id: testModel
-    
-            ListElement {
-                objectName: "testListElement"
-                label: "test list element"
+        Column {
+            id: column
+            anchors.fill: parent
+
+            Label {
+                id: clickedLabel
+                objectName: "clickedLabel"
+                text: "No element clicked."
             }
-        }
 
-        ListView {
-            objectName: "testListView"
-            anchors { left: parent.left; right: parent.right }
-            height: childrenRect.height
-            model: testModel
+            ListModel {
+                id: testModel
 
-            delegate: Text {
-                text: model.label
-                objectName: model.objectName
+                ListElement {
+                    objectName: "testListElement1"
+                    label: "test list element 1"
+                }
+                ListElement {
+                    objectName: "testListElement2"
+                    label: "test list element 2"
+                }
+                ListElement {
+                    objectName: "testListElement3"
+                    label: "test list element 3"
+                }
+                ListElement {
+                    objectName: "testListElement4"
+                    label: "test list element 4"
+                }
+                ListElement {
+                    objectName: "testListElement5"
+                    label: "test list element 5"
+                }
+            }
+
+            ListView {
+                id: testListView
+                objectName: "testListView"
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: column.height - clickedLabel.paintedHeight
+                clip: true
+                model: testModel
+
+                delegate: ListItem.Standard {
+                    text: model.label
+                    objectName: model.objectName
+                    onClicked: clickedLabel.text = model.objectName
+                }
             }
         }
     }
@@ -585,12 +617,29 @@ MainView {
         super(QQuickListViewTestCase, self).setUp()
         self.list_view = self.main_view.select_single(
             emulators.QQuickListView, objectName='testListView')
+        self.label = self.main_view.select_single(
+            'Label', objectName='clickedLabel')
+        self.assertEqual(self.label.text, 'No element clicked.')
 
     def test_qquicklistview_emulator(self):
         self.assertIsInstance(self.list_view, emulators.QQuickListView)
 
-    def test_select_element(self):
-        self.list_view.select_element('testListElement')
+    def test_is_element_visible(self):
+        self.assertTrue(self.list_view.is_element_visible('testListElement1'))
+        self.assertFalse(self.list_view.is_element_visible('testListElement5'))
+
+    def test_click_element(self):
+        self.list_view.click_element('testListElement1')
+        self.assertEqual(self.label.text, 'testListElement1')
+
+    def test_click_element_outside_view_below(self):
+        self.list_view.click_element('testListElement5')
+        self.assertEqual(self.label.text, 'testListElement5')
+
+    def test_click_element_outside_view_above(self):
+        self.list_view.click_element('testListElement5')
+        self.list_view.click_element('testListElement1')
+        self.assertEqual(self.label.text, 'testListElement1')
 
 
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
