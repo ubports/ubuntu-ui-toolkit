@@ -22,7 +22,7 @@ MainView {
     height: 600
     Tabs {
         id: tabs
-        selectedTabIndex: 0
+        selectedTabIndex: 1
 
         Tab {
             title: i18n.tr("One")

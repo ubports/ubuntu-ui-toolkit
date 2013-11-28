@@ -148,11 +148,6 @@ PageTreeNode {
     Object {
         id: internal
 
-        // A very large real number that is used as the z-value for an item
-        // that should go on top of its siblings.
-        // FIXME: Expose this variable to all components of the toolkit
-        property real maxStackingOrder: 200000
-
         UnityActions.ActionContext {
             id: actionContext
 
@@ -240,39 +235,14 @@ PageTreeNode {
         function updateFlickablePosition() {
             if (page.flickable) {
                 // Set-up the top-margin of the contents of the Flickable so that
-                //  the contents is never hidden by the header:
-                page.flickable.contentY = -headerHeight;
-            }
-        }
-    }
-
-    MouseArea {
-        id: contentsArea
-        anchors.fill: page
-        z: internal.maxStackingOrder
-        // This mouse area will be on top of the page contents, but
-        // under the toolbar and header.
-        // It is used for detecting interaction with the page contents
-        // which can close the toolbar and take a tab bar out of selection mode.
-
-        property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ?
-                                      page.__propagated.toolbar : null
-
-        property TabBar tabBar: page.__propagated && page.__propagated.header &&
-                                page.__propagated.header.contents &&
-                                page.__propagated.header.contents.hasOwnProperty("selectionMode") &&
-                                page.__propagated.header.contents.hasOwnProperty("alwaysSelectionMode") ?
-                                    page.__propagated.header.contents : null
-
-        onPressed: {
-            mouse.accepted = false;
-            if (contentsArea.toolbar && !toolbar.locked) {
-                contentsArea.toolbar.close();
+                //  the contents is never hidden by the header
+                var displacement = headerHeight;
+                if (page.flickable.hasOwnProperty("headerItem") && page.flickable.headerItem) {
+                    // flickable is a ListView with a headerItem
+                    displacement += page.flickable.headerItem.height;
                 }
-            if (contentsArea.tabBar && !contentsArea.tabBar.alwaysSelectionMode) {
-                contentsArea.tabBar.selectionMode = false;
+                page.flickable.contentY = -displacement;
             }
         }
-        propagateComposedEvents: true
     }
 }

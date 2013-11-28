@@ -19,7 +19,7 @@ import Ubuntu.Components 0.1
 
 Item {
     id: tabBarStyle
-    // styling properties
+    // styling properties, public API
     property color headerTextColor: Theme.palette.normal.backgroundText
     property color headerTextSelectedColor: Theme.palette.selected.backgroundText
 
@@ -27,20 +27,27 @@ Item {
     property url indicatorImageSource: "artwork/chevron.png"
 
     property string headerFontSize: "x-large"
+    property int headerTextStyle: Text.Normal
+    property color headerTextStyleColor: Theme.palette.normal.backgroundText
     property int headerFontWeight: Font.Light
     property real headerTextLeftMargin: units.gu(2)
     property real headerTextRightMargin: units.gu(2)
     property real headerTextBottomMargin: units.gu(2)
 
     property real buttonPositioningVelocity: styledItem.animate ? 1.0 : -1
-
     // The time of inactivity before leaving selection mode automatically
     property int deactivateTime: 5000
 
-    /*!
-      The set of tabs this tab bar belongs to
-     */
-    property Tabs tabs: styledItem ? styledItem.tabsItem : null
+    /*
+      The function assures the visuals stay on the selected tab. This can be called
+      by the stack components holding the tabs (i.e. Tabs, ListView, etc) and only
+      when the changes happen on the list element values, which is not reported
+      automaytically through ListModel changes.
+      */
+    function sync() {
+        buttonView.selectButton(styledItem.selectedIndex);
+    }
+
     property ListModel tabsModel : styledItem ? styledItem.model : null
 
     Connections {
@@ -50,7 +57,7 @@ Item {
             if (styledItem.selectionMode) {
                 activatingTimer.restart();
             } else {
-                buttonView.selectButton(tabs.selectedTabIndex);
+                buttonView.selectButton(styledItem.selectedIndex);
             }
         }
     }
@@ -65,9 +72,8 @@ Item {
     }
 
     Connections {
-        target: tabs
-        onSelectedTabIndexChanged: buttonView.selectButton(tabs.selectedTabIndex)
-        onModelChanged: buttonView.selectButton(tabs.selectedTabIndex)
+        target: styledItem
+        onSelectedIndexChanged: buttonView.selectButton(styledItem.selectedIndex)
     }
 
     Component {
@@ -99,19 +105,16 @@ Item {
                         top: parent.top
                         bottom: parent.bottom
                     }
-                    width: text.width + text.anchors.leftMargin + text.anchors.rightMargin
+                    width: text.paintedWidth + text.anchors.leftMargin + text.anchors.rightMargin
 
                     // When the tab bar is in selection mode, show both buttons corresponing to
                     // the tab index as selected, but when it is not in selection mode only one
                     // to avoid seeing fading animations of the unselected button when switching
                     // tabs from outside the tab bar.
-                    property bool selected: (styledItem.selectionMode && buttonView.needsScrolling) ? tabs.selectedTabIndex === index : buttonView.selectedButtonIndex === button.buttonIndex
+                    property bool selected: (styledItem.selectionMode && buttonView.needsScrolling) ?
+                                                styledItem.selectedIndex === index :
+                                                buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
-                    onOffsetChanged: {
-                        if (selected) {
-                            buttonView.updateOffset(button.offset);
-                        }
-                    }
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
 
                     // Use opacity 0 to hide instead of setting visibility to false in order to
@@ -152,7 +155,9 @@ Item {
                         // The indicator image must be visible after the selected tab button, when the
                         // tab bar is not in selection mode, or after the "last" button (starting with
                         // the selected one), when the tab bar is in selection mode.
-                        property bool isLastAfterSelected: index === (tabs.selectedTabIndex === 0 ? repeater.count-1 : tabs.selectedTabIndex - 1)
+                        property bool isLastAfterSelected: index === (styledItem.selectedIndex === 0 ?
+                                                                          repeater.count-1 :
+                                                                          styledItem.selectedIndex - 1)
                         opacity: (styledItem.selectionMode ? isLastAfterSelected : selected) ? 1 : 0
                         Behavior on opacity {
                             NumberAnimation {
@@ -180,14 +185,16 @@ Item {
                             baseline: parent.bottom
                             baselineOffset: -headerTextBottomMargin
                         }
-                        text: (tab && tab.hasOwnProperty("title")) ? tab.title : title
+                        text: (model.hasOwnProperty("tab") && tab.hasOwnProperty("title")) ? tab.title : title
                         fontSize: headerFontSize
                         font.weight: headerFontWeight
+                        style: headerTextStyle
+                        styleColor: headerTextStyleColor
                     }
 
                     onClicked: {
                         if (!activatingTimer.running) {
-                            tabs.selectedTabIndex = index;
+                            styledItem.selectedIndex = index;
                             if (!styledItem.alwaysSelectionMode) {
                                 styledItem.selectionMode = false;
                             }
@@ -215,11 +222,7 @@ Item {
 
     PathView {
         id: buttonView
-        anchors {
-            left: parent.left
-            top: parent.top
-            bottom: parent.bottom
-        }
+        anchors.fill: parent
 
         // set to the width of one tabButtonRow in Component.onCompleted.
         property real buttonRowWidth: buttonRow1 ? buttonRow1.width : 0
@@ -255,7 +258,7 @@ Item {
 
         // Select the closest of the two buttons that represent the given tab index
         function selectButton(tabIndex) {
-            if (tabIndex < 0 || tabIndex >= tabsModel.count) return;
+            if (!tabsModel || tabIndex < 0 || tabIndex >= tabsModel.count) return;
             if (buttonView.buttonRow1 && buttonView.buttonRow2) {
                 var b1 = buttonView.buttonRow1.children[tabIndex];
                 var b2 = buttonView.buttonRow2.children[tabIndex];
@@ -272,6 +275,7 @@ Item {
         }
 
         function updateOffset(newOffset) {
+            if (!newOffset) return; // do not update the offset when its value is NaN
             if (offset - newOffset < -1) newOffset = newOffset - 2;
             offset = newOffset;
         }
@@ -282,10 +286,6 @@ Item {
                 velocity: buttonPositioningVelocity
                 easing.type: Easing.InOutQuad
             }
-        }
-
-        Component.onCompleted: {
-            selectButton(tabs.selectedTabIndex);
         }
 
         onDragEnded: activatingTimer.stop()
@@ -314,5 +314,9 @@ Item {
             styledItem.selectionMode = true;
             mouse.accepted = false;
         }
+    }
+
+    Component.onCompleted: {
+        tabBarStyle.sync();
     }
 }

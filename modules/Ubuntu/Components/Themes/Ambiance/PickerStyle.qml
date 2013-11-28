@@ -22,13 +22,9 @@ Item {
     id: control
     // style properties
     /*!
-      Specifies whether to have a frame circumventing the tumbler or not.
-      */
-    property bool hasFrame: true
-    /*!
       Specifies the background color
       */
-    property color backgroundColor: "#00000000"
+    property color backgroundColor: "#0A000000"
     /*!
       Background color for highlight.
       */
@@ -40,99 +36,18 @@ Item {
     /*!
       Scale of the highlight item
       */
-    property real highlightScaleFactor: 1.2
+    property real highlightScaleFactor: 1.15
     /*!
       Thickness of the highlight component
       */
     property real highlightThickness: units.gu(5)
+
     /*!
-      Holds the height for the delegate items.
+      The content holder exposed to the Picker so tumbler list can be reparented to it.
       */
-    property real itemHeight: units.gu(4)
+    property alias tumblerHolder: content
 
-    // private properties
-    property bool completed: false
-
-    function modelSize() {
-        return loader.item.model.hasOwnProperty("count") ? loader.item.model.count : loader.item.model.length;
-    }
-
-    function moveToIndex(toIndex) {
-        var count = (loader.item && loader.item.model) ? modelSize() : -1;
-        if (completed && count > 0) {
-            if (QuickUtils.className(loader.item) === "QQuickListView") {
-                loader.item.currentIndex = toIndex;
-                return;
-            } else {
-                loader.item.positionViewAtIndex(count - 1, PathView.Center);
-                loader.item.positionViewAtIndex(toIndex, PathView.Center);
-            }
-        }
-    }
-
-    // highlight component used for calculations
-    Component {
-        id: highlightComponent
-        Item {
-            width: parent ? parent.width : 0
-            height: highlightThickness
-        }
-    }
-
-    // circular list
-    Component {
-        id: wrapAround
-        PathView {
-            id: pView
-            property Item tumbler: styledItem
-            property real itemHeight: control.itemHeight
-            anchors.fill: parent
-            clip: true
-
-            model: styledItem.model
-            delegate: styledItem.delegate
-            highlight: highlightComponent
-            // put the currentItem to the center of the view
-            preferredHighlightBegin: 0.5
-            preferredHighlightEnd: 0.5
-
-            pathItemCount: pView.height / control.itemHeight + 1
-            snapMode: PathView.SnapToItem
-            flickDeceleration: 100
-
-            property int contentHeight: pathItemCount * control.itemHeight
-            path: Path {
-                startX: pView.width / 2
-                startY: -(pView.contentHeight - pView.height) / 2
-                PathLine {
-                    x: pView.width / 2
-                    y: pView.height + (pView.contentHeight - pView.height) / 2
-                }
-            }
-        }
-    }
-
-    // linear list
-    Component {
-        id: linear
-        ListView {
-            id: lView
-            property Item tumbler: styledItem
-            property real itemHeight: control.itemHeight
-            anchors.fill: parent
-            clip: true
-
-            model: styledItem.model
-            delegate: styledItem.delegate
-            highlight: highlightComponent
-
-            preferredHighlightBegin: highlightItem ? (height - highlightItem.height) / 2 : 0
-            preferredHighlightEnd: highlightItem ? (preferredHighlightBegin + highlightItem.height) : 0
-            highlightRangeMode: ListView.StrictlyEnforceRange
-            highlightMoveDuration: 300
-            flickDeceleration: 100
-        }
-    }
+    anchors.fill: parent
 
     // frame
     UbuntuShape {
@@ -140,13 +55,11 @@ Item {
         radius: "medium"
         color: Theme.palette.normal.overlay
         image: shapeSource
-        visible: hasFrame
-        opacity: visible ? 1.0 : 0.0
     }
 
     ShaderEffectSource {
         id: shapeSource
-        sourceItem: hasFrame ? content : nullItem
+        sourceItem: background
         hideSource: true
         // FIXME: visible: false prevents rendering so make it a nearly
         // transparent 1x1 pixel instead
@@ -155,93 +68,96 @@ Item {
         height: 1
     }
 
-    // null item
-    Item { id: nullItem }
-
     Rectangle {
-        id: content
+        id: background
         anchors.fill: parent
 
+        MouseArea {
+            anchors.fill: parent
+        }
         // background
         color: backgroundColor
 
-        // tumbler
-        Loader {
-            id: loader
-            asynchronous: false
+        Item {
+            id: content
             anchors.fill: parent
-            sourceComponent: (styledItem.circular) ? wrapAround : linear
-
-            // to avoid binding loop
-            Connections {
-                target: styledItem
-                onSelectedIndexChanged: loader.item.currentIndex = styledItem.selectedIndex
-            }
-
-            // live selectedIndex updater
-            Binding {
-                target: styledItem
-                property: "selectedIndex"
-                value: loader.item.currentIndex
-                when: completed && (styledItem.model !== undefined) && styledItem.live
-            }
-            // non-live selectedIndex updater
-            Connections {
-                target: loader.item
-                ignoreUnknownSignals: true
-                onMovementEnded: {
-                    if (!styledItem.live) styledItem.selectedIndex = loader.item.currentIndex;
-                }
-                onCurrentIndexChanged: {
-                    if (!styledItem.live && styledItem.__clickedIndex === loader.item.currentIndex) {
-                        styledItem.selectedIndex = loader.item.currentIndex;
-                        styledItem.__clickedIndex = -1;
-                    }
-                }
-                onModelChanged: {
-                    moveToIndex((completed) ? 0 : styledItem.selectedIndex);
-                    if (completed && !styledItem.live) styledItem.selectedIndex = 0;
-                }
-            }
-
-            Component.onCompleted: {
-                completed = true;
-                if (item) {
-                    loader.item.currentIndex = styledItem.selectedIndex;
-                    moveToIndex(styledItem.selectedIndex);
-                }
-            }
         }
+
         // highlight
         Rectangle {
             id: highlightItem
-            y: (loader.height - control.highlightThickness) / 2
+            y: (content.height - control.highlightThickness) / 2
             anchors {
-                left: loader.left
-                right: loader.right
+                left: content.left
+                right: content.right
             }
             height: control.highlightThickness
         }
         ThinDivider {
             anchors {
-                left: loader.left
-                right: loader.right
+                left: content.left
+                right: content.right
                 bottom: highlightItem.top
             }
         }
         ThinDivider {
             anchors {
-                left: loader.left
-                right: loader.right
+                left: content.left
+                right: content.right
                 top: highlightItem.bottom
             }
         }
 
         HighlightMagnifier {
-            sourceItem: loader.item
+            sourceItem: styledItem.itemList
             anchors.fill: highlightItem
             scaleFactor: control.highlightScaleFactor
             outputColor: control.highlightColor
         }
+
+        // holds the highlight overlay item
+        Item {
+            id: overlayHolder
+            anchors.fill: highlightItem
+
+            Binding {
+                target: styledItem.highlightOverlay
+                property: "parent"
+                value: overlayHolder
+                when: styledItem.highlightOverlay
+            }
+        }
+
+//        Loader {
+//            id: highlightLoader
+//            anchors.fill: highlightItem
+//            asynchronous: false
+//            sourceComponent: styledItem.circular ? wrapAround : linear
+//            onStatusChanged: {
+//                if (status === Loader.Ready && item) {
+//                    item.delegate = (styledItem.hasOwnProperty("highlight") && styledItem.highlight) ?
+//                                styledItem.highlight : styledItem.delegate;
+//                    item.smooth = true;
+//                    item.scale = control.highlightScaleFactor;
+//                    item.enabled = false;
+//                }
+//            }
+
+//            // control bingings for PathView
+//            Binding {
+//                target: highlightLoader.item
+//                property: "offset"
+//                value: loader.item.offset
+//                when: loader.item && highlightLoader.item
+//            }
+
+//            // control bingings for ListView
+//            Binding {
+//                target: highlightLoader.item
+//                property: "contentY"
+//                value: loader.item.contentY - loader.item.originY
+//                when: loader.item && highlightLoader.item
+//            }
+//        }
     }
 }

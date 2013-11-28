@@ -123,6 +123,15 @@ Item {
         function test_0_selectedIndex() {
             compare(picker.selectedIndex, 0, "default selectedIndex");
         }
+        function test_0_highlightOverlay() {
+            compare(picker.highlightOverlay, null, "no highlight overlay item set by default");
+        }
+        function test_0_itemWidth() {
+            compare(picker.itemWidth, picker.width, "itemWidth is same as picker's width by default");
+        }
+        function test_0_itemHeight() {
+            compare(picker.itemHeight, units.gu(4.5), "itemHeight is 4.5 GU by default");
+        }
 
         function test_1_runtimeModel() {
             picker.model = emptyModel;

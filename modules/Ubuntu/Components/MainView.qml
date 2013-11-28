@@ -248,8 +248,9 @@ PageTreeNode {
                 bottom: parent.bottom
             }
             // only clip when necessary
+            // ListView headers may be positioned at the top, independent from
+            // flickable.contentY, so do not clip depending on activePage.flickable.contentY.
             clip: headerItem.bottomY > 0 && activePage && activePage.flickable
-                  && -activePage.flickable.contentY < headerItem.bottomY
 
             property Page activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
 
@@ -269,6 +270,26 @@ PageTreeNode {
                     topMargin: -parent.y
                 }
             }
+
+            MouseArea {
+                id: contentsArea
+                anchors.fill: contents
+                // This mouse area will be on top of the page contents, but
+                // under the toolbar and header.
+                // It is used for detecting interaction with the page contents
+                // which can close the toolbar and take a tab bar out of selection mode.
+
+                onPressed: {
+                    mouse.accepted = false;
+                    if (!toolbarItem.locked) {
+                        toolbarItem.close();
+                        }
+                    if (headerItem.tabBar && !headerItem.tabBar.alwaysSelectionMode) {
+                        headerItem.tabBar.selectionMode = false;
+                    }
+                }
+                propagateComposedEvents: true
+            }
         }
 
         Toolbar {
@@ -286,6 +307,27 @@ PageTreeNode {
             objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
+
+            property Item tabBar: null
+            Binding {
+                target: headerItem
+                property: "tabBar"
+                value: headerItem.contents
+                when: headerItem.contents &&
+                      headerItem.contents.hasOwnProperty("selectionMode") &&
+                      headerItem.contents.hasOwnProperty("alwaysSelectionMode") &&
+                      headerItem.contents.hasOwnProperty("selectedIndex")
+            }
+
+            Connections {
+                // no connections are made when target is null
+                target: headerItem.tabBar
+                onSelectionModeChanged: {
+                    if (headerItem.tabBar.selectionMode) {
+                        if (!toolbarItem.locked) toolbarItem.close();
+                    }
+                }
+            }
         }
     }
 

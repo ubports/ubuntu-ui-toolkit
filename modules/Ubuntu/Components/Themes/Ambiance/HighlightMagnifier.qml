@@ -55,7 +55,7 @@ Item {
             void main() {
                 qt_TexCoord0 = vec2(0.5 - 1.0 / (2.0 * scaleFactor)) + qt_MultiTexCoord0 / vec2(scaleFactor);
                 gl_Position = qt_Matrix * qt_Vertex;
-            }";
+            }"
 
         fragmentShader: "
             uniform lowp float qt_Opacity;
@@ -64,10 +64,8 @@ Item {
             uniform highp vec4 outputColor;
 
             void main() {
-                vec2 tc = qt_TexCoord0;
-                lowp vec4 tex = texture2D(source, tc);
+                lowp vec4 tex = texture2D(source, qt_TexCoord0);
                 gl_FragColor = vec4(outputColor.rgb, outputColor.a*tex.a) * qt_Opacity;
-            }
-            "
+            }"
     }
 }

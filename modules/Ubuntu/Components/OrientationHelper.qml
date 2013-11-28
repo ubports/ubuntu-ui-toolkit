@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import QtQuick.Window 2.0
+import Ubuntu.Components 0.1 as Ubuntu
 
 /*!
     \qmltype OrientationHelper
@@ -91,7 +92,19 @@ Item {
 
     Component.onCompleted: orientationTransition.enabled = transitionEnabled
 
-    Object {
+    /*!
+      \internal
+     */
+    onOrientationAngleChanged: internal.applyOrientation()
+
+    /*
+      The attached property Screen.orientation is only valid inside Item or
+      derived components. Inside Object it evaluates to 0 with no error.
+      Also be aware that some apps eg. webbrowser-app set window.contentOrientation
+      and thus can hide failure to update it from this code.
+      See http://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick-window2-screen.html
+    */
+    Item {
         id: internal
 
         /*!
@@ -113,15 +126,6 @@ Item {
         }
 
         onWindowActiveChanged: applyOrientation()
-    }
-
-    /*!
-      \internal
-     */
-    onOrientationAngleChanged: internal.applyOrientation()
-
-    Item {
-        id: stateWrapper
 
         state: orientationAngle.toString()
 
@@ -184,8 +188,8 @@ Item {
                     RotationAnimation {
                         target: orientationHelper
                         properties: "rotation"
-                        duration: UbuntuAnimation.FastDuration
-                        easing: UbuntuAnimation.StandardEasing
+                        duration: Ubuntu.UbuntuAnimation.FastDuration
+                        easing: Ubuntu.UbuntuAnimation.StandardEasing
                         direction: RotationAnimation.Shortest
                     }
                 }
