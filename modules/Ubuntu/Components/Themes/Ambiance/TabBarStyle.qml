@@ -23,8 +23,8 @@ Item {
     property color headerTextColor: Theme.palette.normal.backgroundText
     property color headerTextSelectedColor: Theme.palette.selected.backgroundText
 
-    // Avoid starting transitions coming from selectionMode before
-    //  styledItem is completed. This fixes bug #1246792.
+    // Don't start transitions because of updates to selectionMode before styledItem is completed.
+    //  This fixes bug #1246792: "Disable tabs scrolling animations at startup"
     property bool animate: false
     Binding {
         target: tabBarStyle
