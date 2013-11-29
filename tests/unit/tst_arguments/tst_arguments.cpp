@@ -482,6 +482,13 @@ private Q_SLOTS:
     }
 };
 
+// Do not use QTEST_MAIN. QTEST_MAIN is 99.99% of the times what you
+// want when running a Qt testcase but it creates a Q*Application and in
+// this case that is not wanted since we are creating and destroying them as
+// part of the test and Qt doesn't like when there's more than one Q*Application
+// at the same time, so do without creating a Q*Application in main.
+// This can of course have some implications but it seems that
+// for this testcase all is fine.
 int main(int argc, char *argv[]) 
 {
     int myArgc = argc;
