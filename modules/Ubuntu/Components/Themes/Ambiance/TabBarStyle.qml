@@ -23,7 +23,16 @@ Item {
     property color headerTextColor: Theme.palette.normal.backgroundText
     property color headerTextSelectedColor: Theme.palette.selected.backgroundText
 
-    property int headerTextFadeDuration: styledItem.animate ? 350 : 0
+    // Don't start transitions because of updates to selectionMode before styledItem is completed.
+    //  This fixes bug #1246792: "Disable tabs scrolling animations at startup"
+    property bool animate: false
+    Binding {
+        target: tabBarStyle
+        property: "animate"
+        when: styledItem.width > 0
+        value: styledItem.animate
+    }
+    property int headerTextFadeDuration: animate ? 350 : 0
     property url indicatorImageSource: "artwork/chevron.png"
 
     property string headerFontSize: "x-large"
@@ -34,7 +43,7 @@ Item {
     property real headerTextRightMargin: units.gu(2)
     property real headerTextBottomMargin: units.gu(2)
 
-    property real buttonPositioningVelocity: styledItem.animate ? 1.0 : -1
+    property real buttonPositioningVelocity: animate ? 1.0 : -1
     // The time of inactivity before leaving selection mode automatically
     property int deactivateTime: 5000
 
@@ -222,7 +231,12 @@ Item {
 
     PathView {
         id: buttonView
-        anchors.fill: parent
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: parent.left
+        }
+        width: needsScrolling ? parent.width : buttonRowWidth
 
         // set to the width of one tabButtonRow in Component.onCompleted.
         property real buttonRowWidth: buttonRow1 ? buttonRow1.width : 0
@@ -236,9 +250,8 @@ Item {
 
         delegate: tabButtonRow
         model: 2 // The second buttonRow shows the buttons that disappear on the left
-        property bool needsScrolling: buttonRowWidth > tabBar.width
+        property bool needsScrolling: buttonRowWidth > parent.width
         interactive: needsScrolling
-        width: needsScrolling ? tabBar.width : buttonRowWidth
         clip: needsScrolling
 
         highlightRangeMode: PathView.NoHighlightRange

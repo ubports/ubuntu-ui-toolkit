@@ -258,7 +258,7 @@ ListItem.Empty
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    readonly property bool currentlyExpanded
+    property bool currentlyExpanded
     readonly property real itemHeight
     signal delegateClicked(int index)
     signal expansionCompleted()
@@ -379,7 +379,7 @@ ListItem.Empty
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    readonly property bool currentlyExpanded
+    property bool currentlyExpanded
     readonly property real itemHeight
     signal delegateClicked(int index)
     signal expansionCompleted()
