@@ -28,8 +28,19 @@ if len(sys.argv) < 2 or '-h' in sys.argv or '--help' in sys.argv:
         '  Generate a QML API file\n'
         'Example:\n'
         '  env BUILTINS=QQuick,QQml,U1db:: '
-        '%s modules/Ubuntu/Components/*.qml modules/Ubuntu/Components/qmldir plugins.qmltypes'
+        '%s modules/Ubuntu/Components/qmldir plugins.qmltypes'
         ' > components.api.new\n'
+        '\n'
+        '  It is recommended to pass qmldir files over a list of qml files\n'
+        '  because then internal components are discarded and errors in that\n'
+        '  list can be found.\n'
+        '  For testing one can pass qml files also directly or serve them\n'
+        '  via standard input.\n'
+        '  The variable BUILTINS is a comma-separated list of prefixes for\n'
+        '  API that appears in qmltypes files but not part of the same\n'
+        '  package.\n'
+        '\n'
+        'Use the following command to see changes in the API:\n'
         '  diff -Fqml -u components.api{,.new}\n' % (basename, basename))
     sys.exit(1)
 
