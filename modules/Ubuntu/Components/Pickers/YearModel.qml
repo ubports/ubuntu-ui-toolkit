@@ -15,18 +15,14 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as DateUtils
+import Ubuntu.Components 0.1
 
-ListModel {
-    property bool circular: false
-    property real narrowFormatLimit: 0.0
-    property real shortFormatLimit: 0.0
-    property real longFormatLimit: 0.0
-
+PickerModelBase {
     // local properties
     property int from
     property int to
     property bool autoExtend
+    circular: false
 
     function reset(date, minimum, maximum) {
         clear();
@@ -34,12 +30,14 @@ ListModel {
         to = (maximum < minimum) ? 0 : maximum.getFullYear();
         autoExtend = !maximum.isValid();
         extend(from, to - from);
+
+        // call the pickerItem reset
+        pickerItem.resetPicker();
     }
 
-    // ommit locale, we don't need that yet
-    function updateLimits(textSizer, margin) {
-        textSizer.text = "9999";
-        narrowFormatLimit = shortFormatLimit = longFormatLimit = textSizer.paintedWidth + 2 * margin;
+    function resetLimits(label, margin) {
+        label.text = "9999";
+        narrowFormatLimit = shortFormatLimit = longFormatLimit = label.paintedWidth + 2 * margin;
     }
 
     function extend(baseYear, items) {
@@ -49,10 +47,6 @@ ListModel {
         for (var i = baseYear; i <= baseYear + items; i++) {
             append({"modelData" : i});
         }
-    }
-
-    function inModel(year) {
-        return (year >= from) && (year <= (from + count - 1));
     }
 
     function indexOf(date) {
@@ -65,8 +59,7 @@ ListModel {
         return newDate;
     }
 
-    // ommit format
-    function text(date, value) {
+    function text(date, value, width) {
         return value;
     }
 }

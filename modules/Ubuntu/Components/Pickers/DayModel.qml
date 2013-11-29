@@ -15,35 +15,36 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
-ListModel {
-    property bool circular: true
-    property real narrowFormatLimit: 0.0
-    property real shortFormatLimit: 0.0
-    property real longFormatLimit: 0.0
+PickerModelBase {
+    circular: true
 
     // ommit minimum and maximum date values
-    function reset(date) {
+    function reset(date, minimum, maximum) {
         clear();
         for (var i = 0; i < date.daysInMonth(); i++) {
-            dayPicker.model.append({"day": i});
+            append({"day": i});
         }
+
+        // call the pickerItem reset
+        pickerItem.resetPicker();
     }
 
-    function updateLimits(label, margin, locale) {
+    function resetLimits(label, margin) {
         label.text = '9999';
         narrowFormatLimit = label.paintedWidth + 2 * margin;
         shortFormatLimit = longFormatLimit = 0.0;
         for (var day = 1; day <= 7; day++) {
-            label.text = '99 ' + locale.dayName(day, Locale.ShortFormat)
+            label.text = '99 ' + compositPicker.locale.dayName(day, Locale.ShortFormat)
             shortFormatLimit = Math.max(label.paintedWidth + 2 * margin, shortFormatLimit);
-            label.text = '99 ' + locale.dayName(day, Locale.LongFormat)
+            label.text = '99 ' + compositPicker.locale.dayName(day, Locale.LongFormat)
             longFormatLimit = Math.max(label.paintedWidth + 2 * margin, longFormatLimit);
         }
     }
 
-    function update(date) {
-        var newDaysCount = date.daysInMonth(year, month);
+    function syncModels() {
+        var newDaysCount = compositPicker.date.daysInMonth(compositPicker.year, compositPicker.month);
         var modelCount = count;
         var daysDiff = newDaysCount - modelCount;
         if (daysDiff < 0) {
@@ -65,16 +66,16 @@ ListModel {
         return newDate;
     }
 
-    function text(date, value, width, locale) {
+    function text(date, value, width) {
         var thisDate = new Date(date);
         thisDate.setDate(value + 1);
 
         if (width >= longFormatLimit) {
-            return Qt.formatDate(thisDate, "dd ") + locale.dayName(thisDate.getDay(), Locale.LongFormat);
+            return Qt.formatDate(thisDate, "dd ") + compositPicker.locale.dayName(thisDate.getDay(), Locale.LongFormat);
         }
 
         if (width >= shortFormatLimit) {
-            return Qt.formatDate(thisDate, "dd ") + locale.dayName(thisDate.getDay(), Locale.ShortFormat);
+            return Qt.formatDate(thisDate, "dd ") + compositPicker.locale.dayName(thisDate.getDay(), Locale.ShortFormat);
         }
         return Qt.formatDate(thisDate, "dd");
     }

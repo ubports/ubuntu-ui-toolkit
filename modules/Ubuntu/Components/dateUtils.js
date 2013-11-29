@@ -71,7 +71,6 @@ Date.prototype.compare = function(that, option) {
   month and date fields are positive numbers
   */
 Date.prototype.isValid = function() {
-    print(this + ((this.getFullYear() > 0) && (this.getMonth() >= 0) && (this.getDate() > 0)) )
     return (this.getFullYear() > 0) && (this.getMonth() >= 0) && (this.getDate() > 0);
 }
 

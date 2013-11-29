@@ -15,12 +15,10 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
-ListModel {
-    property bool circular: (distance >= 11)
-    property real narrowFormatLimit: 0.0
-    property real shortFormatLimit: 0.0
-    property real longFormatLimit: 0.0
+PickerModelBase {
+    circular: (distance >= 11)
 
     // local properties
     property int from
@@ -41,16 +39,19 @@ ListModel {
             modelDate.setMonth(i);
             append({"month": modelDate.getMonth()});
         }
+
+        // call the pickerItem reset
+        pickerItem.resetPicker();
     }
 
-    function updateLimits(label, margin, locale) {
+    function resetLimits(label, margin) {
         label.text = '9999';
         narrowFormatLimit = label.paintedWidth + 2 * margin;
         shortFormatLimit = longFormatLimit = 0.0;
         for (var month = 0; month < 12; month++) {
-            label.text = locale.monthName(month, Locale.LongFormat);
+            label.text = compositPicker.locale.monthName(month, Locale.LongFormat);
             shortFormatLimit = Math.max(label.paintedWidth + 2 * margin, shortFormatLimit);
-            label.text = locale.monthName(month, Locale.LongFormat);
+            label.text = compositPicker.locale.monthName(month, Locale.LongFormat);
             longFormatLimit = Math.max(label.paintedWidth + 2 * margin, longFormatLimit);
         }
     }
@@ -73,13 +74,16 @@ ListModel {
         return newDate;
     }
 
-    function text(date, value, width, locale) {
+    function text(date, value, width) {
+        if (!compositPicker) {
+            return "dummy";
+        }
         if (width >= longFormatLimit) {
-            return locale.monthName(value, Locale.LongFormat);
+            return compositPicker.locale.monthName(value, Locale.LongFormat);
         }
 
         if (width >= shortFormatLimit) {
-            return locale.monthName(value, Locale.ShortFormat);
+            return compositPicker.locale.monthName(value, Locale.ShortFormat);
         }
 
         var thisDate = new Date(date);

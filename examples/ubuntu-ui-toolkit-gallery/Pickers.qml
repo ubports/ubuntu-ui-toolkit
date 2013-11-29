@@ -20,10 +20,6 @@ import Ubuntu.Components.Pickers 0.1
 
 Template {
 
-    Component.onCompleted: {
-        print(MathUtils.clamp(6, 0, 5))
-    }
-
     TemplateSection {
         className: "Picker"
         documentation: "qml-ubuntu-components-pickers0-picker.html"

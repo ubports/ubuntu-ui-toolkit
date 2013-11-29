@@ -243,9 +243,10 @@ FocusScope {
         // use dayPicker narrowFormatLimit even if the dayPicker is hidden
         // and clamp the width so it cannot have less width that the sum of
         // the three tumblers' narrowFormatLimit
-        var minWidth = yearPicker.model.narrowFormatLimit +
-                monthPicker.model.narrowFormatLimit +
-                dayPicker.model.narrowFormatLimit;
+        var minWidth = 0.0;
+        for (var i = 0; i < tumblerModel.count; i++) {
+            minWidth += tumblerModel.get(i).pickerModel.narrowFormatLimit;
+        }
         width = Math.max(width, minWidth);
     }
     /*! \internal */
@@ -258,39 +259,33 @@ FocusScope {
         internals.resetPickers();
     }
 
-    // tumblers, will be reparented under Positioner on completion depending
-    // on the date format of the locale
-    DatePickerTemplate {
-        id: yearPicker
-        datePicker: datePicker
-        completed: internals.completed
-        model: YearModel{}
-        updatePickerWhenChanged: dayPicker
-        width: Math.max(parent.width * 0.24, model.narrowFormatLimit)
+    YearModel {
+        id: yearModel
+        compositPicker: datePicker
+        pickerWidth: Math.max(datePicker.width * 0.24, narrowFormatLimit)
+        function syncModels() {
+            dayModel.syncModels();
+        }
     }
-
-    DatePickerTemplate {
-        id: monthPicker
-        datePicker: datePicker
-        completed: internals.completed
-        updatePickerWhenChanged: dayPicker
-        model: MonthModel {}
-        width: Math.max(parent.width - yearPicker.width - dayPicker.width, model.narrowFormatLimit)
+    MonthModel {
+        id: monthModel
+        compositPicker: datePicker
+        pickerWidth: Math.max(datePicker.width - yearModel.pickerWidth - dayModel.pickerWidth, narrowFormatLimit)
+        function syncModels() {
+            dayModel.syncModels();
+        }
     }
-
-    DatePickerTemplate {
-        id: dayPicker
-        datePicker: datePicker
-        visible: datePicker.mode === "Date"
-        completed: internals.completed
-        model: DayModel{}
-        width: {
-            if (!visible) {
+    DayModel {
+        id: dayModel
+        compositPicker: datePicker
+        property bool inUse: false
+        pickerWidth: {
+            if (!inUse) {
                 return 0;
             }
-            var w = Math.max(parent.width * 0.37, model.narrowFormatLimit);
-            if (w < model.longFormatLimit && w >= model.shortFormatLimit) {
-                return model.shortFormatLimit;
+            var w = Math.max(datePicker.width * 0.37, narrowFormatLimit);
+            if (w < longFormatLimit && w >= shortFormatLimit) {
+                return shortFormatLimit;
             }
             return w;
         }
@@ -307,10 +302,70 @@ FocusScope {
 
         style: Theme.createStyleComponent("PickerStyle.qml", holder)
 
-        Row {
+        Item {
             id: positioner
-            parent: holder.__styleInstance.hasOwnProperty("tumblerHolder") ? holder.__styleInstance.tumblerHolder : holder
             anchors.fill: parent
+            Row {
+                parent: (holder.__styleInstance && holder.__styleInstance.hasOwnProperty("tumblerHolder")) ?
+                            holder.__styleInstance.tumblerHolder : positioner
+                anchors.fill: parent
+
+                Repeater {
+                    model: ListModel {
+                        /*
+                          Model to hold tumbler order for repeaters.
+                          Roles:
+                          - pickerModel
+                          */
+                        id: tumblerModel
+                    }
+                    Picker {
+                        id: pickerDelegate
+                        model: pickerModel
+                        enabled: model.count > 1
+                        circular: model.circular
+                        live: datePicker.live
+                        width: pickerModel.pickerWidth
+
+                        style: Rectangle {
+                            anchors.fill: parent
+                            color: (pickerDelegate.Positioner.index % 2) ? Qt.rgba(0, 0, 0, 0.03) : Qt.rgba(0, 0, 0, 0.07)
+                        }
+                        delegate: PickerDelegate {
+                            Label {
+                                text: pickerModel.text(datePicker.date, modelData, pickerModel.pickerWidth);
+                                color: Theme.palette.normal.backgroundText
+                                anchors.fill: parent
+                                verticalAlignment: Text.AlignVCenter
+                                horizontalAlignment: Text.AlignHCenter
+                            }
+                            Component.onCompleted: {
+                                if (pickerModel && pickerModel.autoExtend && (index === (pickerModel.count - 1))) {
+                                    pickerModel.extend(modelData + 1);
+                                }
+                            }
+                        }
+
+                        onSelectedIndexChanged: {
+                            if (!internals.completed) return;
+                            datePicker.date = pickerModel.dateFromIndex(datePicker.date, selectedIndex);
+                            pickerModel.syncModels();
+                        }
+
+                        /*
+                          Resets the Picker model and updates the new format limits.
+                          */
+                        function resetPicker() {
+                            pickerModel.resetLimits(textSizer, internals.margin);
+                            selectedIndex = pickerModel.indexOf(datePicker.date);
+                        }
+
+                        Component.onCompleted: {
+                            model.pickerItem = pickerDelegate;
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -329,9 +384,10 @@ FocusScope {
             if (!completed) return;
             // turn off completion for a while
             completed = false;
-            yearPicker.resetModel(textSizer, margin);
-            monthPicker.resetModel(textSizer, margin);
-            dayPicker.resetModel(textSizer, margin);
+            for (var i = 0; i < tumblerModel.count; i++) {
+                var model = tumblerModel.get(i);
+                model.pickerModel.reset(datePicker.date, datePicker.minimum, datePicker.maximum);
+            }
             completed = true;
         }
 
@@ -340,7 +396,6 @@ FocusScope {
           */
         function arrangeTumblers() {
             // use short format to exclude any extra characters
-            print(datePicker.locale + " " + datePicker.locale.dateFormat(Locale.ShortFormat));
             var format = datePicker.locale.dateFormat(Locale.ShortFormat).split(/\W/g);
             // loop through the format to decide the position of the tumbler
             for (var i in format) {
@@ -348,13 +403,16 @@ FocusScope {
                 // check the first two characters
                 switch (format[i].substr(0, 1).toLowerCase()) {
                 case 'y':
-                    yearPicker.parent = positioner;
+                    tumblerModel.append({"pickerModel": yearModel})
                     break;
                 case 'm':
-                    monthPicker.parent = positioner;
+                    tumblerModel.append({"pickerModel": monthModel})
                     break;
                 case 'd':
-                    dayPicker.parent = positioner;
+                    if (datePicker.mode !== "Month") {
+                        dayModel.inUse = true;
+                        tumblerModel.append({"pickerModel": dayModel})
+                    }
                     break;
                 }
             }
