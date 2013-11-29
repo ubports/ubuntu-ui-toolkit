@@ -53,6 +53,7 @@ for line in fileinput.input():
         inputfiles.append(fileinput.filename())
         fileinput.nextfile()
 
+inputfiles.sort()
 for line in fileinput.input(inputfiles):
     # New file
     if fileinput.isfirstline():
