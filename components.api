@@ -1,11 +1,3 @@
-modules/Ubuntu/Components/AbstractButton.qml
-ActionItem
-    signal clicked()
-    signal pressAndHold()
-    property bool pressed
-    property bool hovered
-    property bool __acceptEvents
-    property internal __mouseArea
 modules/Ubuntu/Components/Action.qml
 UnityActions.Action
     property url iconSource
@@ -24,60 +16,15 @@ modules/Ubuntu/Components/ActionList.qml
 QtObject
     default property list<Action> children
     property list<Action> actions
-modules/Ubuntu/Components/ActivityIndicator.qml
-AnimatedItem
-    property bool running
-modules/Ubuntu/Components/AnimatedItem.qml
-StyledItem
-    property bool onScreen
-modules/Ubuntu/Components/Button.qml
-AbstractButton
-    property color color
-    property Gradient gradient
-    property string iconPosition
-modules/Ubuntu/Components/CheckBox.qml
-AbstractButton
-    property bool checked
-modules/Ubuntu/Components/CrossFadeImage.qml
+modules/Ubuntu/Components/ToolbarItems.qml
 Item
-    property url source
-    property int fillMode
-    property int fadeDuration
-    readonly property bool running
-    property size sourceSize
-    readonly property int status
-modules/Ubuntu/Components/DraggingArea.qml
-MouseArea
-    property int orientation
-    property bool dragging
-    property real dragVelocity
-    property real dragValue
-    property real lateralPosition
-    property point __pressedPosition
-    property var __dragEvents
-    property bool clickValidated
-    property bool zeroVelocityCounts
-    signal dragStart
-    signal dragEnd
-    function updateSpeed()
-    function cullOldDragEvents(currentTime)
-    function getEventSpeed(currentTime, event)
-    function pushDragEvent(event)
-modules/Ubuntu/Components/Header.qml
-StyledItem
-    function show()
-    function hide()
-    property string title
-    property Item contents
-    property Flickable flickable
-modules/Ubuntu/Components/Icon.qml
-Item
-    property string name
-    property color color
-    property color keyColor
-modules/Ubuntu/Components/Label.qml
-Text
-    property string fontSize
+    default property list<Object> contents
+    property Item back
+    property Item pageStack
+    property bool opened
+    property bool locked
+modules/Ubuntu/Components/ToolbarButton.qml
+ActionItem
 modules/Ubuntu/Components/MainView.qml
 PageTreeNode
     property string applicationName
@@ -89,78 +36,11 @@ PageTreeNode
     default property internal contentsItem
     property list<Action> actions
     property UnityActions.ActionManager actionManager
-modules/Ubuntu/Components/ModelSectionCounter.qml
-Object
-    property var view
-    property int count
-    readonly property real sectionHeight
-    property bool cacheSections
-    property var cache
-modules/Ubuntu/Components/Object.qml
-QtObject
-    default property internal children
-modules/Ubuntu/Components/OptionSelector.qml
-ListItem.Empty
-    property var model
-    property bool expanded
-    property bool multiSelection
-    property bool colourImage
-    property real containerHeight
-    property int selectedIndex
-    readonly property bool currentlyExpanded
-    readonly property real itemHeight
-    signal delegateClicked(int index)
-    signal expansionCompleted()
-modules/Ubuntu/Components/OptionSelectorDelegate.qml
-ListItem.Standard
-    property string text
-    property string subText
-    property url icon
-    property url iconSource
-    property string iconName
-    property bool constrainImage
-    property bool colourImage
-    property color assetColour
-    readonly property ListView listView
-    readonly property string fragColourShader
-modules/Ubuntu/Components/OrientationHelper.qml
-Item
-    property bool automaticOrientation
-    property bool transitionEnabled
-    property alias rotating
-    property int __orientationAngle
-    property int orientationAngle
-modules/Ubuntu/Components/Page.qml
-PageTreeNode
-    property string title
-    property Flickable flickable
-    property list<Action> actions
-modules/Ubuntu/Components/PageStack.qml
-PageTreeNode
-    property bool __showHeader
-    property int depth
-    property Item currentPage
-    function push(page, properties)
-    function pop()
-    function clear()
-modules/Ubuntu/Components/PageTreeNode.qml
-StyledItem
-    property bool __isPageTreeNode
-    property Header header
-    property Toolbar toolbar
-    property QtObject __propagated
-    property bool active
-    property Item pageStack
-    property Item parentNode
-    property Item activeLeafNode
-    property bool isLeaf
-modules/Ubuntu/Components/PageWrapper.qml
-PageTreeNode
-    property var reference
-    property Item object
-    property bool canDestroy
-    property var properties
-    function destroyObject()
+modules/Ubuntu/Components/Button.qml
+AbstractButton
+    property color color
+    property Gradient gradient
+    property string iconPosition
 modules/Ubuntu/Components/Panel.qml
 Item
     default property list<Object> contents
@@ -174,34 +54,6 @@ Item
     readonly property bool animating
     property bool __closeOnContentsClicks
     property bool pressed
-modules/Ubuntu/Components/ProgressBar.qml
-AnimatedItem
-    property bool indeterminate
-    property real minimumValue
-    property real maximumValue
-    property real value
-modules/Ubuntu/Components/Scrollbar.qml
-StyledItem
-    property Flickable flickableItem
-    property int align
-    property bool __interactive
-    property internal __private
-modules/Ubuntu/Components/Slider.qml
-StyledItem
-    property real minimumValue
-    property real maximumValue
-    property real value
-    property bool live
-    property bool pressed
-    signal touched(bool onThumb)
-    function formatValue(v)
-    property internal __internals
-modules/Ubuntu/Components/StyledItem.qml
-FocusScope
-    property Component style
-    readonly property Item __styleInstance
-modules/Ubuntu/Components/Switch.qml
-CheckBox
 modules/Ubuntu/Components/Tab.qml
 PageTreeNode
     property string title
@@ -226,74 +78,26 @@ PageTreeNode
     default property list<Item> tabChildren
     readonly property int count
     signal modelChanged()
-modules/Ubuntu/Components/TextArea.qml
-StyledItem
-    property bool highlighted
-    property string placeholderText
-    readonly property string displayText
-    property bool selectByMouse
-    property bool autoExpand
-    property bool autoSize
-    property int maximumLineCount
-    property real contentWidth
-    property real contentHeight
-    property var popover
-    property bool activeFocusOnPress
-    property url baseUrl
-    property bool canPaste
-    property bool canRedo
-    property bool canUndo
-    property color color
-    property Component cursorDelegate
-    property int cursorPosition
-    property rectangle cursorRectangle
-    property bool cursorVisible
-    property enumeration effectiveHorizontalAlignment
-    property font font
-    property enumeration horizontalAlignment
-    property bool inputMethodComposing
-    property enumeration inputMethodHints
-    property int length
-    property int lineCount
-    property enumeration mouseSelectionMode
-    property enumeration persistentSelection
-    property bool readOnly
-    property enumeration renderType
-    property string selectedText
-    property color selectedTextColor
-    property color selectionColor
-    property int selectionEnd
-    property int selectionStart
-    property string text
-    property enumeration textFormat
-    property enumeration verticalAlignment
-    property enumeration wrapMode
-    signal linkActivated(string link)
-    function copy()
-    function cut()
-    function deselect()
-    function insert(position, text)
-    function positionAt(x, y)
-    function isRightToLeft(start, end)
-    function moveCursorSelection(position, mode)
-    function paste(data)
-    function positionToRectangle(position)
-    function redo()
-    function select(start, end)
-    function selectAll()
-    function selectWord()
-    function getFormattedText(start, end)
-    function getText(start, end)
-    function remove(start, end)
-    function undo()
-    function forceActiveFocus()
-    property internal __internal
-modules/Ubuntu/Components/TextCursor.qml
-StyledItem
-    property var editorItem
-    property string positionProperty
-    property var popover
-    function openPopover()
+modules/Ubuntu/Components/Label.qml
+Text
+    property string fontSize
+modules/Ubuntu/Components/AbstractButton.qml
+ActionItem
+    signal clicked()
+    signal pressAndHold()
+    property bool pressed
+    property bool hovered
+    property bool __acceptEvents
+    property internal __mouseArea
+modules/Ubuntu/Components/ActivityIndicator.qml
+AnimatedItem
+    property bool running
+modules/Ubuntu/Components/ProgressBar.qml
+AnimatedItem
+    property bool indeterminate
+    property real minimumValue
+    property real maximumValue
+    property real value
 modules/Ubuntu/Components/TextField.qml
 ActionItem
     property bool highlighted
@@ -360,23 +164,136 @@ ActionItem
     function remove(start, end)
     function getText(start, end)
     property internal __internal
-modules/Ubuntu/Components/TextInputPopover.qml
-ActionSelectionPopover
-modules/Ubuntu/Components/Toolbar.qml
-Panel
-    property Item tools
-    property int hideTimeout
-modules/Ubuntu/Components/ToolbarButton.qml
-ActionItem
-modules/Ubuntu/Components/ToolbarItems.qml
-Item
-    default property list<Object> contents
-    property Item back
-    property Item pageStack
-    property bool opened
-    property bool locked
-modules/Ubuntu/Components/UbuntuNumberAnimation.qml
-NumberAnimation
+modules/Ubuntu/Components/TextArea.qml
+StyledItem
+    property bool highlighted
+    property string placeholderText
+    readonly property string displayText
+    property bool selectByMouse
+    property bool autoExpand
+    property bool autoSize
+    property int maximumLineCount
+    property real contentWidth
+    property real contentHeight
+    property var popover
+    property bool activeFocusOnPress
+    property url baseUrl
+    property bool canPaste
+    property bool canRedo
+    property bool canUndo
+    property color color
+    property Component cursorDelegate
+    property int cursorPosition
+    property rectangle cursorRectangle
+    property bool cursorVisible
+    property enumeration effectiveHorizontalAlignment
+    property font font
+    property enumeration horizontalAlignment
+    property bool inputMethodComposing
+    property enumeration inputMethodHints
+    property int length
+    property int lineCount
+    property enumeration mouseSelectionMode
+    property enumeration persistentSelection
+    property bool readOnly
+    property enumeration renderType
+    property string selectedText
+    property color selectedTextColor
+    property color selectionColor
+    property int selectionEnd
+    property int selectionStart
+    property string text
+    property enumeration textFormat
+    property enumeration verticalAlignment
+    property enumeration wrapMode
+    signal linkActivated(string link)
+    function copy()
+    function cut()
+    function deselect()
+    function insert(position, text)
+    function positionAt(x, y)
+    function isRightToLeft(start, end)
+    function moveCursorSelection(position, mode)
+    function paste(data)
+    function positionToRectangle(position)
+    function redo()
+    function select(start, end)
+    function selectAll()
+    function selectWord()
+    function getFormattedText(start, end)
+    function getText(start, end)
+    function remove(start, end)
+    function undo()
+    function forceActiveFocus()
+    property internal __internal
+modules/Ubuntu/Components/Switch.qml
+CheckBox
+modules/Ubuntu/Components/CheckBox.qml
+AbstractButton
+    property bool checked
+modules/Ubuntu/Components/Slider.qml
+StyledItem
+    property real minimumValue
+    property real maximumValue
+    property real value
+    property bool live
+    property bool pressed
+    signal touched(bool onThumb)
+    function formatValue(v)
+    property internal __internals
+modules/Ubuntu/Components/Scrollbar.qml
+StyledItem
+    property Flickable flickableItem
+    property int align
+    property bool __interactive
+    property internal __private
+modules/Ubuntu/Components/Object.qml
+QtObject
+    default property internal children
+modules/Ubuntu/Components/OptionSelector.qml
+ListItem.Empty
+    property var model
+    property bool expanded
+    property bool multiSelection
+    property bool colourImage
+    property real containerHeight
+    property int selectedIndex
+    readonly property bool currentlyExpanded
+    readonly property real itemHeight
+    signal delegateClicked(int index)
+    signal expansionCompleted()
+modules/Ubuntu/Components/OptionSelectorDelegate.qml
+ListItem.Standard
+    property string text
+    property string subText
+    property url icon
+    property url iconSource
+    property string iconName
+    property bool constrainImage
+    property bool colourImage
+    property color assetColour
+    readonly property ListView listView
+    readonly property string fragColourShader
+modules/Ubuntu/Components/Page.qml
+PageTreeNode
+    property string title
+    property Flickable flickable
+    property list<Action> actions
+modules/Ubuntu/Components/PageStack.qml
+PageTreeNode
+    property bool __showHeader
+    property int depth
+    property Item currentPage
+    function push(page, properties)
+    function pop()
+    function clear()
+modules/Ubuntu/Components/Header.qml
+StyledItem
+    function show()
+    function hide()
+    property string title
+    property Item contents
+    property Flickable flickable
 modules/Ubuntu/Components/UbuntuShape.qml
 Item
     property color color
@@ -384,16 +301,49 @@ Item
     property string radius
     property Item image
     property url borderSource
-modules/Ubuntu/Components/Colors/UbuntuColors.qml
-QtObject
-    readonly property color orange
-    readonly property color lightAubergine
-    readonly property color midAubergine
-    readonly property color darkAubergine
-    readonly property color warmGrey
-    readonly property color coolGrey
-    property Gradient orangeGradient
-    property Gradient greyGradient
+modules/Ubuntu/Components/CrossFadeImage.qml
+Item
+    property url source
+    property int fillMode
+    property int fadeDuration
+    readonly property bool running
+    property size sourceSize
+    readonly property int status
+modules/Ubuntu/Components/Icon.qml
+Item
+    property string name
+    property color color
+    property color keyColor
+modules/Ubuntu/Components/OrientationHelper.qml
+Item
+    property bool automaticOrientation
+    property bool transitionEnabled
+    property alias rotating
+    property int __orientationAngle
+    property int orientationAngle
+modules/Ubuntu/Components/UbuntuNumberAnimation.qml
+NumberAnimation
+modules/Ubuntu/Components/StyledItem.qml
+FocusScope
+    property Component style
+    readonly property Item __styleInstance
+modules/Ubuntu/Components/ListItems/Empty.qml
+AbstractButton
+    property bool selected
+    property bool highlightWhenPressed
+    property bool removable
+    property bool confirmRemoval
+    readonly property string swipingState
+    readonly property bool waitingConfirmationForRemoval
+    signal itemRemoved
+    property int __height
+    property bool showDivider
+    default property internal children
+    property internal __contents
+    property list<Item> backgroundIndicator
+    property ThinDivider divider
+    property real __contentsMargins
+    function cancelItemRemoval()
 modules/Ubuntu/Components/ListItems/Base.qml
 Empty
     property variant icon
@@ -414,40 +364,13 @@ Item
     property string text
 modules/Ubuntu/Components/ListItems/Divider.qml
 Image
-modules/Ubuntu/Components/ListItems/Empty.qml
-AbstractButton
-    property bool selected
-    property bool highlightWhenPressed
-    property bool removable
-    property bool confirmRemoval
-    readonly property string swipingState
-    readonly property bool waitingConfirmationForRemoval
-    signal itemRemoved
-    property int __height
-    property bool showDivider
-    default property internal children
-    property internal __contents
-    property list<Item> backgroundIndicator
-    property ThinDivider divider
-    property real __contentsMargins
-    function cancelItemRemoval()
 modules/Ubuntu/Components/ListItems/Header.qml
 Item
     property string text
     property internal __foregroundColor
-modules/Ubuntu/Components/ListItems/IconVisual.qml
-Item
-    property url source
-    property url fallbackSource
-    property string fallbackIconName
-    property bool hasFrame
-modules/Ubuntu/Components/ListItems/ImageWithFallback.qml
-Image
-    property url fallbackSource
-    property bool fallbackRequired
-    function isSourceDefined(sourceUrl)
-    function tryLoadingFallbackSource()
-    function checkStatus()
+modules/Ubuntu/Components/ListItems/MultiValue.qml
+Base
+    property variant values
 modules/Ubuntu/Components/ListItems/ItemSelector.qml
 ListItem.Empty
     property var model
@@ -460,23 +383,21 @@ ListItem.Empty
     readonly property real itemHeight
     signal delegateClicked(int index)
     signal expansionCompleted()
-modules/Ubuntu/Components/ListItems/LabelVisual.qml
-Label
-    property bool selected
-    property bool secondary
-    property bool overlay
-    function isInsideOverlay(item)
-modules/Ubuntu/Components/ListItems/MultiValue.qml
-Base
-    property variant values
-modules/Ubuntu/Components/ListItems/ProgressionVisual.qml
-Item
-    property bool showSplit
-    property real splitMargin
-modules/Ubuntu/Components/ListItems/SingleControl.qml
+modules/Ubuntu/Components/ListItems/ValueSelector.qml
 Empty
-    property Item control
-    function __updateControl()
+    property variant icon
+    property url iconSource
+    property string iconName
+    property url fallbackIconSource
+    property string fallbackIconName
+    property real __iconWidth
+    property real __iconHeight
+    property real __leftIconMargin
+    property real __rightIconMargin
+    property bool iconFrame
+    property variant values
+    property int selectedIndex
+    property bool expanded
 modules/Ubuntu/Components/ListItems/SingleValue.qml
 Base
     property string value
@@ -501,23 +422,22 @@ modules/Ubuntu/Components/ListItems/Subtitled.qml
 Base
     property string text
     property string subText
+modules/Ubuntu/Components/ListItems/SingleControl.qml
+Empty
+    property Item control
+    function __updateControl()
 modules/Ubuntu/Components/ListItems/ThinDivider.qml
 Image
-modules/Ubuntu/Components/ListItems/ValueSelector.qml
-Empty
-    property variant icon
-    property url iconSource
-    property string iconName
-    property url fallbackIconSource
-    property string fallbackIconName
-    property real __iconWidth
-    property real __iconHeight
-    property real __leftIconMargin
-    property real __rightIconMargin
-    property bool iconFrame
-    property variant values
+modules/Ubuntu/Components/Pickers/Picker.qml
+StyledItem
+    property bool circular
+    property var model
+    property Component delegate
     property int selectedIndex
-    property bool expanded
+    property bool live
+    property int __clickedIndex
+modules/Ubuntu/Components/Pickers/PickerDelegate.qml
+AbstractButton
 modules/Ubuntu/Components/Pickers/Dialer.qml
 StyledItem
     property real minimumValue
@@ -536,37 +456,6 @@ StyledItem
     default property list<QtObject> overlay
     readonly property int index
     property internal __grabber
-modules/Ubuntu/Components/Pickers/DialerHandGroup.qml
-QtObject
-    property real width
-    property real height
-    property bool draggable
-    property bool visible
-    property bool toCenterItem
-modules/Ubuntu/Components/Pickers/Picker.qml
-StyledItem
-    property bool circular
-    property var model
-    property Component delegate
-    property int selectedIndex
-    property bool live
-    property int __clickedIndex
-modules/Ubuntu/Components/Pickers/PickerDelegate.qml
-AbstractButton
-modules/Ubuntu/Components/Popups/ActionSelectionPopover.qml
-Popover
-    property Item target
-    property var actions
-    property Component delegate
-modules/Ubuntu/Components/Popups/ComposerSheet.qml
-SheetBase
-    signal cancelClicked
-    signal confirmClicked
-modules/Ubuntu/Components/Popups/DefaultSheet.qml
-SheetBase
-    property bool doneButton
-    signal closeClicked
-    signal doneClicked
 modules/Ubuntu/Components/Popups/Dialog.qml
 PopupBase
     default property list<Object> contents
@@ -577,6 +466,18 @@ PopupBase
     property real edgeMargins
     property real callerMargin
     property bool modal
+modules/Ubuntu/Components/Popups/PopupBase.qml
+OrientationHelper
+    property Item dismissArea
+    property bool grabDismissAreaEvents
+    function show()
+    function hide()
+    function __closeIfHidden()
+    function __closePopup()
+    property Item __foreground
+    property bool __closeOnDismissAreaPress
+    property internal __dimBackground
+    property internal __eventGrabber
 modules/Ubuntu/Components/Popups/Popover.qml
 PopupBase
     default property list<Object> container
@@ -591,18 +492,6 @@ PopupBase
     function show()
     function hide()
     function __makeInvisible()
-modules/Ubuntu/Components/Popups/PopupBase.qml
-OrientationHelper
-    property Item dismissArea
-    property bool grabDismissAreaEvents
-    function show()
-    function hide()
-    function __closeIfHidden()
-    function __closePopup()
-    property Item __foreground
-    property bool __closeOnDismissAreaPress
-    property internal __dimBackground
-    property internal __eventGrabber
 modules/Ubuntu/Components/Popups/SheetBase.qml
 PopupBase
     default property list<Object> container
@@ -612,6 +501,20 @@ PopupBase
     property bool modal
     property internal __leftButton
     property internal __rightButton
+modules/Ubuntu/Components/Popups/DefaultSheet.qml
+SheetBase
+    property bool doneButton
+    signal closeClicked
+    signal doneClicked
+modules/Ubuntu/Components/Popups/ComposerSheet.qml
+SheetBase
+    signal cancelClicked
+    signal confirmClicked
+modules/Ubuntu/Components/Popups/ActionSelectionPopover.qml
+Popover
+    property Item target
+    property var actions
+    property Component delegate
 modules/Ubuntu/Components/Themes/Palette.qml
 QtObject
     property PaletteValues normal
