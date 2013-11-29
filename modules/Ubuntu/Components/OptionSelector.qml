@@ -150,7 +150,7 @@ ListItem.Empty {
       \preliminary
       Custom height for list container which allows scrolling inside the selector.
      */
-    property real containerHeight: list.contentHeight
+    property real containerHeight: height - label.height - column.spacing
 
     /*!
       \qmlproperty int selectedIndex
