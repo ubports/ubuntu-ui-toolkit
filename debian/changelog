@@ -1,3 +1,244 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20131126.1-0ubuntu1) trusty; urgency=low
+
+  [ Nic ]
+  * Renamed state assignment to correct "expanded" instead of
+    "alwaysExpanded". (LP: #1252717)
+
+  [ Nicolas d'Offay ]
+  * Renamed state assignment to correct "expanded" instead of
+    "alwaysExpanded". (LP: #1252717)
+
+  [ Christian Dywan ]
+  * Merge stateWrapper and internal so Screen isn't used in an Object.
+    (LP: #1254888)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 862
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 26 Nov 2013 22:25:55 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20131126-0ubuntu1) trusty; urgency=low
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Informed renderer of index and vertex data patterns.
+  * [UbuntuShape] Transformed coordinates of textures packed in atlases.
+    (LP: #1252736)
+
+  [ Jani Monoses ]
+  * Avoid reference errors in OrientationHelper. (LP: #1244631)
+
+  [ Albert Astals ]
+  * Do not include the QtQml catch-all include header Include the
+    headers we need instead .
+  * Compile properly with make -j10 Otherwise tries to compile the tests
+    before the components.so is there and fails.
+
+  [ Christian Dywan ]
+  * Only inspect left hand for keywords and omit identifier. (LP:
+    #1250653)
+  * Merge pot update scripts and tweak 'make pot'. (LP: #1186250)
+  * Add dependencies and indexes to link Qt5 and Ubuntu.Unity.Action
+    docs. (LP: #1202561)
+  * Implement BUILTINS in qmlapicheck to exclude built-in types.
+  * Move ubuntu-ui-toolkit-doc dep from -examples to Recommends This way
+    it's possible to run autopilot tests without docs.
+
+  [ Zsombor Egri ]
+  * Tabs are controlled independently by TabBar from Tabs component.
+    (LP: #1246758)
+
+  [ Florian Boucault ]
+  * Conditionally disable v8-private dependency if Qt's version >= 5.2.
+  * TextArea: added missing MathUtils import. (LP: #1248731)
+  * Homogenized the icon related APIs. Everywhere where an icon can be
+    set 2 properties are defined: url iconSource: url of any image file
+    that can be used as the icon. string iconName: name of the icon in
+    the theme. Redundant APIs are now deprecated. Action, ActionItem,
+    OptionSelectorDelegate, ListItems.Base and ListItems.Standard have
+    been modified. (LP: #1191054)
+
+  [ Leo Arias ]
+  * Add the .py files to the qtcreator project. (LP: #1244615)
+  * Added logging for all the public methods on the autopilot emulators.
+
+  [ Robert Bruce Park ]
+  * Fix indicator tabs ordering.
+
+  [ Michael Zanetti ]
+  * fix typo in ListItems.Empty doc string.
+
+  [ tpeeters ]
+  * Align ListView header with MainView header. (LP: #1202403, #1202277)
+  * Support initial value of selectionMode that is not equal to false.
+    (LP: #1250194)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 859
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 26 Nov 2013 01:11:34 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20131118-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * Support for dynamically inserting/moving/removing tabs in Tabs. .
+    (LP: #1124071)
+
+  [ Leo Arias ]
+  * Fixes for swipe_to_delete on autopilot list items emulator: Take
+    into account items without confirmation. Take into account items
+    that are destroyed on removal. (LP: #1245651, #1249221)
+
+  [ Albert Astals ]
+  * InverseMouseArea: Do not filter events if disabled.
+
+  [ Robert Bruce Park ]
+  * Support both Python 2 and 3 in the autopilot tests.
+
+  [ Christian Dywan ]
+  * Track magic window with a property signal instead of defining it.
+    (LP: #1251436)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 837
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 18 Nov 2013 17:13:33 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20131108.4-0ubuntu1) trusty; urgency=low
+
+  [ Robert Bruce Park ]
+  * (no message)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 830
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 08 Nov 2013 23:11:13 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20131108.3-0ubuntu1) trusty; urgency=low
+
+  [ Leo Arias ]
+  * Add a check for the autopilot version on the emulator init. (LP:
+    #1248570)
+  * Ensure the toolbar is opened when clicking a toolbar in autopilot
+    tests. (LP: #1248487)
+
+  [ Nicolas d'Offay ]
+  * Reverted API break on the selectors. (LP: #1248646)
+
+  [ tpeeters ]
+  * Ensure the toolbar is opened when clicking a toolbar in autopilot
+    tests. (LP: #1248487)
+  * before fixing the actual bug, the test gives me these errors: QWARN
+    : tst_MainView::testNoWarnings_bug186065()
+    unity::action::ActionManager::ActionManager(QObject*): Could not
+    determine application identifier. HUD will not work properly.
+    Provide your application identifier in $APP_ID environment variable.
+    QWARN : tst_MainView::testNoWarnings_bug186065()
+    file:///home/tim/dev/ubuntu-ui-
+    toolkit/fix1244660/modules/Ubuntu/Components/MainView.qml:257:
+    TypeError: Cannot call method 'hasOwnProperty' of null **
+    (process:27191): CRITICAL **: Unable to get session bus: Operation
+    was cancelled QWARN : tst_MainView::testNoWarnings_bug186065() Don't
+    know how to handle 'QList<QQmlError>', use qRegisterMetaType to
+    register it. PASS : tst_MainView::testNoWarnings_bug186065() PASS :
+    tst_MainView::cleanupTestCase() Totals: 8 passed, 0 failed, 0
+    skipped ********* Finished testing of tst_MainView ********* I get
+    the same when I execute unit_x11/tst_orientation/tst_orientation:
+    QWARN : tst_OrientationTest::test_defaults() Don't know how to
+    handle 'QList<QQmlError>', use qRegisterMetaType to register it.
+    PASS : tst_OrientationTest::test_defaults() Should I execute the
+    tests in a different way?. (LP: #186065, #1244660)
+
+  [ Robert Bruce Park ]
+  * (no message)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 828
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 08 Nov 2013 22:02:57 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20131106-0ubuntu1) trusty; urgency=low
+
+  [ Leo Arias ]
+  * Update the tests to work with autopilot 1.4.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 822
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 06 Nov 2013 05:08:45 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20131105.1-0ubuntu1) trusty; urgency=low
+
+  [ Albert Astals ]
+  * Minor optimzations Add const & to foreach to save copies of
+    "complex" types Remove initializations of QStrings to "" since they
+    do nothing Return QString instead of "" since its faster Pass
+    "complex" types as const & instead of copy to functions Not an
+    optimization: Added const qualifier to two functions .
+
+  [ Lars Uebernickel ]
+  * Remove GIconProvider Use urls for file and data icons and the theme
+    image provider (image://theme/) for themed icons.
+
+  [ Kaleo ]
+  * [visual design] Updated tabs chevron asset.
+
+  [ Christian Dywan ]
+  * Install translations for UI toolkit and gallery. (LP: #1239627)
+  * Support checkbox used with an action.
+  * Install autopilot modules in qmake not debian packaging.
+  * Drop the $$ from system calls where output isn't needed.
+  * Look for locale folder as per XDG basedir spec and rewrite test The
+    new test case covers the whole range of changing languages, checking
+    the strings from both QML and C++ and binding to a folder. (LP:
+    #1175726, #1233071)
+  * Define window within OrientationHelper to avoid a race condition.
+    (LP: #1239760)
+
+  [ Zsombor Egri ]
+  * Support for taking themes from XDG_DATA_DIRS as well as from
+    ~/.local/share. These paths are also added as import paths.
+    UBUNTU_UI_TOOLKIT_THEMES_PATH overrules these import paths, and can
+    have more than one path specified, each separated with column. (LP:
+    #1221813)
+  * Warnings treated as errors in all types of builds (debug or
+    release). (LP: #1246290)
+  * Introducing topmostItem property to drive whether InverseMouseArea
+    should filter sensingArea events or to stay in the normal z-
+    order/stack order of its parent. (LP: #1240460)
+
+  [ Leo Arias ]
+  * Added the go back method to the autopilot emulators. (LP: #1239751)
+  * On the autopilot emulator, drag the toolbar to its full height. (LP:
+    #1235060)
+  * Initially show toolbar, but automatically hide after timeout. (LP:
+    #1207369)
+  * Added the change_state method to the CheckBox autopilot emulator.
+    Cleaned up the autopilot gallery toggles tests.
+  * Added the objectNames to the ComposerSheet buttons. (LP: #1244518)
+
+  [ tpeeters ]
+  * Update CrossFadeImage API so that sourceSize can be set by the
+    applications. CHANGED in CrossFadeImage: readonly property size
+    sourceSize TO property size sourceSize. (LP: #1227783)
+  * Initially show toolbar, but automatically hide after timeout. (LP:
+    #1207369)
+  * Put tab bar in selection mode when apps are launched. (LP: #1223597)
+  * Close tabbar and toolbar when user interacts with app contents. (LP:
+    #1223604)
+
+  [ Nicolas d'Offay ]
+  * Added multiSelection bool and supporting code to OptionSelector and
+    ItemSelector. This turns either component into a multiple choice
+    selector. Fixed linked bugs. (LP: #1231936)
+
+  [ Renato Araujo Oliveira Filho ]
+  * Implemented emulator for swipe to remove. (LP: #1236464)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 820
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 05 Nov 2013 16:51:13 +0000
+
 ubuntu-ui-toolkit (0.1.46+13.10.20131011.2-0ubuntu1) saucy; urgency=low
 
   [ Zsombor Egri ]

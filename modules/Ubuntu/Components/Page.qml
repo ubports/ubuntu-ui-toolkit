@@ -235,8 +235,13 @@ PageTreeNode {
         function updateFlickablePosition() {
             if (page.flickable) {
                 // Set-up the top-margin of the contents of the Flickable so that
-                //  the contents is never hidden by the header:
-                page.flickable.contentY = -headerHeight;
+                //  the contents is never hidden by the header
+                var displacement = headerHeight;
+                if (page.flickable.hasOwnProperty("headerItem") && page.flickable.headerItem) {
+                    // flickable is a ListView with a headerItem
+                    displacement += page.flickable.headerItem.height;
+                }
+                page.flickable.contentY = -displacement;
             }
         }
     }

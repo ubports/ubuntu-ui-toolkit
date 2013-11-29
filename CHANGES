@@ -9,10 +9,25 @@ UNRELEASED
 
 API Changes
 ***********
-* CHANGED IN: OptionSelector: property bool expanded TO bool alwaysExpanded
-* CHANGED IN: ItemSelector: property bool expanded TO bool alwaysExpanded
-* ADDED IN: OptionSelector: readonly property bool expanded
-* ADDED IN: ItemSelector: readonly property bool expanded
+* CHANGED IN: OptionSelector: readonly property bool currentlyExpanded TO property bool currentlyExpanded
+* CHANGED IN: ItemSelector: readonly property bool currentlyExpanded TO property bool currentlyExpanded
+* ADDED IN: Action: property string iconName
+* ADDED IN: ActionItem: property string iconName
+* ADDED IN: OptionSelectorDelegate: property string iconName
+* ADDED IN: OptionSelectorDelegate: property url iconSource
+* DEPRECATED IN: OptionSelectorDelegate: property url icon
+* ADDED IN: ListItems.Base: property string fallbackIconName
+* ADDED IN: ListItems.Base: property string iconName
+* ADDED IN: ListItems.Base: property url iconSource
+* DEPRECATED IN: ListItems.Base: property variant icon
+* ADDED IN: ListItems.Standard: property string fallbackIconName
+* ADDED IN: ListItems.Standard: property string iconName
+* ADDED IN: ListItems.Standard: property url iconSource
+* DEPRECATED IN: ListItems.Standard: property variant icon
+* ADDED IN: TabBar: property int selectedIndex
+* DEPRECATED IN TabBar: property Item tabsItem
+* ADDED IN: OptionSelector: readonly property bool currentlyExpanded
+* ADDED IN: ItemSelector: readonly property bool currentlyExpanded
 * ADDED IN: Tab: readonly property int index
 * ADDED IN: ListItem.Empty: property bool confirmRemoval
 * ADDED IN: OptionSelector: property bool multiSelection
@@ -65,6 +80,8 @@ API Changes
 * ADDED IN Panel: function open()
 * ADDED IN Panel: function close()
 * DEPRECATED IN Panel: writable property opened. Will be made read-only.
+* ADDED IN: Empty: property bool waitingConfirmationForRemoval
+* ADDED IN: Empty: function cancelItemRemoval()
 * CHANGED in CrossFadeImage: readonly property size sourceSize TO property size sourceSize
 
 Compatibility Breaks

@@ -14,12 +14,33 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import mock
+import time
 import unittest
 
-import mock
+import autopilot
 from autopilot import input, platform
+from autopilot.introspection import dbus
+from testtools.matchers import GreaterThan, LessThan
 
 from ubuntuuitoolkit import emulators, tests
+
+
+class CheckAutopilotVersionTestCase(unittest.TestCase):
+
+    def test_lower_version_should_raise_exception(self):
+        with mock.patch.object(autopilot, 'version', '1.3'):
+            self.assertRaises(
+                emulators.ToolkitEmulatorException,
+                emulators.check_autopilot_version)
+
+    def test_required_version_should_succeed(self):
+        with mock.patch.object(autopilot, 'version', '1.4'):
+            emulators.check_autopilot_version()
+
+    def test_higher_version_should_succeed(self):
+        with mock.patch.object(autopilot, 'version', '1.5'):
+            emulators.check_autopilot_version()
 
 
 class UbuntuUIToolkitEmulatorBaseTestCase(tests.QMLStringAppTestCase):
@@ -34,6 +55,14 @@ class UbuntuUIToolkitEmulatorBaseTestCase(tests.QMLStringAppTestCase):
     @unittest.skipIf(platform.model() == 'Desktop', 'Phablet only')
     def test_pointing_device_in_phablet(self):
         self.assertIsInstance(self.app.pointing_device._device, input.Touch)
+
+    def test_emulators_should_check_version_on_init(self):
+        check_name = 'ubuntuuitoolkit.emulators.check_autopilot_version'
+        with mock.patch(check_name, autospec=True) as mock_check:
+            # Instantiate any emulator.
+            self.main_view
+
+        mock_check.assert_called_once_with()
 
 
 class MainViewTestCase(tests.QMLStringAppTestCase):
@@ -59,22 +88,34 @@ MainView {
         toolbar = self.main_view.get_toolbar()
         self.assertIsInstance(toolbar, emulators.Toolbar)
 
+    def test_open_toolbar(self):
+        with mock.patch.object(emulators.Toolbar, 'open') as mock_open:
+            self.main_view.open_toolbar()
+
+        mock_open.assert_called_once_with()
+
+    def test_close_toolbar(self):
+        with mock.patch.object(emulators.Toolbar, 'close') as mock_close:
+            self.main_view.close_toolbar()
+
+        mock_close.assert_called_once_with()
+
     def test_open_toolbar_returns_the_toolbar(self):
         toolbar = self.main_view.open_toolbar()
         self.assertIsInstance(toolbar, emulators.Toolbar)
 
     def test_get_tabs_without_tabs(self):
         error = self.assertRaises(
-            AssertionError, self.main_view.get_tabs)
+            emulators.ToolkitEmulatorException, self.main_view.get_tabs)
         self.assertEqual(
-            error.message, 'The MainView has no Tabs.')
+            str(error), 'The MainView has no Tabs.')
 
     def test_switch_to_next_tab_without_tabs(self):
         header = self.main_view.get_header()
         error = self.assertRaises(
-            AssertionError, header.switch_to_next_tab)
+            emulators.ToolkitEmulatorException, header.switch_to_next_tab)
         self.assertEqual(
-            error.message, 'The MainView has no Tabs.')
+            str(error), 'The MainView has no Tabs.')
 
 
 class PageTestCase(tests.QMLStringAppTestCase):
@@ -143,29 +184,29 @@ MainView {
         self.assertFalse(self.toolbar.opened)
 
     def test_open_toolbar(self):
-        self.main_view.open_toolbar()
+        self.toolbar.open()
         self.assertTrue(self.toolbar.opened)
         self.assertFalse(self.toolbar.animating)
 
     def test_opened_toolbar_is_not_opened_again(self):
-        self.main_view.open_toolbar()
+        self.toolbar.open()
         with mock.patch.object(
                 self.main_view.pointing_device, 'drag') as mock_drag:
-            self.main_view.open_toolbar()
+            self.toolbar.open()
 
         self.assertFalse(mock_drag.called)
         self.assertTrue(self.toolbar.opened)
 
     def test_close_toolbar(self):
-        self.main_view.open_toolbar()
-        self.main_view.close_toolbar()
+        self.toolbar.open()
+        self.toolbar.close()
         self.assertFalse(self.toolbar.opened)
         self.assertFalse(self.toolbar.animating)
 
     def test_closed_toolbar_is_not_closed_again(self):
         with mock.patch.object(
                 self.main_view.pointing_device, 'drag') as mock_drag:
-            self.main_view.close_toolbar()
+            self.toolbar.close()
 
         self.assertFalse(mock_drag.called)
         self.assertFalse(self.toolbar.opened)
@@ -173,16 +214,25 @@ MainView {
     def test_click_toolbar_button(self):
         label = self.app.select_single('Label', objectName='clicked_label')
         self.assertNotEqual(label.text, 'Button clicked.')
-        self.main_view.open_toolbar()
+        self.toolbar.open()
         self.toolbar.click_button('buttonName')
         self.assertEqual(label.text, 'Button clicked.')
 
     def test_click_unexisting_button(self):
         self.main_view.open_toolbar()
         error = self.assertRaises(
-            ValueError, self.toolbar.click_button, 'unexisting')
+            emulators.ToolkitEmulatorException, self.toolbar.click_button,
+            'unexisting')
         self.assertEqual(
-            error.message, 'Button with objectName "unexisting" not found.')
+            str(error), 'Button with objectName "unexisting" not found.')
+
+    def test_click_button_on_closed_toolbar(self):
+        error = self.assertRaises(
+            emulators.ToolkitEmulatorException, self.toolbar.click_button,
+            'buttonName')
+        self.assertEqual(
+            str(error),
+            'Toolbar must be opened before calling click_button().')
 
 
 class TabsTestCase(tests.QMLStringAppTestCase):
@@ -281,9 +331,10 @@ MainView {
     def test_swith_to_tab_by_index_out_of_range(self):
         last_tab_index = self.main_view.get_tabs().get_number_of_tabs() - 1
         error = self.assertRaises(
-            IndexError, self.main_view.switch_to_tab_by_index,
+            emulators.ToolkitEmulatorException,
+            self.main_view.switch_to_tab_by_index,
             last_tab_index + 1)
-        self.assertEqual(error.message, 'Tab index out of range.')
+        self.assertEqual(str(error), 'Tab index out of range.')
 
     def test_switch_to_previous_tab_from_first(self):
         current_tab = self.main_view.switch_to_previous_tab()
@@ -304,9 +355,10 @@ MainView {
 
     def test_switch_to_unexisting_tab(self):
         error = self.assertRaises(
-            ValueError, self.main_view.switch_to_tab, 'unexisting')
+            emulators.ToolkitEmulatorException, self.main_view.switch_to_tab,
+            'unexisting')
         self.assertEqual(
-            error.message, 'Tab with objectName "unexisting" not found.')
+            str(error), 'Tab with objectName "unexisting" not found.')
 
 
 class ActionSelectionPopoverTestCase(tests.QMLStringAppTestCase):
@@ -370,17 +422,19 @@ MainView {
         popover = self.main_view.get_action_selection_popover(
             'test_actions_popover')
         error = self.assertRaises(
-            ValueError, popover.click_button_by_text, 'unexisting')
+            emulators.ToolkitEmulatorException, popover.click_button_by_text,
+            'unexisting')
         self.assertEqual(
-            error.message, 'Button with text "unexisting" not found.')
+            str(error), 'Button with text "unexisting" not found.')
 
     def test_click_button_with_closed_popover(self):
         popover = self.main_view.get_action_selection_popover(
             'test_actions_popover')
         error = self.assertRaises(
-            AssertionError, popover.click_button_by_text, 'Action one')
+            emulators.ToolkitEmulatorException, popover.click_button_by_text,
+            'Action one')
         self.assertEqual(
-            error.message, 'The popover is not open.')
+            str(error), 'The popover is not open.')
 
 
 TEST_QML_WITH_CHECKBOX = ("""
@@ -432,12 +486,12 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
         super(ToggleTestCase, self).setUp()
         self.toggle = self.main_view.select_single(
             emulators.CheckBox, objectName=self.objectName)
+        self.assertFalse(self.toggle.checked)
 
     def test_toggle_emulator(self):
         self.assertIsInstance(self.toggle, emulators.CheckBox)
 
     def test_check_toggle(self):
-        self.assertFalse(self.toggle.checked)
         self.toggle.check()
         self.assertTrue(self.toggle.checked)
 
@@ -456,6 +510,192 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
         with mock.patch.object(input.Pointer, 'click_object') as mock_click:
             self.toggle.uncheck()
         self.assertFalse(mock_click.called)
+
+    def test_change_state_from_checked(self):
+        self.toggle.check()
+        self.toggle.change_state()
+        self.assertFalse(self.toggle.checked)
+
+    def test_change_state_from_unchecked(self):
+        self.toggle.change_state()
+        self.assertTrue(self.toggle.checked)
+
+    def test_check_with_timeout(self):
+        with mock.patch.object(
+                emulators.CheckBox, 'change_state') as mock_change:
+            self.toggle.check(timeout=1)
+
+        mock_change.assert_called_once_with(1)
+
+    def test_uncheck_with_timeout(self):
+        self.toggle.check()
+        with mock.patch.object(
+                emulators.CheckBox, 'change_state') as mock_change:
+            self.toggle.uncheck(timeout=1)
+
+        mock_change.assert_called_once_with(1)
+
+    def test_change_state_with_timeout(self):
+        with mock.patch.object(self.toggle, 'pointing_device'):
+            # mock the pointing device so the checkbox is not clicked.
+            timestamp_before_call = time.time()
+            self.assertRaises(AssertionError, self.toggle.change_state, 1)
+
+        waiting_time = time.time() - timestamp_before_call
+        self.assertThat(waiting_time, GreaterThan(1))
+        self.assertThat(waiting_time, LessThan(2))
+
+
+class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1
+
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Page {
+
+        ListModel {
+            id: testModel
+
+            ListElement {
+                name: "listitem_destroyed_on_remove_with_confirm"
+                label: "Item destroyed on remove with confirmation"
+                confirm: true
+            }
+            ListElement {
+                name: "listitem_destroyed_on_remove_without_confirm"
+                label: "Item destroyed on remove without confirmation"
+                confirm: false
+            }
+        }
+
+        Column {
+            anchors { fill: parent }
+
+            Standard {
+                objectName: "listitem_standard"
+                confirmRemoval: true
+                removable: true
+                text: 'Slide to remove'
+            }
+
+            Empty {
+                objectName: "listitem_empty"
+            }
+
+            Standard {
+                objectName: "listitem_without_confirm"
+                confirmRemoval: false
+                removable: true
+                text: "Item without delete confirmation"
+            }
+
+            ListView {
+                anchors { left: parent.left; right: parent.right }
+                height: childrenRect.height
+                model: testModel
+
+                delegate: Standard {
+                    removable: true
+                    confirmRemoval: confirm
+                    onItemRemoved: testModel.remove(index)
+                    text: label
+                    objectName: name
+                }
+            }
+        }
+    }
+}
+""")
+
+    def setUp(self):
+        super(SwipeToDeleteTestCase, self).setUp()
+        self._item = self.main_view.select_single(
+            emulators.Standard, objectName='listitem_standard')
+        self.assertTrue(self._item.exists())
+
+    def test_supported_class(self):
+        self.assertTrue(issubclass(
+            emulators.Base, emulators.Empty))
+        self.assertTrue(issubclass(
+            emulators.ItemSelector, emulators.Empty))
+        self.assertTrue(issubclass(
+            emulators.Standard, emulators.Empty))
+        self.assertTrue(issubclass(
+            emulators.SingleControl, emulators.Empty))
+        self.assertTrue(issubclass(
+            emulators.MultiValue, emulators.Base))
+        self.assertTrue(issubclass(
+            emulators.SingleValue, emulators.Base))
+        self.assertTrue(issubclass(
+            emulators.Subtitled, emulators.Base))
+
+    def test_standard_emulator(self):
+        self.assertIsInstance(self._item, emulators.Standard)
+
+    def test_swipe_item(self):
+        self._item.swipe_to_delete()
+        self.assertTrue(self._item.waitingConfirmationForRemoval)
+
+    def test_swipe_item_to_right(self):
+        self._item.swipe_to_delete('right')
+        self.assertTrue(self._item.waitingConfirmationForRemoval)
+
+    def test_swipe_item_to_left(self):
+        self._item.swipe_to_delete('left')
+        self.assertTrue(self._item.waitingConfirmationForRemoval)
+
+    def test_swipe_item_to_wrong_direction(self):
+        self.assertRaises(
+            emulators.ToolkitEmulatorException,
+            self._item.swipe_to_delete, 'up')
+
+    def test_delete_item_moving_right(self):
+        self._item.swipe_to_delete('right')
+        self._item.confirm_removal()
+        self.assertFalse(self._item.exists())
+
+    def test_delete_item_moving_left(self):
+        self._item.swipe_to_delete('left')
+        self._item.confirm_removal()
+        self.assertFalse(self._item.exists())
+
+    def test_delete_non_removable_item(self):
+        self._item = self.main_view.select_single(
+            emulators.Empty, objectName='listitem_empty')
+        self.assertRaises(
+            emulators.ToolkitEmulatorException, self._item.swipe_to_delete)
+
+    def test_confirm_removal_when_item_was_not_swiped(self):
+        self.assertRaises(
+            emulators.ToolkitEmulatorException, self._item.confirm_removal)
+
+    def test_delete_item_without_confirm(self):
+        item = self.main_view.select_single(
+            emulators.Standard, objectName='listitem_without_confirm')
+        item.swipe_to_delete()
+        self.assertFalse(item.exists())
+
+    def test_delete_item_with_confirmation_that_will_be_destroyed(self):
+        item = self.main_view.select_single(
+            emulators.Standard,
+            objectName='listitem_destroyed_on_remove_with_confirm')
+        item.swipe_to_delete()
+        item.confirm_removal()
+        self.assertFalse(item.exists())
+
+    def test_delete_item_without_confirmation_that_will_be_destroyed(self):
+        item = self.main_view.select_single(
+            emulators.Standard,
+            objectName='listitem_destroyed_on_remove_without_confirm')
+        item.swipe_to_delete()
+        self.assertFalse(item.exists())
 
 
 class PageStackTestCase(tests.QMLStringAppTestCase):
@@ -511,3 +751,78 @@ MainView {
         self._go_to_page1()
         self.main_view.go_back()
         self.assertEqual(self.header.title, 'Page 0')
+
+
+class ComposerSheetTestCase(tests.QMLStringAppTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+import Ubuntu.Components.Popups 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Button {
+        objectName: "openComposerSheetButton"
+        text: "Open Composer Sheet"
+        onClicked: PopupUtils.open(testComposerSheet);
+    }
+
+    Label {
+        id: "label"
+        objectName: "actionLabel"
+        anchors.centerIn: parent
+        text: "No action taken."
+    }
+
+    Component {
+        id: testComposerSheet
+        ComposerSheet {
+            id: sheet
+            objectName: "testComposerSheet"
+            onCancelClicked: {
+                label.text = "Cancel selected."
+            }
+            onConfirmClicked: {
+                label.text = "Confirm selected."
+            }
+        }
+    }
+}
+""")
+
+    def setUp(self):
+        super(ComposerSheetTestCase, self).setUp()
+        self.label = self.main_view.select_single(
+            'Label', objectName='actionLabel')
+        self.assertEqual(self.label.text, 'No action taken.')
+        self._open_composer_sheet()
+        self.composer_sheet = self._select_composer_sheet()
+
+    def _open_composer_sheet(self):
+        button = self.main_view.select_single(
+            'Button', objectName='openComposerSheetButton')
+        self.pointing_device.click_object(button)
+
+    def _select_composer_sheet(self):
+        return self.main_view.select_single(
+            emulators.ComposerSheet, objectName='testComposerSheet')
+
+    def test_select_composer_sheet_custom_emulator(self):
+        self.assertIsInstance(self.composer_sheet, emulators.ComposerSheet)
+
+    def test_confirm_composer_sheet(self):
+        self.composer_sheet.confirm()
+        self.assertEqual(self.label.text, 'Confirm selected.')
+        self._assert_composer_sheet_is_closed()
+
+    def _assert_composer_sheet_is_closed(self):
+        self.assertRaises(
+            dbus.StateNotFoundError, self._select_composer_sheet)
+
+    def test_cancel_composer_sheet(self):
+        self.composer_sheet.cancel()
+        self.assertEqual(self.label.text, 'Cancel selected.')
+        self._assert_composer_sheet_is_closed()

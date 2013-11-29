@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import QtQuick.Window 2.0
+import Ubuntu.Components 0.1 as Ubuntu
 
 /*!
     \qmltype OrientationHelper
@@ -93,14 +94,38 @@ Item {
 
     /*!
       \internal
-
-      Report the current orientation of the application via QWindow::contentOrientation.
-      http://qt-project.org/doc/qt-5.0/qtgui/qwindow.html#contentOrientation-prop
      */
-    onOrientationAngleChanged: window.contentOrientation = Screen.orientation
+    onOrientationAngleChanged: internal.applyOrientation()
 
+    /*
+      The attached property Screen.orientation is only valid inside Item or
+      derived components. Inside Object it evaluates to 0 with no error.
+      Also be aware that some apps eg. webbrowser-app set window.contentOrientation
+      and thus can hide failure to update it from this code.
+      See http://qt-project.org/doc/qt-5.0/qtquick/qml-qtquick-window2-screen.html
+    */
     Item {
-        id: stateWrapper
+        id: internal
+
+        /*!
+          'window' is defined by QML between startup and showing on the screen.
+          There is no signal for when it becomes available and re-declaring it is not safe.
+
+          http://qt-project.org/doc/qt-5.1/qtqml/qml-qtqml2-qt.html
+          http://qt-project.org/doc/qt-5.1/qtquick/qmlmodule-qtquick-window2-qtquick-window-2.html
+         */
+        property bool windowActive: typeof window != 'undefined'
+
+        /*!
+          Report the current orientation of the application via QWindow::contentOrientation.
+          http://qt-project.org/doc/qt-5.0/qtgui/qwindow.html#contentOrientation-prop
+         */
+        function applyOrientation() {
+            if (windowActive)
+                window.contentOrientation = Screen.orientation
+        }
+
+        onWindowActiveChanged: applyOrientation()
 
         state: orientationAngle.toString()
 
@@ -163,8 +188,8 @@ Item {
                     RotationAnimation {
                         target: orientationHelper
                         properties: "rotation"
-                        duration: UbuntuAnimation.FastDuration
-                        easing: UbuntuAnimation.StandardEasing
+                        duration: Ubuntu.UbuntuAnimation.FastDuration
+                        easing: Ubuntu.UbuntuAnimation.StandardEasing
                         direction: RotationAnimation.Shortest
                     }
                 }

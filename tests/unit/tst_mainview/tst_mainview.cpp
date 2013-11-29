@@ -142,6 +142,17 @@ private Q_SLOTS:
         QString database(databaseFolder + "/" + hash + ".sqlite");
         QVERIFY(QFile::exists(database));
     }
+
+    void testNoWarnings_bug186065() {
+        QSignalSpy spy(view->engine(), SIGNAL(warnings(QList<QQmlError>)));
+        spy.setParent(view);
+
+        QQuickItem *root = loadTest("AppName.qml"); // An empty MainView would suffice
+        QVERIFY(root);
+
+        // No warnings from QML
+        QCOMPARE(spy.count(), 0);
+    }
 };
 
 QTEST_MAIN(tst_MainView)

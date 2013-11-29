@@ -53,8 +53,18 @@ StyledItem {
     /*!
       The image associated with the actionItem.
       Default value: action.iconSource.
+
+      If both iconSource and iconName are defined, iconName will be ignored.
      */
-    property url iconSource: action ? action.iconSource : ""
+    property url iconSource: action ? action.iconSource : (iconName ? "image://theme/" + iconName : "")
+
+    /*!
+      The icon associated with the actionItem.
+      Default value: action.iconName.
+
+      If both iconSource and iconName are defined, iconName will be ignored.
+     */
+    property string iconName: action ? action.iconName : ""
 
     /*!
       Called when the actionItem is triggered.

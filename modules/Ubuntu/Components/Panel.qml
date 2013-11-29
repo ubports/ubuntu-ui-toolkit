@@ -398,6 +398,16 @@ Item {
         }
     }
 
+    /*!
+      \internal
+      Enable the InverseMouseArea that closes the panel when the user clicks outside of the panel.
+      This functionality moved to the Toolbar/Page implementation because the mouse area needs to
+      access with the toolbar and header, but this InverseMouseArea is still in the Panel for backwards
+      compatibility in apps that use it directly. Default value is true, but it is set to false in Toolbar.
+
+      FIXME: Remove __detectContentsClicks and the IMA below when all apps use Toolbar instead of Panel.
+     */
+    property bool __closeOnContentsClicks: true
     Toolkit.InverseMouseArea {
         anchors.fill: draggingArea
         onClicked: {
@@ -407,8 +417,18 @@ Item {
             if (!panel.locked) panel.close();
         }
         propagateComposedEvents: true
-        visible: panel.locked == false && panel.state == "spread"
+        visible: panel.__closeOnContentsClicks && panel.locked == false && panel.state == "spread"
     }
+
+    /*!
+      The user presses on the opened toolbar, or when the toolbar is closed but
+      not locked, the user presses in the toolbar trigger area.
+      \qmlproperty bool pressed
+     */
+    // This is a simple alias to draggingArea.pressed, but the documentation is accurate
+    // because of the visible definition of draggingArea. Pressed is false when draggingArea
+    // is not visible.
+    property alias pressed: draggingArea.pressed
 
     DraggingArea {
         id: draggingArea

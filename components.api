@@ -46,6 +46,8 @@ Item
     property real hintSize
     property real triggerSize
     readonly property bool animating
+    property bool __closeOnContentsClicks
+    property bool pressed
 modules/Ubuntu/Components/PageWrapper.qml
 PageTreeNode
     property var reference
@@ -78,6 +80,8 @@ ListItem.Standard
     property string text
     property string subText
     property url icon
+    property url iconSource
+    property string iconName
     property bool constrainImage
     property bool colourImage
     property color assetColour
@@ -86,12 +90,12 @@ ListItem.Standard
 modules/Ubuntu/Components/OptionSelector.qml
 ListItem.Empty
     property var model
-    property bool alwaysExpanded
+    property bool expanded
     property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    readonly property bool expanded
+    property bool currentlyExpanded
     readonly property real itemHeight
     signal delegateClicked(int index)
     signal expansionCompleted()
@@ -179,11 +183,13 @@ StyledItem
     property Action action
     property string text
     property url iconSource
+    property string iconName
     signal triggered(var value)
     function trigger(value)
 modules/Ubuntu/Components/Action.qml
 UnityActions.Action
     property url iconSource
+    property string iconName
     property bool visible
     property Component itemHint
 modules/Ubuntu/Components/AbstractButton.qml
@@ -291,7 +297,10 @@ StyledItem
 modules/Ubuntu/Components/ListItems/ValueSelector.qml
 Empty
     property variant icon
+    property url iconSource
+    property string iconName
     property url fallbackIconSource
+    property string fallbackIconName
     property real __iconWidth
     property real __iconHeight
     property real __leftIconMargin
@@ -307,7 +316,10 @@ Base
 modules/Ubuntu/Components/ListItems/Standard.qml
 Empty
     property variant icon
+    property url iconSource
+    property string iconName
     property url fallbackIconSource
+    property string fallbackIconName
     property bool progression
     property real __iconWidth
     property real __iconHeight
@@ -341,12 +353,12 @@ Label
 modules/Ubuntu/Components/ListItems/ItemSelector.qml
 ListItem.Empty
     property var model
-    property bool alwaysExpanded
+    property bool expanded
     property bool multiSelection
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    readonly property bool expanded
+    property bool currentlyExpanded
     readonly property real itemHeight
     signal delegateClicked(int index)
     signal expansionCompleted()
@@ -361,6 +373,7 @@ modules/Ubuntu/Components/ListItems/IconVisual.qml
 Item
     property url source
     property url fallbackSource
+    property string fallbackIconName
     property bool hasFrame
 modules/Ubuntu/Components/ListItems/Header.qml
 Item
@@ -373,6 +386,7 @@ AbstractButton
     property bool removable
     property bool confirmRemoval
     readonly property string swipingState
+    readonly property bool waitingConfirmationForRemoval
     signal itemRemoved
     property int __height
     property bool showDivider
@@ -381,6 +395,7 @@ AbstractButton
     property list<Item> backgroundIndicator
     property ThinDivider divider
     property real __contentsMargins
+    function cancelItemRemoval()
 modules/Ubuntu/Components/ListItems/Divider.qml
 Image
 modules/Ubuntu/Components/ListItems/Caption.qml
@@ -389,7 +404,10 @@ Item
 modules/Ubuntu/Components/ListItems/Base.qml
 Empty
     property variant icon
+    property url iconSource
+    property string iconName
     property url fallbackIconSource
+    property string fallbackIconName
     property bool progression
     property bool iconFrame
     property real __iconWidth
@@ -413,35 +431,10 @@ plugins.qmltypes
     prototype: "QQuickMouseArea"
     exports: ["InverseMouseArea 0.1"]
     Property { name: "sensingArea"; type: "QQuickItem"; isPointer: true }
+    Property { name: "topmostItem"; type: "bool" }
     Method {
     name: "contains"
     Parameter { name: "point"; type: "QPointF" }
-    name: "QQmlPropertyMap"
-    prototype: "QObject"
-    Signal {
-    name: "valueChanged"
-    Parameter { name: "key"; type: "string" }
-    Parameter { name: "value"; type: "QVariant" }
-    Method { name: "keys"; type: "QStringList" }
-    name: "QQuickClipboard"
-    prototype: "QObject"
-    exports: ["Clipboard 0.1"]
-    Property { name: "data"; type: "QQuickMimeData"; isReadonly: true; isPointer: true }
-    Method {
-    name: "push"
-    Parameter { name: "data"; type: "QVariant" }
-    Method { name: "clear" }
-    Method { name: "newData"; type: "QQuickMimeData*" }
-    name: "QQuickMimeData"
-    prototype: "QObject"
-    exports: ["MimeData 0.1"]
-    Property { name: "formats"; type: "QStringList"; isReadonly: true }
-    Property { name: "text"; type: "string" }
-    Property { name: "html"; type: "string" }
-    Property { name: "urls"; type: "QList<QUrl>" }
-    Property { name: "color"; type: "QColor" }
-    Property { name: "data"; type: "QVariant" }
-    Signal { name: "typeChanged" }
     name: "ShapeItem"
     prototype: "QQuickItem"
     exports: ["Shape 0.1"]

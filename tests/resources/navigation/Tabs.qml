@@ -21,6 +21,7 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 MainView {
     width: 800
     height: 600
+
     Tabs {
         id: tabs
         selectedTabIndex: 0
@@ -29,7 +30,8 @@ MainView {
         }
 
         Tab {
-            title: i18n.tr("Simple page")
+            id: simpleTab
+            title: i18n.tr("Simple page #" + index)
             page: Page {
                 title: "This title is not visible"
                 Row {
@@ -60,7 +62,8 @@ MainView {
         Repeater {
             model: 3
             Tab {
-                title: "Extra " + index
+                id: tab
+                title: "Extra #" + tab.index
                 page: Page {
                     Column {
                         anchors.centerIn: parent
@@ -86,7 +89,7 @@ MainView {
         }
         Tab {
             id: externalTab
-            title: i18n.tr("External")
+            title: i18n.tr("External #" + index)
             page: Loader {
                 parent: externalTab
                 anchors.fill: parent
@@ -94,14 +97,14 @@ MainView {
             }
         }
         Tab {
-            title: i18n.tr("List view")
+            title: i18n.tr("List view #" + index)
             page: Page {
                 ListView {
                     clip: true
                     anchors.fill: parent
                     model: 20
                     delegate: ListItem.Standard {
-                        icon: Qt.resolvedUrl("call_icon.png")
+                        iconSource: Qt.resolvedUrl("call_icon.png")
                         text: "Item "+modelData
                     }
                 }

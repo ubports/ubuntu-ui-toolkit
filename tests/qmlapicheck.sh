@@ -28,7 +28,7 @@ test $STATUS = 0 || ERRORS=1
 test $STATUS = 0 || echo $RESULTS
 
 echo Running QML API check for $QML
-python tests/qmlapicheck.py $QML plugins.qmltypes > components.api.new
+BUILTINS=QQuick,QQml,U1db:: python tests/qmlapicheck.py $QML plugins.qmltypes > components.api.new
 STATUS=$?
 test $STATUS = 0 || ERRORS=1
 test $STATUS = 0 || echo $RESULTS
