@@ -192,6 +192,8 @@ ListItem.Empty {
         }
 
         ListItem.Standard {
+            id: label
+
             text: itemSelector.text
             visible: itemSelector.text !== "" ? true : false
         }
