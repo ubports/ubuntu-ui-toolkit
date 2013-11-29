@@ -19,6 +19,11 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.Pickers 0.1
 
 Template {
+
+    Component.onCompleted: {
+        print(MathUtils.clamp(6, 0, 5))
+    }
+
     TemplateSection {
         className: "Picker"
         documentation: "qml-ubuntu-components-pickers0-picker.html"
@@ -184,9 +189,9 @@ Template {
             Column {
                 DatePicker {
                     id: datePicker
-                    minimum: new Date(2013, 8)
-                    maximum: new Date(2014, 0)
-                    date: new Date(2013, 9, 1)
+//                    minimum: new Date(2013, 8)
+//                    maximum: new Date(2014, 0)
+//                    date: new Date(2013, 9, 1)
 //                    mode: "Month"
                     locale: Qt.locale("hu_HU")
                     onDateChanged: print("picked date="+date)

@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1 as DateUtils
 
 ListModel {
     property bool circular: false

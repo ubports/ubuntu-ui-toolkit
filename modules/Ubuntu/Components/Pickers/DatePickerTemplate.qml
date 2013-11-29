@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import "dateUtils.js" as DateUtils
+//import "dateUtils.js" as DateUtils
 import "../" 0.1
 
 /*

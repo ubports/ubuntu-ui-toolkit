@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import "dateUtils.js" as DateUtils
+//import "dateUtils.js" as DateUtils
 import "../" 0.1
 
 /*!
@@ -165,7 +165,7 @@ FocusScope {
       component creation time. The property automatically updates year, month
       and day properties.
       */
-    property date date: new Date()
+    property date date: Date.prototype.midnight.call(new Date())
 
     /*!
       \qmlproperty int minimum
@@ -184,9 +184,9 @@ FocusScope {
       The default values are the current date for the minimum, and zero value
       for maximum.
       */
-    property date minimum: new Date()
+    property date minimum: Date.prototype.midnight.call(new Date())
     /*! \internal */
-    property date maximum: new Date(-1, -1)
+    property date maximum: Date.prototype.getInvalidDate.call()
 
     /*!
       \qmlproperty int year

@@ -15,7 +15,6 @@
  */
 
 .pragma library
-.import QtQuick 2.0 as Quick
 
 /*
   Extending Date with few prototypes
@@ -23,10 +22,62 @@
 Date.msPerDay = 86400e3
 Date.msPerWeek = Date.msPerDay * 7
 
+/*!
+  The function returns a Date object with the current date and hour set to
+  midnight.
+  */
+Date.prototype.midnight = function() {
+    this.setHours(0, 0, 0, 0);
+    return this;
+}
+
+/*!
+  The function returns an invalid date object.
+  Example of use:
+  \code
+  var invalidDate = Date.prototype.getInvalidDate.call();
+  var otherInvalidDate = (new Date()).getInvalidDate();
+  \endcode
+  */
+Date.prototype.getInvalidDate = function() {
+    return new Date(-1, -1, -1, 0, 0, 0, 0);
+}
+
+/*!
+  The function compares two date objects. By default time objects are compared
+  by date and time content (millisecods are omiotted), however this can be altered
+  through the optional \a option property. This property can take \a 'date' or
+  \a 'time' strings, meaning only date or time sections will be compared.
+  */
+Date.prototype.compare = function(that, option) {
+    var sameDate = true;
+    if (option === undefined || option === 'date') {
+        sameDate = (this.getFullYear() === that.getFullYear()) &&
+                (this.getMonth() === that.getMonth()) &&
+                (this.getDate() === that.getDate());
+    }
+    var sameTime = true;
+    if (option === undefined || option === 'time') {
+        sameTime = (this.getHours() === that.getHours()) &&
+                (this.getMinutes() === that.getMinutes()) &&
+                (this.getSeconds() === that.getSeconds());
+    }
+
+    return sameDate && sameTime;
+}
+
+/*!
+  The function checks whether the date object is a valid one, meaning the year,
+  month and date fields are positive numbers
+  */
 Date.prototype.isValid = function() {
+    print(this + ((this.getFullYear() > 0) && (this.getMonth() >= 0) && (this.getDate() > 0)) )
     return (this.getFullYear() > 0) && (this.getMonth() >= 0) && (this.getDate() > 0);
 }
 
+/*!
+  The function returns the number of days in the month set in the Date object.
+  */
 Date.prototype.daysInMonth = function() {
     return [
         31/*an*/, 28/*Feb*/, 31/*Mar*/, 30/*Apr*/, 31/*May*/, 30/*Jun*/,
@@ -34,19 +85,32 @@ Date.prototype.daysInMonth = function() {
     ][this.getMonth()] + (this.getMonth() === 1) * this.leapYear();
 }
 
+/*!
+  The function checks whether the year in the Date object is a leap year or not.
+  */
 Date.prototype.leapYear = function() {
     var year = this.getFullYear();
     return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
 }
 
+/*!
+  The function returns the distance in months between the Date object and the
+  given one as parameter.
+  */
 Date.prototype.monthsTo = function(target) {
     return target.getMonth() - this.getMonth() + (12 * (target.getFullYear() - this.getFullYear()));
 }
 
+/*!
+  Same as monthsTo, but returns the distance in days.
+  */
 Date.prototype.daysTo = function(target) {
     return !target.isValid() ? 0 : Math.ceil((target - this) / Date.msPerDay);
 }
 
+/*!
+  The function returns the week number of the date stored in the object.
+  */
 Date.prototype.getWeek = function() {
     // Copy date so don't modify original
     var date = new Date(this);
