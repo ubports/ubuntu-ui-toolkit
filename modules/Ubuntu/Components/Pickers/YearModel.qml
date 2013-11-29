@@ -21,8 +21,8 @@ PickerModelBase {
     // local properties
     property int from
     property int to
-    property bool autoExtend
     circular: false
+    autoExtend: true
 
     function reset(date, minimum, maximum) {
         clear();

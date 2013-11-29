@@ -322,8 +322,8 @@ FocusScope {
                     Picker {
                         id: pickerDelegate
                         model: pickerModel
-                        enabled: model.count > 1
-                        circular: model.circular
+                        enabled: pickerModel.count > 1
+                        circular: pickerModel.circular
                         live: datePicker.live
                         width: pickerModel.pickerWidth
 
@@ -361,7 +361,7 @@ FocusScope {
                         }
 
                         Component.onCompleted: {
-                            model.pickerItem = pickerDelegate;
+                            pickerModel.pickerItem = pickerDelegate;
                         }
                     }
                 }
