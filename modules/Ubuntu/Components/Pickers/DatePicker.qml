@@ -302,67 +302,64 @@ FocusScope {
 
         style: Theme.createStyleComponent("PickerStyle.qml", holder)
 
-        Item {
+        Row {
             id: positioner
+            parent: (holder.__styleInstance && holder.__styleInstance.hasOwnProperty("tumblerHolder")) ?
+                        holder.__styleInstance.tumblerHolder : holder
             anchors.fill: parent
-            Row {
-                parent: (holder.__styleInstance && holder.__styleInstance.hasOwnProperty("tumblerHolder")) ?
-                            holder.__styleInstance.tumblerHolder : positioner
-                anchors.fill: parent
 
-                Repeater {
-                    model: ListModel {
-                        /*
-                          Model to hold tumbler order for repeaters.
-                          Roles:
-                          - pickerModel
-                          */
-                        id: tumblerModel
+            Repeater {
+                model: ListModel {
+                    /*
+                      Model to hold tumbler order for repeaters.
+                      Roles:
+                      - pickerModel
+                      */
+                    id: tumblerModel
+                }
+                Picker {
+                    id: pickerDelegate
+                    model: pickerModel
+                    enabled: pickerModel.count > 1
+                    circular: pickerModel.circular
+                    live: datePicker.live
+                    width: pickerModel.pickerWidth
+
+                    style: Rectangle {
+                        anchors.fill: parent
+                        color: (pickerDelegate.Positioner.index % 2) ? Qt.rgba(0, 0, 0, 0.03) : Qt.rgba(0, 0, 0, 0.07)
                     }
-                    Picker {
-                        id: pickerDelegate
-                        model: pickerModel
-                        enabled: pickerModel.count > 1
-                        circular: pickerModel.circular
-                        live: datePicker.live
-                        width: pickerModel.pickerWidth
-
-                        style: Rectangle {
+                    delegate: PickerDelegate {
+                        Label {
+                            text: pickerModel.text(datePicker.date, modelData, pickerModel.pickerWidth);
+                            color: Theme.palette.normal.backgroundText
                             anchors.fill: parent
-                            color: (pickerDelegate.Positioner.index % 2) ? Qt.rgba(0, 0, 0, 0.03) : Qt.rgba(0, 0, 0, 0.07)
+                            verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignHCenter
                         }
-                        delegate: PickerDelegate {
-                            Label {
-                                text: pickerModel.text(datePicker.date, modelData, pickerModel.pickerWidth);
-                                color: Theme.palette.normal.backgroundText
-                                anchors.fill: parent
-                                verticalAlignment: Text.AlignVCenter
-                                horizontalAlignment: Text.AlignHCenter
-                            }
-                            Component.onCompleted: {
-                                if (pickerModel && pickerModel.autoExtend && (index === (pickerModel.count - 1))) {
-                                    pickerModel.extend(modelData + 1);
-                                }
-                            }
-                        }
-
-                        onSelectedIndexChanged: {
-                            if (!internals.completed) return;
-                            datePicker.date = pickerModel.dateFromIndex(datePicker.date, selectedIndex);
-                            pickerModel.syncModels();
-                        }
-
-                        /*
-                          Resets the Picker model and updates the new format limits.
-                          */
-                        function resetPicker() {
-                            pickerModel.resetLimits(textSizer, internals.margin);
-                            selectedIndex = pickerModel.indexOf(datePicker.date);
-                        }
-
                         Component.onCompleted: {
-                            pickerModel.pickerItem = pickerDelegate;
+                            if (pickerModel && pickerModel.autoExtend && (index === (pickerModel.count - 1))) {
+                                pickerModel.extend(modelData + 1);
+                            }
                         }
+                    }
+
+                    onSelectedIndexChanged: {
+                        if (!internals.completed) return;
+                        datePicker.date = pickerModel.dateFromIndex(datePicker.date, selectedIndex);
+                        pickerModel.syncModels();
+                    }
+
+                    /*
+                      Resets the Picker model and updates the new format limits.
+                      */
+                    function resetPicker() {
+                        pickerModel.resetLimits(textSizer, internals.margin);
+                        selectedIndex = pickerModel.indexOf(datePicker.date);
+                    }
+
+                    Component.onCompleted: {
+                        pickerModel.pickerItem = pickerDelegate;
                     }
                 }
             }
