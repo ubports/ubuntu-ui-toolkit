@@ -159,12 +159,6 @@ StyledItem {
 
         property bool completed: item && (status === Loader.Ready)
 
-        // to avoid binding loop
-//        Connections {
-//            target: picker
-//            onSelectedIndexChanged: loader.item.currentIndex = picker.selectedIndex
-//        }
-
         // live selectedIndex updater
         Binding {
             target: picker
@@ -238,9 +232,9 @@ StyledItem {
             // property declared for PickerDelegate
             property Item pickerItem: picker
             anchors {
-                top: parent.top
-                bottom: parent.bottom
-                horizontalCenter: parent.horizontalCenter
+                top: parent ? parent.top : undefined
+                bottom: parent ? parent.bottom : undefined
+                horizontalCenter: parent ? parent.horizontalCenter : undefined
             }
             width: picker.itemWidth
             clip: true
@@ -277,9 +271,9 @@ StyledItem {
             // property declared for PickerDelegate
             property Item pickerItem: picker
             anchors {
-                top: parent.top
-                bottom: parent.bottom
-                horizontalCenter: parent.horizontalCenter
+                top: parent ? parent.top : undefined
+                bottom: parent ? parent.bottom : undefined
+                horizontalCenter: parent ? parent.horizontalCenter : undefined
             }
             width: picker.itemWidth
             clip: true
