@@ -775,21 +775,3 @@ plugins.qmltypes
     Parameter { name: "singular"; type: "string" }
     Parameter { name: "plural"; type: "string" }
     Parameter { name: "n"; type: "int" }
-    prototype: "QObject"
-    name: "Palette"
-    exports: ["Palette -1.-1"]
-    Property { name: "normal"; type: "PaletteValues_QMLTYPE_3"; isPointer: true }
-    Property { name: "selected"; type: "PaletteValues_QMLTYPE_3"; isPointer: true }
-    prototype: "QObject"
-    name: "PaletteValues"
-    exports: ["PaletteValues -1.-1"]
-    Property { name: "background"; type: "QColor" }
-    Property { name: "backgroundText"; type: "QColor" }
-    Property { name: "base"; type: "QColor" }
-    Property { name: "baseText"; type: "QColor" }
-    Property { name: "foreground"; type: "QColor" }
-    Property { name: "foregroundText"; type: "QColor" }
-    Property { name: "overlay"; type: "QColor" }
-    Property { name: "overlayText"; type: "QColor" }
-    Property { name: "field"; type: "QColor" }
-    Property { name: "fieldText"; type: "QColor" }
