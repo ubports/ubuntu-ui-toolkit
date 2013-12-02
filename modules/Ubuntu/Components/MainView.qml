@@ -325,7 +325,6 @@ PageTreeNode {
                       headerItem.contents.hasOwnProperty("selectedIndex")
             }
 
-            onTabBarChanged: print("tabBar = "+tabBar)
             Connections {
                 // no connections are made when target is null
                 target: headerItem.tabBar
