@@ -114,37 +114,5 @@ Item {
             scaleFactor: control.highlightScaleFactor
             outputColor: control.highlightColor
         }
-
-//        Loader {
-//            id: highlightLoader
-//            anchors.fill: highlightItem
-//            asynchronous: false
-//            sourceComponent: styledItem.circular ? wrapAround : linear
-//            onStatusChanged: {
-//                if (status === Loader.Ready && item) {
-//                    item.delegate = (styledItem.hasOwnProperty("highlight") && styledItem.highlight) ?
-//                                styledItem.highlight : styledItem.delegate;
-//                    item.smooth = true;
-//                    item.scale = control.highlightScaleFactor;
-//                    item.enabled = false;
-//                }
-//            }
-
-//            // control bingings for PathView
-//            Binding {
-//                target: highlightLoader.item
-//                property: "offset"
-//                value: loader.item.offset
-//                when: loader.item && highlightLoader.item
-//            }
-
-//            // control bingings for ListView
-//            Binding {
-//                target: highlightLoader.item
-//                property: "contentY"
-//                value: loader.item.contentY - loader.item.originY
-//                when: loader.item && highlightLoader.item
-//            }
-//        }
     }
 }

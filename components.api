@@ -547,7 +547,6 @@ StyledItem
     property bool circular
     property var model
     property Component delegate
-    property Item highlightOverlay
     property int selectedIndex
     property bool live
     property real itemWidth

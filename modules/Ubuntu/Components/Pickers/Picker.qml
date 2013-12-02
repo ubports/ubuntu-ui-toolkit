@@ -119,7 +119,7 @@ StyledItem {
       The default values are covering the entire width of the Picker and 4.5 GU
       as height.
 
-      Note that these two values do not affect the size of the highlighted item.
+      Note that these values do not affect the size of the highlighted item.
       That one is specified by the style component of the Picker.
       */
 
@@ -210,34 +210,24 @@ StyledItem {
         }
     }
 
-    // highlight component used for calculations
-    Component {
-        id: highlightComponent
-        Item {
-            width: picker.itemWidth
-            height: picker.itemHeight
-        }
-    }
-
     // circular list
     Component {
         id: wrapAround
         PathView {
             id: pView
-            objectName: "Picker_WrapAroundList"
-            // property declared for PickerDelegate
+            objectName: "Picker_WrapAround"
+            // property declared for PickerDelegate to be able to access the main component
             property Item pickerItem: picker
             anchors {
                 top: parent ? parent.top : undefined
                 bottom: parent ? parent.bottom : undefined
                 horizontalCenter: parent ? parent.horizontalCenter : undefined
             }
-            width: picker.itemWidth
+            width: parent ? MathUtils.clamp(picker.itemWidth, 0, parent.width) : 0
             clip: true
 
             model: picker.model
             delegate: picker.delegate
-            highlight: highlightComponent
             currentIndex: picker.selectedIndex
             // put the currentItem to the center of the view
             preferredHighlightBegin: 0.5
@@ -264,20 +254,19 @@ StyledItem {
         id: linear
         ListView {
             id: lView
-            objectName: "Picker_LinearList"
-            // property declared for PickerDelegate
+            objectName: "Picker_Linear"
+            // property declared for PickerDelegate to be able to access the main component
             property Item pickerItem: picker
             anchors {
                 top: parent ? parent.top : undefined
                 bottom: parent ? parent.bottom : undefined
                 horizontalCenter: parent ? parent.horizontalCenter : undefined
             }
-            width: picker.itemWidth
+            width: parent ? MathUtils.clamp(picker.itemWidth, 0, parent.width) : 0
             clip: true
 
             model: picker.model
             delegate: picker.delegate
-            highlight: highlightComponent
             currentIndex: picker.selectedIndex
 
             preferredHighlightBegin: (height - picker.itemHeight) / 2

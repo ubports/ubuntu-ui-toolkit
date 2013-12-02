@@ -192,5 +192,25 @@ Item {
             mouseClick(linearLong, units.gu(1), units.gu(18));
             tryCompare(spy, "count", 2);
         }
+
+        function test_6_pickerCircularChange() {
+            var expectedList = picker.circular ? "Picker_WrapAround" : "Picker_Linear";
+            verify(findChild(picker, expectedList) !== undefined, "Picker must use " + expectedList);
+
+            picker.circular = !picker.circular;
+            expectedList = picker.circular ? "Picker_WrapAround" : "Picker_Linear";
+            verify(findChild(picker, expectedList) !== undefined, "circular changed, Picker must use " + expectedList);
+        }
+
+        function test_7_itemHeight_itemWidth() {
+            linearShort.itemHeight = units.gu(6);
+            compare(linearShort.itemList.currentItem.height, units.gu(6), "linear delegate height same as itemHeight");
+            linearShort.itemWidth = units.gu(6);
+            compare(linearShort.itemList.currentItem.width, units.gu(6), "linear delegate width same as itemWidth");
+
+            // itemWidth is omitted for larger width than the Picker's width
+            linearShort.itemWidth = linearShort.width + units.gu(1);
+            compare(linearShort.itemList.currentItem.width, linearShort.width, "larger itemWidth than Pickewr width is omitted");
+        }
     }
 }
