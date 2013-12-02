@@ -107,7 +107,7 @@ ListItem.Empty
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    readonly property bool currentlyExpanded
+    property bool currentlyExpanded
     readonly property real itemHeight
     signal delegateClicked(int index)
     signal expansionCompleted()
@@ -212,7 +212,7 @@ PageTreeNode
 modules/Ubuntu/Components/TabBar.qml
 StyledItem
     property Item tabsItem
-    property ListModel model
+    property var model
     property bool selectionMode
     property int selectedIndex
     property bool alwaysSelectionMode
@@ -456,7 +456,7 @@ ListItem.Empty
     property bool colourImage
     property real containerHeight
     property int selectedIndex
-    readonly property bool currentlyExpanded
+    property bool currentlyExpanded
     readonly property real itemHeight
     signal delegateClicked(int index)
     signal expansionCompleted()

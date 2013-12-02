@@ -130,7 +130,7 @@ ListItem.Empty {
 
     /*!
       \preliminary
-      If the list is expanded, multiple choice selection is enabled.
+      If the multiple choice selection is enabled the list is always expanded.
      */
     property bool multiSelection: false
 
@@ -159,10 +159,10 @@ ListItem.Empty {
     property alias selectedIndex: list.currentIndex
 
     /*!
-      \qmlproperty bool expanded
+      \qmlproperty bool currentlyExpanded
       Is our list currently expanded?
      */
-    readonly property alias currentlyExpanded: listContainer.currentlyExpanded
+    property alias currentlyExpanded: listContainer.currentlyExpanded
 
     /*!
       \qmlproperty real itemHeight
@@ -249,6 +249,8 @@ ListItem.Empty {
                             script: {
                                 if (listContainer.currentlyExpanded) {
                                     expansionCompleted();
+                                } else {
+                                    list.positionViewAtIndex(selectedIndex, ListView.Beginning);
                                 }
                             }
                         }
