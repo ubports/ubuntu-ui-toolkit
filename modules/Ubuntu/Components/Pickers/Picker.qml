@@ -134,7 +134,7 @@ StyledItem {
       delegate. It can either be a ListView or a PathView depending whether the
       picker is chosen to be circular or linear.
       */
-    property alias itemList: loader.item
+    readonly property alias itemList: loader.item
 
     implicitWidth: units.gu(8)
     implicitHeight: units.gu(20)

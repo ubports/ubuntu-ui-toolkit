@@ -34,16 +34,11 @@ TestCase {
 		Find a child from the item based on the objectName.
 	*/
     function findChild(obj,objectName) {
-        var childrenStack = new Array(0);
-        childrenStack.push(obj)
-        while (childrenStack.length > 0) {
-            if (childrenStack[0].objectName === objectName) {
-                return childrenStack[0]
-            }
-            for (var i in childrenStack[0].children) {
-                childrenStack.push(childrenStack[0].children[i])
-            }
-            childrenStack.splice(0, 1);
+        for (var i in obj.children) {
+            var child = obj.children[i];
+            if (child.objectName === objectName) return child;
+            var subChild = findChild(child,objectName);
+            if (subChild !== undefined) return subChild;
         }
         return undefined;
     }
