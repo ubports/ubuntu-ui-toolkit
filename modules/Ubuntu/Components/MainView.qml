@@ -357,6 +357,7 @@ PageTreeNode {
             target: Qt.application
             onActiveChanged: {
                 if (Qt.application.active) {
+                    header.animate = false;
                     headerItem.show();
                     if (headerItem.tabBar) {
                         headerItem.tabBar.selectionMode = true;
@@ -366,6 +367,7 @@ PageTreeNode {
                     // FIXME: Don't close toolbar when selectionMode changes, but only
                     //  when user touches the tabBar.
                     toolbarItem.open();
+                    header.animate = true;
                 }
             }
         }
