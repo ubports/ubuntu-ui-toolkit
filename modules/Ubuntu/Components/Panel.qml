@@ -295,7 +295,7 @@ Item {
             UbuntuNumberAnimation {
                 target: bar
                 properties: "position"
-                duration: panel.animate ? internal.transitionDuration : 0
+                duration: internal.transitionDuration
             }
         },
         Transition {
@@ -304,7 +304,7 @@ Item {
             UbuntuNumberAnimation {
                 target: bar
                 properties: "position"
-                duration: panel.animate ? internal.transitionDuration : 0
+                duration: internal.transitionDuration
             }
         },
         Transition {
@@ -313,7 +313,7 @@ Item {
             UbuntuNumberAnimation {
                 target: bar
                 properties: "position"
-                duration: panel.animate ? internal.transitionDuration : 0
+                duration: internal.transitionDuration
             }
         },
         Transition {
@@ -337,7 +337,7 @@ Item {
           The duration in milliseconds of sliding in or out transitions when opening, closing, and showing the hint.
           Default value: 250
          */
-        property real transitionDuration: Toolkit.UbuntuAnimation.FastDuration
+        property real transitionDuration: panel.animate ? Toolkit.UbuntuAnimation.FastDuration : 0
 
         property string previousState: ""
         property int movingDelta

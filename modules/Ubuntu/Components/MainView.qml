@@ -319,6 +319,7 @@ PageTreeNode {
             objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
+            animate: canvas.animate
 
             property Item tabBar: null
             Binding {
@@ -346,8 +347,7 @@ PageTreeNode {
             target: Qt.application
             onActiveChanged: {
                 if (Qt.application.active) {
-                    header.animate = false;
-                    toolbar.animate = false;
+                    canvas.animate = false;
                     headerItem.show();
                     if (headerItem.tabBar) {
                         headerItem.tabBar.selectionMode = true;
@@ -356,9 +356,9 @@ PageTreeNode {
                     //  because changing that property closes the toolbar.
                     // FIXME: Don't close toolbar when selectionMode changes, but only
                     //  when user touches the tabBar.
+                    // TODO: Don't open a locked toolbar
                     toolbarItem.open();
-                    toolbar.animate = true;
-                    header.animate = true;
+                    canvas.animate = true;
                 }
             }
         }
