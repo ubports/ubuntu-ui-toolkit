@@ -79,6 +79,7 @@ API Changes
 * CHANGED IN Header: property Component contents TO property Item contents
 * ADDED IN Panel: function open()
 * ADDED IN Panel: function close()
+* ADDED IN Panel: property int hideTimeout
 * DEPRECATED IN Panel: writable property opened. Will be made read-only.
 * ADDED IN: Empty: property bool waitingConfirmationForRemoval
 * ADDED IN: Empty: function cancelItemRemoval()
