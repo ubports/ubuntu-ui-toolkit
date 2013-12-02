@@ -228,8 +228,9 @@ Item {
       Note that adding contents to the panel that accepts mouse events will prevent
       the panel frmo detecting interaction and the timer will not be reset.
       Setting a negative value will disable automatic hiding.
+      \qmlproperty int hideTimeout
      */
-    property int hideTimeout: 5000
+    property alias hideTimeout: hideTimer.interval
 
     /*!
       Disable edge swipe to open/close the panel. False by default.
@@ -247,13 +248,8 @@ Item {
 
     Timer {
         id: hideTimer
-        interval: panel.hideTimeout
-        running: panel.opened && !panel.locked
-        onTriggered: {
-            if (!panel.locked) {
-                panel.close();
-            }
-        }
+        interval: -1
+        running: panel.opened && !panel.locked && interval >= 0
 
         function conditionalRestart() {
             if (hideTimer.interval >= 0) {
@@ -263,6 +259,16 @@ Item {
                 }
             }
             return false;
+        }
+        onIntervalChanged: {
+            if (!conditionalRestart()) {
+                hideTimer.stop();
+            }
+        }
+        onTriggered: {
+            if (!panel.locked) {
+                panel.close();
+            }
         }
     }
 

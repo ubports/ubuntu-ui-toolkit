@@ -42,6 +42,8 @@ Panel {
      */
     property Item tools: null
 
+    hideTimeout: 5000
+
     /*! \internal */
     onToolsChanged: {
         internal.updateVisibleTools();
