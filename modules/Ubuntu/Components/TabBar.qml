@@ -46,7 +46,7 @@ StyledItem {
       determined by the style component, Default style checks the existence of the
       \b tab role first, and if not defined will use the \b title role.
       */
-    property ListModel model
+    property var model: null
 
     /*!
       An inactive tab bar only displays the currently selected tab,
@@ -57,7 +57,7 @@ StyledItem {
     /*!
       The property holds the index of the selected Tab item.
       */
-    property int selectedIndex: (model && model.count > 0) ? 0 : -1
+    property int selectedIndex: (model && internal.modelChecked && model.count > 0) ? 0 : -1
 
     /*!
       Do not deactivate the tab bar after a specified idle time or when the user selects a new tab.
@@ -80,4 +80,59 @@ StyledItem {
     implicitHeight: units.gu(7.5)
 
     style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
+
+    QtObject {
+        id: internal
+
+        property bool modelChecked: true;
+
+        function checkRoles() {
+            if (tabBar.model.count <= 0)
+                return;
+
+            modelChecked = true;
+            var f = tabBar.model.get(0);
+            if (f.tab === undefined && f.title === undefined) {
+                console.error("TabBar model must provide either tab or title role.");
+                tabBar.model = null;
+            }
+            if (f.tab !== undefined && f.tab.title === undefined) {
+                console.error("TabBar model's tab role must have title property.");
+                tabBar.model = null;
+            }
+        }
+    }
+
+    /*! \internal */
+    onModelChanged: {
+        internal.modelChecked = true;
+
+        if (!model)
+            return;
+
+        if (!model.hasOwnProperty("count")) {
+            console.error("TabBar model must have count property defined.");
+            tabBar.model = null;
+            return;
+        }
+
+        if (!model.hasOwnProperty("get")) {
+            console.error("TabBar model must provide get() function.");
+            tabBar.model = null;
+            return;
+        }
+
+        if (model.count > 0) {
+            internal.checkRoles();
+            tabBar.selectedIndex = Math.max(Math.min(tabBar.selectedIndex, model.count - 1), 0);
+        } else {
+            internal.modelChecked = false;
+            tabBar.selectedIndex = Qt.binding(function() { return (model && internal.modelChecked && model.count > 0) ? 0 : -1 })
+        }
+    }
+
+    Connections {
+        target: !internal.modelChecked ? tabBar.model : null
+        onCountChanged: internal.checkRoles();
+    }
 }

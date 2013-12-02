@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ################################################################################
-QML=$(find modules/Ubuntu -regex "[^T]+\.qml")
+QML="modules/Ubuntu/Components/qmldir modules/Ubuntu/Components/Colors/UbuntuColors.qml modules/Ubuntu/Components/*/qmldir"
 CPP="Ubuntu.Components Ubuntu.Layouts"
 
 echo Dumping QML API of C++ components

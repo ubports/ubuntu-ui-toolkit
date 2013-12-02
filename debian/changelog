@@ -1,3 +1,39 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20131129-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * Tabs to react on model changes when a Repeater is used to populate
+    with Tab components. . (LP: #1255544)
+
+  [ Leo Arias ]
+  * Added a ComposerSheet autopilot emulator. (LP: #1248740)
+
+  [ Nic ]
+  * Made currentlyExpanded property writeable. Fixed up comments for
+    incorrectly documented properties. Added a positionViewAtIndex to
+    refocus the list on the first index when it's externally collapsed.
+    (LP: #1252718)
+
+  [ Nicolas d'Offay ]
+  * Made currentlyExpanded property writeable. Fixed up comments for
+    incorrectly documented properties. Added a positionViewAtIndex to
+    refocus the list on the first index when it's externally collapsed.
+    (LP: #1252718)
+
+  [ tpeeters ]
+  * Detect interaction with contents (in order to close toolbar/tabbar)
+    from Page to MainView.
+  * Close the toolbar when user activates tabbar. (LP: #1223600)
+  * Close tabbar on toolbar interaction. (LP: #1223606)
+  * Disable header animations at app startup. (LP: #1246792)
+
+  [ Christian Dywan ]
+  * Elaborate on why OrientationHelper's internal must be Item.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 872
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 29 Nov 2013 20:24:58 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20131126.1-0ubuntu1) trusty; urgency=low
 
   [ Nic ]
