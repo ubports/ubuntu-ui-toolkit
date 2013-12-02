@@ -209,7 +209,7 @@ Item {
         // FIXME: When opened is made readonly, openedChangedWarning must be removed
         internal.openedChangedWarning = false;
         panel.state = "spread";
-        hideTimer.restart();
+        hideTimer.conditionalRestart();
     }
 
     /*!
