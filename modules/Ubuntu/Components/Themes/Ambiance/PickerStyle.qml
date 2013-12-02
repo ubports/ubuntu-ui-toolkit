@@ -115,19 +115,6 @@ Item {
             outputColor: control.highlightColor
         }
 
-        // holds the highlight overlay item
-        Item {
-            id: overlayHolder
-            anchors.fill: highlightItem
-
-            Binding {
-                target: styledItem.highlightOverlay
-                property: "parent"
-                value: overlayHolder
-                when: styledItem.highlightOverlay
-            }
-        }
-
 //        Loader {
 //            id: highlightLoader
 //            anchors.fill: highlightItem

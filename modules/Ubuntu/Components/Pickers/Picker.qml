@@ -99,14 +99,6 @@ StyledItem {
     property Component delegate
 
     /*!
-      Specifies the item to be overlaid to the picker's highlight defined by
-      the style. The highlight is considered to be placed vertically in the middle
-      of the Picker's tumbler, and the component specified in this property will
-      be overlaid above it.
-      */
-    property Item highlightOverlay
-
-    /*!
       The property holds the index of the selected item
       */
     property int selectedIndex
