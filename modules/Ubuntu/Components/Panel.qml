@@ -103,8 +103,7 @@ import Ubuntu.Components 0.1 as Toolkit
     Any Items can be placed inside the Panel, but MouseAreas can block mouse events from reaching
     the panel and thus obstruct the swiping behavior for hiding the panel. As a result, the user cannot
     start swiping on the buttons in the examples above in order to hide the panel. To remedy this, clicked()
-    signals are forwarded from the panel to its children. The children's clicked() signal does not have
-    a mouse parameter. Example:
+    signals are forwarded from the panel by calling the child's trigger() function. Example:
     \qml
         import QtQuick 2.0
         import Ubuntu.Components 0.1
@@ -130,15 +129,17 @@ import Ubuntu.Components 0.1 as Toolkit
                         width: units.gu(8)
                         height: units.gu(4)
                         anchors.centerIn: parent
-                        color: Theme.palette.normal.foreground
-                        signal clicked()
-                        onClicked: print("The red rectangle was clicked");
+                        color: "red"
+                        function trigger() {
+                            print("The red rectangle was clicked");
+                        }
                     }
                 }
             }
+            Component.onCompleted: panel.open();
         }
     \endqml
-    Like this, the red rectangle accepts clicked() events, but the user can still swipe down on top
+    Like this, the red rectangle accepts click events, but the user can still swipe down on top
     of the rectangle in order to hide the panel.
 */
 Item {
@@ -223,7 +224,10 @@ Item {
 
     /*!
       The time in milliseconds before the panel automatically hides after inactivity
-      when it is not locked. Setting a negative value will disable automatic hiding.
+      when it is not locked. Interacting with the panel resets the timer.
+      Note that adding contents to the panel that accepts mouse events will prevent
+      the panel frmo detecting interaction and the timer will not be reset.
+      Setting a negative value will disable automatic hiding.
      */
     property int hideTimeout: 5000
 
