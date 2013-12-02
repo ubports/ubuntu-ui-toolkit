@@ -208,22 +208,6 @@ PageTreeNode {
      */
     active: true
 
-//    property bool applicationActive: Qt.application.active
-//    onApplicationActiveChanged: {
-//        print("applicationActive = "+applicationActive)
-//        if (applicationActive) {
-//            headerItem.show();
-//            if (headerItem.tabBar) {
-//                print("activating tabbar");
-//                headerItem.tabBar.selectionMode = true;
-//            } else {
-//                print("no tabbar?");
-//            }
-//            toolbarItem.open();
-//        }
-//    }
-//    Component.onCompleted: print("Application = "+Qt.application+" applicationActive = "+applicationActive)
-
     /*!
       \preliminary
       Sets whether the application will be automatically rotating when the
