@@ -218,11 +218,12 @@ Item {
         // FIXME: When opened is made readonly, openedChangedWarning must be removed.
         internal.openedChangedWarning = false;
         panel.state = "";
+        hideTimer.stop();
     }
 
     /*!
       The time in milliseconds before the panel automatically hides after inactivity
-      when it is not locked.
+      when it is not locked. Setting a negative value will disable automatic hiding.
      */
     property int hideTimeout: 5000
 
@@ -235,8 +236,8 @@ Item {
         if (state == "hint" || state == "moving") {
             draggingArea.finishMoving();
         }
-        if (!panel.locked && panel.opened) {
-            hideTimer.restart();
+        if (!hideTimer.conditionalRestart()) {
+            hideTimer.stop();
         }
     }
 
@@ -248,6 +249,16 @@ Item {
             if (!panel.locked) {
                 panel.close();
             }
+        }
+
+        function conditionalRestart() {
+            if (hideTimer.interval >= 0) {
+                if (!panel.locked && panel.opened) {
+                    hideTimer.restart();
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
@@ -506,6 +517,7 @@ Item {
 
         property int initialPosition
         onPressed: {
+            hideTimer.stop();
             pressedItem = getTriggerableItem(mouse);
             if (panel.locked) return;
             initialPosition = getMousePosition();
@@ -535,12 +547,16 @@ Item {
         onReleased: {
             if (panel.state == "moving" || panel.state == "hint") {
                 finishMoving();
+            } else {
+                hideTimer.conditionalRestart();
             }
         }
         // Mouse cursor moving out of the window while pressed on desktop
         onCanceled: {
             if (panel.state == "moving" || panel.state == "hint") {
                 finishMoving();
+            } else {
+                hideTimer.conditionalRestart();
             }
         }
 
@@ -588,5 +604,21 @@ Item {
 
         y: internal.align === Qt.AlignTop ? -position : internal.align === Qt.AlignBottom ? position : 0
         x: internal.align === Qt.AlignLeft ? -position : internal.align === Qt.AlignRight ? position : 0
+
+//        MouseArea {
+//            id: barArea
+//            anchors.fill: parent
+//            onPressed: mouse.accepted = false
+//            onPressedChanged: {
+//                print("nana");
+
+//            }
+
+//            onReleased: {
+//                print("bla");
+//                mouse.accepted = false;
+//                hideTimer.restart();
+//            }
+//        }
     }
 }
