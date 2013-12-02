@@ -19,7 +19,7 @@
 # xvfb-run can't load gl drivers, Xvfb can
 DISPLAY=:5
 trap : USR1
-(trap '' USR1; exec Xvfb $DISPLAY -screen 0 1280x1024x24) &
+(trap '' USR1; exec Xvfb $DISPLAY -screen 0 1280x1024x24 2>/dev/null) &
 EPID=$!
 echo Running $* in virtual frame buffer with $EPID…
 wait $EPID || :
