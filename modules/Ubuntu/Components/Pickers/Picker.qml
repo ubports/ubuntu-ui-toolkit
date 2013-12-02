@@ -118,6 +118,9 @@ StyledItem {
       and it is also set as default width and height for the PickerDelegate.
       The default values are covering the entire width of the Picker and 4.5 GU
       as height.
+
+      Note that these two values do not affect the size of the highlighted item.
+      That one is specified by the style component of the Picker.
       */
 
     /*! \internal */
@@ -221,6 +224,7 @@ StyledItem {
         id: wrapAround
         PathView {
             id: pView
+            objectName: "Picker_WrapAroundList"
             // property declared for PickerDelegate
             property Item pickerItem: picker
             anchors {
@@ -260,6 +264,7 @@ StyledItem {
         id: linear
         ListView {
             id: lView
+            objectName: "Picker_LinearList"
             // property declared for PickerDelegate
             property Item pickerItem: picker
             anchors {
