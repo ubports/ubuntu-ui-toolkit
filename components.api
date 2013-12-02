@@ -541,6 +541,10 @@ Item
     property string radius
     property Item image
     property url borderSource
+modules/Ubuntu/Test/UbuntuTestCase.qml
+TestCase
+    function findChild(obj,objectName)
+    function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay)
 plugins.qmltypes
     name: "InverseMouseAreaType"
     prototype: "QQuickMouseArea"
