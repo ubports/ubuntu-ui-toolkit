@@ -208,6 +208,7 @@ Item {
         // FIXME: When opened is made readonly, openedChangedWarning must be removed
         internal.openedChangedWarning = false;
         panel.state = "spread";
+        hideTimer.restart();
     }
 
     /*!
@@ -220,6 +221,12 @@ Item {
     }
 
     /*!
+      The time in milliseconds before the panel automatically hides after inactivity
+      when it is not locked.
+     */
+    property int hideTimeout: 5000
+
+    /*!
       Disable edge swipe to open/close the panel. False by default.
      */
     property bool locked: false
@@ -227,6 +234,20 @@ Item {
     onLockedChanged: {
         if (state == "hint" || state == "moving") {
             draggingArea.finishMoving();
+        }
+        if (!panel.locked && panel.opened) {
+            hideTimer.restart();
+        }
+    }
+
+    Timer {
+        id: hideTimer
+        interval: panel.hideTimeout
+        running: panel.opened && !panel.locked
+        onTriggered: {
+            if (!panel.locked) {
+                panel.close();
+            }
         }
     }
 
