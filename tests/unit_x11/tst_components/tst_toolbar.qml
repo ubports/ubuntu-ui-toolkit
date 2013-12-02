@@ -36,6 +36,7 @@ Item {
             tools: ToolbarItems {
                 id: toolbarItems
                 ToolbarButton {
+                    id: toolbarButton
                     text: "action1"
                 }
             }
@@ -74,12 +75,19 @@ Item {
             compare(mainView.__propagated.toolbar.opened, false, "Toolbar can be made closed by setting page.tools.opened to false");
         }
 
-        function test_hideTimeout() {
+        function test_hideTimeout_bug1249031() {
             compare(mainView.__propagated.toolbar.hideTimeout, 5000, "Toolbar hide timeout is initially 5 seconds.");
             mainView.__propagated.toolbar.open();
             compare(mainView.__propagated.toolbar.opened, true, "Toolbar can be made opened");
             wait(mainView.__propagated.toolbar.hideTimeout + 500); // add 500 ms margin
             compare(mainView.__propagated.toolbar.opened, false, "Toolbar automatically closes after timeout");
+
+            mainView.__propagated.toolbar.open();
+            wait(3*mainView.__propagated.toolbar.hideTimeout/4);
+            mouseClick(toolbarButton, toolbarButton.width/2, toolbarButton.height/2);
+            wait(mainView.__propagated.toolbar.hideTimeout/2);
+            compare(mainView.__propagated.toolbar.opened, true, "Interacting with toolbar contents resets the hide timer");
+            mainView.__propagated.toolbar.close();
         }
 
         function test_locked() {
