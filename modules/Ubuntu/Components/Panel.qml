@@ -228,6 +228,7 @@ Item {
       Note that adding contents to the panel that accepts mouse events will prevent
       the panel frmo detecting interaction and the timer will not be reset.
       Setting a negative value will disable automatic hiding.
+      Default value: -1 (automatic hiding is disabled).
       \qmlproperty int hideTimeout
      */
     property alias hideTimeout: hideTimer.interval
