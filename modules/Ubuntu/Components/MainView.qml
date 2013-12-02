@@ -208,6 +208,22 @@ PageTreeNode {
      */
     active: true
 
+//    property bool applicationActive: Qt.application.active
+//    onApplicationActiveChanged: {
+//        print("applicationActive = "+applicationActive)
+//        if (applicationActive) {
+//            headerItem.show();
+//            if (headerItem.tabBar) {
+//                print("activating tabbar");
+//                headerItem.tabBar.selectionMode = true;
+//            } else {
+//                print("no tabbar?");
+//            }
+//            toolbarItem.open();
+//        }
+//    }
+//    Component.onCompleted: print("Application = "+Qt.application+" applicationActive = "+applicationActive)
+
     /*!
       \preliminary
       Sets whether the application will be automatically rotating when the
@@ -325,6 +341,7 @@ PageTreeNode {
                       headerItem.contents.hasOwnProperty("selectedIndex")
             }
 
+            onTabBarChanged: print("tabBar = "+tabBar)
             Connections {
                 // no connections are made when target is null
                 target: headerItem.tabBar
@@ -332,6 +349,23 @@ PageTreeNode {
                     if (headerItem.tabBar.selectionMode) {
                         if (!toolbarItem.locked) toolbarItem.close();
                     }
+                }
+            }
+        }
+
+        Connections {
+            target: Qt.application
+            onActiveChanged: {
+                if (Qt.application.active) {
+                    headerItem.show();
+                    if (headerItem.tabBar) {
+                        headerItem.tabBar.selectionMode = true;
+                    }
+                    // XXX: Toolbar must be opened after updating tabBar.selectionMode
+                    //  because changing that property closes the toolbar.
+                    // FIXME: Don't close toolbar when selectionMode changes, but only
+                    //  when user touches the tabBar.
+                    toolbarItem.open();
                 }
             }
         }
