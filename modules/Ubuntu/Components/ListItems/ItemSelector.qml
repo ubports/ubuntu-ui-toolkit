@@ -115,7 +115,6 @@ import Ubuntu.Components 0.1
 
 ListItem.Empty {
     id: itemSelector
-    __height: column.height
 
     /*!
       \preliminary
@@ -192,6 +191,7 @@ ListItem.Empty {
      */
     signal expansionCompleted()
 
+    __height: column.height
     showDivider: false
 
     Column {
