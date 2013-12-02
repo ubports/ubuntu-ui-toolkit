@@ -277,6 +277,11 @@ Item {
     ]
 
     /*!
+      Animate transitions between the different panel states.
+     */
+    property bool animate: true
+
+    /*!
       The toolbar is currently not in a stable hidden or visible state.
      */
     readonly property bool animating: draggingArea.pressed || transitionToAll.running
@@ -290,7 +295,7 @@ Item {
             UbuntuNumberAnimation {
                 target: bar
                 properties: "position"
-                duration: internal.transitionDuration
+                duration: panel.animate ? internal.transitionDuration : 0
             }
         },
         Transition {
@@ -299,7 +304,7 @@ Item {
             UbuntuNumberAnimation {
                 target: bar
                 properties: "position"
-                duration: internal.transitionDuration
+                duration: panel.animate ? internal.transitionDuration : 0
             }
         },
         Transition {
@@ -308,7 +313,7 @@ Item {
             UbuntuNumberAnimation {
                 target: bar
                 properties: "position"
-                duration: internal.transitionDuration
+                duration: panel.animate ? internal.transitionDuration : 0
             }
         },
         Transition {
@@ -317,7 +322,7 @@ Item {
             UbuntuNumberAnimation {
                 target: bar
                 properties: "position"
-                duration: Toolkit.UbuntuAnimation.SnapDuration
+                duration: panel.animate ? Toolkit.UbuntuAnimation.SnapDuration : 0
             }
         }
     ]

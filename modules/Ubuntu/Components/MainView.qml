@@ -292,6 +292,11 @@ PageTreeNode {
             }
         }
 
+        /*!
+          Animate header and toolbar.
+         */
+        property bool animate: true
+
         Toolbar {
             id: toolbarItem
             onPressedChanged: {
@@ -300,6 +305,7 @@ PageTreeNode {
                     headerItem.tabBar.selectionMode = false;
                 }
             }
+            animate: canvas.animate
         }
 
         /*!
@@ -341,6 +347,7 @@ PageTreeNode {
             onActiveChanged: {
                 if (Qt.application.active) {
                     header.animate = false;
+                    toolbar.animate = false;
                     headerItem.show();
                     if (headerItem.tabBar) {
                         headerItem.tabBar.selectionMode = true;
@@ -350,6 +357,7 @@ PageTreeNode {
                     // FIXME: Don't close toolbar when selectionMode changes, but only
                     //  when user touches the tabBar.
                     toolbarItem.open();
+                    toolbar.animate = true;
                     header.animate = true;
                 }
             }
