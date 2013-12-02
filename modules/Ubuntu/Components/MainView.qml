@@ -294,6 +294,12 @@ PageTreeNode {
 
         Toolbar {
             id: toolbarItem
+            onPressedChanged: {
+                if (!pressed) return;
+                if (headerItem.tabBar !== null) {
+                    headerItem.tabBar.selectionMode = false;
+                }
+            }
         }
 
         /*!
