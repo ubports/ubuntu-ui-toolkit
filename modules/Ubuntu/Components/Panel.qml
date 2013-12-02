@@ -615,21 +615,5 @@ Item {
 
         y: internal.align === Qt.AlignTop ? -position : internal.align === Qt.AlignBottom ? position : 0
         x: internal.align === Qt.AlignLeft ? -position : internal.align === Qt.AlignRight ? position : 0
-
-//        MouseArea {
-//            id: barArea
-//            anchors.fill: parent
-//            onPressed: mouse.accepted = false
-//            onPressedChanged: {
-//                print("nana");
-
-//            }
-
-//            onReleased: {
-//                print("bla");
-//                mouse.accepted = false;
-//                hideTimer.restart();
-//            }
-//        }
     }
 }
