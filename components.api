@@ -35,6 +35,16 @@ AbstractButton
 modules/Ubuntu/Components/CheckBox.qml
 AbstractButton
     property bool checked
+modules/Ubuntu/Components/Colors/UbuntuColors.qml
+QtObject
+    readonly property color orange
+    readonly property color lightAubergine
+    readonly property color midAubergine
+    readonly property color darkAubergine
+    readonly property color warmGrey
+    readonly property color coolGrey
+    property Gradient orangeGradient
+    property Gradient greyGradient
 modules/Ubuntu/Components/CrossFadeImage.qml
 Item
     property url source
