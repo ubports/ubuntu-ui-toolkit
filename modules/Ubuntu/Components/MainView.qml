@@ -350,14 +350,14 @@ PageTreeNode {
                     canvas.animate = false;
                     headerItem.show();
                     if (headerItem.tabBar) {
+                        headerItem.tabBar.selectionMode = false;
+                        // setting selectionMode to false first ensures resetting
+                        //  the idleTime in the TabBarStyle.
                         headerItem.tabBar.selectionMode = true;
                     }
                     // XXX: Toolbar must be opened after updating tabBar.selectionMode
                     //  because changing that property closes the toolbar.
-                    // FIXME: Don't close toolbar when selectionMode changes, but only
-                    //  when user touches the tabBar.
-                    // TODO: Don't open a locked toolbar
-                    toolbarItem.open();
+                    if (!toolbarItem.locked) toolbarItem.open();
                     canvas.animate = true;
                 }
             }
