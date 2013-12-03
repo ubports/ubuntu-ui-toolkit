@@ -183,15 +183,15 @@ Item {
 
             // now, wait in total more than hideTimeout, but less than 2*hideTimeout,
             //  and have user interaction half-way to verify that the interaction
-            //  resets the timer and the toolbar is not closed.
+            //  resets the timer and the panel is not closed.
             panel.open();
             wait(0.6*panel.hideTimeout);
             mouseClick(panel, panel.width/2, panel.height/2);
             wait(0.6*panel.hideTimeout);
-            compare(panel.opened, true, "Interacting with toolbar contents resets the hide timer");
+            compare(panel.opened, true, "Interacting with panel contents resets the hide timer");
             // verify that the timer is still running by waiting a bit longer:
             wait(0.6*panel.hideTimeout);
-            compare(panel.opened, false, "Interacting with the toolbar contents does not stop the timer")
+            compare(panel.opened, false, "Interacting with the panel contents does not stop the timer")
             panel.hideTimeout = -1;
         }
 

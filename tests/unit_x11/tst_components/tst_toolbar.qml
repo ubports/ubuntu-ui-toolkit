@@ -82,12 +82,17 @@ Item {
             wait(mainView.__propagated.toolbar.hideTimeout + 500); // add 500 ms margin
             compare(mainView.__propagated.toolbar.opened, false, "Toolbar automatically closes after timeout");
 
+            // now, wait in total more than hideTimeout, but less than 2*hideTimeout,
+            //  and have user interaction half-way to verify that the interaction
+            //  resets the timer and the toolbar is not closed.
             mainView.__propagated.toolbar.open();
-            wait(3*mainView.__propagated.toolbar.hideTimeout/4);
+            wait(0.6*mainView.__propagated.toolbar.hideTimeout);
             mouseClick(toolbarButton, toolbarButton.width/2, toolbarButton.height/2);
-            wait(mainView.__propagated.toolbar.hideTimeout/2);
+            wait(0.6*mainView.__propagated.toolbar.hideTimeout);
             compare(mainView.__propagated.toolbar.opened, true, "Interacting with toolbar contents resets the hide timer");
-            mainView.__propagated.toolbar.close();
+            // verify that the timer is still running by waiting a bit longer:
+            wait(0.6*mainView.__propagated.toolbar.hideTimeout);
+            compare(mainView.__propagated.toolbar.opened, false, "Interacting with the toolbar contents does not stop the timer")
         }
 
         function test_locked() {
