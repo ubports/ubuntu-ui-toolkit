@@ -92,6 +92,7 @@ Item {
                 right: content.right
             }
             height: control.highlightThickness
+            color: highlightBackgroundColor
         }
         ThinDivider {
             anchors {
