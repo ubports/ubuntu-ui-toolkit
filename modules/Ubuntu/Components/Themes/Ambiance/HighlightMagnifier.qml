@@ -18,23 +18,34 @@ import QtQuick 2.0
 
 ShaderEffect {
     id: magnifier
-    anchors.fill: parent
 
+    // Input texture. Must be a ShaderEffectSource.
     property variant source
     property real scaleFactor: 1.2
 
-    // everything in the sourceItem that is not transparent will be made this color
-    // in the output, but the transparency of the input is respected
+    // Everything in the sourceItem that is not transparent will be made this color
+    // in the output, but the transparency of the input is respected.
     property color outputColor: "red"
 
+    // Specify the region of the sourceRect that must be enlarged as
+    // x, y, width, height in texture coordinates. (0, 0, 1, 1) is full sourceRect.
+    property rect texCoordRange: Qt.rect((x - source.sourceRect.x) / source.sourceRect.width,
+                                         (y - source.sourceRect.y) / source.sourceRect.height,
+                                         width / source.sourceRect.width,
+                                         height / source.sourceRect.height
+                                         );
+
     vertexShader: "
+        uniform highp vec4 texCoordRange;
         attribute highp vec4 qt_Vertex;
         attribute highp vec2 qt_MultiTexCoord0;
         uniform highp mat4 qt_Matrix;
         uniform highp float scaleFactor;
         varying highp vec2 qt_TexCoord0;
         void main() {
-            qt_TexCoord0 = vec2(0.5 - 1.0 / (2.0 * scaleFactor)) + qt_MultiTexCoord0 / vec2(scaleFactor);
+            vec2 texCoord = vec2(0.5 - 1.0 / (2.0 * scaleFactor)) + qt_MultiTexCoord0 / vec2(scaleFactor);
+            texCoord = texCoordRange.xy + texCoord*texCoordRange.zw;
+            qt_TexCoord0 = texCoord;
             gl_Position = qt_Matrix * qt_Vertex;
         }"
 
