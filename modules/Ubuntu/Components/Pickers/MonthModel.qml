@@ -58,7 +58,7 @@ PickerModelBase {
         }
     }
 
-    function indexOf(date) {
+    function indexOf() {
         var index = date.getMonth() - from;
         if (index >= count) {
             index = -1;

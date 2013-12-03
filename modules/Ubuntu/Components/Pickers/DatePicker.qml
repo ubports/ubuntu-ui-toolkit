@@ -341,7 +341,9 @@ FocusScope {
                         color: (pickerDelegate.Positioner.index % 2) ? Qt.rgba(0, 0, 0, 0.03) : Qt.rgba(0, 0, 0, 0.07)
                     }
                     delegate: PickerDelegate {
+                        id: pickerLabel
                         Label {
+                            objectName: "DatePicker_PickerLabel"
                             text: pickerModel.text(datePicker.date, modelData, pickerModel.pickerWidth)
                             color: Theme.palette.normal.backgroundText
                             anchors.fill: parent

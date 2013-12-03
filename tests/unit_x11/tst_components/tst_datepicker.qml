@@ -22,8 +22,8 @@ import Ubuntu.Components.Pickers 0.1
 
 Item {
     id: testSuite
-    width: units.gu(20)
-    height: units.gu(40)
+    width: units.gu(40)
+    height: units.gu(71)
 
     DatePicker {
         id: picker
@@ -93,5 +93,18 @@ Item {
             compare(picker.locale, Qt.locale(), "default locale is the same as system locale");
         }
 
+        function test_1_localeHu() {
+            var locale = Qt.locale("hu_HU");
+            picker.minimum = new Date("2013/12/1");
+            picker.date = new Date("2013/12/1");
+            picker.locale = Qt.locale("hu_HU");
+            waitForRendering(picker);
+            var pickerItem = findChild(picker, "DatePicker_MonthPicker");
+            var label = findChild(pickerItem.itemList.currentItem, "DatePicker_PickerLabel");
+            compare(label.text, locale.monthName(picker.date.getMonth(), Locale.LongFormat), "locale for month wrong");
+//            pickerItem = findChild(picker, "DatePicker_DayPicker");
+//            label = findChild(pickerItem.itemList.currentItem, "DatePicker_PickerLabel");
+//            compare(label.text, locale.dayName(picker.date.getDate(), Locale.LongFormat), "locale for day name wrong");
+        }
     }
 }

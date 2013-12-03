@@ -44,29 +44,6 @@ Date.prototype.getInvalidDate = function() {
 }
 
 /*!
-  The function compares two date objects. By default time objects are compared
-  by date and time content (millisecods are omiotted), however this can be altered
-  through the optional \a option property. This property can take \a 'date' or
-  \a 'time' strings, meaning only date or time sections will be compared.
-  */
-Date.prototype.compare = function(that, option) {
-    var sameDate = true;
-    if (option === undefined || option === 'date') {
-        sameDate = (this.getFullYear() === that.getFullYear()) &&
-                (this.getMonth() === that.getMonth()) &&
-                (this.getDate() === that.getDate());
-    }
-    var sameTime = true;
-    if (option === undefined || option === 'time') {
-        sameTime = (this.getHours() === that.getHours()) &&
-                (this.getMinutes() === that.getMinutes()) &&
-                (this.getSeconds() === that.getSeconds());
-    }
-
-    return sameDate && sameTime;
-}
-
-/*!
   The function checks whether the date object is a valid one, meaning the year,
   month and date fields are positive numbers
   */
@@ -89,12 +66,12 @@ Date.prototype.daysInMonth = function() {
   */
 Date.prototype.leapYear = function() {
     var year = this.getFullYear();
-    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
+    return year % 400 == 0 || (year % 100 !== 0 && year % 4 == 0);
 }
 
 /*!
-  The function returns the distance in months between the Date object and the
-  given one as parameter.
+  The function returns the distance in months (not calendaristic months) between
+  the Date object and the given one as parameter.
   */
 Date.prototype.monthsTo = function(target) {
     return target.getMonth() - this.getMonth() + (12 * (target.getFullYear() - this.getFullYear()));

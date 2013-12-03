@@ -58,7 +58,7 @@ PickerModelBase {
         }
     }
 
-    function indexOf(date) {
+    function indexOf() {
         return date.getDate() - 1;
     }
 

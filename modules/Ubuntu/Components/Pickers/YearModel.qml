@@ -50,7 +50,7 @@ PickerModelBase {
         }
     }
 
-    function indexOf(date) {
+    function indexOf() {
         var index = date.getFullYear() - from;
         if (index >= count) {
             index = -1;

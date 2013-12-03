@@ -28,8 +28,8 @@ MainView {
             DatePicker {
                 id: picker
                 locale: Qt.locale("en_UK")
-//                minimum: { var d = new Date(); d.setFullYear(d.getFullYear() - 1); return d;}
-//                maximum: { var d = new Date(); d.setFullYear(d.getFullYear() + 1); return d;}
+//                minimum: new Date("2013/12/1")
+//                maximum: new Date("2013/12/31")
 
                 onDateChanged: print("CHANGED DATE=" + Qt.formatDate(date, "yyyy/MM/dd"))
             }
@@ -47,6 +47,13 @@ MainView {
                     date.setMonth(2);
                     picker.maximum = date;
                     picker.date = new Date(date);
+                }
+            }
+            Button {
+                text: "minimum & date"
+                onClicked: {
+                    picker.minimum = new Date("2013/12/1");
+//                    picker.date = new Date("2013/12/31");
                 }
             }
         }
