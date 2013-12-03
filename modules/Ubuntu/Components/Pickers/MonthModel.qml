@@ -25,7 +25,7 @@ PickerModelBase {
     property int to
     property int distance
 
-    function reset(date, minimum, maximum) {
+    function reset() {
         clear();
         var modelDate = new Date(date);
         modelDate.setDate(1);
@@ -41,7 +41,10 @@ PickerModelBase {
         }
 
         // call the pickerItem reset
-        pickerItem.resetPicker();
+        if (pickerItem) {
+            print(from + " / " + to)
+            pickerItem.resetPicker();
+        }
     }
 
     function resetLimits(label, margin) {
@@ -57,7 +60,12 @@ PickerModelBase {
     }
 
     function indexOf(date) {
-        return date.getMonth() - from;
+        var index = date.getMonth() - from;
+        if (index >= count) {
+            index = -1;
+        }
+        print("index= " + index + ", count= " + count)
+        return index;
     }
 
     function dateFromIndex(date, index) {
@@ -66,6 +74,7 @@ PickerModelBase {
         var fromDay = newDate.getDate();
         // move the day to the 1st of the month so we don't overflow when setting the month
         newDate.setDate(1);
+        print(index)
         newDate.setMonth(get(index).month);
         var maxDays = newDate.daysInMonth();
         // check whether the original day would overflow
@@ -75,7 +84,7 @@ PickerModelBase {
     }
 
     function text(date, value, width) {
-        if (!compositPicker) {
+        if (!compositPicker || value === undefined) {
             return "dummy";
         }
         if (width >= longFormatLimit) {

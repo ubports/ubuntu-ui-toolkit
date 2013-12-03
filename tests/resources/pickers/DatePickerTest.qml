@@ -18,6 +18,37 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.Pickers 0.1
 
-DatePicker {
+MainView {
+    width: units.gu(40)
+    height: units.gu(71)
 
+    Page {
+        title: "DatePicker test"
+        Column {
+            DatePicker {
+                id: picker
+                locale: Qt.locale("en_UK")
+                minimum: { var d = new Date(); d.setFullYear(d.getFullYear() - 1); return d;}
+//                maximum: { var d = new Date(); d.setFullYear(d.getFullYear() + 1); return d;}
+
+                onDateChanged: print("CHANGED DATE=" + Qt.formatDate(date, "yyyy/MM/dd"))
+            }
+
+            Button {
+                text: "infinite"
+                onClicked: picker.maximum = picker.maximum.getInvalidDate()
+            }
+            Button {
+                text: "Jan-Mar"
+                onClicked: {
+                    var date = new Date();
+                    date.setMonth(0);
+                    picker.minimum = date;
+                    date.setMonth(2);
+                    picker.maximum = date;
+                    picker.date = new Date(date);
+                }
+            }
+        }
+    }
 }

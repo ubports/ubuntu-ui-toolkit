@@ -84,9 +84,10 @@ Item {
             compare(picker.live, false, "default live mode");
         }
         function test_0_minimum_maximum() {
-            var date = new Date();
+            var endDate = Date.prototype.midnight.call(new Date());
+            endDate.setFullYear(endDate.getFullYear() + 50);
             compare(picker.minimum, picker.date, "default minimum is same as date property");
-            compare(picker.maximum, date.getInvalidDate(), "default maximum is an invalid date");
+            compare(picker.maximum, endDate, "default maximum is a 50 years window");
         }
         function test_0_locale() {
             compare(picker.locale, Qt.locale(), "default locale is the same as system locale");

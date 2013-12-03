@@ -22,17 +22,19 @@ PickerModelBase {
     property int from
     property int to
     circular: false
-    autoExtend: true
+    autoExtend: !maximum.isValid()
 
-    function reset(date, minimum, maximum) {
+    function reset() {
         clear();
         from = (minimum.getFullYear() <= 0) ? date.getFullYear() : minimum.getFullYear();
-        to = (maximum < minimum) ? 0 : maximum.getFullYear();
-        autoExtend = !maximum.isValid();
+        to = (maximum < minimum) ? -1 : maximum.getFullYear();
         extend(from, to - from);
 
         // call the pickerItem reset
-        pickerItem.resetPicker();
+        if (pickerItem) {
+            print(from + " - " + to + "||" + count)
+            pickerItem.resetPicker();
+        }
     }
 
     function resetLimits(label, margin) {
@@ -41,7 +43,7 @@ PickerModelBase {
     }
 
     function extend(baseYear, items) {
-        if (items === undefined || items <= 0) {
+        if (items === undefined || items < 0) {
             items = 50;
         }
         for (var i = baseYear; i <= baseYear + items; i++) {
@@ -50,7 +52,13 @@ PickerModelBase {
     }
 
     function indexOf(date) {
-        return date.getFullYear() - from;
+        var index = date.getFullYear() - from;
+        if (index >= count) {
+            index = -1;
+        }
+
+        print("index= " + index + ", count= " + count)
+        return index;
     }
 
     function dateFromIndex(date, index) {
@@ -60,6 +68,6 @@ PickerModelBase {
     }
 
     function text(date, value, width) {
-        return value;
+        return (value) ? value : "";
     }
 }

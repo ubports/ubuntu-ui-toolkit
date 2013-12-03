@@ -25,11 +25,11 @@ import Ubuntu.Components 0.1
 
     DatePicker combines up to three Picker elements providing different date value
     selection possibilities. It can be used to select full date (year, month, day
-    and weekNumber) as well as to select year and month or year and week number
-    only. The selected date as well as the initial one is provided by the \l date
-    property. For convenience the component provides also the year, month and day
-    values as separate properties, however these properties are not writable, and
-    the initialization can happen only through the \l date property.
+    and weekNumber) as well as to select year and month only. The selected date as
+    well as the initial one is provided by the \l date property. For convenience
+    the component provides also the year, month, day and week values as separate
+    properties, however these properties are not writable, and their initialization
+    can happen only through the \l date property.
     \qml
     import QtQuick 2.0
     import Ubuntu.Components 0.1
@@ -37,7 +37,8 @@ import Ubuntu.Components 0.1
 
     Column {
         Label {
-            text: "Selected date: " + Qt.formatDate(datePicker.date, "dddd, dd-mmmm-yyyy")
+            text: "Selected date: W" + datePicker.week + " - " +
+                    Qt.formatDate(datePicker.date, "dddd, dd-mmmm-yyyy")
         }
         DatePicker {
             id: datePicker
@@ -45,10 +46,9 @@ import Ubuntu.Components 0.1
     }
     \endqml
 
-    The \l mode property specifies whether the DatePicker provides full date
-    picking, month picking or week number picking. When \a Month or \a Week modes
-    are set, the component shows only two pickers, one for year and one for the
-    month or week picking.
+    The \l mode property specifies whether the DatePicker provides full date picking
+    or month picking. When \a Month mode is set, the component shows only two pickers,
+    one for year and one for the month picking.
     Month picker example:
     \qml
     import QtQuick 2.0
@@ -65,28 +65,16 @@ import Ubuntu.Components 0.1
         }
     }
     \endqml
-    Week picker example:
-    \qml
-    import QtQuick 2.0
-    import Ubuntu.Components 0.1
-    import Ubuntu.Components.Pickers 0.1
 
-    Column {
-        Label {
-            text: "Selected week: " + datePicker.week
-        }
-        DatePicker {
-            id: datePicker
-            mode: "Week"
-        }
-    }
-    \endqml
-
-    The default behavior of the year picker in the DatePicker is to list the years
-    infinitely starting from the year given in the \l date property. This can be
-    changed through the \a minimumYear and \a maximumYear properties. In case the
-    \a maximumYear value is greater than the \a minimumYear, the year picker will
-    no longer be infinite.
+    The default interval the date values can be chosen is a window starting at
+    the current date ending 50 years later. This window is defined by the
+    \l minimum and \l maximum properties. The value for the \l minimum must be
+    less or equal with the date given in the \l date property. The \l maximum
+    proeprty value must be greater than the \l minimum, or invalid. When set to
+    invalid date, the window the date value can be selected end in infinite.
+    This means the year picker will be extending infinitelly, causing extensive
+    memory use. Therefore this behavior should be used carefully to avoid memory
+    overload.
 
     \qml
     import QtQuick 2.0
@@ -233,10 +221,24 @@ FocusScope {
 
     /*! \internal */
     onLocaleChanged: internals.resetPickers()
-    /*! \internal */
-    onMinimumChanged: { internals.resetPickers() }
-    /*! \internal */
-    onMaximumChanged: { internals.resetPickers() }
+//    /*! \internal */
+//    onMinimumChanged: {
+//        // adjust date
+//        print(datePicker.date)
+//        if (datePicker.date < minimum && minimum.isValid() && internals.completed) {
+//            datePicker.date = minimum;
+//            print("m")
+//        }
+//    }
+//    /*! \internal */
+//    onMaximumChanged: {
+//        print(datePicker.date)
+//        // adjust date
+//        if (datePicker.date > maximum && maximum.isValid() && internals.completed) {
+//            datePicker.date = maximum;
+//            print("M")
+//        }
+//    }
     /*! \internal */
     onWidthChanged: {
         // use dayPicker narrowFormatLimit even if the dayPicker is hidden
@@ -252,15 +254,18 @@ FocusScope {
     onModeChanged: internals.resetPickers();
 
     Component.onCompleted: {
+        print("1- " + date)
         if (minimum === undefined) minimum = date;
         internals.arrangeTumblers();
         internals.completed = true;
         internals.resetPickers();
     }
 
+    // models
     YearModel {
         id: yearModel
         compositPicker: datePicker
+        pickerCompleted: internals.completed
         pickerWidth: Math.max(datePicker.width * 0.24, narrowFormatLimit)
         function syncModels() {
             dayModel.syncModels();
@@ -269,6 +274,7 @@ FocusScope {
     MonthModel {
         id: monthModel
         compositPicker: datePicker
+        pickerCompleted: internals.completed
         pickerWidth: Math.max(datePicker.width - yearModel.pickerWidth - dayModel.pickerWidth, narrowFormatLimit)
         function syncModels() {
             dayModel.syncModels();
@@ -277,6 +283,7 @@ FocusScope {
     DayModel {
         id: dayModel
         compositPicker: datePicker
+        pickerCompleted: internals.completed
         property bool inUse: false
         pickerWidth: {
             if (!inUse) {
@@ -313,11 +320,13 @@ FocusScope {
                       Model to hold tumbler order for repeaters.
                       Roles:
                       - pickerModel
+                      - pickerName
                       */
                     id: tumblerModel
                 }
                 Picker {
                     id: pickerDelegate
+                    objectName: "DatePicker_" + pickerName
                     model: pickerModel
                     enabled: pickerModel.count > 1
                     circular: pickerModel.circular
@@ -330,7 +339,12 @@ FocusScope {
                     }
                     delegate: PickerDelegate {
                         Label {
-                            text: pickerModel.text(datePicker.date, modelData, pickerModel.pickerWidth);
+                            text: {
+                                var txt = pickerModel.text(datePicker.date, modelData, pickerModel.pickerWidth)
+                                if (txt === undefined)
+                                    print(pickerDelegate.objectName + modelData)
+                                return txt
+                            }
                             color: Theme.palette.normal.backgroundText
                             anchors.fill: parent
                             verticalAlignment: Text.AlignVCenter
@@ -344,8 +358,8 @@ FocusScope {
                     }
 
                     onSelectedIndexChanged: {
-                        if (!internals.completed) return;
                         datePicker.date = pickerModel.dateFromIndex(datePicker.date, selectedIndex);
+                        print("selectedIndex= " + selectedIndex + ", " + datePicker.date)
                         pickerModel.syncModels();
                     }
 
@@ -355,9 +369,11 @@ FocusScope {
                     function resetPicker() {
                         pickerModel.resetLimits(textSizer, internals.margin);
                         selectedIndex = pickerModel.indexOf(datePicker.date);
+                        print(objectName + ": " + itemList.count + "/" + itemList.currentIndex)
                     }
 
                     Component.onCompleted: {
+                        print(objectName)
                         pickerModel.pickerItem = pickerDelegate;
                     }
                 }
@@ -379,12 +395,12 @@ FocusScope {
         function resetPickers() {
             if (!completed) return;
             // turn off completion for a while
-            completed = false;
+//            completed = false;
             for (var i = 0; i < tumblerModel.count; i++) {
                 var model = tumblerModel.get(i);
-                model.pickerModel.reset(datePicker.date, datePicker.minimum, datePicker.maximum);
+                model.pickerModel.reset();
             }
-            completed = true;
+//            completed = true;
         }
 
         /*
@@ -399,15 +415,15 @@ FocusScope {
                 // check the first two characters
                 switch (format[i].substr(0, 1).toLowerCase()) {
                 case 'y':
-                    tumblerModel.append({"pickerModel": yearModel})
+                    tumblerModel.append({"pickerModel": yearModel, "pickerName": "YearPicker"})
                     break;
                 case 'm':
-                    tumblerModel.append({"pickerModel": monthModel})
+                    tumblerModel.append({"pickerModel": monthModel, "pickerName": "MonthPicker"})
                     break;
                 case 'd':
                     if (datePicker.mode !== "Month") {
+                        tumblerModel.append({"pickerModel": dayModel, "pickerName": "DayPicker"})
                         dayModel.inUse = true;
-                        tumblerModel.append({"pickerModel": dayModel})
                     }
                     break;
                 }

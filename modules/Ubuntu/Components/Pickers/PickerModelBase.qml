@@ -59,7 +59,7 @@ ListModel {
       The function resets the model and the attached Picker specified in the item.
       The Picker must have a resetPicker() function available.
       */
-    function reset(date, minimumDate, maximumDate) {}
+    function reset() {}
 
     /*
       Function called by the Picker to re-calculate values for the limit properties.
@@ -99,4 +99,20 @@ ListModel {
     function text(date, value, width) {
         return "";
     }
+
+    /*!
+      Readonly properties to the composit picker's date properties
+      */
+    readonly property date date: compositPicker.date
+    readonly property date minimum: compositPicker.minimum
+    readonly property date maximum: compositPicker.maximum
+
+    property bool pickerCompleted: false
+
+    /*
+      Call reset() whenever minimum or maximum changes
+      */
+    onMinimumChanged: if (pickerCompleted) reset()
+    onMaximumChanged: if (pickerCompleted) reset()
+
 }

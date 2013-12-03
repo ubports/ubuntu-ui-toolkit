@@ -21,14 +21,17 @@ PickerModelBase {
     circular: true
 
     // ommit minimum and maximum date values
-    function reset(date, minimum, maximum) {
+    function reset() {
         clear();
         for (var i = 0; i < date.daysInMonth(); i++) {
             append({"day": i});
         }
 
         // call the pickerItem reset
-        pickerItem.resetPicker();
+        if (pickerItem) {
+            print("days: " + count)
+            pickerItem.resetPicker();
+        }
     }
 
     function resetLimits(label, margin) {

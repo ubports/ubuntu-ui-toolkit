@@ -31,6 +31,7 @@ Row {
     Picker {
         height: units.gu(40)
         model: pickerModel
+        selectedIndex: 2
         delegate: PickerDelegate {
             Label {
                 anchors.fill: parent
@@ -39,16 +40,13 @@ Row {
                 text: modelData
             }
         }
-        highlightOverlay: Label {
-            text: "yumm!!!"
-            color: "black"
-        }
     }
 
     Picker {
         height: units.gu(40)
         model: pickerModel
         circular: false
+        selectedIndex: 1
         delegate: PickerDelegate {
             Label {
                 anchors.fill: parent

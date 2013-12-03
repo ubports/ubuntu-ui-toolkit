@@ -96,6 +96,8 @@ Template {
                 Component.onCompleted: {
                     for (var i = 0; i < 100; i++)
                         model.append({"blob" : "Line " + i})
+
+                    selectedIndex = 4;
                 }
             }
         }
@@ -185,7 +187,7 @@ Template {
             Column {
                 DatePicker {
                     id: datePicker
-//                    minimum: new Date(2013, 8)
+                    minimum: new Date(2013, 8)
 //                    maximum: new Date(2014, 0)
 //                    date: new Date(2013, 9, 1)
 //                    mode: "Month"
