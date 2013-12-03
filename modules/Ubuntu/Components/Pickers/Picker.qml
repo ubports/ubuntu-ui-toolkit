@@ -154,6 +154,13 @@ StyledItem {
 
         property bool completed: item && (status === Loader.Ready)
 
+        Binding {
+            target: loader.item
+            property: "currentIndex"
+            value: picker.selectedIndex
+            when: loader.item && loader.status === Loader.Ready
+        }
+
         // live selectedIndex updater
         Binding {
             target: picker
@@ -203,10 +210,6 @@ StyledItem {
 
         Component.onCompleted: {
             loader.completed = true;
-            if (item) {
-                loader.item.currentIndex = picker.selectedIndex;
-                moveToIndex(picker.selectedIndex);
-            }
         }
     }
 
