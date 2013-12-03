@@ -66,16 +66,18 @@ import Ubuntu.Components 0.1
     }
     \endqml
 
-    The default interval the date values can be chosen is a window starting at
+    The default interval the date values are chosen is a window starting at
     the current date ending 50 years later. This window is defined by the
-    \l minimum and \l maximum properties. The value for the \l minimum must be
-    less or equal with the date given in the \l date property. The \l maximum
-    proeprty value must be greater than the \l minimum, or invalid. When set to
-    invalid date, the window the date value can be selected end in infinite.
-    This means the year picker will be extending infinitelly, causing extensive
-    memory use. Therefore this behavior should be used carefully to avoid memory
-    overload.
-
+    \l minimum and \l maximum properties. The interval can be altered considering
+    the following rules:
+    \list
+        \li - \l minimum must be less or equal than the \l date;
+        \li - \l maximum value must be greater than the \l minimum, or invalid.
+                When set to invalid date (see DateUtils getInvalidDate()), the
+                upper limit of the date interval mecomes infinite, meaning the
+                year picker will extend infinitelly. This leads to increased
+                memory use and should be avoided if possible.
+    \endlist
     \qml
     import QtQuick 2.0
     import Ubuntu.Components 0.1
@@ -87,31 +89,33 @@ import Ubuntu.Components 0.1
         }
         DatePicker {
             id: datePicker
-            minimumYear: new Date().getFullYear() - 1
-            maximumYear: new Date().getFullYear() + 1
+            minimum: {
+                var d = new Date();
+                d.setFullYear(d.getFullYear() - 1);
+                return d;
+            }
+            maximum: Date.prototype.getInvalidDate.call()
         }
     }
     \endqml
-    \b Note: do not use the \l date property when initializing minimumYear and maximumYear
-    as it will cause binding loop.
+    \b Note: do not use the \l date property when initializing minimum and maximum
+    as it will lead in binding loops.
 
     \section2 Layout
     As mentioned earlier, DatePicker combines up to three Picker tumblers depending
-    on the mode requested. These tumblers will be placed in a row, laid out using
-    different rules.
+    on the mode requested. These tumblers are laid out in a row in the order the
+    default date format of the \l locale is.
 
-    \section3 Date mode rules
+    \section3 Date mode layout rules
     The date picker consist of three pickers: year, month, and date. The exact
     contents of the month and date pickers depends on the available width:
-    \list A
-        \li number and full name for month, number and full day for date (“08
-            August” “28 Wednesday”)
-        \li otherwise number and full name for month, number and abbreviated day
-            for date (“08 August” “28 Wed”);
-        \li otherwise full name for month, number and abbreviated day for date
-            (“August” “28 Wed”);
+    \list
+        \li full name for month, number and full day for date (“August” “28 Wednesday”)
+        \li otherwise full name for month, number and abbreviated day
+            for date (“August” “28 Wed”);
         \li otherwise full name for month, number for date (“August” “28”);
         \li otherwise abbreviated name for month, number for date (“Aug” “28”).
+        \li otherwise number for month, number for date (“08” “28”).
     \endlist
 
     \a{If the currently selected date becomes impossible the year change (from a
@@ -121,21 +125,20 @@ import Ubuntu.Components 0.1
     to its previous value if that becomes possible again before you next manually
     change the date.}
 
-    \b Minimum/maximum:
+    \section4 How minimum/maximum affects the tumblers
 
-    \list
-        \li If minimum and maximum are within the same year, the year picker
-            will be insensitive.
-        \li If minimum and maximum are within the same month, the month picker
-            will be present
-    \endlist
+    If minimum and maximum are within the same year, the year picker will be
+    insensitive. If minimum and maximum are within the same month, the month picker
+    will also be insensitive.
+
     \section3 Month mode rules
-    \section3 Week mode rules
-
-    \section2 Styling
-    The component's default height is the same asthe on-screen input's height. If
-    the environment does not have on-screen input, the height will be set to 20GUs.
-    The width is the full width of the phone, 40 GUs.
+    The month picker consists of two pickers, one for year and one for month picking.
+    the exact contents of the pickers depends on the available width:
+    \list
+        \li full month name,
+        \li otherwise short month name,
+        \li otherwise month number.
+    \endlist
   */
 FocusScope {
     id: datePicker
@@ -161,19 +164,23 @@ FocusScope {
       Both year and month values will be considered from the properties.
 
       The year and month picker values are filled based on these values. The
-      year picker will be infinite (extending infinitely) if the maximum has
-      zero year value set. If the distance between maximum and minimum is zero
+      year picker will be infinite (extending infinitely) if the maximum is
+      an invalid date. If the distance between maximum and minimum is zero
       years, the year picker will be shown disabled.
 
       The month picker will be circular if the distance between maximum and minimum
-      is at least one year, or if the maximum date value is zero.
+      is at least one year, or if the maximum date is invalid.
 
-      The default values are the current date for the minimum, and zero value
-      for maximum.
+      The default values are the current date for the minimum, and 50 year distance
+      value for maximum.
       */
     property date minimum: Date.prototype.midnight.call(new Date())
     /*! \internal */
-    property date maximum: Date.prototype.getInvalidDate.call()
+    property date maximum: {
+        var d = new Date(minimum);
+        d.setFullYear(d.getFullYear() + 50);
+        return d;
+    }
 
     /*!
       \qmlproperty int year
@@ -211,6 +218,7 @@ FocusScope {
       }
       \endqml
       */
+    /*! \internal */
     property var locale: Qt.locale()
 
     implicitWidth: units.gu(36)
@@ -221,24 +229,20 @@ FocusScope {
 
     /*! \internal */
     onLocaleChanged: internals.resetPickers()
-//    /*! \internal */
-//    onMinimumChanged: {
-//        // adjust date
-//        print(datePicker.date)
-//        if (datePicker.date < minimum && minimum.isValid() && internals.completed) {
-//            datePicker.date = minimum;
-//            print("m")
-//        }
-//    }
-//    /*! \internal */
-//    onMaximumChanged: {
-//        print(datePicker.date)
-//        // adjust date
-//        if (datePicker.date > maximum && maximum.isValid() && internals.completed) {
-//            datePicker.date = maximum;
-//            print("M")
-//        }
-//    }
+    /*! \internal */
+    onMinimumChanged: {
+        // adjust date
+        if (date !== undefined && date < minimum && minimum.isValid() && internals.completed) {
+            date = minimum;
+        }
+    }
+    /*! \internal */
+    onMaximumChanged: {
+        // adjust date
+        if (date !== undefined && date > maximum && maximum.isValid() && internals.completed) {
+            date = maximum;
+        }
+    }
     /*! \internal */
     onWidthChanged: {
         // use dayPicker narrowFormatLimit even if the dayPicker is hidden
@@ -254,7 +258,6 @@ FocusScope {
     onModeChanged: internals.resetPickers();
 
     Component.onCompleted: {
-        print("1- " + date)
         if (minimum === undefined) minimum = date;
         internals.arrangeTumblers();
         internals.completed = true;
@@ -339,12 +342,7 @@ FocusScope {
                     }
                     delegate: PickerDelegate {
                         Label {
-                            text: {
-                                var txt = pickerModel.text(datePicker.date, modelData, pickerModel.pickerWidth)
-                                if (txt === undefined)
-                                    print(pickerDelegate.objectName + modelData)
-                                return txt
-                            }
+                            text: pickerModel.text(datePicker.date, modelData, pickerModel.pickerWidth)
                             color: Theme.palette.normal.backgroundText
                             anchors.fill: parent
                             verticalAlignment: Text.AlignVCenter
@@ -359,7 +357,6 @@ FocusScope {
 
                     onSelectedIndexChanged: {
                         datePicker.date = pickerModel.dateFromIndex(datePicker.date, selectedIndex);
-                        print("selectedIndex= " + selectedIndex + ", " + datePicker.date)
                         pickerModel.syncModels();
                     }
 
@@ -369,11 +366,10 @@ FocusScope {
                     function resetPicker() {
                         pickerModel.resetLimits(textSizer, internals.margin);
                         selectedIndex = pickerModel.indexOf(datePicker.date);
-                        print(objectName + ": " + itemList.count + "/" + itemList.currentIndex)
                     }
 
                     Component.onCompleted: {
-                        print(objectName)
+                        // update model with the item instance
                         pickerModel.pickerItem = pickerDelegate;
                     }
                 }
@@ -394,13 +390,10 @@ FocusScope {
           */
         function resetPickers() {
             if (!completed) return;
-            // turn off completion for a while
-//            completed = false;
             for (var i = 0; i < tumblerModel.count; i++) {
                 var model = tumblerModel.get(i);
                 model.pickerModel.reset();
             }
-//            completed = true;
         }
 
         /*

@@ -28,7 +28,7 @@ MainView {
             DatePicker {
                 id: picker
                 locale: Qt.locale("en_UK")
-                minimum: { var d = new Date(); d.setFullYear(d.getFullYear() - 1); return d;}
+//                minimum: { var d = new Date(); d.setFullYear(d.getFullYear() - 1); return d;}
 //                maximum: { var d = new Date(); d.setFullYear(d.getFullYear() + 1); return d;}
 
                 onDateChanged: print("CHANGED DATE=" + Qt.formatDate(date, "yyyy/MM/dd"))

@@ -40,7 +40,7 @@ Date.prototype.midnight = function() {
   \endcode
   */
 Date.prototype.getInvalidDate = function() {
-    return new Date(-1, -1, -1, 0, 0, 0, 0);
+    return new Date(-1, -1);
 }
 
 /*!

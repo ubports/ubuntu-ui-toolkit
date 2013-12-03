@@ -42,7 +42,6 @@ PickerModelBase {
 
         // call the pickerItem reset
         if (pickerItem) {
-            print(from + " / " + to)
             pickerItem.resetPicker();
         }
     }
@@ -64,7 +63,6 @@ PickerModelBase {
         if (index >= count) {
             index = -1;
         }
-        print("index= " + index + ", count= " + count)
         return index;
     }
 
@@ -74,7 +72,6 @@ PickerModelBase {
         var fromDay = newDate.getDate();
         // move the day to the 1st of the month so we don't overflow when setting the month
         newDate.setDate(1);
-        print(index)
         newDate.setMonth(get(index).month);
         var maxDays = newDate.daysInMonth();
         // check whether the original day would overflow

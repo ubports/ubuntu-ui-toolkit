@@ -92,5 +92,6 @@ Item {
         function test_0_locale() {
             compare(picker.locale, Qt.locale(), "default locale is the same as system locale");
         }
+
     }
 }

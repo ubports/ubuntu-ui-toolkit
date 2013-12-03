@@ -29,7 +29,6 @@ PickerModelBase {
 
         // call the pickerItem reset
         if (pickerItem) {
-            print("days: " + count)
             pickerItem.resetPicker();
         }
     }

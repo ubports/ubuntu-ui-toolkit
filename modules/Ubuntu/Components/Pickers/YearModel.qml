@@ -32,7 +32,6 @@ PickerModelBase {
 
         // call the pickerItem reset
         if (pickerItem) {
-            print(from + " - " + to + "||" + count)
             pickerItem.resetPicker();
         }
     }
@@ -57,7 +56,6 @@ PickerModelBase {
             index = -1;
         }
 
-        print("index= " + index + ", count= " + count)
         return index;
     }
 
