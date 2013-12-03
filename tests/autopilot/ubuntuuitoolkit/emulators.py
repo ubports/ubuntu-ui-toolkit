@@ -468,20 +468,13 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
         start_y = y + (height / 2)
 
         while not self._is_element_fully_visible(objectName):
-            # XXX The autopilot drag is done too fast, so it swipes many
-            # items at once. --elopio - 2013-11-28
-            self.pointing_device.move(start_x, start_y)
-            self.pointing_device.press()
             stop_x = start_x
             if element.globalRect.y < self.globalRect.y:
                 stop_y = start_y + element.globalRect.height
             else:
                 stop_y = start_y - element.globalRect.height
 
-            self.pointing_device.move(stop_x, stop_y)
-            time.sleep(0.25)
-
-            self.pointing_device.release()
+            self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
 
     def _is_element_fully_visible(self, objectName):
         element = self.select_single(objectName=objectName)
