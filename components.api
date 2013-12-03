@@ -234,6 +234,7 @@ Item
     property bool opened
     function open()
     function close()
+    property int hideTimeout
     property bool locked
     property real hintSize
     property real triggerSize
