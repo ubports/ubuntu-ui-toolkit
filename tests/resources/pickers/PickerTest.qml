@@ -39,10 +39,6 @@ Row {
                 text: modelData
             }
         }
-        highlightOverlay: Label {
-            text: "yumm!!!"
-            color: "black"
-        }
     }
 
     Picker {
