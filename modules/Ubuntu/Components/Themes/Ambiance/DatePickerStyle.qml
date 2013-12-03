@@ -135,8 +135,6 @@ Item {
                         bottom: magnifierRow.bottom
                     }
                     width: pickerModel.pickerWidth
-                    onWidthChanged: print("magnifier width = "+width)
-
                     scaleFactor: control.highlightScaleFactor
                     outputColor: control.highlightColor
                     source: effectSource
