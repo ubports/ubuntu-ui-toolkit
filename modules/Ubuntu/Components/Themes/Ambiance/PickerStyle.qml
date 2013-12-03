@@ -120,45 +120,12 @@ Item {
             sourceRect: Qt.rect(highlightItem.x, highlightItem.y, highlightItem.width, highlightItem.height)
             textureSize: Qt.size(highlightItem.width*sourceRectMultiplier, highlightItem.height*sourceRectMultiplier)
         }
-        Rectangle {
-            border.color: "black"
-            color: "yellow"
-            border.width: 2
-            anchors.fill: magnifier
-        }
         HighlightMagnifier {
             id: magnifier
-            anchors {
-                top: highlightItem.top
-                bottom: highlightItem.bottom
-                left: highlightItem.left
-            }
-            width: highlightItem.width/3
-
+            anchors.fill: highlightItem
             scaleFactor: control.highlightScaleFactor
             outputColor: control.highlightColor
             source: effectSource
         }
-
-        Rectangle {
-            border.color: "black"
-            color: "lightyellow"
-            border.width: 2
-            anchors.fill: magnifier2
-        }
-        HighlightMagnifier {
-            id: magnifier2
-            anchors {
-                top: highlightItem.top
-                bottom: highlightItem.bottom
-                right: highlightItem.right
-            }
-            width: 2*highlightItem.width/3
-
-            scaleFactor: control.highlightScaleFactor
-            outputColor: control.highlightColor
-            source: effectSource
-        }
-
     }
 }

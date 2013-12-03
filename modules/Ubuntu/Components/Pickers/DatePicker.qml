@@ -309,7 +309,7 @@ FocusScope {
         property alias itemList: positioner
         property Item highlightOverlay
 
-        style: Theme.createStyleComponent("PickerStyle.qml", holder)
+        style: Theme.createStyleComponent("DatePickerStyle.qml", holder)
 
         Row {
             id: positioner
