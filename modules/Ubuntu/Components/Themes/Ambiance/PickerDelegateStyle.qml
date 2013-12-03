@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    property real minFade: 0.15
+    property real minFade: 0.2
     property real maxFade: 0.95
     property bool fadingEnabled: true
 
@@ -42,14 +42,14 @@ Item {
             highlightY -= itemList.contentY;
             delegateY -= itemList.contentY;
         }
-        var midY = (delegateY + styledItem.height) / 2
+        var midY = delegateY + styledItem.height / 2;
         if (delegateY < highlightY)  {
             return MathUtils.clamp(MathUtils.projectValue(midY, 0, highlightY, minFade, maxFade), minFade, maxFade);
         }
         var highlightH = highlightY + highlightItem.height;
         if (delegateY >= highlightH) {
             delegateY -= highlightH;
-            midY = (delegateY + styledItem.height) / 2;
+            midY = delegateY + styledItem.height / 2;
             return MathUtils.clamp(1.0 - MathUtils.projectValue(midY, 0, highlightY, minFade, maxFade), minFade, maxFade);
         }
         return 1.0;
