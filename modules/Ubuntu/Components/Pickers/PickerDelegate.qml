@@ -32,12 +32,13 @@ AbstractButton {
 
     /*!
       \qmlproperty Picker picker
+      \readonly
       The property holds the Picker component the delegate belongs to.
       */
     readonly property alias picker: internal.picker
 
     implicitHeight: picker ? picker.itemHeight : units.gu(4)
-    implicitWidth: picker ? picker.itemWidth : 0
+    implicitWidth: picker ? internal.itemList.width : 0
 
     /*! \internal */
     onClicked: {

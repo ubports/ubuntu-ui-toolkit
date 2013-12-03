@@ -99,14 +99,6 @@ StyledItem {
     property Component delegate
 
     /*!
-      Specifies the item to be overlaid to the picker's highlight defined by
-      the style. The highlight is considered to be placed vertically in the middle
-      of the Picker's tumbler, and the component specified in this property will
-      be overlaid above it.
-      */
-    property Item highlightOverlay
-
-    /*!
       The property holds the index of the selected item
       */
     property int selectedIndex
@@ -126,6 +118,9 @@ StyledItem {
       and it is also set as default width and height for the PickerDelegate.
       The default values are covering the entire width of the Picker and 4.5 GU
       as height.
+
+      Note that these values do not affect the size of the highlighted item.
+      That one is specified by the style component of the Picker.
       */
 
     /*! \internal */
@@ -139,7 +134,7 @@ StyledItem {
       delegate. It can either be a ListView or a PathView depending whether the
       picker is chosen to be circular or linear.
       */
-    property alias itemList: loader.item
+    readonly property alias itemList: loader.item
 
     implicitWidth: units.gu(8)
     implicitHeight: units.gu(20)
@@ -215,33 +210,24 @@ StyledItem {
         }
     }
 
-    // highlight component used for calculations
-    Component {
-        id: highlightComponent
-        Item {
-            width: picker.itemWidth
-            height: picker.itemHeight
-        }
-    }
-
     // circular list
     Component {
         id: wrapAround
         PathView {
             id: pView
-            // property declared for PickerDelegate
+            objectName: "Picker_WrapAround"
+            // property declared for PickerDelegate to be able to access the main component
             property Item pickerItem: picker
             anchors {
                 top: parent ? parent.top : undefined
                 bottom: parent ? parent.bottom : undefined
                 horizontalCenter: parent ? parent.horizontalCenter : undefined
             }
-            width: picker.itemWidth
+            width: parent ? MathUtils.clamp(picker.itemWidth, 0, parent.width) : 0
             clip: true
 
             model: picker.model
             delegate: picker.delegate
-            highlight: highlightComponent
             currentIndex: picker.selectedIndex
             // put the currentItem to the center of the view
             preferredHighlightBegin: 0.5
@@ -268,19 +254,19 @@ StyledItem {
         id: linear
         ListView {
             id: lView
-            // property declared for PickerDelegate
+            objectName: "Picker_Linear"
+            // property declared for PickerDelegate to be able to access the main component
             property Item pickerItem: picker
             anchors {
                 top: parent ? parent.top : undefined
                 bottom: parent ? parent.bottom : undefined
                 horizontalCenter: parent ? parent.horizontalCenter : undefined
             }
-            width: picker.itemWidth
+            width: parent ? MathUtils.clamp(picker.itemWidth, 0, parent.width) : 0
             clip: true
 
             model: picker.model
             delegate: picker.delegate
-            highlight: highlightComponent
             currentIndex: picker.selectedIndex
 
             preferredHighlightBegin: (height - picker.itemHeight) / 2

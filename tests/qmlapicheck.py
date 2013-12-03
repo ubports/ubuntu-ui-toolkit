@@ -28,13 +28,44 @@ if len(sys.argv) < 2 or '-h' in sys.argv or '--help' in sys.argv:
         '  Generate a QML API file\n'
         'Example:\n'
         '  env BUILTINS=QQuick,QQml,U1db:: '
-        '%s modules/Ubuntu/Components/*.qml plugins.qmltypes'
+        '%s modules/Ubuntu/Components/qmldir plugins.qmltypes'
         ' > components.api.new\n'
+        '\n'
+        '  It is recommended to pass qmldir files over a list of qml files\n'
+        '  because then internal components are discarded and errors in that\n'
+        '  list can be found.\n'
+        '  For testing one can pass qml files also directly or serve them\n'
+        '  via standard input.\n'
+        '  The variable BUILTINS is a comma-separated list of prefixes for\n'
+        '  API that appears in qmltypes files but not part of the same\n'
+        '  package.\n'
+        '\n'
+        'Use the following command to see changes in the API:\n'
         '  diff -Fqml -u components.api{,.new}\n' % (basename, basename))
     sys.exit(1)
 
 builtins = os.getenv('BUILTINS', '').split(',')
+inputfiles = []
 for line in fileinput.input():
+    if fileinput.filename()[-6:] == 'qmldir':
+        if line[:8] == 'internal':
+            # Internal components are not part of public API
+            continue
+        pieces = line.strip().split(' ')
+        if len(pieces) > 2:
+            filename = pieces[2]
+            # We only work with QML
+            if filename[-3:] == 'qml':
+                # Filenames are relative to the qmldir
+                # Foo 1.0 Foo.qml
+                folder = os.path.dirname(fileinput.filename())
+                inputfiles.append(folder + '/' + filename)
+    else:
+        inputfiles.append(fileinput.filename())
+        fileinput.nextfile()
+
+inputfiles.sort()
+for line in fileinput.input(inputfiles):
     # New file
     if fileinput.isfirstline():
         in_block = 0

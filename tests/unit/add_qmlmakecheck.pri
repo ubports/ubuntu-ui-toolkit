@@ -9,5 +9,5 @@ for(TEST, TESTS) {
 }
 check.commands += cd ../../..;
 check.commands += qmlplugindump Ubuntu.Components 0.1 modules > plugins.qmltypes;
-check.commands += BUILTINS=QQuick,QQml,U1db:: python tests/qmlapicheck.py modules/Ubuntu/Components/*.qml modules/Ubuntu/Components/*/*.qml plugins.qmltypes > components.api.new;
+check.commands += BUILTINS=QQuick,QQml,U1db:: python tests/qmlapicheck.py modules/Ubuntu/Components/qmldir modules/Ubuntu/Components/Colors/UbuntuColors.qml modules/Ubuntu/Components/*/qmldir plugins.qmltypes > components.api.new;
 check.commands += diff -Fqml -u components.api components.api.new || exit 1; cd tests/unit
