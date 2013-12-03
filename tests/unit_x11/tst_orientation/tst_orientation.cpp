@@ -89,15 +89,14 @@ private Q_SLOTS:
         QQuickItem *helper = view->rootObject()->findChild<QQuickItem*>("helper");
         QVERIFY(helper);
         // No warning about "window" being undefined must appear
-        /* FIXME TypeError: Cannot set property 'contentOrientation' of null
+        QSKIP("TypeError: Cannot set property 'contentOrientation' of null");
         QCOMPARE(spy->count(), 0);
         QCOMPARE(helper->property("orientationAngle").toInt(), 90);
-        */
         // Verify expected values
         QQuickItem *checkpoint = view->rootObject()->findChild<QQuickItem*>("checkpoint");
         QVERIFY(checkpoint);
         // window.contentOrientation 
-        // FIXME: Doesn't work as-is QCOMPARE(checkpoint->property("contentOrientation").toInt(), helper->property("orientationAngle").toInt());
+        QCOMPARE(checkpoint->property("contentOrientation").toInt(), helper->property("orientationAngle").toInt());
         delete view;
     }
 };
