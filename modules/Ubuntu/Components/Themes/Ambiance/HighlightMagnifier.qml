@@ -29,11 +29,7 @@ ShaderEffect {
 
     // Specify the region of the sourceRect that must be enlarged as
     // x, y, width, height in texture coordinates. (0, 0, 1, 1) is full sourceRect.
-    property rect texCoordRange: Qt.rect((x - source.sourceRect.x) / source.sourceRect.width,
-                                         (y - source.sourceRect.y) / source.sourceRect.height,
-                                         width / source.sourceRect.width,
-                                         height / source.sourceRect.height
-                                         );
+    property rect texCoordRange: Qt.rect(0.0, 0.0, 1.0, 1.0);
 
     vertexShader: "
         uniform highp vec4 texCoordRange;

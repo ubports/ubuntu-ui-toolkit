@@ -311,6 +311,9 @@ FocusScope {
 
         style: Theme.createStyleComponent("DatePickerStyle.qml", holder)
 
+        // used in DatePickerStyle to determine the width of the individual tumblers
+        property alias pickerModels: tumblerModel
+
         Row {
             id: positioner
             parent: (holder.__styleInstance && holder.__styleInstance.hasOwnProperty("tumblerHolder")) ?

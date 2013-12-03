@@ -120,45 +120,31 @@ Item {
             sourceRect: Qt.rect(highlightItem.x, highlightItem.y, highlightItem.width, highlightItem.height)
             textureSize: Qt.size(highlightItem.width*sourceRectMultiplier, highlightItem.height*sourceRectMultiplier)
         }
-        Rectangle {
-            border.color: "black"
-            color: "yellow"
-            border.width: 2
-            anchors.fill: magnifier
-        }
-        HighlightMagnifier {
-            id: magnifier
-            anchors {
-                top: highlightItem.top
-                bottom: highlightItem.bottom
-                left: highlightItem.left
+
+        Row {
+            id: magnifierRow
+            anchors.fill: highlightItem
+
+            Repeater {
+                onCountChanged: print("count = "+count)
+                model: styledItem.pickerModels
+                HighlightMagnifier {
+                    id: magnifier
+                    anchors {
+                        top: magnifierRow.top
+                        bottom: magnifierRow.bottom
+                    }
+                    width: pickerModel.pickerWidth
+                    onWidthChanged: print("magnifier width = "+width)
+
+                    scaleFactor: control.highlightScaleFactor
+                    outputColor: control.highlightColor
+                    source: effectSource
+                    texCoordRange: Qt.rect((x - source.sourceRect.x) / source.sourceRect.width, 0.0,
+                                           width / source.sourceRect.width, 1.0);
+
+                }
             }
-            width: highlightItem.width/3
-
-            scaleFactor: control.highlightScaleFactor
-            outputColor: control.highlightColor
-            source: effectSource
         }
-
-        Rectangle {
-            border.color: "black"
-            color: "lightyellow"
-            border.width: 2
-            anchors.fill: magnifier2
-        }
-        HighlightMagnifier {
-            id: magnifier2
-            anchors {
-                top: highlightItem.top
-                bottom: highlightItem.bottom
-                right: highlightItem.right
-            }
-            width: 2*highlightItem.width/3
-
-            scaleFactor: control.highlightScaleFactor
-            outputColor: control.highlightColor
-            source: effectSource
-        }
-
     }
 }
