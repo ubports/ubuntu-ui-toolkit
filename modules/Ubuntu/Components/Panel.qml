@@ -226,7 +226,7 @@ Item {
       The time in milliseconds before the panel automatically hides after inactivity
       when it is not locked. Interacting with the panel resets the timer.
       Note that adding contents to the panel that accepts mouse events will prevent
-      the panel frmo detecting interaction and the timer will not be reset.
+      the panel from detecting interaction and the timer will not be reset.
       Setting a negative value will disable automatic hiding.
       Default value: -1 (automatic hiding is disabled).
       \qmlproperty int hideTimeout

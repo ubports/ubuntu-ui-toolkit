@@ -179,7 +179,7 @@ Item {
             panel.open();
             compare(panel.opened, true, "Panel can be made opened");
             wait(panel.hideTimeout + 500); // add 500 ms margin
-            compare(panel.opened, false, "Toolbar automatically closes after timeout");
+            compare(panel.opened, false, "Panel automatically closes after timeout");
 
             // now, wait in total more than hideTimeout, but less than 2*hideTimeout,
             //  and have user interaction half-way to verify that the interaction
