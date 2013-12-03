@@ -482,6 +482,38 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(tst_UCArguments)
+// Do not use QTEST_MAIN. QTEST_MAIN is 99.99% of the times what you
+// want when running a Qt testcase but it creates a Q*Application and in
+// this case that is not wanted since we are creating and destroying them as
+// part of the test and Qt doesn't like when there's more than one Q*Application
+// at the same time, so do without creating a Q*Application in main.
+// This can of course have some implications but it seems that
+// for this testcase all is fine.
+int main(int argc, char *argv[]) 
+{
+    int myArgc = argc;
+    char **myArgv = new char*[argc + 1];
+    // Eat -platform xyz, we're just using QCoreApplications here so
+    // no need to say the gui platform to use
+    // We are techically leaking the myArgv char** and it's strdup'ed contents
+    // but it happens the binary just finishes after, so not a problem
+    int j = 0;
+    for (int i = 0; i < argc; i++) {
+        if (argv[i] == QString("-platform")) {
+            if (i < argc) {
+                i++; // skip also the platform value
+                myArgc -= 2;
+            } else {
+                myArgc -= 1;
+            }
+        } else {
+            myArgv[j] = strdup(argv[i]);
+            j++;
+        }
+    }
+    myArgv[myArgc] = 0;
+    tst_UCArguments tc;
+    return QTest::qExec(&tc, myArgc, myArgv);
+}
 
 #include "tst_arguments.moc"

@@ -1,5 +1,5 @@
 include(../test-include.pri)
-include(../qtprivate_dependency.pri)
+include(../../unit/qtprivate_dependency.pri)
 
 QT += gui
 SOURCES += \

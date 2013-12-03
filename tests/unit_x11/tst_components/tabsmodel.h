@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2013 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,20 +14,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#include <QtQuickTest/quicktest.h>
-#include <qqml.h>
 
-#include "tabsmodel.h"
+#ifndef TABSMODEL_H
+#define TABSMODEL_H
 
-class Register
+#include <QAbstractListModel>
+#include <QStringList>
+
+class TabsModel : public QAbstractListModel
 {
+    Q_OBJECT
+    Q_PROPERTY(int count READ rowCount NOTIFY countChanged);
+
 public:
-    Register()
-    {
-        qmlRegisterType<TabsModel>("TestObjects", 0, 1, "TabsModel");
-    }
+    TabsModel();
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    QVariant data(const QModelIndex&, int) const;
+    QHash<int, QByteArray> roleNames() const;
+
+    Q_INVOKABLE void append(const QString &title);
+    Q_INVOKABLE QVariantMap get(int index);
+
+Q_SIGNALS:
+    void countChanged();
+
+private:
+    QStringList m_list;
 };
 
-Register r;
-
-QUICK_TEST_MAIN(components)
+#endif
