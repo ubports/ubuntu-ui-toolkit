@@ -109,11 +109,23 @@ Item {
             }
         }
 
-        HighlightMagnifier {
+        ShaderEffectSource {
+            id: effectSource
+            visible: false
             sourceItem: styledItem.itemList
+
+            property real sourceRectMultiplier: 2.0
+            // XXX: This works because the parent of magnifier is the same as sourceItem
+            //  in this case. Otherwise coordinate transformations will be needed.
+            sourceRect: Qt.rect(magnifier.x, magnifier.y, magnifier.width, magnifier.height)
+            textureSize: Qt.size(magnifier.width*sourceRectMultiplier, magnifier.height*sourceRectMultiplier)
+        }
+        HighlightMagnifier {
+            id: magnifier
             anchors.fill: highlightItem
             scaleFactor: control.highlightScaleFactor
             outputColor: control.highlightColor
+            source: effectSource
         }
     }
 }
