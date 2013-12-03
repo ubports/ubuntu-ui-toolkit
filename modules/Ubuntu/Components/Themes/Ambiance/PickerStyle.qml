@@ -121,7 +121,6 @@ Item {
             textureSize: Qt.size(highlightItem.width*sourceRectMultiplier, highlightItem.height*sourceRectMultiplier)
         }
         HighlightMagnifier {
-            id: magnifier
             anchors.fill: highlightItem
             scaleFactor: control.highlightScaleFactor
             outputColor: control.highlightColor

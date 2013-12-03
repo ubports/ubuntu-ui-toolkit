@@ -126,10 +126,8 @@ Item {
             anchors.fill: highlightItem
 
             Repeater {
-                onCountChanged: print("count = "+count)
                 model: styledItem.pickerModels
                 HighlightMagnifier {
-                    id: magnifier
                     anchors {
                         top: magnifierRow.top
                         bottom: magnifierRow.bottom
@@ -140,7 +138,6 @@ Item {
                     source: effectSource
                     texCoordRange: Qt.rect((x - source.sourceRect.x) / source.sourceRect.width, 0.0,
                                            width / source.sourceRect.width, 1.0);
-
                 }
             }
         }
