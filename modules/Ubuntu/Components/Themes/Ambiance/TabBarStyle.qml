@@ -19,6 +19,11 @@ import Ubuntu.Components 0.1
 
 Item {
     id: tabBarStyle
+
+    // used to detect when the user is interacting with the tab bar by pressing it
+    //  or dragging the tab bar buttons.
+    readonly property bool pressed: mouseArea.pressed || buttonView.dragging
+
     // styling properties, public API
     property color headerTextColor: Theme.palette.normal.backgroundText
     property color headerTextSelectedColor: Theme.palette.selected.backgroundText
@@ -322,7 +327,8 @@ Item {
         // a tabBar not in selection mode can be put in selection mode by pressing
         id: mouseArea
         anchors.fill: parent
-        enabled: !styledItem.selectionMode
+        // This MouseArea is always enabled, even when the tab bar is in selection mode,
+        //  so that press events are detected and tabBarStyle.pressed is updated.
         onPressed: {
             styledItem.selectionMode = true;
             mouse.accepted = false;
