@@ -66,6 +66,13 @@ StyledItem {
     property bool alwaysSelectionMode: false
 
     /*!
+      The user is interacting with the tab bar.
+      Depends on the style pressed property.
+     */
+    readonly property bool pressed: __styleInstance !== null && __styleInstance.hasOwnProperty("pressed") ?
+                                        __styleInstance.pressed : false
+
+    /*!
       Automatically activate the tab bar when \l alwaysSelectionMode is set.
      */
     onAlwaysSelectionModeChanged: {
