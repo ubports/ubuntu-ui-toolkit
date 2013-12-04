@@ -22,10 +22,11 @@ import Ubuntu.Components.Pickers 0.1
 
 Item {
     id: testSuite
-    width: units.gu(20)
-    height: units.gu(40)
+    width: units.gu(40)
+    height: units.gu(71)
 
-    Column {
+    Flow {
+        anchors.fill: parent
         Picker {
             objectName: "linear"
             id: linearShort
@@ -50,21 +51,54 @@ Item {
             id: objectModelled
             model: objectModel
             selectedIndex: 2
+            delegate: PickerDelegate {
+                Label {text: modelData}
+            }
         }
         Picker {
             objectName: "simpleModelled"
             id: simpleModelled
             model: emptyModel
             selectedIndex: 2
+            delegate: PickerDelegate {
+                Label {text: modelData}
+            }
         }
         Picker {
             objectName: "picker"
             id: picker
         }
+        Picker {
+            id: linearDynPicker
+            model: dynamicModel
+            circular: false
+            delegate: PickerDelegate {
+                Label {text: modelData}
+            }
+        }
+        Picker {
+            id: circularDynPicker
+            model: dynamicModel
+            circular: true
+            delegate: PickerDelegate {
+                Label {text: modelData}
+            }
+        }
     }
 
     ListModel {
         id: emptyModel
+    }
+
+    ListModel {
+        id: dynamicModel
+        Component.onCompleted: reset()
+        function reset() {
+            clear();
+            for (var i = 0; i < 100; i++) {
+                append({"label": "line" + i});
+            }
+        }
     }
 
     ListModel {
@@ -136,7 +170,7 @@ Item {
         }
 
         function test_1_selectedIndexForEmptyModel() {
-            compare(simpleModelled.selectedIndex, 2, "empty modelled picker selectedIndex is 0");
+            compare(simpleModelled.selectedIndex, 0, "empty modelled picker selectedIndex is 0");
         }
 
         function test_1_selectedIndexForObjectModel() {
@@ -187,9 +221,11 @@ Item {
             linearLong.circular = true;
 
             spy.target = linearLong;
-            mouseClick(linearLong, units.gu(1), units.gu(1));
+            mouseClick(linearLong, units.gu(1), units.gu(15));
+            wait(500);
             tryCompare(spy, "count", 1);
-            mouseClick(linearLong, units.gu(1), units.gu(18));
+            mouseClick(linearLong, units.gu(1), units.gu(15));
+            wait(500);
             tryCompare(spy, "count", 2);
         }
 
@@ -211,6 +247,66 @@ Item {
             // itemWidth is omitted for larger width than the Picker's width
             linearShort.itemWidth = linearShort.width + units.gu(1);
             compare(linearShort.itemList.currentItem.width, linearShort.width, "larger itemWidth than Pickewr width is omitted");
+        }
+
+        function test_8_modelCropping() {
+            var selected = 50;
+            linearDynPicker.selectedIndex = selected;
+            circularDynPicker.selectedIndex = selected;
+            // wait few milisecods till views are scrolling
+            wait(500);
+            compare(linearDynPicker.selectedIndex, linearDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for linearList");
+            compare(circularDynPicker.selectedIndex, circularDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for circularList");
+
+            selected = 40;
+            dynamicModel.remove(selected, dynamicModel.count - selected);
+            wait(500);
+
+            compare(linearDynPicker.itemList.count, selected, "bad removal from linearList")
+            compare(linearDynPicker.selectedIndex, linearDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for linearList");
+            compare(linearDynPicker.selectedIndex, selected - 1, "bad index of linearList");
+
+            compare(circularDynPicker.itemList.count, selected , "bad removal from circularList")
+            compare(circularDynPicker.selectedIndex, circularDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for circularList");
+            compare(circularDynPicker.selectedIndex, selected - 1, "bad index of circularList");
+
+            // remove from the middle
+            selected = 10;
+            dynamicModel.remove(selected, 10);
+            wait(500);
+
+            compare(linearDynPicker.itemList.count, 30, "bad removal from linearList")
+            compare(linearDynPicker.selectedIndex, linearDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for linearList");
+            compare(linearDynPicker.selectedIndex, 29, "bad index of linearList");
+
+            compare(circularDynPicker.itemList.count, 30, "bad removal from circularList")
+            compare(circularDynPicker.selectedIndex, circularDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for circularList");
+            compare(circularDynPicker.selectedIndex, 29, "bad index of circularList");
+
+            // move selection in front and remove from after
+            linearDynPicker.selectedIndex = 10;
+            circularDynPicker.selectedIndex = 10;
+            dynamicModel.remove(20, 10);
+            wait(500);
+
+            compare(linearDynPicker.itemList.count, 20, "bad removal from linearList")
+            compare(linearDynPicker.selectedIndex, linearDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for linearList");
+            compare(linearDynPicker.selectedIndex, 10, "bad index of linearList");
+
+            compare(circularDynPicker.itemList.count, 20, "bad removal from circularList")
+            compare(circularDynPicker.selectedIndex, circularDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for circularList");
+            compare(circularDynPicker.selectedIndex, 10, "bad index of circularList");
+        }
+
+        function test_9_modelReset() {
+            dynamicModel.reset();
+            wait(500);
+
+            compare(linearDynPicker.itemList.currentIndex, 0, "linear picker's itemList selection not reset");
+            compare(circularDynPicker.itemList.currentIndex, 0, "circular picker's itemList selection not reset");
+
+            compare(linearDynPicker.selectedIndex, 0, "linear picker's selection not reset");
+            compare(circularDynPicker.selectedIndex, 0, "circular picker's selection not reset");
         }
     }
 }

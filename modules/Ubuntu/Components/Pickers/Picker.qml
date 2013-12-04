@@ -154,36 +154,61 @@ StyledItem {
 
         property bool completed: item && (status === Loader.Ready)
 
+        // update curentItem automatically when selectedIndex changes
         Binding {
             target: loader.item
             property: "currentIndex"
             value: picker.selectedIndex
             when: loader.item && loader.status === Loader.Ready
         }
+//        Connections {
+//            target: picker
+//            onSelectedIndexChanged: loader.item.currentIndex = picker.selectedIndex
+//        }
 
         // live selectedIndex updater
-        Binding {
-            target: picker
-            property: "selectedIndex"
-            value: loader.item.currentIndex
-            when: loader.completed && (picker.model !== undefined) && picker.live
-        }
+//        Binding {
+//            target: picker
+//            property: "selectedIndex"
+//            value: loader.item.currentIndex
+//            when: loader.completed && (picker.model !== undefined) &&
+//                  (picker.live || (picker.__clickedIndex === loader.item.currentIndex))
+//        }
         // non-live selectedIndex updater
         Connections {
             target: loader.item
             ignoreUnknownSignals: true
             onMovementEnded: {
+                print("move stopped")
                 if (!picker.live) {
                     picker.selectedIndex = loader.item.currentIndex;
                 }
             }
             onCurrentIndexChanged: {
-                if (!picker.live && picker.__clickedIndex === loader.item.currentIndex) {
+                if (picker.live) {
+                    print("ci2si " + picker.objectName + "/" + loader.item.currentIndex)
                     picker.selectedIndex = loader.item.currentIndex;
-                    picker.__clickedIndex = -1;
+                } else if (!picker.model.count) {
+                    // model reset?
+                    print('reset ' + picker.objectName + ": " + loader.item.currentIndex)
+                    picker.selectedIndex = loader.item.currentIndex;
+                } else if (picker.__clickedIndex > 0 && picker.__clickedIndex === loader.item.currentIndex){
+                    print('clicked ' + picker.objectName)
+                    picker.selectedIndex = loader.item.currentIndex;
+                } else if (modelWatcher.removing) {
+                    picker.selectedIndex = loader.item.currentIndex;
+                    modelWatcher.removing = false;
+                } else {
+                    print("unhandled change on "+picker.objectName+": " + loader.item.currentIndex)
                 }
+
+//                if (picker.live || (picker.__clickedIndex === loader.item.currentIndex)) {
+//                    picker.selectedIndex = loader.item.currentIndex;
+//                    picker.__clickedIndex = -1;
+//                }
             }
             onModelChanged: {
+                modelWatcher.connectModel(picker.model);
                 loader.moveToIndex((loader.completed) ? 0 : picker.selectedIndex);
                 if (loader.completed && !picker.live) {
                     picker.selectedIndex = 0;
@@ -210,6 +235,7 @@ StyledItem {
 
         Component.onCompleted: {
             loader.completed = true;
+            modelWatcher.connectModel(picker.model);
         }
     }
 
@@ -279,4 +305,56 @@ StyledItem {
             flickDeceleration: 100
         }
     }
+
+    /*
+     Watch Picker's model for elements removal, as that is not handled properly
+     by the ListView. If currentIndex fails into the removed model area, PathView will
+     position its currentIndex to the last item, but ListView will leave it somewhere
+     random. In any case, currentItemChange is not triggered. Also, ListView does
+     not report currentIndex changes when the
+     */
+    QtObject {
+        id: modelWatcher
+
+        property var prevModel
+        property bool removing: false
+
+        function connectModel(model) {
+            if (prevModel && Object.prototype.toString.call(prevModel) === "[object Object]") {
+                disconnectModel(prevModel);
+            }
+            prevModel = model;
+            // check if the model is derived from QAbstractListModel
+            if (Object.prototype.toString.call(model) === "[object Object]") {
+                model.rowsAboutToBeRemoved.connect(itemsAboutToRemove);
+                model.rowsInserted.connect(itemsAdded);
+            }
+        }
+
+        function disconnectModel(model) {
+            model.rowsAboutToBeRemoved.disconnect(itemsAboutToRemove);
+            model.rowsInserted.disconnect(itemsAdded);
+        }
+
+        function itemsAdded(parent, start, end) {
+            if (loader.item.currentIndex < 0) {
+//                loader.item.currentIndex = 0;
+            }
+        }
+
+        function itemsAboutToRemove(parent, start, end) {
+            print("model count="+picker.itemList.count + ", start="+start+", end="+end)
+            if ((end - start + 1) === picker.itemList.count) {
+                // cleanup, move selection to 0
+                print("ABOUT TO CLEAR")
+//                picker.itemList.currentIndex = 0;
+                removing = true;
+            } else if (picker.selectedIndex >= start) {
+                print("ABOUT TO REMOVE")
+                removing = true;
+//                picker.itemList.currentIndex = start - 1;
+            }
+        }
+    }
+
 }
