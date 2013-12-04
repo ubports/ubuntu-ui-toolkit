@@ -181,7 +181,8 @@ MainView {
     def setUp(self):
         super(ToolbarTestCase, self).setUp()
         self.toolbar = self.main_view.get_toolbar()
-        self.assertFalse(self.toolbar.opened)
+        # toolbar may be opened or closed now, depending on whether
+        # the application has been deactivated and resumed already
 
     def test_open_toolbar(self):
         self.toolbar.open()
