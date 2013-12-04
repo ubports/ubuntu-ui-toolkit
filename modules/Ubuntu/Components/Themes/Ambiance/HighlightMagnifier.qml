@@ -19,8 +19,7 @@ import QtQuick 2.0
 ShaderEffect {
     id: magnifier
 
-    // Input texture. Must be a ShaderEffectSource.
-    property variant source
+    property ShaderEffectSource source
     property real scaleFactor: 1.2
 
     // Everything in the sourceItem that is not transparent will be made this color
