@@ -266,9 +266,13 @@ StyledItem
     property Component delegate
     property int selectedIndex
     property bool live
+    property real itemWidth
+    property real itemHeight
+    readonly property Item itemList
     property int __clickedIndex
 modules/Ubuntu/Components/Pickers/PickerDelegate.qml
 AbstractButton
+    readonly property Picker picker
 modules/Ubuntu/Components/Popups/ActionSelectionPopover.qml
 Popover
     property Item target

@@ -92,7 +92,9 @@ StyledItem {
     property var model
 
     /*!
-      The delegate visualizing the model elements.
+      The delegate visualizing the model elements. Any kind of component can be
+      used as delegate, however it is recommended to use \l PickerDelegate, which
+      integrates selection functionality into the Picker.
       */
     property Component delegate
 
@@ -108,6 +110,32 @@ StyledItem {
       */
     property bool live: false
 
+    /*!
+      \qmlproperty real itemHeight
+      \qmlproperty real itemWidth
+      These properties define the picker list item's width and height. This is
+      used in calculating the amount of components to be shown in the tumbler,
+      and it is also set as default width and height for the PickerDelegate.
+      The default values are covering the entire width of the Picker and 4.5 GU
+      as height.
+
+      Note that these values do not affect the size of the highlighted item.
+      That one is specified by the style component of the Picker.
+      */
+
+    /*! \internal */
+    property real itemWidth: loader.width
+    /*! \internal */
+    property real itemHeight: units.gu(4.5)
+
+    /*!
+      \qmlproperty Item itemList
+      The property holds the component listing the model content using the given
+      delegate. It can either be a ListView or a PathView depending whether the
+      picker is chosen to be circular or linear.
+      */
+    readonly property alias itemList: loader.item
+
     implicitWidth: units.gu(8)
     implicitHeight: units.gu(20)
 
@@ -115,4 +143,140 @@ StyledItem {
 
     /*! \internal */
     property int __clickedIndex: -1
+
+    // tumbler
+    Loader {
+        id: loader
+        asynchronous: false
+        parent: __styleInstance.hasOwnProperty("tumblerHolder") ? __styleInstance.tumblerHolder : picker
+        anchors.fill: parent
+        sourceComponent: circular ? wrapAround : linear
+
+        property bool completed: item && (status === Loader.Ready)
+
+        Binding {
+            target: loader.item
+            property: "currentIndex"
+            value: picker.selectedIndex
+            when: loader.item && loader.status === Loader.Ready
+        }
+
+        // live selectedIndex updater
+        Binding {
+            target: picker
+            property: "selectedIndex"
+            value: loader.item.currentIndex
+            when: loader.completed && (picker.model !== undefined) && picker.live
+        }
+        // non-live selectedIndex updater
+        Connections {
+            target: loader.item
+            ignoreUnknownSignals: true
+            onMovementEnded: {
+                if (!picker.live) {
+                    picker.selectedIndex = loader.item.currentIndex;
+                }
+            }
+            onCurrentIndexChanged: {
+                if (!picker.live && picker.__clickedIndex === loader.item.currentIndex) {
+                    picker.selectedIndex = loader.item.currentIndex;
+                    picker.__clickedIndex = -1;
+                }
+            }
+            onModelChanged: {
+                loader.moveToIndex((loader.completed) ? 0 : picker.selectedIndex);
+                if (loader.completed && !picker.live) {
+                    picker.selectedIndex = 0;
+                }
+            }
+        }
+
+        function modelSize() {
+            return loader.item.model.hasOwnProperty("count") ? loader.item.model.count : loader.item.model.length;
+        }
+
+        function moveToIndex(toIndex) {
+            var count = (loader.item && loader.item.model) ? modelSize() : -1;
+            if (completed && count > 0) {
+                if (QuickUtils.className(loader.item) === "QQuickListView") {
+                    loader.item.currentIndex = toIndex;
+                    return;
+                } else {
+                    loader.item.positionViewAtIndex(count - 1, PathView.Center);
+                    loader.item.positionViewAtIndex(toIndex, PathView.Center);
+                }
+            }
+        }
+
+        Component.onCompleted: {
+            loader.completed = true;
+        }
+    }
+
+    // circular list
+    Component {
+        id: wrapAround
+        PathView {
+            id: pView
+            objectName: "Picker_WrapAround"
+            // property declared for PickerDelegate to be able to access the main component
+            property Item pickerItem: picker
+            anchors {
+                top: parent ? parent.top : undefined
+                bottom: parent ? parent.bottom : undefined
+                horizontalCenter: parent ? parent.horizontalCenter : undefined
+            }
+            width: parent ? MathUtils.clamp(picker.itemWidth, 0, parent.width) : 0
+            clip: true
+
+            model: picker.model
+            delegate: picker.delegate
+            currentIndex: picker.selectedIndex
+            // put the currentItem to the center of the view
+            preferredHighlightBegin: 0.5
+            preferredHighlightEnd: 0.5
+
+            pathItemCount: pView.height / picker.itemHeight + 1
+            snapMode: PathView.SnapToItem
+            flickDeceleration: 100
+
+            property int contentHeight: pathItemCount * picker.itemHeight
+            path: Path {
+                startX: pView.width / 2
+                startY: -(pView.contentHeight - pView.height) / 2
+                PathLine {
+                    x: pView.width / 2
+                    y: pView.height + (pView.contentHeight - pView.height) / 2
+                }
+            }
+        }
+    }
+
+    // linear list
+    Component {
+        id: linear
+        ListView {
+            id: lView
+            objectName: "Picker_Linear"
+            // property declared for PickerDelegate to be able to access the main component
+            property Item pickerItem: picker
+            anchors {
+                top: parent ? parent.top : undefined
+                bottom: parent ? parent.bottom : undefined
+                horizontalCenter: parent ? parent.horizontalCenter : undefined
+            }
+            width: parent ? MathUtils.clamp(picker.itemWidth, 0, parent.width) : 0
+            clip: true
+
+            model: picker.model
+            delegate: picker.delegate
+            currentIndex: picker.selectedIndex
+
+            preferredHighlightBegin: (height - picker.itemHeight) / 2
+            preferredHighlightEnd: preferredHighlightBegin + picker.itemHeight
+            highlightRangeMode: ListView.StrictlyEnforceRange
+            highlightMoveDuration: 300
+            flickDeceleration: 100
+        }
+    }
 }
