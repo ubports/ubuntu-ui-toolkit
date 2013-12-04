@@ -39,8 +39,7 @@ ShaderEffect {
         varying highp vec2 qt_TexCoord0;
         void main() {
             vec2 texCoord = vec2(0.5 - 1.0 / (2.0 * scaleFactor)) + qt_MultiTexCoord0 / vec2(scaleFactor);
-            texCoord = texCoordRange.xy + texCoord*texCoordRange.zw;
-            qt_TexCoord0 = texCoord;
+            qt_TexCoord0 = texCoordRange.xy + texCoord*texCoordRange.zw;
             gl_Position = qt_Matrix * qt_Vertex;
         }"
 
