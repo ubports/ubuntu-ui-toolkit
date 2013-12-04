@@ -384,7 +384,7 @@ Item {
         }
 
         function test_tabBar_pressed() {
-            compare(tabs.tabBar.pressed, false, "Without user interaction, pressed is false");
+            compare(tabs.tabBar.pressed, false, "Before user interaction, pressed is false");
             mousePress(tabs.tabBar, tabs.tabBar.width/2, tabs.tabBar.height/2);
             compare(tabs.tabBar.pressed, true, "Pressing the tab bar makes pressed true");
             mouseRelease(tabs.tabBar, tabs.tabBar.width/2, tabs.tabBar.height/2);
