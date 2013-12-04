@@ -327,7 +327,7 @@ Item {
         // a tabBar not in selection mode can be put in selection mode by pressing
         id: mouseArea
         anchors.fill: parent
-        // This MouseArea is enabled, even when the tab bar is in selection mode,
+        // This MouseArea is always enabled, even when the tab bar is in selection mode,
         //  so that press events are detected and tabBarStyle.pressed is updated.
         onPressed: {
             styledItem.selectionMode = true;

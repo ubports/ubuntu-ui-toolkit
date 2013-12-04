@@ -369,10 +369,10 @@ modules/Ubuntu/Components/TabBar.qml
 StyledItem
     property Item tabsItem
     property var model
+    readonly property bool pressed
     property bool selectionMode
     property int selectedIndex
     property bool alwaysSelectionMode
-    readonly property bool pressed
     property bool animate
 modules/Ubuntu/Components/Tabs.qml
 PageTreeNode
