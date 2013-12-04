@@ -382,5 +382,13 @@ Item {
             mouseClick(button, units.gu(1), units.gu(1), Qt.LeftButton);
             compare(tabs.tabBar.selectionMode, false, "Tab bar deactivated by interacting with the page contents");
         }
+
+        function test_tabBar_pressed() {
+            compare(tabs.tabBar.pressed, false, "Without user interaction, pressed is false");
+            mousePress(tabs.tabBar, tabs.tabBar.width/2, tabs.tabBar.height/2);
+            compare(tabs.tabBar.pressed, true, "Pressing the tab bar makes pressed true");
+            mouseRelease(tabs.tabBar, tabs.tabBar.width/2, tabs.tabBar.height/2);
+            compare(tabs.tabBar.pressed, false, "After releasing, pressed is false");
+        }
     }
 }

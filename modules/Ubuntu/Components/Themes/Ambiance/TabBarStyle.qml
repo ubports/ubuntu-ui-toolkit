@@ -22,7 +22,7 @@ Item {
 
     // used to detect when the user is interacting with the tab bar by pressing it
     //  or dragging the tab bar buttons.
-    readonly property bool pressed: mouseArea.pressed || buttonView.dragging
+    readonly property bool pressed: mouseArea.interacting
 
     // styling properties, public API
     property color headerTextColor: Theme.palette.normal.backgroundText
@@ -218,6 +218,17 @@ Item {
                         }
                     }
 
+                    onPressedChanged: {
+                        // Catch release after a press with a delay that is too
+                        //  long to make it a click, but don't unset interacting when
+                        //  the user starts dragging. In that case it will be unset in
+                        //  buttonView.onDragEnded.
+                        if (!pressed && !buttonView.dragging) {
+                            // unset interacting which was set in mouseArea.onPressed
+                            mouseArea.interacting = false;
+                        }
+                    }
+
                     // Select this button
                     function select() {
                         buttonView.selectedButtonIndex = button.buttonIndex;
@@ -306,7 +317,11 @@ Item {
             }
         }
 
-        onDragEnded: activatingTimer.stop()
+        onDragEnded: {
+            activatingTimer.stop();
+            // unset interacting which was set in mouseArea.onPressed
+            mouseArea.interacting = false;
+        }
 
         // deactivate the tab bar after inactivity
         onMovementStarted: idleTimer.stop()
@@ -327,9 +342,16 @@ Item {
         // a tabBar not in selection mode can be put in selection mode by pressing
         id: mouseArea
         anchors.fill: parent
+
+        // set in onPressed, and unset in button.onPressedChanged or buttonView.onDragEnded
+        //  because after not accepting the mouse, the released event will go to
+        //  the buttonView or individual buttons.
+        property bool interacting: false
+
         // This MouseArea is always enabled, even when the tab bar is in selection mode,
         //  so that press events are detected and tabBarStyle.pressed is updated.
         onPressed: {
+            mouseArea.interacting = true;
             styledItem.selectionMode = true;
             mouse.accepted = false;
         }
