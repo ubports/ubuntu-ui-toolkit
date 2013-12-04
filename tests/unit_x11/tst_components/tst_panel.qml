@@ -179,15 +179,20 @@ Item {
             panel.open();
             compare(panel.opened, true, "Panel can be made opened");
             wait(panel.hideTimeout + 500); // add 500 ms margin
-            compare(panel.opened, false, "Toolbar automatically closes after timeout");
+            compare(panel.opened, false, "Panel automatically closes after timeout");
 
+            // now, wait in total more than hideTimeout, but less than 2*hideTimeout,
+            //  and have user interaction half-way to verify that the interaction
+            //  resets the timer and the panel is not closed.
             panel.open();
-            wait(3*panel.hideTimeout/4);
+            wait(0.6*panel.hideTimeout);
             mouseClick(panel, panel.width/2, panel.height/2);
-            wait(panel.hideTimeout/2);
-            compare(panel.opened, true, "Interacting with toolbar contents resets the hide timer");
+            wait(0.6*panel.hideTimeout);
+            compare(panel.opened, true, "Interacting with panel contents resets the hide timer");
+            // verify that the timer is still running by waiting a bit longer:
+            wait(0.6*panel.hideTimeout);
+            compare(panel.opened, false, "Interacting with the panel contents does not stop the timer")
             panel.hideTimeout = -1;
-            panel.close();
         }
 
         QtObject {
