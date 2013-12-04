@@ -205,6 +205,7 @@ MainView {
         self.assertFalse(self.toolbar.animating)
 
     def test_closed_toolbar_is_not_closed_again(self):
+        self.toolbar.close()
         with mock.patch.object(
                 self.main_view.pointing_device, 'drag') as mock_drag:
             self.toolbar.close()
@@ -213,6 +214,7 @@ MainView {
         self.assertFalse(self.toolbar.opened)
 
     def test_click_toolbar_button(self):
+        self.toolbar.close()
         label = self.app.select_single('Label', objectName='clicked_label')
         self.assertNotEqual(label.text, 'Button clicked.')
         self.toolbar.open()
@@ -228,6 +230,7 @@ MainView {
             str(error), 'Button with objectName "unexisting" not found.')
 
     def test_click_button_on_closed_toolbar(self):
+        self.toolbar.close()
         error = self.assertRaises(
             emulators.ToolkitEmulatorException, self.toolbar.click_button,
             'buttonName')
