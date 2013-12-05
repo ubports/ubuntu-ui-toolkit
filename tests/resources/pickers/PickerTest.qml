@@ -65,36 +65,36 @@ Column{
             onSelectedIndexChanged: print("linear index="+selectedIndex)
         }
 
-//        Picker {
-//            height: units.gu(40)
-//            model: pickerModel
-//            live: true
-//            delegate: PickerDelegate {
-//                Label {
-//                    anchors.fill: parent
-//                    horizontalAlignment: Text.AlignHCenter
-//                    verticalAlignment: Text.AlignVCenter
-//                    text: modelData
-//                }
-//            }
-//            onSelectedIndexChanged: print("circular index="+selectedIndex)
-//        }
+        Picker {
+            height: units.gu(40)
+            model: pickerModel
+            live: true
+            delegate: PickerDelegate {
+                Label {
+                    anchors.fill: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    text: modelData
+                }
+            }
+            onSelectedIndexChanged: print("circular index="+selectedIndex)
+        }
 
-//        Picker {
-//            height: units.gu(40)
-//            model: pickerModel
-//            circular: false
-//            live: true
-//            delegate: PickerDelegate {
-//                Label {
-//                    anchors.fill: parent
-//                    horizontalAlignment: Text.AlignHCenter
-//                    verticalAlignment: Text.AlignVCenter
-//                    text: modelData
-//                }
-//            }
-//            onSelectedIndexChanged: print("linear index="+selectedIndex)
-//        }
+        Picker {
+            height: units.gu(40)
+            model: pickerModel
+            circular: false
+            live: true
+            delegate: PickerDelegate {
+                Label {
+                    anchors.fill: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    text: modelData
+                }
+            }
+            onSelectedIndexChanged: print("linear index="+selectedIndex)
+        }
     }
     Button {
         text: "crop"
