@@ -79,11 +79,13 @@ Item {
             return tabBar;
         }
 
-        function test_tabBar_selectionMode_closes_toolbar_bug1223600() {
+        function test_tabBar_press_closes_toolbar_bug1223600() {
             testCase.setTabBarSelectionMode(false);
             var toolbar = testCase.openToolbar();
-            testCase.setTabBarSelectionMode(true);
+            testCase.mousePress(tabs.tabBar);
             compare(toolbar.opened, false, "Activating TabBar did not close toolbar");
+            testCase.mouseRelease(tabs.tabBar);
+            testCase.setTabBarSelectionMode(false);
         }
 
         function test_toolbar_press_closes_tabBar_bug1223606 () {
