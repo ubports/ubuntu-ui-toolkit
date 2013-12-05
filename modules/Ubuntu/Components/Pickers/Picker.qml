@@ -175,13 +175,6 @@ StyledItem {
                         || (picker.__clickedIndex > 0 && picker.__clickedIndex === loader.item.currentIndex)
                         || modelWatcher.cropping) {
                     picker.selectedIndex = loader.item.currentIndex;
-//                } else if (modelWatcher.cropping) {
-//                    /*
-//                      Cropping is notified before the change happens on the view, so force
-//                      updating selectedIndex. We must handle this separately as previous
-//                      condition evaluates also when item is inserted, messing it up.
-//                      */
-//                    picker.selectedIndex = loader.item.currentIndex;
                     modelWatcher.cropping = false;
                 }
             }
@@ -329,13 +322,6 @@ StyledItem {
         }
 
         function itemsAdded() {
-//            if (loader.item.currentIndex < 0) {
-//                // ListView does not set currentIndex to 0 (the first item)
-//                // when the first item is added to an empty model, opposite
-//                // to PathView
-//                loader.item.currentIndex = 0;
-//                cropping = false;
-//            }
             if (!loader.isListView && loader.item.count === 2) {
                 // currentItem gets set upon first flick or move when the model is empty
                 // at the time the component gets completed. Disable viewCompleted till
