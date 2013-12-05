@@ -153,7 +153,7 @@ ListItem.Empty {
     property real containerHeight: {
         /*The reason for this slightly unconventional method of setting the container height
           is due to the fact that if we set it to the selector height by default (which is
-          bound to the colum height) then we wouldn't be able to scroll to the end of bottom
+          bound to the colum height) then we wouldn't be able to scroll to the end of the bottom
           boundary. The text is also invisible if none is set so this is taken into account too.*/
         var textHeight = text === "" ? 0 : label.height + column.spacing;
         if (parent && parent.height < list.contentHeight) {
