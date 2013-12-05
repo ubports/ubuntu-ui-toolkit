@@ -134,7 +134,8 @@ StyledItem {
         anchors.fill: parent
         sourceComponent: circular ? wrapAround : linear
 
-        property bool completed: item && (status === Loader.Ready)
+        // property for loading completion
+        property bool completed: item && (status === Loader.Ready) && item.viewCompleted
 
         Binding {
             target: loader.item
@@ -189,10 +190,6 @@ StyledItem {
                 }
             }
         }
-
-        Component.onCompleted: {
-            loader.completed = true;
-        }
     }
 
     // circular list
@@ -203,6 +200,8 @@ StyledItem {
             objectName: "Picker_WrapAround"
             // property declared for PickerDelegate to be able to access the main component
             property Item pickerItem: picker
+            // property holding view completion
+            property bool viewCompleted: false
             anchors {
                 top: parent ? parent.top : undefined
                 bottom: parent ? parent.bottom : undefined
@@ -233,6 +232,8 @@ StyledItem {
                     y: pView.height + (pView.contentHeight - pView.height) / 2
                 }
             }
+
+            Component.onCompleted: viewCompleted = true
         }
     }
 
@@ -244,6 +245,8 @@ StyledItem {
             objectName: "Picker_Linear"
             // property declared for PickerDelegate to be able to access the main component
             property Item pickerItem: picker
+            // property holding view completion
+            property bool viewCompleted: false
             anchors {
                 top: parent ? parent.top : undefined
                 bottom: parent ? parent.bottom : undefined
@@ -261,6 +264,8 @@ StyledItem {
             highlightRangeMode: ListView.StrictlyEnforceRange
             highlightMoveDuration: 300
             flickDeceleration: 100
+
+            Component.onCompleted: viewCompleted = true
         }
     }
 }
