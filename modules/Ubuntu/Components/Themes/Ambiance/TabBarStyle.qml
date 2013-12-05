@@ -318,23 +318,36 @@ Item {
         }
 
         onDragEnded: {
-            activatingTimer.stop();
             // unset interacting which was set in mouseArea.onPressed
             mouseArea.interacting = false;
         }
 
-        // deactivate the tab bar after inactivity
-        onMovementStarted: idleTimer.stop()
-        onMovementEnded: {
-            if (!styledItem.alwaysSelectionMode) {
-                idleTimer.restart();
-            }
-        }
         Timer {
             id: idleTimer
             interval: tabBarStyle.deactivateTime
             running: styledItem.selectionMode && !styledItem.alwaysSelectionMode
             onTriggered: styledItem.selectionMode = false
+            function conditionalRestartOrStop() {
+                if (Qt.application.active &&
+                        styledItem.selectionMode &&
+                        !styledItem.alwaysSelectionMode &&
+                        !mouseArea.interacting) {
+                    idleTimer.restart();
+                } else {
+                    idleTimer.stop();
+                }
+            }
+        }
+
+        // disable the timer when the application is not active and reset
+        //  it when the application is resumed.
+        Connections {
+            target: Qt.application
+            onActiveChanged: idleTimer.conditionalRestartOrStop()
+        }
+        Connections {
+            target: styledItem
+            onSelectionModeChanged: idleTimer.conditionalRestartOrStop()
         }
     }
 
@@ -347,6 +360,7 @@ Item {
         //  because after not accepting the mouse, the released event will go to
         //  the buttonView or individual buttons.
         property bool interacting: false
+        onInteractingChanged: idleTimer.conditionalRestartOrStop()
 
         // This MouseArea is always enabled, even when the tab bar is in selection mode,
         //  so that press events are detected and tabBarStyle.pressed is updated.

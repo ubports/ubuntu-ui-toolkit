@@ -351,9 +351,6 @@ PageTreeNode {
                     canvas.animate = false;
                     headerItem.show();
                     if (headerItem.tabBar) {
-                        headerItem.tabBar.selectionMode = false;
-                        // setting selectionMode to false first ensures resetting
-                        //  the idleTime in the TabBarStyle.
                         headerItem.tabBar.selectionMode = true;
                     }
                     if (!toolbarItem.locked) toolbarItem.open();
