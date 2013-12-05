@@ -17,43 +17,119 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.Pickers 0.1
+Column{
+    Row {
+        ListModel {
+            id: pickerModel
+            Component.onCompleted: reset(100);
 
-Row {
-    ListModel {
-        id: pickerModel
-        Component.onCompleted: {
-            for (var i = 0; i < 100; i++) {
-                append({"label": "Item #"+i});
+            function reset(num) {
+                clear();
+                for (var i = 0; i < num; i++) {
+                    append({"label": "Item #"+i});
+                }
             }
         }
-    }
 
-    Picker {
-        height: units.gu(40)
-        model: pickerModel
-        selectedIndex: 2
-        delegate: PickerDelegate {
-            Label {
-                anchors.fill: parent
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                text: modelData
+
+        Picker {
+            objectName: "Circular"
+            id: circularPicker
+            height: units.gu(40)
+            model: pickerModel
+            delegate: PickerDelegate {
+                Label {
+                    anchors.fill: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    text: modelData
+                }
             }
+            onSelectedIndexChanged: print("circular index="+selectedIndex)
+        }
+
+        Picker {
+            objectName: "Linear"
+            id: linearPicker
+            height: units.gu(40)
+            model: pickerModel
+            circular: false
+            delegate: PickerDelegate {
+                Label {
+                    anchors.fill: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    text: modelData
+                }
+            }
+            onSelectedIndexChanged: print("linear index="+selectedIndex)
+        }
+
+        Picker {
+            height: units.gu(40)
+            model: pickerModel
+            live: true
+            delegate: PickerDelegate {
+                Label {
+                    anchors.fill: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    text: modelData
+                }
+            }
+            onSelectedIndexChanged: print("circular index="+selectedIndex)
+        }
+
+        Picker {
+            height: units.gu(40)
+            model: pickerModel
+            circular: false
+            live: true
+            delegate: PickerDelegate {
+                Label {
+                    anchors.fill: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    text: modelData
+                }
+            }
+            onSelectedIndexChanged: print("linear index="+selectedIndex)
         }
     }
-
-    Picker {
-        height: units.gu(40)
-        model: pickerModel
-        circular: false
-        selectedIndex: 1
-        delegate: PickerDelegate {
-            Label {
-                anchors.fill: parent
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                text: modelData
-            }
+    Button {
+        text: "crop"
+        onClicked: {
+            pickerModel.remove(50, 50);
+            print("circular: selectedIndex="+circularPicker.selectedIndex+
+                  ", currentIndex="+circularPicker.itemList.currentIndex)
+            print("linear: selectedIndex="+linearPicker.selectedIndex+
+                  ", currentIndex="+linearPicker.itemList.currentIndex)
+        }
+    }
+    Button {
+        text: "reset"
+        onClicked: {
+            pickerModel.reset(100);
+            print("circular: selectedIndex="+circularPicker.selectedIndex+
+                  ", currentIndex="+circularPicker.itemList.currentIndex)
+            print("linear: selectedIndex="+linearPicker.selectedIndex+
+                  ", currentIndex="+linearPicker.itemList.currentIndex)
+        }
+    }
+    Button {
+        text: "clear"
+        onClicked: {
+            pickerModel.clear();
+            print("circular: selectedIndex="+circularPicker.selectedIndex+
+                  ", currentIndex="+circularPicker.itemList.currentIndex)
+            print("linear: selectedIndex="+linearPicker.selectedIndex+
+                  ", currentIndex="+linearPicker.itemList.currentIndex)
+        }
+    }
+    Button {
+        text: "append"
+        onClicked: {
+            pickerModel.append({"label": "Item #"+pickerModel.count});
         }
     }
 }
