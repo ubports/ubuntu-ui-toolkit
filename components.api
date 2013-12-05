@@ -266,7 +266,6 @@ StyledItem
     property Component delegate
     property int selectedIndex
     property bool live
-    readonly property Item itemList
     property int __clickedIndex
 modules/Ubuntu/Components/Pickers/PickerDelegate.qml
 AbstractButton

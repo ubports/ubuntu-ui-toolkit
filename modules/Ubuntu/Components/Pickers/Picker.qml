@@ -110,14 +110,6 @@ StyledItem {
       */
     property bool live: false
 
-    /*!
-      \qmlproperty Item itemList
-      The property holds the component listing the model content using the given
-      delegate. It can either be a ListView or a PathView depending whether the
-      picker is chosen to be circular or linear.
-      */
-    readonly property alias itemList: loader.item
-
     implicitWidth: units.gu(8)
     implicitHeight: units.gu(20)
 
@@ -125,6 +117,14 @@ StyledItem {
 
     /*! \internal */
     property int __clickedIndex: -1
+
+    // bind style instance's view property to the Loader's item
+    Binding {
+        target: __styleInstance
+        property: "view"
+        value: loader.item
+        when: __styleInstance.hasOwnProperty("view") && loader.item
+    }
 
     // tumbler
     Loader {

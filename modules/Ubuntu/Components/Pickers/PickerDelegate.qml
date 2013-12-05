@@ -42,9 +42,9 @@ AbstractButton {
 
     /*! \internal */
     onClicked: {
-        if (picker.itemList.currentIndex === index) return;
+        if (internal.itemList.currentIndex === index) return;
         picker.__clickedIndex = index;
-        picker.itemList.currentIndex = index;
+        internal.itemList.currentIndex = index;
     }
 
     style: Theme.createStyleComponent("PickerDelegateStyle.qml", pickerDelegate)
