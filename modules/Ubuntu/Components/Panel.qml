@@ -272,6 +272,19 @@ Item {
             }
         }
     }
+    // disable the timer when the application is not active to avoid closing
+    //  the panel immediately after the application becomes active again
+    Connections {
+        target: Qt.application
+        onActiveChanged: {
+            if (Qt.application.active) {
+                hideTimer.conditionalRestart();
+            } else {
+                hideTimer.stop();
+            }
+        }
+    }
+
 
     /*!
       How much of the panel to show when the user touches the panel's edge.
