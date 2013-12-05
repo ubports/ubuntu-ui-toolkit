@@ -249,19 +249,15 @@ Item {
             waitPickerScrolling();
             var linearList = getPickerList(linearDynPicker, true);
             var circularList = getPickerList(circularDynPicker, false);
-//            compare(linearDynPicker.selectedIndex, linearList.currentIndex, "selectedIndex and itemList.currentIndex differ for linearList");
-//            compare(circularDynPicker.selectedIndex, circularList.currentIndex, "selectedIndex and itemList.currentIndex differ for circularList");
 
             selected = 40;
             dynamicModel.remove(selected, dynamicModel.count - selected);
             waitPickerScrolling();
 
             compare(linearList.count, selected, "bad removal from linearList")
-//            compare(linearDynPicker.selectedIndex, linearList.currentIndex, "selectedIndex and itemList.currentIndex differ for linearList");
             compare(linearDynPicker.selectedIndex, selected - 1, "bad index of linearList");
 
             compare(circularList.count, selected , "bad removal from circularList")
-//            compare(circularDynPicker.selectedIndex, circularList.currentIndex, "selectedIndex and itemList.currentIndex differ for circularList");
             compare(circularDynPicker.selectedIndex, selected - 1, "bad index of circularList");
 
             // remove from the middle
@@ -270,11 +266,9 @@ Item {
             waitPickerScrolling();
 
             compare(linearList.count, 30, "bad removal from linearList")
-            compare(linearDynPicker.selectedIndex, linearList.currentIndex, "selectedIndex and itemList.currentIndex differ for linearList");
             compare(linearDynPicker.selectedIndex, 29, "bad index of linearList");
 
             compare(circularList.count, 30, "bad removal from circularList")
-//            compare(circularDynPicker.selectedIndex, circularList.currentIndex, "selectedIndex and itemList.currentIndex differ for circularList");
             compare(circularDynPicker.selectedIndex, 29, "bad index of circularList");
 
             // move selection in front and remove from after
@@ -284,23 +278,19 @@ Item {
             waitPickerScrolling();
 
             compare(linearList.count, 20, "bad removal from linearList")
-//            compare(linearDynPicker.selectedIndex, linearList.currentIndex, "selectedIndex and itemList.currentIndex differ for linearList");
             compare(linearDynPicker.selectedIndex, 10, "bad index of linearList");
 
             compare(circularList.count, 20, "bad removal from circularList")
-//            compare(circularDynPicker.selectedIndex, circularList.currentIndex, "selectedIndex and itemList.currentIndex differ for circularList");
             compare(circularDynPicker.selectedIndex, 10, "bad index of circularList");
 
-            // remove +-5 items around selectedIndex
+            // remove 6 items around selectedIndex
             dynamicModel.remove(5, 6);
             waitPickerScrolling();
 
             compare(linearList.count, 14, "bad removal from linearList")
-//            compare(linearDynPicker.selectedIndex, linearList.currentIndex, "selectedIndex and itemList.currentIndex differ for linearList");
             compare(linearDynPicker.selectedIndex, 4, "bad index of linearList");
 
             compare(circularList.count, 14, "bad removal from circularList")
-//            compare(circularDynPicker.selectedIndex, circularList.currentIndex, "selectedIndex and itemList.currentIndex differ for circularList");
             compare(circularDynPicker.selectedIndex, 4, "bad index of circularList");
         }
 
