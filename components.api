@@ -266,9 +266,6 @@ StyledItem
     property Component delegate
     property int selectedIndex
     property bool live
-    property real itemWidth
-    property real itemHeight
-    readonly property Item itemList
     property int __clickedIndex
 modules/Ubuntu/Components/Pickers/PickerDelegate.qml
 AbstractButton
@@ -371,6 +368,7 @@ modules/Ubuntu/Components/TabBar.qml
 StyledItem
     property Item tabsItem
     property var model
+    readonly property bool pressed
     property bool selectionMode
     property int selectedIndex
     property bool alwaysSelectionMode

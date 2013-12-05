@@ -47,6 +47,12 @@ Item {
       */
     property alias tumblerHolder: content
 
+    /*!
+      \internal
+      View instance listing the model
+      */
+    property Item view: Item{}
+
     anchors.fill: parent
 
     // frame
@@ -110,7 +116,7 @@ Item {
         }
 
         HighlightMagnifier {
-            sourceItem: styledItem.itemList
+            sourceItem: view
             anchors.fill: highlightItem
             scaleFactor: control.highlightScaleFactor
             outputColor: control.highlightColor

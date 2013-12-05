@@ -37,14 +37,14 @@ AbstractButton {
       */
     readonly property alias picker: internal.picker
 
-    implicitHeight: picker ? picker.itemHeight : units.gu(4)
+    implicitHeight: units.gu(4)
     implicitWidth: picker ? internal.itemList.width : 0
 
     /*! \internal */
     onClicked: {
-        if (picker.itemList.currentIndex === index) return;
+        if (internal.itemList.currentIndex === index) return;
         picker.__clickedIndex = index;
-        picker.itemList.currentIndex = index;
+        internal.itemList.currentIndex = index;
     }
 
     style: Theme.createStyleComponent("PickerDelegateStyle.qml", pickerDelegate)

@@ -159,12 +159,6 @@ Item {
         function test_0_selectedIndex() {
             compare(picker.selectedIndex, 0, "default selectedIndex");
         }
-        function test_0_itemWidth() {
-            compare(picker.itemWidth, picker.width, "itemWidth is same as picker's width by default");
-        }
-        function test_0_itemHeight() {
-            compare(picker.itemHeight, units.gu(4.5), "itemHeight is 4.5 GU by default");
-        }
 
         function test_1_runtimeModel() {
             picker.model = emptyModel;
@@ -240,18 +234,7 @@ Item {
             verify(findChild(picker, expectedList) !== undefined, "circular changed, Picker must use " + expectedList);
         }
 
-        function test_7_itemHeight_itemWidth() {
-            linearShort.itemHeight = units.gu(6);
-            compare(linearShort.itemList.currentItem.height, units.gu(6), "linear delegate height same as itemHeight");
-            linearShort.itemWidth = units.gu(6);
-            compare(linearShort.itemList.currentItem.width, units.gu(6), "linear delegate width same as itemWidth");
-
-            // itemWidth is omitted for larger width than the Picker's width
-            linearShort.itemWidth = linearShort.width + units.gu(1);
-            compare(linearShort.itemList.currentItem.width, linearShort.width, "larger itemWidth than Pickewr width is omitted");
-        }
-
-        function test_8_modelCropping() {
+        function test_7_modelCropping() {
             var selected = 50;
             linearDynPicker.selectedIndex = selected;
             circularDynPicker.selectedIndex = selected;
@@ -300,7 +283,7 @@ Item {
             compare(circularDynPicker.selectedIndex, 10, "bad index of circularList");
         }
 
-        function test_9_modelReset() {
+        function test_8_modelReset() {
             dynamicModel.reset();
             wait(500);
 
