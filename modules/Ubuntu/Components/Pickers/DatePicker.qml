@@ -312,7 +312,10 @@ FocusScope {
         property alias itemList: positioner
         property Item highlightOverlay
 
-        style: Theme.createStyleComponent("PickerStyle.qml", holder)
+        style: Theme.createStyleComponent("DatePickerStyle.qml", holder)
+
+        // used in DatePickerStyle to determine the width of the individual tumblers
+        property alias pickerModels: tumblerModel
 
         Row {
             id: positioner

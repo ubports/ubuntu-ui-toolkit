@@ -36,7 +36,7 @@ Item {
     /*!
       Scale of the highlight item
       */
-    property real highlightScaleFactor: 1.15
+    property real highlightScaleFactor: 1.42
     /*!
       Thickness of the highlight component
       */
@@ -120,11 +120,26 @@ Item {
             sourceRect: Qt.rect(highlightItem.x, highlightItem.y, highlightItem.width, highlightItem.height)
             textureSize: Qt.size(highlightItem.width*sourceRectMultiplier, highlightItem.height*sourceRectMultiplier)
         }
-        HighlightMagnifier {
+
+        Row {
+            id: magnifierRow
             anchors.fill: highlightItem
-            scaleFactor: control.highlightScaleFactor
-            outputColor: control.highlightColor
-            source: effectSource
+
+            Repeater {
+                model: styledItem.pickerModels
+                HighlightMagnifier {
+                    anchors {
+                        top: magnifierRow.top
+                        bottom: magnifierRow.bottom
+                    }
+                    width: pickerModel.pickerWidth
+                    scaleFactor: control.highlightScaleFactor
+                    outputColor: control.highlightColor
+                    source: effectSource
+                    texCoordRange: Qt.rect((x - source.sourceRect.x) / source.sourceRect.width, 0.0,
+                                           width / source.sourceRect.width, 1.0);
+                }
+            }
         }
     }
 }
