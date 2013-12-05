@@ -271,6 +271,17 @@ PageTreeNode {
                 }
             }
 
+          /*
+            Avoid interpreting an extended movement that switches beteween apps as
+            interaction that immediately after activating the app hides the header and
+            toolbar again.
+           */
+            Timer {
+                id: activatingTimer
+                interval: 800 // same as pressAndHold time
+            }
+
+
             MouseArea {
                 id: contentsArea
                 anchors.fill: contents
@@ -281,11 +292,13 @@ PageTreeNode {
 
                 onPressed: {
                     mouse.accepted = false;
-                    if (!toolbarItem.locked) {
-                        toolbarItem.close();
+                    if (!activatingTimer.running) {
+                        if (!toolbarItem.locked) {
+                            toolbarItem.close();
                         }
-                    if (headerItem.tabBar && !headerItem.tabBar.alwaysSelectionMode) {
-                        headerItem.tabBar.selectionMode = false;
+                        if (headerItem.tabBar && !headerItem.tabBar.alwaysSelectionMode) {
+                            headerItem.tabBar.selectionMode = false;
+                        }
                     }
                 }
                 propagateComposedEvents: true
@@ -300,7 +313,7 @@ PageTreeNode {
         Toolbar {
             id: toolbarItem
             onPressedChanged: {
-                if (!pressed) return;
+                if (!pressed || activatingTimer.running) return;
                 if (headerItem.tabBar !== null) {
                     headerItem.tabBar.selectionMode = false;
                 }
@@ -337,7 +350,7 @@ PageTreeNode {
                 // no connections are made when target is null
                 target: headerItem.tabBar
                 onPressedChanged: {
-                    if (headerItem.tabBar.pressed) {
+                    if (headerItem.tabBar.pressed && !activatingTimer.running) {
                         if (!toolbarItem.locked) toolbarItem.close();
                     }
                 }
@@ -348,6 +361,7 @@ PageTreeNode {
             target: Qt.application
             onActiveChanged: {
                 if (Qt.application.active) {
+                    activatingTimer.restart();
                     canvas.animate = false;
                     headerItem.show();
                     if (headerItem.tabBar) {
