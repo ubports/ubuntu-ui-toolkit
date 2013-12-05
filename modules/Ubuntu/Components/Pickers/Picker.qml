@@ -75,6 +75,16 @@ import "../" 0.1
         }
     }
     \endqml
+
+    \section3 Known issues
+    \list
+        \li [1] Circular picker does not react on flicks when nested into a Flickable
+        \l {https://bugreports.qt-project.org/browse/QTBUG-13690} and
+        \l {https://bugreports.qt-project.org/browse/QTBUG-30840}
+        \li [2] Circular picker sets \l selectedIndex to 0 when the model is cleared,
+        contrary to linear one, which sets it to -1.
+        \l {https://bugreports.qt-project.org/browse/QTBUG-35400}
+    \endlist
  */
 
 StyledItem {
@@ -159,53 +169,32 @@ StyledItem {
             target: loader.item
             property: "currentIndex"
             value: picker.selectedIndex
-            when: loader.item && loader.status === Loader.Ready
+            when: loader.item && (loader.status === Loader.Ready) && (picker.selectedIndex >= 0)
         }
-//        Connections {
-//            target: picker
-//            onSelectedIndexChanged: loader.item.currentIndex = picker.selectedIndex
-//        }
 
-        // live selectedIndex updater
-//        Binding {
-//            target: picker
-//            property: "selectedIndex"
-//            value: loader.item.currentIndex
-//            when: loader.completed && (picker.model !== undefined) &&
-//                  (picker.live || (picker.__clickedIndex === loader.item.currentIndex))
-//        }
-        // non-live selectedIndex updater
+        // selectedIndex updater, live or non-live ones
         Connections {
             target: loader.item
             ignoreUnknownSignals: true
             onMovementEnded: {
-                print("move stopped")
                 if (!picker.live) {
-                    picker.selectedIndex = loader.item.currentIndex;
+                    picker.selectedIndex = itemList.currentIndex;
                 }
             }
             onCurrentIndexChanged: {
-                if (picker.live) {
-                    print("ci2si " + picker.objectName + "/" + loader.item.currentIndex)
+                if (picker.live || (!picker.model.count)
+                        || (picker.__clickedIndex > 0 && picker.__clickedIndex === itemList.currentIndex)
+                        ) {
+                    picker.selectedIndex = itemList.currentIndex;
+                } else if (modelWatcher.cropping) {
+                    /*
+                      Cropping is notified before the change happens on the view, so force
+                      updating selectedIndex. We must handle this separately as previous
+                      condition evaluates also when item is inserted, messing it up.
+                      */
                     picker.selectedIndex = loader.item.currentIndex;
-                } else if (!picker.model.count) {
-                    // model reset?
-                    print('reset ' + picker.objectName + ": " + loader.item.currentIndex)
-                    picker.selectedIndex = loader.item.currentIndex;
-                } else if (picker.__clickedIndex > 0 && picker.__clickedIndex === loader.item.currentIndex){
-                    print('clicked ' + picker.objectName)
-                    picker.selectedIndex = loader.item.currentIndex;
-                } else if (modelWatcher.removing) {
-                    picker.selectedIndex = loader.item.currentIndex;
-                    modelWatcher.removing = false;
-                } else {
-                    print("unhandled change on "+picker.objectName+": " + loader.item.currentIndex)
+                    modelWatcher.cropping = false;
                 }
-
-//                if (picker.live || (picker.__clickedIndex === loader.item.currentIndex)) {
-//                    picker.selectedIndex = loader.item.currentIndex;
-//                    picker.__clickedIndex = -1;
-//                }
             }
             onModelChanged: {
                 modelWatcher.connectModel(picker.model);
@@ -217,18 +206,18 @@ StyledItem {
         }
 
         function modelSize() {
-            return loader.item.model.hasOwnProperty("count") ? loader.item.model.count : loader.item.model.length;
+            return itemList.model.hasOwnProperty("count") ? itemList.model.count : itemList.model.length;
         }
 
         function moveToIndex(toIndex) {
-            var count = (loader.item && loader.item.model) ? modelSize() : -1;
+            var count = (itemList && itemList.model) ? modelSize() : -1;
             if (completed && count > 0) {
-                if (QuickUtils.className(loader.item) === "QQuickListView") {
-                    loader.item.currentIndex = toIndex;
+                if (QuickUtils.className(itemList) === "QQuickListView") {
+                    itemList.currentIndex = toIndex;
                     return;
                 } else {
-                    loader.item.positionViewAtIndex(count - 1, PathView.Center);
-                    loader.item.positionViewAtIndex(toIndex, PathView.Center);
+                    itemList.positionViewAtIndex(count - 1, PathView.Center);
+                    itemList.positionViewAtIndex(toIndex, PathView.Center);
                 }
             }
         }
@@ -307,17 +296,15 @@ StyledItem {
     }
 
     /*
-     Watch Picker's model for elements removal, as that is not handled properly
-     by the ListView. If currentIndex fails into the removed model area, PathView will
-     position its currentIndex to the last item, but ListView will leave it somewhere
-     random. In any case, currentItemChange is not triggered. Also, ListView does
-     not report currentIndex changes when the
-     */
+      Watch Picker's model to catch when elements are removed ro model is cleared.
+      We need this to detect currentIndex changes in List/PathViews when non-live
+      update mode is chosen, to know when do we need to update selectedIndex.
+      */
     QtObject {
         id: modelWatcher
 
         property var prevModel
-        property bool removing: false
+        property bool cropping: false
 
         function connectModel(model) {
             if (prevModel && Object.prototype.toString.call(prevModel) === "[object Object]") {
@@ -336,23 +323,23 @@ StyledItem {
             model.rowsInserted.disconnect(itemsAdded);
         }
 
-        function itemsAdded(parent, start, end) {
-            if (loader.item.currentIndex < 0) {
-//                loader.item.currentIndex = 0;
+        function itemsAdded() {
+            if (itemList.currentIndex < 0) {
+                // ListView does not set currentIndex to 0 (the first item)
+                // when the first item is added to an empty model, opposite
+                // to PathView
+                itemList.currentIndex = 0;
+                cropping = false;
             }
         }
 
         function itemsAboutToRemove(parent, start, end) {
-            print("model count="+picker.itemList.count + ", start="+start+", end="+end)
-            if ((end - start + 1) === picker.itemList.count) {
-                // cleanup, move selection to 0
-                print("ABOUT TO CLEAR")
-//                picker.itemList.currentIndex = 0;
-                removing = true;
-            } else if (picker.selectedIndex >= start) {
-                print("ABOUT TO REMOVE")
-                removing = true;
-//                picker.itemList.currentIndex = start - 1;
+            if (((end - start + 1) === itemList.count)
+                    || (selectedIndex >= start)) {
+                // Notify views that the model got cleared or got cropped
+                // the itemList.currentIndex is not yet updated, so we simply remember
+                // that we need to update when currentIndex change is notified
+                cropping = true;
             }
         }
     }

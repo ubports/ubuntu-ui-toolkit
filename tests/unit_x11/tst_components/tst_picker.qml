@@ -70,6 +70,7 @@ Item {
         }
         Picker {
             id: linearDynPicker
+            objectName: "linearDynPicker"
             model: dynamicModel
             circular: false
             delegate: PickerDelegate {
@@ -78,6 +79,7 @@ Item {
         }
         Picker {
             id: circularDynPicker
+            objectName: "circularDynPicker"
             model: dynamicModel
             circular: true
             delegate: PickerDelegate {
@@ -307,6 +309,25 @@ Item {
 
             compare(linearDynPicker.selectedIndex, 0, "linear picker's selection not reset");
             compare(circularDynPicker.selectedIndex, 0, "circular picker's selection not reset");
+        }
+
+        function test_9_modelClear() {
+            dynamicModel.clear();
+            wait(500);
+
+            compare(linearDynPicker.itemList.currentIndex, -1, "linear picker's itemList selection not reset");
+            expectFailContinue("", "PathView issue: https://bugreports.qt-project.org/browse/QTBUG-35400");
+            compare(circularDynPicker.itemList.currentIndex, -1, "circular picker's itemList selection not reset");
+
+            compare(linearDynPicker.selectedIndex, -1, "linear picker's selection not reset");
+            expectFailContinue("", "PathView issue: https://bugreports.qt-project.org/browse/QTBUG-35400");
+            compare(circularDynPicker.selectedIndex, -1, "circular picker's selection not reset");
+
+            // restore model and selections
+            dynamicModel.reset();
+            wait(500);
+//            linearDynPicker.selectedIndex = 0;
+//            circularDynPicker.selectedIndex = 0;
         }
     }
 }
