@@ -50,10 +50,16 @@ MainView {
                 }
             }
             Button {
+                text: "Change minimum"
+                onClicked: {
+                    picker.minimum = new Date("2012/12/1");
+                }
+            }
+            Button {
                 text: "minimum & date"
                 onClicked: {
                     picker.minimum = new Date("2013/12/1");
-//                    picker.date = new Date("2013/12/31");
+                    picker.date = new Date("2014/12/5");
                 }
             }
         }

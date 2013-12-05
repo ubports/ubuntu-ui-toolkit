@@ -81,14 +81,14 @@ ListModel {
     /*
       Returns the index of the value from the model.
       */
-    function indexOf(date) {
+    function indexOf() {
         return -1;
     }
 
     /*
       Returns a Date object from the model's \a index, relative to the given \a date.
       */
-    function dateFromIndex(date, index) {
+    function dateFromIndex(index) {
         return new Date();
     }
 
@@ -96,7 +96,7 @@ ListModel {
       Returns the date string for the value relative to the date, which fits into the
       given width. Uses the locale from pickerItem to fetch the localized date string.
       */
-    function text(date, value, width) {
+    function text(value, width) {
         return "";
     }
 
@@ -110,9 +110,30 @@ ListModel {
     property bool pickerCompleted: false
 
     /*
-      Call reset() whenever minimum or maximum changes
+      Call reset() whenever minimum or maximum changes, and update
+      selected index of pickerItem whenever date changes.
       */
-    onMinimumChanged: if (pickerCompleted) reset()
-    onMaximumChanged: if (pickerCompleted) reset()
+    onMinimumChanged: {
+        if (pickerCompleted && pickerItem) {
+            print("1-MIN RESET " + pickerItem.objectName)
+            pickerItem.resetPicker();
+            print("2-MIN RESET " + pickerItem.objectName)
+        }
+    }
+    onMaximumChanged: {
+        if (pickerCompleted && pickerItem) {
+            print("1-MAX RESET " + pickerItem.objectName)
+            pickerItem.resetPicker();
+            print("2-MAX RESET " + pickerItem.objectName)
+        }
+    }
+    onDateChanged: {
+        if (!pickerCompleted || !pickerItem) {
+            return;
+        }
+        print("1-SYNC " + pickerItem.objectName + ": " + indexOf());
+        pickerItem.selectedIndex = indexOf();
+        print("2-SYNC " + pickerItem.objectName + ": " + indexOf());
+    }
 
 }

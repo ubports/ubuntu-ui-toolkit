@@ -26,11 +26,6 @@ PickerModelBase {
         for (var i = 0; i < date.daysInMonth(); i++) {
             append({"day": i});
         }
-
-        // call the pickerItem reset
-        if (pickerItem) {
-            pickerItem.resetPicker();
-        }
     }
 
     function resetLimits(label, margin) {
@@ -62,13 +57,13 @@ PickerModelBase {
         return date.getDate() - 1;
     }
 
-    function dateFromIndex(date, index) {
+    function dateFromIndex(index) {
         var newDate = new Date(date);
         newDate.setDate(index + 1);
         return newDate;
     }
 
-    function text(date, value, width) {
+    function text(value, width) {
         var thisDate = new Date(date);
         thisDate.setDate(value + 1);
 

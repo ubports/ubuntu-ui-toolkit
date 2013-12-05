@@ -29,11 +29,6 @@ PickerModelBase {
         from = (minimum.getFullYear() <= 0) ? date.getFullYear() : minimum.getFullYear();
         to = (maximum < minimum) ? -1 : maximum.getFullYear();
         extend(from, to - from);
-
-        // call the pickerItem reset
-        if (pickerItem) {
-            pickerItem.resetPicker();
-        }
     }
 
     function resetLimits(label, margin) {
@@ -59,13 +54,13 @@ PickerModelBase {
         return index;
     }
 
-    function dateFromIndex(date, index) {
+    function dateFromIndex(index) {
         var newDate = new Date(date);
         newDate.setFullYear(index + from);
         return newDate;
     }
 
-    function text(date, value, width) {
+    function text(value, width) {
         return (value) ? value : "";
     }
 }

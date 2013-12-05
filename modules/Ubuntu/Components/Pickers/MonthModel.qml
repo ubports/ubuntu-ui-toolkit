@@ -39,11 +39,6 @@ PickerModelBase {
             modelDate.setMonth(i);
             append({"month": modelDate.getMonth()});
         }
-
-        // call the pickerItem reset
-        if (pickerItem) {
-            pickerItem.resetPicker();
-        }
     }
 
     function resetLimits(label, margin) {
@@ -66,7 +61,7 @@ PickerModelBase {
         return index;
     }
 
-    function dateFromIndex(date, index) {
+    function dateFromIndex(index) {
         var newDate = new Date(date);
         // check if the days are in the diff zone (29-31)
         var fromDay = newDate.getDate();
@@ -80,7 +75,7 @@ PickerModelBase {
         return newDate;
     }
 
-    function text(date, value, width) {
+    function text(value, width) {
         if (!compositPicker || value === undefined) {
             return "dummy";
         }

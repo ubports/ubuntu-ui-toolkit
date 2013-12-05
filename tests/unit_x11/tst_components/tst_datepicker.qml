@@ -95,10 +95,11 @@ Item {
 
         function test_1_localeHu() {
             var locale = Qt.locale("hu_HU");
-            picker.minimum = new Date("2013/12/1");
-            picker.date = new Date("2013/12/1");
+            picker.minimum = new Date("2012/12/1");
+            picker.date = new Date("2012/12/1");
             picker.locale = Qt.locale("hu_HU");
             waitForRendering(picker);
+            wait(4000);
             var pickerItem = findChild(picker, "DatePicker_MonthPicker");
             var label = findChild(pickerItem.itemList.currentItem, "DatePicker_PickerLabel");
             compare(label.text, locale.monthName(picker.date.getMonth(), Locale.LongFormat), "locale for month wrong");

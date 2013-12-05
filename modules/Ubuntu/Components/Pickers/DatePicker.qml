@@ -177,7 +177,7 @@ FocusScope {
     property date minimum: Date.prototype.midnight.call(new Date())
     /*! \internal */
     property date maximum: {
-        var d = new Date(minimum);
+        var d = new Date();
         d.setFullYear(d.getFullYear() + 50);
         return d;
     }
@@ -235,6 +235,7 @@ FocusScope {
         if (date !== undefined && date < minimum && minimum.isValid() && internals.completed) {
             date = minimum;
         }
+        print("MIN CHANGED")
     }
     /*! \internal */
     onMaximumChanged: {
@@ -256,6 +257,8 @@ FocusScope {
     }
     /*! \internal */
     onModeChanged: internals.resetPickers();
+    /*! \internal */
+//    onDateChanged: internals.syncPickersWithDate()
 
     Component.onCompleted: {
         if (minimum === undefined) minimum = date;
@@ -341,10 +344,9 @@ FocusScope {
                         color: (pickerDelegate.Positioner.index % 2) ? Qt.rgba(0, 0, 0, 0.03) : Qt.rgba(0, 0, 0, 0.07)
                     }
                     delegate: PickerDelegate {
-                        id: pickerLabel
                         Label {
                             objectName: "DatePicker_PickerLabel"
-                            text: pickerModel.text(datePicker.date, modelData, pickerModel.pickerWidth)
+                            text: pickerModel.text(modelData, pickerModel.pickerWidth)
                             color: Theme.palette.normal.backgroundText
                             anchors.fill: parent
                             verticalAlignment: Text.AlignVCenter
@@ -358,7 +360,7 @@ FocusScope {
                     }
 
                     onSelectedIndexChanged: {
-                        datePicker.date = pickerModel.dateFromIndex(datePicker.date, selectedIndex);
+                        datePicker.date = pickerModel.dateFromIndex(selectedIndex);
                         pickerModel.syncModels();
                     }
 
@@ -366,13 +368,14 @@ FocusScope {
                       Resets the Picker model and updates the new format limits.
                       */
                     function resetPicker() {
-                        pickerModel.resetLimits(textSizer, internals.margin);
-                        selectedIndex = pickerModel.indexOf(datePicker.date);
+                        model.reset();
+                        model.resetLimits(textSizer, internals.margin);
+                        selectedIndex = model.indexOf();
                     }
 
                     Component.onCompleted: {
                         // update model with the item instance
-                        pickerModel.pickerItem = pickerDelegate;
+                        model.pickerItem = pickerDelegate;
                     }
                 }
             }
@@ -393,9 +396,25 @@ FocusScope {
         function resetPickers() {
             if (!completed) return;
             for (var i = 0; i < tumblerModel.count; i++) {
-                var model = tumblerModel.get(i);
-                model.pickerModel.reset();
+                var pickerItem = tumblerModel.get(i).pickerModel.pickerItem;
+//                model.pickerModel.reset();
+                pickerItem.resetPicker();
             }
+        }
+        /*
+          sync pickers.
+          */
+        function syncPickersWithDate() {
+            if (!completed) return;
+            print(datePicker.date)
+            yearModel.pickerItem.selectedIndex = yearModel.indexOf();
+//            monthModel.pickerItem.selectedIndex = monthModel.indexOf();
+            dayModel.pickerItem.selectedIndex = dayModel.indexOf();
+//            for (var i = 0; i < tumblerModel.count; i++) {
+//                var model = tumblerModel.get(i).pickerModel;
+//                model.pickerItem.selectedIndex = model.indexOf();
+//                print(model.pickerItem + "?" + model.pickerItem.selectedIndex)
+//            }
         }
 
         /*
