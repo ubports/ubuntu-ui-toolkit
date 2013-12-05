@@ -111,24 +111,6 @@ StyledItem {
     property bool live: false
 
     /*!
-      \qmlproperty real itemHeight
-      \qmlproperty real itemWidth
-      These properties define the picker list item's width and height. This is
-      used in calculating the amount of components to be shown in the tumbler,
-      and it is also set as default width and height for the PickerDelegate.
-      The default values are covering the entire width of the Picker and 4.5 GU
-      as height.
-
-      Note that these values do not affect the size of the highlighted item.
-      That one is specified by the style component of the Picker.
-      */
-
-    /*! \internal */
-    property real itemWidth: loader.width
-    /*! \internal */
-    property real itemHeight: units.gu(4.5)
-
-    /*!
       \qmlproperty Item itemList
       The property holds the component listing the model content using the given
       delegate. It can either be a ListView or a PathView depending whether the
@@ -226,7 +208,7 @@ StyledItem {
                 bottom: parent ? parent.bottom : undefined
                 horizontalCenter: parent ? parent.horizontalCenter : undefined
             }
-            width: parent ? MathUtils.clamp(picker.itemWidth, 0, parent.width) : 0
+            width: parent ? parent.width : 0
             clip: true
 
             model: picker.model
@@ -236,11 +218,13 @@ StyledItem {
             preferredHighlightBegin: 0.5
             preferredHighlightEnd: 0.5
 
-            pathItemCount: pView.height / picker.itemHeight + 1
+            // FIXME: currentItem gets set upon first flick when the model is empty at the
+            // time the component gets completed. Watch the model changes to force update
+            pathItemCount: pView.height / (pView.currentItem ? pView.currentItem.height : 1) + 1
             snapMode: PathView.SnapToItem
             flickDeceleration: 100
 
-            property int contentHeight: pathItemCount * picker.itemHeight
+            property int contentHeight: pathItemCount * (pView.currentItem ? pView.currentItem.height : 1)
             path: Path {
                 startX: pView.width / 2
                 startY: -(pView.contentHeight - pView.height) / 2
@@ -265,15 +249,15 @@ StyledItem {
                 bottom: parent ? parent.bottom : undefined
                 horizontalCenter: parent ? parent.horizontalCenter : undefined
             }
-            width: parent ? MathUtils.clamp(picker.itemWidth, 0, parent.width) : 0
+            width: parent ? parent.width : 0
             clip: true
 
             model: picker.model
             delegate: picker.delegate
             currentIndex: picker.selectedIndex
 
-            preferredHighlightBegin: (height - picker.itemHeight) / 2
-            preferredHighlightEnd: preferredHighlightBegin + picker.itemHeight
+            preferredHighlightBegin: (height - (currentItem ? currentItem.height : 0)) / 2
+            preferredHighlightEnd: preferredHighlightBegin + (currentItem ? currentItem.height : 0)
             highlightRangeMode: ListView.StrictlyEnforceRange
             highlightMoveDuration: 300
             flickDeceleration: 100

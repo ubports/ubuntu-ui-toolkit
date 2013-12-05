@@ -37,7 +37,7 @@ AbstractButton {
       */
     readonly property alias picker: internal.picker
 
-    implicitHeight: picker ? picker.itemHeight : units.gu(4)
+    implicitHeight: units.gu(4)
     implicitWidth: picker ? internal.itemList.width : 0
 
     /*! \internal */
