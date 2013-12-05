@@ -322,14 +322,15 @@ PageTreeNode {
                 when: headerItem.contents &&
                       headerItem.contents.hasOwnProperty("selectionMode") &&
                       headerItem.contents.hasOwnProperty("alwaysSelectionMode") &&
-                      headerItem.contents.hasOwnProperty("selectedIndex")
+                      headerItem.contents.hasOwnProperty("selectedIndex") &&
+                      headerItem.contents.hasOwnProperty("pressed")
             }
 
             Connections {
                 // no connections are made when target is null
                 target: headerItem.tabBar
-                onSelectionModeChanged: {
-                    if (headerItem.tabBar.selectionMode) {
+                onPressedChanged: {
+                    if (headerItem.tabBar.pressed) {
                         if (!toolbarItem.locked) toolbarItem.close();
                     }
                 }
