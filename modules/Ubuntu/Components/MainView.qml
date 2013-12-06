@@ -292,6 +292,11 @@ PageTreeNode {
             }
         }
 
+        /*!
+          Animate header and toolbar.
+         */
+        property bool animate: true
+
         Toolbar {
             id: toolbarItem
             onPressedChanged: {
@@ -300,6 +305,7 @@ PageTreeNode {
                     headerItem.tabBar.selectionMode = false;
                 }
             }
+            animate: canvas.animate
         }
 
         /*!
@@ -313,6 +319,7 @@ PageTreeNode {
             objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
+            animate: canvas.animate
 
             property Item tabBar: null
             Binding {
@@ -333,6 +340,21 @@ PageTreeNode {
                     if (headerItem.tabBar.pressed) {
                         if (!toolbarItem.locked) toolbarItem.close();
                     }
+                }
+            }
+        }
+
+        Connections {
+            target: Qt.application
+            onActiveChanged: {
+                if (Qt.application.active) {
+                    canvas.animate = false;
+                    headerItem.show();
+                    if (headerItem.tabBar) {
+                        headerItem.tabBar.selectionMode = true;
+                    }
+                    if (!toolbarItem.locked) toolbarItem.open();
+                    canvas.animate = true;
                 }
             }
         }
