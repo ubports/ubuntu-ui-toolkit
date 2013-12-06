@@ -37,7 +37,11 @@ function create_test_cmd {
 
 function execute_test_cmd {
   echo "Executing $_CMD $_ARGS"
-  QML2_IMPORT_PATH=../../../modules:$QML2_IMPORT_PATH UBUNTU_UI_TOOLKIT_THEMES_PATH=../../../modules $_CMD $_ARGS
+  if [ $DISPLAY ]; then
+      QML2_IMPORT_PATH=../../../modules:$QML2_IMPORT_PATH UBUNTU_UI_TOOLKIT_THEMES_PATH=../../../modules $_CMD $_ARGS
+  else
+      echo "Skipped because no DISPLAY available"
+  fi
   RESULT=$?
   # segfault
   if [ $RESULT -eq 139 ]; then
