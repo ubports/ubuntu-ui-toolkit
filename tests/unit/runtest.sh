@@ -20,12 +20,19 @@
 _CMD=""
 _TARGET=$1
 _TESTFILE=$2
-_ARG_XML="-o ../../test_$_TARGET_$_TESTFILE.xml,xunitxml -o -,txt"
-_ARGS=""
+_MINIMAL=$3
+_ARGS="-o ../../test_$_TARGET_$_TESTFILE.xml,xunitxml -o -,txt"
 set +e
 
 function create_test_cmd {
-  _CMD="./$_TARGET -input $_TESTFILE -import \"../../../modules\" -maxwarnings 20"
+  _CMD="./$_TARGET"
+  if [ "$MINIMAL" = "minimal" ]; then
+      _CMD="$_CMD -platform minimal"
+  fi
+  if [ $_TARGET != $_TESTFILE ]; then
+      _CMD="$_CMD -input $_TESTFILE"
+  fi
+  _CMD="$_CMD -maxwarnings 20"
 }
 
 function execute_test_cmd {
@@ -40,9 +47,6 @@ function execute_test_cmd {
   if [ $RESULT -eq 134 ]; then
    return 2
   fi
-#  if [ $RESULT -eq 0 ]; then
-#    ../testparser/testparser ../../test_$_TARGET_$_TESTFILE.xml;
-#  fi
   return $RESULT
 }
 
