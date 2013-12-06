@@ -42,7 +42,7 @@ docs.commands += cat $$DOC_PATH/qdoc.err;
 docs.commands += test ! -s $$DOC_PATH/qdoc.err || exit 1;
 docs.commands += qhelpgenerator -o "$$DOC_PATH/html/ubuntuuserinterfacetoolkit.qch" "$$DOC_PATH/html/ubuntuuserinterfacetoolkit.qhp";
 docs.commands += qdoc $$DOC_PATH/ubuntu-ui-toolkit-online.qdocconf 2> $$DOC_PATH/qdoc.err;
-docs.commands += grep --color=no -viE \\(script\\|web\\|graphics\\)\\|iterator $$DOC_PATH/qdoc.err;
+docs.commands += grep --color=no -viE q\\(script\\|web\\|graphics\\)\\|iterator $$DOC_PATH/qdoc.err;
 docs.commands += $$DOC_PATH/fix-markup.sh $$DOC_PATH;
 QMAKE_EXTRA_TARGETS += docs
 
