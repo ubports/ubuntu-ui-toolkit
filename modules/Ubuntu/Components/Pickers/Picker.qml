@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import "../" 0.1
+import Ubuntu.Components 0.1
 
 /*!
     \qmltype Picker
@@ -78,12 +78,13 @@ import "../" 0.1
 
     \section3 Known issues
     \list
-        \li [1] Circular picker does not react on flicks when nested into a Flickable
-        \l {https://bugreports.qt-project.org/browse/QTBUG-13690} and
-        \l {https://bugreports.qt-project.org/browse/QTBUG-30840}
+        \li [1] Circular picker does not react on touch generated flicks (on touch
+            enabled devices) when nested into a Flickable -
+            \l {https://bugreports.qt-project.org/browse/QTBUG-13690} and
+            \l {https://bugreports.qt-project.org/browse/QTBUG-30840}
         \li [2] Circular picker sets \l selectedIndex to 0 when the model is cleared,
-        contrary to linear one, which sets it to -1.
-        \l {https://bugreports.qt-project.org/browse/QTBUG-35400}
+            contrary to linear one, which sets it to -1 -
+            \l {https://bugreports.qt-project.org/browse/QTBUG-35400}
     \endlist
  */
 
@@ -120,32 +121,6 @@ StyledItem {
       */
     property bool live: false
 
-    /*!
-      \qmlproperty real itemHeight
-      \qmlproperty real itemWidth
-      These properties define the picker list item's width and height. This is
-      used in calculating the amount of components to be shown in the tumbler,
-      and it is also set as default width and height for the PickerDelegate.
-      The default values are covering the entire width of the Picker and 4.5 GU
-      as height.
-
-      Note that these values do not affect the size of the highlighted item.
-      That one is specified by the style component of the Picker.
-      */
-
-    /*! \internal */
-    property real itemWidth: loader.width
-    /*! \internal */
-    property real itemHeight: units.gu(4.5)
-
-    /*!
-      \qmlproperty Item itemList
-      The property holds the component listing the model content using the given
-      delegate. It can either be a ListView or a PathView depending whether the
-      picker is chosen to be circular or linear.
-      */
-    readonly property alias itemList: loader.item
-
     implicitWidth: units.gu(8)
     implicitHeight: units.gu(20)
 
@@ -153,6 +128,14 @@ StyledItem {
 
     /*! \internal */
     property int __clickedIndex: -1
+
+    // bind style instance's view property to the Loader's item
+    Binding {
+        target: __styleInstance
+        property: "view"
+        value: loader.item
+        when: __styleInstance.hasOwnProperty("view") && loader.item
+    }
 
     // tumbler
     Loader {
@@ -162,14 +145,18 @@ StyledItem {
         anchors.fill: parent
         sourceComponent: circular ? wrapAround : linear
 
-        property bool completed: item && (status === Loader.Ready)
+        // property for loading completion
+        property bool completed: item && (status === Loader.Ready) && item.viewCompleted
+
+        // do we have a ListView or PathView?
+        property bool isListView: (item && QuickUtils.className(item) === "QQuickListView")
 
         // update curentItem automatically when selectedIndex changes
         Binding {
             target: loader.item
             property: "currentIndex"
             value: picker.selectedIndex
-            when: loader.item && (loader.status === Loader.Ready) && (picker.selectedIndex >= 0)
+            when: loader.completed && (picker.selectedIndex >= 0)
         }
 
         // selectedIndex updater, live or non-live ones
@@ -177,27 +164,23 @@ StyledItem {
             target: loader.item
             ignoreUnknownSignals: true
             onMovementEnded: {
+                if (!loader.completed) return;
                 if (!picker.live) {
-                    picker.selectedIndex = itemList.currentIndex;
+                    picker.selectedIndex = loader.item.currentIndex;
                 }
             }
             onCurrentIndexChanged: {
+                if (!loader.completed) return;
                 if (picker.live || (!picker.model.count)
-                        || (picker.__clickedIndex > 0 && picker.__clickedIndex === itemList.currentIndex)
-                        ) {
-                    picker.selectedIndex = itemList.currentIndex;
-                } else if (modelWatcher.cropping) {
-                    /*
-                      Cropping is notified before the change happens on the view, so force
-                      updating selectedIndex. We must handle this separately as previous
-                      condition evaluates also when item is inserted, messing it up.
-                      */
+                        || (picker.__clickedIndex > 0 && picker.__clickedIndex === loader.item.currentIndex)
+                        || modelWatcher.cropping) {
                     picker.selectedIndex = loader.item.currentIndex;
                     modelWatcher.cropping = false;
                 }
             }
             onModelChanged: {
                 modelWatcher.connectModel(picker.model);
+                if (!loader.completed) return;
                 loader.moveToIndex((loader.completed) ? 0 : picker.selectedIndex);
                 if (loader.completed && !picker.live) {
                     picker.selectedIndex = 0;
@@ -206,26 +189,23 @@ StyledItem {
         }
 
         function modelSize() {
-            return itemList.model.hasOwnProperty("count") ? itemList.model.count : itemList.model.length;
+            return loader.item.model.hasOwnProperty("count") ? loader.item.model.count : loader.item.model.length;
         }
 
         function moveToIndex(toIndex) {
-            var count = (itemList && itemList.model) ? modelSize() : -1;
+            var count = (loader.item && loader.item.model) ? modelSize() : -1;
             if (completed && count > 0) {
-                if (QuickUtils.className(itemList) === "QQuickListView") {
-                    itemList.currentIndex = toIndex;
+                if (loader.isListView) {
+                    loader.item.currentIndex = toIndex;
                     return;
                 } else {
-                    itemList.positionViewAtIndex(count - 1, PathView.Center);
-                    itemList.positionViewAtIndex(toIndex, PathView.Center);
+                    loader.item.positionViewAtIndex(count - 1, PathView.Center);
+                    loader.item.positionViewAtIndex(toIndex, PathView.Center);
                 }
             }
         }
 
-        Component.onCompleted: {
-            loader.completed = true;
-            modelWatcher.connectModel(picker.model);
-        }
+        Component.onCompleted: modelWatcher.connectModel(picker.model);
     }
 
     // circular list
@@ -236,12 +216,14 @@ StyledItem {
             objectName: "Picker_WrapAround"
             // property declared for PickerDelegate to be able to access the main component
             property Item pickerItem: picker
+            // property holding view completion
+            property bool viewCompleted: false
             anchors {
                 top: parent ? parent.top : undefined
                 bottom: parent ? parent.bottom : undefined
                 horizontalCenter: parent ? parent.horizontalCenter : undefined
             }
-            width: parent ? MathUtils.clamp(picker.itemWidth, 0, parent.width) : 0
+            width: parent ? parent.width : 0
             clip: true
 
             model: picker.model
@@ -251,17 +233,25 @@ StyledItem {
             preferredHighlightBegin: 0.5
             preferredHighlightEnd: 0.5
 
-            pathItemCount: pView.height / picker.itemHeight + 1
+            pathItemCount: pView.height / (pView.currentItem ? pView.currentItem.height : 1) + 1
             snapMode: PathView.SnapToItem
             flickDeceleration: 100
 
-            property int contentHeight: pathItemCount * picker.itemHeight
+            property int contentHeight: pathItemCount * (pView.currentItem ? pView.currentItem.height : 1)
             path: Path {
                 startX: pView.width / 2
                 startY: -(pView.contentHeight - pView.height) / 2
                 PathLine {
                     x: pView.width / 2
                     y: pView.height + (pView.contentHeight - pView.height) / 2
+                }
+            }
+
+            Component.onCompleted: {
+                if (modelWatcher.isObjectModel() && model.hasOwnProperty("count")) {
+                    viewCompleted = (model.count > 0);
+                } else {
+                    viewCompleted = true;
                 }
             }
         }
@@ -275,23 +265,27 @@ StyledItem {
             objectName: "Picker_Linear"
             // property declared for PickerDelegate to be able to access the main component
             property Item pickerItem: picker
+            // property holding view completion
+            property bool viewCompleted: false
             anchors {
                 top: parent ? parent.top : undefined
                 bottom: parent ? parent.bottom : undefined
                 horizontalCenter: parent ? parent.horizontalCenter : undefined
             }
-            width: parent ? MathUtils.clamp(picker.itemWidth, 0, parent.width) : 0
+            width: parent ? parent.width : 0
             clip: true
 
             model: picker.model
             delegate: picker.delegate
             currentIndex: picker.selectedIndex
 
-            preferredHighlightBegin: (height - picker.itemHeight) / 2
-            preferredHighlightEnd: preferredHighlightBegin + picker.itemHeight
+            preferredHighlightBegin: (height - (currentItem ? currentItem.height : 0)) / 2
+            preferredHighlightEnd: preferredHighlightBegin + (currentItem ? currentItem.height : 0)
             highlightRangeMode: ListView.StrictlyEnforceRange
             highlightMoveDuration: 300
             flickDeceleration: 100
+
+            Component.onCompleted: viewCompleted = true
         }
     }
 
@@ -306,8 +300,12 @@ StyledItem {
         property var prevModel
         property bool cropping: false
 
+        function isObjectModel() {
+            return (prevModel && Object.prototype.toString.call(prevModel) === "[object Object]");
+        }
+
         function connectModel(model) {
-            if (prevModel && Object.prototype.toString.call(prevModel) === "[object Object]") {
+            if (isObjectModel()) {
                 disconnectModel(prevModel);
             }
             prevModel = model;
@@ -324,24 +322,32 @@ StyledItem {
         }
 
         function itemsAdded() {
-            if (itemList.currentIndex < 0) {
-                // ListView does not set currentIndex to 0 (the first item)
-                // when the first item is added to an empty model, opposite
-                // to PathView
-                itemList.currentIndex = 0;
-                cropping = false;
+            if (!loader.isListView && loader.item.count === 2) {
+                // currentItem gets set upon first flick or move when the model is empty
+                // at the time the component gets completed. Disable viewCompleted till
+                // we move the view so selectedIndex doesn't get altered
+                loader.item.viewCompleted = false;
+                loader.item.positionViewAtIndex(1, PathView.SnapPosition);
+                loader.item.positionViewAtIndex(0, PathView.SnapPosition);
+                loader.item.viewCompleted = true;
             }
         }
 
         function itemsAboutToRemove(parent, start, end) {
-            if (((end - start + 1) === itemList.count)
-                    || (selectedIndex >= start)) {
+            if ((end - start + 1) === loader.item.count) {
+                cropping = true;
+            } else if (selectedIndex >= start) {
                 // Notify views that the model got cleared or got cropped
-                // the itemList.currentIndex is not yet updated, so we simply remember
+                // the loader.item.currentIndex is not yet updated, so we simply remember
                 // that we need to update when currentIndex change is notified
                 cropping = true;
+                if (selectedIndex <= (start + end)) {
+                    // the selection is in between the removed indexes, so move the selection
+                    // to the closest available one
+                    loader.item.positionViewAtIndex(Math.max(start - 1, 0),
+                                                    (loader.isListView) ? ListView.SnapPosition : PathView.SnapPosition);
+                }
             }
         }
     }
-
 }

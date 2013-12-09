@@ -47,6 +47,12 @@ Item {
       */
     property alias tumblerHolder: content
 
+    /*!
+      \internal
+      View instance listing the model
+      */
+    property Item view: Item{}
+
     anchors.fill: parent
 
     // frame
@@ -112,7 +118,7 @@ Item {
         ShaderEffectSource {
             id: effectSource
             visible: false
-            sourceItem: styledItem.itemList
+            sourceItem: view
 
             property real sourceRectMultiplier: 2.0
             // XXX: This works because the parent of magnifier is the same as sourceItem

@@ -147,6 +147,14 @@ Item {
         name: "PickerAPI"
         when: windowShown
 
+        function waitPickerScrolling() {
+            wait(600);
+        }
+
+        function getPickerList(item, linear) {
+            return findChild(item, (linear) ? "Picker_Linear" : "Picker_WrapAround");
+        }
+
         function test_0_circular() {
             compare(picker.circular, true, "default circular");
         }
@@ -158,12 +166,6 @@ Item {
         }
         function test_0_selectedIndex() {
             compare(picker.selectedIndex, 0, "default selectedIndex");
-        }
-        function test_0_itemWidth() {
-            compare(picker.itemWidth, picker.width, "itemWidth is same as picker's width by default");
-        }
-        function test_0_itemHeight() {
-            compare(picker.itemHeight, units.gu(4.5), "itemHeight is 4.5 GU by default");
         }
 
         function test_1_runtimeModel() {
@@ -223,11 +225,11 @@ Item {
             linearLong.circular = true;
 
             spy.target = linearLong;
-            mouseClick(linearLong, units.gu(1), units.gu(15));
-            wait(500);
+            mouseClick(linearLong, units.gu(1), units.gu(1));
+            waitPickerScrolling();
             tryCompare(spy, "count", 1);
-            mouseClick(linearLong, units.gu(1), units.gu(15));
-            wait(500);
+            mouseClick(linearLong, units.gu(1), units.gu(18));
+            waitPickerScrolling();
             tryCompare(spy, "count", 2);
         }
 
@@ -240,84 +242,80 @@ Item {
             verify(findChild(picker, expectedList) !== undefined, "circular changed, Picker must use " + expectedList);
         }
 
-        function test_7_itemHeight_itemWidth() {
-            linearShort.itemHeight = units.gu(6);
-            compare(linearShort.itemList.currentItem.height, units.gu(6), "linear delegate height same as itemHeight");
-            linearShort.itemWidth = units.gu(6);
-            compare(linearShort.itemList.currentItem.width, units.gu(6), "linear delegate width same as itemWidth");
-
-            // itemWidth is omitted for larger width than the Picker's width
-            linearShort.itemWidth = linearShort.width + units.gu(1);
-            compare(linearShort.itemList.currentItem.width, linearShort.width, "larger itemWidth than Pickewr width is omitted");
-        }
-
-        function test_8_modelCropping() {
+        function test_7_modelCropping() {
             var selected = 50;
             linearDynPicker.selectedIndex = selected;
             circularDynPicker.selectedIndex = selected;
-            // wait few milisecods till views are scrolling
-            wait(500);
-            compare(linearDynPicker.selectedIndex, linearDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for linearList");
-            compare(circularDynPicker.selectedIndex, circularDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for circularList");
+            waitPickerScrolling();
+            var linearList = getPickerList(linearDynPicker, true);
+            var circularList = getPickerList(circularDynPicker, false);
 
             selected = 40;
             dynamicModel.remove(selected, dynamicModel.count - selected);
-            wait(500);
+            waitPickerScrolling();
 
-            compare(linearDynPicker.itemList.count, selected, "bad removal from linearList")
-            compare(linearDynPicker.selectedIndex, linearDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for linearList");
+            compare(linearList.count, selected, "bad removal from linearList")
             compare(linearDynPicker.selectedIndex, selected - 1, "bad index of linearList");
 
-            compare(circularDynPicker.itemList.count, selected , "bad removal from circularList")
-            compare(circularDynPicker.selectedIndex, circularDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for circularList");
+            compare(circularList.count, selected , "bad removal from circularList")
             compare(circularDynPicker.selectedIndex, selected - 1, "bad index of circularList");
 
             // remove from the middle
             selected = 10;
             dynamicModel.remove(selected, 10);
-            wait(500);
+            waitPickerScrolling();
 
-            compare(linearDynPicker.itemList.count, 30, "bad removal from linearList")
-            compare(linearDynPicker.selectedIndex, linearDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for linearList");
+            compare(linearList.count, 30, "bad removal from linearList")
             compare(linearDynPicker.selectedIndex, 29, "bad index of linearList");
 
-            compare(circularDynPicker.itemList.count, 30, "bad removal from circularList")
-            compare(circularDynPicker.selectedIndex, circularDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for circularList");
+            compare(circularList.count, 30, "bad removal from circularList")
             compare(circularDynPicker.selectedIndex, 29, "bad index of circularList");
 
             // move selection in front and remove from after
             linearDynPicker.selectedIndex = 10;
             circularDynPicker.selectedIndex = 10;
             dynamicModel.remove(20, 10);
-            wait(500);
+            waitPickerScrolling();
 
-            compare(linearDynPicker.itemList.count, 20, "bad removal from linearList")
-            compare(linearDynPicker.selectedIndex, linearDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for linearList");
+            compare(linearList.count, 20, "bad removal from linearList")
             compare(linearDynPicker.selectedIndex, 10, "bad index of linearList");
 
-            compare(circularDynPicker.itemList.count, 20, "bad removal from circularList")
-            compare(circularDynPicker.selectedIndex, circularDynPicker.itemList.currentIndex, "selectedIndex and itemList.currentIndex differ for circularList");
+            compare(circularList.count, 20, "bad removal from circularList")
             compare(circularDynPicker.selectedIndex, 10, "bad index of circularList");
+
+            // remove 6 items around selectedIndex
+            dynamicModel.remove(5, 6);
+            waitPickerScrolling();
+
+            compare(linearList.count, 14, "bad removal from linearList")
+            compare(linearDynPicker.selectedIndex, 4, "bad index of linearList");
+
+            compare(circularList.count, 14, "bad removal from circularList")
+            compare(circularDynPicker.selectedIndex, 4, "bad index of circularList");
         }
 
-        function test_9_modelReset() {
+        function test_8_modelReset() {
+            var linearList = getPickerList(linearDynPicker, true);
+            var circularList = getPickerList(circularDynPicker, false);
             dynamicModel.reset();
-            wait(500);
+            waitPickerScrolling();
 
-            compare(linearDynPicker.itemList.currentIndex, 0, "linear picker's itemList selection not reset");
-            compare(circularDynPicker.itemList.currentIndex, 0, "circular picker's itemList selection not reset");
+            compare(linearList.currentIndex, 0, "linear picker's itemList selection not reset");
+            compare(circularList.currentIndex, 0, "circular picker's itemList selection not reset");
 
             compare(linearDynPicker.selectedIndex, 0, "linear picker's selection not reset");
             compare(circularDynPicker.selectedIndex, 0, "circular picker's selection not reset");
         }
 
         function test_9_modelClear() {
+            var linearList = getPickerList(linearDynPicker, true);
+            var circularList = getPickerList(circularDynPicker, false);
             dynamicModel.clear();
-            wait(500);
+            waitPickerScrolling();
 
-            compare(linearDynPicker.itemList.currentIndex, -1, "linear picker's itemList selection not reset");
+            compare(linearList.currentIndex, -1, "linear picker's itemList selection not reset");
             expectFailContinue("", "PathView issue: https://bugreports.qt-project.org/browse/QTBUG-35400");
-            compare(circularDynPicker.itemList.currentIndex, -1, "circular picker's itemList selection not reset");
+            compare(circularList.currentIndex, -1, "circular picker's itemList selection not reset");
 
             compare(linearDynPicker.selectedIndex, -1, "linear picker's selection not reset");
             expectFailContinue("", "PathView issue: https://bugreports.qt-project.org/browse/QTBUG-35400");
