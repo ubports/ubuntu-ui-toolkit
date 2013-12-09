@@ -171,7 +171,7 @@ StyledItem {
             }
             onCurrentIndexChanged: {
                 if (!loader.completed) return;
-                if (picker.live || (!picker.model.count)
+                if (picker.live || (modelWatcher.modelSize() <= 0)
                         || (picker.__clickedIndex > 0 && picker.__clickedIndex === loader.item.currentIndex)
                         || modelWatcher.cropping) {
                     picker.selectedIndex = loader.item.currentIndex;
@@ -188,12 +188,8 @@ StyledItem {
             }
         }
 
-        function modelSize() {
-            return loader.item.model.hasOwnProperty("count") ? loader.item.model.count : loader.item.model.length;
-        }
-
         function moveToIndex(toIndex) {
-            var count = (loader.item && loader.item.model) ? modelSize() : -1;
+            var count = (loader.item && loader.item.model) ? modelWatcher.modelSize() : -1;
             if (completed && count > 0) {
                 if (loader.isListView) {
                     loader.item.currentIndex = toIndex;
@@ -302,6 +298,17 @@ StyledItem {
 
         function isObjectModel() {
             return (prevModel && Object.prototype.toString.call(prevModel) === "[object Object]");
+        }
+
+        function modelSize() {
+            if (prevModel !== undefined) {
+                if (Object.prototype.toString.call(model) === "[object Object]") {
+                    return prevModel.count;
+                } else if (Object.prototype.toString.call(model) === "[object Array]") {
+                    return prevModel.length;
+                }
+            }
+            return -1;
         }
 
         function connectModel(model) {
