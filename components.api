@@ -55,6 +55,7 @@ Item
     readonly property int status
 modules/Ubuntu/Components/Header.qml
 StyledItem
+    property bool animate
     function show()
     function hide()
     property string title
@@ -238,6 +239,7 @@ Item
     property bool locked
     property real hintSize
     property real triggerSize
+    property bool animate
     readonly property bool animating
     property bool __closeOnContentsClicks
     property bool pressed

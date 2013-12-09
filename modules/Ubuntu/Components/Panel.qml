@@ -272,6 +272,19 @@ Item {
             }
         }
     }
+    // disable the timer when the application is not active to avoid closing
+    //  the panel immediately after the application becomes active again
+    Connections {
+        target: Qt.application
+        onActiveChanged: {
+            if (Qt.application.active) {
+                hideTimer.conditionalRestart();
+            } else {
+                hideTimer.stop();
+            }
+        }
+    }
+
 
     /*!
       How much of the panel to show when the user touches the panel's edge.
@@ -320,6 +333,11 @@ Item {
     ]
 
     /*!
+      Animate transitions between the different panel states.
+     */
+    property bool animate: true
+
+    /*!
       The toolbar is currently not in a stable hidden or visible state.
      */
     readonly property bool animating: draggingArea.pressed || transitionToAll.running
@@ -360,7 +378,7 @@ Item {
             UbuntuNumberAnimation {
                 target: bar
                 properties: "position"
-                duration: Toolkit.UbuntuAnimation.SnapDuration
+                duration: panel.animate ? Toolkit.UbuntuAnimation.SnapDuration : 0
             }
         }
     ]
@@ -375,7 +393,7 @@ Item {
           The duration in milliseconds of sliding in or out transitions when opening, closing, and showing the hint.
           Default value: 250
          */
-        property real transitionDuration: Toolkit.UbuntuAnimation.FastDuration
+        property real transitionDuration: panel.animate ? Toolkit.UbuntuAnimation.FastDuration : 0
 
         property string previousState: ""
         property int movingDelta
