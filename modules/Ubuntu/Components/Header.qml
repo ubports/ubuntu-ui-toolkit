@@ -36,8 +36,13 @@ StyledItem {
     }
     y: 0
 
+    /*!
+      Animate showing and hiding of the header.
+     */
+    property bool animate: true
+
     Behavior on y {
-        enabled: !(header.flickable && header.flickable.moving)
+        enabled: animate && !(header.flickable && header.flickable.moving)
         SmoothedAnimation {
             duration: Ubuntu.UbuntuAnimation.BriskDuration
         }
