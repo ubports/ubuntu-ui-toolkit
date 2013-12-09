@@ -37,12 +37,17 @@ QMAKE_EXTRA_TARGETS += license
 
 DOC_PATH=$$system(pwd)/documentation
 docs.target = docs
+# Offline docs for QtCreator
 docs.commands += qdoc $$DOC_PATH/ubuntu-ui-toolkit-qtcreator.qdocconf 2> $$DOC_PATH/qdoc.err;
 docs.commands += cat $$DOC_PATH/qdoc.err;
 docs.commands += test ! -s $$DOC_PATH/qdoc.err || exit 1;
 docs.commands += qhelpgenerator -o "$$DOC_PATH/html/ubuntuuserinterfacetoolkit.qch" "$$DOC_PATH/html/ubuntuuserinterfacetoolkit.qhp";
+# Online docs. Run qdoc twice: the second run with indexes for cross-referencing
+# other APIs but discard errors because qdoc inherits all doc bugs otherwise
 docs.commands += qdoc $$DOC_PATH/ubuntu-ui-toolkit-online.qdocconf 2> $$DOC_PATH/qdoc.err;
-docs.commands += grep --color=no -viE q\\(script\\|web\\|graphics\\)\\|iterator $$DOC_PATH/qdoc.err;
+docs.commands += cat $$DOC_PATH/qdoc.err;
+docs.commands += test ! -s $$DOC_PATH/qdoc.err || exit 1;
+docs.commands += qdoc $$DOC_PATH/ubuntu-ui-toolkit-online-indexes.qdocconf 2> /dev/null;
 docs.commands += $$DOC_PATH/fix-markup.sh $$DOC_PATH;
 QMAKE_EXTRA_TARGETS += docs
 
