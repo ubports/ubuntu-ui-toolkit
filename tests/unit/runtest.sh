@@ -26,7 +26,7 @@ set +e
 
 function create_test_cmd {
   _CMD="./$_TARGET"
-  if [ "$MINIMAL" = "minimal" ]; then
+  if [ "$_MINIMAL" = "minimal" ]; then
       _CMD="$_CMD -platform minimal"
   fi
   if [ $_TARGET != $_TESTFILE ]; then
