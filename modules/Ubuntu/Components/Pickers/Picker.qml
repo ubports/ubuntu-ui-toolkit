@@ -92,7 +92,9 @@ StyledItem {
     property var model
 
     /*!
-      The delegate visualizing the model elements.
+      The delegate visualizing the model elements. Any kind of component can be
+      used as delegate, however it is recommended to use \l PickerDelegate, which
+      integrates selection functionality into the Picker.
       */
     property Component delegate
 
@@ -115,4 +117,155 @@ StyledItem {
 
     /*! \internal */
     property int __clickedIndex: -1
+
+    // bind style instance's view property to the Loader's item
+    Binding {
+        target: __styleInstance
+        property: "view"
+        value: loader.item
+        when: __styleInstance.hasOwnProperty("view") && loader.item
+    }
+
+    // tumbler
+    Loader {
+        id: loader
+        asynchronous: false
+        parent: __styleInstance.hasOwnProperty("tumblerHolder") ? __styleInstance.tumblerHolder : picker
+        anchors.fill: parent
+        sourceComponent: circular ? wrapAround : linear
+
+        // property for loading completion
+        property bool completed: item && (status === Loader.Ready) && item.viewCompleted
+
+        Binding {
+            target: loader.item
+            property: "currentIndex"
+            value: picker.selectedIndex
+            when: loader.item && loader.status === Loader.Ready
+        }
+
+        // live selectedIndex updater
+        Binding {
+            target: picker
+            property: "selectedIndex"
+            value: loader.item.currentIndex
+            when: loader.completed && (picker.model !== undefined) && picker.live
+        }
+        // non-live selectedIndex updater
+        Connections {
+            target: loader.item
+            ignoreUnknownSignals: true
+            onMovementEnded: {
+                if (!picker.live) {
+                    picker.selectedIndex = loader.item.currentIndex;
+                }
+            }
+            onCurrentIndexChanged: {
+                if (!picker.live && picker.__clickedIndex === loader.item.currentIndex) {
+                    picker.selectedIndex = loader.item.currentIndex;
+                    picker.__clickedIndex = -1;
+                }
+            }
+            onModelChanged: {
+                loader.moveToIndex((loader.completed) ? 0 : picker.selectedIndex);
+                if (loader.completed && !picker.live) {
+                    picker.selectedIndex = 0;
+                }
+            }
+        }
+
+        function modelSize() {
+            return loader.item.model.hasOwnProperty("count") ? loader.item.model.count : loader.item.model.length;
+        }
+
+        function moveToIndex(toIndex) {
+            var count = (loader.item && loader.item.model) ? modelSize() : -1;
+            if (completed && count > 0) {
+                if (QuickUtils.className(loader.item) === "QQuickListView") {
+                    loader.item.currentIndex = toIndex;
+                    return;
+                } else {
+                    loader.item.positionViewAtIndex(count - 1, PathView.Center);
+                    loader.item.positionViewAtIndex(toIndex, PathView.Center);
+                }
+            }
+        }
+    }
+
+    // circular list
+    Component {
+        id: wrapAround
+        PathView {
+            id: pView
+            objectName: "Picker_WrapAround"
+            // property declared for PickerDelegate to be able to access the main component
+            property Item pickerItem: picker
+            // property holding view completion
+            property bool viewCompleted: false
+            anchors {
+                top: parent ? parent.top : undefined
+                bottom: parent ? parent.bottom : undefined
+                horizontalCenter: parent ? parent.horizontalCenter : undefined
+            }
+            width: parent ? parent.width : 0
+            clip: true
+
+            model: picker.model
+            delegate: picker.delegate
+            currentIndex: picker.selectedIndex
+            // put the currentItem to the center of the view
+            preferredHighlightBegin: 0.5
+            preferredHighlightEnd: 0.5
+
+            // FIXME: currentItem gets set upon first flick when the model is empty at the
+            // time the component gets completed. Watch the model changes to force update
+            pathItemCount: pView.height / (pView.currentItem ? pView.currentItem.height : 1) + 1
+            snapMode: PathView.SnapToItem
+            flickDeceleration: 100
+
+            property int contentHeight: pathItemCount * (pView.currentItem ? pView.currentItem.height : 1)
+            path: Path {
+                startX: pView.width / 2
+                startY: -(pView.contentHeight - pView.height) / 2
+                PathLine {
+                    x: pView.width / 2
+                    y: pView.height + (pView.contentHeight - pView.height) / 2
+                }
+            }
+
+            Component.onCompleted: viewCompleted = true
+        }
+    }
+
+    // linear list
+    Component {
+        id: linear
+        ListView {
+            id: lView
+            objectName: "Picker_Linear"
+            // property declared for PickerDelegate to be able to access the main component
+            property Item pickerItem: picker
+            // property holding view completion
+            property bool viewCompleted: false
+            anchors {
+                top: parent ? parent.top : undefined
+                bottom: parent ? parent.bottom : undefined
+                horizontalCenter: parent ? parent.horizontalCenter : undefined
+            }
+            width: parent ? parent.width : 0
+            clip: true
+
+            model: picker.model
+            delegate: picker.delegate
+            currentIndex: picker.selectedIndex
+
+            preferredHighlightBegin: (height - (currentItem ? currentItem.height : 0)) / 2
+            preferredHighlightEnd: preferredHighlightBegin + (currentItem ? currentItem.height : 0)
+            highlightRangeMode: ListView.StrictlyEnforceRange
+            highlightMoveDuration: 300
+            flickDeceleration: 100
+
+            Component.onCompleted: viewCompleted = true
+        }
+    }
 }
