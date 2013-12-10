@@ -20,7 +20,6 @@ import Ubuntu.Components 0.1
 PickerModelBase {
     circular: true
 
-    // ommit minimum and maximum date values
     function reset() {
         resetting = true;
         clear();

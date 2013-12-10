@@ -40,8 +40,6 @@ PickerModelBase {
             modelDate.setMonth(i);
             append({"month": modelDate.getMonth()});
         }
-
-
     }
 
     function resetLimits(label, margin) {

@@ -49,17 +49,6 @@ AbstractButton {
 
     style: Theme.createStyleComponent("PickerDelegateStyle.qml", pickerDelegate)
 
-    // get the content into this component
-    /*! \internal */
-    default property alias content: body.data
-    Item {
-        id: body
-        anchors {
-            fill: parent
-            margins: units.gu(0.2)
-        }
-    }
-
     QtObject {
         id: internal
         property bool inListView: QuickUtils.className(pickerDelegate.parent) !== "QQuickPathView"

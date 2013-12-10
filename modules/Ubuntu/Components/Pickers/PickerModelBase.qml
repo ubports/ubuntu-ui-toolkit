@@ -17,7 +17,7 @@
 import QtQuick 2.0
 
 /*
-  Base model type for Date- and TimePickers
+  Base model type for DatePicker
   */
 ListModel {
 
