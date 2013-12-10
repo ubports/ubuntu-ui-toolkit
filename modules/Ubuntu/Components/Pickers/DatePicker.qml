@@ -290,7 +290,6 @@ FocusScope {
         id: dayModel
         mainComponent: datePicker
         pickerCompleted: internals.completed
-//        property bool inUse: false
         pickerWidth: {
             if (!pickerItem) {
                 return 0;
