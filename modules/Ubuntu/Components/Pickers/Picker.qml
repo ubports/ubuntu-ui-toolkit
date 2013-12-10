@@ -253,7 +253,13 @@ StyledItem {
                         positionViewAtIndex(1, PathView.SnapPosition);
                         positionViewAtIndex(0, PathView.SnapPosition);
                     }
+                } else if (Object.prototype.toString.call(model) === "[object Number]") {
+                    if (model >= 2) {
+                        positionViewAtIndex(1, PathView.SnapPosition);
+                        positionViewAtIndex(0, PathView.SnapPosition);
+                    }
                 }
+
                 viewCompleted = complete;
             }
         }
@@ -312,6 +318,8 @@ StyledItem {
                     return prevModel.count;
                 } else if (Object.prototype.toString.call(model) === "[object Array]") {
                     return prevModel.length;
+                } else if (Object.prototype.toString.call(model) === "[object Number]") {
+                    return prevModel;
                 }
             }
             return -1;
