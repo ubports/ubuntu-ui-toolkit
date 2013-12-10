@@ -165,7 +165,7 @@ StyledItem {
             target: loader.item
             ignoreUnknownSignals: true
             onMovementEnded: {
-                if (!loader.completed) return;
+                if (!loader.completed || !model) return;
                 if (!picker.live) {
                     picker.selectedIndex = loader.item.currentIndex;
                 }
@@ -338,11 +338,10 @@ StyledItem {
                 // currentItem gets set upon first flick or move when the model is empty
                 // at the time the component gets completed. Disable viewCompleted till
                 // we move the view so selectedIndex doesn't get altered
-                var completed = loader.item.viewCompleted;
                 loader.item.viewCompleted = false;
                 loader.item.positionViewAtIndex(1, PathView.SnapPosition);
                 loader.item.positionViewAtIndex(0, PathView.SnapPosition);
-                loader.item.viewCompleted = completed;
+                loader.item.viewCompleted = true;
             }
         }
 
