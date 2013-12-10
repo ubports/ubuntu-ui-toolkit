@@ -32,7 +32,9 @@ Template {
                 delegate: PickerDelegate {
                     Label {
                         text: modelData
-                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.fill: parent
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
                     }
                 }
 
@@ -46,7 +48,9 @@ Template {
                 delegate: PickerDelegate {
                     Label {
                         text: modelData
-                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.fill: parent
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
                     }
                 }
 
@@ -73,7 +77,9 @@ Template {
                 delegate: PickerDelegate {
                     Label {
                         text: modelData
-                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.fill: parent
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
                     }
                     Component.onCompleted: {
                         if (index === (picker.model.count - 1))

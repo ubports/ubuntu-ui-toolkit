@@ -186,5 +186,14 @@ Item {
             mouseClick(linearLong, units.gu(1), units.gu(18));
             tryCompare(spy, "count", 2);
         }
+
+        function test_6_pickerCircularChange() {
+            var expectedList = picker.circular ? "Picker_WrapAround" : "Picker_Linear";
+            verify(findChild(picker, expectedList) !== undefined, "Picker must use " + expectedList);
+
+            picker.circular = !picker.circular;
+            expectedList = picker.circular ? "Picker_WrapAround" : "Picker_Linear";
+            verify(findChild(picker, expectedList) !== undefined, "circular changed, Picker must use " + expectedList);
+        }
     }
 }
