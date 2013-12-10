@@ -100,7 +100,7 @@ Item {
             compare(picker.locale, Qt.locale(), "default locale is the same as system locale");
         }
 
-        function test_1_localeHu() {
+        function test_1_changeLocale() {
             var locale = Qt.locale("hu_HU");
             picker.minimum = new Date("2012/12/1");
             picker.date = new Date("2012/12/1");
