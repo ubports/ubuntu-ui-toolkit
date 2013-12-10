@@ -203,6 +203,7 @@ StyledItem {
         }
 
         Component.onCompleted: modelWatcher.connectModel(picker.model);
+        Component.onDestruction: modelWatcher.disconnectModel()
     }
 
     // circular list
@@ -317,9 +318,7 @@ StyledItem {
         }
 
         function connectModel(model) {
-            if (isObjectModel()) {
-                disconnectModel(prevModel);
-            }
+            disconnectModel();
             prevModel = model;
             // check if the model is derived from QAbstractListModel
             if (model && Object.prototype.toString.call(model) === "[object Object]") {
@@ -328,9 +327,11 @@ StyledItem {
             }
         }
 
-        function disconnectModel(model) {
-            model.rowsAboutToBeRemoved.disconnect(itemsAboutToRemove);
-            model.rowsInserted.disconnect(updateView);
+        function disconnectModel() {
+            if (isObjectModel()) {
+                prevModel.rowsAboutToBeRemoved.disconnect(itemsAboutToRemove);
+                prevModel.rowsInserted.disconnect(updateView);
+            }
         }
 
         function updateView() {

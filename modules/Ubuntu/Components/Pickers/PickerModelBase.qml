@@ -103,7 +103,7 @@ ListModel {
       Returns the date string for the value relative to the date, which fits into the
       given width. Uses the locale from pickerItem to fetch the localized date string.
       */
-    function text(value, width) {
+    function text(value) {
         return "";
     }
 

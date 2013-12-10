@@ -67,7 +67,7 @@ PickerModelBase {
         return newDate;
     }
 
-    function text(value, width) {
+    function text(value) {
         if (value === undefined) {
             return "";
         }
@@ -75,11 +75,11 @@ PickerModelBase {
         var thisDate = new Date(date);
         thisDate.setDate(value + 1);
 
-        if (width >= longFormatLimit) {
+        if (pickerWidth >= longFormatLimit) {
             return Qt.formatDate(thisDate, "dd ") + mainComponent.locale.dayName(thisDate.getDay(), Locale.LongFormat);
         }
 
-        if (width >= shortFormatLimit) {
+        if (pickerWidth >= shortFormatLimit) {
             return Qt.formatDate(thisDate, "dd ") + mainComponent.locale.dayName(thisDate.getDay(), Locale.ShortFormat);
         }
         return Qt.formatDate(thisDate, "dd");

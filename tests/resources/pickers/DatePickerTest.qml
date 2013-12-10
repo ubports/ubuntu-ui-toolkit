@@ -78,6 +78,15 @@ MainView {
                         picker.date = new Date("2014/12/5");
                     }
                 }
+                Button {
+                    text: "today"
+                    onClicked: picker.date = new Date()
+                }
+
+                Button {
+                    text: "Toggle mode"
+                    onClicked: picker.mode = (picker.mode === "Date") ? "Month" : "Date"
+                }
             }
         }
     }

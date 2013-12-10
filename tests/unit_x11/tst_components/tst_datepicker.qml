@@ -27,6 +27,7 @@ Item {
 
     DatePicker {
         id: picker
+        width: parent.width
     }
 
     SignalSpy {
@@ -100,10 +101,26 @@ Item {
             compare(picker.locale, Qt.locale(), "default locale is the same as system locale");
         }
 
+        function test_1_changeMode() {
+            var oldMode = picker.mode;
+            var newMode = (picker.mode === "Date") ? "Month" : "Date";
+            var pickerCount = ((newMode === "Date") ? 3 : 2) + 1; // +1 is the Repeater
+            picker.mode = newMode;
+            wait(500);
+            var positioner = findChild(picker, "DatePicker_Positioner");
+            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
+
+            picker.mode = oldMode;
+            pickerCount = ((oldMode === "Date") ? 3 : 2) + 1; // +1 is the Repeater
+            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
+        }
+
         function test_1_changeLocale() {
+            var prevLocale = picker.locale;
             var locale = Qt.locale("hu_HU");
             picker.minimum = new Date("2012/12/1");
             picker.date = new Date("2012/12/1");
+            wait(500)
             picker.locale = Qt.locale("hu_HU");
             wait(500)
             var label = getPickerLabel(picker, "DatePicker_MonthPicker");
@@ -112,9 +129,10 @@ Item {
             label = getPickerLabel(picker, "DatePicker_DayPicker");
             var dayModel = getPickerModel(picker, "DatePicker_DayPicker");
             compare(label.text, dayModel.text(picker.date.getDate() - 1, testSuite.width), "locale for day name wrong");
+            picker.locale = prevLocale;
         }
 
-        function test_2_changeMinimumBeforeDate() {
+        function test_1_changeMinimumBeforeDate() {
             var date = new Date(picker.date);
             var originalDate = new Date(date);
             date.setFullYear(date.getFullYear() - 1);
@@ -127,7 +145,116 @@ Item {
             compare(month.text, picker.locale.monthName(originalDate.getMonth(), Locale.LongFormat), "month differs");
             var day = getPickerLabel(picker, "DatePicker_DayPicker");
             var dayModel = getPickerModel(picker, "DatePicker_DayPicker");
-            compare(day.text, dayModel.text(originalDate.getDate() - 1, testSuite.width), "day differs");
+            compare(day.text, dayModel.text(originalDate.getDate() - 1), "day differs");
+        }
+
+        function test_1_changeMaximumAfterDate() {
+            var date = new Date(picker.date);
+            var originalDate = new Date(date);
+            date.setFullYear(date.getFullYear() + 1);
+            date.setDate(1);
+            picker.maximum = date;
+            wait(500);
+            var year = getPickerLabel(picker, "DatePicker_YearPicker");
+            compare(year.text, originalDate.getFullYear().toString(), "year differs");
+            var month = getPickerLabel(picker, "DatePicker_MonthPicker");
+            compare(month.text, picker.locale.monthName(originalDate.getMonth(), Locale.LongFormat), "month differs");
+            var day = getPickerLabel(picker, "DatePicker_DayPicker");
+            var dayModel = getPickerModel(picker, "DatePicker_DayPicker");
+            compare(day.text, dayModel.text(originalDate.getDate() - 1), "day differs");
+        }
+
+        // make infinite
+        function test_1_changeMaximumInvalid() {
+            picker.maximum = Date.prototype.getInvalidDate.call();
+
+            // check if the year picker model is autoExtending
+            var yearModel = getPickerModel(picker, "DatePicker_YearPicker");
+            compare(yearModel.autoExtend, true, "the year picker is not auto-extending one");
+        }
+
+        function test_1_changeDate() {
+            var date = picker.date;
+            date.setFullYear(date.getFullYear() + 2);
+            date.setMonth(5);
+            date.setDate(21);
+            picker.date = date;
+            picker.mode = "Date";
+            wait(500);
+
+            var yearLabel = getPickerLabel(picker, "DatePicker_YearPicker");
+            var monthLabel = getPickerLabel(picker, "DatePicker_MonthPicker");
+            var monthModel = getPickerModel(picker, "DatePicker_MonthPicker");
+            var dayLabel = getPickerLabel(picker, "DatePicker_DayPicker");
+            var dayModel = getPickerModel(picker, "DatePicker_DayPicker");
+            compare(yearLabel.text, date.getFullYear().toString(), "different year value");
+            compare(monthLabel.text, monthModel.text(date.getMonth()), "different month value");
+            compare(dayLabel.text, dayModel.text(date.getDate() - 1), "different day value");
+        }
+
+        function test_1_changeDateToNextMonth() {
+            picker.date = new Date("2013/10/31");
+            picker.locale = Qt.locale("hu_HU")
+            wait(500);
+
+            // click on the month picker to set the next month
+            var monthPicker = findChild(picker, "DatePicker_MonthPicker");
+            var monthCurrent = findChild(monthPicker, "Picker_ViewLoader");
+            var my = monthPicker.y + (monthPicker.height / 2) + monthCurrent.item.currentItem.height;
+            var mx = monthPicker.x + monthPicker.width / 2;
+            mouseClick(testSuite, mx, my);
+            wait(500);
+
+            var yearLabel = getPickerLabel(picker, "DatePicker_YearPicker");
+            var monthLabel = getPickerLabel(picker, "DatePicker_MonthPicker");
+            var monthModel = getPickerModel(picker, "DatePicker_MonthPicker");
+            var dayLabel = getPickerLabel(picker, "DatePicker_DayPicker");
+            var dayModel = getPickerModel(picker, "DatePicker_DayPicker");
+            compare(yearLabel.text, "2013", "different year value");
+            // November
+            compare(monthLabel.text, monthModel.text(10), "different month value");
+            // the 30th
+            compare(dayLabel.text, dayModel.text(29), "different day value");
+
+            // set it back
+            my = monthPicker.y + (monthPicker.height / 2) - monthCurrent.item.currentItem.height;
+            mouseClick(testSuite, mx, my);
+            wait(500);
+
+            compare(yearLabel.text, "2013", "different year value");
+            // October
+            monthLabel = getPickerLabel(picker, "DatePicker_MonthPicker");
+            compare(monthLabel.text, monthModel.text(9), "different month value");
+            // the 30th
+            dayLabel = getPickerLabel(picker, "DatePicker_DayPicker");
+            compare(dayLabel.text, dayModel.text(29), "different day value");
+        }
+
+        function test_2_disabledYear() {
+            var date = new Date("2013/5/1");
+            var minDate = new Date("2013/1/1");
+            var maxDate = new Date("2013/12/31");
+            picker.minimum = minDate;
+            picker.maximum = maxDate;
+            wait(500);
+            picker.date = date;
+
+            var yearPicker = findChild(picker, "DatePicker_YearPicker");
+            compare(yearPicker.enabled, false, "year picker should be disabled");
+        }
+
+        function test_2_disabledYearAndMonth() {
+            var date = new Date("2013/12/1");
+            var minDate = new Date("2013/12/1");
+            var maxDate = new Date("2013/12/31");
+            picker.minimum = minDate;
+            picker.maximum = maxDate;
+            picker.date = date;
+
+            var yearPicker = findChild(picker, "DatePicker_YearPicker");
+            compare(yearPicker.enabled, false, "year picker should be disabled");
+            var monthPicker = findChild(picker, "DatePicker_MonthPicker");
+            compare(monthPicker.enabled, false, "month picker should be disabled");
         }
     }
 }

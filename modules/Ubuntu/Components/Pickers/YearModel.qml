@@ -64,7 +64,7 @@ PickerModelBase {
         return newDate;
     }
 
-    function text(value, width) {
+    function text(value) {
         return (value) ? value : "";
     }
 }

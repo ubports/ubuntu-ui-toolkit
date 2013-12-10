@@ -81,15 +81,15 @@ PickerModelBase {
         return newDate;
     }
 
-    function text(value, width) {
+    function text(value) {
         if (!mainComponent || value === undefined) {
             return "";
         }
-        if (width >= longFormatLimit) {
+        if (pickerWidth >= longFormatLimit) {
             return mainComponent.locale.monthName(value, Locale.LongFormat);
         }
 
-        if (width >= shortFormatLimit) {
+        if (pickerWidth >= shortFormatLimit) {
             return mainComponent.locale.monthName(value, Locale.ShortFormat);
         }
 

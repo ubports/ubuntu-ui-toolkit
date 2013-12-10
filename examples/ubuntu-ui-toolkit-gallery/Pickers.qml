@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.Pickers 0.1
 
 Template {
+    id: root
     TemplateSection {
         className: "Picker"
         documentation: "qml-ubuntu-components-pickers0-picker.html"
@@ -180,24 +181,20 @@ Template {
         className: "DatePicker"
         documentation: "qml-ubuntu-components-pickers0-datepicker.html"
         TemplateRow {
-            title: "Normal"
-            Column {
-                DatePicker {
-                    id: datePicker
-                    minimum: new Date(2013, 8)
-//                    maximum: new Date(2014, 0)
-//                    date: new Date(2013, 9, 1)
-//                    mode: "Month"
-                    locale: Qt.locale("hu_HU")
-                    onDateChanged: print("picked date="+date)
-                }
-                Slider {
-                    minimumValue: 0
-                    maximumValue: units.gu(40);
-                    value: datePicker.width
-                    live: true
-                    onValueChanged: datePicker.width = value
-                }
+            title: "Date"
+            DatePicker {
+                // make sure we have the whole component in screen
+                width: Math.min(root.width - units.gu(16), units.gu(40))
+                onDateChanged: print("picked date="+date)
+            }
+        }
+        TemplateRow {
+            title: "Month"
+            DatePicker {
+                mode: "Month"
+                // make sure we have the whole component in screen
+                width: Math.min(root.width - units.gu(16), units.gu(40))
+                onDateChanged: print("picked date="+date)
             }
         }
     }
