@@ -70,7 +70,7 @@ for line in fileinput.input(inputfiles):
     if fileinput.isfirstline():
         in_block = 0
         in_comment = in_builtin_type = False
-        annotated_type = None
+        annotated_properties = {}
         if fileinput.filename()[-3:] == 'qml':
             filetype = 'qml'
             keywords = ['signal', 'property', 'function']
@@ -89,9 +89,16 @@ for line in fileinput.input(inputfiles):
     line = line.split('//')[0]
     # alias properties only define their type through qdoc comments
     if '\\qmlproperty' in line:
-        annotated_type = line
+        words = line.strip().split(' ')
+        name = words[2]
+        # Strip namespace
+        if '::' in name:
+            name = name.split('::')[1]
+        type = words[1]
+        annotated_properties[name] = type
     elif '\\internal' in line:
-        annotated_type = 'internal internal internal'
+        # internal without type always relates to the next declared property
+        annotated_properties['internal'] = 'internal'
 
     if '/*' in line and not '*/' in line:
         in_comment = True
@@ -142,13 +149,20 @@ for line in fileinput.input(inputfiles):
                 if filetype == 'qml':
                     signature = declaration.split('{')[0].strip()
                     if 'alias' in line:
-                        if not annotated_type:
+                        no_mods = signature
+                        for mod in ['readonly', 'default']:
+                            no_mods = no_mods.replace(mod, '')
+                        name = no_mods.strip().split(' ')[2]
+                        if 'internal' in annotated_properties:
+                            if not name in annotated_properties:
+                                annotated_properties[name] = 'internal'
+                            del annotated_properties['internal']
+                        if not name in annotated_properties:
                             print('    %s' % (signature))
-                            print('Error: Missing \\qmlproperty annotation')
+                            print('Error: Missing \\qmlproperty for %s' % name)
                             sys.exit(1)
-                        real_type = annotated_type.strip().split(' ')[1]
+                        real_type = annotated_properties[name]
                         signature = signature.replace('alias', real_type)
-                    annotated_type = None
                 elif filetype == 'qmltypes':
                     signature = line.strip()
                 if not in_builtin_type:
