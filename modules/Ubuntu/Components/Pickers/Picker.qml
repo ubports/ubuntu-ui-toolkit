@@ -156,7 +156,7 @@ StyledItem {
             target: loader.item
             property: "currentIndex"
             value: picker.selectedIndex
-            when: loader.completed && (picker.selectedIndex >= 0)
+            when: loader.completed && (picker.selectedIndex > 0)
         }
 
         // selectedIndex updater, live or non-live ones
@@ -171,8 +171,8 @@ StyledItem {
             }
             onCurrentIndexChanged: {
                 if (!loader.completed) return;
-                if (picker.live || (!picker.model.count)
-                        || (picker.__clickedIndex > 0 && picker.__clickedIndex === loader.item.currentIndex)
+                if (picker.live || (modelWatcher.modelSize() <= 0)
+                        || (picker.__clickedIndex >= 0 && (picker.__clickedIndex === loader.item.currentIndex))
                         || modelWatcher.cropping) {
                     picker.selectedIndex = loader.item.currentIndex;
                     modelWatcher.cropping = false;
@@ -188,12 +188,8 @@ StyledItem {
             }
         }
 
-        function modelSize() {
-            return loader.item.model.hasOwnProperty("count") ? loader.item.model.count : loader.item.model.length;
-        }
-
         function moveToIndex(toIndex) {
-            var count = (loader.item && loader.item.model) ? modelSize() : -1;
+            var count = (loader.item && loader.item.model) ? modelWatcher.modelSize() : -1;
             if (completed && count > 0) {
                 if (loader.isListView) {
                     loader.item.currentIndex = toIndex;
@@ -248,11 +244,15 @@ StyledItem {
             }
 
             Component.onCompleted: {
-                if (modelWatcher.isObjectModel() && model.hasOwnProperty("count")) {
-                    viewCompleted = (model.count > 0);
-                } else {
-                    viewCompleted = true;
+                var complete = true
+                if (modelWatcher.isObjectModel()) {
+                    complete = (model.count > 0);
+                    if (model.count >= 2) {
+                        positionViewAtIndex(1, PathView.SnapPosition);
+                        positionViewAtIndex(0, PathView.SnapPosition);
+                    }
                 }
+                viewCompleted = complete;
             }
         }
     }
@@ -304,32 +304,44 @@ StyledItem {
             return (prevModel && Object.prototype.toString.call(prevModel) === "[object Object]");
         }
 
+        function modelSize() {
+            if (prevModel) {
+                if (Object.prototype.toString.call(model) === "[object Object]") {
+                    return prevModel.count;
+                } else if (Object.prototype.toString.call(model) === "[object Array]") {
+                    return prevModel.length;
+                }
+            }
+            return -1;
+        }
+
         function connectModel(model) {
             if (isObjectModel()) {
                 disconnectModel(prevModel);
             }
             prevModel = model;
             // check if the model is derived from QAbstractListModel
-            if (Object.prototype.toString.call(model) === "[object Object]") {
+            if (model && Object.prototype.toString.call(model) === "[object Object]") {
                 model.rowsAboutToBeRemoved.connect(itemsAboutToRemove);
-                model.rowsInserted.connect(itemsAdded);
+                model.rowsInserted.connect(updateView);
             }
         }
 
         function disconnectModel(model) {
             model.rowsAboutToBeRemoved.disconnect(itemsAboutToRemove);
-            model.rowsInserted.disconnect(itemsAdded);
+            model.rowsInserted.disconnect(updateView);
         }
 
-        function itemsAdded() {
+        function updateView() {
             if (!loader.isListView && loader.item.count === 2) {
                 // currentItem gets set upon first flick or move when the model is empty
                 // at the time the component gets completed. Disable viewCompleted till
                 // we move the view so selectedIndex doesn't get altered
+                var completed = loader.item.viewCompleted;
                 loader.item.viewCompleted = false;
                 loader.item.positionViewAtIndex(1, PathView.SnapPosition);
                 loader.item.positionViewAtIndex(0, PathView.SnapPosition);
-                loader.item.viewCompleted = true;
+                loader.item.viewCompleted = completed;
             }
         }
 
