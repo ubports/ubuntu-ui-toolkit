@@ -34,32 +34,49 @@ MainView {
                 onDateChanged: print("CHANGED DATE=" + Qt.formatDate(date, "yyyy/MM/dd"))
             }
 
-            Button {
-                text: "infinite"
-                onClicked: picker.maximum = picker.maximum.getInvalidDate()
-            }
-            Button {
-                text: "Jan-Mar"
-                onClicked: {
-                    var date = new Date();
-                    date.setMonth(0);
-                    picker.minimum = date;
-                    date.setMonth(2);
-                    picker.maximum = date;
-                    picker.date = new Date(date);
+            Flow {
+                width: parent.width
+                spacing: units.gu(1)
+                Button {
+                    text: "HU"
+                    onClicked: picker.locale = Qt.locale("hu_HU")
                 }
-            }
-            Button {
-                text: "Change minimum"
-                onClicked: {
-                    picker.minimum = new Date("2012/12/1");
+                Button {
+                    text: "DE"
+                    onClicked: picker.locale = Qt.locale("de_DE")
                 }
-            }
-            Button {
-                text: "minimum & date"
-                onClicked: {
-                    picker.minimum = new Date("2013/12/1");
-                    picker.date = new Date("2014/12/5");
+                Button {
+                    text: "EN(US)"
+                    onClicked: picker.locale = Qt.locale("en_US")
+                }
+
+                Button {
+                    text: "infinite"
+                    onClicked: picker.maximum = picker.maximum.getInvalidDate()
+                }
+                Button {
+                    text: "Jan-Mar"
+                    onClicked: {
+                        var date = new Date();
+                        date.setMonth(0);
+                        picker.minimum = date;
+                        date.setMonth(2);
+                        picker.maximum = date;
+                        picker.date = new Date(date);
+                    }
+                }
+                Button {
+                    text: "Change minimum"
+                    onClicked: {
+                        picker.minimum = new Date("2012/12/1");
+                    }
+                }
+                Button {
+                    text: "minimum & date"
+                    onClicked: {
+                        picker.minimum = new Date("2013/12/1");
+                        picker.date = new Date("2014/12/5");
+                    }
                 }
             }
         }

@@ -140,6 +140,7 @@ StyledItem {
     // tumbler
     Loader {
         id: loader
+        objectName: "Picker_ViewLoader"
         asynchronous: false
         parent: __styleInstance.hasOwnProperty("tumblerHolder") ? __styleInstance.tumblerHolder : picker
         anchors.fill: parent

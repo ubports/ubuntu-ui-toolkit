@@ -114,8 +114,20 @@ Item {
             compare(label.text, dayModel.text(picker.date.getDate() - 1, testSuite.width), "locale for day name wrong");
         }
 
-        function test_2_minimumAfterDate() {
-
+        function test_2_changeMinimumBeforeDate() {
+            var date = new Date(picker.date);
+            var originalDate = new Date(date);
+            date.setFullYear(date.getFullYear() - 1);
+            date.setDate(1);
+            picker.minimum = date;
+            wait(500);
+            var year = getPickerLabel(picker, "DatePicker_YearPicker");
+            compare(year.text, originalDate.getFullYear().toString(), "year differs");
+            var month = getPickerLabel(picker, "DatePicker_MonthPicker");
+            compare(month.text, picker.locale.monthName(originalDate.getMonth(), Locale.LongFormat), "month differs");
+            var day = getPickerLabel(picker, "DatePicker_DayPicker");
+            var dayModel = getPickerModel(picker, "DatePicker_DayPicker");
+            compare(day.text, dayModel.text(originalDate.getDate() - 1, testSuite.width), "day differs");
         }
     }
 }

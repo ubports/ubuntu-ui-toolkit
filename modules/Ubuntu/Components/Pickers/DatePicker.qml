@@ -230,7 +230,7 @@ FocusScope {
     }
 
     /*! \internal */
-    onLocaleChanged: internals./*resetPickers()*/initialize()
+    onLocaleChanged: internals.updatePickers()
     /*! \internal */
     onMinimumChanged: {
         // adjust date
@@ -260,11 +260,12 @@ FocusScope {
     onModeChanged: internals.resetPickers();
 
     Component.onCompleted: {
-        if (minimum === undefined) minimum = date;
-        internals.initialize();
-//        internals.arrangeTumblers();
-//        internals.completed = true;
-//        internals.resetPickers();
+        if (minimum === undefined) {
+            minimum = date;
+        }
+        internals.arrangeTumblers();
+        internals.completed = true;
+        internals.resetPickers();
     }
 
     // models
@@ -329,13 +330,25 @@ FocusScope {
                       Model to hold tumbler order for repeaters.
                       Roles:
                       - pickerModel
-                      - pickerName
+                      - objectName
                       */
                     id: tumblerModel
+
+                    // the function checks whether a pickerModel was added or not
+                    // returns the index of the model object the pickerModel was found
+                    // or -1 on error.
+                    function pickerModelIndex(name) {
+                        for (var i = 0; i < count; i++) {
+                            if (get(i).objectName === name) {
+                                return i;
+                            }
+                        }
+                        return -1;
+                    }
                 }
                 Picker {
                     id: pickerDelegate
-                    objectName: "DatePicker_" + pickerName
+                    objectName: "DatePicker_" + model.objectName
                     model: pickerModel
                     enabled: pickerModel.count > 1
                     circular: pickerModel.circular
@@ -395,19 +408,14 @@ FocusScope {
         property bool completed: false
         property real margin: units.gu(1.5)
 
-        function initialize() {
-            completed = false;
-            // clean tumblers
-            for (var i = 0; i < tumblerModel.count; i++) {
-                var pickerModel = tumblerModel.get(i).pickerModel;
-                var pickerItem = pickerModel.pickerItem;
-                pickerItem.model = null;
-                pickerModel.clear();
+        function updatePickers() {
+            if (completed) {
+                completed = false;
+                print("REARRANGE TUMBLER")
+                arrangeTumblers();
+                completed = true;
+                resetPickers();
             }
-
-            arrangeTumblers();
-            completed = true;
-            resetPickers();
         }
 
         /*
@@ -426,25 +434,52 @@ FocusScope {
             Detects the tumbler order from the date format of the locale
           */
         function arrangeTumblers() {
-            tumblerModel.clear();
+//            tumblerModel.clear();
             // use short format to exclude any extra characters
             var format = datePicker.locale.dateFormat(Locale.ShortFormat).split(/\W/g);
             // loop through the format to decide the position of the tumbler
+            var formatIndex = 0;
             for (var i in format) {
                 if (!format[i].length) continue;
                 // check the first two characters
                 switch (format[i].substr(0, 1).toLowerCase()) {
                 case 'y':
-                    tumblerModel.append({"pickerModel": yearModel, "pickerName": "YearPicker"})
+                    var idx = tumblerModel.pickerModelIndex("YearPicker");
+                    if (idx >= 0) {
+                        print("MOVE YEAR FROM " + idx + " TO " + formatIndex);
+                        tumblerModel.move(idx, formatIndex, 1);
+                    } else {
+                        tumblerModel.append({"pickerModel": yearModel, "objectName": "YearPicker"})
+                    }
+                    formatIndex++;
                     break;
                 case 'm':
-                    tumblerModel.append({"pickerModel": monthModel, "pickerName": "MonthPicker"})
+                    var idx = tumblerModel.pickerModelIndex("MonthPicker");
+                    if (idx >= 0) {
+                        print("MOVE MONTH FROM " + idx + " TO " + formatIndex);
+                        tumblerModel.move(idx, formatIndex, 1);
+                    } else {
+                        tumblerModel.append({"pickerModel": monthModel, "objectName": "MonthPicker"})
+                    }
+                    formatIndex++;
                     break;
                 case 'd':
+                    var idx = tumblerModel.pickerModelIndex("DayPicker");
                     if (datePicker.mode !== "Month") {
-                        tumblerModel.append({"pickerModel": dayModel, "pickerName": "DayPicker"})
+                        if (idx >= 0) {
+                            print("MOVE DAY FROM " + idx + " TO " + formatIndex);
+                            tumblerModel.move(idx, formatIndex, 1);
+                        } else {
+                            tumblerModel.append({"pickerModel": dayModel, "objectName": "DayPicker"})
+                        }
                         dayModel.inUse = true;
+                        formatIndex++;
+                    } else if (idx >= 0) {
+                        tumblerModel.remove(idx, 1);
+                        print("MODE CHANGED?")
+                        dayModel.inUse = false;
                     }
+
                     break;
                 }
             }
