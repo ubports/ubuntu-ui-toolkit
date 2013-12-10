@@ -44,13 +44,14 @@ DOC_PATH=$$system(pwd)/documentation
 docs.target = docs
 # Offline docs for QtCreator
 docs.commands += SRC=$$DOC_SRC qdoc $$DOC_PATH/ubuntu-ui-toolkit-qtcreator.qdocconf 2> $$DOC_PATH/qdoc.err;
-docs.commands += cat $$DOC_PATH/qdoc.err;
+# FIXME: With Qt 5.2 this warning shows up, forcibly omit it from errors
+docs.commands += cat $$DOC_PATH/qdoc.err | grep -v \"qdoc: warning: No documentation for \'global\'\" > $$DOC_PATH/qdoc.err;
 docs.commands += test ! -s $$DOC_PATH/qdoc.err || exit 1;
 docs.commands += qhelpgenerator -o "$$DOC_PATH/html/ubuntuuserinterfacetoolkit.qch" "$$DOC_PATH/html/ubuntuuserinterfacetoolkit.qhp";
 # Online docs. Run qdoc twice: the second run with indexes for cross-referencing
 # other APIs but discard errors because qdoc inherits all doc bugs otherwise
 docs.commands += SRC=$$DOC_SRC qdoc $$DOC_PATH/ubuntu-ui-toolkit-online.qdocconf 2> $$DOC_PATH/qdoc.err;
-docs.commands += cat $$DOC_PATH/qdoc.err;
+docs.commands += cat $$DOC_PATH/qdoc.err | grep -v \"qdoc: warning: No documentation for \'global\'\" > $$DOC_PATH/qdoc.err;
 docs.commands += test ! -s $$DOC_PATH/qdoc.err || exit 1;
 docs.commands += SRC=$$DOC_SRC qdoc $$DOC_PATH/ubuntu-ui-toolkit-online-indexes.qdocconf 2> /dev/null;
 docs.commands += $$DOC_PATH/fix-markup.sh $$DOC_PATH;
