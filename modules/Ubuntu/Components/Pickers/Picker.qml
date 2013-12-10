@@ -203,6 +203,7 @@ StyledItem {
         }
 
         Component.onCompleted: modelWatcher.connectModel(picker.model);
+        Component.onDestruction: modelWatcher.disconnectModel()
     }
 
     // circular list
@@ -252,7 +253,13 @@ StyledItem {
                         positionViewAtIndex(1, PathView.SnapPosition);
                         positionViewAtIndex(0, PathView.SnapPosition);
                     }
+                } else if (Object.prototype.toString.call(model) === "[object Number]") {
+                    if (model >= 2) {
+                        positionViewAtIndex(1, PathView.SnapPosition);
+                        positionViewAtIndex(0, PathView.SnapPosition);
+                    }
                 }
+
                 viewCompleted = complete;
             }
         }
@@ -311,15 +318,15 @@ StyledItem {
                     return prevModel.count;
                 } else if (Object.prototype.toString.call(model) === "[object Array]") {
                     return prevModel.length;
+                } else if (Object.prototype.toString.call(model) === "[object Number]") {
+                    return prevModel;
                 }
             }
             return -1;
         }
 
         function connectModel(model) {
-            if (isObjectModel()) {
-                disconnectModel(prevModel);
-            }
+            disconnectModel();
             prevModel = model;
             // check if the model is derived from QAbstractListModel
             if (model && Object.prototype.toString.call(model) === "[object Object]") {
@@ -328,9 +335,11 @@ StyledItem {
             }
         }
 
-        function disconnectModel(model) {
-            model.rowsAboutToBeRemoved.disconnect(itemsAboutToRemove);
-            model.rowsInserted.disconnect(updateView);
+        function disconnectModel() {
+            if (isObjectModel()) {
+                prevModel.rowsAboutToBeRemoved.disconnect(itemsAboutToRemove);
+                prevModel.rowsInserted.disconnect(updateView);
+            }
         }
 
         function updateView() {
