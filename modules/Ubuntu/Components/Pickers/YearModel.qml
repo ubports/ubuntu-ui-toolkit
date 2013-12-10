@@ -25,6 +25,7 @@ PickerModelBase {
     autoExtend: !maximum.isValid()
 
     function reset() {
+        resetting = true;
         clear();
         from = (minimum.getFullYear() <= 0) ? date.getFullYear() : minimum.getFullYear();
         to = (maximum < minimum) ? -1 : maximum.getFullYear();
@@ -55,6 +56,9 @@ PickerModelBase {
     }
 
     function dateFromIndex(index) {
+        if (index < 0 || index >= count) {
+            return date;
+        }
         var newDate = new Date(date);
         newDate.setFullYear(index + from);
         return newDate;

@@ -22,15 +22,15 @@ import QtQuick 2.0
 ListModel {
 
     /*
-      Holds the picker item. This is not the composit component, it is the individual
-      picker for a sub-value.
+      Holds the picker instance, the component the model is attached to. Should
+      not be confused with the DatePicker.
       */
     property Item pickerItem
 
     /*
       Property holding the composit picker component.
       */
-    property Item compositPicker
+    property Item mainComponent
 
     /*
       The property holds the width of the picker tumbler to be set.
@@ -60,6 +60,13 @@ ListModel {
       The Picker must have a resetPicker() function available.
       */
     function reset() {}
+
+    /*
+      The function completes the reset operation.
+      */
+    function resetCompleted() {
+        resetting = false;
+    }
 
     /*
       Function called by the Picker to re-calculate values for the limit properties.
@@ -100,40 +107,41 @@ ListModel {
         return "";
     }
 
-    /*!
+    /*
       Readonly properties to the composit picker's date properties
       */
-    readonly property date date: compositPicker.date
-    readonly property date minimum: compositPicker.minimum
-    readonly property date maximum: compositPicker.maximum
+    readonly property date date: mainComponent.date
+    readonly property date minimum: mainComponent.minimum
+    readonly property date maximum: mainComponent.maximum
 
     property bool pickerCompleted: false
+
+    /*
+      The property specifies whether there is a reset operation in progress or not.
+      Derivates overwriting reset() function must also set this flag to avoid unwanted
+      date changes that may occur during reset operation due to selectedIndex changes.
+      */
+    property bool resetting: false
 
     /*
       Call reset() whenever minimum or maximum changes, and update
       selected index of pickerItem whenever date changes.
       */
     onMinimumChanged: {
-        if (pickerCompleted && pickerItem) {
-            print("1-MIN RESET " + pickerItem.objectName)
+        if (pickerCompleted && pickerItem && !resetting) {
             pickerItem.resetPicker();
-            print("2-MIN RESET " + pickerItem.objectName)
         }
     }
     onMaximumChanged: {
-        if (pickerCompleted && pickerItem) {
-            print("1-MAX RESET " + pickerItem.objectName)
+        if (pickerCompleted && pickerItem && !resetting) {
             pickerItem.resetPicker();
-            print("2-MAX RESET " + pickerItem.objectName)
         }
     }
     onDateChanged: {
-        if (!pickerCompleted || !pickerItem) {
+        if (!pickerCompleted || !pickerItem || resetting) {
             return;
         }
-        print("1-SYNC " + pickerItem.objectName + ": " + indexOf());
         pickerItem.selectedIndex = indexOf();
-        print("2-SYNC " + pickerItem.objectName + ": " + indexOf());
     }
 
 }

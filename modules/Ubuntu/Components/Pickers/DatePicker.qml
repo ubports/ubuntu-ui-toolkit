@@ -177,7 +177,7 @@ FocusScope {
     property date minimum: Date.prototype.midnight.call(new Date())
     /*! \internal */
     property date maximum: {
-        var d = new Date();
+        var d = Date.prototype.midnight.call(new Date());
         d.setFullYear(d.getFullYear() + 50);
         return d;
     }
@@ -202,12 +202,6 @@ FocusScope {
     /*! \internal */
     readonly property int week: datePicker.date.getWeek()
 
-    /*!
-      Specifies whether the date update is live. By default the date is not
-      updated live.
-      */
-    property bool live: false
-
     /*
       \qmlproperty Locale locale
       The property defines the locale used in the picker. This can be overridden
@@ -221,6 +215,14 @@ FocusScope {
     /*! \internal */
     property var locale: Qt.locale()
 
+    /*!
+      \internal
+      Forwarded style properties to have DatePicker acting as a StyledItem
+      */
+    property alias style: holder.style
+    /*! \internal */
+    property alias __styleInstance: holder.__styleInstance
+
     implicitWidth: units.gu(36)
     implicitHeight: {
         var h = Qt.inputMethod.keyboardRectangle.height;
@@ -228,14 +230,13 @@ FocusScope {
     }
 
     /*! \internal */
-    onLocaleChanged: internals.resetPickers()
+    onLocaleChanged: internals./*resetPickers()*/initialize()
     /*! \internal */
     onMinimumChanged: {
         // adjust date
         if (date !== undefined && date < minimum && minimum.isValid() && internals.completed) {
             date = minimum;
         }
-        print("MIN CHANGED")
     }
     /*! \internal */
     onMaximumChanged: {
@@ -257,20 +258,19 @@ FocusScope {
     }
     /*! \internal */
     onModeChanged: internals.resetPickers();
-    /*! \internal */
-//    onDateChanged: internals.syncPickersWithDate()
 
     Component.onCompleted: {
         if (minimum === undefined) minimum = date;
-        internals.arrangeTumblers();
-        internals.completed = true;
-        internals.resetPickers();
+        internals.initialize();
+//        internals.arrangeTumblers();
+//        internals.completed = true;
+//        internals.resetPickers();
     }
 
     // models
     YearModel {
         id: yearModel
-        compositPicker: datePicker
+        mainComponent: datePicker
         pickerCompleted: internals.completed
         pickerWidth: Math.max(datePicker.width * 0.24, narrowFormatLimit)
         function syncModels() {
@@ -279,7 +279,7 @@ FocusScope {
     }
     MonthModel {
         id: monthModel
-        compositPicker: datePicker
+        mainComponent: datePicker
         pickerCompleted: internals.completed
         pickerWidth: Math.max(datePicker.width - yearModel.pickerWidth - dayModel.pickerWidth, narrowFormatLimit)
         function syncModels() {
@@ -288,7 +288,7 @@ FocusScope {
     }
     DayModel {
         id: dayModel
-        compositPicker: datePicker
+        mainComponent: datePicker
         pickerCompleted: internals.completed
         property bool inUse: false
         pickerWidth: {
@@ -309,8 +309,7 @@ FocusScope {
         anchors.fill: parent
 
         //declare properties that will be used by the PickerStyle
-        property alias itemList: positioner
-        property Item highlightOverlay
+        property alias view: positioner
 
         style: Theme.createStyleComponent("DatePickerStyle.qml", holder)
 
@@ -319,6 +318,7 @@ FocusScope {
 
         Row {
             id: positioner
+            objectName: "DatePicker_Positioner"
             parent: (holder.__styleInstance && holder.__styleInstance.hasOwnProperty("tumblerHolder")) ?
                         holder.__styleInstance.tumblerHolder : holder
             anchors.fill: parent
@@ -339,7 +339,7 @@ FocusScope {
                     model: pickerModel
                     enabled: pickerModel.count > 1
                     circular: pickerModel.circular
-                    live: datePicker.live
+                    live: false
                     width: pickerModel.pickerWidth
 
                     style: Rectangle {
@@ -363,8 +363,10 @@ FocusScope {
                     }
 
                     onSelectedIndexChanged: {
-                        datePicker.date = pickerModel.dateFromIndex(selectedIndex);
-                        pickerModel.syncModels();
+                        if (model && !model.resetting) {
+                            datePicker.date = pickerModel.dateFromIndex(selectedIndex);
+                            pickerModel.syncModels();
+                        }
                     }
 
                     /*
@@ -373,6 +375,7 @@ FocusScope {
                     function resetPicker() {
                         model.reset();
                         model.resetLimits(textSizer, internals.margin);
+                        model.resetCompleted();
                         selectedIndex = model.indexOf();
                     }
 
@@ -392,6 +395,21 @@ FocusScope {
         property bool completed: false
         property real margin: units.gu(1.5)
 
+        function initialize() {
+            completed = false;
+            // clean tumblers
+            for (var i = 0; i < tumblerModel.count; i++) {
+                var pickerModel = tumblerModel.get(i).pickerModel;
+                var pickerItem = pickerModel.pickerItem;
+                pickerItem.model = null;
+                pickerModel.clear();
+            }
+
+            arrangeTumblers();
+            completed = true;
+            resetPickers();
+        }
+
         /*
           Resets the pickers. Pickers will update their models with the given date,
           minimum and maximum values.
@@ -400,30 +418,15 @@ FocusScope {
             if (!completed) return;
             for (var i = 0; i < tumblerModel.count; i++) {
                 var pickerItem = tumblerModel.get(i).pickerModel.pickerItem;
-//                model.pickerModel.reset();
                 pickerItem.resetPicker();
             }
-        }
-        /*
-          sync pickers.
-          */
-        function syncPickersWithDate() {
-            if (!completed) return;
-            print(datePicker.date)
-            yearModel.pickerItem.selectedIndex = yearModel.indexOf();
-//            monthModel.pickerItem.selectedIndex = monthModel.indexOf();
-            dayModel.pickerItem.selectedIndex = dayModel.indexOf();
-//            for (var i = 0; i < tumblerModel.count; i++) {
-//                var model = tumblerModel.get(i).pickerModel;
-//                model.pickerItem.selectedIndex = model.indexOf();
-//                print(model.pickerItem + "?" + model.pickerItem.selectedIndex)
-//            }
         }
 
         /*
             Detects the tumbler order from the date format of the locale
           */
         function arrangeTumblers() {
+            tumblerModel.clear();
             // use short format to exclude any extra characters
             var format = datePicker.locale.dateFormat(Locale.ShortFormat).split(/\W/g);
             // loop through the format to decide the position of the tumbler

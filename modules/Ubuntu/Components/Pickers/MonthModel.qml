@@ -26,6 +26,7 @@ PickerModelBase {
     property int distance
 
     function reset() {
+        resetting = true;
         clear();
         var modelDate = new Date(date);
         modelDate.setDate(1);
@@ -39,6 +40,8 @@ PickerModelBase {
             modelDate.setMonth(i);
             append({"month": modelDate.getMonth()});
         }
+
+
     }
 
     function resetLimits(label, margin) {
@@ -46,9 +49,9 @@ PickerModelBase {
         narrowFormatLimit = label.paintedWidth + 2 * margin;
         shortFormatLimit = longFormatLimit = 0.0;
         for (var month = 0; month < 12; month++) {
-            label.text = compositPicker.locale.monthName(month, Locale.LongFormat);
+            label.text = mainComponent.locale.monthName(month, Locale.LongFormat);
             shortFormatLimit = Math.max(label.paintedWidth + 2 * margin, shortFormatLimit);
-            label.text = compositPicker.locale.monthName(month, Locale.LongFormat);
+            label.text = mainComponent.locale.monthName(month, Locale.LongFormat);
             longFormatLimit = Math.max(label.paintedWidth + 2 * margin, longFormatLimit);
         }
     }
@@ -62,6 +65,9 @@ PickerModelBase {
     }
 
     function dateFromIndex(index) {
+        if (index < 0 || index >= count) {
+            return date;
+        }
         var newDate = new Date(date);
         // check if the days are in the diff zone (29-31)
         var fromDay = newDate.getDate();
@@ -76,15 +82,15 @@ PickerModelBase {
     }
 
     function text(value, width) {
-        if (!compositPicker || value === undefined) {
-            return "dummy";
+        if (!mainComponent || value === undefined) {
+            return "";
         }
         if (width >= longFormatLimit) {
-            return compositPicker.locale.monthName(value, Locale.LongFormat);
+            return mainComponent.locale.monthName(value, Locale.LongFormat);
         }
 
         if (width >= shortFormatLimit) {
-            return compositPicker.locale.monthName(value, Locale.ShortFormat);
+            return mainComponent.locale.monthName(value, Locale.ShortFormat);
         }
 
         var thisDate = new Date(date);

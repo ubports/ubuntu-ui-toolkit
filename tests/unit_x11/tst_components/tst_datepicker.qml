@@ -69,6 +69,16 @@ Item {
         name: "DatePickerAPI"
         when: windowShown
 
+        function getPickerLabel(picker, name) {
+            var pickerItem = findChild(picker, name);
+            var pickerCurrent = findChild(pickerItem, "Picker_ViewLoader");
+            return findChild(pickerCurrent.item.currentItem, "DatePicker_PickerLabel");
+        }
+        function getPickerModel(picker, name) {
+            var pickerItem = findChild(picker, name);
+            return pickerItem ? pickerItem.model : undefined;
+        }
+
         function test_0_mode() {
             compare(picker.mode, "Date", "default mode");
         }
@@ -79,9 +89,6 @@ Item {
             compare(picker.month, date.getMonth(), "default month");
             compare(picker.day, date.getDate(), "default day");
             compare(picker.week, date.getWeek(), "default week");
-        }
-        function test_0_live() {
-            compare(picker.live, false, "default live mode");
         }
         function test_0_minimum_maximum() {
             var endDate = Date.prototype.midnight.call(new Date());
@@ -98,14 +105,17 @@ Item {
             picker.minimum = new Date("2012/12/1");
             picker.date = new Date("2012/12/1");
             picker.locale = Qt.locale("hu_HU");
-            waitForRendering(picker);
-            wait(4000);
-            var pickerItem = findChild(picker, "DatePicker_MonthPicker");
-            var label = findChild(pickerItem.itemList.currentItem, "DatePicker_PickerLabel");
+            wait(500)
+            var label = getPickerLabel(picker, "DatePicker_MonthPicker");
             compare(label.text, locale.monthName(picker.date.getMonth(), Locale.LongFormat), "locale for month wrong");
-//            pickerItem = findChild(picker, "DatePicker_DayPicker");
-//            label = findChild(pickerItem.itemList.currentItem, "DatePicker_PickerLabel");
-//            compare(label.text, locale.dayName(picker.date.getDate(), Locale.LongFormat), "locale for day name wrong");
+
+            label = getPickerLabel(picker, "DatePicker_DayPicker");
+            var dayModel = getPickerModel(picker, "DatePicker_DayPicker");
+            compare(label.text, dayModel.text(picker.date.getDate() - 1, testSuite.width), "locale for day name wrong");
+        }
+
+        function test_2_minimumAfterDate() {
+
         }
     }
 }

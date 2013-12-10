@@ -19,7 +19,6 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.Pickers 0.1
 
 Template {
-
     TemplateSection {
         className: "Picker"
         documentation: "qml-ubuntu-components-pickers0-picker.html"
@@ -96,8 +95,6 @@ Template {
                 Component.onCompleted: {
                     for (var i = 0; i < 100; i++)
                         model.append({"blob" : "Line " + i})
-
-                    selectedIndex = 4;
                 }
             }
         }
