@@ -70,6 +70,7 @@ for line in fileinput.input(inputfiles):
     if fileinput.isfirstline():
         in_block = 0
         in_comment = in_builtin_type = False
+        block_meta = {}
         annotated_properties = {}
         if fileinput.filename()[-3:] == 'qml':
             filetype = 'qml'
@@ -117,6 +118,7 @@ for line in fileinput.input(inputfiles):
     # End of function/ signal/ Item block
     if '}' in line:
         in_block -= 1
+        block_meta = {}
         if in_block == 1 and in_builtin_type:
             in_builtin_type = False
         continue
@@ -127,7 +129,7 @@ for line in fileinput.input(inputfiles):
         declaration = line.split(':')[0]
         words = declaration.strip().split(' ')
         # Skip types with prefixes considered builtin
-        if words[0] == 'name':
+        if filetype == 'qmltypes' and words[0] == 'name':
             found_builtin_type = False
             for builtin in builtins:
                 if '"' + builtin in line:
@@ -136,6 +138,15 @@ for line in fileinput.input(inputfiles):
             if found_builtin_type:
                 in_builtin_type = True
                 continue
+            if 'prototype' in block_meta:
+                print('    ' + block_meta['prototype'].strip())
+                print('    ' + line.strip())
+                continue
+
+        block_meta[words[0]] = line
+        # Omit prototype if it comes before the name since we may skip it
+        if not 'name' in block_meta and words[0] == 'prototype':
+            continue
 
         # Don't consider the qml variable name as a keyword
         if filetype == 'qml':
@@ -172,6 +183,7 @@ for line in fileinput.input(inputfiles):
     # Start of function/ signal/ Item block
     if '{' in line:
         in_block += 1
+        block_meta = {}
         # The parent type can affect API
         if in_block == 1 and filetype == 'qml':
             print(line.split('{')[0].strip())
