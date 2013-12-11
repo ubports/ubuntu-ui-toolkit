@@ -68,11 +68,11 @@ import Ubuntu.Components 0.1
 
     The default interval the date values are chosen is a window starting at
     the current date ending 50 years later. This window is defined by the
-    \l minimum and \l maximum properties. The interval can be altered considering
+    \a minimum and \a maximum properties. The interval can be altered considering
     the following rules:
     \list
-        \li - \l minimum must be less or equal than the \l date;
-        \li - \l maximum value must be greater than the \l minimum, or invalid.
+        \li - \a minimum must be less or equal than the \l date;
+        \li - \a maximum value must be greater than the \a minimum, or invalid.
                 When set to invalid date (see DateUtils getInvalidDate()), the
                 upper limit of the date interval mecomes infinite, meaning the
                 year picker will extend infinitelly. This leads to increased
@@ -202,8 +202,7 @@ FocusScope {
     /*! \internal */
     readonly property int week: datePicker.date.getWeek()
 
-    /*
-      \qmlproperty Locale locale
+    /*!
       The property defines the locale used in the picker. This can be overridden
       by setting a different Locale object.
       \qml
@@ -212,7 +211,6 @@ FocusScope {
       }
       \endqml
       */
-    /*! \internal */
     property var locale: Qt.locale()
 
     /*!
