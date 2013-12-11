@@ -17,7 +17,11 @@
 # Author: Christian Dywan <christian.dywan@canonical.com>
 
 # xvfb-run can't load gl drivers, Xvfb can
-DISPLAY=:5
+NUM=0
+while [ -f /tmp/.X$NUM-lock ]; do
+    NUM=$(($NUM + 1))
+done
+DISPLAY=":$NUM"
 trap : USR1
 (trap '' USR1; exec Xvfb $DISPLAY -screen 0 1280x1024x24 2>xvfb.err) &
 EPID=$!
