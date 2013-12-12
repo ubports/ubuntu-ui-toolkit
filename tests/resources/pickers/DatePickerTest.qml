@@ -25,13 +25,19 @@ MainView {
     Page {
         title: "DatePicker test"
         Column {
+            anchors.fill: parent
             DatePicker {
                 id: picker
                 locale: Qt.locale("en_UK")
-//                minimum: new Date("2013/12/1")
-//                maximum: new Date("2013/12/31")
 
                 onDateChanged: print("CHANGED DATE=" + Qt.formatDate(date, "yyyy/MM/dd"))
+            }
+            Slider {
+                value: 0.0//units.gu(36)
+                live: true
+                minimumValue: 0.0
+                maximumValue: parent.width
+                onValueChanged: picker.width = value
             }
 
             Flow {
@@ -83,9 +89,12 @@ MainView {
                     onClicked: picker.date = new Date()
                 }
 
-                Button {
-                    text: "Toggle mode"
-                    onClicked: picker.mode = (picker.mode === "Date") ? "Month" : "Date"
+                Repeater {
+                    model: ["Y|M|D", "Y|M", "M|D", "Y", "M", "D"]
+                    Button {
+                        text: "model: " + modelData
+                        onClicked: picker.mode = modelData
+                    }
                 }
             }
         }

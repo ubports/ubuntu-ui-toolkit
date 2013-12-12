@@ -36,7 +36,7 @@ Item {
     /*!
       Scale of the highlight item
       */
-    property real highlightScaleFactor: 1.42
+    property real highlightScaleFactor: 1.2
     /*!
       Thickness of the highlight component
       */
@@ -123,7 +123,11 @@ Item {
 
         Row {
             id: magnifierRow
-            anchors.fill: highlightItem
+            anchors {
+                top: highlightItem.top
+                bottom: highlightItem.bottom
+                horizontalCenter: highlightItem.horizontalCenter
+            }
 
             Repeater {
                 model: styledItem.pickerModels

@@ -81,7 +81,7 @@ Item {
         }
 
         function test_0_mode() {
-            compare(picker.mode, "Date", "default mode");
+            compare(picker.mode, "Y|M|D", "default mode");
         }
         function test_0_date() {
             var date = (new Date()).midnight();
@@ -101,17 +101,94 @@ Item {
             compare(picker.locale, Qt.locale(), "default locale is the same as system locale");
         }
 
-        function test_1_changeMode() {
+        function test_1_changeModeYM() {
             var oldMode = picker.mode;
-            var newMode = (picker.mode === "Date") ? "Month" : "Date";
-            var pickerCount = ((newMode === "Date") ? 3 : 2) + 1; // +1 is the Repeater
+
+            var newMode = "Y|M";
+            var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
             wait(500);
             var positioner = findChild(picker, "DatePicker_Positioner");
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
 
-            picker.mode = oldMode;
-            pickerCount = ((oldMode === "Date") ? 3 : 2) + 1; // +1 is the Repeater
+            picker.mode = "Year|Month|Day";
+            pickerCount = 3 + 1; // +1 is the Repeater
+            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
+        }
+
+        function test_1_changeModeMD() {
+            var oldMode = picker.mode;
+
+            var newMode = "D|M";
+            var pickerCount = 2 + 1; // +1 is the Repeater
+            picker.mode = newMode;
+            wait(500);
+            var positioner = findChild(picker, "DatePicker_Positioner");
+            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
+
+            picker.mode = "Year|Month|Day";
+            pickerCount = 3 + 1; // +1 is the Repeater
+            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
+        }
+
+        function test_1_changeModeYS() {
+            var oldMode = picker.mode;
+
+            var newMode = "Y|S";
+            var pickerCount = 2 + 1; // +1 is the Repeater
+            picker.mode = newMode;
+            wait(500);
+            var positioner = findChild(picker, "DatePicker_Positioner");
+            expectFailContinue("", "Invalid mode");
+            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
+
+            picker.mode = "Year|Month|Day";
+            pickerCount = 3 + 1; // +1 is the Repeater
+            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
+        }
+
+        function test_1_changeModeY() {
+            var oldMode = picker.mode;
+
+            var newMode = "Y";
+            var pickerCount = 1 + 1; // +1 is the Repeater
+            picker.mode = newMode;
+            wait(500);
+            var positioner = findChild(picker, "DatePicker_Positioner");
+            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
+
+            picker.mode = "Year|Month|Day";
+            pickerCount = 3 + 1; // +1 is the Repeater
+            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
+        }
+
+        function test_1_changeModeM() {
+            var oldMode = picker.mode;
+
+            var newMode = "M";
+            var pickerCount = 1 + 1; // +1 is the Repeater
+            picker.mode = newMode;
+            wait(500);
+            var positioner = findChild(picker, "DatePicker_Positioner");
+            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
+
+            picker.mode = "Year|Month|Day";
+            pickerCount = 3 + 1; // +1 is the Repeater
+            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
+        }
+
+        function test_1_changeModeD() {
+            var oldMode = picker.mode;
+
+            var newMode = "D";
+            var pickerCount = 1 + 1; // +1 is the Repeater
+            picker.mode = newMode;
+            wait(500);
+            var positioner = findChild(picker, "DatePicker_Positioner");
+            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
+
+            picker.mode = "Year|Month|Day";
+            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -179,7 +256,7 @@ Item {
             date.setMonth(5);
             date.setDate(21);
             picker.date = date;
-            picker.mode = "Date";
+            picker.mode = "Y|M|D";
             wait(500);
 
             var yearLabel = getPickerLabel(picker, "DatePicker_YearPicker");

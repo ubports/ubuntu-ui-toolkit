@@ -36,7 +36,7 @@ Item {
     /*!
       Scale of the highlight item
       */
-    property real highlightScaleFactor: 1.15
+    property real highlightScaleFactor: 1.2
     /*!
       Thickness of the highlight component
       */

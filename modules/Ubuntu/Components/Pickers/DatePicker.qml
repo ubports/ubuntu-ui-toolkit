@@ -21,15 +21,17 @@ import Ubuntu.Components 0.1
     \qmltype DatePicker
     \inqmlmodule Ubuntu.Components.Pickers 0.1
     \ingroup ubuntu-pickers
-    \brief DatePicker component provides full date or month picking functionality.
+    \brief DatePicker component provides date value picking functionality.
 
     DatePicker combines up to three Picker elements providing different date value
-    selection possibilities. It can be used to select full date (year, month, day
-    and weekNumber) as well as to select year and month only. The selected date as
-    well as the initial one is provided by the \l date property. For convenience
-    the component provides also the year, month, day and week values as separate
-    properties, however these properties are not writable, and their initialization
-    can happen only through the \l date property.
+    selection possibilities. It can be used to select full date (year, month, day)
+    as well as to select a combination of year and month, month and day, or individual
+    date units (i.e. year, month or day). The selected date as well as the initial
+    one is provided by the \l date property. For convenience the component provides
+    also the \a year, \a month, \a day and \a week values as separate properties,
+    however these properties are not writable, and their initialization can happen
+    only through the \l date property.
+
     \qml
     import QtQuick 2.0
     import Ubuntu.Components 0.1
@@ -46,10 +48,10 @@ import Ubuntu.Components 0.1
     }
     \endqml
 
-    The \l mode property specifies whether the DatePicker provides full date picking
-    or month picking. When \a Month mode is set, the component shows only two pickers,
-    one for year and one for the month picking.
-    Month picker example:
+    The \l mode property specifies what date units should be shown by the picker.
+    The property holds a string, combining \b Year, \b Month and \b Day strings
+    or their first letter sepatared with '|' character. A DatePicker which shows
+    only year and month date units would look as follows:
     \qml
     import QtQuick 2.0
     import Ubuntu.Components 0.1
@@ -61,7 +63,7 @@ import Ubuntu.Components 0.1
         }
         DatePicker {
             id: datePicker
-            mode: "Month"
+            mode: "Year|Month"
         }
     }
     \endqml
@@ -71,10 +73,12 @@ import Ubuntu.Components 0.1
     \a minimum and \a maximum properties. The interval can be altered considering
     the following rules:
     \list
-        \li - \a minimum must be less or equal than the \l date;
+        \li - \a minimum must be less or equal than the \l date; if the \a date
+                value is less than the given \a minimum, the date will be set to
+                the minimum's value
         \li - \a maximum value must be greater than the \a minimum, or invalid.
                 When set to invalid date (see DateUtils getInvalidDate()), the
-                upper limit of the date interval mecomes infinite, meaning the
+                upper limit of the date interval becomes infinite, meaning the
                 year picker will extend infinitelly. This leads to increased
                 memory use and should be avoided if possible.
     \endlist
@@ -118,12 +122,11 @@ import Ubuntu.Components 0.1
         \li otherwise number for month, number for date (“08” “28”).
     \endlist
 
-    \a{If the currently selected date becomes impossible the year change (from a
-    leap to a non-leap year when the date is set to February 29) or the month
+    \a{If the currently selected date becomes impossible due to year change (from a
+    leap to a non-leap year when the date is set to February 29) or month change
     (e.g. from a month that has 31 days to one that has fewer when the date is
-    set to 31), the date reduces automatically, but should immediately return
-    to its previous value if that becomes possible again before you next manually
-    change the date.}
+    set to 31), the date reduces automatically to the last day of the month (i.e
+    February 28 or 30th day of the month).}
 
     \section4 How minimum/maximum affects the tumblers
 
@@ -144,11 +147,17 @@ FocusScope {
     id: datePicker
 
     /*!
-      Specifies the picker mode, whether it should be used for date ("Date") or
-      month ("Month") picking.
-      The default value is "Date".
+      Specifies what kind of date value selectors should be shown by the picker.
+      This is a string of 'flags' separated by '|' separator, where flags are:
+      \list
+        \li - \b Year (or simply \b Y) - when the year value selector is required
+        \li - \b Month (or simply \b M) - when the month value selector is required
+        \li - \b Day (or simply \b D) - when the day value selector is required
+      \endlist
+      Any combination of these is allowed, except 'Year|Day'.
+      The default value is "Y|M|D".
       */
-    property string mode: "Date"
+    property string mode: "Y|M|D"
 
     /*!
       The date chosen by the DatePicker. The default value is the date at the
@@ -165,8 +174,8 @@ FocusScope {
 
       The year and month picker values are filled based on these values. The
       year picker will be infinite (extending infinitely) if the maximum is
-      an invalid date. If the distance between maximum and minimum is zero
-      years, the year picker will be shown disabled.
+      an invalid date. If the distance between maximum and minimum is less than
+      a year, the year picker will be shown disabled.
 
       The month picker will be circular if the distance between maximum and minimum
       is at least one year, or if the maximum date is invalid.
@@ -203,8 +212,8 @@ FocusScope {
     readonly property int week: datePicker.date.getWeek()
 
     /*!
-      The property defines the locale used in the picker. This can be overridden
-      by setting a different Locale object.
+      The property defines the locale used in the picker. The default value is
+      the system locale.
       \qml
       DatePicker {
            locale: Qt.locale("hu_HU")
@@ -270,7 +279,7 @@ FocusScope {
         id: yearModel
         mainComponent: datePicker
         pickerCompleted: internals.completed
-        pickerWidth: Math.max(datePicker.width * 0.24, narrowFormatLimit)
+        pickerWidth: (!pickerItem) ? 0 : narrowFormatLimit
         function syncModels() {
             dayModel.syncModels();
         }
@@ -279,7 +288,12 @@ FocusScope {
         id: monthModel
         mainComponent: datePicker
         pickerCompleted: internals.completed
-        pickerWidth: Math.max(datePicker.width - yearModel.pickerWidth - dayModel.pickerWidth, narrowFormatLimit)
+        pickerWidth: {
+            if (!pickerItem) {
+                return 0;
+            }
+            return MathUtils.clamp(datePicker.width - yearModel.pickerWidth - dayModel.pickerWidth, narrowFormatLimit, longFormatLimit);
+        }
         function syncModels() {
             dayModel.syncModels();
         }
@@ -292,7 +306,7 @@ FocusScope {
             if (!pickerItem) {
                 return 0;
             }
-            var w = Math.max(datePicker.width * 0.37, narrowFormatLimit);
+            var w = Math.max((datePicker.width - yearModel.pickerWidth) * internals.dayPickerRatio, narrowFormatLimit);
             if (w < longFormatLimit && w >= shortFormatLimit) {
                 return shortFormatLimit;
             }
@@ -318,7 +332,11 @@ FocusScope {
             objectName: "DatePicker_Positioner"
             parent: (holder.__styleInstance && holder.__styleInstance.hasOwnProperty("tumblerHolder")) ?
                         holder.__styleInstance.tumblerHolder : holder
-            anchors.fill: parent
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                horizontalCenter: parent.horizontalCenter
+            }
 
             Repeater {
                 model: ListModel {
@@ -350,6 +368,14 @@ FocusScope {
                             move(idx, index, 1);
                         } else {
                             append({"pickerModel": model, "pickerName": name});
+                        }
+                    }
+
+                    // removes the given picker
+                    function removePicker(name) {
+                        var idx = pickerModelIndex(name);
+                        if (idx >= 0) {
+                            remove(idx);
                         }
                     }
                 }
@@ -409,17 +435,32 @@ FocusScope {
     }
 
     // component to calculate text fitting
-    Label { id: textSizer; visible: false; scale: 1.2 }
+    Label { id: textSizer; visible: false }
     QtObject {
         id: internals
         property bool completed: false
         property real margin: units.gu(1.5)
+        property real dayPickerRatio: 0.1
+
+        property bool showYearPicker: true
+        property bool showMonthPicker: true
+        property bool showDayPicker: true
 
         /*
           Update pickers.
           */
         function updatePickers() {
             if (completed) {
+                // check mode flags first
+                var modes = datePicker.mode.split(/\W/g);
+                showYearPicker = (modes.indexOf('Y') >= 0) || (modes.indexOf("Year") >= 0);
+                showMonthPicker = (modes.indexOf('M') >= 0) || (modes.indexOf("Month") >= 0);
+                showDayPicker = (modes.indexOf('D') >= 0) || (modes.indexOf("Day") >= 0);
+                if (!showMonthPicker && showYearPicker && showDayPicker) {
+                    console.error("Invalid DatePicker mode: " + datePicker.mode);
+                    return;
+                }
+
                 arrangeTumblers();
                 resetPickers();
             }
@@ -435,6 +476,11 @@ FocusScope {
                 var pickerItem = tumblerModel.get(i).pickerModel.pickerItem;
                 pickerItem.resetPicker();
             }
+
+            // calculate the ratio for the dayPicker
+            var width = datePicker.width - yearModel.pickerWidth;
+            dayPickerRatio = (dayModel.longFormatLimit / width).toPrecision(3);
+            print(dayPickerRatio)
         }
 
         /*
@@ -453,22 +499,29 @@ FocusScope {
                 // check the first two characters
                 switch (format[i].substr(0, 1).toLowerCase()) {
                 case 'y':
-                    tumblerModel.setPickerModel(yearModel, "YearPicker", formatIndex);
-                    formatIndex++;
+                    if (showYearPicker) {
+                        tumblerModel.setPickerModel(yearModel, "YearPicker", formatIndex);
+                        formatIndex++;
+                    } else {
+                        tumblerModel.removePicker("YearPicker");
+                    }
+
                     break;
                 case 'm':
-                    tumblerModel.setPickerModel(monthModel, "MonthPicker", formatIndex);
-                    formatIndex++;
+                    if (showMonthPicker) {
+                        tumblerModel.setPickerModel(monthModel, "MonthPicker", formatIndex);
+                        formatIndex++;
+                    } else {
+                        tumblerModel.removePicker("MonthPicker");
+                    }
+
                     break;
                 case 'd':
-                    if (datePicker.mode !== "Month") {
+                    if (showDayPicker) {
                         tumblerModel.setPickerModel(dayModel, "DayPicker", formatIndex);
                         formatIndex++;
                     } else {
-                        var idx = tumblerModel.pickerModelIndex("DayPicker");
-                        if (idx >= 0) {
-                            tumblerModel.remove(idx, 1);
-                        }
+                        tumblerModel.removePicker("DayPicker");
                     }
                     break;
                 }
