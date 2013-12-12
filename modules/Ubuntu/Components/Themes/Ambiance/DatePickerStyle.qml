@@ -47,6 +47,9 @@ Item {
       */
     property alias tumblerHolder: content
 
+    property Item view: Item {}
+    property ListModel pickerModels: ListModel{}
+
     anchors.fill: parent
 
     // frame
@@ -112,7 +115,7 @@ Item {
         ShaderEffectSource {
             id: effectSource
             visible: false
-            sourceItem: styledItem.view
+            sourceItem: view
 
             property real sourceRectMultiplier: 2.0
             // XXX: This works because the parent of magnifier is the same as sourceItem
@@ -130,7 +133,7 @@ Item {
             }
 
             Repeater {
-                model: styledItem.pickerModels
+                model: pickerModels
                 HighlightMagnifier {
                     anchors {
                         top: magnifierRow.top

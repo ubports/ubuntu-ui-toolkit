@@ -143,7 +143,7 @@ import Ubuntu.Components 0.1
         \li otherwise month number.
     \endlist
   */
-FocusScope {
+StyledItem {
     id: datePicker
 
     /*!
@@ -221,14 +221,6 @@ FocusScope {
       \endqml
       */
     property var locale: Qt.locale()
-
-    /*!
-      \internal
-      Forwarded style properties to have DatePicker acting as a StyledItem
-      */
-    property alias style: holder.style
-    /*! \internal */
-    property alias __styleInstance: holder.__styleInstance
 
     implicitWidth: units.gu(36)
     implicitHeight: {
@@ -314,121 +306,120 @@ FocusScope {
         }
     }
 
+    style: Theme.createStyleComponent("DatePickerStyle.qml", datePicker)
+    Binding {
+        target: __styleInstance
+        property: "view"
+        value: positioner
+    }
+    Binding {
+        target: __styleInstance
+        property: "pickerModels"
+        value: tumblerModel
+    }
+
     // tumbler positioner
-    StyledItem {
-        id: holder
-        anchors.fill: parent
+    Row {
+        id: positioner
+        objectName: "DatePicker_Positioner"
+        parent: (datePicker.__styleInstance && datePicker.__styleInstance.hasOwnProperty("tumblerHolder")) ?
+                    datePicker.__styleInstance.tumblerHolder : datePicker
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            horizontalCenter: parent.horizontalCenter
+        }
 
-        //declare properties that will be used by the PickerStyle
-        property alias view: positioner
-
-        style: Theme.createStyleComponent("DatePickerStyle.qml", holder)
-
-        // used in DatePickerStyle to determine the width of the individual tumblers
-        property alias pickerModels: tumblerModel
-
-        Row {
-            id: positioner
-            objectName: "DatePicker_Positioner"
-            parent: (holder.__styleInstance && holder.__styleInstance.hasOwnProperty("tumblerHolder")) ?
-                        holder.__styleInstance.tumblerHolder : holder
-            anchors {
-                top: parent.top
-                bottom: parent.bottom
-                horizontalCenter: parent.horizontalCenter
-            }
-
-            Repeater {
-                model: ListModel {
-                    /*
+        Repeater {
+            model: ListModel {
+                /*
                       Model to hold tumbler order for repeaters.
                       Roles:
                       - pickerModel
                       - pickerName
                       */
-                    id: tumblerModel
+                id: tumblerModel
 
-                    // the function checks whether a pickerModel was added or not
-                    // returns the index of the model object the pickerModel was found
-                    // or -1 on error.
-                    function pickerModelIndex(name) {
-                        for (var i = 0; i < count; i++) {
-                            if (get(i).pickerName === name) {
-                                return i;
-                            }
-                        }
-                        return -1;
-                    }
-
-                    // the function checks whether a pickerModel is present in the list;
-                    // moves the existing one to the given index or inserts it if not present
-                    function setPickerModel(model, name, index) {
-                        var idx = pickerModelIndex(name);
-                        if (idx >= 0) {
-                            move(idx, index, 1);
-                        } else {
-                            append({"pickerModel": model, "pickerName": name});
+                // the function checks whether a pickerModel was added or not
+                // returns the index of the model object the pickerModel was found
+                // or -1 on error.
+                function pickerModelIndex(name) {
+                    for (var i = 0; i < count; i++) {
+                        if (get(i).pickerName === name) {
+                            return i;
                         }
                     }
+                    return -1;
+                }
 
-                    // removes the given picker
-                    function removePicker(name) {
-                        var idx = pickerModelIndex(name);
-                        if (idx >= 0) {
-                            remove(idx);
+                // the function checks whether a pickerModel is present in the list;
+                // moves the existing one to the given index or inserts it if not present
+                function setPickerModel(model, name, index) {
+                    var idx = pickerModelIndex(name);
+                    if (idx >= 0) {
+                        move(idx, index, 1);
+                    } else {
+                        append({"pickerModel": model, "pickerName": name});
+                    }
+                }
+
+                // removes the given picker
+                function removePicker(name) {
+                    var idx = pickerModelIndex(name);
+                    if (idx >= 0) {
+                        remove(idx);
+                    }
+                }
+            }
+            Picker {
+                id: pickerDelegate
+                objectName: "DatePicker_" + pickerName
+                model: pickerModel
+                enabled: pickerModel.count > 1
+                circular: pickerModel.circular
+                live: false
+                width: pickerModel.pickerWidth
+
+                style: Rectangle {
+                    anchors.fill: parent
+                    color: (pickerDelegate.Positioner.index % 2) ? Qt.rgba(0, 0, 0, 0.03) : Qt.rgba(0, 0, 0, 0.07)
+                }
+                delegate: PickerDelegate {
+                    Label {
+                        objectName: "DatePicker_PickerLabel"
+                        text: pickerModel.text(modelData)
+                        color: Theme.palette.normal.backgroundText
+                        anchors.fill: parent
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+                    Component.onCompleted: {
+                        if (pickerModel && pickerModel.autoExtend && (index === (pickerModel.count - 1))) {
+                            pickerModel.extend(modelData + 1);
                         }
                     }
                 }
-                Picker {
-                    id: pickerDelegate
-                    objectName: "DatePicker_" + pickerName
-                    model: pickerModel
-                    enabled: pickerModel.count > 1
-                    circular: pickerModel.circular
-                    live: false
-                    width: pickerModel.pickerWidth
 
-                    style: Rectangle {
-                        anchors.fill: parent
-                        color: (pickerDelegate.Positioner.index % 2) ? Qt.rgba(0, 0, 0, 0.03) : Qt.rgba(0, 0, 0, 0.07)
+                onSelectedIndexChanged: {
+                    if (model && !model.resetting) {
+                        datePicker.date = pickerModel.dateFromIndex(selectedIndex);
+                        pickerModel.syncModels();
                     }
-                    delegate: PickerDelegate {
-                        Label {
-                            objectName: "DatePicker_PickerLabel"
-                            text: pickerModel.text(modelData)
-                            color: Theme.palette.normal.backgroundText
-                            anchors.fill: parent
-                            verticalAlignment: Text.AlignVCenter
-                            horizontalAlignment: Text.AlignHCenter
-                        }
-                        Component.onCompleted: {
-                            if (pickerModel && pickerModel.autoExtend && (index === (pickerModel.count - 1))) {
-                                pickerModel.extend(modelData + 1);
-                            }
-                        }
-                    }
+                }
 
-                    onSelectedIndexChanged: {
-                        if (model && !model.resetting) {
-                            datePicker.date = pickerModel.dateFromIndex(selectedIndex);
-                            pickerModel.syncModels();
-                        }
-                    }
-
-                    /*
+                /*
                       Resets the Picker model and updates the new format limits.
                       */
-                    function resetPicker() {
-                        model.reset();
-                        model.resetLimits(textSizer, internals.margin);
-                        model.resetCompleted();
-                        selectedIndex = model.indexOf();
-                    }
+                function resetPicker() {
+                    model.reset();
+                    model.resetLimits(textSizer, internals.margin);
+                    model.resetCompleted();
+                    selectedIndex = model.indexOf();
+                }
 
-                    Component.onCompleted: {
-                        // update model with the item instance
-                        model.pickerItem = pickerDelegate;
-                    }
+                Component.onCompleted: {
+                    // update model with the item instance
+                    model.pickerItem = pickerDelegate;
                 }
             }
         }
@@ -480,7 +471,6 @@ FocusScope {
             // calculate the ratio for the dayPicker
             var width = datePicker.width - yearModel.pickerWidth;
             dayPickerRatio = (dayModel.longFormatLimit / width).toPrecision(3);
-            print(dayPickerRatio)
         }
 
         /*
