@@ -77,6 +77,8 @@ import Ubuntu.Components 0.1
                 value is less than the given \a minimum, the date will be set to
                 the minimum's value
         \li - \a maximum value must be greater than the \a minimum, or invalid.
+                When the maximum is smaller than the \l date, the \l date property
+                will be updated to get the maximum value.
                 When set to invalid date (see DateUtils getInvalidDate()), the
                 upper limit of the date interval becomes infinite, meaning the
                 year picker will extend infinitelly. This leads to increased
@@ -230,6 +232,11 @@ StyledItem {
 
     /*! \internal */
     onMinimumChanged: {
+        if (internals.completed && !minimum.isValid()) {
+            // set the minimum to the date
+            minimum = date;
+        }
+
         // adjust date
         if (date !== undefined && date < minimum && minimum.isValid() && internals.completed) {
             date = minimum;

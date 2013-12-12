@@ -242,6 +242,12 @@ Item {
         }
 
         // make infinite
+        function test_1_changeMinimumInvalid() {
+            picker.minimum = Date.prototype.getInvalidDate.call();
+            compare(picker.minimum, picker.date, "invalid minimum hasn't been adjusted to date");
+        }
+
+        // make infinite
         function test_1_changeMaximumInvalid() {
             picker.maximum = Date.prototype.getInvalidDate.call();
 
