@@ -48,10 +48,12 @@ Item {
     property alias tumblerHolder: content
 
     /*!
-      \internal
-      View instance listing the model
+      The property holds the separator to be shown between date and time units
       */
-    property Item view: Item{}
+    property string unitSeparator: ""
+
+    property Item view: Item {}
+    property ListModel pickerModels: ListModel{}
 
     anchors.fill: parent
 
@@ -126,11 +128,38 @@ Item {
             sourceRect: Qt.rect(highlightItem.x, highlightItem.y, highlightItem.width, highlightItem.height)
             textureSize: Qt.size(highlightItem.width*sourceRectMultiplier, highlightItem.height*sourceRectMultiplier)
         }
-        HighlightMagnifier {
-            anchors.fill: highlightItem
-            scaleFactor: control.highlightScaleFactor
-            outputColor: control.highlightColor
-            source: effectSource
+
+        Row {
+            id: magnifierRow
+            anchors {
+                top: highlightItem.top
+                bottom: highlightItem.bottom
+                horizontalCenter: highlightItem.horizontalCenter
+            }
+
+            Repeater {
+                model: pickerModels
+                HighlightMagnifier {
+                    anchors {
+                        top: magnifierRow.top
+                        bottom: magnifierRow.bottom
+                    }
+                    width: pickerModel.pickerWidth
+                    scaleFactor: control.highlightScaleFactor
+                    outputColor: control.highlightColor
+                    source: effectSource
+                    texCoordRange: Qt.rect((x - source.sourceRect.x) / source.sourceRect.width, 0.0,
+                                           width / source.sourceRect.width, 1.0);
+
+                    Label {
+                        text: (index < (pickerModels.count - 1)) ? unitSeparator : ""
+                        anchors {
+                            right: parent.right
+                            verticalCenter: parent.verticalCenter
+                        }
+                    }
+                }
+            }
         }
     }
 }
