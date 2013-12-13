@@ -326,108 +326,57 @@ StyledItem {
     }
 
     // tumbler positioner
-    Row {
+    PickerRow {
         id: positioner
-        objectName: "DatePicker_Positioner"
         parent: (datePicker.__styleInstance && datePicker.__styleInstance.hasOwnProperty("tumblerHolder")) ?
                     datePicker.__styleInstance.tumblerHolder : datePicker
+        mainComponent: datePicker
+        model: tumblerModel
+        margins: internals.margin
         anchors {
             top: parent.top
             bottom: parent.bottom
             horizontalCenter: parent.horizontalCenter
         }
+    }
+    // tumbler model
+    ListModel {
+        /*
+              Model to hold tumbler order for repeaters.
+              Roles:
+              - pickerModel
+              - pickerName
+              */
+        id: tumblerModel
 
-        Repeater {
-            model: ListModel {
-                /*
-                      Model to hold tumbler order for repeaters.
-                      Roles:
-                      - pickerModel
-                      - pickerName
-                      */
-                id: tumblerModel
-
-                // the function checks whether a pickerModel was added or not
-                // returns the index of the model object the pickerModel was found
-                // or -1 on error.
-                function pickerModelIndex(name) {
-                    for (var i = 0; i < count; i++) {
-                        if (get(i).pickerName === name) {
-                            return i;
-                        }
-                    }
-                    return -1;
-                }
-
-                // the function checks whether a pickerModel is present in the list;
-                // moves the existing one to the given index or inserts it if not present
-                function setPickerModel(model, name, index) {
-                    var idx = pickerModelIndex(name);
-                    if (idx >= 0) {
-                        move(idx, index, 1);
-                    } else {
-                        append({"pickerModel": model, "pickerName": name});
-                    }
-                }
-
-                // removes the given picker
-                function removePicker(name) {
-                    var idx = pickerModelIndex(name);
-                    if (idx >= 0) {
-                        remove(idx);
-                    }
+        // the function checks whether a pickerModel was added or not
+        // returns the index of the model object the pickerModel was found
+        // or -1 on error.
+        function pickerModelIndex(name) {
+            for (var i = 0; i < count; i++) {
+                if (get(i).pickerName === name) {
+                    return i;
                 }
             }
-            Picker {
-                id: pickerDelegate
-                objectName: "DatePicker_" + pickerName
-                model: pickerModel
-                enabled: pickerModel.count > 1
-                circular: pickerModel.circular
-                live: false
-                width: pickerModel.pickerWidth
+            return -1;
+        }
 
-                style: Rectangle {
-                    anchors.fill: parent
-                    color: (pickerDelegate.Positioner.index % 2) ? Qt.rgba(0, 0, 0, 0.03) : Qt.rgba(0, 0, 0, 0.07)
-                }
-                delegate: PickerDelegate {
-                    Label {
-                        objectName: "DatePicker_PickerLabel"
-                        text: pickerModel.text(modelData)
-                        color: Theme.palette.normal.backgroundText
-                        anchors.fill: parent
-                        verticalAlignment: Text.AlignVCenter
-                        horizontalAlignment: Text.AlignHCenter
-                    }
-                    Component.onCompleted: {
-                        if (pickerModel && pickerModel.autoExtend && (index === (pickerModel.count - 1))) {
-                            pickerModel.extend(modelData + 1);
-                        }
-                    }
-                }
+        // the function checks whether a pickerModel is present in the list;
+        // moves the existing one to the given index or inserts it if not present
+        function setPickerModel(model, name, index) {
+            var idx = pickerModelIndex(name);
+            if (idx >= 0) {
+                move(idx, index, 1);
+            } else {
+                append({"pickerModel": model, "pickerName": name});
+            }
+        }
 
-                onSelectedIndexChanged: {
-                    if (model && !model.resetting) {
-                        datePicker.date = pickerModel.dateFromIndex(selectedIndex);
-                        pickerModel.syncModels();
-                    }
-                }
-
-                /*
-                      Resets the Picker model and updates the new format limits.
-                      */
-                function resetPicker() {
-                    model.reset();
-                    model.resetLimits(textSizer, internals.margin);
-                    model.resetCompleted();
-                    selectedIndex = model.indexOf();
-                }
-
-                Component.onCompleted: {
-                    // update model with the item instance
-                    model.pickerItem = pickerDelegate;
-                }
+        // removes the given picker
+        function removePicker(name) {
+            var idx = pickerModelIndex(name);
+            if (idx >= 0) {
+                remove(idx);
             }
         }
     }

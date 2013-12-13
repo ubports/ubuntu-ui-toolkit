@@ -73,7 +73,7 @@ Item {
         function getPickerLabel(picker, name) {
             var pickerItem = findChild(picker, name);
             var pickerCurrent = findChild(pickerItem, "Picker_ViewLoader");
-            return findChild(pickerCurrent.item.currentItem, "DatePicker_PickerLabel");
+            return findChild(pickerCurrent.item.currentItem, "PickerRow_PickerLabel");
         }
         function getPickerModel(picker, name) {
             var pickerItem = findChild(picker, name);
@@ -108,7 +108,7 @@ Item {
             var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
             wait(500);
-            var positioner = findChild(picker, "DatePicker_Positioner");
+            var positioner = findChild(picker, "PickerRow_Positioner");
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
 
             picker.mode = "Year|Month|Day";
@@ -123,7 +123,7 @@ Item {
             var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
             wait(500);
-            var positioner = findChild(picker, "DatePicker_Positioner");
+            var positioner = findChild(picker, "PickerRow_Positioner");
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
 
             picker.mode = "Year|Month|Day";
@@ -138,7 +138,7 @@ Item {
             var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
             wait(500);
-            var positioner = findChild(picker, "DatePicker_Positioner");
+            var positioner = findChild(picker, "PickerRow_Positioner");
             expectFailContinue("", "Invalid mode");
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
 
@@ -154,7 +154,7 @@ Item {
             var pickerCount = 1 + 1; // +1 is the Repeater
             picker.mode = newMode;
             wait(500);
-            var positioner = findChild(picker, "DatePicker_Positioner");
+            var positioner = findChild(picker, "PickerRow_Positioner");
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
 
             picker.mode = "Year|Month|Day";
@@ -169,7 +169,7 @@ Item {
             var pickerCount = 1 + 1; // +1 is the Repeater
             picker.mode = newMode;
             wait(500);
-            var positioner = findChild(picker, "DatePicker_Positioner");
+            var positioner = findChild(picker, "PickerRow_Positioner");
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
 
             picker.mode = "Year|Month|Day";
@@ -184,7 +184,7 @@ Item {
             var pickerCount = 1 + 1; // +1 is the Repeater
             picker.mode = newMode;
             wait(500);
-            var positioner = findChild(picker, "DatePicker_Positioner");
+            var positioner = findChild(picker, "PickerRow_Positioner");
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
 
             picker.mode = "Year|Month|Day";
@@ -200,11 +200,11 @@ Item {
             wait(500)
             picker.locale = Qt.locale("hu_HU");
             wait(500)
-            var label = getPickerLabel(picker, "DatePicker_MonthPicker");
+            var label = getPickerLabel(picker, "PickerRow_MonthPicker");
             compare(label.text, locale.monthName(picker.date.getMonth(), Locale.LongFormat), "locale for month wrong");
 
-            label = getPickerLabel(picker, "DatePicker_DayPicker");
-            var dayModel = getPickerModel(picker, "DatePicker_DayPicker");
+            label = getPickerLabel(picker, "PickerRow_DayPicker");
+            var dayModel = getPickerModel(picker, "PickerRow_DayPicker");
             compare(label.text, dayModel.text(picker.date.getDate() - 1, testSuite.width), "locale for day name wrong");
             picker.locale = prevLocale;
         }
@@ -216,12 +216,12 @@ Item {
             date.setDate(1);
             picker.minimum = date;
             wait(500);
-            var year = getPickerLabel(picker, "DatePicker_YearPicker");
+            var year = getPickerLabel(picker, "PickerRow_YearPicker");
             compare(year.text, originalDate.getFullYear().toString(), "year differs");
-            var month = getPickerLabel(picker, "DatePicker_MonthPicker");
+            var month = getPickerLabel(picker, "PickerRow_MonthPicker");
             compare(month.text, picker.locale.monthName(originalDate.getMonth(), Locale.LongFormat), "month differs");
-            var day = getPickerLabel(picker, "DatePicker_DayPicker");
-            var dayModel = getPickerModel(picker, "DatePicker_DayPicker");
+            var day = getPickerLabel(picker, "PickerRow_DayPicker");
+            var dayModel = getPickerModel(picker, "PickerRow_DayPicker");
             compare(day.text, dayModel.text(originalDate.getDate() - 1), "day differs");
         }
 
@@ -232,12 +232,12 @@ Item {
             date.setDate(1);
             picker.maximum = date;
             wait(500);
-            var year = getPickerLabel(picker, "DatePicker_YearPicker");
+            var year = getPickerLabel(picker, "PickerRow_YearPicker");
             compare(year.text, originalDate.getFullYear().toString(), "year differs");
-            var month = getPickerLabel(picker, "DatePicker_MonthPicker");
+            var month = getPickerLabel(picker, "PickerRow_MonthPicker");
             compare(month.text, picker.locale.monthName(originalDate.getMonth(), Locale.LongFormat), "month differs");
-            var day = getPickerLabel(picker, "DatePicker_DayPicker");
-            var dayModel = getPickerModel(picker, "DatePicker_DayPicker");
+            var day = getPickerLabel(picker, "PickerRow_DayPicker");
+            var dayModel = getPickerModel(picker, "PickerRow_DayPicker");
             compare(day.text, dayModel.text(originalDate.getDate() - 1), "day differs");
         }
 
@@ -252,7 +252,7 @@ Item {
             picker.maximum = Date.prototype.getInvalidDate.call();
 
             // check if the year picker model is autoExtending
-            var yearModel = getPickerModel(picker, "DatePicker_YearPicker");
+            var yearModel = getPickerModel(picker, "PickerRow_YearPicker");
             compare(yearModel.autoExtend, true, "the year picker is not auto-extending one");
         }
 
@@ -265,11 +265,11 @@ Item {
             picker.mode = "Y|M|D";
             wait(500);
 
-            var yearLabel = getPickerLabel(picker, "DatePicker_YearPicker");
-            var monthLabel = getPickerLabel(picker, "DatePicker_MonthPicker");
-            var monthModel = getPickerModel(picker, "DatePicker_MonthPicker");
-            var dayLabel = getPickerLabel(picker, "DatePicker_DayPicker");
-            var dayModel = getPickerModel(picker, "DatePicker_DayPicker");
+            var yearLabel = getPickerLabel(picker, "PickerRow_YearPicker");
+            var monthLabel = getPickerLabel(picker, "PickerRow_MonthPicker");
+            var monthModel = getPickerModel(picker, "PickerRow_MonthPicker");
+            var dayLabel = getPickerLabel(picker, "PickerRow_DayPicker");
+            var dayModel = getPickerModel(picker, "PickerRow_DayPicker");
             compare(yearLabel.text, date.getFullYear().toString(), "different year value");
             compare(monthLabel.text, monthModel.text(date.getMonth()), "different month value");
             compare(dayLabel.text, dayModel.text(date.getDate() - 1), "different day value");
@@ -281,18 +281,18 @@ Item {
             wait(500);
 
             // click on the month picker to set the next month
-            var monthPicker = findChild(picker, "DatePicker_MonthPicker");
+            var monthPicker = findChild(picker, "PickerRow_MonthPicker");
             var monthCurrent = findChild(monthPicker, "Picker_ViewLoader");
             var my = monthPicker.y + (monthPicker.height / 2) + monthCurrent.item.currentItem.height;
             var mx = monthPicker.x + monthPicker.width / 2;
             mouseClick(testSuite, mx, my);
             wait(500);
 
-            var yearLabel = getPickerLabel(picker, "DatePicker_YearPicker");
-            var monthLabel = getPickerLabel(picker, "DatePicker_MonthPicker");
-            var monthModel = getPickerModel(picker, "DatePicker_MonthPicker");
-            var dayLabel = getPickerLabel(picker, "DatePicker_DayPicker");
-            var dayModel = getPickerModel(picker, "DatePicker_DayPicker");
+            var yearLabel = getPickerLabel(picker, "PickerRow_YearPicker");
+            var monthLabel = getPickerLabel(picker, "PickerRow_MonthPicker");
+            var monthModel = getPickerModel(picker, "PickerRow_MonthPicker");
+            var dayLabel = getPickerLabel(picker, "PickerRow_DayPicker");
+            var dayModel = getPickerModel(picker, "PickerRow_DayPicker");
             compare(yearLabel.text, "2013", "different year value");
             // November
             compare(monthLabel.text, monthModel.text(10), "different month value");
@@ -306,10 +306,10 @@ Item {
 
             compare(yearLabel.text, "2013", "different year value");
             // October
-            monthLabel = getPickerLabel(picker, "DatePicker_MonthPicker");
+            monthLabel = getPickerLabel(picker, "PickerRow_MonthPicker");
             compare(monthLabel.text, monthModel.text(9), "different month value");
             // the 30th
-            dayLabel = getPickerLabel(picker, "DatePicker_DayPicker");
+            dayLabel = getPickerLabel(picker, "PickerRow_DayPicker");
             compare(dayLabel.text, dayModel.text(29), "different day value");
         }
 
@@ -322,7 +322,7 @@ Item {
             wait(500);
             picker.date = date;
 
-            var yearPicker = findChild(picker, "DatePicker_YearPicker");
+            var yearPicker = findChild(picker, "PickerRow_YearPicker");
             compare(yearPicker.enabled, false, "year picker should be disabled");
         }
 
@@ -334,9 +334,9 @@ Item {
             picker.maximum = maxDate;
             picker.date = date;
 
-            var yearPicker = findChild(picker, "DatePicker_YearPicker");
+            var yearPicker = findChild(picker, "PickerRow_YearPicker");
             compare(yearPicker.enabled, false, "year picker should be disabled");
-            var monthPicker = findChild(picker, "DatePicker_MonthPicker");
+            var monthPicker = findChild(picker, "PickerRow_MonthPicker");
             compare(monthPicker.enabled, false, "month picker should be disabled");
         }
     }
