@@ -441,6 +441,7 @@ StyledItem {
                 showYearPicker = (modes.indexOf("Year") >= 0);
                 showMonthPicker = (modes.indexOf("Month") >= 0);
                 showDayPicker = (modes.indexOf("Day") >= 0);
+                // filter unaccepted date picking mode
                 if (!showMonthPicker && showYearPicker && showDayPicker) {
                     console.error("Invalid DatePicker mode: " + datePicker.mode);
                     return;
@@ -449,8 +450,16 @@ StyledItem {
                 showHoursPicker = (modes.indexOf("Hours") >= 0);
                 showMinutesPicker = (modes.indexOf("Minutes") >= 0);
                 showSecondsPicker = (modes.indexOf("Seconds") >= 0);
+                // filter unaccepted time picking mode
                 if (showHoursPicker && showSecondsPicker && !showMinutesPicker) {
                     console.error("Invalid DatePicker mode: " + datePicker.mode);
+                    return;
+                }
+
+                // date and time picking not allowed at the same time
+                if ((showYearPicker || showMonthPicker || showDayPicker) &&
+                        (showHoursPicker || showMinutesPicker || showSecondsPicker)) {
+                    console.error("Date and Time picking not allowed at the same time.");
                     return;
                 }
 
