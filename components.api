@@ -300,7 +300,7 @@ modules/Ubuntu/Components/Popups/Popover.qml
 PopupBase
     default property list<Object> container
     property real contentWidth
-    property internal contentHeight
+    property real contentHeight
     property Item caller
     property Item pointerTarget
     property real edgeMargins
@@ -488,8 +488,8 @@ ActionItem
     property string text
     property Validator validator
     property enumeration horizontalAlignment
-    property internal effectiveHorizontalAlignment
-    property internal verticalAlignment
+    property enumeration effectiveHorizontalAlignment
+    property enumeration verticalAlignment
     property string passwordCharacter
     property color selectionColor
     property color selectedTextColor
