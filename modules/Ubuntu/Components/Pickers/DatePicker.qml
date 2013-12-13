@@ -63,7 +63,7 @@ import Ubuntu.Components 0.1
         }
         DatePicker {
             id: datePicker
-            mode: "Year|Month"
+            mode: "Years|Months"
         }
     }
     \endqml
@@ -152,14 +152,14 @@ StyledItem {
       Specifies what kind of date value selectors should be shown by the picker.
       This is a string of 'flags' separated by '|' separator, where flags are:
       \list
-        \li - \b Year (or simply \b Y) - when the year value selector is required
-        \li - \b Month (or simply \b M) - when the month value selector is required
-        \li - \b Day (or simply \b D) - when the day value selector is required
+        \li - \b Years - when the year value selector is required
+        \li - \b Months - when the month value selector is required
+        \li - \b Days - when the day value selector is required
       \endlist
-      Any combination of these is allowed, except 'Year|Day'.
-      The default value is "Year|Month|Day".
+      Any combination of these is allowed, except 'Years|Days'.
+      The default value is "Years|Months|Days".
       */
-    property string mode: "Year|Month|Day"
+    property string mode: "Years|Months|Days"
 
     /*!
       The date chosen by the DatePicker. The default value is the date at the
@@ -438,9 +438,9 @@ StyledItem {
                 // check mode flags first
                 var modes = datePicker.mode.split(/\W/g);
 
-                showYearPicker = (modes.indexOf("Year") >= 0);
-                showMonthPicker = (modes.indexOf("Month") >= 0);
-                showDayPicker = (modes.indexOf("Day") >= 0);
+                showYearPicker = (modes.indexOf("Years") >= 0);
+                showMonthPicker = (modes.indexOf("Months") >= 0);
+                showDayPicker = (modes.indexOf("Days") >= 0);
                 // filter unaccepted date picking mode
                 if (!showMonthPicker && showYearPicker && showDayPicker) {
                     console.error("Invalid DatePicker mode: " + datePicker.mode);

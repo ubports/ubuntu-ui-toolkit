@@ -79,7 +79,6 @@ Row {
               Resets the Picker model and updates the new format limits.
               */
             function resetPicker() {
-                print("RESET " + objectName)
                 pickerModel.reset();
                 pickerModel.resetLimits(textSizer, margins);
                 pickerModel.resetCompleted();
