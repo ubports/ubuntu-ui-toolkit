@@ -100,9 +100,9 @@ MainView {
                 }
 
                 Repeater {
-                    model: ["Year|Month|Day", "Year|Month", "Month|Day", "Year", "Month", "Day",
+                    model: ["Years|Months|Days", "Years|Months", "Months|Days", "Years", "Months", "Days",
                         "Hours|Minutes|Seconds", "Hours|Minutes", "Minutes|Seconds", "Hours", "Minutes", "Seconds",
-                        "Year|Month|Day|Hours|Minutes"]
+                        "Years|Months|Days|Hours|Minutes"]
                     Button {
                         text: "model: " + modelData
                         height: units.gu(2)

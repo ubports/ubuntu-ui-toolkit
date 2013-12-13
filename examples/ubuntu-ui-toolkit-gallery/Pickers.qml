@@ -185,16 +185,26 @@ Template {
             DatePicker {
                 // make sure we have the whole component in screen
                 width: Math.min(root.width - units.gu(16), units.gu(40))
-                onDateChanged: print("picked date="+date)
+                onDateChanged: print("picked date="+Qt.formatDate(date, "yyyy/MMMM/dd"))
             }
         }
         TemplateRow {
             title: "Month"
             DatePicker {
-                mode: "Month"
+                mode: "Years|Months"
                 // make sure we have the whole component in screen
                 width: Math.min(root.width - units.gu(16), units.gu(40))
-                onDateChanged: print("picked date="+date)
+                onDateChanged: print("picked month="+Qt.formatDate(date, "yyyy/MMMM"))
+            }
+        }
+        TemplateRow {
+            title: "Time"
+            DatePicker {
+                mode: "Hours|Minutes|Seconds"
+                date: new Date()
+                // make sure we have the whole component in screen
+                width: Math.min(root.width - units.gu(16), units.gu(40))
+                onDateChanged: print("picked time="+Qt.formatTime(date, "hh:mm:ss"))
             }
         }
     }

@@ -51,7 +51,7 @@ import Ubuntu.Components 0.1
     \endqml
 
     The \l mode property specifies what time units should be shown by the picker.
-    The property holds a string, combining \b Year, \b Month, \b Day, \b Hours,
+    The property holds a string, combining \b Years, \b Months, \b Days, \b Hours,
     \b Minutes and \b Seconds strings sepatared with '|' character. A DatePicker
     which shows only year and month date units would look as follows:
     \qml
@@ -180,13 +180,13 @@ StyledItem {
                 \li Value
                 \li Description
             \row
-                \li Year
+                \li Years
                 \li Specifies to show the year picker
             \row
-                \li Month
+                \li Months
                 \li Specifies to show the month picker
             \row
-                \li Day
+                \li Days
                 \li Specifies to show the day picker
         \header
         \li {2, 1} Time picker modes
