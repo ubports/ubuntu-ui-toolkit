@@ -323,6 +323,28 @@ StyledItem {
             return narrowFormatLimit;
         }
     }
+    MinutesModel {
+        id: minutesModel
+        mainComponent: datePicker
+        pickerCompleted: internals.completed
+        pickerWidth: {
+            if (!pickerItem) {
+                return 0;
+            }
+            return narrowFormatLimit;
+        }
+    }
+    SecondsModel {
+        id: secondsModel
+        mainComponent: datePicker
+        pickerCompleted: internals.completed
+        pickerWidth: {
+            if (!pickerItem) {
+                return 0;
+            }
+            return narrowFormatLimit;
+        }
+    }
 
     style: Theme.createStyleComponent("DatePickerStyle.qml", datePicker)
     Binding {

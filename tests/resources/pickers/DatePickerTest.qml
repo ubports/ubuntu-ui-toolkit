@@ -29,12 +29,14 @@ MainView {
             DatePicker {
                 id: picker
                 locale: Qt.locale("en_UK")
+                date: new Date()
 
                 onDateChanged: print("CHANGED DATE=" + Qt.formatDate(date, "yyyy/MM/dd"))
             }
             Slider {
                 value: 0.0//units.gu(36)
                 live: true
+                height: units.gu(2)
                 minimumValue: 0.0
                 maximumValue: parent.width
                 onValueChanged: picker.width = value
@@ -45,23 +47,28 @@ MainView {
                 spacing: units.gu(1)
                 Button {
                     text: "HU"
+                    height: units.gu(3)
                     onClicked: picker.locale = Qt.locale("hu_HU")
                 }
                 Button {
                     text: "DE"
+                    height: units.gu(3)
                     onClicked: picker.locale = Qt.locale("de_DE")
                 }
                 Button {
                     text: "EN(US)"
+                    height: units.gu(3)
                     onClicked: picker.locale = Qt.locale("en_US")
                 }
 
                 Button {
                     text: "infinite"
+                    height: units.gu(3)
                     onClicked: picker.maximum = picker.maximum.getInvalidDate()
                 }
                 Button {
                     text: "Jan-Mar"
+                    height: units.gu(3)
                     onClicked: {
                         var date = new Date();
                         date.setMonth(0);
@@ -73,12 +80,14 @@ MainView {
                 }
                 Button {
                     text: "Change minimum"
+                    height: units.gu(3)
                     onClicked: {
                         picker.minimum = new Date("2012/12/1");
                     }
                 }
                 Button {
                     text: "minimum & date"
+                    height: units.gu(3)
                     onClicked: {
                         picker.minimum = new Date("2013/12/1");
                         picker.date = new Date("2014/12/5");
@@ -86,13 +95,17 @@ MainView {
                 }
                 Button {
                     text: "today"
+                    height: units.gu(3)
                     onClicked: picker.date = new Date()
                 }
 
                 Repeater {
-                    model: ["Year|Month|Day", "Year|Month", "Month|Day", "Year", "Month", "Day", "Hours"]
+                    model: ["Year|Month|Day", "Year|Month", "Month|Day", "Year", "Month", "Day",
+                        "Hours|Minutes|Seconds", "Hours|Minutes", "Minutes|Seconds", "Hours", "Minutes", "Seconds",
+                        "Year|Month|Day|Hours|Minutes"]
                     Button {
                         text: "model: " + modelData
+                        height: units.gu(2)
                         onClicked: picker.mode = modelData
                     }
                 }
