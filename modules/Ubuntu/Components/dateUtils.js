@@ -85,6 +85,27 @@ Date.prototype.daysTo = function(target) {
 }
 
 /*!
+  Same as monthsTo, but returns the distance in hours.
+  */
+Date.prototype.hoursTo = function(target) {
+    return !target.isValid() ? 0 : Math.ceil((target.getTime() - this.getTime()) / (1000 * 60 * 60));
+}
+
+/*!
+  Same as monthsTo, but returns the distance in minutes.
+  */
+Date.prototype.minutesTo = function(target) {
+    return !target.isValid() ? 0 : Math.ceil((target.getTime() - this.getTime()) / (1000 * 60));
+}
+
+/*!
+  Same as monthsTo, but returns the distance in seconds.
+  */
+Date.prototype.secondsTo = function(target) {
+    return !target.isValid() ? 0 : Math.ceil((target.getTime() - this.getTime()) / 1000);
+}
+
+/*!
   The function returns the week number of the date stored in the object.
   */
 Date.prototype.getWeek = function() {

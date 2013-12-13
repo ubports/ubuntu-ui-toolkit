@@ -47,6 +47,11 @@ Item {
       */
     property alias tumblerHolder: content
 
+    /*!
+      The property holds the separator to be shown between date and time units
+      */
+    property string unitSeparator: ""
+
     property Item view: Item {}
     property ListModel pickerModels: ListModel{}
 
@@ -145,6 +150,14 @@ Item {
                     source: effectSource
                     texCoordRange: Qt.rect((x - source.sourceRect.x) / source.sourceRect.width, 0.0,
                                            width / source.sourceRect.width, 1.0);
+
+                    Label {
+                        text: (index < (pickerModels.count - 1)) ? unitSeparator : ""
+                        anchors {
+                            right: parent.right
+                            verticalCenter: parent.verticalCenter
+                        }
+                    }
                 }
             }
         }

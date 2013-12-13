@@ -18,12 +18,10 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 PickerModelBase {
-    circular: (distance >= 11)
+    circular: (count >= 11)
 
     // local properties
     property int from
-    property int to
-    property int distance
 
     function reset() {
         resetting = true;
@@ -32,6 +30,7 @@ PickerModelBase {
         modelDate.setDate(1);
 
         // if maximum is invalid, we have full model (12 months to show)
+        var distance, to;
         distance = to = maximum.isValid() ? minimum.monthsTo(maximum) : 11;
         if (to < 0 || to > 11) to = 11;
         from = (to < 11) ? minimum.getMonth() : 0;

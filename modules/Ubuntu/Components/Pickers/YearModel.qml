@@ -20,7 +20,6 @@ import Ubuntu.Components 0.1
 PickerModelBase {
     // local properties
     property int from
-    property int to
     circular: false
     autoExtend: !maximum.isValid()
 
@@ -28,7 +27,7 @@ PickerModelBase {
         resetting = true;
         clear();
         from = (minimum.getFullYear() <= 0) ? date.getFullYear() : minimum.getFullYear();
-        to = (maximum < minimum) ? -1 : maximum.getFullYear();
+        var to = (maximum < minimum) ? -1 : maximum.getFullYear();
         extend(from, to - from);
     }
 

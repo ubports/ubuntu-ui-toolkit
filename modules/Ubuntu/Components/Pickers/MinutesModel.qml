@@ -19,17 +19,16 @@ import Ubuntu.Components 0.1
 
 PickerModelBase {
     property int from
-    property int distance
-    circular: distance >= 24
+    circular: count >= 60
 
     function reset() {
         resetting = true;
 
         clear();
         from = minimum.getMinutes();
-        distance = (!maximum.isValid() || (minimum.daysTo(maximum) >= 1)) ? 60 : maximum.getMinutes() - from;
+        var distance = (!maximum.isValid() || (minimum.daysTo(maximum) > 1) || (minimum.minutesTo(maximum) >= 60)) ? 60 : minimum.minutesTo(maximum);
         for (var i = 0; i < distance; i++) {
-            append({"minute": from + i});
+            append({"minute": (from + i) % 60});
         }
 
         resetting = false;

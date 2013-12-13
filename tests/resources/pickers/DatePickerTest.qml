@@ -31,7 +31,7 @@ MainView {
                 locale: Qt.locale("en_UK")
                 date: new Date()
 
-                onDateChanged: print("CHANGED DATE=" + Qt.formatDate(date, "yyyy/MM/dd"))
+                onDateChanged: print("CHANGED DATE=" + Qt.formatDateTime(date, "yyyy/MM/dd, hh:mm:ss"))
             }
             Slider {
                 value: 0.0//units.gu(36)
@@ -47,28 +47,28 @@ MainView {
                 spacing: units.gu(1)
                 Button {
                     text: "HU"
-                    height: units.gu(3)
+                    height: units.gu(2)
                     onClicked: picker.locale = Qt.locale("hu_HU")
                 }
                 Button {
                     text: "DE"
-                    height: units.gu(3)
+                    height: units.gu(2)
                     onClicked: picker.locale = Qt.locale("de_DE")
                 }
                 Button {
                     text: "EN(US)"
-                    height: units.gu(3)
+                    height: units.gu(2)
                     onClicked: picker.locale = Qt.locale("en_US")
                 }
 
                 Button {
                     text: "infinite"
-                    height: units.gu(3)
+                    height: units.gu(2)
                     onClicked: picker.maximum = picker.maximum.getInvalidDate()
                 }
                 Button {
                     text: "Jan-Mar"
-                    height: units.gu(3)
+                    height: units.gu(2)
                     onClicked: {
                         var date = new Date();
                         date.setMonth(0);
@@ -80,14 +80,14 @@ MainView {
                 }
                 Button {
                     text: "Change minimum"
-                    height: units.gu(3)
+                    height: units.gu(2)
                     onClicked: {
                         picker.minimum = new Date("2012/12/1");
                     }
                 }
                 Button {
                     text: "minimum & date"
-                    height: units.gu(3)
+                    height: units.gu(2)
                     onClicked: {
                         picker.minimum = new Date("2013/12/1");
                         picker.date = new Date("2014/12/5");
@@ -95,7 +95,7 @@ MainView {
                 }
                 Button {
                     text: "today"
-                    height: units.gu(3)
+                    height: units.gu(2)
                     onClicked: picker.date = new Date()
                 }
 
@@ -107,6 +107,45 @@ MainView {
                         text: "model: " + modelData
                         height: units.gu(2)
                         onClicked: picker.mode = modelData
+                    }
+                }
+                Button {
+                    text: "disable hours"
+                    height: units.gu(2)
+                    onClicked: {
+                        picker.mode = "Hours|Minutes|Seconds";
+                        var min = new Date();
+                        min.setHours(23); min.setMinutes(0); min.setSeconds(0);
+                        var max = new Date();
+                        max.setHours(23); max.setMinutes(59); max.setSeconds(59);
+                        picker.minimum = min;
+                        picker.maximum = max;
+                    }
+                }
+                Button {
+                    text: "disable hours and minutes"
+                    height: units.gu(2)
+                    onClicked: {
+                        picker.mode = "Hours|Minutes|Seconds";
+                        var min = new Date();
+                        min.setHours(23); min.setMinutes(10); min.setSeconds(0);
+                        var max = new Date();
+                        max.setHours(23); max.setMinutes(10); max.setSeconds(59);
+                        picker.minimum = min;
+                        picker.maximum = max;
+                    }
+                }
+                Button {
+                    text: "second range"
+                    height: units.gu(2)
+                    onClicked: {
+                        picker.mode = "Hours|Minutes|Seconds";
+                        var min = new Date();
+                        min.setHours(23); min.setMinutes(10); min.setSeconds(20);
+                        var max = new Date();
+                        max.setHours(23); max.setMinutes(10); max.setSeconds(59);
+                        picker.minimum = min;
+                        picker.maximum = max;
                     }
                 }
             }

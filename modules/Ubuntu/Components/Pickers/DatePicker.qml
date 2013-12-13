@@ -21,14 +21,16 @@ import Ubuntu.Components 0.1
     \qmltype DatePicker
     \inqmlmodule Ubuntu.Components.Pickers 0.1
     \ingroup ubuntu-pickers
-    \brief DatePicker component provides date value picking functionality.
+    \brief DatePicker component provides date and time value picking functionality.
 
-    DatePicker combines up to three Picker elements providing different date value
-    selection possibilities. It can be used to select full date (year, month, day)
-    as well as to select a combination of year and month, month and day, or individual
-    date units (i.e. year, month or day). The selected date as well as the initial
-    one is provided by the \l date property. For convenience the component provides
-    also the \a year, \a month, \a day and \a week values as separate properties,
+    DatePicker combines up to three Picker elements providing different date or time
+    value selection possibilities. It can be used to select full date (year, month,
+    day), full time (hours, minutes, seconds) as well as to select a combination of
+    year and month, month and day, hours and minutes, minutes and seconds or individual
+    time units (i.e. year, month or day as well as hours, minutes or seconds). The
+    selected date as well as the initial one is provided by the \l date property.
+    For convenience the component provides also the \a year, \a month, \a day,
+    \a week, \a hours, \a minutes and \a seconds values as separate properties,
     however these properties are not writable, and their initialization can happen
     only through the \l date property.
 
@@ -48,10 +50,10 @@ import Ubuntu.Components 0.1
     }
     \endqml
 
-    The \l mode property specifies what date units should be shown by the picker.
-    The property holds a string, combining \b Year, \b Month and \b Day strings
-    or their first letter sepatared with '|' character. A DatePicker which shows
-    only year and month date units would look as follows:
+    The \l mode property specifies what time units should be shown by the picker.
+    The property holds a string, combining \b Year, \b Month, \b Day, \b Hours,
+    \b Minutes and \b Seconds strings sepatared with '|' character. A DatePicker
+    which shows only year and month date units would look as follows:
     \qml
     import QtQuick 2.0
     import Ubuntu.Components 0.1
@@ -68,6 +70,29 @@ import Ubuntu.Components 0.1
     }
     \endqml
 
+    The \b mode of the DatePicker is set to date picking. In case tiume picking
+    is needed, the model should be set to contain the time specific mode flags.
+    The following example demonstrates how to use DatePicker for time picking.
+    \qml
+    import QtQuick 2.0
+    import Ubuntu.Components 0.1
+    import Ubuntu.Components.Pickers 0.1
+
+    Column {
+        Label {
+            text: "Selected time: " + Qt.formatTime(datePicker.date, "hh:mm:ss")
+        }
+        DatePicker {
+            id: datePicker
+            mode: "Hours|Minutes|Seconds"
+        }
+    }
+    \endqml
+    Note that the order the flags are specified does not influence the order the
+    pickers are arranged. That is driven by the date format of the \l locale used
+    in the picker. Also, date and time unit flags cannot be combined, therefore
+    the component can be used either for date units or for time units.
+
     The default interval the date values are chosen is a window starting at
     the current date ending 50 years later. This window is defined by the
     \a minimum and \a maximum properties. The interval can be altered considering
@@ -82,7 +107,8 @@ import Ubuntu.Components 0.1
                 When set to invalid date (see DateUtils getInvalidDate()), the
                 upper limit of the date interval becomes infinite, meaning the
                 year picker will extend infinitelly. This leads to increased
-                memory use and should be avoided if possible.
+                memory use and should be avoided if possible. Invalid date will
+                make hours picker presenting 24 hours.
     \endlist
     \qml
     import QtQuick 2.0
@@ -112,7 +138,7 @@ import Ubuntu.Components 0.1
     on the mode requested. These tumblers are laid out in a row in the order the
     default date format of the \l locale is.
 
-    \section3 Date mode layout rules
+    \section3 Date picker layout rules
     The date picker consist of three pickers: year, month, and date. The exact
     contents of the month and date pickers depends on the available width:
     \list
@@ -130,20 +156,16 @@ import Ubuntu.Components 0.1
     set to 31), the date reduces automatically to the last day of the month (i.e
     February 28 or 30th day of the month).}
 
-    \section4 How minimum/maximum affects the tumblers
+    \section3 Time picker layout rules
+    Time units are shown in fixed width picker tumblers, numbers padded with
+    leading zeroes. There is no other special rule on the formatting of the time
+    unit numbers.
+
+    \section3 How minimum/maximum affects the tumblers
 
     If minimum and maximum are within the same year, the year picker will be
     insensitive. If minimum and maximum are within the same month, the month picker
     will also be insensitive.
-
-    \section3 Month mode rules
-    The month picker consists of two pickers, one for year and one for month picking.
-    the exact contents of the pickers depends on the available width:
-    \list
-        \li full month name,
-        \li otherwise short month name,
-        \li otherwise month number.
-    \endlist
   */
 StyledItem {
     id: datePicker
@@ -151,12 +173,42 @@ StyledItem {
     /*!
       Specifies what kind of date value selectors should be shown by the picker.
       This is a string of 'flags' separated by '|' separator, where flags are:
-      \list
-        \li - \b Years - when the year value selector is required
-        \li - \b Months - when the month value selector is required
-        \li - \b Days - when the day value selector is required
-      \endlist
-      Any combination of these is allowed, except 'Years|Days'.
+      \table
+        \header
+        \li {2, 1} Date picker modes
+            \header
+                \li Value
+                \li Description
+            \row
+                \li Year
+                \li Specifies to show the year picker
+            \row
+                \li Month
+                \li Specifies to show the month picker
+            \row
+                \li Day
+                \li Specifies to show the day picker
+        \header
+        \li {2, 1} Time picker modes
+            \header
+                \li Value
+                \li Description
+            \row
+                \li Hours
+                \li Specifies to show the hours picker
+            \row
+                \li Minutes
+                \li Specifies to show the minutes picker
+            \row
+                \li Seconds
+                \li Specifies to show the seconds picker
+      \endtable
+      With some exceptions, any combination of these flags is allowed within the
+      same group. Date and timme picker modes cannot be combined.
+      <br />
+      When date picker modes are used, the combination of "Year|Day" is not allowed.
+      In time picker modes case the "Hours|Seconds" combination is forbidden.
+      <br />
       The default value is "Years|Months|Days".
       */
     property string mode: "Years|Months|Days"
@@ -202,8 +254,15 @@ StyledItem {
       \readonly
       \qmlproperty int week
       \readonly
-      Properties declared for convenience, representing the \b year, \b month, \b day
-      and \b week number values of the \l date property.
+      \qmlproperty int hours
+      \readonly
+      \qmlproperty int minutes
+      \readonly
+      \qmlproperty int seconds
+      \readonly
+      Properties declared for convenience, representing the \b year, \b month,
+      \b day, \b week as well as \b hours, \b minutes and \b seconds values of
+      the \l date property.
       */
     readonly property int year: datePicker.date.getFullYear()
     /*! \internal */
@@ -212,6 +271,12 @@ StyledItem {
     readonly property int day: datePicker.date.getDate()
     /*! \internal */
     readonly property int week: datePicker.date.getWeek()
+    /*! \internal */
+    readonly property int hours: datePicker.date.getHours()
+    /*! \internal */
+    readonly property int minutes: datePicker.date.getMinutes()
+    /*! \internal */
+    readonly property int seconds: datePicker.date.getSeconds()
 
     /*!
       The property defines the locale used in the picker. The default value is
@@ -277,7 +342,7 @@ StyledItem {
     YearModel {
         id: yearModel
         mainComponent: datePicker
-        pickerCompleted: internals.completed
+        pickerCompleted: internals.completed && internals.showYearPicker
         pickerWidth: (!pickerItem) ? 0 : narrowFormatLimit
         function syncModels() {
             dayModel.syncModels();
@@ -286,7 +351,7 @@ StyledItem {
     MonthModel {
         id: monthModel
         mainComponent: datePicker
-        pickerCompleted: internals.completed
+        pickerCompleted: internals.completed && internals.showMonthPicker
         pickerWidth: {
             if (!pickerItem) {
                 return 0;
@@ -300,7 +365,7 @@ StyledItem {
     DayModel {
         id: dayModel
         mainComponent: datePicker
-        pickerCompleted: internals.completed
+        pickerCompleted: internals.completed && internals.showDayPicker
         pickerWidth: {
             if (!pickerItem) {
                 return 0;
@@ -315,7 +380,7 @@ StyledItem {
     HoursModel {
         id: hoursModel
         mainComponent: datePicker
-        pickerCompleted: internals.completed
+        pickerCompleted: internals.completed && internals.showHoursPicker
         pickerWidth: {
             if (!pickerItem) {
                 return 0;
@@ -326,7 +391,7 @@ StyledItem {
     MinutesModel {
         id: minutesModel
         mainComponent: datePicker
-        pickerCompleted: internals.completed
+        pickerCompleted: internals.completed && internals.showMinutesPicker
         pickerWidth: {
             if (!pickerItem) {
                 return 0;
@@ -337,7 +402,7 @@ StyledItem {
     SecondsModel {
         id: secondsModel
         mainComponent: datePicker
-        pickerCompleted: internals.completed
+        pickerCompleted: internals.completed && internals.showSecondsPicker
         pickerWidth: {
             if (!pickerItem) {
                 return 0;
@@ -356,6 +421,12 @@ StyledItem {
         target: __styleInstance
         property: "pickerModels"
         value: tumblerModel
+    }
+    Binding {
+        target: __styleInstance
+        property: "unitSeparator"
+        value: (internals.showHoursPicker || internals.showMinutesPicker || internals.showSecondsPicker) ?
+                   ":" : ""
     }
 
     // tumbler positioner
