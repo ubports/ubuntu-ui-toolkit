@@ -90,7 +90,7 @@ MainView {
                 }
 
                 Repeater {
-                    model: ["Y|M|D", "Y|M", "M|D", "Y", "M", "D"]
+                    model: ["Year|Month|Day", "Year|Month", "Month|Day", "Year", "Month", "Day", "Hours"]
                     Button {
                         text: "model: " + modelData
                         onClicked: picker.mode = modelData

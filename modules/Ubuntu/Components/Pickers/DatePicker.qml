@@ -157,9 +157,9 @@ StyledItem {
         \li - \b Day (or simply \b D) - when the day value selector is required
       \endlist
       Any combination of these is allowed, except 'Year|Day'.
-      The default value is "Y|M|D".
+      The default value is "Year|Month|Day".
       */
-    property string mode: "Y|M|D"
+    property string mode: "Year|Month|Day"
 
     /*!
       The date chosen by the DatePicker. The default value is the date at the
@@ -312,6 +312,17 @@ StyledItem {
             return w;
         }
     }
+    HoursModel {
+        id: hoursModel
+        mainComponent: datePicker
+        pickerCompleted: internals.completed
+        pickerWidth: {
+            if (!pickerItem) {
+                return 0;
+            }
+            return narrowFormatLimit;
+        }
+    }
 
     style: Theme.createStyleComponent("DatePickerStyle.qml", datePicker)
     Binding {
@@ -393,6 +404,10 @@ StyledItem {
         property bool showMonthPicker: true
         property bool showDayPicker: true
 
+        property bool showHoursPicker: false
+        property bool showMinutesPicker: false
+        property bool showSecondsPicker: false
+
         /*
           Update pickers.
           */
@@ -400,10 +415,19 @@ StyledItem {
             if (completed) {
                 // check mode flags first
                 var modes = datePicker.mode.split(/\W/g);
-                showYearPicker = (modes.indexOf('Y') >= 0) || (modes.indexOf("Year") >= 0);
-                showMonthPicker = (modes.indexOf('M') >= 0) || (modes.indexOf("Month") >= 0);
-                showDayPicker = (modes.indexOf('D') >= 0) || (modes.indexOf("Day") >= 0);
+
+                showYearPicker = (modes.indexOf("Year") >= 0);
+                showMonthPicker = (modes.indexOf("Month") >= 0);
+                showDayPicker = (modes.indexOf("Day") >= 0);
                 if (!showMonthPicker && showYearPicker && showDayPicker) {
+                    console.error("Invalid DatePicker mode: " + datePicker.mode);
+                    return;
+                }
+
+                showHoursPicker = (modes.indexOf("Hours") >= 0);
+                showMinutesPicker = (modes.indexOf("Minutes") >= 0);
+                showSecondsPicker = (modes.indexOf("Seconds") >= 0);
+                if (showHoursPicker && showSecondsPicker && !showMinutesPicker) {
                     console.error("Invalid DatePicker mode: " + datePicker.mode);
                     return;
                 }
@@ -472,6 +496,26 @@ StyledItem {
                     break;
                 }
             }
+            // check hms
+            if (showHoursPicker) {
+                tumblerModel.setPickerModel(hoursModel, "HoursPicker", formatIndex);
+                formatIndex++;
+            } else {
+                tumblerModel.removePicker("HoursPicker");
+            }
+            if (showMinutesPicker) {
+                tumblerModel.setPickerModel(minutesModel, "MinutesPicker", formatIndex);
+                formatIndex++;
+            } else {
+                tumblerModel.removePicker("MinutesPicker");
+            }
+            if (showSecondsPicker) {
+                tumblerModel.setPickerModel(secondsModel, "SecondsPicker", formatIndex);
+                formatIndex++;
+            } else {
+                tumblerModel.removePicker("SecondsPicker");
+            }
+
             // re-enable completion
             completed = true;
         }
