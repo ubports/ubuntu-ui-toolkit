@@ -244,7 +244,7 @@ Item
     property bool __closeOnContentsClicks
     property bool pressed
 modules/Ubuntu/Components/Pickers/DatePicker.qml
-FocusScope
+StyledItem
     property string mode
     property date date
     property date minimum
@@ -253,9 +253,10 @@ FocusScope
     readonly property int month
     readonly property int day
     readonly property int week
+    readonly property int hours
+    readonly property int minutes
+    readonly property int seconds
     property var locale
-    property internal style
-    property internal __styleInstance
 modules/Ubuntu/Components/Pickers/Dialer.qml
 StyledItem
     property real minimumValue
