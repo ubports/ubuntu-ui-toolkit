@@ -142,12 +142,12 @@ import Ubuntu.Components 0.1
     The date picker consist of three pickers: year, month, and date. The exact
     contents of the month and date pickers depends on the available width:
     \list
-        \li full name for month, number and full day for date (“August” “28 Wednesday”)
-        \li otherwise full name for month, number and abbreviated day
+        \li * full name for month, number and full day for date (“August” “28 Wednesday”)
+        \li * otherwise full name for month, number and abbreviated day
             for date (“August” “28 Wed”);
-        \li otherwise full name for month, number for date (“August” “28”);
-        \li otherwise abbreviated name for month, number for date (“Aug” “28”).
-        \li otherwise number for month, number for date (“08” “28”).
+        \li * otherwise full name for month, number for date (“August” “28”);
+        \li * otherwise abbreviated name for month, number for date (“Aug” “28”).
+        \li * otherwise number for month, number for date (“08” “28”).
     \endlist
 
     \a{If the currently selected date becomes impossible due to year change (from a
@@ -205,11 +205,11 @@ StyledItem {
       \endtable
       With some exceptions, any combination of these flags is allowed within the
       same group. Date and timme picker modes cannot be combined.
-      <br />
-      When date picker modes are used, the combination of "Year|Day" is not allowed.
-      In time picker modes case the "Hours|Seconds" combination is forbidden.
-      <br />
-      The default value is "Years|Months|Days".
+
+      When date picker modes are used, the combination of \a{"Year|Day"} is not allowed.
+      In time picker modes case the \a{"Hours|Seconds"} combination is forbidden.
+
+      The default value is "\b{Years|Months|Days}".
       */
     property string mode: "Years|Months|Days"
 
