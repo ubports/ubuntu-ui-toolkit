@@ -60,6 +60,14 @@ MainView {
                     height: units.gu(2)
                     onClicked: picker.locale = Qt.locale("en_US")
                 }
+                Button {
+                    text: "FI"
+                    height: units.gu(2)
+                    onClicked: {
+                        picker.locale = Qt.locale("fi_FI")
+                        picker.width = units.gu(37);
+                    }
+                }
 
                 Button {
                     text: "infinite"
