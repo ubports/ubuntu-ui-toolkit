@@ -290,10 +290,7 @@ StyledItem {
     property var locale: Qt.locale()
 
     implicitWidth: units.gu(36)
-    implicitHeight: {
-        var h = Qt.inputMethod.keyboardRectangle.height;
-        return (h > 0) ? h : units.gu(20);
-    }
+    implicitHeight: units.gu(20)
 
     /*! \internal */
     onMinimumChanged: {
@@ -509,18 +506,41 @@ StyledItem {
                 // check mode flags first
                 var modes = datePicker.mode.split(/\W/g);
 
-                showYearPicker = (modes.indexOf("Years") >= 0);
-                showMonthPicker = (modes.indexOf("Months") >= 0);
-                showDayPicker = (modes.indexOf("Days") >= 0);
+                showYearPicker = showMonthPicker = showDayPicker =
+                showHoursPicker = showMinutesPicker = showSecondsPicker = false;
+                while (modes.length > 0) {
+                    var modeFlag = modes.pop();
+                    switch (modeFlag) {
+                    case "Years":
+                        showYearPicker = true;
+                        break;
+                    case "Months":
+                        showMonthPicker = true;
+                        break;
+                    case "Days":
+                        showDayPicker = true;
+                        break;
+                    case "Hours":
+                        showHoursPicker = true;
+                        break;
+                    case "Minutes":
+                        showMinutesPicker = true;
+                        break;
+                    case "Seconds":
+                        showSecondsPicker = true;
+                        break;
+                    default:
+                        console.warn("Unhandled mode flag: " + modeFlag + ". Mode will not be set!");
+                        return;
+                    }
+                }
+
                 // filter unaccepted date picking mode
                 if (!showMonthPicker && showYearPicker && showDayPicker) {
                     console.error("Invalid DatePicker mode: " + datePicker.mode);
                     return;
                 }
 
-                showHoursPicker = (modes.indexOf("Hours") >= 0);
-                showMinutesPicker = (modes.indexOf("Minutes") >= 0);
-                showSecondsPicker = (modes.indexOf("Seconds") >= 0);
                 // filter unaccepted time picking mode
                 if (showHoursPicker && showSecondsPicker && !showMinutesPicker) {
                     console.error("Invalid DatePicker mode: " + datePicker.mode);
