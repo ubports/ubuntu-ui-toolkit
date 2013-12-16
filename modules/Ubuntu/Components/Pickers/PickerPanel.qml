@@ -15,9 +15,9 @@
  */
 
 import QtQuick 2.0
+import QtQuick.Window 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.Popups 0.1
-import QtQuick.Window 2.0
 
 /*!
     \qmltype DateTimePanel
@@ -35,15 +35,22 @@ Object {
       of the \a caller as date type. This implies that the caller must have
       defined a property with date type.
       */
-    function openDatePicker(caller, property) {
+    function openDatePicker(caller, property, mode) {
+        if (mode === undefined) {
+            mode = "Years|Months|Days";
+        }
+        var params = {
+            "date": caller[property],
+            "mode": mode,
+            "dateProperty": property
+        }
+
         if (!internal.isPhone || QuickUtils.inputMethodProvider === "") {
             // we have no input panel defined, or the therefore we show the picker in a Popover
-            return internal.openPanel(datePickerPopover, caller,
-                                      {"date": caller[property], "mode": "Years|Months|Days", "dateProperty": property});
+            return internal.openPanel(datePickerPopover, caller, params);
         }
         // OSK panel
-        return internal.openPanel(datePickerPanel, caller,
-                                  {"date": caller[property], "mode": "Years|Months|Days", "dateProperty": property});
+        return internal.openPanel(datePickerPanel, caller, params);
     }
 
     /*!
@@ -86,12 +93,12 @@ Object {
             //FIXME: set the maximum width possible for the DatePicker
             Rectangle {
                 id: frame
-                width: units.gu(44)
+                width: units.gu(46)
                 height: picker.height + units.gu(4)
                 color: Qt.rgba(0, 0, 0, 0.02)
                 DatePicker {
                     id: picker
-                    width: units.gu(40)
+                    width: frame.width
                     anchors.centerIn: parent
                 }
             }
