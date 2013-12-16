@@ -56,7 +56,6 @@ Row {
                 Label {
                     objectName: "PickerRow_PickerLabel"
                     text: pickerModel.text(modelData)
-                    color: Theme.palette.normal.backgroundText
                     anchors.fill: parent
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
