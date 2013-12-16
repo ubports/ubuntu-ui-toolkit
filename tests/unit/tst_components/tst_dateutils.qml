@@ -44,10 +44,13 @@ TestCase {
         verify(date.getFullYear() < 0, "year is invalid");
     }
 
-    function test_isValid() {
+    function test_0isValid() {
         compare((new Date()).isValid(), true, "any date is valid");
         compare((new Date(-1, -1)).isValid(), false, "a year and month set to -1 is invalid");
         compare((Date.prototype.getInvalidDate.call()).isValid(), false, "getInvalidDate() returns an invalid date");
+
+        compare(Date.prototype.isValid.call(null), false, "null date is invalid");
+        compare(Date.prototype.isValid.call(undefined), false, "undefined date is invalid");
     }
 
     function test_daysInMonth_data() {

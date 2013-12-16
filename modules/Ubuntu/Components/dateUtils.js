@@ -48,6 +48,9 @@ Date.prototype.getInvalidDate = function() {
   month and date fields are positive numbers
   */
 Date.prototype.isValid = function() {
+    if (Object.prototype.toString.call(this) !== "[object Date]") {
+        return false;
+    }
     return (this.getFullYear() > 0) && (this.getMonth() >= 0) && (this.getDate() > 0);
 }
 
@@ -74,6 +77,7 @@ Date.prototype.leapYear = function() {
   the Date object and the given one as parameter.
   */
 Date.prototype.monthsTo = function(target) {
+    print(Date.prototype.isValid(target));
     return target.getMonth() - this.getMonth() + (12 * (target.getFullYear() - this.getFullYear()));
 }
 
@@ -81,6 +85,7 @@ Date.prototype.monthsTo = function(target) {
   Same as monthsTo, but returns the distance in days.
   */
 Date.prototype.daysTo = function(target) {
+    print(Date.prototype.isValid(target));
     return !target.isValid() ? 0 : Math.ceil((target - this) / Date.msPerDay);
 }
 

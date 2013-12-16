@@ -26,7 +26,7 @@ PickerModelBase {
 
         clear();
         from = minimum.getHours();
-        var distance = (!maximum.isValid() || (minimum.daysTo(maximum) > 1)) ? 24 : minimum.hoursTo(maximum);
+        var distance = (!Date.prototype.isValid.call(maximum) || (minimum.daysTo(maximum) > 1)) ? 24 : minimum.hoursTo(maximum);
         for (var i = 0; i < distance; i++) {
             append({"hour": (from + i) % 24});
         }

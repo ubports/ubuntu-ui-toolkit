@@ -70,7 +70,7 @@ import Ubuntu.Components 0.1
     }
     \endqml
 
-    The \b mode of the DatePicker is set to date picking. In case tiume picking
+    The \b mode of the DatePicker is set to date picking. In case time picking
     is needed, the model should be set to contain the time specific mode flags.
     The following example demonstrates how to use DatePicker for time picking.
     \qml
@@ -88,10 +88,10 @@ import Ubuntu.Components 0.1
         }
     }
     \endqml
-    Note that the order the flags are specified does not influence the order the
-    pickers are arranged. That is driven by the date format of the \l locale used
-    in the picker. Also, date and time unit flags cannot be combined, therefore
-    the component can be used either for date units or for time units.
+    Note that the order in which the mode flags are specified does not influence
+    the order the pickers are arranged. That is driven by the date format of the
+    \l locale used in the picker. Also not all combinations of mode flags are
+    supported. See \l mode for the supported combinations.
 
     The default interval the date values are chosen is a window starting at
     the current date ending 50 years later. This window is defined by the
@@ -104,11 +104,11 @@ import Ubuntu.Components 0.1
         \li - \a maximum value must be greater than the \a minimum, or invalid.
                 When the maximum is smaller than the \l date, the \l date property
                 will be updated to get the maximum value.
-                When set to invalid date (see DateUtils getInvalidDate()), the
-                upper limit of the date interval becomes infinite, meaning the
-                year picker will extend infinitelly. This leads to increased
-                memory use and should be avoided if possible. Invalid date will
-                make hours picker presenting 24 hours.
+                When set to invalid date (see Date.getInvalidDate()), the upper
+                limit of the date interval becomes infinite, meaning the year
+                picker will extend infinitely. This leads to increased memory
+                use and should be avoided if possible. Invalid date will make
+                hours picker presenting 24 hours.
     \endlist
     \qml
     import QtQuick 2.0
@@ -131,7 +131,7 @@ import Ubuntu.Components 0.1
     }
     \endqml
     \b Note: do not use the \l date property when initializing minimum and maximum
-    as it will lead in binding loops.
+    as it will cause binding loops.
 
     \section2 Layout
     As mentioned earlier, DatePicker combines up to three Picker tumblers depending
@@ -204,12 +204,13 @@ StyledItem {
                 \li Specifies to show the seconds picker
       \endtable
       With some exceptions, any combination of these flags is allowed within the
-      same group. Date and timme picker modes cannot be combined.
+      same group. Date and time picker modes cannot be combined.
 
-      When date picker modes are used, the combination of \a{"Year|Day"} is not allowed.
-      In time picker modes case the \a{"Hours|Seconds"} combination is forbidden.
+      The supported combinations are: \a{Years|Months|Days}, \a{Years|Months},
+      \a{Months|Days}, \a{Hours|Minutes|Seconds}, \a{Hours|Minutes} and \a{Minutes|Seconds},
+      as well as each mode flag individually.
 
-      The default value is "\b{Years|Months|Days}".
+      The default value is "\a{Years|Months|Days}".
       */
     property string mode: "Years|Months|Days"
 
@@ -300,14 +301,14 @@ StyledItem {
         }
 
         // adjust date
-        if (date !== undefined && date < minimum && minimum.isValid() && internals.completed) {
+        if (date !== undefined && Date.prototype.isValid.call(minimum) && date < minimum && internals.completed) {
             date = minimum;
         }
     }
     /*! \internal */
     onMaximumChanged: {
         // adjust date
-        if (date !== undefined && date > maximum && maximum.isValid() && maximum > minimum  && internals.completed) {
+        if (date !== undefined && Date.prototype.isValid.call(maximum) && date > maximum && maximum > minimum  && internals.completed) {
             date = maximum;
         }
     }
