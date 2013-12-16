@@ -77,7 +77,6 @@ Date.prototype.leapYear = function() {
   the Date object and the given one as parameter.
   */
 Date.prototype.monthsTo = function(target) {
-    print(Date.prototype.isValid(target));
     return target.getMonth() - this.getMonth() + (12 * (target.getFullYear() - this.getFullYear()));
 }
 
@@ -85,7 +84,6 @@ Date.prototype.monthsTo = function(target) {
   Same as monthsTo, but returns the distance in days.
   */
 Date.prototype.daysTo = function(target) {
-    print(Date.prototype.isValid(target));
     return !target.isValid() ? 0 : Math.ceil((target - this) / Date.msPerDay);
 }
 
