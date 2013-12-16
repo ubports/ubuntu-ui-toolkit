@@ -29,39 +29,18 @@
 #include <QtQuick/QQuickItem>
 #include <QtQml/QQmlProperty>
 
+#include "uctestcase.h"
+
 class tst_OrientationTest : public QObject
 {
     Q_OBJECT
 public:
     tst_OrientationTest() {}
 
-private:
-    QString m_modulePath;
-
-    QQuickView *createView(const QString &file, QSignalSpy **spy = 0)
-    {
-        QQuickView *view = new QQuickView(0);
-        if (spy) {
-            *spy = new QSignalSpy(view->engine(), SIGNAL(warnings(QList<QQmlError>)));
-            (*spy)->setParent(view);
-        }
-        view->engine()->addImportPath(m_modulePath);
-        view->setSource(QUrl::fromLocalFile(file));
-        if (!view->rootObject()) {
-            return 0;
-        }
-        view->show();
-        QTest::qWaitForWindowExposed(view);
-        return view;
-    }
-
 private Q_SLOTS:
 
     void initTestCase()
     {
-        QDir modules ("../../../modules");
-        QVERIFY(modules.exists());
-        m_modulePath = modules.absolutePath();
     }
 
     void cleanupTestCase()
@@ -70,35 +49,30 @@ private Q_SLOTS:
 
     void test_defaults()
     {
-        QSignalSpy *spy;
-        QQuickView *view = createView("Defaults.qml", &spy);
-        QVERIFY(view);
-        QQuickItem *helper = view->rootObject()->findChild<QQuickItem*>("helper");
+        UbuntuTestCase *testCase = new UbuntuTestCase("Defaults.qml");
+        QQuickItem *helper = testCase->findItem("helper");
         QVERIFY(helper);
         QCOMPARE(helper->property("automaticOrientation").toBool(), true);
         // No warnings expected
-        QCOMPARE(spy->count(), 0);
-        delete view;
+        QCOMPARE(testCase->status(), QQuickView::Ready);
+        delete testCase;
     }
 
     void test_manualAngle()
     {
-        QSignalSpy *spy;
-        QQuickView *view = createView("ManualAngle.qml", &spy);
-        QVERIFY(view);
-        QQuickItem *helper = view->rootObject()->findChild<QQuickItem*>("helper");
-        QVERIFY(helper);
+        UbuntuTestCase *testCase = new UbuntuTestCase("ManualAngle.qml");
+        QQuickItem *helper = testCase->findItem("helper");
         // No warning about "window" being undefined must appear
-        QCOMPARE(spy->count(), 0);
+        QCOMPARE(testCase->status(), QQuickView::Ready);
         QCOMPARE(helper->property("orientationAngle").toInt(), 90);
         // Verify expected values
-        QQuickItem *checkpoint = view->rootObject()->findChild<QQuickItem*>("checkpoint");
+        QQuickItem *checkpoint = testCase->findItem("checkpoint");
         QVERIFY(checkpoint);
         // window.contentOrientation 
         QCOMPARE(checkpoint->property("contentOrientation").toInt(), helper->property("orientationAngle").toInt());
         // Screen.Orientation
         QCOMPARE(checkpoint->property("orientation").toInt(), helper->property("orientationAngle").toInt());
-        delete view;
+        delete testCase;
     }
 };
 
