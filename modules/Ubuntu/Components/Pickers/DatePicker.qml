@@ -368,7 +368,7 @@ StyledItem {
             if (!pickerItem) {
                 return 0;
             }
-            var w = Math.max((datePicker.width - yearModel.pickerWidth) * internals.dayPickerRatio, narrowFormatLimit);
+            var w = Math.max(datePicker.width * internals.dayPickerRatio, narrowFormatLimit);
             if (w < longFormatLimit && w >= shortFormatLimit) {
                 return shortFormatLimit;
             }
@@ -572,8 +572,13 @@ StyledItem {
             }
 
             // calculate the ratio for the dayPicker
-            var width = datePicker.width - yearModel.pickerWidth;
-            dayPickerRatio = (dayModel.longFormatLimit / width).toPrecision(3);
+            var maxWidth = 0.0;
+            maxWidth += showYearPicker ? yearModel.longFormatLimit : 0.0;
+            maxWidth += showMonthPicker ? monthModel.longFormatLimit : 0.0;
+            maxWidth += showDayPicker ? dayModel.longFormatLimit : 0.0;
+            if (showDayPicker && maxWidth > 0.0) {
+                dayPickerRatio = (dayModel.longFormatLimit / maxWidth).toPrecision(3);
+            }
         }
 
         /*
