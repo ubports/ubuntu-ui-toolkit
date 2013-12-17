@@ -23,17 +23,51 @@ import Ubuntu.Components.Popups 0.1
     \qmltype DateTimePanel
     \inqmlmodule Ubuntu.Components.Pickers 0.1
     \ingroup ubuntu-pickers
-    \brief Provides a panel for opening a Date picker in place of the input panel or
+    \brief Provides a panel for opening a DatePicker in place of the input panel or
     as Popover, depending on the form factor.
+
+    PickerPanel is a singleton component designed to open a DatePicker in input panel
+    area or in a Popover, depending on the form factor, following the design guides
+    on date pickers.
   */
 
 Object {
+
+    /*!
+      \qmlproperty bool closePanelOnDismissAreaPress
+      The property drives whether the panel/popover should be closed when the
+      user presses on the panel's inactive area.
+      The default value is true.
+      */
+    property alias closePanelOnDismissAreaPress: internal.closePanelOnDismissAreaPress
+
     /*!
       The function opens a date picker panel. The date picker is opened in input
-      panel area if there is input panel available and the form factor describes
-      a phone. The picked date will be read from and reported into the \a property
-      of the \a caller as date type. This implies that the caller must have
-      defined a property with date type.
+      panel area if there is on-screen input panel available and the form factor
+      describes a phone. The picked date will be read from and reported into the
+      \a property of the \a caller as date type. This implies that the caller
+      must have defined a property with date type.
+
+      On success the returned object is either a Popover or a PopupBase, with the
+      following additional properties:
+      \table
+        \header
+            \li Property
+            \li Description
+        \row
+            \li \b picker
+            \li instance of the DatePicker component shown in the panel/popup
+        \row
+            \li \b date
+            \li
+        \row
+            \li \b mode
+            \li
+        \row
+            \li \b dateProperty
+            \li
+
+      \endtable
       */
     function openDatePicker(caller, property, mode) {
         if (mode === undefined) {
@@ -45,7 +79,7 @@ Object {
             "dateProperty": property
         }
 
-        if (!internal.isPhone || QuickUtils.inputMethodProvider === "") {
+        if (!internal.isPhone()) {
             // we have no input panel defined, or the therefore we show the picker in a Popover
             return internal.openPanel(datePickerPopover, caller, params);
         }
@@ -53,25 +87,16 @@ Object {
         return internal.openPanel(datePickerPanel, caller, params);
     }
 
-    /*!
-      The function opens a month picker panel. The date picker is opened in input
-      panel area if there is input panel available and the form factor describes a phone.
-      */
-    function monthPicker(caller, property) {
-        if (!internal.isPhone || QuickUtils.inputMethodProvider === "") {
-            // we have no input panel defined, or the therefore we show the picker in a Popover
-            return internal.openPanel(datePickerPopover, caller,
-                                      {"date": caller[property], "mode": "Years|Months", "dateProperty": property});
-        }
-        // OSK panel
-        return internal.openPanel(datePickerPanel, caller,
-                                  {"date": caller[property], "mode": "Years|Months", "dateProperty": property});
-    }
-
     QtObject {
         id: internal
 
-        property bool isPhone: Screen.width <= units.gu(40) && Screen.height <= units.gu(71)
+        property bool closePanelOnDismissAreaPress: true
+        property bool formFactorPhone: Screen.width <= units.gu(40) && Screen.height <= units.gu(71)
+
+        function isPhone() {
+//            return (formFactorPhone && QuickUtils.inputMethodProvider !== "");
+            return formFactorPhone;
+        }
 
         function openPanel(component, caller, params) {
             var panel = PopupUtils.open(component, caller, params);
@@ -84,21 +109,22 @@ Object {
     Component {
         id: datePickerPopover
         Popover {
+            property alias picker: picker
             property alias date: picker.date
             property alias mode: picker.mode
             property string dateProperty
 
             contentWidth: frame.width
             contentHeight: frame.height
+            __closeOnDismissAreaPress: internal.closePanelOnDismissAreaPress
             //FIXME: set the maximum width possible for the DatePicker
             Rectangle {
                 id: frame
-                width: units.gu(46)
+                width: picker.width + units.gu(4)
                 height: picker.height + units.gu(4)
                 color: Qt.rgba(0, 0, 0, 0.02)
                 DatePicker {
                     id: picker
-                    width: frame.width
                     anchors.centerIn: parent
                 }
             }
@@ -116,20 +142,45 @@ Object {
     Component {
         id: datePickerPanel
         PopupBase {
+            property alias picker: picker
             property alias date: picker.date
             property alias mode: picker.mode
             property string dateProperty
 
             __foreground: panel
+            __closeOnDismissAreaPress: internal.closePanelOnDismissAreaPress
             Rectangle {
                 id: panel
-//                width: Qt.inputMethod.keyboardRectangle.width
-//                height: Qt.inputMethod.keyboardRectangle.height
-                width: units.gu(40); height: units.gu(30)
+                width: Qt.inputMethod.keyboardRectangle.width > 0 ? Qt.inputMethod.keyboardRectangle.width : units.gu(40)
+                height: Qt.inputMethod.keyboardRectangle.height > 0 ? Qt.inputMethod.keyboardRectangle.height : units.gu(30)
+                y: dismissArea.height
+
+                states: [
+                    State {
+                        name: "opened"
+                        when: visible
+                        PropertyChanges {
+                            target: panel
+                            y: dismissArea.height - height;
+                        }
+                    }
+                ]
+                transitions: [
+                    Transition {
+                        from: "*"
+                        to: "opened"
+                        reversible: true
+                        UbuntuNumberAnimation {
+                            target: panel
+                            property: "y"
+                        }
+                    }
+
+                ]
                 DatePicker {
                     id: picker
                     anchors {
-                        fill: parent
+                        fill: panel
                         margins: units.gu(2)
                     }
                 }
