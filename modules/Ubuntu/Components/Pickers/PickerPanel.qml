@@ -29,17 +29,31 @@ import Ubuntu.Components.Popups 0.1
     PickerPanel is a singleton component designed to open a DatePicker in input panel
     area or in a Popover, depending on the form factor, following the design guides
     on date pickers.
+    \qml
+    import QtQuick 2.0
+    import Ubuntu.Components 0.1
+
+    MainWindow {
+        width: units.gu(40)
+        height: units.gu(71)
+
+        Page {
+            title: "PickerPanel"
+            Button {
+                id: dateButton
+                property date date: new Date()
+                text: Qt.formatDateTime(date, "yyyy/MMMM"
+                onClicked: PickerPanel.openDatePicker(dateButton, "date", "Years|Months")
+            }
+        }
+    }
+    \endqml
+
+    The opened panel is closed automatically when the user taps/presses outside
+    of the panel or Popover area.
   */
 
 Object {
-
-    /*!
-      \qmlproperty bool closePanelOnDismissAreaPress
-      The property drives whether the panel/popover should be closed when the
-      user presses on the panel's inactive area.
-      The default value is true.
-      */
-    property alias closePanelOnDismissAreaPress: internal.closePanelOnDismissAreaPress
 
     /*!
       The function opens a date picker panel. The date picker is opened in input
@@ -48,8 +62,18 @@ Object {
       \a property of the \a caller as date type. This implies that the caller
       must have defined a property with date type.
 
-      On success the returned object is either a Popover or a PopupBase, with the
-      following additional properties:
+      On failure the function returns null. On success the returned object has the
+      following properties:
+      \code
+      {
+          property DatePicker picker
+          property string pickerMode
+          property date date
+          property Item caller
+          property string callerProperty
+      }
+      \endcode
+
       \table
         \header
             \li Property
@@ -58,15 +82,19 @@ Object {
             \li \b picker
             \li instance of the DatePicker component shown in the panel/popup
         \row
+            \li \b pickerMode
+            \li represents the DatePicker \l mode to be used. This is an optional
+                parameter and if not defined, the default mode will be used.
+        \row
             \li \b date
-            \li
+            \li represents the date selected
         \row
-            \li \b mode
-            \li
+            \li \b caller
+            \li the instance of the component opening the panel
         \row
-            \li \b dateProperty
-            \li
-
+            \li \b callerProperty
+            \li the property of the caller holding the date value which will be
+                updated by the picker.
       \endtable
       */
     function openDatePicker(caller, property, mode) {
@@ -75,32 +103,36 @@ Object {
         }
         var params = {
             "date": caller[property],
-            "mode": mode,
-            "dateProperty": property
+            "pickerMode": mode,
+            "callerProperty": property
         }
 
         if (!internal.isPhone()) {
             // we have no input panel defined, or the therefore we show the picker in a Popover
-            return internal.openPanel(datePickerPopover, caller, params);
+            return internal.openPopover(caller, params);
         }
         // OSK panel
-        return internal.openPanel(datePickerPanel, caller, params);
+        return internal.openPanel(caller, params);
     }
 
     QtObject {
         id: internal
 
-        property bool closePanelOnDismissAreaPress: true
         property bool formFactorPhone: Screen.width <= units.gu(40) && Screen.height <= units.gu(71)
 
         function isPhone() {
-//            return (formFactorPhone && QuickUtils.inputMethodProvider !== "");
-            return formFactorPhone;
+            return (formFactorPhone && QuickUtils.inputMethodProvider !== "");
+//            return formFactorPhone;
         }
 
-        function openPanel(component, caller, params) {
-            var panel = PopupUtils.open(component, caller, params);
+        function openPopover(caller, params) {
+            var panel = PopupUtils.open(datePickerPopover, caller, params);
             panel.parent = QuickUtils.rootItem(null);
+            return panel;
+        }
+        function openPanel(caller, params) {
+            params["caller"] = caller;
+            var panel = datePickerPanel.createObject(QuickUtils.rootItem(null), params);
             return panel;
         }
     }
@@ -111,13 +143,12 @@ Object {
         Popover {
             property alias picker: picker
             property alias date: picker.date
-            property alias mode: picker.mode
-            property string dateProperty
+            property alias pickerMode: picker.mode
+            property string callerProperty
 
             contentWidth: frame.width
             contentHeight: frame.height
-            __closeOnDismissAreaPress: internal.closePanelOnDismissAreaPress
-            //FIXME: set the maximum width possible for the DatePicker
+            __closeOnDismissAreaPress: true
             Rectangle {
                 id: frame
                 width: picker.width + units.gu(4)
@@ -131,8 +162,8 @@ Object {
 
             Binding {
                 target: caller
-                property: dateProperty
-                when: dateProperty != undefined
+                property: callerProperty
+                when: callerProperty != undefined
                 value: picker.date
             }
         }
@@ -141,50 +172,78 @@ Object {
     // OSK panel
     Component {
         id: datePickerPanel
-        PopupBase {
+        Rectangle {
             property alias picker: picker
             property alias date: picker.date
-            property alias mode: picker.mode
-            property string dateProperty
+            property alias pickerMode: picker.mode
+            property string callerProperty
+            property Item caller
 
-            __foreground: panel
-            __closeOnDismissAreaPress: internal.closePanelOnDismissAreaPress
-            Rectangle {
-                id: panel
-                width: Qt.inputMethod.keyboardRectangle.width > 0 ? Qt.inputMethod.keyboardRectangle.width : units.gu(40)
-                height: Qt.inputMethod.keyboardRectangle.height > 0 ? Qt.inputMethod.keyboardRectangle.height : units.gu(30)
-                y: dismissArea.height
+            id: panel
+            width: Qt.inputMethod.keyboardRectangle.width > 0 ? Qt.inputMethod.keyboardRectangle.width : units.gu(40)
+            height: Qt.inputMethod.keyboardRectangle.height > 0 ? Qt.inputMethod.keyboardRectangle.height : units.gu(30)
+            y: parent.height
+            DatePicker {
+                id: picker
+                anchors {
+                    fill: panel
+                    margins: units.gu(2)
+                }
 
-                states: [
-                    State {
-                        name: "opened"
-                        when: visible
-                        PropertyChanges {
-                            target: panel
-                            y: dismissArea.height - height;
-                        }
-                    }
-                ]
-                transitions: [
-                    Transition {
-                        from: "*"
-                        to: "opened"
-                        reversible: true
-                        UbuntuNumberAnimation {
-                            target: panel
-                            property: "y"
-                        }
-                    }
-
-                ]
-                DatePicker {
-                    id: picker
-                    anchors {
-                        fill: panel
-                        margins: units.gu(2)
-                    }
+                Binding {
+                    target: caller
+                    property: callerProperty
+                    when: callerProperty != undefined
+                    value: picker.date
                 }
             }
+
+            InverseMouseArea {
+                anchors.fill: parent
+                onPressed: {
+                    panel.state = '';
+                }
+            }
+
+            Component.onCompleted: state = 'opened'
+
+            states: [
+                State {
+                    name: 'opened'
+                    PropertyChanges {
+                        target: panel
+                        y: parent.height - height
+                    }
+                }
+            ]
+            transitions: [
+                Transition {
+                    from: ''
+                    to: 'opened'
+                    UbuntuNumberAnimation {
+                        target: panel
+                        property: 'y'
+                        duration: UbuntuAnimation.BriskDuration
+                    }
+                },
+                Transition {
+                    from: 'opened'
+                    to: ''
+                    SequentialAnimation {
+                        UbuntuNumberAnimation {
+                            target: panel
+                            property: 'y'
+                            duration: UbuntuAnimation.BriskDuration
+                        }
+                        ScriptAction {
+                            script: {
+                                panel.destroy();
+                            }
+                        }
+                    }
+                }
+
+            ]
         }
     }
 }
