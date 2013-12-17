@@ -43,6 +43,13 @@ UbuntuTestCase::UbuntuTestCase(const QString& file, QWindow* parent) : QQuickVie
     if (file.isEmpty())
         return;
 
+    setFile(file);
+}
+
+void UbuntuTestCase::setFile(const QString& file) {
+    Q_ASSERT(!file.isEmpty());
+    if (rootObject())
+        delete rootObject();
     setSource(QUrl::fromLocalFile(file));
     Q_ASSERT(status() == QQuickView::Ready);
     Q_ASSERT(rootObject());

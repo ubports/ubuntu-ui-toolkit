@@ -28,6 +28,7 @@ class UbuntuTestCase : public QQuickView
 
 public:
     UbuntuTestCase(const QString& file, QWindow* parent = 0);
+    void setFile(const QString& file);
     // getter
     QObject* findObject(const QString& objectName) const;
     QQuickItem* findItem(const QString& objectName) const;
