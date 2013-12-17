@@ -170,8 +170,14 @@ PageTreeNode {
         property Header header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
         property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ? page.__propagated.toolbar : null
 
-        onHeaderChanged: internal.updateHeaderAndToolbar()
-        onToolbarChanged: internal.updateHeaderAndToolbar()
+        onHeaderChanged: {
+            internal.updateHeaderAndToolbar()
+            internal.updateFlickablePosition()
+            print("page header height = "+internal.header.height)
+        }
+        onToolbarChanged: {
+            internal.updateHeaderAndToolbar()
+        }
 
         function updateHeaderAndToolbar() {
             if (page.active) {
@@ -228,15 +234,15 @@ PageTreeNode {
         Binding {
             target: page.flickable
             property: "topMargin"
-            value: internal.headerHeight
-            when: page.flickable
+            value: internal.header.height
+            when: page.flickable && internal.header //&& internal.header.visible
         }
 
         function updateFlickablePosition() {
             if (page.flickable) {
                 // Set-up the top-margin of the contents of the Flickable so that
                 //  the contents is never hidden by the header
-                var displacement = headerHeight;
+                var displacement = internal.header ? internal.header.height : 0
                 if (page.flickable.hasOwnProperty("headerItem") && page.flickable.headerItem) {
                     // flickable is a ListView with a headerItem
                     displacement += page.flickable.headerItem.height;
