@@ -267,7 +267,7 @@ PageTreeNode {
         } else {
             internal.sync();
         }
-        return tab;
+        return tabObject;
     }
 
     /*!
@@ -334,7 +334,7 @@ PageTreeNode {
         }
 
         if (activeIndex < 0) {
-            tabs.modelChanged();
+            internal.sync()
         }
         return true;
     }

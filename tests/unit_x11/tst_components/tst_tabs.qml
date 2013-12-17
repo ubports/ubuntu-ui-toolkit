@@ -401,6 +401,7 @@ Item {
 
         // these tests should not be mixed with Repeaters
         function test_z_addTab() {
+            var newTab = tabs.addTab("Dynamic Tab", dynamicTab);
             compare((newTab !== null), true, "tab added");
             compare(newTab.active, false, "the inserted tab is inactive");
             compare(newTab.index, tabs.count - 1, "the tab is the last one");
