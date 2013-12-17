@@ -48,6 +48,9 @@ Date.prototype.getInvalidDate = function() {
   month and date fields are positive numbers
   */
 Date.prototype.isValid = function() {
+    if (Object.prototype.toString.call(this) !== "[object Date]") {
+        return false;
+    }
     return (this.getFullYear() > 0) && (this.getMonth() >= 0) && (this.getDate() > 0);
 }
 
