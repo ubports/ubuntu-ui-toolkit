@@ -218,10 +218,7 @@ Object {
                 onPressed: panel.state = ''
             }
 
-            Component.onCompleted: {
-                print("OSK height: " + Qt.inputMethod.keyboardRectangle.height)
-                state = 'opened'
-            }
+            Component.onCompleted: state = 'opened'
 
             states: [
                 State {
