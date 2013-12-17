@@ -40,8 +40,11 @@ UbuntuTestCase::UbuntuTestCase(const QString& file, QWindow* parent) : QQuickVie
     m_spy = new QSignalSpy(engine(), SIGNAL(warnings(QList<QQmlError>)));
     m_spy->setParent(this);
 
+    if (file.isEmpty())
+        return;
+
     setSource(QUrl::fromLocalFile(file));
-    Q_ASSERT(status() != QQuickView::Ready);
+    Q_ASSERT(status() == QQuickView::Ready);
     Q_ASSERT(rootObject());
     show();
     QTest::qWaitForWindowExposed(this);
