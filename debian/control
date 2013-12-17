@@ -40,8 +40,8 @@ Build-Depends: debhelper (>= 9.0.0),
                locales,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
-# If you aren't a member of ~ubuntu-sdk-team but need to upload packaging 
-# changes, just go ahead. ~ubuntu-sdk-team will notice and sync up the code 
+# If you aren't a member of ~ubuntu-sdk-team but need to upload packaging
+# changes, just go ahead. ~ubuntu-sdk-team will notice and sync up the code
 # again.
 Vcs-Bzr: https://code.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk
 
@@ -132,6 +132,7 @@ Depends: ${misc:Depends},
          libqt5widgets5,
          python-autopilot (>= 1.4),
          python-mock,
+         python-sphinx,
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
 Description: Test package for Ubuntu UI Toolkit
  Autopilot tests for the ubuntu-ui-toolkit package

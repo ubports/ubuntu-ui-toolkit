@@ -8,8 +8,10 @@ DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 %:
 	dh $@ --fail-missing
 
+
 override_dh_install:
 	dh_auto_build -- docs
-	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch 
+	sphinx-build -b html docs-autopilot-emulator emulator-html
+	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
 	dh_install --fail-missing
 
