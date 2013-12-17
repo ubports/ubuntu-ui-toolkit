@@ -51,7 +51,8 @@ QObject* UbuntuTestCase::findObject(const QString& objectName) const {
     QQuickItem *root = rootObject();
     Q_ASSERT(root);
     QObject* object = root->findChild<QObject*>(objectName);
-    Q_ASSERT(object);
+    if (!object)
+        qFatal("No object '%s' found", qPrintable(objectName));
     return object;
 }
 
@@ -59,7 +60,8 @@ QQuickItem* UbuntuTestCase::findItem(const QString& objectName) const {
     QQuickItem *root = rootObject();
     Q_ASSERT(root);
     QQuickItem* item = root->findChild<QQuickItem*>(objectName);
-    Q_ASSERT(item);
+    if (!item)
+        qFatal("No item '%s' found", qPrintable(objectName));
     return item;
 }
 
