@@ -72,6 +72,8 @@ Object {
           property date date
           property Item caller
           property string callerProperty
+
+          signal closed()
       }
       \endcode
 
@@ -96,6 +98,13 @@ Object {
             \li \b callerProperty
             \li the property of the caller holding the date value which will be
                 updated by the picker.
+        \header
+            \li Signal
+            \li Description
+        \row
+            \li closed()
+            \li the signal is emitted when the panel or popover gets closed. The
+                signal is handy when actions are performed upon panel close.
       \endtable
       */
     function openDatePicker(caller, property, mode) {
@@ -146,6 +155,8 @@ Object {
             property alias pickerMode: picker.mode
             property string callerProperty
 
+            signal closed()
+
             contentWidth: frame.width
             contentHeight: frame.height
 
@@ -164,6 +175,7 @@ Object {
                     }
                 }
             }
+            Component.onDestruction: closed()
         }
     }
 
@@ -176,6 +188,8 @@ Object {
             property alias pickerMode: picker.mode
             property string callerProperty
             property Item caller
+
+            signal closed()
 
             id: panel
             // no additional styling is needed
@@ -237,6 +251,7 @@ Object {
                         }
                         ScriptAction {
                             script: {
+                                closed();
                                 panel.destroy();
                             }
                         }
