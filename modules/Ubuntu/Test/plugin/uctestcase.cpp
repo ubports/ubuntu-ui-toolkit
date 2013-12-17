@@ -22,9 +22,9 @@
 
 #include <QtQml/QQmlEngine>
 #include <QtCore/QDir>
+#include <QtCore/QDebug>
 #include <QtTest/QtTest>
 #include <QtQuick/QQuickItem>
-#include <QtQuick/QQuickView>
 
 /*!
  * \ingroup ubuntu
@@ -36,6 +36,10 @@ UbuntuTestCase::UbuntuTestCase(const QString& file, QWindow* parent) : QQuickVie
     Q_ASSERT(QDir(modules).exists());
     QString modulePath(QDir(modules).absolutePath());
     engine()->addImportPath(modulePath);
+
+    m_spy = new QSignalSpy(engine(), SIGNAL(warnings(QList<QQmlError>)));
+    m_spy->setParent(this);
+
     setSource(QUrl::fromLocalFile(file));
     Q_ASSERT(status() != QQuickView::Ready);
     Q_ASSERT(rootObject());
@@ -60,7 +64,6 @@ QQuickItem* UbuntuTestCase::findItem(const QString& objectName) const {
 }
 
 int UbuntuTestCase::errorCount() const {
-    // TODO: implement
-    return 0;
+    return m_spy->count();
 }
 

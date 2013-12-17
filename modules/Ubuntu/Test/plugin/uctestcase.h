@@ -20,6 +20,7 @@
 #define UBUNTU_TEST_UBUNTUTESTCASE_H
 
 #include <QtQuick/QQuickView>
+#include <QtTest/QSignalSpy>
 
 class UbuntuTestCase : public QQuickView
 {
@@ -33,7 +34,7 @@ public:
     int errorCount() const;
 
 private:
-    QString m_language;
+    QSignalSpy* m_spy;
 };
 
 #endif // UBUNTU_TEST_UBUNTUTESTCASE_H
