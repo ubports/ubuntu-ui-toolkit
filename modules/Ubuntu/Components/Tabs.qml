@@ -200,6 +200,146 @@ PageTreeNode {
     signal modelChanged()
 
     /*!
+      Appends a Tab dynamically to the list of tabs. The \a title specifies the
+      title of the Tab. The \a component can be either a Component, a URL to
+      the Tab component to be loaded or an instance of a pre-declared tab that
+      has been previously removed. The Tab's title will be replaced with the given
+      \a title, unless if the given value is empty string or undefined. The optional
+      \a params defines parameters passed to the Tab.
+      Returns the instance of the added Tab.
+      */
+    function addTab(title, tab, params) {
+        return insertTab(count, title, tab, params);
+    }
+
+    /*!
+      Inserts a Tab at the given index. If the \a index is less or equal than 0,
+      the Tab will be added to the front, and to the end of the tab stack if the
+      \a index is greater than \l count. \a title, \a component and \a params
+      are used in the same way as in \l addTab(). Returns the instance of the
+      inserted Tab.
+      */
+    function insertTab(index, title, tab, params) {
+        // check if the given component is a Tab instance
+        var tabObject = null;
+        if (tab && tab.hasOwnProperty("page") && tab.hasOwnProperty("__protected")) {
+            // dynamically added components are destroyed upon removal, so
+            // in case we get a Tab as parameter, we can only have a predeclared one
+            // therefore we simply restore the default state of the removedFromTabs property
+            // and return the instance
+            if (!tab.__protected.removedFromTabs) {
+                // exit if the Tab is not removed
+                return null;
+            }
+
+            tab.__protected.removedFromTabs = false;
+            tabObject = tab;
+        } else {
+            var tabComponent = null;
+            if (typeof tab === "string") {
+                tabComponent = Qt.createComponent(tab);
+            } else {
+                tabComponent = tab;
+            }
+            if (tabComponent.status === Component.Error) {
+                console.error(tabComponent.errorString());
+                return null;
+            }
+            tabObject = tabComponent.createObject();
+            tabObject.__protected.dynamic = true;
+        }
+
+        // fix title
+        if (title !== undefined && title !== "") {
+            tabObject.title = title;
+        }
+
+        // insert the created tab into the model
+        index = MathUtils.clamp(index, 0, count);
+        tabObject.__protected.inserted = true;
+        tabObject.__protected.index = index;
+        tabsModel.insert(index, tabsModel.listModel(tabObject));
+        tabsModel.reindex(index);
+        tabObject.parent = tabStack;
+        if (tabs.selectedTabIndex >= index) {
+            // move the selected index to the next index
+            tabs.selectedTabIndex += 1;
+        } else {
+            internal.sync();
+        }
+        return tab;
+    }
+
+    /*!
+      The function returns the Tab from the given index.
+      */
+    function getTab(index) {
+        return (index >=0) && (index < count) ? tabsModel.get(index).tab : null;
+    }
+
+    /*!
+      Moves the tab from the given \a from position to the position given in \a to.
+      Returns true if the indexes were in 0..\l count - 1 boundary and if the operation
+      succeeds, and false otherwise. The \l selectedTabIndex is updated if it is
+      affected by the move (it is equal with \a from or falls between \a from and
+      \a to indexes).
+      */
+    function moveTab(from, to) {
+        if (from < 0 || from >= count || to < 0 || to >= count || from === to) return false;
+        var tabFrom = tabsModel.get(from).tab;
+        var tabTo = tabsModel.get(to).tab;
+
+        // move tab
+        tabsModel.move(from, to, 1);
+        tabsModel.reindex();
+
+        // fix selected tab
+        if (selectedTabIndex === from) {
+            selectedTabIndex = to;
+        } else if (selectedTabIndex <= to && selectedTabIndex >= from) {
+            selectedTabIndex -= 1;
+        } else {
+            internal.sync();
+        }
+
+        return true;
+    }
+
+    /*!
+      Removes the Tab from the given \a index. Returns true if the \a index falls
+      into 0..\l count - 1 boundary and the operation succeeds, and false on error.
+      The function removes also the pre-declared tabs. These can be added back using
+      \l addTab or \l insertTab by specifying the instance of the Tab to be added as
+      component. The \l selectedTabIndex is updated if is affected by the removal
+      (it is identical or greater than the tab index to be removed).
+      */
+    function removeTab(index) {
+        if (index < 0 || index >= count) return false;
+        var tab = tabsModel.get(index).tab;
+        var activeIndex = (selectedTabIndex >= index) ? MathUtils.clamp(selectedTabIndex, 0, count - 2) : -1;
+
+        tabsModel.remove(index);
+        tabsModel.reindex();
+        // move active tab if needed
+        if (activeIndex >= 0) {
+            selectedTabIndex = activeIndex;
+        }
+
+        if (tab.__protected.dynamic) {
+            tab.destroy();
+        } else {
+            // pre-declared tab, mark it as removed, so we don't update it next time
+            // the tabs stack children is updated
+            tab.__protected.removedFromTabs = true;
+        }
+
+        if (activeIndex < 0) {
+            tabs.modelChanged();
+        }
+        return true;
+    }
+
+    /*!
       \internal
       required by TabsStyle
      */
