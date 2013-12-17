@@ -195,7 +195,7 @@ Object {
             // no additional styling is needed
             color: Theme.palette.normal.overlay
             width: parent.width
-            height: Qt.inputMethod.keyboardRectangle.height > 0 ? Qt.inputMethod.keyboardRectangle.height : units.gu(30)
+            height: Qt.inputMethod.keyboardRectangle.height > 0 ? Qt.inputMethod.keyboardRectangle.height : units.gu(26)
             y: parent.height
 
             ThinDivider { anchors.bottom: parent.top }
