@@ -17,6 +17,7 @@
 import QtQuick 2.0
 import QtQuick.Window 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1
 import Ubuntu.Components.Popups 0.1
 
 /*!
@@ -42,7 +43,7 @@ import Ubuntu.Components.Popups 0.1
             Button {
                 id: dateButton
                 property date date: new Date()
-                text: Qt.formatDateTime(date, "yyyy/MMMM"
+                text: Qt.formatDateTime(date, "yyyy/MMMM")
                 onClicked: PickerPanel.openDatePicker(dateButton, "date", "Years|Months")
             }
         }
@@ -65,7 +66,7 @@ Object {
       On failure the function returns null. On success the returned object has the
       following properties:
       \code
-      {
+      Object {
           property DatePicker picker
           property string pickerMode
           property date date
@@ -107,7 +108,7 @@ Object {
             "callerProperty": property
         }
 
-        if (!internal.isPhone()) {
+        if (!internal.isPhone) {
             // we have no input panel defined, or the therefore we show the picker in a Popover
             return internal.openPopover(caller, params);
         }
@@ -117,13 +118,12 @@ Object {
 
     QtObject {
         id: internal
+        objectName: "PickerPanel_Internals"
 
         property bool formFactorPhone: Screen.width <= units.gu(40) && Screen.height <= units.gu(71)
-
-        function isPhone() {
-            return (formFactorPhone && QuickUtils.inputMethodProvider !== "");
-//            return formFactorPhone;
-        }
+        // present in a property so we can test it in
+        property bool isPhone: false
+        Component.onCompleted: isPhone = formFactorPhone && (QuickUtils.inputMethodProvider !== "")
 
         function openPopover(caller, params) {
             var panel = PopupUtils.open(datePickerPopover, caller, params);
@@ -148,23 +148,21 @@ Object {
 
             contentWidth: frame.width
             contentHeight: frame.height
-            __closeOnDismissAreaPress: true
-            Rectangle {
+
+            Item {
                 id: frame
                 width: picker.width + units.gu(4)
                 height: picker.height + units.gu(4)
-                color: Qt.rgba(0, 0, 0, 0.02)
                 DatePicker {
                     id: picker
                     anchors.centerIn: parent
+                    Binding {
+                        target: caller
+                        property: callerProperty
+                        when: callerProperty != undefined
+                        value: picker.date
+                    }
                 }
-            }
-
-            Binding {
-                target: caller
-                property: callerProperty
-                when: callerProperty != undefined
-                value: picker.date
             }
         }
     }
@@ -180,16 +178,19 @@ Object {
             property Item caller
 
             id: panel
-            width: Qt.inputMethod.keyboardRectangle.width > 0 ? Qt.inputMethod.keyboardRectangle.width : units.gu(40)
+            // no additional styling is needed
+            color: Theme.palette.normal.overlay
+            width: parent.width
             height: Qt.inputMethod.keyboardRectangle.height > 0 ? Qt.inputMethod.keyboardRectangle.height : units.gu(30)
             y: parent.height
+
+            ThinDivider { anchors.bottom: parent.top }
             DatePicker {
                 id: picker
                 anchors {
                     fill: panel
                     margins: units.gu(2)
                 }
-
                 Binding {
                     target: caller
                     property: callerProperty
@@ -200,12 +201,13 @@ Object {
 
             InverseMouseArea {
                 anchors.fill: parent
-                onPressed: {
-                    panel.state = '';
-                }
+                onPressed: panel.state = ''
             }
 
-            Component.onCompleted: state = 'opened'
+            Component.onCompleted: {
+                print("OSK height: " + Qt.inputMethod.keyboardRectangle.height)
+                state = 'opened'
+            }
 
             states: [
                 State {
@@ -223,7 +225,6 @@ Object {
                     UbuntuNumberAnimation {
                         target: panel
                         property: 'y'
-                        duration: UbuntuAnimation.BriskDuration
                     }
                 },
                 Transition {
@@ -233,7 +234,6 @@ Object {
                         UbuntuNumberAnimation {
                             target: panel
                             property: 'y'
-                            duration: UbuntuAnimation.BriskDuration
                         }
                         ScriptAction {
                             script: {
@@ -242,7 +242,6 @@ Object {
                         }
                     }
                 }
-
             ]
         }
     }
