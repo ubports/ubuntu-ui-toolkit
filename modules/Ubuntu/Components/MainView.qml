@@ -292,8 +292,20 @@ PageTreeNode {
             }
         }
 
+        /*!
+          Animate header and toolbar.
+         */
+        property bool animate: true
+
         Toolbar {
             id: toolbarItem
+            onPressedChanged: {
+                if (!pressed) return;
+                if (headerItem.tabBar !== null) {
+                    headerItem.tabBar.selectionMode = false;
+                }
+            }
+            animate: canvas.animate
         }
 
         /*!
@@ -307,6 +319,7 @@ PageTreeNode {
             objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
+            animate: canvas.animate
 
             property Item tabBar: null
             Binding {
@@ -316,16 +329,32 @@ PageTreeNode {
                 when: headerItem.contents &&
                       headerItem.contents.hasOwnProperty("selectionMode") &&
                       headerItem.contents.hasOwnProperty("alwaysSelectionMode") &&
-                      headerItem.contents.hasOwnProperty("selectedIndex")
+                      headerItem.contents.hasOwnProperty("selectedIndex") &&
+                      headerItem.contents.hasOwnProperty("pressed")
             }
 
             Connections {
                 // no connections are made when target is null
                 target: headerItem.tabBar
-                onSelectionModeChanged: {
-                    if (headerItem.tabBar.selectionMode) {
+                onPressedChanged: {
+                    if (headerItem.tabBar.pressed) {
                         if (!toolbarItem.locked) toolbarItem.close();
                     }
+                }
+            }
+        }
+
+        Connections {
+            target: Qt.application
+            onActiveChanged: {
+                if (Qt.application.active) {
+                    canvas.animate = false;
+                    headerItem.show();
+                    if (headerItem.tabBar) {
+                        headerItem.tabBar.selectionMode = true;
+                    }
+                    if (!toolbarItem.locked) toolbarItem.open();
+                    canvas.animate = true;
                 }
             }
         }

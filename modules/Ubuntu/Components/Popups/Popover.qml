@@ -104,7 +104,6 @@ PopupBase {
       The properties can be used to alter the default content width and heights.
       */
     property alias contentWidth: foreground.width
-    /*! \internal */
     property alias contentHeight: foreground.height
 
     /*!
@@ -144,7 +143,7 @@ PopupBase {
     property bool autoClose: true
 
     /*!
-      \qmlproperty Component style
+      \qmlproperty Component foregroundStyle
       Exposes the style property of the \l StyledItem contained in the Popover.
       Refer to \l StyledItem how to use it.
       */

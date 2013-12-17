@@ -24,6 +24,5 @@ SUBDIRS += tst_units \
     tst_i18n \
     tst_arguments \
     tst_argument \
-    tst_layouts \
     tst_alarms \
     tst_theme

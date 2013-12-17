@@ -31,6 +31,10 @@ Item {
             right: parent.right
         }
         height: parent.height / 2
+        Rectangle {
+            color: "pink"
+            anchors.fill: parent
+        }
     }
 
     TestCase {
@@ -162,6 +166,35 @@ Item {
             panel.align = Qt.AlignBottom;
         }
 
+        function test_clickToDeactivate() {
+            panel.open();
+            compare(panel.opened && panel.align === Qt.AlignBottom, true, "Panel is opened and bottom-aligned");
+            mouseClick(root, root.width / 2, 5, Qt.LeftButton);
+            compare(panel.opened, false, "Panel is deactivated by clicking in the view outside of the panel");
+        }
+
+        function test_hideTimeout_bug1249031() {
+            compare(panel.hideTimeout, -1, "Panel hide timeout is initially negative (no timeout)");
+            panel.hideTimeout = 2000;
+            panel.open();
+            compare(panel.opened, true, "Panel can be made opened");
+            wait(panel.hideTimeout + 500); // add 500 ms margin
+            compare(panel.opened, false, "Panel automatically closes after timeout");
+
+            // now, wait in total more than hideTimeout, but less than 2*hideTimeout,
+            //  and have user interaction half-way to verify that the interaction
+            //  resets the timer and the panel is not closed.
+            panel.open();
+            wait(0.6*panel.hideTimeout);
+            mouseClick(panel, panel.width/2, panel.height/2);
+            wait(0.6*panel.hideTimeout);
+            compare(panel.opened, true, "Interacting with panel contents resets the hide timer");
+            // verify that the timer is still running by waiting a bit longer:
+            wait(0.6*panel.hideTimeout);
+            compare(panel.opened, false, "Interacting with the panel contents does not stop the timer")
+            panel.hideTimeout = -1;
+        }
+
         QtObject {
             id: swipeTests
 
@@ -238,13 +271,6 @@ Item {
                 testCase.mouseMove(panel, x - dx, y - dy, moveDelay);
                 testCase.mouseRelease(panel, x - dx, y - dy, Qt.LeftButton);
                 testCase.compare(panel.opened, false, "Top-aligned panel deactivated by swiping up (delay: "+moveDelay+"");
-            }
-
-            function test_clickToDeactivate() {
-                panel.open();
-                compare(panel.opened && panel.align === Qt.AlignBottom, true, "Panel is opened and bottom-aligned");
-                mouseClick(root, root.width / 2, 5, Qt.LeftButton);
-                compare(panel.opened, false, "Panel is deactivated by clicking in the view outside of the panel");
             }
         }
     }

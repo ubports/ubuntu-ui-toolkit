@@ -41,7 +41,7 @@ Rectangle {
 
             ConditionalLayout {
                 name: "landscape"
-                when: root.width >= root.height
+                when: root.width > root.height
             }
         ]
 
