@@ -27,7 +27,7 @@ Item {
         anchors.fill: parent
 
         Item {
-            // Wraping the Page inside this Item should not
+            // Wrapping the Page inside this Item should not
             // affect the header alignment, see bug #1261907.
             anchors.fill: parent
 
