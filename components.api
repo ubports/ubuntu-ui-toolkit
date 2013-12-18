@@ -243,6 +243,20 @@ Item
     readonly property bool animating
     property bool __closeOnContentsClicks
     property bool pressed
+modules/Ubuntu/Components/Pickers/DatePicker.qml
+StyledItem
+    property string mode
+    property date date
+    property date minimum
+    property date maximum
+    readonly property int year
+    readonly property int month
+    readonly property int day
+    readonly property int week
+    readonly property int hours
+    readonly property int minutes
+    readonly property int seconds
+    property var locale
 modules/Ubuntu/Components/Pickers/Dialer.qml
 StyledItem
     property real minimumValue
