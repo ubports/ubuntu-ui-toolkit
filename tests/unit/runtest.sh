@@ -38,7 +38,9 @@ function create_test_cmd {
 function execute_test_cmd {
   echo "Executing $_CMD $_ARGS"
   if [ $DISPLAY ]; then
-      QML2_IMPORT_PATH=../../../modules:$QML2_IMPORT_PATH UBUNTU_UI_TOOLKIT_THEMES_PATH=../../../modules $_CMD $_ARGS
+      # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
+      QML2_IMPORT_PATH=../../../modules:$QML2_IMPORT_PATH UBUNTU_UI_TOOLKIT_THEMES_PATH=../../../modules \
+          $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
   else
       echo "Skipped because no DISPLAY available"
   fi
