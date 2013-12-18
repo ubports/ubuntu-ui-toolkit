@@ -26,21 +26,28 @@ Item {
         id: mainViewHeader
         anchors.fill: parent
 
-        Page {
-            title: "listview"
+        Item {
+            // Wraping the Page inside this Item should not
+            // affect the header alignment, see bug #1261907.
+            anchors.fill: parent
 
-            ListView {
-                anchors.fill: parent
-                id: listView
+            Page {
+                title: "listview"
 
-                header: Rectangle {
-                    color: "red"
-                    width: parent.width
-                    height: units.gu(5)
-                }
-                model: 500
-                delegate: Label {
-                    text: "number " +index
+                ListView {
+                    anchors.fill: parent
+                    id: listView
+
+                    header: Rectangle {
+                        color: "red"
+                        width: parent.width
+                        height: units.gu(5)
+                    }
+                    model: 500
+                    delegate: Label {
+                        text: "number " +index
+                    }
+                    onContentYChanged: print("contentY = "+contentY)
                 }
             }
         }
@@ -50,9 +57,20 @@ Item {
         name: "HeaderAlignment"
         when: windowShown
 
-        function test_ListViewHeaderAlignment_bug1202277() {
+        function initTestCase() {
+            // nothing
+            wait(1000)
+        }
+
+        function test_ListViewHeaderAlignment_bug1202277_bug1261907() {
             compare(listView.contentY, -listView.headerItem.height - mainViewHeader.__propagated.header.height,
                     "ListView header is aligned with the MainView header");
         }
     }
+    Component.onCompleted: {
+        print("header.height = "+mainViewHeader.__propagated.header.height)
+        print("lv header height = "+units.gu(5))
+        print("contentY = "+listView.contentY)
+    }
+
 }
