@@ -190,11 +190,18 @@ PageTreeNode {
 
         Connections {
             target: page
-            onFlickableChanged: internal.updateFlickablePosition()
+            onFlickableChanged: internal.initializeFlickablePosition()
         }
-        Component.onCompleted: internal.updateFlickablePosition()
+        Component.onCompleted: internal.initializeFlickablePosition()
 
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
+        onHeaderHeightChanged: {
+            if (page.flickable) {
+                var previousHeaderHeight = page.flickable.topMargin;
+                page.flickable.topMargin = headerHeight;
+                page.flickable.contentY -= headerHeight - previousHeaderHeight;
+            }
+        }
 
         function isVerticalFlickable(object) {
             if (object && object.hasOwnProperty("flickableDirection") && object.hasOwnProperty("contentHeight")) {
@@ -225,17 +232,11 @@ PageTreeNode {
             return null;
         }
 
-        Binding {
-            target: page.flickable
-            property: "topMargin"
-            value: internal.headerHeight
-            when: page.flickable
-        }
-
-        function updateFlickablePosition() {
+        function initializeFlickablePosition() {
             if (page.flickable) {
                 // Set-up the top-margin of the contents of the Flickable so that
                 //  the contents is never hidden by the header
+                page.flickable.topMargin = internal.headerHeight;
                 var displacement = headerHeight;
                 if (page.flickable.hasOwnProperty("headerItem") && page.flickable.headerItem) {
                     // flickable is a ListView with a headerItem
