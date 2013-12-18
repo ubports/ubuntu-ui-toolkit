@@ -399,6 +399,7 @@ Item {
         }
 
 
+
         // these tests should not be mixed with Repeaters
         function test_z_addTab() {
             var newTab = tabs.addTab("Dynamic Tab", dynamicTab);
@@ -496,6 +497,16 @@ Item {
             compare(tabs.selectedTabIndex, 0, "the next tab is selected")
         }
 
+        function test_z_removeActiveTab() {
+            tabs.selectedTabIndex = 1;
+            compare(tabs.removeTab(1), true, "selected tab removed");
+            compare(tabs.selectedTabIndex, 1, "selected tab is next");
+
+            tabs.selectedTabIndex = tabs.count - 1;
+            compare(tabs.removeTab(tabs.count - 1), true, "last tab removed");
+            compare(tabs.selectedTabIndex, tabs.count - 1, "selected tab moved to last item");
+        }
+
         function test_z_removeTabAfterActiveTab() {
             var activeTab = tabs.count - 2;
             tabs.selectedTabIndex = activeTab;
@@ -510,19 +521,9 @@ Item {
             compare(tabs.selectedTabIndex, activeTab - 1, "the selected tab index decreased");
         }
 
-        function test_z_removeActiveTab() {
-            tabs.selectedTabIndex = 1;
-            compare(tabs.removeTab(1), true, "selected tab removed");
-            compare(tabs.selectedTabIndex, 1, "selected tab is next");
-
-            tabs.selectedTabIndex = tabs.count - 1;
-            compare(tabs.removeTab(tabs.count - 1), true, "last tab removed");
-            compare(tabs.selectedTabIndex, tabs.count - 1, "selected tab moved to last item");
-        }
-
         function test_zz_addTabAfterCleaningUpTabs() {
             while (tabs.count > 1) {
-                tabs.removeTab(0);
+                tabs.removeTab(tabs.count - 1);
             }
             compare(tabs.selectedTabIndex, 0, "the only tab is the selected one");
             // add a new tab anc check the count (default added tas should not be added anymore
@@ -531,18 +532,11 @@ Item {
         }
 
         function test_zz_addPredeclaredTab() {
-            while (tabs.count > 1) {
-                tabs.removeTab(0);
-            }
-            compare(tabs.selectedTabIndex, 0, "the only tab is the selected one");
+            tabs.removeTab(tab1.index);
 
             // add a predeclared tab back with original title
-            compare(tabs.addTab("", tab1), tab1, "tab1 was added back");
-            compare(tab1.title, "tab 1", "with the original title");
-
-            // add a predeclared tab back with new title
-            compare(tabs.addTab("Original tab", tab2), tab2, "tab2 was added back");
-            compare(tab2.title, "Original tab", "with modified title");
+            compare(tabs.addTab("", tab1), tab1, "tab1 was not added back");
+            compare(tab1.title, "tab 1", "the original title differs");
 
             // add a predeclared tab which was added already
             compare(tabs.addTab("", tab1), null, "tab1 is already in tabs");

@@ -213,6 +213,21 @@ QString QuickUtils::className(QObject *item)
     return result.left(result.indexOf("_QML"));
 }
 
+/*!
+ * \internal
+ * Moves a given item to the specified index in its parent's child list.
+ */
+void QuickUtils::moveItemBefore(QQuickItem *item, QQuickItem *before)
+{
+    Q_ASSERT(item);
+//    QQuickItem *parentItem = item->parentItem();
+    Q_ASSERT(item->parentItem());
+    if (before) {
+        Q_ASSERT(before->parentItem() == item->parentItem());
+        item->stackBefore(before);
+    }
+}
+
 
 /*!
  * \internal

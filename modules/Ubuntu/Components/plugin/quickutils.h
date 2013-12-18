@@ -44,6 +44,7 @@ public:
 
     Q_INVOKABLE qreal modelDelegateHeight(QQmlComponent *delegate, const QVariant &model);
     Q_INVOKABLE QString className(QObject *item);
+    Q_INVOKABLE void moveItemBefore(QQuickItem *item, QQuickItem *before);
     QObject* createQmlObject(const QUrl &url);
     void setImportPathList(const QStringList &paths);
 

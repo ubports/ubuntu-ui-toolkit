@@ -180,10 +180,14 @@ PageTreeNode {
     }
 
     /*!
-      Children are placed in a separate item that has functionality to extract the Tab items.
+      \deprecated
+      Children are placed in a separate item that has functionality to extract
+      the Tab items.
+      Note: this property is deprecated. Tab components are directly parented
+      to Tabs' data property.
       \qmlproperty list<Item> tabChildren
      */
-    default property alias tabChildren: tabStack.data
+    property alias tabChildren: tabs.data
 
     /*!
       \qmlproperty int count
@@ -208,8 +212,8 @@ PageTreeNode {
       \a params defines parameters passed to the Tab.
       Returns the instance of the added Tab.
       */
-    function addTab(title, tab, params) {
-        return insertTab(count, title, tab, params);
+    function addTab(title, tab) {
+        return insertTab(count, title, tab);
     }
 
     /*!
@@ -219,34 +223,30 @@ PageTreeNode {
       are used in the same way as in \l addTab(). Returns the instance of the
       inserted Tab.
       */
-    function insertTab(index, title, tab, params) {
+    function insertTab(index, title, tab) {
         // check if the given component is a Tab instance
         var tabObject = null;
-        if (tab && tab.hasOwnProperty("page") && tab.hasOwnProperty("__protected")) {
-            // dynamically added components are destroyed upon removal, so
-            // in case we get a Tab as parameter, we can only have a predeclared one
-            // therefore we simply restore the default state of the removedFromTabs property
-            // and return the instance
-            if (!tab.__protected.removedFromTabs) {
-                // exit if the Tab is not removed
-                return null;
-            }
 
-            tab.__protected.removedFromTabs = false;
-            tabObject = tab;
-        } else {
-            var tabComponent = null;
-            if (typeof tab === "string") {
-                tabComponent = Qt.createComponent(tab);
-            } else {
-                tabComponent = tab;
-            }
+        if (typeof tab === "string") {
+            // we have a URL
+            var tabComponent = Qt.createComponent(tab);
             if (tabComponent.status === Component.Error) {
                 console.error(tabComponent.errorString());
                 return null;
             }
             tabObject = tabComponent.createObject();
             tabObject.__protected.dynamic = true;
+        } else if (tab.hasOwnProperty("createObject")) {
+            // we have a Component
+            tabObject = tab.createObject();
+            tabObject.__protected.dynamic = true;
+        } else if (tab.hasOwnProperty("parent") && tab.parent === trashedTabs) {
+            // we have a pre-declared tab that has been removed
+            tab.__protected.removedFromTabs = false;
+            tabObject = tab;
+        } else {
+            console.error(i18n.tr("The object is not a URL, Component or a removed Tab: ") + tab);
+            return null;
         }
 
         // fix title
@@ -258,9 +258,7 @@ PageTreeNode {
         index = MathUtils.clamp(index, 0, count);
         tabObject.__protected.inserted = true;
         tabObject.__protected.index = index;
-        tabsModel.insert(index, tabsModel.listModel(tabObject));
-        tabsModel.reindex(index);
-        tabObject.parent = tabStack;
+        tabsModel.insertTab(tabObject, index);
         if (tabs.selectedTabIndex >= index) {
             // move the selected index to the next index
             tabs.selectedTabIndex += 1;
@@ -290,14 +288,14 @@ PageTreeNode {
         var tabTo = tabsModel.get(to).tab;
 
         // move tab
-        tabsModel.move(from, to, 1);
-        tabsModel.reindex();
+        QuickUtils.moveItemBefore(tabFrom, tabTo);
+        tabsModel.updateTabList(tabs.children);
 
         // fix selected tab
         if (selectedTabIndex === from) {
             selectedTabIndex = to;
-        } else if (selectedTabIndex <= to && selectedTabIndex >= from) {
-            selectedTabIndex -= 1;
+        } else if (selectedTabIndex >= Math.min(from, to) && selectedTabIndex <= Math.max(from, to)) {
+            selectedTabIndex--;
         } else {
             internal.sync();
         }
@@ -318,25 +316,32 @@ PageTreeNode {
         var tab = tabsModel.get(index).tab;
         var activeIndex = (selectedTabIndex >= index) ? MathUtils.clamp(selectedTabIndex, 0, count - 2) : -1;
 
-        tabsModel.remove(index);
-        tabsModel.reindex();
         // move active tab if needed
         if (activeIndex >= 0) {
             selectedTabIndex = activeIndex;
         }
 
+        tabsModel.remove(index);
         if (tab.__protected.dynamic) {
             tab.destroy();
         } else {
             // pre-declared tab, mark it as removed, so we don't update it next time
             // the tabs stack children is updated
             tab.__protected.removedFromTabs = true;
+            tab.parent = null;
+            tab.parent = trashedTabs;
         }
 
         if (activeIndex < 0) {
             internal.sync()
         }
         return true;
+    }
+
+    /*! \internal */
+    onChildrenChanged: {
+        internal.connectToRepeaters(tabs.children);
+        tabsModel.updateTabList(tabs.children);
     }
 
     /*!
@@ -346,11 +351,14 @@ PageTreeNode {
     ListModel {
         id: tabsModel
 
+        property bool updateDisabled: false
+
         function listModel(tab) {
             return {"title": tab.title, "tab": tab};
         }
 
         function updateTabList(tabsList) {
+            if (updateDisabled) return;
             var offset = 0;
             var tabIndex;
             for (var i in tabsList) {
@@ -358,7 +366,7 @@ PageTreeNode {
                 if (internal.isTab(tab)) {
                     tabIndex = i - offset;
                     // make sure we have the right parent
-                    tab.parent = tabStack;
+                    tab.parent = tabs;
 
                     if (!tab.__protected.inserted) {
                         tab.__protected.index = tabIndex;
@@ -369,6 +377,10 @@ PageTreeNode {
                     }
 
                     // always makes sure that tabsModel has the same order as tabsList
+                    if (tabIndex >= tabsModel.count) print("SHIT!!!")
+                    if (tabIndex < 0) print("ZERO SHIT!!!")
+                    if (tab.__protected.index >= tabsModel.count) print("TABSHIT!")
+                    if (tab.__protected.index < 0) print("ZERO TABSHIT!")
                     move(tab.__protected.index, tabIndex, 1);
                     reindex();
                 } else {
@@ -391,18 +403,31 @@ PageTreeNode {
                 tab.__protected.index = i;
             }
         }
+
+        function insertTab(tab, index) {
+            // fix index
+            if (index < 0) {
+                index = 0;
+            }
+            // get the tab before which the item will be inserted
+            var itemAtIndex = ((index >= 0) && (index < count)) ? get(index).tab : null;
+            // disable update only if we insert, append can keep the logic rolling
+            updateDisabled = (itemAtIndex !== null);
+            insert(index, listModel(tab));
+            tab.parent = tabs;
+            updateDisabled = false;
+            if (itemAtIndex) {
+                QuickUtils.moveItemBefore(tab, itemAtIndex);
+                updateTabList(tabs.children);
+            }
+        }
     }
 
-    // FIXME: this component is not really needed, as it doesn't really bring any
-    // value; should be removed in a later MR
+    // invisible component to keep removed pre-declared components
     Item {
-        anchors.fill: parent
-        id: tabStack
-
-        onChildrenChanged: {
-            internal.connectToRepeaters(tabStack.children);
-            tabsModel.updateTabList(tabStack.children);
-        }
+        id: trashedTabs
+        visible: false
+        opacity: 0.0
     }
 
     /*
@@ -417,7 +442,7 @@ PageTreeNode {
         interval: 1
         running: false
         onTriggered: {
-            tabsModel.updateTabList(tabStack.children);
+            tabsModel.updateTabList(tabs.children);
             internal.sync();
         }
     }
@@ -489,7 +514,7 @@ PageTreeNode {
            https://bugreports.qt-project.org/browse/QTBUG-32438
         */
         function updateTabsModel() {
-            tabsModel.updateTabList(tabStack.children);
+            tabsModel.updateTabList(tabs.children);
         }
 
         /*

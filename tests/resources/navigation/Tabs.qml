@@ -19,8 +19,37 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 MainView {
+    id: root
     width: 800
     height: 600
+
+    property var repeaterModel: 3
+
+    Component {
+        id: dynamicTab
+        Tab {
+            page: Page {
+                Label {
+                    text: title + " at index " + index
+                    anchors.centerIn: parent
+                }
+                tools: ToolbarItems {
+                    ToolbarButton {
+                        text: "move @1"
+                        onTriggered: tabs.moveTab(index, 1)
+                    }
+                    ToolbarButton {
+                        text: "remove me"
+                        onTriggered: tabs.removeTab(index)
+                    }
+                    ToolbarButton {
+                        text: "remove first"
+                        onTriggered: tabs.removeTab(0)
+                    }
+                }
+            }
+        }
+    }
 
     Tabs {
         id: tabs
@@ -31,6 +60,7 @@ MainView {
 
         Tab {
             id: simpleTab
+            objectName: title
             title: i18n.tr("Simple page #" + index)
             page: Page {
                 title: "This title is not visible"
@@ -56,13 +86,42 @@ MainView {
                         iconSource: "call_icon.png"
                         onTriggered: print("action triggered")
                     }
+                    ToolbarButton {
+                        text: "append"
+                        onTriggered: tabs.addTab("Appended tab", dynamicTab)
+                    }
+                    ToolbarButton {
+                        text: "insert@1"
+                        onTriggered: tabs.insertTab(1, "Inserted tab", dynamicTab)
+                    }
+                    ToolbarButton {
+                        text: "insert@2"
+                        onTriggered: tabs.insertTab(2, "Between repeaters", dynamicTab)
+                    }
+                    ToolbarButton {
+                        text: "insert@here"
+                        onTriggered: tabs.insertTab(simpleTab.index, "Inserted tab", dynamicTab)
+                    }
+                    ToolbarButton {
+                        text: "incRep"
+                        onTriggered: root.repeaterModel += 1
+                    }
+                    ToolbarButton {
+                        text: "remove last"
+                        onTriggered: tabs.removeTab(tabs.count - 1)
+                    }
+                    ToolbarButton {
+                        text: "append predec"
+                        onTriggered: tabs.addTab("Re-added ListView", listViewTab)
+                    }
                 }
             }
         }
         Repeater {
-            model: 3
+            model: root.repeaterModel
             Tab {
                 id: tab
+                objectName: title
                 title: "Extra #" + tab.index
                 page: Page {
                     Column {
@@ -89,6 +148,7 @@ MainView {
         }
         Tab {
             id: externalTab
+            objectName: title
             title: i18n.tr("External #" + index)
             page: Loader {
                 parent: externalTab
@@ -97,6 +157,8 @@ MainView {
             }
         }
         Tab {
+            id: listViewTab
+            objectName: title
             title: i18n.tr("List view #" + index)
             page: Page {
                 ListView {

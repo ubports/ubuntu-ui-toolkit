@@ -133,7 +133,7 @@ Item {
 
                     // Use opacity 0 to hide instead of setting visibility to false in order to
                     // make fading work well, and not to mess up width/offset computations
-                    opacity: isVisible() ? 1.0 : 0.0
+//                    opacity: isVisible() ? 1.0 : 0.0
                     function isVisible() {
                         if (selected) return true;
                         if (!styledItem.selectionMode) return false;
@@ -272,10 +272,12 @@ Item {
 
         highlightRangeMode: PathView.NoHighlightRange
         offset: 0
+        onOffsetChanged: print(offset)
         path: Path {
             startX: -buttonView.buttonRowWidth/2
             PathLine {
                 x: buttonView.buttonRowWidth*1.5
+                onXChanged: print(x)
             }
         }
 
