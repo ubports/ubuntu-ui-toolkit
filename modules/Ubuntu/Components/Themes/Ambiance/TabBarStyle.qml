@@ -272,12 +272,10 @@ Item {
 
         highlightRangeMode: PathView.NoHighlightRange
         offset: 0
-        onOffsetChanged: print(offset)
         path: Path {
             startX: -buttonView.buttonRowWidth/2
             PathLine {
                 x: buttonView.buttonRowWidth*1.5
-                onXChanged: print(x)
             }
         }
 

@@ -377,11 +377,9 @@ PageTreeNode {
                     }
 
                     // always makes sure that tabsModel has the same order as tabsList
-                    if (tabIndex >= tabsModel.count) print("SHIT!!!")
-                    if (tabIndex < 0) print("ZERO SHIT!!!")
-                    if (tab.__protected.index >= tabsModel.count) print("TABSHIT!")
-                    if (tab.__protected.index < 0) print("ZERO TABSHIT!")
-                    move(tab.__protected.index, tabIndex, 1);
+                    if (count > 1) {
+                        move(tab.__protected.index, tabIndex, 1);
+                    }
                     reindex();
                 } else {
                     // keep track of children that are not tabs so that we compute
