@@ -47,7 +47,6 @@ Item {
                     delegate: Label {
                         text: "number " +index
                     }
-                    onContentYChanged: print("contentY = "+contentY)
                 }
             }
         }
