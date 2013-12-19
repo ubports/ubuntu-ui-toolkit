@@ -17,7 +17,7 @@
 # Author: Christian Dywan <christian.dywan@canonical.com>
 
 echo Running $@ in virtual frame buffer...
-xvfb-run -a -s "-screen 0 1280x1024x24" "$@" 2>xvfb.err
+xvfb-run -a -s "-screen 0 1280x1024x24" -e xvfb.err "$@"
 RETVAL=$?
 if [ $RETVAL -eq 0 ]; then
     echo Finished returning $RETVAL...
