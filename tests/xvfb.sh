@@ -17,7 +17,7 @@
 # Author: Christian Dywan <christian.dywan@canonical.com>
 
 # xvfb-run can't load gl drivers, Xvfb can
-NUM=0
+NUM=5
 while [ -f /tmp/.X$NUM-lock ]; do
     NUM=$(($NUM + 1))
 done
@@ -25,14 +25,14 @@ DISPLAY=":$NUM"
 trap : USR1
 (trap '' USR1; exec Xvfb $DISPLAY -screen 0 1280x1024x24 2>xvfb.err) &
 EPID=$!
-echo Running $* in virtual frame buffer with $EPID...
+echo Running $* in virtual frame buffer with $EPID on $DISPLAY...
 wait $EPID || :
 if kill -0 $EPID; then
     echo Executing test...
     env DISPLAY=$DISPLAY $*
     RETVAL=$?
     echo Terminating...
-    kill -9 $EPID
+    kill $EPID
     echo Finished returning $RETVAL...
     exit $RETVAL
 else
