@@ -234,7 +234,7 @@ Item {
             picker.mode = newMode;
             wait(500);
             var positioner = findChild(picker, "PickerRow_Positioner");
-            expectFailContinue("", "cannot sel mode to Hours|Minutes");
+            expectFailContinue("", "cannot set mode to Hours|Minutes");
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
 
             picker.mode = "Years|Months|Days";
