@@ -597,6 +597,22 @@ MainView {
                     objectName: "testListElement5"
                     label: "test list element 5"
                 }
+                ListElement {
+                    objectName: "testListElement6"
+                    label: "test list element 6"
+                }
+                ListElement {
+                    objectName: "testListElement7"
+                    label: "test list element 7"
+                }
+                ListElement {
+                    objectName: "testListElement8"
+                    label: "test list element 8"
+                }
+                ListElement {
+                    objectName: "testListElement9"
+                    label: "test list element 9"
+                }
             }
 
             ListView {
