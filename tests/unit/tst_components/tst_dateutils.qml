@@ -19,6 +19,11 @@ import QtTest 1.0
 import Ubuntu.Test 0.1
 import Ubuntu.Components 0.1
 
+/*
+ Implementation note:
+ We use Date(year, month, day) everywhere, Date(format) cannot be used as of Qt 5.2
+ */
+
 TestCase {
     name: "DateUtilsAPI"
 
