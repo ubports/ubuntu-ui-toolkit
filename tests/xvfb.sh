@@ -17,12 +17,14 @@
 # Author: Christian Dywan <christian.dywan@canonical.com>
 
 echo Running $@ in virtual frame buffer...
-xvfb-run -a -s "-screen 0 1280x1024x24" -e xvfb.err "$@"
+xvfb-run -a -s "-screen 0 1280x1024x24" -e xvfb.err "$@" 2>test.err
 RETVAL=$?
 if [ $RETVAL -eq 0 ]; then
     echo $@ finished successfully...
 else
     echo $@ in virtual frame buffer failed...
-    cat xvfb.err >&2
+    cat test.err >&2
+    echo Tail of xvfb-run output:
+    tail xvfb.err >&2
     exit $RETVAL
 fi
