@@ -24,6 +24,6 @@ if [ $RETVAL -eq 0 ]; then
     exit $RETVAL
 else
     echo $@ in virtual frame buffer failed...
-    cat xvfb.err
+    cat xvfb.err >&2
     exit $RETVAL
 fi
