@@ -90,15 +90,15 @@ MainView {
                     text: "Change minimum"
                     height: units.gu(2)
                     onClicked: {
-                        picker.minimum = new Date("2012/12/1");
+                        picker.minimum = new Date(2012, 11, 1);
                     }
                 }
                 Button {
                     text: "minimum & date"
                     height: units.gu(2)
                     onClicked: {
-                        picker.minimum = new Date("2013/12/1");
-                        picker.date = new Date("2014/12/5");
+                        picker.minimum = new Date(2013, 11, 1);
+                        picker.date = new Date(2014, 11, 5);
                     }
                 }
                 Button {
