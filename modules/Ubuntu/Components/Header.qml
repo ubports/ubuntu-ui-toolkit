@@ -176,6 +176,8 @@ StyledItem {
                 if (flickable.topMargin !== headerHeight) {
                     var previousHeaderHeight = flickable.topMargin;
                     flickable.topMargin = headerHeight;
+                    // push down contents when header grows,
+                    // pull up contents when header shrinks.
                     flickable.contentY -= headerHeight - previousHeaderHeight;
                 }
             }

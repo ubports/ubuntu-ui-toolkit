@@ -126,14 +126,15 @@ Item {
         function test_flickableY_bug1201452() {
             var pageTitle = "Hello bug!";
             page.title = pageTitle;
-            compare(page.__propagated.header.visible, true, "header is visible when title is set")
-            compare(page.__propagated.header.height > 0, true, "header has a height when title is set")
+            var header = page.__propagated.header;
+            compare(header.visible, true, "header is visible when title is set")
+            compare(header.height > 0, true, "header has a height when title is set")
             var flickableY = 150;
             page.flickable.contentY = flickableY;
             compare(page.flickable.contentY, flickableY, "flickable.contentY can be set");
             page.title = "";
-            compare(page.__propagated.header.visible, false, "header is hidden when title is unset")
-            compare(page.flickable.contentY, flickableY, "Making header invisible does not reset flickable.contentY");
+            compare(header.visible, false, "header is hidden when title is unset")
+            compare(page.flickable.contentY, flickableY + header.height, "Making header invisible does not reset flickable.contentY");
             page.title = pageTitle;
             compare(page.flickable.contentY, flickableY, "Making header visible again does not reset flickable.contentY");
         }
