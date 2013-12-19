@@ -143,6 +143,110 @@ import QtQuick 2.0
             }
         }
     \endqml
+
+    \section2 Dynamic tabs
+    So far all Tab elements were pre-declared, but there can be situations when
+    tabs need to be added dynamically. There are two ways to solve this, depending
+    on the output needed.
+
+    \section3 Using Repeaters
+    A Repeater can be used to create the necessary tabs depending on a given model.
+    In this way the number of tabs will be driven by the model itself.
+    An example of such a dynamic tab:
+    \qml
+    // DynamicTab.qml
+    import QtQuick 2.0
+    import Ubuntu.Components 0.1
+
+    Tabs {
+        property alias model: tabRepeater.model
+        Repeater {
+            id: tabRepeater
+            model: 5
+            Tab {
+                title: "Tab #" + index
+                page: Page {
+                    // [...]
+                }
+            }
+        }
+    }
+    \endqml
+    Note that in the example above the Tabs will be re-created each time the model
+    changes. This will cause state losing of each Tab, which depending on the
+    content type can be solved at some extent using StateSaver. Using a Loader
+    or specifying the Tab instance/component in the model the state can be preserved,
+    however may increase code complexity.
+
+    \section3 Dynamic tabs
+    Tabs provides functions to add Tab elements dynamically on runtime, without
+    destroying the state of the existing tabs. You can add, move and remove any
+    kind of Tab element, pre-declared or dynamically created ones. When removing
+    pre-declared tabs, those will all be held back and hidden by Tabs, and can be
+    added back any time either to the same or to a different position.
+
+    \qml
+    import QtQuick 2.0
+    import Ubuntu.Components 0.1
+
+    MainView {
+        width: units.gu(40)
+        height: units.gu(71)
+
+        Component {
+            id: dynamicTab
+            Tab {
+                page: Page {
+                    Label {
+                        text: title
+                        anchors.centerIn: parent
+                    }
+                }
+            }
+        }
+        Tabs {
+        id: tabs
+            Tab {
+                title: "Main tab"
+                page: Page {
+                    toolbar: ToolbarItems {
+                        ToolbarButton {
+                            text: "remove predeclared"
+                            onTriggered: tabs.removeTab(preDeclared.index)
+                        }
+                        ToolbarButton {
+                            text: "add new"
+                            onTriggered: tabs.addTab("New tab", dynamicTab)
+                        }
+                        ToolbarButton {
+                            text: "insert predeclared"
+                            onTriggered: tabs.insertTab("", 0)
+                        }
+                    }
+                }
+            }
+            Tab {
+            id: preDeclared
+                title: "Pre-declared tab"
+                page: Page {
+                    Label {
+                        text: "This is a predeclared tab at index #" + index
+                        anchors.centerIn: parent
+                    }
+                }
+            }
+        }
+    }
+    \endqml
+
+    \section3 Using Repeater and functions together
+    Repeaters re-create their delegates as many times the model changes. Tabs added
+    or moved in between the tabs maintained by the Repeater, as well as reordered
+    through the Tabs functions will be re-arranged once the Repeater's model changes.
+    This should be taken into account when designing the application, and the use
+    of Repeater and functions toghether should be avoided if possible, or at least
+    Repeater should always add tabs to te tail of the tab stack, and no tab insertion
+    happens in that area.
 */
 PageTreeNode {
     id: tabs
@@ -205,11 +309,10 @@ PageTreeNode {
 
     /*!
       Appends a Tab dynamically to the list of tabs. The \a title specifies the
-      title of the Tab. The \a component can be either a Component, a URL to
-      the Tab component to be loaded or an instance of a pre-declared tab that
-      has been previously removed. The Tab's title will be replaced with the given
-      \a title, unless if the given value is empty string or undefined. The optional
-      \a params defines parameters passed to the Tab.
+      title of the Tab. The \a tab can be either a Component, a URL to a Tab
+      component to be loaded or an instance of a pre-declared tab that has been
+      previously removed. The Tab's title will be replaced with the given \a title,
+      unless the value is an empty string or undefined.
       Returns the instance of the added Tab.
       */
     function addTab(title, tab) {
@@ -218,10 +321,10 @@ PageTreeNode {
 
     /*!
       Inserts a Tab at the given index. If the \a index is less or equal than 0,
-      the Tab will be added to the front, and to the end of the tab stack if the
-      \a index is greater than \l count. \a title, \a component and \a params
-      are used in the same way as in \l addTab(). Returns the instance of the
-      inserted Tab.
+      the Tab will be added to the front, and to the end of the tab stack in case
+      the \a index is greater than \l count. \a title and \a tab are used in the
+      same way as with \l addTab().
+      Returns the instance of the inserted Tab.
       */
     function insertTab(index, title, tab) {
         // check if the given component is a Tab instance
@@ -268,7 +371,8 @@ PageTreeNode {
     }
 
     /*!
-      The function returns the Tab from the given index.
+      The function returns the Tab from the given \a index, or null if the \a index
+      is invalid (less than \c 0 and greater than \l count).
       */
     function getTab(index) {
         return (index >=0) && (index < count) ? tabsModel.get(index).tab : null;
@@ -423,7 +527,7 @@ PageTreeNode {
         }
     }
 
-    // invisible component to keep removed pre-declared components
+    // invisible component stacking removed pre-declared components
     Item {
         id: trashedTabs
         visible: false
