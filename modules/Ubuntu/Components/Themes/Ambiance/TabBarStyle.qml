@@ -133,7 +133,7 @@ Item {
 
                     // Use opacity 0 to hide instead of setting visibility to false in order to
                     // make fading work well, and not to mess up width/offset computations
-//                    opacity: isVisible() ? 1.0 : 0.0
+                    opacity: isVisible() ? 1.0 : 0.0
                     function isVisible() {
                         if (selected) return true;
                         if (!styledItem.selectionMode) return false;
@@ -148,6 +148,13 @@ Item {
                         // working modulus numTabs:
                         if (buttonIndex < buttonView.selectedButtonIndex - numTabs) return true;
                         return false;
+                    }
+
+                    // update the offset of the buttonRow
+                    onOffsetChanged: {
+                        if (selected) {
+                            buttonView.updateOffset(button.offset);
+                        }
                     }
 
                     Behavior on opacity {

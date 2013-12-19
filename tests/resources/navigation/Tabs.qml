@@ -36,15 +36,24 @@ MainView {
                 tools: ToolbarItems {
                     ToolbarButton {
                         text: "move @1"
-                        onTriggered: tabs.moveTab(index, 1)
+                        onTriggered: {
+                            print("MOVE TAB TO #1")
+                            tabs.moveTab(index, 1)
+                        }
                     }
                     ToolbarButton {
                         text: "remove me"
-                        onTriggered: tabs.removeTab(index)
+                        onTriggered: {
+                            print("REMOVE CURENT TAB")
+                            tabs.removeTab(index)
+                        }
                     }
                     ToolbarButton {
                         text: "remove first"
-                        onTriggered: tabs.removeTab(0)
+                        onTriggered: {
+                            print("REMOVE TAB AT #0")
+                            tabs.removeTab(0)
+                        }
                     }
                 }
             }
@@ -88,27 +97,45 @@ MainView {
                     }
                     ToolbarButton {
                         text: "append"
-                        onTriggered: tabs.addTab("Appended tab", dynamicTab)
+                        onTriggered: {
+                            print("APPEND TAB")
+                            tabs.addTab("Appended tab", dynamicTab)
+                        }
                     }
                     ToolbarButton {
                         text: "insert@1"
-                        onTriggered: tabs.insertTab(1, "Inserted tab", dynamicTab)
+                        onTriggered: {
+                            print("INSERT TAB TO #1")
+                            tabs.insertTab(1, "Inserted tab", dynamicTab)
+                        }
                     }
                     ToolbarButton {
                         text: "insert@2"
-                        onTriggered: tabs.insertTab(2, "Between repeaters", dynamicTab)
+                        onTriggered: {
+                            print("INSERT BETWEEN REPEATERS #1")
+                            tabs.insertTab(2, "Between repeaters", dynamicTab)
+                        }
                     }
                     ToolbarButton {
                         text: "insert@here"
-                        onTriggered: tabs.insertTab(simpleTab.index, "Inserted tab", dynamicTab)
+                        onTriggered: {
+                            print("INSERT AFTER ME")
+                            tabs.insertTab(simpleTab.index, "Inserted tab", dynamicTab)
+                        }
                     }
                     ToolbarButton {
                         text: "incRep"
-                        onTriggered: root.repeaterModel += 1
+                        onTriggered: {
+                            print("INCREASE REPEATER MODEL")
+                            root.repeaterModel += 1
+                        }
                     }
                     ToolbarButton {
                         text: "remove last"
-                        onTriggered: tabs.removeTab(tabs.count - 1)
+                        onTriggered: {
+                            print("REMOVE LAST TAB")
+                            tabs.removeTab(tabs.count - 1)
+                        }
                     }
                     ToolbarButton {
                         text: "append predec"

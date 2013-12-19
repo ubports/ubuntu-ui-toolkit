@@ -242,7 +242,6 @@ PageTreeNode {
             tabObject.__protected.dynamic = true;
         } else if (tab.hasOwnProperty("parent") && tab.parent === trashedTabs) {
             // we have a pre-declared tab that has been removed
-            tab.__protected.removedFromTabs = false;
             tabObject = tab;
         } else {
             console.error(i18n.tr("The object is not a URL, Component or a removed Tab: ") + tab);
@@ -316,25 +315,23 @@ PageTreeNode {
         var tab = tabsModel.get(index).tab;
         var activeIndex = (selectedTabIndex >= index) ? MathUtils.clamp(selectedTabIndex, 0, count - 2) : -1;
 
-        // move active tab if needed
-        if (activeIndex >= 0) {
-            selectedTabIndex = activeIndex;
-        }
-
-        tabsModel.remove(index);
+        // remove from Tabs; Tabs children change will remove the tab from the model
+        tab.parent = null;
         if (tab.__protected.dynamic) {
             tab.destroy();
         } else {
             // pre-declared tab, mark it as removed, so we don't update it next time
             // the tabs stack children is updated
-            tab.__protected.removedFromTabs = true;
-            tab.parent = null;
             tab.parent = trashedTabs;
         }
 
-        if (activeIndex < 0) {
-            internal.sync()
+        // move active tab if needed
+        if (activeIndex >= 0 && activeIndex !== selectedTabIndex) {
+            selectedTabIndex = activeIndex;
+        } else {
+            internal.sync();
         }
+
         return true;
     }
 
@@ -360,7 +357,7 @@ PageTreeNode {
         function updateTabList(tabsList) {
             if (updateDisabled) return;
             var offset = 0;
-            var tabIndex;
+            var tabIndex = -1;
             for (var i in tabsList) {
                 var tab = tabsList[i];
                 if (internal.isTab(tab)) {
@@ -372,11 +369,12 @@ PageTreeNode {
                         tab.__protected.index = tabIndex;
                         tab.__protected.inserted = true;
                         insert(tabIndex, listModel(tab));
-                    } else if (!tab.__protected.removedFromTabs && tabsModel.count > tab.index) {
+                    } else {
                         get(tab.index).title = tab.title;
                     }
 
                     // always makes sure that tabsModel has the same order as tabsList
+                    // but move only if there are more than on eitems in the list
                     if (count > 1) {
                         move(tab.__protected.index, tabIndex, 1);
                     }
@@ -386,6 +384,10 @@ PageTreeNode {
                     // the right index for actual tabs
                     offset += 1;
                 }
+            }
+            // remove deleted tabs, those should be at the end of the list by now
+            if ((tabIndex >= 0) && (tabIndex + 1) < count) {
+                remove(tabIndex + 1, count - tabIndex - 1);
             }
             internal.sync();
         }
