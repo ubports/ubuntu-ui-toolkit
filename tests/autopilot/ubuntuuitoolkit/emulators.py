@@ -469,11 +469,16 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
         while not self._is_element_fully_visible(objectName):
             stop_x = start_x
             if element.globalRect.y < self.globalRect.y:
-                stop_y = start_y + element.globalRect.height
+                stop_y = start_y + element.implicitHeight
             else:
-                stop_y = start_y - element.globalRect.height
+                stop_y = start_y - element.implicitHeight
 
-            self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
+            self.pointing_device.move(start_x, start_y)
+            self.pointing_device.press()
+            self.pointing_device.move(stop_x, stop_y)
+            import time
+            time.sleep(0.3)
+            self.pointing_device.release()
 
     def _is_element_fully_visible(self, objectName):
         element = self.select_single(objectName=objectName)

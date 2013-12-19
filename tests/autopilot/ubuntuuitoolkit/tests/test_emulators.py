@@ -659,7 +659,7 @@ MainView {
         self.assertEqual(self.label.text, 'testListElement5')
 
     def test_click_element_outside_view_above(self):
-        self.list_view.click_element('testListElement5')
+        self.list_view.click_element('testListElement9')
 
         self.assertFalse(
             self.list_view._is_element_fully_visible('testListElement1'))
