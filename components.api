@@ -55,6 +55,7 @@ Item
     readonly property int status
 modules/Ubuntu/Components/Header.qml
 StyledItem
+    property bool animate
     function show()
     function hide()
     property string title
@@ -234,12 +235,28 @@ Item
     property bool opened
     function open()
     function close()
+    property int hideTimeout
     property bool locked
     property real hintSize
     property real triggerSize
+    property bool animate
     readonly property bool animating
     property bool __closeOnContentsClicks
     property bool pressed
+modules/Ubuntu/Components/Pickers/DatePicker.qml
+StyledItem
+    property string mode
+    property date date
+    property date minimum
+    property date maximum
+    readonly property int year
+    readonly property int month
+    readonly property int day
+    readonly property int week
+    readonly property int hours
+    readonly property int minutes
+    readonly property int seconds
+    property var locale
 modules/Ubuntu/Components/Pickers/Dialer.qml
 StyledItem
     property real minimumValue
@@ -268,6 +285,7 @@ StyledItem
     property int __clickedIndex
 modules/Ubuntu/Components/Pickers/PickerDelegate.qml
 AbstractButton
+    readonly property Picker picker
 modules/Ubuntu/Components/Popups/ActionSelectionPopover.qml
 Popover
     property Item target
@@ -296,7 +314,7 @@ modules/Ubuntu/Components/Popups/Popover.qml
 PopupBase
     default property list<Object> container
     property real contentWidth
-    property internal contentHeight
+    property real contentHeight
     property Item caller
     property Item pointerTarget
     property real edgeMargins
@@ -366,6 +384,7 @@ modules/Ubuntu/Components/TabBar.qml
 StyledItem
     property Item tabsItem
     property var model
+    readonly property bool pressed
     property bool selectionMode
     property int selectedIndex
     property bool alwaysSelectionMode
@@ -483,8 +502,8 @@ ActionItem
     property string text
     property Validator validator
     property enumeration horizontalAlignment
-    property internal effectiveHorizontalAlignment
-    property internal verticalAlignment
+    property enumeration effectiveHorizontalAlignment
+    property enumeration verticalAlignment
     property string passwordCharacter
     property color selectionColor
     property color selectedTextColor

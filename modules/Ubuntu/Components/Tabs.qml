@@ -282,9 +282,16 @@ PageTreeNode {
         }
     }
 
-    QtObject {
+    Object {
         id: internal
         property Header header: tabs.__propagated ? tabs.__propagated.header : null
+
+        Binding {
+            target: tabBar
+            property: "animate"
+            when: internal.header && internal.header.hasOwnProperty("animate")
+            value: internal.header.animate
+        }
 
         /*
           List of connected Repeaters to avoid repeater "hammering" of itemAdded() signal.

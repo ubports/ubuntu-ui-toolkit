@@ -49,6 +49,13 @@ StyledItem {
     property var model: null
 
     /*!
+      The user is interacting with the tab bar.
+      Depends on the style pressed property.
+     */
+    readonly property bool pressed: __styleInstance !== null && __styleInstance.hasOwnProperty("pressed") ?
+                                        __styleInstance.pressed : false
+
+    /*!
       An inactive tab bar only displays the currently selected tab,
       and an active tab bar can be interacted with to select a tab.
      */

@@ -202,9 +202,7 @@ ListItem.Standard {
         Connections {
             target: listView.container
             onCurrentlyExpandedChanged: {
-                optionExpansion.stop();
                 imageExpansion.stop();
-                optionCollapse.stop();
                 selectedImageCollapse.stop();
                 deselectedImageCollapse.stop();
 

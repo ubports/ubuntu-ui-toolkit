@@ -48,22 +48,28 @@ class tst_Layouts : public QObject
 {
     Q_OBJECT
 private:
-    QQuickView *view;
+    QString m_modulePath;
 
 public:
 
-    tst_Layouts() :
-        view(0)
+    tst_Layouts()
     {
     }
 
-    QQuickItem *loadTest(const QString &document)
+    QQuickView * loadTest(const QString &file)
     {
-        // load the document
-        view->setSource(QUrl::fromLocalFile(document));
-        QTest::waitForEvents();
+        QQuickView *view = new QQuickView;
+        view->engine()->addImportPath(m_modulePath);
 
-        return view->rootObject();
+        view->setSource(QUrl::fromLocalFile(file));
+        if (!view->rootObject()) {
+            delete view;
+            view = 0;
+        } else {
+            view->show();
+            QTest::qWaitForWindowExposed(view);
+        }
+        return view;
     }
 
     QQuickItem *testItem(QQuickItem *that, const QString &identifier)
@@ -82,27 +88,19 @@ private Q_SLOTS:
         QString modules("../../../modules");
         QVERIFY(QDir(modules).exists());
 
-        view = new QQuickView;
-        QQmlEngine *quickEngine = view->engine();
-
-        view->setGeometry(0,0, UCUnits::instance().gu(40), UCUnits::instance().gu(30));
-        //add modules folder so we have access to the plugin from QML
-        QStringList imports = quickEngine->importPathList();
-        imports.prepend(QDir(modules).absolutePath());
-        quickEngine->setImportPathList(imports);
+        m_modulePath = QDir(modules).absolutePath();
     }
 
     void cleanupTestCase()
     {
-        delete view;
     }
 
     void testCase_NoLayouts()
     {
-        QQuickItem *root = loadTest("NoLayouts.qml");
-        QVERIFY(root);
+        QScopedPointer<QQuickView> view(loadTest("NoLayouts.qml"));
+        QVERIFY(view);
 
-        ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
+        ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(view->rootObject(), "layouts"));
         QVERIFY(layouts);
 
         QVERIFY(layouts->layoutList().isEmpty());
@@ -110,7 +108,9 @@ private Q_SLOTS:
 
     void testCase_SimpleLayout()
     {
-        QQuickItem *root = loadTest("SimpleLayouts.qml");
+        QScopedPointer<QQuickView> view(loadTest("SimpleLayouts.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
@@ -134,15 +134,21 @@ private Q_SLOTS:
 
     void testCase_SimpleLayout_Medium()
     {
-        QQuickItem *root = loadTest("SimpleLayouts.qml");
+        QScopedPointer<QQuickView> view(loadTest("SimpleLayouts.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
         QVERIFY(layouts);
+
         QVERIFY(!layouts->layoutList().isEmpty());
+        QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
+
         root->setWidth(UCUnits::instance().gu(55));
         QCOMPARE(root->width(), UCUnits::instance().gu(55));
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
+        QCOMPARE(layoutChangeSpy.count(), 1);
 
         QCOMPARE(layouts->currentLayout(), QString("medium"));
 
@@ -161,15 +167,20 @@ private Q_SLOTS:
 
     void testCase_SimpleLayout_Large()
     {
-        QQuickItem *root = loadTest("SimpleLayouts.qml");
+        QScopedPointer<QQuickView> view(loadTest("SimpleLayouts.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
         QVERIFY(layouts);
         QVERIFY(!layouts->layoutList().isEmpty());
+        QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
+
         root->setWidth(UCUnits::instance().gu(65));
         QCOMPARE(root->width(), UCUnits::instance().gu(65));
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
+        QCOMPARE(layoutChangeSpy.count(), 1);
 
         QCOMPARE(layouts->currentLayout(), QString("large"));
 
@@ -188,7 +199,9 @@ private Q_SLOTS:
 
     void testCase_OverlappingCondition()
     {
-        QQuickItem *root = loadTest("OverlappingCondition.qml");
+        QScopedPointer<QQuickView> view(loadTest("OverlappingCondition.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
@@ -200,7 +213,9 @@ private Q_SLOTS:
 
     void testCase_ExternalLayouts()
     {
-        QQuickItem *root = loadTest("ExternalLayouts.qml");
+        QScopedPointer<QQuickView> view(loadTest("ExternalLayouts.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
@@ -212,33 +227,47 @@ private Q_SLOTS:
 
     void testCase_ExternalLayouts_Medium()
     {
-        QQuickItem *root = loadTest("ExternalLayouts.qml");
+        QScopedPointer<QQuickView> view(loadTest("ExternalLayouts.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
         QVERIFY(layouts);
         QVERIFY(!layouts->layoutList().isEmpty());
+        QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
+
         root->setWidth(UCUnits::instance().gu(55));
+        layoutChangeSpy.wait(100);
+        QCOMPARE(layoutChangeSpy.count(), 1);
 
         QCOMPARE(layouts->currentLayout(), QString("medium"));
     }
 
     void testCase_ExternalLayouts_Large()
     {
-        QQuickItem *root = loadTest("ExternalLayouts.qml");
+        QScopedPointer<QQuickView> view(loadTest("ExternalLayouts.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
         QVERIFY(layouts);
         QVERIFY(!layouts->layoutList().isEmpty());
+        QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
+
         root->setWidth(UCUnits::instance().gu(65));
+        layoutChangeSpy.wait(100);
+        QCOMPARE(layoutChangeSpy.count(), 1);
 
         QCOMPARE(layouts->currentLayout(), QString("large"));
     }
 
     void testCase_NestedLayouts()
     {
-        QQuickItem *root = loadTest("NestedLayouts.qml");
+        QScopedPointer<QQuickView> view(loadTest("NestedLayouts.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
@@ -250,26 +279,34 @@ private Q_SLOTS:
 
     void testCase_NestedLayouts_ExtraLarge()
     {
-        QQuickItem *root = loadTest("NestedLayouts.qml");
+        QScopedPointer<QQuickView> view(loadTest("NestedLayouts.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
         QVERIFY(layouts);
         QVERIFY(!layouts->layoutList().isEmpty());
+        QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
+
         root->setWidth(UCUnits::instance().gu(90));
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
+        QCOMPARE(layoutChangeSpy.count(), 1);
 
         QCOMPARE(layouts->currentLayout(), QString("extra-large"));
 
         root->setWidth(UCUnits::instance().gu(50));
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
+        QCOMPARE(layoutChangeSpy.count(), 2);
 
         QCOMPARE(root->property("nestedLayout").toString(), QString("medium"));
     }
 
     void testCase_ResizingContainers()
     {
-        QQuickItem *root = loadTest("ResizingContainers.qml");
+        QScopedPointer<QQuickView> view(loadTest("ResizingContainers.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
         // fetch the current size of one item
@@ -283,21 +320,22 @@ private Q_SLOTS:
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
         QVERIFY(layouts);
         QVERIFY(!layouts->layoutList().isEmpty());
+        QSignalSpy layoutChangeSpy(layouts, SIGNAL(currentLayoutChanged()));
 
         root->setWidth(UCUnits::instance().gu(50));
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(layouts->currentLayout(), QString("small"));
         QCOMPARE(item->width(), UCUnits::instance().gu(10));
         QCOMPARE(item->height(), UCUnits::instance().gu(10));
 
         root->setWidth(UCUnits::instance().gu(60));
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(layouts->currentLayout(), QString("large"));
         QCOMPARE(item->width(), UCUnits::instance().gu(22));
         QCOMPARE(item->height(), UCUnits::instance().gu(22));
 
         root->setWidth(UCUnits::instance().gu(80));
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(layouts->currentLayout(), QString("xlarge"));
         QCOMPARE(item->width(), UCUnits::instance().gu(30));
         QCOMPARE(item->height(), UCUnits::instance().gu(30));
@@ -305,7 +343,7 @@ private Q_SLOTS:
         QCOMPARE(item2->height(), UCUnits::instance().gu(50));
 
         root->setWidth(UCUnits::instance().gu(40));
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(item->width(), width);
         QCOMPARE(item->height(), height);
         QCOMPARE(item2->width(), width2);
@@ -314,7 +352,9 @@ private Q_SLOTS:
 
     void testCase_CurrentLayoutChange()
     {
-        QQuickItem *root = loadTest("CurrentLayoutChange.qml");
+        QScopedPointer<QQuickView> view(loadTest("CurrentLayoutChange.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layoutManager"));
@@ -322,31 +362,38 @@ private Q_SLOTS:
 
         QSignalSpy spy(layouts, SIGNAL(currentLayoutChanged()));
         root->setWidth(root->height() - 10);
+        spy.wait(100);
         QEXPECT_FAIL(0, "Layout change should not happen when component is not defined", Continue);
         QCOMPARE(spy.count(), 1);
     }
 
     void testCase_PositioningOnLayoutChange()
     {
-        QQuickItem *root = loadTest("PositioningOnLayoutChange.qml");
+        QScopedPointer<QQuickView> view(loadTest("PositioningOnLayoutChange.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layoutManager"));
         QVERIFY(layouts);
 
         QSignalSpy spy(layouts, SIGNAL(currentLayoutChanged()));
-        root->setWidth(root->height() - 10);
+        root->setWidth(root->height() + 10);
+        spy.wait(100);
         QEXPECT_FAIL(0, "Layout change should not happen when component is not defined", Continue);
         QCOMPARE(spy.count(), 1);
 
         spy.clear();
-        root->setWidth(root->height() + 10);
+        root->setWidth(root->height() - 10);
+        spy.wait(100);
         QCOMPARE(spy.count(), 1);
     }
 
     void testCase_LaidOutItemsOutsideOfLayout()
     {
-        QQuickItem *root = loadTest("LaidOutItemsOutsideOfLayout.qml");
+        QScopedPointer<QQuickView> view(loadTest("LaidOutItemsOutsideOfLayout.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
         QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "itemLaidOut"));
@@ -360,7 +407,9 @@ private Q_SLOTS:
 
     void testCase_OverlaidInItemLayout()
     {
-        QQuickItem *root = loadTest("OverlaidInItemLayout.qml");
+        QScopedPointer<QQuickView> view(loadTest("OverlaidInItemLayout.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
         QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layout"));
@@ -374,75 +423,84 @@ private Q_SLOTS:
 
     void testCase_AnchorFilledReparenting()
     {
-        QQuickItem *root = loadTest("AnchorFilledReparenting.qml");
+        QScopedPointer<QQuickView> view(loadTest("AnchorFilledReparenting.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QQuickItem *layout = testItem(root, "layoutManager");
         QVERIFY(layout);
+        QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QQuickItem *item = testItem(root, "testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
         root->setWidth(root->width() + 100);
-        QTest::waitForEvents();
-        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        layoutChangeSpy.wait(100);
+        QQuickItem *testLayout = testItem(root, "testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
 
         root->setWidth(root->width() - 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(anchors->fill(), layout);
     }
 
     void testCase_AnchorFilledMargins()
     {
-        QQuickItem *root = loadTest("AnchorFilledMargins.qml");
+        QScopedPointer<QQuickView> view(loadTest("AnchorFilledMargins.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QQuickItem *layout = testItem(root, "layoutManager");
         QVERIFY(layout);
+        QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QQuickItem *item = testItem(root, "testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
         root->setWidth(root->width() + 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
 
-        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QQuickItem *testLayout = testItem(root, "testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         QCOMPARE(anchors->margins(), 0.0);
 
         root->setWidth(root->width() - 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(anchors->fill(), layout);
         QCOMPARE(anchors->margins(), 10.0);
     }
 
     void testCase_AnchorFilledSeparateMargins()
     {
-        QQuickItem *root = loadTest("AnchorFilledSeparateMargins.qml");
+        QScopedPointer<QQuickView> view(loadTest("AnchorFilledSeparateMargins.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QQuickItem *layout = testItem(root, "layoutManager");
         QVERIFY(layout);
+        QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QQuickItem *item = testItem(root, "testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
         root->setWidth(root->width() + 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
 
-        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QQuickItem *testLayout = testItem(root, "testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         QCOMPARE(anchors->margins(), 0.0);
@@ -452,7 +510,7 @@ private Q_SLOTS:
         QCOMPARE(anchors->bottomMargin(), 0.0);
 
         root->setWidth(root->width() - 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(anchors->fill(), layout);
         QCOMPARE(anchors->leftMargin(), 10.0);
         QCOMPARE(anchors->topMargin(), 20.0);
@@ -462,38 +520,44 @@ private Q_SLOTS:
 
     void testCase_AnchorCenteredInDefault()
     {
-        QQuickItem *root = loadTest("AnchorCenteredInDefault.qml");
+        QScopedPointer<QQuickView> view(loadTest("AnchorCenteredInDefault.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QQuickItem *layout = testItem(root, "layoutManager");
         QVERIFY(layout);
+        QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QQuickItem *item = testItem(root, "testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
         root->setWidth(root->width() + 100);
-        QTest::waitForEvents();
-        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        layoutChangeSpy.wait(100);
+        QQuickItem *testLayout = testItem(root, "testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
 
         root->setWidth(root->width() - 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(anchors->centerIn(), layout);
     }
 
     void testCase_AnchorVerticalCenter()
     {
-        QQuickItem *root = loadTest("AnchorVerticalCenter.qml");
+        QScopedPointer<QQuickView> view(loadTest("AnchorVerticalCenter.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QQuickItem *layout = testItem(root, "layoutManager");
         QVERIFY(layout);
+        QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QQuickItem *item = testItem(root, "testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
@@ -502,25 +566,28 @@ private Q_SLOTS:
         QCOMPARE(anchors->verticalCenter().item, layout);
 
         root->setWidth(root->width() + 100);
-        QTest::waitForEvents();
-        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        layoutChangeSpy.wait(100);
+        QQuickItem *testLayout = testItem(root, "testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
 
         root->setWidth(root->width() - 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(anchors->verticalCenter().item, layout);
     }
 
     void testCase_AnchorVerticalCenterOffset()
     {
-        QQuickItem *root = loadTest("AnchorVerticalCenterOffset.qml");
+        QScopedPointer<QQuickView> view(loadTest("AnchorVerticalCenterOffset.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QQuickItem *layout = testItem(root, "layoutManager");
         QVERIFY(layout);
+        QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QQuickItem *item = testItem(root, "testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
@@ -530,27 +597,30 @@ private Q_SLOTS:
         QCOMPARE(anchors->verticalCenterOffset(), 50.0);
 
         root->setWidth(root->width() + 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         // no need to check offset as it does not affect the fill
 
         root->setWidth(root->width() - 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(anchors->verticalCenter().item, layout);
         QCOMPARE(anchors->verticalCenterOffset(), 50.0);
     }
 
     void testCase_AnchorHorizontalCenter()
     {
-        QQuickItem *root = loadTest("AnchorHorizontalCenter.qml");
+        QScopedPointer<QQuickView> view(loadTest("AnchorHorizontalCenter.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QQuickItem *layout = testItem(root, "layoutManager");
         QVERIFY(layout);
+        QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QQuickItem *item = testItem(root, "testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
@@ -559,25 +629,28 @@ private Q_SLOTS:
         QCOMPARE(anchors->horizontalCenter().item, layout);
 
         root->setWidth(root->width() + 100);
-        QTest::waitForEvents();
-        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        layoutChangeSpy.wait(100);
+        QQuickItem *testLayout = testItem(root, "testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
 
         root->setWidth(root->width() - 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(anchors->horizontalCenter().item, layout);
     }
 
     void testCase_AnchorHorizontalCenterOffset()
     {
-        QQuickItem *root = loadTest("AnchorHorizontalCenterOffset.qml");
+        QScopedPointer<QQuickView> view(loadTest("AnchorHorizontalCenterOffset.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QQuickItem *layout = testItem(root, "layoutManager");
         QVERIFY(layout);
+        QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QQuickItem *item = testItem(root, "testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
@@ -587,27 +660,30 @@ private Q_SLOTS:
         QCOMPARE(anchors->horizontalCenterOffset(), 50.0);
 
         root->setWidth(root->width() + 100);
-        QTest::waitForEvents();
-        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        layoutChangeSpy.wait(100);
+        QQuickItem *testLayout = testItem(root, "testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         // no need to check offset as it does not affect the fill
 
         root->setWidth(root->width() - 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(anchors->horizontalCenter().item, layout);
         QCOMPARE(anchors->horizontalCenterOffset(), 50.0);
     }
 
     void testCase_AnchorCenterWithOffset()
     {
-        QQuickItem *root = loadTest("AnchorCenterWithOffset.qml");
+        QScopedPointer<QQuickView> view(loadTest("AnchorCenterWithOffset.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QQuickItem *layout = testItem(root, "layoutManager");
         QVERIFY(layout);
+        QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QQuickItem *item = testItem(root, "testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
@@ -618,14 +694,14 @@ private Q_SLOTS:
         QCOMPARE(anchors->horizontalCenterOffset(), 40.0);
 
         root->setWidth(root->width() + 100);
-        QTest::waitForEvents();
-        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        layoutChangeSpy.wait(100);
+        QQuickItem *testLayout = testItem(root, "testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         // no need to check offsets as it does not affect the fill
 
         root->setWidth(root->width() - 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(anchors->centerIn(), layout);
         QCOMPARE(anchors->verticalCenterOffset(), 50.0);
         QCOMPARE(anchors->horizontalCenterOffset(), 40.0);
@@ -633,13 +709,16 @@ private Q_SLOTS:
 
     void testCase_AnchorLeft()
     {
-        QQuickItem *root = loadTest("AnchorLeft.qml");
+        QScopedPointer<QQuickView> view(loadTest("AnchorLeft.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QQuickItem *layout = testItem(root, "layoutManager");
         QVERIFY(layout);
+        QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QQuickItem *item = testItem(root, "testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
@@ -649,27 +728,30 @@ private Q_SLOTS:
         QCOMPARE(anchors->leftMargin(), 10.0);
 
         root->setWidth(root->width() + 100);
-        QTest::waitForEvents();
-        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        layoutChangeSpy.wait(100);
+        QQuickItem *testLayout = testItem(root, "testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         QCOMPARE(anchors->leftMargin(), 0.0);
 
         root->setWidth(root->width() - 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(anchors->left().item, layout);
         QCOMPARE(anchors->leftMargin(), 10.0);
     }
 
     void testCase_AnchorTop()
     {
-        QQuickItem *root = loadTest("AnchorTop.qml");
+        QScopedPointer<QQuickView> view(loadTest("AnchorTop.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QQuickItem *layout = testItem(root, "layoutManager");
         QVERIFY(layout);
+        QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QQuickItem *item = testItem(root, "testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
@@ -679,27 +761,30 @@ private Q_SLOTS:
         QCOMPARE(anchors->topMargin(), 10.0);
 
         root->setWidth(root->width() + 100);
-        QTest::waitForEvents();
-        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        layoutChangeSpy.wait(100);
+        QQuickItem *testLayout = testItem(root, "testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         QCOMPARE(anchors->topMargin(), 0.0);
 
         root->setWidth(root->width() - 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(anchors->top().item, layout);
         QCOMPARE(anchors->topMargin(), 10.0);
     }
 
     void testCase_AnchorRight()
     {
-        QQuickItem *root = loadTest("AnchorRight.qml");
+        QScopedPointer<QQuickView> view(loadTest("AnchorRight.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QQuickItem *layout = testItem(root, "layoutManager");
         QVERIFY(layout);
+        QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QQuickItem *item = testItem(root, "testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
@@ -709,27 +794,30 @@ private Q_SLOTS:
         QCOMPARE(anchors->rightMargin(), 10.0);
 
         root->setWidth(root->width() + 100);
-        QTest::waitForEvents();
-        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        layoutChangeSpy.wait(100);
+        QQuickItem *testLayout = testItem(root, "testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         QCOMPARE(anchors->rightMargin(), 0.0);
 
         root->setWidth(root->width() - 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(anchors->right().item, layout);
         QCOMPARE(anchors->rightMargin(), 10.0);
     }
 
     void testCase_AnchorBottom()
     {
-        QQuickItem *root = loadTest("AnchorBottom.qml");
+        QScopedPointer<QQuickView> view(loadTest("AnchorBottom.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QQuickItem *layout = testItem(root, "layoutManager");
         QVERIFY(layout);
+        QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QQuickItem *item = testItem(root, "testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
@@ -739,27 +827,30 @@ private Q_SLOTS:
         QCOMPARE(anchors->bottomMargin(), 10.0);
 
         root->setWidth(root->width() + 100);
-        QTest::waitForEvents();
-        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        layoutChangeSpy.wait(100);
+        QQuickItem *testLayout = testItem(root, "testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         QCOMPARE(anchors->bottomMargin(), 0.0);
 
         root->setWidth(root->width() - 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(anchors->bottom().item, layout);
         QCOMPARE(anchors->bottomMargin(), 10.0);
     }
 
     void testCase_AnchorAll()
     {
-        QQuickItem *root = loadTest("AnchorAll.qml");
+        QScopedPointer<QQuickView> view(loadTest("AnchorAll.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layoutManager"));
+        QQuickItem *layout = testItem(root, "layoutManager");
         QVERIFY(layout);
+        QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = qobject_cast<QQuickItem*>(testItem(root, "testItem"));
+        QQuickItem *item = testItem(root, "testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
@@ -773,8 +864,8 @@ private Q_SLOTS:
         QCOMPARE(anchors->margins(), 20.0);
 
         root->setWidth(root->width() + 100);
-        QTest::waitForEvents();
-        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        layoutChangeSpy.wait(100);
+        QQuickItem *testLayout = testItem(root, "testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         QVERIFY(!anchors->left().item);
@@ -784,7 +875,7 @@ private Q_SLOTS:
         QCOMPARE(anchors->margins(), 0.0);
 
         root->setWidth(root->width() - 100);
-        QTest::waitForEvents();
+        layoutChangeSpy.wait(100);
         QCOMPARE(anchors->left().item, layout);
         QCOMPARE(anchors->top().item, layout);
         QCOMPARE(anchors->right().item, layout);
