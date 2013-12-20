@@ -19,6 +19,11 @@ import QtTest 1.0
 import Ubuntu.Test 0.1
 import Ubuntu.Components 0.1
 
+/*
+ Implementation note:
+ We use Date(year, month, day) everywhere, Date(format) cannot be used as of Qt 5.2
+ */
+
 TestCase {
     name: "DateUtilsAPI"
 
@@ -92,11 +97,11 @@ TestCase {
 
     function test_monthsTo_data() {
         return [
-            {"from": new Date("2000/1/1"), "to": new Date("2000/1/31"), "result": 0},
-            {"from": new Date("2000/1/1"), "to": new Date("2000/2/1"), "result": 1},
-            {"from": new Date("2000/1/31"), "to": new Date("2000/2/1"), "result": 1},
-            {"from": new Date("2000/1/31"), "to": new Date("2001/1/1"), "result": 12},
-            {"from": new Date("2000/1/31"), "to": new Date("2002/1/31"), "result": 24},
+            {"from": new Date(2000, 0, 1), "to": new Date(2000, 0, 31), "result": 0},
+            {"from": new Date(2000, 0, 1), "to": new Date(2000, 1, 1), "result": 1},
+            {"from": new Date(2000, 0, 31), "to": new Date(2000, 1, 1), "result": 1},
+            {"from": new Date(2000, 0, 31), "to": new Date(2001, 0, 1), "result": 12},
+            {"from": new Date(2000, 0, 31), "to": new Date(2002, 0, 31), "result": 24},
         ];
     }
     function test_monthsTo(data) {
@@ -106,12 +111,12 @@ TestCase {
 
     function test_daysTo_data() {
         return [
-            {"from": new Date("2000/1/1"), "to": new Date("2000/1/31"), "result": 30},
-            {"from": new Date("2000/1/1"), "to": new Date("2000/2/1"), "result": 31},
-            {"from": new Date("2000/1/31"), "to": new Date("2000/2/1"), "result": 1},
-            {"from": new Date("2000/1/1"), "to": new Date("2001/1/1"), "result": 366}, // 2000 is a leap year
-            {"from": new Date("2000/1/1"), "to": new Date("2000/1/2"), "result": 1},
-            {"from": new Date("2000/7/1"), "to": new Date("2000/9/1"), "result": 62},
+            {"from": new Date(2000, 0, 1), "to": new Date(2000, 0, 31), "result": 30},
+            {"from": new Date(2000, 0, 1), "to": new Date(2000, 1, 1), "result": 31},
+            {"from": new Date(2000, 0, 31), "to": new Date(2000, 1, 1), "result": 1},
+            {"from": new Date(2000, 0, 1), "to": new Date(2001, 0, 1), "result": 366}, // 2000 is a leap year
+            {"from": new Date(2000, 0, 1), "to": new Date(2000, 0, 2), "result": 1},
+            {"from": new Date(2000, 6, 1), "to": new Date(2000, 8, 1), "result": 62},
         ];
     }
     function test_daysTo(data) {
@@ -121,11 +126,11 @@ TestCase {
 
     function test_getWeek_data() {
         return [
-            {"date": new Date("2013/1/1"), "week": 1},
-            {"date": new Date("2012/12/31"), "week": 1},
-            {"date": new Date("2013/12/3"), "week": 49},
-            {"date": new Date("2013/12/31"), "week": 1},
-            {"date": new Date("2011/12/31"), "week": 52},
+            {"date": new Date(2013, 0, 1), "week": 1},
+            {"date": new Date(2012, 11, 31), "week": 1},
+            {"date": new Date(2013, 11, 3), "week": 49},
+            {"date": new Date(2013, 11, 31), "week": 1},
+            {"date": new Date(2011, 11, 31), "week": 52},
         ];
     }
     function test_getWeek(data) {
