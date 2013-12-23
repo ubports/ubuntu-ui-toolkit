@@ -16,27 +16,15 @@
 #
 # Author: Christian Dywan <christian.dywan@canonical.com>
 
-# xvfb-run can't load gl drivers, Xvfb can
-NUM=0
-while [ -f /tmp/.X$NUM-lock ]; do
-    NUM=$(($NUM + 1))
-done
-DISPLAY=":$NUM"
-trap : USR1
-(trap '' USR1; exec Xvfb $DISPLAY -screen 0 1280x1024x24 2>xvfb.err) &
-EPID=$!
-echo Running $* in virtual frame buffer with $EPID...
-wait $EPID || :
-if kill -0 $EPID; then
-    echo Executing test...
-    env DISPLAY=$DISPLAY $*
-    RETVAL=$?
-    echo Terminating...
-    kill -9 $EPID
-    echo Finished returning $RETVAL...
-    exit $RETVAL
+echo Running $@ in virtual frame buffer...
+xvfb-run -a -s "-screen 0 1280x1024x24" -e xvfb.err "$@" 2>test.err
+RETVAL=$?
+if [ $RETVAL -eq 0 ]; then
+    echo $@ finished successfully...
 else
-    echo Xvfb failed to start...
-    cat xvfb.err
-    exit 1
+    echo $@ in virtual frame buffer failed...
+    cat test.err >&2
+    echo Tail of xvfb-run output:
+    tail xvfb.err >&2
+    exit $RETVAL
 fi
