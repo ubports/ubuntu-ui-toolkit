@@ -448,7 +448,7 @@ AbstractButton {
         running: false
         UbuntuNumberAnimation {
             target: emptyListItem
-            property: "height,implicitHeight"
+            property: "height"
             to: 0
         }
         ScriptAction {
