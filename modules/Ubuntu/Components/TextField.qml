@@ -834,8 +834,8 @@ ActionItem {
             if (inputMethodHints != Qt.ImhNone)
                 return
 
-            if (type == UnityActions.Action.Type.Integer
-             || type == UnityActions.Action.Type.Real)
+            if (type == UnityActions.Action.Integer
+             || type == UnityActions.Action.Real)
                 inputMethodHints = Qt.ImhDigitsOnly
         }
 

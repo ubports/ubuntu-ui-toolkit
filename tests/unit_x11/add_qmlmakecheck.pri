@@ -4,15 +4,10 @@
 
 check.target = check
 
-DISPLAY = $$system(export|grep DISPLAY)
-
-!isEmpty(DISPLAY) {
+# Xvfb doesn't run on armhf/qemu
+!contains(QMAKE_HOST.arch,armv7l) {
  check.commands = "set -e;"
  for(TEST, TESTS) {
   check.commands += ../../unit/runtest.sh $${TARGET} $${TEST};
  }
-}
-
-isEmpty(DISPLAY) {
-  message("DISPLAY is not set. Skip tests.");
 }

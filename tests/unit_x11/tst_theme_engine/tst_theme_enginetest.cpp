@@ -114,6 +114,7 @@ void tst_UCTheme::testThemesRelativePath()
 
 void tst_UCTheme::testThemesRelativePathWithParent()
 {
+    QSKIP("https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1248982");
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "../../resources/themes:../../resources/themes/TestModule");
 
     UCTheme theme;
@@ -130,6 +131,7 @@ void tst_UCTheme::testThemesRelativePathWithParent()
 
 void tst_UCTheme::testThemesRelativePathWithParentXDGDATA()
 {
+    QSKIP("https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1248982");
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
     qputenv("XDG_DATA_DIRS", "../../resources/themes:../../resources/themes/TestModule");
 
