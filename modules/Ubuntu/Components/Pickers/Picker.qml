@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import "../" 0.1
+import Ubuntu.Components 0.1
 
 /*!
     \qmltype Picker
@@ -75,6 +75,17 @@ import "../" 0.1
         }
     }
     \endqml
+
+    \section3 Known issues
+    \list
+        \li [1] Circular picker does not react on touch generated flicks (on touch
+            enabled devices) when nested into a Flickable -
+            \l {https://bugreports.qt-project.org/browse/QTBUG-13690} and
+            \l {https://bugreports.qt-project.org/browse/QTBUG-30840}
+        \li [2] Circular picker sets \l selectedIndex to 0 when the model is cleared,
+            contrary to linear one, which sets it to -1 -
+            \l {https://bugreports.qt-project.org/browse/QTBUG-35400}
+    \endlist
  */
 
 StyledItem {
@@ -129,6 +140,7 @@ StyledItem {
     // tumbler
     Loader {
         id: loader
+        objectName: "Picker_ViewLoader"
         asynchronous: false
         parent: __styleInstance.hasOwnProperty("tumblerHolder") ? __styleInstance.tumblerHolder : picker
         anchors.fill: parent
@@ -137,36 +149,39 @@ StyledItem {
         // property for loading completion
         property bool completed: item && (status === Loader.Ready) && item.viewCompleted
 
+        // do we have a ListView or PathView?
+        property bool isListView: (item && QuickUtils.className(item) === "QQuickListView")
+
+        // update curentItem automatically when selectedIndex changes
         Binding {
             target: loader.item
             property: "currentIndex"
             value: picker.selectedIndex
-            when: loader.item && loader.status === Loader.Ready
+            when: loader.completed && (picker.selectedIndex > 0)
         }
 
-        // live selectedIndex updater
-        Binding {
-            target: picker
-            property: "selectedIndex"
-            value: loader.item.currentIndex
-            when: loader.completed && (picker.model !== undefined) && picker.live
-        }
-        // non-live selectedIndex updater
+        // selectedIndex updater, live or non-live ones
         Connections {
             target: loader.item
             ignoreUnknownSignals: true
             onMovementEnded: {
+                if (!loader.completed || !model) return;
                 if (!picker.live) {
                     picker.selectedIndex = loader.item.currentIndex;
                 }
             }
             onCurrentIndexChanged: {
-                if (!picker.live && picker.__clickedIndex === loader.item.currentIndex) {
+                if (!loader.completed) return;
+                if (picker.live || (modelWatcher.modelSize() <= 0)
+                        || (picker.__clickedIndex >= 0 && (picker.__clickedIndex === loader.item.currentIndex))
+                        || modelWatcher.cropping) {
                     picker.selectedIndex = loader.item.currentIndex;
-                    picker.__clickedIndex = -1;
+                    modelWatcher.cropping = false;
                 }
             }
             onModelChanged: {
+                modelWatcher.connectModel(picker.model);
+                if (!loader.completed) return;
                 loader.moveToIndex((loader.completed) ? 0 : picker.selectedIndex);
                 if (loader.completed && !picker.live) {
                     picker.selectedIndex = 0;
@@ -174,14 +189,10 @@ StyledItem {
             }
         }
 
-        function modelSize() {
-            return loader.item.model.hasOwnProperty("count") ? loader.item.model.count : loader.item.model.length;
-        }
-
         function moveToIndex(toIndex) {
-            var count = (loader.item && loader.item.model) ? modelSize() : -1;
+            var count = (loader.item && loader.item.model) ? modelWatcher.modelSize() : -1;
             if (completed && count > 0) {
-                if (QuickUtils.className(loader.item) === "QQuickListView") {
+                if (loader.isListView) {
                     loader.item.currentIndex = toIndex;
                     return;
                 } else {
@@ -190,6 +201,9 @@ StyledItem {
                 }
             }
         }
+
+        Component.onCompleted: modelWatcher.connectModel(picker.model);
+        Component.onDestruction: modelWatcher.disconnectModel()
     }
 
     // circular list
@@ -217,8 +231,6 @@ StyledItem {
             preferredHighlightBegin: 0.5
             preferredHighlightEnd: 0.5
 
-            // FIXME: currentItem gets set upon first flick when the model is empty at the
-            // time the component gets completed. Watch the model changes to force update
             pathItemCount: pView.height / (pView.currentItem ? pView.currentItem.height : 1) + 1
             snapMode: PathView.SnapToItem
             flickDeceleration: 100
@@ -233,7 +245,23 @@ StyledItem {
                 }
             }
 
-            Component.onCompleted: viewCompleted = true
+            Component.onCompleted: {
+                var complete = true
+                if (modelWatcher.isObjectModel()) {
+                    complete = (model.count > 0);
+                    if (model.count >= 2) {
+                        positionViewAtIndex(1, PathView.SnapPosition);
+                        positionViewAtIndex(0, PathView.SnapPosition);
+                    }
+                } else if (Object.prototype.toString.call(model) === "[object Number]") {
+                    if (model >= 2) {
+                        positionViewAtIndex(1, PathView.SnapPosition);
+                        positionViewAtIndex(0, PathView.SnapPosition);
+                    }
+                }
+
+                viewCompleted = complete;
+            }
         }
     }
 
@@ -266,6 +294,81 @@ StyledItem {
             flickDeceleration: 100
 
             Component.onCompleted: viewCompleted = true
+        }
+    }
+
+    /*
+      Watch Picker's model to catch when elements are removed ro model is cleared.
+      We need this to detect currentIndex changes in List/PathViews when non-live
+      update mode is chosen, to know when do we need to update selectedIndex.
+      */
+    QtObject {
+        id: modelWatcher
+
+        property var prevModel
+        property bool cropping: false
+
+        function isObjectModel() {
+            return (prevModel && Object.prototype.toString.call(prevModel) === "[object Object]");
+        }
+
+        function modelSize() {
+            if (prevModel) {
+                if (Object.prototype.toString.call(model) === "[object Object]") {
+                    return prevModel.count;
+                } else if (Object.prototype.toString.call(model) === "[object Array]") {
+                    return prevModel.length;
+                } else if (Object.prototype.toString.call(model) === "[object Number]") {
+                    return prevModel;
+                }
+            }
+            return -1;
+        }
+
+        function connectModel(model) {
+            disconnectModel();
+            prevModel = model;
+            // check if the model is derived from QAbstractListModel
+            if (model && Object.prototype.toString.call(model) === "[object Object]") {
+                model.rowsAboutToBeRemoved.connect(itemsAboutToRemove);
+                model.rowsInserted.connect(updateView);
+            }
+        }
+
+        function disconnectModel() {
+            if (isObjectModel()) {
+                prevModel.rowsAboutToBeRemoved.disconnect(itemsAboutToRemove);
+                prevModel.rowsInserted.disconnect(updateView);
+            }
+        }
+
+        function updateView() {
+            if (!loader.isListView && loader.item.count === 2) {
+                // currentItem gets set upon first flick or move when the model is empty
+                // at the time the component gets completed. Disable viewCompleted till
+                // we move the view so selectedIndex doesn't get altered
+                loader.item.viewCompleted = false;
+                loader.item.positionViewAtIndex(1, PathView.SnapPosition);
+                loader.item.positionViewAtIndex(0, PathView.SnapPosition);
+                loader.item.viewCompleted = true;
+            }
+        }
+
+        function itemsAboutToRemove(parent, start, end) {
+            if ((end - start + 1) === loader.item.count) {
+                cropping = true;
+            } else if (selectedIndex >= start) {
+                // Notify views that the model got cleared or got cropped
+                // the loader.item.currentIndex is not yet updated, so we simply remember
+                // that we need to update when currentIndex change is notified
+                cropping = true;
+                if (selectedIndex <= (start + end)) {
+                    // the selection is in between the removed indexes, so move the selection
+                    // to the closest available one
+                    loader.item.positionViewAtIndex(Math.max(start - 1, 0),
+                                                    (loader.isListView) ? ListView.SnapPosition : PathView.SnapPosition);
+                }
+            }
         }
     }
 }
