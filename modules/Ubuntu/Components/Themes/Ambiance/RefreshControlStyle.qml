@@ -15,10 +15,26 @@
  */
 
 import QtQuick 2.0
-//import Ubuntu.Components 0.1
+import Ubuntu.Components 0.1
 
 Row {
-    id: labelRow
+
+    property bool puller: false
+    property real rotationThreshold: 135.0
+    property int latency: 600
+    property real layoutY: -(contentY + pullImage.height + spacing)
+
+    function stop() {
+        puller = false;
+        pullTimer.stop();
+    }
+
+    property Item flickable: styledItem.parent
+    property int originY: flickable && flickable.hasOwnProperty("originY") ? flickable.originY : 0
+    property int contentY: (flickable ? flickable.contentY : 0) - originY
+    property int mappedY: styledItem.mapToItem(flickable, 0, contentY).y
+
+    id: style
     anchors.left: parent.left
     anchors.leftMargin: spacing
     spacing: pullImage.width / 2
@@ -27,35 +43,36 @@ Row {
     Image {
         id: pullImage
         smooth: true
-        source: Qt.resolvedUrl("artwork/chevron_down.png")
-        rotation: 2 * 360 * pull.contentY / pull.flickable.height
+        source: Qt.resolvedUrl("artwork/go-top.png")
+        rotation: 2 * 360 * style.contentY / style.flickable.height
         onRotationChanged: {
-            if (pullImage.rotation < -control.rotationThreshold){
-                if (!pullTimer.running && !pull.__puller)
+            if (pullImage.rotation < -style.rotationThreshold){
+                if (!pullTimer.running && !puller)
                     pullTimer.restart()
             }
-            else if (pullImage.rotation > -control.rotationThreshold){
-                if (!pullTimer.running && pull.__puller)
+            else if (pullImage.rotation > -style.rotationThreshold){
+                if (!pullTimer.running && puller)
                     pullTimer.restart()
             }
         }
 
         Timer{
             id: pullTimer
-            interval: control.latency
+            interval: style.latency
 
             onTriggered: {
                 print("trigered")
-                if(pullImage.rotation < -control.rotationThreshold)
-                    pull.__puller = true
-                else
-                    pull.__puller = false
+                if(pullImage.rotation < -style.rotationThreshold) {
+                    puller = true
+                } else {
+                    puller = false;
+                }
             }
         }
     }
 
     Label {
         id: pullLabel
-        text: (pull.__puller) ? control.releaseMessageString : control.pullMessageString
+        text: (puller) ? styledItem.releaseMessageString : styledItem.pullMessageString
     }
 }
