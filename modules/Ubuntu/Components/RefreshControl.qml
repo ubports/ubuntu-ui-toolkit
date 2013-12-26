@@ -41,79 +41,24 @@ StyledItem {
     }
 
     style: Theme.createStyleComponent("RefreshControlStyle.qml", control)
-    width: parent ? parent.width : 0
     height: units.gu(5)
-
-    QtObject {
-//        property bool __puller : false
-
-        property Item flickable: control.parent
-        property int originY: flickable && flickable.hasOwnProperty("originY") ? flickable.originY : 0
-        property int contentY: (flickable ? flickable.contentY : 0) - originY
-        property int mappedY: control.mapToItem(flickable, 0, contentY).y
-//        onMappedYChanged: print("mappedY="+mappedY)
-
-        id: pull
+    anchors {
+        left: parent.left
+        right: parent.right
     }
-
-
-//    opacity: -pullImage.rotation / control.rotationThreshold
     y: __styleInstance ? __styleInstance.layoutY : 0
-
-//    Row {
-//        id: labelRow
-//        anchors.left: parent.left
-//        anchors.leftMargin: spacing
-//        spacing: pullImage.width / 2
-//        width: pullImage.width + pullLabel.width + spacing
-
-//        Image {
-//            id: pullImage
-//            smooth: true
-//            source: Qt.resolvedUrl("artwork/chevron_down.png")
-//            rotation: 2 * 360 * pull.contentY / pull.flickable.height
-//            onRotationChanged: {
-//                if (pullImage.rotation < -control.rotationThreshold){
-//                    if (!pullTimer.running && !pull.__puller)
-//                        pullTimer.restart()
-//                }
-//                else if (pullImage.rotation > -control.rotationThreshold){
-//                    if (!pullTimer.running && pull.__puller)
-//                        pullTimer.restart()
-//                }
-//            }
-
-//            Timer{
-//                id: pullTimer
-//                interval: control.latency
-
-//                onTriggered: {
-//                    print("trigered")
-//                    if(pullImage.rotation < -control.rotationThreshold)
-//                        pull.__puller = true
-//                    else
-//                        pull.__puller = false
-//                }
-//            }
-//        }
-
-//        Label {
-//            id: pullLabel
-//            text: (pull.__puller) ? control.releaseMessageString : control.pullMessageString
-//        }
-//    }
 
     // catch when to update
     Connections {
         target: control.parent
         onMovementEnded: {
             if (__styleInstance.puller) {
-                print("call refresh")
                 // refresh target
                 control.refreshBegins();
                 control.target[control.refreshMethod]();
             }
             __styleInstance.stop();
         }
+        onFlickEnded: print("flick ends")
     }
 }

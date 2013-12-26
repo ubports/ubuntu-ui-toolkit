@@ -39,6 +39,7 @@ Row {
     anchors.leftMargin: spacing
     spacing: pullImage.width / 2
     width: pullImage.width + pullLabel.width + spacing
+//    opacity: -pullImage.rotation / style.rotationThreshold
 
     Image {
         id: pullImage
@@ -59,14 +60,8 @@ Row {
         Timer{
             id: pullTimer
             interval: style.latency
-
             onTriggered: {
-                print("trigered")
-                if(pullImage.rotation < -style.rotationThreshold) {
-                    puller = true
-                } else {
-                    puller = false;
-                }
+                puller = (pullImage.rotation < -style.rotationThreshold);
             }
         }
     }

@@ -50,6 +50,7 @@ MainView {
 
     Rectangle {
         anchors.fill: parent
+        clip: true
         anchors.topMargin: units.gu(10)
         border.color: "black"
         ListView {
