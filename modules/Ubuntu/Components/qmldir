@@ -44,6 +44,7 @@ UbuntuNumberAnimation 0.1 UbuntuNumberAnimation.qml
 StyledItem 0.1 StyledItem.qml
 ColorUtils 0.1 colorUtils.js
 DateUtils 0.1 dateUtils.js
+RefreshControl 0.1 RefreshControl.qml
 
 internal TextCursor TextCursor.qml
 internal TextInputPopover TextInputPopover.qml
