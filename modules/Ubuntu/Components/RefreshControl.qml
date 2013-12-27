@@ -51,14 +51,21 @@ StyledItem {
     // catch when to update
     Connections {
         target: control.parent
-        onMovementEnded: {
-            if (__styleInstance.puller) {
-                // refresh target
+//        onMovementEnded: {
+//            if (__styleInstance.puller) {
+//                // refresh target
+//                control.refreshBegins();
+//                control.target[control.refreshMethod]();
+//            }
+//            __styleInstance.stop();
+//        }
+        onDraggingChanged: {
+            if (!control.parent.dragging && __styleInstance.puller) {
+                print("KICK")
                 control.refreshBegins();
                 control.target[control.refreshMethod]();
             }
             __styleInstance.stop();
         }
-        onFlickEnded: print("flick ends")
     }
 }

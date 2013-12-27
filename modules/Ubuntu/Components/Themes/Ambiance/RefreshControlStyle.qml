@@ -18,56 +18,84 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Row {
-
     property bool puller: false
-    property real rotationThreshold: 135.0
-    property int latency: 600
-    property real layoutY: -(contentY + pullImage.height + spacing)
+    property real layoutY: -(contentY + pullImage.height + units.gu(1.5))
+    property real threshold: styledItem.height + units.gu(1.5)
 
     function stop() {
         puller = false;
-        pullTimer.stop();
     }
 
-    property Item flickable: styledItem.parent
-    property int originY: flickable && flickable.hasOwnProperty("originY") ? flickable.originY : 0
-    property int contentY: (flickable ? flickable.contentY : 0) - originY
+    property Flickable flickable: styledItem.parent
+    property int contentY: flickable ? (flickable.contentY - flickable.originY) : 0
     property int mappedY: styledItem.mapToItem(flickable, 0, contentY).y
 
     id: style
-    anchors.left: parent.left
-    anchors.leftMargin: spacing
+    anchors {
+        left: parent.left
+        leftMargin: spacing
+    }
     spacing: pullImage.width / 2
-    width: pullImage.width + pullLabel.width + spacing
-//    opacity: -pullImage.rotation / style.rotationThreshold
+    width: pullImage.paintedWidth + pullLabel.paintedWidth + spacing
+    //    opacity: -pullImage.rotation / style.rotationThreshold
 
     Image {
         id: pullImage
         smooth: true
-        source: Qt.resolvedUrl("artwork/go-top.png")
-        rotation: 2 * 360 * style.contentY / style.flickable.height
-        onRotationChanged: {
-            if (pullImage.rotation < -style.rotationThreshold){
-                if (!pullTimer.running && !puller)
-                    pullTimer.restart()
-            }
-            else if (pullImage.rotation > -style.rotationThreshold){
-                if (!pullTimer.running && puller)
-                    pullTimer.restart()
-            }
-        }
-
-        Timer{
-            id: pullTimer
-            interval: style.latency
-            onTriggered: {
-                puller = (pullImage.rotation < -style.rotationThreshold);
-            }
-        }
+        source: Qt.resolvedUrl("artwork/go-bottom.png")
     }
-
     Label {
         id: pullLabel
-        text: (puller) ? styledItem.releaseMessageString : styledItem.pullMessageString
+        anchors {
+            top: pullImage.top
+            bottom: pullImage.bottom
+        }
+        verticalAlignment: Text.AlignVCenter
+        text: styledItem.pullMessageString
+    }
+
+    states: [
+        State {
+            name: "refresh"
+            when: contentY < -threshold
+            PropertyChanges {
+                target: pullImage
+                rotation: -180
+            }
+            PropertyChanges {
+                target: style
+                puller: true
+            }
+            PropertyChanges {
+                target: pullLabel
+                text: styledItem.releaseMessageString
+            }
+        }
+    ]
+    transitions: [
+        Transition {
+            from: ""
+            to: "refresh"
+            reversible: true
+            UbuntuNumberAnimation {
+                target: pullImage
+                property: "rotation"
+            }
+        }
+    ]
+
+    // rebound transition
+    Binding {
+        target: flickable
+        property: "rebound"
+        when: puller
+        value: Transition {
+            UbuntuNumberAnimation {
+                properties: "y"
+                duration: 1000
+                easing.type: Easing.OutBounce
+            }
+        }
     }
 }
+
