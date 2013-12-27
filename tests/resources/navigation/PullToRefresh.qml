@@ -48,32 +48,68 @@ MainView {
         onTriggered: refreshControl.refreshEnds()
     }
 
-    Rectangle {
+    Column {
         anchors.fill: parent
-        clip: true
-        anchors.topMargin: units.gu(10)
-        border.color: "black"
-        ListView {
-            id: view
-            anchors.fill: parent
-            model: listModel
-            delegate: Rectangle {
-                color: "green"
-                width: ListView.view.width
-                height: units.gu(5)
-                Label {
-                    anchors.fill: parent
-                    text: modelData
-                    color: "white"
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignHCenter
+        spacing: units.gu(0.5)
+        Rectangle {
+            clip: true
+            width: parent.width
+            height: units.gu(30)
+            anchors.topMargin: units.gu(10)
+            border.color: "black"
+            ListView {
+                id: view
+                anchors.fill: parent
+                model: listModel
+                delegate: Rectangle {
+                    color: "green"
+                    width: ListView.view.width
+                    height: units.gu(5)
+                    Label {
+                        anchors.fill: parent
+                        text: modelData
+                        color: "white"
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+                }
+
+                RefreshControl {
+                    id: refreshControl
+                    model: listModel
+                    refreshMethod: "refresh"
                 }
             }
+        }
 
+        Flickable {
+            id: flicker
+            width: parent.width
+            height: units.gu(30)
+
+            clip: true
+            contentHeight: rect.height
+            contentWidth: rect.width
             RefreshControl {
-                id: refreshControl
-                target: listModel
+                parent: flicker
+                model: listModel
                 refreshMethod: "refresh"
+            }
+
+            Rectangle {
+                id: rect
+                width: units.gu(100)
+                height: units.gu(100)
+                gradient: Gradient {
+                    GradientStop {
+                        color: "green"
+                        position: 0.2
+                    }
+                    GradientStop {
+                        color: "red"
+                        position: 1.0
+                    }
+                }
             }
         }
     }

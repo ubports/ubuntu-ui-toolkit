@@ -22,11 +22,19 @@ Row {
     property real layoutY: -(contentY + pullImage.height + units.gu(1.5))
     property real threshold: styledItem.height + units.gu(1.5)
 
-    function stop() {
-        puller = false;
+    function start() {
+        state = "pending-refresh";
+        flickable.contentY = -units.gu(10)// + flickable.originY;
     }
 
-    property Flickable flickable: styledItem.parent
+    function stop() {
+        flickable.contentY = 0;
+        puller = false;
+        print("flickable reset")
+        state = "";
+    }
+
+    property Flickable flickable: styledItem.target
     property int contentY: flickable ? (flickable.contentY - flickable.originY) : 0
     property int mappedY: styledItem.mapToItem(flickable, 0, contentY).y
 
@@ -53,10 +61,15 @@ Row {
         verticalAlignment: Text.AlignVCenter
         text: styledItem.pullMessageString
     }
+    ActivityIndicator {
+        id: busyIndicator
+        running: !visible
+        visible: false
+    }
 
     states: [
         State {
-            name: "refresh"
+            name: "start-refreshing"
             when: contentY < -threshold
             PropertyChanges {
                 target: pullImage
@@ -70,12 +83,30 @@ Row {
                 target: pullLabel
                 text: styledItem.releaseMessageString
             }
+        },
+        State {
+            name: "pending-refresh"
+            PropertyChanges {
+                target: pullImage
+                visible: false
+                width: 0
+            }
+            PropertyChanges {
+                target: pullLabel
+                visible: false
+                width: 0
+            }
+            PropertyChanges {
+                target: busyIndicator
+                visible: true
+            }
         }
+
     ]
     transitions: [
         Transition {
             from: ""
-            to: "refresh"
+            to: "start-refreshing"
             reversible: true
             UbuntuNumberAnimation {
                 target: pullImage
@@ -85,17 +116,27 @@ Row {
     ]
 
     // rebound transition
-    Binding {
-        target: flickable
-        property: "rebound"
-        when: puller
-        value: Transition {
-            UbuntuNumberAnimation {
-                properties: "y"
-                duration: 1000
-                easing.type: Easing.OutBounce
-            }
-        }
-    }
+//    Binding {
+//        target: flickable
+//        property: "rebound"
+//        value: Transition {
+//            enabled: puller
+//            SequentialAnimation {
+//                PropertyAnimation {
+//                    id: reboundAnimation
+//                    duration: UbuntuAnimation.FastDuration
+//                    easing: UbuntuAnimation.StandardEasing
+//                    property: "y"
+//                    to: units.gu(5) - flickable.originY
+//                }
+//                ScriptAction {
+//                    script: {
+//                        flickable.contentY = -units.gu(5) + flickable.originY;
+//                        style.state = "pending-refresh";
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
 

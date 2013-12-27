@@ -21,12 +21,44 @@ import QtQuick 2.0
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
     \brief Pull-to-refresh component for Flickables to reload a model upon pull.
+
+    When used with Flickable, set parent to the flickable so the control does
+    not land in the contentItem of Flickable.
+    \qml
+    ListModel {
+        id: listModel
+        function refresh() {
+            // [...]
+        }
+    }
+    Flickable {
+        id: flicker
+        width: units.gu(10)
+        height: units.gu(10)
+
+        RefreshControl {
+            parent: flicker
+            model: someModel
+            refreshMethod: "refresh"
+        }
+
+        contentWidth: rect.width
+        contentHeight: rect.height
+        Rectangle {
+            id: rect
+            width: units.gu(20)
+            height: units.gu(20)
+            color: "red"
+        }
+    }
+    \endqml
 */
 
 StyledItem {
     id: control
 
-    property var target
+    property Flickable target: parent
+    property var model
 
     property string refreshMethod
 
@@ -34,23 +66,23 @@ StyledItem {
     property string releaseMessageString: i18n.tr("Release to refresh...")
 
     function refreshBegins() {
-//        pull.flickable.contentY = -units.gu(4);
+        __styleInstance.start();
     }
     function refreshEnds() {
-//        pull.flickable.contentY = 0;
+        __styleInstance.stop();
     }
 
     style: Theme.createStyleComponent("RefreshControlStyle.qml", control)
     height: units.gu(5)
     anchors {
-        left: parent.left
-        right: parent.right
+        left: target.left
+        right: target.right
     }
     y: __styleInstance ? __styleInstance.layoutY : 0
 
     // catch when to update
     Connections {
-        target: control.parent
+        target: control.target
 //        onMovementEnded: {
 //            if (__styleInstance.puller) {
 //                // refresh target
@@ -61,11 +93,10 @@ StyledItem {
 //        }
         onDraggingChanged: {
             if (!control.parent.dragging && __styleInstance.puller) {
-                print("KICK")
                 control.refreshBegins();
-                control.target[control.refreshMethod]();
+                control.model[control.refreshMethod]();
             }
-            __styleInstance.stop();
+//            __styleInstance.stop();
         }
     }
 }

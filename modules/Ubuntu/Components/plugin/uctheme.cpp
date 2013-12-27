@@ -245,6 +245,7 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
             if (url.isValid()) {
                 component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
                 if (component->isError()) {
+                    qmlInfo(parent) << component->errorString();
                     delete component;
                     component = NULL;
                 }
