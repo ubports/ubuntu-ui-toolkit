@@ -473,12 +473,15 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
             else:
                 stop_y = start_y - element.implicitHeight
 
-            self.pointing_device.move(start_x, start_y)
-            self.pointing_device.press()
-            self.pointing_device.move(stop_x, stop_y)
-            import time
-            time.sleep(0.3)
-            self.pointing_device.release()
+            if platform.model() == 'Desktop':
+                self.pointing_device.move(start_x, start_y)
+                self.pointing_device.press()
+                self.pointing_device.move(stop_x, stop_y)
+                import time
+                time.sleep(0.3)
+                self.pointing_device.release()
+            else:
+                self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
 
     def _is_element_fully_visible(self, objectName):
         element = self.select_single(objectName=objectName)
