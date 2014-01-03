@@ -18,10 +18,10 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 TextInput {
+    objectName: "FilterOwner"
     width: 100
     height: 20
     activeFocusOnPress: true
 
     Mouse.onPressAndHold: {}
-    Mouse.onClicked: {}
 }

@@ -17,12 +17,16 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-TextInput {
-    objectName: "FilterOwner"
-    width: 100
-    height: 20
-    activeFocusOnPress: true
+Item {
+    width: units.gu(40)
+    height: units.gu(71)
+    TextInput {
+        objectName: "FilterOwner"
+        width: units.gu(30)
+        height: units.gu(4)
+        activeFocusOnPress: true
 
-    // create Mouse filter attached
-    Mouse.enabled: true
+        // create InverseMouse filter attached
+        InverseMouse.enabled: true
+    }
 }

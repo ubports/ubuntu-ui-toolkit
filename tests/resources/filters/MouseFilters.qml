@@ -31,12 +31,22 @@ MainView {
                 activeFocusOnPress: true
                 anchors.fill: parent
                 anchors.margins: units.gu(0.5)
-                Mouse.onPressed: {
-//                    mouse.accepted = true
-                    print("pressed intercepted")
-                }
-                Mouse.onClicked: print("Clicked")
-                Mouse.onDoubleClicked: print("DoubleClick")
+                InverseMouse.onPressed: print("Inverse pressed")
+//                Mouse.hoverEnabled: true
+//                Mouse.onPressed: {
+//                    print(mouse.button + " pressed intercepted, accepted buttons:" + Mouse.acceptedButtons + ", hoverEnabled: " + Mouse.hoverEnabled)
+//                }
+//                Mouse.onClicked: print("Clicked")
+//                Mouse.onDoubleClicked: print("DoubleClick")
+//                MouseArea {
+//                    anchors.fill: parent
+//                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+//                    onPressed: print(mouse.button + " Pressed")
+//                    onClicked: print(mouse.button + " Clicked")
+//                    hoverEnabled: true
+//                    onEntered: print("entered")
+//                    onExited: print("exited")
+//                }
             }
         }
     }

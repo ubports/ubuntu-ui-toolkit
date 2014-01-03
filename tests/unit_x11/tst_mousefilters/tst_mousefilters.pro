@@ -6,4 +6,5 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 OTHER_FILES += \
     FilterTextInput.qml \
     PressAndHoldAcceptedEatsClick.qml \
-    PressAndHoldAndClicked.qml
+    PressAndHoldAndClicked.qml \
+    FilterInverseTextInput.qml
