@@ -132,9 +132,11 @@ Item {
             var flickableY = 150;
             page.flickable.contentY = flickableY;
             compare(page.flickable.contentY, flickableY, "flickable.contentY can be set");
+            compare(page.flickable.contentY + page.flickable.topMargin, flickableY + header.height, "topMargin of the flickable equals header height");
             page.title = "";
             compare(header.visible, false, "header is hidden when title is unset")
-            compare(page.flickable.contentY, flickableY + header.height, "Making header invisible does not reset flickable.contentY");
+            // topMargin becomes 0 because header is hidden, so contentY is increased to compensate
+            compare(page.flickable.contentY + page.flickable.topMargin, flickableY + header.height, "Making header invisible does not reset the flickable position");
             page.title = pageTitle;
             compare(page.flickable.contentY, flickableY, "Making header visible again does not reset flickable.contentY");
         }
