@@ -77,6 +77,7 @@ Item {
     TestCase {
         name: "HeaderAlignment"
         when: windowShown
+
         function test_ListViewHeaderAlignment_bug1202277() {
             compare(listView.contentY, -listView.headerItem.height - mainViewHeader.__propagated.header.height,
                     "ListView header is aligned with the MainView header");
