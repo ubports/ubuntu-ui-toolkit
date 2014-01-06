@@ -17,16 +17,24 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 0.1
+import TestObjects 0.1
 
 Item {
     id: root
-    width: units.gu(50)
-    height: units.gu(80)
+    width: units.gu(40)
+    height: units.gu(71)
 
     TabBar {
         id: bar
         anchors.top: parent.top
         width: parent.width
+    }
+
+    TabBar {
+        id: bar2
+        anchors.top: parent.top
+        width: parent.width
+        model: invalidModel
     }
 
     ListView {
@@ -68,6 +76,41 @@ Item {
         }
     }
 
+    ListModel {
+        id: invalidModel
+        ListElement {
+            fruit: "Pear"
+        }
+    }
+
+    ListModel {
+        id: invalidModelTab
+        ListElement {
+            tab: "Pear"
+        }
+    }
+
+    Item {
+        id: myTab
+        property string title: "Pear"
+    }
+
+    ListModel {
+        id: validModelTab
+    }
+
+    ListModel {
+        id: emptyModelWillBeInvalid
+    }
+
+    ListModel {
+        id: emptyModel
+    }
+
+    TabsModel {
+        id: pagesCpp
+    }
+
     Label {
         id: textSizer
         text: "Tab 9"
@@ -106,6 +149,7 @@ Item {
 
         function test_1_modelSet() {
             bar.model = pages;
+            compare(bar.model, pages);
             compare(bar.selectedIndex, 0, "selectedIndex defaults to 0 when model is defined");
         }
 
@@ -130,16 +174,12 @@ Item {
 
                 {"position": 2 * tabWidth, "selectedIndex": 3},
                 {"position": 2 * tabWidth, "selectedIndex": 0},
-                {"position": 3 * tabWidth, "selectedIndex": 3},
-                {"position": tabWidth, "selectedIndex": 4},
-                {"position": 2 * tabWidth, "selectedIndex": 1},
-
-                {"position": tabWidth, "selectedIndex": 2}
             ];
         }
 
         function test_2_tabSelection(data) {
             bar.model = pages;
+            compare(bar.model, pages);
 
             if (bar.selectionMode) {
                 // wait till the TabBar goes off from selection mode, with an extra threshold
@@ -158,6 +198,50 @@ Item {
             // wait till the selection mode goes off by waiting ~1 second
             wait(bar.__styleInstance.headerTextFadeDuration);
             compare(bar.selectedIndex, data.selectedIndex, "the next tab is selected");
+        }
+
+        function test_invalidModel() {
+            bar.model = invalidModel;
+            compare(bar.model, null, "the model has to be null when setting an invalid model");
+        }
+
+        function test_invalidModelTab() {
+            bar.model = invalidModelTab;
+            compare(bar.model, null, "the model has to be null when setting an invalid model");
+        }
+
+        function test_invalidModelTab2() {
+            compare(bar2.model, null, "the model has to be null when setting an invalid model");
+        }
+
+        function test_validModelTab() {
+            bar.model = validModelTab;
+            compare(bar.model, validModelTab);
+            validModelTab.append({tab: myTab});
+            compare(bar.model, validModelTab);
+        }
+
+        function test_invalidModelEmptyAtTheBeginning() {
+            bar.model = emptyModelWillBeInvalid;
+            compare(bar.model, emptyModelWillBeInvalid);
+            emptyModelWillBeInvalid.append({fruit: "Pear"});
+            compare(bar.model, null, "the model has to be null when setting an invalid model");
+        }
+
+        function test_addTabAfterShownQML() {
+            bar.model = emptyModel;
+            compare(bar.model, emptyModel);
+            compare(bar.selectedIndex, -1);
+            emptyModel.append({title:"Title 1"});
+            compare(bar.selectedIndex, 0);
+        }
+
+        function test_addTabAfterShownCpp() {
+            bar.model = pagesCpp;
+            compare(bar.model, pagesCpp);
+            compare(bar.selectedIndex, -1);
+            pagesCpp.append("Title 1");
+            compare(bar.selectedIndex, 0);
         }
     }
 }

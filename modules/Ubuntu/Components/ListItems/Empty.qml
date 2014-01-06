@@ -158,7 +158,7 @@ AbstractButton {
 
     /*!
       \preliminary
-      \qmlproperty ThinDivider bottomDividerLine
+      \qmlproperty ThinDivider divider
       Exposes our the bottom line divider.
      */
     property alias divider: bottomDividerLine

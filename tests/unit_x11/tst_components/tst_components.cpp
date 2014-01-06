@@ -15,4 +15,19 @@
  *
  */
 #include <QtQuickTest/quicktest.h>
+#include <qqml.h>
+
+#include "tabsmodel.h"
+
+class Register
+{
+public:
+    Register()
+    {
+        qmlRegisterType<TabsModel>("TestObjects", 0, 1, "TabsModel");
+    }
+};
+
+Register r;
+
 QUICK_TEST_MAIN(components)

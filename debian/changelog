@@ -1,3 +1,183 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20131216-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * Layouting fails with Qt5.2 if the tests and components are not
+    rendered upon testing. Layout unit tests have been transferred to
+    X11 unit tests and tests on layout changes all wait till the layout
+    change completes. Tested with Qt 5.0.2 and Qt 5.2 RC1. (LP:
+    #1256235)
+  * Picker visuals facelift, prepared for Date- and TimePicker
+    components.
+  * Picker selectedIndex miss-behavior fix when model is
+    cleared/cropped/reset.
+
+  [ Florian Boucault ]
+  * List item progression: use appropriate icon (same as Tabs' arrow)
+    and fixes the issue of it being the wrong color in Dark and Gradient
+    themes. (LP: #1236777)
+
+  [ Albert Astals ]
+  * tst_arguments: Do not use QTEST_MAIN QTEST_MAIN is 99.99% of the
+    times what you want when running a Qt testcase but it creates a
+    Q*Application and in this case that is not wanted since we are
+    creating and destroying them as part of the test and Qt doesn't like
+    when there's more than one Q*Application at the same time, so do
+    without creating a Q*Application in main. This can of course have
+    some implications but it seems that for this testcase all is fine.
+    (LP: #1254747)
+  * Make the model a var and not a ListModel ListModel is bound
+    specifically to QQuickListModel By using a var we can use other
+    QAbstractItemModel subclasses in the model.
+
+  [ Nic ]
+  * Removed stop animation on text every time an expansion/collapse is
+    made. Fixes bug #1231939. (LP: #1231939)
+  * Fixed scrolling in selector when parent widget's height is less than
+    the selector's ListView height. Fixes bug #1256356. (LP: #1256356)
+
+  [ Timo Jyrinki ]
+  * Require either Qt 5.2 or libqt5v8-5-private-dev.
+
+  [ tpeeters ]
+  * Reset hide timer when user interacts with toolbar or toolbar
+    buttons. (LP: #1249031)
+  * Improve detection of tab bar interaction. Now using the new
+    TabBar.pressed property instead of TabBar.selectionMode property,
+    because selectionMode may be changed without user interaction (for
+    example, when resuming an app in a following MR), and then the
+    toolbar should not automatically hide.
+  * Open the toolbar and tabbar (without animating) when the app is
+    resumed. (LP: #1246790)
+
+  [ Christian Dywan ]
+  * Accept qmldir files in qmlapicheck and skip internal components.
+    (LP: #1256045)
+  * Suppress qdoc warnings coming from upstream API.
+  * Conditionally define doc folder containing resources. (LP: #1256779)
+  * Move doc commands to shellscript and add success output lines.
+  * Use Eventually when checking that the textfield is empty There's
+    always a delay so we can't just compare it. (LP: #1259476)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 892
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 16 Dec 2013 08:17:31 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20131129-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * Tabs to react on model changes when a Repeater is used to populate
+    with Tab components. . (LP: #1255544)
+
+  [ Leo Arias ]
+  * Added a ComposerSheet autopilot emulator. (LP: #1248740)
+
+  [ Nic ]
+  * Made currentlyExpanded property writeable. Fixed up comments for
+    incorrectly documented properties. Added a positionViewAtIndex to
+    refocus the list on the first index when it's externally collapsed.
+    (LP: #1252718)
+
+  [ Nicolas d'Offay ]
+  * Made currentlyExpanded property writeable. Fixed up comments for
+    incorrectly documented properties. Added a positionViewAtIndex to
+    refocus the list on the first index when it's externally collapsed.
+    (LP: #1252718)
+
+  [ tpeeters ]
+  * Detect interaction with contents (in order to close toolbar/tabbar)
+    from Page to MainView.
+  * Close the toolbar when user activates tabbar. (LP: #1223600)
+  * Close tabbar on toolbar interaction. (LP: #1223606)
+  * Disable header animations at app startup. (LP: #1246792)
+
+  [ Christian Dywan ]
+  * Elaborate on why OrientationHelper's internal must be Item.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 872
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 29 Nov 2013 20:24:58 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20131126.1-0ubuntu1) trusty; urgency=low
+
+  [ Nic ]
+  * Renamed state assignment to correct "expanded" instead of
+    "alwaysExpanded". (LP: #1252717)
+
+  [ Nicolas d'Offay ]
+  * Renamed state assignment to correct "expanded" instead of
+    "alwaysExpanded". (LP: #1252717)
+
+  [ Christian Dywan ]
+  * Merge stateWrapper and internal so Screen isn't used in an Object.
+    (LP: #1254888)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 862
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 26 Nov 2013 22:25:55 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20131126-0ubuntu1) trusty; urgency=low
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Informed renderer of index and vertex data patterns.
+  * [UbuntuShape] Transformed coordinates of textures packed in atlases.
+    (LP: #1252736)
+
+  [ Jani Monoses ]
+  * Avoid reference errors in OrientationHelper. (LP: #1244631)
+
+  [ Albert Astals ]
+  * Do not include the QtQml catch-all include header Include the
+    headers we need instead .
+  * Compile properly with make -j10 Otherwise tries to compile the tests
+    before the components.so is there and fails.
+
+  [ Christian Dywan ]
+  * Only inspect left hand for keywords and omit identifier. (LP:
+    #1250653)
+  * Merge pot update scripts and tweak 'make pot'. (LP: #1186250)
+  * Add dependencies and indexes to link Qt5 and Ubuntu.Unity.Action
+    docs. (LP: #1202561)
+  * Implement BUILTINS in qmlapicheck to exclude built-in types.
+  * Move ubuntu-ui-toolkit-doc dep from -examples to Recommends This way
+    it's possible to run autopilot tests without docs.
+
+  [ Zsombor Egri ]
+  * Tabs are controlled independently by TabBar from Tabs component.
+    (LP: #1246758)
+
+  [ Florian Boucault ]
+  * Conditionally disable v8-private dependency if Qt's version >= 5.2.
+  * TextArea: added missing MathUtils import. (LP: #1248731)
+  * Homogenized the icon related APIs. Everywhere where an icon can be
+    set 2 properties are defined: url iconSource: url of any image file
+    that can be used as the icon. string iconName: name of the icon in
+    the theme. Redundant APIs are now deprecated. Action, ActionItem,
+    OptionSelectorDelegate, ListItems.Base and ListItems.Standard have
+    been modified. (LP: #1191054)
+
+  [ Leo Arias ]
+  * Add the .py files to the qtcreator project. (LP: #1244615)
+  * Added logging for all the public methods on the autopilot emulators.
+
+  [ Robert Bruce Park ]
+  * Fix indicator tabs ordering.
+
+  [ Michael Zanetti ]
+  * fix typo in ListItems.Empty doc string.
+
+  [ tpeeters ]
+  * Align ListView header with MainView header. (LP: #1202403, #1202277)
+  * Support initial value of selectionMode that is not equal to false.
+    (LP: #1250194)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 859
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 26 Nov 2013 01:11:34 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20131118-0ubuntu1) trusty; urgency=low
 
   [ Zsombor Egri ]

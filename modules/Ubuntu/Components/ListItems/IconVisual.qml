@@ -30,6 +30,11 @@ Item {
       \qmlproperty url fallbackSource
      */
     property alias fallbackSource: icon.fallbackSource
+    /*!
+      \qmlproperty string fallbackIconName
+     */
+    property string fallbackIconName
+
     visible: source != ""
     property bool hasFrame: true
 
@@ -41,6 +46,7 @@ Item {
         anchors.fill: parent
         smooth: true
         asynchronous: true
+        fallbackSource: iconVisual.fallbackIconName ? "image://theme/" + iconVisual.fallbackIconName : ""
     }
 
     UbuntuShape {

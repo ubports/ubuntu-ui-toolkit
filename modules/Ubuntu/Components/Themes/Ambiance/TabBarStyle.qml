@@ -19,11 +19,25 @@ import Ubuntu.Components 0.1
 
 Item {
     id: tabBarStyle
+
+    // used to detect when the user is interacting with the tab bar by pressing it
+    //  or dragging the tab bar buttons.
+    readonly property bool pressed: mouseArea.interacting
+
     // styling properties, public API
     property color headerTextColor: Theme.palette.normal.backgroundText
     property color headerTextSelectedColor: Theme.palette.selected.backgroundText
 
-    property int headerTextFadeDuration: styledItem.animate ? 350 : 0
+    // Don't start transitions because of updates to selectionMode before styledItem is completed.
+    //  This fixes bug #1246792: "Disable tabs scrolling animations at startup"
+    property bool animate: false
+    Binding {
+        target: tabBarStyle
+        property: "animate"
+        when: styledItem.width > 0
+        value: styledItem.animate
+    }
+    property int headerTextFadeDuration: animate ? 350 : 0
     property url indicatorImageSource: "artwork/chevron.png"
 
     property string headerFontSize: "x-large"
@@ -34,7 +48,7 @@ Item {
     property real headerTextRightMargin: units.gu(2)
     property real headerTextBottomMargin: units.gu(2)
 
-    property real buttonPositioningVelocity: styledItem.animate ? 1.0 : -1
+    property real buttonPositioningVelocity: animate ? 1.0 : -1
     // The time of inactivity before leaving selection mode automatically
     property int deactivateTime: 5000
 
@@ -48,7 +62,7 @@ Item {
         buttonView.selectButton(styledItem.selectedIndex);
     }
 
-    property ListModel tabsModel : styledItem ? styledItem.model : null
+    property var tabsModel : styledItem ? styledItem.model : null
 
     Connections {
         target: styledItem
@@ -115,11 +129,6 @@ Item {
                                                 styledItem.selectedIndex === index :
                                                 buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
-                    onOffsetChanged: {
-                        if (selected) {
-                            buttonView.updateOffset(button.offset);
-                        }
-                    }
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
 
                     // Use opacity 0 to hide instead of setting visibility to false in order to
@@ -209,6 +218,17 @@ Item {
                         }
                     }
 
+                    onPressedChanged: {
+                        // Catch release after a press with a delay that is too
+                        //  long to make it a click, but don't unset interacting when
+                        //  the user starts dragging. In that case it will be unset in
+                        //  buttonView.onDragEnded.
+                        if (!pressed && !buttonView.dragging) {
+                            // unset interacting which was set in mouseArea.onPressed
+                            mouseArea.interacting = false;
+                        }
+                    }
+
                     // Select this button
                     function select() {
                         buttonView.selectedButtonIndex = button.buttonIndex;
@@ -227,7 +247,12 @@ Item {
 
     PathView {
         id: buttonView
-        anchors.fill: parent
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: parent.left
+        }
+        width: needsScrolling ? parent.width : buttonRowWidth
 
         // set to the width of one tabButtonRow in Component.onCompleted.
         property real buttonRowWidth: buttonRow1 ? buttonRow1.width : 0
@@ -241,9 +266,8 @@ Item {
 
         delegate: tabButtonRow
         model: 2 // The second buttonRow shows the buttons that disappear on the left
-        property bool needsScrolling: buttonRowWidth > tabBar.width
+        property bool needsScrolling: buttonRowWidth > parent.width
         interactive: needsScrolling
-        width: needsScrolling ? tabBar.width : buttonRowWidth
         clip: needsScrolling
 
         highlightRangeMode: PathView.NoHighlightRange
@@ -280,6 +304,7 @@ Item {
         }
 
         function updateOffset(newOffset) {
+            if (!newOffset) return; // do not update the offset when its value is NaN
             if (offset - newOffset < -1) newOffset = newOffset - 2;
             offset = newOffset;
         }
@@ -292,24 +317,37 @@ Item {
             }
         }
 
-        Component.onCompleted: {
-            selectButton(styledItem.selectedIndex);
+        onDragEnded: {
+            // unset interacting which was set in mouseArea.onPressed
+            mouseArea.interacting = false;
         }
 
-        onDragEnded: activatingTimer.stop()
-
-        // deactivate the tab bar after inactivity
-        onMovementStarted: idleTimer.stop()
-        onMovementEnded: {
-            if (!styledItem.alwaysSelectionMode) {
-                idleTimer.restart();
-            }
-        }
         Timer {
             id: idleTimer
             interval: tabBarStyle.deactivateTime
             running: styledItem.selectionMode && !styledItem.alwaysSelectionMode
             onTriggered: styledItem.selectionMode = false
+            function conditionalRestartOrStop() {
+                if (Qt.application.active &&
+                        styledItem.selectionMode &&
+                        !styledItem.alwaysSelectionMode &&
+                        !mouseArea.interacting) {
+                    idleTimer.restart();
+                } else {
+                    idleTimer.stop();
+                }
+            }
+        }
+
+        // disable the timer when the application is not active and reset
+        //  it when the application is resumed.
+        Connections {
+            target: Qt.application
+            onActiveChanged: idleTimer.conditionalRestartOrStop()
+        }
+        Connections {
+            target: styledItem
+            onSelectionModeChanged: idleTimer.conditionalRestartOrStop()
         }
     }
 
@@ -317,10 +355,23 @@ Item {
         // a tabBar not in selection mode can be put in selection mode by pressing
         id: mouseArea
         anchors.fill: parent
-        enabled: !styledItem.selectionMode
+
+        // set in onPressed, and unset in button.onPressedChanged or buttonView.onDragEnded
+        //  because after not accepting the mouse, the released event will go to
+        //  the buttonView or individual buttons.
+        property bool interacting: false
+        onInteractingChanged: idleTimer.conditionalRestartOrStop()
+
+        // This MouseArea is always enabled, even when the tab bar is in selection mode,
+        //  so that press events are detected and tabBarStyle.pressed is updated.
         onPressed: {
+            mouseArea.interacting = true;
             styledItem.selectionMode = true;
             mouse.accepted = false;
         }
+    }
+
+    Component.onCompleted: {
+        tabBarStyle.sync();
     }
 }

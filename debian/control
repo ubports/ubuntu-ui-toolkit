@@ -12,7 +12,8 @@ Build-Depends: debhelper (>= 9.0.0),
                qtbase5-dev,
                qtbase5-private-dev,
                qttools5-dev-tools,
-               libqt5v8-5-private-dev,
+# Starting with Qt5.2 'libqt5v8-5-private-dev' should be removed
+               qtbase5-dev (>= 5.2~) | libqt5v8-5-private-dev,
                qtbase5-dev-tools,
                libqt5sql5-sqlite,
                qtdeclarative5-dev-tools,
@@ -36,6 +37,8 @@ Build-Depends: debhelper (>= 9.0.0),
                libthumbnailer-dev,
                libdbus-1-dev,
                libnih-dbus-dev,
+               xvfb,
+               libgl1-mesa-dri,
                locales,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
@@ -108,11 +111,10 @@ Architecture: amd64 i386 armhf
 Depends: qmlscene,
          qtdeclarative5-ubuntu-ui-toolkit-plugin,
          ubuntu-ui-toolkit-theme,
-         ubuntu-ui-toolkit-doc,
          qtdeclarative5-xmllistmodel-plugin,
          ${misc:Depends},
          ${shlibs:Depends}
-Recommends: libqt5multimedia5-plugins
+Recommends: libqt5multimedia5-plugins, ubuntu-ui-toolkit-doc
 Conflicts: qt-components-ubuntu-examples, qt-components-ubuntu-demos
 Replaces: qt-components-ubuntu-examples, qt-components-ubuntu-demos
 Provides: qt-components-ubuntu-examples, qt-components-ubuntu-demos

@@ -71,7 +71,7 @@ import Ubuntu.Components 0.1 as Toolkit
 
             Component {
                 id: selectorDelegate
-                OptionSelectorDelegate { text: name; subText: description; icon: image }
+                OptionSelectorDelegate { text: name; subText: description; iconSource: image }
             }
 
             ListModel {
@@ -114,7 +114,6 @@ import Ubuntu.Components 0.1 as Toolkit
 
 ListItem.Empty {
     id: optionSelector
-    __height: column.height
 
     /*!
       \preliminary
@@ -130,7 +129,7 @@ ListItem.Empty {
 
     /*!
       \preliminary
-      If the list is expanded, multiple choice selection is enabled.
+      If the multiple choice selection is enabled the list is always expanded.
      */
     property bool multiSelection: false
 
@@ -150,7 +149,18 @@ ListItem.Empty {
       \preliminary
       Custom height for list container which allows scrolling inside the selector.
      */
-    property real containerHeight: list.contentHeight
+    property real containerHeight: {
+        /*The reason for this slightly unconventional method of setting the container height
+          is due to the fact that if we set it to the selector height by default (which is
+          bound to the colum height) then we wouldn't be able to scroll to the end of the bottom
+          boundary. The text is also invisible if none is set so this is taken into account too.*/
+        var textHeight = text === "" ? 0 : label.height + column.spacing;
+        if (parent && parent.height < list.contentHeight) {
+            return parent.height - textHeight;
+        } else {
+            list.contentHeight;
+        }
+    }
 
     /*!
       \qmlproperty int selectedIndex
@@ -159,10 +169,10 @@ ListItem.Empty {
     property alias selectedIndex: list.currentIndex
 
     /*!
-      \qmlproperty bool expanded
+      \qmlproperty bool currentlyExpanded
       Is our list currently expanded?
      */
-    readonly property alias currentlyExpanded: listContainer.currentlyExpanded
+    property alias currentlyExpanded: listContainer.currentlyExpanded
 
     /*!
       \qmlproperty real itemHeight
@@ -185,10 +195,10 @@ ListItem.Empty {
       Trigger the action, passing the current index.
      */
     onDelegateClicked: {
-        if (action)
-            action.triggered(index)
+        trigger(index)
     }
 
+    __height: column.height
     showDivider: false
 
     Column {
@@ -221,7 +231,7 @@ ListItem.Empty {
                 left: parent.left
                 right: parent.right
             }
-            state: optionSelector.expanded ? state = "expanded" : state = "collapsed"
+            state: optionSelector.expanded ? "expanded" : "collapsed"
             style: Theme.createStyleComponent("OptionSelectorStyle.qml", listContainer)
             states: [ State {
                     name: "expanded"
@@ -250,6 +260,8 @@ ListItem.Empty {
                             script: {
                                 if (listContainer.currentlyExpanded) {
                                     expansionCompleted();
+                                } else {
+                                    list.positionViewAtIndex(selectedIndex, ListView.Beginning);
                                 }
                             }
                         }

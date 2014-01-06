@@ -270,10 +270,42 @@ PageTreeNode {
                     topMargin: -parent.y
                 }
             }
+
+            MouseArea {
+                id: contentsArea
+                anchors.fill: contents
+                // This mouse area will be on top of the page contents, but
+                // under the toolbar and header.
+                // It is used for detecting interaction with the page contents
+                // which can close the toolbar and take a tab bar out of selection mode.
+
+                onPressed: {
+                    mouse.accepted = false;
+                    if (!toolbarItem.locked) {
+                        toolbarItem.close();
+                        }
+                    if (headerItem.tabBar && !headerItem.tabBar.alwaysSelectionMode) {
+                        headerItem.tabBar.selectionMode = false;
+                    }
+                }
+                propagateComposedEvents: true
+            }
         }
+
+        /*!
+          Animate header and toolbar.
+         */
+        property bool animate: true
 
         Toolbar {
             id: toolbarItem
+            onPressedChanged: {
+                if (!pressed) return;
+                if (headerItem.tabBar !== null) {
+                    headerItem.tabBar.selectionMode = false;
+                }
+            }
+            animate: canvas.animate
         }
 
         /*!
@@ -287,6 +319,44 @@ PageTreeNode {
             objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
+            animate: canvas.animate
+
+            property Item tabBar: null
+            Binding {
+                target: headerItem
+                property: "tabBar"
+                value: headerItem.contents
+                when: headerItem.contents &&
+                      headerItem.contents.hasOwnProperty("selectionMode") &&
+                      headerItem.contents.hasOwnProperty("alwaysSelectionMode") &&
+                      headerItem.contents.hasOwnProperty("selectedIndex") &&
+                      headerItem.contents.hasOwnProperty("pressed")
+            }
+
+            Connections {
+                // no connections are made when target is null
+                target: headerItem.tabBar
+                onPressedChanged: {
+                    if (headerItem.tabBar.pressed) {
+                        if (!toolbarItem.locked) toolbarItem.close();
+                    }
+                }
+            }
+        }
+
+        Connections {
+            target: Qt.application
+            onActiveChanged: {
+                if (Qt.application.active) {
+                    canvas.animate = false;
+                    headerItem.show();
+                    if (headerItem.tabBar) {
+                        headerItem.tabBar.selectionMode = true;
+                    }
+                    if (!toolbarItem.locked) toolbarItem.open();
+                    canvas.animate = true;
+                }
+            }
         }
     }
 

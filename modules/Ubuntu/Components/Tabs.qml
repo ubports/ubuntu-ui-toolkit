@@ -61,7 +61,6 @@ import QtQuick 2.0
                 Tab {
                     id: externalTab
                     title: i18n.tr("External")
-                    iconSource: "call_icon.png"
                     page: Loader {
                         parent: externalTab
                         anchors.fill: parent
@@ -76,7 +75,7 @@ import QtQuick 2.0
                             anchors.fill: parent
                             model: 20
                             delegate: ListItem.Standard {
-                                icon: Qt.resolvedUrl("avatar_contacts_list.png")
+                                iconName: "compose"
                                 text: "Item "+modelData
                             }
                         }
@@ -201,139 +200,6 @@ PageTreeNode {
     signal modelChanged()
 
     /*!
-      Appends a Tab dynamically to the list of tabs. The \a title specifies the
-      title of the Tab. The \a component can be either a Component, a URL to
-      the Tab component to be loaded or an instance of a pre-declared tab that
-      has been previously removed. The Tab's title will be replaced with the given
-      \a title, unless if the given value is empty string or undefined. The optional
-      \a params defines parameters passed to the Tab.
-      Returns the instance of the added Tab.
-      */
-    function addTab(title, component, params) {
-        return insertTab(count, title, component, params);
-    }
-
-    /*!
-      Inserts a Tab at the given index. If the \a index is less or equal than 0,
-      the Tab will be added to the front, and to the end of the tab stack if the
-      \a index is greater than \l count. \a title, \a component and \a params
-      are used in the same way as in \l addTab(). Returns the instance of the
-      inserted Tab.
-      */
-    function insertTab(index, title, component, params) {
-        // check if the given component is a Tab instance
-        var tab = null;
-        if (component && component.hasOwnProperty("page") && component.hasOwnProperty("__protected")) {
-            // dynamically added components are destroyed upon removal, so
-            // in case we get a Tab as parameter, we can only have a predeclared one
-            // therefore we simply restore the default state of the removedFromTabs property
-            // and return the instance
-            if (!component.__protected.removedFromTabs) {
-                // exit if the Tab is not removed
-                return null;
-            }
-
-            component.__protected.removedFromTabs = false;
-            tab = component;
-        } else {
-            var tabComponent = null;
-            if (typeof component === "string") {
-                tabComponent = Qt.createComponent(component);
-            } else {
-                tabComponent = component;
-            }
-            if (tabComponent.status === Component.Error) {
-                console.error(tabComponent.errorString());
-                return null;
-            }
-            tab = tabComponent.createObject();
-            tab.__protected.dynamic = true;
-        }
-
-        // fix title
-        if (title !== undefined && title !== "") {
-            tab.title = title;
-        }
-
-        // insert the created tab into the model
-        index = MathUtils.clamp(index, 0, count);
-        tab.__protected.inserted = true;
-        tab.__protected.index = index;
-        tabsModel.insert(index, tabsModel.listModel(tab));
-        tabsModel.reindex(index);
-        tab.parent = tabStack;
-        if (tabs.selectedTabIndex >= index) {
-            // move the selected index to the next index
-            tabs.selectedTabIndex += 1;
-        } else {
-            internal.sync();
-        }
-        return tab;
-    }
-
-    /*!
-      Moves the tab from the given \a from position to the position given in \a to.
-      Returns true if the indexes were in 0..\l count - 1 boundary and if the operation
-      succeeds, and false otherwise. The \l selectedTabIndex is updated if it is
-      affected by the move (it is equal with \a from or falls between \a from and
-      \a to indexes).
-      */
-    function moveTab(from, to) {
-        if (from < 0 || from >= count || to < 0 || to >= count || from === to) return false;
-        var tabFrom = tabsModel.get(from).tab;
-        var tabTo = tabsModel.get(to).tab;
-
-        // move tab
-        tabsModel.move(from, to, 1);
-        tabsModel.reindex();
-
-        // fix selected tab
-        if (selectedTabIndex === from) {
-            selectedTabIndex = to;
-        } else if (selectedTabIndex <= to && selectedTabIndex >= from) {
-            selectedTabIndex -= 1;
-        } else {
-            internal.sync();
-        }
-
-        return true;
-    }
-
-    /*!
-      Removes the Tab from the given \a index. Returns true if the \a index falls
-      into 0..\l count - 1 boundary and the operation succeeds, and false on error.
-      The function removes also the pre-declared tabs. These can be added back using
-      \l addTab or \l insertTab by specifying the instance of the Tab to be added as
-      component. The \l selectedTabIndex is updated if is affected by the removal
-      (it is identical or greater than the tab index to be removed).
-      */
-    function removeTab(index) {
-        if (index < 0 || index >= count) return false;
-        var tab = tabsModel.get(index).tab;
-        var activeIndex = (selectedTabIndex >= index) ? MathUtils.clamp(selectedTabIndex, 0, count - 2) : -1;
-
-        tabsModel.remove(index);
-        tabsModel.reindex();
-        // move active tab if needed
-        if (activeIndex >= 0) {
-            selectedTabIndex = activeIndex;
-        }
-
-        if (tab.__protected.dynamic) {
-            tab.destroy();
-        } else {
-            // pre-declared tab, mark it as removed, so we don't update it next time
-            // the tabs stack children is updated
-            tab.__protected.removedFromTabs = true;
-        }
-
-        if (activeIndex < 0) {
-            internal.sync();
-        }
-        return true;
-    }
-
-    /*!
       \internal
       required by TabsStyle
      */
@@ -345,19 +211,30 @@ PageTreeNode {
         }
 
         function updateTabList(tabsList) {
+            var offset = 0;
+            var tabIndex;
             for (var i in tabsList) {
                 var tab = tabsList[i];
                 if (internal.isTab(tab)) {
+                    tabIndex = i - offset;
                     // make sure we have the right parent
                     tab.parent = tabStack;
 
                     if (!tab.__protected.inserted) {
-                        tab.__protected.index = count;
+                        tab.__protected.index = tabIndex;
                         tab.__protected.inserted = true;
-                        append(listModel(tab));
+                        insert(tabIndex, listModel(tab));
                     } else if (!tab.__protected.removedFromTabs && tabsModel.count > tab.index) {
                         get(tab.index).title = tab.title;
                     }
+
+                    // always makes sure that tabsModel has the same order as tabsList
+                    move(tab.__protected.index, tabIndex, 1);
+                    reindex();
+                } else {
+                    // keep track of children that are not tabs so that we compute
+                    // the right index for actual tabs
+                    offset += 1;
                 }
             }
             internal.sync();
@@ -376,16 +253,61 @@ PageTreeNode {
         }
     }
 
+    // FIXME: this component is not really needed, as it doesn't really bring any
+    // value; should be removed in a later MR
     Item {
         anchors.fill: parent
         id: tabStack
 
-        onChildrenChanged: tabsModel.updateTabList(children)
+        onChildrenChanged: {
+            internal.connectToRepeaters(tabStack.children);
+            tabsModel.updateTabList(tabStack.children);
+        }
     }
 
-    QtObject {
+    /*
+      This timer is used when tabs are created using Repeaters. Repeater model
+      element moves (shuffling) are causing re-stacking of the tab stack children
+      which may not be realized at the time the rowsMoved/columnsMoved or layoutChanged
+      signals are triggered. Therefore we use an idle timer to update the tabs
+      model, so the tab stack is re-stacked by then.
+      */
+    Timer {
+        id: updateTimer
+        interval: 1
+        running: false
+        onTriggered: {
+            tabsModel.updateTabList(tabStack.children);
+            internal.sync();
+        }
+    }
+
+    Object {
         id: internal
         property Header header: tabs.__propagated ? tabs.__propagated.header : null
+
+        Binding {
+            target: tabBar
+            property: "animate"
+            when: internal.header && internal.header.hasOwnProperty("animate")
+            value: internal.header.animate
+        }
+
+        /*
+          List of connected Repeaters to avoid repeater "hammering" of itemAdded() signal.
+          */
+        property var repeaters: []
+
+        function sync() {
+            if (tabBar && tabBar.__styleInstance && tabBar.__styleInstance.hasOwnProperty("sync")) {
+                tabBar.__styleInstance.sync();
+            }
+            if (tabs.active && internal.header) {
+                internal.header.show();
+            }
+            // deprecated, however use it till we remove it completely
+            tabs.modelChanged();
+        }
 
         function isTab(item) {
             if (item && item.hasOwnProperty("__isPageTreeNode")
@@ -397,13 +319,115 @@ PageTreeNode {
             }
         }
 
-        function sync() {
-            if (tabBar && tabBar.__styleInstance && tabBar.__styleInstance.hasOwnProperty("sync")) {
-                tabBar.__styleInstance.sync();
+        function isRepeater(item) {
+            return (item && item.hasOwnProperty("itemAdded"));
+        }
+
+        function connectToRepeaters(children) {
+            for (var i = 0; i < children.length; i++) {
+                var child = children[i];
+                if (internal.isRepeater(child) && (internal.repeaters.indexOf(child) < 0)) {
+                    internal.connectRepeater(child);
+                }
             }
-            if (tabs.active && internal.header) internal.header.show();
-            // deprecated, however use it till we remove it completely
-            tabs.modelChanged();
+        }
+        /* When inserting a delegate into its parent the Repeater does it in 3
+           steps:
+           1) sets the parent of the delegate thus inserting it in the list of
+              children in a position that does not correspond to the position of
+              the corresponding item in the model. At that point the
+              childrenChanged() signal is emitted.
+           2) reorder the delegate to match the position of the corresponding item
+              in the model.
+           3) emits the itemAdded() signal.
+
+           We need to update the list of tabs (tabsModel) when the children are in the
+           adequate order hence the workaround below. It connects to the itemAdded()
+           signal of any repeater it finds and triggers an update of the tabsModel.
+
+           Somewhat related Qt bug report:
+           https://bugreports.qt-project.org/browse/QTBUG-32438
+        */
+        function updateTabsModel() {
+            tabsModel.updateTabList(tabStack.children);
+        }
+
+        /*
+          Connects a Repeater and stores it so further connects will not happen to
+          the same repeater avoiding in this way hammering.
+          */
+        function connectRepeater(repeater) {
+            // store repeater
+            repeaters.push(repeater);
+
+            // connect destruction signal so we have a proper cleanup
+            repeater.Component.onDestruction.connect(internal.disconnectRepeater.bind(repeater));
+
+            // connect repeater's itemAdded and itemRemoved signals
+            repeater.itemAdded.connect(internal.updateTabsModel);
+            repeater.itemRemoved.connect(internal.removeTabFromModel);
+
+            // check if the repeater's model is set, if not, connect to modelChanged to catch that
+            if (repeater.model === undefined) {
+                repeater.modelChanged.connect(internal.connectRepeaterModelChanges.bind(repeater));
+            } else {
+                connectRepeaterModelChanges(repeater);
+            }
+        }
+
+        /*
+          Disconnects the given repeater signals.
+          */
+        function disconnectRepeater() {
+            this.itemAdded.disconnect(internal.updateTabsModel);
+            this.itemRemoved.disconnect(internal.removeTabFromModel);
+            this.modelChanged.disconnect(internal.connectRepeaterModelChanges);
+        }
+
+        /*
+          Connects a Repeater's model change signals so we get notified whenever those change.
+          This can be called either by the Repeater's modelChanged() signal, in which case the
+          parameter is undefined, or from the connectRepeater() in case the model is given for
+          the Repeater.
+          */
+        function connectRepeaterModelChanges(repeater) {
+            if (repeater === undefined) {
+                repeater = this;
+            }
+
+            /*
+              Omit model types which are not derived from object (i.e. are [object Number]
+              or [object Array] typed).
+
+              JS 'instanceof' operator does not return true for all types of arrays (i.e
+              for property var array: [....] it returns false). The safest way to detect
+              whether the model is really an object we use the toString() prototype of
+              the generic JS Object.
+
+              Inspired from http://perfectionkills.com/instanceof-considered-harmful-or-how-to-write-a-robust-isarray/
+              */
+            if (Object.prototype.toString.call(repeater.model) !== "[object Object]") {
+                return;
+            }
+
+            // other models are most likely derived from QAbstractItemModel,
+            // therefore we can safely connect to the signals to get notified about refreshes
+            repeater.model.rowsMoved.connect(updateTimer.restart);
+            repeater.model.columnsMoved.connect(updateTimer.restart);
+            repeater.model.layoutChanged.connect(updateTimer.restart);
+        }
+
+        // clean items removed trough a repeater
+        function removeTabFromModel(index, item) {
+            // cannot use index as that one is relative to the Repeater's model, therefore
+            // we need to look after the Tabs models' role to find out which item to remove
+            for (var i = 0; i < tabsModel.count; i++) {
+                if (tabsModel.get(i).tab === item) {
+                    tabsModel.remove(i);
+                    break;
+                }
+            }
+            tabsModel.reindex();
         }
     }
 

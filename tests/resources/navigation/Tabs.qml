@@ -22,27 +22,6 @@ MainView {
     width: 800
     height: 600
 
-    Component {
-        id: dynamicTab
-        Tab {
-            title: "Original Title #" + index
-            page: Page {
-                Row {
-                    anchors.centerIn: parent
-                    spacing: 5
-                    Button {
-                        text: "Delete"
-                        onClicked: tabs.removeTab(index)
-                    }
-                    Button {
-                        text: "Move to 0"
-                        onClicked: tabs.moveTab(index, 0)
-                    }
-                }
-            }
-        }
-    }
-
     Tabs {
         id: tabs
         selectedTabIndex: 0
@@ -76,29 +55,6 @@ MainView {
                         text: "action"
                         iconSource: "call_icon.png"
                         onTriggered: print("action triggered")
-                    }
-                    ToolbarButton {
-                        text: "ADD"
-                        iconSource: "call_icon.png"
-                        onTriggered: tabs.addTab("", dynamicTab)
-                    }
-                    ToolbarButton {
-                        text: "INSERT"
-                        iconSource: "call_icon.png"
-                        onTriggered: tabs.insertTab(1, "INSERTED", dynamicTab)
-                    }
-                    ToolbarButton {
-                        text: "move me next"
-                        iconSource: "call_icon.png"
-                        onTriggered: {
-                            var i = simpleTab.index;
-                            tabs.moveTab(i, i + 1);
-                        }
-                    }
-                    ToolbarButton {
-                        text: "delete 0"
-                        iconSource: "call_icon.png"
-                        onTriggered: tabs.removeTab(0)
                     }
                 }
             }
@@ -148,7 +104,7 @@ MainView {
                     anchors.fill: parent
                     model: 20
                     delegate: ListItem.Standard {
-                        icon: Qt.resolvedUrl("call_icon.png")
+                        iconSource: Qt.resolvedUrl("call_icon.png")
                         text: "Item "+modelData
                     }
                 }

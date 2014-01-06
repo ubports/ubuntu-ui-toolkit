@@ -30,7 +30,7 @@
             OptionSelector {
                 text: i18n.tr("Label")
                 model: customModel
-                delegate: OptionSelectorDelegate { text: name; subText: description; icon: image }
+                delegate: OptionSelectorDelegate { text: name; subText: description; iconSource: image }
             }
             ListModel {
                 id: customModel
@@ -63,10 +63,43 @@ ListItem.Standard {
     property string subText
 
     /*!
-      \preliminary
+      \deprecated
+
+      \b{Use iconName or iconSource instead.}
+
       Left icon url.
      */
-    property url icon
+    property url icon: iconSource
+    onIconChanged: if (icon != iconSource) {
+                       console.warn("WARNING: OptionSelectorDelegate.icon is DEPRECATED. " +
+                                     "Use iconName and iconSource instead.")
+                   }
+
+    /*!
+      The image shown for that option.
+      \qmlproperty url iconSource
+
+      This is a URL to any image file.
+      In order to use an icon from the Ubuntu theme, use the iconName property instead.
+     */
+    property url iconSource: iconName ? "image://theme/" + iconName : ""
+
+    /*!
+      The icon shown for that option.
+
+      \qmlproperty string iconName
+
+      If both iconSource and iconName are defined, iconName will be ignored.
+
+      \note The complete list of icons available in Ubuntu is not published yet.
+            For now please refer to the folders where the icon themes are installed:
+            \list
+              \li Ubuntu Touch: \l file:/usr/share/icons/ubuntu-mobile
+              \li Ubuntu Desktop: \l file:/usr/share/icons/ubuntu-mono-dark
+            \endlist
+            These 2 separate icon themes will be merged soon.
+    */
+    property string iconName
 
     /*!
       \preliminary
@@ -169,9 +202,7 @@ ListItem.Standard {
         Connections {
             target: listView.container
             onCurrentlyExpandedChanged: {
-                optionExpansion.stop();
                 imageExpansion.stop();
-                optionCollapse.stop();
                 selectedImageCollapse.stop();
                 deselectedImageCollapse.stop();
 

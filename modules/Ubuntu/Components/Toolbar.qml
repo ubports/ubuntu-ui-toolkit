@@ -42,12 +42,7 @@ Panel {
      */
     property Item tools: null
 
-    /*!
-      \preliminary
-      The time in milliseconds before the toolbar automatically hides after inactivity
-      when it is not locked.
-     */
-    property int hideTimeout: 5000
+    hideTimeout: 5000
 
     /*! \internal */
     onToolsChanged: {
@@ -66,10 +61,6 @@ Panel {
             if (tools && tools.hasOwnProperty("opened")) {
                 tools.opened = toolbar.opened;
             }
-
-            if (!toolbar.locked) {
-                hideTimer.restart();
-            }
         } else { // no tools
             locked = true;
             toolbar.close();
@@ -79,22 +70,10 @@ Panel {
     // if tools is not specified, lock the toolbar in closed position
     locked: tools && tools.hasOwnProperty("locked") ? tools.locked : false
 
-    Timer {
-        id: hideTimer
-        interval: toolbar.hideTimeout
-        running: toolbar.opened && !toolbar.locked
-        onTriggered: {
-            if (!toolbar.locked) {
-                toolbar.close();
-            }
-        }
-    }
-
     onOpenedChanged: {
         if (tools && tools.hasOwnProperty("opened")) {
             tools.opened = toolbar.opened;
         }
-        if (!toolbar.locked) hideTimer.restart();
     }
 
     Connections {
