@@ -26,17 +26,39 @@ Item {
         id: mainViewHeader
         anchors.fill: parent
 
+        Page {
+            id: page
+            title: "listview"
+
+            ListView {
+                anchors.fill: parent
+                id: listView
+
+                header: Rectangle {
+                    color: "red"
+                    width: parent.width
+                    height: units.gu(5)
+                }
+                model: 500
+                delegate: Label {
+                    text: "number " +index
+                }
+            }
+        }
+
         Item {
             // Wrapping the Page inside this Item should not
             // affect the header alignment, see bug #1261907.
             anchors.fill: parent
+            id: wrappingItem
 
             Page {
+                id: wrappedPage
                 title: "listview"
 
                 ListView {
                     anchors.fill: parent
-                    id: listView
+                    id: wrappedListView
 
                     header: Rectangle {
                         color: "red"
@@ -55,9 +77,14 @@ Item {
     TestCase {
         name: "HeaderAlignment"
         when: windowShown
-        function test_ListViewHeaderAlignment_bug1202277_bug1261907() {
+        function test_ListViewHeaderAlignment_bug1202277() {
             compare(listView.contentY, -listView.headerItem.height - mainViewHeader.__propagated.header.height,
                     "ListView header is aligned with the MainView header");
+        }
+
+        function test_WrappedListViewHeaderAlignment_bug1261907() {
+            compare(wrappedListView.contentY, -wrappedListView.headerItem.height - mainViewHeader.__propagated.header.height,
+                    "ListView header inside wrapped Page is aligned with the MainView header");
         }
     }
 }
