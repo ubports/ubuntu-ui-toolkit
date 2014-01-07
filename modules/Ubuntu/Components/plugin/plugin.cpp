@@ -165,7 +165,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterSingletonType<UCUriHandler>(uri, 0, 1, "UriHandler", registerUriHandler);
     qmlRegisterType<UCMouse>(uri, 0, 1, "Mouse");
     qmlRegisterType<UCInverseMouse>(uri, 0, 1, "InverseMouse");
-    qmlRegisterType<UCMouseEvent>();
+    qmlRegisterType<UCExtendedMouseEvent>();
     // Needed for unit tests
     qRegisterMetaType<QList <QQmlError> >();
 }

@@ -7,4 +7,5 @@ OTHER_FILES += \
     FilterTextInput.qml \
     PressAndHoldAcceptedEatsClick.qml \
     PressAndHoldAndClicked.qml \
-    FilterInverseTextInput.qml
+    FilterInverseTextInput.qml \
+    FilterInverseTextInputOSKExcluded.qml
