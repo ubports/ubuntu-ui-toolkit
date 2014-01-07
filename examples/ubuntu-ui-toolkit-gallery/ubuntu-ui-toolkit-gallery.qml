@@ -103,8 +103,6 @@ MainView {
         */
         onFlickableChanged: if (!flickable) widgetList.topMargin = 0;
 
-        LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
-
         Rectangle {
             color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
             anchors.fill: parent
