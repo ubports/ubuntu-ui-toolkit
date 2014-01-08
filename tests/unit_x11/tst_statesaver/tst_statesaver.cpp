@@ -71,12 +71,11 @@ private Q_SLOTS:
         m_modulePath = modules.absolutePath();
         // invoke initialization
         StateSaverBackend::instance();
-        StateSaverBackend::instance().reset();
     }
 
     void cleanupTestCase()
     {
-//        StateSaverBackend::instance().reset();
+        StateSaverBackend::instance().reset();
     }
 
     void test_SaveArrays()
