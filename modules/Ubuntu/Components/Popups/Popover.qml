@@ -104,6 +104,7 @@ PopupBase {
       The properties can be used to alter the default content width and heights.
       */
     property alias contentWidth: foreground.width
+    /*! \internal */
     property alias contentHeight: foreground.height
 
     /*!
