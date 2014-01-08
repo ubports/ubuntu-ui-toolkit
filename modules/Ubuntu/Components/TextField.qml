@@ -543,7 +543,9 @@ ActionItem {
       \qmlproperty enumeration verticalAlignment
     */
     property alias horizontalAlignment: editor.horizontalAlignment
+    /*! \internal */
     property alias effectiveHorizontalAlignment: editor.effectiveHorizontalAlignment
+    /*! \internal */
     property alias verticalAlignment: editor.verticalAlignment
 
     /*!
@@ -834,8 +836,8 @@ ActionItem {
             if (inputMethodHints != Qt.ImhNone)
                 return
 
-            if (type == UnityActions.Action.Type.Integer
-             || type == UnityActions.Action.Type.Real)
+            if (type == UnityActions.Action.Integer
+             || type == UnityActions.Action.Real)
                 inputMethodHints = Qt.ImhDigitsOnly
         }
 

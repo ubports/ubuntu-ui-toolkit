@@ -326,8 +326,8 @@ Item {
         function test_1_changeLocale() {
             var prevLocale = picker.locale;
             var locale = Qt.locale("hu_HU");
-            picker.minimum = new Date("2012/12/1");
-            picker.date = new Date("2012/12/1");
+            picker.minimum = new Date(2012, 11, 1);
+            picker.date = new Date(2012, 11, 1);
             wait(500)
             picker.locale = Qt.locale("hu_HU");
             wait(500)
@@ -407,7 +407,8 @@ Item {
         }
 
         function test_1_changeDateToNextMonth() {
-            picker.date = new Date("2013/10/31");
+            picker.minimum = new Date(2013, 9, 1);
+            picker.date = new Date(2013, 09, 31);
             picker.locale = Qt.locale("hu_HU")
             wait(500);
 
@@ -445,9 +446,9 @@ Item {
         }
 
         function test_2_disabledYear() {
-            var date = new Date("2013/5/1");
-            var minDate = new Date("2013/1/1");
-            var maxDate = new Date("2013/12/31");
+            var date = new Date(2013, 4, 1);
+            var minDate = new Date(2013, 0, 1);
+            var maxDate = new Date(2013, 11, 31);
             picker.minimum = minDate;
             picker.maximum = maxDate;
             wait(500);
@@ -458,9 +459,9 @@ Item {
         }
 
         function test_2_disabledYearAndMonth() {
-            var date = new Date("2013/12/1");
-            var minDate = new Date("2013/12/1");
-            var maxDate = new Date("2013/12/31");
+            var date = new Date(2013, 11, 1);
+            var minDate = new Date(2013, 11, 1);
+            var maxDate = new Date(2013, 11, 31);
             picker.minimum = minDate;
             picker.maximum = maxDate;
             picker.date = date;
@@ -472,9 +473,9 @@ Item {
         }
 
         function test_2_linearDayPicker() {
-            var date = new Date("2013/12/1");
-            var minDate = new Date("2013/12/2");
-            var maxDate = new Date("2013/12/31");
+            var date = new Date(2013, 11, 1);
+            var minDate = new Date(2013, 11, 2);
+            var maxDate = new Date(2013, 11, 31);
             picker.minimum = minDate;
             picker.maximum = maxDate;
             picker.date = date;
