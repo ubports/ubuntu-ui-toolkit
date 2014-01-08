@@ -25,6 +25,7 @@ fi
 qdoc $DOC_PATH/ubuntu-ui-toolkit-qtcreator.qdocconf 2> $DOC_PATH/qdoc.log
 # FIXME: With Qt 5.2 this warning shows up, forcibly omit it from errors
 cat $DOC_PATH/qdoc.log | grep -v "qdoc: warning: No documentation for 'global'" > $DOC_PATH/qdoc.err
+cat $DOC_PATH/qdoc.err
 test ! -s $DOC_PATH/qdoc.err || exit 1
 echo docs: Offline done.
 
@@ -35,6 +36,7 @@ echo docs: qch done.
 # other APIs but discard errors because qdoc inherits all doc bugs otherwise
 qdoc $DOC_PATH/ubuntu-ui-toolkit-online.qdocconf 2> $DOC_PATH/qdoc.log
 cat $DOC_PATH/qdoc.log | grep -v "qdoc: warning: No documentation for 'global'" > $DOC_PATH/qdoc.err
+cat $DOC_PATH/qdoc.err
 test ! -s $DOC_PATH/qdoc.err || exit 1
 echo docs: Online done.
 
