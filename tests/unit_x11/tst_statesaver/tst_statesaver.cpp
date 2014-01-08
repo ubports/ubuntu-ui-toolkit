@@ -71,11 +71,12 @@ private Q_SLOTS:
         m_modulePath = modules.absolutePath();
         // invoke initialization
         StateSaverBackend::instance();
+        StateSaverBackend::instance().reset();
     }
 
     void cleanupTestCase()
     {
-        StateSaverBackend::instance().reset();
+//        StateSaverBackend::instance().reset();
     }
 
     void test_SaveArrays()
@@ -411,6 +412,23 @@ private Q_SLOTS:
         UCStateSaverAttached *stateSaver2 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control2, false));
         QVERIFY(stateSaver2);
         QVERIFY(stateSaver2->enabled());
+        delete view;
+    }
+
+    void test_nestedDynamics()
+    {
+        QQuickView *view = createView("NestedDynamics.qml");
+        QVERIFY(view);
+        QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
+        QVERIFY(testItem);
+
+        testItem->setObjectName("updated");
+        delete view;
+
+        view = createView("NestedDynamics.qml");
+        QVERIFY(view);
+        testItem = view->rootObject()->findChild<QObject*>("updated");
+        QVERIFY(testItem);
         delete view;
     }
 };
