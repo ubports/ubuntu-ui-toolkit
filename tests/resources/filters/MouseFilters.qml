@@ -23,7 +23,7 @@ MainView {
 
     Column {
         anchors.fill: parent
-
+        spacing: units.gu(1)
         Rectangle {
             width: parent.width
             height: units.gu(5)
@@ -31,23 +31,25 @@ MainView {
                 activeFocusOnPress: true
                 anchors.fill: parent
                 anchors.margins: units.gu(0.5)
-                InverseMouse.onPressed: print("Inverse pressed")
-//                Mouse.hoverEnabled: true
-//                Mouse.onPressed: {
-//                    print(mouse.button + " pressed intercepted, accepted buttons:" + Mouse.acceptedButtons + ", hoverEnabled: " + Mouse.hoverEnabled)
-//                }
-//                Mouse.onClicked: print("Clicked")
-//                Mouse.onDoubleClicked: print("DoubleClick")
-//                MouseArea {
-//                    anchors.fill: parent
-//                    acceptedButtons: Qt.LeftButton | Qt.RightButton
-//                    onPressed: print(mouse.button + " Pressed")
-//                    onClicked: print(mouse.button + " Clicked")
-//                    hoverEnabled: true
-//                    onEntered: print("entered")
-//                    onExited: print("exited")
-//                }
+                MouseArea {
+                    anchors.fill: parent
+                    preventStealing: false
+                    propagateComposedEvents: true
+                    onPressed: mouse.accepted = false
+                    onReleased: print("released")
+                }
             }
+        }
+        Button {
+            text: "Button"
+            Mouse.onPressed: print("Button pressed")
+        }
+
+        Rectangle {
+            width: parent.width
+            height: units.gu(5)
+            color: "green"
+            Mouse.onPressed: print("Rectangle pressed")
         }
     }
 }

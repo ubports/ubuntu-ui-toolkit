@@ -38,6 +38,104 @@ bool UCExtendedMouseEvent::overInputArea() const
    \inqmlmodule Ubuntu.Components 0.1
    \ingroup ubuntu
    \brief Attached object filtering mouse events occured inside the owner.
+
+   Sometimes we need to provide additional functionality on mouse events beside
+   a QML element's default behavior. Placing a MouseArea over a component however
+   will grab the mouse events from the component underneath, no matter if we set
+   \l preventStealing to false or not. Setting mouse.accepted to false in onPressed
+   would result in having the event forwarded to the MouseArea's parent, however
+   MouseArea will no longer receive other mouse events anymore.
+
+   \qml
+   import QtQuick 2.0
+
+   TextInput {
+       width: 100
+       height: 20
+       MouseArea {
+           anchors.fill: parent
+           preventStealing: false
+           // do not accept event so it gets propagated to the parent item
+           onPressed: mouse.accepted = false;
+           onReleased: console.log("this will not be printed")
+       }
+   }
+   \endqml
+
+   Ubuntu UI Toolkit declares filter components similar to \l Keys, which can be
+   attached to any visual primitve. Mouse filter hjowever will have effect only
+   when attached to items handling mouse events. Events are handled through signals,
+   where the event data is presented through the \a mouse parameter. Events
+   should be accepted if the propagation of those to the owner primitive is not
+   wanted. This is not valid to \l onClicked, \l onPressAndHold signals, which
+   being composed events and are generated due to \l onPressed - \l onReleased,
+   as well as a certain timeout the mouse button is pressed.
+
+   The previous code sample using Mouse filter, which will print the pressed and
+   released mouse buttons would look as follows:
+   \qml
+   import QtQuick 2.0
+   import Ubuntu.Components 0.1
+
+   TextInput {
+       width: 100
+       height: 20
+       // do not accept event so it gets propagated to the parent item
+       Mouse.onPressed: console.log("mouse button pressed: " + mouse.button)
+       Mouse.onReleased: console.log("mouse button released: " + mouse.button)
+   }
+   \endqml
+
+   The filter will accept the same mouse buttons the owner accepts, and will accept
+   hover events if the owner does. However it is not possible to alter these settings
+   through the filter. If button handling other than the default ones specified for
+   the primitive is required, MouseAreas can be declared to handle those events.
+
+   Example of handling right button clicks over a TextInput:
+   \qml
+   import QtQuick 2.0
+   import Ubuntu.Components 0.1
+
+   TextInput {
+       width: 100
+       height: 20
+       MouseArea {
+           anchors.fill: parent
+           acceptedButtons: Qt.RightButton
+           Mouse.onClicked: console.log("right button clicked")
+       }
+   }
+   \endqml
+   In this example left and middle mouse button clicks will reach TextInput as
+   MouseArea only grabs right button events.
+
+   Mouse filter can be used in combination with MouseArea, where the filter brings
+   additional functionality on top of existing primitive functionality, and MouseArea
+   add new functionality to the primitive.
+
+   \qml
+   import QtQuick 2.0
+   import Ubuntu.Components 0.1
+
+   TextInput {
+       width: 100
+       height: 20
+       // do not accept event so it gets propagated to the parent item
+       Mouse.onPressed: {
+           if (mouse.button === Qt.LeftButton) {
+               // do something
+           }
+       }
+       MouseArea {
+           anchors.fill: parent
+           acceptedButtons: Qt.RightButton
+           Mouse.onPressed: console.log("right button clicked")
+       }
+   }
+   \endqml
+
+   Similar functionality for the case when the mouse event occurs outside of the
+   owner is brought by the \l InverseMouse attached property.
  */
 
 UCMouse::UCMouse(QObject *parent)
@@ -410,7 +508,6 @@ UCInverseMouse *UCInverseMouse::qmlAttachedProperties(QObject *owner)
     }
     UCInverseMouse *filter = new UCInverseMouse(owner);
     filter->setEnabled(true);
-    qDebug() << filter->dynamicPropertyNames();
     return filter;
 }
 
