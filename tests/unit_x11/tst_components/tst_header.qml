@@ -82,7 +82,7 @@ Item {
         when: windowShown
 
         function test_ListViewHeaderAlignment_bug1202277() {
-            compare(listView.contentY, -root.listViewHeaderHeight- mainViewHeader.__propagated.header.height,
+            compare(listView.contentY, -root.listViewHeaderHeight - mainViewHeader.__propagated.header.height,
                     "ListView header is aligned with the MainView header");
         }
 
