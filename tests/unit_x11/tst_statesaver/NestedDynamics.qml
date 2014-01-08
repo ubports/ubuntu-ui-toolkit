@@ -28,7 +28,6 @@ Item {
             id: outerLoader
             objectName: "outerLoader"
             StateSaver.properties: "source"
-            Component.onCompleted: source = "Dynamic.qml"
         }
     }
 }

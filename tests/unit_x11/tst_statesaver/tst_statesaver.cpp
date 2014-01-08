@@ -418,9 +418,14 @@ private Q_SLOTS:
     {
         QQuickView *view = createView("NestedDynamics.qml");
         QVERIFY(view);
+        QObject *topLoader = view->rootObject()->findChild<QObject*>("outerLoader");
+        QVERIFY(topLoader);
+
+        topLoader->setProperty("source", "Dynamic.qml");
+        QTest::waitForEvents();
+
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
-
         testItem->setObjectName("updated");
         delete view;
 
