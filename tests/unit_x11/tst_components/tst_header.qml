@@ -22,6 +22,9 @@ Item {
     width: units.gu(50)
     height: units.gu(80)
 
+    id: root
+    property real listViewHeaderHeight: units.gu(5)
+
     MainView {
         id: mainViewHeader
         anchors.fill: parent
@@ -37,7 +40,7 @@ Item {
                 header: Rectangle {
                     color: "red"
                     width: parent.width
-                    height: units.gu(5)
+                    height: root.listViewHeaderHeight
                 }
                 model: 500
                 delegate: Label {
@@ -63,7 +66,7 @@ Item {
                     header: Rectangle {
                         color: "red"
                         width: parent.width
-                        height: units.gu(5)
+                        height: root.listViewHeaderHeight
                     }
                     model: 500
                     delegate: Label {
@@ -79,12 +82,12 @@ Item {
         when: windowShown
 
         function test_ListViewHeaderAlignment_bug1202277() {
-            compare(listView.contentY, -listView.headerItem.height - mainViewHeader.__propagated.header.height,
+            compare(listView.contentY, -root.listViewHeaderHeight- mainViewHeader.__propagated.header.height,
                     "ListView header is aligned with the MainView header");
         }
 
         function test_WrappedListViewHeaderAlignment_bug1261907() {
-            compare(wrappedListView.contentY, -wrappedListView.headerItem.height - mainViewHeader.__propagated.header.height,
+            compare(wrappedListView.contentY, -root.listViewHeaderHeight - mainViewHeader.__propagated.header.height,
                     "ListView header inside wrapped Page is aligned with the MainView header");
         }
     }
