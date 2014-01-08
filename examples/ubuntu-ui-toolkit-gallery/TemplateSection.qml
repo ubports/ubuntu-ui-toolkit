@@ -34,6 +34,7 @@ Column {
             id: label
             text: templateSection.title
             fontSize: "large"
+            anchors.left: parent.left
         }
 
         WebLink {
