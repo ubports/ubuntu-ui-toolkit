@@ -15,6 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
+import time
 from distutils import version
 
 import autopilot
@@ -474,10 +475,15 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
                 stop_y = start_y - element.implicitHeight
 
             if platform.model() == 'Desktop':
+                # The drag on the desktop is done two fast, so we are left at
+                # the bottom or at the top of the list, sometimes missing the
+                # element we are looking for.
+                # TODO: use the slow drag once it's implemented:
+                # https://bugs.launchpad.net/autopilot/+bug/1257055
+                # --elopio - 2014-01-09
                 self.pointing_device.move(start_x, start_y)
                 self.pointing_device.press()
                 self.pointing_device.move(stop_x, stop_y)
-                import time
                 time.sleep(0.3)
                 self.pointing_device.release()
             else:
