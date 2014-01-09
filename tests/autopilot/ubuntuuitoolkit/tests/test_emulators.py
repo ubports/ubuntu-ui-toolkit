@@ -609,10 +609,6 @@ MainView {
                     objectName: "testListElement8"
                     label: "test list element 8"
                 }
-                ListElement {
-                    objectName: "testListElement9"
-                    label: "test list element 9"
-                }
             }
 
             ListView {
@@ -659,7 +655,7 @@ MainView {
         self.assertEqual(self.label.text, 'testListElement5')
 
     def test_click_element_outside_view_above(self):
-        self.list_view.click_element('testListElement9')
+        self.list_view.click_element('testListElement8')
 
         self.assertFalse(
             self.list_view._is_element_fully_visible('testListElement1'))
