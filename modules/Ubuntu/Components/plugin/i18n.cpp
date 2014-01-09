@@ -113,6 +113,10 @@ void UbuntuI18n::setDomain(const QString &domain) {
 
 void UbuntuI18n::setLanguage(const QString &lang) {
     m_language = lang;
+
+    /* This is needed for LP: #1263163 */
+    setenv("LANGUAGE", lang.toUtf8().constData(), 1);
+
     /*
      The inverse form of setlocale as used in the constructor, passing
      a valid locale string updates all category type defaults.
