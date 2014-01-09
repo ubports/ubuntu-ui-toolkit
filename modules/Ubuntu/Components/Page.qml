@@ -192,12 +192,6 @@ PageTreeNode {
             }
         }
 
-        Connections {
-            target: page
-            onFlickableChanged: internal.initializeFlickablePosition()
-        }
-        Component.onCompleted: internal.initializeFlickablePosition()
-
         function isVerticalFlickable(object) {
             if (object && object.hasOwnProperty("flickableDirection") && object.hasOwnProperty("contentHeight")) {
                 var direction = object.flickableDirection;
@@ -225,19 +219,6 @@ PageTreeNode {
                 }
             }
             return null;
-        }
-
-        function initializeFlickablePosition() {
-            if (page.flickable) {
-                print("Page.initializeFlickablePosition()")
-                // compensating for header height and setting flickable.topMargin is done
-                //  automatically by the header when its flickable property is set.
-//                if (page.flickable.hasOwnProperty("headerItem") && page.flickable.headerItem) {
-//                    // flickable is a ListView with a headerItem
-//                    print("subtracting "+page.flickable.headerItem.height+" from contentY")
-//                    page.flickable.contentY -= page.flickable.headerItem.height;
-//                }
-            }
         }
     }
 }
