@@ -82,6 +82,11 @@ Item {
         when: windowShown
 
         function test_ListViewHeaderAlignment_bug1202277() {
+            // for jenkins only. remove later.
+            compare(root.listViewHeaderHeight, 40);
+            compare(mainViewHeader.__propagated.header.height, 76);
+            compare(listView.contentY, -40-76);
+
             compare(listView.contentY, -root.listViewHeaderHeight - mainViewHeader.__propagated.header.height,
                     "ListView header is aligned with the MainView header");
         }
