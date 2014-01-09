@@ -413,6 +413,28 @@ private Q_SLOTS:
         QVERIFY(stateSaver2->enabled());
         delete view;
     }
+
+    void test_nestedDynamics()
+    {
+        QQuickView *view = createView("NestedDynamics.qml");
+        QVERIFY(view);
+        QObject *topLoader = view->rootObject()->findChild<QObject*>("outerLoader");
+        QVERIFY(topLoader);
+
+        topLoader->setProperty("source", "Dynamic.qml");
+        QTest::waitForEvents();
+
+        QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
+        QVERIFY(testItem);
+        testItem->setObjectName("updated");
+        delete view;
+
+        view = createView("NestedDynamics.qml");
+        QVERIFY(view);
+        testItem = view->rootObject()->findChild<QObject*>("updated");
+        QVERIFY(testItem);
+        delete view;
+    }
 };
 
 QTEST_MAIN(tst_StateSaverTest)
