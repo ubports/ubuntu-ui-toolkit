@@ -478,7 +478,7 @@ PageTreeNode {
                     }
 
                     // always makes sure that tabsModel has the same order as tabsList
-                    // but move only if there are more than on eitems in the list
+                    // but move only if there is more than one item in the list
                     if (count > 1) {
                         move(tab.__protected.index, tabIndex, 1);
                     }
