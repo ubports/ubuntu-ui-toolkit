@@ -172,9 +172,12 @@ StyledItem {
          */
         function checkFlickableMargins() {
             if (header.flickable) {
+                print("Header.checkFlickableMargins()")
                 var headerHeight = header.visible ? header.height : 0
+                print("headerHeight = "+headerHeight)
                 if (flickable.topMargin !== headerHeight) {
                     var previousHeaderHeight = flickable.topMargin;
+                    print("previousHeaderHeight = "+previousHeaderHeight)
                     flickable.topMargin = headerHeight;
                     // push down contents when header grows,
                     // pull up contents when header shrinks.

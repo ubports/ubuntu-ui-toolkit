@@ -229,12 +229,14 @@ PageTreeNode {
 
         function initializeFlickablePosition() {
             if (page.flickable) {
+                print("Page.initializeFlickablePosition()")
                 // compensating for header height and setting flickable.topMargin is done
                 //  automatically by the header when its flickable property is set.
-                if (page.flickable.hasOwnProperty("headerItem") && page.flickable.headerItem) {
-                    // flickable is a ListView with a headerItem
-                    page.flickable.contentY -= page.flickable.headerItem.height;
-                }
+//                if (page.flickable.hasOwnProperty("headerItem") && page.flickable.headerItem) {
+//                    // flickable is a ListView with a headerItem
+//                    print("subtracting "+page.flickable.headerItem.height+" from contentY")
+//                    page.flickable.contentY -= page.flickable.headerItem.height;
+//                }
             }
         }
     }
