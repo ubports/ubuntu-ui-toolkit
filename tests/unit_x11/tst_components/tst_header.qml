@@ -23,7 +23,7 @@ Item {
     height: units.gu(80)
 
     id: root
-    property real listViewHeaderHeight: 11 //units.gu(5)
+    property real listViewHeaderHeight: units.gu(5)
 
     MainView {
         id: mainViewHeader
@@ -46,8 +46,6 @@ Item {
                 delegate: Label {
                     text: "number " +index
                 }
-
-                onContentYChanged: print("lv.y = "+contentY)
             }
         }
 
