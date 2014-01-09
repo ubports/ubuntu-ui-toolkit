@@ -9,7 +9,7 @@
 class UCExtendedMouseEvent : public QQuickMouseEvent
 {
     Q_OBJECT
-    Q_PROPERTY(bool overInputArea READ overInputArea)
+    Q_PROPERTY(bool pointInInputArea READ pointInInputArea)
 public:
     UCExtendedMouseEvent(QPointF pos, Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers
                   , bool overOsk, bool isClick, bool wasHeld)
@@ -19,7 +19,7 @@ public:
         // contrary to the original class, do not accept events by default
         setAccepted(false);
     }
-    bool overInputArea() const;
+    bool pointInInputArea() const;
 private:
     bool m_overOsk;
 };
@@ -38,6 +38,11 @@ public:
 
     static UCMouse *qmlAttachedProperties(QObject *owner);
 
+    bool isEnabled() const;
+    virtual void setEnabled(bool enabled);
+    Qt::MouseButtons acceptedButtons() const;
+    bool hoverEnabled() const;
+
 Q_SIGNALS:
     void enabledChanged();
     void acceptedButtonsChanged();
@@ -55,11 +60,6 @@ Q_SIGNALS:
 protected:
     virtual bool eventFilter(QObject *, QEvent *);
     virtual void timerEvent(QTimerEvent *event);
-
-    bool isEnabled() const;
-    virtual void setEnabled(bool enabled);
-    Qt::MouseButtons acceptedButtons() const;
-    bool hoverEnabled() const;
 
     void setHovered(bool hovered);
     bool mousePressed(QMouseEvent *event);
@@ -83,8 +83,8 @@ protected:
     Qt::MouseButtons m_lastButtons;
     Qt::KeyboardModifiers m_lastModifiers;
     Qt::MouseButtons m_pressedButtons;
-    int m_pressAndHoldDelay;
 
+    bool m_ownerHandlesMouse: 1;
     bool m_enabled: 1;
     bool m_moved:1;
     bool m_longPress:1;
@@ -102,6 +102,7 @@ public:
 
     static UCInverseMouse *qmlAttachedProperties(QObject *owner);
 
+    virtual void setEnabled(bool enabled);
     bool excludeInputArea() const;
     void setExcludeInputArea(bool value);
 
@@ -115,7 +116,6 @@ protected:
     bool isHoverEvent(QEvent::Type type);
     virtual bool eventFilter(QObject *, QEvent *);
     bool contains(QMouseEvent *mouse);
-    virtual void setEnabled(bool enabled);
 
     bool m_excludeOSK:1;
 };

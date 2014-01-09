@@ -8,4 +8,8 @@ OTHER_FILES += \
     PressAndHoldAcceptedEatsClick.qml \
     PressAndHoldAndClicked.qml \
     FilterInverseTextInput.qml \
-    FilterInverseTextInputOSKExcluded.qml
+    FilterInverseTextInputOSKExcluded.qml \
+    AttachedToItem.qml \
+    InverseAttachedToItem.qml \
+    MouseFilterAttachedToNonItem.qml \
+    InverseMouseFilterAttachedToNonItem.qml

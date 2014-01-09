@@ -5,14 +5,35 @@
 #include <private/qqmlglobal_p.h>
 #include <QtQuick/private/qquickmousearea_p.h>
 #include "inversemouseareatype.h"
+#include "i18n.h"
 
 #include "quickutils.h"
 #include "ucunits.h"
-#include "i18n.h"
-#include <QDebug>
 
 // keep in sync with QQuickMouseArea PressAndHoldDelay
 const int DefaultPressAndHoldDelay = 800;
+
+/*
+ * Attached filter instantiator template
+ */
+template<typename T>
+T *createAttachedFilter(QObject *owner, const QString &qmlName)
+{
+    QString warning;
+    QQuickItem *item = qobject_cast<QQuickItem*>(owner);
+    if (!item) {
+        warning = UbuntuI18n::instance().tr(QString("Warning: %1 filter can only be attached to Items.").arg(qmlName));
+    } else  if (item->acceptedMouseButtons() == Qt::NoButton) {
+        warning = UbuntuI18n::instance().tr(QString("Warning: %1 filter owner does not accept any mouse button.").arg(qmlName));
+    }
+    if (!warning.isEmpty()) {
+        qmlInfo(owner) << warning << UbuntuI18n::instance().tr(" The filter will not be active.");
+    }
+
+    T *filter = new T(owner);
+    filter->setEnabled(true);
+    return filter;
+}
 
 /*!
    \qmltype ExtendedMouseEvent
@@ -20,14 +41,30 @@ const int DefaultPressAndHoldDelay = 800;
    \inqmlmodule Ubuntu.Components 0.1
    \ingroup ubuntu
    \brief Mouse event extending \l{http://qt-project.org/doc/qt-5.1/qtquick/qml-qtquick2-mouseevent.html}{QML MouseEvent}.
+
+   ExtendedMouseEvent is used by Mouse and InverseMouse attached signals holding
+   information about the mouse event. Extends the MouseEvent with additional
+   information on the mouse event, like specifying whether the mouse pointer is
+   in the input method area or not. This is useful in InverseMouse filter case
+   when the detection whether the mouse press or click occured inside the input
+   method area or not.
+
+   An other difference from MouseEvent is that when all MouseEvenths are accepted
+   by default, every ExtendedMouseEventis set to not accepted, meaning that every
+   extended mouse event will be propagated to its owner. In case event propagation
+   is not wanted, the \a accepted proeprty must be set explicitly.
  */
 
 /*!
-    \qmlproperty bool ExtendedMouseEvent::overInputArea
-    The proeprty specifies whether the mouse event happened over the input panel
-    or not. The property has meaning only devices where input method is available.
+    \qmlproperty bool ExtendedMouseEvent::pointInInputArea
+    The proeprty specifies whether the mouse event happened over the input method
+    or not. The value is true when the device has input method specified, the
+    input method is active and the mouse is positioned over the input area.
+    The property has meaning mostly for the InverseMouse filter as is the Mouse
+    filter's owner is covered by the input method, all mouse events are consumed
+    by the input method.
   */
-bool UCExtendedMouseEvent::overInputArea() const
+bool UCExtendedMouseEvent::pointInInputArea() const
 {
     return m_overOsk;
 }
@@ -37,14 +74,14 @@ bool UCExtendedMouseEvent::overInputArea() const
    \instantiates UCMouse
    \inqmlmodule Ubuntu.Components 0.1
    \ingroup ubuntu
-   \brief Attached object filtering mouse events occured inside the owner.
+   \brief Attached property filtering mouse events occured inside the owner.
 
    Sometimes we need to provide additional functionality on mouse events beside
    a QML element's default behavior. Placing a MouseArea over a component however
    will grab the mouse events from the component underneath, no matter if we set
    \l preventStealing to false or not. Setting mouse.accepted to false in onPressed
    would result in having the event forwarded to the MouseArea's parent, however
-   MouseArea will no longer receive other mouse events anymore.
+   MouseArea will no longer receive other mouse events.
 
    \qml
    import QtQuick 2.0
@@ -69,7 +106,7 @@ bool UCExtendedMouseEvent::overInputArea() const
    should be accepted if the propagation of those to the owner primitive is not
    wanted. This is not valid to \l onClicked, \l onPressAndHold signals, which
    being composed events and are generated due to \l onPressed - \l onReleased,
-   as well as a certain timeout the mouse button is pressed.
+   as well as when a mouse button is pressed and hold for a certain time.
 
    The previous code sample using Mouse filter, which will print the pressed and
    released mouse buttons would look as follows:
@@ -85,6 +122,9 @@ bool UCExtendedMouseEvent::overInputArea() const
        Mouse.onReleased: console.log("mouse button released: " + mouse.button)
    }
    \endqml
+
+   The event details are reported in the \a mouse parameter, of ExtendedMouseEvent
+   type, which extends QtQuick's MouseEvent with additional properties.
 
    The filter will accept the same mouse buttons the owner accepts, and will accept
    hover events if the owner does. However it is not possible to alter these settings
@@ -140,9 +180,9 @@ bool UCExtendedMouseEvent::overInputArea() const
 
 UCMouse::UCMouse(QObject *parent)
     : QObject(parent)
-    , m_owner(static_cast<QQuickItem*>(parent))
+    , m_owner(qobject_cast<QQuickItem*>(parent))
     , m_pressedButtons(Qt::NoButton)
-    , m_pressAndHoldDelay(DefaultPressAndHoldDelay)
+    , m_ownerHandlesMouse(m_owner && (m_owner->acceptedMouseButtons() != Qt::NoButton))
     , m_enabled(false)
     , m_moved(false)
     , m_longPress(false)
@@ -150,17 +190,18 @@ UCMouse::UCMouse(QObject *parent)
     , m_doubleClicked(false)
     , m_pointInOSK(false)
 {
+    // if owner is MouseArea or InverseMouseArea, connect to the acceptedButtons
+    // and hoverEnabled change signals
+    QQuickMouseArea* mouseOwner = qobject_cast<QQuickMouseArea*>(m_owner);
+    if (mouseOwner) {
+        connect(mouseOwner, SIGNAL(acceptedButtonsChanged()), this, SIGNAL(acceptedButtonsChanged()));
+        connect(mouseOwner, SIGNAL(hoverEnabledChanged()), this, SIGNAL(hoverEnabledChanged()));
+    }
 }
 
 UCMouse *UCMouse::qmlAttachedProperties(QObject *owner)
 {
-    if (!qobject_cast<QQuickItem*>(owner)) {
-        qmlInfo(owner) << "Mouse filter can only be attached to Items";
-        return 0;
-    }
-    UCMouse *filter = new UCMouse(owner);
-    filter->setEnabled(true);
-    return filter;
+    return createAttachedFilter<UCMouse>(owner, "Mouse");
 }
 
 bool UCMouse::eventFilter(QObject *target, QEvent *event)
@@ -258,7 +299,7 @@ bool UCMouse::mousePressed(QMouseEvent *event)
         event->setAccepted(mev.isAccepted());
 
         // start long press timer
-        m_pressAndHoldTimer.start(m_pressAndHoldDelay, this);
+        m_pressAndHoldTimer.start(DefaultPressAndHoldDelay, this);
 
         return mev.isAccepted();
     }
@@ -381,6 +422,7 @@ bool UCMouse::pointInOSK(const QPointF &point)
     QRectF oskRect = QGuiApplication::inputMethod()->keyboardRectangle();
 
     // for test purposes only; simulate OSK area on environments where OSK is not present
+    // FIXME: we may want to provide a generic OSK test environment for desktop?
     if (QString(getenv("MOUSEFILTER_OSK_TEST_AREA")).toLower() == "true") {
         QQuickItem *mainItem = QuickUtils::instance().rootItem(m_owner);
         if (mainItem) {
@@ -402,7 +444,7 @@ bool UCMouse::isEnabled() const
 }
 void UCMouse::setEnabled(bool enabled)
 {
-    if (enabled != m_enabled) {
+    if ((enabled != m_enabled) && m_ownerHandlesMouse) {
         m_enabled = enabled;
         if (m_enabled) {
             m_owner->installEventFilter(this);
@@ -491,8 +533,40 @@ bool UCMouse::hoverEnabled() const
    \ingroup ubuntu
    \brief Attached object filtering mouse events occured outside the owner.
 
-   Same as Mouse attached object, provides mouse event filtering capabilities
-   occurring outside of the owner's area.
+   Similar to Mouse filter attached property, provides mouse event filtering
+   capabilities but for events occurring outside of the owner's area. Beside that
+   the filter also provides abilities to detect whether the mouse occurred inside
+   the input method area or not.
+
+   Being derived from Mouse filter element, provides teh same behavior as the
+   Mouse filter, except that all the signals are emitted when teh mouse event
+   occurs outside the owner's area.
+
+   By default all mouse events occurring outside the owner are reported, including
+   events over the active input method area. This can be controlled through the
+   \l excludeInputMethodArea property. When that is set, no mouse event occurring
+   over the input method area will be reported.
+
+   The following example blocks mouse event propagation to input method when the
+   mouse press occurs over input method area.
+   \qml
+   import QtQuick 2.0
+   import Ubuntu.Components 0.1
+
+   TestInput {
+       width: 100
+       height: 20
+
+       InverseMouse.onPressed: {
+           if (mouse.pointInInputArea) {
+               mouse.accepted = true;
+           }
+       }
+   }
+   \endqml
+
+   Note that accepting composed mouse events does not have any effect on event
+   propagation.
  */
 UCInverseMouse::UCInverseMouse(QObject *parent)
     : UCMouse(parent)
@@ -502,13 +576,7 @@ UCInverseMouse::UCInverseMouse(QObject *parent)
 
 UCInverseMouse *UCInverseMouse::qmlAttachedProperties(QObject *owner)
 {
-    if (!qobject_cast<QQuickItem*>(owner)) {
-        qmlInfo(owner) << "InverseMouse filter can only be attached to Items";
-        return 0;
-    }
-    UCInverseMouse *filter = new UCInverseMouse(owner);
-    filter->setEnabled(true);
-    return filter;
+    return createAttachedFilter<UCInverseMouse>(owner, "InverseMouse");
 }
 
 /*!
@@ -622,7 +690,7 @@ bool UCInverseMouse::contains(QMouseEvent *mouse)
 
 void UCInverseMouse::setEnabled(bool enabled)
 {
-    if (m_enabled != enabled) {
+    if ((m_enabled != enabled) && m_ownerHandlesMouse) {
         m_enabled = enabled;
         if (m_enabled) {
             // FIXME: use application's main till we don't get touch events
