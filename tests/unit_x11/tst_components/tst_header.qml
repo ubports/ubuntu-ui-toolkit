@@ -82,7 +82,7 @@ Item {
         when: windowShown
 
         function test_ListViewHeaderAlignment_bug1202277() {
-            // for jenkins only. remove later.
+            // TODO TIM: for jenkins only. remove later.
             compare(root.listViewHeaderHeight, 40);
             compare(mainViewHeader.__propagated.header.height, 76);
             compare(listView.contentY, -40-76);
