@@ -241,10 +241,10 @@ StyledItem {
     /*!
       \qmlproperty int maximum
 
-      See maximum date (inclusive) to be shown in the picker.
+      The maximum date (inclusive) to be shown in the picker.
       Both year and month values will be considered from the properties.
 
-      See minimum for more details.
+      See \l minimum for more details.
      */
     property date maximum: {
         var d = Date.prototype.midnight.call(new Date());

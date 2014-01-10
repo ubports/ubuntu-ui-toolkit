@@ -544,13 +544,13 @@ ActionItem {
     /*!
       \qmlproperty enumeration effectiveHorizontalAlignment
 
-      See horizontalAlignment for details.
+      See \l horizontalAlignment for details.
     */
     property alias effectiveHorizontalAlignment: editor.effectiveHorizontalAlignment
     /*!
       \qmlproperty enumeration verticalAlignment
 
-      See horizontalAlignment for details.
+      See \l horizontalAlignment for details.
      */
     property alias verticalAlignment: editor.verticalAlignment
 
