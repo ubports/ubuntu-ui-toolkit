@@ -260,6 +260,9 @@ void UCStateSaverAttachedPrivate::connectChangeSlot(bool connect)
  * }
  * \endqml
  *
+ * It can be used in the same way in ListView or GridView, except that both ListView
+ * and GridView must have an id set.
+ *
  * The StateSaver can save all \l{http://qt-project.org/doc/qt-5.0/qtqml/qtqml-typesystem-basictypes.html}{QML base types},
  * Objects, list of objects or variants containing any of these cannot be saved.
  */
