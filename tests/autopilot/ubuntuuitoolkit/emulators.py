@@ -516,11 +516,7 @@ class TextField(UbuntuUIToolkitEmulatorBase):
         root = self.get_root_instance()
         main_view = root.select_single(MainView)
         popover = main_view.get_action_selection_popover('text_input_popover')
-        try:
-            popover.click_button_by_text('Select All')
-        except dbus.StateNotFoundError:
-            # TODO do not merge without fixing this!!!
-            pass
+        popover.click_button_by_text('Select All')
 
 
 class Empty(UbuntuUIToolkitEmulatorBase):
