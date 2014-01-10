@@ -240,6 +240,26 @@ void UCStateSaverAttachedPrivate::connectChangeSlot(bool connect)
  * }
  * \endqml
  *
+ * When used with Repeater, each created item from the Repeater's delegate will
+ * be saved separately. Note that due to the way Repeater works, Repeaters do not
+ * need to have id specified.
+ *
+ * \qml
+ * Item {
+ *     id: root
+ *     // [...]
+ *     Repeater {
+ *         model: 10
+ *         Rectangle {
+ *             id: rect
+ *             width: 50; height: 50
+ *             StateSaver.properties: "width, height"
+ *         }
+ *     }
+ *     // [...]
+ * }
+ * \endqml
+ *
  * The StateSaver can save all \l{http://qt-project.org/doc/qt-5.0/qtqml/qtqml-typesystem-basictypes.html}{QML base types},
  * Objects, list of objects or variants containing any of these cannot be saved.
  */
