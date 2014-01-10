@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013 Canonical Ltd.
+# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -468,20 +468,26 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
         start_y = y + (height / 2)
 
         while not self._is_element_fully_visible(objectName):
-            # XXX The autopilot drag is done too fast, so it swipes many
-            # items at once. --elopio - 2013-11-28
-            self.pointing_device.move(start_x, start_y)
-            self.pointing_device.press()
             stop_x = start_x
             if element.globalRect.y < self.globalRect.y:
-                stop_y = start_y + element.globalRect.height
+                stop_y = start_y + element.implicitHeight
             else:
-                stop_y = start_y - element.globalRect.height
+                stop_y = start_y - element.implicitHeight
 
-            self.pointing_device.move(stop_x, stop_y)
-            time.sleep(0.25)
-
-            self.pointing_device.release()
+            if platform.model() == 'Desktop':
+                # The drag on the desktop is done two fast, so we are left at
+                # the bottom or at the top of the list, sometimes missing the
+                # element we are looking for.
+                # TODO: use the slow drag once it's implemented:
+                # https://bugs.launchpad.net/autopilot/+bug/1257055
+                # --elopio - 2014-01-09
+                self.pointing_device.move(start_x, start_y)
+                self.pointing_device.press()
+                self.pointing_device.move(stop_x, stop_y)
+                time.sleep(0.3)
+                self.pointing_device.release()
+            else:
+                self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
 
     def _is_element_fully_visible(self, objectName):
         element = self.select_single(objectName=objectName)
@@ -577,3 +583,24 @@ class SingleValue(Base):
 
 class Subtitled(Base):
     pass
+
+
+class ComposerSheet(UbuntuUIToolkitEmulatorBase):
+    """ComposerSheet Autopilot emulator."""
+
+    def __init__(self, *args):
+        super(ComposerSheet, self).__init__(*args)
+
+    @autopilot_logging.log_action(logger.info)
+    def confirm(self):
+        """Confirm the composer sheet."""
+        button = self.select_single('Button', objectName='confirmButton')
+        self.pointing_device.click_object(button)
+        self.wait_until_destroyed()
+
+    @autopilot_logging.log_action(logger.info)
+    def cancel(self):
+        """Cancel the composer sheet."""
+        button = self.select_single('Button', objectName='cancelButton')
+        self.pointing_device.click_object(button)
+        self.wait_until_destroyed()

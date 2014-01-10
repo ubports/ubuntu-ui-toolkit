@@ -40,6 +40,7 @@ Item {
 
                     tools: ToolbarItems {
                         ToolbarButton {
+                            id: toolbarButton
                             text: "something"
                         }
                     }
@@ -64,6 +65,7 @@ Item {
             var toolbar = mainView.__propagated.toolbar;
             toolbar.open();
             compare(toolbar.opened, true, "Cannot open toolbar using open()");
+            wait(UbuntuAnimation.FastDuration); // wait for the open animation to finish
             return toolbar;
         }
 
@@ -73,14 +75,44 @@ Item {
             compare(tabBar, header.contents, "TabBar is not the active header contents");
             header.show();
             tabBar.selectionMode = newSelectionMode;
+            compare(tabBar.selectionMode, newSelectionMode, "Failed to set the tab bar selection mode");
             return tabBar;
         }
 
-        function test_tabBar_selectionMode_closes_toolbar_bug1223600() {
+        function test_tabBar_press_closes_toolbar_bug1223600() {
             testCase.setTabBarSelectionMode(false);
             var toolbar = testCase.openToolbar();
-            testCase.setTabBarSelectionMode(true);
+            testCase.mousePress(tabs.tabBar);
             compare(toolbar.opened, false, "Activating TabBar did not close toolbar");
+            testCase.mouseRelease(tabs.tabBar);
+            testCase.setTabBarSelectionMode(false);
+        }
+
+        function test_toolbar_press_closes_tabBar_bug1223606 () {
+            var tabBar = testCase.setTabBarSelectionMode(true);
+            var toolbar = testCase.openToolbar();
+            testCase.mouseClick(toolbarButton,
+                                toolbarButton.width/2, toolbarButton.height/2,
+                                Qt.LeftButton);
+            compare(tabBar.selectionMode, false,
+                    "Clicking a toolbar button does not disable tab bar selection mode");
+
+            toolbar.open();
+            testCase.setTabBarSelectionMode(true);
+            testCase.mousePress(toolbar, toolbar.width/2, toolbar.height/2, Qt.LeftButton);
+            compare(tabBar.selectionMode, false, "Pressing the toolbar does not disable tab bar selection mode");
+            testCase.mouseRelease(toolbar, toolbar.width/2, toolbar.height/2, Qt.LeftButton);
+
+            toolbar.close();
+            testCase.setTabBarSelectionMode(true);
+            testCase.mousePress(mainView,
+                                mainView.width/2, mainView.height - toolbar.triggerSize/2,
+                                Qt.LeftButton);
+            compare(tabBar.selectionMode, false,
+                    "Triggering the toolbar hint does not disable tab selection mode");
+            testCase.mouseRelease(mainView,
+                                mainView.width/2, mainView.height - toolbar.triggerSize/2,
+                                Qt.LeftButton);
         }
     }
 }

@@ -19,8 +19,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.Pickers 0.1
 
 Template {
-    objectName: "pickersTemplate"
-
+    id: root
     TemplateSection {
         className: "Picker"
         documentation: "qml-ubuntu-components-pickers0-picker.html"
@@ -34,7 +33,9 @@ Template {
                 delegate: PickerDelegate {
                     Label {
                         text: modelData
-                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.fill: parent
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
                     }
                 }
 
@@ -48,7 +49,9 @@ Template {
                 delegate: PickerDelegate {
                     Label {
                         text: modelData
-                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.fill: parent
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
                     }
                 }
 
@@ -75,7 +78,9 @@ Template {
                 delegate: PickerDelegate {
                     Label {
                         text: modelData
-                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.fill: parent
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
                     }
                     Component.onCompleted: {
                         if (index === (picker.model.count - 1))
@@ -169,6 +174,37 @@ Template {
                 ]
 
                 onHandUpdated: handText.text = Math.round(hand.value);
+            }
+        }
+    }
+    TemplateSection {
+        className: "DatePicker"
+        documentation: "qml-ubuntu-components-pickers0-datepicker.html"
+        TemplateRow {
+            title: "Date"
+            DatePicker {
+                // make sure we have the whole component in screen
+                width: Math.min(root.width - units.gu(16), units.gu(40))
+                onDateChanged: print("picked date="+Qt.formatDate(date, "yyyy/MMMM/dd"))
+            }
+        }
+        TemplateRow {
+            title: "Month"
+            DatePicker {
+                mode: "Years|Months"
+                // make sure we have the whole component in screen
+                width: Math.min(root.width - units.gu(16), units.gu(40))
+                onDateChanged: print("picked month="+Qt.formatDate(date, "yyyy/MMMM"))
+            }
+        }
+        TemplateRow {
+            title: "Time"
+            DatePicker {
+                mode: "Hours|Minutes|Seconds"
+                date: new Date()
+                // make sure we have the whole component in screen
+                width: Math.min(root.width - units.gu(16), units.gu(40))
+                onDateChanged: print("picked time="+Qt.formatTime(date, "hh:mm:ss"))
             }
         }
     }

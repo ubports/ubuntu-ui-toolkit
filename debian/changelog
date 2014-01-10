@@ -1,3 +1,104 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20131216-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * Layouting fails with Qt5.2 if the tests and components are not
+    rendered upon testing. Layout unit tests have been transferred to
+    X11 unit tests and tests on layout changes all wait till the layout
+    change completes. Tested with Qt 5.0.2 and Qt 5.2 RC1. (LP:
+    #1256235)
+  * Picker visuals facelift, prepared for Date- and TimePicker
+    components.
+  * Picker selectedIndex miss-behavior fix when model is
+    cleared/cropped/reset.
+
+  [ Florian Boucault ]
+  * List item progression: use appropriate icon (same as Tabs' arrow)
+    and fixes the issue of it being the wrong color in Dark and Gradient
+    themes. (LP: #1236777)
+
+  [ Albert Astals ]
+  * tst_arguments: Do not use QTEST_MAIN QTEST_MAIN is 99.99% of the
+    times what you want when running a Qt testcase but it creates a
+    Q*Application and in this case that is not wanted since we are
+    creating and destroying them as part of the test and Qt doesn't like
+    when there's more than one Q*Application at the same time, so do
+    without creating a Q*Application in main. This can of course have
+    some implications but it seems that for this testcase all is fine.
+    (LP: #1254747)
+  * Make the model a var and not a ListModel ListModel is bound
+    specifically to QQuickListModel By using a var we can use other
+    QAbstractItemModel subclasses in the model.
+
+  [ Nic ]
+  * Removed stop animation on text every time an expansion/collapse is
+    made. Fixes bug #1231939. (LP: #1231939)
+  * Fixed scrolling in selector when parent widget's height is less than
+    the selector's ListView height. Fixes bug #1256356. (LP: #1256356)
+
+  [ Timo Jyrinki ]
+  * Require either Qt 5.2 or libqt5v8-5-private-dev.
+
+  [ tpeeters ]
+  * Reset hide timer when user interacts with toolbar or toolbar
+    buttons. (LP: #1249031)
+  * Improve detection of tab bar interaction. Now using the new
+    TabBar.pressed property instead of TabBar.selectionMode property,
+    because selectionMode may be changed without user interaction (for
+    example, when resuming an app in a following MR), and then the
+    toolbar should not automatically hide.
+  * Open the toolbar and tabbar (without animating) when the app is
+    resumed. (LP: #1246790)
+
+  [ Christian Dywan ]
+  * Accept qmldir files in qmlapicheck and skip internal components.
+    (LP: #1256045)
+  * Suppress qdoc warnings coming from upstream API.
+  * Conditionally define doc folder containing resources. (LP: #1256779)
+  * Move doc commands to shellscript and add success output lines.
+  * Use Eventually when checking that the textfield is empty There's
+    always a delay so we can't just compare it. (LP: #1259476)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 892
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 16 Dec 2013 08:17:31 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20131129-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * Tabs to react on model changes when a Repeater is used to populate
+    with Tab components. . (LP: #1255544)
+
+  [ Leo Arias ]
+  * Added a ComposerSheet autopilot emulator. (LP: #1248740)
+
+  [ Nic ]
+  * Made currentlyExpanded property writeable. Fixed up comments for
+    incorrectly documented properties. Added a positionViewAtIndex to
+    refocus the list on the first index when it's externally collapsed.
+    (LP: #1252718)
+
+  [ Nicolas d'Offay ]
+  * Made currentlyExpanded property writeable. Fixed up comments for
+    incorrectly documented properties. Added a positionViewAtIndex to
+    refocus the list on the first index when it's externally collapsed.
+    (LP: #1252718)
+
+  [ tpeeters ]
+  * Detect interaction with contents (in order to close toolbar/tabbar)
+    from Page to MainView.
+  * Close the toolbar when user activates tabbar. (LP: #1223600)
+  * Close tabbar on toolbar interaction. (LP: #1223606)
+  * Disable header animations at app startup. (LP: #1246792)
+
+  [ Christian Dywan ]
+  * Elaborate on why OrientationHelper's internal must be Item.
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 872
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 29 Nov 2013 20:24:58 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20131126.1-0ubuntu1) trusty; urgency=low
 
   [ Nic ]

@@ -32,10 +32,10 @@ Template {
             OptionSelector {
                objectName: "optionselector_collapsed"
                text: i18n.tr("Collapsed")
-                model: [i18n.tr("Value 1"),
-                        i18n.tr("Value 2"),
-                        i18n.tr("Value 3"),
-                        i18n.tr("Value 4")]
+               model: [i18n.tr("Value 1"),
+                       i18n.tr("Value 2"),
+                       i18n.tr("Value 3"),
+                       i18n.tr("Value 4")]
             }
 
             OptionSelector {
@@ -82,7 +82,7 @@ Template {
             }
 
             OptionSelector {
-                text: i18n.tr("Label")
+                text: i18n.tr("Custom container height")
                 model: [i18n.tr("Value 1"),
                         i18n.tr("Value 2"),
                         i18n.tr("Value 3"),
@@ -95,7 +95,7 @@ Template {
             }
 
             OptionSelector {
-                text: i18n.tr("Label")
+                text: i18n.tr("No initial selection, scrollable.")
                 expanded: true
                 selectedIndex: -1
                 model: [i18n.tr("Value 1"),
