@@ -652,11 +652,11 @@ MainView {
         self.assertEqual(self.label.text, 'testListElement1')
 
     def test_click_element_outside_view_below(self):
+        # Click the first element out of view to make sure we are not scrolling
+        # to the bottom at once.
         self.assertFalse(
             self.list_view._is_element_fully_visible('testListElement5'))
 
-        # Do not click the last element to make sure we are not scrolling to
-        # the bottom at once.
         self.list_view.click_element('testListElement5')
         self.assertEqual(self.label.text, 'testListElement5')
 
@@ -666,11 +666,11 @@ MainView {
         self.list_view.click_element('testListElement8')
         self.list_view.click_element('testListElement9')
 
+        # Click the first element out of view to make sure we are not scrolling
+        # to the top at once.
         self.assertFalse(
             self.list_view._is_element_fully_visible('testListElement4'))
 
-        # Do not click the first element to make sure we are not scrolling to
-        # the top at once.
         self.list_view.click_element('testListElement4')
         self.assertEqual(self.label.text, 'testListElement4')
 
