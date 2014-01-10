@@ -73,6 +73,13 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
     }
 
     int result = 0;
+    // save the previous group
+    bool restorePreviousGroup = !m_archive->group().isEmpty();
+    if (restorePreviousGroup) {
+        m_groupStack.push(m_archive->group());
+        // leave the group so we can read the next one
+        m_archive->endGroup();
+    }
     m_archive.data()->beginGroup(id);
     QStringList propertyNames = m_archive.data()->childKeys();
     Q_FOREACH(const QString &propertyName, propertyNames) {
@@ -91,6 +98,10 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
         }
     }
     m_archive.data()->endGroup();
+    // restore leaved group if needed
+    if (restorePreviousGroup) {
+        m_archive->beginGroup(m_groupStack.pop());
+    }
     return result;
 }
 
