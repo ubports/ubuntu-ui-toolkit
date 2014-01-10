@@ -609,6 +609,10 @@ MainView {
                     objectName: "testListElement8"
                     label: "test list element 8"
                 }
+                ListElement {
+                    objectName: "testListElement9"
+                    label: "test list element 9"
+                }
             }
 
             ListView {
@@ -651,17 +655,24 @@ MainView {
         self.assertFalse(
             self.list_view._is_element_fully_visible('testListElement5'))
 
+        # Do not click the last element to make sure we are not scrolling to
+        # the bottom at once.
         self.list_view.click_element('testListElement5')
         self.assertEqual(self.label.text, 'testListElement5')
 
     def test_click_element_outside_view_above(self):
+        # First we need to scroll to the 8th element in order for the 9th to be
+        # created.
         self.list_view.click_element('testListElement8')
+        self.list_view.click_element('testListElement9')
 
         self.assertFalse(
-            self.list_view._is_element_fully_visible('testListElement1'))
+            self.list_view._is_element_fully_visible('testListElement4'))
 
-        self.list_view.click_element('testListElement1')
-        self.assertEqual(self.label.text, 'testListElement1')
+        # Do not click the first element to make sure we are not scrolling to
+        # the top at once.
+        self.list_view.click_element('testListElement4')
+        self.assertEqual(self.label.text, 'testListElement4')
 
 
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
