@@ -105,6 +105,7 @@ private Q_SLOTS:
 
         if (QuickUtils::instance().inputMethodProvider().isEmpty()) {
             setenv("MOUSEFILTER_OSK_TEST_AREA", "true", 1);
+            qDebug() << "No input provider set, simulate OSK panel";
         }
 
     }
