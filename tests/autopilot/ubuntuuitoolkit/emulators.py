@@ -406,7 +406,11 @@ class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
                 'Button with text "{0}" not found.'.format(text))
         self.pointing_device.click_object(button)
         if self.autoClose:
-            self.visible.wait_for(False)
+            try:
+                self.visible.wait_for(False)
+            except dbus.StateNotFoundError:
+                # The popover was removed from the tree.
+                pass
 
     def _get_button(self, text):
         buttons = self.select_many('Empty')
@@ -472,16 +476,13 @@ class TextField(UbuntuUIToolkitEmulatorBase):
             of the text field. Default is True.
 
         """
-        self.pointing_device.click_object(self)
-        if clear:
-            self.clear()
-        else:
-            if not self.is_empty():
-                self.keyboard.press_and_release('End')
-        self.keyboard.type(text)
-        if platform.model() != 'Desktop':
-            # TODO this is a bad name. Ask veebers before merge.
-            self.keyboard.on_test_end()
+        with self.keyboard.focused_type(self):
+            if clear:
+                self.clear()
+            else:
+                if not self.is_empty():
+                    self.keyboard.press_and_release('End')
+            self.keyboard.type(text)
 
     def clear(self):
         """Clear the text field."""
@@ -491,9 +492,6 @@ class TextField(UbuntuUIToolkitEmulatorBase):
             else:
                 self._clear_with_keys()
             self.text.wait_for('')
-            if platform.model() != 'Desktop':
-                # TODO this is a bad name. Ask veebers before merge.
-                self.keyboard.on_test_end()
 
     def is_empty(self):
         """Return True if the text field is empty. False otherwise."""
