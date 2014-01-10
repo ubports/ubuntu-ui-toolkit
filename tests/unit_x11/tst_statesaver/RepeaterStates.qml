@@ -33,7 +33,7 @@ Item {
                 width: root.width
                 height: 20
                 objectName: "testItem"
-//                StateSaver.properties: "height"
+                StateSaver.properties: "height"
             }
         }
     }
