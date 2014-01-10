@@ -253,41 +253,31 @@ StyledItem {
     }
 
     /*!
-      \qmlproperty int year
-      \readonly
-      Properties declared for convenience, representing the \b year, \b month,
-      \b day, \b week as well as \b hours, \b minutes and \b seconds values of
-      the \l date property.
+      For convenience, the \b year value of the \l date property.
       */
     readonly property int year: datePicker.date.getFullYear()
     /*!
-      \qmlproperty int month
-      \readonly
+      For convenience, the \b month value of the \l date property.
      */
     readonly property int month: datePicker.date.getMonth()
     /*!
-      \qmlproperty int day
-      \readonly
+      For convenience, the \b day value of the \l date property.
      */
     readonly property int day: datePicker.date.getDate()
     /*!
-      \qmlproperty int week
-      \readonly
+      For convenience, the \b week value of the \l date property.
      */
     readonly property int week: datePicker.date.getWeek()
     /*!
-      \qmlproperty int hours
-      \readonly
+      For convenience, the \b hours value of the \l date property.
      */
     readonly property int hours: datePicker.date.getHours()
     /*!
-      \qmlproperty int minutes
-      \readonly
+      For convenience, the \b minutes value of the \l date property.
      */
     readonly property int minutes: datePicker.date.getMinutes()
     /*!
-      \qmlproperty int seconds
-      \readonly
+      For convenience, the \b seconds value of the \l date property.
      */
     readonly property int seconds: datePicker.date.getSeconds()
 
