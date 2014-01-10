@@ -100,11 +100,13 @@ PopupBase {
 
     /*!
       \qmlproperty real contentWidth
-      \qmlproperty real contentHeight
       The properties can be used to alter the default content width and heights.
       */
     property alias contentWidth: foreground.width
-    /*! \internal */
+    /*!
+      \qmlproperty real contentHeight
+      The properties can be used to alter the default content width and heights.
+     */
     property alias contentHeight: foreground.height
 
     /*!
