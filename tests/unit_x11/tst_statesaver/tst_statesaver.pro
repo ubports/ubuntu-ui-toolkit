@@ -21,4 +21,5 @@ OTHER_FILES += \
     SavePropertyGroups.qml \
     ComponentsWithStateSavers.qml \
     CustomControl.qml \
-    ComponentsWithStateSaversNoId.qml
+    ComponentsWithStateSaversNoId.qml \
+    NestedDynamics.qml
