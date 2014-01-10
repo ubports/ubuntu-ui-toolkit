@@ -22,4 +22,5 @@ OTHER_FILES += \
     ComponentsWithStateSavers.qml \
     CustomControl.qml \
     ComponentsWithStateSaversNoId.qml \
-    NestedDynamics.qml
+    NestedDynamics.qml \
+    RepeaterStates.qml

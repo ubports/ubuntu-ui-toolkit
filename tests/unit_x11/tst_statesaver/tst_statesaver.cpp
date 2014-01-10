@@ -28,6 +28,7 @@
 #include <QMatrix4x4>
 #include <QtQuick/QQuickItem>
 #include <QtQml/QQmlProperty>
+#include "quickutils.h"
 
 #define protected public
 #include "ucstatesaver.h"
@@ -434,6 +435,38 @@ private Q_SLOTS:
         testItem = view->rootObject()->findChild<QObject*>("updated");
         QVERIFY(testItem);
         delete view;
+    }
+
+    void test_repeaterStates()
+    {
+        QScopedPointer<QQuickView> view(createView("RepeaterStates.qml"));
+        QVERIFY(view);
+        QQuickItem *column = view->rootObject()->findChild<QQuickItem*>("column");
+        QVERIFY(column);
+
+        QList<QQuickItem*> items = column->childItems();
+        QCOMPARE(items.count(), 5); // 4 Rectangles + 1 Repeater
+
+        Q_FOREACH(QQuickItem *item, items) {
+            if (QuickUtils::instance().className(item) == "QQuickRectangle") {
+                item->setHeight(25);
+            }
+        }
+        view.reset();
+
+        view.reset(createView("RepeaterStates.qml"));
+        QVERIFY(view);
+        column = view->rootObject()->findChild<QQuickItem*>("column");
+        QVERIFY(column);
+
+        items = column->childItems();
+        QCOMPARE(items.count(), 5); // 4 Rectangles + 1 Repeater
+
+        Q_FOREACH(QQuickItem *item, items) {
+            if (QuickUtils::instance().className(item) == "QQuickRectangle") {
+                QCOMPARE(item->height(), 25.0);
+            }
+        }
     }
 };
 
