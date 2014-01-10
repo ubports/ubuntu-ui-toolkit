@@ -468,6 +468,76 @@ private Q_SLOTS:
             }
         }
     }
+
+    void test_ListViewItemStates()
+    {
+        QScopedPointer<QQuickView> view(createView("ListViewItems.qml"));
+        QVERIFY(view);
+        QQuickItem *list = view->rootObject()->findChild<QQuickItem*>("list");
+        QVERIFY(list);
+        QQuickItem *contentItem = list->property("contentItem").value<QQuickItem*>();
+        QVERIFY(contentItem);
+        QList<QQuickItem*> items = contentItem->childItems();
+
+        int testItemCount = 0;
+        Q_FOREACH(QQuickItem *item, items) {
+            if (item->objectName() == "testItem") {
+                item->setHeight(25);
+                testItemCount++;
+            }
+        }
+        QCOMPARE(testItemCount, 2);
+        view.reset();
+
+        view.reset(createView("ListViewItems.qml"));
+        QVERIFY(view);
+        list = view->rootObject()->findChild<QQuickItem*>("list");
+        QVERIFY(list);
+        contentItem = list->property("contentItem").value<QQuickItem*>();
+        QVERIFY(contentItem);
+        items = contentItem->childItems();
+
+        Q_FOREACH(QQuickItem *item, items) {
+            if (item->objectName() == "testItem") {
+                QCOMPARE(item->height(), 25.0);
+            }
+        }
+    }
+
+    void test_GridViewItemStates()
+    {
+        QScopedPointer<QQuickView> view(createView("GridViewItems.qml"));
+        QVERIFY(view);
+        QQuickItem *list = view->rootObject()->findChild<QQuickItem*>("grid");
+        QVERIFY(list);
+        QQuickItem *contentItem = list->property("contentItem").value<QQuickItem*>();
+        QVERIFY(contentItem);
+        QList<QQuickItem*> items = contentItem->childItems();
+
+        int testItemCount = 0;
+        Q_FOREACH(QQuickItem *item, items) {
+            if (item->objectName() == "testItem") {
+                item->setHeight(25);
+                testItemCount++;
+            }
+        }
+        QCOMPARE(testItemCount, 2);
+        view.reset();
+
+        view.reset(createView("GridViewItems.qml"));
+        QVERIFY(view);
+        list = view->rootObject()->findChild<QQuickItem*>("grid");
+        QVERIFY(list);
+        contentItem = list->property("contentItem").value<QQuickItem*>();
+        QVERIFY(contentItem);
+        items = contentItem->childItems();
+
+        Q_FOREACH(QQuickItem *item, items) {
+            if (item->objectName() == "testItem") {
+                QCOMPARE(item->height(), 25.0);
+            }
+        }
+    }
 };
 
 QTEST_MAIN(tst_StateSaverTest)

@@ -23,4 +23,6 @@ OTHER_FILES += \
     CustomControl.qml \
     ComponentsWithStateSaversNoId.qml \
     NestedDynamics.qml \
-    RepeaterStates.qml
+    RepeaterStates.qml \
+    ListViewItems.qml \
+    GridViewItems.qml
