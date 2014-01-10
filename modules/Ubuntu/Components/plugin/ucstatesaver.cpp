@@ -86,12 +86,19 @@ void UCStateSaverAttachedPrivate::_q_propertyChange()
 
 QString UCStateSaverAttachedPrivate::absoluteId(const QString &id)
 {
-    QQmlContextData *cdata = QQmlContextData::get(qmlContext(m_attachee));
+    QQmlContext *attacheeContext = qmlContext(m_attachee);
+    QQmlContextData *cdata = QQmlContextData::get(attacheeContext);
     QQmlData *ddata = QQmlData::get(m_attachee);
     QString path = cdata->url.path().replace('/', '_') + ':'
             + QString::number(ddata->lineNumber) + ':'
             + QString::number(ddata->columnNumber) + ':' + id;
     QObject *parent = m_attachee->parent();
+
+    // check whether we have an "index" context property defined
+    QVariant indexValue = attacheeContext->contextProperty("index");
+    if (indexValue.isValid() && (indexValue.type() == QVariant::Int)) {
+        path += indexValue.toString();
+    }
 
     while (parent) {
         QString parentId = qmlContext(parent)->nameForObject(parent);
