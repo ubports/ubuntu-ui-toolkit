@@ -134,7 +134,6 @@ Depends: ${misc:Depends},
          libqt5widgets5,
          python-autopilot (>= 1.4),
          python-mock,
-         ubuntu-keyboard-autopilot,
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
 Description: Test package for Ubuntu UI Toolkit
  Autopilot tests for the ubuntu-ui-toolkit package

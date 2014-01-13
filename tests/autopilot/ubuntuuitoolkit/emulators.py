@@ -51,19 +51,13 @@ def get_pointing_device():
 
 
 def get_keyboard():
-    """Return the keyboard depending on the platform."""
-    if platform.model() == 'Desktop':
-        keyboard = input.Keyboard.create()
-    else:
-        keyboard = input.Keyboard.create(preferred_backend='OSK')
-    return keyboard
+    """Return the keyboard device."""
+    # TODO return the OSK if we are on the phone. --elopio - 2014-01-13
+    return input.Keyboard.create()
 
 
 def check_autopilot_version():
     """Check that the Autopilot installed version matches the one required.
-
-    If the platform is `Desktop`, the keyboard will be the default created by
-    autopilot. If not, it will be the on-screen keyboard.
 
     :raise ToolkitEmulatorException: If the installed Autopilot version does't
         match the required by the emulators.
