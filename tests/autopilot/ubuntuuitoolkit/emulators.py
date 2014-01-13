@@ -500,11 +500,12 @@ class TextField(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.click_object(clear_button)
 
     def _clear_with_keys(self):
-        try:
+        if platform.model() == 'Desktop':
             self._select_all()
-        except dbus.StateNotFoundError:
-            # Mako is not showing this popup. Is it a bug?
-            # DO NOT MERGE UNTIL THIS IS SOLVED
+        else:
+            # Touch tap currently doesn't have a press_duration parameter, so
+            # we can't show the popover. Reported as bug http://pad.lv/1268782
+            # --elopio - 2014-01-13
             self.keyboard.press_and_release('End')
         while not self.is_empty():
             # We delete with backspace because the on-screen keyboard has that
