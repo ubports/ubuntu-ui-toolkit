@@ -60,7 +60,7 @@ StyledItem {
     property Flickable target: parent
 
     property bool waitForCompletion: true
-    readonly property alias inProgress: internals.refreshInProgress
+    readonly property alias refreshing: internals.refreshing
 
     property string pullMessageString: i18n.tr("Pull and hold to refresh...")
     property string releaseMessageString: i18n.tr("Release to refresh...")
@@ -68,7 +68,7 @@ StyledItem {
     signal refresh()
 
     function complete() {
-        internals.refreshInProgress = false;
+        internals.refreshing = false;
     }
 
     style: Theme.createStyleComponent("RefreshControlStyle.qml", control)
@@ -81,7 +81,7 @@ StyledItem {
 
     QtObject {
         id: internals
-        property bool refreshInProgress: false
+        property bool refreshing: false
     }
 
     // catch when to update
@@ -90,7 +90,7 @@ StyledItem {
         onDraggingChanged: {
             if (!control.parent.dragging && __styleInstance.puller) {
                 if (control.waitForCompletion) {
-                    internals.refreshInProgress = true;
+                    internals.refreshing = true;
                 }
                 control.refresh();
             }

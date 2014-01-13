@@ -79,6 +79,7 @@ MainView {
 
                 RefreshControl {
                     id: refreshControl
+                    waitForCompletion: false
                     onRefresh: listModel.refresh()
                 }
             }

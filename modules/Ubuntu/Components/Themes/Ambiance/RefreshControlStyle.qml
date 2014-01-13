@@ -58,8 +58,8 @@ Row {
 
     states: [
         State {
-            name: "flip-to-refresh"
-            when: (contentY < -threshold) && !styledItem.inProgress
+            name: "release-to-refresh"
+            when: (contentY < -threshold) && !styledItem.refreshing
             PropertyChanges {
                 target: pullImage
                 rotation: -180
@@ -75,15 +75,15 @@ Row {
         },
         State {
             name: ""
-            when: !styledItem.inProgress
+            when: !styledItem.refreshing
             PropertyChanges {
                 target: style
                 puller: false
             }
         },
         State {
-            name: "pending-refresh"
-            when: styledItem.inProgress
+            name: "refresh-in-progress"
+            when: styledItem.refreshing
             PropertyChanges {
                 target: pullImage
                 visible: false
@@ -112,7 +112,7 @@ Row {
     transitions: [
         Transition {
             from: ""
-            to: "flip-to-refresh"
+            to: "release-to-refresh"
             reversible: true
             PropertyAnimation {
                 target: pullImage
@@ -122,7 +122,7 @@ Row {
             }
         },
         Transition {
-            from: "pending-refresh"
+            from: "refresh-in-progress"
             to: ""
             onRunningChanged: print("yadayada")
             PropertyAnimation {
@@ -141,7 +141,6 @@ Row {
         value: Transition {
             enabled: puller
             PropertyAnimation {
-                id: reboundAnimation
                 duration: UbuntuAnimation.FastDuration
                 easing: UbuntuAnimation.StandardEasing
                 property: "y"
