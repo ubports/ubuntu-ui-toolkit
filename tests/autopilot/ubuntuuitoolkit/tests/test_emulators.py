@@ -550,6 +550,131 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
         self.assertThat(waiting_time, LessThan(2))
 
 
+class QQuickListViewTestCase(tests.QMLStringAppTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(20)
+
+    Page {
+
+        Column {
+            id: column
+            width: units.gu(48)
+            height: units.gu(20)
+
+            Label {
+                id: clickedLabel
+                objectName: "clickedLabel"
+                text: "No element clicked."
+            }
+
+            ListModel {
+                id: testModel
+
+                ListElement {
+                    objectName: "testListElement1"
+                    label: "test list element 1"
+                }
+                ListElement {
+                    objectName: "testListElement2"
+                    label: "test list element 2"
+                }
+                ListElement {
+                    objectName: "testListElement3"
+                    label: "test list element 3"
+                }
+                ListElement {
+                    objectName: "testListElement4"
+                    label: "test list element 4"
+                }
+                ListElement {
+                    objectName: "testListElement5"
+                    label: "test list element 5"
+                }
+                ListElement {
+                    objectName: "testListElement6"
+                    label: "test list element 6"
+                }
+                ListElement {
+                    objectName: "testListElement7"
+                    label: "test list element 7"
+                }
+                ListElement {
+                    objectName: "testListElement8"
+                    label: "test list element 8"
+                }
+                ListElement {
+                    objectName: "testListElement9"
+                    label: "test list element 9"
+                }
+            }
+
+            ListView {
+                id: testListView
+                objectName: "testListView"
+                anchors.left: parent.left
+                anchors.right: parent.right
+                height: column.height - clickedLabel.paintedHeight
+                clip: true
+                model: testModel
+
+                delegate: ListItem.Standard {
+                    text: model.label
+                    objectName: model.objectName
+                    onClicked: clickedLabel.text = model.objectName
+                    height: units.gu(5)
+                }
+            }
+        }
+    }
+}
+""")
+
+    def setUp(self):
+        super(QQuickListViewTestCase, self).setUp()
+        self.list_view = self.main_view.select_single(
+            emulators.QQuickListView, objectName='testListView')
+        self.label = self.main_view.select_single(
+            'Label', objectName='clickedLabel')
+        self.assertEqual(self.label.text, 'No element clicked.')
+
+    def test_qquicklistview_emulator(self):
+        self.assertIsInstance(self.list_view, emulators.QQuickListView)
+
+    def test_click_element(self):
+        self.list_view.click_element('testListElement1')
+        self.assertEqual(self.label.text, 'testListElement1')
+
+    def test_click_element_outside_view_below(self):
+        # Click the first element out of view to make sure we are not scrolling
+        # to the bottom at once.
+        self.assertFalse(
+            self.list_view._is_element_fully_visible('testListElement5'))
+
+        self.list_view.click_element('testListElement5')
+        self.assertEqual(self.label.text, 'testListElement5')
+
+    def test_click_element_outside_view_above(self):
+        # First we need to scroll to the 8th element in order for the 9th to be
+        # created.
+        self.list_view.click_element('testListElement8')
+        self.list_view.click_element('testListElement9')
+
+        # Click the first element out of view to make sure we are not scrolling
+        # to the top at once.
+        self.assertFalse(
+            self.list_view._is_element_fully_visible('testListElement4'))
+
+        self.list_view.click_element('testListElement4')
+        self.assertEqual(self.label.text, 'testListElement4')
+
+
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
