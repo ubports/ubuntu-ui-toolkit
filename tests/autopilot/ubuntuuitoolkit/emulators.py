@@ -500,9 +500,16 @@ class TextField(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.click_object(clear_button)
 
     def _clear_with_keys(self):
-        self._select_all()
-        # We delete with backspace because the on-screen keyboard has that key.
-        self.keyboard.press_and_release('BackSpace')
+        try:
+            self._select_all()
+        except dbus.StateNotFoundError:
+            # Mako is not showing this popup. Is it a bug?
+            # DO NOT MERGE UNTIL THIS IS SOLVED
+            self.keyboard.press_and_release('End')
+        while not self.is_empty():
+            # We delete with backspace because the on-screen keyboard has that
+            # key.
+            self.keyboard.press_and_release('BackSpace')
 
     def _select_all(self):
         self.pointing_device.click_object(self, press_duration=1)
