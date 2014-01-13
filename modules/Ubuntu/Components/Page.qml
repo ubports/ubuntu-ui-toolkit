@@ -72,7 +72,7 @@ PageTreeNode {
         right: parent ? parent.right : undefined
         bottom: parent ? parent.bottom : undefined
     }
-    // avoid using parent.height because that may be a Loader which should not have its height set.
+    // avoid using parent.height because parent may be a Loader which does not have its height set.
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
     /*!
