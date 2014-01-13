@@ -58,18 +58,17 @@ StyledItem {
     id: control
 
     property Flickable target: parent
-    property var model
 
-    property string refreshMethod
+    property bool waitForCompletion: true
+    readonly property alias inProgress: internals.refreshInProgress
 
     property string pullMessageString: i18n.tr("Pull and hold to refresh...")
     property string releaseMessageString: i18n.tr("Release to refresh...")
 
-    function refreshBegins() {
-        __styleInstance.start();
-    }
-    function refreshEnds() {
-        __styleInstance.stop();
+    signal refresh()
+
+    function complete() {
+        internals.refreshInProgress = false;
     }
 
     style: Theme.createStyleComponent("RefreshControlStyle.qml", control)
@@ -80,23 +79,21 @@ StyledItem {
     }
     y: __styleInstance ? __styleInstance.layoutY : 0
 
+    QtObject {
+        id: internals
+        property bool refreshInProgress: false
+    }
+
     // catch when to update
     Connections {
         target: control.target
-//        onMovementEnded: {
-//            if (__styleInstance.puller) {
-//                // refresh target
-//                control.refreshBegins();
-//                control.target[control.refreshMethod]();
-//            }
-//            __styleInstance.stop();
-//        }
         onDraggingChanged: {
             if (!control.parent.dragging && __styleInstance.puller) {
-                control.refreshBegins();
-                control.model[control.refreshMethod]();
+                if (control.waitForCompletion) {
+                    internals.refreshInProgress = true;
+                }
+                control.refresh();
             }
-//            __styleInstance.stop();
         }
     }
 }

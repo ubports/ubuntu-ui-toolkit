@@ -45,7 +45,10 @@ MainView {
     Timer {
         id: refreshDelay
         interval: 2000
-        onTriggered: refreshControl.refreshEnds()
+        onTriggered: {
+            refreshControl.complete()
+            flickableRefresh.complete()
+        }
     }
 
     Column {
@@ -76,8 +79,7 @@ MainView {
 
                 RefreshControl {
                     id: refreshControl
-                    model: listModel
-                    refreshMethod: "refresh"
+                    onRefresh: listModel.refresh()
                 }
             }
         }
@@ -91,9 +93,9 @@ MainView {
             contentHeight: rect.height
             contentWidth: rect.width
             RefreshControl {
+                id: flickableRefresh
                 parent: flicker
-                model: listModel
-                refreshMethod: "refresh"
+                onRefresh: listModel.refresh()
             }
 
             Rectangle {

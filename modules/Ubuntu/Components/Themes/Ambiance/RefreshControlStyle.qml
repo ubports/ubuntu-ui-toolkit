@@ -22,18 +22,6 @@ Row {
     property real layoutY: -(contentY + pullImage.height + units.gu(1.5))
     property real threshold: styledItem.height + units.gu(1.5)
 
-    function start() {
-        state = "pending-refresh";
-        flickable.contentY = -units.gu(10)// + flickable.originY;
-    }
-
-    function stop() {
-        flickable.contentY = 0;
-        puller = false;
-        print("flickable reset")
-        state = "";
-    }
-
     property Flickable flickable: styledItem.target
     property int contentY: flickable ? (flickable.contentY - flickable.originY) : 0
     property int mappedY: styledItem.mapToItem(flickable, 0, contentY).y
@@ -63,14 +51,15 @@ Row {
     }
     ActivityIndicator {
         id: busyIndicator
-        running: !visible
-        visible: false
+        running: false
     }
+
+    onStateChanged: print("state="+state)
 
     states: [
         State {
-            name: "start-refreshing"
-            when: contentY < -threshold
+            name: "flip-to-refresh"
+            when: (contentY < -threshold) && !styledItem.inProgress
             PropertyChanges {
                 target: pullImage
                 rotation: -180
@@ -85,7 +74,16 @@ Row {
             }
         },
         State {
+            name: ""
+            when: !styledItem.inProgress
+            PropertyChanges {
+                target: style
+                puller: false
+            }
+        },
+        State {
             name: "pending-refresh"
+            when: styledItem.inProgress
             PropertyChanges {
                 target: pullImage
                 visible: false
@@ -98,45 +96,57 @@ Row {
             }
             PropertyChanges {
                 target: busyIndicator
-                visible: true
+                running: true
+            }
+            PropertyChanges {
+                target: flickable
+                topMargin: units.gu(5)
+            }
+            AnchorChanges {
+                target: style
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.left: undefined
             }
         }
-
     ]
     transitions: [
         Transition {
             from: ""
-            to: "start-refreshing"
+            to: "flip-to-refresh"
             reversible: true
-            UbuntuNumberAnimation {
+            PropertyAnimation {
                 target: pullImage
                 property: "rotation"
+                duration: UbuntuAnimation.FastDuration
+                easing: UbuntuAnimation.StandardEasing
+            }
+        },
+        Transition {
+            from: "pending-refresh"
+            to: ""
+            onRunningChanged: print("yadayada")
+            PropertyAnimation {
+                target: flickable
+                property: "topMargin"
+                duration: UbuntuAnimation.SleepyDuration
+                easing: UbuntuAnimation.StandardEasing
             }
         }
     ]
 
     // rebound transition
-//    Binding {
-//        target: flickable
-//        property: "rebound"
-//        value: Transition {
-//            enabled: puller
-//            SequentialAnimation {
-//                PropertyAnimation {
-//                    id: reboundAnimation
-//                    duration: UbuntuAnimation.FastDuration
-//                    easing: UbuntuAnimation.StandardEasing
-//                    property: "y"
-//                    to: units.gu(5) - flickable.originY
-//                }
-//                ScriptAction {
-//                    script: {
-//                        flickable.contentY = -units.gu(5) + flickable.originY;
-//                        style.state = "pending-refresh";
-//                    }
-//                }
-//            }
-//        }
-//    }
+    Binding {
+        target: flickable
+        property: "rebound"
+        value: Transition {
+            enabled: puller
+            PropertyAnimation {
+                id: reboundAnimation
+                duration: UbuntuAnimation.FastDuration
+                easing: UbuntuAnimation.StandardEasing
+                property: "y"
+            }
+        }
+    }
 }
 
