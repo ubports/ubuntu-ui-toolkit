@@ -80,7 +80,7 @@ Row {
             }
             PropertyChanges {
                 target: flickable
-                topMargin: units.gu(5)
+                topMargin: style.layoutHeight
             }
             AnchorChanges {
                 target: style
