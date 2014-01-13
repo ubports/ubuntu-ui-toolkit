@@ -98,7 +98,7 @@ class GenericTests(gallery.GalleryTestCase):
 class OpenPagesTestCase(gallery.GalleryTestCase):
 
     names = [
-        'navigation', 'toggles', 'buttons', 'sliders', 'textfields',
+        'navigation', 'toggles', 'buttons', 'sliders', 'textinputs',
         'optionSelectors', 'pickers', 'progressBars', 'ubuntuShapes', 'icons',
         'labels', 'listItems', 'dialogs', 'popovers', 'sheets', 'animations'
     ]
@@ -118,7 +118,7 @@ class OpenPagesTestCase(gallery.GalleryTestCase):
             'Standard', objectName=self.element_name)
         element.selected.wait_for(True)
         self.checkPageHeader(element.text)
-        if self.template_name == 'textfieldsTemplate':
+        if self.template_name == 'textinputsTemplate':
             page_type = 'TextInputs'
         else:
             page_type = 'Template'

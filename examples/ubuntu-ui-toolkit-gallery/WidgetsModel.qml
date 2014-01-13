@@ -40,7 +40,7 @@ ListModel {
         source: "Sliders.qml"
     }
     ListElement {
-        objectName: "textfieldsElement"
+        objectName: "textinputsElement"
         label: "Text Field"
         source: "TextInputs.qml"
     }
