@@ -18,13 +18,10 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Row {
-    property bool puller: false
-    property real layoutY: -(contentY + pullImage.height + units.gu(1.5))
-    property real threshold: styledItem.height + units.gu(1.5)
+    property real layoutHeight: Math.max(pullImage.paintedHeight, pullLabel.paintedHeight, busyIndicator.height) + units.gu(1.5)
+    property real flipThreshold: layoutHeight + units.gu(1.5)
 
     property Flickable flickable: styledItem.target
-    property int contentY: flickable ? (flickable.contentY - flickable.originY) : 0
-    property int mappedY: styledItem.mapToItem(flickable, 0, contentY).y
 
     id: style
     anchors {
@@ -33,7 +30,6 @@ Row {
     }
     spacing: pullImage.width / 2
     width: pullImage.paintedWidth + pullLabel.paintedWidth + spacing
-    //    opacity: -pullImage.rotation / style.rotationThreshold
 
     Image {
         id: pullImage
@@ -47,43 +43,27 @@ Row {
             bottom: pullImage.bottom
         }
         verticalAlignment: Text.AlignVCenter
-        text: styledItem.pullMessageString
+        text: styledItem.pullText
     }
     ActivityIndicator {
         id: busyIndicator
         running: false
     }
 
-    onStateChanged: print("state="+state)
-
     states: [
         State {
             name: "release-to-refresh"
-            when: (contentY < -threshold) && !styledItem.refreshing
             PropertyChanges {
                 target: pullImage
                 rotation: -180
             }
             PropertyChanges {
-                target: style
-                puller: true
-            }
-            PropertyChanges {
                 target: pullLabel
-                text: styledItem.releaseMessageString
-            }
-        },
-        State {
-            name: ""
-            when: !styledItem.refreshing
-            PropertyChanges {
-                target: style
-                puller: false
+                text: styledItem.releaseText
             }
         },
         State {
             name: "refresh-in-progress"
-            when: styledItem.refreshing
             PropertyChanges {
                 target: pullImage
                 visible: false
@@ -133,19 +113,5 @@ Row {
             }
         }
     ]
-
-    // rebound transition
-    Binding {
-        target: flickable
-        property: "rebound"
-        value: Transition {
-            enabled: puller
-            PropertyAnimation {
-                duration: UbuntuAnimation.FastDuration
-                easing: UbuntuAnimation.StandardEasing
-                property: "y"
-            }
-        }
-    }
 }
 

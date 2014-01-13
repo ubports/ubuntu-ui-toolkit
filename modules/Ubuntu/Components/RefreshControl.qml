@@ -62,8 +62,8 @@ StyledItem {
     property bool waitForCompletion: true
     readonly property alias refreshing: internals.refreshing
 
-    property string pullMessageString: i18n.tr("Pull and hold to refresh...")
-    property string releaseMessageString: i18n.tr("Release to refresh...")
+    property string pullText: i18n.tr("Pull to refresh...")
+    property string releaseText: i18n.tr("Release to refresh...")
 
     signal refresh()
 
@@ -77,18 +77,37 @@ StyledItem {
         left: target.left
         right: target.right
     }
-    y: __styleInstance ? __styleInstance.layoutY : 0
+    y: -(internals.contentY + __styleInstance.layoutHeight)
 
-    QtObject {
+    Item {
         id: internals
         property bool refreshing: false
+        property bool triggerRefresh: false
+        property real contentY: target.contentY - target.originY
+        property real threshold: control.__styleInstance.flipThreshold
+
+        states: [
+            State {
+                name: "release-to-refresh"
+                when: (internals.contentY < -internals.threshold) && !internals.refreshing
+                PropertyChanges {
+                    target: internals
+                    triggerRefresh: true
+                }
+            },
+            State {
+                name: "refresh-in-progress"
+                when: internals.refreshing && control.waitForCompletion
+            }
+        ]
+        onStateChanged: control.__styleInstance.state = state
     }
 
     // catch when to update
     Connections {
         target: control.target
         onDraggingChanged: {
-            if (!control.parent.dragging && __styleInstance.puller) {
+            if (!control.parent.dragging && internals.triggerRefresh) {
                 if (control.waitForCompletion) {
                     internals.refreshing = true;
                 }
