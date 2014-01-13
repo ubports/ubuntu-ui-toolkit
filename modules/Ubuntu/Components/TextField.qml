@@ -539,13 +539,19 @@ ActionItem {
       horizontal alignment of TextField, use the read-only property effectiveHorizontalAlignment.
 
       \qmlproperty enumeration horizontalAlignment
-      \qmlproperty enumeration effectiveHorizontalAlignment
-      \qmlproperty enumeration verticalAlignment
     */
     property alias horizontalAlignment: editor.horizontalAlignment
-    /*! \internal */
+    /*!
+      \qmlproperty enumeration effectiveHorizontalAlignment
+
+      See \l horizontalAlignment for details.
+    */
     property alias effectiveHorizontalAlignment: editor.effectiveHorizontalAlignment
-    /*! \internal */
+    /*!
+      \qmlproperty enumeration verticalAlignment
+
+      See \l horizontalAlignment for details.
+     */
     property alias verticalAlignment: editor.verticalAlignment
 
     /*!
