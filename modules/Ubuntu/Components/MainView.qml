@@ -417,4 +417,7 @@ PageTreeNode {
             UbuntuApplication.applicationName = applicationName
         }
     }
+
+    PerformanceOverlay {
+    }
 }

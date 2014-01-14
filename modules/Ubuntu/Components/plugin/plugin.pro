@@ -11,7 +11,7 @@ equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT += v8-private
 }
 
-CONFIG += qt plugin no_keywords
+CONFIG += qt plugin no_keywords egl
 
 QMAKE_CXXFLAGS += -Werror
 
@@ -58,7 +58,8 @@ HEADERS += plugin.h \
     ucstatesaver.h \
     statesaverbackend_p.h \
     ucstatesaver_p.h \
-    ucurihandler.h
+    ucurihandler.h \
+    ucperformancemetrics.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -87,7 +88,8 @@ SOURCES += plugin.cpp \
     alarmrequest_p.cpp \
     ucstatesaver.cpp \
     statesaverbackend_p.cpp \
-    ucurihandler.cpp
+    ucurihandler.cpp \
+    ucperformancemetrics.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp
