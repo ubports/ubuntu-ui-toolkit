@@ -539,18 +539,19 @@ private Q_SLOTS:
 
     void testCase_forwardedEvents()
     {
-        QScopedPointer<QQuickView*> view(loadTest("ForwardedMouseEvents.qml"));
+        QScopedPointer<QQuickView> view(loadTest("ForwardedMouseEvents.qml"));
         QVERIFY(view);
         UCMouse *filter = attachedFilter<UCMouse>(view->rootObject(), "FilterOwner");
         QVERIFY(filter);
-        QSignalSpy pressed(filter, SIGNAL(pressed(UCExtendedMouseEvent*)));
-        QSignalSpy released(filter, SIGNAL(released(UCExtendedMouseEvent*)));
-        QSignalSpy clicked(filter, SIGNAL(clicked(UCExtendedMouseEvent*)));
-        QSignalSpy positionChanged(filter, SIGNAL(positionChanged(UCExtendedMouseEvent*)));
-        QSignalSpy doubleClicked(filter, SIGNAL(doubleClicked(UCExtendedMouseEvent*)));
-        QSignalSpy pressAndHold(filter, SIGNAL(pressAndHold(UCExtendedMouseEvent*)));
-        QSignalSpy entered(filter, SIGNAL(entered(UCExtendedMouseEvent*)));
-        QSignalSpy exited(filter, SIGNAL(exited(UCExtendedMouseEvent*)));
+        QQuickItem *forwarded = view->rootObject()->findChild<QQuickItem*>("other");
+        QSignalSpy pressed(forwarded, SIGNAL(pressed(QQuickMouseEvent*)));
+        QSignalSpy released(forwarded, SIGNAL(released(QQuickMouseEvent*)));
+        QSignalSpy clicked(forwarded, SIGNAL(clicked(QQuickMouseEvent*)));
+        QSignalSpy positionChanged(forwarded, SIGNAL(positionChanged(QQuickMouseEvent*)));
+        QSignalSpy doubleClicked(forwarded, SIGNAL(doubleClicked(QQuickMouseEvent*)));
+        QSignalSpy pressAndHold(forwarded, SIGNAL(pressAndHold(QQuickMouseEvent*)));
+        QSignalSpy entered(forwarded, SIGNAL(entered()));
+        QSignalSpy exited(forwarded, SIGNAL(exited()));
 
         QTest::mouseClick(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(2), UCUnits::instance().gu(2)));
         QTest::waitForEvents();

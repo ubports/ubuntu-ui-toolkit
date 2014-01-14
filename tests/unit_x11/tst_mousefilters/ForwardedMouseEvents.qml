@@ -22,21 +22,33 @@ Item {
     width: units.gu(40)
     height: units.gu(71)
 
+    MouseArea {
+        id: rootMA
+        acceptedButtons: Qt.RightButton
+        anchors.fill: parent
+        onPressed: print("pressed")
+    }
+
+    Mouse.onPressed: print("top pressed")
     Column {
         TextInput {
+            objectName: "FilterOwner"
             width: root.width
             height: units.gu(5)
 
-            Mouse.forward: [root, other]
+            Mouse.forwardTo: [root, rootMA, other]
+            Mouse.onPressed: {print("this pressed"); mouse.accepted = false}
         }
-        Item {
+        Rectangle {
             id: other
             width: root.width
             height: units.gu(5)
+            color: "blue"
 
             MouseArea {
                 anchors.fill: parent
                 objectName: "other"
+                onPressed: print("other pressed")
             }
         }
     }

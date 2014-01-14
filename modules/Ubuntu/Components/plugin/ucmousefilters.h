@@ -96,6 +96,9 @@ protected:
     virtual void saveEvent(QMouseEvent *event);
     bool isDoubleClickConnected();
     bool pointInOSK(const QPointF &point);
+    bool isMouseEvent(QEvent::Type type);
+    bool isHoverEvent(QEvent::Type type);
+    void forwardEvent(QEvent *event);
 
 protected:
     QQuickItem *m_owner;
@@ -138,8 +141,6 @@ Q_SIGNALS:
 protected:
     QMouseEvent mapMouseToOwner(QObject *target, QMouseEvent* event);
     QHoverEvent mapHoverToOwner(QObject *target, QHoverEvent *event);
-    bool isMouseEvent(QEvent::Type type);
-    bool isHoverEvent(QEvent::Type type);
     virtual bool eventFilter(QObject *, QEvent *);
     bool contains(QMouseEvent *mouse);
 
