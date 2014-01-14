@@ -129,7 +129,7 @@ private Q_SLOTS:
         QSignalSpy entered(filter, SIGNAL(entered(UCExtendedMouseEvent*)));
         QSignalSpy exited(filter, SIGNAL(exited(UCExtendedMouseEvent*)));
 
-        QTest::mouseClick(view.data(), Qt::LeftButton, 0, QPoint(10, 10));
+        QTest::mouseClick(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(2), UCUnits::instance().gu(2)));
         QTest::waitForEvents();
         QCOMPARE(view->rootObject()->hasFocus(), true);
         QCOMPARE(pressed.count(), 1);
@@ -164,6 +164,126 @@ private Q_SLOTS:
         QCOMPARE(released.count(), 1);
         QCOMPARE(clicked.count(), 1);
         QCOMPARE(positionChanged.count(), 0);
+        QCOMPARE(doubleClicked.count(), 0);
+        QCOMPARE(pressAndHold.count(), 0);
+        QCOMPARE(entered.count(), 1);
+        QCOMPARE(exited.count(), 1);
+    }
+
+    void testCase_pressedInsideTextInputTolerance()
+    {
+        QScopedPointer<QQuickView> view(loadTest("FilterTextInput.qml"));
+        QVERIFY(view);
+        UCMouse *filter = attachedFilter<UCMouse>(view->rootObject(), "FilterOwner");
+        QVERIFY(filter);
+        QSignalSpy pressed(filter, SIGNAL(pressed(UCExtendedMouseEvent*)));
+        QSignalSpy released(filter, SIGNAL(released(UCExtendedMouseEvent*)));
+        QSignalSpy clicked(filter, SIGNAL(clicked(UCExtendedMouseEvent*)));
+        QSignalSpy positionChanged(filter, SIGNAL(positionChanged(UCExtendedMouseEvent*)));
+        QSignalSpy doubleClicked(filter, SIGNAL(doubleClicked(UCExtendedMouseEvent*)));
+        QSignalSpy pressAndHold(filter, SIGNAL(pressAndHold(UCExtendedMouseEvent*)));
+        QSignalSpy entered(filter, SIGNAL(entered(UCExtendedMouseEvent*)));
+        QSignalSpy exited(filter, SIGNAL(exited(UCExtendedMouseEvent*)));
+
+        QTest::mousePress(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(2), UCUnits::instance().gu(2)));
+        QTest::mouseMove(view.data(), QPoint(UCUnits::instance().gu(2.2), UCUnits::instance().gu(2.2)));
+        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(2.2), UCUnits::instance().gu(2.2)));
+        QTest::waitForEvents();
+        QCOMPARE(view->rootObject()->hasFocus(), true);
+        QCOMPARE(pressed.count(), 1);
+        QCOMPARE(released.count(), 1);
+        QCOMPARE(clicked.count(), 1);
+        QCOMPARE(positionChanged.count(), 1);
+        QCOMPARE(doubleClicked.count(), 0);
+        QCOMPARE(pressAndHold.count(), 0);
+        QCOMPARE(entered.count(), 1);
+        QCOMPARE(exited.count(), 1);
+    }
+
+    void testCase_pressedOutsideTextInputTolerance()
+    {
+        QScopedPointer<QQuickView> view(loadTest("FilterInverseTextInput.qml"));
+        QVERIFY(view);
+        UCInverseMouse *filter = attachedFilter<UCInverseMouse>(view->rootObject(), "FilterOwner");
+        QVERIFY(filter);
+        QSignalSpy pressed(filter, SIGNAL(pressed(UCExtendedMouseEvent*)));
+        QSignalSpy released(filter, SIGNAL(released(UCExtendedMouseEvent*)));
+        QSignalSpy clicked(filter, SIGNAL(clicked(UCExtendedMouseEvent*)));
+        QSignalSpy positionChanged(filter, SIGNAL(positionChanged(UCExtendedMouseEvent*)));
+        QSignalSpy doubleClicked(filter, SIGNAL(doubleClicked(UCExtendedMouseEvent*)));
+        QSignalSpy pressAndHold(filter, SIGNAL(pressAndHold(UCExtendedMouseEvent*)));
+        QSignalSpy entered(filter, SIGNAL(entered(UCExtendedMouseEvent*)));
+        QSignalSpy exited(filter, SIGNAL(exited(UCExtendedMouseEvent*)));
+
+        QTest::mousePress(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(10), UCUnits::instance().gu(10)));
+        QTest::mouseMove(view.data(), QPoint(UCUnits::instance().gu(10.2), UCUnits::instance().gu(10.2)));
+        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(10.2), UCUnits::instance().gu(10.2)));
+        QTest::waitForEvents();
+        QCOMPARE(view->rootObject()->hasFocus(), false);
+        QCOMPARE(pressed.count(), 1);
+        QCOMPARE(released.count(), 1);
+        QCOMPARE(clicked.count(), 1);
+        QCOMPARE(positionChanged.count(), 1);
+        QCOMPARE(doubleClicked.count(), 0);
+        QCOMPARE(pressAndHold.count(), 0);
+        QCOMPARE(entered.count(), 1);
+        QCOMPARE(exited.count(), 1);
+    }
+
+    void testCase_pressedInsideTextInputOutOfTolerance()
+    {
+        QScopedPointer<QQuickView> view(loadTest("FilterTextInput.qml"));
+        QVERIFY(view);
+        UCMouse *filter = attachedFilter<UCMouse>(view->rootObject(), "FilterOwner");
+        QVERIFY(filter);
+        QSignalSpy pressed(filter, SIGNAL(pressed(UCExtendedMouseEvent*)));
+        QSignalSpy released(filter, SIGNAL(released(UCExtendedMouseEvent*)));
+        QSignalSpy clicked(filter, SIGNAL(clicked(UCExtendedMouseEvent*)));
+        QSignalSpy positionChanged(filter, SIGNAL(positionChanged(UCExtendedMouseEvent*)));
+        QSignalSpy doubleClicked(filter, SIGNAL(doubleClicked(UCExtendedMouseEvent*)));
+        QSignalSpy pressAndHold(filter, SIGNAL(pressAndHold(UCExtendedMouseEvent*)));
+        QSignalSpy entered(filter, SIGNAL(entered(UCExtendedMouseEvent*)));
+        QSignalSpy exited(filter, SIGNAL(exited(UCExtendedMouseEvent*)));
+
+        QTest::mousePress(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(2), UCUnits::instance().gu(2)));
+        QTest::mouseMove(view.data(), QPoint(UCUnits::instance().gu(2.7), UCUnits::instance().gu(2.7)));
+        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(2.7), UCUnits::instance().gu(2.7)));
+        QTest::waitForEvents();
+        QCOMPARE(view->rootObject()->hasFocus(), true);
+        QCOMPARE(pressed.count(), 1);
+        QCOMPARE(released.count(), 1);
+        QCOMPARE(clicked.count(), 0);
+        QCOMPARE(positionChanged.count(), 1);
+        QCOMPARE(doubleClicked.count(), 0);
+        QCOMPARE(pressAndHold.count(), 0);
+        QCOMPARE(entered.count(), 1);
+        QCOMPARE(exited.count(), 1);
+    }
+
+    void testCase_pressedOutsideTextInputOutOfTolerance()
+    {
+        QScopedPointer<QQuickView> view(loadTest("FilterInverseTextInput.qml"));
+        QVERIFY(view);
+        UCInverseMouse *filter = attachedFilter<UCInverseMouse>(view->rootObject(), "FilterOwner");
+        QVERIFY(filter);
+        QSignalSpy pressed(filter, SIGNAL(pressed(UCExtendedMouseEvent*)));
+        QSignalSpy released(filter, SIGNAL(released(UCExtendedMouseEvent*)));
+        QSignalSpy clicked(filter, SIGNAL(clicked(UCExtendedMouseEvent*)));
+        QSignalSpy positionChanged(filter, SIGNAL(positionChanged(UCExtendedMouseEvent*)));
+        QSignalSpy doubleClicked(filter, SIGNAL(doubleClicked(UCExtendedMouseEvent*)));
+        QSignalSpy pressAndHold(filter, SIGNAL(pressAndHold(UCExtendedMouseEvent*)));
+        QSignalSpy entered(filter, SIGNAL(entered(UCExtendedMouseEvent*)));
+        QSignalSpy exited(filter, SIGNAL(exited(UCExtendedMouseEvent*)));
+
+        QTest::mousePress(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(10), UCUnits::instance().gu(10)));
+        QTest::mouseMove(view.data(), QPoint(UCUnits::instance().gu(10.6), UCUnits::instance().gu(10.6)));
+        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(10.6), UCUnits::instance().gu(10.6)));
+        QTest::waitForEvents();
+        QCOMPARE(view->rootObject()->hasFocus(), false);
+        QCOMPARE(pressed.count(), 1);
+        QCOMPARE(released.count(), 1);
+        QCOMPARE(clicked.count(), 0);
+        QCOMPARE(positionChanged.count(), 1);
         QCOMPARE(doubleClicked.count(), 0);
         QCOMPARE(pressAndHold.count(), 0);
         QCOMPARE(entered.count(), 1);
@@ -290,7 +410,39 @@ private Q_SLOTS:
         QCOMPARE(exited.count(), 1);
     }
 
-    void testCase_pressAndMovedOutsideTextInput()
+    void testCase_pressAndMovedOutsideTextInputInTolerance()
+    {
+        QScopedPointer<QQuickView> view(loadTest("FilterInverseTextInput.qml"));
+        QVERIFY(view);
+        UCInverseMouse *filter = attachedFilter<UCInverseMouse>(view->rootObject(), "FilterOwner");
+        QVERIFY(filter);
+        QSignalSpy pressed(filter, SIGNAL(pressed(UCExtendedMouseEvent*)));
+        QSignalSpy released(filter, SIGNAL(released(UCExtendedMouseEvent*)));
+        QSignalSpy clicked(filter, SIGNAL(clicked(UCExtendedMouseEvent*)));
+        QSignalSpy positionChanged(filter, SIGNAL(positionChanged(UCExtendedMouseEvent*)));
+        QSignalSpy doubleClicked(filter, SIGNAL(doubleClicked(UCExtendedMouseEvent*)));
+        QSignalSpy pressAndHold(filter, SIGNAL(pressAndHold(UCExtendedMouseEvent*)));
+        QSignalSpy entered(filter, SIGNAL(entered(UCExtendedMouseEvent*)));
+        QSignalSpy exited(filter, SIGNAL(exited(UCExtendedMouseEvent*)));
+
+        // make sure we do not get double click because of the previous tests
+        QTest::qWait(300);
+        QTest::mousePress(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(10), UCUnits::instance().gu(10)));
+        QTest::mouseMove(view.data(), QPoint(UCUnits::instance().gu(10.5), UCUnits::instance().gu(10.5)));
+        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(10.5), UCUnits::instance().gu(10.5)));
+        QTest::waitForEvents();
+        QCOMPARE(view->rootObject()->hasFocus(), false);
+        QCOMPARE(pressed.count(), 1);
+        QCOMPARE(released.count(), 1);
+        QCOMPARE(clicked.count(), 1);
+        QCOMPARE(positionChanged.count(), 1);
+        QCOMPARE(doubleClicked.count(), 0);
+        QCOMPARE(pressAndHold.count(), 0);
+        QCOMPARE(entered.count(), 1);
+        QCOMPARE(exited.count(), 1);
+    }
+
+    void testCase_pressAndMovedOutsideTextInputOutTolerance()
     {
         QScopedPointer<QQuickView> view(loadTest("FilterInverseTextInput.qml"));
         QVERIFY(view);
@@ -314,7 +466,7 @@ private Q_SLOTS:
         QCOMPARE(view->rootObject()->hasFocus(), false);
         QCOMPARE(pressed.count(), 1);
         QCOMPARE(released.count(), 1);
-        QCOMPARE(clicked.count(), 1);
+        QCOMPARE(clicked.count(), 0);
         QCOMPARE(positionChanged.count(), 1);
         QCOMPARE(doubleClicked.count(), 0);
         QCOMPARE(pressAndHold.count(), 0);

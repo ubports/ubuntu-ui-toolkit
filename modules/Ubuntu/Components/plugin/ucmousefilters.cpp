@@ -199,6 +199,7 @@ UCMouse::UCMouse(QObject *parent)
     : QObject(parent)
     , m_owner(qobject_cast<QQuickItem*>(parent))
     , m_pressedButtons(Qt::NoButton)
+    , m_moveThreshold(UCUnits::instance().gu(0.5))
     , m_ownerHandlesMouse(m_owner && (m_owner->acceptedMouseButtons() != Qt::NoButton))
     , m_enabled(false)
     , m_moved(false)
@@ -330,6 +331,11 @@ bool UCMouse::mouseMoved(QMouseEvent *event)
     if (m_pressedButtons) {
         saveEvent(event);
 
+        // check if we should stop pressAndHold
+        if (!m_toleranceArea.contains(m_lastPos)) {
+            m_pressAndHoldTimer.stop();
+        }
+
         setHovered(true);
         m_moved = true;
         m_doubleClicked = false;
@@ -351,7 +357,8 @@ bool UCMouse::mouseReleased(QMouseEvent *event)
         // stop long press timer event
         m_pressAndHoldTimer.stop();
         bool isClicked = (m_pressedButtons & m_lastButton)
-                && !m_longPress && !m_doubleClicked;
+                && !m_longPress && !m_doubleClicked &&
+                ((m_moveThreshold <= 0.0) || m_toleranceArea.contains(m_lastPos));
         UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
                          m_pointInOSK, isClicked, m_longPress);
         Q_EMIT released(&mev);
@@ -426,6 +433,12 @@ void UCMouse::saveEvent(QMouseEvent *event)
     m_lastButtons = event->buttons();
     m_lastModifiers = event->modifiers();
     m_pointInOSK = pointInOSK(event->localPos());
+    if ((event->type() == QEvent::MouseButtonPress) && (m_moveThreshold > 0)) {
+        m_toleranceArea.setX(m_lastPos.x() - m_moveThreshold);
+        m_toleranceArea.setY(m_lastPos.y() - m_moveThreshold);
+        m_toleranceArea.setWidth(2 * m_moveThreshold);
+        m_toleranceArea.setHeight(2 * m_moveThreshold);
+    }
 }
 bool UCMouse::isDoubleClickConnected()
 {
@@ -492,6 +505,33 @@ Qt::MouseButtons UCMouse::acceptedButtons() const
 bool UCMouse::hoverEnabled() const
 {
     return m_owner->acceptHoverEvents();
+}
+
+/*!
+   \qmlproperty Mouse::mouseMoveThreshold
+   The property holds the tolerance value the mouse can move in both x and y axis
+   when the mouse is pressed, during which the \l pressAndHold() signal will still
+   be emitted and the \l clicked() signal will be emitted upon mouse release.
+
+   The tolerance area is set around the mouse position the button was pressed.
+   If the mouse moves outside of this area having the button pressed will not
+   result in emitting the \l pressAndHold() and \l clicked() signals.
+
+   The tolerance value will not be taken into account if the value set for the
+   property is 0.
+
+   The default value is 0.5 GUs.
+ */
+qreal UCMouse::mouseMoveThreshold() const
+{
+    return m_moveThreshold;
+}
+void UCMouse::setMouseMoveThreshold(qreal threshold)
+{
+    if (m_moveThreshold != threshold) {
+        m_moveThreshold = threshold;
+        Q_EMIT mouseMoveThresholdChanged();
+    }
 }
 
 /*!

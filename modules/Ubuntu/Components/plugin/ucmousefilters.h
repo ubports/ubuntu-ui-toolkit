@@ -50,6 +50,7 @@ class UCMouse : public QObject
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(Qt::MouseButtons acceptedButtons READ acceptedButtons NOTIFY acceptedButtonsChanged)
     Q_PROPERTY(bool hoverEnabled READ hoverEnabled NOTIFY hoverEnabledChanged)
+    Q_PROPERTY(qreal mouseMoveThreshold READ mouseMoveThreshold WRITE setMouseMoveThreshold NOTIFY mouseMoveThresholdChanged)
 public:
     explicit UCMouse(QObject *parent = 0);
 
@@ -59,11 +60,14 @@ public:
     virtual void setEnabled(bool enabled);
     Qt::MouseButtons acceptedButtons() const;
     bool hoverEnabled() const;
+    qreal mouseMoveThreshold() const;
+    void setMouseMoveThreshold(qreal threshold);
 
 Q_SIGNALS:
     void enabledChanged();
     void acceptedButtonsChanged();
     void hoverEnabledChanged();
+    void mouseMoveThresholdChanged();
 
     void pressed(UCExtendedMouseEvent *mouse);
     void released(UCExtendedMouseEvent *mouse);
@@ -94,12 +98,14 @@ protected:
 protected:
     QQuickItem *m_owner;
     QBasicTimer m_pressAndHoldTimer;
+    QRectF m_toleranceArea;
     QPointF m_lastPos;
     QPointF m_lastScenePos;
     Qt::MouseButton m_lastButton;
     Qt::MouseButtons m_lastButtons;
     Qt::KeyboardModifiers m_lastModifiers;
     Qt::MouseButtons m_pressedButtons;
+    qreal m_moveThreshold;
 
     bool m_ownerHandlesMouse: 1;
     bool m_enabled: 1;
