@@ -113,7 +113,6 @@ protected:
     Qt::MouseButtons m_pressedButtons;
     qreal m_moveThreshold;
 
-    bool m_ownerHandlesMouse: 1;
     bool m_enabled: 1;
     bool m_moved:1;
     bool m_longPress:1;

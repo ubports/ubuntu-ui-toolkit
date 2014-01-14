@@ -400,7 +400,7 @@ private Q_SLOTS:
         QCOMPARE(view->rootObject()->hasFocus(), true);
         QCOMPARE(pressed.count(), 1);
         QCOMPARE(released.count(), 1);
-        QCOMPARE(clicked.count(), 1);
+        QCOMPARE(clicked.count(), 0); // the move is out of the threshold
         QCOMPARE(positionChanged.count(), 1);
         QCOMPARE(doubleClicked.count(), 0);
         QCOMPARE(pressAndHold.count(), 0);
@@ -505,22 +505,6 @@ private Q_SLOTS:
         QCOMPARE(clicked.count(), 1);
     }
 
-    void testCase_filterAttachedToNonMouseHandlingItem()
-    {
-        QSignalSpy *warningSpy;
-        QScopedPointer<QQuickView> view(loadTest("AttachedToItem.qml", &warningSpy));
-        QVERIFY(view);
-        QCOMPARE(warningSpy->count(), 1);
-    }
-
-    void testCase_inverseFilterAttachedToNonMouseHandlingItem()
-    {
-        QSignalSpy *warningSpy;
-        QScopedPointer<QQuickView> view(loadTest("InverseAttachedToItem.qml", &warningSpy));
-        QVERIFY(view);
-        QCOMPARE(warningSpy->count(), 1);
-    }
-
     void testCase_mouseFilterAttachedToNonItem()
     {
         QSignalSpy *warningSpy;
@@ -541,21 +525,22 @@ private Q_SLOTS:
     {
         QScopedPointer<QQuickView> view(loadTest("ForwardedMouseEvents.qml"));
         QVERIFY(view);
-        UCMouse *filter = attachedFilter<UCMouse>(view->rootObject(), "FilterOwner");
+        UCMouse *filter = attachedFilter<UCMouse>(view->rootObject(), "target");
         QVERIFY(filter);
-        QQuickItem *forwarded = view->rootObject()->findChild<QQuickItem*>("other");
-        QSignalSpy pressed(forwarded, SIGNAL(pressed(QQuickMouseEvent*)));
-        QSignalSpy released(forwarded, SIGNAL(released(QQuickMouseEvent*)));
-        QSignalSpy clicked(forwarded, SIGNAL(clicked(QQuickMouseEvent*)));
-        QSignalSpy positionChanged(forwarded, SIGNAL(positionChanged(QQuickMouseEvent*)));
-        QSignalSpy doubleClicked(forwarded, SIGNAL(doubleClicked(QQuickMouseEvent*)));
-        QSignalSpy pressAndHold(forwarded, SIGNAL(pressAndHold(QQuickMouseEvent*)));
-        QSignalSpy entered(forwarded, SIGNAL(entered()));
-        QSignalSpy exited(forwarded, SIGNAL(exited()));
+        QQuickItem *input = view->rootObject()->findChild<QQuickItem*>("FilterOwner");
+        QVERIFY(input);
+        QSignalSpy pressed(filter, SIGNAL(pressed(UCExtendedMouseEvent*)));
+        QSignalSpy released(filter, SIGNAL(released(UCExtendedMouseEvent*)));
+        QSignalSpy clicked(filter, SIGNAL(clicked(UCExtendedMouseEvent*)));
+        QSignalSpy positionChanged(filter, SIGNAL(positionChanged(UCExtendedMouseEvent*)));
+        QSignalSpy doubleClicked(filter, SIGNAL(doubleClicked(UCExtendedMouseEvent*)));
+        QSignalSpy pressAndHold(filter, SIGNAL(pressAndHold(UCExtendedMouseEvent*)));
+        QSignalSpy entered(filter, SIGNAL(entered(UCExtendedMouseEvent*)));
+        QSignalSpy exited(filter, SIGNAL(exited(UCExtendedMouseEvent*)));
 
         QTest::mouseClick(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(2), UCUnits::instance().gu(2)));
         QTest::waitForEvents();
-        QCOMPARE(view->rootObject()->hasFocus(), true);
+        QCOMPARE(input->hasFocus(), true);
         QCOMPARE(pressed.count(), 1);
         QCOMPARE(released.count(), 1);
         QCOMPARE(clicked.count(), 1);

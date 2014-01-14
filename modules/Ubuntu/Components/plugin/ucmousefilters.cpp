@@ -36,15 +36,10 @@ const int DefaultPressAndHoldDelay = 800;
 template<typename T>
 T *createAttachedFilter(QObject *owner, const QString &qmlName)
 {
-    QString warning;
     QQuickItem *item = qobject_cast<QQuickItem*>(owner);
     if (!item) {
-        warning = UbuntuI18n::instance().tr(QString("Warning: %1 filter can only be attached to Items.").arg(qmlName));
-    } else  if (item->acceptedMouseButtons() == Qt::NoButton) {
-        warning = UbuntuI18n::instance().tr(QString("Warning: %1 filter owner does not accept any mouse button.").arg(qmlName));
-    }
-    if (!warning.isEmpty()) {
-        qmlInfo(owner) << warning << UbuntuI18n::instance().tr(" The filter will not be active.");
+        qmlInfo(owner) << UbuntuI18n::instance().
+                          tr(QString("Warning: %1 filter can only be attached to Items.").arg(qmlName));
     }
 
     T *filter = new T(owner);
@@ -96,7 +91,7 @@ bool UCExtendedMouseEvent::pointInInputArea() const
    Sometimes we need to provide additional functionality on mouse events beside
    a QML element's default behavior. Placing a MouseArea over a component however
    will grab the mouse events from the component underneath, no matter if we set
-   \l preventStealing to false or not. Setting mouse.accepted to false in onPressed
+   \l preventStealing to false or not. Setting mouse.accepted to false in \l onPressed
    would result in having the event forwarded to the MouseArea's parent, however
    MouseArea will no longer receive other mouse events.
 
@@ -117,12 +112,12 @@ bool UCExtendedMouseEvent::pointInInputArea() const
    \endqml
 
    Ubuntu UI Toolkit declares filter components similar to \l Keys, which can be
-   attached to any visual primitve. Mouse filter hjowever will have effect only
+   attached to any visual primitve. Mouse filter however will have effect only
    when attached to items handling mouse events. Events are handled through signals,
    where the event data is presented through the \a mouse parameter. Events
    should be accepted if the propagation of those to the owner primitive is not
    wanted. This is not valid to \l onClicked, \l onPressAndHold signals, which
-   being composed events and are generated due to \l onPressed - \l onReleased,
+   being composed events, are generated due to \l onPressed - \l onReleased pair,
    as well as when a mouse button is pressed and hold for a certain time.
 
    The previous code sample using Mouse filter, which will print the pressed and
@@ -200,7 +195,6 @@ UCMouse::UCMouse(QObject *parent)
     , m_owner(qobject_cast<QQuickItem*>(parent))
     , m_pressedButtons(Qt::NoButton)
     , m_moveThreshold(UCUnits::instance().gu(0.5))
-    , m_ownerHandlesMouse(m_owner)// && (m_owner->acceptedMouseButtons() != Qt::NoButton))
     , m_enabled(false)
     , m_moved(false)
     , m_longPress(false)
@@ -503,39 +497,45 @@ void UCMouse::forwardEvent(QEvent *event)
     // TODO: alter acceptedButtons and hoverEnabled for the time the event is delivered
     // exclude QQuickMouseArea and InverseMouseAreaType!!
     Q_FOREACH(QQuickItem *item, m_forwardList) {
+
+        /*
+         * temporarily enable mouse buttons and hover for items which have Mouse or InverseMouse
+         * filter attached, but exclude targets which is MouseArea or InverseMouseArea
+         */
+        Qt::MouseButtons acceptedButtons = item->acceptedMouseButtons();
+        bool hoverEnabled = item->acceptHoverEvents();
+        if (!qobject_cast<QQuickMouseArea*>(item) && !qobject_cast<InverseMouseAreaType*>(item) &&
+            (qmlAttachedPropertiesObject<UCMouse>(item, false) ||
+             qmlAttachedPropertiesObject<UCInverseMouse>(item, false))) {
+            // set accepted buttons and hover temporarily
+            item->setAcceptedMouseButtons(m_owner->acceptedMouseButtons());
+            item->setAcceptHoverEvents(m_owner->acceptHoverEvents());
+        }
+
+        // forward events
+        bool accepted = false;
         if (isMouseEvent(event->type())) {
             QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
-
-            Qt::MouseButtons acceptedButtons = item->acceptedMouseButtons();
-            if (!qobject_cast<QQuickMouseArea*>(item) && !qobject_cast<InverseMouseAreaType*>(item)) {
-                item->setAcceptedMouseButtons(acceptedButtons | mouse->button());
-            }
             QPointF itemPos = item->mapFromScene(m_owner->mapToScene(mouse->pos()));
-
             QMouseEvent me = QMouseEvent(event->type(), itemPos, mouse->button(), mouse->buttons(), mouse->modifiers());
             QGuiApplication::sendEvent(item, &me);
-
-            item->setAcceptedMouseButtons(acceptedButtons);
-            if (me.isAccepted()) {
-                return;
-            }
+            accepted = me.isAccepted();
         } else {
             QHoverEvent *hover = static_cast<QHoverEvent*>(event);
-
-            bool hoverEnabled = item->acceptHoverEvents();
-            if (!qobject_cast<QQuickMouseArea*>(item) && !qobject_cast<InverseMouseAreaType*>(item)) {
-                item->setAcceptHoverEvents(true);
-            }
             QPointF itemPos = item->mapFromScene(m_owner->mapToScene(hover->pos()));
             QPointF itemOldPos = item->mapFromScene(m_owner->mapToScene(hover->oldPos()));
-
             QHoverEvent he = QHoverEvent(event->type(), itemPos, itemOldPos, hover->modifiers());
             QGuiApplication::sendEvent(item, &he);
+            accepted = he.isAccepted();
+        }
 
-            item->setAcceptHoverEvents(hoverEnabled);
-            if (he.isAccepted()) {
-                return;
-            }
+        // restore acceptedButtons and hover
+        item->setAcceptedMouseButtons(acceptedButtons);
+        item->setAcceptHoverEvents(hoverEnabled);
+
+        // leave if accepted
+        if (accepted) {
+            return;
         }
     }
 }
@@ -551,7 +551,7 @@ bool UCMouse::isEnabled() const
 }
 void UCMouse::setEnabled(bool enabled)
 {
-    if ((enabled != m_enabled) && m_ownerHandlesMouse) {
+    if ((enabled != m_enabled) && m_owner) {
         m_enabled = enabled;
         if (m_enabled) {
             m_owner->installEventFilter(this);
@@ -569,7 +569,7 @@ void UCMouse::setEnabled(bool enabled)
  */
 Qt::MouseButtons UCMouse::acceptedButtons() const
 {
-    return m_owner->acceptedMouseButtons();
+    return m_owner ? m_owner->acceptedMouseButtons() : Qt::NoButton;
 }
 
 /*!
@@ -581,7 +581,7 @@ Qt::MouseButtons UCMouse::acceptedButtons() const
   */
 bool UCMouse::hoverEnabled() const
 {
-    return m_owner->acceptHoverEvents();
+    return m_owner ? m_owner->acceptHoverEvents() : false;
 }
 
 /*!
@@ -765,8 +765,8 @@ QHoverEvent UCInverseMouse::mapHoverToOwner(QObject *target, QHoverEvent *event)
 
 bool UCInverseMouse::eventFilter(QObject *target, QEvent *event)
 {
-    // exclude MouseArea and InverseMouseArea targets
-    if ((target != m_owner) && !qobject_cast<QQuickMouseArea*>(target) && !qobject_cast<InverseMouseAreaType*>(target)) {
+    // exclude MouseArea and InverseMouseArea targets; InverseMosueArea casts to QQuickMouseArea
+    if (m_owner && (target != m_owner) && !qobject_cast<QQuickMouseArea*>(target)) {
 
         if (isMouseEvent(event->type())) {
             QMouseEvent mouse(mapMouseToOwner(target, static_cast<QMouseEvent*>(event)));
@@ -828,7 +828,7 @@ bool UCInverseMouse::contains(QMouseEvent *mouse)
 
 void UCInverseMouse::setEnabled(bool enabled)
 {
-    if ((m_enabled != enabled) && m_ownerHandlesMouse) {
+    if ((m_enabled != enabled) && m_owner) {
         m_enabled = enabled;
         if (m_enabled) {
             // FIXME: use application's main till we don't get touch events
