@@ -407,6 +407,7 @@ Item {
         }
 
         function test_1_changeDateToNextMonth() {
+            picker.minimum = new Date(2013, 9, 1);
             picker.date = new Date(2013, 09, 31);
             picker.locale = Qt.locale("hu_HU")
             wait(500);

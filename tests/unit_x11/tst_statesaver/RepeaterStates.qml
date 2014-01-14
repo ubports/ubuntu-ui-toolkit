@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,29 +15,26 @@
  */
 
 import QtQuick 2.0
-import QtTest 1.0
 import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1
 
 Item {
     id: root
-    width: units.gu(40)
-    height: units.gu(40)
+    width: 100
+    height: 100
 
-    TestCase {
-        id: test
-        name: "QuickUtilsAPI"
-        when: windowShown
-
-        function test_rootItem()
-        {
-            compare(QuickUtils.rootItem(test) != 0, true, "Root item is not null");
-        }
-
-        function test_className()
-        {
-            compare(QuickUtils.className(test), "TestCase", "className for TestCase");
-            compare(QuickUtils.className(root), "QQuickItem", "className for Item");
+    Column {
+        id: column
+        objectName: "column"
+        Repeater {
+            id: repeater
+            model: 4
+            Rectangle {
+                id: rect
+                width: root.width
+                height: 20
+                objectName: "testItem"
+                StateSaver.properties: "height"
+            }
         }
     }
 }
