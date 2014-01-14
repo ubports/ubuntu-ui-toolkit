@@ -535,6 +535,16 @@ void UCMouse::setMouseMoveThreshold(qreal threshold)
 }
 
 /*!
+  \qmlproperty Mouse::forwardTo
+  The property holds the items tghe mouse events should forwarded to. The items
+  listed will receive the original event.
+  */
+QQmlListProperty<QQuickItem> UCMouse::forwardTo()
+{
+    QQmlListProperty<QQuickItem>(this, m_forwardList);
+}
+
+/*!
    \qmlsignal Mouse::onPressed(ExtendedMouseEvent event)
    The signal reports the mouse press.
  */

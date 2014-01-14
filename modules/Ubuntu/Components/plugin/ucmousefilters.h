@@ -51,6 +51,7 @@ class UCMouse : public QObject
     Q_PROPERTY(Qt::MouseButtons acceptedButtons READ acceptedButtons NOTIFY acceptedButtonsChanged)
     Q_PROPERTY(bool hoverEnabled READ hoverEnabled NOTIFY hoverEnabledChanged)
     Q_PROPERTY(qreal mouseMoveThreshold READ mouseMoveThreshold WRITE setMouseMoveThreshold NOTIFY mouseMoveThresholdChanged)
+    Q_PROPERTY(QQmlListProperty<QQuickItem> forwardTo READ forwardTo)
 public:
     explicit UCMouse(QObject *parent = 0);
 
@@ -62,6 +63,7 @@ public:
     bool hoverEnabled() const;
     qreal mouseMoveThreshold() const;
     void setMouseMoveThreshold(qreal threshold);
+    QQmlListProperty<QQuickItem> forwardTo();
 
 Q_SIGNALS:
     void enabledChanged();
@@ -97,6 +99,7 @@ protected:
 
 protected:
     QQuickItem *m_owner;
+    QList<QQuickItem*> m_forwardList;
     QBasicTimer m_pressAndHoldTimer;
     QRectF m_toleranceArea;
     QPointF m_lastPos;

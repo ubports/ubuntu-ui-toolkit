@@ -22,9 +22,7 @@
 #include <QtQuick/QQuickItem>
 #include <QtCore/QEvent>
 
-//#define protected public
 #include "ucmousefilters.h"
-//#undef protected
 
 #include "ucunits.h"
 #include "quickutils.h"
@@ -537,6 +535,34 @@ private Q_SLOTS:
         QScopedPointer<QQuickView> view(loadTest("InverseMouseFilterAttachedToNonItem.qml", &warningSpy));
         QVERIFY(view);
         QCOMPARE(warningSpy->count(), 1);
+    }
+
+    void testCase_forwardedEvents()
+    {
+        QScopedPointer<QQuickView*> view(loadTest("ForwardedMouseEvents.qml"));
+        QVERIFY(view);
+        UCMouse *filter = attachedFilter<UCMouse>(view->rootObject(), "FilterOwner");
+        QVERIFY(filter);
+        QSignalSpy pressed(filter, SIGNAL(pressed(UCExtendedMouseEvent*)));
+        QSignalSpy released(filter, SIGNAL(released(UCExtendedMouseEvent*)));
+        QSignalSpy clicked(filter, SIGNAL(clicked(UCExtendedMouseEvent*)));
+        QSignalSpy positionChanged(filter, SIGNAL(positionChanged(UCExtendedMouseEvent*)));
+        QSignalSpy doubleClicked(filter, SIGNAL(doubleClicked(UCExtendedMouseEvent*)));
+        QSignalSpy pressAndHold(filter, SIGNAL(pressAndHold(UCExtendedMouseEvent*)));
+        QSignalSpy entered(filter, SIGNAL(entered(UCExtendedMouseEvent*)));
+        QSignalSpy exited(filter, SIGNAL(exited(UCExtendedMouseEvent*)));
+
+        QTest::mouseClick(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(2), UCUnits::instance().gu(2)));
+        QTest::waitForEvents();
+        QCOMPARE(view->rootObject()->hasFocus(), true);
+        QCOMPARE(pressed.count(), 1);
+        QCOMPARE(released.count(), 1);
+        QCOMPARE(clicked.count(), 1);
+        QCOMPARE(positionChanged.count(), 0);
+        QCOMPARE(doubleClicked.count(), 0);
+        QCOMPARE(pressAndHold.count(), 0);
+        QCOMPARE(entered.count(), 1);
+        QCOMPARE(exited.count(), 1);
     }
 };
 
