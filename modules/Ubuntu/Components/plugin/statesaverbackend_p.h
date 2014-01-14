@@ -24,6 +24,7 @@
 #include <QtCore/QPointer>
 #include <QtCore/QSet>
 #include <QtCore/QTimer>
+#include <QtCore/QStack>
 
 class StateSaverBackend : public QObject
 {
@@ -52,6 +53,7 @@ private Q_SLOTS:
 private:
     QPointer<QSettings> m_archive;
     QSet<QString> m_register;
+    QStack<QString> m_groupStack;
 };
 
 #endif // STATESAVERBACKEND_P_H
