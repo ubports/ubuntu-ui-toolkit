@@ -1,3 +1,9 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20131216-0ubuntu2~py3) UNRELEASED; urgency=medium
+
+  * Port autopilot tests to Python 3.
+
+ -- Barry Warsaw <barry@ubuntu.com>  Mon, 13 Jan 2014 16:31:18 -0500
+
 ubuntu-ui-toolkit (0.1.46+14.04.20131216-0ubuntu1) trusty; urgency=low
 
   [ Zsombor Egri ]

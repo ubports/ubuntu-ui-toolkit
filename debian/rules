@@ -10,6 +10,7 @@ DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 
 override_dh_auto_test:
 	mkdir -p debian/tmp/home/run
+	chmod +x tests/xvfb.sh
 	tests/xvfb.sh dh_auto_test || exit $?
 
 override_dh_build:

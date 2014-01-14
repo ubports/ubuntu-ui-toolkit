@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import mock
 import time
 import unittest
 
@@ -22,6 +21,7 @@ import autopilot
 from autopilot import input, platform
 from autopilot.introspection import dbus
 from testtools.matchers import GreaterThan, LessThan
+from unittest import mock
 
 from ubuntuuitoolkit import emulators, tests
 
