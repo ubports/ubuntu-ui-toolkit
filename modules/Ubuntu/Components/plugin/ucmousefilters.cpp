@@ -362,6 +362,8 @@ bool UCMouse::mouseReleased(QMouseEvent *event)
         bool isClicked = (m_pressedButtons & m_lastButton)
                 && !m_longPress && !m_doubleClicked &&
                 ((m_moveThreshold <= 0.0) || m_toleranceArea.contains(m_lastPos));
+        qDebug() << "TOLERANCE" << m_toleranceArea << m_lastPos << m_moveThreshold << UCUnits::instance().gu(0.5);
+
         UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
                          m_pointInOSK, isClicked, m_longPress);
         Q_EMIT released(&mev);
@@ -445,7 +447,7 @@ void UCMouse::saveEvent(QMouseEvent *event)
     m_lastButtons = event->buttons();
     m_lastModifiers = event->modifiers();
     m_pointInOSK = pointInOSK(event->localPos());
-    if ((event->type() == QEvent::MouseButtonPress) && (m_moveThreshold > 0)) {
+    if ((event->type() == QEvent::MouseButtonPress) && (m_moveThreshold > 0.0)) {
         m_toleranceArea.setX(m_lastPos.x() - m_moveThreshold);
         m_toleranceArea.setY(m_lastPos.y() - m_moveThreshold);
         m_toleranceArea.setWidth(2 * m_moveThreshold);
