@@ -521,7 +521,7 @@ private Q_SLOTS:
         QCOMPARE(warningSpy->count(), 1);
     }
 
-    void testCase_forwardedEvents()
+    void testCase_forwardedEventsToItem()
     {
         QScopedPointer<QQuickView> view(loadTest("ForwardedMouseEvents.qml"));
         QVERIFY(view);
@@ -537,6 +537,36 @@ private Q_SLOTS:
         QSignalSpy pressAndHold(filter, SIGNAL(pressAndHold(UCExtendedMouseEvent*)));
         QSignalSpy entered(filter, SIGNAL(entered(UCExtendedMouseEvent*)));
         QSignalSpy exited(filter, SIGNAL(exited(UCExtendedMouseEvent*)));
+
+        QTest::mouseClick(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(2), UCUnits::instance().gu(2)));
+        QTest::waitForEvents();
+        QCOMPARE(input->hasFocus(), true);
+        QCOMPARE(pressed.count(), 1);
+        QCOMPARE(released.count(), 1);
+        QCOMPARE(clicked.count(), 1);
+        QCOMPARE(positionChanged.count(), 0);
+        QCOMPARE(doubleClicked.count(), 0);
+        QCOMPARE(pressAndHold.count(), 0);
+        QCOMPARE(entered.count(), 1);
+        QCOMPARE(exited.count(), 1);
+    }
+
+    void testCase_forwardedEventsToMouseArea()
+    {
+        QScopedPointer<QQuickView> view(loadTest("ForwardToMouseArea.qml"));
+        QVERIFY(view);
+        QQuickItem *target = view->rootObject()->findChild<QQuickItem*>("target");
+        QVERIFY(target);
+        QQuickItem *input = view->rootObject()->findChild<QQuickItem*>("FilterOwner");
+        QVERIFY(input);
+        QSignalSpy pressed(target, SIGNAL(pressed(QQuickMouseEvent*)));
+        QSignalSpy released(target, SIGNAL(released(QQuickMouseEvent*)));
+        QSignalSpy clicked(target, SIGNAL(clicked(QQuickMouseEvent*)));
+        QSignalSpy positionChanged(target, SIGNAL(positionChanged(QQuickMouseEvent*)));
+        QSignalSpy doubleClicked(target, SIGNAL(doubleClicked(QQuickMouseEvent*)));
+        QSignalSpy pressAndHold(target, SIGNAL(pressAndHold(QQuickMouseEvent*)));
+        QSignalSpy entered(target, SIGNAL(entered()));
+        QSignalSpy exited(target, SIGNAL(exited()));
 
         QTest::mouseClick(view.data(), Qt::LeftButton, 0, QPoint(UCUnits::instance().gu(2), UCUnits::instance().gu(2)));
         QTest::waitForEvents();

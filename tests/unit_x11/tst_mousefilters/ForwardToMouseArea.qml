@@ -21,14 +21,17 @@ Item {
     id: root
     width: units.gu(40)
     height: units.gu(71)
-    objectName: "target"
+    MouseArea {
+        id: other
+        objectName: "target"
+        anchors.fill: parent
+    }
 
-    Mouse.enabled: true
     TextInput {
         objectName: "FilterOwner"
         width: root.width
         height: units.gu(5)
 
-        Mouse.forwardTo: [root]
+        Mouse.forwardTo: [root, other]
     }
 }

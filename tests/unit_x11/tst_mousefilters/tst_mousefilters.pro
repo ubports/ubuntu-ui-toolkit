@@ -13,4 +13,5 @@ OTHER_FILES += \
     InverseAttachedToItem.qml \
     MouseFilterAttachedToNonItem.qml \
     InverseMouseFilterAttachedToNonItem.qml \
-    ForwardedMouseEvents.qml
+    ForwardedMouseEvents.qml \
+    ForwardToMouseArea.qml

@@ -115,10 +115,8 @@ bool UCExtendedMouseEvent::pointInInputArea() const
    attached to any visual primitve. Mouse filter however will have effect only
    when attached to items handling mouse events. Events are handled through signals,
    where the event data is presented through the \a mouse parameter. Events
-   should be accepted if the propagation of those to the owner primitive is not
-   wanted. This is not valid to \l onClicked, \l onPressAndHold signals, which
-   being composed events, are generated due to \l onPressed - \l onReleased pair,
-   as well as when a mouse button is pressed and hold for a certain time.
+   should be accepted if the propagation of those to the owner is not wanted.
+   This is not valid to \l onClicked, \l onPressAndHold composed events.
 
    The previous code sample using Mouse filter, which will print the pressed and
    released mouse buttons would look as follows:
@@ -151,10 +149,11 @@ bool UCExtendedMouseEvent::pointInInputArea() const
    TextInput {
        width: 100
        height: 20
+
        MouseArea {
            anchors.fill: parent
            acceptedButtons: Qt.RightButton
-           Mouse.onClicked: console.log("right button clicked")
+           onClicked: console.log("right button clicked")
        }
    }
    \endqml
@@ -366,13 +365,14 @@ bool UCMouse::mouseReleased(QMouseEvent *event)
         UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
                          m_pointInOSK, isClicked, m_longPress);
         Q_EMIT released(&mev);
-        // remove button from both inside and outside press
+        event->setAccepted(mev.isAccepted());
+
+        // remove button from press
         m_pressedButtons &= ~m_lastButton;
         if (isClicked) {
             // emit clicked
             Q_EMIT clicked(&mev);
         }
-        event->setAccepted(mev.isAccepted());
 
         if (!m_pressedButtons && !m_owner->acceptHoverEvents()) {
             setHovered(false);
