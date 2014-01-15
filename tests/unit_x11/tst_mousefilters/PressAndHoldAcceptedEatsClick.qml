@@ -19,8 +19,8 @@ import Ubuntu.Components 0.1
 
 TextInput {
     objectName: "FilterOwner"
-    width: 100
-    height: 20
+    width: units.gu(10)
+    height: units.gu(5)
     activeFocusOnPress: true
 
     Mouse.onPressAndHold: {mouse.accepted = true}

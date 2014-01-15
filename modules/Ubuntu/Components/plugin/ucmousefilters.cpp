@@ -185,6 +185,34 @@ bool UCExtendedMouseEvent::pointInInputArea() const
    }
    \endqml
 
+   As mentioned, mouse filters can be attached to any visual item. Attaching it
+   to items that do not handle any mouse events will not have any effect. However
+   child items which handle mouse events can forward the events they handle to
+   their parent. In this way mouse events will land in these items too, and mouse
+   filter attached to those can also handle the event.
+
+   \qml
+   Item {
+       id: top
+       width: 100
+       height: 50
+
+       Mouse.onPressed: print("mouse received from input")
+
+       TextItem {
+           anchors.fill: parent
+           Mouse.forvardTo: [top]
+           Mouse.onPressed: print("pressed over input")
+           Mouse.onPressAndHold: print("longpress handled here")
+       }
+   }
+   \endqml
+
+   In this example the mouse press is first handled by the mouse filter attached
+   to TextInput, then it is forwarded to the top item and finally to the TextInput.
+   Accepting the mouse event will stop propagation to the top item as well as to
+   the TextInput.
+
    Similar functionality for the case when the mouse event occurs outside of the
    owner is brought by the \l InverseMouse attached property.
  */
@@ -362,8 +390,6 @@ bool UCMouse::mouseReleased(QMouseEvent *event)
         bool isClicked = (m_pressedButtons & m_lastButton)
                 && !m_longPress && !m_doubleClicked &&
                 ((m_moveThreshold <= 0.0) || m_toleranceArea.contains(m_lastPos));
-        qDebug() << "TOLERANCE" << m_toleranceArea << m_lastPos << m_moveThreshold << UCUnits::instance().gu(0.5);
-
         UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
                          m_pointInOSK, isClicked, m_longPress);
         Q_EMIT released(&mev);
