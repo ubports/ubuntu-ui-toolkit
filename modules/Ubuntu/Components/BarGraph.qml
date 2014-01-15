@@ -40,14 +40,11 @@ Item {
     Ubuntu.TextureFromImage {
         id: texture
         image: graph.model.image
-        Connections {
-            target: graph.model
-        }
     }
 
     ShaderEffect {
         anchors.fill: parent
-        
+
         property var texture: texture
         property real shift: graph.model.shift / graph.model.samples
         property real maximumValue: graph.maximumValue
