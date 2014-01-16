@@ -27,14 +27,17 @@ Item {
         height: units.gu(10)
         color: "blue"
         anchors.horizontalCenter: parent.horizontalCenter
+
+        // use MouseArea and enable hover events only
         MouseArea {
             id: other
             anchors.fill: parent
             objectName: "FilterOwner"
             hoverEnabled: true
+            acceptedButtons: Qt.NoButton
 
             // test hover
-            Mouse.priority: Mouse.BeforeItem
+            InverseMouse.priority: Mouse.BeforeItem
         }
     }
 }

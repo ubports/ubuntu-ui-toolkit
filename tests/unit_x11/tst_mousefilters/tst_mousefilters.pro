@@ -22,4 +22,5 @@ OTHER_FILES += \
     ForwardToInverseMouseArea.qml \
     FilterFlickable.qml \
     FilterFlickableAfter.qml \
-    Hover.qml
+    Hover.qml \
+    InverseHover.qml

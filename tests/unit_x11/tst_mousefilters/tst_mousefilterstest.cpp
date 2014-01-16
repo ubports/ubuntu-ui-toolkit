@@ -839,7 +839,7 @@ private Q_SLOTS:
 
     void testCase_hover()
     {
-        QScopedPointer<QQuickView> view(loadTest("FilterFlickableAfter.qml"));
+        QScopedPointer<QQuickView> view(loadTest("Hover.qml"));
         QVERIFY(view);
         UCMouse *filter = attachedFilter<UCMouse>(view->rootObject(), "FilterOwner");
         QVERIFY(filter);
@@ -848,15 +848,37 @@ private Q_SLOTS:
         QSignalSpy exited(filter, SIGNAL(exited(UCExtendedMouseEvent*)));
 
         preventDblClick();
-        QTest::mousePress(view.data(), Qt::LeftButton, 0, guPoint(5, 5));
+        QTest::mouseMove(view.data(), guPoint(5, 5));
         QTest::mouseMove(view.data(), guPoint(15, 5));
         QTest::mouseMove(view.data(), guPoint(25, 5));
-        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, guPoint(35, 5));
+        QTest::mouseMove(view.data(), guPoint(35, 5));
+        QTest::mouseMove(view.data(), guPoint(40, 5));
         QTest::waitForEvents();
 
-        QCOMPARE(positionChanged.count(), 3);
+        QCOMPARE(positionChanged.count(), 3); // only 3 moves inside
         QCOMPARE(entered.count(), 1);
         QCOMPARE(exited.count(), 1);
+    }
+
+    void testCase_inverseHover()
+    {
+        QScopedPointer<QQuickView> view(loadTest("InverseHover.qml"));
+        QVERIFY(view);
+        UCInverseMouse *filter = attachedFilter<UCInverseMouse>(view->rootObject(), "FilterOwner");
+        QVERIFY(filter);
+        QSignalSpy positionChanged(filter, SIGNAL(positionChanged(UCExtendedMouseEvent*)));
+        QSignalSpy entered(filter, SIGNAL(entered(UCExtendedMouseEvent*)));
+        QSignalSpy exited(filter, SIGNAL(exited(UCExtendedMouseEvent*)));
+
+        preventDblClick();
+        for (int i = 0; i < 40; i++) {
+            QTest::mouseMove(view.data(), guPoint(i, 5));
+        }
+        QTest::waitForEvents();
+
+        QCOMPARE(positionChanged.count(), 9); // GU 0, 1, 2, 3, 4, 36, 37, 38, 39
+        QCOMPARE(entered.count(), 2); // twice, at GU 0 and 36
+        QCOMPARE(exited.count(), 1); // @ GU 5
     }
 };
 

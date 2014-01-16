@@ -358,20 +358,6 @@ bool UCMouse::hasAttachedFilter(QQuickItem *item)
     return (qmlAttachedPropertiesObject<UCMouse>(item, false) != 0);
 }
 
-void UCMouse::setHovered(bool hovered)
-{
-    if (m_hovered != hovered) {
-        m_hovered = hovered;
-        UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
-                                 m_pointInOSK, false, false);
-        if (m_hovered) {
-            Q_EMIT entered(&mev);
-        } else {
-            Q_EMIT exited(&mev);
-        }
-    }
-}
-
 bool UCMouse::mousePressed(QMouseEvent *event)
 {
     m_moved = false;
@@ -483,10 +469,12 @@ bool UCMouse::hoverMoved(QHoverEvent *event)
 {
     m_lastPos = event->posF();
     m_lastModifiers = event->modifiers();
+    // make sure we are having the hovered set
+    setHovered(true);
+
     UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
                              m_pointInOSK, false, m_longPress);
     Q_EMIT positionChanged(&mev);
-    forwardEvent(event);
     return false;
 }
 
@@ -513,6 +501,21 @@ void UCMouse::saveEvent(QMouseEvent *event)
         m_toleranceArea.setHeight(2 * m_moveThreshold);
     }
 }
+
+void UCMouse::setHovered(bool hovered)
+{
+    if (m_hovered != hovered) {
+        m_hovered = hovered;
+        UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
+                                 m_pointInOSK, false, false);
+        if (m_hovered) {
+            Q_EMIT entered(&mev);
+        } else {
+            Q_EMIT exited(&mev);
+        }
+    }
+}
+
 bool UCMouse::isDoubleClickConnected()
 {
     IS_SIGNAL_CONNECTED(this, UCMouse, doubleClicked, (UCExtendedMouseEvent*));
@@ -765,7 +768,9 @@ void UCMouse::setPriority(Priority priority)
 
    Being derived from Mouse filter element, provides the same behavior as the
    Mouse filter, except that all the signals are emitted when the mouse event
-   occurs outside the owner's area.
+   occurs outside the owner's area. Hover events are also inverted, meaning that
+   \l entered() is emitted when the mouse leaves the owner, respectively \l exited()
+   is emitted when the mouse enters owner.
 
    By default all mouse events occurring outside the owner are reported, including
    events over the active input method area. This can be controlled through the
@@ -835,18 +840,13 @@ QMouseEvent UCInverseMouse::mapMouseToOwner(QObject *target, QMouseEvent* event)
                        event->button(), event->buttons(), event->modifiers());
 }
 
-QHoverEvent UCInverseMouse::mapHoverToOwner(QObject *target, QHoverEvent *event)
-{
-    QQuickItem *item = qobject_cast<QQuickItem*>(target);
-    QPointF pos = (target != m_owner) ? m_owner->mapFromItem(item, event->posF()) : event->posF();
-    QPointF oldPos = (target != m_owner) ? m_owner->mapFromItem(item, event->oldPosF()) : event->oldPosF();
-    return QHoverEvent(event->type(), pos, oldPos, event->modifiers());
-}
-
 bool UCInverseMouse::eventFilter(QObject *target, QEvent *event)
 {
-    // exclude MouseArea and InverseMouseArea targets; InverseMosueArea casts to QQuickMouseArea
-    if ((target != m_owner) && !qobject_cast<QQuickMouseArea*>(target)) {
+    if (isHoverEvent(event->type())) {
+        UCInverseMouse::hoverEvents(target, static_cast<QHoverEvent*>(event));
+    }
+    else if ((target != m_owner) && !qobject_cast<QQuickMouseArea*>(target)) {
+        // exclude MouseArea and InverseMouseArea targets; InverseMosueArea casts to QQuickMouseArea
         return UCMouse::eventFilter(target, event);
     }
     return QObject::eventFilter(target, event);
@@ -854,7 +854,7 @@ bool UCInverseMouse::eventFilter(QObject *target, QEvent *event)
 bool UCInverseMouse::mouseEvents(QObject *target, QMouseEvent *event)
 {
     QMouseEvent mouse(mapMouseToOwner(target, event));
-    if (!contains(&mouse)) {
+    if (!contains(mouse.localPos())) {
         // do not handle mouse event if it's inside the owner
         return false;
     }
@@ -864,9 +864,38 @@ bool UCInverseMouse::mouseEvents(QObject *target, QMouseEvent *event)
 
 bool UCInverseMouse::hoverEvents(QObject *target, QHoverEvent *event)
 {
-    QHoverEvent hover(mapHoverToOwner(target, event));
-    return UCMouse::hoverEvents(target, &hover);
+    if (event->type() != QEvent::HoverMove) {
+        return UCMouse::hoverEvents(target, event);
+    }
+    return false;
 }
+
+bool UCInverseMouse::mouseMoved(QMouseEvent *event)
+{
+    if (m_owner->acceptHoverEvents() && !m_pressedButtons) {
+        // generate mouse move if outside the owner
+        QHoverEvent hover(QEvent::HoverMove, event->localPos(), m_lastPos, event->modifiers());
+        return hoverMoved(&hover);
+    }
+    return UCMouse::mouseMoved(event);
+}
+// inverse to Mouse filter, report exited
+bool UCInverseMouse::hoverEntered(QHoverEvent *event)
+{
+    m_lastPos = event->posF();
+    m_lastModifiers = event->modifiers();
+    setHovered(false);
+    return false;
+}
+// inverse to Mouse filter, report entered
+bool UCInverseMouse::hoverExited(QHoverEvent *event)
+{
+    m_lastPos = event->posF();
+    m_lastModifiers = event->modifiers();
+    setHovered(true);
+    return false;
+}
+
 
 bool UCInverseMouse::hasAttachedFilter(QQuickItem *item)
 {
@@ -874,11 +903,11 @@ bool UCInverseMouse::hasAttachedFilter(QQuickItem *item)
 }
 
 // returns true if the point is in the inverse area
-bool UCInverseMouse::contains(QMouseEvent *mouse)
+bool UCInverseMouse::contains(const QPointF &localPos)
 {
-    bool result = !m_owner->contains(mouse->localPos());
+    bool result = !m_owner->contains(localPos);
     if (m_excludeOSK) {
-        result = result && !pointInOSK(mouse->localPos());
+        result = result && !pointInOSK(localPos);
     }
     return result;
 }

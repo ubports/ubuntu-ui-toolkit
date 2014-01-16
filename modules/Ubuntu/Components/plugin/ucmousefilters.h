@@ -97,16 +97,16 @@ protected:
     virtual bool hoverEvents(QObject *target, QHoverEvent *event);
     virtual bool hasAttachedFilter(QQuickItem *item);
 
-    void setHovered(bool hovered);
-    bool mousePressed(QMouseEvent *event);
-    bool mouseReleased(QMouseEvent *event);
-    bool mouseDblClick(QMouseEvent *event);
-    bool mouseMoved(QMouseEvent *event);
-    bool hoverEntered(QHoverEvent *event);
-    bool hoverMoved(QHoverEvent *event);
-    bool hoverExited(QHoverEvent *event);
+    virtual bool mousePressed(QMouseEvent *event);
+    virtual bool mouseReleased(QMouseEvent *event);
+    virtual bool mouseDblClick(QMouseEvent *event);
+    virtual bool mouseMoved(QMouseEvent *event);
+    virtual bool hoverEntered(QHoverEvent *event);
+    virtual bool hoverMoved(QHoverEvent *event);
+    virtual bool hoverExited(QHoverEvent *event);
 
     virtual void saveEvent(QMouseEvent *event);
+    void setHovered(bool hovered);
     bool isDoubleClickConnected();
     bool pointInOSK(const QPointF &point);
     bool isMouseEvent(QEvent::Type type);
@@ -154,12 +154,15 @@ Q_SIGNALS:
 
 protected:
     QMouseEvent mapMouseToOwner(QObject *target, QMouseEvent* event);
-    QHoverEvent mapHoverToOwner(QObject *target, QHoverEvent *event);
     virtual bool eventFilter(QObject *, QEvent *);
     virtual bool mouseEvents(QObject *target, QMouseEvent *event);
     virtual bool hoverEvents(QObject *target, QHoverEvent *event);
+    virtual bool mouseMoved(QMouseEvent *event);
+    virtual bool hoverEntered(QHoverEvent *event);
+    virtual bool hoverExited(QHoverEvent *event);
     virtual bool hasAttachedFilter(QQuickItem *item);
-    bool contains(QMouseEvent *mouse);
+
+    bool contains(const QPointF &localPos);
 
     bool m_excludeOSK:1;
 };
