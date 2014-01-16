@@ -836,6 +836,28 @@ private Q_SLOTS:
         QCOMPARE(exited.count(), 1);
         QCOMPARE(flickStart.count(), 1);
     }
+
+    void testCase_hover()
+    {
+        QScopedPointer<QQuickView> view(loadTest("FilterFlickableAfter.qml"));
+        QVERIFY(view);
+        UCMouse *filter = attachedFilter<UCMouse>(view->rootObject(), "FilterOwner");
+        QVERIFY(filter);
+        QSignalSpy positionChanged(filter, SIGNAL(positionChanged(UCExtendedMouseEvent*)));
+        QSignalSpy entered(filter, SIGNAL(entered(UCExtendedMouseEvent*)));
+        QSignalSpy exited(filter, SIGNAL(exited(UCExtendedMouseEvent*)));
+
+        preventDblClick();
+        QTest::mousePress(view.data(), Qt::LeftButton, 0, guPoint(5, 5));
+        QTest::mouseMove(view.data(), guPoint(15, 5));
+        QTest::mouseMove(view.data(), guPoint(25, 5));
+        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, guPoint(35, 5));
+        QTest::waitForEvents();
+
+        QCOMPARE(positionChanged.count(), 3);
+        QCOMPARE(entered.count(), 1);
+        QCOMPARE(exited.count(), 1);
+    }
 };
 
 QTEST_MAIN(tst_mouseFilterTest)

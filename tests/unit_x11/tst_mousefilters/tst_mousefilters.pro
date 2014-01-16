@@ -21,4 +21,5 @@ OTHER_FILES += \
     ForwardedEventsToTargetBlocked.qml \
     ForwardToInverseMouseArea.qml \
     FilterFlickable.qml \
-    FilterFlickableAfter.qml
+    FilterFlickableAfter.qml \
+    Hover.qml
