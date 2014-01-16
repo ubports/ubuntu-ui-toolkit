@@ -249,15 +249,9 @@ UCMouse *UCMouse::qmlAttachedProperties(QObject *owner)
 bool UCMouse::eventFilter(QObject *target, QEvent *event)
 {
     if (isMouseEvent(event->type())) {
-        bool result = mouseEvents(target, static_cast<QMouseEvent*>(event));
-        // forward to forwardlist
-        forwardEvent(event);
-        return result;
+        return mouseEvents(target, static_cast<QMouseEvent*>(event));
     } else if (isHoverEvent(event->type())) {
-        bool result = hoverEvents(target, static_cast<QHoverEvent*>(event));
-        // forward to forwardlist
-        forwardEvent(event);
-        return result;
+        return hoverEvents(target, static_cast<QHoverEvent*>(event));
     }
 
     return QObject::eventFilter(target, event);
@@ -283,56 +277,54 @@ void UCMouse::timerEvent(QTimerEvent *event)
 }
 bool UCMouse::mouseEvents(QObject *target, QMouseEvent *event)
 {
+    bool result = false;
     Q_UNUSED(target);
     switch (event->type()) {
     case QEvent::MouseButtonPress:
     {
-        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
-        return mousePressed(mouse);
+        result = mousePressed(event);
     } break;
     case QEvent::MouseButtonRelease:
     {
-        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
-        return mouseReleased(mouse);
+        result = mouseReleased(event);
     } break;
     case QEvent::MouseButtonDblClick:
     {
-        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
-        return mouseDblClick(mouse);
+        result = mouseDblClick(event);
     } break;
     case QEvent::MouseMove:
     {
-        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
-        return mouseMoved(mouse);
+        result = mouseMoved(event);
     } break;
     default:
-        return false;
+        break;
     }
+    forwardEvent(event);
+    return result;
 }
 
 bool UCMouse::hoverEvents(QObject *target, QHoverEvent *event)
 {
+    bool result = false;
     Q_UNUSED(target)
     switch (event->type()) {
     case QEvent::HoverEnter:
     {
-        QHoverEvent *hover = static_cast<QHoverEvent*>(event);
-        return hoverEntered(hover);
+        result = hoverEntered(event);
     } break;
     case QEvent::HoverMove:
     {
-        QHoverEvent *hover = static_cast<QHoverEvent*>(event);
-        return hoverMoved(hover);
+        result = hoverMoved(event);
     } break;
     case QEvent::HoverLeave:
     {
-        QHoverEvent *hover = static_cast<QHoverEvent*>(event);
-        return hoverExited(hover);
+        result = hoverExited(event);
     } break;
     default:
-        // just to satisfy switch-case warnings
-        return false;
+        break;
     }
+    forwardEvent(event);
+    return result;
 }
 
 void UCMouse::setHovered(bool hovered)
