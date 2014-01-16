@@ -17,28 +17,22 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-//Item {
-//    id: root
-//    width: units.gu(40)
-//    height: units.gu(71)
+Flickable {
+    width: units.gu(40)
+    height: units.gu(40)
+    clip: true
 
-    Flickable {
-        width: units.gu(40)
-        height: units.gu(40)
-        clip: true
+    objectName: "FilterOwner"
+    Mouse.priority: Mouse.BeforeItem
+    onMovementStarted: print("move starts")
+    onMovementEnded: print("move ends")
 
-        objectName: "FilterOwner"
-        Mouse.priority: Mouse.BeforeItem
-        onMovementStarted: print("move starts")
-        onMovementEnded: print("move ends")
-
-        contentWidth: content.width
-        contentHeight: content.height
-        Rectangle {
-            id: content
-            width: units.gu(100)
-            height: units.gu(100)
-            color: "green"
-        }
+    contentWidth: content.width
+    contentHeight: content.height
+    Rectangle {
+        id: content
+        width: units.gu(100)
+        height: units.gu(100)
+        color: "green"
     }
-//}
+}
