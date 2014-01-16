@@ -52,7 +52,14 @@ class UCMouse : public QObject
     Q_PROPERTY(bool hoverEnabled READ hoverEnabled NOTIFY hoverEnabledChanged)
     Q_PROPERTY(qreal mouseMoveThreshold READ mouseMoveThreshold WRITE setMouseMoveThreshold NOTIFY mouseMoveThresholdChanged)
     Q_PROPERTY(QQmlListProperty<QQuickItem> forwardTo READ forwardTo)
+    Q_PROPERTY(Priority priority READ priority WRITE setPriority NOTIFY priorityChanged)
+    Q_ENUMS(Priority)
 public:
+    enum Priority {
+        BeforeItem,
+        AfterItem
+    };
+
     explicit UCMouse(QObject *parent = 0);
 
     static UCMouse *qmlAttachedProperties(QObject *owner);
@@ -64,12 +71,15 @@ public:
     qreal mouseMoveThreshold() const;
     void setMouseMoveThreshold(qreal threshold);
     QQmlListProperty<QQuickItem> forwardTo();
+    Priority priority() const;
+    void setPriority(Priority priority);
 
 Q_SIGNALS:
     void enabledChanged();
     void acceptedButtonsChanged();
     void hoverEnabledChanged();
     void mouseMoveThresholdChanged();
+    void priorityChanged();
 
     void pressed(UCExtendedMouseEvent *mouse);
     void released(UCExtendedMouseEvent *mouse);
@@ -85,6 +95,8 @@ protected:
     virtual void timerEvent(QTimerEvent *event);
 
     void setHovered(bool hovered);
+    virtual bool mouseEvents(QObject *target, QMouseEvent *event);
+    virtual bool hoverEvents(QObject *target, QHoverEvent *event);
     bool mousePressed(QMouseEvent *event);
     bool mouseReleased(QMouseEvent *event);
     bool mouseDblClick(QMouseEvent *event);
@@ -111,6 +123,7 @@ protected:
     Qt::MouseButtons m_lastButtons;
     Qt::KeyboardModifiers m_lastModifiers;
     Qt::MouseButtons m_pressedButtons;
+    Priority m_priority;
     qreal m_moveThreshold;
 
     bool m_enabled: 1;
@@ -141,6 +154,8 @@ protected:
     QMouseEvent mapMouseToOwner(QObject *target, QMouseEvent* event);
     QHoverEvent mapHoverToOwner(QObject *target, QHoverEvent *event);
     virtual bool eventFilter(QObject *, QEvent *);
+    virtual bool mouseEvents(QObject *target, QMouseEvent *event);
+    virtual bool hoverEvents(QObject *target, QHoverEvent *event);
     bool contains(QMouseEvent *mouse);
 
     bool m_excludeOSK:1;

@@ -223,6 +223,7 @@ UCMouse::UCMouse(QObject *parent)
     : QObject(parent)
     , m_owner(qobject_cast<QQuickItem*>(parent))
     , m_pressedButtons(Qt::NoButton)
+    , m_priority(BeforeItem)
     , m_moveThreshold(UCUnits::instance().gu(0.5))
     , m_enabled(false)
     , m_moved(false)
@@ -247,45 +248,16 @@ UCMouse *UCMouse::qmlAttachedProperties(QObject *owner)
 
 bool UCMouse::eventFilter(QObject *target, QEvent *event)
 {
-    switch (event->type()) {
-    case QEvent::MouseButtonPress:
-    {
-        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
-        return mousePressed(mouse);
-    } break;
-    case QEvent::MouseButtonRelease:
-    {
-        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
-        return mouseReleased(mouse);
-    } break;
-    case QEvent::MouseButtonDblClick:
-    {
-        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
-        return mouseDblClick(mouse);
-    } break;
-    case QEvent::MouseMove:
-    {
-        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
-        return mouseMoved(mouse);
-    } break;
-    case QEvent::HoverEnter:
-    {
-        QHoverEvent *hover = static_cast<QHoverEvent*>(event);
-        return hoverEntered(hover);
-    } break;
-    case QEvent::HoverMove:
-    {
-        QHoverEvent *hover = static_cast<QHoverEvent*>(event);
-        return hoverMoved(hover);
-    } break;
-    case QEvent::HoverLeave:
-    {
-        QHoverEvent *hover = static_cast<QHoverEvent*>(event);
-        return hoverExited(hover);
-    } break;
-    default:
-        // just to satisfy switch-case warnings
-        break;
+    if (isMouseEvent(event->type())) {
+        bool result = mouseEvents(target, static_cast<QMouseEvent*>(event));
+        // forward to forwardlist
+        forwardEvent(event);
+        return result;
+    } else if (isHoverEvent(event->type())) {
+        bool result = hoverEvents(target, static_cast<QHoverEvent*>(event));
+        // forward to forwardlist
+        forwardEvent(event);
+        return result;
     }
 
     return QObject::eventFilter(target, event);
@@ -309,6 +281,59 @@ void UCMouse::timerEvent(QTimerEvent *event)
         QObject::timerEvent(event);
     }
 }
+bool UCMouse::mouseEvents(QObject *target, QMouseEvent *event)
+{
+    Q_UNUSED(target);
+    switch (event->type()) {
+    case QEvent::MouseButtonPress:
+    {
+        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
+        return mousePressed(mouse);
+    } break;
+    case QEvent::MouseButtonRelease:
+    {
+        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
+        return mouseReleased(mouse);
+    } break;
+    case QEvent::MouseButtonDblClick:
+    {
+        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
+        return mouseDblClick(mouse);
+    } break;
+    case QEvent::MouseMove:
+    {
+        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
+        return mouseMoved(mouse);
+    } break;
+    default:
+        return false;
+    }
+}
+
+bool UCMouse::hoverEvents(QObject *target, QHoverEvent *event)
+{
+    Q_UNUSED(target)
+    switch (event->type()) {
+    case QEvent::HoverEnter:
+    {
+        QHoverEvent *hover = static_cast<QHoverEvent*>(event);
+        return hoverEntered(hover);
+    } break;
+    case QEvent::HoverMove:
+    {
+        QHoverEvent *hover = static_cast<QHoverEvent*>(event);
+        return hoverMoved(hover);
+    } break;
+    case QEvent::HoverLeave:
+    {
+        QHoverEvent *hover = static_cast<QHoverEvent*>(event);
+        return hoverExited(hover);
+    } break;
+    default:
+        // just to satisfy switch-case warnings
+        return false;
+    }
+}
 
 void UCMouse::setHovered(bool hovered)
 {
@@ -326,7 +351,6 @@ void UCMouse::setHovered(bool hovered)
 
 bool UCMouse::mousePressed(QMouseEvent *event)
 {
-    bool result = false;
     m_moved = false;
     if (event->button() & m_owner->acceptedMouseButtons()) {
         saveEvent(event);
@@ -343,20 +367,15 @@ bool UCMouse::mousePressed(QMouseEvent *event)
         // start long press timer
         m_pressAndHoldTimer.start(DefaultPressAndHoldDelay, this);
 
-        result = mev.isAccepted();
-    } else {
-        event->ignore();
+        return mev.isAccepted();
     }
 
-    // forward event
-    forwardEvent(event);
-
-    return result;
+    event->ignore();
+    return false;
 }
 
 bool UCMouse::mouseMoved(QMouseEvent *event)
 {
-    bool result = false;
     if (m_pressedButtons) {
         saveEvent(event);
 
@@ -372,19 +391,15 @@ bool UCMouse::mouseMoved(QMouseEvent *event)
                          m_pointInOSK, false, m_longPress);
         Q_EMIT positionChanged(&mev);
         event->setAccepted(mev.isAccepted());
-        result = mev.isAccepted();
-    } else {
-        event->ignore();
+        return mev.isAccepted();
     }
-    // forward event
-    forwardEvent(event);
 
-    return result;
+    event->ignore();
+    return false;
 }
 
 bool UCMouse::mouseReleased(QMouseEvent *event)
 {
-    bool result = false;
     if (m_pressedButtons) {
         saveEvent(event);
         // stop long press timer event
@@ -407,18 +422,15 @@ bool UCMouse::mouseReleased(QMouseEvent *event)
         if (!m_pressedButtons && !m_owner->acceptHoverEvents()) {
             setHovered(false);
         }
-        result = mev.isAccepted();
-    } else {
-        event->ignore();
+        return mev.isAccepted();
     }
-    // forward event
-    forwardEvent(event);
-    return result;
+
+    event->ignore();
+    return false;
 }
 
 bool UCMouse::mouseDblClick(QMouseEvent *event)
 {
-    bool result = false;
     if (m_pressedButtons) {
         saveEvent(event);
         // if double click connected, suppress release() and click() signals
@@ -429,13 +441,11 @@ bool UCMouse::mouseDblClick(QMouseEvent *event)
             event->setAccepted(mev.isAccepted());
             m_doubleClicked = true;
         }
-        result = event->isAccepted();
-    } else {
-        event->ignore();
+        return event->isAccepted();
     }
-    // forward event
-    forwardEvent(event);
-    return result;
+
+    event->ignore();
+    return false;
 }
 
 bool UCMouse::hoverEntered(QHoverEvent *event)
@@ -443,7 +453,6 @@ bool UCMouse::hoverEntered(QHoverEvent *event)
     m_lastPos = event->posF();
     m_lastModifiers = event->modifiers();
     setHovered(true);
-    forwardEvent(event);
     return false;
 }
 
@@ -463,7 +472,6 @@ bool UCMouse::hoverExited(QHoverEvent *event)
     m_lastPos = event->posF();
     m_lastModifiers = event->modifiers();
     setHovered(false);
-    forwardEvent(event);
     return false;
 }
 
@@ -656,6 +664,19 @@ QQmlListProperty<QQuickItem> UCMouse::forwardTo()
     return QQmlListProperty<QQuickItem>(this, m_forwardList);
 }
 
+UCMouse::Priority UCMouse::priority() const
+{
+    return m_priority;
+}
+void UCMouse::setPriority(Priority priority)
+{
+    if (priority != m_priority) {
+        m_priority = priority;
+        Q_EMIT priorityChanged();
+    }
+}
+
+
 /*!
    \qmlsignal Mouse::onPressed(ExtendedMouseEvent event)
    The signal reports the mouse press.
@@ -796,54 +817,26 @@ QHoverEvent UCInverseMouse::mapHoverToOwner(QObject *target, QHoverEvent *event)
 bool UCInverseMouse::eventFilter(QObject *target, QEvent *event)
 {
     // exclude MouseArea and InverseMouseArea targets; InverseMosueArea casts to QQuickMouseArea
-    if (m_owner && (target != m_owner) && !qobject_cast<QQuickMouseArea*>(target)) {
-
-        if (isMouseEvent(event->type())) {
-            QMouseEvent mouse(mapMouseToOwner(target, static_cast<QMouseEvent*>(event)));
-            if (!contains(&mouse)) {
-                return QObject::eventFilter(target, event);
-            }
-            switch (event->type()) {
-            case QEvent::MouseButtonPress:
-            {
-                return mousePressed(&mouse);
-            } break;
-            case QEvent::MouseButtonRelease:
-            {
-                return mouseReleased(&mouse);
-            } break;
-            case QEvent::MouseButtonDblClick:
-            {
-                return mouseDblClick(&mouse);
-            } break;
-            case QEvent::MouseMove:
-            {
-                return mouseMoved(&mouse);
-            } break;
-            default: break;
-            }
-        } else if (isHoverEvent(event->type())) {
-            QHoverEvent hover(mapHoverToOwner(target, static_cast<QHoverEvent*>(event)));
-            switch (event->type()) {
-            case QEvent::HoverEnter:
-            {
-                return hoverEntered(&hover);
-            } break;
-            case QEvent::HoverMove:
-            {
-                return hoverMoved(&hover);
-            } break;
-            case QEvent::HoverLeave:
-            {
-                return hoverExited(&hover);
-            } break;
-            default:
-                // just to satisfy switch-case warnings
-                break;
-            }
-        }
+    if ((target != m_owner) && !qobject_cast<QQuickMouseArea*>(target)) {
+        return UCMouse::eventFilter(target, event);
     }
     return QObject::eventFilter(target, event);
+}
+bool UCInverseMouse::mouseEvents(QObject *target, QMouseEvent *event)
+{
+    QMouseEvent mouse(mapMouseToOwner(target, event));
+    if (!contains(&mouse)) {
+        // do not handle mouse event if it's inside the owner
+        return false;
+    }
+    // call base handler
+    return UCMouse::mouseEvents(target, &mouse);
+}
+
+bool UCInverseMouse::hoverEvents(QObject *target, QHoverEvent *event)
+{
+    QHoverEvent hover(mapHoverToOwner(target, event));
+    return UCMouse::hoverEvents(target, &hover);
 }
 
 // returns true if the point is in the inverse area
