@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,12 +17,20 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-TextInput {
-    objectName: "FilterOwner"
-    width: units.gu(10)
-    height: units.gu(5)
-    activeFocusOnPress: true
+Item {
+    id: root
+    width: units.gu(40)
+    height: units.gu(71)
+    objectName: "target"
 
-    // create Mouse filter attached
-    Mouse.priority: Mouse.BeforeItem
+    Mouse.enabled: true
+    TextInput {
+        objectName: "FilterOwner"
+        width: root.width
+        height: units.gu(5)
+
+        Mouse.forwardTo: [root]
+        Mouse.priority: Mouse.AfterItem
+        Mouse.onPressed: mouse.accepted = true
+    }
 }

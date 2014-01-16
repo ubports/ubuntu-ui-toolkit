@@ -24,5 +24,8 @@ TextInput {
     activeFocusOnPress: true
 
     // create Mouse filter attached
-    Mouse.priority: Mouse.BeforeItem
+    Mouse.priority: Mouse.AfterItem
+
+    Mouse.onPressed: print("pressed")
+    Mouse.onReleased: print('released')
 }

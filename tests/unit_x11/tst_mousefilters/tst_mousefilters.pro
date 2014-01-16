@@ -14,4 +14,11 @@ OTHER_FILES += \
     MouseFilterAttachedToNonItem.qml \
     InverseMouseFilterAttachedToNonItem.qml \
     ForwardedMouseEvents.qml \
-    ForwardToMouseArea.qml
+    ForwardToMouseArea.qml \
+    FilterTextInputAfter.qml \
+    FilterInverseTextInputAfter.qml \
+    ForwardedMouseEventsStopped.qml \
+    ForwardedEventsToTargetBlocked.qml \
+    ForwardToInverseMouseArea.qml \
+    FilterFlickable.qml \
+    FilterFlickableAfter.qml

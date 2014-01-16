@@ -72,7 +72,7 @@ public:
     void setMouseMoveThreshold(qreal threshold);
     QQmlListProperty<QQuickItem> forwardTo();
     Priority priority() const;
-    void setPriority(Priority priority);
+    virtual void setPriority(Priority priority);
 
 Q_SIGNALS:
     void enabledChanged();
@@ -93,10 +93,11 @@ Q_SIGNALS:
 protected:
     virtual bool eventFilter(QObject *, QEvent *);
     virtual void timerEvent(QTimerEvent *event);
-
-    void setHovered(bool hovered);
     virtual bool mouseEvents(QObject *target, QMouseEvent *event);
     virtual bool hoverEvents(QObject *target, QHoverEvent *event);
+    virtual bool hasAttachedFilter(QQuickItem *item);
+
+    void setHovered(bool hovered);
     bool mousePressed(QMouseEvent *event);
     bool mouseReleased(QMouseEvent *event);
     bool mouseDblClick(QMouseEvent *event);
@@ -144,6 +145,7 @@ public:
     static UCInverseMouse *qmlAttachedProperties(QObject *owner);
 
     virtual void setEnabled(bool enabled);
+    virtual void setPriority(Priority priority);
     bool excludeInputArea() const;
     void setExcludeInputArea(bool value);
 
@@ -156,6 +158,7 @@ protected:
     virtual bool eventFilter(QObject *, QEvent *);
     virtual bool mouseEvents(QObject *target, QMouseEvent *event);
     virtual bool hoverEvents(QObject *target, QHoverEvent *event);
+    virtual bool hasAttachedFilter(QQuickItem *item);
     bool contains(QMouseEvent *mouse);
 
     bool m_excludeOSK:1;

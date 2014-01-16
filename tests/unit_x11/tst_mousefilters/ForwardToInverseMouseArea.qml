@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,15 +18,29 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
+    id: root
     width: units.gu(40)
     height: units.gu(71)
-    TextInput {
-        objectName: "FilterOwner"
-        width: units.gu(30)
-        height: units.gu(4)
-        activeFocusOnPress: true
 
-        // create InverseMouse filter attached
-        InverseMouse.priority: Mouse.BeforeItem
+    Column {
+        TextInput {
+            objectName: "FilterOwner"
+            width: root.width
+            height: units.gu(5)
+
+            Mouse.forwardTo: [root, other]
+        }
+        Rectangle {
+            width: root.width
+            height: units.gu(15)
+            color: "blue"
+            InverseMouseArea {
+                id: other
+                objectName: "target"
+                anchors.fill: parent
+                onPressed: {print("Pressed"); mouse.accepted = false}
+                onReleased: {print("Released"); mouse.accepted = false}
+            }
+        }
     }
 }
