@@ -644,11 +644,13 @@ plugins.qmltypes
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1"]
+    name: "Priority"
     Property { name: "enabled"; type: "bool" }
     Property { name: "acceptedButtons"; type: "Qt::MouseButtons"; isReadonly: true }
     Property { name: "hoverEnabled"; type: "bool"; isReadonly: true }
     Property { name: "mouseMoveThreshold"; type: "double" }
     Property { name: "forwardTo"; type: "QQuickItem"; isList: true; isReadonly: true }
+    Property { name: "priority"; type: "Priority" }
     Signal {
     name: "pressed"
     Parameter { name: "mouse"; type: "UCExtendedMouseEvent"; isPointer: true }
