@@ -189,7 +189,9 @@ bool UCExtendedMouseEvent::pointInInputArea() const
    to items that do not handle any mouse events will not have any effect. However
    child items which handle mouse events can forward the events they handle to
    their parent. In this way mouse events will land in these items too, and mouse
-   filter attached to those can also handle the event.
+   filter attached to those can also handle the event. This is useful when creating
+   custom types where the mouse handling item is nested into a non-mouse handling
+   one, and we want to provide additional filtering possibility to the user.
 
    \qml
    Item {
