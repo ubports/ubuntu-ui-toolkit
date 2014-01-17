@@ -485,7 +485,7 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
                     pass
             raise ToolkitEmulatorException(
                 'List element with objectName "{}" not found.'.format(
-                object_name))
+                    object_name))
 
     @autopilot_logging.log_action(logger.info)
     def _scroll_to_top(self):
@@ -515,8 +515,8 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
         bottom = y + height - 5
         if direction == 'below':
             start_y = bottom
-            stop_y = top            
-        elif direction =='above':
+            stop_y = top
+        elif direction == 'above':
             start_y = top
             stop_y = bottom
         else:
