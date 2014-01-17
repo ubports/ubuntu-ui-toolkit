@@ -620,8 +620,6 @@ MainView {
         self.assertEqual(self.label.text, 'testListElement5')
 
     def test_click_element_outside_view_above(self):
-        # First we need to scroll to the 8th element in order for the 9th to be
-        # created.
         self.list_view.click_element('testListElement9')
 
         # Click the first element out of view to make sure we are not scrolling
