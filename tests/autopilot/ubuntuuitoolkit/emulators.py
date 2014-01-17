@@ -489,14 +489,19 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
             else:
                 self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
 
-    def _select_element(self, objectName):
+    def _select_element(self, object_name):
         try:
-            return self.select_single(objectName=objectName)
+            return self.select_single(objectName=object_name)
         except dbus.StateNotFoundError:
             # If the list is big, the last elements will only be created when
             # we scroll them into view.
             self._scroll_to_bottom()
-            return self.select_single(objectName=objectName)
+            try:
+                return self.select_single(objectName=object_name)
+            except dbus.StateNotFoundError:
+                raise ToolkitEmulatorException(
+                    'List element with objectName "{}" not found.'.format(
+                        object_name))
 
     def _scroll_to_bottom(self):
         x, y, width, height = self.globalRect

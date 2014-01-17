@@ -640,6 +640,14 @@ MainView {
             objectName=objectName)
         self.list_view.click_element(objectName)
 
+    def test_click_unexisting_element(self):
+        error = self.assertRaises(
+            emulators.ToolkitEmulatorException,
+            self.list_view.click_element,
+            'unexisting')
+        self.assertEqual(
+            str(error), 'List element with objectName "unexisting" not found.')
+
 
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
 
