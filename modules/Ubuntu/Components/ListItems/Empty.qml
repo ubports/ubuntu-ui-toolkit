@@ -234,14 +234,13 @@ AbstractButton {
          */
         function resetDrag() {
             confirmRemovalDialog.waitingForConfirmation = false
+            held = false  // before body.x to ensure animation
             body.x = 0
             pressedPosition = -1
             __mouseArea.drag.target = null
-            held = false
             removeItem = false
             backgroundIndicator.opacity = 0.0
             backgroundIndicator.visible = false
-            backgroundIndicator.state = ""
         }
 
         /*! \internal
@@ -330,6 +329,8 @@ AbstractButton {
             onXChanged: {
                 if (x > 0) {
                     backgroundIndicator.state = "SwipingRight"
+                } else if (x === 0) {
+                    backgroundIndicator.state = ""
                 } else {
                     backgroundIndicator.state = "SwipingLeft"
                 }
