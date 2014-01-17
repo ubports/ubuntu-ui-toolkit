@@ -462,7 +462,7 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.click_object(element)
 
     def _swipe_element_into_view(self, objectName):
-        element = self.select_single(objectName=objectName)
+        element = self._select_element(objectName)
         x, y, width, height = self.globalRect
         start_x = x + (width / 2)
         start_y = y + (height / 2)
@@ -488,6 +488,24 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
                 self.pointing_device.release()
             else:
                 self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
+
+    def _select_element(self, objectName):
+        try:
+            return self.select_single(objectName=objectName)
+        except dbus.StateNotFoundError:
+            # If the list is big, the last elements will only be created when
+            # we scroll them into view.
+            self._scroll_to_bottom()
+            return self.select_single(objectName=objectName)
+
+    def _scroll_to_bottom(self):
+        x, y, width, height = self.globalRect
+        while not self.atYEnd:
+            start_x = stop_x = x + (width / 2)
+            # Start just a little over the end of the list.
+            start_y = y + height - 5
+            stop_y = y
+            self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
 
     def _is_element_fully_visible(self, objectName):
         element = self.select_single(objectName=objectName)
