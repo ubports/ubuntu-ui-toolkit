@@ -491,11 +491,7 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
     def _scroll_to_top(self):
         x, y, width, height = self.globalRect
         while not self.atYBeginning:
-            start_x = stop_x = x + (width / 2)
-            # Start just a little under the top of the list.
-            start_y = y + 5
-            stop_y = y + height
-            self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
+            self._show_more_elements_above()
 
     @autopilot_logging.log_action(logger.info)
     def _show_more_elements_below(self):
