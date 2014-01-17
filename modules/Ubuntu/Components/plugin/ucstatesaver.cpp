@@ -86,12 +86,19 @@ void UCStateSaverAttachedPrivate::_q_propertyChange()
 
 QString UCStateSaverAttachedPrivate::absoluteId(const QString &id)
 {
-    QQmlContextData *cdata = QQmlContextData::get(qmlContext(m_attachee));
+    QQmlContext *attacheeContext = qmlContext(m_attachee);
+    QQmlContextData *cdata = QQmlContextData::get(attacheeContext);
     QQmlData *ddata = QQmlData::get(m_attachee);
     QString path = cdata->url.path().replace('/', '_') + ':'
             + QString::number(ddata->lineNumber) + ':'
             + QString::number(ddata->columnNumber) + ':' + id;
     QObject *parent = m_attachee->parent();
+
+    // check whether we have an "index" context property defined
+    QVariant indexValue = attacheeContext->contextProperty("index");
+    if (indexValue.isValid() && (indexValue.type() == QVariant::Int)) {
+        path += indexValue.toString();
+    }
 
     while (parent) {
         QString parentId = qmlContext(parent)->nameForObject(parent);
@@ -232,6 +239,29 @@ void UCStateSaverAttachedPrivate::connectChangeSlot(bool connect)
  *     }
  * }
  * \endqml
+ *
+ * When used with Repeater, each created item from the Repeater's delegate will
+ * be saved separately. Note that due to the way Repeater works, Repeaters do not
+ * need to have id specified.
+ *
+ * \qml
+ * Item {
+ *     id: root
+ *     // [...]
+ *     Repeater {
+ *         model: 10
+ *         Rectangle {
+ *             id: rect
+ *             width: 50; height: 50
+ *             StateSaver.properties: "width, height"
+ *         }
+ *     }
+ *     // [...]
+ * }
+ * \endqml
+ *
+ * It can be used in the same way in ListView or GridView, except that both ListView
+ * and GridView must have an id set.
  *
  * The StateSaver can save all \l{http://qt-project.org/doc/qt-5.0/qtqml/qtqml-typesystem-basictypes.html}{QML base types},
  * Objects, list of objects or variants containing any of these cannot be saved.

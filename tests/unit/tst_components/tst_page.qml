@@ -126,16 +126,21 @@ Item {
         function test_flickableY_bug1201452() {
             var pageTitle = "Hello bug!";
             page.title = pageTitle;
-            compare(page.__propagated.header.visible, true, "header is visible when title is set")
-            compare(page.__propagated.header.height > 0, true, "header has a height when title is set")
+            var header = page.__propagated.header;
+            compare(header.visible, true, "header is visible when title is set")
+            compare(header.height > 0, true, "header has a height when title is set")
+            var headerHeight = header.height
             var flickableY = 150;
             page.flickable.contentY = flickableY;
             compare(page.flickable.contentY, flickableY, "flickable.contentY can be set");
+            compare(page.flickable.topMargin, headerHeight, "topMargin of the flickable equals header height");
             page.title = "";
-            compare(page.__propagated.header.visible, false, "header is hidden when title is unset")
-            compare(page.flickable.contentY, flickableY, "Making header invisible does not reset flickable.contentY");
+            compare(header.visible, false, "header is hidden when title is unset")
+            compare(page.flickable.topMargin, 0, "topMargin becomes 0 because header is hidden"); // used to be headerHeight
+            compare(page.flickable.contentY, flickableY + headerHeight, "contentY is updated when header is made invisible to compensate for the change in topMargin");
             page.title = pageTitle;
             compare(page.flickable.contentY, flickableY, "Making header visible again does not reset flickable.contentY");
+            compare(page.flickable.topMargin, headerHeight, "topMargin is updated when header becomes visible.")
         }
     }
 }
