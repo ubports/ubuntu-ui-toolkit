@@ -523,7 +523,7 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
             raise ToolkitEmulatorException(
                 'Invalid direction {}.'.format(direction))
         if platform.model() == 'Desktop':
-            # The drag on the desktop is done two fast, so we are left at
+            # The drag on the desktop is done too fast, so we are left at
             # the bottom or at the top of the list, sometimes missing the
             # element we are looking for.
             # TODO: use the slow drag once it's implemented:
