@@ -15,7 +15,8 @@
  *
  */
 
-#include "ucmousefilters.h"
+#include "ucmouse.h"
+#include "ucinversemouse.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/QQuickItem>
 #include <QtGui/QGuiApplication>
@@ -52,7 +53,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    \instantiates UCExtendedMouseEvent
    \inqmlmodule Ubuntu.Components 0.1
    \ingroup ubuntu
-   \brief Mouse event extending \l{http://qt-project.org/doc/qt-5.1/qtquick/qml-qtquick2-mouseevent.html}{QML MouseEvent}.
+   \brief Mouse event extending QtQuick's MouseEvent type.
 
    ExtendedMouseEvent is used by Mouse and InverseMouse attached signals holding
    information about the mouse event. Extends the MouseEvent with additional
@@ -64,12 +65,12 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    An other difference from MouseEvent is that when all MouseEvenths are accepted
    by default, every ExtendedMouseEventis set to not accepted, meaning that every
    extended mouse event will be propagated to its owner. In case event propagation
-   is not wanted, the \a accepted proeprty must be set explicitly.
+   is not wanted, the \a accepted property must be set explicitly.
  */
 
 /*!
     \qmlproperty bool ExtendedMouseEvent::pointInInputArea
-    The proeprty specifies whether the mouse event happened over the input method
+    The property specifies whether the mouse event happened over the input method
     or not. The value is true when the device has input method specified, the
     input method is active and the mouse is positioned over the input area.
     The property has meaning mostly for the InverseMouse filter as is the Mouse
@@ -91,7 +92,7 @@ bool UCExtendedMouseEvent::pointInInputArea() const
    Sometimes we need to provide additional functionality on mouse events beside
    a QML element's default behavior. Placing a MouseArea over a component however
    will grab the mouse events from the component underneath, no matter if we set
-   \l preventStealing to false or not. Setting mouse.accepted to false in \l onPressed
+   \a preventStealing to false or not. Setting mouse.accepted to false in \a onPressed
    would result in having the event forwarded to the MouseArea's parent, however
    MouseArea will no longer receive other mouse events.
 
@@ -111,7 +112,7 @@ bool UCExtendedMouseEvent::pointInInputArea() const
    }
    \endqml
 
-   Ubuntu UI Toolkit declares filter components similar to \l Keys, which can be
+   Ubuntu UI Toolkit declares filter components similar to Keys, which can be
    attached to any visual primitve. Mouse filter however will have effect only
    when attached to items handling mouse events. Events are handled through signals,
    where the event data is presented through the \a mouse parameter. Events
@@ -199,13 +200,13 @@ bool UCExtendedMouseEvent::pointInInputArea() const
        width: 100
        height: 50
 
-       Mouse.onPressed: print("mouse received from input")
+       Mouse.onPressed: console.log("mouse received from input")
 
        TextItem {
            anchors.fill: parent
            Mouse.forvardTo: [top]
-           Mouse.onPressed: print("pressed over input")
-           Mouse.onPressAndHold: print("longpress handled here")
+           Mouse.onPressed: console.log("pressed over input")
+           Mouse.onPressAndHold: console.log("longpress handled here")
        }
    }
    \endqml
@@ -214,6 +215,50 @@ bool UCExtendedMouseEvent::pointInInputArea() const
    to TextInput, then it is forwarded to the top item and finally to the TextInput.
    Accepting the mouse event will stop propagation to the top item as well as to
    the TextInput.
+
+   An interesting feature that can be achieved using Mouse filter is the event
+   "transparency" towards the MouseArea lying behind the items which handle mouse
+   events. This means for example that by forwarding mouse events occurred on a
+   TextInput to a MouseArea that stays behind it in the item hierarchy, the
+   MouseArea will also get all the events occurred on the area covered by the
+   TextInput, acting like it would be above the TextInput. However, due to the
+   nature of the MouseArea event acceptance policy (all events are accepted by
+   default) TextInput will not get these mouse events unless we set the \a accepted
+   field of the mouse event to false in MouseArea. This normally leads to the
+   MouseArea no longer getting further mouse events. However, Mouse filter will
+   continue to forward other mouse events to the MouseArea, so setting \a accepted
+   to false in \a onPressed, \a onReleased will not have the default effect. This
+   is only valid to press and release events, double-click or mouse position change
+   will be blocked by the MouseArea still.
+   \qml
+   import QtQuick 2.0
+   import Ubuntu.Components 0.1
+
+   MouseArea {
+       id: topArea
+       width: units.gu(50)
+       height: units.gu(10)
+
+       onPressed: {
+           console.log("forwarded pressed")
+           mouse.accepted = false
+       }
+       onReleased: {
+           console.log("released")
+           mouse.accepted = false
+       }
+
+       TextInput {
+           width: units.gu(40)
+           height: units.gu(5)
+           anchors.centerIn: parent
+
+           Mouse.forwardTo: [topArea]
+           Mouse.onPressed: console.log("input pressed")
+           Mouse.onReleased: console.log("input released")
+       }
+   }
+   \endqml
 
    Similar functionality for the case when the mouse event occurs outside of the
    owner is brought by the \l InverseMouse attached property.
@@ -224,7 +269,7 @@ UCMouse::UCMouse(QObject *parent)
     , m_owner(qobject_cast<QQuickItem*>(parent))
     , m_pressedButtons(Qt::NoButton)
     , m_priority(BeforeItem)
-    , m_moveThreshold(UCUnits::instance().gu(0.5))
+    , m_moveThreshold(0.0)
     , m_enabled(false)
     , m_moved(false)
     , m_longPress(false)
@@ -318,11 +363,7 @@ bool UCMouse::mouseEvents(QObject *target, QMouseEvent *event)
         break;
     }
     forwardEvent(event);
-    if (!result && (m_priority == AfterItem)) {
-        // make sure we consume the event!
-//        result = true;
-    }
-    return result;
+    return result || event->isAccepted();
 }
 
 bool UCMouse::hoverEvents(QObject *target, QHoverEvent *event)
@@ -346,16 +387,26 @@ bool UCMouse::hoverEvents(QObject *target, QHoverEvent *event)
         break;
     }
     forwardEvent(event);
-    if (!result && (m_priority == AfterItem)) {
-        // make sure we consume the event!
-//        result = true;
-    }
-    return result;
+    return result || event->isAccepted();
 }
 
 bool UCMouse::hasAttachedFilter(QQuickItem *item)
 {
     return (qmlAttachedPropertiesObject<UCMouse>(item, false) != 0);
+}
+
+void UCMouse::setHovered(bool hovered)
+{
+    if (m_hovered != hovered) {
+        m_hovered = hovered;
+        UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
+                                 m_pointInOSK, false, false);
+        if (m_hovered) {
+            Q_EMIT entered(&mev);
+        } else {
+            Q_EMIT exited(&mev);
+        }
+    }
 }
 
 bool UCMouse::mousePressed(QMouseEvent *event)
@@ -449,6 +500,9 @@ bool UCMouse::mouseDblClick(QMouseEvent *event)
             Q_EMIT doubleClicked(&mev);
             event->setAccepted(mev.isAccepted());
             m_doubleClicked = true;
+        } else {
+            // set accepted to false still
+            event->setAccepted(false);
         }
         return event->isAccepted();
     }
@@ -469,12 +523,10 @@ bool UCMouse::hoverMoved(QHoverEvent *event)
 {
     m_lastPos = event->posF();
     m_lastModifiers = event->modifiers();
-    // make sure we are having the hovered set
-    setHovered(true);
-
     UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
                              m_pointInOSK, false, m_longPress);
     Q_EMIT positionChanged(&mev);
+    forwardEvent(event);
     return false;
 }
 
@@ -501,21 +553,6 @@ void UCMouse::saveEvent(QMouseEvent *event)
         m_toleranceArea.setHeight(2 * m_moveThreshold);
     }
 }
-
-void UCMouse::setHovered(bool hovered)
-{
-    if (m_hovered != hovered) {
-        m_hovered = hovered;
-        UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
-                                 m_pointInOSK, false, false);
-        if (m_hovered) {
-            Q_EMIT entered(&mev);
-        } else {
-            Q_EMIT exited(&mev);
-        }
-    }
-}
-
 bool UCMouse::isDoubleClickConnected()
 {
     IS_SIGNAL_CONNECTED(this, UCMouse, doubleClicked, (UCExtendedMouseEvent*));
@@ -554,14 +591,16 @@ bool UCMouse::isHoverEvent(QEvent::Type type)
 // forwards the events to the listed items; only mouse and hover events qualify
 void UCMouse::forwardEvent(QEvent *event)
 {
-    if (event->isAccepted()) {
-        // the event got accepted, therefore should not be forwarded
-        return;
-    }
-    // TODO: alter acceptedButtons and hoverEnabled for the time the event is delivered
-    // exclude QQuickMouseArea and InverseMouseAreaType!!
+    /*
+     * alter acceptedButtons and hoverEnabled for the time the event is delivered
+     * exclude MouseArea and InverseMouseArea!!
+     */
     Q_FOREACH(QQuickItem *item, m_forwardList) {
 
+        if (event->isAccepted()) {
+            // the event got accepted, therefore should not be forwarded
+            return;
+        }
         // skip InverseMouseArea otherwise those will get the event twice
         if (qobject_cast<InverseMouseAreaType*>(item)) {
             continue;
@@ -594,15 +633,11 @@ void UCMouse::forwardEvent(QEvent *event)
             QGuiApplication::sendEvent(item, &he);
             accepted = he.isAccepted();
         }
+        event->setAccepted(accepted);
 
         // restore acceptedButtons and hover
         item->setAcceptedMouseButtons(acceptedButtons);
         item->setAcceptHoverEvents(hoverEnabled);
-
-        // leave if accepted
-        if (accepted) {
-            return;
-        }
     }
 }
 
@@ -642,7 +677,7 @@ Qt::MouseButtons UCMouse::acceptedButtons() const
     \qmlproperty bool Mouse::hoverEnabled
     \readonly
     The property reports whether the owner accepts hover events or not. When
-    events are accepted \l entered(), \l positionChanged() and \l exited() signals
+    events are accepted \l onEntered, \l onPositionChanged and \l onExited signals
     containing the mouse cursor position.
   */
 bool UCMouse::hoverEnabled() const
@@ -651,19 +686,19 @@ bool UCMouse::hoverEnabled() const
 }
 
 /*!
-   \qmlproperty Mouse::mouseMoveThreshold
+   \qmlproperty real Mouse::mouseMoveThreshold
    The property holds the tolerance value the mouse can move in both x and y axis
-   when the mouse is pressed, during which the \l pressAndHold() signal will still
-   be emitted and the \l clicked() signal will be emitted upon mouse release.
+   when the mouse is pressed, during which the composed events such as \l onClicked
+   and \l onPressAndHold will still be emitted.
 
    The tolerance area is set around the mouse position the button was pressed.
-   If the mouse moves outside of this area having the button pressed will not
-   result in emitting the \l pressAndHold() and \l clicked() signals.
+   While the button is pressed, moving the mouse out of this area will not result
+   in emitting the composed signals.
 
-   The tolerance value will not be taken into account if the value set for the
-   property is 0.
+   When this value is 0, the signals will be emitted as in MouseArea, meaning the
+   composed events will come if the mouse move does not leave the area.
 
-   The default value is 0.5 GUs.
+   The default value is 0.
  */
 qreal UCMouse::mouseMoveThreshold() const
 {
@@ -678,20 +713,49 @@ void UCMouse::setMouseMoveThreshold(qreal threshold)
 }
 
 /*!
-  \qmlproperty Mouse::forwardTo
+  \qmlproperty list<Item> Mouse::forwardTo
   The property provides a way to forward mouse presses, releases, moves and double
   click events to other items. This can be useful when you want other items to
   handle different parts of the same mouse event or to handle other mouse events.
 
   The items listed will receive the event only if the mouse event falls into their
   area. Once an item that has forwarded mouse events accepts the event, that will
-  no longer be delivered to the rest of the items in the list.
+  no longer be delivered to the rest of the items in the list. This rule is also
+  applied on the owner when the priority is set to \a BeforeItem.
   */
 QQmlListProperty<QQuickItem> UCMouse::forwardTo()
 {
     return QQmlListProperty<QQuickItem>(this, m_forwardList);
 }
 
+/*!
+  \qmlproperty enumeration Mouse::priority
+  The property specifies the event dispach relation between the filter, the elements
+  the event is forwarded to and the owner.
+  Similar to Keys' \a priority property, the event dispach is performed in two
+  ways: berfore (\a BeforeItem) or after (\a AfterItem) the owner receives the events.
+
+  When \a BeforeItem is set the event dispach happens based as follows:
+  \list i
+    \li the event is handled by the mouse filter
+    \li if there are items listed in \l forwardTo property, the event will be forwarded
+        to those items
+    \li the event is handed over the owner.
+  \endlist
+
+  \raw HTML
+    <br />
+  \endraw
+  When \a AfterItem is set the event dispach happens based as follows:
+  \list i
+    \li the event is handed over the owner;
+    \li the event is handled by the mouse filter;
+    \li if there are items listed in \l forwardTo property, the event will be forwarded
+        to those items.
+  \endlist
+
+  The default value is \a BeforeItem.
+ */
 UCMouse::Priority UCMouse::priority() const
 {
     return m_priority;
@@ -703,7 +767,6 @@ void UCMouse::setPriority(Priority priority)
         Q_EMIT priorityChanged();
     }
 }
-
 
 /*!
    \qmlsignal Mouse::onPressed(ExtendedMouseEvent event)
@@ -768,14 +831,12 @@ void UCMouse::setPriority(Priority priority)
 
    Being derived from Mouse filter element, provides the same behavior as the
    Mouse filter, except that all the signals are emitted when the mouse event
-   occurs outside the owner's area. Hover events are also inverted, meaning that
-   \l entered() is emitted when the mouse leaves the owner, respectively \l exited()
-   is emitted when the mouse enters owner.
+   occurs outside the owner's area.
 
    By default all mouse events occurring outside the owner are reported, including
    events over the active input method area. This can be controlled through the
-   \l excludeInputMethodArea property. When that is set, no mouse event occurring
-   over the input method area will be reported.
+   \l excludeInputArea property. When that is set, no mouse event occurring over
+   the input method area will be reported.
 
    The following example blocks mouse event propagation to input method when the
    mouse press occurs over input method area.
@@ -798,7 +859,7 @@ void UCMouse::setPriority(Priority priority)
    Note that accepting composed mouse events does not have any effect on event
    propagation.
 
-   Altering \l priority property has no effect on inverse mouse filter as mouse
+   Altering \a priority property has no effect on inverse mouse filter as mouse
    events captured by the filter are not forwarded to the owner, hence forwarding
    those events first to the owner will not have any effect.
  */
@@ -814,7 +875,7 @@ UCInverseMouse *UCInverseMouse::qmlAttachedProperties(QObject *owner)
 }
 
 /*!
-   \qmlproperty InverseMouse::excludeInputArea
+   \qmlproperty bool InverseMouse::excludeInputArea
    The property specifies whether the mouse events happening over the input panel
    area should be excluded or not. The default value is false, so mouse events
    are reported all over the outside area of the owner.
@@ -840,13 +901,18 @@ QMouseEvent UCInverseMouse::mapMouseToOwner(QObject *target, QMouseEvent* event)
                        event->button(), event->buttons(), event->modifiers());
 }
 
+QHoverEvent UCInverseMouse::mapHoverToOwner(QObject *target, QHoverEvent *event)
+{
+    QQuickItem *item = qobject_cast<QQuickItem*>(target);
+    QPointF pos = (target != m_owner) ? m_owner->mapFromItem(item, event->posF()) : event->posF();
+    QPointF oldPos = (target != m_owner) ? m_owner->mapFromItem(item, event->oldPosF()) : event->oldPosF();
+    return QHoverEvent(event->type(), pos, oldPos, event->modifiers());
+}
+
 bool UCInverseMouse::eventFilter(QObject *target, QEvent *event)
 {
-    if (isHoverEvent(event->type())) {
-        UCInverseMouse::hoverEvents(target, static_cast<QHoverEvent*>(event));
-    }
-    else if ((target != m_owner) && !qobject_cast<QQuickMouseArea*>(target)) {
-        // exclude MouseArea and InverseMouseArea targets; InverseMosueArea casts to QQuickMouseArea
+    // exclude MouseArea and InverseMouseArea targets; InverseMosueArea casts to QQuickMouseArea
+    if ((target != m_owner) && !qobject_cast<QQuickMouseArea*>(target)) {
         return UCMouse::eventFilter(target, event);
     }
     return QObject::eventFilter(target, event);
@@ -854,7 +920,7 @@ bool UCInverseMouse::eventFilter(QObject *target, QEvent *event)
 bool UCInverseMouse::mouseEvents(QObject *target, QMouseEvent *event)
 {
     QMouseEvent mouse(mapMouseToOwner(target, event));
-    if (!contains(mouse.localPos())) {
+    if (!contains(&mouse)) {
         // do not handle mouse event if it's inside the owner
         return false;
     }
@@ -864,38 +930,9 @@ bool UCInverseMouse::mouseEvents(QObject *target, QMouseEvent *event)
 
 bool UCInverseMouse::hoverEvents(QObject *target, QHoverEvent *event)
 {
-    if (event->type() != QEvent::HoverMove) {
-        return UCMouse::hoverEvents(target, event);
-    }
-    return false;
+    QHoverEvent hover(mapHoverToOwner(target, event));
+    return UCMouse::hoverEvents(target, &hover);
 }
-
-bool UCInverseMouse::mouseMoved(QMouseEvent *event)
-{
-    if (m_owner->acceptHoverEvents() && !m_pressedButtons) {
-        // generate mouse move if outside the owner
-        QHoverEvent hover(QEvent::HoverMove, event->localPos(), m_lastPos, event->modifiers());
-        return hoverMoved(&hover);
-    }
-    return UCMouse::mouseMoved(event);
-}
-// inverse to Mouse filter, report exited
-bool UCInverseMouse::hoverEntered(QHoverEvent *event)
-{
-    m_lastPos = event->posF();
-    m_lastModifiers = event->modifiers();
-    setHovered(false);
-    return false;
-}
-// inverse to Mouse filter, report entered
-bool UCInverseMouse::hoverExited(QHoverEvent *event)
-{
-    m_lastPos = event->posF();
-    m_lastModifiers = event->modifiers();
-    setHovered(true);
-    return false;
-}
-
 
 bool UCInverseMouse::hasAttachedFilter(QQuickItem *item)
 {
@@ -903,11 +940,11 @@ bool UCInverseMouse::hasAttachedFilter(QQuickItem *item)
 }
 
 // returns true if the point is in the inverse area
-bool UCInverseMouse::contains(const QPointF &localPos)
+bool UCInverseMouse::contains(QMouseEvent *mouse)
 {
-    bool result = !m_owner->contains(localPos);
+    bool result = !m_owner->contains(mouse->localPos());
     if (m_excludeOSK) {
-        result = result && !pointInOSK(localPos);
+        result = result && !pointInOSK(mouse->localPos());
     }
     return result;
 }

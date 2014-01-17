@@ -23,4 +23,9 @@ OTHER_FILES += \
     FilterFlickable.qml \
     FilterFlickableAfter.qml \
     Hover.qml \
-    InverseHover.qml
+    FilterTextInputTolerance.qml \
+    FilterInverseTextInputTolerance.qml \
+    ForwardedEventsStoppedInForwards.qml \
+    ForwardToTransparentMouseArea.qml \
+    ForwardDblClickToTransparentMouseArea.qml \
+    DoubleClicked.qml

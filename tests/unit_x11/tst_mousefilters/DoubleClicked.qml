@@ -19,10 +19,12 @@ import Ubuntu.Components 0.1
 
 TextInput {
     objectName: "FilterOwner"
-    width: units.gu(10)
+    width: units.gu(40)
     height: units.gu(5)
-    activeFocusOnPress: true
+    text: "This is a test text";
+    selectByMouse: true
+    mouseSelectionMode: TextInput.SelectWords
 
-    // create Mouse filter attached
-    Mouse.priority: Mouse.AfterItem
+    // make sure we have the doubleClicked() handled
+    Mouse.onDoubleClicked: {}
 }

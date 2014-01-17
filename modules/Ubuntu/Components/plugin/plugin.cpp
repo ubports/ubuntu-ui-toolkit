@@ -47,7 +47,8 @@
 #include "unitythemeiconprovider.h"
 #include "ucstatesaver.h"
 #include "ucurihandler.h"
-#include "ucmousefilters.h"
+#include "ucmouse.h"
+#include "ucinversemouse.h"
 
 #include <sys/types.h>
 #include <unistd.h>

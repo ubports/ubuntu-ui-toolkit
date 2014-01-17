@@ -21,20 +21,15 @@ Item {
     id: root
     width: units.gu(40)
     height: units.gu(71)
-
-    Rectangle {
+    MouseArea {
+        id: other
+        objectName: "FilterOwner"
         width: units.gu(30)
         height: units.gu(10)
-        color: "blue"
-        anchors.horizontalCenter: parent.horizontalCenter
-        MouseArea {
-            id: other
-            anchors.fill: parent
-            objectName: "FilterOwner"
-            hoverEnabled: true
+        anchors.horizontalCenter: parent
+        hoverEnabled: true
 
-            // test hover
-            Mouse.priority: Mouse.BeforeItem
-        }
+        // test hover
+        Mouse.priority: Mouse.BeforeItem
     }
 }

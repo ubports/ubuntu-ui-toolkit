@@ -59,7 +59,8 @@ HEADERS += plugin.h \
     statesaverbackend_p.h \
     ucstatesaver_p.h \
     ucurihandler.h \
-    ucmousefilters.h
+    ucinversemouse.h \
+    ucmouse.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \

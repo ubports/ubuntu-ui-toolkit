@@ -17,12 +17,17 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-TextInput {
-    objectName: "FilterOwner"
-    width: units.gu(10)
-    height: units.gu(5)
-    activeFocusOnPress: true
+Item {
+    width: units.gu(40)
+    height: units.gu(71)
+    TextInput {
+        objectName: "FilterOwner"
+        width: units.gu(30)
+        height: units.gu(4)
+        activeFocusOnPress: true
 
-    // create Mouse filter attached
-    Mouse.priority: Mouse.AfterItem
+        // create InverseMouse filter attached
+        InverseMouse.priority: Mouse.BeforeItem
+        InverseMouse.mouseMoveThreshold: units.gu(0.5)
+    }
 }

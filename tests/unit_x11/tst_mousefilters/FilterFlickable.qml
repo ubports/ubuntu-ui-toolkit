@@ -24,8 +24,6 @@ Flickable {
 
     objectName: "FilterOwner"
     Mouse.priority: Mouse.BeforeItem
-    onMovementStarted: print("move starts")
-    onMovementEnded: print("move ends")
 
     contentWidth: content.width
     contentHeight: content.height

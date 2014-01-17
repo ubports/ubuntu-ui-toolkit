@@ -24,5 +24,6 @@ TextInput {
     activeFocusOnPress: true
 
     // create Mouse filter attached
-    Mouse.priority: Mouse.AfterItem
+    Mouse.priority: Mouse.BeforeItem
+    Mouse.mouseMoveThreshold: units.gu(0.5)
 }
