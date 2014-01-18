@@ -522,13 +522,15 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
         else:
             raise ToolkitEmulatorException(
                 'Invalid direction {}.'.format(direction))
+        self._slow_drag(start_x, stop_x, start_y, stop_y)
+
+    def _slow_drag(self, start_x, stop_x, start_y, stop_y):
+        # The drag is done too fast, so we are scrolling more than what we
+        # should, sometimes missing the  element we are looking for.
+        # TODO: use the slow drag once it's implemented:
+        # https://bugs.launchpad.net/autopilot/+bug/1257055
+        # --elopio - 2014-01-09
         if platform.model() == 'Desktop':
-            # The drag on the desktop is done too fast, so we are left at
-            # the bottom or at the top of the list, sometimes missing the
-            # element we are looking for.
-            # TODO: use the slow drag once it's implemented:
-            # https://bugs.launchpad.net/autopilot/+bug/1257055
-            # --elopio - 2014-01-09
             self.pointing_device.move(start_x, start_y)
             self.pointing_device.press()
             self.pointing_device.move(stop_x, stop_y)
