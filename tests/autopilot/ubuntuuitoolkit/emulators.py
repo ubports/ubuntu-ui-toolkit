@@ -452,7 +452,7 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
     def click_element(self, objectName):
         """Click an element from the list.
 
-        It swipes the element into view if it's not fully visible.
+        It swipes the element into view if it's center is not visible.
 
         :parameter objectName: The objectName property of the element to click.
 
@@ -464,7 +464,7 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
     def _swipe_element_into_view(self, objectName):
         element = self._select_element(objectName)
 
-        while not self._is_element_fully_visible(objectName):
+        while not self._is_element_clickable(objectName):
             if element.globalRect.y < self.globalRect.y:
                 self._show_more_elements_above()
             else:
@@ -523,6 +523,8 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
             raise ToolkitEmulatorException(
                 'Invalid direction {}.'.format(direction))
         self._slow_drag(start_x, stop_x, start_y, stop_y)
+        self.dragging.wait_for(False)
+        self.moving.wait_for(False)
 
     def _slow_drag(self, start_x, stop_x, start_y, stop_y):
         # The drag is done too fast, so we are scrolling more than what we
@@ -539,11 +541,12 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
         else:
             self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
 
-    def _is_element_fully_visible(self, objectName):
+    def _is_element_clickable(self, objectName):
+        """Return True if the center of the element is visible."""
         element = self.select_single(objectName=objectName)
-        return (element.globalRect.y >= self.globalRect.y and
-                element.globalRect.y + element.globalRect.height <=
-                self.globalRect.y + self.globalRect.height)
+        element_center = element.globalRect.y + element.globalRect.height / 2
+        return (element_center >= self.globalRect.y and
+                element_center <= self.globalRect.y + self.globalRect.height)
 
 
 class Empty(UbuntuUIToolkitEmulatorBase):

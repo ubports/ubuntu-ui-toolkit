@@ -614,7 +614,7 @@ MainView {
         # Click the first element out of view to make sure we are not scrolling
         # to the bottom at once.
         self.assertFalse(
-            self.list_view._is_element_fully_visible('testListElement5'))
+            self.list_view._is_element_clickable('testListElement5'))
 
         self.list_view.click_element('testListElement5')
         self.assertEqual(self.label.text, 'testListElement5')
@@ -625,7 +625,7 @@ MainView {
         # Click the first element out of view to make sure we are not scrolling
         # to the top at once.
         self.assertFalse(
-            self.list_view._is_element_fully_visible('testListElement4'))
+            self.list_view._is_element_clickable('testListElement4'))
 
         self.list_view.click_element('testListElement4')
         self.assertEqual(self.label.text, 'testListElement4')
