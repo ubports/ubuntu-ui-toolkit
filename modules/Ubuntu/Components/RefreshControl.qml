@@ -59,7 +59,7 @@ StyledItem {
 
     property Flickable target: parent
 
-    property bool waitForCompletion: true
+    property bool completeWhen: true
     readonly property alias refreshing: internals.refreshing
 
     property string pullText: i18n.tr("Pull to refresh...")
@@ -67,9 +67,10 @@ StyledItem {
 
     signal refresh()
 
-    function complete() {
-        internals.refreshing = false;
-    }
+//    function complete() {
+//        print("COMPLETE")
+//        internals.refreshing = false;
+//    }
 
     style: Theme.createStyleComponent("RefreshControlStyle.qml", control)
     height: units.gu(5)
@@ -81,15 +82,25 @@ StyledItem {
 
     Item {
         id: internals
+        property bool completed: false
         property bool refreshing: false
         property bool triggerRefresh: false
         property real contentY: target.contentY - target.originY
         property real threshold: control.__styleInstance.flipThreshold
+        property real baseTopMargin: 0.0
 
         states: [
             State {
+                name: ""
+                when: control.completeWhen && !internals.refreshing && (internals.contentY >= -internals.threshold)
+                PropertyChanges {
+                    target: internals
+                    refreshing: false
+                }
+            },
+            State {
                 name: "release-to-refresh"
-                when: (internals.contentY < -internals.threshold) && !internals.refreshing
+                when: internals.completed && (internals.contentY < -internals.threshold) && !internals.refreshing
                 PropertyChanges {
                     target: internals
                     triggerRefresh: true
@@ -97,11 +108,27 @@ StyledItem {
             },
             State {
                 name: "refresh-in-progress"
-                when: internals.refreshing && control.waitForCompletion
+                when: internals.completed && internals.refreshing && control.waitForCompletion
             }
         ]
-        onStateChanged: control.__styleInstance.state = state
+        onStateChanged: {
+            if (control.__styleInstance) {
+                control.__styleInstance.state = state;
+            }
+        }
+
+        Binding {
+            target: control.__styleInstance
+            property: "baseFlickableTopMargin"
+            value: internals.baseTopMargin
+        }
     }
+
+    Component.onCompleted: {
+        internals.completed = true;
+        print("DONE" + control.__styleInstance)
+    }
+
 
     // catch when to update
     Connections {
@@ -113,6 +140,13 @@ StyledItem {
                 }
                 control.refresh();
             }
+        }
+        onTopMarginChanged: {
+            if (!internals.completed) {
+                internals.baseTopMargin = control.target.topMargin;
+            }
+
+            print("topMargin="+control.target.topMargin)
         }
     }
 }

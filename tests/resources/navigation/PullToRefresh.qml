@@ -16,50 +16,53 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-
+import Ubuntu.Components.ListItems 0.1 as ListItem
 
 MainView {
     id: root
     width: units.gu(40)
     height: units.gu(71)
 
-    ListModel {
-        id: listModel
+    PageStack {
+        id: pageStack
+        Component.onCompleted: pageStack.push(page)
+    }
 
-        function modelData(index) {
-            return {"name": "line #" + index}
-        }
+    Component {
+        id: page
 
-        function refresh() {
-            print("Refresh model...")
-            refreshDelay.restart()
-        }
+        Page {
+            title: "RefreshControl"
+            ListModel {
+                id: listModel
+                property bool done: false
 
-        Component.onCompleted: {
-            for (var i = 0; i < 50; i++) {
-                append(modelData(i));
+                function modelData(index) {
+                    return {"name": "line #" + index}
+                }
+
+                function refresh() {
+                    print("Refresh model...")
+                    done = false;
+                    refreshDelay.restart()
+                }
+
+                Component.onCompleted: {
+                    for (var i = 0; i < 50; i++) {
+                        append(modelData(i));
+                    }
+                }
             }
-        }
-    }
 
-    Timer {
-        id: refreshDelay
-        interval: 2000
-        onTriggered: {
-            refreshControl.complete()
-            flickableRefresh.complete()
-        }
-    }
+            Timer {
+                id: refreshDelay
+                interval: 2000
+                onTriggered: {
+                    listModel.done = true;
+                    //refreshControl.complete();
+                }
+            }
 
-    Column {
-        anchors.fill: parent
-        spacing: units.gu(0.5)
-        Rectangle {
-            clip: true
-            width: parent.width
-            height: units.gu(30)
-            anchors.topMargin: units.gu(10)
-            border.color: "black"
             ListView {
                 id: view
                 anchors.fill: parent
@@ -68,50 +71,17 @@ MainView {
                     color: "green"
                     width: ListView.view.width
                     height: units.gu(5)
-                    Label {
+                    ListItem.Standard {
                         anchors.fill: parent
                         text: modelData
-                        color: "white"
-                        verticalAlignment: Text.AlignVCenter
-                        horizontalAlignment: Text.AlignHCenter
+                        onClicked: pageStack.push(page)
                     }
                 }
 
                 RefreshControl {
                     id: refreshControl
-                    waitForCompletion: false
+                    completeWhen: listModel.done
                     onRefresh: listModel.refresh()
-                }
-            }
-        }
-
-        Flickable {
-            id: flicker
-            width: parent.width
-            height: units.gu(30)
-
-            clip: true
-            contentHeight: rect.height
-            contentWidth: rect.width
-            RefreshControl {
-                id: flickableRefresh
-                parent: flicker
-                onRefresh: listModel.refresh()
-            }
-
-            Rectangle {
-                id: rect
-                width: units.gu(100)
-                height: units.gu(100)
-                gradient: Gradient {
-                    GradientStop {
-                        color: "green"
-                        position: 0.2
-                    }
-                    GradientStop {
-                        color: "red"
-                        position: 1.0
-                    }
                 }
             }
         }

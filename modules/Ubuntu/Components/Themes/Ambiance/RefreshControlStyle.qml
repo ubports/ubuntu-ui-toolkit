@@ -18,8 +18,9 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Row {
+    property real baseFlickableTopMargin: 0.0
     property real layoutHeight: Math.max(pullImage.paintedHeight, pullLabel.paintedHeight, busyIndicator.height) + units.gu(1.5)
-    property real flipThreshold: layoutHeight + units.gu(1.5)
+    property real flipThreshold: layoutHeight + units.gu(1.5) + baseFlickableTopMargin
 
     property Flickable flickable: styledItem.target
 
@@ -50,7 +51,16 @@ Row {
         running: false
     }
 
+    onStateChanged: print("state="+state)
     states: [
+        State {
+            name: ""
+            PropertyChanges {
+                target: flickable
+                topMargin: baseFlickableTopMargin
+            }
+        },
+
         State {
             name: "release-to-refresh"
             PropertyChanges {
@@ -80,7 +90,7 @@ Row {
             }
             PropertyChanges {
                 target: flickable
-                topMargin: style.layoutHeight
+                topMargin: style.baseFlickableTopMargin + style.layoutHeight
             }
             AnchorChanges {
                 target: style
@@ -108,7 +118,8 @@ Row {
             PropertyAnimation {
                 target: flickable
                 property: "topMargin"
-                duration: UbuntuAnimation.SleepyDuration
+                to: baseFlickableTopMargin
+                duration: UbuntuAnimation.FastDuration
                 easing: UbuntuAnimation.StandardEasing
             }
         }
