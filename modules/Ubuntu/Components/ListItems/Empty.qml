@@ -141,7 +141,7 @@ AbstractButton {
       Reparent so that the visuals of the children does not
       occlude the bottom divider line.
      */
-    default property alias children: body.children
+    default property alias children: body.data
 
      /*!
       \internal
