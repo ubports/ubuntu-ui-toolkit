@@ -72,7 +72,8 @@ PageTreeNode {
         right: parent ? parent.right : undefined
         bottom: parent ? parent.bottom : undefined
     }
-    height: parent ? page.flickable ? parent.height : parent.height - internal.headerHeight : undefined
+    // avoid using parent.height because parent may be a Loader which does not have its height set.
+    height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
     /*!
       The title of the page. Will be shown in the header of the \l MainView.
