@@ -49,7 +49,7 @@ Item {
 
                 Ubuntu.RenderingTimes {
                     id: metrics
-                    period: 1000
+                    period: 2000
                     samples: renderingTimeGraph.width
                 }
 

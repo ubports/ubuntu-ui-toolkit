@@ -36,7 +36,7 @@ class UCGraphModel : public QObject
 public:
     explicit UCGraphModel(QObject *parent = 0);
 
-    void appendValue(qint64 value);
+    void appendValue(int width, int value);
 
     // getters
     QImage image() const;
@@ -96,22 +96,21 @@ private Q_SLOTS:
     void onBeforeRendering();
     void onAfterRendering();
     void onFrameSwapped();
-    void onTimerTimeout();
+    void onFrameRendered(qint64 renderTime);
 
 private:
-    void accumulateRenderTime(qint64 renderTime);
     void appendRenderTime(qint64 renderTime);
+    void updateTimeBetweenSamples();
 
 private:
     bool m_enabled;
     int m_period;
     UCGraphModel* m_graphModel;
     QQuickWindow* m_window;
-    QElapsedTimer m_elapsedTimer;
-    QTimer m_timer;
-    qint64 m_accumulatedTime;
+    QElapsedTimer m_renderingTimer;
+    QElapsedTimer m_appendTimer;
     qint64 m_highestTime;
-    int m_accumulatedFrames;
+    int m_timeBetweenSamples;
 };
 
 

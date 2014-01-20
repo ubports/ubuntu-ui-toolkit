@@ -17,6 +17,7 @@
  */
 
 #include "ucperformancemetrics.h"
+#include <QtCore/qmath.h>
 
 UCGraphModel::UCGraphModel(QObject *parent) :
     QObject(parent),
@@ -27,15 +28,26 @@ UCGraphModel::UCGraphModel(QObject *parent) :
     m_image.fill(0);
 }
 
-void UCGraphModel::appendValue(qint64 value)
+void UCGraphModel::appendValue(int width, int value)
 {
     /* FIXME: modifying m_image here implicitly triggers a deep copy
        of its data because UCTextureFromImage usually holds a reference
        to that image
     */
+    width = qMax(1, width);
     QRgb* line = (QRgb*)m_image.scanLine(0);
-    line[m_shift] = qRgb(value, value, value);
-    m_shift = (m_shift + 1) % m_samples;
+
+    if (width >= m_image.width()) {
+        memset(&line[0], value, m_image.width() * 3);
+    } else if (m_shift + width > m_image.width()) {
+        int after = m_image.width() - m_shift;
+        int before = width - after;
+        memset(&line[m_shift], value, after * 3);
+        memset(&line[0], value, before * 3);
+    } else {
+        memset(&line[m_shift], value, width * 3);
+    }
+    m_shift = (m_shift + width) % m_samples;
 
     Q_EMIT imageChanged();
     Q_EMIT shiftChanged();
@@ -89,10 +101,10 @@ UCRenderingTimes::UCRenderingTimes(QQuickItem* parent) :
     m_period(1000),
     m_graphModel(new UCGraphModel(this)),
     m_window(NULL),
-    m_accumulatedTime(0),
-    m_highestTime(0),
-    m_accumulatedFrames(0)
+    m_highestTime(0)
 {
+    updateTimeBetweenSamples();
+
     /* Disable synchronization to vertical blank signal on Intel */
     qputenv("vblank_mode", "0");
 
@@ -103,9 +115,7 @@ UCRenderingTimes::UCRenderingTimes(QQuickItem* parent) :
     /* Periodically append render time of the most costly frame rendered.
        The period is period / samples */
     QObject::connect(this, &UCRenderingTimes::frameRendered,
-                     this, &UCRenderingTimes::accumulateRenderTime);
-    QObject::connect(&m_timer, &QTimer::timeout,
-                     this, &UCRenderingTimes::onTimerTimeout);
+                     this, &UCRenderingTimes::onFrameRendered);
 }
 
 /*!
@@ -136,6 +146,7 @@ void UCRenderingTimes::setPeriod(int period)
 {
     if (period != m_period) {
         m_period = period;
+        updateTimeBetweenSamples();
         Q_EMIT periodChanged();
     }
 }
@@ -148,6 +159,7 @@ int UCRenderingTimes::samples() const
 void UCRenderingTimes::setSamples(int samples)
 {
     m_graphModel->setSamples(samples);
+    updateTimeBetweenSamples();
 }
 
 UCGraphModel* UCRenderingTimes::graphModel() const
@@ -199,51 +211,57 @@ void UCRenderingTimes::onSceneGraphInitialized()
 
 void UCRenderingTimes::onBeforeRendering()
 {
-    m_elapsedTimer.start();
+    if (!m_appendTimer.isValid()) {
+        m_appendTimer.start();
+    }
+    m_renderingTimer.start();
 }
 
 void UCRenderingTimes::onAfterRendering()
 {
+    Q_EMIT frameRendered(m_renderingTimer.nsecsElapsed());
 }
 
 void UCRenderingTimes::onFrameSwapped()
 {
-    Q_EMIT frameRendered(m_elapsedTimer.nsecsElapsed() / 1000000);
 }
 
-void UCRenderingTimes::onTimerTimeout()
+void UCRenderingTimes::onFrameRendered(qint64 renderTime)
 {
-    if (m_accumulatedFrames > 1) {
-        appendRenderTime(m_highestTime);
-    }
-}
-
-void UCRenderingTimes::accumulateRenderTime(qint64 renderTime)
-{
-    /* Only append render times after a given period of time.
-       Append the highest render time recorded in the past period
-    */
     m_highestTime = qMax(renderTime, m_highestTime);
-    m_accumulatedTime += renderTime;
-    m_accumulatedFrames++;
 
-    float timeout = m_period / m_graphModel->samples();
-    if (m_accumulatedTime >= timeout) {
-        m_timer.stop();
+    /* Only append a render time if enough time (m_timeBetweenSamples) has passed.
+       This ensures that updates to the data are regular.
+    */
+    if (renderTime >= m_timeBetweenSamples || m_appendTimer.nsecsElapsed() >= m_timeBetweenSamples) {
+        // Append the highest render time recorded in the past period
         appendRenderTime(m_highestTime);
-    } else if (!m_timer.isActive()) {
-        m_timer.start(timeout);
     }
 }
 
 void UCRenderingTimes::appendRenderTime(qint64 renderTime)
 {
-    m_accumulatedFrames = 0;
-    m_accumulatedTime = 0;
+    const int maximumSyncTime = 16000000; // 16 ms
+    int width;
+    int renderTimeInMs = qCeil((qreal)renderTime / 1000000);
+
+    if (m_appendTimer.nsecsElapsed() - renderTime > maximumSyncTime) {
+        width = ((qreal)samples() / m_period) * renderTimeInMs;
+    } else {
+        width = ((qreal)samples() / m_period) * m_appendTimer.elapsed();
+    }
+
+    m_graphModel->appendValue(width, renderTimeInMs);
+
+    // reset values
     m_highestTime = 0;
-    m_graphModel->appendValue(renderTime);
+    m_appendTimer.start();
 }
 
+void UCRenderingTimes::updateTimeBetweenSamples()
+{
+    m_timeBetweenSamples = (qreal)m_period * 1000000 / samples();
+}
 
 
 UCTextureFromImageTextureProvider::UCTextureFromImageTextureProvider() :
