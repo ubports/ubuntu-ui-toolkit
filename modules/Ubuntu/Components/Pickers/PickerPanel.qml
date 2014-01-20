@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,8 +21,8 @@ import Ubuntu.Components.ListItems 0.1
 import Ubuntu.Components.Popups 0.1
 
 /*!
-    \qmltype DateTimePanel
-    \inqmlmodule Ubuntu.Components.Pickers 0.1
+    \qmltype PickerPanel
+    \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu-pickers
     \brief Provides a panel for opening a DatePicker in place of the input panel or
     as Popover, depending on the form factor.
@@ -57,11 +57,12 @@ import Ubuntu.Components.Popups 0.1
 Object {
 
     /*!
-      The function opens a date picker panel. The date picker is opened in input
-      panel area if there is on-screen input panel available and the form factor
-      describes a phone. The picked date will be read from and reported into the
-      \a property of the \a caller as date type. This implies that the caller
-      must have defined a property with date type.
+      The function opend a DatePicker component in the input method area or in a
+      popover depending on the availability of an input method provider in the
+      system, and whether the size of the main screen width/height defines a phone
+      form factor. The picked date will be read from and reported into the \a property
+      of the \a caller as date type. This implies that the caller must have defined a
+      property with date type.
 
       On failure the function returns null. On success the returned object has the
       following properties:
@@ -86,7 +87,7 @@ Object {
             \li instance of the DatePicker component shown in the panel/popup
         \row
             \li \b pickerMode
-            \li represents the DatePicker \l mode to be used. This is an optional
+            \li represents the \l DatePicker::mode to be used. This is an optional
                 parameter and if not defined, the default mode will be used.
         \row
             \li \b date
