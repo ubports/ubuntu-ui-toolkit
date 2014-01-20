@@ -26,6 +26,7 @@ from autopilot import (
 )
 from autopilot.introspection import dbus
 
+
 _NO_TABS_ERROR = 'The MainView has no Tabs.'
 
 logger = logging.getLogger(__name__)
@@ -49,6 +50,12 @@ def get_pointing_device():
     return input.Pointer(device=input_device_class.create())
 
 
+def get_keyboard():
+    """Return the keyboard device."""
+    # TODO return the OSK if we are on the phone. --elopio - 2014-01-13
+    return input.Keyboard.create()
+
+
 def check_autopilot_version():
     """Check that the Autopilot installed version matches the one required.
 
@@ -69,8 +76,6 @@ class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
         check_autopilot_version()
         super(UbuntuUIToolkitEmulatorBase, self).__init__(*args)
         self.pointing_device = get_pointing_device()
-        # TODO it would be nice to have access to the screen keyboard if we are
-        # on the touch UI -- elopio - 2013-09-04
 
 
 class MainView(UbuntuUIToolkitEmulatorBase):
@@ -396,7 +401,11 @@ class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
                 'Button with text "{0}" not found.'.format(text))
         self.pointing_device.click_object(button)
         if self.autoClose:
-            self.visible.wait_for(False)
+            try:
+                self.visible.wait_for(False)
+            except dbus.StateNotFoundError:
+                # The popover was removed from the tree.
+                pass
 
     def _get_button(self, text):
         buttons = self.select_many('Empty')
@@ -444,6 +453,71 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
         original_state = self.checked
         self.pointing_device.click_object(self)
         self.checked.wait_for(not original_state, timeout)
+
+
+class TextField(UbuntuUIToolkitEmulatorBase):
+    """TextField Autopilot emulator."""
+
+    def __init__(self, *args):
+        super(TextField, self).__init__(*args)
+        self.keyboard = get_keyboard()
+
+    def write(self, text, clear=True):
+        """Write into the text field.
+
+        :parameter text: The text to write.
+        :parameter clear: If True, the text field will be cleared before
+            writing the text. If False, the text will be appended at the end
+            of the text field. Default is True.
+
+        """
+        with self.keyboard.focused_type(self):
+            if clear:
+                self.clear()
+            else:
+                if not self.is_empty():
+                    self.keyboard.press_and_release('End')
+            self.keyboard.type(text)
+
+    def clear(self):
+        """Clear the text field."""
+        if not self.is_empty():
+            if self.hasClearButton:
+                self._click_clear_button()
+            else:
+                self._clear_with_keys()
+            self.text.wait_for('')
+
+    def is_empty(self):
+        """Return True if the text field is empty. False otherwise."""
+        return self.text == ''
+
+    def _click_clear_button(self):
+        clear_button = self.select_single(
+            'AbstractButton', objectName='clear_button')
+        if not clear_button.visible:
+            self.pointing_device.click_object(self)
+        self.pointing_device.click_object(clear_button)
+
+    def _clear_with_keys(self):
+        if platform.model() == 'Desktop':
+            self._select_all()
+        else:
+            # Touch tap currently doesn't have a press_duration parameter, so
+            # we can't show the popover. Reported as bug http://pad.lv/1268782
+            # --elopio - 2014-01-13
+            self.keyboard.press_and_release('End')
+        while not self.is_empty():
+            # We delete with backspace because the on-screen keyboard has that
+            # key.
+            self.keyboard.press_and_release('BackSpace')
+
+    def _select_all(self):
+        self.pointing_device.click_object(self, press_duration=1)
+        root = self.get_root_instance()
+        main_view = root.select_single(MainView)
+        popover = main_view.get_action_selection_popover('text_input_popover')
+        popover.click_button_by_text('Select All')
 
 
 class QQuickListView(UbuntuUIToolkitEmulatorBase):
