@@ -37,7 +37,7 @@ Item {
             MouseArea {
                 anchors.fill: content
                 drag.target: content
-                onClicked: deactivate()
+                onClicked: overlay.active = false
             }
 
             Item {
@@ -68,37 +68,49 @@ Item {
         }
     }
 
-
-
-    function deactivate() {
-        target1Unlocked = false;
-        target2Unlocked = false;
-    }
-
-    property bool target1Unlocked: false
-    property bool target2Unlocked: false
-    property bool active: !target1Unlocked || !target2Unlocked
+    property bool active: false
+    property int delayBetweenPresses: 200
 
     MouseArea {
-        anchors.top: parent.top
-        anchors.right: parent.right
-        width: units.dp(200)
-        height: units.dp(200)
-        onClicked: target1Unlocked = true
+        id: leftArea
+
+        property var timeLastPress
+
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        width: units.gu(10)
+        height: units.gu(10)
+        onPressed: {
+            mouse.accepted = false;
+            timeLastPress = new Date().getTime();
+            if (timeLastPress - rightArea.timeLastPress <= delayBetweenPresses) {
+                overlay.active = true;
+            }
+        }
     }
 
     MouseArea {
+        id: rightArea
+
+        property var timeLastPress
+
         anchors.bottom: parent.bottom
         anchors.right: parent.right
-        width: units.dp(200)
-        height: units.dp(200)
-        onClicked: target2Unlocked = true
+        width: units.gu(10)
+        height: units.gu(10)
+        onPressed: {
+            mouse.accepted = false;
+            timeLastPress = new Date().getTime();
+            if (timeLastPress - leftArea.timeLastPress <= delayBetweenPresses) {
+                overlay.active = true;
+            }
+        }
     }
 
     Loader {
         id: loader
         anchors.fill: parent
-        //active: !overlay.active
+        active: overlay.active
         asynchronous: true
         sourceComponent: overlayContent
     }
