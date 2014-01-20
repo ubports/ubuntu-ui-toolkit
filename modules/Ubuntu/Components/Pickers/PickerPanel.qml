@@ -136,9 +136,9 @@ Object {
         Component.onCompleted: isPhone = formFactorPhone && (QuickUtils.inputMethodProvider !== "")
 
         function openPopover(caller, params) {
-            var panel = PopupUtils.open(datePickerPopover, caller, params);
-            panel.parent = QuickUtils.rootItem(null);
-            return panel;
+            var popover = PopupUtils.open(datePickerPopover, caller, params);
+            popover.parent = QuickUtils.rootItem(null);
+            return popover;
         }
         function openPanel(caller, params) {
             params["caller"] = caller;
