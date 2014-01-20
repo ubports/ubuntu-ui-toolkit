@@ -419,5 +419,15 @@ PageTreeNode {
     }
 
     PerformanceOverlay {
+        id: performanceOverlay
     }
+
+    focus: true
+    Keys.onPressed: {
+        if ((event.key == Qt.Key_P) && (event.modifiers & Qt.ControlModifier)
+                                    && (event.modifiers & Qt.AltModifier)) {
+            performanceOverlay.active = !performanceOverlay.active;
+        }
+    }
+
 }
