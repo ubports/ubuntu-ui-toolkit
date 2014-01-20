@@ -33,11 +33,11 @@ Item {
         }
 
         Button {
-            id: defaultAPI
-            text: "modeSet"
+            id: defaultMode
+            text: "defaultMode"
             property date buttonDate: new Date()
             property Item panel
-            onClicked: panel = PickerPanel.openDatePicker(defaultAPI, "buttonDate")
+            onClicked: panel = PickerPanel.openDatePicker(defaultMode, "buttonDate")
         }
         Button {
             id: modeSet
@@ -62,19 +62,19 @@ Item {
             waitForRendering(testSuite);
         }
 
-        function test_0_clickOnDefaultAPI() {
-            mouseClick(defaultAPI, units.gu(1), units.gu(1));
-            verify(defaultAPI.panel !== null, "the picker is not opened");
-            verify(defaultAPI.panel.picker !== null, "the DatePicker is not defined");
-            compare(defaultAPI.panel.pickerMode, "Years|Months|Days", "the mode from the picker is not the default");
-            compare(defaultAPI.panel.date, defaultAPI.buttonDate, "the date from the picker differs from the button's");
-            compare(defaultAPI.panel.caller, defaultAPI, "wrong caller");
-            compare(defaultAPI.panel.callerProperty, "buttonDate", "wrong callerProperty");
-            verify(defaultAPI.panel.hasOwnProperty("closed"), "the object has no closed signal");
+        function test_0_clickOndefaultMode() {
+            mouseClick(defaultMode, units.gu(1), units.gu(1));
+            verify(defaultMode.panel !== null, "the picker is not opened");
+            verify(defaultMode.panel.picker !== null, "the DatePicker is not defined");
+            compare(defaultMode.panel.pickerMode, "Years|Months|Days", "the mode from the picker is not the default");
+            compare(defaultMode.panel.date, defaultMode.buttonDate, "the date from the picker differs from the button's");
+            compare(defaultMode.panel.caller, defaultMode, "wrong caller");
+            compare(defaultMode.panel.callerProperty, "buttonDate", "wrong callerProperty");
+            verify(defaultMode.panel.hasOwnProperty("closed"), "the object has no closed signal");
 
             // dismiss
             closeSpy.clear();
-            closeSpy.target = defaultAPI.panel;
+            closeSpy.target = defaultMode.panel;
             mouseClick(testSuite, units.gu(1), units.gu(1));
             closeSpy.wait();
         }
@@ -151,23 +151,23 @@ Item {
 
         // forced panel tests
         // these should be executed as last ones
-        function test_2_clickOnDefaultAPI() {
+        function test_2_clickOndefaultMode() {
             // force panel - this is private specific!!!
             var privates = findChild(PickerPanel, "PickerPanel_Internals");
             privates.isPhone = true;
 
-            mouseClick(defaultAPI, units.gu(1), units.gu(1));
-            verify(defaultAPI.panel !== null, "the picker is not opened");
-            verify(defaultAPI.panel.picker !== null, "the DatePicker is not defined");
-            compare(defaultAPI.panel.pickerMode, "Years|Months|Days", "the mode from the picker is not the default");
-            compare(defaultAPI.panel.date, defaultAPI.buttonDate, "the date from the picker differs from the button's");
-            compare(defaultAPI.panel.caller, defaultAPI, "wrong caller");
-            compare(defaultAPI.panel.callerProperty, "buttonDate", "wrong callerProperty");
-            verify(defaultAPI.panel.hasOwnProperty("closed"), "the object has no closed signal");
+            mouseClick(defaultMode, units.gu(1), units.gu(1));
+            verify(defaultMode.panel !== null, "the picker is not opened");
+            verify(defaultMode.panel.picker !== null, "the DatePicker is not defined");
+            compare(defaultMode.panel.pickerMode, "Years|Months|Days", "the mode from the picker is not the default");
+            compare(defaultMode.panel.date, defaultMode.buttonDate, "the date from the picker differs from the button's");
+            compare(defaultMode.panel.caller, defaultMode, "wrong caller");
+            compare(defaultMode.panel.callerProperty, "buttonDate", "wrong callerProperty");
+            verify(defaultMode.panel.hasOwnProperty("closed"), "the object has no closed signal");
 
             // dismiss
             closeSpy.clear();
-            closeSpy.target = defaultAPI.panel;
+            closeSpy.target = defaultMode.panel;
             mouseClick(testSuite, units.gu(1), units.gu(1));
             closeSpy.wait();
         }
