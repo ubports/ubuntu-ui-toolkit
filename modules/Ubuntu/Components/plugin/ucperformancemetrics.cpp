@@ -80,21 +80,6 @@ void UCGraphModel::setSamples(int samples)
 }
 
 
-/*!
- * \qmltype RenderingTimes
- * \instantiates UCRenderingTimes
- * \inqmlmodule Ubuntu.Components 0.1
- * \brief DOCME
- *
- * Example of use:
- *
- * \qml
- * RenderingTimes {
- * }
- * \endqml
- *
- */
-
 UCRenderingTimes::UCRenderingTimes(QQuickItem* parent) :
     QQuickItem(parent),
     m_enabled(true),

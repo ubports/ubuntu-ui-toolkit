@@ -14,14 +14,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*!
-    \qmltype PerformanceOverlay
-    \inqmlmodule Ubuntu.Components 0.1
-    \ingroup ubuntu
-    \brief DOCME
-
-*/
-
 import QtQuick 2.0
 import Ubuntu.Components 0.1 as Ubuntu
 
