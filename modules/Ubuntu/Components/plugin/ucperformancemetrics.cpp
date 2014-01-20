@@ -299,7 +299,7 @@ void UCTextureFromImageTextureProvider::setTexture(QSGTexture* texture)
 
 UCTextureFromImage::UCTextureFromImage(QQuickItem* parent) :
     QQuickItem(parent),
-    m_textureProvider(new UCTextureFromImageTextureProvider),
+    m_textureProvider(NULL),
     m_textureNeedsUpdate(true)
 {
     setFlag(QQuickItem::ItemHasContents);
@@ -307,7 +307,9 @@ UCTextureFromImage::UCTextureFromImage(QQuickItem* parent) :
 
 UCTextureFromImage::~UCTextureFromImage()
 {
-    delete m_textureProvider;
+    if (m_textureProvider != NULL) {
+        m_textureProvider->deleteLater();
+    }
 }
 
 bool UCTextureFromImage::isTextureProvider() const
@@ -317,6 +319,10 @@ bool UCTextureFromImage::isTextureProvider() const
 
 QSGTextureProvider* UCTextureFromImage::textureProvider() const
 {
+    if (m_textureProvider == NULL) {
+        const_cast<UCTextureFromImage*>(this)->m_textureProvider = new UCTextureFromImageTextureProvider;
+        m_textureProvider->setTexture(window()->createTextureFromImage(m_image));
+    }
     return m_textureProvider;
 }
 
@@ -325,7 +331,7 @@ QSGNode* UCTextureFromImage::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeDa
     Q_UNUSED(oldNode)
     Q_UNUSED(updatePaintNodeData)
 
-    if (m_textureNeedsUpdate) {
+    if (m_textureNeedsUpdate && m_textureProvider != NULL) {
         m_textureProvider->setTexture(window()->createTextureFromImage(m_image));
         m_textureNeedsUpdate = false;
     }
