@@ -17,10 +17,11 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Row {
+Item {
     property real baseFlickableTopMargin: 0.0
     property real layoutHeight: Math.max(pullImage.paintedHeight, pullLabel.paintedHeight, busyIndicator.height) + units.gu(1.5)
-    property real flipThreshold: layoutHeight + units.gu(1.5) + baseFlickableTopMargin
+    property real flipThreshold: layoutHeight + units.gu(1) + baseFlickableTopMargin
+    property real spacing: pullImage.width / 2
 
     property Flickable flickable: styledItem.target
 
@@ -28,27 +29,32 @@ Row {
     anchors {
         left: parent.left
         leftMargin: spacing
+        right: parent.right
+        rightMargin: spacing
     }
-    spacing: pullImage.width / 2
-    width: pullImage.paintedWidth + pullLabel.paintedWidth + spacing
 
-    Image {
-        id: pullImage
-        smooth: true
-        source: Qt.resolvedUrl("artwork/go-bottom.png")
-    }
-    Label {
-        id: pullLabel
-        anchors {
-            top: pullImage.top
-            bottom: pullImage.bottom
+    Row {
+        id: indication
+        spacing: style.spacing
+        Image {
+            id: pullImage
+            smooth: true
+            source: Qt.resolvedUrl("artwork/go-bottom.png")
         }
-        verticalAlignment: Text.AlignVCenter
-        text: styledItem.pullText
+        Label {
+            id: pullLabel
+            anchors {
+                top: pullImage.top
+                bottom: pullImage.bottom
+            }
+            verticalAlignment: Text.AlignVCenter
+            text: styledItem.pullText
+        }
     }
     ActivityIndicator {
         id: busyIndicator
         running: false
+        anchors.centerIn: parent
     }
 
     onStateChanged: print("state="+state)
@@ -75,15 +81,10 @@ Row {
         State {
             name: "refresh-in-progress"
             PropertyChanges {
-                target: pullImage
+                target: indication
                 visible: false
-                width: 0
             }
-            PropertyChanges {
-                target: pullLabel
-                visible: false
-                width: 0
-            }
+
             PropertyChanges {
                 target: busyIndicator
                 running: true
@@ -113,12 +114,10 @@ Row {
         },
         Transition {
             from: "refresh-in-progress"
-            to: ""
-            onRunningChanged: print("yadayada")
+            to: "*"
             PropertyAnimation {
                 target: flickable
                 property: "topMargin"
-                to: baseFlickableTopMargin
                 duration: UbuntuAnimation.FastDuration
                 easing: UbuntuAnimation.StandardEasing
             }

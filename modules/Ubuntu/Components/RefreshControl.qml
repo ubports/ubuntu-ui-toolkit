@@ -67,10 +67,9 @@ StyledItem {
 
     signal refresh()
 
-//    function complete() {
-//        print("COMPLETE")
-//        internals.refreshing = false;
-//    }
+    function beginRefreshing() {
+        internals.refreshing = true;
+    }
 
     style: Theme.createStyleComponent("RefreshControlStyle.qml", control)
     height: units.gu(5)
@@ -92,7 +91,7 @@ StyledItem {
         states: [
             State {
                 name: ""
-                when: control.completeWhen && !internals.refreshing && (internals.contentY >= -internals.threshold)
+                when: !internals.refreshing && !(internals.contentY < -internals.threshold)
                 PropertyChanges {
                     target: internals
                     refreshing: false
@@ -108,15 +107,15 @@ StyledItem {
             },
             State {
                 name: "refresh-in-progress"
-                when: internals.completed && internals.refreshing && control.waitForCompletion
+                when: internals.completed && internals.refreshing
             }
         ]
-        onStateChanged: {
-            if (control.__styleInstance) {
-                control.__styleInstance.state = state;
-            }
-        }
 
+        Binding {
+            target: control.__styleInstance
+            property: "state"
+            value: internals.state
+        }
         Binding {
             target: control.__styleInstance
             property: "baseFlickableTopMargin"
@@ -125,19 +124,23 @@ StyledItem {
     }
 
     Component.onCompleted: {
+        internals.baseTopMargin = control.target.topMargin;
         internals.completed = true;
-        print("DONE" + control.__styleInstance)
     }
-
+    /*! \internal */
+    onCompleteWhenChanged: {
+        if (completeWhen) {
+            internals.refreshing = false;
+//            internals.state = "";
+        }
+    }
 
     // catch when to update
     Connections {
         target: control.target
         onDraggingChanged: {
             if (!control.parent.dragging && internals.triggerRefresh) {
-                if (control.waitForCompletion) {
-                    internals.refreshing = true;
-                }
+                internals.refreshing = true;
                 control.refresh();
             }
         }
@@ -146,7 +149,7 @@ StyledItem {
                 internals.baseTopMargin = control.target.topMargin;
             }
 
-            print("topMargin="+control.target.topMargin)
+//            print("topMargin="+control.target.topMargin)
         }
     }
 }
