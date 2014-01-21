@@ -11,7 +11,7 @@ equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT += v8-private
 }
 
-CONFIG += qt plugin no_keywords egl
+CONFIG += qt plugin no_keywords
 
 QMAKE_CXXFLAGS += -Werror
 
@@ -58,10 +58,7 @@ HEADERS += plugin.h \
     ucstatesaver.h \
     statesaverbackend_p.h \
     ucstatesaver_p.h \
-    ucurihandler.h \
-    ucgraphmodel.h \
-    uctexturefromimage.h \
-    ucrenderingtimes.h
+    ucurihandler.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
