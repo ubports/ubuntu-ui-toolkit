@@ -5,10 +5,6 @@ CONFIG += qt plugin no_keywords
 
 QMAKE_CXXFLAGS += -Werror
 
-equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
-    QT += v8-private
-}
-
 TARGET = $$qtLibraryTarget($$TARGET)
 uri = Ubuntu.PerformanceMetrics
 
