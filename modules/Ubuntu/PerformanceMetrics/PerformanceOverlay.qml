@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Ubuntu
+import Ubuntu.PerformanceMetrics 0.1 as PerformanceMetrics
 
 Item {
     id: overlay
@@ -39,7 +39,7 @@ Item {
                 width: units.gu(38)
                 height: childrenRect.height
 
-                Ubuntu.RenderingTimes {
+                PerformanceMetrics.RenderingTimes {
                     id: metrics
                     period: 2000
                     samples: renderingTimeGraph.width

@@ -16,14 +16,14 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "ucrenderingtimes.h"
+#include "upmrenderingtimes.h"
 #include <QtCore/qmath.h>
 
-UCRenderingTimes::UCRenderingTimes(QQuickItem* parent) :
+UPMRenderingTimes::UPMRenderingTimes(QQuickItem* parent) :
     QQuickItem(parent),
     m_enabled(true),
     m_period(1000),
-    m_graphModel(new UCGraphModel(this)),
+    m_graphModel(new UPMGraphModel(this)),
     m_window(NULL),
     m_highestTime(0)
 {
@@ -33,13 +33,13 @@ UCRenderingTimes::UCRenderingTimes(QQuickItem* parent) :
     qputenv("vblank_mode", "0");
 
     /* Forward samplesChanged signal from graphModel */
-    QObject::connect(m_graphModel, &UCGraphModel::samplesChanged,
-                     this, &UCRenderingTimes::samplesChanged);
+    QObject::connect(m_graphModel, &UPMGraphModel::samplesChanged,
+                     this, &UPMRenderingTimes::samplesChanged);
 
     /* Periodically append render time of the most costly frame rendered.
        The period is period / samples */
-    QObject::connect(this, &UCRenderingTimes::frameRendered,
-                     this, &UCRenderingTimes::onFrameRendered);
+    QObject::connect(this, &UPMRenderingTimes::frameRendered,
+                     this, &UPMRenderingTimes::onFrameRendered);
 }
 
 /*!
@@ -48,12 +48,12 @@ UCRenderingTimes::UCRenderingTimes(QQuickItem* parent) :
  * Whether or not performance metric gathering is enabled.
  *
  */
-bool UCRenderingTimes::enabled() const
+bool UPMRenderingTimes::enabled() const
 {
     return m_enabled;
 }
 
-void UCRenderingTimes::setEnabled(bool enabled)
+void UPMRenderingTimes::setEnabled(bool enabled)
 {
     if (enabled != m_enabled) {
         m_enabled = enabled;
@@ -61,12 +61,12 @@ void UCRenderingTimes::setEnabled(bool enabled)
     }
 }
 
-int UCRenderingTimes::period() const
+int UPMRenderingTimes::period() const
 {
     return m_period;
 }
 
-void UCRenderingTimes::setPeriod(int period)
+void UPMRenderingTimes::setPeriod(int period)
 {
     if (period != m_period) {
         m_period = period;
@@ -75,24 +75,24 @@ void UCRenderingTimes::setPeriod(int period)
     }
 }
 
-int UCRenderingTimes::samples() const
+int UPMRenderingTimes::samples() const
 {
     return m_graphModel->samples();
 }
 
-void UCRenderingTimes::setSamples(int samples)
+void UPMRenderingTimes::setSamples(int samples)
 {
     m_graphModel->setSamples(samples);
     updateTimeBetweenSamples();
 }
 
-UCGraphModel* UCRenderingTimes::graphModel() const
+UPMGraphModel* UPMRenderingTimes::graphModel() const
 {
     return m_graphModel;
 }
 
 // FIXME: can be replaced with connecting to windowChanged() signal introduced in Qt5.2
-void UCRenderingTimes::itemChange(ItemChange change, const ItemChangeData & value)
+void UPMRenderingTimes::itemChange(ItemChange change, const ItemChangeData & value)
 {
     if (change == QQuickItem::ItemSceneChange) {
         connectToWindow(value.window);
@@ -100,40 +100,40 @@ void UCRenderingTimes::itemChange(ItemChange change, const ItemChangeData & valu
     QQuickItem::itemChange(change, value);
 }
 
-void UCRenderingTimes::connectToWindow(QQuickWindow* window)
+void UPMRenderingTimes::connectToWindow(QQuickWindow* window)
 {
     if (window != m_window) {
         if (m_window != NULL) {
             QObject::disconnect(m_window, &QQuickWindow::sceneGraphInitialized,
-                                this, &UCRenderingTimes::onSceneGraphInitialized);
+                                this, &UPMRenderingTimes::onSceneGraphInitialized);
             QObject::disconnect(m_window, &QQuickWindow::beforeRendering,
-                                this, &UCRenderingTimes::onBeforeRendering);
+                                this, &UPMRenderingTimes::onBeforeRendering);
             QObject::disconnect(m_window, &QQuickWindow::afterRendering,
-                                this, &UCRenderingTimes::onAfterRendering);
+                                this, &UPMRenderingTimes::onAfterRendering);
             QObject::disconnect(m_window, &QQuickWindow::frameSwapped,
-                                this, &UCRenderingTimes::onFrameSwapped);
+                                this, &UPMRenderingTimes::onFrameSwapped);
         }
 
         m_window = window;
 
         if (m_window != NULL) {
             QObject::connect(m_window, &QQuickWindow::sceneGraphInitialized,
-                                this, &UCRenderingTimes::onSceneGraphInitialized, Qt::DirectConnection);
+                                this, &UPMRenderingTimes::onSceneGraphInitialized, Qt::DirectConnection);
             QObject::connect(m_window, &QQuickWindow::beforeRendering,
-                                this, &UCRenderingTimes::onBeforeRendering, Qt::DirectConnection);
+                                this, &UPMRenderingTimes::onBeforeRendering, Qt::DirectConnection);
             QObject::connect(m_window, &QQuickWindow::afterRendering,
-                                this, &UCRenderingTimes::onAfterRendering, Qt::DirectConnection);
+                                this, &UPMRenderingTimes::onAfterRendering, Qt::DirectConnection);
             QObject::connect(m_window, &QQuickWindow::frameSwapped,
-                                this, &UCRenderingTimes::onFrameSwapped, Qt::DirectConnection);
+                                this, &UPMRenderingTimes::onFrameSwapped, Qt::DirectConnection);
         }
     }
 }
 
-void UCRenderingTimes::onSceneGraphInitialized()
+void UPMRenderingTimes::onSceneGraphInitialized()
 {
 }
 
-void UCRenderingTimes::onBeforeRendering()
+void UPMRenderingTimes::onBeforeRendering()
 {
     if (!m_appendTimer.isValid()) {
         m_appendTimer.start();
@@ -141,16 +141,16 @@ void UCRenderingTimes::onBeforeRendering()
     m_renderingTimer.start();
 }
 
-void UCRenderingTimes::onAfterRendering()
+void UPMRenderingTimes::onAfterRendering()
 {
     Q_EMIT frameRendered(m_renderingTimer.nsecsElapsed());
 }
 
-void UCRenderingTimes::onFrameSwapped()
+void UPMRenderingTimes::onFrameSwapped()
 {
 }
 
-void UCRenderingTimes::onFrameRendered(qint64 renderTime)
+void UPMRenderingTimes::onFrameRendered(qint64 renderTime)
 {
     m_highestTime = qMax(renderTime, m_highestTime);
 
@@ -163,7 +163,7 @@ void UCRenderingTimes::onFrameRendered(qint64 renderTime)
     }
 }
 
-void UCRenderingTimes::appendRenderTime(qint64 renderTime)
+void UPMRenderingTimes::appendRenderTime(qint64 renderTime)
 {
     const int maximumSyncTime = 16000000; // 16 ms
     int width;
@@ -182,7 +182,7 @@ void UCRenderingTimes::appendRenderTime(qint64 renderTime)
     m_appendTimer.start();
 }
 
-void UCRenderingTimes::updateTimeBetweenSamples()
+void UPMRenderingTimes::updateTimeBetweenSamples()
 {
     m_timeBetweenSamples = (qreal)m_period * 1000000 / samples();
 }

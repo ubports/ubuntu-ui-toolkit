@@ -22,25 +22,25 @@
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QQuickWindow>
 #include <QtCore/QElapsedTimer>
-#include "ucgraphmodel.h"
+#include "upmgraphmodel.h"
 
-class UCRenderingTimes : public QQuickItem
+class UPMRenderingTimes : public QQuickItem
 {
     Q_OBJECT
 
     Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(int period READ period WRITE setPeriod NOTIFY periodChanged)
     Q_PROPERTY(int samples READ samples WRITE setSamples NOTIFY samplesChanged)
-    Q_PROPERTY(UCGraphModel* graphModel READ graphModel NOTIFY graphModelChanged)
+    Q_PROPERTY(UPMGraphModel* graphModel READ graphModel NOTIFY graphModelChanged)
 
 public:
-    explicit UCRenderingTimes(QQuickItem* parent = 0);
+    explicit UPMRenderingTimes(QQuickItem* parent = 0);
 
     // getters
     bool enabled() const;
     int period() const;
     int samples() const;
-    UCGraphModel* graphModel() const;
+    UPMGraphModel* graphModel() const;
 
     // setters
     void setEnabled(bool enabled);
@@ -72,7 +72,7 @@ private:
 private:
     bool m_enabled;
     int m_period;
-    UCGraphModel* m_graphModel;
+    UPMGraphModel* m_graphModel;
     QQuickWindow* m_window;
     QElapsedTimer m_renderingTimer;
     QElapsedTimer m_appendTimer;

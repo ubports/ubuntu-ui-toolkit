@@ -4,7 +4,7 @@
 #include <QtCore/QObject>
 #include <QtGui/QImage>
 
-class UCGraphModel : public QObject
+class UPMGraphModel : public QObject
 {
     Q_OBJECT
 
@@ -13,7 +13,7 @@ class UCGraphModel : public QObject
     Q_PROPERTY(int samples READ samples WRITE setSamples NOTIFY samplesChanged)
 
 public:
-    explicit UCGraphModel(QObject *parent = 0);
+    explicit UPMGraphModel(QObject *parent = 0);
 
     void appendValue(int width, int value);
 

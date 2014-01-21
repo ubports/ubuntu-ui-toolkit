@@ -47,9 +47,6 @@
 #include "unitythemeiconprovider.h"
 #include "ucstatesaver.h"
 #include "ucurihandler.h"
-#include "ucrenderingtimes.h"
-#include "uctexturefromimage.h"
-#include "ucgraphmodel.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -165,9 +162,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCStateSaver>(uri, 0, 1, "StateSaver");
     qmlRegisterType<UCStateSaverAttached>();
     qmlRegisterSingletonType<UCUriHandler>(uri, 0, 1, "UriHandler", registerUriHandler);
-    qmlRegisterType<UCRenderingTimes>(uri, 0, 1, "RenderingTimes");
-    qmlRegisterType<UCTextureFromImage>(uri, 0, 1, "TextureFromImage");
-    qmlRegisterType<UCGraphModel>();
     // Needed for unit tests
     qRegisterMetaType<QList <QQmlError> >();
 }

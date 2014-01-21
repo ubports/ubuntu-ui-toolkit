@@ -16,10 +16,10 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "ucgraphmodel.h"
+#include "upmgraphmodel.h"
 #include <QtCore/qmath.h>
 
-UCGraphModel::UCGraphModel(QObject *parent) :
+UPMGraphModel::UPMGraphModel(QObject *parent) :
     QObject(parent),
     m_shift(0),
     m_samples(100)
@@ -28,7 +28,7 @@ UCGraphModel::UCGraphModel(QObject *parent) :
     m_image.fill(0);
 }
 
-void UCGraphModel::appendValue(int width, int value)
+void UPMGraphModel::appendValue(int width, int value)
 {
     /* FIXME: modifying m_image here implicitly triggers a deep copy
        of its data because UCTextureFromImage usually holds a reference
@@ -53,22 +53,22 @@ void UCGraphModel::appendValue(int width, int value)
     Q_EMIT shiftChanged();
 }
 
-QImage UCGraphModel::image() const
+QImage UPMGraphModel::image() const
 {
     return m_image;
 }
 
-int UCGraphModel::shift() const
+int UPMGraphModel::shift() const
 {
     return m_shift;
 }
 
-int UCGraphModel::samples() const
+int UPMGraphModel::samples() const
 {
     return m_samples;
 }
 
-void UCGraphModel::setSamples(int samples)
+void UPMGraphModel::setSamples(int samples)
 {
     if (samples != m_samples) {
         m_samples = samples;

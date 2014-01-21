@@ -22,13 +22,13 @@
 #include <QtQuick/QSGTextureProvider>
 #include <QtQuick/QQuickItem>
 
-class UCTextureFromImageTextureProvider : public QSGTextureProvider
+class UPMTextureFromImageTextureProvider : public QSGTextureProvider
 {
     Q_OBJECT
 
 public:
-    explicit UCTextureFromImageTextureProvider();
-    virtual ~UCTextureFromImageTextureProvider();
+    explicit UPMTextureFromImageTextureProvider();
+    virtual ~UPMTextureFromImageTextureProvider();
     QSGTexture* texture() const;
     void setTexture(QSGTexture* texture);
 
@@ -37,15 +37,15 @@ private:
 };
 
 
-class UCTextureFromImage : public QQuickItem
+class UPMTextureFromImage : public QQuickItem
 {
     Q_OBJECT
 
     Q_PROPERTY(QImage image READ image WRITE setImage NOTIFY imageChanged)
 
 public:
-    explicit UCTextureFromImage(QQuickItem* parent = 0);
-    virtual ~UCTextureFromImage();
+    explicit UPMTextureFromImage(QQuickItem* parent = 0);
+    virtual ~UPMTextureFromImage();
     bool isTextureProvider() const;
     QSGTextureProvider* textureProvider() const;
     QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData);
@@ -60,7 +60,7 @@ Q_SIGNALS:
     void imageChanged();
 
 private:
-    UCTextureFromImageTextureProvider* m_textureProvider;
+    UPMTextureFromImageTextureProvider* m_textureProvider;
     QImage m_image;
     bool m_textureNeedsUpdate;
 };

@@ -41,8 +41,6 @@ SliderUtils 0.1 sliderUtils.js
 ScrollbarUtils 0.1 scrollbarUtils.js
 UbuntuNumberAnimation 0.1 UbuntuNumberAnimation.qml
 StyledItem 0.1 StyledItem.qml
-internal PerformanceOverlay PerformanceOverlay.qml
-internal BarGraph BarGraph.qml
 ColorUtils 0.1 colorUtils.js
 DateUtils 0.1 dateUtils.js
 

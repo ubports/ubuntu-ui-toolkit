@@ -15,7 +15,8 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Ubuntu
+import Ubuntu.Components 0.1
+import Ubuntu.PerformanceMetrics 0.1 as PerformanceMetrics
 
 Item {
     id: graph
@@ -37,7 +38,7 @@ Item {
         color: Qt.rgba(0.0, 0.0, 0.0, 0.8)
     }
 
-    Ubuntu.TextureFromImage {
+    PerformanceMetrics.TextureFromImage {
         id: texture
         image: graph.model.image
     }

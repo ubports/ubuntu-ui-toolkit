@@ -17,27 +17,27 @@
  */
 
 #include <QtQuick/QQuickWindow>
-#include "uctexturefromimage.h"
+#include "upmtexturefromimage.h"
 
-UCTextureFromImageTextureProvider::UCTextureFromImageTextureProvider() :
+UPMTextureFromImageTextureProvider::UPMTextureFromImageTextureProvider() :
     QSGTextureProvider(),
     m_texture(NULL)
 {
 }
 
-UCTextureFromImageTextureProvider::~UCTextureFromImageTextureProvider()
+UPMTextureFromImageTextureProvider::~UPMTextureFromImageTextureProvider()
 {
     if (m_texture != NULL) {
         delete m_texture;
     }
 }
 
-QSGTexture* UCTextureFromImageTextureProvider::texture() const
+QSGTexture* UPMTextureFromImageTextureProvider::texture() const
 {
     return m_texture;
 }
 
-void UCTextureFromImageTextureProvider::setTexture(QSGTexture* texture)
+void UPMTextureFromImageTextureProvider::setTexture(QSGTexture* texture)
 {
     if (m_texture != NULL) {
         delete m_texture;
@@ -52,7 +52,7 @@ void UCTextureFromImageTextureProvider::setTexture(QSGTexture* texture)
 
 
 
-UCTextureFromImage::UCTextureFromImage(QQuickItem* parent) :
+UPMTextureFromImage::UPMTextureFromImage(QQuickItem* parent) :
     QQuickItem(parent),
     m_textureProvider(NULL),
     m_textureNeedsUpdate(true)
@@ -60,28 +60,28 @@ UCTextureFromImage::UCTextureFromImage(QQuickItem* parent) :
     setFlag(QQuickItem::ItemHasContents);
 }
 
-UCTextureFromImage::~UCTextureFromImage()
+UPMTextureFromImage::~UPMTextureFromImage()
 {
     if (m_textureProvider != NULL) {
         m_textureProvider->deleteLater();
     }
 }
 
-bool UCTextureFromImage::isTextureProvider() const
+bool UPMTextureFromImage::isTextureProvider() const
 {
     return true;
 }
 
-QSGTextureProvider* UCTextureFromImage::textureProvider() const
+QSGTextureProvider* UPMTextureFromImage::textureProvider() const
 {
     if (m_textureProvider == NULL) {
-        const_cast<UCTextureFromImage*>(this)->m_textureProvider = new UCTextureFromImageTextureProvider;
+        const_cast<UPMTextureFromImage*>(this)->m_textureProvider = new UPMTextureFromImageTextureProvider;
         m_textureProvider->setTexture(window()->createTextureFromImage(m_image));
     }
     return m_textureProvider;
 }
 
-QSGNode* UCTextureFromImage::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData)
+QSGNode* UPMTextureFromImage::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData)
 {
     Q_UNUSED(oldNode)
     Q_UNUSED(updatePaintNodeData)
@@ -93,12 +93,12 @@ QSGNode* UCTextureFromImage::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeDa
     return NULL;
 }
 
-QImage UCTextureFromImage::image() const
+QImage UPMTextureFromImage::image() const
 {
     return m_image;
 }
 
-void UCTextureFromImage::setImage(QImage image)
+void UPMTextureFromImage::setImage(QImage image)
 {
     if (image != m_image) {
         m_image = image;

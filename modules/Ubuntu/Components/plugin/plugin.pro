@@ -90,10 +90,7 @@ SOURCES += plugin.cpp \
     alarmrequest_p.cpp \
     ucstatesaver.cpp \
     statesaverbackend_p.cpp \
-    ucurihandler.cpp \
-    ucgraphmodel.cpp \
-    uctexturefromimage.cpp \
-    ucrenderingtimes.cpp
+    ucurihandler.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp
