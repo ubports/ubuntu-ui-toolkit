@@ -19,43 +19,10 @@
 #ifndef UCPERFORMANCE_METRICS_H
 #define UCPERFORMANCE_METRICS_H
 
-#include <QtCore/QObject>
-#include <QtCore/QTimer>
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QQuickWindow>
 #include <QtCore/QElapsedTimer>
-
-class UCGraphModel : public QObject
-{
-    Q_OBJECT
-
-    Q_PROPERTY(QImage image READ image NOTIFY imageChanged)
-    Q_PROPERTY(int shift READ shift NOTIFY shiftChanged)
-    Q_PROPERTY(int samples READ samples WRITE setSamples NOTIFY samplesChanged)
-
-public:
-    explicit UCGraphModel(QObject *parent = 0);
-
-    void appendValue(int width, int value);
-
-    // getters
-    QImage image() const;
-    int shift() const;
-    int samples() const;
-
-    // setters
-    void setSamples(int samples);
-
-Q_SIGNALS:
-    void imageChanged();
-    void shiftChanged();
-    void samplesChanged();
-
-private:
-    QImage m_image;
-    int m_shift;
-    int m_samples;
-};
+#include "ucgraphmodel.h"
 
 class UCRenderingTimes : public QQuickItem
 {
@@ -111,53 +78,6 @@ private:
     QElapsedTimer m_appendTimer;
     qint64 m_highestTime;
     int m_timeBetweenSamples;
-};
-
-
-#include <QtQuick/QSGTextureProvider>
-#include <QtQuick/QQuickItem>
-
-class UCTextureFromImageTextureProvider : public QSGTextureProvider
-{
-    Q_OBJECT
-
-public:
-    explicit UCTextureFromImageTextureProvider();
-    virtual ~UCTextureFromImageTextureProvider();
-    QSGTexture* texture() const;
-    void setTexture(QSGTexture* texture);
-
-private:
-    QSGTexture* m_texture;
-};
-
-
-class UCTextureFromImage : public QQuickItem
-{
-    Q_OBJECT
-
-    Q_PROPERTY(QImage image READ image WRITE setImage NOTIFY imageChanged)
-
-public:
-    explicit UCTextureFromImage(QQuickItem* parent = 0);
-    virtual ~UCTextureFromImage();
-    bool isTextureProvider() const;
-    QSGTextureProvider* textureProvider() const;
-    QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* updatePaintNodeData);
-
-    // getter
-    QImage image() const;
-
-    // setters
-    void setImage(QImage image);
-
-Q_SIGNALS:
-    void imageChanged();
-
-private:
-    UCTextureFromImageTextureProvider* m_textureProvider;
-    QImage m_image;
-    bool m_textureNeedsUpdate;
 };
 
 #endif // UCPERFORMANCE_METRICS_H

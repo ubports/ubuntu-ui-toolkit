@@ -47,7 +47,9 @@
 #include "unitythemeiconprovider.h"
 #include "ucstatesaver.h"
 #include "ucurihandler.h"
-#include "ucperformancemetrics.h"
+#include "ucrenderingtimes.h"
+#include "uctexturefromimage.h"
+#include "ucgraphmodel.h"
 
 #include <sys/types.h>
 #include <unistd.h>

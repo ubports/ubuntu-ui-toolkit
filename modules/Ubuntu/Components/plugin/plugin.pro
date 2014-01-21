@@ -59,7 +59,9 @@ HEADERS += plugin.h \
     statesaverbackend_p.h \
     ucstatesaver_p.h \
     ucurihandler.h \
-    ucperformancemetrics.h
+    ucgraphmodel.h \
+    uctexturefromimage.h \
+    ucrenderingtimes.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -89,7 +91,9 @@ SOURCES += plugin.cpp \
     ucstatesaver.cpp \
     statesaverbackend_p.cpp \
     ucurihandler.cpp \
-    ucperformancemetrics.cpp
+    ucgraphmodel.cpp \
+    uctexturefromimage.cpp \
+    ucrenderingtimes.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp
