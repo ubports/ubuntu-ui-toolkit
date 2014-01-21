@@ -421,6 +421,7 @@ PageTreeNode {
 
     PerformanceOverlay {
         id: performanceOverlay
+        active: false
     }
 
     focus: true

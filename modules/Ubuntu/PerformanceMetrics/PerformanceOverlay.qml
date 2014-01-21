@@ -60,7 +60,7 @@ Item {
         }
     }
 
-    property bool active: false
+    property bool active: true
     property int delayBetweenPresses: 200
 
     MouseArea {
