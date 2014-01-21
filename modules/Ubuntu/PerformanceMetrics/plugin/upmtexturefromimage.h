@@ -16,8 +16,8 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UCTEXTUREFROMIMAGE_H
-#define UCTEXTUREFROMIMAGE_H
+#ifndef UPMTEXTUREFROMIMAGE_H
+#define UPMTEXTUREFROMIMAGE_H
 
 #include <QtQuick/QSGTextureProvider>
 #include <QtQuick/QQuickItem>
@@ -66,4 +66,4 @@ private:
 };
 
 
-#endif // UCTEXTUREFROMIMAGE_H
+#endif // UPMTEXTUREFROMIMAGE_H

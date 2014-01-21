@@ -16,8 +16,8 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UCPERFORMANCE_METRICS_H
-#define UCPERFORMANCE_METRICS_H
+#ifndef UPMPERFORMANCE_METRICS_H
+#define UPMPERFORMANCE_METRICS_H
 
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QQuickWindow>
@@ -80,4 +80,4 @@ private:
     int m_timeBetweenSamples;
 };
 
-#endif // UCPERFORMANCE_METRICS_H
+#endif // UPMPERFORMANCE_METRICS_H
