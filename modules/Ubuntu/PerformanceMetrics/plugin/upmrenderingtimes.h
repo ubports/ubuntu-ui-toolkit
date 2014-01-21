@@ -59,7 +59,6 @@ protected:
 
 private Q_SLOTS:
     void connectToWindow(QQuickWindow* window);
-    void onSceneGraphInitialized();
     void onBeforeRendering();
     void onAfterRendering();
     void onFrameSwapped();

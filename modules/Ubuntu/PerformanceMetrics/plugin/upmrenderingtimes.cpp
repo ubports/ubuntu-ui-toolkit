@@ -104,8 +104,6 @@ void UPMRenderingTimes::connectToWindow(QQuickWindow* window)
 {
     if (window != m_window) {
         if (m_window != NULL) {
-            QObject::disconnect(m_window, &QQuickWindow::sceneGraphInitialized,
-                                this, &UPMRenderingTimes::onSceneGraphInitialized);
             QObject::disconnect(m_window, &QQuickWindow::beforeRendering,
                                 this, &UPMRenderingTimes::onBeforeRendering);
             QObject::disconnect(m_window, &QQuickWindow::afterRendering,
@@ -117,8 +115,6 @@ void UPMRenderingTimes::connectToWindow(QQuickWindow* window)
         m_window = window;
 
         if (m_window != NULL) {
-            QObject::connect(m_window, &QQuickWindow::sceneGraphInitialized,
-                                this, &UPMRenderingTimes::onSceneGraphInitialized, Qt::DirectConnection);
             QObject::connect(m_window, &QQuickWindow::beforeRendering,
                                 this, &UPMRenderingTimes::onBeforeRendering, Qt::DirectConnection);
             QObject::connect(m_window, &QQuickWindow::afterRendering,
@@ -127,10 +123,6 @@ void UPMRenderingTimes::connectToWindow(QQuickWindow* window)
                                 this, &UPMRenderingTimes::onFrameSwapped, Qt::DirectConnection);
         }
     }
-}
-
-void UPMRenderingTimes::onSceneGraphInitialized()
-{
 }
 
 void UPMRenderingTimes::onBeforeRendering()
