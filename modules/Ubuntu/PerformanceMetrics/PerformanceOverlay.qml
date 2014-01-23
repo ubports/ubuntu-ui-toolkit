@@ -17,6 +17,22 @@
 import QtQuick 2.0
 import Ubuntu.PerformanceMetrics 0.1 as PerformanceMetrics
 
+/*!
+    \qmltype PerformanceOverlay
+    \inqmlmodule Ubuntu.PerformanceMetrics 0.1
+    \ingroup ubuntu-performance-metrics
+    \brief Overlay displaying performance related metrics (rendering time, CPU usage, etc.)
+
+    PerformanceOverlay displays various performance related indicators to help
+    developers detect issues in their application.
+
+    Examples:
+    \qml
+        PerformanceOverlay {
+            active: true
+        }
+    \endqml
+*/
 Item {
     id: overlay
 
@@ -84,13 +100,16 @@ Item {
         }
     }
 
+    /*!
+       Whether or not the PerformanceOverlay is displayed.
+    */
     property bool active: true
-    property int delayBetweenPresses: 200
 
     MouseArea {
         id: leftArea
 
         property var timeLastPress
+        property int delayBetweenPresses: 200
 
         anchors.bottom: parent.bottom
         anchors.left: parent.left
@@ -109,6 +128,7 @@ Item {
         id: rightArea
 
         property var timeLastPress
+        property int delayBetweenPresses: 200
 
         anchors.bottom: parent.bottom
         anchors.right: parent.right
