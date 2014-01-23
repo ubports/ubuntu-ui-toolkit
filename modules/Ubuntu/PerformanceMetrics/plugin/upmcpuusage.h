@@ -20,11 +20,13 @@
 #define UPMCPUUSAGE_H
 
 #include <sys/times.h>
+#include <QtQuick/QQuickItem>
+#include <QtQuick/QQuickWindow>
 #include <QtCore/QObject>
 #include <QtCore/QTimer>
 #include "upmgraphmodel.h"
 
-class UPMCpuUsage : public QObject
+class UPMCpuUsage : public QQuickItem
 {
     Q_OBJECT
 
@@ -33,7 +35,7 @@ class UPMCpuUsage : public QObject
     Q_PROPERTY(int samplingInterval READ samplingInterval WRITE setSamplingInterval NOTIFY samplingIntervalChanged)
 
 public:
-    explicit UPMCpuUsage(QObject *parent = 0);
+    explicit UPMCpuUsage(QQuickItem* parent = 0);
 
     // getters
     UPMGraphModel* graphModel() const;
@@ -49,10 +51,16 @@ Q_SIGNALS:
     void periodChanged();
     void samplingIntervalChanged();
 
+protected:
+    void itemChange(ItemChange change, const ItemChangeData & value);
+
 private Q_SLOTS:
+    void connectToWindow(QQuickWindow* window);
+    void onFrameSwapped();
     void appendCpuTime();
 
 private:
+    QQuickWindow* m_window;
     UPMGraphModel* m_graphModel;
     int m_period;
     int m_samplingInterval;
@@ -60,6 +68,7 @@ private:
     float m_cores;
     struct tms m_previousTimes;
     clock_t m_previousClock;
+    int m_timeAtLastFrame;
 };
 
 #endif // UPMCPUUSAGE_H

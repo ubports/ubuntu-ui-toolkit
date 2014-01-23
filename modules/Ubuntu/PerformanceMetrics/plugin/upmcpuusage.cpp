@@ -19,11 +19,13 @@
 #include "upmcpuusage.h"
 #include <unistd.h>
 
-UPMCpuUsage::UPMCpuUsage(QObject *parent) :
-    QObject(parent),
+UPMCpuUsage::UPMCpuUsage(QQuickItem *parent) :
+    QQuickItem(parent),
+    m_window(NULL),
     m_graphModel(new UPMGraphModel(this)),
     m_period(5000),
-    m_samplingInterval(500)
+    m_samplingInterval(500),
+    m_timeAtLastFrame(0)
 {
     m_cores = 1.0f / sysconf(_SC_NPROCESSORS_ONLN);
     m_previousClock = times(&m_previousTimes);
@@ -68,8 +70,53 @@ void UPMCpuUsage::setSamplingInterval(int samplingInterval)
     }
 }
 
+// FIXME: can be replaced with connecting to windowChanged() signal introduced in Qt5.2
+void UPMCpuUsage::itemChange(ItemChange change, const ItemChangeData & value)
+{
+    if (change == QQuickItem::ItemSceneChange) {
+        connectToWindow(value.window);
+    }
+    QQuickItem::itemChange(change, value);
+}
+
+void UPMCpuUsage::connectToWindow(QQuickWindow* window)
+{
+    if (window != m_window) {
+        if (m_window != NULL) {
+            QObject::disconnect(m_window, &QQuickWindow::frameSwapped,
+                                this, &UPMCpuUsage::onFrameSwapped);
+        }
+
+        if (window != NULL) {
+            QObject::connect(window, &QQuickWindow::frameSwapped,
+                             this, &UPMCpuUsage::onFrameSwapped);
+        }
+
+        m_window = window;
+    }
+}
+
+void UPMCpuUsage::onFrameSwapped()
+{
+    /* A frame has been rendered:
+        - if measuring CPU usage is diabled then restart it
+        - otherwise store the time of the rendering
+    */
+    if (!m_timer.isActive()) {
+        m_timer.start();
+    } else {
+        m_timeAtLastFrame = m_timer.remainingTime();
+    }
+}
+
 void UPMCpuUsage::appendCpuTime()
 {
+    // if last frame was over 90% of the timer's interval ago, then stop measuring CPU usage
+    if (m_timeAtLastFrame >= 0.9 * m_timer.interval()) {
+        m_timer.stop();
+        return;
+    }
+
     struct tms newTimes;
     clock_t newClock = times(&newTimes);
 
