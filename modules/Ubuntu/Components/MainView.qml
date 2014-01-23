@@ -298,6 +298,7 @@ PageTreeNode {
         property bool animate: true
 
         Toolbar {
+            visible: false // TODO TIM: make toolbar optional
             id: toolbarItem
             onPressedChanged: {
                 if (!pressed) return;

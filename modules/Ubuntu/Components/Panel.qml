@@ -614,6 +614,9 @@ Item {
         }
     }
 
+    // TODO: expose?
+    property alias position: bar.position
+
     Item {
         id: bar
         height: parent.height
