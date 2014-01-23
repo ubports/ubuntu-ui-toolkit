@@ -47,7 +47,7 @@ Item {
 
                 PerformanceMetrics.CpuUsage {
                     id: cpuUsage
-                    period: 2000
+                    period: 5000
                     samplingInterval: 100
                 }
 

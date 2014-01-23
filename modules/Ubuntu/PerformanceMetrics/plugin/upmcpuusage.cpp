@@ -49,7 +49,6 @@ void UPMCpuUsage::setPeriod(int period)
     if (period != m_period) {
         m_period = period;
         m_graphModel->setSamples(m_period / m_samplingInterval);
-        m_timer.setInterval(m_samplingInterval);
         Q_EMIT periodChanged();
     }
 }
@@ -64,6 +63,7 @@ void UPMCpuUsage::setSamplingInterval(int samplingInterval)
     if (samplingInterval != m_samplingInterval) {
         m_samplingInterval = samplingInterval;
         m_graphModel->setSamples(m_period / m_samplingInterval);
+        m_timer.setInterval(m_samplingInterval);
         Q_EMIT samplingIntervalChanged();
     }
 }
