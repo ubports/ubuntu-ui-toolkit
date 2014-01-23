@@ -38,14 +38,14 @@ void UPMGraphModel::appendValue(int width, int value)
     QRgb* line = (QRgb*)m_image.scanLine(0);
 
     if (width >= m_image.width()) {
-        memset(&line[0], value, m_image.width() * 3);
+        memset(&line[0], value, m_image.width() * 4);
     } else if (m_shift + width > m_image.width()) {
         int after = m_image.width() - m_shift;
         int before = width - after;
-        memset(&line[m_shift], value, after * 3);
-        memset(&line[0], value, before * 3);
+        memset(&line[m_shift], value, after * 4);
+        memset(&line[0], value, before * 4);
     } else {
-        memset(&line[m_shift], value, width * 3);
+        memset(&line[m_shift], value, width * 4);
     }
     m_shift = (m_shift + width) % m_samples;
 
