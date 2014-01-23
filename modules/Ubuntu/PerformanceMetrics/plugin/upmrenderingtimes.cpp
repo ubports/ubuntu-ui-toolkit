@@ -21,7 +21,6 @@
 
 UPMRenderingTimes::UPMRenderingTimes(QQuickItem* parent) :
     QQuickItem(parent),
-    m_enabled(true),
     m_period(1000),
     m_graphModel(new UPMGraphModel(this)),
     m_window(NULL)
@@ -37,25 +36,6 @@ UPMRenderingTimes::UPMRenderingTimes(QQuickItem* parent) :
        The period is period / samples */
     QObject::connect(this, &UPMRenderingTimes::frameRendered,
                      this, &UPMRenderingTimes::onFrameRendered);
-}
-
-/*!
- * \qmlproperty bool PerformanceMetrics::enabled
- *
- * Whether or not performance metric gathering is enabled.
- *
- */
-bool UPMRenderingTimes::enabled() const
-{
-    return m_enabled;
-}
-
-void UPMRenderingTimes::setEnabled(bool enabled)
-{
-    if (enabled != m_enabled) {
-        m_enabled = enabled;
-        Q_EMIT enabledChanged();
-    }
 }
 
 int UPMRenderingTimes::period() const

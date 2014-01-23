@@ -28,7 +28,6 @@ class UPMRenderingTimes : public QQuickItem
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(int period READ period WRITE setPeriod NOTIFY periodChanged)
     Q_PROPERTY(int samples READ samples WRITE setSamples NOTIFY samplesChanged)
     Q_PROPERTY(UPMGraphModel* graphModel READ graphModel NOTIFY graphModelChanged)
@@ -37,18 +36,15 @@ public:
     explicit UPMRenderingTimes(QQuickItem* parent = 0);
 
     // getters
-    bool enabled() const;
     int period() const;
     int samples() const;
     UPMGraphModel* graphModel() const;
 
     // setters
-    void setEnabled(bool enabled);
     void setPeriod(int period);
     void setSamples(int samples);
 
 Q_SIGNALS:
-    void enabledChanged();
     void periodChanged();
     void samplesChanged();
     void graphModelChanged();
@@ -69,7 +65,6 @@ private:
     void updateTimeBetweenSamples();
 
 private:
-    bool m_enabled;
     int m_period;
     UPMGraphModel* m_graphModel;
     QQuickWindow* m_window;
