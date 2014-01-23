@@ -56,7 +56,7 @@ protected:
 
 private Q_SLOTS:
     void connectToWindow(QQuickWindow* window);
-    void onFrameSwapped();
+    void onFrameRendered();
     void appendCpuTime();
 
 private:

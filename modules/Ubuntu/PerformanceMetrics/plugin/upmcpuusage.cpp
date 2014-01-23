@@ -83,20 +83,20 @@ void UPMCpuUsage::connectToWindow(QQuickWindow* window)
 {
     if (window != m_window) {
         if (m_window != NULL) {
-            QObject::disconnect(m_window, &QQuickWindow::frameSwapped,
-                                this, &UPMCpuUsage::onFrameSwapped);
+            QObject::disconnect(m_window, &QQuickWindow::beforeSynchronizing,
+                                this, &UPMCpuUsage::onFrameRendered);
         }
 
         if (window != NULL) {
-            QObject::connect(window, &QQuickWindow::frameSwapped,
-                             this, &UPMCpuUsage::onFrameSwapped);
+            QObject::connect(window, &QQuickWindow::beforeSynchronizing,
+                             this, &UPMCpuUsage::onFrameRendered);
         }
 
         m_window = window;
     }
 }
 
-void UPMCpuUsage::onFrameSwapped()
+void UPMCpuUsage::onFrameRendered()
 {
     /* A frame has been rendered:
         - if measuring CPU usage is diabled then restart it
@@ -111,8 +111,8 @@ void UPMCpuUsage::onFrameSwapped()
 
 void UPMCpuUsage::appendCpuTime()
 {
-    // if last frame was over 90% of the timer's interval ago, then stop measuring CPU usage
-    if (m_timeAtLastFrame >= 0.9 * m_timer.interval()) {
+    // if last frame was over 80% of the timer's interval ago, then stop measuring CPU usage
+    if (m_timeAtLastFrame >= 0.8 * m_timer.interval()) {
         m_timer.stop();
         return;
     }
