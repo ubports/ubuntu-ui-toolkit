@@ -951,6 +951,7 @@ ActionItem {
 
     AbstractButton {
         id: clearButton
+        objectName: "clear_button"
         property url iconSource: control.__styleInstance.iconSource
         anchors {
             top: parent.top

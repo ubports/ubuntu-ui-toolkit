@@ -86,6 +86,20 @@ Item {
                     sourceComponent: tabs.selectedTabIndex != 5 ? null : pageComponent
                 }
             }
+            Tab {
+                id: tabNoFlickLoader
+                title: "loadNoFlick"
+                page: Loader {
+                    id: loaderNoFlick
+                    anchors {
+                        left: parent.left
+                        right: parent.right
+                        bottom: parent.bottom
+                    }
+                    // height compes from the loaded Page
+                    sourceComponent: tabs.selectedTabIndex === 6 ? pageComponentNoFlick : null
+                }
+            }
         }
         Component {
             id: pageComponent
@@ -97,6 +111,12 @@ Item {
                     anchors.fill: parent
                     contentHeight: 1000
                 }
+            }
+        }
+        Component {
+            id: pageComponentNoFlick
+            Page {
+                title: "Loaded page without flickable"
             }
         }
     }
@@ -364,6 +384,14 @@ Item {
             tabs.selectedTabIndex = 0;
         }
 
+        function test_pageHeightLoaderNoFlick_bug1259917() {
+            tabs.selectedTabIndex = 6;
+            compare(tabs.selectedTab, tabNoFlickLoader, "Tab 6 was selected.");
+            compare(mainView.__propagated.header.flickable, null, "Loaded page without flickable.");
+            compare(loaderNoFlick.item.height, mainView.height - mainView.__propagated.header.height,
+                    "Correct height for loaded Page without flickable.");
+        }
+
         function test_index() {
             compare(tab1.index, 0, "tab1 is at 0");
             compare(tab2.index, 1, "tab2 is at 1");
@@ -371,6 +399,7 @@ Item {
             compare(tabFlick1.index, 3, "tabFlick1 is at 3");
             compare(tabFlick2.index, 4, "tabFlick2 is at 4");
             compare(tabFlickLoader.index, 5, "tabFlickLoader is at 5");
+            compare(tabNoFlickLoader.index, 6, "tabNoFlickLoader is at 6");
         }
 
         function test_deactivateByTimeout() {

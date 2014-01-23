@@ -382,8 +382,7 @@ AbstractButton {
                         source: "artwork/delete.png"
                         fillMode: Image.Pad
                         anchors {
-                            top: parent.top
-                            bottom: parent.bottom
+                            verticalCenter: parent.verticalCenter
                         }
                         width: units.gu(5)
                     }
@@ -391,8 +390,7 @@ AbstractButton {
                         text: i18n.tr("Delete")
                         verticalAlignment: Text.AlignVCenter
                         anchors {
-                            top: parent.top
-                            bottom: parent.bottom
+                            verticalCenter: parent.verticalCenter
                         }
                         width: units.gu(7)
                         fontSize: "medium"
@@ -455,7 +453,7 @@ AbstractButton {
         running: false
         UbuntuNumberAnimation {
             target: emptyListItem
-            property: "implicitHeight"
+            property: "height"
             to: 0
         }
         ScriptAction {
