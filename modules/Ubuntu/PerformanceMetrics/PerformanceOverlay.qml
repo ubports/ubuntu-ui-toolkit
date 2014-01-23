@@ -40,20 +40,44 @@ Item {
                 height: childrenRect.height
 
                 PerformanceMetrics.RenderingTimes {
-                    id: metrics
+                    id: renderingTimes
                     period: 2000
                     samples: renderingTimeGraph.width
                 }
 
-                BarGraph {
-                    id: renderingTimeGraph
+                PerformanceMetrics.CpuUsage {
+                    id: cpuUsage
+                    period: 2000
+                    samplingInterval: 100
+                }
+
+                Column {
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    model: metrics.graphModel
-                    maximumValue: 20
-                    threshold: 16
-                    labels: [{"color": "darkorange", "value": 10, "label": "10 ms"},
-                            {"color": "red", "value": 16, "label": "16 ms"}]
+                    spacing: units.gu(1)
+
+                    BarGraph {
+                        id: renderingTimeGraph
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        model: renderingTimes.graphModel
+                        maximumValue: 20
+                        threshold: 16
+                        labels: [{"color": "darkorange", "value": 10, "label": "10 ms"},
+                                {"color": "red", "value": 16, "label": "16 ms"}]
+                    }
+
+                    BarGraph {
+                        id: cpuUsageGraph
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        model: cpuUsage.graphModel
+                        maximumValue: 100
+                        threshold: 75
+                        labels: [{"color": "green", "value": 25, "label": "25%"},
+                                 {"color": "darkorange", "value": 50, "label": "50%"},
+                                 {"color": "red", "value": 75, "label": "75%"}]
+                    }
                 }
             }
 

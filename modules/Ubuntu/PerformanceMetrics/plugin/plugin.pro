@@ -13,13 +13,15 @@ SOURCES += \
     upmplugin.cpp \
     upmgraphmodel.cpp \
     upmtexturefromimage.cpp \
-    upmrenderingtimes.cpp
+    upmrenderingtimes.cpp \
+    upmcpuusage.cpp
 
 HEADERS += \
     upmplugin.h \
     upmgraphmodel.h \
     upmtexturefromimage.h \
-    upmrenderingtimes.h
+    upmrenderingtimes.h \
+    upmcpuusage.h
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
