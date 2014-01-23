@@ -24,11 +24,8 @@ UPMRenderingTimes::UPMRenderingTimes(QQuickItem* parent) :
     m_enabled(true),
     m_period(1000),
     m_graphModel(new UPMGraphModel(this)),
-    m_window(NULL),
-    m_highestTime(0)
+    m_window(NULL)
 {
-    updateTimeBetweenSamples();
-
     /* Disable synchronization to vertical blank signal on Intel */
     qputenv("vblank_mode", "0");
 
@@ -70,7 +67,6 @@ void UPMRenderingTimes::setPeriod(int period)
 {
     if (period != m_period) {
         m_period = period;
-        updateTimeBetweenSamples();
         Q_EMIT periodChanged();
     }
 }
@@ -83,7 +79,6 @@ int UPMRenderingTimes::samples() const
 void UPMRenderingTimes::setSamples(int samples)
 {
     m_graphModel->setSamples(samples);
-    updateTimeBetweenSamples();
 }
 
 UPMGraphModel* UPMRenderingTimes::graphModel() const
@@ -127,9 +122,6 @@ void UPMRenderingTimes::connectToWindow(QQuickWindow* window)
 
 void UPMRenderingTimes::onBeforeRendering()
 {
-    if (!m_appendTimer.isValid()) {
-        m_appendTimer.start();
-    }
     m_renderingTimer.start();
 }
 
@@ -144,37 +136,21 @@ void UPMRenderingTimes::onFrameSwapped()
 
 void UPMRenderingTimes::onFrameRendered(qint64 renderTime)
 {
-    m_highestTime = qMax(renderTime, m_highestTime);
+    static bool oddFrame = false;
+    static qint64 oddFrameRenderTime = 0;
 
-    /* Only append a render time if enough time (m_timeBetweenSamples) has passed.
-       This ensures that updates to the data are regular.
-    */
-    if (renderTime >= m_timeBetweenSamples || m_appendTimer.nsecsElapsed() >= m_timeBetweenSamples) {
-        // Append the highest render time recorded in the past period
-        appendRenderTime(m_highestTime);
+    if (!oddFrame) {
+        appendRenderTime(oddFrameRenderTime);
+        appendRenderTime(renderTime);
+    } else {
+        oddFrameRenderTime = renderTime;
     }
+    oddFrame = !oddFrame;
 }
 
 void UPMRenderingTimes::appendRenderTime(qint64 renderTime)
 {
-    const int maximumSyncTime = 16000000; // 16 ms
-    int width;
     int renderTimeInMs = qCeil((qreal)renderTime / 1000000);
-
-    if (m_appendTimer.nsecsElapsed() - renderTime > maximumSyncTime) {
-        width = ((qreal)samples() / m_period) * renderTimeInMs;
-    } else {
-        width = ((qreal)samples() / m_period) * m_appendTimer.elapsed();
-    }
-
+    int width = ((qreal)samples() / m_period) * renderTimeInMs;
     m_graphModel->appendValue(width, renderTimeInMs);
-
-    // reset values
-    m_highestTime = 0;
-    m_appendTimer.start();
-}
-
-void UPMRenderingTimes::updateTimeBetweenSamples()
-{
-    m_timeBetweenSamples = (qreal)m_period * 1000000 / samples();
 }

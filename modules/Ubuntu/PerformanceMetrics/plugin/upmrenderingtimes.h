@@ -74,9 +74,6 @@ private:
     UPMGraphModel* m_graphModel;
     QQuickWindow* m_window;
     QElapsedTimer m_renderingTimer;
-    QElapsedTimer m_appendTimer;
-    qint64 m_highestTime;
-    int m_timeBetweenSamples;
 };
 
 #endif // UPMPERFORMANCE_METRICS_H
