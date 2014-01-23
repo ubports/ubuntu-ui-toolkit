@@ -63,6 +63,7 @@ Text {
 
        Ref.: https://bugreports.qt-project.org/browse/QTBUG-35095
     */
+    /*! \internal */
     onWidthChanged: if (LayoutMirroring.enabled) {
                         // force a relayout
                         lineHeight += 0.00001;
