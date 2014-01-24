@@ -33,6 +33,7 @@ Column {
         id: label
         text: templateSection.title
         fontSize: "large"
+        anchors.left: parent.left
     }
 
     WebLink {
@@ -43,6 +44,7 @@ Column {
         visible: documentation != ""
         fontSize: "small"
         opacity: 0.3
+        anchors.left: parent.left
     }
 
     WebLink {
@@ -50,6 +52,7 @@ Column {
         url: templateSection.designUrl
         fontSize: "small"
         opacity: 0.3
+        anchors.left: parent.left
     }
 
     Image {
