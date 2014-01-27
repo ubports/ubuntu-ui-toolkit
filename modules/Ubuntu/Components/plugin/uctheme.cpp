@@ -107,9 +107,6 @@ UCTheme::UCTheme(QObject *parent) :
                      this, &UCTheme::onThemeNameChanged);
     updateThemePaths();
 
-    loadPalette();
-//    QObject::connect(this, &UCTheme::nameChanged,
-//                     this, &UCTheme::loadPalette, Qt::UniqueConnection);
     QObject::connect(this, SIGNAL(nameChanged()),
                      this, SLOT(loadPalette()), Qt::UniqueConnection);
 }
