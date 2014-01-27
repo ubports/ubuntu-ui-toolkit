@@ -108,8 +108,10 @@ UCTheme::UCTheme(QObject *parent) :
     updateThemePaths();
 
     loadPalette();
-    QObject::connect(this, &UCTheme::nameChanged,
-                     this, &UCTheme::loadPalette, Qt::UniqueConnection);
+//    QObject::connect(this, &UCTheme::nameChanged,
+//                     this, &UCTheme::loadPalette, Qt::UniqueConnection);
+    QObject::connect(this, SIGNAL(nameChanged()),
+                     this, SLOT(loadPalette()), Qt::UniqueConnection);
 }
 
 void UCTheme::updateEnginePaths()
@@ -191,8 +193,11 @@ void UCTheme::setName(const QString& name)
 
     The palette of the current theme.
 */
-QObject* UCTheme::palette() const
+QObject* UCTheme::palette()
 {
+    if (!m_palette) {
+        loadPalette(false);
+    }
     return m_palette;
 }
 
@@ -245,6 +250,7 @@ QQmlComponent* UCTheme::createStyleComponent(const QString& styleName, QObject* 
             if (url.isValid()) {
                 component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous, parent);
                 if (component->isError()) {
+                    qmlInfo(parent) << component->errorString();
                     delete component;
                     component = NULL;
                 }
@@ -274,11 +280,16 @@ void UCTheme::registerToContext(QQmlContext* context)
 
 }
 
-void UCTheme::loadPalette()
+void UCTheme::loadPalette(bool notify)
 {
+    if (!m_engine) {
+        return;
+    }
     if (m_palette != NULL) {
         delete m_palette;
     }
-    m_palette = QuickUtils::instance().createQmlObject((styleUrl("Palette.qml")));
-    Q_EMIT paletteChanged();
+    m_palette = QuickUtils::instance().createQmlObject(styleUrl("Palette.qml"), m_engine);
+    if (notify) {
+        Q_EMIT paletteChanged();
+    }
 }
