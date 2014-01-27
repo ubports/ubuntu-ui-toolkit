@@ -59,6 +59,13 @@ Q_DECLARE_METATYPE(QList<QQmlError>)
  * Type registration functions.
  */
 
+static QObject *registerPickerPanel(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(scriptEngine)
+    return UbuntuComponentsPlugin::registerQmlSingletonType(engine,
+           "Ubuntu.Components", "Pickers/PickerPanel.qml");
+}
+
 static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
@@ -169,6 +176,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterSingletonType<UCUriHandler>(uri, 0, 1, "UriHandler", registerUriHandler);
     // Needed for unit tests
     qRegisterMetaType<QList <QQmlError> >();
+    // register QML singletons
+    qmlRegisterSingletonType<QObject>(uri, 0, 1, "PickerPanel", registerPickerPanel);
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

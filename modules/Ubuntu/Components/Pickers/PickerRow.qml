@@ -47,6 +47,7 @@ Row {
             circular: pickerModel.circular
             live: false
             width: pickerModel.pickerWidth
+            height: parent.height
 
             style: Rectangle {
                 anchors.fill: parent
