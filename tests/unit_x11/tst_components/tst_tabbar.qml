@@ -131,7 +131,6 @@ Item {
         }
 
         function test_0_selectionMode() {
-            waitForRendering(root);
             compare(bar.selectionMode, true, "default selectionMode");
         }
 
