@@ -23,13 +23,16 @@ from ubuntuuitoolkit import emulators
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 
 
-class TextInputTests(GalleryTestCase):
+class TextInputTestCase(GalleryTestCase):
     """Generic tests for the Gallery"""
 
-    def test_textfield_standard(self):
-        item = "Text Field"
+    def setUp(self):
+        super(TextInputTestCase, self).setUp()
+        item = 'Text Field'
         self.loadItem(item)
         self.checkPageHeader(item)
+
+    def test_textfield_standard(self):
         textfield_standard = self.main_view.select_single(
             emulators.TextField, objectName='textfield_standard')
         self.pointing_device.click_object(textfield_standard)
@@ -39,9 +42,6 @@ class TextInputTests(GalleryTestCase):
                         Eventually(Equals('Hello World')))
 
     def test_textfield_password(self):
-        item = "Text Field"
-        self.loadItem(item)
-        self.checkPageHeader(item)
         textfield_password = self.main_view.select_single(
             emulators.TextField, objectName='textfield_password')
         self.pointing_device.click_object(textfield_password)
@@ -55,9 +55,6 @@ class TextInputTests(GalleryTestCase):
                         Eventually(Equals('abcdefgh123')))
 
     def test_textfield_numbers(self):
-        item = "Text Field"
-        self.loadItem(item)
-        self.checkPageHeader(item)
         textfield_numbers = self.main_view.select_single(
             emulators.TextField, objectName='textfield_numbers')
         self.assertThat(textfield_numbers.text, Eventually(Equals('123')))
@@ -69,9 +66,6 @@ class TextInputTests(GalleryTestCase):
         self.assertThat(textfield_numbers.text, Eventually(Equals('-100123')))
 
     def test_textfield_disabled(self):
-        item = "Text Field"
-        self.loadItem(item)
-        self.checkPageHeader(item)
         textfield_disabled = self.main_view.select_single(
             emulators.TextField, objectName='textfield_disabled')
         self.assertFalse(textfield_disabled.enabled)
