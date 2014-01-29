@@ -55,11 +55,12 @@ Item {
 
         vertexShader: "
                 uniform mediump mat4 qt_Matrix;
+                uniform mediump float shift;
                 attribute mediump vec4 qt_Vertex;
                 attribute mediump vec2 qt_MultiTexCoord0;
                 varying mediump vec2 coord;
                 void main() {
-                    coord = qt_MultiTexCoord0;
+                    coord = qt_MultiTexCoord0 + vec2(shift, 0.0);
                     gl_Position = qt_Matrix * qt_Vertex;
                 }"
 
@@ -67,13 +68,12 @@ Item {
                 varying mediump vec2 coord;
                 uniform sampler2D texture;
                 uniform lowp float qt_Opacity;
-                uniform lowp float shift;
                 uniform lowp float maximumValue;
                 uniform lowp vec4 color;
                 uniform lowp float threshold;
                 uniform lowp vec4 aboveThresholdColor;
                 void main() {
-                    lowp vec4 tex = texture2D(texture, vec2(coord.x + shift, coord.y));
+                    lowp vec4 tex = texture2D(texture, vec2(coord.x, coord.y));
                     lowp float value = tex.r * 255.0;
                     lowp float isOn = 1.0 - step(value / maximumValue, 1.0 - coord.y);
                     lowp float isAboveThreshold = step(threshold, value);
