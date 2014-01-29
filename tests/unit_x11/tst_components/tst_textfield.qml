@@ -65,6 +65,11 @@ Item {
     }
 
     TextField {
+        id: enabledTextField
+        enabled: true
+    }
+
+    TextField {
         id: disabledTextField
         enabled: false
     }
@@ -457,12 +462,24 @@ Item {
             regExp: /[a-z]*/
         }
 
+        function test_click_enabled_textfield_must_give_focus() {
+            textField.forceActiveFocus();
+            compare(
+                enabledTextField.focus, false,
+                'enabledTextField is not focused');
+            mouseClick(
+                enabledTextField, enabledTextField.width/2,
+                enabledTextField.height/2)
+            compare(
+                enabledTextField.focus, true, 'enabledTextField is focused')
+        }
+
         function test_click_disabled_textfield_must_not_give_focus() {
             mouseClick(
                 disabledTextField, disabledTextField.width/2,
                 disabledTextField.height/2)
             compare(
-                textField.focus, true, 'disabledTextField is not focused');
+                textField.focus, false, 'disabledTextField is not focused');
         }
     }
 }
