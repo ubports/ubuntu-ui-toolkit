@@ -286,6 +286,9 @@ StyledItem
 modules/Ubuntu/Components/Pickers/PickerDelegate.qml
 AbstractButton
     readonly property Picker picker
+modules/Ubuntu/Components/Pickers/PickerPanel.qml
+Object
+    function openDatePicker(caller, property, mode)
 modules/Ubuntu/Components/Popups/ActionSelectionPopover.qml
 Popover
     property Item target

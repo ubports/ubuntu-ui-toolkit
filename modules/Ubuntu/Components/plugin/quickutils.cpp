@@ -32,8 +32,7 @@
 
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent),
-    m_rootView(0),
-    m_engine(new QQmlEngine)
+    m_rootView(0)
 {
     QGuiApplication::instance()->installEventFilter(this);
     // connect to focusObjectChanged() to get the latest active focus object
@@ -159,19 +158,14 @@ void QuickUtils::lookupQuickView()
     }
 }
 
-QObject* QuickUtils::createQmlObject(const QUrl &url)
+QObject* QuickUtils::createQmlObject(const QUrl &url, QQmlEngine *engine)
 {
     /* FIXME: if the directory pointed to by url contains a qmldir file that
        declares a JavaScript module then QQmlComponent::create() fails with
        the error "QQmlComponent: Component is not ready".
     */
-    QQmlComponent *component = new QQmlComponent(m_engine, url, QQmlComponent::PreferSynchronous);
+    QQmlComponent *component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous);
     QObject* result = component->create();
     delete component;
     return result;
-}
-
-void QuickUtils::setImportPathList(const QStringList &paths)
-{
-    m_engine->setImportPathList(paths);
 }
