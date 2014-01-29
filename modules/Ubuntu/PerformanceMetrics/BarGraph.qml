@@ -54,17 +54,17 @@ Item {
         property color aboveThresholdColor: graph.aboveThresholdColor
 
         vertexShader: "
-                uniform highp mat4 qt_Matrix;
-                attribute highp vec4 qt_Vertex;
-                attribute highp vec2 qt_MultiTexCoord0;
-                varying highp vec2 coord;
+                uniform mediump mat4 qt_Matrix;
+                attribute mediump vec4 qt_Vertex;
+                attribute mediump vec2 qt_MultiTexCoord0;
+                varying mediump vec2 coord;
                 void main() {
                     coord = qt_MultiTexCoord0;
                     gl_Position = qt_Matrix * qt_Vertex;
                 }"
 
         fragmentShader: "
-                varying highp vec2 coord;
+                varying mediump vec2 coord;
                 uniform sampler2D texture;
                 uniform lowp float qt_Opacity;
                 uniform lowp float shift;
