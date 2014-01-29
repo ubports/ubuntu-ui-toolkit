@@ -14,6 +14,7 @@ SOURCES += \
     upmgraphmodel.cpp \
     upmtexturefromimage.cpp \
     upmrenderingtimes.cpp \
+    upmrenderingtimes2.cpp \
     upmcpuusage.cpp
 
 HEADERS += \
@@ -21,6 +22,7 @@ HEADERS += \
     upmgraphmodel.h \
     upmtexturefromimage.h \
     upmrenderingtimes.h \
+    upmrenderingtimes2.h \
     upmcpuusage.h
 
 # deployment rules for the plugin

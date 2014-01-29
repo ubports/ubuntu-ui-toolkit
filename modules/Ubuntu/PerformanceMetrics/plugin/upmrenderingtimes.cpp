@@ -107,11 +107,11 @@ void UPMRenderingTimes::onBeforeRendering()
 
 void UPMRenderingTimes::onAfterRendering()
 {
-    Q_EMIT frameRendered(m_renderingTimer.nsecsElapsed());
 }
 
 void UPMRenderingTimes::onFrameSwapped()
 {
+      Q_EMIT frameRendered(m_renderingTimer.nsecsElapsed());
 }
 
 void UPMRenderingTimes::onFrameRendered(qint64 renderTime)

@@ -18,6 +18,7 @@
 
 #include "upmplugin.h"
 #include "upmrenderingtimes.h"
+#include "upmrenderingtimes2.h"
 #include "upmcpuusage.h"
 #include "upmtexturefromimage.h"
 #include "upmgraphmodel.h"
@@ -29,6 +30,7 @@ void UbuntuPerformanceMetricsPlugin::registerTypes(const char *uri)
     Q_ASSERT(uri == QLatin1String("Ubuntu.PerformanceMetrics"));
 
     qmlRegisterType<UPMRenderingTimes>(uri, 0, 1, "RenderingTimes");
+    qmlRegisterType<UPMRenderingTimes2>(uri, 0, 1, "RenderingTimes2");
     qmlRegisterType<UPMCpuUsage>(uri, 0, 1, "CpuUsage");
     qmlRegisterType<UPMTextureFromImage>(uri, 0, 1, "TextureFromImage");
     qmlRegisterType<UPMGraphModel>();

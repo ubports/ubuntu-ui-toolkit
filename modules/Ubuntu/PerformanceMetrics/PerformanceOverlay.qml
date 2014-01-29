@@ -60,6 +60,11 @@ Item {
                     period: 2000
                     samples: renderingTimeGraph.width
                 }
+                PerformanceMetrics.RenderingTimes2 {
+                    id: renderingTimes2
+                    period: 2000
+                    samples: renderingTimeGraph.width
+                }
 
                 PerformanceMetrics.CpuUsage {
                     id: cpuUsage
@@ -82,7 +87,16 @@ Item {
                         labels: [{"color": "darkorange", "value": 10, "label": "10 ms"},
                                 {"color": "red", "value": 16, "label": "16 ms"}]
                     }
-
+                    BarGraph {
+                        id: renderingTimeGraph2
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        model: renderingTimes2.graphModel
+                        maximumValue: 20
+                        threshold: 16
+                        labels: [{"color": "darkorange", "value": 10, "label": "10 ms"},
+                                {"color": "red", "value": 16, "label": "16 ms"}]
+                    }
                     BarGraph {
                         id: cpuUsageGraph
                         anchors.left: parent.left
