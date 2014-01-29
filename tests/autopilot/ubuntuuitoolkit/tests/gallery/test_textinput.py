@@ -68,7 +68,7 @@ class TextInputTestCase(GalleryTestCase):
     def test_textfield_disabled(self):
         textfield_disabled = self.main_view.select_single(
             emulators.TextField, objectName='textfield_disabled')
+
+        textfield_disabled.write('This should not be writen')
+        self.assertEqual('', textfield_disabled.text)
         self.assertFalse(textfield_disabled.enabled)
-        #try tapping a disabled field and verify that focus is false.
-        self.pointing_device.click_object(textfield_disabled)
-        self.assertFalse(textfield_disabled.focus)

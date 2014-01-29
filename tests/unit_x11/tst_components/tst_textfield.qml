@@ -64,6 +64,11 @@ Item {
         }
     }
 
+    TextField {
+        id: disabledTextField
+        enabled: false
+    }
+
     TestCase {
         name: "TextFieldAPI"
         when: windowShown
@@ -450,6 +455,14 @@ Item {
         RegExpValidator {
             id: regExpValidator
             regExp: /[a-z]*/
+        }
+
+        function test_click_disabled_textfield_must_not_give_focus() {
+            mouseClick(
+                disabledTextField, disabledTextField.width/2,
+                disabledTextField.height/2)
+            compare(
+                textField.focus, true, 'disabledTextField is not focused');
         }
     }
 }
