@@ -16,59 +16,58 @@
 
 """Tests for the Ubuntu UI Toolkit Gallery - TextInput components"""
 
-from autopilot.matchers import Eventually
-from testtools.matchers import Equals
-
 from ubuntuuitoolkit import emulators
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 
 
-class TextInputTestCase(GalleryTestCase):
-    """Generic tests for the Gallery"""
+class WriteAndClearTextInputTestCase(GalleryTestCase):
+
+    scenarios = [
+        ('standard textfield', dict(
+            objectName='textfield_standard', text_to_write='Hello World',
+            expected_text='Hello World')),
+        ('password textfield', dict(
+            objectName='textfield_password', text_to_write='Test password',
+            expected_text='Test password')),
+        ('only integers textfield', dict(
+            objectName='textfield_numbers', text_to_write='-100.123',
+            expected_text='-100123'))
+    ]
 
     def setUp(self):
-        super(TextInputTestCase, self).setUp()
+        super(WriteAndClearTextInputTestCase, self).setUp()
         item = 'Text Field'
         self.loadItem(item)
         self.checkPageHeader(item)
 
-    def test_textfield_standard(self):
-        textfield_standard = self.main_view.select_single(
-            emulators.TextField, objectName='textfield_standard')
-        self.pointing_device.click_object(textfield_standard)
-        self.assertThat(textfield_standard.focus, Eventually(Equals(True)))
-        textfield_standard.write('Hello World')
-        self.assertThat(textfield_standard.text,
-                        Eventually(Equals('Hello World')))
+    def test_write_on_textfield_must_update_text(self):
+        textfield = self.main_view.select_single(
+            emulators.TextField, objectName=self.objectName)
 
-    def test_textfield_password(self):
-        textfield_password = self.main_view.select_single(
-            emulators.TextField, objectName='textfield_password')
-        self.pointing_device.click_object(textfield_password)
-        self.assertThat(textfield_password.text, Equals('password'))
+        textfield.write(self.text_to_write)
+        self.assertEqual(self.expected_text, textfield.text)
 
-        self.tap_clearButton('textfield_password')
-        self.assertThat(textfield_password.text, Eventually(Equals('')))
+    def test_clear_textfield_must_remove_text(self):
+        textfield = self.main_view.select_single(
+            emulators.TextField, objectName=self.objectName)
+        textfield.write(self.text_to_write)
 
-        textfield_password.write('abcdefgh123')
-        self.assertThat(textfield_password.text,
-                        Eventually(Equals('abcdefgh123')))
+        textfield.clear()
+        self.assertEqual('', textfield.text)
 
-    def test_textfield_numbers(self):
-        textfield_numbers = self.main_view.select_single(
-            emulators.TextField, objectName='textfield_numbers')
-        self.assertThat(textfield_numbers.text, Eventually(Equals('123')))
 
-        textfield_numbers.clear()
-        self.assertThat(textfield_numbers.text, Eventually(Equals('')))
-        #try typing decimal value when text filed is int only.
-        textfield_numbers.write('-100.123')
-        self.assertThat(textfield_numbers.text, Eventually(Equals('-100123')))
+class DisabledTextInputTestCase(GalleryTestCase):
+
+    def setUp(self):
+        super(DisabledTextInputTestCase, self).setUp()
+        item = 'Text Field'
+        self.loadItem(item)
+        self.checkPageHeader(item)
 
     def test_textfield_disabled(self):
         textfield_disabled = self.main_view.select_single(
             emulators.TextField, objectName='textfield_disabled')
+        self.assertFalse(textfield_disabled.enabled)
 
         textfield_disabled.write('This should not be writen')
         self.assertEqual('', textfield_disabled.text)
-        self.assertFalse(textfield_disabled.enabled)
