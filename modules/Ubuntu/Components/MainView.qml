@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Unity.Action 1.1 as UnityActions
+import Qt 5.0
 
 /*!
     \qmltype MainView
@@ -386,7 +387,7 @@ PageTreeNode {
             id: unityActionManager
             onQuit: {
                // TODO Wire this up to the application lifecycle management API instead of quit().
-               qt.quit()
+               Qt.quit()
             }
         }
     }
