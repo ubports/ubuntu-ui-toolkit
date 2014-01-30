@@ -50,7 +50,7 @@ class UCMouse : public QObject
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(Qt::MouseButtons acceptedButtons READ acceptedButtons NOTIFY acceptedButtonsChanged)
     Q_PROPERTY(bool hoverEnabled READ hoverEnabled NOTIFY hoverEnabledChanged)
-    Q_PROPERTY(qreal mouseMoveThreshold READ mouseMoveThreshold WRITE setMouseMoveThreshold NOTIFY mouseMoveThresholdChanged)
+    Q_PROPERTY(int composedEventThreshold READ composedEventThreshold WRITE setComposedEventThreshold NOTIFY composedEventThresholdChanged)
     Q_PROPERTY(QQmlListProperty<QQuickItem> forwardTo READ forwardTo)
     Q_PROPERTY(Priority priority READ priority WRITE setPriority NOTIFY priorityChanged)
     Q_ENUMS(Priority)
@@ -68,8 +68,8 @@ public:
     virtual void setEnabled(bool enabled);
     Qt::MouseButtons acceptedButtons() const;
     bool hoverEnabled() const;
-    qreal mouseMoveThreshold() const;
-    void setMouseMoveThreshold(qreal threshold);
+    int composedEventThreshold() const;
+    void setComposedEventThreshold(int threshold);
     QQmlListProperty<QQuickItem> forwardTo();
     Priority priority() const;
     virtual void setPriority(Priority priority);
@@ -78,7 +78,7 @@ Q_SIGNALS:
     void enabledChanged();
     void acceptedButtonsChanged();
     void hoverEnabledChanged();
-    void mouseMoveThresholdChanged();
+    void composedEventThresholdChanged();
     void priorityChanged();
 
     void pressed(UCExtendedMouseEvent *mouse);
@@ -125,7 +125,7 @@ protected:
     Qt::KeyboardModifiers m_lastModifiers;
     Qt::MouseButtons m_pressedButtons;
     Priority m_priority;
-    qreal m_moveThreshold;
+    int m_moveThreshold;
 
     bool m_enabled: 1;
     bool m_moved:1;

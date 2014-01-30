@@ -686,7 +686,7 @@ bool UCMouse::hoverEnabled() const
 }
 
 /*!
-   \qmlproperty real Mouse::mouseMoveThreshold
+   \qmlproperty int Mouse::composedEventThreshold
    The property holds the tolerance value the mouse can move in both x and y axis
    when the mouse is pressed, during which the composed events such as \l onClicked
    and \l onPressAndHold will still be emitted.
@@ -700,15 +700,15 @@ bool UCMouse::hoverEnabled() const
 
    The default value is 0.
  */
-qreal UCMouse::mouseMoveThreshold() const
+int UCMouse::composedEventThreshold() const
 {
     return m_moveThreshold;
 }
-void UCMouse::setMouseMoveThreshold(qreal threshold)
+void UCMouse::setComposedEventThreshold(int threshold)
 {
     if (m_moveThreshold != threshold) {
         m_moveThreshold = threshold;
-        Q_EMIT mouseMoveThresholdChanged();
+        Q_EMIT composedEventThresholdChanged();
     }
 }
 

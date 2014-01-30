@@ -25,5 +25,5 @@ TextInput {
 
     // create Mouse filter attached
     Mouse.priority: Mouse.BeforeItem
-    Mouse.mouseMoveThreshold: units.gu(0.5)
+    Mouse.composedEventThreshold: units.gu(0.5)
 }
