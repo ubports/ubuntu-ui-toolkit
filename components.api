@@ -651,7 +651,7 @@ plugins.qmltypes
     Property { name: "enabled"; type: "bool" }
     Property { name: "acceptedButtons"; type: "Qt::MouseButtons"; isReadonly: true }
     Property { name: "hoverEnabled"; type: "bool"; isReadonly: true }
-    Property { name: "mouseMoveThreshold"; type: "double" }
+    Property { name: "composedEventThreshold"; type: "int" }
     Property { name: "forwardTo"; type: "QQuickItem"; isList: true; isReadonly: true }
     Property { name: "priority"; type: "Priority" }
     Signal {
