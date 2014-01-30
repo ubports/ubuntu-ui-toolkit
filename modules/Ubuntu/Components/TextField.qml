@@ -809,6 +809,9 @@ ActionItem {
             control.focus = false;
     }
 
+    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
+
     // grab clicks from the area between the frame and the input
     MouseArea {
         anchors.fill: parent
@@ -948,6 +951,7 @@ ActionItem {
 
     AbstractButton {
         id: clearButton
+        objectName: "clear_button"
         property url iconSource: control.__styleInstance.iconSource
         anchors {
             top: parent.top
