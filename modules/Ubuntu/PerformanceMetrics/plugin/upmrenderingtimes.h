@@ -32,12 +32,12 @@ class UPMRenderingTimes : public QQuickItem
     Q_PROPERTY(int period READ period WRITE setPeriod NOTIFY periodChanged)
     Q_PROPERTY(int samples READ samples WRITE setSamples NOTIFY samplesChanged)
     Q_PROPERTY(UPMGraphModel* graphModel READ graphModel NOTIFY graphModelChanged)
-    Q_PROPERTY(Technique technique READ technique WRITE setTechnique NOTIFY techniqueChanged)
+    Q_PROPERTY(TimerType timerType READ timerType WRITE setTimerType NOTIFY timerTypeChanged)
 
-    Q_ENUMS(Technique)
+    Q_ENUMS(TimerType)
 
 public:
-    enum Technique {
+    enum TimerType {
         Automatic,
         Trivial,
 #if defined(QT_OPENGL_ES)
@@ -56,18 +56,18 @@ public:
     int period() const;
     int samples() const;
     UPMGraphModel* graphModel() const;
-    Technique technique() const;
+    TimerType timerType() const;
 
     // setters
     void setPeriod(int period);
     void setSamples(int samples);
-    void setTechnique(Technique technique);
+    void setTimerType(TimerType timerType);
 
 Q_SIGNALS:
     void periodChanged();
     void samplesChanged();
     void graphModelChanged();
-    void techniqueChanged();
+    void timerTypeChanged();
     void frameRendered(qint64 renderTime);
 
 protected:
@@ -89,7 +89,7 @@ private:
 private:
     int m_period;
     UPMGraphModel* m_graphModel;
-    Technique m_technique;
+    TimerType m_timerType;
     bool m_needsNewTimer;
     QQuickWindow* m_window;
     RenderTimer* m_renderingTimer;

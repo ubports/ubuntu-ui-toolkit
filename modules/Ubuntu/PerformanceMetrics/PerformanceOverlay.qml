@@ -59,13 +59,13 @@ Item {
                     id: renderingTimesTrivial
                     period: 2000
                     samples: renderingTimeGraphTrivial.width
-                    technique: PerformanceMetrics.RenderingTimes.Trivial
+                    timerType: PerformanceMetrics.RenderingTimes.Trivial
                 }
                 PerformanceMetrics.RenderingTimes {
                     id: renderingTimesFences
                     period: 2000
                     samples: renderingTimeGraphFences.width
-                    technique: PerformanceMetrics.RenderingTimes.ARBTimerQuery
+                    timerType: PerformanceMetrics.RenderingTimes.ARBTimerQuery
                 }
 
                 PerformanceMetrics.CpuUsage {

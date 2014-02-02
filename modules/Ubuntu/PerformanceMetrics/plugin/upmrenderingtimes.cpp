@@ -31,7 +31,7 @@ UPMRenderingTimes::UPMRenderingTimes(QQuickItem* parent) :
     QQuickItem(parent),
     m_period(1000),
     m_graphModel(new UPMGraphModel(this)),
-    m_technique(UPMRenderingTimes::Automatic),
+    m_timerType(UPMRenderingTimes::Automatic),
     m_needsNewTimer(true),
     m_window(NULL),
     m_renderingTimer(NULL),
@@ -86,18 +86,18 @@ UPMGraphModel* UPMRenderingTimes::graphModel() const
     return m_graphModel;
 }
 
-UPMRenderingTimes::Technique UPMRenderingTimes::technique() const
+UPMRenderingTimes::TimerType UPMRenderingTimes::timerType() const
 {
-    return m_technique;
+    return m_timerType;
 }
 
-void UPMRenderingTimes::setTechnique(UPMRenderingTimes::Technique technique)
+void UPMRenderingTimes::setTimerType(UPMRenderingTimes::TimerType timerType)
 {
-    if (technique != m_technique) {
-        m_technique = technique;
+    if (timerType != m_timerType) {
+        m_timerType = timerType;
         // setup/teardown of RenderTimers need to happen in the rendering thread
         m_needsNewTimer = true;
-        Q_EMIT techniqueChanged();
+        Q_EMIT timerTypeChanged();
     }
 }
 
@@ -194,7 +194,7 @@ void UPMRenderingTimes::setupNewTimer()
         m_renderingTimer->teardown();
         delete m_renderingTimer;
     }
-    switch (m_technique) {
+    switch (m_timerType) {
     case UPMRenderingTimes::Trivial:
         m_renderingTimer = new RenderTimerTrivial;
         break;
