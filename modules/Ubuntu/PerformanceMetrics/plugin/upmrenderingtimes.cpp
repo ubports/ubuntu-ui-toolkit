@@ -18,7 +18,6 @@
 
 #include "upmrenderingtimes.h"
 #include "rendertimertrivial.h"
-#include "rendertimerfences.h"
 #if defined(QT_OPENGL_ES)
 #include "rendertimerkhrfence.h"
 #include "rendertimernvfence.h"
@@ -198,9 +197,6 @@ void UPMRenderingTimes::setupNewTimer()
     switch (m_technique) {
     case UPMRenderingTimes::Trivial:
         m_renderingTimer = new RenderTimerTrivial;
-        break;
-    case UPMRenderingTimes::Fences:
-        m_renderingTimer = new RenderTimerFences;
         break;
 #if defined(QT_OPENGL_ES)
     case UPMRenderingTimes::KHRFence:

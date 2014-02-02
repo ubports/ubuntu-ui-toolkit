@@ -40,7 +40,6 @@ public:
     enum Technique {
         Automatic,
         Trivial,
-        Fences,
 #if defined(QT_OPENGL_ES)
         KHRFence,
         NVFence,

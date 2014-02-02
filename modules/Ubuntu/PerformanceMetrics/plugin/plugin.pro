@@ -16,8 +16,7 @@ SOURCES += \
     upmrenderingtimes.cpp \
     upmcpuusage.cpp \
     rendertimer.cpp \
-    rendertimertrivial.cpp \
-    rendertimerfences.cpp
+    rendertimertrivial.cpp
 
 HEADERS += \
     upmplugin.h \
@@ -26,9 +25,7 @@ HEADERS += \
     upmrenderingtimes.h \
     upmcpuusage.h \
     rendertimer.h \
-    rendertimertrivial.h \
-    rendertimerfences.h
-
+    rendertimertrivial.h
 
 isEmpty(QT_OPENGL_ES) {
     SOURCES += rendertimerarbquery.cpp \
