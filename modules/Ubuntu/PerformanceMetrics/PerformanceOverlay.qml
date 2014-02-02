@@ -61,11 +61,12 @@ Item {
                     samples: renderingTimeGraphTrivial.width
                     timerType: PerformanceMetrics.RenderingTimes.Trivial
                 }
+
                 PerformanceMetrics.RenderingTimes {
-                    id: renderingTimesFences
+                    id: renderingTimesAutomatic
                     period: 2000
-                    samples: renderingTimeGraphFences.width
-                    timerType: PerformanceMetrics.RenderingTimes.ARBTimerQuery
+                    samples: renderingTimeGraphAutomatic.width
+                    timerType: PerformanceMetrics.RenderingTimes.Automatic
                 }
 
                 PerformanceMetrics.CpuUsage {
@@ -89,16 +90,18 @@ Item {
                         labels: [{"color": "darkorange", "value": 10, "label": "10 ms"},
                                 {"color": "red", "value": 16, "label": "16 ms"}]
                     }
+
                     BarGraph {
-                        id: renderingTimeGraphFences
+                        id: renderingTimeGraphAutomatic
                         anchors.left: parent.left
                         anchors.right: parent.right
-                        model: renderingTimesFences.graphModel
+                        model: renderingTimesAutomatic.graphModel
                         maximumValue: 20
                         threshold: 16
                         labels: [{"color": "darkorange", "value": 10, "label": "10 ms"},
                                 {"color": "red", "value": 16, "label": "16 ms"}]
                     }
+
                     BarGraph {
                         id: cpuUsageGraph
                         anchors.left: parent.left
