@@ -40,8 +40,8 @@ private:
         void (QOPENGLF_APIENTRYP deleteFencesNV)(GLsizei n, const GLuint* fences);
         void (QOPENGLF_APIENTRYP setFenceNV)(GLuint fence, GLenum condition);
         void (QOPENGLF_APIENTRYP finishFenceNV)(GLuint fence);
-    } fenceNV_;
-    GLuint fence_[2];
+    } m_fenceNV;
+    GLuint m_fence[2];
 };
 
 #endif // RENDERTIMERNVFENCE_H

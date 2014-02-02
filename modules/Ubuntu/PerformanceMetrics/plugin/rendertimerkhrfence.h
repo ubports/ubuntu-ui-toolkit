@@ -42,8 +42,8 @@ private:
         EGLBoolean (QOPENGLF_APIENTRYP destroySyncKHR)(EGLDisplay dpy, EGLSyncKHR sync);
         EGLint (QOPENGLF_APIENTRYP clientWaitSyncKHR)(EGLDisplay dpy, EGLSyncKHR sync, EGLint flags,
                                                       EGLTimeKHR timeout);
-    } fenceSyncKHR_;
-    EGLSyncKHR beforeSync_;
+    } m_fenceSyncKHR;
+    EGLSyncKHR m_beforeSync;
 };
 
 #endif // RENDERTIMERKHRFENCE_H

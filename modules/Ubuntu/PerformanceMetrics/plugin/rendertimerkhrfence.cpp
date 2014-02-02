@@ -35,13 +35,13 @@ bool RenderTimerKHRFence::isAvailable()
 
 void RenderTimerKHRFence::setup()
 {
-    fenceSyncKHR_.createSyncKHR = reinterpret_cast<
+    m_fenceSyncKHR.createSyncKHR = reinterpret_cast<
         EGLSyncKHR (QOPENGLF_APIENTRYP)(EGLDisplay, EGLenum, const EGLint*)>(
         eglGetProcAddress("eglCreateSyncKHR"));
-    fenceSyncKHR_.destroySyncKHR = reinterpret_cast<
+    m_fenceSyncKHR.destroySyncKHR = reinterpret_cast<
         EGLBoolean (QOPENGLF_APIENTRYP)(EGLDisplay, EGLSyncKHR)>(
         eglGetProcAddress("eglDestroySyncKHR"));
-    fenceSyncKHR_.clientWaitSyncKHR = reinterpret_cast<
+    m_fenceSyncKHR.clientWaitSyncKHR = reinterpret_cast<
         EGLint (QOPENGLF_APIENTRYP)(EGLDisplay, EGLSyncKHR, EGLint, EGLTimeKHR)>(
         eglGetProcAddress("eglClientWaitSyncKHR"));
     fenceSystem_ = FenceSyncKHR;
@@ -49,28 +49,28 @@ void RenderTimerKHRFence::setup()
 
 void RenderTimerKHRFence::teardown()
 {
-    if (beforeSync_ != EGL_NO_SYNC_KHR) {
-        fenceSyncKHR_.destroySyncKHR(eglGetCurrentDisplay(), beforeSync_);
+    if (m_beforeSync != EGL_NO_SYNC_KHR) {
+        m_fenceSyncKHR.destroySyncKHR(eglGetCurrentDisplay(), m_beforeSync);
     }
 }
 
 void RenderTimerKHRFence::start()
 {
-    beforeSync_ = fenceSyncKHR_.createSyncKHR(eglGetCurrentDisplay(), EGL_SYNC_FENCE_KHR, NULL);
+    m_beforeSync = m_fenceSyncKHR.createSyncKHR(eglGetCurrentDisplay(), EGL_SYNC_FENCE_KHR, NULL);
 }
 
 qint64 RenderTimerKHRFence::stop()
 {
     QElapsedTimer timer;
     EGLDisplay dpy = eglGetCurrentDisplay();
-    EGLSyncKHR afterSync = fenceSyncKHR_.createSyncKHR(dpy, EGL_SYNC_FENCE_KHR, NULL);
-    EGLint beforeSyncValue = fenceSyncKHR_.clientWaitSyncKHR(dpy, beforeSync_, 0, EGL_FOREVER_KHR);
+    EGLSyncKHR afterSync = m_fenceSyncKHR.createSyncKHR(dpy, EGL_SYNC_FENCE_KHR, NULL);
+    EGLint beforeSyncValue = m_fenceSyncKHR.clientWaitSyncKHR(dpy, m_beforeSync, 0, EGL_FOREVER_KHR);
     qint64 beforeTime = timer.nsecsElapsed();
-    EGLint afterSyncValue = fenceSyncKHR_.clientWaitSyncKHR(dpy, afterSync, 0, EGL_FOREVER_KHR);
+    EGLint afterSyncValue = m_fenceSyncKHR.clientWaitSyncKHR(dpy, afterSync, 0, EGL_FOREVER_KHR);
     qint64 afterTime = timer.nsecsElapsed();
-    fenceSyncKHR_.destroySyncKHR(dpy, afterSync);
-    fenceSyncKHR_.destroySyncKHR(dpy, beforeSync_);
-    beforeSync_ = EGL_NO_SYNC_KHR;
+    m_fenceSyncKHR.destroySyncKHR(dpy, afterSync);
+    m_fenceSyncKHR.destroySyncKHR(dpy, m_beforeSync);
+    m_beforeSync = EGL_NO_SYNC_KHR;
     if (beforeSyncValue == EGL_CONDITION_SATISFIED_KHR
     && afterSyncValue == EGL_CONDITION_SATISFIED_KHR) {
         return afterTime - beforeTime;

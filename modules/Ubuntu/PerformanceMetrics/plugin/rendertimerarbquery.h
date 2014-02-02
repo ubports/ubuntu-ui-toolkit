@@ -42,9 +42,9 @@ private:
         void (QOPENGLF_APIENTRYP getQueryObjectui64v)(GLuint id, GLenum pname, GLuint64* params);
         void (QOPENGLF_APIENTRYP getQueryObjectui64vExt)(GLuint id, GLenum pname, GLuint64EXT* params);
         void (QOPENGLF_APIENTRYP queryCounter)(GLuint id, GLenum target);
-    } timerQuery_;
-    enum { TimerQueryUnavailable, TimerQueryCore, TimerQueryExt } timerQueryVersion_;
-    GLuint timer_[2];
+    } m_timerQuery;
+    enum { TimerQueryUnavailable, TimerQueryCore, TimerQueryExt } m_timerQueryVersion;
+    GLuint m_timer[2];
 };
 
 #endif // RENDERTIMERARBQUERY_H

@@ -31,36 +31,36 @@ bool RenderTimerNVFence::isAvailable()
 
 void RenderTimerNVFence::setup()
 {
-    fenceNV_.genFencesNV = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLsizei, GLuint*)>(
+    m_fenceNV.genFencesNV = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLsizei, GLuint*)>(
         eglGetProcAddress("glGenFencesNV"));
-    fenceNV_.deleteFencesNV = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLsizei, const GLuint*)>(
+    m_fenceNV.deleteFencesNV = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLsizei, const GLuint*)>(
         eglGetProcAddress("glDeleteFencesNV"));
-    fenceNV_.setFenceNV = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLuint, GLenum)>(
+    m_fenceNV.setFenceNV = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLuint, GLenum)>(
         eglGetProcAddress("glSetFenceNV"));
-    fenceNV_.finishFenceNV = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLuint)>(
+    m_fenceNV.finishFenceNV = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLuint)>(
         eglGetProcAddress("glFinishFenceNV"));
     fenceSystem_ = FenceNV;
-    fenceNV_.genFencesNV(2, fence_);
+    m_fenceNV.genFencesNV(2, m_fence);
 }
 
 void RenderTimerNVFence::teardown()
 {
-    fenceNV_.deleteFencesNV(2, fence_);
+    m_fenceNV.deleteFencesNV(2, m_fence);
 
 }
 
 void RenderTimerNVFence::start()
 {
-    fenceNV_.setFenceNV(fence_[0], GL_ALL_COMPLETED_NV);
+    m_fenceNV.setFenceNV(m_fence[0], GL_ALL_COMPLETED_NV);
 }
 
 qint64 RenderTimerNVFence::stop()
 {
     QElapsedTimer timer;
-    fenceNV_.setFenceNV(fence_[1], GL_ALL_COMPLETED_NV);
-    fenceNV_.finishFenceNV(fence_[0]);
+    m_fenceNV.setFenceNV(m_fence[1], GL_ALL_COMPLETED_NV);
+    m_fenceNV.finishFenceNV(m_fence[0]);
     qint64 beforeTime = timer.nsecsElapsed();
-    fenceNV_.finishFenceNV(fence_[1]);
+    m_fenceNV.finishFenceNV(m_fence[1]);
     qint64 afterTime = timer.nsecsElapsed();
     return afterTime - beforeTime;
 }

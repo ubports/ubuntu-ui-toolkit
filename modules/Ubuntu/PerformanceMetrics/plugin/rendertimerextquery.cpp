@@ -36,35 +36,35 @@ bool RenderTimerEXTQuery::isAvailable()
 void RenderTimerEXTQuery::setup()
 {
     QOpenGLContext* context = QOpenGLContext::currentContext();
-    timerQuery_.genQueries = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLsizei, GLuint*)>(
+    m_timerQuery.genQueries = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLsizei, GLuint*)>(
         context->getProcAddress("glGenQueries"));
-    timerQuery_.deleteQueries = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLsizei, const GLuint*)>(
+    m_timerQuery.deleteQueries = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLsizei, const GLuint*)>(
         context->getProcAddress("glDeleteQueries"));
-    timerQuery_.beginQuery = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLenum, GLuint)>(
+    m_timerQuery.beginQuery = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLenum, GLuint)>(
         context->getProcAddress("glBeginQuery"));
-    timerQuery_.endQuery = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLenum)>(
+    m_timerQuery.endQuery = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLenum)>(
         context->getProcAddress("glEndQuery"));
-    timerQuery_.getQueryObjectui64vExt =
+    m_timerQuery.getQueryObjectui64vExt =
     reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLuint, GLenum, GLuint64EXT*)>(
         context->getProcAddress("glGetQueryObjectui64vEXT"));
-    timerQueryVersion_ = TimerQueryExt;
-    timerQuery_.genQueries(1, timer_);
+    m_timerQueryVersion = TimerQueryExt;
+    m_timerQuery.genQueries(1, m_timer);
 }
 
 void RenderTimerEXTQuery::teardown()
 {
-    timerQuery_.deleteQueries(1, timer_);
+    m_timerQuery.deleteQueries(1, m_timer);
 }
 
 void RenderTimerEXTQuery::start()
 {
-    timerQuery_.beginQuery(GL_TIME_ELAPSED, timer_[0]);
+    m_timerQuery.beginQuery(GL_TIME_ELAPSED, m_timer[0]);
 }
 
 qint64 RenderTimerEXTQuery::stop()
 {
     GLuint64EXT time;
-    timerQuery_.endQuery(GL_TIME_ELAPSED);
-    timerQuery_.getQueryObjectui64vExt(timer_[0], GL_QUERY_RESULT, &time);
+    m_timerQuery.endQuery(GL_TIME_ELAPSED);
+    m_timerQuery.getQueryObjectui64vExt(m_timer[0], GL_QUERY_RESULT, &time);
     return static_cast<qint64>(time);
 }
