@@ -86,7 +86,6 @@ private Q_SLOTS:
 private:
     void setupNewTimer();
     void appendRenderTime(qint64 renderTime);
-    void updateTimeBetweenSamples();
 
 private:
     int m_period;
