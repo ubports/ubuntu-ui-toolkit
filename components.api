@@ -730,6 +730,12 @@ plugins.qmltypes
     Property { name: "period"; type: "int" }
     Property { name: "samples"; type: "int" }
     Property { name: "graphModel"; type: "UPMGraphModel"; isReadonly: true; isPointer: true }
+    name: "UPMRenderingTimes2"
+    prototype: "QQuickItem"
+    exports: ["RenderingTimes2 0.1"]
+    Property { name: "period"; type: "int" }
+    Property { name: "samples"; type: "int" }
+    Property { name: "graphModel"; type: "UPMGraphModel"; isReadonly: true; isPointer: true }
     Signal {
     name: "frameRendered"
     Parameter { name: "renderTime"; type: "qlonglong" }
