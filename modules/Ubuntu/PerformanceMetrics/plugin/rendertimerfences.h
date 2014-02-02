@@ -39,6 +39,28 @@ public:
     virtual void start();
     virtual qint64 stop();
 
+#if defined(QT_OPENGL_ES)
+    void setupKHRFence();
+    void teardownKHRFence();
+    void startKHRFence();
+    qint64 stopKHRFence();
+
+    void setupNVFence();
+    void teardownNVFence();
+    void startNVFence();
+    qint64 stopNVFence();
+#else
+    void setupARBTimerQuery();
+    void teardownARBTimerQuery();
+    void startARBTimerQuery();
+    qint64 stopARBTimerQuery();
+
+    void setupEXTTimerQuery();
+    void teardownEXTTimerQuery();
+    void startEXTTimerQuery();
+    qint64 stopEXTTimerQuery();
+#endif
+
 private:
 #if defined(QT_OPENGL_ES)
     struct {
