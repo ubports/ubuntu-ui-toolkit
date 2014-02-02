@@ -16,20 +16,18 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#include "upmplugin.h"
-#include "upmrenderingtimes.h"
-#include "upmcpuusage.h"
-#include "upmtexturefromimage.h"
-#include "upmgraphmodel.h"
+#include "rendertimertrivial.h"
 
-#include <qqml.h>
-
-void UbuntuPerformanceMetricsPlugin::registerTypes(const char *uri)
+RenderTimerTrivial::RenderTimerTrivial()
 {
-    Q_ASSERT(uri == QLatin1String("Ubuntu.PerformanceMetrics"));
+}
 
-    qmlRegisterType<UPMRenderingTimes>(uri, 0, 1, "RenderingTimes");
-    qmlRegisterType<UPMCpuUsage>(uri, 0, 1, "CpuUsage");
-    qmlRegisterType<UPMTextureFromImage>(uri, 0, 1, "TextureFromImage");
-    qmlRegisterType<UPMGraphModel>();
+void RenderTimerTrivial::start()
+{
+    m_timer.start();
+}
+
+qint64 RenderTimerTrivial::stop()
+{
+    return m_timer.nsecsElapsed();
 }

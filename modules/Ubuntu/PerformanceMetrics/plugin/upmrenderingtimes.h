@@ -23,6 +23,7 @@
 #include <QtQuick/QQuickWindow>
 #include <QtCore/QElapsedTimer>
 #include "upmgraphmodel.h"
+#include "rendertimer.h"
 
 class UPMRenderingTimes : public QQuickItem
 {
@@ -31,23 +32,35 @@ class UPMRenderingTimes : public QQuickItem
     Q_PROPERTY(int period READ period WRITE setPeriod NOTIFY periodChanged)
     Q_PROPERTY(int samples READ samples WRITE setSamples NOTIFY samplesChanged)
     Q_PROPERTY(UPMGraphModel* graphModel READ graphModel NOTIFY graphModelChanged)
+    Q_PROPERTY(Technique technique READ technique WRITE setTechnique NOTIFY techniqueChanged)
+
+    Q_ENUMS(Technique)
 
 public:
+    enum Technique {
+        Trivial,
+        Fences
+    };
+
     explicit UPMRenderingTimes(QQuickItem* parent = 0);
+    ~UPMRenderingTimes();
 
     // getters
     int period() const;
     int samples() const;
     UPMGraphModel* graphModel() const;
+    Technique technique() const;
 
     // setters
     void setPeriod(int period);
     void setSamples(int samples);
+    void setTechnique(Technique technique);
 
 Q_SIGNALS:
     void periodChanged();
     void samplesChanged();
     void graphModelChanged();
+    void techniqueChanged();
     void frameRendered(qint64 renderTime);
 
 protected:
@@ -55,6 +68,8 @@ protected:
 
 private Q_SLOTS:
     void connectToWindow(QQuickWindow* window);
+    void onSceneGraphInitialized();
+    void onSceneGraphInvalidated();
     void onBeforeRendering();
     void onAfterRendering();
     void onFrameSwapped();
@@ -67,8 +82,11 @@ private:
 private:
     int m_period;
     UPMGraphModel* m_graphModel;
+    Technique m_technique;
     QQuickWindow* m_window;
-    QElapsedTimer m_renderingTimer;
+    RenderTimer* m_renderingTimer;
+    bool m_oddFrame;
+    qint64 m_oddFrameRenderTime;
 };
 
 #endif // UPMPERFORMANCE_METRICS_H

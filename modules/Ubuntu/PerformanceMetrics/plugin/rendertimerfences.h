@@ -16,13 +16,12 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef UPMPERFORMANCE_METRICS2_H
-#define UPMPERFORMANCE_METRICS2_H
+#ifndef RENDERTIMERFENCES_H
+#define RENDERTIMERFENCES_H
 
-#include <QtQuick/QQuickItem>
-#include <QtQuick/QQuickWindow>
+#include "rendertimer.h"
 #include <QtCore/QElapsedTimer>
-#include "upmgraphmodel.h"
+
 #if defined(QT_OPENGL_ES)
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
@@ -30,57 +29,17 @@
 #include <QtGui/qopenglfunctions.h>
 #endif
 
-class UPMRenderingTimes2 : public QQuickItem
+class RenderTimerFences : public RenderTimer
 {
-    Q_OBJECT
-
-    Q_PROPERTY(int period READ period WRITE setPeriod NOTIFY periodChanged)
-    Q_PROPERTY(int samples READ samples WRITE setSamples NOTIFY samplesChanged)
-    Q_PROPERTY(UPMGraphModel* graphModel READ graphModel NOTIFY graphModelChanged)
-
 public:
-    explicit UPMRenderingTimes2(QQuickItem* parent = 0);
+    RenderTimerFences();
 
-    // getters
-    int period() const;
-    int samples() const;
-    UPMGraphModel* graphModel() const;
-
-    // setters
-    void setPeriod(int period);
-    void setSamples(int samples);
-
-Q_SIGNALS:
-    void periodChanged();
-    void samplesChanged();
-    void graphModelChanged();
-    void frameRendered(qint64 renderTime);
-
-protected:
-    void itemChange(ItemChange change, const ItemChangeData & value);
-
-private Q_SLOTS:
-    void connectToWindow(QQuickWindow* window);
-    void onSceneGraphInitialized();
-    void onSceneGraphInvalidated();
-    void onBeforeRendering();
-    void onAfterRendering();
-    void onFrameSwapped();
-    void onFrameRendered(qint64 renderTime);
+    virtual void setup();
+    virtual void teardown();
+    virtual void start();
+    virtual qint64 stop();
 
 private:
-    void startGpuTimer();
-    qint64 stopGpuTimer();
-    void appendRenderTime(qint64 renderTime);
-    void updateTimeBetweenSamples();
-
-private:
-    int m_period;
-    UPMGraphModel* m_graphModel;
-    QQuickWindow* m_window;
-    QElapsedTimer m_renderingTimer;
-    QElapsedTimer m_renderingTimer2;
-
 #if defined(QT_OPENGL_ES)
   struct {
     EGLSyncKHR (QOPENGLF_APIENTRYP createSyncKHR)(EGLDisplay dpy, EGLenum type,
@@ -112,7 +71,6 @@ private:
   enum { TimerQueryUnavailable, TimerQueryCore, TimerQueryExt } timerQueryVersion_;
   GLuint timer_[2];
 #endif
-
 };
 
-#endif // UPMPERFORMANCE_METRICS2_H
+#endif // RENDERTIMERFENCES_H

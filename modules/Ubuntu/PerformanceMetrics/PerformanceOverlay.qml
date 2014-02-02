@@ -56,14 +56,16 @@ Item {
                 height: childrenRect.height
 
                 PerformanceMetrics.RenderingTimes {
-                    id: renderingTimes
+                    id: renderingTimesTrivial
                     period: 2000
-                    samples: renderingTimeGraph.width
+                    samples: renderingTimeGraphTrivial.width
+                    technique: PerformanceMetrics.RenderingTimes.Trivial
                 }
-                PerformanceMetrics.RenderingTimes2 {
-                    id: renderingTimes2
+                PerformanceMetrics.RenderingTimes {
+                    id: renderingTimesFences
                     period: 2000
-                    samples: renderingTimeGraph.width
+                    samples: renderingTimeGraphFences.width
+                    technique: PerformanceMetrics.RenderingTimes.Fences
                 }
 
                 PerformanceMetrics.CpuUsage {
@@ -78,20 +80,20 @@ Item {
                     spacing: units.gu(1)
 
                     BarGraph {
-                        id: renderingTimeGraph
+                        id: renderingTimeGraphTrivial
                         anchors.left: parent.left
                         anchors.right: parent.right
-                        model: renderingTimes.graphModel
+                        model: renderingTimesTrivial.graphModel
                         maximumValue: 20
                         threshold: 16
                         labels: [{"color": "darkorange", "value": 10, "label": "10 ms"},
                                 {"color": "red", "value": 16, "label": "16 ms"}]
                     }
                     BarGraph {
-                        id: renderingTimeGraph2
+                        id: renderingTimeGraphFences
                         anchors.left: parent.left
                         anchors.right: parent.right
-                        model: renderingTimes2.graphModel
+                        model: renderingTimesFences.graphModel
                         maximumValue: 20
                         threshold: 16
                         labels: [{"color": "darkorange", "value": 10, "label": "10 ms"},
