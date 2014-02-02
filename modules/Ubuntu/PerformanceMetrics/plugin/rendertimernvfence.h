@@ -16,21 +16,32 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef RENDERTIMER_H
-#define RENDERTIMER_H
+#ifndef RENDERTIMERNVFENCE_H
+#define RENDERTIMERNVFENCE_H
 
-#include <QtCore/QtGlobal>
+#include "rendertimer.h"
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
 
-class RenderTimer
+class RenderTimerNVFence : public RenderTimer
 {
 public:
-    RenderTimer();
-    virtual ~RenderTimer();
+    RenderTimerNVFence();
 
+    static bool isAvailable();
     virtual void setup();
     virtual void teardown();
-    virtual void start() = 0;
-    virtual qint64 stop() = 0;
+    virtual void start();
+    virtual qint64 stop();
+
+private:
+    struct {
+        void (QOPENGLF_APIENTRYP genFencesNV)(GLsizei n, GLuint* fences);
+        void (QOPENGLF_APIENTRYP deleteFencesNV)(GLsizei n, const GLuint* fences);
+        void (QOPENGLF_APIENTRYP setFenceNV)(GLuint fence, GLenum condition);
+        void (QOPENGLF_APIENTRYP finishFenceNV)(GLuint fence);
+    } fenceNV_;
+    GLuint fence_[2];
 };
 
-#endif // RENDERTIMER_H
+#endif // RENDERTIMERNVFENCE_H

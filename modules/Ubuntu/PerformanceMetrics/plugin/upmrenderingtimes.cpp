@@ -19,13 +19,20 @@
 #include "upmrenderingtimes.h"
 #include "rendertimertrivial.h"
 #include "rendertimerfences.h"
+#if defined(QT_OPENGL_ES)
+#include "rendertimerkhrfence.h"
+#include "rendertimernvfence.h"
+#else
+#include "rendertimerarbquery.h"
+#include "rendertimerextquery.h"
+#endif
 #include <QtCore/qmath.h>
 
 UPMRenderingTimes::UPMRenderingTimes(QQuickItem* parent) :
     QQuickItem(parent),
     m_period(1000),
     m_graphModel(new UPMGraphModel(this)),
-    m_technique(UPMRenderingTimes::Trivial),
+    m_technique(UPMRenderingTimes::Automatic),
     m_needsNewTimer(true),
     m_window(NULL),
     m_renderingTimer(NULL),
@@ -156,16 +163,7 @@ void UPMRenderingTimes::onSceneGraphInvalidated()
 void UPMRenderingTimes::onBeforeRendering()
 {
     if (m_needsNewTimer) {
-        if (m_renderingTimer != NULL) {
-            m_renderingTimer->teardown();
-            delete m_renderingTimer;
-        }
-        if (m_technique == UPMRenderingTimes::Trivial) {
-            m_renderingTimer = new RenderTimerTrivial;
-        } else if (m_technique == UPMRenderingTimes::Fences) {
-            m_renderingTimer = new RenderTimerFences;
-        }
-        m_renderingTimer->setup();
+        setupNewTimer();
         m_needsNewTimer = false;
     }
     m_renderingTimer->start();
@@ -190,6 +188,59 @@ void UPMRenderingTimes::onFrameRendered(qint64 renderTime)
     }
     m_oddFrame = !m_oddFrame;
 }
+
+void UPMRenderingTimes::setupNewTimer()
+{
+    if (m_renderingTimer != NULL) {
+        m_renderingTimer->teardown();
+        delete m_renderingTimer;
+    }
+    switch (m_technique) {
+    case UPMRenderingTimes::Trivial:
+        m_renderingTimer = new RenderTimerTrivial;
+        break;
+    case UPMRenderingTimes::Fences:
+        m_renderingTimer = new RenderTimerFences;
+        break;
+#if defined(QT_OPENGL_ES)
+    case UPMRenderingTimes::KHRFence:
+        m_renderingTimer = new RenderTimerKHRFence;
+        break;
+    case UPMRenderingTimes::NVFence:
+        m_renderingTimer = new RenderTimerNVFence;
+        break;
+#else
+    case UPMRenderingTimes::ARBTimerQuery:
+        m_renderingTimer = new RenderTimerARBQuery;
+        break;
+    case UPMRenderingTimes::EXTTimerQuery:
+        m_renderingTimer = new RenderTimerEXTQuery;
+        break;
+#endif
+    case UPMRenderingTimes::Automatic:
+#if defined(QT_OPENGL_ES)
+        if (RenderTimerKHRFence::isAvailable()) {
+            m_renderingTimer = new RenderTimerKHRFence;
+        } else if (RenderTimerNVFence::isAvailable()) {
+            m_renderingTimer = new RenderTimerNVFence;
+        } else {
+            m_renderingTimer = new RenderTimerTrivial;
+        }
+#else
+        if (RenderTimerARBQuery::isAvailable()) {
+            m_renderingTimer = new RenderTimerARBQuery;
+        } else if (RenderTimerEXTQuery::isAvailable()) {
+            m_renderingTimer = new RenderTimerEXTQuery;
+        } else {
+            m_renderingTimer = new RenderTimerTrivial;
+        }
+#endif
+        break;
+    }
+
+    m_renderingTimer->setup();
+}
+
 
 void UPMRenderingTimes::appendRenderTime(qint64 renderTime)
 {

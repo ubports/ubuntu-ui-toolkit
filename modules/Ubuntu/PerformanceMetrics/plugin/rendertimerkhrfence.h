@@ -16,23 +16,34 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#ifndef RENDERTIMERTRIVIAL_H
-#define RENDERTIMERTRIVIAL_H
+#ifndef RENDERTIMERKHRFENCE_H
+#define RENDERTIMERKHRFENCE_H
 
 #include "rendertimer.h"
-#include <QtCore/QElapsedTimer>
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+#include <QtGui/qopenglfunctions.h>
 
-class RenderTimerTrivial : public RenderTimer
+class RenderTimerKHRFence : public RenderTimer
 {
 public:
-    RenderTimerTrivial();
+    RenderTimerKHRFence();
 
     static bool isAvailable();
+    virtual void setup();
+    virtual void teardown();
     virtual void start();
     virtual qint64 stop();
 
 private:
-    QElapsedTimer m_timer;
+    struct {
+        EGLSyncKHR (QOPENGLF_APIENTRYP createSyncKHR)(EGLDisplay dpy, EGLenum type,
+                                                      const EGLint* attrib_list);
+        EGLBoolean (QOPENGLF_APIENTRYP destroySyncKHR)(EGLDisplay dpy, EGLSyncKHR sync);
+        EGLint (QOPENGLF_APIENTRYP clientWaitSyncKHR)(EGLDisplay dpy, EGLSyncKHR sync, EGLint flags,
+                                                      EGLTimeKHR timeout);
+    } fenceSyncKHR_;
+    EGLSyncKHR beforeSync_;
 };
 
-#endif // RENDERTIMERTRIVIAL_H
+#endif // RENDERTIMERKHRFENCE_H

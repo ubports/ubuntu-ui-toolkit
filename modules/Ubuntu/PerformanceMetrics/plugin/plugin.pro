@@ -29,6 +29,20 @@ HEADERS += \
     rendertimertrivial.h \
     rendertimerfences.h
 
+
+isEmpty(QT_OPENGL_ES) {
+    SOURCES += rendertimerarbquery.cpp \
+               rendertimerextquery.cpp
+    HEADERS += rendertimerarbquery.h \
+               rendertimerextquery.h
+} else {
+    SOURCES += rendertimerkhrfence.cpp \
+               rendertimernvfence.cpp
+    HEADERS += rendertimerkhrfence.h \
+               rendertimernvfence.h
+}
+
+
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 target.path = $$installPath

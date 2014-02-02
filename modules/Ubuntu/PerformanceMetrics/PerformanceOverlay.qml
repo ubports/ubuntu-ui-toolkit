@@ -65,7 +65,7 @@ Item {
                     id: renderingTimesFences
                     period: 2000
                     samples: renderingTimeGraphFences.width
-                    technique: PerformanceMetrics.RenderingTimes.Fences
+                    technique: PerformanceMetrics.RenderingTimes.ARBTimerQuery
                 }
 
                 PerformanceMetrics.CpuUsage {

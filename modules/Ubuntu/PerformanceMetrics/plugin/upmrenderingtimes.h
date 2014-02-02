@@ -38,8 +38,16 @@ class UPMRenderingTimes : public QQuickItem
 
 public:
     enum Technique {
+        Automatic,
         Trivial,
-        Fences
+        Fences,
+#if defined(QT_OPENGL_ES)
+        KHRFence,
+        NVFence,
+#else
+        ARBTimerQuery,
+        EXTTimerQuery
+#endif
     };
 
     explicit UPMRenderingTimes(QQuickItem* parent = 0);
@@ -76,6 +84,7 @@ private Q_SLOTS:
     void onFrameRendered(qint64 renderTime);
 
 private:
+    void setupNewTimer();
     void appendRenderTime(qint64 renderTime);
     void updateTimeBetweenSamples();
 
