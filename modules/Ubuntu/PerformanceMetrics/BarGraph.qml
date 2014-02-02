@@ -28,6 +28,7 @@ Item {
     property color color: Qt.rgba(0.4, 0.73, 0.4, 1.0)
     property real threshold: 16.0
     property color aboveThresholdColor: "#ff4e00"
+    property string labelFormat: "%1"
 
     implicitWidth: units.gu(38)
     implicitHeight: units.gu(8)
@@ -115,5 +116,16 @@ Item {
                 color: modelData.color
             }
         }
+    }
+
+    Label {
+        anchors {
+            top: parent.top
+            topMargin: units.gu(1)
+            right: parent.right
+            rightMargin: units.gu(1)
+        }
+        text: graph.labelFormat.arg(graph.model.currentValue)
+        color: "white"
     }
 }

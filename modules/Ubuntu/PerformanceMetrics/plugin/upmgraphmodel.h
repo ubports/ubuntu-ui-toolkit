@@ -29,6 +29,7 @@ class UPMGraphModel : public QObject
     Q_PROPERTY(QImage image READ image NOTIFY imageChanged)
     Q_PROPERTY(int shift READ shift NOTIFY shiftChanged)
     Q_PROPERTY(int samples READ samples WRITE setSamples NOTIFY samplesChanged)
+    Q_PROPERTY(int currentValue READ currentValue NOTIFY currentValueChanged)
 
 public:
     explicit UPMGraphModel(QObject *parent = 0);
@@ -39,6 +40,7 @@ public:
     QImage image() const;
     int shift() const;
     int samples() const;
+    int currentValue() const;
 
     // setters
     void setSamples(int samples);
@@ -47,11 +49,13 @@ Q_SIGNALS:
     void imageChanged();
     void shiftChanged();
     void samplesChanged();
+    void currentValueChanged();
 
 private:
     QImage m_image;
     int m_shift;
     int m_samples;
+    int m_currentValue;
 };
 
 #endif // UPMGRAPHMODEL_H

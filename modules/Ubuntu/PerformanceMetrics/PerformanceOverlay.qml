@@ -89,6 +89,7 @@ Item {
                         threshold: 16
                         labels: [{"color": "darkorange", "value": 10, "label": "10 ms"},
                                 {"color": "red", "value": 16, "label": "16 ms"}]
+                        labelFormat: "%1 ms"
                     }
 
                     BarGraph {
@@ -100,6 +101,7 @@ Item {
                         threshold: 16
                         labels: [{"color": "darkorange", "value": 10, "label": "10 ms"},
                                 {"color": "red", "value": 16, "label": "16 ms"}]
+                        labelFormat: "%1 ms"
                     }
 
                     BarGraph {
@@ -112,6 +114,7 @@ Item {
                         labels: [{"color": "green", "value": 25, "label": "25%"},
                                  {"color": "darkorange", "value": 50, "label": "50%"},
                                  {"color": "red", "value": 75, "label": "75%"}]
+                        labelFormat: "%1 %"
                     }
                 }
             }

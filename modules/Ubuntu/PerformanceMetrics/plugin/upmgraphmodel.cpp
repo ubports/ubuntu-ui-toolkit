@@ -22,7 +22,8 @@
 UPMGraphModel::UPMGraphModel(QObject *parent) :
     QObject(parent),
     m_shift(0),
-    m_samples(100)
+    m_samples(100),
+    m_currentValue(0)
 {
     m_image = QImage(m_samples, 1, QImage::Format_RGB32);
     m_image.fill(0);
@@ -48,9 +49,11 @@ void UPMGraphModel::appendValue(int width, int value)
         memset(&line[m_shift], value, width * 4);
     }
     m_shift = (m_shift + width) % m_samples;
+    m_currentValue = value;
 
     Q_EMIT imageChanged();
     Q_EMIT shiftChanged();
+    Q_EMIT currentValueChanged();
 }
 
 QImage UPMGraphModel::image() const
@@ -77,4 +80,9 @@ void UPMGraphModel::setSamples(int samples)
         Q_EMIT samplesChanged();
         Q_EMIT imageChanged();
     }
+}
+
+int UPMGraphModel::currentValue() const
+{
+    return m_currentValue;
 }
