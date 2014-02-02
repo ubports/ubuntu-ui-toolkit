@@ -36,6 +36,11 @@ RenderTimerFences::RenderTimerFences()
 {
 }
 
+bool RenderTimerFences::isAvailable()
+{
+    return true;
+}
+
 void RenderTimerFences::setup()
 {
 #if defined(QT_OPENGL_ES)

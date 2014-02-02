@@ -34,6 +34,7 @@ class RenderTimerFences : public RenderTimer
 public:
     RenderTimerFences();
 
+    virtual bool isAvailable();
     virtual void setup();
     virtual void teardown();
     virtual void start();

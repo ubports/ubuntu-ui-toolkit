@@ -27,6 +27,7 @@ class RenderTimerTrivial : public RenderTimer
 public:
     RenderTimerTrivial();
 
+    virtual bool isAvailable();
     virtual void start();
     virtual qint64 stop();
 

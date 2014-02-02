@@ -22,6 +22,11 @@ RenderTimerTrivial::RenderTimerTrivial()
 {
 }
 
+bool RenderTimerTrivial::isAvailable()
+{
+    return true;
+}
+
 void RenderTimerTrivial::start()
 {
     m_timer.start();

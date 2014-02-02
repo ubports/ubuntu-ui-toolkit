@@ -27,6 +27,7 @@ public:
     RenderTimer();
     virtual ~RenderTimer();
 
+    virtual bool isAvailable() = 0;
     virtual void setup();
     virtual void teardown();
     virtual void start() = 0;
