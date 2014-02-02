@@ -72,7 +72,7 @@ Item {
                 PerformanceMetrics.CpuUsage {
                     id: cpuUsage
                     period: 5000
-                    samplingInterval: 100
+                    samplingInterval: 200
                 }
 
                 Column {
