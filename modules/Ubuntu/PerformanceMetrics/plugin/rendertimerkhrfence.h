@@ -22,7 +22,6 @@
 #include "rendertimer.h"
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
-#include <QtGui/qopenglfunctions.h>
 
 class RenderTimerKHRFence : public RenderTimer
 {
