@@ -83,6 +83,7 @@ private:
     int m_period;
     UPMGraphModel* m_graphModel;
     Technique m_technique;
+    bool m_needsNewTimer;
     QQuickWindow* m_window;
     RenderTimer* m_renderingTimer;
     bool m_oddFrame;

@@ -26,17 +26,12 @@ UPMRenderingTimes::UPMRenderingTimes(QQuickItem* parent) :
     m_period(1000),
     m_graphModel(new UPMGraphModel(this)),
     m_technique(UPMRenderingTimes::Trivial),
+    m_needsNewTimer(true),
     m_window(NULL),
     m_renderingTimer(NULL),
     m_oddFrame(false),
     m_oddFrameRenderTime(0)
 {
-    if (m_technique == UPMRenderingTimes::Trivial) {
-        m_renderingTimer = new RenderTimerTrivial;
-    } else if (m_technique == UPMRenderingTimes::Fences) {
-        m_renderingTimer = new RenderTimerFences;
-    }
-
     /* Disable synchronization to vertical blank signal on Intel */
     qputenv("vblank_mode", "0");
 
@@ -94,14 +89,8 @@ void UPMRenderingTimes::setTechnique(UPMRenderingTimes::Technique technique)
 {
     if (technique != m_technique) {
         m_technique = technique;
-        if (m_renderingTimer != NULL) {
-            delete m_renderingTimer;
-        }
-        if (m_technique == UPMRenderingTimes::Trivial) {
-            m_renderingTimer = new RenderTimerTrivial;
-        } else if (m_technique == UPMRenderingTimes::Fences) {
-            m_renderingTimer = new RenderTimerFences;
-        }
+        // setup/teardown of RenderTimers need to happen in the rendering thread
+        m_needsNewTimer = true;
         Q_EMIT techniqueChanged();
     }
 }
@@ -152,16 +141,33 @@ void UPMRenderingTimes::connectToWindow(QQuickWindow* window)
 
 void UPMRenderingTimes::onSceneGraphInitialized()
 {
-    m_renderingTimer->setup();
+    if (m_renderingTimer) {
+        m_renderingTimer->setup();
+    }
 }
 
 void UPMRenderingTimes::onSceneGraphInvalidated()
 {
-    m_renderingTimer->teardown();
+    if (m_renderingTimer) {
+        m_renderingTimer->teardown();
+    }
 }
 
 void UPMRenderingTimes::onBeforeRendering()
 {
+    if (m_needsNewTimer) {
+        if (m_renderingTimer != NULL) {
+            m_renderingTimer->teardown();
+            delete m_renderingTimer;
+        }
+        if (m_technique == UPMRenderingTimes::Trivial) {
+            m_renderingTimer = new RenderTimerTrivial;
+        } else if (m_technique == UPMRenderingTimes::Fences) {
+            m_renderingTimer = new RenderTimerFences;
+        }
+        m_renderingTimer->setup();
+        m_needsNewTimer = false;
+    }
     m_renderingTimer->start();
 }
 
