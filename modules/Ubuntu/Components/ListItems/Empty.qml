@@ -280,8 +280,6 @@ AbstractButton {
                 } else {
                     body.x = -finalX
                 }
-                confirmRemovalDialog.waitingForConfirmation = true;
-                priv.commitDrag()
             }
         }
     }
@@ -316,7 +314,17 @@ AbstractButton {
 
             Behavior on x {
                 enabled: !priv.held
-                UbuntuNumberAnimation {
+                SequentialAnimation {
+                    UbuntuNumberAnimation {
+                    }
+                    ScriptAction {
+                        script: {
+                            if (x !== 0) {  // waiting if not at 0 pos
+                                confirmRemovalDialog.waitingForConfirmation = true;
+                                priv.commitDrag()
+                            }
+                        }
+                    }
                 }
             }
 
