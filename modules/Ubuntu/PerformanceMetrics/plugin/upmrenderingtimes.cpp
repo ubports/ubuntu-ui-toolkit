@@ -38,9 +38,6 @@ UPMRenderingTimes::UPMRenderingTimes(QQuickItem* parent) :
     m_oddFrame(false),
     m_oddFrameRenderTime(0)
 {
-    /* Disable synchronization to vertical blank signal on Intel */
-    qputenv("vblank_mode", "0");
-
     /* Forward samplesChanged signal from graphModel */
     QObject::connect(m_graphModel, &UPMGraphModel::samplesChanged,
                      this, &UPMRenderingTimes::samplesChanged);
