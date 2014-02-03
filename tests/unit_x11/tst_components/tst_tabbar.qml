@@ -21,8 +21,8 @@ import TestObjects 0.1
 
 Item {
     id: root
-    width: units.gu(50)
-    height: units.gu(80)
+    width: units.gu(40)
+    height: units.gu(71)
 
     TabBar {
         id: bar
@@ -131,7 +131,6 @@ Item {
         }
 
         function test_0_selectionMode() {
-            waitForRendering(root);
             compare(bar.selectionMode, true, "default selectionMode");
         }
 
@@ -174,11 +173,6 @@ Item {
 
                 {"position": 2 * tabWidth, "selectedIndex": 3},
                 {"position": 2 * tabWidth, "selectedIndex": 0},
-                {"position": 3 * tabWidth, "selectedIndex": 3},
-                {"position": tabWidth, "selectedIndex": 4},
-                {"position": 2 * tabWidth, "selectedIndex": 1},
-
-                {"position": tabWidth, "selectedIndex": 2}
             ];
         }
 

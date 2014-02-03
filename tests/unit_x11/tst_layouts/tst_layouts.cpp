@@ -116,6 +116,8 @@ private Q_SLOTS:
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
         QVERIFY(layouts);
         QVERIFY(!layouts->layoutList().isEmpty());
+        QSignalSpy currentLayout(layouts, SIGNAL(currentLayoutChanged()));
+        currentLayout.wait(300);
 
         QCOMPARE(layouts->currentLayout(), QString("small"));
 
@@ -207,6 +209,8 @@ private Q_SLOTS:
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
         QVERIFY(layouts);
         QVERIFY(!layouts->layoutList().isEmpty());
+        QSignalSpy currentLayout(layouts, SIGNAL(currentLayoutChanged()));
+        currentLayout.wait(300);
 
         QCOMPARE(layouts->currentLayout(), QString("small"));
     }
@@ -221,6 +225,8 @@ private Q_SLOTS:
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
         QVERIFY(layouts);
         QVERIFY(!layouts->layoutList().isEmpty());
+        QSignalSpy currentLayout(layouts, SIGNAL(currentLayoutChanged()));
+        currentLayout.wait(300);
 
         QCOMPARE(layouts->currentLayout(), QString("small"));
     }
@@ -273,6 +279,8 @@ private Q_SLOTS:
         ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layouts"));
         QVERIFY(layouts);
         QVERIFY(!layouts->layoutList().isEmpty());
+        QSignalSpy currentLayout(layouts, SIGNAL(currentLayoutChanged()));
+        currentLayout.wait(300);
 
         QCOMPARE(layouts->currentLayout(), QString("simple"));
     }
@@ -411,6 +419,11 @@ private Q_SLOTS:
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
+
+        ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(root, "layoutManager"));
+        QVERIFY(layouts);
+        QSignalSpy currentLayout(layouts, SIGNAL(currentLayoutChanged()));
+        currentLayout.wait(300);
 
         QQuickItem *layout = qobject_cast<QQuickItem*>(testItem(root, "layout"));
         QVERIFY(layout);

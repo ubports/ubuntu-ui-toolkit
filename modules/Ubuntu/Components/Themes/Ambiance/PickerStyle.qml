@@ -36,7 +36,7 @@ Item {
     /*!
       Scale of the highlight item
       */
-    property real highlightScaleFactor: 1.15
+    property real highlightScaleFactor: 1.2
     /*!
       Thickness of the highlight component
       */
@@ -115,11 +115,22 @@ Item {
             }
         }
 
-        HighlightMagnifier {
+        ShaderEffectSource {
+            id: effectSource
+            visible: false
             sourceItem: view
+
+            property real sourceRectMultiplier: 2.0
+            // XXX: This works because the parent of magnifier is the same as sourceItem
+            //  in this case. Otherwise coordinate transformations will be needed.
+            sourceRect: Qt.rect(highlightItem.x, highlightItem.y, highlightItem.width, highlightItem.height)
+            textureSize: Qt.size(highlightItem.width*sourceRectMultiplier, highlightItem.height*sourceRectMultiplier)
+        }
+        HighlightMagnifier {
             anchors.fill: highlightItem
             scaleFactor: control.highlightScaleFactor
             outputColor: control.highlightColor
+            source: effectSource
         }
     }
 }

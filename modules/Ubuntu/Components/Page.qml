@@ -72,7 +72,8 @@ PageTreeNode {
         right: parent ? parent.right : undefined
         bottom: parent ? parent.bottom : undefined
     }
-    height: parent ? page.flickable ? parent.height : parent.height - internal.headerHeight : undefined
+    // avoid using parent.height because parent may be a Loader which does not have its height set.
+    height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
     /*!
       The title of the page. Will be shown in the header of the \l MainView.
@@ -170,6 +171,10 @@ PageTreeNode {
         property Header header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
         property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ? page.__propagated.toolbar : null
 
+        // Used to position the Page when there is no flickable.
+        // When there is a flickable, the header will automatically position it.
+        property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
+
         onHeaderChanged: internal.updateHeaderAndToolbar()
         onToolbarChanged: internal.updateHeaderAndToolbar()
 
@@ -187,14 +192,6 @@ PageTreeNode {
                 }
             }
         }
-
-        Connections {
-            target: page
-            onFlickableChanged: internal.updateFlickablePosition()
-        }
-        Component.onCompleted: internal.updateFlickablePosition()
-
-        property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
 
         function isVerticalFlickable(object) {
             if (object && object.hasOwnProperty("flickableDirection") && object.hasOwnProperty("contentHeight")) {
@@ -223,26 +220,6 @@ PageTreeNode {
                 }
             }
             return null;
-        }
-
-        Binding {
-            target: page.flickable
-            property: "topMargin"
-            value: internal.headerHeight
-            when: page.flickable
-        }
-
-        function updateFlickablePosition() {
-            if (page.flickable) {
-                // Set-up the top-margin of the contents of the Flickable so that
-                //  the contents is never hidden by the header
-                var displacement = headerHeight;
-                if (page.flickable.hasOwnProperty("headerItem") && page.flickable.headerItem) {
-                    // flickable is a ListView with a headerItem
-                    displacement += page.flickable.headerItem.height;
-                }
-                page.flickable.contentY = -displacement;
-            }
         }
     }
 }

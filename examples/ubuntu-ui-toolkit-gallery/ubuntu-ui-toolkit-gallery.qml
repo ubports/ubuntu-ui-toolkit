@@ -30,92 +30,132 @@ MainView {
     width: units.gu(120)
     height: units.gu(75)
 
-    property bool wideAspect: width >= units.gu(80)
     /*
      This property enables the application to change orientation
      when the device is rotated. The default is false.
     */
     automaticOrientation: true
 
-    state: wideAspect ? "wide" : ""
+    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
+
+    state: width >= units.gu(80) ? "wide" : "narrow"
     states: [
         State {
-            name: "wide"
-            PropertyChanges {
-                target: pageStack
-                width: units.gu(40)
-                anchors {
-                    fill: null
-                    top: parent.top
-                    bottom: parent.bottom
+            name: "narrow"
+            StateChangeScript {
+                script: {
+                    pageStack.push(mainPage);
+                    if (selectedWidget) {
+                        pageStack.push(contentPage);
+                    }
                 }
             }
             PropertyChanges {
+                target: mainPage
+                flickable: widgetList
+            }
+            PropertyChanges {
                 target: contentPage
-                x: pageStack.width
-                width: pageStack.parent.width - x
-                anchors {
-                    left: undefined
-                    right: undefined
-                    bottom: undefined
+                flickable: contentLoader.item ? contentLoader.item.flickable : null
+            }
+        },
+        State {
+            name: "wide"
+            StateChangeScript {
+                script: {
+                    pageStack.clear();
+
+                    /* When pushing Pages into a PageStack they are reparented
+                       to internally created PageWrappers. This undoes it as to
+                       allow us to anchor the Pages freely again.
+                    */
+                    mainPage.parent = gallery;
+                    contentPage.parent = gallery;
                 }
+            }
+            PropertyChanges {
+                target: mainPage
+                width: units.gu(40)
                 clip: true
-                visible: true
+            }
+            AnchorChanges {
+                target: mainPage
+                anchors.right: undefined
+            }
+            PropertyChanges {
+                target: contentPage
+                clip: true
+            }
+            AnchorChanges {
+                target: contentPage
+                anchors.left: mainPage.right
             }
         }
     ]
 
-    PageStack {
-        id: pageStack
-        Component.onCompleted: push(mainPage)
 
-        Page {
-            id: mainPage
-            title: "Ubuntu UI Toolkit"
-            visible: false
-            flickable: widgetList
+    property var selectedWidget
 
-            Rectangle {
-                color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
+    Page {
+        id: mainPage
+
+        title: "Ubuntu UI Toolkit"
+        /* Page internally sets the topMargin of its flickable to account for
+           the height of the header. Undo it when unsetting the flickable.
+        */
+        onFlickableChanged: if (!flickable) widgetList.topMargin = 0;
+
+        Rectangle {
+            color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
+            anchors.fill: parent
+
+            ListView {
+                id: widgetList
+                objectName: "widgetList"
                 anchors.fill: parent
-
-                ListView {
-                    id: widgetList
-                    objectName: "widgetList"
-                    anchors.fill: parent
-                    model: widgetsModel
-                    delegate: ListItem.Standard {
-                        text: model.label
-                        enabled: model.source != ""
-                        progression: true
-                        selected: enabled && contentPage.source == Qt.resolvedUrl(model.source)
-                        onClicked: {
-                            contentPage.title = model.label;
-                            contentPage.source = model.source;
-                            if (!wideAspect) {
-                                pageStack.push(contentPage);
-                            }
+                model: widgetsModel
+                delegate: ListItem.Standard {
+                    text: model.label
+                    enabled: model.source != ""
+                    progression: true
+                    selected: enabled && selectedWidget == model
+                    onClicked: {
+                        selectedWidget = model;
+                        if (gallery.state == "narrow") {
+                            pageStack.push(contentPage);
                         }
                     }
                 }
             }
         }
+    }
 
-        Page {
-            id: contentPage
-            visible: false
-            property alias source: contentLoader.source
-            onActiveChanged: if (!active) source = ""
-            ToolbarItems{ id: defTools}
-            tools: contentLoader.item && contentLoader.item.tools ? contentLoader.item.tools : defTools
-            flickable: contentLoader.item && !wideAspect ? contentLoader.item.flickable : null
+    Page {
+        id: contentPage
 
-            Loader {
-                id: contentLoader
-                objectName: "contentLoader"
-                anchors.fill: parent
-            }
+        title: selectedWidget ? selectedWidget.label : ""
+        /* Page internally sets the topMargin of its flickable to account for
+           the height of the header. Undo it when unsetting the flickable.
+        */
+        onFlickableChanged: if (!flickable && contentLoader.item) contentLoader.item.flickable.topMargin = 0;
+        onActiveChanged: if (gallery.state == "narrow" && !active) {
+                             selectedWidget = null;
+                         }
+
+        ToolbarItems{ id: defTools}
+        tools: contentLoader.item && contentLoader.item.tools ? contentLoader.item.tools : defTools
+
+        Loader {
+            id: contentLoader
+            objectName: "contentLoader"
+            anchors.fill: parent
+            source: selectedWidget ? selectedWidget.source : ""
         }
+    }
+
+    PageStack {
+        id: pageStack
     }
 
     WidgetsModel {
