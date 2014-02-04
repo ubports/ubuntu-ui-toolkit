@@ -319,10 +319,8 @@ AbstractButton {
                     }
                     ScriptAction {
                         script: {
-                            if (x !== 0) {  // waiting if not at 0 pos
-                                confirmRemovalDialog.waitingForConfirmation = true;
-                                priv.commitDrag()
-                            }
+                            confirmRemovalDialog.waitingForConfirmation = x === 0
+                            priv.commitDrag()
                         }
                     }
                 }
