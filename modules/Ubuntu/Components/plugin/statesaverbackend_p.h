@@ -37,6 +37,9 @@ public:
         return instance;
     }
 
+    bool enabled() const;
+    void setEnabled(bool enabled);
+
     bool registerId(const QString &id);
     void removeId(const QString &id);
 
@@ -44,16 +47,21 @@ public:
     int save(const QString &id, QObject *item, const QStringList &properties);
     bool reset();
 
+Q_SIGNALS:
+    void enabledChanged(bool enabled);
+
 protected:
     explicit StateSaverBackend(QObject *parent = 0);
 
 private Q_SLOTS:
     void initialize();
+    void cleanup();
 
 private:
     QPointer<QSettings> m_archive;
     QSet<QString> m_register;
     QStack<QString> m_groupStack;
+    bool m_globalEnabled;
 };
 
 #endif // STATESAVERBACKEND_P_H

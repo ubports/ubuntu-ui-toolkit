@@ -30,7 +30,11 @@
 StateSaverBackend::StateSaverBackend(QObject *parent)
     : QObject(parent)
     , m_archive(0)
+    , m_globalEnabled(true)
 {
+    // connect to application quit signal so when that is called, we can clean the states saved
+    QObject::connect(QCoreApplication::instance(), SIGNAL(aboutToQuit()),
+                     this, SLOT(cleanup()));
     if (!UCApplication::instance().applicationName().isEmpty()) {
         initialize();
     } else {
@@ -50,6 +54,27 @@ void StateSaverBackend::initialize()
 {
     m_archive = new QSettings(UCApplication::instance().applicationName());
     m_archive->setFallbacksEnabled(false);
+}
+
+void StateSaverBackend::cleanup()
+{
+    reset();
+    m_archive.clear();
+}
+
+bool StateSaverBackend::enabled() const
+{
+    return m_globalEnabled;
+}
+void StateSaverBackend::setEnabled(bool enabled)
+{
+    if (m_globalEnabled != enabled) {
+        m_globalEnabled = enabled;
+        Q_EMIT enabledChanged(m_globalEnabled);
+        if (!m_globalEnabled) {
+            reset();
+        }
+    }
 }
 
 bool StateSaverBackend::registerId(const QString &id)

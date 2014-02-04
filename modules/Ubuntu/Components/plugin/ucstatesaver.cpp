@@ -84,6 +84,12 @@ void UCStateSaverAttachedPrivate::_q_propertyChange()
     m_propertiesDirty = true;
 }
 
+void UCStateSaverAttachedPrivate::_q_globalEnableChanged(bool enabled)
+{
+    // sync component watchers signals
+    watchComponent(enabled);
+}
+
 QString UCStateSaverAttachedPrivate::absoluteId(const QString &id)
 {
     QQmlContext *attacheeContext = qmlContext(m_attachee);
@@ -159,6 +165,27 @@ void UCStateSaverAttachedPrivate::connectChangeSlot(bool connect)
             }
             QObject::connect(m_attachee, property.notifySignal(), q, slot);
         }
+    }
+}
+
+/*
+ *
+ */
+void UCStateSaverAttachedPrivate::watchComponent(bool watch)
+{
+    Q_Q(UCStateSaverAttached);
+    if (!watch) {
+        // disconnect to save processing time if no state save is needed
+        QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(m_attachee);
+        QObject::disconnect(componentAttached, SIGNAL(completed()), q, SLOT(_q_init()));
+        QObject::disconnect(componentAttached, SIGNAL(destruction()), q, SLOT(_q_save()));
+        QObject::disconnect(&QuickUtils::instance(), SIGNAL(deactivated()), q, SLOT(_q_save()));
+    } else {
+        // re-connect to proceed with saving
+        QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(m_attachee);
+        QObject::connect(componentAttached, SIGNAL(completed()), q, SLOT(_q_init()));
+        QObject::connect(componentAttached, SIGNAL(destruction()), q, SLOT(_q_save()));
+        QObject::connect(&QuickUtils::instance(), SIGNAL(deactivated()), q, SLOT(_q_save()));
     }
 }
 
@@ -272,6 +299,8 @@ UCStateSaverAttached::UCStateSaverAttached(QObject *attachee)
     , d_ptr(new UCStateSaverAttachedPrivate(this, attachee))
 {
     setEnabled(true);
+    // connect to StateSaverBackend's enabledChanged signal to sync when the state saver is globally disabled/enabled
+    connect(&StateSaverBackend::instance(), SIGNAL(enabledChanged(bool)), this, SLOT(_q_globalEnableChanged(bool)));
 }
 
 UCStateSaverAttached::~UCStateSaverAttached()
@@ -298,18 +327,8 @@ void UCStateSaverAttached::setEnabled(bool v)
         d->m_enabled = v;
         // make sure next time we sync properties
         d->m_propertiesDirty = true;
-        if (!d->m_enabled) {
-            // disconnect to save processing time if no state save is needed
-            QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(d->m_attachee);
-            QObject::disconnect(componentAttached, SIGNAL(completed()), this, SLOT(_q_init()));
-            QObject::disconnect(componentAttached, SIGNAL(destruction()), this, SLOT(_q_save()));
-            QObject::disconnect(&QuickUtils::instance(), SIGNAL(deactivated()), this, SLOT(_q_save()));
-        } else {
-            // re-connect to proceed with saving
-            QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(d->m_attachee);
-            QObject::connect(componentAttached, SIGNAL(completed()), this, SLOT(_q_init()));
-            QObject::connect(componentAttached, SIGNAL(destruction()), this, SLOT(_q_save()));
-            QObject::connect(&QuickUtils::instance(), SIGNAL(deactivated()), this, SLOT(_q_save()));
+        if (StateSaverBackend::instance().enabled()) {
+            d->watchComponent(d->m_enabled);
         }
         Q_EMIT enabledChanged();
     }

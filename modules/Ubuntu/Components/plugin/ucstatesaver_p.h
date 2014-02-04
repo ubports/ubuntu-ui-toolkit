@@ -41,10 +41,12 @@ public:
     QString absoluteId(const QString &id);
     void restore();
     void connectChangeSlot(bool connect);
+    void watchComponent(bool watch);
 
     void _q_init();
     void _q_save();
     void _q_propertyChange();
+    void _q_globalEnableChanged(bool);
 };
 
 #endif // UCSTATESAVER_P_H
