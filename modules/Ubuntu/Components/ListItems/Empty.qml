@@ -235,9 +235,9 @@ AbstractButton {
         function resetDrag() {
             confirmRemovalDialog.waitingForConfirmation = false
             held = false  // before body.x to ensure animation
+            __mouseArea.drag.target = null  // stops waitingForConfirmation = true in animation
             body.x = 0
             pressedPosition = -1
-            __mouseArea.drag.target = null
             removeItem = false
             backgroundIndicator.opacity = 0.0
             backgroundIndicator.visible = false
@@ -319,8 +319,10 @@ AbstractButton {
                     }
                     ScriptAction {
                         script: {
-                            confirmRemovalDialog.waitingForConfirmation = x === 0
-                            priv.commitDrag()
+                            if (__mouseArea.drag.target !== null) {  // if not from resetDrag()
+                                confirmRemovalDialog.waitingForConfirmation = true
+                                priv.commitDrag()
+                            }
                         }
                     }
                 }
