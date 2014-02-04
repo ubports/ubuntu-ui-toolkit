@@ -50,6 +50,8 @@ import Ubuntu.Components 0.1 as Toolkit
 ListItem.Standard {
     id: option
 
+    __height: units.gu(5)
+
     /*!
       \preliminary
       Main text.
