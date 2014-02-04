@@ -27,7 +27,7 @@ PartialColorize {
 
         void main() {
             lowp vec4 color = texture2D(source, qt_TexCoord0);
-            lowp vec4 newColor = mix(leftColor, rightColor, step(progress, qt_TexCoord0.x));
+            lowp vec4 newColor = mix(leftColor, rightColor, step(progress, " + texCoord + "));
             highp float opacity = (1.0 - color.r / max(1.0/256.0, color.a));
             lowp vec4 result = opacity * vec4(0.0, 0.0, 0.0, 1.0) + vec4(1.0 - opacity) * newColor;
             gl_FragColor = vec4(result.rgb * result.a, result.a) * color.a * qt_Opacity;

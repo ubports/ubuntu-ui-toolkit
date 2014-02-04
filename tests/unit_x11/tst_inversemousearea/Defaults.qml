@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,16 +17,8 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Rectangle {
-    id: circle
-
-    color: UbuntuColors.orange
-    width: radius
-    height: radius
-    radius: units.gu(12)
-    antialiasing: true
-    gradient: Gradient {
-        GradientStop { position: 0.0; color: Qt.lighter(circle.color, 1.3) }
-        GradientStop { position: 1.0; color: circle.color }
+Item {
+    InverseMouseArea {
+        objectName: "testItem"
     }
 }

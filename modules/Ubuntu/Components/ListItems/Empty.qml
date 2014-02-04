@@ -184,6 +184,9 @@ AbstractButton {
     // Keep compatible with the old version
     height: implicitHeight
 
+    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
+
     /*! \internal */
     QtObject {
         id: priv
@@ -347,6 +350,8 @@ AbstractButton {
                 top: parent.top
                 bottom: parent.bottom
             }
+            LayoutMirroring.enabled: false
+            LayoutMirroring.childrenInherit: true
 
             Item {
                 id: confirmRemovalDialog
