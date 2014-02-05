@@ -58,7 +58,7 @@ Item {
                 PerformanceMetrics.RenderingTimes {
                     id: renderingTimes
                     period: 2000
-                    samples: renderingTimeGraphAutomatic.width
+                    samples: renderingTimeGraph.width
                     timerType: PerformanceMetrics.RenderingTimes.Automatic
                 }
 
