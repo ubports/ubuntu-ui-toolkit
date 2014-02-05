@@ -60,7 +60,9 @@ void StateSaverBackend::initialize()
     if (applicationName.isEmpty()) {
         applicationName = UCApplication::instance().applicationName();
     }
-    m_archive = new QSettings(applicationName);
+    m_archive = new QSettings(QString("%1/%2.state")
+                              .arg(QStandardPaths::standardLocations(QStandardPaths::TempLocation)[0])
+                              .arg(applicationName));
     m_archive->setFallbacksEnabled(false);
 }
 
