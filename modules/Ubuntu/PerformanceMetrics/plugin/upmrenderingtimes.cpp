@@ -167,11 +167,11 @@ void UPMRenderingTimes::onBeforeRendering()
 
 void UPMRenderingTimes::onAfterRendering()
 {
+    Q_EMIT frameRendered(m_renderingTimer->stop());
 }
 
 void UPMRenderingTimes::onFrameSwapped()
 {
-    Q_EMIT frameRendered(m_renderingTimer->stop());
 }
 
 void UPMRenderingTimes::onFrameRendered(qint64 renderTime)
