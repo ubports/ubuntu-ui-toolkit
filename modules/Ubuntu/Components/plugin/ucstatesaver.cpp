@@ -144,12 +144,16 @@ void UCStateSaverAttachedPrivate::watchComponent(bool watch)
  * \ingroup ubuntu-services
  * \brief Attached propertyes to save component property states.
  *
- * StateSaver attached object provides the ability to serialize property values
- * between application starts. The properties subject of serialization must be
- * given in the \l properties as a string, separated with commas. The serialization
- * will happen automatically on component's completion and destruction time, as
- * well as when the application is deactivated. Automatic serialization can be
- * turned off by simply setting false to \l enabled property.
+ * StateSaver attached object provides the ability to save component property values
+ * that can be restored after an inproper application close. The properties subject
+ * of serialization must be given in the \l properties as a string, separated with
+ * commas. The serialization will happen automatically on component's completion
+ * time, as well as when the application is deactivated. Automatic serialization
+ * of a component can be turned off by simply setting false to \l enabled property.
+ *
+ * States saved are discarded when the application is closed properly. The state
+ * loading is ignored (but not discarded) when the application is launched through
+ * UriHandler.
  *
  * Example:
  * \qml

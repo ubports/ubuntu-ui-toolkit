@@ -56,13 +56,11 @@ StateSaverBackend::~StateSaverBackend()
 
 void StateSaverBackend::initialize()
 {
-    QString file(qgetenv("APP_ID"));
-    if (file.isEmpty()) {
-        file = UCApplication::instance().applicationName();
+    QString applicationName(qgetenv("APP_ID"));
+    if (applicationName.isEmpty()) {
+        applicationName = UCApplication::instance().applicationName();
     }
-    m_archive = new QSettings(QString("%1/%2.state")
-                              .arg(QStandardPaths::standardLocations(QStandardPaths::TempLocation)[0])
-                              .arg(file), QSettings::NativeFormat);
+    m_archive = new QSettings(applicationName);
     m_archive->setFallbacksEnabled(false);
 }
 
