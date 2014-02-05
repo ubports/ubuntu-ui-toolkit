@@ -56,14 +56,7 @@ Item {
                 height: childrenRect.height
 
                 PerformanceMetrics.RenderingTimes {
-                    id: renderingTimesTrivial
-                    period: 2000
-                    samples: renderingTimeGraphTrivial.width
-                    timerType: PerformanceMetrics.RenderingTimes.Trivial
-                }
-
-                PerformanceMetrics.RenderingTimes {
-                    id: renderingTimesAutomatic
+                    id: renderingTimes
                     period: 2000
                     samples: renderingTimeGraphAutomatic.width
                     timerType: PerformanceMetrics.RenderingTimes.Automatic
@@ -81,22 +74,10 @@ Item {
                     spacing: units.gu(1)
 
                     BarGraph {
-                        id: renderingTimeGraphTrivial
+                        id: renderingTimeGraph
                         anchors.left: parent.left
                         anchors.right: parent.right
-                        model: renderingTimesTrivial.graphModel
-                        maximumValue: 20
-                        threshold: 16
-                        labels: [{"color": "darkorange", "value": 10, "label": "10 ms"},
-                                {"color": "red", "value": 16, "label": "16 ms"}]
-                        labelFormat: "%1 ms"
-                    }
-
-                    BarGraph {
-                        id: renderingTimeGraphAutomatic
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        model: renderingTimesAutomatic.graphModel
+                        model: renderingTimes.graphModel
                         maximumValue: 20
                         threshold: 16
                         labels: [{"color": "darkorange", "value": 10, "label": "10 ms"},
