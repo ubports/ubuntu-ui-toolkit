@@ -27,16 +27,17 @@ HEADERS += \
     rendertimer.h \
     rendertimertrivial.h
 
-isEmpty(QT_OPENGL_ES) {
-    SOURCES += rendertimerarbquery.cpp \
-               rendertimerextquery.cpp
-    HEADERS += rendertimerarbquery.h \
-               rendertimerextquery.h
-} else {
+contains(QT_CONFIG, opengles2) {
+    CONFIG += egl
     SOURCES += rendertimerkhrfence.cpp \
                rendertimernvfence.cpp
     HEADERS += rendertimerkhrfence.h \
                rendertimernvfence.h
+} else {
+    SOURCES += rendertimerarbquery.cpp \
+               rendertimerextquery.cpp
+    HEADERS += rendertimerarbquery.h \
+               rendertimerextquery.h
 }
 
 

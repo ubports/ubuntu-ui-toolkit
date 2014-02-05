@@ -17,6 +17,7 @@
  */
 
 #include "rendertimernvfence.h"
+#include <QtCore/QElapsedTimer>
 
 RenderTimerNVFence::RenderTimerNVFence()
 {
@@ -39,7 +40,6 @@ void RenderTimerNVFence::setup()
         eglGetProcAddress("glSetFenceNV"));
     m_fenceNV.finishFenceNV = reinterpret_cast<void (QOPENGLF_APIENTRYP)(GLuint)>(
         eglGetProcAddress("glFinishFenceNV"));
-    fenceSystem_ = FenceNV;
     m_fenceNV.genFencesNV(2, m_fence);
 }
 

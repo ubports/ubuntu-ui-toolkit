@@ -17,6 +17,7 @@
  */
 
 #include "rendertimerkhrfence.h"
+#include <QtCore/QElapsedTimer>
 
 RenderTimerKHRFence::RenderTimerKHRFence()
 {
@@ -29,7 +30,7 @@ bool RenderTimerKHRFence::isAvailable()
     QList<QByteArray> glExtensions = QByteArray(
         reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS))).split(' ');
     // Note the workaround for PowerVR that declares 'GL_OES_egl_sync'.
-    return (eglExtensions.contains("EGL_KHR_fence_sync") &&
+    return eglExtensions.contains("EGL_KHR_fence_sync") &&
             (glExtensions.contains("GL_OES_EGL_sync") || glExtensions.contains("GL_OES_egl_sync"));
 }
 
@@ -44,7 +45,6 @@ void RenderTimerKHRFence::setup()
     m_fenceSyncKHR.clientWaitSyncKHR = reinterpret_cast<
         EGLint (QOPENGLF_APIENTRYP)(EGLDisplay, EGLSyncKHR, EGLint, EGLTimeKHR)>(
         eglGetProcAddress("eglClientWaitSyncKHR"));
-    fenceSystem_ = FenceSyncKHR;
 }
 
 void RenderTimerKHRFence::teardown()

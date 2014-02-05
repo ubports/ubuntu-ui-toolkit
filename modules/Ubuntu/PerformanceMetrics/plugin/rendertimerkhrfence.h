@@ -20,6 +20,7 @@
 #define RENDERTIMERKHRFENCE_H
 
 #include "rendertimer.h"
+#include <QtGui/qopenglfunctions.h>
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
