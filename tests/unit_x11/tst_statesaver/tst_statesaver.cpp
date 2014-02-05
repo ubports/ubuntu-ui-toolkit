@@ -29,6 +29,7 @@
 #include <QtQuick/QQuickItem>
 #include <QtQml/QQmlProperty>
 #include "quickutils.h"
+#include "ucapplication.h"
 
 #define protected public
 #include "ucstatesaver.h"
@@ -72,9 +73,8 @@ private:
 
     QString stateFile(const QString &appId)
     {
-        return QString("%1/%2.state")
-                .arg(QStandardPaths::standardLocations(QStandardPaths::TempLocation)[0])
-                .arg(appId);
+        QSettings settings(appId);
+        return settings.fileName();
     }
 
 private Q_SLOTS:
