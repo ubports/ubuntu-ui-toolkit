@@ -20,6 +20,7 @@
 #include <QtDBus/QtDBus>
 #include <libnih.h>
 #include <libnih-dbus.h>
+#include "statesaverbackend_p.h"
 
 UriHandlerObject::UriHandlerObject(UCUriHandler* uriHandler)
     : m_uriHandler(uriHandler)
@@ -29,6 +30,8 @@ UriHandlerObject::UriHandlerObject(UCUriHandler* uriHandler)
 void UriHandlerObject::Open(const QStringList& uris, const QHash<QString, QVariant>& platformData)
 {
     Q_UNUSED(platformData);
+    // disable state saving
+    StateSaverBackend::instance().setEnabled(false);
     Q_EMIT m_uriHandler->opened(uris);
 }
 
