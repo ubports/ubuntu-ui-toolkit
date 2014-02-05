@@ -17,6 +17,7 @@
  */
 
 #include "rendertimertrivial.h"
+#include <QtGui/qopengl.h>
 
 RenderTimerTrivial::RenderTimerTrivial()
 {
