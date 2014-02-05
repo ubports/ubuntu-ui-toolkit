@@ -26,6 +26,8 @@
 #include <QtCore/QFile>
 #include <QtCore/QStringList>
 #include "i18n.h"
+#include "quickutils.h"
+#include <QtCore/QStandardPaths>
 
 StateSaverBackend::StateSaverBackend(QObject *parent)
     : QObject(parent)
@@ -33,9 +35,11 @@ StateSaverBackend::StateSaverBackend(QObject *parent)
     , m_globalEnabled(true)
 {
     // connect to application quit signal so when that is called, we can clean the states saved
-    QObject::connect(QCoreApplication::instance(), SIGNAL(aboutToQuit()),
-                     this, SLOT(cleanup()));
-    if (!UCApplication::instance().applicationName().isEmpty()) {
+    QObject::connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit,
+                     this, &StateSaverBackend::cleanup);
+    QObject::connect(&QuickUtils::instance(), &QuickUtils::deactivated,
+                     this, &StateSaverBackend::initiateStateSaving);
+    if (!qgetenv("APP_ID").isEmpty() || !UCApplication::instance().applicationName().isEmpty()) {
         initialize();
     } else {
         QObject::connect(&UCApplication::instance(), &UCApplication::applicationNameChanged,
@@ -52,7 +56,13 @@ StateSaverBackend::~StateSaverBackend()
 
 void StateSaverBackend::initialize()
 {
-    m_archive = new QSettings(UCApplication::instance().applicationName());
+    QString file(qgetenv("APP_ID"));
+    if (file.isEmpty()) {
+        file = UCApplication::instance().applicationName();
+    }
+    m_archive = new QSettings(QString("%1/%2.state")
+                              .arg(QStandardPaths::standardLocations(QStandardPaths::TempLocation)[0])
+                              .arg(file), QSettings::NativeFormat);
     m_archive->setFallbacksEnabled(false);
 }
 

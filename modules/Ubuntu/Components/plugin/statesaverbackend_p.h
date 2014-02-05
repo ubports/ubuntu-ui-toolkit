@@ -49,6 +49,7 @@ public:
 
 Q_SIGNALS:
     void enabledChanged(bool enabled);
+    void initiateStateSaving();
 
 protected:
     explicit StateSaverBackend(QObject *parent = 0);
