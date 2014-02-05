@@ -165,6 +165,8 @@ Item {
                             bottomMargin: headerTextBottomMargin
                         }
                         x: button.width - width
+                        // FIXME: temporary hack for the chevron's height to match the font size
+                        height: 0.82*sourceSize.height
 
                         // The indicator image must be visible after the selected tab button, when the
                         // tab bar is not in selection mode, or after the "last" button (starting with
