@@ -34,5 +34,6 @@ void RenderTimerTrivial::start()
 
 qint64 RenderTimerTrivial::stop()
 {
+    glFinish();
     return m_timer.nsecsElapsed();
 }
