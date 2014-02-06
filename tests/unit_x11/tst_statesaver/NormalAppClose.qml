@@ -17,10 +17,7 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-MainView {
-    width: units.gu(40)
-    height: units.gu(71)
-    applicationName: "NormalAppClose"
+Item {
     property var boolArray: [false, false]
     property var intArray: [1, 2]
     property var realArray: [10.1, 20.2]
