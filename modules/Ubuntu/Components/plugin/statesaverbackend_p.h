@@ -25,6 +25,7 @@
 #include <QtCore/QSet>
 #include <QtCore/QTimer>
 #include <QtCore/QStack>
+#include "signalhandler_p.h"
 
 class StateSaverBackend : public QObject
 {
@@ -57,6 +58,7 @@ protected:
 private Q_SLOTS:
     void initialize();
     void cleanup();
+    void signalHandler(int type);
 
 private:
     QPointer<QSettings> m_archive;
