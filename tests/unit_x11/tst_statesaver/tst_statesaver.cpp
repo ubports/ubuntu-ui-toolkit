@@ -30,6 +30,7 @@
 #include <QtQml/QQmlProperty>
 #include "quickutils.h"
 #include "ucapplication.h"
+#include <QtCore/QProcess>
 #include <QtCore/QProcessEnvironment>
 
 #define protected public
