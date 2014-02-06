@@ -30,6 +30,7 @@
 #include <QtQml/QQmlProperty>
 #include "quickutils.h"
 #include "ucapplication.h"
+#include <QtCore/QProcessEnvironment>
 
 #define protected public
 #include "ucstatesaver.h"
@@ -524,7 +525,9 @@ private Q_SLOTS:
     void test_normalAppClose()
     {
         QProcess testApp;
-        testApp.start("qmlscene", QStringList() << "-I" <<  "../../modules" << "NormalAppClose.qml");
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        env.insert("APP_ID", "NormalAppClose");
+        testApp.start("qmlscene", QStringList() << "-I" <<  "../../../modules" << "NormalAppClose.qml");
         testApp.waitForFinished();
 
         QString fileName = stateFile("NormalAppClose");
