@@ -37,6 +37,8 @@ StateSaverBackend::StateSaverBackend(QObject *parent)
     // connect to application quit signal so when that is called, we can clean the states saved
     QObject::connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit,
                      this, &StateSaverBackend::cleanup);
+    QObject::connect(&QuickUtils::instance(), &QuickUtils::activated,
+                     this, &StateSaverBackend::reset);
     QObject::connect(&QuickUtils::instance(), &QuickUtils::deactivated,
                      this, &StateSaverBackend::initiateStateSaving);
     if (!qgetenv("APP_ID").isEmpty() || !UCApplication::instance().applicationName().isEmpty()) {

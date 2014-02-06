@@ -45,6 +45,8 @@ public:
 
     int load(const QString &id, QObject *item, const QStringList &properties);
     int save(const QString &id, QObject *item, const QStringList &properties);
+
+public Q_SLOTS:
     bool reset();
 
 Q_SIGNALS:
