@@ -20,7 +20,7 @@ import Ubuntu.Components 0.1
 MainView {
     width: units.gu(40)
     height: units.gu(71)
-    applicationName: "NormalAppClose"
+    applicationName: "SimpleApp"
     property var boolArray: [false, false]
     property var intArray: [1, 2]
     property var realArray: [10.1, 20.2]
@@ -28,12 +28,4 @@ MainView {
     id: testItem
     objectName: "testItem"
     StateSaver.properties: "boolArray, intArray, realArray, stringArray"
-
-    Timer {
-        id: closeTimer
-        interval: 1000
-        running: false
-        onTriggered: Qt.quit();
-    }
-    Component.onCompleted: closeTimer.running = true
 }
