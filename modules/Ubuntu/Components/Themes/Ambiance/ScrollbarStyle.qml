@@ -56,7 +56,7 @@ import Ubuntu.Components 0.1
 Item {
     id: visuals
     // styling properties
-    property bool interactive: true
+    property bool interactive: false
     property real minimumSliderSize: units.gu(2)
 
     property bool overlay: true
