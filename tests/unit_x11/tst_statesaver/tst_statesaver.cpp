@@ -527,6 +527,7 @@ private Q_SLOTS:
         QProcess testApp;
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         env.insert("APP_ID", "NormalAppClose");
+        testApp.setProcessEnvironment(env);
         testApp.start("qmlscene", QStringList() << "-I" <<  "../../../modules" << "NormalAppClose.qml");
         testApp.waitForFinished();
 
