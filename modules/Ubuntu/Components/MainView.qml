@@ -16,7 +16,6 @@
 
 import QtQuick 2.0
 import Ubuntu.Unity.Action 1.1 as UnityActions
-import Qt 5.0
 
 /*!
     \qmltype MainView
