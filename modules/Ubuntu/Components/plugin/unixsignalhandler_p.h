@@ -14,30 +14,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef SIGNALHANDLER_P_H
-#define SIGNALHANDLER_P_H
+#ifndef UNIXSIGNALHANDLER_P_H
+#define UNIXSIGNALHANDLER_P_H
 
 #include <QtCore/QObject>
 #include <QtCore/QHash>
+#include <signal.h>
 
 class QSocketNotifier;
-typedef void (*SignalHook)(int);
-
-class SignalHandler : public QObject
+class UnixSignalHandler : public QObject
 {
     Q_OBJECT
 public:
     enum SignalType {
-        Interrupt,
-        Terminate
+        Invalid = 0,
+        Interrupt = SIGINT,
+        Terminate = SIGTERM
     };
 
     typedef QPair<int[2], QSocketNotifier*> HandlerType;
-    typedef QPair<SignalType, QSocketNotifier*> SocketRecord;
 
-    static SignalHandler &instance()
+    static UnixSignalHandler &instance()
     {
-        static SignalHandler instance;
+        static UnixSignalHandler instance;
         return instance;
     }
 
@@ -49,12 +48,13 @@ Q_SIGNALS:
 private Q_SLOTS:
     void notifierActivated(int socket);
 private:
-    explicit SignalHandler(QObject *parent = 0);
+    explicit UnixSignalHandler(QObject *parent = 0);
 
     static void signalHook(int);
-    HandlerType createHandler(int signal, SignalHook hook);
-    QHash<SignalType, HandlerType > notifiers;
-    QHash<int, SocketRecord> socketRegister;
+    HandlerType createHandler(int signal);
+
+    QHash<SignalType, HandlerType> notifiers;
+    QHash<int, SignalType> socketRegister;
 };
 
-#endif // SIGNALHANDLER_P_H
+#endif // UNIXSIGNALHANDLER_P_H

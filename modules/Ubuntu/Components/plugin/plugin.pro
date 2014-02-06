@@ -59,7 +59,7 @@ HEADERS += plugin.h \
     statesaverbackend_p.h \
     ucstatesaver_p.h \
     ucurihandler.h \
-    signalhandler_p.h
+    unixsignalhandler_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -89,7 +89,7 @@ SOURCES += plugin.cpp \
     ucstatesaver.cpp \
     statesaverbackend_p.cpp \
     ucurihandler.cpp \
-    signalhandler_p.cpp
+    unixsignalhandler_p.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp

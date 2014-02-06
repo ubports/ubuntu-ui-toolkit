@@ -29,7 +29,7 @@
 #include "quickutils.h"
 #include <QtCore/QStandardPaths>
 
-#include "signalhandler_p.h"
+#include "unixsignalhandler_p.h"
 
 StateSaverBackend::StateSaverBackend(QObject *parent)
     : QObject(parent)
@@ -48,9 +48,9 @@ StateSaverBackend::StateSaverBackend(QObject *parent)
                          this, &StateSaverBackend::initialize);
     }
 
-    SignalHandler::instance().connectSignal(SignalHandler::Terminate);
-//    SignalHandler::instance().connectSignal(SignalHandler::Interrupt);
-    QObject::connect(&SignalHandler::instance(), SIGNAL(signalTriggered(int)),
+    UnixSignalHandler::instance().connectSignal(UnixSignalHandler::Terminate);
+    UnixSignalHandler::instance().connectSignal(UnixSignalHandler::Interrupt);
+    QObject::connect(&UnixSignalHandler::instance(), SIGNAL(signalTriggered(int)),
                      this, SLOT(signalHandler(int)));
 }
 
@@ -81,8 +81,7 @@ void StateSaverBackend::cleanup()
 
 void StateSaverBackend::signalHandler(int type)
 {
-    if (type == SignalHandler::Terminate) {
-        qDebug() << "SAVE DUDE";
+    if (type == UnixSignalHandler::Interrupt) {
         Q_EMIT initiateStateSaving();
         // disconnect aboutToQuit() so the state file doesn't get wiped upon quit
         QObject::disconnect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit,
@@ -188,7 +187,6 @@ bool StateSaverBackend::reset()
 {
     m_register.clear();
     if (m_archive) {
-        qDebug() << "DELETE STATEFILE" << m_archive.data()->fileName();
         QFile archiveFile(m_archive.data()->fileName());
         return archiveFile.remove();
     }

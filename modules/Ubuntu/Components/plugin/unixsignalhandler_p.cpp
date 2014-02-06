@@ -15,41 +15,32 @@
  *
  */
 
-#include "signalhandler_p.h"
+#include "unixsignalhandler_p.h"
 #include <sys/socket.h>
 #include <signal.h>
 #include <unistd.h>
 #include <QtCore/QSocketNotifier>
 
-SignalHandler::SignalHandler(QObject *parent) :
+UnixSignalHandler::UnixSignalHandler(QObject *parent) :
     QObject(parent)
 {
 }
 
-void SignalHandler::connectSignal(SignalType type)
+void UnixSignalHandler::connectSignal(SignalType type)
 {
     if (notifiers.contains(type)) {
         return;
     }
 
-    HandlerType handler;
-    if (type == Interrupt) {
-        handler = createHandler(SIGINT, signalHook);
-    } else if (type == Terminate) {
-        handler = createHandler(SIGTERM, signalHook);
-    } else {
-        qFatal("Invalid signal type");
-    }
-
+    HandlerType handler = createHandler((int)type);
     notifiers.insert(type, handler);
-    SocketRecord record(type, handler.second);
-    socketRegister.insert(handler.first[1], record);
+    socketRegister.insert(handler.first[1], type);
 }
 
-SignalHandler::HandlerType SignalHandler::createHandler(int signal, SignalHook hook)
+UnixSignalHandler::HandlerType UnixSignalHandler::createHandler(int signal)
 {
     struct sigaction sigAction;
-    sigAction.sa_handler = hook;
+    sigAction.sa_handler = signalHook;
     ::sigemptyset(&sigAction.sa_mask);
     sigAction.sa_flags = SA_RESTART;
 
@@ -66,35 +57,24 @@ SignalHandler::HandlerType SignalHandler::createHandler(int signal, SignalHook h
     return handler;
 }
 
-void SignalHandler::signalHook(int signal)
+void UnixSignalHandler::signalHook(int signal)
 {
-    HandlerType handler;
-    switch (signal) {
-    case SIGINT:
-        handler = SignalHandler::instance().notifiers.value(Interrupt);
-        break;
-    case SIGTERM:
-        handler = SignalHandler::instance().notifiers.value(Terminate);
-        break;
-    }
-    if (handler.second) {
-        char value = 1;
-        ::write(handler.first[0], &value, sizeof(value));
-    }
+    HandlerType handler = UnixSignalHandler::instance().notifiers.value((SignalType)signal);
+    char value = 1;
+    ::write(handler.first[0], &value, sizeof(value));
 }
 
-void SignalHandler::notifierActivated(int socket)
+void UnixSignalHandler::notifierActivated(int socket)
 {
     // get the socket from the hash
-    SocketRecord record = socketRegister.value(socket);
-    QSocketNotifier *notifier = record.second;
-    HandlerType handler = notifiers.value(record.first);
+    SignalType signal = socketRegister.value(socket);
+    HandlerType handler = notifiers.value(signal);
 
-    notifier->setEnabled(false);
+    handler.second->setEnabled(false);
     char value;
     ::read(handler.first[1], &value, sizeof(value));
 
-    Q_EMIT signalTriggered(record.first);
+    Q_EMIT signalTriggered(signal);
 
-    notifier->setEnabled(true);
+    handler.second->setEnabled(true);
 }
