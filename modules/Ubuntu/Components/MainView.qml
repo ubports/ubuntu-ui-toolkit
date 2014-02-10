@@ -385,7 +385,7 @@ PageTreeNode {
         UnityActions.ActionManager {
             id: unityActionManager
             onQuit: {
-               // TODO Wire this up to the application lifecycle management API instead of quit().
+               // FIXME Wire this up to the application lifecycle management API instead of quit().
                Qt.quit()
             }
         }
