@@ -724,12 +724,14 @@ plugins.qmltypes
     Property { name: "image"; type: "QImage"; isReadonly: true }
     Property { name: "shift"; type: "int"; isReadonly: true }
     Property { name: "samples"; type: "int" }
+    Property { name: "currentValue"; type: "int"; isReadonly: true }
     name: "UPMRenderingTimes"
     prototype: "QQuickItem"
     exports: ["RenderingTimes 0.1"]
     Property { name: "period"; type: "int" }
     Property { name: "samples"; type: "int" }
     Property { name: "graphModel"; type: "UPMGraphModel"; isReadonly: true; isPointer: true }
+    Property { name: "timerType"; type: "RenderTimer::TimerType" }
     Signal {
     name: "frameRendered"
     Parameter { name: "renderTime"; type: "qlonglong" }
