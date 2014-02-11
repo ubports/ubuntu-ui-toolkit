@@ -109,40 +109,32 @@ Item {
     property bool active: true
 
     MouseArea {
-        id: leftArea
-
         property var timeLastPress
-        property int delayBetweenPresses: 200
-
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        width: units.gu(10)
-        height: units.gu(10)
-        onPressed: {
-            mouse.accepted = false;
-            timeLastPress = new Date().getTime();
-            if (timeLastPress - rightArea.timeLastPress <= delayBetweenPresses) {
-                overlay.active = true;
-            }
-        }
-    }
-
-    MouseArea {
-        id: rightArea
-
-        property var timeLastPress
-        property int delayBetweenPresses: 200
+        property int delayBetweenPresses: 500
+        property int pressCount: 0
+        property int pressCountToActivate: 3
 
         anchors.bottom: parent.bottom
         anchors.right: parent.right
         width: units.gu(10)
         height: units.gu(10)
+
         onPressed: {
             mouse.accepted = false;
-            timeLastPress = new Date().getTime();
-            if (timeLastPress - leftArea.timeLastPress <= delayBetweenPresses) {
-                overlay.active = true;
+            var timePress = new Date().getTime();
+
+            if (timeLastPress && timePress - timeLastPress > delayBetweenPresses) {
+                pressCount = 0;
             }
+
+            pressCount += 1;
+
+            if (pressCount >= pressCountToActivate) {
+                overlay.active = true;
+                pressCount = 0;
+            }
+
+            timeLastPress = timePress;
         }
     }
 
