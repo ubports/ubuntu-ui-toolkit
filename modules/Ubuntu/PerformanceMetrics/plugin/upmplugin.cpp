@@ -23,6 +23,8 @@
 #include "upmgraphmodel.h"
 
 #include <qqml.h>
+#include <QtQml/QQmlEngine>
+#include <QtQml/QQmlContext>
 
 void UbuntuPerformanceMetricsPlugin::registerTypes(const char *uri)
 {
@@ -32,4 +34,12 @@ void UbuntuPerformanceMetricsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UPMCpuUsage>(uri, 0, 1, "CpuUsage");
     qmlRegisterType<UPMTextureFromImage>(uri, 0, 1, "TextureFromImage");
     qmlRegisterType<UPMGraphModel>();
+}
+
+void UbuntuPerformanceMetricsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
+{
+    QQmlExtensionPlugin::initializeEngine(engine, uri);
+    QQmlContext* context = engine->rootContext();
+    QByteArray performanceOverlay = qgetenv("PERFORMANCE_OVERLAY");
+    context->setContextProperty("performanceOverlayEnabled", QVariant(!performanceOverlay.isEmpty()));
 }

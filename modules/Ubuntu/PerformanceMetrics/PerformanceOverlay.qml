@@ -141,7 +141,7 @@ Item {
     Loader {
         id: loader
         anchors.fill: parent
-        active: overlay.active
+        active: performanceOverlayEnabled && overlay.active
         asynchronous: true
         sourceComponent: overlayContent
     }
