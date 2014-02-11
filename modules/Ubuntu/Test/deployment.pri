@@ -15,6 +15,9 @@ js_files.files = $$JS_FILES
 
 plugins_qmltypes.path = $$installPath
 plugins_qmltypes.files = plugins.qmltypes
-plugins_qmltypes.extra = $$[QT_INSTALL_BINS]/qmlplugindump -notrelocatable Ubuntu.Test 0.1 ../../ > $(INSTALL_ROOT)/$$installPath/plugins.qmltypes
+# Silence spam on stderr due to fonts
+# https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
+# https://bugreports.qt-project.org/browse/QTBUG-36243
+plugins_qmltypes.extra = $$[QT_INSTALL_BINS]/qmlplugindump -notrelocatable Ubuntu.Test 0.1 ../../ 2>/dev/null > $(INSTALL_ROOT)/$$installPath/plugins.qmltypes
 
 INSTALLS += qmldir_file plugins_qmltypes
