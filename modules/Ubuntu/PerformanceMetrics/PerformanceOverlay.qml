@@ -114,10 +114,8 @@ Item {
         property int pressCount: 0
         property int pressCountToActivate: 3
 
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-        width: units.gu(10)
-        height: units.gu(10)
+        anchors.fill: parent
+        enabled: performanceOverlayEnabled
 
         onPressed: {
             mouse.accepted = false;
@@ -141,7 +139,7 @@ Item {
     Loader {
         id: loader
         anchors.fill: parent
-        active: performanceOverlayEnabled && overlay.active
+        active: overlay.active
         asynchronous: true
         sourceComponent: overlayContent
     }
