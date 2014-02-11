@@ -32,36 +32,23 @@ class UPMRenderingTimes : public QQuickItem
     Q_PROPERTY(int period READ period WRITE setPeriod NOTIFY periodChanged)
     Q_PROPERTY(int samples READ samples WRITE setSamples NOTIFY samplesChanged)
     Q_PROPERTY(UPMGraphModel* graphModel READ graphModel NOTIFY graphModelChanged)
-    Q_PROPERTY(TimerType timerType READ timerType WRITE setTimerType NOTIFY timerTypeChanged)
+    Q_PROPERTY(RenderTimer::TimerType timerType READ timerType WRITE setTimerType NOTIFY timerTypeChanged)
 
-    Q_ENUMS(TimerType)
+    Q_ENUMS(RenderTimer::TimerType)
 
 public:
-    enum TimerType {
-        Automatic,
-        Trivial,
-#if defined(QT_OPENGL_ES)
-        KHRFence,
-        NVFence,
-#else
-        ARBTimerQuery,
-        EXTTimerQuery
-#endif
-    };
-
     explicit UPMRenderingTimes(QQuickItem* parent = 0);
-    ~UPMRenderingTimes();
 
     // getters
     int period() const;
     int samples() const;
     UPMGraphModel* graphModel() const;
-    TimerType timerType() const;
+    RenderTimer::TimerType timerType() const;
 
     // setters
     void setPeriod(int period);
     void setSamples(int samples);
-    void setTimerType(TimerType timerType);
+    void setTimerType(RenderTimer::TimerType timerType);
 
 Q_SIGNALS:
     void periodChanged();
@@ -83,16 +70,15 @@ private Q_SLOTS:
     void onFrameRendered(qint64 renderTime);
 
 private:
-    void setupNewTimer();
     void appendRenderTime(qint64 renderTime);
 
 private:
     int m_period;
     UPMGraphModel* m_graphModel;
-    TimerType m_timerType;
+    RenderTimer::TimerType m_timerType;
     bool m_needsNewTimer;
+    RenderTimer m_renderingTimer;
     QQuickWindow* m_window;
-    RenderTimer* m_renderingTimer;
     bool m_oddFrame;
     qint64 m_oddFrameRenderTime;
 };

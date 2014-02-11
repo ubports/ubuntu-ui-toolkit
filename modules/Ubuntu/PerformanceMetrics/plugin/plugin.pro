@@ -15,8 +15,7 @@ SOURCES += \
     upmtexturefromimage.cpp \
     upmrenderingtimes.cpp \
     upmcpuusage.cpp \
-    rendertimer.cpp \
-    rendertimertrivial.cpp
+    rendertimer.cpp
 
 HEADERS += \
     upmplugin.h \
@@ -24,22 +23,11 @@ HEADERS += \
     upmtexturefromimage.h \
     upmrenderingtimes.h \
     upmcpuusage.h \
-    rendertimer.h \
-    rendertimertrivial.h
+    rendertimer.h
 
 contains(QT_CONFIG, opengles2) {
     CONFIG += egl
-    SOURCES += rendertimerkhrfence.cpp \
-               rendertimernvfence.cpp
-    HEADERS += rendertimerkhrfence.h \
-               rendertimernvfence.h
-} else {
-    SOURCES += rendertimerarbquery.cpp \
-               rendertimerextquery.cpp
-    HEADERS += rendertimerarbquery.h \
-               rendertimerextquery.h
 }
-
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)

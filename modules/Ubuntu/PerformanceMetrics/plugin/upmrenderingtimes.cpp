@@ -17,24 +17,15 @@
  */
 
 #include "upmrenderingtimes.h"
-#include "rendertimertrivial.h"
-#if defined(QT_OPENGL_ES)
-#include "rendertimerkhrfence.h"
-#include "rendertimernvfence.h"
-#else
-#include "rendertimerarbquery.h"
-#include "rendertimerextquery.h"
-#endif
 #include <QtCore/qmath.h>
 
 UPMRenderingTimes::UPMRenderingTimes(QQuickItem* parent) :
     QQuickItem(parent),
     m_period(1000),
     m_graphModel(new UPMGraphModel(this)),
-    m_timerType(UPMRenderingTimes::Automatic),
+    m_timerType(RenderTimer::Automatic),
     m_needsNewTimer(true),
     m_window(NULL),
-    m_renderingTimer(NULL),
     m_oddFrame(false),
     m_oddFrameRenderTime(0)
 {
@@ -46,13 +37,6 @@ UPMRenderingTimes::UPMRenderingTimes(QQuickItem* parent) :
        The period is period / samples */
     QObject::connect(this, &UPMRenderingTimes::frameRendered,
                      this, &UPMRenderingTimes::onFrameRendered);
-}
-
-UPMRenderingTimes::~UPMRenderingTimes()
-{
-    if (m_renderingTimer != NULL) {
-        delete m_renderingTimer;
-    }
 }
 
 int UPMRenderingTimes::period() const
@@ -83,12 +67,12 @@ UPMGraphModel* UPMRenderingTimes::graphModel() const
     return m_graphModel;
 }
 
-UPMRenderingTimes::TimerType UPMRenderingTimes::timerType() const
+RenderTimer::TimerType UPMRenderingTimes::timerType() const
 {
     return m_timerType;
 }
 
-void UPMRenderingTimes::setTimerType(UPMRenderingTimes::TimerType timerType)
+void UPMRenderingTimes::setTimerType(RenderTimer::TimerType timerType)
 {
     if (timerType != m_timerType) {
         m_timerType = timerType;
@@ -144,30 +128,27 @@ void UPMRenderingTimes::connectToWindow(QQuickWindow* window)
 
 void UPMRenderingTimes::onSceneGraphInitialized()
 {
-    if (m_renderingTimer) {
-        m_renderingTimer->setup();
-    }
+    m_renderingTimer.setup(m_timerType);
 }
 
 void UPMRenderingTimes::onSceneGraphInvalidated()
 {
-    if (m_renderingTimer) {
-        m_renderingTimer->teardown();
-    }
+    m_renderingTimer.teardown();
 }
 
 void UPMRenderingTimes::onBeforeRendering()
 {
     if (m_needsNewTimer) {
-        setupNewTimer();
+        m_renderingTimer.teardown();
+        m_renderingTimer.setup(m_timerType);
         m_needsNewTimer = false;
     }
-    m_renderingTimer->start();
+    m_renderingTimer.start();
 }
 
 void UPMRenderingTimes::onAfterRendering()
 {
-    Q_EMIT frameRendered(m_renderingTimer->stop());
+    Q_EMIT frameRendered(m_renderingTimer.stop());
 }
 
 void UPMRenderingTimes::onFrameSwapped()
@@ -183,55 +164,6 @@ void UPMRenderingTimes::onFrameRendered(qint64 renderTime)
         m_oddFrameRenderTime = renderTime;
     }
     m_oddFrame = !m_oddFrame;
-}
-
-void UPMRenderingTimes::setupNewTimer()
-{
-    if (m_renderingTimer != NULL) {
-        m_renderingTimer->teardown();
-        delete m_renderingTimer;
-    }
-    switch (m_timerType) {
-    case UPMRenderingTimes::Trivial:
-        m_renderingTimer = new RenderTimerTrivial;
-        break;
-#if defined(QT_OPENGL_ES)
-    case UPMRenderingTimes::KHRFence:
-        m_renderingTimer = new RenderTimerKHRFence;
-        break;
-    case UPMRenderingTimes::NVFence:
-        m_renderingTimer = new RenderTimerNVFence;
-        break;
-#else
-    case UPMRenderingTimes::ARBTimerQuery:
-        m_renderingTimer = new RenderTimerARBQuery;
-        break;
-    case UPMRenderingTimes::EXTTimerQuery:
-        m_renderingTimer = new RenderTimerEXTQuery;
-        break;
-#endif
-    case UPMRenderingTimes::Automatic:
-#if defined(QT_OPENGL_ES)
-        if (RenderTimerKHRFence::isAvailable()) {
-            m_renderingTimer = new RenderTimerKHRFence;
-        } else if (RenderTimerNVFence::isAvailable()) {
-            m_renderingTimer = new RenderTimerNVFence;
-        } else {
-            m_renderingTimer = new RenderTimerTrivial;
-        }
-#else
-        if (RenderTimerARBQuery::isAvailable()) {
-            m_renderingTimer = new RenderTimerARBQuery;
-        } else if (RenderTimerEXTQuery::isAvailable()) {
-            m_renderingTimer = new RenderTimerEXTQuery;
-        } else {
-            m_renderingTimer = new RenderTimerTrivial;
-        }
-#endif
-        break;
-    }
-
-    m_renderingTimer->setup();
 }
 
 
