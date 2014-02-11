@@ -59,7 +59,7 @@ Item {
                     id: renderingTimes
                     period: 2000
                     samples: renderingTimeGraph.width
-                    timerType: PerformanceMetrics.RenderingTimes.Automatic
+                    timerType: PerformanceMetrics.RenderingTimes.Trivial
                 }
 
                 PerformanceMetrics.CpuUsage {
