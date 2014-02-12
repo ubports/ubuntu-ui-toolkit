@@ -15,7 +15,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import re
 
 import mock
 import testtools
@@ -29,22 +28,13 @@ class FakeApplicationTestCase(testtools.TestCase):
 
     def assert_desktop_file_contents(
             self, desktop_file_contents, expected_contents_dict):
-        expected_contents_regex = '\[Desktop Entry\]\n'
-        for _ in expected_contents_dict:
-            expected_contents_regex += '(.+=.+\n)'
-        expected_contents_regex += '$'
 
-        match = re.match(expected_contents_regex, desktop_file_contents)
+        desktop_file_lines = desktop_file_contents.splitlines()
+        self.assertEqual('[Desktop Entry]', desktop_file_lines[0])
+        contents_dict = dict(
+            [line.split('=') for line in desktop_file_lines[1:]])
 
-        self.assertIsNot(
-            match, None,
-            "Desktop file doesn't match the expected regular expression."
-            "File contents: {!r}. Regular expression: {!r}".format(
-                desktop_file_contents, expected_contents_regex))
-
-        for key, value in expected_contents_dict.iteritems():
-            self.assertThat(
-                match.groups(), Contains('{}={}\n'.format(key, value)))
+        self.assertDictEqual(expected_contents_dict, contents_dict)
 
     def test_qml_file_must_be_created_with_specified_contents(self):
         fake_application = fixture_setup.FakeApplication(
