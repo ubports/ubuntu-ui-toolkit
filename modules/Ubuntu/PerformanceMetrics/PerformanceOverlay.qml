@@ -112,7 +112,7 @@ Item {
         property var timeLastPress
         property int delayBetweenPresses: 500
         property int pressCount: 0
-        property int pressCountToActivate: 3
+        property int pressCountToActivate: 4
 
         anchors.fill: parent
         enabled: performanceOverlayEnabled
