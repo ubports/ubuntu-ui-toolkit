@@ -28,12 +28,11 @@ class FakeApplicationTestCase(testtools.TestCase):
 
     def assert_desktop_file_contents(
             self, desktop_file_contents, expected_contents_dict):
-
         desktop_file_lines = desktop_file_contents.splitlines()
         self.assertEqual('[Desktop Entry]', desktop_file_lines[0])
+
         contents_dict = dict(
             [line.split('=') for line in desktop_file_lines[1:]])
-
         self.assertDictEqual(expected_contents_dict, contents_dict)
 
     def test_qml_file_must_be_created_with_specified_contents(self):
