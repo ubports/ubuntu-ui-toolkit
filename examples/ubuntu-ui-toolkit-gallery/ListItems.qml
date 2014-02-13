@@ -222,4 +222,88 @@ Template {
             }
         }
     }
+
+    TemplateSection {
+        title: i18n.tr("ExpandablesColumn")
+        className: "Header"
+
+        ListItem.ExpandablesColumn {
+            anchors { left: parent.left; right: parent.right }
+            clip: true
+            height: units.gu(24)
+
+            Repeater {
+                model: 8
+                ListItem.Expandable {
+                    id: expandingColumnItem
+                    expandedHeight: contentColumn1.height + units.gu(1)
+                    collapseOnClick: index % 2 == 0
+
+                    onClicked: {
+                        expanded = true;
+                    }
+
+                    Column {
+                        id: contentColumn1
+                        anchors { left: parent.left; right: parent.right }
+                        Item {
+                            anchors { left: parent.left; right: parent.right}
+                            height: expandingColumnItem.collapsedHeight
+                            Toolkit.Label {
+                                anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter}
+                                text: "Item " + index + (expandingColumnItem.collapseOnClick ? " (with collapseOnClick)" : "")
+                            }
+                        }
+
+                        Toolkit.UbuntuShape {
+                            anchors { left: parent.left; right: parent.right }
+                            height: index % 2 == 0 ? units.gu(6) : units.gu(18)
+                            color: "khaki"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    TemplateSection {
+        title: i18n.tr("Expandable")
+        className: "Header"
+
+        Column {
+            anchors { left: parent.left; right: parent.right }
+            clip: true
+
+            Repeater {
+                model: 2
+                ListItem.Expandable {
+                    id: expandingItem1
+                    expandedHeight: contentCol1.height + units.gu(1)
+
+                    onClicked: {
+                        expanded = !expanded;
+                    }
+
+                    Column {
+                        id: contentCol1
+                        anchors { left: parent.left; right: parent.right }
+                        Item {
+                            anchors { left: parent.left; right: parent.right}
+                            height: expandingItem1.collapsedHeight
+                            Toolkit.Label {
+                                anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter}
+                                text: "Item " + index
+                            }
+                        }
+
+                        Toolkit.UbuntuShape {
+                            anchors { left: parent.left; right: parent.right }
+                            height: index % 2 == 0 ? units.gu(6) : units.gu(18)
+                            color: "khaki"
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
