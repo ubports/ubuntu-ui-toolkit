@@ -224,6 +224,56 @@ Template {
     }
 
     TemplateSection {
+        title: i18n.tr("UbuntuListView")
+        className: "Header"
+
+        ListModel {
+            id: fruitModel
+            ListElement { name: "Orange"; details: "The orange (specifically, the sweet orange) is the fruit of the citrus species Citrus × ​sinensis in the family Rutaceae. The fruit of the Citrus sinensis is called sweet orange to distinguish it from that of the Citrus aurantium, the bitter orange. The orange is a hybrid, possibly between pomelo (Citrus maxima) and mandarin (Citrus reticulata), cultivated since ancient times.\n-\nWikipedia"}
+            ListElement { name: "Apple"; details: "Fruit" }
+            ListElement { name: "Tomato"; details: "The tomato is the edible, often red fruit of the plant Solanum lycopersicum, commonly known as a tomato plant. Both the species and its use as a food originated in Mexico, and spread throughout the world following the Spanish colonization of the Americas. Its many varieties are now widely grown, sometimes in greenhouses in cooler climates. The tomato is consumed in diverse ways, including raw, as an ingredient in many dishes, sauces, salads, and drinks. While it is botanically a fruit, it is considered a vegetable for culinary purposes (as well as under U.S. customs regulations, see Nix v. Hedden), which has caused some confusion. The fruit is rich in lycopene, which may have beneficial health effects. The tomato belongs to the nightshade family (Solanaceae). The plants typically grow to 1–3 meters (3–10 ft) in height and have a weak stem that often sprawls over the ground and vines over other plants. It is a perennial in its native habitat, although often grown outdoors in temperate climates as an annual. An average common tomato weighs approximately 100 grams (4 oz).\n-\nWikipedia" }
+            ListElement { name: "Carrot"; details: "Vegetable" }
+            ListElement { name: "Potato"; details: "Vegetable" }
+        }
+
+        UbuntuListView {
+            anchors { left: parent.left; right: parent.right }
+            height: units.gu(24)
+            model: fruitModel
+            clip: true
+
+            delegate: ListItem.Expandable {
+                id: expandingItem
+
+                expandedHeight: contentColumn.height + units.gu(1)
+
+                onClicked: {
+                    expanded = true;
+                }
+
+                Column {
+                    id: contentColumn
+                    anchors { left: parent.left; right: parent.right }
+                    Item {
+                        anchors { left: parent.left; right: parent.right}
+                        height: expandingItem.collapsedHeight
+                        Toolkit.Label {
+                            anchors { left: parent.left; right: parent.right; verticalCenter: parent.verticalCenter}
+                            text: model.name
+                        }
+                    }
+
+                    Toolkit.Label {
+                        anchors { left: parent.left; right: parent.right }
+                        text: model.details
+                        wrapMode: Text.WordWrap
+                    }
+                }
+            }
+        }
+    }
+
+    TemplateSection {
         title: i18n.tr("ExpandablesColumn")
         className: "Header"
 
