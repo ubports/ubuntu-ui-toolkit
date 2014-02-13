@@ -260,6 +260,35 @@ bool UCExtendedMouseEvent::pointInInputArea() const
    }
    \endqml
 
+   Another featire of the mouse filters is the ability to restrict when the composed
+   events like \l onClicked and \l onPressAndHold should be triggered. By default
+   these events are triggered no matter what is the distance between the mouse pressed
+   position and the current position after a certain timeout (for \l onPressAndHold)
+   or upon mouse release (for \l onClicked). In this way the \l onClicked will be
+   emitted even if the user presses the mouse at the left-top edge of the component,
+   then moves it to the right-bottom corner and releases it. This may not be the
+   preferred behavior on certain components (like TextInput). Therefore MouseFilter
+   provides a property which can alter this behavior, the \l composedEventThreshold.
+   This property specifies the radius of the area the up-mentioned composed events
+   are emitted during a mouse move.
+
+   \qml
+   import QtQuick 2.0
+   import Ubuntu.Components 0.1
+
+   TextInput {
+       width: units.gu(40)
+       height: units.gu(5)
+       activeFocusOnPress: true
+       selectByMouse: true
+
+       // emit composed events only if the mouse moves within 2 GU radius area
+       Mouse.composedEventThreshold: units.gu(2)
+       Mouse.onClicked: console.log("click happened within threshold value")
+       Mouse.onPressAndHold: console.log("pressAndHold happened within threshold value")
+   }
+   \endqml
+
    Similar functionality for the case when the mouse event occurs outside of the
    owner is brought by the \l InverseMouse attached property.
  */
