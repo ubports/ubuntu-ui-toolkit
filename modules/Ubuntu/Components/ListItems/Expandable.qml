@@ -96,7 +96,7 @@ Empty {
       \internal
       Reparent any content to inside the Flickable
      */
-    property alias children: flickableContent.data
+    default property alias children: flickableContent.data
 
     /*! \internal */
     QtObject {
