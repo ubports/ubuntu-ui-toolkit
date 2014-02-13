@@ -84,7 +84,6 @@ void StateSaverBackend::cleanup()
 void StateSaverBackend::signalHandler(int type)
 {
     if (type == UnixSignalHandler::Interrupt) {
-        qDebug() << "UHH";
         Q_EMIT initiateStateSaving();
         // disconnect aboutToQuit() so the state file doesn't get wiped upon quit
         QObject::disconnect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit,

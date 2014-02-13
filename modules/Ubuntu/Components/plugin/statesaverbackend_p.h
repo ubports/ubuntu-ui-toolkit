@@ -25,7 +25,6 @@
 #include <QtCore/QSet>
 #include <QtCore/QTimer>
 #include <QtCore/QStack>
-//#include "unixsignalhandler_p.h"
 
 class StateSaverBackend : public QObject
 {
