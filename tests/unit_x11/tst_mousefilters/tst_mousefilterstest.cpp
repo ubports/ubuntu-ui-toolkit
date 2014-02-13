@@ -111,12 +111,6 @@ private Q_SLOTS:
         QVERIFY(QDir(modules).exists());
 
         m_modulePath = QDir(modules).absolutePath();
-
-        if (!inputPanelPresent()) {
-            setenv("MOUSEFILTER_OSK_TEST_AREA", "true", 1);
-            qDebug() << "No input provider set, simulate OSK panel";
-        }
-
     }
 
     void cleanupTestCase()
@@ -404,6 +398,9 @@ private Q_SLOTS:
         preventDblClick();
         QTest::mouseClick(view.data(), Qt::LeftButton, 0, guPoint(10, 69));
         QTest::waitForEvents();
+        if (!inputPanelPresent()) {
+            QEXPECT_FAIL(0, "No OSK installed", Continue);
+        }
         QCOMPARE(oskClick, true);
         QCOMPARE(pressed.count(), 2);
         QCOMPARE(released.count(), 2);
@@ -449,6 +446,9 @@ private Q_SLOTS:
         QTest::mouseClick(view.data(), Qt::LeftButton, 0, guPoint(10, 69));
         QTest::waitForEvents();
         QCOMPARE(oskClick, false);
+        if (!inputPanelPresent()) {
+            QEXPECT_FAIL(0, "No OSK installed", Abort);
+        }
         QCOMPARE(pressed.count(), 1);
         QCOMPARE(released.count(), 1);
         QCOMPARE(clicked.count(), 1);

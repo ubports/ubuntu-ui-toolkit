@@ -563,17 +563,6 @@ bool UCMouse::pointInOSK(const QPointF &point)
 {
     QPointF scenePoint = m_owner->mapToScene(point);
     QRectF oskRect = QGuiApplication::inputMethod()->keyboardRectangle();
-
-    // for test purposes only; simulate OSK area on environments where OSK is not present
-    // FIXME: we may want to provide a generic OSK test environment for desktop?
-    if (QString(getenv("MOUSEFILTER_OSK_TEST_AREA")).toLower() == "true") {
-        QQuickItem *mainItem = QuickUtils::instance().rootItem(m_owner);
-        if (mainItem) {
-            QRect mainRect(0, 0, mainItem->width(), mainItem->height());
-            oskRect = QRectF(0, mainRect.height() - UCUnits::instance().gu(29),
-                             mainRect.width(), UCUnits::instance().gu(29));
-        }
-    }
     return oskRect.contains(scenePoint);
 }
 
