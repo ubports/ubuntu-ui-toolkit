@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Unity.Action 1.0 as UnityActions
+import Ubuntu.Unity.Action 1.1 as UnityActions
 
 /*!
     \qmltype Page
