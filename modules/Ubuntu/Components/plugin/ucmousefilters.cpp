@@ -49,40 +49,6 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
 }
 
 /*!
-   \qmltype ExtendedMouseEvent
-   \instantiates UCExtendedMouseEvent
-   \inqmlmodule Ubuntu.Components 0.1
-   \ingroup ubuntu
-   \brief Mouse event extending QtQuick's MouseEvent type.
-
-   ExtendedMouseEvent is used by Mouse and InverseMouse attached signals holding
-   information about the mouse event. Extends the MouseEvent with additional
-   information on the mouse event, like specifying whether the mouse pointer is
-   in the input method area or not. This is useful in InverseMouse filter case
-   when the detection whether the mouse press or click occured inside the input
-   method area or not.
-
-   An other difference from MouseEvent is that when all MouseEvenths are accepted
-   by default, every ExtendedMouseEventis set to not accepted, meaning that every
-   extended mouse event will be propagated to its owner. In case event propagation
-   is not wanted, the \a accepted property must be set explicitly.
- */
-
-/*!
-    \qmlproperty bool ExtendedMouseEvent::pointInInputArea
-    The property specifies whether the mouse event happened over the input method
-    or not. The value is true when the device has input method specified, the
-    input method is active and the mouse is positioned over the input area.
-    The property has meaning mostly for the InverseMouse filter as is the Mouse
-    filter's owner is covered by the input method, all mouse events are consumed
-    by the input method.
-  */
-bool UCExtendedMouseEvent::pointInInputArea() const
-{
-    return m_overOsk;
-}
-
-/*!
    \qmltype Mouse
    \instantiates UCMouse
    \inqmlmodule Ubuntu.Components 0.1
@@ -134,7 +100,7 @@ bool UCExtendedMouseEvent::pointInInputArea() const
    }
    \endqml
 
-   The event details are reported in the \a mouse parameter, of ExtendedMouseEvent
+   The event details are reported in the \a mouse parameter, of MouseEvent
    type, which extends QtQuick's MouseEvent with additional properties.
 
    The filter will accept the same mouse buttons the owner accepts, and will accept
@@ -260,7 +226,26 @@ bool UCExtendedMouseEvent::pointInInputArea() const
    }
    \endqml
 
-   Another featire of the mouse filters is the ability to restrict when the composed
+   Mouse filter provides ability to control the order of the event dispatching.
+   The filter can receive the events prior the owner or after the owner. This
+   can be controlled through the \l priority property. In the following example
+   we make sure the TextInput always receives the events before the filter:
+   \qml
+   import QtQuick 2.0
+   import Ubuntu.Components 0.1
+
+   TextInput {
+       id: input
+       width: units.gu(40)
+       height: units.gu(5)
+       activeFocusOnPress: true
+
+       Mouse.prority: Mouse.AfterItem
+       Mouse.onPressed: if (input.activeFocus) console.log("Text input already handled it")
+   }
+   \endqml
+
+   Another feature of the mouse filters is the ability to restrict when the composed
    events like \l onClicked and \l onPressAndHold should be triggered. By default
    these events are triggered no matter what is the distance between the mouse pressed
    position and the current position after a certain timeout (for \l onPressAndHold)
@@ -268,7 +253,7 @@ bool UCExtendedMouseEvent::pointInInputArea() const
    emitted even if the user presses the mouse at the left-top edge of the component,
    then moves it to the right-bottom corner and releases it. This may not be the
    preferred behavior on certain components (like TextInput). Therefore MouseFilter
-   provides a property which can alter this behavior, the \l composedEventThreshold.
+   provides a property which can alter this behavior, the \l clickAndHoldThreshold.
    This property specifies the radius of the area the up-mentioned composed events
    are emitted during a mouse move.
 
@@ -283,7 +268,7 @@ bool UCExtendedMouseEvent::pointInInputArea() const
        selectByMouse: true
 
        // emit composed events only if the mouse moves within 2 GU radius area
-       Mouse.composedEventThreshold: units.gu(2)
+       Mouse.clickAndHoldThreshold: units.gu(2)
        Mouse.onClicked: console.log("click happened within threshold value")
        Mouse.onPressAndHold: console.log("pressAndHold happened within threshold value")
    }
@@ -304,7 +289,6 @@ UCMouse::UCMouse(QObject *parent)
     , m_longPress(false)
     , m_hovered(false)
     , m_doubleClicked(false)
-    , m_pointInOSK(false)
 {
     // if owner is MouseArea or InverseMouseArea, connect to the acceptedButtons
     // and hoverEnabled change signals
@@ -354,8 +338,9 @@ void UCMouse::timerEvent(QTimerEvent *event)
         m_pressAndHoldTimer.stop();
         if (m_pressedButtons && m_hovered) {
             m_longPress = true;
-            UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
-                                     m_pointInOSK, false, m_longPress);
+            QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+                                     false, m_longPress);
+            mev.setAccepted(false);
             Q_EMIT pressAndHold(&mev);
             // if the event wasn't handled, allow click
             if (!mev.isAccepted()) {
@@ -428,8 +413,9 @@ void UCMouse::setHovered(bool hovered)
 {
     if (m_hovered != hovered) {
         m_hovered = hovered;
-        UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
-                                 m_pointInOSK, false, false);
+        QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+                                 false, false);
+        mev.setAccepted(false);
         if (m_hovered) {
             Q_EMIT entered(&mev);
         } else {
@@ -448,8 +434,9 @@ bool UCMouse::mousePressed(QMouseEvent *event)
 
         setHovered(true);
 
-        UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
-                                 m_pointInOSK, false, m_longPress);
+        QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+                                 false, m_longPress);
+        mev.setAccepted(false);
         Q_EMIT pressed(&mev);
         event->setAccepted(mev.isAccepted());
 
@@ -476,8 +463,9 @@ bool UCMouse::mouseMoved(QMouseEvent *event)
         setHovered(true);
         m_moved = true;
         m_doubleClicked = false;
-        UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
-                                 m_pointInOSK, false, m_longPress);
+        QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+                                 false, m_longPress);
+        mev.setAccepted(false);
         Q_EMIT positionChanged(&mev);
         event->setAccepted(mev.isAccepted());
         return mev.isAccepted();
@@ -496,8 +484,9 @@ bool UCMouse::mouseReleased(QMouseEvent *event)
         bool isClicked = (m_pressedButtons & m_lastButton)
                 && !m_longPress && !m_doubleClicked &&
                 ((m_moveThreshold <= 0.0) || m_toleranceArea.contains(m_lastPos));
-        UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
-                                 m_pointInOSK, isClicked, m_longPress);
+        QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+                                 isClicked, m_longPress);
+        mev.setAccepted(false);
         Q_EMIT released(&mev);
         event->setAccepted(mev.isAccepted());
 
@@ -524,8 +513,9 @@ bool UCMouse::mouseDblClick(QMouseEvent *event)
         saveEvent(event);
         // if double click connected, suppress release() and click() signals
         if (isDoubleClickConnected()) {
-            UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
-                                     m_pointInOSK, true, m_longPress);
+            QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+                                     true, m_longPress);
+            mev.setAccepted(false);
             Q_EMIT doubleClicked(&mev);
             event->setAccepted(mev.isAccepted());
             m_doubleClicked = true;
@@ -552,8 +542,9 @@ bool UCMouse::hoverMoved(QHoverEvent *event)
 {
     m_lastPos = event->posF();
     m_lastModifiers = event->modifiers();
-    UCExtendedMouseEvent mev(m_lastPos, m_lastButton, m_lastButtons, m_lastModifiers,
-                             m_pointInOSK, false, m_longPress);
+    QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+                             false, m_longPress);
+    mev.setAccepted(false);
     Q_EMIT positionChanged(&mev);
     forwardEvent(event);
     return false;
@@ -574,7 +565,6 @@ void UCMouse::saveEvent(QMouseEvent *event)
     m_lastButton = event->button();
     m_lastButtons = event->buttons();
     m_lastModifiers = event->modifiers();
-    m_pointInOSK = pointInOSK(event->localPos());
     if ((event->type() == QEvent::MouseButtonPress) && (m_moveThreshold > 0.0)) {
         m_toleranceArea.setX(m_lastPos.x() - m_moveThreshold);
         m_toleranceArea.setY(m_lastPos.y() - m_moveThreshold);
@@ -584,15 +574,7 @@ void UCMouse::saveEvent(QMouseEvent *event)
 }
 bool UCMouse::isDoubleClickConnected()
 {
-    IS_SIGNAL_CONNECTED(this, UCMouse, doubleClicked, (UCExtendedMouseEvent*));
-}
-
-// check whether the mouse point is in OSK area
-bool UCMouse::pointInOSK(const QPointF &point)
-{
-    QPointF scenePoint = m_owner->mapToScene(point);
-    QRectF oskRect = QGuiApplication::inputMethod()->keyboardRectangle();
-    return oskRect.contains(scenePoint);
+    IS_SIGNAL_CONNECTED(this, UCMouse, doubleClicked, (QQuickMouseEvent*));
 }
 
 bool UCMouse::isMouseEvent(QEvent::Type type)
@@ -704,29 +686,27 @@ bool UCMouse::hoverEnabled() const
 }
 
 /*!
-   \qmlproperty int Mouse::composedEventThreshold
-   The property holds the tolerance value the mouse can move in both x and y axis
-   when the mouse is pressed, during which the composed events such as \l onClicked
-   and \l onPressAndHold will still be emitted.
-
-   The tolerance area is set around the mouse position the button was pressed.
-   While the button is pressed, moving the mouse out of this area will not result
-   in emitting the composed signals.
+   \qmlproperty int Mouse::clickAndHoldThreshold
+   The property holds the radius of the tolerance area the mouse can move in both
+   x and y axis when the mouse is pressed, during which the composed events such
+   as \l onClicked and \l onPressAndHold will still be emitted. If the mouse is
+   moved out of this area while the button is pressed, no composed events will be
+   emitted.
 
    When this value is 0, the signals will be emitted as in MouseArea, meaning the
-   composed events will come if the mouse move does not leave the area.
+   composed events will come until the mouse is moved inside the owner's area.
 
    The default value is 0.
  */
-int UCMouse::composedEventThreshold() const
+int UCMouse::clickAndHoldThreshold() const
 {
     return m_moveThreshold;
 }
-void UCMouse::setComposedEventThreshold(int threshold)
+void UCMouse::setClickAndHoldThreshold(int threshold)
 {
     if (m_moveThreshold != threshold) {
         m_moveThreshold = threshold;
-        Q_EMIT composedEventThresholdChanged();
+        Q_EMIT clickAndHoldThresholdChanged();
     }
 }
 
@@ -787,47 +767,47 @@ void UCMouse::setPriority(Priority priority)
 }
 
 /*!
-   \qmlsignal Mouse::onPressed(ExtendedMouseEvent event)
+   \qmlsignal Mouse::onPressed(MouseEvent event)
    The signal reports the mouse press.
  */
 
 /*!
-   \qmlsignal Mouse::onReleased(ExtendedMouseEvent event)
+   \qmlsignal Mouse::onReleased(MouseEvent event)
    The signal reports the mouse release.
  */
 
 /*!
-   \qmlsignal Mouse::onClicked(ExtendedMouseEvent event)
+   \qmlsignal Mouse::onClicked(MouseEvent event)
    The signal reports the mouse click. The signal is not emitted if the onPressAndHold
    got triggered or if onDoubleClicked is handled (a slot is connected to it).
  */
 
 /*!
-   \qmlsignal Mouse::onPressAndHold(ExtendedMouseEvent event)
+   \qmlsignal Mouse::onPressAndHold(MouseEvent event)
    The signal reports the mouse press and hold.
  */
 
 /*!
-   \qmlsignal Mouse::onDoubleClicked(ExtendedMouseEvent event)
+   \qmlsignal Mouse::onDoubleClicked(MouseEvent event)
    The signal reports mouse double click.
  */
 
 /*!
-   \qmlsignal Mouse::onPositionChanged(ExtendedMouseEvent event)
+   \qmlsignal Mouse::onPositionChanged(MouseEvent event)
    The signal reports the mouse pointer position change. If the hover events are
    enabled for the owner, the signal will come continuously. Otherwise the position
    chanes are reported when one of the accepted mouse buttons are being kept pressed.
  */
 
 /*!
-   \qmlsignal Mouse::onEntered(ExtendedMouseEvent event)
+   \qmlsignal Mouse::onEntered(MouseEvent event)
    The signal reports that the mouse has entered into the area. The signal is
    emitted when the hover events are enabled and the mouse enters the area or
    when one of the accepted mouse button is pressed.
  */
 
 /*!
-   \qmlsignal Mouse::onExited(ExtendedMouseEvent event)
+   \qmlsignal Mouse::onExited(MouseEvent event)
    The signal reports that the mouse has left the area. The signal is emitted when
    the hover events are enabled for the owner or if not, when one of the accepted
    button is released.
@@ -843,39 +823,13 @@ void UCMouse::setPriority(Priority priority)
    \brief Attached object filtering mouse events occured outside the owner.
 
    Similar to Mouse filter attached property, provides mouse event filtering
-   capabilities but for events occurring outside of the owner's area. Beside that
-   the filter also provides abilities to detect whether the mouse occurred inside
-   the input method area or not.
+   capabilities but for events occurring outside of the owner's area, excluding
+   the input method area.
 
    Being derived from Mouse filter element, provides the same behavior as the
    Mouse filter, except that all the signals are emitted when the mouse event
-   occurs outside the owner's area.
-
-   By default all mouse events occurring outside the owner are reported, including
-   events over the active input method area. This can be controlled through the
-   \l excludeInputArea property. When that is set, no mouse event occurring over
-   the input method area will be reported.
-
-   The following example blocks mouse event propagation to input method when the
-   mouse press occurs over input method area.
-   \qml
-   import QtQuick 2.0
-   import Ubuntu.Components 0.1
-
-   TestInput {
-       width: 100
-       height: 20
-
-       InverseMouse.onPressed: {
-           if (mouse.pointInInputArea) {
-               mouse.accepted = true;
-           }
-       }
-   }
-   \endqml
-
-   Note that accepting composed mouse events does not have any effect on event
-   propagation.
+   occurs outside the owner's area. Note that accepting composed mouse events
+   does not have any effect on event propagation.
 
    Altering \a priority property has no effect on inverse mouse filter as mouse
    events captured by the filter are not forwarded to the owner, hence forwarding
@@ -883,31 +837,12 @@ void UCMouse::setPriority(Priority priority)
  */
 UCInverseMouse::UCInverseMouse(QObject *parent)
     : UCMouse(parent)
-    , m_excludeOSK(false)
 {
 }
 
 UCInverseMouse *UCInverseMouse::qmlAttachedProperties(QObject *owner)
 {
     return createAttachedFilter<UCInverseMouse>(owner, "InverseMouse");
-}
-
-/*!
-   \qmlproperty bool InverseMouse::excludeInputArea
-   The property specifies whether the mouse events happening over the input panel
-   area should be excluded or not. The default value is false, so mouse events
-   are reported all over the outside area of the owner.
- */
-bool UCInverseMouse::excludeInputArea() const
-{
-    return m_excludeOSK;
-}
-void UCInverseMouse::setExcludeInputArea(bool value)
-{
-    if (m_excludeOSK != value) {
-        m_excludeOSK = value;
-        Q_EMIT excludeInputAreaChanged();
-    }
 }
 
 QMouseEvent UCInverseMouse::mapMouseToOwner(QObject *target, QMouseEvent* event)
@@ -957,14 +892,19 @@ bool UCInverseMouse::hasAttachedFilter(QQuickItem *item)
     return UCMouse::hasAttachedFilter(item) || (qmlAttachedPropertiesObject<UCInverseMouse>(item, false) != 0);
 }
 
+// check whether the mouse point is in OSK area
+bool UCInverseMouse::pointInOSK(const QPointF &point)
+{
+    QPointF scenePoint = m_owner->mapToScene(point);
+    QRectF oskRect = QGuiApplication::inputMethod()->keyboardRectangle();
+    return oskRect.contains(scenePoint);
+}
+
 // returns true if the point is in the inverse area
 bool UCInverseMouse::contains(QMouseEvent *mouse)
 {
-    bool result = !m_owner->contains(mouse->localPos());
-    if (m_excludeOSK) {
-        result = result && !pointInOSK(mouse->localPos());
-    }
-    return result;
+    QPointF localPos = mouse->localPos();
+    return !m_owner->contains(localPos) && !pointInOSK(localPos);
 }
 
 void UCInverseMouse::setEnabled(bool enabled)

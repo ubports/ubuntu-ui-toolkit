@@ -23,7 +23,6 @@
 
 class UCInverseMouse : public UCMouse {
     Q_OBJECT
-    Q_PROPERTY(bool excludeInputArea READ excludeInputArea WRITE setExcludeInputArea NOTIFY excludeInputAreaChanged)
 public:
     explicit UCInverseMouse(QObject *parent = 0);
 
@@ -34,9 +33,6 @@ public:
     bool excludeInputArea() const;
     void setExcludeInputArea(bool value);
 
-Q_SIGNALS:
-    void excludeInputAreaChanged();
-
 protected:
     QMouseEvent mapMouseToOwner(QObject *target, QMouseEvent* event);
     QHoverEvent mapHoverToOwner(QObject *target, QHoverEvent *event);
@@ -44,9 +40,8 @@ protected:
     virtual bool mouseEvents(QObject *target, QMouseEvent *event);
     virtual bool hoverEvents(QObject *target, QHoverEvent *event);
     virtual bool hasAttachedFilter(QQuickItem *item);
+    bool pointInOSK(const QPointF &point);
     bool contains(QMouseEvent *mouse);
-
-    bool m_excludeOSK:1;
 };
 QML_DECLARE_TYPE(UCInverseMouse)
 QML_DECLARE_TYPEINFO(UCInverseMouse, QML_HAS_ATTACHED_PROPERTIES)

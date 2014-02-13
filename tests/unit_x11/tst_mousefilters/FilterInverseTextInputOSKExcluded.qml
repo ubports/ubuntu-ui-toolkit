@@ -27,6 +27,6 @@ Item {
         activeFocusOnPress: true
 
         // create InverseMouse filter attached
-        InverseMouse.excludeInputArea: true
+        InverseMouse.enabled: true
     }
 }

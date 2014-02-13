@@ -23,25 +23,6 @@
 #include <private/qquickevents_p_p.h>
 #include <QtCore/qbasictimer.h>
 
-class UCExtendedMouseEvent : public QQuickMouseEvent
-{
-    Q_OBJECT
-    Q_PROPERTY(bool pointInInputArea READ pointInInputArea)
-public:
-    UCExtendedMouseEvent(QPointF pos, Qt::MouseButton button, Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers
-                  , bool overOsk, bool isClick, bool wasHeld)
-        : QQuickMouseEvent(pos.x(), pos.y(), button, buttons, modifiers, isClick, wasHeld)
-        , m_overOsk(overOsk)
-    {
-        // contrary to the original class, do not accept events by default
-        setAccepted(false);
-    }
-    bool pointInInputArea() const;
-private:
-    bool m_overOsk;
-};
-QML_DECLARE_TYPE(UCExtendedMouseEvent)
-
 class QQuickItem;
 class UCMouse : public QObject
 {
@@ -50,7 +31,7 @@ class UCMouse : public QObject
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled NOTIFY enabledChanged)
     Q_PROPERTY(Qt::MouseButtons acceptedButtons READ acceptedButtons NOTIFY acceptedButtonsChanged)
     Q_PROPERTY(bool hoverEnabled READ hoverEnabled NOTIFY hoverEnabledChanged)
-    Q_PROPERTY(int composedEventThreshold READ composedEventThreshold WRITE setComposedEventThreshold NOTIFY composedEventThresholdChanged)
+    Q_PROPERTY(int clickAndHoldThreshold READ clickAndHoldThreshold WRITE setClickAndHoldThreshold NOTIFY clickAndHoldThresholdChanged)
     Q_PROPERTY(QQmlListProperty<QQuickItem> forwardTo READ forwardTo)
     Q_PROPERTY(Priority priority READ priority WRITE setPriority NOTIFY priorityChanged)
     Q_ENUMS(Priority)
@@ -68,8 +49,8 @@ public:
     virtual void setEnabled(bool enabled);
     Qt::MouseButtons acceptedButtons() const;
     bool hoverEnabled() const;
-    int composedEventThreshold() const;
-    void setComposedEventThreshold(int threshold);
+    int clickAndHoldThreshold() const;
+    void setClickAndHoldThreshold(int threshold);
     QQmlListProperty<QQuickItem> forwardTo();
     Priority priority() const;
     virtual void setPriority(Priority priority);
@@ -78,17 +59,17 @@ Q_SIGNALS:
     void enabledChanged();
     void acceptedButtonsChanged();
     void hoverEnabledChanged();
-    void composedEventThresholdChanged();
+    void clickAndHoldThresholdChanged();
     void priorityChanged();
 
-    void pressed(UCExtendedMouseEvent *mouse);
-    void released(UCExtendedMouseEvent *mouse);
-    void clicked(UCExtendedMouseEvent *mouse);
-    void pressAndHold(UCExtendedMouseEvent *mouse);
-    void doubleClicked(UCExtendedMouseEvent *mouse);
-    void positionChanged(UCExtendedMouseEvent *mouse);
-    void entered(UCExtendedMouseEvent *event);
-    void exited(UCExtendedMouseEvent *event);
+    void pressed(QQuickMouseEvent *mouse);
+    void released(QQuickMouseEvent *mouse);
+    void clicked(QQuickMouseEvent *mouse);
+    void pressAndHold(QQuickMouseEvent *mouse);
+    void doubleClicked(QQuickMouseEvent *mouse);
+    void positionChanged(QQuickMouseEvent *mouse);
+    void entered(QQuickMouseEvent *event);
+    void exited(QQuickMouseEvent *event);
 
 protected:
     virtual bool eventFilter(QObject *, QEvent *);
@@ -108,7 +89,6 @@ protected:
 
     virtual void saveEvent(QMouseEvent *event);
     bool isDoubleClickConnected();
-    bool pointInOSK(const QPointF &point);
     bool isMouseEvent(QEvent::Type type);
     bool isHoverEvent(QEvent::Type type);
     void forwardEvent(QEvent *event);
@@ -132,7 +112,6 @@ protected:
     bool m_longPress:1;
     bool m_hovered:1;
     bool m_doubleClicked:1;
-    bool m_pointInOSK:1;
 };
 QML_DECLARE_TYPEINFO(UCMouse, QML_HAS_ATTACHED_PROPERTIES)
 

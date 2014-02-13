@@ -28,6 +28,6 @@ Item {
 
         // create InverseMouse filter attached
         InverseMouse.priority: Mouse.BeforeItem
-        InverseMouse.composedEventThreshold: units.gu(0.5)
+        InverseMouse.clickAndHoldThreshold: units.gu(0.5)
     }
 }
