@@ -646,7 +646,6 @@ plugins.qmltypes
     name: "UCInverseMouse"
     prototype: "UCMouse"
     exports: ["InverseMouse 0.1"]
-    Property { name: "excludeInputArea"; type: "bool" }
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1"]
@@ -654,33 +653,33 @@ plugins.qmltypes
     Property { name: "enabled"; type: "bool" }
     Property { name: "acceptedButtons"; type: "Qt::MouseButtons"; isReadonly: true }
     Property { name: "hoverEnabled"; type: "bool"; isReadonly: true }
-    Property { name: "composedEventThreshold"; type: "int" }
+    Property { name: "clickAndHoldThreshold"; type: "int" }
     Property { name: "forwardTo"; type: "QQuickItem"; isList: true; isReadonly: true }
     Property { name: "priority"; type: "Priority" }
     Signal {
     name: "pressed"
-    Parameter { name: "mouse"; type: "UCExtendedMouseEvent"; isPointer: true }
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
     Signal {
     name: "released"
-    Parameter { name: "mouse"; type: "UCExtendedMouseEvent"; isPointer: true }
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
     Signal {
     name: "clicked"
-    Parameter { name: "mouse"; type: "UCExtendedMouseEvent"; isPointer: true }
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
     Signal {
     name: "pressAndHold"
-    Parameter { name: "mouse"; type: "UCExtendedMouseEvent"; isPointer: true }
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
     Signal {
     name: "doubleClicked"
-    Parameter { name: "mouse"; type: "UCExtendedMouseEvent"; isPointer: true }
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
     Signal {
     name: "positionChanged"
-    Parameter { name: "mouse"; type: "UCExtendedMouseEvent"; isPointer: true }
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
     Signal {
     name: "entered"
-    Parameter { name: "event"; type: "UCExtendedMouseEvent"; isPointer: true }
+    Parameter { name: "event"; type: "QQuickMouseEvent"; isPointer: true }
     Signal {
     name: "exited"
-    Parameter { name: "event"; type: "UCExtendedMouseEvent"; isPointer: true }
+    Parameter { name: "event"; type: "QQuickMouseEvent"; isPointer: true }
     name: "UCQQuickImageExtension"
     prototype: "QQuickImageBase"
     exports: ["QQuickImageBase 0.1"]
