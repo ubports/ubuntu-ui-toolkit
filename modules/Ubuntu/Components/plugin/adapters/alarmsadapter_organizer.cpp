@@ -25,6 +25,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
+#include <QtCore/QDebug>
 
 #define ALARM_DATABASE          "%1/alarms.database"
 /*

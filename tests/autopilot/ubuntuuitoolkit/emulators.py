@@ -472,6 +472,7 @@ class TextField(UbuntuUIToolkitEmulatorBase):
 
         """
         with self.keyboard.focused_type(self):
+            self.focus.wait_for(True)
             if clear:
                 self.clear()
             else:
