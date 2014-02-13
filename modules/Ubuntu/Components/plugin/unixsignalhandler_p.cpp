@@ -62,6 +62,7 @@ void UnixSignalHandler::signalHook(int signal)
     HandlerType handler = UnixSignalHandler::instance().notifiers.value((SignalType)signal);
     char value = 1;
     ::write(handler.first[0], &value, sizeof(value));
+    Q_UNUSED(value)
 }
 
 void UnixSignalHandler::notifierActivated(int socket)
@@ -73,6 +74,7 @@ void UnixSignalHandler::notifierActivated(int socket)
     handler.second->setEnabled(false);
     char value;
     ::read(handler.first[1], &value, sizeof(value));
+    Q_UNUSED(value)
 
     Q_EMIT signalTriggered(signal);
 
