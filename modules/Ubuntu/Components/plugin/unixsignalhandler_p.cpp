@@ -61,8 +61,9 @@ void UnixSignalHandler::signalHook(int signal)
 {
     HandlerType handler = UnixSignalHandler::instance().notifiers.value((SignalType)signal);
     char value = 1;
-    ::write(handler.first[0], &value, sizeof(value));
-    Q_UNUSED(value)
+    ssize_t size = ::write(handler.first[0], &value, sizeof(value));
+    // this is needed to suppress write return value warning
+    Q_UNUSED(size)
 }
 
 void UnixSignalHandler::notifierActivated(int socket)
@@ -73,8 +74,9 @@ void UnixSignalHandler::notifierActivated(int socket)
 
     handler.second->setEnabled(false);
     char value;
-    ::read(handler.first[1], &value, sizeof(value));
-    Q_UNUSED(value)
+    ssize_t size = ::read(handler.first[1], &value, sizeof(value));
+    // this is needed to suppress read return value warning
+    Q_UNUSED(size)
 
     Q_EMIT signalTriggered(signal);
 
