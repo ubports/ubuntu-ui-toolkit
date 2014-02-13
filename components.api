@@ -112,7 +112,7 @@ Empty
     property real collapsedHeight
     property real expandedHeight
     property bool collapseOnClick
-    property internal children
+    default property internal children
 modules/Ubuntu/Components/ListItems/ExpandablesColumn.qml
 Flickable
     readonly property Item expandedItem
@@ -567,6 +567,11 @@ Item
     property Item pageStack
     property bool opened
     property bool locked
+modules/Ubuntu/Components/UbuntuListView.qml
+ListView
+    readonly property Item expandedItem
+    function expandItem(item)
+    function collapse()
 modules/Ubuntu/Components/UbuntuNumberAnimation.qml
 NumberAnimation
 modules/Ubuntu/Components/UbuntuShape.qml
