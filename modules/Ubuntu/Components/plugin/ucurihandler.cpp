@@ -30,8 +30,6 @@ UriHandlerObject::UriHandlerObject(UCUriHandler* uriHandler)
 void UriHandlerObject::Open(const QStringList& uris, const QHash<QString, QVariant>& platformData)
 {
     Q_UNUSED(platformData);
-    // disable state saving
-    StateSaverBackend::instance().setEnabled(false);
     Q_EMIT m_uriHandler->opened(uris);
 }
 
