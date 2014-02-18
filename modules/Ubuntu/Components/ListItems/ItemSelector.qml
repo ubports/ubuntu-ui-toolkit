@@ -156,10 +156,10 @@ ListItem.Empty {
           bound to the colum height) then we wouldn't be able to scroll to the end of the bottom
           boundary. The text is also invisible if none is set so this is taken into account too.*/
         var textHeight = text === "" ? 0 : label.height + column.spacing;
-        if (parent && parent.height < list.contentHeight) {
+        if (parent && parent.height > 0 && parent.height < list.contentHeight) {
             return parent.height - textHeight;
         } else {
-            list.contentHeight;
+            return list.contentHeight;
         }
     }
 
