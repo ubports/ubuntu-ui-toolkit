@@ -1,3 +1,97 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20140212-0ubuntu1) trusty; urgency=low
+
+  [ Andrew Hayzen ]
+  * Fixed text not aligned at vertical centre if the listitem height has
+    changed dynamically. Fixed no removeItemAnimation if the listitem
+    height has been set. (LP: #1263688, #1263682)
+
+  [ CI bot ]
+  * Trunk as is, for CI Train release.
+
+  [ William Hua ]
+  * Also update LANGUAGE when setLanguage is called for dynamic
+    translation. (LP: #1263163). (LP: #1263163)
+
+  [ Timo Jyrinki ]
+  * A qtdeclarative5-private-dev packaging change adding a dependency on
+    libqt5v8-5-private-dev has been backported to all Ubuntu versions
+    now, so this workaround can now be dropped - building both against
+    Qt 5.2 and 5.0.2 works.
+  * Add #include for QDebug to fix Qt 5.2 build.
+
+  [ Christian Dywan ]
+  * Split build and install steps in debian/rules.
+  * Use integer Date constructor in date picker tests for Qt 5.2.
+  * Run unit_x11 test cases via Xvfb and address failures. (LP:
+    #1258017, #1237812, #1242646)
+  * Don't redirect output of the input file in itself.
+  * Don't try to deploy non-existing qml and js files. (LP: #1259228)
+  * Assert textField focus, button visibility and pressed after tapping
+    clear.
+  * Split documentation for previously group properties. (LP: #1266842)
+  * Suppress errors to work-around font error messages. (LP: #1256999)
+  * ListItems.Empty's default property needs to be data not children.
+    (LP: #1190509)
+
+  [ Pete Woods ]
+  * Handle the unity-action-api quit signal. (LP: #1269409)
+
+  [ Zsombor Egri ]
+  * Date picker component. Provides full date and month only picking
+    functionality.
+  * DatePicker test case fix, setting the minimum limit to value that is
+    earlier than the date value set. (LP: #1266515)
+  * Fixing state restoration when nested dynamic component properties
+    are restored. (LP: #1267039)
+  * Removing obsolete functionality from QuickUtils. (LP: #1266707)
+  * StateSaver failure with Repeater fixed. Indirectly fixes StateSaver
+    with ListView and GridView. (LP: #1267900)
+  * TabBar test case failure fix for Qt5.2. (LP: #1256930)
+  * InverseMouseArea API test removed, being a duplicate of the other
+    InverseMouseArea tests. Connecting to th eproper enabledChanged
+    signal in InverseMouseArea resolves the warning in Qt5.2 stating
+    enabledChanged was overwritten in QQuickMouseArea. (LP: #1266707)
+  * Panel implementation for DatePicker. Presents the DatePicker either
+    in a panel covering the OSK area or in a Popover, depending on the
+    form factor and presence of input method provider.
+  * Layout tests now wait for the currentLayout change completion. (LP:
+    #1266707)
+  * Extra QQmlEngine instance removed from plugin, which seemed to cause
+    some race conditions with Qt5.2. As result UbuntuColors got
+    transferred from context property into singleton object, Theme's
+    palette creation delayed till its first access. (LP: #1266707)
+  * DateUtils test failure fix. (LP: #1273893)
+
+  [ Florian Boucault ]
+  * Ubuntu UI Toolkit Gallery: reimplemented in a cleaner way the
+    responsiveness of the UI. That will allow for working right-to-left
+    support. (LP: #1172652, #1182599)
+  * Added Right-to-Left languages support to most widgets and to the UI
+    Toolkit Gallery. The following widgets now behave properly in RTL
+    environments: - List Items - Popups - Slider - TextArea - TextField
+    - Button - ProgressBar - Toolbar - Header - Switch Tabs still need
+    to be reversed. Relayout issues had to be workarounded (QTBUG 35095)
+    for Label and Row. . (LP: #1181740, #35095)
+
+  [ Leo Arias ]
+  * Added an autopilot emulator for list views, with tests.
+  * Added the TextField autopilot emulator.
+  * Use the autopilot text field helper in the gallery test cases. (LP:
+    #1274240, #1259476)
+
+  [ Andrea Cimitan ]
+  * Use integer Date constructor in date picker tests for Qt 5.2.
+
+  [ tpeeters ]
+  * Date picker component. Provides full date and month only picking
+    functionality.
+  * Fix the positioning of a flickable in a Page which has a parent that
+    is not a PageTreeNode. (LP: #1261907)
+  * Fix the height of a Page in case its parent is a Loader. (LP:
+    #1259917)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 12 Feb 2014 10:56:52 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20131216-0ubuntu1) trusty; urgency=low
 
   [ Zsombor Egri ]
