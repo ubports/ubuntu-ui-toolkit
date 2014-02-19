@@ -43,6 +43,7 @@ UbuntuNumberAnimation 0.1 UbuntuNumberAnimation.qml
 StyledItem 0.1 StyledItem.qml
 ColorUtils 0.1 colorUtils.js
 DateUtils 0.1 dateUtils.js
+ComboButton 0.1 ComboButton.qml
 
 internal TextCursor TextCursor.qml
 internal TextInputPopover TextInputPopover.qml

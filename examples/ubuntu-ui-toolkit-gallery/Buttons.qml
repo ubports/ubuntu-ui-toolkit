@@ -78,4 +78,16 @@ Template {
             }
         }
     }
+
+    TemplateSection {
+        className: "ComboButton"
+
+        TemplateRow {
+            title: i18n.tr("Collapsed")
+
+            ComboButton {
+                text: "Press me"
+            }
+        }
+    }
 }
