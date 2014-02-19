@@ -27,7 +27,7 @@ import Ubuntu.Components.Popups 0.1
     \brief Provides a panel for opening a DatePicker in place of the input panel or
     as Popover, depending on the form factor.
 
-    PickerPanel is a singleton component designed to open a DatePicker in an input panel
+    PickerPanel is a singleton component designed to open a DatePicker in the input panel
     area or in a Popover, depending on the form factor, following the design guides
     on date pickers.
     \qml
