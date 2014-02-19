@@ -37,7 +37,6 @@ TestCase {
 		var childs = new Array(0);
 		childs.push(obj)
 		while (childs.length > 0) {
-                        print("checking child:", childs[0].objectName);
 			if (childs[0].objectName == objectName) {
 				return childs[0]
 			}
@@ -53,7 +52,6 @@ TestCase {
 		var childs = new Array(0);
 		childs.push(obj)
 		while (childs.length > 0) {
-                        print("checking child:", childs[0].objectName);
 			if (childs[0].objectName == objectName) {
 				return childs[0]
 			}
