@@ -93,7 +93,6 @@ Empty {
     property bool collapseOnClick: false
 
     /*!
-      \internal
       Reparent any content to inside the Flickable
      */
     default property alias children: flickableContent.data

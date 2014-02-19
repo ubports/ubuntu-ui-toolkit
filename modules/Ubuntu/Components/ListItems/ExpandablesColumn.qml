@@ -95,7 +95,6 @@ Flickable {
     }
 
     /*!
-      \internal
       Reparent any content to inside the Column.
      */
     default property alias children: column.data
