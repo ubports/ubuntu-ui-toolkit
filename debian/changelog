@@ -1,3 +1,32 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20140220-0ubuntu1) trusty; urgency=low
+
+  [ Michael Zanetti ]
+  * use data instead of children In ListItems.Base to allow having
+    QtObjects as childs. In findChild() to be able to find invisible
+    things like QtObject and Animations. Changes the return value from
+    undefined to null as that's more correct.
+  * Fix some issues in DatePicker's docs
+
+  [ CI bot ]
+  * Resync trunk
+
+  [ Iain Lane ]
+  * Support building with DEB_BUILD_OPTIONS=nocheck to skip the
+    testsuite, per Debian policy.
+
+  [ Leo Arias ]
+  * Refactor the fake application used by the autopilot emulator tests
+    to make a fixture that can be reused by other projects.
+
+  [ Zsombor Egri ]
+  * Mouse filters attacheable to mouse handling primitives.
+  * Item instances set as property values were excluded from layouting,
+    causing segfaults when re-layouting was performed or when the
+    component got deleted due to or during re-layouting. (LP: #1280359)
+  * ItemSelector regression fix. (LP: #1275861)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 20 Feb 2014 10:04:25 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20140212-0ubuntu1) trusty; urgency=low
 
   [ Andrew Hayzen ]
