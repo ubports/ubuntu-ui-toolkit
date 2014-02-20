@@ -33,7 +33,7 @@ QImage ThumbnailGenerator::requestImage(const QString &id, QSize *realSize,
         const QSize &requestedSize) {
     std::string src_path(id.toUtf8().data());
     std::string tgt_path;
-    const int xlarge_cutoff = 360;
+    const int xlarge_cutoff = 512;
     const int large_cutoff = 256;
     const int small_cutoff = 128;
     try {
