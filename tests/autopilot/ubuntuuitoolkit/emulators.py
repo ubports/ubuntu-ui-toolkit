@@ -527,19 +527,9 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
         self.moving.wait_for(False)
 
     def _slow_drag(self, start_x, stop_x, start_y, stop_y):
-        # The drag is done too fast, so we are scrolling more than what we
+        # If we drag too fast, we end up scrolling more than what we
         # should, sometimes missing the  element we are looking for.
-        # TODO: use the slow drag once it's implemented:
-        # https://bugs.launchpad.net/autopilot/+bug/1257055
-        # --elopio - 2014-01-09
-        if platform.model() == 'Desktop':
-            self.pointing_device.move(start_x, start_y)
-            self.pointing_device.press()
-            self.pointing_device.move(stop_x, stop_y)
-            time.sleep(0.3)
-            self.pointing_device.release()
-        else:
-            self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
+        self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=5)
 
     def _is_element_clickable(self, objectName):
         """Return True if the center of the element is visible."""
