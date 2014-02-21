@@ -410,16 +410,18 @@ bool AlarmRequestAdapter::fetch()
     QOrganizerItemFetchRequest *operation = new QOrganizerItemFetchRequest(q_ptr);
     operation->setManager(owner->manager);
 
-    // filter only current week alarms
+    // FIXME: Since returning all events without a limit of date is not a good solution we need to find
+    // a better solution for that.
+    // The current solution filters only the next 7 days (one week).
+    // This will be enough for now, since the current alarms occur weekly, but for the future
+    // we want to allow create alarms with monthly or yearly recurrence
     QDate currentDate = QDate::currentDate();
-    int firstDayOfWeek = currentDate.day() - (currentDate.dayOfWeek() - 1);
-    int lastDayOfWeek = firstDayOfWeek + 6;
-    QDateTime weekStart(QDate(currentDate.year(), currentDate.month(), firstDayOfWeek),
+    QDateTime startDate(currentDate,
                         QTime(0,0,0));
-    QDateTime weekEnd(QDate(currentDate.year(), currentDate.month(), lastDayOfWeek),
+    QDateTime endDate(currentDate.addDays(6),
                       QTime(23,59,59));
-    operation->setStartDate(weekStart);
-    operation->setEndDate(weekEnd);
+    operation->setStartDate(startDate);
+    operation->setEndDate(endDate);
 
     // set sort order
     QOrganizerItemSortOrder sortOrder;
