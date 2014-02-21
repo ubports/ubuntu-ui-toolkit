@@ -410,6 +410,17 @@ bool AlarmRequestAdapter::fetch()
     QOrganizerItemFetchRequest *operation = new QOrganizerItemFetchRequest(q_ptr);
     operation->setManager(owner->manager);
 
+    // filter only current week alarms
+    QDate currentDate = QDate::currentDate();
+    int firstDayOfWeek = currentDate.day() - (currentDate.dayOfWeek() - 1);
+    int lastDayOfWeek = firstDayOfWeek + 6;
+    QDateTime weekStart(QDate(currentDate.year(), currentDate.month(), firstDayOfWeek),
+                        QTime(0,0,0));
+    QDateTime weekEnd(QDate(currentDate.year(), currentDate.month(), lastDayOfWeek),
+                      QTime(23,59,59));
+    operation->setStartDate(weekStart);
+    operation->setEndDate(weekEnd);
+
     // set sort order
     QOrganizerItemSortOrder sortOrder;
     sortOrder.setDirection(Qt::AscendingOrder);
