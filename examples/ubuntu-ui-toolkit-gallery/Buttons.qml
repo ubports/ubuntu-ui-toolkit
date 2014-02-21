@@ -87,6 +87,19 @@ Template {
 
             ComboButton {
                 text: "Press me"
+//                color: "#00FF00"
+                objectName: "combobutton_collapsed"
+                comboList: Rectangle {
+                    height: units.gu(20)
+                    width: parent.width
+                    color: "blue"
+                }
+            }
+
+            ComboButton {
+                text: "gradient"
+                objectName: "combobutton_collapsed_gradient"
+                gradient: UbuntuColors.greyGradient
             }
         }
     }

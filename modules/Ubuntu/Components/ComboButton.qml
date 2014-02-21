@@ -30,11 +30,21 @@ Button {
 
     property int selectedIndex: -1
 
-    property real expandedHeight
+    property real collapsedHeight: implicitHeight
+    property real expandedHeight: collapsedHeight + units.gu(15)
 
-    property Item comboList
+    property alias comboList: comboHolder.data
+
+//    property color color: __styleInstance.defaultColor
+//    property Gradient gradient:  __styleInstance.defaultGradient
+
+    // override colors
+//    property color color: __styleInstance ? __styleInstance.color: "#00000000"
+//    property Gradient gradient: __styleInstance ? __styleInstance.gradient : null
 
     style: Theme.createStyleComponent("ComboButtonStyle.qml", combo)
+
+    height: expanded ? expandedHeight : collapsedHeight
 
     // dropdown button
     AbstractButton {
@@ -43,17 +53,19 @@ Button {
             right: parent.right
             top: parent.top
             bottom: parent.bottom
-            margins: __styleInstance ? __styleInstance.dropDownMargins : 0
         }
-        width: __styleInstance ? __styleInstance.dropDownWidth: 0
+        width: combo.__styleInstance ? combo.__styleInstance.dropDownWidth: 0
+        onClicked: {
+            // toggle expanded
+            combo.expanded = !combo.expanded;
+        }
     }
 
     // expansion list
-    Popover {
+    Item {
         id: comboHolder
-        anchors {
-            left: parent.left
-            right: parent.right
-        }
+        parent: combo.__styleInstance ? combo.__styleInstance.comboList : combo
+        anchors.fill: parent
+        visible: combo.expanded
     }
 }
