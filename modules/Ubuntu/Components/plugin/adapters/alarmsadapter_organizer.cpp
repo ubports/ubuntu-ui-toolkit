@@ -418,7 +418,7 @@ bool AlarmRequestAdapter::fetch()
     QDate currentDate = QDate::currentDate();
     QDateTime startDate(currentDate,
                         QTime(0,0,0));
-    QDateTime endDate(currentDate.addDays(6),
+    QDateTime endDate(currentDate.addDays(7),
                       QTime(23,59,59));
     operation->setStartDate(startDate);
     operation->setEndDate(endDate);
