@@ -47,6 +47,18 @@ Item {
         }
     }
 
+    Column {
+        anchors.left: parent.left
+        anchors.right: parent.right
+
+        ListItem.ItemSelector {
+            id: expandedSelector
+            text: i18n.tr("Return results from:")
+            model: [i18n.tr("Phone only"), i18n.tr("Phone and Internet")]
+            expanded: true
+        }
+    }
+
     Component {
         id: selectorDelegate
 
@@ -107,6 +119,10 @@ Item {
          function test_image_constraint() {
             var image = findChild(testDelegate, "icon");
             compare(image.height, testDelegate.height);
+         }
+
+         function test_expandedSelector() {
+             verify(expandedSelector.containerHeight > 0, "Expanded ItemSelector height negative");
          }
     }
 }

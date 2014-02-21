@@ -36,6 +36,9 @@ MainView {
     */
     automaticOrientation: true
 
+    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
+
     state: width >= units.gu(80) ? "wide" : "narrow"
     states: [
         State {
