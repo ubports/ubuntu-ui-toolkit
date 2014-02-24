@@ -50,7 +50,7 @@ UnityActions.Action {
       The icon associated with the action.
       \qmlproperty string iconName
 
-      This is the name of the icon in the theme.
+      This is the name of the icon in the ubuntu-mobile theme.
       If both iconSource and iconName are defined, iconName will be ignored.
 
       Example:
@@ -61,12 +61,10 @@ UnityActions.Action {
       \endqml
 
       \note The complete list of icons available in Ubuntu is not published yet.
-            For now please refer to the folders where the icon themes are installed:
+            For now please refer to the folder where the icon theme is installed:
             \list
               \li Ubuntu Touch: \l file:/usr/share/icons/ubuntu-mobile
-              \li Ubuntu Desktop: \l file:/usr/share/icons/ubuntu-mono-dark
             \endlist
-            These 2 separate icon themes will be merged soon.
     */
     property string iconName
 
