@@ -93,8 +93,8 @@ Empty {
     property bool collapseOnClick: false
 
     /*!
-      \internal
       Reparent any content to inside the Flickable
+      \qmlproperty QtObject children
      */
     default property alias children: flickableContent.data
 

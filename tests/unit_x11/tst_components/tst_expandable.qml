@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -64,7 +64,7 @@ Item {
             tryCompare(expandable, "height", contentColumn.height);
 
             // Item's flickable must not be interactive when the full expandedHeight fits
-            var flickable = findChild(expandable, "__expandableContentFlickable");
+            var flickable = findInvisibleChild(expandable, "__expandableContentFlickable");
             compare(flickable.interactive, false);
 
             // collapse it and make sure it eventually reaches the collapsedHeight
@@ -77,7 +77,7 @@ Item {
             expandablesColumn.height = units.gu(30);
 
             // Item's flickable must not be interactive when collapsed
-            var flickable = findChild(expandable, "__expandableContentFlickable");
+            var flickable = findInvisibleChild(expandable, "__expandableContentFlickable");
             compare(flickable.interactive, false);
 
             expandable.expanded = true;
@@ -94,7 +94,7 @@ Item {
             expandable.expanded = true;
             tryCompare(expandable, "height", expandablesColumn.height - expandable.collapsedHeight);
 
-            var flickable = findChild(expandable, "__expandableContentFlickable");
+            var flickable = findInvisibleChild(expandable, "__expandableContentFlickable");
             flickable.flick(0, -units.gu(500))
             tryCompare(flickable, "flicking", false);
 

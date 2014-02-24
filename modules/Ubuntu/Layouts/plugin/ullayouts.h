@@ -77,6 +77,8 @@ private:
     friend class ULConditionalLayout;
     Q_DECLARE_PRIVATE(ULLayouts)
     QScopedPointer<ULLayoutsPrivate> d_ptr;
+
+    Q_PRIVATE_SLOT(d_func(), void _q_removeExcludedItem(QObject*))
 };
 
 QML_DECLARE_TYPE(ULLayouts)
