@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1 as Toolkit
 
 /*!
     \qmltype UbuntuListView
@@ -38,6 +39,7 @@ import QtQuick 2.0
             }
 
             UbuntuListView {
+                id: ubuntuListView
                 anchors { left: parent.left; right: parent.right }
                 height: units.gu(24)
                 model: listModel
@@ -48,7 +50,7 @@ import QtQuick 2.0
                     expandedHeight: units.gu(30)
 
                     onClicked: {
-                        expanded = true;
+                        ubuntuListView.expandedIndex = index;
                     }
                 }
             }
@@ -63,64 +65,58 @@ ListView {
 
     /*!
       \preliminary
-      Points to the currently expanded item. Null if no item is expanded.
-      \qmlproperty Item expandedItem
+      The index of the currently expanded item. -1 if no item is expanded.
      */
-    readonly property alias expandedItem: priv.expandedItem
+    property int expandedIndex: -1
 
-    /*!
-      \preliminary
-      Expand the given item. The item must be a child of this ListView.
-     */
-    function expandItem(item) {
-        if (!item.hasOwnProperty("expandedHeight") || !item.hasOwnProperty("collapsedHeight")) {
-            return;
-        }
-
-        if (priv.expandedItem != null) {
-            priv.expandedItem.expanded = false;
-        }
-        item.expanded = true;
-        priv.expandedItem = item;
-
-        var itemY = contentItem.mapFromItem(item).y;
-        var itemHeight = item.expandedHeight;
-        var itemIndex = indexAt(item.x, item.y);
-
-        var bottomSpacing = itemIndex == model.count - 1 ? 0 : item.collapsedHeight;
-        if (itemY + itemHeight > height + contentY - bottomSpacing) {
-            contentY = Math.min(itemY, itemY + itemHeight - height + bottomSpacing);
-        }
-    }
-
-    /*!
-      \preliminary
-      Collapse the currently expanded item. If there isn't any item expanded, this function does nothing.
-     */
-    function collapse() {
-        priv.expandedItem.expanded = false;
-        priv.expandedItem = null;
-    }
-
-    /*! \internal */
     QtObject {
         id: priv
 
-        /*! \internal
-          Points to the currently expanded item. Null if no item is expanded.
-         */
-        property Item expandedItem: null
+        function positionViewAtIndexAnimated(expandedIndex) {
+            animation.from = root.contentY;
+            root.currentIndex = expandedIndex;
+            if (expandedIndex == root.count - 1) {
+                root.positionViewAtIndex(expandedIndex, ListView.End);
+            } else {
+                root.positionViewAtIndex(expandedIndex + 1, ListView.End);
+            }
+
+            var effectiveExpandedHeight = Math.min(root.currentItem.expandedHeight, root.height - root.currentItem.collapsedHeight);
+            if (root.contentY == 0) {
+                if (((root.currentIndex + 1) * root.currentItem.collapsedHeight) + effectiveExpandedHeight > root.height) {
+                    animation.to = ((root.currentIndex + 1) * root.currentItem.collapsedHeight + effectiveExpandedHeight) - root.height
+                } else {
+                    animation.to = 0
+                }
+            } else {
+                animation.to = root.contentY + (effectiveExpandedHeight - root.currentItem.collapsedHeight);
+            }
+            animation.start();
+        }
     }
 
-    Behavior on contentY {
-        UbuntuNumberAnimation {}
+    /*!
+      \preliminary
+      Expand the item at the given index.
+     */
+    onExpandedIndexChanged: {
+        if (expandedIndex < 0) {
+            return;
+        }
+        priv.positionViewAtIndexAnimated(expandedIndex, ListView.End)
+    }
+
+    UbuntuNumberAnimation {
+        id: animation
+        target: root
+        property: "contentY"
     }
 
     MouseArea {
         parent: contentItem
         anchors.fill: parent
         z: 2
-        enabled: priv.expandedItem != null
-        onClicked: root.collapse();
+        enabled: root.expandedIndex != -1
+        onClicked: root.expandedIndex = -1;
     }
 }

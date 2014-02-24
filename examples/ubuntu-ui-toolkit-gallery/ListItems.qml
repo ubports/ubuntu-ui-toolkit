@@ -236,7 +236,8 @@ Template {
             ListElement { name: "Potato"; details: "Vegetable" }
         }
 
-        UbuntuListView {
+        Toolkit.UbuntuListView {
+            id: ubuntuListView
             anchors { left: parent.left; right: parent.right }
             height: units.gu(24)
             model: fruitModel
@@ -248,7 +249,7 @@ Template {
                 expandedHeight: contentColumn.height + units.gu(1)
 
                 onClicked: {
-                    expanded = true;
+                    ubuntuListView.expandedIndex = index;
                 }
 
                 Column {

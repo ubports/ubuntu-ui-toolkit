@@ -109,19 +109,25 @@ Empty {
         property Item view: root.ListView.view ? root.ListView.view : (root.parent.parent.parent.hasOwnProperty("expandItem") ? root.parent.parent.parent : null)
 
         /*! \internal
-          Gives information whether this item is inside a ExpandablesListView or ExpandablesColumn
+          Gives information whether this item is inside an item based container supporting Expandable items, such as ExpandablesColumn
          */
-        readonly property bool isInExpandableList: view && view !== undefined && view.hasOwnProperty("expandItem") && view.hasOwnProperty("collapse")
+        readonly property bool isInExpandableColumn: view && view !== undefined && view.hasOwnProperty("expandItem") && view.hasOwnProperty("collapse")
+
+        /*! \internal
+          Gives information whether this item is inside an index based container supporting Expandable items, such as UbuntuListView
+         */
+        readonly property bool isInExpandableListView: view && view !== undefined && view.hasOwnProperty("expandedIndex") 
 
         /*! \internal
           Gives information if there is another item expanded in the containing ExpandablesListView or ExpandablesColumn
          */
-        readonly property bool otherExpanded: isInExpandableList && view.expandedItem !== null && view.expandedItem !== undefined && view.expandedItem !== root
+        readonly property bool otherExpanded: (isInExpandableColumn && view.expandedItem !== null && view.expandedItem !== undefined && view.expandedItem !== root)
+                                              || (isInExpandableListView && view.expandedIndex !== -1 && view.expandedIndex !== index)
 
         /*! \internal
           Gives information about the maximum expanded height, in case that is limited by the containing ExpandablesListView or ExpandablesColumn
          */
-        readonly property real maxExpandedHeight: isInExpandableList ? Math.min(view.height - collapsedHeight, expandedHeight) : expandedHeight
+        readonly property real maxExpandedHeight: (isInExpandableColumn || isInExpandableListView) ? Math.min(view.height - collapsedHeight, expandedHeight) : expandedHeight
     }
 
     states: [
@@ -139,13 +145,24 @@ Empty {
         }
     ]
 
+    Connections {
+        target: priv.isInExpandableListView ? priv.view : null
+        onExpandedIndexChanged: {
+            if (priv.view.expandedIndex == index) {
+                root.expanded = true;
+            } else if (root.expanded = true) {
+                root.expanded = false;
+            }
+        }
+    }
+
     /*! \internal */
     onExpandedChanged: {
         if (!expanded) {
             contentFlickable.contentY = 0;
         }
 
-        if (priv.isInExpandableList) {
+        if (priv.isInExpandableColumn) {
             if (expanded) {
                 priv.view.expandItem(root);
             } else {

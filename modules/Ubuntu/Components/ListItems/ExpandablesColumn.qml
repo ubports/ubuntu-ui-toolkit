@@ -117,18 +117,17 @@ Flickable {
     Column {
         id: column
         anchors { left: parent.left; right: parent.right }
-
     }
 
     MouseArea {
-        anchors {left: parent.left; right: parent.right; top: parent.top }
+        anchors { left: parent.left; right: parent.right; top: parent.top }
         height: root.mapFromItem(priv.expandedItem).y + root.contentY
         enabled: priv.expandedItem != null
         onClicked: root.collapse();
     }
 
     MouseArea {
-        anchors {left: parent.left; right: parent.right; bottom: parent.bottom }
+        anchors { left: parent.left; right: parent.right; bottom: parent.bottom }
         height: priv.expandedItem != null ? root.contentHeight - (root.mapFromItem(priv.expandedItem).y + root.contentY + priv.expandedItem.height) : 0
         enabled: priv.expandedItem != null
         onClicked: root.collapse();
