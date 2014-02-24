@@ -120,6 +120,21 @@ void UbuntuI18n::setDomain(const QString &domain) {
 
 void UbuntuI18n::setLanguage(const QString &lang) {
     m_language = lang;
+
+    /*
+     This is needed for LP: #1263163.
+
+     LANGUAGE may be set to one or more languages for example "fi" or
+     "sv:de". gettext prioritizes LANGUAGE over LC_ALL, LC_*, and
+     LANG, so if the session has already set LANGUAGE, calls to
+     gettext will only use that.  We must override it here so that
+     future calls to gettext are done in the new language.
+
+     This only affects the current process. It does not override the
+     user's session LANGUAGE.
+     */
+    setenv("LANGUAGE", lang.toUtf8().constData(), 1);
+
     /*
      The inverse form of setlocale as used in the constructor, passing
      a valid locale string updates all category type defaults.

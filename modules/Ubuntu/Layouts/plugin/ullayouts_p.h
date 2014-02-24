@@ -33,6 +33,7 @@ public:
 
     ULLayoutsPrivate(ULLayouts *qq);
 
+    void _q_removeExcludedItem(QObject *excludedItem);
     void validateConditionalLayouts();
     void getLaidOutItems();
     void updateLayout();
