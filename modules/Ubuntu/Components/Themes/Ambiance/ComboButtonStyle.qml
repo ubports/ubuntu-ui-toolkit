@@ -20,24 +20,23 @@ import Ubuntu.Components 0.1
 Item {
     id: comboStyle
 
-    property real dropDownSeparatorWidth: units.gu(0.5)
-    property real dropDownWidth: units.gu(4)
+    property real dropDownSeparatorWidth: units.dp(2)
+    property real dropDownWidth: units.gu(5)
     property Item comboList: comboListHolder
 
-//    implicitHeight: units.gu(5)
-//    implicitWidth: units.gu(14)
     width: combo.width
     height: combo.collapsedHeight
 
     property ComboButton combo: styledItem
-    property real minimumWidth: units.gu(15)
+    property real minimumWidth: units.gu(36)
     property real horizontalPadding: units.gu(1)
     property real buttonFaceOffset: -dropDownWidth / 2
-    property color defaultColor
-    property Gradient defaultGradient: UbuntuColors.orangeGradient
+    // FIXME: use hardcoded color while we get the theme palette updated
+    property color defaultColor: "#b2b2b2"
+    property Gradient defaultGradient: null
 
     implicitWidth: Math.max(minimumWidth, foreground.implicitWidth + 2*horizontalPadding)
-    implicitHeight: units.gu(5)
+    implicitHeight: units.gu(4)
 
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
@@ -89,7 +88,7 @@ Item {
             opacity: 0.01
             width: 1
             height: 1
-            visible: true
+//            visible: true
         }
 
         Item {
@@ -106,14 +105,14 @@ Item {
                 gradient: isGradient ? combo.gradient : null
             }
 
-            Rectangle {
+            // distancer
+            Item {
                 anchors {
                     right: dropDownButton.right
                     top: parent.top
                     bottom: parent.bottom
                 }
                 width: comboStyle.dropDownSeparatorWidth
-                color: Theme.palette.normal.background
             }
 
             Rectangle {
@@ -124,14 +123,18 @@ Item {
                     bottom: parent.bottom
                 }
                 width: comboStyle.dropDownWidth
-                color: Theme.palette.normal.overlay
+                color: !combo.expanded ? defaultColor : Qt.rgba(0, 0, 0, 0.05)
+                Icon {
+//                    name: combo.expanded ? "go-up" : "go-down"
+                    name: ""
+                    anchors.centerIn: parent
+                }
             }
         }
         UbuntuShape {
             id: background
             anchors.fill: parent
             borderSource: "radius_idle.sci"
-            visible: true
             image: comboFace
         }
 

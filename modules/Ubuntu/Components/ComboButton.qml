@@ -35,13 +35,6 @@ Button {
 
     property alias comboList: comboHolder.data
 
-//    property color color: __styleInstance.defaultColor
-//    property Gradient gradient:  __styleInstance.defaultGradient
-
-    // override colors
-//    property color color: __styleInstance ? __styleInstance.color: "#00000000"
-//    property Gradient gradient: __styleInstance ? __styleInstance.gradient : null
-
     style: Theme.createStyleComponent("ComboButtonStyle.qml", combo)
 
     height: expanded ? expandedHeight : collapsedHeight
