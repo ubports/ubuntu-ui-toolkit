@@ -34,4 +34,7 @@ OTHER_FILES += \
     AnchorRight.qml \
     AnchorTop.qml \
     AnchorBottom.qml \
-    AnchorAll.qml
+    AnchorAll.qml \
+    ItemInstanceAsProperty.qml \
+    DialerCrash.qml \
+    ExcludedItemDeleted.qml
