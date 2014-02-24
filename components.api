@@ -567,6 +567,9 @@ Item
     property Item pageStack
     property bool opened
     property bool locked
+modules/Ubuntu/Components/UbuntuListView.qml
+ListView
+    property int expandedIndex
 modules/Ubuntu/Components/UbuntuNumberAnimation.qml
 NumberAnimation
 modules/Ubuntu/Components/UbuntuShape.qml
