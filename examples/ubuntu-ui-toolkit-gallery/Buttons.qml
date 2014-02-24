@@ -94,11 +94,20 @@ Template {
                     color: "blue"
                 }
             }
+        }
+
+        TemplateRow {
+            title: i18n.tr("Expanded")
 
             ComboButton {
-                text: "gradient"
-                objectName: "combobutton_collapsed_gradient"
-                gradient: UbuntuColors.greyGradient
+                text: "Press me"
+                objectName: "combobutton_expanded"
+                expanded: true
+                comboList: Rectangle {
+                    height: units.gu(20)
+                    width: parent.width
+                    color: "blue"
+                }
             }
         }
     }

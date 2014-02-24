@@ -22,6 +22,9 @@ import Ubuntu.Components.Popups 0.1
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
     \brief Ubuntu button with expanding list of components.
+
+    Do not set the component's height directly, as expansion controls its value and
+    overriding it may destroy component's proper functioning.
   */
 Button {
     id: combo
@@ -37,7 +40,7 @@ Button {
 
     style: Theme.createStyleComponent("ComboButtonStyle.qml", combo)
 
-    height: expanded ? expandedHeight : collapsedHeight
+//    height: expanded ? expandedHeight : collapsedHeight
 
     // dropdown button
     AbstractButton {

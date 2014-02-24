@@ -27,6 +27,8 @@ Item {
     property real horizontalPadding: units.gu(1)
     property color defaultColor
     property Gradient defaultGradient: UbuntuColors.orangeGradient
+    property real buttonFaceOffset: 0
+    property Item backgroundSource: null
 
     width: button.width
     height: button.height
@@ -40,8 +42,9 @@ Item {
        non-NOTIFYable properties. They cannot be written to so it is fine but
        the proxy avoids the warnings.
     */
+    property QtObject gradientProxy: gradientProxyObject
     QtObject {
-        id: gradientProxy
+        id: gradientProxyObject
         property color topColor
         property color bottomColor
 
@@ -67,7 +70,8 @@ Item {
         id: background
         anchors.fill: parent
         borderSource: "radius_idle.sci"
-        visible: color.a != 0.0
+        visible: (color.a != 0.0) || backgroundSource
+        image: backgroundSource
 
         // Color properties in a JS ternary operator don't work as expected in
         // QML because it overwrites alpha values with 1. A workaround is to use
@@ -75,8 +79,8 @@ Item {
         // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197802 and
         // https://bugreports.qt-project.org/browse/QTBUG-32238.
         function colorHack(color) { return Qt.rgba(color.r, color.g, color.b, color.a); }
-        color: isGradient ? colorHack(gradientProxy.topColor) : colorHack(button.color)
-        gradientColor: isGradient ? colorHack(gradientProxy.bottomColor) : colorHack(button.color)
+        color: backgroundSource ? "#00000000" : (isGradient ? colorHack(gradientProxy.topColor) : colorHack(button.color))
+        gradientColor: backgroundSource ? "#00000000" : (isGradient ? colorHack(gradientProxy.bottomColor) : colorHack(button.color))
     }
 
     UbuntuShape {
@@ -98,7 +102,10 @@ Item {
     ButtonForeground {
         id: foreground
         width: parent.width - 2*horizontalPadding
-        anchors.centerIn: parent
+        anchors {
+            centerIn: parent
+            horizontalCenterOffset: buttonFaceOffset
+        }
         text: button.text
         /* Pick either a clear or dark text color depending on the luminance of the
            background color to maintain good contrast (works in most cases)
