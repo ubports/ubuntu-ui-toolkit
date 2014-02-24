@@ -1,3 +1,14 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20140224-0ubuntu1) trusty; urgency=low
+
+  [ Renato Araujo Oliveira Filho ]
+  * [alarms] Filter only alarms of the current week. This is necessary
+    because query for events without a valid date interval will return
+    all events on the database, including the recurrence ones. Ex. A
+    alarm that recurs every day, will be returned infinite times. (LP:
+    #1282129)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 24 Feb 2014 21:54:01 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20140220-0ubuntu1) trusty; urgency=low
 
   [ Michael Zanetti ]
