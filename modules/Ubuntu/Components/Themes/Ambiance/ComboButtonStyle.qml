@@ -62,7 +62,6 @@ Item {
         Component.onCompleted: {
             updateGradient();
             combo.gradientChanged.connect(updateGradient);
-            print(combo, combo.gradient, combo.color)
         }
         function colorHack(color) { return Qt.rgba(color.r, color.g, color.b, color.a); }
     }
@@ -90,6 +89,7 @@ Item {
             opacity: 0.01
             width: 1
             height: 1
+            visible: true
         }
 
         Item {
@@ -102,9 +102,7 @@ Item {
                     fill: parent
                     rightMargin: comboStyle.dropDownSeparatorWidth + comboStyle.dropDownWidth
                 }
-//                gradient: {print("G", combo, combo.gradient); combo.gradient}
-//                color: {print("C", combo, combo.color); combo.color}
-                color: isGradient ? "#00000000" : gradientProxy.colorHack(combo.color)
+                color: combo.color
                 gradient: isGradient ? combo.gradient : null
             }
 
@@ -135,15 +133,6 @@ Item {
             borderSource: "radius_idle.sci"
             visible: true
             image: comboFace
-
-//            // Color properties in a JS ternary operator don't work as expected in
-//            // QML because it overwrites alpha values with 1. A workaround is to use
-//            // Qt.rgba(). For more information, see
-//            // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197802 and
-//            // https://bugreports.qt-project.org/browse/QTBUG-32238.
-//            function colorHack(color) { return Qt.rgba(color.r, color.g, color.b, color.a); }
-//            color: "#00000000"
-//            gradientColor: "#00000000"
         }
 
         UbuntuShape {
@@ -207,113 +196,3 @@ Item {
         }
     }
 }
-
-
-
-
-//Item {
-//    id: comboStyle
-//    property real dropDownSeparatorWidth: units.gu(0.5)
-//    property real dropDownWidth: units.gu(4)
-//    property Item comboList: comboListHolder
-
-//    property alias defaultColor: mainButton.defaultColor
-//    property alias defaultGradient: mainButton.defaultGradient
-//    implicitHeight: units.gu(5)
-//    implicitWidth: units.gu(14)
-
-//    property ComboButton combo: styledItem
-//    Component.onCompleted: print(combo.gradient, combo.color)
-
-//    comboStyle {
-//        id: mainButton
-//        anchors {
-//            left: parent.left
-//            right: parent.right
-//            top: parent.top
-//        }
-//        height: units.gu(5)
-
-//        // overrides of the common style
-////        defaultColor: comboStyle.defaultColor
-////        defaultGradient: comboStyle.defaultGradient
-//        minimumWidth: units.gu(14)
-//        buttonFaceOffset: -dropDownWidth / 2
-//        sourceItem: comboFace
-//        ShaderEffectSource {
-//            id: comboFace
-//            sourceItem: content
-//            hideSource: true
-//            // FIXME: visible: false prevents rendering so make it a nearly
-//            // transparent 1x1 pixel instead
-//            opacity: 0.01
-//            width: 1
-//            height: 1
-//        }
-
-//        Item {
-//            id: content
-//            width: mainButton.width
-//            height: mainButton.height
-
-//            Rectangle {
-//                anchors {
-//                    fill: parent
-//                    rightMargin: comboStyle.dropDownSeparatorWidth + comboStyle.dropDownWidth
-//                }
-//                gradient: {print("G", combo, combo.gradient); combo.gradient}
-//                color: {print("C", combo, combo.color); combo.color}
-//            }
-
-//            Rectangle {
-//                anchors {
-//                    right: dropDownButton.right
-//                    top: parent.top
-//                    bottom: parent.bottom
-//                }
-//                width: comboStyle.dropDownSeparatorWidth
-//                color: Theme.palette.normal.background
-//            }
-
-//            Rectangle {
-//                id: dropDownButton
-//                anchors {
-//                    right: parent.right
-//                    top: parent.top
-//                    bottom: parent.bottom
-//                }
-//                width: comboStyle.dropDownWidth
-//                color: Theme.palette.normal.overlay
-//            }
-//        }
-//    }
-
-//    Connections {
-//        target: combo
-//        onExpandedChanged: {
-//            if (expanded)
-//                comboListHolder.show()
-//            else
-//                comboListHolder.hide()
-//        }
-//    }
-
-//    Popover {
-//        id: comboListHolder
-//        anchors {
-//            left: parent.left
-//            top: mainButton.bottom
-//            right: parent.right
-//        }
-//        height: combo.expanded ? (combo.expandedHeight - combo.collapsedHeight) : 0
-//        clip: true
-//        caller: dropDownButton
-
-//        Behavior on height {
-//            NumberAnimation {
-//                duration: UbuntuAnimation.SnapDuration
-//                easing.type: Easing.Linear
-//            }
-//        }
-//    }
-//}

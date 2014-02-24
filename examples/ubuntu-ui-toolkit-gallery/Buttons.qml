@@ -87,7 +87,7 @@ Template {
 
             ComboButton {
                 text: "Press me"
-//                color: "#00FF00"
+                color: "green"
                 objectName: "combobutton_collapsed"
                 comboList: Rectangle {
                     height: units.gu(20)

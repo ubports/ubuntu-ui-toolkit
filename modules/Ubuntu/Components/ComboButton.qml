@@ -66,6 +66,5 @@ Button {
         id: comboHolder
         parent: combo.__styleInstance ? combo.__styleInstance.comboList : combo
         anchors.fill: parent
-        visible: combo.expanded
     }
 }
