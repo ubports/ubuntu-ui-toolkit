@@ -90,4 +90,11 @@
          import Ubuntu.Components 0.1
      \endcode
      \annotatedlist ubuntu-services
+
+     \part Performance Metrics
+     Available through:
+     \code
+         import Ubuntu.PerformanceMetrics 0.1
+     \endcode
+     \annotatedlist ubuntu-performance-metrics
  */

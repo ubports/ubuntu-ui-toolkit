@@ -56,6 +56,9 @@ OrientationHelper {
     automaticOrientation: stateWrapper.rootItem && stateWrapper.rootItem.automaticOrientation ?
                           stateWrapper.rootItem.automaticOrientation : false
 
+    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
+
     /*!
       \preliminary
       Make the popup visible. Reparent to the background area object first if needed.

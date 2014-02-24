@@ -49,9 +49,15 @@ StyledItem {
     }
 
     /*! \internal */
-    onHeightChanged: internal.movementEnded()
+    onHeightChanged: {
+        internal.checkFlickableMargins();
+        internal.movementEnded();
+    }
 
     visible: title || contents
+    onVisibleChanged: {
+        internal.checkFlickableMargins();
+    }
 
     /*!
       Show the header
@@ -86,6 +92,7 @@ StyledItem {
      */
     property Flickable flickable: null
     onFlickableChanged: {
+        internal.checkFlickableMargins();
         internal.connectFlickable();
         header.show();
     }
@@ -157,6 +164,23 @@ StyledItem {
          */
         function interactiveChanged() {
             if (flickable && !flickable.interactive) header.show();
+        }
+
+        /*
+          Check the topMargin of the flickable and set it if needed to avoid
+          contents becoming unavailable behind the header.
+         */
+        function checkFlickableMargins() {
+            if (header.flickable) {
+                var headerHeight = header.visible ? header.height : 0
+                if (flickable.topMargin !== headerHeight) {
+                    var previousHeaderHeight = flickable.topMargin;
+                    flickable.topMargin = headerHeight;
+                    // push down contents when header grows,
+                    // pull up contents when header shrinks.
+                    flickable.contentY -= headerHeight - previousHeaderHeight;
+                }
+            }
         }
     }
 

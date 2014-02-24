@@ -15,13 +15,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ################################################################################
-QML="modules/Ubuntu/*/qmldir modules/Ubuntu/Components/Colors/UbuntuColors.qml modules/Ubuntu/Components/*/qmldir"
-CPP="Ubuntu.Components Ubuntu.Layouts"
+QML="modules/Ubuntu/*/qmldir modules/Ubuntu/Components/Colors/UbuntuColors.qml modules/Ubuntu/Components/*/qmldir modules/Ubuntu/Components/Pickers/PickerPanel.qml"
+CPP="Ubuntu.Components Ubuntu.Layouts Ubuntu.PerformanceMetrics"
 
 echo Dumping QML API of C++ components
 echo '' > plugins.qmltypes
 for i in $CPP; do
-    qmlplugindump $i 0.1 modules >> plugins.qmltypes
+    # Silence spam on stderr due to fonts
+    # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
+    # https://bugreports.qt-project.org/browse/QTBUG-36243
+    qmlplugindump $i 0.1 modules 2>/dev/null >> plugins.qmltypes
 done
 STATUS=$?
 test $STATUS = 0 || ERRORS=1

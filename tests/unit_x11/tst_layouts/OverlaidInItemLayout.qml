@@ -24,6 +24,7 @@ Rectangle {
 
     Layouts {
         id: layoutManager
+        objectName: "layoutManager"
         anchors.fill: parent
 
         layouts: [
