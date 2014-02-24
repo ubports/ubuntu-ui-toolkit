@@ -64,7 +64,6 @@ ListView {
     id: root
 
     /*!
-      \preliminary
       The index of the currently expanded item. -1 if no item is expanded.
      */
     property int expandedIndex: -1
