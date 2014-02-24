@@ -96,6 +96,7 @@ Flickable {
 
     /*!
       Reparent any content to inside the Column.
+      \qmlproperty QtObject children
      */
     default property alias children: column.data
 
