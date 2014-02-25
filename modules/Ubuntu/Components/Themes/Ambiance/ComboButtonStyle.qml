@@ -22,7 +22,8 @@ Item {
 
     property real dropDownSeparatorWidth: units.dp(2)
     property real dropDownWidth: units.gu(5)
-    property Item comboList: comboListHolder
+    property real comboListMargin: units.gu(1)
+    property Item comboList: comboListContent
 
     width: combo.width
     height: combo.collapsedHeight
@@ -109,8 +110,6 @@ Item {
                 Icon {
                     name: combo.expanded ? "go-up" : "go-down"
                     anchors.centerIn: parent
-                    width: 20
-                    height: 20
                 }
             }
         }
@@ -124,7 +123,47 @@ Item {
             right: parent.right
         }
         height: combo.expanded ? (combo.expandedHeight - combo.collapsedHeight) : 0
-        clip: true
+
+        ShaderEffectSource {
+            id: listContent
+            sourceItem: comboListContent
+            hideSource: true
+            // FIXME: visible: false prevents rendering so make it a nearly
+            // transparent 1x1 pixel instead
+            opacity: 0.01
+            width: 1
+            height: 1
+        }
+        Item {
+            id: comboListContent
+            anchors {
+                fill: parent
+                topMargin: comboListMargin
+            }
+            clip: true
+        }
+
+        UbuntuShape {
+            id: shape
+            anchors {
+                fill: parent
+                topMargin: comboListMargin
+            }
+            visible: true
+            borderSource: "radius_idle.sci"
+            image: listContent
+        }
+
+        Image {
+            source: "artwork/bubble_arrow.png"
+            rotation: 180
+            anchors {
+                bottom: shape.top
+                right: parent.right
+                rightMargin: dropDownWidth / 2
+            }
+
+        }
 
         Behavior on height {
             NumberAnimation {

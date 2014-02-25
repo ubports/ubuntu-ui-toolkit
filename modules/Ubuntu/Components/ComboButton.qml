@@ -37,10 +37,23 @@ Button {
     property real expandedHeight: collapsedHeight + units.gu(15)
 
     property alias comboList: comboHolder.data
+    property alias comboListItem: comboHolder
 
     style: Theme.createStyleComponent("ComboButtonStyle.qml", combo)
 
 //    height: expanded ? expandedHeight : collapsedHeight
+
+    Component.onCompleted: {
+        // update mouse area to report clicks only on the main button area
+        // area excluding dropDown button and combo list
+        // we must do separate bindings as __mouseArea is a read-only property
+        __mouseArea.anchors.fill = undefined;
+        __mouseArea.anchors.left = Qt.binding(function() {return combo.left;});
+        __mouseArea.anchors.top = Qt.binding(function() {return combo.top;});
+        __mouseArea.anchors.right = Qt.binding(function() {return combo.right;});
+        __mouseArea.anchors.rightMargin = Qt.binding(function() {return combo.__styleInstance.dropDownWidth;});
+        __mouseArea.height = Qt.binding(function() {return collapsedHeight;});
+    }
 
     // dropdown button
     AbstractButton {
@@ -50,7 +63,7 @@ Button {
             top: parent.top
             bottom: parent.bottom
         }
-        width: combo.__styleInstance ? combo.__styleInstance.dropDownWidth: 0
+        width: combo.__styleInstance ? combo.__styleInstance.dropDownWidth : 0
         onClicked: {
             // toggle expanded
             combo.expanded = !combo.expanded;
