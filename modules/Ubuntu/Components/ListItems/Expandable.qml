@@ -95,6 +95,7 @@ Empty {
     /*!
       Reparent any content to inside the Flickable
       \qmlproperty QtObject children
+      \default
      */
     default property alias children: flickableContent.data
 
