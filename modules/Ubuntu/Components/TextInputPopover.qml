@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1 as Toolkit
 import "Popups" 0.1
 
 ActionSelectionPopover {
+    objectName: "text_input_popover"
     actions: ActionList {
         Action {
             text: i18n.tr("Select All")

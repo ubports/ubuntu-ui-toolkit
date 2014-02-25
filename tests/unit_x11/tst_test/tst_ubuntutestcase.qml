@@ -52,11 +52,11 @@ Rectangle {
 
     function test_findChild() {
         var child = findChild(root,"myMouseArea");
-        compare(child!==undefined,true, "When a child is found, it is returned");
+        compare(child!==null,true, "When a child is found, it is returned");
         compare(child.objectName,"myMouseArea");
 
         child = findChild(root,"NoSuchChildHere");
-        compare(child===undefined,true,"When there is no child, function should return undefined");
+        compare(child===null,true,"When there is no child, function should return null");
     }
  }
 }

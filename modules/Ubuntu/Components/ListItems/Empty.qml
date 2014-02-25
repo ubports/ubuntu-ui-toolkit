@@ -141,7 +141,7 @@ AbstractButton {
       Reparent so that the visuals of the children does not
       occlude the bottom divider line.
      */
-    default property alias children: body.children
+    default property alias children: body.data
 
      /*!
       \internal
@@ -183,6 +183,9 @@ AbstractButton {
 
     // Keep compatible with the old version
     height: implicitHeight
+
+    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
 
     /*! \internal */
     QtObject {
@@ -347,6 +350,8 @@ AbstractButton {
                 top: parent.top
                 bottom: parent.bottom
             }
+            LayoutMirroring.enabled: false
+            LayoutMirroring.childrenInherit: true
 
             Item {
                 id: confirmRemovalDialog
@@ -377,8 +382,7 @@ AbstractButton {
                         source: "artwork/delete.png"
                         fillMode: Image.Pad
                         anchors {
-                            top: parent.top
-                            bottom: parent.bottom
+                            verticalCenter: parent.verticalCenter
                         }
                         width: units.gu(5)
                     }
@@ -386,8 +390,7 @@ AbstractButton {
                         text: i18n.tr("Delete")
                         verticalAlignment: Text.AlignVCenter
                         anchors {
-                            top: parent.top
-                            bottom: parent.bottom
+                            verticalCenter: parent.verticalCenter
                         }
                         width: units.gu(7)
                         fontSize: "medium"
@@ -450,7 +453,7 @@ AbstractButton {
         running: false
         UbuntuNumberAnimation {
             target: emptyListItem
-            property: "implicitHeight"
+            property: "height"
             to: 0
         }
         ScriptAction {

@@ -47,6 +47,8 @@
 #include "unitythemeiconprovider.h"
 #include "ucstatesaver.h"
 #include "ucurihandler.h"
+#include "ucmouse.h"
+#include "ucinversemouse.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -58,6 +60,13 @@ Q_DECLARE_METATYPE(QList<QQmlError>)
 /*
  * Type registration functions.
  */
+
+static QObject *registerPickerPanel(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(scriptEngine)
+    return UbuntuComponentsPlugin::registerQmlSingletonType(engine,
+           "Ubuntu.Components", "Pickers/PickerPanel.qml");
+}
 
 static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
@@ -86,6 +95,13 @@ static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
     return uriHandler;
 }
 
+static QObject *registerUbuntuColors(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(scriptEngine)
+    return UbuntuComponentsPlugin::registerQmlSingletonType(engine,
+           "Ubuntu.Components", "Colors/UbuntuColors.qml");
+}
+
 QUrl UbuntuComponentsPlugin::baseUrl(const QStringList& importPathList, const char* uri)
 {
     /* FIXME: remove when migrating to Qt 5.1 and use QQmlExtensionPlugin::baseUrl()
@@ -108,13 +124,10 @@ QUrl UbuntuComponentsPlugin::baseUrl(const QStringList& importPathList, const ch
     return QUrl();
 }
 
-void UbuntuComponentsPlugin::registerQmlSingletonType(QQmlEngine *engine, const char* uri, const char* typeName, const char* qmlFile)
+QObject *UbuntuComponentsPlugin::registerQmlSingletonType(QQmlEngine *engine, const char* uri, const char* qmlFile)
 {
     QUrl url = baseUrl(engine->importPathList(), uri).resolved(QUrl::fromLocalFile(qmlFile));
-    QObject* object = QuickUtils::instance().createQmlObject(url);
-    if (object != NULL) {
-        engine->rootContext()->setContextProperty(typeName, object);
-    }
+    return QuickUtils::instance().createQmlObject(url, engine);
 }
 
 void UbuntuComponentsPlugin::registerWindowContextProperty()
@@ -146,6 +159,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
 
+    qmlRegisterSingletonType<QObject>(uri, 0, 1, "UbuntuColors", registerUbuntuColors);
     qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, 0, 1, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, 0, 1, "UCUnits", "Not instantiable");
@@ -162,16 +176,18 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCStateSaver>(uri, 0, 1, "StateSaver");
     qmlRegisterType<UCStateSaverAttached>();
     qmlRegisterSingletonType<UCUriHandler>(uri, 0, 1, "UriHandler", registerUriHandler);
+    qmlRegisterType<UCMouse>(uri, 0, 1, "Mouse");
+    qmlRegisterType<UCInverseMouse>(uri, 0, 1, "InverseMouse");
     // Needed for unit tests
     qRegisterMetaType<QList <QQmlError> >();
+    // register QML singletons
+    qmlRegisterSingletonType<QObject>(uri, 0, 1, "PickerPanel", registerPickerPanel);
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
-
-    QuickUtils::instance().setImportPathList(engine->importPathList());
 
     // register root object watcher that sets a global property with the root object
     // that can be accessed from any object
@@ -210,9 +226,6 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
                      fontUtilsListener, SLOT(updateContextProperty()));
 
     context->setContextProperty("bottomBarVisibilityCommunicator", &BottomBarVisibilityCommunicator::instance());
-
-    // register UbuntuColors
-    registerQmlSingletonType(engine, uri, "UbuntuColors", "Colors/UbuntuColors.qml");
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 

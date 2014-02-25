@@ -185,7 +185,7 @@ Empty {
     /*!
       \internal
      */
-    property alias children: middle.children
+    property alias children: middle.data
     Item {
         id: middle
         property bool anchorToIconHelper: !__iconIsItem && iconHelper.source != ""
