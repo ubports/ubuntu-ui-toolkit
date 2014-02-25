@@ -574,47 +574,6 @@ MainView {
                 text: "No element clicked."
             }
 
-            ListModel {
-                id: testModel
-
-                ListElement {
-                    objectName: "testListElement1"
-                    label: "test list element 1"
-                }
-                ListElement {
-                    objectName: "testListElement2"
-                    label: "test list element 2"
-                }
-                ListElement {
-                    objectName: "testListElement3"
-                    label: "test list element 3"
-                }
-                ListElement {
-                    objectName: "testListElement4"
-                    label: "test list element 4"
-                }
-                ListElement {
-                    objectName: "testListElement5"
-                    label: "test list element 5"
-                }
-                ListElement {
-                    objectName: "testListElement6"
-                    label: "test list element 6"
-                }
-                ListElement {
-                    objectName: "testListElement7"
-                    label: "test list element 7"
-                }
-                ListElement {
-                    objectName: "testListElement8"
-                    label: "test list element 8"
-                }
-                ListElement {
-                    objectName: "testListElement9"
-                    label: "test list element 9"
-                }
-            }
-
             ListView {
                 id: testListView
                 objectName: "testListView"
@@ -622,13 +581,13 @@ MainView {
                 anchors.right: parent.right
                 height: column.height - clickedLabel.paintedHeight
                 clip: true
-                model: testModel
+                model: 20
 
                 delegate: ListItem.Standard {
-                    text: model.label
-                    objectName: model.objectName
-                    onClicked: clickedLabel.text = model.objectName
-                    height: units.gu(5)
+                        objectName: "testListElement%1".arg(index)
+                        text: "test list element %1".arg(index)
+                        onClicked: clickedLabel.text = objectName
+                        height: units.gu(5)
                 }
             }
         }
@@ -648,31 +607,44 @@ MainView {
         self.assertIsInstance(self.list_view, emulators.QQuickListView)
 
     def test_click_element(self):
-        self.list_view.click_element('testListElement1')
-        self.assertEqual(self.label.text, 'testListElement1')
+        self.list_view.click_element('testListElement0')
+        self.assertEqual(self.label.text, 'testListElement0')
 
     def test_click_element_outside_view_below(self):
         # Click the first element out of view to make sure we are not scrolling
         # to the bottom at once.
         self.assertFalse(
-            self.list_view._is_element_fully_visible('testListElement5'))
+            self.list_view._is_element_clickable('testListElement5'))
 
         self.list_view.click_element('testListElement5')
         self.assertEqual(self.label.text, 'testListElement5')
 
     def test_click_element_outside_view_above(self):
-        # First we need to scroll to the 8th element in order for the 9th to be
-        # created.
-        self.list_view.click_element('testListElement8')
         self.list_view.click_element('testListElement9')
 
         # Click the first element out of view to make sure we are not scrolling
         # to the top at once.
         self.assertFalse(
-            self.list_view._is_element_fully_visible('testListElement4'))
+            self.list_view._is_element_clickable('testListElement4'))
 
         self.list_view.click_element('testListElement4')
         self.assertEqual(self.label.text, 'testListElement4')
+
+    def test_click_element_not_created_at_start(self):
+        objectName = 'testListElement19'
+        self.assertRaises(
+            dbus.StateNotFoundError,
+            self.list_view.select_single,
+            objectName=objectName)
+        self.list_view.click_element(objectName)
+
+    def test_click_unexisting_element(self):
+        error = self.assertRaises(
+            emulators.ToolkitEmulatorException,
+            self.list_view.click_element,
+            'unexisting')
+        self.assertEqual(
+            str(error), 'List element with objectName "unexisting" not found.')
 
 
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
