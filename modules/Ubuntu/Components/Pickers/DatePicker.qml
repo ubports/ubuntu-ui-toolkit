@@ -223,8 +223,7 @@ StyledItem {
 
     /*!
       \qmlproperty int minimum
-      \qmlproperty int maximum
-      The minimum and maximum dates (inclusive) to be shown in the picker.
+      The minimum date (inclusive) to be shown in the picker.
       Both year and month values will be considered from the properties.
 
       The year and month picker values are filled based on these values. The
@@ -239,7 +238,14 @@ StyledItem {
       value for maximum.
       */
     property date minimum: Date.prototype.midnight.call(new Date())
-    /*! \internal */
+    /*!
+      \qmlproperty int maximum
+
+      The maximum date (inclusive) to be shown in the picker.
+      Both year and month values will be considered from the properties.
+
+      See \l minimum for more details.
+     */
     property date maximum: {
         var d = Date.prototype.midnight.call(new Date());
         d.setFullYear(d.getFullYear() + 50);
@@ -247,36 +253,32 @@ StyledItem {
     }
 
     /*!
-      \qmlproperty int year
-      \readonly
-      \qmlproperty int month
-      \readonly
-      \qmlproperty int day
-      \readonly
-      \qmlproperty int week
-      \readonly
-      \qmlproperty int hours
-      \readonly
-      \qmlproperty int minutes
-      \readonly
-      \qmlproperty int seconds
-      \readonly
-      Properties declared for convenience, representing the \b year, \b month,
-      \b day, \b week as well as \b hours, \b minutes and \b seconds values of
-      the \l date property.
+      For convenience, the \b year value of the \l date property.
       */
     readonly property int year: datePicker.date.getFullYear()
-    /*! \internal */
+    /*!
+      For convenience, the \b month value of the \l date property.
+     */
     readonly property int month: datePicker.date.getMonth()
-    /*! \internal */
+    /*!
+      For convenience, the \b day value of the \l date property.
+     */
     readonly property int day: datePicker.date.getDate()
-    /*! \internal */
+    /*!
+      For convenience, the \b week value of the \l date property.
+     */
     readonly property int week: datePicker.date.getWeek()
-    /*! \internal */
+    /*!
+      For convenience, the \b hours value of the \l date property.
+     */
     readonly property int hours: datePicker.date.getHours()
-    /*! \internal */
+    /*!
+      For convenience, the \b minutes value of the \l date property.
+     */
     readonly property int minutes: datePicker.date.getMinutes()
-    /*! \internal */
+    /*!
+      For convenience, the \b seconds value of the \l date property.
+     */
     readonly property int seconds: datePicker.date.getSeconds()
 
     /*!

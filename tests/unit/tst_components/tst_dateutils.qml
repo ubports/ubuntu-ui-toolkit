@@ -77,6 +77,7 @@ TestCase {
     }
     function test_daysInMonth(data) {
         var date = new Date;
+        date.setDate(1);
         date.setMonth(data.month);
         compare(date.daysInMonth(), data.days, "daysInMonth() failed for month " + (data.month + 1));
     }
