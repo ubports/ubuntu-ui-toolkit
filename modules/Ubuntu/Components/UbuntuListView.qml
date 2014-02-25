@@ -81,11 +81,11 @@ ListView {
             }
 
             var effectiveExpandedHeight = Math.min(root.currentItem.expandedHeight, root.height - root.currentItem.collapsedHeight);
-            if (root.contentY == 0) {
+            if (root.contentY - root.originY == 0) {
                 if (((root.currentIndex + 1) * root.currentItem.collapsedHeight) + effectiveExpandedHeight > root.height) {
-                    animation.to = ((root.currentIndex + 1) * root.currentItem.collapsedHeight + effectiveExpandedHeight) - root.height
+                    animation.to = ((root.currentIndex + 1) * root.currentItem.collapsedHeight + effectiveExpandedHeight) - root.height + root.originY
                 } else {
-                    animation.to = 0
+                    animation.to = root.originY
                 }
             } else {
                 animation.to = root.contentY + (effectiveExpandedHeight - root.currentItem.collapsedHeight);

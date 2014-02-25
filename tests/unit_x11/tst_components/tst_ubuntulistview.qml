@@ -36,7 +36,7 @@ Item {
     UbuntuListView {
         id: ubuntuListView
         anchors { left: parent.left; top: parent.top; right: parent.right }
-        height: units.gu(60)
+        height: units.gu(20)
         clip: true
         model: dummyModel
 
@@ -45,7 +45,7 @@ Item {
             objectName: "expandable" + index
             expandedHeight: contentColumn.height
 
-            onClicked: expanded = !expanded
+            onClicked: ubuntuListView.expandedIndex = index
 
             Column {
                 id: contentColumn
@@ -114,15 +114,17 @@ Item {
             fuzzyCompare(ubuntuListView.mapFromItem(item).y, item.collapsedHeight, .5);
 
             expandItem(item);
+            waitForRendering(ubuntuListView);
 
             fuzzyCompare(ubuntuListView.mapFromItem(item).y, item.collapsedHeight, .5);
         }
 
         function test_scrollToTop() {
             ubuntuListView.height = units.gu(30);
+            ubuntuListView.positionViewAtIndex(0, ListView.Beginning)
 
             var item = findChild(ubuntuListView, "expandable1");
-            fuzzyCompare(ubuntuListView.mapFromItem(item).y, item.collapsedHeight, .5);
+            fuzzyCompare(ubuntuListView.mapFromItem(item).y, item.collapsedHeight, 1);
 
             expandItem(item);
 
@@ -132,9 +134,10 @@ Item {
         function test_scrollIntoView() {
             var item = findChild(ubuntuListView, "expandable9");
             expandItem(item);
+            waitForRendering(ubuntuListView);
 
             // The item must be scrolled upwards, leaving space for one other item at the bottom
-            fuzzyCompare(ubuntuListView.mapFromItem(item).y, ubuntuListView.height - item.collapsedHeight - item.expandedHeight, .5);
+            fuzzyCompare(ubuntuListView.mapFromItem(item).y, ubuntuListView.height - item.collapsedHeight - item.expandedHeight, 1);
         }
 
         function test_collapseByClickingOutside() {
@@ -163,13 +166,33 @@ Item {
             }
         }
 
+        function test_destroyAndRecreateExpanded() {
+            var item = findChild(ubuntuListView, "expandable1");
+            expandItem(item);
+
+            // scroll the list to the bottom
+            ubuntuListView.currentIndex = 0;
+            ubuntuListView.positionViewAtIndex(ubuntuListView.count -1, ListView.End);
+
+            // make sure the item is eventually destroyed
+            tryCompareFunction(function() { return findChild(ubuntuListView, "expandable1") == null;}, true)
+
+            // scroll the list back up
+            ubuntuListView.positionViewAtIndex(0, ListView.Beginning)
+
+            // wait until the item is recreated.
+            tryCompareFunction(function() { return findChild(ubuntuListView, "expandable1") != null; }, true);
+            item = findChild(ubuntuListView, "expandable1");
+            compare(item.expanded, true);
+            
+        }
+
         function cleanup() {
             // Restore listview height
             ubuntuListView.height = units.gu(60);
             collapse();
             // scroll the ListView back to top
-            ubuntuListView.flick(0, units.gu(500));
-            tryCompare(ubuntuListView, "flicking", false);
+            ubuntuListView.positionViewAtIndex(0, ListView.Beginning);
         }
     }
 }

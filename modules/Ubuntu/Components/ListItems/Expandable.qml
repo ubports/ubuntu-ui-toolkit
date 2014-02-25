@@ -145,6 +145,12 @@ Empty {
         }
     ]
 
+    Component.onCompleted: {
+        if (priv.isInExpandableListView && priv.view.expandedIndex == index) {
+            root.expanded = true;
+        }
+    }
+
     Connections {
         target: priv.isInExpandableListView ? priv.view : null
         onExpandedIndexChanged: {
