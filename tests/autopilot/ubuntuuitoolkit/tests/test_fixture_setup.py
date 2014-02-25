@@ -17,11 +17,11 @@
 import os
 
 try:
- # Python 3.
- from unittest import mock
+    # Python 3.
+    from unittest import mock
 except ImportError:
- # Python 2 add-on: python-mock.
- import mock
+    # Python 2 add-on: python-mock.
+    import mock
 import testtools
 from autopilot import testcase as autopilot_testcase
 from testtools.matchers import Contains, Not, FileExists
