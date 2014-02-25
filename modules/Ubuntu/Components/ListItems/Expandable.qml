@@ -25,7 +25,7 @@ import Ubuntu.Components 0.1
     components such as buttons. It subclasses \l Empty and thus brings all that
     functionality, but additionally provides means to expand and collapse the item.
 
-    When used together with an \l UbuntuListView or \l ExpandablesColumn it
+    When used together with an UbuntuListView or \l ExpandablesColumn it
     can coordinate with other items in the list to make sure it is scrolled while
     expanding to be fully visible in the view. Additionally it is made sure that
     only one Expandable item is expanded at a time and it is collapsed when the
