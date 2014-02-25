@@ -19,6 +19,7 @@ import os
 import tempfile
 
 import fixtures
+from autopilot import display
 
 from ubuntuuitoolkit import base
 
@@ -28,7 +29,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 MainView {
-    width: units.gu(48)
+    width: units.gu(80)
     height: units.gu(60)
 
     Label {
@@ -95,3 +96,38 @@ class FakeApplication(fixtures.Fixture):
     def _get_local_desktop_file_directory(self):
         return os.path.join(
             os.environ.get('HOME'), '.local', 'share', 'applications')
+
+
+class SimulateDevice(fixtures.Fixture):
+
+    def __init__(self, app_width, app_height, grid_unit_px):
+        super(SimulateDevice, self).__init__()
+        self.app_width = app_width
+        self.app_height = app_height
+        self.grid_unit_px = grid_unit_px
+
+    def setUp(self):
+        super(SimulateDevice, self).setUp()
+        if self._is_geometry_larger_than_display(
+                self.app_width, self.app_height):
+            scale_divisor = self._get_scale_divisor()
+            grid_unit_px = self.grid_unit_px // scale_divisor
+        else:
+            grid_unit_px = self.grid_unit_px
+        self.useFixture(
+            fixtures.EnvironmentVariable(
+                'GRID_UNIT_PX', str(grid_unit_px)))
+
+    def _is_geometry_larger_than_display(self, width, height):
+        screen = display.Display.create()
+        screen_width = screen.get_screen_width()
+        screen_height = screen.get_screen_height()
+        return (width > screen_width) or (height > screen_height)
+
+    def _get_scale_divisor(self):
+        scale_divisor = 2
+        while self._is_geometry_larger_than_display(
+                self.app_width // scale_divisor,
+                self.app_height // scale_divisor):
+            scale_divisor = scale_divisor * 2
+        return scale_divisor

@@ -21,7 +21,7 @@ import testtools
 from autopilot import testcase as autopilot_testcase
 from testtools.matchers import Contains, Not, FileExists
 
-from ubuntuuitoolkit import base, fixture_setup
+from ubuntuuitoolkit import base, fixture_setup, scenarios
 
 
 class FakeApplicationTestCase(testtools.TestCase):
@@ -149,6 +149,28 @@ class FakeApplicationTestCase(testtools.TestCase):
 class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
 
     def test_launch_fake_application_with_qmlscene(self):
+        fake_application = fixture_setup.FakeApplication()
+        self.useFixture(fake_application)
+
+        self.application = self.launch_test_application(
+            base.get_qmlscene_launch_command(),
+            fake_application.qml_file_path,
+            '--desktop_file_hint={0}'.format(
+                fake_application.desktop_file_path),
+            app_type='qt')
+
+        # We can select a component from the application.
+        self.application.select_single('Label', objectName='testLabel')
+
+
+class SimulateDeviceTestCase(autopilot_testcase.AutopilotTestCase):
+
+    scenarios = scenarios.get_device_simulation_scenarios()
+
+    def test(self):
+        self.useFixture(fixture_setup.SimulateDevice(
+            self.app_width, self.app_height, self.grid_unit_px))
+
         fake_application = fixture_setup.FakeApplication()
         self.useFixture(fake_application)
 
