@@ -93,11 +93,13 @@ TestCase {
 		is generated)
 	*/
 
-	function tryCompareFunction(func, expectedResult) {
+	function tryCompareFunction(func, expectedResult, timeout) {
 		var timeSpent = 0
-		var timeout = 5000
 		var success = false
 		var actualResult
+		if (timeout == undefined) {
+                    timeout = 5000;
+                }
 		while (timeSpent < timeout && !success) {
 			actualResult = func()
 			success = qtest_compareInternal(actualResult, expectedResult)
