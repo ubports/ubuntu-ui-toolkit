@@ -68,26 +68,26 @@ Item {
         target: styledItem
 
         onSelectionModeChanged: {
-            if (styledItem.selectionMode) {
-                activatingTimer.restart();
-            } else {
+            if (!styledItem.selectionMode) {
                 buttonView.selectButton(styledItem.selectedIndex);
             }
         }
     }
 
-    /*!
-      \internal
-      Avoid interpreting a click to enter selection mode as a button click.
-     */
-    Timer {
-        id: activatingTimer
-        interval: 800 // same as pressAndHold time
-    }
-
     Connections {
         target: styledItem
         onSelectedIndexChanged: buttonView.selectButton(styledItem.selectedIndex)
+    }
+
+    /*
+      Prevent events that are not accepted by tab buttons or mouseArea below
+      from passing through the TabBar.
+     */
+    MouseArea {
+        anchors.fill: parent
+        onReleased: {
+            mouseArea.enteringSelectionMode = false;
+        }
     }
 
     Component {
@@ -209,14 +209,14 @@ Item {
                     }
 
                     onClicked: {
-                        if (!activatingTimer.running) {
+                        if (mouseArea.enteringSelectionMode) {
+                            mouseArea.enteringSelectionMode = false;
+                        } else if (opacity > 0.0) {
                             styledItem.selectedIndex = index;
                             if (!styledItem.alwaysSelectionMode) {
                                 styledItem.selectionMode = false;
                             }
                             button.select();
-                        } else {
-                            activatingTimer.stop();
                         }
                     }
 
@@ -322,6 +322,7 @@ Item {
         onDragEnded: {
             // unset interacting which was set in mouseArea.onPressed
             mouseArea.interacting = false;
+            mouseArea.enteringSelectionMode = false;
         }
 
         Timer {
@@ -364,10 +365,17 @@ Item {
         property bool interacting: false
         onInteractingChanged: idleTimer.conditionalRestartOrStop()
 
+        // When pressing to enter selection mode, a release should not be interpreted
+        //  as a click on a button to select a new tab.
+        property bool enteringSelectionMode: false
+
         // This MouseArea is always enabled, even when the tab bar is in selection mode,
         //  so that press events are detected and tabBarStyle.pressed is updated.
         onPressed: {
             mouseArea.interacting = true;
+            if (!styledItem.selectionMode) {
+                mouseArea.enteringSelectionMode = true;
+            }
             styledItem.selectionMode = true;
             mouse.accepted = false;
         }
