@@ -23,25 +23,52 @@ import Ubuntu.Components.Popups 0.1
     \ingroup ubuntu
     \brief Ubuntu button with expanding list of components.
 
-    Do not set the component's height directly, as expansion controls its value and
-    overriding it may destroy component's proper functioning.
+    Do not set the component's height directly, as expansion controls its value
+    and overriding it may destroy component's proper functioning.
   */
 Button {
     id: combo
 
+    /*!
+      Specifies whether the combo list is expanded or not. The default falue is
+      false.
+      */
     property bool expanded: false
 
-    property int selectedIndex: -1
+    /*!
+      The property specifies whether to collapse the expanded combo list when
+      the main button is clicked. The default value is true.
+      */
+    property bool autoCollapse: true
 
+    /*!
+      The property holds the height of the component when collapsed. By default
+      the height is the implicit height of the component.
+      */
     property real collapsedHeight: implicitHeight
+
+    /*!
+        The property holds the maximum height value the component should expand.
+        The default value is the collapsedHeight + 15 GU.
+      */
     property real expandedHeight: collapsedHeight + units.gu(15)
 
-    property alias comboList: comboHolder.data
-    property alias comboListItem: comboHolder
+    /*!
+        \qmlproperty list<Item> comboList
+        \default
+        Default property holding the item to be shown in the combo list.
+      */
+    default property alias comboList: comboHolder.data
 
     style: Theme.createStyleComponent("ComboButtonStyle.qml", combo)
 
-//    height: expanded ? expandedHeight : collapsedHeight
+    // auto-collapse
+    /*! \internal */
+    onClicked: {
+        if (autoCollapse) {
+            expanded = false;
+        }
+    }
 
     Component.onCompleted: {
         // update mouse area to report clicks only on the main button area
@@ -51,20 +78,22 @@ Button {
         __mouseArea.anchors.left = Qt.binding(function() {return combo.left;});
         __mouseArea.anchors.top = Qt.binding(function() {return combo.top;});
         __mouseArea.anchors.right = Qt.binding(function() {return combo.right;});
-        __mouseArea.anchors.rightMargin = Qt.binding(function() {return combo.__styleInstance.dropDownWidth;});
+        __mouseArea.anchors.rightMargin = Qt.binding(function() {return combo.__styleInstance.dropDownWidth + combo.__styleInstance.dropDownSeparatorWidth;});
         __mouseArea.height = Qt.binding(function() {return collapsedHeight;});
     }
 
     // dropdown button
-    AbstractButton {
+    MouseArea {
         id: dropDown
+        objectName: "dropdown_button"
         anchors {
             right: parent.right
             top: parent.top
-            bottom: parent.bottom
         }
         width: combo.__styleInstance ? combo.__styleInstance.dropDownWidth : 0
-        onClicked: {
+        height: combo.collapsedHeight
+        // open dropdown when predded, not when clicked
+        onPressed: {
             // toggle expanded
             combo.expanded = !combo.expanded;
         }
@@ -73,6 +102,7 @@ Button {
     // expansion list
     Item {
         id: comboHolder
+        objectName: "combo_list"
         parent: combo.__styleInstance ? combo.__styleInstance.comboList : combo
         anchors.fill: parent
     }

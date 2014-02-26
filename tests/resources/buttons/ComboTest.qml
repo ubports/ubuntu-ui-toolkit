@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1
 
 MainView {
     width: units.gu(40)
@@ -11,24 +12,44 @@ MainView {
         spacing: units.gu(2)
 
         ComboButton {
-            text: "Press me"
-            comboList: Rectangle {
-                color: "blue"
-                width: parent.width
-                height: units.gu(40)
+            text: "comboList is Flickable"
+            Flickable {
+                id: flickable
+                anchors.fill: parent
+                contentHeight: rect.height
+
+                Rectangle {
+                    id: rect
+                    width: parent.width
+                    height: units.gu(40)
+                    gradient: Gradient {
+                        GradientStop {
+                            position: 0.0
+                            color: "red"
+                        }
+                        GradientStop {
+                            position: 0.5
+                            color: "green"
+                        }
+                        GradientStop {
+                            position: 1.0
+                            color: "blue"
+                        }
+                    }
+                }
             }
         }
 
         ComboButton {
             id: combo2
-            text: "Press me"
+            text: "comboList is ListView"
             expanded: true
             expandedHeight: units.gu(30)
             comboList: ListView {
-                anchors.fill: combo2.comboListItem
+                anchors.fill: parent
                 model: 20
-                delegate: Label {
-                    text: "Item #" + modelData
+                delegate: Standard {
+                    text: "Action #" + modelData
                 }
             }
         }

@@ -17,20 +17,61 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
+/*!
+    The component defines the style of the ComboButton component.
+  */
 Item {
     id: comboStyle
 
-    property real dropDownSeparatorWidth: units.dp(2)
+    /*!
+      Width of the drop down button.
+      */
     property real dropDownWidth: units.gu(5)
-    property real comboListMargin: units.gu(1)
+
+    /*!
+      Width of the dropdown button separator.
+      */
+    property real dropDownSeparatorWidth: units.dp(2)
+
+    /*!
+      Distance between the combo list and the main button.
+      */
+    property real comboListMargin: units.gu(0.8)
+
+    /*!
+      The item which will hold the combo list data.
+      */
     property Item comboList: comboListContent
+
+    /*!
+      The item pointing to the panel holding the combo list and additional design
+      artifacts. It is used by the component to calculate the expansion size.
+      */
+    property Item comboListPanel: comboListHolder
+
+    /*!
+      Default color for the main button.
+      */
+    property alias defaultColor: mainButton.defaultColor
+
+    /*!
+      Default gradient for the main button.
+      */
+    property alias defaultGradient: mainButton.defaultGradient
+
+    /*!
+      Default color for the dropdown button when released.
+      */
+    property color dropDownColorReleased: defaultColor
+    /*!
+      Default color for dropdown button when pressed.
+      */
+    property color dropDownColorPressed: "#0C000000" //Qt.rgba(0, 0, 0, 0.05)
 
     width: combo.width
     height: combo.collapsedHeight
 
     property ComboButton combo: styledItem
-    property alias defaultColor: mainButton.defaultColor
-    property alias defaultGradient: mainButton.defaultGradient
 
     implicitWidth: units.gu(36)
     implicitHeight: units.gu(4)
@@ -38,7 +79,14 @@ Item {
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
-    //Update component's height
+    // Color properties in a JS ternary operator don't work as expected in
+    // QML because it overwrites alpha values with 1. A workaround is to use
+    // Qt.rgba(). For more information, see
+    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197802 and
+    // https://bugreports.qt-project.org/browse/QTBUG-32238.
+    function colorHack(color) { return Qt.rgba(color.r, color.g, color.b, color.a); }
+
+    // Update component's height
     Binding {
         target: combo
         property: "height"
@@ -106,10 +154,12 @@ Item {
                     bottom: parent.bottom
                 }
                 width: comboStyle.dropDownWidth
-                color: !combo.expanded ? defaultColor : Qt.rgba(0, 0, 0, 0.05)
+                color: combo.expanded ? comboStyle.colorHack(comboStyle.dropDownColorPressed) : comboStyle.dropDownColorReleased
                 Icon {
                     name: combo.expanded ? "go-up" : "go-down"
                     anchors.centerIn: parent
+//                    width: units.gu(4)
+//                    height: units.gu(4)
                 }
             }
         }
@@ -123,6 +173,7 @@ Item {
             right: parent.right
         }
         height: combo.expanded ? (combo.expandedHeight - combo.collapsedHeight) : 0
+        opacity: combo.expanded ? 1.0 : 0.0
 
         ShaderEffectSource {
             id: listContent
@@ -134,15 +185,27 @@ Item {
             width: 1
             height: 1
         }
-        Item {
+        Rectangle {
             id: comboListContent
             anchors {
                 fill: parent
                 topMargin: comboListMargin
             }
             clip: true
+            color: comboStyle.dropDownColorPressed
         }
 
+        BorderImage {
+            id: shadow
+            anchors {
+                fill: parent
+                leftMargin: -units.gu(0.5)
+                topMargin: comboListMargin - units.gu(0.5)
+                rightMargin: -units.gu(0.5)
+                bottomMargin: -units.gu(0.5)
+            }
+            source: "artwork/bubble_shadow.sci"
+        }
         UbuntuShape {
             id: shape
             anchors {
@@ -159,16 +222,23 @@ Item {
             rotation: 180
             anchors {
                 bottom: shape.top
+                bottomMargin: -1
                 right: parent.right
-                rightMargin: dropDownWidth / 2
+                rightMargin: dropDownWidth / 2 - units.gu(0.5)
             }
 
         }
 
         Behavior on height {
             NumberAnimation {
-                duration: UbuntuAnimation.SnapDuration
-                easing.type: Easing.Linear
+                duration: UbuntuAnimation.FastDuration
+                easing: UbuntuAnimation.StandardEasing
+            }
+        }
+        Behavior on opacity {
+            NumberAnimation {
+                duration: UbuntuAnimation.FastDuration
+                easing: UbuntuAnimation.StandardEasing
             }
         }
     }
