@@ -85,7 +85,7 @@ Item {
      */
     MouseArea {
         anchors.fill: parent
-        onClicked: {
+        onReleased: {
             mouseArea.enteringSelectionMode = false;
         }
     }
