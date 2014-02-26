@@ -327,9 +327,7 @@ Item {
             id: idleTimer
             interval: tabBarStyle.deactivateTime
             running: styledItem.selectionMode && !styledItem.alwaysSelectionMode
-            onTriggered: {
-                styledItem.selectionMode = false
-            }
+            onTriggered: styledItem.selectionMode = false
             function conditionalRestartOrStop() {
                 if (Qt.application.active &&
                         styledItem.selectionMode &&
@@ -363,9 +361,7 @@ Item {
         //  because after not accepting the mouse, the released event will go to
         //  the buttonView or individual buttons.
         property bool interacting: false
-        onInteractingChanged: {
-            idleTimer.conditionalRestartOrStop();
-        }
+        onInteractingChanged: idleTimer.conditionalRestartOrStop()
 
         // When pressing to enter selection mode, a release should not be interpreted
         //  as a click on a button to select a new tab.
