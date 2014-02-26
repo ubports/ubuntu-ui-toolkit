@@ -225,7 +225,7 @@ Template {
 
     TemplateSection {
         title: i18n.tr("UbuntuListView")
-        className: "Header"
+        className: "UbuntuListView"
 
         ListModel {
             id: fruitModel
