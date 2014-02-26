@@ -276,7 +276,7 @@ Template {
 
     TemplateSection {
         title: i18n.tr("ExpandablesColumn")
-        className: "Header"
+        className: "ExpandablesColumn"
 
         ListItem.ExpandablesColumn {
             anchors { left: parent.left; right: parent.right }
@@ -319,7 +319,7 @@ Template {
 
     TemplateSection {
         title: i18n.tr("Expandable")
-        className: "Header"
+        className: "Expandable"
 
         Column {
             anchors { left: parent.left; right: parent.right }
