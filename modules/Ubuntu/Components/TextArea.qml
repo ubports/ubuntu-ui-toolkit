@@ -741,6 +741,9 @@ StyledItem {
     /*!\internal */
     onHeightChanged: internal.inputAreaHeight = control.height - 2 * internal.frameSpacing
 
+    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
+
     /*!\internal */
     property alias __internal: internal
     QtObject {

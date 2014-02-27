@@ -33,6 +33,9 @@ Item {
     implicitWidth: Math.max(minimumWidth, foreground.implicitWidth + 2*horizontalPadding)
     implicitHeight: units.gu(5)
 
+    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
+
     /* The proxy is necessary because Gradient.stops and GradientStop.color are
        non-NOTIFYable properties. They cannot be written to so it is fine but
        the proxy avoids the warnings.

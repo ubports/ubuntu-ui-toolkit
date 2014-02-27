@@ -32,7 +32,9 @@ ShaderEffect {
     property color leftColor
     property color rightColor
     property real progress
-    
+    property bool mirror: false
+    property string texCoord: mirror ? "1.0 - qt_TexCoord0.x" : "qt_TexCoord0.x"
+
     fragmentShader: "
             varying highp vec2 qt_TexCoord0;
             uniform sampler2D source;
@@ -43,7 +45,7 @@ ShaderEffect {
 
             void main() {
                 lowp vec4 sourceColor = texture2D(source, qt_TexCoord0);
-                lowp vec4 newColor = mix(leftColor, rightColor, step(progress, qt_TexCoord0.x));
+                lowp vec4 newColor = mix(leftColor, rightColor, step(progress, " + texCoord + "));
                 gl_FragColor = newColor * sourceColor.a * qt_Opacity;
             }"
 }
