@@ -315,7 +315,6 @@ PageTreeNode {
         Component {
             id: toolbarComponent
             Toolbar {
-                visible: mainView.useDeprecatedToolbar
                 onPressedChanged: {
                     if (!pressed) return;
                     if (headerItem.tabBar !== null) {
