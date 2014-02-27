@@ -228,7 +228,7 @@ PageTreeNode {
       This property will be deprecated after the new header implementation is done and
       all apps transitioned to using it. Default value: true.
      */
-    property bool useOldToolbar: true
+    property bool useDeprecatedToolbar: true
 
     /*!
       \internal
@@ -309,7 +309,7 @@ PageTreeNode {
         property bool animate: true
 
         Toolbar {
-            visible: mainView.useOldToolbar
+            visible: mainView.useDeprecatedToolbar
             id: toolbarItem
             onPressedChanged: {
                 if (!pressed) return;
