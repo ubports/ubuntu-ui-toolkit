@@ -221,6 +221,16 @@ PageTreeNode {
     property alias automaticOrientation: canvas.automaticOrientation
 
     /*!
+      Setting this option will enable the old toolbar, and disable the new features
+      that are being added to the new header. Unsetting it removes the toolbar and
+      enables developers to have a sneak peek at the new features that are coming to
+      the header, even before all the required functionality is implemented.
+      This property will be deprecated after the new header implementation is done and
+      all apps transitioned to using it. Default value: true.
+     */
+    property bool useOldToolbar: true
+
+    /*!
       \internal
       Use default property to ensure children added do not draw over the toolbar.
      */
@@ -299,7 +309,7 @@ PageTreeNode {
         property bool animate: true
 
         Toolbar {
-            visible: false // TODO TIM: make toolbar optional
+            visible: mainView.useOldToolbar
             id: toolbarItem
             onPressedChanged: {
                 if (!pressed) return;
