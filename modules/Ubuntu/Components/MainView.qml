@@ -276,7 +276,9 @@ PageTreeNode {
                     fill: parent
                     
                     // move the whole contents up if the toolbar is locked and opened otherwise the toolbar will obscure part of the contents
-                    bottomMargin: toolbarItem.locked && toolbarItem.opened ? toolbarItem.height + toolbarItem.triggerSize : 0
+                    bottomMargin: mainView.useDeprecatedToolbar &&
+                                  toolbarLoader.item.locked && toolbarLoader.item.opened ?
+                                      toolbarLoader.item.height + toolbarLoader.item.triggerSize : 0
                     // compensate so that the actual y is always 0
                     topMargin: -parent.y
                 }
@@ -292,9 +294,11 @@ PageTreeNode {
 
                 onPressed: {
                     mouse.accepted = false;
-                    if (!toolbarItem.locked) {
-                        toolbarItem.close();
+                    if (mainView.useDeprecatedToolbar) {
+                        if (!toolbarLoader.item.locked) {
+                            toolbarLoader.item.close();
                         }
+                    }
                     if (headerItem.tabBar && !headerItem.tabBar.alwaysSelectionMode) {
                         headerItem.tabBar.selectionMode = false;
                     }
@@ -308,16 +312,24 @@ PageTreeNode {
          */
         property bool animate: true
 
-        Toolbar {
-            visible: mainView.useDeprecatedToolbar
-            id: toolbarItem
-            onPressedChanged: {
-                if (!pressed) return;
-                if (headerItem.tabBar !== null) {
-                    headerItem.tabBar.selectionMode = false;
+        Component {
+            id: toolbarComponent
+            Toolbar {
+                visible: mainView.useDeprecatedToolbar
+                onPressedChanged: {
+                    if (!pressed) return;
+                    if (headerItem.tabBar !== null) {
+                        headerItem.tabBar.selectionMode = false;
+                    }
                 }
+                animate: canvas.animate
             }
-            animate: canvas.animate
+        }
+
+        Loader {
+            id: toolbarLoader
+            anchors.fill: parent
+            sourceComponent: mainView.useDeprecatedToolbar ? toolbarComponent : null
         }
 
         /*!
@@ -349,8 +361,10 @@ PageTreeNode {
                 // no connections are made when target is null
                 target: headerItem.tabBar
                 onPressedChanged: {
-                    if (headerItem.tabBar.pressed) {
-                        if (!toolbarItem.locked) toolbarItem.close();
+                    if (mainView.useDeprecatedToolbar) {
+                        if (headerItem.tabBar.pressed) {
+                            if (!toolbarLoader.item.locked) toolbarLoader.item.close();
+                        }
                     }
                 }
             }
@@ -365,7 +379,9 @@ PageTreeNode {
                     if (headerItem.tabBar) {
                         headerItem.tabBar.selectionMode = true;
                     }
-                    if (!toolbarItem.locked) toolbarItem.open();
+                    if (mainView.useDeprecatedToolbar) {
+                        if (!toolbarLoader.item.locked) toolbarLoader.item.open();
+                    }
                     canvas.animate = true;
                 }
             }
@@ -397,8 +413,8 @@ PageTreeNode {
         UnityActions.ActionManager {
             id: unityActionManager
             onQuit: {
-               // FIXME Wire this up to the application lifecycle management API instead of quit().
-               Qt.quit()
+                // FIXME Wire this up to the application lifecycle management API instead of quit().
+                Qt.quit()
             }
         }
     }
@@ -416,7 +432,7 @@ PageTreeNode {
           The toolbar that will be propagated to the children in the page tree node.
           It will be used by the active \l Page to set the toolbar actions.
          */
-        property Toolbar toolbar: toolbarItem
+        property Toolbar toolbar: toolbarLoader.item
 
         /*!
           \internal
