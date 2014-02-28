@@ -24,6 +24,7 @@
 
 #include <qorganizer.h>
 #include <qorganizermanager.h>
+#include <qorganizertodo.h>
 
 QTORGANIZER_USE_NAMESPACE
 
@@ -78,6 +79,7 @@ public:
     QOrganizerCollection collection;
 
     void completeFetchAlarms(const QList<QOrganizerItem> &alarmList);
+    void adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData &alarm);
 
     void loadAlarms();
     void saveAlarms();

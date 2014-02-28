@@ -520,6 +520,8 @@ void UCAlarm::setSound(const QUrl &sound)
     Q_EMIT soundChanged();
 }
 
+
+
 /*!
  * \qmlproperty Error Alarm::error
  * The property holds the error code occurred during the last performed operation.
@@ -670,6 +672,8 @@ void UCAlarm::save()
     if (result != UCAlarm::NoError) {
         d->_q_syncStatus(Saving, Fail, result);
     } else {
+        // the alarm has been modified, therefore update the original date as well
+        d->rawData.originalDate = d->rawData.date;
         if (d->createRequest()) {
             d->request->save(d->rawData);
         }
