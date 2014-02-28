@@ -56,10 +56,11 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     , manager(0)
     , fetchRequest(0)
 {
-    bool usingDefaultManager = QOrganizerManager::availableManagers().contains(ALARM_MANAGER);
-    manager = (usingDefaultManager) ? new QOrganizerManager(ALARM_MANAGER) : new QOrganizerManager(ALARM_MANAGER_FALLBACK);
+    bool forceFallback = qgetenv("ALARM_BACKEND") == "memory";
+    bool defaultManagerAvailable = QOrganizerManager::availableManagers().contains(ALARM_MANAGER);
+    manager = (!defaultManagerAvailable || forceFallback) ? new QOrganizerManager(ALARM_MANAGER_FALLBACK) : new QOrganizerManager(ALARM_MANAGER);
     manager->setParent(q_ptr);
-    if (!usingDefaultManager) {
+    if (manager->managerName() != ALARM_MANAGER) {
         qWarning() << "WARNING: default alarm manager not installed, using" << manager->managerName() << "manager.";
         qWarning() << "This manager may not provide all the needed features.";
     }
@@ -158,7 +159,6 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
     event.setCollectionId(collection.id());
     event.setAllDay(false);
     event.setStartDateTime(alarm.date);
-    event.setDueDateTime(alarm.date);
     event.setDisplayLabel(alarm.message);
 
     if (alarm.enabled) {
@@ -225,7 +225,7 @@ int AlarmsAdapter::alarmDataFromOrganizerEvent(const QOrganizerTodo &event, Alar
 
     alarm.cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
     alarm.message = event.displayLabel();
-    alarm.date = AlarmData::normalizeDate(event.dueDateTime());
+    alarm.date = AlarmData::normalizeDate(event.startDateTime());
     alarm.sound = QUrl(event.description());
     alarm.originalDate = alarm.date;
 
@@ -293,7 +293,6 @@ bool AlarmsAdapter::fetchAlarms()
     // create self deleting request
     fetchRequest = new AlarmRequest(true, q_ptr);
     AlarmRequestAdapter *adapter = static_cast<AlarmRequestAdapter*>(AlarmRequestPrivate::get(fetchRequest));
-    qDebug() << "ADAPTER FETCH";
     return adapter->fetch();
 }
 
@@ -331,7 +330,6 @@ void AlarmsAdapter::completeFetchAlarms(const QList<QOrganizerItem> &alarms)
     // do we get segfault because this is missing?
     fetchRequest->deleteLater();
     fetchRequest = 0;
-    qDebug() << "ADAPTER FETCH COMPLETED";
 }
 
 void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData &alarm)
@@ -347,7 +345,7 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
     if (alarm.type == UCAlarm::Repeating) {
         // 7 days is enough from the starting date (or current date depending on the start date)
         startDate = (alarm.date > currentDate) ? alarm.date : QDateTime(currentDate.date(), QTime(0, 0, 0));
-        endDate = startDate.addDays(7);
+        endDate = startDate.addDays(8);
     }
     QList<QOrganizerItem> occurrences = manager->itemOccurrences(event, startDate, endDate);
     // get the first occurrence and use the date from it
@@ -356,11 +354,11 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
         for (int i = 0; i < occurrences.count(); i++) {
             QOrganizerTodoOccurrence occurrence = static_cast<QOrganizerTodoOccurrence>(occurrences[i]);
             // check if the date is after the current datetime
-            qDebug() << "UPDATE OCCURRENCE" << alarm.message << alarm.date << occurrence.dueDateTime();
+            qDebug() << "UPDATE OCCURRENCE" << alarm.message << alarm.date << occurrence.startDateTime();
             // the first occurrence is the one closest to the currentDate, therefore we can safely
-            // set that dueDate to the alarm
-            alarm.date = occurrence.dueDateTime();
-            if (occurrence.dueDateTime() >= currentDate) {
+            // set that startDate to the alarm
+            alarm.date = occurrence.startDateTime();
+            if (alarm.date >= currentDate) {
                 // we have the proper date set, leave
                 break;
             }
@@ -454,7 +452,7 @@ bool AlarmRequestAdapter::fetch()
     // set sort order
     QOrganizerItemSortOrder sortOrder;
     sortOrder.setDirection(Qt::AscendingOrder);
-    sortOrder.setDetail(QOrganizerItemDetail::TypeTodoTime, QOrganizerTodoTime::FieldDueDateTime);
+    sortOrder.setDetail(QOrganizerItemDetail::TypeTodoTime, QOrganizerTodoTime::FieldStartDateTime);
     operation->setSorting(QList<QOrganizerItemSortOrder>() << sortOrder);
 
     // set filter
@@ -463,7 +461,6 @@ bool AlarmRequestAdapter::fetch()
     operation->setFilter(filter);
 
     // start request
-    qDebug() << "START FETCHING";
     return start(operation);
 }
 
@@ -529,7 +526,6 @@ void AlarmRequestAdapter::_q_updateProgress()
             }
             case AlarmRequest::Fetching: {
                 completeFetch();
-                qDebug() << "FETCH COMPLETED";
                 break;
             }
             default:
@@ -555,7 +551,6 @@ void AlarmRequestAdapter::_q_updateProgress()
         m_request = 0;
 
         if (autoDelete) {
-            qDebug() << "REQUEST AUTODELETE";
             q_ptr->deleteLater();
         }
     }
