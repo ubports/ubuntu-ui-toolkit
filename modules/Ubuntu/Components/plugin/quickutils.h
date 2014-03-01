@@ -46,6 +46,7 @@ public:
 
 Q_SIGNALS:
     void rootObjectChanged();
+    void activated();
     void deactivated();
 
 protected:
