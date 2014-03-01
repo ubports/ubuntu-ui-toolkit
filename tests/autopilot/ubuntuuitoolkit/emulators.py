@@ -372,9 +372,8 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
         for button in buttons:
             if button.buttonIndex == index:
                 return button
-        else:
-            raise ToolkitEmulatorException(
-                'There is no tab button with index {0}.'.format(index))
+        raise ToolkitEmulatorException(
+            'There is no tab button with index {0}.'.format(index))
 
 
 class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
