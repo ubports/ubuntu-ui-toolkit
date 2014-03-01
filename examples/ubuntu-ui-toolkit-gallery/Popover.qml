@@ -19,6 +19,8 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.Popups 0.1
 
 Template {
+    objectName: "popoversTemplate"
+
     tools: ToolbarItems {
         ToolbarButton {
             id: actionsButton
