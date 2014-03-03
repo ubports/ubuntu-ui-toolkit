@@ -15,11 +15,11 @@ ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
 endif
 
 override_dh_build:
-	dh_auto_build
-	dh_auto_build -- docs
+	dh_auto_build --parallel
+	dh_auto_build --parallel -- docs
 
 override_dh_install:
-	dh_auto_build -- docs
+	dh_auto_build --parallel -- docs
 	sphinx-build -b html docs-autopilot-emulator docs-autopilot-emulator/_build/html
 	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
 	dh_install --fail-missing
