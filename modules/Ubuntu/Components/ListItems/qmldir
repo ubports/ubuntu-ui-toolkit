@@ -14,3 +14,5 @@ Standard 0.1 Standard.qml
 Subtitled 0.1 Subtitled.qml
 SingleControl 0.1 SingleControl.qml
 ThinDivider 0.1 ThinDivider.qml
+Expandable 0.1 Expandable.qml
+ExpandablesColumn 0.1 ExpandablesColumn.qml

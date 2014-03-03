@@ -106,6 +106,19 @@ AbstractButton
     property ThinDivider divider
     property real __contentsMargins
     function cancelItemRemoval()
+modules/Ubuntu/Components/ListItems/Expandable.qml
+Empty
+    property bool expanded
+    property real collapsedHeight
+    property real expandedHeight
+    property bool collapseOnClick
+    default property QtObject children
+modules/Ubuntu/Components/ListItems/ExpandablesColumn.qml
+Flickable
+    readonly property Item expandedItem
+    function expandItem(item)
+    function collapse()
+    default property QtObject children
 modules/Ubuntu/Components/ListItems/Header.qml
 Item
     property string text
@@ -554,6 +567,9 @@ Item
     property Item pageStack
     property bool opened
     property bool locked
+modules/Ubuntu/Components/UbuntuListView.qml
+ListView
+    property int expandedIndex
 modules/Ubuntu/Components/UbuntuNumberAnimation.qml
 NumberAnimation
 modules/Ubuntu/Components/UbuntuShape.qml
