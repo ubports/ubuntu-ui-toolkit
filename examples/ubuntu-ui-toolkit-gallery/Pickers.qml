@@ -19,6 +19,7 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.Pickers 0.1
 
 Template {
+    objectName: "pickersTemplate"
     id: root
     TemplateSection {
         className: "Picker"

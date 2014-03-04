@@ -15,7 +15,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import logging
-import time
 from distutils import version
 
 import autopilot
@@ -526,7 +525,7 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
     def click_element(self, objectName):
         """Click an element from the list.
 
-        It swipes the element into view if it's not fully visible.
+        It swipes the element into view if it's center is not visible.
 
         :parameter objectName: The objectName property of the element to click.
 
@@ -536,38 +535,81 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.click_object(element)
 
     def _swipe_element_into_view(self, objectName):
-        element = self.select_single(objectName=objectName)
-        x, y, width, height = self.globalRect
-        start_x = x + (width / 2)
-        start_y = y + (height / 2)
+        element = self._select_element(objectName)
 
-        while not self._is_element_fully_visible(objectName):
-            stop_x = start_x
+        while not self._is_element_clickable(objectName):
             if element.globalRect.y < self.globalRect.y:
-                stop_y = start_y + element.implicitHeight
+                self._show_more_elements_above()
             else:
-                stop_y = start_y - element.implicitHeight
+                self._show_more_elements_below()
 
-            if platform.model() == 'Desktop':
-                # The drag on the desktop is done two fast, so we are left at
-                # the bottom or at the top of the list, sometimes missing the
-                # element we are looking for.
-                # TODO: use the slow drag once it's implemented:
-                # https://bugs.launchpad.net/autopilot/+bug/1257055
-                # --elopio - 2014-01-09
-                self.pointing_device.move(start_x, start_y)
-                self.pointing_device.press()
-                self.pointing_device.move(stop_x, stop_y)
-                time.sleep(0.3)
-                self.pointing_device.release()
-            else:
-                self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
+    def _select_element(self, object_name):
+        try:
+            return self.select_single(objectName=object_name)
+        except dbus.StateNotFoundError:
+            # If the list is big, elements will only be created when we scroll
+            # them into view.
+            self._scroll_to_top()
+            while not self.atYEnd:
+                self._show_more_elements_below()
+                try:
+                    return self.select_single(objectName=object_name)
+                except dbus.StateNotFoundError:
+                    pass
+            raise ToolkitEmulatorException(
+                'List element with objectName "{}" not found.'.format(
+                    object_name))
 
-    def _is_element_fully_visible(self, objectName):
+    @autopilot_logging.log_action(logger.info)
+    def _scroll_to_top(self):
+        x, y, width, height = self.globalRect
+        while not self.atYBeginning:
+            self._show_more_elements_above()
+
+    @autopilot_logging.log_action(logger.info)
+    def _show_more_elements_below(self):
+        if self.atYEnd:
+            raise ToolkitEmulatorException('There are no more elements below.')
+        else:
+            self._show_more_elements('below')
+
+    @autopilot_logging.log_action(logger.info)
+    def _show_more_elements_above(self):
+        if self.atYBeginning:
+            raise ToolkitEmulatorException('There are no more elements above.')
+        else:
+            self._show_more_elements('above')
+
+    def _show_more_elements(self, direction):
+        x, y, width, height = self.globalRect
+        start_x = stop_x = x + (width / 2)
+        # Start and stop just a little under the top of the list.
+        top = y + 5
+        bottom = y + height - 5
+        if direction == 'below':
+            start_y = bottom
+            stop_y = top
+        elif direction == 'above':
+            start_y = top
+            stop_y = bottom
+        else:
+            raise ToolkitEmulatorException(
+                'Invalid direction {}.'.format(direction))
+        self._slow_drag(start_x, stop_x, start_y, stop_y)
+        self.dragging.wait_for(False)
+        self.moving.wait_for(False)
+
+    def _slow_drag(self, start_x, stop_x, start_y, stop_y):
+        # If we drag too fast, we end up scrolling more than what we
+        # should, sometimes missing the  element we are looking for.
+        self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=5)
+
+    def _is_element_clickable(self, objectName):
+        """Return True if the center of the element is visible."""
         element = self.select_single(objectName=objectName)
-        return (element.globalRect.y >= self.globalRect.y and
-                element.globalRect.y + element.globalRect.height <=
-                self.globalRect.y + self.globalRect.height)
+        element_center = element.globalRect.y + element.globalRect.height / 2
+        return (element_center >= self.globalRect.y and
+                element_center <= self.globalRect.y + self.globalRect.height)
 
 
 class Empty(UbuntuUIToolkitEmulatorBase):

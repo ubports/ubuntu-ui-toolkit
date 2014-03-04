@@ -33,8 +33,6 @@ UCStateSaverAttachedPrivate::UCStateSaverAttachedPrivate(UCStateSaverAttached *q
     : q_ptr(qq)
     , m_attachee(attachee)
     , m_enabled(false)
-    , m_changeDisabled(false)
-    , m_propertiesDirty(false)
 {
 }
 
@@ -68,20 +66,15 @@ void UCStateSaverAttachedPrivate::_q_init()
  */
 void UCStateSaverAttachedPrivate::_q_save()
 {
-    if (m_enabled && m_propertiesDirty && !m_properties.isEmpty() && !m_absoluteId.isEmpty()) {
-        if (StateSaverBackend::instance().save(m_absoluteId, m_attachee, m_properties) > 0) {
-            m_propertiesDirty = false;
-        }
+    if (m_enabled && StateSaverBackend::instance().enabled() && !m_properties.isEmpty() && !m_absoluteId.isEmpty()) {
+        StateSaverBackend::instance().save(m_absoluteId, m_attachee, m_properties);
     }
 }
 
-void UCStateSaverAttachedPrivate::_q_propertyChange()
+void UCStateSaverAttachedPrivate::_q_globalEnableChanged(bool enabled)
 {
-    if (m_changeDisabled) {
-        return;
-    }
-    // the proeprty has been changed outside the state saver
-    m_propertiesDirty = true;
+    // sync component watchers signals
+    watchComponent(enabled);
 }
 
 QString UCStateSaverAttachedPrivate::absoluteId(const QString &id)
@@ -120,45 +113,26 @@ void UCStateSaverAttachedPrivate::restore()
 {
     if (m_enabled && !m_absoluteId.isEmpty() && !m_properties.isEmpty()) {
         // load group
-        m_changeDisabled = true;
         StateSaverBackend::instance().load(m_absoluteId, m_attachee, m_properties);
-        m_changeDisabled = false;
-        // set dirty so at least one save will be occurring for sure
-        m_propertiesDirty = true;
     }
 }
 
 /*
- * Watch property changes made outside of the state saver, so we know whether we need
- * to save the property values on idle.
+ *
  */
-void UCStateSaverAttachedPrivate::connectChangeSlot(bool connect)
+void UCStateSaverAttachedPrivate::watchComponent(bool watch)
 {
     Q_Q(UCStateSaverAttached);
-    if (!connect) {
-        // disconnect all slots from attachee
-        m_attachee->disconnect(q);
-        return;
-    }
-
-    const QMetaObject *mo = m_attachee->metaObject();
-    int slotIndex = q->metaObject()->indexOfSlot("_q_propertyChange()");
-    const QMetaMethod slot = q->metaObject()->method(slotIndex);
-    Q_FOREACH(const QString &propertyName, m_properties) {
-        if (propertyName.contains('.')) {
-            // qroup or attached property, needs workaround from QQmlProperty,
-            // which is a bit slower than connecting with QMetaMethod
-            // therefore we use this method only for these types of properties
-            QQmlProperty qmlProperty(m_attachee, propertyName, qmlContext(m_attachee));
-            qmlProperty.connectNotifySignal(q, slotIndex);
-        } else {
-            // simple property
-            QMetaProperty property = mo->property(mo->indexOfProperty(propertyName.toLocal8Bit().constData()));
-            if (!property.isValid()) {
-                continue;
-            }
-            QObject::connect(m_attachee, property.notifySignal(), q, slot);
-        }
+    if (!watch) {
+        // disconnect to save processing time if no state save is needed
+        QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(m_attachee);
+        QObject::disconnect(componentAttached, SIGNAL(completed()), q, SLOT(_q_init()));
+        QObject::disconnect(&StateSaverBackend::instance(), SIGNAL(initiateStateSaving()), q, SLOT(_q_save()));
+    } else {
+        // re-connect to proceed with saving
+        QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(m_attachee);
+        QObject::connect(componentAttached, SIGNAL(completed()), q, SLOT(_q_init()));
+        QObject::connect(&StateSaverBackend::instance(), SIGNAL(initiateStateSaving()), q, SLOT(_q_save()));
     }
 }
 
@@ -170,12 +144,16 @@ void UCStateSaverAttachedPrivate::connectChangeSlot(bool connect)
  * \ingroup ubuntu-services
  * \brief Attached propertyes to save component property states.
  *
- * StateSaver attached object provides the ability to serialize property values
- * between application starts. The properties subject of serialization must be
- * given in the \l properties as a string, separated with commas. The serialization
- * will happen automatically on component's completion and destruction time, as
- * well as when the application is deactivated. Automatic serialization can be
- * turned off by simply setting false to \l enabled property.
+ * StateSaver attached object provides the ability to save component property values
+ * that can be restored after an inproper application close. The properties subject
+ * of serialization must be given in the \l properties as a string, separated with
+ * commas. The serialization will happen automatically on component's completion
+ * time, as well as when the application is deactivated. Automatic serialization
+ * of a component can be turned off by simply setting false to \l enabled property.
+ *
+ * States saved are discarded when the application is closed properly. The state
+ * loading is ignored (but not discarded) when the application is launched through
+ * UriHandler.
  *
  * Example:
  * \qml
@@ -272,6 +250,8 @@ UCStateSaverAttached::UCStateSaverAttached(QObject *attachee)
     , d_ptr(new UCStateSaverAttachedPrivate(this, attachee))
 {
     setEnabled(true);
+    // connect to StateSaverBackend's enabledChanged signal to sync when the state saver is globally disabled/enabled
+    connect(&StateSaverBackend::instance(), SIGNAL(enabledChanged(bool)), this, SLOT(_q_globalEnableChanged(bool)));
 }
 
 UCStateSaverAttached::~UCStateSaverAttached()
@@ -297,19 +277,8 @@ void UCStateSaverAttached::setEnabled(bool v)
     if (d->m_enabled != v) {
         d->m_enabled = v;
         // make sure next time we sync properties
-        d->m_propertiesDirty = true;
-        if (!d->m_enabled) {
-            // disconnect to save processing time if no state save is needed
-            QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(d->m_attachee);
-            QObject::disconnect(componentAttached, SIGNAL(completed()), this, SLOT(_q_init()));
-            QObject::disconnect(componentAttached, SIGNAL(destruction()), this, SLOT(_q_save()));
-            QObject::disconnect(&QuickUtils::instance(), SIGNAL(deactivated()), this, SLOT(_q_save()));
-        } else {
-            // re-connect to proceed with saving
-            QQmlComponentAttached *componentAttached = QQmlComponent::qmlAttachedProperties(d->m_attachee);
-            QObject::connect(componentAttached, SIGNAL(completed()), this, SLOT(_q_init()));
-            QObject::connect(componentAttached, SIGNAL(destruction()), this, SLOT(_q_save()));
-            QObject::connect(&QuickUtils::instance(), SIGNAL(deactivated()), this, SLOT(_q_save()));
+        if (StateSaverBackend::instance().enabled()) {
+            d->watchComponent(d->m_enabled);
         }
         Q_EMIT enabledChanged();
     }
@@ -340,9 +309,7 @@ void UCStateSaverAttached::setProperties(const QString &list)
     }
     Q_D(UCStateSaverAttached);
     if (d->m_properties != propertyList) {
-        d->connectChangeSlot(false);
         d->m_properties = propertyList;
-        d->connectChangeSlot(true);
         Q_EMIT propertiesChanged();
         d->restore();
     }
