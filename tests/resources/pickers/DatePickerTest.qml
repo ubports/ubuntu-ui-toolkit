@@ -33,7 +33,6 @@ MainView {
 
                 onDateChanged: print("CHANGED DATE=" + Qt.formatDateTime(date, "yyyy/MM/dd, hh:mm:ss"))
                 onMovingChanged: print("MOVING?", moving)
-                onReadyChanged: print("READY?", ready)
             }
             Slider {
                 value: 0.0//units.gu(36)
@@ -49,21 +48,25 @@ MainView {
                 spacing: units.gu(1)
                 Button {
                     text: "HU"
+                    width: units.gu(5)
                     height: units.gu(2)
                     onClicked: picker.locale = Qt.locale("hu_HU")
                 }
                 Button {
                     text: "DE"
+                    width: units.gu(5)
                     height: units.gu(2)
                     onClicked: picker.locale = Qt.locale("de_DE")
                 }
                 Button {
                     text: "EN(US)"
+                    width: units.gu(9)
                     height: units.gu(2)
                     onClicked: picker.locale = Qt.locale("en_US")
                 }
                 Button {
                     text: "FI"
+                    width: units.gu(5)
                     height: units.gu(2)
                     onClicked: {
                         picker.locale = Qt.locale("fi_FI")

@@ -293,18 +293,10 @@ StyledItem {
     property var locale: Qt.locale()
 
     /*!
-      \qmlproperty bool moving
-      \readonly
       The property holds whether the component's pickers are moving.
       \sa Picker::moving
       */
-    readonly property alias moving: positioner.moving
-
-    /*!
-      The property holds teh readyness of the component. The component is considered
-      to be ready when its creation is completed and when it is not moving.
-      */
-    readonly property bool ready: internals.completed && !moving
+    readonly property bool moving: internals.completed && positioner.moving
 
     implicitWidth: units.gu(36)
     implicitHeight: units.gu(20)
