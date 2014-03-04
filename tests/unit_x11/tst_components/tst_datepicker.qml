@@ -247,7 +247,6 @@ Item {
             var pickerCount = 1 + 1; // +1 is the Repeater
             picker.mode = newMode;
             wait(500);
-            tryCompareFunction(function(){return picker.ready}, true);
             var positioner = findChild(picker, "PickerRow_Positioner");
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
 
