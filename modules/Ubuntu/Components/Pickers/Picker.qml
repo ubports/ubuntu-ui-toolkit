@@ -121,6 +121,13 @@ StyledItem {
       */
     property bool live: false
 
+    /*!
+      The property holds whether the picker's view is moving due to the user
+      interaction either by dragging, flicking or due to the manual change of
+      the selectedIndex property.
+      */
+    readonly property bool moving: (loader.item ? loader.item.moving : false) || movingPoll.indexChanging
+
     implicitWidth: units.gu(8)
     implicitHeight: units.gu(20)
 
@@ -135,6 +142,34 @@ StyledItem {
         property: "view"
         value: loader.item
         when: __styleInstance.hasOwnProperty("view") && loader.item
+    }
+
+    /*
+      ListView/PathView do not change moding property when the current index is
+      changed manually. Therefore we use an idle timer to poll the contentY to
+      detect whether the views are still moving.
+      PathView's currentIndex changes while the component is moving, however this
+      is not true for ListView.
+     */
+    Timer {
+        id: movingPoll
+        interval: 50
+        running: false
+        property bool indexChanging: false
+        property real prevContentY
+        onTriggered: {
+            if (prevContentY === loader.item.contentY) {
+                indexChanging = false;
+            } else {
+                kick();
+            }
+        }
+        function kick() {
+            if (!loader.item) return;
+            indexChanging = true;
+            prevContentY = loader.item.contentY;
+            running = true;
+        }
     }
 
     // tumbler
@@ -171,6 +206,7 @@ StyledItem {
                 }
             }
             onCurrentIndexChanged: {
+                movingPoll.kick();
                 if (!loader.completed) return;
                 if (picker.live || (modelWatcher.modelSize() <= 0)
                         || (picker.__clickedIndex >= 0 && (picker.__clickedIndex === loader.item.currentIndex))
@@ -216,6 +252,8 @@ StyledItem {
             property Item pickerItem: picker
             // property holding view completion
             property bool viewCompleted: false
+            // declared to ease moving detection
+            property real contentY: offset
             anchors {
                 top: parent ? parent.top : undefined
                 bottom: parent ? parent.bottom : undefined

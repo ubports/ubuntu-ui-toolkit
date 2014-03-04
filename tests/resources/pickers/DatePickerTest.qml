@@ -32,6 +32,8 @@ MainView {
                 date: new Date()
 
                 onDateChanged: print("CHANGED DATE=" + Qt.formatDateTime(date, "yyyy/MM/dd, hh:mm:ss"))
+                onMovingChanged: print("MOVING?", moving)
+                onReadyChanged: print("READY?", ready)
             }
             Slider {
                 value: 0.0//units.gu(36)

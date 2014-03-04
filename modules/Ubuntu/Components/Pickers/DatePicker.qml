@@ -292,6 +292,20 @@ StyledItem {
       */
     property var locale: Qt.locale()
 
+    /*!
+      \qmlproperty bool moving
+      \readonly
+      The property holds whether the component's pickers are moving.
+      \sa Picker::moving
+      */
+    readonly property alias moving: positioner.moving
+
+    /*!
+      The property holds teh readyness of the component. The component is considered
+      to be ready when its creation is completed and when it is not moving.
+      */
+    readonly property bool ready: internals.completed && !moving
+
     implicitWidth: units.gu(36)
     implicitHeight: units.gu(20)
 
@@ -452,6 +466,21 @@ StyledItem {
               - pickerName
               */
         id: tumblerModel
+
+        /*
+          Signal triggered when the model has been reorganized. Connects to all
+          QAbstractItemModel signals so PickerRow can reset the moving each time
+          the tumblers are re-arranged.
+          */
+        signal reset()
+        Component.onCompleted: {
+            tumblerModel.countChanged.connect(reset);
+            tumblerModel.rowsInserted.connect(reset);
+            tumblerModel.rowsMoved.connect(reset);
+            tumblerModel.rowsRemoved.connect(reset);
+            tumblerModel.dataChanged.connect(reset);
+            tumblerModel.layoutChanged.connect(reset);
+        }
 
         // the function checks whether a pickerModel was added or not
         // returns the index of the model object the pickerModel was found
@@ -646,6 +675,9 @@ StyledItem {
                 tumblerModel.removePicker("SecondsPicker");
             }
 
+            // call the reset once more to make sure we do not have readyness signaled before
+            // each picker creation gets completed
+            tumblerModel.reset();
             // re-enable completion
             completed = true;
         }

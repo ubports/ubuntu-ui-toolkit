@@ -583,6 +583,7 @@ Item {
         }
 
         function test_4_disabledHour() {
+            picker.mode = "Hours|Minutes|Seconds";
             var date = setHMS(new Date(), 12, 10, 45);
             var minDate = setHMS(new Date(), 12, 0, 0);
             var maxDate = setHMS(new Date(), 12, 59, 59);
@@ -596,12 +597,15 @@ Item {
         }
 
         function test_4_disabledHoursAndMinutes() {
+            picker.mode = "Hours|Minutes|Seconds";
             var date = setHMS(new Date(), 12, 10, 45);
             var minDate = setHMS(new Date(), 12, 10, 0);
             var maxDate = setHMS(new Date(), 12, 10, 59);
             picker.minimum = minDate;
             picker.maximum = maxDate;
             picker.date = date;
+
+//            tryCompareFunction(function(){return picker.ready}, true);
             wait(500);
 
             var hoursPicker = findChild(picker, "PickerRow_HoursPicker");
@@ -611,13 +615,15 @@ Item {
         }
 
         function test_4_linearSecondsPicker() {
+            picker.mode = "Hours|Minutes|Seconds";
             var date = setHMS(new Date(), 12, 10, 45);
             var minDate = setHMS(new Date(), 12, 10, 1);
             var maxDate = setHMS(new Date(), 12, 10, 59);
             picker.minimum = minDate;
             picker.maximum = maxDate;
             picker.date = date;
-            wait(500);
+            tryCompareFunction(function(){return picker.ready}, true);
+//            wait(500);
 
             var hoursPicker = findChild(picker, "PickerRow_HoursPicker");
             compare(hoursPicker.enabled, false, "hours picker should be disabled");

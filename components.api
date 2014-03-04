@@ -270,6 +270,8 @@ StyledItem
     readonly property int minutes
     readonly property int seconds
     property var locale
+    readonly property bool moving
+    readonly property bool ready
 modules/Ubuntu/Components/Pickers/Dialer.qml
 StyledItem
     property real minimumValue
@@ -295,6 +297,7 @@ StyledItem
     property Component delegate
     property int selectedIndex
     property bool live
+    readonly property bool moving
     property int __clickedIndex
 modules/Ubuntu/Components/Pickers/PickerDelegate.qml
 AbstractButton

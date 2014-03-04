@@ -35,10 +35,39 @@ Row {
       */
     property real margins: units.gu(1.5)
 
+    /*
+      Reports whether either of the pickers is moving
+      */
+    property bool moving
+
+    // the following functions/properties should be kept private in case the
+    // component is ever decided to be published
+
+    function pickerMoving(isMoving) {
+        if (isMoving) {
+            row.moving = true;
+        } else {
+            for (var i = 0; i < row.model.count; i++) {
+                var pickerItem = model.get(i).pickerModel.pickerItem;
+                if (!pickerItem) return;
+                if (pickerItem.moving) {
+                    row.moving = true;
+                    return;
+                }
+            }
+            row.moving = false;
+        }
+    }
+    Connections {
+        target: row.model
+        onReset: row.pickerMoving(true)
+    }
+
     objectName: "PickerRow_Positioner";
 
     Repeater {
         id: rowRepeater
+        onModelChanged: row.pickerMoving(true)
         Picker {
             id: unitPicker
             objectName: "PickerRow_" + pickerName
@@ -47,7 +76,9 @@ Row {
             circular: pickerModel.circular
             live: false
             width: pickerModel.pickerWidth
-            height: parent.height
+            height: parent ? parent.height : 0
+
+            onMovingChanged: row.pickerMoving(unitPicker.moving)
 
             style: Rectangle {
                 anchors.fill: parent
@@ -56,7 +87,7 @@ Row {
             delegate: PickerDelegate {
                 Label {
                     objectName: "PickerRow_PickerLabel"
-                    text: pickerModel.text(modelData)
+                    text: pickerModel ? pickerModel.text(modelData) : ""
                     anchors.fill: parent
                     verticalAlignment: Text.AlignVCenter
                     horizontalAlignment: Text.AlignHCenter
@@ -88,6 +119,7 @@ Row {
             Component.onCompleted: {
                 // update model with the item instance
                 pickerModel.pickerItem = unitPicker;
+                row.pickerMoving(unitPicker.moving);
             }
         }
     }
