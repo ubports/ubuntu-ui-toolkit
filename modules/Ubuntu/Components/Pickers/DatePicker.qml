@@ -473,6 +473,7 @@ StyledItem {
           the tumblers are re-arranged.
           */
         signal reset()
+        signal pickerRemoved(int index)
         Component.onCompleted: {
             tumblerModel.countChanged.connect(reset);
             tumblerModel.rowsInserted.connect(reset);
@@ -509,6 +510,7 @@ StyledItem {
         function removePicker(name) {
             var idx = pickerModelIndex(name);
             if (idx >= 0) {
+                pickerRemoved(idx);
                 remove(idx);
             }
         }

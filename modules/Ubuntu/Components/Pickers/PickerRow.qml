@@ -44,6 +44,10 @@ Row {
     // component is ever decided to be published
 
     function pickerMoving(isMoving) {
+        if (isMoving === undefined) {
+            isMoving = this.moving;
+        }
+
         if (isMoving) {
             row.moving = true;
         } else {
@@ -58,9 +62,18 @@ Row {
             row.moving = false;
         }
     }
+
+    function disconnectPicker(index) {
+        var pickerItem = model.get(index).pickerModel.pickerItem;
+        if (pickerItem) {
+            pickerItem.onMovingChanged.disconnect(pickerMoving);
+        }
+    }
+
     Connections {
         target: row.model
         onReset: row.pickerMoving(true)
+        onPickerRemoved: disconnectPicker(index)
     }
 
     objectName: "PickerRow_Positioner";
@@ -77,8 +90,6 @@ Row {
             live: false
             width: pickerModel.pickerWidth
             height: parent ? parent.height : 0
-
-            onMovingChanged: row.pickerMoving(unitPicker.moving)
 
             style: Rectangle {
                 anchors.fill: parent
@@ -119,6 +130,7 @@ Row {
             Component.onCompleted: {
                 // update model with the item instance
                 pickerModel.pickerItem = unitPicker;
+                unitPicker.onMovingChanged.connect(pickerMoving.bind(unitPicker));
                 row.pickerMoving(unitPicker.moving);
             }
         }
