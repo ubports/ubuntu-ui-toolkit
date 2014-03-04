@@ -327,7 +327,6 @@ PageTreeNode {
 
         Loader {
             id: toolbarLoader
-            anchors.fill: parent
             sourceComponent: mainView.useDeprecatedToolbar ? toolbarComponent : null
         }
 
