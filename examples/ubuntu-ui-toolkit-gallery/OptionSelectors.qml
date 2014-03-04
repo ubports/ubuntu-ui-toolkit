@@ -18,6 +18,8 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
+    objectName: "optionSelectorsTemplate"
+
     TemplateSection {
         title: i18n.tr("Option Selector")
         className: "Option Selector"

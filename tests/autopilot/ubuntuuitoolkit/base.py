@@ -31,8 +31,9 @@ def get_qmlscene_launch_command():
     # configuration on devices and it seems the environment variable
     # QT_SELECT=qt5 doesn't work for autopilot tests. --Mirv - 2013-10-03
     arch = subprocess.check_output(
-        ["dpkg-architecture", "-qDEB_HOST_MULTIARCH"]).strip()
-    return '/usr/lib/{}/qt5/bin/qmlscene'.format(arch.decode())
+        ["dpkg-architecture", "-qDEB_HOST_MULTIARCH"],
+        universal_newlines=True).strip()
+    return '/usr/lib/{}/qt5/bin/qmlscene'.format(arch)
 
 
 class UbuntuUIToolkitAppTestCase(testcase.AutopilotTestCase):

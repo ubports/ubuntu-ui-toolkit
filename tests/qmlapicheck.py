@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 # Copyright 2013 Canonical Ltd.
@@ -65,7 +65,9 @@ for line in fileinput.input():
         fileinput.nextfile()
 
 inputfiles.sort()
-for line in fileinput.input(inputfiles):
+
+hook = fileinput.hook_encoded('utf-8')
+for line in fileinput.input(inputfiles, openhook=hook):
     # New file
     if fileinput.isfirstline():
         in_block = 0

@@ -28,20 +28,20 @@ for i in $CPP; do
 done
 STATUS=$?
 test $STATUS = 0 || ERRORS=1
-test $STATUS = 0 || echo $RESULTS
+test $STATUS = 0 || echo Error: qmldump failed
 
 echo Running QML API check for $QML
 # Palette gets included in Qt 5.2 qmlplugindump even though it's qml
-BUILTINS=QQuick,QQml,U1db::,Palette python tests/qmlapicheck.py $QML plugins.qmltypes > components.api.new
+BUILTINS=QQuick,QQml,U1db::,Palette python3 tests/qmlapicheck.py $QML plugins.qmltypes > components.api.new
 STATUS=$?
 test $STATUS = 0 || ERRORS=1
-test $STATUS = 0 || echo $RESULTS
+test $STATUS = 0 || echo Error: qmlapicheck.py failed
 
 echo Verifying the diff between existing and generated API
 diff -Fqml -u components.api components.api.new
 STATUS=$?
 test $STATUS = 0 || ERRORS=1
-test $STATUS = 0 || echo $RESULTS
+test $STATUS = 0 || echo Error: diff mismatched
 
 if [ "x$ERRORS" != "x1" ]; then
     echo API is all fine.
