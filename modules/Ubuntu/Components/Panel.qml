@@ -285,7 +285,6 @@ Item {
         }
     }
 
-
     /*!
       How much of the panel to show when the user touches the panel's edge.
       This gives the user a hint that there is a panel hiding at that edge and
@@ -299,6 +298,16 @@ Item {
       the panel is not opened. Default value: units.gu(2).
      */
     property real triggerSize: units.gu(2)
+
+    /*!
+      \qmlproperty real position
+      The current position of the edge of the panel. The value is 0 when the panel is
+      opened, and has its maximum value when the panel is closed. The maximum value is the
+      width of the Panel for a left or right-aligned panel, and the height of the panel for
+      top or bottom-aligned panels. When the user drags the Panel from the edge to open it,
+      the position will change from the maximum size (closed) to 0 (fully expanded).
+     */
+    readonly property alias position: bar.position
 
     states: [
         State {
