@@ -72,7 +72,6 @@ Row {
 
     Connections {
         target: row.model
-        onReset: row.pickerMoving(true)
         onPickerRemoved: disconnectPicker(index)
     }
 
@@ -124,7 +123,7 @@ Row {
                 pickerModel.reset();
                 pickerModel.resetLimits(textSizer, margins);
                 pickerModel.resetCompleted();
-                selectedIndex = pickerModel.indexOf();
+                positionViewAtIndex(pickerModel.indexOf());
             }
 
             Component.onCompleted: {

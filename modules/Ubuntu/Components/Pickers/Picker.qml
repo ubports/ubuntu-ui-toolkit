@@ -128,6 +128,33 @@ StyledItem {
       */
     readonly property bool moving: (loader.item ? loader.item.moving : false) || movingPoll.indexChanging
 
+    /*!
+      The function positions the picker's view to the given index without animating
+      the view. The component must be ready when calling the function, e.g. to make
+      sure the Picker shows up at the given index, do the following:
+      \qml
+      Picker {
+          model: 120
+          delegate: PickerDelegate {
+              Label {
+                  anchors.fill: parent
+                  verticalCenter: Text.AlignVCenter
+                  text: modelData
+              }
+          }
+          Component.onCompleted: positionViewAtIndex(10)
+      }
+      \endqml
+      */
+    function positionViewAtIndex(index) {
+        if (!loader.item || !internals.completed) {
+            return;
+        }
+        loader.item.positionViewAtIndex(index, loader.isListView ? ListView.SnapPosition : PathView.SnapPosition);
+        // update selectedIndex
+        selectedIndex = loader.item.currentIndex;
+    }
+
     implicitWidth: units.gu(8)
     implicitHeight: units.gu(20)
 
@@ -213,6 +240,7 @@ StyledItem {
                         || modelWatcher.cropping) {
                     picker.selectedIndex = loader.item.currentIndex;
                     modelWatcher.cropping = false;
+                    picker.__clickedIndex = -1;
                 }
             }
             onModelChanged: {
