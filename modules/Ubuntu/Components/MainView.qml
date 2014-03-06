@@ -315,6 +315,7 @@ PageTreeNode {
         Component {
             id: toolbarComponent
             Toolbar {
+                parent: canvas
                 onPressedChanged: {
                     if (!pressed) return;
                     if (headerItem.tabBar !== null) {
