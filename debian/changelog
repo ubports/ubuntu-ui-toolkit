@@ -1,3 +1,27 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20140304-0ubuntu1) trusty; urgency=low
+
+  [ CI bot ]
+  * Ship python3 autopilot emulators/tests.
+
+  [ Florian Boucault ]
+  * More compact visual style for a few widgets: Button: switched
+    default color to plain instead of gradient. Height from 5gu to 4gu.
+    OptionSelector: row height from 6gu to 5gu. Slider: much thinner
+    visual style. Switch: size from 10gu x 5gu to 8gu x 4gu. CheckBox:
+    size from 4.25gu x 4gu to 3.25gu x 3gu. smaller 'x-large' font size.
+    (LP: #1276173)
+
+  [ tpeeters ]
+  * Expose a position property in Panel to make it more useful for
+    implementing new bottom-edge behavior.
+
+  [ Christian Dywan ]
+  * The wrapper is intended to make API test more visible in the output
+    regardless of failure or success. A semi-related fix increases
+    coverage so that UbuntuTestCase and Layouts are also checked.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 04 Mar 2014 13:01:40 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20140301-0ubuntu1) trusty; urgency=low
 
   [ Zsombor Egri ]
