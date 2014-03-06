@@ -243,7 +243,7 @@ private Q_SLOTS:
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
 
-        alarm.setDate(QDateTime::currentDateTime().addDays(10));
+        alarm.setDate(QDateTime::currentDateTime().addDays(5));
         QVERIFY(!compareAlarms(&alarm, &copy));
 
         alarm.save();

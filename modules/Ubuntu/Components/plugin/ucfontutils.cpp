@@ -93,7 +93,7 @@ qreal UCFontUtils::modularScale(const QString &size)
     } else if (size == "large") {
         return 1.414;
     } else if (size == "x-large") {
-        return 2.328;
+        return 1.905;
     }
     return 0.0;
 }

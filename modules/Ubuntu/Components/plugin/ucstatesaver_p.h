@@ -32,19 +32,17 @@ public:
     UCStateSaverAttached *q_ptr;
     QObject *m_attachee;
     bool m_enabled:1;
-    bool m_changeDisabled:1;
-    bool m_propertiesDirty:1;
     QString m_id;
     QString m_absoluteId;
     QStringList m_properties;
 
     QString absoluteId(const QString &id);
     void restore();
-    void connectChangeSlot(bool connect);
+    void watchComponent(bool watch);
 
     void _q_init();
     void _q_save();
-    void _q_propertyChange();
+    void _q_globalEnableChanged(bool);
 };
 
 #endif // UCSTATESAVER_P_H
