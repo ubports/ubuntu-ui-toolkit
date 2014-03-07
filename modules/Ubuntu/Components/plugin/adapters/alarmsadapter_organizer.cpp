@@ -56,9 +56,13 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     , manager(0)
     , fetchRequest(0)
 {
-    bool forceFallback = qgetenv("ALARM_BACKEND") == "memory";
-    bool defaultManagerAvailable = QOrganizerManager::availableManagers().contains(ALARM_MANAGER);
-    manager = (!defaultManagerAvailable || forceFallback) ? new QOrganizerManager(ALARM_MANAGER_FALLBACK) : new QOrganizerManager(ALARM_MANAGER);
+    QString envManager(qgetenv("ALARM_BACKEND"));
+    if (!envManager.isEmpty() && QOrganizerManager::availableManagers().contains(envManager)) {
+        manager = new QOrganizerManager(envManager);
+    } else {
+        manager = QOrganizerManager::availableManagers().contains(ALARM_MANAGER) ?
+                    new QOrganizerManager(ALARM_MANAGER) : new QOrganizerManager(ALARM_MANAGER_FALLBACK);
+    }
     manager->setParent(q_ptr);
     if (manager->managerName() != ALARM_MANAGER) {
         qWarning() << "WARNING: default alarm manager not installed, using" << manager->managerName() << "manager.";
@@ -354,7 +358,6 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
         for (int i = 0; i < occurrences.count(); i++) {
             QOrganizerTodoOccurrence occurrence = static_cast<QOrganizerTodoOccurrence>(occurrences[i]);
             // check if the date is after the current datetime
-            qDebug() << "UPDATE OCCURRENCE" << alarm.message << alarm.date << occurrence.startDateTime();
             // the first occurrence is the one closest to the currentDate, therefore we can safely
             // set that startDate to the alarm
             alarm.date = occurrence.startDateTime();

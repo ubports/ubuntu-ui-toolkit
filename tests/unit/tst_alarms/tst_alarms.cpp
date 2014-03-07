@@ -70,11 +70,11 @@ private:
         QList<AlarmData> alarms = AlarmManager::instance().alarms();
         Q_FOREACH(AlarmData i, alarms) {
             if (trace) {
-                qDebug() << "COMPARE:";
-                qDebug() << pAlarm->rawData.message << i.message;
-                qDebug() << pAlarm->rawData.date << i.date;
-                qDebug() << pAlarm->rawData.type << i.type;
-                qDebug() << pAlarm->rawData.days << i.days;
+                qDebug() << "Alarm data:";
+                qDebug() << alarm->message() << i.message;
+                qDebug() << alarm->date() << i.date;
+                qDebug() << alarm->type() << i.type;
+                qDebug() << alarm->daysOfWeek() << i.days;
             }
             if (i == pAlarm->rawData) {
                 return true;
@@ -139,7 +139,7 @@ private Q_SLOTS:
         alarm.save();
         waitForRequest(&alarm);
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
-        QVERIFY(containsAlarm(&alarm));
+        QVERIFY(containsAlarm(&alarm, true));
     }
 
     void test_repeating_daily()
