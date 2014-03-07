@@ -11,6 +11,7 @@ DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 override_dh_auto_test:
 ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
 	mkdir -p debian/tmp/home/run
+	chmod +x tests/xvfb.sh
 	tests/xvfb.sh dh_auto_test || exit $?
 endif
 
@@ -19,6 +20,8 @@ override_dh_build:
 	dh_auto_build -- docs
 
 override_dh_install:
-	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch 
+	dh_auto_build -- docs
+	sphinx-build -b html docs-autopilot-emulator docs-autopilot-emulator/_build/html
+	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
 	dh_install --fail-missing
 
