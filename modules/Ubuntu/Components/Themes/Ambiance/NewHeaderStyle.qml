@@ -15,6 +15,8 @@
  */
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.Popups 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Item {
     id: headerStyle
@@ -38,8 +40,7 @@ Item {
 
     property int fontWeight: Font.Light
     property string fontSize: "x-large"
-//    property color textColor: Theme.palette.selected.backgroundText
-    property color textColor: "orange" // XXX: for testing only
+    property color textColor: Theme.palette.selected.backgroundText
     property real textLeftMargin: units.gu(2)
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
@@ -63,10 +64,71 @@ Item {
         source: headerStyle.separatorBottomSource
     }
 
+    QtObject {
+        id: internal
+
+        property Tabs tabs: styledItem.tabs && styledItem.tabs.hasOwnProperty("selectedTabIndex") ?
+                                styledItem.tabs : null
+
+        property var tabsModel: tabs ? tabs.__model : 0
+    }
+
+    Item {
+        id: leftButtonContainer
+        anchors {
+            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
+        }
+        width: childrenRect.width
+
+        AbstractButton {
+            id: tabsButton
+            height: parent ? parent.height : undefined
+            width: visible ? units.gu(5) : 0
+
+            iconName: "navigation-menu"
+            visible: internal.tabsModel !== 0
+            text: visible ? internal.tabs.count + " tabs" : ""
+
+            // XXX: We currently use an AbstractButton with ToolbarButtonStyle because
+            //  a ToolbarButton does not has its own MouseArea to handle interaction,
+            //  that was done in the Toolbar.
+            style: Theme.createStyleComponent("ToolbarButtonStyle.qml", tabsButton)
+
+            onTriggered: {
+                tabsPopover.show();
+            }
+
+            Popover {
+                id: tabsPopover
+                parent: QuickUtils.rootItem(tabsPopover)
+                caller: tabsButton
+                Column {
+                    anchors {
+                        left: parent.left
+                        top: parent.top
+                        right: parent.right
+                    }
+                    Repeater {
+                        model: internal.tabsModel
+                        ListItem.Standard {
+                            text: tab.title // XXX: only "title" doesn't work with i18n.tr(). Why not?
+                            onClicked: {
+                                internal.tabs.selectedTabIndex = index;
+                                tabsPopover.hide();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     Item {
         id: foreground
         anchors {
-            left: parent.left
+            left: leftButtonContainer.right
             right: parent.right
             top: parent.top
         }

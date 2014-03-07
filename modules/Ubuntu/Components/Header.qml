@@ -86,6 +86,14 @@ StyledItem {
     onContentsChanged: header.show()
 
     /*!
+      Set by \l Tabs. When this property is set, a drawer button is shown in
+      the new header that opens a popover where the user can select a tab.
+     */
+     // Note: A var type is used instead of Tabs because Tabs.qml needs Header
+     // and using the Tabs type here would cause a circular dependency.
+     property var tabs: null
+
+    /*!
       The flickable that controls the movement of the header.
       Will be set automatically by Pages inside a MainView, but can
       be overridden.

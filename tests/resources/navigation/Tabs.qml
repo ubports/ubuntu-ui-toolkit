@@ -21,7 +21,7 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 MainView {
     width: 800
     height: 600
-    useDeprecatedToolbar: true
+    useDeprecatedToolbar: false
 
     Tabs {
         id: tabs
@@ -34,7 +34,7 @@ MainView {
             id: simpleTab
             title: i18n.tr("Simple page #" + index)
             page: Page {
-                title: "This title is not visible"
+                title: "Selected page title"
                 Row {
                     anchors.centerIn: parent
                     spacing: units.gu(1)

@@ -302,7 +302,6 @@ PageTreeNode {
         id: internal
         property Header header: tabs.__propagated ? tabs.__propagated.header : null
         property bool oldTabs: tabs.__propagated ? tabs.__propagated.useDeprecatedToolbar : true
-        onOldTabsChanged: print("oldTabs = "+oldTabs)
 
         Binding {
             target: tabBar
@@ -454,5 +453,12 @@ PageTreeNode {
         property: "contents"
         value: tabs.active ? tabs.tabBar: null
         when: internal.oldTabs && internal.header && tabs.active
+    }
+
+    Binding {
+        target: internal.header
+        when: !internal.oldTabs && internal.header && tabs.active
+        property: "tabs"
+        value: tabs
     }
 }
