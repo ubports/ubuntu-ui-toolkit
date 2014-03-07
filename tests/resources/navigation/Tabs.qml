@@ -21,6 +21,7 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 MainView {
     width: 800
     height: 600
+    useDeprecatedToolbar: true
 
     Tabs {
         id: tabs

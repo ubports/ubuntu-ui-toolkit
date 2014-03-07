@@ -179,10 +179,14 @@ PageTreeNode {
       The \l TabBar that will be shown in the header
       and provides scrollable tab buttons.
      */
+    // TODO: The TabBar currently checks the model and controls the selected index.
+    //  When the tabBar is removed most of that functionality can be deprecated,
+    //  but we cannot load the TabBar in a Loader now because the alias
+    //  for selectedTabIndex is needed in case the app sets useDeprecatedToolbar.
     property TabBar tabBar: TabBar {
         id: bar
         model: tabsModel
-        visible: tabs.active
+        visible: tabs.active && internal.oldTabs
     }
 
     /*!
@@ -204,6 +208,12 @@ PageTreeNode {
       implementation and may be removed in the future.
      */
     signal modelChanged()
+
+    /*!
+      \internal
+      The model is needed by the new header style to display the tabs.
+     */
+    property alias __model: tabsModel
 
     /*!
       \internal
@@ -291,11 +301,13 @@ PageTreeNode {
     Object {
         id: internal
         property Header header: tabs.__propagated ? tabs.__propagated.header : null
+        property bool oldTabs: tabs.__propagated ? tabs.__propagated.useDeprecatedToolbar : true
+        onOldTabsChanged: print("oldTabs = "+oldTabs)
 
         Binding {
             target: tabBar
             property: "animate"
-            when: internal.header && internal.header.hasOwnProperty("animate")
+            when: internal.oldTabs && internal.header && internal.header.hasOwnProperty("animate")
             value: internal.header.animate
         }
 
@@ -441,6 +453,6 @@ PageTreeNode {
         target: internal.header
         property: "contents"
         value: tabs.active ? tabs.tabBar: null
-        when: internal.header && tabs.active
+        when: internal.oldTabs && internal.header && tabs.active
     }
 }

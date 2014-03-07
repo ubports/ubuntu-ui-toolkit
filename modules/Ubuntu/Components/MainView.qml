@@ -435,6 +435,12 @@ PageTreeNode {
 
         /*!
           \internal
+          Tabs needs to know whether to use a TabBar or the new header.
+         */
+        property alias useDeprecatedToolbar: mainView.useDeprecatedToolbar
+
+        /*!
+          \internal
           The action manager that has the global context for the MainView's actions,
           and to which a local context can be added for each Page that has actions.actions.
          */
