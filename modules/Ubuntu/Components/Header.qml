@@ -97,6 +97,11 @@ StyledItem {
         header.show();
     }
 
+    /*!
+      Set by \l MainView
+     */
+    property bool useDeprecatedToolbar: true
+
     QtObject {
         id: internal
 
@@ -184,5 +189,6 @@ StyledItem {
         }
     }
 
-    style: Theme.createStyleComponent("HeaderStyle.qml", header)
+    style: header.useDeprecatedToolbar ? Theme.createStyleComponent("HeaderStyle.qml", header) :
+                                         Theme.createStyleComponent("NewHeaderStyle.qml", header)
 }

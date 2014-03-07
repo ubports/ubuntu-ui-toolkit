@@ -367,6 +367,8 @@ PageTreeNode {
                     }
                 }
             }
+
+            useDeprecatedToolbar: mainView.useDeprecatedToolbar
         }
 
         Connections {
