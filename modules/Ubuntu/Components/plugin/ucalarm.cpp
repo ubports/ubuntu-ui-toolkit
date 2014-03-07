@@ -304,7 +304,7 @@ UCAlarm::UCAlarm(const QDateTime &dt, const QString &message, QObject *parent)
     : QObject(parent)
     , d_ptr(new UCAlarmPrivate(this))
 {
-    d_ptr->rawData.date = dt;
+    d_ptr->rawData.date = AlarmData::normalizeDate(dt);
     if (!message.isEmpty()) {
         d_ptr->rawData.message = message;
     }
@@ -315,7 +315,7 @@ UCAlarm::UCAlarm(const QDateTime &dt, DaysOfWeek days, const QString &message, Q
     : QObject(parent)
     , d_ptr(new UCAlarmPrivate(this))
 {
-    d_ptr->rawData.date = dt;
+    d_ptr->rawData.date = AlarmData::normalizeDate(dt);
     d_ptr->rawData.type = Repeating;
     d_ptr->rawData.days = days;
     if (!message.isEmpty()) {
@@ -366,10 +366,10 @@ QDateTime UCAlarm::date() const
 void UCAlarm::setDate(const QDateTime &date)
 {
     Q_D(UCAlarm);
-    if (d->rawData.date == date) {
+    if (d->rawData.date == AlarmData::normalizeDate(date)) {
         return;
     }
-    d->rawData.date = date;
+    d->rawData.date = AlarmData::normalizeDate(date);
     d->rawData.changes |= AlarmData::Date;
     Q_EMIT dateChanged();
 }

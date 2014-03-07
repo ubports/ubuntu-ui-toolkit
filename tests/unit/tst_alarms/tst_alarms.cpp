@@ -164,12 +164,20 @@ private Q_SLOTS:
 
     void test_repeating_moreDays()
     {
-        UCAlarm alarm(QDateTime::currentDateTime(), UCAlarm::Monday | UCAlarm::Wednesday, "test_repeating_moreDays");
+        UCAlarm alarm(AlarmData::normalizeDate(QDateTime::currentDateTime()), UCAlarm::Monday | UCAlarm::Wednesday, "test_repeating_moreDays");
 
         alarm.save();
         waitForRequest(&alarm);
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
-        QVERIFY(containsAlarm(&alarm));
+
+        // if we are on Monday, the first alarm occurrence is gonna be on Wednesday!
+        // so test accordingly!!!
+        if (QDateTime::currentDateTime().date().dayOfWeek() == 1) {
+            UCAlarm occurrence(alarm.date().addDays(2), alarm.daysOfWeek(), alarm.message());
+            QVERIFY(containsAlarm(&occurrence));
+        } else {
+            QVERIFY(containsAlarm(&alarm));
+        }
     }
 
     void test_setAlarmObjectFail_WrongRecurence1()
