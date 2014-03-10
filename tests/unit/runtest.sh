@@ -49,10 +49,12 @@ function execute_test_cmd {
   RESULT=${PIPESTATUS[0]}
   # segfault
   if [ $RESULT -eq 139 ]; then
+   echo "SIG 139"
    return 2
   fi
   # abort
   if [ $RESULT -eq 134 ]; then
+   echo "SIG 134"
    return 2
   fi
   return $RESULT
