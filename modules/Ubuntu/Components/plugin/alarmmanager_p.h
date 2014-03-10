@@ -48,6 +48,7 @@ public:
     AlarmData(const AlarmData &other)
         : changes(0)
         , cookie(other.cookie)
+        , originalDate(other.originalDate)
         , date(other.date)
         , message(other.message)
         , type(other.type)
@@ -104,6 +105,7 @@ public:
     QVariant cookie;
 
     // data members
+    QDateTime originalDate;
     QDateTime date;
     QString message;
     QUrl sound;

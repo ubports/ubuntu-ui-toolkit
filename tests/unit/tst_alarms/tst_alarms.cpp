@@ -64,11 +64,18 @@ private:
         syncFetch();
     }
 
-    bool containsAlarm(UCAlarm *alarm)
+    bool containsAlarm(UCAlarm *alarm, bool trace = false)
     {
         UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
         QList<AlarmData> alarms = AlarmManager::instance().alarms();
         Q_FOREACH(AlarmData i, alarms) {
+            if (trace) {
+                qDebug() << "Alarm data:";
+                qDebug() << alarm->message() << i.message;
+                qDebug() << alarm->date() << i.date;
+                qDebug() << alarm->type() << i.type;
+                qDebug() << alarm->daysOfWeek() << i.days;
+            }
             if (i == pAlarm->rawData) {
                 return true;
             }
@@ -127,7 +134,7 @@ private Q_SLOTS:
 
     void test_repeating_autoDetect()
     {
-        UCAlarm alarm(QDateTime::currentDateTime(), UCAlarm::AutoDetect, "test_repeating_autoDetect");
+        UCAlarm alarm(AlarmData::normalizeDate(QDateTime::currentDateTime().addSecs(20)), UCAlarm::AutoDetect, "test_repeating_autoDetect");
 
         alarm.save();
         waitForRequest(&alarm);
@@ -137,7 +144,7 @@ private Q_SLOTS:
 
     void test_repeating_daily()
     {
-        UCAlarm alarm(QDateTime::currentDateTime(), UCAlarm::Daily, "test_repeating_daily");
+        UCAlarm alarm(AlarmData::normalizeDate(QDateTime::currentDateTime().addSecs(10)), UCAlarm::Daily, "test_repeating_daily");
 
         alarm.save();
         waitForRequest(&alarm);
@@ -159,6 +166,38 @@ private Q_SLOTS:
     {
         UCAlarm alarm(QDateTime::currentDateTime(), UCAlarm::Monday | UCAlarm::Wednesday, "test_repeating_moreDays");
 
+        alarm.save();
+        waitForRequest(&alarm);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
+
+        // if we are on Monday, the first alarm occurrence is gonna be on Wednesday!
+        // so test accordingly!!!
+        if (QDateTime::currentDateTime().date().dayOfWeek() == 1) {
+            UCAlarm occurrence(alarm.date().addDays(2), alarm.daysOfWeek(), alarm.message());
+            QVERIFY(containsAlarm(&occurrence));
+        } else {
+            QVERIFY(containsAlarm(&alarm));
+        }
+    }
+
+    void test_repeating_weekly_data() {
+        QTest::addColumn<QString>("message");
+        QTest::addColumn<int>("dow");
+
+        QTest::newRow("Monday") << "test_repeating_Mon" << (int)UCAlarm::Monday;
+        QTest::newRow("Tuesday") << "test_repeating_Tue" << (int)UCAlarm::Tuesday;
+        QTest::newRow("Wednesday") << "test_repeating_Wed" << (int)UCAlarm::Wednesday;
+        QTest::newRow("Thursday") << "test_repeating_Thu" << (int)UCAlarm::Thursday;
+        QTest::newRow("Friday") << "test_repeating_Fri" << (int)UCAlarm::Friday;
+        QTest::newRow("Saturday") << "test_repeating_Sat" << (int)UCAlarm::Saturday;
+        QTest::newRow("Sunday") << "test_repeating_Sun" << (int)UCAlarm::Sunday;
+    }
+    void test_repeating_weekly()
+    {
+        QFETCH(QString, message);
+        QFETCH(int, dow);
+
+        UCAlarm alarm(QDateTime::currentDateTime().addSecs(600), (UCAlarm::DaysOfWeek)dow, message);
         alarm.save();
         waitForRequest(&alarm);
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
@@ -271,6 +310,63 @@ private Q_SLOTS:
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
         QVERIFY(!containsAlarm(&copy));
+    }
+
+    void test_fetchAlarmPlus7Days()
+    {
+        QDateTime dt = QDateTime::currentDateTime().addDays(10);
+        UCAlarm alarm(dt, "test_fetchAlarmPlus7Days");
+
+        alarm.save();
+        waitForRequest(&alarm);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
+        QVERIFY(containsAlarm(&alarm));
+
+        UCAlarm nextMonth(dt.addMonths(1), "test_fetchAlarmPlus1Month");
+        nextMonth.save();
+        waitForRequest(&nextMonth);
+        QCOMPARE(nextMonth.error(), (int)UCAlarm::NoError);
+        QVERIFY(containsAlarm(&nextMonth));
+
+        UCAlarm nextYear(dt.addYears(1), "test_fetchAlarmPlus1Year");
+        nextYear.save();
+        waitForRequest(&nextYear);
+        QCOMPARE(nextYear.error(), (int)UCAlarm::NoError);
+        QVERIFY(containsAlarm(&nextYear));
+    }
+
+    void test_correctAlarmOrderDaily()
+    {
+        QDate cd = QDate::currentDate();
+        QTime ct = QTime::currentTime();
+        QDateTime dt(cd, QTime(ct.hour(), ct.minute(), ct.second() + 2));
+        QDateTime nextDt(cd.addDays(1), QTime(ct.hour(), ct.minute(), ct.second() + 2));
+        UCAlarm alarm(dt, UCAlarm::Daily, "test_correctAlarmOrderDaily");
+        UCAlarm nextAlarm(nextDt, UCAlarm::Daily, "test_correctAlarmOrderDaily");
+
+        alarm.save();
+        waitForRequest(&alarm);
+        QTest::qWait(2000);
+        syncFetch();
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
+        QVERIFY(containsAlarm(&nextAlarm));
+    }
+
+    void test_correctAlarmOrderWeekly()
+    {
+        QDate cd = QDate::currentDate();
+        QTime ct = QTime::currentTime();
+        QDateTime dt(cd, QTime(ct.hour(), ct.minute(), ct.second() + 1));
+        QDateTime nextDt(cd.addDays(7), QTime(ct.hour(), ct.minute(), ct.second() + 1));
+        UCAlarm alarm(dt, UCAlarm::AutoDetect, "test_correctAlarmOrderWeekly");
+        UCAlarm nextAlarm(nextDt, UCAlarm::AutoDetect, "test_correctAlarmOrderWeekly");
+
+        alarm.save();
+        waitForRequest(&alarm);
+        QTest::qWait(2000);
+        syncFetch();
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
+        QVERIFY(containsAlarm(&nextAlarm));
     }
 
 };
