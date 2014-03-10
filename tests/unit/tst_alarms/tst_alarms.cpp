@@ -134,12 +134,12 @@ private Q_SLOTS:
 
     void test_repeating_autoDetect()
     {
-        UCAlarm alarm(AlarmData::normalizeDate(QDateTime::currentDateTime().addSecs(10)), UCAlarm::AutoDetect, "test_repeating_autoDetect");
+        UCAlarm alarm(AlarmData::normalizeDate(QDateTime::currentDateTime().addSecs(20)), UCAlarm::AutoDetect, "test_repeating_autoDetect");
 
         alarm.save();
         waitForRequest(&alarm);
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
-        QVERIFY(containsAlarm(&alarm, true));
+        QVERIFY(containsAlarm(&alarm));
     }
 
     void test_repeating_daily()
@@ -164,7 +164,7 @@ private Q_SLOTS:
 
     void test_repeating_moreDays()
     {
-        UCAlarm alarm(AlarmData::normalizeDate(QDateTime::currentDateTime()), UCAlarm::Monday | UCAlarm::Wednesday, "test_repeating_moreDays");
+        UCAlarm alarm(QDateTime::currentDateTime(), UCAlarm::Monday | UCAlarm::Wednesday, "test_repeating_moreDays");
 
         alarm.save();
         waitForRequest(&alarm);
@@ -178,6 +178,30 @@ private Q_SLOTS:
         } else {
             QVERIFY(containsAlarm(&alarm));
         }
+    }
+
+    void test_repeating_weekly_data() {
+        QTest::addColumn<QString>("message");
+        QTest::addColumn<int>("dow");
+
+        QTest::newRow("Monday") << "test_repeating_Mon" << (int)UCAlarm::Monday;
+        QTest::newRow("Tuesday") << "test_repeating_Tue" << (int)UCAlarm::Tuesday;
+        QTest::newRow("Wednesday") << "test_repeating_Wed" << (int)UCAlarm::Wednesday;
+        QTest::newRow("Thursday") << "test_repeating_Thu" << (int)UCAlarm::Thursday;
+        QTest::newRow("Friday") << "test_repeating_Fri" << (int)UCAlarm::Friday;
+        QTest::newRow("Saturday") << "test_repeating_Sat" << (int)UCAlarm::Saturday;
+        QTest::newRow("Sunday") << "test_repeating_Sun" << (int)UCAlarm::Sunday;
+    }
+    void test_repeating_weekly()
+    {
+        QFETCH(QString, message);
+        QFETCH(int, dow);
+
+        UCAlarm alarm(QDateTime::currentDateTime().addSecs(600), (UCAlarm::DaysOfWeek)dow, message);
+        alarm.save();
+        waitForRequest(&alarm);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
+        QVERIFY(containsAlarm(&alarm));
     }
 
     void test_setAlarmObjectFail_WrongRecurence1()

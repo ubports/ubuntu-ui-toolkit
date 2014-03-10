@@ -343,15 +343,20 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
     }
     // with EDS we need to query the occurrences separately as the fetch reports only the main events
     // with fallback manager this does not reduce the performance and does work teh same way.
-    QDateTime currentDate = QDateTime::currentDateTime();
+    QDateTime currentDate = AlarmData::normalizeDate(QDateTime::currentDateTime());
+    if (alarm.date > currentDate) {
+        // no need to adjust date, the event occurs in the future
+        return;
+    }
     QDateTime startDate;
     QDateTime endDate;
     if (alarm.type == UCAlarm::Repeating) {
-        // 7 days is enough from the starting date (or current date depending on the start date)
-        startDate = (alarm.date > currentDate) ? alarm.date : QDateTime(currentDate.date(), QTime(0, 0, 0));
+        // 8 days is enough from the starting date (or current date depending on the start date)
+        startDate = (alarm.date > currentDate) ? alarm.date : currentDate;
         endDate = startDate.addDays(8);
     }
-    QList<QOrganizerItem> occurrences = manager->itemOccurrences(event, startDate, endDate);
+
+    QList<QOrganizerItem> occurrences = manager->itemOccurrences(event, startDate, endDate, 10);
     // get the first occurrence and use the date from it
     if ((occurrences.length() > 0) && (occurrences[0].type() == QOrganizerItemType::TypeTodoOccurrence)) {
         // loop till we get a proper future due date
@@ -361,7 +366,7 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
             // the first occurrence is the one closest to the currentDate, therefore we can safely
             // set that startDate to the alarm
             alarm.date = occurrence.startDateTime();
-            if (alarm.date >= currentDate) {
+            if (alarm.date > currentDate) {
                 // we have the proper date set, leave
                 break;
             }
