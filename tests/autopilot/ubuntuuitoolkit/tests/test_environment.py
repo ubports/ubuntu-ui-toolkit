@@ -22,10 +22,12 @@ from ubuntuuitoolkit import environment
 class InitctlEnvironmentVariableTestCase(testtools.TestCase):
 
     def test_is_environment_variable_set_with_unset_variable(self):
+        """Test that is_initctl_env_var_set returns False for unset vars."""
         variable = 'I do not exist'
         self.assertFalse(environment.is_initctl_env_var_set(variable))
 
     def test_is_environment_variable_set_with_set_variable(self):
+        """Test that is_initctl_env_var_set returns True for existing vars."""
         variable = 'Testvariabletoset'
         self.addCleanup(environment.unset_initctl_env_var, variable)
 
@@ -34,6 +36,7 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
         self.assertTrue(environment.is_initctl_env_var_set(variable))
 
     def test_get_environment_variable(self):
+        """Test that get_initctl_env_var returns the right value."""
         variable = 'Testvariabletoget'
         self.addCleanup(environment.unset_initctl_env_var, variable)
         environment.set_initctl_env_var(variable, 'test value')
@@ -42,6 +45,7 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
             'test value', environment.get_initctl_env_var(variable))
 
     def test_unset_environment_variable(self):
+        """Test that unset_initctl_env_var removes the variable."""
         variable = 'Testvariabletoget'
         environment.set_initctl_env_var(variable, 'dummy')
 
@@ -50,6 +54,7 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
         self.assertFalse(environment.is_initctl_env_var_set(variable))
 
     def test_unset_environment_variable_with_unset_variable(self):
+        """Test that unset_initctl_env_var does nothing with unset var."""
         variable = 'I do not exist'
 
         environment.unset_initctl_env_var(variable)

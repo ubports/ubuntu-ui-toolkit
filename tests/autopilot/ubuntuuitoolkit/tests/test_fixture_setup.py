@@ -171,6 +171,12 @@ class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
 class InitctlEnvironmentVariableTestCase(testtools.TestCase):
 
     def test_use_initctl_environment_variable_with_unset_variable(self):
+        """Test the initctl env var fixture when the var is unset.
+
+        During the test, the new value must be in place.
+        After the test, the variable must be unset again.
+
+        """
         initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
             testenvvarforfixture='test value')
 
@@ -194,6 +200,12 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
             environment.is_initctl_env_var_set('testenvvarforfixture'))
 
     def test_use_initctl_environment_variable_with_set_variable(self):
+        """Test the initctl env var fixture when the var is unset.
+
+        During the test, the new value must be in place.
+        After the test, the old value must be set again.
+
+        """
         self.addCleanup(
             environment.unset_initctl_env_var, 'testenvvarforfixture')
         environment.set_initctl_env_var(
