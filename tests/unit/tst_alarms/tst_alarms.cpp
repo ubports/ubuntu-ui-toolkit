@@ -174,7 +174,7 @@ private Q_SLOTS:
         // so test accordingly!!!
         if (QDateTime::currentDateTime().date().dayOfWeek() == 1) {
             UCAlarm occurrence(alarm.date().addDays(2), alarm.daysOfWeek(), alarm.message());
-            QVERIFY(containsAlarm(&occurrence));
+            QVERIFY(containsAlarm(&occurrence, true));
         } else {
             QVERIFY(containsAlarm(&alarm));
         }
