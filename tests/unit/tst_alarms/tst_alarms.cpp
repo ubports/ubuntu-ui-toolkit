@@ -134,7 +134,7 @@ private Q_SLOTS:
 
     void test_repeating_autoDetect()
     {
-        UCAlarm alarm(AlarmData::normalizeDate(QDateTime::currentDateTime().addSecs(20)), UCAlarm::AutoDetect, "test_repeating_autoDetect");
+        UCAlarm alarm(QDateTime::currentDateTime().addSecs(20), UCAlarm::AutoDetect, "test_repeating_autoDetect");
 
         alarm.save();
         waitForRequest(&alarm);
@@ -144,7 +144,7 @@ private Q_SLOTS:
 
     void test_repeating_daily()
     {
-        UCAlarm alarm(AlarmData::normalizeDate(QDateTime::currentDateTime().addSecs(10)), UCAlarm::Daily, "test_repeating_daily");
+        UCAlarm alarm(QDateTime::currentDateTime().addSecs(10), UCAlarm::Daily, "test_repeating_daily");
 
         alarm.save();
         waitForRequest(&alarm);
@@ -367,6 +367,16 @@ private Q_SLOTS:
         syncFetch();
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&nextAlarm));
+    }
+
+    void test_transcodedDate()
+    {
+        UCAlarm alarm(QDateTime::currentDateTime().addDays(1), "test_transcodedDate");
+
+        alarm.save();
+        waitForRequest(&alarm);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
+        QVERIFY(containsAlarm(&alarm));
     }
 
 };

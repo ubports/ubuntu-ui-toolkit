@@ -162,7 +162,7 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
 {
     event.setCollectionId(collection.id());
     event.setAllDay(false);
-    event.setStartDateTime(alarm.date);
+    event.setStartDateTime(AlarmData::transcodeDate(alarm.date, Qt::UTC));
     event.setDisplayLabel(alarm.message);
 
     if (alarm.enabled) {
@@ -229,7 +229,7 @@ int AlarmsAdapter::alarmDataFromOrganizerEvent(const QOrganizerTodo &event, Alar
 
     alarm.cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
     alarm.message = event.displayLabel();
-    alarm.date = AlarmData::normalizeDate(event.startDateTime());
+    alarm.date = AlarmData::transcodeDate(event.startDateTime(), Qt::LocalTime);
     alarm.sound = QUrl(event.description());
     alarm.originalDate = alarm.date;
 
