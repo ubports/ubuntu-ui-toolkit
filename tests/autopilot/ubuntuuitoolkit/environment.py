@@ -23,39 +23,39 @@ from autopilot import logging as autopilot_logging
 logger = logging.getLogger(__name__)
 
 
-def is_initctl_global_env_var_set(variable):
-    """Check True if an initctl global environment variable is set.
+def is_initctl_env_var_set(variable):
+    """Check True if an initctl environment variable is set.
 
     :param variable: The name of the variable to check.
     :return: True if the variable is set. False otherwise.
 
     """
     try:
-        get_initctl_global_env_var(variable)
+        get_initctl_env_var(variable)
         return True
     except subprocess.CalledProcessError:
         return False
 
 
-def get_initctl_global_env_var(variable):
-    """Return the value of an initctl global environment variable."""
+def get_initctl_env_var(variable):
+    """Return the value of an initctl environment variable."""
     output = subprocess.check_output(
-        ['/sbin/initctl', 'get-env', '--global', variable],
+        ['/sbin/initctl', 'get-env', variable],
         stderr=subprocess.STDOUT)
     return output.rstrip()
 
 
 @autopilot_logging.log_action(logger.info)
-def set_initctl_global_env_var(variable, value):
-    """Set the value of an initctl global environment variable."""
+def set_initctl_env_var(variable, value):
+    """Set the value of an initctl environment variable."""
     subprocess.call(
-        ['/sbin/initctl', 'set-env', '--global', '%s=%s' % (variable, value)],
+        ['/sbin/initctl', 'set-env', '%s=%s' % (variable, value)],
         stderr=subprocess.STDOUT)
 
 
 @autopilot_logging.log_action(logger.info)
-def unset_initctl_global_env_var(variable):
-    """Remove an initctl global environment variable."""
+def unset_initctl_env_var(variable):
+    """Remove an initctl environment variable."""
     subprocess.call(
-        ['/sbin/initctl', 'unset-env', '--global', variable],
+        ['/sbin/initctl', 'unset-env', variable],
         stderr=subprocess.STDOUT)

@@ -108,13 +108,13 @@ class InitctlEnvironmentVariable(fixtures.Fixture):
         super(InitctlEnvironmentVariable, self).setUp()
         for variable, value in self.variables.iteritems():
             self._add_variable_cleanup(variable)
-            environment.set_initctl_global_env_var(variable, value)
+            environment.set_initctl_env_var(variable, value)
 
     def _add_variable_cleanup(self, variable):
-        if environment.is_initctl_global_env_var_set(variable):
-            original_value = environment.get_initctl_global_env_var(variable)
+        if environment.is_initctl_env_var_set(variable):
+            original_value = environment.get_initctl_env_var(variable)
             self.addCleanup(
-                environment.set_initctl_global_env_var, variable,
+                environment.set_initctl_env_var, variable,
                 original_value)
         else:
-            self.addCleanup(environment.unset_initctl_global_env_var, variable)
+            self.addCleanup(environment.unset_initctl_env_var, variable)

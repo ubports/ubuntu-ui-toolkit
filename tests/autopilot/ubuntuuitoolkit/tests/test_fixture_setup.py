@@ -182,7 +182,7 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
                     self.useFixture(initctl_env_var)
                     self.assertEqual(
                         'test value',
-                        environment.get_initctl_global_env_var(
+                        environment.get_initctl_env_var(
                             'testenvvarforfixture'))
             return TestWithInitctlEnvVar('test_it')
 
@@ -191,12 +191,12 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
         self.assertTrue(
             result.wasSuccessful(), 'Failed to set the environment variable.')
         self.assertFalse(
-            environment.is_initctl_global_env_var_set('testenvvarforfixture'))
+            environment.is_initctl_env_var_set('testenvvarforfixture'))
 
     def test_use_initctl_environment_variable_with_set_variable(self):
         self.addCleanup(
-            environment.unset_initctl_global_env_var, 'testenvvarforfixture')
-        environment.set_initctl_global_env_var(
+            environment.unset_initctl_env_var, 'testenvvarforfixture')
+        environment.set_initctl_env_var(
             'testenvvarforfixture', 'original test value')
 
         initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
@@ -210,7 +210,7 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
                     self.useFixture(initctl_env_var)
                     self.assertEqual(
                         'new test value',
-                        environment.get_initctl_global_env_var(
+                        environment.get_initctl_env_var(
                             'testenvvarforfixture'))
             return TestWithInitctlEnvVar('test_it')
 
@@ -220,5 +220,4 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
             result.wasSuccessful(), 'Failed to set the environment variable.')
         self.assertEqual(
             'original test value',
-            environment.get_initctl_global_env_var(
-                'testenvvarforfixture'))
+            environment.get_initctl_env_var('testenvvarforfixture'))

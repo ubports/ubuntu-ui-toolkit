@@ -23,35 +23,35 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
 
     def test_is_environment_variable_set_with_unset_variable(self):
         variable = 'I do not exist'
-        self.assertFalse(environment.is_initctl_global_env_var_set(variable))
+        self.assertFalse(environment.is_initctl_env_var_set(variable))
 
     def test_is_environment_variable_set_with_set_variable(self):
         variable = 'Testvariabletoset'
-        self.addCleanup(environment.unset_initctl_global_env_var, variable)
+        self.addCleanup(environment.unset_initctl_env_var, variable)
 
-        environment.set_initctl_global_env_var(variable, 'dummy')
+        environment.set_initctl_env_var(variable, 'dummy')
 
-        self.assertTrue(environment.is_initctl_global_env_var_set(variable))
+        self.assertTrue(environment.is_initctl_env_var_set(variable))
 
     def test_get_environment_variable(self):
         variable = 'Testvariabletoget'
-        self.addCleanup(environment.unset_initctl_global_env_var, variable)
-        environment.set_initctl_global_env_var(variable, 'test value')
+        self.addCleanup(environment.unset_initctl_env_var, variable)
+        environment.set_initctl_env_var(variable, 'test value')
 
         self.assertEqual(
-            'test value', environment.get_initctl_global_env_var(variable))
+            'test value', environment.get_initctl_env_var(variable))
 
     def test_unset_environment_variable(self):
         variable = 'Testvariabletoget'
-        environment.set_initctl_global_env_var(variable, 'dummy')
+        environment.set_initctl_env_var(variable, 'dummy')
 
-        environment.unset_initctl_global_env_var(variable)
+        environment.unset_initctl_env_var(variable)
 
-        self.assertFalse(environment.is_initctl_global_env_var_set(variable))
+        self.assertFalse(environment.is_initctl_env_var_set(variable))
 
     def test_unset_environment_variable_with_unset_variable(self):
         variable = 'I do not exist'
 
-        environment.unset_initctl_global_env_var(variable)
+        environment.unset_initctl_env_var(variable)
 
-        self.assertFalse(environment.is_initctl_global_env_var_set(variable))
+        self.assertFalse(environment.is_initctl_env_var_set(variable))
