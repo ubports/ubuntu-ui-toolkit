@@ -45,7 +45,8 @@ function execute_test_cmd {
   else
       echo "Skipped because no DISPLAY available"
   fi
-  RESULT=$?
+  # Note: Get first command before the pipe, $? would be ambiguous
+  RESULT=${PIPESTATUS[0]}
   # segfault
   if [ $RESULT -eq 139 ]; then
    return 2

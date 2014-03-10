@@ -22,9 +22,14 @@ test_api.depends = modules/ubuntu-ui-toolkit.pro
 QMAKE_EXTRA_TARGETS += test_api
 
 test_components.target = test-components
-test_components.commands = cd tests/autopilot; autopilot run ubuntuuitoolkit
+test_components.commands = cd tests/autopilot; python3 -m autopilot.run run ubuntuuitoolkit
 test_components.depends = modules/ubuntu-ui-toolkit.pro
 QMAKE_EXTRA_TARGETS += test_components
+
+test_components2.target = test-components2
+test_components2.commands = cd tests/autopilot; python2 -m autopilot.run run ubuntuuitoolkit
+test_components2.depends = modules/ubuntu-ui-toolkit.pro
+QMAKE_EXTRA_TARGETS += test_components2
 
 qmluitests.target = qmluitests
 qmluitests.commands = cd tests/unit_x11; make check

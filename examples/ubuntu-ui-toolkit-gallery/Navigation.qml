@@ -18,6 +18,8 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
+    objectName: "navigationTemplate"
+
     Label {
         anchors.left: parent.left
         anchors.right: parent.right

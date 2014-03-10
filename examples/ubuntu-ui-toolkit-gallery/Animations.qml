@@ -18,6 +18,8 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
+    objectName: "animationsTemplate"
+
     TemplateSection {
         title: i18n.tr("NumberAnimation")
         className: "UbuntuNumberAnimation"

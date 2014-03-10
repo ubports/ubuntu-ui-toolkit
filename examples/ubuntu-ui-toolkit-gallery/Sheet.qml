@@ -19,6 +19,8 @@ import Ubuntu.Components 0.1
 import Ubuntu.Components.Popups 0.1
 
 Template {
+    objectName: "sheetsTemplate"
+
     Label {
         anchors.left: parent.left
         anchors.right: parent.right
