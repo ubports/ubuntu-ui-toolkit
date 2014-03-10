@@ -23,7 +23,7 @@ Item {
     property ProgressBar progressBar: styledItem
 
     implicitWidth: units.gu(38)
-    implicitHeight: units.gu(5)
+    implicitHeight: units.gu(4)
 
     UbuntuShape {
         id: background

@@ -18,6 +18,8 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
+    objectName: "slidersTemplate"
+
     TemplateSection {
         className: "Slider"
         spacing: units.gu(5)
