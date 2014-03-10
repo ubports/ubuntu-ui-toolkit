@@ -312,6 +312,28 @@ private Q_SLOTS:
         QVERIFY(!containsAlarm(&copy));
     }
 
+    void test_updateAlarm_Repeating()
+    {
+        UCAlarm alarm(QDateTime::currentDateTime().addMSecs(5000), UCAlarm::AutoDetect, "test_updateAlarm_Repeating");
+
+        alarm.save();
+        waitForRequest(&alarm);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
+        QVERIFY(containsAlarm(&alarm));
+
+        alarm.setDate(alarm.date().addDays(1));
+        alarm.save();
+        waitForRequest(&alarm);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
+        QVERIFY(containsAlarm(&alarm));
+
+        alarm.setDaysOfWeek(UCAlarm::Daily);
+        alarm.save();
+        waitForRequest(&alarm);
+        QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
+        QVERIFY(containsAlarm(&alarm));
+    }
+
     void test_fetchAlarmPlus7Days()
     {
         QDateTime dt = QDateTime::currentDateTime().addDays(10);
