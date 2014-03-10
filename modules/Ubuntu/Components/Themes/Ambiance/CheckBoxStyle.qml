@@ -33,6 +33,7 @@ Item {
     UbuntuShape {
         id: background
         anchors.fill: parent
+        anchors.margins: units.gu(0.5)
     }
 
     Image {
