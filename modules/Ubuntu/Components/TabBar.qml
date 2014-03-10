@@ -63,8 +63,22 @@ StyledItem {
 
     /*!
       The property holds the index of the selected Tab item.
+      Note: Setting this property is DEPRECATED. Set the selectedIndex of the model instead.
       */
-    property int selectedIndex: (model && internal.modelChecked && model.count > 0) ? 0 : -1
+    property int selectedIndex: (model && internal.modelChecked) ? model.selectedIndex : -1
+    onSelectedIndexChanged: {
+        if (tabBar.selectedIndex !== model.selectedIndex) {
+            internal.fixSelectedIndex();
+        }
+    }
+    Connections {
+        target: tabBar.model ? tabBar.model : null
+        onSelectedIndexChanged: {
+            if (tabBar.model.selectedIndex !== tabBar.selectedIndex) {
+                internal.fixSelectedIndex();
+            }
+        }
+    }
 
     /*!
       Do not deactivate the tab bar after a specified idle time or when the user selects a new tab.
@@ -90,6 +104,11 @@ StyledItem {
 
     QtObject {
         id: internal
+
+        function fixSelectedIndex() {
+            console.warn("Setting TabBar.selectedIndex is DEPRECATED. Set selectedIndex of the model instead");
+            tabBar.selectedIndex = Qt.binding(function() { return (model && internal.modelChecked) ? model.selectedIndex : -1 });
+        }
 
         property bool modelChecked: true;
 
@@ -117,6 +136,12 @@ StyledItem {
         if (!model)
             return;
 
+        if (!model.hasOwnProperty("selectedIndex")) {
+            console.error("TabBar model must have selectedIndex property defined.");
+            tabBar.model = null;
+            return;
+        }
+
         if (!model.hasOwnProperty("count")) {
             console.error("TabBar model must have count property defined.");
             tabBar.model = null;
@@ -131,10 +156,9 @@ StyledItem {
 
         if (model.count > 0) {
             internal.checkRoles();
-            tabBar.selectedIndex = Math.max(Math.min(tabBar.selectedIndex, model.count - 1), 0);
+            model.selectedIndex = Math.max(Math.min(tabBar.selectedIndex, model.count - 1), 0);
         } else {
             internal.modelChecked = false;
-            tabBar.selectedIndex = Qt.binding(function() { return (model && internal.modelChecked && model.count > 0) ? 0 : -1 })
         }
     }
 
