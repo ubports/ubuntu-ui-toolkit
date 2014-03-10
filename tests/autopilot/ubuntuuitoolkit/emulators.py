@@ -575,7 +575,6 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
 
     @autopilot_logging.log_action(logger.info)
     def _show_more_elements_below(self):
-        import pdb; pdb.set_trace()
         if self.atYEnd:
             raise ToolkitEmulatorException('There are no more elements below.')
         else:
