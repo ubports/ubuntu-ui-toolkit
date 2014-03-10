@@ -222,5 +222,3 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
             'original test value',
             environment.get_initctl_global_env_var(
                 'testenvvarforfixture'))
-
-
