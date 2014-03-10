@@ -615,9 +615,9 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
 
     def _get_visible_bottom(self):
         list_bottom = self.globalRect.y + self.globalRect.height
-        container_bottom = (self.container.globalRect.y +
-            self.container.globalRect.height)
-        if  list_bottom < container_bottom:
+        container_bottom = (
+            self.container.globalRect.y + self.container.globalRect.height)
+        if list_bottom < container_bottom:
             return list_bottom
         else:
             return container_bottom
