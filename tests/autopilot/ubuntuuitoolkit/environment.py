@@ -41,7 +41,8 @@ def get_initctl_env_var(variable):
     """Return the value of an initctl environment variable."""
     output = subprocess.check_output(
         ['/sbin/initctl', 'get-env', variable],
-        stderr=subprocess.STDOUT)
+        stderr=subprocess.STDOUT,
+        universal_newlines=True)
     return output.rstrip()
 
 
@@ -50,7 +51,8 @@ def set_initctl_env_var(variable, value):
     """Set the value of an initctl environment variable."""
     subprocess.call(
         ['/sbin/initctl', 'set-env', '%s=%s' % (variable, value)],
-        stderr=subprocess.STDOUT)
+        stderr=subprocess.STDOUT,
+        universal_newlines=True)
 
 
 @autopilot_logging.log_action(logger.info)
@@ -58,4 +60,5 @@ def unset_initctl_env_var(variable):
     """Remove an initctl environment variable."""
     subprocess.call(
         ['/sbin/initctl', 'unset-env', variable],
-        stderr=subprocess.STDOUT)
+        stderr=subprocess.STDOUT,
+        universal_newlines=True)
