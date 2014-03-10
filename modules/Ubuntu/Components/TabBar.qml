@@ -67,16 +67,9 @@ StyledItem {
       */
     property int selectedIndex: (model && internal.modelChecked) ? model.selectedIndex : -1
     onSelectedIndexChanged: {
+        if (!model) return;
         if (tabBar.selectedIndex !== model.selectedIndex) {
             internal.fixSelectedIndex();
-        }
-    }
-    Connections {
-        target: tabBar.model ? tabBar.model : null
-        onSelectedIndexChanged: {
-            if (tabBar.model.selectedIndex !== tabBar.selectedIndex) {
-                internal.fixSelectedIndex();
-            }
         }
     }
 
@@ -114,18 +107,21 @@ StyledItem {
 
         function checkRoles() {
             if (tabBar.model.count <= 0)
-                return;
+                return false;
 
             modelChecked = true;
             var f = tabBar.model.get(0);
             if (f.tab === undefined && f.title === undefined) {
                 console.error("TabBar model must provide either tab or title role.");
                 tabBar.model = null;
+                return false;
             }
             if (f.tab !== undefined && f.tab.title === undefined) {
                 console.error("TabBar model's tab role must have title property.");
                 tabBar.model = null;
+                return false;
             }
+            return true;
         }
     }
 
@@ -155,8 +151,9 @@ StyledItem {
         }
 
         if (model.count > 0) {
-            internal.checkRoles();
-            model.selectedIndex = Math.max(Math.min(tabBar.selectedIndex, model.count - 1), 0);
+            if (internal.checkRoles()) {
+                model.selectedIndex = Math.max(Math.min(tabBar.selectedIndex, model.count - 1), 0);
+            }
         } else {
             internal.modelChecked = false;
         }
