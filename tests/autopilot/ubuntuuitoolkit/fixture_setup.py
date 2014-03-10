@@ -87,7 +87,7 @@ class FakeApplication(fixtures.Fixture):
                 qmlscene=base.get_qmlscene_launch_command(),
                 qml_file_path=qml_file_path))
         desktop_file.write('[Desktop Entry]\n')
-        for key, value in self._desktop_file_dict.iteritems():
+        for key, value in self._desktop_file_dict.items():
             desktop_file.write('{key}={value}\n'.format(key=key, value=value))
         desktop_file.close()
         return desktop_file.name
