@@ -57,6 +57,7 @@ function execute_test_cmd {
    echo "SIG 134"
    return 2
   fi
+  echo "RESULT"
   return $RESULT
 }
 
