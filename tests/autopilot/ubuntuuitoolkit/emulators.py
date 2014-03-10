@@ -521,6 +521,13 @@ class TextField(UbuntuUIToolkitEmulatorBase):
 
 class QQuickListView(UbuntuUIToolkitEmulatorBase):
 
+    container_class = MainView
+
+    def __init__(self, *args):
+        super(QQuickListView, self).__init__(*args)
+        self.container = self.get_root_instance().select_single(
+            self.container_class)
+
     @autopilot_logging.log_action(logger.info)
     def click_element(self, objectName):
         """Click an element from the list.
@@ -568,6 +575,7 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
 
     @autopilot_logging.log_action(logger.info)
     def _show_more_elements_below(self):
+        import pdb; pdb.set_trace()
         if self.atYEnd:
             raise ToolkitEmulatorException('There are no more elements below.')
         else:
@@ -581,11 +589,10 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
             self._show_more_elements('above')
 
     def _show_more_elements(self, direction):
-        x, y, width, height = self.globalRect
-        start_x = stop_x = x + (width // 2)
+        start_x = stop_x = self.globalRect.x + (self.globalRect.width // 2)
         # Start and stop just a little under the top of the list.
-        top = y + 5
-        bottom = y + height - 5
+        top = self._get_visible_top() + 5
+        bottom = self._get_visible_bottom() - 5
         if direction == 'below':
             start_y = bottom
             stop_y = top
@@ -599,6 +606,23 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
         self.dragging.wait_for(False)
         self.moving.wait_for(False)
 
+    def _get_visible_top(self):
+        list_top = self.globalRect.y
+        container_top = self.container.globalRect.y
+        if list_top > container_top:
+            return list_top
+        else:
+            return container_top
+
+    def _get_visible_bottom(self):
+        list_bottom = self.globalRect.y + self.globalRect.height
+        container_bottom = (self.container.globalRect.y +
+            self.container.globalRect.height)
+        if  list_bottom < container_bottom:
+            return list_bottom
+        else:
+            return container_bottom
+
     def _slow_drag(self, start_x, stop_x, start_y, stop_y):
         # If we drag too fast, we end up scrolling more than what we
         # should, sometimes missing the  element we are looking for.
@@ -608,8 +632,9 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
         """Return True if the center of the element is visible."""
         element = self.select_single(objectName=objectName)
         element_center = element.globalRect.y + element.globalRect.height // 2
-        return (element_center >= self.globalRect.y and
-                element_center <= self.globalRect.y + self.globalRect.height)
+        return (element_center >= self.container.globalRect.y and
+                element_center <= self.container.globalRect.y +
+                self.container.globalRect.height)
 
 
 class Empty(UbuntuUIToolkitEmulatorBase):
