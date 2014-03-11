@@ -720,10 +720,10 @@ MainView {
         # Click the first element out of view to make sure we are not scrolling
         # to the bottom at once.
         self.assertFalse(
-            self.list_view._is_element_clickable('testListElement5'))
+            self.list_view._is_element_clickable('testListElement9'))
 
-        self.list_view.click_element('testListElement5')
-        self.assertEqual(self.label.text, 'testListElement5')
+        self.list_view.click_element('testListElement9')
+        self.assertEqual(self.label.text, 'testListElement9')
 
 
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
