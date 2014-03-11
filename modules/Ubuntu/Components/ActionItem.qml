@@ -59,7 +59,7 @@ StyledItem {
     property url iconSource: action ? action.iconSource : (iconName ? "image://theme/" + iconName : "")
 
     /*!
-      The icon associated with the actionItem.
+      The icon associated with the actionItem in the ubuntu-mobile icon theme.
       Default value: action.iconName.
 
       If both iconSource and iconName are defined, iconName will be ignored.

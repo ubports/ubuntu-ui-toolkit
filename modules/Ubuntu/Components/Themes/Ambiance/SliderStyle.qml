@@ -26,7 +26,7 @@ import Ubuntu.Components 0.1
 Item {
     id: sliderStyle
 
-    property real thumbSpacing: units.gu(0.5)
+    property real thumbSpacing: units.gu(0)
     property Item bar: background
     property Item thumb: thumb
 
@@ -35,17 +35,30 @@ Item {
 
     UbuntuShape {
         id: background
+        anchors {
+            verticalCenter: parent.verticalCenter
+            right: parent.right
+            left: parent.left
+        }
+        height: units.dp(4)
 
-        anchors.fill: parent
-        color: Theme.palette.normal.base
+        color: "white"
+    }
+
+    PartialColorizeUbuntuShape {
+        anchors.fill: background
+        sourceItem: background
+        progress: thumb.x / thumb.barMinusThumbWidth
+        leftColor: Theme.palette.selected.foreground
+        rightColor: Theme.palette.normal.base
+        mirror: Qt.application.layoutDirection == Qt.RightToLeft
     }
 
     UbuntuShape {
         id: thumb
 
         anchors {
-            top: background.top
-            bottom: background.bottom
+            verticalCenter: parent.verticalCenter
             topMargin: thumbSpacing
             bottomMargin: thumbSpacing
         }
@@ -68,8 +81,10 @@ Item {
                 duration: UbuntuAnimation.FastDuration
             }
         }
-        width: units.gu(4)
-        color: Theme.palette.selected.foreground
+        width: units.gu(2)
+        height: units.gu(2)
+        opacity: 0.97
+        color: Theme.palette.normal.overlay
     }
 
     BubbleShape {
@@ -82,8 +97,8 @@ Item {
         property real minX: 0.0
         property real maxX: background.width - width
         property real pointerSize: units.dp(6)
-        property real targetMargin: units.dp(2)
-        property point globalTarget: Qt.point(thumb.x + thumb.width / 2.0, -targetMargin)
+        property real targetMargin: units.gu(1)
+        property point globalTarget: Qt.point(thumb.x + thumb.width / 2.0, thumb.y - targetMargin)
 
         x: MathUtils.clamp(globalTarget.x - width / 2.0, minX, maxX)
         y: globalTarget.y - height - pointerSize

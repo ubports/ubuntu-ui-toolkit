@@ -18,6 +18,8 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Template {
+    objectName: "buttonsTemplate"
+
     TemplateSection {
         className: "Button"
 
@@ -36,7 +38,7 @@ Template {
             Button {
                 objectName: "button_color"
                 text: i18n.tr("Call")
-                gradient: UbuntuColors.greyGradient
+                color: UbuntuColors.warmGrey
             }
         }
 

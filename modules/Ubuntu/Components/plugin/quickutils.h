@@ -46,13 +46,11 @@ public:
 
 Q_SIGNALS:
     void rootObjectChanged();
+    void activated();
     void deactivated();
 
 protected:
     bool eventFilter(QObject *, QEvent *);
-
-private Q_SLOTS:
-    void activeFocus(QObject*);
 
 private:
     explicit QuickUtils(QObject *parent = 0);
