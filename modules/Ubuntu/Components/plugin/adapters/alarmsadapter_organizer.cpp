@@ -163,8 +163,6 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
     event.setCollectionId(collection.id());
     event.setAllDay(false);
     event.setStartDateTime(AlarmData::transcodeDate(alarm.date, Qt::UTC));
-    qDebug() << "TR Alarm2Event" << alarm.message << alarm.date << alarm.date.timeSpec();
-//    event.setStartDateTime(alarm.date);
     event.setDisplayLabel(alarm.message);
 
     if (alarm.enabled) {
@@ -231,9 +229,7 @@ int AlarmsAdapter::alarmDataFromOrganizerEvent(const QOrganizerTodo &event, Alar
 
     alarm.cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
     alarm.message = event.displayLabel();
-    alarm.date = AlarmData::transcodeDate(event.startDateTime(), Qt::LocalTime);
-//    alarm.date = AlarmData::normalizeDate(event.startDateTime());
-    qDebug() << "TR Event2Alarm" << alarm.message << alarm.date << alarm.date.timeSpec() << event.startDateTime().timeSpec();
+    alarm.date = AlarmData::transcodeDate(event.startDateTime().toUTC(), Qt::LocalTime);
     alarm.sound = QUrl(event.description());
     alarm.originalDate = alarm.date;
 
@@ -363,8 +359,6 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
     // transcode both dates
     startDate = AlarmData::transcodeDate(startDate, Qt::UTC);
     endDate = AlarmData::transcodeDate(endDate, Qt::UTC);
-    qDebug() << "TR startDate" << startDate << startDate.timeSpec();
-    qDebug() << "TR endDate" << endDate << endDate.timeSpec();
 
     QList<QOrganizerItem> occurrences = manager->itemOccurrences(event, startDate, endDate, 10);
     // get the first occurrence and use the date from it
@@ -375,8 +369,7 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
             // check if the date is after the current datetime
             // the first occurrence is the one closest to the currentDate, therefore we can safely
             // set that startDate to the alarm
-            alarm.date = AlarmData::transcodeDate(occurrence.startDateTime(), Qt::LocalTime);
-            qDebug() << "TR OCCURRENCE" << alarm.message << alarm.date << alarm.date.timeSpec() << occurrence.startDateTime().timeSpec();
+            alarm.date = AlarmData::transcodeDate(occurrence.startDateTime().toUTC(), Qt::LocalTime);
             if (alarm.date > currentDate) {
                 // we have the proper date set, leave
                 break;
@@ -420,7 +413,6 @@ bool AlarmRequestAdapter::save(AlarmData &alarm)
         }
         AlarmsAdapter::get()->updateOrganizerEventFromAlarmData(alarm, event);
     }
-    qDebug() << "UPDATED" << event.startDateTime().timeSpec();
 
     QOrganizerItemSaveRequest *operation = new QOrganizerItemSaveRequest(q_ptr);
     operation->setManager(AlarmsAdapter::get()->manager);

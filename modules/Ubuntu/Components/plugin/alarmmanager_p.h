@@ -103,13 +103,10 @@ public:
 
     // the function normalizes and transcodes the date into UTC/LocalTime equivalent
     static QDateTime transcodeDate(const QDateTime &dt, Qt::TimeSpec targetSpec) {
-        QDateTime result;
         if (dt.timeSpec() == targetSpec) {
-            result = normalizeDate(dt);
-        } else {
-            result = QDateTime(dt.date(), normalizeDate(dt).time(), targetSpec);
+            return normalizeDate(dt);
         }
-        return result;
+        return QDateTime(dt.date(), normalizeDate(dt).time(), targetSpec);
     }
 
     unsigned int changes;
