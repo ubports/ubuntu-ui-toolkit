@@ -21,6 +21,8 @@
 #include <unistd.h>
 #include <QtCore/QSocketNotifier>
 
+#include <QDebug>
+
 UnixSignalHandler::UnixSignalHandler(QObject *parent) :
     QObject(parent)
 {
