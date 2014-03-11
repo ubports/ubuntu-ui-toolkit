@@ -627,13 +627,12 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
         # should, sometimes missing the  element we are looking for.
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=5)
 
-    def _is_element_clickable(self, objectName):
+    def _is_element_clickable(self, object_name):
         """Return True if the center of the element is visible."""
-        element = self.select_single(objectName=objectName)
+        element = self.select_single(objectName=object_name)
         element_center = element.globalRect.y + element.globalRect.height // 2
-        return (element_center >= self.container.globalRect.y and
-                element_center <= self.container.globalRect.y +
-                self.container.globalRect.height)
+        return (element_center >= self._get_visible_top() and
+                element_center <= self._get_visible_bottom())
 
 
 class Empty(UbuntuUIToolkitEmulatorBase):
