@@ -66,6 +66,8 @@ StyledItem {
       Note: Setting this property is DEPRECATED. Set the selectedIndex of the model instead.
       */
     property int selectedIndex: (model && internal.modelChecked) ? model.selectedIndex : -1
+
+    /*! \internal */
     onSelectedIndexChanged: {
         if (!model) return;
         if (tabBar.selectedIndex !== model.selectedIndex) {
