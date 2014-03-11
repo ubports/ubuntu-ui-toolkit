@@ -156,10 +156,12 @@ Item {
                 width: comboStyle.dropDownWidth
                 color: combo.expanded ? comboStyle.colorHack(comboStyle.dropDownColorPressed) : comboStyle.dropDownColorReleased
                 Icon {
-                    name: combo.expanded ? "go-up" : "go-down"
+                    // FIXME: use these temporarily whyle we're getting the propert go-up/go-down
+                    name: combo.expanded ? "go-previous" : "go-next"
                     anchors.centerIn: parent
-//                    width: units.gu(4)
-//                    height: units.gu(4)
+                    smooth: true
+                    width: units.gu(2)
+                    height: units.gu(2)
                 }
             }
         }
