@@ -266,7 +266,6 @@ Button {
     // expansion list
     Flickable {
         id: comboHolder
-        objectName: "combo_list"
         parent: combo.__styleInstance ? combo.__styleInstance.comboList : combo
         anchors.fill: parent
         interactive: combo.expanded && !contentIsFlickable() && (combo.expandedHeight > 0)
@@ -281,6 +280,7 @@ Button {
 
         Item {
             id: comboListHolder
+            objectName: "combo_list"
             anchors {
                 left: parent.left
                 right: parent.right
@@ -308,5 +308,11 @@ Button {
             }
             return 0;
         }
+    }
+    // for testing purposes only
+    Binding {
+        target: combo.__styleInstance.comboListPanel
+        property: "objectName"
+        value: "combolist_panel"
     }
 }
