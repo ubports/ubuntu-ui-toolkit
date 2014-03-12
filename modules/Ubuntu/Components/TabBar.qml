@@ -66,10 +66,13 @@ StyledItem {
       Note: Setting this property is DEPRECATED. Set the selectedIndex of the model instead.
       */
     property int selectedIndex: (model && internal.modelChecked) ? model.selectedIndex : -1
+
+    /*! \internal */
     onSelectedIndexChanged: {
         if (!model) return;
         if (tabBar.selectedIndex !== model.selectedIndex) {
-            internal.fixSelectedIndex();
+            console.warn("Setting TabBar.selectedIndex is DEPRECATED. Set selectedIndex of the model instead");
+            tabBar.selectedIndex = Qt.binding(function() { return (model && internal.modelChecked) ? model.selectedIndex : -1 });
         }
     }
 
@@ -97,11 +100,6 @@ StyledItem {
 
     QtObject {
         id: internal
-
-        function fixSelectedIndex() {
-            console.warn("Setting TabBar.selectedIndex is DEPRECATED. Set selectedIndex of the model instead");
-            tabBar.selectedIndex = Qt.binding(function() { return (model && internal.modelChecked) ? model.selectedIndex : -1 });
-        }
 
         property bool modelChecked: true;
 

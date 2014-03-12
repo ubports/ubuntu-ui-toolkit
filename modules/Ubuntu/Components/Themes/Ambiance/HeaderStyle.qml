@@ -43,12 +43,6 @@ Item {
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
 
-    /*!
-      \internal
-      Tabs needs to call sync of the TabBar
-     */
-    property TabBar __tabBar: tabBarLoader.sourceComponent ? tabBarLoader.item : null
-
     BorderImage {
         id: separator
         anchors {
@@ -87,7 +81,7 @@ Item {
             }
             text: styledItem.title
             font.weight: headerStyle.fontWeight
-            visible: !styledItem.tabsModel && !styledItem.contents
+            visible: !styledItem.contents
             fontSize: headerStyle.fontSize
             color: headerStyle.textColor
         }
@@ -103,22 +97,6 @@ Item {
             property: "parent"
             value: foreground
             when: styledItem.contents
-        }
-
-        Loader {
-            id: tabBarLoader
-            sourceComponent: styledItem.tabsModel && !styledItem.contents ? tabBarComponent : null
-            anchors.fill: parent
-        }
-
-        Component {
-            id: tabBarComponent
-            TabBar {
-                id: tabBar
-                anchors.fill: parent
-                model: styledItem.tabsModel
-                animate: styledItem.animate
-            }
         }
     }
 }
