@@ -54,7 +54,7 @@ StyledItem {
         internal.movementEnded();
     }
 
-    visible: title || contents || tabsModel
+    visible: title || contents
     onVisibleChanged: {
         internal.checkFlickableMargins();
     }
@@ -84,12 +84,6 @@ StyledItem {
      */
     property Item contents: null
     onContentsChanged: header.show()
-
-    /*!
-      A model of tabs to represent in the header.
-      This is automatically set by \l Tabs.
-     */
-    property var tabsModel: null
 
     /*!
       The flickable that controls the movement of the header.

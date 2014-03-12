@@ -161,7 +161,7 @@ PageTreeNode {
       The first tab is 0, and -1 means that no tab is selected.
       The initial value is 0 if Tabs has contents, or -1 otherwise.
      */
-    property alias selectedTabIndex: tabsModel.selectedIndex
+    property alias selectedTabIndex: bar.selectedIndex
 
     /*!
       \preliminary
@@ -176,14 +176,14 @@ PageTreeNode {
     readonly property Item currentPage: selectedTab ? selectedTab.page : null
 
     /*!
-      \deprecated
       The \l TabBar that will be shown in the header
       and provides scrollable tab buttons.
-      This property is DEPRECATED. TabBar is now part of the header style.
      */
-    property TabBar tabBar: internal.header && internal.header.__styleInstance &&
-                            internal.header.__styleInstance.hasOwnProperty("__tabBar") ?
-                                internal.header.__styleInstance.__tabBar : null
+    property TabBar tabBar: TabBar {
+        id: bar
+        model: tabsModel
+        visible: tabs.active
+    }
 
     /*!
       Children are placed in a separate item that has functionality to extract the Tab items.
@@ -205,14 +205,12 @@ PageTreeNode {
      */
     signal modelChanged()
 
-    // Needed to set the tabs model of the header
+    /*!
+      \internal
+      required by TabsStyle
+     */
     ListModel {
         id: tabsModel
-
-        /*!
-          The index of the selected tab.
-         */
-        property int selectedIndex: tabsModel.count > 0 ? 0 : -1
 
         function listModel(tab) {
             return {"title": tab.title, "tab": tab};
@@ -293,6 +291,13 @@ PageTreeNode {
     Object {
         id: internal
         property Header header: tabs.__propagated ? tabs.__propagated.header : null
+
+        Binding {
+            target: tabBar
+            property: "animate"
+            when: internal.header && internal.header.hasOwnProperty("animate")
+            value: internal.header.animate
+        }
 
         /*
           List of connected Repeaters to avoid repeater "hammering" of itemAdded() signal.
@@ -434,8 +439,8 @@ PageTreeNode {
 
     Binding {
         target: internal.header
-        property: "tabsModel"
-        value: tabsModel
+        property: "contents"
+        value: tabs.active ? tabs.tabBar: null
         when: internal.header && tabs.active
     }
 }
