@@ -249,7 +249,7 @@ Button {
     // dropdown button
     MouseArea {
         id: dropDown
-        objectName: "dropdown_button"
+        objectName: "combobutton_dropdown"
         anchors {
             right: parent.right
             top: parent.top
@@ -280,7 +280,7 @@ Button {
 
         Item {
             id: comboListHolder
-            objectName: "combo_list"
+            objectName: "combobutton_combolist"
             anchors {
                 left: parent.left
                 right: parent.right
@@ -313,6 +313,6 @@ Button {
     Binding {
         target: combo.__styleInstance.comboListPanel
         property: "objectName"
-        value: "combolist_panel"
+        value: "combobutton_combopanel"
     }
 }
