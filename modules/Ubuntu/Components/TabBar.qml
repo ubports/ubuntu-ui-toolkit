@@ -71,7 +71,8 @@ StyledItem {
     onSelectedIndexChanged: {
         if (!model) return;
         if (tabBar.selectedIndex !== model.selectedIndex) {
-            internal.fixSelectedIndex();
+            console.warn("Setting TabBar.selectedIndex is DEPRECATED. Set selectedIndex of the model instead");
+            tabBar.selectedIndex = Qt.binding(function() { return (model && internal.modelChecked) ? model.selectedIndex : -1 });
         }
     }
 
@@ -99,11 +100,6 @@ StyledItem {
 
     QtObject {
         id: internal
-
-        function fixSelectedIndex() {
-            console.warn("Setting TabBar.selectedIndex is DEPRECATED. Set selectedIndex of the model instead");
-            tabBar.selectedIndex = Qt.binding(function() { return (model && internal.modelChecked) ? model.selectedIndex : -1 });
-        }
 
         property bool modelChecked: true;
 
