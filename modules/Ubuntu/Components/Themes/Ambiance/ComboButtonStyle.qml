@@ -45,16 +45,18 @@ Item {
 
     /*!
       The item pointing to the panel holding the combo list and additional design
-      artifacts. It is used by the component to calculate the expansion size.
+      artifacts. It is used by the component to drive the expansion size.
       */
     property Item comboListPanel: comboListHolder
 
     /*!
+      \qmlproperty color defaultColor
       Default color for the main button.
       */
     property alias defaultColor: mainButton.defaultColor
 
     /*!
+      \qmlproperty Gradient defaultGradient
       Default gradient for the main button.
       */
     property alias defaultGradient: mainButton.defaultGradient
@@ -66,11 +68,12 @@ Item {
     /*!
       Default color for dropdown button when pressed.
       */
-    property color dropDownColorPressed: "#0C000000" //Qt.rgba(0, 0, 0, 0.05)
+    property color dropDownColorPressed: Qt.rgba(0, 0, 0, 0.05)
 
     width: combo.width
     height: combo.collapsedHeight
 
+    /*! \internal */
     property ComboButton combo: styledItem
 
     implicitWidth: units.gu(36)
@@ -84,14 +87,8 @@ Item {
     // Qt.rgba(). For more information, see
     // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197802 and
     // https://bugreports.qt-project.org/browse/QTBUG-32238.
+    /*! \internal */
     function colorHack(color) { return Qt.rgba(color.r, color.g, color.b, color.a); }
-
-    // Update component's height
-    Binding {
-        target: combo
-        property: "height"
-        value: combo.collapsedHeight + comboListHolder.height
-    }
 
     ButtonStyle {
         id: mainButton
@@ -174,8 +171,7 @@ Item {
             top: mainButton.bottom
             right: parent.right
         }
-        height: combo.expanded ? (combo.expandedHeight - combo.collapsedHeight) : 0
-        opacity: combo.expanded ? 1.0 : 0.0
+        opacity: combo.expanded && (combo.comboList.length > 0)? 1.0 : 0.0
 
         ShaderEffectSource {
             id: listContent
