@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import uuid
+
 import testtools
 
 from ubuntuuitoolkit import environment
@@ -23,7 +25,7 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
 
     def test_is_environment_variable_set_with_unset_variable(self):
         """Test that is_initctl_env_var_set returns False for unset vars."""
-        variable = 'I do not exist'
+        variable = 'I do not exist {}'.format(uuid.uuid1())
         self.assertFalse(environment.is_initctl_env_var_set(variable))
 
     def test_is_environment_variable_set_with_set_variable(self):
