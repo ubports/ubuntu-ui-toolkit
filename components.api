@@ -45,6 +45,14 @@ QtObject
     readonly property color coolGrey
     property Gradient orangeGradient
     property Gradient greyGradient
+modules/Ubuntu/Components/ComboButton.qml
+Button
+    property bool expanded
+    property bool autoCollapse
+    property real collapsedHeight
+    property real expandedHeight
+    readonly property real comboListHeight
+    default property list<Item> comboList
 modules/Ubuntu/Components/CrossFadeImage.qml
 Item
     property url source
