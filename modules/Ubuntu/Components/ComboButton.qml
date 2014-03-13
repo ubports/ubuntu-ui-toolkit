@@ -260,6 +260,8 @@ Button {
         __mouseArea.anchors.right = Qt.binding(function() {return combo.right;});
         __mouseArea.anchors.rightMargin = Qt.binding(function() {return combo.__styleInstance.dropDownWidth + combo.__styleInstance.dropDownSeparatorWidth;});
         __mouseArea.height = Qt.binding(function() {return collapsedHeight;});
+        // for autopilot, set the main button name
+        __mouseArea.objectName = "combobutton_mainbutton";
 
         // bind a height calculation to avoid unwanted change
         combo.height = Qt.binding(function() {return collapsedHeight + __styleInstance.comboListPanel.height});

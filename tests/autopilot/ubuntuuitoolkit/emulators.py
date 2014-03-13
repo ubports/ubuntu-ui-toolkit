@@ -453,6 +453,32 @@ class CheckBox(UbuntuUIToolkitEmulatorBase):
         self.checked.wait_for(not original_state, timeout)
 
 
+class ComboButton(UbuntuUIToolkitEmulatorBase):
+    """ComboButton Autopilot emulator."""
+
+    def press_mainbutton(self):
+        """Presses the main button of the ComboBox."""
+        main_button = self.select_single(objectName="combobutton_mainbutton")
+        self.pointing_device.click_object(main_button)
+
+    def press_dropdown(self):
+        """Presses the dropdown button to togle combo list expansion."""
+        dropdown_button = self.select_single(objectName="combobutton_dropdown")
+        self.pointing_device.click_object(dropdown_button)
+
+    def expand(self):
+        """Expands a combo button by clicking on the dropdown button if not expanded."""
+        if self.expanded:
+            return
+        self.press_dropdown()
+
+    def collapse(self):
+        """Collapses a combo button by clicking on the dropdown button if expanded."""
+        if not self.expanded:
+            return
+        self.press_dropdown()
+
+
 class TextField(UbuntuUIToolkitEmulatorBase):
     """TextField Autopilot emulator."""
 

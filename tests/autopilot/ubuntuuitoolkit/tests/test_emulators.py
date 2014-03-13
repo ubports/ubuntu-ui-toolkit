@@ -1003,3 +1003,48 @@ MainView {
         self.composer_sheet.cancel()
         self.assertEqual(self.label.text, 'Cancel selected.')
         self._assert_composer_sheet_is_closed()
+
+
+class ComboButtonTestCase(tests.QMLStringAppTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1
+
+MainView {
+    width: units.gu(40)
+    height: units.gu(60)
+
+    Item {
+        ComboButton {
+            text: "main button"
+            objectName: "combo_button"
+            ListView {
+                model: 10
+                delegate: Standard {
+                    text: "Item #" + modelData
+                }
+            }
+        }
+    }
+}
+""")
+
+    def setUp(self):
+        super(ComboButtonTestCase, self).setUp()
+        self.combo = self.main_view.select_single(
+            emulators.ComboButton, objectName="combo_button")
+        self.assertFalse(self.combo.expanded)
+
+    def test_expand_collapse_combo(self):
+        self.combo.expand()
+        self.assertTrue(self.combo.expanded)
+        self.combo.collapse()
+        self.assertFalse(self.combo.expanded)
+
+    def test_autocollapse(self):
+        self.combo.expand()
+        self.assertTrue(self.combo.expanded)
+        self.combo.press_mainbutton()
+        self.assertFalse(self.combo.expanded)
