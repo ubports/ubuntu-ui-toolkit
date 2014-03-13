@@ -157,7 +157,7 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
     event.setCollectionId(collection.id());
     event.setAllDay(false);
     event.setStartDateTime(alarm.date);
-//    event.setDueDateTime(alarm.date);
+    event.setDueDateTime(alarm.date);
     event.setDisplayLabel(alarm.message);
 
     if (alarm.enabled) {
