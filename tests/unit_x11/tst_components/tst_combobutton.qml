@@ -33,6 +33,7 @@ Item {
             id: rectCombo
 
             Rectangle {
+                id: rect
                 width: parent.width
                 height: units.gu(40)
                 gradient: Gradient {
@@ -56,6 +57,7 @@ Item {
             id: columnCombo
             expandedHeight: -1
             Column {
+                id: column
                 anchors {
                     left: parent.left
                     right: parent.right
@@ -68,6 +70,28 @@ Item {
                         height: units.gu(5)
                         color: Qt.rgba(Math.random(1), Math.random(1), Math.random(1), 1);
                     }
+                }
+            }
+        }
+
+        ComboButton {
+            id: longCombo
+            expandedHeight: units.gu(40)
+            Rectangle {
+                id: longRect
+                height: units.gu(10)
+                color: "cyan"
+            }
+        }
+
+        ComboButton {
+            id: listCombo
+            ListView {
+                id: list
+                model: 20
+                height: listCombo.comboListHeight
+                delegate: Standard {
+                    text: modelData
                 }
             }
         }
@@ -97,11 +121,22 @@ Item {
             compare(combo.comboList.length, 0, "comboList is empty");
         }
 
+        function test_comboListWidth() {
+            var comboListHolder = findChild(rectCombo, "combobutton_combolist");
+            compare(rect.width, comboListHolder.width, "rectCombo list content width is not adjusted");
+            comboListHolder = findChild(columnCombo, "combobutton_combolist");
+            compare(column.width, comboListHolder.width, "columnCombo list content width is not adjusted");
+            comboListHolder = findChild(longCombo, "combobutton_combolist");
+            compare(longRect.width, comboListHolder.width, "longCombo list content width is not adjusted");
+            comboListHolder = findChild(listCombo, "combobutton_combolist");
+            compare(list.width, comboListHolder.width, "listCombo list content width is not adjusted");
+        }
+
         function test_expandRectComboThroughProperty() {
             rectCombo.expanded = true;
             waitForRendering(rectCombo);
-            var comboListHolder = findChild(rectCombo, "combobutton_combopanel");
-            tryCompareFunction(function() { return comboListHolder.opacity}, 1.0);
+            var comboListPanel = findChild(rectCombo, "combobutton_combopanel");
+            tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
         }
 
         function test_expandRectComboThroughClick() {
@@ -109,31 +144,31 @@ Item {
             mouseClick(dropDown, dropDown.width / 2, dropDown.height / 2);
             waitForRendering(rectCombo);
             compare(rectCombo.expanded, true, "combo is not expanded");
-            var comboListHolder = findChild(rectCombo, "combobutton_combopanel");
-            tryCompareFunction(function() { return comboListHolder.opacity}, 1.0);
+            var comboListPanel = findChild(rectCombo, "combobutton_combopanel");
+            tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
         }
 
         function test_autoCollapse() {
             var dropDown = findChild(rectCombo, "combobutton_dropdown");
-            var comboListHolder = findChild(rectCombo, "combobutton_combopanel");
+            var comboListPanel = findChild(rectCombo, "combobutton_combopanel");
             mouseClick(dropDown, dropDown.width / 2, dropDown.height / 2);
             waitForRendering(rectCombo);
             compare(rectCombo.expanded, true, "combo is not expanded");
-            tryCompareFunction(function() { return comboListHolder.opacity}, 1.0);
+            tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
 
             mouseClick(rectCombo, rectCombo.width / 2, rectCombo.collapsedHeight / 2);
             waitForRendering(rectCombo);
             compare(rectCombo.expanded, false, "combo is not collapsed");
-            tryCompareFunction(function() { return comboListHolder.opacity}, 0.0);
+            tryCompareFunction(function() { return comboListPanel.opacity}, 0.0);
         }
 
         function test_flickRectCombo() {
             var dropDown = findChild(rectCombo, "combobutton_dropdown");
-            var comboListHolder = findChild(rectCombo, "combobutton_combopanel");
+            var comboListPanel = findChild(rectCombo, "combobutton_combopanel");
             var comboList = findChild(rectCombo, "combobutton_combolist");
             mouseClick(dropDown, dropDown.width / 2, dropDown.height / 2);
             waitForRendering(rectCombo);
-            tryCompareFunction(function() { return comboListHolder.opacity}, 1.0);
+            tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
             verify(comboList.height > rectCombo.expandedHeight);
             // comboList flicker is the combolist parent's parent
             var comboListFlicker = comboList.parent.parent;
@@ -151,23 +186,44 @@ Item {
         }
 
         function test_autoExpandHeight() {
-            var comboListHolder = findChild(columnCombo, "combobutton_combopanel");
+            var comboListPanel = findChild(columnCombo, "combobutton_combopanel");
             var comboList = findChild(columnCombo, "combobutton_combolist");
             columnCombo.expanded = true;
             waitForRendering(columnCombo);
-            tryCompareFunction(function() { return comboListHolder.opacity}, 1.0);
+            tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
             var comboListFlicker = comboList.parent.parent;
             compare(comboListFlicker.interactive, false, "combo list holder must not be interactive");
             compare(comboListFlicker.height, columnCombo.comboListHeight, "combo list height differs from the holder height");
         }
 
         function test_emptyComboExpanded() {
-            var comboListHolder = findChild(combo, "combobutton_combopanel");
+            var comboListPanel = findChild(combo, "combobutton_combopanel");
             var comboList = findChild(combo, "combobutton_combolist");
             combo.expanded = true;
             waitForRendering(combo);
-            waitForRendering(comboListHolder);
-            tryCompareFunction(function() { return comboListHolder.opacity}, 0.0, 1000);
+            waitForRendering(comboListPanel);
+            tryCompareFunction(function() { return comboListPanel.opacity}, 0.0, 1000);
+        }
+
+        function test_longCombo() {
+            var comboListPanel = findChild(longCombo, "combobutton_combopanel");
+            var comboList = findChild(longCombo, "combobutton_combolist");
+            longCombo.expanded = true;
+            waitForRendering(longCombo);
+            waitForRendering(comboListPanel);
+            tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
+            verify(comboListPanel.height < longCombo.expandedHeight);
+        }
+
+        function test_listCombo() {
+            var comboListPanel = findChild(listCombo, "combobutton_combopanel");
+            var comboList = findChild(listCombo, "combobutton_combolist");
+            listCombo.expanded = true;
+            waitForRendering(listCombo);
+            waitForRendering(comboListPanel);
+            tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
+
+            compare(list.height, comboList.height, "list and comboList height differs");
         }
     }
 }

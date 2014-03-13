@@ -12,14 +12,18 @@ MainView {
         spacing: units.gu(2)
 
         ComboButton {
+            id: combo1
             text: "collapsedHeight differs"
             collapsedHeight: units.gu(6)
+            Rectangle {
+                color: "green"
+//                height: combo1.comboListHeight
+            }
         }
 
         ComboButton {
             text: "content is Rectangle > expanded"
             Rectangle {
-                width: parent.width
                 height: units.gu(40)
                 gradient: Gradient {
                     GradientStop {
@@ -48,7 +52,6 @@ MainView {
                     right: parent.right
                     top: parent.top
                 }
-                height: units.gu(20)
                 contentHeight: rect.height
 
                 Rectangle {
@@ -80,8 +83,6 @@ MainView {
             expandedHeight: units.gu(30)
             UbuntuListView {
                 objectName: "ListView"
-                width: parent.width
-                height: combo2.comboListHeight
                 model: 20
                 delegate: Standard {
                     text: "Action #" + modelData

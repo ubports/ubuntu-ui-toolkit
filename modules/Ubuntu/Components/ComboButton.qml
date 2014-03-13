@@ -34,83 +34,98 @@ import "mathUtils.js" as MathUtils
     The \a {dropdown} is a button located on the top-right side of the expanded
     component. Its functionality is to drive the component's expanded state.
 
-    The \a {combo list} is a panel showing the content in the expanded state. The
-    content can be any component with any size, however cropped in the height
-    given in the \l expandedHeight property. If the content height exceeds this
-    value, the content will be scrolled. Also, if the content height is less than
-    the value in the \l expandedHeight, the combo list will not be expanded to the
-    full expandedHeight.
-
-    \note Do not set the component's height directly, as expansion controls its value
-    and overriding it may destroy component's proper functioning. Instead use
-    \l collapsedHeight and \l expandedHeight to control the height in collapsed and
-    expanded states.
-
-    The combo list has a built-in Flickable which provides you the ability to scroll
-    the content when that exceeds the height provided in \l expandedHeight. If the
-    content of the combo list is declared as a single Flickable, ListView, GridView
-    or PathView component, the content list scrolling will be disabled allowing the
-    provided component to do the scrolling. In this case it is recommended to set
-    the height of the component to \l comboListHeight avoiding unwanted clipping
-    in case the size exceeds the maximum allowed one.
-
-    \qml
-    import QtQuick 2.0
-    import Ubuntu.Components 0.1
-
-    ComboButton {
-        text: "ListView"
-        ListView {
-            width: parent.width
-            height: comboListHeight
-            model: 20
-            delegate: Standard {
-                text: "Action #" + modelData
-            }
-        }
-    }
-    \endqml
-
-    An other way to control the expansion is to make sure the component expands
-    as much as the combo list content does. In this case the \l expandedHeight
-    should be set to -1.
-
-    \qml
-    import QtQuick 2.0
-    import Ubuntu.Components 0.1
-
-    ComboButton {
-        text: "auto expandHeight"
-        expandedHeight: -1
-        Column {
-            id: column
-            anchors {
-                left: parent.left
-                right: parent.right
-            }
+    The \a {combo list} is a panel showing the content specified in \l comboList
+    property when expanded. The content is stretched horizontally to the component's
+    width, and its height is controlled by the \l expandedHeight property as follows:
+    \list
+    \li If the content height is smaller than the value of \l expandedHeight, the combo
+        list will be expanded only to the height of the content.
+        \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+        ComboButton {
+            text: "smaller content"
             Rectangle {
-                width: parent.width
-                height: units.gu(6)
-                color: "red"
-            }
-            Rectangle {
-                width: parent.width
-                height: units.gu(6)
-                color: "green"
-            }
-            Rectangle {
-                width: parent.width
-                height: units.gu(6)
+                height: units.gu(5) // smaller than the default expandedHeight
                 color: "blue"
             }
-            Rectangle {
-                width: parent.width
-                height: units.gu(6)
-                color: "yellow"
+        }
+        \endqml
+    \li If the content height is greater than \l expandedHeight, the combo list will
+        expand till the height specified by the property and the content will be
+        scrolled; in case the combo list content is one single Flickable, ListView,
+        GridView or PathView, the content scrolling will be provided by the content
+        itself.
+        \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+        ComboButton {
+            text: "long scrolled content"
+            Column {
+                Repeater {
+                    model: 5
+                    spacing: units.gu(1)
+                    Rectangle {
+                        height: units.gu(5)
+                        color: "blue"
+                    }
+                }
             }
         }
-    }
-    \endqml
+        \endqml
+    \li In case the content is a single Flickable, ListView, GridView or PathView,
+        the content will be filling the entire combo list area defined.
+        \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+        import Ubuntu.Components.ListItems 0.1
+        ComboButton {
+            text: "listview"
+            ListView {
+                model: 10
+                delegate: Standard {
+                    text: "Item #" + modelData
+                }
+            }
+        }
+        \endqml
+    \li Vertical anchoring of combo list content to its parent is not possible
+        as the expansion calculation is done based on the combo list content height.
+        If the content wants to take the size of the entire combo list, it should
+        bind its height to the \l comboListHeight property.
+        \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+        ComboButton {
+            id: combo
+            text: "smaller content"
+            Rectangle {
+                height: combo.comboListHeight
+                color: "blue"
+            }
+        }
+        \endqml
+    \li In case the expansion needs to be the size of the combo list content, the \l
+        expandedHeight should be set to -1.
+        \qml
+        import QtQuick 2.0
+        import Ubuntu.Components 0.1
+        ComboButton {
+            text: "auto-sized content"
+            expandedHeight: -1
+            Column {
+                Repeater {
+                    model: 5
+                    spacing: units.gu(1)
+                    Rectangle {
+                        height: units.gu(5)
+                        color: "blue"
+                    }
+                }
+            }
+        }
+        \endqml
+    \endlist
 
     As combo list content is unknown for the component, eventual collapsing when
     an action selected from the combo list holder must be driven manually. Also,
@@ -217,7 +232,11 @@ Button {
     /*!
         \qmlproperty list<Item> comboList
         \default
-        Default property holding the item to be shown in the combo list.
+        Property holding the list of items to be shown in the combo list. Being
+        a default property children items declared will land in the combo list.
+        \note The component is not responsible for layouting the content. It only
+        provides scrolling abilities for the case the content exceeds the defined
+        expanded height.
       */
     default property alias comboList: comboListHolder.data
 
@@ -270,7 +289,7 @@ Button {
         anchors.fill: parent
         interactive: combo.expanded && !contentIsFlickable() && (combo.expandedHeight > 0)
         flickableDirection: Flickable.VerticalFlick
-        contentHeight: interactive ? comboListHolder.height : parent.height
+        contentHeight: comboListHolder.height
 
         // consider PathView as Flickable in this case as well!
         function contentIsFlickable() {
@@ -285,7 +304,32 @@ Button {
                 left: parent.left
                 right: parent.right
             }
-            height: childrenRect.height
+
+            // stretch children width to holder's width
+            // must do binding to height manually to avoid binding loops caused
+            // by the vertical stretching when the component is a single flickable
+            property bool anchorFill: (combo.expandedHeight > 0 && comboHolder.contentIsFlickable())
+            onAnchorFillChanged: stretchChildren()
+            onChildrenChanged: stretchChildren()
+            function stretchChildren() {
+                for (var i in comboListHolder.children) {
+                    var child = comboListHolder.children[i];
+                    if (comboListHolder.anchorFill) {
+                        child.anchors.left = undefined;
+                        child.anchors.right = undefined;
+                        child.anchors.fill = comboListHolder;
+                        comboListHolder.height = Qt.binding(function() {
+                            return combo.comboListHeight;
+                        });
+                    } else {
+                        child.anchors.left = comboListHolder.left;
+                        child.anchors.right = comboListHolder.right;
+                        comboListHolder.height = Qt.binding(function() {
+                            return comboListHolder.childrenRect.height;
+                        });
+                    }
+                }
+            }
         }
     }
     Scrollbar {
@@ -297,16 +341,20 @@ Button {
         target: combo.__styleInstance.comboListPanel
         property: "height"
         value: {
-            if (expanded) {
-                var h = comboListHolder.height;
-                var max = combo.comboListHeight + combo.__styleInstance.comboListMargin;
-                if (combo.expandedHeight < 0) {
-                    return max;
-                }
-
-                return MathUtils.clamp(h, 0, max);
+            if (!expanded) {
+                return 0;
             }
-            return 0;
+            if (comboListHolder.anchorFill) {
+                return combo.comboListHeight + combo.__styleInstance.comboListMargin;
+            }
+
+            var h = comboListHolder.height;
+            var max = combo.comboListHeight + combo.__styleInstance.comboListMargin;
+            if (combo.expandedHeight < 0) {
+                return max;
+            }
+
+            return MathUtils.clamp(h, 0, max);
         }
     }
     // for testing purposes only

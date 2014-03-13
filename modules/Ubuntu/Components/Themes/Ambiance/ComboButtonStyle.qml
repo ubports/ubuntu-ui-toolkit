@@ -47,7 +47,7 @@ Item {
       The item pointing to the panel holding the combo list and additional design
       artifacts. It is used by the component to drive the expansion size.
       */
-    property Item comboListPanel: comboListHolder
+    property Item comboListPanel: panelItem
 
     /*!
       \qmlproperty color defaultColor
@@ -165,7 +165,7 @@ Item {
     }
 
     Item {
-        id: comboListHolder
+        id: panelItem
         anchors {
             left: parent.left
             top: mainButton.bottom
