@@ -49,7 +49,7 @@ Homepage: https://launchpad.net/ubuntu-ui-toolkit
 Vcs-Bzr: https://code.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk
 
 Package: qtdeclarative5-ubuntu-ui-toolkit-plugin
-Architecture: amd64 i386 armhf
+Architecture: any
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: libqt5qml-graphicaleffects | libqt5graphicaleffects5,
@@ -72,7 +72,7 @@ Description: Qt Components for Ubuntu - QML plugin
  This package contains the Ubuntu Components QML plugin.
 
 Package: ubuntu-ui-toolkit-theme
-Architecture: amd64 i386 armhf
+Architecture: any
 Multi-Arch: foreign
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: ${misc:Depends},
@@ -108,7 +108,7 @@ Description: Qt Components for Ubuntu - documentation
 
 Package: ubuntu-ui-toolkit-examples
 Section: devel
-Architecture: amd64 i386 armhf
+Architecture: any
 Depends: qmlscene,
          qtdeclarative5-ubuntu-ui-toolkit-plugin,
          ubuntu-ui-toolkit-theme,
