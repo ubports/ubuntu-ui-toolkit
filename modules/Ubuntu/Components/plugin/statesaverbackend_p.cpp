@@ -50,8 +50,8 @@ StateSaverBackend::StateSaverBackend(QObject *parent)
                          this, &StateSaverBackend::initialize);
     }
 
-    UnixSignalHandler::instance().connectSignal(UnixSignalHandler::Terminate);
-//    UnixSignalHandler::instance().connectSignal(UnixSignalHandler::Interrupt);
+//    UnixSignalHandler::instance().connectSignal(UnixSignalHandler::Terminate);
+    UnixSignalHandler::instance().connectSignal(UnixSignalHandler::Interrupt);
     QObject::connect(&UnixSignalHandler::instance(), SIGNAL(signalTriggered(int)),
                      this, SLOT(signalHandler(int)));
 }
