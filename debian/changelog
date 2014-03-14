@@ -1,3 +1,16 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20140306.1-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * DatePicker flaky test fix. (LP: #1287009)
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+  [ Michael Zanetti ]
+  * Make the UbuntuListView tests more stable (LP: #1288597)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 06 Mar 2014 12:46:50 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20140304-0ubuntu1) trusty; urgency=low
 
   [ CI bot ]
