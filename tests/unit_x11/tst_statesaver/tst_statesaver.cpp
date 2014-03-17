@@ -559,22 +559,22 @@ private Q_SLOTS:
 //        QFile::remove(fileName);
 //    }
 
-//    void test_SigTerm()
-//    {
-//        QProcess testApp;
-//        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-//        env.insert("APP_ID", "SimpleApp");
-//        testApp.setProcessEnvironment(env);
-//        testApp.start("qmlscene -I ../../../modules SimpleApp.qml");
-//        testApp.waitForStarted();
+    void test_SigTerm()
+    {
+        QProcess testApp;
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        env.insert("APP_ID", "SimpleApp");
+        testApp.setProcessEnvironment(env);
+        testApp.start("qmlscene -I ../../../modules SimpleApp.qml");
+        testApp.waitForStarted();
 
-//        // use process' terminate() as that sends SIGTERM to the process in Unix/MacOSX
-//        testApp.terminate();
-//        testApp.waitForFinished();
+        // use process' terminate() as that sends SIGTERM to the process in Unix/MacOSX
+        testApp.terminate();
+        testApp.waitForFinished();
 
-//        QString fileName = stateFile("SimpleApp");
-//        QVERIFY(!QFile(fileName).exists());
-//    }
+        QString fileName = stateFile("SimpleApp");
+        QVERIFY(!QFile(fileName).exists());
+    }
 };
 
 QTEST_MAIN(tst_StateSaverTest)
