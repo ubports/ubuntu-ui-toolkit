@@ -1,3 +1,15 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20140314-0ubuntu1) trusty; urgency=low
+
+  [ CI bot ]
+  * Resync trunk
+
+  [ Colin Watson ]
+  * With Qt 5.2, QtDeclarative now supports all architectures, at least
+    in principle. Switch back to trying to build everywhere, since
+    ubuntu-ui-toolkit has no intrinsic reason to be non-portable.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 14 Mar 2014 15:07:46 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20140306.1-0ubuntu1) trusty; urgency=low
 
   [ Zsombor Egri ]
