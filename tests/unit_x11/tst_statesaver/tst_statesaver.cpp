@@ -535,29 +535,29 @@ private Q_SLOTS:
         QString fileName = stateFile("NormalAppClose");
         QVERIFY(!QFile(fileName).exists());
     }
-//    void test_SigInt()
-//    {
-//        QProcess testApp;
-//        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-//        env.insert("APP_ID", "SimpleApp");
-//        testApp.setProcessEnvironment(env);
-//        testApp.start("qmlscene -I ../../../modules SimpleApp.qml");
-//        testApp.waitForStarted();
+    void test_SigInt()
+    {
+        QProcess testApp;
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        env.insert("APP_ID", "SimpleApp");
+        testApp.setProcessEnvironment(env);
+        testApp.start("qmlscene -I ../../../modules SimpleApp.qml");
+        testApp.waitForStarted();
 
-//        QTest::qWait(1000);
+        QTest::qWait(1000);
 
-//        QProcess kill;
-//        QString command = QString("kill -s SIGINT %1").arg(testApp.pid());
-//        kill.start(command);
-//        kill.waitForFinished();
-//        testApp.waitForFinished();
+        QProcess kill;
+        QString command = QString("kill -s SIGINT %1").arg(testApp.pid());
+        kill.start(command);
+        kill.waitForFinished();
+        testApp.waitForFinished();
 
-//        QString fileName = stateFile("SimpleApp");
-//        qDebug() << fileName;
-//        QVERIFY(QFile(fileName).exists());
-//        // clean the file
-//        QFile::remove(fileName);
-//    }
+        QString fileName = stateFile("SimpleApp");
+        qDebug() << fileName;
+        QVERIFY(QFile(fileName).exists());
+        // clean the file
+        QFile::remove(fileName);
+    }
 
     void test_SigTerm()
     {
@@ -568,8 +568,10 @@ private Q_SLOTS:
         testApp.start("qmlscene -I ../../../modules SimpleApp.qml");
         testApp.waitForStarted();
 
-        // use process' terminate() as that sends SIGTERM to the process in Unix/MacOSX
-        testApp.terminate();
+        QProcess kill;
+        QString command = QString("kill -s SIGTERM %1").arg(testApp.pid());
+        kill.start(command);
+        kill.waitForFinished();
         testApp.waitForFinished();
 
         QString fileName = stateFile("SimpleApp");
