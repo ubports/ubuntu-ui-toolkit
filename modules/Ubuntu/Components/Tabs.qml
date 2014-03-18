@@ -176,18 +176,14 @@ PageTreeNode {
     readonly property Item currentPage: selectedTab ? selectedTab.page : null
 
     /*!
+      \deprecated
       The \l TabBar that will be shown in the header
       and provides scrollable tab buttons.
+      This property is DEPRECATED. TabBar is now part of the header style.
      */
-    // TODO: The TabBar currently checks the model and controls the selected index.
-    //  When the tabBar is removed most of that functionality can be deprecated,
-    //  but we cannot load the TabBar in a Loader now because the alias
-    //  for selectedTabIndex is needed in case the app sets useDeprecatedToolbar.
-    property TabBar tabBar: TabBar {
-        id: bar
-        model: tabsModel
-        visible: tabs.active && internal.oldTabs
-    }
+    property TabBar tabBar: internal.header && internal.header.__styleInstance &&
+                            internal.header.__styleInstance.hasOwnProperty("__tabBar") ?
+                                internal.header.__styleInstance.__tabBar : null
 
     /*!
       Children are placed in a separate item that has functionality to extract the Tab items.
@@ -209,16 +205,7 @@ PageTreeNode {
      */
     signal modelChanged()
 
-    /*!
-      \internal
-      The model is needed by the new header style to display the tabs.
-     */
-    property alias __model: tabsModel
-
-    /*!
-      \internal
-      required by TabsStyle
-     */
+    // Needed to set the tabs model of the header
     ListModel {
         id: tabsModel
 
@@ -306,14 +293,6 @@ PageTreeNode {
     Object {
         id: internal
         property Header header: tabs.__propagated ? tabs.__propagated.header : null
-        property bool oldTabs: tabs.__propagated ? tabs.__propagated.useDeprecatedToolbar : true
-
-        Binding {
-            target: tabBar
-            property: "animate"
-            when: internal.oldTabs && internal.header && internal.header.hasOwnProperty("animate")
-            value: internal.header.animate
-        }
 
         /*
           List of connected Repeaters to avoid repeater "hammering" of itemAdded() signal.
@@ -455,15 +434,8 @@ PageTreeNode {
 
     Binding {
         target: internal.header
-        property: "contents"
-        value: tabs.active ? tabs.tabBar: null
-        when: internal.oldTabs && internal.header && tabs.active
-    }
-
-    Binding {
-        target: internal.header
-        when: !internal.oldTabs && internal.header && tabs.active
-        property: "tabs"
-        value: tabs
+        property: "tabsModel"
+        value: tabsModel
+        when: internal.header && tabs.active
     }
 }
