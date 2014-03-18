@@ -25,50 +25,36 @@ Item {
     width: units.gu(40)
     height: units.gu(71)
 
-    DatePicker {
-        id: picker
+    Component {
+        id: testComponent
+        DatePicker {
+            width: testSuite.width
+        }
+    }
+    Loader {
+        id: pickerLoader
+        asynchronous: false
         width: parent.width
-    }
-
-    SignalSpy {
-        id: modeChange
-        target: picker
-        signalName: "modeChanged"
-    }
-
-    SignalSpy {
-        id: dateChange
-        target: picker
-        signalName: "dateChanged"
-    }
-
-    SignalSpy {
-        id: yearChange
-        target: picker
-        signalName: "yearChanged"
-    }
-
-    SignalSpy {
-        id: monthChange
-        target: picker
-        signalName: "monthChanged"
-    }
-
-    SignalSpy {
-        id: dayChange
-        target: picker
-        signalName: "dayChanged"
-    }
-
-    SignalSpy {
-        id: weekChange
-        target: picker
-        signalName: "weekChanged"
     }
 
     UbuntuTestCase {
         name: "DatePickerAPI"
         when: windowShown
+
+        readonly property DatePicker picker: pickerLoader.item
+
+        function init() {
+            pickerLoader.sourceComponent = testComponent;
+            tryCompareFunction(function(){return pickerLoader.status}, Loader.Ready);
+            waitPickerMoving();
+        }
+        function cleanup() {
+            pickerLoader.sourceComponent = undefined;
+        }
+        function waitPickerMoving() {
+            waitForRendering(picker);
+            tryCompareFunction(function(){return picker.moving}, false);
+        }
 
         function getPickerLabel(picker, name) {
             var pickerItem = findChild(picker, name);
@@ -76,7 +62,7 @@ Item {
             return findChild(pickerCurrent.item.currentItem, "PickerRow_PickerLabel");
         }
         function getPickerModel(picker, name) {
-            var pickerItem = findChild(picker, name);
+            var pickerItem = findInvisibleChild(picker, name);
             return pickerItem ? pickerItem.model : undefined;
         }
         function setHMS(date, h, m, s) {
@@ -114,12 +100,8 @@ Item {
             var newMode = "Years|Months";
             var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            waitPickerMoving();
             var positioner = findChild(picker, "PickerRow_Positioner");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -127,12 +109,8 @@ Item {
             var newMode = "Days|Months";
             var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            waitPickerMoving();
             var positioner = findChild(picker, "PickerRow_Positioner");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -140,13 +118,9 @@ Item {
             var newMode = "Years|Days";
             var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            // no rendering is expected, no need to wait
             var positioner = findChild(picker, "PickerRow_Positioner");
             expectFailContinue("", "Invalid mode");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -154,12 +128,8 @@ Item {
             var newMode = "Years";
             var pickerCount = 1 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            waitPickerMoving();
             var positioner = findChild(picker, "PickerRow_Positioner");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -167,12 +137,8 @@ Item {
             var newMode = "Months";
             var pickerCount = 1 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            waitPickerMoving();
             var positioner = findChild(picker, "PickerRow_Positioner");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -180,12 +146,8 @@ Item {
             var newMode = "Days";
             var pickerCount = 1 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            waitPickerMoving();
             var positioner = findChild(picker, "PickerRow_Positioner");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -193,12 +155,8 @@ Item {
             var newMode = "Hours|Minutes|Seconds";
             var pickerCount = 3 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            waitPickerMoving();
             var positioner = findChild(picker, "PickerRow_Positioner");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -206,12 +164,8 @@ Item {
             var newMode = "Hours|Minutes";
             var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            waitPickerMoving();
             var positioner = findChild(picker, "PickerRow_Positioner");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -219,12 +173,8 @@ Item {
             var newMode = "Minutes|Seconds";
             var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            waitPickerMoving();
             var positioner = findChild(picker, "PickerRow_Positioner");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -232,13 +182,9 @@ Item {
             var newMode = "Hours|Seconds";
             var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            waitPickerMoving();
             var positioner = findChild(picker, "PickerRow_Positioner");
             expectFailContinue("", "cannot set mode to Hours|Minutes");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -246,12 +192,8 @@ Item {
             var newMode = "Hours";
             var pickerCount = 1 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            waitPickerMoving();
             var positioner = findChild(picker, "PickerRow_Positioner");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -259,12 +201,8 @@ Item {
             var newMode = "Minutes";
             var pickerCount = 1 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            waitPickerMoving();
             var positioner = findChild(picker, "PickerRow_Positioner");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -272,12 +210,8 @@ Item {
             var newMode = "Seconds";
             var pickerCount = 1 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            waitPickerMoving();
             var positioner = findChild(picker, "PickerRow_Positioner");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -285,13 +219,9 @@ Item {
             var newMode = "Years|Months|Days|Hours|Minutes|Seconds";
             var pickerCount = 6 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            waitPickerMoving();
             var positioner = findChild(picker, "PickerRow_Positioner");
             expectFailContinue("", "cannot combine date and time pickers");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -299,13 +229,9 @@ Item {
             var newMode = "Years|Hours";
             var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            waitPickerMoving();
             var positioner = findChild(picker, "PickerRow_Positioner");
             expectFailContinue("", "cannot combine date and time pickers");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -313,13 +239,9 @@ Item {
             var newMode = "Years|Whatever";
             var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
-            wait(500);
+            // no rendering is expected, no need to wait
             var positioner = findChild(picker, "PickerRow_Positioner");
             expectFailContinue("", "unhandled mode flag should not pass");
-            compare(positioner.children.length, pickerCount, "invalid amount of pickers");
-
-            picker.mode = "Years|Months|Days";
-            pickerCount = 3 + 1; // +1 is the Repeater
             compare(positioner.children.length, pickerCount, "invalid amount of pickers");
         }
 
@@ -328,16 +250,14 @@ Item {
             var locale = Qt.locale("hu_HU");
             picker.minimum = new Date(2012, 11, 1);
             picker.date = new Date(2012, 11, 1);
-            wait(500)
             picker.locale = Qt.locale("hu_HU");
-            wait(500)
+            waitPickerMoving();
             var label = getPickerLabel(picker, "PickerRow_MonthPicker");
             compare(label.text, locale.monthName(picker.date.getMonth(), Locale.LongFormat), "locale for month wrong");
 
             label = getPickerLabel(picker, "PickerRow_DayPicker");
             var dayModel = getPickerModel(picker, "PickerRow_DayPicker");
             compare(label.text, dayModel.text(picker.date.getDate() - 1, testSuite.width), "locale for day name wrong");
-            picker.locale = prevLocale;
         }
 
         function test_1_changeMinimumBeforeDate() {
@@ -346,7 +266,8 @@ Item {
             date.setFullYear(date.getFullYear() - 1);
             date.setDate(1);
             picker.minimum = date;
-            wait(500);
+            // no rendering is expected, so no need to wait
+
             var year = getPickerLabel(picker, "PickerRow_YearPicker");
             compare(year.text, originalDate.getFullYear().toString(), "year differs");
             var month = getPickerLabel(picker, "PickerRow_MonthPicker");
@@ -362,7 +283,7 @@ Item {
             date.setFullYear(date.getFullYear() + 1);
             date.setDate(1);
             picker.maximum = date;
-            wait(500);
+            waitPickerMoving();
             var year = getPickerLabel(picker, "PickerRow_YearPicker");
             compare(year.text, originalDate.getFullYear().toString(), "year differs");
             var month = getPickerLabel(picker, "PickerRow_MonthPicker");
@@ -375,26 +296,27 @@ Item {
         // make infinite
         function test_1_changeMinimumInvalid() {
             picker.minimum = Date.prototype.getInvalidDate.call();
+            // no rendering is expected
             compare(picker.minimum, picker.date, "invalid minimum hasn't been adjusted to date");
         }
 
         // make infinite
         function test_1_changeMaximumInvalid() {
             picker.maximum = Date.prototype.getInvalidDate.call();
-
+            waitPickerMoving();
             // check if the year picker model is autoExtending
             var yearModel = getPickerModel(picker, "PickerRow_YearPicker");
             compare(yearModel.autoExtend, true, "the year picker is not auto-extending one");
         }
 
         function test_1_changeDate() {
-            var date = picker.date;
-            date.setFullYear(date.getFullYear() + 2);
+            var date = new Date();
+            date.setFullYear(picker.date.getFullYear() + 2);
             date.setMonth(5);
             date.setDate(21);
             picker.date = date;
             picker.mode = "Years|Months|Days";
-            wait(500);
+            waitPickerMoving();
 
             var yearLabel = getPickerLabel(picker, "PickerRow_YearPicker");
             var monthLabel = getPickerLabel(picker, "PickerRow_MonthPicker");
@@ -410,15 +332,15 @@ Item {
             picker.minimum = new Date(2013, 9, 1);
             picker.date = new Date(2013, 09, 31);
             picker.locale = Qt.locale("hu_HU")
-            wait(500);
+            waitPickerMoving();
 
             // click on the month picker to set the next month
             var monthPicker = findChild(picker, "PickerRow_MonthPicker");
             var monthCurrent = findChild(monthPicker, "Picker_ViewLoader");
             var my = monthPicker.y + (monthPicker.height / 2) + monthCurrent.item.currentItem.height;
             var mx = monthPicker.x + monthPicker.width / 2;
-            mouseClick(testSuite, mx, my);
-            wait(500);
+            mouseClick(picker, mx, my);
+            waitPickerMoving();
 
             var yearLabel = getPickerLabel(picker, "PickerRow_YearPicker");
             var monthLabel = getPickerLabel(picker, "PickerRow_MonthPicker");
@@ -433,8 +355,8 @@ Item {
 
             // set it back
             my = monthPicker.y + (monthPicker.height / 2) - monthCurrent.item.currentItem.height;
-            mouseClick(testSuite, mx, my);
-            wait(500);
+            mouseClick(picker, mx, my);
+            waitPickerMoving();
 
             compare(yearLabel.text, "2013", "different year value");
             // October
@@ -451,8 +373,9 @@ Item {
             var maxDate = new Date(2013, 11, 31);
             picker.minimum = minDate;
             picker.maximum = maxDate;
-            wait(500);
+            waitPickerMoving();
             picker.date = date;
+            waitPickerMoving();
 
             var yearPicker = findChild(picker, "PickerRow_YearPicker");
             compare(yearPicker.enabled, false, "year picker should be disabled");
@@ -465,6 +388,7 @@ Item {
             picker.minimum = minDate;
             picker.maximum = maxDate;
             picker.date = date;
+            waitPickerMoving();
 
             var yearPicker = findChild(picker, "PickerRow_YearPicker");
             compare(yearPicker.enabled, false, "year picker should be disabled");
@@ -491,10 +415,11 @@ Item {
 
         function test_3_changeHours() {
             picker.mode = "Hours|Minutes|Seconds";
+            waitPickerMoving();
             var date = new Date(picker.date);
             date.setHours((date.getHours() + 10) % 24);
             picker.date = date;
-            wait(500);
+            waitPickerMoving();
 
             var hoursLabel = getPickerLabel(picker, "PickerRow_HoursPicker");
             verify(hoursLabel, "hour label undefined");
@@ -512,7 +437,7 @@ Item {
             var date = new Date(picker.date);
             date.setMinutes((date.getMinutes() + 40) % 60);
             picker.date = date;
-            wait(500);
+            waitPickerMoving();
 
             var hoursLabel = getPickerLabel(picker, "PickerRow_HoursPicker");
             verify(hoursLabel, "hour label undefined");
@@ -530,7 +455,7 @@ Item {
             var date = new Date(picker.date);
             date.setSeconds((date.getSeconds() + 50) % 60);
             picker.date = date;
-            wait(500);
+            waitPickerMoving();
 
             var hoursLabel = getPickerLabel(picker, "PickerRow_HoursPicker");
             verify(hoursLabel, "hour label undefined");
@@ -550,7 +475,7 @@ Item {
             date.setFullYear(date.getFullYear() - 1);
             date.setDate(1);
             picker.minimum = date;
-            wait(500);
+            waitPickerMoving();
 
             var hoursLabel = getPickerLabel(picker, "PickerRow_HoursPicker");
             verify(hoursLabel, "hour label undefined");
@@ -570,7 +495,7 @@ Item {
             date.setFullYear(date.getFullYear() + 1);
             date.setDate(1);
             picker.maximum = date;
-            wait(500);
+            waitPickerMoving();
             var hoursLabel = getPickerLabel(picker, "PickerRow_HoursPicker");
             verify(hoursLabel, "hour label undefined");
             compare(hoursLabel.text, ("00" + originalDate.getHours()).slice(-2), "hours differ");
@@ -583,12 +508,13 @@ Item {
         }
 
         function test_4_disabledHour() {
+            picker.mode = "Hours|Minutes|Seconds";
             var date = setHMS(new Date(), 12, 10, 45);
             var minDate = setHMS(new Date(), 12, 0, 0);
             var maxDate = setHMS(new Date(), 12, 59, 59);
             picker.minimum = minDate;
             picker.maximum = maxDate;
-            wait(500);
+            waitPickerMoving();
             picker.date = date;
 
             var hoursPicker = findChild(picker, "PickerRow_HoursPicker");
@@ -596,13 +522,14 @@ Item {
         }
 
         function test_4_disabledHoursAndMinutes() {
+            picker.mode = "Hours|Minutes|Seconds";
             var date = setHMS(new Date(), 12, 10, 45);
             var minDate = setHMS(new Date(), 12, 10, 0);
             var maxDate = setHMS(new Date(), 12, 10, 59);
             picker.minimum = minDate;
             picker.maximum = maxDate;
             picker.date = date;
-            wait(500);
+            waitPickerMoving();
 
             var hoursPicker = findChild(picker, "PickerRow_HoursPicker");
             compare(hoursPicker.enabled, false, "hours picker should be disabled");
@@ -611,13 +538,14 @@ Item {
         }
 
         function test_4_linearSecondsPicker() {
+            picker.mode = "Hours|Minutes|Seconds";
             var date = setHMS(new Date(), 12, 10, 45);
             var minDate = setHMS(new Date(), 12, 10, 1);
             var maxDate = setHMS(new Date(), 12, 10, 59);
             picker.minimum = minDate;
             picker.maximum = maxDate;
             picker.date = date;
-            wait(500);
+            waitPickerMoving();
 
             var hoursPicker = findChild(picker, "PickerRow_HoursPicker");
             compare(hoursPicker.enabled, false, "hours picker should be disabled");
