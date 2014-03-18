@@ -64,15 +64,6 @@ Item {
         source: headerStyle.separatorBottomSource
     }
 
-    QtObject {
-        id: internal
-
-        property Tabs tabs: styledItem.tabs && styledItem.tabs.hasOwnProperty("selectedTabIndex") ?
-                                styledItem.tabs : null
-
-        property var tabsModel: tabs ? tabs.__model : 0
-    }
-
     Item {
         id: leftButtonContainer
         anchors {
@@ -88,8 +79,8 @@ Item {
             width: visible ? units.gu(5) : 0
 
             iconName: "navigation-menu"
-            visible: internal.tabsModel !== 0
-            text: visible ? internal.tabs.count + " tabs" : ""
+            visible: styledItem.tabsModel !== null
+            text: visible ? styledItem.tabsModel.count + " tabs" : ""
 
             // XXX: We currently use an AbstractButton with ToolbarButtonStyle because
             //  a ToolbarButton does not has its own MouseArea to handle interaction,
@@ -111,11 +102,11 @@ Item {
                         right: parent.right
                     }
                     Repeater {
-                        model: internal.tabsModel
+                        model: styledItem.tabsModel
                         ListItem.Standard {
                             text: tab.title // XXX: only "title" doesn't work with i18n.tr(). Why not?
                             onClicked: {
-                                internal.tabs.selectedTabIndex = index;
+                                styledItem.tabsModel.selectedIndex = index;
                                 tabsPopover.hide();
                             }
                         }
