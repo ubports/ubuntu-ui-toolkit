@@ -23,7 +23,6 @@
 #include <QtCore/QEvent>
 
 #include "inversemouseareatype.h"
-#include "ucunits.h"
 #include <private/qquickevents_p_p.h>
 
 class tst_InverseMouseAreaTest : public QObject
@@ -38,7 +37,7 @@ private:
     QQmlEngine *quickEngine;
     QObjectCleanupHandler eventCleanup;
 
-    InverseMouseAreaType *testArea(const QString &document, const QString &imaName = QString())
+    InverseMouseAreaType *testArea(const QString &document)
     {
         // delete previous root
         QObject *rootObject = quickView->rootObject();
@@ -53,9 +52,6 @@ private:
         if (!rootObject)
             return 0;
 
-        if (!imaName.isEmpty()) {
-            return rootObject->findChild<InverseMouseAreaType*>(imaName);
-        }
         QList<QQuickItem*> items = rootObject->findChildren<QQuickItem*>();
         Q_FOREACH(QQuickItem *item, items) {
             InverseMouseAreaType *area = qobject_cast<InverseMouseAreaType*>(item);
@@ -63,11 +59,6 @@ private:
                 return area;
         }
         return 0;
-    }
-
-    QPoint guPoint(qreal guX, qreal guY)
-    {
-        return QPointF(UCUnits::instance().gu(guX), UCUnits::instance().gu(guY)).toPoint();
     }
 
 protected Q_SLOTS:
@@ -459,23 +450,6 @@ private Q_SLOTS:
         QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(175, 175));
         QCOMPARE(maSpy.count(), 1);
         QCOMPARE(imaSpy.count(), 0);
-    }
-
-    void test_MouseClicksOnHeaderNotSeen_bug1288876()
-    {
-        InverseMouseAreaType *ima = testArea("MouseClicksOnHeaderNotSeen.qml", "Test_IMA");
-        QVERIFY(ima);
-        quickView->show();
-        QTest::qWaitForWindowExposed(quickView);
-
-        QQuickItem *header = quickView->rootObject()->findChild<QQuickItem*>("MainView_Header");
-        QVERIFY(header);
-
-        QSignalSpy imaSpy(ima, SIGNAL(clicked(QQuickMouseEvent*)));
-
-        // make sure we click on the header
-        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, guPoint(20, 5));
-        QCOMPARE(imaSpy.count(), 1);
     }
 
 };

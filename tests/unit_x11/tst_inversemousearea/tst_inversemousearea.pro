@@ -15,5 +15,4 @@ OTHER_FILES += \
     InverseMouseAreaTopmostItem.qml \
     InverseMouseAreaSensingArea.qml \
     InverseMouseAreaOnTopNoAccept.qml \
-    Defaults.qml \
-    MouseClicksOnHeaderNotSeen.qml
+    Defaults.qml

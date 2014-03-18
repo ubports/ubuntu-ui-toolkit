@@ -334,7 +334,6 @@ bool InverseMouseAreaType::eventFilter(QObject *object, QEvent *event)
 
         switch (event->type()) {
         case QEvent::MouseButtonPress:
-            qDebug() << "MouseButtonPress" << object;
             mousePressEvent(static_cast<QMouseEvent*>(mappedEvent));
             break;
         case QEvent::MouseButtonRelease:
