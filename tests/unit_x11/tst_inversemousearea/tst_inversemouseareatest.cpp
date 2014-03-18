@@ -25,17 +25,23 @@
 #include "inversemouseareatype.h"
 #include "ucunits.h"
 #include <private/qquickevents_p_p.h>
+#include <qpa/qwindowsysteminterface.h>
+
+using QTest::QTouchEventSequence;
 
 class tst_InverseMouseAreaTest : public QObject
 {
     Q_OBJECT
     
 public:
-    tst_InverseMouseAreaTest() {}
+    tst_InverseMouseAreaTest() :
+    quickView(0), quickEngine(0), device(0)
+    {}
 
 private:
     QQuickView *quickView;
     QQmlEngine *quickEngine;
+    QTouchDevice *device;
     QObjectCleanupHandler eventCleanup;
 
     InverseMouseAreaType *testArea(const QString &document, const QString &imaName = QString())
@@ -70,6 +76,12 @@ private:
         return QPointF(UCUnits::instance().gu(guX), UCUnits::instance().gu(guY)).toPoint();
     }
 
+    void touchClick(QWindow *window, const QPoint &point)
+    {
+        QTest::touchEvent(window, device).press(0, point, window);
+        QTest::touchEvent(window, device).release(0, point, window);
+    }
+
 protected Q_SLOTS:
     void capturePressed(QQuickMouseEvent *event)
     {
@@ -85,6 +97,10 @@ private Q_SLOTS:
 
         quickView = new QQuickView(0);
         quickEngine = quickView->engine();
+
+        device = new QTouchDevice;
+        device->setType(QTouchDevice::TouchScreen);
+        QWindowSystemInterface::registerTouchDevice(device);
 
         quickView->setGeometry(0,0, 240, 320);
         //add modules folder so we have access to the plugin from QML
@@ -474,7 +490,7 @@ private Q_SLOTS:
         QSignalSpy imaSpy(ima, SIGNAL(clicked(QQuickMouseEvent*)));
 
         // make sure we click on the header
-        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, guPoint(20, 5));
+        touchClick(quickView, guPoint(20, 5));
         QCOMPARE(imaSpy.count(), 1);
     }
 

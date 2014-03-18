@@ -334,10 +334,10 @@ bool InverseMouseAreaType::eventFilter(QObject *object, QEvent *event)
 
         switch (event->type()) {
         case QEvent::MouseButtonPress:
-            qDebug() << "MouseButtonPress" << object;
             mousePressEvent(static_cast<QMouseEvent*>(mappedEvent));
             break;
         case QEvent::MouseButtonRelease:
+            QuickUtils::log("HANDLE RELEASE");
             mouseReleaseEvent(static_cast<QMouseEvent*>(mappedEvent));
             break;
         case QEvent::MouseButtonDblClick:
@@ -379,12 +379,14 @@ void InverseMouseAreaType::mousePressEvent(QMouseEvent *event)
     // to true automatically, however ion our case this can be false in case the press
     // happens inside the "hole"
     if (!m_topmostItem || (m_topmostItem && contains(event->localPos()))) {
+        QuickUtils::log("HANDLE PRESS");
         QQuickMouseArea::mousePressEvent(event);
     } else {
         // we do not consume the mouse event
         // this is not the same as setting the accepted flag in the signal handler
         // as in this way we only tell to the event handling that the event can be
         // propagated to other filters
+        QuickUtils::log("FORWARD PRESS");
         event->setAccepted(false);
     }
 }

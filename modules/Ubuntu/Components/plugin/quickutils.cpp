@@ -37,6 +37,22 @@ QuickUtils::QuickUtils(QObject *parent) :
     QGuiApplication::instance()->installEventFilter(this);
 }
 
+void QuickUtils::log(const QString &log)
+{
+    instance().m_consoleLog += log + '\n';
+    Q_EMIT instance().consoleLogChanged();
+}
+
+void QuickUtils::clearLog()
+{
+    instance().m_consoleLog.clear();
+    Q_EMIT instance().consoleLogChanged();
+}
+
+QString QuickUtils::consoleLog() const
+{
+    return m_consoleLog;
+}
 /*!
  * \internal
  * Filter events to catch ChildAdded, when the the application gets the topmost

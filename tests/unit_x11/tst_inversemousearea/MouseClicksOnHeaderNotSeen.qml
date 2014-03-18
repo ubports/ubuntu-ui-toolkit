@@ -29,6 +29,13 @@ MainView {
             width: units.gu(30)
             height: units.gu(30)
             anchors.centerIn: parent
+            clip: true
+
+            Text {
+                text: QuickUtils.consoleLog
+                color: "white"
+                onTextChanged: print("text=", text)
+            }
 
             InverseMouseArea {
                 id: ima
@@ -36,7 +43,7 @@ MainView {
                 anchors.fill: parent
                 topmostItem: true
 
-                onClicked: print("IMA CLICK", ima)
+                onClicked: QuickUtils.log("IMA captured")
             }
         }
     }

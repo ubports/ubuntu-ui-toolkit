@@ -30,6 +30,7 @@ class QuickUtils : public QObject
     Q_OBJECT
     Q_PROPERTY(QQuickItem *rootObject READ rootObject NOTIFY rootObjectChanged)
     Q_PROPERTY(QString inputMethodProvider READ inputMethodProvider)
+    Q_PROPERTY(QString consoleLog READ consoleLog NOTIFY consoleLogChanged)
 public:
     static QuickUtils& instance()
     {
@@ -37,15 +38,20 @@ public:
         return instance;
     }
 
+    Q_INVOKABLE static void log(const QString &log);
+    Q_INVOKABLE static void clearLog();
+
     QQuickItem *rootObject();
     Q_INVOKABLE QQuickItem *rootItem(QObject *object);
     QString inputMethodProvider() const;
+    QString consoleLog() const;
 
     Q_INVOKABLE QString className(QObject *item);
     QObject* createQmlObject(const QUrl &url, QQmlEngine *engine);
 
 Q_SIGNALS:
     void rootObjectChanged();
+    void consoleLogChanged();
     void activated();
     void deactivated();
 
@@ -55,6 +61,7 @@ protected:
 private:
     explicit QuickUtils(QObject *parent = 0);
     QPointer<QQuickView> m_rootView;
+    QString m_consoleLog;
 
     void lookupQuickView();
 };
