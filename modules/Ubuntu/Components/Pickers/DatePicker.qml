@@ -292,6 +292,14 @@ StyledItem {
       */
     property var locale: Qt.locale()
 
+    /*!
+      \qmlproperty bool moving
+      \readonly
+      The property holds whether the component's pickers are moving.
+      \sa Picker::moving
+      */
+    readonly property alias moving: positioner.moving
+
     implicitWidth: units.gu(36)
     implicitHeight: units.gu(20)
 
@@ -453,6 +461,13 @@ StyledItem {
               */
         id: tumblerModel
 
+        /*
+          Signal triggered when the model is about to remove a picker. We cannot rely on
+          rowAboutToBeRemoved, as by the time the signal is called the list element is
+          already removed from the model.
+          */
+        signal pickerRemoved(int index)
+
         // the function checks whether a pickerModel was added or not
         // returns the index of the model object the pickerModel was found
         // or -1 on error.
@@ -480,6 +495,7 @@ StyledItem {
         function removePicker(name) {
             var idx = pickerModelIndex(name);
             if (idx >= 0) {
+                pickerRemoved(idx);
                 remove(idx);
             }
         }
