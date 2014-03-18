@@ -16,34 +16,58 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1
 
 MainView {
+    id: root
     width: units.gu(40)
     height: units.gu(71)
+
+    property InverseMouseArea ima: null
+
+    Component {
+        id: editor
+        TextArea {
+            text: QuickUtils.consoleLog
+            onTextChanged: print("text=", text)
+        }
+
+    }
 
     Page {
         title: "Test"
 
-        Rectangle {
-            color: "blue"
-            width: units.gu(30)
-            height: units.gu(30)
-            anchors.centerIn: parent
-            clip: true
-
-            Text {
-                text: QuickUtils.consoleLog
-                color: "white"
-                onTextChanged: print("text=", text)
+        ListView {
+            id: list
+            objectName: "ListView"
+            anchors.fill: parent
+            model: ListModel {
+                Component.onCompleted: {
+                    append({"contentData": editor})
+                }
             }
 
-            InverseMouseArea {
-                id: ima
-                objectName: "Test_IMA"
-                anchors.fill: parent
-                topmostItem: true
+            delegate: Empty {
+                objectName: "Card"
+                width: parent.width - units.gu(5)
+                anchors.horizontalCenter: parent.horizontalCenter
+                height: units.gu(30)
 
-                onClicked: QuickUtils.log("IMA captured")
+                Loader {
+                    anchors.fill: parent
+                    sourceComponent: contentData
+                }
+
+                InverseMouseArea {
+                    id: ima
+                    objectName: "Test_IMA"
+                    anchors.fill: parent
+                    topmostItem: true
+                    propagateComposedEvents: true
+
+                    onClicked: QuickUtils.log("IMA captured")
+                    Component.onCompleted: root.ima = ima
+                }
             }
         }
     }

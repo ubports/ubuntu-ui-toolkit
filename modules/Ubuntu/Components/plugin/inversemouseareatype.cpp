@@ -379,8 +379,8 @@ void InverseMouseAreaType::mousePressEvent(QMouseEvent *event)
     // to true automatically, however ion our case this can be false in case the press
     // happens inside the "hole"
     if (!m_topmostItem || (m_topmostItem && contains(event->localPos()))) {
-        QuickUtils::log("HANDLE PRESS");
         QQuickMouseArea::mousePressEvent(event);
+        QuickUtils::log(QString("PRESS HANDLED, accepted=%1").arg(event->isAccepted()));
     } else {
         // we do not consume the mouse event
         // this is not the same as setting the accepted flag in the signal handler

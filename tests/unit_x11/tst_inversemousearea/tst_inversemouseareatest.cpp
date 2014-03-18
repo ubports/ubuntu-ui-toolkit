@@ -479,8 +479,11 @@ private Q_SLOTS:
 
     void test_MouseClicksOnHeaderNotSeen_bug1288876()
     {
-        InverseMouseAreaType *ima = testArea("MouseClicksOnHeaderNotSeen.qml", "Test_IMA");
+        testArea("MouseClicksOnHeaderNotSeen.qml");
+        InverseMouseAreaType *ima = quickView->rootObject()->
+                property("ima").value<InverseMouseAreaType*>();
         QVERIFY(ima);
+        QCOMPARE(ima->objectName(), QString("Test_IMA"));
         quickView->show();
         QTest::qWaitForWindowExposed(quickView);
 
