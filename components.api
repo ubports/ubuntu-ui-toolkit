@@ -60,6 +60,7 @@ StyledItem
     function hide()
     property string title
     property Item contents
+    property var tabsModel
     property Flickable flickable
 modules/Ubuntu/Components/Icon.qml
 Item
