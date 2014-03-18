@@ -75,6 +75,7 @@ Item {
 
         AbstractButton {
             id: tabsButton
+            objectName: "tabsButton"
             height: parent ? parent.height : undefined
             width: visible ? units.gu(5) : 0
 
@@ -93,6 +94,7 @@ Item {
 
             Popover {
                 id: tabsPopover
+                objectName: "tabsPopover"
                 parent: QuickUtils.rootItem(tabsPopover)
                 caller: tabsButton
                 Column {
@@ -105,6 +107,7 @@ Item {
                         model: styledItem.tabsModel
                         ListItem.Standard {
                             text: tab.title // XXX: only "title" doesn't work with i18n.tr(). Why not?
+                            objectName: "tabButton" + index
                             onClicked: {
                                 styledItem.tabsModel.selectedIndex = index;
                                 tabsPopover.hide();

@@ -247,11 +247,11 @@ class TabsTestCase(tests.QMLStringAppTestCase):
     test_qml = ("""
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItem
 
 MainView {
     width: units.gu(70)
     height: units.gu(60)
+    useDeprecatedToolbar: false
 
     Tabs {
         id: tabs
@@ -366,6 +366,59 @@ MainView {
             'unexisting')
         self.assertEqual(
             str(error), 'Tab with objectName "unexisting" not found.')
+
+
+class DeprecatedTabsTestCase(TabsTestCase):
+
+    # The only difference of this test_qml with the one from
+    # TabsTestCase is the value of useDeprecatedToolbar
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(70)
+    height: units.gu(60)
+    useDeprecatedToolbar: true
+
+    Tabs {
+        id: tabs
+        Tab {
+            objectName: "tab1"
+            title: "Tab1"
+            Page {
+                tools: ToolbarItems {
+                    ToolbarButton {
+                        text: "Test1"
+                    }
+                }
+            }
+        }
+        Tab {
+            objectName: "tab2"
+            title: "Tab2"
+            Page {
+                tools: ToolbarItems {
+                    ToolbarButton {
+                        text: "Test2"
+                    }
+                }
+            }
+        }
+        Tab {
+            objectName: "tab3"
+            title: "Tab3"
+            Page {
+                tools: ToolbarItems {
+                    ToolbarButton {
+                        text: "Test3"
+                    }
+                }
+            }
+        }
+    }
+}
+""")
 
 
 class ActionSelectionPopoverTestCase(tests.QMLStringAppTestCase):

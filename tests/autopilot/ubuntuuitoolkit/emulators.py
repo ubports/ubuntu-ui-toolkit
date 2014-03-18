@@ -212,8 +212,11 @@ class Header(UbuntuUIToolkitEmulatorBase):
         self.pointing_device = get_pointing_device()
 
     def _get_animating(self):
-        tab_bar_style = self.select_single('TabBarStyle')
-        return tab_bar_style.animating
+        if (self.useDeprecatedToolbar):
+            tab_bar_style = self.select_single('TabBarStyle')
+            return tab_bar_style.animating
+        else:
+            return false
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_next_tab(self):
@@ -222,12 +225,32 @@ class Header(UbuntuUIToolkitEmulatorBase):
         :raise ToolkitEmulatorException: If the main view has no tabs.
 
         """
-        try:
-            tab_bar = self.select_single(TabBar)
-        except dbus.StateNotFoundError:
-            raise ToolkitEmulatorException(_NO_TABS_ERROR)
-        tab_bar.switch_to_next_tab()
-        self._get_animating().wait_for(False)
+        if (self.useDeprecatedToolbar):
+            try:
+                tab_bar = self.select_single(TabBar)
+            except dbus.StateNotFoundError:
+                raise ToolkitEmulatorException(_NO_TABS_ERROR)
+            tab_bar.switch_to_next_tab()
+            self._get_animating().wait_for(False)
+        else:
+            try:
+                tabs_drawer_button = self.select_single('AbstractButton', objectName='tabsButton')
+            except dbus.StateNotFoundError:
+                raise ToolkitEmulatorException(_NO_TABS_ERROR)
+            self.pointing_device.click_object(tabs_drawer_button)
+
+            tabs_model_properties = self.select_single('QQuickItem', objectName='tabsModelProperties')
+            next_tab_index = (tabs_model_properties.selectedIndex + 1) % tabs_model_properties.count
+
+            try:
+                tab_button = self.select_single('Standard', objectName='tabButton'+str(next_tab_index))
+                # FIXME TIM: this fails because the tab buttons are not inside the header because
+                #   the parent of the Popover is not Header but the root item.
+            except dbus.StateNotFoundError:
+                raise ToolkitEmulatorException("Tab button {0} not found.".format(next_tab_index))
+
+            self.pointing_device.click_object(tab_button)
+
 
 
 class Toolbar(UbuntuUIToolkitEmulatorBase):

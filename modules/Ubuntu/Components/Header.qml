@@ -91,6 +91,16 @@ StyledItem {
      */
     property var tabsModel: null
 
+    // FIXME: Currently autopilot can only get visual items, but once it is
+    //  updated to support non-visual items, a QtObject may be used.
+    Item {
+        // FIXME: This is a workaround to be able to get the properties of
+        //  tabsModel in an autopilot test.
+        objectName: "tabsModelProperties"
+        property int count: tabsModel ? tabsModel.count : 0
+        property int selectedIndex: tabsModel ? tabsModel.selectedIndex : -1
+    }
+
     /*!
       The flickable that controls the movement of the header.
       Will be set automatically by Pages inside a MainView, but can
