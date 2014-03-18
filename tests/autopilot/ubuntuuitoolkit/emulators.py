@@ -243,9 +243,8 @@ class Header(UbuntuUIToolkitEmulatorBase):
             next_tab_index = (tabs_model_properties.selectedIndex + 1) % tabs_model_properties.count
 
             try:
-                tab_button = self.select_single('Standard', objectName='tabButton'+str(next_tab_index))
-                # FIXME TIM: this fails because the tab buttons are not inside the header because
-                #   the parent of the Popover is not Header but the root item.
+                tab_button = self.get_root_instance().select_single('Standard',
+                            objectName='tabButton'+str(next_tab_index))
             except dbus.StateNotFoundError:
                 raise ToolkitEmulatorException("Tab button {0} not found.".format(next_tab_index))
 
