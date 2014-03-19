@@ -885,7 +885,7 @@ MainView {
     def test_expand(self):
         """expand() must expand a collapsed option elector"""
         self.assertFalse(self.option_selector.currentlyExpanded)
-        self.option_selector.expand()
+        self.option_selector._expand()
         self.assertTrue(self.option_selector.currentlyExpanded)
 
     def test_negative_select_text(self):

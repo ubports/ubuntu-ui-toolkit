@@ -459,17 +459,17 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
         self.list_view = self.select_single("QQuickListView")
         return self.list_view.currentIndex
 
-    def expand(self):
+    def _expand(self):
         """Expand an optionselector if it's collapsed"""
-        #if just collapsed it can think that the item is expanded
-        # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1240288
+        # if just collapsed it can think that the item is expanded
+        #  https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1240288
         sleep(1)
         if not self.expanded and not self.currentlyExpanded:
             self.pointing_device.click_object(self)
             self.currentlyExpanded.wait_for(True)
-            #selecting the same item too quickly after expand
-            #causes the wrong item to be selected
-            #https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1231939
+            # selecting the same item too quickly after expand
+            # causes the wrong item to be selected
+            # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1231939
             sleep(1)
 
     def get_selected_text(self):
@@ -489,7 +489,7 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
         :parameter kwargs: keywords used to find property(s) of delegate in
             option selector
 
-                """
+        """
         try:
             select_object = self.select_single(
                 'OptionSelectorDelegate',
@@ -500,7 +500,7 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
                 'OptionSelectorDelegate with kwargs {} not found'.format(
                     kwargs)
             )
-        self.expand()
+        self._expand()
         self.pointing_device.click_object(select_object)
 
 
