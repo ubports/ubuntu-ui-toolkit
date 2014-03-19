@@ -50,6 +50,8 @@ import Ubuntu.Components 0.1 as Toolkit
 ListItem.Standard {
     id: option
 
+    __height: units.gu(5)
+
     /*!
       \preliminary
       Main text.
@@ -92,12 +94,10 @@ ListItem.Standard {
       If both iconSource and iconName are defined, iconName will be ignored.
 
       \note The complete list of icons available in Ubuntu is not published yet.
-            For now please refer to the folders where the icon themes are installed:
+            For now please refer to the folders where the icon theme is installed:
             \list
               \li Ubuntu Touch: \l file:/usr/share/icons/ubuntu-mobile
-              \li Ubuntu Desktop: \l file:/usr/share/icons/ubuntu-mono-dark
             \endlist
-            These 2 separate icon themes will be merged soon.
     */
     property string iconName
 
@@ -202,9 +202,7 @@ ListItem.Standard {
         Connections {
             target: listView.container
             onCurrentlyExpandedChanged: {
-                optionExpansion.stop();
                 imageExpansion.stop();
-                optionCollapse.stop();
                 selectedImageCollapse.stop();
                 deselectedImageCollapse.stop();
 

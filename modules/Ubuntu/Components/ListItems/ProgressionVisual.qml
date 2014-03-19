@@ -15,38 +15,15 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
 // Internal helper class for the visuals of
 // the progression symbol.
-Item {
+StyledItem {
     id: progressionVisual
-
-    width: progressIcon.width + (showSplit ? splitMargin + progressionDivider.width : 0)
 
     property bool showSplit: false
     property real splitMargin
 
-    Image {
-        id: progressIcon
-        source: "artwork/ListItemProgressionArrow.png"
-        anchors {
-            verticalCenter: parent.verticalCenter
-            right: parent.right
-        }
-
-        opacity: enabled ? 1.0 : 0.5
-    }
-
-    Image {
-        id: progressionDivider
-        visible: progressionVisual.showSplit
-        anchors {
-            top: parent.top
-            bottom: parent.bottom
-            right: progressIcon.left
-            rightMargin: splitMargin
-        }
-        source: "artwork/ListItemDividerVertical.png"
-        opacity: enabled ? 1.0 : 0.5
-    }
+    style: Theme.createStyleComponent("ProgressionVisualStyle.qml", progressionVisual)
 }

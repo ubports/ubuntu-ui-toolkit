@@ -22,9 +22,14 @@ test_api.depends = modules/ubuntu-ui-toolkit.pro
 QMAKE_EXTRA_TARGETS += test_api
 
 test_components.target = test-components
-test_components.commands = cd tests/autopilot; autopilot run ubuntuuitoolkit
+test_components.commands = cd tests/autopilot; python3 -m autopilot.run run ubuntuuitoolkit
 test_components.depends = modules/ubuntu-ui-toolkit.pro
 QMAKE_EXTRA_TARGETS += test_components
+
+test_components2.target = test-components2
+test_components2.commands = cd tests/autopilot; python2 -m autopilot.run run ubuntuuitoolkit
+test_components2.depends = modules/ubuntu-ui-toolkit.pro
+QMAKE_EXTRA_TARGETS += test_components2
 
 qmluitests.target = qmluitests
 qmluitests.commands = cd tests/unit_x11; make check
@@ -35,13 +40,13 @@ license.target = license
 license.commands = ./tests/license/checklicense.sh
 QMAKE_EXTRA_TARGETS += license
 
+DOC_SRC = .
+equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
+    DOC_SRC = documentation
+}
+
 DOC_PATH=$$system(pwd)/documentation
 docs.target = docs
-docs.commands += qdoc $$DOC_PATH/ubuntu-ui-toolkit-qtcreator.qdocconf 2> $$DOC_PATH/qdoc.err;
-docs.commands += cat $$DOC_PATH/qdoc.err;
-docs.commands += test ! -s $$DOC_PATH/qdoc.err || exit 1;
-docs.commands += qhelpgenerator -o "$$DOC_PATH/html/ubuntuuserinterfacetoolkit.qch" "$$DOC_PATH/html/ubuntuuserinterfacetoolkit.qhp";
-docs.commands += qdoc $$DOC_PATH/ubuntu-ui-toolkit-online.qdocconf;
-docs.commands += $$DOC_PATH/fix-markup.sh $$DOC_PATH;
+docs.commands = SRC=$$DOC_SRC ./documentation/docs.sh $$DOC_PATH;
 QMAKE_EXTRA_TARGETS += docs
 

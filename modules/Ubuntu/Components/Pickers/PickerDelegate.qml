@@ -30,22 +30,29 @@ import "../" 0.1
 AbstractButton {
     id: pickerDelegate
 
+    /*!
+      \qmlproperty Picker picker
+      \readonly
+      The property holds the Picker component the delegate belongs to.
+      */
+    readonly property alias picker: internal.picker
+
     implicitHeight: units.gu(4)
-    implicitWidth: parent.width
+    implicitWidth: picker ? internal.itemList.width : 0
 
     /*! \internal */
     onClicked: {
-        if (internal.tumblerItem.currentIndex === index) return;
-        internal.tumbler.__clickedIndex = index;
-        internal.tumblerItem.currentIndex = index;
+        if (internal.itemList.currentIndex === index) return;
+        picker.__clickedIndex = index;
+        internal.itemList.currentIndex = index;
     }
 
     style: Theme.createStyleComponent("PickerDelegateStyle.qml", pickerDelegate)
 
     QtObject {
         id: internal
-        property bool inListView: QuickUtils.className(pickerDelegate.parent) !== "QQuickPathView"
-        property Item tumblerItem: !inListView ? pickerDelegate.parent : pickerDelegate.parent.parent
-        property Item tumbler: tumblerItem ? tumblerItem.tumbler : null
+        property bool inListView: pickerDelegate.parent && (QuickUtils.className(pickerDelegate.parent) !== "QQuickPathView")
+        property Item itemList: !inListView ? pickerDelegate.PathView.view : pickerDelegate.ListView.view
+        property Picker picker: itemList ? itemList.pickerItem : null
     }
 }

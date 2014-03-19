@@ -25,7 +25,6 @@
 class QQuickItem;
 class QQmlEngine;
 class QQmlComponent;
-class QJSEngine;
 class QuickUtils : public QObject
 {
     Q_OBJECT
@@ -42,25 +41,20 @@ public:
     Q_INVOKABLE QQuickItem *rootItem(QObject *object);
     QString inputMethodProvider() const;
 
-    Q_INVOKABLE qreal modelDelegateHeight(QQmlComponent *delegate, const QVariant &model);
     Q_INVOKABLE QString className(QObject *item);
-    QObject* createQmlObject(const QUrl &url);
-    void setImportPathList(const QStringList &paths);
+    QObject* createQmlObject(const QUrl &url, QQmlEngine *engine);
 
 Q_SIGNALS:
     void rootObjectChanged();
+    void activated();
     void deactivated();
 
 protected:
     bool eventFilter(QObject *, QEvent *);
 
-private Q_SLOTS:
-    void activeFocus(QObject*);
-
 private:
     explicit QuickUtils(QObject *parent = 0);
     QPointer<QQuickView> m_rootView;
-    QQmlEngine *m_engine;
 
     void lookupQuickView();
 };

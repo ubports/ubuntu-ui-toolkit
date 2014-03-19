@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Unity.Action 1.0 as UnityActions
+import Ubuntu.Unity.Action 1.1 as UnityActions
 
 /*!
     \qmltype TextField
@@ -539,13 +539,19 @@ ActionItem {
       horizontal alignment of TextField, use the read-only property effectiveHorizontalAlignment.
 
       \qmlproperty enumeration horizontalAlignment
-      \qmlproperty enumeration effectiveHorizontalAlignment
-      \qmlproperty enumeration verticalAlignment
     */
     property alias horizontalAlignment: editor.horizontalAlignment
-    /*! \internal */
+    /*!
+      \qmlproperty enumeration effectiveHorizontalAlignment
+
+      See \l horizontalAlignment for details.
+    */
     property alias effectiveHorizontalAlignment: editor.effectiveHorizontalAlignment
-    /*! \internal */
+    /*!
+      \qmlproperty enumeration verticalAlignment
+
+      See \l horizontalAlignment for details.
+     */
     property alias verticalAlignment: editor.verticalAlignment
 
     /*!
@@ -570,7 +576,7 @@ ActionItem {
     /*!
       The highlighted text color, used in selections.
 
-      \qmlproperty color selctedTextColor
+      \qmlproperty color selectedTextColor
       */
     property alias selectedTextColor: editor.selectedTextColor
 
@@ -803,6 +809,9 @@ ActionItem {
             control.focus = false;
     }
 
+    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
+
     // grab clicks from the area between the frame and the input
     MouseArea {
         anchors.fill: parent
@@ -836,8 +845,8 @@ ActionItem {
             if (inputMethodHints != Qt.ImhNone)
                 return
 
-            if (type == UnityActions.Action.Type.Integer
-             || type == UnityActions.Action.Type.Real)
+            if (type == UnityActions.Action.Integer
+             || type == UnityActions.Action.Real)
                 inputMethodHints = Qt.ImhDigitsOnly
         }
 
@@ -942,6 +951,7 @@ ActionItem {
 
     AbstractButton {
         id: clearButton
+        objectName: "clear_button"
         property url iconSource: control.__styleInstance.iconSource
         anchors {
             top: parent.top

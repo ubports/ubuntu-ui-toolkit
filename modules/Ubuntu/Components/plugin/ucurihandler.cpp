@@ -20,6 +20,7 @@
 #include <QtDBus/QtDBus>
 #include <libnih.h>
 #include <libnih-dbus.h>
+#include "statesaverbackend_p.h"
 
 UriHandlerObject::UriHandlerObject(UCUriHandler* uriHandler)
     : m_uriHandler(uriHandler)

@@ -25,13 +25,16 @@ Item {
     property Button button: styledItem
     property real minimumWidth: units.gu(10)
     property real horizontalPadding: units.gu(1)
-    property color defaultColor
-    property Gradient defaultGradient: UbuntuColors.orangeGradient
+    property color defaultColor: UbuntuColors.orange
+    property Gradient defaultGradient
 
     width: button.width
     height: button.height
     implicitWidth: Math.max(minimumWidth, foreground.implicitWidth + 2*horizontalPadding)
-    implicitHeight: units.gu(5)
+    implicitHeight: units.gu(4)
+
+    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
 
     /* The proxy is necessary because Gradient.stops and GradientStop.color are
        non-NOTIFYable properties. They cannot be written to so it is fine but

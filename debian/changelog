@@ -1,3 +1,301 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20140317-0ubuntu1) trusty; urgency=low
+
+  [ Didier Roche ]
+  * remove the doc generation for UITK autopilot emulator. Autopilot is
+    in universe for now, it needs MIRing first
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 17 Mar 2014 09:03:08 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140314-0ubuntu1) trusty; urgency=low
+
+  [ CI bot ]
+  * Resync trunk
+
+  [ Colin Watson ]
+  * With Qt 5.2, QtDeclarative now supports all architectures, at least
+    in principle. Switch back to trying to build everywhere, since
+    ubuntu-ui-toolkit has no intrinsic reason to be non-portable.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 14 Mar 2014 15:07:46 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140306.1-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * DatePicker flaky test fix. (LP: #1287009)
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+  [ Michael Zanetti ]
+  * Make the UbuntuListView tests more stable (LP: #1288597)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 06 Mar 2014 12:46:50 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140304-0ubuntu1) trusty; urgency=low
+
+  [ CI bot ]
+  * Ship python3 autopilot emulators/tests.
+
+  [ Florian Boucault ]
+  * More compact visual style for a few widgets: Button: switched
+    default color to plain instead of gradient. Height from 5gu to 4gu.
+    OptionSelector: row height from 6gu to 5gu. Slider: much thinner
+    visual style. Switch: size from 10gu x 5gu to 8gu x 4gu. CheckBox:
+    size from 4.25gu x 4gu to 3.25gu x 3gu. smaller 'x-large' font size.
+    (LP: #1276173)
+
+  [ tpeeters ]
+  * Expose a position property in Panel to make it more useful for
+    implementing new bottom-edge behavior.
+
+  [ Christian Dywan ]
+  * The wrapper is intended to make API test more visible in the output
+    regardless of failure or success. A semi-related fix increases
+    coverage so that UbuntuTestCase and Layouts are also checked.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 04 Mar 2014 13:01:40 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140301-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * StateSaver does no longer save the component states upon
+    destruction. State is saved when the application is deactivated
+    (looses focus) and cleaned once the application gets re-activated
+    (gains focus). Discards saved states when the application closes
+    properly. Ignores state saving when the app is launched thru content
+    pickers. (LP: #1276174)
+
+  [ Ugo Riboni ]
+  * Allow appending query strings (which are then ignored) to the image
+    id to allow a workaround for QT's inability to selectively clean the
+    image cache.
+
+  [ Leo Arias ]
+  * Add a common autopilot test to try load pages in gallery (LP:
+    #1231265)
+
+  [ Michael Zanetti ]
+  * Introduce the almighty UbuntuListView. So far not /that/ mighty tho.
+    Can only deal with Expandables. (LP: #1169258)
+
+  [ CI bot ]
+  * On the autopilot listview emulator, scroll to the bottom to try to
+    find elements not yet created. (LP: #1270200)
+
+  [ tpeeters ]
+  * Always use the ubuntu-mobile icon theme in UITK apps. (LP: #1284218)
+  * Fix autopilot and unit tests for TabBar.
+
+  [ Christian Dywan ]
+  * Look for locale folder in the same prefix as the app data (LP:
+    #1259540)
+  * Remove activeFocus hack for OSK from QuickUtils (LP: #1259476)
+  * Add a common autopilot test to try load pages in gallery (LP:
+    #1231265)
+  * Use PIPESTATUS to avoid getting the wrong return value (LP:
+    #1284699)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sat, 01 Mar 2014 12:53:03 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140224-0ubuntu1) trusty; urgency=low
+
+  [ Renato Araujo Oliveira Filho ]
+  * [alarms] Filter only alarms of the current week. This is necessary
+    because query for events without a valid date interval will return
+    all events on the database, including the recurrence ones. Ex. A
+    alarm that recurs every day, will be returned infinite times. (LP:
+    #1282129)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 24 Feb 2014 21:54:01 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140220-0ubuntu1) trusty; urgency=low
+
+  [ Michael Zanetti ]
+  * use data instead of children In ListItems.Base to allow having
+    QtObjects as childs. In findChild() to be able to find invisible
+    things like QtObject and Animations. Changes the return value from
+    undefined to null as that's more correct.
+  * Fix some issues in DatePicker's docs
+
+  [ CI bot ]
+  * Resync trunk
+
+  [ Iain Lane ]
+  * Support building with DEB_BUILD_OPTIONS=nocheck to skip the
+    testsuite, per Debian policy.
+
+  [ Leo Arias ]
+  * Refactor the fake application used by the autopilot emulator tests
+    to make a fixture that can be reused by other projects.
+
+  [ Zsombor Egri ]
+  * Mouse filters attacheable to mouse handling primitives.
+  * Item instances set as property values were excluded from layouting,
+    causing segfaults when re-layouting was performed or when the
+    component got deleted due to or during re-layouting. (LP: #1280359)
+  * ItemSelector regression fix. (LP: #1275861)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 20 Feb 2014 10:04:25 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140212-0ubuntu1) trusty; urgency=low
+
+  [ Andrew Hayzen ]
+  * Fixed text not aligned at vertical centre if the listitem height has
+    changed dynamically. Fixed no removeItemAnimation if the listitem
+    height has been set. (LP: #1263688, #1263682)
+
+  [ CI bot ]
+  * Trunk as is, for CI Train release.
+
+  [ William Hua ]
+  * Also update LANGUAGE when setLanguage is called for dynamic
+    translation. (LP: #1263163). (LP: #1263163)
+
+  [ Timo Jyrinki ]
+  * A qtdeclarative5-private-dev packaging change adding a dependency on
+    libqt5v8-5-private-dev has been backported to all Ubuntu versions
+    now, so this workaround can now be dropped - building both against
+    Qt 5.2 and 5.0.2 works.
+  * Add #include for QDebug to fix Qt 5.2 build.
+
+  [ Christian Dywan ]
+  * Split build and install steps in debian/rules.
+  * Use integer Date constructor in date picker tests for Qt 5.2.
+  * Run unit_x11 test cases via Xvfb and address failures. (LP:
+    #1258017, #1237812, #1242646)
+  * Don't redirect output of the input file in itself.
+  * Don't try to deploy non-existing qml and js files. (LP: #1259228)
+  * Assert textField focus, button visibility and pressed after tapping
+    clear.
+  * Split documentation for previously group properties. (LP: #1266842)
+  * Suppress errors to work-around font error messages. (LP: #1256999)
+  * ListItems.Empty's default property needs to be data not children.
+    (LP: #1190509)
+
+  [ Pete Woods ]
+  * Handle the unity-action-api quit signal. (LP: #1269409)
+
+  [ Zsombor Egri ]
+  * Date picker component. Provides full date and month only picking
+    functionality.
+  * DatePicker test case fix, setting the minimum limit to value that is
+    earlier than the date value set. (LP: #1266515)
+  * Fixing state restoration when nested dynamic component properties
+    are restored. (LP: #1267039)
+  * Removing obsolete functionality from QuickUtils. (LP: #1266707)
+  * StateSaver failure with Repeater fixed. Indirectly fixes StateSaver
+    with ListView and GridView. (LP: #1267900)
+  * TabBar test case failure fix for Qt5.2. (LP: #1256930)
+  * InverseMouseArea API test removed, being a duplicate of the other
+    InverseMouseArea tests. Connecting to th eproper enabledChanged
+    signal in InverseMouseArea resolves the warning in Qt5.2 stating
+    enabledChanged was overwritten in QQuickMouseArea. (LP: #1266707)
+  * Panel implementation for DatePicker. Presents the DatePicker either
+    in a panel covering the OSK area or in a Popover, depending on the
+    form factor and presence of input method provider.
+  * Layout tests now wait for the currentLayout change completion. (LP:
+    #1266707)
+  * Extra QQmlEngine instance removed from plugin, which seemed to cause
+    some race conditions with Qt5.2. As result UbuntuColors got
+    transferred from context property into singleton object, Theme's
+    palette creation delayed till its first access. (LP: #1266707)
+  * DateUtils test failure fix. (LP: #1273893)
+
+  [ Florian Boucault ]
+  * Ubuntu UI Toolkit Gallery: reimplemented in a cleaner way the
+    responsiveness of the UI. That will allow for working right-to-left
+    support. (LP: #1172652, #1182599)
+  * Added Right-to-Left languages support to most widgets and to the UI
+    Toolkit Gallery. The following widgets now behave properly in RTL
+    environments: - List Items - Popups - Slider - TextArea - TextField
+    - Button - ProgressBar - Toolbar - Header - Switch Tabs still need
+    to be reversed. Relayout issues had to be workarounded (QTBUG 35095)
+    for Label and Row. . (LP: #1181740, #35095)
+
+  [ Leo Arias ]
+  * Added an autopilot emulator for list views, with tests.
+  * Added the TextField autopilot emulator.
+  * Use the autopilot text field helper in the gallery test cases. (LP:
+    #1274240, #1259476)
+
+  [ Andrea Cimitan ]
+  * Use integer Date constructor in date picker tests for Qt 5.2.
+
+  [ tpeeters ]
+  * Date picker component. Provides full date and month only picking
+    functionality.
+  * Fix the positioning of a flickable in a Page which has a parent that
+    is not a PageTreeNode. (LP: #1261907)
+  * Fix the height of a Page in case its parent is a Loader. (LP:
+    #1259917)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 12 Feb 2014 10:56:52 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20131216-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * Layouting fails with Qt5.2 if the tests and components are not
+    rendered upon testing. Layout unit tests have been transferred to
+    X11 unit tests and tests on layout changes all wait till the layout
+    change completes. Tested with Qt 5.0.2 and Qt 5.2 RC1. (LP:
+    #1256235)
+  * Picker visuals facelift, prepared for Date- and TimePicker
+    components.
+  * Picker selectedIndex miss-behavior fix when model is
+    cleared/cropped/reset.
+
+  [ Florian Boucault ]
+  * List item progression: use appropriate icon (same as Tabs' arrow)
+    and fixes the issue of it being the wrong color in Dark and Gradient
+    themes. (LP: #1236777)
+
+  [ Albert Astals ]
+  * tst_arguments: Do not use QTEST_MAIN QTEST_MAIN is 99.99% of the
+    times what you want when running a Qt testcase but it creates a
+    Q*Application and in this case that is not wanted since we are
+    creating and destroying them as part of the test and Qt doesn't like
+    when there's more than one Q*Application at the same time, so do
+    without creating a Q*Application in main. This can of course have
+    some implications but it seems that for this testcase all is fine.
+    (LP: #1254747)
+  * Make the model a var and not a ListModel ListModel is bound
+    specifically to QQuickListModel By using a var we can use other
+    QAbstractItemModel subclasses in the model.
+
+  [ Nic ]
+  * Removed stop animation on text every time an expansion/collapse is
+    made. Fixes bug #1231939. (LP: #1231939)
+  * Fixed scrolling in selector when parent widget's height is less than
+    the selector's ListView height. Fixes bug #1256356. (LP: #1256356)
+
+  [ Timo Jyrinki ]
+  * Require either Qt 5.2 or libqt5v8-5-private-dev.
+
+  [ tpeeters ]
+  * Reset hide timer when user interacts with toolbar or toolbar
+    buttons. (LP: #1249031)
+  * Improve detection of tab bar interaction. Now using the new
+    TabBar.pressed property instead of TabBar.selectionMode property,
+    because selectionMode may be changed without user interaction (for
+    example, when resuming an app in a following MR), and then the
+    toolbar should not automatically hide.
+  * Open the toolbar and tabbar (without animating) when the app is
+    resumed. (LP: #1246790)
+
+  [ Christian Dywan ]
+  * Accept qmldir files in qmlapicheck and skip internal components.
+    (LP: #1256045)
+  * Suppress qdoc warnings coming from upstream API.
+  * Conditionally define doc folder containing resources. (LP: #1256779)
+  * Move doc commands to shellscript and add success output lines.
+  * Use Eventually when checking that the textfield is empty There's
+    always a delay so we can't just compare it. (LP: #1259476)
+
+  [ Ubuntu daily release ]
+  * Automatic snapshot from revision 892
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 16 Dec 2013 08:17:31 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20131129-0ubuntu1) trusty; urgency=low
 
   [ Zsombor Egri ]
@@ -274,6 +572,12 @@ ubuntu-ui-toolkit (0.1.46+14.04.20131105.1-0ubuntu1) trusty; urgency=low
   * Automatic snapshot from revision 820
 
  -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 05 Nov 2013 16:51:13 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20131011.2-0ubuntu2) UNRELEASED; urgency=low
+
+  * add sphinx documentation
+
+ -- Nicholas Skaggs <nicholas.skaggs@canonical.com>  Tue, 29 Oct 2013 17:28:30 -0400
 
 ubuntu-ui-toolkit (0.1.46+13.10.20131011.2-0ubuntu1) saucy; urgency=low
 

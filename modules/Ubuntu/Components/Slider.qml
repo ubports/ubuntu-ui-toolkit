@@ -141,13 +141,24 @@ StyledItem {
         property real dragInitNormalizedValue: 0.0
 
         function normalizedValueFromValue(value) {
-            return MathUtils.clampAndProject(value, slider.minimumValue,
-                                             slider.maximumValue, 0.0, 1.0);
+            if (Qt.application.layoutDirection == Qt.RightToLeft) {
+                return MathUtils.clampAndProject(value, slider.minimumValue,
+                                                 slider.maximumValue, 1.0, 0.0);
+            } else {
+                return MathUtils.clampAndProject(value, slider.minimumValue,
+                                                 slider.maximumValue, 0.0, 1.0);
+            }
+
         }
 
         function valueFromNormalizedValue(normalizedValue) {
-            return MathUtils.lerp(MathUtils.clamp(normalizedValue, 0.0, 1.0),
-                                  slider.minimumValue, slider.maximumValue);
+            if (Qt.application.layoutDirection == Qt.RightToLeft) {
+                return MathUtils.lerp(MathUtils.clamp(normalizedValue, 0.0, 1.0),
+                                      slider.maximumValue, slider.minimumValue);
+            } else {
+                return MathUtils.lerp(MathUtils.clamp(normalizedValue, 0.0, 1.0),
+                                      slider.minimumValue, slider.maximumValue);
+            }
         }
 
         /* Mimic the behaviour of the 'pressed' property with one important difference:

@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-05-30 14:06+0200\n"
-"PO-Revision-Date: 2013-07-08 07:35+0000\n"
+"PO-Revision-Date: 2014-01-11 19:09+0000\n"
 "Last-Translator: Leo Arias <leo.arias@canonical.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2013-11-28 06:06+0000\n"
-"X-Generator: Launchpad (build 16847)\n"
+"X-Launchpad-Export-Date: 2014-03-15 07:29+0000\n"
+"X-Generator: Launchpad (build 16963)\n"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:22
 msgid "NumberAnimation"
@@ -207,6 +207,7 @@ msgstr "Indicador de actividad"
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:26
 msgid "The visual style of the Sheet is early work and thus clunky looking."
 msgstr ""
+"El estilo visual de la Hoja es trabajo prematuro y por eso se ve tosco."
 
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:51
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:84

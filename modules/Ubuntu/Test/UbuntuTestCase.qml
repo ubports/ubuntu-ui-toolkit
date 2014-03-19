@@ -29,19 +29,42 @@ import Ubuntu.Components 0.1
     This class extends the default QML TestCase class which is available in QtTest 1.0.
 */
 TestCase {
+	TestUtil {
+		id:util
+	}
 
 	/*!
 		Find a child from the item based on the objectName.
 	*/
-    function findChild(obj,objectName) {
-        for (var i in obj.children) {
-            var child = obj.children[i];
-            if (child.objectName === objectName) return child;
-            var subChild = findChild(child,objectName);
-            if (subChild !== undefined) return subChild;
-        }
-        return undefined;
-    }
+	function findChild(obj,objectName) {
+		var childs = new Array(0);
+		childs.push(obj)
+		while (childs.length > 0) {
+			if (childs[0].objectName == objectName) {
+				return childs[0]
+			}
+			for (var i in childs[0].children) {
+				childs.push(childs[0].children[i])
+			}
+			childs.splice(0, 1);
+		}
+		return null;
+	}
+
+	function findInvisibleChild(obj,objectName) {
+		var childs = new Array(0);
+		childs.push(obj)
+		while (childs.length > 0) {
+			if (childs[0].objectName == objectName) {
+				return childs[0]
+			}
+			for (var i in childs[0].data) {
+				childs.push(childs[0].data[i])
+			}
+			childs.splice(0, 1);
+		}
+		return null;
+	}
 
 	/*!
 		Move Mouse from x,y to distance of dx, dy divided to steps with a stepdelay (ms).
@@ -61,6 +84,38 @@ TestCase {
 				iy += step_dy;
 			}
 			mouseMove(item,x + ix,y + iy,stepdelay);
+		}
+	}
+
+	/*!
+		Keeps executing a given parameter-less function until it returns the given
+		expected result or the timemout is reached (in which case a test failure
+		is generated)
+	*/
+
+	function tryCompareFunction(func, expectedResult, timeout) {
+		var timeSpent = 0
+		var success = false
+		var actualResult
+		if (timeout == undefined) {
+                    timeout = 5000;
+                }
+		while (timeSpent < timeout && !success) {
+			actualResult = func()
+			success = qtest_compareInternal(actualResult, expectedResult)
+			if (success === false) {
+				wait(50)
+				timeSpent += 50
+			}
+		}
+
+		var act = qtest_results.stringify(actualResult)
+		var exp = qtest_results.stringify(expectedResult)
+		if (!qtest_results.compare(success,
+				"function returned unexpected result",
+				act, exp,
+				util.callerFile(), util.callerLine())) {
+			throw new Error("QtQuickTest::fail")
 		}
 	}
 } 

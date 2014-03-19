@@ -103,8 +103,7 @@ import Ubuntu.Components 0.1 as Toolkit
     Any Items can be placed inside the Panel, but MouseAreas can block mouse events from reaching
     the panel and thus obstruct the swiping behavior for hiding the panel. As a result, the user cannot
     start swiping on the buttons in the examples above in order to hide the panel. To remedy this, clicked()
-    signals are forwarded from the panel to its children. The children's clicked() signal does not have
-    a mouse parameter. Example:
+    signals are forwarded from the panel by calling the child's trigger() function. Example:
     \qml
         import QtQuick 2.0
         import Ubuntu.Components 0.1
@@ -130,15 +129,17 @@ import Ubuntu.Components 0.1 as Toolkit
                         width: units.gu(8)
                         height: units.gu(4)
                         anchors.centerIn: parent
-                        color: Theme.palette.normal.foreground
-                        signal clicked()
-                        onClicked: print("The red rectangle was clicked");
+                        color: "red"
+                        function trigger() {
+                            print("The red rectangle was clicked");
+                        }
                     }
                 }
             }
+            Component.onCompleted: panel.open();
         }
     \endqml
-    Like this, the red rectangle accepts clicked() events, but the user can still swipe down on top
+    Like this, the red rectangle accepts click events, but the user can still swipe down on top
     of the rectangle in order to hide the panel.
 */
 Item {
@@ -208,6 +209,7 @@ Item {
         // FIXME: When opened is made readonly, openedChangedWarning must be removed
         internal.openedChangedWarning = false;
         panel.state = "spread";
+        hideTimer.conditionalRestart();
     }
 
     /*!
@@ -217,7 +219,19 @@ Item {
         // FIXME: When opened is made readonly, openedChangedWarning must be removed.
         internal.openedChangedWarning = false;
         panel.state = "";
+        hideTimer.stop();
     }
+
+    /*!
+      The time in milliseconds before the panel automatically hides after inactivity
+      when it is not locked. Interacting with the panel resets the timer.
+      Note that adding contents to the panel that accepts mouse events will prevent
+      the panel from detecting interaction and the timer will not be reset.
+      Setting a negative value will disable automatic hiding.
+      Default value: -1 (automatic hiding is disabled).
+      \qmlproperty int hideTimeout
+     */
+    property alias hideTimeout: hideTimer.interval
 
     /*!
       Disable edge swipe to open/close the panel. False by default.
@@ -227,6 +241,47 @@ Item {
     onLockedChanged: {
         if (state == "hint" || state == "moving") {
             draggingArea.finishMoving();
+        }
+        if (!hideTimer.conditionalRestart()) {
+            hideTimer.stop();
+        }
+    }
+
+    Timer {
+        id: hideTimer
+        interval: -1
+        running: panel.opened && !panel.locked && interval >= 0
+
+        function conditionalRestart() {
+            if (hideTimer.interval >= 0) {
+                if (!panel.locked && panel.opened) {
+                    hideTimer.restart();
+                    return true;
+                }
+            }
+            return false;
+        }
+        onIntervalChanged: {
+            if (!conditionalRestart()) {
+                hideTimer.stop();
+            }
+        }
+        onTriggered: {
+            if (!panel.locked) {
+                panel.close();
+            }
+        }
+    }
+    // disable the timer when the application is not active to avoid closing
+    //  the panel immediately after the application becomes active again
+    Connections {
+        target: Qt.application
+        onActiveChanged: {
+            if (Qt.application.active) {
+                hideTimer.conditionalRestart();
+            } else {
+                hideTimer.stop();
+            }
         }
     }
 
@@ -243,6 +298,16 @@ Item {
       the panel is not opened. Default value: units.gu(2).
      */
     property real triggerSize: units.gu(2)
+
+    /*!
+      \qmlproperty real position
+      The current position of the edge of the panel. The value is 0 when the panel is
+      opened, and has its maximum value when the panel is closed. The maximum value is the
+      width of the Panel for a left or right-aligned panel, and the height of the panel for
+      top or bottom-aligned panels. When the user drags the Panel from the edge to open it,
+      the position will change from the maximum size (closed) to 0 (fully expanded).
+     */
+    readonly property alias position: bar.position
 
     states: [
         State {
@@ -275,6 +340,11 @@ Item {
             }
         }
     ]
+
+    /*!
+      Animate transitions between the different panel states.
+     */
+    property bool animate: true
 
     /*!
       The toolbar is currently not in a stable hidden or visible state.
@@ -317,7 +387,7 @@ Item {
             UbuntuNumberAnimation {
                 target: bar
                 properties: "position"
-                duration: Toolkit.UbuntuAnimation.SnapDuration
+                duration: panel.animate ? Toolkit.UbuntuAnimation.SnapDuration : 0
             }
         }
     ]
@@ -332,7 +402,7 @@ Item {
           The duration in milliseconds of sliding in or out transitions when opening, closing, and showing the hint.
           Default value: 250
          */
-        property real transitionDuration: Toolkit.UbuntuAnimation.FastDuration
+        property real transitionDuration: panel.animate ? Toolkit.UbuntuAnimation.FastDuration : 0
 
         property string previousState: ""
         property int movingDelta
@@ -485,6 +555,7 @@ Item {
 
         property int initialPosition
         onPressed: {
+            hideTimer.stop();
             pressedItem = getTriggerableItem(mouse);
             if (panel.locked) return;
             initialPosition = getMousePosition();
@@ -514,12 +585,16 @@ Item {
         onReleased: {
             if (panel.state == "moving" || panel.state == "hint") {
                 finishMoving();
+            } else {
+                hideTimer.conditionalRestart();
             }
         }
         // Mouse cursor moving out of the window while pressed on desktop
         onCanceled: {
             if (panel.state == "moving" || panel.state == "hint") {
                 finishMoving();
+            } else {
+                hideTimer.conditionalRestart();
             }
         }
 

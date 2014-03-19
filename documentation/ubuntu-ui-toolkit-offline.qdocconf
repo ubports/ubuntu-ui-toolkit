@@ -2,11 +2,11 @@ include(ubuntu-ui-toolkit-common.qdocconf)
 HTML.nobreadcrumbs = "true"
 
 HTML.stylesheets = \
-    documentation/css/breadcrumbs.js \
-    documentation/css/reset.css \
-    documentation/css/qtquick.css \
-    documentation/css/base.css \
-    documentation/css/scratch.css
+    $SRC/css/breadcrumbs.js \
+    $SRC/css/reset.css \
+    $SRC/css/qtquick.css \
+    $SRC/css/base.css \
+    $SRC/css/scratch.css
 
 HTML.headerstyles = \
   "<link rel=\"stylesheet\" type=\"text/css\" href=\"style/reset.css\" />\n" \

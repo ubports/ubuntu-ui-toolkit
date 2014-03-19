@@ -17,6 +17,7 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 0.1
+import Ubuntu.Unity.Action 1.1 as UnityActions
 
 Item {
     id: textItem
@@ -61,6 +62,16 @@ Item {
         TextField {
             id: t2
         }
+    }
+
+    TextField {
+        id: enabledTextField
+        enabled: true
+    }
+
+    TextField {
+        id: disabledTextField
+        enabled: false
     }
 
     TestCase {
@@ -428,27 +439,47 @@ Item {
         function test_zz_ActionInputMethodHints() {
             // Preset digit only for numbers
             textField.inputMethodHints = Qt.ImhNone
-            textField.parameterType = UnityActions.Action.Type.Integer
+            textField.action.parameterType = UnityActions.Action.Integer
             compare(textField.inputMethodHints, Qt.ImhDigitsOnly)
 
             textField.inputMethodHints = Qt.ImhNone
-            textField.parameterType = UnityActions.Action.Type.Real
+            textField.action.parameterType = UnityActions.Action.Real
             compare(textField.inputMethodHints, Qt.ImhDigitsOnly)
 
             // No preset for strings
             textField.inputMethodHints = Qt.ImhNone
-            textField.parameterType = UnityActions.Action.Type.String
+            textField.action.parameterType = UnityActions.Action.String
             compare(textField.inputMethodHints, Qt.ImhNone)
 
             // Never interfere with a manual setting
             textField.inputMethodHints = Qt.ImhDate
-            textField.parameterType = UnityActions.Action.Type.Integer
+            textField.action.parameterType = UnityActions.Action.Integer
             compare(textField.inputMethodHints, Qt.ImhDate)
         }
 
         RegExpValidator {
             id: regExpValidator
             regExp: /[a-z]*/
+        }
+
+        function test_click_enabled_textfield_must_give_focus() {
+            textField.forceActiveFocus();
+            compare(
+                enabledTextField.focus, false,
+                'enabledTextField is not focused');
+            mouseClick(
+                enabledTextField, enabledTextField.width/2,
+                enabledTextField.height/2)
+            compare(
+                enabledTextField.focus, true, 'enabledTextField is focused')
+        }
+
+        function test_click_disabled_textfield_must_not_give_focus() {
+            mouseClick(
+                disabledTextField, disabledTextField.width/2,
+                disabledTextField.height/2)
+            compare(
+                textField.focus, false, 'disabledTextField is not focused');
         }
     }
 }

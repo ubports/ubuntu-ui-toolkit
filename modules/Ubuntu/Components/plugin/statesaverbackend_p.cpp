@@ -26,12 +26,22 @@
 #include <QtCore/QFile>
 #include <QtCore/QStringList>
 #include "i18n.h"
+#include "quickutils.h"
+#include <QtCore/QStandardPaths>
 
 StateSaverBackend::StateSaverBackend(QObject *parent)
     : QObject(parent)
     , m_archive(0)
+    , m_globalEnabled(true)
 {
-    if (!UCApplication::instance().applicationName().isEmpty()) {
+    // connect to application quit signal so when that is called, we can clean the states saved
+    QObject::connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit,
+                     this, &StateSaverBackend::cleanup);
+    QObject::connect(&QuickUtils::instance(), &QuickUtils::activated,
+                     this, &StateSaverBackend::reset);
+    QObject::connect(&QuickUtils::instance(), &QuickUtils::deactivated,
+                     this, &StateSaverBackend::initiateStateSaving);
+    if (!qgetenv("APP_ID").isEmpty() || !UCApplication::instance().applicationName().isEmpty()) {
         initialize();
     } else {
         QObject::connect(&UCApplication::instance(), &UCApplication::applicationNameChanged,
@@ -48,8 +58,33 @@ StateSaverBackend::~StateSaverBackend()
 
 void StateSaverBackend::initialize()
 {
-    m_archive = new QSettings(UCApplication::instance().applicationName());
+    QString applicationName(qgetenv("APP_ID"));
+    if (applicationName.isEmpty()) {
+        applicationName = UCApplication::instance().applicationName();
+    }
+    m_archive = new QSettings(applicationName);
     m_archive->setFallbacksEnabled(false);
+}
+
+void StateSaverBackend::cleanup()
+{
+    reset();
+    m_archive.clear();
+}
+
+bool StateSaverBackend::enabled() const
+{
+    return m_globalEnabled;
+}
+void StateSaverBackend::setEnabled(bool enabled)
+{
+    if (m_globalEnabled != enabled) {
+        m_globalEnabled = enabled;
+        Q_EMIT enabledChanged(m_globalEnabled);
+        if (!m_globalEnabled) {
+            reset();
+        }
+    }
 }
 
 bool StateSaverBackend::registerId(const QString &id)
@@ -73,6 +108,13 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
     }
 
     int result = 0;
+    // save the previous group
+    bool restorePreviousGroup = !m_archive->group().isEmpty();
+    if (restorePreviousGroup) {
+        m_groupStack.push(m_archive->group());
+        // leave the group so we can read the next one
+        m_archive->endGroup();
+    }
     m_archive.data()->beginGroup(id);
     QStringList propertyNames = m_archive.data()->childKeys();
     Q_FOREACH(const QString &propertyName, propertyNames) {
@@ -91,6 +133,10 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
         }
     }
     m_archive.data()->endGroup();
+    // restore leaved group if needed
+    if (restorePreviousGroup) {
+        m_archive->beginGroup(m_groupStack.pop());
+    }
     return result;
 }
 

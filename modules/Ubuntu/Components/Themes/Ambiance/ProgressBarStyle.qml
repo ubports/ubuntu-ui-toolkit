@@ -23,7 +23,7 @@ Item {
     property ProgressBar progressBar: styledItem
 
     implicitWidth: units.gu(38)
-    implicitHeight: units.gu(5)
+    implicitHeight: units.gu(4)
 
     UbuntuShape {
         id: background
@@ -46,6 +46,7 @@ Item {
         progress: progressBarStyle.progress
         leftColor: Theme.palette.selected.foreground
         rightColor: Theme.palette.normal.base
+        mirror: Qt.application.layoutDirection == Qt.RightToLeft
     }
 
     Label {
@@ -74,5 +75,6 @@ Item {
         leftColor: Theme.palette.selected.foregroundText
         rightColor: Theme.palette.normal.baseText
         progress: (progressBarStyle.progress * background.width - valueLabel.x) / valueLabel.width
+        mirror: Qt.application.layoutDirection == Qt.RightToLeft
     }
 }

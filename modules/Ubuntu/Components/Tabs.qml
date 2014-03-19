@@ -63,7 +63,11 @@ import QtQuick 2.0
                     title: i18n.tr("External")
                     page: Loader {
                         parent: externalTab
-                        anchors.fill: parent
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                            bottom: parent.bottom
+                        }
                         source: (tabs.selectedTab === externalTab) ? Qt.resolvedUrl("MyCustomPage.qml") : ""
                     }
                 }
@@ -86,6 +90,8 @@ import QtQuick 2.0
 
     \endqml
     As the example above shows, an external \l Page inside a \l Tab can be loaded using a Loader.
+    Note that setting the top anchor or the height of the Loader would override the \l Page height.
+    We avoid this because the \l Page automatically adapts its height to accommodate for the header.
 
     It is possible to use a Repeater to generate tabs, but when doing so, ensure that the Repeater
     is declared inside the Tabs at the end, because otherwise the shuffling of
@@ -282,9 +288,16 @@ PageTreeNode {
         }
     }
 
-    QtObject {
+    Object {
         id: internal
         property Header header: tabs.__propagated ? tabs.__propagated.header : null
+
+        Binding {
+            target: tabBar
+            property: "animate"
+            when: internal.header && internal.header.hasOwnProperty("animate")
+            value: internal.header.animate
+        }
 
         /*
           List of connected Repeaters to avoid repeater "hammering" of itemAdded() signal.

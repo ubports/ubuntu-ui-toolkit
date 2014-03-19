@@ -33,9 +33,11 @@ Item {
     */
     width: implicitWidth
     height: implicitHeight
-    implicitWidth: units.gu(10)
-    implicitHeight: units.gu(5)
+    implicitWidth: units.gu(8)
+    implicitHeight: units.gu(4)
     opacity: styledItem.enabled ? 1.0 : 0.5
+    LayoutMirroring.enabled: false
+    LayoutMirroring.childrenInherit: true
 
     UbuntuShape {
         id: background

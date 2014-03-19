@@ -19,6 +19,11 @@ import Ubuntu.Components 0.1
 
 Item {
     id: tabBarStyle
+
+    // used to detect when the user is interacting with the tab bar by pressing it
+    //  or dragging the tab bar buttons.
+    readonly property bool pressed: mouseArea.interacting
+
     // styling properties, public API
     property color headerTextColor: Theme.palette.normal.backgroundText
     property color headerTextSelectedColor: Theme.palette.selected.backgroundText
@@ -63,26 +68,26 @@ Item {
         target: styledItem
 
         onSelectionModeChanged: {
-            if (styledItem.selectionMode) {
-                activatingTimer.restart();
-            } else {
+            if (!styledItem.selectionMode) {
                 buttonView.selectButton(styledItem.selectedIndex);
             }
         }
     }
 
-    /*!
-      \internal
-      Avoid interpreting a click to enter selection mode as a button click.
-     */
-    Timer {
-        id: activatingTimer
-        interval: 800 // same as pressAndHold time
-    }
-
     Connections {
         target: styledItem
         onSelectedIndexChanged: buttonView.selectButton(styledItem.selectedIndex)
+    }
+
+    /*
+      Prevent events that are not accepted by tab buttons or mouseArea below
+      from passing through the TabBar.
+     */
+    MouseArea {
+        anchors.fill: parent
+        onReleased: {
+            mouseArea.enteringSelectionMode = false;
+        }
     }
 
     Component {
@@ -160,6 +165,8 @@ Item {
                             bottomMargin: headerTextBottomMargin
                         }
                         x: button.width - width
+                        // FIXME: temporary hack for the chevron's height to match the font size
+                        height: 0.82*sourceSize.height
 
                         // The indicator image must be visible after the selected tab button, when the
                         // tab bar is not in selection mode, or after the "last" button (starting with
@@ -202,14 +209,25 @@ Item {
                     }
 
                     onClicked: {
-                        if (!activatingTimer.running) {
+                        if (mouseArea.enteringSelectionMode) {
+                            mouseArea.enteringSelectionMode = false;
+                        } else if (opacity > 0.0) {
                             styledItem.selectedIndex = index;
                             if (!styledItem.alwaysSelectionMode) {
                                 styledItem.selectionMode = false;
                             }
                             button.select();
-                        } else {
-                            activatingTimer.stop();
+                        }
+                    }
+
+                    onPressedChanged: {
+                        // Catch release after a press with a delay that is too
+                        //  long to make it a click, but don't unset interacting when
+                        //  the user starts dragging. In that case it will be unset in
+                        //  buttonView.onDragEnded.
+                        if (!pressed && !buttonView.dragging) {
+                            // unset interacting which was set in mouseArea.onPressed
+                            mouseArea.interacting = false;
                         }
                     }
 
@@ -301,20 +319,38 @@ Item {
             }
         }
 
-        onDragEnded: activatingTimer.stop()
-
-        // deactivate the tab bar after inactivity
-        onMovementStarted: idleTimer.stop()
-        onMovementEnded: {
-            if (!styledItem.alwaysSelectionMode) {
-                idleTimer.restart();
-            }
+        onDragEnded: {
+            // unset interacting which was set in mouseArea.onPressed
+            mouseArea.interacting = false;
+            mouseArea.enteringSelectionMode = false;
         }
+
         Timer {
             id: idleTimer
             interval: tabBarStyle.deactivateTime
             running: styledItem.selectionMode && !styledItem.alwaysSelectionMode
             onTriggered: styledItem.selectionMode = false
+            function conditionalRestartOrStop() {
+                if (Qt.application.active &&
+                        styledItem.selectionMode &&
+                        !styledItem.alwaysSelectionMode &&
+                        !mouseArea.interacting) {
+                    idleTimer.restart();
+                } else {
+                    idleTimer.stop();
+                }
+            }
+        }
+
+        // disable the timer when the application is not active and reset
+        //  it when the application is resumed.
+        Connections {
+            target: Qt.application
+            onActiveChanged: idleTimer.conditionalRestartOrStop()
+        }
+        Connections {
+            target: styledItem
+            onSelectionModeChanged: idleTimer.conditionalRestartOrStop()
         }
     }
 
@@ -322,8 +358,24 @@ Item {
         // a tabBar not in selection mode can be put in selection mode by pressing
         id: mouseArea
         anchors.fill: parent
-        enabled: !styledItem.selectionMode
+
+        // set in onPressed, and unset in button.onPressedChanged or buttonView.onDragEnded
+        //  because after not accepting the mouse, the released event will go to
+        //  the buttonView or individual buttons.
+        property bool interacting: false
+        onInteractingChanged: idleTimer.conditionalRestartOrStop()
+
+        // When pressing to enter selection mode, a release should not be interpreted
+        //  as a click on a button to select a new tab.
+        property bool enteringSelectionMode: false
+
+        // This MouseArea is always enabled, even when the tab bar is in selection mode,
+        //  so that press events are detected and tabBarStyle.pressed is updated.
         onPressed: {
+            mouseArea.interacting = true;
+            if (!styledItem.selectionMode) {
+                mouseArea.enteringSelectionMode = true;
+            }
             styledItem.selectionMode = true;
             mouse.accepted = false;
         }

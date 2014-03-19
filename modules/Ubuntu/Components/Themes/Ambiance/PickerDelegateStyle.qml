@@ -18,36 +18,38 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    property real minFade: 0.25
+    property real minFade: 0.2
     property real maxFade: 0.95
+    property bool fadingEnabled: true
 
-    property bool inListView: QuickUtils.className(styledItem.parent) !== "QQuickPathView"
-    property Item tumblerItem: !inListView ? styledItem.parent : styledItem.parent.parent
-    property Item tumbler: tumblerItem ? tumblerItem.tumbler : null
-    property Item highlightItem: tumblerItem.highlightItem
+    property bool inListView: styledItem.parent && (QuickUtils.className(styledItem.parent) !== "QQuickPathView")
+    property Item itemList: inListView ? styledItem.ListView.view : styledItem.PathView.view
+    property Item picker: styledItem.picker
+    property Item highlightItem: itemList.highlightItem
 
     Binding {
         target: styledItem
+        when: fadingEnabled
         property: "opacity"
         value: opacityCalc()
     }
 
     function opacityCalc() {
-        if (!tumbler || !highlightItem || (index === tumblerItem.currentIndex)) return 1.0;
+        if (!picker || !highlightItem || (index === itemList.currentIndex)) return 1.0;
         var highlightY = highlightItem.y;
         var delegateY = styledItem.y;
         if (inListView) {
-            highlightY -= tumblerItem.contentY;
-            delegateY -= tumblerItem.contentY;
+            highlightY -= itemList.contentY;
+            delegateY -= itemList.contentY;
         }
-        var midY = (delegateY + styledItem.height) / 2
+        var midY = delegateY + styledItem.height / 2;
         if (delegateY < highlightY)  {
             return MathUtils.clamp(MathUtils.projectValue(midY, 0, highlightY, minFade, maxFade), minFade, maxFade);
         }
         var highlightH = highlightY + highlightItem.height;
         if (delegateY >= highlightH) {
             delegateY -= highlightH;
-            midY = (delegateY + styledItem.height) / 2;
+            midY = delegateY + styledItem.height / 2;
             return MathUtils.clamp(1.0 - MathUtils.projectValue(midY, 0, highlightY, minFade, maxFade), minFade, maxFade);
         }
         return 1.0;

@@ -21,8 +21,8 @@ import TestObjects 0.1
 
 Item {
     id: root
-    width: units.gu(50)
-    height: units.gu(80)
+    width: units.gu(40)
+    height: units.gu(71)
 
     TabBar {
         id: bar
@@ -32,7 +32,8 @@ Item {
 
     TabBar {
         id: bar2
-        anchors.top: parent.top
+        // anchor to bottom not to occlude the first TabBar
+        anchors.bottom: parent.bottom
         width: parent.width
         model: invalidModel
     }
@@ -131,7 +132,6 @@ Item {
         }
 
         function test_0_selectionMode() {
-            waitForRendering(root);
             compare(bar.selectionMode, true, "default selectionMode");
         }
 
@@ -174,11 +174,6 @@ Item {
 
                 {"position": 2 * tabWidth, "selectedIndex": 3},
                 {"position": 2 * tabWidth, "selectedIndex": 0},
-                {"position": 3 * tabWidth, "selectedIndex": 3},
-                {"position": tabWidth, "selectedIndex": 4},
-                {"position": 2 * tabWidth, "selectedIndex": 1},
-
-                {"position": tabWidth, "selectedIndex": 2}
             ];
         }
 

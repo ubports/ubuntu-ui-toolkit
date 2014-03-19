@@ -23,7 +23,7 @@ from autopilot.input import Pointer
 from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
 
-from ubuntuuitoolkit import base, emulators
+from ubuntuuitoolkit import base, emulators, fixture_setup
 
 
 _DESKTOP_FILE_CONTENTS = ("""[Desktop Entry]
@@ -79,26 +79,21 @@ MainView {
         self.launch_application()
 
     def launch_application(self):
-        qml_file_path = self._write_test_qml_file()
-        self.addCleanup(os.remove, qml_file_path)
-        desktop_file_path = _write_test_desktop_file()
-        self.addCleanup(os.remove, desktop_file_path)
+        fake_application = fixture_setup.FakeApplication(
+            qml_file_contents=self.test_qml)
+        self.useFixture(fake_application)
+
         self.app = self.launch_test_application(
             base.get_qmlscene_launch_command(),
             '-I' + _get_module_include_path(),
-            qml_file_path,
-            '--desktop_file_hint={0}'.format(desktop_file_path),
+            fake_application.qml_file_path,
+            '--desktop_file_hint={0}'.format(
+                fake_application.desktop_file_path),
             emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
             app_type='qt')
 
         self.assertThat(
             self.main_view.visible, Eventually(Equals(True)))
-
-    def _write_test_qml_file(self):
-        qml_file = tempfile.NamedTemporaryFile(suffix='.qml', delete=False)
-        qml_file.write(self.test_qml.encode('utf-8'))
-        qml_file.close()
-        return qml_file.name
 
     @property
     def main_view(self):
@@ -273,7 +268,10 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         textField = self.getObject(objectName)
         self.assertIsNotNone(textField)
         self.pointing_device.click_object(textField)
+        self.assertThat(textField.focus, Eventually(Equals(True)))
         self.assertThat(textField.hasClearButton, Eventually(Equals(True)))
         btn = textField.select_single("AbstractButton")
         self.assertIsNotNone(btn)
+        self.assertThat(btn.visible, Eventually(Equals(True)))
         self.pointing_device.click_object(btn)
+        self.assertThat(btn.pressed, Eventually(Equals(False)))

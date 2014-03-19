@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013 Canonical Ltd.
+# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -49,6 +49,12 @@ def get_pointing_device():
     return input.Pointer(device=input_device_class.create())
 
 
+def get_keyboard():
+    """Return the keyboard device."""
+    # TODO return the OSK if we are on the phone. --elopio - 2014-01-13
+    return input.Keyboard.create()
+
+
 def check_autopilot_version():
     """Check that the Autopilot installed version matches the one required.
 
@@ -69,8 +75,6 @@ class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
         check_autopilot_version()
         super(UbuntuUIToolkitEmulatorBase, self).__init__(*args)
         self.pointing_device = get_pointing_device()
-        # TODO it would be nice to have access to the screen keyboard if we are
-        # on the touch UI -- elopio - 2013-09-04
 
 
 class MainView(UbuntuUIToolkitEmulatorBase):
@@ -368,9 +372,8 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
         for button in buttons:
             if button.buttonIndex == index:
                 return button
-        else:
-            raise ToolkitEmulatorException(
-                'There is no tab button with index {0}.'.format(index))
+        raise ToolkitEmulatorException(
+            'There is no tab button with index {0}.'.format(index))
 
 
 class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
@@ -396,7 +399,11 @@ class ActionSelectionPopover(UbuntuUIToolkitEmulatorBase):
                 'Button with text "{0}" not found.'.format(text))
         self.pointing_device.click_object(button)
         if self.autoClose:
-            self.visible.wait_for(False)
+            try:
+                self.visible.wait_for(False)
+            except dbus.StateNotFoundError:
+                # The popover was removed from the tree.
+                pass
 
     def _get_button(self, text):
         buttons = self.select_many('Empty')
@@ -504,6 +511,166 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.click_object(select_object)
 
 
+
+class TextField(UbuntuUIToolkitEmulatorBase):
+    """TextField Autopilot emulator."""
+
+    def __init__(self, *args):
+        super(TextField, self).__init__(*args)
+        self.keyboard = get_keyboard()
+
+    def write(self, text, clear=True):
+        """Write into the text field.
+
+        :parameter text: The text to write.
+        :parameter clear: If True, the text field will be cleared before
+            writing the text. If False, the text will be appended at the end
+            of the text field. Default is True.
+
+        """
+        with self.keyboard.focused_type(self):
+            self.focus.wait_for(True)
+            if clear:
+                self.clear()
+            else:
+                if not self.is_empty():
+                    self.keyboard.press_and_release('End')
+            self.keyboard.type(text)
+
+    def clear(self):
+        """Clear the text field."""
+        if not self.is_empty():
+            if self.hasClearButton:
+                self._click_clear_button()
+            else:
+                self._clear_with_keys()
+            self.text.wait_for('')
+
+    def is_empty(self):
+        """Return True if the text field is empty. False otherwise."""
+        return self.text == ''
+
+    def _click_clear_button(self):
+        clear_button = self.select_single(
+            'AbstractButton', objectName='clear_button')
+        if not clear_button.visible:
+            self.pointing_device.click_object(self)
+        self.pointing_device.click_object(clear_button)
+
+    def _clear_with_keys(self):
+        if platform.model() == 'Desktop':
+            self._select_all()
+        else:
+            # Touch tap currently doesn't have a press_duration parameter, so
+            # we can't show the popover. Reported as bug http://pad.lv/1268782
+            # --elopio - 2014-01-13
+            self.keyboard.press_and_release('End')
+        while not self.is_empty():
+            # We delete with backspace because the on-screen keyboard has that
+            # key.
+            self.keyboard.press_and_release('BackSpace')
+
+    def _select_all(self):
+        self.pointing_device.click_object(self, press_duration=1)
+        root = self.get_root_instance()
+        main_view = root.select_single(MainView)
+        popover = main_view.get_action_selection_popover('text_input_popover')
+        popover.click_button_by_text('Select All')
+
+
+class QQuickListView(UbuntuUIToolkitEmulatorBase):
+
+    @autopilot_logging.log_action(logger.info)
+    def click_element(self, objectName):
+        """Click an element from the list.
+
+        It swipes the element into view if it's center is not visible.
+
+        :parameter objectName: The objectName property of the element to click.
+
+        """
+        self._swipe_element_into_view(objectName)
+        element = self.select_single(objectName=objectName)
+        self.pointing_device.click_object(element)
+
+    def _swipe_element_into_view(self, objectName):
+        element = self._select_element(objectName)
+
+        while not self._is_element_clickable(objectName):
+            if element.globalRect.y < self.globalRect.y:
+                self._show_more_elements_above()
+            else:
+                self._show_more_elements_below()
+
+    def _select_element(self, object_name):
+        try:
+            return self.select_single(objectName=object_name)
+        except dbus.StateNotFoundError:
+            # If the list is big, elements will only be created when we scroll
+            # them into view.
+            self._scroll_to_top()
+            while not self.atYEnd:
+                self._show_more_elements_below()
+                try:
+                    return self.select_single(objectName=object_name)
+                except dbus.StateNotFoundError:
+                    pass
+            raise ToolkitEmulatorException(
+                'List element with objectName "{}" not found.'.format(
+                    object_name))
+
+    @autopilot_logging.log_action(logger.info)
+    def _scroll_to_top(self):
+        x, y, width, height = self.globalRect
+        while not self.atYBeginning:
+            self._show_more_elements_above()
+
+    @autopilot_logging.log_action(logger.info)
+    def _show_more_elements_below(self):
+        if self.atYEnd:
+            raise ToolkitEmulatorException('There are no more elements below.')
+        else:
+            self._show_more_elements('below')
+
+    @autopilot_logging.log_action(logger.info)
+    def _show_more_elements_above(self):
+        if self.atYBeginning:
+            raise ToolkitEmulatorException('There are no more elements above.')
+        else:
+            self._show_more_elements('above')
+
+    def _show_more_elements(self, direction):
+        x, y, width, height = self.globalRect
+        start_x = stop_x = x + (width // 2)
+        # Start and stop just a little under the top of the list.
+        top = y + 5
+        bottom = y + height - 5
+        if direction == 'below':
+            start_y = bottom
+            stop_y = top
+        elif direction == 'above':
+            start_y = top
+            stop_y = bottom
+        else:
+            raise ToolkitEmulatorException(
+                'Invalid direction {}.'.format(direction))
+        self._slow_drag(start_x, stop_x, start_y, stop_y)
+        self.dragging.wait_for(False)
+        self.moving.wait_for(False)
+
+    def _slow_drag(self, start_x, stop_x, start_y, stop_y):
+        # If we drag too fast, we end up scrolling more than what we
+        # should, sometimes missing the  element we are looking for.
+        self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=5)
+
+    def _is_element_clickable(self, objectName):
+        """Return True if the center of the element is visible."""
+        element = self.select_single(objectName=objectName)
+        element_center = element.globalRect.y + element.globalRect.height // 2
+        return (element_center >= self.globalRect.y and
+                element_center <= self.globalRect.y + self.globalRect.height)
+
+
 class Empty(UbuntuUIToolkitEmulatorBase):
     """Base class to emulate swipe to delete."""
 
@@ -520,7 +687,7 @@ class Empty(UbuntuUIToolkitEmulatorBase):
     @autopilot_logging.log_action(logger.info)
     def swipe_to_delete(self, direction='right'):
         """Swipe the item in a specific direction."""
-        if (self.removable):
+        if self.removable:
             self._drag_pointing_device_to_delete(direction)
             if self.confirmRemoval:
                 self.waitingConfirmationForRemoval.wait_for(True)
@@ -532,12 +699,12 @@ class Empty(UbuntuUIToolkitEmulatorBase):
 
     def _drag_pointing_device_to_delete(self, direction):
         x, y, w, h = self.globalRect
-        tx = x + (w / 8)
-        ty = y + (h / 2)
+        tx = x + (w // 8)
+        ty = y + (h // 2)
 
-        if (direction == 'right'):
+        if direction == 'right':
             self.pointing_device.drag(tx, ty, w, ty)
-        elif (direction == 'left'):
+        elif direction == 'left':
             self.pointing_device.drag(w - (w*0.1), ty, x, ty)
         else:
             raise ToolkitEmulatorException(
@@ -555,7 +722,7 @@ class Empty(UbuntuUIToolkitEmulatorBase):
     @autopilot_logging.log_action(logger.info)
     def confirm_removal(self):
         """Comfirm item removal if this was already swiped."""
-        if (self.waitingConfirmationForRemoval):
+        if self.waitingConfirmationForRemoval:
             deleteButton = self._get_confirm_button()
             self.pointing_device.click_object(deleteButton)
             self._wait_until_deleted()

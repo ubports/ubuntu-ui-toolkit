@@ -28,6 +28,10 @@
 #include <QMatrix4x4>
 #include <QtQuick/QQuickItem>
 #include <QtQml/QQmlProperty>
+#include "quickutils.h"
+#include "ucapplication.h"
+#include <QtCore/QProcess>
+#include <QtCore/QProcessEnvironment>
 
 #define protected public
 #include "ucstatesaver.h"
@@ -57,7 +61,22 @@ private:
         }
         view->show();
         QTest::qWaitForWindowExposed(view);
+
+        // connect StateSaverBackend's initiateStateSaving() to view destroyed
         return view;
+    }
+
+    void resetView(QScopedPointer<QQuickView> &view, const QString &file, QSignalSpy **spy = 0)
+    {
+        Q_EMIT StateSaverBackend::instance().initiateStateSaving();
+        view.reset();
+        view.reset(createView(file, spy));
+    }
+
+    QString stateFile(const QString &appId)
+    {
+        QSettings settings(appId);
+        return settings.fileName();
     }
 
 private Q_SLOTS:
@@ -80,7 +99,7 @@ private Q_SLOTS:
 
     void test_SaveArrays()
     {
-        QQuickView *view = createView("SaveArrays.qml");
+        QScopedPointer<QQuickView> view(createView("SaveArrays.qml"));
         QVERIFY(view);
         QObject *testItem = view->rootObject();
         QVERIFY(testItem);
@@ -97,9 +116,8 @@ private Q_SLOTS:
         testItem->setProperty("intArray", intValues);
         testItem->setProperty("realArray", realValues);
         testItem->setProperty("stringArray", stringValues);
-        delete view;
 
-        view = createView("SaveArrays.qml");
+        resetView(view, "SaveArrays.qml");
         QVERIFY(view);
         testItem = view->rootObject();
         QVERIFY(testItem);
@@ -107,12 +125,11 @@ private Q_SLOTS:
         QVERIFY(testItem->property("intArray") == intValues);
         QVERIFY(testItem->property("realArray") == realValues);
         QVERIFY(testItem->property("stringArray") == stringValues);
-        delete view;
     }
 
     void test_SaveStructures()
     {
-        QQuickView *view = createView("SaveSupportedTypes.qml");
+        QScopedPointer<QQuickView> view(createView("SaveSupportedTypes.qml"));
         QVERIFY(view);
         QObject *testItem = view->rootObject();
         QVERIFY(testItem);
@@ -143,9 +160,7 @@ private Q_SLOTS:
                                            QString("set %1").arg(i.key()).toLocal8Bit().constData());
         }
 
-        delete view;
-
-        view = createView("SaveSupportedTypes.qml");
+        resetView(view, "SaveSupportedTypes.qml");
         QVERIFY(view);
         testItem = view->rootObject();
         QVERIFY(testItem);
@@ -157,13 +172,11 @@ private Q_SLOTS:
         Q_FOREACH(const QString &property, properties) {
             QVERIFY2(testItem->property(property.toLocal8Bit().constData()) == values.value(property), QString("verifying %1").arg(property).toLocal8Bit().constData());
         }
-
-        delete view;
     }
 
     void test_SavePropertyGroup()
     {
-        QQuickView *view = createView("SavePropertyGroups.qml");
+        QScopedPointer<QQuickView> view(createView("SavePropertyGroups.qml"));
         QVERIFY(view);
         QObject *testItem = view->rootObject();
         QVERIFY(testItem);
@@ -173,9 +186,8 @@ private Q_SLOTS:
         borderColor.write(QColor("green"));
         QQmlProperty propertyGroup(testItem, "propertyGroup.color");
         propertyGroup.write(QColor("blue"));
-        delete view;
 
-        view = createView("SavePropertyGroups.qml");
+        resetView(view, "SavePropertyGroups.qml");
         QVERIFY(view);
         testItem = view->rootObject();
         QVERIFY(testItem);
@@ -185,158 +197,140 @@ private Q_SLOTS:
         QCOMPARE(verifyBorderColor.read(), QVariant(QColor("green")));
         QQmlProperty verifyPropertyGroup(testItem, "propertyGroup.color");
         QCOMPARE(verifyPropertyGroup.read(), QVariant(QColor("blue")));
-        delete view;
     }
 
     void test_SaveObject()
     {
-        QQuickView *view = createView("SaveObject.qml");
+        QScopedPointer<QQuickView> view(createView("SaveObject.qml"));
         QVERIFY(view);
         QObject *testItem = view->rootObject();
         QVERIFY(testItem);
 
-        QQuickItem *obj = new QQuickItem;
+        QScopedPointer<QQuickItem> obj(new QQuickItem);
         obj->setObjectName("internal");
-        testItem->setProperty("object", QVariant::fromValue(obj));
-        delete view;
+        testItem->setProperty("object", QVariant::fromValue(obj.data()));
 
-        view = createView("SaveObject.qml");
+        resetView(view, "SaveObject.qml");
         QVERIFY(view);
         testItem = view->rootObject();
         QVERIFY(testItem);
-        QVERIFY(testItem->property("object").value<QQuickItem*>() != obj);
-        delete view;
-        delete obj;
+        QVERIFY(testItem->property("object").value<QQuickItem*>() != obj.data());
     }
 
     void test_ValidUID()
     {
-        QQuickView *view = createView("ValidUID.qml");
+        QScopedPointer<QQuickView> view(createView("ValidUID.qml"));
         QVERIFY(view);
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
 
         testItem->setObjectName("updated");
-        delete view;
 
-        view = createView("ValidUID.qml");
+        resetView(view, "ValidUID.qml");
         QVERIFY(view);
         testItem = view->rootObject()->findChild<QObject*>("updated");
         QVERIFY(testItem);
-        delete view;
     }
 
     void test_InvalidUID()
     {
         QSignalSpy *spy;
-        QQuickView *view = createView("InvalidUID.qml", &spy);
+        QScopedPointer<QQuickView> view(createView("InvalidUID.qml", &spy));
         QVERIFY(view);
         QCOMPARE(spy->count(), 1);
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
 
         testItem->setObjectName("updated");
-        delete view;
 
-        view = createView("InvalidUID.qml", &spy);
+        resetView(view, "InvalidUID.qml", &spy);
         QVERIFY(view);
         QCOMPARE(spy->count(), 1);
         testItem = view->rootObject()->findChild<QObject*>("updated");
         QVERIFY(testItem == 0);
-        delete view;
     }
 
     void test_ValidGroupProperty()
     {
-        QQuickView *view = createView("ValidGroupProperty.qml");
+        QScopedPointer<QQuickView> view(createView("ValidGroupProperty.qml"));
         QVERIFY(view);
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
 
         testItem->setObjectName("group");
-        delete view;
 
-        view = createView("ValidGroupProperty.qml");
+        resetView(view, "ValidGroupProperty.qml");
         QVERIFY(view);
         testItem = view->rootObject()->findChild<QObject*>("group");
         QVERIFY(testItem);
-        delete view;
     }
 
     void test_InvalidGroupProperty()
     {
         QSignalSpy *spy;
-        QQuickView *view = createView("InvalidGroupProperty.qml", &spy);
+        QScopedPointer<QQuickView> view(createView("InvalidGroupProperty.qml", &spy));
         QVERIFY(view);
         QCOMPARE(spy->count(), 1);
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
 
         testItem->setObjectName("group");
-        delete view;
 
-        view = createView("InvalidGroupProperty.qml", &spy);
+        resetView(view, "InvalidGroupProperty.qml", &spy);
         QVERIFY(view);
         QCOMPARE(spy->count(), 1);
         testItem = view->rootObject()->findChild<QObject*>("group");
         QVERIFY(testItem == 0);
-        delete view;
     }
 
     void test_Dynamic()
     {
-        QQuickView *view = createView("Dynamic.qml");
+        QScopedPointer<QQuickView> view(createView("Dynamic.qml"));
         QVERIFY(view);
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
 
         testItem->setObjectName("updated");
-        delete view;
 
-        view = createView("Dynamic.qml");
+        resetView(view, "Dynamic.qml");
         QVERIFY(view);
         testItem = view->rootObject()->findChild<QObject*>("updated");
         QVERIFY(testItem);
-        delete view;
     }
 
     void test_TwoDynamics()
     {
-        QQuickView *view = createView("TwoDynamics.qml");
+        QScopedPointer<QQuickView> view(createView("TwoDynamics.qml"));
         QVERIFY(view);
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
 
         testItem->setObjectName("updated");
-        delete view;
 
-        view = createView("TwoDynamics.qml");
+        resetView(view, "TwoDynamics.qml");
         QVERIFY(view);
         testItem = view->rootObject()->findChild<QObject*>("updated");
         QVERIFY(testItem);
-        delete view;
     }
 
     void test_DisabledStateSaver()
     {
-        QQuickView *view = createView("DisabledStateSaver.qml");
+        QScopedPointer<QQuickView> view(createView("DisabledStateSaver.qml"));
         QVERIFY(view);
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
 
         testItem->setObjectName("updated");
-        delete view;
 
-        view = createView("DisabledStateSaver.qml");
+        resetView(view, "DisabledStateSaver.qml");
         QVERIFY(view);
         testItem = view->rootObject()->findChild<QObject*>("updated");
         QVERIFY(testItem == 0);
-        delete view;
     }
 
     void test_SameIdsInDifferentComponents()
     {
-        QQuickView *view = createView("SameIdsInDifferentComponents.qml");
+        QScopedPointer<QQuickView> view(createView("SameIdsInDifferentComponents.qml"));
         QVERIFY(view);
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
@@ -349,18 +343,16 @@ private Q_SLOTS:
         UCStateSaverAttached *stateSaver = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(innerItem, false));
         QVERIFY(stateSaver);
         QVERIFY(stateSaver->enabled());
-        delete view;
 
-        view = createView("SameIdsInDifferentComponents.qml");
+        resetView(view, "SameIdsInDifferentComponents.qml");
         QVERIFY(view);
         testItem = view->rootObject()->findChild<QObject*>("secondComponent");
         QVERIFY(testItem);
-        delete view;
     }
 
     void test_ComponentsWithStateSavers()
     {
-        QQuickView *view = createView("ComponentsWithStateSavers.qml");
+        QScopedPointer<QQuickView> view(createView("ComponentsWithStateSavers.qml"));
         QVERIFY(view);
         QObject *control1 = view->rootObject()->findChild<QObject*>("control1");
         QVERIFY(control1);
@@ -375,9 +367,8 @@ private Q_SLOTS:
 
         QVERIFY(control1->setProperty("color", QColor("green")));
         QVERIFY(control2->setProperty("color", QColor("blue")));
-        delete view;
 
-        view = createView("ComponentsWithStateSavers.qml");
+        resetView(view, "ComponentsWithStateSavers.qml");
         control1 = view->rootObject()->findChild<QObject*>("control1");
         QVERIFY(control1);
         control2 = view->rootObject()->findChild<QObject*>("control2");
@@ -392,13 +383,12 @@ private Q_SLOTS:
 
         QCOMPARE(control1->property("color"), QVariant(QColor("green")));
         QCOMPARE(control2->property("color"), QVariant(QColor("blue")));
-        delete view;
     }
 
     void test_ComponentsWithStateSaversNoId()
     {
         QSignalSpy *spy;
-        QQuickView *view = createView("ComponentsWithStateSaversNoId.qml", &spy);
+        QScopedPointer<QQuickView> view(createView("ComponentsWithStateSaversNoId.qml", &spy));
         QVERIFY(view);
         QObject *control1 = view->rootObject()->findChild<QObject*>("control1");
         QVERIFY(control1);
@@ -411,7 +401,138 @@ private Q_SLOTS:
         UCStateSaverAttached *stateSaver2 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control2, false));
         QVERIFY(stateSaver2);
         QVERIFY(stateSaver2->enabled());
-        delete view;
+    }
+
+    void test_nestedDynamics()
+    {
+        QScopedPointer<QQuickView> view(createView("NestedDynamics.qml"));
+        QVERIFY(view);
+        QObject *topLoader = view->rootObject()->findChild<QObject*>("outerLoader");
+        QVERIFY(topLoader);
+
+        topLoader->setProperty("source", "Dynamic.qml");
+        QTest::waitForEvents();
+
+        QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
+        QVERIFY(testItem);
+        testItem->setObjectName("updated");
+
+        resetView(view, "NestedDynamics.qml");
+        QVERIFY(view);
+        testItem = view->rootObject()->findChild<QObject*>("updated");
+        QVERIFY(testItem);
+    }
+
+    void test_repeaterStates()
+    {
+        QScopedPointer<QQuickView> view(createView("RepeaterStates.qml"));
+        QVERIFY(view);
+        QQuickItem *column = view->rootObject()->findChild<QQuickItem*>("column");
+        QVERIFY(column);
+
+        QList<QQuickItem*> items = column->childItems();
+        QCOMPARE(items.count(), 5); // 4 Rectangles + 1 Repeater
+
+        Q_FOREACH(QQuickItem *item, items) {
+            if (QuickUtils::instance().className(item) == "QQuickRectangle") {
+                item->setHeight(25);
+            }
+        }
+
+        resetView(view, "RepeaterStates.qml");
+        QVERIFY(view);
+        column = view->rootObject()->findChild<QQuickItem*>("column");
+        QVERIFY(column);
+
+        items = column->childItems();
+        QCOMPARE(items.count(), 5); // 4 Rectangles + 1 Repeater
+
+        Q_FOREACH(QQuickItem *item, items) {
+            if (QuickUtils::instance().className(item) == "QQuickRectangle") {
+                QCOMPARE(item->height(), 25.0);
+            }
+        }
+    }
+
+    void test_ListViewItemStates()
+    {
+        QScopedPointer<QQuickView> view(createView("ListViewItems.qml"));
+        QVERIFY(view);
+        QQuickItem *list = view->rootObject()->findChild<QQuickItem*>("list");
+        QVERIFY(list);
+        QQuickItem *contentItem = list->property("contentItem").value<QQuickItem*>();
+        QVERIFY(contentItem);
+        QList<QQuickItem*> items = contentItem->childItems();
+
+        int testItemCount = 0;
+        Q_FOREACH(QQuickItem *item, items) {
+            if (item->objectName() == "testItem") {
+                item->setHeight(25);
+                testItemCount++;
+            }
+        }
+        QCOMPARE(testItemCount, 2);
+
+        resetView(view, "ListViewItems.qml");
+        QVERIFY(view);
+        list = view->rootObject()->findChild<QQuickItem*>("list");
+        QVERIFY(list);
+        contentItem = list->property("contentItem").value<QQuickItem*>();
+        QVERIFY(contentItem);
+        items = contentItem->childItems();
+
+        Q_FOREACH(QQuickItem *item, items) {
+            if (item->objectName() == "testItem") {
+                QCOMPARE(item->height(), 25.0);
+            }
+        }
+    }
+
+    void test_GridViewItemStates()
+    {
+        QScopedPointer<QQuickView> view(createView("GridViewItems.qml"));
+        QVERIFY(view);
+        QQuickItem *list = view->rootObject()->findChild<QQuickItem*>("grid");
+        QVERIFY(list);
+        QQuickItem *contentItem = list->property("contentItem").value<QQuickItem*>();
+        QVERIFY(contentItem);
+        QList<QQuickItem*> items = contentItem->childItems();
+
+        int testItemCount = 0;
+        Q_FOREACH(QQuickItem *item, items) {
+            if (item->objectName() == "testItem") {
+                item->setHeight(25);
+                testItemCount++;
+            }
+        }
+        QCOMPARE(testItemCount, 2);
+
+        resetView(view, "GridViewItems.qml");
+        QVERIFY(view);
+        list = view->rootObject()->findChild<QQuickItem*>("grid");
+        QVERIFY(list);
+        contentItem = list->property("contentItem").value<QQuickItem*>();
+        QVERIFY(contentItem);
+        items = contentItem->childItems();
+
+        Q_FOREACH(QQuickItem *item, items) {
+            if (item->objectName() == "testItem") {
+                QCOMPARE(item->height(), 25.0);
+            }
+        }
+    }
+
+    void test_normalAppClose()
+    {
+        QProcess testApp;
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        env.insert("APP_ID", "NormalAppClose");
+        testApp.setProcessEnvironment(env);
+        testApp.start("qmlscene", QStringList() << "-I" <<  "../../../modules" << "NormalAppClose.qml");
+        testApp.waitForFinished();
+
+        QString fileName = stateFile("NormalAppClose");
+        QVERIFY(!QFile(fileName).exists());
     }
 };
 

@@ -15,7 +15,8 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Unity.Action 1.0 as UnityActions
+import Ubuntu.Unity.Action 1.1 as UnityActions
+import Ubuntu.PerformanceMetrics 0.1
 
 /*!
     \qmltype MainView
@@ -292,6 +293,11 @@ PageTreeNode {
             }
         }
 
+        /*!
+          Animate header and toolbar.
+         */
+        property bool animate: true
+
         Toolbar {
             id: toolbarItem
             onPressedChanged: {
@@ -300,6 +306,7 @@ PageTreeNode {
                     headerItem.tabBar.selectionMode = false;
                 }
             }
+            animate: canvas.animate
         }
 
         /*!
@@ -313,6 +320,7 @@ PageTreeNode {
             objectName: "MainView_Header"
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
+            animate: canvas.animate
 
             property Item tabBar: null
             Binding {
@@ -322,16 +330,32 @@ PageTreeNode {
                 when: headerItem.contents &&
                       headerItem.contents.hasOwnProperty("selectionMode") &&
                       headerItem.contents.hasOwnProperty("alwaysSelectionMode") &&
-                      headerItem.contents.hasOwnProperty("selectedIndex")
+                      headerItem.contents.hasOwnProperty("selectedIndex") &&
+                      headerItem.contents.hasOwnProperty("pressed")
             }
 
             Connections {
                 // no connections are made when target is null
                 target: headerItem.tabBar
-                onSelectionModeChanged: {
-                    if (headerItem.tabBar.selectionMode) {
+                onPressedChanged: {
+                    if (headerItem.tabBar.pressed) {
                         if (!toolbarItem.locked) toolbarItem.close();
                     }
+                }
+            }
+        }
+
+        Connections {
+            target: Qt.application
+            onActiveChanged: {
+                if (Qt.application.active) {
+                    canvas.animate = false;
+                    headerItem.show();
+                    if (headerItem.tabBar) {
+                        headerItem.tabBar.selectionMode = true;
+                    }
+                    if (!toolbarItem.locked) toolbarItem.open();
+                    canvas.animate = true;
                 }
             }
         }
@@ -361,6 +385,10 @@ PageTreeNode {
         id: internal
         UnityActions.ActionManager {
             id: unityActionManager
+            onQuit: {
+               // FIXME Wire this up to the application lifecycle management API instead of quit().
+               Qt.quit()
+            }
         }
     }
 
@@ -393,5 +421,10 @@ PageTreeNode {
             i18n.domain = applicationName;
             UbuntuApplication.applicationName = applicationName
         }
+    }
+
+    PerformanceOverlay {
+        id: performanceOverlay
+        active: false
     }
 }
