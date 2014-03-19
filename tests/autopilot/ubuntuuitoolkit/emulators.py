@@ -143,19 +143,25 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         number_of_tabs = tabs.get_number_of_tabs()
         if index >= number_of_tabs:
             raise ToolkitEmulatorException('Tab index out of range.')
-        current_tab = tabs.get_current_tab()
-        number_of_switches = 0
-        while not tabs.selectedTabIndex == index:
-            logger.debug(
-                'Current tab index: {0}.'.format(tabs.selectedTabIndex))
-            if number_of_switches >= number_of_tabs - 1:
-                # This prevents a loop. But if this error is ever raised, it's
-                # likely there's a bug on the emulator or on the QML Tab.
-                raise ToolkitEmulatorException(
-                    'The tab with index {0} was not selected.'.format(index))
-            current_tab = self.switch_to_next_tab()
-            number_of_switches += 1
-        return current_tab
+
+        if (self.useDeprecatedToolbar):
+            current_tab = tabs.get_current_tab()
+            number_of_switches = 0
+            while not tabs.selectedTabIndex == index:
+                logger.debug(
+                    'Current tab index: {0}.'.format(tabs.selectedTabIndex))
+                if number_of_switches >= number_of_tabs - 1:
+                    # This prevents a loop. But if this error is ever raised, it's
+                    # likely there's a bug on the emulator or on the QML Tab.
+                    raise ToolkitEmulatorException(
+                        'The tab with index {0} was not selected.'.format(index))
+                current_tab = self.switch_to_next_tab()
+                number_of_switches += 1
+            return current_tab
+        else:
+            self.get_header().switch_to_tab_by_index(index)
+            current_tab = tabs.get_current_tab()
+            return current_tab
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_previous_tab(self):
@@ -250,6 +256,33 @@ class Header(UbuntuUIToolkitEmulatorBase):
 
             self.pointing_device.click_object(tab_button)
 
+    @autopilot_logging.log_action(logger.info)
+    def switch_to_tab_by_index(self, index):
+        """Open a tab. This only supports the new tabs in the header
+
+        :parameter index: The index of the tab to open.
+        :raise ToolkitEmulatorException: If the tab index is out of range or
+                useDeprecatedToolbar is set.
+
+        """
+        if (self.useDeprecatedToolbar):
+            raise ToolkitEmulatorException("Header.swtich_to_tab_by_index only works with new header")
+
+        try:
+            tabs_drawer_button = self.select_single('AbstractButton', objectName='tabsButton')
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException(_NO_TABS_ERROR)
+        self.pointing_device.click_object(tabs_drawer_button)
+
+        tabs_model_properties = self.select_single('QQuickItem', objectName='tabsModelProperties')
+
+        try:
+            tab_button = self.get_root_instance().select_single('Standard',
+                        objectName='tabButton'+str(index))
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException("Tab button {0} not found.".format(index))
+
+        self.pointing_device.click_object(tab_button)
 
 
 class Toolbar(UbuntuUIToolkitEmulatorBase):
