@@ -32,13 +32,25 @@
 
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent),
-    m_rootView(0)
+    m_rootView(0),
+    m_touchScreenAvailable(false)
 {
     QGuiApplication::instance()->installEventFilter(this);
+    /*
+     * Do we have touch screen?
+     */
+    QList<const QTouchDevice*> devices = QTouchDevice::devices();
+    Q_FOREACH(const QTouchDevice* dev, devices) {
+        m_touchScreenAvailable = (dev->type() == QTouchDevice::TouchScreen);
+        if (m_touchScreenAvailable) {
+            break;
+        }
+    }
 }
 
 void QuickUtils::log(const QString &log)
 {
+    qDebug() << log;
     instance().m_consoleLog += log + '\n';
     Q_EMIT instance().consoleLogChanged();
 }
@@ -92,10 +104,11 @@ QQuickItem *QuickUtils::rootObject()
  */
 QQuickItem *QuickUtils::rootItem(QObject *object)
 {
+    QuickUtils &utils = instance();
     // make sure we have the m_rootView updated
-    lookupQuickView();
+    utils.lookupQuickView();
     if (!object) {
-        return (m_rootView) ? m_rootView->rootObject() : 0;
+        return (utils.m_rootView) ? utils.m_rootView->rootObject() : 0;
     }
 
     QQuickItem *item = qobject_cast<QQuickItem*>(object);
@@ -106,12 +119,12 @@ QQuickItem *QuickUtils::rootItem(QObject *object)
         parentItem = parentItem->parentItem();
     }
 
-    if (m_rootView && (m_rootView->contentItem() == parentItem)) {
+    if (utils.m_rootView && (utils.m_rootView->contentItem() == parentItem)) {
         // when traversing visual parents of an element from the application,
         // we reach QQuickView's contentItem, whose size is invalid. Therefore
         // we need to return the QQuickView's rootObject() instead of the topmost
         // item found
-        return m_rootView->rootObject();
+        return utils.m_rootView->rootObject();
     }
     return parentItem;
 }
@@ -129,7 +142,7 @@ QString QuickUtils::inputMethodProvider() const
 QString QuickUtils::className(QObject *item)
 {
     if (!item) {
-        return QString();
+        return QString("(null)");
     }
     QString result = item->metaObject()->className();
     return result.left(result.indexOf("_QML"));

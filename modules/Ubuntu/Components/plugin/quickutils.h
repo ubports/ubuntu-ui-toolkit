@@ -38,15 +38,20 @@ public:
         return instance;
     }
 
+    static bool touchScreenAvailable()
+    {
+        return instance().m_touchScreenAvailable;
+    }
+
     Q_INVOKABLE static void log(const QString &log);
     Q_INVOKABLE static void clearLog();
 
     QQuickItem *rootObject();
-    Q_INVOKABLE QQuickItem *rootItem(QObject *object);
+    Q_INVOKABLE static QQuickItem *rootItem(QObject *object);
     QString inputMethodProvider() const;
     QString consoleLog() const;
 
-    Q_INVOKABLE QString className(QObject *item);
+    Q_INVOKABLE static QString className(QObject *item);
     QObject* createQmlObject(const QUrl &url, QQmlEngine *engine);
 
 Q_SIGNALS:
@@ -62,6 +67,7 @@ private:
     explicit QuickUtils(QObject *parent = 0);
     QPointer<QQuickView> m_rootView;
     QString m_consoleLog;
+    bool m_touchScreenAvailable:1;
 
     void lookupQuickView();
 };

@@ -56,7 +56,10 @@ private Q_SLOTS:
 private:
     bool m_ready;
     bool m_topmostItem;
+    QObject *m_filterHost;
     QQuickItem *m_sensingArea;
+
+    void updateEventFilter(bool enable);
 };
 
 #endif // INVERSEMOUSEAREATYPE_H

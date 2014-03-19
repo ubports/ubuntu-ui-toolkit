@@ -23,6 +23,16 @@ Item {
     objectName: "ROOT"
 
     Rectangle {
+        x: 110; y: 10
+        width: 100; height: 100
+        color: "red"
+        MouseArea {
+            anchors.fill: parent
+            objectName: "MA"
+        }
+    }
+
+    Rectangle {
         x: 10; y: 10
         width: 100; height: 100
         color: "blue"
@@ -33,13 +43,4 @@ Item {
         }
     }
 
-    Rectangle {
-        x: 110; y: 10
-        width: 100; height: 100
-        color: "red"
-        MouseArea {
-            anchors.fill: parent
-            objectName: "MA"
-        }
-    }
 }

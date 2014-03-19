@@ -229,6 +229,7 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
     QQuickMouseArea(parent),
     m_ready(false),
     m_topmostItem(false),
+    m_filterHost(0),
     m_sensingArea(QuickUtils::instance().rootItem(this))
 {
     /*
@@ -248,6 +249,34 @@ InverseMouseAreaType::~InverseMouseAreaType()
 {
 }
 
+void InverseMouseAreaType::updateEventFilter(bool enable)
+{
+    if (!enable && m_filterHost) {
+        m_filterHost->removeEventFilter(this);
+    } else {
+//        m_filterHost = (m_sensingArea && m_sensingArea != QuickUtils::instance().rootItem(this)) ?
+//                    static_cast<QObject*>(m_sensingArea) : QGuiApplication::instance();
+        m_filterHost = (!m_sensingArea || (m_sensingArea != QuickUtils::instance().rootItem(this))) ?
+                    QuickUtils::instance().rootItem(this) : m_sensingArea;
+        // check if we have a Flickable (or something that is derived from it) in the parental chain
+        QQuickItem *parent = parentItem();
+        while (parent) {
+            if (parent->inherits("QQuickFlickable")) {
+                QuickUtils::log("HAS A FLICKABLE IN THE PATH!!!");
+//                m_filterHost = QGuiApplication::instance();
+            }
+            parent = parent->parentItem();
+        }
+        QuickUtils::log(QString("sensing=%1, root(%2), host(%3)")
+                        .arg(QuickUtils::className(m_sensingArea))
+                        .arg(QuickUtils::className(QuickUtils::rootItem(this)))
+                        .arg(QuickUtils::className(m_filterHost)));
+        if (m_filterHost) {
+            m_filterHost->installEventFilter(this);
+        }
+    }
+}
+
 
 /*!
   \internal
@@ -259,14 +288,17 @@ void InverseMouseAreaType::update()
         return;
     }
     // update sensing area
-    if (!m_sensingArea)
+    if (!m_sensingArea) {
+        updateEventFilter(false);
         m_sensingArea = QuickUtils::instance().rootItem(this);
+        updateEventFilter(m_topmostItem);
+    }
 }
 
 void InverseMouseAreaType::componentComplete()
 {
     QQuickMouseArea::componentComplete();
-    // by now the parents shoudl have been resolved so we can look after the
+    // by now the parents should have been resolved so we can look after the
     // topmost component for the sensingArea in case it has not been set yet
     m_ready = true;
     update();
@@ -420,10 +452,10 @@ void InverseMouseAreaType::setSensingArea(QQuickItem *sensing)
     if (!sensing)
         sensing = QuickUtils::instance().rootItem(this);
     if (sensing != m_sensingArea) {
-        bool oldTopItem = m_topmostItem;
-        setTopmostItem(false);
+        // clear previous filter
+        updateEventFilter(false);
         m_sensingArea = sensing;
-        setTopmostItem(oldTopItem);
+        updateEventFilter(m_topmostItem);
         Q_EMIT sensingAreaChanged();
     }
 }
@@ -443,13 +475,8 @@ void InverseMouseAreaType::setTopmostItem(bool value)
 {
     if (m_topmostItem != value) {
         m_topmostItem = value;
-        QObject *sensingArea = (m_sensingArea && m_sensingArea != QuickUtils::instance().rootItem(this)) ?
-                    static_cast<QObject*>(m_sensingArea) : QGuiApplication::instance();
-        if (m_topmostItem) {
-            sensingArea->installEventFilter(this);
-        } else {
-            sensingArea->removeEventFilter(this);
-        }
+        updateEventFilter(m_topmostItem);
+        Q_EMIT topmostItemChanged();
     }
 }
 

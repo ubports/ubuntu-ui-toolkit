@@ -29,9 +29,7 @@ MainView {
         id: editor
         TextArea {
             text: QuickUtils.consoleLog
-            onTextChanged: print("text=", text)
         }
-
     }
 
     Page {
@@ -51,7 +49,7 @@ MainView {
                 objectName: "Card"
                 width: parent.width - units.gu(5)
                 anchors.horizontalCenter: parent.horizontalCenter
-                height: units.gu(30)
+                height: units.gu(50)
 
                 Loader {
                     anchors.fill: parent
@@ -65,7 +63,8 @@ MainView {
                     topmostItem: true
                     propagateComposedEvents: true
 
-                    onClicked: QuickUtils.log("IMA captured")
+                    onPressed: QuickUtils.log("IMA pressed")
+                    onClicked: QuickUtils.log("IMA clicked")
                     Component.onCompleted: root.ima = ima
                 }
             }

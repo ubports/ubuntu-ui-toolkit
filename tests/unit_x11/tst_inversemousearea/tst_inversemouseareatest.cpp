@@ -79,6 +79,7 @@ private:
     void touchClick(QWindow *window, const QPoint &point)
     {
         QTest::touchEvent(window, device).press(0, point, window);
+        QTest::qWait(10);
         QTest::touchEvent(window, device).release(0, point, window);
     }
 
@@ -225,10 +226,13 @@ private Q_SLOTS:
 
         QSignalSpy imaDSpy(area, SIGNAL(doubleClicked(QQuickMouseEvent*)));
         QTest::mouseDClick(quickView, Qt::LeftButton, 0, QPoint(10, 65));
+        QTest::waitForEvents();
+        // FIXME: this is flaky
         QCOMPARE(imaDSpy.count(), 1);
         imaDSpy.clear();
 
         QTest::mouseDClick(quickView, Qt::LeftButton, 0, QPoint(10, 10));
+        QTest::waitForEvents();
         QCOMPARE(imaDSpy.count(), 1);
         imaDSpy.clear();
     }
@@ -477,9 +481,19 @@ private Q_SLOTS:
         QCOMPARE(imaSpy.count(), 0);
     }
 
+    void test_MouseClicksOnHeaderNotSeen_bug1288876_data()
+    {
+        QTest::addColumn<QString>("document");
+
+        QTest::newRow("InverseMouseArea in a Page") << "InverseMouseAreaInPage.qml";
+        QTest::newRow("InverseMouseArea in a ListView") << "InverseMouseAreaInListView.qml";
+        QTest::newRow("InverseMouseArea in a Flickable") << "InverseMouseAreaInFlickable.qml";
+    }
+
     void test_MouseClicksOnHeaderNotSeen_bug1288876()
     {
-        testArea("MouseClicksOnHeaderNotSeen.qml");
+        QFETCH(QString, document);
+        testArea(document);
         InverseMouseAreaType *ima = quickView->rootObject()->
                 property("ima").value<InverseMouseAreaType*>();
         QVERIFY(ima);
@@ -493,6 +507,10 @@ private Q_SLOTS:
         QSignalSpy imaSpy(ima, SIGNAL(clicked(QQuickMouseEvent*)));
 
         // make sure we click on the header
+        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, guPoint(20, 5));
+        QCOMPARE(imaSpy.count(), 1);
+
+        imaSpy.clear();
         touchClick(quickView, guPoint(20, 5));
         QCOMPARE(imaSpy.count(), 1);
     }

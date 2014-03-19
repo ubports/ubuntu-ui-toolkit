@@ -16,4 +16,6 @@ OTHER_FILES += \
     InverseMouseAreaSensingArea.qml \
     InverseMouseAreaOnTopNoAccept.qml \
     Defaults.qml \
-    MouseClicksOnHeaderNotSeen.qml
+    InverseMouseAreaInListView.qml \
+    InverseMouseAreaInPage.qml \
+    InverseMouseAreaInFlickable.qml
