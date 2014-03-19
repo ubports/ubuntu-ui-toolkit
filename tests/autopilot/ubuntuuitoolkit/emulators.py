@@ -511,7 +511,6 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.click_object(select_object)
 
 
-
 class TextField(UbuntuUIToolkitEmulatorBase):
     """TextField Autopilot emulator."""
 
