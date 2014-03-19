@@ -144,6 +144,10 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         if index >= number_of_tabs:
             raise ToolkitEmulatorException('Tab index out of range.')
 
+        if (index == tabs.selectedTabIndex):
+            current_tab = tabs.get_current_tab()
+            return current_tab
+
         if (self.useDeprecatedToolbar):
             current_tab = tabs.get_current_tab()
             number_of_switches = 0
