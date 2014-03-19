@@ -24,7 +24,6 @@
 
 #include "inversemouseareatype.h"
 #include <private/qquickevents_p_p.h>
-#include "uctestcase.h"
 
 class tst_InverseMouseAreaTest : public QObject
 {
@@ -34,18 +33,32 @@ public:
     tst_InverseMouseAreaTest() {}
 
 private:
-    UbuntuTestCase *testCase;
     QQuickView *quickView;
     QQmlEngine *quickEngine;
     QObjectCleanupHandler eventCleanup;
 
     InverseMouseAreaType *testArea(const QString &document)
     {
-        testCase->setFile(document);
+        // delete previous root
+        QObject *rootObject = quickView->rootObject();
+        if (rootObject)
+            delete rootObject;
+        QTest::waitForEvents();
 
-        InverseMouseAreaType* area = quickView->rootObject()->findChild<InverseMouseAreaType*>();
-        Q_ASSERT(area);
-        return area;
+        quickView->setSource(QUrl::fromLocalFile(document));
+        QCoreApplication::processEvents();
+
+        rootObject = quickView->rootObject();
+        if (!rootObject)
+            return 0;
+
+        QList<QQuickItem*> items = rootObject->findChildren<QQuickItem*>();
+        Q_FOREACH(QQuickItem *item, items) {
+            InverseMouseAreaType *area = qobject_cast<InverseMouseAreaType*>(item);
+            if (area)
+                return area;
+        }
+        return 0;
     }
 
 protected Q_SLOTS:
@@ -58,7 +71,17 @@ private Q_SLOTS:
 
     void initTestCase()
     {
-        quickView = testCase = new UbuntuTestCase(0);
+        QString modules("../../../modules");
+        QVERIFY(QDir(modules).exists());
+
+        quickView = new QQuickView(0);
+        quickEngine = quickView->engine();
+
+        quickView->setGeometry(0,0, 240, 320);
+        //add modules folder so we have access to the plugin from QML
+        QStringList imports = quickEngine->importPathList();
+        imports << QDir(modules).absolutePath();
+        quickEngine->setImportPathList(imports);
     }
 
     void cleanupTestCase()
@@ -80,6 +103,7 @@ private Q_SLOTS:
     {
         eventCleanup.clear();
         InverseMouseAreaType *area = testArea("InverseMouseAreaDoNotPropagateEvents.qml");
+        QVERIFY(area);
         // connect pressed signal to capture mouse object
         QObject::connect(area, SIGNAL(pressed(QQuickMouseEvent*)), this, SLOT(capturePressed(QQuickMouseEvent*)));
         QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(10, 10));
@@ -92,6 +116,7 @@ private Q_SLOTS:
     {
         eventCleanup.clear();
         InverseMouseAreaType *area = testArea("InverseMouseAreaPropagateEvents.qml");
+        QVERIFY(area);
         // connect pressed signal to capture mouse object
         QObject::connect(area, SIGNAL(pressed(QQuickMouseEvent*)), this, SLOT(capturePressed(QQuickMouseEvent*)));
         QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(10, 10));
@@ -113,6 +138,7 @@ private Q_SLOTS:
     {
         InverseMouseAreaType *area = testArea("InverseMouseAreaInWindow.qml");
         QVERIFY(area);
+        quickView->show();
 
         QList<QQuickWindow *> l = quickView->rootObject()->findChildren<QQuickWindow*>("isawindow");
         QVERIFY(l.count());
@@ -126,6 +152,7 @@ private Q_SLOTS:
     {
         InverseMouseAreaType *area = testArea("OverlappedMouseArea.qml");
         QVERIFY(area);
+        quickView->show();
 
         QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(20, 10));
         QTest::waitForEvents();
@@ -135,8 +162,14 @@ private Q_SLOTS:
     void testCase_InverseMouseAreaOnTop()
     {
         InverseMouseAreaType *area = testArea("InverseMouseAreaOnTop.qml");
-        QQuickItem *ma1 = testCase->findItem("MA1");
-        QQuickItem *ma2 = testCase->findItem("MA2");
+        QVERIFY(area);
+        quickView->show();
+        QTest::qWaitForWindowExposed(quickView);
+
+        QQuickItem *ma1 = quickView->rootObject()->findChild<QQuickItem*>("MA1");
+        QVERIFY(ma1);
+        QQuickItem *ma2 = quickView->rootObject()->findChild<QQuickItem*>("MA2");
+        QVERIFY(ma2);
 
         QSignalSpy imaSpy(area, SIGNAL(pressed(QQuickMouseEvent*)));
         QSignalSpy ma1Spy(ma1, SIGNAL(pressed(QQuickMouseEvent*)));
@@ -178,9 +211,14 @@ private Q_SLOTS:
     void testCase_InverseMouseAreaOnTopNoAccept()
     {
         InverseMouseAreaType *area = testArea("InverseMouseAreaOnTopNoAccept.qml");
+        QVERIFY(area);
+        quickView->show();
+        QTest::qWaitForWindowExposed(quickView);
 
-        QQuickItem *ma1 = testCase->findItem("MA1");
-        QQuickItem *ma2 = testCase->findItem("MA2");
+        QQuickItem *ma1 = quickView->rootObject()->findChild<QQuickItem*>("MA1");
+        QVERIFY(ma1);
+        QQuickItem *ma2 = quickView->rootObject()->findChild<QQuickItem*>("MA2");
+        QVERIFY(ma2);
 
         QSignalSpy imaSpy(area, SIGNAL(pressed(QQuickMouseEvent*)));
         QSignalSpy ma1Spy(ma1, SIGNAL(pressed(QQuickMouseEvent*)));
@@ -220,9 +258,13 @@ private Q_SLOTS:
     void testCase_InverseMouseAreaOnTopTopmost()
     {
         InverseMouseAreaType *area = testArea("InverseMouseAreaOnTop.qml");
+        QVERIFY(area);
+        quickView->show();
+        QTest::qWaitForWindowExposed(quickView);
         area->setProperty("topmostItem", true);
 
-        QQuickItem *ma2 = testCase->findItem("MA2");
+        QQuickItem *ma2 = quickView->rootObject()->findChild<QQuickItem*>("MA2");
+        QVERIFY(ma2);
 
         QSignalSpy imaSpy(area, SIGNAL(pressed(QQuickMouseEvent*)));
         QSignalSpy ma2Spy(ma2, SIGNAL(pressed(QQuickMouseEvent*)));
@@ -257,6 +299,9 @@ private Q_SLOTS:
     void testCase_InverseMouseAreaSignals()
     {
         InverseMouseAreaType *area = testArea("InverseMouseAreaSignals.qml");
+        QVERIFY(area);
+        quickView->show();
+        QTest::qWaitForWindowExposed(quickView);
 
         QSignalSpy pressSpy(area, SIGNAL(pressed(QQuickMouseEvent*)));
         QSignalSpy releaseSpy(area, SIGNAL(released(QQuickMouseEvent*)));
@@ -279,7 +324,12 @@ private Q_SLOTS:
     void testCase_InverseMouseAreaNormalEventStack()
     {
         InverseMouseAreaType *ima = testArea("InverseMouseAreaNormalEventStack.qml");
-        QQuickItem *ma = testCase->findItem("MA");
+        QVERIFY(ima);
+        quickView->show();
+        QTest::qWaitForWindowExposed(quickView);
+
+        QQuickItem *ma = quickView->rootObject()->findChild<QQuickItem*>("MA");
+        QVERIFY(ma);
 
         QSignalSpy imaSpy(ima, SIGNAL(pressed(QQuickMouseEvent*)));
         QSignalSpy maSpy(ma, SIGNAL(pressed(QQuickMouseEvent*)));
@@ -301,7 +351,12 @@ private Q_SLOTS:
     void testCase_InverseMouseAreaTopmost()
     {
         InverseMouseAreaType *ima = testArea("InverseMouseAreaTopmostItem.qml");
-        QQuickItem *ma = testCase->findItem("MA");
+        QVERIFY(ima);
+        quickView->show();
+        QTest::qWaitForWindowExposed(quickView);
+
+        QQuickItem *ma = quickView->rootObject()->findChild<QQuickItem*>("MA");
+        QVERIFY(ma);
 
         QSignalSpy imaSpy(ima, SIGNAL(pressed(QQuickMouseEvent*)));
         QSignalSpy maSpy(ma, SIGNAL(pressed(QQuickMouseEvent*)));
@@ -327,7 +382,12 @@ private Q_SLOTS:
     void testCase_InverseMouseAreaSensingArea()
     {
         InverseMouseAreaType *ima = testArea("InverseMouseAreaSensingArea.qml");
-        QQuickItem *ma = testCase->findItem("MA");
+        QVERIFY(ima);
+        quickView->show();
+        QTest::qWaitForWindowExposed(quickView);
+
+        QQuickItem *ma = quickView->rootObject()->findChild<QQuickItem*>("MA");
+        QVERIFY(ma);
 
         QSignalSpy maSpy(ma, SIGNAL(clicked(QQuickMouseEvent*)));
         QSignalSpy imaSpy(ima, SIGNAL(clicked(QQuickMouseEvent*)));
@@ -350,7 +410,12 @@ private Q_SLOTS:
     void testCase_InverseMouseAreaSensingAreaChange()
     {
         InverseMouseAreaType *ima = testArea("InverseMouseAreaSensingArea.qml");
-        QQuickItem *ma = testCase->findItem("MA");
+        QVERIFY(ima);
+        quickView->show();
+        QTest::qWaitForWindowExposed(quickView);
+
+        QQuickItem *ma = quickView->rootObject()->findChild<QQuickItem*>("MA");
+        QVERIFY(ma);
 
         QSignalSpy maSpy(ma, SIGNAL(clicked(QQuickMouseEvent*)));
         QSignalSpy imaSpy(ima, SIGNAL(clicked(QQuickMouseEvent*)));

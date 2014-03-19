@@ -21,8 +21,6 @@
 #include <QtQuick/QQuickView>
 #include <QtQuick/QQuickItem>
 
-#include "uctestcase.h"
-
 class RecreateViewTest : public QObject
 {
     Q_OBJECT
@@ -35,19 +33,36 @@ private Q_SLOTS:
     void testCase_recreateView();
 
 private:
+    QString m_modulePath;
 };
 
 void RecreateViewTest::initTestCase()
 {
+    QString modules("../../../modules");
+    QVERIFY(QDir(modules).exists());
+
+    m_modulePath = QDir(modules).absolutePath();
 }
 
 void RecreateViewTest::testCase_recreateView()
 {
-    UbuntuTestCase *testCase = new UbuntuTestCase("SimpleApp.qml");
-    delete testCase;
+    QQuickView *view = new QQuickView;
+    view->engine()->addImportPath(m_modulePath);
 
-    testCase = new UbuntuTestCase("SimpleApp.qml");
-    delete testCase;
+    view->setSource(QUrl::fromLocalFile("SimpleApp.qml"));
+    QVERIFY(view->rootObject() != 0);
+    view->show();
+    QTest::qWaitForWindowExposed(view);
+    delete view;
+
+    view = new QQuickView;
+    view->engine()->addImportPath(m_modulePath);
+
+    view->setSource(QUrl::fromLocalFile("SimpleApp.qml"));
+    QVERIFY(view->rootObject() != 0);
+    view->show();
+    QTest::qWaitForWindowExposed(view);
+    delete view;
 }
 
 QTEST_MAIN(RecreateViewTest)
