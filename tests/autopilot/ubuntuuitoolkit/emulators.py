@@ -582,7 +582,7 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
 
     def _show_more_elements(self, direction):
         x, y, width, height = self.globalRect
-        start_x = stop_x = x + (width / 2)
+        start_x = stop_x = x + (width // 2)
         # Start and stop just a little under the top of the list.
         top = y + 5
         bottom = y + height - 5
@@ -607,7 +607,7 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
     def _is_element_clickable(self, objectName):
         """Return True if the center of the element is visible."""
         element = self.select_single(objectName=objectName)
-        element_center = element.globalRect.y + element.globalRect.height / 2
+        element_center = element.globalRect.y + element.globalRect.height // 2
         return (element_center >= self.globalRect.y and
                 element_center <= self.globalRect.y + self.globalRect.height)
 
@@ -628,7 +628,7 @@ class Empty(UbuntuUIToolkitEmulatorBase):
     @autopilot_logging.log_action(logger.info)
     def swipe_to_delete(self, direction='right'):
         """Swipe the item in a specific direction."""
-        if (self.removable):
+        if self.removable:
             self._drag_pointing_device_to_delete(direction)
             if self.confirmRemoval:
                 self.waitingConfirmationForRemoval.wait_for(True)
@@ -640,12 +640,12 @@ class Empty(UbuntuUIToolkitEmulatorBase):
 
     def _drag_pointing_device_to_delete(self, direction):
         x, y, w, h = self.globalRect
-        tx = x + (w / 8)
-        ty = y + (h / 2)
+        tx = x + (w // 8)
+        ty = y + (h // 2)
 
-        if (direction == 'right'):
+        if direction == 'right':
             self.pointing_device.drag(tx, ty, w, ty)
-        elif (direction == 'left'):
+        elif direction == 'left':
             self.pointing_device.drag(w - (w*0.1), ty, x, ty)
         else:
             raise ToolkitEmulatorException(
@@ -663,7 +663,7 @@ class Empty(UbuntuUIToolkitEmulatorBase):
     @autopilot_logging.log_action(logger.info)
     def confirm_removal(self):
         """Comfirm item removal if this was already swiped."""
-        if (self.waitingConfirmationForRemoval):
+        if self.waitingConfirmationForRemoval:
             deleteButton = self._get_confirm_button()
             self.pointing_device.click_object(deleteButton)
             self._wait_until_deleted()

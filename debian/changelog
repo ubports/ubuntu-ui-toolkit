@@ -1,3 +1,60 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20140317-0ubuntu1) trusty; urgency=low
+
+  [ Didier Roche ]
+  * remove the doc generation for UITK autopilot emulator. Autopilot is
+    in universe for now, it needs MIRing first
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 17 Mar 2014 09:03:08 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140314-0ubuntu1) trusty; urgency=low
+
+  [ CI bot ]
+  * Resync trunk
+
+  [ Colin Watson ]
+  * With Qt 5.2, QtDeclarative now supports all architectures, at least
+    in principle. Switch back to trying to build everywhere, since
+    ubuntu-ui-toolkit has no intrinsic reason to be non-portable.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 14 Mar 2014 15:07:46 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140306.1-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * DatePicker flaky test fix. (LP: #1287009)
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+  [ Michael Zanetti ]
+  * Make the UbuntuListView tests more stable (LP: #1288597)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 06 Mar 2014 12:46:50 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140304-0ubuntu1) trusty; urgency=low
+
+  [ CI bot ]
+  * Ship python3 autopilot emulators/tests.
+
+  [ Florian Boucault ]
+  * More compact visual style for a few widgets: Button: switched
+    default color to plain instead of gradient. Height from 5gu to 4gu.
+    OptionSelector: row height from 6gu to 5gu. Slider: much thinner
+    visual style. Switch: size from 10gu x 5gu to 8gu x 4gu. CheckBox:
+    size from 4.25gu x 4gu to 3.25gu x 3gu. smaller 'x-large' font size.
+    (LP: #1276173)
+
+  [ tpeeters ]
+  * Expose a position property in Panel to make it more useful for
+    implementing new bottom-edge behavior.
+
+  [ Christian Dywan ]
+  * The wrapper is intended to make API test more visible in the output
+    regardless of failure or success. A semi-related fix increases
+    coverage so that UbuntuTestCase and Layouts are also checked.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 04 Mar 2014 13:01:40 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20140301-0ubuntu1) trusty; urgency=low
 
   [ Zsombor Egri ]
