@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,6 +19,7 @@
 #ifndef UBUNTU_TEST_UBUNTUTESTCASE_H
 #define UBUNTU_TEST_UBUNTUTESTCASE_H
 
+#include <QtQuick/QQuickItem>
 #include <QtQuick/QQuickView>
 #include <QtTest/QSignalSpy>
 
@@ -28,11 +29,16 @@ class UbuntuTestCase : public QQuickView
 
 public:
     UbuntuTestCase(const QString& file, QWindow* parent = 0);
-    void setFile(const QString& file);
     // getter
-    QObject* findObject(const QString& objectName) const;
-    QQuickItem* findItem(const QString& objectName) const;
-    int errorCount() const;
+    template<class T>
+    inline T findItem(const QString& objectName) const {
+        T item = rootObject()->findChild<T>(objectName);
+        if (item)
+            return item;
+        if (rootObject()->findChild<QObject*>(objectName))
+            qFatal("Item '%s' found with unexpected type", qPrintable(objectName));
+        qFatal("No item '%s' found", qPrintable(objectName));
+    }
 
 private:
     QSignalSpy* m_spy;

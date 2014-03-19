@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -40,42 +40,11 @@ UbuntuTestCase::UbuntuTestCase(const QString& file, QWindow* parent) : QQuickVie
     m_spy = new QSignalSpy(engine(), SIGNAL(warnings(QList<QQmlError>)));
     m_spy->setParent(this);
 
-    if (file.isEmpty())
-        return;
-
-    setFile(file);
-}
-
-void UbuntuTestCase::setFile(const QString& file) {
     Q_ASSERT(!file.isEmpty());
-    if (rootObject())
-        delete rootObject();
     setSource(QUrl::fromLocalFile(file));
     Q_ASSERT(status() == QQuickView::Ready);
     Q_ASSERT(rootObject());
     show();
     QTest::qWaitForWindowExposed(this);
-}
-
-QObject* UbuntuTestCase::findObject(const QString& objectName) const {
-    QQuickItem *root = rootObject();
-    Q_ASSERT(root);
-    QObject* object = root->findChild<QObject*>(objectName);
-    if (!object)
-        qFatal("No object '%s' found", qPrintable(objectName));
-    return object;
-}
-
-QQuickItem* UbuntuTestCase::findItem(const QString& objectName) const {
-    QQuickItem *root = rootObject();
-    Q_ASSERT(root);
-    QQuickItem* item = root->findChild<QQuickItem*>(objectName);
-    if (!item)
-        qFatal("No item '%s' found", qPrintable(objectName));
-    return item;
-}
-
-int UbuntuTestCase::errorCount() const {
-    return m_spy->count();
 }
 
