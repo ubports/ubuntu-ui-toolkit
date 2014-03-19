@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import mock
 import time
 import unittest
 
@@ -22,6 +21,10 @@ import autopilot
 from autopilot import input, platform
 from autopilot.introspection import dbus
 from testtools.matchers import GreaterThan, LessThan
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
 from ubuntuuitoolkit import emulators, tests
 
@@ -574,47 +577,6 @@ MainView {
                 text: "No element clicked."
             }
 
-            ListModel {
-                id: testModel
-
-                ListElement {
-                    objectName: "testListElement1"
-                    label: "test list element 1"
-                }
-                ListElement {
-                    objectName: "testListElement2"
-                    label: "test list element 2"
-                }
-                ListElement {
-                    objectName: "testListElement3"
-                    label: "test list element 3"
-                }
-                ListElement {
-                    objectName: "testListElement4"
-                    label: "test list element 4"
-                }
-                ListElement {
-                    objectName: "testListElement5"
-                    label: "test list element 5"
-                }
-                ListElement {
-                    objectName: "testListElement6"
-                    label: "test list element 6"
-                }
-                ListElement {
-                    objectName: "testListElement7"
-                    label: "test list element 7"
-                }
-                ListElement {
-                    objectName: "testListElement8"
-                    label: "test list element 8"
-                }
-                ListElement {
-                    objectName: "testListElement9"
-                    label: "test list element 9"
-                }
-            }
-
             ListView {
                 id: testListView
                 objectName: "testListView"
@@ -622,13 +584,13 @@ MainView {
                 anchors.right: parent.right
                 height: column.height - clickedLabel.paintedHeight
                 clip: true
-                model: testModel
+                model: 20
 
                 delegate: ListItem.Standard {
-                    text: model.label
-                    objectName: model.objectName
-                    onClicked: clickedLabel.text = model.objectName
-                    height: units.gu(5)
+                        objectName: "testListElement%1".arg(index)
+                        text: "test list element %1".arg(index)
+                        onClicked: clickedLabel.text = objectName
+                        height: units.gu(5)
                 }
             }
         }
@@ -648,31 +610,44 @@ MainView {
         self.assertIsInstance(self.list_view, emulators.QQuickListView)
 
     def test_click_element(self):
-        self.list_view.click_element('testListElement1')
-        self.assertEqual(self.label.text, 'testListElement1')
+        self.list_view.click_element('testListElement0')
+        self.assertEqual(self.label.text, 'testListElement0')
 
     def test_click_element_outside_view_below(self):
         # Click the first element out of view to make sure we are not scrolling
         # to the bottom at once.
         self.assertFalse(
-            self.list_view._is_element_fully_visible('testListElement5'))
+            self.list_view._is_element_clickable('testListElement5'))
 
         self.list_view.click_element('testListElement5')
         self.assertEqual(self.label.text, 'testListElement5')
 
     def test_click_element_outside_view_above(self):
-        # First we need to scroll to the 8th element in order for the 9th to be
-        # created.
-        self.list_view.click_element('testListElement8')
         self.list_view.click_element('testListElement9')
 
         # Click the first element out of view to make sure we are not scrolling
         # to the top at once.
         self.assertFalse(
-            self.list_view._is_element_fully_visible('testListElement4'))
+            self.list_view._is_element_clickable('testListElement4'))
 
         self.list_view.click_element('testListElement4')
         self.assertEqual(self.label.text, 'testListElement4')
+
+    def test_click_element_not_created_at_start(self):
+        objectName = 'testListElement19'
+        self.assertRaises(
+            dbus.StateNotFoundError,
+            self.list_view.select_single,
+            objectName=objectName)
+        self.list_view.click_element(objectName)
+
+    def test_click_unexisting_element(self):
+        error = self.assertRaises(
+            emulators.ToolkitEmulatorException,
+            self.list_view.click_element,
+            'unexisting')
+        self.assertEqual(
+            str(error), 'List element with objectName "unexisting" not found.')
 
 
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
@@ -880,6 +855,79 @@ MainView {
         self._go_to_page1()
         self.main_view.go_back()
         self.assertEqual(self.header.title, 'Page 0')
+
+
+class TextFieldTestCase(tests.QMLStringAppTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Item {
+        TextField {
+            id: simpleTextField
+            objectName: "simple_text_field"
+        }
+        TextField {
+            id: textFieldWithoutClearButton
+            objectName: "text_field_without_clear_button"
+            hasClearButton: false
+            anchors.top: simpleTextField.bottom
+        }
+    }
+}
+""")
+
+    def setUp(self):
+        super(TextFieldTestCase, self).setUp()
+        self.simple_text_field = self.main_view.select_single(
+            emulators.TextField, objectName='simple_text_field')
+
+    def test_text_field_emulator(self):
+        self.assertIsInstance(self.simple_text_field, emulators.TextField)
+
+    def test_write(self):
+        self.simple_text_field.write('test')
+        self.assertEqual(self.simple_text_field.text, 'test')
+
+    def test_clear_with_clear_button(self):
+        self.simple_text_field.write('test')
+        self.simple_text_field.clear()
+        self.assertEqual(self.simple_text_field.text, '')
+
+    def test_clear_without_clear_button(self):
+        text_field = self.main_view.select_single(
+            emulators.TextField, objectName='text_field_without_clear_button')
+        text_field.write('test')
+        text_field.clear()
+        self.assertEqual(text_field.text, '')
+
+    def test_clear_and_write(self):
+        self.simple_text_field.write('test1')
+        self.simple_text_field.write('test2')
+        self.assertEqual(self.simple_text_field.text, 'test2')
+
+    def test_write_without_clear(self):
+        self.simple_text_field.write('test1')
+        self.simple_text_field.write('test2', clear=False)
+        self.assertEqual(self.simple_text_field.text, 'test1test2')
+
+    def test_write_without_clear_writes_at_the_end(self):
+        self.simple_text_field.write(
+            'long text that will fill more than half of the text field.')
+        self.simple_text_field.write('append', clear=False)
+        self.assertEqual(
+            self.simple_text_field.text,
+            'long text that will fill more than half of the text field.append')
+
+    def test_is_empty(self):
+        self.assertTrue(self.simple_text_field.is_empty())
+        self.simple_text_field.write('test')
+        self.assertFalse(self.simple_text_field.is_empty())
 
 
 class ComposerSheetTestCase(tests.QMLStringAppTestCase):

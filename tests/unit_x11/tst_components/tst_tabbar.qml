@@ -32,7 +32,8 @@ Item {
 
     TabBar {
         id: bar2
-        anchors.top: parent.top
+        // anchor to bottom not to occlude the first TabBar
+        anchors.bottom: parent.bottom
         width: parent.width
         model: invalidModel
     }
@@ -131,7 +132,6 @@ Item {
         }
 
         function test_0_selectionMode() {
-            waitForRendering(root);
             compare(bar.selectionMode, true, "default selectionMode");
         }
 

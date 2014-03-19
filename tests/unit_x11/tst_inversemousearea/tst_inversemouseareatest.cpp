@@ -66,6 +66,16 @@ private Q_SLOTS:
         delete quickView;
     }
 
+    void testCase_Defaults()
+    {
+        InverseMouseAreaType *area = testArea("Defaults.qml");
+        QVERIFY(area);
+
+        QCOMPARE(area->pressed(), false);
+        QCOMPARE(area->acceptedButtons(), Qt::LeftButton);
+        QCOMPARE(area->pressedButtons(), Qt::NoButton);
+        QCOMPARE(area->propagateComposedEvents(), false);
+    }
     void testCase_DoNotPropagateEvents()
     {
         eventCleanup.clear();

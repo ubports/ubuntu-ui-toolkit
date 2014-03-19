@@ -18,6 +18,7 @@
 
 #include "i18n.h"
 #include <QtCore/QStandardPaths>
+#include <QtCore/QDir>
 
 namespace C {
 #include <libintl.h>
@@ -103,16 +104,37 @@ void UbuntuI18n::setDomain(const QString &domain) {
     /*
      Look for locale folder as per XDG basedir spec
      The default is /usr/share/locale if we don't set a folder
+     We look for share/domain to pick correctly among multiple prefixes
      */
-    QString localePath (QStandardPaths::locate(QStandardPaths::GenericDataLocation,
-        "locale", QStandardPaths::LocateDirectory));
-    if (!localePath.isEmpty())
-        C::bindtextdomain(domain.toUtf8(), localePath.toUtf8());
+    QString dataPath(QStandardPaths::locate(QStandardPaths::GenericDataLocation,
+        domain, QStandardPaths::LocateDirectory));
+    if (!dataPath.isEmpty()) {
+        QDir dataDir(dataPath);
+        if (dataDir.cdUp() && dataDir.cd("locale")) {
+            QString localePath(dataDir.path());
+            C::bindtextdomain(domain.toUtf8(), localePath.toUtf8());
+        }
+    }
     Q_EMIT domainChanged();
 }
 
 void UbuntuI18n::setLanguage(const QString &lang) {
     m_language = lang;
+
+    /*
+     This is needed for LP: #1263163.
+
+     LANGUAGE may be set to one or more languages for example "fi" or
+     "sv:de". gettext prioritizes LANGUAGE over LC_ALL, LC_*, and
+     LANG, so if the session has already set LANGUAGE, calls to
+     gettext will only use that.  We must override it here so that
+     future calls to gettext are done in the new language.
+
+     This only affects the current process. It does not override the
+     user's session LANGUAGE.
+     */
+    setenv("LANGUAGE", lang.toUtf8().constData(), 1);
+
     /*
      The inverse form of setlocale as used in the constructor, passing
      a valid locale string updates all category type defaults.

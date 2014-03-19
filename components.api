@@ -106,6 +106,19 @@ AbstractButton
     property ThinDivider divider
     property real __contentsMargins
     function cancelItemRemoval()
+modules/Ubuntu/Components/ListItems/Expandable.qml
+Empty
+    property bool expanded
+    property real collapsedHeight
+    property real expandedHeight
+    property bool collapseOnClick
+    default property QtObject children
+modules/Ubuntu/Components/ListItems/ExpandablesColumn.qml
+Flickable
+    readonly property Item expandedItem
+    function expandItem(item)
+    function collapse()
+    default property QtObject children
 modules/Ubuntu/Components/ListItems/Header.qml
 Item
     property string text
@@ -239,6 +252,7 @@ Item
     property bool locked
     property real hintSize
     property real triggerSize
+    readonly property real position
     property bool animate
     readonly property bool animating
     property bool __closeOnContentsClicks
@@ -257,6 +271,7 @@ StyledItem
     readonly property int minutes
     readonly property int seconds
     property var locale
+    readonly property bool moving
 modules/Ubuntu/Components/Pickers/Dialer.qml
 StyledItem
     property real minimumValue
@@ -282,10 +297,15 @@ StyledItem
     property Component delegate
     property int selectedIndex
     property bool live
+    readonly property bool moving
+    function positionViewAtIndex(index)
     property int __clickedIndex
 modules/Ubuntu/Components/Pickers/PickerDelegate.qml
 AbstractButton
     readonly property Picker picker
+modules/Ubuntu/Components/Pickers/PickerPanel.qml
+Object
+    function openDatePicker(caller, property, mode)
 modules/Ubuntu/Components/Popups/ActionSelectionPopover.qml
 Popover
     property Item target
@@ -551,6 +571,9 @@ Item
     property Item pageStack
     property bool opened
     property bool locked
+modules/Ubuntu/Components/UbuntuListView.qml
+ListView
+    property int expandedIndex
 modules/Ubuntu/Components/UbuntuNumberAnimation.qml
 NumberAnimation
 modules/Ubuntu/Components/UbuntuShape.qml
@@ -560,6 +583,15 @@ Item
     property string radius
     property Item image
     property url borderSource
+modules/Ubuntu/PerformanceMetrics/PerformanceOverlay.qml
+Item
+    property bool active
+modules/Ubuntu/Test/UbuntuTestCase.qml
+TestCase
+    function findChild(obj,objectName)
+    function findInvisibleChild(obj,objectName)
+    function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay)
+    function tryCompareFunction(func, expectedResult, timeout)
 plugins.qmltypes
     name: "InverseMouseAreaType"
     prototype: "QQuickMouseArea"
@@ -637,6 +669,43 @@ plugins.qmltypes
     name: "quitWithError"
     Parameter { name: "errorMessage"; type: "string" }
     Method { name: "quitWithError" }
+    name: "UCInverseMouse"
+    prototype: "UCMouse"
+    exports: ["InverseMouse 0.1"]
+    name: "UCMouse"
+    prototype: "QObject"
+    exports: ["Mouse 0.1"]
+    name: "Priority"
+    Property { name: "enabled"; type: "bool" }
+    Property { name: "acceptedButtons"; type: "Qt::MouseButtons"; isReadonly: true }
+    Property { name: "hoverEnabled"; type: "bool"; isReadonly: true }
+    Property { name: "clickAndHoldThreshold"; type: "int" }
+    Property { name: "forwardTo"; type: "QQuickItem"; isList: true; isReadonly: true }
+    Property { name: "priority"; type: "Priority" }
+    Signal {
+    name: "pressed"
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Signal {
+    name: "released"
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Signal {
+    name: "clicked"
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Signal {
+    name: "pressAndHold"
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Signal {
+    name: "doubleClicked"
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Signal {
+    name: "positionChanged"
+    Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Signal {
+    name: "entered"
+    Parameter { name: "event"; type: "QQuickMouseEvent"; isPointer: true }
+    Signal {
+    name: "exited"
+    Parameter { name: "event"; type: "QQuickMouseEvent"; isPointer: true }
     name: "UCQQuickImageExtension"
     prototype: "QQuickImageBase"
     exports: ["QQuickImageBase 0.1"]
@@ -707,3 +776,47 @@ plugins.qmltypes
     Parameter { name: "singular"; type: "string" }
     Parameter { name: "plural"; type: "string" }
     Parameter { name: "n"; type: "int" }
+    name: "ULConditionalLayout"
+    prototype: "QObject"
+    exports: ["ConditionalLayout 0.1"]
+    Property { name: "name"; type: "string" }
+    Property { name: "when"; type: "QQmlBinding"; isPointer: true }
+    Property { name: "layout"; type: "QQmlComponent"; isPointer: true }
+    name: "ULItemLayout"
+    prototype: "QQuickItem"
+    exports: ["ItemLayout 0.1"]
+    Property { name: "item"; type: "string" }
+    name: "ULLayouts"
+    prototype: "QQuickItem"
+    exports: ["Layouts 0.1"]
+    Property { name: "currentLayout"; type: "string"; isReadonly: true }
+    Property { name: "layouts"; type: "ULConditionalLayout"; isList: true; isReadonly: true }
+    name: "ULLayoutsAttached"
+    prototype: "QObject"
+    Property { name: "item"; type: "string" }
+    name: "UPMCpuUsage"
+    prototype: "QQuickItem"
+    exports: ["CpuUsage 0.1"]
+    Property { name: "graphModel"; type: "UPMGraphModel"; isReadonly: true; isPointer: true }
+    Property { name: "period"; type: "int" }
+    Property { name: "samplingInterval"; type: "int" }
+    name: "UPMGraphModel"
+    prototype: "QObject"
+    Property { name: "image"; type: "QImage"; isReadonly: true }
+    Property { name: "shift"; type: "int"; isReadonly: true }
+    Property { name: "samples"; type: "int" }
+    Property { name: "currentValue"; type: "int"; isReadonly: true }
+    name: "UPMRenderingTimes"
+    prototype: "QQuickItem"
+    exports: ["RenderingTimes 0.1"]
+    Property { name: "period"; type: "int" }
+    Property { name: "samples"; type: "int" }
+    Property { name: "graphModel"; type: "UPMGraphModel"; isReadonly: true; isPointer: true }
+    Property { name: "timerType"; type: "RenderTimer::TimerType" }
+    Signal {
+    name: "frameRendered"
+    Parameter { name: "renderTime"; type: "qlonglong" }
+    name: "UPMTextureFromImage"
+    prototype: "QQuickItem"
+    exports: ["TextureFromImage 0.1"]
+    Property { name: "image"; type: "QImage" }

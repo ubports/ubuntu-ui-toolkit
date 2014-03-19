@@ -36,6 +36,9 @@ MainView {
     */
     automaticOrientation: true
 
+    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
+
     state: width >= units.gu(80) ? "wide" : "narrow"
     states: [
         State {
@@ -114,6 +117,7 @@ MainView {
                 model: widgetsModel
                 delegate: ListItem.Standard {
                     text: model.label
+                    objectName: model.objectName
                     enabled: model.source != ""
                     progression: true
                     selected: enabled && selectedWidget == model

@@ -25,6 +25,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
+#include <QtCore/QDebug>
 
 #define ALARM_DATABASE          "%1/alarms.database"
 /*
@@ -408,6 +409,19 @@ bool AlarmRequestAdapter::fetch()
 
     QOrganizerItemFetchRequest *operation = new QOrganizerItemFetchRequest(q_ptr);
     operation->setManager(owner->manager);
+
+    // FIXME: Since returning all events without a limit of date is not a good solution we need to find
+    // a better solution for that.
+    // The current solution filters only the next 7 days (one week).
+    // This will be enough for now, since the current alarms occur weekly, but for the future
+    // we want to allow create alarms with monthly or yearly recurrence
+    QDate currentDate = QDate::currentDate();
+    QDateTime startDate(currentDate,
+                        QTime(0,0,0));
+    QDateTime endDate(currentDate.addDays(7),
+                      QTime(23,59,59));
+    operation->setStartDate(startDate);
+    operation->setEndDate(endDate);
 
     // set sort order
     QOrganizerItemSortOrder sortOrder;

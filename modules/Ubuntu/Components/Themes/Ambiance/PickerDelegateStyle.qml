@@ -22,7 +22,7 @@ Item {
     property real maxFade: 0.95
     property bool fadingEnabled: true
 
-    property bool inListView: QuickUtils.className(styledItem.parent) !== "QQuickPathView"
+    property bool inListView: styledItem.parent && (QuickUtils.className(styledItem.parent) !== "QQuickPathView")
     property Item itemList: inListView ? styledItem.ListView.view : styledItem.PathView.view
     property Item picker: styledItem.picker
     property Item highlightItem: itemList.highlightItem

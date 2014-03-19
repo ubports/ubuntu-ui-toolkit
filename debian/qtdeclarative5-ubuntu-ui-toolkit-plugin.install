@@ -1,3 +1,7 @@
+usr/lib/*/qt5/qml/Ubuntu/PerformanceMetrics/*.qml
+usr/lib/*/qt5/qml/Ubuntu/PerformanceMetrics/qmldir
+usr/lib/*/qt5/qml/Ubuntu/PerformanceMetrics/plugins.qmltypes
+usr/lib/*/qt5/qml/Ubuntu/PerformanceMetrics/libUbuntuPerformanceMetrics.so
 usr/lib/*/qt5/qml/Ubuntu/Layouts/qmldir
 usr/lib/*/qt5/qml/Ubuntu/Layouts/plugins.qmltypes
 usr/lib/*/qt5/qml/Ubuntu/Layouts/libUbuntuLayouts.so

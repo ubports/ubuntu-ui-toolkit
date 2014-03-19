@@ -72,6 +72,8 @@ Item {
         height: headerStyle.contentHeight
 
         Label {
+            LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+
             anchors {
                 left: parent.left
                 verticalCenter: parent.verticalCenter
