@@ -106,6 +106,7 @@ Item {
                     Repeater {
                         model: styledItem.tabsModel
                         ListItem.Standard {
+                            visible: index !== styledItem.tabsModel.selectedIndex
                             text: tab.title // XXX: only "title" doesn't work with i18n.tr(). Why not?
                             objectName: "tabButton" + index
                             onClicked: {
