@@ -238,6 +238,32 @@ class Header(UbuntuUIToolkitEmulatorBase):
         else:
             return False
 
+    def _switch_to_next_tab_in_deprecated_tabbar(self):
+        try:
+            tab_bar = self.select_single(TabBar)
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException(_NO_TABS_ERROR)
+        tab_bar.switch_to_next_tab()
+        self._get_animating().wait_for(False)
+
+    def _switch_to_next_tab_in_drawer(self):
+        try:
+            tabs_drawer_button = self.select_single('AbstractButton', objectName='tabsButton')
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException(_NO_TABS_ERROR)
+        self.pointing_device.click_object(tabs_drawer_button)
+
+        tabs_model_properties = self.select_single('QQuickItem', objectName='tabsModelProperties')
+        next_tab_index = (tabs_model_properties.selectedIndex + 1) % tabs_model_properties.count
+
+        try:
+            tab_button = self.get_root_instance().select_single('Standard',
+                        objectName='tabButton'+str(next_tab_index))
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException("Tab button {0} not found.".format(next_tab_index))
+
+        self.pointing_device.click_object(tab_button)
+
     @autopilot_logging.log_action(logger.info)
     def switch_to_next_tab(self):
         """Open the next tab.
@@ -246,29 +272,9 @@ class Header(UbuntuUIToolkitEmulatorBase):
 
         """
         if (self.useDeprecatedToolbar):
-            try:
-                tab_bar = self.select_single(TabBar)
-            except dbus.StateNotFoundError:
-                raise ToolkitEmulatorException(_NO_TABS_ERROR)
-            tab_bar.switch_to_next_tab()
-            self._get_animating().wait_for(False)
+            self._switch_to_next_tab_in_deprecated_tabbar()
         else:
-            try:
-                tabs_drawer_button = self.select_single('AbstractButton', objectName='tabsButton')
-            except dbus.StateNotFoundError:
-                raise ToolkitEmulatorException(_NO_TABS_ERROR)
-            self.pointing_device.click_object(tabs_drawer_button)
-
-            tabs_model_properties = self.select_single('QQuickItem', objectName='tabsModelProperties')
-            next_tab_index = (tabs_model_properties.selectedIndex + 1) % tabs_model_properties.count
-
-            try:
-                tab_button = self.get_root_instance().select_single('Standard',
-                            objectName='tabButton'+str(next_tab_index))
-            except dbus.StateNotFoundError:
-                raise ToolkitEmulatorException("Tab button {0} not found.".format(next_tab_index))
-
-            self.pointing_device.click_object(tab_button)
+            self._switch_to_next_tab_in_drawer()
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_tab_by_index(self, index):
