@@ -43,11 +43,11 @@
  *
  * SortFilterModel {
  *     model: movies
+ *     sortProperty: "title"
  *     sortOrder: Qt.DescendingOrder
- *     sortRole: "title"
  *
- *     filterRole: "producer
- *     filter: /blender/
+ *     filterProperty: "producer
+ *     filterPattern: /blender/
  * }
  *
  * ListView {
@@ -90,6 +90,40 @@ QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent)
     connect(this, SIGNAL(modelReset()), SIGNAL(countChanged()));
     connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(countChanged()));
     connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(countChanged()));
+}
+
+int
+QSortFilterProxyModelQML::roleByName(const QString& roleName) const
+{
+    const QHash<int, QByteArray> roles = roleNames();
+    for(int role = 0; role < roles.count(); role++)
+        if (roles[role] == roleName)
+            return role;
+    return 0;
+}
+
+QString
+QSortFilterProxyModelQML::sortProperty() const
+{
+    return roleNames()[sortRole()];
+}
+
+QString
+QSortFilterProxyModelQML::filterProperty() const
+{
+    return roleNames()[filterRole()];
+}
+
+void
+QSortFilterProxyModelQML::setSortProperty(const QString& property)
+{
+    setSortRole(roleByName(property));
+}
+
+void
+QSortFilterProxyModelQML::setFilterProperty(const QString& property)
+{
+    setFilterRole(roleByName(property));
 }
 
 void
@@ -160,8 +194,9 @@ QSortFilterProxyModelQML::filterAcceptsRow(int sourceRow,
 }
 
 int
-QSortFilterProxyModelQML::findFirst(int role, const QVariant& value) const
+QSortFilterProxyModelQML::findFirst(const QString& roleName, const QVariant& value) const
 {
+    int role(roleByName(roleName));
     QModelIndexList matches = match(index(0, 0), role, value, 1, Qt::MatchExactly);
     if (!matches.isEmpty()) {
         return matches.first().row();
