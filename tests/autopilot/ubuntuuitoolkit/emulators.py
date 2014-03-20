@@ -129,6 +129,38 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         current_tab.visible.wait_for(True)
         return current_tab
 
+    def _switch_to_tab_in_deprecated_tabbar_by_index(self, index):
+        tabs = self.get_tabs()
+        number_of_tabs = tabs.get_number_of_tabs()
+        if index >= number_of_tabs:
+            raise ToolkitEmulatorException('Tab index out of range.')
+
+        current_tab = tabs.get_current_tab()
+        number_of_switches = 0
+        while not tabs.selectedTabIndex == index:
+            logger.debug(
+                'Current tab index: {0}.'.format(tabs.selectedTabIndex))
+            if number_of_switches >= number_of_tabs - 1:
+                # This prevents a loop. But if this error is ever raised, it's
+                # likely there's a bug on the emulator or on the QML Tab.
+                raise ToolkitEmulatorException(
+                    'The tab with index {0} was not selected.'.format(index))
+            current_tab = self.switch_to_next_tab()
+            number_of_switches += 1
+        return current_tab
+
+    def _switch_to_tab_in_drawer_by_index(self, index):
+        tabs = self.get_tabs()
+        number_of_tabs = tabs.get_number_of_tabs()
+        if index >= number_of_tabs:
+            raise ToolkitEmulatorException('Tab index out of range.')
+
+        if (index != tabs.selectedTabIndex):
+            self.get_header().switch_to_tab_by_index(index)
+        current_tab = tabs.get_current_tab()
+        return current_tab
+
+
     @autopilot_logging.log_action(logger.info)
     def switch_to_tab_by_index(self, index):
         """Open a tab.
@@ -139,30 +171,11 @@ class MainView(UbuntuUIToolkitEmulatorBase):
 
         """
         logger.debug('Switch to tab with index {0}.'.format(index))
-        tabs = self.get_tabs()
-        number_of_tabs = tabs.get_number_of_tabs()
-        if index >= number_of_tabs:
-            raise ToolkitEmulatorException('Tab index out of range.')
 
         if (self.useDeprecatedToolbar):
-            current_tab = tabs.get_current_tab()
-            number_of_switches = 0
-            while not tabs.selectedTabIndex == index:
-                logger.debug(
-                    'Current tab index: {0}.'.format(tabs.selectedTabIndex))
-                if number_of_switches >= number_of_tabs - 1:
-                    # This prevents a loop. But if this error is ever raised, it's
-                    # likely there's a bug on the emulator or on the QML Tab.
-                    raise ToolkitEmulatorException(
-                        'The tab with index {0} was not selected.'.format(index))
-                current_tab = self.switch_to_next_tab()
-                number_of_switches += 1
-            return current_tab
+            return self._switch_to_tab_in_deprecated_tabbar_by_index(index)
         else:
-            if (index != tabs.selectedTabIndex):
-                self.get_header().switch_to_tab_by_index(index)
-            current_tab = tabs.get_current_tab()
-            return current_tab
+            return self._switch_to_tab_in_drawer_by_index(index)
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_previous_tab(self):
