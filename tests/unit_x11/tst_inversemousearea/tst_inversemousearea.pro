@@ -18,4 +18,5 @@ OTHER_FILES += \
     Defaults.qml \
     InverseMouseAreaInListView.qml \
     InverseMouseAreaInPage.qml \
-    InverseMouseAreaInFlickable.qml
+    InverseMouseAreaInFlickable.qml \
+    InverseMouseAreaParentClipped.qml

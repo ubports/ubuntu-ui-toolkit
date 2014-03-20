@@ -17,6 +17,7 @@
 #define INVERSEMOUSEAREATYPE_H
 
 #include <private/qquickmousearea_p.h>
+#include <QtCore/QPointer>
 
 class QQuickItem;
 class InverseMouseAreaType : public QQuickMouseArea
@@ -44,7 +45,7 @@ private: // getter/setter
     void setSensingArea(QQuickItem *sensing);
     bool topmostItem() const;
     void setTopmostItem(bool value);
-    QEvent * mapEventToArea(QObject *target, QEvent *event);
+    QEvent * mapEventToArea(QObject *target, QEvent *event, QPoint &point);
 
 Q_SIGNALS:
     void sensingAreaChanged();
@@ -52,12 +53,15 @@ Q_SIGNALS:
 
 private Q_SLOTS:
     void update();
+    void resetFilterOnWindowUpdate(QQuickWindow *win);
     
 private:
-    bool m_ready;
-    bool m_topmostItem;
-    QObject *m_filterHost;
-    QQuickItem *m_sensingArea;
+    bool m_ready:1;
+    bool m_topmostItem:1;
+    bool m_filteredEvent:1;
+    QPointer<QObject> m_filterHost;
+    QPointer<QQuickItem> m_sensingArea;
+    int m_touchId;
 
     void updateEventFilter(bool enable);
 };

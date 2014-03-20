@@ -39,7 +39,7 @@ MainView {
             id: list
             objectName: "ListView"
             anchors.fill: parent
-            contentHeight: column.clientRect.height
+            contentHeight: column.childrenRect.height
             Column {
                 id: column
                 Repeater {

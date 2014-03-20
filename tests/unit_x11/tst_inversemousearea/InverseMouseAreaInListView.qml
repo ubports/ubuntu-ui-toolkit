@@ -24,6 +24,7 @@ MainView {
     height: units.gu(71)
 
     property InverseMouseArea ima: null
+//    onImaChanged: print(ima)
 
     Component {
         id: editor
@@ -42,6 +43,7 @@ MainView {
             model: ListModel {
                 Component.onCompleted: {
                     append({"contentData": editor})
+                    append({"contentData": editor})
                 }
             }
 
@@ -57,7 +59,7 @@ MainView {
                 }
 
                 InverseMouseArea {
-                    id: ima
+                    id: imaItem
                     objectName: "Test_IMA"
                     anchors.fill: parent
                     topmostItem: true
@@ -65,7 +67,7 @@ MainView {
 
                     onPressed: QuickUtils.log("IMA pressed")
                     onClicked: QuickUtils.log("IMA clicked")
-                    Component.onCompleted: root.ima = ima
+                    Component.onCompleted: root.ima = imaItem
                 }
             }
         }

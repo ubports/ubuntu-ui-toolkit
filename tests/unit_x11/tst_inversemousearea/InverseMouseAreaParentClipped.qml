@@ -48,7 +48,8 @@ MainView {
             width: parent.width - units.gu(5)
             height: units.gu(50)
             anchors.centerIn: parent
-            color: "blue"
+            color: "teal"
+            clip: true
 
             Text {
                 id: logger

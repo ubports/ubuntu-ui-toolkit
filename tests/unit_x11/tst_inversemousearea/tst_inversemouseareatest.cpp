@@ -27,6 +27,8 @@
 #include <private/qquickevents_p_p.h>
 #include <qpa/qwindowsysteminterface.h>
 
+#define DOUBLECLICK_TIMEOUT 400
+
 using QTest::QTouchEventSequence;
 
 class tst_InverseMouseAreaTest : public QObject
@@ -201,29 +203,30 @@ private Q_SLOTS:
         QSignalSpy ma1Spy(ma1, SIGNAL(pressed(QQuickMouseEvent*)));
         QSignalSpy ma2Spy(ma2, SIGNAL(pressed(QQuickMouseEvent*)));
 
-        // click in the top rectangle
-        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 10));
+        // click in the top rectangle, use 800msec delay to prevent dblclick detection
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 10), DOUBLECLICK_TIMEOUT);
         QTest::waitForEvents();
         QCOMPARE(ma1Spy.count(), 0);
         QCOMPARE(ma2Spy.count(), 0);
         QCOMPARE(imaSpy.count(), 1);
         imaSpy.clear();
 
-        // click in the second rectangle
-        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 65));
+        // click in the second rectangle, use 800msec delay to prevent dblclick detection
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 65), DOUBLECLICK_TIMEOUT);
         QTest::waitForEvents();
         QCOMPARE(ma1Spy.count(), 0);
         QCOMPARE(ma2Spy.count(), 0);
         QCOMPARE(imaSpy.count(), 1);
         imaSpy.clear();
 
-        // click in teh button
-        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(25, 85));
+        // click in the button, use 800msec delay to prevent dblclick detection
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(25, 85), DOUBLECLICK_TIMEOUT);
         QTest::waitForEvents();
         QCOMPARE(ma1Spy.count(), 0);
         QCOMPARE(ma2Spy.count(), 1);
         QCOMPARE(imaSpy.count(), 0);
 
+        // double click in the second rectangle
         QSignalSpy imaDSpy(area, SIGNAL(doubleClicked(QQuickMouseEvent*)));
         QTest::mouseDClick(quickView, Qt::LeftButton, 0, QPoint(10, 65));
         QTest::waitForEvents();
@@ -231,6 +234,7 @@ private Q_SLOTS:
         QCOMPARE(imaDSpy.count(), 1);
         imaDSpy.clear();
 
+        // double click in the first rectangle
         QTest::mouseDClick(quickView, Qt::LeftButton, 0, QPoint(10, 10));
         QTest::waitForEvents();
         QCOMPARE(imaDSpy.count(), 1);
@@ -253,21 +257,21 @@ private Q_SLOTS:
         QSignalSpy ma1Spy(ma1, SIGNAL(pressed(QQuickMouseEvent*)));
         QSignalSpy ma2Spy(ma2, SIGNAL(pressed(QQuickMouseEvent*)));
 
-        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 10));
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 10), DOUBLECLICK_TIMEOUT);
         QTest::waitForEvents();
         QCOMPARE(ma1Spy.count(), 1);
         QCOMPARE(ma2Spy.count(), 0);
         QCOMPARE(imaSpy.count(), 1);
         ma1Spy.clear(); imaSpy.clear();
 
-        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 65));
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 65), DOUBLECLICK_TIMEOUT);
         QTest::waitForEvents();
         QCOMPARE(ma1Spy.count(), 0);
         QCOMPARE(ma2Spy.count(), 1);
         QCOMPARE(imaSpy.count(), 1);
         ma2Spy.clear(); imaSpy.clear();
 
-        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(25, 80));
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(25, 80), DOUBLECLICK_TIMEOUT);
         QTest::waitForEvents();
         QCOMPARE(ma1Spy.count(), 0);
         QCOMPARE(ma2Spy.count(), 1);
@@ -298,28 +302,33 @@ private Q_SLOTS:
         QSignalSpy imaSpy(area, SIGNAL(pressed(QQuickMouseEvent*)));
         QSignalSpy ma2Spy(ma2, SIGNAL(pressed(QQuickMouseEvent*)));
 
-        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 10));
+        // click on the topmost rectangle
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 10), DOUBLECLICK_TIMEOUT);
         QTest::waitForEvents();
         QCOMPARE(ma2Spy.count(), 0);
         QCOMPARE(imaSpy.count(), 1);
         imaSpy.clear();
 
-        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 65));
+        // click on the second rectangle
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(10, 65), DOUBLECLICK_TIMEOUT);
         QTest::waitForEvents();
         QCOMPARE(ma2Spy.count(), 0);
         QCOMPARE(imaSpy.count(), 1);
         imaSpy.clear();
 
-        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(25, 80));
+        // click on the button
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(25, 85), DOUBLECLICK_TIMEOUT);
         QTest::waitForEvents();
         QCOMPARE(ma2Spy.count(), 1);
         QCOMPARE(imaSpy.count(), 0);
 
+        // double click on the second rectangle
         QSignalSpy imaDSpy(area, SIGNAL(doubleClicked(QQuickMouseEvent*)));
         QTest::mouseDClick(quickView, Qt::LeftButton, 0, QPoint(10, 65));
         QCOMPARE(imaDSpy.count(), 1);
         imaDSpy.clear();
 
+        // double click on the first rectangle
         QTest::mouseDClick(quickView, Qt::LeftButton, 0, QPoint(10, 10));
         QCOMPARE(imaDSpy.count(), 1);
         imaDSpy.clear();
@@ -338,7 +347,7 @@ private Q_SLOTS:
         QSignalSpy enteredSpy(area, SIGNAL(entered()));
         QSignalSpy exitedSpy(area, SIGNAL(exited()));
 
-        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(5, 5));
+        QTest::mouseClick(quickView, Qt::LeftButton, 0, QPoint(5, 5), DOUBLECLICK_TIMEOUT);
         QCOMPARE(pressSpy.count(), 1);
         QCOMPARE(releaseSpy.count(), 1);
         QCOMPARE(clickSpy.count(), 1);
@@ -391,16 +400,16 @@ private Q_SLOTS:
         QSignalSpy maSpy(ma, SIGNAL(pressed(QQuickMouseEvent*)));
         QSignalSpy imaDblClick(ima, SIGNAL(doubleClicked(QQuickMouseEvent*)));
 
-        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(15, 15));
+        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(15, 15), DOUBLECLICK_TIMEOUT);
         QCOMPARE(imaSpy.count(), 0);
         QCOMPARE(maSpy.count(), 0);
 
-        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(115, 15));
+        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(115, 15), DOUBLECLICK_TIMEOUT);
         QCOMPARE(imaSpy.count(), 1);
         QCOMPARE(maSpy.count(), 0);
 
         imaSpy.clear();
-        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(115, 115));
+        QTest::mouseClick(quickView, Qt::LeftButton, Qt::NoModifier, QPoint(115, 115), DOUBLECLICK_TIMEOUT);
         QCOMPARE(imaSpy.count(), 1);
         QCOMPARE(maSpy.count(), 0);
 
@@ -486,6 +495,7 @@ private Q_SLOTS:
         QTest::addColumn<QString>("document");
 
         QTest::newRow("InverseMouseArea in a Page") << "InverseMouseAreaInPage.qml";
+        QTest::newRow("InverseMouseArea parent clipped") << "InverseMouseAreaParentClipped.qml";
         QTest::newRow("InverseMouseArea in a ListView") << "InverseMouseAreaInListView.qml";
         QTest::newRow("InverseMouseArea in a Flickable") << "InverseMouseAreaInFlickable.qml";
     }
