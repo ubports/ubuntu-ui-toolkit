@@ -38,9 +38,8 @@ public:
     }
 
     QQuickItem *rootObject();
-    Q_INVOKABLE static QQuickItem *rootItem(QObject *object);
+    Q_INVOKABLE QQuickItem *rootItem(QObject *object);
     QString inputMethodProvider() const;
-    QString consoleLog() const;
 
     Q_INVOKABLE static QString className(QObject *item);
     QObject* createQmlObject(const QUrl &url, QQmlEngine *engine);
@@ -56,7 +55,6 @@ protected:
 private:
     explicit QuickUtils(QObject *parent = 0);
     QPointer<QQuickView> m_rootView;
-    QString m_consoleLog;
 
     void lookupQuickView();
 };

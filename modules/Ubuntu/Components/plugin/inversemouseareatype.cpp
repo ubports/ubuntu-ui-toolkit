@@ -290,7 +290,7 @@ void InverseMouseAreaType::update()
     if (!m_sensingArea) {
         m_sensingArea = QuickUtils::instance().rootItem(this);
     }
-    updateEventFilter(isEnabled() && isVisible());
+    updateEventFilter(isEnabled() && isVisible() && m_topmostItem);
 }
 /*!
   \internal

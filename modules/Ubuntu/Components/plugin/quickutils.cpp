@@ -76,11 +76,10 @@ QQuickItem *QuickUtils::rootObject()
  */
 QQuickItem *QuickUtils::rootItem(QObject *object)
 {
-    QuickUtils &utils = instance();
     // make sure we have the m_rootView updated
-    utils.lookupQuickView();
+    lookupQuickView();
     if (!object) {
-        return (utils.m_rootView) ? utils.m_rootView->rootObject() : 0;
+        return (m_rootView) ? m_rootView->rootObject() : 0;
     }
 
     QQuickItem *item = qobject_cast<QQuickItem*>(object);
@@ -91,12 +90,12 @@ QQuickItem *QuickUtils::rootItem(QObject *object)
         parentItem = parentItem->parentItem();
     }
 
-    if (utils.m_rootView && (utils.m_rootView->contentItem() == parentItem)) {
+    if (m_rootView && (m_rootView->contentItem() == parentItem)) {
         // when traversing visual parents of an element from the application,
         // we reach QQuickView's contentItem, whose size is invalid. Therefore
         // we need to return the QQuickView's rootObject() instead of the topmost
         // item found
-        return utils.m_rootView->rootObject();
+        return m_rootView->rootObject();
     }
     return parentItem;
 }
