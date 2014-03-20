@@ -236,7 +236,7 @@ class Header(UbuntuUIToolkitEmulatorBase):
             tab_bar_style = self.select_single('TabBarStyle')
             return tab_bar_style.animating
         else:
-            return false
+            return False
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_next_tab(self):
