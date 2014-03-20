@@ -495,6 +495,7 @@ private Q_SLOTS:
         QTest::addColumn<QString>("document");
 
         QTest::newRow("InverseMouseArea in a Page") << "InverseMouseAreaInPage.qml";
+        QTest::newRow("InverseMouseArea with clip") << "InverseMouseAreaClip.qml";
         QTest::newRow("InverseMouseArea parent clipped") << "InverseMouseAreaParentClipped.qml";
         QTest::newRow("InverseMouseArea in a ListView") << "InverseMouseAreaInListView.qml";
         QTest::newRow("InverseMouseArea in a Flickable") << "InverseMouseAreaInFlickable.qml";
@@ -510,9 +511,6 @@ private Q_SLOTS:
         QCOMPARE(ima->objectName(), QString("Test_IMA"));
         quickView->show();
         QTest::qWaitForWindowExposed(quickView);
-
-        QQuickItem *header = quickView->rootObject()->findChild<QQuickItem*>("MainView_Header");
-        QVERIFY(header);
 
         QSignalSpy imaSpy(ima, SIGNAL(clicked(QQuickMouseEvent*)));
 

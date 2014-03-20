@@ -25,13 +25,6 @@ MainView {
 
     property InverseMouseArea ima: null
 
-    Component {
-        id: editor
-        TextArea {
-            text: QuickUtils.consoleLog
-        }
-    }
-
     Page {
         title: "Test"
 
@@ -39,39 +32,24 @@ MainView {
             id: list
             objectName: "ListView"
             anchors.fill: parent
-            contentHeight: column.childrenRect.height
-            Column {
-                id: column
-                Repeater {
-                    model: ListModel {
-                        Component.onCompleted: {
-                            append({"contentData": editor})
-                        }
-                    }
-                    Empty {
-                        objectName: "Card"
-                        width: root.width - units.gu(10)
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        height: units.gu(50)
+            contentHeight: units.gu(100)
 
-                        Loader {
-                            anchors.fill: parent
-                            sourceComponent: contentData
-                        }
+            Rectangle {
+                width: 100
+                height: 100
+                anchors.centerIn: parent
 
-                        InverseMouseArea {
-                            id: ima
-                            objectName: "Test_IMA"
-                            anchors.fill: parent
-                            topmostItem: true
-                            propagateComposedEvents: true
+                InverseMouseArea {
+                    id: ima
+                    objectName: "Test_IMA"
+                    anchors.fill: parent
+                    topmostItem: true
+                    propagateComposedEvents: true
 
-                            onPressed: QuickUtils.log("IMA pressed")
-                            onClicked: QuickUtils.log("IMA clicked")
-                            Component.onCompleted: root.ima = ima
-                        }
-                    }
-                }
+                    onPressed: QuickUtils.log("IMA pressed")
+                    onClicked: QuickUtils.log("IMA clicked")
+                    Component.onCompleted: root.ima = ima
+               }
             }
         }
     }

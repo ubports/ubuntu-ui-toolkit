@@ -40,12 +40,7 @@ MainView {
             id: list
             objectName: "ListView"
             anchors.fill: parent
-            model: ListModel {
-                Component.onCompleted: {
-                    append({"contentData": editor})
-                    append({"contentData": editor})
-                }
-            }
+            model: 1
 
             delegate: Empty {
                 objectName: "Card"
@@ -55,7 +50,7 @@ MainView {
 
                 Loader {
                     anchors.fill: parent
-                    sourceComponent: contentData
+                    sourceComponent: editor
                 }
 
                 InverseMouseArea {
