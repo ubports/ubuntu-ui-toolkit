@@ -91,8 +91,9 @@ StyledItem {
      */
     property var tabsModel: null
 
-    // FIXME: Currently autopilot can only get visual items, but once it is
-    //  updated to support non-visual items, a QtObject may be used.
+    // FIXME: Currently autopilot can only get visual items, but once bug #1273956
+    //  is fixed to support non-visual items, a QtObject may be used.
+    //  --timp - 2014-03-20
     Item {
         // FIXME: This is a workaround to be able to get the properties of
         //  tabsModel in an autopilot test.
