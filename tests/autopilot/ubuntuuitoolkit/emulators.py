@@ -247,22 +247,9 @@ class Header(UbuntuUIToolkitEmulatorBase):
         self._get_animating().wait_for(False)
 
     def _switch_to_next_tab_in_drawer(self):
-        try:
-            tabs_drawer_button = self.select_single('AbstractButton', objectName='tabsButton')
-        except dbus.StateNotFoundError:
-            raise ToolkitEmulatorException(_NO_TABS_ERROR)
-        self.pointing_device.click_object(tabs_drawer_button)
-
         tabs_model_properties = self.select_single('QQuickItem', objectName='tabsModelProperties')
         next_tab_index = (tabs_model_properties.selectedIndex + 1) % tabs_model_properties.count
-
-        try:
-            tab_button = self.get_root_instance().select_single('Standard',
-                        objectName='tabButton'+str(next_tab_index))
-        except dbus.StateNotFoundError:
-            raise ToolkitEmulatorException("Tab button {0} not found.".format(next_tab_index))
-
-        self.pointing_device.click_object(tab_button)
+        self._switch_to_tab_in_drawer_by_index(next_tab_index)
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_next_tab(self):
@@ -276,18 +263,7 @@ class Header(UbuntuUIToolkitEmulatorBase):
         else:
             self._switch_to_next_tab_in_drawer()
 
-    @autopilot_logging.log_action(logger.info)
-    def switch_to_tab_by_index(self, index):
-        """Open a tab. This only supports the new tabs in the header
-
-        :parameter index: The index of the tab to open.
-        :raise ToolkitEmulatorException: If the tab index is out of range or
-                useDeprecatedToolbar is set.
-
-        """
-        if (self.useDeprecatedToolbar):
-            raise ToolkitEmulatorException("Header.swtich_to_tab_by_index only works with new header")
-
+    def _switch_to_tab_in_drawer_by_index(self, index):
         try:
             tabs_drawer_button = self.select_single('AbstractButton', objectName='tabsButton')
         except dbus.StateNotFoundError:
@@ -303,6 +279,21 @@ class Header(UbuntuUIToolkitEmulatorBase):
             raise ToolkitEmulatorException("Tab button {0} not found.".format(index))
 
         self.pointing_device.click_object(tab_button)
+
+
+    @autopilot_logging.log_action(logger.info)
+    def switch_to_tab_by_index(self, index):
+        """Open a tab. This only supports the new tabs in the header
+
+        :parameter index: The index of the tab to open.
+        :raise ToolkitEmulatorException: If the tab index is out of range or
+                useDeprecatedToolbar is set.
+
+        """
+        if (self.useDeprecatedToolbar):
+            raise ToolkitEmulatorException("Header.swtich_to_tab_by_index only works with new header")
+        else:
+            _switch_to_tab_in_drawer_by_index(index)
 
 
 class Toolbar(UbuntuUIToolkitEmulatorBase):
