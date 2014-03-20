@@ -62,7 +62,7 @@ Empty {
       \note The complete list of icons available in Ubuntu is not published yet.
             For now please refer to the folders where the icon themes are installed:
             \list
-              \li Ubuntu Touch: \l file:/usr/share/icons/ubuntu-mobile
+              \li Ubuntu Touch: \l file:/usr/share/icons/suru
               \li Ubuntu Desktop: \l file:/usr/share/icons/ubuntu-mono-dark
             \endlist
             These 2 separate icon themes will be merged soon.
@@ -86,7 +86,7 @@ Empty {
       \note The complete list of icons available in Ubuntu is not published yet.
             For now please refer to the folders where the icon themes are installed:
             \list
-              \li Ubuntu Touch: \l file:/usr/share/icons/ubuntu-mobile
+              \li Ubuntu Touch: \l file:/usr/share/icons/suru
               \li Ubuntu Desktop: \l file:/usr/share/icons/ubuntu-mono-dark
             \endlist
             These 2 separate icon themes will be merged soon.

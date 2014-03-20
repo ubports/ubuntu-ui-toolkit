@@ -96,7 +96,7 @@ ListItem.Standard {
       \note The complete list of icons available in Ubuntu is not published yet.
             For now please refer to the folders where the icon theme is installed:
             \list
-              \li Ubuntu Touch: \l file:/usr/share/icons/ubuntu-mobile
+              \li Ubuntu Touch: \l file:/usr/share/icons/suru
             \endlist
     */
     property string iconName
