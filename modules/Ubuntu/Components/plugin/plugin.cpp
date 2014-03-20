@@ -49,6 +49,7 @@
 #include "ucurihandler.h"
 #include "ucmouse.h"
 #include "ucinversemouse.h"
+#include "sortfiltermodel.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -178,6 +179,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterSingletonType<UCUriHandler>(uri, 0, 1, "UriHandler", registerUriHandler);
     qmlRegisterType<UCMouse>(uri, 0, 1, "Mouse");
     qmlRegisterType<UCInverseMouse>(uri, 0, 1, "InverseMouse");
+    qmlRegisterType<QAbstractItemModel>();
+    qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "SortFilterModel");
     // Needed for unit tests
     qRegisterMetaType<QList <QQmlError> >();
     // register QML singletons

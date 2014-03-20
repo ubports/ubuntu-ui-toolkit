@@ -238,11 +238,18 @@ Template {
             ListElement { name: "Potato"; details: "Vegetable" }
         }
 
+        Toolkit.SortFilterModel {
+            id: processedFruits
+            model: fruitModel
+            sortOrder: Qt.DescendingOrder
+            sortRole: 0
+        }
+
         Toolkit.UbuntuListView {
             id: ubuntuListView
             anchors { left: parent.left; right: parent.right }
             height: units.gu(24)
-            model: fruitModel
+            model: processedFruits
             clip: true
 
             delegate: ListItem.Expandable {
