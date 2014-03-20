@@ -32,39 +32,11 @@
 
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent),
-    m_rootView(0),
-    m_touchScreenAvailable(false)
+    m_rootView(0)
 {
     QGuiApplication::instance()->installEventFilter(this);
-    /*
-     * Do we have touch screen?
-     */
-    QList<const QTouchDevice*> devices = QTouchDevice::devices();
-    Q_FOREACH(const QTouchDevice* dev, devices) {
-        m_touchScreenAvailable = (dev->type() == QTouchDevice::TouchScreen);
-        if (m_touchScreenAvailable) {
-            break;
-        }
-    }
 }
 
-void QuickUtils::log(const QString &log)
-{
-    qDebug() << log;
-    instance().m_consoleLog += log + '\n';
-    Q_EMIT instance().consoleLogChanged();
-}
-
-void QuickUtils::clearLog()
-{
-    instance().m_consoleLog.clear();
-    Q_EMIT instance().consoleLogChanged();
-}
-
-QString QuickUtils::consoleLog() const
-{
-    return m_consoleLog;
-}
 /*!
  * \internal
  * Filter events to catch ChildAdded, when the the application gets the topmost

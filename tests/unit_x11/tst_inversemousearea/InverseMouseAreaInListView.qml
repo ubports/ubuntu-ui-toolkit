@@ -24,12 +24,10 @@ MainView {
     height: units.gu(71)
 
     property InverseMouseArea ima: null
-//    onImaChanged: print(ima)
 
     Component {
         id: editor
         TextArea {
-            text: QuickUtils.consoleLog
         }
     }
 
@@ -58,10 +56,6 @@ MainView {
                     objectName: "Test_IMA"
                     anchors.fill: parent
                     topmostItem: true
-                    propagateComposedEvents: true
-
-                    onPressed: QuickUtils.log("IMA pressed")
-                    onClicked: QuickUtils.log("IMA clicked")
                     Component.onCompleted: root.ima = imaItem
                 }
             }

@@ -22,23 +22,7 @@ MainView {
     width: units.gu(40)
     height: units.gu(71)
 
-    property InverseMouseArea ima: null
-    Component {
-        id: imaComponent
-        InverseMouseArea {
-            id: ima
-            objectName: "Test_IMA"
-            anchors.fill: parent
-            topmostItem: true
-            propagateComposedEvents: true
-
-            onPressed: QuickUtils.log("IMA pressed")
-            onClicked: QuickUtils.log("IMA clicked")
-            Component.onCompleted: root.ima = ima
-        }
-    }
-
-    Component.onCompleted: loader.sourceComponent = imaComponent
+    property InverseMouseArea ima: imaItem
 
     Page {
         title: "Test"
@@ -50,15 +34,12 @@ MainView {
             anchors.centerIn: parent
             color: "blue"
 
-            Text {
-                id: logger
-                color: "white"
-                text: QuickUtils.consoleLog
-            }
-
-            Loader {
-                id: loader
+            InverseMouseArea {
+                id: imaItem
+                objectName: "Test_IMA"
                 anchors.fill: parent
+                topmostItem: true
+                Component.onCompleted: root.ima = ima
             }
         }
     }

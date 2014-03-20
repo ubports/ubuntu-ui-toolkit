@@ -237,6 +237,8 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
      */
     QObject::connect(this, &QQuickMouseArea::enabledChanged,
                      this, &InverseMouseAreaType::update);
+    QObject::connect(this, &QQuickMouseArea::visibleChanged,
+                     this, &InverseMouseAreaType::update);
     /*
      * Also connect to windowChanged() to get the proper window to filter
      */
@@ -259,28 +261,9 @@ void InverseMouseAreaType::updateEventFilter(bool enable)
     if (!enable && m_filterHost) {
         m_filterHost->removeEventFilter(this);
         m_filterHost.clear();
-    } else if (enable) {
-//        m_filterHost = static_cast<QObject*>((!m_sensingArea || (m_sensingArea.data() != QuickUtils::instance().rootItem(this))) ?
-//                    QuickUtils::instance().rootItem(this) : m_sensingArea.data());
-//        // check if we have a Flickable (or something that is derived from it) in the parental chain
-//        QQuickItem *parent = parentItem();
-//        while (parent) {
-//            if (parent->inherits("QQuickFlickable")) {
-//                QuickUtils::log("HAS A FLICKABLE IN THE PATH!!!");
-//                m_filterHost = qApp;
-//            }
-//            parent = parent->parentItem();
-//        }
-//        QuickUtils::log(QString("sensing=%1, root(%2), host(%3)")
-//                        .arg(QuickUtils::className(m_sensingArea))
-//                        .arg(QuickUtils::className(QuickUtils::rootItem(this)))
-//                        .arg(QuickUtils::className(m_filterHost)));
-//        if (m_filterHost) {
-//            m_filterHost->installEventFilter(this);
-//        }
 
+    } else if (enable) {
         QQuickWindow *currentWindow = window();
-        qDebug() << "HOST" << enable << currentWindow << m_filterHost;
         if (!currentWindow || (m_filterHost == currentWindow)) {
             return;
         }
@@ -290,10 +273,6 @@ void InverseMouseAreaType::updateEventFilter(bool enable)
         }
         currentWindow->installEventFilter(this);
         m_filterHost = currentWindow;
-        QuickUtils::log(QString("sensing=%1, root(%2), host(%3)")
-                        .arg(QuickUtils::className(m_sensingArea))
-                        .arg(QuickUtils::className(QuickUtils::rootItem(this)))
-                        .arg(QuickUtils::className(m_filterHost)));
     }
 }
 
@@ -309,12 +288,14 @@ void InverseMouseAreaType::update()
     }
     // update sensing area
     if (!m_sensingArea) {
-        updateEventFilter(false);
         m_sensingArea = QuickUtils::instance().rootItem(this);
-        updateEventFilter(m_topmostItem);
     }
+    updateEventFilter(isEnabled() && isVisible());
 }
-
+/*!
+  \internal
+  Slot connected to windowChanged signal to refresh filter host.
+ */
 void InverseMouseAreaType::resetFilterOnWindowUpdate(QQuickWindow *win)
 {
     Q_UNUSED(win);
@@ -336,12 +317,19 @@ void InverseMouseAreaType::componentComplete()
 QEvent *InverseMouseAreaType::mapEventToArea(QObject *target, QEvent *event, QPoint &point)
 {
     QQuickItem *targetItem = qobject_cast<QQuickItem*>(target);
-    // target can be the quickView, then we need to get the root item from it
+    // target can be the QQuickView or QQuickWindow, then we need to get the root item from it
     if (!targetItem) {
         QQuickView *view = qobject_cast<QQuickView*>(target);
-        Q_ASSERT(view);
-        targetItem = view->rootObject();
+        if (view) {
+            targetItem = view->rootObject();
+        } else {
+            QQuickWindow *window = qobject_cast<QQuickWindow*>(target);
+            if (window) {
+                targetItem = window->contentItem();
+            }
+        }
     }
+    Q_ASSERT(target);
     m_filteredEvent = true;
 
     switch (event->type()) {
@@ -397,9 +385,6 @@ QEvent *InverseMouseAreaType::mapEventToArea(QObject *target, QEvent *event, QPo
                         primaryPoint.scenePos(),
                         primaryPoint.screenPos(),
                         Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-        QuickUtils::log(QString("TB pos %1,%2")
-                        .arg(mev->pos().x())
-                        .arg(mev->pos().y()));
         point = mev->pos();
         return mev;
         } break;
@@ -431,9 +416,6 @@ QEvent *InverseMouseAreaType::mapEventToArea(QObject *target, QEvent *event, QPo
                             point.scenePos(),
                             point.screenPos(),
                             Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
-            QuickUtils::log(QString("TE pos %1,%2")
-                            .arg(mev->pos().x())
-                            .arg(mev->pos().y()));
             break;
         }
         point = mev->pos();
@@ -449,9 +431,6 @@ QEvent *InverseMouseAreaType::mapEventToArea(QObject *target, QEvent *event, QPo
 
 bool InverseMouseAreaType::eventFilter(QObject *object, QEvent *event)
 {
-    if (!isEnabled())
-        return false;
-
     if (object != this)
     {
         bool captured = true;
@@ -460,11 +439,9 @@ bool InverseMouseAreaType::eventFilter(QObject *object, QEvent *event)
 
         switch (mappedEvent->type()) {
         case QEvent::MouseButtonPress:
-            QuickUtils::log("HANDLING PRESS");
             mousePressEvent(static_cast<QMouseEvent*>(mappedEvent));
             break;
         case QEvent::MouseButtonRelease:
-            QuickUtils::log("HANDLE RELEASE");
             mouseReleaseEvent(static_cast<QMouseEvent*>(mappedEvent));
             break;
         case QEvent::MouseButtonDblClick:
@@ -494,11 +471,12 @@ bool InverseMouseAreaType::eventFilter(QObject *object, QEvent *event)
             delete mappedEvent;
         }
         m_filteredEvent = false;
-        if (captured && !propagateComposedEvents() && contains(point)) {
+        if (captured && event->isAccepted() && contains(point)) {
+            // consume the event
             return true;
         }
     }
-    return QQuickMouseArea::eventFilter(object, event);
+    return false;
 }
 
 void InverseMouseAreaType::mousePressEvent(QMouseEvent *event)
@@ -508,16 +486,12 @@ void InverseMouseAreaType::mousePressEvent(QMouseEvent *event)
     // happens inside the "hole"
     if (!m_topmostItem || (m_topmostItem && m_filteredEvent && contains(event->localPos()))) {
         QQuickMouseArea::mousePressEvent(event);
-        QuickUtils::log(QString("PRESS HANDLED, %2 accepted=%1")
-                        .arg(event->isAccepted())
-                        .arg(objectName()));
     } else {
         // we do not consume the mouse event
         // this is not the same as setting the accepted flag in the signal handler
         // as in this way we only tell to the event handling that the event can be
         // propagated to other filters
-        QuickUtils::log("FORWARD PRESS");
-        event->setAccepted(true);
+        event->setAccepted(false);
     }
 }
 
@@ -531,7 +505,7 @@ void InverseMouseAreaType::mouseDoubleClickEvent(QMouseEvent *event)
         // this is not the same as setting the accepted flag in the signal handler
         // as in this way we only tell to the event handling that the event can be
         // propagated to other filters
-        event->setAccepted(true);
+        event->setAccepted(false);
     }
 }
 

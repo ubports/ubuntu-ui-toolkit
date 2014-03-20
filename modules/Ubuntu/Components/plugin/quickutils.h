@@ -30,21 +30,12 @@ class QuickUtils : public QObject
     Q_OBJECT
     Q_PROPERTY(QQuickItem *rootObject READ rootObject NOTIFY rootObjectChanged)
     Q_PROPERTY(QString inputMethodProvider READ inputMethodProvider)
-    Q_PROPERTY(QString consoleLog READ consoleLog NOTIFY consoleLogChanged)
 public:
     static QuickUtils& instance()
     {
         static QuickUtils instance;
         return instance;
     }
-
-    static bool touchScreenAvailable()
-    {
-        return instance().m_touchScreenAvailable;
-    }
-
-    Q_INVOKABLE static void log(const QString &log);
-    Q_INVOKABLE static void clearLog();
 
     QQuickItem *rootObject();
     Q_INVOKABLE static QQuickItem *rootItem(QObject *object);
@@ -56,7 +47,6 @@ public:
 
 Q_SIGNALS:
     void rootObjectChanged();
-    void consoleLogChanged();
     void activated();
     void deactivated();
 
@@ -67,7 +57,6 @@ private:
     explicit QuickUtils(QObject *parent = 0);
     QPointer<QQuickView> m_rootView;
     QString m_consoleLog;
-    bool m_touchScreenAvailable:1;
 
     void lookupQuickView();
 };

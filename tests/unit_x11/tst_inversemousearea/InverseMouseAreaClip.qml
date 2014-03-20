@@ -66,10 +66,6 @@ Rectangle {
                 objectName: "Test_IMA"
                 anchors.fill: parent
                 topmostItem: true
-                onPressed: {
-                    print("Pressed InverseMouseArea")
-                }
-                onClicked: print("Clicked  InverseMouseArea")
                 clip: false
             }
         }

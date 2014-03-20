@@ -44,10 +44,6 @@ MainView {
                     objectName: "Test_IMA"
                     anchors.fill: parent
                     topmostItem: true
-                    propagateComposedEvents: true
-
-                    onPressed: QuickUtils.log("IMA pressed")
-                    onClicked: QuickUtils.log("IMA clicked")
                     Component.onCompleted: root.ima = ima
                }
             }
