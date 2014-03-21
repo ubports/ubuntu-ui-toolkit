@@ -160,7 +160,6 @@ class MainView(UbuntuUIToolkitEmulatorBase):
         current_tab = tabs.get_current_tab()
         return current_tab
 
-
     @autopilot_logging.log_action(logger.info)
     def switch_to_tab_by_index(self, index):
         """Open a tab.
@@ -247,7 +246,8 @@ class Header(UbuntuUIToolkitEmulatorBase):
         self._get_animating().wait_for(False)
 
     def _switch_to_next_tab_in_drawer(self):
-        tabs_model_properties = self.select_single('QQuickItem', objectName='tabsModelProperties')
+        tabs_model_properties = self.select_single(
+            'QQuickItem', objectName='tabsModelProperties')
         next_tab_index = (tabs_model_properties.selectedIndex + 1) % tabs_model_properties.count
         self._switch_to_tab_in_drawer_by_index(next_tab_index)
 
@@ -265,21 +265,23 @@ class Header(UbuntuUIToolkitEmulatorBase):
 
     def _switch_to_tab_in_drawer_by_index(self, index):
         try:
-            tabs_drawer_button = self.select_single('AbstractButton', objectName='tabsButton')
+            tabs_drawer_button = self.select_single(
+                'AbstractButton', objectName='tabsButton')
         except dbus.StateNotFoundError:
             raise ToolkitEmulatorException(_NO_TABS_ERROR)
         self.pointing_device.click_object(tabs_drawer_button)
 
-        tabs_model_properties = self.select_single('QQuickItem', objectName='tabsModelProperties')
+        tabs_model_properties = self.select_single(
+            'QQuickItem', objectName='tabsModelProperties')
 
         try:
-            tab_button = self.get_root_instance().select_single('Standard',
-                        objectName='tabButton'+str(index))
+            tab_button = self.get_root_instance().select_single(
+                'Standard', objectName='tabButton' + str(index))
         except dbus.StateNotFoundError:
-            raise ToolkitEmulatorException("Tab button {0} not found.".format(index))
+            raise ToolkitEmulatorException(
+                "Tab button {0} not found.".format(index))
 
         self.pointing_device.click_object(tab_button)
-
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_tab_by_index(self, index):
@@ -291,7 +293,8 @@ class Header(UbuntuUIToolkitEmulatorBase):
 
         """
         if (self.useDeprecatedToolbar):
-            raise ToolkitEmulatorException("Header.swtich_to_tab_by_index only works with new header")
+            raise ToolkitEmulatorException(
+                "Header.swtich_to_tab_by_index only works with new header")
         else:
             self._switch_to_tab_in_drawer_by_index(index)
 

@@ -290,6 +290,7 @@ MainView {{
 }}
 """)
 
+
 class TabsTestCase(tests.QMLStringAppTestCase):
 
     scenarios = [
