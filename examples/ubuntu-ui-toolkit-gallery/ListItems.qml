@@ -241,10 +241,10 @@ Template {
         Toolkit.SortFilterModel {
             id: processedFruits
             model: fruitModel
-            sortProperty: "title"
-            sortOrder: Qt.DescendingOrder
-            filterProperty: "details"
-            filterPattern: /Vegetable/
+            sort.property: "title"
+            sort.order: Qt.DescendingOrder
+            filter.property: "details"
+            filter.pattern: /Vegetable/
         }
 
         Toolkit.UbuntuListView {

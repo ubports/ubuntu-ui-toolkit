@@ -23,16 +23,57 @@
 
 #include <QSortFilterProxyModel>
 
+class SortBehavior : public QObject {
+    Q_OBJECT
+
+    Q_PROPERTY(QString property READ property WRITE setProperty NOTIFY propertyChanged)
+    Q_PROPERTY(Qt::SortOrder order READ order WRITE setOrder NOTIFY orderChanged)
+
+public:
+    QString property() const;
+    void setProperty(const QString& property);
+    Qt::SortOrder order() const;
+    void setOrder(Qt::SortOrder order);
+
+Q_SIGNALS:
+    void propertyChanged();
+    void orderChanged();
+
+private:
+    QString m_property;
+    Qt::SortOrder m_order;
+};
+
+class FilterBehavior : public QObject {
+    Q_OBJECT
+
+    Q_PROPERTY(QString property READ property WRITE setProperty NOTIFY propertyChanged)
+    Q_PROPERTY(QRegExp pattern READ pattern WRITE setPattern NOTIFY patternChanged)
+
+public:
+    QString property() const;
+    void setProperty(const QString& property);
+    QRegExp pattern() const;
+    void setPattern(QRegExp pattern);
+
+Q_SIGNALS:
+    void propertyChanged();
+    void patternChanged();
+
+private:
+    QString m_property;
+    QRegExp m_pattern;
+};
+
+
 class Q_DECL_EXPORT QSortFilterProxyModelQML : public QSortFilterProxyModel
 {
     Q_OBJECT
 
     Q_PROPERTY(QAbstractItemModel* model READ sourceModel WRITE setModel NOTIFY modelChanged)
     Q_PROPERTY(int count READ count NOTIFY countChanged)
-    Q_PROPERTY(QString sortProperty READ sortProperty WRITE setSortProperty)
-    Q_PROPERTY(Qt::SortOrder sortOrder READ sortOrder WRITE setSortOrder)
-    Q_PROPERTY(QString filterProperty READ filterProperty WRITE setFilterProperty)
-    Q_PROPERTY(QRegExp filterPattern READ filterRegExp WRITE setFilterRegExp)
+    Q_PROPERTY(SortBehavior* sort READ sortBehavior)
+    Q_PROPERTY(FilterBehavior* filter READ filterBehavior)
 
 public:
     explicit QSortFilterProxyModelQML(QObject *parent = 0);
@@ -45,12 +86,8 @@ public:
 
     /* getters */
     QHash<int, QByteArray> roleNames() const;
-    QString sortProperty() const;
-    QString filterProperty() const;
 
     /* setters */
-    void setSortProperty(const QString& property);
-    void setSortOrder(Qt::SortOrder order);
     void setFilterProperty(const QString& property);
     void setModel(QAbstractItemModel *model);
 
@@ -62,6 +99,12 @@ Q_SIGNALS:
     void modelChanged();
 
 private:
+    SortBehavior m_sortBehavior;
+    SortBehavior* sortBehavior();
+    void sortChanged();
+    FilterBehavior m_filterBehavior;
+    FilterBehavior* filterBehavior();
+    void filterChanged();
     int roleByName(const QString& roleName) const;
 };
 

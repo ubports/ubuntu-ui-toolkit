@@ -43,11 +43,11 @@
  *
  * SortFilterModel {
  *     model: movies
- *     sortProperty: "title"
- *     sortOrder: Qt.DescendingOrder
+ *     sort.property: "title"
+ *     sort.order: Qt.DescendingOrder
  *
- *     filterProperty: "producer
- *     filterPattern: /blender/
+ *     filter.property: "producer
+ *     filter.pattern: /blender/
  * }
  *
  * ListView {
@@ -90,6 +90,10 @@ QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent)
     connect(this, SIGNAL(modelReset()), SIGNAL(countChanged()));
     connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(countChanged()));
     connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(countChanged()));
+    connect(&m_sortBehavior, &SortBehavior::propertyChanged, this, &QSortFilterProxyModelQML::sortChanged);
+    connect(&m_sortBehavior, &SortBehavior::orderChanged, this, &QSortFilterProxyModelQML::sortChanged);
+    connect(&m_filterBehavior, &FilterBehavior::propertyChanged, this, &QSortFilterProxyModelQML::filterChanged);
+    connect(&m_filterBehavior, &FilterBehavior::patternChanged, this, &QSortFilterProxyModelQML::filterChanged);
 }
 
 int
@@ -102,35 +106,82 @@ QSortFilterProxyModelQML::roleByName(const QString& roleName) const
     return 0;
 }
 
-QString
-QSortFilterProxyModelQML::sortProperty() const
+SortBehavior*
+QSortFilterProxyModelQML::sortBehavior()
 {
-    return roleNames()[sortRole()];
+    return &m_sortBehavior;
+}
+
+FilterBehavior*
+QSortFilterProxyModelQML::filterBehavior()
+{
+    return &m_filterBehavior;
 }
 
 QString
-QSortFilterProxyModelQML::filterProperty() const
+SortBehavior::property() const
 {
-    return roleNames()[filterRole()];
+    return m_property;
+}
+
+Qt::SortOrder
+SortBehavior::order() const
+{
+    return m_order;
 }
 
 void
-QSortFilterProxyModelQML::setSortProperty(const QString& property)
+SortBehavior::setProperty(const QString& property)
 {
-    setSortRole(roleByName(property));
+    m_property = property;
+    Q_EMIT propertyChanged();
 }
 
 void
-QSortFilterProxyModelQML::setFilterProperty(const QString& property)
+SortBehavior::setOrder(Qt::SortOrder order)
 {
-    setFilterRole(roleByName(property));
+    m_order = order;
+    Q_EMIT orderChanged();
 }
 
 void
-QSortFilterProxyModelQML::setSortOrder(Qt::SortOrder newOrder)
+QSortFilterProxyModelQML::sortChanged()
 {
-    if (newOrder != sortOrder() || sortColumn() == -1)
-        sort(sortColumn() != -1 ? sortColumn() : 0, newOrder);
+    setSortRole(roleByName(m_sortBehavior.property()));
+    sort(sortColumn() != -1 ? sortColumn() : 0, m_sortBehavior.order());
+}
+
+QString
+FilterBehavior::property() const
+{
+    return m_property;
+}
+
+void
+FilterBehavior::setProperty(const QString& property)
+{
+    m_property = property;
+    Q_EMIT propertyChanged();
+}
+
+QRegExp
+FilterBehavior::pattern() const
+{
+    return m_pattern;
+}
+
+void
+FilterBehavior::setPattern(QRegExp pattern)
+{
+    m_pattern = pattern;
+    Q_EMIT patternChanged();
+}
+
+void
+QSortFilterProxyModelQML::filterChanged()
+{
+    setFilterRole(roleByName(m_filterBehavior.property()));
+    setFilterRegExp(m_filterBehavior.pattern());
 }
 
 QHash<int, QByteArray> QSortFilterProxyModelQML::roleNames() const

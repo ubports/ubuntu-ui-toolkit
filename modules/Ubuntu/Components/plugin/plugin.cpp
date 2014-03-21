@@ -180,6 +180,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCMouse>(uri, 0, 1, "Mouse");
     qmlRegisterType<UCInverseMouse>(uri, 0, 1, "InverseMouse");
     qmlRegisterType<QAbstractItemModel>();
+    qmlRegisterType<SortBehavior>();
+    qmlRegisterType<FilterBehavior>();
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 0, 1, "SortFilterModel");
     // Needed for unit tests
     qRegisterMetaType<QList <QQmlError> >();
