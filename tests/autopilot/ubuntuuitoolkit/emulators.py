@@ -293,7 +293,7 @@ class Header(UbuntuUIToolkitEmulatorBase):
         if (self.useDeprecatedToolbar):
             raise ToolkitEmulatorException("Header.swtich_to_tab_by_index only works with new header")
         else:
-            _switch_to_tab_in_drawer_by_index(index)
+            self._switch_to_tab_in_drawer_by_index(index)
 
 
 class Toolbar(UbuntuUIToolkitEmulatorBase):
