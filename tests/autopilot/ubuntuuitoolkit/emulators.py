@@ -76,6 +76,20 @@ class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
         super(UbuntuUIToolkitEmulatorBase, self).__init__(*args)
         self.pointing_device = get_pointing_device()
 
+    def is_flickable(self):
+        """Check if the element is flickable.
+
+        If the element has a flicking attribute, we consider it as a flickable.
+
+        :return: True if the element is flickable. False otherwise.
+
+        """
+        try:
+            self.flicking
+            return True
+        except AttributeError:
+            return False
+
 
 class MainView(UbuntuUIToolkitEmulatorBase):
     """MainView Autopilot emulator."""
