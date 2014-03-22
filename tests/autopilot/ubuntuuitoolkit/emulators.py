@@ -90,6 +90,42 @@ class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
         super(UbuntuUIToolkitEmulatorBase, self).__init__(*args)
         self.pointing_device = get_pointing_device()
 
+    def is_flickable(self):
+        """Check if the object is flickable.
+
+        If the object has a flicking attribute, we consider it as a flickable.
+
+        :return: True if the object is flickable. False otherwise.
+
+        """
+        try:
+            self.flicking
+            return True
+        except AttributeError:
+            return False
+
+    @autopilot_logging.log_action(logger.info)
+    def swipe_into_view(self):
+        """Make the object visible.
+
+        Currently it works only when the object needs to be swiped vertically.
+        TODO implement horizontal swiping. --elopio - 2014-03-21
+
+        """
+        flickable_parent = self._get_flickable_parent()
+        flickable_parent.swipe_child_into_view(self)
+
+    def _get_flickable_parent(self):
+        parent = self.get_parent()
+        root = self.get_root_instance()
+        while parent.id != root.id:
+            if parent.is_flickable():
+                return parent
+            parent = parent.get_parent()
+        raise ToolkitEmulatorException(
+            "The element is not contained in a Flickable so it can't be "
+            "swiped into view.")
+
 
 class MainView(UbuntuUIToolkitEmulatorBase):
     """MainView Autopilot emulator."""
