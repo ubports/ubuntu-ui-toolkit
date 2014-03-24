@@ -20,7 +20,6 @@ class QSGTexture;
 
 struct TextureData {
     const unsigned char* const data;
-    QSGTexture* texture;
     int width;
     int height;
     int bytesPerPixel;
@@ -5160,7 +5159,7 @@ const float hh = 1.0f / 512.0f;
 
 // High resolution shape texture.
 TextureData shapeTextureHigh __attribute__((aligned(16))) = {
-    shapeTextureHighData, NULL, 256, 128, 4, 32.0f, 64.0f, 18.0f,
+    shapeTextureHighData, 256, 128, 4, 32.0f, 64.0f, 18.0f,
     {
         {  // Medium raw coords.
             { hh, 0.0f }, { 0.25f-hh, 0.0f }, { 0.25f-hh, 0.0f }, { hh, 0.0f },
@@ -6484,7 +6483,7 @@ const float hl = 1.0f / 256.0f;
 
 // Low resolution shape texture.
 TextureData shapeTextureLow __attribute__((aligned(16))) = {
-    shapeTextureLowData, NULL, 128, 64, 4, 16.0f, 32.0f, 9.0f,
+    shapeTextureLowData, 128, 64, 4, 16.0f, 32.0f, 9.0f,
     {
         {  // Medium raw coords.
             { hl, 0.0f }, { 0.25f-hl, 0.0f }, { 0.25f-hl, 0.0f }, { hl, 0.0f },
