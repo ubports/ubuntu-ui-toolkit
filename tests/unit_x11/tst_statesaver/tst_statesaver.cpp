@@ -32,6 +32,7 @@
 #include "ucapplication.h"
 #include <QtCore/QProcess>
 #include <QtCore/QProcessEnvironment>
+#include <signal.h>
 
 #define protected public
 #include "ucstatesaver.h"
@@ -564,10 +565,10 @@ private Q_SLOTS:
 
         QTest::qWait(1000);
 
-        QProcess kill;
-        QString command = QString("kill -s SIGINT %1").arg(testApp.pid());
-        kill.start(command);
-        kill.waitForFinished();
+        qDebug() << "PIDS" << testApp.pid() << QProcess().pid();
+
+        // send SIGINT
+        ::kill(testApp.pid(), SIGINT);
         testApp.waitForFinished();
 
         QString fileName = stateFile("SimpleApp");
