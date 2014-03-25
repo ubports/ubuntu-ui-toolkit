@@ -152,13 +152,10 @@ Item {
                 }
                 width: comboStyle.dropDownWidth
                 color: combo.expanded ? comboStyle.colorHack(comboStyle.dropDownColorPressed) : comboStyle.dropDownColorReleased
-                Icon {
-                    // FIXME: use these temporarily whyle we're getting the propert go-up/go-down
-                    name: combo.expanded ? "go-previous" : "go-next"
+                Image {
+                    source: "artwork/chevron.png"
                     anchors.centerIn: parent
-                    smooth: true
-                    width: units.gu(2)
-                    height: units.gu(2)
+                    rotation: combo.expanded ? 90 : -90
                 }
             }
         }
