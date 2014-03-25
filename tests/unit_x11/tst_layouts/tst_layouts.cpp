@@ -28,6 +28,7 @@
 
 #include "ullayouts.h"
 #include "ucunits.h"
+#include "uctestcase.h"
 #include <QtQuick/private/qquickanchors_p.h>
 #include <QtQuick/private/qquickanchors_p_p.h>
 
@@ -58,18 +59,8 @@ public:
 
     QQuickView * loadTest(const QString &file)
     {
-        QQuickView *view = new QQuickView;
-        view->engine()->addImportPath(m_modulePath);
-
-        view->setSource(QUrl::fromLocalFile(file));
-        if (!view->rootObject()) {
-            delete view;
-            view = 0;
-        } else {
-            view->show();
-            QTest::qWaitForWindowExposed(view);
-        }
-        return view;
+        UbuntuTestCase* testCase = new UbuntuTestCase(file);
+        return qobject_cast<QQuickView*>(testCase);
     }
 
     QQuickItem *testItem(QQuickItem *that, const QString &identifier)
@@ -85,10 +76,6 @@ public:
 private Q_SLOTS:
     void initTestCase()
     {
-        QString modules("../../../modules");
-        QVERIFY(QDir(modules).exists());
-
-        m_modulePath = QDir(modules).absolutePath();
     }
 
     void cleanupTestCase()
@@ -97,12 +84,8 @@ private Q_SLOTS:
 
     void testCase_NoLayouts()
     {
-        QScopedPointer<QQuickView> view(loadTest("NoLayouts.qml"));
-        QVERIFY(view);
-
-        ULLayouts *layouts = qobject_cast<ULLayouts*>(testItem(view->rootObject(), "layouts"));
-        QVERIFY(layouts);
-
+        QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("NoLayouts.qml"));
+        ULLayouts *layouts = testCase->findItem<ULLayouts*>("layouts");
         QVERIFY(layouts->layoutList().isEmpty());
     }
 

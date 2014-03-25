@@ -834,8 +834,6 @@ ActionItem {
         property real lineSize: editor.font.pixelSize + lineSpacing
         //selection properties
         property bool selectionMode: false
-        property int selectionStart: 0
-        property int selectionEnd: 0
 
         signal popupTriggered()
 
@@ -882,16 +880,20 @@ ActionItem {
         // reset selection
         function resetEditorSelection(mouseX)
         {
-            editor.cursorPosition = selectionStart = selectionEnd = editor.positionAt(mouseX);
+            editor.cursorPosition = editor.positionAt(mouseX);
         }
 
         // positions the cursor depending on whether there is a selection active or not
         function positionCursor(x) {
+
             var cursorPos = control.positionAt(x);
-            if (internal.selectionEnd == internal.selectionStart)
-                control.cursorPosition = control.positionAt(x);
-            else
-                control.select(internal.selectionStart, internal.selectionEnd);
+            if (control.selectedText === "") {
+                control.cursorPosition = cursorPos;
+            }
+            // If target cursor position is outside selection then cancel selection and move cursor
+            else if (control.selectionStart > cursorPos || control.selectionEnd < cursorPos) {
+                control.cursorPosition = cursorPos;
+            }
         }
     }
 
@@ -1055,9 +1057,6 @@ ActionItem {
                 if (!control.activeFocus)
                     return;
                 editor.selectWord();
-                // update selection boundaries, except cursorPosition
-                internal.selectionEnd = editor.selectionEnd;
-                internal.selectionStart = editor.selectionStart;
                 internal.selectionMode = false;
             }
             onPressed: {
@@ -1065,7 +1064,7 @@ ActionItem {
                 if (!control.activeFocus || (pressedButtons != Qt.LeftButton))
                     return;
                 internal.activateEditor();
-                if (internal.selectionEnd == internal.selectionStart) {
+                if (control.selectedText === "") {
                     internal.resetEditorSelection(mouse.x);
                     internal.selectionMode = true;
                 }

@@ -1,3 +1,57 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20140321.1-0ubuntu1) trusty; urgency=low
+
+  [ Bartosz Kosiorek ]
+  * Fix selection and coping text from TextFields (LP: 1130369) (LP:
+    #1130369)
+  * "Cut" operation do not shows for "ReadOnly's" TextField and TextArea
+    (LP: 1293149) (LP: #1293149, #1267821)
+
+  [ Zsombor Egri ]
+  * InverseMouseArea not getting mouse events converted from touch when
+    set as topmost item. (LP: #1288876)
+
+  [ Michael Zanetti ]
+  * drop BottomBarVisiblityCommunicator as it has gone from unity8 - no
+    more HUD from the lower edge
+
+  [ Christian Dywan ]
+  * Introduce UbuntuTestCase API for C++ (LP: #1261396)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 21 Mar 2014 11:29:53 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140317-0ubuntu1) trusty; urgency=low
+
+  [ Didier Roche ]
+  * remove the doc generation for UITK autopilot emulator. Autopilot is
+    in universe for now, it needs MIRing first
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 17 Mar 2014 09:03:08 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140314-0ubuntu1) trusty; urgency=low
+
+  [ CI bot ]
+  * Resync trunk
+
+  [ Colin Watson ]
+  * With Qt 5.2, QtDeclarative now supports all architectures, at least
+    in principle. Switch back to trying to build everywhere, since
+    ubuntu-ui-toolkit has no intrinsic reason to be non-portable.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 14 Mar 2014 15:07:46 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140306.1-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * DatePicker flaky test fix. (LP: #1287009)
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+  [ Michael Zanetti ]
+  * Make the UbuntuListView tests more stable (LP: #1288597)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 06 Mar 2014 12:46:50 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20140304-0ubuntu1) trusty; urgency=low
 
   [ CI bot ]
