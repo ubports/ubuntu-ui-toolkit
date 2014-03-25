@@ -565,14 +565,13 @@ private Q_SLOTS:
 
         QTest::qWait(1000);
 
-        qDebug() << "PIDS" << testApp.pid() << QProcess().pid();
-
+        // make sure we are not killing the parent
+        QVERIFY(testApp.pid() != QCoreApplication::applicationPid());
         // send SIGINT
         ::kill(testApp.pid(), SIGINT);
         testApp.waitForFinished();
 
         QString fileName = stateFile("SimpleApp");
-        qDebug() << fileName;
         QVERIFY(QFile(fileName).exists());
         // clean the file
         QFile::remove(fileName);
