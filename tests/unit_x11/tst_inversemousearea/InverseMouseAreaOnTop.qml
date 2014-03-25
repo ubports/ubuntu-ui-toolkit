@@ -38,8 +38,6 @@ Rectangle {
             objectName: "MA1"
             anchors.fill: parent
             z: 1
-            onPressed: print("MA1")
-            onDoubleClicked: print("DMA1")
         }
     }
 
@@ -63,15 +61,11 @@ Rectangle {
         MouseArea {
             objectName: "MA2"
             anchors.fill: parent
-            onPressed: print("MA2")
-            onDoubleClicked: print("DMA2")
         }
 
         InverseMouseArea {
             objectName: "IMA"
             anchors.fill: button
-            onPressed: print("IMA")
-            onDoubleClicked: print("DIMA")
         }
     }
 }

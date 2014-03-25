@@ -1,3 +1,24 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20140321.1-0ubuntu1) trusty; urgency=low
+
+  [ Bartosz Kosiorek ]
+  * Fix selection and coping text from TextFields (LP: 1130369) (LP:
+    #1130369)
+  * "Cut" operation do not shows for "ReadOnly's" TextField and TextArea
+    (LP: 1293149) (LP: #1293149, #1267821)
+
+  [ Zsombor Egri ]
+  * InverseMouseArea not getting mouse events converted from touch when
+    set as topmost item. (LP: #1288876)
+
+  [ Michael Zanetti ]
+  * drop BottomBarVisiblityCommunicator as it has gone from unity8 - no
+    more HUD from the lower edge
+
+  [ Christian Dywan ]
+  * Introduce UbuntuTestCase API for C++ (LP: #1261396)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 21 Mar 2014 11:29:53 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20140317-0ubuntu1) trusty; urgency=low
 
   [ Didier Roche ]
