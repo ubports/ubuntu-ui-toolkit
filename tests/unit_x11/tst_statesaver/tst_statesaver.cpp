@@ -67,29 +67,6 @@ private:
         return view;
     }
 
-    Q_PID getPid(const QString &app)
-    {
-        QDir procs("/proc");
-        QStringList procList = procs.entryList(QDir::AllDirs);
-        Q_FOREACH(const QString &proc, procList) {
-            QFile cmdLine(QString("/proc/%1/cmdline").arg(proc));
-            if (!cmdLine.open(QFile::ReadOnly)) {
-                continue;
-            }
-            QByteArray bline = cmdLine.readAll();
-            while (bline.contains((char)0)) {
-                bline.replace((char)0, ' ');
-            }
-            QString line(bline);
-            if (line.contains(app)) {
-                qDebug() << "PID" << app << proc;
-                return proc.toInt();
-            }
-        }
-
-        return 0;
-    }
-
     void resetView(QScopedPointer<QQuickView> &view, const QString &file, QSignalSpy **spy = 0)
     {
         Q_EMIT StateSaverBackend::instance().initiateStateSaving();
@@ -579,6 +556,10 @@ private Q_SLOTS:
 
     void test_SigInt()
     {
+        // skip tests if the application PID is zero => the child app PID seems to be zero as well
+        if (!QCoreApplication::applicationPid()) {
+            QSKIP("This test requires valid PID");
+        }
         QProcess testApp;
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         env.insert("APP_ID", "SimpleApp");
@@ -590,12 +571,10 @@ private Q_SLOTS:
 
         // make sure we are not killing the parent
         QVERIFY(testApp.pid() != QCoreApplication::applicationPid());
-        QCOMPARE(testApp.pid(), getPid("SimpleApp.qml"));
         QVERIFY(testApp.pid());
         // send SIGINT
-//        ::kill(testApp.pid(), SIGINT);
-//        testApp.waitForFinished();
-        testApp.close();
+        ::kill(testApp.pid(), SIGINT);
+        testApp.waitForFinished();
 
         QString fileName = stateFile("SimpleApp");
         QVERIFY(QFile(fileName).exists());
