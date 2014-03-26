@@ -345,19 +345,6 @@ PageTreeNode {
                 }
             }
 
-            // The following bindings get the title from the Header and
-            // set it as the window title when the window or the title changes
-            Binding {
-                target: headerItem
-                property: "title"
-                value: headerItem.title
-                when: headerItem.contents &&
-                      headerItem.contents.hasOwnProperty("selectionMode") &&
-                      headerItem.contents.hasOwnProperty("alwaysSelectionMode") &&
-                      headerItem.contents.hasOwnProperty("selectedIndex") &&
-                      headerItem.contents.hasOwnProperty("pressed")
-            }
-
             // 'window' is defined by QML between startup and showing on the screen.
             // There is no signal for when it becomes available and re-declaring it is not safe.
             property bool windowActive: typeof window != 'undefined'
