@@ -556,10 +556,6 @@ private Q_SLOTS:
 
     void test_SigInt()
     {
-        // skip tests if the application PID is zero => the child app PID seems to be zero as well
-        if (!QCoreApplication::applicationPid()) {
-            QSKIP("This test requires valid PID");
-        }
         QProcess testApp;
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
         env.insert("APP_ID", "SimpleApp");
@@ -571,7 +567,12 @@ private Q_SLOTS:
 
         // make sure we are not killing the parent
         QVERIFY(testApp.pid() != QCoreApplication::applicationPid());
-        QVERIFY(testApp.pid());
+        // skip tests if the application PID is zero => the child app PID seems to be zero as well
+        if (!testApp.pid()) {
+            // kill child process
+            testApp.close();
+            QSKIP("This test requires valid PID");
+        }
         // send SIGINT
         ::kill(testApp.pid(), SIGINT);
         testApp.waitForFinished();
