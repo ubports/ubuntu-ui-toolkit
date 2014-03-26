@@ -17,6 +17,7 @@
 import QtQuick 2.0
 import Ubuntu.Unity.Action 1.1 as UnityActions
 import Ubuntu.PerformanceMetrics 0.1
+import QtQuick.Window 2.0
 
 /*!
     \qmltype MainView
@@ -341,6 +342,33 @@ PageTreeNode {
                     if (headerItem.tabBar.pressed) {
                         if (!toolbarItem.locked) toolbarItem.close();
                     }
+                }
+            }
+
+            // The following bindings get the title from the Header and
+            // set it as the window title when the window or the title changes
+            Binding {
+                target: headerItem
+                property: "title"
+                value: headerItem.title
+                when: headerItem.contents &&
+                      headerItem.contents.hasOwnProperty("selectionMode") &&
+                      headerItem.contents.hasOwnProperty("alwaysSelectionMode") &&
+                      headerItem.contents.hasOwnProperty("selectedIndex") &&
+                      headerItem.contents.hasOwnProperty("pressed")
+            }
+
+            Connections {
+                target: headerItem
+                onTitleChanged: {
+                    window.title = headerItem.title
+                }
+            }
+
+            Connections {
+                target: window
+                onActiveChanged: {
+                    window.title = headerItem.title
                 }
             }
         }
