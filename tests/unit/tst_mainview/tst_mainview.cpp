@@ -34,6 +34,7 @@
 
 #include "ucapplication.h"
 #include "ucunits.h"
+#include "uctestcase.h"
 
 class tst_MainView : public QObject
 {
@@ -152,6 +153,13 @@ private Q_SLOTS:
 
         // No warnings from QML
         QCOMPARE(spy.count(), 0);
+    }
+
+    void testWindowTitleFromPage() {
+        QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("PageTitle.qml"));
+        QQuickItem *page = testCase->findItem<QQuickItem*>("page");
+        QCOMPARE(QString("Once upon a time"), page->property("title").toString());
+        QCOMPARE(testCase->title(), page->property("title").toString());
     }
 };
 
