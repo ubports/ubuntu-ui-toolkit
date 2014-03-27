@@ -161,6 +161,21 @@ private Q_SLOTS:
         QCOMPARE(QString("Once upon a time"), page->property("title").toString());
         QCOMPARE(testCase->title(), page->property("title").toString());
     }
+
+    void testWindowTitleFromStack() {
+        QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("PageStack.qml"));
+        QQuickItem *page = testCase->findItem<QQuickItem*>("page");
+        QCOMPARE(QString("Far far away"), page->property("title").toString());
+        QCOMPARE(testCase->title(), page->property("title").toString());
+    }
+
+    void testWindowTitleFromTabs() {
+        QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("TabsTitle.qml"));
+        QQuickItem *page = testCase->findItem<QQuickItem*>("page");
+        QEXPECT_FAIL(0, "Tabs don't correctly propagate the title yet", Continue);
+        QCOMPARE(QString("Long long ago"), page->property("title").toString());
+        QCOMPARE(testCase->title(), page->property("title").toString());
+    }
 };
 
 QTEST_MAIN(tst_MainView)
