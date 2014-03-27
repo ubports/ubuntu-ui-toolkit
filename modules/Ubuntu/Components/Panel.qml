@@ -285,7 +285,6 @@ Item {
         }
     }
 
-
     /*!
       How much of the panel to show when the user touches the panel's edge.
       This gives the user a hint that there is a panel hiding at that edge and
@@ -299,6 +298,16 @@ Item {
       the panel is not opened. Default value: units.gu(2).
      */
     property real triggerSize: units.gu(2)
+
+    /*!
+      \qmlproperty real position
+      The current position of the edge of the panel. The value is 0 when the panel is
+      opened, and has its maximum value when the panel is closed. The maximum value is the
+      width of the Panel for a left or right-aligned panel, and the height of the panel for
+      top or bottom-aligned panels. When the user drags the Panel from the edge to open it,
+      the position will change from the maximum size (closed) to 0 (fully expanded).
+     */
+    readonly property alias position: bar.position
 
     states: [
         State {
@@ -398,11 +407,6 @@ Item {
         property string previousState: ""
         property int movingDelta
 
-        // Used for recovering the state from before
-        //  bottomBarVisibilityCommunicator forced the toolbar to hide.
-        property bool savedLocked: panel.locked
-        property bool savedOpened: panel.opened
-
         // Convert from Qt.AlignLeading to Qt.AlignTrailing to Qt.AlignLeft and Qt.AlignRight
         property int align: {
             if (panel.align === Qt.AlignLeading) {
@@ -424,30 +428,6 @@ Item {
 
         readonly property int orientation: (panel.align === Qt.AlignTop || panel.align === Qt.AlignBottom)
                                            ? Qt.Horizontal : Qt.Vertical
-    }
-
-    Connections {
-        // FIXME: bottomBarVisibilityCommunicator is not the most-suitable name anymore.
-        target: bottomBarVisibilityCommunicator
-        onForceHiddenChanged: {
-            if (bottomBarVisibilityCommunicator.forceHidden) {
-                internal.savedLocked = panel.locked;
-                internal.savedOpened = panel.opened;
-                panel.close();
-                panel.locked = true;
-            } else { // don't force hidden
-                panel.locked = internal.savedLocked;
-                if (panel.locked) {
-                    if (internal.savedOpened) {
-                        panel.open();
-                    } else {
-                        panel.close();
-                    }
-                }
-                // if the panel was locked, do not slide it back in
-                // until the user performs an edge swipe.
-            }
-        }
     }
 
     /*! \internal */
@@ -628,8 +608,6 @@ Item {
         property real size: internal.orientation === Qt.Horizontal ? height : width
         //position will always be in the range 0..size, where position==0 means spread, position==size means hidden.
         property real position: panel.opened ? 0 : size
-
-        onPositionChanged: bottomBarVisibilityCommunicator.position = size - position
 
         y: internal.align === Qt.AlignTop ? -position : internal.align === Qt.AlignBottom ? position : 0
         x: internal.align === Qt.AlignLeft ? -position : internal.align === Qt.AlignRight ? position : 0

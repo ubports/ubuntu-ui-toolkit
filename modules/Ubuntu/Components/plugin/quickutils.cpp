@@ -35,8 +35,6 @@ QuickUtils::QuickUtils(QObject *parent) :
     m_rootView(0)
 {
     QGuiApplication::instance()->installEventFilter(this);
-    // connect to focusObjectChanged() to get the latest active focus object
-    QObject::connect(QGuiApplication::instance(), SIGNAL(focusObjectChanged(QObject*)), this, SLOT(activeFocus(QObject*)));
 }
 
 /*!
@@ -47,31 +45,15 @@ QuickUtils::QuickUtils(QObject *parent) :
  */
 bool QuickUtils::eventFilter(QObject *obj, QEvent *event)
 {
-    if (!m_rootView && (event->type() == QEvent::ApplicationActivate))
+    if (!m_rootView && (event->type() == QEvent::ApplicationActivate)) {
         lookupQuickView();
+        Q_EMIT activated();
+    }
     if (event->type() == QEvent::ApplicationDeactivate) {
         Q_EMIT deactivated();
     }
 
     return QObject::eventFilter(obj, event);
-}
-
-/*!
- * \internal
- * Catch active focus object change to detecte whether we need to remove OSK or not.
- */
-void QuickUtils::activeFocus(QObject *active)
-{
-    // FIXME: workaround for bug https://bugreports.qt-project.org/browse/QTBUG-30729
-    // input panel does not get removed when no input is active
-    // remove input panel if there's no more active object or the new active object
-    // is not a text input
-    // workaround for bug https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1163371
-    if (QGuiApplication::inputMethod()->isVisible() && (!active || (active &&
-                    !qobject_cast<QQuickTextInput*>(active) &&
-                    !qobject_cast<QQuickTextEdit*>(active)))) {
-        QGuiApplication::inputMethod()->hide();
-    }
 }
 
 /*!
@@ -130,6 +112,9 @@ QString QuickUtils::inputMethodProvider() const
  */
 QString QuickUtils::className(QObject *item)
 {
+    if (!item) {
+        return QString("(null)");
+    }
     QString result = item->metaObject()->className();
     return result.left(result.indexOf("_QML"));
 }

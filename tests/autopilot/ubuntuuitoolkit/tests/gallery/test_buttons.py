@@ -29,7 +29,7 @@ class ButtonsTestCase(GalleryTestCase):
             text="Call")),
         ('button with color', dict(
             button_name="button_color", is_enabled=True,
-            color=[0, 0, 0, 255], icon=None, text="Call")),
+            color=[174, 167, 159, 255], icon=None, text="Call")),
         ('button with icon', dict(
             button_name="button_iconsource", is_enabled=True, color=None,
             icon="call.png", text=None)),

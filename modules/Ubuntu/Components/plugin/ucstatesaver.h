@@ -47,7 +47,7 @@ private:
     QScopedPointer<UCStateSaverAttachedPrivate> d_ptr;
     Q_PRIVATE_SLOT(d_func(), void _q_init())
     Q_PRIVATE_SLOT(d_func(), void _q_save())
-    Q_PRIVATE_SLOT(d_func(), void _q_propertyChange())
+    Q_PRIVATE_SLOT(d_func(), void _q_globalEnableChanged(bool))
 };
 
 class UCStateSaver : public QObject

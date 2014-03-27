@@ -117,6 +117,7 @@ MainView {
                 model: widgetsModel
                 delegate: ListItem.Standard {
                     text: model.label
+                    objectName: model.objectName
                     enabled: model.source != ""
                     progression: true
                     selected: enabled && selectedWidget == model
