@@ -121,16 +121,16 @@ QString QuickUtils::className(QObject *item)
 
 /*!
  * \internal
- * Moves a given item to the specified index in its parent's child list.
+ * Moves a given \a item before the \a other one in the object stack. Both \a item
+ * and \a other must have the same parent item.
  */
-void QuickUtils::moveItemBefore(QQuickItem *item, QQuickItem *before)
+void QuickUtils::moveItemBefore(QQuickItem *item, QQuickItem *other)
 {
     Q_ASSERT(item);
-//    QQuickItem *parentItem = item->parentItem();
     Q_ASSERT(item->parentItem());
-    if (before) {
-        Q_ASSERT(before->parentItem() == item->parentItem());
-        item->stackBefore(before);
+    if (other) {
+        Q_ASSERT(other->parentItem() == item->parentItem());
+        item->stackBefore(other);
     }
 }
 
