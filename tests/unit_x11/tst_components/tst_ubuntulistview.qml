@@ -82,6 +82,7 @@ Item {
             ubuntuListView.expandedIndex = index;
             var targetHeight = Math.min(item.expandedHeight, ubuntuListView.height - item.collapsedHeight);
             tryCompare(item, "height", targetHeight);
+            waitForRendering(ubuntuListView)
         }
 
         function collapse() {
@@ -92,6 +93,7 @@ Item {
             var expandedItem = findChild(ubuntuListView, "expandable" + ubuntuListView.expandedIndex);
             ubuntuListView.expandedIndex = -1;
             tryCompare(expandedItem, "height", expandedItem.collapsedHeight);
+            waitForRendering(ubuntuListView);
         }
 
         function test_expandedItem() {

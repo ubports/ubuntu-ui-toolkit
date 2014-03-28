@@ -36,7 +36,6 @@ HEADERS += plugin.h \
     shapeitemtexture.h \
     shapeitem.h \
     inversemouseareatype.h \
-    bottombarvisibilitycommunicator.h \
     qquickclipboard.h \
     qquickmimedata.h \
     qquickclipboard_p.h \
@@ -73,7 +72,6 @@ SOURCES += plugin.cpp \
     quickutils.cpp \
     shapeitem.cpp \
     inversemouseareatype.cpp \
-    bottombarvisibilitycommunicator.cpp \
     qquickclipboard.cpp \
     qquickmimedata.cpp \
     ucubuntuanimation.cpp \
