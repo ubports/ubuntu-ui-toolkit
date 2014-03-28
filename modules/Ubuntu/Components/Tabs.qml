@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import "mathUtils.js" as MathUtils
 
 /*!
     \qmltype Tabs
@@ -564,8 +565,8 @@ PageTreeNode {
         Binding {
             target: tabBar
             property: "animate"
-            when: internal.header && internal.header.hasOwnProperty("animate")
-            value: internal.header.animate
+            when: (internal.header !== null) && internal.header.hasOwnProperty("animate")
+            value: internal.header ? internal.header.animate : "false"
         }
 
         /*
@@ -601,7 +602,9 @@ PageTreeNode {
         function connectToRepeaters(children) {
             for (var i = 0; i < children.length; i++) {
                 var child = children[i];
-                if (internal.isRepeater(child) && (internal.repeaters.indexOf(child) < 0)) {
+                if (internal.isRepeater(child) &&
+                        (internal.repeaters !== undefined) &&
+                        (internal.repeaters.indexOf(child) < 0)) {
                     internal.connectRepeater(child);
                 }
             }
