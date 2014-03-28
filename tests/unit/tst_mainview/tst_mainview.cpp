@@ -34,6 +34,7 @@
 
 #include "ucapplication.h"
 #include "ucunits.h"
+#include "uctestcase.h"
 
 class tst_MainView : public QObject
 {
@@ -144,14 +145,11 @@ private Q_SLOTS:
     }
 
     void testNoWarnings_bug186065() {
-        QSignalSpy spy(view->engine(), SIGNAL(warnings(QList<QQmlError>)));
-        spy.setParent(view);
-
-        QQuickItem *root = loadTest("AppName.qml"); // An empty MainView would suffice
-        QVERIFY(root);
+        // An empty MainView would suffice
+        QScopedPointer<UbuntuTestCase>testCase (new UbuntuTestCase("AppName.qml"));
 
         // No warnings from QML
-        QCOMPARE(spy.count(), 0);
+        QCOMPARE(testCase->warnings(), 0);
     }
 };
 

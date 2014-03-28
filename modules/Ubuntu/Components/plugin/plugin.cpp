@@ -53,9 +53,6 @@
 #include <unistd.h>
 #include <stdexcept>
 
-// Needed for unit tests
-Q_DECLARE_METATYPE(QList<QQmlError>)
-
 /*
  * Type registration functions.
  */
@@ -177,8 +174,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterSingletonType<UCUriHandler>(uri, 0, 1, "UriHandler", registerUriHandler);
     qmlRegisterType<UCMouse>(uri, 0, 1, "Mouse");
     qmlRegisterType<UCInverseMouse>(uri, 0, 1, "InverseMouse");
-    // Needed for unit tests
-    qRegisterMetaType<QList <QQmlError> >();
     // register QML singletons
     qmlRegisterSingletonType<QObject>(uri, 0, 1, "PickerPanel", registerPickerPanel);
 }
