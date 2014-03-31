@@ -51,11 +51,17 @@ Item {
 
     QtObject {
         id: internals
-        property bool isLight: ColorUtils.luminance(styledItem.backgroundColor) >= 0.85
         property bool isGradient: styledItem.backgroundColor != styledItem.headerColor ||
                                   styledItem.backgroundColor != styledItem.footerColor
-        property string theme: isLight ? "Ambiance" :
-                              (isGradient ? "SuruGradient" : "SuruDark")
+        /*
+          As we don't know the order the property bindings and onXXXChanged signals are evaluated
+          we should rely only on one property when changing the theme to avoid intermediate
+          theme changes due to properties being evaluated separately.
+
+          Qt bug: https://bugreports.qt-project.org/browse/QTBUG-11712
+          */
+        property string theme: (ColorUtils.luminance(styledItem.backgroundColor) >= 0.85) ? "Ambiance" :
+                                (isGradient ? "SuruGradient" : "SuruDark")
     }
 
     // automatically select the appropriate theme depending on the background colors
@@ -63,5 +69,6 @@ Item {
         target: Theme
         property: "name"
         value: "Ubuntu.Components.Themes.%1".arg(internals.theme)
+        when: internals.theme !== ""
     }
 }
