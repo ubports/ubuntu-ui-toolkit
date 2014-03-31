@@ -32,6 +32,7 @@
 #include "ucapplication.h"
 #include <QtCore/QProcess>
 #include <QtCore/QProcessEnvironment>
+#include <signal.h>
 
 #define protected public
 #include "ucstatesaver.h"
@@ -534,6 +535,52 @@ private Q_SLOTS:
 
         QString fileName = stateFile("NormalAppClose");
         QVERIFY(!QFile(fileName).exists());
+    }
+
+    void test_SigTerm()
+    {
+        QProcess testApp;
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        env.insert("APP_ID", "SimpleApp");
+        testApp.setProcessEnvironment(env);
+        testApp.start("qmlscene -I ../../../modules SimpleApp.qml");
+        testApp.waitForStarted();
+
+        // send SIGTERM signal to the process, use terminate() to do that.
+        testApp.terminate();
+        testApp.waitForFinished();
+
+        QString fileName = stateFile("SimpleApp");
+        QVERIFY(!QFile(fileName).exists());
+    }
+
+    void test_SigInt()
+    {
+        QProcess testApp;
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        env.insert("APP_ID", "SimpleApp");
+        testApp.setProcessEnvironment(env);
+        testApp.start("qmlscene -I ../../../modules SimpleApp.qml");
+        testApp.waitForStarted();
+
+        QTest::qWait(1000);
+
+        // make sure we are not killing the parent
+        QVERIFY(testApp.pid() != QCoreApplication::applicationPid());
+        // skip tests if the application PID is zero => the child app PID seems to be zero as well
+        if (!testApp.pid()) {
+            // kill child process
+            testApp.close();
+            QSKIP("This test requires valid PID");
+        }
+        // send SIGINT
+        ::kill(testApp.pid(), SIGINT);
+        testApp.waitForFinished();
+
+        QString fileName = stateFile("SimpleApp");
+        QVERIFY(QFile(fileName).exists());
+        // clean the file
+        QFile::remove(fileName);
     }
 };
 
