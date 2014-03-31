@@ -31,6 +31,7 @@
 #include <QtCore/QDebug>
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
+#include <QtCore/QTimeZone>
 
 class tst_UCAlarms : public QObject
 {
@@ -388,6 +389,37 @@ private Q_SLOTS:
         syncFetch();
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&nextAlarm));
+    }
+
+    void test_transcodeDate_data()
+    {
+        QTest::addColumn<QDateTime>("date");
+        QTest::addColumn<int>("srcSpec");
+        QTest::addColumn<int>("dstSpec");
+        QTest::addColumn<bool>("xfail");
+
+        QDateTime now = QDateTime::currentDateTime();
+        QTest::newRow("Local to Local") << now << (int)Qt::LocalTime << (int)Qt::LocalTime << true;
+        QTest::newRow("Local to UTC") << now << (int)Qt::LocalTime << (int)Qt::UTC << false;
+        QTest::newRow("UTC to UTC") << now << (int)Qt::UTC << (int)Qt::UTC << true;
+        QTest::newRow("UTC to Local") << now << (int)Qt::UTC << (int)Qt::LocalTime << false;
+    }
+
+    void test_transcodeDate()
+    {
+        QFETCH(QDateTime, date);
+        QFETCH(int, srcSpec);
+        QFETCH(int, dstSpec);
+        QFETCH(bool, xfail);
+
+        QDateTime srcDate = AlarmData::normalizeDate(QDateTime(date.date(), date.time(), (Qt::TimeSpec)srcSpec));
+        QDateTime dstDate(AlarmData::transcodeDate(srcDate, (Qt::TimeSpec)dstSpec));
+        QCOMPARE(srcDate.date(), dstDate.date());
+        QCOMPARE(srcDate.time(), dstDate.time());
+        if (xfail) {
+            QEXPECT_FAIL("", "Similar timespec set, expect fail", Continue);
+        }
+        QVERIFY(srcDate.timeZone() != dstDate.timeZone());
     }
 
 };
