@@ -25,6 +25,7 @@
 #include "adapters/alarmsadapter_p.h"
 #undef protected
 
+#include "uctestcase.h"
 #include <QtCore/QString>
 #include <QtCore/QTextCodec>
 #include <QtCore/QDebug>
@@ -69,9 +70,8 @@ private:
         UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
         QList<AlarmData> alarms = AlarmManager::instance().alarms();
         Q_FOREACH(AlarmData i, alarms) {
-            if (trace) {
-                qDebug() << "Alarm data:";
-                qDebug() << alarm->message() << i.message;
+            if (trace && (alarm->message() == i.message)) {
+                qDebug() << "Alarm data:" << alarm->message();
                 qDebug() << alarm->date() << i.date;
                 qDebug() << alarm->type() << i.type;
                 qDebug() << alarm->daysOfWeek() << i.days;
@@ -164,20 +164,19 @@ private Q_SLOTS:
 
     void test_repeating_moreDays()
     {
-        UCAlarm alarm(QDateTime::currentDateTime(), UCAlarm::Monday | UCAlarm::Wednesday, "test_repeating_moreDays");
+        QDateTime currentDate(QDateTime::currentDateTime());
+        int dow = currentDate.date().dayOfWeek() - 1;
+        int nextDow = (dow + 6) % 7;
+        UCAlarm::DaysOfWeek days = (UCAlarm::DaysOfWeek)((1 << dow) | (1 << nextDow));
+
+        UCAlarm alarm(currentDate, days, "test_repeating_moreDays");
+        // the distance is always 6 days between the occurrences
+        UCAlarm firstOccurrence(currentDate.addDays(6), alarm.daysOfWeek(), alarm.message());
 
         alarm.save();
         waitForRequest(&alarm);
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
-
-        // if we are on Monday, the first alarm occurrence is gonna be on Wednesday!
-        // so test accordingly!!!
-        if (QDateTime::currentDateTime().date().dayOfWeek() == 1) {
-            UCAlarm occurrence(alarm.date().addDays(2), alarm.daysOfWeek(), alarm.message());
-            QVERIFY(containsAlarm(&occurrence));
-        } else {
-            QVERIFY(containsAlarm(&alarm));
-        }
+        QVERIFY(containsAlarm(&firstOccurrence));
     }
 
     void test_repeating_weekly_data() {
