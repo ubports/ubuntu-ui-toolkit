@@ -75,8 +75,9 @@ private:
 
     QString stateFile(const QString &appId)
     {
-        QSettings settings(appId);
-        return settings.fileName();
+        return QString("%1/%2.state")
+                .arg(QStandardPaths::standardLocations(QStandardPaths::TempLocation)[0])
+                .arg(appId);
     }
 
 private Q_SLOTS:
