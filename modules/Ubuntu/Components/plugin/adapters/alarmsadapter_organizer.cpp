@@ -331,7 +331,6 @@ void AlarmsAdapter::completeFetchAlarms(const QList<QOrganizerItem> &alarms)
     saveAlarms();
     Q_EMIT q_ptr->alarmsChanged();
     completed = true;
-    // do we get segfault because this is missing?
     fetchRequest->deleteLater();
     fetchRequest = 0;
 }
@@ -342,7 +341,7 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
         return;
     }
     // with EDS we need to query the occurrences separately as the fetch reports only the main events
-    // with fallback manager this does not reduce the performance and does work teh same way.
+    // with fallback manager this does not reduce the performance and does work the same way.
     QDateTime currentDate = AlarmData::normalizeDate(QDateTime::currentDateTime());
     if (alarm.date > currentDate) {
         // no need to adjust date, the event occurs in the future
