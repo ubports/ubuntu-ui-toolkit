@@ -16,12 +16,13 @@
 
 import QtQuick 2.0
 import QtTest 1.0
+import Ubuntu.Test 0.1
 import Ubuntu.Components 0.1
 import Ubuntu.Unity.Action 1.1 as UnityActions
 
 Item {
     id: textItem
-    width: 200; height: 200
+    width: units.gu(50); height: units.gu(70)
 
     property bool hasOSK: QuickUtils.inputMethodProvider !== ""
 
@@ -32,49 +33,53 @@ Item {
         t2.focus = false;
     }
 
-    TextField {
-        id: colorTest
-        color: colorTest.text.length < 4 ? "#0000ff" : "#00ff00"
-    }
-
-    TextField {
-        id: textField
-        SignalSpy {
-            id: signalSpy
-            target: parent
+    Column {
+        TextField {
+            id: longText
+            text: "The orange (specifically, the sweet orange) is the fruit of the citrus species Citrus × ​sinensis in the family Rutaceae."
+        }
+        TextField {
+            id: colorTest
+            color: colorTest.text.length < 4 ? "#0000ff" : "#00ff00"
         }
 
-        property int keyPressData
-        property int keyReleaseData
-        Keys.onPressed: keyPressData = event.key
-        Keys.onReleased: keyReleaseData = event.key
-        action: Action {
+        TextField {
+            id: textField
+            SignalSpy {
+                id: signalSpy
+                target: parent
+            }
+
+            property int keyPressData
+            property int keyReleaseData
+            Keys.onPressed: keyPressData = event.key
+            Keys.onReleased: keyReleaseData = event.key
+            action: Action {
+                enabled: true
+                name: 'spam'
+                text: 'Spam'
+            }
+        }
+
+            TextField {
+                id: t1
+            }
+            TextField {
+                id: t2
+            }
+
+        TextField {
+            id: enabledTextField
             enabled: true
-            name: 'spam'
-            text: 'Spam'
         }
-    }
 
-    Item {
         TextField {
-            id: t1
-        }
-        TextField {
-            id: t2
+            id: disabledTextField
+            enabled: false
         }
     }
 
-    TextField {
-        id: enabledTextField
-        enabled: true
-    }
-
-    TextField {
-        id: disabledTextField
-        enabled: false
-    }
-
-    TestCase {
+    UbuntuTestCase {
         name: "TextFieldAPI"
         when: windowShown
 
@@ -465,21 +470,66 @@ Item {
         function test_click_enabled_textfield_must_give_focus() {
             textField.forceActiveFocus();
             compare(
-                enabledTextField.focus, false,
-                'enabledTextField is not focused');
+                        enabledTextField.focus, false,
+                        'enabledTextField is not focused');
             mouseClick(
-                enabledTextField, enabledTextField.width/2,
-                enabledTextField.height/2)
+                        enabledTextField, enabledTextField.width/2,
+                        enabledTextField.height/2)
             compare(
-                enabledTextField.focus, true, 'enabledTextField is focused')
+                        enabledTextField.focus, true, 'enabledTextField is focused')
         }
 
         function test_click_disabled_textfield_must_not_give_focus() {
             mouseClick(
-                disabledTextField, disabledTextField.width/2,
-                disabledTextField.height/2)
+                        disabledTextField, disabledTextField.width/2,
+                        disabledTextField.height/2)
             compare(
-                textField.focus, false, 'disabledTextField is not focused');
+                        textField.focus, false, 'disabledTextField is not focused');
+        }
+
+
+        // text selection
+        SignalSpy {
+            id: flickSpy
+        }
+
+        function test_2_scrolling() {
+            var flicker = findChild(longText, "textfield_flicker");
+            verify(flicker);
+            flickSpy.target = flicker;
+            flickSpy.signalName = "onMovingChanged";
+            flickSpy.clear();
+            // scroll when inactive
+            verify(longText.focus == false);
+            var dx = longText.width / 4;
+            var x = longText.width - dx;
+            var y = longText.height / 2;
+            mousePress(longText, x, y);
+            mouseMoveSlowly(longText, x, y, -2*dx, 0, 2);
+            mouseRelease(longText, dx, y);
+            verify(longText.focus);
+            compare(flickSpy.count, 1, "The input had not scrolled");
+        }
+
+        function test_2_select_text_doubletap() {
+            longText.focus = true;
+            longText.cursorPosition = 0;
+            var x = longText.width / 2;
+            var y = longText.height / 4;
+            mouseDoubleClick(longText, x, y);
+            verify(longText.selectedText !== "");
+        }
+
+        function test_2_select_by_pressAndDrag() {
+            longText.focus = true;
+            longText.cursorPosition = 0;
+            var dx = longText.width / 4;
+            var x = longText.width - dx;
+            var y = longText.height / 2;
+            mousePress(longText, x, y);
+            mouseMoveSlowly(longText, x, y, 2* dx, 0, 2);
+            mouseRelease(longText, x + 2 * dx, y);
+            verify(longText.selectedText !== "");
         }
     }
 }
