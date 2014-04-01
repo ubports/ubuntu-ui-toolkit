@@ -27,7 +27,7 @@ function TextInputHelper(input, flicker, im) {
     var handlingEnabled = true;
     var flickTimer = (flicker && flicker.hasOwnProperty("flickTimer")) ? flicker.flickTimer: null;
     var selectionMode = (input.persistentSelection && input.selectedText !== "")
-    var mouseEnterSelectionMode = false;
+    var longOrDoubleTap = false;
 
     // slots
     function toggleFlickerInteractiveMode() {
@@ -188,10 +188,10 @@ function TextInputHelper(input, flicker, im) {
             flickTimer.running = false;
         }
 
-        if (mouseEnterSelectionMode && this.mouseInSelection(mouseX, mouseY)) {
+        if (longOrDoubleTap && this.mouseInSelection(mouseX, mouseY)) {
             return;
         }
-        mouseEnterSelectionMode = false;
+        longOrDoubleTap = false;
         resetCursors(mouseX, mouseY);
         selectionMode = false;
     }
@@ -224,7 +224,7 @@ function TextInputHelper(input, flicker, im) {
       click.
       */
     this.doubleTap = function (mouseX) {
-        mouseEnterSelectionMode = true;
+        longOrDoubleTap = true;
         input.selectWord();
         pressedPosition = input.selectionEnd;
     }
@@ -242,7 +242,7 @@ function TextInputHelper(input, flicker, im) {
             input.selectWord();
             selectionMode = true;
         }
-        mouseEnterSelectionMode = true;
+        longOrDoubleTap = true;
         return true;
     }
 }
