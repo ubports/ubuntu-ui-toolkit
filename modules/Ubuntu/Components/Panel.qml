@@ -441,6 +441,7 @@ Item {
 
     /*!
       \internal
+      \deprecated
       Enable the InverseMouseArea that closes the panel when the user clicks outside of the panel.
       This functionality moved to the Toolbar/Page implementation because the mouse area needs to
       access with the toolbar and header, but this InverseMouseArea is still in the Panel for backwards
@@ -463,6 +464,7 @@ Item {
 
     /*!
       \internal
+      \deprecated
       Enable automatic reveal of panel on mouse hover over hint area, and hide when leaving
       the panel area. This is disabled by default, because Panel may be used to implement
       bottom edge behaviors that are completely different from the toolbar, but the property
