@@ -590,6 +590,8 @@ Item {
 
         onExited: {
             // panel.__openOnHover
+            // Ensure the panel is not still opening. The draggingArea will
+            // change after the panel finishes the opening animation.
             if (!animating) {
                 hideTimer.conditionalRestart();
             }
