@@ -15,7 +15,9 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1 as Ubuntu
 import "mathUtils.js" as MathUtils
+import "textInput.js" as Input
 
 /*!
     \qmltype TextArea
@@ -708,7 +710,7 @@ StyledItem {
     */
     function forceActiveFocus()
     {
-        internal.activateEditor();
+        editor.helper.activateInput();
     }
 
     // logic
@@ -721,6 +723,12 @@ StyledItem {
     // activation area on mouse click
     // the editor activates automatically when pressed in the editor control,
     // however that one can be slightly spaced to the main control area
+    MouseArea {
+        anchors.fill: parent
+        enabled: internal.frameSpacing > 0
+        // forward mouse events to input
+        Ubuntu.Mouse.forwardTo: [editor]
+    }
 
     //internals
 
@@ -744,8 +752,6 @@ StyledItem {
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
-    /*!\internal */
-    property alias __internal: internal
     QtObject {
         id: internal
         // public property locals enabling aliasing
@@ -757,22 +763,9 @@ StyledItem {
         property real inputAreaWidth: control.width - 2 * frameSpacing
         property real inputAreaHeight: control.height - 2 * frameSpacing
         //selection properties
-        property bool draggingMode: false
-        property bool selectionMode: false
         property bool prevShowCursor
 
         signal popupTriggered(int pos)
-
-        onDraggingModeChanged: {
-            if (draggingMode) selectionMode = false;
-        }
-        onSelectionModeChanged: {
-            if (selectionMode)
-                draggingMode = false;
-            else {
-                toggleSelectionCursors(false);
-            }
-        }
 
         function toggleSelectionCursors(show)
         {
@@ -788,25 +781,6 @@ StyledItem {
             }
         }
 
-        function activateEditor()
-        {
-            if (!editor.activeFocus)
-                editor.forceActiveFocus();
-            else
-                showInputPanel();
-
-        }
-
-        function showInputPanel()
-        {
-            if (!Qt.inputMethod.visible)
-                Qt.inputMethod.show();
-        }
-        function hideInputPanel()
-        {
-            Qt.inputMethod.hide();
-        }
-
         function linesHeight(lines)
         {
             var lineHeight = editor.font.pixelSize * lines + lineSpacing * lines
@@ -820,24 +794,6 @@ StyledItem {
                             control.lineCount :
                             Math.min(control.maximumLineCount, control.lineCount);
                 control.height = linesHeight(MathUtils.clamp(control.lineCount, 1, max));
-            }
-        }
-
-        function enterSelectionMode(x, y)
-        {
-            if (undefined !== x && undefined !== y) {
-                control.cursorPosition = control.positionAt(x, y);
-                control.moveCursorSelection(control.cursorPosition + 1);
-            }
-            toggleSelectionCursors(true);
-        }
-
-        function positionCursor(x, y) {
-            var cursorPos = control.positionAt(x, y);
-            if (control.selectedText === "")
-                control.cursorPosition = cursorPos;
-            else if (control.selectionStart > cursorPos || control.selectionEnd < cursorPos) {
-                control.cursorPosition = cursorPos;
             }
         }
     }
@@ -929,24 +885,12 @@ StyledItem {
         clip: true
         contentWidth: editor.paintedWidth
         contentHeight: editor.paintedHeight
-        interactive: !autoSize || (autoSize && maximumLineCount > 0)
+        property bool autosizeInfinite: control.autoSize && (control.maximumLineCount <= 0)
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
-        pressDelay: 500
-
-        function ensureVisible(r)
-        {
-            if (moving || flicking)
-                return;
-            if (contentX >= r.x)
-                contentX = r.x;
-            else if (contentX+width <= r.x+r.width)
-                contentX = r.x+r.width-width;
-            if (contentY >= r.y)
-                contentY = r.y;
-            else if (contentY+height <= r.y+r.height)
-                contentY = r.y+r.height-height;
-        }
+        // workaround for controlled flicking
+        pressDelay: 0
+        property Timer flickTimer: Timer{}
 
         // editor
         // Images are not shown when text contains <img> tags
@@ -955,7 +899,6 @@ StyledItem {
             readOnly: false
             id: editor
             focus: true
-            onCursorRectangleChanged: flicker.ensureVisible(cursorRectangle)
             width: internal.inputAreaWidth
             height: Math.max(internal.inputAreaHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
@@ -969,57 +912,48 @@ StyledItem {
             // forward keys to the root element so it can be captured outside of it
             Keys.forwardTo: [control]
 
+            property bool selectionMode: false
+            property var helper: new Input.TextInputHelper(editor, flicker, Qt.inputMethod)
+//            onSelectionModeChanged: internal.toggleSelectionCursors(selectionMode)
+
             // autosize handling
             onLineCountChanged: internal.frameSize()
 
             // remove selection when typing starts or input method start entering text
             onInputMethodComposingChanged: {
-                if (inputMethodComposing)
-                    internal.selectionMode = false;
+                if (inputMethodComposing) {
+                    helper.resetSelectionMode();
+                }
             }
             Keys.onPressed: {
-                if ((event.text !== ""))
-                    internal.selectionMode = false;
+                if ((event.text !== "")) {
+                    helper.resetSelectionMode();
+                }
             }
             Keys.onReleased: {
                 // selection positioners are updated after the keypress
-                if (selectionStart == selectionEnd)
-                    internal.selectionMode = false;
+                if (editor.selectionStart === editor.selectionEnd) {
+                    helper.resetSelectionMode();
+                }
             }
 
             // handling text selection
-            MouseArea {
-                id: handler
-                enabled: control.enabled && control.activeFocusOnPress
-                anchors.fill: parent
-                propagateComposedEvents: true
+            Ubuntu.Mouse.enabled: control.enabled && control.activeFocusOnPress && control.selectByMouse
+            Ubuntu.Mouse.clickAndHoldThreshold: units.gu(1)
+            // forward events to root so thise can be filtered out in case needed
+            Ubuntu.Mouse.forwardTo: [control]
 
-                onPressed: {
-                    internal.activateEditor();
-                    internal.draggingMode = true;
-                }
-                onPressAndHold: {
-                    // move mode gets false if there was a mouse move after the press;
-                    // this is needed as Flickable will send a pressAndHold in case of
-                    // press -> move-pressed ->stop-and-hold-pressed gesture is performed
-                    if (!internal.draggingMode)
-                        return;
-                    internal.draggingMode = false;
-                    // open popup
-                    internal.positionCursor(mouse.x, mouse.y);
+            Ubuntu.Mouse.onPressed: {
+                helper.pressed(mouse);
+                // consume mouse event so the selection does not get destroyed.
+                mouse.accepted = true;
+            }
+            Ubuntu.Mouse.onReleased: helper.released(mouse)
+            Ubuntu.Mouse.onPositionChanged: helper.positionChanged(mouse, Ubuntu.Mouse.hoverEnabled)
+            Ubuntu.Mouse.onDoubleClicked: helper.doubleTap(mouse)
+            Ubuntu.Mouse.onPressAndHold: {
+                if (helper.pressAndHold(mouse)) {
                     internal.popupTriggered(editor.cursorPosition);
-                }
-                onReleased: {
-                    internal.draggingMode = false;
-                }
-                onDoubleClicked: {
-                    internal.activateEditor();
-                    if (control.selectByMouse)
-                        control.selectWord();
-                }
-                onClicked: {
-                    internal.activateEditor();
-                    internal.positionCursor(mouse.x, mouse.y);
                 }
             }
         }

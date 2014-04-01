@@ -1005,6 +1005,7 @@ ActionItem {
             activeFocusOnPress: false
 
             // input selection and navigation handling
+            property bool selectionMode
             property var helper: new Input.TextInputHelper(editor, flicker, Qt.inputMethod)
 
             // mouse and touch handling
@@ -1014,15 +1015,15 @@ ActionItem {
             Ubuntu.Mouse.forwardTo: [control]
 
             Ubuntu.Mouse.onPressed: {
-                helper.pressed(mouse.x);
+                helper.pressed(mouse);
                 // consume mouse event so the selection does not get destroyed.
                 mouse.accepted = true;
             }
-            Ubuntu.Mouse.onReleased: helper.released(mouse.x)
-            Ubuntu.Mouse.onPositionChanged: helper.positionChanged(mouse.x)
-            Ubuntu.Mouse.onDoubleClicked: helper.doubleTap(mouse.x)
+            Ubuntu.Mouse.onReleased: helper.released(mouse)
+            Ubuntu.Mouse.onPositionChanged: helper.positionChanged(mouse, Ubuntu.Mouse.hoverEnabled)
+            Ubuntu.Mouse.onDoubleClicked: helper.doubleTap(mouse)
             Ubuntu.Mouse.onPressAndHold: {
-                if (helper.pressAndHold(mouse.x)) {
+                if (helper.pressAndHold(mouse)) {
                     internal.popupTriggered(editor.cursorPosition);
                 }
             }

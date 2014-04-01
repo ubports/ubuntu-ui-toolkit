@@ -18,6 +18,8 @@
 
 /*
   Helper functions for text inputs.
+  The \a input must have a boolean \a selectionMode property declared. The \a flicker
+  must have a \a flickerTimer Timer{} property declared.
   */
 
 function TextInputHelper(input, flicker, im) {
@@ -26,8 +28,10 @@ function TextInputHelper(input, flicker, im) {
     var textChanged = false;
     var handlingEnabled = true;
     var flickTimer = (flicker && flicker.hasOwnProperty("flickTimer")) ? flicker.flickTimer: null;
-    var selectionMode = (input.persistentSelection && input.selectedText !== "")
     var longOrDoubleTap = false;
+    // only TextInput has validator property
+    var singleLine = input.hasOwnProperty("validator");
+
 
     // slots
     function toggleFlickerInteractiveMode() {
@@ -39,6 +43,11 @@ function TextInputHelper(input, flicker, im) {
         }
     }
     function disableFlicking() {
+        if (flicker.moving) {
+            // do not disable while moving
+            print("MOVES STILL")
+            return;
+        }
         flicker.interactive = false;
         handlingEnabled = true;
     }
@@ -62,8 +71,13 @@ function TextInputHelper(input, flicker, im) {
         else if (flicker.contentY + flicker.height <= r.y + r.height)
             flicker.contentY = r.y + r.height - flicker.height;
     }
+    function flickResetSelectionMode() {
+        input.selectionMode = false;
+        longOrDoubleTap = false;
+    }
 
     // initialization
+    input.selectionMode = (input.persistentSelection && input.selectedText !== "")
     input.textChanged.connect(syncTextChange);
     if (flicker) {
         if (!flicker.hasOwnProperty("flickTimer")) {
@@ -74,7 +88,9 @@ function TextInputHelper(input, flicker, im) {
         flicker.pressDelay = 0;
         input.activeFocusChanged.connect(toggleFlickerInteractiveMode);
         flicker.interactiveChanged.connect(toggleHandling);
-        input.cursorRectangleChanged.connect(ensureVisible)
+        input.cursorRectangleChanged.connect(ensureVisible);
+        flicker.flickStarted.connect(flickResetSelectionMode);
+        flicker.movementEnded.connect(disableFlicking);
         // flick timer to distinguish between text selection and flick scrolling
         // if mouse move happens in the first few ms after the press, the event is considered a flicking
         if (flickTimer) {
@@ -89,31 +105,31 @@ function TextInputHelper(input, flicker, im) {
     /*
       Resets the selection boundaries.
       */
-    function resetSelectionBoundaries(mouseX, mouseY) {
+    function resetSelectionBoundaries(mouse) {
         input.cursorPosition =
-                (mouseY === undefined) ? input.positionAt(mouseX) : input.positionAt(mouseX, mouseY);
+                singleLine ? input.positionAt(mouse.x) : input.positionAt(mouse.x, mouse.y);
     }
 
     /*
       Reset selection boundaries and cursor position.
       */
-    function resetCursors(mouseX, mouseY) {
-        resetSelectionBoundaries(mouseX, mouseY);
-        input.cursorPosition = pressedPosition = (mouseY === undefined) ?
-                    input.positionAt(mouseX) : input.positionAt(mouseX, mouseY);
+    function resetCursors(mouse) {
+        resetSelectionBoundaries(mouse);
+        input.cursorPosition = pressedPosition = singleLine ?
+                    input.positionAt(mouse.x) : input.positionAt(mouse.x, mouse.y);
         moveStarts = moveEnds = undefined;
     }
 
     /*
       Moves the selection.
       */
-    function moveSelection(mouseX, mouseY) {
-        moveEnds = (mouseY === undefined) ? input.positionAt(mouseX) : input.positionAt(mouseX, mouseY);
+    function moveSelection(mouse) {
+        moveEnds = singleLine ? input.positionAt(mouse.x) : input.positionAt(mouse.x, mouse.y);
         if (moveStarts === undefined) {
             moveStarts = input.selectionStart;
         }
 
-        if (selectionMode) {
+        if (input.selectionMode) {
             input.select(moveStarts, moveEnds);
         }
     }
@@ -154,23 +170,30 @@ function TextInputHelper(input, flicker, im) {
     /*
       Checks whether the mouse fall in the selected text area.
       */
-    this.mouseInSelection = function (mouseX, mouseY) {
-        var pos = (mouseY === undefined) ?
-                    input.positionAt(mouseX) : input.positionAt(mouseX, mouseY);
+    this.mouseInSelection = function (mouse) {
+        var pos = singleLine ?
+                    input.positionAt(mouse.x) : input.positionAt(mouse.x, mouse.y);
         return (input.selectionStart !== input.selectionEnd)
                 && (pos >= Math.min(input.selectionStart, input.selectionEnd))
                 && (pos <= Math.max(input.selectionStart, input.selectionEnd));
+    }
+
+    /*
+      Resets selection mode due to key interaction.
+      */
+    this.resetSelectionMode = function() {
+        flickResetSelectionMode();
     }
 
     /*-----------------------INPUT ACTIONS----------------------- */
     /*
       on pressed, remembers the press position
       */
-    this.pressed = function (mouseX, mouseY) {
-        pressedPosition = (mouseY === undefined) ?
-                    input.positionAt(mouseX) : input.positionAt(mouseX, mouseY);
+    this.pressed = function (mouse) {
+        pressedPosition = singleLine ?
+                    input.positionAt(mouse.x) : input.positionAt(mouse.x, mouse.y);
         // leave selection mode if we are outside the selection area
-        selectionMode = this.mouseInSelection(mouseX, mouseY);
+        input.selectionMode = this.mouseInSelection(mouse);
         if (input.activeFocus && flicker && flickTimer) {
             // enable flicker and start flick-timer
             flicker.interactive = true;
@@ -181,26 +204,26 @@ function TextInputHelper(input, flicker, im) {
     /*
       Activates input, resets selection if needed
       */
-    this.released = function (mouseX, mouseY) {
+    this.released = function (mouse) {
         this.activateInput();
         if (flickTimer) {
             // stop flick timer
             flickTimer.running = false;
         }
 
-        if (longOrDoubleTap && this.mouseInSelection(mouseX, mouseY)) {
+        if (longOrDoubleTap && this.mouseInSelection(mouse)) {
             return;
         }
         longOrDoubleTap = false;
-        resetCursors(mouseX, mouseY);
-        selectionMode = false;
+        resetCursors(mouse);
+        input.selectionMode = false;
     }
 
     /*
       Performs selection
       */
-    this.positionChanged = function (mouseX, mouseY) {
-        if (!input.activeFocus) {
+    this.positionChanged = function (mouse, hoverEnabled) {
+        if (!input.activeFocus || mouse.button !== Qt.LeftButton) {
             return;
         }
         if (flicker && flicker.interactive) {
@@ -211,19 +234,20 @@ function TextInputHelper(input, flicker, im) {
             return;
         }
 
-        if (!selectionMode) {
+        if (!input.selectionMode) {
             input.cursorPosition = pressedPosition;
-            resetSelectionBoundaries(mouseX, mouseY);
-            selectionMode = true;
+            resetSelectionBoundaries(mouse);
+            input.selectionMode = true;
         }
-        moveSelection(mouseX, mouseY);
+
+        moveSelection(mouse);
     }
 
     /*
       Selects a word under cursor. The input is activated and its cursor is positioned by a previous
       click.
       */
-    this.doubleTap = function (mouseX) {
+    this.doubleTap = function (mouse) {
         longOrDoubleTap = true;
         input.selectWord();
         pressedPosition = input.selectionEnd;
@@ -232,17 +256,13 @@ function TextInputHelper(input, flicker, im) {
     /*
       Performs pressAndHold action. Returns true if the action can be performed
       */
-    this.pressAndHold = function (mouseX, mouseY) {
+    this.pressAndHold = function (mouse) {
         if (!input.activeFocus || !handlingEnabled) {
             return false;
         }
-        if (!this.mouseInSelection(mouseX, mouseY)) {
-            input.cursorPosition = pressedPosition = (mouseY === undefined) ?
-                        input.positionAt(mouseX) : input.positionAt(mouseX, mouseY);
-            input.selectWord();
-            selectionMode = true;
+        if (!this.mouseInSelection(mouse)) {
+            return false;
         }
-        longOrDoubleTap = true;
         return true;
     }
 }
