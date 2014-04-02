@@ -407,11 +407,6 @@ Item {
         property string previousState: ""
         property int movingDelta
 
-        // Used for recovering the state from before
-        //  bottomBarVisibilityCommunicator forced the toolbar to hide.
-        property bool savedLocked: panel.locked
-        property bool savedOpened: panel.opened
-
         // Convert from Qt.AlignLeading to Qt.AlignTrailing to Qt.AlignLeft and Qt.AlignRight
         property int align: {
             if (panel.align === Qt.AlignLeading) {
@@ -435,30 +430,6 @@ Item {
                                            ? Qt.Horizontal : Qt.Vertical
     }
 
-    Connections {
-        // FIXME: bottomBarVisibilityCommunicator is not the most-suitable name anymore.
-        target: bottomBarVisibilityCommunicator
-        onForceHiddenChanged: {
-            if (bottomBarVisibilityCommunicator.forceHidden) {
-                internal.savedLocked = panel.locked;
-                internal.savedOpened = panel.opened;
-                panel.close();
-                panel.locked = true;
-            } else { // don't force hidden
-                panel.locked = internal.savedLocked;
-                if (panel.locked) {
-                    if (internal.savedOpened) {
-                        panel.open();
-                    } else {
-                        panel.close();
-                    }
-                }
-                // if the panel was locked, do not slide it back in
-                // until the user performs an edge swipe.
-            }
-        }
-    }
-
     /*! \internal */
     onStateChanged: {
         if (state == "hint") {
@@ -480,7 +451,7 @@ Item {
     property bool __closeOnContentsClicks: true
     Toolkit.InverseMouseArea {
         anchors.fill: draggingArea
-        onClicked: {
+        onPressed: {
             mouse.accepted = false;
             // the mouse click may cause an update
             //  of locked by the clicked Item behind
@@ -637,8 +608,6 @@ Item {
         property real size: internal.orientation === Qt.Horizontal ? height : width
         //position will always be in the range 0..size, where position==0 means spread, position==size means hidden.
         property real position: panel.opened ? 0 : size
-
-        onPositionChanged: bottomBarVisibilityCommunicator.position = size - position
 
         y: internal.align === Qt.AlignTop ? -position : internal.align === Qt.AlignBottom ? position : 0
         x: internal.align === Qt.AlignLeft ? -position : internal.align === Qt.AlignRight ? position : 0

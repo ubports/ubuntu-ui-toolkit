@@ -47,26 +47,6 @@ shell.
 Documentation
 -------------
 
-Main Documentation (QDocs):
-+++++++++++++++++++++++++++
-
 Once built, you may view the documentation by opening  
-`documentation/html/overview-ubuntu-sdk.html` in your favorite web browser.
-
-
-Autopilot Emulators (Sphinx docs):
-++++++++++++++++++++++++++++++++++
-
-To build the AutoPilot Emulators API documentation (html),
-  
-  * install python-sphinx::
-
-        $ sudo apt-get install python-sphinx
-    
-  * from the branch's root, run::
-
-        $ sphinx-build -b html docs-autopilot-emulator emulator-html
-
-  * Once built, you may view the documentation by opening
-    `emulator-html/ubuntuuitoolkit.html` in your favorite web browser.
-
+  documentation/html/overview-ubuntu-sdk.html
+in your favorite web browser.

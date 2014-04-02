@@ -141,7 +141,14 @@ ListModel {
         if (!pickerCompleted || !pickerItem || resetting) {
             return;
         }
-        pickerItem.selectedIndex = indexOf();
+        // use animated index update only if the change had happened because of the delegate update
+        if (pickerItem.__clickedIndex >= 0) {
+            pickerItem.selectedIndex = indexOf();
+        } else {
+            // in case the date property was changed due to binding/update,
+            // position tumbler without animating
+            pickerItem.positionViewAtIndex(indexOf());
+        }
     }
 
 }

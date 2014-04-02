@@ -191,6 +191,7 @@ PageTreeNode
     property color backgroundColor
     property color footerColor
     property bool automaticOrientation
+    property bool useDeprecatedToolbar
     default property internal contentsItem
     property list<Action> actions
     property UnityActions.ActionManager actionManager
@@ -271,6 +272,7 @@ StyledItem
     readonly property int minutes
     readonly property int seconds
     property var locale
+    readonly property bool moving
 modules/Ubuntu/Components/Pickers/Dialer.qml
 StyledItem
     property real minimumValue
@@ -296,6 +298,8 @@ StyledItem
     property Component delegate
     property int selectedIndex
     property bool live
+    readonly property bool moving
+    function positionViewAtIndex(index)
     property int __clickedIndex
 modules/Ubuntu/Components/Pickers/PickerDelegate.qml
 AbstractButton
