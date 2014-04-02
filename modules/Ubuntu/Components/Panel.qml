@@ -451,7 +451,7 @@ Item {
     property bool __closeOnContentsClicks: true
     Toolkit.InverseMouseArea {
         anchors.fill: draggingArea
-        onClicked: {
+        onPressed: {
             mouse.accepted = false;
             // the mouse click may cause an update
             //  of locked by the clicked Item behind
