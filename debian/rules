@@ -21,5 +21,7 @@ override_dh_build:
 
 override_dh_install:
 	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch 
+	mkdir -p debian/tmp/usr/share/ubuntu-ui-toolkit/doc
+	cp -r $(CURDIR)/documentation/*qch debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
 	dh_install --fail-missing
 

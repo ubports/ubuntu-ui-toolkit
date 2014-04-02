@@ -1,3 +1,54 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20140331-0ubuntu1) trusty; urgency=low
+
+  [ Zoltán Balogh ]
+  * Separate the online and offline documentation and install the QtC
+    help file
+
+  [ Zsombor Egri ]
+  * Move state data file to temp folder (LP: #1276760)
+  * StateSaver does cleanup if the app is closed due to SIGTERM. This is
+    needed as upstart sends this signal when the application is closed
+    from app scope. SIGINT saves the state. (LP: #1259498)
+  * MainView binding loop fix when backgroundColor is changed runtime.
+    (LP: #1204453)
+
+  [ Loïc Molinari ]
+  * [Perf metrics] Considered number of CPU cores for CPU usage.
+
+  [ tpeeters ]
+  * Add useDeprecatedToolbar property to MainView which can be used to
+    disable the current toolbar. Unsetting that property will in future
+    also enable new features in the header. (LP: #1273184)
+  * Close panel on contents press instead of click, so that composed
+    events are not eaten by the InverseMouseArea of the Panel. (LP:
+    #1295720)
+
+  [ Christian Dywan ]
+  * Treat QML warnings as fatal except for explicitly listed tests
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 31 Mar 2014 18:26:59 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140321.1-0ubuntu1) trusty; urgency=low
+
+  [ Bartosz Kosiorek ]
+  * Fix selection and coping text from TextFields (LP: 1130369) (LP:
+    #1130369)
+  * "Cut" operation do not shows for "ReadOnly's" TextField and TextArea
+    (LP: 1293149) (LP: #1293149, #1267821)
+
+  [ Zsombor Egri ]
+  * InverseMouseArea not getting mouse events converted from touch when
+    set as topmost item. (LP: #1288876)
+
+  [ Michael Zanetti ]
+  * drop BottomBarVisiblityCommunicator as it has gone from unity8 - no
+    more HUD from the lower edge
+
+  [ Christian Dywan ]
+  * Introduce UbuntuTestCase API for C++ (LP: #1261396)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 21 Mar 2014 11:29:53 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20140317-0ubuntu1) trusty; urgency=low
 
   [ Didier Roche ]

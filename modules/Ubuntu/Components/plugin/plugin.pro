@@ -36,7 +36,6 @@ HEADERS += plugin.h \
     shapeitemtexture.h \
     shapeitem.h \
     inversemouseareatype.h \
-    bottombarvisibilitycommunicator.h \
     qquickclipboard.h \
     qquickmimedata.h \
     qquickclipboard_p.h \
@@ -60,7 +59,8 @@ HEADERS += plugin.h \
     ucstatesaver_p.h \
     ucurihandler.h \
     ucinversemouse.h \
-    ucmouse.h
+    ucmouse.h \
+    unixsignalhandler_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -73,7 +73,6 @@ SOURCES += plugin.cpp \
     quickutils.cpp \
     shapeitem.cpp \
     inversemouseareatype.cpp \
-    bottombarvisibilitycommunicator.cpp \
     qquickclipboard.cpp \
     qquickmimedata.cpp \
     ucubuntuanimation.cpp \
@@ -90,7 +89,8 @@ SOURCES += plugin.cpp \
     ucstatesaver.cpp \
     statesaverbackend_p.cpp \
     ucurihandler.cpp \
-    ucmousefilters.cpp
+    ucmousefilters.cpp \
+    unixsignalhandler_p.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp

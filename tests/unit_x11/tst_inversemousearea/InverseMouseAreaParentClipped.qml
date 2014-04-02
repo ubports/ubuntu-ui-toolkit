@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,30 +17,40 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Item {
-    width: 300
-    height: 300
-    objectName: "ROOT"
+MainView {
+    id: root
+    width: units.gu(40)
+    height: units.gu(71)
 
-    Rectangle {
-        x: 110; y: 10
-        width: 100; height: 100
-        color: "red"
-        MouseArea {
-            anchors.fill: parent
-            objectName: "MA"
-        }
-    }
-
-    Rectangle {
-        x: 10; y: 10
-        width: 100; height: 100
-        color: "blue"
+    property InverseMouseArea ima: null
+    Component {
+        id: imaComponent
         InverseMouseArea {
+            id: ima
+            objectName: "Test_IMA"
             anchors.fill: parent
-            objectName: "IMA"
             topmostItem: true
+            Component.onCompleted: root.ima = ima
         }
     }
 
+    Component.onCompleted: loader.sourceComponent = imaComponent
+
+    Page {
+        title: "Test"
+
+        Rectangle {
+            objectName: "Card"
+            width: parent.width - units.gu(5)
+            height: units.gu(50)
+            anchors.centerIn: parent
+            color: "teal"
+            clip: true
+
+            Loader {
+                id: loader
+                anchors.fill: parent
+            }
+        }
+    }
 }

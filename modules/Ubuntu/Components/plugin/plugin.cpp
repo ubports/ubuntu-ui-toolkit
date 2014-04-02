@@ -35,7 +35,6 @@
 #include "inversemouseareatype.h"
 #include "qquickclipboard.h"
 #include "qquickmimedata.h"
-#include "bottombarvisibilitycommunicator.h"
 #include "thumbnailgenerator.h"
 #include "ucubuntuanimation.h"
 #include "ucfontutils.h"
@@ -224,8 +223,6 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
         new ContextPropertyChangeListener(context, "FontUtils");
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      fontUtilsListener, SLOT(updateContextProperty()));
-
-    context->setContextProperty("bottomBarVisibilityCommunicator", &BottomBarVisibilityCommunicator::instance());
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 
