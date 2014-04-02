@@ -33,7 +33,9 @@ ActionSelectionPopover {
         }
         Action {
             text: i18n.tr("Cut")
-            enabled: target && target.selectedText !== ""
+            // If paste/editing is not possible, then disable also "Cut" operation
+            // It is applicable for ReadOnly's TextFields and TextAreas
+            enabled: target && target.selectedText !== "" && target.canPaste
             onTriggered: target.cut()
         }
         Action {
