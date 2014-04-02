@@ -27,7 +27,7 @@ UPMCpuUsage::UPMCpuUsage(QQuickItem *parent) :
     m_samplingInterval(500),
     m_timeAtLastFrame(0)
 {
-    m_cores = 1.0f / sysconf(_SC_NPROCESSORS_ONLN);
+    m_timingFactor = 100.0f / sysconf(_SC_NPROCESSORS_ONLN);
     m_previousClock = times(&m_previousTimes);
 
     QObject::connect(&m_timer, &QTimer::timeout, this, &UPMCpuUsage::appendCpuTime);
@@ -127,5 +127,5 @@ void UPMCpuUsage::appendCpuTime()
     m_previousClock = newClock;
 
     int width = ((qreal)m_graphModel->samples() / m_period) * m_samplingInterval;
-    m_graphModel->appendValue(width, elapsed * 100);
+    m_graphModel->appendValue(width, elapsed * m_timingFactor);
 }
