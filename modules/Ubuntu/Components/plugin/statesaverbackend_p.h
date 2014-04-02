@@ -59,6 +59,7 @@ protected:
 private Q_SLOTS:
     void initialize();
     void cleanup();
+    void signalHandler(int type);
 
 private:
     QPointer<QSettings> m_archive;
