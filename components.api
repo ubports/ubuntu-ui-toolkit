@@ -191,6 +191,7 @@ PageTreeNode
     property color backgroundColor
     property color footerColor
     property bool automaticOrientation
+    property bool useDeprecatedToolbar
     default property internal contentsItem
     property list<Action> actions
     property UnityActions.ActionManager actionManager
