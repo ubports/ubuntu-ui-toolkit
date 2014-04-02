@@ -71,6 +71,7 @@ private:
         QList<AlarmData> alarms = AlarmManager::instance().alarms();
         Q_FOREACH(AlarmData i, alarms) {
             if (trace && (alarm->message() == i.message)) {
+                qDebug() << "----------------------";
                 qDebug() << "Alarm data:" << alarm->message();
                 qDebug() << alarm->date() << i.date;
                 qDebug() << alarm->type() << i.type;
@@ -152,9 +153,25 @@ private Q_SLOTS:
         QVERIFY(containsAlarm(&alarm));
     }
 
-    void test_repeating_givenDay()
+    void test_repeating_givenDay_exact_data()
     {
-        UCAlarm alarm(QDateTime::currentDateTime(), UCAlarm::Wednesday, "test_repeating_givenDay");
+        QTest::addColumn<QString>("message");
+        QTest::addColumn<int>("day");
+
+        QTest::newRow("Monday") << "Monday" << (int)UCAlarm::Monday;
+        QTest::newRow("Tuesday") << "Tuesday" << (int)UCAlarm::Tuesday;
+        QTest::newRow("Wednesday") << "Wednesday" << (int)UCAlarm::Wednesday;
+        QTest::newRow("Thursday") << "Thursday" << (int)UCAlarm::Thursday;
+        QTest::newRow("Friday") << "Friday" << (int)UCAlarm::Friday;
+        QTest::newRow("Saturday") << "Saturday" << (int)UCAlarm::Saturday;
+        QTest::newRow("Sunday") << "Sunday" << (int)UCAlarm::Sunday;
+    }
+
+    void test_repeating_givenDay_exact()
+    {
+        QFETCH(QString, message);
+        QFETCH(int, day);
+        UCAlarm alarm(QDateTime::currentDateTime(), (UCAlarm::DaysOfWeek)day, "test_repeating_givenDay_exact_" + message);
 
         alarm.save();
         waitForRequest(&alarm);
@@ -162,20 +179,37 @@ private Q_SLOTS:
         QVERIFY(containsAlarm(&alarm));
     }
 
+    void test_repeating_moreDays_data()
+    {
+        QTest::addColumn<QString>("message");
+        QTest::addColumn<int>("days");
+
+        QTest::newRow("First on Monday") << "Monday" << (int)(UCAlarm::Monday | UCAlarm::Sunday);
+        QTest::newRow("First on Tuesday") << "Tuesday" << (int)(UCAlarm::Tuesday | UCAlarm::Monday);
+        QTest::newRow("First on Wednesday") << "Wednesday" << (int)(UCAlarm::Wednesday | UCAlarm::Tuesday);
+        QTest::newRow("First on Thursday") << "Thursday" << (int)(UCAlarm::Thursday | UCAlarm::Wednesday);
+        QTest::newRow("First on Friday") << "Friday" << (int)(UCAlarm::Friday | UCAlarm::Thursday);
+        QTest::newRow("First on Saturday") << "Saturday" << (int)(UCAlarm::Saturday | UCAlarm::Friday);
+        QTest::newRow("First on Sunday") << "Sunday" << (int)(UCAlarm::Sunday | UCAlarm::Saturday);
+    }
+
     void test_repeating_moreDays()
     {
-        QDateTime currentDate(QDateTime::currentDateTime());
-        int dow = currentDate.date().dayOfWeek() - 1;
-        int nextDow = (dow + 6) % 7;
-        UCAlarm::DaysOfWeek days = (UCAlarm::DaysOfWeek)((1 << dow) | (1 << nextDow));
+        QFETCH(QString, message);
+        QFETCH(int, days);
 
-        UCAlarm alarm(currentDate, days, "test_repeating_moreDays");
+        QDateTime currentDate(QDateTime::currentDateTime());
+
+        UCAlarm alarm(currentDate, (UCAlarm::DaysOfWeek)days, "test_repeating_moreDays" + message);
         // the distance is always 6 days between the occurrences
-        UCAlarm firstOccurrence(currentDate.addDays(6), alarm.daysOfWeek(), alarm.message());
+        UCAlarm firstOccurrence(currentDate, alarm.daysOfWeek(), alarm.message());
+        // make sure we have the same setup as the original one; checkAlarm() adjusts all alarm data
+        UCAlarmPrivate::get(&firstOccurrence)->checkAlarm();
 
         alarm.save();
         waitForRequest(&alarm);
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
+        QVERIFY(containsAlarm(&alarm));
         QVERIFY(containsAlarm(&firstOccurrence));
     }
 
@@ -183,20 +217,20 @@ private Q_SLOTS:
         QTest::addColumn<QString>("message");
         QTest::addColumn<int>("dow");
 
-        QTest::newRow("Monday") << "test_repeating_Mon" << (int)UCAlarm::Monday;
-        QTest::newRow("Tuesday") << "test_repeating_Tue" << (int)UCAlarm::Tuesday;
-        QTest::newRow("Wednesday") << "test_repeating_Wed" << (int)UCAlarm::Wednesday;
-        QTest::newRow("Thursday") << "test_repeating_Thu" << (int)UCAlarm::Thursday;
-        QTest::newRow("Friday") << "test_repeating_Fri" << (int)UCAlarm::Friday;
-        QTest::newRow("Saturday") << "test_repeating_Sat" << (int)UCAlarm::Saturday;
-        QTest::newRow("Sunday") << "test_repeating_Sun" << (int)UCAlarm::Sunday;
+        QTest::newRow("Monday") << "Monday" << (int)UCAlarm::Monday;
+        QTest::newRow("Tuesday") << "Tuesday" << (int)UCAlarm::Tuesday;
+        QTest::newRow("Wednesday") << "Wednesday" << (int)UCAlarm::Wednesday;
+        QTest::newRow("Thursday") << "Thursday" << (int)UCAlarm::Thursday;
+        QTest::newRow("Friday") << "Friday" << (int)UCAlarm::Friday;
+        QTest::newRow("Saturday") << "Saturday" << (int)UCAlarm::Saturday;
+        QTest::newRow("Sunday") << "Sunday" << (int)UCAlarm::Sunday;
     }
     void test_repeating_weekly()
     {
         QFETCH(QString, message);
         QFETCH(int, dow);
 
-        UCAlarm alarm(QDateTime::currentDateTime().addSecs(600), (UCAlarm::DaysOfWeek)dow, message);
+        UCAlarm alarm(QDateTime::currentDateTime().addSecs(600), (UCAlarm::DaysOfWeek)dow, "test_repeating_weekly_" + message);
         alarm.save();
         waitForRequest(&alarm);
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
@@ -281,7 +315,7 @@ private Q_SLOTS:
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
 
-        alarm.setDate(QDateTime::currentDateTime().addDays(5));
+        alarm.setDate(QDateTime::currentDateTime().addDays(1));
         QVERIFY(!compareAlarms(&alarm, &copy));
 
         alarm.save();

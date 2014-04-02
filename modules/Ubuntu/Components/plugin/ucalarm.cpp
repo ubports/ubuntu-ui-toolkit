@@ -163,6 +163,9 @@ UCAlarm::Error UCAlarmPrivate::checkDow()
         } else if (alarmDay > dayOfWeek) {
             rawData.date = rawData.date.addDays(alarmDay - dayOfWeek);
             rawData.changes |= AlarmData::Date;
+        } else if (rawData.type != UCAlarm::OneTime) {
+            rawData.date = rawData.date.addDays(7);
+            rawData.changes |= AlarmData::Date;
         }
     }
     return UCAlarm::NoError;
@@ -372,6 +375,10 @@ void UCAlarm::setDate(const QDateTime &date)
     d->rawData.date = AlarmData::normalizeDate(date);
     d->rawData.changes |= AlarmData::Date;
     Q_EMIT dateChanged();
+    if (d->rawData.type == UCAlarm::OneTime) {
+        // adjust dayOfWeek as well
+        setDaysOfWeek(UCAlarm::AutoDetect);
+    }
 }
 
 /*!
