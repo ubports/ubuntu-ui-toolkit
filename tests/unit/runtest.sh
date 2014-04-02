@@ -21,7 +21,8 @@ _CMD=""
 _TARGET=$1
 _TESTFILE=$2
 _MINIMAL=$3
-_ARGS="-o ../../test_$_TARGET_$_TESTFILE.xml,xunitxml -o -,txt"
+_XML="../../test_$_TARGET_$_TESTFILE.xml"
+_ARGS="-o $_XML,xunitxml -o -,txt"
 set +e
 
 function create_test_cmd {
@@ -32,29 +33,72 @@ function create_test_cmd {
   if [ $_TARGET != $_TESTFILE ]; then
       _CMD="$_CMD -input $_TESTFILE"
   fi
-  _CMD="$_CMD -maxwarnings 20"
+  _CMD="$_CMD -maxwarnings 4"
 }
 
 function execute_test_cmd {
   echo "Executing $_CMD $_ARGS"
   if [ $DISPLAY ]; then
-      # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
-      # https://bugreports.qt-project.org/browse/QTBUG-36243
-      QML2_IMPORT_PATH=../../../modules:$QML2_IMPORT_PATH UBUNTU_UI_TOOLKIT_THEMES_PATH=../../../modules \
-          $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
+    # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
+    # https://bugreports.qt-project.org/browse/QTBUG-36243
+    QML2_IMPORT_PATH=../../../modules:$QML2_IMPORT_PATH UBUNTU_UI_TOOLKIT_THEMES_PATH=../../../modules \
+    $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
+    # Note: Get first command before the pipe, $? would be ambiguous
+    RESULT=${PIPESTATUS[0]}
+    WARNINGS=$(grep -c qwarn $_XML)
+    EXCEPTIONS='tst_components_benchmark \
+                tst_toolbaritems.qml \
+                tst_tabbar.qml \
+                tst_alarms \
+                tst_pickerpanel.qml \
+                tst_picker.qml \
+                tst_i18n \
+                tst_listitems_standard.qml \
+                tst_optionselector.qml \
+                tst_arguments \
+                tst_mainview \
+                tst_popups_actionselectionpopover.qml \
+                tst_layouts tst_datepicker.qml \
+                tst_listitems_valueselector.qml \
+                tst_listitems_itemselector.qml \
+                tst_ubuntu_shape \
+                tst_page.qml \
+                tst_qquick_image_extension \
+                tst_listitems_divider.qml tst_layouts \
+                tst_checkbox.qml \
+                tst_performance \
+                tst_inversemousearea \
+                tst_listitems_base.qml \
+                tst_statesaver \
+                tst_theme_engine \
+                tst_orientation \
+                tst_tabs.qml \
+                tst_textfield.qml \
+                tst_mousefilters'
+    if [ $WARNINGS -ne 0 ]; then
+      if [[ $EXCEPTIONS == *$_TARGET_$_TESTFILE* ]]; then
+        echo "FIXME: $WARNINGS warnings - Known problematic test"
+      else
+        echo "Error: $WARNINGS warnings in $_TARGET_$_TESTFILE"
+        RESULT=666
+      fi
+    elif [[ $EXCEPTIONS == *$_TARGET_$_TESTFILE* ]]; then
+      echo Woot! Known problematic test did pass afterall!
+      echo Consider removing $_TARGET_$_TESTFILE from EXCEPTIONS in $0
+    fi
   else
-      echo "Skipped because no DISPLAY available"
+    echo "Skipped because no DISPLAY available"
+    RESULT=0
   fi
-  # Note: Get first command before the pipe, $? would be ambiguous
-  RESULT=${PIPESTATUS[0]}
   # segfault
   if [ $RESULT -eq 139 ]; then
-   return 2
+    RESULT=2
   fi
   # abort
   if [ $RESULT -eq 134 ]; then
-   return 2
+    RESULT=2
   fi
+  echo "$_TARGET_$_TESTFILE exited with $RESULT"
   return $RESULT
 }
 

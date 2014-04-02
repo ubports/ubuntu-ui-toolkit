@@ -65,7 +65,7 @@ private:
     int m_period;
     int m_samplingInterval;
     QTimer m_timer;
-    float m_cores;
+    float m_timingFactor;
     struct tms m_previousTimes;
     clock_t m_previousClock;
     int m_timeAtLastFrame;
