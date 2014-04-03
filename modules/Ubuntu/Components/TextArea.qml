@@ -902,6 +902,7 @@ StyledItem {
         property bool autosizeInfinite: control.autoSize && (control.maximumLineCount <= 0)
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
+        pressDelay: 0
 
         // editor
         // Images are not shown when text contains <img> tags

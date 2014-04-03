@@ -87,6 +87,33 @@ TestCase {
 		}
 	}
 
+    /*!
+      The function simulates a flick event over an \item. The flick is executed
+      between \a from and \to points with a given \a speed (in msec).
+      */
+    function flick(item, from, to, speed) {
+        var pointCount = 5;
+        if (from === undefined)
+            qtest_fail("source point not defined", 2);
+        if (to === undefined)
+            qtest_fail("destination point not defined", 2);
+        if (speed === undefined)
+            speed = -1;
+        else
+            speed /= pointCount;
+
+        var dx = to.x - from.x;
+        var dy = to.y - from.y;
+
+        mousePress(item, from.x, from.y);
+        for (var i = 0; i < pointCount; i++) {
+            mouseMove(item, from.x + (i + 1) * dx / pointCount, from.y + (i + 1) * dy / pointCount, speed);
+        }
+        mouseRelease(item, to.x, to.y);
+        // empty event buffer
+        wait(200);
+    }
+
 	/*!
 		Keeps executing a given parameter-less function until it returns the given
 		expected result or the timemout is reached (in which case a test failure

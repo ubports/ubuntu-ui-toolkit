@@ -17,7 +17,10 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1 as Ubuntu
 
+// TODO: check whether main is also inside a Flickable =? disable interactive for that as well
+
 Item {
+    objectName: "input_handler"
     // the root control
     property Item main
     // the input instance
@@ -59,6 +62,8 @@ Item {
     property var flickableList: new Array()
     property bool textChanged: false
     property int pressedPosition: -1
+    readonly property bool scrollingDisabled: main && main.hasOwnProperty("autosize") && main.autoSize && (main.maximumLineCount <= 0)
+    onScrollingDisabledChanged: if (state == "") flicker.interactive = scrollingDisabled
     // move properties
     property int moveStarts: -1
     property int moveEnds: -1
@@ -102,6 +107,34 @@ Item {
         }
         input.select(moveStarts, moveEnds);
     }
+    // disables interactive Flickable parents, stops at the first non-interactive flickable.
+    function toggleFlickablesInteractive(turnOn) {
+        var p;
+        if (!turnOn) {
+            // handle the internal Flickable differently
+            p = main.parent;
+            while (p) {
+                if (p.hasOwnProperty("flicking")) {
+                    if (p.interactive) {
+                        flickableList.push(p);
+                        p.interactive = false;
+                    } else {
+                        break;
+                    }
+                }
+                p = p.parent;
+            }
+        } else {
+            while (flickableList.length > 0) {
+                p = flickableList.pop();
+                p.interactive = true;
+            }
+        }
+    }
+
+    Component.onCompleted: {
+        state = (main.focus) ? "" : "inactive";
+    }
 
     // states
     states: [
@@ -110,42 +143,34 @@ Item {
             name: ""
             StateChangeScript {
                 // restore interactive for all Flickable parents
-                script: {
-                    while (flickableList.length > 0) {
-                        var p = flickableList.pop();
-                        p.interactive = true;
-                    }
-                }
+                script: toggleFlickablesInteractive(true);
             }
         },
-
+        State {
+            name: "inactive"
+            when: main.focus = false
+            PropertyChanges {
+                target: flickable
+                interactive: false
+            }
+        },
         State {
             name: "scrolling"
             StateChangeScript {
-                script: {
-                    selectionTimeout.running = false;
-                }
+                script: selectionTimeout.running = false;
             }
         },
         State {
             name: "select"
             // during select state the Flickable is not interactive
+            PropertyChanges {
+                target: flickable
+                interactive: false
+            }
             StateChangeScript {
                 script: {
                     // turn off interactive for all parent flickables
-                    var p = input.parent;
-                    while (p) {
-                        if (p.hasOwnProperty("flicking")) {
-                            if (p.interactive) {
-                                flickableList.push(p);
-                                p.interactive = false;
-                            } else {
-                                break;
-                            }
-                        }
-                        p = p.parent;
-                    }
-
+                    toggleFlickablesInteractive(false);
                     if (!positionInSelection(pressedPosition)) {
                         input.cursorPosition = pressedPosition;
                     }
@@ -153,10 +178,15 @@ Item {
             }
         }
     ]
+//    onStateChanged: print("STATE", state)
 
+    // brings the state back to default when the component looses focuse
     Connections {
         target: main
-        onFocusChanged: if (!main.focus) state = "";
+        ignoreUnknownSignals: true
+        onFocusChanged: {
+            state = (main.focus) ? "" : "inactive";
+        }
     }
 
     Connections {
@@ -168,13 +198,13 @@ Item {
     Connections {
         target: flickable
         // turn scrolling state on
-        onFlickStarted: state = "scrolling"
-        onMovementStarted: state = "scrolling"
+        onFlickStarted: if (!scrollingDisabled) state = "scrolling"
+        onMovementStarted: if (!scrollingDisabled) state = "scrolling"
         // reset to default state
         onMovementEnded: state = ""
     }
 
-    // switches the
+    // switches the state to selection
     Timer {
         id: selectionTimeout
         interval: 300
@@ -206,7 +236,7 @@ Item {
         activateInput();
         // stop text selection timer
         selectionTimeout.running = false;
-        if (/*!mouseInSelection(mouse) && */(state === "")) {
+        if (state === "") {
             input.cursorPosition = mousePosition(mouse);
         }
         moveStarts = moveEnds = -1;

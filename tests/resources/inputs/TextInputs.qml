@@ -29,17 +29,22 @@ MainView {
     Flickable {
         anchors.fill: parent
         contentHeight: column.childrenRect.height
+        onMovingChanged: print("Main Flickable moving")
         Column {
             id: column
             anchors.horizontalCenter: parent.horizontalCenter
             spacing: units.gu(1)
             TextField {
+                id: field
                 objectName: "Standard"
                 width: units.gu(30)
-                focus: true
-                activeFocusOnPress: false
                 text: "The orange (specifically, the sweet orange) is the fruit of the citrus species Citrus × ​sinensis in the family Rutaceae."
             }
+            Button {
+                text: "home"
+                onClicked: field.cursorPosition = 0;
+            }
+
             TextField {
                 objectName: "Preserving"
                 width: units.gu(30)

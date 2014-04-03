@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import QtTest 1.0
+import Ubuntu.Test 0.1
 import Ubuntu.Components 0.1
 
 Item {
@@ -36,7 +37,7 @@ Item {
             width: flickable.width
             autoSize: true
             maximumLineCount: 0
-            text: "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1"
+            text: "1\n2\n3\n4\n5\n6\n7\n8\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1"
         }
     }
 
@@ -46,34 +47,9 @@ Item {
         signalName: "movingChanged"
     }
 
-    TestCase {
+    UbuntuTestCase {
         name: "TextAreaInFlickableAPI"
         when: windowShown
-        // simulates a flick event between \b from  and \b to points both relative to the item
-        // with a given speed
-        function flick(item, from, to, speed) {
-            var pointCount = 5;
-            if (from === undefined)
-                qtest_fail("source point not defined", 2);
-            if (to === undefined)
-                qtest_fail("destination point not defined", 2);
-            if (speed === undefined)
-                speed = -1;
-            else
-                speed /= pointCount;
-
-            var dx = to.x - from.x;
-            var dy = to.y - from.y;
-
-            mousePress(item, from.x, from.y);
-            for (var i = 0; i < pointCount; i++) {
-                mouseMove(item, from.x + (i + 1) * dx / pointCount, from.y + (i + 1) * dy / pointCount, speed);
-            }
-            mouseRelease(item, to.x, to.y);
-            // empty event queues
-            wait(500);
-        }
-
         function test_DoNotStealFlickEvents() {
             mouseClick(inFlickable, 10, 10);
             flick(inFlickable, Qt.point(50, 20), Qt.point(50, 0), 100);
