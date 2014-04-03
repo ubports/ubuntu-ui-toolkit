@@ -47,11 +47,6 @@ Item {
         onErrorChanged: (error) ? visuals.errorColor : visuals.backgroundColor;
         color: visuals.backgroundColor;
         anchors.fill: parent
-
-        MouseArea {
-            anchors.fill: parent
-            onPressed: if (!styledItem.activeFocus && styledItem.activeFocusOnPress) styledItem.forceActiveFocus()
-        }
     }
 
     Loader {

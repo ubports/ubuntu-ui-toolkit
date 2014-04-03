@@ -17,7 +17,6 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1 as Ubuntu
 import "mathUtils.js" as MathUtils
-import "textInput.js" as Input
 
 /*!
     \qmltype TextArea
@@ -62,19 +61,34 @@ import "textInput.js" as Input
     mode and 4 lines on fixed-mode. The line size is calculated from the font size and the
     ovarlay and frame spacing specified in the style.
 
+    \section2 Scrolling and text selection
+    The input is activated when the tap or mouse is released after being pressed
+    over the component.
+
     Scrolling the editing area can happen when the size is fixed or in auto-sizing mode when
     the content size is bigger than the visible area. The scrolling is realized by swipe
     gestures, or by navigating the cursor.
 
-    The item enters in selection mode when the user performs a long tap (or long mouse press)
-    or a double tap/press on the text area. The mode is visualized by two selection cursors
-    (pins) which can be used to select the desired text. The text can also be selected by
-    moving the finger/mouse towards the desired area right after entering in selection mode.
-    The way the text is selected is driven by the mouseSelectionMode value, which is either
-    character or word. The editor leaves the selection mode by pressing/tapping again on it
-    or by losing focus.
+    The content can be selected in the following ways:
+    \list
+    \li - double tapping/left mouse clicking over the content, when the word that
+          had been tapped over will be selected
+    \li - by pressing and dragging the selection cursor over the text input. Note
+          that there has to be a delay of approx. 200 ms between the press and drag
+          gesture, time when the input switches from scroll mode to selection mode
+    \endlist
 
-    \b{This component is under heavy development.}
+    The input is focused (activated) upon tap/left mouse button release. The cursor
+    will be placed at the position the mouse/tap point at release time. If the click
+    is happening on a selected area, the selection will be cleared. Long press above
+    a selected area brings up the clipboard context menu. When the long press happens
+    over a non-selected area, the cursor will be moved to the position and the component
+    enters in selection mode. The selection mode can also be activated by tapping and
+    keeping the tap/mouse over for approx 300 ms. If there is a move during this time,
+    the component enters into scrolling mode. The mode is exited once the scrolling
+    finishes. During the scrolling mode the selected text is preserved.
+
+    \note During text selection all interactive parent Flickables are turned off.
   */
 
 StyledItem {
@@ -710,7 +724,7 @@ StyledItem {
     */
     function forceActiveFocus()
     {
-        editor.helper.activateInput();
+        inputHandler.activateInput();
     }
 
     // logic
@@ -727,7 +741,7 @@ StyledItem {
         anchors.fill: parent
         enabled: internal.frameSpacing > 0
         // forward mouse events to input
-        Ubuntu.Mouse.forwardTo: [editor]
+        Ubuntu.Mouse.forwardTo: [inputHandler]
     }
 
     //internals
@@ -825,7 +839,7 @@ StyledItem {
             popover: control.popover
             visible: editor.cursorVisible
 
-            Component.onCompleted: internal.popupTriggered.connect(cursorItem.openPopover)
+            Component.onCompleted: inputHandler.pressAndHold.connect(cursorItem.openPopover)
         }
     }
     // selection cursor loader
@@ -888,9 +902,6 @@ StyledItem {
         property bool autosizeInfinite: control.autoSize && (control.maximumLineCount <= 0)
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
-        // workaround for controlled flicking
-        pressDelay: 0
-        property Timer flickTimer: Timer{}
 
         // editor
         // Images are not shown when text contains <img> tags
@@ -912,49 +923,19 @@ StyledItem {
             // forward keys to the root element so it can be captured outside of it
             Keys.forwardTo: [control]
 
-            property bool selectionMode: false
-            property var helper: new Input.TextInputHelper(editor, flicker, Qt.inputMethod)
-//            onSelectionModeChanged: internal.toggleSelectionCursors(selectionMode)
+            onSelectedTextChanged: internal.toggleSelectionCursors(selectedText !== "")
 
             // autosize handling
             onLineCountChanged: internal.frameSize()
 
-            // remove selection when typing starts or input method start entering text
-            onInputMethodComposingChanged: {
-                if (inputMethodComposing) {
-                    helper.resetSelectionMode();
-                }
-            }
-            Keys.onPressed: {
-                if ((event.text !== "")) {
-                    helper.resetSelectionMode();
-                }
-            }
-            Keys.onReleased: {
-                // selection positioners are updated after the keypress
-                if (editor.selectionStart === editor.selectionEnd) {
-                    helper.resetSelectionMode();
-                }
-            }
-
-            // handling text selection
-            Ubuntu.Mouse.enabled: control.enabled && control.activeFocusOnPress && control.selectByMouse
-            Ubuntu.Mouse.clickAndHoldThreshold: units.gu(1)
-            // forward events to root so thise can be filtered out in case needed
-            Ubuntu.Mouse.forwardTo: [control]
-
-            Ubuntu.Mouse.onPressed: {
-                helper.pressed(mouse);
-                // consume mouse event so the selection does not get destroyed.
-                mouse.accepted = true;
-            }
-            Ubuntu.Mouse.onReleased: helper.released(mouse)
-            Ubuntu.Mouse.onPositionChanged: helper.positionChanged(mouse, Ubuntu.Mouse.hoverEnabled)
-            Ubuntu.Mouse.onDoubleClicked: helper.doubleTap(mouse)
-            Ubuntu.Mouse.onPressAndHold: {
-                if (helper.pressAndHold(mouse)) {
-                    internal.popupTriggered(editor.cursorPosition);
-                }
+            // input selection and navigation handling
+            Ubuntu.Mouse.forwardTo: [inputHandler]
+            InputHandler {
+                id: inputHandler
+                anchors.fill: parent
+                main: control
+                input: editor
+                flickable: flicker
             }
         }
     }

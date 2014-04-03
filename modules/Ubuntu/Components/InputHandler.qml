@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -55,6 +55,7 @@ Item {
 
     // internal properties/functions
     readonly property bool singleLine: input && input.hasOwnProperty("validator")
+    property var flickableList: new Array()
     property bool textChanged: false
     property int pressedPosition: -1
     // move properties
@@ -102,27 +103,48 @@ Item {
     }
 
     // states
-    // default state is flicking mode, when swipes produce text scrolling
-    onStateChanged: print("STATE=\"", state, "\"")
     states: [
+        // override default state to turn on the saved Flickable interactive mode
+        State {
+            name: ""
+            StateChangeScript {
+                // restore interactive for all Flickable parents
+                script: {
+                    while (flickableList.length > 0) {
+                        var p = flickableList.pop();
+                        p.interactive = true;
+                    }
+                }
+            }
+        },
+
         State {
             name: "scrolling"
             StateChangeScript {
                 script: {
                     selectionTimeout.running = false;
-                    print("EHHO!")
                 }
             }
         },
         State {
             name: "select"
             // during select state the Flickable is not interactive
-            PropertyChanges {
-                target: flickable
-                interactive: false
-            }
             StateChangeScript {
                 script: {
+                    // turn off interactive for all parent flickables
+                    var p = input.parent;
+                    while (p) {
+                        if (p.hasOwnProperty("flicking")) {
+                            if (p.interactive) {
+                                flickableList.push(p);
+                                p.interactive = false;
+                            } else {
+                                break;
+                            }
+                        }
+                        p = p.parent;
+                    }
+
                     if (!positionInSelection(pressedPosition)) {
                         input.cursorPosition = pressedPosition;
                     }

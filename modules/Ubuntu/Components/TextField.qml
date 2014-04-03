@@ -17,7 +17,6 @@
 import QtQuick 2.0
 import Ubuntu.Unity.Action 1.1 as UnityActions
 import Ubuntu.Components 0.1 as Ubuntu
-import "textInput.js" as Input
 
 /*!
     \qmltype TextField
@@ -84,12 +83,22 @@ import "textInput.js" as Input
     \list
     \li - double tapping/left mouse clicking over the content, when the word that
           had been tapped over will be selected
-    \li - long tap/left mouse press will perform teh same effect as double tap,
-          bringing up additionally the component's clipboard menu
     \li - by pressing and dragging the selection cursor over the text input. Note
           that there has to be a delay of approx. 200 ms between the press and drag
           gesture, time when the input switches from scroll mode to selection mode
     \endlist
+
+    The input is focused (activated) upon tap/left mouse button release. The cursor
+    will be placed at the position the mouse/tap point at release time. If the click
+    is happening on a selected area, the selection will be cleared. Long press above
+    a selected area brings up the clipboard context menu. When the long press happens
+    over a non-selected area, the cursor will be moved to the position and the component
+    enters in selection mode. The selection mode can also be activated by tapping and
+    keeping the tap/mouse over for approx 300 ms. If there is a move during this time,
+    the component enters into scrolling mode. The mode is exited once the scrolling
+    finishes. During the scrolling mode the selected text is preserved.
+
+    \note During text selection all interactive parent Flickables are turned off.
 */
 
 ActionItem {
@@ -977,7 +986,6 @@ ActionItem {
         boundsBehavior: Flickable.StopAtBounds
         // workaround for controlled flicking
         Ubuntu.Mouse.forwardTo: [inputHandler]
-//        pressDelay: 0
 
         clip: true
         contentWidth: editor.contentWidth
@@ -1012,29 +1020,6 @@ ActionItem {
                 input: editor
                 flickable: flicker
             }
-
-//            property bool selectionMode
-//            property var helper: new Input.TextInputHelper(editor, flicker, Qt.inputMethod)
-
-//            // mouse and touch handling
-//            Ubuntu.Mouse.enabled: control.enabled && control.activeFocusOnPress && control.selectByMouse
-//            Ubuntu.Mouse.clickAndHoldThreshold: units.gu(2)
-//            // forward events to root so thise can be filtered out in case needed
-//            Ubuntu.Mouse.forwardTo: [control]
-
-//            Ubuntu.Mouse.onPressed: {
-//                helper.pressed(mouse);
-//                // consume mouse event so the selection does not get destroyed.
-//                mouse.accepted = true;
-//            }
-//            Ubuntu.Mouse.onReleased: helper.released(mouse)
-//            Ubuntu.Mouse.onPositionChanged: helper.positionChanged(mouse, Ubuntu.Mouse.hoverEnabled)
-//            Ubuntu.Mouse.onDoubleClicked: helper.doubleTap(mouse)
-//            Ubuntu.Mouse.onPressAndHold: {
-//                if (helper.pressAndHold(mouse)) {
-//                    internal.popupTriggered(editor.cursorPosition);
-//                }
-//            }
         }
     }
 
