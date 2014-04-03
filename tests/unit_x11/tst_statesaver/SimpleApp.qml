@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,29 +18,11 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 Item {
-    width: 300
-    height: 300
-    objectName: "ROOT"
-
-    Rectangle {
-        x: 110; y: 10
-        width: 100; height: 100
-        color: "red"
-        MouseArea {
-            anchors.fill: parent
-            objectName: "MA"
-        }
-    }
-
-    Rectangle {
-        x: 10; y: 10
-        width: 100; height: 100
-        color: "blue"
-        InverseMouseArea {
-            anchors.fill: parent
-            objectName: "IMA"
-            topmostItem: true
-        }
-    }
-
+    property var boolArray: [false, false]
+    property var intArray: [1, 2]
+    property var realArray: [10.1, 20.2]
+    property var stringArray: ["false", "false"]
+    id: testItem
+    objectName: "testItem"
+    StateSaver.properties: "boolArray, intArray, realArray, stringArray"
 }
