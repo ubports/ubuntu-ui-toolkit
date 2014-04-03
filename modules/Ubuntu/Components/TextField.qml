@@ -734,7 +734,7 @@ ActionItem {
     */
     function forceActiveFocus()
     {
-        editor.helper.activateInput();
+        inputHandler.activateInput();
     }
 
     /*!
@@ -833,7 +833,7 @@ ActionItem {
         // us it only when there is space between the frame and input
         enabled: internal.spacing > 0
         // forward mouse events to input so we can handle those uniformly
-        Ubuntu.Mouse.forwardTo: [editor]
+        Ubuntu.Mouse.forwardTo: [inputHandler]
     }
 
     Text { id: fontHolder }
@@ -910,7 +910,7 @@ ActionItem {
             popover: control.popover
             visible: editor.cursorVisible
 
-            Component.onCompleted: internal.popupTriggered.connect(openPopover)
+            Component.onCompleted: inputHandler.pressAndHold.connect(openPopover)
         }
     }
 
@@ -976,9 +976,8 @@ ActionItem {
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
         // workaround for controlled flicking
-        Ubuntu.Mouse.forwardTo: [editor]
-        pressDelay: 0
-        property Timer flickTimer: Timer{}
+        Ubuntu.Mouse.forwardTo: [inputHandler]
+//        pressDelay: 0
 
         clip: true
         contentWidth: editor.contentWidth
@@ -1005,28 +1004,37 @@ ActionItem {
             activeFocusOnPress: false
 
             // input selection and navigation handling
-            property bool selectionMode
-            property var helper: new Input.TextInputHelper(editor, flicker, Qt.inputMethod)
-
-            // mouse and touch handling
-            Ubuntu.Mouse.enabled: control.enabled && control.activeFocusOnPress && control.selectByMouse
-            Ubuntu.Mouse.clickAndHoldThreshold: units.gu(2)
-            // forward events to root so thise can be filtered out in case needed
-            Ubuntu.Mouse.forwardTo: [control]
-
-            Ubuntu.Mouse.onPressed: {
-                helper.pressed(mouse);
-                // consume mouse event so the selection does not get destroyed.
-                mouse.accepted = true;
+            Ubuntu.Mouse.forwardTo: [inputHandler]
+            InputHandler {
+                id: inputHandler
+                anchors.fill: parent
+                main: control
+                input: editor
+                flickable: flicker
             }
-            Ubuntu.Mouse.onReleased: helper.released(mouse)
-            Ubuntu.Mouse.onPositionChanged: helper.positionChanged(mouse, Ubuntu.Mouse.hoverEnabled)
-            Ubuntu.Mouse.onDoubleClicked: helper.doubleTap(mouse)
-            Ubuntu.Mouse.onPressAndHold: {
-                if (helper.pressAndHold(mouse)) {
-                    internal.popupTriggered(editor.cursorPosition);
-                }
-            }
+
+//            property bool selectionMode
+//            property var helper: new Input.TextInputHelper(editor, flicker, Qt.inputMethod)
+
+//            // mouse and touch handling
+//            Ubuntu.Mouse.enabled: control.enabled && control.activeFocusOnPress && control.selectByMouse
+//            Ubuntu.Mouse.clickAndHoldThreshold: units.gu(2)
+//            // forward events to root so thise can be filtered out in case needed
+//            Ubuntu.Mouse.forwardTo: [control]
+
+//            Ubuntu.Mouse.onPressed: {
+//                helper.pressed(mouse);
+//                // consume mouse event so the selection does not get destroyed.
+//                mouse.accepted = true;
+//            }
+//            Ubuntu.Mouse.onReleased: helper.released(mouse)
+//            Ubuntu.Mouse.onPositionChanged: helper.positionChanged(mouse, Ubuntu.Mouse.hoverEnabled)
+//            Ubuntu.Mouse.onDoubleClicked: helper.doubleTap(mouse)
+//            Ubuntu.Mouse.onPressAndHold: {
+//                if (helper.pressAndHold(mouse)) {
+//                    internal.popupTriggered(editor.cursorPosition);
+//                }
+//            }
         }
     }
 

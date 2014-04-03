@@ -34,10 +34,12 @@ MainView {
             anchors.horizontalCenter: parent.horizontalCenter
             spacing: units.gu(1)
             TextField {
+                objectName: "Standard"
                 width: units.gu(30)
                 text: "The orange (specifically, the sweet orange) is the fruit of the citrus species Citrus × ​sinensis in the family Rutaceae."
             }
             TextField {
+                objectName: "Preserving"
                 width: units.gu(30)
                 text: "Second line."
                 placeholderText: "yeeeeewww!"
