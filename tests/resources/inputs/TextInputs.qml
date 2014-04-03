@@ -36,12 +36,15 @@ MainView {
             TextField {
                 objectName: "Standard"
                 width: units.gu(30)
+                focus: true
+                activeFocusOnPress: false
                 text: "The orange (specifically, the sweet orange) is the fruit of the citrus species Citrus × ​sinensis in the family Rutaceae."
             }
             TextField {
                 objectName: "Preserving"
                 width: units.gu(30)
                 text: "Second line."
+                selectByMouse: false
                 placeholderText: "yeeeeewww!"
                 persistentSelection: true
             }

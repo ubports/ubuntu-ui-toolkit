@@ -44,6 +44,7 @@ Item {
         if (!Qt.inputMethod.visible) {
             Qt.inputMethod.show();
         }
+        textChanged = false;
     }
     function hideInputPanel() {
         Qt.inputMethod.hide();
@@ -154,14 +155,13 @@ Item {
     ]
 
     Connections {
+        target: main
+        onFocusChanged: if (!main.focus) state = "";
+    }
+
+    Connections {
         target: input
         onCursorRectangleChanged: ensureVisible()
-        onActiveFocusChanged: {
-            if (!main.focus) {
-                // reset input state
-                state = "";
-            }
-        }
         onTextChanged: textChanged = true;
     }
 
@@ -199,6 +199,10 @@ Item {
         mouse.accepted = true;
     }
     Ubuntu.Mouse.onReleased: {
+        if (!main.focus && !main.activeFocusOnPress) {
+            return;
+        }
+
         activateInput();
         // stop text selection timer
         selectionTimeout.running = false;
@@ -210,7 +214,7 @@ Item {
     }
     Ubuntu.Mouse.onPositionChanged: {
         // leave if not focus, not the left button or not in select state
-        if (!input.activeFocus || (mouse.button !== Qt.LeftButton) || (state !== "select")) {
+        if (!input.activeFocus || (mouse.button !== Qt.LeftButton) || (state !== "select") || !main.selectByMouse) {
             return;
         }
         // stop text selection timer
@@ -218,9 +222,11 @@ Item {
         selectText(mouse);
     }
     Ubuntu.Mouse.onDoubleClicked: {
-        input.selectWord();
-        // turn selection state temporarily so the selection is not cleared on release
-        state = "selection";
+        if (main.selectByMouse) {
+            input.selectWord();
+            // turn selection state temporarily so the selection is not cleared on release
+            state = "selection";
+        }
     }
     Ubuntu.Mouse.onPressAndHold: {
         if ((state === "select") && mouseInSelection(mouse)) {
