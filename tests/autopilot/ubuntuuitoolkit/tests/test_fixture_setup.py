@@ -26,7 +26,7 @@ import testtools
 from autopilot import testcase as autopilot_testcase
 from testtools.matchers import Contains, Not, FileExists
 
-from ubuntuuitoolkit import base, fixture_setup
+from ubuntuuitoolkit import base, environment, fixture_setup
 
 
 class FakeApplicationTestCase(testtools.TestCase):
@@ -166,3 +166,70 @@ class LaunchFakeApplicationTestCase(autopilot_testcase.AutopilotTestCase):
 
         # We can select a component from the application.
         self.application.select_single('Label', objectName='testLabel')
+
+
+class InitctlEnvironmentVariableTestCase(testtools.TestCase):
+
+    def test_use_initctl_environment_variable_with_unset_variable(self):
+        """Test the initctl env var fixture when the var is unset.
+
+        During the test, the new value must be in place.
+        After the test, the variable must be unset again.
+
+        """
+        initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
+            testenvvarforfixture='test value')
+
+        result = testtools.TestResult()
+
+        def inner_test():
+            class TestWithInitctlEnvVar(testtools.TestCase):
+                def test_it(self):
+                    self.useFixture(initctl_env_var)
+                    self.assertEqual(
+                        'test value',
+                        environment.get_initctl_env_var(
+                            'testenvvarforfixture'))
+            return TestWithInitctlEnvVar('test_it')
+
+        inner_test().run(result)
+
+        self.assertTrue(
+            result.wasSuccessful(), 'Failed to set the environment variable.')
+        self.assertFalse(
+            environment.is_initctl_env_var_set('testenvvarforfixture'))
+
+    def test_use_initctl_environment_variable_with_set_variable(self):
+        """Test the initctl env var fixture when the var is unset.
+
+        During the test, the new value must be in place.
+        After the test, the old value must be set again.
+
+        """
+        self.addCleanup(
+            environment.unset_initctl_env_var, 'testenvvarforfixture')
+        environment.set_initctl_env_var(
+            'testenvvarforfixture', 'original test value')
+
+        initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
+            testenvvarforfixture='new test value')
+
+        result = testtools.TestResult()
+
+        def inner_test():
+            class TestWithInitctlEnvVar(testtools.TestCase):
+                def test_it(self):
+                    self.useFixture(initctl_env_var)
+                    self.assertEqual(
+                        'new test value',
+                        environment.get_initctl_env_var(
+                            'testenvvarforfixture'))
+            return TestWithInitctlEnvVar('test_it')
+
+        inner_test().run(result)
+
+        self.assertTrue(
+            result.wasSuccessful(), 'Failed to set the environment variable.')
+        self.assertEqual(
+            'original test value',
+            environment.get_initctl_env_var('testenvvarforfixture'))
