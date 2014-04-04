@@ -1,3 +1,20 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20140404-0ubuntu1) trusty; urgency=low
+
+  [ Michael Zanetti ]
+  * fix collapseOnClick in combination with UbuntuListView (LP:
+    #1293996)
+
+  [ Leo Arias ]
+  * Added a helper for autopilot tests to override the values of initctl
+    vars during tests.
+  * Take into account the visibility of the container when making list
+    elements visible on the autopilot helpers. (LP: #1275060)
+
+  [ Christian Dywan ]
+  * Set the window title based on the Header title (LP: #1289695)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 04 Apr 2014 11:03:59 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20140331-0ubuntu1) trusty; urgency=low
 
   [ Zoltán Balogh ]
