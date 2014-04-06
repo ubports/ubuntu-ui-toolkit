@@ -538,6 +538,8 @@ bool UCMouse::hoverEntered(QHoverEvent *event)
 {
     m_lastPos = event->posF();
     m_lastModifiers = event->modifiers();
+    m_lastButton = Qt::NoButton;
+    m_lastButtons = Qt::NoButton;
     setHovered(true);
     return false;
 }
@@ -558,6 +560,8 @@ bool UCMouse::hoverExited(QHoverEvent *event)
 {
     m_lastPos = event->posF();
     m_lastModifiers = event->modifiers();
+    m_lastButton = Qt::NoButton;
+    m_lastButtons = Qt::NoButton;
     setHovered(false);
     return false;
 }
