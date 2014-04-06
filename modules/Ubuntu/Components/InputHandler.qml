@@ -296,6 +296,9 @@ Item {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
         // trigger pressAndHold
-        onReleased: handler.pressAndHold(input.cursorPosition)
+        onReleased: {
+            input.cursorPosition = pressedPosition = mousePosition(mouse);
+            handler.pressAndHold(input.cursorPosition);
+        }
     }
 }
