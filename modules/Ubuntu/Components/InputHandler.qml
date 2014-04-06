@@ -23,6 +23,7 @@ import Ubuntu.Components 0.1 as Ubuntu
   */
 
 Item {
+    id: handler
     objectName: "input_handler"
     // the root control
     property Item main
@@ -288,5 +289,13 @@ Item {
             // trigger clipboard popover
             pressAndHold(input.cursorPosition);
         }
+    }
+
+    // right button handling
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.RightButton
+        // trigger pressAndHold
+        onReleased: handler.pressAndHold(input.cursorPosition)
     }
 }
