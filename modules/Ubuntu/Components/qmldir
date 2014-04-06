@@ -47,3 +47,4 @@ UbuntuListView 0.1 UbuntuListView.qml
 
 internal TextCursor TextCursor.qml
 internal TextInputPopover TextInputPopover.qml
+internal InputHandler InputHandler.qml

@@ -53,8 +53,9 @@ public:
 
 private:
     QString m_modulePath;
-    bool insideClick;
-    bool oskClick;
+    QString eventHandler;
+    Qt::MouseButton pressedButton;
+    Qt::MouseButtons pressedButtons;
 
     QQuickView * loadTest(const QString &file, QSignalSpy **spy = 0)
     {
@@ -98,6 +99,18 @@ private:
     }
 
 protected Q_SLOTS:
+    void onMouseEvent(QQuickMouseEvent *event)
+    {
+        eventHandler = "EVENT1";
+        pressedButton = (Qt::MouseButton)event->button();
+        pressedButtons = (Qt::MouseButtons)event->buttons();
+    }
+    void onMouseEvent2(QQuickMouseEvent *event)
+    {
+        eventHandler = "EVENT2";
+        pressedButton = (Qt::MouseButton)event->button();
+        pressedButtons = (Qt::MouseButtons)event->buttons();
+    }
 
 private Q_SLOTS:
 
@@ -891,17 +904,118 @@ private Q_SLOTS:
         QSignalSpy positionChanged(filter, SIGNAL(positionChanged(QQuickMouseEvent*)));
         QSignalSpy entered(filter, SIGNAL(entered(QQuickMouseEvent*)));
         QSignalSpy exited(filter, SIGNAL(exited(QQuickMouseEvent*)));
+        QObject::connect(filter, SIGNAL(entered(QQuickMouseEvent*)), this, SLOT(onMouseEvent(QQuickMouseEvent*)));
+        QObject::connect(filter, SIGNAL(exited(QQuickMouseEvent*)), this, SLOT(onMouseEvent(QQuickMouseEvent*)));
+        QObject::connect(filter, SIGNAL(positionChanged(QQuickMouseEvent*)), this, SLOT(onMouseEvent2(QQuickMouseEvent*)));
 
         preventDblClick();
+        // Note: press inside the filtered area, so entered() exited() positionChanged() will
+        // all receive the pressed button
         QTest::mousePress(view.data(), Qt::LeftButton, 0, guPoint(5, 5));
+        QTest::waitForEvents();
+        QCOMPARE(entered.count(), 1);
+        // when entered(), buttons are the same as when pressed
+        QCOMPARE(eventHandler, QString("EVENT1"));
+        QCOMPARE(pressedButton, Qt::LeftButton);
+
         QTest::mouseMove(view.data(), guPoint(15, 5));
         QTest::mouseMove(view.data(), guPoint(25, 5));
+        QTest::waitForEvents();
+        QCOMPARE(eventHandler, QString("EVENT2"));
+        QCOMPARE(pressedButton, Qt::LeftButton);
+
         QTest::mouseRelease(view.data(), Qt::LeftButton, 0, guPoint(35, 5));
         QTest::waitForEvents();
-
-        QCOMPARE(positionChanged.count(), 3);
-        QCOMPARE(entered.count(), 1);
         QCOMPARE(exited.count(), 1);
+        // when entered(), button is the same when pressed, however buttons
+        // does no longer contains the button pressed
+        QCOMPARE(eventHandler, QString("EVENT1"));
+        QCOMPARE(pressedButton, Qt::LeftButton);
+
+        // we have 2 moves, but we get 3 position changes, as the release point differs from the last moved point
+        QCOMPARE(positionChanged.count(), 3);
+    }
+
+    void testCase_mouseMove()
+    {
+        QScopedPointer<QQuickView> view(loadTest("HoverEvent.qml"));
+        QVERIFY(view);
+        UCMouse *filter = attachedFilter<UCMouse>(view->rootObject(), "FilterOwner");
+        QVERIFY(filter);
+        QSignalSpy moved(filter, SIGNAL(positionChanged(QQuickMouseEvent*)));
+        QSignalSpy entered(filter, SIGNAL(entered(QQuickMouseEvent*)));
+        QSignalSpy exited(filter, SIGNAL(exited(QQuickMouseEvent*)));
+        QObject::connect(filter, SIGNAL(entered(QQuickMouseEvent*)), this, SLOT(onMouseEvent(QQuickMouseEvent*)));
+        QObject::connect(filter, SIGNAL(exited(QQuickMouseEvent*)), this, SLOT(onMouseEvent(QQuickMouseEvent*)));
+        QObject::connect(filter, SIGNAL(positionChanged(QQuickMouseEvent*)), this, SLOT(onMouseEvent2(QQuickMouseEvent*)));
+
+        preventDblClick();
+        // move mouse while entered() triggers
+        int i, x = view->rootObject()->width() / 2;
+        QTest::mousePress(view.data(), Qt::LeftButton, 0, QPoint(x, 0));
+        for (i = 0; (i < view->rootObject()->height()) && (entered.count() < 1); i++) {
+            QTest::mouseMove(view.data(), QPoint(x, i));
+        }
+        // Note: as button was pressed outside the filtered area, no button will be reported
+        // by the mouse move.
+        QCOMPARE(eventHandler, QString("EVENT1"));
+        QCOMPARE(pressedButton, Qt::NoButton);
+        QCOMPARE(pressedButtons, Qt::NoButton);
+        // continue to move mouse while exited() triggers
+        while (++i < view->rootObject()->height()) {
+            QTest::mouseMove(view.data(), QPoint(x, i));
+            if (exited.count() >= 1) {
+                break;
+            }
+            QCOMPARE(eventHandler, QString("EVENT2"));
+            QCOMPARE(pressedButton, Qt::NoButton);
+            QCOMPARE(pressedButtons, Qt::NoButton);
+        }
+        // test if we really exited
+        QCOMPARE(eventHandler, QString("EVENT1"));
+        QCOMPARE(pressedButton, Qt::NoButton);
+        QCOMPARE(pressedButtons, Qt::NoButton);
+
+        // cleanup
+        QTest::mouseRelease(view.data(), Qt::LeftButton, 0, QPoint(x, i));
+    }
+
+    void testCase_hoverEvents() {
+        QScopedPointer<QQuickView> view(loadTest("HoverEvent.qml"));
+        QVERIFY(view);
+        UCMouse *filter = attachedFilter<UCMouse>(view->rootObject(), "FilterOwner");
+        QVERIFY(filter);
+
+        QSignalSpy entered(filter, SIGNAL(entered(QQuickMouseEvent*)));
+        QSignalSpy moved(filter, SIGNAL(positionChanged(QQuickMouseEvent*)));
+        QSignalSpy exited(filter, SIGNAL(exited(QQuickMouseEvent*)));
+
+        QObject::connect(filter, SIGNAL(entered(QQuickMouseEvent*)), this, SLOT(onMouseEvent(QQuickMouseEvent*)));
+        QObject::connect(filter, SIGNAL(exited(QQuickMouseEvent*)), this, SLOT(onMouseEvent(QQuickMouseEvent*)));
+        QObject::connect(filter, SIGNAL(positionChanged(QQuickMouseEvent*)), this, SLOT(onMouseEvent2(QQuickMouseEvent*)));
+
+        // move mouse while entered() triggers
+        int i, x = view->rootObject()->width() / 2;
+        for (i = 0; (i < view->rootObject()->height()) && (entered.count() < 1); i++) {
+            QTest::mouseMove(view.data(), QPoint(x, i));
+        }
+        QCOMPARE(eventHandler, QString("EVENT1"));
+        QCOMPARE(pressedButton, Qt::NoButton);
+        QCOMPARE(pressedButtons, Qt::NoButton);
+        // continue to move mouse while exited() triggers
+        while (++i < view->rootObject()->height()) {
+            QTest::mouseMove(view.data(), QPoint(x, i));
+            if (exited.count() >= 1) {
+                break;
+            }
+            QCOMPARE(eventHandler, QString("EVENT2"));
+            QCOMPARE(pressedButton, Qt::NoButton);
+            QCOMPARE(pressedButtons, Qt::NoButton);
+        }
+        // test if we really exited
+        QCOMPARE(eventHandler, QString("EVENT1"));
+        QCOMPARE(pressedButton, Qt::NoButton);
+        QCOMPARE(pressedButtons, Qt::NoButton);
     }
 };
 

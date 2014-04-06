@@ -281,6 +281,9 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
 UCMouse::UCMouse(QObject *parent)
     : QObject(parent)
     , m_owner(qobject_cast<QQuickItem*>(parent))
+    , m_lastButton(Qt::NoButton)
+    , m_lastButtons(Qt::NoButton)
+    , m_lastModifiers(Qt::NoModifier)
     , m_pressedButtons(Qt::NoButton)
     , m_priority(BeforeItem)
     , m_moveThreshold(0.0)
@@ -419,6 +422,7 @@ void UCMouse::setHovered(bool hovered)
         if (m_hovered) {
             Q_EMIT entered(&mev);
         } else {
+            m_pressAndHoldTimer.stop();
             Q_EMIT exited(&mev);
         }
     }
@@ -534,6 +538,8 @@ bool UCMouse::hoverEntered(QHoverEvent *event)
 {
     m_lastPos = event->posF();
     m_lastModifiers = event->modifiers();
+    m_lastButton = Qt::NoButton;
+    m_lastButtons = Qt::NoButton;
     setHovered(true);
     return false;
 }
@@ -542,7 +548,7 @@ bool UCMouse::hoverMoved(QHoverEvent *event)
 {
     m_lastPos = event->posF();
     m_lastModifiers = event->modifiers();
-    QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+    QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), Qt::NoButton, Qt::NoButton, m_lastModifiers,
                              false, m_longPress);
     mev.setAccepted(false);
     Q_EMIT positionChanged(&mev);
@@ -554,6 +560,8 @@ bool UCMouse::hoverExited(QHoverEvent *event)
 {
     m_lastPos = event->posF();
     m_lastModifiers = event->modifiers();
+    m_lastButton = Qt::NoButton;
+    m_lastButtons = Qt::NoButton;
     setHovered(false);
     return false;
 }
@@ -562,8 +570,10 @@ void UCMouse::saveEvent(QMouseEvent *event)
 {
     m_lastPos = event->localPos();
     m_lastScenePos = event->windowPos();
-    m_lastButton = event->button();
-    m_lastButtons = event->buttons();
+    if (event->type() != QEvent::MouseMove) {
+        m_lastButton = event->button();
+        m_lastButtons = event->buttons();
+    }
     m_lastModifiers = event->modifiers();
     if ((event->type() == QEvent::MouseButtonPress) && (m_moveThreshold > 0.0)) {
         m_toleranceArea.setX(m_lastPos.x() - m_moveThreshold);

@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Unity.Action 1.1 as UnityActions
+import Ubuntu.Components 0.1 as Ubuntu
 
 /*!
     \qmltype TextField
@@ -70,6 +71,34 @@ import Ubuntu.Unity.Action 1.1 as UnityActions
         }
     }
     \endqml
+
+    \section2 Scrolling and text selection
+    The input is activated when the tap or mouse is released after being pressed
+    over the component.
+
+    The text can be scrolled horizontally by swiping over the content both when
+    the component is active or inactive.
+
+    The content can be selected in the following ways:
+    \list
+    \li - double tapping/left mouse clicking over the content, when the word that
+          had been tapped over will be selected
+    \li - by pressing and dragging the selection cursor over the text input. Note
+          that there has to be a delay of approx. 200 ms between the press and drag
+          gesture, time when the input switches from scroll mode to selection mode
+    \endlist
+
+    The input is focused (activated) upon tap/left mouse button release. The cursor
+    will be placed at the position the mouse/tap point at release time. If the click
+    is happening on a selected area, the selection will be cleared. Long press above
+    a selected area brings up the clipboard context menu. When the long press happens
+    over a non-selected area, the cursor will be moved to the position and the component
+    enters in selection mode. The selection mode can also be activated by tapping and
+    keeping the tap/mouse over for approx 300 ms. If there is a move during this time,
+    the component enters into scrolling mode. The mode is exited once the scrolling
+    finishes. During the scrolling mode the selected text is preserved.
+
+    \note During text selection all interactive parent Flickables are turned off.
 */
 
 ActionItem {
@@ -98,10 +127,11 @@ ActionItem {
     property bool hasClearButton: true
 
     /*!
-      \preliminary
+      \deprecated
       Component to be shown and used instead of the default On Screen Keyboard.
     */
     property Component customSoftwareInputPanel
+    onCustomSoftwareInputPanelChanged: console.error("customSoftwareInputPanel property deprecated.")
 
     /*!
       The property overrides the default popover of the TextField. When set, the TextField
@@ -146,10 +176,8 @@ ActionItem {
     /*!
       Whether the TextField should gain active focus on a mouse press. By default
       this is set to true.
-
-      \qmlproperty bool activeFocusOnPress
     */
-    property alias activeFocusOnPress: editor.activeFocusOnPress
+    property bool activeFocusOnPress: true
 
     /*!
       Whether the TextField should scroll when the text is longer than the width.
@@ -446,11 +474,8 @@ ActionItem {
 
       If false, the user cannot use the mouse to select text, only can use it to
       focus the input.
-
-      \qmlproperty bool selectByMouse
-      \preliminary
     */
-    property alias selectByMouse: virtualKbdHandler.enabled
+    property bool selectByMouse: true
 
     /*!
       This read-only property provides the text currently selected in the text input.
@@ -719,7 +744,7 @@ ActionItem {
     */
     function forceActiveFocus()
     {
-        internal.activateEditor();
+        inputHandler.activateInput();
     }
 
     /*!
@@ -817,25 +842,19 @@ ActionItem {
         anchors.fill: parent
         // us it only when there is space between the frame and input
         enabled: internal.spacing > 0
-        onClicked: internal.activateEditor()
+        // forward mouse events to input so we can handle those uniformly
+        Ubuntu.Mouse.forwardTo: [inputHandler]
     }
 
     Text { id: fontHolder }
 
     //internals
-    /*! \internal */
-    property alias __internal: internal
     QtObject {
         id: internal
         // array of borders in left, top, right, bottom order
-        property bool textChanged: false
         property real spacing: control.__styleInstance.overlaySpacing
         property real lineSpacing: units.dp(3)
         property real lineSize: editor.font.pixelSize + lineSpacing
-        //selection properties
-        property bool selectionMode: false
-
-        signal popupTriggered()
 
         property int type: action ? action.parameterType : 0
         onTypeChanged: {
@@ -846,54 +865,6 @@ ActionItem {
             if (type == UnityActions.Action.Integer
              || type == UnityActions.Action.Real)
                 inputMethodHints = Qt.ImhDigitsOnly
-        }
-
-        function activateEditor()
-        {
-            if (!editor.activeFocus)
-                editor.forceActiveFocus();
-            else
-                showInputPanel();
-        }
-
-        function showInputPanel()
-        {
-            if (control.customSoftwareInputPanel != undefined) {
-                // TODO implement once we have the SIP ready
-            } else {
-                if (!Qt.inputMethod.visible)
-                    Qt.inputMethod.show();
-            }
-            textChanged = false;
-        }
-        function hideInputPanel()
-        {
-            if (control.customSoftwareInputPanel != undefined) {
-                // TODO implement once we have the SIP ready
-            } else {
-                Qt.inputMethod.hide();
-            }
-            // emit accepted signal if changed
-            if (textChanged)
-                control.accepted();
-        }
-        // reset selection
-        function resetEditorSelection(mouseX)
-        {
-            editor.cursorPosition = editor.positionAt(mouseX);
-        }
-
-        // positions the cursor depending on whether there is a selection active or not
-        function positionCursor(x) {
-
-            var cursorPos = control.positionAt(x);
-            if (control.selectedText === "") {
-                control.cursorPosition = cursorPos;
-            }
-            // If target cursor position is outside selection then cancel selection and move cursor
-            else if (control.selectionStart > cursorPos || control.selectionEnd < cursorPos) {
-                control.cursorPosition = cursorPos;
-            }
         }
     }
 
@@ -947,7 +918,7 @@ ActionItem {
             popover: control.popover
             visible: editor.cursorVisible
 
-            Component.onCompleted: internal.popupTriggered.connect(openPopover)
+            Component.onCompleted: inputHandler.pressAndHold.connect(openPopover)
         }
     }
 
@@ -999,79 +970,54 @@ ActionItem {
 
 
     // text input
-    TextInput {
-        id: editor
-        // FocusScope will forward focus to this component
-        focus: true
+    Flickable {
+        id: flicker
+        objectName: "textfield_scroller"
         anchors {
             left: leftPane.right
             right: clearButton.left
+            top: parent.top
+            bottom: parent.bottom
             margins: internal.spacing
-            verticalCenter: parent.verticalCenter
         }
-        // get the control's style
+        topMargin: internal.spacing
+        // do not allow rebounding
+        boundsBehavior: Flickable.StopAtBounds
+        // workaround for controlled flicking
+        Ubuntu.Mouse.forwardTo: [inputHandler]
+
         clip: true
-        onTextChanged: internal.textChanged = true
-        cursorDelegate: cursor
-        color: control.__styleInstance.color
-        selectedTextColor: Theme.palette.selected.foregroundText
-        selectionColor: Theme.palette.selected.foreground
-        font.pixelSize: FontUtils.sizeToPixels("medium")
-        passwordCharacter: "\u2022"
-        // forward keys to the root element so it can be captured outside of it
-        Keys.forwardTo: [control]
+        contentWidth: editor.contentWidth
+        contentHeight: editor.contentHeight
 
-        // handle virtual keyboard and cursor positioning, as the MouseArea overrides
-        // those functionalities of the TextInput
-        MouseArea {
-            id: virtualKbdHandler
-            anchors.fill: parent
-            hoverEnabled: true
-            preventStealing: true
+        TextInput {
+            id: editor
+            // FocusScope will forward focus to this component
+            focus: true
+            anchors.verticalCenter: parent.verticalCenter
+            // get the control's style
+            clip: true
+            cursorDelegate: cursor
+            color: control.__styleInstance.color
+            selectedTextColor: Theme.palette.selected.foregroundText
+            selectionColor: Theme.palette.selected.foreground
+            font.pixelSize: FontUtils.sizeToPixels("medium")
+            passwordCharacter: "\u2022"
+            // forward keys to the root element so it can be captured outside of it
+            Keys.forwardTo: [control]
 
-            onClicked: {
-                // activate control
-                if (!control.activeFocus) {
-                    internal.activateEditor();
-                    // set cursor position if no selection was previously set
-                    internal.positionCursor(mouse.x)
-                } else if (!internal.selectionMode){
-                    // reset selection and move cursor unde mouse click
-                    internal.resetEditorSelection(mouse.x);
-                } else if (internal.selectionMode) {
-                    // reset selection mode (onReleased is triggered prior to onClicked
-                    // and resetting selection mode there would cause to enter in the\
-                    // previous if-clause
-                    internal.selectionMode = false;
-                }
-            }
+            // overrides
+            selectByMouse: false
+            activeFocusOnPress: false
 
-            onPressAndHold: {
-                internal.activateEditor();
-                internal.positionCursor(mouse.x);
-                internal.popupTriggered();
-            }
-
-            onDoubleClicked: {
-                // select word under doubletap
-                if (!control.activeFocus)
-                    return;
-                editor.selectWord();
-                internal.selectionMode = false;
-            }
-            onPressed: {
-                // don't do anything while the control is inactive
-                if (!control.activeFocus || (pressedButtons != Qt.LeftButton))
-                    return;
-                internal.activateEditor();
-                if (control.selectedText === "") {
-                    internal.resetEditorSelection(mouse.x);
-                    internal.selectionMode = true;
-                }
-            }
-            onReleased: {
-                if (!containsMouse)
-                    internal.selectionMode = false;
+            // input selection and navigation handling
+            Ubuntu.Mouse.forwardTo: [inputHandler]
+            InputHandler {
+                id: inputHandler
+                anchors.fill: parent
+                main: control
+                input: editor
+                flickable: flicker
             }
         }
     }
