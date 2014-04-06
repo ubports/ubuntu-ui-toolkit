@@ -63,8 +63,18 @@ StyledItem {
 
     /*!
       The property holds the index of the selected Tab item.
+      Note: Setting this property is DEPRECATED. Set the selectedIndex of the model instead.
       */
-    property int selectedIndex: (model && internal.modelChecked && model.count > 0) ? 0 : -1
+    property int selectedIndex: (model && internal.modelChecked) ? model.selectedIndex : -1
+
+    /*! \internal */
+    onSelectedIndexChanged: {
+        if (!model) return;
+        if (tabBar.selectedIndex !== model.selectedIndex) {
+            console.warn("Setting TabBar.selectedIndex is DEPRECATED. Set selectedIndex of the model instead");
+            tabBar.selectedIndex = Qt.binding(function() { return (model && internal.modelChecked) ? model.selectedIndex : -1 });
+        }
+    }
 
     /*!
       Do not deactivate the tab bar after a specified idle time or when the user selects a new tab.
@@ -95,18 +105,21 @@ StyledItem {
 
         function checkRoles() {
             if (tabBar.model.count <= 0)
-                return;
+                return false;
 
             modelChecked = true;
             var f = tabBar.model.get(0);
             if (f.tab === undefined && f.title === undefined) {
                 console.error("TabBar model must provide either tab or title role.");
                 tabBar.model = null;
+                return false;
             }
             if (f.tab !== undefined && f.tab.title === undefined) {
                 console.error("TabBar model's tab role must have title property.");
                 tabBar.model = null;
+                return false;
             }
+            return true;
         }
     }
 
@@ -116,6 +129,12 @@ StyledItem {
 
         if (!model)
             return;
+
+        if (!model.hasOwnProperty("selectedIndex")) {
+            console.error("TabBar model must have selectedIndex property defined.");
+            tabBar.model = null;
+            return;
+        }
 
         if (!model.hasOwnProperty("count")) {
             console.error("TabBar model must have count property defined.");
@@ -130,11 +149,11 @@ StyledItem {
         }
 
         if (model.count > 0) {
-            internal.checkRoles();
-            tabBar.selectedIndex = Math.max(Math.min(tabBar.selectedIndex, model.count - 1), 0);
+            if (internal.checkRoles()) {
+                model.selectedIndex = Math.max(Math.min(tabBar.selectedIndex, model.count - 1), 0);
+            }
         } else {
             internal.modelChecked = false;
-            tabBar.selectedIndex = Qt.binding(function() { return (model && internal.modelChecked && model.count > 0) ? 0 : -1 })
         }
     }
 
