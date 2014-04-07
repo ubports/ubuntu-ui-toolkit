@@ -892,6 +892,7 @@ StyledItem {
     }
     Flickable {
         id: flicker
+        objectName: "textarea_scroller"
         anchors {
             fill: parent
             margins: internal.frameSpacing
@@ -902,7 +903,6 @@ StyledItem {
         property bool autosizeInfinite: control.autoSize && (control.maximumLineCount <= 0)
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
-        pressDelay: 0
 
         // editor
         // Images are not shown when text contains <img> tags
@@ -923,8 +923,6 @@ StyledItem {
             font.pixelSize: FontUtils.sizeToPixels("medium")
             // forward keys to the root element so it can be captured outside of it
             Keys.forwardTo: [control]
-
-            onSelectedTextChanged: internal.toggleSelectionCursors(selectedText !== "")
 
             // autosize handling
             onLineCountChanged: internal.frameSize()

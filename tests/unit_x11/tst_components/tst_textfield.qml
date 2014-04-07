@@ -88,24 +88,6 @@ Item {
         name: "TextFieldAPI"
         when: windowShown
 
-        // same as flick, however wait few ms before moving
-        function selectByDrag(item, from, to, speed) {
-            var pointCount = 5;
-            var dx = to.x - from.x;
-            var dy = to.y - from.y;
-            speed /= pointCount
-
-            mousePress(item, from.x, from.y);
-            // wait 400 msecs to activate selection mode
-            wait(400);
-            for (var i = 0; i < pointCount; i++) {
-                mouseMove(item, from.x + (i + 1) * dx / pointCount, from.y + (i + 1) * dy / pointCount, speed);
-            }
-            mouseRelease(item, to.x, to.y);
-            // empty event buffer
-            wait(200);
-        }
-
         // empty event buffer
         function cleanup() {
             wait(200);
@@ -518,7 +500,7 @@ Item {
             var handler = findChild(longText, "input_handler");
             verify(handler);
 
-            flickSpy.target = findChild(longText, "textfield_flicker");
+            flickSpy.target = findChild(longText, "textfield_scroller");
             flickSpy.clear();
             // scroll when inactive
             verify(longText.focus == false);
@@ -526,14 +508,14 @@ Item {
             var mx = x / 2;
             var y = longText.height / 2;
             var dx = units.gu(8);
-            flick(longText, Qt.point(x, y), Qt.point(x - dx, y), 100);
+            flick(longText, Qt.point(x, y), Qt.point(x - dx, y), 10);
             verify(longText.focus);
             compare(flickSpy.count, 0, "The input had scrolled while inactive");
 
             // flick when active
             flickSpy.clear();
             compare(handler.state, "", "The input is not in default state before selection");
-            flick(longText, Qt.point(mx, y), Qt.point(mx - dx, y), 100);
+            flick(longText, Qt.point(mx, y), Qt.point(mx - dx, y), 10);
             flickSpy.wait();
             compare(flickSpy.count, 1, "The input had not scrolled while active");
             compare(handler.state, "", "The input has not returned to default state.");
@@ -547,7 +529,7 @@ Item {
             var x = units.gu(5);
             var y = longText.height / 2;
             compare(handler.state, "", "The input is not in default state before selection");
-            selectByDrag(longText, Qt.point(x, y), Qt.point(x + 2*dx, y), 100);
+            flick(longText, Qt.point(x, y), Qt.point(x + 2*dx, y), 10, 400);
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
         }
@@ -568,19 +550,20 @@ Item {
             var handler = findChild(longText, "input_handler");
             verify(handler);
             var y = longText.height / 2;
-            flickSpy.target = findChild(longText, "textfield_flicker");
+            flickSpy.target = findChild(longText, "textfield_scroller");
             flickSpy.clear();
 
             // select text
             compare(handler.state, "", "The input is not in default state before selection");
-            selectByDrag(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 100);
+            flick(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 10, 400);
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
 
             // flick
-            flick(longText, Qt.point(longText.width / 2, y), Qt.point(0, y), 100);
+            flick(longText, Qt.point(longText.width / 2, y), Qt.point(0, y), 10);
             flickSpy.wait();
             compare(handler.state, "", "The input has not returned to default state.");
+            verify(longText.selectedText !== "");
         }
 
         function test_6_press_and_hold_moves_cursor_position() {
@@ -588,7 +571,7 @@ Item {
             longText.cursorPosition = 0;
             var handler = findChild(longText, "input_handler");
             var y = longText.height / 2;
-            flickSpy.target = findChild(longText, "textfield_flicker");
+            flickSpy.target = findChild(longText, "textfield_scroller");
             flickSpy.clear();
 
             // long press
@@ -608,12 +591,12 @@ Item {
             longText.cursorPosition = 0;
             var handler = findChild(longText, "input_handler");
             var y = longText.height / 2;
-            flickSpy.target = findChild(longText, "textfield_flicker");
+            flickSpy.target = findChild(longText, "textfield_scroller");
             flickSpy.clear();
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            selectByDrag(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 100);
+            flick(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 10, 400);
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
 
@@ -633,12 +616,12 @@ Item {
             longText.cursorPosition = 0;
             var handler = findChild(longText, "input_handler");
             var y = longText.height / 2;
-            flickSpy.target = findChild(longText, "textfield_flicker");
+            flickSpy.target = findChild(longText, "textfield_scroller");
             flickSpy.clear();
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            selectByDrag(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 100);
+            flick(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 10, 400);
             compare(handler.state, "", "The input has not returned to default state.");
             verify(longText.selectedText !== "");
 
@@ -652,12 +635,12 @@ Item {
             longText.cursorPosition = 0;
             var handler = findChild(longText, "input_handler");
             var y = longText.height / 2;
-            flickSpy.target = findChild(longText, "textfield_flicker");
+            flickSpy.target = findChild(longText, "textfield_scroller");
             flickSpy.clear();
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            selectByDrag(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 100);
+            flick(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 10, 400);
             compare(handler.state, "", "The input has not returned to default state.");
             verify(longText.selectedText !== "");
 

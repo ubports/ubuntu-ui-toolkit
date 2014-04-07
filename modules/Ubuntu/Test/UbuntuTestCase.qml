@@ -88,10 +88,14 @@ TestCase {
 	}
 
     /*!
+      \qmlmethod UbuntuTestCase::flick(item, from, to, speed = -1, pressDelay = -1)
+
       The function simulates a flick event over an \item. The flick is executed
-      between \a from and \to points with a given \a speed (in msec).
+      between \a from and \to points (built using Qt.point()) with a given \a speed
+      (in msec) in between each intermediate point. A \a pressDelay will be executed
+      between the mouse press event and the first mouse move if specified.
       */
-    function flick(item, from, to, speed) {
+    function flick(item, from, to, speed, pressTimeout) {
         var pointCount = 5;
         if (from === undefined)
             qtest_fail("source point not defined", 2);
@@ -106,6 +110,10 @@ TestCase {
         var dy = to.y - from.y;
 
         mousePress(item, from.x, from.y);
+        if (pressTimeout !== undefined) {
+            wait(pressTimeout);
+        }
+
         for (var i = 0; i < pointCount; i++) {
             mouseMove(item, from.x + (i + 1) * dx / pointCount, from.y + (i + 1) * dy / pointCount, speed);
         }

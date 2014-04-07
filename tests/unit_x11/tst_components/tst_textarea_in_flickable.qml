@@ -21,39 +21,80 @@ import Ubuntu.Components 0.1
 
 Item {
     id: root
-    width: 200; height: 200
+    width: units.gu(50); height: units.gu(100)
 
     property bool hasOSK: QuickUtils.inputMethodProvider !== ""
 
     Flickable {
         id: flickable
         anchors.fill: parent
-        contentWidth: inFlickable.width
-        contentHeight: inFlickable.height
+        contentHeight: column.childrenRect.height
         clip: true
 
-        TextArea {
-            id: inFlickable
-            width: flickable.width
-            autoSize: true
-            maximumLineCount: 0
-            text: "1\n2\n3\n4\n5\n6\n7\n8\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1"
+        Column {
+            id: column
+            Text {
+                text: "This is a simple label on top of the Flickable"
+            }
+
+            TextArea {
+                id: inFlickable
+                width: flickable.width
+                autoSize: true
+                maximumLineCount: 0
+                text: "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1"
+            }
         }
     }
 
     SignalSpy {
-        id: flickableSpy
+        id: moveSpy
         target: flickable
-        signalName: "movingChanged"
+        signalName: "onMovementEnded"
     }
 
     UbuntuTestCase {
         name: "TextAreaInFlickableAPI"
         when: windowShown
+
+        function cleanup() {
+            flickable.contentY = 0;
+            moveSpy.clear();
+            inFlickable.focus = false;
+        }
+
         function test_DoNotStealFlickEvents() {
             mouseClick(inFlickable, 10, 10);
-            flick(inFlickable, Qt.point(50, 20), Qt.point(50, 0), 100);
-            tryCompare(flickableSpy, "count", 2, 200);
+            flick(inFlickable, Qt.point(50, 50), Qt.point(50, 0), 10);
+            tryCompare(moveSpy, "count", 1, 200);
+        }
+
+        function test_flicker_moves_when_inactive() {
+            flick(flickable, Qt.point(50, 100), Qt.point(50, 0), 10)
+            tryCompare(moveSpy, "count", 1, 200);
+        }
+
+        function test_select_state_locks_outer_flickable() {
+            mouseClick(inFlickable, 10, 10);
+            // select text
+            flick(inFlickable, Qt.point(50, 50), Qt.point(50, 0), 10, 400);
+            compare(moveSpy.count, 0, "The Flickable has moved while the TextArea was in selection mode");
+            verify(inFlickable.selectedText !== "");
+        }
+
+        function test_z_scrolling_input_with_selected_text() {
+            mouseClick(inFlickable, 10, 10);
+            // select text
+            flick(inFlickable, Qt.point(50, 50), Qt.point(50, 0), 10, 400);
+            compare(moveSpy.count, 0, "The Flickable has moved while the TextArea was in selection mode");
+            verify(inFlickable.selectedText !== "");
+
+            // scroll
+            moveSpy.clear();
+            flick(inFlickable, Qt.point(50, 100), Qt.point(50, 0), 10);
+            // wait till the move ends
+            moveSpy.wait();
+            verify(inFlickable.selectedText !== "");
         }
     }
 }

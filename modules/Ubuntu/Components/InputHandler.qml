@@ -17,7 +17,10 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1 as Ubuntu
 
-// TODO: check whether main is also inside a Flickable =? disable interactive for that as well
+/*
+  This component is a unified text selection and scrolling handler for both
+  TextField and TextArea components.
+  */
 
 Item {
     objectName: "input_handler"
@@ -62,13 +65,19 @@ Item {
     property var flickableList: new Array()
     property bool textChanged: false
     property int pressedPosition: -1
-    readonly property bool scrollingDisabled: main && main.hasOwnProperty("autosize") && main.autoSize && (main.maximumLineCount <= 0)
-    onScrollingDisabledChanged: if (state == "") flicker.interactive = scrollingDisabled
     // move properties
     property int moveStarts: -1
     property int moveEnds: -1
+    // set scroller to the first Flickable that scrolls the input
+    // this can be the internal Flickable if the full autosize is disabled
+    // or one of the input's parent Flickable
+    readonly property bool scrollingDisabled: main && main.hasOwnProperty("autoSize") ?
+                                                  (main.autoSize && (main.maximumLineCount <= 0)) : false
+    onScrollingDisabledChanged: if (state == "") flickable.interactive = !scrollingDisabled
+    readonly property Flickable grandScroller: firstFlickableParent(main)
+    readonly property Flickable scroller: (scrollingDisabled && grandScroller) ? grandScroller : flickable
 
-    // ensures the text cusrorRectangle is always in the Flickable's visible area
+    // ensures the text cusrorRectangle is always in the internal Flickable's visible area
     function ensureVisible()
     {
         var rect = input.cursorRectangle;
@@ -107,22 +116,29 @@ Item {
         }
         input.select(moveStarts, moveEnds);
     }
+    // returns the first Flickable parent of a given item
+    function firstFlickableParent(item) {
+        var p = item ? item.parent : null;
+        while (p && !p.hasOwnProperty("flicking")) {
+            p = p.parent;
+        }
+        return p;
+    }
+
     // disables interactive Flickable parents, stops at the first non-interactive flickable.
     function toggleFlickablesInteractive(turnOn) {
         var p;
         if (!turnOn) {
-            // handle the internal Flickable differently
-            p = main.parent;
+            // handle the scroller separately
+            p = firstFlickableParent(scroller)
             while (p) {
-                if (p.hasOwnProperty("flicking")) {
-                    if (p.interactive) {
-                        flickableList.push(p);
-                        p.interactive = false;
-                    } else {
-                        break;
-                    }
+                if (p.interactive) {
+                    flickableList.push(p);
+                    p.interactive = false;
+                } else {
+                    break;
                 }
-                p = p.parent;
+                p = firstFlickableParent(p);
             }
         } else {
             while (flickableList.length > 0) {
@@ -148,7 +164,9 @@ Item {
         },
         State {
             name: "inactive"
-            when: main.focus = false
+            // we do not disable scroller here as in case the internal scrolling
+            // is disabled (scrollingDisabled = true) the outer scroller (grandScroller)
+            // would be blocked as well, which we don't want to
             PropertyChanges {
                 target: flickable
                 interactive: false
@@ -157,14 +175,20 @@ Item {
         State {
             name: "scrolling"
             StateChangeScript {
-                script: selectionTimeout.running = false;
+                script: {
+                    // stop scrolling all the parents
+                    toggleFlickablesInteractive(false);
+                    // stop selection timeout
+                    selectionTimeout.running = false;
+                }
             }
         },
         State {
             name: "select"
-            // during select state the Flickable is not interactive
+            // during select state all the flickables are blocked (interactive = false)
+            // we can use scroller here as we need to disable the outer scroller too!
             PropertyChanges {
-                target: flickable
+                target: scroller
                 interactive: false
             }
             StateChangeScript {
@@ -178,7 +202,6 @@ Item {
             }
         }
     ]
-//    onStateChanged: print("STATE", state)
 
     // brings the state back to default when the component looses focuse
     Connections {
@@ -189,14 +212,16 @@ Item {
         }
     }
 
+    // input specific signals
     Connections {
         target: input
-        onCursorRectangleChanged: ensureVisible()
+        onCursorRectangleChanged: if (!scrollingDisabled) ensureVisible()
         onTextChanged: textChanged = true;
     }
 
+    // inner or outer Flickable controlling
     Connections {
-        target: flickable
+        target: scroller
         // turn scrolling state on
         onFlickStarted: if (!scrollingDisabled) state = "scrolling"
         onMovementStarted: if (!scrollingDisabled) state = "scrolling"
@@ -209,7 +234,7 @@ Item {
         id: selectionTimeout
         interval: 300
         onTriggered: {
-            if (!flickable.moving) {
+            if (scroller && !scroller.moving) {
                 state = "select";
             }
         }

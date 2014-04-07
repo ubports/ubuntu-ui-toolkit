@@ -479,7 +479,6 @@ StyledItem
     function remove(start, end)
     function undo()
     function forceActiveFocus()
-    property internal __internal
 modules/Ubuntu/Components/TextField.qml
 ActionItem
     property bool highlighted
@@ -545,7 +544,6 @@ ActionItem
     function undo()
     function remove(start, end)
     function getText(start, end)
-    property internal __internal
 modules/Ubuntu/Components/Themes/Palette.qml
 QtObject
     property PaletteValues normal
@@ -591,6 +589,7 @@ TestCase
     function findChild(obj,objectName)
     function findInvisibleChild(obj,objectName)
     function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay)
+    function flick(item, from, to, speed, pressTimeout)
     function tryCompareFunction(func, expectedResult, timeout)
 plugins.qmltypes
     name: "InverseMouseAreaType"

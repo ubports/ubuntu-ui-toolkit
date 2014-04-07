@@ -973,7 +973,7 @@ ActionItem {
     // text input
     Flickable {
         id: flicker
-        objectName: "textfield_flicker"
+        objectName: "textfield_scroller"
         anchors {
             left: leftPane.right
             right: clearButton.left
