@@ -898,7 +898,6 @@ StyledItem {
         clip: true
         contentWidth: editor.paintedWidth
         contentHeight: editor.paintedHeight
-        property bool autosizeInfinite: control.autoSize && (control.maximumLineCount <= 0)
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
 
