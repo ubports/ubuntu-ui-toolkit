@@ -856,8 +856,6 @@ ActionItem {
         property real lineSpacing: units.dp(3)
         property real lineSize: editor.font.pixelSize + lineSpacing
 
-        signal popupTriggered(int pos)
-
         property int type: action ? action.parameterType : 0
         onTypeChanged: {
             // Don't undo explicitly specified hints

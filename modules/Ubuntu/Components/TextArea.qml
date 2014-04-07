@@ -779,8 +779,6 @@ StyledItem {
         //selection properties
         property bool prevShowCursor
 
-        signal popupTriggered(int pos)
-
         function toggleSelectionCursors(show)
         {
             if (!show) {
