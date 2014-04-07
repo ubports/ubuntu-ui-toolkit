@@ -127,10 +127,11 @@ ActionItem {
     property bool hasClearButton: true
 
     /*!
-      \preliminary
+      \deprecated
       Component to be shown and used instead of the default On Screen Keyboard.
     */
     property Component customSoftwareInputPanel
+    onCustomSoftwareInputPanelChanged: console.error("customSoftwareInputPanel property deprecated.")
 
     /*!
       The property overrides the default popover of the TextField. When set, the TextField
