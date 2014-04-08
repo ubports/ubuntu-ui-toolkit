@@ -87,7 +87,66 @@ TestCase {
 		}
 	}
 
-	/*!
+    /*!
+      \qmlmethod UbuntuTestCase::flick(item, from, to, speed = -1, pressDelay = undefined)
+
+      The function simulates a flick event over an \item. The flick is executed
+      between \a from and \to points (built using Qt.point()) with a given \a speed
+      (in msec) in between each intermediate point. A \a pressDelay will be executed
+      between the mouse press event and the first mouse move if specified.
+
+      \note The function can be used to select a text in a TextField or TextArea by
+      specifying at least 400 millisecods to \a pressDelay.
+      */
+    function flick(item, from, to, speed, pressTimeout) {
+        var pointCount = 5;
+        if (from === undefined)
+            qtest_fail("source point not defined", 2);
+        if (to === undefined)
+            qtest_fail("destination point not defined", 2);
+        if (speed === undefined)
+            speed = -1;
+        else
+            speed /= pointCount;
+
+        var dx = to.x - from.x;
+        var dy = to.y - from.y;
+
+        mousePress(item, from.x, from.y);
+        if (pressTimeout !== undefined) {
+            wait(pressTimeout);
+        }
+
+        for (var i = 0; i < pointCount; i++) {
+            mouseMove(item, from.x + (i + 1) * dx / pointCount, from.y + (i + 1) * dy / pointCount, speed);
+        }
+        mouseRelease(item, to.x, to.y);
+        // empty event buffer
+        wait(200);
+    }
+
+    /*!
+        \qmlmethod UbuntuTestCase::mouseLongPress(item, x, y, button = Qt.LeftButton, modifiers = Qt.NoModifiers, delay = -1)
+
+        Simulates a long press on a mouse \a button with an optional \a modifier
+        on an \a item. The position is defined by \a x and \a y. If \a delay is
+        specified, the test will wait the specified amount of milliseconds before
+        the press.
+
+        The position given by \a x and \a y is transformed from the co-ordinate
+        system of \a item into window co-ordinates and then delivered.
+        If \a item is obscured by another item, or a child of \a item occupies
+        that position, then the event will be delivered to the other item instead.
+
+        \sa mouseRelease(), mouseClick(), mouseDoubleClick(), mouseMove(), mouseDrag(), mouseWheel()
+      */
+    function mouseLongPress(item, x, y, button, modifiers, delay) {
+        mousePress(item, x, y, button, modifiers, delay);
+        // the delay is taken from QQuickMouseArea
+        wait(800);
+    }
+
+    /*!
 		Keeps executing a given parameter-less function until it returns the given
 		expected result or the timemout is reached (in which case a test failure
 		is generated)
