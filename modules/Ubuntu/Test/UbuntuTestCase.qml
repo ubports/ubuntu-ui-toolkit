@@ -117,8 +117,6 @@ TestCase {
         steps += 1;
         if (delay === undefined)
             delay = -1;
-        else
-            delay /= steps;
 
         var ddx = (to.x - from.x) / steps;
         var ddy = (to.y - from.y) / steps;
@@ -128,7 +126,8 @@ TestCase {
             wait(pressTimeout);
         }
         for (var i = 1; i <= steps; i++) {
-            mouseMove(item, from.x + i * ddx, from.y + i * ddy, delay, button);
+            // mouse moves are all processed immediately, without delay in between events
+            mouseMove(item, from.x + i * ddx, from.y + i * ddy, -1, button);
         }
         mouseRelease(item, to.x, to.y, button, modifiers, delay);
         // empty event buffer

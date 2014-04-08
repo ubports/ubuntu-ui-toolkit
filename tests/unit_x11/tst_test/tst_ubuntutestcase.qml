@@ -65,6 +65,10 @@ Rectangle {
     function init() {
         mouseArea.steps = 0;
     }
+    function cleanup() {
+        movementSpy.clear();
+        longPressSpy.clear();
+    }
 
     function test_mouseMoveSlowly() {
        mouseMoveSlowly(root,0,0,800,300,10,100);
@@ -119,32 +123,26 @@ Rectangle {
     }
 
     function test_flick_default() {
-        movementSpy.clear();
         flick(flicker, 0, 0, flicker.width, flicker.height);
         movementSpy.wait();
     }
     function test_flick_long() {
-        movementSpy.clear();
         flick(flicker, 0, 0, flicker.width, flicker.height, -1, 10);
         movementSpy.wait();
     }
     function test_flick_short() {
-        movementSpy.clear();
         flick(flicker, 0, 0, flicker.width, flicker.height, -1, 1);
         movementSpy.wait();
     }
     function test_flick_pressTimeout() {
-        movementSpy.clear();
         flick(flicker, 0, 0, flicker.width, flicker.height, 400);
         movementSpy.wait();
     }
     function test_flick_pressTimeout_short() {
-        movementSpy.clear();
         flick(flicker, flicker.width, flicker.height, -flicker.width, -flicker.height, 400, 1);
         movementSpy.wait();
     }
     function test_flick_pressTimeout_long() {
-        movementSpy.clear();
         flick(flicker, flicker.width, flicker.height, -flicker.width, -flicker.height, 400, 100);
         movementSpy.wait();
     }
