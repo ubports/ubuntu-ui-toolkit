@@ -88,12 +88,15 @@ TestCase {
 	}
 
     /*!
-      \qmlmethod UbuntuTestCase::flick(item, from, to, speed = -1, pressDelay = -1)
+      \qmlmethod UbuntuTestCase::flick(item, from, to, speed = -1, pressDelay = undefined)
 
-      The function simulates a flick event over an \item. The flick is executed
-      between \a from and \to points (built using Qt.point()) with a given \a speed
+      The function simulates a flick event over an \a item. The flick is executed
+      between \a from and \a to points (built using Qt.point()) with a given \a speed
       (in msec) in between each intermediate point. A \a pressDelay will be executed
       between the mouse press event and the first mouse move if specified.
+
+      \note The function can be used to select a text in a TextField or TextArea by
+      specifying at least 400 millisecods to \a pressDelay.
       */
     function flick(item, from, to, speed, pressTimeout) {
         var pointCount = 5;
@@ -143,7 +146,7 @@ TestCase {
         wait(800);
     }
 
-	/*!
+    /*!
 		Keeps executing a given parameter-less function until it returns the given
 		expected result or the timemout is reached (in which case a test failure
 		is generated)

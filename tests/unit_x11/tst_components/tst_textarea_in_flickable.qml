@@ -61,6 +61,8 @@ Item {
             flickable.contentY = 0;
             moveSpy.clear();
             inFlickable.focus = false;
+            // empty event buffer caused by the flick() events
+            wait(200);
         }
 
         function test_DoNotStealFlickEvents() {
