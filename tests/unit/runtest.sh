@@ -33,7 +33,7 @@ function create_test_cmd {
   if [ $_TARGET != $_TESTFILE ]; then
       _CMD="$_CMD -input $_TESTFILE"
   fi
-  _CMD="$_CMD -maxwarnings 4"
+  _CMD="$_CMD -maxwarnings 40"
 }
 
 function execute_test_cmd {
