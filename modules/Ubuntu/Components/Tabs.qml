@@ -161,7 +161,7 @@ PageTreeNode {
       The first tab is 0, and -1 means that no tab is selected.
       The initial value is 0 if Tabs has contents, or -1 otherwise.
      */
-    property alias selectedTabIndex: tabsModel.selectedIndex
+    property alias selectedTabIndex: bar.selectedIndex
 
     /*!
       \preliminary
@@ -211,11 +211,6 @@ PageTreeNode {
      */
     ListModel {
         id: tabsModel
-
-        /*!
-          The index of the selected tab.
-         */
-        property int selectedIndex: tabsModel.count > 0 ? 0 : -1
 
         function listModel(tab) {
             return {"title": tab.title, "tab": tab};
