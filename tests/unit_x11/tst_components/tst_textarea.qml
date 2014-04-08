@@ -87,14 +87,29 @@ Item {
         name: "TextAreaAPI"
         when: windowShown
 
-        function cleanup() {
-            longText.focus = false;
+        function init() {
             longText.cursorPosition = 0;
+        }
+
+        function cleanup() {
+            textArea.focus =
+            colorTest.focus =
+            textEdit.focus =
+            input.focus =
+            t1.focus = t2. focus =
+            longText.focus = false;
             var scroller = findChild(longText, "textarea_scroller");
             scroller.contentY = 0;
             scroller.contentX = 0;
+            textArea.text = "";
+            textArea.textFormat = TextEdit.PlainText;
+            input.forceActiveFocus();
+            input.textFormat = TextEdit.PlainText;
+            input.text = "";
+            input.cursorPosition = 0;
+
             // empty event buffer
-            wait(100);
+            wait(200);
         }
 
 
@@ -168,7 +183,7 @@ Item {
             compare(textArea.lineCount,textEdit.lineCount,"TextArea.lineCount is same as TextEdit.lineCount")
         }
 
-        function test_1_mouseSelectionMode() {
+        function test_0_mouseSelectionMode() {
             compare(textArea.mouseSelectionMode, TextEdit.SelectWords,"TextArea.mouseSelectionMode is SelectWords")
         }
 
@@ -225,44 +240,44 @@ Item {
         }
 
         // TextArea specific properties
-        function test_1_highlighted() {
+        function test_0_highlighted() {
             compare(textArea.highlighted, textArea.focus, "highlighted is the same as focused");
         }
 
-        function test_1_contentHeight() {
+        function test_contentHeight() {
             compare(textArea.contentHeight>0,true,"contentHeight over 0 units on default")
             var newValue = 200;
             textArea.contentHeight = newValue;
             compare(textArea.contentHeight,newValue,"set/get");
         }
 
-        function test_1_contentWidth() {
+        function test_contentWidth() {
             compare(textArea.contentWidth,units.gu(30),"contentWidth is 30 units on default")
             var newValue = 200;
             textArea.contentWidth = newValue;
             compare(textArea.contentWidth,newValue,"set/get");
         }
 
-        function test_1_placeholderText() {
+        function test_placeholderText() {
             compare(textArea.placeholderText,"","placeholderText is '' on default")
             var newValue = "Hello Placeholder";
             textArea.placeholderText = newValue;
             compare(textArea.placeholderText,newValue,"set/get");
         }
 
-        function test_1_autoSize() {
+        function test_autoSize() {
             compare(textArea.autoSize,false,"TextArea.autoSize is set to false");
             var newValue = true;
             textArea.autoSize = newValue;
             compare(textArea.autoSize, newValue,"set/get");
         }
 
-        function test_1_baseUrl() {
+        function test_0_baseUrl() {
             expectFail("","TODO")
             compare(textArea.baseUrl,"tst_textarea.qml","baseUrl is QML file instantiating the TextArea item on default")
         }
 
-        function test_1_displayText() {
+        function test_displayText() {
             compare(textArea.displayText,"","displayText is '' on default")
             var newValue = "Hello Display Text";
             try {
@@ -274,18 +289,18 @@ Item {
 
         }
 
-        function test_1_popover() {
+        function test_0_popover() {
             compare(textArea.popover, undefined, "Uses default popover");
         }
 
-        function test_1_maximumLineCount() {
+        function test_maximumLineCount() {
             compare(textArea.maximumLineCount,5,"maximumLineCount is 0 on default")
             var newValue = 10;
             textArea.maximumLineCount = newValue;
             compare(textArea.maximumLineCount,newValue,"set/get");
         }
 
-        function test_0_visible() {
+        function test_visible() {
             textArea.visible = false;
             compare(textArea.activeFocus, false, "TextArea is inactive");
         }
@@ -468,8 +483,8 @@ Item {
             compare(Qt.inputMethod.visible, true, "OSK shown");
         }
 
-        // make it to b ethe last test case executed
-        function test_zz_TextareaInListItem_RichTextEnterCaptured() {
+        // make it to bethe last test case executed
+        function test_TextareaInListItem_RichTextEnterCaptured() {
             textArea.text = "a<br />b";
             textArea.textFormat = TextEdit.RichText;
             input.forceActiveFocus();
@@ -554,6 +569,11 @@ Item {
             compare(handler.state, "", "The input has not returned to default state.");
         }
 
+        SignalSpy {
+            id: popoverSpy
+            signalName: "onPressAndHold"
+        }
+
         function test_press_and_hold_moves_cursor_position() {
             longText.focus = true;
             var handler = findChild(longText, "input_handler");
@@ -563,8 +583,7 @@ Item {
 
             // long press
             compare(handler.state, "", "The input is not in default state before long press");
-            mousePress(longText, units.gu(8), y);
-            wait(800);
+            mouseLongPress(longText, units.gu(8), y);
             verify(longText.cursorPosition != 0);
             compare(handler.state, "select", "The input is not in selection state");
 
@@ -580,6 +599,8 @@ Item {
             var y = longText.height / 2;
             flickSpy.target = findChild(longText, "textarea_scroller");
             flickSpy.clear();
+            popoverSpy.target = handler;
+            popoverSpy.clear();
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
@@ -587,11 +608,11 @@ Item {
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
 
-            mousePress(longText, units.gu(7), y);
-            wait(800);
+            mouseLongPress(longText, units.gu(7), y);
             compare(handler.state, "select", "The input is not in selection state");
             // wait till popover is shown
-            waitForRendering(longText);
+//            waitForRendering(longText);
+            popoverSpy.wait();
             // cleanup, release the mouse, that should bring the handler back to default state
             mouseRelease(main, 0, 0);
             compare(handler.state, "", "The input has not returned to default state.");
@@ -633,6 +654,37 @@ Item {
             // click on selection
             mouseClick(longText, units.gu(10), y);
             verify(longText.selectedText === "");
+        }
+
+        function test_rightclick_does_not_open_popover_when_not_focused() {
+            var handler = findChild(longText, "input_handler");
+            var x = longText.width / 2;
+            var y = longText.height / 2;
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // rclick should not bring popover in
+            mouseClick(longText, x, y, Qt.RightButton);
+            compare(popoverSpy.count, 0, "Right click should not open popover when the input is not focused.");
+            compare(handler.state, "inactive", "The input is not in inactive state.");
+        }
+
+        function test_rightclick_opens_popover_when_focused() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            var x = longText.width / 2;
+            var y = longText.height / 2;
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // rclick should bring popover in
+            mouseClick(longText, x, y, Qt.RightButton);
+            popoverSpy.wait();
+            compare(handler.state, "", "The input is not in default state.");
+
+            // take the popover away, that should bring the handler back to default state
+            mouseClick(main, 0, 0);
+            compare(handler.state, "", "The input has not returned to default state.");
         }
     }
 }

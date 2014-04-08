@@ -295,6 +295,7 @@ Item {
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
+        enabled: main.focus
         // trigger pressAndHold
         onReleased: {
             input.cursorPosition = pressedPosition = mousePosition(mouse);
