@@ -90,8 +90,8 @@ TestCase {
     /*!
       \qmlmethod UbuntuTestCase::flick(item, from, to, speed = -1, pressDelay = undefined)
 
-      The function simulates a flick event over an \item. The flick is executed
-      between \a from and \to points (built using Qt.point()) with a given \a speed
+      The function simulates a flick event over an \a item. The flick is executed
+      between \a from and \a to points (built using Qt.point()) with a given \a speed
       (in msec) in between each intermediate point. A \a pressDelay will be executed
       between the mouse press event and the first mouse move if specified.
 
