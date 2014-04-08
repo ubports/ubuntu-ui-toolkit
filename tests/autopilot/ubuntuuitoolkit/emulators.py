@@ -360,6 +360,9 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.click_object(self._get_next_tab_button())
 
     def _activate_tab_bar(self):
+        # First move to the tab bar to avoid timing issues when we find it in
+        # selection mode but it's deselected while we move to it.
+        self.pointing_device.move_to_object(self)
         if self.selectionMode:
             logger.debug('Already in selection mode.')
         else:
