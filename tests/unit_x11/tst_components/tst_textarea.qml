@@ -611,7 +611,6 @@ Item {
             mouseLongPress(longText, units.gu(7), y);
             compare(handler.state, "select", "The input is not in selection state");
             // wait till popover is shown
-//            waitForRendering(longText);
             popoverSpy.wait();
             // cleanup, release the mouse, that should bring the handler back to default state
             mouseRelease(main, 0, 0);
