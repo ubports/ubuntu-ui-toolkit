@@ -88,39 +88,49 @@ TestCase {
 	}
 
     /*!
-      \qmlmethod UbuntuTestCase::flick(item, from, to, speed = -1, pressDelay = undefined)
+      \qmlmethod UbuntuTestCase::flick(item, x, y, dx, dy, pressTimeout = -1, steps = -1, button = Qt.LeftButton, modifiers = Qt.NoModifiers, delay = -1)
 
-      The function simulates a flick event over an \a item. The flick is executed
-      between \a from and \a to points (built using Qt.point()) with a given \a speed
-      (in msec) in between each intermediate point. A \a pressDelay will be executed
-      between the mouse press event and the first mouse move if specified.
+      The function produces a flick event when executed on Flickables. When used
+      on other components it provides the same functionality as \l mouseDrag()
+      function. The optional \a pressTimeout parameter can be used to introduce
+      a small delay between the mouse press and the first mouse move.
+
+      The default flick velocity is built up using 5 move points. This can be altered
+      by setting a positive value to \a steps parameter. The bigger the number the
+      longer the flick will be.
 
       \note The function can be used to select a text in a TextField or TextArea by
-      specifying at least 400 millisecods to \a pressDelay.
+      specifying at least 400 millisecods to \a pressTimeout.
       */
-    function flick(item, from, to, speed, pressTimeout) {
-        var pointCount = 5;
-        if (from === undefined)
-            qtest_fail("source point not defined", 2);
-        if (to === undefined)
-            qtest_fail("destination point not defined", 2);
-        if (speed === undefined)
-            speed = -1;
+    function flick(item, x, y, dx, dy, pressTimeout, steps, button, modifiers, delay) {
+        if (item === undefined || item.x === undefined || item.y === undefined)
+            return
+        if (button === undefined)
+            button = Qt.LeftButton
+        if (modifiers === undefined)
+            modifiers = Qt.NoModifier
+        var from = Qt.point(x, y);
+        var to = Qt.point(x + dx, y + dy);
+        if (steps === undefined || steps <= 0)
+            steps = 4;
+        // make sure we have at least two move steps so the flick will be sensed
+        steps += 1;
+        if (delay === undefined)
+            delay = -1;
         else
-            speed /= pointCount;
+            delay /= steps;
 
-        var dx = to.x - from.x;
-        var dy = to.y - from.y;
+        var ddx = (to.x - from.x) / steps;
+        var ddy = (to.y - from.y) / steps;
 
-        mousePress(item, from.x, from.y);
-        if (pressTimeout !== undefined) {
+        mousePress(item, from.x, from.y, button, modifiers, delay);
+        if (pressTimeout !== undefined && pressTimeout > 0) {
             wait(pressTimeout);
         }
-
-        for (var i = 0; i < pointCount; i++) {
-            mouseMove(item, from.x + (i + 1) * dx / pointCount, from.y + (i + 1) * dy / pointCount, speed);
+        for (var i = 1; i <= steps; i++) {
+            mouseMove(item, from.x + i * ddx, from.y + i * ddy, delay, button);
         }
-        mouseRelease(item, to.x, to.y);
+        mouseRelease(item, to.x, to.y, button, modifiers, delay);
         // empty event buffer
         wait(200);
     }
