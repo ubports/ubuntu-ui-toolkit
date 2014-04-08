@@ -172,7 +172,6 @@ private Q_SLOTS:
     void testWindowTitleFromTabs() {
         QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("TabsTitle.qml"));
         QQuickItem *page = testCase->findItem<QQuickItem*>("page");
-        QEXPECT_FAIL(0, "Tabs don't correctly propagate the title yet", Continue);
         QCOMPARE(QString("Long long ago"), page->property("title").toString());
         QCOMPARE(testCase->title(), page->property("title").toString());
     }
