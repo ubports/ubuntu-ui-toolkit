@@ -1,3 +1,9 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20140404.1.is.0.1.46+14.04.20140404-0ubuntu1) trusty; urgency=medium
+
+  * Revert to previous version as it's making gallery-app AP tests
+    failing on the CI dashboard
+ -- Didier Roche <didrocks@ubuntu.com>   Tue, 08 Apr 2014 13:34:12 +0200
+
 ubuntu-ui-toolkit (0.1.46+14.04.20140404.1-0ubuntu1) trusty; urgency=low
 
   [ tpeeters ]
