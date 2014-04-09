@@ -87,10 +87,6 @@ Item {
         name: "TextAreaAPI"
         when: windowShown
 
-        function init() {
-            longText.cursorPosition = 0;
-        }
-
         function cleanup() {
             textArea.focus =
             colorTest.focus =
@@ -99,6 +95,7 @@ Item {
             t1.focus =
             t2.focus =
             longText.focus = false;
+            longText.cursorPosition = 0;
             var scroller = findChild(longText, "textarea_scroller");
             scroller.contentY = 0;
             scroller.contentX = 0;
@@ -110,7 +107,7 @@ Item {
             input.cursorPosition = 0;
 
             // empty event buffer
-            wait(200);
+            wait(100);
         }
 
 
@@ -301,7 +298,7 @@ Item {
             compare(textArea.maximumLineCount,newValue,"set/get");
         }
 
-        function test_visible() {
+        function test_0_visible() {
             textArea.visible = false;
             compare(textArea.activeFocus, false, "TextArea is inactive");
         }

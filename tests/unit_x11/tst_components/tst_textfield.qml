@@ -663,8 +663,6 @@ Item {
             mouseRelease(textItem, 0, 0);
             compare(handler.state, "", "The input has not returned to default state.");
             mouseClick(longText, 10, 10);
-            // but we should still have the text selected
-            verify(longText.selectedText !== "");
         }
 
         function test_clear_selection_by_click_on_selection() {
