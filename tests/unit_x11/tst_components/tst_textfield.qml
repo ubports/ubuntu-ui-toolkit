@@ -605,12 +605,19 @@ Item {
             compare(handler.state, "", "The input has not returned to default state.");
         }
 
+        SignalSpy {
+            id: popoverSpy
+            signalName: "onPressAndHold"
+        }
+
         function test_press_and_hold_over_selected_text() {
             longText.focus = true;
             var handler = findChild(longText, "input_handler");
             var y = longText.height / 2;
             flickSpy.target = findChild(longText, "textfield_scroller");
             flickSpy.clear();
+            popoverSpy.target = handler;
+            popoverSpy.clear();
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
@@ -622,6 +629,7 @@ Item {
             compare(handler.state, "select", "The input is not in selection state");
             // wait till popover is shown
             waitForRendering(longText);
+            popoverSpy.wait();
             // cleanup, release the mouse, that should bring the handler back to default state
             mouseRelease(textItem, 0, 0);
             compare(handler.state, "", "The input has not returned to default state.");
