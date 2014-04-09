@@ -80,10 +80,15 @@ StyledItem {
     onTitleChanged: contentsChanged()
 
     /*!
+      \deprecated
       The contents of the header. If this is set, \l title will be ignored.
+      This property is now DEPRECATED. Set tabsModel to show tabs navigation in header.
      */
     property Item contents: null
-    onContentsChanged: header.show()
+    onContentsChanged: {
+        print("Header.contents property is now DEPRECATED. Set tabsModel to show tabs navigation.");
+        header.show();
+    }
 
     /*!
       A model of tabs to represent in the header.

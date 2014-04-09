@@ -85,6 +85,7 @@ API Changes
 * ADDED IN: Empty: property bool waitingConfirmationForRemoval
 * ADDED IN: Empty: function cancelItemRemoval()
 * CHANGED in CrossFadeImage: readonly property size sourceSize TO property size sourceSize
+* DEPRECATED in Header: property Item contents
 
 Compatibility Breaks
 ********************
