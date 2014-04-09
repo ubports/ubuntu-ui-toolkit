@@ -64,11 +64,20 @@ Item {
     /*!
       Default color for the dropdown button when released.
       */
-    property color dropDownColorReleased: defaultColor
+    property color defaultDropdownColorReleased: defaultColor
     /*!
       Default color for dropdown button when pressed.
       */
-    property color dropDownColorPressed: Qt.rgba(0, 0, 0, 0.05)
+    property color defaultDropdownColorPressed: Qt.rgba(0, 0, 0, 0.05)
+    /*!
+      Default button face font.
+      */
+    property alias defaultFont: mainButton.defaultFont
+
+    /*!
+      The property holds the Item implementing the visuals of the dropdown button.
+      */
+    property alias dropdownButtonVisuals: dropDownButton
 
     width: combo.width
     height: combo.collapsedHeight
@@ -76,8 +85,8 @@ Item {
     /*! \internal */
     property ComboButton combo: styledItem
 
-    implicitWidth: units.gu(36)
-    implicitHeight: units.gu(4)
+    implicitWidth: mainButton.implicitWidth
+    implicitHeight: mainButton.implicitHeight
 
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
@@ -100,7 +109,8 @@ Item {
         height: combo.collapsedHeight
         // overrides
         backgroundSource: comboFace
-        buttonFaceOffset: -dropDownWidth / 2
+        buttonFaceOffset: -dropDownWidth/2 - dropDownSeparatorWidth
+        horizontalPadding: units.gu(4) - dropDownSeparatorWidth
         minimumWidth: units.gu(36)
 
         // FIXME: use hardcoded color while we get the theme palette updated
@@ -145,17 +155,18 @@ Item {
 
             Rectangle {
                 id: dropDownButton
+                objectName: "combobutton_dropdown_visuals"
                 anchors {
                     right: parent.right
                     top: parent.top
                     bottom: parent.bottom
                 }
                 width: comboStyle.dropDownWidth
-                color: combo.expanded ? comboStyle.colorHack(comboStyle.dropDownColorPressed) : comboStyle.dropDownColorReleased
+                color: combo.expanded ? comboStyle.colorHack(combo.dropdownColorPressed) : comboStyle.colorHack(combo.dropdownColorReleased)
                 Image {
                     source: "artwork/chevron.png"
                     anchors.centerIn: parent
-                    rotation: combo.expanded ? 90 : -90
+                    rotation: combo.expanded ? -90 : 90
                 }
             }
         }

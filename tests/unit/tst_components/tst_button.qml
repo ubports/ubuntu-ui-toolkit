@@ -53,6 +53,10 @@ TestCase {
         compare(button.color,newColor,"Can set/get color")
     }
 
+    function test_font() {
+        verify(button.font === Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")}), "Default font differs");
+    }
+
     function test_hovered() {
         compare(button.hovered,false,"Hovered is boolean and false by default")
     }

@@ -83,6 +83,11 @@ AbstractButton {
     property Gradient gradient: __styleInstance.defaultGradient
 
     /*!
+      The font used for the button's text.
+    */
+    property font font: __styleInstance ? __styleInstance.defaultFont : Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
+
+    /*!
        The source URL of the icon to display inside the button.
        Leave this value blank for a text-only button.
        If \l action is set, the default iconSource is that of the action.

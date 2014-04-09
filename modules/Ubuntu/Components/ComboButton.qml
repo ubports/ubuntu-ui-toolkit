@@ -192,10 +192,10 @@ Button {
         A value of -1 will instruct the component to expand the combo list as
         much as its content height is.
 
-        The default value is \l collapsedHeight + 15 GU.
+        The default value is \l collapsedHeight + 19.5 GU.
         \sa collapsedHeight
       */
-    property real expandedHeight: collapsedHeight + units.gu(15)
+    property real expandedHeight: collapsedHeight + units.gu(19.5)
 
     /*!
       The property holds the maximum combo list height allowed based on the
@@ -239,6 +239,17 @@ Button {
         expanded height.
       */
     default property alias comboList: comboListHolder.data
+
+    /* ----------------- Color and font configurations ----------------- */
+    /*!
+      The property specifies the color of the dropdown button when expanded.
+      */
+    property color dropdownColorPressed: __styleInstance ? __styleInstance.defaultDropdownColorPressed : color
+
+    /*!
+      The property specifies the color of the dropdown button when collapsed.
+      */
+    property color dropdownColorReleased: __styleInstance ? __styleInstance.defaultDropdownColorReleased : color
 
     style: Theme.createStyleComponent("ComboButtonStyle.qml", combo)
 
@@ -365,4 +376,8 @@ Button {
         property: "objectName"
         value: "combobutton_combopanel"
     }
+
+    /*! \internal */
+    // on style change, update the visual's names so we can access it when testing
+    onStyleChanged: if (__styleInstance) __styleInstance.dropdownButtonVisuals.objectName = "combobutton_dropdow_visuals"
 }

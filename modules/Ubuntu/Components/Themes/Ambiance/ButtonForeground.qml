@@ -30,6 +30,7 @@ Item {
     property real spacing
     property bool hasIcon: iconSource != ""
     property bool hasText: text != ""
+    property alias font: label.font
 
     opacity: enabled ? 1.0 : 0.5
     implicitHeight: Math.max(icon.height, label.height)

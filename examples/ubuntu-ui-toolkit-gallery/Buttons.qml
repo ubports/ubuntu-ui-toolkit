@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1
 
 Template {
     objectName: "buttonsTemplate"
@@ -90,14 +91,43 @@ Template {
             ComboButton {
                 text: "Press me"
                 objectName: "combobutton_collapsed"
-                comboList: Rectangle {
-                    height: units.gu(20)
-                    width: parent.width
-                    color: "blue"
+                comboList:  UbuntuListView {
+                    model: 10
+                    delegate: Standard {
+                        text: "item #" + modelData
+                    }
                 }
             }
         }
 
+        TemplateRow {
+            title: i18n.tr("Icon")
+
+            ComboButton {
+                iconSource: "call.png"
+                comboList:  UbuntuListView {
+                    model: 10
+                    delegate: Standard {
+                        text: "item #" + modelData
+                    }
+                }
+            }
+        }
+
+        TemplateRow {
+            title: i18n.tr("Icon+Text")
+
+            ComboButton {
+                text: "Answer"
+                iconSource: "call.png"
+                comboList:  UbuntuListView {
+                    model: 10
+                    delegate: Standard {
+                        text: "item #" + modelData
+                    }
+                }
+            }
+        }
         TemplateRow {
             title: i18n.tr("Expanded")
 
@@ -105,10 +135,11 @@ Template {
                 text: "Press me"
                 objectName: "combobutton_expanded"
                 expanded: true
-                comboList: Rectangle {
-                    height: units.gu(20)
-                    width: parent.width
-                    color: "blue"
+                comboList:  UbuntuListView {
+                    model: 10
+                    delegate: Standard {
+                        text: "item #" + modelData
+                    }
                 }
             }
         }

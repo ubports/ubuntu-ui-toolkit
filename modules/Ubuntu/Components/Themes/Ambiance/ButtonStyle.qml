@@ -26,6 +26,7 @@ Item {
     property real minimumWidth: units.gu(10)
     property real horizontalPadding: units.gu(1)
     property color defaultColor: UbuntuColors.orange
+    property font defaultFont: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
     property Gradient defaultGradient
     property real buttonFaceOffset: 0
     property Item backgroundSource: null
@@ -114,6 +115,7 @@ Item {
         iconSource: button.iconSource
         iconPosition: button.iconPosition
         iconSize: units.gu(3)
+        font: button.font
         spacing: horizontalPadding
         transformOrigin: Item.Top
         scale: button.pressed ? 0.98 : 1.0
