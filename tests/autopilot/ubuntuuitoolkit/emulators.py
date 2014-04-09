@@ -467,13 +467,13 @@ class ComboButton(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.click_object(dropdown_button)
 
     def expand(self):
-        """Expands a combo button by clicking on the dropdown button if not expanded."""
+        """Expands a combo button by clicking on the dropdown button."""
         if self.expanded:
             return
         self.press_dropdown()
 
     def collapse(self):
-        """Collapses a combo button by clicking on the dropdown button if expanded."""
+        """Collapses a combo button by clicking on the dropdown button."""
         if not self.expanded:
             return
         self.press_dropdown()
