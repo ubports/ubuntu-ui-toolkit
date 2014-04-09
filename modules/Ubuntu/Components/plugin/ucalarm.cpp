@@ -102,15 +102,21 @@ int UCAlarmPrivate::firstDayOfWeek(UCAlarm::DaysOfWeek days)
 
 int UCAlarmPrivate::nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay)
 {
-    if (fromDay <= 0) {
+    if (fromDay <= 0 || fromDay >= Qt::Sunday) {
+        // start from teh beginning of the week
         fromDay = Qt::Monday;
+    } else {
+        // start checking from the next day onwards
+        fromDay++;
     }
     for (int d = fromDay; d <= Qt::Sunday; d++) {
         if ((1 << (d - 1)) & days) {
             return d;
         }
     }
-    return 0;
+
+    // none found for the rest of the week, return the fist day set
+    return firstDayOfWeek(days);
 }
 
 // checks whether the given num has more than one bit set
@@ -154,7 +160,8 @@ UCAlarm::Error UCAlarmPrivate::checkDow()
     } else if (rawData.days == UCAlarm::AutoDetect) {
         rawData.days = dayOfWeek(rawData.date);
         rawData.changes |= AlarmData::Days;
-    } else if (rawData.days != UCAlarm::Daily) {
+    } else if (rawData.type != UCAlarm::OneTime && rawData.days != UCAlarm::Daily) {
+        // this block is valid only for repeating alarms
         int alarmDay = firstDayOfWeek(rawData.days);
         int dayOfWeek = rawData.date.date().dayOfWeek();
         if (alarmDay < dayOfWeek) {
@@ -162,9 +169,6 @@ UCAlarm::Error UCAlarmPrivate::checkDow()
             rawData.changes |= AlarmData::Date;
         } else if (alarmDay > dayOfWeek) {
             rawData.date = rawData.date.addDays(alarmDay - dayOfWeek);
-            rawData.changes |= AlarmData::Date;
-        } else if (rawData.type != UCAlarm::OneTime) {
-            rawData.date = rawData.date.addDays(7);
             rawData.changes |= AlarmData::Date;
         }
     }
@@ -205,14 +209,16 @@ UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly()
     int dayOfWeek = rawData.date.date().dayOfWeek();
     if (!isDaySet(dayOfWeek, rawData.days) || (rawData.date <= QDateTime::currentDateTime())) {
         // check the next occurence of the alarm
-        int nextOccurence = nextDayOfWeek(rawData.days, dayOfWeek);
-        if (nextOccurence <= 0) {
-             // the starting date should be moved to the next week
-            nextOccurence = firstDayOfWeek(rawData.days);
-            rawData.date.addDays(7 - dayOfWeek + nextOccurence);
+        int nextOccurrence = nextDayOfWeek(rawData.days, dayOfWeek);
+        if (nextOccurrence == dayOfWeek) {
+            // move the date to the same day next week
+            rawData.date = rawData.date.addDays(7);
+        } else if (nextOccurrence < dayOfWeek) {
+             // the starting date should be moved to the next week's occurrence
+            rawData.date = rawData.date.addDays(7 - dayOfWeek + nextOccurrence);
         } else {
             // the starting date is still this week
-            rawData.date.addDays(nextOccurence - dayOfWeek);
+            rawData.date = rawData.date.addDays(nextOccurrence - dayOfWeek);
         }
         rawData.changes |= AlarmData::Date;
     }
