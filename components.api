@@ -53,6 +53,8 @@ Button
     property real expandedHeight
     readonly property real comboListHeight
     default property list<Item> comboList
+    property color dropdownColorPressed
+    property color dropdownColorReleased
 modules/Ubuntu/Components/CrossFadeImage.qml
 Item
     property url source
