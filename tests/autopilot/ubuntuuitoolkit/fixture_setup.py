@@ -20,7 +20,7 @@ import tempfile
 
 import fixtures
 
-from ubuntuuitoolkit import base
+from ubuntuuitoolkit import base, environment
 
 
 DEFAULT_QML_FILE_CONTENTS = ("""
@@ -95,3 +95,26 @@ class FakeApplication(fixtures.Fixture):
     def _get_local_desktop_file_directory(self):
         return os.path.join(
             os.environ.get('HOME'), '.local', 'share', 'applications')
+
+
+class InitctlEnvironmentVariable(fixtures.Fixture):
+    """Set the value of initctl environment variables."""
+
+    def __init__(self, **kwargs):
+        super(InitctlEnvironmentVariable, self).__init__()
+        self.variables = kwargs
+
+    def setUp(self):
+        super(InitctlEnvironmentVariable, self).setUp()
+        for variable, value in self.variables.items():
+            self._add_variable_cleanup(variable)
+            environment.set_initctl_env_var(variable, value)
+
+    def _add_variable_cleanup(self, variable):
+        if environment.is_initctl_env_var_set(variable):
+            original_value = environment.get_initctl_env_var(variable)
+            self.addCleanup(
+                environment.set_initctl_env_var, variable,
+                original_value)
+        else:
+            self.addCleanup(environment.unset_initctl_env_var, variable)
