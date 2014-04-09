@@ -34,6 +34,8 @@ Item {
     property bool selectionCursor: input && input.selectedText !== ""
     // True if mouse handlig is enabled, false if flicking mode is enabled
     readonly property bool mouseHandlingEnabled: !flickable.interactive
+    // property holding the selection mode timeout
+    readonly property int selectionModeTimeout: main && main.__styleInstance ? main._styleInstance.selectionModeTimeout : 300
 
     // signal triggered when popup shoudl be opened
     signal pressAndHold(int pos)
@@ -232,7 +234,7 @@ Item {
     // switches the state to selection
     Timer {
         id: selectionTimeout
-        interval: 300
+        interval: selectionModeTimeout
         onTriggered: {
             if (scroller && !scroller.moving) {
                 state = "select";

@@ -91,6 +91,7 @@ Item {
             textArea.focus =
             colorTest.focus =
             textEdit.focus =
+            input.focus =
             t1.focus =
             t2.focus =
             longText.focus = false;
@@ -539,7 +540,7 @@ Item {
             var x = units.gu(5);
             var y = longText.height / 2;
             compare(handler.state, "", "The input is not in default state before selection");
-            flick(longText, x, y, 0, 2*dy, 400);
+            flick(longText, x, y, 0, 2*dy, handler.selectionModeTimeout + 50);
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
         }
@@ -564,7 +565,7 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before selection");
-            flick(longText, 0, y, units.gu(8), 0, 400);
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
 
@@ -608,7 +609,7 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            flick(longText, 0, y, units.gu(8), 0, 400);
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
 
@@ -632,7 +633,7 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            flick(longText, 0, y, units.gu(8), 0, 400);
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
             compare(handler.state, "", "The input has not returned to default state.");
             verify(longText.selectedText !== "");
 
@@ -650,7 +651,7 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            flick(longText, 0, y, units.gu(8), 0, 400);
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
             compare(handler.state, "", "The input has not returned to default state.");
             verify(longText.selectedText !== "");
 

@@ -508,7 +508,7 @@ Item {
         // text selection
         SignalSpy {
             id: flickSpy
-            signalName: "onFlickEnded"
+            signalName: "onMovementEnded"
         }
 
         function test_scroll_when_not_focused() {
@@ -553,7 +553,7 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before selection");
-            flick(longText, 0, y, units.gu(8), 0, 400);
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
 
@@ -573,7 +573,7 @@ Item {
             var x = units.gu(5);
             var y = longText.height / 2;
             compare(handler.state, "", "The input is not in default state before selection");
-            flick(longText, x, y, 2*dx, 0, 400);
+            flick(longText, x, y, 2*dx, 0, handler.selectionModeTimeout + 50);
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
         }
@@ -621,7 +621,7 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            flick(longText, 0, y, units.gu(8), 0, 400);
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
 
@@ -645,7 +645,7 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            flick(longText, 0, y, units.gu(8), 0, 400);
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
             compare(handler.state, "", "The input has not returned to default state.");
             verify(longText.selectedText !== "");
 
@@ -664,7 +664,7 @@ Item {
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
             print(1)
-            flick(longText, 0, y, units.gu(8), 0, 400);
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
             print(2)
             compare(handler.state, "", "The input has not returned to default state.");
             verify(longText.selectedText !== "");

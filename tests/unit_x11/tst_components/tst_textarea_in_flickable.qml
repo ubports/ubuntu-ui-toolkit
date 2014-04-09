@@ -67,8 +67,7 @@ Item {
 
         function test_DoNotStealFlickEvents() {
             mouseClick(inFlickable, 10, 10);
-            // provide a longer flick to get a proper signal from the Flickable
-            flick(inFlickable, 50, 50, 0, -50, -1, 50);
+            flick(inFlickable, 50, 50, 0, -50);
             moveSpy.wait();
         }
 
@@ -78,17 +77,19 @@ Item {
         }
 
         function test_select_state_locks_outer_flickable() {
+            var handler = findChild(inFlickable, "input_handler");
             mouseClick(inFlickable, 10, 10);
             // select text
-            flick(inFlickable, 50, 50, 0, -50, 400);
+            flick(inFlickable, 50, 50, 0, -50, handler.selectionModeTimeout+ 50);
             compare(moveSpy.count, 0, "The Flickable has moved while the TextArea was in selection mode");
             verify(inFlickable.selectedText !== "");
         }
 
         function test_scrolling_input_with_selected_text() {
+            var handler = findChild(inFlickable, "input_handler");
             mouseClick(inFlickable, 10, 10);
             // select text
-            flick(inFlickable, 50, 50, 0, -50, 400);
+            flick(inFlickable, 50, 50, 0, -50, handler.selectionModeTimeout + 50);
             compare(moveSpy.count, 0, "The Flickable has moved while the TextArea was in selection mode");
             verify(inFlickable.selectedText !== "");
 
