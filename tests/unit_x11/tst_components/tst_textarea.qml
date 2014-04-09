@@ -180,7 +180,7 @@ Item {
             compare(textArea.lineCount,textEdit.lineCount,"TextArea.lineCount is same as TextEdit.lineCount")
         }
 
-        function test_mouseSelectionMode() {
+        function test_0_mouseSelectionMode() {
             compare(textArea.mouseSelectionMode, TextEdit.SelectWords,"TextArea.mouseSelectionMode is SelectWords")
         }
 
@@ -237,7 +237,7 @@ Item {
         }
 
         // TextArea specific properties
-        function test_highlighted() {
+        function test_0_highlighted() {
             compare(textArea.highlighted, textArea.focus, "highlighted is the same as focused");
         }
 
@@ -269,7 +269,7 @@ Item {
             compare(textArea.autoSize, newValue,"set/get");
         }
 
-        function test_baseUrl() {
+        function test_0_baseUrl() {
             expectFail("","TODO")
             compare(textArea.baseUrl,"tst_textarea.qml","baseUrl is QML file instantiating the TextArea item on default")
         }
@@ -286,7 +286,7 @@ Item {
 
         }
 
-        function test_popover() {
+        function test_0_popover() {
             compare(textArea.popover, undefined, "Uses default popover");
         }
 
