@@ -98,7 +98,7 @@ TestCase {
 
       The default flick velocity is built up using 5 move points. This can be altered
       by setting a positive value to \a steps parameter. The bigger the number the
-      longer the flick will be. When a negative or zero value is givent, the default
+      longer the flick will be. When a negative or zero value is given, the default
       of 5 move points will be used.
 
       \note The function can be used to select a text in a TextField or TextArea by
