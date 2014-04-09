@@ -43,7 +43,7 @@ StyledItem {
       */
     function openPopover() {
         if (!visible)
-            return;
+            return;z
         if (popover === undefined) {
             // open the default one
             PopupUtils.open(Qt.resolvedUrl("TextInputPopover.qml"), cursorItem,

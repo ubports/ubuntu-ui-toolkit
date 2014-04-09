@@ -932,6 +932,7 @@ StyledItem {
                 main: control
                 input: editor
                 flickable: flicker
+                selectionModeTimeout: control.__styleInstance.selectionModeTimeout
             }
         }
     }

@@ -23,7 +23,7 @@ import Ubuntu.Components 0.1 as Ubuntu
   */
 
 Item {
-    id: handler
+    id: inputHandler
     objectName: "input_handler"
     // the root control
     property Item main
@@ -35,6 +35,8 @@ Item {
     property bool selectionCursor: input && input.selectedText !== ""
     // True if mouse handlig is enabled, false if flicking mode is enabled
     readonly property bool mouseHandlingEnabled: !flickable.interactive
+    // property holding the selection mode timeout
+    property int selectionModeTimeout: 200
 
     // signal triggered when popup shoudl be opened
     signal pressAndHold(int pos)
@@ -233,7 +235,7 @@ Item {
     // switches the state to selection
     Timer {
         id: selectionTimeout
-        interval: 300
+        interval: selectionModeTimeout
         onTriggered: {
             if (scroller && !scroller.moving) {
                 state = "select";
@@ -288,6 +290,8 @@ Item {
         if ((state === "select") && mouseInSelection(mouse)) {
             // trigger clipboard popover
             pressAndHold(input.cursorPosition);
+            // get out of the select mode, otherwise we mey change the selection by dragging the mouse while pressed
+            state = "";
         }
     }
 
@@ -299,7 +303,7 @@ Item {
         // trigger pressAndHold
         onReleased: {
             input.cursorPosition = pressedPosition = mousePosition(mouse);
-            handler.pressAndHold(input.cursorPosition);
+            inputHandler.pressAndHold(input.cursorPosition);
         }
     }
 }
