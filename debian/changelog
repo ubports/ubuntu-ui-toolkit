@@ -1,3 +1,28 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20140408.1-0ubuntu1) trusty; urgency=low
+
+  [ Zoltán Balogh ]
+  * Change Ubuntu API links in the docs (LP: #1303535) (LP: #1303535)
+
+  [ Leo Arias ]
+  * Improve the check of tab selection mode by moving to it first.
+  * On the autopilot helpers to click a toolbar button, check that the
+    toolbar is opened first. (LP: #1302706)
+
+  [ tpeeters ]
+  * Improve toolbar handling on desktop by opening it on mouse hover.
+    (LP: #1182734)
+  * If a Page is inside a Tab and has no title set, get it automatically
+    from the Tab. (LP: #1289695)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 08 Apr 2014 14:47:06 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140404.1.is.0.1.46+14.04.20140404-0ubuntu1) trusty; urgency=medium
+
+  * Revert to previous version as it's making gallery-app AP tests
+    failing on the CI dashboard
+
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 08 Apr 2014 13:34:12 +0200
+
 ubuntu-ui-toolkit (0.1.46+14.04.20140404.1-0ubuntu1) trusty; urgency=low
 
   [ tpeeters ]

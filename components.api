@@ -257,6 +257,7 @@ Item
     property bool animate
     readonly property bool animating
     property bool __closeOnContentsClicks
+    property bool __openOnHover
     property bool pressed
 modules/Ubuntu/Components/Pickers/DatePicker.qml
 StyledItem
