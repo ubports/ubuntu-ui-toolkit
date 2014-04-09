@@ -69,12 +69,12 @@ Item {
             mouseClick(inFlickable, 10, 10);
             // provide a longer flick to get a proper signal from the Flickable
             flick(inFlickable, 50, 50, 0, -50, -1, 50);
-            tryCompare(moveSpy, "count", 1, 200);
+            moveSpy.wait();
         }
 
         function test_flicker_moves_when_inactive() {
             flick(flickable, 50, 100, 0, -100);
-            tryCompare(moveSpy, "count", 1, 200);
+            moveSpy.wait();
         }
 
         function test_select_state_locks_outer_flickable() {
