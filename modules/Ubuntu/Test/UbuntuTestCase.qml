@@ -93,11 +93,13 @@ TestCase {
       The function produces a flick event when executed on Flickables. When used
       on other components it provides the same functionality as \l mouseDrag()
       function. The optional \a pressTimeout parameter can be used to introduce
-      a small delay between the mouse press and the first mouse move.
+      a small delay between the mouse press and the first mouse move. Setting a
+      negative or zero value will disable the timeout.
 
       The default flick velocity is built up using 5 move points. This can be altered
       by setting a positive value to \a steps parameter. The bigger the number the
-      longer the flick will be.
+      longer the flick will be. When a negative or zero value is given, the default
+      of 5 move points will be used.
 
       \note The function can be used to select a text in a TextField or TextArea by
       specifying at least 400 millisecods to \a pressTimeout.
@@ -109,8 +111,6 @@ TestCase {
             button = Qt.LeftButton
         if (modifiers === undefined)
             modifiers = Qt.NoModifier
-        var from = Qt.point(x, y);
-        var to = Qt.point(x + dx, y + dy);
         if (steps === undefined || steps <= 0)
             steps = 4;
         // make sure we have at least two move steps so the flick will be sensed
@@ -118,18 +118,18 @@ TestCase {
         if (delay === undefined)
             delay = -1;
 
-        var ddx = (to.x - from.x) / steps;
-        var ddy = (to.y - from.y) / steps;
+        var ddx = dx / steps;
+        var ddy = dy / steps;
 
-        mousePress(item, from.x, from.y, button, modifiers, delay);
+        mousePress(item, x, y, button, modifiers, delay);
         if (pressTimeout !== undefined && pressTimeout > 0) {
             wait(pressTimeout);
         }
         for (var i = 1; i <= steps; i++) {
             // mouse moves are all processed immediately, without delay in between events
-            mouseMove(item, from.x + i * ddx, from.y + i * ddy, -1, button);
+            mouseMove(item, x + i * ddx, y + i * ddy, -1, button);
         }
-        mouseRelease(item, to.x, to.y, button, modifiers, delay);
+        mouseRelease(item, x + dx, y + dy, button, modifiers, delay);
         // empty event buffer
         wait(200);
     }
