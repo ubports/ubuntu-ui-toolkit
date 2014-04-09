@@ -107,7 +107,7 @@ Item {
             input.cursorPosition = 0;
 
             // empty event buffer
-            wait(100);
+            wait(200);
         }
 
 
