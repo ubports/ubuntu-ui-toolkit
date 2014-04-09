@@ -96,14 +96,15 @@ Item {
             colorTest.focus =
             textEdit.focus =
             input.focus =
-            t1.focus = t2. focus =
+            t1.focus =
+            t2.focus =
             longText.focus = false;
             var scroller = findChild(longText, "textarea_scroller");
             scroller.contentY = 0;
             scroller.contentX = 0;
+
             textArea.text = "";
             textArea.textFormat = TextEdit.PlainText;
-            input.forceActiveFocus();
             input.textFormat = TextEdit.PlainText;
             input.text = "";
             input.cursorPosition = 0;
@@ -113,7 +114,7 @@ Item {
         }
 
 
-        function test_1_activate() {
+        function test_activate() {
             textArea.forceActiveFocus();
             compare(textArea.activeFocus, true, "TextArea is active");
         }
@@ -483,7 +484,6 @@ Item {
             compare(Qt.inputMethod.visible, true, "OSK shown");
         }
 
-        // make it to bethe last test case executed
         function test_TextareaInListItem_RichTextEnterCaptured() {
             textArea.text = "a<br />b";
             textArea.textFormat = TextEdit.RichText;
@@ -498,31 +498,39 @@ Item {
         // selection and scrolling
         SignalSpy {
             id: flickSpy
-            signalName: "onFlickEnded"
+            signalName: "onMovementEnded"
         }
 
-        function test_scrolling() {
+        function test_scroll_when_not_focused() {
             var handler = findChild(longText, "input_handler");
             verify(handler);
 
             flickSpy.target = findChild(longText, "textarea_scroller");
             flickSpy.clear();
-            // scroll when inactive
             verify(longText.focus == false);
             var y = longText.height - units.gu(2);
             var my = y / 2;
             var x = longText.width / 2;
             var dy = units.gu(3);
-            flick(longText, Qt.point(x, y), Qt.point(x, y - dy), 10);
+            flick(longText, x, y, 0, -dy);
             verify(longText.focus);
             compare(flickSpy.count, 0, "The input had scrolled while inactive");
+        }
 
-            // flick when active
+        function test_scrolling_when_focused() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            verify(handler);
+
+            flickSpy.target = findChild(longText, "textarea_scroller");
             flickSpy.clear();
+            var y = longText.height - units.gu(2);
+            var my = y / 2;
+            var x = longText.width / 2;
+            var dy = units.gu(3);
             compare(handler.state, "", "The input is not in default state before selection");
-            flick(longText, Qt.point(x, my), Qt.point(x, my - dy), 10);
+            flick(longText, x, my, 0, -dy);
             flickSpy.wait();
-            compare(flickSpy.count, 1, "The input had not scrolled while active");
             compare(handler.state, "", "The input has not returned to default state.");
         }
 
@@ -534,7 +542,7 @@ Item {
             var x = units.gu(5);
             var y = longText.height / 2;
             compare(handler.state, "", "The input is not in default state before selection");
-            flick(longText, Qt.point(x, y), Qt.point(x, y + 2*dy), 10, 400);
+            flick(longText, x, y, 0, 2*dy, 400);
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
         }
@@ -559,19 +567,14 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before selection");
-            flick(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 10, 400);
+            flick(longText, 0, y, units.gu(8), 0, 400);
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
 
             // flick upwards
-            flick(longText, Qt.point(x, y), Qt.point(x, y - units.gu(2)), 10);
+            flick(longText, x, y, 0, -units.gu(2));
             flickSpy.wait();
             compare(handler.state, "", "The input has not returned to default state.");
-        }
-
-        SignalSpy {
-            id: popoverSpy
-            signalName: "onPressAndHold"
         }
 
         function test_press_and_hold_moves_cursor_position() {
@@ -592,9 +595,13 @@ Item {
             compare(handler.state, "", "The input has not returned to default state.");
         }
 
+        SignalSpy {
+            id: popoverSpy
+            signalName: "onPressAndHold"
+        }
+
         function test_press_and_hold_over_selected_text() {
             longText.focus = true;
-            longText.cursorPosition = 0;
             var handler = findChild(longText, "input_handler");
             var y = longText.height / 2;
             flickSpy.target = findChild(longText, "textarea_scroller");
@@ -604,13 +611,14 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            flick(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 10, 400);
+            flick(longText, 0, y, units.gu(8), 0, 400);
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
 
             mouseLongPress(longText, units.gu(7), y);
             compare(handler.state, "select", "The input is not in selection state");
             // wait till popover is shown
+            waitForRendering(longText);
             popoverSpy.wait();
             // cleanup, release the mouse, that should bring the handler back to default state
             mouseRelease(main, 0, 0);
@@ -620,7 +628,6 @@ Item {
 
         function test_clear_selection_by_click_on_selection() {
             longText.focus = true;
-            longText.cursorPosition = 0;
             var handler = findChild(longText, "input_handler");
             var y = longText.height / 2;
             flickSpy.target = findChild(longText, "textarea_scroller");
@@ -628,7 +635,7 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            flick(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 10, 400);
+            flick(longText, 0, y, units.gu(8), 0, 400);
             compare(handler.state, "", "The input has not returned to default state.");
             verify(longText.selectedText !== "");
 
@@ -646,7 +653,7 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            flick(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 10, 400);
+            flick(longText, 0, y, units.gu(8), 0, 400);
             compare(handler.state, "", "The input has not returned to default state.");
             verify(longText.selectedText !== "");
 
@@ -678,6 +685,7 @@ Item {
 
             // rclick should bring popover in
             mouseClick(longText, x, y, Qt.RightButton);
+            waitForRendering(longText);
             popoverSpy.wait();
             compare(handler.state, "", "The input is not in default state.");
 

@@ -67,33 +67,34 @@ Item {
 
         function test_DoNotStealFlickEvents() {
             mouseClick(inFlickable, 10, 10);
-            flick(inFlickable, Qt.point(50, 50), Qt.point(50, 0), 10);
+            // provide a longer flick to get a proper signal from the Flickable
+            flick(inFlickable, 50, 50, 0, -50, -1, 50);
             tryCompare(moveSpy, "count", 1, 200);
         }
 
         function test_flicker_moves_when_inactive() {
-            flick(flickable, Qt.point(50, 100), Qt.point(50, 0), 10)
+            flick(flickable, 50, 100, 0, -100);
             tryCompare(moveSpy, "count", 1, 200);
         }
 
         function test_select_state_locks_outer_flickable() {
             mouseClick(inFlickable, 10, 10);
             // select text
-            flick(inFlickable, Qt.point(50, 50), Qt.point(50, 0), 10, 400);
+            flick(inFlickable, 50, 50, 0, -50, 400);
             compare(moveSpy.count, 0, "The Flickable has moved while the TextArea was in selection mode");
             verify(inFlickable.selectedText !== "");
         }
 
-        function test_z_scrolling_input_with_selected_text() {
+        function test_scrolling_input_with_selected_text() {
             mouseClick(inFlickable, 10, 10);
             // select text
-            flick(inFlickable, Qt.point(50, 50), Qt.point(50, 0), 10, 400);
+            flick(inFlickable, 50, 50, 0, -50, 400);
             compare(moveSpy.count, 0, "The Flickable has moved while the TextArea was in selection mode");
             verify(inFlickable.selectedText !== "");
 
             // scroll
             moveSpy.clear();
-            flick(inFlickable, Qt.point(50, 100), Qt.point(50, 0), 10);
+            flick(inFlickable, 50, 100, 0, -100);
             // wait till the move ends
             moveSpy.wait();
             verify(inFlickable.selectedText !== "");

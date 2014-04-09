@@ -101,6 +101,8 @@ Item {
             t2.focus =
             enabledTextField.focus =
             longText.focus = false;
+            var scroller = findChild(longText, "textfield_scroller");
+            scroller.contentX = 0;
             wait(200);
         }
 
@@ -509,7 +511,7 @@ Item {
             signalName: "onFlickEnded"
         }
 
-        function test_scrolling() {
+        function test_scroll_when_not_focused() {
             var handler = findChild(longText, "input_handler");
             verify(handler);
 
@@ -517,43 +519,28 @@ Item {
             flickSpy.clear();
             // scroll when inactive
             verify(longText.focus == false);
-            var x = longText.width - units.gu(2);
-            var mx = x / 2;
+            var x = longText.width / 2;
             var y = longText.height / 2;
-            var dx = units.gu(8);
-            flick(longText, Qt.point(x, y), Qt.point(x - dx, y), 10);
+            var dx = x;
+            flick(longText, x, y, -dx, 0);
             verify(longText.focus);
             compare(flickSpy.count, 0, "The input had scrolled while inactive");
-
-            // flick when active
-            flickSpy.clear();
-            compare(handler.state, "", "The input is not in default state before selection");
-            flick(longText, Qt.point(mx, y), Qt.point(mx - dx, y), 10);
-            flickSpy.wait();
-            compare(flickSpy.count, 1, "The input had not scrolled while active");
-            compare(handler.state, "", "The input has not returned to default state.");
         }
 
-        function test_select_by_pressAndDrag() {
+        function test_scroll_when_focused() {
             longText.focus = true;
             var handler = findChild(longText, "input_handler");
             verify(handler);
-            var dx = longText.width / 4;
-            var x = units.gu(5);
-            var y = longText.height / 2;
-            compare(handler.state, "", "The input is not in default state before selection");
-            flick(longText, Qt.point(x, y), Qt.point(x + 2*dx, y), 10, 400);
-            verify(longText.selectedText !== "");
-            compare(handler.state, "", "The input has not returned to default state.");
-        }
 
-        function test_select_text_doubletap() {
-            longText.focus = true;
-            var x = units.gu(2);
-            var y = longText.height / 4;
-            mouseDoubleClick(longText, x, y);
-            expectFail("", "mouseDoubleClick fails to trigger");
-            verify(longText.selectedText !== "");
+            flickSpy.target = findChild(longText, "textfield_scroller");
+            flickSpy.clear();
+            var x = longText.width / 2;
+            var y = longText.height / 2;
+
+            compare(handler.state, "", "The input is not in default state before selection");
+            flick(longText, x, y, - x, 0);
+            flickSpy.wait();
+            compare(handler.state, "", "The input has not returned to default state.");
         }
 
         function test_scroll_with_selected_text() {
@@ -566,14 +553,37 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before selection");
-            flick(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 10, 400);
+            flick(longText, 0, y, units.gu(8), 0, 400);
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
 
             // flick
-            flick(longText, Qt.point(longText.width / 2, y), Qt.point(0, y), 10);
+            var dx = longText.width / 2;
+            flick(longText, dx, y, -dx, 0);
             flickSpy.wait();
             compare(handler.state, "", "The input has not returned to default state.");
+            verify(longText.selectedText !== "");
+        }
+
+        function test_select_by_pressAndDrag() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            verify(handler);
+            var dx = longText.width / 4;
+            var x = units.gu(5);
+            var y = longText.height / 2;
+            compare(handler.state, "", "The input is not in default state before selection");
+            flick(longText, x, y, 2*dx, 0, 400);
+            verify(longText.selectedText !== "");
+            compare(handler.state, "", "The input has not returned to default state.");
+        }
+
+        function test_select_text_doubletap() {
+            longText.focus = true;
+            var x = units.gu(2);
+            var y = longText.height / 4;
+            mouseDoubleClick(longText, x, y);
+            expectFail("", "mouseDoubleClick fails to trigger");
             verify(longText.selectedText !== "");
         }
 
@@ -611,13 +621,14 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            flick(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 10, 400);
+            flick(longText, 0, y, units.gu(8), 0, 400);
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
 
             mouseLongPress(longText, units.gu(7), y);
             compare(handler.state, "select", "The input is not in selection state");
             // wait till popover is shown
+            waitForRendering(longText);
             popoverSpy.wait();
             // check if we still have the text selected
             verify(longText.selectedText !== "");
@@ -639,7 +650,7 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            flick(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 10, 400);
+            flick(longText, 0, y, units.gu(8), 0, 400);
             compare(handler.state, "", "The input has not returned to default state.");
             verify(longText.selectedText !== "");
 
@@ -657,7 +668,9 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            flick(longText, Qt.point(0, y), Qt.point(units.gu(8), y), 10, 400);
+            print(1)
+            flick(longText, 0, y, units.gu(8), 0, 400);
+            print(2)
             compare(handler.state, "", "The input has not returned to default state.");
             verify(longText.selectedText !== "");
 
@@ -689,6 +702,7 @@ Item {
 
             // rclick should bring popover in
             mouseClick(longText, x, y, Qt.RightButton);
+            waitForRendering(longText);
             popoverSpy.wait();
             compare(handler.state, "", "The input is not in default state.");
 
