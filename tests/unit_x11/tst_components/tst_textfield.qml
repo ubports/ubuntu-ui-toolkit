@@ -708,10 +708,17 @@ Item {
             popoverSpy.target = handler;
             popoverSpy.clear();
 
-            // rclick should not bring popover in
+            // rclick should bring popover in
             mouseClick(longText, x, y, Qt.RightButton);
-            compare(popoverSpy.count, 0, "Right click should not open popover when the input is not focused.");
-            compare(handler.state, "inactive", "The input is not in inactive state.");
+            // and also set the focus
+            compare(longText.focus, true, "Component haven't got focused");
+            waitForRendering(longText);
+            popoverSpy.wait();
+            compare(handler.state, "", "The input is not in inactive state.");
+
+            // take the popover away, that should bring the handler back to default state
+            mouseClick(textItem, 0, 0);
+            compare(handler.state, "", "The input has not returned to default state.");
         }
 
         function test_rightclick_opens_popover_when_focused() {
