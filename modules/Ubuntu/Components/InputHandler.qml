@@ -304,6 +304,8 @@ Item {
             activateInput();
             input.cursorPosition = pressedPosition = mousePosition(mouse);
             inputHandler.pressAndHold(input.cursorPosition);
+            // move into inactive state to keep selection
+            state = "inactive"
         }
     }
 }
