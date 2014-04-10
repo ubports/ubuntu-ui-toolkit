@@ -189,6 +189,20 @@ Item {
             
         }
 
+        function test_collapseOnClick() {
+            var item = findChild(ubuntuListView, "expandable1");
+            item.collapseOnClick = true;
+            expandItem(item);
+
+            compare(ubuntuListView.expandedIndex, 1);
+
+            mouseClick(item, item.width / 2, item.collapsedHeight / 2);
+            tryCompare(ubuntuListView, "expandedIndex", -1);
+
+            // restore stuff we've changed
+            item.collapseOnClick = false;
+        }
+
         function cleanup() {
             // Restore listview height
             ubuntuListView.height = units.gu(60);

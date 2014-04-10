@@ -68,6 +68,20 @@ def check_autopilot_version():
             'The emulators need Autopilot 1.4 or higher.')
 
 
+# Containers helpers.
+
+def _get_visible_container_top(containers):
+    containers_top = [container.globalRect.y for container in containers]
+    return max(containers_top)
+
+
+def _get_visible_container_bottom(containers):
+    containers_bottom = [
+        container.globalRect.y + container.globalRect.height
+        for container in containers if container.globalRect.height > 0]
+    return min(containers_bottom)
+
+
 class UbuntuUIToolkitEmulatorBase(dbus.CustomEmulatorBase):
     """A base class for all the Ubuntu UI Toolkit emulators."""
 
@@ -287,15 +301,15 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
             name.
 
         """
+        # ensure the toolbar is open
+        if not self.opened:
+            raise ToolkitEmulatorException(
+                'Toolbar must be opened before calling click_button().')
         try:
             button = self._get_button(object_name)
         except dbus.StateNotFoundError:
             raise ToolkitEmulatorException(
                 'Button with objectName "{0}" not found.'.format(object_name))
-        # ensure the toolbar is open
-        if not self.opened:
-            raise ToolkitEmulatorException(
-                'Toolbar must be opened before calling click_button().')
         self.pointing_device.move_to_object(button)
         # ensure the toolbar is still open (may have closed due to timeout)
         self.open()
@@ -346,6 +360,9 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.click_object(self._get_next_tab_button())
 
     def _activate_tab_bar(self):
+        # First move to the tab bar to avoid timing issues when we find it in
+        # selection mode but it's deselected while we move to it.
+        self.pointing_device.move_to_object(self)
         if self.selectionMode:
             logger.debug('Already in selection mode.')
         else:
@@ -519,73 +536,92 @@ class TextField(UbuntuUIToolkitEmulatorBase):
         popover.click_button_by_text('Select All')
 
 
-class QQuickListView(UbuntuUIToolkitEmulatorBase):
+class Flickable(UbuntuUIToolkitEmulatorBase):
 
     @autopilot_logging.log_action(logger.info)
-    def click_element(self, objectName):
-        """Click an element from the list.
+    def swipe_child_into_view(self, child):
+        """Make the child visible.
 
-        It swipes the element into view if it's center is not visible.
-
-        :parameter objectName: The objectName property of the element to click.
+        Currently it works only when the object needs to be swiped vertically.
+        TODO implement horizontal swiping. --elopio - 2014-03-21
 
         """
-        self._swipe_element_into_view(objectName)
-        element = self.select_single(objectName=objectName)
-        self.pointing_device.click_object(element)
+        containers = self._get_containers()
+        if not self._is_child_visible(child, containers):
+            self._swipe_non_visible_child_into_view(child, containers)
+        else:
+            logger.debug('The element is already visible.')
 
-    def _swipe_element_into_view(self, objectName):
-        element = self._select_element(objectName)
+    def _get_containers(self):
+        """Return a list with the containers to take into account when swiping.
 
-        while not self._is_element_clickable(objectName):
-            if element.globalRect.y < self.globalRect.y:
-                self._show_more_elements_above()
+        The list includes this flickable and the top-most container.
+        TODO add additional flickables that are between this and the top
+        container. --elopio - 2014-03-22
+
+        """
+        containers = [self._get_top_container(), self]
+        return containers
+
+    def _get_top_container(self):
+        """Return the top-most container with a globalRect."""
+        root = self.get_root_instance()
+        containers = [root]
+        while len(containers) == 1:
+            try:
+                containers[0].globalRect
+                return containers[0]
+            except AttributeError:
+                containers = containers[0].get_children()
+
+        raise ToolkitEmulatorException("Couldn't find the top-most container.")
+
+    def _is_child_visible(self, child, containers):
+        """Check if the center of the child is visible.
+
+        :return: True if the center of the child is visible, False otherwise.
+
+        """
+        object_center = child.globalRect.y + child.globalRect.height // 2
+        visible_top = _get_visible_container_top(containers)
+        visible_bottom = _get_visible_container_bottom(containers)
+        return (object_center >= visible_top and
+                object_center <= visible_bottom)
+
+    @autopilot_logging.log_action(logger.info)
+    def _swipe_non_visible_child_into_view(self, child, containers):
+        while not self._is_child_visible(child, containers):
+            # Check the direction of the swipe based on the position of the
+            # child relative to the immediate flickable container.
+            if child.globalRect.y < self.globalRect.y:
+                self._swipe_to_show_more_above(containers)
             else:
-                self._show_more_elements_below()
-
-    def _select_element(self, object_name):
-        try:
-            return self.select_single(objectName=object_name)
-        except dbus.StateNotFoundError:
-            # If the list is big, elements will only be created when we scroll
-            # them into view.
-            self._scroll_to_top()
-            while not self.atYEnd:
-                self._show_more_elements_below()
-                try:
-                    return self.select_single(objectName=object_name)
-                except dbus.StateNotFoundError:
-                    pass
-            raise ToolkitEmulatorException(
-                'List element with objectName "{}" not found.'.format(
-                    object_name))
+                self._swipe_to_show_more_below(containers)
 
     @autopilot_logging.log_action(logger.info)
-    def _scroll_to_top(self):
-        x, y, width, height = self.globalRect
-        while not self.atYBeginning:
-            self._show_more_elements_above()
-
-    @autopilot_logging.log_action(logger.info)
-    def _show_more_elements_below(self):
-        if self.atYEnd:
-            raise ToolkitEmulatorException('There are no more elements below.')
-        else:
-            self._show_more_elements('below')
-
-    @autopilot_logging.log_action(logger.info)
-    def _show_more_elements_above(self):
+    def _swipe_to_show_more_above(self, containers):
         if self.atYBeginning:
-            raise ToolkitEmulatorException('There are no more elements above.')
+            raise ToolkitEmulatorException(
+                "Can't swipe more, we are already at the top of the "
+                "container.")
         else:
-            self._show_more_elements('above')
+            self._swipe_to_show_more('above', containers)
 
-    def _show_more_elements(self, direction):
-        x, y, width, height = self.globalRect
-        start_x = stop_x = x + (width // 2)
-        # Start and stop just a little under the top of the list.
-        top = y + 5
-        bottom = y + height - 5
+    @autopilot_logging.log_action(logger.info)
+    def _swipe_to_show_more_below(self, containers):
+        if self.atYEnd:
+            raise ToolkitEmulatorException(
+                "Can't swipe more, we are already at the bottom of the "
+                "container.")
+        else:
+            self._swipe_to_show_more('below', containers)
+
+    def _swipe_to_show_more(self, direction, containers):
+        start_x = stop_x = self.globalRect.x + (self.globalRect.width // 2)
+        # Start and stop just a little under the top and a little over the
+        # bottom.
+        top = _get_visible_container_top(containers) + 5
+        bottom = _get_visible_container_bottom(containers) - 5
         if direction == 'below':
             start_y = bottom
             stop_y = top
@@ -604,12 +640,51 @@ class QQuickListView(UbuntuUIToolkitEmulatorBase):
         # should, sometimes missing the  element we are looking for.
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=5)
 
-    def _is_element_clickable(self, objectName):
-        """Return True if the center of the element is visible."""
-        element = self.select_single(objectName=objectName)
-        element_center = element.globalRect.y + element.globalRect.height // 2
-        return (element_center >= self.globalRect.y and
-                element_center <= self.globalRect.y + self.globalRect.height)
+    @autopilot_logging.log_action(logger.info)
+    def _scroll_to_top(self):
+        if not self.atYBeginning:
+            containers = self._get_containers()
+            while not self.atYBeginning:
+                self._swipe_to_show_more_above(containers)
+
+
+class QQuickListView(Flickable):
+
+    @autopilot_logging.log_action(logger.info)
+    def click_element(self, object_name):
+        """Click an element from the list.
+
+        It swipes the element into view if it's center is not visible.
+
+        :parameter objectName: The objectName property of the element to click.
+
+        """
+        try:
+            element = self.select_single(objectName=object_name)
+        except dbus.StateNotFoundError:
+            # The element might be on a part of the list that hasn't been
+            # created yet. We have to search for it scrolling the entire list.
+            element = self._find_element(object_name)
+        self.swipe_child_into_view(element)
+        self.pointing_device.click_object(element)
+
+    @autopilot_logging.log_action(logger.info)
+    def _find_element(self, object_name):
+        self._scroll_to_top()
+        while not self.atYEnd:
+            containers = self._get_containers()
+            self._swipe_to_show_more_below(containers)
+            try:
+                return self.select_single(objectName=object_name)
+            except dbus.StateNotFoundError:
+                pass
+        raise ToolkitEmulatorException(
+            'List element with objectName "{}" not found.'.format(object_name))
+
+    def _is_element_clickable(self, object_name):
+        child = self.select_single(objectName=object_name)
+        containers = self._get_containers()
+        return self._is_child_visible(child, containers)
 
 
 class Empty(UbuntuUIToolkitEmulatorBase):
