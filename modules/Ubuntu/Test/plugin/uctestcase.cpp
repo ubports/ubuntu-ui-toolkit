@@ -26,6 +26,8 @@
 #include <QtTest/QtTest>
 #include <QtQuick/QQuickItem>
 
+Q_DECLARE_METATYPE(QList<QQmlError>)
+
 /*!
  * \ingroup ubuntu
  * \brief UbuntuTestCase is the C++ pendant to the QML UbuntuTestCase.
@@ -37,6 +39,7 @@ UbuntuTestCase::UbuntuTestCase(const QString& file, QWindow* parent) : QQuickVie
     QString modulePath(QDir(modules).absolutePath());
     engine()->addImportPath(modulePath);
 
+    qRegisterMetaType<QList <QQmlError> >();
     m_spy = new QSignalSpy(engine(), SIGNAL(warnings(QList<QQmlError>)));
     m_spy->setParent(this);
 
@@ -46,5 +49,14 @@ UbuntuTestCase::UbuntuTestCase(const QString& file, QWindow* parent) : QQuickVie
     Q_ASSERT(rootObject());
     show();
     QTest::qWaitForWindowExposed(this);
+}
+
+/*!
+ * The number of all warnings from the point of loading the first line of QML code.
+ */
+int
+UbuntuTestCase::warnings() const
+{
+	return m_spy->count();
 }
 
