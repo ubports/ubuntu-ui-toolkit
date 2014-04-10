@@ -145,14 +145,11 @@ private Q_SLOTS:
     }
 
     void testNoWarnings_bug186065() {
-        QSignalSpy spy(view->engine(), SIGNAL(warnings(QList<QQmlError>)));
-        spy.setParent(view);
-
-        QQuickItem *root = loadTest("AppName.qml"); // An empty MainView would suffice
-        QVERIFY(root);
+        // An empty MainView would suffice
+        QScopedPointer<UbuntuTestCase>testCase (new UbuntuTestCase("AppName.qml"));
 
         // No warnings from QML
-        QCOMPARE(spy.count(), 0);
+        QCOMPARE(testCase->warnings(), 0);
     }
 
     void testWindowTitleFromPage() {
@@ -172,7 +169,6 @@ private Q_SLOTS:
     void testWindowTitleFromTabs() {
         QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("TabsTitle.qml"));
         QQuickItem *page = testCase->findItem<QQuickItem*>("page");
-        QEXPECT_FAIL(0, "Tabs don't correctly propagate the title yet", Continue);
         QCOMPARE(QString("Long long ago"), page->property("title").toString());
         QCOMPARE(testCase->title(), page->property("title").toString());
     }

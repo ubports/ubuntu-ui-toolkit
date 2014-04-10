@@ -301,15 +301,15 @@ class Toolbar(UbuntuUIToolkitEmulatorBase):
             name.
 
         """
+        # ensure the toolbar is open
+        if not self.opened:
+            raise ToolkitEmulatorException(
+                'Toolbar must be opened before calling click_button().')
         try:
             button = self._get_button(object_name)
         except dbus.StateNotFoundError:
             raise ToolkitEmulatorException(
                 'Button with objectName "{0}" not found.'.format(object_name))
-        # ensure the toolbar is open
-        if not self.opened:
-            raise ToolkitEmulatorException(
-                'Toolbar must be opened before calling click_button().')
         self.pointing_device.move_to_object(button)
         # ensure the toolbar is still open (may have closed due to timeout)
         self.open()
@@ -360,6 +360,9 @@ class TabBar(UbuntuUIToolkitEmulatorBase):
         self.pointing_device.click_object(self._get_next_tab_button())
 
     def _activate_tab_bar(self):
+        # First move to the tab bar to avoid timing issues when we find it in
+        # selection mode but it's deselected while we move to it.
+        self.pointing_device.move_to_object(self)
         if self.selectionMode:
             logger.debug('Already in selection mode.')
         else:

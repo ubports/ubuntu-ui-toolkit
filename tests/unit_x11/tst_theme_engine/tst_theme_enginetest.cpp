@@ -21,6 +21,8 @@
 #include <QtQml/QQmlComponent>
 #include "uctheme.h"
 
+Q_DECLARE_METATYPE(QList<QQmlError>)
+
 class tst_UCTheme : public QObject
 {
     Q_OBJECT
@@ -154,6 +156,7 @@ void tst_UCTheme::testThemesRelativePathWithParentNoVariablesSet()
 
     UCTheme theme;
     QQmlEngine engine;
+    qRegisterMetaType<QList <QQmlError> >();
     QSignalSpy spy(&engine, SIGNAL(warnings(QList<QQmlError>)));
     theme.registerToContext(engine.rootContext());
     QQmlComponent parentComponent(&engine, "Parent.qml");

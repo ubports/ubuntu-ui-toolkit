@@ -29,6 +29,7 @@ class UbuntuTestCase : public QQuickView
 
 public:
     UbuntuTestCase(const QString& file, QWindow* parent = 0);
+    int warnings() const;
     // getter
     template<class T>
     inline T findItem(const QString& objectName) const {
@@ -39,7 +40,6 @@ public:
             qFatal("Item '%s' found with unexpected type", qPrintable(objectName));
         qFatal("No item '%s' found", qPrintable(objectName));
     }
-
 private:
     QSignalSpy* m_spy;
 };

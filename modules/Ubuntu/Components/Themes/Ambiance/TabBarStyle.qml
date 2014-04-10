@@ -116,8 +116,8 @@ Item {
                 AbstractButton {
                     id: button
                     anchors {
-                        top: parent.top
-                        bottom: parent.bottom
+                        top: parent ? parent.top : undefined
+                        bottom: parent ? parent.bottom: undefined
                     }
                     width: text.paintedWidth + text.anchors.leftMargin + text.anchors.rightMargin
 
@@ -148,6 +148,13 @@ Item {
                         // working modulus numTabs:
                         if (buttonIndex < buttonView.selectedButtonIndex - numTabs) return true;
                         return false;
+                    }
+
+                    // update the offset of the buttonRow
+                    onOffsetChanged: {
+                        if (selected) {
+                            buttonView.updateOffset(button.offset);
+                        }
                     }
 
                     Behavior on opacity {
@@ -212,7 +219,7 @@ Item {
                         if (mouseArea.enteringSelectionMode) {
                             mouseArea.enteringSelectionMode = false;
                         } else if (opacity > 0.0) {
-                            styledItem.model.selectedIndex = index;
+                            styledItem.selectedIndex = index;
                             if (!styledItem.alwaysSelectionMode) {
                                 styledItem.selectionMode = false;
                             }
