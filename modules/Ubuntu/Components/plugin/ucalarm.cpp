@@ -103,7 +103,7 @@ int UCAlarmPrivate::firstDayOfWeek(UCAlarm::DaysOfWeek days)
 int UCAlarmPrivate::nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay)
 {
     if (fromDay <= 0 || fromDay >= Qt::Sunday) {
-        // start from teh beginning of the week
+        // start from the beginning of the week
         fromDay = Qt::Monday;
     } else {
         // start checking from the next day onwards
@@ -153,24 +153,14 @@ UCAlarm::Error UCAlarmPrivate::checkAlarm()
     return UCAlarm::NoError;
 }
 
-UCAlarm::Error UCAlarmPrivate::checkDow()
+// adjust dayOfWeek
+UCAlarm::Error UCAlarmPrivate::adjustDow()
 {
     if (!rawData.days) {
         return UCAlarm::NoDaysOfWeek;
     } else if (rawData.days == UCAlarm::AutoDetect) {
         rawData.days = dayOfWeek(rawData.date);
         rawData.changes |= AlarmData::Days;
-    } else if (rawData.type != UCAlarm::OneTime && rawData.days != UCAlarm::Daily) {
-        // this block is valid only for repeating alarms
-        int alarmDay = firstDayOfWeek(rawData.days);
-        int dayOfWeek = rawData.date.date().dayOfWeek();
-        if (alarmDay < dayOfWeek) {
-            rawData.date = rawData.date.addDays(7 - dayOfWeek + alarmDay);
-            rawData.changes |= AlarmData::Date;
-        } else if (alarmDay > dayOfWeek) {
-            rawData.date = rawData.date.addDays(alarmDay - dayOfWeek);
-            rawData.changes |= AlarmData::Date;
-        }
     }
     return UCAlarm::NoError;
 }
@@ -182,8 +172,7 @@ UCAlarm::Error UCAlarmPrivate::checkOneTime()
         return UCAlarm::OneTimeOnMoreDays;
     }
 
-    // adjust start date and/or dayOfWeek according to their values
-    UCAlarm::Error result = checkDow();
+    UCAlarm::Error result = adjustDow();
     if (result != UCAlarm::NoError) {
         return result;
     }
@@ -200,12 +189,12 @@ UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly()
     // start date is adjusted depending on the days value;
     // start date can be set to be the current time, as scheduling will move
     // it to the first occurence.
-    UCAlarm::Error result = checkDow();
+    UCAlarm::Error result = adjustDow();
     if (result != UCAlarm::NoError) {
         return result;
     }
 
-    // move start time to the first occurence if needed
+    // move start time of the first occurence if needed
     int dayOfWeek = rawData.date.date().dayOfWeek();
     if (!isDaySet(dayOfWeek, rawData.days) || (rawData.date <= QDateTime::currentDateTime())) {
         // check the next occurence of the alarm
