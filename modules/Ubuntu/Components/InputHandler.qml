@@ -291,7 +291,7 @@ Item {
             // trigger clipboard popover
             pressAndHold(input.cursorPosition);
             // get out of the select mode, otherwise we mey change the selection by dragging the mouse while pressed
-            state = "";
+            state = "inactive";
         }
     }
 
