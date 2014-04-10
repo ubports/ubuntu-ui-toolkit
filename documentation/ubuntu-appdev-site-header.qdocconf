@@ -9,12 +9,13 @@ HTML.postheader = \
     "		<div>\n" \
     "			<nav role=\"navigation\">\n" \
     "				<ul>\n" \
-    "					<li class=\"page_item page-item-5\"><a href=\"http://developer.ubuntu.com/\">Home</a></li>\n" \
-    "					<li class=\"page_item page-item-7\"><a href=\"http://developer.ubuntu.com/get-started/\">Get started</a></li>\n" \
-    "					<li class=\"page_item page-item-9\"><a href=\"http://developer.ubuntu.com/resources/\">Resources</a></li>\n" \
-    "					<li class=\"page_item page-item-11\"><a href=\"http://developer.ubuntu.com/publish/\">Publish</a></li>\n" \
-    "					<li class=\"page_item page-item-13\"><a href=\"http://developer.ubuntu.com/community/\">Community</a></li>\n" \
-    "					<li><a href=\"https://myapps.developer.ubuntu.com/dev\">My Apps</a></li>\n" \
+    "					<li class=\"page_item page-item-5\"><a href=\"http://developer.ubuntu.com/apps/\">Apps</a></li>\n" \
+    "					<li class=\"page_item page-item-7\"><a href=\"http://developer.ubuntu.com/scopes/\">Scopes</a></li>\n" \
+    "					<li class=\"page_item page-item-9\"><a href=\"http://developer.ubuntu.com/cloud/\">Cloud</a></li>\n" \
+    "					<li class=\"page_item page-item-11\"><a href=\"http://developer.ubuntu.com/web/\">Web</a></li>\n" \
+    "					<li class=\"page_item page-item-13\"><a href=\"http://developer.ubuntu.com/publish/\">Publish</a></li>\n" \
+    "					<li class=\"page_item page-item-15\"><a href=\"http://developer.ubuntu.com/community/\">Community</a></li>\n" \
+    "					<li><a href=\"http://developer.ubuntu.com/blog/\">Blog</a></li>\n" \
     "					<li>\n" \
     "						<form id=\"form-search\" method=\"get\" action=\"/\">\n" \
     "							<fieldset>\n" \
@@ -25,7 +26,7 @@ HTML.postheader = \
     "				</ul>\n" \
     "			</nav>\n" \
     "			<a class=\"logo-ubuntu\" href=\"/\"><img src=\"http://developer.ubuntu.com/wp-content/themes/wordpress-theme-ubuntudeveloper/img/logo-ubuntu.png\" width=\"119\" height=\"27\" alt=\"Ubuntu logo\" /></a>\n" \
-    "			<h2><a href=\"/\">App Developer</a></h2>\n" \
+    "			<h2><a href=\"/\">Developer</a></h2>\n" \
     "		</div>\n" \
     "	</div>\n" \
     "	\n" \

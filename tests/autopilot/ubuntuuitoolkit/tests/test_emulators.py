@@ -587,10 +587,10 @@ MainView {
                 model: 20
 
                 delegate: ListItem.Standard {
-                        objectName: "testListElement%1".arg(index)
-                        text: "test list element %1".arg(index)
-                        onClicked: clickedLabel.text = objectName
-                        height: units.gu(5)
+                    objectName: "testListElement%1".arg(index)
+                    text: "test list element %1".arg(index)
+                    onClicked: clickedLabel.text = objectName
+                    height: units.gu(5)
                 }
             }
         }
@@ -648,6 +648,82 @@ MainView {
             'unexisting')
         self.assertEqual(
             str(error), 'List element with objectName "unexisting" not found.')
+
+
+class QQuickListViewOutOfViewTestCase(tests.QMLStringAppTestCase):
+    """Test that we can make elements visible when the list is out of view."""
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(20)
+
+    Page {
+
+        Flickable {
+
+            Column {
+                id: column
+                width: units.gu(48)
+                // The column height is greater than the main view height, so
+                // the bottom of the list is out of view.
+                height: units.gu(40)
+
+                Label {
+                    id: clickedLabel
+                    objectName: "clickedLabel"
+                    text: "No element clicked."
+                }
+
+                ListView {
+                    id: testListView
+                    objectName: "testListView"
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    height: column.height - clickedLabel.paintedHeight
+                    clip: true
+                    model: 20
+
+                    delegate: ListItem.Standard {
+                        objectName: "testListElement%1".arg(index)
+                        text: "test list element %1".arg(index)
+                        onClicked: clickedLabel.text = objectName
+                        height: units.gu(5)
+                    }
+                }
+            }
+        }
+    }
+}
+""")
+
+    def setUp(self):
+        super(QQuickListViewOutOfViewTestCase, self).setUp()
+        self.list_view = self.main_view.select_single(
+            emulators.QQuickListView, objectName='testListView')
+        self.label = self.main_view.select_single(
+            'Label', objectName='clickedLabel')
+        self.assertEqual(self.label.text, 'No element clicked.')
+
+    def test_click_element_outside_view_below(self):
+        """Test that we can click an element that's out of view below.
+
+        The list is also out of view, so we must scroll from the bottom of the
+        main view.
+
+        """
+        # Test for http://pad.lv/1275060.
+        # Click the first element out of view to make sure we are not scrolling
+        # to the bottom at once.
+        self.assertFalse(
+            self.list_view._is_element_clickable('testListElement9'))
+
+        self.list_view.click_element('testListElement9')
+        self.assertEqual(self.label.text, 'testListElement9')
 
 
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
