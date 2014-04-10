@@ -231,7 +231,7 @@ private Q_SLOTS:
         QFETCH(QString, message);
         QFETCH(int, dow);
 
-        UCAlarm alarm(QDateTime::currentDateTime().addSecs(600), (UCAlarm::DaysOfWeek)dow, "test_repeating_weekly_" + message);
+        UCAlarm alarm(QDateTime::currentDateTime().addSecs(3600), (UCAlarm::DaysOfWeek)dow, "test_repeating_weekly_" + message);
         alarm.save();
         waitForRequest(&alarm);
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
@@ -316,7 +316,7 @@ private Q_SLOTS:
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
 
-        alarm.setDate(QDateTime::currentDateTime().addDays(1));
+        alarm.setDate(QDateTime::currentDateTime().addDays(5));
         QVERIFY(!compareAlarms(&alarm, &copy));
 
         alarm.save();
