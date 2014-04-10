@@ -72,7 +72,6 @@ MainView {
             objectName: title
             title: i18n.tr("Simple page #" + index)
             page: Page {
-                title: "This title is not visible"
                 Row {
                     anchors.centerIn: parent
                     spacing: units.gu(1)

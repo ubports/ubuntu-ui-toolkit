@@ -219,7 +219,7 @@ Item {
                         if (mouseArea.enteringSelectionMode) {
                             mouseArea.enteringSelectionMode = false;
                         } else if (opacity > 0.0) {
-                            styledItem.model.selectedIndex = index;
+                            styledItem.selectedIndex = index;
                             if (!styledItem.alwaysSelectionMode) {
                                 styledItem.selectionMode = false;
                             }
