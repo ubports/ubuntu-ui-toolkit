@@ -17,6 +17,7 @@
 import QtQuick 2.0
 import Ubuntu.Unity.Action 1.1 as UnityActions
 import Ubuntu.PerformanceMetrics 0.1
+import QtQuick.Window 2.0
 
 /*!
     \qmltype MainView
@@ -221,6 +222,16 @@ PageTreeNode {
     property alias automaticOrientation: canvas.automaticOrientation
 
     /*!
+      Setting this option will enable the old toolbar, and disable the new features
+      that are being added to the new header. Unsetting it removes the toolbar and
+      enables developers to have a sneak peek at the new features that are coming to
+      the header, even before all the required functionality is implemented.
+      This property will be deprecated after the new header implementation is done and
+      all apps transitioned to using it. Default value: true.
+     */
+    property bool useDeprecatedToolbar: true
+
+    /*!
       \internal
       Use default property to ensure children added do not draw over the toolbar.
      */
@@ -266,7 +277,9 @@ PageTreeNode {
                     fill: parent
                     
                     // move the whole contents up if the toolbar is locked and opened otherwise the toolbar will obscure part of the contents
-                    bottomMargin: toolbarItem.locked && toolbarItem.opened ? toolbarItem.height + toolbarItem.triggerSize : 0
+                    bottomMargin: mainView.useDeprecatedToolbar &&
+                                  toolbarLoader.item.locked && toolbarLoader.item.opened ?
+                                      toolbarLoader.item.height + toolbarLoader.item.triggerSize : 0
                     // compensate so that the actual y is always 0
                     topMargin: -parent.y
                 }
@@ -282,9 +295,11 @@ PageTreeNode {
 
                 onPressed: {
                     mouse.accepted = false;
-                    if (!toolbarItem.locked) {
-                        toolbarItem.close();
+                    if (mainView.useDeprecatedToolbar) {
+                        if (!toolbarLoader.item.locked) {
+                            toolbarLoader.item.close();
                         }
+                    }
                     if (headerItem.tabBar && !headerItem.tabBar.alwaysSelectionMode) {
                         headerItem.tabBar.selectionMode = false;
                     }
@@ -298,15 +313,23 @@ PageTreeNode {
          */
         property bool animate: true
 
-        Toolbar {
-            id: toolbarItem
-            onPressedChanged: {
-                if (!pressed) return;
-                if (headerItem.tabBar !== null) {
-                    headerItem.tabBar.selectionMode = false;
+        Component {
+            id: toolbarComponent
+            Toolbar {
+                parent: canvas
+                onPressedChanged: {
+                    if (!pressed) return;
+                    if (headerItem.tabBar !== null) {
+                        headerItem.tabBar.selectionMode = false;
+                    }
                 }
+                animate: canvas.animate
             }
-            animate: canvas.animate
+        }
+
+        Loader {
+            id: toolbarLoader
+            sourceComponent: mainView.useDeprecatedToolbar ? toolbarComponent : null
         }
 
         /*!
@@ -338,9 +361,26 @@ PageTreeNode {
                 // no connections are made when target is null
                 target: headerItem.tabBar
                 onPressedChanged: {
-                    if (headerItem.tabBar.pressed) {
-                        if (!toolbarItem.locked) toolbarItem.close();
+                    if (mainView.useDeprecatedToolbar) {
+                        if (headerItem.tabBar.pressed) {
+                            if (!toolbarLoader.item.locked) toolbarLoader.item.close();
+                        }
                     }
+                }
+            }
+
+            // 'window' is defined by QML between startup and showing on the screen.
+            // There is no signal for when it becomes available and re-declaring it is not safe.
+            property bool windowActive: typeof window != 'undefined'
+            onWindowActiveChanged: {
+                window.title = headerItem.title
+            }
+
+            Connections {
+                target: headerItem
+                onTitleChanged: {
+                    if (headerItem.windowActive)
+                        window.title = headerItem.title
                 }
             }
         }
@@ -354,7 +394,9 @@ PageTreeNode {
                     if (headerItem.tabBar) {
                         headerItem.tabBar.selectionMode = true;
                     }
-                    if (!toolbarItem.locked) toolbarItem.open();
+                    if (mainView.useDeprecatedToolbar) {
+                        if (!toolbarLoader.item.locked) toolbarLoader.item.open();
+                    }
                     canvas.animate = true;
                 }
             }
@@ -386,8 +428,8 @@ PageTreeNode {
         UnityActions.ActionManager {
             id: unityActionManager
             onQuit: {
-               // FIXME Wire this up to the application lifecycle management API instead of quit().
-               Qt.quit()
+                // FIXME Wire this up to the application lifecycle management API instead of quit().
+                Qt.quit()
             }
         }
     }
@@ -405,7 +447,7 @@ PageTreeNode {
           The toolbar that will be propagated to the children in the page tree node.
           It will be used by the active \l Page to set the toolbar actions.
          */
-        property Toolbar toolbar: toolbarItem
+        property Toolbar toolbar: toolbarLoader.item
 
         /*!
           \internal

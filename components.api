@@ -191,6 +191,7 @@ PageTreeNode
     property color backgroundColor
     property color footerColor
     property bool automaticOrientation
+    property bool useDeprecatedToolbar
     default property internal contentsItem
     property list<Action> actions
     property UnityActions.ActionManager actionManager
@@ -256,6 +257,7 @@ Item
     property bool animate
     readonly property bool animating
     property bool __closeOnContentsClicks
+    property bool __openOnHover
     property bool pressed
 modules/Ubuntu/Components/Pickers/DatePicker.qml
 StyledItem
@@ -591,6 +593,8 @@ TestCase
     function findChild(obj,objectName)
     function findInvisibleChild(obj,objectName)
     function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay)
+    function flick(item, x, y, dx, dy, pressTimeout, steps, button, modifiers, delay)
+    function mouseLongPress(item, x, y, button, modifiers, delay)
     function tryCompareFunction(func, expectedResult, timeout)
 plugins.qmltypes
     name: "InverseMouseAreaType"

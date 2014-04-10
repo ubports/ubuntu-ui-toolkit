@@ -151,6 +151,27 @@ private Q_SLOTS:
         // No warnings from QML
         QCOMPARE(testCase->warnings(), 0);
     }
+
+    void testWindowTitleFromPage() {
+        QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("PageTitle.qml"));
+        QQuickItem *page = testCase->findItem<QQuickItem*>("page");
+        QCOMPARE(QString("Once upon a time"), page->property("title").toString());
+        QCOMPARE(testCase->title(), page->property("title").toString());
+    }
+
+    void testWindowTitleFromStack() {
+        QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("PageStack.qml"));
+        QQuickItem *page = testCase->findItem<QQuickItem*>("page");
+        QCOMPARE(QString("Far far away"), page->property("title").toString());
+        QCOMPARE(testCase->title(), page->property("title").toString());
+    }
+
+    void testWindowTitleFromTabs() {
+        QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("TabsTitle.qml"));
+        QQuickItem *page = testCase->findItem<QQuickItem*>("page");
+        QCOMPARE(QString("Long long ago"), page->property("title").toString());
+        QCOMPARE(testCase->title(), page->property("title").toString());
+    }
 };
 
 QTEST_MAIN(tst_MainView)
