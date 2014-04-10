@@ -417,9 +417,14 @@ PageTreeNode
     readonly property Tab selectedTab
     readonly property Item currentPage
     property TabBar tabBar
-    default property list<Item> tabChildren
+    property list<Item> tabChildren
     readonly property int count
     signal modelChanged()
+    function addTab(title, tab)
+    function insertTab(index, title, tab)
+    function getTab(index)
+    function moveTab(from, to)
+    function removeTab(index)
 modules/Ubuntu/Components/TextArea.qml
 StyledItem
     property bool highlighted
