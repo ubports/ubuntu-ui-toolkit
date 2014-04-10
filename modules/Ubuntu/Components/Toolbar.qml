@@ -39,6 +39,9 @@ Panel {
     // Closing of the toolbar on app contents interaction is handled by the Page.
     __closeOnContentsClicks: false
 
+    // Open toolbar on hover (for desktop only)
+    __openOnHover: true
+
     /*!
       \preliminary
       The list of \l Actions to be shown on the toolbar

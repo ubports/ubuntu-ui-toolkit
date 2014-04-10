@@ -24,10 +24,10 @@ MainView {
     Tabs {
         objectName: "tabs"
         Tab {
-            title: 'Long long ago'
+            title: 'Not the title you are looking for'
             page: Page {
                 objectName: "page"
-                title: 'Not the title you are looking for'
+                title: 'Long long ago'
             }
         }
     }

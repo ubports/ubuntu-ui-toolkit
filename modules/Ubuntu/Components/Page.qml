@@ -77,8 +77,10 @@ PageTreeNode {
 
     /*!
       The title of the page. Will be shown in the header of the \l MainView.
+      If the page is used inside a Tab, by default it takes the title from the Tab.
+      Otherwise, the default value is an empty string.
      */
-    property string title
+    property string title: parentNode && parentNode.hasOwnProperty("title") ? parentNode.title : ""
 
     /*!
       The toolbar items associated with this Page.
