@@ -27,7 +27,7 @@ logger.warning(
     'helpers from the top-level ubuntuuitoolkit module.')
 
 
-from ubuntuuitoolkit import (  #NOQA
+from ubuntuuitoolkit import (  # NOQA
     check_autopilot_version,
     get_keyboard,
     get_pointing_device,
