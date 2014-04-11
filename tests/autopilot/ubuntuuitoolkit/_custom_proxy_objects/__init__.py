@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Ubuntu UI Toolkit autopilot tests and helpers."""
+"""Ubuntu UI Toolkit Autopilot custom proxy objects."""
 
 import logging
 from distutils import version
