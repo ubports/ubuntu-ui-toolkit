@@ -50,6 +50,6 @@ from ubuntuuitoolkit import (  #NOQA
     Tabs,
     TextField,
     Toolbar,
-    UbuntuUIToolkitException as ToolkitEmulatorException,
+    ToolkitException as ToolkitEmulatorException,
     UbuntuUIToolkitCustomProxyObjectBase as UbuntuUIToolkitEmulatorBase,
 )

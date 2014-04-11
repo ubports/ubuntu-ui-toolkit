@@ -33,7 +33,7 @@ _NO_TABS_ERROR = 'The MainView has no Tabs.'
 logger = logging.getLogger(__name__)
 
 
-class UbuntuUIToolkitException(Exception):
+class ToolkitException(Exception):
     """Exception raised when there is an error with the emulator."""
 
 
@@ -60,13 +60,13 @@ def get_keyboard():
 def check_autopilot_version():
     """Check that the Autopilot installed version matches the one required.
 
-    :raise UbuntuUIToolkitException: If the installed Autopilot version does't
+    :raise ToolkitException: If the installed Autopilot version does't
         match the required by the emulators.
 
     """
     installed_version = version.LooseVersion(autopilot.version)
     if installed_version < version.LooseVersion('1.4'):
-        raise UbuntuUIToolkitException(
+        raise ToolkitException(
             'The emulators need Autopilot 1.4 or higher.')
 
 
@@ -101,7 +101,7 @@ class MainView(UbuntuUIToolkitCustomProxyObjectBase):
         try:
             return self.select_single('Header', objectName='MainView_Header')
         except dbus.StateNotFoundError:
-            raise UbuntuUIToolkitException('The main view has no header.')
+            raise ToolkitException('The main view has no header.')
 
     def get_toolbar(self):
         """Return the Toolbar emulator of the MainView."""
@@ -124,13 +124,13 @@ class MainView(UbuntuUIToolkitCustomProxyObjectBase):
     def get_tabs(self):
         """Return the Tabs emulator of the MainView.
 
-        :raise UbuntuUIToolkitException: If the main view has no tabs.
+        :raise ToolkitException: If the main view has no tabs.
 
         """
         try:
             return self.select_single(Tabs)
         except dbus.StateNotFoundError:
-            raise UbuntuUIToolkitException(_NO_TABS_ERROR)
+            raise ToolkitException(_NO_TABS_ERROR)
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_next_tab(self):
@@ -151,14 +151,14 @@ class MainView(UbuntuUIToolkitCustomProxyObjectBase):
 
         :parameter index: The index of the tab to open.
         :return: The newly opened tab.
-        :raise UbuntuUIToolkitException: If the tab index is out of range.
+        :raise ToolkitException: If the tab index is out of range.
 
         """
         logger.debug('Switch to tab with index {0}.'.format(index))
         tabs = self.get_tabs()
         number_of_tabs = tabs.get_number_of_tabs()
         if index >= number_of_tabs:
-            raise UbuntuUIToolkitException('Tab index out of range.')
+            raise ToolkitException('Tab index out of range.')
         current_tab = tabs.get_current_tab()
         number_of_switches = 0
         while not tabs.selectedTabIndex == index:
@@ -167,7 +167,7 @@ class MainView(UbuntuUIToolkitCustomProxyObjectBase):
             if number_of_switches >= number_of_tabs - 1:
                 # This prevents a loop. But if this error is ever raised, it's
                 # likely there's a bug on the emulator or on the QML Tab.
-                raise UbuntuUIToolkitException(
+                raise ToolkitException(
                     'The tab with index {0} was not selected.'.format(index))
             current_tab = self.switch_to_next_tab()
             number_of_switches += 1
@@ -193,7 +193,7 @@ class MainView(UbuntuUIToolkitCustomProxyObjectBase):
 
         :parameter object_name: The QML objectName property of the tab.
         :return: The newly opened tab.
-        :raise UbuntuUIToolkitException: If there is no tab with that object
+        :raise ToolkitException: If there is no tab with that object
             name.
 
         """
@@ -201,7 +201,7 @@ class MainView(UbuntuUIToolkitCustomProxyObjectBase):
         for index, tab in enumerate(tabs.select_many('Tab')):
             if tab.objectName == object_name:
                 return self.switch_to_tab_by_index(tab.index)
-        raise UbuntuUIToolkitException(
+        raise ToolkitException(
             'Tab with objectName "{0}" not found.'.format(object_name))
 
     def get_action_selection_popover(self, object_name):
@@ -235,13 +235,13 @@ class Header(UbuntuUIToolkitCustomProxyObjectBase):
     def switch_to_next_tab(self):
         """Open the next tab.
 
-        :raise UbuntuUIToolkitException: If the main view has no tabs.
+        :raise ToolkitException: If the main view has no tabs.
 
         """
         try:
             tab_bar = self.select_single(TabBar)
         except dbus.StateNotFoundError:
-            raise UbuntuUIToolkitException(_NO_TABS_ERROR)
+            raise ToolkitException(_NO_TABS_ERROR)
         tab_bar.switch_to_next_tab()
         self._get_animating().wait_for(False)
 
@@ -299,18 +299,18 @@ class Toolbar(UbuntuUIToolkitCustomProxyObjectBase):
         clicking the button, it is re-opened automatically by this function.
 
         :parameter object_name: The QML objectName property of the button.
-        :raise UbuntuUIToolkitException: If there is no button with that object
+        :raise ToolkitException: If there is no button with that object
             name.
 
         """
         # ensure the toolbar is open
         if not self.opened:
-            raise UbuntuUIToolkitException(
+            raise ToolkitException(
                 'Toolbar must be opened before calling click_button().')
         try:
             button = self._get_button(object_name)
         except dbus.StateNotFoundError:
-            raise UbuntuUIToolkitException(
+            raise ToolkitException(
                 'Button with objectName "{0}" not found.'.format(object_name))
         self.pointing_device.move_to_object(button)
         # ensure the toolbar is still open (may have closed due to timeout)
@@ -340,7 +340,7 @@ class Tabs(UbuntuUIToolkitCustomProxyObjectBase):
             if tab.index == index:
                 return tab
         else:
-            raise UbuntuUIToolkitException(
+            raise ToolkitException(
                 'There is no tab with index {0}.'.format(index))
 
     def _get_tabs(self):
@@ -391,7 +391,7 @@ class TabBar(UbuntuUIToolkitCustomProxyObjectBase):
         for button in buttons:
             if button.buttonIndex == index:
                 return button
-        raise UbuntuUIToolkitException(
+        raise ToolkitException(
             'There is no tab button with index {0}.'.format(index))
 
 
@@ -407,14 +407,14 @@ class ActionSelectionPopover(UbuntuUIToolkitCustomProxyObjectBase):
         --elopio - 2013-07-25
 
         :parameter text: The text of the button.
-        :raise UbuntuUIToolkitException: If the popover is not open.
+        :raise ToolkitException: If the popover is not open.
 
         """
         if not self.visible:
-            raise UbuntuUIToolkitException('The popover is not open.')
+            raise ToolkitException('The popover is not open.')
         button = self._get_button(text)
         if button is None:
-            raise UbuntuUIToolkitException(
+            raise ToolkitException(
                 'Button with text "{0}" not found.'.format(text))
         self.pointing_device.click_object(button)
         if self.autoClose:
@@ -576,7 +576,7 @@ class Flickable(UbuntuUIToolkitCustomProxyObjectBase):
             except AttributeError:
                 containers = containers[0].get_children()
 
-        raise UbuntuUIToolkitException("Couldn't find the top-most container.")
+        raise ToolkitException("Couldn't find the top-most container.")
 
     def _is_child_visible(self, child, containers):
         """Check if the center of the child is visible.
@@ -603,7 +603,7 @@ class Flickable(UbuntuUIToolkitCustomProxyObjectBase):
     @autopilot_logging.log_action(logger.info)
     def _swipe_to_show_more_above(self, containers):
         if self.atYBeginning:
-            raise UbuntuUIToolkitException(
+            raise ToolkitException(
                 "Can't swipe more, we are already at the top of the "
                 "container.")
         else:
@@ -612,7 +612,7 @@ class Flickable(UbuntuUIToolkitCustomProxyObjectBase):
     @autopilot_logging.log_action(logger.info)
     def _swipe_to_show_more_below(self, containers):
         if self.atYEnd:
-            raise UbuntuUIToolkitException(
+            raise ToolkitException(
                 "Can't swipe more, we are already at the bottom of the "
                 "container.")
         else:
@@ -631,7 +631,7 @@ class Flickable(UbuntuUIToolkitCustomProxyObjectBase):
             start_y = top
             stop_y = bottom
         else:
-            raise UbuntuUIToolkitException(
+            raise ToolkitException(
                 'Invalid direction {}.'.format(direction))
         self._slow_drag(start_x, stop_x, start_y, stop_y)
         self.dragging.wait_for(False)
@@ -680,7 +680,7 @@ class QQuickListView(Flickable):
                 return self.select_single(objectName=object_name)
             except dbus.StateNotFoundError:
                 pass
-        raise UbuntuUIToolkitException(
+        raise ToolkitException(
             'List element with objectName "{}" not found.'.format(object_name))
 
     def _is_element_clickable(self, object_name):
@@ -712,7 +712,7 @@ class Empty(UbuntuUIToolkitCustomProxyObjectBase):
             else:
                 self._wait_until_deleted()
         else:
-            raise UbuntuUIToolkitException(
+            raise ToolkitException(
                 'The item "{0}" is not removable'.format(self.objectName))
 
     def _drag_pointing_device_to_delete(self, direction):
@@ -725,7 +725,7 @@ class Empty(UbuntuUIToolkitCustomProxyObjectBase):
         elif direction == 'left':
             self.pointing_device.drag(w - (w*0.1), ty, x, ty)
         else:
-            raise UbuntuUIToolkitException(
+            raise ToolkitException(
                 'Invalid direction "{0}" used on swipe to delete function'
                 .format(direction))
 
@@ -745,7 +745,7 @@ class Empty(UbuntuUIToolkitCustomProxyObjectBase):
             self.pointing_device.click_object(deleteButton)
             self._wait_until_deleted()
         else:
-            raise UbuntuUIToolkitException(
+            raise ToolkitException(
                 'The item "{0}" is not waiting for removal confirmation'.
                 format(self.objectName))
 
