@@ -16,7 +16,12 @@
 
 """Tests for the deprecated ubuntuuitoolkit.emulators module."""
 
+import logging
+
+import fixtures
 import testscenarios
+import testtools
+from testtools.matchers import Contains
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import emulators
@@ -54,3 +59,17 @@ class DeprecatedSymbolsTestCase(testscenarios.TestWithScenarios):
         self.assertEqual(
             getattr(ubuntuuitoolkit, self.current),
             getattr(emulators, self.deprecated))
+
+
+class DeprecationWarningTestCase(testtools.TestCase):
+
+    def test_import_emulators_must_log_warning(self):
+        fake_logger = fixtures.FakeLogger(level=logging.WARNING)
+        self.useFixture(fake_logger)
+        reload(emulators)
+        self.assertThat(
+            fake_logger.output,
+            Contains(
+                'The ubuntuuitoolkit.emulators module is deprecated. Import '
+                'the autopilot helpers from the top-level ubuntuuitoolkit '
+                'module.'))
