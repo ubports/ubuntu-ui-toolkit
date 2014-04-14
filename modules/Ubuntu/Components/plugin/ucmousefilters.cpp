@@ -30,13 +30,13 @@
 // keep in sync with QQuickMouseArea PressAndHoldDelay
 const int DefaultPressAndHoldDelay = 800;
 
-static int ForwardedEvent::m_eventBase = -1;
-void ForwardedEvent::registerForwardEvents()
+QEvent::Type ForwardedEvent::m_eventBase = QEvent::None;
+void ForwardedEvent::registerForwardedEvent()
 {
     if (m_eventBase > 0) {
         return;
     }
-    m_eventBase = QEvent::registerEventType();
+    m_eventBase = (QEvent::Type)QEvent::registerEventType();
 }
 
 /*
@@ -705,11 +705,6 @@ bool UCMouse::isHoverEvent(QEvent::Type type)
     return (type == QEvent::HoverEnter) || (type == QEvent::HoverMove) || (type == QEvent::HoverLeave);
 }
 
-bool UCMouse::isForwardedEvent(QEvent::Type type)
-{
-    return (type >= (QEvent::Type)ForwardedEvent::Min) && (type <= (QEvent::Type)ForwardedEvent::Max);
-}
-
 
 /*
  * Forwards the events to the listed items. The event coordinates are mapped to the destination's coordinates
@@ -761,7 +756,7 @@ bool UCMouse::forwardEvent(ForwardedEvent::EventType type, QEvent *event, QQuick
             QQuickMouseEvent mev(itemPos.x(), itemPos.y(), (Qt::MouseButton)quickEvent->button(), (Qt::MouseButtons)quickEvent->buttons(),
                                  (Qt::KeyboardModifiers)quickEvent->modifiers(), quickEvent->isClick(), quickEvent->wasHeld());
             mev.setAccepted(false);
-            ForwardedEvent forwardedEvent((QEvent::Type)type, m_owner, mappedEvent, &mev);
+            ForwardedEvent forwardedEvent(type, m_owner, mappedEvent, &mev);
             QGuiApplication::sendEvent(item, &forwardedEvent);
             accepted = mev.isAccepted();
         }

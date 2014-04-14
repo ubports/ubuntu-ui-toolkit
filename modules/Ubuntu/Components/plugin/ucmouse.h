@@ -54,13 +54,13 @@ public:
     QQuickItem *sender() const { return m_sender; }
     QQuickMouseEvent *quickEvent() const { return m_quickEvent; }
     QEvent *originalEvent() const { return m_originalEvent; }
-    QEvent::Type baseType() const { return m_eventBase; }
+    static QEvent::Type baseType() { return m_eventBase; }
 private:
     EventType m_subType;
     QPointer<QQuickItem> m_sender;
     QEvent *m_originalEvent;
     QPointer<QQuickMouseEvent> m_quickEvent;
-    static int m_eventBase;
+    static QEvent::Type m_eventBase;
 };
 
 class UCMouse : public QObject
@@ -132,7 +132,6 @@ protected:
     bool isDoubleClickConnected();
     bool isMouseEvent(QEvent::Type type);
     bool isHoverEvent(QEvent::Type type);
-    bool isForwardedEvent(QEvent::Type type);
     bool forwardEvent(ForwardedEvent::EventType type, QEvent *event, QQuickMouseEvent *quickEvent);
 
 protected:
