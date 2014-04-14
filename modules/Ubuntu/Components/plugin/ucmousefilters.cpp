@@ -30,6 +30,15 @@
 // keep in sync with QQuickMouseArea PressAndHoldDelay
 const int DefaultPressAndHoldDelay = 800;
 
+static int ForwardedEvent::m_eventBase = -1;
+void ForwardedEvent::registerForwardEvents()
+{
+    if (m_eventBase > 0) {
+        return;
+    }
+    m_eventBase = QEvent::registerEventType();
+}
+
 /*
  * Attached filter instantiator template
  */
@@ -379,7 +388,7 @@ bool UCMouse::eventFilter(QObject *target, QEvent *event)
         } else {
             return hoverEvents(target, static_cast<QHoverEvent*>(event));
         }
-    } else if (isForwardedEvent(type)) {
+    } else if (type == ForwardedEvent::baseType()) {
         // this is a forwarded event, handle it as such
         return forwardedEvents(static_cast<ForwardedEvent*>(event));
     }
@@ -462,7 +471,7 @@ bool UCMouse::forwardedEvents(ForwardedEvent *event)
 {
     // the quick event is always specified!
     if (contains(QPointF(event->quickEvent()->x(), event->quickEvent()->y()))) {
-        switch ((ForwardedEvent::EventType)event->type()) {
+        switch (event->subType()) {
         case ForwardedEvent::MousePress: {
             Q_EMIT pressed(event->quickEvent(), event->sender());
         } break;
@@ -493,7 +502,7 @@ bool UCMouse::forwardedEvents(ForwardedEvent *event)
     }
 
     // forward event, but use the current owner as sender
-    event->setAccepted(forwardEvent(event->type(), event->originalEvent(), event->quickEvent()));
+    event->setAccepted(forwardEvent(event->subType(), event->originalEvent(), event->quickEvent()));
     return event->isAccepted();
 }
 
@@ -707,7 +716,7 @@ bool UCMouse::isForwardedEvent(QEvent::Type type)
  * and sent to the destination in case the destination has no filter attached. Otherwise the quick event
  * coordinates will be mapped and sent as ForwardedEvents.
  */
-bool UCMouse::forwardEvent(int type, QEvent *event, QQuickMouseEvent *quickEvent)
+bool UCMouse::forwardEvent(ForwardedEvent::EventType type, QEvent *event, QQuickMouseEvent *quickEvent)
 {
     // first set the accepted flag to the original event
     if (event && quickEvent) {

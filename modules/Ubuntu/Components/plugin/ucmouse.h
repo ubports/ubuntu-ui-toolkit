@@ -38,8 +38,9 @@ public:
         HoverExit,
         Max = HoverExit
     };
-    ForwardedEvent(QEvent::Type type, QQuickItem *sender, QEvent *originalEvent, QQuickMouseEvent *quickEvent)
-        : QEvent(type)
+    ForwardedEvent(EventType type, QQuickItem *sender, QEvent *originalEvent, QQuickMouseEvent *quickEvent)
+        : QEvent((QEvent::Type)m_eventBase)
+        , m_subType(type)
         , m_sender(sender)
         , m_originalEvent(originalEvent)
         , m_quickEvent(quickEvent)
@@ -47,13 +48,19 @@ public:
         setAccepted(false);
     }
 
+    static void registerForwardedEvent();
+
+    EventType subType() const { return m_subType; }
     QQuickItem *sender() const { return m_sender; }
     QQuickMouseEvent *quickEvent() const { return m_quickEvent; }
     QEvent *originalEvent() const { return m_originalEvent; }
+    QEvent::Type baseType() const { return m_eventBase; }
 private:
+    EventType m_subType;
     QPointer<QQuickItem> m_sender;
     QEvent *m_originalEvent;
     QPointer<QQuickMouseEvent> m_quickEvent;
+    static int m_eventBase;
 };
 
 class UCMouse : public QObject
@@ -126,7 +133,7 @@ protected:
     bool isMouseEvent(QEvent::Type type);
     bool isHoverEvent(QEvent::Type type);
     bool isForwardedEvent(QEvent::Type type);
-    bool forwardEvent(int type, QEvent *event, QQuickMouseEvent *quickEvent);
+    bool forwardEvent(ForwardedEvent::EventType type, QEvent *event, QQuickMouseEvent *quickEvent);
 
 protected:
     QQuickItem *m_owner;
