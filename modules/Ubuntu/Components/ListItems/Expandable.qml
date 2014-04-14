@@ -212,6 +212,12 @@ Empty {
         anchors { left: parent.left; top: parent.top; right: parent.right }
         enabled: root.collapseOnClick && root.expanded
         height: root.collapsedHeight
-        onClicked: root.expanded = false;
+        onClicked: {
+            if (priv.isInExpandableListView) {
+                priv.view.expandedIndex = -1;
+            } else {
+                root.expanded = false;
+            }
+        }
     }
 }

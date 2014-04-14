@@ -36,8 +36,11 @@ Panel {
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
-    // Closing of the toolbar on app contents ineraction is handled by the Page.
+    // Closing of the toolbar on app contents interaction is handled by the Page.
     __closeOnContentsClicks: false
+
+    // Open toolbar on hover (for desktop only)
+    __openOnHover: true
 
     /*!
       \preliminary

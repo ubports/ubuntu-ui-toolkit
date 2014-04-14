@@ -32,6 +32,8 @@
 #include "ucapplication.h"
 #include <QtCore/QProcess>
 #include <QtCore/QProcessEnvironment>
+#include "uctestcase.h"
+#include <signal.h>
 
 #define protected public
 #include "ucstatesaver.h"
@@ -47,36 +49,31 @@ public:
 private:
     QString m_modulePath;
 
-    QQuickView *createView(const QString &file, QSignalSpy **spy = 0)
+    QQuickView *createView(const QString &file)
     {
-        QQuickView *view = new QQuickView(0);
-        if (spy) {
-            *spy = new QSignalSpy(view->engine(), SIGNAL(warnings(QList<QQmlError>)));
-            (*spy)->setParent(view);
-        }
-        view->engine()->addImportPath(m_modulePath);
-        view->setSource(QUrl::fromLocalFile(file));
-        if (!view->rootObject()) {
-            return 0;
-        }
-        view->show();
-        QTest::qWaitForWindowExposed(view);
-
-        // connect StateSaverBackend's initiateStateSaving() to view destroyed
-        return view;
+        UbuntuTestCase* testCase = new UbuntuTestCase(file);
+        return qobject_cast<QQuickView*>(testCase);
     }
 
-    void resetView(QScopedPointer<QQuickView> &view, const QString &file, QSignalSpy **spy = 0)
+    void resetView(QScopedPointer<UbuntuTestCase> &view, const QString &file)
     {
         Q_EMIT StateSaverBackend::instance().initiateStateSaving();
         view.reset();
-        view.reset(createView(file, spy));
+        view.reset(new UbuntuTestCase(file));
+    }
+
+    void resetView(QScopedPointer<QQuickView> &view, const QString &file)
+    {
+        Q_EMIT StateSaverBackend::instance().initiateStateSaving();
+        view.reset();
+        view.reset(createView(file));
     }
 
     QString stateFile(const QString &appId)
     {
-        QSettings settings(appId);
-        return settings.fileName();
+        return QString("%1/%2.state")
+                .arg(QStandardPaths::standardLocations(QStandardPaths::TempLocation)[0])
+                .arg(appId);
     }
 
 private Q_SLOTS:
@@ -234,18 +231,17 @@ private Q_SLOTS:
 
     void test_InvalidUID()
     {
-        QSignalSpy *spy;
-        QScopedPointer<QQuickView> view(createView("InvalidUID.qml", &spy));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("InvalidUID.qml"));
         QVERIFY(view);
-        QCOMPARE(spy->count(), 1);
+        QCOMPARE(view->warnings(), 1);
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
 
         testItem->setObjectName("updated");
 
-        resetView(view, "InvalidUID.qml", &spy);
+        resetView(view, "InvalidUID.qml");
         QVERIFY(view);
-        QCOMPARE(spy->count(), 1);
+        QCOMPARE(view->warnings(), 1);
         testItem = view->rootObject()->findChild<QObject*>("updated");
         QVERIFY(testItem == 0);
     }
@@ -267,18 +263,17 @@ private Q_SLOTS:
 
     void test_InvalidGroupProperty()
     {
-        QSignalSpy *spy;
-        QScopedPointer<QQuickView> view(createView("InvalidGroupProperty.qml", &spy));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("InvalidGroupProperty.qml"));
         QVERIFY(view);
-        QCOMPARE(spy->count(), 1);
+        QCOMPARE(view->warnings(), 1);
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
 
         testItem->setObjectName("group");
 
-        resetView(view, "InvalidGroupProperty.qml", &spy);
+        resetView(view, "InvalidGroupProperty.qml");
         QVERIFY(view);
-        QCOMPARE(spy->count(), 1);
+        QCOMPARE(view->warnings(), 1);
         testItem = view->rootObject()->findChild<QObject*>("group");
         QVERIFY(testItem == 0);
     }
@@ -387,8 +382,7 @@ private Q_SLOTS:
 
     void test_ComponentsWithStateSaversNoId()
     {
-        QSignalSpy *spy;
-        QScopedPointer<QQuickView> view(createView("ComponentsWithStateSaversNoId.qml", &spy));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("ComponentsWithStateSaversNoId.qml"));
         QVERIFY(view);
         QObject *control1 = view->rootObject()->findChild<QObject*>("control1");
         QVERIFY(control1);
@@ -397,7 +391,7 @@ private Q_SLOTS:
         UCStateSaverAttached *stateSaver1 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control1, false));
         QVERIFY(stateSaver1);
         QVERIFY(stateSaver1->enabled() == false);
-        QCOMPARE(spy->count(), 1);
+        QCOMPARE(view->warnings(), 1);
         UCStateSaverAttached *stateSaver2 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control2, false));
         QVERIFY(stateSaver2);
         QVERIFY(stateSaver2->enabled());
@@ -533,6 +527,52 @@ private Q_SLOTS:
 
         QString fileName = stateFile("NormalAppClose");
         QVERIFY(!QFile(fileName).exists());
+    }
+
+    void test_SigTerm()
+    {
+        QProcess testApp;
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        env.insert("APP_ID", "SimpleApp");
+        testApp.setProcessEnvironment(env);
+        testApp.start("qmlscene -I ../../../modules SimpleApp.qml");
+        testApp.waitForStarted();
+
+        // send SIGTERM signal to the process, use terminate() to do that.
+        testApp.terminate();
+        testApp.waitForFinished();
+
+        QString fileName = stateFile("SimpleApp");
+        QVERIFY(!QFile(fileName).exists());
+    }
+
+    void test_SigInt()
+    {
+        QProcess testApp;
+        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+        env.insert("APP_ID", "SimpleApp");
+        testApp.setProcessEnvironment(env);
+        testApp.start("qmlscene -I ../../../modules SimpleApp.qml");
+        testApp.waitForStarted();
+
+        QTest::qWait(1000);
+
+        // make sure we are not killing the parent
+        QVERIFY(testApp.pid() != QCoreApplication::applicationPid());
+        // skip tests if the application PID is zero => the child app PID seems to be zero as well
+        if (!testApp.pid()) {
+            // kill child process
+            testApp.close();
+            QSKIP("This test requires valid PID");
+        }
+        // send SIGINT
+        ::kill(testApp.pid(), SIGINT);
+        testApp.waitForFinished();
+
+        QString fileName = stateFile("SimpleApp");
+        QVERIFY(QFile(fileName).exists());
+        // clean the file
+        QFile::remove(fileName);
     }
 };
 

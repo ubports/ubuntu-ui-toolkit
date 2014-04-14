@@ -1,4 +1,5 @@
 include(ubuntu-ui-toolkit-offline.qdocconf)
+outputdir = offline
 
 qhp.projects = UbuntuUserInterfaceToolkit
 qhp.UbuntuUserInterfaceToolkit.namespace = com.canonical.ubuntuuitoolkit.0.1

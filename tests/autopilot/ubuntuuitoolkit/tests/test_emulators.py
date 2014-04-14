@@ -587,10 +587,10 @@ MainView {
                 model: 20
 
                 delegate: ListItem.Standard {
-                        objectName: "testListElement%1".arg(index)
-                        text: "test list element %1".arg(index)
-                        onClicked: clickedLabel.text = objectName
-                        height: units.gu(5)
+                    objectName: "testListElement%1".arg(index)
+                    text: "test list element %1".arg(index)
+                    onClicked: clickedLabel.text = objectName
+                    height: units.gu(5)
                 }
             }
         }
@@ -648,6 +648,82 @@ MainView {
             'unexisting')
         self.assertEqual(
             str(error), 'List element with objectName "unexisting" not found.')
+
+
+class QQuickListViewOutOfViewTestCase(tests.QMLStringAppTestCase):
+    """Test that we can make elements visible when the list is out of view."""
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(20)
+
+    Page {
+
+        Flickable {
+
+            Column {
+                id: column
+                width: units.gu(48)
+                // The column height is greater than the main view height, so
+                // the bottom of the list is out of view.
+                height: units.gu(40)
+
+                Label {
+                    id: clickedLabel
+                    objectName: "clickedLabel"
+                    text: "No element clicked."
+                }
+
+                ListView {
+                    id: testListView
+                    objectName: "testListView"
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    height: column.height - clickedLabel.paintedHeight
+                    clip: true
+                    model: 20
+
+                    delegate: ListItem.Standard {
+                        objectName: "testListElement%1".arg(index)
+                        text: "test list element %1".arg(index)
+                        onClicked: clickedLabel.text = objectName
+                        height: units.gu(5)
+                    }
+                }
+            }
+        }
+    }
+}
+""")
+
+    def setUp(self):
+        super(QQuickListViewOutOfViewTestCase, self).setUp()
+        self.list_view = self.main_view.select_single(
+            emulators.QQuickListView, objectName='testListView')
+        self.label = self.main_view.select_single(
+            'Label', objectName='clickedLabel')
+        self.assertEqual(self.label.text, 'No element clicked.')
+
+    def test_click_element_outside_view_below(self):
+        """Test that we can click an element that's out of view below.
+
+        The list is also out of view, so we must scroll from the bottom of the
+        main view.
+
+        """
+        # Test for http://pad.lv/1275060.
+        # Click the first element out of view to make sure we are not scrolling
+        # to the bottom at once.
+        self.assertFalse(
+            self.list_view._is_element_clickable('testListElement9'))
+
+        self.list_view.click_element('testListElement9')
+        self.assertEqual(self.label.text, 'testListElement9')
 
 
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
@@ -1014,38 +1090,41 @@ import Ubuntu.Components 0.1
 MainView {
     width: units.gu(48)
     height: units.gu(60)
+    Page{
 
-    Column {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        spacing: units.gu(3)
+        Column {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.fill: parent
 
-        Component {
-            id: valueSelectorDelegate
-            OptionSelectorDelegate {
-            text: label
-            objectName: name
+            spacing: units.gu(3)
+
+            Component {
+                id: valueSelectorDelegate
+                OptionSelectorDelegate {
+                    text: label
+                    objectName: name
+                }
+            }
+
+            ListModel {
+                id: valueModel
+                ListElement { name: "one"; label: "Value 1" }
+                ListElement { name: "two"; label: "Value 2" }
+                ListElement { name: "three"; label: "Value 3" }
+                ListElement { name: "four"; label: "Value 4" }
+                ListElement { name: "five"; label: "Value 5" }
+            }
+
+            OptionSelector {
+                id: valueSelector
+                objectName: "test_option_selector_collapsed"
+                text: "Collapsed"
+                delegate: valueSelectorDelegate
+                model: valueModel
             }
         }
-
-        ListModel {
-            id: valueModel
-            ListElement { name: "one"; label: "Value 1" }
-            ListElement { name: "two"; label: "Value 2" }
-            ListElement { name: "three"; label: "Value 3" }
-            ListElement { name: "four"; label: "Value 4" }
-            ListElement { name: "five"; label: "Value 5" }
-        }
-
-        OptionSelector {
-            id: valueSelector
-            objectName: "test_option_selector_collapsed"
-            text: "Collapsed"
-            delegate: valueSelectorDelegate
-            model: valueModel
-        }
-
-   }
+    }
 }
 """)
 
@@ -1072,9 +1151,9 @@ MainView {
             lambda: self.option_selector.select_option(text="this should fail")
         )
         self.assertEqual(
-            error.message,
             "OptionSelectorDelegate with kwargs {'text': 'this should fail'}"
-            " not found"
+            " not found",
+            error.message
         )
 
     def test_select_option(self):
@@ -1109,24 +1188,24 @@ import Ubuntu.Components 0.1
 
 MainView {
     width: units.gu(48)
-    height: units.gu(60)
+    height: units.gu(120)
+        Column {
+           anchors.fill: parent
+           anchors.left: parent.left
+           anchors.right: parent.right
+           spacing: units.gu(3)
 
-    Column {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        spacing: units.gu(3)
-
-            OptionSelector {
-                objectName: "option_selector"
-                text: i18n.tr("option_selector")
-                expanded: true
-                model: [i18n.tr("Red"),
-                        i18n.tr("Blue"),
-                        i18n.tr("Green"),
-                        i18n.tr("Yellow"),
-                        i18n.tr("Black")]
-            }
-   }
+                OptionSelector {
+                    objectName: "option_selector"
+                    text: i18n.tr("option_selector")
+                    expanded: true
+                    model: [i18n.tr("Red"),
+                            i18n.tr("Blue"),
+                            i18n.tr("Green"),
+                            i18n.tr("Yellow"),
+                            i18n.tr("Black")]
+                }
+        }
 }
 """)
 
@@ -1140,23 +1219,18 @@ MainView {
         """get_option_count() must return number of options"""
         self.assertEqual(self.option_selector.get_option_count(), 5)
 
-    def test_expand(self):
-        """expand() must expand a collapsed option elector"""
-        self.assertFalse(self.option_selector.currentlyExpanded)
-        self.option_selector._expand()
-        self.assertTrue(self.option_selector.currentlyExpanded)
-
     def test_negative_select_text(self):
-        """select_text() must raise a ValueError if text does not exist"""
+        """select_text() must raise a ValueError if object and
+        text does not exist"""
         error = self.assertRaises(
             emulators.ToolkitEmulatorException,
             lambda: self.option_selector.select_option('Label',
                                                        text="this should fail")
         )
         self.assertEqual(
-            error.message,
-            "OptionSelectorDelegate with kwargs {'text': 'this should fail'}"
-            " not found"
+            "OptionSelectorDelegate with args ('Label',) and kwargs {'text': "
+            "'this should fail'} not found",
+            error.message
         )
 
     def test_select_option(self):

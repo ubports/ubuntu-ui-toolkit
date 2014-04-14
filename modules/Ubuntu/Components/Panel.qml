@@ -407,11 +407,6 @@ Item {
         property string previousState: ""
         property int movingDelta
 
-        // Used for recovering the state from before
-        //  bottomBarVisibilityCommunicator forced the toolbar to hide.
-        property bool savedLocked: panel.locked
-        property bool savedOpened: panel.opened
-
         // Convert from Qt.AlignLeading to Qt.AlignTrailing to Qt.AlignLeft and Qt.AlignRight
         property int align: {
             if (panel.align === Qt.AlignLeading) {
@@ -435,30 +430,6 @@ Item {
                                            ? Qt.Horizontal : Qt.Vertical
     }
 
-    Connections {
-        // FIXME: bottomBarVisibilityCommunicator is not the most-suitable name anymore.
-        target: bottomBarVisibilityCommunicator
-        onForceHiddenChanged: {
-            if (bottomBarVisibilityCommunicator.forceHidden) {
-                internal.savedLocked = panel.locked;
-                internal.savedOpened = panel.opened;
-                panel.close();
-                panel.locked = true;
-            } else { // don't force hidden
-                panel.locked = internal.savedLocked;
-                if (panel.locked) {
-                    if (internal.savedOpened) {
-                        panel.open();
-                    } else {
-                        panel.close();
-                    }
-                }
-                // if the panel was locked, do not slide it back in
-                // until the user performs an edge swipe.
-            }
-        }
-    }
-
     /*! \internal */
     onStateChanged: {
         if (state == "hint") {
@@ -470,17 +441,18 @@ Item {
 
     /*!
       \internal
+      \deprecated
       Enable the InverseMouseArea that closes the panel when the user clicks outside of the panel.
       This functionality moved to the Toolbar/Page implementation because the mouse area needs to
       access with the toolbar and header, but this InverseMouseArea is still in the Panel for backwards
       compatibility in apps that use it directly. Default value is true, but it is set to false in Toolbar.
 
-      FIXME: Remove __detectContentsClicks and the IMA below when all apps use Toolbar instead of Panel.
+      FIXME: Remove __closeOnContentsClicks and the IMA below when all apps use Toolbar instead of Panel.
      */
     property bool __closeOnContentsClicks: true
     Toolkit.InverseMouseArea {
         anchors.fill: draggingArea
-        onClicked: {
+        onPressed: {
             mouse.accepted = false;
             // the mouse click may cause an update
             //  of locked by the clicked Item behind
@@ -489,6 +461,16 @@ Item {
         propagateComposedEvents: true
         visible: panel.__closeOnContentsClicks && panel.locked == false && panel.state == "spread"
     }
+
+    /*!
+      \internal
+      \deprecated
+      Enable automatic reveal of panel on mouse hover over hint area, and hide when leaving
+      the panel area. This is disabled by default, because Panel may be used to implement
+      bottom edge behaviors that are completely different from the toolbar, but the property
+      is enabled in Toolbar to make more usable on desktop.
+     */
+    property bool __openOnHover: false
 
     /*!
       The user presses on the opened toolbar, or when the toolbar is closed but
@@ -513,6 +495,7 @@ Item {
         height: internal.orientation === Qt.Horizontal ? panel.opened ? bar.size + units.gu(1) : panel.triggerSize : undefined
         width: internal.orientation === Qt.Vertical ? panel.opened ? bar.size + units.gu(1) : panel.triggerSize : undefined
         visible: !panel.locked || panel.opened
+        hoverEnabled: panel.__openOnHover
 
         property int mousePosition: getMousePosition()
         function getMousePosition() {
@@ -570,6 +553,7 @@ Item {
         property real dragThreshold: units.gu(1)
 
         onPositionChanged: {
+            if (!pressed) return;
             if (panel.locked) return;
             if (panel.state == "hint" && mousePosition < initialPosition - dragThreshold) {
                 internal.previousState = "hint";
@@ -594,6 +578,21 @@ Item {
             if (panel.state == "moving" || panel.state == "hint") {
                 finishMoving();
             } else {
+                hideTimer.conditionalRestart();
+            }
+        }
+
+        onEntered: {
+            // panel.__openOnHover
+            panel.open();
+            hideTimer.stop();
+        }
+
+        onExited: {
+            // panel.__openOnHover
+            // Ensure the panel is not still opening. The draggingArea will
+            // change after the panel finishes the opening animation.
+            if (!animating) {
                 hideTimer.conditionalRestart();
             }
         }
@@ -637,8 +636,6 @@ Item {
         property real size: internal.orientation === Qt.Horizontal ? height : width
         //position will always be in the range 0..size, where position==0 means spread, position==size means hidden.
         property real position: panel.opened ? 0 : size
-
-        onPositionChanged: bottomBarVisibilityCommunicator.position = size - position
 
         y: internal.align === Qt.AlignTop ? -position : internal.align === Qt.AlignBottom ? position : 0
         x: internal.align === Qt.AlignLeft ? -position : internal.align === Qt.AlignRight ? position : 0

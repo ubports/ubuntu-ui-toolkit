@@ -35,7 +35,6 @@
 #include "inversemouseareatype.h"
 #include "qquickclipboard.h"
 #include "qquickmimedata.h"
-#include "bottombarvisibilitycommunicator.h"
 #include "thumbnailgenerator.h"
 #include "ucubuntuanimation.h"
 #include "ucfontutils.h"
@@ -53,9 +52,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdexcept>
-
-// Needed for unit tests
-Q_DECLARE_METATYPE(QList<QQmlError>)
 
 /*
  * Type registration functions.
@@ -178,8 +174,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterSingletonType<UCUriHandler>(uri, 0, 1, "UriHandler", registerUriHandler);
     qmlRegisterType<UCMouse>(uri, 0, 1, "Mouse");
     qmlRegisterType<UCInverseMouse>(uri, 0, 1, "InverseMouse");
-    // Needed for unit tests
-    qRegisterMetaType<QList <QQmlError> >();
     // register QML singletons
     qmlRegisterSingletonType<QObject>(uri, 0, 1, "PickerPanel", registerPickerPanel);
 }
@@ -224,8 +218,6 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
         new ContextPropertyChangeListener(context, "FontUtils");
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      fontUtilsListener, SLOT(updateContextProperty()));
-
-    context->setContextProperty("bottomBarVisibilityCommunicator", &BottomBarVisibilityCommunicator::instance());
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 

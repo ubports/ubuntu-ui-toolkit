@@ -41,7 +41,8 @@ public:
     Q_INVOKABLE QQuickItem *rootItem(QObject *object);
     QString inputMethodProvider() const;
 
-    Q_INVOKABLE QString className(QObject *item);
+    Q_INVOKABLE static QString className(QObject *item);
+    Q_INVOKABLE void moveItemBefore(QQuickItem *item, QQuickItem *before);
     QObject* createQmlObject(const QUrl &url, QQmlEngine *engine);
 
 Q_SIGNALS:
