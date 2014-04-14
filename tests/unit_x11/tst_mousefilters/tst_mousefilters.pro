@@ -29,4 +29,6 @@ OTHER_FILES += \
     ForwardToTransparentMouseArea.qml \
     ForwardDblClickToTransparentMouseArea.qml \
     DoubleClicked.qml \
-    HoverEvent.qml
+    HoverEvent.qml \
+    ForwardComposedEvents.qml \
+    ForwardEventChained.qml

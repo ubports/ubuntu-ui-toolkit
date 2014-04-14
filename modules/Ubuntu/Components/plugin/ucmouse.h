@@ -20,10 +20,49 @@
 
 #include <QtCore/QObject>
 #include <QtQml>
+#include <QtQuick/QQuickItem>
 #include <private/qquickevents_p_p.h>
 #include <QtCore/qbasictimer.h>
 
-class QQuickItem;
+class ForwardedEvent : public QEvent {
+public:
+    enum EventType {
+        Min = QEvent::MaxUser - 10,
+        MousePress = Min,
+        MouseRelease,
+        MouseMove,
+        MouseDblClick,
+        MouseClick,
+        MouseLongPress,
+        HoverEnter,
+        HoverExit,
+        Max = HoverExit
+    };
+    ForwardedEvent(EventType type, QQuickItem *sender, QEvent *originalEvent, QQuickMouseEvent *quickEvent)
+        : QEvent((QEvent::Type)m_eventBase)
+        , m_subType(type)
+        , m_sender(sender)
+        , m_originalEvent(originalEvent)
+        , m_quickEvent(quickEvent)
+    {
+        setAccepted(false);
+    }
+
+    static void registerForwardedEvent();
+
+    EventType subType() const { return m_subType; }
+    QQuickItem *sender() const { return m_sender; }
+    QQuickMouseEvent *quickEvent() const { return m_quickEvent; }
+    QEvent *originalEvent() const { return m_originalEvent; }
+    static QEvent::Type baseType() { return m_eventBase; }
+private:
+    EventType m_subType;
+    QPointer<QQuickItem> m_sender;
+    QEvent *m_originalEvent;
+    QPointer<QQuickMouseEvent> m_quickEvent;
+    static QEvent::Type m_eventBase;
+};
+
 class UCMouse : public QObject
 {
     Q_OBJECT
@@ -62,23 +101,25 @@ Q_SIGNALS:
     void clickAndHoldThresholdChanged();
     void priorityChanged();
 
-    void pressed(QQuickMouseEvent *mouse);
-    void released(QQuickMouseEvent *mouse);
-    void clicked(QQuickMouseEvent *mouse);
-    void pressAndHold(QQuickMouseEvent *mouse);
-    void doubleClicked(QQuickMouseEvent *mouse);
-    void positionChanged(QQuickMouseEvent *mouse);
-    void entered(QQuickMouseEvent *event);
-    void exited(QQuickMouseEvent *event);
+    void pressed(QQuickMouseEvent *mouse, QQuickItem *host);
+    void released(QQuickMouseEvent *mouse, QQuickItem *host);
+    void clicked(QQuickMouseEvent *mouse, QQuickItem *host);
+    void pressAndHold(QQuickMouseEvent *mouse, QQuickItem *host);
+    void doubleClicked(QQuickMouseEvent *mouse, QQuickItem *host);
+    void positionChanged(QQuickMouseEvent *mouse, QQuickItem *host);
+    void entered(QQuickMouseEvent *event, QQuickItem *host);
+    void exited(QQuickMouseEvent *event, QQuickItem *host);
 
 protected:
     virtual bool eventFilter(QObject *, QEvent *);
     virtual void timerEvent(QTimerEvent *event);
     virtual bool mouseEvents(QObject *target, QMouseEvent *event);
     virtual bool hoverEvents(QObject *target, QHoverEvent *event);
+    virtual bool forwardedEvents(ForwardedEvent *event);
     virtual bool hasAttachedFilter(QQuickItem *item);
+    virtual bool contains(const QPointF &mousePos);
 
-    void setHovered(bool hovered);
+    void setHovered(bool hovered, QEvent *hoverEvent);
     bool mousePressed(QMouseEvent *event);
     bool mouseReleased(QMouseEvent *event);
     bool mouseDblClick(QMouseEvent *event);
@@ -91,7 +132,7 @@ protected:
     bool isDoubleClickConnected();
     bool isMouseEvent(QEvent::Type type);
     bool isHoverEvent(QEvent::Type type);
-    void forwardEvent(QEvent *event);
+    bool forwardEvent(ForwardedEvent::EventType type, QEvent *event, QQuickMouseEvent *quickEvent);
 
 protected:
     QQuickItem *m_owner;
@@ -114,5 +155,7 @@ protected:
     bool m_doubleClicked:1;
 };
 QML_DECLARE_TYPEINFO(UCMouse, QML_HAS_ATTACHED_PROPERTIES)
+
+extern const int DefaultPressAndHoldDelay;
 
 #endif // UCMOUSE_H
