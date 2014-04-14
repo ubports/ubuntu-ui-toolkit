@@ -219,6 +219,11 @@ Item {
         name: "TabsAPI"
         when: windowShown
 
+        function init() {
+            // introduce a small delay in front of each test
+            wait(200);
+        }
+
         /*
           The following testcases are all related to bug #1253804
           */

@@ -511,7 +511,11 @@ PageTreeNode {
 
             for (var i = start; i < count; i++) {
                 var tab = get(i).tab;
-                tab.__protected.index = i;
+                if (tab) {
+                    tab.__protected.index = i;
+                } else {
+                    console.warn("Invalid Tab at index", i, get(i).title)
+                }
             }
         }
 
