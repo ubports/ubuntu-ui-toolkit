@@ -41,7 +41,7 @@ protected:
     virtual bool hoverEvents(QObject *target, QHoverEvent *event);
     virtual bool hasAttachedFilter(QQuickItem *item);
     bool pointInOSK(const QPointF &point);
-    bool contains(QMouseEvent *mouse);
+    virtual bool contains(const QPointF &mousePos);
 };
 QML_DECLARE_TYPE(UCInverseMouse)
 QML_DECLARE_TYPEINFO(UCInverseMouse, QML_HAS_ATTACHED_PROPERTIES)
