@@ -1005,7 +1005,7 @@ MainView {
         self._assert_composer_sheet_is_closed()
 
 
-class OptionSelectorCollapsedTestCase(tests.QMLStringAppTestCase):
+class OptionSelectorCustomDelegateTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -1050,7 +1050,7 @@ MainView {
 """)
 
     def setUp(self):
-        super(OptionSelectorCollapsedTestCase, self).setUp()
+        super(OptionSelectorCustomDelegateTestCase, self).setUp()
         self.option_selector = self.main_view.select_single(
             emulators.OptionSelector,
             objectName="test_option_selector_collapsed")
@@ -1098,4 +1098,86 @@ MainView {
         self.option_selector.select_option(text="Value 3")
         self.assertEqual(
             self.option_selector.get_selected_text(), "Value 3")
+        self.assertEqual(2, self.option_selector.selectedIndex)
+
+
+class OptionSelectorTestCase(tests.QMLStringAppTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Column {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        spacing: units.gu(3)
+
+            OptionSelector {
+                objectName: "option_selector"
+                text: i18n.tr("option_selector")
+                expanded: true
+                model: [i18n.tr("Red"),
+                        i18n.tr("Blue"),
+                        i18n.tr("Green"),
+                        i18n.tr("Yellow"),
+                        i18n.tr("Black")]
+            }
+   }
+}
+""")
+
+    def setUp(self):
+        super(OptionSelectorTestCase, self).setUp()
+        self.option_selector = self.main_view.select_single(
+            emulators.OptionSelector,
+            objectName="option_selector")
+
+    def test_get_option_count(self):
+        """get_option_count() must return number of options"""
+        self.assertEqual(self.option_selector.get_option_count(), 5)
+
+    def test_expand(self):
+        """expand() must expand a collapsed option elector"""
+        self.assertFalse(self.option_selector.currentlyExpanded)
+        self.option_selector._expand()
+        self.assertTrue(self.option_selector.currentlyExpanded)
+
+    def test_negative_select_text(self):
+        """select_text() must raise a ValueError if text does not exist"""
+        error = self.assertRaises(
+            emulators.ToolkitEmulatorException,
+            lambda: self.option_selector.select_option('Label',
+                                                       text="this should fail")
+        )
+        self.assertEqual(
+            error.message,
+            "OptionSelectorDelegate with kwargs {'text': 'this should fail'}"
+            " not found"
+        )
+
+    def test_select_option(self):
+        """select_text() must select the text in the OptionSelector"""
+        self.option_selector.select_option('Label', text="Green")
+        self.assertEqual(2, self.option_selector.selectedIndex)
+
+    def test_get_selected_text(self):
+        """get_selected_text() must return the text selected item"""
+        self.option_selector.select_option('Label', text="Blue")
+        self.assertEqual(1, self.option_selector.selectedIndex)
+        self.assertEqual(
+            self.option_selector.get_selected_text(), "Blue")
+
+    def test_same_item_2_times(self):
+        """Emulator must be able to select 2 items in a row"""
+        self.option_selector.select_option('Label', text="Green")
+        self.assertEqual(
+            self.option_selector.get_selected_text(), "Green")
+        self.assertEqual(2, self.option_selector.selectedIndex)
+        self.option_selector.select_option('Label', text="Green")
+        self.assertEqual(
+            self.option_selector.get_selected_text(), "Green")
         self.assertEqual(2, self.option_selector.selectedIndex)

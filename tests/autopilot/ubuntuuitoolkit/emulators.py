@@ -466,19 +466,6 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
         self.list_view = self.select_single("QQuickListView")
         return self.list_view.currentIndex
 
-    def _expand(self):
-        """Expand an optionselector if it's collapsed"""
-        # if just collapsed it can think that the item is expanded
-        #  https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1240288
-        sleep(1)
-        if not self.expanded and not self.currentlyExpanded:
-            self.pointing_device.click_object(self)
-            self.currentlyExpanded.wait_for(True)
-            # selecting the same item too quickly after expand
-            # causes the wrong item to be selected
-            # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1231939
-            sleep(1)
-
     def get_selected_text(self):
         """gets the text of the currently selected item"""
         option_selector_delegate = self.select_single(
@@ -487,26 +474,63 @@ class OptionSelector(UbuntuUIToolkitEmulatorBase):
             'Label', visible='True')
         return current_label.text
 
-    def select_option(self, **kwargs):
+    def get_current_label(self):
+        """gets the text of the currently selected item"""
+        option_selector_delegate = self.select_single(
+            'OptionSelectorDelegate', focus='True')
+        current_label = option_selector_delegate.select_single(
+            'Label', visible='True')
+        return current_label
+
+    def _expand(self):
+        """Expand an optionselector if it's collapsed"""
+        # if just collapsed it can think that the item is expanded
+        #  https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1240288
+        sleep(1)
+        if not self.expanded and not self.currentlyExpanded:
+            self.pointing_device.click_object(self.get_current_label())
+            self.currentlyExpanded.wait_for(True)
+            # selecting the same item too quickly after expand
+            # causes the wrong item to be selected
+            # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1231939
+            sleep(1)
+
+    def select_option(self, *args, **kwargs):
         """Select delegate in option selector
 
         Example usage::
             select_option(objectName="myOptionSelectorDelegate")
+            select_option('Label', text="some_text_here")
 
         :parameter kwargs: keywords used to find property(s) of delegate in
             option selector
 
         """
-        try:
-            select_object = self.select_single(
-                'OptionSelectorDelegate',
-                **kwargs
-            )
-        except dbus.StateNotFoundError:
-            raise ToolkitEmulatorException(
-                'OptionSelectorDelegate with kwargs {} not found'.format(
-                    kwargs)
-            )
+
+        if args:
+            try:
+                select_object = self.select_single(
+                    *args,
+                    **kwargs
+                )
+            except dbus.StateNotFoundError:
+                raise ToolkitEmulatorException(
+                    'OptionSelectorDelegate args {} and {} not'
+                    'found'.format(args, kwargs)
+                )
+
+        else:
+            try:
+                select_object = self.select_single(
+                    'OptionSelectorDelegate',
+                    **kwargs
+                )
+            except dbus.StateNotFoundError:
+                raise ToolkitEmulatorException(
+                    'OptionSelectorDelegate kargs {} not found'.format(
+                        args, kwargs)
+                )
+
         self._expand()
         self.pointing_device.click_object(select_object)
 
