@@ -50,30 +50,22 @@ public:
     tst_mouseFilterTest() {}
 
 private:
+    struct FilterParams {
+        QString handler;
+        Qt::MouseButton pressedButton;
+        Qt::MouseButtons pressedButtons;
+        QQuickItem *sender;
+    };
+
     QString m_modulePath;
-    QString eventHandler;
-    Qt::MouseButton pressedButton;
-    Qt::MouseButtons pressedButtons;
-    QQuickItem *eventSender;
+    FilterParams mouseEventParams;
+    FilterParams mouseEvent2Params;
+    FilterParams mouseEvent3Params;
 
-    QQuickView * loadTest(const QString &file, QSignalSpy **spy = 0)
+    QQuickView * loadTest(const QString &file)
     {
-        QQuickView *view = new QQuickView;
-        if (spy) {
-            *spy = new QSignalSpy(view->engine(), SIGNAL(warnings(QList<QQmlError>)));
-            (*spy)->setParent(view);
-        }
-        view->engine()->addImportPath(m_modulePath);
-
-        view->setSource(QUrl::fromLocalFile(file));
-        if (!view->rootObject()) {
-            delete view;
-            view = 0;
-        } else {
-            view->show();
-            QTest::qWaitForWindowExposed(view);
-        }
-        return view;
+        UbuntuTestCase* testCase = new UbuntuTestCase(file);
+        return qobject_cast<QQuickView*>(testCase);
     }
 
     void mousePressAndHold(QWindow *view, Qt::MouseButton button, Qt::KeyboardModifiers modifiers, const QPoint &point, int delay = DefaultPressAndHoldDelay + 200)
@@ -98,21 +90,26 @@ private:
     }
 
 protected Q_SLOTS:
-    void onMouseEvent(QQuickMouseEvent *event, QQuickItem*)
+    void onMouseEvent(QQuickMouseEvent *event, QQuickItem *sender)
     {
-        eventHandler = "EVENT1";
-        pressedButton = (Qt::MouseButton)event->button();
-        pressedButtons = (Qt::MouseButtons)event->buttons();
+        mouseEventParams.handler = "EVENT1";
+        mouseEventParams.sender = sender;
+        mouseEventParams.pressedButton = (Qt::MouseButton)event->button();
+        mouseEventParams.pressedButtons = (Qt::MouseButtons)event->buttons();
     }
-    void onMouseEvent2(QQuickMouseEvent *event, QQuickItem*)
+    void onMouseEvent2(QQuickMouseEvent *event, QQuickItem *sender)
     {
-        eventHandler = "EVENT2";
-        pressedButton = (Qt::MouseButton)event->button();
-        pressedButtons = (Qt::MouseButtons)event->buttons();
+        mouseEvent2Params.handler = "EVENT2";
+        mouseEvent2Params.sender = sender;
+        mouseEvent2Params.pressedButton = (Qt::MouseButton)event->button();
+        mouseEvent2Params.pressedButtons = (Qt::MouseButtons)event->buttons();
     }
-    void testSender(QQuickMouseEvent *, QQuickItem *sender)
+    void onMouseEvent3(QQuickMouseEvent *event, QQuickItem *sender)
     {
-        eventSender = sender;
+        mouseEvent3Params.handler = "EVENT4";
+        mouseEvent3Params.sender = sender;
+        mouseEvent3Params.pressedButton = (Qt::MouseButton)event->button();
+        mouseEvent3Params.pressedButtons = (Qt::MouseButtons)event->buttons();
     }
 
 private Q_SLOTS:
@@ -218,10 +215,8 @@ private Q_SLOTS:
 
     void testCase_pressedOutsideTextInputAfter()
     {
-        QSignalSpy *spy;
-        QScopedPointer<QQuickView> view(loadTest("FilterInverseTextInputAfter.qml", &spy));
-        QVERIFY(view);
-        QCOMPARE(spy->count(), 1);
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("FilterInverseTextInputAfter.qml"));
+        QCOMPARE(view->warnings(), 1);
         UCInverseMouse *filter = attachedFilter<UCInverseMouse>(view->rootObject(), "FilterOwner");
         QVERIFY(filter);
         QSignalSpy pressed(filter, SIGNAL(pressed(QQuickMouseEvent*, QQuickItem*)));
@@ -569,18 +564,14 @@ private Q_SLOTS:
 
     void testCase_mouseFilterAttachedToNonItem()
     {
-        QSignalSpy *warningSpy;
-        QScopedPointer<QQuickView> view(loadTest("MouseFilterAttachedToNonItem.qml", &warningSpy));
-        QVERIFY(view);
-        QCOMPARE(warningSpy->count(), 1);
+        QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("MouseFilterAttachedToNonItem.qml"));
+        QCOMPARE(testCase->warnings(), 1);
     }
 
     void testCase_inverseMouseFilterAttachedToNonItem()
     {
-        QSignalSpy *warningSpy;
-        QScopedPointer<QQuickView> view(loadTest("InverseMouseFilterAttachedToNonItem.qml", &warningSpy));
-        QVERIFY(view);
-        QCOMPARE(warningSpy->count(), 1);
+        QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("InverseMouseFilterAttachedToNonItem.qml"));
+        QCOMPARE(testCase->warnings(), 1);
     }
 
     void testCase_forwardedEventsToItem()
@@ -918,22 +909,22 @@ private Q_SLOTS:
         QTest::waitForEvents();
         QCOMPARE(entered.count(), 1);
         // when entered(), buttons are the same as when pressed
-        QCOMPARE(eventHandler, QString("EVENT1"));
-        QCOMPARE(pressedButton, Qt::LeftButton);
+        QCOMPARE(mouseEventParams.handler, QString("EVENT1"));
+        QCOMPARE(mouseEventParams.pressedButton, Qt::LeftButton);
 
         QTest::mouseMove(view.data(), guPoint(15, 5));
         QTest::mouseMove(view.data(), guPoint(25, 5));
         QTest::waitForEvents();
-        QCOMPARE(eventHandler, QString("EVENT2"));
-        QCOMPARE(pressedButton, Qt::LeftButton);
+        QCOMPARE(mouseEvent2Params.handler, QString("EVENT2"));
+        QCOMPARE(mouseEvent2Params.pressedButton, Qt::LeftButton);
 
         QTest::mouseRelease(view.data(), Qt::LeftButton, 0, guPoint(35, 5));
         QTest::waitForEvents();
         QCOMPARE(exited.count(), 1);
         // when entered(), button is the same when pressed, however buttons
         // does no longer contains the button pressed
-        QCOMPARE(eventHandler, QString("EVENT1"));
-        QCOMPARE(pressedButton, Qt::LeftButton);
+        QCOMPARE(mouseEventParams.handler, QString("EVENT1"));
+        QCOMPARE(mouseEventParams.pressedButton, Qt::LeftButton);
 
         // we have 2 moves, but we get 3 position changes, as the release point differs from the last moved point
         QCOMPARE(positionChanged.count(), 3);
@@ -961,23 +952,23 @@ private Q_SLOTS:
         }
         // Note: as button was pressed outside the filtered area, no button will be reported
         // by the mouse move.
-        QCOMPARE(eventHandler, QString("EVENT1"));
-        QCOMPARE(pressedButton, Qt::NoButton);
-        QCOMPARE(pressedButtons, Qt::NoButton);
+        QCOMPARE(mouseEventParams.handler, QString("EVENT1"));
+        QCOMPARE(mouseEventParams.pressedButton, Qt::NoButton);
+        QCOMPARE(mouseEventParams.pressedButtons, Qt::NoButton);
         // continue to move mouse while exited() triggers
         while (++i < view->rootObject()->height()) {
             QTest::mouseMove(view.data(), QPoint(x, i));
             if (exited.count() >= 1) {
                 break;
             }
-            QCOMPARE(eventHandler, QString("EVENT2"));
-            QCOMPARE(pressedButton, Qt::NoButton);
-            QCOMPARE(pressedButtons, Qt::NoButton);
+            QCOMPARE(mouseEvent2Params.handler, QString("EVENT2"));
+            QCOMPARE(mouseEvent2Params.pressedButton, Qt::NoButton);
+            QCOMPARE(mouseEvent2Params.pressedButtons, Qt::NoButton);
         }
         // test if we really exited
-        QCOMPARE(eventHandler, QString("EVENT1"));
-        QCOMPARE(pressedButton, Qt::NoButton);
-        QCOMPARE(pressedButtons, Qt::NoButton);
+        QCOMPARE(mouseEventParams.handler, QString("EVENT1"));
+        QCOMPARE(mouseEventParams.pressedButton, Qt::NoButton);
+        QCOMPARE(mouseEventParams.pressedButtons, Qt::NoButton);
 
         // cleanup
         QTest::mouseRelease(view.data(), Qt::LeftButton, 0, QPoint(x, i));
@@ -1002,23 +993,23 @@ private Q_SLOTS:
         for (i = 0; (i < view->rootObject()->height()) && (entered.count() < 1); i++) {
             QTest::mouseMove(view.data(), QPoint(x, i));
         }
-        QCOMPARE(eventHandler, QString("EVENT1"));
-        QCOMPARE(pressedButton, Qt::NoButton);
-        QCOMPARE(pressedButtons, Qt::NoButton);
+        QCOMPARE(mouseEventParams.handler, QString("EVENT1"));
+        QCOMPARE(mouseEventParams.pressedButton, Qt::NoButton);
+        QCOMPARE(mouseEventParams.pressedButtons, Qt::NoButton);
         // continue to move mouse while exited() triggers
         while (++i < view->rootObject()->height()) {
             QTest::mouseMove(view.data(), QPoint(x, i));
             if (exited.count() >= 1) {
                 break;
             }
-            QCOMPARE(eventHandler, QString("EVENT2"));
-            QCOMPARE(pressedButton, Qt::NoButton);
-            QCOMPARE(pressedButtons, Qt::NoButton);
+            QCOMPARE(mouseEvent2Params.handler, QString("EVENT2"));
+            QCOMPARE(mouseEvent2Params.pressedButton, Qt::NoButton);
+            QCOMPARE(mouseEvent2Params.pressedButtons, Qt::NoButton);
         }
         // test if we really exited
-        QCOMPARE(eventHandler, QString("EVENT1"));
-        QCOMPARE(pressedButton, Qt::NoButton);
-        QCOMPARE(pressedButtons, Qt::NoButton);
+        QCOMPARE(mouseEventParams.handler, QString("EVENT1"));
+        QCOMPARE(mouseEventParams.pressedButton, Qt::NoButton);
+        QCOMPARE(mouseEventParams.pressedButtons, Qt::NoButton);
     }
 
     void testCase_forwardComposedEventsToProxy()
@@ -1089,11 +1080,19 @@ private Q_SLOTS:
         QSignalSpy proxy1Pressed(proxy1, SIGNAL(pressed(QQuickMouseEvent*, QQuickItem*)));
         QSignalSpy proxy2Pressed(proxy2, SIGNAL(pressed(QQuickMouseEvent*, QQuickItem*)));
 
+        QObject::connect(host, SIGNAL(pressed(QQuickMouseEvent*,QQuickItem*)), this, SLOT(onMouseEvent(QQuickMouseEvent*,QQuickItem*)));
+        QObject::connect(proxy1, SIGNAL(pressed(QQuickMouseEvent*,QQuickItem*)), this, SLOT(onMouseEvent2(QQuickMouseEvent*,QQuickItem*)));
+        QObject::connect(proxy2, SIGNAL(pressed(QQuickMouseEvent*,QQuickItem*)), this, SLOT(onMouseEvent3(QQuickMouseEvent*,QQuickItem*)));
+
         QTest::mousePress(test.data(), Qt::LeftButton, 0, guPoint(20, 30));
         QTest::waitForEvents();
         QCOMPARE(hostPressed.count(), 1);
-        QCOMPARE(proxy1Pressed.count(), 0);
+        QCOMPARE(proxy1Pressed.count(), 1);
         QCOMPARE(proxy2Pressed.count(), 1);
+
+        QCOMPARE(mouseEventParams.sender, qobject_cast<QQuickItem*>(host->parent()));
+        QCOMPARE(mouseEvent2Params.sender, qobject_cast<QQuickItem*>(host->parent()));
+        QCOMPARE(mouseEvent3Params.sender, qobject_cast<QQuickItem*>(proxy1->parent()));
 
         // click
         QTest::mouseRelease(test.data(), Qt::LeftButton, 0, guPoint(20, 30));

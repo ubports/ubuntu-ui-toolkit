@@ -470,35 +470,33 @@ bool UCMouse::hoverEvents(QObject *target, QHoverEvent *event)
 bool UCMouse::forwardedEvents(ForwardedEvent *event)
 {
     // the quick event is always specified!
-    if (contains(QPointF(event->quickEvent()->x(), event->quickEvent()->y()))) {
-        switch (event->subType()) {
-        case ForwardedEvent::MousePress: {
-            Q_EMIT pressed(event->quickEvent(), event->sender());
-        } break;
-        case ForwardedEvent::MouseRelease: {
-            Q_EMIT released(event->quickEvent(), event->sender());
-        } break;
-        case ForwardedEvent::MouseMove: {
-            Q_EMIT positionChanged(event->quickEvent(), event->sender());
-        } break;
-        case ForwardedEvent::MouseDblClick: {
-            Q_EMIT doubleClicked(event->quickEvent(), event->sender());
-        } break;
-        case ForwardedEvent::HoverEnter: {
-            Q_EMIT entered(event->quickEvent(), event->sender());
-        } break;
-        case ForwardedEvent::HoverExit: {
-            Q_EMIT exited(event->quickEvent(), event->sender());
-        } break;
-            // composed events
-        case ForwardedEvent::MouseClick: {
-            Q_EMIT clicked(event->quickEvent(), event->sender());
-        } break;
-        case ForwardedEvent::MouseLongPress: {
-            Q_EMIT pressAndHold(event->quickEvent(), event->sender());
-        } break;
-        default: break;
-        }
+    switch (event->subType()) {
+    case ForwardedEvent::MousePress: {
+        Q_EMIT pressed(event->quickEvent(), event->sender());
+    } break;
+    case ForwardedEvent::MouseRelease: {
+        Q_EMIT released(event->quickEvent(), event->sender());
+    } break;
+    case ForwardedEvent::MouseMove: {
+        Q_EMIT positionChanged(event->quickEvent(), event->sender());
+    } break;
+    case ForwardedEvent::MouseDblClick: {
+        Q_EMIT doubleClicked(event->quickEvent(), event->sender());
+    } break;
+    case ForwardedEvent::HoverEnter: {
+        Q_EMIT entered(event->quickEvent(), event->sender());
+    } break;
+    case ForwardedEvent::HoverExit: {
+        Q_EMIT exited(event->quickEvent(), event->sender());
+    } break;
+        // composed events
+    case ForwardedEvent::MouseClick: {
+        Q_EMIT clicked(event->quickEvent(), event->sender());
+    } break;
+    case ForwardedEvent::MouseLongPress: {
+        Q_EMIT pressAndHold(event->quickEvent(), event->sender());
+    } break;
+    default: break;
     }
 
     // forward event, but use the current owner as sender

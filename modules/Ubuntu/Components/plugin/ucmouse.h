@@ -27,16 +27,14 @@
 class ForwardedEvent : public QEvent {
 public:
     enum EventType {
-        Min = QEvent::MaxUser - 10,
-        MousePress = Min,
+        MousePress,
         MouseRelease,
         MouseMove,
         MouseDblClick,
-        MouseClick,
-        MouseLongPress,
         HoverEnter,
         HoverExit,
-        Max = HoverExit
+        MouseClick,
+        MouseLongPress,
     };
     ForwardedEvent(EventType type, QQuickItem *sender, QEvent *originalEvent, QQuickMouseEvent *quickEvent)
         : QEvent((QEvent::Type)m_eventBase)
@@ -148,6 +146,7 @@ protected:
     Priority m_priority;
     int m_moveThreshold;
 
+    bool m_signalWhenContains:1;
     bool m_enabled: 1;
     bool m_moved:1;
     bool m_longPress:1;
