@@ -307,12 +307,6 @@ Item {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
         // trigger pressAndHold
-        onReleased: {
-            activateInput();
-            input.cursorPosition = pressedPosition = mousePosition(mouse);
-            inputHandler.pressAndHold(input.cursorPosition);
-            // move into inactive state to keep selection
-            state = "inactive"
-        }
+        onReleased: openContextMenu(mouse)
     }
 }

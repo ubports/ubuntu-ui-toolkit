@@ -721,7 +721,7 @@ Item {
             verify(longText.selectedText === "", "There is still selected text");
         }
 
-        function test_rightclick_does_not_open_popover_when_not_focused() {
+        function test_rightclick_opens_popover_when_not_focused() {
             var handler = findChild(longText, "input_handler");
             var x = longText.width / 2;
             var y = longText.height / 2;
