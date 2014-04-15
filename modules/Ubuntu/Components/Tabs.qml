@@ -473,8 +473,6 @@ PageTreeNode {
                 var tab = tabsList[i];
                 if (internal.isTab(tab)) {
                     tabIndex = i - offset;
-                    // make sure we have the right parent
-//                    tab.parent = tabs;
 
                     if (!tab.__protected.inserted) {
                         tab.__protected.index = tabIndex;
@@ -511,6 +509,8 @@ PageTreeNode {
 
             for (var i = start; i < count; i++) {
                 var tab = get(i).tab;
+                // FIXME: wait 1 miliseconds to get the model updated properly. This small delay
+                // is needed for arm64 unit tests, as the move() seems to update the model asynchronously.
                 if (!tab) wait(1);
                 tab = get(i).tab;
                 if (tab) {
