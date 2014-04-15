@@ -77,7 +77,9 @@ StyledItem {
       The text to display in the header
      */
     property string title: ""
-    onTitleChanged: contentsChanged()
+    onTitleChanged: {
+        header.show();
+    }
 
     /*!
       \deprecated
