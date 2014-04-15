@@ -509,9 +509,9 @@ PageTreeNode {
 
             for (var i = start; i < count; i++) {
                 var tab = get(i).tab;
-                // FIXME: wait 1 miliseconds to get the model updated properly. This small delay
+                // FIXME: introduce an idle timer to get the model updated properly. This small delay
                 // is needed for arm64 unit tests, as the move() seems to update the model asynchronously.
-                // bug #1308086
+                // fixes bug #1308086
                 if (!tab) wait(0);
                 tab = get(i).tab;
 
