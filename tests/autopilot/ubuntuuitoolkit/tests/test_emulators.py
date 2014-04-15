@@ -242,55 +242,65 @@ MainView {
             'Toolbar must be opened before calling click_button().')
 
 
-class TabsTestCase(tests.QMLStringAppTestCase):
-
-    test_qml = ("""
+TEST_TABS_QML_FORMAT = ("""
 import QtQuick 2.0
 import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItem
 
-MainView {
+MainView {{
     width: units.gu(70)
     height: units.gu(60)
+    useDeprecatedToolbar: {use_deprecated_toolbar}
 
-    Tabs {
+    Tabs {{
         id: tabs
-        Tab {
+        Tab {{
             objectName: "tab1"
             title: "Tab1"
-            Page {
-                tools: ToolbarItems {
-                    ToolbarButton {
+            Page {{
+                tools: ToolbarItems {{
+                    ToolbarButton {{
                         text: "Test1"
-                    }
-                }
-            }
-        }
-        Tab {
+                    }}
+                }}
+            }}
+        }}
+        Tab {{
             objectName: "tab2"
             title: "Tab2"
-            Page {
-                tools: ToolbarItems {
-                    ToolbarButton {
+            Page {{
+                tools: ToolbarItems {{
+                    ToolbarButton {{
                         text: "Test2"
-                    }
-                }
-            }
-        }
-        Tab {
+                    }}
+                }}
+            }}
+        }}
+        Tab {{
             objectName: "tab3"
             title: "Tab3"
-            Page {
-                tools: ToolbarItems {
-                    ToolbarButton {
+            Page {{
+                tools: ToolbarItems {{
+                    ToolbarButton {{
                         text: "Test3"
-                    }
-                }
-            }
-        }
-    }
-}
+                    }}
+                }}
+            }}
+        }}
+    }}
+}}
 """)
+
+
+class TabsTestCase(tests.QMLStringAppTestCase):
+
+    scenarios = [
+        ('deprecated tabs', dict(
+            test_qml=TEST_TABS_QML_FORMAT.format(
+                use_deprecated_toolbar='true'))),
+        ('drawer tabs', dict(
+            test_qml=TEST_TABS_QML_FORMAT.format(
+                use_deprecated_toolbar='false')))
+    ]
 
     def test_tabs_custom_emulator(self):
         self.assertIsInstance(self.main_view.get_tabs(), emulators.Tabs)

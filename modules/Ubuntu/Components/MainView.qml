@@ -383,6 +383,8 @@ PageTreeNode {
                         window.title = headerItem.title
                 }
             }
+
+            useDeprecatedToolbar: mainView.useDeprecatedToolbar
         }
 
         Connections {
@@ -448,6 +450,12 @@ PageTreeNode {
           It will be used by the active \l Page to set the toolbar actions.
          */
         property Toolbar toolbar: toolbarLoader.item
+
+        /*!
+          \internal
+          Tabs needs to know whether to use a TabBar or the new header.
+         */
+        property alias useDeprecatedToolbar: mainView.useDeprecatedToolbar
 
         /*!
           \internal

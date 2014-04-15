@@ -22,6 +22,7 @@ MainView {
     id: root
     width: 800
     height: 600
+    useDeprecatedToolbar: false
 
     property var repeaterModel: 3
 
