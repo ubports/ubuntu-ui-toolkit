@@ -511,8 +511,10 @@ PageTreeNode {
                 var tab = get(i).tab;
                 // FIXME: wait 1 miliseconds to get the model updated properly. This small delay
                 // is needed for arm64 unit tests, as the move() seems to update the model asynchronously.
-                if (!tab) wait(1);
+                // bug #1308086
+                if (!tab) wait(0);
                 tab = get(i).tab;
+
                 if (tab) {
                     tab.__protected.index = i;
                 } else {
