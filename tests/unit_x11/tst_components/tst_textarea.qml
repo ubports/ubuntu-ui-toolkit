@@ -562,7 +562,6 @@ Item {
             flickSpy.target = findChild(longText, "textarea_scroller");
             flickSpy.clear();
 
-            print("A"); wait(3000)
             // select text
             compare(handler.state, "", "The input is not in default state before selection");
             flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
@@ -573,7 +572,6 @@ Item {
             flick(longText, x, y, 0, -units.gu(2));
             flickSpy.wait();
             compare(handler.state, "", "The input has not returned to default state.");
-            print("B"); wait(3000)
         }
 
         SignalSpy {
