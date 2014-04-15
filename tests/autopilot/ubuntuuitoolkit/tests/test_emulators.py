@@ -1153,7 +1153,7 @@ MainView {
         self.assertEqual(
             "OptionSelectorDelegate with kwargs {'text': 'this should fail'}"
             " not found",
-            error.message
+            str(error)
         )
 
     def test_select_option(self):
@@ -1230,7 +1230,7 @@ MainView {
         self.assertEqual(
             "OptionSelectorDelegate with args ('Label',) and kwargs {'text': "
             "'this should fail'} not found",
-            error.message
+            str(error)
         )
 
     def test_select_option(self):
