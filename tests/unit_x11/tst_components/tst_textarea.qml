@@ -697,11 +697,11 @@ Item {
             compare(handler.state, "", "The input is not in default state before long press");
             flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
             compare(handler.state, "", "The input has not returned to default state.");
-            verify(longText.selectedText !== "");
+            verify(longText.selectedText !== "", "There is no selected text");
 
             // click on selection
             mouseClick(longText, units.gu(4), y);
-            verify(longText.selectedText === "");
+            verify(longText.selectedText === "", "There is still selected text");
         }
 
         function test_clear_selection_by_click_beside_selection() {
@@ -713,13 +713,13 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
+            flick(longText, 0, y, units.gu(8), units.gu(4), handler.selectionModeTimeout + 50);
             compare(handler.state, "", "The input has not returned to default state.");
-            verify(longText.selectedText !== "");
+            verify(longText.selectedText !== "", "There is no text selected");
 
             // click on selection
             mouseClick(longText, units.gu(10), y);
-            verify(longText.selectedText === "");
+            verify(longText.selectedText === "", "There is still selected text");
         }
     }
 }
