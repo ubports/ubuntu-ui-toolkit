@@ -842,6 +842,7 @@ ActionItem {
         anchors.fill: parent
         // us it only when there is space between the frame and input
         enabled: internal.spacing > 0
+        preventStealing: false
         // forward mouse events to input so we can handle those uniformly
         Ubuntu.Mouse.forwardTo: [inputHandler]
     }
@@ -983,7 +984,7 @@ ActionItem {
         topMargin: internal.spacing
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
-        // workaround for controlled flicking
+        // need to forward events as events occurred on topMargin area are not grabbed by the MouseArea.
         Ubuntu.Mouse.forwardTo: [inputHandler]
 
         clip: true

@@ -742,7 +742,6 @@ StyledItem {
         enabled: internal.frameSpacing > 0
         // activate input when pressed on the frame
         preventStealing: false
-//        onPressed: inputHandler.activateInput()
         Ubuntu.Mouse.forwardTo: [inputHandler]
     }
 
@@ -902,10 +901,6 @@ StyledItem {
         contentHeight: editor.paintedHeight
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
-
-        // forward mouse events to InputHandler
-//        Ubuntu.Mouse.forwardTo: [inputHandler]
-        Ubuntu.Mouse.onPressed: print("HPRESED")
 
         // editor
         // Images are not shown when text contains <img> tags

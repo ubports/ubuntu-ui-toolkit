@@ -123,7 +123,6 @@ TestCase {
 
         mousePress(item, x, y, button, modifiers, delay);
         if (pressTimeout !== undefined && pressTimeout > 0) {
-            print("PRESSANDHOLD WAIT", pressTimeout)
             wait(pressTimeout);
         }
         mouseMove(item, x, y, button, modifiers, delay);

@@ -220,7 +220,6 @@ Item {
             }
         }
     ]
-//    onStateChanged: print("state", state)
 
     // brings the state back to default when the component looses focuse
     Connections {
@@ -261,7 +260,6 @@ Item {
 
     // Mouse handling
     Ubuntu.Mouse.forwardTo: [main]
-//    Ubuntu.Mouse.clickAndHoldThreshold: units.gu(2)
     Ubuntu.Mouse.onPressed: {
         if (input.activeFocus) {
             // start selection timeout
@@ -302,14 +300,6 @@ Item {
             state = "selection";
         }
     }
-    Ubuntu.Mouse.onPressAndHold: openContextMenu(mouse);
-//    Ubuntu.Mouse.onPressAndHold: {
-//        if ((state === "select") && mouseInSelection(mouse)) {
-//            // trigger clipboard popover
-//            pressAndHold(input.cursorPosition);
-//            // get out of the select mode, otherwise we mey change the selection by dragging the mouse while pressed
-//            state = "inactive";
-//        }
-//    }
+    Ubuntu.Mouse.onPressAndHold: openContextMenu(mouse)
 
 }
