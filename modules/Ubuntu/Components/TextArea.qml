@@ -740,7 +740,8 @@ StyledItem {
     MouseArea {
         anchors.fill: parent
         enabled: internal.frameSpacing > 0
-        // forward mouse events to input
+        // activate input when pressed on the frame
+        preventStealing: false
         Ubuntu.Mouse.forwardTo: [inputHandler]
     }
 
@@ -905,6 +906,7 @@ StyledItem {
         // Images are not shown when text contains <img> tags
         // bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27071
         TextEdit {
+            objectName: "textarea_input"
             readOnly: false
             id: editor
             focus: true
@@ -913,6 +915,7 @@ StyledItem {
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectWords
             selectByMouse: false
+            activeFocusOnPress: false
             cursorDelegate: cursor
             color: control.__styleInstance.color
             selectedTextColor: Theme.palette.selected.foregroundText

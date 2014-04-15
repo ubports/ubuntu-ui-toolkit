@@ -127,6 +127,21 @@ Item {
         }
         return p;
     }
+    // focuses the input if not yet focused, and shows the context menu
+    function openContextMenu(mouse) {
+        var pos = mousePosition(mouse);
+        if (!main.focus || !mouseInSelection(mouse)) {
+            activateInput();
+            input.cursorPosition = pressedPosition = mousePosition(mouse);
+        }
+        // open context menu at the cursor position
+        inputHandler.pressAndHold(input.cursorPosition);
+        // if opened with left press (touch falls into this criteria as well), we need to set state to inactive
+        // so the mouse moves won't result in selected text loss/change
+        if (mouse.button === Qt.LeftButton) {
+            state = "inactive";
+        }
+    }
 
     // disables interactive Flickable parents, stops at the first non-interactive flickable.
     function toggleFlickablesInteractive(turnOn) {
@@ -245,7 +260,6 @@ Item {
 
     // Mouse handling
     Ubuntu.Mouse.forwardTo: [main]
-    Ubuntu.Mouse.clickAndHoldThreshold: units.gu(2)
     Ubuntu.Mouse.onPressed: {
         if (input.activeFocus) {
             // start selection timeout
@@ -286,14 +300,7 @@ Item {
             state = "selection";
         }
     }
-    Ubuntu.Mouse.onPressAndHold: {
-        if ((state === "select") && mouseInSelection(mouse)) {
-            // trigger clipboard popover
-            pressAndHold(input.cursorPosition);
-            // get out of the select mode, otherwise we mey change the selection by dragging the mouse while pressed
-            state = "inactive";
-        }
-    }
+    Ubuntu.Mouse.onPressAndHold: openContextMenu(mouse)
 
     // right button handling
     MouseArea {

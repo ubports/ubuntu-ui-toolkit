@@ -514,7 +514,7 @@ Item {
             compare(flickSpy.count, 0, "The input had scrolled while inactive");
         }
 
-        function test_scrolling_when_focused() {
+        function test_scroll_when_focused() {
             longText.focus = true;
             var handler = findChild(longText, "input_handler");
             verify(handler);
@@ -535,11 +535,11 @@ Item {
             longText.focus = true;
             var handler = findChild(longText, "input_handler");
             verify(handler);
-            var dy = longText.height / 4;
+            var dx = longText.width / 4;
             var x = units.gu(5);
             var y = longText.height / 2;
             compare(handler.state, "", "The input is not in default state before selection");
-            flick(longText, x, y, 0, 2*dy, handler.selectionModeTimeout + 50);
+            flick(longText, x, y, 2*dx, 0, handler.selectionModeTimeout + 50, 10);
             verify(longText.selectedText !== "");
             compare(handler.state, "", "The input has not returned to default state.");
         }
@@ -562,6 +562,7 @@ Item {
             flickSpy.target = findChild(longText, "textarea_scroller");
             flickSpy.clear();
 
+            print("A"); wait(3000)
             // select text
             compare(handler.state, "", "The input is not in default state before selection");
             flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
@@ -572,29 +573,60 @@ Item {
             flick(longText, x, y, 0, -units.gu(2));
             flickSpy.wait();
             compare(handler.state, "", "The input has not returned to default state.");
-        }
-
-        function test_press_and_hold_moves_cursor_position() {
-            longText.focus = true;
-            var handler = findChild(longText, "input_handler");
-            var y = longText.height / 2;
-            flickSpy.target = findChild(longText, "textarea_scroller");
-            flickSpy.clear();
-
-            // long press
-            compare(handler.state, "", "The input is not in default state before long press");
-            mouseLongPress(longText, units.gu(8), y);
-            verify(longText.cursorPosition != 0);
-            compare(handler.state, "select", "The input is not in selection state");
-
-            // cleanup, release the mouse, that should bring the handler back to defautl state
-            mouseRelease(longText, units.gu(2), y);
-            compare(handler.state, "", "The input has not returned to default state.");
+            print("B"); wait(3000)
         }
 
         SignalSpy {
             id: popoverSpy
             signalName: "onPressAndHold"
+        }
+
+        function test_press_and_hold_moves_cursor_position_and_opens_context_menu() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textarea_scroller");
+            flickSpy.clear();
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // long press
+            compare(handler.state, "", "The input is not in default state before long press");
+            mouseLongPress(longText, units.gu(8), y);
+            waitForRendering(longText);
+            popoverSpy.wait();
+            verify(longText.cursorPosition != 0);
+            compare(handler.state, "inactive", "The input is not in inactive state while context menu is open");
+
+            // cleanup, release the mouse, that should bring the handler back to defautl state
+            mouseRelease(longText, units.gu(8), y);
+            compare(handler.state, "", "The input has not returned to default state.");
+            // dismiss popover
+            mouseClick(main, 10, 10);
+        }
+
+        function test_press_and_hold_moves_cursor_position_and_opens_context_menu_when_not_focus() {
+            var handler = findChild(longText, "input_handler");
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textarea_scroller");
+            flickSpy.clear();
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // long press
+            compare(handler.state, "inactive", "The input is not in inactive state before long press");
+            mouseLongPress(longText, units.gu(8), y);
+            waitForRendering(longText);
+            popoverSpy.wait();
+            verify(longText.focus, "The input is not focused");
+            verify(longText.cursorPosition != 0, "The cursor wasn't moved");
+            compare(handler.state, "inactive", "The input is not in inactive state while the context menu is open");
+
+            // cleanup, release the mouse, that should bring the handler back to defautl state
+            mouseRelease(longText, units.gu(8), y);
+            compare(handler.state, "", "The input has not returned to default state.");
+            // dismiss popover
+            mouseClick(main, 10, 10);
         }
 
         function test_press_and_hold_over_selected_text() {
@@ -609,17 +641,19 @@ Item {
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
             flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
-            verify(longText.selectedText !== "");
+            waitForRendering(longText);
             compare(handler.state, "", "The input has not returned to default state.");
+            verify(longText.selectedText !== "");
 
-            mouseLongPress(longText, units.gu(7), y);
+            mouseLongPress(longText, units.gu(4), y);
             // wait till popover is shown
             waitForRendering(longText);
             popoverSpy.wait();
             // cleanup, release the mouse, that should bring the handler back to default state
-            mouseRelease(main, 0, 0);
+            mouseRelease(longText, units.gu(4), y);
             compare(handler.state, "", "The input has not returned to default state.");
-            mouseClick(longText, 10, 10);
+            // dismiss popover
+            mouseClick(main, 10, 10);
         }
 
         function test_move_mouse_while_context_menu_open_does_not_move_selection() {
@@ -646,9 +680,9 @@ Item {
             mouseMoveSlowly(longText, units.gu(4), y, units.gu(4), units.gu(1), 3, 100);
             compare(selection, longText.selectedText, "Selection differs");
             // cleanup, release the mouse, that should bring the handler back to default state
-            mouseRelease(main, 0, 0);
+            mouseRelease(longText, units.gu(8), y + units.gu(1));
             compare(handler.state, "", "The input has not returned to default state.");
-            mouseClick(longText, 10, 10);
+            mouseClick(main, 10, 10);
         }
 
         function test_clear_selection_by_click_on_selection() {
@@ -662,11 +696,11 @@ Item {
             compare(handler.state, "", "The input is not in default state before long press");
             flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
             compare(handler.state, "", "The input has not returned to default state.");
-            verify(longText.selectedText !== "");
+            verify(longText.selectedText !== "", "There is no selected text");
 
             // click on selection
             mouseClick(longText, units.gu(4), y);
-            verify(longText.selectedText === "");
+            verify(longText.selectedText === "", "There is still selected text");
         }
 
         function test_clear_selection_by_click_beside_selection() {
@@ -678,13 +712,13 @@ Item {
 
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
-            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
+            flick(longText, 0, y, units.gu(8), units.gu(4), handler.selectionModeTimeout + 50);
             compare(handler.state, "", "The input has not returned to default state.");
-            verify(longText.selectedText !== "");
+            verify(longText.selectedText !== "", "There is no text selected");
 
             // click on selection
             mouseClick(longText, units.gu(10), y);
-            verify(longText.selectedText === "");
+            verify(longText.selectedText === "", "There is still selected text");
         }
 
         function test_rightclick_does_not_open_popover_when_not_focused() {

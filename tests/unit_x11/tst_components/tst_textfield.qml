@@ -587,27 +587,57 @@ Item {
             verify(longText.selectedText !== "");
         }
 
-        function test_press_and_hold_moves_cursor_position() {
+        SignalSpy {
+            id: popoverSpy
+            signalName: "onPressAndHold"
+        }
+
+        function test_press_and_hold_moves_cursor_position_and_opens_context_menu() {
             longText.focus = true;
             var handler = findChild(longText, "input_handler");
             var y = longText.height / 2;
             flickSpy.target = findChild(longText, "textfield_scroller");
             flickSpy.clear();
+            popoverSpy.target = handler;
+            popoverSpy.clear();
 
             // long press
             compare(handler.state, "", "The input is not in default state before long press");
             mouseLongPress(longText, units.gu(8), y);
+            waitForRendering(longText);
+            popoverSpy.wait();
             verify(longText.cursorPosition != 0);
-            compare(handler.state, "select", "The input is not in selection state");
+            compare(handler.state, "inactive", "The input is not in inactive state while context menu is open");
 
-            // cleanup, release the mouse, that should bring the handler back to defautl state
-            mouseRelease(longText, units.gu(2), y);
+            // cleanup, release the mouse, that should bring the handler back to default state
+            mouseRelease(longText, units.gu(8), y);
             compare(handler.state, "", "The input has not returned to default state.");
+            // dismiss popover
+            mouseClick(longText, 10, 10);
         }
 
-        SignalSpy {
-            id: popoverSpy
-            signalName: "onPressAndHold"
+        function test_press_and_hold_moves_cursor_position_and_opens_context_menu_when_not_focus() {
+            var handler = findChild(longText, "input_handler");
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textfield_scroller");
+            flickSpy.clear();
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // long press
+            compare(handler.state, "inactive", "The input is not in inactive state before long press");
+            mouseLongPress(longText, units.gu(8), y);
+            waitForRendering(longText);
+            popoverSpy.wait();
+            verify(longText.focus, "The input is not focused");
+            verify(longText.cursorPosition != 0, "The cursor wasn't moved");
+            compare(handler.state, "inactive", "The input is not in inactive state while the context menu is open");
+
+            // cleanup, release the mouse, that should bring the handler back to default state
+            mouseRelease(longText, units.gu(8), y);
+            compare(handler.state, "", "The input has not returned to default state.");
+            // dismiss popover
+            mouseClick(longText, 10, 10);
         }
 
         function test_press_and_hold_over_selected_text() {
@@ -622,8 +652,9 @@ Item {
             // select text
             compare(handler.state, "", "The input is not in default state before long press");
             flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
-            verify(longText.selectedText !== "");
+            waitForRendering(longText);
             compare(handler.state, "", "The input has not returned to default state.");
+            verify(longText.selectedText !== "");
 
             mouseLongPress(longText, units.gu(7), y);
             // wait till popover is shown
@@ -632,6 +663,7 @@ Item {
             // cleanup, release the mouse, that should bring the handler back to default state
             mouseRelease(textItem, 0, 0);
             compare(handler.state, "", "The input has not returned to default state.");
+            // dismiss popover
             mouseClick(longText, 10, 10);
         }
 
