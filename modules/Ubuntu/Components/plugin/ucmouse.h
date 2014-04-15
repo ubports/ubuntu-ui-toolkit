@@ -115,7 +115,6 @@ protected:
     virtual bool hoverEvents(QObject *target, QHoverEvent *event);
     virtual bool forwardedEvents(ForwardedEvent *event);
     virtual bool hasAttachedFilter(QQuickItem *item);
-    virtual bool contains(const QPointF &mousePos);
 
     void setHovered(bool hovered, QEvent *hoverEvent);
     bool mousePressed(QMouseEvent *event);
