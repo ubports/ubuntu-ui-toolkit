@@ -487,9 +487,7 @@ PageTreeNode {
                     // always makes sure that tabsModel has the same order as tabsList
                     // but move only if there is more than one item in the list
                     if (count > 1) {
-                        console.log("move - from", tab.__protected.index, "to", tabIndex, "count", count, ":", get(tab.__protected.index).tab)
                         move(tab.__protected.index, tabIndex, 1);
-                        console.log("moved - to", get(tabIndex).title, get(tabIndex).tab);
                     }
                     reindex();
                 } else {
@@ -511,9 +509,10 @@ PageTreeNode {
                 start = from + 1;
             }
 
-            console.error("reindexing, count", count)
             for (var i = start; i < count; i++) {
                 var tab = get(i).tab;
+                if (!tab) wait(1);
+                tab = get(i).tab;
                 if (tab) {
                     tab.__protected.index = i;
                 } else {

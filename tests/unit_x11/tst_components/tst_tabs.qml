@@ -90,7 +90,7 @@ Item {
                 title: "load"
                 page: Loader {
                     id: loader
-                    sourceComponent: tabs.selectedTabIndex != 5 ? null : pageComponent
+                    sourceComponent: tabs.selectedTabIndex != tabFlickLoader.index ? null : pageComponent
                 }
             }
             Tab {
@@ -103,8 +103,8 @@ Item {
                         right: parent.right
                         bottom: parent.bottom
                     }
-                    // height compes from the loaded Page
-                    sourceComponent: tabs.selectedTabIndex === 6 ? pageComponentNoFlick : null
+                    // height comes from the loaded Page
+                    sourceComponent: tabs.selectedTabIndex === tabNoFlickLoader.index ? pageComponentNoFlick : null
                 }
             }
         }
