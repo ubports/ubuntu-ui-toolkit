@@ -17,18 +17,5 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-MainView {
-    objectName: "tabsTitle"
-    applicationName: "once.upon.a.time"
-
-    Tabs {
-        objectName: "tabs"
-        Tab {
-            title: 'Not the title you are looking for'
-            page: Page {
-                objectName: "page"
-                title: 'Long long ago'
-            }
-        }
-    }
+Tab {
 }

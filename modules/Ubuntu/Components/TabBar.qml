@@ -103,6 +103,7 @@ StyledItem {
 
         property bool modelChecked: true;
 
+        // returns true if the roles are good, false otherwise.
         function checkRoles() {
             if (tabBar.model.count <= 0)
                 return false;

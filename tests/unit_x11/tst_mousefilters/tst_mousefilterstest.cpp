@@ -24,6 +24,7 @@
 
 #include "ucmouse.h"
 #include "ucinversemouse.h"
+#include "uctestcase.h"
 
 #include "ucunits.h"
 #include "quickutils.h"
@@ -56,24 +57,10 @@ private:
     bool insideClick;
     bool oskClick;
 
-    QQuickView * loadTest(const QString &file, QSignalSpy **spy = 0)
+    QQuickView * loadTest(const QString &file)
     {
-        QQuickView *view = new QQuickView;
-        if (spy) {
-            *spy = new QSignalSpy(view->engine(), SIGNAL(warnings(QList<QQmlError>)));
-            (*spy)->setParent(view);
-        }
-        view->engine()->addImportPath(m_modulePath);
-
-        view->setSource(QUrl::fromLocalFile(file));
-        if (!view->rootObject()) {
-            delete view;
-            view = 0;
-        } else {
-            view->show();
-            QTest::qWaitForWindowExposed(view);
-        }
-        return view;
+        UbuntuTestCase* testCase = new UbuntuTestCase(file);
+        return qobject_cast<QQuickView*>(testCase);
     }
 
     void mousePressAndHold(QWindow *view, Qt::MouseButton button, Qt::KeyboardModifiers modifiers, const QPoint &point, int delay = DefaultPressAndHoldDelay + 200)
@@ -202,10 +189,9 @@ private Q_SLOTS:
 
     void testCase_pressedOutsideTextInputAfter()
     {
-        QSignalSpy *spy;
-        QScopedPointer<QQuickView> view(loadTest("FilterInverseTextInputAfter.qml", &spy));
-        QVERIFY(view);
-        QCOMPARE(spy->count(), 1);
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("FilterInverseTextInputAfter.qml"));
+        QCOMPARE(view->warnings(), 1);
+
         UCInverseMouse *filter = attachedFilter<UCInverseMouse>(view->rootObject(), "FilterOwner");
         QVERIFY(filter);
         QSignalSpy pressed(filter, SIGNAL(pressed(QQuickMouseEvent*)));
@@ -554,18 +540,14 @@ private Q_SLOTS:
 
     void testCase_mouseFilterAttachedToNonItem()
     {
-        QSignalSpy *warningSpy;
-        QScopedPointer<QQuickView> view(loadTest("MouseFilterAttachedToNonItem.qml", &warningSpy));
-        QVERIFY(view);
-        QCOMPARE(warningSpy->count(), 1);
+        QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("MouseFilterAttachedToNonItem.qml"));
+        QCOMPARE(testCase->warnings(), 1);
     }
 
     void testCase_inverseMouseFilterAttachedToNonItem()
     {
-        QSignalSpy *warningSpy;
-        QScopedPointer<QQuickView> view(loadTest("InverseMouseFilterAttachedToNonItem.qml", &warningSpy));
-        QVERIFY(view);
-        QCOMPARE(warningSpy->count(), 1);
+        QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("InverseMouseFilterAttachedToNonItem.qml"));
+        QCOMPARE(testCase->warnings(), 1);
     }
 
     void testCase_forwardedEventsToItem()

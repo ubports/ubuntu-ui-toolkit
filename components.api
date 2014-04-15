@@ -258,6 +258,7 @@ Item
     property bool animate
     readonly property bool animating
     property bool __closeOnContentsClicks
+    property bool __openOnHover
     property bool pressed
 modules/Ubuntu/Components/Pickers/DatePicker.qml
 StyledItem
@@ -417,9 +418,14 @@ PageTreeNode
     readonly property Tab selectedTab
     readonly property Item currentPage
     property TabBar tabBar
-    default property list<Item> tabChildren
+    property list<Item> tabChildren
     readonly property int count
     signal modelChanged()
+    function addTab(title, tab)
+    function insertTab(index, title, tab)
+    function getTab(index)
+    function moveTab(from, to)
+    function removeTab(index)
 modules/Ubuntu/Components/TextArea.qml
 StyledItem
     property bool highlighted
@@ -593,6 +599,8 @@ TestCase
     function findChild(obj,objectName)
     function findInvisibleChild(obj,objectName)
     function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay)
+    function flick(item, x, y, dx, dy, pressTimeout, steps, button, modifiers, delay)
+    function mouseLongPress(item, x, y, button, modifiers, delay)
     function tryCompareFunction(func, expectedResult, timeout)
 plugins.qmltypes
     name: "InverseMouseAreaType"

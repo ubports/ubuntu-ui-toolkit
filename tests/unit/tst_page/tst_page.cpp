@@ -23,7 +23,7 @@
 #include <QtQuick/QQuickItem>
 #include <QtCore/QDir>
 
-#include "ucunits.h"
+#include "uctestcase.h"
 
 class tst_Page : public QObject
 {
@@ -38,55 +38,19 @@ public:
     {
     }
 
-    QQuickItem *loadTest(const QString &document)
-    {
-        // load the document
-        view->setSource(QUrl::fromLocalFile(document));
-        QTest::waitForEvents();
-
-        return view->rootObject();
-    }
-
-    QQuickItem *testItem(QQuickItem *that, const QString &identifier)
-    {
-        if (that->property(identifier.toLocal8Bit()).isValid())
-            return that->property(identifier.toLocal8Bit()).value<QQuickItem*>();
-
-        QList<QQuickItem*> children = that->findChildren<QQuickItem*>(identifier);
-        return (children.count() > 0) ? children[0] : 0;
-    }
-
 private Q_SLOTS:
 
     void initTestCase()
     {
-        QString modules("../../../modules");
-        QVERIFY(QDir(modules).exists());
-
-        view = new QQuickView;
-        QQmlEngine *quickEngine = view->engine();
-
-        view->setGeometry(0,0, UCUnits::instance().gu(40), UCUnits::instance().gu(30));
-        //add modules folder so we have access to the plugin from QML
-        QStringList imports = quickEngine->importPathList();
-        imports.prepend(QDir(modules).absolutePath());
-        quickEngine->setImportPathList(imports);
     }
 
     void cleanupTestCase()
     {
-        delete view;
     }
 
     void testAnchorToPage_bug1249386() {
-        QSignalSpy spy(view->engine(), SIGNAL(warnings(QList<QQmlError>)));
-        spy.setParent(view);
-
-        QQuickItem *root = loadTest("AnchorToPage.qml");
-        QVERIFY(root);
-
-        // No warnings from QML
-        QCOMPARE(spy.count(), 0);
+        QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("AnchorToPage.qml"));
+        QCOMPARE(testCase->warnings(), 0);
     }
 };
 

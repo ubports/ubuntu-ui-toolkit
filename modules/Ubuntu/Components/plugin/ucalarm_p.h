@@ -50,7 +50,7 @@ public:
     static int nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay);
     static bool multipleDaysSet(UCAlarm::DaysOfWeek days);
     UCAlarm::Error checkAlarm();
-    UCAlarm::Error checkDow();
+    UCAlarm::Error adjustDow();
     UCAlarm::Error checkOneTime();
     UCAlarm::Error checkRepeatingWeekly();
 
