@@ -509,11 +509,6 @@ bool UCMouse::hasAttachedFilter(QQuickItem *item)
     return (qmlAttachedPropertiesObject<UCMouse>(item, false) != 0);
 }
 
-bool UCMouse::contains(const QPointF &mousePos)
-{
-    return m_owner->contains(mousePos);
-}
-
 void UCMouse::setHovered(bool hovered, QEvent *hoverEvent)
 {
     if (m_hovered != hovered) {
@@ -1014,7 +1009,7 @@ bool UCInverseMouse::eventFilter(QObject *target, QEvent *event)
 bool UCInverseMouse::mouseEvents(QObject *target, QMouseEvent *event)
 {
     QMouseEvent mouse(mapMouseToOwner(target, event));
-    if (!contains(mouse.localPos())) {
+    if (!contains(&mouse)) {
         // do not handle mouse event if it's inside the owner
         return false;
     }
@@ -1042,9 +1037,10 @@ bool UCInverseMouse::pointInOSK(const QPointF &point)
 }
 
 // returns true if the point is in the inverse area
-bool UCInverseMouse::contains(const QPointF &mousePos)
+bool UCInverseMouse::contains(QMouseEvent *mouse)
 {
-    return !m_owner->contains(mousePos) && !pointInOSK(mousePos);
+    QPointF localPos = mouse->localPos();
+    return !m_owner->contains(localPos) && !pointInOSK(localPos);
 }
 
 void UCInverseMouse::setEnabled(bool enabled)
