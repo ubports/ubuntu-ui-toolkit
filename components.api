@@ -417,9 +417,14 @@ PageTreeNode
     readonly property Tab selectedTab
     readonly property Item currentPage
     property TabBar tabBar
-    default property list<Item> tabChildren
+    property list<Item> tabChildren
     readonly property int count
     signal modelChanged()
+    function addTab(title, tab)
+    function insertTab(index, title, tab)
+    function getTab(index)
+    function moveTab(from, to)
+    function removeTab(index)
 modules/Ubuntu/Components/TextArea.qml
 StyledItem
     property bool highlighted
@@ -689,27 +694,35 @@ plugins.qmltypes
     Signal {
     name: "pressed"
     Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     Signal {
     name: "released"
     Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     Signal {
     name: "clicked"
     Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     Signal {
     name: "pressAndHold"
     Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     Signal {
     name: "doubleClicked"
     Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     Signal {
     name: "positionChanged"
     Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     Signal {
     name: "entered"
     Parameter { name: "event"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     Signal {
     name: "exited"
     Parameter { name: "event"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     name: "UCQQuickImageExtension"
     prototype: "QQuickImageBase"
     exports: ["QQuickImageBase 0.1"]

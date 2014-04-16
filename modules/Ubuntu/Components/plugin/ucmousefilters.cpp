@@ -18,7 +18,6 @@
 #include "ucmouse.h"
 #include "ucinversemouse.h"
 #include <QtQml/QQmlInfo>
-#include <QtQuick/QQuickItem>
 #include <QtGui/QGuiApplication>
 #include <private/qqmlglobal_p.h>
 #include <QtQuick/private/qquickmousearea_p.h>
@@ -30,6 +29,15 @@
 
 // keep in sync with QQuickMouseArea PressAndHoldDelay
 const int DefaultPressAndHoldDelay = 800;
+
+QEvent::Type ForwardedEvent::m_eventBase = QEvent::None;
+void ForwardedEvent::registerForwardedEvent()
+{
+    if (m_eventBase > 0) {
+        return;
+    }
+    m_eventBase = (QEvent::Type)QEvent::registerEventType();
+}
 
 /*
  * Attached filter instantiator template
@@ -158,7 +166,8 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    their parent. In this way mouse events will land in these items too, and mouse
    filter attached to those can also handle the event. This is useful when creating
    custom types where the mouse handling item is nested into a non-mouse handling
-   one, and we want to provide additional filtering possibility to the user.
+   one, and we want to provide additional filtering possibility to the user. These
+   type of items are called proxy handlers.
 
    \qml
    Item {
@@ -180,7 +189,54 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
    In this example the mouse press is first handled by the mouse filter attached
    to TextInput, then it is forwarded to the top item and finally to the TextInput.
    Accepting the mouse event will stop propagation to the top item as well as to
-   the TextInput.
+   the TextInput. The topmost item itself does not handle mouse events, therefore
+   it will be a sinple proxy handler item. However, proxies can themself handle
+   mouse events. Therefore each mouse event signal has the \a host parameter specifying
+   the sender of the mouse event reported.
+
+   \note The forwarded events are handled in the proxy handlers only if the mouse
+   position points inside their area. If the forwarded mouse position falls outside
+   the target area, the event will not be reported, however will be forwarded further
+   to the items in the list. In the following example the mouse press in red rectangle
+   will be printed as well as the proxied mouse press from the main item.
+   \qml
+   import QtQuick 2.0
+   import Ubuntu.Components 0.1
+
+   Item {
+       id: main
+       width: units.gu(40)
+       height: units.gu(71)
+
+       Mouse.onPressed: console.log("got the mouse press forwarded by " + host.objectName)
+
+       Column {
+           anchors.fill: parent
+           spacing: units.gu(1)
+
+           Rectangle {
+               id: blueRect
+               objectName: "BlueRect"
+               width: parent.width
+               height: units.gu(20)
+               color: "blue"
+               Mouse.forwardTo: [main]
+               Mouse.onPressed: console.log("This should not be printed")
+           }
+           Rectangle {
+               objectName: "RedRect"
+               width: parent.width
+               height: units.gu(20)
+               color: "red"
+               MouseArea {
+                   anchors.fill: parent
+                   Mouse.forwardTo: [blueRect]
+                   Mouse.onPressed: console.log("Pressed in " + host.objectName)
+               }
+           }
+       }
+   }
+   \endqml
 
    An interesting feature that can be achieved using Mouse filter is the event
    "transparency" towards the MouseArea lying behind the items which handle mouse
@@ -225,6 +281,7 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
        }
    }
    \endqml
+
 
    Mouse filter provides ability to control the order of the event dispatching.
    The filter can receive the events prior the owner or after the owner. This
@@ -281,6 +338,9 @@ T *createAttachedFilter(QObject *owner, const QString &qmlName)
 UCMouse::UCMouse(QObject *parent)
     : QObject(parent)
     , m_owner(qobject_cast<QQuickItem*>(parent))
+    , m_lastButton(Qt::NoButton)
+    , m_lastButtons(Qt::NoButton)
+    , m_lastModifiers(Qt::NoModifier)
     , m_pressedButtons(Qt::NoButton)
     , m_priority(BeforeItem)
     , m_moveThreshold(0.0)
@@ -328,6 +388,9 @@ bool UCMouse::eventFilter(QObject *target, QEvent *event)
         } else {
             return hoverEvents(target, static_cast<QHoverEvent*>(event));
         }
+    } else if (type == ForwardedEvent::baseType()) {
+        // this is a forwarded event, handle it as such
+        return forwardedEvents(static_cast<ForwardedEvent*>(event));
     }
 
     return QObject::eventFilter(target, event);
@@ -341,7 +404,8 @@ void UCMouse::timerEvent(QTimerEvent *event)
             QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
                                      false, m_longPress);
             mev.setAccepted(false);
-            Q_EMIT pressAndHold(&mev);
+            Q_EMIT pressAndHold(&mev, m_owner);
+            mev.setAccepted(forwardEvent(ForwardedEvent::MouseLongPress, 0, &mev));
             // if the event wasn't handled, allow click
             if (!mev.isAccepted()) {
                 m_longPress = false;
@@ -376,7 +440,6 @@ bool UCMouse::mouseEvents(QObject *target, QMouseEvent *event)
     default:
         break;
     }
-    forwardEvent(event);
     return result || event->isAccepted();
 }
 
@@ -400,8 +463,45 @@ bool UCMouse::hoverEvents(QObject *target, QHoverEvent *event)
     default:
         break;
     }
-    forwardEvent(event);
     return result || event->isAccepted();
+}
+
+// emit signals and forward the events further
+bool UCMouse::forwardedEvents(ForwardedEvent *event)
+{
+    // the quick event is always specified!
+    switch (event->subType()) {
+    case ForwardedEvent::MousePress: {
+        Q_EMIT pressed(event->quickEvent(), event->sender());
+    } break;
+    case ForwardedEvent::MouseRelease: {
+        Q_EMIT released(event->quickEvent(), event->sender());
+    } break;
+    case ForwardedEvent::MouseMove: {
+        Q_EMIT positionChanged(event->quickEvent(), event->sender());
+    } break;
+    case ForwardedEvent::MouseDblClick: {
+        Q_EMIT doubleClicked(event->quickEvent(), event->sender());
+    } break;
+    case ForwardedEvent::HoverEnter: {
+        Q_EMIT entered(event->quickEvent(), event->sender());
+    } break;
+    case ForwardedEvent::HoverExit: {
+        Q_EMIT exited(event->quickEvent(), event->sender());
+    } break;
+        // composed events
+    case ForwardedEvent::MouseClick: {
+        Q_EMIT clicked(event->quickEvent(), event->sender());
+    } break;
+    case ForwardedEvent::MouseLongPress: {
+        Q_EMIT pressAndHold(event->quickEvent(), event->sender());
+    } break;
+    default: break;
+    }
+
+    // forward event, but use the current owner as sender
+    event->setAccepted(forwardEvent(event->subType(), event->originalEvent(), event->quickEvent()));
+    return event->isAccepted();
 }
 
 bool UCMouse::hasAttachedFilter(QQuickItem *item)
@@ -409,18 +509,21 @@ bool UCMouse::hasAttachedFilter(QQuickItem *item)
     return (qmlAttachedPropertiesObject<UCMouse>(item, false) != 0);
 }
 
-void UCMouse::setHovered(bool hovered)
+void UCMouse::setHovered(bool hovered, QEvent *hoverEvent)
 {
     if (m_hovered != hovered) {
         m_hovered = hovered;
         QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
                                  false, false);
         mev.setAccepted(false);
+        ForwardedEvent::EventType type = (m_hovered) ? ForwardedEvent::HoverEnter : ForwardedEvent::HoverExit;
         if (m_hovered) {
-            Q_EMIT entered(&mev);
+            Q_EMIT entered(&mev, m_owner);
         } else {
-            Q_EMIT exited(&mev);
+            m_pressAndHoldTimer.stop();
+            Q_EMIT exited(&mev, m_owner);
         }
+        forwardEvent(type, hoverEvent, &mev);
     }
 }
 
@@ -432,13 +535,13 @@ bool UCMouse::mousePressed(QMouseEvent *event)
         m_pressedButtons |= m_lastButton;
         m_longPress = m_doubleClicked = false;
 
-        setHovered(true);
+        setHovered(true, 0);
 
         QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
                                  false, m_longPress);
         mev.setAccepted(false);
-        Q_EMIT pressed(&mev);
-        event->setAccepted(mev.isAccepted());
+        Q_EMIT pressed(&mev, m_owner);
+        event->setAccepted(forwardEvent(ForwardedEvent::MousePress, event, &mev));
 
         // start long press timer
         m_pressAndHoldTimer.start(DefaultPressAndHoldDelay, this);
@@ -460,14 +563,14 @@ bool UCMouse::mouseMoved(QMouseEvent *event)
             m_pressAndHoldTimer.stop();
         }
 
-        setHovered(true);
+        setHovered(true, 0);
         m_moved = true;
         m_doubleClicked = false;
         QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
                                  false, m_longPress);
         mev.setAccepted(false);
-        Q_EMIT positionChanged(&mev);
-        event->setAccepted(mev.isAccepted());
+        Q_EMIT positionChanged(&mev, m_owner);
+        event->setAccepted(forwardEvent(ForwardedEvent::MouseMove, event, &mev));
         return mev.isAccepted();
     }
 
@@ -487,18 +590,20 @@ bool UCMouse::mouseReleased(QMouseEvent *event)
         QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
                                  isClicked, m_longPress);
         mev.setAccepted(false);
-        Q_EMIT released(&mev);
-        event->setAccepted(mev.isAccepted());
+        Q_EMIT released(&mev, m_owner);
+        event->setAccepted(forwardEvent(ForwardedEvent::MouseRelease, event, &mev));
 
         // remove button from press
         m_pressedButtons &= ~m_lastButton;
         if (isClicked) {
             // emit clicked
-            Q_EMIT clicked(&mev);
+            mev.setAccepted(false);
+            Q_EMIT clicked(&mev, m_owner);
+            forwardEvent(ForwardedEvent::MouseClick, 0, &mev);
         }
 
         if (!m_pressedButtons && !m_owner->acceptHoverEvents()) {
-            setHovered(false);
+            setHovered(false, 0);
         }
         return mev.isAccepted();
     }
@@ -511,18 +616,17 @@ bool UCMouse::mouseDblClick(QMouseEvent *event)
 {
     if (m_pressedButtons) {
         saveEvent(event);
+
+        QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+                                 true, m_longPress);
+        mev.setAccepted(false);
         // if double click connected, suppress release() and click() signals
         if (isDoubleClickConnected()) {
-            QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
-                                     true, m_longPress);
-            mev.setAccepted(false);
-            Q_EMIT doubleClicked(&mev);
-            event->setAccepted(mev.isAccepted());
+            Q_EMIT doubleClicked(&mev, m_owner);
             m_doubleClicked = true;
-        } else {
-            // set accepted to false still
-            event->setAccepted(false);
         }
+        // forward event even if it wasn't handled for the owner
+        event->setAccepted(forwardEvent(ForwardedEvent::MouseDblClick, event, &mev));
         return event->isAccepted();
     }
 
@@ -534,7 +638,9 @@ bool UCMouse::hoverEntered(QHoverEvent *event)
 {
     m_lastPos = event->posF();
     m_lastModifiers = event->modifiers();
-    setHovered(true);
+    m_lastButton = Qt::NoButton;
+    m_lastButtons = Qt::NoButton;
+    setHovered(true, event);
     return false;
 }
 
@@ -542,11 +648,11 @@ bool UCMouse::hoverMoved(QHoverEvent *event)
 {
     m_lastPos = event->posF();
     m_lastModifiers = event->modifiers();
-    QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), m_lastButton, m_lastButtons, m_lastModifiers,
+    QQuickMouseEvent mev(m_lastPos.x(), m_lastPos.y(), Qt::NoButton, Qt::NoButton, m_lastModifiers,
                              false, m_longPress);
     mev.setAccepted(false);
-    Q_EMIT positionChanged(&mev);
-    forwardEvent(event);
+    Q_EMIT positionChanged(&mev, m_owner);
+    event->setAccepted(forwardEvent(ForwardedEvent::MouseMove, event, &mev));
     return false;
 }
 
@@ -554,7 +660,9 @@ bool UCMouse::hoverExited(QHoverEvent *event)
 {
     m_lastPos = event->posF();
     m_lastModifiers = event->modifiers();
-    setHovered(false);
+    m_lastButton = Qt::NoButton;
+    m_lastButtons = Qt::NoButton;
+    setHovered(false, event);
     return false;
 }
 
@@ -562,8 +670,10 @@ void UCMouse::saveEvent(QMouseEvent *event)
 {
     m_lastPos = event->localPos();
     m_lastScenePos = event->windowPos();
-    m_lastButton = event->button();
-    m_lastButtons = event->buttons();
+    if (event->type() != QEvent::MouseMove) {
+        m_lastButton = event->button();
+        m_lastButtons = event->buttons();
+    }
     m_lastModifiers = event->modifiers();
     if ((event->type() == QEvent::MouseButtonPress) && (m_moveThreshold > 0.0)) {
         m_toleranceArea.setX(m_lastPos.x() - m_moveThreshold);
@@ -574,7 +684,7 @@ void UCMouse::saveEvent(QMouseEvent *event)
 }
 bool UCMouse::isDoubleClickConnected()
 {
-    IS_SIGNAL_CONNECTED(this, UCMouse, doubleClicked, (QQuickMouseEvent*));
+    IS_SIGNAL_CONNECTED(this, UCMouse, doubleClicked, (QQuickMouseEvent*,QQuickItem*));
 }
 
 bool UCMouse::isMouseEvent(QEvent::Type type)
@@ -588,57 +698,73 @@ bool UCMouse::isHoverEvent(QEvent::Type type)
     return (type == QEvent::HoverEnter) || (type == QEvent::HoverMove) || (type == QEvent::HoverLeave);
 }
 
-// forwards the events to the listed items; only mouse and hover events qualify
-void UCMouse::forwardEvent(QEvent *event)
+
+/*
+ * Forwards the events to the listed items. The event coordinates are mapped to the destination's coordinates
+ * and sent to the destination in case the destination has no filter attached. Otherwise the quick event
+ * coordinates will be mapped and sent as ForwardedEvents.
+ */
+bool UCMouse::forwardEvent(ForwardedEvent::EventType type, QEvent *event, QQuickMouseEvent *quickEvent)
 {
-    /*
-     * alter acceptedButtons and hoverEnabled for the time the event is delivered
-     * exclude MouseArea and InverseMouseArea!!
-     */
+    // first set the accepted flag to the original event
+    if (event && quickEvent) {
+        event->setAccepted(quickEvent->isAccepted());
+    }
+    bool accepted = event ? event->isAccepted() : (quickEvent ? quickEvent->isAccepted() : false);
+
     Q_FOREACH(QQuickItem *item, m_forwardList) {
 
-        if (event->isAccepted()) {
+        if (accepted) {
             // the event got accepted, therefore should not be forwarded
-            return;
+            return accepted;
         }
         // skip InverseMouseArea otherwise those will get the event twice
         if (qobject_cast<InverseMouseAreaType*>(item)) {
             continue;
         }
-        /*
-         * temporarily enable mouse buttons and hover for items which have Mouse or InverseMouse
-         * filter attached, but exclude targets which is MouseArea or InverseMouseArea
-         */
-        Qt::MouseButtons acceptedButtons = item->acceptedMouseButtons();
-        bool hoverEnabled = item->acceptHoverEvents();
-        if (!qobject_cast<QQuickMouseArea*>(item) && hasAttachedFilter(item)) {
-            // set accepted buttons and hover temporarily
-            item->setAcceptedMouseButtons(m_owner->acceptedMouseButtons());
-            item->setAcceptHoverEvents(m_owner->acceptHoverEvents());
+
+        // map the normal event coordinates to item
+        QEvent *mappedEvent = 0;
+        if (event) {
+            if (isMouseEvent(event->type())) {
+                QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
+                QPointF itemPos = item->mapFromScene(m_owner->mapToScene(mouse->pos()));
+                mappedEvent = new QMouseEvent(event->type(), itemPos, mouse->button(), mouse->buttons(), mouse->modifiers());
+            } else if (isHoverEvent(event->type())){
+                QHoverEvent *hover = static_cast<QHoverEvent*>(event);
+                QPointF itemPos = item->mapFromScene(m_owner->mapToScene(hover->pos()));
+                QPointF itemOldPos = item->mapFromScene(m_owner->mapToScene(hover->oldPos()));
+                mappedEvent = new QHoverEvent(event->type(), itemPos, itemOldPos, hover->modifiers());
+            }
         }
 
-        // forward events
-        bool accepted = false;
-        if (isMouseEvent(event->type())) {
-            QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
-            QPointF itemPos = item->mapFromScene(m_owner->mapToScene(mouse->pos()));
-            QMouseEvent me = QMouseEvent(event->type(), itemPos, mouse->button(), mouse->buttons(), mouse->modifiers());
-            QGuiApplication::sendEvent(item, &me);
-            accepted = me.isAccepted();
-        } else {
-            QHoverEvent *hover = static_cast<QHoverEvent*>(event);
-            QPointF itemPos = item->mapFromScene(m_owner->mapToScene(hover->pos()));
-            QPointF itemOldPos = item->mapFromScene(m_owner->mapToScene(hover->oldPos()));
-            QHoverEvent he = QHoverEvent(event->type(), itemPos, itemOldPos, hover->modifiers());
-            QGuiApplication::sendEvent(item, &he);
-            accepted = he.isAccepted();
+        // if the item has no filter attached, deliver the mapped event to it as it is
+        UCMouse *filter = qobject_cast<UCMouse*>(qmlAttachedPropertiesObject<UCMouse>(item, false));
+        if (!filter && mappedEvent) {
+            QGuiApplication::sendEvent(item, mappedEvent);
+            accepted = mappedEvent->isAccepted();
+        } else if (quickEvent) {
+            // map the quick event coordinates as well
+            QPoint itemPos(item->mapFromScene(m_owner->mapToScene(QPointF(quickEvent->x(), quickEvent->y()))).toPoint());
+            QQuickMouseEvent mev(itemPos.x(), itemPos.y(), (Qt::MouseButton)quickEvent->button(), (Qt::MouseButtons)quickEvent->buttons(),
+                                 (Qt::KeyboardModifiers)quickEvent->modifiers(), quickEvent->isClick(), quickEvent->wasHeld());
+            mev.setAccepted(false);
+            ForwardedEvent forwardedEvent(type, m_owner, mappedEvent, &mev);
+            QGuiApplication::sendEvent(item, &forwardedEvent);
+            accepted = mev.isAccepted();
         }
-        event->setAccepted(accepted);
 
-        // restore acceptedButtons and hover
-        item->setAcceptedMouseButtons(acceptedButtons);
-        item->setAcceptHoverEvents(hoverEnabled);
+        // cleanup and transfer accepted flag
+        delete mappedEvent;
+        if (event) {
+            event->setAccepted(accepted);
+        }
+        if (quickEvent) {
+            quickEvent->setAccepted(accepted);
+        }
     }
+
+    return accepted;
 }
 
 
@@ -697,6 +823,9 @@ bool UCMouse::hoverEnabled() const
    composed events will come until the mouse is moved inside the owner's area.
 
    The default value is 0.
+
+   \note The value has no effect for the forwarded events. The threshold is only
+   valid when the host handles mouse events.
  */
 int UCMouse::clickAndHoldThreshold() const
 {
@@ -767,29 +896,34 @@ void UCMouse::setPriority(Priority priority)
 }
 
 /*!
-   \qmlsignal Mouse::onPressed(MouseEvent event)
-   The signal reports the mouse press.
+   \qmlsignal Mouse::onPressed(MouseEvent event, Item host)
+   The signal reports the mouse press. The \a host specifies the item that triggered
+   the event.
  */
 
 /*!
    \qmlsignal Mouse::onReleased(MouseEvent event)
-   The signal reports the mouse release.
+   The signal reports the mouse release. The \a host specifies the item that triggered
+   the event.
  */
 
 /*!
    \qmlsignal Mouse::onClicked(MouseEvent event)
    The signal reports the mouse click. The signal is not emitted if the onPressAndHold
-   got triggered or if onDoubleClicked is handled (a slot is connected to it).
+   got triggered or if onDoubleClicked is handled (a slot is connected to it). The \a
+   host specifies the item that triggered the event.
  */
 
 /*!
    \qmlsignal Mouse::onPressAndHold(MouseEvent event)
-   The signal reports the mouse press and hold.
+   The signal reports the mouse press and hold. The \a host specifies the item that triggered
+   the event.
  */
 
 /*!
    \qmlsignal Mouse::onDoubleClicked(MouseEvent event)
-   The signal reports mouse double click.
+   The signal reports mouse double click. The \a host specifies the item that triggered
+   the event.
  */
 
 /*!
@@ -797,20 +931,22 @@ void UCMouse::setPriority(Priority priority)
    The signal reports the mouse pointer position change. If the hover events are
    enabled for the owner, the signal will come continuously. Otherwise the position
    chanes are reported when one of the accepted mouse buttons are being kept pressed.
+   The \a host specifies the item that triggered the event.
  */
 
 /*!
    \qmlsignal Mouse::onEntered(MouseEvent event)
    The signal reports that the mouse has entered into the area. The signal is
    emitted when the hover events are enabled and the mouse enters the area or
-   when one of the accepted mouse button is pressed.
+   when one of the accepted mouse button is pressed. The \a host specifies the
+   item that triggered the event.
  */
 
 /*!
    \qmlsignal Mouse::onExited(MouseEvent event)
    The signal reports that the mouse has left the area. The signal is emitted when
    the hover events are enabled for the owner or if not, when one of the accepted
-   button is released.
+   button is released. The \a host specifies the item that triggered the event.
  */
 
 /******************************************************************************
