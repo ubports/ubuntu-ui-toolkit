@@ -473,6 +473,8 @@ PageTreeNode {
                 var tab = tabsList[i];
                 if (internal.isTab(tab)) {
                     tabIndex = i - offset;
+                    // make sure we have the right parent
+                    tab.parent = tabs;
 
                     if (!tab.__protected.inserted) {
                         tab.__protected.index = tabIndex;
@@ -509,17 +511,7 @@ PageTreeNode {
 
             for (var i = start; i < count; i++) {
                 var tab = get(i).tab;
-                // FIXME: introduce an idle timer to get the model updated properly. This small delay
-                // is needed for arm64 unit tests, as the move() seems to update the model asynchronously.
-                // fixes bug #1308086
-                if (!tab) wait(0);
-                tab = get(i).tab;
-
-                if (tab) {
-                    tab.__protected.index = i;
-                } else {
-                    console.error("Invalid Tab at index", i, get(i).title)
-                }
+                tab.__protected.index = i;
             }
         }
 

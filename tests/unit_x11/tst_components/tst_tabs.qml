@@ -90,7 +90,7 @@ Item {
                 title: "load"
                 page: Loader {
                     id: loader
-                    sourceComponent: tabs.selectedTabIndex != tabFlickLoader.index ? null : pageComponent
+                    sourceComponent: tabs.selectedTabIndex != 5 ? null : pageComponent
                 }
             }
             Tab {
@@ -103,8 +103,8 @@ Item {
                         right: parent.right
                         bottom: parent.bottom
                     }
-                    // height comes from the loaded Page
-                    sourceComponent: tabs.selectedTabIndex === tabNoFlickLoader.index ? pageComponentNoFlick : null
+                    // height compes from the loaded Page
+                    sourceComponent: tabs.selectedTabIndex === 6 ? pageComponentNoFlick : null
                 }
             }
         }
@@ -218,11 +218,6 @@ Item {
     TestCase {
         name: "TabsAPI"
         when: windowShown
-
-        function init() {
-            // introduce a small delay in front of each test
-            wait(200);
-        }
 
         /*
           The following testcases are all related to bug #1253804
