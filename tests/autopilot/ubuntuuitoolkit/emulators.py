@@ -478,22 +478,22 @@ class ComboButton(UbuntuUIToolkitEmulatorBase):
         main_button = self.select_single(objectName="combobutton_mainbutton")
         self.pointing_device.click_object(main_button)
 
-    def press_dropdown(self):
-        """Presses the dropdown button to togle combo list expansion."""
-        dropdown_button = self.select_single(objectName="combobutton_dropdown")
-        self.pointing_device.click_object(dropdown_button)
-
     def expand(self):
         """Expands a combo button by clicking on the dropdown button."""
-        if self.expanded:
-            return
-        self.press_dropdown()
+        if not self.expanded:
+            self._press_dropdown()
+        return self.expanded
 
     def collapse(self):
         """Collapses a combo button by clicking on the dropdown button."""
-        if not self.expanded:
-            return
-        self.press_dropdown()
+        if self.expanded:
+            self._press_dropdown()
+        return self.expanded
+
+    def _press_dropdown(self):
+        """Presses the dropdown button to togle combo list expansion."""
+        dropdown_button = self.select_single(objectName="combobutton_dropdown")
+        return self.pointing_device.click_object(dropdown_button)
 
 
 class OptionSelector(UbuntuUIToolkitEmulatorBase):

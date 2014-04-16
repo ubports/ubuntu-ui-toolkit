@@ -1080,24 +1080,24 @@ MainView {
         self.assertEqual(self.label.text, 'Cancel selected.')
         self._assert_composer_sheet_is_closed()
 
+
 class ComboButtonTestCase(tests.QMLStringAppTestCase):
     test_qml = ("""
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1
 
 MainView {
     width: units.gu(40)
     height: units.gu(60)
 
-    Item {
-        ComboButton {
-            text: "main button"
-            objectName: "combo_button"
-            ListView {
-                model: 10
-                delegate: Standard {
-                    text: "Item #" + modelData
-                }
+    ComboButton {
+        text: "main button"
+        objectName: "combo_button"
+        ListView {
+            model: 10
+            delegate: Standard {
+                text: "Item #" + modelData
             }
         }
     }
