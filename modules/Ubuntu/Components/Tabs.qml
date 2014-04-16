@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import "mathUtils.js" as MathUtils
 
 /*!
     \qmltype Tabs
@@ -149,6 +150,110 @@ import QtQuick 2.0
             }
         }
     \endqml
+
+    \section2 Dynamic tabs
+    So far all Tab elements were pre-declared, but there can be situations when
+    tabs need to be added dynamically. There are two ways to solve this, depending
+    on the output needed.
+
+    \section3 Using Repeaters
+    A Repeater can be used to create the necessary tabs depending on a given model.
+    In this way the number of tabs will be driven by the model itself.
+    An example of such a dynamic tab:
+    \qml
+    // DynamicTab.qml
+    import QtQuick 2.0
+    import Ubuntu.Components 0.1
+
+    Tabs {
+        property alias model: tabRepeater.model
+        Repeater {
+            id: tabRepeater
+            model: 5
+            Tab {
+                title: "Tab #" + index
+                page: Page {
+                    // [...]
+                }
+            }
+        }
+    }
+    \endqml
+    Note that in the example above the Tabs will be re-created each time the model
+    changes. This will cause state losing of each Tab, which depending on the
+    content type can be solved at some extent using StateSaver. Using a Loader
+    or specifying the Tab instance/component in the model the state can be preserved,
+    however may increase code complexity.
+
+    \section3 Dynamic tabs
+    Tabs provides functions to add Tab elements dynamically on runtime, without
+    destroying the state of the existing tabs. You can add, move and remove any
+    kind of Tab element, pre-declared or dynamically created ones. When removing
+    pre-declared tabs, those will all be held back and hidden by Tabs, and can be
+    added back any time either to the same or to a different position.
+
+    \qml
+    import QtQuick 2.0
+    import Ubuntu.Components 0.1
+
+    MainView {
+        width: units.gu(40)
+        height: units.gu(71)
+
+        Component {
+            id: dynamicTab
+            Tab {
+                page: Page {
+                    Label {
+                        text: title
+                        anchors.centerIn: parent
+                    }
+                }
+            }
+        }
+        Tabs {
+        id: tabs
+            Tab {
+                title: "Main tab"
+                page: Page {
+                    toolbar: ToolbarItems {
+                        ToolbarButton {
+                            text: "remove predeclared"
+                            onTriggered: tabs.removeTab(preDeclared.index)
+                        }
+                        ToolbarButton {
+                            text: "add new"
+                            onTriggered: tabs.addTab("New tab", dynamicTab)
+                        }
+                        ToolbarButton {
+                            text: "insert predeclared"
+                            onTriggered: tabs.insertTab("", 0)
+                        }
+                    }
+                }
+            }
+            Tab {
+            id: preDeclared
+                title: "Pre-declared tab"
+                page: Page {
+                    Label {
+                        text: "This is a predeclared tab at index #" + index
+                        anchors.centerIn: parent
+                    }
+                }
+            }
+        }
+    }
+    \endqml
+
+    \section3 Using Repeater and functions together
+    Repeaters re-create their delegates as many times the model changes. Tabs added
+    or moved in between the tabs maintained by the Repeater, as well as reordered
+    through the Tabs functions will be re-arranged once the Repeater's model changes.
+    This should be taken into account when designing the application, and the use
+    of Repeater and functions toghether should be avoided if possible, or at least
+    Repeater should always add tabs to te tail of the tab stack, and no tab insertion
+    happens in that area.
 */
 PageTreeNode {
     id: tabs
@@ -186,10 +291,14 @@ PageTreeNode {
     }
 
     /*!
-      Children are placed in a separate item that has functionality to extract the Tab items.
+      \deprecated
+      Children are placed in a separate item that has functionality to extract
+      the Tab items.
+      Note: this property is deprecated. Tab components are directly parented
+      to Tabs' data property.
       \qmlproperty list<Item> tabChildren
      */
-    default property alias tabChildren: tabStack.data
+    property alias tabChildren: tabs.data
 
     /*!
       \qmlproperty int count
@@ -206,42 +315,188 @@ PageTreeNode {
     signal modelChanged()
 
     /*!
+      Appends a Tab dynamically to the list of tabs. The \a title specifies the
+      title of the Tab. The \a tab can be either a Component, a URL to a Tab
+      component to be loaded or an instance of a pre-declared tab that has been
+      previously removed. The Tab's title will be replaced with the given \a title,
+      unless the value is an empty string or undefined.
+      Returns the instance of the added Tab.
+      */
+    function addTab(title, tab) {
+        return insertTab(count, title, tab);
+    }
+
+    /*!
+      Inserts a Tab at the given index. If the \a index is less or equal than 0,
+      the Tab will be added to the front, and to the end of the tab stack in case
+      the \a index is greater than \l count. \a title and \a tab are used in the
+      same way as with \l addTab().
+      Returns the instance of the inserted Tab.
+      */
+    function insertTab(index, title, tab) {
+        // check if the given component is a Tab instance
+        var tabObject = null;
+
+        if (typeof tab === "string") {
+            // we have a URL
+            var tabComponent = Qt.createComponent(tab);
+            if (tabComponent.status === Component.Error) {
+                console.error(tabComponent.errorString());
+                return null;
+            }
+            tabObject = tabComponent.createObject();
+            tabObject.__protected.dynamic = true;
+        } else if (tab.hasOwnProperty("createObject")) {
+            // we have a Component
+            tabObject = tab.createObject();
+            tabObject.__protected.dynamic = true;
+        } else if (tab.hasOwnProperty("parent") && tab.parent === trashedTabs) {
+            // we have a pre-declared tab that has been removed
+            tabObject = tab;
+        } else {
+            console.error(i18n.tr("The object is not a URL, Component or a removed Tab: ") + tab);
+            return null;
+        }
+
+        // fix title
+        if (title !== undefined && title !== "") {
+            tabObject.title = title;
+        }
+
+        // insert the created tab into the model
+        index = MathUtils.clamp(index, 0, count);
+        tabObject.__protected.inserted = true;
+        tabObject.__protected.index = index;
+        tabsModel.insertTab(tabObject, index);
+        if (tabs.selectedTabIndex >= index) {
+            // move the selected index to the next index
+            tabs.selectedTabIndex += 1;
+        } else {
+            internal.sync();
+        }
+        return tabObject;
+    }
+
+    /*!
+      The function returns the Tab from the given \a index, or null if the \a index
+      is invalid (less than \c 0 and greater than \l count).
+      */
+    function getTab(index) {
+        return (index >=0) && (index < count) ? tabsModel.get(index).tab : null;
+    }
+
+    /*!
+      Moves the tab from the given \a from position to the position given in \a to.
+      Returns true if the indexes were in 0..\l count - 1 boundary and if the operation
+      succeeds, and false otherwise. The \l selectedTabIndex is updated if it is
+      affected by the move (it is equal with \a from or falls between \a from and
+      \a to indexes).
+      */
+    function moveTab(from, to) {
+        if (from < 0 || from >= count || to < 0 || to >= count || from === to) return false;
+        var tabFrom = tabsModel.get(from).tab;
+        var tabTo = tabsModel.get(to).tab;
+
+        // move tab
+        QuickUtils.moveItemBefore(tabFrom, tabTo);
+        tabsModel.updateTabList(tabs.children);
+
+        // fix selected tab
+        if (selectedTabIndex === from) {
+            selectedTabIndex = to;
+        } else if (selectedTabIndex >= Math.min(from, to) && selectedTabIndex <= Math.max(from, to)) {
+            selectedTabIndex--;
+        } else {
+            internal.sync();
+        }
+
+        return true;
+    }
+
+    /*!
+      Removes the Tab from the given \a index. Returns true if the \a index falls
+      into 0..\l count - 1 boundary and the operation succeeds, and false on error.
+      The function removes also the pre-declared tabs. These can be added back using
+      \l addTab or \l insertTab by specifying the instance of the Tab to be added as
+      component. The \l selectedTabIndex is updated if is affected by the removal
+      (it is identical or greater than the tab index to be removed).
+      */
+    function removeTab(index) {
+        if (index < 0 || index >= count) return false;
+        var tab = tabsModel.get(index).tab;
+        var activeIndex = (selectedTabIndex >= index) ? MathUtils.clamp(selectedTabIndex, 0, count - 2) : -1;
+
+        // remove from Tabs; Tabs children change will remove the tab from the model
+        tab.parent = null;
+        if (tab.__protected.dynamic) {
+            tab.destroy();
+        } else {
+            // pre-declared tab, mark it as removed, so we don't update it next time
+            // the tabs stack children is updated
+            tab.parent = trashedTabs;
+        }
+
+        // move active tab if needed
+        if (activeIndex >= 0 && activeIndex !== selectedTabIndex) {
+            selectedTabIndex = activeIndex;
+        } else {
+            internal.sync();
+        }
+
+        return true;
+    }
+
+    /*! \internal */
+    onChildrenChanged: {
+        internal.connectToRepeaters(tabs.children);
+        tabsModel.updateTabList(tabs.children);
+    }
+
+    /*!
       \internal
       required by TabsStyle
      */
     ListModel {
         id: tabsModel
 
+        property bool updateDisabled: false
+
         function listModel(tab) {
             return {"title": tab.title, "tab": tab};
         }
 
         function updateTabList(tabsList) {
+            if (updateDisabled) return;
             var offset = 0;
-            var tabIndex;
+            var tabIndex = -1;
             for (var i in tabsList) {
                 var tab = tabsList[i];
                 if (internal.isTab(tab)) {
                     tabIndex = i - offset;
-                    // make sure we have the right parent
-                    tab.parent = tabStack;
 
                     if (!tab.__protected.inserted) {
                         tab.__protected.index = tabIndex;
                         tab.__protected.inserted = true;
                         insert(tabIndex, listModel(tab));
-                    } else if (!tab.__protected.removedFromTabs && tabsModel.count > tab.index) {
+                    } else {
                         get(tab.index).title = tab.title;
                     }
 
                     // always makes sure that tabsModel has the same order as tabsList
-                    move(tab.__protected.index, tabIndex, 1);
+                    // but move only if there is more than one item in the list
+                    if (count > 1) {
+                        move(tab.__protected.index, tabIndex, 1);
+                    }
                     reindex();
                 } else {
                     // keep track of children that are not tabs so that we compute
                     // the right index for actual tabs
                     offset += 1;
                 }
+            }
+            // remove deleted tabs, those should be at the end of the list by now
+            if ((tabIndex >= 0) && (tabIndex + 1) < count) {
+                remove(tabIndex + 1, count - tabIndex - 1);
             }
             internal.sync();
         }
@@ -254,21 +509,44 @@ PageTreeNode {
 
             for (var i = start; i < count; i++) {
                 var tab = get(i).tab;
-                tab.__protected.index = i;
+                // FIXME: introduce an idle timer to get the model updated properly. This small delay
+                // is needed for arm64 unit tests, as the move() seems to update the model asynchronously.
+                // fixes bug #1308086
+                if (!tab) wait(0);
+                tab = get(i).tab;
+
+                if (tab) {
+                    tab.__protected.index = i;
+                } else {
+                    console.error("Invalid Tab at index", i, get(i).title)
+                }
+            }
+        }
+
+        function insertTab(tab, index) {
+            // fix index
+            if (index < 0) {
+                index = 0;
+            }
+            // get the tab before which the item will be inserted
+            var itemAtIndex = ((index >= 0) && (index < count)) ? get(index).tab : null;
+            // disable update only if we insert, append can keep the logic rolling
+            updateDisabled = (itemAtIndex !== null);
+            insert(index, listModel(tab));
+            tab.parent = tabs;
+            updateDisabled = false;
+            if (itemAtIndex) {
+                QuickUtils.moveItemBefore(tab, itemAtIndex);
+                updateTabList(tabs.children);
             }
         }
     }
 
-    // FIXME: this component is not really needed, as it doesn't really bring any
-    // value; should be removed in a later MR
+    // invisible component stacking removed pre-declared components
     Item {
-        anchors.fill: parent
-        id: tabStack
-
-        onChildrenChanged: {
-            internal.connectToRepeaters(tabStack.children);
-            tabsModel.updateTabList(tabStack.children);
-        }
+        id: trashedTabs
+        visible: false
+        opacity: 0.0
     }
 
     /*
@@ -283,7 +561,7 @@ PageTreeNode {
         interval: 1
         running: false
         onTriggered: {
-            tabsModel.updateTabList(tabStack.children);
+            tabsModel.updateTabList(tabs.children);
             internal.sync();
         }
     }
@@ -295,8 +573,8 @@ PageTreeNode {
         Binding {
             target: tabBar
             property: "animate"
-            when: internal.header && internal.header.hasOwnProperty("animate")
-            value: internal.header.animate
+            when: (internal.header !== null) && internal.header.hasOwnProperty("animate")
+            value: internal.header ? internal.header.animate : "false"
         }
 
         /*
@@ -332,7 +610,9 @@ PageTreeNode {
         function connectToRepeaters(children) {
             for (var i = 0; i < children.length; i++) {
                 var child = children[i];
-                if (internal.isRepeater(child) && (internal.repeaters.indexOf(child) < 0)) {
+                if (internal.isRepeater(child) &&
+                        (internal.repeaters !== undefined) &&
+                        (internal.repeaters.indexOf(child) < 0)) {
                     internal.connectRepeater(child);
                 }
             }
@@ -355,7 +635,7 @@ PageTreeNode {
            https://bugreports.qt-project.org/browse/QTBUG-32438
         */
         function updateTabsModel() {
-            tabsModel.updateTabList(tabStack.children);
+            tabsModel.updateTabList(tabs.children);
         }
 
         /*

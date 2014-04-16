@@ -21,6 +21,7 @@
 #include "alarmmanager_p.h"
 #include "alarmrequest_p.h"
 #include "alarmsadapter_p.h"
+#include <qorganizertodooccurrence.h>
 
 #include <QtCore/QFile>
 #include <QtCore/QDir>
@@ -55,11 +56,15 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     , manager(0)
     , fetchRequest(0)
 {
-    QOrganizerManager local;
-    bool usingDefaultManager = local.availableManagers().contains(ALARM_MANAGER);
-    manager = (usingDefaultManager) ? new QOrganizerManager(ALARM_MANAGER) : new QOrganizerManager(ALARM_MANAGER_FALLBACK);
+    QString envManager(qgetenv("ALARM_BACKEND"));
+    if (!envManager.isEmpty() && QOrganizerManager::availableManagers().contains(envManager)) {
+        manager = new QOrganizerManager(envManager);
+    } else {
+        manager = QOrganizerManager::availableManagers().contains(ALARM_MANAGER) ?
+                    new QOrganizerManager(ALARM_MANAGER) : new QOrganizerManager(ALARM_MANAGER_FALLBACK);
+    }
     manager->setParent(q_ptr);
-    if (!usingDefaultManager) {
+    if (manager->managerName() != ALARM_MANAGER) {
         qWarning() << "WARNING: default alarm manager not installed, using" << manager->managerName() << "manager.";
         qWarning() << "This manager may not provide all the needed features.";
     }
@@ -114,6 +119,7 @@ void AlarmsAdapter::loadAlarms()
 
         int type, days;
         in >> alarm.message >> alarm.date >> alarm.sound >> type >> days >> alarm.enabled;
+        alarm.originalDate = alarm.date;
         alarm.type = static_cast<UCAlarm::AlarmType>(type);
         alarm.days = static_cast<UCAlarm::DaysOfWeek>(days);
 
@@ -142,7 +148,7 @@ void AlarmsAdapter::saveAlarms()
 
     Q_FOREACH(const AlarmData &alarm, alarmList) {
         out << alarm.message
-            << alarm.date
+            << alarm.originalDate
             << alarm.sound
             << alarm.type
             << alarm.days
@@ -157,7 +163,6 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
     event.setCollectionId(collection.id());
     event.setAllDay(false);
     event.setStartDateTime(alarm.date);
-    event.setDueDateTime(alarm.date);
     event.setDisplayLabel(alarm.message);
 
     if (alarm.enabled) {
@@ -224,8 +229,9 @@ int AlarmsAdapter::alarmDataFromOrganizerEvent(const QOrganizerTodo &event, Alar
 
     alarm.cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
     alarm.message = event.displayLabel();
-    alarm.date = AlarmData::normalizeDate(event.dueDateTime());
+    alarm.date = AlarmData::normalizeDate(event.startDateTime());
     alarm.sound = QUrl(event.description());
+    alarm.originalDate = alarm.date;
 
     // check if the alarm is enabled or not
     QOrganizerItemVisualReminder visual = event.detail(QOrganizerItemDetail::TypeVisualReminder);
@@ -303,8 +309,8 @@ void AlarmsAdapter::completeFetchAlarms(const QList<QOrganizerItem> &alarms)
     Q_FOREACH(const QOrganizerItem &item, alarms) {
         // repeating alarms may be fetched as occurences, therefore check their parent event
         if (item.type() == QOrganizerItemType::TypeTodoOccurrence) {
-            QOrganizerTodoOccurrence occurence = static_cast<QOrganizerTodoOccurrence>(item);
-            QOrganizerItemId eventId = occurence.parentId();
+            QOrganizerTodoOccurrence occurrence = static_cast<QOrganizerTodoOccurrence>(item);
+            QOrganizerItemId eventId = occurrence.parentId();
             if (parentId.contains(eventId)) {
                 continue;
             }
@@ -317,6 +323,7 @@ void AlarmsAdapter::completeFetchAlarms(const QList<QOrganizerItem> &alarms)
         }
         AlarmData alarm;
         if (alarmDataFromOrganizerEvent(event, alarm) == UCAlarm::NoError) {
+            adjustAlarmOccurrence(event, alarm);
             alarmList << alarm;
         }
     }
@@ -324,7 +331,46 @@ void AlarmsAdapter::completeFetchAlarms(const QList<QOrganizerItem> &alarms)
     saveAlarms();
     Q_EMIT q_ptr->alarmsChanged();
     completed = true;
+    fetchRequest->deleteLater();
     fetchRequest = 0;
+}
+
+void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData &alarm)
+{
+    if (alarm.type == UCAlarm::OneTime) {
+        return;
+    }
+    // with EDS we need to query the occurrences separately as the fetch reports only the main events
+    // with fallback manager this does not reduce the performance and does work the same way.
+    QDateTime currentDate = AlarmData::normalizeDate(QDateTime::currentDateTime());
+    if (alarm.date > currentDate) {
+        // no need to adjust date, the event occurs in the future
+        return;
+    }
+    QDateTime startDate;
+    QDateTime endDate;
+    if (alarm.type == UCAlarm::Repeating) {
+        // 8 days is enough from the starting date (or current date depending on the start date)
+        startDate = (alarm.date > currentDate) ? alarm.date : currentDate;
+        endDate = startDate.addDays(8);
+    }
+
+    QList<QOrganizerItem> occurrences = manager->itemOccurrences(event, startDate, endDate, 10);
+    // get the first occurrence and use the date from it
+    if ((occurrences.length() > 0) && (occurrences[0].type() == QOrganizerItemType::TypeTodoOccurrence)) {
+        // loop till we get a proper future due date
+        for (int i = 0; i < occurrences.count(); i++) {
+            QOrganizerTodoOccurrence occurrence = static_cast<QOrganizerTodoOccurrence>(occurrences[i]);
+            // check if the date is after the current datetime
+            // the first occurrence is the one closest to the currentDate, therefore we can safely
+            // set that startDate to the alarm
+            alarm.date = occurrence.startDateTime();
+            if (alarm.date > currentDate) {
+                // we have the proper date set, leave
+                break;
+            }
+        }
+    }
 }
 
 /*-----------------------------------------------------------------------------
@@ -410,23 +456,10 @@ bool AlarmRequestAdapter::fetch()
     QOrganizerItemFetchRequest *operation = new QOrganizerItemFetchRequest(q_ptr);
     operation->setManager(owner->manager);
 
-    // FIXME: Since returning all events without a limit of date is not a good solution we need to find
-    // a better solution for that.
-    // The current solution filters only the next 7 days (one week).
-    // This will be enough for now, since the current alarms occur weekly, but for the future
-    // we want to allow create alarms with monthly or yearly recurrence
-    QDate currentDate = QDate::currentDate();
-    QDateTime startDate(currentDate,
-                        QTime(0,0,0));
-    QDateTime endDate(currentDate.addDays(7),
-                      QTime(23,59,59));
-    operation->setStartDate(startDate);
-    operation->setEndDate(endDate);
-
     // set sort order
     QOrganizerItemSortOrder sortOrder;
     sortOrder.setDirection(Qt::AscendingOrder);
-    sortOrder.setDetail(QOrganizerItemDetail::TypeTodoTime, QOrganizerTodoTime::FieldDueDateTime);
+    sortOrder.setDetail(QOrganizerItemDetail::TypeTodoTime, QOrganizerTodoTime::FieldStartDateTime);
     operation->setSorting(QList<QOrganizerItemSortOrder>() << sortOrder);
 
     // set filter
