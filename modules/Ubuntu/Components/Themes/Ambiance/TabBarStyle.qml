@@ -116,8 +116,8 @@ Item {
                 AbstractButton {
                     id: button
                     anchors {
-                        top: parent ? parent.top : undefined
-                        bottom: parent ? parent.bottom: undefined
+                        top: parent.top
+                        bottom: parent.bottom
                     }
                     width: text.paintedWidth + text.anchors.leftMargin + text.anchors.rightMargin
 
@@ -148,13 +148,6 @@ Item {
                         // working modulus numTabs:
                         if (buttonIndex < buttonView.selectedButtonIndex - numTabs) return true;
                         return false;
-                    }
-
-                    // update the offset of the buttonRow
-                    onOffsetChanged: {
-                        if (selected) {
-                            buttonView.updateOffset(button.offset);
-                        }
                     }
 
                     Behavior on opacity {
