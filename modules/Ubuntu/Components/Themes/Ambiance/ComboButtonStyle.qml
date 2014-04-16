@@ -198,7 +198,7 @@ Item {
                 topMargin: comboListMargin
             }
             clip: true
-            color: comboStyle.dropDownColorPressed
+            color: combo.expanded ? combo.dropdownColorPressed : combo.dropdownColorReleased
         }
 
         BorderImage {
