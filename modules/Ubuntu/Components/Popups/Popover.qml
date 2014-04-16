@@ -204,6 +204,7 @@ PopupBase {
 
     StyledItem {
         id: foreground
+        objectName: "popover_foreground"
 
         //styling properties
         property real minimumWidth: units.gu(40)

@@ -486,7 +486,6 @@ StyledItem
     function remove(start, end)
     function undo()
     function forceActiveFocus()
-    property internal __internal
 modules/Ubuntu/Components/TextField.qml
 ActionItem
     property bool highlighted
@@ -552,7 +551,6 @@ ActionItem
     function undo()
     function remove(start, end)
     function getText(start, end)
-    property internal __internal
 modules/Ubuntu/Components/Themes/Palette.qml
 QtObject
     property PaletteValues normal
@@ -694,27 +692,35 @@ plugins.qmltypes
     Signal {
     name: "pressed"
     Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     Signal {
     name: "released"
     Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     Signal {
     name: "clicked"
     Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     Signal {
     name: "pressAndHold"
     Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     Signal {
     name: "doubleClicked"
     Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     Signal {
     name: "positionChanged"
     Parameter { name: "mouse"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     Signal {
     name: "entered"
     Parameter { name: "event"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     Signal {
     name: "exited"
     Parameter { name: "event"; type: "QQuickMouseEvent"; isPointer: true }
+    Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     name: "UCQQuickImageExtension"
     prototype: "QQuickImageBase"
     exports: ["QQuickImageBase 0.1"]

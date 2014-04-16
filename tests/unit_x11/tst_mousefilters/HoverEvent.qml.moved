@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -13,17 +13,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-/*!
-  \internal
-  Component serving as group property for DialerHhand.hand property.
-  */
-QtObject {
-    property real width: units.gu(0.5)
-    property real height: parent.dialer.handSize
-    property bool draggable: true
-    property bool visible: true
-    property bool toCenterItem: false
+Item {
+    id: root
+    width: units.gu(40)
+    height: units.gu(71)
+
+    Rectangle {
+        width: units.gu(30)
+        height: units.gu(30)
+        anchors.centerIn: parent
+        color: "blue"
+
+        MouseArea {
+            objectName: "FilterOwner"
+            anchors.fill: parent
+            hoverEnabled: true
+            Mouse.enabled: true
+        }
+    }
 }
