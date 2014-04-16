@@ -17,4 +17,57 @@
 """Ubuntu UI Toolkit Autopilot tests and helpers."""
 
 
-from ubuntuuitoolkit._custom_proxy_objects import *  # NOQA
+__all__ = [
+    'ActionSelectionPopover',
+    'Base',
+    'check_autopilot_version',
+    'CheckBox',
+    'ComposerSheet',
+    'Empty',
+    'Flickable',
+    'get_keyboard',
+    'get_pointing_device',
+    'Header',
+    'ItemSelector',
+    'MainView',
+    'MultiValue',
+    'QQuickListView',
+    'SingleControl',
+    'SingleValue',
+    'Standard',
+    'Subtitled',
+    'TabBar',
+    'Tabs',
+    'TextField',
+    'Toolbar',
+    'ToolkitException',
+    'UbuntuUIToolkitCustomProxyObjectBase',
+]
+
+
+from ubuntuuitoolkit._custom_proxy_objects import (
+    ActionSelectionPopover,
+    Base,
+    check_autopilot_version,
+    CheckBox,
+    ComposerSheet,
+    Empty,
+    Flickable,
+    get_keyboard,
+    get_pointing_device,
+    Header,
+    ItemSelector,
+    MainView,
+    MultiValue,
+    QQuickListView,
+    SingleControl,
+    SingleValue,
+    Standard,
+    Subtitled,
+    TabBar,
+    Tabs,
+    TextField,
+    Toolbar,
+    ToolkitException,
+    UbuntuUIToolkitCustomProxyObjectBase,
+)
