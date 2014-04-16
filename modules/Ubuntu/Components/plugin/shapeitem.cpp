@@ -375,6 +375,11 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
         return NULL;
     }
 
+    // Update the node whenever the source item's texture changes.
+    if ((dirtyFlags_ & ShapeItem::DirtyImage) && provider) {
+        QObject::connect(provider, SIGNAL(textureChanged()), this, SLOT(update()));
+    }
+
     ShapeNode* node = static_cast<ShapeNode*>(old_node);
     if (!node) {
         node = new ShapeNode(this);
@@ -417,6 +422,8 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
     node->setVertices(geometry_, radius, image_, stretched_, hAlignment_, vAlignment_,
                       textureData->coordinate[index]);
     node->setMaterialType(image_ ? ShapeNode::TexturedMaterial : ShapeNode::ColoredMaterial);
+
+    dirtyFlags_ = ShapeItem::NotDirty;
 
     return node;
 }
