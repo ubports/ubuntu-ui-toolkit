@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import "../" 0.1
+import Ubuntu.Components 0.1
 
 /*!
     \qmltype Dialer

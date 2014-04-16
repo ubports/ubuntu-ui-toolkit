@@ -486,7 +486,6 @@ StyledItem
     function remove(start, end)
     function undo()
     function forceActiveFocus()
-    property internal __internal
 modules/Ubuntu/Components/TextField.qml
 ActionItem
     property bool highlighted
@@ -552,7 +551,6 @@ ActionItem
     function undo()
     function remove(start, end)
     function getText(start, end)
-    property internal __internal
 modules/Ubuntu/Components/Themes/Palette.qml
 QtObject
     property PaletteValues normal

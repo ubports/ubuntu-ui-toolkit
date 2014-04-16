@@ -16,56 +16,58 @@
 
 import QtQuick 2.0
 import QtTest 1.0
+import Ubuntu.Test 0.1
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Item {
-    width: 200; height: 200
+    id: main
+    width: units.gu(50); height: units.gu(100)
 
     property bool hasOSK: QuickUtils.inputMethodProvider !== ""
 
-    TextArea {
-        id: textArea
-        SignalSpy {
-            id: signalSpy
-            target: parent
-        }
+    Column {
+        TextArea {
+            id: textArea
+            SignalSpy {
+                id: signalSpy
+                target: parent
+            }
 
-        property int keyPressData
-        property int keyReleaseData
-        Keys.onPressed: keyPressData = event.key
-        Keys.onReleased: keyReleaseData = event.key
-    }
-
-    TextArea {
-        id: colorTest
-        color: colorTest.text.length < 4 ? "#0000ff" : "#00ff00"
-    }
-
-    TextEdit {
-        id: textEdit
-    }
-
-    ListItem.Empty {
-        id: listItem
-        height: 200
-        anchors.left: parent.left
-
-        anchors.right: parent.right
-        SignalSpy {
-            id: listItemSpy
-            signalName: "clicked"
-            target: listItem
+            property int keyPressData
+            property int keyReleaseData
+            Keys.onPressed: keyPressData = event.key
+            Keys.onReleased: keyReleaseData = event.key
         }
 
         TextArea {
-            id: input
-            anchors.fill: parent
-            Component.onCompleted: forceActiveFocus()
+            id: colorTest
+            color: colorTest.text.length < 4 ? "#0000ff" : "#00ff00"
         }
-    }
 
-    Item {
+        TextEdit {
+            id: textEdit
+        }
+
+        ListItem.Empty {
+            id: listItem
+            height: 200
+            anchors.left: parent.left
+
+            anchors.right: parent.right
+            SignalSpy {
+                id: listItemSpy
+                signalName: "clicked"
+                target: listItem
+            }
+
+            TextArea {
+                id: input
+                anchors.fill: parent
+                Component.onCompleted: forceActiveFocus()
+            }
+        }
+
         TextArea {
             id: t1
             objectName: "t1"
@@ -74,13 +76,42 @@ Item {
             id: t2
             objectName: "t2"
         }
+
+        TextArea {
+            id: longText
+            text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
+        }
     }
 
-    TestCase {
+    UbuntuTestCase {
         name: "TextAreaAPI"
         when: windowShown
 
-        function test_1_activate() {
+        function cleanup() {
+            textArea.focus =
+            colorTest.focus =
+            textEdit.focus =
+            input.focus =
+            t1.focus =
+            t2.focus =
+            longText.focus = false;
+            longText.cursorPosition = 0;
+            var scroller = findChild(longText, "textarea_scroller");
+            scroller.contentY = 0;
+            scroller.contentX = 0;
+
+            textArea.text = "";
+            textArea.textFormat = TextEdit.PlainText;
+            input.textFormat = TextEdit.PlainText;
+            input.text = "";
+            input.cursorPosition = 0;
+
+            // empty event buffer
+            wait(200);
+        }
+
+
+        function test_activate() {
             textArea.forceActiveFocus();
             compare(textArea.activeFocus, true, "TextArea is active");
         }
@@ -150,7 +181,7 @@ Item {
             compare(textArea.lineCount,textEdit.lineCount,"TextArea.lineCount is same as TextEdit.lineCount")
         }
 
-        function test_1_mouseSelectionMode() {
+        function test_0_mouseSelectionMode() {
             compare(textArea.mouseSelectionMode, TextEdit.SelectWords,"TextArea.mouseSelectionMode is SelectWords")
         }
 
@@ -206,45 +237,45 @@ Item {
             compare(textArea.wrapMode,TextEdit.Wrap,"TextArea.wrapMode is TextEdit.Wrap")
         }
 
-    // TextArea specific properties
-        function test_1_highlighted() {
+        // TextArea specific properties
+        function test_0_highlighted() {
             compare(textArea.highlighted, textArea.focus, "highlighted is the same as focused");
         }
 
-        function test_1_contentHeight() {
+        function test_contentHeight() {
             compare(textArea.contentHeight>0,true,"contentHeight over 0 units on default")
             var newValue = 200;
             textArea.contentHeight = newValue;
             compare(textArea.contentHeight,newValue,"set/get");
         }
 
-        function test_1_contentWidth() {
+        function test_contentWidth() {
             compare(textArea.contentWidth,units.gu(30),"contentWidth is 30 units on default")
             var newValue = 200;
             textArea.contentWidth = newValue;
             compare(textArea.contentWidth,newValue,"set/get");
         }
 
-        function test_1_placeholderText() {
+        function test_placeholderText() {
             compare(textArea.placeholderText,"","placeholderText is '' on default")
             var newValue = "Hello Placeholder";
             textArea.placeholderText = newValue;
             compare(textArea.placeholderText,newValue,"set/get");
         }
 
-        function test_1_autoSize() {
+        function test_autoSize() {
             compare(textArea.autoSize,false,"TextArea.autoSize is set to false");
             var newValue = true;
             textArea.autoSize = newValue;
             compare(textArea.autoSize, newValue,"set/get");
         }
 
-        function test_1_baseUrl() {
+        function test_0_baseUrl() {
             expectFail("","TODO")
             compare(textArea.baseUrl,"tst_textarea.qml","baseUrl is QML file instantiating the TextArea item on default")
         }
 
-        function test_1_displayText() {
+        function test_displayText() {
             compare(textArea.displayText,"","displayText is '' on default")
             var newValue = "Hello Display Text";
             try {
@@ -256,11 +287,11 @@ Item {
 
         }
 
-        function test_1_popover() {
+        function test_0_popover() {
             compare(textArea.popover, undefined, "Uses default popover");
         }
 
-        function test_1_maximumLineCount() {
+        function test_maximumLineCount() {
             compare(textArea.maximumLineCount,5,"maximumLineCount is 0 on default")
             var newValue = 10;
             textArea.maximumLineCount = newValue;
@@ -272,7 +303,7 @@ Item {
             compare(textArea.activeFocus, false, "TextArea is inactive");
         }
 
-    // functions
+        // functions
         function test_copy() {
             textArea.copy();
         }
@@ -360,13 +391,13 @@ Item {
         }
 
 
-    // signals
+        // signals
         function test_linkActivated() {
             signalSpy.signalName = "linkActivated";
             compare(signalSpy.valid,true,"linkActivated signal exists")
         }
 
-    // filters
+        // filters
         function test_keyPressAndReleaseFilter() {
             textArea.visible = true;
             textArea.forceActiveFocus();
@@ -451,7 +482,7 @@ Item {
         }
 
         // make it to b ethe last test case executed
-        function test_zz_TextareaInListItem_RichTextEnterCaptured() {
+        function test_TextareaInListItem_RichTextEnterCaptured() {
             textArea.text = "a<br />b";
             textArea.textFormat = TextEdit.RichText;
             input.forceActiveFocus();
@@ -460,6 +491,233 @@ Item {
             input.cursorPosition = 1;
             keyClick(Qt.Key_Return);
             compare(input.text, textArea.text, "Formatted text split");
+        }
+
+        // selection and scrolling
+        SignalSpy {
+            id: flickSpy
+            signalName: "onMovementEnded"
+        }
+
+        function test_scroll_when_not_focused() {
+            var handler = findChild(longText, "input_handler");
+            verify(handler);
+
+            flickSpy.target = findChild(longText, "textarea_scroller");
+            flickSpy.clear();
+            verify(longText.focus == false);
+            var y = longText.height - units.gu(2);
+            var my = y / 2;
+            var x = longText.width / 2;
+            var dy = units.gu(3);
+            flick(longText, x, y, 0, -dy);
+            verify(longText.focus);
+            compare(flickSpy.count, 0, "The input had scrolled while inactive");
+        }
+
+        function test_scroll_when_focused() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            verify(handler);
+
+            flickSpy.target = findChild(longText, "textarea_scroller");
+            flickSpy.clear();
+            var y = longText.height - units.gu(2);
+            var my = y / 2;
+            var x = longText.width / 2;
+            var dy = units.gu(3);
+            compare(handler.state, "", "The input is not in default state before selection");
+            flick(longText, x, my, 0, -dy);
+            flickSpy.wait();
+            compare(handler.state, "", "The input has not returned to default state.");
+        }
+
+        function test_select_by_pressAndDrag() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            verify(handler);
+            var dx = longText.width / 4;
+            var x = units.gu(5);
+            var y = longText.height / 2;
+            compare(handler.state, "", "The input is not in default state before selection");
+            flick(longText, x, y, 2*dx, 0, handler.selectionModeTimeout + 50, 10);
+            verify(longText.selectedText !== "");
+            compare(handler.state, "", "The input has not returned to default state.");
+        }
+
+        function test_select_text_doubletap() {
+            longText.focus = true;
+            var x = units.gu(2);
+            var y = longText.height / 4;
+            mouseDoubleClick(longText, x, y);
+            expectFail("", "mouseDoubleClick fails to trigger");
+            verify(longText.selectedText !== "");
+        }
+
+        function test_scroll_with_selected_text() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            verify(handler);
+            var y = longText.height / 2;
+            var x = longText.width / 2;
+            flickSpy.target = findChild(longText, "textarea_scroller");
+            flickSpy.clear();
+
+            // select text
+            compare(handler.state, "", "The input is not in default state before selection");
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
+            verify(longText.selectedText !== "");
+            compare(handler.state, "", "The input has not returned to default state.");
+
+            // flick upwards
+            flick(longText, x, y, 0, -units.gu(2));
+            flickSpy.wait();
+            compare(handler.state, "", "The input has not returned to default state.");
+        }
+
+        SignalSpy {
+            id: popoverSpy
+            signalName: "onPressAndHold"
+        }
+
+        function test_press_and_hold_moves_cursor_position_and_opens_context_menu() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textarea_scroller");
+            flickSpy.clear();
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // long press
+            compare(handler.state, "", "The input is not in default state before long press");
+            mouseLongPress(longText, units.gu(8), y);
+            waitForRendering(longText);
+            popoverSpy.wait();
+            verify(longText.cursorPosition != 0);
+            compare(handler.state, "inactive", "The input is not in inactive state while context menu is open");
+
+            // cleanup, release the mouse, that should bring the handler back to defautl state
+            mouseRelease(longText, units.gu(8), y);
+            compare(handler.state, "", "The input has not returned to default state.");
+            // dismiss popover
+            mouseClick(main, 10, 10);
+        }
+
+        function test_press_and_hold_moves_cursor_position_and_opens_context_menu_when_not_focus() {
+            var handler = findChild(longText, "input_handler");
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textarea_scroller");
+            flickSpy.clear();
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // long press
+            compare(handler.state, "inactive", "The input is not in inactive state before long press");
+            mouseLongPress(longText, units.gu(8), y);
+            waitForRendering(longText);
+            popoverSpy.wait();
+            verify(longText.focus, "The input is not focused");
+            verify(longText.cursorPosition != 0, "The cursor wasn't moved");
+            compare(handler.state, "inactive", "The input is not in inactive state while the context menu is open");
+
+            // cleanup, release the mouse, that should bring the handler back to defautl state
+            mouseRelease(longText, units.gu(8), y);
+            compare(handler.state, "", "The input has not returned to default state.");
+            // dismiss popover
+            mouseClick(main, 10, 10);
+        }
+
+        function test_press_and_hold_over_selected_text() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textarea_scroller");
+            flickSpy.clear();
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // select text
+            compare(handler.state, "", "The input is not in default state before long press");
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
+            waitForRendering(longText);
+            compare(handler.state, "", "The input has not returned to default state.");
+            verify(longText.selectedText !== "");
+
+            mouseLongPress(longText, units.gu(4), y);
+            // wait till popover is shown
+            waitForRendering(longText);
+            popoverSpy.wait();
+            // cleanup, release the mouse, that should bring the handler back to default state
+            mouseRelease(longText, units.gu(4), y);
+            compare(handler.state, "", "The input has not returned to default state.");
+            // dismiss popover
+            mouseClick(main, 10, 10);
+        }
+
+        function test_move_mouse_while_context_menu_open_does_not_move_selection() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textarea_scroller");
+            flickSpy.clear();
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // select text
+            compare(handler.state, "", "The input is not in default state before long press");
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
+            verify(longText.selectedText !== "");
+            var selection = longText.selectedText;
+            compare(handler.state, "", "The input has not returned to default state.");
+
+            mouseLongPress(longText, units.gu(4), y);
+            // wait till popover is shown
+            waitForRendering(longText);
+            popoverSpy.wait();
+            // do some mouse moves and compare whether we have the same selection
+            mouseMoveSlowly(longText, units.gu(4), y, units.gu(4), units.gu(1), 3, 100);
+            compare(selection, longText.selectedText, "Selection differs");
+            // cleanup, release the mouse, that should bring the handler back to default state
+            mouseRelease(longText, units.gu(8), y + units.gu(1));
+            compare(handler.state, "", "The input has not returned to default state.");
+            mouseClick(main, 10, 10);
+        }
+
+        function test_clear_selection_by_click_on_selection() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textarea_scroller");
+            flickSpy.clear();
+
+            // select text
+            compare(handler.state, "", "The input is not in default state before long press");
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
+            compare(handler.state, "", "The input has not returned to default state.");
+            verify(longText.selectedText !== "", "There is no selected text");
+
+            // click on selection
+            mouseClick(longText, units.gu(4), y);
+            verify(longText.selectedText === "", "There is still selected text");
+        }
+
+        function test_clear_selection_by_click_beside_selection() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textarea_scroller");
+            flickSpy.clear();
+
+            // select text
+            compare(handler.state, "", "The input is not in default state before long press");
+            flick(longText, 0, y, units.gu(8), units.gu(4), handler.selectionModeTimeout + 50);
+            compare(handler.state, "", "The input has not returned to default state.");
+            verify(longText.selectedText !== "", "There is no text selected");
+
+            // click on selection
+            mouseClick(longText, units.gu(10), y);
+            verify(longText.selectedText === "", "There is still selected text");
         }
     }
 }
