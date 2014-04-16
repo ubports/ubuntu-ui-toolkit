@@ -740,6 +740,7 @@ StyledItem {
     MouseArea {
         anchors.fill: parent
         enabled: internal.frameSpacing > 0
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
         // activate input when pressed on the frame
         preventStealing: false
         Ubuntu.Mouse.forwardTo: [inputHandler]

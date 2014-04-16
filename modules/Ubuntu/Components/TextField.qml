@@ -840,7 +840,8 @@ ActionItem {
     // grab clicks from the area between the frame and the input
     MouseArea {
         anchors.fill: parent
-        // us it only when there is space between the frame and input
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        // use it only when there is space between the frame and input
         enabled: internal.spacing > 0
         preventStealing: false
         // forward mouse events to input so we can handle those uniformly

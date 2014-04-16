@@ -283,6 +283,11 @@ Item {
         }
         moveStarts = moveEnds = -1;
         state = "";
+        // check if we get right-click from the frame or the area that has no text
+        if (mouse.button === Qt.RightButton) {
+            // open the popover
+            inputHandler.pressAndHold(input.cursorPosition);
+        }
     }
     Ubuntu.Mouse.onPositionChanged: {
         // leave if not focus, not the left button or not in select state
