@@ -43,6 +43,7 @@ __all__ = [
     'Subtitled',
     'TabBar',
     'Tabs',
+    'tests',
     'TextField',
     'Toolbar',
     'ToolkitException',
@@ -55,6 +56,7 @@ from ubuntuuitoolkit import (
     emulators,
     environment,
     fixture_setup,
+    tests,
 )
 from ubuntuuitoolkit._custom_proxy_objects import (
     ActionSelectionPopover,
