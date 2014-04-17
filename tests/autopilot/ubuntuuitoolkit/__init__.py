@@ -25,7 +25,6 @@ __all__ = [
     'CheckBox',
     'ComposerSheet',
     'Empty',
-    'emulators',
     'environment',
     'fixture_setup',
     'Flickable',
@@ -43,7 +42,6 @@ __all__ = [
     'Subtitled',
     'TabBar',
     'Tabs',
-    'tests',
     'TextField',
     'Toolbar',
     'ToolkitException',
@@ -53,10 +51,8 @@ __all__ = [
 
 from ubuntuuitoolkit import (
     base,
-    emulators,
     environment,
     fixture_setup,
-    tests,
 )
 from ubuntuuitoolkit._custom_proxy_objects import (
     ActionSelectionPopover,
