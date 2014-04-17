@@ -26,6 +26,7 @@ __all__ = [
     'ComposerSheet',
     'Empty',
     'environment',
+    'emulators',
     'fixture_setup',
     'Flickable',
     'get_keyboard',
@@ -51,6 +52,7 @@ __all__ = [
 
 from ubuntuuitoolkit import (
     base,
+    emulators,
     environment,
     fixture_setup,
 )

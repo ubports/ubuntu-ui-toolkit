@@ -56,7 +56,7 @@ __all__ = [
 ]
 
 
-from ubuntuuitoolkit import (
+from ubuntuuitoolkit._custom_proxy_objects import (
     check_autopilot_version,
     get_keyboard,
     get_pointing_device,
