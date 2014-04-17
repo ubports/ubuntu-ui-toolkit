@@ -119,21 +119,6 @@ QString QuickUtils::className(QObject *item)
     return result.left(result.indexOf("_QML"));
 }
 
-/*!
- * \internal
- * Moves a given \a item before the \a other one in the object stack. Both \a item
- * and \a other must have the same parent item.
- */
-void QuickUtils::moveItemBefore(QQuickItem *item, QQuickItem *other)
-{
-    Q_ASSERT(item);
-    Q_ASSERT(item->parentItem());
-    if (other) {
-        Q_ASSERT(other->parentItem() == item->parentItem());
-        item->stackBefore(other);
-    }
-}
-
 
 /*!
  * \internal
