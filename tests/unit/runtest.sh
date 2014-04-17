@@ -33,7 +33,7 @@ function create_test_cmd {
   if [ $_TARGET != $_TESTFILE ]; then
       _CMD="$_CMD -input $_TESTFILE"
   fi
-  _CMD="$_CMD -maxwarnings 4"
+  _CMD="$_CMD -maxwarnings 40"
 }
 
 function execute_test_cmd {
@@ -71,7 +71,6 @@ function execute_test_cmd {
                 tst_listitems_base.qml \
                 tst_statesaver \
                 tst_theme_engine \
-                tst_orientation \
                 tst_tabs.qml \
                 tst_textfield.qml \
                 tst_mousefilters'

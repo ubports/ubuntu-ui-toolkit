@@ -33,8 +33,9 @@ class DeprecatedSymbolsTestCase(testscenarios.TestWithScenarios):
         'check_autopilot_version', 'get_keyboard', 'get_pointing_device',
         'ActionSelectionPopover', 'Base', 'CheckBox', 'ComposerSheet',
         'Empty', 'Flickable', 'Header', 'ItemSelector', 'MainView',
-        'MultiValue', 'QQuickListView', 'SingleControl', 'SingleValue',
-        'Standard', 'Subtitled', 'TabBar', 'Tabs', 'TextField', 'Toolbar',
+        'MultiValue', 'OptionSelector', 'QQuickListView', 'SingleControl',
+        'SingleValue', 'Standard', 'Subtitled', 'TabBar', 'Tabs',
+        'TextField', 'Toolbar',
     ]
 
     symbols_retaining_name_scenarios = [

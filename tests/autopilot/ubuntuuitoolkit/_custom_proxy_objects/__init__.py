@@ -31,6 +31,7 @@ __all__ = [
     'ItemSelector',
     'MainView',
     'MultiValue',
+    'OptionSelector',
     'QQuickListView',
     'SingleControl',
     'SingleValue',
@@ -65,6 +66,9 @@ from ubuntuuitoolkit._custom_proxy_objects._listitems import (
     Subtitled,
 )
 from ubuntuuitoolkit._custom_proxy_objects._mainview import MainView
+from ubuntuuitoolkit._custom_proxy_objects._optionselector import (
+    OptionSelector
+)
 from ubuntuuitoolkit._custom_proxy_objects._popups import (
     ActionSelectionPopover,
     ComposerSheet,
