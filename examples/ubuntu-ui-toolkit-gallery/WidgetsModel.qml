@@ -17,6 +17,7 @@
 import QtQuick 2.0
 
 ListModel {
+    /*
     // Already in design guidelines
     ListElement {
         objectName: "navigationElement"
@@ -77,6 +78,7 @@ ListModel {
         label: "Label"
         source: "Label.qml"
     }
+    */
 
     // Already in design guidelines but should be reordered
     ListElement {

@@ -22,12 +22,16 @@
 
 /*!
  * \qmltype SortFilterModel
- * \instantiates QSortFilterProxyModel
+ * \instantiates QSortFilterProxyModelQML
  * \inqmlmodule Ubuntu.Components 0.1
  * \ingroup ubuntu
- * \brief SortFilterModel lorem ipsum qml sit amet.
+ * \brief SortFilterModel sorts and filters rows from an existing model.
  *
- * Carpe noctem.
+ * The SortFilterModel takes an existing model such as a ListModel or
+ * any QAbstractItemModel implementation. The original rows and role names
+ * show up in the SortFilterModel with two basic differences. For one if
+ * \b sort.property is set all rows will be sorted. Further more if
+ * \b filter.property is set only rows matching the filter will be in the model.
  *
  * Example usage:
  * \qml
@@ -37,9 +41,9 @@
  *
  * ListModel {
  *     id: movies
- *     ListElement { title: “Esign”; producer: “Chris Larkee” }
- *     ListElement { title: “Elephants Dream”; producer “Blender” }
- *     ListElement { title: “Big Buck Bunny”; producer “Blender” }
+ *     ListElement { "title": "Esign"; "producer": "Chris Larkee" }
+ *     ListElement { "title": "Elephants Dream"; "producer": "Blender" }
+ *     ListElement { "title": "Big Buck Bunny"; "producer": "Blender" }
  * }
  *
  * SortFilterModel {
@@ -109,12 +113,24 @@ QSortFilterProxyModelQML::filterBehavior()
     return &m_filterBehavior;
 }
 
+/*!
+ * \qmlproperty string SortBehavior::property
+ *
+ * If set to a valid role name, all rows will be sorted according to \l order.
+ */
 QString
 SortBehavior::property() const
 {
     return m_property;
 }
 
+/*!
+ * \qmlproperty string SortBehavior::order
+ *
+ * The order, if \l property is set.
+ * Qt::AscendingOrder sorts results from A to Z or 0 to 9.
+ * Qt::DescendingOrder sorts results from Z to A or 9 to 0.
+ */
 Qt::SortOrder
 SortBehavior::order() const
 {
@@ -142,6 +158,11 @@ QSortFilterProxyModelQML::sortChanged()
     sort(sortColumn() != -1 ? sortColumn() : 0, m_sortBehavior.order());
 }
 
+/*!
+ * \qmlproperty string FilterBehavior::property
+ *
+ * If set to a valid role name, only rows matching \l pattern will be in the model.
+ */
 QString
 FilterBehavior::property() const
 {
@@ -155,6 +176,18 @@ FilterBehavior::setProperty(const QString& property)
     Q_EMIT propertyChanged();
 }
 
+/*!
+ * \qmlproperty string FilterBehavior::pattern
+ *
+ * The pattern all rows must match, if \l property is set.
+ *
+ * Some examples:
+ * /possible/ matches anywhere in a word, so both "impossible" and "possible".
+ * /^sign/ matches "sign". But not "assignment" because ^ means start.
+ * /vest$/ matches "safety vest" and "vest" but not "vested".
+ *
+ * For more advanced uses it's recommended to read up on Javascript regular expressions.
+ */
 QRegExp
 FilterBehavior::pattern() const
 {
