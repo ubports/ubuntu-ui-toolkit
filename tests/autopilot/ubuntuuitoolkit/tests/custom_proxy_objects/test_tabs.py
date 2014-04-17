@@ -22,6 +22,7 @@ except ImportError:
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
+
 class TabsTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
