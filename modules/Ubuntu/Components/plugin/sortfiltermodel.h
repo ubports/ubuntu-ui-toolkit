@@ -81,7 +81,6 @@ public:
     Q_INVOKABLE QVariantMap get(int row); // Use with caution, it can be slow to query all the roles
     Q_INVOKABLE QVariant data(int row, int role);
     Q_INVOKABLE int count();
-    Q_INVOKABLE int findFirst(const QString& roleName, const QVariant& value) const;
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
     /* getters */
@@ -90,9 +89,6 @@ public:
     /* setters */
     void setFilterProperty(const QString& property);
     void setModel(QAbstractItemModel *model);
-
-    Q_INVOKABLE int mapFromSource(int row);
-    Q_INVOKABLE int mapToSource(int row);
 
 Q_SIGNALS:
     void countChanged();

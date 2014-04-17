@@ -36,6 +36,7 @@
  * import Ubuntu.Components.ListItems 0.1
  *
  * ListModel {
+ *     id: movies
  *     ListElement { title: “Esign”; producer: “Chris Larkee” }
  *     ListElement { title: “Elephants Dream”; producer “Blender” }
  *     ListElement { title: “Big Buck Bunny”; producer “Blender” }
@@ -46,7 +47,7 @@
  *     sort.property: "title"
  *     sort.order: Qt.DescendingOrder
  *
- *     filter.property: "producer
+ *     filter.property: "producer"
  *     filter.pattern: /blender/
  * }
  *
@@ -64,21 +65,11 @@
  *     section.property: "title"
  *     section.criteria: ViewSection.FirstCharacter
  * }
- *
- * Label {
- *     text: {
- *         var firstRow = sortedMovies.findFirst("title", /Elephant/))
- *         var sourceRow = sortedMovies.mapToSource(firstRow)
- *         var foundTitle = movies.get(sourceRow).title
- *         i18n.tr("First matching movie: %1").arg(foundTitle)
- *     }
- * }
  * \endqml
  *
  * Pay attention to the differences between the original model and the result:
  * - Big Buck Bunny will be the first row, because it's sorted by title
  * - Esign won't be visible, because it's from the wrong producer
- * - The label displays a title extracted via Javascript
  */
 
 
@@ -242,38 +233,6 @@ QSortFilterProxyModelQML::filterAcceptsRow(int sourceRow,
 
     bool result = QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
     return result;
-}
-
-int
-QSortFilterProxyModelQML::findFirst(const QString& roleName, const QVariant& value) const
-{
-    int role(roleByName(roleName));
-    QModelIndexList matches = match(index(0, 0), role, value, 1, Qt::MatchExactly);
-    if (!matches.isEmpty()) {
-        return matches.first().row();
-    } else {
-        return -1;
-    }
-}
-
-int
-QSortFilterProxyModelQML::mapFromSource(int row)
-{
-    if (sourceModel() != NULL) {
-        return QSortFilterProxyModel::mapFromSource(sourceModel()->index(row, 0)).row();
-    } else {
-        return -1;
-    }
-}
-
-int
-QSortFilterProxyModelQML::mapToSource(int row)
-{
-    if (sourceModel() != NULL) {
-        return QSortFilterProxyModel::mapToSource(index(row, 0)).row();
-    } else {
-        return -1;
-    }
 }
 
 #include "moc_sortfiltermodel.cpp"
