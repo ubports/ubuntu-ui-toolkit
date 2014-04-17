@@ -16,6 +16,7 @@
 
 """Tests for the deprecated ubuntuuitoolkit.emulators module."""
 
+import imp
 import logging
 
 import fixtures
@@ -64,10 +65,18 @@ class DeprecatedSymbolsTestCase(testscenarios.TestWithScenarios):
 
 class DeprecationWarningTestCase(testtools.TestCase):
 
+    def reload_emulators(self):
+        _, ubuntuuitoolkit_path, _ = imp.find_module('ubuntuuitoolkit')
+        emulators_file, emulators_path, emulators_description = (
+            imp.find_module('emulators', [ubuntuuitoolkit_path]))
+        imp.load_module(
+            'emulators', emulators_file, emulators_path,
+            emulators_description)
+
     def test_import_emulators_must_log_warning(self):
         fake_logger = fixtures.FakeLogger(level=logging.WARNING)
         self.useFixture(fake_logger)
-        reload(emulators)
+        self.reload_emulators()
         self.assertThat(
             fake_logger.output,
             Contains(
