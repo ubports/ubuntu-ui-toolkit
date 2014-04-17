@@ -57,12 +57,12 @@ class UbuntuUIToolkitCustomProxyObjectBaseTestCase(tests.QMLStringAppTestCase):
     def test_pointing_device_in_phablet(self):
         self.assertIsInstance(self.app.pointing_device._device, input.Touch)
 
-    def test_emulators_should_check_version_on_init(self):
+    def test_custom_proxy_objects_should_check_version_on_init(self):
         check_name = (
             'ubuntuuitoolkit._custom_proxy_objects._common.'
             'check_autopilot_version')
         with mock.patch(check_name, autospec=True) as mock_check:
-            # Instantiate any emulator.
+            # Instantiate any custom proxy object.
             self.main_view
 
         mock_check.assert_called_once_with()

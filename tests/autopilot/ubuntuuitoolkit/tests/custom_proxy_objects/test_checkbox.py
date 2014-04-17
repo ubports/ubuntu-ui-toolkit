@@ -78,7 +78,7 @@ class ToggleTestCase(tests.QMLStringAppTestCase):
             ubuntuuitoolkit.CheckBox, objectName=self.objectName)
         self.assertFalse(self.toggle.checked)
 
-    def test_toggle_emulator(self):
+    def test_toggle_custom_proxy_object(self):
         self.assertIsInstance(self.toggle, ubuntuuitoolkit.CheckBox)
 
     def test_check_toggle(self):

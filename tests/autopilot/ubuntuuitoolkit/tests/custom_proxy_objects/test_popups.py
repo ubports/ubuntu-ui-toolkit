@@ -57,7 +57,7 @@ MainView {
 }
 """)
 
-    def test_action_selection_popover_emulator(self):
+    def test_action_selection_popover_custom_proxy_object(self):
         popover = self.main_view.get_action_selection_popover(
             'test_actions_popover')
         self.assertIsInstance(popover, ubuntuuitoolkit.ActionSelectionPopover)

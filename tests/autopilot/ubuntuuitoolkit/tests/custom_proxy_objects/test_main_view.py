@@ -35,14 +35,14 @@ MainView {
 }
 """)
 
-    def test_main_view_custom_emulator(self):
+    def test_main_view_custom_proxy_object(self):
         self.assertIsInstance(self.main_view, ubuntuuitoolkit.MainView)
 
     def test_get_header_without_header(self):
         header = self.main_view.get_header()
         self.assertFalse(header.visible)
 
-    def test_toolbar_custom_emulator(self):
+    def test_toolbar_custom_proxy_object(self):
         toolbar = self.main_view.get_toolbar()
         self.assertIsInstance(toolbar, ubuntuuitoolkit.Toolbar)
 
