@@ -31,8 +31,8 @@ import "mathUtils.js" as MathUtils
     located at the left-top side of the expanded button. The \a clicked() signal
     is triggered only when this button is pressed.
 
-    The \a {dropdown} is a button located on the top-right side of the expanded
-    component. Its functionality is to drive the component's expanded state.
+    The \a {dropdown} is a button located on the right of the main button. Its
+    functionality is to drive the component's expanded state.
 
     The \a {combo list} is a panel showing the content specified in \l comboList
     property when expanded. The content is stretched horizontally to the component's
@@ -117,9 +117,8 @@ import "mathUtils.js" as MathUtils
                 Repeater {
                     model: 5
                     spacing: units.gu(1)
-                    Rectangle {
-                        height: units.gu(5)
-                        color: "blue"
+                    Button {
+                        text: "Button #" + modelData
                     }
                 }
             }
@@ -127,9 +126,12 @@ import "mathUtils.js" as MathUtils
         \endqml
     \endlist
 
-    As combo list content is unknown for the component, eventual collapsing when
-    an action selected from the combo list holder must be driven manually. Also,
-    the default action of the main button can be changed in this way.
+    The combo list can be expanded/collapsed either through the \l expanded property
+    or by clicking on the dropdown button. It is not collapsed when pressing the main
+    button or clicking on the combo list. In order to do an auto-collapsing button
+    you must reset the expanded property (set it to false) when the main button is
+    clicked or when a selection is taken from the combo list content. The following
+    example illustrates a possible implementation.
 
     \qml
     import QtQuick 2.0
@@ -140,6 +142,7 @@ import "mathUtils.js" as MathUtils
         text: "Auto closing"
         expanded: true
         expandedHeight: units.gu(30)
+        onClicked: expanded = false
         UbuntuListView {
             width: parent.width
             height: combo.comboListHeight
@@ -167,12 +170,6 @@ Button {
     property bool expanded: false
 
     /*!
-      The property specifies whether to collapse the expanded combo list when
-      the main button is clicked. The default value is true.
-      */
-    property bool autoCollapse: true
-
-    /*!
       The property holds the height of the component when collapsed. By default
       the value is the implicit height of the component.
       */
@@ -192,7 +189,8 @@ Button {
         A value of -1 will instruct the component to expand the combo list as
         much as its content height is.
 
-        The default value is \l collapsedHeight + 19.5 GU.
+        The default value is \l collapsedHeight + 19.5 GU, so at least 3 ListItems
+        can fit in the combo list.
         \sa collapsedHeight
       */
     property real expandedHeight: collapsedHeight + units.gu(19.5)
@@ -242,24 +240,14 @@ Button {
 
     /* ----------------- Color and font configurations ----------------- */
     /*!
-      The property specifies the color of the dropdown button when expanded.
+      The property specifies the color of the dropdown button and the combo list
+      for both collapsed and expanded states. You can use \l expanded to define
+      different colors for expanded or collapsed states.
       */
-    property color dropdownColorPressed: __styleInstance ? __styleInstance.defaultDropdownColorPressed : color
+    property color dropdownColor: __styleInstance ? __styleInstance.defaultDropdownColor : color
 
-    /*!
-      The property specifies the color of the dropdown button when collapsed.
-      */
-    property color dropdownColorReleased: __styleInstance ? __styleInstance.defaultDropdownColorReleased : color
 
     style: Theme.createStyleComponent("ComboButtonStyle.qml", combo)
-
-    // auto-collapse
-    /*! \internal */
-    onClicked: {
-        if (autoCollapse) {
-            expanded = false;
-        }
-    }
 
     Component.onCompleted: {
         // update mouse area to report clicks only on the main button area
@@ -279,7 +267,7 @@ Button {
     }
 
     // dropdown button
-    MouseArea {
+    AbstractButton {
         id: dropDown
         objectName: "combobutton_dropdown"
         anchors {
@@ -289,7 +277,7 @@ Button {
         width: combo.__styleInstance ? combo.__styleInstance.dropDownWidth : 0
         height: combo.collapsedHeight
         // open dropdown when pressed, not when clicked
-        onPressed: {
+        onClicked: {
             // toggle expanded
             combo.expanded = !combo.expanded;
         }
@@ -298,7 +286,7 @@ Button {
     // expansion list
     Flickable {
         id: comboHolder
-        parent: combo.__styleInstance ? combo.__styleInstance.comboList : combo
+        parent: combo.__styleInstance ? combo.__styleInstance.comboListHolder : combo
         anchors.fill: parent
         interactive: combo.expanded && !contentIsFlickable() && (combo.expandedHeight > 0)
         flickableDirection: Flickable.VerticalFlick
@@ -321,13 +309,13 @@ Button {
             // stretch children width to holder's width
             // must do binding to height manually to avoid binding loops caused
             // by the vertical stretching when the component is a single flickable
-            property bool anchorFill: (combo.expandedHeight > 0 && comboHolder.contentIsFlickable())
-            onAnchorFillChanged: stretchChildren()
+            property bool stretch: (combo.expandedHeight > 0 && comboHolder.contentIsFlickable())
+            onStretchChanged: stretchChildren()
             onChildrenChanged: stretchChildren()
             function stretchChildren() {
                 for (var i in comboListHolder.children) {
                     var child = comboListHolder.children[i];
-                    if (comboListHolder.anchorFill) {
+                    if (comboListHolder.stretch) {
                         child.anchors.left = undefined;
                         child.anchors.right = undefined;
                         child.anchors.fill = comboListHolder;
@@ -349,7 +337,11 @@ Button {
         flickableItem: comboHolder
     }
 
-    // drive the expansion height of the combo list holder
+    /*
+      Drive the expansion height of the combo list holder
+      This is a common functionaity in all combo buttons, therefore we can have it
+      in the main component.
+      */
     Binding {
         target: combo.__styleInstance.comboListPanel
         property: "height"
@@ -357,7 +349,7 @@ Button {
             if (!expanded) {
                 return 0;
             }
-            if (comboListHolder.anchorFill) {
+            if (comboListHolder.stretch) {
                 return combo.comboListHeight + combo.__styleInstance.comboListMargin;
             }
 
@@ -370,14 +362,4 @@ Button {
             return MathUtils.clamp(h, 0, max);
         }
     }
-    // for testing purposes only
-    Binding {
-        target: combo.__styleInstance.comboListPanel
-        property: "objectName"
-        value: "combobutton_combopanel"
-    }
-
-    /*! \internal */
-    // on style change, update the visual's names so we can access it when testing
-    onStyleChanged: if (__styleInstance) __styleInstance.dropdownButtonVisuals.objectName = "combobutton_dropdow_visuals"
 }

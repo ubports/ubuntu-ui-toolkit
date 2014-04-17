@@ -39,9 +39,12 @@ Item {
     property real comboListMargin: units.gu(0.8)
 
     /*!
-      The item which will hold the combo list data.
+      The item which will holds the combo list data. Implementations can point both
+      this \l comboListPanel to the same component, however separate items should be
+      used if a gap between the panel and the content is required.
+      See Ambiance theme.
       */
-    property Item comboList: comboListContent
+    property Item comboListHolder: comboListContent
 
     /*!
       The item pointing to the panel holding the combo list and additional design
@@ -64,40 +67,24 @@ Item {
     /*!
       Default color for the dropdown button when released.
       */
-    property color defaultDropdownColorReleased: defaultColor
-    /*!
-      Default color for dropdown button when pressed.
-      */
-    property color defaultDropdownColorPressed: Qt.rgba(0, 0, 0, 0.05)
+    property color defaultDropdownColor: __combo.expanded ? Qt.rgba(0, 0, 0, 0.05) : defaultColor
     /*!
       Default button face font.
       */
     property alias defaultFont: mainButton.defaultFont
 
-    /*!
-      The property holds the Item implementing the visuals of the dropdown button.
-      */
-    property alias dropdownButtonVisuals: dropDownButton
 
-    width: combo.width
-    height: combo.collapsedHeight
+    width: __combo.width
+    height: __combo.collapsedHeight
 
     /*! \internal */
-    property ComboButton combo: styledItem
+    property ComboButton __combo: styledItem
 
     implicitWidth: mainButton.implicitWidth
     implicitHeight: mainButton.implicitHeight
 
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
-
-    // Color properties in a JS ternary operator don't work as expected in
-    // QML because it overwrites alpha values with 1. A workaround is to use
-    // Qt.rgba(). For more information, see
-    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197802 and
-    // https://bugreports.qt-project.org/browse/QTBUG-32238.
-    /*! \internal */
-    function colorHack(color) { return Qt.rgba(color.r, color.g, color.b, color.a); }
 
     ButtonStyle {
         id: mainButton
@@ -106,7 +93,7 @@ Item {
             top: parent.top
             right: parent.right
         }
-        height: combo.collapsedHeight
+        height: __combo.collapsedHeight
         // overrides
         backgroundSource: comboFace
         buttonFaceOffset: -dropDownWidth/2 - dropDownSeparatorWidth
@@ -139,8 +126,8 @@ Item {
                     fill: parent
                     rightMargin: comboStyle.dropDownSeparatorWidth + comboStyle.dropDownWidth
                 }
-                color: combo.color
-                gradient: mainButton.isGradient ? combo.gradient : null
+                color: __combo.color
+                gradient: mainButton.isGradient ? __combo.gradient : null
             }
 
             // distancer
@@ -162,11 +149,11 @@ Item {
                     bottom: parent.bottom
                 }
                 width: comboStyle.dropDownWidth
-                color: combo.expanded ? comboStyle.colorHack(combo.dropdownColorPressed) : comboStyle.colorHack(combo.dropdownColorReleased)
+                color: mainButton.__colorHack(__combo.dropdownColor)
                 Image {
                     source: "artwork/chevron.png"
                     anchors.centerIn: parent
-                    rotation: combo.expanded ? -90 : 90
+                    rotation: __combo.expanded ? -90 : 90
                 }
             }
         }
@@ -174,12 +161,13 @@ Item {
 
     Item {
         id: panelItem
+        objectName: "combobutton_combopanel"
         anchors {
             left: parent.left
             top: mainButton.bottom
             right: parent.right
         }
-        opacity: combo.expanded && (combo.comboList.length > 0)? 1.0 : 0.0
+        opacity: __combo.expanded && (__combo.comboList.length > 0)? 1.0 : 0.0
 
         ShaderEffectSource {
             id: listContent
@@ -198,7 +186,7 @@ Item {
                 topMargin: comboListMargin
             }
             clip: true
-            color: combo.expanded ? combo.dropdownColorPressed : combo.dropdownColorReleased
+            color: mainButton.__colorHack(__combo.dropdownColor)
         }
 
         BorderImage {

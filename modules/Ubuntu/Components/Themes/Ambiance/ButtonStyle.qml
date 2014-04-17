@@ -29,6 +29,12 @@ Item {
     property font defaultFont: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
     property Gradient defaultGradient
     property real buttonFaceOffset: 0
+    /*!
+      The property overrides the button's default background with an item. This
+      item can be used by derived styles to reuse the ButtonStyle and override
+      the default coloured background with an image or any other drawing.
+      The default value is null.
+      */
     property Item backgroundSource: null
 
     width: button.width
@@ -38,6 +44,15 @@ Item {
 
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
+
+    /*! \internal */
+    // Color properties in a JS ternary operator don't work as expected in
+    // QML because it overwrites alpha values with 1. A workaround is to use
+    // Qt.rgba(). For more information, see
+    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197802 and
+    // https://bugreports.qt-project.org/browse/QTBUG-32238.
+    function __colorHack(color) { return Qt.rgba(color.r, color.g, color.b, color.a); }
+
 
     /* The proxy is necessary because Gradient.stops and GradientStop.color are
        non-NOTIFYable properties. They cannot be written to so it is fine but
@@ -74,14 +89,8 @@ Item {
         visible: (color.a != 0.0) || backgroundSource
         image: backgroundSource
 
-        // Color properties in a JS ternary operator don't work as expected in
-        // QML because it overwrites alpha values with 1. A workaround is to use
-        // Qt.rgba(). For more information, see
-        // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197802 and
-        // https://bugreports.qt-project.org/browse/QTBUG-32238.
-        function colorHack(color) { return Qt.rgba(color.r, color.g, color.b, color.a); }
-        color: backgroundSource ? "#00000000" : (isGradient ? colorHack(gradientProxy.topColor) : colorHack(button.color))
-        gradientColor: backgroundSource ? "#00000000" : (isGradient ? colorHack(gradientProxy.bottomColor) : colorHack(button.color))
+        color: backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.topColor) : __colorHack(button.color))
+        gradientColor: backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.bottomColor) : __colorHack(button.color))
     }
 
     UbuntuShape {

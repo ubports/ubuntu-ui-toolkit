@@ -31,6 +31,7 @@ Item {
 
         ComboButton {
             id: rectCombo
+            onClicked: expanded = false
 
             Rectangle {
                 id: rect
@@ -115,27 +116,24 @@ Item {
 
         function test_0_defaults() {
             compare(combo.expanded, false, "not expanded by default");
-            compare(combo.autoCollapse, true, "automatically collapses");
             compare(combo.collapsedHeight, combo.implicitHeight, "collapsedHeight is implicitHeight");
             compare(combo.expandedHeight, combo.collapsedHeight + units.gu(19.5), "expanded height default");
             var lheight = combo.expandedHeight - combo.collapsedHeight - combo.__styleInstance.comboListMargin;
             compare(combo.comboListHeight, lheight, "comboListHeight default");
             compare(combo.comboList.length, 0, "comboList is empty");
             verify(combo.font === Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")}), "Default font differs.");
-            verify(combo.dropdownColorPressed === combo.__styleInstance.defaultDropdownColorPressed, "Default dropdown pressed color differs");
-            verify(combo.dropdownColorReleased === combo.__styleInstance.defaultDropdownColorReleased, "Default dropdown released color differs");
+            verify(combo.dropdownColor === combo.__styleInstance.defaultDropdownColor, "Default dropdown color differs");
         }
 
         function test_dropdownColor() {
-            rectCombo.dropdownColorPressed = "red";
-            rectCombo.dropdownColorReleased = "green";
+            rectCombo.dropdownColor = rectCombo.expanded ? "red" : "green";
             rectCombo.expanded = false;
             var dropdownFace = findChild(rectCombo, "combobutton_dropdown_visuals");
             verify(dropdownFace, "Dropdown button visuals cannot be reached");
-            verify(dropdownFace.color === rectCombo.dropdownColorReleased, "Dropdon color when collapsed wrong");
+            verify(dropdownFace.color === rectCombo.dropdownColor, "Dropdon color when collapsed wrong");
             rectCombo.expanded = true;
             waitForRendering(rectCombo);
-            verify(dropdownFace.color === rectCombo.dropdownColorPressed, "Dropdon color when expanded wrong");
+            verify(dropdownFace.color === rectCombo.dropdownColor, "Dropdon color when expanded wrong");
         }
 
         function test_comboListWidth() {
