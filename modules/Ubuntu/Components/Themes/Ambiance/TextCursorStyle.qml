@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
 Item {
     id: visuals
@@ -32,11 +33,9 @@ Item {
     property int blinkTimeoutHidden: 400
 
     /*!
-      Selection mode pin styles
+      Caret handler
       */
-    property var pinSize: units.gu(1.2)
-    property var pinSensingOffset: units.dp(4)
-    property color pinColor: Theme.palette.selected.foreground
+    readonly property alias caretHandler: handlerPin
 
     anchors.fill: parent
     Rectangle {
@@ -59,5 +58,16 @@ Item {
                 cursor.timerShowCursor = !cursor.timerShowCursor;
             }
         }
+    }
+    Image {
+        id: handlerPin
+        anchors {
+            top: cursor.bottom
+            horizontalCenter: cursor.horizontalCenter
+            topMargin: -units.gu(1)
+            horizontalCenterOffset: units.gu(0.5)
+        }
+        rotation: -35
+        source: "artwork/teardrop.png"
     }
 }

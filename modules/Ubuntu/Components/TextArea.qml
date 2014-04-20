@@ -731,7 +731,6 @@ StyledItem {
     /*!\internal - to remove warnings */
     Component.onCompleted: {
         editor.linkActivated.connect(control.linkActivated);
-        internal.prevShowCursor = control.cursorVisible;
     }
 
     // activation area on mouse click
@@ -778,22 +777,6 @@ StyledItem {
         property real minimumSize: units.gu(4)
         property real inputAreaWidth: control.width - 2 * frameSpacing
         property real inputAreaHeight: control.height - 2 * frameSpacing
-        //selection properties
-        property bool prevShowCursor
-
-        function toggleSelectionCursors(show)
-        {
-            if (!show) {
-                leftCursorLoader.sourceComponent = undefined;
-                rightCursorLoader.sourceComponent = undefined;
-                editor.cursorVisible = prevShowCursor;
-            } else {
-                prevShowCursor = editor.cursorVisible;
-                editor.cursorVisible = false;
-                leftCursorLoader.sourceComponent = cursor;
-                rightCursorLoader.sourceComponent = cursor;
-            }
-        }
 
         function linesHeight(lines)
         {
@@ -835,30 +818,10 @@ StyledItem {
         TextCursor {
             id: cursorItem
             editorItem: control
+            handler: inputHandler
             height: internal.lineSize
             popover: control.popover
             visible: editor.cursorVisible
-
-            Component.onCompleted: inputHandler.pressAndHold.connect(cursorItem.openPopover)
-        }
-    }
-    // selection cursor loader
-    Loader {
-        id: leftCursorLoader
-        onStatusChanged: {
-            if (status == Loader.Ready && item) {
-                item.positionProperty = "selectionStart";
-                item.parent = editor;
-            }
-        }
-    }
-    Loader {
-        id: rightCursorLoader
-        onStatusChanged: {
-            if (status == Loader.Ready && item) {
-                item.positionProperty = "selectionEnd";
-                item.parent = editor;
-            }
         }
     }
 

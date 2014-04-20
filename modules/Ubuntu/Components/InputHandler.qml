@@ -22,14 +22,15 @@ import Ubuntu.Components 0.1 as Ubuntu
   TextField and TextArea components.
   */
 
-Item {
+//Item {
+Rectangle { color: "green"; opacity: 0.5
     id: inputHandler
     objectName: "input_handler"
     // the root control
     property Item main
     // the input instance
     property Item input
-    // the Flickable holdiong the input instance
+    // the Flickable holding the input instance
     property Flickable flickable
     // selection cursor mode
     property bool selectionCursor: input && input.selectedText !== ""
@@ -38,7 +39,7 @@ Item {
     // property holding the selection mode timeout
     property int selectionModeTimeout: 200
 
-    // signal triggered when popup shoudl be opened
+    // signal triggered when popup should be opened
     signal pressAndHold(int pos)
 
     function activateInput() {
@@ -164,6 +165,12 @@ Item {
                 p.interactive = true;
             }
         }
+    }
+
+    // moves the specified position, called by the cursor handler
+    // positioner = "currentPosition/selectionStart/selectionEnd"
+    function positionCaret(positioner, x, y) {
+        input[positioner] = singleLine ? input.positionAt(x) : input.positionAt(x, y);
     }
 
     Component.onCompleted: {

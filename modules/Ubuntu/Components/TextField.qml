@@ -914,13 +914,11 @@ ActionItem {
     Component {
         id: cursor
         TextCursor {
-            //FIXME: connect to root object once we have all TextInput properties exposed
-            editorItem: editor
+            editorItem: control
+            handler: inputHandler
             height: internal.lineSize
             popover: control.popover
             visible: editor.cursorVisible
-
-            Component.onCompleted: inputHandler.pressAndHold.connect(openPopover)
         }
     }
 
@@ -998,7 +996,7 @@ ActionItem {
             focus: true
             anchors.verticalCenter: parent.verticalCenter
             // get the control's style
-            clip: true
+//            clip: true
             cursorDelegate: cursor
             color: control.__styleInstance.color
             selectedTextColor: Theme.palette.selected.foregroundText
