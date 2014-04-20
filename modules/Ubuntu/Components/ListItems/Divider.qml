@@ -18,7 +18,7 @@ import QtQuick 2.0
 
 /*!
     \qmltype Divider
-    \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief Divider to break up list items into groups.
 

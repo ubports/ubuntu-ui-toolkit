@@ -19,7 +19,7 @@ import "mathUtils.js" as MathUtils
 
 /*!
     \qmltype TextArea
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.0
     \ingroup ubuntu
     \brief The TextArea item displays a block of editable, scrollable, formatted
     text.

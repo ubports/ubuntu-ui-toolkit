@@ -16,13 +16,13 @@
 
 import QtQuick 2.0
 import QtQuick.Window 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1
-import Ubuntu.Components.Popups 0.1
+import Ubuntu.Components 1.0
+import Ubuntu.Components.ListItems 1.0
+import Ubuntu.Components.Popups 1.0
 
 /*!
     \qmltype PickerPanel
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.0
     \ingroup ubuntu-pickers
     \brief Provides a panel for opening a DatePicker in place of the input panel or
     as Popover, depending on the form factor.
@@ -32,7 +32,7 @@ import Ubuntu.Components.Popups 0.1
     on date pickers.
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
+    import Ubuntu.Components 1.0
 
     MainWindow {
         width: units.gu(40)

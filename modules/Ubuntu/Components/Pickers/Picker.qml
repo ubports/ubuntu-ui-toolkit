@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 /*!
     \qmltype Picker
-    \inqmlmodule Ubuntu.Components.Pickers 0.1
+    \inqmlmodule Ubuntu.Components.Pickers 1.0
     \ingroup ubuntu-pickers
     \brief Picker is a slot-machine style value selection component.
 
@@ -35,8 +35,8 @@ import Ubuntu.Components 0.1
     Example:
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
-    import Ubuntu.Components.Pickers 0.1
+    import Ubuntu.Components 1.0
+    import Ubuntu.Components.Pickers 1.0
 
     Picker {
         model: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]

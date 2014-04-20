@@ -15,6 +15,6 @@
  */
 
 /*!
-    \qmlmodule Ubuntu.Components.Popups 0.1
+    \qmlmodule Ubuntu.Components.Popups 1.0
     \title Popovers, Sheets and Dialogs 
 */
