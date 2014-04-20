@@ -910,7 +910,7 @@ ActionItem {
         }
     }
 
-    // cursor
+    // Default cursor component used in both normal and selection modes
     Component {
         id: cursor
         TextCursor {
@@ -996,7 +996,6 @@ ActionItem {
             focus: true
             anchors.verticalCenter: parent.verticalCenter
             // get the control's style
-//            clip: true
             cursorDelegate: cursor
             color: control.__styleInstance.color
             selectedTextColor: Theme.palette.selected.foregroundText

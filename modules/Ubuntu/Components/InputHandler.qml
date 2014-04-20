@@ -22,8 +22,7 @@ import Ubuntu.Components 0.1 as Ubuntu
   TextField and TextArea components.
   */
 
-//Item {
-Rectangle { color: "green"; opacity: 0.5
+Item {
     id: inputHandler
     objectName: "input_handler"
     // the root control

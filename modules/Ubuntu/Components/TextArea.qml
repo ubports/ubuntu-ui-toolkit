@@ -812,7 +812,7 @@ StyledItem {
     }
     Keys.onReleased: event.accepted = (event.key === Qt.Key_Enter) || (event.key === Qt.Key_Return)
 
-    // cursor is FIXME: move in a separate element and align with TextField
+    // Default cursor component used in both normal and selection modes
     Component {
         id: cursor
         TextCursor {

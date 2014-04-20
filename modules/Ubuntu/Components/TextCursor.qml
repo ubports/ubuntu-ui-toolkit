@@ -67,12 +67,13 @@ StyledItem {
     style: Theme.createStyleComponent("TextCursorStyle.qml", cursorItem)
 
     Component.onCompleted: {
-        draggedItem.moveToCaret();
         handler.pressAndHold.connect(cursorItem.openPopover);
     }
 
     /*
-     * Caret handling
+     * Caret dragging handling. We need a separate item which is dragged along the
+     * component's area, which can move freely and not attached to the caret itself.
+     * This area will then be used to update the caret position.
      */
     onXChanged: if (draggedItem.state === "") draggedItem.moveToCaret()
     onYChanged: if (draggedItem.state === "") draggedItem.moveToCaret()
@@ -80,58 +81,99 @@ StyledItem {
     //dragged item
     Rectangle { opacity: 0.5; color: "blue"
         id: draggedItem
-        width: __styleInstance.caretHandler.width
-        height: __styleInstance.caretHandler.height
-        parent: handler
+        width: __styleInstance.caretHandler ? __styleInstance.caretHandler.width : 0
+        height: __styleInstance.caretHandler ? __styleInstance.caretHandler.height : 0
+        parent: handler.input
 
-        // mouse area to turn on dragging or selection mode
+        onStateChanged: print('dragstate=', state)
+
+        /*
+          Mouse area to turn on dragging or selection mode when pressed
+          on the handler area. The drag mode is turned off when the drag
+          gets inactive or when the LeftButton is released.
+          */
         MouseArea {
             anchors.fill: parent
             preventStealing: true
+            enabled: parent.width && parent.height
 
             onPressed: {
-                draggedItem.moveToCaret();
+                draggedItem.moveToCaret(mouse.x, mouse.y);
                 draggedItem.state = "dragging";
             }
             Ubuntu.Mouse.forwardTo: [dragger]
-
+            /*
+              As we are forwarding the events to the upper mouse area, the release
+              will not get into the normal MosueArea onRelease signal as the preventStealing
+              will not have any effect on the handling. However due to the mouse
+              filter's nature, we will still be able to grab mouse events and we
+              can stop dragging. We only handle the release in case the drag hasn't
+              been active at all, otherwise the drag will not be deactivated and we
+              will end up in a binding loop on the moveToCaret() next time the caret
+              handler is grabbed.
+              */
+            Ubuntu.Mouse.onReleased: if (!dragger.drag.active) draggedItem.state = ""
         }
 
-        onXChanged: if (state === "dragging") draggedItem.positionHandler()
-        onYChanged: if (state === "dragging") draggedItem.positionHandler()
+        // aligns the draggedItem to the caret and resets the dragger
+        function moveToCaret(cx, cy) {
+            if (cx === undefined && cy === undefined) {
+                cx = cursorItem.x + (__styleInstance.caretHandler ? __styleInstance.caretHandler.x : 0);
+                cy = cursorItem.y + (__styleInstance.caretHandler ? __styleInstance.caretHandler.y : 0);
+            } else {
+                cx += draggedItem.x;
+                cy += draggedItem.y;
+            }
 
-        function moveToCaret() {
-            draggedItem.x = cursorItem.x + __styleInstance.caretHandler.x;
-            draggedItem.y = cursorItem.y + __styleInstance.caretHandler.y;
-            print("REPOS", draggedItem.x, draggedItem.y)
+            draggedItem.x = cx;
+            draggedItem.y = cy;
+            dragger.resetDrag();
         }
-        function positionHandler() {
-            var cx = draggedItem.x - handler.flickable.contentX;
-            var cy = draggedItem.y - handler.flickable.contentY;
-            print(cx, cy)
-            handler.positionCaret(positionProperty, cx, cy);
+        // positions caret to the dragged position
+        function positionCaret() {
+            if (dragger.drag.active) {
+                handler.positionCaret(positionProperty,
+                                      dragger.thumbStartX + dragger.dragAmountX,
+                                      dragger.thumbStartY + dragger.dragAmountY);
+            }
         }
     }
     MouseArea {
         id: dragger
-        // fill the entire input area
-        parent: draggedItem.parent
+        // fill the entire component area
+        parent: handler.main
         anchors.fill: parent
-        hoverEnabled: false
+        hoverEnabled: true
         preventStealing: drag.active
-        enabled: draggedItem.state === "dragging"
+        enabled: draggedItem.enabled && draggedItem.state === "dragging"
 
+        property int thumbStartX
+        property int dragStartX
+        property int dragAmountX: dragger.drag.target.x - dragStartX
+        property int thumbStartY
+        property int dragStartY
+        property int dragAmountY: dragger.drag.target.y - dragStartY
+
+        function resetDrag() {
+            thumbStartX = cursorItem.x + (__styleInstance.caretHandler ? __styleInstance.caretHandler.x : 0);
+            thumbStartY = cursorItem.y + (__styleInstance.caretHandler ? __styleInstance.caretHandler.y : 0);
+            dragStartX = drag.target.x;
+            dragStartY = drag.target.y;
+        }
+
+        // do not set minimum/maximum so we can drag outside of the Flickable area
         drag {
             target: draggedItem
             axis: handler.singleLine ? Drag.XAxis : Drag.XAndYAxis
+            // deactivate dragging
             onActiveChanged: {
                 if (!drag.active) {
                     draggedItem.state = "";
-                } else {
-                    // position the pin
-                    print("HUHUUUU")
                 }
             }
         }
+
+        onDragAmountXChanged: draggedItem.positionCaret()
+        onDragAmountYChanged: draggedItem.positionCaret()
     }
 }

@@ -33,9 +33,10 @@ Item {
     property int blinkTimeoutHidden: 400
 
     /*!
-      Caret handler
+      Caret handler item exposed to the cursor. null value means the cursor does
+      not have any separate caret handler.
       */
-    readonly property alias caretHandler: handlerPin
+    readonly property Item caretHandler: handlerPin
 
     anchors.fill: parent
     Rectangle {
