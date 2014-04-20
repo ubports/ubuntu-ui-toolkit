@@ -68,7 +68,7 @@ Item {
 
         function test_DoNotStealFlickEvents() {
             mouseClick(inFlickable, 10, 10);
-            flick(inFlickable, 50, 50, 0, -50);
+            mouseDrag(inFlickable, 50, 50, 0, -50);
             moveSpy.wait();
         }
 
@@ -96,7 +96,6 @@ Item {
             verify(inFlickable.selectedText !== "", "No text selected");
 
             // scroll
-            print("flicking");wait(2000)
             moveSpy.clear();
             flick(inFlickable, 50, 100, 0, -100);
             // wait till the move ends
