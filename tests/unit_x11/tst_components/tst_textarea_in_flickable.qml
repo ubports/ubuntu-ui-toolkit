@@ -68,12 +68,12 @@ Item {
 
         function test_DoNotStealFlickEvents() {
             mouseClick(inFlickable, 10, 10);
-            mouseDrag(inFlickable, 50, 50, 0, -50);
+            mouseDrag(flickable, 50, 50, 0, -50);
             moveSpy.wait();
         }
 
         function test_flicker_moves_when_inactive() {
-            flick(flickable, 50, 100, 0, -100);
+            mouseDrag(flickable, 50, 100, 0, -100);
             moveSpy.wait();
         }
 
