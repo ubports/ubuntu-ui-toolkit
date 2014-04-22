@@ -105,5 +105,12 @@ PageTreeNode {
           Tab is destroyed upon removal.
           */
         property bool dynamic: false
+
+        /*
+          This flag is used by the Tabs to determine whether the pre-declared Tab was removed
+          from the Tabs model or not. The flag guards adding back pre-declared tabs upon Tabs
+          component stack  (children) change.
+          */
+        property bool removedFromTabs: false
     }
 }

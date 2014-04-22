@@ -176,6 +176,9 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCInverseMouse>(uri, 0, 1, "InverseMouse");
     // register QML singletons
     qmlRegisterSingletonType<QObject>(uri, 0, 1, "PickerPanel", registerPickerPanel);
+
+    // register custom event
+    ForwardedEvent::registerForwardedEvent();
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

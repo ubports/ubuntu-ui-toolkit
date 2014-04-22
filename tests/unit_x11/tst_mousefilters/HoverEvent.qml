@@ -17,5 +17,22 @@
 import QtQuick 2.0
 import Ubuntu.Components 0.1
 
-Tab {
+Item {
+    id: root
+    width: units.gu(40)
+    height: units.gu(71)
+
+    Rectangle {
+        width: units.gu(30)
+        height: units.gu(30)
+        anchors.centerIn: parent
+        color: "blue"
+
+        MouseArea {
+            objectName: "FilterOwner"
+            anchors.fill: parent
+            hoverEnabled: true
+            Mouse.enabled: true
+        }
+    }
 }
