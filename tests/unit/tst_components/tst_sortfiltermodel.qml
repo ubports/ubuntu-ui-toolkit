@@ -23,9 +23,9 @@ TestCase {
 
     ListModel {
         id: things
-        ListElement { alpha: "bee"; num: 200 }
-        ListElement { alpha: "cow"; num: 300 }
-        ListElement { alpha: "ant"; num: 100 }
+        ListElement { foo: "den"; alpha: "bee"; num: 200 }
+        ListElement { foo: "pub"; alpha: "cow"; num: 300 }
+        ListElement { foo: "bar"; alpha: "ant"; num: 100 }
     }
 
     SortFilterModel {
@@ -37,6 +37,12 @@ TestCase {
         id: alphabetic
         model: things
         sort.property: "alpha"
+    }
+
+    SortFilterModel {
+        id: alphaSecond
+        model: things
+        sort.property: "foo"
     }
 
     SortFilterModel {
@@ -77,8 +83,11 @@ TestCase {
         compare(alphabetic.get(1).alpha, "bee")
         compare(alphabetic.get(2).alpha, "cow")
 
+        // Ensure different columns work also
+        compare(alphaSecond.get(0).foo, "bar")
+
         // Descending
-        compare(alphabeticRe.sort.order, Qt.Descending)
+        compare(alphabeticRe.sort.order, Qt.DescendingOrder)
         compare(alphabeticRe.get(0).alpha, "cow")
         compare(alphabeticRe.get(1).alpha, "bee")
         compare(alphabeticRe.get(2).alpha, "ant")
