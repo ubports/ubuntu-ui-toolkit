@@ -822,6 +822,7 @@ PageTreeNode
     default property list<Item> tabChildren
     readonly property int count
     signal modelChanged()
+    property var __model
 modules/Ubuntu/Components/Tabs.qml
 PageTreeNode
     property int selectedTabIndex
@@ -831,6 +832,7 @@ PageTreeNode
     default property list<Item> tabChildren
     readonly property int count
     signal modelChanged()
+    property var __model
 modules/Ubuntu/Components/TextArea.qml
 StyledItem
     property bool highlighted
