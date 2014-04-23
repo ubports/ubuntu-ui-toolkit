@@ -19,7 +19,7 @@ import Ubuntu.Unity.Action 1.1 as UnityActions
 
 /*!
     \qmltype Page
-    \inqmlmodule Ubuntu.Components 1.0
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief A page is the basic Item that must be used inside the \l MainView,
         \l PageStack and \l Tabs.
@@ -33,7 +33,7 @@ import Ubuntu.Unity.Action 1.1 as UnityActions
 
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
 
         MainView {
             width: units.gu(48)
@@ -94,7 +94,7 @@ PageTreeNode {
       and anchors to the top of the page or fills the page. For example:
       \qml
         import QtQuick 2.0
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
 
         MainView {
             width: units.gu(30)

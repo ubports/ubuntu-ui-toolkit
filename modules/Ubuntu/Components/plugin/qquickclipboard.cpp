@@ -26,7 +26,7 @@
 /*!
  * \qmltype Clipboard
  * \instantiates QQuickClipboard
- * \inqmlmodule Ubuntu.Components 1.0
+ * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu
  * \brief This is a singleton type providing access to the system clipboard.
  *

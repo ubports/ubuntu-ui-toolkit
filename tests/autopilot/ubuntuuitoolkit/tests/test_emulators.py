@@ -72,7 +72,7 @@ class MainViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -125,7 +125,7 @@ class PageTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -148,7 +148,7 @@ class ToolbarTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(50)
@@ -246,7 +246,7 @@ class TabsTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
@@ -372,7 +372,7 @@ class ActionSelectionPopoverTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.Popups 1.0
 
 MainView {
@@ -446,7 +446,7 @@ MainView {
 
 TEST_QML_WITH_CHECKBOX = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -464,7 +464,7 @@ MainView {
 
 TEST_QML_WITH_SWITCH = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -557,7 +557,7 @@ class QQuickListViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
@@ -655,7 +655,7 @@ class QQuickListViewOutOfViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
@@ -730,7 +730,7 @@ class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0
 
 
@@ -882,7 +882,7 @@ class PageStackTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -937,7 +937,7 @@ class TextFieldTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -1010,7 +1010,7 @@ class ComposerSheetTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.Popups 1.0
 
 MainView {
@@ -1084,7 +1084,7 @@ MainView {
 class ComboButtonTestCase(tests.QMLStringAppTestCase):
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0
 
 MainView {
@@ -1151,7 +1151,7 @@ class OptionSelectorCustomDelegateTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0
 
 MainView {
@@ -1251,7 +1251,7 @@ class OptionSelectorTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)

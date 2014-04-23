@@ -18,7 +18,7 @@ import QtQuick 2.0
 
 /*!
     \qmltype Tabs
-    \inqmlmodule Ubuntu.Components 1.0
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief The Tabs class provides an environment where multible \l Tab
     children can be added, and the user is presented with a tab
@@ -33,7 +33,7 @@ import QtQuick 2.0
     Example:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
         import Ubuntu.Components.ListItems 1.0 as ListItem
 
         MainView {
@@ -104,7 +104,7 @@ import QtQuick 2.0
 
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
 
         MainView {
             id: mainView

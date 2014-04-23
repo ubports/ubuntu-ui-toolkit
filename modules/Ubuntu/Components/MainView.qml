@@ -21,7 +21,7 @@ import QtQuick.Window 2.0
 
 /*!
     \qmltype MainView
-    \inqmlmodule Ubuntu.Components 1.0
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief MainView is the root Item that should be used for all applications.
         It automatically adds a header and toolbar for its contents and can
@@ -30,7 +30,7 @@ import QtQuick.Window 2.0
     The simplest way to use a MainView is to include a \l Page object inside the MainView:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
 
         MainView {
             width: units.gu(48)
@@ -57,7 +57,7 @@ import QtQuick.Window 2.0
     will automatically hide and show when the user scrolls up or down:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
 
         MainView {
             width: units.gu(48)
@@ -89,7 +89,7 @@ import QtQuick.Window 2.0
     A toolbar can be added to the application by setting the tools property of the \l Page:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
 
         MainView {
             width: units.gu(48)
@@ -169,7 +169,7 @@ PageTreeNode {
       the content:
       \qml
           import QtQuick 2.0
-          import Ubuntu.Components 1.0
+          import Ubuntu.Components 1.1
 
           MainView {
               width: units.gu(40)

@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0 as Toolkit
+import Ubuntu.Components 1.1 as Toolkit
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
 Template {

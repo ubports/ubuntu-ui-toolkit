@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0 as Ubuntu
+import Ubuntu.Components 1.1 as Ubuntu
 
 /*!
     \qmltype UbuntuShape
-    \inqmlmodule Ubuntu.Components 1.0
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief The UbuntuShape item provides a standard Ubuntu shaped rounded rectangle.
 
@@ -35,7 +35,7 @@ import Ubuntu.Components 1.0 as Ubuntu
 
     Examples:
     \qml
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
 
         UbuntuShape {
             color: "lightblue"
@@ -44,7 +44,7 @@ import Ubuntu.Components 1.0 as Ubuntu
     \endqml
 
     \qml
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
 
         UbuntuShape {
             image: Image {

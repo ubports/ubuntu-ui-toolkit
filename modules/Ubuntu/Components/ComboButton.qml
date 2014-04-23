@@ -21,7 +21,7 @@ import "mathUtils.js" as MathUtils
 /*!
     \qmltype ComboButton
     \inqmlmodule Ubuntu.Components 1.1
-    \ingroup ubuntu11
+    \ingroup ubuntu
     \brief Ubuntu button providing a drop-down panel visualizing custom options.
 
     The component is composed of three main blocks: \b {main button}, \b {dropdown}
@@ -158,6 +158,7 @@ import "mathUtils.js" as MathUtils
     }
     \endqml
 
+    \section2 Styling
     The style of the component is defined in \l ComboButtonStyle.
   */
 Button {
