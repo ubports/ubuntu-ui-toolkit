@@ -20,8 +20,8 @@ import "mathUtils.js" as MathUtils
 
 /*!
     \qmltype ComboButton
-    \inqmlmodule Ubuntu.Components 1.0
-    \ingroup ubuntu
+    \inqmlmodule Ubuntu.Components 1.1
+    \ingroup ubuntu11
     \brief Ubuntu button providing a drop-down panel visualizing custom options.
 
     The component is composed of three main blocks: \b {main button}, \b {dropdown}
@@ -42,7 +42,7 @@ import "mathUtils.js" as MathUtils
         list will be expanded only to the height of the content.
         \qml
         import QtQuick 2.0
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
         ComboButton {
             text: "smaller content"
             Rectangle {
@@ -58,7 +58,7 @@ import "mathUtils.js" as MathUtils
         itself.
         \qml
         import QtQuick 2.0
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
         ComboButton {
             text: "long scrolled content"
             Column {
@@ -77,7 +77,7 @@ import "mathUtils.js" as MathUtils
         the content will be filling the entire combo list area defined.
         \qml
         import QtQuick 2.0
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
         import Ubuntu.Components.ListItems 1.0
         ComboButton {
             text: "listview"
@@ -95,7 +95,7 @@ import "mathUtils.js" as MathUtils
         bind its height to the \l comboListHeight property.
         \qml
         import QtQuick 2.0
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
         ComboButton {
             id: combo
             text: "smaller content"
@@ -109,7 +109,7 @@ import "mathUtils.js" as MathUtils
         expandedHeight should be set to -1.
         \qml
         import QtQuick 2.0
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
         ComboButton {
             text: "auto-sized content"
             expandedHeight: -1
@@ -135,7 +135,7 @@ import "mathUtils.js" as MathUtils
 
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 1.0
+    import Ubuntu.Components 1.1
 
     ComboButton {
         id: combo
@@ -201,7 +201,7 @@ Button {
       that can be used to size the combo list content.
       \qml
       import QtQuick 2.0
-      import Ubuntu.Components 1.0
+      import Ubuntu.Components 1.1
       import Ubuntu.Components.ListItems 0.1
       ComboButton {
           id: combo

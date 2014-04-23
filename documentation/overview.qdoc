@@ -34,6 +34,10 @@
          import Ubuntu.Components 1.0
      \endcode
      \annotatedlist ubuntu
+     \code
+         import Ubuntu.Components 1.1
+     \endcode
+     \annotatedlist ubuntu11
 
      \part List Items
      Available through:
@@ -69,6 +73,9 @@
          import Ubuntu.Components 1.0
      \endcode
      \annotatedlist theming
+
+     \part Styles
+     \annotatedlist style-api
 
      \part Resolution Independence Items
      Available through:

@@ -26,4 +26,6 @@ PickerDelegateStyle 0.1 PickerDelegateStyle.qml
 DialerStyle 0.1 DialerStyle.qml
 DialerHandStyle 0.1 DialerHandStyle.qml
 internal HighlightMagnifier HighlightMagnifier.qml
-ComboButtonStyle 0.1 ComboButtonStyle.qml
+
+#version 1.1
+ComboButtonStyle 1.1 ComboButtonStyle.qml
