@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import QtQuick.Window 2.0
-import Ubuntu.Components 1.1 as Ubuntu
+import Ubuntu.Components 1.0
 
 /*!
     \qmltype OrientationHelper
@@ -188,8 +188,8 @@ Item {
                     RotationAnimation {
                         target: orientationHelper
                         properties: "rotation"
-                        duration: Ubuntu.UbuntuAnimation.FastDuration
-                        easing: Ubuntu.UbuntuAnimation.StandardEasing
+                        duration: UbuntuAnimation.FastDuration
+                        easing: UbuntuAnimation.StandardEasing
                         direction: RotationAnimation.Shortest
                     }
                 }
