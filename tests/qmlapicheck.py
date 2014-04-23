@@ -59,7 +59,9 @@ for line in fileinput.input():
                 # Filenames are relative to the qmldir
                 # Foo 1.0 Foo.qml
                 folder = os.path.dirname(fileinput.filename())
-                inputfiles.append(folder + '/' + filename)
+                fullpath = folder + '/' + filename
+                if not fullpath in inputfiles:
+                    inputfiles.append(fullpath)
     else:
         inputfiles.append(fileinput.filename())
         fileinput.nextfile()
