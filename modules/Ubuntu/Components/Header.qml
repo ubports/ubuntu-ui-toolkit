@@ -19,12 +19,12 @@ import QtQuick 2.0
 // we need to use named imports otherwise namespace collision is reported
 // by the QML engine. As workaround, we use Ubuntu named import.
 // Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Ubuntu
+import Ubuntu.Components 1.0 as Ubuntu
 
 /*!
     \internal
     \qmltype Header
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.0
     \ingroup ubuntu
 */
 StyledItem {

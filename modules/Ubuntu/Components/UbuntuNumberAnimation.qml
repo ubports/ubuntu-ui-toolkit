@@ -16,11 +16,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Ubuntu
+import Ubuntu.Components 1.0 as Ubuntu
 
 /*!
     \qmltype UbuntuNumberAnimation
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.0
     \ingroup ubuntu
     \brief UbuntuNumberAnimation is a NumberAnimation that has predefined
            settings to ensure that Ubuntu applications are consistent in their animations.
@@ -29,7 +29,7 @@ import Ubuntu.Components 0.1 as Ubuntu
 
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
+    import Ubuntu.Components 1.0
 
     Rectangle {
         width: 100; height: 100

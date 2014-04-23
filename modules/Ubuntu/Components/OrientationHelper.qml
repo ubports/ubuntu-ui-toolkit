@@ -16,11 +16,11 @@
 
 import QtQuick 2.0
 import QtQuick.Window 2.0
-import Ubuntu.Components 0.1 as Ubuntu
+import Ubuntu.Components 1.0 as Ubuntu
 
 /*!
     \qmltype OrientationHelper
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.0
     \ingroup ubuntu
     \brief The OrientationHelper automatically rotates its children following the
            orientation of the device.

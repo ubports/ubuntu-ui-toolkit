@@ -72,7 +72,7 @@ class MainViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(48)
@@ -125,7 +125,7 @@ class PageTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(48)
@@ -148,7 +148,7 @@ class ToolbarTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(50)
@@ -246,8 +246,8 @@ class TabsTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItem
+import Ubuntu.Components 1.0
+import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
     width: units.gu(70)
@@ -372,8 +372,8 @@ class ActionSelectionPopoverTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.Popups 0.1
+import Ubuntu.Components 1.0
+import Ubuntu.Components.Popups 1.0
 
 MainView {
     width: units.gu(48)
@@ -446,7 +446,7 @@ MainView {
 
 TEST_QML_WITH_CHECKBOX = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(48)
@@ -464,7 +464,7 @@ MainView {
 
 TEST_QML_WITH_SWITCH = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(48)
@@ -557,8 +557,8 @@ class QQuickListViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItem
+import Ubuntu.Components 1.0
+import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
     width: units.gu(48)
@@ -655,8 +655,8 @@ class QQuickListViewOutOfViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItem
+import Ubuntu.Components 1.0
+import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
     width: units.gu(48)
@@ -730,8 +730,8 @@ class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1
+import Ubuntu.Components 1.0
+import Ubuntu.Components.ListItems 1.0
 
 
 MainView {
@@ -882,7 +882,7 @@ class PageStackTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(48)
@@ -937,7 +937,7 @@ class TextFieldTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(48)
@@ -1010,8 +1010,8 @@ class ComposerSheetTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.Popups 0.1
+import Ubuntu.Components 1.0
+import Ubuntu.Components.Popups 1.0
 
 MainView {
     width: units.gu(48)
@@ -1084,8 +1084,8 @@ MainView {
 class ComboButtonTestCase(tests.QMLStringAppTestCase):
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1
+import Ubuntu.Components 1.0
+import Ubuntu.Components.ListItems 1.0
 
 MainView {
     width: units.gu(40)
@@ -1151,8 +1151,8 @@ class OptionSelectorCustomDelegateTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1
+import Ubuntu.Components 1.0
+import Ubuntu.Components.ListItems 1.0
 
 MainView {
     width: units.gu(48)
@@ -1251,7 +1251,7 @@ class OptionSelectorTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(48)
