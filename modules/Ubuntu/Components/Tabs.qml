@@ -207,6 +207,12 @@ PageTreeNode {
 
     /*!
       \internal
+      tst_tabs.qml needs access to the model to verify that Repeaters inside Tabs works.
+     */
+    property var __model: tabsModel
+
+    /*!
+      \internal
       required by TabsStyle
      */
     ListModel {
