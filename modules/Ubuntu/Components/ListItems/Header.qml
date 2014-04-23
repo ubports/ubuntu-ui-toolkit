@@ -18,13 +18,13 @@ import QtQuick 2.0
 
 /*!
     \qmltype Header
-    \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief Header for grouping list items together
 
     Examples:
     \qml
-        import Ubuntu.Components.ListItems 0.1 as ListItem
+        import Ubuntu.Components.ListItems 1.0 as ListItem
         Column {
             ListItem.Header { text: "Title" }
             ListItem.Standard { text: "Item one" }
