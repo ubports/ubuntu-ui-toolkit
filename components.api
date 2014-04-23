@@ -599,7 +599,7 @@ TestCase
 plugins.qmltypes
     name: "InverseMouseAreaType"
     prototype: "QQuickMouseArea"
-    exports: ["InverseMouseArea 0.1"]
+    exports: ["InverseMouseArea 0.1", "InverseMouseArea 1.0"]
     Property { name: "sensingArea"; type: "QQuickItem"; isPointer: true }
     Property { name: "topmostItem"; type: "bool" }
     Method {
@@ -607,7 +607,7 @@ plugins.qmltypes
     Parameter { name: "point"; type: "QPointF" }
     name: "ShapeItem"
     prototype: "QQuickItem"
-    exports: ["Shape 0.1"]
+    exports: ["Shape 0.1", "Shape 1.0"]
     name: "HAlignment"
     name: "VAlignment"
     Property { name: "color"; type: "QColor" }
@@ -622,7 +622,7 @@ plugins.qmltypes
     Method { name: "gridUnitChanged" }
     name: "UCAlarm"
     prototype: "QObject"
-    exports: ["Alarm 0.1"]
+    exports: ["Alarm 0.1", "Alarm 1.0"]
     name: "Status"
     name: "Operation"
     name: "Error"
@@ -645,14 +645,14 @@ plugins.qmltypes
     Method { name: "reset" }
     name: "UCAlarmModel"
     prototype: "QAbstractListModel"
-    exports: ["AlarmModel 0.1"]
+    exports: ["AlarmModel 0.1", "AlarmModel 1.0"]
     Property { name: "count"; type: "int"; isReadonly: true }
     Method {
     name: "get"
     Parameter { name: "index"; type: "int" }
     name: "UCArgument"
     prototype: "QObject"
-    exports: ["Argument 0.1"]
+    exports: ["Argument 0.1", "Argument 1.0"]
     Property { name: "name"; type: "string" }
     Property { name: "help"; type: "string" }
     Property { name: "required"; type: "bool" }
@@ -662,7 +662,7 @@ plugins.qmltypes
     Parameter { name: "i"; type: "int" }
     name: "UCArguments"
     prototype: "QObject"
-    exports: ["Arguments 0.1"]
+    exports: ["Arguments 0.1", "Arguments 1.0"]
     Property { name: "defaultArgument"; type: "UCArgument"; isPointer: true }
     Property { name: "arguments"; type: "UCArgument"; isList: true; isReadonly: true }
     Property { name: "values"; type: "QQmlPropertyMap"; isReadonly: true; isPointer: true }
@@ -675,10 +675,10 @@ plugins.qmltypes
     Method { name: "quitWithError" }
     name: "UCInverseMouse"
     prototype: "UCMouse"
-    exports: ["InverseMouse 0.1"]
+    exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
     name: "UCMouse"
     prototype: "QObject"
-    exports: ["Mouse 0.1"]
+    exports: ["Mouse 0.1", "Mouse 1.0"]
     name: "Priority"
     Property { name: "enabled"; type: "bool" }
     Property { name: "acceptedButtons"; type: "Qt::MouseButtons"; isReadonly: true }
@@ -720,7 +720,7 @@ plugins.qmltypes
     Parameter { name: "host"; type: "QQuickItem"; isPointer: true }
     name: "UCQQuickImageExtension"
     prototype: "QQuickImageBase"
-    exports: ["QQuickImageBase 0.1"]
+    exports: ["QQuickImageBase 0.1", "QQuickImageBase 1.0"]
     Property { name: "source"; type: "QUrl" }
     Signal {
     name: "sourceChanged"
@@ -730,14 +730,14 @@ plugins.qmltypes
     Parameter { type: "QUrl" }
     name: "UCStateSaver"
     prototype: "QObject"
-    exports: ["StateSaver 0.1"]
+    exports: ["StateSaver 0.1", "StateSaver 1.0"]
     name: "UCStateSaverAttached"
     prototype: "QObject"
     Property { name: "enabled"; type: "bool" }
     Property { name: "properties"; type: "string" }
     name: "UCUbuntuAnimation"
     prototype: "QObject"
-    exports: ["UbuntuAnimation 0.1"]
+    exports: ["UbuntuAnimation 0.1", "UbuntuAnimation 1.0"]
     Property { name: "SnapDuration"; type: "int"; isReadonly: true }
     Property { name: "FastDuration"; type: "int"; isReadonly: true }
     Property { name: "BriskDuration"; type: "int"; isReadonly: true }
@@ -747,7 +747,7 @@ plugins.qmltypes
     Property { name: "StandardEasingReverse"; type: "QEasingCurve"; isReadonly: true }
     name: "UCUnits"
     prototype: "QObject"
-    exports: ["UCUnits 0.1"]
+    exports: ["UCUnits 0.1", "UCUnits 1.0"]
     Property { name: "gridUnit"; type: "float" }
     Method {
     name: "dp"
@@ -757,13 +757,13 @@ plugins.qmltypes
     Parameter { name: "value"; type: "float" }
     name: "UCUriHandler"
     prototype: "QObject"
-    exports: ["UriHandler 0.1"]
+    exports: ["UriHandler 0.1", "UriHandler 1.0"]
     Signal {
     name: "opened"
     Parameter { name: "uris"; type: "QStringList" }
     name: "UbuntuI18n"
     prototype: "QObject"
-    exports: ["i18n 0.1"]
+    exports: ["i18n 0.1", "i18n 1.0"]
     Property { name: "domain"; type: "string" }
     Property { name: "language"; type: "string" }
     Method {
@@ -790,17 +790,17 @@ plugins.qmltypes
     Parameter { name: "n"; type: "int" }
     name: "ULConditionalLayout"
     prototype: "QObject"
-    exports: ["ConditionalLayout 0.1"]
+    exports: ["ConditionalLayout 0.1", "ConditionalLayout 1.0"]
     Property { name: "name"; type: "string" }
     Property { name: "when"; type: "QQmlBinding"; isPointer: true }
     Property { name: "layout"; type: "QQmlComponent"; isPointer: true }
     name: "ULItemLayout"
     prototype: "QQuickItem"
-    exports: ["ItemLayout 0.1"]
+    exports: ["ItemLayout 0.1", "ItemLayout 1.0"]
     Property { name: "item"; type: "string" }
     name: "ULLayouts"
     prototype: "QQuickItem"
-    exports: ["Layouts 0.1"]
+    exports: ["Layouts 0.1", "Layouts 1.0"]
     Property { name: "currentLayout"; type: "string"; isReadonly: true }
     Property { name: "layouts"; type: "ULConditionalLayout"; isList: true; isReadonly: true }
     name: "ULLayoutsAttached"
@@ -808,7 +808,7 @@ plugins.qmltypes
     Property { name: "item"; type: "string" }
     name: "UPMCpuUsage"
     prototype: "QQuickItem"
-    exports: ["CpuUsage 0.1"]
+    exports: ["CpuUsage 0.1", "CpuUsage 1.0"]
     Property { name: "graphModel"; type: "UPMGraphModel"; isReadonly: true; isPointer: true }
     Property { name: "period"; type: "int" }
     Property { name: "samplingInterval"; type: "int" }
@@ -820,7 +820,7 @@ plugins.qmltypes
     Property { name: "currentValue"; type: "int"; isReadonly: true }
     name: "UPMRenderingTimes"
     prototype: "QQuickItem"
-    exports: ["RenderingTimes 0.1"]
+    exports: ["RenderingTimes 0.1", "RenderingTimes 1.0"]
     Property { name: "period"; type: "int" }
     Property { name: "samples"; type: "int" }
     Property { name: "graphModel"; type: "UPMGraphModel"; isReadonly: true; isPointer: true }
@@ -830,5 +830,5 @@ plugins.qmltypes
     Parameter { name: "renderTime"; type: "qlonglong" }
     name: "UPMTextureFromImage"
     prototype: "QQuickItem"
-    exports: ["TextureFromImage 0.1"]
+    exports: ["TextureFromImage 0.1", "TextureFromImage 1.0"]
     Property { name: "image"; type: "QImage" }
