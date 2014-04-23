@@ -18,7 +18,7 @@ import QtQuick 2.0
 
 /*!
     \qmltype TabBar
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.0
     \ingroup ubuntu
     \brief Tab bar that will be shown in the header when \l Tabs is active.
         This component does not need to be instantiated by the developer, it is
