@@ -17,40 +17,39 @@
 import QtQuick 2.0
 import Ubuntu.Components 1.0
 
-MainView {
+FocusScope {
     id: root
     width: units.gu(40)
     height: units.gu(71)
 
-    property InverseMouseArea ima: null
-    Component {
-        id: imaComponent
-        InverseMouseArea {
-            id: ima
-            objectName: "Test_IMA"
-            anchors.fill: parent
-            topmostItem: true
-            Component.onCompleted: root.ima = ima
+    Flickable {
+        anchors {
+            fill: parent
+            margins: units.gu(1)
         }
-    }
-
-    Component.onCompleted: loader.sourceComponent = imaComponent
-
-    Page {
-        title: "Test"
+        contentWidth: body.width
+        contentHeight: body.height
+        clip: true
 
         Rectangle {
-            objectName: "Card"
-            width: parent.width - units.gu(5)
-            height: units.gu(50)
-            anchors.centerIn: parent
-            color: "teal"
-            clip: true
-
-            Loader {
-                id: loader
+            color: "blue"
+            id: body
+            width: units.gu(100)
+            height: units.gu(100)
+            MouseArea {
+                objectName: "host"
                 anchors.fill: parent
+                Mouse.forwardTo: [proxy]
+                Item {
+                    id: proxy
+                    objectName: "proxy"
+                    anchors.fill: parent
+                    Mouse.enabled: true
+                    // this threshold does not apply for the forwarded events!
+                    Mouse.clickAndHoldThreshold: units.gu(2)
+                }
             }
+
         }
     }
 }

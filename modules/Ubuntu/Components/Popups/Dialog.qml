@@ -15,13 +15,13 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 import "internalPopupUtils.js" as InternalPopupUtils
 
 /*!
     \qmltype Dialog
     \inherits PopupBase
-    \inqmlmodule Ubuntu.Components.Popups 0.1
+    \inqmlmodule Ubuntu.Components.Popups 1.0
     \ingroup ubuntu-popups
     \brief The Dialog caters for cases in which the application requires the user to determine
         between optional actions. The Dialog will interrupt the user flow and lock the view
@@ -33,8 +33,8 @@ import "internalPopupUtils.js" as InternalPopupUtils
     Example:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
-        import Ubuntu.Components.Popups 0.1
+        import Ubuntu.Components 1.0
+        import Ubuntu.Components.Popups 1.0
 
         Item {
             width: units.gu(80)

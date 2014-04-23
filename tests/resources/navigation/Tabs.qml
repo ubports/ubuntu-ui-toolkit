@@ -15,51 +15,13 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItem
+import Ubuntu.Components 1.0
+import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
-    id: root
     width: 800
     height: 600
     useDeprecatedToolbar: false
-
-    property var repeaterModel: 3
-
-    Component {
-        id: dynamicTab
-        Tab {
-            page: Page {
-                Label {
-                    text: title + " at index " + index
-                    anchors.centerIn: parent
-                }
-                tools: ToolbarItems {
-                    ToolbarButton {
-                        text: "move @1"
-                        onTriggered: {
-                            print("MOVE TAB TO #1")
-                            tabs.moveTab(index, 1)
-                        }
-                    }
-                    ToolbarButton {
-                        text: "remove me"
-                        onTriggered: {
-                            print("REMOVE CURENT TAB")
-                            tabs.removeTab(index)
-                        }
-                    }
-                    ToolbarButton {
-                        text: "remove first"
-                        onTriggered: {
-                            print("REMOVE TAB AT #0")
-                            tabs.removeTab(0)
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     Tabs {
         id: tabs
@@ -70,7 +32,6 @@ MainView {
 
         Tab {
             id: simpleTab
-            objectName: title
             title: i18n.tr("Simple page #" + index)
             page: Page {
                 Row {
@@ -95,60 +56,13 @@ MainView {
                         iconSource: "call_icon.png"
                         onTriggered: print("action triggered")
                     }
-                    ToolbarButton {
-                        text: "append"
-                        onTriggered: {
-                            print("APPEND TAB")
-                            tabs.addTab("Appended tab", dynamicTab)
-                        }
-                    }
-                    ToolbarButton {
-                        text: "insert@1"
-                        onTriggered: {
-                            print("INSERT TAB TO #1")
-                            tabs.insertTab(1, "Inserted tab", dynamicTab)
-                        }
-                    }
-                    ToolbarButton {
-                        text: "insert@2"
-                        onTriggered: {
-                            print("INSERT BETWEEN REPEATERS #1")
-                            tabs.insertTab(2, "Between repeaters", dynamicTab)
-                        }
-                    }
-                    ToolbarButton {
-                        text: "insert@here"
-                        onTriggered: {
-                            print("INSERT AFTER ME")
-                            tabs.insertTab(simpleTab.index, "Inserted tab", dynamicTab)
-                        }
-                    }
-                    ToolbarButton {
-                        text: "incRep"
-                        onTriggered: {
-                            print("INCREASE REPEATER MODEL")
-                            root.repeaterModel += 1
-                        }
-                    }
-                    ToolbarButton {
-                        text: "remove last"
-                        onTriggered: {
-                            print("REMOVE LAST TAB")
-                            tabs.removeTab(tabs.count - 1)
-                        }
-                    }
-                    ToolbarButton {
-                        text: "append predec"
-                        onTriggered: tabs.addTab("Re-added ListView", listViewTab)
-                    }
                 }
             }
         }
         Repeater {
-            model: root.repeaterModel
+            model: 3
             Tab {
                 id: tab
-                objectName: title
                 title: "Extra #" + tab.index
                 page: Page {
                     Column {
@@ -175,7 +89,6 @@ MainView {
         }
         Tab {
             id: externalTab
-            objectName: title
             title: i18n.tr("External #" + index)
             page: Loader {
                 parent: externalTab
@@ -184,8 +97,6 @@ MainView {
             }
         }
         Tab {
-            id: listViewTab
-            objectName: title
             title: i18n.tr("List view #" + index)
             page: Page {
                 ListView {

@@ -15,15 +15,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+source $PWD/export_modules_dir.sh
+
 cd tests/autopilot
 
 echo running with arg: $1
 
 UBUNTU_UI_TOOLKIT_AUTOPILOT_FROM_SOURCE=1
 if [ "$1" == "" ]; then
-	python3 -m autopilot.run run ubuntuuitoolkit
+        autopilot3 run ubuntuuitoolkit
 else
-	python3 -m autopilot.run run -o ../../$1 -f xml -r -rd ../../ ubuntuuitoolkit
+        autopilot3 run -o ../../$1 -f xml -r -rd ../../ $1
 fi
 
 exit 0

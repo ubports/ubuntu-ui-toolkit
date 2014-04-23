@@ -15,16 +15,12 @@
  */
 
 import QtQuick 2.0
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Ubuntu named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Ubuntu
+import Ubuntu.Components 1.0
 
 /*!
     \internal
     \qmltype Header
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.0
     \ingroup ubuntu
 */
 StyledItem {
@@ -44,7 +40,7 @@ StyledItem {
     Behavior on y {
         enabled: animate && !(header.flickable && header.flickable.moving)
         SmoothedAnimation {
-            duration: Ubuntu.UbuntuAnimation.BriskDuration
+            duration: UbuntuAnimation.BriskDuration
         }
     }
 

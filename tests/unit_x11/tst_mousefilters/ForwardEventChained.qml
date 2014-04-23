@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -13,33 +13,39 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 import QtQuick 2.0
 import Ubuntu.Components 1.0
 
 Item {
-    id: visuals
-    // styling properties
-    property color color: Theme.palette.normal.overlay
+    id: main
+    objectName: "proxy2"
+    width: units.gu(40)
+    height: units.gu(71)
 
-    anchors.fill: parent
+    Mouse.enabled: true
 
-    Rectangle {
-        id: background
+    Column {
         anchors.fill: parent
-        color: visuals.color
-    }
+        spacing: units.gu(1)
 
-    Image {
-        id: dropshadow
-        anchors {
-            left: parent.left
-            right: parent.right
-            bottom: background.top
+        Rectangle {
+            id: blueRect
+            objectName: "proxy1"
+            width: parent.width
+            height: units.gu(20)
+            color: "blue"
+            Mouse.forwardTo: [main]
         }
-        source: Qt.resolvedUrl("artwork/toolbar_dropshadow.png")
-        opacity: styledItem.opened || styledItem.animating ? 0.5 : 0.0
-        Behavior on opacity {
-            UbuntuNumberAnimation { duration: UbuntuAnimation.SnapDuration }
+        Rectangle {
+            width: parent.width
+            height: units.gu(20)
+            color: "red"
+            MouseArea {
+                objectName: "host"
+                anchors.fill: parent
+                Mouse.forwardTo: [blueRect]
+            }
         }
     }
 }

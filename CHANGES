@@ -9,7 +9,7 @@ UNRELEASED
 
 API Changes
 ***********
-* DEPRECATED IN: Tabs: default property list<Item> tabChildren
+* ADDED IN: all modules exported as 0.1 as well as 1.0 version
 * ADDED IN: PickerDelegate: readonly property Picker picker
 * CHANGED IN: OptionSelector: readonly property bool currentlyExpanded TO property bool currentlyExpanded
 * CHANGED IN: ItemSelector: readonly property bool currentlyExpanded TO property bool currentlyExpanded
