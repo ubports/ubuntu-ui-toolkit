@@ -226,6 +226,9 @@ QSortFilterProxyModelQML::setModel(QAbstractItemModel *itemModel)
         }
 
         setSourceModel(itemModel);
+        // Roles mapping to role names may change
+        setSortRole(roleByName(m_sortBehavior.property()));
+        setFilterRole(roleByName(m_filterBehavior.property()));
         Q_EMIT modelChanged();
     }
 }

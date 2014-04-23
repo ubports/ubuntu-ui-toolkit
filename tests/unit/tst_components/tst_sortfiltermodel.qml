@@ -103,6 +103,6 @@ TestCase {
 
         // Filter
         compare(bee.count, 1)
-        compare(bee.get(0), "bee")
+        compare(bee.get(0).alpha, "bee")
     }
 }
