@@ -16,8 +16,8 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1
+import Ubuntu.Components 1.1
+import Ubuntu.Components.ListItems 1.0
 
 MainView {
     width: units.gu(40)
@@ -32,10 +32,6 @@ MainView {
             id: combo1
             text: "collapsedHeight differs"
             collapsedHeight: units.gu(6)
-            Rectangle {
-                color: "green"
-//                height: combo1.comboListHeight
-            }
         }
 
         ComboButton {
