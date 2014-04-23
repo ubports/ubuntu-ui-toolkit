@@ -25,7 +25,7 @@ from ubuntuuitoolkit import base, environment
 
 DEFAULT_QML_FILE_CONTENTS = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(48)
