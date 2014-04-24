@@ -46,7 +46,7 @@ if len(sys.argv) < 2 or '-h' in sys.argv or '--help' in sys.argv:
 
 builtins = os.getenv('BUILTINS', '').split(',')
 inputfiles = []
-versions = {}
+classes = {}
 for line in fileinput.input():
     if fileinput.filename()[-6:] == 'qmldir':
         if line[:8] == 'internal':
@@ -61,12 +61,16 @@ for line in fileinput.input():
                 # Foo 1.0 Foo.qml
                 folder = os.path.dirname(fileinput.filename())
                 fullpath = folder + '/' + filename
+                classname = pieces[0]
                 version = pieces[1]
                 if not fullpath in inputfiles:
                     inputfiles.append(fullpath)
-                    versions[fullpath] = [version]
+                    classes[fullpath] = [classname, version]
                 else:
-                    versions[fullpath].append(version)
+                    versions = classes[fullpath]
+                    if not classname in versions:
+                        versions.append(classname)
+                    versions.append(version)
     else:
         inputfiles.append(fileinput.filename())
         fileinput.nextfile()
@@ -94,9 +98,10 @@ for line in fileinput.input(inputfiles, openhook=hook):
         else:
             print('Unknown filetype %s' % fileinput.filename())
             sys.exit(1)
-        classname = fileinput.filename()
-        if fileinput.filename() in versions:
-            classname += ' ' + ' '.join(versions[fileinput.filename()])
+        if fileinput.filename() in classes:
+            classname = ' '.join(classes[fileinput.filename()])
+        else:
+            classname = fileinput.filename()
         print(classname)
 
     line = line.split('//')[0]
