@@ -583,8 +583,9 @@ Item {
         }
 
         onEntered: {
-            // panel.__openOnHover
-            panel.open();
+            if (panel.__openOnHover) {
+                panel.open();
+            }
             hideTimer.stop();
         }
 
