@@ -289,6 +289,10 @@ class Header(UbuntuUIToolkitEmulatorBase):
         tabs_model_properties = self.select_single(
             'QQuickItem', objectName='tabsModelProperties')
 
+        if (tabs_model_properties.selectedIndex == index):
+            # specified index is already selected
+            return
+
         try:
             tab_button = self.get_root_instance().select_single(
                 'Standard', objectName='tabButton' + str(index))
