@@ -290,7 +290,6 @@ class Header(UbuntuUIToolkitEmulatorBase):
             'QQuickItem', objectName='tabsModelProperties')
 
         if (tabs_model_properties.selectedIndex == index):
-            # specified index is already selected
             return
 
         try:
