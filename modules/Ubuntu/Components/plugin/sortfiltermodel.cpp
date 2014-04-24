@@ -229,6 +229,11 @@ QHash<int, QByteArray> QSortFilterProxyModelQML::roleNames() const
     return sourceModel() ? sourceModel()->roleNames() : QHash<int, QByteArray>();
 }
 
+/*!
+ * \qmlproperty QAbstractItemModel SortFilterModel::model
+ *
+ * The source model to sort and/ or filter.
+ */
 void
 QSortFilterProxyModelQML::setModel(QAbstractItemModel *itemModel)
 {
