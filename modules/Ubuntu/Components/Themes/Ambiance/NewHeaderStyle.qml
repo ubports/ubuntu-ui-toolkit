@@ -84,7 +84,7 @@ Item {
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
 
             // XXX: We currently use an AbstractButton with ToolbarButtonStyle because
-            //  a ToolbarButton does not has its own MouseArea to handle interaction,
+            //  a ToolbarButton does not have its own MouseArea to handle interaction,
             //  that was done in the Toolbar.
             style: Theme.createStyleComponent("ToolbarButtonStyle.qml", tabsButton)
 
