@@ -4,8 +4,18 @@ SDK Release Notes
 .. contents:: List of Releases
    :depth: 1
 
-UNRELEASED
-##########
+Ubuntu.Components 1.1
+#####################
+
+API Changes
+***********
+
+Compatibility Breaks
+********************
+
+
+Ubuntu.Components 1.0
+#####################
 
 API Changes
 ***********
@@ -92,11 +102,11 @@ API Changes
 Compatibility Breaks
 ********************
 
-- CHANGED IN Tabs: Automatically show the header when the title of the active tab changes
-- CHANGED IN Page/MainView: Only enable auto-hide behavior of header when the Page's flickable can be flicked vertically, so that manual setting of anchors is no longer needed for flickables that only flick horizontally
-- CHANGED IN Page: Automatic detection of flickable inside a Page to control the header is now limited to Flickables that are anchored to the top of the Page or fill the Page. Header automatically shows when flickable.contentHeight becomes <= flickable.height.
-- CHANGED IN Action, ActionItem, OptionSelectorDelegate: Setting iconName now always selects the requested icon from ubuntu-mobile theme, not the system icon theme.
-- CHANGED IN TabBar: The model now needs to have a selectedIndex property.
+* CHANGED IN Tabs: Automatically show the header when the title of the active tab changes
+* CHANGED IN Page/MainView: Only enable auto-hide behavior of header when the Page's flickable can be flicked vertically, so that manual setting of anchors is no longer needed for flickables that only flick horizontally
+* CHANGED IN Page: Automatic detection of flickable inside a Page to control the header is now limited to Flickables that are anchored to the top of the Page or fill the Page. Header automatically shows when flickable.contentHeight becomes <= flickable.height.
+* CHANGED IN Action, ActionItem, OptionSelectorDelegate: Setting iconName now always selects the requested icon from ubuntu-mobile theme, not the system icon theme.
+* CHANGED IN TabBar: The model now needs to have a selectedIndex property.
 
 SDK 0.1.46
 ##########
