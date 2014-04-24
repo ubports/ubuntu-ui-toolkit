@@ -21,7 +21,7 @@
 /*!
   \qmltype InverseMouseArea
   \instantiates InverseMouseAreaType
-  \inqmlmodule Ubuntu.Components 0.1
+  \inqmlmodule Ubuntu.Components 1.0
   \ingroup ubuntu
   \brief The InverseMouseArea captures mouse events happening outside of a given
   area.
@@ -33,7 +33,7 @@
   Popup.qml
   \qml
   import QtQuick 2.0
-  import Ubuntu.Components 0.1
+  import Ubuntu.Components 1.0
 
   Rectangle {
       anchors.centerIn: parent
@@ -53,7 +53,7 @@
 
   \qml
   import QtQuick 2.0
-  import Ubuntu.Components 0.1
+  import Ubuntu.Components 1.0
 
   Item {
       width: 640
@@ -77,7 +77,7 @@
   a component which is either a parent of the mouse area or a sibling of it.
   \qml
   import QtQuick 2.0
-  import Ubuntu.Components 0.1
+  import Ubuntu.Components 1.0
 
   Item {
       width: units.gu(40)

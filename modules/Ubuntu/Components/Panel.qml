@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Toolkit
+import Ubuntu.Components 1.0 as Toolkit
 
 /*!
     \qmltype Panel
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.0
     \ingroup ubuntu
     \brief A panel that can be swiped in and out from an edge of the window by the user.
     For most applications, it is highly recommended to use the \l MainView instead which includes
@@ -38,7 +38,7 @@ import Ubuntu.Components 0.1 as Toolkit
     A black panel that can be swiped in from the lower-right of the window can be created like this:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.0
 
         Item {
             width: units.gu(80)
@@ -69,7 +69,7 @@ import Ubuntu.Components 0.1 as Toolkit
     A panel that looks like the standard (bottom-aligned) toolbar, but with custom contents, can be created like this:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.0
 
         Item {
             width: units.gu(80)
@@ -106,7 +106,7 @@ import Ubuntu.Components 0.1 as Toolkit
     signals are forwarded from the panel by calling the child's trigger() function. Example:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.0
 
         Rectangle {
             color: Theme.palette.normal.background
@@ -583,8 +583,9 @@ Item {
         }
 
         onEntered: {
-            // panel.__openOnHover
-            panel.open();
+            if (panel.__openOnHover) {
+                panel.open();
+            }
             hideTimer.stop();
         }
 

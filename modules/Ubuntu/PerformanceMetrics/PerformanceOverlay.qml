@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.PerformanceMetrics 0.1 as PerformanceMetrics
+import Ubuntu.PerformanceMetrics 1.0 as PerformanceMetrics
 
 /*!
     \qmltype PerformanceOverlay

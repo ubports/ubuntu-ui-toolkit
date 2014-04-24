@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 /*!
     \qmltype PickerDelegate
-    \inqmlmodule Ubuntu.Components.Pickers 0.1
+    \inqmlmodule Ubuntu.Components.Pickers 1.0
     \ingroup ubuntu-pickers
     \brief PickerDelegate component serves as base for Picker delegates.
 

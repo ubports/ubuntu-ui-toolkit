@@ -36,7 +36,7 @@ void UriHandlerObject::Open(const QStringList& uris, const QHash<QString, QVaria
 /*!
  * \qmltype UriHandler
  * \instantiates UCUriHandler
- * \inqmlmodule Ubuntu.Components 0.1
+ * \inqmlmodule Ubuntu.Components 1.0
  * \ingroup ubuntu
  * \brief Singleton signalling for opened URIs.
  *
