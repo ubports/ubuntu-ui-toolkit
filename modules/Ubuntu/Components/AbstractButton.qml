@@ -19,7 +19,7 @@ import QtFeedback 5.0
 
 /*!
     \qmlabstract AbstractButton
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.0
     \ingroup ubuntu
     \brief The AbstractButton class defines the behavior of the button.
 

@@ -38,6 +38,9 @@ public:
 private Q_SLOTS:
     void registerWindowContextProperty();
     void setWindowContextProperty(QWindow* focusWindow);
+
+private:
+    void registerTypesToVersion(const char *uri, int major, int minor);
 };
 #endif // UBUNTU_COMPONENTS_PLUGIN_H
 

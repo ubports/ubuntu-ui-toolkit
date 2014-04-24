@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 /*!
     \qmltype Standard
-    \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief The standard list item class. It shows a basic list item
         with a label (text), and optionally an icon, a progression arrow,
@@ -30,8 +30,8 @@ import Ubuntu.Components 0.1
 
     Examples:
     \qml
-        import Ubuntu.Components 0.1
-        import Ubuntu.Components.ListItems 0.1 as ListItem
+        import Ubuntu.Components 1.0
+        import Ubuntu.Components.ListItems 1.0 as ListItem
         Column {
             ListItem.Standard {
                 text: "Selectable standard list item"
