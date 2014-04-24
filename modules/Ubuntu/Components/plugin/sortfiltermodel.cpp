@@ -39,35 +39,47 @@
  * import Ubuntu.Components 0.1
  * import Ubuntu.Components.ListItems 0.1
  *
- * ListModel {
- *     id: movies
- *     ListElement { "title": "Esign"; "producer": "Chris Larkee" }
- *     ListElement { "title": "Elephants Dream"; "producer": "Blender" }
- *     ListElement { "title": "Big Buck Bunny"; "producer": "Blender" }
- * }
- *
- * SortFilterModel {
- *     model: movies
- *     sort.property: "title"
- *     sort.order: Qt.DescendingOrder
- *
- *     filter.property: "producer"
- *     filter.pattern: /blender/
- * }
- *
- * ListView {
- *     model: sortedMovies
+ * MainView {
  *     width: units.gu(80)
- *     height: units.gu(100)
+ *     height: units.gu(40)
  *
- *     delegate: Subtitled {
- *         text: title
- *         subText: producer
+ *     ListModel {
+ *         id: movies
+ *         ListElement {
+ *             title: "Esign"
+ *             producer: "Chris Larkee"
+ *         }
+ *         ListElement {
+ *             title: "Elephants Dream"
+ *             producer: "Blender"
+ *         }
+ *         ListElement {
+ *             title: "Big Buck Bunny"
+ *             producer: "Blender"
+ *         }
  *     }
  *
- *     section.delegate: sectionDelegate
- *     section.property: "title"
- *     section.criteria: ViewSection.FirstCharacter
+ *     SortFilterModel {
+ *         model: movies
+ *         sort.property: "title"
+ *         sort.order: Qt.DescendingOrder
+ *
+ *         filter.property: "producer"
+ *         filter.pattern: /blender/
+ *     }
+ *
+ *     ListView {
+ *         model: sortedMovies
+ *
+ *         delegate: Subtitled {
+ *             text: title
+ *             subText: producer
+ *         }
+ *
+ *         section.delegate: sectionDelegate
+ *         section.property: "title"
+ *         section.criteria: ViewSection.FirstCharacter
+ *     }
  * }
  * \endqml
  *
