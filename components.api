@@ -106,6 +106,7 @@ StyledItem
     property string title
     property Item contents
     property var tabsModel
+    property PageStack pageStack
     property Flickable flickable
     property bool useDeprecatedToolbar
 modules/Ubuntu/Components/Header.qml
@@ -116,6 +117,7 @@ StyledItem
     property string title
     property Item contents
     property var tabsModel
+    property PageStack pageStack
     property Flickable flickable
     property bool useDeprecatedToolbar
 modules/Ubuntu/Components/Icon.qml
