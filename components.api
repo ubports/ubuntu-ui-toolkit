@@ -107,6 +107,7 @@ StyledItem
     property Item contents
     property var tabsModel
     property Flickable flickable
+    property bool useDeprecatedToolbar
 modules/Ubuntu/Components/Header.qml
 StyledItem
     property bool animate
@@ -116,6 +117,7 @@ StyledItem
     property Item contents
     property var tabsModel
     property Flickable flickable
+    property bool useDeprecatedToolbar
 modules/Ubuntu/Components/Icon.qml
 Item
     property string name
