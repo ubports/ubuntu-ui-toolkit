@@ -83,7 +83,7 @@ Item {
             visible: styledItem.tabsModel !== null
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
 
-            // XXX: We currently use an AbstractButton with ToolbarButtonStyle because
+            // FIXME: We currently use an AbstractButton with ToolbarButtonStyle because
             //  a ToolbarButton does not have its own MouseArea to handle interaction,
             //  that was done in the Toolbar.
             style: Theme.createStyleComponent("ToolbarButtonStyle.qml", tabsButton)
@@ -107,7 +107,7 @@ Item {
                         model: styledItem.tabsModel
                         ListItem.Standard {
                             visible: index !== styledItem.tabsModel.selectedIndex
-                            text: tab.title // XXX: only "title" doesn't work with i18n.tr(). Why not?
+                            text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
                             objectName: "tabButton" + index
                             onClicked: {
                                 styledItem.tabsModel.selectedIndex = index;
