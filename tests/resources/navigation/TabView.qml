@@ -45,15 +45,7 @@ MainView {
 
     Header {
         id: header
-        contents: TabBar {
-            id: tabBar
-            model: pages
-            anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
-            }
-        }
+        tabsModel: pages
     }
 
     Component {
