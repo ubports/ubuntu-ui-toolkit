@@ -15,8 +15,8 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Ubuntu
-import "Popups" 0.1
+import Ubuntu.Components 1.0
+import Ubuntu.Components.Popups 1.0
 
 StyledItem {
     id: cursorItem
@@ -43,6 +43,11 @@ StyledItem {
       The property contains the custom popover to be shown.
       */
     property var popover
+
+    /*
+      The property holding the cursor component of the input
+      */
+    property Component cursorDelegate
 
     /*
         The function opens the text input popover setting the text cursor as caller.
@@ -101,7 +106,7 @@ StyledItem {
                 draggedItem.moveToCaret(mouse.x, mouse.y);
                 draggedItem.state = "dragging";
             }
-            Ubuntu.Mouse.forwardTo: [dragger]
+            Mouse.forwardTo: [dragger]
             /*
               As we are forwarding the events to the upper mouse area, the release
               will not get into the normal MosueArea onRelease signal as the preventStealing
@@ -112,7 +117,7 @@ StyledItem {
               will end up in a binding loop on the moveToCaret() next time the caret
               handler is grabbed.
               */
-            Ubuntu.Mouse.onReleased: if (!dragger.drag.active) draggedItem.state = ""
+            Mouse.onReleased: if (!dragger.drag.active) draggedItem.state = ""
         }
 
         // aligns the draggedItem to the caret and resets the dragger

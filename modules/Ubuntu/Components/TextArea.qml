@@ -236,7 +236,7 @@ StyledItem {
 
       \qmlproperty Component cursorDelegate
       */
-    property alias cursorDelegate: editor.cursorDelegate
+    property Component cursorDelegate: undefined// __styleInstance ? __styleInstance.defaultCursor : undefined
 
     /*!
       The position of the cursor in the TextArea.
@@ -819,6 +819,7 @@ StyledItem {
             id: cursorItem
             editorItem: control
             handler: inputHandler
+            cursorDelegate: control.cursorDelegate
             height: internal.lineSize
             popover: control.popover
             visible: editor.cursorVisible

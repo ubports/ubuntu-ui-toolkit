@@ -18,6 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 
 // frame
+// FIXME: stabilize API
 Item {
     id: visuals
     // style properties
@@ -43,10 +44,38 @@ Item {
       */
     property int selectionModeTimeout: 300
 
+    /*!
+      Text cursor component.
+      */
+    property Component defaultCursor
+
+    /*!
+      Cursor blinking behavior.
+      */
+    property bool blinking: true
+
+    /*!
+      Timeout the cursor is visible when blinking.
+      */
+    property int cursorVisibleTimeout: 800
+
+    /*!
+      Timeout the cursor is hidden when blinking.
+      */
+    property int cursorHiddenTimeout: 400
+
+    /*!
+      Cursor handler (caret) component.
+      */
+    property Component defaultCaret
+
     anchors.fill: parent
 
     z: -1
 
+    /*!
+      Text input background
+      */
     property Component background: UbuntuShape {
         property bool error: (styledItem.hasOwnProperty("errorHighlight") && styledItem.errorHighlight && !styledItem.acceptableInput)
         onErrorChanged: (error) ? visuals.errorColor : visuals.backgroundColor;
