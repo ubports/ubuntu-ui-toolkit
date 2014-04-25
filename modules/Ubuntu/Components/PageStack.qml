@@ -19,7 +19,7 @@ import "stack.js" as Stack
 
 /*!
     \qmltype PageStack
-    \inqmlmodule Ubuntu.Components 1.0
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief A stack of \l Page items that is used for inter-Page navigation.
         Pages on the stack can be popped, and new Pages can be pushed.
@@ -39,7 +39,7 @@ import "stack.js" as Stack
     Example:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
         import Ubuntu.Components.ListItems 1.0 as ListItem
 
         MainView {

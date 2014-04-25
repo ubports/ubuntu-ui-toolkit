@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 // Internal helper class for the visuals of
 // the progression symbol.

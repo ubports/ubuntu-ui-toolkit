@@ -45,6 +45,14 @@ QtObject
     readonly property color coolGrey
     property Gradient orangeGradient
     property Gradient greyGradient
+ComboButton 1.1
+Button
+    property bool expanded
+    property real collapsedHeight
+    property real expandedHeight
+    readonly property real comboListHeight
+    default property list<Item> comboList
+    property color dropdownColor
 CrossFadeImage 0.1 1.0
 Item
     property url source

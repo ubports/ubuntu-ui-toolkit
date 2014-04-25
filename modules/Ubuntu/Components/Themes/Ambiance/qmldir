@@ -27,3 +27,21 @@ PickerDelegateStyle 0.1 PickerDelegateStyle.qml
 DialerStyle 0.1 DialerStyle.qml
 DialerHandStyle 0.1 DialerHandStyle.qml
 internal HighlightMagnifier HighlightMagnifier.qml
+
+#version 1.0
+
+MainViewStyle 1.0 MainViewStyle.qml
+ListItemOptionSelector 1.0 ListItemOptionSelector.qml
+OptionSelectorStyle 1.0 OptionSelectorStyle.qml
+PopoverForegroundStyle 1.0 PopoverForegroundStyle.qml
+TabBarStyle 1.0 TabBarStyle.qml
+TextAreaStyle 1.0 TextAreaStyle.qml
+TextFieldStyle 1.0 TextFieldStyle.qml
+PickerStyle 1.0 PickerStyle.qml
+DatePickerStyle 1.0 DatePickerStyle.qml
+PickerDelegateStyle 1.0 PickerDelegateStyle.qml
+DialerStyle 1.0 DialerStyle.qml
+DialerHandStyle 1.0 DialerHandStyle.qml
+
+#version 1.1
+ComboButtonStyle 1.1 ComboButtonStyle.qml

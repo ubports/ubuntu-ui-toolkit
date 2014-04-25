@@ -20,7 +20,7 @@ import Ubuntu.Components 1.0
 /*!
     \internal
     \qmltype Header
-    \inqmlmodule Ubuntu.Components 1.0
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
 */
 StyledItem {

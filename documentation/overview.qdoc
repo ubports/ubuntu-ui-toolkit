@@ -31,7 +31,7 @@
      \part Basic QML Types
      Available through:
      \code
-         import Ubuntu.Components 1.0
+         import Ubuntu.Components 1.1
      \endcode
      \annotatedlist ubuntu
 
@@ -66,28 +66,33 @@
      \part Theming Elements
      Available through:
      \code
-         import Ubuntu.Components 1.0
+         import Ubuntu.Components 1.1
      \endcode
      \annotatedlist theming
+
+     \part Style API
+     The Style API defines the interface components use to style the visuals.
+     Themes must make sure that these interfaces are all implemented.
+     \annotatedlist style-api
 
      \part Resolution Independence Items
      Available through:
      \code
-         import Ubuntu.Components 1.0
+         import Ubuntu.Components 1.1
      \endcode
      \annotatedlist resolution-independence
 
      \part Parsing Command-Line Arguments
      Available through:
      \code
-         import Ubuntu.Components 1.0
+         import Ubuntu.Components 1.1
      \endcode
      \annotatedlist ubuntu-commandline
 
      \part Services
      Available through:
      \code
-         import Ubuntu.Components 1.0
+         import Ubuntu.Components 1.1
      \endcode
      \annotatedlist ubuntu-services
 

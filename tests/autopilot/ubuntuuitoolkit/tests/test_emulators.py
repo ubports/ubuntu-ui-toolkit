@@ -72,7 +72,7 @@ class MainViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -125,7 +125,7 @@ class PageTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -148,7 +148,7 @@ class ToolbarTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(50)
@@ -244,7 +244,7 @@ MainView {
 
 TEST_TABS_QML_FORMAT = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {{
     width: units.gu(70)
@@ -382,7 +382,7 @@ class ActionSelectionPopoverTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.Popups 1.0
 
 MainView {
@@ -456,7 +456,7 @@ MainView {
 
 TEST_QML_WITH_CHECKBOX = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -474,7 +474,7 @@ MainView {
 
 TEST_QML_WITH_SWITCH = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -567,7 +567,7 @@ class QQuickListViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
@@ -665,7 +665,7 @@ class QQuickListViewOutOfViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
@@ -740,7 +740,7 @@ class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0
 
 
@@ -892,7 +892,7 @@ class PageStackTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -947,7 +947,7 @@ class TextFieldTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -1020,7 +1020,7 @@ class ComposerSheetTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.Popups 1.0
 
 MainView {
@@ -1091,11 +1091,78 @@ MainView {
         self._assert_composer_sheet_is_closed()
 
 
+class ComboButtonTestCase(tests.QMLStringAppTestCase):
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 1.1
+import Ubuntu.Components.ListItems 1.0
+
+MainView {
+    width: units.gu(40)
+    height: units.gu(60)
+
+    Column {
+        anchors.fill: parent
+
+        ComboButton {
+            text: "main button"
+            objectName: "combo_button"
+            ListView {
+                model: 10
+                delegate: Standard {
+                    text: "Item #" + modelData
+                }
+            }
+        }
+        ComboButton {
+            text: "main button"
+            objectName: "autocollapse_button"
+            onClicked: expanded = false
+            ListView {
+                model: 10
+                delegate: Standard {
+                    text: "Item #" + modelData
+                }
+            }
+        }
+    }
+}
+""")
+
+    def setUp(self):
+        super(ComboButtonTestCase, self).setUp()
+        self.combo = self.main_view.select_single(
+            emulators.ComboButton, objectName="combo_button")
+        self.autocombo = self.main_view.select_single(
+            emulators.ComboButton, objectName="autocollapse_button")
+        self.assertFalse(self.combo.expanded)
+        self.assertFalse(self.autocombo.expanded)
+
+    def test_expand_collapse_combo(self):
+        self.combo.expand()
+        self.assertTrue(self.combo.expanded)
+        self.combo.collapse()
+        self.assertFalse(self.combo.expanded)
+
+    def test_main_pressed(self):
+        self.combo.expand()
+        self.assertTrue(self.combo.expanded)
+        self.combo.press_mainbutton()
+        self.assertTrue(self.combo.expanded)
+
+    def test_autocollapse(self):
+        self.autocombo.expand()
+        self.assertTrue(self.autocombo.expanded)
+        self.autocombo.press_mainbutton()
+        self.assertFalse(self.autocombo.expanded)
+
+
 class OptionSelectorCustomDelegateTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
+import Ubuntu.Components.ListItems 1.0
 
 MainView {
     width: units.gu(48)
@@ -1194,7 +1261,7 @@ class OptionSelectorTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)

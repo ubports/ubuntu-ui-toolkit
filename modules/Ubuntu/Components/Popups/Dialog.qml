@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import "internalPopupUtils.js" as InternalPopupUtils
 
 /*!
@@ -33,7 +33,7 @@ import "internalPopupUtils.js" as InternalPopupUtils
     Example:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
         import Ubuntu.Components.Popups 1.0
 
         Item {

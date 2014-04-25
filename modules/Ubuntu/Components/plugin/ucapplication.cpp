@@ -27,7 +27,7 @@
 /*!
  * \qmltype UbuntuApplication
  * \instantiates UCApplication
- * \inqmlmodule Ubuntu.Components 1.0
+ * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu
  * \brief UbuntuApplication is a QML binding for a subset of QCoreApplication.
  *

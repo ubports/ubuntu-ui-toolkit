@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 /*!
     \qmltype ExpandablesColumn
@@ -29,7 +29,7 @@ import Ubuntu.Components 1.0
 
     Examples:
     \qml
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
         import Ubuntu.Components.ListItems 1.0 as ListItem
 
         ListItem.ExpandablesColumn {
