@@ -95,7 +95,7 @@ StyledItem {
     property var tabsModel: null
 
     /*!
-      A PageStack. If it is possible to pop the PageStack, a back button will be
+      If it is possible to pop this PageStack, a back button will be
       shown in the header.
      */
     property var pageStack: null
