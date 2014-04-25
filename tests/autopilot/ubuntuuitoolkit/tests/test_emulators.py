@@ -1134,7 +1134,7 @@ MainView {
         self.combo.collapse()
         self.assertFalse(self.combo.expanded)
 
-    def test_main_pressed():
+    def test_main_pressed(self):
         self.combo.expand()
         self.assertTrue(self.combo.expanded)
         self.combo.press_mainbutton()
