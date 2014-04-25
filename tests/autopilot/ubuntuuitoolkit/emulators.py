@@ -248,7 +248,7 @@ class Header(UbuntuUIToolkitEmulatorBase):
         self.pointing_device = get_pointing_device()
 
     def click_back_button(self):
-        if (self.useDeprecatedToolbar):
+        if self.useDeprecatedToolbar:
             raise ToolkitEmulatorException('Old header has no back button')
         try:
             back_button = self.select_single(

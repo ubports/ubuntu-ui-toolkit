@@ -887,8 +887,6 @@ MainView {
         item.swipe_to_delete()
         self.assertFalse(item.exists())
 
-
-
 TEST_PAGESTACK_QML_FORMAT = ("""
 import QtQuick 2.0
 import Ubuntu.Components 1.0
@@ -923,8 +921,8 @@ MainView {{
 }}
 """)
 
-class PageStackTestCase(tests.QMLStringAppTestCase):
 
+class PageStackTestCase(tests.QMLStringAppTestCase):
     scenarios = [
         ('back in toolbar', dict(
             test_qml=TEST_PAGESTACK_QML_FORMAT.format(
