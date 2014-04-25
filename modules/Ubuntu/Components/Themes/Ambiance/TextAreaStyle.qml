@@ -45,17 +45,20 @@ Item {
     property int selectionModeTimeout: 300
 
     /*!
-      \qmlproperty Component defaultCursor.component
-      \qmlproperty bool defaultCursor.blinking
+      \qmlproperty Component defaultCursor.cursor
+      \qmlproperty Component defaultCursor.caret
       \qmlproperty int defaultCursor.cursorVisibleTimeout
       \qmlproperty int defaultCursor.cursorHiddenTimeout
 
       Defines the default cursor component and its blinking configuration. If either of the
       blinking properties are invalid (false, or zero) the cursor will not blink anymore.
+      The \a caret property specifies the visuals of the cursor handler used to grab the
+      cursor. The caret will be reparented to the cursor, therefore anchoring it to parent
+      will position the caret relative to the cursor.
       */
     property TextCursorStyle defaultCursor: TextCursorStyle {
         id: cursorStyle
-        component: Rectangle {
+        cursor: Rectangle {
             width: units.dp(1)
             color: Theme.palette.selected.foreground
             visible: blinkTimer.timerShowCursor
@@ -77,35 +80,56 @@ Item {
         }
         cursorVisibleTimeout: 800
         cursorHiddenTimeout: 400
-    }
-
-    /*!
-      Component defining the default cursor caret visuals. The caret will be
-      re-parented to the cursor item, therefore anchoring to the parent can
-      be used to drive the positioning of the handler.
-      */
-    property Component defaultCaret: Image {
-        source: "artwork/teardrop-left.png"
-        anchors {
-            top: parent.bottom
-            horizontalCenter: parent.horizontalCenter
-            topMargin: units.gu(-1)
-            horizontalCenterOffset: units.gu(0.7)
+        caret: Image {
+            source: "artwork/teardrop-left.png"
+            anchors {
+                top: parent ? parent.bottom : undefined
+                horizontalCenter: parent ? parent.horizontalCenter : undefined
+                topMargin: -units.gu(1)
+                horizontalCenterOffset: units.gu(0.7)
+            }
         }
     }
 
     /*!
       Selection start caret.
       */
+    property TextCursorStyle selectionStartCursor: TextCursorStyle {
+        cursor: Rectangle {
+            width: units.dp(1)
+            color: Theme.palette.selected.foreground
+            visible: styledItem.selectedText !== ""
+        }
+        caret: Image {
+            source: "artwork/teardrop-right.png"
+            anchors {
+                top: parent ? parent.bottom : undefined
+                horizontalCenter: parent ? parent.horizontalCenter : undefined
+                topMargin: -units.gu(1)
+                horizontalCenterOffset: -units.gu(0.7)
+            }
+        }
+    }
 
     /*!
       Selection end caret.
       */
-
-    /*!
-      Caret alignments
-      */
-
+    property TextCursorStyle selectionEndCursor: TextCursorStyle {
+        cursor: Rectangle {
+            width: units.dp(1)
+            color: Theme.palette.selected.foreground
+            visible: styledItem.selectedText !== ""
+        }
+        caret: Image {
+            source: "artwork/teardrop-left.png"
+            anchors {
+                top: parent ? parent.bottom : undefined
+                horizontalCenter: parent ? parent.horizontalCenter : undefined
+                topMargin: -units.gu(1)
+                horizontalCenterOffset: units.gu(0.7)
+            }
+        }
+    }
 
     // style body
     anchors.fill: parent

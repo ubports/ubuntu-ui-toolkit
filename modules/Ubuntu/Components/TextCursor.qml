@@ -21,6 +21,8 @@ import Ubuntu.Components.Popups 1.0
 Item {
     id: cursorItem
 
+    objectName: positionProperty
+
     width: units.dp(1)
 
     /*
@@ -46,6 +48,16 @@ Item {
     property var popover
 
     /*
+      Cursor delegate used
+      */
+    property Component cursorDelegate: editorItem.cursorDelegate
+
+    /*
+      Caret delegate
+      */
+    property Component caretDelegate: editor.__styleInstance.defaultCursor.caret
+
+    /*
         The function opens the text input popover setting the text cursor as caller.
       */
     function openPopover() {
@@ -68,9 +80,10 @@ Item {
     // cursor visual loader
     Loader {
         id: cursorLoader
-        sourceComponent: editorItem.cursorDelegate
+        sourceComponent: cursorDelegate
         onItemChanged: {
             if (item) {
+                item.parent = cursorItem;
                 item.height = cursorItem.height;
                 cursorItem.width = item.width;
             }
@@ -80,7 +93,7 @@ Item {
     // caret loader
     Loader {
         id: caretLoader
-        sourceComponent: editorItem.__styleInstance.defaultCaret
+        sourceComponent: caretDelegate
         // apply anchoring
         onItemChanged: if (item) item.parent = cursorItem
         property int caretX: x + (item ? item.x : 0)
@@ -89,6 +102,13 @@ Item {
 
     Component.onCompleted: {
         handler.pressAndHold.connect(cursorItem.openPopover);
+    }
+
+    Binding {
+        target: cursorItem
+        property: "visible"
+        value: main.cursorVisible
+        when: positionProperty === "cursorPosition"
     }
 
     /*
@@ -107,7 +127,12 @@ Item {
         parent: handler.input
         visible: cursorItem.visible
 
-        onStateChanged: print('dragstate=', state)
+        // when the dragging ends, reposition the dragger back to caret
+        onStateChanged: {
+            if (state === "") {
+                draggedItem.moveToCaret();
+            }
+        }
 
         /*
           Mouse area to turn on dragging or selection mode when pressed
@@ -134,7 +159,11 @@ Item {
               will end up in a binding loop on the moveToCaret() next time the caret
               handler is grabbed.
               */
-            Ubuntu.Mouse.onReleased: if (!dragger.drag.active) draggedItem.state = ""
+            Ubuntu.Mouse.onReleased: {
+                if (!dragger.drag.active) {
+                    draggedItem.state = "";
+                }
+            }
         }
 
         // aligns the draggedItem to the caret and resets the dragger
@@ -143,6 +172,7 @@ Item {
                 cx = cursorItem.x + caretLoader.caretX;
                 cy = cursorItem.y + caretLoader.caretY;
             } else {
+                // move mouse position to caret
                 cx += draggedItem.x;
                 cy += draggedItem.y;
             }

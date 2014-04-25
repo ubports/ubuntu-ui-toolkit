@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.1
 import Ubuntu.Components 1.0
 
 /*
@@ -95,9 +95,14 @@ Item {
         else if (flickable.contentY + flickable.height <= rect.y + rect.height)
             flickable.contentY = rect.y + rect.height - flickable.height;
     }
+    // returns the cursor position from x,y pair
+    function cursorPosition(x, y) {
+        return singleLine ? input.positionAt(x, TextInput.CursorOnCharacter) : input.positionAt(x, y, TextInput.CursorOnCharacter);
+    }
+
     // returns the mouse position
     function mousePosition(mouse) {
-        return singleLine ? input.positionAt(mouse.x) : input.positionAt(mouse.x, mouse.y);
+        return cursorPosition(mouse.x, mouse.y);
     }
     // checks whether the position is in the selected text
     function positionInSelection(pos) {
@@ -169,7 +174,16 @@ Item {
     // moves the specified position, called by the cursor handler
     // positioner = "currentPosition/selectionStart/selectionEnd"
     function positionCaret(positioner, x, y) {
-        input[positioner] = singleLine ? input.positionAt(x) : input.positionAt(x, y);
+        if (positioner === "cursorPosition") {
+            input[positioner] = cursorPosition(x, y);
+        } else {
+            var pos = cursorPosition(x, y);
+            if (positioner === "selectionStart" && (pos < input.selectionEnd)) {
+                input.select(pos, input.selectionEnd);
+            } else if (positioner === "selectionEnd" && (pos > input.selectionStart)) {
+                input.select(input.selectionStart, pos);
+            }
+        }
     }
 
     Component.onCompleted: {
@@ -319,5 +333,54 @@ Item {
         acceptedButtons: Qt.RightButton
         // trigger pressAndHold
         onReleased: openContextMenu(mouse)
+    }
+
+    // cursors to use when selection is there
+    Loader {
+        id: startCursorLoader
+        property rect cursorRect: input.positionToRectangle(input.selectionStart)
+        onCursorRectChanged: {
+            if (item && item.visible) {
+                item.x = cursorRect.x;
+                item.y = cursorRect.y;
+            }
+        }
+        sourceComponent: main.__styleInstance ? input.cursorDelegate : undefined
+        onItemChanged: {
+            if (item) {
+                item.positionProperty = "selectionStart";
+                item.parent = input;
+                item.visible = Qt.binding(function() {return input.selectedText !== "";})
+                item.cursorDelegate = main.__styleInstance.selectionStartCursor.cursor;
+                item.caretDelegate = main.__styleInstance.selectionStartCursor.caret;
+            }
+        }
+    }
+    Loader {
+        id: endCursorLoader
+        property rect cursorRect: input.positionToRectangle(input.selectionEnd)
+        property bool originalCursorVisible
+        onCursorRectChanged: {
+            if (item && item.visible) {
+                item.x = cursorRect.x;
+                item.y = cursorRect.y;
+                originalCursorVisible = main.cursorVisible;
+                main.cursorVisible = false;
+            } else {
+                main.cursorVisible = originalCursorVisible;
+            }
+        }
+        sourceComponent: main.__styleInstance ? input.cursorDelegate : undefined
+        onItemChanged: {
+            if (item) {
+                // hide cursor
+                item.positionProperty = "selectionEnd";
+                item.parent = input;
+                item.visible = Qt.binding(function() {return input.selectedText !== "";})
+                item.cursorDelegate = main.__styleInstance.selectionEndCursor.cursor;
+                item.caretDelegate = main.__styleInstance.selectionEndCursor.caret;
+            }
+        }
+        Component.onCompleted: originalCursorVisible = main.cursorVisible
     }
 }

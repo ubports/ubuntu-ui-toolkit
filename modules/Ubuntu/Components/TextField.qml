@@ -245,7 +245,7 @@ ActionItem {
       Note that the root item of the delegate component must be a QQuickItem or
       QQuickItem derived item.
     */
-    property Component cursorDelegate: __styleInstance ? __styleInstance.defaultCursor.component : null
+    property Component cursorDelegate: __styleInstance ? __styleInstance.defaultCursor.cursor : null
 
     /*!
       The position of the cursor in the TextField.

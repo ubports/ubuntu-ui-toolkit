@@ -17,7 +17,11 @@
 import QtQuick 2.0
 
 QtObject {
-    property Component component
+    /*!
+      Property holding the visuals of the cursor
+      */
+    property Component cursor
+    property Component caret
     property int cursorVisibleTimeout
     property int cursorHiddenTimeout
 }
