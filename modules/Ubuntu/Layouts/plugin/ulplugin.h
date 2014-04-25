@@ -28,6 +28,8 @@ class PluginPlugin : public QQmlExtensionPlugin
     
 public:
     void registerTypes(const char *uri);
+private:
+    void registerTypeVersions(const char *uri, int major, int minor);
 };
 
 #endif // PLUGIN_PLUGIN_H

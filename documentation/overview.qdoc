@@ -31,70 +31,70 @@
      \part Basic QML Types
      Available through:
      \code
-         import Ubuntu.Components 0.1
+         import Ubuntu.Components 1.0
      \endcode
      \annotatedlist ubuntu
 
      \part List Items
      Available through:
      \code
-         import Ubuntu.Components.ListItems 0.1
+         import Ubuntu.Components.ListItems 1.0
      \endcode
      \annotatedlist ubuntu-listitems
 
      \part Pickers
      Available through:
      \code
-         import Ubuntu.Components.Pickers 0.1
+         import Ubuntu.Components.Pickers 1.0
      \endcode
      \annotatedlist ubuntu-pickers
 
      \part Popovers, Sheets and Dialogs
      Available through:
      \code
-         import Ubuntu.Components.Popups 0.1
+         import Ubuntu.Components.Popups 1.0
      \endcode
      \annotatedlist ubuntu-popups
 
      \part Layouting
      Available through:
      \code
-         import Ubuntu.Layouts 0.1
+         import Ubuntu.Layouts 1.0
      \endcode
      \annotatedlist ubuntu-layouts
 
      \part Theming Elements
      Available through:
      \code
-         import Ubuntu.Components 0.1
+         import Ubuntu.Components 1.0
      \endcode
      \annotatedlist theming
 
      \part Resolution Independence Items
      Available through:
      \code
-         import Ubuntu.Components 0.1
+         import Ubuntu.Components 1.0
      \endcode
      \annotatedlist resolution-independence
 
      \part Parsing Command-Line Arguments
      Available through:
      \code
-         import Ubuntu.Components 0.1
+         import Ubuntu.Components 1.0
      \endcode
      \annotatedlist ubuntu-commandline
 
      \part Services
      Available through:
      \code
-         import Ubuntu.Components 0.1
+         import Ubuntu.Components 1.0
      \endcode
      \annotatedlist ubuntu-services
 
      \part Performance Metrics
      Available through:
      \code
-         import Ubuntu.PerformanceMetrics 0.1
+         import Ubuntu.PerformanceMetrics 1.0
      \endcode
      \annotatedlist ubuntu-performance-metrics
  */

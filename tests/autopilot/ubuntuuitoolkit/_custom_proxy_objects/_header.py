@@ -39,19 +39,73 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.pointing_device = _common.get_pointing_device()
 
     def _get_animating(self):
-        tab_bar_style = self.select_single('TabBarStyle')
-        return tab_bar_style.animating
+        if self.useDeprecatedToolbar:
+            tab_bar_style = self.select_single('TabBarStyle')
+            return tab_bar_style.animating
+        else:
+            return False
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_next_tab(self):
         """Open the next tab.
 
-        :raise ToolkitException: If the main view has no tabs.
+        :raise ToolkitEmulatorException: If the main view has no tabs.
 
         """
+        if self.useDeprecatedToolbar:
+            self._switch_to_next_tab_in_deprecated_tabbar()
+        else:
+            self._switch_to_next_tab_in_drawer()
+
+    def _switch_to_next_tab_in_deprecated_tabbar(self):
         try:
             tab_bar = self.select_single(_tabbar.TabBar)
         except dbus.StateNotFoundError:
             raise _common.ToolkitException(_NO_TABS_ERROR)
         tab_bar.switch_to_next_tab()
         self._get_animating().wait_for(False)
+
+    def _switch_to_next_tab_in_drawer(self):
+        tabs_model_properties = self.select_single(
+            'QQuickItem', objectName='tabsModelProperties')
+        next_tab_index = (tabs_model_properties.selectedIndex
+                          + 1) % tabs_model_properties.count
+        self._switch_to_tab_in_drawer_by_index(next_tab_index)
+
+    @autopilot_logging.log_action(logger.info)
+    def switch_to_tab_by_index(self, index):
+        """Open a tab. This only supports the new tabs in the header
+
+        :parameter index: The index of the tab to open.
+        :raise ToolkitEmulatorException: If the tab index is out of range or
+                useDeprecatedToolbar is set.
+
+        """
+        if self.useDeprecatedToolbar:
+            raise _common.ToolkitException(
+                "Header.swtich_to_tab_by_index only works with new header")
+        else:
+            self._switch_to_tab_in_drawer_by_index(index)
+
+    def _switch_to_tab_in_drawer_by_index(self, index):
+        try:
+            tabs_drawer_button = self.select_single(
+                'AbstractButton', objectName='tabsButton')
+        except dbus.StateNotFoundError:
+            raise _common.ToolkitException(_NO_TABS_ERROR)
+        self.pointing_device.click_object(tabs_drawer_button)
+
+        tabs_model_properties = self.select_single(
+            'QQuickItem', objectName='tabsModelProperties')
+
+        if tabs_model_properties.selectedIndex == index:
+            return
+
+        try:
+            tab_button = self.get_root_instance().select_single(
+                'Standard', objectName='tabButton' + str(index))
+        except dbus.StateNotFoundError:
+            raise _common.ToolkitException(
+                "Tab button {0} not found.".format(index))
+
+        self.pointing_device.click_object(tab_button)

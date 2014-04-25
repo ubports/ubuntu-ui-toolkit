@@ -93,14 +93,20 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         :parameter index: The index of the tab to open.
         :return: The newly opened tab.
-        :raise ToolkitException: If the tab index is out of range.
+        :raise ToolkitEmulatorException: If the tab index is out of range.
 
         """
-        logger.debug('Switch to tab with index {0}.'.format(index))
+        if self.useDeprecatedToolbar:
+            return self._switch_to_tab_in_deprecated_tabbar_by_index(index)
+        else:
+            return self._switch_to_tab_in_drawer_by_index(index)
+
+    def _switch_to_tab_in_deprecated_tabbar_by_index(self, index):
         tabs = self.get_tabs()
         number_of_tabs = tabs.get_number_of_tabs()
         if index >= number_of_tabs:
             raise _common.ToolkitException('Tab index out of range.')
+
         current_tab = tabs.get_current_tab()
         number_of_switches = 0
         while not tabs.selectedTabIndex == index:
@@ -113,6 +119,17 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
                     'The tab with index {0} was not selected.'.format(index))
             current_tab = self.switch_to_next_tab()
             number_of_switches += 1
+        return current_tab
+
+    def _switch_to_tab_in_drawer_by_index(self, index):
+        tabs = self.get_tabs()
+        number_of_tabs = tabs.get_number_of_tabs()
+        if index >= number_of_tabs:
+            raise _common.ToolkitException('Tab index out of range.')
+
+        if index != tabs.selectedTabIndex:
+            self.get_header().switch_to_tab_by_index(index)
+        current_tab = tabs.get_current_tab()
         return current_tab
 
     @autopilot_logging.log_action(logger.info)

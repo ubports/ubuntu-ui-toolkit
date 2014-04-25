@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 Item {
     id: testCase
@@ -216,7 +216,7 @@ Item {
           The following testcases are all related to bug #1253804
           */
         function test_tabOrder_bug1253804() {
-            var tabsModel = tabsWithRepeater.tabBar.model;
+            var tabsModel = tabsWithRepeater.__model;
 
             compare(tabsRepeater.count, inputModel.count, "Incorrect number of tabs in Tabs");
             compare(tabsModel.count, tabsRepeater.count, "Incorrect number of tabs in TabBar");
@@ -236,12 +236,12 @@ Item {
 
             // set it to null
             tabsRepeater.model = null;
-            compare(tabsWithRepeater.tabBar.model.count, 0, "There are still tabs left after repeater model is reset");
+            compare(tabsWithRepeater.__model.count, 0, "There are still tabs left after repeater model is reset");
         }
 
         function test_repeaterTabs() {
             repeater.model = inputModel;
-            var tabsModel = repeaterTabs.tabBar.model;
+            var tabsModel = repeaterTabs.__model;
 
             compare(repeater.count, inputModel.count, "Incorrect number of tabs in Tabs");
             compare(tabsModel.count, repeater.count, "Incorrect number of tabs in TabBar");
@@ -251,12 +251,12 @@ Item {
 
             // clear repeaterTabs
             repeater.model = null;
-            compare(repeaterTabs.tabBar.model.count, 0, "There are still tabs left after repeater model is reset");
+            compare(repeaterTabs.__model.count, 0, "There are still tabs left after repeater model is reset");
         }
 
         function test_repeaterTabs_arrayAsModel() {
             repeater.model = testCase.listModel;
-            var tabsModel = repeaterTabs.tabBar.model;
+            var tabsModel = repeaterTabs.__model;
 
             compare(repeater.count, testCase.listModel.length, "Incorrect number of tabs in Tabs");
             compare(tabsModel.count, repeater.count, "Incorrect number of tabs in TabBar");
@@ -275,12 +275,12 @@ Item {
 
             // clear repeaterTabs
             repeater.model = null;
-            compare(repeaterTabs.tabBar.model.count, 0, "There are still tabs left after repeater model is reset");
+            compare(repeaterTabs.__model.count, 0, "There are still tabs left after repeater model is reset");
 
         }
 
         function test_twoRepeaters() {
-            var tabsModel = twoRepeaters.tabBar.model;
+            var tabsModel = twoRepeaters.__model;
             var secondRepeaterModel = secondRepeater.model;
 
             compare(tabsModel.count, firstRepeater.count + secondRepeater.count, "Incorrect number of tabs in TabBar");
@@ -293,7 +293,7 @@ Item {
         }
 
         function test_twinRepeaters() {
-            var tabsModel = twinRepeaters.tabBar.model;
+            var tabsModel = twinRepeaters.__model;
 
             compare(twinRepeater1.count, twinModel.count, "Incorrect number of tabs in the first repeater");
             compare(twinRepeater2.count, twinModel.count, "Incorrect number of tabs in the second repeater");
@@ -324,7 +324,7 @@ Item {
             // set it to null
             twinRepeater1.model = null;
             twinRepeater2.model = null;
-            compare(twinRepeaters.tabBar.model.count, 0, "There are still tabs left after repeater model is reset");
+            compare(twinRepeaters.__model.count, 0, "There are still tabs left after repeater model is reset");
         }
 
         function test_emptyTabs() {

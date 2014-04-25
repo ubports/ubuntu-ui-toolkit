@@ -23,55 +23,65 @@ import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
 
-class TabsTestCase(tests.QMLStringAppTestCase):
-
-    test_qml = ("""
+TEST_TABS_QML_FORMAT = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItem
+import Ubuntu.Components 1.0
 
-MainView {
+MainView {{
     width: units.gu(70)
     height: units.gu(60)
+    useDeprecatedToolbar: {use_deprecated_toolbar}
 
-    Tabs {
+    Tabs {{
         id: tabs
-        Tab {
+        Tab {{
             objectName: "tab1"
             title: "Tab1"
-            Page {
-                tools: ToolbarItems {
-                    ToolbarButton {
+            Page {{
+                tools: ToolbarItems {{
+                    ToolbarButton {{
                         text: "Test1"
-                    }
-                }
-            }
-        }
-        Tab {
+                    }}
+                }}
+            }}
+        }}
+        Tab {{
             objectName: "tab2"
             title: "Tab2"
-            Page {
-                tools: ToolbarItems {
-                    ToolbarButton {
+            Page {{
+                tools: ToolbarItems {{
+                    ToolbarButton {{
                         text: "Test2"
-                    }
-                }
-            }
-        }
-        Tab {
+                    }}
+                }}
+            }}
+        }}
+        Tab {{
             objectName: "tab3"
             title: "Tab3"
-            Page {
-                tools: ToolbarItems {
-                    ToolbarButton {
+            Page {{
+                tools: ToolbarItems {{
+                    ToolbarButton {{
                         text: "Test3"
-                    }
-                }
-            }
-        }
-    }
-}
+                    }}
+                }}
+            }}
+        }}
+    }}
+}}
 """)
+
+
+class TabsTestCase(tests.QMLStringAppTestCase):
+
+    scenarios = [
+        ('deprecated tabs', dict(
+            test_qml=TEST_TABS_QML_FORMAT.format(
+                use_deprecated_toolbar='true'))),
+        ('drawer tabs', dict(
+            test_qml=TEST_TABS_QML_FORMAT.format(
+                use_deprecated_toolbar='false')))
+    ]
 
     def test_tabs_custom_proxy_object(self):
         self.assertIsInstance(self.main_view.get_tabs(), ubuntuuitoolkit.Tabs)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,7 +19,7 @@ import Ubuntu.Unity.Action 1.1 as UnityActions
 
 /*!
     \qmltype Page
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.0
     \ingroup ubuntu
     \brief A page is the basic Item that must be used inside the \l MainView,
         \l PageStack and \l Tabs.
@@ -33,7 +33,7 @@ import Ubuntu.Unity.Action 1.1 as UnityActions
 
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.0
 
         MainView {
             width: units.gu(48)
@@ -94,7 +94,7 @@ PageTreeNode {
       and anchors to the top of the page or fills the page. For example:
       \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.0
 
         MainView {
             width: units.gu(30)
@@ -150,6 +150,13 @@ PageTreeNode {
 
     Object {
         id: internal
+
+        Binding {
+            target: internal.header
+            property: "pageStack"
+            value: page.pageStack
+            when: page.active && internal.header != null && page.pageStack != null
+        }
 
         UnityActions.ActionContext {
             id: actionContext
