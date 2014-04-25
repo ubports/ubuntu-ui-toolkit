@@ -60,26 +60,30 @@ from ubuntuuitoolkit._custom_proxy_objects import (
     check_autopilot_version,
     get_keyboard,
     get_pointing_device,
-    ActionSelectionPopover,
-    Base,
     CheckBox,
-    ComposerSheet,
-    Empty,
     Flickable,
     Header,
-    ItemSelector,
     MainView,
-    MultiValue,
     OptionSelector,
     QQuickListView,
-    SingleControl,
-    SingleValue,
-    Standard,
-    Subtitled,
     TabBar,
     Tabs,
     TextField,
     Toolbar,
     ToolkitException as ToolkitEmulatorException,
     UbuntuUIToolkitCustomProxyObjectBase as UbuntuUIToolkitEmulatorBase,
+)
+from ubuntuuitoolkit._custom_proxy_objects.listitems import (
+    Base,
+    Empty,
+    ItemSelector,
+    MultiValue,
+    SingleControl,
+    SingleValue,
+    Standard,
+    Subtitled
+)
+from ubuntuuitoolkit._custom_proxy_objects.popups import (
+    ActionSelectionPopover,
+    ComposerSheet
 )

@@ -25,42 +25,54 @@ import testtools
 from testtools.matchers import Contains
 
 import ubuntuuitoolkit
-from ubuntuuitoolkit import emulators
+from ubuntuuitoolkit import emulators, listitems, popups
 
 
 class DeprecatedSymbolsTestCase(testscenarios.TestWithScenarios):
 
     symbols_retaining_name = [
         'check_autopilot_version', 'get_keyboard', 'get_pointing_device',
-        'ActionSelectionPopover', 'Base', 'CheckBox', 'ComposerSheet',
-        'Empty', 'Flickable', 'Header', 'ItemSelector', 'MainView',
-        'MultiValue', 'OptionSelector', 'QQuickListView', 'SingleControl',
-        'SingleValue', 'Standard', 'Subtitled', 'TabBar', 'Tabs',
-        'TextField', 'Toolbar',
+        'CheckBox', 'Flickable', 'Header', 'MainView', 'OptionSelector',
+        'QQuickListView', 'TabBar', 'Tabs', 'TextField', 'Toolbar',
     ]
 
     symbols_retaining_name_scenarios = [
-        (symbol, dict(current=symbol, deprecated=symbol))
+        (symbol, dict(
+            current_module=ubuntuuitoolkit, current_symbol=symbol,
+            deprecated_symbol=symbol))
         for symbol in symbols_retaining_name
     ]
 
     symbols_with_new_name = [
-        ('ToolkitException', 'ToolkitEmulatorException'),
-        ('UbuntuUIToolkitCustomProxyObjectBase',
-         'UbuntuUIToolkitEmulatorBase')]
+        (ubuntuuitoolkit, 'ToolkitException', 'ToolkitEmulatorException'),
+        (ubuntuuitoolkit, 'UbuntuUIToolkitCustomProxyObjectBase',
+         'UbuntuUIToolkitEmulatorBase'),
+        (popups, 'ActionSelectionPopover', 'ActionSelectionPopover'),
+        (popups, 'ComposerSheet', 'ComposerSheet'),
+        (listitems, 'Base', 'Base'),
+        (listitems, 'Empty', 'Empty'),
+        (listitems, 'ItemSelector', 'ItemSelector'),
+        (listitems, 'MultiValue', 'MultiValue'),
+        (listitems, 'SingleControl', 'SingleControl'),
+        (listitems, 'SingleValue', 'SingleValue'),
+        (listitems, 'Standard', 'Standard'),
+        (listitems, 'Subtitled', 'Subtitled')
+    ]
 
     symbols_with_new_name_scenarios = [
         ('{0} to {1}'.format(old_name, new_name),
-         dict(current=new_name, deprecated=old_name))
-        for new_name, old_name in symbols_with_new_name]
+         dict(
+             current_module=new_module, current_symbol=new_name,
+             deprecated_symbol=old_name))
+        for new_module, new_name, old_name in symbols_with_new_name]
 
     scenarios = (symbols_retaining_name_scenarios +
                  symbols_with_new_name_scenarios)
 
     def test_deprecated_symbol_must_be_the_same_as_current(self):
         self.assertEqual(
-            getattr(ubuntuuitoolkit, self.current),
-            getattr(emulators, self.deprecated))
+            getattr(self.current_module, self.current_symbol),
+            getattr(emulators, self.deprecated_symbol))
 
 
 class DeprecationWarningTestCase(testtools.TestCase):

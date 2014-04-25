@@ -18,25 +18,17 @@
 
 
 __all__ = [
-    'ActionSelectionPopover',
-    'Base',
     'check_autopilot_version',
     'CheckBox',
-    'ComposerSheet',
-    'Empty',
     'Flickable',
     'get_keyboard',
     'get_pointing_device',
     'Header',
-    'ItemSelector',
+    'listitems',
     'MainView',
-    'MultiValue',
     'OptionSelector',
+    'popups',
     'QQuickListView',
-    'SingleControl',
-    'SingleValue',
-    'Standard',
-    'Subtitled',
     'TabBar',
     'Tabs',
     'TextField',
@@ -55,24 +47,12 @@ from ubuntuuitoolkit._custom_proxy_objects._common import (
 )
 from ubuntuuitoolkit._custom_proxy_objects._flickable import Flickable
 from ubuntuuitoolkit._custom_proxy_objects._header import Header
-from ubuntuuitoolkit._custom_proxy_objects._listitems import (
-    Base,
-    Empty,
-    ItemSelector,
-    MultiValue,
-    SingleControl,
-    SingleValue,
-    Standard,
-    Subtitled,
-)
+from ubuntuuitoolkit._custom_proxy_objects import listitems
 from ubuntuuitoolkit._custom_proxy_objects._mainview import MainView
 from ubuntuuitoolkit._custom_proxy_objects._optionselector import (
     OptionSelector
 )
-from ubuntuuitoolkit._custom_proxy_objects._popups import (
-    ActionSelectionPopover,
-    ComposerSheet,
-)
+from ubuntuuitoolkit._custom_proxy_objects import popups
 from ubuntuuitoolkit._custom_proxy_objects._qquicklistview import (
     QQuickListView
 )

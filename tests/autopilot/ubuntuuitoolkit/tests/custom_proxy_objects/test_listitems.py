@@ -15,7 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import ubuntuuitoolkit
-from ubuntuuitoolkit import tests
+from ubuntuuitoolkit import listitems, tests
 
 
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
@@ -89,27 +89,27 @@ MainView {
     def setUp(self):
         super(SwipeToDeleteTestCase, self).setUp()
         self._item = self.main_view.select_single(
-            ubuntuuitoolkit.Standard, objectName='listitem_standard')
+            listitems.Standard, objectName='listitem_standard')
         self.assertTrue(self._item.exists())
 
     def test_supported_class(self):
         self.assertTrue(issubclass(
-            ubuntuuitoolkit.Base, ubuntuuitoolkit.Empty))
+            listitems.Base, listitems.Empty))
         self.assertTrue(issubclass(
-            ubuntuuitoolkit.ItemSelector, ubuntuuitoolkit.Empty))
+            listitems.ItemSelector, listitems.Empty))
         self.assertTrue(issubclass(
-            ubuntuuitoolkit.Standard, ubuntuuitoolkit.Empty))
+            listitems.Standard, listitems.Empty))
         self.assertTrue(issubclass(
-            ubuntuuitoolkit.SingleControl, ubuntuuitoolkit.Empty))
+            listitems.SingleControl, listitems.Empty))
         self.assertTrue(issubclass(
-            ubuntuuitoolkit.MultiValue, ubuntuuitoolkit.Base))
+            listitems.MultiValue, listitems.Base))
         self.assertTrue(issubclass(
-            ubuntuuitoolkit.SingleValue, ubuntuuitoolkit.Base))
+            listitems.SingleValue, listitems.Base))
         self.assertTrue(issubclass(
-            ubuntuuitoolkit.Subtitled, ubuntuuitoolkit.Base))
+            listitems.Subtitled, listitems.Base))
 
     def test_standard_custom_proxy_object(self):
-        self.assertIsInstance(self._item, ubuntuuitoolkit.Standard)
+        self.assertIsInstance(self._item, listitems.Standard)
 
     def test_swipe_item(self):
         self._item.swipe_to_delete()
@@ -140,7 +140,7 @@ MainView {
 
     def test_delete_non_removable_item(self):
         self._item = self.main_view.select_single(
-            ubuntuuitoolkit.Empty, objectName='listitem_empty')
+            listitems.Empty, objectName='listitem_empty')
         self.assertRaises(
             ubuntuuitoolkit.ToolkitException, self._item.swipe_to_delete)
 
@@ -150,13 +150,13 @@ MainView {
 
     def test_delete_item_without_confirm(self):
         item = self.main_view.select_single(
-            ubuntuuitoolkit.Standard, objectName='listitem_without_confirm')
+            listitems.Standard, objectName='listitem_without_confirm')
         item.swipe_to_delete()
         self.assertFalse(item.exists())
 
     def test_delete_item_with_confirmation_that_will_be_destroyed(self):
         item = self.main_view.select_single(
-            ubuntuuitoolkit.Standard,
+            listitems.Standard,
             objectName='listitem_destroyed_on_remove_with_confirm')
         item.swipe_to_delete()
         item.confirm_removal()
@@ -164,7 +164,7 @@ MainView {
 
     def test_delete_item_without_confirmation_that_will_be_destroyed(self):
         item = self.main_view.select_single(
-            ubuntuuitoolkit.Standard,
+            listitems.Standard,
             objectName='listitem_destroyed_on_remove_without_confirm')
         item.swipe_to_delete()
         self.assertFalse(item.exists())

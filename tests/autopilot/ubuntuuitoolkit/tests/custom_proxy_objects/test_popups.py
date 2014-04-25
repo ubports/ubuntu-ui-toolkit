@@ -17,7 +17,7 @@
 from autopilot.introspection import dbus
 
 import ubuntuuitoolkit
-from ubuntuuitoolkit import tests
+from ubuntuuitoolkit import popups, tests
 
 
 class ActionSelectionPopoverTestCase(tests.QMLStringAppTestCase):
@@ -60,7 +60,7 @@ MainView {
     def test_action_selection_popover_custom_proxy_object(self):
         popover = self.main_view.get_action_selection_popover(
             'test_actions_popover')
-        self.assertIsInstance(popover, ubuntuuitoolkit.ActionSelectionPopover)
+        self.assertIsInstance(popover, popups.ActionSelectionPopover)
 
     def test_click_action_select_popover_button(self):
         label = self.app.select_single('Label', objectName='clicked_label')
@@ -151,11 +151,11 @@ MainView {
 
     def _select_composer_sheet(self):
         return self.main_view.select_single(
-            ubuntuuitoolkit.ComposerSheet, objectName='testComposerSheet')
+            popups.ComposerSheet, objectName='testComposerSheet')
 
     def test_select_composer_sheet_custom_proxy_object(self):
         self.assertIsInstance(
-            self.composer_sheet, ubuntuuitoolkit.ComposerSheet)
+            self.composer_sheet, popups.ComposerSheet)
 
     def test_confirm_composer_sheet(self):
         self.composer_sheet.confirm()
