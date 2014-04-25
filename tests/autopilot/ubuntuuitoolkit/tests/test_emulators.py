@@ -1106,7 +1106,7 @@ MainView {
         }
         ComboButton {
             text: "main button"
-            objectName: "atocollapse_button"
+            objectName: "autocollapse_button"
             onClicked: expanded = false
             ListView {
                 model: 10
