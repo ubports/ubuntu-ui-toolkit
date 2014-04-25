@@ -142,6 +142,7 @@ OrientationHelper {
     InverseMouseArea {
         id: eventGrabber
         enabled: true
+        acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
         anchors.fill: __foreground
         sensingArea: dismissArea
         propagateComposedEvents: !grabDismissAreaEvents
