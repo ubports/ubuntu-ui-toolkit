@@ -72,7 +72,7 @@ Item {
         function setTabBarSelectionMode(newSelectionMode) {
             var tabBar = tabs.tabBar;
             var header = mainView.__propagated.header;
-            compare(tabBar, header.contents, "TabBar is not the active header contents");
+            compare(tabBar, header.__styleInstance.__tabBar, "TabBar is not the active header contents");
             header.show();
             tabBar.selectionMode = newSelectionMode;
             compare(tabBar.selectionMode, newSelectionMode, "Failed to set the tab bar selection mode");

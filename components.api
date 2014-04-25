@@ -68,6 +68,7 @@ StyledItem
     function hide()
     property string title
     property Item contents
+    property var tabsModel
     property Flickable flickable
 Icon 0.1 1.0
 Item
@@ -428,6 +429,7 @@ PageTreeNode
     default property list<Item> tabChildren
     readonly property int count
     signal modelChanged()
+    property var __model
 TextArea 0.1 1.0
 StyledItem
     property bool highlighted

@@ -349,12 +349,9 @@ PageTreeNode {
             Binding {
                 target: headerItem
                 property: "tabBar"
-                value: headerItem.contents
-                when: headerItem.contents &&
-                      headerItem.contents.hasOwnProperty("selectionMode") &&
-                      headerItem.contents.hasOwnProperty("alwaysSelectionMode") &&
-                      headerItem.contents.hasOwnProperty("selectedIndex") &&
-                      headerItem.contents.hasOwnProperty("pressed")
+                value: headerItem.__styleInstance.__tabBar
+                when: headerItem.__styleInstance &&
+                      headerItem.__styleInstance.hasOwnProperty("__tabBar")
             }
 
             Connections {

@@ -176,14 +176,14 @@ PageTreeNode {
     readonly property Item currentPage: selectedTab ? selectedTab.page : null
 
     /*!
+      \deprecated
       The \l TabBar that will be shown in the header
       and provides scrollable tab buttons.
+      This property is DEPRECATED. TabBar is now part of the header style.
      */
-    property TabBar tabBar: TabBar {
-        id: bar
-        model: tabsModel
-        visible: tabs.active
-    }
+    property TabBar tabBar: internal.header && internal.header.__styleInstance &&
+                            internal.header.__styleInstance.hasOwnProperty("__tabBar") ?
+                                internal.header.__styleInstance.__tabBar : null
 
     /*!
       Children are placed in a separate item that has functionality to extract the Tab items.
@@ -204,6 +204,12 @@ PageTreeNode {
       implementation and may be removed in the future.
      */
     signal modelChanged()
+
+    /*!
+      \internal
+      tst_tabs.qml needs access to the model to verify that Repeaters inside Tabs works.
+     */
+    property var __model: tabsModel
 
     /*!
       \internal
@@ -298,13 +304,6 @@ PageTreeNode {
     Object {
         id: internal
         property Header header: tabs.__propagated ? tabs.__propagated.header : null
-
-        Binding {
-            target: tabBar
-            property: "animate"
-            when: internal.header && internal.header.hasOwnProperty("animate")
-            value: internal.header.animate
-        }
 
         /*
           List of connected Repeaters to avoid repeater "hammering" of itemAdded() signal.
@@ -446,8 +445,8 @@ PageTreeNode {
 
     Binding {
         target: internal.header
-        property: "contents"
-        value: tabs.active ? tabs.tabBar: null
+        property: "tabsModel"
+        value: tabsModel
         when: internal.header && tabs.active
     }
 }
