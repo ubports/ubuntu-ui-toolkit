@@ -140,7 +140,7 @@ void UCStateSaverAttachedPrivate::watchComponent(bool watch)
 /*!
  * \qmltype StateSaver
  * \instantiates UCStateSaverAttached
- * \inqmlmodule Ubuntu.Components 1.0
+ * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu-services
  * \brief Attached propertyes to save component property states.
  *
@@ -158,7 +158,7 @@ void UCStateSaverAttachedPrivate::watchComponent(bool watch)
  * Example:
  * \qml
  * import QtQuick 2.0
- * import Ubuntu.Components 1.0
+ * import Ubuntu.Components 1.1
  *
  * TextField {
  *     id: input

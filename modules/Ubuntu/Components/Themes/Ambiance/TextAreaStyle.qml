@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 // frame
 Item {
@@ -38,6 +38,11 @@ Item {
     property real frameSpacing: units.gu(1)
     property real overlaySpacing: units.gu(0.5)
 
+    /*!
+      Property holding the timeout in milliseconds the component enters into selection mode.
+      */
+    property int selectionModeTimeout: 300
+
     anchors.fill: parent
 
     z: -1
@@ -47,11 +52,6 @@ Item {
         onErrorChanged: (error) ? visuals.errorColor : visuals.backgroundColor;
         color: visuals.backgroundColor;
         anchors.fill: parent
-
-        MouseArea {
-            anchors.fill: parent
-            onPressed: if (!styledItem.activeFocus && styledItem.activeFocusOnPress) styledItem.forceActiveFocus()
-        }
     }
 
     Loader {

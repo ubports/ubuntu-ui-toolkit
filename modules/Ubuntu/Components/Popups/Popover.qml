@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import "internalPopupUtils.js" as InternalPopupUtils
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 /*!
     \qmltype Popover
@@ -32,7 +32,7 @@ import Ubuntu.Components 1.0
     Example:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
         import Ubuntu.Components.ListItems 1.0 as ListItem
         import Ubuntu.Components.Popups 1.0
 
@@ -204,6 +204,7 @@ PopupBase {
 
     StyledItem {
         id: foreground
+        objectName: "popover_foreground"
 
         //styling properties
         property real minimumWidth: units.gu(40)

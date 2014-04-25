@@ -21,7 +21,7 @@
 /*!
  * \qmltype UbuntuAnimation
  * \instantiates UCUbuntuAnimation
- * \inqmlmodule Ubuntu.Components 1.0
+ * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu
  * \brief Singleton defining standard Ubuntu durations and easing for animations
  *        that should be used to ensure that Ubuntu applications are consistent

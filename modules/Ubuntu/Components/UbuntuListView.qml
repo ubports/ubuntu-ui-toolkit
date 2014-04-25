@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0 as Toolkit
+import Ubuntu.Components 1.1 as Toolkit
 
 /*!
     \qmltype UbuntuListView
-    \inqmlmodule Ubuntu.Components 1.0
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief A ListView with special features tailored for a look and feel fitting the
     Ubuntu Touch platform.
@@ -30,7 +30,7 @@ import Ubuntu.Components 1.0 as Toolkit
 
     Examples:
     \qml
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
         import Ubuntu.Components.ListItems 1.0 as ListItem
 
         Item {

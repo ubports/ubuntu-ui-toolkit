@@ -45,6 +45,14 @@ QtObject
     readonly property color coolGrey
     property Gradient orangeGradient
     property Gradient greyGradient
+ComboButton 1.1
+Button
+    property bool expanded
+    property real collapsedHeight
+    property real expandedHeight
+    readonly property real comboListHeight
+    default property list<Item> comboList
+    property color dropdownColor
 CrossFadeImage 0.1 1.0
 Item
     property url source
@@ -485,7 +493,6 @@ StyledItem
     function remove(start, end)
     function undo()
     function forceActiveFocus()
-    property internal __internal
 TextField 0.1 1.0
 ActionItem
     property bool highlighted
@@ -551,7 +558,6 @@ ActionItem
     function undo()
     function remove(start, end)
     function getText(start, end)
-    property internal __internal
 Palette 0.1
 QtObject
     property PaletteValues normal
