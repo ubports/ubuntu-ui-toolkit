@@ -16,68 +16,94 @@
 
 import QtQuick 2.0
 import QtTest 1.0
+import Ubuntu.Test 1.0
 import Ubuntu.Components 1.1
 
 Item {
     id: root
-    width: 200; height: 200
+    width: units.gu(50); height: units.gu(100)
 
     property bool hasOSK: QuickUtils.inputMethodProvider !== ""
 
     Flickable {
         id: flickable
         anchors.fill: parent
-        contentWidth: inFlickable.width
-        contentHeight: inFlickable.height
+        contentHeight: column.childrenRect.height
         clip: true
 
-        TextArea {
-            id: inFlickable
-            width: flickable.width
-            autoSize: true
-            maximumLineCount: 0
-            text: "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1"
+        Column {
+            id: column
+            Text {
+                text: "This is a simple label on top of the Flickable"
+            }
+
+            TextArea {
+                id: inFlickable
+                width: flickable.width
+                autoSize: true
+                maximumLineCount: 0
+                text: "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1"
+            }
         }
     }
 
     SignalSpy {
-        id: flickableSpy
+        id: moveSpy
         target: flickable
-        signalName: "movingChanged"
+        signalName: "onMovementEnded"
     }
 
-    TestCase {
+    UbuntuTestCase {
         name: "TextAreaInFlickableAPI"
         when: windowShown
-        // simulates a flick event between \b from  and \b to points both relative to the item
-        // with a given speed
-        function flick(item, from, to, speed) {
-            var pointCount = 5;
-            if (from === undefined)
-                qtest_fail("source point not defined", 2);
-            if (to === undefined)
-                qtest_fail("destination point not defined", 2);
-            if (speed === undefined)
-                speed = -1;
-            else
-                speed /= pointCount;
 
-            var dx = to.x - from.x;
-            var dy = to.y - from.y;
+        function init() {
+            waitForRendering(flickable, 1000);
+        }
 
-            mousePress(item, from.x, from.y);
-            for (var i = 0; i < pointCount; i++) {
-                mouseMove(item, from.x + (i + 1) * dx / pointCount, from.y + (i + 1) * dy / pointCount, speed);
-            }
-            mouseRelease(item, to.x, to.y);
-            // empty event queues
-            wait(500);
+        function cleanup() {
+            flickable.contentY = 0;
+            moveSpy.clear();
+            inFlickable.focus = false;
+            inFlickable.cursorPosition = 0;
+            // empty event buffer caused by the flick() events
+            wait(400);
         }
 
         function test_DoNotStealFlickEvents() {
-            mouseClick(inFlickable, 10, 10);
-            flick(inFlickable, Qt.point(50, 20), Qt.point(50, 0), 100);
-            tryCompare(flickableSpy, "count", 2, 200);
+            inFlickable.focus = true;
+            flick(inFlickable, 50, 150, 0, -150);
+            moveSpy.wait();
+        }
+
+        function test_flicker_moves_when_inactive() {
+            flick(flickable, 50, 150, 0, -150);
+            moveSpy.wait();
+        }
+
+        function test_select_state_locks_outer_flickable() {
+            var handler = findChild(inFlickable, "input_handler");
+            inFlickable.focus = true;
+            // select text
+            flick(inFlickable, 50, 50, -50, -50, handler.selectionModeTimeout+ 50);
+            compare(moveSpy.count, 0, "The Flickable has moved while the TextArea was in selection mode");
+            verify(inFlickable.selectedText !== "", "No text selected");
+        }
+
+        function test_scrolling_input_with_selected_text() {
+            var handler = findChild(inFlickable, "input_handler");
+            inFlickable.focus = true;
+            // select text
+            flick(inFlickable, 50, 50, -50, -50, handler.selectionModeTimeout + 100);
+            compare(moveSpy.count, 0, "The Flickable has moved while the TextArea was in selection mode");
+            verify(inFlickable.selectedText !== "", "No text selected");
+
+            // scroll
+            moveSpy.clear();
+            flick(inFlickable, 50, 100, 0, -100);
+            // wait till the move ends
+            moveSpy.wait();
+            verify(inFlickable.selectedText !== "", "There is still text selected");
         }
     }
 }

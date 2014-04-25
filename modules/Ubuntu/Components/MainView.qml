@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2013 Canonical Ltd.
+ * Copyright 2012-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -380,6 +380,8 @@ PageTreeNode {
                         window.title = headerItem.title
                 }
             }
+
+            useDeprecatedToolbar: mainView.useDeprecatedToolbar
         }
 
         Connections {
@@ -445,6 +447,12 @@ PageTreeNode {
           It will be used by the active \l Page to set the toolbar actions.
          */
         property Toolbar toolbar: toolbarLoader.item
+
+        /*!
+          \internal
+          Tabs needs to know whether to use a TabBar or the new header.
+         */
+        property alias useDeprecatedToolbar: mainView.useDeprecatedToolbar
 
         /*!
           \internal

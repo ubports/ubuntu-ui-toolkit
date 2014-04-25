@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -94,6 +94,17 @@ StyledItem {
      */
     property var tabsModel: null
 
+    // FIXME: Currently autopilot can only get visual items, but once bug #1273956
+    //  is fixed to support non-visual items, a QtObject may be used.
+    //  --timp - 2014-03-20
+    Item {
+        // FIXME: This is a workaround to be able to get the properties of
+        //  tabsModel in an autopilot test.
+        objectName: "tabsModelProperties"
+        property int count: tabsModel ? tabsModel.count : 0
+        property int selectedIndex: tabsModel ? tabsModel.selectedIndex : -1
+    }
+
     /*!
       The flickable that controls the movement of the header.
       Will be set automatically by Pages inside a MainView, but can
@@ -105,6 +116,11 @@ StyledItem {
         internal.connectFlickable();
         header.show();
     }
+
+    /*!
+      Set by \l MainView
+     */
+    property bool useDeprecatedToolbar: true
 
     QtObject {
         id: internal
@@ -193,5 +209,6 @@ StyledItem {
         }
     }
 
-    style: Theme.createStyleComponent("HeaderStyle.qml", header)
+    style: header.useDeprecatedToolbar ? Theme.createStyleComponent("HeaderStyle.qml", header) :
+                                         Theme.createStyleComponent("NewHeaderStyle.qml", header)
 }

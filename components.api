@@ -70,6 +70,7 @@ StyledItem
     property Item contents
     property var tabsModel
     property Flickable flickable
+    property bool useDeprecatedToolbar
 Icon 0.1 1.0
 Item
     property string name
@@ -491,7 +492,6 @@ StyledItem
     function remove(start, end)
     function undo()
     function forceActiveFocus()
-    property internal __internal
 TextField 0.1 1.0
 ActionItem
     property bool highlighted
@@ -557,7 +557,6 @@ ActionItem
     function undo()
     function remove(start, end)
     function getText(start, end)
-    property internal __internal
 Palette 0.1
 QtObject
     property PaletteValues normal
