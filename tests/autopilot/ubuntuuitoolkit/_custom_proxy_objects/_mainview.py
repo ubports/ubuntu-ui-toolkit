@@ -175,5 +175,8 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
     @autopilot_logging.log_action(logger.info)
     def go_back(self):
         """Go to the previous page."""
-        toolbar = self.open_toolbar()
-        toolbar.click_back_button()
+        if self.useDeprecatedToolbar:
+            toolbar = self.open_toolbar()
+            toolbar.click_back_button()
+        else:
+            self.get_header().click_back_button()

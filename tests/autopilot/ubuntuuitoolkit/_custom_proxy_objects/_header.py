@@ -38,6 +38,18 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
         super(Header, self).__init__(*args)
         self.pointing_device = _common.get_pointing_device()
 
+    def click_back_button(self):
+        if self.useDeprecatedToolbar:
+            raise _common.ToolkitException('Old header has no back button')
+        try:
+            back_button = self.select_single(
+                'AbstractButton', objectName='backButton')
+        except dbus.StateNotFoundError:
+            raise _common.ToolkitException('Missing back button in header')
+        if not back_button.visible:
+            raise _common.ToolkitException('Back button in header not visible')
+        self.pointing_device.click_object(back_button)
+
     def _get_animating(self):
         if self.useDeprecatedToolbar:
             tab_bar_style = self.select_single('TabBarStyle')
