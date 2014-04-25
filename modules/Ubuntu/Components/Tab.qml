@@ -18,7 +18,7 @@ import QtQuick 2.0
 
 /*!
     \qmltype Tab
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.0
     \ingroup ubuntu
     \brief Component to represent a single tab in a \l Tabs environment.
 
@@ -105,5 +105,12 @@ PageTreeNode {
           Tab is destroyed upon removal.
           */
         property bool dynamic: false
+
+        /*
+          This flag is used by the Tabs to determine whether the pre-declared Tab was removed
+          from the Tabs model or not. The flag guards adding back pre-declared tabs upon Tabs
+          component stack  (children) change.
+          */
+        property bool removedFromTabs: false
     }
 }

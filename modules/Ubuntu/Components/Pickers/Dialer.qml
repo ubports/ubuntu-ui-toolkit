@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 /*!
     \qmltype Dialer
-    \inqmlmodule Ubuntu.Components.Pickers 0.1
+    \inqmlmodule Ubuntu.Components.Pickers 1.0
     \ingroup ubuntu-pickers
     \brief Dialer is a phone dialer style picker component.
 
@@ -35,7 +35,7 @@ import Ubuntu.Components 0.1
 
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components.Pickers 0.1
+    import Ubuntu.Components.Pickers 1.0
 
     Dialer {
         size: units.gu(20)

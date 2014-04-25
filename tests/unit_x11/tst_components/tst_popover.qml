@@ -45,8 +45,6 @@ MainView {
         id: popoverComponent
         Popover {
             objectName: "popover"
-            contentHeight: units.gu(20)
-            contentWidth: units.gu(20)
             Rectangle {
                 width: units.gu(20)
                 height: units.gu(20)

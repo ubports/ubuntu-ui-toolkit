@@ -41,7 +41,7 @@ ULLayouts *ULConditionalLayoutPrivate::layouts()
 /*!
  * \qmltype ConditionalLayout
  * \instantiates ULConditionalLayout
- * \inqmlmodule Ubuntu.Layouts 0.1
+ * \inqmlmodule Ubuntu.Layouts 1.0
  * \ingroup ubuntu-layouts
  * \brief ConditionalLayout defines the layout of a given form factor.
  *

@@ -95,7 +95,11 @@ QQuickItem *QuickUtils::rootItem(QObject *object)
         // we reach QQuickView's contentItem, whose size is invalid. Therefore
         // we need to return the QQuickView's rootObject() instead of the topmost
         // item found
-        return m_rootView->rootObject();
+        parentItem = m_rootView->rootObject();
+    }
+    // in case the item found is derived from internal QQuickRootItem, return its first child
+    if (parentItem && parentItem->inherits("QQuickRootItem")) {
+        parentItem = parentItem->childItems()[0];
     }
     return parentItem;
 }
@@ -117,21 +121,6 @@ QString QuickUtils::className(QObject *item)
     }
     QString result = item->metaObject()->className();
     return result.left(result.indexOf("_QML"));
-}
-
-/*!
- * \internal
- * Moves a given \a item before the \a other one in the object stack. Both \a item
- * and \a other must have the same parent item.
- */
-void QuickUtils::moveItemBefore(QQuickItem *item, QQuickItem *other)
-{
-    Q_ASSERT(item);
-    Q_ASSERT(item->parentItem());
-    if (other) {
-        Q_ASSERT(other->parentItem() == item->parentItem());
-        item->stackBefore(other);
-    }
 }
 
 

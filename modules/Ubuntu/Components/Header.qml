@@ -15,16 +15,12 @@
  */
 
 import QtQuick 2.0
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Ubuntu named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Ubuntu
+import Ubuntu.Components 1.0
 
 /*!
     \internal
     \qmltype Header
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.0
     \ingroup ubuntu
 */
 StyledItem {
@@ -44,7 +40,7 @@ StyledItem {
     Behavior on y {
         enabled: animate && !(header.flickable && header.flickable.moving)
         SmoothedAnimation {
-            duration: Ubuntu.UbuntuAnimation.BriskDuration
+            duration: UbuntuAnimation.BriskDuration
         }
     }
 
@@ -54,7 +50,7 @@ StyledItem {
         internal.movementEnded();
     }
 
-    visible: title || contents
+    visible: title || contents || tabsModel
     onVisibleChanged: {
         internal.checkFlickableMargins();
     }
@@ -77,13 +73,26 @@ StyledItem {
       The text to display in the header
      */
     property string title: ""
-    onTitleChanged: contentsChanged()
+    onTitleChanged: {
+        header.show();
+    }
 
     /*!
+      \deprecated
       The contents of the header. If this is set, \l title will be ignored.
+      This property is now DEPRECATED. Set tabsModel to show tabs navigation in header.
      */
     property Item contents: null
-    onContentsChanged: header.show()
+    onContentsChanged: {
+        print("Header.contents property is now DEPRECATED. Set tabsModel to show tabs navigation.");
+        header.show();
+    }
+
+    /*!
+      A model of tabs to represent in the header.
+      This is automatically set by \l Tabs.
+     */
+    property var tabsModel: null
 
     /*!
       The flickable that controls the movement of the header.
