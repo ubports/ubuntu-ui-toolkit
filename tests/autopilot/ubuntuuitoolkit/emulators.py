@@ -233,7 +233,7 @@ class MainView(UbuntuUIToolkitEmulatorBase):
     @autopilot_logging.log_action(logger.info)
     def go_back(self):
         """Go to the previous page."""
-        if (self.useDeprecatedToolbar):
+        if self.useDeprecatedToolbar:
             toolbar = self.open_toolbar()
             toolbar.click_back_button()
         else:
