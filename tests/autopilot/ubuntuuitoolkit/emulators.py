@@ -255,6 +255,8 @@ class Header(UbuntuUIToolkitEmulatorBase):
                 'AbstractButton', objectName='backButton')
         except dbus.StateNotFoundError:
             raise ToolkitEmulatorException('Missing back button in header')
+        if not back_button.visible:
+            raise ToolkitEmulatorException('Back button in header not visible')
         self.pointing_device.click_object(back_button)
 
     def _get_animating(self):
