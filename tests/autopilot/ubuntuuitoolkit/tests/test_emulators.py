@@ -887,41 +887,50 @@ MainView {
         item.swipe_to_delete()
         self.assertFalse(item.exists())
 
-
-class PageStackTestCase(tests.QMLStringAppTestCase):
-
-    test_qml = ("""
+TEST_PAGESTACK_QML_FORMAT = ("""
 import QtQuick 2.0
 import Ubuntu.Components 1.1
 
-MainView {
+MainView {{
     width: units.gu(48)
     height: units.gu(60)
+    useDeprecatedToolbar: {use_deprecated_toolbar}
 
-    PageStack {
+    PageStack {{
         id: pageStack
         Component.onCompleted: push(page0)
 
-        Page {
+        Page {{
             id: page0
             title: "Page 0"
             visible: false
 
-            Button {
+            Button {{
                 objectName: "go_to_page1"
                 text: "Go to page 1"
                 onClicked: pageStack.push(page1)
-            }
-        }
+            }}
+        }}
 
-        Page {
+        Page {{
             id: page1
             title: "Page 1"
             visible: false
-        }
-    }
-}
+        }}
+    }}
+}}
 """)
+
+
+class PageStackTestCase(tests.QMLStringAppTestCase):
+    scenarios = [
+        ('back in toolbar', dict(
+            test_qml=TEST_PAGESTACK_QML_FORMAT.format(
+                use_deprecated_toolbar='true'))),
+        ('back in header', dict(
+            test_qml=TEST_PAGESTACK_QML_FORMAT.format(
+                use_deprecated_toolbar='false')))
+    ]
 
     def setUp(self):
         super(PageStackTestCase, self).setUp()

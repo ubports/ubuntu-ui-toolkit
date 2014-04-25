@@ -94,6 +94,12 @@ StyledItem {
      */
     property var tabsModel: null
 
+    /*!
+      If it is possible to pop this PageStack, a back button will be
+      shown in the header.
+     */
+    property var pageStack: null
+
     // FIXME: Currently autopilot can only get visual items, but once bug #1273956
     //  is fixed to support non-visual items, a QtObject may be used.
     //  --timp - 2014-03-20

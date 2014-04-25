@@ -74,13 +74,35 @@ Item {
         width: childrenRect.width
 
         AbstractButton {
+            id: backButton
+            objectName: "backButton"
+            height: parent ? parent.height : undefined
+            width: visible ? units.gu(5) : 0
+
+            iconName: "back"
+            visible: styledItem.pageStack !== null &&
+                     styledItem.pageStack.depth > 1
+
+            text: "back"
+
+            // FIXME: We currently use an AbstractButton with ToolbarButtonStyle because
+            //  a ToolbarButton does not have its own MouseArea to handle interaction,
+            //  that was done in the Toolbar.
+            style: Theme.createStyleComponent("ToolbarButtonStyle.qml", backButton)
+
+            onTriggered: {
+                styledItem.pageStack.pop();
+            }
+        }
+
+        AbstractButton {
             id: tabsButton
             objectName: "tabsButton"
             height: parent ? parent.height : undefined
             width: visible ? units.gu(5) : 0
 
             iconName: "navigation-menu"
-            visible: styledItem.tabsModel !== null
+            visible: styledItem.tabsModel !== null && !backButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
 
             // FIXME: We currently use an AbstractButton with ToolbarButtonStyle because

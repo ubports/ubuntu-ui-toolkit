@@ -69,6 +69,7 @@ StyledItem
     property string title
     property Item contents
     property var tabsModel
+    property var pageStack
     property Flickable flickable
     property bool useDeprecatedToolbar
 Icon 0.1 1.0

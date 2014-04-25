@@ -28,6 +28,7 @@ MainView {
     width: units.gu(38)
     height: units.gu(50)
     anchors.centerIn: parent
+    useDeprecatedToolbar: false
 
     PageStack {
         id: pageStack
