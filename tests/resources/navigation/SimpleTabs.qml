@@ -20,6 +20,8 @@ import Ubuntu.Components 1.0
 MainView {
     width: 800
     height: 600
+    useDeprecatedToolbar: false
+
     Tabs {
         id: tabs
         selectedTabIndex: 1

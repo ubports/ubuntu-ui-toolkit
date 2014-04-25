@@ -62,6 +62,7 @@ StyledItem
     property Item contents
     property var tabsModel
     property Flickable flickable
+    property bool useDeprecatedToolbar
 Icon 0.1 1.0
 Item
     property string name
