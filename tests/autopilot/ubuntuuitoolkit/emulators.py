@@ -233,8 +233,11 @@ class MainView(UbuntuUIToolkitEmulatorBase):
     @autopilot_logging.log_action(logger.info)
     def go_back(self):
         """Go to the previous page."""
-        toolbar = self.open_toolbar()
-        toolbar.click_back_button()
+        if (self.useDeprecatedToolbar):
+            toolbar = self.open_toolbar()
+            toolbar.click_back_button()
+        else:
+            self.get_header().click_back_button()
 
 
 class Header(UbuntuUIToolkitEmulatorBase):
@@ -243,6 +246,16 @@ class Header(UbuntuUIToolkitEmulatorBase):
     def __init__(self, *args):
         super(Header, self).__init__(*args)
         self.pointing_device = get_pointing_device()
+
+    def click_back_button(self):
+        if (self.useDeprecatedToolbar):
+            raise ToolkitEmulatorException('Old header has no back button')
+        try:
+            back_button = self.select_single(
+                'AbstractButton', objectName='backButton')
+        except dbus.StateNotFoundError:
+            raise ToolkitEmulatorException('Missing back button in header')
+        self.pointing_device.click_object(back_button)
 
     def _get_animating(self):
         if (self.useDeprecatedToolbar):
