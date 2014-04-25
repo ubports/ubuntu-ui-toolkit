@@ -15,16 +15,17 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.0 as Ubuntu
 import Ubuntu.Components.Popups 1.0
 
-StyledItem {
+Item {
     id: cursorItem
 
     width: units.dp(1)
 
     /*
-      Property holding the text input item instance.
+      Property holding the text input item instance. This points to the main
+      component not to the input itself!
       */
     property var editorItem
 
@@ -43,11 +44,6 @@ StyledItem {
       The property contains the custom popover to be shown.
       */
     property var popover
-
-    /*
-      The property holding the cursor component of the input
-      */
-    property Component cursorDelegate
 
     /*
         The function opens the text input popover setting the text cursor as caller.
@@ -69,7 +65,27 @@ StyledItem {
         }
     }
 
-    style: Theme.createStyleComponent("TextCursorStyle.qml", cursorItem)
+    // cursor visual loader
+    Loader {
+        id: cursorLoader
+        sourceComponent: editorItem.cursorDelegate
+        onItemChanged: {
+            if (item) {
+                item.height = cursorItem.height;
+                cursorItem.width = item.width;
+            }
+        }
+    }
+
+    // caret loader
+    Loader {
+        id: caretLoader
+        sourceComponent: editorItem.__styleInstance.defaultCaret
+        // apply anchoring
+        onItemChanged: if (item) item.parent = cursorItem
+        property int caretX: x + (item ? item.x : 0)
+        property int caretY: y + (item ? item.y : 0)
+    }
 
     Component.onCompleted: {
         handler.pressAndHold.connect(cursorItem.openPopover);
@@ -86,9 +102,10 @@ StyledItem {
     //dragged item
     Rectangle { opacity: 0.5; color: "blue"
         id: draggedItem
-        width: __styleInstance.caretHandler ? __styleInstance.caretHandler.width : 0
-        height: __styleInstance.caretHandler ? __styleInstance.caretHandler.height : 0
+        width: caretLoader.width
+        height: caretLoader.height
         parent: handler.input
+        visible: cursorItem.visible
 
         onStateChanged: print('dragstate=', state)
 
@@ -106,7 +123,7 @@ StyledItem {
                 draggedItem.moveToCaret(mouse.x, mouse.y);
                 draggedItem.state = "dragging";
             }
-            Mouse.forwardTo: [dragger]
+            Ubuntu.Mouse.forwardTo: [dragger]
             /*
               As we are forwarding the events to the upper mouse area, the release
               will not get into the normal MosueArea onRelease signal as the preventStealing
@@ -117,14 +134,14 @@ StyledItem {
               will end up in a binding loop on the moveToCaret() next time the caret
               handler is grabbed.
               */
-            Mouse.onReleased: if (!dragger.drag.active) draggedItem.state = ""
+            Ubuntu.Mouse.onReleased: if (!dragger.drag.active) draggedItem.state = ""
         }
 
         // aligns the draggedItem to the caret and resets the dragger
         function moveToCaret(cx, cy) {
             if (cx === undefined && cy === undefined) {
-                cx = cursorItem.x + (__styleInstance.caretHandler ? __styleInstance.caretHandler.x : 0);
-                cy = cursorItem.y + (__styleInstance.caretHandler ? __styleInstance.caretHandler.y : 0);
+                cx = cursorItem.x + caretLoader.caretX;
+                cy = cursorItem.y + caretLoader.caretY;
             } else {
                 cx += draggedItem.x;
                 cy += draggedItem.y;
@@ -146,7 +163,7 @@ StyledItem {
     MouseArea {
         id: dragger
         // fill the entire component area
-        parent: handler.main
+        parent: editorItem
         anchors.fill: parent
         hoverEnabled: true
         preventStealing: drag.active
@@ -160,8 +177,8 @@ StyledItem {
         property int dragAmountY: dragger.drag.target.y - dragStartY
 
         function resetDrag() {
-            thumbStartX = cursorItem.x + (__styleInstance.caretHandler ? __styleInstance.caretHandler.x : 0);
-            thumbStartY = cursorItem.y + (__styleInstance.caretHandler ? __styleInstance.caretHandler.y : 0);
+            thumbStartX = cursorItem.x + caretLoader.caretX;
+            thumbStartY = cursorItem.y + caretLoader.caretY;
             dragStartX = drag.target.x;
             dragStartY = drag.target.y;
         }

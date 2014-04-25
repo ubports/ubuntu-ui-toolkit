@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Ubuntu
+import Ubuntu.Components 1.0 as Ubuntu
 import "mathUtils.js" as MathUtils
 
 /*!
@@ -233,10 +233,8 @@ StyledItem {
 
       Note that the root item of the delegate component must be a QQuickItem or
       QQuickItem derived item.
-
-      \qmlproperty Component cursorDelegate
       */
-    property Component cursorDelegate: undefined// __styleInstance ? __styleInstance.defaultCursor : undefined
+    property Component cursorDelegate: __styleInstance ? __styleInstance.defaultCursor.component : null
 
     /*!
       The position of the cursor in the TextArea.
@@ -819,7 +817,6 @@ StyledItem {
             id: cursorItem
             editorItem: control
             handler: inputHandler
-            cursorDelegate: control.cursorDelegate
             height: internal.lineSize
             popover: control.popover
             visible: editor.cursorVisible

@@ -45,30 +45,69 @@ Item {
     property int selectionModeTimeout: 300
 
     /*!
-      Text cursor component.
+      \qmlproperty Component defaultCursor.component
+      \qmlproperty bool defaultCursor.blinking
+      \qmlproperty int defaultCursor.cursorVisibleTimeout
+      \qmlproperty int defaultCursor.cursorHiddenTimeout
+
+      Defines the default cursor component and its blinking configuration. If either of the
+      blinking properties are invalid (false, or zero) the cursor will not blink anymore.
       */
-    property Component defaultCursor
+    property TextCursorStyle defaultCursor: TextCursorStyle {
+        id: cursorStyle
+        component: Rectangle {
+            width: units.dp(1)
+            color: Theme.palette.selected.foreground
+            visible: blinkTimer.timerShowCursor
+            Timer {
+                id: blinkTimer
+                interval: cursorStyle.cursorVisibleTimeout
+                running: (cursorStyle.cursorVisibleTimeout > 0) &&
+                         (cursorStyle.cursorHiddenTimeout > 0) &&
+                         styledItem.cursorVisible
+                repeat: true
+                onRunningChanged: print("running", running)
+                property bool timerShowCursor: true
+                onTriggered: {
+                    interval = (interval == cursorStyle.cursorVisibleTimeout) ?
+                                cursorStyle.cursorHiddenTimeout : cursorStyle.cursorVisibleTimeout;
+                    timerShowCursor = !timerShowCursor;
+                }
+            }
+        }
+        cursorVisibleTimeout: 800
+        cursorHiddenTimeout: 400
+    }
 
     /*!
-      Cursor blinking behavior.
+      Component defining the default cursor caret visuals. The caret will be
+      re-parented to the cursor item, therefore anchoring to the parent can
+      be used to drive the positioning of the handler.
       */
-    property bool blinking: true
+    property Component defaultCaret: Image {
+        source: "artwork/teardrop-left.png"
+        anchors {
+            top: parent.bottom
+            horizontalCenter: parent.horizontalCenter
+            topMargin: units.gu(-1)
+            horizontalCenterOffset: units.gu(0.7)
+        }
+    }
 
     /*!
-      Timeout the cursor is visible when blinking.
+      Selection start caret.
       */
-    property int cursorVisibleTimeout: 800
 
     /*!
-      Timeout the cursor is hidden when blinking.
+      Selection end caret.
       */
-    property int cursorHiddenTimeout: 400
 
     /*!
-      Cursor handler (caret) component.
+      Caret alignments
       */
-    property Component defaultCaret
 
+
+    // style body
     anchors.fill: parent
 
     z: -1

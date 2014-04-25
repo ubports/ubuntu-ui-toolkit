@@ -320,17 +320,4 @@ Item {
         // trigger pressAndHold
         onReleased: openContextMenu(mouse)
     }
-
-    /*
-     * Caret handling
-     */
-
-    Loader {
-        id: startSelection
-        onItemChanged: {
-            if (item) {
-                item.positionProperty = "";
-            }
-        }
-    }
 }

@@ -244,10 +244,8 @@ ActionItem {
 
       Note that the root item of the delegate component must be a QQuickItem or
       QQuickItem derived item.
-
-      \qmlproperty Component cursorDelegate
     */
-    property alias cursorDelegate: editor.cursorDelegate
+    property Component cursorDelegate: __styleInstance ? __styleInstance.defaultCursor.component : null
 
     /*!
       The position of the cursor in the TextField.
