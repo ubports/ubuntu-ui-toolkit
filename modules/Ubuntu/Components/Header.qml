@@ -50,7 +50,7 @@ StyledItem {
         internal.movementEnded();
     }
 
-    visible: title || contents
+    visible: title || contents || tabsModel
     onVisibleChanged: {
         internal.checkFlickableMargins();
     }
@@ -73,13 +73,26 @@ StyledItem {
       The text to display in the header
      */
     property string title: ""
-    onTitleChanged: contentsChanged()
+    onTitleChanged: {
+        header.show();
+    }
 
     /*!
+      \deprecated
       The contents of the header. If this is set, \l title will be ignored.
+      This property is now DEPRECATED. Set tabsModel to show tabs navigation in header.
      */
     property Item contents: null
-    onContentsChanged: header.show()
+    onContentsChanged: {
+        print("Header.contents property is now DEPRECATED. Set tabsModel to show tabs navigation.");
+        header.show();
+    }
+
+    /*!
+      A model of tabs to represent in the header.
+      This is automatically set by \l Tabs.
+     */
+    property var tabsModel: null
 
     /*!
       The flickable that controls the movement of the header.
