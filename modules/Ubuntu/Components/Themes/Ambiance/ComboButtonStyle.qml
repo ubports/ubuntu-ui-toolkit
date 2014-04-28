@@ -16,66 +16,20 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 1.1
+import Ubuntu.Components.Styles 1.1 as Style
 
-/*!
-    \qmltype ComboButton
-    \ingroup style-api
-    \brief ComboButton style API.
-
-    The component defines the style of the ComboButton component.
-  */
-Item {
+Style.ComboButtonStyle {
     id: comboStyle
 
-    /*!
-      Width of the drop down button.
-      */
-    property real dropDownWidth: units.gu(5)
-
-    /*!
-      Width of the dropdown button separator.
-      */
-    property real dropDownSeparatorWidth: units.dp(2)
-
-    /*!
-      Distance between the combo list and the main button.
-      */
-    property real comboListMargin: units.gu(0.8)
-
-    /*!
-      The item which will holds the combo list data. Implementations can point both
-      this \l comboListPanel to the same component, however separate items should be
-      used if a gap between the panel and the content is required.
-      See Ambiance theme.
-      */
-    property Item comboListHolder: comboListContent
-
-    /*!
-      The item pointing to the panel holding the combo list and additional design
-      artifacts. It is used by the component to drive the expansion size.
-      */
-    property Item comboListPanel: panelItem
-
-    /*!
-      \qmlproperty color defaultColor
-      Default color for the main button.
-      */
-    property alias defaultColor: mainButton.defaultColor
-
-    /*!
-      \qmlproperty Gradient defaultGradient
-      Default gradient for the main button.
-      */
-    property alias defaultGradient: mainButton.defaultGradient
-
-    /*!
-      Default color for the dropdown button when released.
-      */
-    property color defaultDropdownColor: __combo.expanded ? Qt.rgba(0, 0, 0, 0.05) : defaultColor
-    /*!
-      Default button face font.
-      */
-    property alias defaultFont: mainButton.defaultFont
+    dropDownWidth: units.gu(5)
+    dropDownSeparatorWidth: units.dp(2)
+    comboListMargin: units.gu(0.8)
+    comboListHolder: comboListContent
+    comboListPanel: panelItem
+    defaultColor: mainButton.defaultColor
+    defaultGradient: mainButton.defaultGradient
+    defaultDropdownColor: __combo.expanded ? Qt.rgba(0, 0, 0, 0.05) : defaultColor
+    defaultFont: mainButton.defaultFont
 
 
     width: __combo.width
