@@ -379,7 +379,7 @@ void ULLayoutsPrivate::warning(QObject *item, const QString &message)
 /*!
  * \qmltype Layouts
  * \instantiates ULLayouts
- * \inqmlmodule Ubuntu.Layouts 0.1
+ * \inqmlmodule Ubuntu.Layouts 1.0
  * \ingroup ubuntu-layouts
  * \brief The Layouts component allows one to specify multiple different layouts for a
  * fixed set of Items, and applies the desired layout to those Items.

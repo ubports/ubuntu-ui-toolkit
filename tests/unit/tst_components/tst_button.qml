@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 TestCase {
     name: "ButtonAPI"
@@ -51,6 +51,10 @@ TestCase {
         var newColor = "#f00baa"
         button.color = newColor
         compare(button.color,newColor,"Can set/get color")
+    }
+
+    function test_font() {
+        verify(button.font === Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")}), "Default font differs");
     }
 
     function test_hovered() {

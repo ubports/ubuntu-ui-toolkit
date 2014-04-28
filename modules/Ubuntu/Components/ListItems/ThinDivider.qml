@@ -18,7 +18,7 @@ import QtQuick 2.0
 
 /*!
     \qmltype ThinDivider
-    \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief Narrow line used as a divider between ListItems.
 
@@ -29,7 +29,7 @@ import QtQuick 2.0
 
     Examples:
     \qml
-        import Ubuntu.Components.ListItems 0.1 as ListItem
+        import Ubuntu.Components.ListItems 1.0 as ListItem
         Column {
             width: 250
             ListItem.ThinDivider {} //can be used as header for list

@@ -17,7 +17,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 Item {
     id: buttonStyle
@@ -26,7 +26,16 @@ Item {
     property real minimumWidth: units.gu(10)
     property real horizontalPadding: units.gu(1)
     property color defaultColor: UbuntuColors.orange
+    property font defaultFont: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
     property Gradient defaultGradient
+    property real buttonFaceOffset: 0
+    /*!
+      The property overrides the button's default background with an item. This
+      item can be used by derived styles to reuse the ButtonStyle and override
+      the default coloured background with an image or any other drawing.
+      The default value is null.
+      */
+    property Item backgroundSource: null
 
     width: button.width
     height: button.height
@@ -36,12 +45,22 @@ Item {
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
+    /*! \internal */
+    // Color properties in a JS ternary operator don't work as expected in
+    // QML because it overwrites alpha values with 1. A workaround is to use
+    // Qt.rgba(). For more information, see
+    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197802 and
+    // https://bugreports.qt-project.org/browse/QTBUG-32238.
+    function __colorHack(color) { return Qt.rgba(color.r, color.g, color.b, color.a); }
+
+
     /* The proxy is necessary because Gradient.stops and GradientStop.color are
        non-NOTIFYable properties. They cannot be written to so it is fine but
        the proxy avoids the warnings.
     */
+    property QtObject gradientProxy: gradientProxyObject
     QtObject {
-        id: gradientProxy
+        id: gradientProxyObject
         property color topColor
         property color bottomColor
 
@@ -67,16 +86,11 @@ Item {
         id: background
         anchors.fill: parent
         borderSource: "radius_idle.sci"
-        visible: color.a != 0.0
+        visible: (color.a != 0.0) || backgroundSource
+        image: backgroundSource
 
-        // Color properties in a JS ternary operator don't work as expected in
-        // QML because it overwrites alpha values with 1. A workaround is to use
-        // Qt.rgba(). For more information, see
-        // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197802 and
-        // https://bugreports.qt-project.org/browse/QTBUG-32238.
-        function colorHack(color) { return Qt.rgba(color.r, color.g, color.b, color.a); }
-        color: isGradient ? colorHack(gradientProxy.topColor) : colorHack(button.color)
-        gradientColor: isGradient ? colorHack(gradientProxy.bottomColor) : colorHack(button.color)
+        color: backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.topColor) : __colorHack(button.color))
+        gradientColor: backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.bottomColor) : __colorHack(button.color))
     }
 
     UbuntuShape {
@@ -98,7 +112,10 @@ Item {
     ButtonForeground {
         id: foreground
         width: parent.width - 2*horizontalPadding
-        anchors.centerIn: parent
+        anchors {
+            centerIn: parent
+            horizontalCenterOffset: buttonFaceOffset
+        }
         text: button.text
         /* Pick either a clear or dark text color depending on the luminance of the
            background color to maintain good contrast (works in most cases)
@@ -107,6 +124,7 @@ Item {
         iconSource: button.iconSource
         iconPosition: button.iconPosition
         iconSize: units.gu(3)
+        font: button.font
         spacing: horizontalPadding
         transformOrigin: Item.Top
         scale: button.pressed ? 0.98 : 1.0

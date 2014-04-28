@@ -18,7 +18,7 @@ import QtQuick 2.0
 
 /*!
     \qmltype Tabs
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief The Tabs class provides an environment where multible \l Tab
     children can be added, and the user is presented with a tab
@@ -33,8 +33,8 @@ import QtQuick 2.0
     Example:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
-        import Ubuntu.Components.ListItems 0.1 as ListItem
+        import Ubuntu.Components 1.1
+        import Ubuntu.Components.ListItems 1.0 as ListItem
 
         MainView {
             width: units.gu(48)
@@ -104,7 +104,7 @@ import QtQuick 2.0
 
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.1
 
         MainView {
             id: mainView
@@ -161,7 +161,7 @@ PageTreeNode {
       The first tab is 0, and -1 means that no tab is selected.
       The initial value is 0 if Tabs has contents, or -1 otherwise.
      */
-    property alias selectedTabIndex: bar.selectedIndex
+    property alias selectedTabIndex: tabsModel.selectedIndex
 
     /*!
       \preliminary
@@ -176,14 +176,14 @@ PageTreeNode {
     readonly property Item currentPage: selectedTab ? selectedTab.page : null
 
     /*!
+      \deprecated
       The \l TabBar that will be shown in the header
       and provides scrollable tab buttons.
+      This property is DEPRECATED. TabBar is now part of the header style.
      */
-    property TabBar tabBar: TabBar {
-        id: bar
-        model: tabsModel
-        visible: tabs.active
-    }
+    property TabBar tabBar: internal.header && internal.header.__styleInstance &&
+                            internal.header.__styleInstance.hasOwnProperty("__tabBar") ?
+                                internal.header.__styleInstance.__tabBar : null
 
     /*!
       Children are placed in a separate item that has functionality to extract the Tab items.
@@ -207,10 +207,23 @@ PageTreeNode {
 
     /*!
       \internal
+      tst_tabs.qml needs access to the model to verify that Repeaters inside Tabs works.
+     */
+    property var __model: tabsModel
+
+    /*!
+      \internal
       required by TabsStyle
      */
     ListModel {
         id: tabsModel
+
+        property bool updateDisabled: false
+
+        /*!
+          The index of the selected tab.
+         */
+        property int selectedIndex: tabsModel.count > 0 ? 0 : -1
 
         function listModel(tab) {
             return {"title": tab.title, "tab": tab};
@@ -291,13 +304,6 @@ PageTreeNode {
     Object {
         id: internal
         property Header header: tabs.__propagated ? tabs.__propagated.header : null
-
-        Binding {
-            target: tabBar
-            property: "animate"
-            when: internal.header && internal.header.hasOwnProperty("animate")
-            value: internal.header.animate
-        }
 
         /*
           List of connected Repeaters to avoid repeater "hammering" of itemAdded() signal.
@@ -439,8 +445,8 @@ PageTreeNode {
 
     Binding {
         target: internal.header
-        property: "contents"
-        value: tabs.active ? tabs.tabBar: null
+        property: "tabsModel"
+        value: tabsModel
         when: internal.header && tabs.active
     }
 }

@@ -15,13 +15,13 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 /*!
     ****DEPRECATED! PLEASE USE ITEM SELECTOR OR FOR THE UBUNTU SHAPE VERSION THE OPTION SELECTOR.****
 
     \qmltype ValueSelector
-    \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief List item displaying single selected value when not expanded,
     where expanding it opens a listing of all the possible values for selection.
@@ -30,7 +30,7 @@ import Ubuntu.Components 0.1
 
     Examples:
     \qml
-        import Ubuntu.Components.ListItems 0.1 as ListItem
+        import Ubuntu.Components.ListItems 1.0 as ListItem
         Column {
             width: 250
             ListItem.ValueSelector {

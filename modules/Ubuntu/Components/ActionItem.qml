@@ -18,7 +18,7 @@ import QtQuick 2.0
 
 /*!
     \qmlabstract ActionItem
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief A visual representation of an Action. The API of ActionItem is a
         copy of the API of \l Action, with additional properties to define

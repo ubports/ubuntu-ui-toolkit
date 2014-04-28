@@ -21,7 +21,7 @@
 /*!
  * \qmltype FontUtils
  * \instantiates UCFontUtils
- * \inqmlmodule Ubuntu.Components 0.1
+ * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu
  * \brief FontUtils is a \l {http://qt-project.org/doc/qt-5.0/qtqml/qqmlcontext.html#details} {context property},
  * which provides utility functions for font manipulations.
@@ -34,7 +34,7 @@
  * size:
  * \qml
  * import QtQuick 2.0
- * import Ubuntu.Components 0.1
+ * import Ubuntu.Components 1.1
  *
  * Text {
  *     property string fontSize: "medium"
@@ -46,7 +46,7 @@
  * font unit size to scale its font:
  * \qml
  * import QtQuick 2.0
- * import Ubuntu.Components 0.1
+ * import Ubuntu.Components 1.1
  *
  * TextInput {
  *     property string fontSize: "small"

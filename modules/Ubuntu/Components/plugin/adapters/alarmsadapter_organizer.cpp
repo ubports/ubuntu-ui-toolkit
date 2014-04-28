@@ -119,7 +119,7 @@ void AlarmsAdapter::loadAlarms()
 
         int type, days;
         in >> alarm.message >> alarm.date >> alarm.sound >> type >> days >> alarm.enabled;
-        alarm.originalDate = alarm.date;
+        alarm.originalDate = alarm.date = AlarmData::transcodeDate(alarm.date, Qt::LocalTime);
         alarm.type = static_cast<UCAlarm::AlarmType>(type);
         alarm.days = static_cast<UCAlarm::DaysOfWeek>(days);
 
@@ -148,7 +148,7 @@ void AlarmsAdapter::saveAlarms()
 
     Q_FOREACH(const AlarmData &alarm, alarmList) {
         out << alarm.message
-            << alarm.originalDate
+            << AlarmData::transcodeDate(alarm.originalDate, Qt::UTC)
             << alarm.sound
             << alarm.type
             << alarm.days
@@ -162,7 +162,7 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
 {
     event.setCollectionId(collection.id());
     event.setAllDay(false);
-    event.setStartDateTime(alarm.date);
+    event.setStartDateTime(AlarmData::transcodeDate(alarm.date, Qt::UTC));
     event.setDisplayLabel(alarm.message);
 
     if (alarm.enabled) {
@@ -229,7 +229,7 @@ int AlarmsAdapter::alarmDataFromOrganizerEvent(const QOrganizerTodo &event, Alar
 
     alarm.cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
     alarm.message = event.displayLabel();
-    alarm.date = AlarmData::normalizeDate(event.startDateTime());
+    alarm.date = AlarmData::transcodeDate(event.startDateTime().toUTC(), Qt::LocalTime);
     alarm.sound = QUrl(event.description());
     alarm.originalDate = alarm.date;
 
@@ -355,6 +355,10 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
         endDate = startDate.addDays(8);
     }
 
+    // transcode both dates
+    startDate = AlarmData::transcodeDate(startDate, Qt::UTC);
+    endDate = AlarmData::transcodeDate(endDate, Qt::UTC);
+
     QList<QOrganizerItem> occurrences = manager->itemOccurrences(event, startDate, endDate, 10);
     // get the first occurrence and use the date from it
     if ((occurrences.length() > 0) && (occurrences[0].type() == QOrganizerItemType::TypeTodoOccurrence)) {
@@ -364,7 +368,7 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
             // check if the date is after the current datetime
             // the first occurrence is the one closest to the currentDate, therefore we can safely
             // set that startDate to the alarm
-            alarm.date = occurrence.startDateTime();
+            alarm.date = AlarmData::transcodeDate(occurrence.startDateTime().toUTC(), Qt::LocalTime);
             if (alarm.date > currentDate) {
                 // we have the proper date set, leave
                 break;

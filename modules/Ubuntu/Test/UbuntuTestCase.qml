@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 /*!
     \qmlabstract UbuntuTestCase
@@ -125,6 +125,7 @@ TestCase {
         if (pressTimeout !== undefined && pressTimeout > 0) {
             wait(pressTimeout);
         }
+        mouseMove(item, x, y, button, modifiers, delay);
         for (var i = 1; i <= steps; i++) {
             // mouse moves are all processed immediately, without delay in between events
             mouseMove(item, x + i * ddx, y + i * ddy, -1, button);

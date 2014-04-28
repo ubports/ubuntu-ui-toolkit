@@ -19,7 +19,7 @@ import Ubuntu.Unity.Action 1.1 as UnityActions
 
 /*!
     \qmltype Action
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief Describe an action that can be re-used in, for example a \l Button
 

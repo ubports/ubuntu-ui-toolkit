@@ -18,7 +18,7 @@ import QtQuick 2.0
 
 /*!
     \qmltype ToolbarButton
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief An \l ActionItem that represents a button in the toolbar.
         ToolbarButtons should be included in \l ToolbarItems to define the tools of a \l Page.
@@ -28,7 +28,7 @@ import QtQuick 2.0
         Example of different ways to define the toolbar button:
         \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.1
 
         MainView {
             width: units.gu(50)
