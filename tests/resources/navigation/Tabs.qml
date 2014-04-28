@@ -53,9 +53,11 @@ MainView {
                 }
                 tools: ToolbarItems {
                     ToolbarButton {
-                        text: "action"
-                        iconSource: "call_icon.png"
-                        onTriggered: print("action triggered")
+                        action: Action {
+                            text: "action"
+                            iconSource: "call_icon.png"
+                            onTriggered: print("action triggered")
+                        }
                     }
                 }
             }

@@ -69,9 +69,9 @@ Item {
         anchors {
             left: parent.left
             top: parent.top
-            bottom: parent.bottom
         }
         width: childrenRect.width
+        height: headerStyle.contentHeight
 
         AbstractButton {
             id: backButton
@@ -162,10 +162,10 @@ Item {
         id: actionsContainer
         anchors {
             top: parent.top
-            bottom: parent.bottom
             right: parent.right
         }
         width: childrenRect.width
+        height: headerStyle.contentHeight
 
         Repeater {
             model: styledItem.actions
@@ -175,7 +175,6 @@ Item {
                 style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionButton)
                 width: units.gu(5)
                 height: actionsContainer.height
-                text: ""
             }
         }
     }

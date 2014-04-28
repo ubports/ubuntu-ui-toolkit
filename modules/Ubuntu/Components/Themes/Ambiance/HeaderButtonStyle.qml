@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,40 +20,20 @@ import Ubuntu.Components 1.1
 Item {
     id: visuals
     // styling properties
-    property int iconWidth: units.gu(2)
-    property int iconHeight: units.gu(2)
+    property int iconWidth: units.gu(3)
+    property int iconHeight: units.gu(3)
 
-    anchors.fill: parent
+    width: units.gu(5)
+    height: units.gu(5)
 
-    Item {
-        anchors.centerIn: parent
-        height: icon.height + label.height + label.anchors.topMargin
+    Image {
+        id: icon
+        anchors {
+            centerIn: parent
+        }
+        width: visuals.iconWidth
+        height: visuals.iconWidth
+        source: styledItem.iconSource
         opacity: styledItem.enabled ? 1.0 : 0.3
-
-        Image {
-            id: icon
-            anchors {
-                top: parent.top
-                horizontalCenter: parent.horizontalCenter
-            }
-            width: iconWidth
-            height: iconWidth
-            source: styledItem.iconSource
-        }
-
-        Label {
-            id: label
-            anchors {
-                horizontalCenter: parent.horizontalCenter
-                top: icon.bottom
-                topMargin: units.gu(1)
-            }
-            width: paintedWidth
-            text: styledItem.text
-            fontSize: "x-small"
-            color: Theme.palette.normal.overlayText
-        }
     }
-
-    Component.onCompleted: styledItem.implicitWidth = implicitWidth
 }

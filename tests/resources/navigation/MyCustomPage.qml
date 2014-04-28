@@ -37,12 +37,16 @@ Page {
 
     tools: ToolbarItems {
         ToolbarButton {
-            text: "action 1"
-            iconSource: Qt.resolvedUrl("call_icon.png")
+            action: Action {
+                text: "action 1"
+                iconSource: Qt.resolvedUrl("call_icon.png")
+            }
         }
         ToolbarButton {
-            text: "action 2"
-            iconSource: Qt.resolvedUrl("call_icon.png")
+            action: Action {
+                text: "action 2"
+                iconSource: Qt.resolvedUrl("call_icon.png")
+            }
         }
         opened: true
         locked: true
