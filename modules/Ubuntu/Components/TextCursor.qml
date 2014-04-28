@@ -77,6 +77,10 @@ Item {
         }
     }
 
+    // change opacity to 0 if text is selected and the positionProperty is cursorPosition
+    // note: we should not touch visibility as cursorVisible alters that!
+    opacity: (positionProperty === "cursorPosition") && (editorItem.selectedText !== "") ? 0.0 : 1.0
+
     // cursor visual loader
     Loader {
         id: cursorLoader
@@ -118,7 +122,7 @@ Item {
         width: caretLoader.width
         height: caretLoader.height
         parent: handler.input
-        visible: cursorItem.visible
+        visible: cursorItem.visible && (cursorItem.opacity > 0.0)
 
         // when the dragging ends, reposition the dragger back to caret
         onStateChanged: {

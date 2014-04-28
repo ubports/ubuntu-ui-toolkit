@@ -335,46 +335,46 @@ Item {
         onReleased: openContextMenu(mouse)
     }
 
-    // cursors to use when selection is there
-    Loader {
-        id: startCursorLoader
-        property rect cursorRect: input.positionToRectangle(input.selectionStart)
-        onCursorRectChanged: {
-            if (item && item.visible) {
-                item.x = cursorRect.x;
-                item.y = cursorRect.y;
-            }
-        }
-        sourceComponent: main.__styleInstance ? input.cursorDelegate : undefined
-        onItemChanged: {
-            if (item) {
-                item.positionProperty = "selectionStart";
-                item.parent = input;
-                item.visible = Qt.binding(function() {return input.selectedText !== "";})
-                item.cursorDelegate = main.__styleInstance.selectionStartCursor.cursor;
-                item.caretDelegate = main.__styleInstance.selectionStartCursor.caret;
+    // cursors to use when text is selected
+
+    property Item selectionStartCursor: null
+    property Item selectionEndCursor: null
+    Connections {
+        target: input
+        onSelectedTextChanged: {
+            if (selectedText !== "") {
+                selectionStartCursor = input.cursorDelegate.createObject(
+                            input, {
+                                "positionProperty": "selectionStart",
+                                "cursorDelegate": main.__styleInstance.selectionStartCursor.cursor,
+                                "caretDelegate": main.__styleInstance.selectionStartCursor.caret
+                                 });
+                selectionEndCursor = input.cursorDelegate.createObject(
+                            input, {
+                                "positionProperty": "selectionEnd",
+                                "cursorDelegate": main.__styleInstance.selectionEndCursor.cursor,
+                                "caretDelegate": main.__styleInstance.selectionEndCursor.caret
+                                 });
+            } else {
+                if (selectionStartCursor) {
+                    selectionStartCursor.destroy();
+                }
+                if (selectionEndCursor) {
+                    selectionEndCursor.destroy();
+                }
             }
         }
     }
-    Loader {
-        id: endCursorLoader
-        property rect cursorRect: input.positionToRectangle(input.selectionEnd)
-        onCursorRectChanged: {
-            if (item && item.visible) {
-                item.x = cursorRect.x;
-                item.y = cursorRect.y;
-            } else {
-            }
-        }
-        sourceComponent: main.__styleInstance ? input.cursorDelegate : undefined
-        onItemChanged: {
-            if (item) {
-                // hide cursor
-                item.positionProperty = "selectionEnd";
-                item.parent = input;
-                item.visible = Qt.binding(function() {return input.selectedText !== "";})
-                item.cursorDelegate = main.__styleInstance.selectionEndCursor.cursor;
-                item.caretDelegate = main.__styleInstance.selectionEndCursor.caret;
+    Connections {
+        target: input
+        onCursorRectangleChanged: {
+            if (selectionStartCursor && selectionEndCursor) {
+                var start = input.positionToRectangle(input.selectionStart);
+                selectionStartCursor.x = start.x;
+                selectionStartCursor.y = start.y;
+                var end = input.positionToRectangle(input.selectionEnd);
+                selectionEndCursor.x = end.x;
+                selectionEndCursor.y = end.y;
             }
         }
     }
