@@ -133,7 +133,6 @@ Template {
                                     ListItem.Standard {
                                         iconName: iconPopover.icon
                                         text: iconPopover.icon
-                                        property string icon: "N/A"
                                     }
                                 }
                             }
