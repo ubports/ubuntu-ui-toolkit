@@ -146,7 +146,7 @@ Item {
         id: foreground
         anchors {
             left: leftButtonContainer.right
-            right: parent.right
+            right: actionsContainer.left
             top: parent.top
         }
         height: headerStyle.contentHeight
@@ -163,6 +163,28 @@ Item {
             font.weight: headerStyle.fontWeight
             fontSize: headerStyle.fontSize
             color: headerStyle.textColor
+        }
+    }
+
+    Row {
+        id: actionsContainer
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            right: parent.right
+        }
+        width: childrenRect.width
+
+        Repeater {
+            model: styledItem.actions
+            AbstractButton {
+                id: actionButton
+                action: modelData
+                style: Theme.createStyleComponent("ToolbarButtonStyle.qml", actionButton)
+                width: units.gu(5)
+                height: actionsContainer.height
+                text: ""
+            }
         }
     }
 }

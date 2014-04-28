@@ -100,6 +100,14 @@ StyledItem {
      */
     property var pageStack: null
 
+    /*!
+      \qmlproperty list<Action> actions
+      The list of actions actions that will be shown in the header
+      TODO TIM: Shall I prefix this with __?
+     */
+//    property list<Action> actions: [Action { text: "bla" }]
+    property var actions: null
+
     // FIXME: Currently autopilot can only get visual items, but once bug #1273956
     //  is fixed to support non-visual items, a QtObject may be used.
     //  --timp - 2014-03-20
