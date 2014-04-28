@@ -165,15 +165,8 @@ PageTreeNode {
             when: internal.header && page.active && internal.headerActions !== null
         }
 
+        // the actions that will be bind to internal.header.actions
         property var headerActions: null
-//        ActionList {
-//            id: actionList
-//            Action {
-//                text: "test action"
-//                onTriggered: print("trigger!")
-//            }
-//        }
-
         Connections {
             target: page
             onToolsChanged: {

@@ -41,14 +41,18 @@ MainView {
             Button { // normal-styled button.
                 anchors.verticalCenter: parent.verticalCenter
                 width: units.gu(10)
-                text: "yeah"
-                onClicked: print("upa")
+                action: Action {
+                    text: "yeah"
+                    onTriggered: print("upa")
+                }
             }
             ToolbarButton {
-                iconSource: Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png")
-                text: "oh"
-                onTriggered: print("lala")
-                enabled: false
+                action: Action {
+                    iconSource: Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png")
+                    text: "oh"
+                    onTriggered: print("lala")
+                    enabled: false
+                }
             }
             ToolbarButton {
                 action: action1

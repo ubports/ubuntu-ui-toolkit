@@ -39,13 +39,13 @@ Page {
         ToolbarButton {
             action: Action {
                 text: "action 1"
-                iconSource: Qt.resolvedUrl("call_icon.png")
+                iconName: "outgoing-call"
             }
         }
         ToolbarButton {
             action: Action {
                 text: "action 2"
-                iconSource: Qt.resolvedUrl("call_icon.png")
+                iconName: "missed-call"
             }
         }
         opened: true
