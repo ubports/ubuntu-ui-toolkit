@@ -481,7 +481,6 @@ Item {
             compare(Qt.inputMethod.visible, true, "OSK shown");
         }
 
-        // make it to b ethe last test case executed
         function test_TextareaInListItem_RichTextEnterCaptured() {
             textArea.text = "a<br />b";
             textArea.textFormat = TextEdit.RichText;
@@ -718,6 +717,44 @@ Item {
             // click on selection
             mouseClick(longText, units.gu(10), y);
             verify(longText.selectedText === "", "There is still selected text");
+        }
+
+        function test_rightclick_opens_popover_when_not_focused() {
+            var handler = findChild(longText, "input_handler");
+            var x = longText.width / 2;
+            var y = longText.height / 2;
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // rclick should bring popover in
+            mouseClick(longText, x, y, Qt.RightButton);
+            waitForRendering(longText);
+            popoverSpy.wait();
+            compare(longText.focus, true, "The input was not focused");
+            compare(handler.state, "", "The input is not in default state.");
+
+            // take the popover away, that should bring the handler back to default state
+            mouseClick(main, 0, 0);
+            compare(handler.state, "", "The input has not returned to default state.");
+        }
+
+        function test_rightclick_opens_popover_when_focused() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            var x = longText.width / 2;
+            var y = longText.height / 2;
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // rclick should bring popover in
+            mouseClick(longText, x, y, Qt.RightButton);
+            waitForRendering(longText);
+            popoverSpy.wait();
+            compare(handler.state, "", "The input is not in default state.");
+
+            // take the popover away, that should bring the handler back to default state
+            mouseClick(main, 0, 0);
+            compare(handler.state, "", "The input has not returned to default state.");
         }
     }
 }
