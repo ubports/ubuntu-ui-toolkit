@@ -359,15 +359,11 @@ Item {
     Loader {
         id: endCursorLoader
         property rect cursorRect: input.positionToRectangle(input.selectionEnd)
-        property bool originalCursorVisible
         onCursorRectChanged: {
             if (item && item.visible) {
                 item.x = cursorRect.x;
                 item.y = cursorRect.y;
-                originalCursorVisible = main.cursorVisible;
-                main.cursorVisible = false;
             } else {
-                main.cursorVisible = originalCursorVisible;
             }
         }
         sourceComponent: main.__styleInstance ? input.cursorDelegate : undefined
@@ -381,6 +377,5 @@ Item {
                 item.caretDelegate = main.__styleInstance.selectionEndCursor.caret;
             }
         }
-        Component.onCompleted: originalCursorVisible = main.cursorVisible
     }
 }

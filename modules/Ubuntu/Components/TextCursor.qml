@@ -104,13 +104,6 @@ Item {
         handler.pressAndHold.connect(cursorItem.openPopover);
     }
 
-    Binding {
-        target: cursorItem
-        property: "visible"
-        value: main.cursorVisible
-        when: positionProperty === "cursorPosition"
-    }
-
     /*
      * Caret dragging handling. We need a separate item which is dragged along the
      * component's area, which can move freely and not attached to the caret itself.
