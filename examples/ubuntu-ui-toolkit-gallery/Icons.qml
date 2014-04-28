@@ -18,6 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 import Ubuntu.Components.Popups 1.0
+import Qt.labs.folderlistmodel 2.1
 
 Template {
     objectName: "iconsTemplate"
@@ -87,32 +88,16 @@ Template {
                 spacing: units.gu(2)
 
                 Repeater {
-                    model: [ "add", "add-to-call", "back", "browser-tabs",
-                             "browser-timeline", "calendar", "calendar-today",
-                             "call-end", "call-start", "camcorder", "camera-flip",
-                             "cancel", "chevron", "clear", "close", "compose",
-                             "contact", "delete", "dialer", "dropdown-menu", "edit",
-                             "email", "erase", "external-link", "favorite-selected",
-                             "favorite-unselected", "filter", "find", "flash-auto",
-                             "flash-off", "flash-on", "go-next", "go-previous",
-                             "go-to", "help", "hud", "import-image", "incoming-call",
-                             "keyboard-caps-active", "keyboard-caps-lock",
-                             "keyboard-caps", "keyboard-return", "keypad",
-                             "language-chooser", "location", "media-playback-pause",
-                             "media-playback-start", "media-playlist-repeat",
-                             "media-playlist-shuffle", "media-skip-backward",
-                             "media-skip-forward", "messages", "microphone-mute",
-                             "microphone", "missed-call", "navigation-menu",
-                             "new-contact", "new-event", "new-message",
-                             "outgoing-call", "properties", "redo", "reload",
-                             "remove-from-call", "reset", "save", "search", "select",
-                             "settings", "share", "speaker-mute", "speaker",
-                             "switch", "system-log-out", "system-restart", "system-shutdown",
-                             "torch-off", "torch-on", "undo", "view-fullscreen",
-                             "view-restore", "voicemail" ]
+                    model: FolderListModel {
+                        folder: "/usr/share/icons/ubuntu-mobile/actions/scalable"
+                        showDirs: false
+                        showOnlyReadable : true
+                        sortField: FolderListModel.Name
+                        nameFilters: [ "*.svg" ]
+                    }
                     Icon {
                         id: themedIcon
-                        name: modelData
+                        name: fileBaseName || ""
                         width: 24
                         height: 24
                         MouseArea {
