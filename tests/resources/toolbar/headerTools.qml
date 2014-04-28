@@ -20,6 +20,7 @@ import Ubuntu.Components 1.1
 MainView {
     width: units.gu(50)
     height: units.gu(80)
+    useDeprecatedToolbar: false
 
     Action {
         id: action1
