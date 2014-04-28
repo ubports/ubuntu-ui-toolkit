@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import "Popups" 0.1
+import Ubuntu.Components.Popups 1.0
 
 StyledItem {
     id: cursorItem

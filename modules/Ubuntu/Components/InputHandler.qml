@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Ubuntu
+import Ubuntu.Components 1.1
 
 /*
   This component is a unified text selection and scrolling handler for both
@@ -259,8 +259,8 @@ Item {
     }
 
     // Mouse handling
-    Ubuntu.Mouse.forwardTo: [main]
-    Ubuntu.Mouse.onPressed: {
+    Mouse.forwardTo: [main]
+    Mouse.onPressed: {
         if (input.activeFocus) {
             // start selection timeout
             selectionTimeout.restart();
@@ -270,7 +270,7 @@ Item {
         // consume event so it does not get forwarded to the input
         mouse.accepted = true;
     }
-    Ubuntu.Mouse.onReleased: {
+    Mouse.onReleased: {
         if (!main.focus && !main.activeFocusOnPress) {
             return;
         }
@@ -289,7 +289,7 @@ Item {
             inputHandler.pressAndHold(input.cursorPosition);
         }
     }
-    Ubuntu.Mouse.onPositionChanged: {
+    Mouse.onPositionChanged: {
         // leave if not focus, not the left button or not in select state
         if (!input.activeFocus || (mouse.button !== Qt.LeftButton) || (state !== "select") || !main.selectByMouse) {
             return;
@@ -298,14 +298,14 @@ Item {
         selectionTimeout.running = false;
         selectText(mouse);
     }
-    Ubuntu.Mouse.onDoubleClicked: {
+    Mouse.onDoubleClicked: {
         if (main.selectByMouse) {
             input.selectWord();
             // turn selection state temporarily so the selection is not cleared on release
             state = "selection";
         }
     }
-    Ubuntu.Mouse.onPressAndHold: openContextMenu(mouse)
+    Mouse.onPressAndHold: openContextMenu(mouse)
 
     // right button handling
     MouseArea {
