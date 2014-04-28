@@ -16,11 +16,11 @@
 
 import QtQuick 2.0
 import "ListItems" as ListItem
-import Ubuntu.Components 1.0 as Toolkit
+import Ubuntu.Components 1.1 as Toolkit
 
 /*!
     \qmltype OptionSelector
-    \inqmlmodule Ubuntu.Components 1.0
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu-components
     \brief Component displaying either a single selected value or expanded multiple choice with an optional image and subtext when not expanded, when expanding it opens a
     listing of all the possible values for selection with an additional option of always being expanded. If multiple choice is selected the list is expanded automatically.
@@ -29,7 +29,7 @@ import Ubuntu.Components 1.0 as Toolkit
 
     Examples:
     \qml
-        import Ubuntu.Components 1.0
+        import Ubuntu.Components 1.1
         Column {
             spacing: units.gu(3)
 

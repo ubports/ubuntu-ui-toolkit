@@ -72,7 +72,7 @@ class MainViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -125,7 +125,7 @@ class PageTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -148,7 +148,7 @@ class ToolbarTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(50)
@@ -242,55 +242,65 @@ MainView {
             'Toolbar must be opened before calling click_button().')
 
 
-class TabsTestCase(tests.QMLStringAppTestCase):
-
-    test_qml = ("""
+TEST_TABS_QML_FORMAT = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
-import Ubuntu.Components.ListItems 1.0 as ListItem
+import Ubuntu.Components 1.1
 
-MainView {
+MainView {{
     width: units.gu(70)
     height: units.gu(60)
+    useDeprecatedToolbar: {use_deprecated_toolbar}
 
-    Tabs {
+    Tabs {{
         id: tabs
-        Tab {
+        Tab {{
             objectName: "tab1"
             title: "Tab1"
-            Page {
-                tools: ToolbarItems {
-                    ToolbarButton {
+            Page {{
+                tools: ToolbarItems {{
+                    ToolbarButton {{
                         text: "Test1"
-                    }
-                }
-            }
-        }
-        Tab {
+                    }}
+                }}
+            }}
+        }}
+        Tab {{
             objectName: "tab2"
             title: "Tab2"
-            Page {
-                tools: ToolbarItems {
-                    ToolbarButton {
+            Page {{
+                tools: ToolbarItems {{
+                    ToolbarButton {{
                         text: "Test2"
-                    }
-                }
-            }
-        }
-        Tab {
+                    }}
+                }}
+            }}
+        }}
+        Tab {{
             objectName: "tab3"
             title: "Tab3"
-            Page {
-                tools: ToolbarItems {
-                    ToolbarButton {
+            Page {{
+                tools: ToolbarItems {{
+                    ToolbarButton {{
                         text: "Test3"
-                    }
-                }
-            }
-        }
-    }
-}
+                    }}
+                }}
+            }}
+        }}
+    }}
+}}
 """)
+
+
+class TabsTestCase(tests.QMLStringAppTestCase):
+
+    scenarios = [
+        ('deprecated tabs', dict(
+            test_qml=TEST_TABS_QML_FORMAT.format(
+                use_deprecated_toolbar='true'))),
+        ('drawer tabs', dict(
+            test_qml=TEST_TABS_QML_FORMAT.format(
+                use_deprecated_toolbar='false')))
+    ]
 
     def test_tabs_custom_emulator(self):
         self.assertIsInstance(self.main_view.get_tabs(), emulators.Tabs)
@@ -372,7 +382,7 @@ class ActionSelectionPopoverTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.Popups 1.0
 
 MainView {
@@ -446,7 +456,7 @@ MainView {
 
 TEST_QML_WITH_CHECKBOX = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -464,7 +474,7 @@ MainView {
 
 TEST_QML_WITH_SWITCH = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -557,7 +567,7 @@ class QQuickListViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
@@ -655,7 +665,7 @@ class QQuickListViewOutOfViewTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
@@ -730,7 +740,7 @@ class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0
 
 
@@ -877,41 +887,50 @@ MainView {
         item.swipe_to_delete()
         self.assertFalse(item.exists())
 
-
-class PageStackTestCase(tests.QMLStringAppTestCase):
-
-    test_qml = ("""
+TEST_PAGESTACK_QML_FORMAT = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
-MainView {
+MainView {{
     width: units.gu(48)
     height: units.gu(60)
+    useDeprecatedToolbar: {use_deprecated_toolbar}
 
-    PageStack {
+    PageStack {{
         id: pageStack
         Component.onCompleted: push(page0)
 
-        Page {
+        Page {{
             id: page0
             title: "Page 0"
             visible: false
 
-            Button {
+            Button {{
                 objectName: "go_to_page1"
                 text: "Go to page 1"
                 onClicked: pageStack.push(page1)
-            }
-        }
+            }}
+        }}
 
-        Page {
+        Page {{
             id: page1
             title: "Page 1"
             visible: false
-        }
-    }
-}
+        }}
+    }}
+}}
 """)
+
+
+class PageStackTestCase(tests.QMLStringAppTestCase):
+    scenarios = [
+        ('back in toolbar', dict(
+            test_qml=TEST_PAGESTACK_QML_FORMAT.format(
+                use_deprecated_toolbar='true'))),
+        ('back in header', dict(
+            test_qml=TEST_PAGESTACK_QML_FORMAT.format(
+                use_deprecated_toolbar='false')))
+    ]
 
     def setUp(self):
         super(PageStackTestCase, self).setUp()
@@ -937,7 +956,7 @@ class TextFieldTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -1010,7 +1029,7 @@ class ComposerSheetTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.Popups 1.0
 
 MainView {
@@ -1081,11 +1100,78 @@ MainView {
         self._assert_composer_sheet_is_closed()
 
 
+class ComboButtonTestCase(tests.QMLStringAppTestCase):
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 1.1
+import Ubuntu.Components.ListItems 1.0
+
+MainView {
+    width: units.gu(40)
+    height: units.gu(60)
+
+    Column {
+        anchors.fill: parent
+
+        ComboButton {
+            text: "main button"
+            objectName: "combo_button"
+            ListView {
+                model: 10
+                delegate: Standard {
+                    text: "Item #" + modelData
+                }
+            }
+        }
+        ComboButton {
+            text: "main button"
+            objectName: "autocollapse_button"
+            onClicked: expanded = false
+            ListView {
+                model: 10
+                delegate: Standard {
+                    text: "Item #" + modelData
+                }
+            }
+        }
+    }
+}
+""")
+
+    def setUp(self):
+        super(ComboButtonTestCase, self).setUp()
+        self.combo = self.main_view.select_single(
+            emulators.ComboButton, objectName="combo_button")
+        self.autocombo = self.main_view.select_single(
+            emulators.ComboButton, objectName="autocollapse_button")
+        self.assertFalse(self.combo.expanded)
+        self.assertFalse(self.autocombo.expanded)
+
+    def test_expand_collapse_combo(self):
+        self.combo.expand()
+        self.assertTrue(self.combo.expanded)
+        self.combo.collapse()
+        self.assertFalse(self.combo.expanded)
+
+    def test_main_pressed(self):
+        self.combo.expand()
+        self.assertTrue(self.combo.expanded)
+        self.combo.press_mainbutton()
+        self.assertTrue(self.combo.expanded)
+
+    def test_autocollapse(self):
+        self.autocombo.expand()
+        self.assertTrue(self.autocombo.expanded)
+        self.autocombo.press_mainbutton()
+        self.assertFalse(self.autocombo.expanded)
+
+
 class OptionSelectorCustomDelegateTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
+import Ubuntu.Components.ListItems 1.0
 
 MainView {
     width: units.gu(48)
@@ -1184,7 +1270,7 @@ class OptionSelectorTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)

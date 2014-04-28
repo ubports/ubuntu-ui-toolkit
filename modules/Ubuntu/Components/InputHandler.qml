@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.1
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 /*
   This component is a unified text selection and scrolling handler for both

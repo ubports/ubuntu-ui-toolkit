@@ -16,11 +16,11 @@
 
 import QtQuick 2.0
 import Ubuntu.Unity.Action 1.1 as UnityActions
-import Ubuntu.Components 0.1 as Ubuntu
+import Ubuntu.Components 1.1 as Ubuntu
 
 /*!
     \qmltype TextField
-    \inqmlmodule Ubuntu.Components 1.0
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief The TextField element displays a single line of editable plain text.
     Input constraints can be set through validator or inputMask. Setting echoMode
@@ -527,7 +527,7 @@ ActionItem {
 
       \qml
       import QtQuick 2.0
-      import Ubuntu.Components 1.0
+      import Ubuntu.Components 1.1
       TextField{
           validator: IntValidator{bottom: 11; top: 31;}
           focus: true

@@ -15,12 +15,12 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0 as Ubuntu
+import Ubuntu.Components 1.1 as Ubuntu
 import "mathUtils.js" as MathUtils
 
 /*!
     \qmltype TextArea
-    \inqmlmodule Ubuntu.Components 1.0
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief The TextArea item displays a block of editable, scrollable, formatted
     text.
