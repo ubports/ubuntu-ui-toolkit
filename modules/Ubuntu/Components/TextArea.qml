@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Ubuntu
+import Ubuntu.Components 1.1 as Ubuntu
 import "mathUtils.js" as MathUtils
 
 /*!
@@ -740,6 +740,7 @@ StyledItem {
     MouseArea {
         anchors.fill: parent
         enabled: internal.frameSpacing > 0
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
         // activate input when pressed on the frame
         preventStealing: false
         Ubuntu.Mouse.forwardTo: [inputHandler]
