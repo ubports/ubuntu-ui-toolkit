@@ -161,6 +161,15 @@ Item {
 
     Row {
         id: actionsContainer
+        property int numActions: styledItem.actions && styledItem.actions.hasOwnProperty("length") ?
+                                     styledItem.actions.length : 0
+        onNumActionsChanged: print("numActions = "+numActions)
+        property int numLeftSlots: tabsButton.visible || backButton.visible ? 1 : 0
+        property int maxRightSlots: 3 - numLeftSlots
+        property int numOverflowSlots: actionsOverflowButton.visible ? 1 : 0
+        property int numActionSlots: Math.min(maxRightSlots - numOverflowSlots, numActions)
+        onNumActionSlotsChanged: print("numActionSlots = "+numActionSlots)
+
         anchors {
             top: parent.top
             right: parent.right
@@ -169,13 +178,43 @@ Item {
         height: headerStyle.contentHeight
 
         Repeater {
-            model: styledItem.actions
+            model: actionsContainer.numActionSlots
             AbstractButton {
                 id: actionButton
-                action: modelData
+                action: styledItem.actions[index]
                 style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionButton)
                 width: units.gu(5)
                 height: actionsContainer.height
+            }
+        }
+
+        AbstractButton {
+            id: actionsOverflowButton
+            visible: actionsContainer.numActions > actionsContainer.maxRightSlots
+            iconName: "dropdown-menu"
+            width: visible ? units.gu(5) : 0
+            style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionsOverflowButton)
+            height: actionsContainer.height
+            onTriggered: actionsOverflowPopover.show()
+
+            Popover {
+                id: actionsOverflowPopover
+                objectName: "actionsOverflowPopover"
+                parent: QuickUtils.rootItem(actionsOverflowPopover)
+                caller: actionsOverflowButton
+                Column {
+                    anchors {
+                        left: parent.left
+                        top: parent.top
+                        right: parent.right
+                    }
+                    Repeater {
+                        model: actionsContainer.numActions - actionsContainer.numActionSlots
+                        ListItem.Standard {
+                            action: styledItem.actions[actionsContainer.numActionSlots + index]
+                        }
+                    }
+                }
             }
         }
     }

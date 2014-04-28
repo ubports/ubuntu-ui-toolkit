@@ -89,18 +89,21 @@ StyledItem {
     }
 
     /*!
+      \preliminary
       A model of tabs to represent in the header.
       This is automatically set by \l Tabs.
      */
     property var tabsModel: null
 
     /*!
+      \preliminary
       If it is possible to pop this PageStack, a back button will be
       shown in the header.
      */
     property var pageStack: null
 
     /*!
+      \preliminary
       \qmlproperty list<Action> actions
       The list of actions actions that will be shown in the header
      */

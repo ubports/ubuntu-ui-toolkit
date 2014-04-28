@@ -26,7 +26,7 @@ MainView {
         id: action1
         text: "action 1"
         onTriggered: print("one!")
-        iconSource: Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/call_icon.png")
+        iconName: "call-start"
     }
 
     Page {
@@ -44,11 +44,12 @@ MainView {
                 action: Action {
                     text: "yeah"
                     onTriggered: print("upa")
+                    iconName: "cancel"
                 }
             }
             ToolbarButton {
                 action: Action {
-                    iconSource: Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png")
+                    iconName: "contact"
                     text: "oh"
                     onTriggered: print("lala")
                     enabled: false
@@ -60,7 +61,7 @@ MainView {
             ToolbarButton {
                 action: Action {
                     onTriggered: print("two!")
-                    iconSource: Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png")
+                    iconName: "contact"
                     text: "Second action"
                 }
                 text: "action 2"

@@ -48,6 +48,13 @@ Page {
                 iconName: "missed-call"
             }
         }
+        ToolbarButton {
+            action: Action {
+                text: "another one"
+                iconName: "contact"
+            }
+        }
+
         opened: true
         locked: true
     }
