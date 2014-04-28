@@ -71,13 +71,6 @@ Base {
 
     /*!
       \preliminary
-      The text that is shown in the list item as a label.
-      \qmlproperty string text
-     */
-    property alias text: label.text
-
-    /*!
-      \preliminary
       The list of strings that will be shown under the label text
       \qmlproperty string subText
      */
@@ -94,6 +87,7 @@ Base {
 
         LabelVisual {
             id: label
+            text: subtitledListItem.text
             selected: subtitledListItem.selected
             anchors {
                 top: parent.top
