@@ -15,12 +15,13 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     id: mainView
     width: units.gu(38)
     height: units.gu(50)
+    useDeprecatedToolbar: false
 
     PageStack {
         id: pageStack

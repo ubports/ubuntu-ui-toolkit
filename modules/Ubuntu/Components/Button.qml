@@ -18,7 +18,7 @@ import QtQuick 2.0
 
 /*!
     \qmltype Button
-    \inqmlmodule Ubuntu.Components 1.0
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief Standard Ubuntu button.
 
@@ -81,6 +81,11 @@ AbstractButton {
        \sa color
     */
     property Gradient gradient: __styleInstance.defaultGradient
+
+    /*!
+      The font used for the button's text.
+    */
+    property font font: __styleInstance ? __styleInstance.defaultFont : Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
 
     /*!
        The source URL of the icon to display inside the button.

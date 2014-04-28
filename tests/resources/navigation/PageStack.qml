@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
 Rectangle {
@@ -28,6 +28,7 @@ MainView {
     width: units.gu(38)
     height: units.gu(50)
     anchors.centerIn: parent
+    useDeprecatedToolbar: false
 
     PageStack {
         id: pageStack

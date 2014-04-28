@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 /*!
     \qmltype Picker
@@ -35,7 +35,7 @@ import Ubuntu.Components 1.0
     Example:
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 1.0
+    import Ubuntu.Components 1.1
     import Ubuntu.Components.Pickers 1.0
 
     Picker {

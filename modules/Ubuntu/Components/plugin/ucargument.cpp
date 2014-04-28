@@ -21,7 +21,7 @@
 /*!
  * \qmltype Argument
  * \instantiates UCArgument
- * \inqmlmodule Ubuntu.Components 1.0
+ * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu-commandline
  * \brief The Argument class specifies what type a given command line parameter should be.
  *

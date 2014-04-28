@@ -15,12 +15,14 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
     width: 800
     height: 600
+    id: mainView
+    useDeprecatedToolbar: false
 
     Tabs {
         id: tabs
@@ -40,12 +42,12 @@ MainView {
                     height: childrenRect.height
                     Button {
                         text: "tab bar on"
-                        enabled: !tabs.tabBar.selectionMode
+                        enabled: mainView.useDeprecatedToolbar && !tabs.tabBar.selectionMode
                         onClicked: tabs.tabBar.selectionMode = true;
                     }
                     Button {
                         text: "tab bar off"
-                        enabled: tabs.tabBar.selectionMode
+                        enabled: mainView.useDeprecatedToolbar && tabs.tabBar.selectionMode
                         onClicked: tabs.tabBar.selectionMode = false;
                     }
                 }

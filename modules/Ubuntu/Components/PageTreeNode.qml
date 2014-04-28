@@ -19,7 +19,7 @@ import QtQuick 2.0
 /*!
     \internal
     \qmltype PageTreeNode
-    \inqmlmodule Ubuntu.Components 1.0
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief The common parent of \l Page, \l MainView, \l PageStack and \l Tabs.
 
