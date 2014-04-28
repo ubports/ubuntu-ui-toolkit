@@ -82,7 +82,7 @@ Empty {
       This is a URL to any image file.
       In order to use an icon from the Ubuntu theme, use the iconName property instead.
      */
-    property url iconSource: iconName ? "image://theme/" + iconName : ""
+    // iconSource property is inherited from ActionItem.
 
     /*!
       The icon shown in the list item.
@@ -99,7 +99,7 @@ Empty {
             \endlist
             These 2 separate icon themes will be merged soon.
     */
-    property string iconName
+   // iconName property is inherited from ActionItem
 
     /*!
       \preliminary
