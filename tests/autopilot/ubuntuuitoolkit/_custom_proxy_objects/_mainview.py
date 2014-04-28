@@ -23,7 +23,7 @@ from autopilot.introspection import dbus
 
 from ubuntuuitoolkit._custom_proxy_objects import (
     _common,
-    _popups,
+    popups,
     _tabs,
     _toolbar,
 )
@@ -170,7 +170,7 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         """
         return self.select_single(
-            _popups.ActionSelectionPopover, objectName=object_name)
+            popups.ActionSelectionPopover, objectName=object_name)
 
     @autopilot_logging.log_action(logger.info)
     def go_back(self):
