@@ -18,25 +18,33 @@
 
 from ubuntuuitoolkit import emulators
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
+import locale
 
 
 class WriteAndClearTextInputTestCase(GalleryTestCase):
 
+    def text_to_write_string():
+        return 'Hell(o) World!?$§'
+
+    def text_to_write_number():
+        return locale.format('%.2f', -1001.23)
+
     scenarios = [
         ('standard textfield', dict(
-            objectName='textfield_standard', text_to_write='Hello World',
-            expected_text='Hello World')),
+            objectName='textfield_standard', text_to_write=text_to_write_string,
+            expected_text=text_to_write_string())),
         ('password textfield', dict(
-            objectName='textfield_password', text_to_write='Test password',
-            expected_text='Test password')),
+            objectName='textfield_password', text_to_write=text_to_write_string,
+            expected_text=text_to_write_string())),
         ('only integers textfield', dict(
             objectName='textfield_numbers',
-            text_to_write='{:,}'.format(-100123),
+            text_to_write=text_to_write_number,
             expected_text='-100123'))
     ]
 
     def setUp(self):
         super(WriteAndClearTextInputTestCase, self).setUp()
+        locale.setlocale(locale.LC_ALL, "")
         item = 'Text Field'
         self.loadItem(item)
         self.checkPageHeader(item)
@@ -45,13 +53,13 @@ class WriteAndClearTextInputTestCase(GalleryTestCase):
         textfield = self.main_view.select_single(
             emulators.TextField, objectName=self.objectName)
 
-        textfield.write(self.text_to_write)
+        textfield.write(self.text_to_write())
         self.assertEqual(self.expected_text, textfield.text)
 
     def test_clear_textfield_must_remove_text(self):
         textfield = self.main_view.select_single(
             emulators.TextField, objectName=self.objectName)
-        textfield.write(self.text_to_write)
+        textfield.write(self.text_to_write())
 
         textfield.clear()
         self.assertEqual('', textfield.text)

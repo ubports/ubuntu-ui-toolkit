@@ -23,9 +23,9 @@ echo running with arg: $1
 
 UBUNTU_UI_TOOLKIT_AUTOPILOT_FROM_SOURCE=1
 if [ "$1" == "" ]; then
-        autopilot3 run ubuntuuitoolkit
+        autopilot3 run -v ubuntuuitoolkit
 else
-        autopilot3 run -o ../../$1 -f xml -r -rd ../../ $1
+        autopilot3 run -v -o ../../$1 -f xml -r -rd ../../ $1
 fi
 
 exit 0
