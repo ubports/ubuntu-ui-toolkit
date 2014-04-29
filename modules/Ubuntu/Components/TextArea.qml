@@ -885,7 +885,7 @@ StyledItem {
                 input: editor
                 flickable: flicker
                 selectionModeTimeout: control.__styleInstance.selectionModeTimeout
-                frameDistance: Qt.point(internal.spacing, internal.spacing)
+                frameDistance: Qt.point(internal.frameSpacing, internal.frameSpacing)
             }
         }
     }
