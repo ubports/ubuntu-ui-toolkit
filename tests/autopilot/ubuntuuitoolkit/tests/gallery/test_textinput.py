@@ -30,7 +30,8 @@ class WriteAndClearTextInputTestCase(GalleryTestCase):
             objectName='textfield_password', text_to_write='Test password',
             expected_text='Test password')),
         ('only integers textfield', dict(
-            objectName='textfield_numbers', text_to_write='-100.123',
+            objectName='textfield_numbers',
+            text_to_write='{:,}'.format(-100123),
             expected_text='-100123'))
     ]
 
