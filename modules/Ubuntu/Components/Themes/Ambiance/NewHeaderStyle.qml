@@ -161,14 +161,16 @@ Item {
 
     Row {
         id: actionsContainer
-        property int numActions: styledItem.actions && styledItem.actions.hasOwnProperty("length") ?
-                                     styledItem.actions.length : 0
-        onNumActionsChanged: print("numActions = "+numActions)
-        property int numLeftSlots: tabsButton.visible || backButton.visible ? 1 : 0
-        property int maxRightSlots: 3 - numLeftSlots
-        property int numOverflowSlots: actionsOverflowButton.visible ? 1 : 0
-        property int numActionSlots: Math.min(maxRightSlots - numOverflowSlots, numActions)
-        onNumActionSlotsChanged: print("numActionSlots = "+numActionSlots)
+
+        QtObject {
+            id: numberOfSlots
+            property int requested: styledItem.actions && styledItem.actions.hasOwnProperty("length") ?
+                                         styledItem.actions.length : 0
+            property int left: tabsButton.visible || backButton.visible ? 1 : 0
+            property int right: 3 - left
+            property int overflow: actionsOverflowButton.visible ? 1 : 0
+            property int used: Math.min(right - overflow, requested)
+        }
 
         anchors {
             top: parent.top
@@ -178,7 +180,7 @@ Item {
         height: headerStyle.contentHeight
 
         Repeater {
-            model: actionsContainer.numActionSlots
+            model: numberOfSlots.used
             AbstractButton {
                 id: actionButton
                 action: styledItem.actions[index]
@@ -190,7 +192,7 @@ Item {
 
         AbstractButton {
             id: actionsOverflowButton
-            visible: actionsContainer.numActions > actionsContainer.maxRightSlots
+            visible: numberOfSlots.requested > numberOfSlots.right
             iconName: "dropdown-menu"
             width: visible ? units.gu(5) : 0
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionsOverflowButton)
@@ -209,9 +211,9 @@ Item {
                         right: parent.right
                     }
                     Repeater {
-                        model: actionsContainer.numActions - actionsContainer.numActionSlots
+                        model: numberOfSlots.requested - numberOfSlots.used
                         ListItem.Standard {
-                            action: styledItem.actions[actionsContainer.numActionSlots + index]
+                            action: styledItem.actions[numberOfSlots.used + index]
                         }
                     }
                 }
