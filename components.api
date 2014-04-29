@@ -83,8 +83,6 @@ Text
 Base 0.1 1.0
 Empty
     property variant icon
-    property url iconSource
-    property string iconName
     property url fallbackIconSource
     property string fallbackIconName
     property bool progression
@@ -159,8 +157,6 @@ Base
 Standard 0.1 1.0
 Empty
     property variant icon
-    property url iconSource
-    property string iconName
     property url fallbackIconSource
     property string fallbackIconName
     property bool progression
@@ -175,15 +171,12 @@ Empty
     property internal __foregroundColor
 Subtitled 0.1 1.0
 Base
-    property string text
     property string subText
 ThinDivider 0.1 1.0
 Image
 ValueSelector 0.1 1.0
 Empty
     property variant icon
-    property url iconSource
-    property string iconName
     property url fallbackIconSource
     property string fallbackIconName
     property real __iconWidth
@@ -222,12 +215,9 @@ ListItem.Empty
     signal delegateClicked(int index)
     signal expansionCompleted()
 OptionSelectorDelegate 0.1 1.0
-ListItem.Standard
-    property string text
+ListItem.Empty
     property string subText
     property url icon
-    property url iconSource
-    property string iconName
     property bool constrainImage
     property bool colourImage
     property color assetColour
