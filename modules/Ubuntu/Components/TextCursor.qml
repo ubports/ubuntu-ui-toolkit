@@ -106,9 +106,15 @@ Ubuntu.StyledItem {
         height: parent.height
         onItemChanged: {
             if (item) {
-                item.height = cursorItem.height;
                 cursorItem.width = item.width;
             }
+        }
+        // bind the cursor height as it may change depending on the text size
+        Binding {
+            target: cursorLoader.item
+            property: "height"
+            value: cursorLoader.height
+            when: cursorLoader.item
         }
     }
 
@@ -121,7 +127,7 @@ Ubuntu.StyledItem {
     onYChanged: if (draggedItem.state === "") draggedItem.moveToCaret()
 
     //dragged item
-    Rectangle { opacity: 0.5; color: "blue"
+    Item {
         id: draggedItem
         width: caret ? caret.width : 0
         height: caret ? caret.height : 0

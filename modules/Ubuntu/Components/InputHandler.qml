@@ -81,9 +81,11 @@ Item {
     readonly property Flickable scroller: (scrollingDisabled && grandScroller) ? grandScroller : flickable
 
     // ensures the text cusrorRectangle is always in the internal Flickable's visible area
-    function ensureVisible()
+    function ensureVisible(rect)
     {
-        var rect = input.cursorRectangle;
+        if (rect === undefined) {
+            rect = input.cursorRectangle;
+        }
         if (flickable.moving || flickable.flicking)
             return;
         if (flickable.contentX >= rect.x)
@@ -180,7 +182,7 @@ Item {
             var pos = cursorPosition(x, y);
             if (positioner === "selectionStart" && (pos < input.selectionEnd)) {
                 input.select(pos, input.selectionEnd);
-                print("SELECT", pos, input.selectionStart)
+                // move cursor position to update cursor rectangle
             } else if (positioner === "selectionEnd" && (pos > input.selectionStart)) {
                 input.select(input.selectionStart, pos);
             }
@@ -337,10 +339,9 @@ Item {
     }
 
     // cursors to use when text is selected
-
-    property Item selectionStartCursor: null
-    property Item selectionEndCursor: null
     Connections {
+        property Item selectionStartCursor: null
+        property Item selectionEndCursor: null
         target: input
         onSelectedTextChanged: {
             if (selectedText !== "") {
@@ -383,6 +384,7 @@ Item {
             var pos = input.positionToRectangle(input[cursor.positionProperty]);
             cursor.x = pos.x;
             cursor.y = pos.y;
+            ensureVisible(pos);
         }
     }
 }
