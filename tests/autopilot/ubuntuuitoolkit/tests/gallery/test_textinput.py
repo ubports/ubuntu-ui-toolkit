@@ -24,7 +24,7 @@ import locale
 class WriteAndClearTextInputTestCase(GalleryTestCase):
 
     def text_to_write_string():
-        return 'Hell(o) World!?$§'
+        return 'Hello World'
 
     def text_to_write_number():
         return locale.format('%.2f', -1001.23)
