@@ -14,16 +14,12 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Ubuntu UI Toolkit Autopilot tests and helpers."""
+"""Ubuntu UI Toolkit Autopilot custom proxy objects."""
 
 
 __all__ = [
-    'base',
     'check_autopilot_version',
     'CheckBox',
-    'environment',
-    'emulators',
-    'fixture_setup',
     'Flickable',
     'get_keyboard',
     'get_pointing_device',
@@ -35,37 +31,32 @@ __all__ = [
     'QQuickListView',
     'TabBar',
     'Tabs',
-    'tests',
     'TextField',
     'Toolbar',
     'ToolkitException',
     'UbuntuUIToolkitCustomProxyObjectBase',
 ]
 
-
-from ubuntuuitoolkit import (
-    base,
-    emulators,
-    environment,
-    fixture_setup,
-    tests,
-)
-from ubuntuuitoolkit._custom_proxy_objects import (
+from ubuntuuitoolkit._custom_proxy_objects._checkbox import CheckBox
+from ubuntuuitoolkit._custom_proxy_objects._common import (
     check_autopilot_version,
-    CheckBox,
-    Flickable,
     get_keyboard,
     get_pointing_device,
-    Header,
-    listitems,
-    MainView,
-    OptionSelector,
-    popups,
-    QQuickListView,
-    TabBar,
-    Tabs,
-    TextField,
-    Toolbar,
     ToolkitException,
     UbuntuUIToolkitCustomProxyObjectBase,
 )
+from ubuntuuitoolkit._custom_proxy_objects._flickable import Flickable
+from ubuntuuitoolkit._custom_proxy_objects._header import Header
+from ubuntuuitoolkit._custom_proxy_objects import listitems
+from ubuntuuitoolkit._custom_proxy_objects._mainview import MainView
+from ubuntuuitoolkit._custom_proxy_objects._optionselector import (
+    OptionSelector
+)
+from ubuntuuitoolkit._custom_proxy_objects import popups
+from ubuntuuitoolkit._custom_proxy_objects._qquicklistview import (
+    QQuickListView
+)
+from ubuntuuitoolkit._custom_proxy_objects._tabbar import TabBar
+from ubuntuuitoolkit._custom_proxy_objects._tabs import Tabs
+from ubuntuuitoolkit._custom_proxy_objects._textfield import TextField
+from ubuntuuitoolkit._custom_proxy_objects._toolbar import Toolbar
