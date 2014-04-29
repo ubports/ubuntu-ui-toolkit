@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 /*!
     \qmltype ExpandablesColumn
-    \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief A column to be used together with the \l Expandable item.
     This lays out its content just like a regular Column inside a Flickable but
@@ -29,8 +29,8 @@ import Ubuntu.Components 0.1
 
     Examples:
     \qml
-        import Ubuntu.Components 0.1
-        import Ubuntu.Components.ListItems 0.1 as ListItem
+        import Ubuntu.Components 1.1
+        import Ubuntu.Components.ListItems 1.0 as ListItem
 
         ListItem.ExpandablesColumn {
             anchors { left: parent.left; right: parent.right }

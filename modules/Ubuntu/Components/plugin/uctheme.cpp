@@ -36,7 +36,7 @@
 /*!
     \qmltype Theme
     \instantiates UCTheme
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup theming
     \brief The Theme class provides facilities to interact with the current theme.
 
@@ -48,7 +48,7 @@
 
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
+    import Ubuntu.Components 1.1
 
     Item {
         Button {
@@ -61,7 +61,7 @@
 
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
+    import Ubuntu.Components 1.1
 
     StyledItem {
         id: myItem

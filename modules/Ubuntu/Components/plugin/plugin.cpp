@@ -53,9 +53,6 @@
 #include <unistd.h>
 #include <stdexcept>
 
-// Needed for unit tests
-Q_DECLARE_METATYPE(QList<QQmlError>)
-
 /*
  * Type registration functions.
  */
@@ -154,33 +151,41 @@ void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
     }
 }
 
+void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, int minor)
+{
+    qmlRegisterSingletonType<QObject>(uri, major, minor, "UbuntuColors", registerUbuntuColors);
+    qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
+    qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
+    qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
+    qmlRegisterType<ShapeItem>(uri, major, minor, "Shape");
+    qmlRegisterType<InverseMouseAreaType>(uri, major, minor, "InverseMouseArea");
+    qmlRegisterType<QQuickMimeData>(uri, major, minor, "MimeData");
+    qmlRegisterSingletonType<QQuickClipboard>(uri, major, minor, "Clipboard", registerClipboard);
+    qmlRegisterSingletonType<UCUbuntuAnimation>(uri, major, minor, "UbuntuAnimation", registerUCUbuntuAnimation);
+    qmlRegisterType<UCArguments>(uri, major, minor, "Arguments");
+    qmlRegisterType<UCArgument>(uri, major, minor, "Argument");
+    qmlRegisterType<QQmlPropertyMap>();
+    qmlRegisterType<UCAlarm>(uri, major, minor, "Alarm");
+    qmlRegisterType<UCAlarmModel>(uri, major, minor, "AlarmModel");
+    qmlRegisterType<UCStateSaver>(uri, major, minor, "StateSaver");
+    qmlRegisterType<UCStateSaverAttached>();
+    qmlRegisterSingletonType<UCUriHandler>(uri, major, minor, "UriHandler", registerUriHandler);
+    qmlRegisterType<UCMouse>(uri, major, minor, "Mouse");
+    qmlRegisterType<UCInverseMouse>(uri, major, minor, "InverseMouse");
+    // register QML singletons
+    qmlRegisterSingletonType<QObject>(uri, major, minor, "PickerPanel", registerPickerPanel);
+}
+
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
 
-    qmlRegisterSingletonType<QObject>(uri, 0, 1, "UbuntuColors", registerUbuntuColors);
-    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
-    qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, 0, 1, "QQuickImageBase");
-    qmlRegisterUncreatableType<UCUnits>(uri, 0, 1, "UCUnits", "Not instantiable");
-    qmlRegisterType<ShapeItem>(uri, 0, 1, "Shape");
-    qmlRegisterType<InverseMouseAreaType>(uri, 0, 1, "InverseMouseArea");
-    qmlRegisterType<QQuickMimeData>(uri, 0, 1, "MimeData");
-    qmlRegisterSingletonType<QQuickClipboard>(uri, 0, 1, "Clipboard", registerClipboard);
-    qmlRegisterSingletonType<UCUbuntuAnimation>(uri, 0, 1, "UbuntuAnimation", registerUCUbuntuAnimation);
-    qmlRegisterType<UCArguments>(uri, 0, 1, "Arguments");
-    qmlRegisterType<UCArgument>(uri, 0, 1, "Argument");
-    qmlRegisterType<QQmlPropertyMap>();
-    qmlRegisterType<UCAlarm>(uri, 0, 1, "Alarm");
-    qmlRegisterType<UCAlarmModel>(uri, 0, 1, "AlarmModel");
-    qmlRegisterType<UCStateSaver>(uri, 0, 1, "StateSaver");
-    qmlRegisterType<UCStateSaverAttached>();
-    qmlRegisterSingletonType<UCUriHandler>(uri, 0, 1, "UriHandler", registerUriHandler);
-    qmlRegisterType<UCMouse>(uri, 0, 1, "Mouse");
-    qmlRegisterType<UCInverseMouse>(uri, 0, 1, "InverseMouse");
-    // Needed for unit tests
-    qRegisterMetaType<QList <QQmlError> >();
-    // register QML singletons
-    qmlRegisterSingletonType<QObject>(uri, 0, 1, "PickerPanel", registerPickerPanel);
+    // register 0.1 for backward compatibility
+    registerTypesToVersion(uri, 0, 1);
+    registerTypesToVersion(uri, 1, 0);
+
+    // register custom event
+    ForwardedEvent::registerForwardedEvent();
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 /*!
     \qmltype ComposerSheet
     \inherits SheetBase
-    \inqmlmodule Ubuntu.Components.Popups 0.1
+    \inqmlmodule Ubuntu.Components.Popups 1.0
     \ingroup ubuntu-popups
     \brief Much like the \l DefaultSheet the Composer Sheet allows an application to insert a content
         view over the focused view without disrupting the navigation pattern. However the Composer Sheet
@@ -31,8 +31,8 @@ import Ubuntu.Components 0.1
 
     Example:
     \qml
-        import Ubuntu.Components 0.1
-        import Ubuntu.Components.Popups 0.1
+        import Ubuntu.Components 1.1
+        import Ubuntu.Components.Popups 1.0
 
         Item {
             Component {

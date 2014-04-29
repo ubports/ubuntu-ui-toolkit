@@ -18,7 +18,7 @@ import QtQuick 2.0
 
 /*!
     \qmlabstract ActionItem
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief A visual representation of an Action. The API of ActionItem is a
         copy of the API of \l Action, with additional properties to define
@@ -54,6 +54,7 @@ StyledItem {
       The image associated with the actionItem.
       Default value: action.iconSource.
 
+      This is the URL of any image file
       If both iconSource and iconName are defined, iconName will be ignored.
      */
     property url iconSource: action ? action.iconSource : (iconName ? "image://theme/" + iconName : "")
@@ -61,6 +62,14 @@ StyledItem {
     /*!
       The icon associated with the actionItem in the ubuntu-mobile icon theme.
       Default value: action.iconName.
+
+      \note The complete list of icons available in Ubuntu is not published yet.
+            For now please refer to the folders where the icon themes are installed:
+            \list
+              \li Ubuntu Touch: \l file:/usr/share/icons/ubuntu-mobile
+              \li Ubuntu Desktop: \l file:/usr/share/icons/ubuntu-mono-dark
+            \endlist
+            These 2 separate icon themes will be merged soon.
 
       If both iconSource and iconName are defined, iconName will be ignored.
      */

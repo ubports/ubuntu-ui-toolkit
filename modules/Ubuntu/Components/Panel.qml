@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Toolkit
+import Ubuntu.Components 1.1 as Toolkit
 
 /*!
     \qmltype Panel
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief A panel that can be swiped in and out from an edge of the window by the user.
     For most applications, it is highly recommended to use the \l MainView instead which includes
@@ -38,7 +38,7 @@ import Ubuntu.Components 0.1 as Toolkit
     A black panel that can be swiped in from the lower-right of the window can be created like this:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.1
 
         Item {
             width: units.gu(80)
@@ -69,7 +69,7 @@ import Ubuntu.Components 0.1 as Toolkit
     A panel that looks like the standard (bottom-aligned) toolbar, but with custom contents, can be created like this:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.1
 
         Item {
             width: units.gu(80)
@@ -106,7 +106,7 @@ import Ubuntu.Components 0.1 as Toolkit
     signals are forwarded from the panel by calling the child's trigger() function. Example:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.1
 
         Rectangle {
             color: Theme.palette.normal.background
@@ -441,12 +441,13 @@ Item {
 
     /*!
       \internal
+      \deprecated
       Enable the InverseMouseArea that closes the panel when the user clicks outside of the panel.
       This functionality moved to the Toolbar/Page implementation because the mouse area needs to
       access with the toolbar and header, but this InverseMouseArea is still in the Panel for backwards
       compatibility in apps that use it directly. Default value is true, but it is set to false in Toolbar.
 
-      FIXME: Remove __detectContentsClicks and the IMA below when all apps use Toolbar instead of Panel.
+      FIXME: Remove __closeOnContentsClicks and the IMA below when all apps use Toolbar instead of Panel.
      */
     property bool __closeOnContentsClicks: true
     Toolkit.InverseMouseArea {
@@ -460,6 +461,16 @@ Item {
         propagateComposedEvents: true
         visible: panel.__closeOnContentsClicks && panel.locked == false && panel.state == "spread"
     }
+
+    /*!
+      \internal
+      \deprecated
+      Enable automatic reveal of panel on mouse hover over hint area, and hide when leaving
+      the panel area. This is disabled by default, because Panel may be used to implement
+      bottom edge behaviors that are completely different from the toolbar, but the property
+      is enabled in Toolbar to make more usable on desktop.
+     */
+    property bool __openOnHover: false
 
     /*!
       The user presses on the opened toolbar, or when the toolbar is closed but
@@ -484,6 +495,7 @@ Item {
         height: internal.orientation === Qt.Horizontal ? panel.opened ? bar.size + units.gu(1) : panel.triggerSize : undefined
         width: internal.orientation === Qt.Vertical ? panel.opened ? bar.size + units.gu(1) : panel.triggerSize : undefined
         visible: !panel.locked || panel.opened
+        hoverEnabled: panel.__openOnHover
 
         property int mousePosition: getMousePosition()
         function getMousePosition() {
@@ -541,6 +553,7 @@ Item {
         property real dragThreshold: units.gu(1)
 
         onPositionChanged: {
+            if (!pressed) return;
             if (panel.locked) return;
             if (panel.state == "hint" && mousePosition < initialPosition - dragThreshold) {
                 internal.previousState = "hint";
@@ -565,6 +578,22 @@ Item {
             if (panel.state == "moving" || panel.state == "hint") {
                 finishMoving();
             } else {
+                hideTimer.conditionalRestart();
+            }
+        }
+
+        onEntered: {
+            if (panel.__openOnHover) {
+                panel.open();
+            }
+            hideTimer.stop();
+        }
+
+        onExited: {
+            // panel.__openOnHover
+            // Ensure the panel is not still opening. The draggingArea will
+            // change after the panel finishes the opening animation.
+            if (!animating) {
                 hideTimer.conditionalRestart();
             }
         }

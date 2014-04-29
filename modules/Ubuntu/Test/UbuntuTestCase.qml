@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 /*!
     \qmlabstract UbuntuTestCase
@@ -87,7 +87,76 @@ TestCase {
 		}
 	}
 
-	/*!
+    /*!
+      \qmlmethod UbuntuTestCase::flick(item, x, y, dx, dy, pressTimeout = -1, steps = -1, button = Qt.LeftButton, modifiers = Qt.NoModifiers, delay = -1)
+
+      The function produces a flick event when executed on Flickables. When used
+      on other components it provides the same functionality as \l mouseDrag()
+      function. The optional \a pressTimeout parameter can be used to introduce
+      a small delay between the mouse press and the first mouse move. Setting a
+      negative or zero value will disable the timeout.
+
+      The default flick velocity is built up using 5 move points. This can be altered
+      by setting a positive value to \a steps parameter. The bigger the number the
+      longer the flick will be. When a negative or zero value is given, the default
+      of 5 move points will be used.
+
+      \note The function can be used to select a text in a TextField or TextArea by
+      specifying at least 400 millisecods to \a pressTimeout.
+      */
+    function flick(item, x, y, dx, dy, pressTimeout, steps, button, modifiers, delay) {
+        if (item === undefined || item.x === undefined || item.y === undefined)
+            return
+        if (button === undefined)
+            button = Qt.LeftButton
+        if (modifiers === undefined)
+            modifiers = Qt.NoModifier
+        if (steps === undefined || steps <= 0)
+            steps = 4;
+        // make sure we have at least two move steps so the flick will be sensed
+        steps += 1;
+        if (delay === undefined)
+            delay = -1;
+
+        var ddx = dx / steps;
+        var ddy = dy / steps;
+
+        mousePress(item, x, y, button, modifiers, delay);
+        if (pressTimeout !== undefined && pressTimeout > 0) {
+            wait(pressTimeout);
+        }
+        mouseMove(item, x, y, button, modifiers, delay);
+        for (var i = 1; i <= steps; i++) {
+            // mouse moves are all processed immediately, without delay in between events
+            mouseMove(item, x + i * ddx, y + i * ddy, -1, button);
+        }
+        mouseRelease(item, x + dx, y + dy, button, modifiers, delay);
+        // empty event buffer
+        wait(200);
+    }
+
+    /*!
+        \qmlmethod UbuntuTestCase::mouseLongPress(item, x, y, button = Qt.LeftButton, modifiers = Qt.NoModifiers, delay = -1)
+
+        Simulates a long press on a mouse \a button with an optional \a modifier
+        on an \a item. The position is defined by \a x and \a y. If \a delay is
+        specified, the test will wait the specified amount of milliseconds before
+        the press.
+
+        The position given by \a x and \a y is transformed from the co-ordinate
+        system of \a item into window co-ordinates and then delivered.
+        If \a item is obscured by another item, or a child of \a item occupies
+        that position, then the event will be delivered to the other item instead.
+
+        \sa mouseRelease(), mouseClick(), mouseDoubleClick(), mouseMove(), mouseDrag(), mouseWheel()
+      */
+    function mouseLongPress(item, x, y, button, modifiers, delay) {
+        mousePress(item, x, y, button, modifiers, delay);
+        // the delay is taken from QQuickMouseArea
+        wait(800);
+    }
+
+    /*!
 		Keeps executing a given parameter-less function until it returns the given
 		expected result or the timemout is reached (in which case a test failure
 		is generated)

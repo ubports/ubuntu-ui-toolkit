@@ -16,11 +16,11 @@
 
 import QtQuick 2.0
 import QtQuick.Window 2.0
-import Ubuntu.Components 0.1 as Ubuntu
+import Ubuntu.Components 1.0
 
 /*!
     \qmltype OrientationHelper
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief The OrientationHelper automatically rotates its children following the
            orientation of the device.
@@ -188,8 +188,8 @@ Item {
                     RotationAnimation {
                         target: orientationHelper
                         properties: "rotation"
-                        duration: Ubuntu.UbuntuAnimation.FastDuration
-                        easing: Ubuntu.UbuntuAnimation.StandardEasing
+                        duration: UbuntuAnimation.FastDuration
+                        easing: UbuntuAnimation.StandardEasing
                         direction: RotationAnimation.Shortest
                     }
                 }
