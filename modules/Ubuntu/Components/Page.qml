@@ -177,7 +177,6 @@ PageTreeNode {
             }
         }
 
-
         function getActionsFromTools(tools) {
             print("getActionFromTools("+tools+")");
             if (!tools.hasOwnProperty("contents")) {
