@@ -24,12 +24,6 @@ Ubuntu.StyledItem {
     width: units.dp(1)
 
     /*
-      Property holding the text input item instance. This points to the main
-      component not to the input itself!
-      */
-    property var editorItem
-
-    /*
       Property holding the text input's custor position property. Can be one of
       the following ones: cursorPosition, selectionStart and selectionEnd.
       */
@@ -43,8 +37,8 @@ Ubuntu.StyledItem {
     /*
       Cursor delegate used. This is the visual component from the main
       */
-    property Component cursorDelegate: editorItem.cursorDelegate ?
-                                           editorItem.cursorDelegate :
+    property Component cursorDelegate: handler.main.cursorDelegate ?
+                                           handler.main.cursorDelegate :
                                            __styleInstance.cursorDelegate
 
     // depending on the positionProperty, we chose different styles
@@ -57,9 +51,6 @@ Ubuntu.StyledItem {
             return Theme.createStyleComponent("TextCursorStyle.qml", cursorItem);
         }
     }
-
-    // The property makes the text input's cursorVisible property accessible for the cursor style.
-    readonly property bool cursorVisible: editorItem.cursorVisible
 
     //Caret instance from the style.
     property Item caret: __styleInstance.caret
@@ -80,24 +71,25 @@ Ubuntu.StyledItem {
         }
         // open context menu only for cursorPosition or selectionEnd
         if (positionProperty !== "selectionStart") {
-            if (editorItem.popover === undefined) {
+            if (handler.main.popover === undefined) {
                 // open the default one
                 PopupUtils.open(Qt.resolvedUrl("TextInputPopover.qml"), cursorItem,
                                 {
-                                    "target": editorItem
+                                    "target": handler.main
                                 })
             } else {
-                PopupUtils.open(editorItem.popover, cursorItem,
+                PopupUtils.open(handler.main.popover, cursorItem,
                                 {
-                                    "target": editorItem
+                                    "target": handler.main
                                 })
             }
         }
     }
 
+    visible: handler.main.cursorVisible
     // change opacity to 0 if text is selected and the positionProperty is cursorPosition
     // note: we should not touch visibility as cursorVisible alters that!
-    opacity: (positionProperty === "cursorPosition") && (editorItem.selectedText !== "") ? 0.0 : 1.0
+    opacity: (positionProperty === "cursorPosition") && (handler.main.selectedText !== "") ? 0.0 : 1.0
 
     // cursor visual loader
     Loader {
@@ -202,7 +194,7 @@ Ubuntu.StyledItem {
         id: dragger
         objectName: cursorItem.positionProperty + "_dragger"
         // fill the entire component area
-        parent: editorItem
+        parent: handler.main
         anchors.fill: parent
         hoverEnabled: true
         preventStealing: drag.active

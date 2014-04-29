@@ -55,7 +55,7 @@ Item {
                 interval: cursorStyle.cursorVisibleTimeout
                 running: (cursorStyle.cursorVisibleTimeout > 0) &&
                          (cursorStyle.cursorHiddenTimeout > 0) &&
-                         styledItem.cursorVisible
+                         styledItem.visible
                 repeat: true
                 property bool timerShowCursor: true
                 onTriggered: {

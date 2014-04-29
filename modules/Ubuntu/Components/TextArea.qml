@@ -769,16 +769,14 @@ StyledItem {
         id: internal
         // public property locals enabling aliasing
         property string displayText: editor.getText(0, editor.length)
-        property real lineSpacing: units.dp(3)
         property real frameSpacing: control.__styleInstance.frameSpacing
-        property real lineSize: editor.font.pixelSize + lineSpacing
         property real minimumSize: units.gu(4)
         property real inputAreaWidth: control.width - 2 * frameSpacing
         property real inputAreaHeight: control.height - 2 * frameSpacing
 
         function linesHeight(lines)
         {
-            var lineHeight = editor.font.pixelSize * lines + lineSpacing * lines
+            var lineHeight = editor.font.pixelSize * lines + inputHandler.lineSpacing * lines
             return lineHeight + 2 * frameSpacing;
         }
 
@@ -814,11 +812,7 @@ StyledItem {
     Component {
         id: cursor
         TextCursor {
-            id: cursorItem
-            editorItem: control
             handler: inputHandler
-            height: internal.lineSize
-            visible: editor.cursorVisible
         }
     }
 
@@ -897,6 +891,7 @@ StyledItem {
                 input: editor
                 flickable: flicker
                 selectionModeTimeout: control.__styleInstance.selectionModeTimeout
+                frameDistance: Qt.point(internal.spacing, internal.spacing)
             }
         }
     }

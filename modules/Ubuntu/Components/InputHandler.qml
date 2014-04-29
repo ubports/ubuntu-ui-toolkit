@@ -38,6 +38,12 @@ Item {
     // property holding the selection mode timeout
     property int selectionModeTimeout: 200
 
+    // line size and spacing
+    property real lineSpacing: units.dp(3)
+    property real lineSize: input.font.pixelSize + lineSpacing
+    // input x/y distance from the frame
+    property point frameDistance: Qt.point(0,0)
+
     // signal triggered when popup should be opened
     signal pressAndHold(int pos)
 
@@ -348,7 +354,7 @@ Item {
                     selectionStartCursor = input.cursorDelegate.createObject(
                                 input, {
                                     "positionProperty": "selectionStart",
-                                    "editorItem": main,
+                                    "height": lineSize,
                                     "handler": inputHandler,
                                     }
                                 );
@@ -358,7 +364,7 @@ Item {
                     selectionEndCursor = input.cursorDelegate.createObject(
                                 input, {
                                     "positionProperty": "selectionEnd",
-                                    "editorItem": main,
+                                    "height": lineSize,
                                     "handler": inputHandler,
                                     }
                                 );

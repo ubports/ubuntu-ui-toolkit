@@ -912,10 +912,7 @@ ActionItem {
     Component {
         id: cursor
         TextCursor {
-            editorItem: control
             handler: inputHandler
-            height: internal.lineSize
-            visible: editor.cursorVisible
         }
     }
 
@@ -934,7 +931,6 @@ ActionItem {
                     (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
 
         Image {
-            //anchors.fill: parent
             anchors.verticalCenter: parent.verticalCenter
             width: units.gu(3)
             height: width
@@ -981,7 +977,6 @@ ActionItem {
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
         // need to forward events as events occurred on topMargin area are not grabbed by the MouseArea.
-//        Ubuntu.Mouse.forwardTo: [inputHandler]
 
         clip: true
         contentWidth: editor.contentWidth
@@ -1015,6 +1010,13 @@ ActionItem {
                 input: editor
                 flickable: flicker
                 selectionModeTimeout: control.__styleInstance.selectionModeTimeout
+                /*
+                  In x direction we use 2 times the configured spacing, as we have
+                  both the overlay and the Flickable aligned with margins. On y
+                  direction we only use the simple spacing, the Flickable moves the
+                  top downwards.
+                  */
+                frameDistance: Qt.point(2 * internal.spacing, internal.spacing)
             }
         }
     }
