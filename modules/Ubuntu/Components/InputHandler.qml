@@ -349,7 +349,7 @@ Item {
         property Item selectionEndCursor: null
         target: input
         onSelectedTextChanged: {
-            if (selectedText !== "") {
+            if (selectedText !== "" && input.cursorDelegate) {
                 if (!selectionStartCursor) {
                     selectionStartCursor = input.cursorDelegate.createObject(
                                 input, {
@@ -373,9 +373,11 @@ Item {
             } else {
                 if (selectionStartCursor) {
                     selectionStartCursor.destroy();
+                    selectionStartCursor = null;
                 }
                 if (selectionEndCursor) {
                     selectionEndCursor.destroy();
+                    selectionEndCursor = null;
                 }
             }
         }

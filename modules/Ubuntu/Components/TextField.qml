@@ -908,14 +908,6 @@ ActionItem {
         }
     }
 
-    // Default cursor component used in both normal and selection modes
-    Component {
-        id: cursor
-        TextCursor {
-            handler: inputHandler
-        }
-    }
-
     AbstractButton {
         id: clearButton
         objectName: "clear_button"
@@ -987,8 +979,9 @@ ActionItem {
             // FocusScope will forward focus to this component
             focus: true
             anchors.verticalCenter: parent.verticalCenter
-            // get the control's style
-            cursorDelegate: cursor
+            cursorDelegate: TextCursor {
+                handler: inputHandler
+            }
             color: control.__styleInstance.color
             selectedTextColor: Theme.palette.selected.foregroundText
             selectionColor: Theme.palette.selected.foreground

@@ -808,14 +808,6 @@ StyledItem {
     }
     Keys.onReleased: event.accepted = (event.key === Qt.Key_Enter) || (event.key === Qt.Key_Return)
 
-    // Default cursor component used in both normal and selection modes
-    Component {
-        id: cursor
-        TextCursor {
-            handler: inputHandler
-        }
-    }
-
     // holding default values
     Label { id: fontHolder }
 
@@ -871,7 +863,9 @@ StyledItem {
             mouseSelectionMode: TextEdit.SelectWords
             selectByMouse: false
             activeFocusOnPress: false
-            cursorDelegate: cursor
+            cursorDelegate: TextCursor {
+                handler: inputHandler
+            }
             color: control.__styleInstance.color
             selectedTextColor: Theme.palette.selected.foregroundText
             selectionColor: Theme.palette.selected.foreground
