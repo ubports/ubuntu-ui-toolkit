@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.1
+import QtQuick 2.0
 import Ubuntu.Components 1.1
 
 /*
@@ -182,7 +182,6 @@ Item {
             var pos = cursorPosition(x, y);
             if (positioner === "selectionStart" && (pos < input.selectionEnd)) {
                 input.select(pos, input.selectionEnd);
-                // move cursor position to update cursor rectangle
             } else if (positioner === "selectionEnd" && (pos > input.selectionStart)) {
                 input.select(input.selectionStart, pos);
             }
