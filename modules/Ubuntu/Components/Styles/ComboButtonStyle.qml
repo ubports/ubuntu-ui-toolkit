@@ -75,8 +75,4 @@ Item {
       Default font used in the main button.
       */
     property font defaultFont
-
-
-    width: __combo.width
-    height: __combo.collapsedHeight
 }

@@ -21,6 +21,7 @@ import Ubuntu.Components.Styles 1.1 as Style
 Style.ComboButtonStyle {
     id: comboStyle
 
+    // configurations
     dropDownWidth: units.gu(5)
     dropDownSeparatorWidth: units.dp(2)
     comboListMargin: units.gu(0.8)
@@ -28,15 +29,14 @@ Style.ComboButtonStyle {
     comboListPanel: panelItem
     defaultColor: mainButton.defaultColor
     defaultGradient: mainButton.defaultGradient
-    defaultDropdownColor: __combo.expanded ? Qt.rgba(0, 0, 0, 0.05) : defaultColor
+    defaultDropdownColor: combo.expanded ? Qt.rgba(0, 0, 0, 0.05) : defaultColor
     defaultFont: mainButton.defaultFont
 
 
-    width: __combo.width
-    height: __combo.collapsedHeight
+    width: combo.width
+    height: combo.collapsedHeight
 
-    /*! \internal */
-    property ComboButton __combo: styledItem
+    property ComboButton combo: styledItem
 
     implicitWidth: mainButton.implicitWidth
     implicitHeight: mainButton.implicitHeight
@@ -51,7 +51,7 @@ Style.ComboButtonStyle {
             top: parent.top
             right: parent.right
         }
-        height: __combo.collapsedHeight
+        height: combo.collapsedHeight
         // overrides
         backgroundSource: comboFace
         buttonFaceOffset: -dropDownWidth/2 - dropDownSeparatorWidth
@@ -84,8 +84,8 @@ Style.ComboButtonStyle {
                     fill: parent
                     rightMargin: comboStyle.dropDownSeparatorWidth + comboStyle.dropDownWidth
                 }
-                color: __combo.color
-                gradient: mainButton.isGradient ? __combo.gradient : null
+                color: combo.color
+                gradient: mainButton.isGradient ? combo.gradient : null
             }
 
             // distancer
@@ -107,11 +107,11 @@ Style.ComboButtonStyle {
                     bottom: parent.bottom
                 }
                 width: comboStyle.dropDownWidth
-                color: mainButton.__colorHack(__combo.dropdownColor)
+                color: mainButton.__colorHack(combo.dropdownColor)
                 Image {
                     source: "artwork/chevron.png"
                     anchors.centerIn: parent
-                    rotation: __combo.expanded ? -90 : 90
+                    rotation: combo.expanded ? -90 : 90
                 }
             }
         }
@@ -125,7 +125,7 @@ Style.ComboButtonStyle {
             top: mainButton.bottom
             right: parent.right
         }
-        opacity: __combo.expanded && (__combo.comboList.length > 0)? 1.0 : 0.0
+        opacity: combo.expanded && (combo.comboList.length > 0)? 1.0 : 0.0
 
         ShaderEffectSource {
             id: listContent
@@ -144,7 +144,7 @@ Style.ComboButtonStyle {
                 topMargin: comboListMargin
             }
             clip: true
-            color: mainButton.__colorHack(__combo.dropdownColor)
+            color: mainButton.__colorHack(combo.dropdownColor)
         }
 
         BorderImage {
