@@ -68,15 +68,19 @@ class Flickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _get_top_container(self):
         """Return the top-most container with a globalRect."""
         root = self.get_root_instance()
-        containers = [root]
-        while len(containers) == 1:
-            try:
-                containers[0].globalRect
-                return containers[0]
-            except AttributeError:
-                containers = containers[0].get_children()
+        parent = self.get_parent()
+        top_container = None
+        while parent.id != root.id:
+            if hasattr(parent, 'globalRect'):
+                top_container = parent
 
-        raise _common.ToolkitException("Couldn't find the top-most container.")
+            parent = parent.get_parent()
+
+        if top_container is None:
+            raise _common.ToolkitException(
+                "Couldn't find the top-most container.")
+        else:
+            return top_container
 
     def _is_child_visible(self, child, containers):
         """Check if the center of the child is visible.
