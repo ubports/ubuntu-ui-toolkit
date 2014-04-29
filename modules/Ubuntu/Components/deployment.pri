@@ -19,7 +19,7 @@ POPUPS_FILES = $$system(find Popups -maxdepth 1 -type f)
 PICKER_FILES = $$system(find Pickers -maxdepth 1 -type f)
 
 #Style API
-STYLE_FILES = $$system(find Styles -maxdepth 1 -type f)
+STYLES_FILES = $$system(find Styles -maxdepth 1 -type f)
 
 # qmldir
 QMLDIR_FILE = qmldir

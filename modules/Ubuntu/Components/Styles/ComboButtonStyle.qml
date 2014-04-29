@@ -18,8 +18,9 @@ import QtQuick 2.0
 
 /*!
     \qmltype ComboButtonStyle
+    \inqmlmodule Ubuntu.Components.Styles 1.1
     \ingroup style-api
-    \brief ComboButton style API.
+    \brief Style API for ComboButton component.
 
     The component defines the style API for the ComboButton component.
   */
