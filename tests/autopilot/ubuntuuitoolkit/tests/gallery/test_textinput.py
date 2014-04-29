@@ -31,10 +31,12 @@ class WriteAndClearTextInputTestCase(GalleryTestCase):
 
     scenarios = [
         ('standard textfield', dict(
-            objectName='textfield_standard', text_to_write=text_to_write_string,
+            objectName='textfield_standard',
+            text_to_write=text_to_write_string,
             expected_text=text_to_write_string())),
         ('password textfield', dict(
-            objectName='textfield_password', text_to_write=text_to_write_string,
+            objectName='textfield_password',
+            text_to_write=text_to_write_string,
             expected_text=text_to_write_string())),
         ('only integers textfield', dict(
             objectName='textfield_numbers',
