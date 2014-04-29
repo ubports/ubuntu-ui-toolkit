@@ -234,7 +234,7 @@ StyledItem {
       Note that the root item of the delegate component must be a QQuickItem or
       QQuickItem derived item.
       */
-    property Component cursorDelegate: __styleInstance ? __styleInstance.defaultCursor.cursor : null
+    property Component cursorDelegate: null
 
     /*!
       The position of the cursor in the TextArea.
@@ -818,8 +818,6 @@ StyledItem {
             editorItem: control
             handler: inputHandler
             height: internal.lineSize
-            popover: control.popover
-            caretDelegate: control.__styleInstance.defaultCursor.caret
             visible: editor.cursorVisible
         }
     }

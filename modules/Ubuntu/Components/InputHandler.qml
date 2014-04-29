@@ -180,6 +180,7 @@ Item {
             var pos = cursorPosition(x, y);
             if (positioner === "selectionStart" && (pos < input.selectionEnd)) {
                 input.select(pos, input.selectionEnd);
+                print("SELECT", pos, input.selectionStart)
             } else if (positioner === "selectionEnd" && (pos > input.selectionStart)) {
                 input.select(input.selectionStart, pos);
             }
@@ -343,18 +344,26 @@ Item {
         target: input
         onSelectedTextChanged: {
             if (selectedText !== "") {
-                selectionStartCursor = input.cursorDelegate.createObject(
-                            input, {
-                                "positionProperty": "selectionStart",
-                                "cursorDelegate": main.__styleInstance.selectionStartCursor.cursor,
-                                "caretDelegate": main.__styleInstance.selectionStartCursor.caret
-                                 });
-                selectionEndCursor = input.cursorDelegate.createObject(
-                            input, {
-                                "positionProperty": "selectionEnd",
-                                "cursorDelegate": main.__styleInstance.selectionEndCursor.cursor,
-                                "caretDelegate": main.__styleInstance.selectionEndCursor.caret
-                                 });
+                if (!selectionStartCursor) {
+                    selectionStartCursor = input.cursorDelegate.createObject(
+                                input, {
+                                    "positionProperty": "selectionStart",
+                                    "editorItem": main,
+                                    "handler": inputHandler,
+                                    }
+                                );
+                    moveSelectionCursor(selectionStartCursor);
+                }
+                if (!selectionEndCursor) {
+                    selectionEndCursor = input.cursorDelegate.createObject(
+                                input, {
+                                    "positionProperty": "selectionEnd",
+                                    "editorItem": main,
+                                    "handler": inputHandler,
+                                    }
+                                );
+                    moveSelectionCursor(selectionEndCursor);
+                }
             } else {
                 if (selectionStartCursor) {
                     selectionStartCursor.destroy();
@@ -364,18 +373,16 @@ Item {
                 }
             }
         }
-    }
-    Connections {
-        target: input
-        onCursorRectangleChanged: {
-            if (selectionStartCursor && selectionEndCursor) {
-                var start = input.positionToRectangle(input.selectionStart);
-                selectionStartCursor.x = start.x;
-                selectionStartCursor.y = start.y;
-                var end = input.positionToRectangle(input.selectionEnd);
-                selectionEndCursor.x = end.x;
-                selectionEndCursor.y = end.y;
+        onSelectionStartChanged: moveSelectionCursor(selectionStartCursor);
+        onSelectionEndChanged: moveSelectionCursor(selectionEndCursor);
+
+        function moveSelectionCursor(cursor) {
+            if (!cursor) {
+                return;
             }
+            var pos = input.positionToRectangle(input[cursor.positionProperty]);
+            cursor.x = pos.x;
+            cursor.y = pos.y;
         }
     }
 }

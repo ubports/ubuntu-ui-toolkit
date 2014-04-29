@@ -245,7 +245,7 @@ ActionItem {
       Note that the root item of the delegate component must be a QQuickItem or
       QQuickItem derived item.
     */
-    property Component cursorDelegate: __styleInstance ? __styleInstance.defaultCursor.cursor : null
+    property Component cursorDelegate: null
 
     /*!
       The position of the cursor in the TextField.
@@ -915,7 +915,6 @@ ActionItem {
             editorItem: control
             handler: inputHandler
             height: internal.lineSize
-            popover: control.popover
             visible: editor.cursorVisible
         }
     }
@@ -982,7 +981,7 @@ ActionItem {
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
         // need to forward events as events occurred on topMargin area are not grabbed by the MouseArea.
-        Ubuntu.Mouse.forwardTo: [inputHandler]
+//        Ubuntu.Mouse.forwardTo: [inputHandler]
 
         clip: true
         contentWidth: editor.contentWidth

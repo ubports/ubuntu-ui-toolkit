@@ -18,10 +18,8 @@ import QtQuick 2.0
 import Ubuntu.Components 1.1 as Ubuntu
 import Ubuntu.Components.Popups 1.0
 
-Item {
+Ubuntu.StyledItem {
     id: cursorItem
-
-    objectName: positionProperty
 
     width: units.dp(1)
 
@@ -43,37 +41,57 @@ Item {
     property InputHandler handler
 
     /*
-      The property contains the custom popover to be shown.
+      Cursor delegate used. This is the visual component from the main
       */
-    property var popover
+    property Component cursorDelegate: editorItem.cursorDelegate ?
+                                           editorItem.cursorDelegate :
+                                           __styleInstance.cursorDelegate
 
-    /*
-      Cursor delegate used
-      */
-    property Component cursorDelegate: editorItem.cursorDelegate
+    // depending on the positionProperty, we chose different styles
+    style: {
+        if (positionProperty === "selectionStart") {
+            return Theme.createStyleComponent("TextSelectionStartCursorStyle.qml", cursorItem);
+        } else if (positionProperty === "selectionEnd") {
+            return Theme.createStyleComponent("TextSelectionEndCursorStyle.qml", cursorItem);
+        } else {
+            return Theme.createStyleComponent("TextCursorStyle.qml", cursorItem);
+        }
+    }
 
-    /*
-      Caret delegate
-      */
-    property Component caretDelegate: editor.__styleInstance.defaultCursor.caret
+    // The property makes the text input's cursorVisible property accessible for the cursor style.
+    readonly property bool cursorVisible: editorItem.cursorVisible
+
+    //Caret instance from the style.
+    property Item caret: __styleInstance.caret
+    property real caretX: caret ? caret.x : 0
+    property real caretY: caret ? caret.y : 0
 
     /*
         The function opens the text input popover setting the text cursor as caller.
       */
+    Connections {
+        target: inputHandler
+        onPressAndHold: openPopover()
+    }
+
     function openPopover() {
-        if (!visible)
+        if (!visible || opacity === 0.0) {
             return;
-        if (popover === undefined) {
-            // open the default one
-            PopupUtils.open(Qt.resolvedUrl("TextInputPopover.qml"), cursorItem,
-                            {
-                                "target": editorItem
-                            })
-        } else {
-            PopupUtils.open(popover, cursorItem,
-                            {
-                                "target": editorItem
-                            })
+        }
+        // open context menu only for cursorPosition or selectionEnd
+        if (positionProperty !== "selectionStart") {
+            if (editorItem.popover === undefined) {
+                // open the default one
+                PopupUtils.open(Qt.resolvedUrl("TextInputPopover.qml"), cursorItem,
+                                {
+                                    "target": editorItem
+                                })
+            } else {
+                PopupUtils.open(editorItem.popover, cursorItem,
+                                {
+                                    "target": editorItem
+                                })
+            }
         }
     }
 
@@ -85,27 +103,13 @@ Item {
     Loader {
         id: cursorLoader
         sourceComponent: cursorDelegate
+        height: parent.height
         onItemChanged: {
             if (item) {
-                item.parent = cursorItem;
                 item.height = cursorItem.height;
                 cursorItem.width = item.width;
             }
         }
-    }
-
-    // caret loader
-    Loader {
-        id: caretLoader
-        sourceComponent: caretDelegate
-        // apply anchoring
-        onItemChanged: if (item) item.parent = cursorItem
-        property int caretX: x + (item ? item.x : 0)
-        property int caretY: y + (item ? item.y : 0)
-    }
-
-    Component.onCompleted: {
-        handler.pressAndHold.connect(cursorItem.openPopover);
     }
 
     /*
@@ -119,8 +123,8 @@ Item {
     //dragged item
     Rectangle { opacity: 0.5; color: "blue"
         id: draggedItem
-        width: caretLoader.width
-        height: caretLoader.height
+        width: caret ? caret.width : 0
+        height: caret ? caret.height : 0
         parent: handler.input
         visible: cursorItem.visible && (cursorItem.opacity > 0.0)
 
@@ -137,6 +141,7 @@ Item {
           gets inactive or when the LeftButton is released.
           */
         MouseArea {
+            objectName: cursorItem.positionProperty + "_activator"
             anchors.fill: parent
             preventStealing: true
             enabled: parent.width && parent.height
@@ -166,8 +171,8 @@ Item {
         // aligns the draggedItem to the caret and resets the dragger
         function moveToCaret(cx, cy) {
             if (cx === undefined && cy === undefined) {
-                cx = cursorItem.x + caretLoader.caretX;
-                cy = cursorItem.y + caretLoader.caretY;
+                cx = cursorItem.x + caretX;
+                cy = cursorItem.y + caretY;
             } else {
                 // move mouse position to caret
                 cx += draggedItem.x;
@@ -189,6 +194,7 @@ Item {
     }
     MouseArea {
         id: dragger
+        objectName: cursorItem.positionProperty + "_dragger"
         // fill the entire component area
         parent: editorItem
         anchors.fill: parent
@@ -204,8 +210,8 @@ Item {
         property int dragAmountY: dragger.drag.target.y - dragStartY
 
         function resetDrag() {
-            thumbStartX = cursorItem.x + caretLoader.caretX;
-            thumbStartY = cursorItem.y + caretLoader.caretY;
+            thumbStartX = cursorItem.x + caretX;
+            thumbStartY = cursorItem.y + caretY;
             dragStartX = drag.target.x;
             dragStartY = drag.target.y;
         }
