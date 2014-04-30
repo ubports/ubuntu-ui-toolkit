@@ -77,3 +77,11 @@ MainView {
         # and the others in the overflow.
         self.header.click_action_button('action3')
         self.assertEqual(self.label.text, 'Button 3 clicked.')
+
+    def test_click_unexisting_header_action_button(self):
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException, self.header.click_action_button,
+            'unexisting')
+        self.assertEqual(
+            str(error),
+            'Button not found in header or overflow')
