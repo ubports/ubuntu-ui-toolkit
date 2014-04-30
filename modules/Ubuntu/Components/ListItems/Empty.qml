@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012, 2013, 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -237,14 +237,13 @@ AbstractButton {
          */
         function resetDrag() {
             confirmRemovalDialog.waitingForConfirmation = false
+            held = false  // before body.x to ensure animation
+            __mouseArea.drag.target = null  // stops waitingForConfirmation = true in animation
             body.x = 0
             pressedPosition = -1
-            __mouseArea.drag.target = null
-            held = false
             removeItem = false
             backgroundIndicator.opacity = 0.0
             backgroundIndicator.visible = false
-            backgroundIndicator.state = ""
         }
 
         /*! \internal
@@ -322,9 +321,11 @@ AbstractButton {
                     UbuntuNumberAnimation {
                     }
                     ScriptAction {
-                         script: {
-                             confirmRemovalDialog.waitingForConfirmation = true
-                             priv.commitDrag()
+                        script: {
+                            if (__mouseArea.drag.target !== null) {  // if not from resetDrag()
+                                confirmRemovalDialog.waitingForConfirmation = true
+                                priv.commitDrag()
+                            }
                         }
                     }
                 }
@@ -333,6 +334,8 @@ AbstractButton {
             onXChanged: {
                 if (x > 0) {
                     backgroundIndicator.state = "SwipingRight"
+                } else if (x === 0) {
+                    backgroundIndicator.state = ""
                 } else {
                     backgroundIndicator.state = "SwipingLeft"
                 }
