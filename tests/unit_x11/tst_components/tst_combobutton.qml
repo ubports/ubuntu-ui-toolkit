@@ -186,7 +186,7 @@ Item {
             tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
             verify(comboList.height > rectCombo.expandedHeight);
             // comboList flicker is the combolist parent's parent
-            var comboListFlicker = comboList.parent.parent;
+            var comboListFlicker = findChild(rectCombo, "combobutton_contentflicker");
             compare(comboListFlicker.interactive, true, "combo list holder must be interactive");
 
             // drag the rectangle, the Flickable should be moving
@@ -195,9 +195,9 @@ Item {
             var dy = comboListFlicker.height / 6;
             spy.target = comboListFlicker;
             spy.signalName = "onMovementEnded";
-            mouseDrag(comboListFlicker, x, y, x, dy);
+            mouseDrag(comboList, x, y, 0, -dy);
             waitForRendering(comboListFlicker);
-            compare(spy.count, 1, "combo list content did not move");
+            spy.wait();
         }
 
         function test_autoExpandHeight() {
@@ -206,7 +206,7 @@ Item {
             columnCombo.expanded = true;
             waitForRendering(columnCombo);
             tryCompareFunction(function() { return comboListPanel.opacity}, 1.0);
-            var comboListFlicker = comboList.parent.parent;
+            var comboListFlicker = findChild(columnCombo, "combobutton_contentflicker");
             compare(comboListFlicker.interactive, false, "combo list holder must not be interactive");
             compare(comboListFlicker.height, columnCombo.comboListHeight, "combo list height differs from the holder height");
         }
