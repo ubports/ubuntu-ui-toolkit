@@ -183,6 +183,7 @@ Item {
             model: numberOfSlots.used
             AbstractButton {
                 id: actionButton
+                objectName: action.objectName + "_header_button"
                 action: styledItem.actions[index]
                 style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionButton)
                 width: units.gu(5)
@@ -192,6 +193,7 @@ Item {
 
         AbstractButton {
             id: actionsOverflowButton
+            objectName: "actions_overflow_button"
             visible: numberOfSlots.requested > numberOfSlots.right
             iconName: "dropdown-menu"
             width: visible ? units.gu(5) : 0
@@ -214,6 +216,7 @@ Item {
                         model: numberOfSlots.requested - numberOfSlots.used
                         ListItem.Standard {
                             action: styledItem.actions[numberOfSlots.used + index]
+                            objectName: action.objectName + "_header_overflow_button"
                         }
                     }
                 }
