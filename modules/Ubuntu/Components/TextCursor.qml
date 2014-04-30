@@ -120,13 +120,12 @@ Ubuntu.StyledItem {
     Component.onCompleted: draggedItem.moveToCaret()
 
     //dragged item
-//    Item {
-    Rectangle { color: "blue"; opacity: 0.3
+    Item {
         id: draggedItem
         objectName: cursorItem.positionProperty + "_draggeditem"
         width: caret ? caret.width : 0
         height: caret ? caret.height : 0
-        parent: handler.input
+        parent: handler.main
         visible: cursorItem.visible && (cursorItem.opacity > 0.0)
 
         // when the dragging ends, reposition the dragger back to caret
@@ -172,8 +171,8 @@ Ubuntu.StyledItem {
         // aligns the draggedItem to the caret and resets the dragger
         function moveToCaret(cx, cy) {
             if (cx === undefined && cy === undefined) {
-                cx = cursorItem.x + caretX;
-                cy = cursorItem.y + caretY;
+                cx = cursorItem.x + caretX + handler.frameDistance.x - handler.flickable.contentX;
+                cy = cursorItem.y + caretY + handler.frameDistance.y - handler.flickable.contentY;
             } else {
                 // move mouse position to caret
                 cx += draggedItem.x;
@@ -188,8 +187,8 @@ Ubuntu.StyledItem {
         function positionCaret() {
             if (dragger.drag.active) {
                 handler.positionCaret(positionProperty,
-                                      dragger.thumbStartX + dragger.dragAmountX,
-                                      dragger.thumbStartY + dragger.dragAmountY);
+                                      dragger.thumbStartX + dragger.dragAmountX + handler.flickable.contentX,
+                                      dragger.thumbStartY + dragger.dragAmountY + handler.flickable.contentY);
             }
         }
     }
@@ -211,8 +210,8 @@ Ubuntu.StyledItem {
         property int dragAmountY: dragger.drag.target.y - dragStartY
 
         function resetDrag() {
-            thumbStartX = cursorItem.x + caretX;
-            thumbStartY = cursorItem.y + caretY;
+            thumbStartX = cursorItem.x + caretX + handler.frameDistance.x - handler.flickable.contentX;
+            thumbStartY = cursorItem.y + caretY + handler.frameDistance.y - handler.flickable.contentY;
             dragStartX = drag.target.x;
             dragStartY = drag.target.y;
         }
@@ -233,7 +232,7 @@ Ubuntu.StyledItem {
         onDragAmountYChanged: draggedItem.positionCaret()
     }
 
-    // fake cursor, caret is reparented to it while it is not dragged
+    // fake cursor, caret is reparented to it to avoid caret clipping
     Item {
         id: fakeCursor
         parent: handler.main
