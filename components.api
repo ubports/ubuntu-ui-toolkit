@@ -610,6 +610,7 @@ TestCase
 plugins.qmltypes
     name: "FilterBehavior"
     prototype: "QObject"
+    exports: ["FilterBehavior 1.1"]
     Property { name: "property"; type: "string" }
     Property { name: "pattern"; type: "QRegExp" }
     name: "InverseMouseAreaType"
@@ -676,6 +677,7 @@ plugins.qmltypes
     Method { name: "gridUnitChanged" }
     name: "SortBehavior"
     prototype: "QObject"
+    exports: ["SortBehavior 1.1"]
     Property { name: "property"; type: "string" }
     Property { name: "order"; type: "Qt::SortOrder" }
     name: "UCAlarm"

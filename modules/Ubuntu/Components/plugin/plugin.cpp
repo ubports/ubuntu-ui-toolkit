@@ -188,7 +188,10 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     // register custom event
     ForwardedEvent::registerForwardedEvent();
 
+    qmlRegisterUncreatableType<QAbstractItemModel>(uri, 1, 1, "QAbstractItemModel", "Not instantiable");
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
+    qmlRegisterType<FilterBehavior>(uri, 1, 1, "FilterBehavior");
+    qmlRegisterType<SortBehavior>(uri, 1, 1, "SortBehavior");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
