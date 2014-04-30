@@ -30,11 +30,14 @@ class FlickableTestCase(testtools.TestCase):
         # _get_top_container fail. Instead of going from the top looking for
         # a container, we should start from the flickable until we find the
         # top-most container.
-        mock_root_instance = type('obj', (object,), {'id': 'root'})
+        RootClass = type('obj', (object,), {'id': 'root'})
+        mock_root_instance = RootClass()
         # We consider a container is an object with a globalRect.
-        mock_non_container = type('obj', (object,), {})
-        mock_container = type(
+        MockNonContainerClass = type('obj', (object,), {})
+        mock_non_container = MockNonContainerClass()
+        MockContainerClass = type(
             'obj', (object,), {'id': 'container', 'globalRect': 'dummy'})
+        mock_container = MockContainerClass()
         mock_container.get_parent = lambda: mock_root_instance
 
         # The root instance has two children. This exposes the bug.
