@@ -646,7 +646,7 @@ plugins.qmltypes
     Method { name: "invalidate" }
     name: "QSortFilterProxyModelQML"
     prototype: "QSortFilterProxyModel"
-    exports: ["SortFilterModel 0.1"]
+    exports: ["SortFilterModel 1.1"]
     Property { name: "model"; type: "QAbstractItemModel"; isPointer: true }
     Property { name: "count"; type: "int"; isReadonly: true }
     Property { name: "sort"; type: "SortBehavior"; isReadonly: true; isPointer: true }
