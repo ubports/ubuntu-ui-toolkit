@@ -29,6 +29,8 @@ class WriteAndClearTextInputTestCase(GalleryTestCase):
     def text_to_write_number():
         return locale.format('%.2f', -1001.23)
 
+    # text_to_write is a function to ensure
+    # that locale is evaluated after setUp
     scenarios = [
         ('standard textfield', dict(
             objectName='textfield_standard',
@@ -38,6 +40,9 @@ class WriteAndClearTextInputTestCase(GalleryTestCase):
             objectName='textfield_password',
             text_to_write=text_to_write_string,
             expected_text=text_to_write_string())),
+        # The text_to_write contains a decimal separator based on locale
+        # eg. -1001.23 or -1001,23 or -۱۰۰۱٫۲۳
+        # The test expects integers, TextField rejects that character
         ('only integers textfield', dict(
             objectName='textfield_numbers',
             text_to_write=text_to_write_number,
@@ -46,6 +51,8 @@ class WriteAndClearTextInputTestCase(GalleryTestCase):
 
     def setUp(self):
         super(WriteAndClearTextInputTestCase, self).setUp()
+        # Apply the user locale from the environment
+        # The UITK does the same, so the test must be localized
         locale.setlocale(locale.LC_ALL, "")
         item = 'Text Field'
         self.loadItem(item)
