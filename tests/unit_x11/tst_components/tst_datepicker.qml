@@ -552,6 +552,8 @@ Item {
             var minutesPicker = findChild(picker, "PickerRow_MinutesPicker");
             compare(minutesPicker.enabled, false, "minutes picker should be disabled");
             var secondsPickerModel = getPickerModel(picker, "PickerRow_SecondsPicker");
+            tryCompare(secondsPickerModel, "resetting", false);
+            tryCompare(secondsPickerModel, "count", maxDate.seconds - minDate.seconds);
             compare(secondsPickerModel.circular, false, "day picker should be linear");
         }
 
