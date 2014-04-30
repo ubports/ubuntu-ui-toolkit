@@ -130,7 +130,6 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
             name.
 
         """
-
         button = self._get_action_button(action_object_name)
         self.pointing_device.click_object(button)
 
