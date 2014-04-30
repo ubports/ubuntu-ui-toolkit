@@ -117,10 +117,13 @@ Ubuntu.StyledItem {
      */
     onXChanged: if (draggedItem.state === "") draggedItem.moveToCaret()
     onYChanged: if (draggedItem.state === "") draggedItem.moveToCaret()
+    Component.onCompleted: draggedItem.moveToCaret()
 
     //dragged item
-    Item {
+//    Item {
+    Rectangle { color: "blue"; opacity: 0.3
         id: draggedItem
+        objectName: cursorItem.positionProperty + "_draggeditem"
         width: caret ? caret.width : 0
         height: caret ? caret.height : 0
         parent: handler.input
@@ -229,4 +232,5 @@ Ubuntu.StyledItem {
         onDragAmountXChanged: draggedItem.positionCaret()
         onDragAmountYChanged: draggedItem.positionCaret()
     }
+
 }
