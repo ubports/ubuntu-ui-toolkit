@@ -60,7 +60,8 @@ MainView {
     def setUp(self):
         super(HeaderTestCase, self).setUp()
         self.header = self.main_view.get_header()
-        self.label = self.app.select_single('Label', objectName='clicked_label')
+        self.label = self.app.select_single(
+            'Label', objectName='clicked_label')
         self.assertEqual(self.label.text, 'No button clicked.')
 
     def test_header_custom_proxy_object(self):
