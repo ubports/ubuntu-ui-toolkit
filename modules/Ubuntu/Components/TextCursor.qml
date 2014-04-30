@@ -42,21 +42,17 @@ Ubuntu.StyledItem {
                                            __styleInstance.cursorDelegate
 
     // depending on the positionProperty, we chose different styles
-    style: {
-        if (positionProperty === "selectionStart") {
-            return Theme.createStyleComponent("TextSelectionStartCursorStyle.qml", cursorItem);
-        } else if (positionProperty === "selectionEnd") {
-            return Theme.createStyleComponent("TextSelectionEndCursorStyle.qml", cursorItem);
-        } else {
-            return Theme.createStyleComponent("TextCursorStyle.qml", cursorItem);
-        }
-    }
+    style: Theme.createStyleComponent(handler.textCursorStyle(positionProperty), cursorItem);
 
     //Caret instance from the style.
     property Item caret: __styleInstance.caret
     property real caretX: caret ? caret.x : 0
     property real caretY: caret ? caret.y : 0
 
+    // returns the mapped cursor position to a position relative to the main component
+    function mappedCursorPosition(pos) {
+        return cursorItem[pos] + handler.frameDistance[pos] - handler.flickable["content"+pos.toUpperCase()];
+    }
     /*
         The function opens the text input popover setting the text cursor as caller.
       */
@@ -171,8 +167,8 @@ Ubuntu.StyledItem {
         // aligns the draggedItem to the caret and resets the dragger
         function moveToCaret(cx, cy) {
             if (cx === undefined && cy === undefined) {
-                cx = cursorItem.x + caretX + handler.frameDistance.x - handler.flickable.contentX;
-                cy = cursorItem.y + caretY + handler.frameDistance.y - handler.flickable.contentY;
+                cx = mappedCursorPosition("x") + caretX;
+                cy = mappedCursorPosition("y") + caretY;
             } else {
                 // move mouse position to caret
                 cx += draggedItem.x;
@@ -210,8 +206,8 @@ Ubuntu.StyledItem {
         property int dragAmountY: dragger.drag.target.y - dragStartY
 
         function resetDrag() {
-            thumbStartX = cursorItem.x + handler.frameDistance.x - handler.flickable.contentX;
-            thumbStartY = cursorItem.y + handler.frameDistance.y - handler.flickable.contentY;
+            thumbStartX = mappedCursorPosition("x");
+            thumbStartY = mappedCursorPosition("y");
             dragStartX = drag.target.x;
             dragStartY = drag.target.y;
         }
@@ -239,20 +235,15 @@ Ubuntu.StyledItem {
         width: cursorItem.width
         height: cursorItem.height
         //reparent caret to it
-        Component.onCompleted: caret.parent = fakeCursor
+        Component.onCompleted: if (caret) caret.parent = fakeCursor
 
-        function mappedCursorPosition() {
-            var cx = cursorItem.x + handler.frameDistance.x - handler.flickable.contentX;
-            var cy = cursorItem.y + handler.frameDistance.y - handler.flickable.contentY;
-            return Qt.point(cx, cy);
-        }
-        x: mappedCursorPosition().x
-        y: mappedCursorPosition().y
+        x: mappedCursorPosition("x")
+        y: mappedCursorPosition("y")
 
         // manual clipping: the caret should be visible only while the cursor's
         // top/bottom falls into the text area
         visible: {
-            if (!cursorItem.visible || cursorItem.opacity < 1.0)
+            if (!caret || !cursorItem.visible || cursorItem.opacity < 1.0)
                 return false;
 
             var leftTop = Qt.point(x - handler.frameDistance.x, y + handler.frameDistance.y + handler.lineSpacing);

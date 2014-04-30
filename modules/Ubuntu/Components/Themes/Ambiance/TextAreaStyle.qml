@@ -44,6 +44,15 @@ Item {
       */
     property int selectionModeTimeout: 300
 
+    /*!
+      The following properties define the name of the style components declaring
+      the styles for the main and the selection cursors. All cursors must defive
+      from TextCursorStyle.
+      */
+    property string mainCursorStyle: "TextCursorStyle.qml"
+    property string selectionStartCursorStyle: "TextSelectionStartCursorStyle.qml"
+    property string selectionEndCursorStyle: "TextSelectionEndCursorStyle.qml"
+
     // style body
     anchors.fill: parent
     objectName: "textarea_style"

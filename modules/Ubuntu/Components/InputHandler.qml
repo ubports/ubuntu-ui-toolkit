@@ -201,6 +201,15 @@ Item {
         }
     }
 
+    // returns the styles for the cursors depending on the position property given
+    function textCursorStyle(positionProperty) {
+        switch (positionProperty) {
+        case "cursorPosition": return main.__styleInstance.mainCursorStyle;
+        case "selectionStart": return main.__styleInstance.selectionStartCursorStyle;
+        case "selectionEnd": return main.__styleInstance.selectionEndCursorStyle;
+        }
+    }
+
     Component.onCompleted: {
         state = (main.focus) ? "" : "inactive";
     }
