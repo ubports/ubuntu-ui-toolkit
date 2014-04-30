@@ -21,7 +21,6 @@ import Ubuntu.Components.ListItems 0.1 as ListItem
 Template {
     objectName: "listItemsTemplate"
 
-                    /*
     ListItemsSection {
         title: i18n.tr("Standard")
         className: "Standard"
@@ -225,7 +224,7 @@ Template {
             }
         }
     }
-*/
+
     TemplateSection {
         title: i18n.tr("UbuntuListView")
         className: "UbuntuListView"
