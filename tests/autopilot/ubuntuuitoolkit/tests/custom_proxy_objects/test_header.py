@@ -60,6 +60,8 @@ MainView {
     def setUp(self):
         super(HeaderTestCase, self).setUp()
         self.header = self.main_view.get_header()
+        self.label = self.app.select_single('Label', objectName='clicked_label')
+        self.assertEqual(self.label.text, 'No button clicked.')
 
     def test_header_custom_proxy_object(self):
         self.assertIsInstance(self.header, ubuntuuitoolkit.Header)
@@ -67,15 +69,11 @@ MainView {
         self.assertEqual(self.header.title, "Test title")
 
     def test_click_header_action_button(self):
-        label = self.app.select_single('Label', objectName='clicked_label')
-        self.assertNotEqual(label.text, 'Button 1 clicked.')
         self.header.click_action_button('action1')
-        self.assertEqual(label.text, 'Button 1 clicked.')
+        self.assertEqual(self.label.text, 'Button 1 clicked.')
 
     def test_click_header_overflow_action_button(self):
         # there are more than 3 buttons, so the first two go in the header
         # and the others in the overflow.
-        label = self.app.select_single('Label', objectName='clicked_label')
-        self.assertNotEqual(label.text, 'Button 3 clicked.')
         self.header.click_action_button('action3')
-        self.assertEqual(label.text, 'Button 3 clicked.')
+        self.assertEqual(self.label.text, 'Button 3 clicked.')
