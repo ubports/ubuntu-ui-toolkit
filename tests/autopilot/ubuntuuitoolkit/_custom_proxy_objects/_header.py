@@ -140,24 +140,27 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 'AbstractButton', objectName=object_name)
         except dbus.StateNotFoundError:
             # the button is not in the header, but it may be in the overflow
-            actions_overflow_button = self.select_single(
-                'AbstractButton',
-                objectName='actions_overflow_button')
-
-            if not actions_overflow_button.visible:
-                raise _common.ToolkitException('Button not found in header')
-
-            # open the popover
-            self.pointing_device.click_object(actions_overflow_button)
-            object_name = action_object_name + "_header_overflow_button"
-
-            # the popover is not a child of the header, so use the root object
-            # to find the requested button
             try:
-                button = self.get_root_instance().select_single(
-                    'Standard', objectName=object_name)
+                button = self._get_action_button_in_overflow(action_object_name)
             except dbus.StateNotFoundError:
                 raise _common.ToolkitException(
                     'Button not found in header or overflow')
 
         return button
+
+    def _get_action_button_in_overflow(self, action_object_name):
+        actions_overflow_button = self.select_single(
+            'AbstractButton',
+            objectName='actions_overflow_button')
+
+        if not actions_overflow_button.visible:
+            raise _common.ToolkitException('No actions in overflow')
+
+        # open the popover
+        self.pointing_device.click_object(actions_overflow_button)
+        object_name = action_object_name + "_header_overflow_button"
+
+        # the popover is not a child of the header, so use the root object
+        # to find the requested button
+        return self.get_root_instance().select_single(
+                'Standard', objectName=object_name)
