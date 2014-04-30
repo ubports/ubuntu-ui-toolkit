@@ -38,7 +38,7 @@ def _get_visible_container_bottom(containers):
     return min(containers_bottom)
 
 
-class Flickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
+class QQuickFlickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     @autopilot_logging.log_action(logger.info)
     def swipe_child_into_view(self, child):
@@ -96,6 +96,7 @@ class Flickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     @autopilot_logging.log_action(logger.info)
     def _swipe_non_visible_child_into_view(self, child, containers):
+        original_content_y = self.contentY
         while not self._is_child_visible(child, containers):
             # Check the direction of the swipe based on the position of the
             # child relative to the immediate flickable container.
@@ -103,6 +104,10 @@ class Flickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 self._swipe_to_show_more_above(containers)
             else:
                 self._swipe_to_show_more_below(containers)
+
+            if self.contentY == original_content_y:
+                raise _common.ToolkitException(
+                    "Couldn't swipe in the flickable.")
 
     @autopilot_logging.log_action(logger.info)
     def _swipe_to_show_more_above(self, containers):
@@ -128,8 +133,12 @@ class Flickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         # bottom.
         top = _get_visible_container_top(containers) + 5
         bottom = _get_visible_container_bottom(containers) - 5
+
         if direction == 'below':
-            start_y = bottom
+            # Take into account that swiping from below can open the toolbar or
+            # trigger the bottom edge gesture.
+            # XXX Do this only if we are close to the bottom edge.
+            start_y = bottom - 20
             stop_y = top
         elif direction == 'above':
             start_y = top

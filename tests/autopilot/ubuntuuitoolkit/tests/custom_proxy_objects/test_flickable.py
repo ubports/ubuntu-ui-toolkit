@@ -44,7 +44,8 @@ class FlickableTestCase(testtools.TestCase):
             mock_non_container, mock_container]
 
         dummy_state = {'id': '10'}
-        flickable = ubuntuuitoolkit.Flickable(dummy_state, 'dummy', 'dummy')
+        flickable = ubuntuuitoolkit.QQuickFlickable(
+            dummy_state, 'dummy', 'dummy')
 
         flickable.get_root_instance = lambda: mock_root_instance
         # The top container of the flickable is its immediate parent.
@@ -114,3 +115,80 @@ MainView {
         """Test that is_flickable identifies the elements correctly."""
         element = self.app.select_single(objectName=self.object_name)
         self.assertEqual(element.is_flickable(), self.is_flickable)
+
+
+class SwipeIntoViewTestCase(tests.QMLStringAppTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Label {
+        id: clickedLabel
+        objectName: "clickedLabel"
+        text: "No element clicked."
+    }
+
+    Flickable {
+        anchors {
+            fill: parent
+            topMargin: clickedLabel.height
+            // It can't be at the bottom, or the toolbar will be opened
+            // when we try to click it.
+            bottomMargin: units.gu(10)
+        }
+        objectName: 'flickable'
+        height: units.gu(60)
+        contentHeight: bottomButton.y + bottomButton.height
+
+        Button {
+            id: topButton
+            objectName: 'topButton'
+            text: 'Top button'
+            onClicked: clickedLabel.text = objectName
+        }
+        Rectangle {
+            id: emptyRectangle
+            height: units.gu(80)
+            anchors.top: topButton.bottom
+        }
+        Button {
+            id: bottomButton
+            objectName: 'bottomButton'
+            text: 'Bottom button'
+            onClicked: clickedLabel.text = objectName
+            anchors.top: emptyRectangle.bottom
+        }
+    }
+}
+""")
+
+    def setUp(self):
+        super(SwipeIntoViewTestCase, self).setUp()
+        self.label = self.main_view.select_single(
+            'Label', objectName='clickedLabel')
+        self.assertEqual(self.label.text, 'No element clicked.')
+
+    def test_swipe_to_bottom(self):
+        self.main_view.close_toolbar()
+
+        button = self.main_view.select_single(objectName='bottomButton')
+        button.swipe_into_view()
+
+        self.pointing_device.click_object(button)
+        self.assertEqual(self.label.text, 'bottomButton')
+
+    def test_swipe_to_top(self):
+        self.main_view.close_toolbar()
+        bottomButton = self.main_view.select_single(objectName='bottomButton')
+        bottomButton.swipe_into_view()
+
+        topButton = self.main_view.select_single(objectName='topButton')
+        topButton.swipe_into_view()
+
+        self.pointing_device.click_object(topButton)
+        self.assertEqual(self.label.text, 'topButton')
