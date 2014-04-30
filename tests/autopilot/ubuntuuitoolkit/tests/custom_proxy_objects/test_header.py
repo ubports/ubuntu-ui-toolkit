@@ -48,7 +48,7 @@ MainView {
                         objectName: "action" + index
                         text: "text " + index
                         iconName: "add"
-                        onTriggered: label.text = "Button " + index + " clicked."
+                        onTriggered: label.text = "Button "+index+" clicked."
                     }
                 }
             }

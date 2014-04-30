@@ -137,7 +137,8 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _get_action_button(self, action_object_name):
         try:
             object_name = action_object_name + "_header_button"
-            button = self.select_single('AbstractButton', objectName=object_name)
+            button = self.select_single(
+                'AbstractButton', objectName=object_name)
         except dbus.StateNotFoundError:
             # the button is not in the header, but it may be in the overflow
             actions_overflow_button = self.select_single(
