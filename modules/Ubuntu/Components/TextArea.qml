@@ -158,7 +158,7 @@ StyledItem {
       area defined in the current theme. The default value is the same as the visible
       input area's width.
       */
-    property real contentWidth: internal.inputAreaWidth
+    property real contentWidth: control.width - 2 * internal.frameSpacing
 
     /*!
       The property folds the height of the text editing content. This can be equal or
@@ -166,7 +166,7 @@ StyledItem {
       area defined in the current theme. The default value is the same as the visible
       input area's height.
       */
-    property real contentHeight: internal.inputAreaHeight
+    property real contentHeight: control.height - 2 * internal.frameSpacing
 
     /*!
       The property overrides the default popover of the TextArea. When set, the
@@ -753,15 +753,6 @@ StyledItem {
             control.focus = false;
     }
 
-    /*!\internal */
-    onContentWidthChanged: internal.inputAreaWidth = control.contentWidth
-    /*!\internal */
-    onContentHeightChanged: internal.inputAreaHeight = control.contentHeight
-    /*!\internal */
-    onWidthChanged: internal.inputAreaWidth = control.width - 2 * internal.frameSpacing
-    /*!\internal */
-    onHeightChanged: internal.inputAreaHeight = control.height - 2 * internal.frameSpacing
-
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
@@ -771,8 +762,6 @@ StyledItem {
         property string displayText: editor.getText(0, editor.length)
         property real frameSpacing: control.__styleInstance.frameSpacing
         property real minimumSize: units.gu(4)
-        property real inputAreaWidth: control.width - 2 * frameSpacing
-        property real inputAreaHeight: control.height - 2 * frameSpacing
 
         function linesHeight(lines)
         {
@@ -857,8 +846,8 @@ StyledItem {
             readOnly: false
             id: editor
             focus: true
-            width: internal.inputAreaWidth
-            height: Math.max(internal.inputAreaHeight, editor.contentHeight)
+            width: control.contentWidth
+            height: Math.max(control.contentHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectWords
             selectByMouse: false

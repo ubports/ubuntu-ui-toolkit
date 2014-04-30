@@ -38,6 +38,13 @@ Item {
     // property holding the selection mode timeout
     property int selectionModeTimeout: 200
 
+    // item filling the text input visible area, used to check teh caret handler
+    // visibility
+    property Item visibleArea: Item {
+        parent: flickable
+        anchors.fill: parent
+    }
+
     // line size and spacing
     property real lineSpacing: units.dp(3)
     property real lineSize: input.font.pixelSize + lineSpacing

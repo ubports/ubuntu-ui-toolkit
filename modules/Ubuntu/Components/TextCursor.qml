@@ -37,7 +37,7 @@ Ubuntu.StyledItem {
     /*
       Cursor delegate used. This is the visual component from the main
       */
-    property Component cursorDelegate: handler.main.cursorDelegate ?
+    readonly property Component cursorDelegate: handler.main.cursorDelegate ?
                                            handler.main.cursorDelegate :
                                            __styleInstance.cursorDelegate
 
@@ -233,4 +233,32 @@ Ubuntu.StyledItem {
         onDragAmountYChanged: draggedItem.positionCaret()
     }
 
+    // fake cursor, caret is reparented to it while it is not dragged
+    Item {
+        id: fakeCursor
+        parent: handler.main
+        width: cursorItem.width
+        height: cursorItem.height
+        //reparent caret to it
+        Component.onCompleted: caret.parent = fakeCursor
+
+        function mappedCursorPosition() {
+            var cx = cursorItem.x + handler.frameDistance.x - handler.flickable.contentX;
+            var cy = cursorItem.y + handler.frameDistance.y - handler.flickable.contentY;
+            return Qt.point(cx, cy);
+        }
+        x: mappedCursorPosition().x
+        y: mappedCursorPosition().y
+
+        // the caret should be visible only while the cursor's top/bottom
+        // falls into the text area
+        visible: {
+            if (!cursorItem.visible || cursorItem.opacity < 1.0)
+                return false;
+
+            var leftTop = Qt.point(x - handler.frameDistance.x, y + handler.frameDistance.y + handler.lineSpacing);
+            var rightBottom = Qt.point(x - handler.frameDistance.x, y + height - handler.frameDistance.y - handler.lineSpacing);
+            return (handler.visibleArea.contains(leftTop) || handler.visibleArea.contains(rightBottom));
+        }
+    }
 }

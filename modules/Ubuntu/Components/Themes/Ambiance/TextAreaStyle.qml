@@ -37,7 +37,7 @@ Item {
       Spacing between the frame and the text editor area
       */
     property real frameSpacing: units.gu(1)
-    property real overlaySpacing: units.gu(0.5)
+    property real overlaySpacing: frameSpacing / 2
 
     /*!
       Property holding the timeout in milliseconds the component enters into selection mode.
@@ -46,6 +46,7 @@ Item {
 
     // style body
     anchors.fill: parent
+    objectName: "textarea_style"
 
     z: -1
 
