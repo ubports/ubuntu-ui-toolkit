@@ -185,14 +185,13 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def click_action_button(self, action_object_name):
         """Click the specified button.
 
-        :parameter action_object_name: When using the deprecated header,
-                the objectName of the button, when using the new header,
-                the objectName of the action to trigger.
-        :raise: ToolkitException: The requested button is not available.
+        :parameter action_object_name: the objectName of the action to trigger.
+        :raise ToolkitException: The requested button is not available.
+
         """
         if self.useDeprecatedToolbar:
-            toolbar = self.open_toolbar()
-            toolbar.click_button(action_object_name)
+            raise _common.ToolkitException(
+                "App is using deprecated toolbar instead of new header")
         else:
             header = self.open_header()
             header.click_action_button(action_object_name)
