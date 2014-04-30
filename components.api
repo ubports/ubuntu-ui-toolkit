@@ -394,6 +394,17 @@ StyledItem 0.1 1.0
 FocusScope
     property Component style
     readonly property Item __styleInstance
+ComboButtonStyle 1.1
+Item
+    property real dropDownWidth
+    property real dropDownSeparatorWidth
+    property real comboListMargin
+    property Item comboListHolder
+    property Item comboListPanel
+    property color defaultColor
+    property Gradient defaultGradient
+    property color defaultDropdownColor
+    property font defaultFont
 Switch 0.1 1.0
 CheckBox
 Tab 0.1 1.0
