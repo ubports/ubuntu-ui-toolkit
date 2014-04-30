@@ -210,8 +210,8 @@ Ubuntu.StyledItem {
         property int dragAmountY: dragger.drag.target.y - dragStartY
 
         function resetDrag() {
-            thumbStartX = cursorItem.x + caretX + handler.frameDistance.x - handler.flickable.contentX;
-            thumbStartY = cursorItem.y + caretY + handler.frameDistance.y - handler.flickable.contentY;
+            thumbStartX = cursorItem.x + handler.frameDistance.x - handler.flickable.contentX;
+            thumbStartY = cursorItem.y + handler.frameDistance.y - handler.flickable.contentY;
             dragStartX = drag.target.x;
             dragStartY = drag.target.y;
         }

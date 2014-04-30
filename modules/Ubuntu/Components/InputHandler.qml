@@ -388,13 +388,19 @@ Item {
                 }
             }
         }
-        onSelectionStartChanged: moveSelectionCursor(selectionStartCursor);
-        onSelectionEndChanged: moveSelectionCursor(selectionEndCursor);
+        onSelectionStartChanged: moveSelectionCursor(selectionStartCursor, true);
+        onSelectionEndChanged: moveSelectionCursor(selectionEndCursor, true);
 
-        function moveSelectionCursor(cursor) {
+        function moveSelectionCursor(cursor, updateProperty) {
             if (!cursor) {
                 return;
             }
+            // workaround for https://bugreports.qt-project.org/browse/QTBUG-38704
+            // selectedTextChanged signal is not emitted for TextEdit when selectByMouse is false
+            if (updateProperty && QuickUtils.className(input) === "QQuickTextEdit") {
+                input.selectedTextChanged();
+            }
+
             var pos = input.positionToRectangle(input[cursor.positionProperty]);
             cursor.x = pos.x;
             cursor.y = pos.y;
