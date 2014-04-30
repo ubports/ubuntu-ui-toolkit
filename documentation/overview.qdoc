@@ -73,6 +73,10 @@
      \part Style API
      The Style API defines the interface components use to style the visuals.
      Themes must make sure that these interfaces are all implemented.
+     Available through:
+     \code
+         import Ubuntu.Components.Styles 1.1
+     \endcode
      \annotatedlist style-api
 
      \part Resolution Independence Items
