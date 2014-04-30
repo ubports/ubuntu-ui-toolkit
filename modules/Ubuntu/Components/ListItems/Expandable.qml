@@ -14,11 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 /*!
     \qmltype Expandable
-    \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief An expandable list item with no contents.
     The Expandable class can be used for generic list items containing other
@@ -35,8 +35,8 @@ import Ubuntu.Components 0.1
 
     Examples:
     \qml
-        import Ubuntu.Components 0.1
-        import Ubuntu.Components.ListItems 0.1 as ListItem
+        import Ubuntu.Components 1.1
+        import Ubuntu.Components.ListItems 1.0 as ListItem
 
         Item {
             ListModel {
@@ -212,6 +212,12 @@ Empty {
         anchors { left: parent.left; top: parent.top; right: parent.right }
         enabled: root.collapseOnClick && root.expanded
         height: root.collapsedHeight
-        onClicked: root.expanded = false;
+        onClicked: {
+            if (priv.isInExpandableListView) {
+                priv.view.expandedIndex = -1;
+            } else {
+                root.expanded = false;
+            }
+        }
     }
 }

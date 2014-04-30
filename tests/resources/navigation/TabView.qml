@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 
 MainView {
@@ -25,6 +25,7 @@ MainView {
 
     ListModel {
         id: pages
+        property int selectedIndex: 0
         ListElement {
             title: "Tab 1"
         }
@@ -44,15 +45,7 @@ MainView {
 
     Header {
         id: header
-        contents: TabBar {
-            id: tabBar
-            model: pages
-            anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
-            }
-        }
+        tabsModel: pages
     }
 
     Component {
@@ -68,7 +61,7 @@ MainView {
             color: Qt.rgba(Math.random(0.5), Math.random(1), Math.random(0.5), 1)
             MouseArea {
                 anchors.fill: parent
-                onClicked: tabBar.selectedIndex = index
+                onClicked: pages.selectedIndex = index
             }
         }
     }
@@ -83,6 +76,6 @@ MainView {
         orientation: Qt.Horizontal
         model: pages
         delegate: tabComponent
-        currentIndex: tabBar.selectedIndex
+        currentIndex: pages.selectedIndex
     }
 }

@@ -26,14 +26,19 @@
 #include <QtQml/QQmlContext>
 #include "upmrenderingtimes.h"
 
+void UbuntuPerformanceMetricsPlugin::registerTypeVersion(const char *uri, int major, int minor)
+{
+    qmlRegisterType<UPMRenderingTimes>(uri, major, minor, "RenderingTimes");
+    qmlRegisterType<UPMCpuUsage>(uri, major, minor, "CpuUsage");
+    qmlRegisterType<UPMTextureFromImage>(uri, major, minor, "TextureFromImage");
+    qmlRegisterType<UPMGraphModel>();
+}
+
 void UbuntuPerformanceMetricsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.PerformanceMetrics"));
-
-    qmlRegisterType<UPMRenderingTimes>(uri, 0, 1, "RenderingTimes");
-    qmlRegisterType<UPMCpuUsage>(uri, 0, 1, "CpuUsage");
-    qmlRegisterType<UPMTextureFromImage>(uri, 0, 1, "TextureFromImage");
-    qmlRegisterType<UPMGraphModel>();
+    registerTypeVersion(uri, 0, 1);
+    registerTypeVersion(uri, 1, 0);
 }
 
 void UbuntuPerformanceMetricsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

@@ -1,3 +1,112 @@
+ubuntu-ui-toolkit (0.1.46+14.04.20140408.1-0ubuntu1) trusty; urgency=low
+
+  [ Zoltán Balogh ]
+  * Change Ubuntu API links in the docs (LP: #1303535) (LP: #1303535)
+
+  [ Leo Arias ]
+  * Improve the check of tab selection mode by moving to it first.
+  * On the autopilot helpers to click a toolbar button, check that the
+    toolbar is opened first. (LP: #1302706)
+
+  [ tpeeters ]
+  * Improve toolbar handling on desktop by opening it on mouse hover.
+    (LP: #1182734)
+  * If a Page is inside a Tab and has no title set, get it automatically
+    from the Tab. (LP: #1289695)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 08 Apr 2014 14:47:06 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140404.1.is.0.1.46+14.04.20140404-0ubuntu1) trusty; urgency=medium
+
+  * Revert to previous version as it's making gallery-app AP tests
+    failing on the CI dashboard
+
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 08 Apr 2014 13:34:12 +0200
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140404.1-0ubuntu1) trusty; urgency=low
+
+  [ tpeeters ]
+  * Move the property to keep track of the selected tab to the tabs
+    model. (LP: #1290121)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 04 Apr 2014 15:08:22 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140404-0ubuntu1) trusty; urgency=low
+
+  [ Michael Zanetti ]
+  * fix collapseOnClick in combination with UbuntuListView (LP:
+    #1293996)
+
+  [ Leo Arias ]
+  * Added a helper for autopilot tests to override the values of initctl
+    vars during tests.
+  * Take into account the visibility of the container when making list
+    elements visible on the autopilot helpers. (LP: #1275060)
+
+  [ Christian Dywan ]
+  * Set the window title based on the Header title (LP: #1289695)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 04 Apr 2014 11:03:59 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140331-0ubuntu1) trusty; urgency=low
+
+  [ Zoltán Balogh ]
+  * Separate the online and offline documentation and install the QtC
+    help file
+
+  [ Zsombor Egri ]
+  * Move state data file to temp folder (LP: #1276760)
+  * StateSaver does cleanup if the app is closed due to SIGTERM. This is
+    needed as upstart sends this signal when the application is closed
+    from app scope. SIGINT saves the state. (LP: #1259498)
+  * MainView binding loop fix when backgroundColor is changed runtime.
+    (LP: #1204453)
+
+  [ Loïc Molinari ]
+  * [Perf metrics] Considered number of CPU cores for CPU usage.
+
+  [ tpeeters ]
+  * Add useDeprecatedToolbar property to MainView which can be used to
+    disable the current toolbar. Unsetting that property will in future
+    also enable new features in the header. (LP: #1273184)
+  * Close panel on contents press instead of click, so that composed
+    events are not eaten by the InverseMouseArea of the Panel. (LP:
+    #1295720)
+
+  [ Christian Dywan ]
+  * Treat QML warnings as fatal except for explicitly listed tests
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 31 Mar 2014 18:26:59 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140321.1-0ubuntu1) trusty; urgency=low
+
+  [ Bartosz Kosiorek ]
+  * Fix selection and coping text from TextFields (LP: 1130369) (LP:
+    #1130369)
+  * "Cut" operation do not shows for "ReadOnly's" TextField and TextArea
+    (LP: 1293149) (LP: #1293149, #1267821)
+
+  [ Zsombor Egri ]
+  * InverseMouseArea not getting mouse events converted from touch when
+    set as topmost item. (LP: #1288876)
+
+  [ Michael Zanetti ]
+  * drop BottomBarVisiblityCommunicator as it has gone from unity8 - no
+    more HUD from the lower edge
+
+  [ Christian Dywan ]
+  * Introduce UbuntuTestCase API for C++ (LP: #1261396)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 21 Mar 2014 11:29:53 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140317-0ubuntu1) trusty; urgency=low
+
+  [ Didier Roche ]
+  * remove the doc generation for UITK autopilot emulator. Autopilot is
+    in universe for now, it needs MIRing first
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 17 Mar 2014 09:03:08 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20140314-0ubuntu1) trusty; urgency=low
 
   [ CI bot ]

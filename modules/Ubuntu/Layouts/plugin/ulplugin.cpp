@@ -23,10 +23,16 @@
 
 #include <qqml.h>
 
+void PluginPlugin::registerTypeVersions(const char *uri, int major, int minor)
+{
+    qmlRegisterType<ULLayouts>(uri, major, minor, "Layouts");
+    qmlRegisterType<ULConditionalLayout>(uri, major, minor, "ConditionalLayout");
+    qmlRegisterType<ULItemLayout>(uri, major, minor, "ItemLayout");
+}
+
 void PluginPlugin::registerTypes(const char *uri)
 {
     // @uri Ubuntu.Layouts
-    qmlRegisterType<ULLayouts>(uri, 0, 1, "Layouts");
-    qmlRegisterType<ULConditionalLayout>(uri, 0, 1, "ConditionalLayout");
-    qmlRegisterType<ULItemLayout>(uri, 0, 1, "ItemLayout");
+    registerTypeVersions(uri, 0, 1);
+    registerTypeVersions(uri, 1, 0);
 }

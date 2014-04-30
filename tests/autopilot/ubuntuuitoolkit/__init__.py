@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013 Canonical Ltd.
+# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -14,4 +14,58 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-"""Ubuntu UI Toolkit autopilot tests and emulators - top level package."""
+"""Ubuntu UI Toolkit Autopilot tests and helpers."""
+
+
+__all__ = [
+    'base',
+    'check_autopilot_version',
+    'CheckBox',
+    'environment',
+    'emulators',
+    'fixture_setup',
+    'Flickable',
+    'get_keyboard',
+    'get_pointing_device',
+    'Header',
+    'listitems',
+    'MainView',
+    'OptionSelector',
+    'popups',
+    'QQuickListView',
+    'TabBar',
+    'Tabs',
+    'tests',
+    'TextField',
+    'Toolbar',
+    'ToolkitException',
+    'UbuntuUIToolkitCustomProxyObjectBase',
+]
+
+
+from ubuntuuitoolkit import (
+    base,
+    emulators,
+    environment,
+    fixture_setup,
+    tests,
+)
+from ubuntuuitoolkit._custom_proxy_objects import (
+    check_autopilot_version,
+    CheckBox,
+    Flickable,
+    get_keyboard,
+    get_pointing_device,
+    Header,
+    listitems,
+    MainView,
+    OptionSelector,
+    popups,
+    QQuickListView,
+    TabBar,
+    Tabs,
+    TextField,
+    Toolbar,
+    ToolkitException,
+    UbuntuUIToolkitCustomProxyObjectBase,
+)

@@ -8,3 +8,10 @@ internal YearModel YearModel.qml
 internal MonthModel MonthModel.qml
 internal DayModel DayModel.qml
 internal PickerModelBase PickerModelBase.qml
+
+#version 1.0
+Picker 1.0 Picker.qml
+PickerDelegate 1.0 PickerDelegate.qml
+Dialer 1.0 Dialer.qml
+DialerHand 1.0 DialerHand.qml
+DatePicker 1.0 DatePicker.qml

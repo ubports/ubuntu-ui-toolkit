@@ -15,6 +15,11 @@
  */
 
 /*!
+    \qmlmodule Ubuntu.Layouts 1.0
+    \title Layouts
+*/
+
+/*!
   \page ubuntu-layouts.html
   \title Layouts - Introduction
   \nextpage Layouts - Terminology
@@ -177,7 +182,7 @@
   \section2 Import
   First of all, in order to use the layouting abilities, you need to import Ubuntu.Layouts.
   \code
-  import Ubuntu.Layouts 0.1
+  import Ubuntu.Layouts 1.0
   \endcode
 
   This layout will have the red button anchored to the parent's left, top and bottom, having
