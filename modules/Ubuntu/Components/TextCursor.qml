@@ -250,8 +250,8 @@ Ubuntu.StyledItem {
         x: mappedCursorPosition().x
         y: mappedCursorPosition().y
 
-        // the caret should be visible only while the cursor's top/bottom
-        // falls into the text area
+        // manual clipping: the caret should be visible only while the cursor's
+        // top/bottom falls into the text area
         visible: {
             if (!cursorItem.visible || cursorItem.opacity < 1.0)
                 return false;
