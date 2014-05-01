@@ -230,6 +230,7 @@ Item {
                         ListItem.Standard {
                             action: styledItem.actions[numberOfSlots.used + index]
                             objectName: action.objectName + "_header_overflow_button"
+                            onClicked: actionsOverflowPopover.hide()
                         }
                     }
                 }
