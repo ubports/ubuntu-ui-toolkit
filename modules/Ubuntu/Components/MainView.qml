@@ -402,8 +402,8 @@ PageTreeNode {
                 }
                 return actionList;
             }
-            actions: mainView.activeLeafNode && mainView.activeLeafNode.hasOwnProperty("tools") ?
-                         getActionsFromTools(mainView.activeLeafNode.tools) : null
+            actions: contentsClipper.activePage ?
+                         getActionsFromTools(contentsClipper.activePage.tools) : null
         }
 
         Connections {
