@@ -68,8 +68,11 @@ MainView {
             }
 
             back: ToolbarButton {
-                text: "cancel"
-                iconSource: Qt.resolvedUrl("../../../modules/Ubuntu/Components/artwork/back.png")
+                action: Action {
+                    text: "cancel"
+                    iconName: "cancel"
+                    onTriggered: print("cancelled!")
+                }
                 anchors.verticalCenter: parent.verticalCenter
             }
         }

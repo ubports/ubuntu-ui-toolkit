@@ -74,6 +74,16 @@ Item {
         height: headerStyle.contentHeight
 
         AbstractButton {
+            id: customLeftButton
+            objectName: "customLeftButton"
+            height: parent ? parent.height : undefined
+            width: visible ? units.gu(5) : 0
+            action: styledItem.__leftAction
+            visible: null !== styledItem.__leftAction
+            style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
+        }
+
+        AbstractButton {
             id: backButton
             objectName: "backButton"
             height: parent ? parent.height : undefined
@@ -81,7 +91,8 @@ Item {
 
             iconName: "back"
             visible: styledItem.pageStack !== null &&
-                     styledItem.pageStack.depth > 1
+                     styledItem.pageStack.depth > 1 &&
+                     !customLeftButton.visible
 
             text: "back"
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
@@ -98,7 +109,8 @@ Item {
             width: visible ? units.gu(5) : 0
 
             iconName: "navigation-menu"
-            visible: styledItem.tabsModel !== null && !backButton.visible
+            visible: styledItem.tabsModel !== null && !backButton.visible &&
+                     !customLeftButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", tabsButton)
 
@@ -166,7 +178,8 @@ Item {
             id: numberOfSlots
             property int requested: styledItem.actions && styledItem.actions.hasOwnProperty("length") ?
                                          styledItem.actions.length : 0
-            property int left: tabsButton.visible || backButton.visible ? 1 : 0
+            property int left: tabsButton.visible || backButton.visible ||
+                               customLeftButton.visible ? 1 : 0
             property int right: 3 - left
             property int overflow: actionsOverflowButton.visible ? 1 : 0
             property int used: Math.min(right - overflow, requested)
