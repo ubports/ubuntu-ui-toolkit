@@ -22,7 +22,7 @@ MainView {
     width: 800
     height: 600
     id: mainView
-//    useDeprecatedToolbar: false
+    useDeprecatedToolbar: false
 
     Tabs {
         id: tabs
