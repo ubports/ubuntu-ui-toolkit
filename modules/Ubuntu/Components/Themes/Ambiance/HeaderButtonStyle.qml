@@ -35,5 +35,9 @@ Item {
         height: visuals.iconWidth
         source: styledItem.iconSource
         opacity: styledItem.enabled ? 1.0 : 0.3
+        sourceSize {
+            width: width
+            height: height
+        }
     }
 }
