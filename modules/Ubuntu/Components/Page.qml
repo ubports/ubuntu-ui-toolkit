@@ -142,13 +142,6 @@ PageTreeNode {
     Object {
         id: internal
 
-        Binding {
-            target: internal.header
-            property: "pageStack"
-            value: page.pageStack
-            when: page.active && internal.header != null && page.pageStack != null
-        }
-
         UnityActions.ActionContext {
             id: actionContext
 

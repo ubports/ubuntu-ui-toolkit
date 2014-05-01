@@ -341,6 +341,7 @@ PageTreeNode {
 
             title: internal.activePage ? internal.activePage.title : ""
             flickable: internal.activePage ? internal.activePage.flickable : null
+            pageStack: internal.activePage ? internal.activePage.pageStack : null
 
             property Item tabBar: null
             Binding {
