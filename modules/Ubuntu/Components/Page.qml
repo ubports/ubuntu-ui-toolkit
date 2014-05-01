@@ -158,45 +158,6 @@ PageTreeNode {
             when: page.active && internal.header != null && page.pageStack != null
         }
 
-        Binding {
-            target: internal.header
-            property: "actions"
-            value: internal.headerActions
-            when: internal.header && page.active && internal.headerActions !== null
-        }
-
-        // the actions that will be bind to internal.header.actions
-        property var headerActions: null
-        Connections {
-            target: page
-            onToolsChanged: {
-                internal.headerActions = internal.getActionsFromTools(page.tools);
-            }
-            Component.onCompleted: {
-                internal.headerActions = internal.getActionsFromTools(page.tools);
-            }
-        }
-
-        function getActionsFromTools(tools) {
-            if (!tools.hasOwnProperty("contents")) {
-                // tools is not of type ToolbarActions. Not supported.
-                return null;
-            }
-
-            var actionList = [];
-            for (var i in tools.contents) {
-                var item = tools.contents[i];
-                if (item && item.hasOwnProperty("action") && item.action !== null) {
-                    var action = item.action;
-                    if (action.hasOwnProperty("iconName") && action.hasOwnProperty("text")) {
-                        // it is likely that the action is of type Action.
-                        actionList.push(action);
-                    }
-                }
-            }
-            return actionList;
-        }
-
         UnityActions.ActionContext {
             id: actionContext
 
