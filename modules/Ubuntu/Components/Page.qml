@@ -127,17 +127,8 @@ PageTreeNode {
 
     /*! \internal */
     onActiveChanged: {
-        internal.updateHeaderAndToolbar();
         internal.updateActions();
     }
-    /*! \internal */
-    onTitleChanged: internal.updateHeaderAndToolbar()
-    /*! \internal */
-    onToolsChanged: internal.updateHeaderAndToolbar()
-    /*! \internal */
-    onPageStackChanged: internal.updateHeaderAndToolbar()
-    /*! \internal */
-    onFlickableChanged: internal.updateHeaderAndToolbar()
 
     /*!
       Local actions. These actions will be made available outside the application
@@ -184,22 +175,11 @@ PageTreeNode {
         // When there is a flickable, the header will automatically position it.
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
 
-        onHeaderChanged: internal.updateHeaderAndToolbar()
-        onToolbarChanged: internal.updateHeaderAndToolbar()
-
-        function updateHeaderAndToolbar() {
-            if (page.active) {
-                if (internal.header) {
-                    internal.header.title = page.title;
-                    internal.header.flickable = page.flickable;
-                }
-                if (tools) {
-                    if (tools.hasOwnProperty("pageStack")) tools.pageStack = page.pageStack;
-                }
-                if (internal.toolbar) {
-                    internal.toolbar.tools = page.tools;
-                }
-            }
+        Binding {
+            target: tools
+            property: "pageStack"
+            value: page.pageStack
+            when: tools && tools.hasOwnProperty("pageStack")
         }
 
         function isVerticalFlickable(object) {
