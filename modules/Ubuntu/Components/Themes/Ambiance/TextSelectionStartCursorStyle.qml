@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,13 +24,13 @@ Item {
       for styles to define values for this property if the cursor blinking is not
       desired. A value of 0 turns off the cursor blinking.
       */
-    property int cursorVisibleTimeout: 800
+    property int cursorVisibleTimeout: 0
     /*!
       Property specifying the hidden timeout of the cursor. It is not mandatory
       for styles to define values for this property if the cursor blinking is not
       desired. A value of 0 turns off the cursor blinking.
       */
-    property int cursorHiddenTimeout: 400
+    property int cursorHiddenTimeout: 0
 
     /*!
       Component defining the default cursor visuals.
@@ -49,33 +49,18 @@ Item {
         Rectangle {
             width: units.dp(1)
             color: Theme.palette.selected.foreground
-            visible: blinkTimer.timerShowCursor
-            Timer {
-                id: blinkTimer
-                interval: cursorStyle.cursorVisibleTimeout
-                running: (cursorStyle.cursorVisibleTimeout > 0) &&
-                         (cursorStyle.cursorHiddenTimeout > 0) &&
-                         styledItem.visible
-                repeat: true
-                property bool timerShowCursor: true
-                onTriggered: {
-                    interval = (interval == cursorStyle.cursorVisibleTimeout) ?
-                                cursorStyle.cursorHiddenTimeout : cursorStyle.cursorVisibleTimeout;
-                    timerShowCursor = !timerShowCursor;
-                }
-            }
         }
     }
 
     // caretItem
     Image {
         id: caretItem
-        source: "artwork/teardrop-left.png"
+        source: "artwork/teardrop-right.png"
         anchors {
             top: parent.bottom
             horizontalCenter: parent.horizontalCenter
             topMargin: -units.gu(1)
-            horizontalCenterOffset: units.gu(0.7)
+            horizontalCenterOffset: -units.gu(0.7)
         }
     }
 }
