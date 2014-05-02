@@ -5,13 +5,13 @@
 export DPKG_GENSYMBOLS_CHECK_LEVEL=4
 DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
+# Skip tests on the archs they are known to be flaky  with current configuration
+testskip_architectures := powerpc
 
 %:
 	dh $@ --fail-missing
 
 override_dh_auto_test:
-	# Skip tests on the archs they are known to be flaky  with current configuration
-	testskip_architectures := powerpc
 	ifneq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(testskip_architectures)))
 		flake8 tests/autopilot/ubuntuuitoolkit/
 		ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
