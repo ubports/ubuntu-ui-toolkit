@@ -21,7 +21,7 @@
 /*!
  * \qmltype ItemLayout
  * \instantiates ULItemLayout
- * \inqmlmodule Ubuntu.Layouts 0.1
+ * \inqmlmodule Ubuntu.Layouts 1.0
  * \ingroup ubuntu-layouts
  * \brief ItemLayout defines a new size & position of a single Item, for the purposes
  * of specifying layouts. This is to be used within a ConditionalLayout definition.

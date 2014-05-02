@@ -95,7 +95,11 @@ QQuickItem *QuickUtils::rootItem(QObject *object)
         // we reach QQuickView's contentItem, whose size is invalid. Therefore
         // we need to return the QQuickView's rootObject() instead of the topmost
         // item found
-        return m_rootView->rootObject();
+        parentItem = m_rootView->rootObject();
+    }
+    // in case the item found is derived from internal QQuickRootItem, return its first child
+    if (parentItem && parentItem->inherits("QQuickRootItem")) {
+        parentItem = parentItem->childItems()[0];
     }
     return parentItem;
 }

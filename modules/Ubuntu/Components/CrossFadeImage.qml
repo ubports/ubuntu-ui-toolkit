@@ -19,7 +19,7 @@ import QtQuick 2.0
 // we need to use named imports otherwise namespace collision is reported
 // by the QML engine. As workaround, we use Ubuntu named import.
 // Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Ubuntu
+import Ubuntu.Components 1.1 as Ubuntu
 
 /*!
    \qmltype CrossFadeImage
@@ -28,7 +28,7 @@ import Ubuntu.Components 0.1 as Ubuntu
 
    \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.1
 
         CrossFadeImage {
             width: units.gu(100)

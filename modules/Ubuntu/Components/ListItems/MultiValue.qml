@@ -18,14 +18,14 @@ import QtQuick 2.0
 
 /*!
     \qmltype MultiValue
-    \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief List item displaying multiple values.
     \b{This component is under heavy development.}
 
     Examples:
     \qml
-        import Ubuntu.Components.ListItems 0.1 as ListItem
+        import Ubuntu.Components.ListItems 1.0 as ListItem
         Column {
             ListItem.MultiValue {
                 text: "Label"

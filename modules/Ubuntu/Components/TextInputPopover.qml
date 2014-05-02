@@ -15,8 +15,8 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Toolkit
-import "Popups" 0.1
+import Ubuntu.Components 1.1 as Toolkit
+import Ubuntu.Components.Popups 1.0
 
 ActionSelectionPopover {
     objectName: "text_input_popover"
