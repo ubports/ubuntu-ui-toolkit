@@ -74,7 +74,7 @@ Item {
         height: headerStyle.contentHeight
 
         AbstractButton {
-            id: customLeftButton
+            id: customBackButton
             objectName: "customBackButton"
             height: parent ? parent.height : undefined
             width: visible ? units.gu(5) : 0
@@ -92,7 +92,7 @@ Item {
             iconName: "back"
             visible: styledItem.pageStack !== null &&
                      styledItem.pageStack.depth > 1 &&
-                     !customLeftButton.visible
+                     !customBackButton.visible
 
             text: "back"
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
@@ -110,7 +110,7 @@ Item {
 
             iconName: "navigation-menu"
             visible: styledItem.tabsModel !== null && !backButton.visible &&
-                     !customLeftButton.visible
+                     !customBackButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", tabsButton)
 
@@ -179,7 +179,7 @@ Item {
             property int requested: styledItem.actions && styledItem.actions.hasOwnProperty("length") ?
                                          styledItem.actions.length : 0
             property int left: tabsButton.visible || backButton.visible ||
-                               customLeftButton.visible ? 1 : 0
+                               customBackButton.visible ? 1 : 0
             property int right: 3 - left
             property int overflow: actionsOverflowButton.visible ? 1 : 0
             property int used: Math.min(right - overflow, requested)
