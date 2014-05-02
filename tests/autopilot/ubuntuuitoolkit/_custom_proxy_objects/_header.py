@@ -52,14 +52,17 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     def click_custom_back_button(self):
         if self.useDeprecatedToolbar:
-            raise _common.ToolkitException('Old header has no custom back button')
+            raise _common.ToolkitException(
+                'Old header has no custom back button')
         try:
             custom_back_button = self.select_single(
                 'AbstractButton', objectName='customBackButton')
         except dbus.StateNotFoundError:
-            raise _common.ToolkitException('Missing custom back button in header')
+            raise _common.ToolkitException(
+                'Missing custom back button in header')
         if not custom_back_button.visible:
-            raise _common.ToolkitException('Custom back button in header not visible')
+            raise _common.ToolkitException(
+                'Custom back button in header not visible')
         self.pointing_device.click_object(custom_back_button)
 
     def _get_animating(self):
