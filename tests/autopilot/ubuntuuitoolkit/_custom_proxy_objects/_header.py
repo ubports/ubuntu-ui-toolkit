@@ -55,7 +55,7 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
             raise _common.ToolkitException('Old header has no custom back button')
         try:
             custom_back_button = self.select_single(
-                'AbstractButton', objectName='customLeftButton')
+                'AbstractButton', objectName='customBackButton')
         except dbus.StateNotFoundError:
             raise _common.ToolkitException('Missing custom back button in header')
         if not custom_back_button.visible:

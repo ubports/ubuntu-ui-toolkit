@@ -71,7 +71,7 @@ StyledItem
     property var tabsModel
     property var pageStack
     property var actions
-    property var __leftAction
+    property var __customBackAction
     property Flickable flickable
     property bool useDeprecatedToolbar
 Icon 0.1 1.0

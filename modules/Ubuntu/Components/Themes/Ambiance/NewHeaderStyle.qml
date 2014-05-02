@@ -75,11 +75,11 @@ Item {
 
         AbstractButton {
             id: customLeftButton
-            objectName: "customLeftButton"
+            objectName: "customBackButton"
             height: parent ? parent.height : undefined
             width: visible ? units.gu(5) : 0
-            action: styledItem.__leftAction
-            visible: null !== styledItem.__leftAction
+            action: styledItem.__customBackAction
+            visible: null !== styledItem.__customBackAction
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
         }
 

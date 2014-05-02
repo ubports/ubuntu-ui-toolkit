@@ -342,7 +342,7 @@ PageTreeNode {
             title: internal.activePage ? internal.activePage.title : ""
             flickable: internal.activePage ? internal.activePage.flickable : null
             pageStack: internal.activePage ? internal.activePage.pageStack : null
-            __leftAction: internal.activePage && internal.activePage.tools &&
+            __customBackAction: internal.activePage && internal.activePage.tools &&
                           internal.activePage.tools.hasOwnProperty("back") &&
                           internal.activePage.tools.back.hasOwnProperty("action") ?
                               internal.activePage.tools.back.action : null
