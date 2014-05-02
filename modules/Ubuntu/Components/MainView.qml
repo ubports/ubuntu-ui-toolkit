@@ -262,14 +262,7 @@ PageTreeNode {
             // only clip when necessary
             // ListView headers may be positioned at the top, independent from
             // flickable.contentY, so do not clip depending on activePage.flickable.contentY.
-            clip: headerItem.bottomY > 0 && activePage && activePage.flickable
-
-            property Page activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
-
-            function isPage(item) {
-                return item && item.hasOwnProperty("__isPageTreeNode") && item.__isPageTreeNode &&
-                        item.hasOwnProperty("title") && item.hasOwnProperty("tools");
-            }
+            clip: headerItem.bottomY > 0 && internal.activePage && internal.activePage.flickable
 
             Item {
                 id: contents
@@ -324,6 +317,7 @@ PageTreeNode {
                     }
                 }
                 animate: canvas.animate
+                tools: internal.activePage ? internal.activePage.tools : null
             }
         }
 
@@ -344,6 +338,10 @@ PageTreeNode {
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
             animate: canvas.animate
+
+            title: internal.activePage ? internal.activePage.title : ""
+            flickable: internal.activePage ? internal.activePage.flickable : null
+            pageStack: internal.activePage ? internal.activePage.pageStack : null
 
             property Item tabBar: null
             Binding {
@@ -402,8 +400,8 @@ PageTreeNode {
                 }
                 return actionList;
             }
-            actions: mainView.activeLeafNode && mainView.activeLeafNode.hasOwnProperty("tools") ?
-                         getActionsFromTools(mainView.activeLeafNode.tools) : null
+            actions: internal.activePage ?
+                         getActionsFromTools(internal.activePage.tools) : null
         }
 
         Connections {
@@ -446,6 +444,14 @@ PageTreeNode {
 
     Object {
         id: internal
+
+        property Page activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
+
+        function isPage(item) {
+            return item && item.hasOwnProperty("__isPageTreeNode") && item.__isPageTreeNode &&
+                    item.hasOwnProperty("title") && item.hasOwnProperty("tools");
+        }
+
         UnityActions.ActionManager {
             id: unityActionManager
             onQuit: {
@@ -459,14 +465,14 @@ PageTreeNode {
         /*!
           \internal
           The header that will be propagated to the children in the page tree node.
-          It will be used by the active \l Page to set the title.
+          It is used by Tabs to bind header's tabsModel.
          */
         property Header header: headerItem
 
         /*!
           \internal
+          \deprecated
           The toolbar that will be propagated to the children in the page tree node.
-          It will be used by the active \l Page to set the toolbar actions.
          */
         property Toolbar toolbar: toolbarLoader.item
 

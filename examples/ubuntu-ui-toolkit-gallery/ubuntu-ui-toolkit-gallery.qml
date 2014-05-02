@@ -94,11 +94,11 @@ MainView {
         }
     ]
 
-
-    property var selectedWidget
+    property var selectedWidget: null
 
     Page {
         id: mainPage
+        active: selectedWidget == null
 
         title: "Ubuntu UI Toolkit"
         /* Page internally sets the topMargin of its flickable to account for
@@ -134,7 +134,7 @@ MainView {
 
     Page {
         id: contentPage
-
+        active: selectedWidget != null
         title: selectedWidget ? selectedWidget.label : ""
         /* Page internally sets the topMargin of its flickable to account for
            the height of the header. Undo it when unsetting the flickable.

@@ -127,17 +127,8 @@ PageTreeNode {
 
     /*! \internal */
     onActiveChanged: {
-        internal.updateHeaderAndToolbar();
         internal.updateActions();
     }
-    /*! \internal */
-    onTitleChanged: internal.updateHeaderAndToolbar()
-    /*! \internal */
-    onToolsChanged: internal.updateHeaderAndToolbar()
-    /*! \internal */
-    onPageStackChanged: internal.updateHeaderAndToolbar()
-    /*! \internal */
-    onFlickableChanged: internal.updateHeaderAndToolbar()
 
     /*!
       Local actions. These actions will be made available outside the application
@@ -150,13 +141,6 @@ PageTreeNode {
 
     Object {
         id: internal
-
-        Binding {
-            target: internal.header
-            property: "pageStack"
-            value: page.pageStack
-            when: page.active && internal.header != null && page.pageStack != null
-        }
 
         Binding {
             target: internal.header
@@ -187,28 +171,15 @@ PageTreeNode {
         }
 
         property Header header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
-        property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ? page.__propagated.toolbar : null
-
         // Used to position the Page when there is no flickable.
         // When there is a flickable, the header will automatically position it.
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
 
-        onHeaderChanged: internal.updateHeaderAndToolbar()
-        onToolbarChanged: internal.updateHeaderAndToolbar()
-
-        function updateHeaderAndToolbar() {
-            if (page.active) {
-                if (internal.header) {
-                    internal.header.title = page.title;
-                    internal.header.flickable = page.flickable;
-                }
-                if (tools) {
-                    if (tools.hasOwnProperty("pageStack")) tools.pageStack = page.pageStack;
-                }
-                if (internal.toolbar) {
-                    internal.toolbar.tools = page.tools;
-                }
-            }
+        Binding {
+            target: tools
+            property: "pageStack"
+            value: page.pageStack
+            when: tools && tools.hasOwnProperty("pageStack")
         }
 
         function isVerticalFlickable(object) {
