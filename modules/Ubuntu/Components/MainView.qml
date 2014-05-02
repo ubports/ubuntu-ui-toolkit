@@ -344,6 +344,7 @@ PageTreeNode {
             pageStack: internal.activePage ? internal.activePage.pageStack : null
             __customBackAction: internal.activePage && internal.activePage.tools &&
                           internal.activePage.tools.hasOwnProperty("back") &&
+                          internal.activePage.tools.back &&
                           internal.activePage.tools.back.hasOwnProperty("action") ?
                               internal.activePage.tools.back.action : null
 
