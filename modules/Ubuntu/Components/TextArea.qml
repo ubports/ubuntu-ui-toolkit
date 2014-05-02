@@ -744,6 +744,7 @@ StyledItem {
     }
 
     //internals
+
     opacity: enabled ? 1.0 : 0.3
 
     /*!\internal */

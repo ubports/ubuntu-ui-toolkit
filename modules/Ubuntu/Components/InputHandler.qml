@@ -212,9 +212,8 @@ Item {
 
     // moves the cursor one page forward with or without positioning the cursor
     function movePage(forward) {
-        var crect = input.cursorRectangle;
-        var cx = crect.x;
-        var cy = crect.y;
+        var cx = input.cursorRectangle.x;
+        var cy = input.cursorRectangle.y;
         if (forward) {
             if (singleLine) {
                 cx += visibleArea.width;
@@ -228,7 +227,7 @@ Item {
                 cy -= visibleArea.height;
             }
         }
-        input.cursorPosition = cursorPosition(cx, cy);;
+        input.cursorPosition = cursorPosition(cx, cy);
     }
 
     Component.onCompleted: {
