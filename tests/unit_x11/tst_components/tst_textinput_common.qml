@@ -229,7 +229,7 @@ Item {
             if (data.xfail) {
                 expectFailContinue(data.tag, "With modifier");
             }
-            cursorRectSpy.wait();
+            cursorRectSpy.wait(500);
             cursorRectSpy.target = null;
         }
     }
