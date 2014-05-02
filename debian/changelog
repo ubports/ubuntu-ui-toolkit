@@ -1,3 +1,28 @@
+ubuntu-ui-toolkit (0.1.46+14.10.20140502.6-0ubuntu1) utopic; urgency=low
+
+  [ Tarmac ]
+  * [ Zoltán Balogh]   * Skip tests only for powerpc   [ Christian Dywan
+    ]   * Use locale format specifier in textfield_numbers. (LP:
+    #1311907, #1283236, #1285958, #1124071, #1256424, #1276172,
+    #1228042, #1183255, #1283212, #1168914, #1273187, #1276821,
+    #1308086, #1288937, #1292601)
+
+  [ Zoltán Balogh ]
+  * [ Zoltán Balogh]   * Skip tests only for powerpc   [ Christian Dywan
+    ]   * Use locale format specifier in textfield_numbers. (LP:
+    #1311907, #1283236, #1285958, #1124071, #1256424, #1276172,
+    #1228042, #1183255, #1283212, #1168914, #1273187, #1276821,
+    #1308086, #1288937, #1292601)
+
+  [ tpeeters ]
+  * [ Zoltán Balogh]   * Skip tests only for powerpc   [ Christian Dywan
+    ]   * Use locale format specifier in textfield_numbers. (LP:
+    #1311907, #1283236, #1285958, #1124071, #1256424, #1276172,
+    #1228042, #1183255, #1283212, #1168914, #1273187, #1276821,
+    #1308086, #1288937, #1292601)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 02 May 2014 16:31:41 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20140408.1-0ubuntu1) trusty; urgency=low
 
   [ Zoltán Balogh ]
