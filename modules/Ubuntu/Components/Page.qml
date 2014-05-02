@@ -142,15 +142,6 @@ PageTreeNode {
     Object {
         id: internal
 
-        Binding {
-            target: internal.header
-            property: "__leftAction"
-            value: page.tools.back.action
-            when: page.tools && page.tools.hasOwnProperty("back") &&
-                  page.tools.back && page.tools.back.hasOwnProperty("action") &&
-                  page.tools.back.action !== null
-        }
-
         UnityActions.ActionContext {
             id: actionContext
 
