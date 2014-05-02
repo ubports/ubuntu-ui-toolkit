@@ -215,7 +215,6 @@ Item {
         }
         function test_input_pageup_pagedown(data) {
             var handler = findChild(data.input, "input_handler");
-            cursorRectSpy.target = null;
             data.input.focus = true;
 
             // move the cursor to the end
@@ -231,6 +230,7 @@ Item {
                 expectFailContinue(data.tag, "With modifier");
             }
             cursorRectSpy.wait();
+            cursorRectSpy.target = null;
         }
     }
 }
