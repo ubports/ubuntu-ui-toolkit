@@ -23,8 +23,7 @@ endif
 endif
 
 override_dh_build:
-ifeq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(build_architectures)))
-	echo "BUILD --> " $(DEB_HOST_ARCH)
+ifeq ($(DEB_HOST_ARCH),amd64)
 	dh_auto_build
 	dh_auto_build -- docs
 endif
