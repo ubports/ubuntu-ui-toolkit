@@ -5,15 +5,15 @@
 export DPKG_GENSYMBOLS_CHECK_LEVEL=4
 DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
+
 # Skip tests on the archs they are known to be flaky  with current configuration
-testskip_architectures := powerpc
-build_architectures :=  powerpc amd64
+testskip_architectures := powerpc 
 
 %:
 	dh $@ --fail-missing
 
 override_dh_auto_test:
-ifneq (,$(findstring $(DEB_HOST_ARCH), $(testskip_architectures)))
+ifneq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(testskip_architectures)))
 	flake8 tests/autopilot/ubuntuuitoolkit/
 ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
 	mkdir -p debian/tmp/home/run
@@ -23,10 +23,8 @@ endif
 endif
 
 override_dh_build:
-ifeq ($(DEB_HOST_ARCH),amd64)
 	dh_auto_build
 	dh_auto_build -- docs
-endif
 
 override_dh_install:
 	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
