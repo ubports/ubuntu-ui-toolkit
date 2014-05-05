@@ -1,25 +1,44 @@
 ubuntu-ui-toolkit (0.1.46+14.10.20140502.6-0ubuntu1) utopic; urgency=low
 
-  [ Tarmac ]
-  * [ Zoltán Balogh]   * Skip tests only for powerpc   [ Christian Dywan
-    ]   * Use locale format specifier in textfield_numbers. (LP:
-    #1311907, #1283236, #1285958, #1124071, #1256424, #1276172,
-    #1228042, #1183255, #1283212, #1168914, #1273187, #1276821,
-    #1308086, #1288937, #1292601)
+  [ Zoltán Balogh]
+  * Skip tests only for powerpc
 
-  [ Zoltán Balogh ]
-  * [ Zoltán Balogh]   * Skip tests only for powerpc   [ Christian Dywan
-    ]   * Use locale format specifier in textfield_numbers. (LP:
-    #1311907, #1283236, #1285958, #1124071, #1256424, #1276172,
-    #1228042, #1183255, #1283212, #1168914, #1273187, #1276821,
-    #1308086, #1288937, #1292601)
+  [ Christian Dywan ]
+  * Use locale format specifier in textfield_numbers. Fixes: (LP: #1311907)
+  * Resolve QList<QQmlError> warnings by porting to UbuntuTestCase.warnings.
 
-  [ tpeeters ]
-  * [ Zoltán Balogh]   * Skip tests only for powerpc   [ Christian Dywan
-    ]   * Use locale format specifier in textfield_numbers. (LP:
-    #1311907, #1283236, #1285958, #1124071, #1256424, #1276172,
-    #1228042, #1183255, #1283212, #1168914, #1273187, #1276821,
-    #1308086, #1288937, #1292601)
+  [Andrew Hayzen]
+  * Animation of the listItem when cancelItemRemoval() is called
+
+  [ Zsombor Egri ]
+  * Introducing Ubuntu.Components.Styles 1.1 module.
+  * Text inputs show context menu when right-clicked on desktop. Fixes: (LP: #1276821)
+  * Fixes TextField and TextArea selection and scrolling behaviors. Fixes: (LP: #1168914), (LP: #1183255)
+  * Dismiss Popovers when any of the mouse buttons is pressed.
+  * ComboButton component. Fixes: (LP: #1276172)
+  * QuickUtils::rootItem() to return the actual root object in case the internal root item is reached.
+  * Moving to import version 1.0, which is the same as version 0.1.
+  * Fix for alarm dates to occur in the same time in all timezones. Fixes: (LP: #1283236)
+  * Mouse filters forwarding fix to proxy items.
+  * Fix for arm64 test failure. Fixes: (LP: #1308086)
+  * Fix alarm fetching order and interval. Fixes: (LP: #1283212, (LP: #1285958)
+  * Flick and mouse long press simulation added to UbuntuTestCase. Fixes: (LP: #1288937)
+
+  [ Tim Peeters ]
+  * Remove already inherited properties from OptionSelectorDelegate, ValueSelector, Subtitled, Standard and Base list item components.
+  * Change parent of OptionSelectorDelegate from Standard to Empty, because it effectively disabled all the visuals of Standard.
+  * Back button in new header. Fixes: (LP: #1256424)
+  * First version of the tabs in a drawer. Fixes: (LP: #1228042), (LP: #1273187)
+  * Put the TabBar inside of the HeaderStyle instead of directly in the style. Fixes: (LP: #1292601)
+  * Make the panel draggable again instead of opening completely on press.
+  * Create a new entry in CHANGES to record the changes for Ubuntu.Components 1.1.
+  * Move the property to keep track of the selected tab to the tabs model.
+
+  [ Leo Arias ]
+  * Deprecated the ubuntuuitoolkit.emulators namespace. Split the autopilot helpers in smaller files.
+
+  [ Chris Gagnon ]
+  * autopilot emulator for OptionSelector.
 
  -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 02 May 2014 16:31:41 +0000
 
