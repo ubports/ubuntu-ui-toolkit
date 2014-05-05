@@ -41,6 +41,13 @@ MainView {
         }
 
         tools: ToolbarItems {
+            back: ToolbarButton {
+                action: Action {
+                    iconName: "cancel"
+                    text: "cancel"
+                    onTriggered: label.text = "Cancel button clicked."
+                }
+            }
             Repeater {
                 model: 5
                 ToolbarButton {
@@ -74,7 +81,7 @@ MainView {
         self.assertEqual(self.label.text, 'Button 1 clicked.')
 
     def test_click_header_overflow_action_button(self):
-        # there are more than 3 buttons, so the first two go in the header
+        # custom back button and first action button go in the header
         # and the others in the overflow.
         self.header.click_action_button('action3')
         self.assertEqual(self.label.text, 'Button 3 clicked.')
@@ -86,3 +93,8 @@ MainView {
         self.assertEqual(
             str(error),
             'Button not found in header or overflow')
+
+    # back button and tabs button are tested in pagestack and tabs tests
+    def test_click_custom_back_button(self):
+        self.header.click_custom_back_button()
+        self.assertEqual(self.label.text, 'Cancel button clicked.')
