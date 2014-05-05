@@ -46,6 +46,7 @@ Item {
     }
 
     Scrollbar {
+        objectName: "TemplateScrollbar"
         flickableItem: flickable
     }
 }
