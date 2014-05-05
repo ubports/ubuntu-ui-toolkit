@@ -21,7 +21,7 @@ cd tests/autopilot
 
 echo running with arg: $1
 
-UBUNTU_UI_TOOLKIT_AUTOPILOT_FROM_SOURCE=1
+export UBUNTU_UI_TOOLKIT_AUTOPILOT_FROM_SOURCE=1
 if [ "$1" == "" ]; then
         autopilot3 run ubuntuuitoolkit
 else

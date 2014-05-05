@@ -18,6 +18,7 @@
 
 from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
+from autopilot import platform
 
 from ubuntuuitoolkit import emulators
 from ubuntuuitoolkit.tests import gallery
@@ -39,11 +40,15 @@ class GenericTests(gallery.GalleryTestCase):
         self.checkPageHeader(item)
         # By default there's no interactive thumb
         scrollbar = self.main_view.select_single('Scrollbar', objectName="TemplateScrollbar")
-        self.assertThat(scrollbar.__interactive, False)
+        self.assertEqual(scrollbar.interactive, False)
         # On the desktop (or any device with a mouse)
         if platform.model() == 'Desktop':
-            # TODO: Move the mouse
-            self.assertThat(scrollbar.__interactive, True)
+            # Move the mouse to activate the thumb
+            flickable = self.main_view.select_single(emulators.Flickable, objectName='TemplateFlickable')
+            bottomSection = self.main_view.select_single(className='PageStack')
+            flickable.click_element(bottomSection)
+            self.assertEqual(scrollbar.interactive, True)
+            # TODO: Drag the thumb
 
     def test_slider(self):
         item = "Slider"

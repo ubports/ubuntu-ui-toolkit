@@ -29,6 +29,7 @@ Item {
     property Flickable flickable: flickable
 
     Flickable {
+        objectName: "TemplateFlickable"
         id: flickable
         anchors.fill: parent
         anchors.topMargin: units.gu(2)
@@ -46,7 +47,9 @@ Item {
     }
 
     Scrollbar {
+        id: sb
         objectName: "TemplateScrollbar"
         flickableItem: flickable
+        property alias interactive: sb.__interactive
     }
 }
