@@ -44,9 +44,8 @@ class GenericTests(gallery.GalleryTestCase):
         # On the desktop (or any device with a mouse)
         if platform.model() == 'Desktop':
             # Move the mouse to activate the thumb
-            flickable = self.main_view.select_single(emulators.Flickable, objectName='TemplateFlickable')
             bottomSection = self.main_view.select_single(className='PageStack')
-            flickable.click_element(bottomSection)
+            bottomSection.swipe_into_view()
             self.assertEqual(scrollbar.interactive, True)
             # TODO: Drag the thumb
 
