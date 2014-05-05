@@ -112,6 +112,7 @@ Depends: qmlscene,
          qtdeclarative5-ubuntu-ui-toolkit-plugin,
          ubuntu-ui-toolkit-theme,
          qtdeclarative5-xmllistmodel-plugin,
+         qml-module-qt-labs-folderlistmodel,
          ${misc:Depends},
          ${shlibs:Depends}
 Recommends: libqt5multimedia5-plugins, ubuntu-ui-toolkit-doc
