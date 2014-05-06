@@ -33,7 +33,6 @@ MainView {
                     left: parent.left
                     verticalCenter: parent.verticalCenter
                 }
-
             }
         }
 
