@@ -57,9 +57,8 @@ Item {
     function activateInput() {
         if (!input.activeFocus) {
             input.forceActiveFocus();
-        } else {
-            showInputPanel();
         }
+        showInputPanel();
     }
 
     function showInputPanel() {

@@ -180,3 +180,18 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
             toolbar.click_back_button()
         else:
             self.get_header().click_back_button()
+
+    @autopilot_logging.log_action(logger.info)
+    def click_action_button(self, action_object_name):
+        """Click the specified button.
+
+        :parameter action_object_name: the objectName of the action to trigger.
+        :raise ToolkitException: The requested button is not available.
+
+        """
+        if self.useDeprecatedToolbar:
+            raise _common.ToolkitException(
+                "App is using deprecated toolbar instead of new header")
+        else:
+            header = self.open_header()
+            header.click_action_button(action_object_name)

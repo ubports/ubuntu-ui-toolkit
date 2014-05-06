@@ -48,6 +48,27 @@ Template {
         }
     }
 
+    TemplateSection {
+        title: i18n.tr("ThinDivider")
+        className: "ThinDivider"
+
+        Column {
+            anchors.left: parent.left
+            anchors.right: parent.right
+
+            ListItem.Standard {
+                text: i18n.tr("Label")
+                showDivider: false
+            }
+            ListItem.ThinDivider {
+            }
+            ListItem.Standard {
+                text: i18n.tr("Label")
+                showDivider: false
+            }
+        }
+    }
+
     ListItemsSection {
         title: i18n.tr("Progression")
         className: "Standard"
