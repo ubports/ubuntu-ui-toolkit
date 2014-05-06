@@ -158,6 +158,7 @@ Item {
         Label {
             LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
 
+            visible: !styledItem.contents
             anchors {
                 left: parent.left
                 verticalCenter: parent.verticalCenter
@@ -168,6 +169,19 @@ Item {
             font.weight: headerStyle.fontWeight
             fontSize: headerStyle.fontSize
             color: headerStyle.textColor
+        }
+
+        Binding {
+            target: styledItem.contents
+            property: "anchors.fill"
+            value: foreground
+            when: styledItem.contents
+        }
+        Binding {
+            target: styledItem.contents
+            property: "parent"
+            value: foreground
+            when: styledItem.contents
         }
     }
 
