@@ -54,6 +54,16 @@ class QQuickFlickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         else:
             logger.debug('The element is already visible.')
 
+    @autopilot_logging.log_action(logger.info)
+    def is_child_visible(self, child):
+        """Determine if the child is visible.
+
+        A child is visible if no scrolling is needed to reveal it.
+
+        """
+        containers = self._get_containers()
+        return self._is_child_visible(child, containers)
+
     def _get_containers(self):
         """Return a list with the containers to take into account when swiping.
 

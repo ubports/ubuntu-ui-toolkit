@@ -63,9 +63,7 @@ class GenericTests(gallery.GalleryTestCase):
             bottomSection = self.main_view.select_single(className='PageStack')
             flickable = self.main_view.select_single(
                 'QQuickFlickable', objectName='TemplateFlickable')
-            # FIXME: Use public API once it becomes available
-            self.assertEqual(flickable._is_child_visible(bottomSection,
-                             flickable._get_containers()), True)
+            self.assertEqual(flickable.is_child_visible(bottomSection), True)
 
     def test_slider(self):
         item = "Slider"
