@@ -171,16 +171,24 @@ Item {
             color: headerStyle.textColor
         }
 
+        Item {
+            // This Item is used to make the custom header item invisible
+            // when styledItem.contents is unset and its parent is not updated
+            // when the bindings below is no longer active
+            id: contentsContainer
+            anchors.fill: parent
+            visible: styledItem.contents
+        }
         Binding {
             target: styledItem.contents
             property: "anchors.fill"
-            value: foreground
+            value: contentsContainer
             when: styledItem.contents
         }
         Binding {
             target: styledItem.contents
             property: "parent"
-            value: foreground
+            value: contentsContainer
             when: styledItem.contents
         }
     }
