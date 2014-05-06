@@ -59,7 +59,7 @@ Item {
         anchors {
             top: parent.bottom
             horizontalCenter: parent.horizontalCenter
-            topMargin: -units.gu(1)
+            topMargin: -units.gu(0.5)
             horizontalCenterOffset: units.gu(0.7)
         }
     }
