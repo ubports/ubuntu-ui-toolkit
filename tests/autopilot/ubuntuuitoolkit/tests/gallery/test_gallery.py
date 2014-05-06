@@ -38,10 +38,17 @@ class GenericTests(gallery.GalleryTestCase):
         item = "Navigation"
         self.loadItem(item)
         self.checkPageHeader(item)
+
+    def test_scrollbars(self):
+        item = "Navigation"
+        self.loadItem(item)
+        self.checkPageHeader(item)
+
         # By default there's no interactive thumb
         scrollbar = self.main_view.select_single(
             'Scrollbar', objectName="TemplateScrollbar")
         self.assertEqual(scrollbar.interactive, False)
+
         # On the desktop (or any device with a mouse)
         if platform.model() == 'Desktop':
             # Move the mouse to activate the thumb
