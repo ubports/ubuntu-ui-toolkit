@@ -603,6 +603,7 @@ UbuntuTestCase 0.1 1.0
 TestCase
     function findChild(obj,objectName)
     function findInvisibleChild(obj,objectName)
+    function findChildWithProperty(item, property, value)
     function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay)
     function flick(item, x, y, dx, dy, pressTimeout, steps, button, modifiers, delay)
     function mouseLongPress(item, x, y, button, modifiers, delay)
