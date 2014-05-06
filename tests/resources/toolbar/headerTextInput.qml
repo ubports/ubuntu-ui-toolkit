@@ -27,7 +27,7 @@ MainView {
 
         id: page
 
-        property Item customHeaderContents: Item {
+        __customHeaderContents: Item {
             TextField {
                 anchors {
                     left: parent.left
@@ -56,7 +56,7 @@ MainView {
                     text: "cancel"
                     iconName: "cancel"
                     onTriggered: {
-                        page.customHeaderContents = null;
+                        page.__customHeaderContents = null;
                     }
                 }
                 anchors.verticalCenter: parent.verticalCenter

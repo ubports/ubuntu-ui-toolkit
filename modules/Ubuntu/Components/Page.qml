@@ -89,6 +89,12 @@ PageTreeNode {
     property Item tools: ToolbarItems { }
 
     /*!
+      \internal
+      Set this property to replace the title label in the header by any Item.
+     */
+    property Item __customHeaderContents: null
+
+    /*!
       Optional flickable that controls the header. This property
       is automatically set to the first child of the page that is Flickable
       and anchors to the top of the page or fills the page. For example:
