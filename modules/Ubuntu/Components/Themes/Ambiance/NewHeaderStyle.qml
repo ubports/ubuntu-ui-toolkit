@@ -152,6 +152,8 @@ Item {
             left: leftButtonContainer.right
             right: actionsContainer.left
             top: parent.top
+            // don't keep a margin if there is already a button with spacing
+            leftMargin: leftButtonContainer.width > 0 ? 0 : headerStyle.textLeftMargin
         }
         height: headerStyle.contentHeight
 
@@ -162,8 +164,6 @@ Item {
             anchors {
                 left: parent.left
                 verticalCenter: parent.verticalCenter
-                // don't keep a margin if there is already a button with spacing
-                leftMargin: leftButtonContainer.width > 0 ? 0 : headerStyle.textLeftMargin
             }
             text: styledItem.title
             font.weight: headerStyle.fontWeight
