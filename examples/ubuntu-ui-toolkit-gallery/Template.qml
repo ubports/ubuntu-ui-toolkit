@@ -30,6 +30,7 @@ Item {
 
     Flickable {
         id: flickable
+        objectName: "TemplateFlickable"
         anchors.fill: parent
         anchors.topMargin: units.gu(2)
         anchors.bottomMargin: units.gu(2)

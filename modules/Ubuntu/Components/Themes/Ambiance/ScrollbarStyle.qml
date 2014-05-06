@@ -409,6 +409,7 @@ Item {
 
     Item {
         id: thumb
+        objectName: "interactiveScrollbarThumb"
 
         enabled: interactive
 

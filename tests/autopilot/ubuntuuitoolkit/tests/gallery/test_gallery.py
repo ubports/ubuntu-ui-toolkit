@@ -39,15 +39,26 @@ class GenericTests(gallery.GalleryTestCase):
         self.loadItem(item)
         self.checkPageHeader(item)
         # By default there's no interactive thumb
-        scrollbar = self.main_view.select_single('Scrollbar', objectName="TemplateScrollbar")
+        scrollbar = self.main_view.select_single(
+            'Scrollbar', objectName="TemplateScrollbar")
         self.assertEqual(scrollbar.interactive, False)
         # On the desktop (or any device with a mouse)
         if platform.model() == 'Desktop':
             # Move the mouse to activate the thumb
-            bottomSection = self.main_view.select_single(className='PageStack')
-            bottomSection.swipe_into_view()
+            thumb = scrollbar.select_single(
+                objectName='interactiveScrollbarThumb')
+            self.pointing_device.move_to_object(thumb)
             self.assertEqual(scrollbar.interactive, True)
-            # TODO: Drag the thumb
+            # Drag the thumb downwards
+            x, y = self.pointing_device.position()
+            self.pointing_device.drag(x, y, x, self.main_view.height)
+            # The bottom should be visible
+            bottomSection = self.main_view.select_single(className='PageStack')
+            flickable = self.main_view.select_single(
+                'QQuickFlickable', objectName='TemplateFlickable')
+            # FIXME: Use public API once it becomes available
+            self.assertEqual(flickable._is_child_visible(bottomSection,
+                             flickable._get_containers()), True)
 
     def test_slider(self):
         item = "Slider"
