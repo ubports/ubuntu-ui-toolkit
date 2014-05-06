@@ -91,6 +91,7 @@ PageTreeNode {
     /*!
       \internal
       Set this property to replace the title label in the header by any Item.
+      It will be automatically anchored to fill the title space in the header.
      */
     property Item __customHeaderContents: null
 
