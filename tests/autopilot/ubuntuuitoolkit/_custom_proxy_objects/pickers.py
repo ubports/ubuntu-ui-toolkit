@@ -82,6 +82,7 @@ class DatePicker(_common.UbuntuUIToolkitCustomProxyObjectBase):
             QQuickPathView, objectName='Picker_WrapAround')
         self._pick_date_value(self.month, month, path_view)
 
+    @autopilot_logging.log_action(logger.info)
     def _pick_day(self, day):
         picker = self.select_single(
             'Picker', objectName='PickerRow_DayPicker')
