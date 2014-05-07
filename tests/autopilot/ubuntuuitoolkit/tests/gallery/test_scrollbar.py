@@ -39,7 +39,7 @@ class ScrollBarTestCase(gallery.GalleryTestCase):
     def test_scrollbar_must_start_without_interactive_thumb(self):
         self.assertEqual(self.scrollbar.interactive, False)
 
-    def test_move_mouse_to_thumb_make_scrollbar_interactive(self):
+    def test_move_mouse_to_thumb_must_make_scrollbar_interactive(self):
         if platform.model() != 'Desktop':
             self.skipTest(
                 'The interactive thumb is activated only by the move of a '
