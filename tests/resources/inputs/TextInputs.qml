@@ -74,6 +74,10 @@ MainView {
                     autoSize: true
                     maximumLineCount: 0
                     text: "Lorem Ipsum is simply dummy text\nof the printing and typesetting\nindustry.\n"
+                    cursorDelegate: Rectangle {
+                        width: units.dp(4)
+                        color: "blue"
+                    }
                 }
                 TextArea {
                     autoSize: true

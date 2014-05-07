@@ -244,10 +244,8 @@ ActionItem {
 
       Note that the root item of the delegate component must be a QQuickItem or
       QQuickItem derived item.
-
-      \qmlproperty Component cursorDelegate
     */
-    property alias cursorDelegate: editor.cursorDelegate
+    property Component cursorDelegate: null
 
     /*!
       The position of the cursor in the TextField.
@@ -910,20 +908,6 @@ ActionItem {
         }
     }
 
-    // cursor
-    Component {
-        id: cursor
-        TextCursor {
-            //FIXME: connect to root object once we have all TextInput properties exposed
-            editorItem: editor
-            height: internal.lineSize
-            popover: control.popover
-            visible: editor.cursorVisible
-
-            Component.onCompleted: inputHandler.pressAndHold.connect(openPopover)
-        }
-    }
-
     AbstractButton {
         id: clearButton
         objectName: "clear_button"
@@ -939,7 +923,6 @@ ActionItem {
                     (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
 
         Image {
-            //anchors.fill: parent
             anchors.verticalCenter: parent.verticalCenter
             width: units.gu(3)
             height: width
@@ -997,9 +980,9 @@ ActionItem {
             // FocusScope will forward focus to this component
             focus: true
             anchors.verticalCenter: parent.verticalCenter
-            // get the control's style
-            clip: true
-            cursorDelegate: cursor
+            cursorDelegate: TextCursor {
+                handler: inputHandler
+            }
             color: control.__styleInstance.color
             selectedTextColor: Theme.palette.selected.foregroundText
             selectionColor: Theme.palette.selected.foreground
@@ -1021,6 +1004,13 @@ ActionItem {
                 input: editor
                 flickable: flicker
                 selectionModeTimeout: control.__styleInstance.selectionModeTimeout
+                /*
+                  In x direction we use 2 times the configured spacing, as we have
+                  both the overlay and the Flickable aligned with margins. On y
+                  direction we only use the simple spacing, the Flickable moves the
+                  top downwards.
+                  */
+                frameDistance: Qt.point(2 * internal.spacing, internal.spacing)
             }
         }
     }
