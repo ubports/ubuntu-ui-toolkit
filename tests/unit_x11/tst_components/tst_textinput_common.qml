@@ -211,6 +211,14 @@ Item {
                 {tag: "Ctrl+PageDown in TextField", input: textField, moveToEnd: false, key: Qt.Key_PageDown, modifier: Qt.ControlModifier, xfail: true},
                 {tag: "Ctrl+PageUp in TextArea", input: textArea, moveToEnd: true, key: Qt.Key_PageUp, modifier: Qt.ControlModifier, xfail: true},
                 {tag: "Ctrl+PageDown in TextArea", input: textArea, moveToEnd: false, key: Qt.Key_PageDown, modifier: Qt.ControlModifier, xfail: true},
+                {tag: "Shift+PageUp in TextField", input: textField, moveToEnd: true, key: Qt.Key_PageUp, modifier: Qt.ShiftModifier, xfail: true},
+                {tag: "Shift+PageDown in TextField", input: textField, moveToEnd: false, key: Qt.Key_PageDown, modifier: Qt.ShiftModifier, xfail: true},
+                {tag: "Shift+PageUp in TextArea", input: textArea, moveToEnd: true, key: Qt.Key_PageUp, modifier: Qt.ShiftModifier, xfail: true},
+                {tag: "Shift+PageDown in TextArea", input: textArea, moveToEnd: false, key: Qt.Key_PageDown, modifier: Qt.ShiftModifier, xfail: true},
+                {tag: "Alt+PageUp in TextField", input: textField, moveToEnd: true, key: Qt.Key_PageUp, modifier: Qt.AltModifier, xfail: true},
+                {tag: "Alt+PageDown in TextField", input: textField, moveToEnd: false, key: Qt.Key_PageDown, modifier: Qt.AltModifier, xfail: true},
+                {tag: "Alt+PageUp in TextArea", input: textArea, moveToEnd: true, key: Qt.Key_PageUp, modifier: Qt.AltModifier, xfail: true},
+                {tag: "Alt+PageDown in TextArea", input: textArea, moveToEnd: false, key: Qt.Key_PageDown, modifier: Qt.AltModifier, xfail: true},
             ];
         }
         function test_input_pageup_pagedown(data) {
