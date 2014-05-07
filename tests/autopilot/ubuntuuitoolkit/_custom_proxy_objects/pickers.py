@@ -20,7 +20,11 @@ import logging
 from autopilot import logging as autopilot_logging
 from autopilot.introspection import dbus
 
-from ubuntuuitoolkit._custom_proxy_objects import _common, _qquicklistview
+from ubuntuuitoolkit._custom_proxy_objects import (
+    _common,
+    _flickable,
+    _qquicklistview
+)
 
 
 logger = logging.getLogger(__name__)
@@ -46,13 +50,13 @@ class DatePicker(_common.UbuntuUIToolkitCustomProxyObjectBase):
         if 'Years' in self.mode:
             self._pick_year(date.year)
             self.year.wait_for(date.year)
-        # Python's date object starts at one. The model in the date picker
-        # at 0.
         if 'Month' in self.mode:
+            # Python's date object starts at one. The model in the date picker
+            # at 0.
             self._pick_month(date.month - 1)
             self.month.wait_for(date.month - 1)
         if 'Day' in self.mode:
-            self._pick_day(date.day - 1)
+            self._pick_day(date.day)
             self.day.wait_for(date.day)
 
     def _is_date_picker(self):
@@ -73,20 +77,22 @@ class DatePicker(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _pick_month(self, month):
         picker = self.select_single(
             'Picker', objectName='PickerRow_MonthPicker')
-        list_view = picker.select_single(objectName='Picker_WrapAround')
-        self._pick_date_value(self.month, month, list_view)
+        scrollable = picker.select_single(objectName='Picker_WrapAround')
+        self._pick_date_value(self.month, month, scrollable)
 
     def _pick_day(self, day):
         picker = self.select_single(
             'Picker', objectName='PickerRow_DayPicker')
-        list_view = picker.select_single(objectName='Picker_WrapAround')
-        self._pick_date_value(self.day, day, list_view)
+        scrollable = picker.select_single(objectName='Picker_WrapAround')
+        # Python's date object starts at one. The model in the date picker
+        # at 0.
+        self._pick_date_value(self.get_date().day - 1, day - 1, scrollable)
 
-    def _pick_date_value(self, current_value, new_value, list_view):
+    def _pick_date_value(self, current_value, new_value, scrollable):
         if new_value > current_value:
-            click_method = list_view.click_element_swiping_to_bottom
+            click_method = scrollable.click_element_swiping_to_bottom
         elif new_value < current_value:
-            click_method = list_view.click_element_swiping_to_top
+            click_method = scrollable.click_element_swiping_to_top
         else:
             logger.debug('The value is already selected.')
             return
@@ -172,7 +178,7 @@ class _DateLinearPickerQQuickListView(_qquicklistview.QQuickListView):
             'List element with objectName "{}" not found.'.format(object_name))
 
 
-class _DateQQuickPathView(_DateLinearPickerQQuickListView):
+class _DateQQuickPathView(_flickable.Scrollable):
 
     @classmethod
     def validate_dbus_object(cls, path, state):
@@ -180,6 +186,33 @@ class _DateQQuickPathView(_DateLinearPickerQQuickListView):
             if 'Picker_WrapAround' == state['objectName'][1]:
                 return True
         return False
+
+    def _slow_drag(self, start_x, stop_x, start_y, stop_y):
+        # If we drag too fast, we end up scrolling more than what we
+        # should, sometimes missing the  element we are looking for.
+        self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=1)
+
+    @autopilot_logging.log_action(logger.info)
+    def click_element_swiping_to_bottom(self, object_name):
+        self._click_element_swiping(object_name, 'bottom')
+
+    @autopilot_logging.log_action(logger.info)
+    def click_element_swiping_to_top(self, object_name):
+        self._click_element_swiping(object_name, 'top')
+
+    def _click_element_swiping(self, object_name, direction):
+        try:
+            element = self.select_single(objectName=object_name)
+        except dbus.StateNotFoundError:
+            # The element might be on a part of the list that hasn't been
+            # created yet. We have to search for it scrolling.
+            if direction == 'bottom':
+                find_method = self._find_element_swiping_to_bottom
+            elif direction == 'top':
+                find_method = self._find_element_swiping_to_top
+            element = find_method(object_name)
+        self.swipe_child_into_view(element)
+        self.pointing_device.click_object(element)
 
     @autopilot_logging.log_action(logger.info)
     def _find_element_swiping_to_bottom(self, object_name):
@@ -232,6 +265,20 @@ class _DateQQuickPathView(_DateLinearPickerQQuickListView):
         self._slow_drag(start_x, stop_x, start_y, stop_y)
         self.dragging.wait_for(False)
         self.moving.wait_for(False)
+
+    @autopilot_logging.log_action(logger.info)
+    def swipe_child_into_view(self, child):
+        """Make the child visible.
+
+        Currently it works only when the object needs to be swiped vertically.
+        TODO implement horizontal swiping. --elopio - 2014-03-21
+
+        """
+        containers = self._get_containers()
+        if not self._is_child_visible(child, containers):
+            self._swipe_non_visible_child_into_view(child, containers)
+        else:
+            logger.debug('The element is already visible.')
 
     @autopilot_logging.log_action(logger.info)
     def _swipe_non_visible_child_into_view(self, child, containers):

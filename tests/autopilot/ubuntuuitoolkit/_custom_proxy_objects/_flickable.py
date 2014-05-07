@@ -38,21 +38,7 @@ def _get_visible_container_bottom(containers):
     return min(containers_bottom)
 
 
-class Flickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
-
-    @autopilot_logging.log_action(logger.info)
-    def swipe_child_into_view(self, child):
-        """Make the child visible.
-
-        Currently it works only when the object needs to be swiped vertically.
-        TODO implement horizontal swiping. --elopio - 2014-03-21
-
-        """
-        containers = self._get_containers()
-        if not self._is_child_visible(child, containers):
-            self._swipe_non_visible_child_into_view(child, containers)
-        else:
-            logger.debug('The element is already visible.')
+class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     def _get_containers(self):
         """Return a list with the containers to take into account when swiping.
@@ -89,6 +75,28 @@ class Flickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         visible_bottom = _get_visible_container_bottom(containers)
         return (object_center >= visible_top and
                 object_center <= visible_bottom)
+
+    def _slow_drag(self, start_x, stop_x, start_y, stop_y):
+        # If we drag too fast, we end up scrolling more than what we
+        # should, sometimes missing the  element we are looking for.
+        self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=5)
+
+
+class Flickable(Scrollable):
+
+    @autopilot_logging.log_action(logger.info)
+    def swipe_child_into_view(self, child):
+        """Make the child visible.
+
+        Currently it works only when the object needs to be swiped vertically.
+        TODO implement horizontal swiping. --elopio - 2014-03-21
+
+        """
+        containers = self._get_containers()
+        if not self._is_child_visible(child, containers):
+            self._swipe_non_visible_child_into_view(child, containers)
+        else:
+            logger.debug('The element is already visible.')
 
     @autopilot_logging.log_action(logger.info)
     def _swipe_non_visible_child_into_view(self, child, containers):
@@ -136,11 +144,6 @@ class Flickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self._slow_drag(start_x, stop_x, start_y, stop_y)
         self.dragging.wait_for(False)
         self.moving.wait_for(False)
-
-    def _slow_drag(self, start_x, stop_x, start_y, stop_y):
-        # If we drag too fast, we end up scrolling more than what we
-        # should, sometimes missing the  element we are looking for.
-        self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=5)
 
     @autopilot_logging.log_action(logger.info)
     def _scroll_to_top(self):
