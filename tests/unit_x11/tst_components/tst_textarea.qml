@@ -138,7 +138,7 @@ Item {
         }
 
         function test_0_cursorDelegate() {
-            compare((textArea.cursorDelegate!=null),true,"TextArea.cursorDelegate is not null")
+            verify(textArea.cursorDelegate === null, "TextArea.cursorDelegate is not null")
         }
 
         function test_0_cursorPosition() {
@@ -242,15 +242,16 @@ Item {
             compare(textArea.highlighted, textArea.focus, "highlighted is the same as focused");
         }
 
-        function test_contentHeight() {
-            compare(textArea.contentHeight>0,true,"contentHeight over 0 units on default")
+        function test_0_contentHeight() {
+            verify(textArea.contentHeight > 0, "contentHeight over 0 units on default")
             var newValue = 200;
             textArea.contentHeight = newValue;
             compare(textArea.contentHeight,newValue,"set/get");
         }
 
-        function test_contentWidth() {
-            compare(textArea.contentWidth,units.gu(30),"contentWidth is 30 units on default")
+        function test_0_contentWidth() {
+            var style = findChild(textArea, "textarea_style");
+            compare(textArea.contentWidth, units.gu(30) - 2 * style.frameSpacing, "contentWidth is the implicitWidth - 2 times the frame size on default")
             var newValue = 200;
             textArea.contentWidth = newValue;
             compare(textArea.contentWidth,newValue,"set/get");
