@@ -989,7 +989,8 @@ ActionItem {
             font.pixelSize: FontUtils.sizeToPixels("medium")
             passwordCharacter: "\u2022"
             // forward keys to the root element so it can be captured outside of it
-            Keys.forwardTo: [control]
+            // as well as to InputHandler to handle PageUp/PageDown keys
+            Keys.forwardTo: [control, inputHandler]
 
             // overrides
             selectByMouse: false

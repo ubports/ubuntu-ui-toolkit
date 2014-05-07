@@ -209,6 +209,26 @@ Item {
         }
     }
 
+    // moves the cursor one page forward with or without positioning the cursor
+    function movePage(forward) {
+        var cx = input.cursorRectangle.x;
+        var cy = input.cursorRectangle.y;
+        if (forward) {
+            if (singleLine) {
+                cx += visibleArea.width;
+            } else {
+                cy += visibleArea.height;
+            }
+        } else {
+            if (singleLine) {
+                cx -= visibleArea.width;
+            } else {
+                cy -= visibleArea.height;
+            }
+        }
+        input.cursorPosition = cursorPosition(cx, cy);
+    }
+
     Component.onCompleted: {
         state = (main.focus) ? "" : "inactive";
     }
@@ -298,6 +318,15 @@ Item {
             if (scroller && !scroller.moving) {
                 state = "select";
             }
+        }
+    }
+
+    // PageUp and PageDown handling
+    Keys.onPressed: {
+        if (event.key === Qt.Key_PageUp && event.modifiers === Qt.NoModifier) {
+            movePage(false);
+        } else if (event.key === Qt.Key_PageDown && event.modifiers === Qt.NoModifier) {
+            movePage(true);
         }
     }
 

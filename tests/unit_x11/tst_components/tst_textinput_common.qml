@@ -86,6 +86,7 @@ Item {
             popupSpy.clear();
             movementXSpy.clear();
             movementYSpy.clear();
+            cursorRectSpy.clear();
         }
 
         function test_textfield_grab_caret_data() {
@@ -193,6 +194,51 @@ Item {
             // dismiss popover
             mouseClick(testMain, testMain.width / 2, testMain.height / 2);
             wait(200);
+        }
+
+        SignalSpy {
+            id: cursorRectSpy
+            signalName: "cursorRectangleChanged"
+        }
+
+        function test_input_pageup_pagedown_data() {
+            return [
+                {tag: "PageUp in TextField", input: textField, moveToEnd: true, key: Qt.Key_PageUp, modifier: Qt.NoModifier, xfail: false},
+                {tag: "PageDown in TextField", input: textField, moveToEnd: false, key: Qt.Key_PageDown, modifier: Qt.NoModifier, xfail: false},
+                {tag: "PageUp in TextArea", input: textArea, moveToEnd: true, key: Qt.Key_PageUp, modifier: Qt.NoModifier, xfail: false},
+                {tag: "PageDown in TextArea", input: textArea, moveToEnd: false, key: Qt.Key_PageDown, modifier: Qt.NoModifier, xfail: false},
+                {tag: "Ctrl+PageUp in TextField", input: textField, moveToEnd: true, key: Qt.Key_PageUp, modifier: Qt.ControlModifier, xfail: true},
+                {tag: "Ctrl+PageDown in TextField", input: textField, moveToEnd: false, key: Qt.Key_PageDown, modifier: Qt.ControlModifier, xfail: true},
+                {tag: "Ctrl+PageUp in TextArea", input: textArea, moveToEnd: true, key: Qt.Key_PageUp, modifier: Qt.ControlModifier, xfail: true},
+                {tag: "Ctrl+PageDown in TextArea", input: textArea, moveToEnd: false, key: Qt.Key_PageDown, modifier: Qt.ControlModifier, xfail: true},
+                {tag: "Shift+PageUp in TextField", input: textField, moveToEnd: true, key: Qt.Key_PageUp, modifier: Qt.ShiftModifier, xfail: true},
+                {tag: "Shift+PageDown in TextField", input: textField, moveToEnd: false, key: Qt.Key_PageDown, modifier: Qt.ShiftModifier, xfail: true},
+                {tag: "Shift+PageUp in TextArea", input: textArea, moveToEnd: true, key: Qt.Key_PageUp, modifier: Qt.ShiftModifier, xfail: true},
+                {tag: "Shift+PageDown in TextArea", input: textArea, moveToEnd: false, key: Qt.Key_PageDown, modifier: Qt.ShiftModifier, xfail: true},
+                {tag: "Alt+PageUp in TextField", input: textField, moveToEnd: true, key: Qt.Key_PageUp, modifier: Qt.AltModifier, xfail: true},
+                {tag: "Alt+PageDown in TextField", input: textField, moveToEnd: false, key: Qt.Key_PageDown, modifier: Qt.AltModifier, xfail: true},
+                {tag: "Alt+PageUp in TextArea", input: textArea, moveToEnd: true, key: Qt.Key_PageUp, modifier: Qt.AltModifier, xfail: true},
+                {tag: "Alt+PageDown in TextArea", input: textArea, moveToEnd: false, key: Qt.Key_PageDown, modifier: Qt.AltModifier, xfail: true},
+            ];
+        }
+        function test_input_pageup_pagedown(data) {
+            var handler = findChild(data.input, "input_handler");
+            data.input.focus = true;
+
+            // move the cursor to the end
+            if (data.moveToEnd) {
+                keyClick(Qt.Key_End);
+                waitForRendering(data.input, 500);
+                verify(data.input.cursorPosition > 0, "The cursor wasn't moved");
+            }
+            cursorRectSpy.target = data.input;
+            keyClick(data.key, data.modifier);
+            waitForRendering(data.input, 500);
+            if (data.xfail) {
+                expectFailContinue(data.tag, "With modifier");
+            }
+            cursorRectSpy.wait(500);
+            cursorRectSpy.target = null;
         }
     }
 }
