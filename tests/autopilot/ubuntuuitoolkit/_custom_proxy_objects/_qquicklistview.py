@@ -66,8 +66,8 @@ class QQuickListView(_flickable.Flickable):
             raise _common.ToolkitException(
                 'Invalid direction: {}'.format(direction))
 
+        containers = self._get_containers()
         while not fail_condition():
-            containers = self._get_containers()
             swipe_method(containers)
             try:
                 return self.select_single(objectName=object_name)

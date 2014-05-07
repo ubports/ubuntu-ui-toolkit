@@ -133,6 +133,7 @@ class QQuickPathView(_flickable.Scrollable):
 
     @autopilot_logging.log_action(logger.info)
     def _find_element(self, object_name, direction):
+        containers = self._get_containers()
         for index in range(self.count):
             if direction == 'below':
                 swipe_method = self._swipe_to_show_one_more_below
@@ -142,7 +143,6 @@ class QQuickPathView(_flickable.Scrollable):
                 raise _common.ToolkitException(
                     'Invalid direction: {}'.format(direction))
 
-            containers = self._get_containers()
             swipe_method(containers)
 
             try:
