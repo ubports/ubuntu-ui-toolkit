@@ -137,16 +137,24 @@ Item {
             id: arrow
 
             visible: bubbleShape.direction != "none"
-            property var directionToRotation: {"down": 0,
-                                               "up": 180,
-                                               "left": 90,
-                                               "right": -90,
-                                               "none": 0
-                                              }
+
+            function directionToRotation(direction) {
+                switch (direction) {
+                case "up":
+                    return 180;
+                case "left":
+                    return 90
+                case "right":
+                    return -90;
+                default: // "down" or "none"
+                    return 0;
+                }
+            }
+
             x: -width / 2.0
             y: -height
             transformOrigin: Item.Bottom
-            rotation: directionToRotation[bubbleShape.direction]
+            rotation: directionToRotation(bubbleShape.direction)
             source: "artwork/bubble_arrow.png"
         }
     }
