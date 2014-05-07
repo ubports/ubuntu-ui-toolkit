@@ -143,7 +143,7 @@ Item {
                 case "up":
                     return 180;
                 case "left":
-                    return 90
+                    return 90;
                 case "right":
                     return -90;
                 default: // "down" or "none"
