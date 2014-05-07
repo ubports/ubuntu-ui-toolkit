@@ -28,6 +28,16 @@ logger = logging.getLogger(__name__)
 
 class QQuickListView(_flickable.Flickable):
 
+    @classmethod
+    def validate_dbus_object(cls, path, state):
+        name = dbus.get_classname_from_path(path)
+        if name == 'QQuickListView':
+            if 'Picker_Linear' == state['objectName'][1]:
+                return False
+            else:
+                return True
+        return False
+
     @autopilot_logging.log_action(logger.info)
     def click_element(self, object_name):
         """Click an element from the list.
