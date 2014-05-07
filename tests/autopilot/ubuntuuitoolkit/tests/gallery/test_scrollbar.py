@@ -42,14 +42,17 @@ class ScrollBarTestCase(gallery.GalleryTestCase):
     def test_move_mouse_to_thumb_must_make_scrollbar_interactive(self):
         if platform.model() != 'Desktop':
             self.skipTest(
-                'The interactive thumb is activated only by the move of a '
-                'mouse')
+                'The interactive thumb is activated by the move of a mouse')
 
         self.move_mouse_to_thumb()
 
         self.assertEqual(self.scrollbar.interactive, True)
 
     def test_drag_thumb_down_must_make_bottom_visible(self):
+        if platform.model() != 'Desktop':
+            self.skipTest(
+                'The interactive thumb is activated by the move of a mouse')
+
         bottom_section = self.main_view.select_single(className='PageStack')
         flickable = self.main_view.select_single(
             'QQuickFlickable', objectName='TemplateFlickable')
