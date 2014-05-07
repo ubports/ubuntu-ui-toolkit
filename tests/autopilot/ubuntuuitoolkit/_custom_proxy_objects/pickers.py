@@ -70,33 +70,38 @@ class DatePicker(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _pick_year(self, year):
         picker = self.select_single(
             'Picker', objectName='PickerRow_YearPicker')
-        list_view = picker.select_single(objectName='Picker_Linear')
+        list_view = picker.select_single(
+            _qquicklistview.QQuickListView, objectName='Picker_Linear')
         self._pick_date_value(self.year, year, list_view)
 
     @autopilot_logging.log_action(logger.info)
     def _pick_month(self, month):
         picker = self.select_single(
             'Picker', objectName='PickerRow_MonthPicker')
-        scrollable = picker.select_single(objectName='Picker_WrapAround')
-        self._pick_date_value(self.month, month, scrollable)
+        path_view = picker.select_single(
+            QQuickPathView, objectName='Picker_WrapAround')
+        self._pick_date_value(self.month, month, path_view)
 
     def _pick_day(self, day):
         picker = self.select_single(
             'Picker', objectName='PickerRow_DayPicker')
-        scrollable = picker.select_single(objectName='Picker_WrapAround')
+        path_view = picker.select_single(
+            QQuickPathView, objectName='Picker_WrapAround')
         # Python's date object starts at one. The model in the date picker
         # at 0.
-        self._pick_date_value(self.get_date().day - 1, day - 1, scrollable)
+        self._pick_date_value(self.get_date().day - 1, day - 1, path_view)
 
     def _pick_date_value(self, current_value, new_value, scrollable):
         if new_value > current_value:
-            click_method = scrollable.click_element_swiping_to_bottom
+            direction = 'below'
         elif new_value < current_value:
-            click_method = scrollable.click_element_swiping_to_top
+            direction = 'above'
         else:
             logger.debug('The value is already selected.')
             return
-        click_method(object_name='PickerRow_PickerLabel{}'.format(new_value))
+        scrollable.click_element(
+            object_name='PickerRow_PickerLabel{}'.format(new_value),
+            direction=direction)
 
     def get_date(self):
         """Return the currently selected date.
@@ -110,127 +115,36 @@ class DatePicker(_common.UbuntuUIToolkitCustomProxyObjectBase):
             self.year, self.month + 1, self.day)
 
 
-class _DateLinearPickerQQuickListView(_qquicklistview.QQuickListView):
+class QQuickPathView(_flickable.Scrollable):
 
-    # Override the QQuickListView because:
-    # - it needs an even slower drag to not skip any elements.
-    # - the list can be infinite, and the default implementation of
-    # QQuickListView starts scrolling to top which might never finish.
-    # - we can take advantage of knowing if the index of the current selected
-    # value is higher or lower than the one we are looking for.
-
-    @classmethod
-    def validate_dbus_object(cls, path, state):
-        if dbus.get_classname_from_path(path) == 'QQuickListView':
-            if 'Picker_Linear' == state['objectName'][1]:
-                return True
-        return False
-
-    def _slow_drag(self, start_x, stop_x, start_y, stop_y):
-        # If we drag too fast, we end up scrolling more than what we
-        # should, sometimes missing the  element we are looking for.
-        self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=1)
+    # TODO make it more general and move it to its own module.
+    # --elopio - 2014-05-06
 
     @autopilot_logging.log_action(logger.info)
-    def click_element_swiping_to_bottom(self, object_name):
-        self._click_element_swiping(object_name, 'bottom')
-
-    @autopilot_logging.log_action(logger.info)
-    def click_element_swiping_to_top(self, object_name):
-        self._click_element_swiping(object_name, 'top')
-
-    def _click_element_swiping(self, object_name, direction):
+    def click_element(self, object_name, direction='below'):
         try:
             element = self.select_single(objectName=object_name)
         except dbus.StateNotFoundError:
             # The element might be on a part of the list that hasn't been
             # created yet. We have to search for it scrolling.
-            if direction == 'bottom':
-                find_method = self._find_element_swiping_to_bottom
-            elif direction == 'top':
-                find_method = self._find_element_swiping_to_top
-            element = find_method(object_name)
+            element = self._find_element(object_name, direction)
         self.swipe_child_into_view(element)
         self.pointing_device.click_object(element)
 
     @autopilot_logging.log_action(logger.info)
-    def _find_element_swiping_to_bottom(self, object_name):
-        while not self.atYEnd:
-            containers = self._get_containers()
-            self._swipe_to_show_more_below(containers)
-            try:
-                return self.select_single(objectName=object_name)
-            except dbus.StateNotFoundError:
-                pass
-        raise _common.ToolkitException(
-            'List element with objectName "{}" not found.'.format(object_name))
-
-    @autopilot_logging.log_action(logger.info)
-    def _find_element_swiping_to_top(self, object_name):
-        while not self.atYBeginning:
-            containers = self._get_containers()
-            self._swipe_to_show_more_above(containers)
-            try:
-                return self.select_single(objectName=object_name)
-            except dbus.StateNotFoundError:
-                pass
-        raise _common.ToolkitException(
-            'List element with objectName "{}" not found.'.format(object_name))
-
-
-class _DateQQuickPathView(_flickable.Scrollable):
-
-    @classmethod
-    def validate_dbus_object(cls, path, state):
-        if dbus.get_classname_from_path(path) == 'QQuickPathView':
-            if 'Picker_WrapAround' == state['objectName'][1]:
-                return True
-        return False
-
-    def _slow_drag(self, start_x, stop_x, start_y, stop_y):
-        # If we drag too fast, we end up scrolling more than what we
-        # should, sometimes missing the  element we are looking for.
-        self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=1)
-
-    @autopilot_logging.log_action(logger.info)
-    def click_element_swiping_to_bottom(self, object_name):
-        self._click_element_swiping(object_name, 'bottom')
-
-    @autopilot_logging.log_action(logger.info)
-    def click_element_swiping_to_top(self, object_name):
-        self._click_element_swiping(object_name, 'top')
-
-    def _click_element_swiping(self, object_name, direction):
-        try:
-            element = self.select_single(objectName=object_name)
-        except dbus.StateNotFoundError:
-            # The element might be on a part of the list that hasn't been
-            # created yet. We have to search for it scrolling.
-            if direction == 'bottom':
-                find_method = self._find_element_swiping_to_bottom
-            elif direction == 'top':
-                find_method = self._find_element_swiping_to_top
-            element = find_method(object_name)
-        self.swipe_child_into_view(element)
-        self.pointing_device.click_object(element)
-
-    @autopilot_logging.log_action(logger.info)
-    def _find_element_swiping_to_bottom(self, object_name):
+    def _find_element(self, object_name, direction):
         for index in range(self.count):
-            containers = self._get_containers()
-            self._swipe_to_show_one_more_below(containers)
-            try:
-                return self.select_single(objectName=object_name)
-            except dbus.StateNotFoundError:
-                pass
-        raise _common.ToolkitException(
-            'List element with objectName "{}" not found.'.format(object_name))
+            if direction == 'below':
+                swipe_method = self._swipe_to_show_one_more_below
+            elif direction == 'above':
+                swipe_method = self._swipe_to_show_one_more_above
+            else:
+                raise _common.ToolkitException(
+                    'Invalid direction: {}'.format(direction))
 
-    @autopilot_logging.log_action(logger.info)
-    def _find_element_swiping_to_top(self, object_name):
-        for index in range(self.count):
             containers = self._get_containers()
-            self._swipe_to_show_one_more_above(containers)
+            swipe_method(containers)
+
             try:
                 return self.select_single(objectName=object_name)
             except dbus.StateNotFoundError:
