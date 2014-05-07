@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013 Canonical Ltd.
+# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -18,7 +18,6 @@
 
 from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
-from autopilot import platform
 
 from ubuntuuitoolkit import emulators
 from ubuntuuitoolkit.tests import gallery
@@ -38,32 +37,6 @@ class GenericTests(gallery.GalleryTestCase):
         item = "Navigation"
         self.loadItem(item)
         self.checkPageHeader(item)
-
-    def test_scrollbars(self):
-        item = "Navigation"
-        self.loadItem(item)
-        self.checkPageHeader(item)
-
-        # By default there's no interactive thumb
-        scrollbar = self.main_view.select_single(
-            'Scrollbar', objectName="TemplateScrollbar")
-        self.assertEqual(scrollbar.interactive, False)
-
-        # On the desktop (or any device with a mouse)
-        if platform.model() == 'Desktop':
-            # Move the mouse to activate the thumb
-            thumb = scrollbar.select_single(
-                objectName='interactiveScrollbarThumb')
-            self.pointing_device.move_to_object(thumb)
-            self.assertEqual(scrollbar.interactive, True)
-            # Drag the thumb downwards
-            x, y = self.pointing_device.position()
-            self.pointing_device.drag(x, y, x, self.main_view.height)
-            # The bottom should be visible
-            bottomSection = self.main_view.select_single(className='PageStack')
-            flickable = self.main_view.select_single(
-                'QQuickFlickable', objectName='TemplateFlickable')
-            self.assertEqual(flickable.is_child_visible(bottomSection), True)
 
     def test_slider(self):
         item = "Slider"
