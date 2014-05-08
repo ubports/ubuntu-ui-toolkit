@@ -198,6 +198,7 @@ Template {
     }
 
     ListItemsSection {
+        id: removableSection
         title: i18n.tr("Removable")
         className: "Standard"
         delegate: ListItem.Standard {
@@ -207,6 +208,16 @@ Template {
             backgroundIndicator: Rectangle {
                 anchors.fill: parent
                 color: Theme.palette.normal.base
+            }
+        }
+
+        Toolkit.Button {
+            text: i18n.tr("Reset")
+            anchors.right: parent.right
+            onClicked: {
+                for (var i=0, iMax=removableSection.count; i < iMax; i++) {
+                    removableSection.itemAt(i).cancelItemRemoval()
+                }
             }
         }
     }
