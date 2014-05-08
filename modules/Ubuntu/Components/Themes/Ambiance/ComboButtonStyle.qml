@@ -16,73 +16,27 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 1.1
+import Ubuntu.Components.Styles 1.1 as Style
 
-/*!
-    \qmltype ComboButton
-    \ingroup style-api
-    \brief ComboButton style API.
-
-    The component defines the style of the ComboButton component.
-  */
-Item {
+Style.ComboButtonStyle {
     id: comboStyle
 
-    /*!
-      Width of the drop down button.
-      */
-    property real dropDownWidth: units.gu(5)
-
-    /*!
-      Width of the dropdown button separator.
-      */
-    property real dropDownSeparatorWidth: units.dp(2)
-
-    /*!
-      Distance between the combo list and the main button.
-      */
-    property real comboListMargin: units.gu(0.8)
-
-    /*!
-      The item which will holds the combo list data. Implementations can point both
-      this \l comboListPanel to the same component, however separate items should be
-      used if a gap between the panel and the content is required.
-      See Ambiance theme.
-      */
-    property Item comboListHolder: comboListContent
-
-    /*!
-      The item pointing to the panel holding the combo list and additional design
-      artifacts. It is used by the component to drive the expansion size.
-      */
-    property Item comboListPanel: panelItem
-
-    /*!
-      \qmlproperty color defaultColor
-      Default color for the main button.
-      */
-    property alias defaultColor: mainButton.defaultColor
-
-    /*!
-      \qmlproperty Gradient defaultGradient
-      Default gradient for the main button.
-      */
-    property alias defaultGradient: mainButton.defaultGradient
-
-    /*!
-      Default color for the dropdown button when released.
-      */
-    property color defaultDropdownColor: __combo.expanded ? Qt.rgba(0, 0, 0, 0.05) : defaultColor
-    /*!
-      Default button face font.
-      */
-    property alias defaultFont: mainButton.defaultFont
+    // configurations
+    dropDownWidth: units.gu(5)
+    dropDownSeparatorWidth: units.dp(2)
+    comboListMargin: units.gu(0.8)
+    comboListHolder: comboListContent
+    comboListPanel: panelItem
+    defaultColor: mainButton.defaultColor
+    defaultGradient: mainButton.defaultGradient
+    defaultDropdownColor: combo.expanded ? Qt.rgba(0, 0, 0, 0.05) : defaultColor
+    defaultFont: mainButton.defaultFont
 
 
-    width: __combo.width
-    height: __combo.collapsedHeight
+    width: combo.width
+    height: combo.collapsedHeight
 
-    /*! \internal */
-    property ComboButton __combo: styledItem
+    property ComboButton combo: styledItem
 
     implicitWidth: mainButton.implicitWidth
     implicitHeight: mainButton.implicitHeight
@@ -97,7 +51,7 @@ Item {
             top: parent.top
             right: parent.right
         }
-        height: __combo.collapsedHeight
+        height: combo.collapsedHeight
         // overrides
         backgroundSource: comboFace
         buttonFaceOffset: -dropDownWidth/2 - dropDownSeparatorWidth
@@ -130,8 +84,8 @@ Item {
                     fill: parent
                     rightMargin: comboStyle.dropDownSeparatorWidth + comboStyle.dropDownWidth
                 }
-                color: __combo.color
-                gradient: mainButton.isGradient ? __combo.gradient : null
+                color: combo.color
+                gradient: mainButton.isGradient ? combo.gradient : null
             }
 
             // distancer
@@ -153,11 +107,11 @@ Item {
                     bottom: parent.bottom
                 }
                 width: comboStyle.dropDownWidth
-                color: mainButton.__colorHack(__combo.dropdownColor)
+                color: mainButton.__colorHack(combo.dropdownColor)
                 Image {
                     source: "artwork/chevron.png"
                     anchors.centerIn: parent
-                    rotation: __combo.expanded ? -90 : 90
+                    rotation: combo.expanded ? -90 : 90
                 }
             }
         }
@@ -171,7 +125,7 @@ Item {
             top: mainButton.bottom
             right: parent.right
         }
-        opacity: __combo.expanded && (__combo.comboList.length > 0)? 1.0 : 0.0
+        opacity: combo.expanded && (combo.comboList.length > 0)? 1.0 : 0.0
 
         ShaderEffectSource {
             id: listContent
@@ -190,7 +144,7 @@ Item {
                 topMargin: comboListMargin
             }
             clip: true
-            color: mainButton.__colorHack(__combo.dropdownColor)
+            color: mainButton.__colorHack(combo.dropdownColor)
         }
 
         BorderImage {

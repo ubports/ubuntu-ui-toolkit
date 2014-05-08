@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Canonical Ltd.
+ * Copyright 2012-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,31 +17,27 @@
 import QtQuick 2.0
 import Ubuntu.Components 1.1
 
-MainView {
-    width: units.gu(50)
-    height: units.gu(80)
+Item {
+    id: visuals
+    // styling properties
+    property int iconWidth: units.gu(3)
+    property int iconHeight: units.gu(3)
 
-    Action {
-        id: action1
-        text: "action 1"
-        onTriggered: print("one!")
-    }
-    Action {
-        id: action2
-        text: "action 2"
-        onTriggered: print("two!")
-    }
+    width: units.gu(5)
+    height: units.gu(5)
 
-    Page {
-        title: "test page"
-
-        Label {
-            anchors.centerIn: parent
-            text: "Hello, world"
+    Image {
+        id: icon
+        anchors {
+            centerIn: parent
         }
-
-        tools: ToolbarActions {
-            actions: [action1, action2]
+        width: visuals.iconWidth
+        height: visuals.iconWidth
+        source: styledItem.iconSource
+        opacity: styledItem.enabled ? 1.0 : 0.3
+        sourceSize {
+            width: width
+            height: height
         }
     }
 }

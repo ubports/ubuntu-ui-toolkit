@@ -70,6 +70,8 @@ StyledItem
     property Item contents
     property var tabsModel
     property var pageStack
+    property var actions
+    property var __customBackAction
     property Flickable flickable
     property bool useDeprecatedToolbar
 Icon 0.1 1.0
@@ -83,8 +85,6 @@ Text
 Base 0.1 1.0
 Empty
     property variant icon
-    property url iconSource
-    property string iconName
     property url fallbackIconSource
     property string fallbackIconName
     property bool progression
@@ -159,8 +159,6 @@ Base
 Standard 0.1 1.0
 Empty
     property variant icon
-    property url iconSource
-    property string iconName
     property url fallbackIconSource
     property string fallbackIconName
     property bool progression
@@ -175,15 +173,12 @@ Empty
     property internal __foregroundColor
 Subtitled 0.1 1.0
 Base
-    property string text
     property string subText
 ThinDivider 0.1 1.0
 Image
 ValueSelector 0.1 1.0
 Empty
     property variant icon
-    property url iconSource
-    property string iconName
     property url fallbackIconSource
     property string fallbackIconName
     property real __iconWidth
@@ -222,12 +217,9 @@ ListItem.Empty
     signal delegateClicked(int index)
     signal expansionCompleted()
 OptionSelectorDelegate 0.1 1.0
-ListItem.Standard
-    property string text
+ListItem.Empty
     property string subText
     property url icon
-    property url iconSource
-    property string iconName
     property bool constrainImage
     property bool colourImage
     property color assetColour
@@ -404,6 +396,17 @@ StyledItem 0.1 1.0
 FocusScope
     property Component style
     readonly property Item __styleInstance
+ComboButtonStyle 1.1
+Item
+    property real dropDownWidth
+    property real dropDownSeparatorWidth
+    property real comboListMargin
+    property Item comboListHolder
+    property Item comboListPanel
+    property color defaultColor
+    property Gradient defaultGradient
+    property color defaultDropdownColor
+    property font defaultFont
 Switch 0.1 1.0
 CheckBox
 Tab 0.1 1.0
@@ -602,6 +605,7 @@ UbuntuTestCase 0.1 1.0
 TestCase
     function findChild(obj,objectName)
     function findInvisibleChild(obj,objectName)
+    function findChildWithProperty(item, property, value)
     function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay)
     function flick(item, x, y, dx, dy, pressTimeout, steps, button, modifiers, delay)
     function mouseLongPress(item, x, y, button, modifiers, delay)
