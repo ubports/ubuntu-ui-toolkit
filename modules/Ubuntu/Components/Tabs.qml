@@ -139,7 +139,6 @@ import QtQuick 2.0
                 }
                 Page {
                     id: page3
-                    visible: false
                     title: "Page on stack"
                     Label {
                         anchors.centerIn: parent
