@@ -100,6 +100,9 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         # I found that when the flickDeceleration is 1500, the rate should be
         # 5 and that when it's 100, the rate should be 1. With those two points
         # we can get that the following equation.
+        # XXX The deceleration might not be linear with respect to the rate,
+        # but this works for the two types of scrollables we have for now.
+        # --elopio - 2014-05-08
         rate = (self.flickDeceleration + 250) / 350
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=rate)
 
