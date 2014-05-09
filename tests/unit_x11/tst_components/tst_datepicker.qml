@@ -59,7 +59,7 @@ Item {
         function getPickerLabel(picker, name) {
             var pickerItem = findChild(picker, name);
             var pickerCurrent = findChild(pickerItem, "Picker_ViewLoader");
-            return findChild(pickerCurrent.item.currentItem, "PickerRow_PickerLabel");
+            return pickerCurrent.item.currentItem.children[2];
         }
         function getPickerModel(picker, name) {
             var pickerItem = findInvisibleChild(picker, name);
