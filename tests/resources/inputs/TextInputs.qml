@@ -43,7 +43,7 @@ MainView {
             Column {
                 id: column
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: units.gu(1.5)
+                spacing: units.gu(1)
                 TextField {
                     id: field
                     objectName: "Standard"
