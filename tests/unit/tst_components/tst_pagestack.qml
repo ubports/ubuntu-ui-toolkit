@@ -96,6 +96,17 @@ TestCase {
         pageStack.clear();
     }
 
+    function test_pop_to_tabs_bug1316736() {
+        pageStack.push(tabs);
+        tabs.selectedTabIndex = 1;
+        pageStack.push(page1);
+        compare(tabs.active, false, "Tabs on a PageStack, but not on top, are inactive");
+        pageStack.pop();
+        compare(tabs.active, true, "Tabs on top of PageStack is active");
+        compare(tabs.selectedTabIndex, 1, "Pushing and popping another page on top of Tabs does not change selectedTabsIndex");
+        pageStack.clear();
+    }
+
     MainView {
         id: mainView
         PageStack {
@@ -119,5 +130,11 @@ TestCase {
 
     Tabs {
         id: tabs
+        Tab {
+            id: tab1
+        }
+        Tab {
+            id: tab2
+        }
     }
 }
