@@ -77,15 +77,40 @@ class DatePickerTestCase(DatePickerBaseTestCase):
             "Can't pick date. The picker mode is: {!r}.".format(
                 time_picker.mode))
 
-    def test_pick_value_in_next_page_swipes_only_once(self):
+    def test_swipe_to_show_one_more_below_must_select_next_index(self):
         """Test that we don't end up swiping more than needed.
 
         This would cause us to miss the element we are looking for, and to have
         to swipe many times in order to finally click it.
 
         """
-        # TODO ask mfoord. DO NOT MERGE YET
-        pass
+        picker = self.main_view.select_single(
+            'Picker', objectName='PickerRow_DayPicker')
+        path_view = picker.select_single(
+            pickers.QQuickPathView, objectName='Picker_WrapAround')
+        current_index = path_view.currentIndex
+
+        path_view._swipe_to_show_one_more_below(path_view._get_containers())
+
+        self.assertEqual(path_view.currentIndex, current_index + 1)
+
+    def test_swipe_to_show_one_more_above_must_select_previous_index(self):
+        """Test that we don't end up swiping more than needed.
+
+        This would cause us to miss the element we are looking for, and to have
+        to swipe many times in order to finally click it.
+
+        """
+        picker = self.main_view.select_single(
+            'Picker', objectName='PickerRow_DayPicker')
+        path_view = picker.select_single(
+            pickers.QQuickPathView, objectName='Picker_WrapAround')
+        current_index = path_view.currentIndex
+
+        path_view._swipe_to_show_one_more_above(path_view._get_containers())
+
+        self.assertEqual(path_view.currentIndex, current_index - 1)
+
 
 
 class PickDateFromDatePickerTestCase(DatePickerBaseTestCase):
