@@ -79,7 +79,6 @@ MainView {
         }
         Page {
             id: page3
-            visible: false
             title: "Page on stack"
             Label {
                 anchors.centerIn: parent

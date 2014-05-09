@@ -184,4 +184,15 @@ PageTreeNode {
             else currentPage = null;
         }
     }
+
+    /*!
+      Children of PageStack are placed in a separate \l PageTreeNode that is
+      not active so that Pages can be defined which are not active until they
+      are pushed on the PageStack.
+     */
+    default property alias stackChildren: inactiveNode.data
+    PageTreeNode {
+        id: inactiveNode
+        active: false
+    }
 }
