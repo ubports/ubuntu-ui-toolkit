@@ -43,11 +43,17 @@ MainView {
             Column {
                 id: column
                 anchors.horizontalCenter: parent.horizontalCenter
-                spacing: units.gu(1)
+                spacing: units.gu(1.5)
                 TextField {
                     id: field
                     objectName: "Standard"
                     width: units.gu(30)
+                    primaryItem: Icon {
+                        width: height
+                        height: parent.height - units.gu(1)
+                        name: "search"
+                    }
+
                     text: "The orange (specifically, the sweet orange) is the fruit of the citrus species Citrus × ​sinensis in the family Rutaceae."
                 }
                 Button {
