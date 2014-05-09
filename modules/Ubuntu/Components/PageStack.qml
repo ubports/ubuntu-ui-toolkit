@@ -186,9 +186,9 @@ PageTreeNode {
     }
 
     /*!
-      Children of PageStack are placed in a separate \l PageTreeNode that is
-      not active so that Pages can be defined which are not active until they
-      are pushed on the PageStack.
+      \qmlproperty list<Item> stackChildren
+      Children of PageStack are placed in a separate item such that they are
+      not active by default until they are pushed on the PageStack.
      */
     default property alias stackChildren: inactiveNode.data
     PageTreeNode {
