@@ -1,3 +1,258 @@
+ubuntu-ui-toolkit (0.1.46+14.10.20140502.6-0ubuntu1) utopic; urgency=low
+
+  [ Zoltán Balogh]
+  * Skip tests only for powerpc
+
+  [ Christian Dywan ]
+  * Use locale format specifier in textfield_numbers. Fixes: (LP: #1311907)
+  * Resolve QList<QQmlError> warnings by porting to UbuntuTestCase.warnings.
+
+  [Andrew Hayzen]
+  * Animation of the listItem when cancelItemRemoval() is called
+
+  [ Zsombor Egri ]
+  * Introducing Ubuntu.Components.Styles 1.1 module.
+  * Text inputs show context menu when right-clicked on desktop. Fixes: (LP: #1276821)
+  * Fixes TextField and TextArea selection and scrolling behaviors. Fixes: (LP: #1168914), (LP: #1183255)
+  * Dismiss Popovers when any of the mouse buttons is pressed.
+  * ComboButton component. Fixes: (LP: #1276172)
+  * QuickUtils::rootItem() to return the actual root object in case the internal root item is reached.
+  * Moving to import version 1.0, which is the same as version 0.1.
+  * Fix for alarm dates to occur in the same time in all timezones. Fixes: (LP: #1283236)
+  * Mouse filters forwarding fix to proxy items.
+  * Fix for arm64 test failure. Fixes: (LP: #1308086)
+  * Fix alarm fetching order and interval. Fixes: (LP: #1283212, (LP: #1285958)
+  * Flick and mouse long press simulation added to UbuntuTestCase. Fixes: (LP: #1288937)
+
+  [ Tim Peeters ]
+  * Remove already inherited properties from OptionSelectorDelegate, ValueSelector, Subtitled, Standard and Base list item components.
+  * Change parent of OptionSelectorDelegate from Standard to Empty, because it effectively disabled all the visuals of Standard.
+  * Back button in new header. Fixes: (LP: #1256424)
+  * First version of the tabs in a drawer. Fixes: (LP: #1228042), (LP: #1273187)
+  * Put the TabBar inside of the HeaderStyle instead of directly in the style. Fixes: (LP: #1292601)
+  * Make the panel draggable again instead of opening completely on press.
+  * Create a new entry in CHANGES to record the changes for Ubuntu.Components 1.1.
+  * Move the property to keep track of the selected tab to the tabs model.
+
+  [ Leo Arias ]
+  * Deprecated the ubuntuuitoolkit.emulators namespace. Split the autopilot helpers in smaller files.
+
+  [ Chris Gagnon ]
+  * autopilot emulator for OptionSelector.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 02 May 2014 16:31:41 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140408.1-0ubuntu1) trusty; urgency=low
+
+  [ Zoltán Balogh ]
+  * Change Ubuntu API links in the docs (LP: #1303535) (LP: #1303535)
+
+  [ Leo Arias ]
+  * Improve the check of tab selection mode by moving to it first.
+  * On the autopilot helpers to click a toolbar button, check that the
+    toolbar is opened first. (LP: #1302706)
+
+  [ tpeeters ]
+  * Improve toolbar handling on desktop by opening it on mouse hover.
+    (LP: #1182734)
+  * If a Page is inside a Tab and has no title set, get it automatically
+    from the Tab. (LP: #1289695)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 08 Apr 2014 14:47:06 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140404.1.is.0.1.46+14.04.20140404-0ubuntu1) trusty; urgency=medium
+
+  * Revert to previous version as it's making gallery-app AP tests
+    failing on the CI dashboard
+
+ -- Didier Roche <didrocks@ubuntu.com>  Tue, 08 Apr 2014 13:34:12 +0200
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140404.1-0ubuntu1) trusty; urgency=low
+
+  [ tpeeters ]
+  * Move the property to keep track of the selected tab to the tabs
+    model. (LP: #1290121)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 04 Apr 2014 15:08:22 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140404-0ubuntu1) trusty; urgency=low
+
+  [ Michael Zanetti ]
+  * fix collapseOnClick in combination with UbuntuListView (LP:
+    #1293996)
+
+  [ Leo Arias ]
+  * Added a helper for autopilot tests to override the values of initctl
+    vars during tests.
+  * Take into account the visibility of the container when making list
+    elements visible on the autopilot helpers. (LP: #1275060)
+
+  [ Christian Dywan ]
+  * Set the window title based on the Header title (LP: #1289695)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 04 Apr 2014 11:03:59 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140331-0ubuntu1) trusty; urgency=low
+
+  [ Zoltán Balogh ]
+  * Separate the online and offline documentation and install the QtC
+    help file
+
+  [ Zsombor Egri ]
+  * Move state data file to temp folder (LP: #1276760)
+  * StateSaver does cleanup if the app is closed due to SIGTERM. This is
+    needed as upstart sends this signal when the application is closed
+    from app scope. SIGINT saves the state. (LP: #1259498)
+  * MainView binding loop fix when backgroundColor is changed runtime.
+    (LP: #1204453)
+
+  [ Loïc Molinari ]
+  * [Perf metrics] Considered number of CPU cores for CPU usage.
+
+  [ tpeeters ]
+  * Add useDeprecatedToolbar property to MainView which can be used to
+    disable the current toolbar. Unsetting that property will in future
+    also enable new features in the header. (LP: #1273184)
+  * Close panel on contents press instead of click, so that composed
+    events are not eaten by the InverseMouseArea of the Panel. (LP:
+    #1295720)
+
+  [ Christian Dywan ]
+  * Treat QML warnings as fatal except for explicitly listed tests
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 31 Mar 2014 18:26:59 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140321.1-0ubuntu1) trusty; urgency=low
+
+  [ Bartosz Kosiorek ]
+  * Fix selection and coping text from TextFields (LP: 1130369) (LP:
+    #1130369)
+  * "Cut" operation do not shows for "ReadOnly's" TextField and TextArea
+    (LP: 1293149) (LP: #1293149, #1267821)
+
+  [ Zsombor Egri ]
+  * InverseMouseArea not getting mouse events converted from touch when
+    set as topmost item. (LP: #1288876)
+
+  [ Michael Zanetti ]
+  * drop BottomBarVisiblityCommunicator as it has gone from unity8 - no
+    more HUD from the lower edge
+
+  [ Christian Dywan ]
+  * Introduce UbuntuTestCase API for C++ (LP: #1261396)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 21 Mar 2014 11:29:53 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140317-0ubuntu1) trusty; urgency=low
+
+  [ Didier Roche ]
+  * remove the doc generation for UITK autopilot emulator. Autopilot is
+    in universe for now, it needs MIRing first
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 17 Mar 2014 09:03:08 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140314-0ubuntu1) trusty; urgency=low
+
+  [ CI bot ]
+  * Resync trunk
+
+  [ Colin Watson ]
+  * With Qt 5.2, QtDeclarative now supports all architectures, at least
+    in principle. Switch back to trying to build everywhere, since
+    ubuntu-ui-toolkit has no intrinsic reason to be non-portable.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 14 Mar 2014 15:07:46 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140306.1-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * DatePicker flaky test fix. (LP: #1287009)
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+  [ Michael Zanetti ]
+  * Make the UbuntuListView tests more stable (LP: #1288597)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 06 Mar 2014 12:46:50 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140304-0ubuntu1) trusty; urgency=low
+
+  [ CI bot ]
+  * Ship python3 autopilot emulators/tests.
+
+  [ Florian Boucault ]
+  * More compact visual style for a few widgets: Button: switched
+    default color to plain instead of gradient. Height from 5gu to 4gu.
+    OptionSelector: row height from 6gu to 5gu. Slider: much thinner
+    visual style. Switch: size from 10gu x 5gu to 8gu x 4gu. CheckBox:
+    size from 4.25gu x 4gu to 3.25gu x 3gu. smaller 'x-large' font size.
+    (LP: #1276173)
+
+  [ tpeeters ]
+  * Expose a position property in Panel to make it more useful for
+    implementing new bottom-edge behavior.
+
+  [ Christian Dywan ]
+  * The wrapper is intended to make API test more visible in the output
+    regardless of failure or success. A semi-related fix increases
+    coverage so that UbuntuTestCase and Layouts are also checked.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 04 Mar 2014 13:01:40 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140301-0ubuntu1) trusty; urgency=low
+
+  [ Zsombor Egri ]
+  * StateSaver does no longer save the component states upon
+    destruction. State is saved when the application is deactivated
+    (looses focus) and cleaned once the application gets re-activated
+    (gains focus). Discards saved states when the application closes
+    properly. Ignores state saving when the app is launched thru content
+    pickers. (LP: #1276174)
+
+  [ Ugo Riboni ]
+  * Allow appending query strings (which are then ignored) to the image
+    id to allow a workaround for QT's inability to selectively clean the
+    image cache.
+
+  [ Leo Arias ]
+  * Add a common autopilot test to try load pages in gallery (LP:
+    #1231265)
+
+  [ Michael Zanetti ]
+  * Introduce the almighty UbuntuListView. So far not /that/ mighty tho.
+    Can only deal with Expandables. (LP: #1169258)
+
+  [ CI bot ]
+  * On the autopilot listview emulator, scroll to the bottom to try to
+    find elements not yet created. (LP: #1270200)
+
+  [ tpeeters ]
+  * Always use the ubuntu-mobile icon theme in UITK apps. (LP: #1284218)
+  * Fix autopilot and unit tests for TabBar.
+
+  [ Christian Dywan ]
+  * Look for locale folder in the same prefix as the app data (LP:
+    #1259540)
+  * Remove activeFocus hack for OSK from QuickUtils (LP: #1259476)
+  * Add a common autopilot test to try load pages in gallery (LP:
+    #1231265)
+  * Use PIPESTATUS to avoid getting the wrong return value (LP:
+    #1284699)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sat, 01 Mar 2014 12:53:03 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.04.20140224-0ubuntu1) trusty; urgency=low
+
+  [ Renato Araujo Oliveira Filho ]
+  * [alarms] Filter only alarms of the current week. This is necessary
+    because query for events without a valid date interval will return
+    all events on the database, including the recurrence ones. Ex. A
+    alarm that recurs every day, will be returned infinite times. (LP:
+    #1282129)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 24 Feb 2014 21:54:01 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.04.20140220-0ubuntu1) trusty; urgency=low
 
   [ Michael Zanetti ]
@@ -462,6 +717,12 @@ ubuntu-ui-toolkit (0.1.46+14.04.20131105.1-0ubuntu1) trusty; urgency=low
   * Automatic snapshot from revision 820
 
  -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 05 Nov 2013 16:51:13 +0000
+
+ubuntu-ui-toolkit (0.1.46+13.10.20131011.2-0ubuntu2) UNRELEASED; urgency=low
+
+  * add sphinx documentation
+
+ -- Nicholas Skaggs <nicholas.skaggs@canonical.com>  Tue, 29 Oct 2013 17:28:30 -0400
 
 ubuntu-ui-toolkit (0.1.46+13.10.20131011.2-0ubuntu1) saucy; urgency=low
 

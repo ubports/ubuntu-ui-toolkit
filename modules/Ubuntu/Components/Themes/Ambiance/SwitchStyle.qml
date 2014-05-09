@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 Item {
     id: switchStyle
@@ -33,8 +33,8 @@ Item {
     */
     width: implicitWidth
     height: implicitHeight
-    implicitWidth: units.gu(10)
-    implicitHeight: units.gu(5)
+    implicitWidth: units.gu(8)
+    implicitHeight: units.gu(4)
     opacity: styledItem.enabled ? 1.0 : 0.5
     LayoutMirroring.enabled: false
     LayoutMirroring.childrenInherit: true

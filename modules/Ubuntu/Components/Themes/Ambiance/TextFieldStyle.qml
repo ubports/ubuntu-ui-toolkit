@@ -17,4 +17,5 @@
 import QtQuick 2.0
 
 TextAreaStyle {
+    objectName: "textfield_style"
 }

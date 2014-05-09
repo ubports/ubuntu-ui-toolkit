@@ -15,9 +15,10 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 // frame
+// FIXME: stabilize API
 Item {
     id: visuals
     // style properties
@@ -36,22 +37,36 @@ Item {
       Spacing between the frame and the text editor area
       */
     property real frameSpacing: units.gu(1)
-    property real overlaySpacing: units.gu(0.5)
+    property real overlaySpacing: frameSpacing / 2
 
+    /*!
+      Property holding the timeout in milliseconds the component enters into selection mode.
+      */
+    property int selectionModeTimeout: 300
+
+    /*!
+      The following properties define the name of the style components declaring
+      the styles for the main and the selection cursors. All cursors must defive
+      from TextCursorStyle.
+      */
+    property string mainCursorStyle: "TextCursorStyle.qml"
+    property string selectionStartCursorStyle: "TextSelectionStartCursorStyle.qml"
+    property string selectionEndCursorStyle: "TextSelectionEndCursorStyle.qml"
+
+    // style body
     anchors.fill: parent
+    objectName: "textarea_style"
 
     z: -1
 
+    /*!
+      Text input background
+      */
     property Component background: UbuntuShape {
         property bool error: (styledItem.hasOwnProperty("errorHighlight") && styledItem.errorHighlight && !styledItem.acceptableInput)
         onErrorChanged: (error) ? visuals.errorColor : visuals.backgroundColor;
         color: visuals.backgroundColor;
         anchors.fill: parent
-
-        MouseArea {
-            anchors.fill: parent
-            onPressed: if (!styledItem.activeFocus && styledItem.activeFocusOnPress) styledItem.forceActiveFocus()
-        }
     }
 
     Loader {

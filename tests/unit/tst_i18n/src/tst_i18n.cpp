@@ -19,6 +19,7 @@
 #include <QtCore/QString>
 #include <QtCore/QTextCodec>
 #include <QtCore/QStandardPaths>
+#include <QtCore/QDir>
 #include <QtCore/QProcessEnvironment>
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
@@ -75,12 +76,17 @@ private Q_SLOTS:
     {
         // Set test locale folder in the environment
         // Using setenv because QProcessEnvironment ignores changes
-        QString testDataFolder(QCoreApplication::applicationDirPath());
-        setenv("XDG_DATA_HOME", testDataFolder.toUtf8(), 1);
+        QString wrongDataFolder(QCoreApplication::applicationDirPath() + "/diversion");
+        QString testDataFolder(QCoreApplication::applicationDirPath() + "/appropriate");
+        setenv("XDG_DATA_DIRS", (wrongDataFolder + ":" + testDataFolder).toUtf8(), 1);
 
         // Verify that we set it correctly
-        QString doubleCheckLocalePath(QStandardPaths::locate(QStandardPaths::GenericDataLocation,
-            "locale", QStandardPaths::LocateDirectory));
+        QString dataPath(QStandardPaths::locate(QStandardPaths::GenericDataLocation,
+            "localizedApp", QStandardPaths::LocateDirectory));
+        QDir dataDir(dataPath);
+        QVERIFY(dataDir.cdUp());
+        QVERIFY(dataDir.cd("locale"));
+        QString doubleCheckLocalePath(dataDir.path());
         QCOMPARE(doubleCheckLocalePath, testDataFolder + "/locale");
         QVERIFY(QFileInfo(testDataFolder + "/locale/en/LC_MESSAGES/localizedApp.mo").exists());
 
@@ -122,8 +128,12 @@ private Q_SLOTS:
 
         // Was the locale folder detected and set?
         QString boundDomain(C::bindtextdomain(i18n->domain().toUtf8(), ((const char*)0)));
-        QString expectedLocalePath(QStandardPaths::locate(QStandardPaths::GenericDataLocation,
-            "locale", QStandardPaths::LocateDirectory));
+        QString dataPath(QStandardPaths::locate(QStandardPaths::GenericDataLocation,
+            i18n->domain(), QStandardPaths::LocateDirectory));
+        QDir dataDir(dataPath);
+        QVERIFY(dataDir.cdUp());
+        QVERIFY(dataDir.cd("locale"));
+        QString expectedLocalePath(dataDir.path());
         QCOMPARE(boundDomain, expectedLocalePath);
         // Is the domain gettext uses correct?
         QString gettextDomain(C::textdomain(((const char*)0)));

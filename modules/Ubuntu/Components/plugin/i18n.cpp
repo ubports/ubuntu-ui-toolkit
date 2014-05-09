@@ -18,6 +18,7 @@
 
 #include "i18n.h"
 #include <QtCore/QStandardPaths>
+#include <QtCore/QDir>
 
 namespace C {
 #include <libintl.h>
@@ -29,7 +30,7 @@ namespace C {
 /*!
  * \qmltype i18n
  * \instantiates UbuntuI18n
- * \inqmlmodule Ubuntu.Components 0.1
+ * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu
  * \brief i18n is a context property that provides internationalization support.
  *
@@ -103,11 +104,17 @@ void UbuntuI18n::setDomain(const QString &domain) {
     /*
      Look for locale folder as per XDG basedir spec
      The default is /usr/share/locale if we don't set a folder
+     We look for share/domain to pick correctly among multiple prefixes
      */
-    QString localePath (QStandardPaths::locate(QStandardPaths::GenericDataLocation,
-        "locale", QStandardPaths::LocateDirectory));
-    if (!localePath.isEmpty())
-        C::bindtextdomain(domain.toUtf8(), localePath.toUtf8());
+    QString dataPath(QStandardPaths::locate(QStandardPaths::GenericDataLocation,
+        domain, QStandardPaths::LocateDirectory));
+    if (!dataPath.isEmpty()) {
+        QDir dataDir(dataPath);
+        if (dataDir.cdUp() && dataDir.cd("locale")) {
+            QString localePath(dataDir.path());
+            C::bindtextdomain(domain.toUtf8(), localePath.toUtf8());
+        }
+    }
     Q_EMIT domainChanged();
 }
 

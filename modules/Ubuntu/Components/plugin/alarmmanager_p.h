@@ -48,6 +48,7 @@ public:
     AlarmData(const AlarmData &other)
         : changes(0)
         , cookie(other.cookie)
+        , originalDate(other.originalDate)
         , date(other.date)
         , message(other.message)
         , type(other.type)
@@ -100,10 +101,19 @@ public:
         return QDateTime(dt.date(), time, dt.timeSpec());
     }
 
+    // the function normalizes and transcodes the date into UTC/LocalTime equivalent
+    static QDateTime transcodeDate(const QDateTime &dt, Qt::TimeSpec targetSpec) {
+        if (dt.timeSpec() == targetSpec) {
+            return normalizeDate(dt);
+        }
+        return QDateTime(dt.date(), normalizeDate(dt).time(), targetSpec);
+    }
+
     unsigned int changes;
     QVariant cookie;
 
     // data members
+    QDateTime originalDate;
     QDateTime date;
     QString message;
     QUrl sound;

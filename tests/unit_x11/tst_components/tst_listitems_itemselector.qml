@@ -16,9 +16,9 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItem
-import Ubuntu.Test 0.1
+import Ubuntu.Components 1.1
+import Ubuntu.Components.ListItems 1.0 as ListItem
+import Ubuntu.Test 1.0
 
 Item {
     width: 400

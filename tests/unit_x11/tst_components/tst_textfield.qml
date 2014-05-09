@@ -16,12 +16,13 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 0.1
+import Ubuntu.Test 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Unity.Action 1.1 as UnityActions
 
 Item {
     id: textItem
-    width: 200; height: 200
+    width: units.gu(50); height: units.gu(70)
 
     property bool hasOSK: QuickUtils.inputMethodProvider !== ""
 
@@ -32,51 +33,78 @@ Item {
         t2.focus = false;
     }
 
-    TextField {
-        id: colorTest
-        color: colorTest.text.length < 4 ? "#0000ff" : "#00ff00"
-    }
-
-    TextField {
-        id: textField
-        SignalSpy {
-            id: signalSpy
-            target: parent
+    Column {
+        TextField {
+            id: colorTest
+            color: colorTest.text.length < 4 ? "#0000ff" : "#00ff00"
+            text: "colorTest"
         }
 
-        property int keyPressData
-        property int keyReleaseData
-        Keys.onPressed: keyPressData = event.key
-        Keys.onReleased: keyReleaseData = event.key
-        action: Action {
-            enabled: true
-            name: 'spam'
-            text: 'Spam'
-        }
-    }
+        TextField {
+            id: textField
+            SignalSpy {
+                id: signalSpy
+                target: parent
+            }
 
-    Item {
+            property int keyPressData
+            property int keyReleaseData
+            Keys.onPressed: keyPressData = event.key
+            Keys.onReleased: keyReleaseData = event.key
+            action: Action {
+                enabled: true
+                name: 'spam'
+                text: 'Spam'
+            }
+        }
+
         TextField {
             id: t1
+            text: "t1"
         }
         TextField {
             id: t2
+            text: "t2"
+        }
+
+        TextField {
+            id: enabledTextField
+            enabled: true
+            text: "enabledTextField"
+        }
+
+        TextField {
+            id: disabledTextField
+            enabled: false
+            text: "disabledTextField"
+        }
+        TextField {
+            id: longText
+            text: "The orange (specifically, the sweet orange) is the fruit of the citrus species Citrus × ​sinensis in the family Rutaceae."
         }
     }
 
-    TextField {
-        id: enabledTextField
-        enabled: true
-    }
-
-    TextField {
-        id: disabledTextField
-        enabled: false
-    }
-
-    TestCase {
+    UbuntuTestCase {
         name: "TextFieldAPI"
         when: windowShown
+
+        // initialize test objects
+        function init() {
+            longText.cursorPosition = 0;
+        }
+
+        // empty event buffer
+        function cleanup() {
+            colorTest.focus =
+            textField.focus =
+            t1.focus =
+            t2.focus =
+            enabledTextField.focus =
+            longText.focus = false;
+            var scroller = findChild(longText, "textfield_scroller");
+            scroller.contentX = 0;
+            wait(200);
+        }
 
         function initTestCase() {
             textField.forceActiveFocus();
@@ -128,7 +156,7 @@ Item {
         }
 
         function test_0_cursorDelegate() {
-            verify(textField.cursorDelegate, "cursorDelegate set by default")
+            verify(textField.cursorDelegate === null, "cursorDelegate not set by default")
         }
 
         function test_0_cursorPosition() {
@@ -140,7 +168,9 @@ Item {
         }
 
         function test_0_cursorVisible() {
-            compare(textField.cursorVisible, true, "cursorVisible true by default")
+            compare(textField.cursorVisible, false, "cursorVisible false by default when inactive");
+            textField.focus = true;
+            compare(textField.cursorVisible, true, "cursorVisible true by default when active");
         }
 
         function test_0_customSoftwareInputPanel() {
@@ -291,7 +321,7 @@ Item {
             compare(textField.keyReleaseData, Qt.Key_Control, "Key release filtered");
         }
 
-        function test_1_undo_redo() {
+        function test_undo_redo() {
             textField.readOnly = false;
             textField.text = "";
             textField.focus = true;
@@ -304,7 +334,7 @@ Item {
             compare(textField.text, "test", "redone");
         }
 
-        function test_1_getText() {
+        function test_getText() {
             textField.text = "this is a longer text";
             compare(textField.getText(0, 10), "this is a ", "getText(0, 10)");
             compare(textField.getText(10, 0), "this is a ", "getText(10, 0)");
@@ -312,7 +342,7 @@ Item {
             compare(textField.getText(4, 0), "this", "getText(4, 0)");
         }
 
-        function test_1_removeText() {
+        function test_removeText() {
             textField.text = "this is a longer text";
             textField.remove(0, 10);
             compare(textField.text, "longer text", "remove(0, 10)");
@@ -335,14 +365,14 @@ Item {
             compare(textField.text, "this is a longer text", "select(0, 4) && remove()");
         }
 
-        function test_1_moveCursorSelection() {
+        function test_moveCursorSelection() {
             textField.text = "this is a longer text";
             textField.cursorPosition = 5;
             textField.moveCursorSelection(9, TextInput.SelectCharacters);
             compare(textField.selectedText, "is a", "moveCursorSelection from 5 to 9, selecting the text");
         }
 
-        function test_1_isRightToLeft() {
+        function test_isRightToLeft() {
             textField.text = "this is a longer text";
             compare(textField.isRightToLeft(0), false, "isRightToLeft(0)");
             compare(textField.isRightToLeft(0, 0), false, "isRightToLeft(0, 0)");
@@ -393,7 +423,7 @@ Item {
         }
 
         // need to make the very first test case, otherwise OSK detection fails on phablet
-        function test_zz_OSK_ShownWhenNextTextFieldIsFocused() {
+        function test_OSK_ShownWhenNextTextFieldIsFocused() {
             if (!hasOSK)
                 expectFail("", "OSK can be tested only when present");
             t1.focus = true;
@@ -402,7 +432,7 @@ Item {
             compare(Qt.inputMethod.visible, true, "OSK is shown for the second TextField");
         }
 
-        function test_zz_RemoveOSKWhenFocusLost() {
+        function test_RemoveOSKWhenFocusLost() {
             if (!hasOSK)
                 expectFail("", "OSK can be tested only when present");
             t1.focus = true;
@@ -411,7 +441,7 @@ Item {
             compare(Qt.inputMethod.visible, false, "OSK is hidden when TextField looses focus");
         }
 
-        function test_zz_ReEnabledInput() {
+        function test_ReEnabledInput() {
             textField.forceActiveFocus();
             textField.enabled = false;
             compare(textField.enabled, false, "textField is disabled");
@@ -428,7 +458,7 @@ Item {
             compare(Qt.inputMethod.visible, true, "OSK shown");
         }
 
-        function test_zz_Trigger() {
+        function test_Trigger() {
             signalSpy.signalName = 'accepted'
             textField.enabled = true
             textField.text = 'eggs'
@@ -436,7 +466,7 @@ Item {
             signalSpy.wait()
         }
 
-        function test_zz_ActionInputMethodHints() {
+        function test_ActionInputMethodHints() {
             // Preset digit only for numbers
             textField.inputMethodHints = Qt.ImhNone
             textField.action.parameterType = UnityActions.Action.Integer
@@ -464,22 +494,282 @@ Item {
 
         function test_click_enabled_textfield_must_give_focus() {
             textField.forceActiveFocus();
-            compare(
-                enabledTextField.focus, false,
-                'enabledTextField is not focused');
-            mouseClick(
-                enabledTextField, enabledTextField.width/2,
-                enabledTextField.height/2)
-            compare(
-                enabledTextField.focus, true, 'enabledTextField is focused')
+            compare(enabledTextField.focus, false, 'enabledTextField is not focused');
+            mouseClick(enabledTextField, enabledTextField.width/2, enabledTextField.height/2);
+            compare(enabledTextField.focus, true, 'enabledTextField is focused');
         }
 
         function test_click_disabled_textfield_must_not_give_focus() {
-            mouseClick(
-                disabledTextField, disabledTextField.width/2,
-                disabledTextField.height/2)
-            compare(
-                textField.focus, false, 'disabledTextField is not focused');
+            mouseClick(disabledTextField, disabledTextField.width/2, disabledTextField.height/2);
+            compare(textField.focus, false, 'disabledTextField is not focused');
+        }
+
+
+        // text selection
+        SignalSpy {
+            id: flickSpy
+            signalName: "onMovementEnded"
+        }
+
+        function test_scroll_when_not_focused() {
+            var handler = findChild(longText, "input_handler");
+            verify(handler);
+
+            flickSpy.target = findChild(longText, "textfield_scroller");
+            flickSpy.clear();
+            // scroll when inactive
+            verify(longText.focus == false);
+            var x = longText.width / 2;
+            var y = longText.height / 2;
+            var dx = x;
+            flick(longText, x, y, -dx, 0);
+            verify(longText.focus);
+            compare(flickSpy.count, 0, "The input had scrolled while inactive");
+        }
+
+        function test_scroll_when_focused() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            verify(handler);
+
+            flickSpy.target = findChild(longText, "textfield_scroller");
+            flickSpy.clear();
+            var x = longText.width / 2;
+            var y = longText.height / 2;
+
+            compare(handler.state, "", "The input is not in default state before selection");
+            flick(longText, x, y, - x, 0);
+            flickSpy.wait();
+            compare(handler.state, "", "The input has not returned to default state.");
+        }
+
+        function test_scroll_with_selected_text() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            verify(handler);
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textfield_scroller");
+            flickSpy.clear();
+
+            // select text
+            compare(handler.state, "", "The input is not in default state before selection");
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
+            verify(longText.selectedText !== "");
+            compare(handler.state, "", "The input has not returned to default state.");
+
+            // flick
+            var dx = longText.width / 2;
+            flick(longText, dx, y, -dx, 0);
+            flickSpy.wait();
+            compare(handler.state, "", "The input has not returned to default state.");
+            verify(longText.selectedText !== "");
+        }
+
+        function test_select_by_pressAndDrag() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            verify(handler);
+            var dx = longText.width / 4;
+            var x = units.gu(5);
+            var y = longText.height / 2;
+            compare(handler.state, "", "The input is not in default state before selection");
+            flick(longText, x, y, 2*dx, 0, handler.selectionModeTimeout + 50);
+            verify(longText.selectedText !== "");
+            compare(handler.state, "", "The input has not returned to default state.");
+        }
+
+        function test_select_text_doubletap() {
+            longText.focus = true;
+            var x = units.gu(2);
+            var y = longText.height / 4;
+            mouseDoubleClick(longText, x, y);
+            expectFail("", "mouseDoubleClick fails to trigger");
+            verify(longText.selectedText !== "");
+        }
+
+        SignalSpy {
+            id: popoverSpy
+            signalName: "onPressAndHold"
+        }
+
+        function test_press_and_hold_moves_cursor_position_and_opens_context_menu() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textfield_scroller");
+            flickSpy.clear();
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // long press
+            compare(handler.state, "", "The input is not in default state before long press");
+            mouseLongPress(longText, units.gu(8), y);
+            waitForRendering(longText);
+            popoverSpy.wait();
+            verify(longText.cursorPosition != 0);
+            compare(handler.state, "inactive", "The input is not in inactive state while context menu is open");
+
+            // cleanup, release the mouse, that should bring the handler back to default state
+            mouseRelease(longText, units.gu(8), y);
+            compare(handler.state, "", "The input has not returned to default state.");
+            // dismiss popover
+            mouseClick(longText, 10, 10);
+        }
+
+        function test_press_and_hold_moves_cursor_position_and_opens_context_menu_when_not_focus() {
+            var handler = findChild(longText, "input_handler");
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textfield_scroller");
+            flickSpy.clear();
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // long press
+            compare(handler.state, "inactive", "The input is not in inactive state before long press");
+            mouseLongPress(longText, units.gu(8), y);
+            waitForRendering(longText);
+            popoverSpy.wait();
+            verify(longText.focus, "The input is not focused");
+            verify(longText.cursorPosition != 0, "The cursor wasn't moved");
+            compare(handler.state, "inactive", "The input is not in inactive state while the context menu is open");
+
+            // cleanup, release the mouse, that should bring the handler back to default state
+            mouseRelease(longText, units.gu(8), y);
+            compare(handler.state, "", "The input has not returned to default state.");
+            // dismiss popover
+            mouseClick(longText, 10, 10);
+        }
+
+        function test_press_and_hold_over_selected_text() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textfield_scroller");
+            flickSpy.clear();
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // select text
+            compare(handler.state, "", "The input is not in default state before long press");
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
+            waitForRendering(longText);
+            compare(handler.state, "", "The input has not returned to default state.");
+            verify(longText.selectedText !== "");
+
+            mouseLongPress(longText, units.gu(7), y);
+            // wait till popover is shown
+            waitForRendering(longText);
+            popoverSpy.wait();
+            // cleanup, release the mouse, that should bring the handler back to default state
+            mouseRelease(textItem, 0, 0);
+            compare(handler.state, "", "The input has not returned to default state.");
+            // dismiss popover
+            mouseClick(longText, 10, 10);
+        }
+
+        function test_move_mouse_while_context_menu_open_does_not_move_selection() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textfield_scroller");
+            flickSpy.clear();
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // select text
+            compare(handler.state, "", "The input is not in default state before long press");
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
+            verify(longText.selectedText !== "", "Selected text differs");
+            var selection = longText.selectedText;
+            compare(handler.state, "", "The input has not returned to default state.");
+
+            mouseLongPress(longText, units.gu(4), y);
+            // wait till popover is shown
+            waitForRendering(longText);
+            popoverSpy.wait();
+            // do some mouse moves and compare whether we have the same selection
+            mouseMoveSlowly(longText, units.gu(4), y, units.gu(4), 0, 3, 100);
+            compare(selection, longText.selectedText, "Selection differs");
+
+            // cleanup, release the mouse, that should bring the handler back to default state
+            mouseRelease(textItem, 0, 0);
+            compare(handler.state, "", "The input has not returned to default state.");
+            mouseClick(longText, 10, 10);
+        }
+
+        function test_clear_selection_by_click_on_selection() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textfield_scroller");
+            flickSpy.clear();
+
+            // select text
+            compare(handler.state, "", "The input is not in default state before long press");
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
+            compare(handler.state, "", "The input has not returned to default state.");
+            verify(longText.selectedText !== "");
+
+            // click on selection
+            mouseClick(longText, units.gu(4), y);
+            verify(longText.selectedText === "");
+        }
+
+        function test_clear_selection_by_click_beside_selection() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            var y = longText.height / 2;
+            flickSpy.target = findChild(longText, "textfield_scroller");
+            flickSpy.clear();
+
+            // select text
+            compare(handler.state, "", "The input is not in default state before long press");
+            flick(longText, 0, y, units.gu(8), 0, handler.selectionModeTimeout + 50);
+            compare(handler.state, "", "The input has not returned to default state.");
+            verify(longText.selectedText !== "");
+
+            // click on selection
+            mouseClick(longText, units.gu(10), y);
+            verify(longText.selectedText === "");
+        }
+
+        function test_rightclick_opens_popover_when_not_focused() {
+            var handler = findChild(longText, "input_handler");
+            var x = longText.width / 2;
+            var y = longText.height / 2;
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // rclick should bring popover in
+            mouseClick(longText, x, y, Qt.RightButton);
+            waitForRendering(longText);
+            popoverSpy.wait();
+            // and also set the focus
+            compare(longText.focus, true, "Component haven't got focused");
+            compare(handler.state, "", "The input is not in inactive state.");
+
+            // take the popover away, that should bring the handler back to default state
+            mouseClick(textItem, 0, 0);
+            compare(handler.state, "", "The input has not returned to default state.");
+        }
+
+        function test_rightclick_opens_popover_when_focused() {
+            longText.focus = true;
+            var handler = findChild(longText, "input_handler");
+            var x = longText.width / 2;
+            var y = longText.height / 2;
+            popoverSpy.target = handler;
+            popoverSpy.clear();
+
+            // rclick should bring popover in
+            mouseClick(longText, x, y, Qt.RightButton);
+            waitForRendering(longText);
+            popoverSpy.wait();
+            compare(handler.state, "", "The input is not in default state.");
+
+            // take the popover away, that should bring the handler back to default state
+            mouseClick(textItem, 0, 0);
+            compare(handler.state, "", "The input has not returned to default state.");
         }
     }
 }

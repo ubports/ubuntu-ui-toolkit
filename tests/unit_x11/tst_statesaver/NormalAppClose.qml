@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,33 +15,22 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
-MainView {
-    width: units.gu(50)
-    height: units.gu(80)
+Item {
+    property var boolArray: [false, false]
+    property var intArray: [1, 2]
+    property var realArray: [10.1, 20.2]
+    property var stringArray: ["false", "false"]
+    id: testItem
+    objectName: "testItem"
+    StateSaver.properties: "boolArray, intArray, realArray, stringArray"
 
-    Action {
-        id: action1
-        text: "action 1"
-        onTriggered: print("one!")
+    Timer {
+        id: closeTimer
+        interval: 1000
+        running: false
+        onTriggered: Qt.quit();
     }
-    Action {
-        id: action2
-        text: "action 2"
-        onTriggered: print("two!")
-    }
-
-    Page {
-        title: "test page"
-
-        Label {
-            anchors.centerIn: parent
-            text: "Hello, world"
-        }
-
-        tools: ToolbarActions {
-            actions: [action1, action2]
-        }
-    }
+    Component.onCompleted: closeTimer.running = true
 }

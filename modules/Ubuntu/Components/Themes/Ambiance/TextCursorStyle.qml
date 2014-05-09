@@ -16,48 +16,66 @@
 
 import QtQuick 2.0
 
+// FIXME : move the API into Ubuntu.Components.Style
 Item {
-    id: visuals
+    id: cursorStyle
     /*!
-      Cursor color
+      Property specifying the visible timeout of the cursor. It is not mandatory
+      for styles to define values for this property if the cursor blinking is not
+      desired. A value of 0 turns off the cursor blinking.
       */
-    property color color: Theme.palette.selected.foreground
+    property int cursorVisibleTimeout: 800
+    /*!
+      Property specifying the hidden timeout of the cursor. It is not mandatory
+      for styles to define values for this property if the cursor blinking is not
+      desired. A value of 0 turns off the cursor blinking.
+      */
+    property int cursorHiddenTimeout: 400
 
     /*!
-      Properties driving cursor blinking. If either of these values are 0, no
-      blinking is provided.
+      Component defining the default cursor visuals.
       */
-    property bool blinking: true
-    property int blinkTimeoutShown: 800
-    property int blinkTimeoutHidden: 400
+    property Component cursorDelegate: delegate
 
     /*!
-      Selection mode pin styles
+      The item pointing to the cursor handler. Styles should set to null if the
+      cursor does not have handler at all.
       */
-    property var pinSize: units.gu(1.2)
-    property var pinSensingOffset: units.dp(4)
-    property color pinColor: Theme.palette.selected.foreground
+    property Item caret: caretItem
 
-    anchors.fill: parent
-    Rectangle {
-        id: cursor
-
-        property bool showCursor: styledItem.visible
-        property bool timerShowCursor: true
-
-        visible: showCursor && timerShowCursor
-        color: visuals.color
-        anchors.fill: parent
-
-        Timer {
-            interval: visuals.blinkTimeoutShown
-            running: cursor.showCursor && (visuals.blinkTimeoutShown > 0) && (visuals.blinkTimeoutHidden > 0) && visuals.blinking
-            repeat: true
-            onTriggered: {
-                interval = (interval == visuals.blinkTimeoutShown) ?
-                            visuals.blinkTimeoutHidden : visuals.blinkTimeoutShown;
-                cursor.timerShowCursor = !cursor.timerShowCursor;
+    // style body
+    Component {
+        id: delegate
+        Rectangle {
+            width: units.dp(1)
+            color: Theme.palette.selected.foreground
+            visible: blinkTimer.timerShowCursor
+            Timer {
+                id: blinkTimer
+                interval: cursorStyle.cursorVisibleTimeout
+                running: (cursorStyle.cursorVisibleTimeout > 0) &&
+                         (cursorStyle.cursorHiddenTimeout > 0) &&
+                         styledItem.visible
+                repeat: true
+                property bool timerShowCursor: true
+                onTriggered: {
+                    interval = (interval == cursorStyle.cursorVisibleTimeout) ?
+                                cursorStyle.cursorHiddenTimeout : cursorStyle.cursorVisibleTimeout;
+                    timerShowCursor = !timerShowCursor;
+                }
             }
+        }
+    }
+
+    // caretItem
+    Image {
+        id: caretItem
+        source: "artwork/teardrop-left.png"
+        anchors {
+            top: parent.bottom
+            horizontalCenter: parent.horizontalCenter
+            topMargin: -units.gu(0.5)
+            horizontalCenterOffset: units.gu(0.7)
         }
     }
 }

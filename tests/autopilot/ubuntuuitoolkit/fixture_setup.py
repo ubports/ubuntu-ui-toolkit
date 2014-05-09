@@ -21,12 +21,12 @@ import tempfile
 import fixtures
 from autopilot import display
 
-from ubuntuuitoolkit import base
+from ubuntuuitoolkit import base, environment
 
 
 DEFAULT_QML_FILE_CONTENTS = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(80)
@@ -88,7 +88,7 @@ class FakeApplication(fixtures.Fixture):
                 qmlscene=base.get_qmlscene_launch_command(),
                 qml_file_path=qml_file_path))
         desktop_file.write('[Desktop Entry]\n')
-        for key, value in self._desktop_file_dict.iteritems():
+        for key, value in self._desktop_file_dict.items():
             desktop_file.write('{key}={value}\n'.format(key=key, value=value))
         desktop_file.close()
         return desktop_file.name
@@ -96,6 +96,28 @@ class FakeApplication(fixtures.Fixture):
     def _get_local_desktop_file_directory(self):
         return os.path.join(
             os.environ.get('HOME'), '.local', 'share', 'applications')
+
+
+class InitctlEnvironmentVariable(fixtures.Fixture):
+    """Set the value of initctl environment variables."""
+
+    def __init__(self, **kwargs):
+        super(InitctlEnvironmentVariable, self).__init__()
+        self.variables = kwargs
+
+        super(InitctlEnvironmentVariable, self).setUp()
+        for variable, value in self.variables.items():
+            self._add_variable_cleanup(variable)
+            environment.set_initctl_env_var(variable, value)
+
+    def _add_variable_cleanup(self, variable):
+        if environment.is_initctl_env_var_set(variable):
+            original_value = environment.get_initctl_env_var(variable)
+            self.addCleanup(
+                environment.set_initctl_env_var, variable,
+                original_value)
+        else:
+            self.addCleanup(environment.unset_initctl_env_var, variable)
 
 
 class SimulateDevice(fixtures.Fixture):

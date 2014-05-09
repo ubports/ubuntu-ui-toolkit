@@ -4,14 +4,21 @@
 #export DH_VERBOSE=1
 export DPKG_GENSYMBOLS_CHECK_LEVEL=4
 DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
+DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
+
+# Skip tests on the archs they are known to be flaky  with current configuration
+testskip_architectures := powerpc arm64
 
 %:
 	dh $@ --fail-missing
 
 override_dh_auto_test:
+ifneq ($(DEB_HOST_ARCH),$(findstring $(DEB_HOST_ARCH), $(testskip_architectures)))
 ifeq (,$(findstring nocheck,$(DEB_BUILD_OPTIONS)))
 	mkdir -p debian/tmp/home/run
+	chmod +x tests/xvfb.sh
 	tests/xvfb.sh dh_auto_test || exit $?
+endif
 endif
 
 override_dh_build:
@@ -19,6 +26,7 @@ override_dh_build:
 	dh_auto_build -- docs
 
 override_dh_install:
-	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch 
+	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
+	mkdir -p debian/tmp/usr/share/ubuntu-ui-toolkit/doc
+	cp -r $(CURDIR)/documentation/*qch debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
 	dh_install --fail-missing
-

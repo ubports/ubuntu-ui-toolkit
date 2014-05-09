@@ -18,7 +18,7 @@ import QtQuick 2.0
 
 /*!
     \qmltype Tab
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief Component to represent a single tab in a \l Tabs environment.
 

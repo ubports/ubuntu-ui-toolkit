@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 Item {
     id: headerStyle
@@ -42,6 +42,12 @@ Item {
     property real textLeftMargin: units.gu(2)
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
+
+    /*!
+      \internal
+      Tabs needs to call sync of the TabBar
+     */
+    property TabBar __tabBar: tabBarLoader.sourceComponent ? tabBarLoader.item : null
 
     BorderImage {
         id: separator
@@ -81,7 +87,7 @@ Item {
             }
             text: styledItem.title
             font.weight: headerStyle.fontWeight
-            visible: !styledItem.contents
+            visible: !styledItem.tabsModel && !styledItem.contents
             fontSize: headerStyle.fontSize
             color: headerStyle.textColor
         }
@@ -97,6 +103,22 @@ Item {
             property: "parent"
             value: foreground
             when: styledItem.contents
+        }
+
+        Loader {
+            id: tabBarLoader
+            sourceComponent: styledItem.tabsModel && !styledItem.contents ? tabBarComponent : null
+            anchors.fill: parent
+        }
+
+        Component {
+            id: tabBarComponent
+            TabBar {
+                id: tabBar
+                anchors.fill: parent
+                model: styledItem.tabsModel
+                animate: styledItem.animate
+            }
         }
     }
 }

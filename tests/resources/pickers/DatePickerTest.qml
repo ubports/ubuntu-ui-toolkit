@@ -15,8 +15,8 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.Pickers 0.1
+import Ubuntu.Components 1.1
+import Ubuntu.Components.Pickers 1.0
 
 MainView {
     width: units.gu(40)
@@ -32,6 +32,7 @@ MainView {
                 date: new Date()
 
                 onDateChanged: print("CHANGED DATE=" + Qt.formatDateTime(date, "yyyy/MM/dd, hh:mm:ss"))
+                onMovingChanged: print("MOVING?", moving)
             }
             Slider {
                 value: 0.0//units.gu(36)
@@ -47,21 +48,25 @@ MainView {
                 spacing: units.gu(1)
                 Button {
                     text: "HU"
+                    width: units.gu(5)
                     height: units.gu(2)
                     onClicked: picker.locale = Qt.locale("hu_HU")
                 }
                 Button {
                     text: "DE"
+                    width: units.gu(5)
                     height: units.gu(2)
                     onClicked: picker.locale = Qt.locale("de_DE")
                 }
                 Button {
                     text: "EN(US)"
+                    width: units.gu(9)
                     height: units.gu(2)
                     onClicked: picker.locale = Qt.locale("en_US")
                 }
                 Button {
                     text: "FI"
+                    width: units.gu(5)
                     height: units.gu(2)
                     onClicked: {
                         picker.locale = Qt.locale("fi_FI")

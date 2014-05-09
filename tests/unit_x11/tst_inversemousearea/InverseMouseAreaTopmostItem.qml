@@ -15,12 +15,22 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 Item {
     width: 300
     height: 300
     objectName: "ROOT"
+
+    Rectangle {
+        x: 110; y: 10
+        width: 100; height: 100
+        color: "red"
+        MouseArea {
+            anchors.fill: parent
+            objectName: "MA"
+        }
+    }
 
     Rectangle {
         x: 10; y: 10
@@ -33,13 +43,4 @@ Item {
         }
     }
 
-    Rectangle {
-        x: 110; y: 10
-        width: 100; height: 100
-        color: "red"
-        MouseArea {
-            anchors.fill: parent
-            objectName: "MA"
-        }
-    }
 }

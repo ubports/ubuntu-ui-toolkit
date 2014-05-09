@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import "../" 0.1
+import Ubuntu.Components 1.1
 
 /*!
     \qmltype PickerDelegate
-    \inqmlmodule Ubuntu.Components.Pickers 0.1
+    \inqmlmodule Ubuntu.Components.Pickers 1.0
     \ingroup ubuntu-pickers
     \brief PickerDelegate component serves as base for Picker delegates.
 
@@ -51,7 +51,7 @@ AbstractButton {
 
     QtObject {
         id: internal
-        property bool inListView: QuickUtils.className(pickerDelegate.parent) !== "QQuickPathView"
+        property bool inListView: pickerDelegate.parent && (QuickUtils.className(pickerDelegate.parent) !== "QQuickPathView")
         property Item itemList: !inListView ? pickerDelegate.PathView.view : pickerDelegate.ListView.view
         property Picker picker: itemList ? itemList.pickerItem : null
     }
