@@ -93,10 +93,12 @@ StyledItem {
       The leaf node that is active.
      */
     property Item activeLeafNode
+
     /*!
       Whether or not this node is a leaf, that is if it has no descendant that are nodes.
+      Pages are leafs, and they don't have descendants in the PageTree.
      */
-    property bool isLeaf: true
+    property bool isLeaf: false
 
     Binding {
         target: node.parentNode
@@ -105,11 +107,11 @@ StyledItem {
         when: node.active
     }
 
-    Binding {
-        target: node.parentNode
-        property: "isLeaf"
-        value: false
-    }
+//    Binding {
+//        target: node.parentNode
+//        property: "isLeaf"
+//        value: false
+//    }
 
     Item {
         id: internal
@@ -127,7 +129,13 @@ StyledItem {
                 var i = item.parent;
                 while (i) {
                     if (internal.isPageTreeNode(i)) {
-                        node = i;
+                        if (i.isLeaf) {
+                            // current node is not part of the tree.
+                            node = null;
+                        } else {
+                            // current node is part of the tree with i as its parent.
+                            node = i;
+                        }
                         break;
                     }
                     i = i.parent;

@@ -75,6 +75,9 @@ PageTreeNode {
     // avoid using parent.height because parent may be a Loader which does not have its height set.
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
+    // TODO TIM: document
+    isLeaf: true
+
     /*!
       The title of the page. Will be shown in the header of the \l MainView.
       If the page is used inside a Tab, by default it takes the title from the Tab.
