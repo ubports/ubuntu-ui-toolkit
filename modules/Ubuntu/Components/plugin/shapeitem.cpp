@@ -33,7 +33,7 @@
 const float lowHighTextureThreshold = 11.0f;
 
 // Map of windows and associated textures.
-QHash<QWindow*, ShapeItem::TextureHandles> ShapeItem::textures_;
+QHash<QOpenGLContext*, ShapeItem::TextureHandles> ShapeItem::textures_;
 
 static const char* const shapeVertexShader =
     "uniform lowp mat4 matrix;                  \n"
@@ -341,12 +341,19 @@ void ShapeItem::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeom
     update();
 }
 
-void ShapeItem::onWindowDestroyed()
+void ShapeItem::onOpenglContextDestroyed()
 {
-    QWindow *window = qobject_cast<QWindow*>(sender());
-    if (Q_UNLIKELY(!window)) return;
+    QOpenGLContext* context = qobject_cast<QOpenGLContext*>(sender());
+    if (Q_UNLIKELY(!context)) return;
 
-    textures_.remove(window);
+    QHash<QOpenGLContext*, TextureHandles>::iterator it =
+        textures_.find(context);
+    if (it != textures_.end()) {
+        TextureHandles &textureHandles = it.value();
+        delete textureHandles.high;
+        delete textureHandles.low;
+        textures_.erase(it);
+    }
 }
 
 QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data)
@@ -356,14 +363,18 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
     // FIXME(loicm) Shape textures are stored in the read-only data section of the plugin as it
     //     avoids having to deal with paths for now. It should preferably be loaded from a file.
 
-    /* Textures created with QWindow::createTextureFromImage() become invalid
-     * when the window is destroyed; therefore, we must keep track of which
-     * window was used to create them and be ready to re-create them if that
-     * window goes away. */
-    TextureHandles &textureHandles = textures_[window()];
-    /* If the hash table didn't contain an entry for the current window, the
-     * line above has just caused the creation of a default-constructed value.
-     */
+    // OpenGL allocates textures per context, so we store textures reused by
+    // all shape instances per context as well
+    QOpenGLContext* openglContext = window() ? window()->openglContext() : NULL;
+    if (Q_UNLIKELY(!openglContext)) {
+        qCritical() << "Window has no GL context!";
+        delete old_node;
+        return NULL;
+    }
+
+    TextureHandles &textureHandles = textures_[openglContext];
+    // If the hash table didn't contain an entry for the current context, the
+    // line above has just caused the creation of a default-constructed value.
     if (!textureHandles.high) {
         textureHandles.high = window()->createTextureFromImage(
             QImage(shapeTextureHigh.data, shapeTextureHigh.width, shapeTextureHigh.height,
@@ -371,8 +382,9 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
         textureHandles.low = window()->createTextureFromImage(
             QImage(shapeTextureLow.data, shapeTextureLow.width, shapeTextureLow.height,
                    QImage::Format_ARGB32_Premultiplied));
-        QObject::connect(window(), SIGNAL(destroyed()),
-                         this, SLOT(onWindowDestroyed()));
+        QObject::connect(openglContext, SIGNAL(aboutToBeDestroyed()),
+                         this, SLOT(onOpenglContextDestroyed()),
+                         Qt::DirectConnection);
     }
 
     // The image item sets its texture in its updatePaintNode() method when QtQuick iterates through
@@ -398,7 +410,7 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
     ShapeTexturedMaterial* texturedMaterial = node->texturedMaterial();
     ShapeColoredMaterial* coloredMaterial = node->coloredMaterial();
     TextureData* textureData;
-    QSGTexture *textureHandle;
+    QSGTexture* textureHandle;
     if (gridUnit_ > lowHighTextureThreshold) {
         textureData = &shapeTextureHigh;
         textureHandle = textureHandles.high;
