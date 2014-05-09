@@ -112,7 +112,6 @@ class DatePickerTestCase(DatePickerBaseTestCase):
         self.assertEqual(path_view.currentIndex, current_index - 1)
 
 
-
 class PickDateFromDatePickerTestCase(DatePickerBaseTestCase):
 
     SELECTED_YEAR = datetime.date.today().year + 25
