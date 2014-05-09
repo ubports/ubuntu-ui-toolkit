@@ -28,9 +28,16 @@ ULLayoutsPrivate::ULLayoutsPrivate(ULLayouts *qq)
     , q_ptr(qq)
     , currentLayoutItem(0)
     , previousLayoutItem(0)
+    , hiddenContainer(new QQuickItem(qq))
     , currentLayoutIndex(-1)
     , ready(false)
 {
+    // hidden container for the components that are not laid out
+    // any component not subject of layout is reparented into this component
+    hiddenContainer->setParentItem(qq);
+    hiddenContainer->setObjectName("HiddenContainer");
+    hiddenContainer->setVisible(false);
+    hiddenContainer->setEnabled(false);
 }
 
 
@@ -122,7 +129,11 @@ void ULLayoutsPrivate::statusChanged(Status status)
 void ULLayoutsPrivate::hideExcludedItems()
 {
     for (int i = 0; i < excludedFromLayout.count(); i++) {
-        itemActivate(excludedFromLayout[i], false);
+        // skip hiddenContainer!
+        if (excludedFromLayout[i] == hiddenContainer) {
+            continue;
+        }
+        changes.addChange(new ParentChange(excludedFromLayout[i], hiddenContainer, false));
     }
 }
 
@@ -152,7 +163,7 @@ void ULLayoutsPrivate::reparentItems()
     LaidOutItemsMapIterator i(unusedItems);
     while (i.hasNext()) {
         i.next();
-        itemActivate(i.value(), false);
+        changes.addChange(new ParentChange(i.value(), hiddenContainer, false));
     }
 }
 

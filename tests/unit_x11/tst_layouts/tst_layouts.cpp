@@ -932,6 +932,35 @@ private Q_SLOTS:
         QCOMPARE(layoutChangeSpy.count(), 1);
     }
 
+    // guard bug #1204834 and #1300668
+    void testCase_Visibility() {
+        QScopedPointer<QQuickView> view(loadTest("Visibility.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
+        QVERIFY(root);
+
+        QQuickItem *container = testItem(root, "HiddenContainer");
+        QVERIFY(container);
+
+        QQuickItem *layout = testItem(root, "layoutManager");
+        QVERIFY(layout);
+        QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
+
+        QQuickItem *defaultLayout = testItem(root, "DefaultLayout");
+        QVERIFY(defaultLayout);
+
+        // invoke layout change
+        view->rootObject()->metaObject()->invokeMethod(view->rootObject(), "portraitLayout");
+        layoutChangeSpy.wait();
+        QCOMPARE(defaultLayout->parentItem(), container);
+
+        // change layout back
+        layoutChangeSpy.clear();
+        view->rootObject()->metaObject()->invokeMethod(view->rootObject(), "landscapeLayout");
+        layoutChangeSpy.wait();
+        QCOMPARE(defaultLayout->parentItem(), layout);
+    }
+
 };
 
 QTEST_MAIN(tst_Layouts)

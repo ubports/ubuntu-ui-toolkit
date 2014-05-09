@@ -37,4 +37,5 @@ OTHER_FILES += \
     AnchorAll.qml \
     ItemInstanceAsProperty.qml \
     DialerCrash.qml \
-    ExcludedItemDeleted.qml
+    ExcludedItemDeleted.qml \
+    Visibility.qml
