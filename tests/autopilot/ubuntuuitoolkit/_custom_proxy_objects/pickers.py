@@ -72,27 +72,26 @@ class DatePicker(_common.UbuntuUIToolkitCustomProxyObjectBase):
             'Picker', objectName='PickerRow_YearPicker')
         list_view = picker.select_single(
             _qquicklistview.QQuickListView, objectName='Picker_Linear')
-        self._pick_date_value(self.year, year, list_view)
+        self._pick_value(self.year, year, list_view)
 
     @autopilot_logging.log_action(logger.info)
     def _pick_month(self, month):
-        picker = self.select_single(
-            'Picker', objectName='PickerRow_MonthPicker')
-        path_view = picker.select_single(
-            QQuickPathView, objectName='Picker_WrapAround')
-        self._pick_date_value(self.month, month, path_view)
+        self._pick_value_from_path_view('Month', self.month, month)
 
     @autopilot_logging.log_action(logger.info)
     def _pick_day(self, day):
-        picker = self.select_single(
-            'Picker', objectName='PickerRow_DayPicker')
-        path_view = picker.select_single(
-            QQuickPathView, objectName='Picker_WrapAround')
         # Python's date object starts at one. The model in the date picker
         # at 0.
-        self._pick_date_value(self.get_date().day - 1, day - 1, path_view)
+        self._pick_value_from_path_view('Day', self.day - 1, day - 1)
 
-    def _pick_date_value(self, current_value, new_value, scrollable):
+    def _pick_value_from_path_view(self, type_, current_value, new_value):
+        picker = self.select_single(
+            'Picker', objectName='PickerRow_{}Picker'.format(type_))
+        path_view = picker.select_single(
+            QQuickPathView, objectName='Picker_WrapAround')
+        self._pick_value(current_value, new_value, path_view)
+
+    def _pick_value(self, current_value, new_value, scrollable):
         if new_value > current_value:
             direction = 'below'
         elif new_value < current_value:
@@ -112,8 +111,58 @@ class DatePicker(_common.UbuntuUIToolkitCustomProxyObjectBase):
         """
         # Python's date object starts at one. The model in the date picker
         # at 0.
-        return datetime.date(
-            self.year, self.month + 1, self.day)
+        return datetime.date(self.year, self.month + 1, self.day)
+
+    @autopilot_logging.log_action(logger.info)
+    def pick_time(self, time):
+        """Pick a time from the date picker.
+
+        :parameter time: The time to pick.
+        :type time: An object with hour, minute and second attributes, like
+            python's datetime.time.
+        :raises ubuntuuitoolkit.ToolkitException if the mode of the picker
+            doesn't let select a time.
+
+        """
+        if not self._is_time_picker():
+            raise _common.ToolkitException(
+                "Can't pick time. The picker mode is: {!r}.".format(self.mode))
+        if 'Hours' in self.mode:
+            self._pick_hour(time.hour)
+            self.hours.wait_for(time.hour)
+        if 'Minutes' in self.mode:
+            self._pick_minute(time.minute)
+            self.minutes.wait_for(time.minute)
+        if 'Seconds' in self.mode:
+            self._pick_second(time.second)
+            self.seconds.wait_for(time.second)
+
+    def _is_time_picker(self):
+        mode = self.mode
+        if 'Hours' in mode or 'Minutes' in mode or 'Seconds' in mode:
+            return True
+        else:
+            return False
+
+    @autopilot_logging.log_action(logger.info)
+    def _pick_hour(self, hour):
+        self._pick_value_from_path_view('Hours', self.hours, hour)
+
+    @autopilot_logging.log_action(logger.info)
+    def _pick_minute(self, minute):
+        self._pick_value_from_path_view('Minutes', self.minutes, minute)
+
+    @autopilot_logging.log_action(logger.info)
+    def _pick_second(self, second):
+        self._pick_value_from_path_view('Seconds', self.seconds, second)
+
+    def get_time(self):
+        """Return the currently selected time.
+
+        :return: a python datetime.time object with the selected time.
+
+        """
+        return datetime.time(self.hours, self.minutes, self.seconds)
 
 
 class QQuickPathView(_flickable.Scrollable):
