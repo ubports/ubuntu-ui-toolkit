@@ -152,22 +152,44 @@ Item {
             left: leftButtonContainer.right
             right: actionsContainer.left
             top: parent.top
+            // don't keep a margin if there is already a button with spacing
+            leftMargin: leftButtonContainer.width > 0 ? 0 : headerStyle.textLeftMargin
         }
         height: headerStyle.contentHeight
 
         Label {
             LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
 
+            visible: !styledItem.contents
             anchors {
                 left: parent.left
                 verticalCenter: parent.verticalCenter
-                // don't keep a margin if there is already a button with spacing
-                leftMargin: leftButtonContainer.width > 0 ? 0 : headerStyle.textLeftMargin
             }
             text: styledItem.title
             font.weight: headerStyle.fontWeight
             fontSize: headerStyle.fontSize
             color: headerStyle.textColor
+        }
+
+        Item {
+            // This Item is used to make the custom header item invisible
+            // when styledItem.contents is unset and its parent is not updated
+            // when the bindings below is no longer active
+            id: contentsContainer
+            anchors.fill: parent
+            visible: styledItem.contents
+        }
+        Binding {
+            target: styledItem.contents
+            property: "anchors.fill"
+            value: contentsContainer
+            when: styledItem.contents
+        }
+        Binding {
+            target: styledItem.contents
+            property: "parent"
+            value: contentsContainer
+            when: styledItem.contents
         }
     }
 
