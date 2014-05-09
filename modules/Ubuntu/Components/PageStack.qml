@@ -53,7 +53,6 @@ import "stack.js" as Stack
                 Page {
                     id: page0
                     title: i18n.tr("Root page")
-                    visible: false
 
                     Column {
                         anchors.fill: parent
@@ -73,7 +72,6 @@ import "stack.js" as Stack
                 Page {
                     title: "Rectangle"
                     id: page1
-                    visible: false
                     property alias color: rectangle.color
                     Rectangle {
                         id: rectangle
