@@ -24,7 +24,7 @@ from ubuntuuitoolkit._custom_proxy_objects import _common, _flickable
 logger = logging.getLogger(__name__)
 
 
-class QQuickListView(_flickable.Flickable):
+class QQuickListView(_flickable.QQuickFlickable):
 
     @autopilot_logging.log_action(logger.info)
     def click_element(self, object_name, direction=None):
