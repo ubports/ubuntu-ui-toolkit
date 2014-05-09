@@ -223,12 +223,10 @@ Item {
     }
 
     // The presence of a mouse enables the interactive thumb
-    InverseMouseArea {
-        id: ima
-        anchors.fill: parent
-        acceptedButtons: Qt.NoButton
-        hoverEnabled: true
-        onEntered: interactive = true
+    InverseMouse.onEntered: {
+        interactive = true;
+        // FIXME: Flash the thumb to faciliate debugging
+        thumb.show();
     }
 
     // The slider's position represents which part of the flickable is visible.
