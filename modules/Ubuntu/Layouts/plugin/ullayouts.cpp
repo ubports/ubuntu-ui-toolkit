@@ -133,7 +133,7 @@ void ULLayoutsPrivate::hideExcludedItems()
         if (excludedFromLayout[i] == hiddenContainer) {
             continue;
         }
-        changes.addChange(new ParentChange(excludedFromLayout[i], hiddenContainer, false));
+        changes.addParentChange(excludedFromLayout[i], hiddenContainer, currentLayoutItem, previousLayoutItem);
     }
 }
 
@@ -163,7 +163,7 @@ void ULLayoutsPrivate::reparentItems()
     LaidOutItemsMapIterator i(unusedItems);
     while (i.hasNext()) {
         i.next();
-        changes.addChange(new ParentChange(i.value(), hiddenContainer, false));
+        changes.addParentChange(i.value(), hiddenContainer, currentLayoutItem, previousLayoutItem);
     }
 }
 

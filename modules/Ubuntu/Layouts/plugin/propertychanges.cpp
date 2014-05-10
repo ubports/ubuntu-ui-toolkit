@@ -459,6 +459,13 @@ ChangeList &ChangeList::addChange(PropertyChange *change)
     return *this;
 }
 
+// creates two changes, one for reparenting and one for itemstack backup
+ChangeList &ChangeList::addParentChange(QQuickItem *item, QQuickItem *newParent, QQuickItem *currentLayout, QQuickItem *prevLayout)
+{
+    return addChange(new ParentChange(item, newParent, false))
+            .addChange(new ItemStackBackup(item, currentLayout, prevLayout));
+}
+
 QList<PropertyChange*> ChangeList::unifiedChanges()
 {
     QList<PropertyChange*> list;

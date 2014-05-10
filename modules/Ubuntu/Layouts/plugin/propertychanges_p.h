@@ -214,6 +214,7 @@ public:
     void clear();
 
     ChangeList &addChange(PropertyChange *change);
+    ChangeList &addParentChange(QQuickItem *item, QQuickItem *newParent, QQuickItem *currentLayout, QQuickItem *prevLayout);
 
 private:
     QList<PropertyChange*> changes[PropertyChange::MaxPriority];

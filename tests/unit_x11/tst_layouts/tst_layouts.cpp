@@ -951,13 +951,13 @@ private Q_SLOTS:
 
         // invoke layout change
         view->rootObject()->metaObject()->invokeMethod(view->rootObject(), "portraitLayout");
-        layoutChangeSpy.wait();
+        layoutChangeSpy.wait(1000);
         QCOMPARE(defaultLayout->parentItem(), container);
 
         // change layout back
         layoutChangeSpy.clear();
         view->rootObject()->metaObject()->invokeMethod(view->rootObject(), "landscapeLayout");
-        layoutChangeSpy.wait();
+        layoutChangeSpy.wait(1000);
         QCOMPARE(defaultLayout->parentItem(), layout);
     }
 
