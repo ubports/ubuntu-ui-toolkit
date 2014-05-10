@@ -99,8 +99,6 @@ MainView {
     Page {
         id: mainPage
         active: selectedWidget == null
-        // be visible even when not active
-        visible: true
 
         title: "Ubuntu UI Toolkit"
         /* Page internally sets the topMargin of its flickable to account for
