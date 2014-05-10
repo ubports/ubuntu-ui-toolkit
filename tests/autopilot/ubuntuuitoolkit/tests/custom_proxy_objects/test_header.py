@@ -64,8 +64,7 @@ MainView {
         }
 
         Button {
-            id: hideButton
-            objectName: "hide_button"
+            objectName: "hide_actions_button"
             anchors {
                 bottom: parent.bottom
                 horizontalCenter: parent.horizontalCenter
@@ -125,10 +124,10 @@ MainView {
             objectName='actions_overflow_button')
         self.assertEqual(overflow_button.visible, True)
 
-        hide_button = self.main_view.select_single(
+        hide_actions_button = self.main_view.select_single(
             'Button',
-            objectName='hide_button')
-        self.pointing_device.click_object(hide_button)
+            objectName='hide_actions_button')
+        self.pointing_device.click_object(hide_actions_button)
 
         # only three actions are visible
         self.assertEqual(overflow_button.visible, False)
