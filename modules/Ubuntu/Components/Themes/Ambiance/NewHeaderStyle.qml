@@ -205,10 +205,21 @@ Item {
     Row {
         id: actionsContainer
 
+        property var visibleActions: getVisibleActions(styledItem.actions)
+        function getVisibleActions(actions) {
+            var visibleActionList = [];
+            for (var i in actions) {
+                var action = actions[i];
+                if (action.visible) {
+                    visibleActionList.push(action);
+                }
+            }
+            return visibleActionList;
+        }
+
         QtObject {
             id: numberOfSlots
-            property int requested: styledItem.actions && styledItem.actions.hasOwnProperty("length") ?
-                                         styledItem.actions.length : 0
+            property int requested: actionsContainer.visibleActions.length
             property int left: tabsButton.visible || backButton.visible ||
                                customBackButton.visible ? 1 : 0
             property int right: headerStyle.maximumNumberOfActions - left
@@ -228,7 +239,7 @@ Item {
             AbstractButton {
                 id: actionButton
                 objectName: action.objectName + "_header_button"
-                action: styledItem.actions[index]
+                action: actionsContainer.visibleActions[index]
                 style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionButton)
                 width: units.gu(5)
                 height: actionsContainer.height
@@ -259,7 +270,7 @@ Item {
                     Repeater {
                         model: numberOfSlots.requested - numberOfSlots.used
                         ListItem.Standard {
-                            action: styledItem.actions[numberOfSlots.used + index]
+                            action: actionsContainer.visibleActions[numberOfSlots.used + index]
                             objectName: action.objectName + "_header_overflow_button"
                             onClicked: actionsOverflowPopover.hide()
                         }

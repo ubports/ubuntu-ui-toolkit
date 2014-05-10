@@ -74,7 +74,7 @@ MainView {
             onClicked: {
                 cancelAction.visible = false;
                 for (var i=0; i < 3; i++) {
-                    buttonRepeater.itemAt(0).action.visible = false;
+                    buttonRepeater.itemAt(i).action.visible = false;
                 }
                 // only three visible actions left
             }
