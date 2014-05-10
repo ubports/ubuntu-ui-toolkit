@@ -60,7 +60,7 @@ TestCase {
         pageStack.clear();
     }
 
-    function test_title_bug1143345() {
+    function test_title_bug1143345_bug1317902() {
         pageStack.push(page1);
         compare(mainView.__propagated.header.title, "Title 1", "Header is correctly set by page");
         page1.title = "New title";
@@ -69,6 +69,10 @@ TestCase {
         compare(mainView.__propagated.header.title, "Title 2", "Header is correctly set by page");
         pageStack.clear();
         page1.title = "Title 1";
+
+        pageStack.push(pageWithPage);
+        compare(mainView.__propagated.header.title, pageWithPage.title, "Embedded page sets title of outer page");
+        pageStack.clear();
     }
 
     function test_tools_bug1126197() {
@@ -127,7 +131,13 @@ TestCase {
             id: tools2
         }
     }
-
+    Page {
+        id: pageWithPage
+        title: "Outer"
+        Page {
+            title: "Inner"
+        }
+    }
     Tabs {
         id: tabs
         Tab {
