@@ -76,7 +76,7 @@ MainView {
                 for (var i=0; i < 3; i++) {
                     buttonRepeater.itemAt(i).action.visible = false;
                 }
-                // only three visible actions left
+                // only three of five visible actions left
             }
         }
     }
