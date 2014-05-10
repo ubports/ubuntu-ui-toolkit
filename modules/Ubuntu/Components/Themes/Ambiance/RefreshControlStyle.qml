@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,14 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 0.1
+import QtQuick 2.2
+import Ubuntu.Components 1.1
+import Ubuntu.Components.Styles 1.1 as Style
 
-Item {
-    property real baseFlickableTopMargin: 0.0
-    property real layoutHeight: Math.max(pullImage.paintedHeight, pullLabel.paintedHeight, busyIndicator.height) + units.gu(1.5)
-    property real flipThreshold: layoutHeight + units.gu(1) + baseFlickableTopMargin
-    property real spacing: pullImage.width / 2
+Style.RefreshControlStyle {
+    flickableTopMargin: 0.0
+    layoutHeight: Math.max(pullImage.paintedHeight, pullLabel.paintedHeight, busyIndicator.height) + units.gu(1.5)
+    flipThreshold: layoutHeight + units.gu(1) + flickableTopMargin
+    spacing: pullImage.width / 2
 
     property Flickable flickable: styledItem.target
 
@@ -63,7 +64,7 @@ Item {
             name: ""
             PropertyChanges {
                 target: flickable
-                topMargin: baseFlickableTopMargin
+                topMargin: flickableTopMargin
             }
         },
 
@@ -91,7 +92,7 @@ Item {
             }
             PropertyChanges {
                 target: flickable
-                topMargin: style.baseFlickableTopMargin + style.layoutHeight
+                topMargin: style.flickableTopMargin + style.layoutHeight
             }
             AnchorChanges {
                 target: style

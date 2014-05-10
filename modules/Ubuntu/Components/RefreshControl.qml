@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.2
 
 /*!
     \qmltype RefreshControl
@@ -22,8 +22,8 @@ import QtQuick 2.0
     \ingroup ubuntu
     \brief Pull-to-refresh component for Flickables to reload a model upon pull.
 
-    When used with Flickable, set parent to the flickable so the control does
-    not land in the contentItem of Flickable.
+    When used with Flickable, set parent to the flickable explicitly so the component
+    does not land in the contentItem of Flickable.
     \qml
     ListModel {
         id: listModel
@@ -57,14 +57,32 @@ import QtQuick 2.0
 StyledItem {
     id: control
 
+    /*!
+      */
     property Flickable target: parent
 
+    /*!
+      */
     property bool completeWhen: true
+
+    /*!
+      */
     readonly property alias refreshing: internals.refreshing
 
+    /*!
+      */
     property string pullText: i18n.tr("Pull to refresh...")
+
+    /*!
+      */
     property string releaseText: i18n.tr("Release to refresh...")
 
+    /*!
+      */
+    property var model
+
+    /*!
+      */
     signal refresh()
 
     function beginRefreshing() {
@@ -118,7 +136,7 @@ StyledItem {
         }
         Binding {
             target: control.__styleInstance
-            property: "baseFlickableTopMargin"
+            property: "flickableTopMargin"
             value: internals.baseTopMargin
         }
     }
@@ -131,7 +149,7 @@ StyledItem {
     onCompleteWhenChanged: {
         if (completeWhen) {
             internals.refreshing = false;
-//            internals.state = "";
+            internals.state = "";
         }
     }
 
