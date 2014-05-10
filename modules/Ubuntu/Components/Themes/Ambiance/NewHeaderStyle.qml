@@ -43,6 +43,14 @@ Item {
     property color textColor: Theme.palette.selected.backgroundText
     property real textLeftMargin: units.gu(2)
 
+    /*!
+      The number of slots for actions in the header, including the optional
+      (custom or automatic) back button in the left side of the header.
+      If the number of actions defined is larger than the numer of actions
+      specified here, extra actions are put into an overflow.
+     */
+    property int maximumNumberOfActions: 3
+
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
 
     BorderImage {
@@ -203,7 +211,7 @@ Item {
                                          styledItem.actions.length : 0
             property int left: tabsButton.visible || backButton.visible ||
                                customBackButton.visible ? 1 : 0
-            property int right: 3 - left
+            property int right: headerStyle.maximumNumberOfActions - left
             property int overflow: actionsOverflowButton.visible ? 1 : 0
             property int used: Math.min(right - overflow, requested)
         }
