@@ -60,10 +60,10 @@ MainView {
             }
             ToolbarButton {
                 action: Action {
+                    id: action2
                     onTriggered: print("two!")
                     iconName: "contact"
                     text: "Second action"
-                    visible: false
                 }
                 text: "action 2"
             }
@@ -72,8 +72,10 @@ MainView {
                 action: Action {
                     text: "cancel"
                     iconName: "cancel"
-                    onTriggered: print("cancelled!")
-                    visible: false
+                    onTriggered: {
+                        action2.visible = false;
+                        visible = false;
+                    }
                 }
             }
         }
