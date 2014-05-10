@@ -108,12 +108,6 @@ StyledItem {
         when: node.active
     }
 
-//    Binding {
-//        target: node.parentNode
-//        property: "isLeaf"
-//        value: false
-//    }
-
     Item {
         id: internal
         function isPageTreeNode(object) {
@@ -131,7 +125,7 @@ StyledItem {
                 while (i) {
                     if (internal.isPageTreeNode(i)) {
                         if (i.isLeaf) {
-                            // current node is not part of the tree.
+                            // children of a leaf are not part of the tree
                             node = null;
                         } else {
                             // current node is part of the tree with i as its parent.
