@@ -79,7 +79,8 @@ Item {
             height: parent ? parent.height : undefined
             width: visible ? units.gu(5) : 0
             action: styledItem.__customBackAction
-            visible: null !== styledItem.__customBackAction
+            visible: null !== styledItem.__customBackAction &&
+                     styledItem.__customBackAction.visible
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
         }
 

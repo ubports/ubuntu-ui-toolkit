@@ -68,14 +68,14 @@ MainView {
                 text: "action 2"
             }
 
-//            back: ToolbarButton {
-//                action: Action {
-//                    text: "cancel"
-//                    iconName: "cancel"
-//                    onTriggered: print("cancelled!")
-//                }
-//                anchors.verticalCenter: parent.verticalCenter
-//            }
+            back: ToolbarButton {
+                action: Action {
+                    text: "cancel"
+                    iconName: "cancel"
+                    onTriggered: print("cancelled!")
+                    visible: false
+                }
+            }
         }
     }
 }
