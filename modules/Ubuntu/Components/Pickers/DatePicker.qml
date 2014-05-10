@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 /*!
     \qmltype DatePicker
-    \inqmlmodule Ubuntu.Components.Pickers 0.1
+    \inqmlmodule Ubuntu.Components.Pickers 1.0
     \ingroup ubuntu-pickers
     \brief DatePicker component provides date and time value picking functionality.
 
@@ -36,8 +36,8 @@ import Ubuntu.Components 0.1
 
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
-    import Ubuntu.Components.Pickers 0.1
+    import Ubuntu.Components 1.1
+    import Ubuntu.Components.Pickers 1.0
 
     Column {
         Label {
@@ -56,8 +56,8 @@ import Ubuntu.Components 0.1
     which shows only year and month date units would look as follows:
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
-    import Ubuntu.Components.Pickers 0.1
+    import Ubuntu.Components 1.1
+    import Ubuntu.Components.Pickers 1.0
 
     Column {
         Label {
@@ -75,8 +75,8 @@ import Ubuntu.Components 0.1
     The following example demonstrates how to use DatePicker for time picking.
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
-    import Ubuntu.Components.Pickers 0.1
+    import Ubuntu.Components 1.1
+    import Ubuntu.Components.Pickers 1.0
 
     Column {
         Label {
@@ -112,8 +112,8 @@ import Ubuntu.Components 0.1
     \endlist
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
-    import Ubuntu.Components.Pickers 0.1
+    import Ubuntu.Components 1.1
+    import Ubuntu.Components.Pickers 1.0
 
     Column {
         Label {
@@ -292,6 +292,14 @@ StyledItem {
       */
     property var locale: Qt.locale()
 
+    /*!
+      \qmlproperty bool moving
+      \readonly
+      The property holds whether the component's pickers are moving.
+      \sa Picker::moving
+      */
+    readonly property alias moving: positioner.moving
+
     implicitWidth: units.gu(36)
     implicitHeight: units.gu(20)
 
@@ -453,6 +461,13 @@ StyledItem {
               */
         id: tumblerModel
 
+        /*
+          Signal triggered when the model is about to remove a picker. We cannot rely on
+          rowAboutToBeRemoved, as by the time the signal is called the list element is
+          already removed from the model.
+          */
+        signal pickerRemoved(int index)
+
         // the function checks whether a pickerModel was added or not
         // returns the index of the model object the pickerModel was found
         // or -1 on error.
@@ -480,6 +495,7 @@ StyledItem {
         function removePicker(name) {
             var idx = pickerModelIndex(name);
             if (idx >= 0) {
+                pickerRemoved(idx);
                 remove(idx);
             }
         }

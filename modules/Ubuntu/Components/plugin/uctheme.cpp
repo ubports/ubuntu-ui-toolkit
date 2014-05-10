@@ -36,7 +36,7 @@
 /*!
     \qmltype Theme
     \instantiates UCTheme
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup theming
     \brief The Theme class provides facilities to interact with the current theme.
 
@@ -48,7 +48,7 @@
 
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
+    import Ubuntu.Components 1.1
 
     Item {
         Button {
@@ -61,7 +61,7 @@
 
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
+    import Ubuntu.Components 1.1
 
     StyledItem {
         id: myItem
@@ -107,9 +107,8 @@ UCTheme::UCTheme(QObject *parent) :
                      this, &UCTheme::onThemeNameChanged);
     updateThemePaths();
 
-    loadPalette();
-    QObject::connect(this, &UCTheme::nameChanged,
-                     this, &UCTheme::loadPalette, Qt::UniqueConnection);
+    QObject::connect(this, SIGNAL(nameChanged()),
+                     this, SLOT(loadPalette()), Qt::UniqueConnection);
 }
 
 void UCTheme::updateEnginePaths()
@@ -191,8 +190,11 @@ void UCTheme::setName(const QString& name)
 
     The palette of the current theme.
 */
-QObject* UCTheme::palette() const
+QObject* UCTheme::palette()
 {
+    if (!m_palette) {
+        loadPalette(false);
+    }
     return m_palette;
 }
 
@@ -275,11 +277,16 @@ void UCTheme::registerToContext(QQmlContext* context)
 
 }
 
-void UCTheme::loadPalette()
+void UCTheme::loadPalette(bool notify)
 {
+    if (!m_engine) {
+        return;
+    }
     if (m_palette != NULL) {
         delete m_palette;
     }
-    m_palette = QuickUtils::instance().createQmlObject((styleUrl("Palette.qml")));
-    Q_EMIT paletteChanged();
+    m_palette = QuickUtils::instance().createQmlObject(styleUrl("Palette.qml"), m_engine);
+    if (notify) {
+        Q_EMIT paletteChanged();
+    }
 }

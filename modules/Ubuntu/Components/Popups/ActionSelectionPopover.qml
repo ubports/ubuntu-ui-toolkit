@@ -15,13 +15,13 @@
  */
 
 import QtQuick 2.0
-import "../" 0.1
-import "../ListItems" 0.1
+import Ubuntu.Components 1.1
+import Ubuntu.Components.ListItems 1.0
 
 /*!
     \qmltype ActionSelectionPopover
     \inherits Popover
-    \inqmlmodule Ubuntu.Components.Popups 0.1
+    \inqmlmodule Ubuntu.Components.Popups 1.0
     \ingroup ubuntu-popups
     \brief A special popover presenting actions to the user. The popover is closed
         automatically when the action is chosen.

@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 TestCase {
     name: "FontUtilsAPI"
@@ -27,7 +27,7 @@ TestCase {
         compare(FontUtils.modularScale("small"), 0.857, "small scale");
         compare(FontUtils.modularScale("medium"), 1.0, "medium scale");
         compare(FontUtils.modularScale("large"), 1.414, "large scale");
-        compare(FontUtils.modularScale("x-large"), 2.328, "x-large scale");
+        compare(FontUtils.modularScale("x-large"), 1.905, "x-large scale");
     }
 
     function test_modularScale_failures() {
@@ -41,7 +41,7 @@ TestCase {
         compare(FontUtils.sizeToPixels("small"), 0.857 * units.dp(14), "small scale");
         compare(FontUtils.sizeToPixels("medium"), 1.0 * units.dp(14), "medium scale");
         compare(FontUtils.sizeToPixels("large"), 1.414 * units.dp(14), "large scale");
-        compare(FontUtils.sizeToPixels("x-large"), 2.328 * units.dp(14), "x-large scale");
+        compare(FontUtils.sizeToPixels("x-large"), 1.905 * units.dp(14), "x-large scale");
     }
 
     function test_sizeToPixels_failures() {

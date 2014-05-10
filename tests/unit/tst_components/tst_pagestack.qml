@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 TestCase {
     name: "PageStackAPI"
@@ -85,14 +85,25 @@ TestCase {
         pageStack.push(tabs);
         compare(pageStack.currentPage, tabs, "Tabs can be pushed on a PageStack");
         compare(tabs.active, true, "Tabs on top of a PageStack are active");
-        compare(mainView.__propagated.header.contents, tabs.tabBar, "Pushing Tabs on PageStack updates the header contents");
+        compare(mainView.__propagated.header.__styleInstance.__tabBar, tabs.tabBar, "Pushing Tabs on PageStack updates the header contents");
         pageStack.push(page1);
         compare(pageStack.currentPage, page1, "A page can be pushed on top of a Tabs");
         compare(tabs.active, false, "Tabs on a PageStack, but not on top, are inactive");
-        compare(mainView.__propagated.header.contents, null, "Contents of inactive Tabs is not applied to header");
+        compare(mainView.__propagated.header.__styleInstance.__tabBar, null, "Contents of inactive Tabs is not applied to header");
         pageStack.pop();
         compare(tabs.active, true, "Tabs on top of PageStack is active");
-        compare(mainView.__propagated.header.contents, tabs.tabBar, "Active Tabs controls header contents");
+        compare(mainView.__propagated.header.__styleInstance.__tabBar, tabs.tabBar, "Active Tabs controls header contents");
+        pageStack.clear();
+    }
+
+    function test_pop_to_tabs_bug1316736() {
+        pageStack.push(tabs);
+        tabs.selectedTabIndex = 1;
+        pageStack.push(page1);
+        compare(tabs.active, false, "Tabs on a PageStack, but not on top, are inactive");
+        pageStack.pop();
+        compare(tabs.active, true, "Tabs on top of PageStack is active");
+        compare(tabs.selectedTabIndex, 1, "Pushing and popping another page on top of Tabs does not change selectedTabsIndex");
         pageStack.clear();
     }
 
@@ -119,5 +130,11 @@ TestCase {
 
     Tabs {
         id: tabs
+        Tab {
+            id: tab1
+        }
+        Tab {
+            id: tab2
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012, 2013, 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 /*!
     \qmltype Empty
-    \inqmlmodule Ubuntu.Components.ListItems 0.1
+    \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief A list item with no contents.
     The Empty class can be used for generic list items containing other
@@ -34,8 +34,8 @@ import Ubuntu.Components 0.1
 
     Examples:
     \qml
-        import Ubuntu.Components 0.1
-        import Ubuntu.Components.ListItems 0.1 as ListItem
+        import Ubuntu.Components 1.1
+        import Ubuntu.Components.ListItems 1.0 as ListItem
 
         Item {
             Model {
@@ -141,7 +141,7 @@ AbstractButton {
       Reparent so that the visuals of the children does not
       occlude the bottom divider line.
      */
-    default property alias children: body.children
+    default property alias children: body.data
 
      /*!
       \internal
@@ -183,6 +183,9 @@ AbstractButton {
 
     // Keep compatible with the old version
     height: implicitHeight
+
+    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
 
     /*! \internal */
     QtObject {
@@ -234,14 +237,13 @@ AbstractButton {
          */
         function resetDrag() {
             confirmRemovalDialog.waitingForConfirmation = false
+            held = false  // before body.x to ensure animation
+            __mouseArea.drag.target = null  // stops waitingForConfirmation = true in animation
             body.x = 0
             pressedPosition = -1
-            __mouseArea.drag.target = null
-            held = false
             removeItem = false
             backgroundIndicator.opacity = 0.0
             backgroundIndicator.visible = false
-            backgroundIndicator.state = ""
         }
 
         /*! \internal
@@ -319,9 +321,11 @@ AbstractButton {
                     UbuntuNumberAnimation {
                     }
                     ScriptAction {
-                         script: {
-                             confirmRemovalDialog.waitingForConfirmation = true
-                             priv.commitDrag()
+                        script: {
+                            if (__mouseArea.drag.target !== null) {  // if not from resetDrag()
+                                confirmRemovalDialog.waitingForConfirmation = true
+                                priv.commitDrag()
+                            }
                         }
                     }
                 }
@@ -330,6 +334,8 @@ AbstractButton {
             onXChanged: {
                 if (x > 0) {
                     backgroundIndicator.state = "SwipingRight"
+                } else if (x === 0) {
+                    backgroundIndicator.state = ""
                 } else {
                     backgroundIndicator.state = "SwipingLeft"
                 }
@@ -347,6 +353,8 @@ AbstractButton {
                 top: parent.top
                 bottom: parent.bottom
             }
+            LayoutMirroring.enabled: false
+            LayoutMirroring.childrenInherit: true
 
             Item {
                 id: confirmRemovalDialog

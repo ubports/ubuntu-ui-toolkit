@@ -1,5 +1,5 @@
 include(../test-include.pri)
-QT += quick-private
+QT += quick-private gui-private
 SOURCES += tst_inversemouseareatest.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
@@ -14,4 +14,10 @@ OTHER_FILES += \
     InverseMouseAreaNormalEventStack.qml \
     InverseMouseAreaTopmostItem.qml \
     InverseMouseAreaSensingArea.qml \
-    InverseMouseAreaOnTopNoAccept.qml
+    InverseMouseAreaOnTopNoAccept.qml \
+    Defaults.qml \
+    InverseMouseAreaInListView.qml \
+    InverseMouseAreaInPage.qml \
+    InverseMouseAreaInFlickable.qml \
+    InverseMouseAreaParentClipped.qml \
+    InverseMouseAreaClip.qml

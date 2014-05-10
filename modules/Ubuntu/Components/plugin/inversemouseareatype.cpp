@@ -21,7 +21,7 @@
 /*!
   \qmltype InverseMouseArea
   \instantiates InverseMouseAreaType
-  \inqmlmodule Ubuntu.Components 0.1
+  \inqmlmodule Ubuntu.Components 1.1
   \ingroup ubuntu
   \brief The InverseMouseArea captures mouse events happening outside of a given
   area.
@@ -33,7 +33,7 @@
   Popup.qml
   \qml
   import QtQuick 2.0
-  import Ubuntu.Components 0.1
+  import Ubuntu.Components 1.1
 
   Rectangle {
       anchors.centerIn: parent
@@ -53,7 +53,7 @@
 
   \qml
   import QtQuick 2.0
-  import Ubuntu.Components 0.1
+  import Ubuntu.Components 1.1
 
   Item {
       width: 640
@@ -77,7 +77,7 @@
   a component which is either a parent of the mouse area or a sibling of it.
   \qml
   import QtQuick 2.0
-  import Ubuntu.Components 0.1
+  import Ubuntu.Components 1.1
 
   Item {
       width: units.gu(40)
@@ -231,7 +231,19 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
     m_topmostItem(false),
     m_sensingArea(QuickUtils::instance().rootItem(this))
 {
-    QObject::connect(this, SIGNAL(enabledChanged()), this, SLOT(update()));
+    /*
+     * QQuickMouseArea overrides enabledChanged() signal, therefore we must make sure
+     * we connect to the proper signal.
+     */
+    QObject::connect(this, &QQuickMouseArea::enabledChanged,
+                     this, &InverseMouseAreaType::update);
+    QObject::connect(this, &QQuickMouseArea::visibleChanged,
+                     this, &InverseMouseAreaType::update);
+    /*
+     * Also connect to windowChanged() to get the proper window to filter
+     */
+    QObject::connect(this, &QQuickMouseArea::windowChanged,
+                     this, &InverseMouseAreaType::resetFilterOnWindowUpdate);
 
     if (!m_sensingArea) {
         // get sensing area upon parent change
@@ -241,6 +253,27 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
 
 InverseMouseAreaType::~InverseMouseAreaType()
 {
+}
+
+void InverseMouseAreaType::updateEventFilter(bool enable)
+{
+    m_filteredEvent = false;
+    if (!enable && m_filterHost) {
+        m_filterHost->removeEventFilter(this);
+        m_filterHost.clear();
+
+    } else if (enable) {
+        QQuickWindow *currentWindow = window();
+        if (!currentWindow || (m_filterHost == currentWindow)) {
+            return;
+        }
+
+        if (m_filterHost) {
+            m_filterHost->removeEventFilter(this);
+        }
+        currentWindow->installEventFilter(this);
+        m_filterHost = currentWindow;
+    }
 }
 
 
@@ -254,14 +287,25 @@ void InverseMouseAreaType::update()
         return;
     }
     // update sensing area
-    if (!m_sensingArea)
+    if (!m_sensingArea) {
         m_sensingArea = QuickUtils::instance().rootItem(this);
+    }
+    updateEventFilter(isEnabled() && isVisible() && m_topmostItem);
+}
+/*!
+  \internal
+  Slot connected to windowChanged signal to refresh filter host.
+ */
+void InverseMouseAreaType::resetFilterOnWindowUpdate(QQuickWindow *win)
+{
+    Q_UNUSED(win);
+    updateEventFilter(m_topmostItem);
 }
 
 void InverseMouseAreaType::componentComplete()
 {
     QQuickMouseArea::componentComplete();
-    // by now the parents shoudl have been resolved so we can look after the
+    // by now the parents should have been resolved so we can look after the
     // topmost component for the sensingArea in case it has not been set yet
     m_ready = true;
     update();
@@ -270,14 +314,30 @@ void InverseMouseAreaType::componentComplete()
 /*
  * Translate mouse, wheel and hover event positions to component's local coordinates.
  */
-QEvent *InverseMouseAreaType::mapEventToArea(QObject *target, QEvent *event)
+QEvent *InverseMouseAreaType::mapEventToArea(QObject *target, QEvent *event, QPoint &point)
 {
+    QQuickItem *targetItem = qobject_cast<QQuickItem*>(target);
+    // target can be the QQuickView or QQuickWindow, then we need to get the root item from it
+    if (!targetItem) {
+        QQuickView *view = qobject_cast<QQuickView*>(target);
+        if (view) {
+            targetItem = view->rootObject();
+        } else {
+            QQuickWindow *window = qobject_cast<QQuickWindow*>(target);
+            if (window) {
+                targetItem = window->contentItem();
+            }
+        }
+    }
+    Q_ASSERT(target);
+    m_filteredEvent = true;
+
     switch (event->type()) {
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
     case QEvent::MouseButtonDblClick:
     case QEvent::MouseMove:
-        if (target != this) {
+        if (targetItem != this) {
             // translate coordinates to local
             QMouseEvent *ev = static_cast<QMouseEvent*>(event);
             QMouseEvent *mev = new QMouseEvent(ev->type(),
@@ -285,33 +345,85 @@ QEvent *InverseMouseAreaType::mapEventToArea(QObject *target, QEvent *event)
                                    ev->windowPos(),
                                    ev->screenPos(),
                                    ev->button(), ev->buttons(), ev->modifiers());
+            point = mev->pos();
             return mev;
         }
         break;
     case QEvent::Wheel:
-        if (target != this) {
+        if (targetItem != this) {
             QWheelEvent *ev = static_cast<QWheelEvent*>(event);
             QWheelEvent *wev = new QWheelEvent(mapFromScene(ev->globalPos()), ev->globalPos(),
                                                ev->delta(), ev->buttons(), ev->modifiers(), ev->orientation());
+            point = wev->pos();
             return wev;
         }
         break;
     case QEvent::HoverEnter:
     case QEvent::HoverLeave:
     case QEvent::HoverMove: {
-        QQuickItem *item = qobject_cast<QQuickItem*>(target);
-        if (item && item != this) {
+        if (targetItem && targetItem != this) {
             QHoverEvent *ev = static_cast<QHoverEvent*>(event);
-            QPointF spos = item->mapToScene(ev->posF());
-            QPointF sopos = item->mapToScene(ev->oldPosF());
+            QPointF spos = targetItem->mapToScene(ev->posF());
+            QPointF sopos = targetItem->mapToScene(ev->oldPosF());
             QHoverEvent *hev = new QHoverEvent(ev->type(),
                                                mapFromScene(spos),
                                                mapFromScene(sopos),
                                                ev->modifiers());
+            point = hev->pos();
             return hev;
         }
         } break;
+    // convert touch events into mouse events and continue handling as such
+    case QEvent::TouchBegin: {
+        QTouchEvent *tev = static_cast<QTouchEvent*>(event);
+        QList<QTouchEvent::TouchPoint> points = tev->touchPoints();
+        const QTouchEvent::TouchPoint &primaryPoint = points.first();
+        m_touchId = primaryPoint.id();
+        QPointF pos = targetItem->mapToScene(primaryPoint.pos());
+        QMouseEvent *mev = new QMouseEvent(QEvent::MouseButtonPress,
+                        mapFromScene(pos),
+                        primaryPoint.scenePos(),
+                        primaryPoint.screenPos(),
+                        Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+        point = mev->pos();
+        return mev;
+        } break;
+    case QEvent::TouchUpdate: {
+        QTouchEvent *tev = static_cast<QTouchEvent*>(event);
+        QList<QTouchEvent::TouchPoint> points = tev->touchPoints();
+        const QTouchEvent::TouchPoint &primaryPoint = points.first();
+        QPointF pos = targetItem->mapToScene(primaryPoint.pos());
+        QMouseEvent *mev = new QMouseEvent(QEvent::MouseMove,
+                        mapFromScene(pos),
+                        primaryPoint.scenePos(),
+                        primaryPoint.screenPos(),
+                        Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+        point = mev->pos();
+        return mev;
+        } break;
+    case QEvent::TouchEnd: {
+        QMouseEvent *mev = 0;
+        QTouchEvent *tev = static_cast<QTouchEvent*>(event);
+        QList<QTouchEvent::TouchPoint> points = tev->touchPoints();
+        for (int i = 0; i < points.count(); i++) {
+            const QTouchEvent::TouchPoint &point = points.at(i);
+            if (point.id() != m_touchId) {
+                continue;
+            }
+            QPointF pos = targetItem->mapToScene(point.pos());
+            mev = new QMouseEvent(QEvent::MouseButtonRelease,
+                            mapFromScene(pos),
+                            point.scenePos(),
+                            point.screenPos(),
+                            Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+            break;
+        }
+        point = mev->pos();
+        return mev;
+        } break;
     default:
+        m_filteredEvent = false;
+        point = QPoint();
         break;
     }
     return event;
@@ -319,15 +431,13 @@ QEvent *InverseMouseAreaType::mapEventToArea(QObject *target, QEvent *event)
 
 bool InverseMouseAreaType::eventFilter(QObject *object, QEvent *event)
 {
-    if (!isEnabled())
-        return false;
-
     if (object != this)
     {
         bool captured = true;
-        QEvent *mappedEvent = mapEventToArea(object, event);
+        QPoint point;
+        QEvent *mappedEvent = mapEventToArea(object, event, point);
 
-        switch (event->type()) {
+        switch (mappedEvent->type()) {
         case QEvent::MouseButtonPress:
             mousePressEvent(static_cast<QMouseEvent*>(mappedEvent));
             break;
@@ -360,11 +470,13 @@ bool InverseMouseAreaType::eventFilter(QObject *object, QEvent *event)
             event->setAccepted(mappedEvent->isAccepted());
             delete mappedEvent;
         }
-        if (captured && !propagateComposedEvents()) {
-            return event->isAccepted();
+        m_filteredEvent = false;
+        if (captured && event->isAccepted() && contains(point)) {
+            // consume the event
+            return true;
         }
     }
-    return QQuickMouseArea::eventFilter(object, event);
+    return false;
 }
 
 void InverseMouseAreaType::mousePressEvent(QMouseEvent *event)
@@ -372,7 +484,7 @@ void InverseMouseAreaType::mousePressEvent(QMouseEvent *event)
     // overload QQuickMouseArea mousePress event as the original one sets containsMouse
     // to true automatically, however ion our case this can be false in case the press
     // happens inside the "hole"
-    if (!m_topmostItem || (m_topmostItem && contains(event->localPos()))) {
+    if (!m_topmostItem || (m_topmostItem && m_filteredEvent && contains(event->localPos()))) {
         QQuickMouseArea::mousePressEvent(event);
     } else {
         // we do not consume the mouse event
@@ -386,7 +498,7 @@ void InverseMouseAreaType::mousePressEvent(QMouseEvent *event)
 void InverseMouseAreaType::mouseDoubleClickEvent(QMouseEvent *event)
 {
     // same as with mousePressEvent
-    if (!m_topmostItem || (m_topmostItem && contains(event->localPos()))) {
+    if (!m_topmostItem || (m_topmostItem && m_filteredEvent && contains(event->localPos()))) {
         QQuickMouseArea::mouseDoubleClickEvent(event);
     } else {
         // we do not consume the mouse event
@@ -412,10 +524,10 @@ void InverseMouseAreaType::setSensingArea(QQuickItem *sensing)
     if (!sensing)
         sensing = QuickUtils::instance().rootItem(this);
     if (sensing != m_sensingArea) {
-        bool oldTopItem = m_topmostItem;
-        setTopmostItem(false);
+        // clear previous filter
+        updateEventFilter(false);
         m_sensingArea = sensing;
-        setTopmostItem(oldTopItem);
+        updateEventFilter(m_topmostItem);
         Q_EMIT sensingAreaChanged();
     }
 }
@@ -435,13 +547,8 @@ void InverseMouseAreaType::setTopmostItem(bool value)
 {
     if (m_topmostItem != value) {
         m_topmostItem = value;
-        QObject *sensingArea = (m_sensingArea && m_sensingArea != QuickUtils::instance().rootItem(this)) ?
-                    static_cast<QObject*>(m_sensingArea) : QGuiApplication::instance();
-        if (m_topmostItem) {
-            sensingArea->installEventFilter(this);
-        } else {
-            sensingArea->removeEventFilter(this);
-        }
+        updateEventFilter(m_topmostItem);
+        Q_EMIT topmostItemChanged();
     }
 }
 
@@ -452,7 +559,7 @@ bool InverseMouseAreaType::contains(const QPointF &point) const
 {
     QPointF scenePos = mapToScene(point);
     QRectF oskRect = QGuiApplication::inputMethod()->keyboardRectangle();
-    bool pointInArea = QQuickItem::contains(point);
+    bool pointInArea = QQuickMouseArea::contains(point);
     bool pointInOSK = oskRect.contains(scenePos);
     bool pointOutArea = (m_sensingArea && m_sensingArea->contains(m_sensingArea->mapFromScene(scenePos)));
     return !pointInArea && !pointInOSK && pointOutArea;

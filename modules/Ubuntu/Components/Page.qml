@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Unity.Action 1.0 as UnityActions
+import Ubuntu.Unity.Action 1.1 as UnityActions
 
 /*!
     \qmltype Page
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief A page is the basic Item that must be used inside the \l MainView,
         \l PageStack and \l Tabs.
@@ -33,7 +33,7 @@ import Ubuntu.Unity.Action 1.0 as UnityActions
 
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.1
 
         MainView {
             width: units.gu(48)
@@ -77,8 +77,10 @@ PageTreeNode {
 
     /*!
       The title of the page. Will be shown in the header of the \l MainView.
+      If the page is used inside a Tab, by default it takes the title from the Tab.
+      Otherwise, the default value is an empty string.
      */
-    property string title
+    property string title: parentNode && parentNode.hasOwnProperty("title") ? parentNode.title : ""
 
     /*!
       The toolbar items associated with this Page.
@@ -87,12 +89,19 @@ PageTreeNode {
     property Item tools: ToolbarItems { }
 
     /*!
+      \internal
+      Set this property to replace the title label in the header by any Item.
+      It will be automatically anchored to fill the title space in the header.
+     */
+    property Item __customHeaderContents: null
+
+    /*!
       Optional flickable that controls the header. This property
       is automatically set to the first child of the page that is Flickable
       and anchors to the top of the page or fills the page. For example:
       \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.1
 
         MainView {
             width: units.gu(30)
@@ -125,17 +134,8 @@ PageTreeNode {
 
     /*! \internal */
     onActiveChanged: {
-        internal.updateHeaderAndToolbar();
         internal.updateActions();
     }
-    /*! \internal */
-    onTitleChanged: internal.updateHeaderAndToolbar()
-    /*! \internal */
-    onToolsChanged: internal.updateHeaderAndToolbar()
-    /*! \internal */
-    onPageStackChanged: internal.updateHeaderAndToolbar()
-    /*! \internal */
-    onFlickableChanged: internal.updateHeaderAndToolbar()
 
     /*!
       Local actions. These actions will be made available outside the application
@@ -169,28 +169,15 @@ PageTreeNode {
         }
 
         property Header header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
-        property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ? page.__propagated.toolbar : null
-
         // Used to position the Page when there is no flickable.
         // When there is a flickable, the header will automatically position it.
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
 
-        onHeaderChanged: internal.updateHeaderAndToolbar()
-        onToolbarChanged: internal.updateHeaderAndToolbar()
-
-        function updateHeaderAndToolbar() {
-            if (page.active) {
-                if (internal.header) {
-                    internal.header.title = page.title;
-                    internal.header.flickable = page.flickable;
-                }
-                if (tools) {
-                    if (tools.hasOwnProperty("pageStack")) tools.pageStack = page.pageStack;
-                }
-                if (internal.toolbar) {
-                    internal.toolbar.tools = page.tools;
-                }
-            }
+        Binding {
+            target: tools
+            property: "pageStack"
+            value: page.pageStack
+            when: tools && tools.hasOwnProperty("pageStack")
         }
 
         function isVerticalFlickable(object) {

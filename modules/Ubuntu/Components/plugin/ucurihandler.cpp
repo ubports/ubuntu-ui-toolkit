@@ -20,6 +20,7 @@
 #include <QtDBus/QtDBus>
 #include <libnih.h>
 #include <libnih-dbus.h>
+#include "statesaverbackend_p.h"
 
 UriHandlerObject::UriHandlerObject(UCUriHandler* uriHandler)
     : m_uriHandler(uriHandler)
@@ -35,7 +36,7 @@ void UriHandlerObject::Open(const QStringList& uris, const QHash<QString, QVaria
 /*!
  * \qmltype UriHandler
  * \instantiates UCUriHandler
- * \inqmlmodule Ubuntu.Components 0.1
+ * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu
  * \brief Singleton signalling for opened URIs.
  *

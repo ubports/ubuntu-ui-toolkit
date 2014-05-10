@@ -15,8 +15,8 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.Pickers 0.1
+import Ubuntu.Components 1.1
+import Ubuntu.Components.Pickers 1.0
 
 MainView {
     width: units.gu(40)
@@ -42,6 +42,7 @@ MainView {
                 height: units.gu(40)
                 model: pickerModel
                 delegate: PickerDelegate {
+                    property string text: modelData ? modelData : ""
                     Label {
                         anchors.fill: parent
                         horizontalAlignment: Text.AlignHCenter
@@ -50,6 +51,7 @@ MainView {
                     }
                 }
                 onSelectedIndexChanged: print("circular index="+selectedIndex)
+                onMovingChanged: print("MOVING?", moving)
             }
 
             Picker {
@@ -59,6 +61,7 @@ MainView {
                 model: pickerModel
                 circular: false
                 delegate: PickerDelegate {
+                    property string text: modelData ? modelData : ""
                     Label {
                         anchors.fill: parent
                         horizontalAlignment: Text.AlignHCenter
@@ -67,6 +70,7 @@ MainView {
                     }
                 }
                 onSelectedIndexChanged: print("linear index="+selectedIndex)
+                onMovingChanged: print("MOVING?", moving)
             }
 
             Picker {
@@ -82,6 +86,7 @@ MainView {
                     }
                 }
                 onSelectedIndexChanged: print("circular index="+selectedIndex)
+                onMovingChanged: print("MOVING?", moving)
             }
 
             Picker {
@@ -98,6 +103,7 @@ MainView {
                     }
                 }
                 onSelectedIndexChanged: print("linear index="+selectedIndex)
+                onMovingChanged: print("MOVING?", moving)
             }
         }
 

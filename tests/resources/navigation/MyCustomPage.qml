@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 Page {
     title: i18n.tr("My custom page")
@@ -37,13 +37,24 @@ Page {
 
     tools: ToolbarItems {
         ToolbarButton {
-            text: "action 1"
-            iconSource: Qt.resolvedUrl("call_icon.png")
+            action: Action {
+                text: "action 1"
+                iconName: "outgoing-call"
+            }
         }
         ToolbarButton {
-            text: "action 2"
-            iconSource: Qt.resolvedUrl("call_icon.png")
+            action: Action {
+                text: "action 2"
+                iconName: "missed-call"
+            }
         }
+        ToolbarButton {
+            action: Action {
+                text: "another one"
+                iconName: "contact"
+            }
+        }
+
         opened: true
         locked: true
     }

@@ -15,8 +15,8 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Toolkit
-import "Popups" 0.1
+import Ubuntu.Components 1.1 as Toolkit
+import Ubuntu.Components.Popups 1.0
 
 ActionSelectionPopover {
     objectName: "text_input_popover"
@@ -33,7 +33,9 @@ ActionSelectionPopover {
         }
         Action {
             text: i18n.tr("Cut")
-            enabled: target && target.selectedText !== ""
+            // If paste/editing is not possible, then disable also "Cut" operation
+            // It is applicable for ReadOnly's TextFields and TextAreas
+            enabled: target && target.selectedText !== "" && target.canPaste
             onTriggered: target.cut()
         }
         Action {

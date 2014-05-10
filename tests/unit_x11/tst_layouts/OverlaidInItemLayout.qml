@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Layouts 0.1
+import Ubuntu.Layouts 1.0
 
 Rectangle {
     id: root
@@ -24,6 +24,7 @@ Rectangle {
 
     Layouts {
         id: layoutManager
+        objectName: "layoutManager"
         anchors.fill: parent
 
         layouts: [

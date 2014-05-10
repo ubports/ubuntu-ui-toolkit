@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 Item {
     width: 200
@@ -52,7 +52,6 @@ Item {
 
         function initTestCase() {
             compare(toolbarItems.pageStack, null, "pageStack initially null");
-            compare(toolbarItems.opened, false, "toolbar items closed by default");
             compare(toolbarItems.locked, false, "toolbar items unlocked with children");
             compare(emptyToolbarItems.locked, true, "toolbar items unlocked without visible children");
             compare(toolbarItems.back === undefined, false, "back item set by default");
@@ -61,7 +60,7 @@ Item {
         }
 
         function test_opened() {
-            compare(toolbarItems.opened, true, "Toolbar items initially opened");
+            compare(toolbarItems.opened, true, "Toolbar items opened when page is first loaded");
             toolbarItems.opened = false;
             compare(toolbarItems.opened, false, "Toolbar items can be closed");
             toolbarItems.opened = true;

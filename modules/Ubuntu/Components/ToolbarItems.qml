@@ -18,7 +18,7 @@ import QtQuick 2.0
 
 /*!
     \qmltype ToolbarItems
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief Row of Items to be placed in a toolbar.
 
@@ -38,7 +38,7 @@ import QtQuick 2.0
     be visible to the user:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.1
 
         MainView {
             width: units.gu(50)
@@ -70,7 +70,7 @@ import QtQuick 2.0
     the full height of the toolbar, and other Items you will probably want to center vertically:
     \qml
         import QtQuick 2.0
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.1
 
         MainView {
             width: units.gu(50)
@@ -119,7 +119,7 @@ Item {
       visible in the toolbar, instead of the default toolbar-styled back button:
         \qml
             import QtQuick 2.0
-            import Ubuntu.Components 0.1
+            import Ubuntu.Components 1.1
 
             MainView {
                 width: units.gu(50)

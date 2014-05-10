@@ -32,12 +32,9 @@
 
 QuickUtils::QuickUtils(QObject *parent) :
     QObject(parent),
-    m_rootView(0),
-    m_engine(new QQmlEngine)
+    m_rootView(0)
 {
     QGuiApplication::instance()->installEventFilter(this);
-    // connect to focusObjectChanged() to get the latest active focus object
-    QObject::connect(QGuiApplication::instance(), SIGNAL(focusObjectChanged(QObject*)), this, SLOT(activeFocus(QObject*)));
 }
 
 /*!
@@ -48,31 +45,15 @@ QuickUtils::QuickUtils(QObject *parent) :
  */
 bool QuickUtils::eventFilter(QObject *obj, QEvent *event)
 {
-    if (!m_rootView && (event->type() == QEvent::ApplicationActivate))
+    if (!m_rootView && (event->type() == QEvent::ApplicationActivate)) {
         lookupQuickView();
+        Q_EMIT activated();
+    }
     if (event->type() == QEvent::ApplicationDeactivate) {
         Q_EMIT deactivated();
     }
 
     return QObject::eventFilter(obj, event);
-}
-
-/*!
- * \internal
- * Catch active focus object change to detecte whether we need to remove OSK or not.
- */
-void QuickUtils::activeFocus(QObject *active)
-{
-    // FIXME: workaround for bug https://bugreports.qt-project.org/browse/QTBUG-30729
-    // input panel does not get removed when no input is active
-    // remove input panel if there's no more active object or the new active object
-    // is not a text input
-    // workaround for bug https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1163371
-    if (QGuiApplication::inputMethod()->isVisible() && (!active || (active &&
-                    !qobject_cast<QQuickTextInput*>(active) &&
-                    !qobject_cast<QQuickTextEdit*>(active)))) {
-        QGuiApplication::inputMethod()->hide();
-    }
 }
 
 /*!
@@ -114,7 +95,11 @@ QQuickItem *QuickUtils::rootItem(QObject *object)
         // we reach QQuickView's contentItem, whose size is invalid. Therefore
         // we need to return the QQuickView's rootObject() instead of the topmost
         // item found
-        return m_rootView->rootObject();
+        parentItem = m_rootView->rootObject();
+    }
+    // in case the item found is derived from internal QQuickRootItem, return its first child
+    if (parentItem && parentItem->inherits("QQuickRootItem")) {
+        parentItem = parentItem->childItems()[0];
     }
     return parentItem;
 }
@@ -131,6 +116,9 @@ QString QuickUtils::inputMethodProvider() const
  */
 QString QuickUtils::className(QObject *item)
 {
+    if (!item) {
+        return QString("(null)");
+    }
     QString result = item->metaObject()->className();
     return result.left(result.indexOf("_QML"));
 }
@@ -159,19 +147,14 @@ void QuickUtils::lookupQuickView()
     }
 }
 
-QObject* QuickUtils::createQmlObject(const QUrl &url)
+QObject* QuickUtils::createQmlObject(const QUrl &url, QQmlEngine *engine)
 {
     /* FIXME: if the directory pointed to by url contains a qmldir file that
        declares a JavaScript module then QQmlComponent::create() fails with
        the error "QQmlComponent: Component is not ready".
     */
-    QQmlComponent *component = new QQmlComponent(m_engine, url, QQmlComponent::PreferSynchronous);
+    QQmlComponent *component = new QQmlComponent(engine, url, QQmlComponent::PreferSynchronous);
     QObject* result = component->create();
     delete component;
     return result;
-}
-
-void QuickUtils::setImportPathList(const QStringList &paths)
-{
-    m_engine->setImportPathList(paths);
 }

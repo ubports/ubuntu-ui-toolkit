@@ -32,6 +32,7 @@ Item {
     Label {
         id: label
         text: templateFlow.title
+        anchors.left: parent.left
         width: templateFlow.titleWidth
         y: templateFlow.titleOffset
         elide: Text.ElideRight

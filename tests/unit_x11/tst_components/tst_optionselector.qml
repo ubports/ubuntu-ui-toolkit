@@ -16,9 +16,9 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 0.1
-import Ubuntu.Test 0.1
-import Ubuntu.Unity.Action 1.0 as UnityActions
+import Ubuntu.Components 1.1
+import Ubuntu.Test 1.0
+import Ubuntu.Unity.Action 1.1 as UnityActions
 
 MainView {
     width: 400

@@ -16,8 +16,8 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Test 0.1
-import Ubuntu.Components 0.1
+import Ubuntu.Test 1.0
+import Ubuntu.Components 1.1
 
 /*
  Implementation note:
@@ -77,6 +77,7 @@ TestCase {
     }
     function test_daysInMonth(data) {
         var date = new Date;
+        date.setDate(1);
         date.setMonth(data.month);
         compare(date.daysInMonth(), data.days, "daysInMonth() failed for month " + (data.month + 1));
     }

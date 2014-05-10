@@ -40,7 +40,7 @@ static float getenvFloat(const char* name, float defaultValue)
 /*!
     \qmltype Units
     \instantiates UCUnits
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup resolution-independence
     \brief Units of measurement for sizes, spacing, margin, etc.
 
@@ -52,7 +52,7 @@ static float getenvFloat(const char* name, float defaultValue)
 
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
+    import Ubuntu.Components 1.1
 
     Item {
         width: units.gu(2)

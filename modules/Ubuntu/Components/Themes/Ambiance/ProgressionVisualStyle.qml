@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 Item {
     id: progressionVisualStyle
@@ -34,6 +34,7 @@ Item {
         }
 
         opacity: enabled ? 1.0 : 0.5
+        mirror: Qt.application.layoutDirection == Qt.RightToLeft
     }
 
     Image {

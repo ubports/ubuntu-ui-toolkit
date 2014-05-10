@@ -200,6 +200,11 @@ void ULLayoutsPrivate::itemActivate(QQuickItem *item, bool activate)
            .addChange(new PropertyChange(item, "enabled", activate));
 }
 
+// remove the deleted item from the excluded ones
+void ULLayoutsPrivate::_q_removeExcludedItem(QObject *excludedItem)
+{
+    excludedFromLayout.removeAll(static_cast<QQuickItem*>(excludedItem));
+}
 
 /*
  * Validates the declared conditional layouts by checking whether they have name
@@ -256,6 +261,12 @@ void ULLayoutsPrivate::getLaidOutItems()
             // check if the item's  parent is included in the layout
             QQuickItem *pl = item->parentItem();
             marker = 0;
+            if (!pl && item->parent()) {
+                // this may be an item instance assigned to a property
+                // like "property var anItem: Item {}"
+                // in which case we must get the parent object of it, not the parent item
+                pl = qobject_cast<QQuickItem*>(item->parent());
+            }
             while (pl) {
                 marker = qobject_cast<ULLayoutsAttached*>(
                             qmlAttachedPropertiesObject<ULLayouts>(pl, false));
@@ -267,6 +278,9 @@ void ULLayoutsPrivate::getLaidOutItems()
             if (!marker || (marker && marker->item().isEmpty())) {
                 // remember theese so we hide them once we switch away from default layout
                 excludedFromLayout << item;
+                // and make sure we remove the item from excluded ones in case the item is destroyed
+                QObject::connect(item, SIGNAL(destroyed(QObject*)),
+                                 q, SLOT(_q_removeExcludedItem(QObject*)));
             }
         }
     }
@@ -365,7 +379,7 @@ void ULLayoutsPrivate::warning(QObject *item, const QString &message)
 /*!
  * \qmltype Layouts
  * \instantiates ULLayouts
- * \inqmlmodule Ubuntu.Layouts 0.1
+ * \inqmlmodule Ubuntu.Layouts 1.0
  * \ingroup ubuntu-layouts
  * \brief The Layouts component allows one to specify multiple different layouts for a
  * fixed set of Items, and applies the desired layout to those Items.
@@ -632,3 +646,5 @@ QQmlListProperty<ULConditionalLayout> ULLayouts::layouts()
                                                  &ULLayoutsPrivate::at_layout,
                                                  &ULLayoutsPrivate::clear_layouts);
 }
+
+#include "moc_ullayouts.cpp"

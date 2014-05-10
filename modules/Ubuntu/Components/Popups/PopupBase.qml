@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 /*!
     \qmltype PopupBase
-    \inqmlmodule Ubuntu.Components.Popups 0.1
+    \inqmlmodule Ubuntu.Components.Popups 1.0
     \ingroup ubuntu-popups
     \brief The base class for all dialogs, sheets and popovers. Do not use directly.
 
@@ -55,6 +55,9 @@ OrientationHelper {
     // copy value of automaticOrientation from root object (typically a MainView)
     automaticOrientation: stateWrapper.rootItem && stateWrapper.rootItem.automaticOrientation ?
                           stateWrapper.rootItem.automaticOrientation : false
+
+    LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+    LayoutMirroring.childrenInherit: true
 
     /*!
       \preliminary
@@ -139,6 +142,7 @@ OrientationHelper {
     InverseMouseArea {
         id: eventGrabber
         enabled: true
+        acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
         anchors.fill: __foreground
         sensingArea: dismissArea
         propagateComposedEvents: !grabDismissAreaEvents
