@@ -37,6 +37,7 @@ MainView {
         Page {
             id: page0
             title: i18n.tr("Root page")
+            visible: false
 
             Column {
                 anchors.fill: parent
@@ -56,6 +57,7 @@ MainView {
         Page {
             id: page1
             title: i18n.tr("First page")
+            visible: false
 
             Column {
                 anchors.fill: parent
@@ -81,6 +83,7 @@ MainView {
         Page {
             title: "Rectangle"
             id: page2
+            visible: false
             property alias color: rectangle.color
             Rectangle {
                 id: rectangle

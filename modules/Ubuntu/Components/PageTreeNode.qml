@@ -74,7 +74,6 @@ StyledItem {
       PageStack is the currently active one.
      */
     property bool active: node.parentNode ? node.parentNode.active : false
-    visible: active
 
     /*!
       The \l PageStack that this Page has been pushed on, or null if it is not
