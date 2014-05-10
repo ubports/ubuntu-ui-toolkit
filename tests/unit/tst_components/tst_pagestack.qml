@@ -48,7 +48,7 @@ TestCase {
         compare(pageStack.currentPage, null, "currentPage properly reset");
     }
 
-    function test_active() {
+    function test_active_bug1260116() {
         pageStack.push(page1);
         compare(page1.active, true, "Page is active after pushing");
         pageStack.push(page2);
@@ -57,6 +57,13 @@ TestCase {
         pageStack.pop();
         compare(page1.active, true, "Page re-activated when on top of the stack");
         compare(page2.active, false, "Page no longer active after being popped");
+        pageStack.clear();
+
+        compare(pageInStack.active, false, "Page defined inside PageStack is not active by default");
+        pageStack.push(pageInStack);
+        compare(pageInStack.active, true, "Pushing a page on PageStack makes it active");
+        pageStack.pop();
+        compare(pageInStack.active, false, "Popping a page from PageStack makes it inactive");
         pageStack.clear();
     }
 
@@ -115,6 +122,9 @@ TestCase {
         id: mainView
         PageStack {
             id: pageStack
+            Page {
+                id: pageInStack
+            }
         }
     }
     Page {
