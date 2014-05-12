@@ -62,6 +62,12 @@ StyledItem {
     property Flickable target: parent
 
     /*!
+      The property holds the model to be refreshed. The value is taken automatically
+      from the \l target, if the \l target has \a model property specified.
+      */
+    property var model: target && target.hasOwnProperty("model") ? target.model : null
+
+    /*!
       */
     property bool completeWhen: true
 
@@ -79,10 +85,6 @@ StyledItem {
 
     /*!
       */
-    property var model
-
-    /*!
-      */
     signal refresh()
 
     function beginRefreshing() {
@@ -90,7 +92,7 @@ StyledItem {
     }
 
     style: Theme.createStyleComponent("RefreshControlStyle.qml", control)
-    height: units.gu(5)
+    implicitHeight: __styleInstance.implicitHeight
     anchors {
         left: target.left
         right: target.right
@@ -103,9 +105,13 @@ StyledItem {
         property bool refreshing: false
         property bool triggerRefresh: false
         property real contentY: target.contentY - target.originY
-        property real threshold: control.__styleInstance.flipThreshold
-        property real baseTopMargin: 0.0
+        property real threshold: control.__styleInstance.activationThreshold
 
+        Binding {
+            target: control.__styleInstance
+            property: "state"
+            value: internals.state
+        }
         states: [
             State {
                 name: ""
@@ -116,7 +122,7 @@ StyledItem {
                 }
             },
             State {
-                name: "release-to-refresh"
+                name: "ready-to-refresh"
                 when: internals.completed && (internals.contentY < -internals.threshold) && !internals.refreshing
                 PropertyChanges {
                     target: internals
@@ -124,25 +130,13 @@ StyledItem {
                 }
             },
             State {
-                name: "refresh-in-progress"
+                name: "refreshing"
                 when: internals.completed && internals.refreshing
             }
         ]
-
-        Binding {
-            target: control.__styleInstance
-            property: "state"
-            value: internals.state
-        }
-        Binding {
-            target: control.__styleInstance
-            property: "flickableTopMargin"
-            value: internals.baseTopMargin
-        }
     }
 
     Component.onCompleted: {
-        internals.baseTopMargin = control.target.topMargin;
         internals.completed = true;
     }
     /*! \internal */
@@ -150,6 +144,9 @@ StyledItem {
         if (completeWhen) {
             internals.refreshing = false;
             internals.state = "";
+        } else {
+//            internals.refreshing = true;
+//            internals.state = "refreshing"
         }
     }
 
@@ -161,13 +158,6 @@ StyledItem {
                 internals.refreshing = true;
                 control.refresh();
             }
-        }
-        onTopMarginChanged: {
-            if (!internals.completed) {
-                internals.baseTopMargin = control.target.topMargin;
-            }
-
-//            print("topMargin="+control.target.topMargin)
         }
     }
 }

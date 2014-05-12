@@ -26,8 +26,17 @@ import QtQuick 2.2
   */
 
 Item {
-    property real flickableTopMargin: 0.0
-    property real layoutHeight: 0.0
-    property real flipThreshold: 0.0
-    property real spacing: 0.0
+    /*!
+      The property holds the threshold value when the component should enter
+      into \a ready-to-refresh state. By default this value is the sum of
+      Flickable's \a topMargin and \l layoutHeight
+      */
+    property real activationThreshold: 0.0
+    /*!
+      States:
+      \list
+      \li \b ready-to-refresh - the component is ready to initiate refresh
+      \li \b refreshing - the component is in refreshing state
+      \endlist
+      */
 }

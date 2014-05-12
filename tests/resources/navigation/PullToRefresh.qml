@@ -44,14 +44,17 @@ MainView {
                 function refresh() {
                     print("Refresh model...")
                     done = false;
+                    clear();
                     refreshDelay.restart()
                 }
 
-                Component.onCompleted: {
+                function fillModel() {
                     for (var i = 0; i < 50; i++) {
                         append(modelData(i));
                     }
                 }
+
+                Component.onCompleted: fillModel()
             }
 
             Timer {
@@ -59,6 +62,7 @@ MainView {
                 interval: 2000
                 onTriggered: {
                     listModel.done = true;
+                    listModel.fillModel();
                     //refreshControl.complete();
                 }
             }
@@ -74,7 +78,9 @@ MainView {
                     ListItem.Standard {
                         anchors.fill: parent
                         text: modelData
-                        onClicked: pageStack.push(page)
+                        onClicked: {
+                            listModel.refresh()
+                        }
                     }
                 }
 

@@ -19,38 +19,27 @@ import Ubuntu.Components 1.1
 import Ubuntu.Components.Styles 1.1 as Style
 
 Style.RefreshControlStyle {
-    flickableTopMargin: 0.0
-    layoutHeight: Math.max(pullImage.paintedHeight, pullLabel.paintedHeight, busyIndicator.height) + units.gu(1.5)
-    flipThreshold: layoutHeight + units.gu(1) + flickableTopMargin
-    spacing: pullImage.width / 2
+    property real flickableTopMargin: 0.0
+    property real layoutHeight: Math.max(pullLabel.paintedHeight, busyIndicator.height) + units.gu(2)
+    activationThreshold: control.height + units.gu(1) + flickableTopMargin
 
-    property Flickable flickable: styledItem.target
+    // local properties
+    readonly property RefreshControl control: styledItem
 
     id: style
+    implicitHeight: layoutHeight
     anchors {
         left: parent.left
-        leftMargin: spacing
         right: parent.right
-        rightMargin: spacing
     }
 
-    Row {
-        id: indication
-        spacing: style.spacing
-        Image {
-            id: pullImage
-            smooth: true
-            source: Qt.resolvedUrl("artwork/go-bottom.png")
-        }
-        Label {
-            id: pullLabel
-            anchors {
-                top: pullImage.top
-                bottom: pullImage.bottom
-            }
-            verticalAlignment: Text.AlignVCenter
-            text: styledItem.pullText
-        }
+    // visuals
+    Label {
+        id: pullLabel
+        anchors.fill: parent
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        text: styledItem.pullText
     }
     ActivityIndicator {
         id: busyIndicator
@@ -58,67 +47,72 @@ Style.RefreshControlStyle {
         anchors.centerIn: parent
     }
 
+    // capture topMargin change of the flickable
+    Connections {
+        target: control.target
+        onTopMarginChanged: {
+            if (state === "") {
+                flickableTopMargin = control.target.topMargin;
+            }
+        }
+    }
+
     onStateChanged: print("state="+state)
     states: [
         State {
-            name: ""
-            PropertyChanges {
-                target: flickable
-                topMargin: flickableTopMargin
-            }
+            name: "ready-to-refresh"
         },
-
         State {
-            name: "release-to-refresh"
-            PropertyChanges {
-                target: pullImage
-                rotation: -180
-            }
+            name: "refreshing"
             PropertyChanges {
                 target: pullLabel
-                text: styledItem.releaseText
-            }
-        },
-        State {
-            name: "refresh-in-progress"
-            PropertyChanges {
-                target: indication
                 visible: false
             }
-
             PropertyChanges {
                 target: busyIndicator
                 running: true
             }
             PropertyChanges {
-                target: flickable
-                topMargin: style.flickableTopMargin + style.layoutHeight
-            }
-            AnchorChanges {
-                target: style
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.left: undefined
+                target: control.target
+                topMargin: style.flickableTopMargin + layoutHeight
             }
         }
     ]
+    function flipLabel() {
+        if (pullLabel.text === control.pullText) {
+            pullLabel.text = control.releaseText;
+        } else {
+            pullLabel.text = control.pullText;
+        }
+    }
+
     transitions: [
         Transition {
             from: ""
-            to: "release-to-refresh"
-            reversible: true
-            PropertyAnimation {
-                target: pullImage
-                property: "rotation"
-                duration: UbuntuAnimation.FastDuration
-                easing: UbuntuAnimation.StandardEasing
+            to: "ready-to-refresh"
+            SequentialAnimation {
+                NumberAnimation { target: pullLabel; property: "opacity"; from: 1.0; to: 0.0; duration: UbuntuAnimation.FastDuration; easing: UbuntuAnimation.StandardEasing }
+                ScriptAction { script: flipLabel() }
+                NumberAnimation { target: pullLabel; property: "opacity"; from: 0.0; to: 1.0; duration: UbuntuAnimation.FastDuration; easing: UbuntuAnimation.StandardEasing }
             }
         },
         Transition {
-            from: "refresh-in-progress"
-            to: "*"
+            from: "ready-to-refresh"
+            to: ""
+            SequentialAnimation {
+                NumberAnimation { target: pullLabel; property: "opacity"; from: 1.0; to: 0.0; duration: UbuntuAnimation.FastDuration; easing: UbuntuAnimation.StandardEasing }
+                ScriptAction { script: flipLabel() }
+                NumberAnimation { target: pullLabel; property: "opacity"; from: 0.0; to: 1.0; duration: UbuntuAnimation.FastDuration; easing: UbuntuAnimation.StandardEasing }
+            }
+        },
+        Transition {
+            from: "refreshing"
+            to: ""
             PropertyAnimation {
-                target: flickable
+                target: control.target
                 property: "topMargin"
+                from: flickableTopMargin + layoutHeight
+                to: flickableTopMargin
                 duration: UbuntuAnimation.FastDuration
                 easing: UbuntuAnimation.StandardEasing
             }
