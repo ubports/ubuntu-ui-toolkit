@@ -38,7 +38,13 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
         super(Header, self).__init__(*args)
         self.pointing_device = _common.get_pointing_device()
 
+    def _show(self):
+        if (self.y > 0):
+            # header is not (completely opened)
+            raise _common.ToolkitException("Don't know yet how top open header")
+
     def click_back_button(self):
+        self._show()
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException('Old header has no back button')
         try:
@@ -51,6 +57,7 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.pointing_device.click_object(back_button)
 
     def click_custom_back_button(self):
+        self._show()
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException(
                 'Old header has no custom back button')
@@ -79,6 +86,7 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
         :raise ToolkitEmulatorException: If the main view has no tabs.
 
         """
+        self._show()
         if self.useDeprecatedToolbar:
             self._switch_to_next_tab_in_deprecated_tabbar()
         else:
@@ -108,6 +116,7 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 useDeprecatedToolbar is set.
 
         """
+        self._show()
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException(
                 "Header.swtich_to_tab_by_index only works with new header")
@@ -145,6 +154,7 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
             name.
 
         """
+        self._show()
         button = self._get_action_button(action_object_name)
         self.pointing_device.click_object(button)
 

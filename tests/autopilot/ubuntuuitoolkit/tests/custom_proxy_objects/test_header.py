@@ -77,8 +77,8 @@ MainView {
         self.assertEqual(self.header.title, "Test title")
 
     def test_click_header_action_button(self):
-        self.header.click_action_button('action1')
-        self.assertEqual(self.label.text, 'Button 1 clicked.')
+        self.header.click_action_button('action0')
+        self.assertEqual(self.label.text, 'Button 0 clicked.')
 
     def test_click_header_overflow_action_button(self):
         # custom back button and first action button go in the header

@@ -181,6 +181,9 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
         else:
             self.get_header().click_back_button()
 
+    # FIXME TIM: Remove this function completely (and get_header)?
+    #   In previous version the function did not even work, and everything is
+    #   available via the header variable.
     @autopilot_logging.log_action(logger.info)
     def click_action_button(self, action_object_name):
         """Click the specified button.
@@ -193,5 +196,5 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
             raise _common.ToolkitException(
                 "App is using deprecated toolbar instead of new header")
         else:
-            header = self.open_header()
+            header = self.get_header()
             header.click_action_button(action_object_name)
