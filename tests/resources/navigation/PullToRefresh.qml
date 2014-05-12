@@ -35,7 +35,7 @@ MainView {
             title: "RefreshControl"
             ListModel {
                 id: listModel
-                property bool done: true
+                property bool done: !refreshDelay.running
 
                 function modelData(index) {
                     return {"name": "line #" + index}
@@ -43,7 +43,6 @@ MainView {
 
                 function refresh() {
                     print("Refresh model...")
-                    done = false;
                     clear();
                     refreshDelay.restart()
                 }
@@ -62,7 +61,6 @@ MainView {
                 interval: 2000
                 onTriggered: {
                     listModel.fillModel();
-                    listModel.done = true;
                 }
             }
 

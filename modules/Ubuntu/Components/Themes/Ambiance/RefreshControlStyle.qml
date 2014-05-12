@@ -70,6 +70,7 @@ Style.RefreshControlStyle {
     Connections {
         target: control
         onCompleteWhenChanged: {
+            print("completeWhen=", control.completeWhen)
             if (control.completeWhen) {
                 refreshing = false;
                 state = "";
