@@ -97,7 +97,7 @@ StyledItem {
         left: target.left
         right: target.right
     }
-    y: -(internals.contentY + __styleInstance.layoutHeight)
+    y: -(internals.contentY + height)
 
     Item {
         id: internals

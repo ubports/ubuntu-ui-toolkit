@@ -20,14 +20,13 @@ import Ubuntu.Components.Styles 1.1 as Style
 
 Style.RefreshControlStyle {
     property real flickableTopMargin: 0.0
-    property real layoutHeight: Math.max(pullLabel.paintedHeight, busyIndicator.height) + units.gu(2)
+    implicitHeight: Math.max(pullLabel.paintedHeight, busyIndicator.height) + units.gu(2)
     activationThreshold: control.height + units.gu(1) + flickableTopMargin
 
     // local properties
     readonly property RefreshControl control: styledItem
 
     id: style
-    implicitHeight: layoutHeight
     anchors {
         left: parent.left
         right: parent.right
@@ -74,7 +73,7 @@ Style.RefreshControlStyle {
             }
             PropertyChanges {
                 target: control.target
-                topMargin: style.flickableTopMargin + layoutHeight
+                topMargin: style.flickableTopMargin + control.height
             }
         }
     ]
@@ -111,7 +110,7 @@ Style.RefreshControlStyle {
             PropertyAnimation {
                 target: control.target
                 property: "topMargin"
-                from: flickableTopMargin + layoutHeight
+                from: flickableTopMargin + control.height
                 to: flickableTopMargin
                 duration: UbuntuAnimation.FastDuration
                 easing: UbuntuAnimation.StandardEasing
