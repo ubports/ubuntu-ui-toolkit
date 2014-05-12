@@ -62,18 +62,7 @@ Style.RefreshControlStyle {
         // catch when to initiate refresh
         onDraggingChanged: {
             if (!control.parent.dragging && triggerRefresh) {
-//                refreshing = true;
                 control.refresh();
-            }
-        }
-    }
-    Connections {
-        target: control
-        onCompleteWhenChanged: {
-            print("completeWhen=", control.completeWhen)
-            if (control.completeWhen) {
-//                refreshing = false;
-//                state = "";
             }
         }
     }
@@ -83,10 +72,6 @@ Style.RefreshControlStyle {
         State {
             name: ""
             when: !style.refreshing && !(style.contentY < -style.activationThreshold)
-//            PropertyChanges {
-//                target: style
-//                refreshing: false
-//            }
         },
         State {
             name: "ready-to-refresh"

@@ -81,10 +81,6 @@ StyledItem {
 
     /*!
       */
-    readonly property bool refreshing: __styleInstance.refreshing
-
-    /*!
-      */
     property string pullText: i18n.tr("Pull to refresh...")
 
     /*!
