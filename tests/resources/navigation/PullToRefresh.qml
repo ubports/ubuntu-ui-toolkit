@@ -112,7 +112,7 @@ MainView {
                             height: units.gu(5)
                             text: modelData
                             onClicked: {
-                                listModel.reload()
+                                pageStack.push(xmlModel)
                             }
                         }
                     }
@@ -123,6 +123,37 @@ MainView {
                     parent: view
                     refreshing: !listModel.ready
                     onRefresh: listModel.reload()
+                }
+            }
+        }
+    }
+
+    Component {
+        id: xmlModel
+
+        Page {
+            id: page
+            title: "Using XmlListModel"
+            UbuntuListView {
+                anchors.fill: parent
+                model: XmlListModel {
+                    source: "http://feeds.reuters.com/reuters/topNews"
+                    query: "/rss/channel/item"
+                    XmlRole { name: "title"; query: "title/string()" }
+
+                    onStatusChanged: if (status === XmlListModel.Ready) completed()
+                    signal completed()
+                }
+                delegate: ListItem.Standard {
+                    width: ListView.view.width
+                    height: units.gu(5)
+                    text: modelData
+                    onClicked: {
+                        pageStack.push(inFlickable)
+                    }
+                }
+                RefreshControl {
+                    enabled: page.active
                 }
             }
         }
