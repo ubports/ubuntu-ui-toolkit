@@ -86,6 +86,7 @@ MainView {
 
                 RefreshControl {
                     id: refreshControl
+                    height: units.gu(7)
                     completeWhen: listModel.done
                     onRefresh: listModel.refresh()
                 }

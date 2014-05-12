@@ -56,6 +56,10 @@ import QtQuick 2.2
         }
     }
     \endqml
+
+    \section2 Styling
+    The component style API is defined by the \l RefreshControlStyle component.
+    Styles may define different ways to initiate refresh upon dragging.
 */
 
 StyledItem {
@@ -77,7 +81,7 @@ StyledItem {
 
     /*!
       */
-    readonly property alias refreshing: internals.refreshing
+    readonly property bool refreshing: __styleInstance.refreshing
 
     /*!
       */
@@ -106,62 +110,10 @@ StyledItem {
     Item {
         id: internals
         property bool completed: false
-        property bool refreshing: false
-        property bool triggerRefresh: false
         property real contentY: target.contentY - target.originY
-        property real threshold: control.__styleInstance.activationThreshold
-
-        Binding {
-            target: control.__styleInstance
-            property: "state"
-            value: internals.state
-        }
-        states: [
-            State {
-                name: ""
-                when: !internals.refreshing && !(internals.contentY < -internals.threshold)
-                PropertyChanges {
-                    target: internals
-                    refreshing: false
-                }
-            },
-            State {
-                name: "ready-to-refresh"
-                when: internals.completed && (internals.contentY < -internals.threshold) && !internals.refreshing
-                PropertyChanges {
-                    target: internals
-                    triggerRefresh: true
-                }
-            },
-            State {
-                name: "refreshing"
-                when: internals.completed && internals.refreshing
-            }
-        ]
     }
 
     Component.onCompleted: {
         internals.completed = true;
-    }
-    /*! \internal */
-    onCompleteWhenChanged: {
-        if (completeWhen) {
-            internals.refreshing = false;
-            internals.state = "";
-        } else {
-//            internals.refreshing = true;
-//            internals.state = "refreshing"
-        }
-    }
-
-    // catch when to update
-    Connections {
-        target: control.target
-        onDraggingChanged: {
-            if (!control.parent.dragging && internals.triggerRefresh) {
-                internals.refreshing = true;
-                control.refresh();
-            }
-        }
     }
 }

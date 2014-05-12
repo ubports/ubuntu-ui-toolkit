@@ -19,12 +19,16 @@ import Ubuntu.Components 1.1
 import Ubuntu.Components.Styles 1.1 as Style
 
 Style.RefreshControlStyle {
-    property real flickableTopMargin: 0.0
     implicitHeight: Math.max(pullLabel.paintedHeight, busyIndicator.height) + units.gu(2)
     activationThreshold: control.height + units.gu(1) + flickableTopMargin
 
     // local properties
     readonly property RefreshControl control: styledItem
+    property real flickableTopMargin: 0.0
+    property bool refreshing: false
+    property bool triggerRefresh: false
+    property real contentY: target.contentY - target.originY
+    property real threshold: control.__styleInstance.activationThreshold
 
     id: style
     anchors {
@@ -46,12 +50,29 @@ Style.RefreshControlStyle {
         anchors.centerIn: parent
     }
 
-    // capture topMargin change of the flickable
+    // refresh logic of the visuals
     Connections {
         target: control.target
+        // capture topMargin change of the flickable
         onTopMarginChanged: {
             if (state === "") {
                 flickableTopMargin = control.target.topMargin;
+            }
+        }
+        // catch when to initiate refresh
+        onDraggingChanged: {
+            if (!control.parent.dragging && triggerRefresh) {
+                refreshing = true;
+                control.refresh();
+            }
+        }
+    }
+    Connections {
+        target: control
+        onCompleteWhenChanged: {
+            if (control.completeWhen) {
+                refreshing = false;
+                state = "";
             }
         }
     }
@@ -59,10 +80,24 @@ Style.RefreshControlStyle {
     onStateChanged: print("state="+state)
     states: [
         State {
+            name: ""
+            when: !style.refreshing && !(style.contentY < -style.activationThreshold)
+            PropertyChanges {
+                target: style
+                refreshing: false
+            }
+        },
+        State {
             name: "ready-to-refresh"
+            when: (style.contentY < -style.activationThreshold) && !style.refreshing
+            PropertyChanges {
+                target: style
+                triggerRefresh: true
+            }
         },
         State {
             name: "refreshing"
+            when: style.refreshing
             PropertyChanges {
                 target: pullLabel
                 visible: false
