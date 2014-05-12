@@ -28,8 +28,9 @@ import QtQuick 2.2
 Item {
     /*!
       The property holds the threshold value when the component should enter
-      into \a ready-to-refresh state. By default this value is the sum of
-      Flickable's \a topMargin and \l layoutHeight
+      into \a ready-to-refresh state when dragged manually. By default this
+      value is the sum of the Flickable's \a topMargin and \a height of the
+      component.
       */
     property real activationThreshold: 0.0
     /*!
