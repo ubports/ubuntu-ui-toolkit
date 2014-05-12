@@ -70,6 +70,8 @@ StyledItem
     property Item contents
     property var tabsModel
     property var pageStack
+    property var actions
+    property var __customBackAction
     property Flickable flickable
     property bool useDeprecatedToolbar
 Icon 0.1 1.0
@@ -233,6 +235,7 @@ Item
 Page 0.1 1.0
 PageTreeNode
     property string title
+    property Item __customHeaderContents
     property Flickable flickable
     property list<Action> actions
 PageStack 0.1 1.0
@@ -603,6 +606,7 @@ UbuntuTestCase 0.1 1.0
 TestCase
     function findChild(obj,objectName)
     function findInvisibleChild(obj,objectName)
+    function findChildWithProperty(item, property, value)
     function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay)
     function flick(item, x, y, dx, dy, pressTimeout, steps, button, modifiers, delay)
     function mouseLongPress(item, x, y, button, modifiers, delay)

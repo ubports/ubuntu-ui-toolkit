@@ -69,9 +69,19 @@ Item {
         anchors {
             left: parent.left
             top: parent.top
-            bottom: parent.bottom
         }
         width: childrenRect.width
+        height: headerStyle.contentHeight
+
+        AbstractButton {
+            id: customBackButton
+            objectName: "customBackButton"
+            height: parent ? parent.height : undefined
+            width: visible ? units.gu(5) : 0
+            action: styledItem.__customBackAction
+            visible: null !== styledItem.__customBackAction
+            style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
+        }
 
         AbstractButton {
             id: backButton
@@ -81,14 +91,11 @@ Item {
 
             iconName: "back"
             visible: styledItem.pageStack !== null &&
-                     styledItem.pageStack.depth > 1
+                     styledItem.pageStack.depth > 1 &&
+                     !customBackButton.visible
 
             text: "back"
-
-            // FIXME: We currently use an AbstractButton with ToolbarButtonStyle because
-            //  a ToolbarButton does not have its own MouseArea to handle interaction,
-            //  that was done in the Toolbar.
-            style: Theme.createStyleComponent("ToolbarButtonStyle.qml", backButton)
+            style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
 
             onTriggered: {
                 styledItem.pageStack.pop();
@@ -102,13 +109,10 @@ Item {
             width: visible ? units.gu(5) : 0
 
             iconName: "navigation-menu"
-            visible: styledItem.tabsModel !== null && !backButton.visible
+            visible: styledItem.tabsModel !== null && !backButton.visible &&
+                     !customBackButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
-
-            // FIXME: We currently use an AbstractButton with ToolbarButtonStyle because
-            //  a ToolbarButton does not have its own MouseArea to handle interaction,
-            //  that was done in the Toolbar.
-            style: Theme.createStyleComponent("ToolbarButtonStyle.qml", tabsButton)
+            style: Theme.createStyleComponent("HeaderButtonStyle.qml", tabsButton)
 
             onTriggered: {
                 tabsPopover.show();
@@ -146,23 +150,113 @@ Item {
         id: foreground
         anchors {
             left: leftButtonContainer.right
-            right: parent.right
+            right: actionsContainer.left
             top: parent.top
+            // don't keep a margin if there is already a button with spacing
+            leftMargin: leftButtonContainer.width > 0 ? 0 : headerStyle.textLeftMargin
         }
         height: headerStyle.contentHeight
 
         Label {
             LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
 
+            visible: !styledItem.contents
             anchors {
                 left: parent.left
                 verticalCenter: parent.verticalCenter
-                leftMargin: headerStyle.textLeftMargin
             }
             text: styledItem.title
             font.weight: headerStyle.fontWeight
             fontSize: headerStyle.fontSize
             color: headerStyle.textColor
+        }
+
+        Item {
+            // This Item is used to make the custom header item invisible
+            // when styledItem.contents is unset and its parent is not updated
+            // when the bindings below is no longer active
+            id: contentsContainer
+            anchors.fill: parent
+            visible: styledItem.contents
+        }
+        Binding {
+            target: styledItem.contents
+            property: "anchors.fill"
+            value: contentsContainer
+            when: styledItem.contents
+        }
+        Binding {
+            target: styledItem.contents
+            property: "parent"
+            value: contentsContainer
+            when: styledItem.contents
+        }
+    }
+
+    Row {
+        id: actionsContainer
+
+        QtObject {
+            id: numberOfSlots
+            property int requested: styledItem.actions && styledItem.actions.hasOwnProperty("length") ?
+                                         styledItem.actions.length : 0
+            property int left: tabsButton.visible || backButton.visible ||
+                               customBackButton.visible ? 1 : 0
+            property int right: 3 - left
+            property int overflow: actionsOverflowButton.visible ? 1 : 0
+            property int used: Math.min(right - overflow, requested)
+        }
+
+        anchors {
+            top: parent.top
+            right: parent.right
+        }
+        width: childrenRect.width
+        height: headerStyle.contentHeight
+
+        Repeater {
+            model: numberOfSlots.used
+            AbstractButton {
+                id: actionButton
+                objectName: action.objectName + "_header_button"
+                action: styledItem.actions[index]
+                style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionButton)
+                width: units.gu(5)
+                height: actionsContainer.height
+            }
+        }
+
+        AbstractButton {
+            id: actionsOverflowButton
+            objectName: "actions_overflow_button"
+            visible: numberOfSlots.requested > numberOfSlots.right
+            iconName: "dropdown-menu"
+            width: visible ? units.gu(5) : 0
+            style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionsOverflowButton)
+            height: actionsContainer.height
+            onTriggered: actionsOverflowPopover.show()
+
+            Popover {
+                id: actionsOverflowPopover
+                objectName: "actionsOverflowPopover"
+                parent: QuickUtils.rootItem(actionsOverflowPopover)
+                caller: actionsOverflowButton
+                Column {
+                    anchors {
+                        left: parent.left
+                        top: parent.top
+                        right: parent.right
+                    }
+                    Repeater {
+                        model: numberOfSlots.requested - numberOfSlots.used
+                        ListItem.Standard {
+                            action: styledItem.actions[numberOfSlots.used + index]
+                            objectName: action.objectName + "_header_overflow_button"
+                            onClicked: actionsOverflowPopover.hide()
+                        }
+                    }
+                }
+            }
         }
     }
 }
