@@ -95,10 +95,6 @@ StyledItem {
       */
     signal refresh()
 
-    function beginRefreshing() {
-        internals.refreshing = true;
-    }
-
     style: Theme.createStyleComponent("RefreshControlStyle.qml", control)
     implicitHeight: __styleInstance.implicitHeight
     anchors {

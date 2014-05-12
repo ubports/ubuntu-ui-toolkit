@@ -19,7 +19,7 @@ import Ubuntu.Components 1.1
 import Ubuntu.Components.Styles 1.1 as Style
 
 Style.RefreshControlStyle {
-    implicitHeight: Math.max(pullLabel.paintedHeight, busyIndicator.height) + units.gu(2)
+    implicitHeight: Math.max(pullLabel.paintedHeight, busyIndicator.height) + units.gu(4)
     activationThreshold: control.height + units.gu(1) + flickableTopMargin
 
     // local properties
