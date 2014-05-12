@@ -23,6 +23,37 @@ MainView {
     width: units.gu(40)
     height: units.gu(71)
 
+    ListModel {
+        id: listModel
+        property bool done: !refreshDelay.running
+
+        function modelData(index) {
+            return {"name": "line #" + index}
+        }
+
+        function refresh() {
+            print("Refresh model...")
+            clear();
+            refreshDelay.restart()
+        }
+
+        function fillModel() {
+            for (var i = 0; i < 50; i++) {
+                append(modelData(i));
+            }
+        }
+
+        Component.onCompleted: fillModel()
+    }
+
+    Timer {
+        id: refreshDelay
+        interval: 2000
+        onTriggered: {
+            listModel.fillModel();
+        }
+    }
+
     PageStack {
         id: pageStack
         Component.onCompleted: pageStack.push(page)
@@ -33,37 +64,6 @@ MainView {
 
         Page {
             title: "RefreshControl"
-            ListModel {
-                id: listModel
-                property bool done: !refreshDelay.running
-
-                function modelData(index) {
-                    return {"name": "line #" + index}
-                }
-
-                function refresh() {
-                    print("Refresh model...")
-                    clear();
-                    refreshDelay.restart()
-                }
-
-                function fillModel() {
-                    for (var i = 0; i < 50; i++) {
-                        append(modelData(i));
-                    }
-                }
-
-                Component.onCompleted: fillModel()
-            }
-
-            Timer {
-                id: refreshDelay
-                interval: 2000
-                onTriggered: {
-                    listModel.fillModel();
-                }
-            }
-
             UbuntuListView {
                 id: view
                 anchors.fill: parent

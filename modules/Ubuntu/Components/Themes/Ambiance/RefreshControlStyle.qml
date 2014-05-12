@@ -54,9 +54,9 @@ Style.RefreshControlStyle {
         target: control.target
         // capture topMargin change of the flickable
         onTopMarginChanged: {
-            if (state === "") {
+            if (control.ready && !control.refreshing && !control.target.moving) {
+//                print("top", control.target.topMargin, "state=", style.state)
                 flickableTopMargin = control.target.topMargin;
-//                print("top", flickableTopMargin)
             }
         }
         // catch when to initiate refresh
@@ -66,16 +66,20 @@ Style.RefreshControlStyle {
             }
         }
     }
+    Connections {
+        target: control
+        onReadyChanged: print(control.target.topMargin)
+    }
 
 //    onStateChanged: print("state="+state)
     states: [
         State {
             name: ""
-            when: !control.refreshing && !(style.contentY < -style.activationThreshold)
+            when: control.ready && !control.refreshing && !(style.contentY < -style.activationThreshold)
         },
         State {
             name: "ready-to-refresh"
-            when: (style.contentY < -style.activationThreshold) && !control.refreshing
+            when: control.ready && (style.contentY < -style.activationThreshold) && !control.refreshing
             PropertyChanges {
                 target: style
                 triggerRefresh: true
@@ -83,7 +87,7 @@ Style.RefreshControlStyle {
         },
         State {
             name: "refreshing"
-            when: control.refreshing
+            when: control.ready && control.refreshing
             PropertyChanges {
                 target: pullLabel
                 visible: false
@@ -104,30 +108,60 @@ Style.RefreshControlStyle {
             from: ""
             to: "ready-to-refresh"
             SequentialAnimation {
-                NumberAnimation { target: pullLabel; property: "opacity"; from: 1.0; to: 0.0; duration: UbuntuAnimation.FastDuration; easing: UbuntuAnimation.StandardEasing }
-                ScriptAction { script: pullLabel.text = control.releaseText; }
-                NumberAnimation { target: pullLabel; property: "opacity"; from: 0.0; to: 1.0; duration: UbuntuAnimation.FastDuration; easing: UbuntuAnimation.StandardEasing }
+                UbuntuNumberAnimation {
+                    target: pullLabel
+                    property: "opacity"
+                    from: 1.0
+                    to: 0.0
+                }
+                ScriptAction {
+                    script: pullLabel.text = control.releaseText
+                }
+                UbuntuNumberAnimation {
+                    target: pullLabel
+                    property: "opacity"
+                    from: 0.0
+                    to: 1.0
+                }
             }
         },
         Transition {
             from: "ready-to-refresh"
             to: ""
             SequentialAnimation {
-                NumberAnimation { target: pullLabel; property: "opacity"; from: 1.0; to: 0.0; duration: UbuntuAnimation.FastDuration; easing: UbuntuAnimation.StandardEasing }
-                ScriptAction { script: pullLabel.text = control.pullText; }
-                NumberAnimation { target: pullLabel; property: "opacity"; from: 0.0; to: 1.0; duration: UbuntuAnimation.FastDuration; easing: UbuntuAnimation.StandardEasing }
+                UbuntuNumberAnimation {
+                    target: pullLabel
+                    property: "opacity"
+                    from: 1.0
+                    to: 0.0
+                }
+                ScriptAction {
+                    script: pullLabel.text = control.pullText
+                }
+                UbuntuNumberAnimation {
+                    target: pullLabel
+                    property: "opacity"
+                    from: 0.0
+                    to: 1.0
+                }
             }
         },
         Transition {
             from: "refreshing"
             to: ""
-            PropertyAnimation {
-                target: control.target
-                property: "topMargin"
-                from: flickableTopMargin + control.height
-                to: flickableTopMargin
-                duration: UbuntuAnimation.FastDuration
-                easing: UbuntuAnimation.StandardEasing
+            SequentialAnimation {
+                ScriptAction {
+                    script: pullLabel.text = "";
+                }
+                UbuntuNumberAnimation {
+                    target: control.target
+                    property: "topMargin"
+                    from: flickableTopMargin + control.height
+                    to: flickableTopMargin
+                }
+                ScriptAction {
+                    script: pullLabel.text = control.pullText;
+                }
             }
         }
     ]

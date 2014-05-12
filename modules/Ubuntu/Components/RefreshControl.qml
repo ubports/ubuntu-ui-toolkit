@@ -66,6 +66,12 @@ StyledItem {
     id: control
 
     /*!
+      \qmplroperty bool ready
+      The property specifies when the component is fully functional.
+      */
+    readonly property alias ready: internals.completed
+
+    /*!
       */
     property Flickable target: parent
 
