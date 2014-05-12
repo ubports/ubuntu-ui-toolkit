@@ -21,6 +21,7 @@ from autopilot.introspection import dbus
 
 from ubuntuuitoolkit._custom_proxy_objects import (
     _common,
+    _flickable,
     _tabbar
 )
 
@@ -39,9 +40,13 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.pointing_device = _common.get_pointing_device()
 
     def _show(self):
-        if (self.y > 0):
+        if (self.y != 0):
             # header is not (completely opened)
-            raise _common.ToolkitException("Don't know yet how top open header")
+            if not self.flickable:
+                raise _common.ToolkitException(
+                    'Header is closed and there is no flickable to scroll up.')
+            else:
+                raise _common.ToolkitException('Not done yet.')
 
     def click_back_button(self):
         self._show()
