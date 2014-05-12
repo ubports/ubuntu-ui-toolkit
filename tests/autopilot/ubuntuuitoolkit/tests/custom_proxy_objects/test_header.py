@@ -22,7 +22,7 @@ class HeaderTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -33,11 +33,29 @@ MainView {
     Page {
         title: "Test title"
 
-        Label {
-            id: label
-            objectName: "clicked_label"
-            anchors.centerIn: parent
-            text: "No button clicked."
+        Flickable {
+            anchors.fill: parent
+            contentHeight: units.gu(120)
+            objectName: "header_test_flickable"
+
+            Label {
+                id: label
+                objectName: "clicked_label"
+                anchors {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                }
+                text: "No button clicked."
+            }
+            Label {
+                id: endLabel
+                objectName: "end_label"
+                anchors {
+                    bottom: parent.bottom
+                    horizontalCenter: parent.horizontalCenter
+                }
+                text: "The end."
+            }
         }
 
         tools: ToolbarItems {
@@ -98,3 +116,8 @@ MainView {
     def test_click_custom_back_button(self):
         self.header.click_custom_back_button()
         self.assertEqual(self.label.text, 'Cancel button clicked.')
+
+    def test_click_header_action_button_with_hidden_header(self):
+        labelAtBottom = self.main_view.select_single(objectName='end_label')
+        labelAtBottom.swipe_into_view()
+        self.test_click_header_action_button()
