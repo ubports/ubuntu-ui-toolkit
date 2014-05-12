@@ -62,16 +62,12 @@ Style.RefreshControlStyle {
         // catch when to initiate refresh
         onDraggingChanged: {
             if (!control.parent.dragging && triggerRefresh) {
-                control.refresh();
+                style.refresh();
             }
         }
     }
-    Connections {
-        target: control
-        onReadyChanged: print(control.target.topMargin)
-    }
 
-    onStateChanged: print("state="+state)
+//    onStateChanged: print("state="+state)
     states: [
         State {
             name: ""

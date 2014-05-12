@@ -57,6 +57,32 @@ import QtQuick 2.2
     }
     \endqml
 
+    The component detects whether the \l target has a \a model property and whether
+    that \a model has \a refresh() or \a reload() functions and whether it has \a
+    ready property. When either \a refresh() or \a reload() functions are defined,
+    the component will call those functions and will not emit \l refresh() signal.
+    When \a ready property is defined, the \l refreshing property will be bount to
+    that property.
+    \qml
+    import QtQuick 2.2
+    import QtQuick.XmlListModel 2.0
+    import Ubuntu.Components 1.1
+    import Ubuntu.Components.ListItems 1.0
+
+    ListView {
+        model: XmlListModel {
+            id: xmlModel
+            property bool ready: status === XmlListModel.Ready
+        }
+        delegate: Standard {
+            width: ListView.view.width
+            height: units.gu(5)
+            text:
+        }
+    }
+    \endqml
+
+
     \section2 Styling
     The component style API is defined by the \l RefreshControlStyle component.
     Styles may define different ways to initiate refresh upon dragging.
@@ -74,12 +100,6 @@ StyledItem {
     /*!
       */
     property Flickable target: parent
-
-    /*!
-      The property holds the model to be refreshed. The value is taken automatically
-      from the \l target, if the \l target has \a model property specified.
-      */
-    property var model: target && target.hasOwnProperty("model") ? target.model : null
 
     /*!
       */
@@ -109,9 +129,42 @@ StyledItem {
         id: internals
         property bool completed: false
         property real contentY: target.contentY - target.originY
+        property var model: control.target && control.target.hasOwnProperty("model") ? control.target.model : null
+        onModelChanged: updateModel()
+
+        function updateModel() {
+            if (!model || !isObjectModel()) {
+                return;
+            }
+
+            if (model.hasOwnProperty("ready")) {
+                control.refreshing = Qt.binding(function() { return !model.ready; });
+            } else {
+                control.refreshing = false;
+            }
+        }
+        function isObjectModel() {
+            return (Object.prototype.toString.call(model) === "[object Object]");
+        }
+    }
+
+    Connections {
+        target: __styleInstance
+        onRefresh: {
+            if (internals.model) {
+                if (internals.model.hasOwnProperty("reload")) {
+                    internals.model.reload();
+                } else if (internals.model.hasOwnProperty("refresh")) {
+                    internals.model.refresh();
+                }
+            } else {
+                control.refresh();
+            }
+        }
     }
 
     Component.onCompleted: {
         internals.completed = true;
+        internals.updateModel();
     }
 }

@@ -28,16 +28,14 @@ import QtQuick 2.2
 Item {
     /*!
       The property holds the threshold value when the component should enter
-      into \a ready-to-refresh state when dragged manually. By default this
-      value is the sum of the Flickable's \a topMargin and \a height of the
-      component.
+      into \a ready-to-refresh state when dragged manually. The default value
+      is the height of the component styled.
       */
-    property real activationThreshold: 0.0
+    property real activationThreshold: styledItem.height
+
     /*!
-      States:
-      \list
-      \li \b ready-to-refresh - the component is ready to initiate refresh
-      \li \b refreshing - the component is in refreshing state
-      \endlist
+      The signal is triggered when the visuals reac the point when manual refresh
+      can be triggered.
       */
+    signal refresh()
 }

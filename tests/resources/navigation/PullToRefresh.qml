@@ -15,8 +15,9 @@
  */
 
 import QtQuick 2.2
+import QtQuick.XmlListModel 2.0
 import Ubuntu.Components 1.1
-import Ubuntu.Components.ListItems 0.1 as ListItem
+import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
     id: root
@@ -25,7 +26,7 @@ MainView {
 
     ListModel {
         id: listModel
-        property bool done: !refreshDelay.running
+        property bool ready: !refreshDelay.running
 
         function modelData(index) {
             return {"name": "line #" + index}
@@ -84,8 +85,7 @@ MainView {
                 RefreshControl {
                     id: refreshControl
                     enabled: view.visible
-//                    refreshing: !listModel.done
-//                    onRefresh: listModel.refresh()
+//                    refreshing: !listModel.ready
                 }
             }
         }
@@ -119,7 +119,7 @@ MainView {
                 RefreshControl {
                     id: refreshControl
                     parent: view
-                    refreshing: !listModel.done
+                    refreshing: !listModel.ready
                     onRefresh: listModel.refresh()
                 }
             }
