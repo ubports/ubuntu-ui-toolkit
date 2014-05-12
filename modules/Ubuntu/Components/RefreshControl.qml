@@ -22,7 +22,11 @@ import QtQuick 2.2
     \ingroup ubuntu
     \brief Pull-to-refresh component for Flickables to reload a model upon pull.
 
-    When used with Flickable, set parent to the flickable explicitly so the component
+    The component provides ability to initiate data model refresh by pulling the
+    attached Flickable's content. The Flickable's content must be at its top boundary.
+    It can be attached to any Flickable or to any derivate component.
+
+    When placed inside Flickable, set parent to the flickable explicitly so the component
     does not land in the contentItem of Flickable.
     \qml
     ListModel {
