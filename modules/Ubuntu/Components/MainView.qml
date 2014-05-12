@@ -348,6 +348,9 @@ PageTreeNode {
                           internal.activePage.tools.back.hasOwnProperty("action") ?
                               internal.activePage.tools.back.action : null
 
+            contents: internal.activePage ?
+                          internal.activePage.__customHeaderContents : null
+
             property Item tabBar: null
             Binding {
                 target: headerItem

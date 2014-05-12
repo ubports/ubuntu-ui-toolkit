@@ -235,6 +235,7 @@ Item
 Page 0.1 1.0
 PageTreeNode
     property string title
+    property Item __customHeaderContents
     property Flickable flickable
     property list<Action> actions
 PageStack 0.1 1.0

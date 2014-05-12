@@ -1006,12 +1006,11 @@ ActionItem {
                 flickable: flicker
                 selectionModeTimeout: control.__styleInstance.selectionModeTimeout
                 /*
-                  In x direction we use 2 times the configured spacing, as we have
-                  both the overlay and the Flickable aligned with margins. On y
-                  direction we only use the simple spacing, the Flickable moves the
-                  top downwards.
+                  In x direction we use the Flickable x position as we can have overlays
+                  which can shift the cursor caret. On y direction we only use the topMargin
+                  spacing.
                   */
-                frameDistance: Qt.point(2 * internal.spacing, internal.spacing)
+                frameDistance: Qt.point(flicker.x, flicker.topMargin)
             }
         }
     }
