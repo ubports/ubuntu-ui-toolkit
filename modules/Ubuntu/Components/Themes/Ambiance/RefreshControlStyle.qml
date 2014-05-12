@@ -71,7 +71,7 @@ Style.RefreshControlStyle {
         onReadyChanged: print(control.target.topMargin)
     }
 
-//    onStateChanged: print("state="+state)
+    onStateChanged: print("state="+state)
     states: [
         State {
             name: ""
@@ -79,7 +79,7 @@ Style.RefreshControlStyle {
         },
         State {
             name: "ready-to-refresh"
-            when: control.ready && (style.contentY < -style.activationThreshold) && !control.refreshing
+            when: control.ready && control.enabled && (style.contentY < -style.activationThreshold) && !control.refreshing
             PropertyChanges {
                 target: style
                 triggerRefresh: true
@@ -87,7 +87,7 @@ Style.RefreshControlStyle {
         },
         State {
             name: "refreshing"
-            when: control.ready && control.refreshing
+            when: control.ready && control.enabled && control.refreshing
             PropertyChanges {
                 target: pullLabel
                 visible: false

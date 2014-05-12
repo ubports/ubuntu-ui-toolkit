@@ -56,14 +56,14 @@ MainView {
 
     PageStack {
         id: pageStack
-        Component.onCompleted: pageStack.push(page)
+        Component.onCompleted: pageStack.push(inListView)
     }
 
     Component {
-        id: page
+        id: inListView
 
         Page {
-            title: "RefreshControl"
+            title: "In ListView"
             UbuntuListView {
                 id: view
                 anchors.fill: parent
@@ -76,13 +76,49 @@ MainView {
                         anchors.fill: parent
                         text: modelData
                         onClicked: {
-                            listModel.refresh()
+                            pageStack.push(inFlickable)
                         }
                     }
                 }
 
                 RefreshControl {
                     id: refreshControl
+                    enabled: view.visible
+//                    refreshing: !listModel.done
+//                    onRefresh: listModel.refresh()
+                }
+            }
+        }
+    }
+
+    Component {
+        id: inFlickable
+
+        Page {
+            title: "In Flickable"
+            Flickable {
+                id: view
+                anchors.fill: parent
+                contentWidth: column.childrenRect.width
+                contentHeight: column.childrenRect.height
+                Column {
+                    id: column
+                    Repeater {
+                        model: listModel
+                        ListItem.Standard {
+                            width: root.width
+                            height: units.gu(5)
+                            text: modelData
+                            onClicked: {
+                                listModel.refresh()
+                            }
+                        }
+                    }
+                }
+
+                RefreshControl {
+                    id: refreshControl
+                    parent: view
                     refreshing: !listModel.done
                     onRefresh: listModel.refresh()
                 }
