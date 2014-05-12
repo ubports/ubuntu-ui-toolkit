@@ -77,7 +77,7 @@ StyledItem {
 
     /*!
       */
-    property bool completeWhen: true
+    property bool refreshing: true
 
     /*!
       */

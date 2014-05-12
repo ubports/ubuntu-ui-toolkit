@@ -83,7 +83,7 @@ MainView {
 
                 RefreshControl {
                     id: refreshControl
-                    completeWhen: listModel.done
+                    refreshing: !listModel.done
                     onRefresh: listModel.refresh()
                 }
             }

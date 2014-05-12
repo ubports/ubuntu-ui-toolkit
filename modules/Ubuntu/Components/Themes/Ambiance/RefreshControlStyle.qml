@@ -25,7 +25,6 @@ Style.RefreshControlStyle {
     // local properties
     readonly property RefreshControl control: styledItem
     property real flickableTopMargin: 0.0
-    property bool refreshing: !control.completeWhen
     property bool triggerRefresh: false
     property real contentY: target.contentY - target.originY
     property real threshold: control.__styleInstance.activationThreshold
@@ -57,6 +56,7 @@ Style.RefreshControlStyle {
         onTopMarginChanged: {
             if (state === "") {
                 flickableTopMargin = control.target.topMargin;
+//                print("top", flickableTopMargin)
             }
         }
         // catch when to initiate refresh
@@ -67,15 +67,15 @@ Style.RefreshControlStyle {
         }
     }
 
-    onStateChanged: print("state="+state)
+//    onStateChanged: print("state="+state)
     states: [
         State {
             name: ""
-            when: !style.refreshing && !(style.contentY < -style.activationThreshold)
+            when: !control.refreshing && !(style.contentY < -style.activationThreshold)
         },
         State {
             name: "ready-to-refresh"
-            when: (style.contentY < -style.activationThreshold) && !style.refreshing
+            when: (style.contentY < -style.activationThreshold) && !control.refreshing
             PropertyChanges {
                 target: style
                 triggerRefresh: true
@@ -83,7 +83,7 @@ Style.RefreshControlStyle {
         },
         State {
             name: "refreshing"
-            when: style.refreshing
+            when: control.refreshing
             PropertyChanges {
                 target: pullLabel
                 visible: false
@@ -98,13 +98,6 @@ Style.RefreshControlStyle {
             }
         }
     ]
-    function flipLabel() {
-        if (pullLabel.text === control.pullText) {
-            pullLabel.text = control.releaseText;
-        } else {
-            pullLabel.text = control.pullText;
-        }
-    }
 
     transitions: [
         Transition {
@@ -112,7 +105,7 @@ Style.RefreshControlStyle {
             to: "ready-to-refresh"
             SequentialAnimation {
                 NumberAnimation { target: pullLabel; property: "opacity"; from: 1.0; to: 0.0; duration: UbuntuAnimation.FastDuration; easing: UbuntuAnimation.StandardEasing }
-                ScriptAction { script: flipLabel() }
+                ScriptAction { script: pullLabel.text = control.releaseText; }
                 NumberAnimation { target: pullLabel; property: "opacity"; from: 0.0; to: 1.0; duration: UbuntuAnimation.FastDuration; easing: UbuntuAnimation.StandardEasing }
             }
         },
@@ -121,7 +114,7 @@ Style.RefreshControlStyle {
             to: ""
             SequentialAnimation {
                 NumberAnimation { target: pullLabel; property: "opacity"; from: 1.0; to: 0.0; duration: UbuntuAnimation.FastDuration; easing: UbuntuAnimation.StandardEasing }
-                ScriptAction { script: flipLabel() }
+                ScriptAction { script: pullLabel.text = control.pullText; }
                 NumberAnimation { target: pullLabel; property: "opacity"; from: 0.0; to: 1.0; duration: UbuntuAnimation.FastDuration; easing: UbuntuAnimation.StandardEasing }
             }
         },
