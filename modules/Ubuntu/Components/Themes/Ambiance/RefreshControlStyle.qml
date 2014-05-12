@@ -25,7 +25,7 @@ Style.RefreshControlStyle {
     // local properties
     readonly property RefreshControl control: styledItem
     property real flickableTopMargin: 0.0
-    property bool refreshing: false
+    property bool refreshing: !control.completeWhen
     property bool triggerRefresh: false
     property real contentY: target.contentY - target.originY
     property real threshold: control.__styleInstance.activationThreshold
@@ -62,7 +62,7 @@ Style.RefreshControlStyle {
         // catch when to initiate refresh
         onDraggingChanged: {
             if (!control.parent.dragging && triggerRefresh) {
-                refreshing = true;
+//                refreshing = true;
                 control.refresh();
             }
         }
@@ -72,8 +72,8 @@ Style.RefreshControlStyle {
         onCompleteWhenChanged: {
             print("completeWhen=", control.completeWhen)
             if (control.completeWhen) {
-                refreshing = false;
-                state = "";
+//                refreshing = false;
+//                state = "";
             }
         }
     }
@@ -83,10 +83,10 @@ Style.RefreshControlStyle {
         State {
             name: ""
             when: !style.refreshing && !(style.contentY < -style.activationThreshold)
-            PropertyChanges {
-                target: style
-                refreshing: false
-            }
+//            PropertyChanges {
+//                target: style
+//                refreshing: false
+//            }
         },
         State {
             name: "ready-to-refresh"
