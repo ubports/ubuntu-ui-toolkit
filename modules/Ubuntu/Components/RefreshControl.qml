@@ -103,7 +103,7 @@ StyledItem {
 
     /*!
       */
-    property bool refreshing: true
+    property bool refreshing: false
 
     /*!
       */
@@ -129,36 +129,48 @@ StyledItem {
         id: internals
         property bool completed: false
         property real contentY: target.contentY - target.originY
-        property var model: control.target && control.target.hasOwnProperty("model") ? control.target.model : null
+        property QtObject model: control.target && control.target.hasOwnProperty("model") ? control.target.model : null
+        property QtObject prevModel: null
         onModelChanged: updateModel()
 
+        property bool autoReload: false
+        property bool autoComplete: false
+
         function updateModel() {
-            if (!model || !isObjectModel()) {
+            if (prevModel && autoComplete) {
+                prevModel.completed.disconnect(reloadComplete);
+            }
+            prevModel = null;
+            autoReload = autoComplete = false;
+
+            if (!completed || !model || !isObjectModel()) {
                 return;
             }
 
-            if (model.hasOwnProperty("ready")) {
-                control.refreshing = Qt.binding(function() { return !model.ready; });
-            } else {
-                control.refreshing = false;
+            autoReload = model.hasOwnProperty("reload");
+            autoComplete = model.hasOwnProperty("completed");
+            if (autoComplete) {
+                model.completed.connect(reloadComplete);
             }
         }
         function isObjectModel() {
             return (Object.prototype.toString.call(model) === "[object Object]");
+        }
+        function reloadComplete() {
+            control.refreshing = false;
         }
     }
 
     Connections {
         target: __styleInstance
         onRefresh: {
-            if (internals.model) {
-                if (internals.model.hasOwnProperty("reload")) {
-                    internals.model.reload();
-                } else if (internals.model.hasOwnProperty("refresh")) {
-                    internals.model.refresh();
-                }
+            if (internals.autoReload) {
+                internals.model.reload();
             } else {
                 control.refresh();
+            }
+            if (internals.autoComplete) {
+                control.refreshing = true;
             }
         }
     }

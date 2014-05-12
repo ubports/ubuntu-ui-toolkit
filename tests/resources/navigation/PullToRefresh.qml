@@ -27,12 +27,15 @@ MainView {
     ListModel {
         id: listModel
         property bool ready: !refreshDelay.running
+        signal completed()
+
+        onReadyChanged: if(ready) completed()
 
         function modelData(index) {
             return {"name": "line #" + index}
         }
 
-        function refresh() {
+        function reload() {
             print("Refresh model...")
             clear();
             refreshDelay.restart()
@@ -85,7 +88,6 @@ MainView {
                 RefreshControl {
                     id: refreshControl
                     enabled: view.visible
-//                    refreshing: !listModel.ready
                 }
             }
         }
@@ -110,7 +112,7 @@ MainView {
                             height: units.gu(5)
                             text: modelData
                             onClicked: {
-                                listModel.refresh()
+                                listModel.reload()
                             }
                         }
                     }
@@ -120,7 +122,7 @@ MainView {
                     id: refreshControl
                     parent: view
                     refreshing: !listModel.ready
-                    onRefresh: listModel.refresh()
+                    onRefresh: listModel.reload()
                 }
             }
         }
