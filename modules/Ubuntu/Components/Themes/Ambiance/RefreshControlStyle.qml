@@ -27,7 +27,10 @@ Style.RefreshControlStyle {
     property real flickableTopMargin: 0.0
     property bool triggerRefresh: false
     property real contentY: target.contentY - target.originY
-    property real threshold: control.__styleInstance.activationThreshold
+    property bool activate: contentY < -activationThreshold
+    property real pointOfRelease
+    property bool refreshing: false
+    property string prevState
 
     id: style
     anchors {
@@ -51,10 +54,23 @@ Style.RefreshControlStyle {
 
     // refresh logic of the visuals
     Connections {
+        target: control
+        onRefreshingChanged: {
+            if (style.triggerRefresh) {
+                if (!target.refreshing) {
+                    style.refreshing = false;
+                }
+            } else {
+                style.refreshing = target.refreshing;
+            }
+        }
+    }
+
+    Connections {
         target: control.target
         // capture topMargin change of the flickable
         onTopMarginChanged: {
-            if (control.ready && !control.refreshing && !control.target.moving) {
+            if (control.ready && !style.refreshing && !control.target.moving) {
 //                print("top", control.target.topMargin, "state=", style.state)
                 flickableTopMargin = control.target.topMargin;
             }
@@ -62,20 +78,22 @@ Style.RefreshControlStyle {
         // catch when to initiate refresh
         onDraggingChanged: {
             if (!control.parent.dragging && triggerRefresh) {
-                style.refresh();
+                pointOfRelease = -style.contentY
+                style.refreshing = true;
             }
         }
     }
 
-//    onStateChanged: print("state="+state)
+    onStateChanged: print("state="+state)
     states: [
         State {
-            name: ""
-            when: control.ready && !control.refreshing && !(style.contentY < -style.activationThreshold)
+            name: "idle"
+            extend: ""
+            when: control.ready && !style.refreshing && !style.activate
         },
         State {
             name: "ready-to-refresh"
-            when: control.ready && control.enabled && (style.contentY < -style.activationThreshold) && !control.refreshing
+            when: control.ready && control.enabled && style.activate && !style.refreshing
             PropertyChanges {
                 target: style
                 triggerRefresh: true
@@ -83,7 +101,7 @@ Style.RefreshControlStyle {
         },
         State {
             name: "refreshing"
-            when: control.ready && control.enabled && control.refreshing
+            when: control.ready && control.enabled && style.refreshing
             PropertyChanges {
                 target: pullLabel
                 visible: false
@@ -101,7 +119,7 @@ Style.RefreshControlStyle {
 
     transitions: [
         Transition {
-            from: ""
+            from: "idle"
             to: "ready-to-refresh"
             SequentialAnimation {
                 UbuntuNumberAnimation {
@@ -123,7 +141,7 @@ Style.RefreshControlStyle {
         },
         Transition {
             from: "ready-to-refresh"
-            to: ""
+            to: "idle"
             SequentialAnimation {
                 UbuntuNumberAnimation {
                     target: pullLabel
@@ -143,8 +161,26 @@ Style.RefreshControlStyle {
             }
         },
         Transition {
+            from: "ready-to-refresh"
+            to: "refreshing"
+            SequentialAnimation {
+                UbuntuNumberAnimation {
+                    target: control.target
+                    property: "topMargin"
+                    from: style.pointOfRelease
+                    to: style.flickableTopMargin + control.height
+                }
+                ScriptAction {
+                    script: {
+                        style.refresh()
+                    }
+                }
+            }
+        },
+
+        Transition {
             from: "refreshing"
-            to: ""
+            to: "idle"
             SequentialAnimation {
                 ScriptAction {
                     script: pullLabel.text = "";

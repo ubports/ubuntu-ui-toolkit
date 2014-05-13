@@ -26,10 +26,7 @@ MainView {
 
     ListModel {
         id: listModel
-        property bool ready: !refreshDelay.running
-        signal completed()
-
-        onReadyChanged: if(ready) completed()
+        property bool ready: !refreshComplete.running
 
         function modelData(index) {
             return {"name": "line #" + index}
@@ -38,7 +35,7 @@ MainView {
         function reload() {
             print("Refresh model...")
             clear();
-            refreshDelay.restart()
+            refreshComplete.restart();
         }
 
         function fillModel() {
@@ -51,10 +48,11 @@ MainView {
     }
 
     Timer {
-        id: refreshDelay
-        interval: 2000
+        id: refreshComplete
+        interval: 100
         onTriggered: {
             listModel.fillModel();
+            print("Done")
         }
     }
 
@@ -80,7 +78,10 @@ MainView {
                         anchors.fill: parent
                         text: modelData
                         onClicked: {
-                            pageStack.push(inFlickable)
+                            if (index % 2)
+                                view.model.reload();
+                            else
+                                pageStack.push(inFlickable);
                         }
                     }
                 }
@@ -110,9 +111,12 @@ MainView {
                         ListItem.Standard {
                             width: root.width
                             height: units.gu(5)
-                            text: modelData
+                            text: index + " - " + modelData
                             onClicked: {
-                                pageStack.push(xmlModel)
+                                if (index % 2)
+                                    listModel.reload();
+                                else
+                                    pageStack.push(xmlModel)
                             }
                         }
                     }
@@ -141,19 +145,22 @@ MainView {
                     query: "/rss/channel/item"
                     XmlRole { name: "title"; query: "title/string()" }
 
-                    onStatusChanged: if (status === XmlListModel.Ready) completed()
-                    signal completed()
+//                    property bool ready: status === XmlListModel.Ready
+                    onStatusChanged: {
+                        print("status=", status)
+                    }
                 }
                 delegate: ListItem.Standard {
                     width: ListView.view.width
                     height: units.gu(5)
                     text: modelData
                     onClicked: {
-                        pageStack.push(inFlickable)
+                        ListView.view.model.reload();
                     }
                 }
                 RefreshControl {
                     enabled: page.active
+                    refreshing: target.model.status === XmlListModel.Loading
                 }
             }
         }

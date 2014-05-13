@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.2
+import Ubuntu.Components 1.1
 
 /*!
     \qmltype RefreshControl
@@ -98,22 +99,37 @@ StyledItem {
     readonly property alias ready: internals.completed
 
     /*!
-      */
-    property Flickable target: parent
-
-    /*!
-      */
-    property bool refreshing: false
-
-    /*!
+      The property holds the text shown before refresh can be initiated. The limit
+      is defined by the RefreshControlStyle \l activationThreshold property.
       */
     property string pullText: i18n.tr("Pull to refresh...")
 
     /*!
+      The property holds the text shown indicating the refresh can be initiated
+      upon touch/mouse release.
+      \sa pullText activationThreshold
       */
     property string releaseText: i18n.tr("Release to refresh...")
 
     /*!
+      The Flickable or derivate the component is attached to. This can be the
+      parent or sibling of the component.
+      */
+    property Flickable target: parent
+
+    /*!
+      The property notifies the component about the refresh operation completion.
+      Implementations must bind model's readyness checking in order to let the
+      component to know when the operation is complete. If the \l target has a
+      \a model which has a \a ready property defined, the component will auto-bind
+      that property, so implementations do not need to care of it themselves.
+      */
+    property bool refreshing: false//internals.autoComplete ? internals.model.ready : false
+
+    /*!
+      Signal emitted when the model refresh is initiated by the component. If the
+      \l target has a \a model which has \a reload() function defined, the function
+      will be called and the signal will not be emitted.
       */
     signal refresh()
 
@@ -148,30 +164,30 @@ StyledItem {
             }
 
             autoReload = model.hasOwnProperty("reload");
-            autoComplete = model.hasOwnProperty("completed");
+            autoComplete = model.hasOwnProperty("ready");
             if (autoComplete) {
-                model.completed.connect(reloadComplete);
+                control.refreshing = Qt.binding(function() { return !model.ready; });
             }
         }
         function isObjectModel() {
             return (Object.prototype.toString.call(model) === "[object Object]");
         }
-        function reloadComplete() {
-            control.refreshing = false;
+
+        // initiate refresh on model
+        function initiateRefresh() {
+            if (autoReload) {
+                model.reload();
+            } else {
+                control.refresh();
+            }
+            print("refresh")
         }
     }
 
     Connections {
         target: __styleInstance
         onRefresh: {
-            if (internals.autoReload) {
-                internals.model.reload();
-            } else {
-                control.refresh();
-            }
-            if (internals.autoComplete) {
-                control.refreshing = true;
-            }
+            internals.initiateRefresh();
         }
     }
 
