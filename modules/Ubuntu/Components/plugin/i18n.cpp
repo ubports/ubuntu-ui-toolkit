@@ -113,7 +113,7 @@ void UbuntuI18n::setDomain(const QString &domain) {
          See if this prefix belongs to a click package
          eg. /usr/share/click/preinstalled/com.example.foo/current/share
          */
-        if (dataDir.cdUp() && dataDir.exists(".click")) {
+        if (dataDir.cdUp() && dataDir.exists(".click/status")) {
             QString localePath(QDir(dataPath).filePath("locale"));
             C::bindtextdomain(domain.toUtf8(), localePath.toUtf8());
             break;
