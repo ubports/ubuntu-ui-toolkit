@@ -27,7 +27,7 @@ Style.RefreshControlStyle {
     property real flickableTopMargin: 0.0
     property bool triggerRefresh: false
     property real contentY: target.contentY - target.originY
-    property bool activate: contentY < -activationThreshold
+    property bool activate: false
     property real pointOfRelease
     property bool refreshing: false
     property string prevState
@@ -56,6 +56,10 @@ Style.RefreshControlStyle {
     Connections {
         target: control
         onRefreshingChanged: {
+            if (!control.ready || !control.enabled) {
+                return;
+            }
+
             if (style.triggerRefresh) {
                 if (!target.refreshing) {
                     style.refreshing = false;
@@ -80,6 +84,12 @@ Style.RefreshControlStyle {
             if (!control.parent.dragging && triggerRefresh) {
                 pointOfRelease = -style.contentY
                 style.refreshing = true;
+                style.activate = false;
+            }
+        }
+        onContentYChanged: {
+            if (control.enabled && control.target.dragging) {
+                style.activate = true;
             }
         }
     }
@@ -181,18 +191,26 @@ Style.RefreshControlStyle {
         Transition {
             from: "refreshing"
             to: "idle"
+            reversible: true
             SequentialAnimation {
                 ScriptAction {
-                    script: pullLabel.text = "";
+                    script: {
+                        pullLabel.text = "";
+                        print("ONE")
+                    }
                 }
-                UbuntuNumberAnimation {
+                PropertyAnimation {
+                    id: anim
                     target: control.target
                     property: "topMargin"
                     from: flickableTopMargin + control.height
                     to: flickableTopMargin
                 }
                 ScriptAction {
-                    script: pullLabel.text = control.pullText;
+                    script: {
+                        pullLabel.text = control.pullText;
+                        print ("TWO")
+                    }
                 }
             }
         }

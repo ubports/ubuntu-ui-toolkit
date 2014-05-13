@@ -34,7 +34,7 @@ MainView {
 
         function reload() {
             print("Refresh model...")
-            clear();
+//            clear();
             refreshComplete.restart();
         }
 
@@ -49,7 +49,7 @@ MainView {
 
     Timer {
         id: refreshComplete
-        interval: 100
+        interval: 1000
         onTriggered: {
             listModel.fillModel();
             print("Done")
@@ -65,6 +65,7 @@ MainView {
         id: inListView
 
         Page {
+            id: page
             title: "In ListView"
             UbuntuListView {
                 id: view
@@ -88,7 +89,8 @@ MainView {
 
                 RefreshControl {
                     id: refreshControl
-                    enabled: view.visible
+                    objectName: "InListView"
+                    enabled: page.active
                 }
             }
         }
@@ -98,6 +100,7 @@ MainView {
         id: inFlickable
 
         Page {
+            id: page
             title: "In Flickable"
             Flickable {
                 id: view
@@ -124,6 +127,8 @@ MainView {
 
                 RefreshControl {
                     id: refreshControl
+                    enabled: page.active
+                    objectName: "InFlickable"
                     parent: view
                     refreshing: !listModel.ready
                     onRefresh: listModel.reload()
@@ -159,6 +164,7 @@ MainView {
                     }
                 }
                 RefreshControl {
+                    objectName: "WithXmlListModel"
                     enabled: page.active
                     refreshing: target.model.status === XmlListModel.Loading
                 }
