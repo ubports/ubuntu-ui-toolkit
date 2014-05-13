@@ -50,6 +50,9 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
         return self.y == 0
 
     def _show(self):
+        # FIXME This will fail if the header is not linked to a flickable that
+        # fills the main view. The header has a flickable property but it
+        # can't be read by autopilot. See bug http://pad.lv/1318829
         start_x = stop_x = (self.globalRect.x + self.globalRect.width) // 2
         start_y = self.main_view.globalRect.y + 5
         stop_y = start_y + self.globalRect.height
