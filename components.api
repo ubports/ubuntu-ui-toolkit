@@ -817,6 +817,8 @@ plugins.qmltypes
     exports: ["Layouts 0.1", "Layouts 1.0"]
     Property { name: "currentLayout"; type: "string"; isReadonly: true }
     Property { name: "layouts"; type: "ULConditionalLayout"; isList: true; isReadonly: true }
+    Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
     name: "ULLayoutsAttached"
     prototype: "QObject"
     Property { name: "item"; type: "string" }
