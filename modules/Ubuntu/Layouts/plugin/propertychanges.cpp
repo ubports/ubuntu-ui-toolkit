@@ -316,6 +316,9 @@ ItemStackBackup::ItemStackBackup(QQuickItem *item, QQuickItem *currentLayoutItem
 void ItemStackBackup::saveState()
 {
     QQuickItem *rewindParent = target->parentItem();
+    if (!rewindParent) {
+        return;
+    }
     // save original stack position, but detect layout objects!
     QList<QQuickItem*> children = rewindParent->childItems();
     for (int ii = 0; ii < children.count() - 1; ++ii) {
