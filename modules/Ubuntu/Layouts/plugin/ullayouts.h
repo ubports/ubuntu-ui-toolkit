@@ -55,7 +55,9 @@ class ULLayouts : public QQuickItem
 
     Q_PROPERTY(QString currentLayout READ currentLayout NOTIFY currentLayoutChanged DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<ULConditionalLayout> layouts READ layouts DESIGNABLE false)
-    
+
+    Q_PROPERTY(QQmlListProperty<QQuickItem> defaultLayout READ defaultLayout DESIGNABLE false REVISION 1)
+    Q_CLASSINFO("DefaultProperty", "defaultLayout")
 public:
     explicit ULLayouts(QQuickItem *parent = 0);
     ~ULLayouts();
@@ -70,9 +72,11 @@ Q_SIGNALS:
 
 protected:
     void componentComplete();
+    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
 
 private:
     QQmlListProperty<ULConditionalLayout> layouts();
+    QQmlListProperty<QQuickItem> defaultLayout();
 
     friend class ULConditionalLayout;
     Q_DECLARE_PRIVATE(ULLayouts)

@@ -54,7 +54,7 @@ private:
     QList<QQuickItem*> excludedFromLayout;
     QQuickItem* currentLayoutItem;
     QQuickItem* previousLayoutItem;
-    QQuickItem* hiddenContainer;
+    QQuickItem* contentItem;
     int currentLayoutIndex;
     bool ready:1;
 

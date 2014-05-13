@@ -22,22 +22,23 @@
 #include "ulconditionallayout.h"
 #include "propertychanges_p.h"
 #include <QtQml/QQmlInfo>
+#include <QtQuick/private/qquickitem_p.h>
 
 ULLayoutsPrivate::ULLayoutsPrivate(ULLayouts *qq)
     : QQmlIncubator(Asynchronous)
     , q_ptr(qq)
     , currentLayoutItem(0)
     , previousLayoutItem(0)
-    , hiddenContainer(new QQuickItem(qq))
+    , contentItem(new QQuickItem)
     , currentLayoutIndex(-1)
     , ready(false)
 {
     // hidden container for the components that are not laid out
     // any component not subject of layout is reparented into this component
-    hiddenContainer->setParentItem(qq);
-    hiddenContainer->setObjectName("HiddenContainer");
-    hiddenContainer->setVisible(false);
-    hiddenContainer->setEnabled(false);
+    contentItem->setParentItem(qq);
+    contentItem->setObjectName("HiddenContainer");
+//    contentItem->setVisible(false);
+//    contentItem->setEnabled(false);
 }
 
 
@@ -106,12 +107,15 @@ void ULLayoutsPrivate::statusChanged(Status status)
         Q_ASSERT(currentLayoutItem);
 
         // hide all non-laid out items first
-        hideExcludedItems();
+//        hideExcludedItems();
 
         //reparent components to be laid out
         reparentItems();
         // set parent item, then enable and show layout
         changes.addChange(new ParentChange(currentLayoutItem, q, false));
+
+        // deactivate default layout
+        itemActivate(contentItem, false);
         itemActivate(currentLayoutItem, true);
         // apply changes
         changes.apply();
@@ -129,11 +133,11 @@ void ULLayoutsPrivate::statusChanged(Status status)
 void ULLayoutsPrivate::hideExcludedItems()
 {
     for (int i = 0; i < excludedFromLayout.count(); i++) {
-        // skip hiddenContainer!
-        if (excludedFromLayout[i] == hiddenContainer) {
+        // skip contentItem!
+        if (excludedFromLayout[i] == contentItem) {
             continue;
         }
-        changes.addParentChange(excludedFromLayout[i], hiddenContainer, currentLayoutItem, previousLayoutItem);
+        changes.addParentChange(excludedFromLayout[i], contentItem, currentLayoutItem, previousLayoutItem);
     }
 }
 
@@ -159,12 +163,12 @@ void ULLayoutsPrivate::reparentItems()
         }
     }
 
-    // hide the rest of the unused ones
-    LaidOutItemsMapIterator i(unusedItems);
-    while (i.hasNext()) {
-        i.next();
-        changes.addParentChange(i.value(), hiddenContainer, currentLayoutItem, previousLayoutItem);
-    }
+//    // hide the rest of the unused ones
+//    LaidOutItemsMapIterator i(unusedItems);
+//    while (i.hasNext()) {
+//        i.next();
+//        changes.addParentChange(i.value(), contentItem, currentLayoutItem, previousLayoutItem);
+//    }
 }
 
 /*
@@ -188,7 +192,8 @@ void ULLayoutsPrivate::reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *
 
     // the component fills the parent
     changes.addChange(new ParentChange(item, fragment, true));
-    changes.addChange(new ItemStackBackup(item, currentLayoutItem, previousLayoutItem));
+//    changes.addChange(new ItemStackBackup(item, currentLayoutItem, previousLayoutItem));
+    changes.addChange(new ItemStackBackup(item, 0, 0));
     changes.addChange(new AnchorChange(item, "fill", fragment));
     changes.addChange(new PropertyChange(item, "anchors.margins", 0));
     changes.addChange(new PropertyChange(item, "anchors.leftMargin", 0));
@@ -621,6 +626,14 @@ void ULLayouts::componentComplete()
     d->updateLayout();
 }
 
+void ULLayouts::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+{
+    Q_D(ULLayouts);
+    QQuickItem::geometryChanged(newGeometry, oldGeometry);
+    // simply update the container's width/height to the new width/height
+    d->contentItem->setSize(newGeometry.size());
+}
+
 /*!
  * \qmlproperty string Layouts::currentLayout
  * The property holds the active layout name. The default layout is identified
@@ -656,6 +669,12 @@ QQmlListProperty<ULConditionalLayout> ULLayouts::layouts()
                                                  &ULLayoutsPrivate::count_layouts,
                                                  &ULLayoutsPrivate::at_layout,
                                                  &ULLayoutsPrivate::clear_layouts);
+}
+
+QQmlListProperty<QQuickItem> ULLayouts::defaultLayout()
+{
+    Q_D(ULLayouts);
+    return QQuickItemPrivate::get(d->contentItem)->children();
 }
 
 #include "moc_ullayouts.cpp"

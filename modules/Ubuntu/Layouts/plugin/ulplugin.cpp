@@ -35,4 +35,7 @@ void PluginPlugin::registerTypes(const char *uri)
     // @uri Ubuntu.Layouts
     registerTypeVersions(uri, 0, 1);
     registerTypeVersions(uri, 1, 0);
+
+    // register revision 1 types
+    qmlRegisterType<ULLayouts, 1>(uri, 1, 1, "Layouts");
 }
