@@ -442,7 +442,7 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->fill(), layout);
+        QCOMPARE(anchors->fill(), layout->property("contentItem").value<QQuickItem*>());
     }
 
     void testCase_AnchorFilledMargins()
@@ -472,7 +472,7 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->fill(), layout);
+        QCOMPARE(anchors->fill(), layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->margins(), 10.0);
     }
 
@@ -507,7 +507,7 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->fill(), layout);
+        QCOMPARE(anchors->fill(), layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->leftMargin(), 10.0);
         QCOMPARE(anchors->topMargin(), 20.0);
         QCOMPARE(anchors->rightMargin(), 30.0);
@@ -539,7 +539,7 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->centerIn(), layout);
+        QCOMPARE(anchors->centerIn(), layout->property("contentItem").value<QQuickItem*>());
     }
 
     void testCase_AnchorVerticalCenter()
@@ -559,7 +559,7 @@ private Q_SLOTS:
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->verticalCenter().item, layout);
+        QCOMPARE(anchors->verticalCenter().item, layout->property("contentItem").value<QQuickItem*>());
 
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
@@ -569,7 +569,7 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->verticalCenter().item, layout);
+        QCOMPARE(anchors->verticalCenter().item, layout->property("contentItem").value<QQuickItem*>());
     }
 
     void testCase_AnchorVerticalCenterOffset()
@@ -589,7 +589,7 @@ private Q_SLOTS:
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->verticalCenter().item, layout);
+        QCOMPARE(anchors->verticalCenter().item, layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->verticalCenterOffset(), 50.0);
 
         root->setWidth(root->width() + 100);
@@ -601,7 +601,7 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->verticalCenter().item, layout);
+        QCOMPARE(anchors->verticalCenter().item, layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->verticalCenterOffset(), 50.0);
     }
 
@@ -622,7 +622,7 @@ private Q_SLOTS:
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->horizontalCenter().item, layout);
+        QCOMPARE(anchors->horizontalCenter().item, layout->property("contentItem").value<QQuickItem*>());
 
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
@@ -632,7 +632,7 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->horizontalCenter().item, layout);
+        QCOMPARE(anchors->horizontalCenter().item, layout->property("contentItem").value<QQuickItem*>());
     }
 
     void testCase_AnchorHorizontalCenterOffset()
@@ -652,7 +652,7 @@ private Q_SLOTS:
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->horizontalCenter().item, layout);
+        QCOMPARE(anchors->horizontalCenter().item, layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->horizontalCenterOffset(), 50.0);
 
         root->setWidth(root->width() + 100);
@@ -664,7 +664,7 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->horizontalCenter().item, layout);
+        QCOMPARE(anchors->horizontalCenter().item, layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->horizontalCenterOffset(), 50.0);
     }
 
@@ -685,7 +685,7 @@ private Q_SLOTS:
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->centerIn(), layout);
+        QCOMPARE(anchors->centerIn(), layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->verticalCenterOffset(), 50.0);
         QCOMPARE(anchors->horizontalCenterOffset(), 40.0);
 
@@ -698,7 +698,7 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->centerIn(), layout);
+        QCOMPARE(anchors->centerIn(), layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->verticalCenterOffset(), 50.0);
         QCOMPARE(anchors->horizontalCenterOffset(), 40.0);
     }
@@ -720,7 +720,7 @@ private Q_SLOTS:
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->left().item, layout);
+        QCOMPARE(anchors->left().item, layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->leftMargin(), 10.0);
 
         root->setWidth(root->width() + 100);
@@ -732,7 +732,7 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->left().item, layout);
+        QCOMPARE(anchors->left().item, layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->leftMargin(), 10.0);
     }
 
@@ -753,7 +753,7 @@ private Q_SLOTS:
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->top().item, layout);
+        QCOMPARE(anchors->top().item, layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->topMargin(), 10.0);
 
         root->setWidth(root->width() + 100);
@@ -765,7 +765,7 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->top().item, layout);
+        QCOMPARE(anchors->top().item, layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->topMargin(), 10.0);
     }
 
@@ -786,7 +786,7 @@ private Q_SLOTS:
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->right().item, layout);
+        QCOMPARE(anchors->right().item, layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->rightMargin(), 10.0);
 
         root->setWidth(root->width() + 100);
@@ -798,7 +798,7 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->right().item, layout);
+        QCOMPARE(anchors->right().item, layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->rightMargin(), 10.0);
     }
 
@@ -819,7 +819,7 @@ private Q_SLOTS:
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->bottom().item, layout);
+        QCOMPARE(anchors->bottom().item, layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->bottomMargin(), 10.0);
 
         root->setWidth(root->width() + 100);
@@ -831,7 +831,7 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->bottom().item, layout);
+        QCOMPARE(anchors->bottom().item, layout->property("contentItem").value<QQuickItem*>());
         QCOMPARE(anchors->bottomMargin(), 10.0);
     }
 
@@ -852,10 +852,10 @@ private Q_SLOTS:
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->left().item, layout);
-        QCOMPARE(anchors->top().item, layout);
-        QCOMPARE(anchors->right().item, layout);
-        QCOMPARE(anchors->bottom().item, layout);
+        QCOMPARE(anchors->left().item, layout->property("contentItem").value<QQuickItem*>());
+        QCOMPARE(anchors->top().item, layout->property("contentItem").value<QQuickItem*>());
+        QCOMPARE(anchors->right().item, layout->property("contentItem").value<QQuickItem*>());
+        QCOMPARE(anchors->bottom().item, layout->property("contentItem").value<QQuickItem*>());
         QVERIFY(!anchors->fill());
         QCOMPARE(anchors->margins(), 20.0);
 
@@ -872,10 +872,10 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->left().item, layout);
-        QCOMPARE(anchors->top().item, layout);
-        QCOMPARE(anchors->right().item, layout);
-        QCOMPARE(anchors->bottom().item, layout);
+        QCOMPARE(anchors->left().item, layout->property("contentItem").value<QQuickItem*>());
+        QCOMPARE(anchors->top().item, layout->property("contentItem").value<QQuickItem*>());
+        QCOMPARE(anchors->right().item, layout->property("contentItem").value<QQuickItem*>());
+        QCOMPARE(anchors->bottom().item, layout->property("contentItem").value<QQuickItem*>());
         QVERIFY(!anchors->fill());
         QCOMPARE(anchors->margins(), 20.0);
     }
@@ -939,12 +939,12 @@ private Q_SLOTS:
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *container = testItem(root, "HiddenContainer");
-        QVERIFY(container);
-
         QQuickItem *layout = testItem(root, "layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
+
+        QQuickItem *container = layout->property("contentItem").value<QQuickItem*>();
+        QVERIFY(container);
 
         QQuickItem *defaultLayout = testItem(root, "DefaultLayout");
         QVERIFY(defaultLayout);
@@ -958,7 +958,7 @@ private Q_SLOTS:
         layoutChangeSpy.clear();
         view->rootObject()->metaObject()->invokeMethod(view->rootObject(), "landscapeLayout");
         layoutChangeSpy.wait(1000);
-        QCOMPARE(defaultLayout->parentItem(), layout);
+        QCOMPARE(defaultLayout->parentItem(), container);
     }
 
 };

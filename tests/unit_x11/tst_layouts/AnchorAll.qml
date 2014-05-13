@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Layouts 1.0
+import Ubuntu.Layouts 1.1
 
 Rectangle {
     id: root

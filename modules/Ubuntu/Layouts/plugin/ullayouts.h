@@ -57,6 +57,7 @@ class ULLayouts : public QQuickItem
     Q_PROPERTY(QQmlListProperty<ULConditionalLayout> layouts READ layouts DESIGNABLE false)
 
     Q_PROPERTY(QQmlListProperty<QQuickItem> defaultLayout READ defaultLayout DESIGNABLE false REVISION 1)
+    Q_PROPERTY(QQuickItem *contentItem READ contentItem DESIGNABLE false REVISION 1)
     Q_CLASSINFO("DefaultProperty", "defaultLayout")
 public:
     explicit ULLayouts(QQuickItem *parent = 0);
@@ -66,6 +67,7 @@ public:
 
     QString currentLayout() const;
     QList<ULConditionalLayout*> layoutList();
+    QQuickItem *contentItem() const;
 
 Q_SIGNALS:
     void currentLayoutChanged();

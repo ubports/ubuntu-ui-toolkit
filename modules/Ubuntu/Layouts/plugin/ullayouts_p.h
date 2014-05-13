@@ -65,7 +65,6 @@ private:
     static void clear_layouts(QQmlListProperty<ULConditionalLayout>*);
 
     void reLayout();
-    void hideExcludedItems();
     void reparentItems();
     void reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *fragment);
     void itemActivate(QQuickItem *item, bool activate);

@@ -36,9 +36,7 @@ ULLayoutsPrivate::ULLayoutsPrivate(ULLayouts *qq)
     // hidden container for the components that are not laid out
     // any component not subject of layout is reparented into this component
     contentItem->setParentItem(qq);
-    contentItem->setObjectName("HiddenContainer");
-//    contentItem->setVisible(false);
-//    contentItem->setEnabled(false);
+    contentItem->setObjectName("Layouts_ContentItem");
 }
 
 
@@ -106,9 +104,6 @@ void ULLayoutsPrivate::statusChanged(Status status)
         currentLayoutItem = qobject_cast<QQuickItem*>(object());
         Q_ASSERT(currentLayoutItem);
 
-        // hide all non-laid out items first
-//        hideExcludedItems();
-
         //reparent components to be laid out
         reparentItems();
         // set parent item, then enable and show layout
@@ -116,6 +111,7 @@ void ULLayoutsPrivate::statusChanged(Status status)
 
         // deactivate default layout
         itemActivate(contentItem, false);
+        // then activate new layout
         itemActivate(currentLayoutItem, true);
         // apply changes
         changes.apply();
@@ -127,17 +123,6 @@ void ULLayoutsPrivate::statusChanged(Status status)
     } else if (status == Error) {
         Q_Q(ULLayouts);
         error(q, errors());
-    }
-}
-
-void ULLayoutsPrivate::hideExcludedItems()
-{
-    for (int i = 0; i < excludedFromLayout.count(); i++) {
-        // skip contentItem!
-        if (excludedFromLayout[i] == contentItem) {
-            continue;
-        }
-        changes.addParentChange(excludedFromLayout[i], contentItem, currentLayoutItem, previousLayoutItem);
     }
 }
 
@@ -162,13 +147,6 @@ void ULLayoutsPrivate::reparentItems()
             reparentToItemLayout(unusedItems, itemLayout);
         }
     }
-
-//    // hide the rest of the unused ones
-//    LaidOutItemsMapIterator i(unusedItems);
-//    while (i.hasNext()) {
-//        i.next();
-//        changes.addParentChange(i.value(), contentItem, currentLayoutItem, previousLayoutItem);
-//    }
 }
 
 /*
@@ -191,9 +169,7 @@ void ULLayoutsPrivate::reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *
     }
 
     // the component fills the parent
-    changes.addChange(new ParentChange(item, fragment, true));
-//    changes.addChange(new ItemStackBackup(item, currentLayoutItem, previousLayoutItem));
-    changes.addChange(new ItemStackBackup(item, 0, 0));
+    changes.addParentChange(item, fragment, true);
     changes.addChange(new AnchorChange(item, "fill", fragment));
     changes.addChange(new PropertyChange(item, "anchors.margins", 0));
     changes.addChange(new PropertyChange(item, "anchors.leftMargin", 0));
@@ -671,10 +647,28 @@ QQmlListProperty<ULConditionalLayout> ULLayouts::layouts()
                                                  &ULLayoutsPrivate::clear_layouts);
 }
 
+/*!
+ * \qmlproperty list<Item> Layouts::defaultLayout
+ * \default
+ * \since Ubuntu.Layouts 1.1
+ * The property contains the default layout.
+ */
 QQmlListProperty<QQuickItem> ULLayouts::defaultLayout()
 {
     Q_D(ULLayouts);
     return QQuickItemPrivate::get(d->contentItem)->children();
 }
+
+/*!
+ * \qmlproperty Item Layouts::contentItem
+ * \since Ubuntu.Layouts 1.1
+ * The property holds the internal item containing the default layout data.
+ */
+QQuickItem *ULLayouts::contentItem() const
+{
+    Q_D(const ULLayouts);
+    return d->contentItem;
+}
+
 
 #include "moc_ullayouts.cpp"

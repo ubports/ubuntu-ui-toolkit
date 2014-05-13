@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 1.1
-import Ubuntu.Layouts 1.0
+import Ubuntu.Layouts 1.1
 
 ConditionalLayout {
     name: "medium"
