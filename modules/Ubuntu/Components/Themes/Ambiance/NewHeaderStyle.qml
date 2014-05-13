@@ -159,7 +159,6 @@ Item {
 
         Label {
             LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
-
             visible: !styledItem.contents
             anchors {
                 left: parent.left
