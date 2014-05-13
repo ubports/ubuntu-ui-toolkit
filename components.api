@@ -246,7 +246,7 @@ PageTreeNode
     function push(page, properties)
     function pop()
     function clear()
-    default property list<Item> stackChildren
+    default property list<Object> data
 Panel 0.1 1.0
 Item
     default property list<Object> contents
