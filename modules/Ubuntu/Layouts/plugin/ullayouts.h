@@ -56,9 +56,9 @@ class ULLayouts : public QQuickItem
     Q_PROPERTY(QString currentLayout READ currentLayout NOTIFY currentLayoutChanged DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<ULConditionalLayout> layouts READ layouts DESIGNABLE false)
 
-    Q_PROPERTY(QQmlListProperty<QQuickItem> defaultLayout READ defaultLayout DESIGNABLE false REVISION 1)
-    Q_PROPERTY(QQuickItem *contentItem READ contentItem DESIGNABLE false REVISION 1)
-    Q_CLASSINFO("DefaultProperty", "defaultLayout")
+    Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
+    Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children DESIGNABLE false)
+    Q_CLASSINFO("DefaultProperty", "data")
 public:
     explicit ULLayouts(QQuickItem *parent = 0);
     ~ULLayouts();
@@ -78,7 +78,8 @@ protected:
 
 private:
     QQmlListProperty<ULConditionalLayout> layouts();
-    QQmlListProperty<QQuickItem> defaultLayout();
+    QQmlListProperty<QObject> data();
+    QQmlListProperty<QQuickItem> children();
 
     friend class ULConditionalLayout;
     Q_DECLARE_PRIVATE(ULLayouts)

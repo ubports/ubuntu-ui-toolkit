@@ -35,6 +35,7 @@ ULLayoutsPrivate::ULLayoutsPrivate(ULLayouts *qq)
 {
     // hidden container for the components that are not laid out
     // any component not subject of layout is reparented into this component
+    contentItem->setParent(qq);
     contentItem->setParentItem(qq);
     contentItem->setObjectName("Layouts_ContentItem");
 }
@@ -634,6 +635,17 @@ QList<ULConditionalLayout*> ULLayouts::layoutList()
 }
 
 /*!
+ * \internal
+ * Returns the contentItem for internal use.
+ */
+QQuickItem *ULLayouts::contentItem() const
+{
+    Q_D(const ULLayouts);
+    return d->contentItem;
+}
+
+
+/*!
  * \qmlproperty list<ConditionalLayout> Layouts::layouts
  * The property holds the list of different ConditionalLayout elements.
  */
@@ -648,26 +660,23 @@ QQmlListProperty<ULConditionalLayout> ULLayouts::layouts()
 }
 
 /*!
- * \qmlproperty list<Item> Layouts::defaultLayout
- * \default
- * \since Ubuntu.Layouts 1.1
- * The property contains the default layout.
+ * \internal
+ * Overrides the default data property.
  */
-QQmlListProperty<QQuickItem> ULLayouts::defaultLayout()
+QQmlListProperty<QObject> ULLayouts::data()
 {
     Q_D(ULLayouts);
-    return QQuickItemPrivate::get(d->contentItem)->children();
+    return QQuickItemPrivate::get(d->contentItem)->data();
 }
 
 /*!
- * \qmlproperty Item Layouts::contentItem
- * \since Ubuntu.Layouts 1.1
- * The property holds the internal item containing the default layout data.
+ * \internal
+ * Overrides the default children property.
  */
-QQuickItem *ULLayouts::contentItem() const
+QQmlListProperty<QQuickItem> ULLayouts::children()
 {
-    Q_D(const ULLayouts);
-    return d->contentItem;
+    Q_D(ULLayouts);
+    return QQuickItemPrivate::get(d->contentItem)->children();
 }
 
 
