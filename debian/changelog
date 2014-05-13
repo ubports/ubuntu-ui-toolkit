@@ -1,3 +1,25 @@
+ubuntu-ui-toolkit (0.1.46+14.10.20140512-0ubuntu1) utopic; urgency=low
+
+  [ Tim Peeters ]
+  * Make it possible to replace the title in the header with a
+    custom Item. Fixes: https://bugs.launchpad.net/bugs/1314948
+  * Use selectedIndex of the tabs model instead of the TabBar
+    everywhere in TabBarStyle to fix a bug that uses Tabs on a
+    PageStack. Fixes: https://bugs.launchpad.net/bugs/1316736
+  * Fix the positioning of a popover pointer on a small screen
+    in portrait mode. Fixes: https://bugs.launchpad.net/bugs/1208833
+
+  [ Christian Dywan ]
+  * Export to load modules from source and allow arguments.
+  * linearSecondsPicker check it's not resetting and
+    count is correct
+
+  [ Zsombor Egri ]
+  * Text input caret positioning fix for the cases when TextField
+    has overlay primary items and when RTL is enabled.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 12 May 2014 12:27:41 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.10.20140508-0ubuntu1) utopic; urgency=low
 
   [ Christian Dywan ]
