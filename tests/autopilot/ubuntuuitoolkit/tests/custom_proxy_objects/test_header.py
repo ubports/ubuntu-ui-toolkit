@@ -118,6 +118,8 @@ MainView {
         self.assertEqual(self.label.text, 'Cancel button clicked.')
 
     def test_click_header_action_button_with_hidden_header(self):
-        labelAtBottom = self.main_view.select_single(objectName='end_label')
-        labelAtBottom.swipe_into_view()
-        self.test_click_header_action_button()
+        bottom_label = self.main_view.select_single(objectName='end_label')
+        bottom_label.swipe_into_view()
+        self.assertFalse(self.header._is_visible())
+        self.header.click_action_button('action0')
+        self.assertEqual(self.label.text, 'Button 0 clicked.')
