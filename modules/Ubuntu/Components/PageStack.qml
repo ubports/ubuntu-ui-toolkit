@@ -186,11 +186,11 @@ PageTreeNode {
     }
 
     /*!
-      \qmlproperty list<Item> stackChildren
+      \qmlproperty list<Object> data
       Children of PageStack are placed in a separate item such that they are
       not active by default until they are pushed on the PageStack.
      */
-    default property alias stackChildren: inactiveNode.data
+    default property alias data: inactiveNode.data
     PageTreeNode {
         id: inactiveNode
         active: false
