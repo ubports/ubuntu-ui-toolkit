@@ -30,7 +30,7 @@ MainView {
     }
 
     Page {
-        title: "This is a long title for the test page"
+        title: "test page"
 
         Label {
             anchors.centerIn: parent
