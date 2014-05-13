@@ -104,15 +104,19 @@ void UbuntuI18n::setDomain(const QString &domain) {
     /*
      Look for locale folder as per XDG basedir spec
      The default is /usr/share/locale if we don't set a folder
-     We look for share/domain to pick correctly among multiple prefixes
      */
-    QString dataPath(QStandardPaths::locate(QStandardPaths::GenericDataLocation,
-        domain, QStandardPaths::LocateDirectory));
-    if (!dataPath.isEmpty()) {
+    QStringList dataPaths(QStandardPaths::standardLocations(
+        QStandardPaths::GenericDataLocation));
+    Q_FOREACH(QString dataPath, dataPaths) {
         QDir dataDir(dataPath);
-        if (dataDir.cdUp() && dataDir.cd("locale")) {
+        /*
+         See if this prefix belongs to a click package
+         eg. /usr/share/click/preinstalled/com.example.foo/current/share
+         */
+        if (dataDir.cdUp() && dataDir.exists(".click") && dataDir.cd("locale")) {
             QString localePath(dataDir.path());
             C::bindtextdomain(domain.toUtf8(), localePath.toUtf8());
+            break;
         }
     }
     Q_EMIT domainChanged();
