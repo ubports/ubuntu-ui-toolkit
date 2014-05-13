@@ -76,8 +76,8 @@ private Q_SLOTS:
     {
         // Set test locale folder in the environment
         // Using setenv because QProcessEnvironment ignores changes
-        QString wrongDataFolder(QCoreApplication::applicationDirPath() + "/diversion");
-        QString testDataFolder(QCoreApplication::applicationDirPath() + "/appropriate");
+        QString wrongDataFolder(QCoreApplication::applicationDirPath() + "/bar/diversion");
+        QString testDataFolder(QCoreApplication::applicationDirPath() + "/foo/appropriate");
         setenv("XDG_DATA_DIRS", (wrongDataFolder + ":" + testDataFolder).toUtf8(), 1);
 
         // Verify that we set it correctly
