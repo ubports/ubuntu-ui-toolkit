@@ -110,9 +110,9 @@ void ULLayoutsPrivate::statusChanged(Status status)
         changes.addChange(new ParentChange(currentLayoutItem, q, false));
 
         // deactivate default layout
-        itemActivate(contentItem, false);
+        contentItem->setVisible(false);
         // then activate new layout
-        itemActivate(currentLayoutItem, true);
+        currentLayoutItem->setVisible(true);
         // apply changes
         changes.apply();
         // clear previous layout
@@ -121,7 +121,6 @@ void ULLayoutsPrivate::statusChanged(Status status)
 
         Q_EMIT q->currentLayoutChanged();
     } else if (status == Error) {
-        Q_Q(ULLayouts);
         error(q, errors());
     }
 }
@@ -321,6 +320,9 @@ void ULLayoutsPrivate::updateLayout()
         // revert and clear changes
         changes.revert();
         changes.clear();
+        // make contentItem visible
+
+        contentItem->setVisible(true);
         delete currentLayoutItem;
         currentLayoutItem = 0;
         currentLayoutIndex = -1;
