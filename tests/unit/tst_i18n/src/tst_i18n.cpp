@@ -76,19 +76,11 @@ private Q_SLOTS:
     {
         // Set test locale folder in the environment
         // Using setenv because QProcessEnvironment ignores changes
-        QString wrongDataFolder(QCoreApplication::applicationDirPath() + "/bar/diversion");
-        QString testDataFolder(QCoreApplication::applicationDirPath() + "/foo/appropriate");
-        setenv("XDG_DATA_DIRS", (wrongDataFolder + ":" + testDataFolder).toUtf8(), 1);
+        QString testAppDir(QCoreApplication::applicationDirPath() + "/localizedApp");
+        setenv("APP_DIR", testAppDir.toUtf8(), 1);
 
         // Verify that we set it correctly
-        QString dataPath(QStandardPaths::locate(QStandardPaths::GenericDataLocation,
-            "localizedApp", QStandardPaths::LocateDirectory));
-        QDir dataDir(dataPath);
-        QVERIFY(dataDir.cdUp());
-        QVERIFY(dataDir.cd("locale"));
-        QString doubleCheckLocalePath(dataDir.path());
-        QCOMPARE(doubleCheckLocalePath, testDataFolder + "/locale");
-        QVERIFY(QFileInfo(testDataFolder + "/locale/en/LC_MESSAGES/localizedApp.mo").exists());
+        QVERIFY(QFileInfo(testAppDir + "/share/locale/en/LC_MESSAGES/localizedApp.mo").exists());
 
         QString modules("../../../modules");
         QVERIFY(QDir(modules).exists());
@@ -128,12 +120,8 @@ private Q_SLOTS:
 
         // Was the locale folder detected and set?
         QString boundDomain(C::bindtextdomain(i18n->domain().toUtf8(), ((const char*)0)));
-        QString dataPath(QStandardPaths::locate(QStandardPaths::GenericDataLocation,
-            i18n->domain(), QStandardPaths::LocateDirectory));
-        QDir dataDir(dataPath);
-        QVERIFY(dataDir.cdUp());
-        QVERIFY(dataDir.cd("locale"));
-        QString expectedLocalePath(dataDir.path());
+        QString testAppDir(QCoreApplication::applicationDirPath() + "/localizedApp");
+        QString expectedLocalePath(QDir(testAppDir).filePath("share/locale"));
         QCOMPARE(boundDomain, expectedLocalePath);
         // Is the domain gettext uses correct?
         QString gettextDomain(C::textdomain(((const char*)0)));
