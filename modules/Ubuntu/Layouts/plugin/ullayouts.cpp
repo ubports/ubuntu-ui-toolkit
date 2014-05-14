@@ -37,7 +37,6 @@ ULLayoutsPrivate::ULLayoutsPrivate(ULLayouts *qq)
     // any component not subject of layout is reparented into this component
     contentItem->setParent(qq);
     contentItem->setParentItem(qq);
-    contentItem->setObjectName("Layouts_ContentItem");
 }
 
 
@@ -135,19 +134,34 @@ void ULLayoutsPrivate::reparentItems()
     // create copy of items list, to keep track of which ones we change
     LaidOutItemsMap unusedItems = itemsToLayout;
 
-    // iterate through the Layout definition to find containers - those Items with
-    // ConditionalLayout.items set
-    QList<QQuickItem*> items = currentLayoutItem->findChildren<QQuickItem*>();
-    // add the root item as that also can be the container
-    items.prepend(currentLayoutItem);
+    // iterate through the Layout definition to find containers - ItemLayout items
+    // note that this will list the containers from nested layouts, therefore
+    // we need to skip those when reparenting
+    QList<ULItemLayout*> items = collectContainers(currentLayoutItem);
 
-    Q_FOREACH(QQuickItem *container, items) {
-        // check whether we have ItemLayout declared
-        ULItemLayout *itemLayout = qobject_cast<ULItemLayout*>(container);
-        if (itemLayout) {
-            reparentToItemLayout(unusedItems, itemLayout);
-        }
+    Q_FOREACH(ULItemLayout *container, items) {
+        reparentToItemLayout(unusedItems, container);
     }
+}
+
+QList<ULItemLayout*> ULLayoutsPrivate::collectContainers(QQuickItem *fromItem)
+{
+    QList<ULItemLayout*> result;
+    // check first if the fromItem is also a container
+    ULItemLayout *container = qobject_cast<ULItemLayout*>(fromItem);
+    if (container) {
+        result.append(container);
+    }
+
+    // loop through children but exclude nested Layouts
+    QList<QQuickItem*> children = fromItem->childItems();
+    Q_FOREACH(QQuickItem *child, children) {
+        if (qobject_cast<ULLayouts*>(child)) {
+            continue;
+        }
+        result.append(collectContainers(child));
+    }
+    return result;
 }
 
 /*
@@ -193,12 +207,6 @@ void ULLayoutsPrivate::itemActivate(QQuickItem *item, bool activate)
            .addChange(new PropertyChange(item, "enabled", activate));
 }
 
-// remove the deleted item from the excluded ones
-void ULLayoutsPrivate::_q_removeExcludedItem(QObject *excludedItem)
-{
-    excludedFromLayout.removeAll(static_cast<QQuickItem*>(excludedItem));
-}
-
 /*
  * Validates the declared conditional layouts by checking whether they have name
  * property set and whether the value set is unique, and whether the conditional
@@ -237,44 +245,20 @@ void ULLayoutsPrivate::validateConditionalLayouts()
 /*
  * Collect items to be laid out.
  */
-void ULLayoutsPrivate::getLaidOutItems()
+void ULLayoutsPrivate::getLaidOutItems(QQuickItem *container)
 {
-    Q_Q(ULLayouts);
-
-    QList<QQuickItem*> items = q->findChildren<QQuickItem*>();
-    for (int i = 0; i < items.count(); i++) {
-        QQuickItem *item = items[i];
+    Q_FOREACH(QQuickItem *child, container->childItems()) {
+        // skip nested layouts
+        if (qobject_cast<ULLayouts*>(child)) {
+            continue;
+        }
         ULLayoutsAttached *marker = qobject_cast<ULLayoutsAttached*>(
-                    qmlAttachedPropertiesObject<ULLayouts>(item, false));
+                    qmlAttachedPropertiesObject<ULLayouts>(child, false));
         if (marker && !marker->item().isEmpty()) {
-            itemsToLayout.insert(marker->item(), item);
+            itemsToLayout.insert(marker->item(), child);
         } else {
-            // the item is not marked to be laid out but one of its parents
-            // can be, therefore check
-            // check if the item's  parent is included in the layout
-            QQuickItem *pl = item->parentItem();
-            marker = 0;
-            if (!pl && item->parent()) {
-                // this may be an item instance assigned to a property
-                // like "property var anItem: Item {}"
-                // in which case we must get the parent object of it, not the parent item
-                pl = qobject_cast<QQuickItem*>(item->parent());
-            }
-            while (pl) {
-                marker = qobject_cast<ULLayoutsAttached*>(
-                            qmlAttachedPropertiesObject<ULLayouts>(pl, false));
-                if (marker && !marker->item().isEmpty()) {
-                    break;
-                }
-                pl = pl->parentItem();
-            }
-            if (!marker || (marker && marker->item().isEmpty())) {
-                // remember theese so we hide them once we switch away from default layout
-                excludedFromLayout << item;
-                // and make sure we remove the item from excluded ones in case the item is destroyed
-                QObject::connect(item, SIGNAL(destroyed(QObject*)),
-                                 q, SLOT(_q_removeExcludedItem(QObject*)));
-            }
+            // continue to search in between the child's children
+            getLaidOutItems(child);
         }
     }
 }
@@ -599,7 +583,7 @@ void ULLayouts::componentComplete()
     Q_D(ULLayouts);
     d->ready = true;
     d->validateConditionalLayouts();
-    d->getLaidOutItems();
+    d->getLaidOutItems(d->contentItem);
     d->updateLayout();
 }
 
