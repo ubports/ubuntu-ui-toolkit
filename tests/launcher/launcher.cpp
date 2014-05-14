@@ -99,6 +99,7 @@ int main(int argc, const char *argv[])
         return usage();
     }
     QString filename(args.at(1));
+    // The first argument is the launcher itself
     args.removeAt(0);
 
     QUrl source(QUrl::fromLocalFile(filename));
