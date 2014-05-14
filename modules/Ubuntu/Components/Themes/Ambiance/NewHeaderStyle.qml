@@ -168,16 +168,17 @@ Item {
 
         Label {
             LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
-
             visible: !styledItem.contents
             anchors {
                 left: parent.left
+                right: parent.right
                 verticalCenter: parent.verticalCenter
             }
             text: styledItem.title
             font.weight: headerStyle.fontWeight
             fontSize: headerStyle.fontSize
             color: headerStyle.textColor
+            elide: Text.ElideRight
         }
 
         Item {
