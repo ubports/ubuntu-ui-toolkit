@@ -78,7 +78,7 @@ class Q_DECL_EXPORT QSortFilterProxyModelQML : public QSortFilterProxyModel
 public:
     explicit QSortFilterProxyModelQML(QObject *parent = 0);
 
-    Q_INVOKABLE QVariantMap get(int row); // Use with caution, it can be slow to query all the roles
+    Q_INVOKABLE QVariantMap get(int row);
     Q_INVOKABLE QVariant data(int row, int role);
     Q_INVOKABLE int count();
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;

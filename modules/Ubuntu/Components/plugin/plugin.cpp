@@ -188,10 +188,13 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     // register custom event
     ForwardedEvent::registerForwardedEvent();
 
+    // register parent type so that properties can get/ set it
     qmlRegisterUncreatableType<QAbstractItemModel>(uri, 1, 1, "QAbstractItemModel", "Not instantiable");
+
+    // register 1.1 only API
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
-    qmlRegisterType<FilterBehavior>(uri, 1, 1, "FilterBehavior");
-    qmlRegisterType<SortBehavior>(uri, 1, 1, "SortBehavior");
+    qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
+    qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
