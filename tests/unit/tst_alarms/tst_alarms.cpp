@@ -480,6 +480,27 @@ private Q_SLOTS:
         QVERIFY(containsAlarm(&alarm));
     }
 
+    void test_oneTime_setDate_does_not_change_dow_data() {
+        QTest::addColumn<QString>("message");
+        QTest::addColumn<int>("dow");
+
+        QTest::newRow("Monday") << "Monday" << (int)UCAlarm::Monday;
+        QTest::newRow("Tuesday") << "Tuesday" << (int)UCAlarm::Tuesday;
+        QTest::newRow("Wednesday") << "Wednesday" << (int)UCAlarm::Wednesday;
+        QTest::newRow("Thursday") << "Thursday" << (int)UCAlarm::Thursday;
+        QTest::newRow("Friday") << "Friday" << (int)UCAlarm::Friday;
+        QTest::newRow("Saturday") << "Saturday" << (int)UCAlarm::Saturday;
+        QTest::newRow("Sunday") << "Sunday" << (int)UCAlarm::Sunday;
+    }
+    void test_oneTime_setDate_does_not_change_dow() {
+        QFETCH(QString, message);
+        QFETCH(int, dow);
+
+        UCAlarm alarm(QDateTime::currentDateTime(), "test_oneTime_setDate_does_not_change_dow_" + message);
+        alarm.setDaysOfWeek((UCAlarm::DaysOfWeek)dow);
+        alarm.setDate(QDateTime::currentDateTime().addSecs(3600));
+        QCOMPARE((int)alarm.daysOfWeek(), dow);
+    }
 };
 
 QTEST_MAIN(tst_UCAlarms)

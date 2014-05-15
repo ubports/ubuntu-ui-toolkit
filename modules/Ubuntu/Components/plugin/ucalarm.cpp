@@ -385,10 +385,6 @@ void UCAlarm::setDate(const QDateTime &date)
     d->rawData.date = AlarmData::normalizeDate(date);
     d->rawData.changes |= AlarmData::Date;
     Q_EMIT dateChanged();
-    if (d->rawData.type == UCAlarm::OneTime) {
-        // adjust dayOfWeek as well
-        setDaysOfWeek(UCAlarm::AutoDetect);
-    }
 }
 
 /*!
