@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2014 Canonical Ltd.
+ * Copyright (C) 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -22,15 +22,19 @@ MainView {
     height: units.gu(80)
     useDeprecatedToolbar: false
 
-    Action {
-        id: action1
-        text: "action 1"
-        onTriggered: print("one!")
-        iconName: "call-start"
-    }
-
     Page {
-        title: "This is a long title for the test page"
+        title: "test page"
+
+        id: page
+
+        __customHeaderContents: Item {
+            TextField {
+                anchors {
+                    left: parent.left
+                    verticalCenter: parent.verticalCenter
+                }
+            }
+        }
 
         Label {
             anchors.centerIn: parent
@@ -38,15 +42,6 @@ MainView {
         }
 
         tools: ToolbarItems {
-            Button { // normal-styled button.
-                anchors.verticalCenter: parent.verticalCenter
-                width: units.gu(10)
-                action: Action {
-                    text: "yeah"
-                    onTriggered: print("upa")
-                    iconName: "cancel"
-                }
-            }
             ToolbarButton {
                 action: Action {
                     iconName: "contact"
@@ -55,28 +50,16 @@ MainView {
                     enabled: false
                 }
             }
-            ToolbarButton {
-                action: action1
-            }
-            ToolbarButton {
-                action: Action {
-                    id: action2
-                    onTriggered: print("two!")
-                    iconName: "contact"
-                    text: "Second action"
-                }
-                text: "action 2"
-            }
 
             back: ToolbarButton {
                 action: Action {
                     text: "cancel"
                     iconName: "cancel"
                     onTriggered: {
-                        action2.visible = false;
-                        visible = false;
+                        page.__customHeaderContents = null;
                     }
                 }
+                anchors.verticalCenter: parent.verticalCenter
             }
         }
     }

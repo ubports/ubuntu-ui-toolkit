@@ -59,7 +59,7 @@ Item {
       automaytically through ListModel changes.
       */
     function sync() {
-        buttonView.selectButton(styledItem.selectedIndex);
+        buttonView.selectButton(styledItem.model.selectedIndex);
     }
 
     property var tabsModel : styledItem ? styledItem.model : null
@@ -69,14 +69,14 @@ Item {
 
         onSelectionModeChanged: {
             if (!styledItem.selectionMode) {
-                buttonView.selectButton(styledItem.selectedIndex);
+                buttonView.selectButton(styledItem.model.selectedIndex);
             }
         }
     }
 
     Connections {
-        target: styledItem
-        onSelectedIndexChanged: buttonView.selectButton(styledItem.selectedIndex)
+        target: styledItem.model
+        onSelectedIndexChanged: buttonView.selectButton(styledItem.model.selectedIndex)
     }
 
     /*
@@ -126,7 +126,7 @@ Item {
                     // to avoid seeing fading animations of the unselected button when switching
                     // tabs from outside the tab bar.
                     property bool selected: (styledItem.selectionMode && buttonView.needsScrolling) ?
-                                                styledItem.selectedIndex === index :
+                                                styledItem.model.selectedIndex === index :
                                                 buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
@@ -171,9 +171,9 @@ Item {
                         // The indicator image must be visible after the selected tab button, when the
                         // tab bar is not in selection mode, or after the "last" button (starting with
                         // the selected one), when the tab bar is in selection mode.
-                        property bool isLastAfterSelected: index === (styledItem.selectedIndex === 0 ?
+                        property bool isLastAfterSelected: index === (styledItem.model.selectedIndex === 0 ?
                                                                           repeater.count-1 :
-                                                                          styledItem.selectedIndex - 1)
+                                                                          styledItem.model.selectedIndex - 1)
                         opacity: (styledItem.selectionMode ? isLastAfterSelected : selected) ? 1 : 0
                         Behavior on opacity {
                             NumberAnimation {

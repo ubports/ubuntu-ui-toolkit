@@ -860,7 +860,8 @@ StyledItem {
             selectionColor: Theme.palette.selected.foreground
             font.pixelSize: FontUtils.sizeToPixels("medium")
             // forward keys to the root element so it can be captured outside of it
-            Keys.forwardTo: [control]
+            // as well as to InputHandler to handle PageUp/PageDown keys
+            Keys.forwardTo: [control, inputHandler]
 
             // autosize handling
             onLineCountChanged: internal.frameSize()
@@ -874,7 +875,7 @@ StyledItem {
                 input: editor
                 flickable: flicker
                 selectionModeTimeout: control.__styleInstance.selectionModeTimeout
-                frameDistance: Qt.point(internal.frameSpacing, internal.frameSpacing)
+                frameDistance: Qt.point(flicker.x, flicker.y)
             }
         }
     }
