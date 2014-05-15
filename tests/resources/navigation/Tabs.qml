@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -53,9 +53,11 @@ MainView {
                 }
                 tools: ToolbarItems {
                     ToolbarButton {
-                        text: "action"
-                        iconSource: "call_icon.png"
-                        onTriggered: print("action triggered")
+                        action: Action {
+                            text: "action"
+                            iconSource: "call_icon.png"
+                            onTriggered: print("action triggered")
+                        }
                     }
                 }
             }
