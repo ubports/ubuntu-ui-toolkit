@@ -14,48 +14,16 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import os
 
 import testtools
 
 import ubuntuuitoolkit
-from ubuntuuitoolkit import tests
+from ubuntuuitoolkit import fixture_setup, tests
 from ubuntuuitoolkit._custom_proxy_objects import _common
 
 
 class FlickableTestCase(testtools.TestCase):
-
-    def test_get_unity_top_container(self):
-        """Test that we can get the top cointainer in Unity."""
-        # This tests bug http://pad.lv/1314390
-        # On Unity, the top container is not the first child as it is in all
-        # the apps that have a MainView. This makes the first implementation of
-        # _get_top_container fail. Instead of going from the top looking for
-        # a container, we should start from the flickable until we find the
-        # top-most container.
-        RootClass = type('obj', (object,), {'id': 'root'})
-        mock_root_instance = RootClass()
-        # We consider a container is an object with a globalRect.
-        MockNonContainerClass = type('obj', (object,), {})
-        mock_non_container = MockNonContainerClass()
-        MockContainerClass = type(
-            'obj', (object,), {'id': 'container', 'globalRect': 'dummy'})
-        mock_container = MockContainerClass()
-        mock_container.get_parent = lambda: mock_root_instance
-
-        # The root instance has two children. This exposes the bug.
-        mock_root_instance.get_children = lambda: [
-            mock_non_container, mock_container]
-
-        dummy_state = {'id': '10'}
-        flickable = ubuntuuitoolkit.QQuickFlickable(
-            dummy_state, 'dummy', 'dummy')
-
-        flickable.get_root_instance = lambda: mock_root_instance
-        # The top container of the flickable is its immediate parent.
-        flickable.get_parent = lambda: mock_container
-
-        top_container = flickable._get_top_container()
-        self.assertEqual(top_container, mock_container)
 
     def test_is_flickable_with_flicking_property_must_return_true(self):
         """is_flickable returns True if flickable property exists."""
@@ -195,3 +163,58 @@ MainView {
 
         self.pointing_device.click_object(topButton)
         self.assertEqual(self.label.text, 'topButton')
+
+
+class UnityFlickableTestCase(tests.QMLStringAppTestCase):
+
+    test_qml = ("""
+import QtQuick 2.0
+import Ubuntu.Components 0.1
+
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+
+    Flickable {
+        objectName: 'testFlickable'
+        width: 200; height: 200
+        contentWidth: image.width; contentHeight: image.height
+    }
+}
+""")
+
+    def launch_application(self):
+        fake_application = fixture_setup.FakeApplication(
+            qml_file_contents=self.test_qml)
+        self.useFixture(fake_application)
+
+        self.app = self.launch_test_application(
+            self.get_alternate_launch_command(),
+            '-engine',
+            fake_application.qml_file_path,
+            emulator_base=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase,
+            app_type='qt')
+
+    def get_alternate_launch_command(self):
+        root = tests.get_path_to_source_root()
+        path_to_local_launcher = os.path.join(
+            root, 'tests', 'launcher', 'launcher')
+        if os.path.exists(path_to_local_launcher):
+            return path_to_local_launcher
+        else:
+            path_to_installed_launcher = os.path.join(
+                '/', 'usr', 'lib', 'ubuntu-ui-toolkit', 'launcher')
+        return path_to_installed_launcher
+
+    def test_get_unity_top_container(self):
+        """Test that we can get the top cointainer in Unity."""
+        # This tests bug http://pad.lv/1314390
+        # On Unity, the top container is not the first child as it is in all
+        # the apps that have a MainView. This makes the first implementation of
+        # _get_top_container fail. Instead of going from the top looking for
+        # a container, we should start from the flickable until we find the
+        # top-most container.
+        test_flickable = self.app.select_single(
+            ubuntuuitoolkit.QQuickFlickable, objectName='testFlickable')
+        top_container = test_flickable._get_top_container()
+        self.assertIsInstance(top_container, ubuntuuitoolkit.MainView)
