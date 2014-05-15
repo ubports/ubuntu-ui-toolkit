@@ -36,8 +36,8 @@
  * Example usage:
  * \qml
  * import QtQuick 2.0
- * import Ubuntu.Components 0.1
- * import Ubuntu.Components.ListItems 0.1
+ * import Ubuntu.Components 1.1
+ * import Ubuntu.Components.ListItems 1.1
  *
  * MainView {
  *     width: units.gu(80)
@@ -60,6 +60,7 @@
  *     }
  *
  *     SortFilterModel {
+ *         id: sortedMovies
  *         model: movies
  *         sort.property: "title"
  *         sort.order: Qt.DescendingOrder
@@ -70,13 +71,14 @@
  *
  *     ListView {
  *         model: sortedMovies
+ *         anchors.fill: parent
  *
  *         delegate: Subtitled {
  *             text: title
  *             subText: producer
  *         }
  *
- *         section.delegate: sectionDelegate
+ *         section.delegate: ListItem.Header { text: i18n.tr(section) }
  *         section.property: "title"
  *         section.criteria: ViewSection.FirstCharacter
  *     }
