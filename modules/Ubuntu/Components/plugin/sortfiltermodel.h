@@ -22,49 +22,8 @@
 #define QSORTFILTERPROXYMODELQML_H
 
 #include <QSortFilterProxyModel>
-
-class SortBehavior : public QObject {
-    Q_OBJECT
-
-    Q_PROPERTY(QString property READ property WRITE setProperty NOTIFY propertyChanged)
-    Q_PROPERTY(Qt::SortOrder order READ order WRITE setOrder NOTIFY orderChanged)
-
-public:
-    QString property() const;
-    void setProperty(const QString& property);
-    Qt::SortOrder order() const;
-    void setOrder(Qt::SortOrder order);
-
-Q_SIGNALS:
-    void propertyChanged();
-    void orderChanged();
-
-private:
-    QString m_property;
-    Qt::SortOrder m_order;
-};
-
-class FilterBehavior : public QObject {
-    Q_OBJECT
-
-    Q_PROPERTY(QString property READ property WRITE setProperty NOTIFY propertyChanged)
-    Q_PROPERTY(QRegExp pattern READ pattern WRITE setPattern NOTIFY patternChanged)
-
-public:
-    QString property() const;
-    void setProperty(const QString& property);
-    QRegExp pattern() const;
-    void setPattern(QRegExp pattern);
-
-Q_SIGNALS:
-    void propertyChanged();
-    void patternChanged();
-
-private:
-    QString m_property;
-    QRegExp m_pattern;
-};
-
+#include "sortbehavior.h"
+#include "filterbehavior.h"
 
 class Q_DECL_EXPORT QSortFilterProxyModelQML : public QSortFilterProxyModel
 {

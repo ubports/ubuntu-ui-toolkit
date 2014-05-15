@@ -117,28 +117,11 @@ QSortFilterProxyModelQML::roleByName(const QString& roleName) const
     return 0;
 }
 
-SortBehavior*
-QSortFilterProxyModelQML::sortBehavior()
-{
-    return &m_sortBehavior;
-}
-
-FilterBehavior*
-QSortFilterProxyModelQML::filterBehavior()
-{
-    return &m_filterBehavior;
-}
-
 /*!
  * \qmlproperty string SortFilterModel::sort.property
  *
  * If set to a valid role name, all rows will be sorted according to \l sort.order.
  */
-QString
-SortBehavior::property() const
-{
-    return m_property;
-}
 
 /*!
  * \qmlproperty string SortFilterModel::sort.order
@@ -147,49 +130,11 @@ SortBehavior::property() const
  * Qt::AscendingOrder sorts results from A to Z or 0 to 9.
  * Qt::DescendingOrder sorts results from Z to A or 9 to 0.
  */
-Qt::SortOrder
-SortBehavior::order() const
-{
-    return m_order;
-}
 
-void
-SortBehavior::setProperty(const QString& property)
+SortBehavior*
+QSortFilterProxyModelQML::sortBehavior()
 {
-    m_property = property;
-    Q_EMIT propertyChanged();
-}
-
-void
-SortBehavior::setOrder(Qt::SortOrder order)
-{
-    m_order = order;
-    Q_EMIT orderChanged();
-}
-
-void
-QSortFilterProxyModelQML::sortChanged()
-{
-    setSortRole(roleByName(m_sortBehavior.property()));
-    sort(sortColumn() != -1 ? sortColumn() : 0, m_sortBehavior.order());
-}
-
-/*!
- * \qmlproperty string SortFilterModel::filter.property
- *
- * If set to a valid role name, only rows matching \l filter.pattern will be in the model.
- */
-QString
-FilterBehavior::property() const
-{
-    return m_property;
-}
-
-void
-FilterBehavior::setProperty(const QString& property)
-{
-    m_property = property;
-    Q_EMIT propertyChanged();
+    return &m_sortBehavior;
 }
 
 /*!
@@ -206,17 +151,24 @@ FilterBehavior::setProperty(const QString& property)
  *
  * For more advanced uses it's recommended to read up on Javascript regular expressions.
  */
-QRegExp
-FilterBehavior::pattern() const
+
+/*!
+ * \qmlproperty string SortFilterModel::filter.property
+ *
+ * If set to a valid role name, only rows matching \l filter.pattern will be in the model.
+ */
+
+FilterBehavior*
+QSortFilterProxyModelQML::filterBehavior()
 {
-    return m_pattern;
+    return &m_filterBehavior;
 }
 
 void
-FilterBehavior::setPattern(QRegExp pattern)
+QSortFilterProxyModelQML::sortChanged()
 {
-    m_pattern = pattern;
-    Q_EMIT patternChanged();
+    setSortRole(roleByName(m_sortBehavior.property()));
+    sort(sortColumn() != -1 ? sortColumn() : 0, m_sortBehavior.order());
 }
 
 void

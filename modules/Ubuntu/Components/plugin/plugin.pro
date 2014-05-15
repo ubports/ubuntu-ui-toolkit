@@ -55,6 +55,8 @@ HEADERS += plugin.h \
     alarmrequest_p_p.h \
     adapters/alarmsadapter_p.h \
     ucstatesaver.h \
+    sortbehavior.h \
+    filterbehavior.h \
     sortfiltermodel.h \
     statesaverbackend_p.h \
     ucstatesaver_p.h \
@@ -88,6 +90,8 @@ SOURCES += plugin.cpp \
     thumbnailgenerator.cpp \
     alarmrequest_p.cpp \
     ucstatesaver.cpp \
+    sortbehavior.cpp \
+    filterbehavior.cpp \
     sortfiltermodel.cpp \
     statesaverbackend_p.cpp \
     ucurihandler.cpp \
