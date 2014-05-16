@@ -116,8 +116,8 @@ Item {
                 AbstractButton {
                     id: button
                     anchors {
-                        top: parent.top
-                        bottom: parent.bottom
+                        top: parent ? parent.top : undefined
+                        bottom: parent ? parent.bottom : undefined
                     }
                     width: text.paintedWidth + text.anchors.leftMargin + text.anchors.rightMargin
 
