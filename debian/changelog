@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (0.1.46+14.10.20140512-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (0.1.46+14.10.20140516-0ubuntu1) utopic; urgency=medium
 
   [ Tim Peeters ]
   * Take visibility of actions into account when determining whether 
@@ -31,7 +31,7 @@ ubuntu-ui-toolkit (0.1.46+14.10.20140512-0ubuntu2) UNRELEASED; urgency=medium
     on mobile architectures (less rattling, more realistic).
     Fixes: https://bugs.launchpad.net/bugs/1290201.
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Wed, 14 May 2014 15:46:58 +0300
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 16 May 2014 11:58:25 +0000
 
 ubuntu-ui-toolkit (0.1.46+14.10.20140512-0ubuntu1) utopic; urgency=low
 
