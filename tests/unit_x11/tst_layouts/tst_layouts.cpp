@@ -984,8 +984,19 @@ private Q_SLOTS:
         QCOMPARE(layout->contentItem()->isVisible(), true);
     }
 
-    void testCase_tablet_portrait_NestedVisibility()
+    void testCase_NestedVisibility_data() {
+        QTest::addColumn<QString>("layoutFunction");
+        QTest::addColumn<QString>("layoutName");
+
+        QTest::newRow("portrait") << "tabletPortraitLayout" << "tabletPortrait";
+        QTest::newRow("portrait") << "tabletLandscapeLayout" << "tabletLandscape";
+    }
+
+    void testCase_NestedVisibility()
     {
+        QFETCH(QString, layoutFunction);
+        QFETCH(QString, layoutName);
+
         QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("NestedVisibility.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
@@ -1012,12 +1023,12 @@ private Q_SLOTS:
 
         // invoke tablet layout change
         QSignalSpy mainLayoutChangeSpy(mainLayout, SIGNAL(currentLayoutChanged()));
-        view->rootObject()->metaObject()->invokeMethod(view->rootObject(), "tabletPortraitLayout");
+        view->rootObject()->metaObject()->invokeMethod(view->rootObject(), layoutFunction.toLocal8Bit().data());
         mainLayoutChangeSpy.wait(1000);
         // get the nested layout
         ULLayouts *nestedLayout = qobject_cast<ULLayouts*>(testItem(mainLayout, "nestedLayout"));
         QVERIFY(nestedLayout);
-        QQuickItem *nestedActiveLayout = testItem(nestedLayout, "tabletPortrait");
+        QQuickItem *nestedActiveLayout = testItem(nestedLayout, layoutName);
         QVERIFY(nestedActiveLayout);
         QCOMPARE(red->isVisible(), false);
         QCOMPARE(green->isVisible(), true);
@@ -1049,70 +1060,6 @@ private Q_SLOTS:
         QVERIFY(hasChildItem(magenta, mainLayout->contentItem()));
     }
 
-    void testCase_tablet_landscape_NestedVisibility()
-    {
-        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("NestedVisibility.qml"));
-        QVERIFY(view);
-        QQuickItem *root = view->rootObject();
-        QVERIFY(root);
-
-        ULLayouts *mainLayout = view->findItem<ULLayouts*>("mainLayout");
-        QVERIFY(mainLayout);
-        QQuickItem *red = testItem(mainLayout, "mainRed");
-        QVERIFY(red);
-        QQuickItem *green = testItem(mainLayout, "mainGreen");
-        QVERIFY(green);
-        QQuickItem *blue = testItem(mainLayout, "mainBlue");
-        QVERIFY(blue);
-        QQuickItem *magenta = testItem(mainLayout, "mainMagenta");
-        QVERIFY(magenta);
-        QQuickItem *hidden = testItem(mainLayout, "mainHidden");
-        QVERIFY(hidden);
-        QCOMPARE(hidden->isVisible(), false);
-        // default is phone layout, get layd out items' neighbors
-        QQuickItem *greenPrev = prevSibling(green);
-        QQuickItem *magentaPrev = prevSibling(magenta);
-        QSizeF greenSize(green->width(), green->height());
-        QSizeF magentaSize(magenta->width(), magenta->height());
-
-        // invoke tablet layout change
-        QSignalSpy mainLayoutChangeSpy(mainLayout, SIGNAL(currentLayoutChanged()));
-        view->rootObject()->metaObject()->invokeMethod(view->rootObject(), "tabletLandscapeLayout");
-        mainLayoutChangeSpy.wait(1000);
-        // get the nested layout
-        ULLayouts *nestedLayout = qobject_cast<ULLayouts*>(testItem(mainLayout, "nestedLayout"));
-        QVERIFY(nestedLayout);
-        QQuickItem *nestedActiveLayout = testItem(nestedLayout, "tabletLandscape");
-        QVERIFY(nestedActiveLayout);
-        QCOMPARE(red->isVisible(), false);
-        QCOMPARE(green->isVisible(), true);
-        QCOMPARE(blue->isVisible(), false);
-        QCOMPARE(magenta->isVisible(), true);
-        QCOMPARE(hidden->isVisible(), false);
-        // we cannot use findChild() to locate green and magenta boxes, as reparenting only
-        // changes the parentItem, not the parent object itself; therefore we only check if
-        // their container is in the layout
-        QVERIFY(hasChildItem(green, nestedActiveLayout));
-        QVERIFY(hasChildItem(magenta, nestedActiveLayout));
-
-        // go back to default layout of main
-        mainLayoutChangeSpy.clear();
-        view->rootObject()->metaObject()->invokeMethod(view->rootObject(), "phoneLayout");
-        mainLayoutChangeSpy.wait(1000);
-        QCOMPARE(red->isVisible(), true);
-        QCOMPARE(green->isVisible(), true);
-        QCOMPARE(blue->isVisible(), true);
-        QCOMPARE(magenta->isVisible(), true);
-        QCOMPARE(hidden->isVisible(), false);
-        QCOMPARE(prevSibling(green), greenPrev);
-        QCOMPARE(prevSibling(magenta), magentaPrev);
-        QCOMPARE(green->width(), greenSize.width());
-        QCOMPARE(green->height(), greenSize.height());
-        QCOMPARE(magenta->width(), magentaSize.width());
-        QCOMPARE(magenta->height(), magentaSize.height());
-        QVERIFY(hasChildItem(green, mainLayout->contentItem()));
-        QVERIFY(hasChildItem(magenta, mainLayout->contentItem()));
-    }
 };
 
 QTEST_MAIN(tst_Layouts)
