@@ -147,10 +147,12 @@ OrientationHelper {
         sensingArea: dismissArea
         propagateComposedEvents: !grabDismissAreaEvents
         onPressed: if (__closeOnDismissAreaPress) popupBase.hide()
+        onWheel: wheel.accepted = true
     }
 
     MouseArea {
         anchors.fill: __foreground
+        onWheel: wheel.accepted = true
     }
 
     // set visible as false by default

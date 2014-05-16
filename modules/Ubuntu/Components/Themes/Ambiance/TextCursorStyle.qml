@@ -75,7 +75,7 @@ Item {
             top: parent.bottom
             horizontalCenter: parent.horizontalCenter
             topMargin: -units.gu(0.5)
-            horizontalCenterOffset: units.gu(0.7)
+            horizontalCenterOffset: LayoutMirroring.enabled ? -units.gu(0.7) : units.gu(0.7)
         }
     }
 }

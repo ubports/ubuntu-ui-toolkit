@@ -1,5 +1,8 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright (C) 2014 Canonical, Ltd.
+ *
+ * Authors:
+ *   Christian Dywan <christian.dywan@canonical.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,22 +17,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+#include "filterbehavior.h"
 
-MainView {
-    objectName: "pageStack"
-    applicationName: "once.upon.a.time"
-
-    PageStack {
-	id: stack
-        objectName: "stack"
-	Component.onCompleted: stack.push(pageOnStack)
-
-        Page {
-	    id: pageOnStack
-            objectName: "page"
-            title: 'Far far away'
-        }
-    }
+QString
+FilterBehavior::property() const
+{
+    return m_property;
 }
+
+void
+FilterBehavior::setProperty(const QString& property)
+{
+    m_property = property;
+    Q_EMIT propertyChanged();
+}
+
+QRegExp
+FilterBehavior::pattern() const
+{
+    return m_pattern;
+}
+
+void
+FilterBehavior::setPattern(QRegExp pattern)
+{
+    m_pattern = pattern;
+    Q_EMIT patternChanged();
+}
+
