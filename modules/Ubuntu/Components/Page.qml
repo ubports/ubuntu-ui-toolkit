@@ -64,6 +64,10 @@ import Ubuntu.Unity.Action 1.1 as UnityActions
     \endqml
     See \l MainView for more basic examples that show how to use a header and toolbar.
     Advanced navigation structures can be created by adding Pages to a \l PageStack or \l Tabs.
+
+    A Page or \l PageStack or \l Tabs inside a Page does not update the header title or actions
+    to avoid confusion which Page is the active one that controls the current header title
+    and actions.
 */
 PageTreeNode {
     id: page
