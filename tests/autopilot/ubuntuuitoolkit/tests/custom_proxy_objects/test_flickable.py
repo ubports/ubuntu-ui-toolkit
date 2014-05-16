@@ -49,7 +49,8 @@ class FlickableTestCase(testtools.TestCase):
             mock_non_container, mock_container]
 
         dummy_state = {'id': '10'}
-        flickable = ubuntuuitoolkit.Flickable(dummy_state, 'dummy', 'dummy')
+        flickable = ubuntuuitoolkit.Flickable(
+            dummy_state, '/dummy'.encode(), 'dummy')
 
         flickable.get_root_instance = lambda: mock_root_instance
         # The top container of the flickable is its immediate parent.
