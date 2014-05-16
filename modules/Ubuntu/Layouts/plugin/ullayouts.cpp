@@ -108,9 +108,10 @@ void ULLayoutsPrivate::statusChanged(Status status)
         // set parent item, then enable and show layout
         changes.addChange(new ParentChange(currentLayoutItem, q, false));
 
-        // deactivate default layout
+        // hide default layout, then show the new one
+        // there's no need to queue these property changes as we do not need
+        // to back up their previosus states
         contentItem->setVisible(false);
-        // then activate new layout
         currentLayoutItem->setVisible(true);
         // apply changes
         changes.apply();
@@ -133,8 +134,6 @@ void ULLayoutsPrivate::reparentItems()
     LaidOutItemsMap unusedItems = itemsToLayout;
 
     // iterate through the Layout definition to find containers - ItemLayout items
-    // note that this will list the containers from nested layouts, therefore
-    // we need to skip those when reparenting
     QList<ULItemLayout*> containers = collectContainers(currentLayoutItem);
 
     Q_FOREACH(ULItemLayout *container, containers) {
