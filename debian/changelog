@@ -12,6 +12,8 @@ ubuntu-ui-toolkit (0.1.46+14.10.20140512-0ubuntu2) UNRELEASED; urgency=medium
     https://bugs.launchpad.net/bugs/1260116
     https://bugs.launchpad.net/bugs/1317902
   * Elide titles in the header that are too long to fit.
+  * Add documentation and print a warning when apps put 
+    PageStack/Tabs/Page inside a Page.
 
   [ Christian Dywan ]
   * Add a Theme section to the Icon section in the gallery. 
