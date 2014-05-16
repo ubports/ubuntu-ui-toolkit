@@ -75,6 +75,8 @@ PageTreeNode {
     // avoid using parent.height because parent may be a Loader which does not have its height set.
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
+    isLeaf: true
+
     /*!
       The title of the page. Will be shown in the header of the \l MainView.
       If the page is used inside a Tab, by default it takes the title from the Tab.
@@ -87,6 +89,13 @@ PageTreeNode {
       It is recommended to use \l ToolbarItems to specify the tools, but any Item is allowed here.
      */
     property Item tools: ToolbarItems { }
+
+    /*!
+      \internal
+      Set this property to replace the title label in the header by any Item.
+      It will be automatically anchored to fill the title space in the header.
+     */
+    property Item __customHeaderContents: null
 
     /*!
       Optional flickable that controls the header. This property
@@ -127,17 +136,8 @@ PageTreeNode {
 
     /*! \internal */
     onActiveChanged: {
-        internal.updateHeaderAndToolbar();
         internal.updateActions();
     }
-    /*! \internal */
-    onTitleChanged: internal.updateHeaderAndToolbar()
-    /*! \internal */
-    onToolsChanged: internal.updateHeaderAndToolbar()
-    /*! \internal */
-    onPageStackChanged: internal.updateHeaderAndToolbar()
-    /*! \internal */
-    onFlickableChanged: internal.updateHeaderAndToolbar()
 
     /*!
       Local actions. These actions will be made available outside the application
@@ -150,13 +150,6 @@ PageTreeNode {
 
     Object {
         id: internal
-
-        Binding {
-            target: internal.header
-            property: "pageStack"
-            value: page.pageStack
-            when: page.active && internal.header != null && page.pageStack != null
-        }
 
         UnityActions.ActionContext {
             id: actionContext
@@ -178,28 +171,15 @@ PageTreeNode {
         }
 
         property Header header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
-        property Toolbar toolbar: page.__propagated && page.__propagated.toolbar ? page.__propagated.toolbar : null
-
         // Used to position the Page when there is no flickable.
         // When there is a flickable, the header will automatically position it.
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
 
-        onHeaderChanged: internal.updateHeaderAndToolbar()
-        onToolbarChanged: internal.updateHeaderAndToolbar()
-
-        function updateHeaderAndToolbar() {
-            if (page.active) {
-                if (internal.header) {
-                    internal.header.title = page.title;
-                    internal.header.flickable = page.flickable;
-                }
-                if (tools) {
-                    if (tools.hasOwnProperty("pageStack")) tools.pageStack = page.pageStack;
-                }
-                if (internal.toolbar) {
-                    internal.toolbar.tools = page.tools;
-                }
-            }
+        Binding {
+            target: tools
+            property: "pageStack"
+            value: page.pageStack
+            when: tools && tools.hasOwnProperty("pageStack")
         }
 
         function isVerticalFlickable(object) {

@@ -156,7 +156,7 @@ Item {
         }
 
         function test_0_cursorDelegate() {
-            verify(textField.cursorDelegate, "cursorDelegate set by default")
+            verify(textField.cursorDelegate === null, "cursorDelegate not set by default")
         }
 
         function test_0_cursorPosition() {

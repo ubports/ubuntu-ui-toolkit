@@ -70,6 +70,8 @@ StyledItem
     property Item contents
     property var tabsModel
     property var pageStack
+    property var actions
+    property var __customBackAction
     property Flickable flickable
     property bool useDeprecatedToolbar
 Icon 0.1 1.0
@@ -83,8 +85,6 @@ Text
 Base 0.1 1.0
 Empty
     property variant icon
-    property url iconSource
-    property string iconName
     property url fallbackIconSource
     property string fallbackIconName
     property bool progression
@@ -159,8 +159,6 @@ Base
 Standard 0.1 1.0
 Empty
     property variant icon
-    property url iconSource
-    property string iconName
     property url fallbackIconSource
     property string fallbackIconName
     property bool progression
@@ -175,15 +173,12 @@ Empty
     property internal __foregroundColor
 Subtitled 0.1 1.0
 Base
-    property string text
     property string subText
 ThinDivider 0.1 1.0
 Image
 ValueSelector 0.1 1.0
 Empty
     property variant icon
-    property url iconSource
-    property string iconName
     property url fallbackIconSource
     property string fallbackIconName
     property real __iconWidth
@@ -222,12 +217,9 @@ ListItem.Empty
     signal delegateClicked(int index)
     signal expansionCompleted()
 OptionSelectorDelegate 0.1 1.0
-ListItem.Standard
-    property string text
+ListItem.Empty
     property string subText
     property url icon
-    property url iconSource
-    property string iconName
     property bool constrainImage
     property bool colourImage
     property color assetColour
@@ -243,6 +235,7 @@ Item
 Page 0.1 1.0
 PageTreeNode
     property string title
+    property Item __customHeaderContents
     property Flickable flickable
     property list<Action> actions
 PageStack 0.1 1.0
@@ -253,6 +246,7 @@ PageTreeNode
     function push(page, properties)
     function pop()
     function clear()
+    default property list<Object> data
 Panel 0.1 1.0
 Item
     default property list<Object> contents
@@ -404,6 +398,17 @@ StyledItem 0.1 1.0
 FocusScope
     property Component style
     readonly property Item __styleInstance
+ComboButtonStyle 1.1
+Item
+    property real dropDownWidth
+    property real dropDownSeparatorWidth
+    property real comboListMargin
+    property Item comboListHolder
+    property Item comboListPanel
+    property color defaultColor
+    property Gradient defaultGradient
+    property color defaultDropdownColor
+    property font defaultFont
 Switch 0.1 1.0
 CheckBox
 Tab 0.1 1.0
@@ -602,11 +607,17 @@ UbuntuTestCase 0.1 1.0
 TestCase
     function findChild(obj,objectName)
     function findInvisibleChild(obj,objectName)
+    function findChildWithProperty(item, property, value)
     function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay)
     function flick(item, x, y, dx, dy, pressTimeout, steps, button, modifiers, delay)
     function mouseLongPress(item, x, y, button, modifiers, delay)
     function tryCompareFunction(func, expectedResult, timeout)
 plugins.qmltypes
+    name: "FilterBehavior"
+    prototype: "QObject"
+    exports: ["FilterBehavior 1.1"]
+    Property { name: "property"; type: "string" }
+    Property { name: "pattern"; type: "QRegExp" }
     name: "InverseMouseAreaType"
     prototype: "QQuickMouseArea"
     exports: ["InverseMouseArea 0.1", "InverseMouseArea 1.0"]
@@ -615,6 +626,45 @@ plugins.qmltypes
     Method {
     name: "contains"
     Parameter { name: "point"; type: "QPointF" }
+    name: "QAbstractProxyModel"
+    prototype: "QAbstractItemModel"
+    Property { name: "sourceModel"; type: "QAbstractItemModel"; isPointer: true }
+    name: "QSortFilterProxyModel"
+    prototype: "QAbstractProxyModel"
+    Property { name: "filterRegExp"; type: "QRegExp" }
+    Property { name: "filterKeyColumn"; type: "int" }
+    Property { name: "dynamicSortFilter"; type: "bool" }
+    Property { name: "filterCaseSensitivity"; type: "Qt::CaseSensitivity" }
+    Property { name: "sortCaseSensitivity"; type: "Qt::CaseSensitivity" }
+    Property { name: "isSortLocaleAware"; type: "bool" }
+    Property { name: "sortRole"; type: "int" }
+    Property { name: "filterRole"; type: "int" }
+    Method {
+    name: "setFilterRegExp"
+    Parameter { name: "pattern"; type: "string" }
+    Method {
+    name: "setFilterWildcard"
+    Parameter { name: "pattern"; type: "string" }
+    Method {
+    name: "setFilterFixedString"
+    Parameter { name: "pattern"; type: "string" }
+    Method { name: "clear" }
+    Method { name: "invalidate" }
+    name: "QSortFilterProxyModelQML"
+    prototype: "QSortFilterProxyModel"
+    exports: ["SortFilterModel 1.1"]
+    Property { name: "model"; type: "QAbstractItemModel"; isPointer: true }
+    Property { name: "count"; type: "int"; isReadonly: true }
+    Property { name: "sort"; type: "SortBehavior"; isReadonly: true; isPointer: true }
+    Property { name: "filter"; type: "FilterBehavior"; isReadonly: true; isPointer: true }
+    Method {
+    name: "get"
+    Parameter { name: "row"; type: "int" }
+    Method {
+    name: "data"
+    Parameter { name: "row"; type: "int" }
+    Parameter { name: "role"; type: "int" }
+    Method { name: "count"; type: "int" }
     name: "ShapeItem"
     prototype: "QQuickItem"
     exports: ["Shape 0.1", "Shape 1.0"]
@@ -630,6 +680,11 @@ plugins.qmltypes
     Property { name: "borderSource"; type: "string" }
     Signal { name: "borderChanged" }
     Method { name: "gridUnitChanged" }
+    name: "SortBehavior"
+    prototype: "QObject"
+    exports: ["SortBehavior 1.1"]
+    Property { name: "property"; type: "string" }
+    Property { name: "order"; type: "Qt::SortOrder" }
     name: "UCAlarm"
     prototype: "QObject"
     exports: ["Alarm 0.1", "Alarm 1.0"]

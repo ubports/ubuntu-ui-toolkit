@@ -287,6 +287,7 @@ Button {
     // expansion list
     Flickable {
         id: comboHolder
+        objectName: "combobutton_contentflicker"
         parent: combo.__styleInstance ? combo.__styleInstance.comboListHolder : combo
         anchors.fill: parent
         interactive: combo.expanded && !contentIsFlickable() && (combo.expandedHeight > 0)

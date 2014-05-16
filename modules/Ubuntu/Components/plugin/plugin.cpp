@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -48,6 +48,7 @@
 #include "ucurihandler.h"
 #include "ucmouse.h"
 #include "ucinversemouse.h"
+#include "sortfiltermodel.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -186,6 +187,14 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 
     // register custom event
     ForwardedEvent::registerForwardedEvent();
+
+    // register parent type so that properties can get/ set it
+    qmlRegisterUncreatableType<QAbstractItemModel>(uri, 1, 1, "QAbstractItemModel", "Not instantiable");
+
+    // register 1.1 only API
+    qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
+    qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
+    qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

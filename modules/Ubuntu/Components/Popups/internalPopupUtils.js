@@ -154,7 +154,7 @@ function CallerPositioning(foreground, pointer, area, caller, pointerTarget, edg
         if (simplePos.checkVerticalPosition(foreground, ycoord, 0, area.height/4)) {
             foreground.y = ycoord;
             pointer.direction = "up";
-            pointer.y = this.above(null, callerMargins, caller);
+            pointer.y = this.below(null, callerMargins, caller);
             pointer.x = this.closestToHorizontalCenter(pointerTarget, pointer.horizontalMargin);
             return;
         }
