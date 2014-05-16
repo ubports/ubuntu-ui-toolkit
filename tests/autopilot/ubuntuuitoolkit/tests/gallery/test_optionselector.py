@@ -16,13 +16,7 @@
 
 """Tests for the Ubuntu UI Toolkit Gallery - OptionSelector component."""
 
-import time
-
-from autopilot.matchers import Eventually
-from testtools.matchers import Equals
-
 import ubuntuuitoolkit
-from ubuntuuitoolkit.tests import FlickDirection
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 
 
@@ -60,6 +54,7 @@ class OptionSelectorTestCase(GalleryTestCase):
         option_selector_with_custom_model = self.main_view.select_single(
             ubuntuuitoolkit.OptionSelector,
             objectName='optionselector_custommodel')
+        option_selector_with_custom_model.swipe_into_view()
 
         self.assertEqual(
             option_selector_with_custom_model.get_selected_index(), 0)
