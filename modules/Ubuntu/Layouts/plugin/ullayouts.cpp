@@ -86,7 +86,6 @@ void ULLayoutsPrivate::setInitialState(QObject *object)
     QQuickItem *item = static_cast<QQuickItem*>(object);
     // set disabled and invisible, and set its parent as last action
     item->setVisible(false);
-    item->setEnabled(false);
 }
 
 /*
@@ -136,9 +135,9 @@ void ULLayoutsPrivate::reparentItems()
     // iterate through the Layout definition to find containers - ItemLayout items
     // note that this will list the containers from nested layouts, therefore
     // we need to skip those when reparenting
-    QList<ULItemLayout*> items = collectContainers(currentLayoutItem);
+    QList<ULItemLayout*> containers = collectContainers(currentLayoutItem);
 
-    Q_FOREACH(ULItemLayout *container, items) {
+    Q_FOREACH(ULItemLayout *container, containers) {
         reparentToItemLayout(unusedItems, container);
     }
 }
@@ -198,12 +197,6 @@ void ULLayoutsPrivate::reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *
 
     // remove from unused ones
     map.remove(itemName);
-}
-
-void ULLayoutsPrivate::itemActivate(QQuickItem *item, bool activate)
-{
-    changes.addChange(new PropertyChange(item, "visible", activate))
-           .addChange(new PropertyChange(item, "enabled", activate));
 }
 
 /*

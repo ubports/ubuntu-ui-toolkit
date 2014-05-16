@@ -38,4 +38,5 @@ OTHER_FILES += \
     ItemInstanceAsProperty.qml \
     DialerCrash.qml \
     ExcludedItemDeleted.qml \
-    Visibility.qml
+    Visibility.qml \
+    NestedVisibility.qml

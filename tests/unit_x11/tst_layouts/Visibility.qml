@@ -19,6 +19,7 @@ import Ubuntu.Components 1.1
 import Ubuntu.Layouts 1.0
 
 MainView {
+    id: main
     objectName: "mainView"
     applicationName: "test-app"
 
@@ -27,6 +28,8 @@ MainView {
      when the device is rotated. The default is false.
     */
     automaticOrientation: true // TODO: support wide aspect ratios, esp. on prepareGamePage
+
+    property bool boundValue: true
 
     width: units.gu(100)
     height: units.gu(75)
@@ -72,6 +75,7 @@ MainView {
                     width: units.gu(20)
                     height: units.gu(20)
                     color: "green"
+                    visible: main.boundValue
                     Label { text: "default" }
                 }
             }

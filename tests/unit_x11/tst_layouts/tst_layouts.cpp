@@ -72,10 +72,23 @@ public:
         return (children.count() > 0) ? children[0] : 0;
     }
 
-    QQuickItem *contentItem(QQuickItem *object)
+    bool hasChildItem(QQuickItem *child, QQuickItem *parent)
     {
-        ULLayouts *layouts = qobject_cast<ULLayouts*>(object);
-        return layouts ? layouts->contentItem() : 0;
+        QQuickItem *pl = child->parentItem();
+        while (pl) {
+            if (pl == parent) {
+                return true;
+            }
+            pl = pl->parentItem();
+        }
+        return false;
+    }
+
+    QQuickItem *prevSibling(QQuickItem *item)
+    {
+        QList<QQuickItem*> children = item->parentItem()->childItems();
+        int index = children.indexOf(item);
+        return (index > 0) ? children.at(index - 1) : 0;
     }
 
 
@@ -425,16 +438,16 @@ private Q_SLOTS:
 
     void testCase_AnchorFilledReparenting()
     {
-        QScopedPointer<QQuickView> view(loadTest("AnchorFilledReparenting.qml"));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("AnchorFilledReparenting.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = testItem(root, "layoutManager");
+        ULLayouts *layout = view->findItem<ULLayouts*>("layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = testItem(root, "testItem");
+        QQuickItem *item = view->findItem<QQuickItem*>("testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
@@ -442,27 +455,27 @@ private Q_SLOTS:
 
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
-        QQuickItem *testLayout = testItem(root, "testLayout");
+        QQuickItem *testLayout = view->findItem<QQuickItem*>("testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->fill(), contentItem(layout));
+        QCOMPARE(anchors->fill(), layout->contentItem());
     }
 
     void testCase_AnchorFilledMargins()
     {
-        QScopedPointer<QQuickView> view(loadTest("AnchorFilledMargins.qml"));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("AnchorFilledMargins.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = testItem(root, "layoutManager");
+        ULLayouts *layout = view->findItem<ULLayouts*>("layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = testItem(root, "testItem");
+        QQuickItem *item = view->findItem<QQuickItem*>("testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
@@ -471,29 +484,29 @@ private Q_SLOTS:
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
 
-        QQuickItem *testLayout = testItem(root, "testLayout");
+        QQuickItem *testLayout = view->findItem<QQuickItem*>("testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         QCOMPARE(anchors->margins(), 0.0);
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->fill(), contentItem(layout));
+        QCOMPARE(anchors->fill(), layout->contentItem());
         QCOMPARE(anchors->margins(), 10.0);
     }
 
     void testCase_AnchorFilledSeparateMargins()
     {
-        QScopedPointer<QQuickView> view(loadTest("AnchorFilledSeparateMargins.qml"));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("AnchorFilledSeparateMargins.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = testItem(root, "layoutManager");
+        ULLayouts *layout = view->findItem<ULLayouts*>("layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = testItem(root, "testItem");
+        QQuickItem *item = view->findItem<QQuickItem*>("testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
@@ -502,7 +515,7 @@ private Q_SLOTS:
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
 
-        QQuickItem *testLayout = testItem(root, "testLayout");
+        QQuickItem *testLayout = view->findItem<QQuickItem*>("testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         QCOMPARE(anchors->margins(), 0.0);
@@ -513,7 +526,7 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->fill(), contentItem(layout));
+        QCOMPARE(anchors->fill(), layout->contentItem());
         QCOMPARE(anchors->leftMargin(), 10.0);
         QCOMPARE(anchors->topMargin(), 20.0);
         QCOMPARE(anchors->rightMargin(), 30.0);
@@ -522,16 +535,16 @@ private Q_SLOTS:
 
     void testCase_AnchorCenteredInDefault()
     {
-        QScopedPointer<QQuickView> view(loadTest("AnchorCenteredInDefault.qml"));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("AnchorCenteredInDefault.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = testItem(root, "layoutManager");
+        ULLayouts *layout = view->findItem<ULLayouts*>("layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = testItem(root, "testItem");
+        QQuickItem *item = view->findItem<QQuickItem*>("testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
@@ -539,335 +552,335 @@ private Q_SLOTS:
 
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
-        QQuickItem *testLayout = testItem(root, "testLayout");
+        QQuickItem *testLayout = view->findItem<QQuickItem*>("testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->centerIn(), contentItem(layout));
+        QCOMPARE(anchors->centerIn(), layout->contentItem());
     }
 
     void testCase_AnchorVerticalCenter()
     {
-        QScopedPointer<QQuickView> view(loadTest("AnchorVerticalCenter.qml"));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("AnchorVerticalCenter.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = testItem(root, "layoutManager");
+        ULLayouts *layout = view->findItem<ULLayouts*>("layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = testItem(root, "testItem");
+        QQuickItem *item = view->findItem<QQuickItem*>("testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->verticalCenter().item, contentItem(layout));
+        QCOMPARE(anchors->verticalCenter().item, layout->contentItem());
 
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
-        QQuickItem *testLayout = testItem(root, "testLayout");
+        QQuickItem *testLayout = view->findItem<QQuickItem*>("testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->verticalCenter().item, contentItem(layout));
+        QCOMPARE(anchors->verticalCenter().item, layout->contentItem());
     }
 
     void testCase_AnchorVerticalCenterOffset()
     {
-        QScopedPointer<QQuickView> view(loadTest("AnchorVerticalCenterOffset.qml"));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("AnchorVerticalCenterOffset.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = testItem(root, "layoutManager");
+        ULLayouts *layout = view->findItem<ULLayouts*>("layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = testItem(root, "testItem");
+        QQuickItem *item = view->findItem<QQuickItem*>("testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->verticalCenter().item, contentItem(layout));
+        QCOMPARE(anchors->verticalCenter().item, layout->contentItem());
         QCOMPARE(anchors->verticalCenterOffset(), 50.0);
 
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
-        QQuickItem *testLayout = qobject_cast<QQuickItem*>(testItem(root, "testLayout"));
+        QQuickItem *testLayout = view->findItem<QQuickItem*>("testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         // no need to check offset as it does not affect the fill
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->verticalCenter().item, contentItem(layout));
+        QCOMPARE(anchors->verticalCenter().item, layout->contentItem());
         QCOMPARE(anchors->verticalCenterOffset(), 50.0);
     }
 
     void testCase_AnchorHorizontalCenter()
     {
-        QScopedPointer<QQuickView> view(loadTest("AnchorHorizontalCenter.qml"));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("AnchorHorizontalCenter.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = testItem(root, "layoutManager");
+        ULLayouts *layout = view->findItem<ULLayouts*>("layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = testItem(root, "testItem");
+        QQuickItem *item = view->findItem<QQuickItem*>("testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->horizontalCenter().item, contentItem(layout));
+        QCOMPARE(anchors->horizontalCenter().item, layout->contentItem());
 
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
-        QQuickItem *testLayout = testItem(root, "testLayout");
+        QQuickItem *testLayout = view->findItem<QQuickItem*>("testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->horizontalCenter().item, contentItem(layout));
+        QCOMPARE(anchors->horizontalCenter().item, layout->contentItem());
     }
 
     void testCase_AnchorHorizontalCenterOffset()
     {
-        QScopedPointer<QQuickView> view(loadTest("AnchorHorizontalCenterOffset.qml"));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("AnchorHorizontalCenterOffset.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = testItem(root, "layoutManager");
+        ULLayouts *layout = view->findItem<ULLayouts*>("layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = testItem(root, "testItem");
+        QQuickItem *item = view->findItem<QQuickItem*>("testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->horizontalCenter().item, contentItem(layout));
+        QCOMPARE(anchors->horizontalCenter().item, layout->contentItem());
         QCOMPARE(anchors->horizontalCenterOffset(), 50.0);
 
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
-        QQuickItem *testLayout = testItem(root, "testLayout");
+        QQuickItem *testLayout = view->findItem<QQuickItem*>("testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         // no need to check offset as it does not affect the fill
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->horizontalCenter().item, contentItem(layout));
+        QCOMPARE(anchors->horizontalCenter().item, layout->contentItem());
         QCOMPARE(anchors->horizontalCenterOffset(), 50.0);
     }
 
     void testCase_AnchorCenterWithOffset()
     {
-        QScopedPointer<QQuickView> view(loadTest("AnchorCenterWithOffset.qml"));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("AnchorCenterWithOffset.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = testItem(root, "layoutManager");
+        ULLayouts *layout = view->findItem<ULLayouts*>("layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = testItem(root, "testItem");
+        QQuickItem *item = view->findItem<QQuickItem*>("testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->centerIn(), contentItem(layout));
+        QCOMPARE(anchors->centerIn(), layout->contentItem());
         QCOMPARE(anchors->verticalCenterOffset(), 50.0);
         QCOMPARE(anchors->horizontalCenterOffset(), 40.0);
 
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
-        QQuickItem *testLayout = testItem(root, "testLayout");
+        QQuickItem *testLayout = view->findItem<QQuickItem*>("testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         // no need to check offsets as it does not affect the fill
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->centerIn(), contentItem(layout));
+        QCOMPARE(anchors->centerIn(), layout->contentItem());
         QCOMPARE(anchors->verticalCenterOffset(), 50.0);
         QCOMPARE(anchors->horizontalCenterOffset(), 40.0);
     }
 
     void testCase_AnchorLeft()
     {
-        QScopedPointer<QQuickView> view(loadTest("AnchorLeft.qml"));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("AnchorLeft.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = testItem(root, "layoutManager");
+        ULLayouts *layout = view->findItem<ULLayouts*>("layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = testItem(root, "testItem");
+        QQuickItem *item = view->findItem<QQuickItem*>("testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->left().item, contentItem(layout));
+        QCOMPARE(anchors->left().item, layout->contentItem());
         QCOMPARE(anchors->leftMargin(), 10.0);
 
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
-        QQuickItem *testLayout = testItem(root, "testLayout");
+        QQuickItem *testLayout = view->findItem<QQuickItem*>("testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         QCOMPARE(anchors->leftMargin(), 0.0);
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->left().item, contentItem(layout));
+        QCOMPARE(anchors->left().item, layout->contentItem());
         QCOMPARE(anchors->leftMargin(), 10.0);
     }
 
     void testCase_AnchorTop()
     {
-        QScopedPointer<QQuickView> view(loadTest("AnchorTop.qml"));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("AnchorTop.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = testItem(root, "layoutManager");
+        ULLayouts *layout = view->findItem<ULLayouts*>("layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = testItem(root, "testItem");
+        QQuickItem *item = view->findItem<QQuickItem*>("testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->top().item, contentItem(layout));
+        QCOMPARE(anchors->top().item, layout->contentItem());
         QCOMPARE(anchors->topMargin(), 10.0);
 
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
-        QQuickItem *testLayout = testItem(root, "testLayout");
+        QQuickItem *testLayout = view->findItem<QQuickItem*>("testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         QCOMPARE(anchors->topMargin(), 0.0);
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->top().item, contentItem(layout));
+        QCOMPARE(anchors->top().item, layout->contentItem());
         QCOMPARE(anchors->topMargin(), 10.0);
     }
 
     void testCase_AnchorRight()
     {
-        QScopedPointer<QQuickView> view(loadTest("AnchorRight.qml"));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("AnchorRight.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = testItem(root, "layoutManager");
+        ULLayouts *layout = view->findItem<ULLayouts*>("layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = testItem(root, "testItem");
+        QQuickItem *item = view->findItem<QQuickItem*>("testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->right().item, contentItem(layout));
+        QCOMPARE(anchors->right().item, layout->contentItem());
         QCOMPARE(anchors->rightMargin(), 10.0);
 
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
-        QQuickItem *testLayout = testItem(root, "testLayout");
+        QQuickItem *testLayout = view->findItem<QQuickItem*>("testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         QCOMPARE(anchors->rightMargin(), 0.0);
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->right().item, contentItem(layout));
+        QCOMPARE(anchors->right().item, layout->contentItem());
         QCOMPARE(anchors->rightMargin(), 10.0);
     }
 
     void testCase_AnchorBottom()
     {
-        QScopedPointer<QQuickView> view(loadTest("AnchorBottom.qml"));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("AnchorBottom.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = testItem(root, "layoutManager");
+        ULLayouts *layout = view->findItem<ULLayouts*>("layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = testItem(root, "testItem");
+        QQuickItem *item = view->findItem<QQuickItem*>("testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->bottom().item, contentItem(layout));
+        QCOMPARE(anchors->bottom().item, layout->contentItem());
         QCOMPARE(anchors->bottomMargin(), 10.0);
 
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
-        QQuickItem *testLayout = testItem(root, "testLayout");
+        QQuickItem *testLayout = view->findItem<QQuickItem*>("testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         QCOMPARE(anchors->bottomMargin(), 0.0);
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->bottom().item, contentItem(layout));
+        QCOMPARE(anchors->bottom().item, layout->contentItem());
         QCOMPARE(anchors->bottomMargin(), 10.0);
     }
 
     void testCase_AnchorAll()
     {
-        QScopedPointer<QQuickView> view(loadTest("AnchorAll.qml"));
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("AnchorAll.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = testItem(root, "layoutManager");
+        ULLayouts *layout = view->findItem<ULLayouts*>("layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
 
-        QQuickItem *item = testItem(root, "testItem");
+        QQuickItem *item = view->findItem<QQuickItem*>("testItem");
         QVERIFY(item);
 
         QQuickAnchors *anchors = item->property("anchors").value<QQuickAnchors*>();
         QVERIFY(anchors);
 
-        QCOMPARE(anchors->left().item, contentItem(layout));
-        QCOMPARE(anchors->top().item, contentItem(layout));
-        QCOMPARE(anchors->right().item, contentItem(layout));
-        QCOMPARE(anchors->bottom().item, contentItem(layout));
+        QCOMPARE(anchors->left().item, layout->contentItem());
+        QCOMPARE(anchors->top().item, layout->contentItem());
+        QCOMPARE(anchors->right().item, layout->contentItem());
+        QCOMPARE(anchors->bottom().item, layout->contentItem());
         QVERIFY(!anchors->fill());
         QCOMPARE(anchors->margins(), 20.0);
 
         root->setWidth(root->width() + 100);
         layoutChangeSpy.wait(100);
-        QQuickItem *testLayout = testItem(root, "testLayout");
+        QQuickItem *testLayout = view->findItem<QQuickItem*>("testLayout");
         QVERIFY(testLayout);
         QCOMPARE(anchors->fill(), testLayout);
         QVERIFY(!anchors->left().item);
@@ -878,10 +891,10 @@ private Q_SLOTS:
 
         root->setWidth(root->width() - 100);
         layoutChangeSpy.wait(100);
-        QCOMPARE(anchors->left().item, contentItem(layout));
-        QCOMPARE(anchors->top().item, contentItem(layout));
-        QCOMPARE(anchors->right().item, contentItem(layout));
-        QCOMPARE(anchors->bottom().item, contentItem(layout));
+        QCOMPARE(anchors->left().item, layout->contentItem());
+        QCOMPARE(anchors->top().item, layout->contentItem());
+        QCOMPARE(anchors->right().item, layout->contentItem());
+        QCOMPARE(anchors->bottom().item, layout->contentItem());
         QVERIFY(!anchors->fill());
         QCOMPARE(anchors->margins(), 20.0);
     }
@@ -939,18 +952,16 @@ private Q_SLOTS:
     }
 
     // guard bug #1204834 and #1300668
-    void testCase_Visibility() {
-        QScopedPointer<QQuickView> view(loadTest("Visibility.qml"));
+    void testCase_Visibility()
+    {
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("Visibility.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
         QVERIFY(root);
 
-        QQuickItem *layout = testItem(root, "layoutManager");
+        ULLayouts *layout = view->findItem<ULLayouts*>("layoutManager");
         QVERIFY(layout);
         QSignalSpy layoutChangeSpy(layout, SIGNAL(currentLayoutChanged()));
-
-        QQuickItem *container = contentItem(layout);
-        QVERIFY(container);
 
         QQuickItem *defaultLayout = testItem(root, "DefaultLayout");
         QVERIFY(defaultLayout);
@@ -958,15 +969,150 @@ private Q_SLOTS:
         // invoke layout change
         view->rootObject()->metaObject()->invokeMethod(view->rootObject(), "portraitLayout");
         layoutChangeSpy.wait(1000);
-        QCOMPARE(defaultLayout->parentItem(), container);
+        QCOMPARE(defaultLayout->parentItem(), layout->contentItem());
+        // despite of visible property binding, the visibility of the component is false
+        // while its parent is set to invisible
+        QCOMPARE(defaultLayout->isVisible(), false);
+        QCOMPARE(layout->contentItem()->isVisible(), false);
 
         // change layout back
         layoutChangeSpy.clear();
         view->rootObject()->metaObject()->invokeMethod(view->rootObject(), "landscapeLayout");
         layoutChangeSpy.wait(1000);
-        QCOMPARE(defaultLayout->parentItem(), container);
+        QCOMPARE(defaultLayout->parentItem(), layout->contentItem());
+        QCOMPARE(defaultLayout->isVisible(), true);
+        QCOMPARE(layout->contentItem()->isVisible(), true);
     }
 
+    void testCase_tablet_portrait_NestedVisibility()
+    {
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("NestedVisibility.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
+        QVERIFY(root);
+
+        ULLayouts *mainLayout = view->findItem<ULLayouts*>("mainLayout");
+        QVERIFY(mainLayout);
+        QQuickItem *red = testItem(mainLayout, "mainRed");
+        QVERIFY(red);
+        QQuickItem *green = testItem(mainLayout, "mainGreen");
+        QVERIFY(green);
+        QQuickItem *blue = testItem(mainLayout, "mainBlue");
+        QVERIFY(blue);
+        QQuickItem *magenta = testItem(mainLayout, "mainMagenta");
+        QVERIFY(magenta);
+        QQuickItem *hidden = testItem(mainLayout, "mainHidden");
+        QVERIFY(hidden);
+        QCOMPARE(hidden->isVisible(), false);
+        // default is phone layout, get layd out items' neighbors
+        QQuickItem *greenPrev = prevSibling(green);
+        QQuickItem *magentaPrev = prevSibling(magenta);
+        QSizeF greenSize(green->width(), green->height());
+        QSizeF magentaSize(magenta->width(), magenta->height());
+
+        // invoke tablet layout change
+        QSignalSpy mainLayoutChangeSpy(mainLayout, SIGNAL(currentLayoutChanged()));
+        view->rootObject()->metaObject()->invokeMethod(view->rootObject(), "tabletPortraitLayout");
+        mainLayoutChangeSpy.wait(1000);
+        // get the nested layout
+        ULLayouts *nestedLayout = qobject_cast<ULLayouts*>(testItem(mainLayout, "nestedLayout"));
+        QVERIFY(nestedLayout);
+        QQuickItem *nestedActiveLayout = testItem(nestedLayout, "tabletPortrait");
+        QVERIFY(nestedActiveLayout);
+        QCOMPARE(red->isVisible(), false);
+        QCOMPARE(green->isVisible(), true);
+        QCOMPARE(blue->isVisible(), false);
+        QCOMPARE(magenta->isVisible(), true);
+        QCOMPARE(hidden->isVisible(), false);
+        // we cannot use findChild() to locate green and magenta boxes, as reparenting only
+        // changes the parentItem, not the parent object itself; therefore we only check if
+        // their container is in the layout
+        QVERIFY(hasChildItem(green, nestedActiveLayout));
+        QVERIFY(hasChildItem(magenta, nestedActiveLayout));
+
+        // go back to default layout of main
+        mainLayoutChangeSpy.clear();
+        view->rootObject()->metaObject()->invokeMethod(view->rootObject(), "phoneLayout");
+        mainLayoutChangeSpy.wait(1000);
+        QCOMPARE(red->isVisible(), true);
+        QCOMPARE(green->isVisible(), true);
+        QCOMPARE(blue->isVisible(), true);
+        QCOMPARE(magenta->isVisible(), true);
+        QCOMPARE(hidden->isVisible(), false);
+        QCOMPARE(prevSibling(green), greenPrev);
+        QCOMPARE(prevSibling(magenta), magentaPrev);
+        QCOMPARE(green->width(), greenSize.width());
+        QCOMPARE(green->height(), greenSize.height());
+        QCOMPARE(magenta->width(), magentaSize.width());
+        QCOMPARE(magenta->height(), magentaSize.height());
+        QVERIFY(hasChildItem(green, mainLayout->contentItem()));
+        QVERIFY(hasChildItem(magenta, mainLayout->contentItem()));
+    }
+
+    void testCase_tablet_landscape_NestedVisibility()
+    {
+        QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("NestedVisibility.qml"));
+        QVERIFY(view);
+        QQuickItem *root = view->rootObject();
+        QVERIFY(root);
+
+        ULLayouts *mainLayout = view->findItem<ULLayouts*>("mainLayout");
+        QVERIFY(mainLayout);
+        QQuickItem *red = testItem(mainLayout, "mainRed");
+        QVERIFY(red);
+        QQuickItem *green = testItem(mainLayout, "mainGreen");
+        QVERIFY(green);
+        QQuickItem *blue = testItem(mainLayout, "mainBlue");
+        QVERIFY(blue);
+        QQuickItem *magenta = testItem(mainLayout, "mainMagenta");
+        QVERIFY(magenta);
+        QQuickItem *hidden = testItem(mainLayout, "mainHidden");
+        QVERIFY(hidden);
+        QCOMPARE(hidden->isVisible(), false);
+        // default is phone layout, get layd out items' neighbors
+        QQuickItem *greenPrev = prevSibling(green);
+        QQuickItem *magentaPrev = prevSibling(magenta);
+        QSizeF greenSize(green->width(), green->height());
+        QSizeF magentaSize(magenta->width(), magenta->height());
+
+        // invoke tablet layout change
+        QSignalSpy mainLayoutChangeSpy(mainLayout, SIGNAL(currentLayoutChanged()));
+        view->rootObject()->metaObject()->invokeMethod(view->rootObject(), "tabletLandscapeLayout");
+        mainLayoutChangeSpy.wait(1000);
+        // get the nested layout
+        ULLayouts *nestedLayout = qobject_cast<ULLayouts*>(testItem(mainLayout, "nestedLayout"));
+        QVERIFY(nestedLayout);
+        QQuickItem *nestedActiveLayout = testItem(nestedLayout, "tabletLandscape");
+        QVERIFY(nestedActiveLayout);
+        QCOMPARE(red->isVisible(), false);
+        QCOMPARE(green->isVisible(), true);
+        QCOMPARE(blue->isVisible(), false);
+        QCOMPARE(magenta->isVisible(), true);
+        QCOMPARE(hidden->isVisible(), false);
+        // we cannot use findChild() to locate green and magenta boxes, as reparenting only
+        // changes the parentItem, not the parent object itself; therefore we only check if
+        // their container is in the layout
+        QVERIFY(hasChildItem(green, nestedActiveLayout));
+        QVERIFY(hasChildItem(magenta, nestedActiveLayout));
+
+        // go back to default layout of main
+        mainLayoutChangeSpy.clear();
+        view->rootObject()->metaObject()->invokeMethod(view->rootObject(), "phoneLayout");
+        mainLayoutChangeSpy.wait(1000);
+        QCOMPARE(red->isVisible(), true);
+        QCOMPARE(green->isVisible(), true);
+        QCOMPARE(blue->isVisible(), true);
+        QCOMPARE(magenta->isVisible(), true);
+        QCOMPARE(hidden->isVisible(), false);
+        QCOMPARE(prevSibling(green), greenPrev);
+        QCOMPARE(prevSibling(magenta), magentaPrev);
+        QCOMPARE(green->width(), greenSize.width());
+        QCOMPARE(green->height(), greenSize.height());
+        QCOMPARE(magenta->width(), magentaSize.width());
+        QCOMPARE(magenta->height(), magentaSize.height());
+        QVERIFY(hasChildItem(green, mainLayout->contentItem()));
+        QVERIFY(hasChildItem(magenta, mainLayout->contentItem()));
+    }
 };
 
 QTEST_MAIN(tst_Layouts)

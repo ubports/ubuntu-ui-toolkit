@@ -66,7 +66,6 @@ private:
     void reparentItems();
     QList<ULItemLayout*> collectContainers(QQuickItem *fromItem);
     void reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *fragment);
-    void itemActivate(QQuickItem *item, bool activate);
 };
 
 #endif // ULLAYOUTS_P_H

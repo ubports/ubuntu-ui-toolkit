@@ -145,7 +145,7 @@ void PropertyAction::revert(bool reset)
     }
     if (fromBinding) {
         QQmlAbstractBinding *revertedBinding = QQmlPropertyPrivate::setBinding(property, fromBinding);
-        if (revertedBinding && ((revertedBinding != toBinding.data()) || (revertedBinding == toBinding.data() && deleteToBinding))) {
+        if (revertedBinding && (revertedBinding != fromBinding) && ((revertedBinding != toBinding.data()) || (revertedBinding == toBinding.data() && deleteToBinding))) {
             revertedBinding->destroy();
         }
     } else if (!toBinding.isNull() && QQmlPropertyPrivate::binding(property) == toBinding.data()) {

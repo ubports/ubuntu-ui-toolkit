@@ -26,7 +26,7 @@ class ULItemLayout : public QQuickItem
     Q_OBJECT
     Q_DISABLE_COPY(ULItemLayout)
 
-    Q_PROPERTY(QString item READ item WRITE setItem)
+    Q_PROPERTY(QString item READ item WRITE setItem NOTIFY itemChanged)
 
 public:
     explicit ULItemLayout(QQuickItem *parent = 0);
@@ -34,6 +34,9 @@ public:
 
     QString item() const;
     void setItem(const QString &value);
+
+Q_SIGNALS:
+    void itemChanged();
 
 private:
     QString m_itemName;
