@@ -34,7 +34,7 @@ Item {
     property real activationThreshold: styledItem.height
 
     /*!
-      The signal is triggered when the visuals reac the point when manual refresh
+      The signal is triggered when the visuals reach the point when manual refresh
       can be triggered.
       */
     signal refresh()

@@ -20,12 +20,11 @@ import Ubuntu.Components.Styles 1.1 as Style
 
 Style.RefreshControlStyle {
     implicitHeight: Math.max(pullLabel.paintedHeight, busyIndicator.height) + units.gu(4)
-    activationThreshold: control.height + units.gu(1) + flickableTopMargin
+    activationThreshold: control.height + units.gu(1)
 
     // local properties
     readonly property RefreshControl control: styledItem
     property real flickableTopMargin: 0.0
-    property bool triggerRefresh: false
     property real contentY: target.contentY - target.originY
     property bool activated: false
     property real pointOfRelease
@@ -59,35 +58,37 @@ Style.RefreshControlStyle {
             if (!control.ready || !control.enabled) {
                 return;
             }
-            if (style.triggerRefresh) {
-                if (!target.refreshing) {
-                    style.refreshing = false;
-                }
-            } else {
-                style.refreshing = target.refreshing;
+            if (!style.activated && target.refreshing) {
+                style.flickableTopMargin = control.target.topMargin;
+                print(style.flickableTopMargin)
             }
+            style.refreshing = target.refreshing;
         }
     }
 
+    property bool wasAtYBeginning: false
+    property real initialContentY: 0.0
     Connections {
         target: control.target
-        // capture topMargin change of the flickable
-        onTopMarginChanged: {
-            if (control.ready && !style.refreshing && !control.target.moving) {
-                flickableTopMargin = control.target.topMargin;
-            }
+        onMovementStarted: {
+            style.wasAtYBeginning = control.target.atYBeginning;
+            style.initialContentY = control.target.contentY;
+            style.flickableTopMargin = control.target.topMargin;
+            style.refreshing = false;
+            style.activated = false;
         }
+
         // catch when to initiate refresh
         onDraggingChanged: {
-            if (!control.parent.dragging && triggerRefresh) {
+            if (!control.parent.dragging && style.activated) {
                 pointOfRelease = -style.contentY
                 style.refreshing = true;
                 style.activated = false;
             }
         }
         onContentYChanged: {
-            if (control.enabled && control.target.dragging) {
-                style.activated = (style.contentY < -style.activationThreshold);
+            if (style.wasAtYBeginning && control.enabled && control.target.dragging) {
+                style.activated = ((style.initialContentY - control.target.contentY) > style.activationThreshold);
             }
         }
     }
@@ -102,10 +103,6 @@ Style.RefreshControlStyle {
         State {
             name: "ready-to-refresh"
             when: control.ready && control.enabled && style.activated && !style.refreshing
-            PropertyChanges {
-                target: style
-                triggerRefresh: true
-            }
         },
         State {
             name: "refreshing"
@@ -185,7 +182,16 @@ Style.RefreshControlStyle {
                 }
             }
         },
-
+        Transition {
+            from: "idle"
+            to: "refreshing"
+            UbuntuNumberAnimation {
+                target: control.target
+                property: "contentY"
+                from: -style.flickableTopMargin
+                to: -style.flickableTopMargin - control.height
+            }
+        },
         Transition {
             from: "refreshing"
             to: "idle"
@@ -194,7 +200,6 @@ Style.RefreshControlStyle {
                     script: pullLabel.text = ""
                 }
                 UbuntuNumberAnimation {
-                    id: anim
                     target: control.target
                     property: "topMargin"
                 }
