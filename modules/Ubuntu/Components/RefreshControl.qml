@@ -24,17 +24,53 @@ import Ubuntu.Components 1.1
     \brief Pull-to-refresh component for Flickables to reload a model upon pull.
 
     The component provides ability to initiate data model refresh by pulling the
-    attached Flickable's content. The Flickable's content must be at its top boundary.
-    It can be attached to any Flickable or to any derivate component.
+    attached Flickable's content. The refresh can be initiated when the flickable
+    content is at its top boundary. By dragging the content further, reaching the
+    threshold value defined by the style will initiate the manual refresh by emitting
+    the \l refresh() signal. The progress of the refresh must be notified to the
+    component by defining the completion clause to the \l refreshing property.
 
-    When placed inside Flickable, set parent to the flickable explicitly so the component
-    does not land in the contentItem of Flickable.
+    However, the component can detect the existence of a \c model property when
+    used with ListView or GridView, or with a Flickable which has a \c model property
+    declared. If the \c model has a \c reload() function declared, the component
+    will call this function and will not emit \l refresh() signal. Also, if the
+    \c model declares a \c refreshing property, the \l refreshing property will
+    be bound with the \c model's one, assuming the \c refreshing property of the
+    \c model notifies the progress of the content refreshing.
+
+    \qml
+    import QtQuick 2.2
+    import QtQuick.XmlListModel 2.0
+    import Ubuntu.Components 1.1
+    import Ubuntu.Components.ListItems 1.0
+
+    ListView {
+        model: XmlListModel {
+            id: xmlModel
+            property bool refreshing: status === XmlListModel.Loading
+            source: "http://feeds.reuters.com/reuters/topNews"
+            query: "/rss/channel/item"
+            XmlRole { name: "title"; query: "title/string()" }
+        }
+        delegate: Standard {
+            width: ListView.view.width
+            height: units.gu(5)
+            text: title
+        }
+        RefreshControl {
+        }
+    }
+    \endqml
+
+    \note When used with Flickable, set parent to the flickable explicitly so the
+    component does not land in the \c contentItem of Flickable.
     \qml
     ListModel {
-        id: listModel
+        id: someModel
         function refresh() {
             // [...]
         }
+        property bool ready
     }
     Flickable {
         id: flicker
@@ -43,8 +79,8 @@ import Ubuntu.Components 1.1
 
         RefreshControl {
             parent: flicker
-            model: someModel
-            refreshMethod: "refresh"
+            onRefresh: someModel.refresh()
+            refreshing: !someModel.ready
         }
 
         contentWidth: rect.width
@@ -57,32 +93,6 @@ import Ubuntu.Components 1.1
         }
     }
     \endqml
-
-    The component detects whether the \l target has a \a model property and whether
-    that \a model has \a refresh() or \a reload() functions and whether it has \a
-    ready property. When either \a refresh() or \a reload() functions are defined,
-    the component will call those functions and will not emit \l refresh() signal.
-    When \a ready property is defined, the \l refreshing property will be bount to
-    that property.
-    \qml
-    import QtQuick 2.2
-    import QtQuick.XmlListModel 2.0
-    import Ubuntu.Components 1.1
-    import Ubuntu.Components.ListItems 1.0
-
-    ListView {
-        model: XmlListModel {
-            id: xmlModel
-            property bool ready: status === XmlListModel.Ready
-        }
-        delegate: Standard {
-            width: ListView.view.width
-            height: units.gu(5)
-            text:
-        }
-    }
-    \endqml
-
 
     \section2 Styling
     The component style API is defined by the \l RefreshControlStyle component.
@@ -124,7 +134,7 @@ StyledItem {
       \a model which has a \a ready property defined, the component will auto-bind
       that property, so implementations do not need to care of it themselves.
       */
-    property bool refreshing: false//internals.autoComplete ? internals.model.ready : false
+    property bool refreshing: false
 
     /*!
       Signal emitted when the model refresh is initiated by the component. If the

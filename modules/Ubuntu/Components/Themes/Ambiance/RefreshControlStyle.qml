@@ -27,7 +27,7 @@ Style.RefreshControlStyle {
     property real flickableTopMargin: 0.0
     property bool triggerRefresh: false
     property real contentY: target.contentY - target.originY
-    property bool activate: false
+    property bool activated: false
     property real pointOfRelease
     property bool refreshing: false
     property string prevState
@@ -59,7 +59,6 @@ Style.RefreshControlStyle {
             if (!control.ready || !control.enabled) {
                 return;
             }
-
             if (style.triggerRefresh) {
                 if (!target.refreshing) {
                     style.refreshing = false;
@@ -75,7 +74,6 @@ Style.RefreshControlStyle {
         // capture topMargin change of the flickable
         onTopMarginChanged: {
             if (control.ready && !style.refreshing && !control.target.moving) {
-//                print("top", control.target.topMargin, "state=", style.state)
                 flickableTopMargin = control.target.topMargin;
             }
         }
@@ -84,12 +82,12 @@ Style.RefreshControlStyle {
             if (!control.parent.dragging && triggerRefresh) {
                 pointOfRelease = -style.contentY
                 style.refreshing = true;
-                style.activate = false;
+                style.activated = false;
             }
         }
         onContentYChanged: {
             if (control.enabled && control.target.dragging) {
-                style.activate = true;
+                style.activated = (style.contentY < -style.activationThreshold);
             }
         }
     }
@@ -99,11 +97,11 @@ Style.RefreshControlStyle {
         State {
             name: "idle"
             extend: ""
-            when: control.ready && !style.refreshing && !style.activate
+            when: control.ready && !style.refreshing && !style.activated
         },
         State {
             name: "ready-to-refresh"
-            when: control.ready && control.enabled && style.activate && !style.refreshing
+            when: control.ready && control.enabled && style.activated && !style.refreshing
             PropertyChanges {
                 target: style
                 triggerRefresh: true
@@ -191,26 +189,17 @@ Style.RefreshControlStyle {
         Transition {
             from: "refreshing"
             to: "idle"
-            reversible: true
             SequentialAnimation {
                 ScriptAction {
-                    script: {
-                        pullLabel.text = "";
-                        print("ONE")
-                    }
+                    script: pullLabel.text = ""
                 }
-                PropertyAnimation {
+                UbuntuNumberAnimation {
                     id: anim
                     target: control.target
                     property: "topMargin"
-                    from: flickableTopMargin + control.height
-                    to: flickableTopMargin
                 }
                 ScriptAction {
-                    script: {
-                        pullLabel.text = control.pullText;
-                        print ("TWO")
-                    }
+                    script: pullLabel.text = control.pullText
                 }
             }
         }
