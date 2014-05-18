@@ -19,25 +19,24 @@ import Ubuntu.Components 1.1
 import Ubuntu.Components.Styles 1.1 as Style
 
 Style.RefreshControlStyle {
-    implicitHeight: Math.max(pullLabel.paintedHeight, busyIndicator.height) + units.gu(4)
-    activationThreshold: control.height + units.gu(1)
+    id: style
+    implicitHeight: Math.max(label.paintedHeight, refreshIndicator.height) + units.gu(5)
 
     // local properties
     readonly property RefreshControl control: styledItem
     property real flickableTopMargin: 0.0
-    property real contentY: target.contentY - target.originY
-    property bool activated: false
-    property real pointOfRelease
+    property bool wasAtYBeginning: false
+    property real initialContentY: 0.0
+    property bool manualRefresh: false
     property bool refreshing: false
-    property string prevState
+    property real pointOfRelease
 
-    id: style
-    anchors {
-        left: parent.left
-        right: parent.right
-    }
+    anchors.fill: parent
 
     // visuals
+    label: pullLabel
+    refreshIndicator: busyIndicator
+
     Label {
         id: pullLabel
         anchors.fill: parent
@@ -51,44 +50,48 @@ Style.RefreshControlStyle {
         anchors.centerIn: parent
     }
 
-    // refresh logic of the visuals
+    // state controlling
     Connections {
         target: control
         onRefreshingChanged: {
             if (!control.ready || !control.enabled) {
                 return;
             }
-            if (!style.activated && target.refreshing) {
+            if (!style.manualRefresh && target.refreshing) {
+                // not a manual refresh, update flickable's starting topMargin
                 style.flickableTopMargin = control.target.topMargin;
-                print(style.flickableTopMargin)
             }
+            /*
+              Must controll refreshing property separately and not via property binding as
+              when the model is refreshed automatically and not via the component, we need
+              to remember the flickable's topMargin in order to proceed with a proper flickable
+              rebinding. If we use property binding, the Connections' onRefreshingChanged will
+              update the flickableTopMargin only after the binding is evaluated.
+              */
             style.refreshing = target.refreshing;
         }
     }
-
-    property bool wasAtYBeginning: false
-    property real initialContentY: 0.0
     Connections {
         target: control.target
         onMovementStarted: {
             style.wasAtYBeginning = control.target.atYBeginning;
             style.initialContentY = control.target.contentY;
-            style.flickableTopMargin = control.target.topMargin;
             style.refreshing = false;
-            style.activated = false;
+            style.manualRefresh = false;
         }
 
         // catch when to initiate refresh
         onDraggingChanged: {
-            if (!control.parent.dragging && style.activated) {
-                pointOfRelease = -style.contentY
+            if (!control.parent.dragging && style.manualRefresh) {
+                pointOfRelease = -(control.target.contentY - control.target.originY)
+                style.flickableTopMargin = control.target.topMargin;
                 style.refreshing = true;
-                style.activated = false;
+                style.manualRefresh = false;
             }
         }
         onContentYChanged: {
             if (style.wasAtYBeginning && control.enabled && control.target.dragging) {
-                style.activated = ((style.initialContentY - control.target.contentY) > style.activationThreshold);
+                style.manualRefresh = ((style.initialContentY - control.target.contentY) > style.activationThreshold);
             }
         }
     }
@@ -98,21 +101,21 @@ Style.RefreshControlStyle {
         State {
             name: "idle"
             extend: ""
-            when: control.ready && !style.refreshing && !style.activated
+            when: control.ready && !style.refreshing && !style.manualRefresh
         },
         State {
             name: "ready-to-refresh"
-            when: control.ready && control.enabled && style.activated && !style.refreshing
+            when: control.ready && control.enabled && style.manualRefresh && !style.refreshing
         },
         State {
             name: "refreshing"
             when: control.ready && control.enabled && style.refreshing
             PropertyChanges {
-                target: pullLabel
+                target: label
                 visible: false
             }
             PropertyChanges {
-                target: busyIndicator
+                target: refreshIndicator
                 running: true
             }
             PropertyChanges {
@@ -128,16 +131,20 @@ Style.RefreshControlStyle {
             to: "ready-to-refresh"
             SequentialAnimation {
                 UbuntuNumberAnimation {
-                    target: pullLabel
+                    target: label
                     property: "opacity"
                     from: 1.0
                     to: 0.0
                 }
                 ScriptAction {
-                    script: pullLabel.text = control.releaseText
+                    script: {
+                        if (label.hasOwnProperty("text")) {
+                            label.text = control.releaseText;
+                        }
+                    }
                 }
                 UbuntuNumberAnimation {
-                    target: pullLabel
+                    target: label
                     property: "opacity"
                     from: 0.0
                     to: 1.0
@@ -149,16 +156,20 @@ Style.RefreshControlStyle {
             to: "idle"
             SequentialAnimation {
                 UbuntuNumberAnimation {
-                    target: pullLabel
+                    target: label
                     property: "opacity"
                     from: 1.0
                     to: 0.0
                 }
                 ScriptAction {
-                    script: pullLabel.text = control.pullText
+                    script: {
+                        if (label.hasOwnProperty("text")) {
+                            label.text = control.pullText;
+                        }
+                    }
                 }
                 UbuntuNumberAnimation {
-                    target: pullLabel
+                    target: label
                     property: "opacity"
                     from: 0.0
                     to: 1.0
@@ -197,14 +208,22 @@ Style.RefreshControlStyle {
             to: "idle"
             SequentialAnimation {
                 ScriptAction {
-                    script: pullLabel.text = ""
+                    script: {
+                        if (label.hasOwnProperty("text")) {
+                            label.text = "";
+                        }
+                    }
                 }
                 UbuntuNumberAnimation {
                     target: control.target
                     property: "topMargin"
                 }
                 ScriptAction {
-                    script: pullLabel.text = control.pullText
+                    script: {
+                        if (label.hasOwnProperty("text")) {
+                            label.text = control.pullText;
+                        }
+                    }
                 }
             }
         }

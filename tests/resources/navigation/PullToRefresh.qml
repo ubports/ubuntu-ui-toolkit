@@ -86,7 +86,6 @@ MainView {
                         }
                     }
                 }
-
                 RefreshControl {
                     id: refreshControl
                     objectName: "InListView"

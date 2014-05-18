@@ -122,8 +122,8 @@ StyledItem {
     property string releaseText: i18n.tr("Release to refresh...")
 
     /*!
-      The Flickable or derivate the component is attached to. This can be the
-      parent or sibling of the component.
+      The Flickable or derivate the component is attached to. This can only be
+      the parent or a sibling of the component.
       */
     property Flickable target: parent
 
