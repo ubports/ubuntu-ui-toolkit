@@ -34,18 +34,15 @@ Style.RefreshControlStyle {
     anchors.fill: parent
 
     // visuals
-    label: pullLabel
-    refreshIndicator: busyIndicator
-
     Label {
-        id: pullLabel
+        id: label
         anchors.fill: parent
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         text: styledItem.pullText
     }
     ActivityIndicator {
-        id: busyIndicator
+        id: refreshIndicator
         running: false
         anchors.centerIn: parent
     }
@@ -126,6 +123,7 @@ Style.RefreshControlStyle {
     ]
 
     transitions: [
+        // text animations
         Transition {
             from: "idle"
             to: "ready-to-refresh"
@@ -137,11 +135,7 @@ Style.RefreshControlStyle {
                     to: 0.0
                 }
                 ScriptAction {
-                    script: {
-                        if (label.hasOwnProperty("text")) {
-                            label.text = control.releaseText;
-                        }
-                    }
+                    script: label.text = control.releaseText;
                 }
                 UbuntuNumberAnimation {
                     target: label
@@ -162,11 +156,7 @@ Style.RefreshControlStyle {
                     to: 0.0
                 }
                 ScriptAction {
-                    script: {
-                        if (label.hasOwnProperty("text")) {
-                            label.text = control.pullText;
-                        }
-                    }
+                    script: label.text = control.pullText;
                 }
                 UbuntuNumberAnimation {
                     target: label
@@ -187,12 +177,11 @@ Style.RefreshControlStyle {
                     to: style.flickableTopMargin + control.height
                 }
                 ScriptAction {
-                    script: {
-                        style.refresh()
-                    }
+                    script: style.refresh()
                 }
             }
         },
+        // transition to be applied when the model is auto-updating
         Transition {
             from: "idle"
             to: "refreshing"
@@ -208,22 +197,14 @@ Style.RefreshControlStyle {
             to: "idle"
             SequentialAnimation {
                 ScriptAction {
-                    script: {
-                        if (label.hasOwnProperty("text")) {
-                            label.text = "";
-                        }
-                    }
+                    script: label.text = "";
                 }
                 UbuntuNumberAnimation {
                     target: control.target
                     property: "topMargin"
                 }
                 ScriptAction {
-                    script: {
-                        if (label.hasOwnProperty("text")) {
-                            label.text = control.pullText;
-                        }
-                    }
+                    script: label.text = control.pullText;
                 }
             }
         }
