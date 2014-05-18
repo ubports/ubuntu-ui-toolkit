@@ -27,13 +27,13 @@ import Ubuntu.Components 1.1
     attached Flickable's content. The refresh can be initiated when the flickable
     content is at its top boundary. By dragging the content further, reaching the
     threshold value defined by the style will initiate the manual refresh by emitting
-    the \l refresh() signal. The progress of the refresh must be notified to the
+    the \l refresh signal. The progress of the refresh must be notified to the
     component by defining the completion clause to the \l refreshing property.
 
     However, the component can detect the existence of a \c model property when
     used with ListView or GridView, or with a Flickable which has a \c model property
     declared. If the \c model has a \c reload() function declared, the component
-    will call this function and will not emit \l refresh() signal. Also, if the
+    will call this function and will not emit \l refresh signal. Also, if the
     \c model declares a \c refreshing property, the \l refreshing property will
     be bound with the \c model's one, assuming the \c refreshing property of the
     \c model notifies the progress of the content refreshing.
@@ -62,8 +62,11 @@ import Ubuntu.Components 1.1
     }
     \endqml
 
-    \note When used with Flickable, set parent to the flickable explicitly so the
-    component does not land in the \c contentItem of Flickable.
+    \note UbuntuListView has a built-in RefreshControl, therefore it is recommended
+    to use UbuntuListView instead of ListView.
+
+    \note When declared as child of Flickable, set parent to the flickable explicitly
+    so the component does not land in the \c contentItem of Flickable.
     \qml
     ListModel {
         id: someModel
@@ -103,21 +106,21 @@ StyledItem {
     id: control
 
     /*!
-      \qmplroperty bool ready
+      \qmlproperty bool ready
       The property specifies when the component is fully functional.
       */
     readonly property alias ready: internals.completed
 
     /*!
       The property holds the text shown before refresh can be initiated. The limit
-      is defined by the RefreshControlStyle \l activationThreshold property.
+      is defined by the RefreshControlStyle \l RefreshControlStyle::activationThreshold property.
       */
     property string pullText: i18n.tr("Pull to refresh...")
 
     /*!
       The property holds the text shown indicating the refresh can be initiated
       upon touch/mouse release.
-      \sa pullText activationThreshold
+      \sa pullText, RefreshControlStyle::activationThreshold
       */
     property string releaseText: i18n.tr("Release to refresh...")
 
@@ -174,9 +177,9 @@ StyledItem {
             }
 
             autoReload = model.hasOwnProperty("reload");
-            autoComplete = model.hasOwnProperty("ready");
+            autoComplete = model.hasOwnProperty("refreshing");
             if (autoComplete) {
-                control.refreshing = Qt.binding(function() { return !model.ready; });
+                control.refreshing = Qt.binding(function() { return model.refreshing; });
             }
         }
         function isObjectModel() {

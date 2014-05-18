@@ -20,7 +20,13 @@ import Ubuntu.Components.Styles 1.1 as Style
 
 Style.RefreshControlStyle {
     id: style
-    implicitHeight: Math.max(label.paintedHeight, refreshIndicator.height) + units.gu(5)
+    implicitHeight: Math.max(labelItem.paintedHeight, refreshIndicatorItem.height) + units.gu(5)
+
+    // additional configuration properties provided by the Ambiance theme
+    // these properties can be used by the deriving themes to configure the label
+    // and the activity indicator
+    property alias label: labelItem
+    property alias refreshIndicator: refreshIndicatorItem
 
     // local properties
     readonly property RefreshControl control: styledItem
@@ -35,14 +41,14 @@ Style.RefreshControlStyle {
 
     // visuals
     Label {
-        id: label
+        id: labelItem
         anchors.fill: parent
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         text: styledItem.pullText
     }
     ActivityIndicator {
-        id: refreshIndicator
+        id: refreshIndicatorItem
         running: false
         anchors.centerIn: parent
     }
@@ -96,9 +102,17 @@ Style.RefreshControlStyle {
     onStateChanged: print("state="+state)
     states: [
         State {
+            name: "disabled"
+            when: !control.enabled
+            PropertyChanges {
+                target: labelItem
+                visible: false
+            }
+        },
+        State {
             name: "idle"
             extend: ""
-            when: control.ready && !style.refreshing && !style.manualRefresh
+            when: control.ready && control.enabled && !style.refreshing && !style.manualRefresh
         },
         State {
             name: "ready-to-refresh"
@@ -108,11 +122,11 @@ Style.RefreshControlStyle {
             name: "refreshing"
             when: control.ready && control.enabled && style.refreshing
             PropertyChanges {
-                target: label
+                target: labelItem
                 visible: false
             }
             PropertyChanges {
-                target: refreshIndicator
+                target: refreshIndicatorItem
                 running: true
             }
             PropertyChanges {
@@ -129,16 +143,16 @@ Style.RefreshControlStyle {
             to: "ready-to-refresh"
             SequentialAnimation {
                 UbuntuNumberAnimation {
-                    target: label
+                    target: labelItem
                     property: "opacity"
                     from: 1.0
                     to: 0.0
                 }
                 ScriptAction {
-                    script: label.text = control.releaseText;
+                    script: labelItem.text = control.releaseText;
                 }
                 UbuntuNumberAnimation {
-                    target: label
+                    target: labelItem
                     property: "opacity"
                     from: 0.0
                     to: 1.0
@@ -150,16 +164,16 @@ Style.RefreshControlStyle {
             to: "idle"
             SequentialAnimation {
                 UbuntuNumberAnimation {
-                    target: label
+                    target: labelItem
                     property: "opacity"
                     from: 1.0
                     to: 0.0
                 }
                 ScriptAction {
-                    script: label.text = control.pullText;
+                    script: labelItem.text = control.pullText;
                 }
                 UbuntuNumberAnimation {
-                    target: label
+                    target: labelItem
                     property: "opacity"
                     from: 0.0
                     to: 1.0
@@ -197,14 +211,14 @@ Style.RefreshControlStyle {
             to: "idle"
             SequentialAnimation {
                 ScriptAction {
-                    script: label.text = "";
+                    script: labelItem.text = "";
                 }
                 UbuntuNumberAnimation {
                     target: control.target
                     property: "topMargin"
                 }
                 ScriptAction {
-                    script: label.text = control.pullText;
+                    script: labelItem.text = control.pullText;
                 }
             }
         }

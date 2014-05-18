@@ -93,3 +93,4 @@ UbuntuListView 1.0 UbuntuListView.qml
 #version 1.1
 ComboButton 1.1 ComboButton.qml
 RefreshControl 1.1 RefreshControl.qml
+UbuntuListView 1.1 UbuntuListView11.qml

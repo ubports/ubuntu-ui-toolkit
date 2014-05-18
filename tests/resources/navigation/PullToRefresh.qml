@@ -26,7 +26,7 @@ MainView {
 
     ListModel {
         id: listModel
-        property bool ready: !refreshComplete.running
+        property bool refreshing: refreshComplete.running
 
         function modelData(index) {
             return {"name": "line #" + index}
@@ -86,11 +86,6 @@ MainView {
                         }
                     }
                 }
-                RefreshControl {
-                    id: refreshControl
-                    objectName: "InListView"
-                    enabled: page.active
-                }
             }
         }
     }
@@ -144,15 +139,11 @@ MainView {
             title: "Using XmlListModel"
             UbuntuListView {
                 anchors.fill: parent
+                refreshControl.refreshing: model.status === XmlListModel.Loading
                 model: XmlListModel {
                     source: "http://feeds.reuters.com/reuters/topNews"
                     query: "/rss/channel/item"
                     XmlRole { name: "title"; query: "title/string()" }
-
-//                    property bool ready: status === XmlListModel.Ready
-                    onStatusChanged: {
-                        print("status=", status)
-                    }
                 }
                 delegate: ListItem.Standard {
                     width: ListView.view.width
@@ -161,11 +152,6 @@ MainView {
                     onClicked: {
                         ListView.view.model.reload();
                     }
-                }
-                RefreshControl {
-                    objectName: "WithXmlListModel"
-                    enabled: page.active
-                    refreshing: target.model.status === XmlListModel.Loading
                 }
             }
         }
