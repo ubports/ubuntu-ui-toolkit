@@ -85,10 +85,10 @@ ActionItem {
     HapticsEffect {
         id: pressEffect
         attackIntensity: 0.0
-        attackTime: 250
+        attackTime: 50
         intensity: 1.0
-        duration: 100
-        fadeTime: 250
+        duration: 10
+        fadeTime: 50
         fadeIntensity: 0.0
     }
 

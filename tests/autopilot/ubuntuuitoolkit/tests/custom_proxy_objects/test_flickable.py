@@ -32,6 +32,10 @@ class FlickableTestCase(testtools.TestCase):
         # _get_top_container fail. Instead of going from the top looking for
         # a container, we should start from the flickable until we find the
         # top-most container.
+        # FIXME we are faking the QML tree because we have no way to launch
+        # the app with a tree like the one in Unity8. kalikiana has a branch
+        # with an alternate launcher that will let us clean this test.
+        # --elopio - 2014-05-15.
         RootClass = type('obj', (object,), {'id': 'root'})
         mock_root_instance = RootClass()
         # We consider a container is an object with a globalRect.
@@ -48,7 +52,7 @@ class FlickableTestCase(testtools.TestCase):
 
         dummy_state = {'id': '10'}
         flickable = ubuntuuitoolkit.QQuickFlickable(
-            dummy_state, 'dummy', 'dummy')
+            dummy_state, '/dummy'.encode(), 'dummy')
 
         flickable.get_root_instance = lambda: mock_root_instance
         # The top container of the flickable is its immediate parent.
@@ -63,7 +67,7 @@ class FlickableTestCase(testtools.TestCase):
         dummy_flicking = (0, 'dummy')
         state_with_flicking = {'id': dummy_id, 'flicking': dummy_flicking}
         element = _common.UbuntuUIToolkitCustomProxyObjectBase(
-            state_with_flicking, 'dummy', 'dummy')
+            state_with_flicking, '/dummy'.encode(), 'dummy')
         with element.no_automatic_refreshing():
             self.assertTrue(element.is_flickable())
 
@@ -72,7 +76,7 @@ class FlickableTestCase(testtools.TestCase):
         dummy_id = (0, 0)
         state_without_flicking = {'id': dummy_id}
         element = _common.UbuntuUIToolkitCustomProxyObjectBase(
-            state_without_flicking, 'dummy', 'dummy')
+            state_without_flicking, '/dummy'.encode(), 'dummy')
         with element.no_automatic_refreshing():
             self.assertFalse(element.is_flickable())
 
