@@ -78,13 +78,10 @@ StyledItem {
     }
 
     /*!
-      \deprecated
       The contents of the header. If this is set, \l title will be ignored.
-      This property is now DEPRECATED. Set tabsModel to show tabs navigation in header.
      */
     property Item contents: null
     onContentsChanged: {
-        print("Header.contents property is now DEPRECATED. Set tabsModel to show tabs navigation.");
         header.show();
     }
 
@@ -108,6 +105,14 @@ StyledItem {
       The list of actions actions that will be shown in the header
      */
     property var actions: null
+
+    /*!
+      \internal
+      Action shown before the title. Setting this will disable the back
+      button and tabs drawer button in the new header and replace it with a button
+      representing the action below.
+     */
+    property var __customBackAction: null
 
     // FIXME: Currently autopilot can only get visual items, but once bug #1273956
     //  is fixed to support non-visual items, a QtObject may be used.

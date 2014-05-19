@@ -30,7 +30,7 @@ MainView {
     }
 
     Page {
-        title: "test page"
+        title: "This is a long title for the test page"
 
         Label {
             anchors.centerIn: parent
@@ -60,6 +60,7 @@ MainView {
             }
             ToolbarButton {
                 action: Action {
+                    id: action2
                     onTriggered: print("two!")
                     iconName: "contact"
                     text: "Second action"
@@ -68,9 +69,14 @@ MainView {
             }
 
             back: ToolbarButton {
-                text: "cancel"
-                iconSource: Qt.resolvedUrl("../../../modules/Ubuntu/Components/artwork/back.png")
-                anchors.verticalCenter: parent.verticalCenter
+                action: Action {
+                    text: "cancel"
+                    iconName: "cancel"
+                    onTriggered: {
+                        action2.visible = false;
+                        visible = false;
+                    }
+                }
             }
         }
     }

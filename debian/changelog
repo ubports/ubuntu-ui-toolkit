@@ -1,3 +1,65 @@
+ubuntu-ui-toolkit (0.1.46+14.10.20140512-0ubuntu1) utopic; urgency=low
+
+  [ Tim Peeters ]
+  * Make it possible to replace the title in the header with a
+    custom Item. Fixes: https://bugs.launchpad.net/bugs/1314948
+  * Use selectedIndex of the tabs model instead of the TabBar
+    everywhere in TabBarStyle to fix a bug that uses Tabs on a
+    PageStack. Fixes: https://bugs.launchpad.net/bugs/1316736
+  * Fix the positioning of a popover pointer on a small screen
+    in portrait mode. Fixes: https://bugs.launchpad.net/bugs/1208833
+
+  [ Christian Dywan ]
+  * Export to load modules from source and allow arguments.
+  * linearSecondsPicker check it's not resetting and
+    count is correct
+
+  [ Zsombor Egri ]
+  * Text input caret positioning fix for the cases when TextField
+    has overlay primary items and when RTL is enabled.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 12 May 2014 12:27:41 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.10.20140508-0ubuntu1) utopic; urgency=low
+
+  [ Christian Dywan ]
+  * Export to load modules from source and allow arguments.
+  * linearSecondsPicker check it's not resetting and count is correct
+  * Add a section for the ThinDivider to the gallery.
+    Fixes: https://bugs.launchpad.net/bugs/1312716.
+  * Use locale format specifier in textfield_numbers.
+    Fixes: https://bugs.launchpad.net/bugs/1311907.
+
+  [ Zsombor Egri ]
+  * PageUp/PageDown fix in text inputs.
+    Fixes: https://bugs.launchpad.net/bugs/1180188.
+  * Text input caret handler visuals and functionality.
+    Fixes: https://bugs.launchpad.net/bugs/1183257.
+  * Introducing Ubuntu.Components.Styles 1.1 module.
+
+  [ Tim Peeters ]
+  * Add the possibility to override the back button in the header.
+    Fixes: https://bugs.launchpad.net/bugs/1314945.
+  * Simplify code by setting header and toolbar properties in
+    MainView instead of Page.
+  * Move toolbar tools that were defined using an Action to header
+    Fixes: https://bugs.launchpad.net/bugs/1273185.
+  * Remove already inherited properties from OptionSelectorDelegate,
+    ValueSelector, Subtitled, Standard and Base list item components
+  * Change parent of OptionSelectorDelegate from Standard to Empty,
+    because it effectively disabled all the visuals of Standard.
+
+  [ Andrew Hayzen ]
+  * Currently there is no animation of the listItem when
+    cancelItemRemoval() is called, which causes a 'jump' in the
+    listItem, this allows for the animation to occur.
+
+  [ Leo Arias ]
+  * Deprecated the ubuntuuitoolkit.emulators namespace. Split the
+    autopilot helpers in smaller files.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 08 May 2014 10:54:32 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.10.20140502.6-0ubuntu1) utopic; urgency=low
 
   [ Zoltán Balogh]

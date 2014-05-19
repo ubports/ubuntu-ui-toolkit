@@ -151,7 +151,7 @@ StyledItem {
 
         if (model.count > 0) {
             if (internal.checkRoles()) {
-                model.selectedIndex = Math.max(Math.min(tabBar.selectedIndex, model.count - 1), 0);
+                model.selectedIndex = Math.max(Math.min(model.selectedIndex, model.count - 1), 0);
             }
         } else {
             internal.modelChecked = false;
