@@ -22,10 +22,8 @@ Item {
     width: 200
     height: 200
 
-    id: root
-    property alias mainView: theMainView
     MainView {
-        id: theMainView
+        id: mainView
         anchors.fill: parent
         PageStack {
             id: pageStack0
@@ -101,8 +99,9 @@ Item {
 
         function test_visible() {
             compare(toolbarItems.visible, true, "Toolbar items are visible when in toolbar");
-            root.mainView.useDeprecatedToolbar = false;
+            mainView.useDeprecatedToolbar = false;
             compare(toolbarItems.visible, false, "Toolbar items are invisible when not using deprecated toolbar");
+            mainView.useDeprecatedToolbar = true;
         }
     }
 }
