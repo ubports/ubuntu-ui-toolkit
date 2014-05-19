@@ -82,6 +82,7 @@ Style.RefreshControlStyle {
             style.refreshing = false;
             style.manualRefresh = false;
         }
+        onMovementEnded: style.wasAtYBeginning = control.target.atYBeginning
 
         // catch when to initiate refresh
         onDraggingChanged: {
@@ -120,7 +121,7 @@ Style.RefreshControlStyle {
         },
         State {
             name: "refreshing"
-            when: control.ready && control.enabled && style.refreshing
+            when: control.ready && control.enabled && style.wasAtYBeginning && style.refreshing
             PropertyChanges {
                 target: labelItem
                 visible: false
