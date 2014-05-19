@@ -48,6 +48,12 @@ MainView {
                     id: field
                     objectName: "Standard"
                     width: units.gu(30)
+                    primaryItem: Icon {
+                        width: height
+                        height: parent.height - units.gu(1)
+                        name: "search"
+                    }
+
                     text: "The orange (specifically, the sweet orange) is the fruit of the citrus species Citrus × ​sinensis in the family Rutaceae."
                 }
                 Button {
@@ -74,6 +80,10 @@ MainView {
                     autoSize: true
                     maximumLineCount: 0
                     text: "Lorem Ipsum is simply dummy text\nof the printing and typesetting\nindustry.\n"
+                    cursorDelegate: Rectangle {
+                        width: units.dp(4)
+                        color: "blue"
+                    }
                 }
                 TextArea {
                     autoSize: true

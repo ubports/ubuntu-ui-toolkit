@@ -32,6 +32,10 @@ class FlickableTestCase(testtools.TestCase):
         # _get_top_container fail. Instead of going from the top looking for
         # a container, we should start from the flickable until we find the
         # top-most container.
+        # FIXME we are faking the QML tree because we have no way to launch
+        # the app with a tree like the one in Unity8. kalikiana has a branch
+        # with an alternate launcher that will let us clean this test.
+        # --elopio - 2014-05-15.
         RootClass = type('obj', (object,), {'id': 'root'})
         mock_root_instance = RootClass()
         # We consider a container is an object with a globalRect.
@@ -47,8 +51,8 @@ class FlickableTestCase(testtools.TestCase):
             mock_non_container, mock_container]
 
         dummy_state = {'id': '10'}
-        flickable = ubuntuuitoolkit.QQuickFlickable(
-            dummy_state, 'dummy', 'dummy')
+        flickable = ubuntuuitoolkit.Flickable(
+            dummy_state, '/dummy'.encode(), 'dummy')
 
         flickable.get_root_instance = lambda: mock_root_instance
         # The top container of the flickable is its immediate parent.

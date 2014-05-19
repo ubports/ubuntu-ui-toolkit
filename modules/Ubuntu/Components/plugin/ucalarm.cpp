@@ -177,6 +177,21 @@ UCAlarm::Error UCAlarmPrivate::checkOneTime()
         return result;
     }
 
+    // fix lp:1319401 - dayOfWeek omitted if set to other than AutoDetect
+    int dayOfWeek = rawData.date.date().dayOfWeek();
+    if (!isDaySet(dayOfWeek, rawData.days)) {
+        // dayOfWeek has been set by the user, adjust the date to it
+        int nextOccurrence = nextDayOfWeek(rawData.days, dayOfWeek);
+        if (nextOccurrence < dayOfWeek) {
+             // the starting date should be moved to the next week's occurrence
+            rawData.date = rawData.date.addDays(7 - dayOfWeek + nextOccurrence);
+        } else {
+            // the starting date is still this week
+            rawData.date = rawData.date.addDays(nextOccurrence - dayOfWeek);
+        }
+        rawData.changes |= AlarmData::Date;
+    }
+
     // start date should be later then the current date/time
     if (rawData.date <= AlarmData::normalizeDate(QDateTime::currentDateTime())) {
         return UCAlarm::EarlyDate;
@@ -370,10 +385,6 @@ void UCAlarm::setDate(const QDateTime &date)
     d->rawData.date = AlarmData::normalizeDate(date);
     d->rawData.changes |= AlarmData::Date;
     Q_EMIT dateChanged();
-    if (d->rawData.type == UCAlarm::OneTime) {
-        // adjust dayOfWeek as well
-        setDaysOfWeek(UCAlarm::AutoDetect);
-    }
 }
 
 /*!
