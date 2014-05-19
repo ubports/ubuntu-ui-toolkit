@@ -34,7 +34,11 @@
 int usage()
 {
     QString self(QGuiApplication::instance()->arguments().at(0));
-    std::cout << "Usage\n  " << qPrintable(self) << " -testability- frameless -engine FILENAME\n";
+    std::cout << "Usage\n  "
+        << qPrintable(self)
+        << " -testability- frameless -engine"
+        << " --desktop_file_path=DESKTOP_FILE"
+        << " -I MODULE_PATH FILENAME\n";
     return 1;
 }
 
@@ -60,6 +64,14 @@ int main(int argc, const char *argv[])
     int _engine(args.indexOf("-engine"));
     args.removeAt(_engine);
 
+    Q_FOREACH(QString arg, args) {
+        if (arg.startsWith("--desktop_file_hint")) {
+            // This will not be used - it only needs to be ignored
+            int _desktop_file_hint(args.indexOf(arg));
+            args.removeAt(_desktop_file_hint);
+        }
+    }
+
     // Testability is only supported out of the box by QApplication not QGuiApplication
     if (_testability > -1 || getenv("QT_LOAD_TESTABILITY")) {
         QLibrary testLib(QLatin1String("qttestability"));
@@ -78,13 +90,25 @@ int main(int argc, const char *argv[])
         }
     }
 
-    QQmlEngine engine;
+    QQmlEngine* engine;
     // The default constructor affects the components tree (autopilot vis)
     QQuickView* view;
     if (_engine > -1) {
         view = new QQuickView();
+        engine = view->engine();
     } else {
-        view = new QQuickView(&engine, NULL);
+        engine = new QQmlEngine();
+        view = new QQuickView(engine, NULL);
+    }
+
+    int _import(args.indexOf("-I"));
+    args.removeAt(_import);
+    if (_import > -1) {
+        if (args.count() > _import) {
+            QString importPath(args.at(_import));
+            args.removeAt(_import);
+            engine->addImportPath(importPath);
+        }
     }
 
     view->setResizeMode(QQuickView::SizeRootObjectToView);
