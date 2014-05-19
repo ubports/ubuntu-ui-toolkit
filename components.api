@@ -246,6 +246,7 @@ PageTreeNode
     function push(page, properties)
     function pop()
     function clear()
+    default property list<Object> data
 Panel 0.1 1.0
 Item
     default property list<Object> contents
@@ -612,6 +613,11 @@ TestCase
     function mouseLongPress(item, x, y, button, modifiers, delay)
     function tryCompareFunction(func, expectedResult, timeout)
 plugins.qmltypes
+    name: "FilterBehavior"
+    prototype: "QObject"
+    exports: ["FilterBehavior 1.1"]
+    Property { name: "property"; type: "string" }
+    Property { name: "pattern"; type: "QRegExp" }
     name: "InverseMouseAreaType"
     prototype: "QQuickMouseArea"
     exports: ["InverseMouseArea 0.1", "InverseMouseArea 1.0"]
@@ -620,6 +626,45 @@ plugins.qmltypes
     Method {
     name: "contains"
     Parameter { name: "point"; type: "QPointF" }
+    name: "QAbstractProxyModel"
+    prototype: "QAbstractItemModel"
+    Property { name: "sourceModel"; type: "QAbstractItemModel"; isPointer: true }
+    name: "QSortFilterProxyModel"
+    prototype: "QAbstractProxyModel"
+    Property { name: "filterRegExp"; type: "QRegExp" }
+    Property { name: "filterKeyColumn"; type: "int" }
+    Property { name: "dynamicSortFilter"; type: "bool" }
+    Property { name: "filterCaseSensitivity"; type: "Qt::CaseSensitivity" }
+    Property { name: "sortCaseSensitivity"; type: "Qt::CaseSensitivity" }
+    Property { name: "isSortLocaleAware"; type: "bool" }
+    Property { name: "sortRole"; type: "int" }
+    Property { name: "filterRole"; type: "int" }
+    Method {
+    name: "setFilterRegExp"
+    Parameter { name: "pattern"; type: "string" }
+    Method {
+    name: "setFilterWildcard"
+    Parameter { name: "pattern"; type: "string" }
+    Method {
+    name: "setFilterFixedString"
+    Parameter { name: "pattern"; type: "string" }
+    Method { name: "clear" }
+    Method { name: "invalidate" }
+    name: "QSortFilterProxyModelQML"
+    prototype: "QSortFilterProxyModel"
+    exports: ["SortFilterModel 1.1"]
+    Property { name: "model"; type: "QAbstractItemModel"; isPointer: true }
+    Property { name: "count"; type: "int"; isReadonly: true }
+    Property { name: "sort"; type: "SortBehavior"; isReadonly: true; isPointer: true }
+    Property { name: "filter"; type: "FilterBehavior"; isReadonly: true; isPointer: true }
+    Method {
+    name: "get"
+    Parameter { name: "row"; type: "int" }
+    Method {
+    name: "data"
+    Parameter { name: "row"; type: "int" }
+    Parameter { name: "role"; type: "int" }
+    Method { name: "count"; type: "int" }
     name: "ShapeItem"
     prototype: "QQuickItem"
     exports: ["Shape 0.1", "Shape 1.0"]
@@ -635,6 +680,11 @@ plugins.qmltypes
     Property { name: "borderSource"; type: "string" }
     Signal { name: "borderChanged" }
     Method { name: "gridUnitChanged" }
+    name: "SortBehavior"
+    prototype: "QObject"
+    exports: ["SortBehavior 1.1"]
+    Property { name: "property"; type: "string" }
+    Property { name: "order"; type: "Qt::SortOrder" }
     name: "UCAlarm"
     prototype: "QObject"
     exports: ["Alarm 0.1", "Alarm 1.0"]

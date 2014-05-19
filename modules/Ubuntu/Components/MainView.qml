@@ -27,7 +27,8 @@ import QtQuick.Window 2.0
         It automatically adds a header and toolbar for its contents and can
         rotate its content based on the device orientation.
 
-    The simplest way to use a MainView is to include a \l Page object inside the MainView:
+    The simplest way to use a MainView is to include a single \l Page object
+    inside the MainView:
     \qml
         import QtQuick 2.0
         import Ubuntu.Components 1.1
@@ -49,6 +50,9 @@ import QtQuick.Window 2.0
     \endqml
     It is not required to set the anchors of the \l Page as it will automatically fill its parent.
     The MainView has a header that automatically shows the title of the \l Page.
+
+    Do not include multiple Pages directly inside the MainView, but use \l Tabs
+    or \l PageStack inside MainView to navigate between several Pages.
 
     For the MainView to automatically rotate its content following the orientation
     of the device, set the \l automaticOrientation property to true.

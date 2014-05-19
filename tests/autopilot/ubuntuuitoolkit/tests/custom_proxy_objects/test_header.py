@@ -61,12 +61,14 @@ MainView {
         tools: ToolbarItems {
             back: ToolbarButton {
                 action: Action {
+                    id: cancelAction
                     iconName: "cancel"
                     text: "cancel"
                     onTriggered: label.text = "Cancel button clicked."
                 }
             }
             Repeater {
+                id: buttonRepeater
                 model: 5
                 ToolbarButton {
                     action: Action {
@@ -76,6 +78,22 @@ MainView {
                         onTriggered: label.text = "Button "+index+" clicked."
                     }
                 }
+            }
+        }
+
+        Button {
+            objectName: "hide_actions_button"
+            anchors {
+                bottom: parent.bottom
+                horizontalCenter: parent.horizontalCenter
+            }
+            text: "Hide some actions"
+            onClicked: {
+                cancelAction.visible = false;
+                for (var i=0; i < 3; i++) {
+                    buttonRepeater.itemAt(i).action.visible = false;
+                }
+                // only three of five visible actions left
             }
         }
     }
@@ -123,3 +141,18 @@ MainView {
         self.assertFalse(self.header._is_visible())
         self.header.click_action_button('action0')
         self.assertEqual(self.label.text, 'Button 0 clicked.')
+
+    def test_overflow_button(self):
+        # there are 5 actions plus a custom back action
+        overflow_button = self.header.select_single(
+            'AbstractButton',
+            objectName='actions_overflow_button')
+        self.assertEqual(overflow_button.visible, True)
+
+        hide_actions_button = self.main_view.select_single(
+            'Button',
+            objectName='hide_actions_button')
+        self.pointing_device.click_object(hide_actions_button)
+
+        # only three actions are visible
+        self.assertEqual(overflow_button.visible, False)
