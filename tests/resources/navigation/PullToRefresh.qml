@@ -71,6 +71,12 @@ MainView {
                 id: view
                 anchors.fill: parent
                 model: listModel
+
+                refreshControl {
+                    refreshing: model.refreshing
+                    onRefresh: model.reload()
+                }
+
                 delegate: Rectangle {
                     color: "green"
                     width: ListView.view.width
@@ -139,7 +145,10 @@ MainView {
             title: "Using XmlListModel"
             UbuntuListView {
                 anchors.fill: parent
-                refreshControl.refreshing: model.status === XmlListModel.Loading
+                refreshControl {
+                    refreshing: model.status === XmlListModel.Loading
+                    onRefresh: model.reload()
+                }
                 model: XmlListModel {
                     source: "http://feeds.reuters.com/reuters/topNews"
                     query: "/rss/channel/item"

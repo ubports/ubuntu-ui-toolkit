@@ -30,14 +30,6 @@ import Ubuntu.Components 1.1
     the \l refresh signal. The progress of the refresh must be notified to the
     component by defining the completion clause to the \l refreshing property.
 
-    However, the component can detect the existence of a \c model property when
-    used with ListView or GridView, or with a Flickable which has a \c model property
-    declared. If the \c model has a \c reload() function declared, the component
-    will call this function and will not emit \l refresh signal. Also, if the
-    \c model declares a \c refreshing property, the \l refreshing property will
-    be bound with the \c model's one, assuming the \c refreshing property of the
-    \c model notifies the progress of the content refreshing.
-
     \qml
     import QtQuick 2.2
     import QtQuick.XmlListModel 2.0
@@ -46,8 +38,6 @@ import Ubuntu.Components 1.1
 
     ListView {
         model: XmlListModel {
-            id: xmlModel
-            property bool refreshing: status === XmlListModel.Loading
             source: "http://feeds.reuters.com/reuters/topNews"
             query: "/rss/channel/item"
             XmlRole { name: "title"; query: "title/string()" }
@@ -58,6 +48,8 @@ import Ubuntu.Components 1.1
             text: title
         }
         RefreshControl {
+            refreshing: model.status === XmlListModel.Loading
+            onRefresh: model.reload()
         }
     }
     \endqml
@@ -65,34 +57,40 @@ import Ubuntu.Components 1.1
     \note UbuntuListView has a built-in RefreshControl, therefore it is recommended
     to use UbuntuListView instead of ListView.
 
+    The component will also show the progress of the model's update when the refresh
+    gets initiated by the model or from other party. Style implementations can decide
+    whether to visualize that or not.
+
     \note When declared as child of Flickable, set parent to the flickable explicitly
     so the component does not land in the \c contentItem of Flickable.
     \qml
-    ListModel {
-        id: someModel
-        function refresh() {
-            // [...]
+    Item {
+        ListModel {
+            id: someModel
+            function refresh() {
+                // [...]
+            }
+            property bool ready
         }
-        property bool ready
-    }
-    Flickable {
-        id: flicker
-        width: units.gu(10)
-        height: units.gu(10)
+        Flickable {
+            id: flicker
+            width: units.gu(10)
+            height: units.gu(10)
 
-        RefreshControl {
-            parent: flicker
-            onRefresh: someModel.refresh()
-            refreshing: !someModel.ready
-        }
+            RefreshControl {
+                parent: flicker
+                onRefresh: someModel.refresh()
+                refreshing: !someModel.ready
+            }
 
-        contentWidth: rect.width
-        contentHeight: rect.height
-        Rectangle {
-            id: rect
-            width: units.gu(20)
-            height: units.gu(20)
-            color: "red"
+            contentWidth: rect.width
+            contentHeight: rect.height
+            Rectangle {
+                id: rect
+                width: units.gu(20)
+                height: units.gu(20)
+                color: "red"
+            }
         }
     }
     \endqml
@@ -133,16 +131,12 @@ StyledItem {
     /*!
       The property notifies the component about the refresh operation completion.
       Implementations must bind model's readyness checking in order to let the
-      component to know when the operation is complete. If the \l target has a
-      \a model which has a \a ready property defined, the component will auto-bind
-      that property, so implementations do not need to care of it themselves.
+      component to know when the operation is complete.
       */
     property bool refreshing: false
 
     /*!
-      Signal emitted when the model refresh is initiated by the component. If the
-      \l target has a \a model which has \a reload() function defined, the function
-      will be called and the signal will not be emitted.
+      Signal emitted when the model refresh is initiated by the component.
       */
     signal refresh()
 
@@ -158,41 +152,10 @@ StyledItem {
         id: internals
         property bool completed: false
         property real contentY: target.contentY - target.originY
-        property QtObject model: control.target && control.target.hasOwnProperty("model") ? control.target.model : null
-        property QtObject prevModel: null
-        onModelChanged: updateModel()
-
-        property bool autoReload: false
-        property bool autoComplete: false
-
-        function updateModel() {
-            if (prevModel && autoComplete) {
-                prevModel.completed.disconnect(reloadComplete);
-            }
-            prevModel = null;
-            autoReload = autoComplete = false;
-
-            if (!completed || !model || !isObjectModel()) {
-                return;
-            }
-
-            autoReload = model.hasOwnProperty("reload");
-            autoComplete = model.hasOwnProperty("refreshing");
-            if (autoComplete) {
-                control.refreshing = Qt.binding(function() { return model.refreshing; });
-            }
-        }
-        function isObjectModel() {
-            return (Object.prototype.toString.call(model) === "[object Object]");
-        }
 
         // initiate refresh on model
         function initiateRefresh() {
-            if (autoReload) {
-                model.reload();
-            } else {
-                control.refresh();
-            }
+            control.refresh();
             print("refresh")
         }
     }
@@ -206,6 +169,5 @@ StyledItem {
 
     Component.onCompleted: {
         internals.completed = true;
-        internals.updateModel();
     }
 }
