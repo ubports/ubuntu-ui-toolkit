@@ -140,6 +140,7 @@ Panel {
 
     Item {
         id: visibleToolsContainer
+        property bool isToolbarToolsContainer: true
         anchors {
             fill: background
         }
