@@ -181,6 +181,13 @@ PageTreeNode {
             value: page.pageStack
             when: tools && tools.hasOwnProperty("pageStack")
         }
+        Binding {
+            target: tools
+            property: "visible"
+            value: false
+            when: header && !header.useDeprecatedToolbar &&
+                  page.tools !== null
+        }
 
         function isVerticalFlickable(object) {
             if (object && object.hasOwnProperty("flickableDirection") && object.hasOwnProperty("contentHeight")) {

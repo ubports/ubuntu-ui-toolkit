@@ -102,8 +102,6 @@ import QtQuick 2.0
 Item {
     id: toolbarItems
     anchors.fill: parent
-    visible: parent && parent.hasOwnProperty("isToolbarToolsContainer") &&
-             parent.isToolbarToolsContainer
 
     /*!
       Default property, holds the content which will shown in the toolbar.
