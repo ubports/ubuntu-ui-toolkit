@@ -1,9 +1,9 @@
 /*!
-  \qmlproperty RefreshControl UbuntuListView::refreshControl
+  \qmlproperty pullToRefresh UbuntuListView::pullToRefresh
   \readonly
   \since Ubuntu.Components 1.1
 
-  Attached RefreshControl to control manual model refresh. The component is disabled
+  Attached PullToRefresh to control manual model refresh. The component is disabled
   by default if the model is not defined.
 
   \qml
@@ -20,7 +20,7 @@
           XmlRole { name: "title"; query: "title/string()" }
       }
       // let refresh control know when the refresh gets completed
-      refreshControl {
+      pullToRefresh {
           refreshing: model.status === XmlListModel.Loading
           onRefresh: model.reload()
       }

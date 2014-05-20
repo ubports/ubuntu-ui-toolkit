@@ -18,9 +18,9 @@ import QtQuick 2.2
 
 UbuntuListView {
 
-    property alias refreshControl: refreshItem
+    property alias pullToRefresh: refreshItem
 
-    RefreshControl {
+    PullToRefresh {
         id: refreshItem
         enabled: (model === undefined) || model.hasOwnProperty("reload") || model.hasOwnProperty("refreshing")
     }

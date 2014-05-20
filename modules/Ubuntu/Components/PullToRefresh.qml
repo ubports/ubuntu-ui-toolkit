@@ -140,7 +140,7 @@ StyledItem {
       */
     signal refresh()
 
-    style: Theme.createStyleComponent("RefreshControlStyle.qml", control)
+    style: Theme.createStyleComponent("PullToRefreshStyle.qml", control)
     implicitHeight: __styleInstance.implicitHeight
     anchors {
         left: target.left

@@ -72,7 +72,7 @@ MainView {
                 anchors.fill: parent
                 model: listModel
 
-                refreshControl {
+                pullToRefresh {
                     refreshing: model.refreshing
                     onRefresh: model.reload()
                 }
@@ -125,8 +125,8 @@ MainView {
                     }
                 }
 
-                RefreshControl {
-                    id: refreshControl
+                PullToRefresh {
+                    id: pullToRefresh
                     enabled: page.active
                     objectName: "InFlickable"
                     parent: view
@@ -145,7 +145,7 @@ MainView {
             title: "Using XmlListModel"
             UbuntuListView {
                 anchors.fill: parent
-                refreshControl {
+                pullToRefresh {
                     refreshing: model.status === XmlListModel.Loading
                     onRefresh: model.reload()
                 }

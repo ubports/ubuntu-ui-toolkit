@@ -18,7 +18,7 @@ import QtQuick 2.2
 import Ubuntu.Components 1.1
 import Ubuntu.Components.Styles 1.1 as Style
 
-Style.RefreshControlStyle {
+Style.PullToRefreshStyle {
     id: style
     implicitHeight: Math.max(labelItem.paintedHeight, refreshIndicatorItem.height) + units.gu(5)
 
@@ -29,7 +29,7 @@ Style.RefreshControlStyle {
     property alias refreshIndicator: refreshIndicatorItem
 
     // local properties
-    readonly property RefreshControl control: styledItem
+    readonly property PullToRefresh control: styledItem
     property real flickableTopMargin: 0.0
     property bool wasAtYBeginning: false
     property real initialContentY: 0.0

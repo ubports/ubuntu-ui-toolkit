@@ -45,7 +45,7 @@ DialerHandStyle 1.0 DialerHandStyle.qml
 
 #version 1.1
 ComboButtonStyle 1.1 ComboButtonStyle.qml
-RefreshControlStyle 1.1 RefreshControlStyle.qml
+PullToRefreshStyle 1.1 PullToRefreshStyle.qml
 
 internal TextSelectionStartCursorStyle TextSelectionStartCursorStyle.qml
 internal TextSelectionEndCursorStyle TextSelectionEndCursorStyle.qml
