@@ -97,6 +97,12 @@ MainView {
         self.simple_text_field.write('test')
         self.assertFalse(self.simple_text_field.is_empty())
 
+    def test_select_all_selects_all_text(self):
+        self.simple_text_field.write('Text to select.')
+        self.simple_text_field._select_all()
+
+        self.assertTrue(self.simple_text_field._is_all_text_selected())
+
     def test_select_all_when_already_selected_must_do_nothing(self):
         """Test for select all the text when it's already selected."""
         self.simple_text_field.write('Text to select.')
