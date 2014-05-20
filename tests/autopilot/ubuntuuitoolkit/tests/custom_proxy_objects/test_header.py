@@ -47,6 +47,23 @@ MainView {
                 }
                 text: "No button clicked."
             }
+
+            Button {
+                objectName: "hide_actions_button"
+                anchors {
+                    top: label.bottom
+                    topMargin: units.gu(5)
+                    horizontalCenter: parent.horizontalCenter
+                }
+                text: "Hide some actions"
+                onClicked: {
+                    cancelAction.visible = false;
+                    for (var i=0; i < 3; i++) {
+                        buttonRepeater.itemAt(i).action.visible = false;
+                    }
+                    // only three of five visible actions left
+                }
+            }
             Label {
                 id: endLabel
                 objectName: "end_label"
@@ -78,22 +95,6 @@ MainView {
                         onTriggered: label.text = "Button "+index+" clicked."
                     }
                 }
-            }
-        }
-
-        Button {
-            objectName: "hide_actions_button"
-            anchors {
-                bottom: parent.bottom
-                horizontalCenter: parent.horizontalCenter
-            }
-            text: "Hide some actions"
-            onClicked: {
-                cancelAction.visible = false;
-                for (var i=0; i < 3; i++) {
-                    buttonRepeater.itemAt(i).action.visible = false;
-                }
-                // only three of five visible actions left
             }
         }
     }
