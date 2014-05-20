@@ -989,7 +989,7 @@ private Q_SLOTS:
         QTest::addColumn<QString>("layoutName");
 
         QTest::newRow("portrait") << "tabletPortraitLayout" << "tabletPortrait";
-        QTest::newRow("portrait") << "tabletLandscapeLayout" << "tabletLandscape";
+        QTest::newRow("landscape") << "tabletLandscapeLayout" << "tabletLandscape";
     }
 
     void testCase_NestedVisibility()
