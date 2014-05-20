@@ -74,13 +74,9 @@ UnityActions.Action {
      */
 
     /*!
-      \deprecated
-      \b {visible is DEPRECATED. Use \l ActionItem to specify the representation of an \l Action.}
       The action is visible to the user
      */
     property bool visible: true
-    /*! \internal */
-    onVisibleChanged: print("Action.visible is a DEPRECATED property. Use ActionItems to specify the representation of an Action.")
 
     /*!
       Enable the action. It may be visible, but disabled.

@@ -158,7 +158,7 @@ StyledItem {
       area defined in the current theme. The default value is the same as the visible
       input area's width.
       */
-    property real contentWidth: internal.inputAreaWidth
+    property real contentWidth: control.width - 2 * internal.frameSpacing
 
     /*!
       The property folds the height of the text editing content. This can be equal or
@@ -166,7 +166,7 @@ StyledItem {
       area defined in the current theme. The default value is the same as the visible
       input area's height.
       */
-    property real contentHeight: internal.inputAreaHeight
+    property real contentHeight: control.height - 2 * internal.frameSpacing
 
     /*!
       The property overrides the default popover of the TextArea. When set, the
@@ -233,10 +233,8 @@ StyledItem {
 
       Note that the root item of the delegate component must be a QQuickItem or
       QQuickItem derived item.
-
-      \qmlproperty Component cursorDelegate
       */
-    property alias cursorDelegate: editor.cursorDelegate
+    property Component cursorDelegate: null
 
     /*!
       The position of the cursor in the TextArea.
@@ -731,7 +729,6 @@ StyledItem {
     /*!\internal - to remove warnings */
     Component.onCompleted: {
         editor.linkActivated.connect(control.linkActivated);
-        internal.prevShowCursor = control.cursorVisible;
     }
 
     // activation area on mouse click
@@ -756,15 +753,6 @@ StyledItem {
             control.focus = false;
     }
 
-    /*!\internal */
-    onContentWidthChanged: internal.inputAreaWidth = control.contentWidth
-    /*!\internal */
-    onContentHeightChanged: internal.inputAreaHeight = control.contentHeight
-    /*!\internal */
-    onWidthChanged: internal.inputAreaWidth = control.width - 2 * internal.frameSpacing
-    /*!\internal */
-    onHeightChanged: internal.inputAreaHeight = control.height - 2 * internal.frameSpacing
-
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
@@ -772,32 +760,12 @@ StyledItem {
         id: internal
         // public property locals enabling aliasing
         property string displayText: editor.getText(0, editor.length)
-        property real lineSpacing: units.dp(3)
         property real frameSpacing: control.__styleInstance.frameSpacing
-        property real lineSize: editor.font.pixelSize + lineSpacing
         property real minimumSize: units.gu(4)
-        property real inputAreaWidth: control.width - 2 * frameSpacing
-        property real inputAreaHeight: control.height - 2 * frameSpacing
-        //selection properties
-        property bool prevShowCursor
-
-        function toggleSelectionCursors(show)
-        {
-            if (!show) {
-                leftCursorLoader.sourceComponent = undefined;
-                rightCursorLoader.sourceComponent = undefined;
-                editor.cursorVisible = prevShowCursor;
-            } else {
-                prevShowCursor = editor.cursorVisible;
-                editor.cursorVisible = false;
-                leftCursorLoader.sourceComponent = cursor;
-                rightCursorLoader.sourceComponent = cursor;
-            }
-        }
 
         function linesHeight(lines)
         {
-            var lineHeight = editor.font.pixelSize * lines + lineSpacing * lines
+            var lineHeight = editor.font.pixelSize * lines + inputHandler.lineSpacing * lines
             return lineHeight + 2 * frameSpacing;
         }
 
@@ -828,39 +796,6 @@ StyledItem {
         }
     }
     Keys.onReleased: event.accepted = (event.key === Qt.Key_Enter) || (event.key === Qt.Key_Return)
-
-    // cursor is FIXME: move in a separate element and align with TextField
-    Component {
-        id: cursor
-        TextCursor {
-            id: cursorItem
-            editorItem: control
-            height: internal.lineSize
-            popover: control.popover
-            visible: editor.cursorVisible
-
-            Component.onCompleted: inputHandler.pressAndHold.connect(cursorItem.openPopover)
-        }
-    }
-    // selection cursor loader
-    Loader {
-        id: leftCursorLoader
-        onStatusChanged: {
-            if (status == Loader.Ready && item) {
-                item.positionProperty = "selectionStart";
-                item.parent = editor;
-            }
-        }
-    }
-    Loader {
-        id: rightCursorLoader
-        onStatusChanged: {
-            if (status == Loader.Ready && item) {
-                item.positionProperty = "selectionEnd";
-                item.parent = editor;
-            }
-        }
-    }
 
     // holding default values
     Label { id: fontHolder }
@@ -911,19 +846,22 @@ StyledItem {
             readOnly: false
             id: editor
             focus: true
-            width: internal.inputAreaWidth
-            height: Math.max(internal.inputAreaHeight, editor.contentHeight)
+            width: control.contentWidth
+            height: Math.max(control.contentHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectWords
             selectByMouse: false
             activeFocusOnPress: false
-            cursorDelegate: cursor
+            cursorDelegate: TextCursor {
+                handler: inputHandler
+            }
             color: control.__styleInstance.color
             selectedTextColor: Theme.palette.selected.foregroundText
             selectionColor: Theme.palette.selected.foreground
             font.pixelSize: FontUtils.sizeToPixels("medium")
             // forward keys to the root element so it can be captured outside of it
-            Keys.forwardTo: [control]
+            // as well as to InputHandler to handle PageUp/PageDown keys
+            Keys.forwardTo: [control, inputHandler]
 
             // autosize handling
             onLineCountChanged: internal.frameSize()
@@ -937,6 +875,7 @@ StyledItem {
                 input: editor
                 flickable: flicker
                 selectionModeTimeout: control.__styleInstance.selectionModeTimeout
+                frameDistance: Qt.point(flicker.x, flicker.y)
             }
         }
     }

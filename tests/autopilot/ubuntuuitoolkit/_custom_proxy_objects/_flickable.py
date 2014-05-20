@@ -40,20 +40,6 @@ def _get_visible_container_bottom(containers):
 
 class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
-    @autopilot_logging.log_action(logger.info)
-    def swipe_child_into_view(self, child):
-        """Make the child visible.
-
-        Currently it works only when the object needs to be swiped vertically.
-        TODO implement horizontal swiping. --elopio - 2014-03-21
-
-        """
-        containers = self._get_containers()
-        if not self._is_child_visible(child, containers):
-            self._swipe_non_visible_child_into_view(child, containers)
-        else:
-            logger.debug('The element is already visible.')
-
     def _get_containers(self):
         """Return a list with the containers to take into account when swiping.
 

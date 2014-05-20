@@ -75,6 +75,8 @@ PageTreeNode {
     // avoid using parent.height because parent may be a Loader which does not have its height set.
     height: parentNode ? page.flickable ? parentNode.height : parentNode.height - internal.headerHeight : undefined
 
+    isLeaf: true
+
     /*!
       The title of the page. Will be shown in the header of the \l MainView.
       If the page is used inside a Tab, by default it takes the title from the Tab.
@@ -87,6 +89,13 @@ PageTreeNode {
       It is recommended to use \l ToolbarItems to specify the tools, but any Item is allowed here.
      */
     property Item tools: ToolbarItems { }
+
+    /*!
+      \internal
+      Set this property to replace the title label in the header by any Item.
+      It will be automatically anchored to fill the title space in the header.
+     */
+    property Item __customHeaderContents: null
 
     /*!
       Optional flickable that controls the header. This property
