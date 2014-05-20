@@ -102,7 +102,7 @@ MainView {
         self.simple_text_field.write('Text to select.')
         self.simple_text_field._select_all()
         with mock.patch.object(
-                self.simple_text_field, 'pointing_device') as mock_click:
+                self.simple_text_field, 'pointing_device') as mock_device:
             self.simple_text_field._select_all()
 
-        self.assertFalse(mock_click.called)
+        self.assertFalse(mock_device.called)
