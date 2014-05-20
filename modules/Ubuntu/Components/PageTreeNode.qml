@@ -93,22 +93,18 @@ StyledItem {
       The leaf node that is active.
      */
     property Item activeLeafNode
+
     /*!
       Whether or not this node is a leaf, that is if it has no descendant that are nodes.
+      Pages are leafs, and they don't have descendants in the PageTree.
      */
-    property bool isLeaf: true
+    property bool isLeaf: false
 
     Binding {
         target: node.parentNode
         property: "activeLeafNode"
         value: node.isLeaf ? node : node.activeLeafNode
         when: node.active
-    }
-
-    Binding {
-        target: node.parentNode
-        property: "isLeaf"
-        value: false
     }
 
     Item {
@@ -127,7 +123,17 @@ StyledItem {
                 var i = item.parent;
                 while (i) {
                     if (internal.isPageTreeNode(i)) {
-                        node = i;
+                        if (i.isLeaf) {
+                            // children of a leaf are not part of the tree
+                            node = null;
+                            print("WARNING! " +
+                                "Do not put Page/Tabs/PageStack inside another "+
+                                "Page because that causes confusion which is the "+
+                                "active page that sets the title and actions.");
+                        } else {
+                            // current node is part of the tree with i as its parent.
+                            node = i;
+                        }
                         break;
                     }
                     i = i.parent;
