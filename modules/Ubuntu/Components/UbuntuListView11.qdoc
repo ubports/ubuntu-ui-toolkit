@@ -4,12 +4,7 @@
   \since Ubuntu.Components 1.1
 
   Attached RefreshControl to control manual model refresh. The component is disabled
-  by default if the model is not defined or it has no \c reload() and/or no \c refreshing
-  property defined.
-
-  \note In case the model does not define one or either of the up-mentioned properties,
-  implementations must be provided for refreshControl.refresh() and/or refreshControl.refreshing
-  properties, depending on which one is not present in the model.
+  by default if the model is not defined.
 
   \qml
   import QtQuick 2.2
@@ -25,7 +20,10 @@
           XmlRole { name: "title"; query: "title/string()" }
       }
       // let refresh control know when the refresh gets completed
-      refreshControl.refreshing: model.status === XmlListModel.Loading
+      refreshControl {
+          refreshing: model.status === XmlListModel.Loading
+          onRefresh: model.reload()
+      }
       delegate: ListItem.Standard {
           width: ListView.view.width
           height: units.gu(5)
@@ -35,6 +33,5 @@
           }
       }
   }
-
   \endqml
   */

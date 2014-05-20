@@ -32,10 +32,4 @@ Item {
       is the height of the component styled.
       */
     property real activationThreshold: styledItem.height
-
-    /*!
-      The signal is triggered when the visuals reach the point when manual refresh
-      can be triggered.
-      */
-    signal refresh()
 }

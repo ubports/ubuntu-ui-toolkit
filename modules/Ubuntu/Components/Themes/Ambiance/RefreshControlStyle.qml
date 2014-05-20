@@ -63,6 +63,7 @@ Style.RefreshControlStyle {
             if (!style.manualRefresh && target.refreshing) {
                 // not a manual refresh, update flickable's starting topMargin
                 style.flickableTopMargin = control.target.topMargin;
+                style.wasAtYBeginning = control.target.atYBeginning;
             }
             /*
               Must controll refreshing property separately and not via property binding as
@@ -192,7 +193,7 @@ Style.RefreshControlStyle {
                     to: style.flickableTopMargin + control.height
                 }
                 ScriptAction {
-                    script: style.refresh()
+                    script: control.refresh()
                 }
             }
         },

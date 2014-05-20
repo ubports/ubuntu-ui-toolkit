@@ -152,19 +152,6 @@ StyledItem {
         id: internals
         property bool completed: false
         property real contentY: target.contentY - target.originY
-
-        // initiate refresh on model
-        function initiateRefresh() {
-            control.refresh();
-            print("refresh")
-        }
-    }
-
-    Connections {
-        target: __styleInstance
-        onRefresh: {
-            internals.initiateRefresh();
-        }
     }
 
     Component.onCompleted: {
