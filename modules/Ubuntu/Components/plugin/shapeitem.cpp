@@ -32,6 +32,9 @@
 // Threshold in grid unit defining the texture quality to be used.
 const float lowHighTextureThreshold = 11.0f;
 
+// Map of windows and associated textures.
+QHash<QOpenGLContext*, ShapeItem::TextureHandles> ShapeItem::textures_;
+
 static const char* const shapeVertexShader =
     "uniform lowp mat4 matrix;                  \n"
     "attribute lowp vec4 positionAttrib;        \n"
@@ -338,6 +341,21 @@ void ShapeItem::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeom
     update();
 }
 
+void ShapeItem::onOpenglContextDestroyed()
+{
+    QOpenGLContext* context = qobject_cast<QOpenGLContext*>(sender());
+    if (Q_UNLIKELY(!context)) return;
+
+    QHash<QOpenGLContext*, TextureHandles>::iterator it =
+        textures_.find(context);
+    if (it != textures_.end()) {
+        TextureHandles &textureHandles = it.value();
+        delete textureHandles.high;
+        delete textureHandles.low;
+        textures_.erase(it);
+    }
+}
+
 QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data)
 {
     Q_UNUSED(data);
@@ -345,19 +363,28 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
     // FIXME(loicm) Shape textures are stored in the read-only data section of the plugin as it
     //     avoids having to deal with paths for now. It should preferably be loaded from a file.
 
-    /* Textures created with QWindow::createTextureFromImage() become invalid
-     * when the window is destroyed; therefore, we must keep track of which
-     * window was used to create them and be ready to re-create them if that
-     * window goes away. */
-    static QPointer<QWindow> textureOwner = 0;
-    if (!textureOwner) {
-        shapeTextureHigh.texture = window()->createTextureFromImage(
+    // OpenGL allocates textures per context, so we store textures reused by
+    // all shape instances per context as well
+    QOpenGLContext* openglContext = window() ? window()->openglContext() : NULL;
+    if (Q_UNLIKELY(!openglContext)) {
+        qCritical() << "Window has no GL context!";
+        delete old_node;
+        return NULL;
+    }
+
+    TextureHandles &textureHandles = textures_[openglContext];
+    // If the hash table didn't contain an entry for the current context, the
+    // line above has just caused the creation of a default-constructed value.
+    if (!textureHandles.high) {
+        textureHandles.high = window()->createTextureFromImage(
             QImage(shapeTextureHigh.data, shapeTextureHigh.width, shapeTextureHigh.height,
                    QImage::Format_ARGB32_Premultiplied));
-        shapeTextureLow.texture = window()->createTextureFromImage(
+        textureHandles.low = window()->createTextureFromImage(
             QImage(shapeTextureLow.data, shapeTextureLow.width, shapeTextureLow.height,
                    QImage::Format_ARGB32_Premultiplied));
-        textureOwner = window();
+        QObject::connect(openglContext, SIGNAL(aboutToBeDestroyed()),
+                         this, SLOT(onOpenglContextDestroyed()),
+                         Qt::DirectConnection);
     }
 
     // The image item sets its texture in its updatePaintNode() method when QtQuick iterates through
@@ -387,8 +414,15 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
 
     ShapeTexturedMaterial* texturedMaterial = node->texturedMaterial();
     ShapeColoredMaterial* coloredMaterial = node->coloredMaterial();
-    TextureData* textureData = (gridUnit_ > lowHighTextureThreshold) ?
-        &shapeTextureHigh : &shapeTextureLow;
+    TextureData* textureData;
+    QSGTexture* textureHandle;
+    if (gridUnit_ > lowHighTextureThreshold) {
+        textureData = &shapeTextureHigh;
+        textureHandle = textureHandles.high;
+    } else {
+        textureData = &shapeTextureLow;
+        textureHandle = textureHandles.low;
+    }
 
     // Set the shape texture to be used by the materials depending on current grid unit. The radius
     // is set considering the current grid unit and the texture raster grid unit. When the item size
@@ -406,8 +440,8 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
         radius = halfMinWidthHeight;
         scaledDown |= 1;
     }
-    coloredMaterial->setShapeTexture(textureData->texture, !!scaledDown);
-    texturedMaterial->setShapeTexture(textureData->texture, !!scaledDown);
+    coloredMaterial->setShapeTexture(textureHandle, !!scaledDown);
+    texturedMaterial->setShapeTexture(textureHandle, !!scaledDown);
 
     // Update the other material properties.
     coloredMaterial->setColor(color_);
