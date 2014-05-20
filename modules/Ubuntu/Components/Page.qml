@@ -84,14 +84,14 @@ PageTreeNode {
     /*!
       \internal
      */
-    property alias headerConfig: hc
+    property alias headerSettings: config
     Item {
-        id: hc
+        id: config
         /*!
           \qmlproperty headerConfig.actions
           List of actions to show in the header.
          */
-          property list<Action> actions //: []
+          property var actions: []
 
         /*!
           \qmlproperty headerConfig.backAction
@@ -106,7 +106,12 @@ PageTreeNode {
         // TODO: document
         property list<State> states
 
+        // TODO: document
+        // listof strings
+        property var options: []
 
+        // TODO: document
+        readonly property int selectedOptionIndex: -1
     }
 
     /*!

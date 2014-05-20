@@ -142,8 +142,24 @@ StyledItem {
      */
     property bool useDeprecatedToolbar: true
 
+    /*!
+      Configuration of the header.
+     */
+    property QtObject settings: null
+    onSettingsChanged: internal.checkSettings(settings)
+
     QtObject {
         id: internal
+
+        /*!
+          Check that the settings property has the expected properties.
+         */
+        function checkSettings(settings) {
+            if (!settings.hasOwnProperty("actions")) {
+                print("ERROR: header settings does not have actions property.");
+                // TODO TIM: check all the required properties.
+            }
+        }
 
         /*!
           Track the y-position inside the flickable.
