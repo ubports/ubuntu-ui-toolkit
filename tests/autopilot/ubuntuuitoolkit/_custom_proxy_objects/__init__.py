@@ -20,7 +20,6 @@
 __all__ = [
     'check_autopilot_version',
     'CheckBox',
-    'Flickable',
     'get_keyboard',
     'get_pointing_device',
     'Header',
@@ -28,6 +27,7 @@ __all__ = [
     'MainView',
     'OptionSelector',
     'popups',
+    'QQuickFlickable',
     'QQuickListView',
     'TabBar',
     'Tabs',
@@ -45,7 +45,7 @@ from ubuntuuitoolkit._custom_proxy_objects._common import (
     ToolkitException,
     UbuntuUIToolkitCustomProxyObjectBase,
 )
-from ubuntuuitoolkit._custom_proxy_objects._flickable import Flickable
+from ubuntuuitoolkit._custom_proxy_objects._flickable import QQuickFlickable
 from ubuntuuitoolkit._custom_proxy_objects._header import Header
 from ubuntuuitoolkit._custom_proxy_objects import listitems
 from ubuntuuitoolkit._custom_proxy_objects._mainview import MainView
