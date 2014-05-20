@@ -109,7 +109,6 @@ class QQuickFlickable(Scrollable):
         else:
             logger.debug('The element is already visible.')
 
-
     @autopilot_logging.log_action(logger.info)
     def _swipe_non_visible_child_into_view(self, child, containers):
         original_content_y = self.contentY
