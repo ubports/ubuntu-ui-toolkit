@@ -14,6 +14,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+try:
+    from unittest import mock
+except ImportError:
+    import mock
+
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
@@ -91,3 +96,14 @@ MainView {
         self.assertTrue(self.simple_text_field.is_empty())
         self.simple_text_field.write('test')
         self.assertFalse(self.simple_text_field.is_empty())
+
+    def test_select_all_when_already_selected_must_do_nothing(self):
+        """Test for select all the text when it's already selected."""
+        self.simple_text_field.write('Text to select.')
+        self.simple_text_field._select_all()
+        pointer = self.simple_text_field.pointing_device
+        with mock.patch.object(pointer, 'click_object') as mock_click:
+            self.simple_text_field._select_all()
+
+        self.assertFalse(mock_click.called)
+
