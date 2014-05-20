@@ -101,7 +101,6 @@ Style.PullToRefreshStyle {
         }
     }
 
-    onStateChanged: print("state="+state)
     states: [
         State {
             name: "disabled"
