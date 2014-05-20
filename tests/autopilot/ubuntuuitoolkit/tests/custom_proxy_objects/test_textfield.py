@@ -101,9 +101,8 @@ MainView {
         """Test for select all the text when it's already selected."""
         self.simple_text_field.write('Text to select.')
         self.simple_text_field._select_all()
-        pointer = self.simple_text_field.pointing_device
-        with mock.patch.object(pointer, 'click_object') as mock_click:
+        with mock.patch.object(
+                self.simple_text_field, 'pointing_device') as mock_click:
             self.simple_text_field._select_all()
 
         self.assertFalse(mock_click.called)
-
