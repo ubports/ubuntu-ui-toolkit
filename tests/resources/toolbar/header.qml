@@ -18,6 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 1.1
 
 MainView {
+    id: mainView
     width: units.gu(40)
     height: units.gu(50)
     useDeprecatedToolbar: false
@@ -84,7 +85,33 @@ MainView {
             }
             Tab {
                 title: "Tab 3"
-                page: Page { }
+                page: Page {
+                    Switch {
+                        id: newHeaderSwitch
+                        anchors.centerIn: parent
+                        checked: !mainView.useDeprecatedToolbar
+                        onTriggered: {
+                            mainView.useDeprecatedToolbar = !checked;
+                        }
+                    }
+                    Label {
+                        anchors {
+                            horizontalCenter: parent.horizontalCenter
+                            bottom: newHeaderSwitch.top
+                            bottomMargin: units.gu(1)
+                        }
+                        text: "Use new header"
+                    }
+                    tools: ToolbarItems {
+                        ToolbarButton {
+                            action: Action {
+                                iconName: "camera-flip"
+                                text: "hello"
+                            }
+                        }
+                    }
+
+                }
             }
             Tab {
                 title: "Tab 4"
