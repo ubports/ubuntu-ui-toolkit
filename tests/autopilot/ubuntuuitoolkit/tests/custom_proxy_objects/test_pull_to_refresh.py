@@ -1,0 +1,50 @@
+# -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
+#
+# Copyright (C) 2014 Canonical Ltd.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation; version 3.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+import os
+
+import ubuntuuitoolkit
+from ubuntuuitoolkit import tests
+
+
+class PullToRefreshTestCase(tests.QMLFileAppTestCase):
+
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(dir_path, 'test_pull_to_refresh.qml')
+
+    def setUp(self):
+        super(PullToRefreshTestCase, self).setUp()
+        self.label = self.main_view.select_single(
+            'Label', objectName='refreshedLabel')
+        self.assertEqual(self.label.text, 'Not refreshed.')
+
+    def test_pull_to_refresh_on_a_flickable_without_it_must_raise_error(self):
+        flickable = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickFlickable,
+            objectName='flickableWithoutPullToRefresh')
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException, flickable.pull_to_refresh)
+        self.assertEqual(
+            str(error), 'The flickable has no pull to refresh functionality.')
+
+    def test_pull_to_refresh_must_refresh_model(self):
+        flickable = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickFlickable,
+            objectName='flickableWithPullToRefresh')
+        flickable.pull_to_refresh()
+
+        self.assertEqual(self.label.text, 'Refreshed.')
