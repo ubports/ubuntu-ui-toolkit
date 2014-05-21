@@ -34,11 +34,11 @@ MainView {
 
         function reload() {
             print("Refresh model...")
-//            clear();
             refreshComplete.restart();
         }
 
         function fillModel() {
+            clear();
             for (var i = 0; i < 50; i++) {
                 append(modelData(i));
             }
@@ -73,6 +73,8 @@ MainView {
                 model: listModel
 
                 pullToRefresh {
+                    objectName: "ULV"
+                    enabled: page.active
                     refreshing: model.refreshing
                     onRefresh: model.reload()
                 }
@@ -130,7 +132,7 @@ MainView {
                     enabled: page.active
                     objectName: "InFlickable"
                     parent: view
-                    refreshing: !listModel.ready
+                    refreshing: listModel.refreshing
                     onRefresh: listModel.reload()
                 }
             }
@@ -142,15 +144,17 @@ MainView {
 
         Page {
             id: page
-            title: "Using XmlListModel"
+            title: "TechCrunch"
             UbuntuListView {
                 anchors.fill: parent
                 pullToRefresh {
+                    objectName: "XmlList"
                     refreshing: model.status === XmlListModel.Loading
                     onRefresh: model.reload()
                 }
                 model: XmlListModel {
-                    source: "http://feeds.reuters.com/reuters/topNews"
+//                    source: "http://feeds.reuters.com/reuters/topNews"
+                    source: "http://feeds.feedburner.com/TechCrunch/"
                     query: "/rss/channel/item"
                     XmlRole { name: "title"; query: "title/string()" }
                 }

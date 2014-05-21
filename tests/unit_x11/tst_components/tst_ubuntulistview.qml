@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.2
 import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.1
@@ -27,9 +27,22 @@ Item {
     ListModel {
         id: dummyModel
         Component.onCompleted: {
+            reload();
+        }
+        function reload() {
+            clear();
             for (var i = 0; i < 20; ++i) {
                 dummyModel.append({idx: i});
             }
+        }
+    }
+
+    // timer used to simulate the model refresh
+    Timer {
+        id: refreshTimer
+        interval: 200
+        onTriggered: {
+            dummyModel.reload();
         }
     }
 
@@ -39,6 +52,11 @@ Item {
         height: units.gu(20)
         clip: true
         model: dummyModel
+
+        pullToRefresh {
+            refreshing: refreshTimer.running
+            onRefresh: refreshTimer.restart()
+        }
 
         delegate: Expandable {
             id: expandable
@@ -203,12 +221,32 @@ Item {
             item.collapseOnClick = false;
         }
 
+        SignalSpy {
+            id: refreshSpy
+            signalName: "onRefresh"
+            target: ubuntuListView.pullToRefresh
+        }
+
+        function test_pullToRefresh_enabled() {
+            compare(ubuntuListView.pullToRefresh.enabled, true, "Model is defined, pullToRefresh should be enabled by default");
+            verify(ubuntuListView.pullToRefresh.hasOwnProperty("refresh"), "signal is missing, do we have the pullToRefresh installed??!");
+        }
+
+        function test_pullToRefresh_manual_refresh() {
+            var x = ubuntuListView.width / 2;
+            flick(ubuntuListView, x, units.gu(1), 0, units.gu(40));
+            refreshSpy.wait();
+            tryCompareFunction(function() { return ubuntuListView.pullToRefresh.refreshing; }, false, 1000);
+            waitForRendering(ubuntuListView, 1000);
+        }
+
         function cleanup() {
             // Restore listview height
             ubuntuListView.height = units.gu(60);
             collapse();
             // scroll the ListView back to top
             ubuntuListView.positionViewAtIndex(0, ListView.Beginning);
+            refreshSpy.clear();
         }
     }
 }

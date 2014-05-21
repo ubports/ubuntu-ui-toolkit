@@ -101,6 +101,7 @@ Style.PullToRefreshStyle {
         }
     }
 
+    onStateChanged: print("state=", control.objectName + "/" + state)
     states: [
         State {
             name: "disabled"

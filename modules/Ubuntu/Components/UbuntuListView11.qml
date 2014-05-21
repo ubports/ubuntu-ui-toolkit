@@ -22,6 +22,6 @@ UbuntuListView {
 
     PullToRefresh {
         id: refreshItem
-        enabled: (model === undefined) || model.hasOwnProperty("reload") || model.hasOwnProperty("refreshing")
+        enabled: (model !== undefined)
     }
 }
