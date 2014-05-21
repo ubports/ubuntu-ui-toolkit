@@ -168,7 +168,7 @@ class QQuickFlickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         """Pulls the flickable down and triggers a refresh on it.
 
         :raises ubuntuuitoolkit.ToolkitException: If the flickable has no pull
-           to release functionality.
+            to release functionality.
 
         """
         try:
