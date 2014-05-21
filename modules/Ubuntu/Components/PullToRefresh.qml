@@ -36,20 +36,36 @@ import Ubuntu.Components 1.1
     import Ubuntu.Components 1.1
     import Ubuntu.Components.ListItems 1.0
 
-    ListView {
-        model: XmlListModel {
-            source: "http://feeds.reuters.com/reuters/topNews"
-            query: "/rss/channel/item"
-            XmlRole { name: "title"; query: "title/string()" }
+    MainView {
+        width: units.gu(40)
+        height: units.gu(71)
+
+        PageStack {
+            Component.onCompleted: push(page)
         }
-        delegate: Standard {
-            width: ListView.view.width
-            height: units.gu(5)
-            text: title
-        }
-        RefreshControl {
-            refreshing: model.status === XmlListModel.Loading
-            onRefresh: model.reload()
+
+        Component {
+            id: page
+            Page {
+                title: "Reuters"
+                ListView {
+                    anchors.fill: parent
+                    model: XmlListModel {
+                        source: "http://feeds.reuters.com/reuters/topNews"
+                        query: "/rss/channel/item"
+                        XmlRole { name: "title"; query: "title/string()" }
+                    }
+                    delegate: Standard {
+                        width: ListView.view.width
+                        height: units.gu(5)
+                        text: title
+                    }
+                    PullToRefresh {
+                        refreshing: model.status === XmlListModel.Loading
+                        onRefresh: model.reload()
+                    }
+                }
+            }
         }
     }
     \endqml
@@ -124,7 +140,7 @@ StyledItem {
 
     /*!
       The Flickable or derivate the component is attached to. This can only be
-      the parent or a sibling of the component.
+      the parent or a sibling of the component. Defaults to the parent.
       */
     property Flickable target: parent
 
