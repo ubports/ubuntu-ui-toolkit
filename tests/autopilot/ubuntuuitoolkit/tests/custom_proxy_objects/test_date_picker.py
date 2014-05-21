@@ -50,6 +50,15 @@ MainView {
             id: timePicker
             objectName: 'timePicker'
             mode: 'Hours|Minutes|Seconds'
+            date: {
+                var d = new Date()
+                // Make sure that the picker will have higher and lower values
+                // to select.
+                d.setHours(12)
+                d.setMinutes('30')
+                d.setSeconds('30')
+                return d
+            }
         }
     }
 }
@@ -59,6 +68,8 @@ MainView {
         super(DatePickerBaseTestCase, self).setUp()
         self.date_picker = self.main_view.select_single(
             pickers.DatePicker, objectName='datePicker')
+        self.time_picker = self.main_view.select_single(
+            pickers.DatePicker, objectName='timePicker')
 
 
 class DatePickerTestCase(DatePickerBaseTestCase):
@@ -68,14 +79,22 @@ class DatePickerTestCase(DatePickerBaseTestCase):
             self.date_picker, pickers.DatePicker)
 
     def test_pick_date_on_time_picker_must_raise_exception(self):
-        time_picker = self.main_view.select_single(
-            pickers.DatePicker, objectName='timePicker')
         error = self.assertRaises(
-            ubuntuuitoolkit.ToolkitException, time_picker.pick_date, 'dummy')
+            ubuntuuitoolkit.ToolkitException, self.time_picker.pick_date,
+            'dummy')
         self.assertEqual(
             str(error),
             "Can't pick date. The picker mode is: {!r}.".format(
-                time_picker.mode))
+                self.time_picker.mode))
+
+    def test_pick_time_on_date_picker_must_raise_exception(self):
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException, self.date_picker.pick_time,
+            'dummy')
+        self.assertEqual(
+            str(error),
+            "Can't pick time. The picker mode is: {!r}.".format(
+                self.date_picker.mode))
 
     def test_swipe_to_show_one_more_below_must_select_next_index(self):
         """Test that we don't end up swiping more than needed.
@@ -137,11 +156,48 @@ class PickDateFromDatePickerTestCase(DatePickerBaseTestCase):
         ('lower day', {
             'date_to_pick': datetime.date(
                 SELECTED_YEAR, SELECTED_MONTH, SELECTED_DAY - 10)}),
-        ('change all value', {
+        ('change all values', {
             'date_to_pick': datetime.date(
                 SELECTED_YEAR - 10, SELECTED_MONTH + 4, SELECTED_DAY - 10)}),
     ]
 
     def test_pick_date(self):
+        """Test that picking a date updates the picker."""
         self.date_picker.pick_date(self.date_to_pick)
         self.assertEqual(self.date_picker.get_date(), self.date_to_pick)
+
+
+class PickTimeFromDatePickerTestCase(DatePickerBaseTestCase):
+
+    SELECTED_HOUR = 12
+    SELECTED_MINUTE = 30
+    SELECTED_SECOND = 30
+
+    scenarios = [
+        ('higher hour', {
+            'time_to_pick': datetime.time(
+                SELECTED_HOUR + 6, SELECTED_MINUTE, SELECTED_SECOND)}),
+        ('lower hour', {
+            'time_to_pick': datetime.time(
+                SELECTED_HOUR - 6, SELECTED_MINUTE, SELECTED_SECOND)}),
+        ('higher minute', {
+            'time_to_pick': datetime.time(
+                SELECTED_HOUR, SELECTED_MINUTE + 10, SELECTED_SECOND)}),
+        ('lower minute', {
+            'time_to_pick': datetime.time(
+                SELECTED_HOUR, SELECTED_MINUTE - 10, SELECTED_SECOND)}),
+        ('higher second', {
+            'time_to_pick': datetime.time(
+                SELECTED_HOUR, SELECTED_MINUTE, SELECTED_SECOND + 10)}),
+        ('lower second', {
+            'time_to_pick': datetime.time(
+                SELECTED_HOUR, SELECTED_MINUTE, SELECTED_SECOND - 10)}),
+        ('change all values', {
+            'time_to_pick': datetime.time(
+                SELECTED_HOUR + 6, SELECTED_MINUTE - 10,
+                SELECTED_SECOND + 10)}),
+    ]
+
+    def test_pick_time(self):
+        self.time_picker.pick_time(self.time_to_pick)
+        self.assertEqual(self.time_picker.get_time(), self.time_to_pick)
