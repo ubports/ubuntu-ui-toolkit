@@ -48,7 +48,7 @@ class QQuickListView(_flickable.QQuickFlickable):
 
     @autopilot_logging.log_action(logger.info)
     def _find_element(self, object_name):
-        self._scroll_to_top()
+        self._swipe_to_top()
         while not self.atYEnd:
             containers = self._get_containers()
             self._swipe_to_show_more_below(containers)
