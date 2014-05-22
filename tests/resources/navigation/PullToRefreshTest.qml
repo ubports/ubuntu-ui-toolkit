@@ -36,11 +36,8 @@ MainView {
                 onRefresh: model.reload()
             }
             model: XmlListModel {
-                source: "http://feeds.launchpad.net/ubuntu-ui-toolkit/latest-bugs.atom"
-                query: "/entry"
-////                source: "http://feeds.reuters.com/reuters/topNews"
-//                source: "http://feeds.feedburner.com/TechCrunch/"
-//                query: "/rss/channel/item"
+                source: "http://feeds.feedburner.com/TechCrunch/"
+                query: "/rss/channel/item"
                 XmlRole { name: "title"; query: "title/string()" }
             }
             delegate: ListItem.Standard {
