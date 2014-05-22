@@ -17,12 +17,12 @@
 import QtQuick 2.2
 
 /*!
-    \qmltype RefreshControlStyle
+    \qmltype PullToRefreshStyle
     \inqmlmodule Ubuntu.Components.Styles 1.1
     \ingroup style-api
-    \brief Style API for RefreshControl component.
+    \brief Style API for PullToRefresh component.
 
-    The component defines the style API for the RefreshControl component.
+    The component defines the style API for the PullToRefresh component.
   */
 
 Item {

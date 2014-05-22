@@ -16,12 +16,13 @@
 
 import QtQuick 2.2
 
+// documentation in UbuntuListView11.qdoc
 UbuntuListView {
 
     property alias pullToRefresh: refreshItem
 
     PullToRefresh {
         id: refreshItem
-        enabled: (model !== undefined)
+        enabled: false
     }
 }

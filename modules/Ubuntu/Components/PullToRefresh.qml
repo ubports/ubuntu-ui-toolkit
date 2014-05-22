@@ -40,30 +40,23 @@ import Ubuntu.Components 1.1
         width: units.gu(40)
         height: units.gu(71)
 
-        PageStack {
-            Component.onCompleted: push(page)
-        }
-
-        Component {
-            id: page
-            Page {
-                title: "Reuters"
-                ListView {
-                    anchors.fill: parent
-                    model: XmlListModel {
-                        source: "http://feeds.reuters.com/reuters/topNews"
-                        query: "/rss/channel/item"
-                        XmlRole { name: "title"; query: "title/string()" }
-                    }
-                    delegate: Standard {
-                        width: ListView.view.width
-                        height: units.gu(5)
-                        text: title
-                    }
-                    PullToRefresh {
-                        refreshing: model.status === XmlListModel.Loading
-                        onRefresh: model.reload()
-                    }
+        Page {
+            title: "Reuters"
+            ListView {
+                anchors.fill: parent
+                model: XmlListModel {
+                    source: "http://feeds.reuters.com/reuters/topNews"
+                    query: "/rss/channel/item"
+                    XmlRole { name: "title"; query: "title/string()" }
+                }
+                delegate: Standard {
+                    width: ListView.view.width
+                    height: units.gu(5)
+                    text: title
+                }
+                PullToRefresh {
+                    refreshing: model.status === XmlListModel.Loading
+                    onRefresh: model.reload()
                 }
             }
         }
@@ -80,39 +73,52 @@ import Ubuntu.Components 1.1
     \note When declared as child of Flickable, set parent to the flickable explicitly
     so the component does not land in the \c contentItem of Flickable.
     \qml
-    Item {
-        ListModel {
-            id: someModel
-            function refresh() {
-                // [...]
-            }
-            property bool ready
+    import QtQuick 2.2
+    import QtQuick.XmlListModel 2.0
+    import Ubuntu.Components 1.1
+    import Ubuntu.Components.ListItems 1.0
+
+    MainView {
+    id: main
+        width: units.gu(40)
+        height: units.gu(71)
+
+        XmlListModel {
+            id: rssFeed
+            source: "http://feeds.reuters.com/reuters/topNews"
+            query: "/rss/channel/item"
+            XmlRole { name: "title"; query: "title/string()" }
         }
-        Flickable {
-            id: flicker
-            width: units.gu(10)
-            height: units.gu(10)
+        Page {
+            title: "Reuters"
+            Flickable {
+                id: flickable
+                anchors.fill: parent
+                contentHeight: column.childrenRect.height
+                contentWidth: column.childrenRect.width
+                Column {
+                    Repeater {
+                        model: rssFeed
+                        Standard {
+                            width: main.width
+                            height: units.gu(5)
+                            text: title
+                        }
+                    }
+                }
 
-            RefreshControl {
-                parent: flicker
-                onRefresh: someModel.refresh()
-                refreshing: !someModel.ready
-            }
-
-            contentWidth: rect.width
-            contentHeight: rect.height
-            Rectangle {
-                id: rect
-                width: units.gu(20)
-                height: units.gu(20)
-                color: "red"
+                PullToRefresh {
+                    parent: flickable
+                    refreshing: model.status === XmlListModel.Loading
+                    onRefresh: model.reload()
+                }
             }
         }
     }
     \endqml
 
     \section2 Styling
-    The component style API is defined by the \l RefreshControlStyle component.
+    The component style API is defined by the \l PullToRefreshStyle component.
     Styles may define different ways to initiate refresh upon dragging.
 */
 
@@ -145,9 +151,7 @@ StyledItem {
     property Flickable target: parent
 
     /*!
-      The property notifies the component about the refresh operation completion.
-      Implementations must bind model's readyness checking in order to let the
-      component to know when the operation is complete.
+      The property notifies the component about the ongoing refresh operation.
       */
     property bool refreshing: false
 

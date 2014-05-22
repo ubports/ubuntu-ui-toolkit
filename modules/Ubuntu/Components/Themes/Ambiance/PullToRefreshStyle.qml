@@ -30,11 +30,17 @@ Style.PullToRefreshStyle {
 
     // local properties
     readonly property PullToRefresh control: styledItem
+    // property to store Flickable's toipMargin at the time the pull or auto-refresh is started
     property real flickableTopMargin: 0.0
+    // store when the drag has happened at the beginning of the Flickable's content
     property bool wasAtYBeginning: false
+    // initial contentY value when pull started
     property real initialContentY: 0.0
+    // indicates that the refresh has been started manually
     property bool manualRefresh: false
+    // drives the refreshing state
     property bool refreshing: false
+    // point of release used in rebind animation between the ready-to-refresh and refreshing states
     property real pointOfRelease
 
     anchors.fill: parent
@@ -66,11 +72,13 @@ Style.PullToRefreshStyle {
                 style.wasAtYBeginning = control.target.atYBeginning;
             }
             /*
-              Must controll refreshing property separately and not via property binding as
-              when the model is refreshed automatically and not via the component, we need
-              to remember the flickable's topMargin in order to proceed with a proper flickable
-              rebinding. If we use property binding, the Connections' onRefreshingChanged will
-              update the flickableTopMargin only after the binding is evaluated.
+              We cannot bind refreshing state activation clause with the
+              control.refreshing property dirrectly as when the model is
+              refreshed automatically (not manually via the component), we
+              need to remember the flickable's topMargin in order to proceed
+              with a proper Flickable rebinding. If we use property binding,
+              the Connections' onRefreshingChanged will update the flickableTopMargin
+              only after the binding is evaluated.
               */
             style.refreshing = target.refreshing;
         }
@@ -101,7 +109,7 @@ Style.PullToRefreshStyle {
         }
     }
 
-    onStateChanged: print("state=", control.objectName + "/" + state)
+//    onStateChanged: print("state=", control.objectName + "/" + state)
     states: [
         State {
             name: "disabled"
