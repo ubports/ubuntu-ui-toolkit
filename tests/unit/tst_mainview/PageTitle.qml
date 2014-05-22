@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,33 +15,14 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 MainView {
-    width: units.gu(50)
-    height: units.gu(80)
-
-    Action {
-        id: action1
-        text: "action 1"
-        onTriggered: print("one!")
-    }
-    Action {
-        id: action2
-        text: "action 2"
-        onTriggered: print("two!")
-    }
+    objectName: "pageTitle"
+    applicationName: "once.upon.a.time"
 
     Page {
-        title: "test page"
-
-        Label {
-            anchors.centerIn: parent
-            text: "Hello, world"
-        }
-
-        tools: ToolbarActions {
-            actions: [action1, action2]
-        }
+        objectName: "page"
+        title: 'Once upon a time'
     }
 }

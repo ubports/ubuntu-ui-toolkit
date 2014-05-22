@@ -1,1 +1,5 @@
+module Ubuntu.Test
 UbuntuTestCase 0.1 UbuntuTestCase.qml
+
+#version 1.0
+UbuntuTestCase 1.0 UbuntuTestCase.qml

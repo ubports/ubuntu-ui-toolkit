@@ -19,7 +19,7 @@ import Ubuntu.Unity.Action 1.1 as UnityActions
 
 /*!
     \qmltype Action
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief Describe an action that can be re-used in, for example a \l Button
 
@@ -74,13 +74,9 @@ UnityActions.Action {
      */
 
     /*!
-      \deprecated
-      \b {visible is DEPRECATED. Use \l ActionItem to specify the representation of an \l Action.}
       The action is visible to the user
      */
     property bool visible: true
-    /*! \internal */
-    onVisibleChanged: print("Action.visible is a DEPRECATED property. Use ActionItems to specify the representation of an Action.")
 
     /*!
       Enable the action. It may be visible, but disabled.

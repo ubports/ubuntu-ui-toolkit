@@ -15,11 +15,12 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 1.1 as Ubuntu
 import "mathUtils.js" as MathUtils
 
 /*!
     \qmltype TextArea
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief The TextArea item displays a block of editable, scrollable, formatted
     text.
@@ -60,19 +61,34 @@ import "mathUtils.js" as MathUtils
     mode and 4 lines on fixed-mode. The line size is calculated from the font size and the
     ovarlay and frame spacing specified in the style.
 
+    \section2 Scrolling and text selection
+    The input is activated when the tap or mouse is released after being pressed
+    over the component.
+
     Scrolling the editing area can happen when the size is fixed or in auto-sizing mode when
     the content size is bigger than the visible area. The scrolling is realized by swipe
     gestures, or by navigating the cursor.
 
-    The item enters in selection mode when the user performs a long tap (or long mouse press)
-    or a double tap/press on the text area. The mode is visualized by two selection cursors
-    (pins) which can be used to select the desired text. The text can also be selected by
-    moving the finger/mouse towards the desired area right after entering in selection mode.
-    The way the text is selected is driven by the mouseSelectionMode value, which is either
-    character or word. The editor leaves the selection mode by pressing/tapping again on it
-    or by losing focus.
+    The content can be selected in the following ways:
+    \list
+    \li - double tapping/left mouse clicking over the content, when the word that
+          had been tapped over will be selected
+    \li - by pressing and dragging the selection cursor over the text input. Note
+          that there has to be a delay of approx. 200 ms between the press and drag
+          gesture, time when the input switches from scroll mode to selection mode
+    \endlist
 
-    \b{This component is under heavy development.}
+    The input is focused (activated) upon tap/left mouse button release. The cursor
+    will be placed at the position the mouse/tap point at release time. If the click
+    is happening on a selected area, the selection will be cleared. Long press above
+    a selected area brings up the clipboard context menu. When the long press happens
+    over a non-selected area, the cursor will be moved to the position and the component
+    enters in selection mode. The selection mode can also be activated by tapping and
+    keeping the tap/mouse over for approx 300 ms. If there is a move during this time,
+    the component enters into scrolling mode. The mode is exited once the scrolling
+    finishes. During the scrolling mode the selected text is preserved.
+
+    \note During text selection all interactive parent Flickables are turned off.
   */
 
 StyledItem {
@@ -142,7 +158,7 @@ StyledItem {
       area defined in the current theme. The default value is the same as the visible
       input area's width.
       */
-    property real contentWidth: internal.inputAreaWidth
+    property real contentWidth: control.width - 2 * internal.frameSpacing
 
     /*!
       The property folds the height of the text editing content. This can be equal or
@@ -150,7 +166,7 @@ StyledItem {
       area defined in the current theme. The default value is the same as the visible
       input area's height.
       */
-    property real contentHeight: internal.inputAreaHeight
+    property real contentHeight: control.height - 2 * internal.frameSpacing
 
     /*!
       The property overrides the default popover of the TextArea. When set, the
@@ -217,10 +233,8 @@ StyledItem {
 
       Note that the root item of the delegate component must be a QQuickItem or
       QQuickItem derived item.
-
-      \qmlproperty Component cursorDelegate
       */
-    property alias cursorDelegate: editor.cursorDelegate
+    property Component cursorDelegate: null
 
     /*!
       The position of the cursor in the TextArea.
@@ -708,19 +722,26 @@ StyledItem {
     */
     function forceActiveFocus()
     {
-        internal.activateEditor();
+        inputHandler.activateInput();
     }
 
     // logic
     /*!\internal - to remove warnings */
     Component.onCompleted: {
         editor.linkActivated.connect(control.linkActivated);
-        internal.prevShowCursor = control.cursorVisible;
     }
 
     // activation area on mouse click
     // the editor activates automatically when pressed in the editor control,
     // however that one can be slightly spaced to the main control area
+    MouseArea {
+        anchors.fill: parent
+        enabled: internal.frameSpacing > 0
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        // activate input when pressed on the frame
+        preventStealing: false
+        Ubuntu.Mouse.forwardTo: [inputHandler]
+    }
 
     //internals
 
@@ -732,84 +753,19 @@ StyledItem {
             control.focus = false;
     }
 
-    /*!\internal */
-    onContentWidthChanged: internal.inputAreaWidth = control.contentWidth
-    /*!\internal */
-    onContentHeightChanged: internal.inputAreaHeight = control.contentHeight
-    /*!\internal */
-    onWidthChanged: internal.inputAreaWidth = control.width - 2 * internal.frameSpacing
-    /*!\internal */
-    onHeightChanged: internal.inputAreaHeight = control.height - 2 * internal.frameSpacing
-
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
-    /*!\internal */
-    property alias __internal: internal
     QtObject {
         id: internal
         // public property locals enabling aliasing
         property string displayText: editor.getText(0, editor.length)
-        property real lineSpacing: units.dp(3)
         property real frameSpacing: control.__styleInstance.frameSpacing
-        property real lineSize: editor.font.pixelSize + lineSpacing
         property real minimumSize: units.gu(4)
-        property real inputAreaWidth: control.width - 2 * frameSpacing
-        property real inputAreaHeight: control.height - 2 * frameSpacing
-        //selection properties
-        property bool draggingMode: false
-        property bool selectionMode: false
-        property bool prevShowCursor
-
-        signal popupTriggered(int pos)
-
-        onDraggingModeChanged: {
-            if (draggingMode) selectionMode = false;
-        }
-        onSelectionModeChanged: {
-            if (selectionMode)
-                draggingMode = false;
-            else {
-                toggleSelectionCursors(false);
-            }
-        }
-
-        function toggleSelectionCursors(show)
-        {
-            if (!show) {
-                leftCursorLoader.sourceComponent = undefined;
-                rightCursorLoader.sourceComponent = undefined;
-                editor.cursorVisible = prevShowCursor;
-            } else {
-                prevShowCursor = editor.cursorVisible;
-                editor.cursorVisible = false;
-                leftCursorLoader.sourceComponent = cursor;
-                rightCursorLoader.sourceComponent = cursor;
-            }
-        }
-
-        function activateEditor()
-        {
-            if (!editor.activeFocus)
-                editor.forceActiveFocus();
-            else
-                showInputPanel();
-
-        }
-
-        function showInputPanel()
-        {
-            if (!Qt.inputMethod.visible)
-                Qt.inputMethod.show();
-        }
-        function hideInputPanel()
-        {
-            Qt.inputMethod.hide();
-        }
 
         function linesHeight(lines)
         {
-            var lineHeight = editor.font.pixelSize * lines + lineSpacing * lines
+            var lineHeight = editor.font.pixelSize * lines + inputHandler.lineSpacing * lines
             return lineHeight + 2 * frameSpacing;
         }
 
@@ -820,24 +776,6 @@ StyledItem {
                             control.lineCount :
                             Math.min(control.maximumLineCount, control.lineCount);
                 control.height = linesHeight(MathUtils.clamp(control.lineCount, 1, max));
-            }
-        }
-
-        function enterSelectionMode(x, y)
-        {
-            if (undefined !== x && undefined !== y) {
-                control.cursorPosition = control.positionAt(x, y);
-                control.moveCursorSelection(control.cursorPosition + 1);
-            }
-            toggleSelectionCursors(true);
-        }
-
-        function positionCursor(x, y) {
-            var cursorPos = control.positionAt(x, y);
-            if (control.selectedText === "")
-                control.cursorPosition = cursorPos;
-            else if (control.selectionStart > cursorPos || control.selectionEnd < cursorPos) {
-                control.cursorPosition = cursorPos;
             }
         }
     }
@@ -858,39 +796,6 @@ StyledItem {
         }
     }
     Keys.onReleased: event.accepted = (event.key === Qt.Key_Enter) || (event.key === Qt.Key_Return)
-
-    // cursor is FIXME: move in a separate element and align with TextField
-    Component {
-        id: cursor
-        TextCursor {
-            id: cursorItem
-            editorItem: control
-            height: internal.lineSize
-            popover: control.popover
-            visible: editor.cursorVisible
-
-            Component.onCompleted: internal.popupTriggered.connect(cursorItem.openPopover)
-        }
-    }
-    // selection cursor loader
-    Loader {
-        id: leftCursorLoader
-        onStatusChanged: {
-            if (status == Loader.Ready && item) {
-                item.positionProperty = "selectionStart";
-                item.parent = editor;
-            }
-        }
-    }
-    Loader {
-        id: rightCursorLoader
-        onStatusChanged: {
-            if (status == Loader.Ready && item) {
-                item.positionProperty = "selectionEnd";
-                item.parent = editor;
-            }
-        }
-    }
 
     // holding default values
     Label { id: fontHolder }
@@ -922,6 +827,7 @@ StyledItem {
     }
     Flickable {
         id: flicker
+        objectName: "textarea_scroller"
         anchors {
             fill: parent
             margins: internal.frameSpacing
@@ -929,98 +835,47 @@ StyledItem {
         clip: true
         contentWidth: editor.paintedWidth
         contentHeight: editor.paintedHeight
-        interactive: !autoSize || (autoSize && maximumLineCount > 0)
         // do not allow rebounding
         boundsBehavior: Flickable.StopAtBounds
-        pressDelay: 500
-
-        function ensureVisible(r)
-        {
-            if (moving || flicking)
-                return;
-            if (contentX >= r.x)
-                contentX = r.x;
-            else if (contentX+width <= r.x+r.width)
-                contentX = r.x+r.width-width;
-            if (contentY >= r.y)
-                contentY = r.y;
-            else if (contentY+height <= r.y+r.height)
-                contentY = r.y+r.height-height;
-        }
 
         // editor
         // Images are not shown when text contains <img> tags
         // bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27071
         TextEdit {
+            objectName: "textarea_input"
             readOnly: false
             id: editor
             focus: true
-            onCursorRectangleChanged: flicker.ensureVisible(cursorRectangle)
-            width: internal.inputAreaWidth
-            height: Math.max(internal.inputAreaHeight, editor.contentHeight)
+            width: control.contentWidth
+            height: Math.max(control.contentHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectWords
             selectByMouse: false
-            cursorDelegate: cursor
+            activeFocusOnPress: false
+            cursorDelegate: TextCursor {
+                handler: inputHandler
+            }
             color: control.__styleInstance.color
             selectedTextColor: Theme.palette.selected.foregroundText
             selectionColor: Theme.palette.selected.foreground
             font.pixelSize: FontUtils.sizeToPixels("medium")
             // forward keys to the root element so it can be captured outside of it
-            Keys.forwardTo: [control]
+            // as well as to InputHandler to handle PageUp/PageDown keys
+            Keys.forwardTo: [control, inputHandler]
 
             // autosize handling
             onLineCountChanged: internal.frameSize()
 
-            // remove selection when typing starts or input method start entering text
-            onInputMethodComposingChanged: {
-                if (inputMethodComposing)
-                    internal.selectionMode = false;
-            }
-            Keys.onPressed: {
-                if ((event.text !== ""))
-                    internal.selectionMode = false;
-            }
-            Keys.onReleased: {
-                // selection positioners are updated after the keypress
-                if (selectionStart == selectionEnd)
-                    internal.selectionMode = false;
-            }
-
-            // handling text selection
-            MouseArea {
-                id: handler
-                enabled: control.enabled && control.activeFocusOnPress
+            // input selection and navigation handling
+            Ubuntu.Mouse.forwardTo: [inputHandler]
+            InputHandler {
+                id: inputHandler
                 anchors.fill: parent
-                propagateComposedEvents: true
-
-                onPressed: {
-                    internal.activateEditor();
-                    internal.draggingMode = true;
-                }
-                onPressAndHold: {
-                    // move mode gets false if there was a mouse move after the press;
-                    // this is needed as Flickable will send a pressAndHold in case of
-                    // press -> move-pressed ->stop-and-hold-pressed gesture is performed
-                    if (!internal.draggingMode)
-                        return;
-                    internal.draggingMode = false;
-                    // open popup
-                    internal.positionCursor(mouse.x, mouse.y);
-                    internal.popupTriggered(editor.cursorPosition);
-                }
-                onReleased: {
-                    internal.draggingMode = false;
-                }
-                onDoubleClicked: {
-                    internal.activateEditor();
-                    if (control.selectByMouse)
-                        control.selectWord();
-                }
-                onClicked: {
-                    internal.activateEditor();
-                    internal.positionCursor(mouse.x, mouse.y);
-                }
+                main: control
+                input: editor
+                flickable: flicker
+                selectionModeTimeout: control.__styleInstance.selectionModeTimeout
+                frameDistance: Qt.point(flicker.x, flicker.y)
             }
         }
     }

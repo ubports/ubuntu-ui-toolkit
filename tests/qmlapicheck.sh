@@ -20,28 +20,24 @@ CPP="Ubuntu.Components Ubuntu.Layouts Ubuntu.PerformanceMetrics"
 
 echo Dumping QML API of C++ components
 echo '' > plugins.qmltypes
+ERRORS=0
 for i in $CPP; do
     # Silence spam on stderr due to fonts
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
-    qmlplugindump $i 0.1 modules 2>/dev/null >> plugins.qmltypes
+    qmlplugindump $i 0.1 modules 1>> plugins.qmltypes
+    test $? != 0 && ERRORS=1
 done
-STATUS=$?
-test $STATUS = 0 || ERRORS=1
-test $STATUS = 0 || echo Error: qmldump failed
+test $ERRORS = 1 && echo Error: qmlplugindump failed && exit 1
 
 echo Running QML API check for $QML
 # Palette gets included in Qt 5.2 qmlplugindump even though it's qml
 BUILTINS=QQuick,QQml,U1db::,Palette python3 tests/qmlapicheck.py $QML plugins.qmltypes > components.api.new
-STATUS=$?
-test $STATUS = 0 || ERRORS=1
-test $STATUS = 0 || echo Error: qmlapicheck.py failed
+test $? != 0 && echo Error: qmlapicheck.py failed && exit 1
 
 echo Verifying the diff between existing and generated API
 diff -Fqml -u components.api components.api.new
-STATUS=$?
-test $STATUS = 0 || ERRORS=1
-test $STATUS = 0 || echo Error: diff mismatched
+test $? != 0 && ERRORS=1
 
 if [ "x$ERRORS" != "x1" ]; then
     echo API is all fine.

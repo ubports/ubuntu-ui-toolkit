@@ -16,7 +16,7 @@
 
 /*!
     \qmltype OptionSelectorDelegate
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu-components
     \brief OptionSelector delegate which can display text, subtext and an image from a custom model.
 
@@ -24,7 +24,7 @@
 
     Examples:
     \qml
-        import Ubuntu.Components 0.1
+        import Ubuntu.Components 1.1
         Column {
             width: 250
             OptionSelector {
@@ -45,18 +45,12 @@
 
 import QtQuick 2.0
 import "ListItems" as ListItem
-import Ubuntu.Components 0.1 as Toolkit
+import Ubuntu.Components 1.1 as Toolkit
 
-ListItem.Standard {
+ListItem.Empty {
     id: option
 
     __height: units.gu(5)
-
-    /*!
-      \preliminary
-      Main text.
-     */
-    property string text
 
     /*!
       \preliminary
@@ -76,30 +70,6 @@ ListItem.Standard {
                        console.warn("WARNING: OptionSelectorDelegate.icon is DEPRECATED. " +
                                      "Use iconName and iconSource instead.")
                    }
-
-    /*!
-      The image shown for that option.
-      \qmlproperty url iconSource
-
-      This is a URL to any image file.
-      In order to use an icon from the Ubuntu theme, use the iconName property instead.
-     */
-    property url iconSource: iconName ? "image://theme/" + iconName : ""
-
-    /*!
-      The icon shown for that option.
-
-      \qmlproperty string iconName
-
-      If both iconSource and iconName are defined, iconName will be ignored.
-
-      \note The complete list of icons available in Ubuntu is not published yet.
-            For now please refer to the folders where the icon theme is installed:
-            \list
-              \li Ubuntu Touch: \l file:/usr/share/icons/suru
-            \endlist
-    */
-    property string iconName
 
     /*!
       \preliminary
@@ -337,7 +307,7 @@ ListItem.Standard {
             objectName: "icon"
 
             height: constrainImage ? option.height : sourceSize.height
-            source: icon
+            source: option.iconSource
             fillMode: constrainImage ? Image.PreserveAspectFit : Image.Stretch
 
             ShaderEffect {

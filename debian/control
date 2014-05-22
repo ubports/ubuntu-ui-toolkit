@@ -112,6 +112,7 @@ Depends: qmlscene,
          qtdeclarative5-ubuntu-ui-toolkit-plugin,
          ubuntu-ui-toolkit-theme,
          qtdeclarative5-xmllistmodel-plugin,
+         qml-module-qt-labs-folderlistmodel,
          ${misc:Depends},
          ${shlibs:Depends}
 Recommends: libqt5multimedia5-plugins, ubuntu-ui-toolkit-doc
@@ -135,9 +136,12 @@ Depends: ${misc:Depends},
          python-autopilot (>= 1.4),
          python-fixtures,
          python-mock,
+         python-testscenarios,
+         python-testtools,
          python3-fixtures,
+         python3-testscenarios,
+         python3-testtools,
          python3-autopilot (>= 1.4),
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
 Description: Test package for Ubuntu UI Toolkit
  Autopilot tests for the ubuntu-ui-toolkit package
-

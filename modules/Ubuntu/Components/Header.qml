@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,16 +15,12 @@
  */
 
 import QtQuick 2.0
-// FIXME: When a module contains QML, C++ and JavaScript elements exported,
-// we need to use named imports otherwise namespace collision is reported
-// by the QML engine. As workaround, we use Ubuntu named import.
-// Bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27645
-import Ubuntu.Components 0.1 as Ubuntu
+import Ubuntu.Components 1.0
 
 /*!
     \internal
     \qmltype Header
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
 */
 StyledItem {
@@ -44,7 +40,7 @@ StyledItem {
     Behavior on y {
         enabled: animate && !(header.flickable && header.flickable.moving)
         SmoothedAnimation {
-            duration: Ubuntu.UbuntuAnimation.BriskDuration
+            duration: UbuntuAnimation.BriskDuration
         }
     }
 
@@ -54,7 +50,7 @@ StyledItem {
         internal.movementEnded();
     }
 
-    visible: title || contents
+    visible: title || contents || tabsModel
     onVisibleChanged: {
         internal.checkFlickableMargins();
     }
@@ -77,13 +73,57 @@ StyledItem {
       The text to display in the header
      */
     property string title: ""
-    onTitleChanged: contentsChanged()
+    onTitleChanged: {
+        header.show();
+    }
 
     /*!
       The contents of the header. If this is set, \l title will be ignored.
      */
     property Item contents: null
-    onContentsChanged: header.show()
+    onContentsChanged: {
+        header.show();
+    }
+
+    /*!
+      \preliminary
+      A model of tabs to represent in the header.
+      This is automatically set by \l Tabs.
+     */
+    property var tabsModel: null
+
+    /*!
+      \preliminary
+      If it is possible to pop this PageStack, a back button will be
+      shown in the header.
+     */
+    property var pageStack: null
+
+    /*!
+      \preliminary
+      \qmlproperty list<Action> actions
+      The list of actions actions that will be shown in the header
+     */
+    property var actions: null
+
+    /*!
+      \internal
+      Action shown before the title. Setting this will disable the back
+      button and tabs drawer button in the new header and replace it with a button
+      representing the action below.
+     */
+    property var __customBackAction: null
+
+    // FIXME: Currently autopilot can only get visual items, but once bug #1273956
+    //  is fixed to support non-visual items, a QtObject may be used.
+    //  --timp - 2014-03-20
+    Item {
+        // FIXME: This is a workaround to be able to get the properties of
+        //  tabsModel in an autopilot test.
+        objectName: "tabsModelProperties"
+        property int count: tabsModel ? tabsModel.count : 0
+        property int selectedIndex: tabsModel ? tabsModel.selectedIndex : -1
+    }
 
     /*!
       The flickable that controls the movement of the header.
@@ -96,6 +136,11 @@ StyledItem {
         internal.connectFlickable();
         header.show();
     }
+
+    /*!
+      Set by \l MainView
+     */
+    property bool useDeprecatedToolbar: true
 
     QtObject {
         id: internal
@@ -184,5 +229,6 @@ StyledItem {
         }
     }
 
-    style: Theme.createStyleComponent("HeaderStyle.qml", header)
+    style: header.useDeprecatedToolbar ? Theme.createStyleComponent("HeaderStyle.qml", header) :
+                                         Theme.createStyleComponent("NewHeaderStyle.qml", header)
 }

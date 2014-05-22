@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1 as Toolkit
+import Ubuntu.Components 1.1 as Toolkit
 import Ubuntu.Components.ListItems 0.1 as ListItem
 
 Template {
@@ -45,6 +45,27 @@ Template {
         delegate: ListItem.Standard {
             text: i18n.tr("Label")
             iconSource: Qt.resolvedUrl("avatar_contacts_list.png")
+        }
+    }
+
+    TemplateSection {
+        title: i18n.tr("ThinDivider")
+        className: "ThinDivider"
+
+        Column {
+            anchors.left: parent.left
+            anchors.right: parent.right
+
+            ListItem.Standard {
+                text: i18n.tr("Label")
+                showDivider: false
+            }
+            ListItem.ThinDivider {
+            }
+            ListItem.Standard {
+                text: i18n.tr("Label")
+                showDivider: false
+            }
         }
     }
 
@@ -238,11 +259,20 @@ Template {
             ListElement { name: "Potato"; details: "Vegetable" }
         }
 
+        Toolkit.SortFilterModel {
+            id: processedFruits
+            model: fruitModel
+            sort.property: "title"
+            sort.order: Qt.DescendingOrder
+            filter.property: "details"
+            filter.pattern: /Vegetable/
+        }
+
         Toolkit.UbuntuListView {
             id: ubuntuListView
             anchors { left: parent.left; right: parent.right }
             height: units.gu(24)
-            model: fruitModel
+            model: processedFruits
             clip: true
 
             delegate: ListItem.Expandable {

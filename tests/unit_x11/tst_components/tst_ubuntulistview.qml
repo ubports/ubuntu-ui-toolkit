@@ -16,9 +16,9 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Test 0.1
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1
+import Ubuntu.Test 1.0
+import Ubuntu.Components 1.1
+import Ubuntu.Components.ListItems 1.0
 
 Item {
     width: units.gu(40)
@@ -187,6 +187,20 @@ Item {
             item = findChild(ubuntuListView, "expandable1");
             compare(item.expanded, true);
             
+        }
+
+        function test_collapseOnClick() {
+            var item = findChild(ubuntuListView, "expandable1");
+            item.collapseOnClick = true;
+            expandItem(item);
+
+            compare(ubuntuListView.expandedIndex, 1);
+
+            mouseClick(item, item.width / 2, item.collapsedHeight / 2);
+            tryCompare(ubuntuListView, "expandedIndex", -1);
+
+            // restore stuff we've changed
+            item.collapseOnClick = false;
         }
 
         function cleanup() {

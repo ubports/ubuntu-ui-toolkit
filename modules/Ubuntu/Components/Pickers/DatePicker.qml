@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 /*!
     \qmltype DatePicker
-    \inqmlmodule Ubuntu.Components.Pickers 0.1
+    \inqmlmodule Ubuntu.Components.Pickers 1.0
     \ingroup ubuntu-pickers
     \brief DatePicker component provides date and time value picking functionality.
 
@@ -36,8 +36,8 @@ import Ubuntu.Components 0.1
 
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
-    import Ubuntu.Components.Pickers 0.1
+    import Ubuntu.Components 1.1
+    import Ubuntu.Components.Pickers 1.0
 
     Column {
         Label {
@@ -56,8 +56,8 @@ import Ubuntu.Components 0.1
     which shows only year and month date units would look as follows:
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
-    import Ubuntu.Components.Pickers 0.1
+    import Ubuntu.Components 1.1
+    import Ubuntu.Components.Pickers 1.0
 
     Column {
         Label {
@@ -75,8 +75,8 @@ import Ubuntu.Components 0.1
     The following example demonstrates how to use DatePicker for time picking.
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
-    import Ubuntu.Components.Pickers 0.1
+    import Ubuntu.Components 1.1
+    import Ubuntu.Components.Pickers 1.0
 
     Column {
         Label {
@@ -112,8 +112,8 @@ import Ubuntu.Components 0.1
     \endlist
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
-    import Ubuntu.Components.Pickers 0.1
+    import Ubuntu.Components 1.1
+    import Ubuntu.Components.Pickers 1.0
 
     Column {
         Label {

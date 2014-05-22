@@ -19,7 +19,7 @@ import QtFeedback 5.0
 
 /*!
     \qmlabstract AbstractButton
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief The AbstractButton class defines the behavior of the button.
 
@@ -85,10 +85,10 @@ ActionItem {
     HapticsEffect {
         id: pressEffect
         attackIntensity: 0.0
-        attackTime: 250
+        attackTime: 50
         intensity: 1.0
-        duration: 100
-        fadeTime: 250
+        duration: 10
+        fadeTime: 50
         fadeIntensity: 0.0
     }
 

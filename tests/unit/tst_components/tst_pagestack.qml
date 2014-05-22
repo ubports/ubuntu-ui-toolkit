@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 TestCase {
     name: "PageStackAPI"
@@ -48,7 +48,7 @@ TestCase {
         compare(pageStack.currentPage, null, "currentPage properly reset");
     }
 
-    function test_active() {
+    function test_active_bug1260116() {
         pageStack.push(page1);
         compare(page1.active, true, "Page is active after pushing");
         pageStack.push(page2);
@@ -58,9 +58,16 @@ TestCase {
         compare(page1.active, true, "Page re-activated when on top of the stack");
         compare(page2.active, false, "Page no longer active after being popped");
         pageStack.clear();
+
+        compare(pageInStack.active, false, "Page defined inside PageStack is not active by default");
+        pageStack.push(pageInStack);
+        compare(pageInStack.active, true, "Pushing a page on PageStack makes it active");
+        pageStack.pop();
+        compare(pageInStack.active, false, "Popping a page from PageStack makes it inactive");
+        pageStack.clear();
     }
 
-    function test_title_bug1143345() {
+    function test_title_bug1143345_bug1317902() {
         pageStack.push(page1);
         compare(mainView.__propagated.header.title, "Title 1", "Header is correctly set by page");
         page1.title = "New title";
@@ -69,6 +76,10 @@ TestCase {
         compare(mainView.__propagated.header.title, "Title 2", "Header is correctly set by page");
         pageStack.clear();
         page1.title = "Title 1";
+
+        pageStack.push(pageWithPage);
+        compare(mainView.__propagated.header.title, pageWithPage.title, "Embedded page sets title of outer page");
+        pageStack.clear();
     }
 
     function test_tools_bug1126197() {
@@ -85,14 +96,25 @@ TestCase {
         pageStack.push(tabs);
         compare(pageStack.currentPage, tabs, "Tabs can be pushed on a PageStack");
         compare(tabs.active, true, "Tabs on top of a PageStack are active");
-        compare(mainView.__propagated.header.contents, tabs.tabBar, "Pushing Tabs on PageStack updates the header contents");
+        compare(mainView.__propagated.header.__styleInstance.__tabBar, tabs.tabBar, "Pushing Tabs on PageStack updates the header contents");
         pageStack.push(page1);
         compare(pageStack.currentPage, page1, "A page can be pushed on top of a Tabs");
         compare(tabs.active, false, "Tabs on a PageStack, but not on top, are inactive");
-        compare(mainView.__propagated.header.contents, null, "Contents of inactive Tabs is not applied to header");
+        compare(mainView.__propagated.header.__styleInstance.__tabBar, null, "Contents of inactive Tabs is not applied to header");
         pageStack.pop();
         compare(tabs.active, true, "Tabs on top of PageStack is active");
-        compare(mainView.__propagated.header.contents, tabs.tabBar, "Active Tabs controls header contents");
+        compare(mainView.__propagated.header.__styleInstance.__tabBar, tabs.tabBar, "Active Tabs controls header contents");
+        pageStack.clear();
+    }
+
+    function test_pop_to_tabs_bug1316736() {
+        pageStack.push(tabs);
+        tabs.selectedTabIndex = 1;
+        pageStack.push(page1);
+        compare(tabs.active, false, "Tabs on a PageStack, but not on top, are inactive");
+        pageStack.pop();
+        compare(tabs.active, true, "Tabs on top of PageStack is active");
+        compare(tabs.selectedTabIndex, 1, "Pushing and popping another page on top of Tabs does not change selectedTabsIndex");
         pageStack.clear();
     }
 
@@ -100,6 +122,9 @@ TestCase {
         id: mainView
         PageStack {
             id: pageStack
+            Page {
+                id: pageInStack
+            }
         }
     }
     Page {
@@ -116,8 +141,20 @@ TestCase {
             id: tools2
         }
     }
-
+    Page {
+        id: pageWithPage
+        title: "Outer"
+        Page {
+            title: "Inner"
+        }
+    }
     Tabs {
         id: tabs
+        Tab {
+            id: tab1
+        }
+        Tab {
+            id: tab2
+        }
     }
 }
