@@ -26,7 +26,7 @@ MainView {
 
     Page {
         id: page
-        title: "TechCrunch"
+        title: "Design"
         UbuntuListView {
             anchors.fill: parent
             pullToRefresh {
@@ -36,7 +36,7 @@ MainView {
                 onRefresh: model.reload()
             }
             model: XmlListModel {
-                source: "http://feeds.feedburner.com/TechCrunch/"
+                source: "http://design.canonical.com/feed/"
                 query: "/rss/channel/item"
                 XmlRole { name: "title"; query: "title/string()" }
             }
