@@ -15,6 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import time
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
@@ -31,6 +32,9 @@ class PullToRefreshTestCase(tests.QMLFileAppTestCase):
         self.label = self.main_view.select_single(
             'Label', objectName='refreshedLabel')
         self.assertEqual(self.label.text, 'Not refreshed.')
+        self.flickable_with_pull_to_refresh = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickFlickable,
+            objectName='flickableWithPullToRefresh')
 
     def test_pull_to_refresh_on_a_flickable_without_it_must_raise_error(self):
         flickable = self.main_view.select_single(
@@ -42,9 +46,13 @@ class PullToRefreshTestCase(tests.QMLFileAppTestCase):
             str(error), 'The flickable has no pull to refresh functionality.')
 
     def test_pull_to_refresh_must_refresh_model(self):
-        flickable = self.main_view.select_single(
-            ubuntuuitoolkit.QQuickFlickable,
-            objectName='flickableWithPullToRefresh')
-        flickable.pull_to_refresh()
+        self.flickable_with_pull_to_refresh.pull_to_refresh()
 
         self.assertEqual(self.label.text, 'Refreshed.')
+
+    def test_cancel_pull_to_refresh_must_not_refresh_model(self):
+        self.flickable_with_pull_to_refresh._cancel_pull_to_refresh()
+        # Sleep for some time to make sure that the list is not being
+        # refreshed.
+        time.sleep(3)
+        self.assertEqual(self.label.text, 'Not refreshed.')
