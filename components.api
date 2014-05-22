@@ -175,7 +175,7 @@ Subtitled 0.1 1.0
 Base
     property string subText
 ThinDivider 0.1 1.0
-Image
+Rectangle
 ValueSelector 0.1 1.0
 Empty
     property variant icon
