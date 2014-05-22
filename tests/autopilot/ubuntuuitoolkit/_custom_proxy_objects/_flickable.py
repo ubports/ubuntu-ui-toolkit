@@ -16,6 +16,7 @@
 
 import logging
 
+import autopilot.exceptions
 from autopilot import logging as autopilot_logging
 
 from ubuntuuitoolkit._custom_proxy_objects import _common
@@ -156,8 +157,47 @@ class QQuickFlickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=5)
 
     @autopilot_logging.log_action(logger.info)
-    def _scroll_to_top(self):
+    def _swipe_to_top(self):
         if not self.atYBeginning:
             containers = self._get_containers()
             while not self.atYBeginning:
                 self._swipe_to_show_more_above(containers)
+
+    @autopilot_logging.log_action(logger.info)
+    def pull_to_refresh(self):
+        """Pulls the flickable down and triggers a refresh on it.
+
+        :raises ubuntuuitoolkit.ToolkitException: If the flickable has no pull
+            to release functionality.
+
+        """
+        try:
+            pull_to_refresh = self.select_single(PullToRefresh)
+        except autopilot.exceptions.StateNotFoundError:
+            raise _common.ToolkitException(
+                'The flickable has no pull to refresh functionality.')
+        self._swipe_to_top()
+        self._swipe_to_middle()
+        pull_to_refresh.wait_for_refresh()
+
+    @autopilot_logging.log_action(logger.info)
+    def _swipe_to_middle(self):
+        start_x = stop_x = self.globalRect.x + (self.globalRect.width // 2)
+        # Start and stop just a little under the top.
+        containers = self._get_containers()
+        top = _get_visible_container_top(containers) + 5
+        bottom = _get_visible_container_bottom(containers)
+
+        start_y = top
+        stop_y = bottom // 2
+        self._slow_drag(start_x, stop_x, start_y, stop_y)
+        self.dragging.wait_for(False)
+        self.moving.wait_for(False)
+
+
+class PullToRefresh(_common.UbuntuUIToolkitCustomProxyObjectBase):
+    """Autopilot helper for the PullToRefresh component."""
+
+    def wait_for_refresh(self):
+        activity_indicator = self.select_single('ActivityIndicator')
+        activity_indicator.running.wait_for(False)
