@@ -30,6 +30,7 @@ internal PageTreeNode PageTreeNode.qml
 PageStack 0.1 PageStack.qml
 internal Toolbar Toolbar.qml
 internal Header Header.qml
+internal HeaderConfiguration HeaderConfiguration.qml
 internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
 UbuntuShape 0.1 UbuntuShape.qml

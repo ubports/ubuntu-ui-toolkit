@@ -114,6 +114,12 @@ StyledItem {
      */
     property var __customBackAction: null
 
+    // TODO TIM: document
+    property TextField input: TextField {
+//        visible: false
+        anchors.centerIn: parent
+    }
+
     // FIXME: Currently autopilot can only get visual items, but once bug #1273956
     //  is fixed to support non-visual items, a QtObject may be used.
     //  --timp - 2014-03-20
@@ -155,7 +161,7 @@ StyledItem {
           Check that the settings property has the expected properties.
          */
         function checkConfig(config) {
-            if (!settings.hasOwnProperty("actions")) {
+            if (!config.hasOwnProperty("actions")) {
                 print("ERROR: header settings does not have actions property.");
                 // TODO TIM: check all the required properties.
             }
