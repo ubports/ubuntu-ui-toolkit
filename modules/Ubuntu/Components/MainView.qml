@@ -355,7 +355,7 @@ PageTreeNode {
             contents: internal.activePage ?
                           internal.activePage.__customHeaderContents : null
 
-            settings: internal.activePage ? internal.activePage.headerSettings : null
+            config: internal.activePage ? internal.activePage.header : null
 
             property Item tabBar: null
             Binding {

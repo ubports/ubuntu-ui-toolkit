@@ -145,8 +145,8 @@ StyledItem {
     /*!
       Configuration of the header.
      */
-    property QtObject settings: null
-    onSettingsChanged: internal.checkSettings(settings)
+    property QtObject config: null
+    onConfigChanged: internal.checkConfig(config)
 
     QtObject {
         id: internal

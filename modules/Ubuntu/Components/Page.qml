@@ -84,9 +84,10 @@ PageTreeNode {
     /*!
       \internal
      */
-    property alias headerSettings: config
+    property alias header: headerConfig
+    // TODO: move to Page11
     Item {
-        id: config
+        id: headerConfig
         /*!
           \qmlproperty headerConfig.actions
           List of actions to show in the header.
@@ -100,14 +101,9 @@ PageTreeNode {
          */
         property Action backAction: null
 
-        // TODO: document
-        property string state: ""
 
         // TODO: document
-        property list<State> states
-
-        // TODO: document
-        // listof strings
+        // list of strings
         property var options: []
 
         // TODO: document

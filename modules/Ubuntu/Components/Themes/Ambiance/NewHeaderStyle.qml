@@ -72,6 +72,13 @@ Item {
         source: headerStyle.separatorBottomSource
     }
 
+    QtObject {
+        id: internal
+        property bool searchMode: styledItem.state === "search"
+        onSearchModeChanged: print("headerStyle searchMode = "+searchMode)
+
+    }
+
     Item {
         id: leftButtonContainer
         anchors {
@@ -87,7 +94,8 @@ Item {
             height: parent ? parent.height : undefined
             width: visible ? units.gu(5) : 0
             action: styledItem.__customBackAction
-            visible: null !== styledItem.__customBackAction &&
+            visible: !internal.searchMode &&
+                     null !== styledItem.__customBackAction &&
                      styledItem.__customBackAction.visible
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
         }
@@ -98,8 +106,9 @@ Item {
             height: parent ? parent.height : undefined
             width: visible ? units.gu(5) : 0
 
-            iconName: "back"
-            visible: styledItem.pageStack !== null &&
+            iconName: internal.searchMode ? "close" : "back"
+            visible: internal.searchMode ||
+                     styledItem.pageStack !== null &&
                      styledItem.pageStack.depth > 1 &&
                      !customBackButton.visible
 
@@ -107,7 +116,11 @@ Item {
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
 
             onTriggered: {
-                styledItem.pageStack.pop();
+                if (internal.searchMode) {
+                    styledItem.state = "";
+                } else {
+                    styledItem.pageStack.pop();
+                }
             }
         }
 
