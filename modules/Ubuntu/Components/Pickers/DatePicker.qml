@@ -523,7 +523,9 @@ StyledItem {
         function updatePickers() {
             if (completed) {
                 // check mode flags first
-                var modes = datePicker.mode.split(/\W/g);
+                // FIXME: The js split() terminates the process on armhf with Qt 5.3 (v4 js)
+                // var modes = datePicker.mode.split(/\W/g);
+                var modes = datePicker.mode.match(/\w+/g);
 
                 showYearPicker = showMonthPicker = showDayPicker =
                 showHoursPicker = showMinutesPicker = showSecondsPicker = false;
@@ -607,7 +609,9 @@ StyledItem {
             completed = false;
 
             // use short format to exclude any extra characters
-            var format = datePicker.locale.dateFormat(Locale.ShortFormat).split(/\W/g);
+            // FIXME: The js split() terminates the process on armhf with Qt 5.3 (v4 js)
+            // var format = datePicker.locale.dateFormat(Locale.ShortFormat).split(/\W/g);
+            var format = datePicker.locale.dateFormat(Locale.ShortFormat).match(/\w+/g);
             // loop through the format to decide the position of the tumbler
             var formatIndex = 0;
             for (var i in format) {
