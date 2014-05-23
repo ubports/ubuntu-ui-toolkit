@@ -154,7 +154,7 @@ StyledItem {
         /*!
           Check that the settings property has the expected properties.
          */
-        function checkSettings(settings) {
+        function checkConfig(config) {
             if (!settings.hasOwnProperty("actions")) {
                 print("ERROR: header settings does not have actions property.");
                 // TODO TIM: check all the required properties.

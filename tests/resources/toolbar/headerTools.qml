@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(50)
@@ -44,10 +44,6 @@ MainView {
                 width: units.gu(10)
                 action: Action {
                     text: "yeah"
-                    onTriggered: {
-                        page.headerSettings.state = "search";
-                    }
-
                     iconName: "search"
                 }
             }

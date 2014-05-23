@@ -82,35 +82,6 @@ PageTreeNode {
     isLeaf: true
 
     /*!
-      \internal
-     */
-    property alias header: headerConfig
-    // TODO: move to Page11
-    Item {
-        id: headerConfig
-        /*!
-          \qmlproperty headerConfig.actions
-          List of actions to show in the header.
-         */
-          property var actions: []
-
-        /*!
-          \qmlproperty headerConfig.backAction
-          Overrides the default \l PageStack back button and the
-          \l Tabs drawer button in the header.
-         */
-        property Action backAction: null
-
-
-        // TODO: document
-        // list of strings
-        property var options: []
-
-        // TODO: document
-        readonly property int selectedOptionIndex: -1
-    }
-
-    /*!
       The title of the page. Will be shown in the header of the \l MainView.
       If the page is used inside a Tab, by default it takes the title from the Tab.
       Otherwise, the default value is an empty string.
