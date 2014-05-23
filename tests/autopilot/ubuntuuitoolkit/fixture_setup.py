@@ -16,6 +16,7 @@
 
 import copy
 import os
+import shutil
 import tempfile
 
 import fixtures
@@ -118,3 +119,43 @@ class InitctlEnvironmentVariable(fixtures.Fixture):
                 original_value)
         else:
             self.addCleanup(environment.unset_initctl_env_var, variable)
+
+
+class FakeHome(fixtures.Fixture):
+
+    should_copy_xauthority_file = True
+
+    def __init__(self, directory=None):
+        super(FakeHome, self).__init__()
+        self.directory = directory
+
+    def setUp(self):
+        super(FakeHome, self).setUp()
+        self.directory = self._make_directory_if_not_specified()
+        if self.should_copy_xauthority_file:
+            self._copy_xauthority_file(self.directory)
+        self.useFixture(
+            InitctlEnvironmentVariable(HOME=self.directory))
+        self.useFixture(
+            fixtures.EnvironmentVariable('HOME', newvalue=self.directory))
+
+    def _make_directory_if_not_specified(self):
+        if self.directory is None:
+            parent_directory = os.path.join(
+                os.environ.get('HOME'), 'autopilot', 'fakeenv')
+            if not os.path.exists(parent_directory):
+                os.makedirs(parent_directory)
+            temp_dir_fixture = fixtures.TempDir(parent_directory)
+            self.useFixture(temp_dir_fixture)
+            return temp_dir_fixture.path
+        else:
+            return self.directory
+
+    def _copy_xauthority_file(self, directory):
+        """Copy the .Xauthority file if it exists in the user's home."""
+        xauthority_file_path = os.path.join(
+            os.environ.get('HOME'), '.Xauthority')
+        if os.path.isfile(xauthority_file_path):
+            shutil.copyfile(
+                xauthority_file_path,
+                os.path.join(directory, '.Xauthority'))

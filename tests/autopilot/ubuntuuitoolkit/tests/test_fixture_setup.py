@@ -24,7 +24,7 @@ except ImportError:
     import mock
 import testtools
 from autopilot import testcase as autopilot_testcase
-from testtools.matchers import Contains, Not, FileExists
+from testtools.matchers import Contains, FileExists, Not, StartsWith
 
 from ubuntuuitoolkit import base, environment, fixture_setup
 
@@ -233,3 +233,73 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
         self.assertEqual(
             'original test value',
             environment.get_initctl_env_var('testenvvarforfixture'))
+
+
+class FakeHomeTestCase(testtools.TestCase):
+
+    def test_fake_home_fixture_patches_initctl_env_var(self):
+        original_home = environment.get_initctl_env_var('HOME')
+        fake_home = original_home + 'fake'
+        result = testtools.TestResult()
+
+        def inner_test():
+            class TestWithFakeHome(testtools.TestCase):
+                def test_it(self):
+                    fake_home_fixture = fixture_setup.FakeHome(fake_home)
+                    fake_home_fixture.should_copy_xauthority_file = False
+                    self.useFixture(fake_home_fixture)
+                    self.assertEqual(
+                        fake_home, environment.get_initctl_env_var('HOME'))
+            return TestWithFakeHome('test_it')
+
+        inner_test().run(result)
+
+        self.assertTrue(
+            result.wasSuccessful(),
+            'Failed to fake the home: {}'.format(result.errors))
+        self.assertEqual(
+            original_home,
+            environment.get_initctl_env_var('HOME'))
+
+    def test_fake_home_fixture_patches_environment_variable(self):
+        original_home = os.environ.get('HOME')
+        fake_home = '/tmp'
+        result = testtools.TestResult()
+
+        def inner_test():
+            class TestWithFakeHome(testtools.TestCase):
+                def test_it(self):
+                    fake_home_fixture = fixture_setup.FakeHome(fake_home)
+                    fake_home_fixture.should_copy_xauthority_file = False
+                    self.useFixture(fake_home_fixture)
+                    self.assertEqual(
+                        fake_home, os.environ.get('HOME'))
+            return TestWithFakeHome('test_it')
+
+        inner_test().run(result)
+
+        self.assertTrue(
+            result.wasSuccessful(),
+            'Failed to fake the home: {}'.format(result.failures))
+        self.assertEqual(original_home, os.environ.get('HOME'))
+
+    def test_fake_home_fixture_must_create_default_directory(self):
+        original_home = os.environ.get('HOME')
+        self.useFixture(fixture_setup.FakeHome())
+
+        home_parent_directory, _ = os.path.split(os.environ.get('HOME'))
+        self.assertEqual(
+            home_parent_directory,
+            os.path.join(original_home, 'autopilot', 'fakeenv'))
+
+    def test_fake_home_fixture_must_copy_xauthority(self):
+        # Fake the home first so we don't write the xauthority on the real
+        # home.
+        self.useFixture(fixture_setup.FakeHome())
+
+        open(os.path.join(os.environ.get('HOME'), '.Xauthority')).close()
+
+        self.useFixture(fixture_setup.FakeHome())
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(os.environ.get('HOME'), '.Xauthority')))
