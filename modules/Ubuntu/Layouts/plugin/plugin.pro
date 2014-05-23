@@ -5,7 +5,7 @@ CONFIG += qt plugin no_keywords
 
 QMAKE_CXXFLAGS += -Werror
 
-QT += quick-private
+QT += quick-private gui-private
 QT += qml-private core-private
 
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {

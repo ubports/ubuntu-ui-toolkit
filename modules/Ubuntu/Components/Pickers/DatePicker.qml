@@ -42,7 +42,7 @@ import Ubuntu.Components 1.1
     Column {
         Label {
             text: "Selected date: W" + datePicker.week + " - " +
-                    Qt.formatDate(datePicker.date, "dddd, dd-mmmm-yyyy")
+                    Qt.formatDate(datePicker.date, "dddd, dd-MMMM-yyyy")
         }
         DatePicker {
             id: datePicker
@@ -61,7 +61,7 @@ import Ubuntu.Components 1.1
 
     Column {
         Label {
-            text: "Selected month: " + Qt.formatDate(datePicker.date, "mmmm-yyyy")
+            text: "Selected month: " + Qt.formatDate(datePicker.date, "MMMM-yyyy")
         }
         DatePicker {
             id: datePicker
@@ -117,7 +117,7 @@ import Ubuntu.Components 1.1
 
     Column {
         Label {
-            text: "Selected date: " + Qt.formatDate(datePicker.date, "dddd, dd-mmmm-yyyy")
+            text: "Selected date: " + Qt.formatDate(datePicker.date, "dddd, dd-MMMM-yyyy")
         }
         DatePicker {
             id: datePicker
@@ -667,5 +667,3 @@ StyledItem {
         }
     }
 }
-
-
