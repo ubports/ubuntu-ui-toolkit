@@ -24,7 +24,7 @@ except ImportError:
     import mock
 import testtools
 from autopilot import testcase as autopilot_testcase
-from testtools.matchers import Contains, FileExists, Not, StartsWith
+from testtools.matchers import Contains, FileExists, Not
 
 from ubuntuuitoolkit import base, environment, fixture_setup
 
