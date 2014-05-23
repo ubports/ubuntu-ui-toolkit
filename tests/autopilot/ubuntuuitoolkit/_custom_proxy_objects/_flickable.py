@@ -183,7 +183,7 @@ class QQuickFlickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
     @autopilot_logging.log_action(logger.info)
     def _swipe_to_middle(self):
         start_x = stop_x = self.globalRect.x + (self.globalRect.width // 2)
-        # Start and stop just a little under the top.
+        # Start just a little under the top.
         containers = self._get_containers()
         top = _get_visible_container_top(containers) + 5
         bottom = _get_visible_container_bottom(containers)
@@ -194,6 +194,25 @@ class QQuickFlickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.dragging.wait_for(False)
         self.moving.wait_for(False)
 
+    @autopilot_logging.log_action(logger.info)
+    def _cancel_pull_to_refresh(self):
+        """Swipe down the list and then swipe it up to cancel the refresh."""
+        # This method is kept private because it's not for the test writers to
+        # call. It's to test pull to refresh. --elopio - 2014-05-22
+        self._swipe_to_top()
+        start_x = stop_x = self.globalRect.x + (self.globalRect.width // 2)
+        # Start just a little under the top.
+        containers = self._get_containers()
+        top = _get_visible_container_top(containers) + 5
+        bottom = _get_visible_container_bottom(containers)
+
+        start_y = top
+        stop_y = bottom // 2
+        self.pointing_device.move(start_x, start_y)
+        self.pointing_device.press()
+        self.pointing_device.move(stop_x, stop_y)
+        self.pointing_device.move(start_x, start_y)
+        self.pointing_device.release()
 
 class PullToRefresh(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """Autopilot helper for the PullToRefresh component."""
