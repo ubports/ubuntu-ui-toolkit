@@ -123,6 +123,7 @@ class InitctlEnvironmentVariable(fixtures.Fixture):
 
 class FakeHome(fixtures.Fixture):
 
+    # We copy the Xauthority file to allow executions using XVFB. If it is not.
     should_copy_xauthority_file = True
 
     def __init__(self, directory=None):
