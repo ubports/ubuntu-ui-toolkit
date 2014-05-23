@@ -39,7 +39,7 @@ class OptionSelectorTestCase(GalleryTestCase):
         collapsed_option_selector.select_option('Label', text='Value 4')
         self.assertEqual(collapsed_option_selector.get_selected_index(), 3)
 
-    def test_select_option_from_exptanded_optionselector(self):
+    def test_select_option_from_expanded_optionselector(self):
         expanded_option_selector = self.main_view.select_single(
             ubuntuuitoolkit.OptionSelector,
             objectName='optionselector_expanded')
