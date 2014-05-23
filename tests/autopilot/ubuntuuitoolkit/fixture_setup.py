@@ -135,6 +135,8 @@ class FakeHome(fixtures.Fixture):
         self.directory = self._make_directory_if_not_specified()
         if self.should_copy_xauthority_file:
             self._copy_xauthority_file(self.directory)
+        # We patch both environment variables so it works on the desktop and on
+        # the phone.
         self.useFixture(
             InitctlEnvironmentVariable(HOME=self.directory))
         self.useFixture(
