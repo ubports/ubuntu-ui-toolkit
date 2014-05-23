@@ -19,6 +19,7 @@ Ubuntu.Components 1.0
 
 API Changes
 ***********
+* CHANGED IN: ThinDivider: base class Image TO Rectangle
 * ADDED IN: all modules exported as 0.1 as well as 1.0 version
 * ADDED IN: PickerDelegate: readonly property Picker picker
 * CHANGED IN: OptionSelector: readonly property bool currentlyExpanded TO property bool currentlyExpanded

@@ -26,6 +26,7 @@ __all__ = [
     'listitems',
     'MainView',
     'OptionSelector',
+    'pickers',
     'popups',
     'QQuickFlickable',
     'QQuickListView',
@@ -52,6 +53,7 @@ from ubuntuuitoolkit._custom_proxy_objects._mainview import MainView
 from ubuntuuitoolkit._custom_proxy_objects._optionselector import (
     OptionSelector
 )
+from ubuntuuitoolkit._custom_proxy_objects import pickers
 from ubuntuuitoolkit._custom_proxy_objects import popups
 from ubuntuuitoolkit._custom_proxy_objects._qquicklistview import (
     QQuickListView
