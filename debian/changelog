@@ -17,7 +17,7 @@ ubuntu-ui-toolkit (0.1.46+14.10.20140520-0ubuntu2) UNRELEASED; urgency=medium
   [ Tim Peeters ]
   * Fix bug where header actions are painted in the middle 
     of the page. Fixes: https://bugs.launchpad.net/bugs/1319861
-  * Add today's header demo program to our resources.
+  * Add header demo program to the resources.
   * Show header if it was not visible before clicking header 
     button in autopilot test. 
 
