@@ -30,7 +30,7 @@ MainView {
         Tabs {
             id: tabs
             Tab {
-                title: "Tab 1"
+                title: "Stack"
                 page: Page {
                     Button {
                         anchors.centerIn: parent
@@ -48,7 +48,7 @@ MainView {
                 }
             }
             Tab {
-                title: "Tab 2"
+                title: "Tools"
                 page: Page {
                     Label {
                         anchors.centerIn: parent
@@ -84,7 +84,7 @@ MainView {
                 }
             }
             Tab {
-                title: "Tab 3"
+                title: "Switch"
                 page: Page {
                     Switch {
                         id: newHeaderSwitch
@@ -113,20 +113,26 @@ MainView {
                 }
             }
             Tab {
-                title: "Tab 4"
+                title: "Actions"
                 page: Page {
                     Label {
                         anchors.centerIn: parent
                         text: "New API"
                     }
-                    header.actions: [
-                        Action {
-                            iconName: "search"
-                        },
-                        Action {
-                            iconName: "camera-flip"
+                    header {
+                        actions: [
+                            Action {
+                                iconName: "search"
+                            },
+                            Action {
+                                iconName: "camera-flip"
+                            }
+                        ]
+                        backAction: Action {
+                            iconName: "clear"
+                            onTriggered: tabs.selectedTabIndex = 0
                         }
-                    ]
+                    }
                 }
             }
             Tab {
