@@ -30,7 +30,6 @@ MainView {
     }
 
     Page {
-        id: page
         title: "This is a long title for the test page"
 
         Label {
@@ -44,7 +43,8 @@ MainView {
                 width: units.gu(10)
                 action: Action {
                     text: "yeah"
-                    iconName: "search"
+                    onTriggered: print("upa")
+                    iconName: "cancel"
                 }
             }
             ToolbarButton {
