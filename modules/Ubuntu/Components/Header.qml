@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 1.1 as Components
 
 /*!
     \internal
@@ -39,7 +40,7 @@ StyledItem {
     Behavior on y {
         enabled: animate && !(header.flickable && header.flickable.moving)
         SmoothedAnimation {
-            duration: UbuntuAnimation.BriskDuration
+            duration: Components.UbuntuAnimation.BriskDuration
         }
     }
 

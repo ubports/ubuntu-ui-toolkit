@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.0
 
 // Documentation is part of the Page documentation in Page11.qdoc
 QtObject {
@@ -33,5 +33,5 @@ QtObject {
          */
     property Action backAction: null
 
-    readonly property TextField input: parent.__propagated.header.input
+//    readonly property TextField input: parent.__propagated.header.input
 }
