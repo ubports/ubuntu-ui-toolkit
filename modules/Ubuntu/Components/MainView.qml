@@ -385,8 +385,9 @@ PageTreeNode {
 
             // FIXME TIM: If activePage is of type Page11 we no longer need to
             //  check that there is a header property.
-            config: internal.activePage && internal.activePage.hasOwnProperty("header") ?
-//                    internal.activePage.header.actions !== undefined ?
+            config: internal.activePage && internal.activePage.hasOwnProperty("header") &&
+                    (internal.activePage.header.actions.length > 0 ||
+                     internal.activePage.header.backAction !== null) ?
                         internal.activePage.header : headerConfig
             onConfigChanged: print("header config = "+headerConfig)
 

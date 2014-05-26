@@ -15,13 +15,13 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 MainView {
     id: mainView
     width: units.gu(40)
     height: units.gu(50)
-    useDeprecatedToolbar: true
+    useDeprecatedToolbar: false
 
     PageStack {
         id: stack
@@ -119,14 +119,14 @@ MainView {
                         anchors.centerIn: parent
                         text: "New API"
                     }
-//                    header.actions: [
-//                        Action {
-//                            iconName: "search"
-//                        },
-//                        Action {
-//                            iconName: "camera-flip"
-//                        }
-//                    ]
+                    header.actions: [
+                        Action {
+                            iconName: "search"
+                        },
+                        Action {
+                            iconName: "camera-flip"
+                        }
+                    ]
                 }
             }
             Tab {
