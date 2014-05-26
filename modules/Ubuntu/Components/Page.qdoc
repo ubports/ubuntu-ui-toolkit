@@ -7,10 +7,9 @@
         Anchors and height of a Page are automatically determined to align with
         the header of the \l MainView, but can be overridden.
 
-    \l MainView provides a header and toolbar for Pages it includes. Each page automatically
-    has its header and toolbar property linked to that of its parent \l MainView.
-    The text of the header, and the buttons in the toolbar are determined by the \l title
-    and \l tools properties of the page:
+    \l MainView provides a header for Pages it includes.
+    The text and actions of the header are determined by the \l title
+    and \l header.actions properties of the page:
 
     \qml
         import QtQuick 2.0
@@ -21,30 +20,27 @@
             height: units.gu(60)
 
             Page {
-                title: "Example page"
+                title: i18n.tr("Example page")
 
                 Label {
                     anchors.centerIn: parent
-                    text: "Hello world!"
+                    text: i18n.tr("Hello world!")
                 }
 
-                //TODO TIM: don't use ToolbarItems, but header.actions.
-                tools: ToolbarItems {
-                    ToolbarButton {
-                        action: Action {
-                            text: "one"
-                        }
-                     }
-                    ToolbarButton {
-                        action: Action {
-                            text: "two"
-                        }
+                header.actions: [
+                    Action {
+                        iconName: "search"
+                        text: i18n.tr("Search")
+                    },
+                    Action {
+                        iconName: "contacts"
+                        text: i18n.tr("Contacts")
                     }
-                }
+                ]
             }
         }
     \endqml
-    See \l MainView for more basic examples that show how to use a header and toolbar.
+    See \l MainView for more basic examples that show how to use the header.
     Advanced navigation structures can be created by adding Pages to a \l PageStack or \l Tabs.
 
     A Page or \l PageStack or \l Tabs inside a Page does not update the header title or actions
@@ -65,6 +61,9 @@
     The toolbar items associated with this Page.
     DEPRECATED. Use \l header.actions instead.
  */
+
+// Cannot define qmlpropertygroup for Page::header, see
+// https://bugreports.qt-project.org/browse/QTBUG-34206
 
 /*!
     \qmlproperty list<Action> Page::header.actions
