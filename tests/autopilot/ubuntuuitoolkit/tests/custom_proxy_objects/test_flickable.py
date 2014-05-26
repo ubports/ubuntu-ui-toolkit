@@ -191,7 +191,10 @@ MainView {
         self.app = self.launch_test_application(
             self.get_alternate_launch_command(),
             '-engine',
+            '-I' + tests._get_module_include_path(),
             fake_application.qml_file_path,
+            '--desktop_file_hint={0}'.format(
+                fake_application.desktop_file_path),
             emulator_base=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase,
             app_type='qt')
 
