@@ -383,13 +383,12 @@ PageTreeNode {
             contents: internal.activePage ?
                           internal.activePage.__customHeaderContents : null
 
-            // FIXME TIM: If activePage is of type Page11 we no longer need to
-            //  check that there is a header property.
+            // FIXME: This can be simplified a lot when we drop support for using
+            //  the deprecated tools property.
             config: internal.activePage && internal.activePage.hasOwnProperty("header") &&
                     (internal.activePage.header.actions.length > 0 ||
                      internal.activePage.header.backAction !== null) ?
                         internal.activePage.header : headerConfig
-            onConfigChanged: print("header config = "+headerConfig)
 
             property Item tabBar: null
             Binding {

@@ -16,22 +16,14 @@
 
 import QtQuick 2.0
 
-// Documentation is part of the Page documentation in Page11.qdoc
+/*!
+  \internal
+  Documentation of properties in Page11.qdoc
+ */
 QtObject {
     // To be used inside a Page only.
     id: headerConfig
-    /*!
-          \qmlproperty headerConfig.actions
-          List of actions to show in the header.
-         */
+
     property list<Action> actions
-
-    /*!
-          \qmlproperty headerConfig.backAction
-          Overrides the default \l PageStack back button and the
-          \l Tabs drawer button in the header.
-         */
     property Action backAction: null
-
-//    readonly property TextField input: parent.__propagated.header.input
 }
