@@ -36,8 +36,6 @@ Template {
         ToolbarButton {
             iconName: "speaker"
         }
-        locked: force.checked
-        opened: force.checked
     }
 
     TemplateSection {
@@ -46,14 +44,6 @@ Template {
 
         TemplateRow {
             title: i18n.tr("See below")
-
-            Label {
-                text: i18n.tr("Always open")
-            }
-
-            Switch {
-                id: force
-            }
         }
     }
 }
