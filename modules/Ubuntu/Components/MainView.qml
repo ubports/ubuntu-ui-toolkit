@@ -18,6 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Unity.Action 1.1 as UnityActions
 import Ubuntu.PerformanceMetrics 1.0
 import QtQuick.Window 2.0
+//import Ubuntu.Components 1.0 as Comp01
 
 /*!
     \qmltype MainView
@@ -355,7 +356,7 @@ PageTreeNode {
             contents: internal.activePage ?
                           internal.activePage.__customHeaderContents : null
 
-            config: internal.activePage ? internal.activePage.header : null
+//            config: internal.activePage ? internal.activePage.header : null
 
             property Item tabBar: null
             Binding {
@@ -459,7 +460,7 @@ PageTreeNode {
     Object {
         id: internal
 
-        property Page activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
+        property Page10 activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
 
         function isPage(item) {
             return item && item.hasOwnProperty("__isPageTreeNode") && item.__isPageTreeNode &&

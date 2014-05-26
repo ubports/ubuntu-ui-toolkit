@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 /*!
     \internal
@@ -115,10 +115,10 @@ StyledItem {
     property var __customBackAction: null
 
     // TODO TIM: document
-    property TextField input: TextField {
-//        visible: false
-        anchors.centerIn: parent
-    }
+//    property TextField input: TextField {
+////        visible: false
+//        anchors.centerIn: parent
+//    }
 
     // FIXME: Currently autopilot can only get visual items, but once bug #1273956
     //  is fixed to support non-visual items, a QtObject may be used.
@@ -151,21 +151,10 @@ StyledItem {
     /*!
       Configuration of the header.
      */
-    property QtObject config: null
-    onConfigChanged: internal.checkConfig(config)
+//    property HeaderConfiguration config: null
 
     QtObject {
         id: internal
-
-        /*!
-          Check that the settings property has the expected properties.
-         */
-        function checkConfig(config) {
-            if (!config.hasOwnProperty("actions")) {
-                print("ERROR: header settings does not have actions property.");
-                // TODO TIM: check all the required properties.
-            }
-        }
 
         /*!
           Track the y-position inside the flickable.

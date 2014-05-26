@@ -17,37 +17,40 @@
 import QtQuick 2.2
 
 // TODO TIM: documentation in Page11.qdoc
-Page {
+Page10 {
     id: page
-    /*!
-      \internal
-     */
-    property alias header: headerConfig
-    // TODO: move to Page11
-    Item {
-        id: headerConfig
-        /*!
-          \qmlproperty headerConfig.actions
-          List of actions to show in the header.
-         */
-          property var actions: []
 
-        /*!
-          \qmlproperty headerConfig.backAction
-          Overrides the default \l PageStack back button and the
-          \l Tabs drawer button in the header.
-         */
-        property Action backAction: null
+    property HeaderConfiguration header: HeaderConfiguration { }
+
+    //    /*!
+//      \internal
+//     */
+//    property alias header: headerConfig
+//    // TODO: move to Page11
+//    Item {
+//        id: headerConfig
+//        /*!
+//          \qmlproperty headerConfig.actions
+//          List of actions to show in the header.
+//         */
+//          property var actions: []
+
+//        /*!
+//          \qmlproperty headerConfig.backAction
+//          Overrides the default \l PageStack back button and the
+//          \l Tabs drawer button in the header.
+//         */
+//        property Action backAction: null
 
 
-        // TODO:
-    }
+//        // TODO:
+//    }
 
 
-    states: [
-        SearchState {
-            target: page.header
-        }
+//    states: [
+//        SearchState {
+//            target: page.header
+//        }
 
-    ]
+//    ]
 }

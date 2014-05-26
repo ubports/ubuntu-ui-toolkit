@@ -16,38 +16,24 @@
 
 import QtQuick 2.2
 
-// TODO TIM: documentation in Page11.qdoc
-Page {
-    id: page
+// Documentation is part of the Page documentation in Page11.qdoc
+QtObject {
+    // To be used inside a Page only.
+    id: headerConfig
     /*!
-      \internal
-     */
-    property alias header: headerConfig
-    // TODO: move to Page11
-    Item {
-        id: headerConfig
-        /*!
           \qmlproperty headerConfig.actions
           List of actions to show in the header.
          */
-          property var actions: []
+    property var actions: []
 
-        /*!
+    /*!
           \qmlproperty headerConfig.backAction
           Overrides the default \l PageStack back button and the
           \l Tabs drawer button in the header.
          */
-        property Action backAction: null
+    property Action backAction: null
 
 
-        // TODO:
-    }
-
-
-    states: [
-        SearchState {
-            target: page.header
-        }
-
-    ]
+    readonly property TextField input: parent.__propagated.header.input
+    // TODO:
 }
