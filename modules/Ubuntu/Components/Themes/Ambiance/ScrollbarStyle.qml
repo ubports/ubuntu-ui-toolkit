@@ -223,11 +223,8 @@ Item {
     }
 
     // The presence of a mouse enables the interactive thumb
-    InverseMouse.onEntered: {
-        interactive = true;
-        // FIXME: Flash the thumb to faciliate debugging
-        thumb.show();
-    }
+    // FIXME: Should use form factor hints
+    InverseMouse.onEntered: interactive = true
 
     // The slider's position represents which part of the flickable is visible.
     // The slider's size represents the size the visible part relative to the
