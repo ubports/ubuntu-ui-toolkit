@@ -55,7 +55,10 @@ class ULLayouts : public QQuickItem
 
     Q_PROPERTY(QString currentLayout READ currentLayout NOTIFY currentLayoutChanged DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<ULConditionalLayout> layouts READ layouts DESIGNABLE false)
-    
+
+    Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
+    Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children DESIGNABLE false)
+    Q_CLASSINFO("DefaultProperty", "data")
 public:
     explicit ULLayouts(QQuickItem *parent = 0);
     ~ULLayouts();
@@ -64,21 +67,23 @@ public:
 
     QString currentLayout() const;
     QList<ULConditionalLayout*> layoutList();
+    QQuickItem *contentItem() const;
 
 Q_SIGNALS:
     void currentLayoutChanged();
 
 protected:
     void componentComplete();
+    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
 
 private:
     QQmlListProperty<ULConditionalLayout> layouts();
+    QQmlListProperty<QObject> data();
+    QQmlListProperty<QQuickItem> children();
 
     friend class ULConditionalLayout;
     Q_DECLARE_PRIVATE(ULLayouts)
     QScopedPointer<ULLayoutsPrivate> d_ptr;
-
-    Q_PRIVATE_SLOT(d_func(), void _q_removeExcludedItem(QObject*))
 };
 
 QML_DECLARE_TYPE(ULLayouts)

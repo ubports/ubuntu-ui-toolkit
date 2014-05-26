@@ -38,21 +38,7 @@ def _get_visible_container_bottom(containers):
     return min(containers_bottom)
 
 
-class Flickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
-
-    @autopilot_logging.log_action(logger.info)
-    def swipe_child_into_view(self, child):
-        """Make the child visible.
-
-        Currently it works only when the object needs to be swiped vertically.
-        TODO implement horizontal swiping. --elopio - 2014-03-21
-
-        """
-        containers = self._get_containers()
-        if not self._is_child_visible(child, containers):
-            self._swipe_non_visible_child_into_view(child, containers)
-        else:
-            logger.debug('The element is already visible.')
+class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     def _get_containers(self):
         """Return a list with the containers to take into account when swiping.
@@ -94,8 +80,38 @@ class Flickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         return (object_center >= visible_top and
                 object_center <= visible_bottom)
 
+    def _slow_drag(self, start_x, stop_x, start_y, stop_y):
+        # If we drag too fast, we end up scrolling more than what we
+        # should, sometimes missing the  element we are looking for.
+        # I found that when the flickDeceleration is 1500, the rate should be
+        # 5 and that when it's 100, the rate should be 1. With those two points
+        # we can get that the following equation.
+        # XXX The deceleration might not be linear with respect to the rate,
+        # but this works for the two types of scrollables we have for now.
+        # --elopio - 2014-05-08
+        rate = (self.flickDeceleration + 250) / 350
+        self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=rate)
+
+
+class QQuickFlickable(Scrollable):
+
+    @autopilot_logging.log_action(logger.info)
+    def swipe_child_into_view(self, child):
+        """Make the child visible.
+
+        Currently it works only when the object needs to be swiped vertically.
+        TODO implement horizontal swiping. --elopio - 2014-03-21
+
+        """
+        containers = self._get_containers()
+        if not self._is_child_visible(child, containers):
+            self._swipe_non_visible_child_into_view(child, containers)
+        else:
+            logger.debug('The element is already visible.')
+
     @autopilot_logging.log_action(logger.info)
     def _swipe_non_visible_child_into_view(self, child, containers):
+        original_content_y = self.contentY
         while not self._is_child_visible(child, containers):
             # Check the direction of the swipe based on the position of the
             # child relative to the immediate flickable container.
@@ -103,6 +119,10 @@ class Flickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 self._swipe_to_show_more_above(containers)
             else:
                 self._swipe_to_show_more_below(containers)
+
+            if self.contentY == original_content_y:
+                raise _common.ToolkitException(
+                    "Couldn't swipe in the flickable.")
 
     @autopilot_logging.log_action(logger.info)
     def _swipe_to_show_more_above(self, containers):
@@ -128,8 +148,12 @@ class Flickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         # bottom.
         top = _get_visible_container_top(containers) + 5
         bottom = _get_visible_container_bottom(containers) - 5
+
         if direction == 'below':
-            start_y = bottom
+            # Take into account that swiping from below can open the toolbar or
+            # trigger the bottom edge gesture.
+            # XXX Do this only if we are close to the bottom edge.
+            start_y = bottom - 20
             stop_y = top
         elif direction == 'above':
             start_y = top
@@ -140,11 +164,6 @@ class Flickable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self._slow_drag(start_x, stop_x, start_y, stop_y)
         self.dragging.wait_for(False)
         self.moving.wait_for(False)
-
-    def _slow_drag(self, start_x, stop_x, start_y, stop_y):
-        # If we drag too fast, we end up scrolling more than what we
-        # should, sometimes missing the  element we are looking for.
-        self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=5)
 
     @autopilot_logging.log_action(logger.info)
     def _scroll_to_top(self):
