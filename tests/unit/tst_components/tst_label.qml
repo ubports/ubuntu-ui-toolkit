@@ -44,7 +44,7 @@ TestCase {
     }
 
     function test_fontWeight() {
-        compare(textCustom.font.weight, Font.Normal, "font.weight is 'normal' by default")
+        compare(textCustom.font.weight, Font.Light, "font.weight is 'light' by default")
 
         var fontWeights = [ Font.Light, Font.Normal, Font.DemiBold, Font.Bold, Font.Black ]
 
