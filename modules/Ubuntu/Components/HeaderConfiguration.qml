@@ -24,7 +24,7 @@ QtObject {
           \qmlproperty headerConfig.actions
           List of actions to show in the header.
          */
-    property var actions: []
+    property list<Action> actions
 
     /*!
           \qmlproperty headerConfig.backAction

@@ -346,19 +346,49 @@ PageTreeNode {
             title: internal.activePage ? internal.activePage.title : ""
             flickable: internal.activePage ? internal.activePage.flickable : null
             pageStack: internal.activePage ? internal.activePage.pageStack : null
-            __customBackAction: internal.activePage && internal.activePage.tools &&
+
+            HeaderConfiguration {
+                id: headerConfig
+                // for backwards compatibility with deprecated tools property
+                actions: internal.activePage ?
+                             getActionsFromTools(internal.activePage.tools) : null
+
+                backAction: internal.activePage && internal.activePage.tools &&
                           internal.activePage.tools.hasOwnProperty("back") &&
                           internal.activePage.tools.back &&
                           internal.activePage.tools.back.hasOwnProperty("action") ?
                               internal.activePage.tools.back.action : null
+
+                function getActionsFromTools(tools) {
+                    if (!tools || !tools.hasOwnProperty("contents")) {
+                        // tools is not of type ToolbarActions. Not supported.
+                        return null;
+                    }
+
+                    var actionList = [];
+                    for (var i in tools.contents) {
+                        var item = tools.contents[i];
+                        if (item && item.hasOwnProperty("action") && item.action !== null) {
+                            var action = item.action;
+                            if (action.hasOwnProperty("iconName") && action.hasOwnProperty("text")) {
+                                // it is likely that the action is of type Action.
+                                actionList.push(action);
+                            }
+                        }
+                    }
+                    return actionList;
+                }
+            }
 
             contents: internal.activePage ?
                           internal.activePage.__customHeaderContents : null
 
             // FIXME TIM: If activePage is of type Page11 we no longer need to
             //  check that there is a header property.
-            config: internal.activePage && internal.activePage.hasOwnProperty("header")
-                    ? internal.activePage.header : null
+            config: internal.activePage && internal.activePage.hasOwnProperty("header") ?
+//                    internal.activePage.header.actions !== undefined ?
+                        internal.activePage.header : headerConfig
+            onConfigChanged: print("header config = "+headerConfig)
 
             property Item tabBar: null
             Binding {
@@ -397,28 +427,6 @@ PageTreeNode {
             }
 
             useDeprecatedToolbar: mainView.useDeprecatedToolbar
-
-            function getActionsFromTools(tools) {
-                if (!tools || !tools.hasOwnProperty("contents")) {
-                    // tools is not of type ToolbarActions. Not supported.
-                    return null;
-                }
-
-                var actionList = [];
-                for (var i in tools.contents) {
-                    var item = tools.contents[i];
-                    if (item && item.hasOwnProperty("action") && item.action !== null) {
-                        var action = item.action;
-                        if (action.hasOwnProperty("iconName") && action.hasOwnProperty("text")) {
-                            // it is likely that the action is of type Action.
-                            actionList.push(action);
-                        }
-                    }
-                }
-                return actionList;
-            }
-            actions: internal.activePage ?
-                         getActionsFromTools(internal.activePage.tools) : null
         }
 
         Connections {

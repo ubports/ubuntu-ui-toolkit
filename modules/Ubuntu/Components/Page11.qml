@@ -14,43 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
-
 // TODO TIM: documentation in Page11.qdoc
 Page10 {
-    id: page
 
-    property HeaderConfiguration header: HeaderConfiguration { }
-
-    //    /*!
-//      \internal
-//     */
-//    property alias header: headerConfig
-//    // TODO: move to Page11
-//    Item {
-//        id: headerConfig
-//        /*!
-//          \qmlproperty headerConfig.actions
-//          List of actions to show in the header.
-//         */
-//          property var actions: []
-
-//        /*!
-//          \qmlproperty headerConfig.backAction
-//          Overrides the default \l PageStack back button and the
-//          \l Tabs drawer button in the header.
-//         */
-//        property Action backAction: null
-
-
-//        // TODO:
-//    }
-
-
-//    states: [
-//        SearchState {
-//            target: page.header
-//        }
-
-//    ]
+    readonly property alias header: headerConfig
+    HeaderConfiguration {
+        id: headerConfig
+    }
 }

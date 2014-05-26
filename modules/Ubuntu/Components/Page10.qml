@@ -188,9 +188,8 @@ PageTreeNode {
         Binding {
             target: tools
             property: "visible"
-            value: false
-            when: internal.header && !internal.header.useDeprecatedToolbar &&
-                  page.tools !== null
+            value: internal.header.useDeprecatedToolbar
+            when: internal.header && page.tools !== null
         }
 
         function isVerticalFlickable(object) {

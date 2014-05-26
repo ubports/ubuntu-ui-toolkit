@@ -21,7 +21,7 @@ MainView {
     id: mainView
     width: units.gu(40)
     height: units.gu(50)
-    useDeprecatedToolbar: false
+    useDeprecatedToolbar: true
 
     PageStack {
         id: stack
@@ -110,12 +110,24 @@ MainView {
                             }
                         }
                     }
-
                 }
             }
             Tab {
                 title: "Tab 4"
-                page: Page { }
+                page: Page {
+                    Label {
+                        anchors.centerIn: parent
+                        text: "New API"
+                    }
+//                    header.actions: [
+//                        Action {
+//                            iconName: "search"
+//                        },
+//                        Action {
+//                            iconName: "camera-flip"
+//                        }
+//                    ]
+                }
             }
             Tab {
                 title: "Tab 5"

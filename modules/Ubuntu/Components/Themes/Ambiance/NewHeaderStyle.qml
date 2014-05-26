@@ -86,9 +86,9 @@ Item {
             objectName: "customBackButton"
             height: parent ? parent.height : undefined
             width: visible ? units.gu(5) : 0
-            action: styledItem.__customBackAction
-            visible: null !== styledItem.__customBackAction &&
-                     styledItem.__customBackAction.visible
+            action: styledItem.config.backAction
+            visible: null !== styledItem.config.backAction &&
+                     styledItem.config.backAction.visible
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
         }
 
@@ -206,7 +206,7 @@ Item {
     Row {
         id: actionsContainer
 
-        property var visibleActions: getVisibleActions(styledItem.actions)
+        property var visibleActions: getVisibleActions(styledItem.config.actions)
         function getVisibleActions(actions) {
             var visibleActionList = [];
             for (var i in actions) {
