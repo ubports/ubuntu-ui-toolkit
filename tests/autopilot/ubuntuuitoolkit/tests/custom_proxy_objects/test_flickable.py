@@ -51,7 +51,7 @@ class FlickableTestCase(testtools.TestCase):
             mock_non_container, mock_container]
 
         dummy_state = {'id': '10'}
-        flickable = ubuntuuitoolkit.Flickable(
+        flickable = ubuntuuitoolkit.QQuickFlickable(
             dummy_state, '/dummy'.encode(), 'dummy')
 
         flickable.get_root_instance = lambda: mock_root_instance
@@ -67,7 +67,7 @@ class FlickableTestCase(testtools.TestCase):
         dummy_flicking = (0, 'dummy')
         state_with_flicking = {'id': dummy_id, 'flicking': dummy_flicking}
         element = _common.UbuntuUIToolkitCustomProxyObjectBase(
-            state_with_flicking, 'dummy', 'dummy')
+            state_with_flicking, '/dummy'.encode(), 'dummy')
         with element.no_automatic_refreshing():
             self.assertTrue(element.is_flickable())
 
@@ -76,7 +76,7 @@ class FlickableTestCase(testtools.TestCase):
         dummy_id = (0, 0)
         state_without_flicking = {'id': dummy_id}
         element = _common.UbuntuUIToolkitCustomProxyObjectBase(
-            state_without_flicking, 'dummy', 'dummy')
+            state_without_flicking, '/dummy'.encode(), 'dummy')
         with element.no_automatic_refreshing():
             self.assertFalse(element.is_flickable())
 

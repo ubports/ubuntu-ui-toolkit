@@ -22,39 +22,39 @@ ActionSelectionPopover {
     objectName: "text_input_popover"
     actions: ActionList {
         Action {
-            text: i18n.tr("Select All")
+            text: i18n.dtr('ubuntu-ui-toolkit', "Select All")
             enabled: target && target.text !== "" && target.text !== target.selectedText
             onTriggered: target.selectAll()
         }
         Action {
-            text: i18n.tr("Select Word")
+            text: i18n.dtr('ubuntu-ui-toolkit', "Select Word")
             enabled: target && target.text !== "" && target.selectedText === ""
             onTriggered: target.selectWord()
         }
         Action {
-            text: i18n.tr("Cut")
+            text: i18n.dtr('ubuntu-ui-toolkit', "Cut")
             // If paste/editing is not possible, then disable also "Cut" operation
             // It is applicable for ReadOnly's TextFields and TextAreas
             enabled: target && target.selectedText !== "" && target.canPaste
             onTriggered: target.cut()
         }
         Action {
-            text: i18n.tr("Copy")
+            text: i18n.dtr('ubuntu-ui-toolkit', "Copy")
             enabled: target && target.selectedText !== ""
             onTriggered: target.copy()
         }
         Action {
-            text: i18n.tr("Paste")
+            text: i18n.dtr('ubuntu-ui-toolkit', "Paste")
             enabled: target && target.canPaste
             onTriggered: target.paste()
         }
         Action {
-            text: i18n.tr("Undo")
+            text: i18n.dtr('ubuntu-ui-toolkit', "Undo")
             enabled: target && target.canUndo
             onTriggered: target.undo()
         }
         Action {
-            text: i18n.tr("Redo")
+            text: i18n.dtr('ubuntu-ui-toolkit', "Redo")
             enabled: target && target.canRedo
             onTriggered: target.redo()
         }
