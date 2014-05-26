@@ -169,7 +169,7 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
         :parameter object_name: The QML objectName property of the popover.
 
         """
-        return self.select_single(
+        return self.wait_select_single(
             popups.ActionSelectionPopover, objectName=object_name)
 
     @autopilot_logging.log_action(logger.info)

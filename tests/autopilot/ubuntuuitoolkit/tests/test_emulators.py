@@ -32,7 +32,7 @@ class DeprecatedSymbolsTestCase(testscenarios.TestWithScenarios):
 
     symbols_retaining_name = [
         'check_autopilot_version', 'get_keyboard', 'get_pointing_device',
-        'CheckBox', 'Flickable', 'Header', 'MainView', 'OptionSelector',
+        'CheckBox', 'Header', 'MainView', 'OptionSelector', 'QQuickFlickable',
         'QQuickListView', 'TabBar', 'Tabs', 'TextField', 'Toolbar',
     ]
 

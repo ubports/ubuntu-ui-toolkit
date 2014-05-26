@@ -22,7 +22,7 @@ class HeaderTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
@@ -33,11 +33,46 @@ MainView {
     Page {
         title: "Test title"
 
-        Label {
-            id: label
-            objectName: "clicked_label"
-            anchors.centerIn: parent
-            text: "No button clicked."
+        Flickable {
+            anchors.fill: parent
+            contentHeight: units.gu(120)
+            objectName: "header_test_flickable"
+
+            Label {
+                id: label
+                objectName: "clicked_label"
+                anchors {
+                    top: parent.top
+                    horizontalCenter: parent.horizontalCenter
+                }
+                text: "No button clicked."
+            }
+
+            Button {
+                objectName: "hide_actions_button"
+                anchors {
+                    top: label.bottom
+                    topMargin: units.gu(5)
+                    horizontalCenter: parent.horizontalCenter
+                }
+                text: "Hide some actions"
+                onClicked: {
+                    cancelAction.visible = false;
+                    for (var i=0; i < 3; i++) {
+                        buttonRepeater.itemAt(i).action.visible = false;
+                    }
+                    // only three of five visible actions left
+                }
+            }
+            Label {
+                id: endLabel
+                objectName: "end_label"
+                anchors {
+                    bottom: parent.bottom
+                    horizontalCenter: parent.horizontalCenter
+                }
+                text: "The end."
+            }
         }
 
         tools: ToolbarItems {
@@ -62,22 +97,6 @@ MainView {
                 }
             }
         }
-
-        Button {
-            objectName: "hide_actions_button"
-            anchors {
-                bottom: parent.bottom
-                horizontalCenter: parent.horizontalCenter
-            }
-            text: "Hide some actions"
-            onClicked: {
-                cancelAction.visible = false;
-                for (var i=0; i < 3; i++) {
-                    buttonRepeater.itemAt(i).action.visible = false;
-                }
-                // only three of five visible actions left
-            }
-        }
     }
 }
 """)
@@ -95,8 +114,8 @@ MainView {
         self.assertEqual(self.header.title, "Test title")
 
     def test_click_header_action_button(self):
-        self.header.click_action_button('action1')
-        self.assertEqual(self.label.text, 'Button 1 clicked.')
+        self.header.click_action_button('action0')
+        self.assertEqual(self.label.text, 'Button 0 clicked.')
 
     def test_click_header_overflow_action_button(self):
         # custom back button and first action button go in the header
@@ -116,6 +135,13 @@ MainView {
     def test_click_custom_back_button(self):
         self.header.click_custom_back_button()
         self.assertEqual(self.label.text, 'Cancel button clicked.')
+
+    def test_click_header_action_button_with_hidden_header(self):
+        bottom_label = self.main_view.select_single(objectName='end_label')
+        bottom_label.swipe_into_view()
+        self.assertFalse(self.header._is_visible())
+        self.header.click_action_button('action0')
+        self.assertEqual(self.label.text, 'Button 0 clicked.')
 
     def test_overflow_button(self):
         # there are 5 actions plus a custom back action
