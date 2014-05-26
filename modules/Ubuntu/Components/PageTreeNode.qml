@@ -42,13 +42,6 @@ StyledItem {
 
     /*!
       \deprecated
-      The header of the node. Propagates down from the root node.
-      This property is deprecated.
-     */
-    property Header header: node.__propagated ? node.__propagated.header : null
-
-    /*!
-      \deprecated
       The toolbar of the node. Propagates down from the root node.
       This property is deprecated.
      */

@@ -9,6 +9,7 @@ Ubuntu.Components 1.1
 
 API Changes
 ***********
+* REMOVED IN: PageTreeNode (internal): property Header header
 
 Compatibility Breaks
 ********************
