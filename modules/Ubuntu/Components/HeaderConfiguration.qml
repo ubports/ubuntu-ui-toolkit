@@ -33,7 +33,5 @@ QtObject {
          */
     property Action backAction: null
 
-
     readonly property TextField input: parent.__propagated.header.input
-    // TODO:
 }

@@ -18,7 +18,6 @@ import QtQuick 2.0
 import Ubuntu.Unity.Action 1.1 as UnityActions
 import Ubuntu.PerformanceMetrics 1.0
 import QtQuick.Window 2.0
-//import Ubuntu.Components 1.0 as Comp01
 
 /*!
     \qmltype MainView
@@ -356,7 +355,10 @@ PageTreeNode {
             contents: internal.activePage ?
                           internal.activePage.__customHeaderContents : null
 
-//            config: internal.activePage ? internal.activePage.header : null
+            // FIXME TIM: If activePage is of type Page11 we no longer need to
+            //  check that there is a header property.
+            config: internal.activePage && internal.activePage.hasOwnProperty("header")
+                    ? internal.activePage.header : null
 
             property Item tabBar: null
             Binding {
