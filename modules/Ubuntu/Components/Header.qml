@@ -132,6 +132,17 @@ StyledItem {
      */
     property HeaderConfiguration config: null
 
+    // FIXME TIM: why can I not make this readonly?
+    // Set input.visible to true to replace the title with the input
+    property Item input: Components.TextField {
+        // FIXME TIM: why no qtc syntax highlighting here? sth wrong?
+        enabled: false
+        anchors {
+            verticalCenter: parent ? parent.verticalCenter : undefined
+            left: parent ? parent.left : undefined
+        }
+    }
+
     QtObject {
         id: internal
 

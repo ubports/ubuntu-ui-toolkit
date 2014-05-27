@@ -168,7 +168,7 @@ Item {
 
         Label {
             LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
-            visible: !styledItem.contents
+            visible: !contentsContainer.visible
             anchors {
                 left: parent.left
                 right: parent.right
@@ -180,14 +180,13 @@ Item {
             color: headerStyle.textColor
             elide: Text.ElideRight
         }
-
         Item {
             // This Item is used to make the custom header item invisible
             // when styledItem.contents is unset and its parent is not updated
             // when the bindings below is no longer active
             id: contentsContainer
             anchors.fill: parent
-            visible: styledItem.contents
+            visible: styledItem.contents || styledItem.input.enabled
         }
         Binding {
             target: styledItem.contents
@@ -200,6 +199,12 @@ Item {
             property: "parent"
             value: contentsContainer
             when: styledItem.contents
+        }
+        Binding {
+            target: styledItem.input
+            property: "parent"
+            value: contentsContainer
+            when: styledItem.input.enabled && !styledItem.contents
         }
     }
 

@@ -28,6 +28,7 @@ MainView {
 
         Component.onCompleted: stack.push(tabs)
         Tabs {
+            selectedTabIndex: 4
             id: tabs
             Tab {
                 title: "Stack"
@@ -136,8 +137,59 @@ MainView {
                 }
             }
             Tab {
-                title: "Tab 5"
-                page: Page { }
+                title: "Search"
+                page: Page {
+                    id: searchPage
+
+                    Label {
+                        anchors.centerIn: parent
+                        text: searchPage.state == "search" ? "search mode" : "normal mode"
+                    }
+
+                    Action {
+                        id: leaveSearchAction
+                        text: "back"
+                        iconName: "back"
+                        onTriggered: searchPage.state = ""
+                    }
+
+                    property list<Action> searchActions: [
+                        Action {
+                            iconName: "contact"
+                        }
+                    ]
+
+                    Action {
+                        id: searchAction
+                        iconName: "search"
+                        onTriggered: searchPage.state = "search"
+                    }
+                    head.actions: searchAction
+                    state: "search"
+                    states: [
+                        State {
+                            name: ""
+                            PropertyChanges {
+                                target: searchPage.head
+                                // needed otherwise actions will not be
+                                // returned to its original state.
+                                actions: [ searchAction ]
+                            }
+                        },
+                        State {
+                            name: "search"
+                            PropertyChanges {
+                                target: searchPage.head.input
+                                enabled: true
+                            }
+                            PropertyChanges {
+                                target: searchPage.head
+                                backAction: leaveSearchAction
+                                actions: searchPage.searchActions
+                            }
+                        }
+                    ]
+                }
             }
         }
     }
