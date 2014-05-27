@@ -61,19 +61,6 @@ Item
     readonly property bool running
     property size sourceSize
     readonly property int status
-Header 0.1 1.0
-StyledItem
-    property bool animate
-    function show()
-    function hide()
-    property string title
-    property Item contents
-    property var tabsModel
-    property var pageStack
-    property var actions
-    property var __customBackAction
-    property Flickable flickable
-    property bool useDeprecatedToolbar
 Icon 0.1 1.0
 Item
     property string name
