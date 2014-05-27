@@ -17,7 +17,6 @@
  */
 
 #include "i18n.h"
-#include <QtCore/QStandardPaths>
 #include <QtCore/QDir>
 
 namespace C {
@@ -104,13 +103,14 @@ void UbuntuI18n::setDomain(const QString &domain) {
     /*
      The default is /usr/share/locale if we don't set a folder
      For click we use APP_DIR/share/locale
-     eg. /usr/share/click/preinstalled/com.example.foo/current/share/locale
+     e.g. /usr/share/click/preinstalled/com.example.foo/current/share/locale
      */
-    QDir appDir(getenv("APP_DIR"));
-    if (appDir.exists()) {
-        QString localePath(appDir.filePath("share/locale"));
-        C::bindtextdomain(domain.toUtf8(), localePath.toUtf8());
+    QString appDir(getenv("APP_DIR"));
+    if (!QDir::isAbsolutePath (appDir)) {
+        appDir = "/usr";
     }
+    QString localePath(QDir(appDir).filePath("share/locale"));
+    C::bindtextdomain(domain.toUtf8(), localePath.toUtf8());
     Q_EMIT domainChanged();
 }
 
