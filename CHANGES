@@ -10,6 +10,7 @@ Ubuntu.Components 1.1
 API Changes
 ***********
 * REMOVED IN: PageTreeNode (internal): property Header header
+* REMOVED IN: PageTreeNode (internal): property Toolbar toolbar
 
 Compatibility Breaks
 ********************
