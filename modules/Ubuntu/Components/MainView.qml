@@ -385,10 +385,10 @@ PageTreeNode {
 
             // FIXME: This can be simplified a lot when we drop support for using
             //  the deprecated tools property.
-            config: internal.activePage && internal.activePage.hasOwnProperty("header") &&
-                    (internal.activePage.header.actions.length > 0 ||
-                     internal.activePage.header.backAction !== null) ?
-                        internal.activePage.header : headerConfig
+            config: internal.activePage && internal.activePage.hasOwnProperty("head") &&
+                    (internal.activePage.head.actions.length > 0 ||
+                     internal.activePage.head.backAction !== null) ?
+                        internal.activePage.head : headerConfig
 
             property Item tabBar: null
             Binding {

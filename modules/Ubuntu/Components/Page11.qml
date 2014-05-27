@@ -14,10 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO TIM: documentation in Page11.qdoc
+// Documentation in Page11.qdoc
 Page10 {
-
-    readonly property alias header: headerConfig
+    readonly property alias head: headerConfig
     HeaderConfiguration {
         id: headerConfig
     }

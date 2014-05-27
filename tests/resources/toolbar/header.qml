@@ -119,7 +119,7 @@ MainView {
                         anchors.centerIn: parent
                         text: "New API"
                     }
-                    header {
+                    head {
                         actions: [
                             Action {
                                 iconName: "search"

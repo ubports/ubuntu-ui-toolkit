@@ -59,20 +59,20 @@
     \qmlproperty Item Page::tools
     \deprecated
     The toolbar items associated with this Page.
-    DEPRECATED. Use \l header.actions instead.
+    DEPRECATED. Use \l head.actions instead.
  */
 
-// Cannot define qmlpropertygroup for Page::header, see
+// Cannot define qmlpropertygroup for Page::head, see
 // https://bugreports.qt-project.org/browse/QTBUG-34206
 
 /*!
-    \qmlproperty list<Action> Page::header.actions
+    \qmlproperty list<Action> Page::head.actions
     \since Ubuntu.Components 1.1
     List of actions to show in the header.
  */
 
 /*!
-    \qmlproperty Action Page::header.backAction
+    \qmlproperty Action Page::head.backAction
     \since Ubuntu.Components 1.1
     Overrides the default \l PageStack back button and the
     \l Tabs drawer button in the header.
@@ -120,5 +120,5 @@
     Local actions. These actions will be made available outside the application
     (for example, to HUD) when the Page is active. For actions that are always available
     when the application is running, use the actions property of \l MainView.
-    For actions in the header, see \l header.actions.
+    For actions in the header, see \l head.actions.
 */
