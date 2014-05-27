@@ -146,26 +146,13 @@ MainView {
                         text: searchPage.state == "search" ? "search mode" : "normal mode"
                     }
 
-                    Action {
-                        id: leaveSearchAction
-                        text: "back"
-                        iconName: "back"
-                        onTriggered: searchPage.state = ""
-                    }
-
-                    property list<Action> searchActions: [
-                        Action {
-                            iconName: "contact"
-                        }
-                    ]
-
-                    Action {
+                    head.actions: Action {
                         id: searchAction
                         iconName: "search"
                         onTriggered: searchPage.state = "search"
                     }
-                    head.actions: searchAction
-                    state: "search"
+
+                    state: ""
                     states: [
                         State {
                             name: ""
@@ -177,15 +164,36 @@ MainView {
                             }
                         },
                         State {
+                            id: headerState
+                            property alias head: searchPage.head
+                            property bool showInput: true
+                            property list<Action> actions: [
+                                Action {
+                                    iconName: "contact"
+                                }
+                            ]
+                            property alias inputChanges: inputPropertyChanges
+                            property Action backAction: Action {
+                                id: leaveSearchAction
+                                text: "back"
+                                iconName: "back"
+                                onTriggered: searchPage.state = ""
+                            }
                             name: "search"
                             PropertyChanges {
+                                id: inputPropertyChanges
                                 target: searchPage.head.input
-                                enabled: true
+                                placeholderText: "search..."
                             }
                             PropertyChanges {
-                                target: searchPage.head
-                                backAction: leaveSearchAction
-                                actions: searchPage.searchActions
+                                target: headerState.head.input
+                                enabled: headerState.showInput
+//                                placeholderText: "search..."
+                            }
+                            PropertyChanges {
+                                target: headerState.head
+                                backAction: headerState.backAction
+                                actions: headerState.actions
                             }
                         }
                     ]
