@@ -647,10 +647,6 @@ plugins.qmltypes
     Method {
     name: "get"
     Parameter { name: "row"; type: "int" }
-    Method {
-    name: "data"
-    Parameter { name: "row"; type: "int" }
-    Parameter { name: "role"; type: "int" }
     Method { name: "count"; type: "int" }
     name: "ShapeItem"
     prototype: "QQuickItem"
