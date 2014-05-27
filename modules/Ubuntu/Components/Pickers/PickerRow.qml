@@ -96,7 +96,7 @@ Row {
             }
             delegate: PickerDelegate {
                 Label {
-                    objectName: "PickerRow_PickerLabel"
+                    objectName: "PickerRow_PickerLabel" + (pickerModel ? modelData : "")
                     text: pickerModel ? pickerModel.text(modelData) : ""
                     anchors.fill: parent
                     verticalAlignment: Text.AlignVCenter

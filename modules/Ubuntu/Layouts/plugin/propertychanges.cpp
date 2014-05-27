@@ -145,7 +145,7 @@ void PropertyAction::revert(bool reset)
     }
     if (fromBinding) {
         QQmlAbstractBinding *revertedBinding = QQmlPropertyPrivate::setBinding(property, fromBinding);
-        if (revertedBinding && ((revertedBinding != toBinding.data()) || (revertedBinding == toBinding.data() && deleteToBinding))) {
+        if (revertedBinding && (revertedBinding != fromBinding) && ((revertedBinding != toBinding.data()) || (revertedBinding == toBinding.data() && deleteToBinding))) {
             revertedBinding->destroy();
         }
     } else if (!toBinding.isNull() && QQmlPropertyPrivate::binding(property) == toBinding.data()) {
@@ -222,24 +222,6 @@ PropertyBackup::PropertyBackup(QQuickItem *target, const QString &property)
 {
 }
 
-/******************************************************************************
- * ReparentChange
- */
-ReparentChange::ReparentChange(QQuickItem *target, const QString &property, QQuickItem *source)
-    : PropertyChange(target, property, QVariant(), Normal)
-    , sourceProperty(source, property, qmlContext(source))
-{
-    action.type = PropertyAction::Binding;
-}
-
-void ReparentChange::saveState()
-{
-    action.toValue = sourceProperty.read();
-    PropertyChange::saveState();
-    if (sourceProperty.isValid()) {
-        action.setTargetBinding(QQmlPropertyPrivate::binding(sourceProperty), false);
-    }
-}
 
 /******************************************************************************
  * ParentChange
@@ -304,35 +286,31 @@ void AnchorChange::revert()
  * ItemStackBackup
  * High priority change backing up the item's stack position.
  */
-ItemStackBackup::ItemStackBackup(QQuickItem *item, QQuickItem *currentLayoutItem, QQuickItem *previousLayoutItem)
+ItemStackBackup::ItemStackBackup(QQuickItem *item)
     : PropertyChange(High)
     , target(item)
-    , currentLayout(currentLayoutItem)
-    , previousLayout(previousLayoutItem)
-    , originalStackBefore(0)
+    , prevItem(0)
 {
 }
 
 void ItemStackBackup::saveState()
 {
     QQuickItem *rewindParent = target->parentItem();
+    if (!rewindParent) {
+        return;
+    }
     // save original stack position, but detect layout objects!
     QList<QQuickItem*> children = rewindParent->childItems();
-    for (int ii = 0; ii < children.count() - 1; ++ii) {
-        if (children.at(ii) == target) {
-            originalStackBefore = children.at(ii + 1);
-            if (originalStackBefore == currentLayout || originalStackBefore == previousLayout) {
-                originalStackBefore = 0;
-            }
-            break;
-        }
+    int index = children.indexOf(target);
+    if (index > 0) {
+        prevItem = children.at(index - 1);
     }
 }
 
 void ItemStackBackup::revert()
 {
-    if (originalStackBefore) {
-        target->stackBefore(originalStackBefore);
+    if (prevItem) {
+        target->stackAfter(prevItem);
     }
 }
 
@@ -457,6 +435,13 @@ ChangeList &ChangeList::addChange(PropertyChange *change)
         changes[change->priority()] << change;
     }
     return *this;
+}
+
+// creates two changes, one for reparenting and one for itemstack backup
+ChangeList &ChangeList::addParentChange(QQuickItem *item, QQuickItem *newParent, bool topmostItem)
+{
+    return addChange(new ParentChange(item, newParent, topmostItem))
+            .addChange(new ItemStackBackup(item));
 }
 
 QList<PropertyChange*> ChangeList::unifiedChanges()

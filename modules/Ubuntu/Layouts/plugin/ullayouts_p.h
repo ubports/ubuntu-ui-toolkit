@@ -33,9 +33,8 @@ public:
 
     ULLayoutsPrivate(ULLayouts *qq);
 
-    void _q_removeExcludedItem(QObject *excludedItem);
     void validateConditionalLayouts();
-    void getLaidOutItems();
+    void getLaidOutItems(QQuickItem *item);
     void updateLayout();
 
     static void error(QObject *item, const QString &message);
@@ -51,9 +50,9 @@ private:
     QList<ULConditionalLayout*> layouts;
     ChangeList changes;
     LaidOutItemsMap itemsToLayout;
-    QList<QQuickItem*> excludedFromLayout;
     QQuickItem* currentLayoutItem;
     QQuickItem* previousLayoutItem;
+    QQuickItem* contentItem;
     int currentLayoutIndex;
     bool ready:1;
 
@@ -64,10 +63,9 @@ private:
     static void clear_layouts(QQmlListProperty<ULConditionalLayout>*);
 
     void reLayout();
-    void hideExcludedItems();
     void reparentItems();
+    QList<ULItemLayout*> collectContainers(QQuickItem *fromItem);
     void reparentToItemLayout(LaidOutItemsMap &map, ULItemLayout *fragment);
-    void itemActivate(QQuickItem *item, bool activate);
 };
 
 #endif // ULLAYOUTS_P_H
