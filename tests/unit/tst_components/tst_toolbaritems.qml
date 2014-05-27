@@ -16,13 +16,14 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 Item {
     width: 200
     height: 200
 
     MainView {
+        id: mainView
         anchors.fill: parent
         PageStack {
             id: pageStack0
@@ -37,7 +38,8 @@ Item {
 
         Page {
             id: page1
-            tools: ToolbarItems {
+            tools: toolbarItems
+            ToolbarItems {
                 id: toolbarItems
                 ToolbarButton {
                     id: button
@@ -52,7 +54,6 @@ Item {
 
         function initTestCase() {
             compare(toolbarItems.pageStack, null, "pageStack initially null");
-            compare(toolbarItems.opened, false, "toolbar items closed by default");
             compare(toolbarItems.locked, false, "toolbar items unlocked with children");
             compare(emptyToolbarItems.locked, true, "toolbar items unlocked without visible children");
             compare(toolbarItems.back === undefined, false, "back item set by default");
@@ -61,7 +62,7 @@ Item {
         }
 
         function test_opened() {
-            compare(toolbarItems.opened, true, "Toolbar items initially opened");
+            compare(toolbarItems.opened, true, "Toolbar items opened when page is first loaded");
             toolbarItems.opened = false;
             compare(toolbarItems.opened, false, "Toolbar items can be closed");
             toolbarItems.opened = true;
@@ -94,6 +95,13 @@ Item {
             compare(page0.tools.back.visible, false, "back item not visible with only one page on the stack");
             pageStack0.pop();
             compare(pageStack0.depth, 0, "pageStack is empty after popping both pages");
+        }
+
+        function test_visible() {
+            compare(toolbarItems.visible, true, "Toolbar items are visible when in toolbar");
+            mainView.useDeprecatedToolbar = false;
+            compare(toolbarItems.visible, false, "Toolbar items are invisible when not using deprecated toolbar");
+            mainView.useDeprecatedToolbar = true;
         }
     }
 }

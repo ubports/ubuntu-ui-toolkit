@@ -19,7 +19,7 @@ import Ubuntu.Unity.Action 1.1 as UnityActions
 
 /*!
     \qmltype Action
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief Describe an action that can be re-used in, for example a \l Button
 
@@ -50,7 +50,7 @@ UnityActions.Action {
       The icon associated with the action.
       \qmlproperty string iconName
 
-      This is the name of the icon in the theme.
+      This is the name of the icon in the ubuntu-mobile theme.
       If both iconSource and iconName are defined, iconName will be ignored.
 
       Example:
@@ -61,12 +61,10 @@ UnityActions.Action {
       \endqml
 
       \note The complete list of icons available in Ubuntu is not published yet.
-            For now please refer to the folders where the icon themes are installed:
+            For now please refer to the folder where the icon theme is installed:
             \list
               \li Ubuntu Touch: \l file:/usr/share/icons/ubuntu-mobile
-              \li Ubuntu Desktop: \l file:/usr/share/icons/ubuntu-mono-dark
             \endlist
-            These 2 separate icon themes will be merged soon.
     */
     property string iconName
 
@@ -76,13 +74,9 @@ UnityActions.Action {
      */
 
     /*!
-      \deprecated
-      \b {visible is DEPRECATED. Use \l ActionItem to specify the representation of an \l Action.}
       The action is visible to the user
      */
     property bool visible: true
-    /*! \internal */
-    onVisibleChanged: print("Action.visible is a DEPRECATED property. Use ActionItems to specify the representation of an Action.")
 
     /*!
       Enable the action. It may be visible, but disabled.

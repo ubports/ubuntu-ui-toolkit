@@ -19,6 +19,7 @@
 #include <QtCore/QString>
 #include <QtCore/QTextCodec>
 #include <QtCore/QStandardPaths>
+#include <QtCore/QDir>
 #include <QtCore/QProcessEnvironment>
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
@@ -75,14 +76,11 @@ private Q_SLOTS:
     {
         // Set test locale folder in the environment
         // Using setenv because QProcessEnvironment ignores changes
-        QString testDataFolder(QCoreApplication::applicationDirPath());
-        setenv("XDG_DATA_HOME", testDataFolder.toUtf8(), 1);
+        QString testAppDir(QCoreApplication::applicationDirPath() + "/localizedApp");
+        setenv("APP_DIR", testAppDir.toUtf8(), 1);
 
         // Verify that we set it correctly
-        QString doubleCheckLocalePath(QStandardPaths::locate(QStandardPaths::GenericDataLocation,
-            "locale", QStandardPaths::LocateDirectory));
-        QCOMPARE(doubleCheckLocalePath, testDataFolder + "/locale");
-        QVERIFY(QFileInfo(testDataFolder + "/locale/en/LC_MESSAGES/localizedApp.mo").exists());
+        QVERIFY(QFileInfo(testAppDir + "/share/locale/en/LC_MESSAGES/localizedApp.mo").exists());
 
         QString modules("../../../modules");
         QVERIFY(QDir(modules).exists());
@@ -122,8 +120,8 @@ private Q_SLOTS:
 
         // Was the locale folder detected and set?
         QString boundDomain(C::bindtextdomain(i18n->domain().toUtf8(), ((const char*)0)));
-        QString expectedLocalePath(QStandardPaths::locate(QStandardPaths::GenericDataLocation,
-            "locale", QStandardPaths::LocateDirectory));
+        QString testAppDir(QCoreApplication::applicationDirPath() + "/localizedApp");
+        QString expectedLocalePath(QDir(testAppDir).filePath("share/locale"));
         QCOMPARE(boundDomain, expectedLocalePath);
         // Is the domain gettext uses correct?
         QString gettextDomain(C::textdomain(((const char*)0)));

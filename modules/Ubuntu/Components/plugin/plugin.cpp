@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,7 +35,6 @@
 #include "inversemouseareatype.h"
 #include "qquickclipboard.h"
 #include "qquickmimedata.h"
-#include "bottombarvisibilitycommunicator.h"
 #include "thumbnailgenerator.h"
 #include "ucubuntuanimation.h"
 #include "ucfontutils.h"
@@ -47,13 +46,13 @@
 #include "unitythemeiconprovider.h"
 #include "ucstatesaver.h"
 #include "ucurihandler.h"
+#include "ucmouse.h"
+#include "ucinversemouse.h"
+#include "sortfiltermodel.h"
 
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdexcept>
-
-// Needed for unit tests
-Q_DECLARE_METATYPE(QList<QQmlError>)
 
 /*
  * Type registration functions.
@@ -153,31 +152,49 @@ void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
     }
 }
 
+void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, int minor)
+{
+    qmlRegisterSingletonType<QObject>(uri, major, minor, "UbuntuColors", registerUbuntuColors);
+    qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
+    qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
+    qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
+    qmlRegisterType<ShapeItem>(uri, major, minor, "Shape");
+    qmlRegisterType<InverseMouseAreaType>(uri, major, minor, "InverseMouseArea");
+    qmlRegisterType<QQuickMimeData>(uri, major, minor, "MimeData");
+    qmlRegisterSingletonType<QQuickClipboard>(uri, major, minor, "Clipboard", registerClipboard);
+    qmlRegisterSingletonType<UCUbuntuAnimation>(uri, major, minor, "UbuntuAnimation", registerUCUbuntuAnimation);
+    qmlRegisterType<UCArguments>(uri, major, minor, "Arguments");
+    qmlRegisterType<UCArgument>(uri, major, minor, "Argument");
+    qmlRegisterType<QQmlPropertyMap>();
+    qmlRegisterType<UCAlarm>(uri, major, minor, "Alarm");
+    qmlRegisterType<UCAlarmModel>(uri, major, minor, "AlarmModel");
+    qmlRegisterType<UCStateSaver>(uri, major, minor, "StateSaver");
+    qmlRegisterType<UCStateSaverAttached>();
+    qmlRegisterSingletonType<UCUriHandler>(uri, major, minor, "UriHandler", registerUriHandler);
+    qmlRegisterType<UCMouse>(uri, major, minor, "Mouse");
+    qmlRegisterType<UCInverseMouse>(uri, major, minor, "InverseMouse");
+    // register QML singletons
+    qmlRegisterSingletonType<QObject>(uri, major, minor, "PickerPanel", registerPickerPanel);
+}
+
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("Ubuntu.Components"));
 
-    qmlRegisterSingletonType<QObject>(uri, 0, 1, "UbuntuColors", registerUbuntuColors);
-    qmlRegisterUncreatableType<UbuntuI18n>(uri, 0, 1, "i18n", "Singleton object");
-    qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, 0, 1, "QQuickImageBase");
-    qmlRegisterUncreatableType<UCUnits>(uri, 0, 1, "UCUnits", "Not instantiable");
-    qmlRegisterType<ShapeItem>(uri, 0, 1, "Shape");
-    qmlRegisterType<InverseMouseAreaType>(uri, 0, 1, "InverseMouseArea");
-    qmlRegisterType<QQuickMimeData>(uri, 0, 1, "MimeData");
-    qmlRegisterSingletonType<QQuickClipboard>(uri, 0, 1, "Clipboard", registerClipboard);
-    qmlRegisterSingletonType<UCUbuntuAnimation>(uri, 0, 1, "UbuntuAnimation", registerUCUbuntuAnimation);
-    qmlRegisterType<UCArguments>(uri, 0, 1, "Arguments");
-    qmlRegisterType<UCArgument>(uri, 0, 1, "Argument");
-    qmlRegisterType<QQmlPropertyMap>();
-    qmlRegisterType<UCAlarm>(uri, 0, 1, "Alarm");
-    qmlRegisterType<UCAlarmModel>(uri, 0, 1, "AlarmModel");
-    qmlRegisterType<UCStateSaver>(uri, 0, 1, "StateSaver");
-    qmlRegisterType<UCStateSaverAttached>();
-    qmlRegisterSingletonType<UCUriHandler>(uri, 0, 1, "UriHandler", registerUriHandler);
-    // Needed for unit tests
-    qRegisterMetaType<QList <QQmlError> >();
-    // register QML singletons
-    qmlRegisterSingletonType<QObject>(uri, 0, 1, "PickerPanel", registerPickerPanel);
+    // register 0.1 for backward compatibility
+    registerTypesToVersion(uri, 0, 1);
+    registerTypesToVersion(uri, 1, 0);
+
+    // register custom event
+    ForwardedEvent::registerForwardedEvent();
+
+    // register parent type so that properties can get/ set it
+    qmlRegisterUncreatableType<QAbstractItemModel>(uri, 1, 1, "QAbstractItemModel", "Not instantiable");
+
+    // register 1.1 only API
+    qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
+    qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
+    qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -220,8 +237,6 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
         new ContextPropertyChangeListener(context, "FontUtils");
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()),
                      fontUtilsListener, SLOT(updateContextProperty()));
-
-    context->setContextProperty("bottomBarVisibilityCommunicator", &BottomBarVisibilityCommunicator::instance());
 
     engine->addImageProvider(QLatin1String("scaling"), new UCScalingImageProvider);
 

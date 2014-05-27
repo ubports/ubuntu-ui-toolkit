@@ -20,6 +20,7 @@
 #include <stdexcept>
 #include <QDebug>
 #include <QMimeDatabase>
+#include <QUrl>
 
 const char *DEFAULT_VIDEO_ART = "/usr/share/unity/icons/video_missing.png";
 const char *DEFAULT_ALBUM_ART = "/usr/share/unity/icons/album_missing.png";
@@ -31,7 +32,16 @@ ThumbnailGenerator::ThumbnailGenerator() : QQuickImageProvider(QQuickImageProvid
 
 QImage ThumbnailGenerator::requestImage(const QString &id, QSize *realSize,
         const QSize &requestedSize) {
-    std::string src_path(id.toUtf8().data());
+    /* Allow appending a query string (e.g. ?something=timestamp)
+     * to the id and then ignore it.
+     * This is workaround to force reloading a thumbnail when it has
+     * the same file name on disk but we know the content has changed.
+     * It is necessary because in such a situation the QML image cache
+     * will kick in and this ImageProvider will never get called.
+     * The only "solution" is setting Image.cache = false, but in some
+     * cases we don't want to do that for performance reasons, so this
+     * is the only way around the issue for now. */
+    std::string src_path(QUrl(id).path().toUtf8().data());
     std::string tgt_path;
     const int xlarge_cutoff = 512;
     const int large_cutoff = 256;

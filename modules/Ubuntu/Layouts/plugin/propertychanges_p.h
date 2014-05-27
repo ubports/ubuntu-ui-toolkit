@@ -104,18 +104,6 @@ public:
 };
 
 
-class ReparentChange : public PropertyChange
-{
-public:
-    ReparentChange(QQuickItem *item, const QString &property, QQuickItem *source);
-
-protected:
-    virtual void saveState();
-
-    QQmlProperty sourceProperty;
-};
-
-
 class ParentChange : public PropertyChange
 {
 public:
@@ -143,16 +131,14 @@ private:
 class ItemStackBackup : public PropertyChange
 {
 public:
-    ItemStackBackup(QQuickItem *item, QQuickItem *currentLayoutItem, QQuickItem *previousLayoutItem);
+    ItemStackBackup(QQuickItem *item);
     void apply() {}
     void revert();
 
 protected:
     virtual void saveState();
     QQuickItem *target;
-    QQuickItem *currentLayout;
-    QQuickItem *previousLayout;
-    QQuickItem *originalStackBefore;
+    QQuickItem *prevItem;
 private:
     friend class ULLayouts;
 };
@@ -214,6 +200,7 @@ public:
     void clear();
 
     ChangeList &addChange(PropertyChange *change);
+    ChangeList &addParentChange(QQuickItem *item, QQuickItem *newParent, bool topmostItem);
 
 private:
     QList<PropertyChange*> changes[PropertyChange::MaxPriority];

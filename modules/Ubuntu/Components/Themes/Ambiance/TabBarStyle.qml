@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 Item {
     id: tabBarStyle
@@ -59,7 +59,7 @@ Item {
       automaytically through ListModel changes.
       */
     function sync() {
-        buttonView.selectButton(styledItem.selectedIndex);
+        buttonView.selectButton(styledItem.model.selectedIndex);
     }
 
     property var tabsModel : styledItem ? styledItem.model : null
@@ -68,26 +68,26 @@ Item {
         target: styledItem
 
         onSelectionModeChanged: {
-            if (styledItem.selectionMode) {
-                activatingTimer.restart();
-            } else {
-                buttonView.selectButton(styledItem.selectedIndex);
+            if (!styledItem.selectionMode) {
+                buttonView.selectButton(styledItem.model.selectedIndex);
             }
         }
     }
 
-    /*!
-      \internal
-      Avoid interpreting a click to enter selection mode as a button click.
-     */
-    Timer {
-        id: activatingTimer
-        interval: 800 // same as pressAndHold time
+    Connections {
+        target: styledItem.model
+        onSelectedIndexChanged: buttonView.selectButton(styledItem.model.selectedIndex)
     }
 
-    Connections {
-        target: styledItem
-        onSelectedIndexChanged: buttonView.selectButton(styledItem.selectedIndex)
+    /*
+      Prevent events that are not accepted by tab buttons or mouseArea below
+      from passing through the TabBar.
+     */
+    MouseArea {
+        anchors.fill: parent
+        onReleased: {
+            mouseArea.enteringSelectionMode = false;
+        }
     }
 
     Component {
@@ -116,8 +116,8 @@ Item {
                 AbstractButton {
                     id: button
                     anchors {
-                        top: parent.top
-                        bottom: parent.bottom
+                        top: parent ? parent.top : undefined
+                        bottom: parent ? parent.bottom : undefined
                     }
                     width: text.paintedWidth + text.anchors.leftMargin + text.anchors.rightMargin
 
@@ -126,7 +126,7 @@ Item {
                     // to avoid seeing fading animations of the unselected button when switching
                     // tabs from outside the tab bar.
                     property bool selected: (styledItem.selectionMode && buttonView.needsScrolling) ?
-                                                styledItem.selectedIndex === index :
+                                                styledItem.model.selectedIndex === index :
                                                 buttonView.selectedButtonIndex === button.buttonIndex
                     property real offset: theRow.rowNumber + 1 - button.x / theRow.width;
                     property int buttonIndex: index + theRow.rowNumber*repeater.count
@@ -165,13 +165,15 @@ Item {
                             bottomMargin: headerTextBottomMargin
                         }
                         x: button.width - width
+                        // FIXME: temporary hack for the chevron's height to match the font size
+                        height: 0.82*sourceSize.height
 
                         // The indicator image must be visible after the selected tab button, when the
                         // tab bar is not in selection mode, or after the "last" button (starting with
                         // the selected one), when the tab bar is in selection mode.
-                        property bool isLastAfterSelected: index === (styledItem.selectedIndex === 0 ?
+                        property bool isLastAfterSelected: index === (styledItem.model.selectedIndex === 0 ?
                                                                           repeater.count-1 :
-                                                                          styledItem.selectedIndex - 1)
+                                                                          styledItem.model.selectedIndex - 1)
                         opacity: (styledItem.selectionMode ? isLastAfterSelected : selected) ? 1 : 0
                         Behavior on opacity {
                             NumberAnimation {
@@ -207,14 +209,14 @@ Item {
                     }
 
                     onClicked: {
-                        if (!activatingTimer.running) {
-                            styledItem.selectedIndex = index;
+                        if (mouseArea.enteringSelectionMode) {
+                            mouseArea.enteringSelectionMode = false;
+                        } else if (opacity > 0.0) {
+                            styledItem.model.selectedIndex = index;
                             if (!styledItem.alwaysSelectionMode) {
                                 styledItem.selectionMode = false;
                             }
                             button.select();
-                        } else {
-                            activatingTimer.stop();
                         }
                     }
 
@@ -320,6 +322,7 @@ Item {
         onDragEnded: {
             // unset interacting which was set in mouseArea.onPressed
             mouseArea.interacting = false;
+            mouseArea.enteringSelectionMode = false;
         }
 
         Timer {
@@ -362,10 +365,17 @@ Item {
         property bool interacting: false
         onInteractingChanged: idleTimer.conditionalRestartOrStop()
 
+        // When pressing to enter selection mode, a release should not be interpreted
+        //  as a click on a button to select a new tab.
+        property bool enteringSelectionMode: false
+
         // This MouseArea is always enabled, even when the tab bar is in selection mode,
         //  so that press events are detected and tabBarStyle.pressed is updated.
         onPressed: {
             mouseArea.interacting = true;
+            if (!styledItem.selectionMode) {
+                mouseArea.enteringSelectionMode = true;
+            }
             styledItem.selectionMode = true;
             mouse.accepted = false;
         }

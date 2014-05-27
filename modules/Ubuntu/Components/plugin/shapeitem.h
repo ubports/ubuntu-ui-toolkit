@@ -91,6 +91,7 @@ private:
 
 private Q_SLOTS:
     void onImagePropertiesChanged();
+    void onOpenglContextDestroyed();
 
 private:
     enum DirtyFlags {
@@ -110,6 +111,12 @@ private:
                               | DirtyGridUnit | DirtyGeometry)
     };
 
+    struct TextureHandles {
+        TextureHandles(): high(0), low(0) {}
+        QSGTexture* high;
+        QSGTexture* low;
+    };
+
     QColor color_;
     QColor gradientColor_;
     bool gradientColorSet_;
@@ -124,6 +131,7 @@ private:
     float gridUnit_;
     QRectF geometry_;
     QFlags<DirtyFlags> dirtyFlags_;
+    static QHash<QOpenGLContext*, TextureHandles> textures_;
 
     Q_DISABLE_COPY(ShapeItem)
 };

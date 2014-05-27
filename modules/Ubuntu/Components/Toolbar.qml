@@ -19,7 +19,7 @@ import QtQuick 2.0
 /*!
     \internal
     \qmltype Toolbar
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief Application toolbar. This class is not exposed because it will
             be automatically added when a Page defines tools.
@@ -27,17 +27,20 @@ import QtQuick 2.0
 Panel {
     id: toolbar
     anchors {
-        left: parent.left
-        right: parent.right
-        bottom: parent.bottom
+        left: parent ? parent.left : undefined
+        right: parent ? parent.right : undefined
+        bottom: parent ? parent.bottom : undefined
     }
     height: background.height
 
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
-    // Closing of the toolbar on app contents ineraction is handled by the Page.
+    // Closing of the toolbar on app contents interaction is handled by the Page.
     __closeOnContentsClicks: false
+
+    // Open toolbar on hover (for desktop only)
+    __openOnHover: true
 
     /*!
       \preliminary

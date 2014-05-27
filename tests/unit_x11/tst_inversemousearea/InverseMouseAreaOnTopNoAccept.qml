@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 Rectangle {
     id: page
@@ -38,8 +38,6 @@ Rectangle {
             objectName: "MA1"
             anchors.fill: parent
             z: 1
-            onPressed: print("MA1")
-            onDoubleClicked: print("DMA1")
         }
     }
 
@@ -63,15 +61,12 @@ Rectangle {
         MouseArea {
             objectName: "MA2"
             anchors.fill: parent
-            onPressed: print("MA2")
-            onDoubleClicked: print("DMA2")
         }
 
         InverseMouseArea {
             objectName: "IMA"
             anchors.fill: button
-            onPressed: {mouse.accepted = false; print("IMA")}
-            onDoubleClicked: print("DIMA")
+            onPressed: mouse.accepted = false
         }
     }
 }

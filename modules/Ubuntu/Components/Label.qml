@@ -18,7 +18,7 @@ import QtQuick 2.0
 
 /*!
     \qmltype Label
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief Text with Ubuntu styling.
 
@@ -56,6 +56,7 @@ Text {
 
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
     font.family: "Ubuntu"
+    font.weight: Font.Light
     color: Theme.palette.selected.backgroundText
 
     /* FIXME: workaround for QTBUG 35095 where Text's alignment is incorrect

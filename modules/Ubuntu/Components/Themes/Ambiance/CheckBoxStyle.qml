@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 Item {
     id: checkBoxStyle
@@ -33,6 +33,7 @@ Item {
     UbuntuShape {
         id: background
         anchors.fill: parent
+        anchors.margins: units.gu(0.5)
     }
 
     Image {

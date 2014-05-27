@@ -102,15 +102,21 @@ int UCAlarmPrivate::firstDayOfWeek(UCAlarm::DaysOfWeek days)
 
 int UCAlarmPrivate::nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay)
 {
-    if (fromDay <= 0) {
+    if (fromDay <= 0 || fromDay >= Qt::Sunday) {
+        // start from the beginning of the week
         fromDay = Qt::Monday;
+    } else {
+        // start checking from the next day onwards
+        fromDay++;
     }
     for (int d = fromDay; d <= Qt::Sunday; d++) {
         if ((1 << (d - 1)) & days) {
             return d;
         }
     }
-    return 0;
+
+    // none found for the rest of the week, return the fist day set
+    return firstDayOfWeek(days);
 }
 
 // checks whether the given num has more than one bit set
@@ -147,23 +153,14 @@ UCAlarm::Error UCAlarmPrivate::checkAlarm()
     return UCAlarm::NoError;
 }
 
-UCAlarm::Error UCAlarmPrivate::checkDow()
+// adjust dayOfWeek
+UCAlarm::Error UCAlarmPrivate::adjustDow()
 {
     if (!rawData.days) {
         return UCAlarm::NoDaysOfWeek;
     } else if (rawData.days == UCAlarm::AutoDetect) {
         rawData.days = dayOfWeek(rawData.date);
         rawData.changes |= AlarmData::Days;
-    } else if (rawData.days != UCAlarm::Daily) {
-        int alarmDay = firstDayOfWeek(rawData.days);
-        int dayOfWeek = rawData.date.date().dayOfWeek();
-        if (alarmDay < dayOfWeek) {
-            rawData.date = rawData.date.addDays(7 - dayOfWeek + alarmDay);
-            rawData.changes |= AlarmData::Date;
-        } else if (alarmDay > dayOfWeek) {
-            rawData.date = rawData.date.addDays(alarmDay - dayOfWeek);
-            rawData.changes |= AlarmData::Date;
-        }
     }
     return UCAlarm::NoError;
 }
@@ -175,10 +172,24 @@ UCAlarm::Error UCAlarmPrivate::checkOneTime()
         return UCAlarm::OneTimeOnMoreDays;
     }
 
-    // adjust start date and/or dayOfWeek according to their values
-    UCAlarm::Error result = checkDow();
+    UCAlarm::Error result = adjustDow();
     if (result != UCAlarm::NoError) {
         return result;
+    }
+
+    // fix lp:1319401 - dayOfWeek omitted if set to other than AutoDetect
+    int dayOfWeek = rawData.date.date().dayOfWeek();
+    if (!isDaySet(dayOfWeek, rawData.days)) {
+        // dayOfWeek has been set by the user, adjust the date to it
+        int nextOccurrence = nextDayOfWeek(rawData.days, dayOfWeek);
+        if (nextOccurrence < dayOfWeek) {
+             // the starting date should be moved to the next week's occurrence
+            rawData.date = rawData.date.addDays(7 - dayOfWeek + nextOccurrence);
+        } else {
+            // the starting date is still this week
+            rawData.date = rawData.date.addDays(nextOccurrence - dayOfWeek);
+        }
+        rawData.changes |= AlarmData::Date;
     }
 
     // start date should be later then the current date/time
@@ -193,23 +204,25 @@ UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly()
     // start date is adjusted depending on the days value;
     // start date can be set to be the current time, as scheduling will move
     // it to the first occurence.
-    UCAlarm::Error result = checkDow();
+    UCAlarm::Error result = adjustDow();
     if (result != UCAlarm::NoError) {
         return result;
     }
 
-    // move start time to the first occurence if needed
+    // move start time of the first occurence if needed
     int dayOfWeek = rawData.date.date().dayOfWeek();
     if (!isDaySet(dayOfWeek, rawData.days) || (rawData.date <= QDateTime::currentDateTime())) {
         // check the next occurence of the alarm
-        int nextOccurence = nextDayOfWeek(rawData.days, dayOfWeek);
-        if (nextOccurence <= 0) {
-             // the starting date should be moved to the next week
-            nextOccurence = firstDayOfWeek(rawData.days);
-            rawData.date.addDays(7 - dayOfWeek + nextOccurence);
+        int nextOccurrence = nextDayOfWeek(rawData.days, dayOfWeek);
+        if (nextOccurrence == dayOfWeek) {
+            // move the date to the same day next week
+            rawData.date = rawData.date.addDays(7);
+        } else if (nextOccurrence < dayOfWeek) {
+             // the starting date should be moved to the next week's occurrence
+            rawData.date = rawData.date.addDays(7 - dayOfWeek + nextOccurrence);
         } else {
             // the starting date is still this week
-            rawData.date.addDays(nextOccurence - dayOfWeek);
+            rawData.date = rawData.date.addDays(nextOccurrence - dayOfWeek);
         }
         rawData.changes |= AlarmData::Date;
     }
@@ -221,7 +234,7 @@ UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly()
 /*!
  * \qmltype Alarm
  * \instantiates UCAlarm
- * \inqmlmodule Ubuntu.Components 0.1
+ * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu-services
  * \brief Alarm component is a representation of an alarm event.
  *
@@ -239,7 +252,7 @@ UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly()
  * Example usage:
  * \qml
  * import QtQuick 2.0
- * import Ubuntu.Components 0.1
+ * import Ubuntu.Components 1.1
  *
  * Rectangle {
  *     width: units.gu(40)
@@ -304,7 +317,7 @@ UCAlarm::UCAlarm(const QDateTime &dt, const QString &message, QObject *parent)
     : QObject(parent)
     , d_ptr(new UCAlarmPrivate(this))
 {
-    d_ptr->rawData.date = dt;
+    d_ptr->rawData.date = AlarmData::normalizeDate(dt);
     if (!message.isEmpty()) {
         d_ptr->rawData.message = message;
     }
@@ -315,7 +328,7 @@ UCAlarm::UCAlarm(const QDateTime &dt, DaysOfWeek days, const QString &message, Q
     : QObject(parent)
     , d_ptr(new UCAlarmPrivate(this))
 {
-    d_ptr->rawData.date = dt;
+    d_ptr->rawData.date = AlarmData::normalizeDate(dt);
     d_ptr->rawData.type = Repeating;
     d_ptr->rawData.days = days;
     if (!message.isEmpty()) {
@@ -366,10 +379,10 @@ QDateTime UCAlarm::date() const
 void UCAlarm::setDate(const QDateTime &date)
 {
     Q_D(UCAlarm);
-    if (d->rawData.date == date) {
+    if (d->rawData.date == AlarmData::normalizeDate(date)) {
         return;
     }
-    d->rawData.date = date;
+    d->rawData.date = AlarmData::normalizeDate(date);
     d->rawData.changes |= AlarmData::Date;
     Q_EMIT dateChanged();
 }
@@ -519,6 +532,8 @@ void UCAlarm::setSound(const QUrl &sound)
     d->rawData.changes |= AlarmData::Sound;
     Q_EMIT soundChanged();
 }
+
+
 
 /*!
  * \qmlproperty Error Alarm::error
@@ -670,6 +685,8 @@ void UCAlarm::save()
     if (result != UCAlarm::NoError) {
         d->_q_syncStatus(Saving, Fail, result);
     } else {
+        // the alarm has been modified, therefore update the original date as well
+        d->rawData.originalDate = d->rawData.date;
         if (d->createRequest()) {
             d->request->save(d->rawData);
         }

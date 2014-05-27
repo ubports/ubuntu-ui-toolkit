@@ -15,13 +15,13 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1
-import Ubuntu.Components.Popups 0.1
+import Ubuntu.Components 1.1
+import Ubuntu.Components.ListItems 1.0
+import Ubuntu.Components.Popups 1.0
 
 MainView {
     id: mainView
-    width: units.gu(40)
+    width: units.gu(80)
     height: units.gu(71)
     objectName: "mainView"
 
@@ -113,7 +113,7 @@ MainView {
             id: days
             text: "Occurence"
             values: getValues()
-            visible: recurence.selectedIndex == 2
+            visible: recurence.selectedIndex !== 1
             onClicked: {
                 PopupUtils.open(Qt.resolvedUrl("AlarmDays.qml"), days, {"alarm": alarm});
             }
@@ -162,7 +162,11 @@ MainView {
         clip: true
         model: alarmModel
         delegate: Standard {
-            text: message
+            text: message + recurring(model) + "\n" + model.date
+            function recurring(alarmData) {
+                return (alarmData.type === Alarm.Repeating) ? "[Repeating]" : "[Onetime]";
+            }
+
             removable: true
             control: Switch {
                 checked: model.enabled

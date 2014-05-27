@@ -43,6 +43,52 @@ UbuntuNumberAnimation 0.1 UbuntuNumberAnimation.qml
 StyledItem 0.1 StyledItem.qml
 ColorUtils 0.1 colorUtils.js
 DateUtils 0.1 dateUtils.js
+UbuntuListView 0.1 UbuntuListView.qml
 
 internal TextCursor TextCursor.qml
 internal TextInputPopover TextInputPopover.qml
+internal InputHandler InputHandler.qml
+
+#version 1.0
+Action 1.0 Action.qml
+ActionItem 1.0 ActionItem.qml
+ActionList 1.0 ActionList.qml
+ToolbarItems 1.0 ToolbarItems.qml
+ToolbarButton 1.0 ToolbarButton.qml
+MainView 1.0 MainView.qml
+Button 1.0 Button.qml
+Panel 1.0 Panel.qml
+Tab 1.0 Tab.qml
+TabBar 1.0 TabBar.qml
+Tabs 1.0 Tabs.qml
+Label 1.0 Label.qml
+AbstractButton 1.0 AbstractButton.qml
+ActivityIndicator 1.0 ActivityIndicator.qml
+ProgressBar 1.0 ProgressBar.qml
+TextField 1.0 TextField.qml
+TextArea 1.0 TextArea.qml
+Switch 1.0 Switch.qml
+CheckBox 1.0 CheckBox.qml
+Slider 1.0 Slider.qml
+Scrollbar 1.0 Scrollbar.qml
+Object 1.0 Object.qml
+OptionSelector 1.0 OptionSelector.qml
+OptionSelectorDelegate 1.0 OptionSelectorDelegate.qml
+Page 1.0 Page.qml
+PageStack 1.0 PageStack.qml
+Header 1.0 Header.qml
+UbuntuShape 1.0 UbuntuShape.qml
+CrossFadeImage 1.0 CrossFadeImage.qml
+Icon 1.0 Icon.qml
+OrientationHelper 1.0 OrientationHelper.qml
+MathUtils 1.0 mathUtils.js
+SliderUtils 1.0 sliderUtils.js
+ScrollbarUtils 1.0 scrollbarUtils.js
+UbuntuNumberAnimation 1.0 UbuntuNumberAnimation.qml
+StyledItem 1.0 StyledItem.qml
+ColorUtils 1.0 colorUtils.js
+DateUtils 1.0 dateUtils.js
+UbuntuListView 1.0 UbuntuListView.qml
+
+#version 1.1
+ComboButton 1.1 ComboButton.qml

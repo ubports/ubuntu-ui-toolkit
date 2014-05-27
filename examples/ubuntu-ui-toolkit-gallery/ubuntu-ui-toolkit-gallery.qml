@@ -94,11 +94,11 @@ MainView {
         }
     ]
 
-
-    property var selectedWidget
+    property var selectedWidget: null
 
     Page {
         id: mainPage
+        active: selectedWidget == null
 
         title: "Ubuntu UI Toolkit"
         /* Page internally sets the topMargin of its flickable to account for
@@ -117,6 +117,7 @@ MainView {
                 model: widgetsModel
                 delegate: ListItem.Standard {
                     text: model.label
+                    objectName: model.objectName
                     enabled: model.source != ""
                     progression: true
                     selected: enabled && selectedWidget == model
@@ -133,7 +134,7 @@ MainView {
 
     Page {
         id: contentPage
-
+        active: selectedWidget != null
         title: selectedWidget ? selectedWidget.label : ""
         /* Page internally sets the topMargin of its flickable to account for
            the height of the header. Undo it when unsetting the flickable.

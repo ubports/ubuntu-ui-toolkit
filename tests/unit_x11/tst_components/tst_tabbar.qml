@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 import TestObjects 0.1
 
 Item {
@@ -32,7 +32,8 @@ Item {
 
     TabBar {
         id: bar2
-        anchors.top: parent.top
+        // anchor to bottom not to occlude the first TabBar
+        anchors.bottom: parent.bottom
         width: parent.width
         model: invalidModel
     }
@@ -59,6 +60,7 @@ Item {
 
     ListModel {
         id: pages
+        property int selectedIndex: 0
         ListElement {
             title: "Tab 1"
         }
@@ -78,6 +80,7 @@ Item {
 
     ListModel {
         id: invalidModel
+        property int selectedIndex: 0
         ListElement {
             fruit: "Pear"
         }
@@ -85,6 +88,7 @@ Item {
 
     ListModel {
         id: invalidModelTab
+        property int selectedIndex: 0
         ListElement {
             tab: "Pear"
         }
@@ -97,18 +101,22 @@ Item {
 
     ListModel {
         id: validModelTab
+        property int selectedIndex: count > 0 ? 0 : -1
     }
 
     ListModel {
         id: emptyModelWillBeInvalid
+        property int selectedIndex: count > 0 ? 0 : -1
     }
 
     ListModel {
         id: emptyModel
+        property int selectedIndex: count > 0 ? 0 : -1
     }
 
     TabsModel {
         id: pagesCpp
+        property int selectedIndex: count > 0 ? 0 : -1
     }
 
     Label {

@@ -15,12 +15,13 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 MainView {
     id: mainView
     width: units.gu(38)
     height: units.gu(50)
+    useDeprecatedToolbar: false
 
     PageStack {
         id: pageStack
@@ -30,16 +31,6 @@ MainView {
             id: tabs
             Tab {
                 title: "Tab 1"
-                page: Page {
-                    Button {
-                        anchors.centerIn: parent
-                        onClicked: pageStack.push(page3)
-                        text: "Press"
-                    }
-                }
-            }
-            Tab {
-                title: "Tab 2"
                 page: Page {
                     Column {
                         anchors {
@@ -72,6 +63,16 @@ MainView {
                                 value: animateSwitch.checked
                             }
                         }
+                    }
+                }
+            }
+            Tab {
+                title: "Tab 2"
+                page: Page {
+                    Button {
+                        anchors.centerIn: parent
+                        onClicked: pageStack.push(page3)
+                        text: "Press"
                     }
                 }
             }

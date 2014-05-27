@@ -6,8 +6,9 @@ Build-Depends: debhelper (>= 9.0.0),
                devscripts,
                libgles2-mesa-dev,
                libglib2.0-dev,
-               python,
-               libqt5qml-graphicaleffects | libqt5graphicaleffects5,
+               python3:any,
+               python:any,
+               qml-module-qtgraphicaleffects | libqt5qml-graphicaleffects,
                qt5-default,
                qtbase5-dev,
                qtbase5-private-dev,
@@ -16,18 +17,18 @@ Build-Depends: debhelper (>= 9.0.0),
                libqt5sql5-sqlite,
                qtdeclarative5-dev-tools,
                qtdeclarative5-private-dev,
-               qtdeclarative5-qtquick2-plugin,
-               qtdeclarative5-test-plugin,
-               qtdeclarative5-window-plugin,
+               qml-module-qtquick2 | qtdeclarative5-qtquick2-plugin,
+               qml-module-qttest | qtdeclarative5-test-plugin,
+               qml-module-qtquick-window2 | qtdeclarative5-window-plugin,
                qtdeclarative5-qtfeedback-plugin,
                qtdeclarative5-unity-action-plugin (>= 1.1.0),
-               qtdeclarative5-localstorage-plugin,
-         qtdeclarative5-doc-html,
-         qtwebkit5-doc-html,
-         qtsvg5-doc-html,
-         qtscript5-doc-html,
-         qtmultimedia5-doc-html,
-         unity-action-doc,
+               qml-module-qtquick-localstorage | qtdeclarative5-localstorage-plugin,
+               qtdeclarative5-doc-html,
+               qtwebkit5-doc-html,
+               qtsvg5-doc-html,
+               qtscript5-doc-html,
+               qtmultimedia5-doc-html,
+               unity-action-doc,
                devscripts,
                libqt5organizer5,
                qtpim5-dev,
@@ -40,13 +41,13 @@ Build-Depends: debhelper (>= 9.0.0),
                locales,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
-# If you aren't a member of ~ubuntu-sdk-team but need to upload packaging 
-# changes, just go ahead. ~ubuntu-sdk-team will notice and sync up the code 
+# If you aren't a member of ~ubuntu-sdk-team but need to upload packaging
+# changes, just go ahead. ~ubuntu-sdk-team will notice and sync up the code
 # again.
 Vcs-Bzr: https://code.launchpad.net/~ubuntu-sdk-team/ubuntu-ui-toolkit/trunk
 
 Package: qtdeclarative5-ubuntu-ui-toolkit-plugin
-Architecture: amd64 i386 armhf
+Architecture: any
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: libqt5qml-graphicaleffects | libqt5graphicaleffects5,
@@ -69,7 +70,7 @@ Description: Qt Components for Ubuntu - QML plugin
  This package contains the Ubuntu Components QML plugin.
 
 Package: ubuntu-ui-toolkit-theme
-Architecture: amd64 i386 armhf
+Architecture: any
 Multi-Arch: foreign
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
 Depends: ${misc:Depends},
@@ -105,11 +106,12 @@ Description: Qt Components for Ubuntu - documentation
 
 Package: ubuntu-ui-toolkit-examples
 Section: devel
-Architecture: amd64 i386 armhf
+Architecture: any
 Depends: qmlscene,
          qtdeclarative5-ubuntu-ui-toolkit-plugin,
          ubuntu-ui-toolkit-theme,
          qtdeclarative5-xmllistmodel-plugin,
+         qml-module-qt-labs-folderlistmodel,
          ${misc:Depends},
          ${shlibs:Depends}
 Recommends: libqt5multimedia5-plugins, ubuntu-ui-toolkit-doc
@@ -131,8 +133,14 @@ Depends: ${misc:Depends},
          libqt5test5,
          libqt5widgets5,
          python-autopilot (>= 1.4),
+         python-fixtures,
          python-mock,
+         python-testscenarios,
+         python-testtools,
+         python3-fixtures,
+         python3-testscenarios,
+         python3-testtools,
+         python3-autopilot (>= 1.4),
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
 Description: Test package for Ubuntu UI Toolkit
  Autopilot tests for the ubuntu-ui-toolkit package
-

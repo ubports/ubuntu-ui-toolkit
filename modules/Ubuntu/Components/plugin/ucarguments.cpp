@@ -28,7 +28,7 @@
 /*!
  * \qmltype Arguments
  * \instantiates UCArguments
- * \inqmlmodule Ubuntu.Components 0.1
+ * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu-commandline
  * \brief The Arguments class provides a way to declare what command line
  *        parameters are expected by the application.

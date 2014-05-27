@@ -16,23 +16,23 @@
 
 import QtQuick 2.0
 import QtQuick.Window 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1
-import Ubuntu.Components.Popups 0.1
+import Ubuntu.Components 1.1
+import Ubuntu.Components.ListItems 1.0
+import Ubuntu.Components.Popups 1.0
 
 /*!
     \qmltype PickerPanel
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu-pickers
     \brief Provides a panel for opening a DatePicker in place of the input panel or
     as Popover, depending on the form factor.
 
-    PickerPanel is a singleton component designed to open a DatePicker in input panel
+    PickerPanel is a singleton component designed to open a DatePicker in the input panel
     area or in a Popover, depending on the form factor, following the design guides
     on date pickers.
     \qml
     import QtQuick 2.0
-    import Ubuntu.Components 0.1
+    import Ubuntu.Components 1.1
 
     MainWindow {
         width: units.gu(40)
@@ -57,14 +57,14 @@ import Ubuntu.Components.Popups 0.1
 Object {
 
     /*!
-      The function opend a DatePicker component in the input method area or in a
-      popover depending on the availability of an input method provider in the
-      system, and whether the size of the main screen width/height defines a phone
-      form factor. The picked date will be read from and reported into the \a property
-      of the \a caller as date type. This implies that the caller must have defined a
-      property with date type.
+      The function opens a DatePicker component in the input method area or in a
+      popover, depending on the availability of an input method provider in the
+      system and whether the size of the main screen width/height defines a phone
+      form factor. The picked date will be read from and reported to the \a property
+      of the \a caller as date type. This implies that the caller must have defined
+      the given property of type date.
 
-      On failure the function returns null. On success the returned object has the
+      On failure, the function returns null. On success, the returned object has the
       following properties:
       \code
       Object {

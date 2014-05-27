@@ -17,7 +17,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 Item {
     id: buttonForeground
@@ -30,6 +30,7 @@ Item {
     property real spacing
     property bool hasIcon: iconSource != ""
     property bool hasText: text != ""
+    property alias font: label.font
 
     opacity: enabled ? 1.0 : 0.5
     implicitHeight: Math.max(icon.height, label.height)

@@ -21,7 +21,7 @@ import "mathUtils.js" as MathUtils
 
 /*!
     \qmltype Slider
-    \inqmlmodule Ubuntu.Components 0.1
+    \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief Slider is a component to select a value from a continuous range of
      values.

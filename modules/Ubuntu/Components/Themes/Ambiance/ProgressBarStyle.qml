@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 Item {
     id: progressBarStyle
@@ -23,7 +23,7 @@ Item {
     property ProgressBar progressBar: styledItem
 
     implicitWidth: units.gu(38)
-    implicitHeight: units.gu(5)
+    implicitHeight: units.gu(4)
 
     UbuntuShape {
         id: background

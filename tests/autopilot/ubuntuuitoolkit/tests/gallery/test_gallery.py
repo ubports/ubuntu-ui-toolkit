@@ -19,10 +19,11 @@
 from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
 
-from ubuntuuitoolkit.tests.gallery import GalleryTestCase
+from ubuntuuitoolkit import emulators
+from ubuntuuitoolkit.tests import gallery
 
 
-class GenericTests(GalleryTestCase):
+class GenericTests(gallery.GalleryTestCase):
     """Generic tests for the Gallery"""
 
     def test_0_can_select_mainwindow(self):
@@ -74,6 +75,10 @@ class GenericTests(GalleryTestCase):
             # TODO: check for properties
 
     def test_ubuntushape(self):
+        # Flaky test case
+        # FIXME: https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1308979
+        return
+
         item = "Ubuntu Shape"
         self.loadItem(item)
         self.checkPageHeader(item)
@@ -92,3 +97,35 @@ class GenericTests(GalleryTestCase):
         for data in item_data:
             objName = data[0]
             self.getObject(objName)
+
+
+class OpenPagesTestCase(gallery.GalleryTestCase):
+
+    names = [
+        'navigation', 'toggles', 'buttons', 'sliders', 'textinputs',
+        'optionSelectors', 'pickers', 'progressBars', 'ubuntuShapes', 'icons',
+        'labels', 'listItems', 'dialogs', 'popovers', 'sheets', 'animations'
+    ]
+
+    scenarios = [
+        (name, dict(
+            element_name=name+'Element',
+            template_name=name+'Template'))
+        for name in names
+    ]
+
+    def test_open_page(self):
+        list_view = self.main_view.select_single(
+            emulators.QQuickListView, objectName="widgetList")
+        list_view.click_element(self.element_name)
+        element = self.main_view.select_single(
+            'Standard', objectName=self.element_name)
+        element.selected.wait_for(True)
+        self.checkPageHeader(element.text)
+        if self.template_name == 'textinputsTemplate':
+            page_type = 'TextInputs'
+        else:
+            page_type = 'Template'
+        self.main_view.wait_select_single(
+            page_type, objectName=self.template_name)
+        # TODO check that the template is visible. --elopio - 2013-11-28
