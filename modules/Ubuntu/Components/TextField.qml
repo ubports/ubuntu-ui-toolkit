@@ -135,7 +135,7 @@ ActionItem {
 
     /*!
       The property overrides the default popover of the TextField. When set, the TextField
-      will open the given popover instead of the defaul tone defined. The popover can either
+      will open the given popover instead of the default one defined. The popover can either
       be a component or a URL to be loaded.
       */
     property var popover
