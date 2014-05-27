@@ -17,7 +17,6 @@
  */
 
 #include "i18n.h"
-#include <QtCore/QStandardPaths>
 #include <QtCore/QDir>
 
 namespace C {

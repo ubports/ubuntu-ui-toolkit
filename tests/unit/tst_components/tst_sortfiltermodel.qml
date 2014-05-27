@@ -23,8 +23,8 @@ TestCase {
 
     ListModel {
         id: things
-        ListElement { foo: "den"; alpha: "bee"; num: 200 }
-        ListElement { foo: "pub"; alpha: "cow"; num: 300 }
+        ListElement { foo: "pub"; alpha: "bee"; num: 200 }
+        ListElement { foo: "den"; alpha: "cow"; num: 300 }
         ListElement { foo: "bar"; alpha: "ant"; num: 100 }
     }
 
@@ -95,6 +95,21 @@ TestCase {
         // Numbers
         compare(numeric.get(0).num, 100)
         compare(numericRe.get(0).num, 300)
+
+        // Changing roles
+        alphabetic.sort.property = "foo"
+        compare(alphabetic.get(0).foo, "bar")
+        compare(alphabetic.get(1).foo, "den")
+        compare(alphabetic.get(2).foo, "pub")
+        // Sanity check
+        compare(alphabetic.get(1).alpha, "cow")
+        // change again
+        alphabetic.sort.property = "num"
+        compare(alphabetic.get(0).num, 100)
+        compare(alphabetic.get(1).num, 200)
+        compare(alphabetic.get(2).num, 300)
+        // Sanity check
+        compare(alphabetic.get(2).alpha, "cow")
     }
 
     function test_filter() {
