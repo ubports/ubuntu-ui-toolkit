@@ -19,6 +19,10 @@ import QtQuick 2.2
 // documentation in UbuntuListView11.qdoc
 UbuntuListView {
 
+    /*!
+      \internal
+      \qmlproperty PullToRefresh pullToRefresh
+      */
     property alias pullToRefresh: refreshItem
 
     PullToRefresh {

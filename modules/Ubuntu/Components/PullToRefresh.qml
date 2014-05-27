@@ -21,6 +21,7 @@ import Ubuntu.Components 1.1
     \qmltype RefreshControl
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
+    \since Ubuntu.Components 1.1
     \brief Pull-to-refresh component for Flickables to reload a model upon pull.
 
     The component provides ability to initiate data model refresh by pulling the
@@ -133,14 +134,15 @@ StyledItem {
 
     /*!
       The property holds the text shown before refresh can be initiated. The limit
-      is defined by the RefreshControlStyle \l RefreshControlStyle::activationThreshold property.
+      is defined by the PullToRefreshStyle \l PullToRefreshStyle::activationThreshold
+      property.
       */
     property string pullText: i18n.tr("Pull to refresh...")
 
     /*!
       The property holds the text shown indicating the refresh can be initiated
       upon touch/mouse release.
-      \sa pullText, RefreshControlStyle::activationThreshold
+      \sa pullText, PullToRefreshStyle::activationThreshold
       */
     property string releaseText: i18n.tr("Release to refresh...")
 
