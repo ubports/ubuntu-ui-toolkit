@@ -41,6 +41,20 @@ StyledItem {
     Component.onCompleted: internal.updatePageTree()
 
     /*!
+      \deprecated
+      The header of the node. Propagates down from the root node.
+      This property is deprecated.
+     */
+    property Header header: node.__propagated ? node.__propagated.header : null
+
+    /*!
+      \deprecated
+      The toolbar of the node. Propagates down from the root node.
+      This property is deprecated.
+     */
+    property Toolbar toolbar: node.__propagated ? node.__propagated.toolbar : null
+
+    /*!
       \internal
       QtObject containing all the properties that are propagated from the
       root (MainView) of a page tree to its leafs (Pages).

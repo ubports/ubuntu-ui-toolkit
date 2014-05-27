@@ -189,7 +189,7 @@ PageTreeNode {
             target: tools
             property: "visible"
             value: false
-            when: internal.header && !internal.header.useDeprecatedToolbar &&
+            when: header && !header.useDeprecatedToolbar &&
                   page.tools !== null
         }
 
