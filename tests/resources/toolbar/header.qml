@@ -152,6 +152,12 @@ MainView {
                         onTriggered: searchPage.state = "search"
                     }
 
+                    // FIXME TIM: why is this not working?
+                    // Because initially input is null
+//                    head.input {
+//                        enabled: true
+//                    }
+
                     state: ""
                     states: [
                         State {
@@ -172,7 +178,7 @@ MainView {
                                     iconName: "contact"
                                 }
                             ]
-                            property alias inputChanges: inputPropertyChanges
+                            property alias input: inputPropertyChanges
                             property Action backAction: Action {
                                 id: leaveSearchAction
                                 text: "back"
