@@ -159,9 +159,10 @@ Empty {
     /*!
       \internal
      */
-    property alias children: middle.data
+    default property alias children: middle.data
     Item {
         id: middle
+        objectName: "base_content"
         property bool anchorToIconHelper: !__iconIsItem && iconHelper.source != ""
         anchors {
             top: parent.top
