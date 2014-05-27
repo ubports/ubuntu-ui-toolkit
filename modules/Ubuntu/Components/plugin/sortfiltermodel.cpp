@@ -101,10 +101,10 @@ QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent)
     connect(this, SIGNAL(modelReset()), SIGNAL(countChanged()));
     connect(this, SIGNAL(rowsInserted(QModelIndex,int,int)), SIGNAL(countChanged()));
     connect(this, SIGNAL(rowsRemoved(QModelIndex,int,int)), SIGNAL(countChanged()));
-    connect(&m_sortBehavior, &SortBehavior::propertyChanged, this, &QSortFilterProxyModelQML::sortChanged);
-    connect(&m_sortBehavior, &SortBehavior::orderChanged, this, &QSortFilterProxyModelQML::sortChanged);
-    connect(&m_filterBehavior, &FilterBehavior::propertyChanged, this, &QSortFilterProxyModelQML::filterChanged);
-    connect(&m_filterBehavior, &FilterBehavior::patternChanged, this, &QSortFilterProxyModelQML::filterChanged);
+    connect(&m_sortBehavior, &SortBehavior::propertyChanged, this, &QSortFilterProxyModelQML::sortChangedInternal);
+    connect(&m_sortBehavior, &SortBehavior::orderChanged, this, &QSortFilterProxyModelQML::sortChangedInternal);
+    connect(&m_filterBehavior, &FilterBehavior::propertyChanged, this, &QSortFilterProxyModelQML::filterChangedInternal);
+    connect(&m_filterBehavior, &FilterBehavior::patternChanged, this, &QSortFilterProxyModelQML::filterChangedInternal);
 }
 
 int
@@ -165,17 +165,19 @@ QSortFilterProxyModelQML::filterBehavior()
 }
 
 void
-QSortFilterProxyModelQML::sortChanged()
+QSortFilterProxyModelQML::sortChangedInternal()
 {
     setSortRole(roleByName(m_sortBehavior.property()));
     sort(sortColumn() != -1 ? sortColumn() : 0, m_sortBehavior.order());
+    Q_EMIT sortChanged();
 }
 
 void
-QSortFilterProxyModelQML::filterChanged()
+QSortFilterProxyModelQML::filterChangedInternal()
 {
     setFilterRole(roleByName(m_filterBehavior.property()));
     setFilterRegExp(m_filterBehavior.pattern());
+    Q_EMIT filterChanged();
 }
 
 QHash<int, QByteArray> QSortFilterProxyModelQML::roleNames() const

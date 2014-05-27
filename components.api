@@ -175,7 +175,7 @@ Subtitled 0.1 1.0
 Base
     property string subText
 ThinDivider 0.1 1.0
-Image
+Rectangle
 ValueSelector 0.1 1.0
 Empty
     property variant icon
@@ -660,10 +660,6 @@ plugins.qmltypes
     Method {
     name: "get"
     Parameter { name: "row"; type: "int" }
-    Method {
-    name: "data"
-    Parameter { name: "row"; type: "int" }
-    Parameter { name: "role"; type: "int" }
     Method { name: "count"; type: "int" }
     name: "ShapeItem"
     prototype: "QQuickItem"
@@ -868,6 +864,8 @@ plugins.qmltypes
     exports: ["Layouts 0.1", "Layouts 1.0"]
     Property { name: "currentLayout"; type: "string"; isReadonly: true }
     Property { name: "layouts"; type: "ULConditionalLayout"; isList: true; isReadonly: true }
+    Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
     name: "ULLayoutsAttached"
     prototype: "QObject"
     Property { name: "item"; type: "string" }

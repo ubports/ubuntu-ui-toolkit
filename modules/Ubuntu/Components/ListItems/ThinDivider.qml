@@ -44,11 +44,14 @@ import QtQuick 2.0
         }
     \endqml
 */
-Image {
+Rectangle {
     anchors {
         left: (parent) ? parent.left : null
         right: (parent) ? parent.right : null
     }
     height: (visible) ? units.dp(2) : 0
-    source: "artwork/ListItemDividerHorizontal.png"
+    gradient: Gradient {
+        GradientStop { position: 0.0; color: "#26000000" }
+        GradientStop { position: 1.0; color: "#14F3F3E7" }
+    }
 }
