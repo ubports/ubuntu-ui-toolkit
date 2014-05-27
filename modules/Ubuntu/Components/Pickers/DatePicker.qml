@@ -523,7 +523,7 @@ StyledItem {
         function updatePickers() {
             if (completed) {
                 // check mode flags first
-                // FIXME: The js split(/\W/g) terminates the process on armhf with Qt 5.3 (v4 js)
+                // FIXME: The js split(/\W/g) terminates the process on armhf with Qt 5.3 (v4 js) (https://bugreports.qt-project.org/browse/QTBUG-39255)
                 var modes = datePicker.mode.match(/\w+/g);
 
                 showYearPicker = showMonthPicker = showDayPicker =
@@ -608,7 +608,7 @@ StyledItem {
             completed = false;
 
             // use short format to exclude any extra characters
-            // FIXME: The js split(/\W/g) terminates the process on armhf with Qt 5.3 (v4 js)
+            // FIXME: The js split(/\W/g) terminates the process on armhf with Qt 5.3 (v4 js) (https://bugreports.qt-project.org/browse/QTBUG-39255)
             var format = datePicker.locale.dateFormat(Locale.ShortFormat).match(/\w+/g);
             // loop through the format to decide the position of the tumbler
             var formatIndex = 0;
