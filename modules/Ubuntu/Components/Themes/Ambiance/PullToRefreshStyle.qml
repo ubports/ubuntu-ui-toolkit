@@ -42,8 +42,12 @@ Style.PullToRefreshStyle {
     property bool refreshing: false
     // point of release used in rebind animation between the ready-to-refresh and refreshing states
     property real pointOfRelease
+    // specifies the component completion
+    property bool ready: false
 
     anchors.fill: parent
+
+    Component.onCompleted: ready = true
 
     // visuals
     Label {
@@ -63,7 +67,7 @@ Style.PullToRefreshStyle {
     Connections {
         target: control
         onRefreshingChanged: {
-            if (!control.ready || !control.enabled) {
+            if (!ready || !control.enabled) {
                 return;
             }
             if (!style.manualRefresh && target.refreshing) {
@@ -122,15 +126,15 @@ Style.PullToRefreshStyle {
         State {
             name: "idle"
             extend: ""
-            when: control.ready && control.enabled && !style.refreshing && !style.manualRefresh
+            when: ready && control.enabled && !style.refreshing && !style.manualRefresh
         },
         State {
             name: "ready-to-refresh"
-            when: control.ready && control.enabled && style.manualRefresh && !style.refreshing
+            when: ready && control.enabled && style.manualRefresh && !style.refreshing
         },
         State {
             name: "refreshing"
-            when: control.ready && control.enabled && style.wasAtYBeginning && style.refreshing
+            when: ready && control.enabled && style.wasAtYBeginning && style.refreshing
             PropertyChanges {
                 target: labelItem
                 visible: false

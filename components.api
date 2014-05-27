@@ -380,7 +380,6 @@ AnimatedItem
     property real value
 PullToRefresh 1.1
 StyledItem
-    readonly property bool ready
     property string pullText
     property string releaseText
     property Flickable target

@@ -127,12 +127,6 @@ StyledItem {
     id: control
 
     /*!
-      \qmlproperty bool ready
-      The property specifies when the component is fully functional.
-      */
-    readonly property alias ready: internals.completed
-
-    /*!
       The property holds the text shown before refresh can be initiated. The limit
       is defined by the PullToRefreshStyle \l PullToRefreshStyle::activationThreshold
       property.
@@ -170,7 +164,7 @@ StyledItem {
     }
     y: -(internals.contentY + height)
 
-    Item {
+    QtObject {
         id: internals
         property bool completed: false
         property real contentY: target.contentY - target.originY
