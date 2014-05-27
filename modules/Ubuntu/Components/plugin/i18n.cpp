@@ -104,7 +104,7 @@ void UbuntuI18n::setDomain(const QString &domain) {
     /*
      The default is /usr/share/locale if we don't set a folder
      For click we use APP_DIR/share/locale
-     eg. /usr/share/click/preinstalled/com.example.foo/current/share/locale
+     e.g. /usr/share/click/preinstalled/com.example.foo/current/share/locale
      */
     QString appDir(getenv("APP_DIR"));
     if (!QDir::isAbsolutePath (appDir)) {
