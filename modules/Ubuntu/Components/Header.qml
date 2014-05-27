@@ -133,7 +133,9 @@ StyledItem {
     property HeaderConfiguration config: null
 
     // FIXME TIM: why can I not make this readonly?
-    // Set input.visible to true to replace the title with the input
+    // Set input.enabled to true to replace the title with the input.
+    // Cannot use input.visible because it will change the visibility of its parent
+    //  (causing binding loops)
     property Item input: Components.TextField {
         // FIXME TIM: why no qtc syntax highlighting here? sth wrong?
         enabled: false
