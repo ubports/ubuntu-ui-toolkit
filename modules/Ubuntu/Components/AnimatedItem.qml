@@ -30,45 +30,8 @@ StyledItem {
     id: root
     /*!
       \preliminary
+      \deprecated
       Specifies whether the component is on the visible area of the Flickable or not.
     */
     property bool onScreen: true
-
-    QtObject {
-        id: internal
-        property Flickable flickable
-
-        // returns whether the component is in the visible area of the flickable
-        function checkOnScreen()
-        {
-            var pos = root.mapToItem(flickable, 0, 0)
-            root.onScreen = (pos.y + root.height >= 0) && (pos.y <= internal.flickable.height) &&
-                            (pos.x + root.width >= 0) && (pos.x <= internal.flickable.width)
-        }
-        // lookup for a flickable parent
-        function updateFlickableParent()
-        {
-            var flickable = root.parent
-            while (flickable) {
-                if (flickable.hasOwnProperty("flicking") && flickable.hasOwnProperty("flickableDirection")) {
-                    // non-interactive flickables must be skipped as those do not provide
-                    // on-screen detection support
-                    if (flickable.interactive)
-                        break
-                }
-                flickable = flickable.parent
-            }
-            internal.flickable = flickable
-        }
-    }
-
-    Connections {
-        target: internal.flickable
-
-        onContentXChanged: internal.checkOnScreen()
-        onContentYChanged: internal.checkOnScreen()
-    }
-
-    Component.onCompleted: internal.updateFlickableParent()
-    onParentChanged: internal.updateFlickableParent()
 }
