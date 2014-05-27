@@ -13,6 +13,9 @@ ubuntu-ui-toolkit (0.1.46+14.10.20140520-0ubuntu2) UNRELEASED; urgency=medium
 
   [ Christian Dywan ]
   * Skip flaky test_updateAlarm_Repeating.
+  * Skip test_ubuntushape which is flakey and add a FIXME.
+  * Read ubuntu-ui-toolkit.ini from $XDG_CONFIG_HOME.
+  * More unit tests and property corrections for SortFilterModel.
 
   [ Tim Peeters ]
   * Fix bug where header actions are painted in the middle 
@@ -26,6 +29,7 @@ ubuntu-ui-toolkit (0.1.46+14.10.20140520-0ubuntu2) UNRELEASED; urgency=medium
     by using an Animator.
   * ThinDivider: use a Rectangle instead of an Image. 
     5x faster creation.
+  * Label: default font weight is now light.
 
   [ Zsombor Egri ]
   * Ubuntu Layouts reparents those default layout components which
