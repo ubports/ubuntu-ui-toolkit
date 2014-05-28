@@ -152,12 +152,6 @@ MainView {
                         onTriggered: searchPage.state = "search"
                     }
 
-                    // FIXME TIM: why is this not working?
-                    // Because initially input is null
-//                    head.input {
-//                        enabled: true
-//                    }
-
                     state: ""
                     states: [
                         State {
@@ -171,35 +165,21 @@ MainView {
                         },
                         HeaderState {
                             id: headerState
+                            name: "search"
                             head: searchPage.head
-                            property bool showInput: true
                             actions: [
                                 Action {
                                     iconName: "contact"
                                 }
                             ]
-                            property alias input: inputPropertyChanges
                             backAction: Action {
                                 id: leaveSearchAction
                                 text: "back"
                                 iconName: "back"
                                 onTriggered: searchPage.state = ""
                             }
-                            name: "search"
-                            PropertyChanges {
-                                id: inputPropertyChanges
-                                target: searchPage.head.input
-                                placeholderText: "search..."
-                            }
-                            PropertyChanges {
-                                target: headerState.head.input
-                                enabled: headerState.showInput
-//                                placeholderText: "search..."
-                            }
-                            PropertyChanges {
-                                target: headerState.head
-                                backAction: headerState.backAction
-                                actions: headerState.actions
+                            input: TextField {
+
                             }
                         }
                     ]

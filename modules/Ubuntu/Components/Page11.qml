@@ -22,6 +22,6 @@ Page10 {
         id: headerConfig
 
         // TODO document in Page.qdoc
-        readonly property TextField input: page.__propagated.header.input
+        property TextField input //: page.__propagated.header.input
     }
 }

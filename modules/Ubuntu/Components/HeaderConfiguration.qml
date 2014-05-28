@@ -26,4 +26,7 @@ QtObject {
 
     property list<Action> actions
     property Action backAction: null
+
+    // TODO: document
+    property TextField input: null
 }
