@@ -261,7 +261,7 @@ class FakeHomeTestCase(testtools.TestCase):
             original_home,
             environment.get_initctl_env_var('HOME'))
 
-    def test_fake_home_fixture_patches_environment_variable(self):
+    def test_fake_home_fixture_patches_env_var(self):
         original_home = os.environ.get('HOME')
         fake_home = '/tmp'
         result = testtools.TestResult()
