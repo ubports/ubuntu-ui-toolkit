@@ -31,6 +31,7 @@ Button 0.1 1.0
 AbstractButton
     property color color
     property Gradient gradient
+    property font font
     property string iconPosition
 CheckBox 0.1 1.0
 AbstractButton
@@ -127,6 +128,7 @@ ListItem.Empty
     property bool expanded
     property bool multiSelection
     property bool colourImage
+    property Component delegate
     property real containerHeight
     property int selectedIndex
     property bool currentlyExpanded
@@ -191,12 +193,14 @@ PageTreeNode
 Object 0.1 1.0
 QtObject
     default property internal children
+    property list<QtObject> __defaultPropertyFix
 OptionSelector 0.1 1.0
 ListItem.Empty
     property var model
     property bool expanded
     property bool multiSelection
     property bool colourImage
+    property Component delegate
     property real containerHeight
     property int selectedIndex
     property bool currentlyExpanded
@@ -222,6 +226,7 @@ Item
 Page 0.1 1.0
 PageTreeNode
     property string title
+    property Item tools
     property Item __customHeaderContents
     property Flickable flickable
     property list<Action> actions
@@ -342,6 +347,7 @@ PopupBase 0.1 1.0
 OrientationHelper
     property Item dismissArea
     property bool grabDismissAreaEvents
+    property PropertyAnimation fadingAnimation
     function show()
     function hide()
     function __closeIfHidden()
