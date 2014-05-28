@@ -45,7 +45,7 @@ StyledItem {
       The header of the node. Propagates down from the root node.
       This property is deprecated.
      */
-    property AppHeader header: internal.getToolbarWithDeprecatedWarning()
+    property AppHeader header: internal.getHeaderWithDeprecatedWarning()
 
     /*!
       \deprecated
