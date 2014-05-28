@@ -65,7 +65,7 @@
     DEPRECATED. Use \l head.actions instead.
  */
 
-// Cannot define qmlpropertygroup for Page::head, see
+// FIXME: Cannot define qmlpropertygroup for Page::head, see
 // https://bugreports.qt-project.org/browse/QTBUG-34206
 
 /*!
