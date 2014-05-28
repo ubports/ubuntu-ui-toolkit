@@ -23,8 +23,8 @@ import QtQuick 2.0
 */
 AppHeader {
     Component.onCompleted: {
-        print("WARNING: Header is an internal component of Ubuntu.Components." +
-              "Its API may change or be removed at any moment." +
+        print("WARNING: Header is an internal component of Ubuntu.Components and" +
+              "its API may change or be removed at any moment." +
               "Please use MainView and Page instead."
               );
     }
