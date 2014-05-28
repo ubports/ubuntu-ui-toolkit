@@ -179,7 +179,7 @@ MainView {
                                 onTriggered: searchPage.state = ""
                             }
                             input: TextField {
-
+                                placeholderText: "search..."
                             }
                         }
                     ]

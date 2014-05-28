@@ -48,6 +48,9 @@
     and actions.
 */
 
+// TODO TIM: Examples.
+//  Use parts of header.qml from resources
+
 /*!
     \qmlproperty string Page::title
     The title of the page. Will be shown in the header of the \l MainView.
@@ -76,6 +79,13 @@
     \since Ubuntu.Components 1.1
     Overrides the default \l PageStack back button and the
     \l Tabs drawer button in the header.
+ */
+
+/*!
+    \qmlproperty TextField Page::head.input
+    \since Ubuntu.Components 1.1
+    Set this property to show the \l TextField in the header instead of
+    the title. Useful for search mode.
  */
 
 /*!
