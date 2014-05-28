@@ -15,11 +15,11 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 /*!
     \internal
-    \qmltype Header
+    \qmltype AppHeader
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
 */

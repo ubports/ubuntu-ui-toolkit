@@ -174,7 +174,7 @@ PageTreeNode {
             actionContext.active = page.active;
         }
 
-        property Header header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
+        property AppHeader header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
         // Used to position the Page when there is no flickable.
         // When there is a flickable, the header will automatically position it.
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
