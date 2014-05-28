@@ -1,36 +1,3 @@
-ubuntu-ui-toolkit (0.1.46+14.10.20140527-0ubuntu2) UNRELEASED; urgency=medium
-
-  [ Christian Dywan ]
-  * Tweak API parsing to include the Button.font property. 
-    Fixes: https://bugs.launchpad.net/bugs/1322169
-  * Call bindtextdomain on /usr if APP_DIR is not defined. 
-    Fixes: https://bugs.launchpad.net/bugs/1322630
-  * More unit tests and property corrections for SortFilterModel.
-  * Read ubuntu-ui-toolkit.ini from $XDG_CONFIG_HOME.
-  * Skip test_ubuntushape which is flakey and add a FIXME.
-
-  [ Zsombor Egri ]
-  * Missing "default" keyword added to children property of Base, 
-    causing rendering and test case failures on Qt 5.3. 
-    Fixes: https://bugs.launchpad.net/bugs/1317881
-
-  [ Ugo Riboni ]
-  * Allow requesting extra large thumbnails.
-
-  [ Florian Boucault ]
-  * AnimatedItem: deprecated as it was not used and still costly.
-  * Label: default font weight is now light.
-
-  [ Tim Peeters ]
-  * Make Header component internal as it was always documented.
-
-
-  [ Zoltán Balogh ]
-  * Replace split with match to work around failing split() 
-    function usage.
- 
- -- Zoltán Balogh <zoltan@bakter.hu>  Wed, 28 May 2014 11:54:22 +0200
-
 ubuntu-ui-toolkit (0.1.46+14.10.20140527-0ubuntu1) utopic; urgency=medium
 
   [ Timo Jyrinki ]
