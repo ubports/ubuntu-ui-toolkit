@@ -81,7 +81,7 @@ Empty
     property real __leftIconMargin
     property real __rightIconMargin
     property bool __iconIsItem
-    property internal children
+    default property internal children
 Caption 0.1 1.0
 Item
     property string text
