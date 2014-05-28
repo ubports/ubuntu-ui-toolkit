@@ -208,16 +208,30 @@ Item {
         }
         Binding {
             target: styledItem.config.input
-            property: "anchors.left"
-            value: contentsContainer.left
-            when: styledItem.config.input && !styledItem.contents
+            property: "anchors.verticalCenter"
+            value: contentsContainer.verticalCenter
+            when: styledItem.config.input &&
+                  styledItem.config.input.parent === contentsContainer
         }
         Binding {
             target: styledItem.config.input
-            property: "anchors.verticalCenter"
-            value: contentsContainer.verticalCenter
-            when: styledItem.config.input && !styledItem.contents
+            property: "anchors.left"
+            value: contentsContainer.left
+            when: styledItem.config.input &&
+                  styledItem.config.input.parent === contentsContainer
         }
+//        Binding {
+//            target: styledItem.config.input
+//            property: "anchors.left"
+//            value: contentsContainer.left
+//            when: styledItem.config.input //&& !styledItem.contents
+//        }
+//        Binding {
+//            target: styledItem.config.input
+//            property: "anchors.verticalCenter"
+//            value: styledItem.config.input.parent.verticalCenter //contentsContainer.verticalCenter
+//            when: styledItem.config.input !== null //&& !styledItem.contents
+//        }
     }
 
     Row {
