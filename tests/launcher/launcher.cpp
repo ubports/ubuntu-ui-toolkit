@@ -36,7 +36,7 @@ int usage()
     QString self(QGuiApplication::instance()->arguments().at(0));
     std::cout << "Usage\n  "
         << qPrintable(self)
-        << " -testability- frameless -engine"
+        << " -testability -frameless -engine"
         << " --desktop_file_path=DESKTOP_FILE"
         << " -I MODULE_PATH FILENAME\n";
     return 1;
