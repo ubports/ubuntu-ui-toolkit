@@ -169,17 +169,17 @@ MainView {
                                 actions: [ searchAction ]
                             }
                         },
-                        State {
+                        HeaderState {
                             id: headerState
-                            property alias head: searchPage.head
+                            head: searchPage.head
                             property bool showInput: true
-                            property list<Action> actions: [
+                            actions: [
                                 Action {
                                     iconName: "contact"
                                 }
                             ]
                             property alias input: inputPropertyChanges
-                            property Action backAction: Action {
+                            backAction: Action {
                                 id: leaveSearchAction
                                 text: "back"
                                 iconName: "back"

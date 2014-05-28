@@ -93,3 +93,4 @@ UbuntuListView 1.0 UbuntuListView.qml
 #version 1.1
 ComboButton 1.1 ComboButton.qml
 Page 1.1 Page11.qml
+HeaderState 1.1 HeaderState.qml
