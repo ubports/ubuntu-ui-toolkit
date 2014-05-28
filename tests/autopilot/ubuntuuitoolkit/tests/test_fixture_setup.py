@@ -15,6 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import tempfile
 
 try:
     # Python 3.
@@ -263,7 +264,7 @@ class FakeHomeTestCase(testtools.TestCase):
 
     def test_fake_home_fixture_patches_env_var(self):
         original_home = os.environ.get('HOME')
-        fake_home = '/tmp'
+        fake_home = tempfile.gettempdir()
         result = testtools.TestResult()
 
         def inner_test():
