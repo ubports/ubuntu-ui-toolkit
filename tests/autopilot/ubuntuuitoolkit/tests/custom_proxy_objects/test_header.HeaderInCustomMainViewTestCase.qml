@@ -21,7 +21,4 @@ CustomMainView {
 
     objectName: 'mainView'
 
-    Header {
-        title: 'test header'
-    }
 }
