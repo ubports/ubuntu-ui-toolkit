@@ -127,5 +127,3 @@ class UbuntuUIToolkitCustomProxyObjectBase(dbus.CustomEmulatorBase):
             raise ToolkitException('Could not find the top-most container.')
         else:
             return top_container
-
-
