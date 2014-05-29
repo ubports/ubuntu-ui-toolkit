@@ -161,6 +161,10 @@ MainView {
         self.assertEqual(overflow_button.visible, False)
 
 
+class CustomMainView(ubuntuuitoolkit.MainView):
+    """Autopilot helper for a custom main view."""
+
+
 class HeaderInCustomMainViewTestCase(tests.QMLFileAppTestCase):
 
     path = os.path.abspath(__file__)
@@ -170,7 +174,7 @@ class HeaderInCustomMainViewTestCase(tests.QMLFileAppTestCase):
 
     @property
     def main_view(self):
-        return self.app.select_single('QQuickItem', objectName='mainView')
+        return self.app.select_single(CustomMainView)
 
     def test_get_header_from_custom_main_view(self):
         """Test that we can get the header from a custom main view.
@@ -178,5 +182,5 @@ class HeaderInCustomMainViewTestCase(tests.QMLFileAppTestCase):
         This prevents a regression of http://pad.lv/1324556.
 
         """
-        header = self.app.select_single(ubuntuuitoolkit.Header)
+        header = self.main_view.get_header()
         self.assertIsInstance(header, ubuntuuitoolkit.Header)
