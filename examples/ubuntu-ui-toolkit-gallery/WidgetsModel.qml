@@ -23,6 +23,11 @@ ListModel {
         label: "Navigation"
         source: "Navigation.qml"
     }
+    ListElement {
+        objectName: "tweaksElement"
+        label: "Tweaks"
+        source: "Tweaks.qml"
+    }
 
     ListElement {
         objectName: "togglesElement"
