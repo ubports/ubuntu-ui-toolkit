@@ -19,6 +19,8 @@ import Ubuntu.Components 1.1
 
 Item {
 
+    objectName: 'mainView'
+
     Header {
         title: 'test header'
     }

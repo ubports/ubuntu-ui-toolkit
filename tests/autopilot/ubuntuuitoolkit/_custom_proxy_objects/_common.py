@@ -111,3 +111,21 @@ class UbuntuUIToolkitCustomProxyObjectBase(dbus.CustomEmulatorBase):
         raise ToolkitException(
             "The element is not contained in a Flickable so it can't be "
             "swiped into view.")
+
+    def _get_top_container(self):
+        """Return the top-most container with a globalRect."""
+        root = self.get_root_instance()
+        parent = self.get_parent()
+        top_container = None
+        while parent.id != root.id:
+            if hasattr(parent, 'globalRect'):
+                top_container = parent
+
+            parent = parent.get_parent()
+
+        if top_container is None:
+            raise ToolkitException('Could not find the top-most container.')
+        else:
+            return top_container
+
+

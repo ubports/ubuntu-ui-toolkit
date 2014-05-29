@@ -168,10 +168,15 @@ class HeaderInCustomMainViewTestCase(tests.QMLFileAppTestCase):
     test_qml_file_path = os.path.join(
         dir_path, 'test_header.HeaderInCustomMainViewTestCase.qml')
 
+    @property
+    def main_view(self):
+        return self.app.select_single('QQuickItem', objectName='mainView')
+
     def test_get_header_from_custom_main_view(self):
         """Test that we can get the header from a custom main view.
 
         This prevents a regression of http://pad.lv/1324556.
 
         """
-        self.app.select_single(ubuntuuitoolkit.Header)
+        header = self.app.select_single(ubuntuuitoolkit.Header)
+        self.assertIsInstance(header, ubuntuuitoolkit.Header)
