@@ -605,7 +605,7 @@ TestCase
     function flick(item, x, y, dx, dy, pressTimeout, steps, button, modifiers, delay)
     function mouseLongPress(item, x, y, button, modifiers, delay)
     function tryCompareFunction(func, expectedResult, timeout)
-    function typeString(obj, string)
+    function typeString(string)
 plugins.qmltypes
     name: "FilterBehavior"
     prototype: "QObject"
