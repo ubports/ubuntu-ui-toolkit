@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import os
+
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
@@ -157,3 +159,19 @@ MainView {
 
         # only three actions are visible
         self.assertEqual(overflow_button.visible, False)
+
+
+class HeaderInCustomMainViewTestCase(tests.QMLFileAppTestCase):
+
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_header.HeaderInCustomMainViewTestCase.qml')
+
+    def test_get_header_from_custom_main_view(self):
+        """Test that we can get the header from a custom main view.
+
+        This prevents a regression of http://pad.lv/1324556.
+
+        """
+        self.app.select_single(ubuntuuitoolkit.Header)
