@@ -116,8 +116,6 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         super(QMLFileAppTestCase, self).setUp()
         self.pointing_device = Pointer(self.input_device_class.create())
         self.launch_application()
-        self.assertThat(
-            self.main_view.visible, Eventually(Equals(True)))
 
     def launch_application(self):
         desktop_file_path = self._get_desktop_file_path()
@@ -128,6 +126,9 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
             '--desktop_file_hint={0}'.format(desktop_file_path),
             emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
             app_type='qt')
+
+        self.assertThat(
+            self.main_view.visible, Eventually(Equals(True)))
 
     def _get_desktop_file_path(self):
         if self.desktop_file_path is None:
