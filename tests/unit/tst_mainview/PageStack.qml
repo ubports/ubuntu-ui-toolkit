@@ -22,9 +22,12 @@ MainView {
     applicationName: "once.upon.a.time"
 
     PageStack {
+	id: stack
         objectName: "stack"
+	Component.onCompleted: stack.push(pageOnStack)
 
         Page {
+	    id: pageOnStack
             objectName: "page"
             title: 'Far far away'
         }

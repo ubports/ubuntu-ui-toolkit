@@ -1,3 +1,131 @@
+ubuntu-ui-toolkit (0.1.46+14.10.20140520-0ubuntu1) utopic; urgency=medium
+
+  [ Leo Arias ]
+  * Added the swipe_into_view method to autopilot helpers.
+    Fixed the name of the QQuickFlickable autopilot helper. 
+    Fixes: https://bugs.launchpad.net/bugs/1286479 
+    https://bugs.launchpad.net/bugs/1314433.
+  * On the autopilot helpers, find the top container starting from
+    the flickable. Fixes: https://bugs.launchpad.net/bugs/1314390.
+
+  [ Christian Dywan ] 
+  * Use i18n.dtr for toolkit-owned translations. 
+    Fixes: https://bugs.launchpad.net/bugs/1317539
+  * Introduce QML bindings for SortFilterModel. 
+    Fixes: https://bugs.launchpad.net/bugs/1266529
+  * Pick data path if .click is present. 
+    Fixes: https://bugs.launchpad.net/bugs/1317772
+
+  [ Tim Peeters ]
+  * Quick fix for TabBarStyle.qml:119: TypeError: Cannot 
+    read property of null.
+
+  [ Zsombor Egri ]
+  * One time alarms omit dayOfWeek value changes. 
+    Fixes: https://bugs.launchpad.net/bugs/1319401
+
+  [ CI bot ]
+  * Resync trunk
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 20 May 2014 08:35:48 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.10.20140516-0ubuntu1) utopic; urgency=medium
+
+  [ Tim Peeters ]
+  * Take visibility of actions into account when determining whether 
+    an overflow is needed in header. 
+    Fixes: https://bugs.launchpad.net/bugs/1316631
+  * Improve automatic setting of the active property of Pages, 
+    Tabs, PageStack.
+    Pages defined as children of PageStack are now not active by 
+    default until they are pushed on the stack, and inactive pages 
+    are not visible. Fixes: https://bugs.launchpad.net/bugs/1225079 
+    https://bugs.launchpad.net/bugs/1260116
+    https://bugs.launchpad.net/bugs/1317902
+  * Elide titles in the header that are too long to fit.
+  * Add documentation and print a warning when apps put 
+    PageStack/Tabs/Page inside a Page.
+
+  [ Christian Dywan ]
+  * Add a Theme section to the Icon section in the gallery. 
+    Fixes: https://bugs.launchpad.net/bugs/1312710
+
+  [ Zsombor Egri ]
+  * Right selection caret positioning fix.
+
+  [ Andrew Hayzen ]
+  * Block wheel events to items below PopupBase.qml
+    Fixes: https://bugs.launchpad.net/bugs/1315775.
+
+  [ Oliver Grawert ]
+  * Improve the haptics button feedback to be more like other 
+    on mobile architectures (less rattling, more realistic).
+    Fixes: https://bugs.launchpad.net/bugs/1290201.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 16 May 2014 11:58:25 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.10.20140512-0ubuntu1) utopic; urgency=low
+
+  [ Tim Peeters ]
+  * Make it possible to replace the title in the header with a
+    custom Item. Fixes: https://bugs.launchpad.net/bugs/1314948
+  * Use selectedIndex of the tabs model instead of the TabBar
+    everywhere in TabBarStyle to fix a bug that uses Tabs on a
+    PageStack. Fixes: https://bugs.launchpad.net/bugs/1316736
+  * Fix the positioning of a popover pointer on a small screen
+    in portrait mode. Fixes: https://bugs.launchpad.net/bugs/1208833
+
+  [ Christian Dywan ]
+  * Export to load modules from source and allow arguments.
+  * linearSecondsPicker check it's not resetting and
+    count is correct
+
+  [ Zsombor Egri ]
+  * Text input caret positioning fix for the cases when TextField
+    has overlay primary items and when RTL is enabled.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 12 May 2014 12:27:41 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.10.20140508-0ubuntu1) utopic; urgency=low
+
+  [ Christian Dywan ]
+  * Export to load modules from source and allow arguments.
+  * linearSecondsPicker check it's not resetting and count is correct
+  * Add a section for the ThinDivider to the gallery.
+    Fixes: https://bugs.launchpad.net/bugs/1312716.
+  * Use locale format specifier in textfield_numbers.
+    Fixes: https://bugs.launchpad.net/bugs/1311907.
+
+  [ Zsombor Egri ]
+  * PageUp/PageDown fix in text inputs.
+    Fixes: https://bugs.launchpad.net/bugs/1180188.
+  * Text input caret handler visuals and functionality.
+    Fixes: https://bugs.launchpad.net/bugs/1183257.
+  * Introducing Ubuntu.Components.Styles 1.1 module.
+
+  [ Tim Peeters ]
+  * Add the possibility to override the back button in the header.
+    Fixes: https://bugs.launchpad.net/bugs/1314945.
+  * Simplify code by setting header and toolbar properties in
+    MainView instead of Page.
+  * Move toolbar tools that were defined using an Action to header
+    Fixes: https://bugs.launchpad.net/bugs/1273185.
+  * Remove already inherited properties from OptionSelectorDelegate,
+    ValueSelector, Subtitled, Standard and Base list item components
+  * Change parent of OptionSelectorDelegate from Standard to Empty,
+    because it effectively disabled all the visuals of Standard.
+
+  [ Andrew Hayzen ]
+  * Currently there is no animation of the listItem when
+    cancelItemRemoval() is called, which causes a 'jump' in the
+    listItem, this allows for the animation to occur.
+
+  [ Leo Arias ]
+  * Deprecated the ubuntuuitoolkit.emulators namespace. Split the
+    autopilot helpers in smaller files.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 08 May 2014 10:54:32 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.10.20140502.6-0ubuntu1) utopic; urgency=low
 
   [ Zoltán Balogh]

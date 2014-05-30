@@ -32,16 +32,6 @@ MainView {
             Tab {
                 title: "Tab 1"
                 page: Page {
-                    Button {
-                        anchors.centerIn: parent
-                        onClicked: pageStack.push(page3)
-                        text: "Press"
-                    }
-                }
-            }
-            Tab {
-                title: "Tab 2"
-                page: Page {
                     Column {
                         anchors {
                             centerIn: parent
@@ -73,6 +63,16 @@ MainView {
                                 value: animateSwitch.checked
                             }
                         }
+                    }
+                }
+            }
+            Tab {
+                title: "Tab 2"
+                page: Page {
+                    Button {
+                        anchors.centerIn: parent
+                        onClicked: pageStack.push(page3)
+                        text: "Press"
                     }
                 }
             }
