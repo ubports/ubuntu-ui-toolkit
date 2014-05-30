@@ -21,16 +21,18 @@ ARCH=arm-linux-gnueabihf
 # Make the image writable
 phablet-config writable-image || exit 1
 # Copy selectively to avoid pushing binaries (arch conflict) and sources (unneeded)
-for i in / /ListItems/ /Pickers/ /Popups/ /Colors/ /Styles/ /Themes/ /artwork/; do
-    OLDPWD=$PWD
-    cd modules
-    for j in $(ls Ubuntu/Components$i*.qml 2>/dev/null); do
-        adb push $j /usr/lib/$ARCH/qt5/qml/$j || exit 1
-    done
-    for j in $(ls Ubuntu/Components$i*.js 2>/dev/null); do
-        adb push $j /usr/lib/$ARCH/qt5/qml/$j || exit 1
-    done
-    cd $OLDPWD
+cd modules || exit 1
+for i in $(ls Ubuntu/Components/*.qml 2>/dev/null); do
+    echo modules/$i '->' /usr/lib/$ARCH/qt5/qml/Ubuntu/Components/
+    adb push $i /usr/lib/$ARCH/qt5/qml/Ubuntu/Components/
+done
+for i in $(ls Ubuntu/Components/*.js 2>/dev/null); do
+    echo modules/$i '->' /usr/lib/$ARCH/qt5/qml/Ubuntu/Components/
+    adb push $i /usr/lib/$ARCH/qt5/qml/Ubuntu/Components/
+done
+cd ..
+for i in ListItems Pickers Popups Colors Styles Themes artwork; do
+    adb push modules/Ubuntu/Components/$i/ /usr/lib/$ARCH/qt5/qml/Ubuntu/Components/$i || exit 1
 done
 # Autopilot tests should always match the Toolkit
 adb push tests/autopilot/ubuntuuitoolkit/ /usr/lib/python2.7/dist-packages/ubuntuuitoolkit || exit 1
