@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013 Canonical Ltd.
+# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -19,6 +19,7 @@
 import os
 import shutil
 
+import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
 
@@ -70,6 +71,19 @@ class GalleryTestCase(tests.QMLFileAppTestCase):
             return local_desktop_file_path
         else:
             return desktop_file_path
+
+    def open_page(self, page):
+        """Open a page of the widget gallery.
+
+        :param page: The objectName of the element in the index list that opens
+            the page.
+
+        """
+        list_view = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickListView, objectName="widgetList")
+        list_view.click_element(page)
+        element = self.main_view.select_single('Standard', objectName=page)
+        element.selected.wait_for(True)
 
     def tearDown(self):
         super(GalleryTestCase, self).tearDown()

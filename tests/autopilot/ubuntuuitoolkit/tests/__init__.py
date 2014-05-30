@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013 Canonical Ltd.
+# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -160,19 +160,6 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         self.assertThat(listView, Not(Is(None)))
         self.assertThat(listView.visible, Eventually(Equals(True)))
         return (contentLoader, listView)
-
-    def loadItem(self, item):
-        self.selectItem(item)
-        contentLoader = self.main_view.select_single(
-            "QQuickLoader", objectName="contentLoader")
-        self.assertThat(contentLoader.progress, Eventually(Equals(1.0)))
-        loadedPage = self.getListItem(item)
-        self.assertThat(loadedPage, Not(Is(None)))
-        #loadedPage is not a page, it is the list item which goes in
-        #background when the item is selected, which changes the visible
-        #property of item in list itself to False. So followin check
-        #fails on Nexus 4. Commenting it for now.
-        #self.assertThat(loadedPage.visible, Eventually(Equals(True)))
 
     def drag(self, itemText, itemTextTo):
         item = self.getListItem(itemText)
