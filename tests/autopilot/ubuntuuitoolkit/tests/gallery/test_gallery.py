@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013 Canonical Ltd.
+# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -20,7 +20,7 @@ import ubuntuuitoolkit
 from ubuntuuitoolkit.tests import gallery
 
 
-class GenericTests(gallery.GalleryTestCase):
+class GalleryAppTestCase(gallery.GalleryTestCase):
     """Generic tests for the Gallery"""
 
     def test_select_main_view_must_return_main_window_emulator(self):
