@@ -16,21 +16,16 @@
 
 """Tests for the Ubuntu UI Toolkit Gallery"""
 
-from autopilot.matchers import Eventually
-from testtools.matchers import Is, Not, Equals
-
+import ubuntuuitoolkit
 from ubuntuuitoolkit.tests import gallery
 
 
 class GenericTests(gallery.GalleryTestCase):
     """Generic tests for the Gallery"""
 
-    def test_0_can_select_mainwindow(self):
-        """Must be able to select the main window."""
-
-        rootItem = self.main_view
-        self.assertThat(rootItem, Not(Is(None)))
-        self.assertThat(rootItem.visible, Eventually(Equals(True)))
+    def test_select_main_view_must_return_main_window_emulator(self):
+        main_view = self.main_view
+        self.assertIsInstance(main_view, ubuntuuitoolkit.MainView)
 
     def test_slider(self):
         self.open_page('slidersElement')
