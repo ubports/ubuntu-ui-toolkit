@@ -10,6 +10,8 @@ ubuntu-ui-toolkit (0.1.46+14.10.20140527-0ubuntu1) utopic; urgency=medium
   * Added autopilot helpers to pick a time from a date picker.
   * In autopilot select all text only if not already selected.
     Fixes: https://bugs.launchpad.net/bugs/1321222.
+  * Added a fixture for autopilot tests to use a fake home directory
+    Fixes: https://bugs.launchpad.net/bugs/1317639.
 
   [ Christian Dywan ]
   * Skip flaky test_updateAlarm_Repeating.
@@ -23,6 +25,8 @@ ubuntu-ui-toolkit (0.1.46+14.10.20140527-0ubuntu1) utopic; urgency=medium
   * Add header demo program to the resources.
   * Show header if it was not visible before clicking header 
     button in autopilot test. 
+  * Anchor the internal PageTreeNode of PageStack to fill its parent. 
+    Fixes: https://bugs.launchpad.net/bugs/1322527.
 
   [ Florian Boucault ]
   * ActivityIndicator: do not rely on the main thread to animate
