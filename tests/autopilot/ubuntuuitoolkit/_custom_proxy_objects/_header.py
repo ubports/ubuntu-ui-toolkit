@@ -31,8 +31,8 @@ _NO_TABS_ERROR = 'The MainView has no Tabs.'
 logger = logging.getLogger(__name__)
 
 
-class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
-    """Header Autopilot emulator."""
+class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
+    """AppHeader Autopilot emulator."""
 
     def _show_if_not_visible(self):
         if not self._is_visible():
@@ -132,7 +132,7 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException(
-                "Header.switch_to_tab_by_index only works with new header")
+                "AppHeader.switch_to_tab_by_index only works with new header")
         else:
             self._switch_to_tab_in_drawer_by_index(index)
 

@@ -39,7 +39,7 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """MainView Autopilot emulator."""
 
     def get_header(self):
-        """Return the Header emulator of the MainView."""
+        """Return the AppHeader emulator of the MainView."""
         try:
             return self.select_single('AppHeader', objectName='MainView_Header')
         except dbus.StateNotFoundError:

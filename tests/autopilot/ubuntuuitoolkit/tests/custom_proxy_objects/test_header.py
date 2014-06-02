@@ -111,7 +111,7 @@ MainView {
         self.assertEqual(self.label.text, 'No button clicked.')
 
     def test_header_custom_proxy_object(self):
-        self.assertIsInstance(self.header, ubuntuuitoolkit.Header)
+        self.assertIsInstance(self.header, ubuntuuitoolkit.AppHeader)
         self.assertTrue(self.header.visible)
         self.assertEqual(self.header.title, "Test title")
 
@@ -183,4 +183,4 @@ class HeaderInCustomMainViewTestCase(tests.QMLFileAppTestCase):
 
         """
         header = self.main_view.get_header()
-        self.assertIsInstance(header, ubuntuuitoolkit.Header)
+        self.assertIsInstance(header, ubuntuuitoolkit.AppHeader)

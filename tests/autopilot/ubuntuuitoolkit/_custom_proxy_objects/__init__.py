@@ -22,7 +22,7 @@ __all__ = [
     'CheckBox',
     'get_keyboard',
     'get_pointing_device',
-    'Header',
+    'AppHeader',
     'listitems',
     'MainView',
     'OptionSelector',
@@ -47,7 +47,7 @@ from ubuntuuitoolkit._custom_proxy_objects._common import (
     UbuntuUIToolkitCustomProxyObjectBase,
 )
 from ubuntuuitoolkit._custom_proxy_objects._flickable import QQuickFlickable
-from ubuntuuitoolkit._custom_proxy_objects._header import Header
+from ubuntuuitoolkit._custom_proxy_objects._header import AppHeader
 from ubuntuuitoolkit._custom_proxy_objects import listitems
 from ubuntuuitoolkit._custom_proxy_objects._mainview import MainView
 from ubuntuuitoolkit._custom_proxy_objects._optionselector import (
