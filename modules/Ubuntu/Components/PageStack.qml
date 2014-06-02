@@ -192,6 +192,7 @@ PageTreeNode {
      */
     default property alias data: inactiveNode.data
     PageTreeNode {
+        anchors.fill: parent
         id: inactiveNode
         active: false
     }
