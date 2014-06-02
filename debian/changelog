@@ -1,3 +1,15 @@
+ubuntu-ui-toolkit (0.1.46+14.10.20140602-0ubuntu1) utopic; urgency=low
+
+  [ Tarmac ]
+  * [ Christian Dywan ]   * Tweak API parsing to include the Button.font
+    property.      (LP: #1322169, #1322630, #1317881)
+
+  [ Zoltán Balogh ]
+  * [ Christian Dywan ]   * Tweak API parsing to include the Button.font
+    property.      (LP: #1322169, #1322630, #1317881)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 02 Jun 2014 11:33:42 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.10.20140527-0ubuntu1) utopic; urgency=medium
 
   [ Timo Jyrinki ]
