@@ -139,7 +139,7 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException(
-                "Header.swtich_to_tab_by_index only works with new header")
+                "Header.switch_to_tab_by_index only works with new header")
         else:
             self._switch_to_tab_in_drawer_by_index(index)
 
