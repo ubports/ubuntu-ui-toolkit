@@ -21,7 +21,6 @@ from autopilot.introspection import dbus
 
 from ubuntuuitoolkit._custom_proxy_objects import (
     _common,
-    _mainview,
     _tabbar
 )
 
@@ -35,13 +34,6 @@ logger = logging.getLogger(__name__)
 class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """Header Autopilot emulator."""
 
-    def __init__(self, *args):
-        super(Header, self).__init__(*args)
-        # XXX we need a better way to keep reference to the main view.
-        # --elopio - 2014-02-26
-        self.main_view = self.get_root_instance().select_single(
-            _mainview.MainView)
-
     def _show_if_not_visible(self):
         if not self._is_visible():
             self._show()
@@ -53,8 +45,9 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
         # FIXME This will fail if the header is not linked to a flickable that
         # fills the main view. The header has a flickable property but it
         # can't be read by autopilot. See bug http://pad.lv/1318829
+        top_container = self._get_top_container()
         start_x = stop_x = (self.globalRect.x + self.globalRect.width) // 2
-        start_y = self.main_view.globalRect.y + 5
+        start_y = top_container.globalRect.y + 5
         stop_y = start_y + self.globalRect.height
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
         self.y.wait_for(0)
