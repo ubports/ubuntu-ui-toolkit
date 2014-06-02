@@ -41,7 +41,7 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def get_header(self):
         """Return the Header emulator of the MainView."""
         try:
-            return self.select_single('Header', objectName='MainView_Header')
+            return self.select_single('AppHeader', objectName='MainView_Header')
         except dbus.StateNotFoundError:
             raise _common.ToolkitException('The main view has no header.')
 
