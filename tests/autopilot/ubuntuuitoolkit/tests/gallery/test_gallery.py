@@ -104,7 +104,8 @@ class OpenPagesTestCase(gallery.GalleryTestCase):
     names = [
         'navigation', 'toggles', 'buttons', 'sliders', 'textinputs',
         'optionSelectors', 'pickers', 'progressBars', 'ubuntuShapes', 'icons',
-        'labels', 'listItems', 'ubuntuListView', 'dialogs', 'popovers', 'sheets', 'animations'
+        'labels', 'listItems', 'ubuntuListView', 'dialogs', 'popovers',
+        'sheets', 'animations'
     ]
 
     scenarios = [
