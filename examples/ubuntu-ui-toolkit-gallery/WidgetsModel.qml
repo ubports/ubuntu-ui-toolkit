@@ -86,8 +86,8 @@ ListModel {
     }
     ListElement {
         objectName: "ubuntuListViewElement"
-        label: "UbuntuListView"
-        source: "UbuntuListView.qml"
+        label: "Ubuntu ListView"
+        source: "UbuntuListViews.qml"
     }
 
     ListElement {

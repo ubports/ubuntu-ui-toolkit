@@ -97,7 +97,6 @@ Item {
             ubuntuListView.pullToRefresh.enabled = true;
             refreshSpy.target = ubuntuListView.pullToRefresh
             var x = ubuntuListView.width / 2;
-//            flick(ubuntuListView, x, units.gu(1), 0, units.gu(40));
             mouseDrag(ubuntuListView, x, units.gu(1), 0, ubuntuListView.height);
             refreshSpy.wait();
             tryCompareFunction(function() { return ubuntuListView.pullToRefresh.refreshing; }, false, 1000);

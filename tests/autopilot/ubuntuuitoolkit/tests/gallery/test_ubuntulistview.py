@@ -17,16 +17,31 @@
 """Tests for the Ubuntu UI Toolkit Gallery - UbuntuListView component."""
 
 import ubuntuuitoolkit
-from ubuntuuitoolkit import emulators
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 
 
 class UbuntuListViewTestCase(GalleryTestCase):
 
-    def setup(self):
+    def setUp(self):
         super(UbuntuListViewTestCase, self).setUp()
-
-    def test_pull_to_refresh_enabled(self):
-        item = "UbuntuListView"
+        item = "Ubuntu ListView"
         self.loadItem(item)
         self.checkPageHeader(item)
+
+    def _open_page(self):
+        list_view = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickListView, objectName="widgetList")
+        list_view.click_element("ubuntuListViewElement")
+        element = self.main_view.select_single(
+            'Standard', objectName="ubuntuListViewElement")
+        element.selected.wait_for(True)
+        self.checkPageHeader(element.text)
+        result = self.main_view.wait_select_single(
+            "Template", objectName="ubuntuListViewTemplate")
+        return result
+
+    def test_pull_to_refresh_enabled(self):
+        self._open_page()
+        listView = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickListView, objectName="ubuntu_listview")
+        listView.pull_to_refresh()

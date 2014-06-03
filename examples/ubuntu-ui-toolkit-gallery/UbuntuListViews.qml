@@ -16,14 +16,14 @@
 
 import QtQuick 2.2
 import QtQuick 2.0
-import Ubuntu.Components 1.1 as Toolkit
+import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
 Template {
     objectName: "ubuntuListViewTemplate"
 
     TemplateSection {
-        title: "UbuntuListView"
+        title: "Ubuntu ListView"
         className: "UbuntuListView"
 
         ListModel {
@@ -46,8 +46,13 @@ Template {
             interval: 400
         }
 
-        Toolkit.UbuntuListView {
-            objectName: "ubuntu_listview"
+        Rectangle {
+            width: 10; height: width
+            objectName: "crap"
+        }
+
+        UbuntuListView {
+            objectName: "ubuntuListView"
             width: parent.width
             height: units.gu(36)
             model: fruitModel
