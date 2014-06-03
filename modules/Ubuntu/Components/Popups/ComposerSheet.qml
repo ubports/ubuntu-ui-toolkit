@@ -56,6 +56,8 @@ import Ubuntu.Components 1.1
             }
         }
     \endqml
+
+    \b{Sheets are deprecated. Consider using \l Dialog, \l Popover or \l PageStack instead.}
 */
 
 SheetBase {
