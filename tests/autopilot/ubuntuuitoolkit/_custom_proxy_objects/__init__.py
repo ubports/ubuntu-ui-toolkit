@@ -18,11 +18,12 @@
 
 
 __all__ = [
+    'AppHeader',
     'check_autopilot_version',
     'CheckBox',
     'get_keyboard',
     'get_pointing_device',
-    'AppHeader',
+    'Header',
     'listitems',
     'MainView',
     'OptionSelector',
@@ -47,7 +48,10 @@ from ubuntuuitoolkit._custom_proxy_objects._common import (
     UbuntuUIToolkitCustomProxyObjectBase,
 )
 from ubuntuuitoolkit._custom_proxy_objects._flickable import QQuickFlickable
-from ubuntuuitoolkit._custom_proxy_objects._header import AppHeader
+from ubuntuuitoolkit._custom_proxy_objects._header import (
+    AppHeader,
+    Header,
+)
 from ubuntuuitoolkit._custom_proxy_objects import listitems
 from ubuntuuitoolkit._custom_proxy_objects._mainview import MainView
 from ubuntuuitoolkit._custom_proxy_objects._optionselector import (

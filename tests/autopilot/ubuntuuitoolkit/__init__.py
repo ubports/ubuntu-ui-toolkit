@@ -18,6 +18,7 @@
 
 
 __all__ = [
+    'AppHeader',
     'base',
     'check_autopilot_version',
     'CheckBox',
@@ -26,7 +27,7 @@ __all__ = [
     'fixture_setup',
     'get_keyboard',
     'get_pointing_device',
-    'AppHeader',
+    'Header',
     'listitems',
     'MainView',
     'OptionSelector',
@@ -52,11 +53,12 @@ from ubuntuuitoolkit import (
     tests,
 )
 from ubuntuuitoolkit._custom_proxy_objects import (
+    AppHeader,
     check_autopilot_version,
     CheckBox,
     get_keyboard,
     get_pointing_device,
-    AppHeader,
+    Header,
     listitems,
     MainView,
     OptionSelector,

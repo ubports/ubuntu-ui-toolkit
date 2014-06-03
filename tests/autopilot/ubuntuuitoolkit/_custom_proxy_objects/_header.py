@@ -204,3 +204,14 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         # to find the requested button
         return self.get_root_instance().select_single(
             'Standard', objectName=object_name)
+
+
+class Header(AppHeader):
+    """Autopilot helper for the deprecated Header."""
+
+    def __init__(self, *args):
+        logger.warning(
+            'Header is an internal QML component of Ubuntu.Components and '
+            'its API may change or be removed at any moment. Please use '
+            'MainView and Page instead.')
+        super(Header, self).__init__(*args)
