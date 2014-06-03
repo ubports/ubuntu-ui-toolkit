@@ -53,7 +53,7 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
         # FIXME This will fail if the header is not linked to a flickable that
         # fills the main view. The header has a flickable property but it
         # can't be read by autopilot. See bug http://pad.lv/1318829
-        start_x = stop_x = (self.globalRect.x + self.globalRect.width) // 2
+        start_x = stop_x = self.globalRect.x + (self.globalRect.width // 2)
         start_y = self.main_view.globalRect.y + 5
         stop_y = start_y + self.globalRect.height
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
