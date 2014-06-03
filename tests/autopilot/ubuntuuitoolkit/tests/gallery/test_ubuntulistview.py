@@ -22,12 +22,6 @@ from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 
 class UbuntuListViewTestCase(GalleryTestCase):
 
-    def setUp(self):
-        super(UbuntuListViewTestCase, self).setUp()
-        item = "Ubuntu ListView"
-        self.loadItem(item)
-        self.checkPageHeader(item)
-
     def _open_page(self):
         list_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickListView, objectName="widgetList")
@@ -43,5 +37,5 @@ class UbuntuListViewTestCase(GalleryTestCase):
     def test_pull_to_refresh_enabled(self):
         self._open_page()
         listView = self.main_view.select_single(
-            ubuntuuitoolkit.QQuickListView, objectName="ubuntu_listview")
+            ubuntuuitoolkit.UbuntuListView11, objectName="ubuntuListView")
         listView.pull_to_refresh()

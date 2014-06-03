@@ -199,7 +199,7 @@ class QQuickFlickable(Scrollable):
         bottom = _get_visible_container_bottom(containers)
 
         start_y = top
-        stop_y = bottom // 2
+        stop_y = (self.globalRect.y + bottom) // 2
         self._slow_drag(start_x, stop_x, start_y, stop_y)
         self.dragging.wait_for(False)
         self.moving.wait_for(False)
@@ -217,12 +217,13 @@ class QQuickFlickable(Scrollable):
         bottom = _get_visible_container_bottom(containers)
 
         start_y = top
-        stop_y = bottom // 2
+        stop_y = (self.globalRect.y + bottom) // 2
         self.pointing_device.move(start_x, start_y)
         self.pointing_device.press()
         self.pointing_device.move(stop_x, stop_y)
         self.pointing_device.move(start_x, start_y)
         self.pointing_device.release()
+
 
 class PullToRefresh(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """Autopilot helper for the PullToRefresh component."""

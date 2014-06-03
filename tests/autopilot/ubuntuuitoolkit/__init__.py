@@ -40,6 +40,7 @@ __all__ = [
     'TextField',
     'Toolbar',
     'ToolkitException',
+    'UbuntuListView11',
     'UbuntuUIToolkitCustomProxyObjectBase',
 ]
 
@@ -70,4 +71,5 @@ from ubuntuuitoolkit._custom_proxy_objects import (
     Toolbar,
     ToolkitException,
     UbuntuUIToolkitCustomProxyObjectBase,
+    UbuntuListView11,
 )

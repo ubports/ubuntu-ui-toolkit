@@ -35,6 +35,7 @@ __all__ = [
     'TextField',
     'Toolbar',
     'ToolkitException',
+    'UbuntuListView11',
     'UbuntuUIToolkitCustomProxyObjectBase',
 ]
 
@@ -62,3 +63,6 @@ from ubuntuuitoolkit._custom_proxy_objects._tabbar import TabBar
 from ubuntuuitoolkit._custom_proxy_objects._tabs import Tabs
 from ubuntuuitoolkit._custom_proxy_objects._textfield import TextField
 from ubuntuuitoolkit._custom_proxy_objects._toolbar import Toolbar
+from ubuntuuitoolkit._custom_proxy_objects._ubuntulistview import (
+    UbuntuListView11
+)
