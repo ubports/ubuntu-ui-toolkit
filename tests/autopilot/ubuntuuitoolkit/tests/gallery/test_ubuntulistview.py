@@ -30,28 +30,21 @@ class UbuntuListViewTestCase(GalleryTestCase):
             'Standard', objectName="ubuntuListViewElement")
         element.selected.wait_for(True)
         self.checkPageHeader(element.text)
-        result = self.main_view.wait_select_single(
+        self.main_view.wait_select_single(
             "Template", objectName="ubuntuListViewTemplate")
-        return result
+        self.listView = self.main_view.select_single(
+            ubuntuuitoolkit.UbuntuListView11, objectName="ubuntuListView")
 
     def test_pull_to_refresh_enabled(self):
         self._open_page()
-        listView = self.main_view.select_single(
-            ubuntuuitoolkit.UbuntuListView11, objectName="ubuntuListView")
-        self.assertTrue(listView.pull_to_refresh_enabled())
+        self.assertTrue(self.listView.pull_to_refresh_enabled())
 
     def test_manual_refresh_wait(self):
         self._open_page()
-        listView = self.main_view.select_single(
-            ubuntuuitoolkit.UbuntuListView11, objectName="ubuntuListView")
-        result = listView.manual_refresh_wait()
-        self.assertTrue(result)
+        self.assertTrue(self.listView.manual_refresh_wait())
 
     def test_manual_refresh_nowait(self):
         self._open_page()
-        listView = self.main_view.select_single(
-            ubuntuuitoolkit.UbuntuListView11, objectName="ubuntuListView")
-        result = listView.manual_refresh_nowait()
-        self.assertTrue(result)
+        self.assertTrue(self.listView.manual_refresh_nowait())
         # wait for completion
-        listView.wait_refresh_completed()
+        self.listView.wait_refresh_completed()
