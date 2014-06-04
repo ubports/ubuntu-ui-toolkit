@@ -77,6 +77,7 @@ OptionSelector 1.0 OptionSelector.qml
 OptionSelectorDelegate 1.0 OptionSelectorDelegate.qml
 Page 1.0 Page10.qml
 PageStack 1.0 PageStack.qml
+Header 1.0 Header.qml
 UbuntuShape 1.0 UbuntuShape.qml
 CrossFadeImage 1.0 CrossFadeImage.qml
 Icon 1.0 Icon.qml
