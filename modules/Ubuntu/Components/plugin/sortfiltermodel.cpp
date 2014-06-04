@@ -96,6 +96,7 @@
 QSortFilterProxyModelQML::QSortFilterProxyModelQML(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
+    m_sortBehavior.setOrder(Qt::AscendingOrder);
     // This is virtually always what you want in QML
     setDynamicSortFilter(true);
     connect(this, SIGNAL(modelReset()), SIGNAL(countChanged()));
