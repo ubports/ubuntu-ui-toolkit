@@ -20,10 +20,9 @@ import os
 import shutil
 
 import ubuntuuitoolkit
-from ubuntuuitoolkit import tests
 
 
-class GalleryTestCase(tests.QMLFileAppTestCase):
+class GalleryTestCase(ubuntuuitoolkit.tests.QMLFileAppTestCase):
     """Base class for gallery test cases."""
 
     local_desktop_file_path = None
@@ -40,7 +39,7 @@ class GalleryTestCase(tests.QMLFileAppTestCase):
 
     def _get_path_to_gallery_source(self):
         return os.path.join(
-            tests.get_path_to_source_root(), 'examples',
+            ubuntuuitoolkit.tests.get_path_to_source_root(), 'examples',
             'ubuntu-ui-toolkit-gallery')
 
     def _application_source_exists(self):
@@ -59,7 +58,8 @@ class GalleryTestCase(tests.QMLFileAppTestCase):
             self.test_source_path,
             'ubuntu-ui-toolkit-gallery.desktop')
         if self._application_source_exists():
-            local_desktop_file_dir = tests.get_local_desktop_file_directory()
+            local_desktop_file_dir = (
+                ubuntuuitoolkit.tests.get_local_desktop_file_directory())
             if not os.path.exists(local_desktop_file_dir):
                 os.makedirs(local_desktop_file_dir)
             local_desktop_file_path = os.path.join(
