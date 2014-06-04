@@ -1,3 +1,62 @@
+ubuntu-ui-toolkit (0.1.46+14.10.20140602-0ubuntu1) utopic; urgency=low
+
+  [ Tarmac ]
+  * [ Christian Dywan ]   * Tweak API parsing to include the Button.font
+    property.      (LP: #1322169, #1322630, #1317881)
+
+  [ Zoltán Balogh ]
+  * [ Christian Dywan ]   * Tweak API parsing to include the Button.font
+    property.      (LP: #1322169, #1322630, #1317881)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 02 Jun 2014 11:33:42 +0000
+
+ubuntu-ui-toolkit (0.1.46+14.10.20140527-0ubuntu1) utopic; urgency=medium
+
+  [ Timo Jyrinki ]
+  * Allow using the renamed QML packages. Allow also old names 
+    for eg. trusty backporting. For additional cross-building 
+    friendliness, add :any to python build dependencies.
+
+  [ Leo Arias ]
+  * Rewrite OptionSelector tests using new helpers.
+  * Added autopilot helpers to pick a time from a date picker.
+  * In autopilot select all text only if not already selected.
+    Fixes: https://bugs.launchpad.net/bugs/1321222.
+
+  [ Christian Dywan ]
+  * Skip flaky test_updateAlarm_Repeating.
+  * Skip test_ubuntushape which is flakey and add a FIXME.
+  * Read ubuntu-ui-toolkit.ini from $XDG_CONFIG_HOME.
+  * More unit tests and property corrections for SortFilterModel.
+
+  [ Tim Peeters ]
+  * Fix bug where header actions are painted in the middle 
+    of the page. Fixes: https://bugs.launchpad.net/bugs/1319861
+  * Add header demo program to the resources.
+  * Show header if it was not visible before clicking header 
+    button in autopilot test. 
+
+  [ Florian Boucault ]
+  * ActivityIndicator: do not rely on the main thread to animate
+    by using an Animator.
+  * ThinDivider: use a Rectangle instead of an Image. 
+    5x faster creation.
+  * Label: default font weight is now light.
+
+  [ Zsombor Egri ]
+  * Ubuntu Layouts reparents those default layout components which
+    are not subject of layout instead of altering their visible and
+    enabled properties. 
+    Fixes: https://bugs.launchpad.net/bugs/1204834
+    https://bugs.launchpad.net/bugs/1298886
+    https://bugs.launchpad.net/bugs/1300668.
+
+  [ Alberto Mardegan ]
+  * Keep a map of windows and associated textures. 
+    Fixes: https://bugs.launchpad.net/bugs/1296728.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 27 May 2014 07:51:29 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.10.20140520-0ubuntu1) utopic; urgency=medium
 
   [ Leo Arias ]
