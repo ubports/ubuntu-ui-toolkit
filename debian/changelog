@@ -1,3 +1,33 @@
+ubuntu-ui-toolkit (0.1.46+14.10.20140602-0ubuntu1) utopic; urgency=low
+
+  [ Christian Dywan ]   
+  * Tweak API parsing to include the Button.font property. 
+    Fixes: https://bugs.launchpad.net/bugs/1322169
+  * Call bindtextdomain on /usr if APP_DIR is not defined. 
+    Fixes: https://bugs.launchpad.net/bugs/1322630
+
+  [ Tim Peeters ]
+  * On the autopilot Header helper, do not assume that the top 
+    container will be a MainView
+  * Make Header component internal as it was always documented.
+
+  [ Zsombor Egri ]
+  * Missing "default" keyword added to children property of Base,
+    causing rendering and test case failures on Qt 5.3. 
+    Fixes: https://bugs.launchpad.net/bugs/1317881
+
+  [ Ugo Riboni ]
+  * Allow requesting extra large thumbnails.
+
+  [ Florian Boucault ]
+  * AnimatedItem: deprecated as it was not used and still costly.
+ 
+  [ Zoltán Balogh ]
+  * Replace split with match to work around failing split() 
+    function usage.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 02 Jun 2014 11:33:42 +0000
+
 ubuntu-ui-toolkit (0.1.46+14.10.20140527-0ubuntu1) utopic; urgency=medium
 
   [ Timo Jyrinki ]
