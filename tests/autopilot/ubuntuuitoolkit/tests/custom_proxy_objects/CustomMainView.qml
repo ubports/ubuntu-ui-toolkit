@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,24 +14,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*!
-    \qmltype AnimatedItem
-    \inqmlmodule Ubuntu.Components 1.1
-    \ingroup ubuntu
-    \brief The AnimatedItem drives the animated components behavior inside a Flickable.
-    Reports whether the component whos parent is a Flickable is in the visible area or not,
-    so derived components can pause animations while off-screen.
-
-*/
-
 import QtQuick 2.0
+import Ubuntu.Components 0.1
 
-StyledItem {
-    id: root
-    /*!
-      \preliminary
-      \deprecated
-      Specifies whether the component is on the visible area of the Flickable or not.
-    */
-    property bool onScreen: true
+MainView {
+    objectName: "overview"
+    property string test
 }

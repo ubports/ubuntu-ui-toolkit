@@ -51,23 +51,6 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         containers = [self._get_top_container(), self]
         return containers
 
-    def _get_top_container(self):
-        """Return the top-most container with a globalRect."""
-        root = self.get_root_instance()
-        parent = self.get_parent()
-        top_container = None
-        while parent.id != root.id:
-            if hasattr(parent, 'globalRect'):
-                top_container = parent
-
-            parent = parent.get_parent()
-
-        if top_container is None:
-            raise _common.ToolkitException(
-                "Couldn't find the top-most container.")
-        else:
-            return top_container
-
     def _is_child_visible(self, child, containers):
         """Check if the center of the child is visible.
 

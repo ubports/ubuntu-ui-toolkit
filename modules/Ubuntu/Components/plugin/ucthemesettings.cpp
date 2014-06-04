@@ -21,19 +21,20 @@
 
 #include <QtCore/QDir>
 #include <QtCore/QFile>
+#include <QtCore/QStandardPaths>
 
 /*
-  User theme settings are stored in $HOME/.config/ubuntu-ui-toolkit/theme.ini file, which contains
+  User theme settings are stored in $XDG_CONFIG_HOME/ubuntu-ui-toolkit/theme.ini file, which contains
   the current global theme name.
 */
 
-const QString SETTINGS_FILE_FORMAT("%1/.config/ubuntu-ui-toolkit/theme.ini");
+const QString SETTINGS_FILE_FORMAT("%1/ubuntu-ui-toolkit/theme.ini");
 const QString THEME_KEY("theme");
 const QString DEFAULT_THEME("Ubuntu.Components.Themes.Ambiance");
 
 UCThemeSettings::UCThemeSettings(QObject *parent) :
     QObject(parent),
-    m_settings(SETTINGS_FILE_FORMAT.arg(QDir::homePath()), QSettings::IniFormat)
+    m_settings(SETTINGS_FILE_FORMAT.arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)), QSettings::IniFormat)
 {
     // check if there is a theme settings file, if not, create one
     if (!QFile::exists(m_settings.fileName())) {
