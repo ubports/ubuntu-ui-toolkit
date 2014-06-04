@@ -12,7 +12,7 @@ API Changes
 
 Compatibility Breaks
 ********************
-* Header component API was made internal (as it was always documented)
+
 
 Ubuntu.Components 1.0
 #####################

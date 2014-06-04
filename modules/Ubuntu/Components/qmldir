@@ -29,7 +29,7 @@ Page 0.1 Page.qml
 internal PageTreeNode PageTreeNode.qml
 PageStack 0.1 PageStack.qml
 internal Toolbar Toolbar.qml
-internal Header Header.qml
+Header 0.1 Header.qml
 internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
 UbuntuShape 0.1 UbuntuShape.qml
@@ -76,6 +76,7 @@ OptionSelector 1.0 OptionSelector.qml
 OptionSelectorDelegate 1.0 OptionSelectorDelegate.qml
 Page 1.0 Page.qml
 PageStack 1.0 PageStack.qml
+Header 1.0 Header.qml
 UbuntuShape 1.0 UbuntuShape.qml
 CrossFadeImage 1.0 CrossFadeImage.qml
 Icon 1.0 Icon.qml
