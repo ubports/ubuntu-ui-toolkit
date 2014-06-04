@@ -38,4 +38,20 @@ class UbuntuListViewTestCase(GalleryTestCase):
         self._open_page()
         listView = self.main_view.select_single(
             ubuntuuitoolkit.UbuntuListView11, objectName="ubuntuListView")
-        listView.pull_to_refresh()
+        self.assertTrue(listView.pull_to_refresh_enabled())
+
+    def test_manual_refresh_wait(self):
+        self._open_page()
+        listView = self.main_view.select_single(
+            ubuntuuitoolkit.UbuntuListView11, objectName="ubuntuListView")
+        result = listView.manual_refresh_wait()
+        self.assertTrue(result)
+
+    def test_manual_refresh_nowait(self):
+        self._open_page()
+        listView = self.main_view.select_single(
+            ubuntuuitoolkit.UbuntuListView11, objectName="ubuntuListView")
+        result = listView.manual_refresh_nowait()
+        self.assertTrue(result)
+        # wait for completion
+        listView.wait_refresh_completed()

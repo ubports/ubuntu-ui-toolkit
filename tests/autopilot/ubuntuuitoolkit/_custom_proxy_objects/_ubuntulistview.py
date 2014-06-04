@@ -19,3 +19,29 @@ from ubuntuuitoolkit._custom_proxy_objects import _qquicklistview
 
 class UbuntuListView11(_qquicklistview.QQuickListView):
     """Autopilot helper for the UbuntuListView 1.1."""
+
+    def pull_to_refresh_enabled(self):
+        refresh = self.select_single('PullToRefresh')
+        return refresh.enabled
+
+    def manual_refresh_wait(self):
+        refresh = self.select_single('PullToRefresh')
+        if refresh.enabled:
+            self.pull_to_refresh()
+            refresh.wait_for_refresh()
+            return True
+        return False
+
+    def manual_refresh_nowait(self):
+        refresh = self.select_single('PullToRefresh')
+        if refresh.enabled:
+            self.pull_to_refresh()
+            return True
+        return False
+
+    def wait_refresh_completed(self):
+        refresh = self.select_single('PullToRefresh')
+        if refresh.enabled:
+            refresh.wait_for_refresh()
+            return True
+        return False

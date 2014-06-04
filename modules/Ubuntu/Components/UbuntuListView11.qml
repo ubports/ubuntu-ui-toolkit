@@ -26,6 +26,7 @@ UbuntuListView {
     property alias pullToRefresh: refreshItem
 
     PullToRefresh {
+        objectName: "listview_pulltorefresh"
         id: refreshItem
         enabled: false
     }

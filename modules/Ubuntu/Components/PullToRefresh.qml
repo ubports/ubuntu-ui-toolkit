@@ -18,7 +18,7 @@ import QtQuick 2.2
 import Ubuntu.Components 1.1
 
 /*!
-    \qmltype RefreshControl
+    \qmltype PullToRefresh
     \inqmlmodule Ubuntu.Components 0.1
     \ingroup ubuntu
     \since Ubuntu.Components 1.1
@@ -64,7 +64,7 @@ import Ubuntu.Components 1.1
     }
     \endqml
 
-    \note UbuntuListView has a built-in RefreshControl, therefore it is recommended
+    \note UbuntuListView has a built-in PullToRefresh, therefore it is recommended
     to use UbuntuListView instead of ListView.
 
     The component will also show the progress of the model's update when the refresh
