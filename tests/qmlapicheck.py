@@ -130,10 +130,10 @@ for line in fileinput.input(inputfiles, openhook=hook):
     if '{' in line and '}' in line:
         if filetype == 'qmltypes' and not in_builtin_type:
             print('    ' + line.strip())
-        continue
+            continue
 
     # End of function/ signal/ Item block
-    if '}' in line:
+    if '}' in line and not '{' in line:
         in_block -= 1
         block_meta = {}
         if in_block == 1 and in_builtin_type:
@@ -143,7 +143,7 @@ for line in fileinput.input(inputfiles, openhook=hook):
     # Only root "Item {" is inspected for QML, otherwise all children
     if in_block == 1 or filetype == 'qmltypes':
         # Left hand side specifies a keyword, a type and a variable name
-        declaration = line.split(':')[0]
+        declaration = line.split(':', 1)[0]
         words = declaration.strip().split(' ')
         # Skip types with prefixes considered builtin
         if filetype == 'qmltypes' and words[0] == 'name':
@@ -175,7 +175,8 @@ for line in fileinput.input(inputfiles, openhook=hook):
         for word in words:
             if word in keywords:
                 if filetype == 'qml':
-                    signature = declaration.split('{')[0].strip()
+                    separator = '{' if 'function' in declaration else ':'
+                    signature = declaration.split(separator, 1)[0].strip()
                     if 'alias' in line:
                         no_mods = signature
                         for mod in ['readonly', 'default']:
@@ -198,7 +199,7 @@ for line in fileinput.input(inputfiles, openhook=hook):
                 break
 
     # Start of function/ signal/ Item block
-    if '{' in line:
+    if '{' in line and not '}' in line:
         in_block += 1
         block_meta = {}
         # The parent type can affect API
