@@ -259,7 +259,7 @@ Item {
 
             Popover {
                 id: actionsOverflowPopover
-                objectName: "actionsOverflowPopover"
+                objectName: "actions_overflow_popover"
                 parent: QuickUtils.rootItem(actionsOverflowPopover)
                 caller: actionsOverflowButton
 
