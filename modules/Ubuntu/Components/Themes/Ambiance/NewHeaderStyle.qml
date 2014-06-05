@@ -262,6 +262,17 @@ Item {
                 objectName: "actionsOverflowPopover"
                 parent: QuickUtils.rootItem(actionsOverflowPopover)
                 caller: actionsOverflowButton
+
+                Connections {
+                    target: styledItem
+                    onActionsChanged: {
+                        // ensure the popover closes when actions change and
+                        // the list item below may be destroyed before its
+                        // onClicked is executed. See bug TODO
+                        actionsOverflowPopover.hide();
+                    }
+                }
+
                 Column {
                     anchors {
                         left: parent.left
