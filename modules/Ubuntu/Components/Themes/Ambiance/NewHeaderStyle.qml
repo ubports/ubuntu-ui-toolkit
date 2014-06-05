@@ -266,9 +266,10 @@ Item {
                 Connections {
                     target: styledItem
                     onActionsChanged: {
-                        // ensure the popover closes when actions change and
+                        // Ensure the popover closes when actions change and
                         // the list item below may be destroyed before its
-                        // onClicked is executed. See bug TODO
+                        // onClicked is executed. See bug
+                        // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
                         actionsOverflowPopover.hide();
                     }
                 }
