@@ -19,6 +19,7 @@ import Ubuntu.Components 1.1
 
 /*!
     \qmltype DefaultSheet
+    \deprecated
     \inherits SheetBase
     \inqmlmodule Ubuntu.Components.Popups 1.0
     \ingroup ubuntu-popups
@@ -58,6 +59,9 @@ import Ubuntu.Components 1.1
             }
         }
     \endqml
+
+    \b{Sheets are deprecated. Consider using \l Dialog, \l Popover or \l PageStack instead.}
+
 */
 SheetBase {
     id: sheet
