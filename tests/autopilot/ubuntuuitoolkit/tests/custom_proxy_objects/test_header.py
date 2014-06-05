@@ -101,7 +101,9 @@ MainView {
                             objectName: "action" + index
                             text: "text " + index
                             iconName: "add"
-                            onTriggered: label.text = "Button "+index+" clicked."
+                            onTriggered: {
+                                label.text = "Button "+index+" clicked.";
+                            }
                         }
                     }
                 }
@@ -145,7 +147,7 @@ MainView {
         self.header.click_action_button('action3')
         self.assertEqual(self.label.text, 'Button 3 clicked.')
 
-    def test_click_header_overflow_action_button_closes_popover_bug1326963(self):
+    def test_click_header_overflow_action_closes_popover_bug1326963(self):
         overflow_popover = self.main_view.select_single(
             'Popover',
             objectName='actions_overflow_popover')
