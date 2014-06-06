@@ -298,7 +298,7 @@ class FakeHomeTestCase(testtools.TestCase):
         # home.
         self.useFixture(fixture_setup.FakeHome())
 
-        open(os.path.join(os.environ.get('HOME'), '.Xauthority')).close()
+        open(os.path.join(os.environ.get('HOME'), '.Xauthority'), 'w').close()
 
         self.useFixture(fixture_setup.FakeHome())
         self.assertTrue(
