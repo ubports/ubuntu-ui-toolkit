@@ -17,6 +17,8 @@
 import os
 import time
 
+from autopilot import platform
+
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
@@ -51,6 +53,11 @@ class PullToRefreshTestCase(tests.QMLFileAppTestCase):
         self.assertEqual(self.label.text, 'Refreshed.')
 
     def test_cancel_pull_to_refresh_must_not_refresh_model(self):
+        if platform.model() != 'Desktop':
+            # TODO remove the skip once bug http://pad.lv/1266601 is fixed.
+            self.skipTest(
+                'Autopilot is not yet able to do a drag on the devices '
+                'without releasing the simulated finger.')
         self.flickable_with_pull_to_refresh._cancel_pull_to_refresh()
         # Sleep for some time to make sure that the list is not being
         # refreshed.
