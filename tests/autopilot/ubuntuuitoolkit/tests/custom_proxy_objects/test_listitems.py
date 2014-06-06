@@ -119,6 +119,11 @@ MainView {
         self._item.swipe_to_delete('right')
         self.assertTrue(self._item.waitingConfirmationForRemoval)
 
+    def test_swipe_item_to_left(self):
+        # This will do a right to left swipe behind the scenes
+        self._item.swipe_to_delete('left')
+        self.assertTrue(self._item.waitingConfirmationForRemoval)
+
     def test_swipe_item_to_wrong_direction(self):
         self.assertRaises(
             ubuntuuitoolkit.ToolkitException,
@@ -126,6 +131,12 @@ MainView {
 
     def test_delete_item_moving_right(self):
         self._item.swipe_to_delete('right')
+        self._item.confirm_removal()
+        self.assertFalse(self._item.exists())
+
+    def test_delete_item_moving_left(self):
+        # This will do a right to left swipe behind the scenes
+        self._item.swipe_to_delete('left')
         self._item.confirm_removal()
         self.assertFalse(self._item.exists())
 
