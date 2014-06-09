@@ -1004,7 +1004,6 @@ ActionItem {
                 main: control
                 input: editor
                 flickable: flicker
-                selectionModeTimeout: control.__styleInstance.selectionModeTimeout
                 /*
                   In x direction we use the Flickable x position as we can have overlays
                   which can shift the cursor caret. On y direction we only use the topMargin

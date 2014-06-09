@@ -25,6 +25,7 @@ import Ubuntu.Components 1.1
 Item {
     id: inputHandler
     objectName: "input_handler"
+
     // the root control
     property Item main
     // the input instance
@@ -35,8 +36,6 @@ Item {
     property bool selectionCursor: input && input.selectedText !== ""
     // True if mouse handlig is enabled, false if flicking mode is enabled
     readonly property bool mouseHandlingEnabled: !flickable.interactive
-    // property holding the selection mode timeout
-    property int selectionModeTimeout: 200
 
     // item filling the text input visible area, used to check teh caret handler
     // visibility
@@ -132,6 +131,7 @@ Item {
     }
     // selects text
     function selectText(mouse) {
+        state = "select";
         moveEnds = mousePosition(mouse);
         if (moveStarts < 0) {
             moveStarts = moveEnds;
@@ -147,11 +147,14 @@ Item {
         return p;
     }
     // focuses the input if not yet focused, and shows the context menu
-    function openContextMenu(mouse) {
+    function openContextMenu(mouse, noAutoselect) {
         var pos = mousePosition(mouse);
         if (!main.focus || !mouseInSelection(mouse)) {
             activateInput();
             input.cursorPosition = pressedPosition = mousePosition(mouse);
+            if (noAutoselect === undefined || !noAutoselect) {
+                input.selectWord();
+            }
         }
         // open context menu at the cursor position
         inputHandler.pressAndHold(input.cursorPosition);
@@ -234,6 +237,7 @@ Item {
     }
 
     // states
+    onStateChanged: print("state=", state)
     states: [
         // override default state to turn on the saved Flickable interactive mode
         State {
@@ -259,8 +263,6 @@ Item {
                 script: {
                     // stop scrolling all the parents
                     toggleFlickablesInteractive(false);
-                    // stop selection timeout
-                    selectionTimeout.running = false;
                 }
             }
         },
@@ -310,17 +312,6 @@ Item {
         onMovementEnded: state = ""
     }
 
-    // switches the state to selection
-    Timer {
-        id: selectionTimeout
-        interval: selectionModeTimeout
-        onTriggered: {
-            if (scroller && !scroller.moving) {
-                state = "select";
-            }
-        }
-    }
-
     // PageUp and PageDown handling
     Keys.onPressed: {
         if (event.key === Qt.Key_PageUp && event.modifiers === Qt.NoModifier) {
@@ -333,10 +324,6 @@ Item {
     // Mouse handling
     Mouse.forwardTo: [main]
     Mouse.onPressed: {
-        if (input.activeFocus) {
-            // start selection timeout
-            selectionTimeout.restart();
-        }
         // remember pressed position as we need it when entering into selection state
         pressedPosition = mousePosition(mouse);
         // consume event so it does not get forwarded to the input
@@ -348,8 +335,6 @@ Item {
         }
 
         activateInput();
-        // stop text selection timer
-        selectionTimeout.running = false;
         if (state === "") {
             input.cursorPosition = mousePosition(mouse);
         }
@@ -363,11 +348,9 @@ Item {
     }
     Mouse.onPositionChanged: {
         // leave if not focus, not the left button or not in select state
-        if (!input.activeFocus || (mouse.button !== Qt.LeftButton) || (state !== "select") || !main.selectByMouse) {
+        if (!input.activeFocus || (mouse.button !== Qt.LeftButton) /*|| (state !== "select")*/ || !main.selectByMouse) {
             return;
         }
-        // stop text selection timer
-        selectionTimeout.running = false;
         selectText(mouse);
     }
     Mouse.onDoubleClicked: {
@@ -384,7 +367,7 @@ Item {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
         // trigger pressAndHold
-        onReleased: openContextMenu(mouse)
+        onReleased: openContextMenu(mouse, true)
     }
 
     // cursors to use when text is selected

@@ -5,7 +5,7 @@ unix {
 
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
-QT += core-private qml qml-private quick quick-private dbus
+QT += core-private qml qml-private quick quick-private gui-private dbus
 
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT += v8-private
@@ -99,7 +99,10 @@ SOURCES += plugin.cpp \
     unixsignalhandler_p.cpp
 
 # adapters
-SOURCES += adapters/alarmsadapter_organizer.cpp
+HEADERS += adapters/MouseTouchAdaptor.h
+
+SOURCES += adapters/alarmsadapter_organizer.cpp \
+    adapters/MouseTouchAdaptor.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
