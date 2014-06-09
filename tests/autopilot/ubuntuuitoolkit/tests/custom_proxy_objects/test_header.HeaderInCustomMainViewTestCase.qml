@@ -1,8 +1,5 @@
 /*
- * Copyright (C) 2014 Canonical, Ltd.
- *
- * Authors:
- *   Christian Dywan <christian.dywan@canonical.com>
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -17,39 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "sortbehavior.h"
+import QtQuick 2.0
+import Ubuntu.Components 1.1
 
-SortBehavior::SortBehavior(QObject *parent)
-    : QObject(parent)
-    , m_property(QString())
-    , m_order(Qt::AscendingOrder)
-{
+CustomMainView {
+
+    objectName: 'mainView'
 
 }
-
-QString
-SortBehavior::property() const
-{
-    return m_property;
-}
-
-Qt::SortOrder
-SortBehavior::order() const
-{
-    return m_order;
-}
-
-void
-SortBehavior::setProperty(const QString& property)
-{
-    m_property = property;
-    Q_EMIT propertyChanged();
-}
-
-void
-SortBehavior::setOrder(Qt::SortOrder order)
-{
-    m_order = order;
-    Q_EMIT orderChanged();
-}
-

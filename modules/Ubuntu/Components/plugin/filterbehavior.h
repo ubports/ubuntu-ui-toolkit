@@ -29,6 +29,8 @@ class FilterBehavior : public QObject {
     Q_PROPERTY(QRegExp pattern READ pattern WRITE setPattern NOTIFY patternChanged)
 
 public:
+    explicit FilterBehavior(QObject *parent = 0);
+
     QString property() const;
     void setProperty(const QString& property);
     QRegExp pattern() const;
