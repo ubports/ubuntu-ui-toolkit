@@ -321,45 +321,55 @@ Item {
         }
     }
 
-    // Mouse handling
-    Mouse.forwardTo: [main]
-    Mouse.onPressed: {
-        // remember pressed position as we need it when entering into selection state
-        pressedPosition = mousePosition(mouse);
-        // consume event so it does not get forwarded to the input
-        mouse.accepted = true;
+    // touch and mous handling
+    function handlePressed(event, touch) {
+        if (touch) {
+
+        } else {
+            // remember pressed position as we need it when entering into selection state
+            pressedPosition = mousePosition(event);
+            // consume event so it does not get forwarded to the input
+            event.accepted = true;
+        }
     }
-    Mouse.onReleased: {
+    function handleReleased(event, touch) {
         if (!main.focus && !main.activeFocusOnPress) {
             return;
         }
 
         activateInput();
         if (state === "") {
-            input.cursorPosition = mousePosition(mouse);
+            input.cursorPosition = mousePosition(event);
         }
         moveStarts = moveEnds = -1;
         state = "";
         // check if we get right-click from the frame or the area that has no text
-        if (mouse.button === Qt.RightButton) {
+        if (event.button === Qt.RightButton) {
             // open the popover
             inputHandler.pressAndHold(input.cursorPosition);
         }
     }
-    Mouse.onPositionChanged: {
+    function handleMove(event, touch ) {
         // leave if not focus, not the left button or not in select state
-        if (!input.activeFocus || (mouse.button !== Qt.LeftButton) /*|| (state !== "select")*/ || !main.selectByMouse) {
+        if (!input.activeFocus || (!touch && event.button !== Qt.LeftButton) || !main.selectByMouse) {
             return;
         }
-        selectText(mouse);
+        selectText(event);
     }
-    Mouse.onDoubleClicked: {
+    function handleDblClick(event) {
         if (main.selectByMouse) {
             input.selectWord();
             // turn selection state temporarily so the selection is not cleared on release
             state = "selection";
         }
     }
+
+    // Mouse handling
+    Mouse.forwardTo: [main]
+    Mouse.onPressed: handlePressed(mouse, false)
+    Mouse.onReleased: handleReleased(mouse, false)
+    Mouse.onPositionChanged: handleMove(mouse, false)
+    Mouse.onDoubleClicked: handleDblClick(mouse)
     Mouse.onPressAndHold: openContextMenu(mouse)
 
     // right button handling
