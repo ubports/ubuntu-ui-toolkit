@@ -555,6 +555,7 @@ Item {
         }
 
         function test_scroll_with_selected_text() {
+            skip("Flaky test, feature needs rewrite");
             longText.focus = true;
             var handler = findChild(longText, "input_handler");
             verify(handler);
