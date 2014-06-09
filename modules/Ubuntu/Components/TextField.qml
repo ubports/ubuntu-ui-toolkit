@@ -176,8 +176,9 @@ ActionItem {
     /*!
       Whether the TextField should gain active focus on a mouse press. By default
       this is set to true.
+      \qmlproperty bool activeFocusOnPress
     */
-    property bool activeFocusOnPress: true
+    property alias activeFocusOnPress: editor.activeFocusOnPress
 
     /*!
       Whether the TextField should scroll when the text is longer than the width.
@@ -472,8 +473,9 @@ ActionItem {
 
       If false, the user cannot use the mouse to select text, only can use it to
       focus the input.
+      \qmlproperty bool selectByMouse
     */
-    property bool selectByMouse: true
+    property alias selectByMouse: editor.selectByMouse
 
     /*!
       This read-only property provides the text currently selected in the text input.
@@ -993,8 +995,8 @@ ActionItem {
             Keys.forwardTo: [control, inputHandler]
 
             // overrides
-            selectByMouse: false
-            activeFocusOnPress: false
+            selectByMouse: true
+            activeFocusOnPress: true
 
             // input selection and navigation handling
             Ubuntu.Mouse.forwardTo: [inputHandler]

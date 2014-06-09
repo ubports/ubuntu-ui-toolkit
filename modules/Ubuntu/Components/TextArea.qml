@@ -123,8 +123,9 @@ StyledItem {
     /*!
       The property drives whether text selection should happen with the mouse or
       not. The default value is true.
+      \qmlproperty bool selectByMouse
       */
-    property bool selectByMouse: true
+    property alias selectByMouse: editor.selectByMouse
 
     /*!
       \deprecated
@@ -179,8 +180,9 @@ StyledItem {
     /*!
       Whether the TextArea should gain active focus on a mouse press. By default this
       is set to true.
+      \qmlproperty bool activeFocusOnPress
       */
-    property bool activeFocusOnPress: true
+    property alias activeFocusOnPress: editor.activeFocusOnPress
 
     /*!
       This property specifies a base URL which is used to resolve relative URLs within
@@ -850,8 +852,8 @@ StyledItem {
             height: Math.max(control.contentHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectWords
-            selectByMouse: false
-            activeFocusOnPress: false
+            selectByMouse: true
+            activeFocusOnPress: true
             cursorDelegate: TextCursor {
                 handler: inputHandler
             }
