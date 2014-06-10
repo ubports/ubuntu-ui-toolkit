@@ -23,6 +23,7 @@ from testtools.matchers import Equals
 
 from ubuntuuitoolkit import tests
 
+
 class HeaderTestCase(tests.QMLFileAppTestCase):
 
     path = os.path.abspath(__file__)
