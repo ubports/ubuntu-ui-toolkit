@@ -630,6 +630,7 @@ Item {
         }
 
         function test_press_and_hold_over_selected_text() {
+            skip("Flaky test, feature will be rewritten");
             longText.focus = true;
             var handler = findChild(longText, "input_handler");
             var y = longText.height / 2;
