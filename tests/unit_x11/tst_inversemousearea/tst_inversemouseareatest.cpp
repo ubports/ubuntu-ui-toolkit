@@ -509,7 +509,7 @@ private Q_SLOTS:
         QCOMPARE(imaSpy.count(), 1);
 
         imaSpy.clear();
-        UbuntuTestCase::touchClick(quickView, guPoint(20, 5));
+        UbuntuTestCase::touchClick(0, quickView, guPoint(20, 5));
         QCOMPARE(imaSpy.count(), 1);
     }
 

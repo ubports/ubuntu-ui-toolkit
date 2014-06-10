@@ -37,9 +37,6 @@ QTouchDevice *UbuntuTestCase::m_touchDevice = 0;
  */
 UbuntuTestCase::UbuntuTestCase(const QString& file, QWindow* parent) : QQuickView(parent)
 {
-    // make sure we have a touch device installed
-    registerTouchDevice();
-
     QString modules("../../../modules");
     Q_ASSERT(QDir(modules).exists());
     QString modulePath(QDir(modules).absolutePath());
