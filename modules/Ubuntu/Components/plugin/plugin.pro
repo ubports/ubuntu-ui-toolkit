@@ -53,7 +53,6 @@ HEADERS += plugin.h \
     thumbnailgenerator.h \
     alarmrequest_p.h \
     alarmrequest_p_p.h \
-    adapters/alarmsadapter_p.h \
     ucstatesaver.h \
     sortbehavior.h \
     filterbehavior.h \
@@ -99,10 +98,9 @@ SOURCES += plugin.cpp \
     unixsignalhandler_p.cpp
 
 # adapters
-HEADERS += adapters/MouseTouchAdaptor.h
+HEADERS += adapters/alarmsadapter_p.h
 
-SOURCES += adapters/alarmsadapter_organizer.cpp \
-    adapters/MouseTouchAdaptor.cpp
+SOURCES += adapters/alarmsadapter_organizer.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)

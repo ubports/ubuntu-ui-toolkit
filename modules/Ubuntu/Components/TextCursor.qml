@@ -125,6 +125,12 @@ Ubuntu.StyledItem {
      * component's area, which can move freely and not attached to the caret itself.
      * This area will then be used to update the caret position.
      */
+    Binding {
+        target: caret
+        when: caret
+        property: "visible"
+        value: QuickUtils.touchScreenAvailable
+    }
     onXChanged: if (draggedItem.state === "") draggedItem.moveToCaret()
     onYChanged: if (draggedItem.state === "") draggedItem.moveToCaret()
     Component.onCompleted: draggedItem.moveToCaret()
@@ -136,7 +142,7 @@ Ubuntu.StyledItem {
         width: caret ? caret.width : 0
         height: caret ? caret.height : 0
         parent: handler.main
-        visible: cursorItem.visible && (cursorItem.opacity > 0.0)
+        visible: cursorItem.visible && (cursorItem.opacity > 0.0) && QuickUtils.touchScreenAvailable
 
         // when the dragging ends, reposition the dragger back to caret
         onStateChanged: {

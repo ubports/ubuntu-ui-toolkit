@@ -50,8 +50,6 @@
 #include "ucinversemouse.h"
 #include "sortfiltermodel.h"
 
-#include "adapters/MouseTouchAdaptor.h"
-
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdexcept>
@@ -259,19 +257,4 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
             Qt::InvertedLandscapeOrientation);
 
     registerWindowContextProperty();
-
-    // register mouse touch adaptor if requested
-    if (!qgetenv("UITK_MOUSE_TO_TOUCH").isEmpty()) {
-        MouseTouchAdaptor *mouseToTouch = new MouseTouchAdaptor;
-        QGuiApplication::instance()->installNativeEventFilter(mouseToTouch);
-    }
-    // publish internal context property to detect whether we have touch device or not
-    context->setContextProperty("HasTouchDevices", QVariant(false));
-    QList<const QTouchDevice*> touchDevices = QTouchDevice::devices();
-    Q_FOREACH(const QTouchDevice *device, touchDevices) {
-        if (device->type() == QTouchDevice::TouchScreen) {
-            context->setContextProperty("HasTouchDevices", true);
-            break;
-        }
-    }
 }

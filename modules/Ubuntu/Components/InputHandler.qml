@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.1
 import Ubuntu.Components 1.1
 
 /*
@@ -22,7 +22,7 @@ import Ubuntu.Components 1.1
   TextField and TextArea components.
   */
 
-Item {
+MultiPointTouchArea {
     id: inputHandler
     objectName: "input_handler"
 
@@ -34,8 +34,6 @@ Item {
     property Flickable flickable
     // selection cursor mode
     property bool selectionCursor: input && input.selectedText !== ""
-    // True if mouse handlig is enabled, false if flicking mode is enabled
-    readonly property bool mouseHandlingEnabled: !flickable.interactive
 
     // item filling the text input visible area, used to check teh caret handler
     // visibility
@@ -78,6 +76,7 @@ Item {
     readonly property bool singleLine: input && input.hasOwnProperty("validator")
     property var flickableList: new Array()
     property bool textChanged: false
+    property bool suppressReleaseEvent: false
     property int pressedPosition: -1
     // move properties
     property int moveStarts: -1
@@ -237,7 +236,6 @@ Item {
     }
 
     // states
-    onStateChanged: print("state=", state)
     states: [
         // override default state to turn on the saved Flickable interactive mode
         State {
@@ -263,6 +261,8 @@ Item {
                 script: {
                     // stop scrolling all the parents
                     toggleFlickablesInteractive(false);
+                    // stop touch timers
+                    touchPoint.reset();
                 }
             }
         },
@@ -324,7 +324,8 @@ Item {
     // touch and mous handling
     function handlePressed(event, touch) {
         if (touch) {
-
+            // we do not have longTap or double tap, therefore we need to generate those
+            event.touch();
         } else {
             // remember pressed position as we need it when entering into selection state
             pressedPosition = mousePosition(event);
@@ -333,7 +334,11 @@ Item {
         }
     }
     function handleReleased(event, touch) {
-        if (!main.focus && !main.activeFocusOnPress) {
+        if (touch) {
+            event.untouch();
+        }
+        if ((!main.focus && !main.activeFocusOnPress) || suppressReleaseEvent) {
+            suppressReleaseEvent = false;
             return;
         }
 
@@ -361,6 +366,7 @@ Item {
             input.selectWord();
             // turn selection state temporarily so the selection is not cleared on release
             state = "selection";
+            suppressReleaseEvent = true;
         }
     }
 
@@ -370,7 +376,6 @@ Item {
     Mouse.onReleased: handleReleased(mouse, false)
     Mouse.onPositionChanged: handleMove(mouse, false)
     Mouse.onDoubleClicked: handleDblClick(mouse)
-    Mouse.onPressAndHold: openContextMenu(mouse)
 
     // right button handling
     MouseArea {
@@ -380,12 +385,57 @@ Item {
         onReleased: openContextMenu(mouse, true)
     }
 
+    // touch handling
+    touchPoints: TouchPoint {
+        id: touchPoint
+        function touch() {
+            longTap.restart();
+            if (!doubleTap.running) {
+                doubleTap.restart();
+            } else if (doubleTap.tapCount > 0) {
+                doubleTap.running = false;
+                handleDblClick(touchPoint);
+                suppressReleaseEvent = true;
+            }
+        }
+        function untouch() {
+            longTap.running = false;
+        }
+        function reset() {
+            longTap.running = false;
+            doubleTap.running = false;
+        }
+    }
+    Timer {
+        id: longTap
+        // sync with QQuickMouseArea constant
+        interval: 800
+        onTriggered: {
+            openContextMenu(touchPoint, false);
+            suppressReleaseEvent = true;
+        }
+    }
+    Timer {
+        id: doubleTap
+        property int tapCount: 0
+        interval: 300
+        onRunningChanged: {
+            tapCount = running;
+        }
+    }
+    onPressed: handlePressed(touchPoints[0], true)
+    onReleased: handleReleased(touchPoints[0], true)
+
     // cursors to use when text is selected
     Connections {
         property Item selectionStartCursor: null
         property Item selectionEndCursor: null
         target: input
         onSelectedTextChanged: {
+            if (!QuickUtils.touchScreenAvailable) {
+                // no need to change the cursors, as we don't show carets
+                return;
+            }
             if (selectedText !== "" && input.cursorDelegate) {
                 if (!selectionStartCursor) {
                     selectionStartCursor = input.cursorDelegate.createObject(
