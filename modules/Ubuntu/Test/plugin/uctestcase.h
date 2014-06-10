@@ -19,6 +19,7 @@
 #ifndef UBUNTU_TEST_UBUNTUTESTCASE_H
 #define UBUNTU_TEST_UBUNTUTESTCASE_H
 
+#include <QtTest/QtTest>
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QQuickView>
 #include <QtTest/QSignalSpy>
@@ -40,8 +41,91 @@ public:
             qFatal("Item '%s' found with unexpected type", qPrintable(objectName));
         qFatal("No item '%s' found", qPrintable(objectName));
     }
+
+    static void registerTouchDevice();
+
+    inline static void touchPress(QWindow *window, const QPoint &point)
+    {
+        if (!m_touchDevice) {
+            qWarning() << QString("No touch device registered. Register one using registerTouchDevice() before using %1").arg(__FUNCTION__);
+            return;
+        }
+        QTest::touchEvent(window, m_touchDevice).press(0, point, window);
+    }
+    inline static void touchRelease(QWindow *window, const QPoint &point)
+    {
+        if (!m_touchDevice) {
+            qWarning() << QString("No touch device registered. Register one using registerTouchDevice() before using %1").arg(__FUNCTION__);
+            return;
+        }
+        QTest::touchEvent(window, m_touchDevice).release(0, point, window);
+    }
+    inline static void touchClick(QWindow *window, const QPoint &point)
+    {
+        if (!m_touchDevice) {
+            qWarning() << QString("No touch device registered. Register one using registerTouchDevice() before using %1").arg(__FUNCTION__);
+            return;
+        }
+        touchPress(window, point);
+        QTest::qWait(10);
+        touchRelease(window, point);
+    }
+    inline static void touchLongPress(QWindow *window, const QPoint &point)
+    {
+        if (!m_touchDevice) {
+            qWarning() << QString("No touch device registered. Register one using registerTouchDevice() before using %1").arg(__FUNCTION__);
+            return;
+        }
+        touchPress(window, point);
+        QTest::qWait(800);
+    }
+    inline static void touchDoubleClick(QWindow *window, const QPoint &point)
+    {
+        if (!m_touchDevice) {
+            qWarning() << QString("No touch device registered. Register one using registerTouchDevice() before using %1").arg(__FUNCTION__);
+            return;
+        }
+        touchPress(window, point);
+        QTest::qWait(10);
+        touchRelease(window, point);
+        QTest::qWait(10);
+        touchPress(window, point);
+        QTest::qWait(10);
+        touchRelease(window, point);
+    }
+    inline static void touchMove(QWindow *window, const QPoint &point)
+    {
+        if (!m_touchDevice) {
+            qWarning() << QString("No touch device registered. Register one using registerTouchDevice() before using %1").arg(__FUNCTION__);
+            return;
+        }
+        QTest::touchEvent(window, m_touchDevice).move(0, point, window);
+    }
+    inline static void touchDrag(QWindow *window, const QPoint &from, const QPoint &delta, int steps = 5)
+    {
+        if (!m_touchDevice) {
+            qWarning() << QString("No touch device registered. Register one using registerTouchDevice() before using %1").arg(__FUNCTION__);
+            return;
+        }
+        touchPress(window, from);
+        QTest::qWait(10);
+        QTest::touchEvent(window, m_touchDevice).move(0, from, window);
+        qreal stepDx = delta.x() / steps;
+        qreal stepDy = delta.y() / steps;
+        if (!delta.isNull()) {
+            for (int i = 0; i < steps; i++) {
+                QTest::qWait(10);
+                QTest::touchEvent(window, m_touchDevice).move(0, from + QPoint(i * stepDx, i * stepDy), window);
+            }
+        }
+        QTest::qWait(10);
+        touchRelease(window, from + QPoint(stepDx, stepDy));
+    }
+
+
 private:
     QSignalSpy* m_spy;
+    static QTouchDevice *m_touchDevice;
 };
 
 #endif // UBUNTU_TEST_UBUNTUTESTCASE_H

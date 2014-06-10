@@ -26,14 +26,20 @@
 #include <QtTest/QtTest>
 #include <QtQuick/QQuickItem>
 
+#include <qpa/qwindowsysteminterface.h>
+
 Q_DECLARE_METATYPE(QList<QQmlError>)
 
+QTouchDevice *UbuntuTestCase::m_touchDevice = 0;
 /*!
  * \ingroup ubuntu
  * \brief UbuntuTestCase is the C++ pendant to the QML UbuntuTestCase.
  */
 UbuntuTestCase::UbuntuTestCase(const QString& file, QWindow* parent) : QQuickView(parent)
 {
+    // make sure we have a touch device installed
+    registerTouchDevice();
+
     QString modules("../../../modules");
     Q_ASSERT(QDir(modules).exists());
     QString modulePath(QDir(modules).absolutePath());
@@ -58,5 +64,28 @@ int
 UbuntuTestCase::warnings() const
 {
 	return m_spy->count();
+}
+
+/*!
+ * Registers a touch device if there's none registered.
+ */
+void UbuntuTestCase::registerTouchDevice()
+{
+    // check if there is any touch device registered in the system
+    if (!m_touchDevice) {
+        QList<const QTouchDevice*> touchDevices = QTouchDevice::devices();
+        Q_FOREACH(const QTouchDevice *device, touchDevices) {
+            if (device->type() == QTouchDevice::TouchScreen) {
+                m_touchDevice = const_cast<QTouchDevice*>(device);
+                break;
+            }
+        }
+    }
+    // if none, register one
+    if (!m_touchDevice) {
+        m_touchDevice = new QTouchDevice;
+        m_touchDevice->setType(QTouchDevice::TouchScreen);
+        QWindowSystemInterface::registerTouchDevice(m_touchDevice);
+    }
 }
 
