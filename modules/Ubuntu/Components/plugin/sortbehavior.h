@@ -29,6 +29,8 @@ class SortBehavior : public QObject {
     Q_PROPERTY(Qt::SortOrder order READ order WRITE setOrder NOTIFY orderChanged)
 
 public:
+    explicit SortBehavior(QObject *parent = 0);
+
     QString property() const;
     void setProperty(const QString& property);
     Qt::SortOrder order() const;

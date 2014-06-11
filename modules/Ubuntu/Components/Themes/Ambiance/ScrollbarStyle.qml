@@ -59,7 +59,7 @@ Item {
     property bool interactive: false
     property real minimumSliderSize: units.gu(2)
 
-    property bool overlay: true
+    property bool overlay: !interactive
     property real overlayOpacityWhenShown: 0.6
     property real overlayOpacityWhenHidden: 0.0
 
@@ -222,6 +222,9 @@ Item {
         onReleased: mouse.accepted = false
     }
 
+    // The presence of a mouse enables the interactive thumb
+    // FIXME: Should use form factor hints
+    InverseMouse.onEntered: interactive = true
 
     // The slider's position represents which part of the flickable is visible.
     // The slider's size represents the size the visible part relative to the
@@ -401,6 +404,7 @@ Item {
 
     Item {
         id: thumb
+        objectName: "interactiveScrollbarThumb"
 
         enabled: interactive
 
