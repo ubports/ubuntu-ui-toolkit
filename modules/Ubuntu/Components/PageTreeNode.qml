@@ -45,14 +45,14 @@ StyledItem {
       The header of the node. Propagates down from the root node.
       This property is deprecated.
      */
-    property Header header: node.__propagated ? node.__propagated.header : null
+    property AppHeader header: internal.getHeaderWithDeprecatedWarning()
 
     /*!
       \deprecated
       The toolbar of the node. Propagates down from the root node.
       This property is deprecated.
      */
-    property Toolbar toolbar: node.__propagated ? node.__propagated.toolbar : null
+    property Toolbar toolbar: internal.getToolbarWithDeprecatedWarning()
 
     /*!
       \internal
@@ -109,6 +109,18 @@ StyledItem {
 
     Item {
         id: internal
+
+        function getHeaderWithDeprecatedWarning() {
+            print("WARNING: Do not use MainView.header or Page.header." +
+                  "This property is deprecated.");
+            return node.__propagated ? node.__propagated.header : null;
+        }
+        function getToolbarWithDeprecatedWarning() {
+            print("WARNING: Do not use MainView.toolbar or Page.toolbar." +
+                  "This property is deprecated.");
+            return node.__propagated ? node.__propagated.toolbar : null
+        }
+
         function isPageTreeNode(object) {
             // FIXME: Use QuickUtils.className() when it becomes available.
             return (object && object.hasOwnProperty("__isPageTreeNode") && object.__isPageTreeNode);
