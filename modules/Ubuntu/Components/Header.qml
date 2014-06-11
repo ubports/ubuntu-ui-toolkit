@@ -33,4 +33,25 @@ AppHeader {
               "Please use MainView and Page instead."
               );
     }
+
+    // Deprecated properties
+    // TODO: add contents here and remove from AppHeader
+    //  after adding contents override to HeaderConfiguration
+
+    /*!
+      \deprecated
+      \qmlproperty list<Action> actions
+      The list of actions actions that will be shown in the header.
+      DEPRECATED. Use \l config property instead.
+     */
+    property var actions: null
+
+    /*!
+      \internal
+      Action shown before the title. Setting this will disable the back
+      button and tabs drawer button in the new header and replace it with a button
+      representing the action below.
+      DEPRECATED. Use \l config property instead.
+     */
+    property var __customBackAction: null
 }
