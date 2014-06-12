@@ -53,8 +53,11 @@ int main(int argc, const char *argv[])
     // Oxide and QWebEngine need a shared context
     QScopedPointer<QOpenGLContext> shareContext;
     shareContext.reset(new QOpenGLContext);
-    QSGContext::setSharedOpenGLContext(shareContext.data());
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 3, 0)
+     QSGContext::setSharedOpenGLContext(shareContext.data());
+#else
+    QOpenGLContextPrivate::setGlobalShareContext(shareContext.data());
+#endif
     QGuiApplication::setApplicationName("UITK Launcher");
     QGuiApplication application(argc, (char**)argv);
 
