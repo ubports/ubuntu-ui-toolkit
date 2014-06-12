@@ -23,10 +23,8 @@ class ScrollBarTestCase(gallery.GalleryTestCase):
 
     def setUp(self):
         super(ScrollBarTestCase, self).setUp()
-        item = 'Navigation'
-        self.loadItem(item)
-        self.checkPageHeader(item)
-        self.scrollbar = self.main_view.select_single(
+        self.open_page('navigationElement')
+        self.scrollbar = self.main_view.wait_select_single(
             'Scrollbar', objectName="TemplateScrollbar")
 
     def move_mouse_to_thumb(self):
