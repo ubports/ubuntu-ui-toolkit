@@ -54,7 +54,7 @@ int main(int argc, const char *argv[])
     QScopedPointer<QOpenGLContext> shareContext;
     shareContext.reset(new QOpenGLContext);
 #if QT_VERSION < QT_VERSION_CHECK(5, 3, 0)
-     QSGContext::setSharedOpenGLContext(shareContext.data());
+    QSGContext::setSharedOpenGLContext(shareContext.data());
 #else
     QOpenGLContextPrivate::setGlobalShareContext(shareContext.data());
 #endif
