@@ -157,9 +157,13 @@ private Q_SLOTS:
         InverseMouseAreaType *area = testArea("InverseMouseAreaInWindow.qml");
         QVERIFY(area);
         quickView->show();
+        QTest::qWaitForWindowExposed(quickView);
 
         QList<QQuickWindow *> l = quickView->rootObject()->findChildren<QQuickWindow*>("isawindow");
         QVERIFY(l.count());
+
+        QQuickItem *clickArea = quickView->rootObject()->findChild<QQuickItem*>("clickArea");
+        QVERIFY(clickArea);
 
         QTest::mouseClick(l[0], Qt::LeftButton, 0, QPoint(20, 10));
         QTest::waitForEvents();
