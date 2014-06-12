@@ -30,16 +30,18 @@
 #include <QOpenGLContext>
 #include <QtGui/private/qopenglcontext_p.h>
 #include <QtQuick/private/qsgcontext_p.h>
+#include <QtCore/QCommandLineParser>
+#include <QtCore/QCommandLineOption>
+#include "MouseTouchAdaptor.h"
+#include <QtGui/QTouchDevice>
 
-int usage()
+bool touchDevicePresent()
 {
-    QString self(QGuiApplication::instance()->arguments().at(0));
-    std::cout << "Usage\n  "
-        << qPrintable(self)
-        << " -testability -frameless -engine"
-        << " --desktop_file_path=DESKTOP_FILE"
-        << " -I MODULE_PATH FILENAME\n";
-    return 1;
+    Q_FOREACH(const QTouchDevice *device, QTouchDevice::devices()) {
+        if (device->type() == QTouchDevice::TouchScreen)
+            return true;
+    }
+    return false;
 }
 
 int main(int argc, const char *argv[])
@@ -51,32 +53,43 @@ int main(int argc, const char *argv[])
     // Oxide and QWebEngine need a shared context
     QScopedPointer<QOpenGLContext> shareContext;
     shareContext.reset(new QOpenGLContext);
-#if QT_VERSION < QT_VERSION_CHECK(5, 3, 0)
     QSGContext::setSharedOpenGLContext(shareContext.data());
-#else
-    QOpenGLContextPrivate::setGlobalShareContext(shareContext.data());
-#endif
+
     QGuiApplication::setApplicationName("UITK Launcher");
     QGuiApplication application(argc, (char**)argv);
-    QStringList args (application.arguments());
 
-    int _testability(args.indexOf("-testability"));
-    args.removeAt(_testability);
-    int _frameless(args.indexOf("-frameless"));
-    args.removeAt(_frameless);
-    int _engine(args.indexOf("-engine"));
-    args.removeAt(_engine);
+    QCommandLineParser args;
+    QCommandLineOption _import("I", "Add <path> to the list of import paths", "path");
+    QCommandLineOption _enableTouch("touch", "Enables mouse to touch conversion on desktop");
+    QCommandLineOption _testability("testability", "Loads the testability driver");
+    QCommandLineOption _frameless("frameless", "Run without borders");
+    QCommandLineOption _engine("engine", "Use quick engine from quick view");
+    QCommandLineOption _desktop_file_hint("desktop_file_hint", "Desktop file - ignored", "desktop_file");
 
-    Q_FOREACH(QString arg, args) {
-        if (arg.startsWith("--desktop_file_hint")) {
-            // This will not be used - it only needs to be ignored
-            int _desktop_file_hint(args.indexOf(arg));
-            args.removeAt(_desktop_file_hint);
-        }
+    args.addOption(_import);
+    args.addOption(_enableTouch);
+    args.addOption(_testability);
+    args.addOption(_frameless);
+    args.addOption(_engine);
+    args.addOption(_desktop_file_hint);
+    args.addPositionalArgument("filename", "Document to be viewed");
+    args.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
+    args.process(application);
+
+    QString filename;
+    if (args.positionalArguments().count() > 0) {
+        filename = args.positionalArguments()[0];
+    }
+    if (filename.isEmpty()) {
+        // show usage and exit
+        args.showHelp(1);
+    }
+    if (args.unknownOptionNames().count() > 0) {
+        args.showHelp(2);
     }
 
     // Testability is only supported out of the box by QApplication not QGuiApplication
-    if (_testability > -1 || getenv("QT_LOAD_TESTABILITY")) {
+    if (args.isSet(_testability) || getenv("QT_LOAD_TESTABILITY")) {
         QLibrary testLib(QLatin1String("qttestability"));
         if (testLib.load()) {
             typedef void (*TasInitialize)(void);
@@ -96,7 +109,7 @@ int main(int argc, const char *argv[])
     QQmlEngine* engine;
     // The default constructor affects the components tree (autopilot vis)
     QQuickView* view;
-    if (_engine > -1) {
+    if (args.isSet(_engine)) {
         view = new QQuickView();
         engine = view->engine();
     } else {
@@ -104,42 +117,30 @@ int main(int argc, const char *argv[])
         view = new QQuickView(engine, NULL);
     }
 
-    int _import(args.indexOf("-I"));
-    args.removeAt(_import);
-    if (_import > -1) {
-        if (args.count() > _import) {
-            QString importPath(args.at(_import));
-            args.removeAt(_import);
-            engine->addImportPath(importPath);
+    if (args.isSet(_import)) {
+        QStringList paths = args.values(_import);
+        Q_FOREACH(const QString &path, paths) {
+            engine->addImportPath(path);
         }
     }
 
     view->setResizeMode(QQuickView::SizeRootObjectToView);
     view->setTitle("UI Toolkit QQuickView");
-    if (_frameless > -1) {
+    if (args.isSet(_frameless)) {
         view->setFlags(Qt::FramelessWindowHint);
     }
 
-    // The remaining unnamed argument must be a filename
-    if (args.count() == 1) {
-        qCritical() << "Missing filename";
-        return usage();
+    if (args.isSet(_enableTouch) && !touchDevicePresent()) {
+        // has no effect if we have touch screen
+        application.installNativeEventFilter(new MouseTouchAdaptor);
     }
-    QString filename(args.at(1));
-    // The first argument is the launcher itself
-    args.removeAt(0);
 
     QUrl source(QUrl::fromLocalFile(filename));
     view->setSource(source);
     if (view->errors().count() > 0) {
-        return usage();
+        args.showHelp(3);
     }
     view->show();
-
-    if (args.count() > 1) {
-        qCritical() << "Invalid arguments passed" << args;
-        return usage();
-    }
 
     return application.exec();
 }
