@@ -44,6 +44,7 @@ Ubuntu.StyledItem {
     // depending on the positionProperty, we chose different styles
     style: Theme.createStyleComponent(handler.textCursorStyle(positionProperty), cursorItem);
 
+    objectName: "textCursor"
     //Caret instance from the style.
     property Item caret: __styleInstance.caret
     property real caretX: caret ? caret.x : 0
@@ -51,7 +52,11 @@ Ubuntu.StyledItem {
 
     // returns the mapped cursor position to a position relative to the main component
     function mappedCursorPosition(pos) {
-        return cursorItem[pos] + handler.frameDistance[pos] - handler.flickable["content"+pos.toUpperCase()];
+        var cpos = cursorItem[pos];
+        if (handler) {
+            cpos += handler.frameDistance[pos] - handler.flickable["content"+pos.toUpperCase()];
+        }
+        return cpos;
     }
     /*
         The function opens the text input popover setting the text cursor as caller.
@@ -139,8 +144,8 @@ Ubuntu.StyledItem {
     Item {
         id: draggedItem
         objectName: cursorItem.positionProperty + "_draggeditem"
-        width: caret ? caret.width : 0
-        height: caret ? caret.height : 0
+        width: caret ? Math.max(caret.width, units.gu(2)) : 0
+        height: caret ? Math.max(caret.height, units.gu(2)) : 0
         parent: handler.main
         visible: cursorItem.visible && (cursorItem.opacity > 0.0) && QuickUtils.touchScreenAvailable
 
@@ -161,7 +166,7 @@ Ubuntu.StyledItem {
             anchors.fill: parent
             acceptedButtons: Qt.LeftButton | Qt.RightButton
             preventStealing: true
-            enabled: parent.width && parent.height
+            enabled: parent.width && parent.height && parent.visible
 
             onPressed: {
                 draggedItem.moveToCaret(mouse.x, mouse.y);
@@ -221,7 +226,7 @@ Ubuntu.StyledItem {
         anchors.fill: parent
         hoverEnabled: true
         preventStealing: drag.active
-        enabled: draggedItem.enabled && draggedItem.state === "dragging"
+        enabled: draggedItem.enabled && draggedItem.state === "dragging" && QuickUtils.touchScreenAvailable
 
         property int thumbStartX
         property int dragStartX
@@ -233,8 +238,8 @@ Ubuntu.StyledItem {
         function resetDrag() {
             thumbStartX = mappedCursorPosition("x");
             thumbStartY = mappedCursorPosition("y");
-            dragStartX = drag.target.x;
-            dragStartY = drag.target.y;
+            dragStartX = drag.target ? drag.target.x : 0;
+            dragStartY = drag.target ? drag.target.y : 0;
         }
 
         // do not set minimum/maximum so we can drag outside of the Flickable area

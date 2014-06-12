@@ -44,6 +44,18 @@ public:
         qFatal("No item '%s' found", qPrintable(objectName));
     }
 
+    inline static QPointF centerOf(QQuickItem *item, bool windowPos = true)
+    {
+        QPointF center;
+        if (item) {
+            center = item->boundingRect().center();
+            if (windowPos) {
+                center = item->mapToScene(center);
+            }
+        }
+        return center;
+    }
+
     static void registerTouchDevice();
 
     inline static void touchPress(int touchId, QWindow *window, const QPoint &point)

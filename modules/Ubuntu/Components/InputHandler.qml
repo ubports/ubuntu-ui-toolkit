@@ -327,17 +327,17 @@ MultiPointTouchArea {
             // we do not have longTap or double tap, therefore we need to generate those
             event.touch();
         } else {
-            // remember pressed position as we need it when entering into selection state
-            pressedPosition = mousePosition(event);
             // consume event so it does not get forwarded to the input
             event.accepted = true;
         }
+        // remember pressed position as we need it when entering into selection state
+        pressedPosition = mousePosition(event);
     }
     function handleReleased(event, touch) {
         if (touch) {
             event.untouch();
         }
-        if ((!main.focus && !main.activeFocusOnPress) || suppressReleaseEvent) {
+        if ((!main.focus && !main.activeFocusOnPress) || suppressReleaseEvent === true) {
             suppressReleaseEvent = false;
             return;
         }
@@ -361,12 +361,14 @@ MultiPointTouchArea {
         }
         selectText(event);
     }
-    function handleDblClick(event) {
+    function handleDblClick(event, touch) {
         if (main.selectByMouse) {
             input.selectWord();
             // turn selection state temporarily so the selection is not cleared on release
             state = "selection";
-            suppressReleaseEvent = true;
+            if (touch) {
+                suppressReleaseEvent = true;
+            }
         }
     }
 
@@ -394,8 +396,7 @@ MultiPointTouchArea {
                 doubleTap.restart();
             } else if (doubleTap.tapCount > 0) {
                 doubleTap.running = false;
-                handleDblClick(touchPoint);
-                suppressReleaseEvent = true;
+                handleDblClick(touchPoint, true);
             }
         }
         function untouch() {
@@ -418,7 +419,7 @@ MultiPointTouchArea {
     Timer {
         id: doubleTap
         property int tapCount: 0
-        interval: 300
+        interval: 400
         onRunningChanged: {
             tapCount = running;
         }
@@ -432,10 +433,6 @@ MultiPointTouchArea {
         property Item selectionEndCursor: null
         target: input
         onSelectedTextChanged: {
-            if (!QuickUtils.touchScreenAvailable) {
-                // no need to change the cursors, as we don't show carets
-                return;
-            }
             if (selectedText !== "" && input.cursorDelegate) {
                 if (!selectionStartCursor) {
                     selectionStartCursor = input.cursorDelegate.createObject(
@@ -443,6 +440,7 @@ MultiPointTouchArea {
                                     "positionProperty": "selectionStart",
                                     "height": lineSize,
                                     "handler": inputHandler,
+                                    "objectName": "selectionStartCursor"
                                     }
                                 );
                     moveSelectionCursor(selectionStartCursor);
@@ -453,6 +451,7 @@ MultiPointTouchArea {
                                     "positionProperty": "selectionEnd",
                                     "height": lineSize,
                                     "handler": inputHandler,
+                                    "objectName": "selectionEndCursor"
                                     }
                                 );
                     moveSelectionCursor(selectionEndCursor);

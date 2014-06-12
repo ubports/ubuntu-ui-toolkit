@@ -829,7 +829,7 @@ StyledItem {
     }
     Flickable {
         id: flicker
-        objectName: "textarea_scroller"
+        objectName: "input_scroller"
         anchors {
             fill: parent
             margins: internal.frameSpacing
