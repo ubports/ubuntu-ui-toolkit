@@ -62,6 +62,10 @@ Item {
         id: movementYSpy
         signalName: "contentYChanged"
     }
+    SignalSpy {
+        id: scrollerSpy
+        signalName: "movementEnded"
+    }
 
     UbuntuTestCase {
         name: "TextInputCaretTest"
@@ -69,7 +73,7 @@ Item {
 
         function init() {
             textField.text = "This is a single line text input called TextField.";
-            textArea.text = "This is a multiline text input component called TextArea. It supports fix size as well as auto-expanding behavior.";
+            textArea.text = "This is a multiline text input component called TextArea. It supports fix size as well as auto-expanding behavior. The content is scrollable only if it exceeds the visible area.";
             textField.cursorPosition = 0;
             textArea.cursorPosition = 0;
             waitForRendering(textField, 500);
@@ -87,76 +91,7 @@ Item {
             movementXSpy.clear();
             movementYSpy.clear();
             cursorRectSpy.clear();
-        }
-
-        function test_textfield_grab_caret_data() {
-            return [
-                {input: textField},
-                {input: textArea},
-            ];
-        }
-
-        function test_textfield_grab_caret(data) {
-            data.input.focus = true;
-
-            var draggedItem = findChild(data.input, "cursorPosition_draggeditem");
-            var drag_activator = findChild(data.input, "cursorPosition_activator");
-            var dragger = findChild(data.input, "cursorPosition_dragger");
-
-            // drag the cursor, observe cursorPositionChanged
-            cursorPositionSpy.target = data.input;
-            var x = drag_activator.width / 2;
-            var y = drag_activator.height / 2;
-            mousePress(drag_activator, x, y);
-            compare(draggedItem.state, "dragging", "the caret hasn't been activated");
-            // drag the mouse
-            mouseMoveSlowly(dragger, x, y, 100, 0, 10, 0);
-            mouseRelease(dragger, x + 100, y);
-            waitForRendering(data.input, 1000);
-            compare(draggedItem.state, "", "the caret hasn't been deactivated");
-            cursorPositionSpy.wait();
-        }
-
-        function test_textfield_grab_selection_cursors_data() {
-            return [
-                {input: textField, cursorSpy: selectionStartSpy, dragPrefix: "selectionStart", startDx: 0, startDy: 0, dragDx: 100, dragDy: 0, movingSpy: null},
-                {input: textArea, cursorSpy: selectionStartSpy, dragPrefix: "selectionStart", startDx: 0, startDy: 0, dragDx: 100, dragDy: 0, movingSpy: null},
-                {input: textField, cursorSpy: selectionEndSpy, dragPrefix: "selectionEnd", startDx: 0, startDy: 0, dragDx: 200, dragDy: 100, movingSpy: movementXSpy, flicker: "textfield_scroller"},
-                {input: textArea, cursorSpy: selectionEndSpy, dragPrefix: "selectionEnd", startDx: 0, startDy: 0, dragDx: 200, dragDy: 100, movingSpy: movementYSpy, flicker: "textarea_scroller"},
-            ];
-        }
-        function test_textfield_grab_selection_cursors(data) {
-            if (data.movingSpy) {
-                var flicker = findChild(data.input, data.flicker)
-                data.movingSpy.target = flicker;
-            }
-            data.input.focus = true;
-            // make sure the text is long enough
-            data.input.text += data.input.text;
-
-            // select text in front
-            data.input.select(0, 10);
-            var draggedItem = findChild(data.input, data.dragPrefix + "_draggeditem");
-            var drag_activator = findChild(data.input, data.dragPrefix + "_activator");
-            var dragger = findChild(data.input, data.dragPrefix + "_dragger");
-            data.cursorSpy.target = data.input;
-
-            // grab the selection and drag it
-            var x = drag_activator.width / 2 + data.startDx;
-            var y = drag_activator.height / 2 + data.startDy;
-            selectedTextSpy.target = data.input;
-            mousePress(drag_activator, x, y);
-            compare(draggedItem.state, "dragging", "the caret hasn't been activated");
-            // drag the mouse
-            mouseMoveSlowly(dragger, x, y, data.dragDx, data.dragDy, 15, 100);
-            mouseRelease(dragger, x + data.dragDx, y + data.dragDy);
-            waitForRendering(data.input, 500);
-            compare(draggedItem.state, "", "the caret hasn't been deactivated");
-            data.cursorSpy.wait();
-            selectedTextSpy.wait();
-            if (data.movingSpy) {
-                data.movingSpy.wait();
-            }
+            scrollerSpy.clear();
         }
 
         function test_clear_text_using_popover_data() {
@@ -174,9 +109,8 @@ Item {
             // invoke popover
             var x = data.input.width / 2;
             var y = data.input.height / 2;
-            mouseLongPress(data.input, x, y);
+            mouseClick(data.input, x, y, Qt.RightButton);
             popupSpy.wait();
-            mouseRelease(data.input, x, y);
             var popover = findChild(testMain, "text_input_popover");
             verify(popover, "Cannot retrieve default TextInputPopover");
             waitForRendering(popover);
@@ -239,6 +173,131 @@ Item {
             }
             cursorRectSpy.wait(500);
             cursorRectSpy.target = null;
+        }
+
+        function test_press_and_hold_does_nothing_data() {
+            return [
+                {tag: "TextField", input: textField, withTextSelected: false},
+                {tag: "TextArea", input: textArea, withTextSelected: false},
+                {tag: "TextField", input: textField, withTextSelected: true},
+                {tag: "TextArea", input: textArea, withTextSelected: true},
+            ];
+        }
+
+        function test_press_and_hold_does_nothing(data) {
+            var handler = findChild(data.input, "input_handler");
+            popupSpy.target = handler;
+
+            data.input.focus = true;
+            if (data.withTextSelected) {
+                // select the first 20 characters
+                data.input.select(0, 20);
+            }
+
+            // press and hold over selected text
+            mouseLongPress(data.input, units.gu(7), y);
+            waitForRendering(data.input);
+            expectFailContinue(data.tag, "Should not open popover");
+            popupSpy.wait(400);
+
+            if (data.withTextSelected) {
+                // text selection must not be cleared
+                verify(data.input.selectedText !== "", "Selected text cleared!");
+            }
+            mouseRelease(data.input, units.gu(7), y);
+        }
+
+        function test_scroll_when_not_focused_data() {
+            return [
+                // dx and dy are in eights of a degree; see QWheelEvent::angleDelta() for more details.
+                {tag: "TextField", input: textField, x: textField.width / 2, y: textField.height / 2, dx: -240, dy: 0},
+                {tag: "TextArea", input: textArea, x: textField.width / 2, y: textField.height / 2, dx: 0, dy: -240},
+            ];
+        }
+        function test_scroll_when_not_focused(data) {
+            var scroller = findChild(data.input, "input_scroller");
+            scrollerSpy.target = scroller;
+
+            mouseWheel(data.input, data.x, data.y, data.dx, data.dy);
+            expectFailContinue(data.tag, "Content must not scroll while inactive");
+            scrollerSpy.wait(500);
+        }
+
+        function test_scroll_when_focused_data() {
+            return [
+                // dx and dy are in eights of a degree; see QWheelEvent::angleDelta() for more details.
+                {tag: "TextField", input: textField, x: textField.width / 2, y: textField.height / 2, dx: -480, dy: 0},
+                {tag: "TextArea", input: textArea, x: textArea.width / 2, y: textArea.height / 2, dx: 0, dy: -480},
+            ];
+        }
+        function test_scroll_when_focused(data) {
+            var scroller = findChild(data.input, "input_scroller");
+            scrollerSpy.target = scroller;
+
+            // focus component
+            data.input.focus = true;
+
+            mouseWheel(data.input, data.x, data.y, data.dx, data.dy);
+            waitForRendering(data.input);
+            scrollerSpy.wait();
+        }
+
+        function test_rightclick_opens_popover_data() {
+            return [
+                {tag: "TextField active", input: textField, whenFocused: true},
+                {tag: "TextArea active" , input: textArea, whenFocused: true},
+                {tag: "TextField inactive", input: textField, whenFocused: false},
+                {tag: "TextArea inactive" , input: textArea, whenFocused: false},
+            ];
+        }
+        function test_rightclick_opens_popover(data) {
+            var handler = findChild(data.input, "input_handler");
+            popupSpy.target = handler;
+
+            if (data.whenFocused) {
+                data.input.focus = true;
+                waitForRendering(data.input);
+            }
+            mouseClick(data.input, data.input.width / 2, data.input.height / 2, Qt.RightButton);
+            waitForRendering(data.input);
+            popupSpy.wait();
+            verify(data.input.cursorPosition !== 0, "Cursor should be moved to the mouse click position.")
+
+            // dismiss popover
+            mouseClick(testMain, 0, 0);
+            // add some timeout to get the event buffer cleaned
+            wait(500);
+        }
+
+        function test_clear_selection_on_click_data() {
+            return [
+                {tag: "TextField click on selection", input: textField, selectChars: 10, clickPos: Qt.point(10, textField.height / 2)},
+                {tag: "TextArea click on selection", input: textArea, selectChars: 40, clickPos: Qt.point(20, 20)},
+                {tag: "TextField click beside selection", input: textField, selectChars: 5, clickPos: Qt.point(textField.width / 2, textField.height / 2)},
+                {tag: "TextArea click beside selection", input: textArea, selectChars: 5, clickPos: Qt.point(textArea.width / 2, textArea.height / 2)},
+            ];
+        }
+        function test_clear_selection_on_click(data) {
+            data.input.focus = true;
+            data.input.select(0, data.selectChars);
+            verify(data.input.selectedText !== "", "No text selected!");
+
+            mouseClick(data.input, data.clickPos.x, data.clickPos.y);
+            verify(data.input.selectedText === "", "There is still text selected!");
+        }
+
+        function test_select_text_by_mouse_drag_data() {
+            return [
+                {tag: "TextField", input: textField},
+                {tag: "TextArea", input: textArea},
+            ];
+        }
+        function test_select_text_by_mouse_drag(data) {
+            data.input.focus = true;
+
+            flick(data.input, 0, 0, data.input.width / 2, data.input.height / 2);
+            waitForRendering(data.input);
+            verify(data.input.selectedText !== "", "There's no text selected!");
         }
     }
 }

@@ -236,7 +236,6 @@ MultiPointTouchArea {
     }
 
     // states
-//    onStateChanged: print("state", state)
     states: [
         // override default state to turn on the saved Flickable interactive mode
         State {
@@ -299,7 +298,7 @@ MultiPointTouchArea {
     // input specific signals
     Connections {
         target: input
-        onCursorRectangleChanged: if (!scrollingDisabled) ensureVisible()
+        onCursorRectangleChanged: ensureVisible()
         onTextChanged: textChanged = true;
     }
 
@@ -307,17 +306,16 @@ MultiPointTouchArea {
     Connections {
         target: scroller
         // turn scrolling state on
-        onFlickStarted: if (!scrollingDisabled) state = "scrolling"
-        onMovementStarted: if (!scrollingDisabled) state = "scrolling"
+        onFlickStarted: toggleScrollingState(true)
+        onMovementStarted: toggleScrollingState(true)
         // reset to default state
-        onMovementEnded: state = ""
+        onMovementEnded: toggleScrollingState(false)
 
         function toggleScrollingState(turnOn) {
-            if (turnOn && inputHandler.state === "") {
-                inputHandler.state = "scrolling";
-            } else if (!turnOn && inputHandler.state === "scrolling") {
-                inputHandler.state = "";
+            if (!main.focus) {
+                return;
             }
+            inputHandler.state = (turnOn) ? "scrolling" : ""
         }
     }
 
@@ -352,7 +350,7 @@ MultiPointTouchArea {
         }
 
         activateInput();
-        if (state === "") {
+        if (state === "" || touch) {
             input.cursorPosition = mousePosition(event);
         }
         moveStarts = moveEnds = -1;

@@ -35,6 +35,7 @@ Item {
             }
 
             TextArea {
+                focus: true
                 id: inFlickable
                 objectName: "test_input"
                 width: flickable.width

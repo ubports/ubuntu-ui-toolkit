@@ -844,7 +844,7 @@ StyledItem {
         // Images are not shown when text contains <img> tags
         // bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27071
         TextEdit {
-            objectName: "textarea_input"
+            objectName: "text_input"
             readOnly: false
             id: editor
             focus: true
