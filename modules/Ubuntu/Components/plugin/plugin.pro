@@ -5,7 +5,7 @@ unix {
 
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
-QT += core-private qml qml-private quick quick-private gui-private dbus
+QT += core-private qml qml-private quick quick-private dbus
 
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT += v8-private
@@ -53,6 +53,7 @@ HEADERS += plugin.h \
     thumbnailgenerator.h \
     alarmrequest_p.h \
     alarmrequest_p_p.h \
+    adapters/alarmsadapter_p.h \
     ucstatesaver.h \
     sortbehavior.h \
     filterbehavior.h \
@@ -98,8 +99,6 @@ SOURCES += plugin.cpp \
     unixsignalhandler_p.cpp
 
 # adapters
-HEADERS += adapters/alarmsadapter_p.h
-
 SOURCES += adapters/alarmsadapter_organizer.cpp
 
 # deployment rules for the plugin
