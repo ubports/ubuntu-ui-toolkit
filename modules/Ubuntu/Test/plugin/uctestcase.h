@@ -56,6 +56,7 @@ public:
         return center;
     }
 
+    static bool touchDevicePresent();
     static void registerTouchDevice();
 
     inline static void touchPress(int touchId, QWindow *window, const QPoint &point)

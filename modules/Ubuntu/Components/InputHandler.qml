@@ -236,6 +236,7 @@ MultiPointTouchArea {
     }
 
     // states
+//    onStateChanged: print("state", state)
     states: [
         // override default state to turn on the saved Flickable interactive mode
         State {
@@ -310,6 +311,14 @@ MultiPointTouchArea {
         onMovementStarted: if (!scrollingDisabled) state = "scrolling"
         // reset to default state
         onMovementEnded: state = ""
+
+        function toggleScrollingState(turnOn) {
+            if (turnOn && inputHandler.state === "") {
+                inputHandler.state = "scrolling";
+            } else if (!turnOn && inputHandler.state === "scrolling") {
+                inputHandler.state = "";
+            }
+        }
     }
 
     // PageUp and PageDown handling
@@ -412,6 +421,11 @@ MultiPointTouchArea {
         // sync with QQuickMouseArea constant
         interval: 800
         onTriggered: {
+            // do not open context menu if the input is not focus
+            if (!main.focus) {
+                return;
+            }
+
             openContextMenu(touchPoint, false);
             suppressReleaseEvent = true;
         }

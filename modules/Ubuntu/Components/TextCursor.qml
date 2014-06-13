@@ -112,20 +112,6 @@ Ubuntu.StyledItem {
     }
 
     /*
-     * Handle pressAndHold as well as right clicks when pressed around the
-     */
-    MouseArea {
-        anchors {
-            fill: parent
-            margins: -units.dp(4)
-        }
-        acceptedButtons: Qt.LeftButon | Qt.RightButton
-        preventStealing: false
-        onPressAndHold: openPopover()
-        onClicked: if (mouse.button === Qt.RightButton) openPopover()
-    }
-
-    /*
      * Caret dragging handling. We need a separate item which is dragged along the
      * component's area, which can move freely and not attached to the caret itself.
      * This area will then be used to update the caret position.
@@ -164,7 +150,7 @@ Ubuntu.StyledItem {
         MouseArea {
             objectName: cursorItem.positionProperty + "_activator"
             anchors.fill: parent
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            acceptedButtons: Qt.LeftButton
             preventStealing: true
             enabled: parent.width && parent.height && parent.visible
 
@@ -172,8 +158,6 @@ Ubuntu.StyledItem {
                 draggedItem.moveToCaret(mouse.x, mouse.y);
                 draggedItem.state = "dragging";
             }
-            onPressAndHold: openPopover()
-            onClicked: if (mouse.button === Qt.RightButton) openPopover()
             Ubuntu.Mouse.forwardTo: [dragger]
             /*
               As we are forwarding the events to the upper mouse area, the release

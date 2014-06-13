@@ -63,6 +63,22 @@ UbuntuTestCase::warnings() const
 	return m_spy->count();
 }
 
+
+/*!
+  Returns true if there is touch screen device installed.
+  */
+bool UbuntuTestCase::touchDevicePresent()
+{
+    QList<const QTouchDevice*> touchDevices = QTouchDevice::devices();
+    Q_FOREACH(const QTouchDevice *device, touchDevices) {
+        if (device->type() == QTouchDevice::TouchScreen) {
+            return true;
+            break;
+        }
+    }
+    return false;
+}
+
 /*!
  * Registers a touch device if there's none registered.
  */
