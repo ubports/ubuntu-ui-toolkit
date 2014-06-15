@@ -739,15 +739,6 @@ ActionItem {
     }
 
     /*!
-      \internal
-       Ensure focus propagation
-    */
-    function forceActiveFocus()
-    {
-        inputHandler.activateInput();
-    }
-
-    /*!
       Returns true if the natural reading direction of the editor text found between
       positions start and end is right to left.
     */
@@ -979,6 +970,7 @@ ActionItem {
 
         TextInput {
             id: editor
+            objectName: "text_input"
             // FocusScope will forward focus to this component
             focus: true
             anchors.verticalCenter: parent.verticalCenter

@@ -300,6 +300,8 @@ MultiPointTouchArea {
         target: input
         onCursorRectangleChanged: ensureVisible()
         onTextChanged: textChanged = true;
+        // make sure we show the OSK
+        onActiveFocusChanged: showInputPanel()
     }
 
     // inner or outer Flickable controlling

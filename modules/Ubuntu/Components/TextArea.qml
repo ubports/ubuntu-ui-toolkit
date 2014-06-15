@@ -718,15 +718,6 @@ StyledItem {
         editor.undo();
     }
 
-    /*!
-      \internal
-       Ensure focus propagation
-    */
-    function forceActiveFocus()
-    {
-        inputHandler.activateInput();
-    }
-
     // logic
     /*!\internal - to remove warnings */
     Component.onCompleted: {

@@ -30,6 +30,7 @@ class tst_TextInputTest : public QObject
     Q_OBJECT
     
 public:
+    bool skipTextCursorTests;
     tst_TextInputTest()
     {}
 
@@ -44,6 +45,14 @@ private Q_SLOTS:
 
     void initTestCase()
     {
+        // text cursor related test cases cannot be tested if the active focus is not set
+        // when executed with xvfb the active focus item si not set, therefore we must skip all of them
+        // detect whether activeFocus is set
+        QScopedPointer<UbuntuTestCase> test(new UbuntuTestCase("TextFieldTest.qml"));
+        QVERIFY(test);
+        QQuickItem *input = test->findItem<QQuickItem*>("test_input");
+        input->forceActiveFocus();
+        skipTextCursorTests = (test->activeFocusItem() == 0);
     }
 
     void cleanupTestCase()
@@ -63,6 +72,9 @@ private Q_SLOTS:
         if (UbuntuTestCase::touchDevicePresent()) {
             QSKIP("This test can be executed on non-touch enabled environment.");
         }
+        if (skipTextCursorTests) {
+            QSKIP("XVFB environment hickup, activeFocusItem is not set, cannot retrieve text cursor for tests..");
+        }
         QFETCH(QString, document);
         QScopedPointer<UbuntuTestCase> test(new UbuntuTestCase(document));
         QVERIFY(test);
@@ -71,6 +83,9 @@ private Q_SLOTS:
         QVERIFY(textField);
 
         textField->forceActiveFocus();
+        QTest::qWaitForWindowActive(textField->window(), 1000);
+        QVERIFY(test->activeFocusItem());
+
         QQuickItem *cursor = test->findItem<QQuickItem*>("textCursor");
         QVERIFY(cursor);
         QQuickItem *caret = cursor->property("caret").value<QQuickItem*>();
@@ -88,6 +103,9 @@ private Q_SLOTS:
     }
     void test_has_caret_when_touchscreen()
     {
+        if (skipTextCursorTests) {
+            QSKIP("XVFB environment hickup, activeFocusItem is not set, cannot retrieve text cursor for tests.");
+        }
         QFETCH(QString, document);
         QScopedPointer<UbuntuTestCase> test(new UbuntuTestCase(document));
         QVERIFY(test);
@@ -96,6 +114,9 @@ private Q_SLOTS:
         QVERIFY(textField);
 
         textField->forceActiveFocus();
+        QTest::qWaitForWindowActive(test.data(), 1000);
+        QVERIFY(test->activeFocusItem());
+
         QQuickItem *cursor = test->findItem<QQuickItem*>("textCursor");
         QVERIFY(cursor);
         QQuickItem *caret = cursor->property("caret").value<QQuickItem*>();
@@ -380,6 +401,9 @@ private Q_SLOTS:
     }
     void test_drag_cursor_handler()
     {
+        if (skipTextCursorTests) {
+            QSKIP("XVFB environment hickup, activeFocusItem is not set, cannot retrieve text cursor for tests..");
+        }
         QFETCH(QString, document);
         QFETCH(QPoint, delta);
 
@@ -389,8 +413,8 @@ private Q_SLOTS:
         QQuickItem *input = test->findItem<QQuickItem*>("test_input");
         QVERIFY(input);
         input->forceActiveFocus();
-        QTest::qWaitForWindowExposed(test.data());
-        QVERIFY(input->hasFocus());
+        QTest::qWaitForWindowActive(input->window(), 1000);
+        QVERIFY(test->activeFocusItem());
 
         QQuickItem *caret = test->findItem<QQuickItem*>("cursorPosition_draggeditem");
         QVERIFY(caret);
@@ -430,6 +454,9 @@ private Q_SLOTS:
     }
     void test_select_text_by_dragging_cursor_handler()
     {
+        if (skipTextCursorTests) {
+            QSKIP("XVFB environment hickup, activeFocusItem is not set, cannot retrieve text cursor for tests..");
+        }
         QFETCH(QString, document);
         QFETCH(QString, cursorName);
         QFETCH(int, initialCursorPosition);
@@ -441,8 +468,8 @@ private Q_SLOTS:
         QQuickItem *input = test->findItem<QQuickItem*>("test_input");
         QVERIFY(input);
         input->forceActiveFocus();
-        QTest::qWaitForWindowExposed(test.data());
-        QVERIFY(input->hasFocus());
+        QTest::qWaitForWindowActive(input->window(), 1000);
+        QVERIFY(test->activeFocusItem());
 
         // move the cursor to the initial position (selection start cannot bypass selection end)
         input->setProperty("cursorPosition", initialCursorPosition);
