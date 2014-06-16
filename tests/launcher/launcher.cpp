@@ -77,7 +77,11 @@ int main(int argc, const char *argv[])
     args.addOption(_desktop_file_hint);
     args.addPositionalArgument("filename", "Document to be viewed");
     args.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
-    args.process(application);
+    args.addHelpOption();
+    if (!args.parse(application.arguments())) {
+        qWarning() << args.errorText();
+        args.showHelp(1);
+    }
 
     QString filename;
     if (args.positionalArguments().count() > 0) {
@@ -86,9 +90,6 @@ int main(int argc, const char *argv[])
     if (filename.isEmpty()) {
         // show usage and exit
         args.showHelp(1);
-    }
-    if (args.unknownOptionNames().count() > 0) {
-        args.showHelp(2);
     }
 
     // Testability is only supported out of the box by QApplication not QGuiApplication
