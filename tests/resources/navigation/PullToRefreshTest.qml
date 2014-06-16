@@ -28,12 +28,21 @@ MainView {
         id: page
         title: "Design"
         UbuntuListView {
+            id: view
             anchors.fill: parent
             pullToRefresh {
                 objectName: "XmlList"
                 enabled: page.active
                 refreshing: model.status === XmlListModel.Loading
                 onRefresh: model.reload()
+                contentItem: Item {
+                    Icon {
+                        name: view.pullToRefresh.releaseToRefresh ? "search" : ""
+                        height: parent.height
+                        width: height
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                }
             }
             model: XmlListModel {
                 source: "http://design.canonical.com/feed/"

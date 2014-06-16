@@ -71,6 +71,53 @@ import Ubuntu.Components 1.1
     gets initiated by the model or from other party. Style implementations can decide
     whether to visualize that or not.
 
+    As default, the component displays a Label visualizing the two states of the
+    component, which is pull to refresh and release to refresh. As mentioned, this
+    is driven by the threshold value specified by the style, and the state is reported
+    by the \l releaseToRefresh property. The \l contentItem specifies the visuals
+    to be shown by the component. Custom implementations can hold any component,
+    which will be anchor filled to the component itself.
+    \qml
+    import QtQuick 2.2
+    import QtQuick.XmlListModel 2.0
+    import Ubuntu.Components 1.1
+    import Ubuntu.Components.ListItems 1.0
+
+    MainView {
+        width: units.gu(40)
+        height: units.gu(71)
+
+        Page {
+            title: "Reuters"
+            ListView {
+                anchors.fill: parent
+                model: XmlListModel {
+                    source: "http://feeds.reuters.com/reuters/topNews"
+                    query: "/rss/channel/item"
+                    XmlRole { name: "title"; query: "title/string()" }
+                }
+                delegate: Standard {
+                    width: ListView.view.width
+                    height: units.gu(5)
+                    text: title
+                }
+                PullToRefresh {
+                    refreshing: model.status === XmlListModel.Loading
+                    onRefresh: model.reload()
+                    contentItem: Item {
+                        Icon {
+                            name: releaseToRefresh ? "search" : ""
+                            height: parent.height
+                            width: height
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
+                    }
+                }
+            }
+        }
+    }
+    \endqml
+
     \note When declared as child of Flickable, set parent to the flickable explicitly
     so the component does not land in the \c contentItem of Flickable.
     \qml
@@ -135,7 +182,7 @@ StyledItem {
     readonly property bool releaseToRefresh: __styleInstance.manualRefresh
 
     /*!
-      The property holds the visuals to be displayed when teh component is revealed
+      The property holds the visuals to be displayed when the component is revealed
       upon manual refresh. The default value is a Label showing "Pull to refresh..."
       text when the component is pulled down till the activation threshold, and
       "Release to refresh..." after that.

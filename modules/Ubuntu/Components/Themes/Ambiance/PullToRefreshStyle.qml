@@ -20,7 +20,7 @@ import Ubuntu.Components.Styles 1.1 as Style
 
 Style.PullToRefreshStyle {
     id: style
-    implicitHeight: Math.max(label.paintedHeight, refreshIndicatorItem.height) + units.gu(5)
+    implicitHeight: refreshIndicatorItem.height + units.gu(5)
 
     // additional configuration properties provided by the Ambiance theme
     // these properties can be used by the deriving themes to configure the label

@@ -386,8 +386,8 @@ AnimatedItem
     property real value
 PullToRefresh 1.1
 StyledItem
-    property string pullText
-    property string releaseText
+    readonly property bool releaseToRefresh
+    property Item contentItem
     property Flickable target
     property bool refreshing
     signal refresh()
@@ -425,6 +425,7 @@ Item
 PullToRefreshStyle 1.1
 Item
     property real activationThreshold
+    property bool manualRefresh
 Switch 0.1 1.0
 CheckBox
 Tab 0.1 1.0
