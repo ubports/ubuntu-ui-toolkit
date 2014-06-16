@@ -1,19 +1,18 @@
 /*
- * Copyright (C) 2013 Canonical, Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; version 3.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Authored by: Daniel d'Andrada <daniel.dandrada@canonical.com>
  */
 
 #include "MouseTouchAdaptor.h"
@@ -77,18 +76,20 @@ bool MouseTouchAdaptor::handleButtonPress(xcb_button_press_event_t *pressEvent)
 {
     Qt::MouseButton button = translateMouseButton(pressEvent->detail);
 
-    // Just eat the event if it wasn't a left mouse press
-    if (button != Qt::LeftButton)
-        return true;
+    // Skip the event if it wasn't a left mouse press
+    if (button != Qt::LeftButton) {
+        return false;
+    }
 
     QPoint windowPos(pressEvent->event_x, pressEvent->event_y);
 
     QWindow *targetWindow = findQWindowWithXWindowID(static_cast<WId>(pressEvent->event));
 
-    QTouchEventSequence touchEvent = QTest::touchEvent(targetWindow, m_touchDevice,
-                                                       false /* autoCommit */);
-    touchEvent.press(0 /* touchId */, windowPos);
-    touchEvent.commit(false /* processEvents */);
+    // no autoCommit
+    QTouchEventSequence touchEvent = QTest::touchEvent(targetWindow, m_touchDevice, false);
+    touchEvent.press(0, windowPos);
+    // do not process events when committed, let the events be processed with next event loop
+    touchEvent.commit(false);
 
     m_leftButtonIsPressed = true;
     return true;
@@ -98,18 +99,20 @@ bool MouseTouchAdaptor::handleButtonRelease(xcb_button_release_event_t *releaseE
 {
     Qt::MouseButton button = translateMouseButton(releaseEvent->detail);
 
-    // Just eat the event if it wasn't a left mouse release
-    if (button != Qt::LeftButton)
-        return true;
+    // Skip the event if it wasn't a left mouse release
+    if (button != Qt::LeftButton) {
+        return false;
+    }
 
     QPoint windowPos(releaseEvent->event_x, releaseEvent->event_y);
 
     QWindow *targetWindow = findQWindowWithXWindowID(static_cast<WId>(releaseEvent->event));
 
-    QTouchEventSequence touchEvent = QTest::touchEvent(targetWindow, m_touchDevice,
-                                                       false /* autoCommit */);
-    touchEvent.release(0 /* touchId */, windowPos);
-    touchEvent.commit(false /* processEvents */);
+    // no autoCommit
+    QTouchEventSequence touchEvent = QTest::touchEvent(targetWindow, m_touchDevice, false);
+    touchEvent.release(0, windowPos);
+    // do not process events when committed, let the events be processed with next event loop
+    touchEvent.commit(false);
 
     m_leftButtonIsPressed = false;
     return true;
@@ -118,17 +121,18 @@ bool MouseTouchAdaptor::handleButtonRelease(xcb_button_release_event_t *releaseE
 bool MouseTouchAdaptor::handleMotionNotify(xcb_motion_notify_event_t *event)
 {
     if (!m_leftButtonIsPressed) {
-        return true;
+        return false;
     }
 
     QPoint windowPos(event->event_x, event->event_y);
 
     QWindow *targetWindow = findQWindowWithXWindowID(static_cast<WId>(event->event));
 
-    QTouchEventSequence touchEvent = QTest::touchEvent(targetWindow, m_touchDevice,
-                                                       false /* autoCommit */);
-    touchEvent.move(0 /* touchId */, windowPos);
-    touchEvent.commit(false /* processEvents */);
+    // no autoCommit
+    QTouchEventSequence touchEvent = QTest::touchEvent(targetWindow, m_touchDevice, false);
+    touchEvent.move(0, windowPos);
+    // do not process events when committed, let the events be processed with next event loop
+    touchEvent.commit(false);
 
     return true;
 }

@@ -88,6 +88,7 @@ int main(int argc, const char *argv[])
         args.showHelp(1);
     }
     if (args.unknownOptionNames().count() > 0) {
+        qDebug() <<"TADAAAM";
         args.showHelp(2);
     }
 
