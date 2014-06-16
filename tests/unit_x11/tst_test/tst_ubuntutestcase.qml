@@ -151,7 +151,7 @@ Rectangle {
         movementSpy.wait();
     }
     function test_typeString() {
-        mouseClick(textField, textField.width / 2, textField.height / 2);
+        textField.forceActiveFocus();
         typeString("Hello Ubuntu");
         tryCompare(textField, "text", "Hello Ubuntu");
     }
