@@ -25,7 +25,7 @@ Style.PullToRefreshStyle {
     // additional configuration properties provided by the Ambiance theme
     // these properties can be used by the deriving themes to configure the label
     // and the activity indicator
-    property Item label: control.contentItem
+    property Item label: contentLoader.item
     property alias refreshIndicator: refreshIndicatorItem
 
     // local properties
@@ -36,8 +36,6 @@ Style.PullToRefreshStyle {
     property bool wasAtYBeginning: false
     // initial contentY value when pull started
     property real initialContentY: 0.0
-    // indicates that the refresh has been started manually
-//    manualRefresh: false
     // drives the refreshing state
     property bool refreshing: false
     // point of release used in rebind animation between the ready-to-refresh and refreshing states
@@ -57,6 +55,12 @@ Style.PullToRefreshStyle {
     }
 
     // visuals
+    Loader {
+        id: contentLoader
+        anchors.fill: parent
+        sourceComponent: control.contentItem
+    }
+
     ActivityIndicator {
         id: refreshIndicatorItem
         running: false

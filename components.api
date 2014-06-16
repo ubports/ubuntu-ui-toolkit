@@ -387,7 +387,7 @@ AnimatedItem
 PullToRefresh 1.1
 StyledItem
     readonly property bool releaseToRefresh
-    property Item contentItem
+    property Component contentItem
     property Flickable target
     property bool refreshing
     signal refresh()

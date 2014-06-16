@@ -187,7 +187,7 @@ StyledItem {
       text when the component is pulled down till the activation threshold, and
       "Release to refresh..." after that.
       */
-    property Item contentItem: Label {
+    property Component contentItem: Label {
         id: label
         text: releaseToRefresh ? i18n.tr("Release to refresh...") : i18n.tr("Pull to refresh...")
         horizontalAlignment: Text.AlignHCenter
