@@ -32,4 +32,10 @@ Item {
       is the height of the component styled.
       */
     property real activationThreshold: styledItem.height
+
+    /*!
+      The property holds the style specific implementation trigger when the
+      refresh control is ready to initiate refresh.
+      */
+    property bool manualRefresh: false
 }

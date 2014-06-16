@@ -20,12 +20,12 @@ import Ubuntu.Components.Styles 1.1 as Style
 
 Style.PullToRefreshStyle {
     id: style
-    implicitHeight: Math.max(labelItem.paintedHeight, refreshIndicatorItem.height) + units.gu(5)
+    implicitHeight: Math.max(label.paintedHeight, refreshIndicatorItem.height) + units.gu(5)
 
     // additional configuration properties provided by the Ambiance theme
     // these properties can be used by the deriving themes to configure the label
     // and the activity indicator
-    property alias label: labelItem
+    property Item label: control.contentItem
     property alias refreshIndicator: refreshIndicatorItem
 
     // local properties
@@ -37,7 +37,7 @@ Style.PullToRefreshStyle {
     // initial contentY value when pull started
     property real initialContentY: 0.0
     // indicates that the refresh has been started manually
-    property bool manualRefresh: false
+//    manualRefresh: false
     // drives the refreshing state
     property bool refreshing: false
     // point of release used in rebind animation between the ready-to-refresh and refreshing states
@@ -47,23 +47,23 @@ Style.PullToRefreshStyle {
 
     anchors.fill: parent
 
-    Component.onCompleted: ready = true
+    Component.onCompleted: ready = true;
+
+    onLabelChanged: {
+        if (label) {
+            label.parent = style;
+            label.anchors.fill = style;
+        }
+    }
 
     // visuals
-    Label {
-        id: labelItem
-        anchors.fill: parent
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        text: styledItem.pullText
-    }
     ActivityIndicator {
         id: refreshIndicatorItem
         running: false
         anchors.centerIn: parent
     }
 
-    // state controlling
+    // state and content controlling
     Connections {
         target: control
         onRefreshingChanged: {
@@ -119,7 +119,7 @@ Style.PullToRefreshStyle {
             name: "disabled"
             when: !control.enabled
             PropertyChanges {
-                target: labelItem
+                target: label
                 visible: false
             }
         },
@@ -136,7 +136,7 @@ Style.PullToRefreshStyle {
             name: "refreshing"
             when: ready && control.enabled && style.wasAtYBeginning && style.refreshing
             PropertyChanges {
-                target: labelItem
+                target: label
                 visible: false
             }
             PropertyChanges {
@@ -151,49 +151,6 @@ Style.PullToRefreshStyle {
     ]
 
     transitions: [
-        // text animations
-        Transition {
-            from: "idle"
-            to: "ready-to-refresh"
-            SequentialAnimation {
-                UbuntuNumberAnimation {
-                    target: labelItem
-                    property: "opacity"
-                    from: 1.0
-                    to: 0.0
-                }
-                ScriptAction {
-                    script: labelItem.text = control.releaseText;
-                }
-                UbuntuNumberAnimation {
-                    target: labelItem
-                    property: "opacity"
-                    from: 0.0
-                    to: 1.0
-                }
-            }
-        },
-        Transition {
-            from: "ready-to-refresh"
-            to: "idle"
-            SequentialAnimation {
-                UbuntuNumberAnimation {
-                    target: labelItem
-                    property: "opacity"
-                    from: 1.0
-                    to: 0.0
-                }
-                ScriptAction {
-                    script: labelItem.text = control.pullText;
-                }
-                UbuntuNumberAnimation {
-                    target: labelItem
-                    property: "opacity"
-                    from: 0.0
-                    to: 1.0
-                }
-            }
-        },
         Transition {
             from: "ready-to-refresh"
             to: "refreshing"
@@ -223,17 +180,9 @@ Style.PullToRefreshStyle {
         Transition {
             from: "refreshing"
             to: "idle"
-            SequentialAnimation {
-                ScriptAction {
-                    script: labelItem.text = "";
-                }
-                UbuntuNumberAnimation {
-                    target: control.target
-                    property: "topMargin"
-                }
-                ScriptAction {
-                    script: labelItem.text = control.pullText;
-                }
+            UbuntuNumberAnimation {
+                target: control.target
+                property: "topMargin"
             }
         }
     ]

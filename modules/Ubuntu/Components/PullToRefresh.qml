@@ -127,18 +127,41 @@ StyledItem {
     id: control
 
     /*!
-      The property holds the text shown before refresh can be initiated. The limit
-      is defined by the PullToRefreshStyle \l PullToRefreshStyle::activationThreshold
-      property.
+      The property specifies when the component is ready to trigger the refresh()
+      signal. The logic is defined by the style and the value is transferred
+      from the style's releaseToRefresh property. The property can be used to
+      define custom visuals for contentItem.
       */
-    property string pullText: i18n.tr("Pull to refresh...")
+    readonly property bool releaseToRefresh: __styleInstance.manualRefresh
 
     /*!
-      The property holds the text shown indicating the refresh can be initiated
-      upon touch/mouse release.
-      \sa pullText, PullToRefreshStyle::activationThreshold
+      The property holds the visuals to be displayed when teh component is revealed
+      upon manual refresh. The default value is a Label showing "Pull to refresh..."
+      text when the component is pulled down till the activation threshold, and
+      "Release to refresh..." after that.
       */
-    property string releaseText: i18n.tr("Release to refresh...")
+    property Item contentItem: Label {
+        id: label
+        text: releaseToRefresh ? i18n.tr("Release to refresh...") : i18n.tr("Pull to refresh...")
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        Behavior on text {
+            SequentialAnimation {
+                UbuntuNumberAnimation {
+                    target: label
+                    property: "opacity"
+                    from: 1.0
+                    to: 0.0
+                }
+                UbuntuNumberAnimation {
+                    target: label
+                    property: "opacity"
+                    from: 0.0
+                    to: 1.0
+                }
+            }
+        }
+    }
 
     /*!
       The Flickable or derivate the component is attached to. This can only be
