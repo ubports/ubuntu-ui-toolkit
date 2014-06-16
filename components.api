@@ -503,7 +503,6 @@ StyledItem
     function getText(start, end)
     function remove(start, end)
     function undo()
-    function forceActiveFocus()
 TextField 0.1 1.0
 ActionItem
     property bool highlighted
@@ -562,7 +561,6 @@ ActionItem
     function select(start, end)
     function selectAll()
     function selectWord()
-    function forceActiveFocus()
     function isRightToLeft(start, end)
     function moveCursorSelection(position, mode)
     function redo()
