@@ -513,7 +513,7 @@ private Q_SLOTS:
         QCOMPARE(imaSpy.count(), 1);
 
         imaSpy.clear();
-        TestExtras::touchClick(0, quickView, guPoint(20, 5));
+        TestExtras::touchClick(0, quickView->rootObject(), guPoint(20, 5));
         QCOMPARE(imaSpy.count(), 1);
     }
 

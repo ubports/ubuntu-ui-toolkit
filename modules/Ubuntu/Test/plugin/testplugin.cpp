@@ -1,6 +1,6 @@
 #include "testplugin.h"
 #include <QtQml>
-#include "testextras.h"
+#include "uctestextras.h"
 
 static QObject *registerExtras(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
