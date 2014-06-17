@@ -53,6 +53,27 @@ Template {
                 indeterminate: true
             }
         }
+
+        TemplateRow {
+            title: i18n.tr("No label")
+
+            ProgressBar {
+                id: progressNoLabel
+                objectName: "progressbar_nolabel"
+                width: parent.width
+                showProgressPercentage: false
+
+                SequentialAnimation on value {
+                    loops: Animation.Infinite
+                    NumberAnimation {
+                        from: progress.minimumValue
+                        to: progress.maximumValue
+                        duration: 2000
+                    }
+                    PauseAnimation {duration: 1000}
+                }
+            }
+        }
     }
 
     TemplateSection {

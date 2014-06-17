@@ -56,6 +56,7 @@ Item {
         color: Theme.palette.normal.baseText
         text: progressBar.indeterminate ? i18n.tr("In Progress")
               : "%1%".arg(Number(progressBarStyle.progress * 100.0).toFixed(0))
+        visible: progressBar.showProgressPercentage
 
         SequentialAnimation on opacity {
             loops: Animation.Infinite
