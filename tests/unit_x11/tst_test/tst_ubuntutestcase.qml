@@ -25,11 +25,20 @@ Rectangle {
 
  Column {
      anchors.fill: parent
+     MultiPointTouchArea {
+         id: touchArea
+         width: parent.width
+         height: 100
+         touchPoints: TouchPoint {
+             id: point
+         }
+     }
+
      MouseArea {
         id: mouseArea
         objectName: "myMouseArea"
         width: parent.width
-        height: 300
+        height: 200
         hoverEnabled: true
         acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
         property int testX : 0
@@ -62,18 +71,25 @@ Rectangle {
     name: "TestTheUbuntuTestCase"
     when: windowShown
 
+    function initTestCase() {
+        TestExtras.registerTouchDevice();
+    }
+
     function init() {
         mouseArea.steps = 0;
     }
     function cleanup() {
         movementSpy.clear();
         longPressSpy.clear();
+        touchPressSpy.clear();
+        touchReleaseSpy.clear();
+        touchUpdateSpy.clear();
     }
 
     function test_mouseMoveSlowly() {
-       mouseMoveSlowly(root,0,0,800,300,10,100);
+       mouseMoveSlowly(mouseArea,0,0,800,200,10,100);
        compare(mouseArea.testX,800);
-       compare(mouseArea.testY,300);
+       compare(mouseArea.testY,200);
        compare(mouseArea.steps,10);
     }
 
@@ -145,6 +161,60 @@ Rectangle {
     function test_flick_pressTimeout_long() {
         flick(flicker, flicker.width, flicker.height, -flicker.width, -flicker.height, 400, 100);
         movementSpy.wait();
+    }
+
+    SignalSpy {
+        id: touchPressSpy
+        signalName: "onPressed"
+        target: touchArea
+    }
+    SignalSpy {
+        id: touchReleaseSpy
+        signalName: "onReleased"
+        target: touchArea
+    }
+    SignalSpy {
+        id: touchUpdateSpy
+        signalName: "onUpdated"
+        target: touchArea
+    }
+
+    function test_touchPress() {
+        TestExtras.touchPress(0, touchArea, Qt.point(10, 10));
+        touchPressSpy.wait();
+    }
+    function test_touchRelease() {
+        TestExtras.touchRelease(0, touchArea, Qt.point(10, 10));
+        touchReleaseSpy.wait();
+    }
+    function test_touchClick() {
+        TestExtras.touchClick(0, touchArea, Qt.point(10, 10));
+        touchReleaseSpy.wait();
+        compare(touchPressSpy.count, 1, "Not pressed?");
+        compare(touchReleaseSpy.count, 1, "Not released?");
+    }
+    function test_touchDoubleClick() {
+        TestExtras.touchDoubleClick(0, touchArea, Qt.point(10, 10));
+        compare(touchPressSpy.count, 2, "Not pressed twice?");
+        compare(touchReleaseSpy.count, 2, "Not released twice?");
+    }
+    function test_touchMove() {
+        TestExtras.touchPress(0, touchArea, Qt.point(0, 0));
+        TestExtras.touchMove(0, touchArea, Qt.point(10, 10));
+        touchUpdateSpy.wait();
+        TestExtras.touchRelease(0, touchArea, Qt.point(10, 10));
+    }
+    function test_touchDrag_default_steps() {
+        TestExtras.touchDrag(0, touchArea, Qt.point(0, 0), Qt.point(10, 10));
+        compare(touchPressSpy.count, 1, "Not pressed?");
+        compare(touchReleaseSpy.count, 1, "Not released?");
+        compare(touchUpdateSpy.count, 5, "Not moved?");
+    }
+    function test_touchDrag_10_steps() {
+        TestExtras.touchDrag(0, touchArea, Qt.point(0, 0), Qt.point(100, 100), 10);
+        compare(touchPressSpy.count, 1, "Not pressed?");
+        compare(touchReleaseSpy.count, 1, "Not released?");
+        compare(touchUpdateSpy.count, 10, "Not moved?");
     }
  }
 }

@@ -15,9 +15,13 @@ uri = Ubuntu.Test
 
 HEADERS += \
     uctestcase.h \
+    testplugin.h \
+    uctestextras.h
 
 SOURCES += \
     uctestcase.cpp \
+    testplugin.cpp \
+    uctestextras.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
