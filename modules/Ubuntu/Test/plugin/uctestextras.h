@@ -8,9 +8,11 @@ class QTouchDevice;
 class TestExtras : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool touchPresent READ touchDevicePresent)
 public:
     explicit TestExtras(QObject *parent = 0);
 
+    static bool touchDevicePresent();
 public Q_SLOTS:
     static void registerTouchDevice();
     static void touchPress(int touchId, QQuickItem *item, const QPoint &point);

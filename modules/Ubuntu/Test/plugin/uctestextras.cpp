@@ -24,6 +24,20 @@ bool TestExtras::checkTouchDevice(const char *func)
 /*!
  * Registers a touch device if there's none registered.
  */
+bool TestExtras::touchDevicePresent()
+{
+    QList<const QTouchDevice*> touchDevices = QTouchDevice::devices();
+    Q_FOREACH(const QTouchDevice *device, touchDevices) {
+        if (device->type() == QTouchDevice::TouchScreen) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/*!
+ * Registers a touch device if there's none registered.
+ */
 void TestExtras::registerTouchDevice()
 {
     // check if there is any touch device registered in the system

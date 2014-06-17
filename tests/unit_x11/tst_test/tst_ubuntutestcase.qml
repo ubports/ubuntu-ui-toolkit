@@ -179,6 +179,10 @@ Rectangle {
         target: touchArea
     }
 
+    function test_has_property() {
+        verify(TestExtras.hasOwnProperty("touchPresent"), "touchPresent property missing");
+    }
+
     function test_touchPress() {
         TestExtras.touchPress(0, touchArea, Qt.point(10, 10));
         touchPressSpy.wait();
