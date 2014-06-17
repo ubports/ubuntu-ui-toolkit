@@ -16,31 +16,7 @@
 
 import QtQuick 2.0
 
-/*!
-    \qmltype ProgressBar
-    \inqmlmodule Ubuntu.Components 1.1
-    \ingroup ubuntu
-    \brief The ProgressBar component visually indicates the progress of a process of
-    determinate or indeterminate duration.
-
-    \b{This component is under heavy development.}
-
-    Example:
-    \qml
-    Item {
-        ProgressBar {
-            id: indeterminateBar
-            indeterminate: true
-        }
-
-        ProgressBar {
-            id: determinateBar
-            minimumValue: -3.0
-            maximumValue: 15
-        }
-    }
-    \endqml
-*/
+// Documentation in ProgressBar11.qml
 AnimatedItem {
     id: progressBar
 

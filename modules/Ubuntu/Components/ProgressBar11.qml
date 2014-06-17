@@ -41,34 +41,8 @@ import QtQuick 2.0
     }
     \endqml
 */
-AnimatedItem {
+ProgressBar {
     id: progressBar
-
-    /*!
-      \preliminary
-      Specifies whether the progress interval is unknown. When set, altering
-      other properties do not have any effect on the component's behavior.
-      By default the property is set to false.
-    */
-    property bool indeterminate: false
-
-    /*!
-      \preliminary
-      Specifies the minimum value of the progress.
-    */
-    property real minimumValue: 0.0
-
-    /*!
-      \preliminary
-      Specifies the maximum value of the progress.
-    */
-    property real maximumValue: 1.0
-
-    /*!
-      \preliminary
-      Specifies the current value of the progress
-    */
-    property real value: 0.5
 
     /*!
       Shows the current percentage of the progress
