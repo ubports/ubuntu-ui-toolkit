@@ -81,7 +81,12 @@ QStringList themeSearchPath() {
     QStringList pathList = envPath.split(':', QString::SkipEmptyParts);
     if (pathList.isEmpty()) {
         // get the default path list from generic data location, which contains
-        // ~/.local/share and XDG_DATA_DIRS
+        // XDG_DATA_DIRS
+        QString xdgDirs = QLatin1String(getenv("XDG_DATA_DIRS"));
+        if (!xdgDirs.isEmpty()) {
+            pathList << xdgDirs.split(':', QString::SkipEmptyParts);
+        }
+        // ~/.local/share
         pathList << QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
     }
     // fix folders

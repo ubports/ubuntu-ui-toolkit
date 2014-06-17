@@ -35,10 +35,7 @@ class EnabledTogglesTestCase(gallery.GalleryTestCase):
 
     def setUp(self):
         super(EnabledTogglesTestCase, self).setUp()
-        item = "Toggles"
-        self.checkListItem(item)
-        self.loadItem(item)
-        self.checkPageHeader(item)
+        self.open_page('togglesElement')
 
     def test_change_toggles_state(self):
         toggle = self.main_view.select_single(
@@ -65,10 +62,7 @@ class DisabledTogglesTestCase(gallery.GalleryTestCase):
 
     def setUp(self):
         super(DisabledTogglesTestCase, self).setUp()
-        item = "Toggles"
-        self.checkListItem(item)
-        self.loadItem(item)
-        self.checkPageHeader(item)
+        self.open_page('togglesElement')
 
     def test_change_toggles_state(self):
         toggle = self.main_view.select_single(

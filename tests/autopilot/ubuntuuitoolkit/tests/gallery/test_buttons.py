@@ -45,9 +45,7 @@ class ButtonsTestCase(GalleryTestCase):
     ]
 
     def test_buttons(self):
-        item = "Buttons"
-        self.loadItem(item)
-        self.checkPageHeader(item)
+        self.open_page('buttonsElement')
 
         button = self.app.select_single(objectName=self.button_name)
         self.assertIsNot(button, None)

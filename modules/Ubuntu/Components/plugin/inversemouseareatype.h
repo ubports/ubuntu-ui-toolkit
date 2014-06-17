@@ -32,6 +32,7 @@ public:
     Q_INVOKABLE virtual bool contains(const QPointF &point) const;
 
 protected:
+    void itemChange(ItemChange, const ItemChangeData &);
     void componentComplete();
     bool eventFilter(QObject *, QEvent *);
 
@@ -52,7 +53,7 @@ Q_SIGNALS:
     void topmostItemChanged();
 
 private Q_SLOTS:
-    void update();
+    void updateArea();
     void resetFilterOnWindowUpdate(QQuickWindow *win);
     
 private:

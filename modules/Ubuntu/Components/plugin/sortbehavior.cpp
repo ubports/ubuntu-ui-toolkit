@@ -19,6 +19,14 @@
 
 #include "sortbehavior.h"
 
+SortBehavior::SortBehavior(QObject *parent)
+    : QObject(parent)
+    , m_property(QString())
+    , m_order(Qt::AscendingOrder)
+{
+
+}
+
 QString
 SortBehavior::property() const
 {
