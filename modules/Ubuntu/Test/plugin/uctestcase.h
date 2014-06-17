@@ -42,7 +42,7 @@ public:
         qFatal("No item '%s' found", qPrintable(objectName));
     }
 
-    inline QPointF centerOf(QQuickItem *item, bool windowPos = false)
+    static inline QPointF centerOf(QQuickItem *item, bool windowPos = false)
     {
         QPointF center;
         if (item) {

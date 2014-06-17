@@ -150,7 +150,7 @@ private Q_SLOTS:
 
         QPoint center = UbuntuTestCase::centerOf(textField).toPoint();
         if (touchEvent) {
-            TestExtras::touchPress(0, input, center);
+            TestExtras::touchPress(0, textField, center);
         } else {
             QTest::mousePress(test.data(), Qt::LeftButton, Qt::NoModifier, center);
         }
@@ -189,7 +189,7 @@ private Q_SLOTS:
 
         QPoint center = UbuntuTestCase::centerOf(textField).toPoint();
         if (touchEvent) {
-            TestExtras::touchClick(0, input, center);
+            TestExtras::touchClick(0, textField, center);
         } else {
             QTest::mouseClick(test.data(), Qt::LeftButton, Qt::NoModifier, center);
         }
