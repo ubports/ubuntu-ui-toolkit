@@ -70,5 +70,10 @@ AnimatedItem {
     */
     property real value: 0.5
 
+    /*!
+      Shows the current percentage of the progress
+    */
+    property bool showProgressPercentage: true
+
     style: Theme.createStyleComponent("ProgressBarStyle.qml", progressBar)
 }
