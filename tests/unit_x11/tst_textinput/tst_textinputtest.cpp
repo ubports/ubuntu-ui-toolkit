@@ -23,6 +23,7 @@
 #include <QtQuick/private/qquickflickable_p.h>
 
 #include "uctestcase.h"
+#include "uctestextras.h"
 #include "ucunits.h"
 
 class tst_TextInputTest : public QObject
@@ -69,7 +70,7 @@ private Q_SLOTS:
     void test_no_caret_when_no_touchscreen()
     {
         // skip the test if we are on a touch enabled device
-        if (UbuntuTestCase::touchDevicePresent()) {
+        if (TestExtras::touchDevicePresent()) {
             QSKIP("This test can be executed on non-touch enabled environment.");
         }
         if (skipTextCursorTests) {
@@ -95,7 +96,7 @@ private Q_SLOTS:
 
     void test_has_caret_when_touchscreen_data()
     {
-        UbuntuTestCase::registerTouchDevice();
+        TestExtras::registerTouchDevice();
         QTest::addColumn<QString>("document");
 
         QTest::newRow("TextField") << "TextFieldTest.qml";
@@ -149,7 +150,7 @@ private Q_SLOTS:
 
         QPoint center = UbuntuTestCase::centerOf(textField).toPoint();
         if (touchEvent) {
-            UbuntuTestCase::touchPress(0, test.data(), center);
+            TestExtras::touchPress(0, input, center);
         } else {
             QTest::mousePress(test.data(), Qt::LeftButton, Qt::NoModifier, center);
         }
@@ -188,7 +189,7 @@ private Q_SLOTS:
 
         QPoint center = UbuntuTestCase::centerOf(textField).toPoint();
         if (touchEvent) {
-            UbuntuTestCase::touchClick(0, test.data(), center);
+            TestExtras::touchClick(0, input, center);
         } else {
             QTest::mouseClick(test.data(), Qt::LeftButton, Qt::NoModifier, center);
         }
@@ -219,7 +220,7 @@ private Q_SLOTS:
         QVERIFY(input);
 
         // double tap on the first word
-        UbuntuTestCase::touchDoubleClick(0, test.data(), guPoint(1, 1));
+        TestExtras::touchDoubleClick(0, input, guPoint(1, 1));
         QVERIFY(!input->property("selectedText").value<QString>().isEmpty());
     }
 
@@ -241,13 +242,13 @@ private Q_SLOTS:
         QVERIFY(input);
 
         // long tap
-        UbuntuTestCase::touchLongPress(0, test.data(), guPoint(1, 1));
+        TestExtras::touchLongPress(0, input, guPoint(1, 1));
         QTest::waitForEvents();
         QVERIFY(!input->hasFocus());
         QVERIFY(input->property("selectedText").value<QString>().isEmpty());
 
         // cleanup
-        UbuntuTestCase::touchRelease(0, test.data(), guPoint(1, 1));
+        TestExtras::touchRelease(0, input, guPoint(1, 1));
     }
 
     void test_select_text_longtap_data()
@@ -275,7 +276,7 @@ private Q_SLOTS:
         QSignalSpy openPopover(handler, SIGNAL(pressAndHold(int)));
 
         // long tap
-        UbuntuTestCase::touchLongPress(0, test.data(), guPoint(1, 1));
+        TestExtras::touchLongPress(0, input, guPoint(1, 1));
         // this can be flaky!!!
         QVERIFY(openPopover.wait());
         // make sure the longTap is handled
@@ -284,7 +285,7 @@ private Q_SLOTS:
         QCOMPARE(openPopover.count(), 1);
 
         //cleanup
-        UbuntuTestCase::touchRelease(0, test.data(), guPoint(1, 1));
+        TestExtras::touchRelease(0, input, guPoint(1, 1));
     }
 
     void test_long_tap_on_selected_text_data()
@@ -316,7 +317,7 @@ private Q_SLOTS:
         QString selectedText = input->property("selectedText").toString();
 
         // long tap on it
-        UbuntuTestCase::touchLongPress(0, test.data(), guPoint(1, 1));
+        TestExtras::touchLongPress(0, input, guPoint(1, 1));
         // this IS flaky!!!
         QVERIFY(openPopover.wait());
         // make sure the longTap is handled
@@ -325,7 +326,7 @@ private Q_SLOTS:
         QCOMPARE(openPopover.count(), 1);
 
         //cleanup
-        UbuntuTestCase::touchRelease(0, test.data(), guPoint(1, 1));
+        TestExtras::touchRelease(0, input, guPoint(1, 1));
         QTest::qWait(200);
     }
 
@@ -381,7 +382,7 @@ private Q_SLOTS:
             selectedText = input->property("selectedText").value<QString>();
         }
         QTest::waitForEvents();
-        UbuntuTestCase::touchDrag(0, test.data(), from, delta);
+        TestExtras::touchDrag(0, input, from, delta);
         QTest::waitForEvents();
         QVERIFY(flickerSpy.count() > 0);
         if (withTextSelected) {
@@ -422,7 +423,7 @@ private Q_SLOTS:
         // drag cursor
         int cursorPosition = input->property("cursorPosition").toInt();
         QPoint from = UbuntuTestCase::centerOf(caret).toPoint();
-        UbuntuTestCase::touchDrag(0, test.data(), from, delta);
+        TestExtras::touchDrag(0, caret, from, delta);
         QTest::waitForEvents();
         QVERIFY(cursorPosition != input->property("cursorPosition").toInt());
     }
@@ -484,7 +485,7 @@ private Q_SLOTS:
         // drag cursor
         int cursorPosition = input->property(cursorName.toLocal8Bit().constData()).toInt();
         QPoint from = UbuntuTestCase::centerOf(caret).toPoint();
-        UbuntuTestCase::touchDrag(0, test.data(), from, delta);
+        TestExtras::touchDrag(0, caret, from, delta);
         QTest::waitForEvents();
         QVERIFY(cursorPosition != input->property(cursorName.toLocal8Bit().constData()).toInt());
         QVERIFY(!input->property("selectedText").toString().isEmpty() && selectedText != input->property("selectedText").toString());
@@ -506,13 +507,13 @@ private Q_SLOTS:
 
         // move when not focused
         QPoint from(editor->x(), editor->y());
-        UbuntuTestCase::touchDrag(0, test.data(), from, guPoint(2, 40));
+        TestExtras::touchDrag(0, editor, from, guPoint(2, 40));
         QVERIFY(moveSpy.wait());
 
         // focus then repeat dragging
         moveSpy.clear();
         input->forceActiveFocus();
-        UbuntuTestCase::touchDrag(0, test.data(), from, guPoint(2, 40));
+        TestExtras::touchDrag(0, editor, from, guPoint(2, 40));
         QVERIFY(moveSpy.wait());
     }
 
