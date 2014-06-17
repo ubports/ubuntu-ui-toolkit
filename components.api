@@ -384,6 +384,9 @@ AnimatedItem
     property real minimumValue
     property real maximumValue
     property real value
+ProgressBar 1.1
+ProgressBar
+    property bool showProgressPercentage
 Scrollbar 0.1 1.0
 StyledItem
     property Flickable flickableItem
