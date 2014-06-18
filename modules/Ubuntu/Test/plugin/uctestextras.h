@@ -21,12 +21,12 @@
 
 class QQuickItem;
 class QTouchDevice;
-class TestExtras : public QObject
+class UCTestExtras : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool touchPresent READ touchDevicePresent)
 public:
-    explicit TestExtras(QObject *parent = 0);
+    explicit UCTestExtras(QObject *parent = 0);
 
     static bool touchDevicePresent();
 public Q_SLOTS:

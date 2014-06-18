@@ -21,14 +21,25 @@
 
 #define CHECK_TOUCH_DEVICE()    if (!checkTouchDevice(__FUNCTION__)) return
 
-QTouchDevice *TestExtras::m_touchDevice = 0;
+QTouchDevice *UCTestExtras::m_touchDevice = 0;
 
-TestExtras::TestExtras(QObject *parent) :
+/*!
+ * \qmltype TestExtras
+ * \instantiates UCTestExtras
+ * \inqmlmodule Ubuntu.Test 1.0
+ * \ingroup ubuntu-test
+ * \brief Singleton type providing additional test functions.
+ *
+ * The component provides additional test functions like touch handling, registering
+ * touch device on non-touch screen enabled environment.
+ */
+
+UCTestExtras::UCTestExtras(QObject *parent) :
     QObject(parent)
 {
 }
 
-bool TestExtras::checkTouchDevice(const char *func)
+bool UCTestExtras::checkTouchDevice(const char *func)
 {
     if (!m_touchDevice) {
         qWarning() << QString("No touch device registered. Register one using registerTouchDevice() before using %1").arg(func);
@@ -38,9 +49,10 @@ bool TestExtras::checkTouchDevice(const char *func)
 }
 
 /*!
- * Registers a touch device if there's none registered.
+ * \qmlmethod TestExtras::touchDevicePresent()
+ * Returns true if the system has a touch device registered.
  */
-bool TestExtras::touchDevicePresent()
+bool UCTestExtras::touchDevicePresent()
 {
     QList<const QTouchDevice*> touchDevices = QTouchDevice::devices();
     Q_FOREACH(const QTouchDevice *device, touchDevices) {
@@ -52,9 +64,12 @@ bool TestExtras::touchDevicePresent()
 }
 
 /*!
- * Registers a touch device if there's none registered.
+ * \qmlmethod TestExtras::registerTouchDevice()
+ * Registers a touch device if there's none registered. Calling the function in
+ * touch enabled environment has no effect. The function must be called in initTestCase()
+ * in order to perform touch related tests.
  */
-void TestExtras::registerTouchDevice()
+void UCTestExtras::registerTouchDevice()
 {
     // check if there is any touch device registered in the system
     if (!m_touchDevice) {
@@ -74,44 +89,92 @@ void TestExtras::registerTouchDevice()
     }
 }
 
-void TestExtras::touchPress(int touchId, QQuickItem *item, const QPoint &point)
+/*!
+ * \qmlmethod TestExtras::touchPress(touchId, item, point)
+ * The function triggers a touch press event for a given \a touchId on a specific
+ * \a item. The \a point contains the (x,y) coordinates of the event in \a item
+ * coordinates.
+ */
+void UCTestExtras::touchPress(int touchId, QQuickItem *item, const QPoint &point)
 {
     CHECK_TOUCH_DEVICE();
     QTest::touchEvent(item->window(), m_touchDevice).press(touchId, point, item->window());
 }
-void TestExtras::touchRelease(int touchId, QQuickItem *item, const QPoint &point)
+/*!
+ * \qmlmethod TestExtras::touchRelease(touchId, item, point)
+ * The function produces a touch release event on a given \a touchId performed on
+ * \a item at a \a point.
+ */
+void UCTestExtras::touchRelease(int touchId, QQuickItem *item, const QPoint &point)
 {
     CHECK_TOUCH_DEVICE();
     QTest::touchEvent(item->window(), m_touchDevice).release(touchId, point, item->window());
 }
-void TestExtras::touchClick(int touchId, QQuickItem *item, const QPoint &point)
+/*!
+ * \qmlmethod TestExtras::touchClick(touchId, item, point)
+ * The function performs a pair of \l touchPress and \l touchRelease calls on the same
+ * point resulting in a click like event.
+ */
+void UCTestExtras::touchClick(int touchId, QQuickItem *item, const QPoint &point)
 {
     CHECK_TOUCH_DEVICE();
     touchPress(touchId, item, point);
     QTest::qWait(100);
     touchRelease(touchId, item, point);
 }
-void TestExtras::touchLongPress(int touchId, QQuickItem *item, const QPoint &point)
+/*!
+ * \qmlmethod TestExtras::touchLongPress(touchId, item, point)
+ * The function produces a \l touchPress event with a timeout equivalent to the
+ * mouse \c pressAndHold timeout, after which the function returns.
+ */
+void UCTestExtras::touchLongPress(int touchId, QQuickItem *item, const QPoint &point)
 {
     CHECK_TOUCH_DEVICE();
     touchPress(touchId, item, point);
     // 800 miliseconds + 200 to let events processed
     QTest::qWait(1000);
 }
-void TestExtras::touchDoubleClick(int touchId, QQuickItem *item, const QPoint &point)
+/*!
+ * \qmlmethod TestExtras::touchDoubleClick(touchId, item, point)
+ * The function performs two consecutive \l touchClick events with a slight delay
+ * in between each click event.
+ */
+void UCTestExtras::touchDoubleClick(int touchId, QQuickItem *item, const QPoint &point)
 {
     CHECK_TOUCH_DEVICE();
     touchClick(touchId, item, point);
     QTest::qWait(100);
     touchClick(touchId, item, point);
 }
-void TestExtras::touchMove(int touchId, QQuickItem *item, const QPoint &point)
+/*!
+ * \qmlmethod TestExtras::touchMove(touchId, item, point)
+ * The function moves the touch point identified by the \a touchId to the destination
+ * \a point. The point is in \a item coordinates. The touch point identified by the
+ * \a touchId must be pressed before calling this function in order to produce the
+ * desired functionality. The event can be captured in a \c MultiPointTouchArea through
+ * \c updated() signal.
+ */
+void UCTestExtras::touchMove(int touchId, QQuickItem *item, const QPoint &point)
 {
     CHECK_TOUCH_DEVICE();
     QTest::touchEvent(item->window(), m_touchDevice).move(touchId, point, item->window());
 }
-void TestExtras::touchDrag(int touchId, QQuickItem *item, const QPoint &from, const QPoint &delta, int steps)
+/*!
+ * \qmlmethod TestExtras::touchDrag(touchId, item, from, delta, steps = 5)
+ * The function performs a drag gesture on a touch point identified by \a touchId
+ * over an \a item from the starting point \a from with a \a delta. The gesture
+ * is realized with a touch press, \a step moves and a release event.
+ *
+ * By default the function uses 5 steps to produce the gesture. This value can be any
+ * positive number, driving the gesture appliance to be faster (less than 5 moves) or
+ * slower (more than 5 moves). If a negative or 0 value is given, the function will
+ * use the default 5 steps to produce the gesture.
+ */
+void UCTestExtras::touchDrag(int touchId, QQuickItem *item, const QPoint &from, const QPoint &delta, int steps)
 {
+    if (steps <= 0) {
+        steps = 5;
+    }
     touchPress(touchId, item, from);
     QTest::qWait(10);
     QTest::touchEvent(item->window(), m_touchDevice).move(touchId, from, item->window());

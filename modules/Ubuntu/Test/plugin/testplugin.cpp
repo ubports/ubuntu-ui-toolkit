@@ -23,10 +23,10 @@ static QObject *registerExtras(QQmlEngine *engine, QJSEngine *scriptEngine)
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
 
-    return new TestExtras;
+    return new UCTestExtras;
 }
 
 void TestPlugin::registerTypes(const char *uri)
 {
-    qmlRegisterSingletonType<TestExtras>(uri, 1, 0, "TestExtras", registerExtras);
+    qmlRegisterSingletonType<UCTestExtras>(uri, 1, 0, "TestExtras", registerExtras);
 }
