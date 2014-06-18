@@ -1,3 +1,19 @@
+/*
+ * Copyright 2014 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #ifndef TESTEXTRAS_H
 #define TESTEXTRAS_H
 
@@ -5,12 +21,12 @@
 
 class QQuickItem;
 class QTouchDevice;
-class TestExtras : public QObject
+class UCTestExtras : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool touchPresent READ touchDevicePresent)
 public:
-    explicit TestExtras(QObject *parent = 0);
+    explicit UCTestExtras(QObject *parent = 0);
 
     static bool touchDevicePresent();
 public Q_SLOTS:
