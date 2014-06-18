@@ -43,16 +43,16 @@ StyledItem {
     /*!
       \deprecated
       The header of the node. Propagates down from the root node.
-      This property is deprecated.
+      This property is DEPRECATED.
      */
-    property AppHeader header: internal.getHeaderWithDeprecatedWarning()
+    property AppHeader header: node.__propagated ? node.__propagated.header : null
 
     /*!
       \deprecated
       The toolbar of the node. Propagates down from the root node.
-      This property is deprecated.
+      This property is DEPRECATED.
      */
-    property Toolbar toolbar: internal.getToolbarWithDeprecatedWarning()
+    property Toolbar toolbar: node.__propagated ? node.__propagated.toolbar : null
 
     /*!
       \internal
@@ -109,17 +109,6 @@ StyledItem {
 
     Item {
         id: internal
-
-        function getHeaderWithDeprecatedWarning() {
-            print("WARNING: Do not use MainView.header or Page.header. " +
-                  "This property is deprecated.");
-            return node.__propagated ? node.__propagated.header : null;
-        }
-        function getToolbarWithDeprecatedWarning() {
-            print("WARNING: Do not use MainView.toolbar or Page.toolbar. " +
-                  "This property is deprecated.");
-            return node.__propagated ? node.__propagated.toolbar : null
-        }
 
         function isPageTreeNode(object) {
             // FIXME: Use QuickUtils.className() when it becomes available.
