@@ -105,7 +105,7 @@ AbstractButton {
     /*!
       \preliminary
       \qmlproperty string swipingState
-      The current swiping state ("SwipingLeft", "SwipingRight", "")
+      The current swiping state ("SwipingRight" or "")
      */
     readonly property alias swipingState: backgroundIndicator.state
 
@@ -228,7 +228,7 @@ AbstractButton {
             __mouseArea.drag.target = body
             held = true
             __mouseArea.drag.maximumX = parent.width
-            __mouseArea.drag.minimumX = (parent.width * -1)
+            __mouseArea.drag.minimumX = 0
             backgroundIndicator.visible = true
         }
 
@@ -334,10 +334,8 @@ AbstractButton {
             onXChanged: {
                 if (x > 0) {
                     backgroundIndicator.state = "SwipingRight"
-                } else if (x === 0) {
-                    backgroundIndicator.state = ""
                 } else {
-                    backgroundIndicator.state = "SwipingLeft"
+                    backgroundIndicator.state = ""
                 }
             }
         }
@@ -426,24 +424,6 @@ AbstractButton {
                     PropertyChanges {
                         target: confirmRemovalDialog
                         x: body.x - confirmRemovalDialog.width - units.gu(2)
-                    }
-                },
-                State {
-                    name: "SwipingLeft"
-                    AnchorChanges {
-                        target: backgroundIndicator
-                        anchors.left: body.right
-                        anchors.right: parent.right
-                    }
-
-                    PropertyChanges {
-                        target: backgroundIndicator
-                        opacity: 1.0
-                    }
-
-                    PropertyChanges {
-                        target: confirmRemovalDialog
-                        x: units.gu(2)
                     }
                 }
             ]
