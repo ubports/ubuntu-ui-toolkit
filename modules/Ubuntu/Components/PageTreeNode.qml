@@ -111,12 +111,12 @@ StyledItem {
         id: internal
 
         function getHeaderWithDeprecatedWarning() {
-            print("WARNING: Do not use MainView.header or Page.header." +
+            print("WARNING: Do not use MainView.header or Page.header. " +
                   "This property is deprecated.");
             return node.__propagated ? node.__propagated.header : null;
         }
         function getToolbarWithDeprecatedWarning() {
-            print("WARNING: Do not use MainView.toolbar or Page.toolbar." +
+            print("WARNING: Do not use MainView.toolbar or Page.toolbar. " +
                   "This property is deprecated.");
             return node.__propagated ? node.__propagated.toolbar : null
         }
