@@ -24,9 +24,7 @@ class OptionSelectorTestCase(GalleryTestCase):
 
     def setUp(self):
         super(OptionSelectorTestCase, self).setUp()
-        item = "Option Selector"
-        self.loadItem(item)
-        self.checkPageHeader(item)
+        self.open_page('optionSelectorsElement')
 
     def test_select_option_from_collapsed_optionselector(self):
         collapsed_option_selector = self.main_view.select_single(

@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013 Canonical Ltd.
+# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -16,32 +16,19 @@
 
 """Tests for the Ubuntu UI Toolkit Gallery"""
 
-from autopilot.matchers import Eventually
-from testtools.matchers import Is, Not, Equals
-
-from ubuntuuitoolkit import emulators
+import ubuntuuitoolkit
 from ubuntuuitoolkit.tests import gallery
 
 
-class GenericTests(gallery.GalleryTestCase):
+class GalleryAppTestCase(gallery.GalleryTestCase):
     """Generic tests for the Gallery"""
 
-    def test_0_can_select_mainwindow(self):
-        """Must be able to select the main window."""
-
-        rootItem = self.main_view
-        self.assertThat(rootItem, Not(Is(None)))
-        self.assertThat(rootItem.visible, Eventually(Equals(True)))
-
-    def test_navigation(self):
-        item = "Navigation"
-        self.loadItem(item)
-        self.checkPageHeader(item)
+    def test_select_main_view_must_return_main_window_emulator(self):
+        main_view = self.main_view
+        self.assertIsInstance(main_view, ubuntuuitoolkit.MainView)
 
     def test_slider(self):
-        item = "Slider"
-        self.loadItem(item)
-        self.checkPageHeader(item)
+        self.open_page('slidersElement')
 
         item_data = [
             ["slider_standard"],
@@ -57,9 +44,7 @@ class GenericTests(gallery.GalleryTestCase):
             # TODO: move slider value
 
     def test_progress_and_activity(self):
-        item = "Progress and activity"
-        self.loadItem(item)
-        self.checkPageHeader(item)
+        self.open_page('progressBarsElement')
 
         item_data = [
             ["progressbar_standard"],
@@ -79,9 +64,7 @@ class GenericTests(gallery.GalleryTestCase):
         # FIXME: https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1308979
         return
 
-        item = "Ubuntu Shape"
-        self.loadItem(item)
-        self.checkPageHeader(item)
+        self.open_page('ubuntuShapesElement')
 
         item_data = [
             ["ubuntushape_color_hex"],
@@ -116,12 +99,9 @@ class OpenPagesTestCase(gallery.GalleryTestCase):
     ]
 
     def test_open_page(self):
-        list_view = self.main_view.select_single(
-            emulators.QQuickListView, objectName="widgetList")
-        list_view.click_element(self.element_name)
+        self.open_page(self.element_name)
         element = self.main_view.select_single(
             'Standard', objectName=self.element_name)
-        element.selected.wait_for(True)
         self.checkPageHeader(element.text)
         if self.template_name == 'textinputsTemplate':
             page_type = 'TextInputs'
