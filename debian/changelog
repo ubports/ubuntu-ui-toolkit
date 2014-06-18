@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (0.1.46+14.10.20140602-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (0.1.47+14.10.20140618-0ubuntu1) utopic; urgency=medium
 
   [Leo Arias ]
   * On the autopilot helper for the header, fix the swipe to show 
@@ -42,7 +42,7 @@ ubuntu-ui-toolkit (0.1.46+14.10.20140602-0ubuntu2) UNRELEASED; urgency=medium
     Calling shadowed superclass' update() method.
 
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Wed, 04 Jun 2014 09:40:11 +0200
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 18 Jun 2014 17:10:43 +0000
 
 ubuntu-ui-toolkit (0.1.46+14.10.20140602-0ubuntu1) utopic; urgency=low
 
