@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.2
 import QtQuick.Window 2.0
 import Ubuntu.Components 1.0
 
@@ -208,26 +208,20 @@ Item {
             Transition {
                 id: orientationTransition
                 ParallelAnimation {
-                    SequentialAnimation {
-                        PauseAnimation {
-                            duration: 25
-                        }
-                        /* FIXME: this is a workaround for 2 issues that trigger too many changes
-                                  to the width and height of orientationHelper which creates intermediary
-                                  states of the UI with unexpected sizes:
-                            1) upon state change fast-forwarding is used which means that the final values are computed and applied
-                              then immediately reverted before the actual transition is applied
-                            2) when margins are applied, width and height are updated separately
+                    /* FIXME: this is a workaround for 2 issues that trigger too many changes
+                              to the width and height of orientationHelper which creates intermediary
+                              states of the UI with unexpected sizes:
+                        1) upon state change fast-forwarding is used which means that the final values are computed and applied
+                          then immediately reverted before the actual transition is applied
+                        2) when margins are applied, width and height are updated separately
 
-                            Without these issues, regular PropertyChanges could be used to set the margins.
-                        */
-                        ScriptAction {
-                            scriptName: "anchorsScript"
-                        }
+                        Without these issues, regular PropertyChanges could be used to set the margins.
+                    */
+                    ScriptAction {
+                        scriptName: "anchorsScript"
                     }
-                    RotationAnimation {
+                    RotationAnimator {
                         target: orientationHelper
-                        properties: "rotation"
                         duration: UbuntuAnimation.FastDuration
                         easing: UbuntuAnimation.StandardEasing
                         direction: RotationAnimation.Shortest
