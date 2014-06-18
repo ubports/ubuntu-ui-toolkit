@@ -9,6 +9,9 @@ ubuntu-ui-toolkit (0.1.46+14.10.20140602-0ubuntu2) UNRELEASED; urgency=medium
     launcher.
   * Fixed the creation of the fake Xauthority file on mako for the 
     fixture tests. Fixes: https://bugs.launchpad.net/bugs/1326072
+  * Fixed the swipe to delete on the list item autopilot helper.
+    Fixes: https://bugs.launchpad.net/bugs/1311392.
+  * clean ups to the autopilot tests for the widget gallery.
 
   [ Christian Dywan ]   
   * Add a launcher with a switch for the QQMLEngine.
@@ -17,12 +20,27 @@ ubuntu-ui-toolkit (0.1.46+14.10.20140602-0ubuntu2) UNRELEASED; urgency=medium
   * Initialize sort.order explicitly. 
     Fixes: https://bugs.launchpad.net/bugs/1324087
   * Swiping from Left to Right to Delete only.
+  * Show explicit failure when test wasn't built yet.
+  * Add push_to_phone script to push QML/ Python/ artwork.
 
 
   [ Tim Peeters ]
   * Anchor the internal PageTreeNode of PageStack to fill its parent. 
     Fixes: https://bugs.launchpad.net/bugs/1322527
   * Deprecate sheets. Fixes: https://bugs.launchpad.net/bugs/1304541
+  * Fix bug where header overflow action popover does not close when 
+    the associated action pushes a new page on the pagestack. 
+    Fixes: https://bugs.launchpad.net/bugs/1326963.
+
+  [ Zsombor Egri]
+  * Adding touch functions to UbuntuTestCase.
+  * Qt5.3 related fixes. Fixes: 
+    https://bugs.launchpad.net/bugs/1324070, 
+    https://bugs.launchpad.net/bugs/1324088, 
+    https://bugs.launchpad.net/bugs/1324089.
+  * Reverting InverseMouseAreaType updateArea() method to update(). 
+    Calling shadowed superclass' update() method.
+
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Wed, 04 Jun 2014 09:40:11 +0200
 
