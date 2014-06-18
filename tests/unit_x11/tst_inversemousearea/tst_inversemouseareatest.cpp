@@ -89,7 +89,7 @@ private Q_SLOTS:
     void initTestCase()
     {
         // make sure we have a touch device installed
-        TestExtras::registerTouchDevice();
+        UCTestExtras::registerTouchDevice();
         QString modules("../../../modules");
         QVERIFY(QDir(modules).exists());
 
@@ -513,7 +513,7 @@ private Q_SLOTS:
         QCOMPARE(imaSpy.count(), 1);
 
         imaSpy.clear();
-        TestExtras::touchClick(0, quickView->rootObject(), guPoint(20, 5));
+        UCTestExtras::touchClick(0, quickView->rootObject(), guPoint(20, 5));
         QCOMPARE(imaSpy.count(), 1);
     }
 
