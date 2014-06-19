@@ -30,7 +30,7 @@ Template {
     OptionSelector {
         model: [ i18n.tr('Header with Toolbar'), i18n.tr('New Style Header') ]
         expanded: true
-        onSelectedIndexChanged: gallery.useDeprecatedToolbar = selectedIndex == 0
+        onSelectedIndexChanged: gallery.useDeprecatedToolbar = (selectedIndex == 0)
     }
 
     Label {
