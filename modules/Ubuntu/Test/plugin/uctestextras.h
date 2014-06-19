@@ -41,8 +41,6 @@ public Q_SLOTS:
 
 private:
     static QTouchDevice *m_touchDevice;
-
-    static bool checkTouchDevice(const char *func);
 };
 
 #endif // TESTEXTRAS_H

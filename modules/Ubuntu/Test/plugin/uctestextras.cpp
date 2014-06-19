@@ -19,7 +19,21 @@
 
 #include <qpa/qwindowsysteminterface.h>
 
-#define CHECK_TOUCH_DEVICE()    if (!checkTouchDevice(__FUNCTION__)) return
+const char *DEVICE_MISSING_MSG = "No touch device registered. Register one using registerTouchDevice() before using %1";
+
+#define CHECK_TOUCH_DEVICE(touchId, item) \
+    if (!touchDevicePresent()) { \
+        qWarning() << QString(DEVICE_MISSING_MSG).arg(__FUNCTION__); \
+        return; \
+    } \
+    if (touchId < 0) { \
+        qWarning() << "Invalid touchId specified."; \
+        return; \
+    } \
+    if (!item) { \
+        qWarning() << "Invalid item specified."; \
+        return; \
+    }
 
 QTouchDevice *UCTestExtras::m_touchDevice = 0;
 
@@ -37,15 +51,6 @@ QTouchDevice *UCTestExtras::m_touchDevice = 0;
 UCTestExtras::UCTestExtras(QObject *parent) :
     QObject(parent)
 {
-}
-
-bool UCTestExtras::checkTouchDevice(const char *func)
-{
-    if (!m_touchDevice) {
-        qWarning() << QString("No touch device registered. Register one using registerTouchDevice() before using %1").arg(func);
-        return false;
-    }
-    return true;
 }
 
 /*!
@@ -97,8 +102,8 @@ void UCTestExtras::registerTouchDevice()
  */
 void UCTestExtras::touchPress(int touchId, QQuickItem *item, const QPoint &point)
 {
-    CHECK_TOUCH_DEVICE();
-    QTest::touchEvent(item->window(), m_touchDevice).press(touchId, point, item->window());
+    CHECK_TOUCH_DEVICE(touchId, item);
+    QTest::touchEvent(item->window(), m_touchDevice).press(touchId, item->mapToScene(point).toPoint(), item->window());
 }
 /*!
  * \qmlmethod TestExtras::touchRelease(touchId, item, point)
@@ -107,8 +112,8 @@ void UCTestExtras::touchPress(int touchId, QQuickItem *item, const QPoint &point
  */
 void UCTestExtras::touchRelease(int touchId, QQuickItem *item, const QPoint &point)
 {
-    CHECK_TOUCH_DEVICE();
-    QTest::touchEvent(item->window(), m_touchDevice).release(touchId, point, item->window());
+    CHECK_TOUCH_DEVICE(touchId, item);
+    QTest::touchEvent(item->window(), m_touchDevice).release(touchId, item->mapToScene(point).toPoint(), item->window());
 }
 /*!
  * \qmlmethod TestExtras::touchClick(touchId, item, point)
@@ -117,7 +122,7 @@ void UCTestExtras::touchRelease(int touchId, QQuickItem *item, const QPoint &poi
  */
 void UCTestExtras::touchClick(int touchId, QQuickItem *item, const QPoint &point)
 {
-    CHECK_TOUCH_DEVICE();
+    CHECK_TOUCH_DEVICE(touchId, item);
     touchPress(touchId, item, point);
     QTest::qWait(100);
     touchRelease(touchId, item, point);
@@ -129,7 +134,7 @@ void UCTestExtras::touchClick(int touchId, QQuickItem *item, const QPoint &point
  */
 void UCTestExtras::touchLongPress(int touchId, QQuickItem *item, const QPoint &point)
 {
-    CHECK_TOUCH_DEVICE();
+    CHECK_TOUCH_DEVICE(touchId, item);
     touchPress(touchId, item, point);
     // 800 miliseconds + 200 to let events processed
     QTest::qWait(1000);
@@ -141,7 +146,7 @@ void UCTestExtras::touchLongPress(int touchId, QQuickItem *item, const QPoint &p
  */
 void UCTestExtras::touchDoubleClick(int touchId, QQuickItem *item, const QPoint &point)
 {
-    CHECK_TOUCH_DEVICE();
+    CHECK_TOUCH_DEVICE(touchId, item);
     touchClick(touchId, item, point);
     QTest::qWait(100);
     touchClick(touchId, item, point);
@@ -156,8 +161,8 @@ void UCTestExtras::touchDoubleClick(int touchId, QQuickItem *item, const QPoint 
  */
 void UCTestExtras::touchMove(int touchId, QQuickItem *item, const QPoint &point)
 {
-    CHECK_TOUCH_DEVICE();
-    QTest::touchEvent(item->window(), m_touchDevice).move(touchId, point, item->window());
+    CHECK_TOUCH_DEVICE(touchId, item);
+    QTest::touchEvent(item->window(), m_touchDevice).move(touchId, item->mapToScene(point).toPoint(), item->window());
 }
 /*!
  * \qmlmethod TestExtras::touchDrag(touchId, item, from, delta, steps = 5)
@@ -172,22 +177,27 @@ void UCTestExtras::touchMove(int touchId, QQuickItem *item, const QPoint &point)
  */
 void UCTestExtras::touchDrag(int touchId, QQuickItem *item, const QPoint &from, const QPoint &delta, int steps)
 {
+    CHECK_TOUCH_DEVICE(touchId, item);
+    if (delta.isNull()) {
+        qWarning() << "delta point is invalid";
+        return;
+    }
     if (steps <= 0) {
         steps = 5;
     }
     touchPress(touchId, item, from);
     QTest::qWait(10);
-    QTest::touchEvent(item->window(), m_touchDevice).move(touchId, from, item->window());
+    touchMove(touchId, item, from);
+    QPoint movePoint(from);
     qreal stepDx = delta.x() / steps;
     qreal stepDy = delta.y() / steps;
-    QPoint movePoint(from);
     if (!delta.isNull()) {
         for (int i = 0; i < steps - 1; i++) {
             QTest::qWait(10);
             movePoint += QPoint(stepDx, stepDy);
-            QTest::touchEvent(item->window(), m_touchDevice).move(touchId, movePoint, item->window());
+            touchMove(touchId, item, movePoint);
         }
     }
     QTest::qWait(10);
-    touchRelease(touchId, item, movePoint);
+    touchRelease(touchId, item, from + delta);
 }
