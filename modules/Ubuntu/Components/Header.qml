@@ -24,8 +24,11 @@ import QtQuick 2.0
 AppHeader {
     id: header
 
-    // We need this property so QML exposes this class as Header instead of
-    // AppHeader. This way autopilot can select the deprecated header.
+    /*!
+      \internal
+      We need this property so QML exposes this class as Header instead of
+      AppHeader. This way autopilot can select the deprecated header.
+    */
     property string _for_autopilot
 
     Component.onCompleted: {

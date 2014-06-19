@@ -64,6 +64,7 @@ Item
     readonly property int status
 Header 0.1 1.0
 AppHeader
+    property string _for_autopilot
 Icon 0.1 1.0
 Item
     property string name
