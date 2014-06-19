@@ -55,14 +55,19 @@ class Empty(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 'The item "{0}" is not removable'.format(self.objectName))
 
     def _drag_pointing_device_to_delete(self, direction):
-        x, y, w, h = self.globalRect
-        tx = x + (w // 8)
-        ty = y + (h // 2)
+        x, y, width, height = self.globalRect
+        left_x = x + (width * 0.2)
+        right_x = x + (width * 0.8)
+        start_y = stop_y = y + (height // 2)
 
         if direction == 'right':
-            self.pointing_device.drag(tx, ty, w, ty)
+            start_x = left_x
+            stop_x = right_x
+            self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
         elif direction == 'left':
-            self.pointing_device.drag(w - (w*0.1), ty, x, ty)
+            start_x = right_x
+            stop_x = left_x
+            self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
         else:
             raise _common.ToolkitException(
                 'Invalid direction "{0}" used on swipe to delete function'
