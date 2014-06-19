@@ -18,7 +18,6 @@ import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.1
-import TestExtras 1.0
 
 Item {
     id: testMain
@@ -68,6 +67,43 @@ Item {
             verify(cursor, "Cursor not accessible, FAIL");
             verify(cursor.caret, "No caret is set");
             compare(cursor.caret.visible, true, "Caret is not visible")
+        }
+
+        function test_do_not_activate_on_pressed_data() {
+            return [
+                {tag: "TextField", input: textField},
+                {tag: "TextArea", input: textArea},
+            ];
+        }
+        function test_do_not_activate_on_pressed(data) {
+            TestExtras.touchPress(0, data.input, centerOf(data.input));
+            compare(data.input.focus, false, "Input must not be focused on press");
+            // cleanup
+            TestExtras.touchRelease(0, data.input, centerOf(data.input));
+        }
+
+        function test_activate_on_released_data() {
+            return [
+                {tag: "TextField", input: textField},
+                {tag: "TextArea", input: textArea},
+            ];
+        }
+        function test_activate_on_released(data) {
+            TestExtras.touchClick(0, data.input, centerOf(data.input));
+            compare(data.input.focus, true, "Input must be focused on release");
+        }
+
+        function test_select_text_on_doubletap_data() {
+            return [
+                {tag: "TextField", input: textField},
+                {tag: "TextArea", input: textArea},
+            ];
+        }
+        function test_select_text_on_doubletap(data) {
+            data.input.focus = true;
+            TestExtras.touchDoubleClick(0, data.input, Qt.point(units.gu(1), units.gu(1)));
+            waitForRendering(data.input);
+            verify(data.input.selectedText !== "", "No text selected!");
         }
     }
 }
