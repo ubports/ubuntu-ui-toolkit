@@ -18,7 +18,7 @@ import QtQuick 2.0
 import Ubuntu.Components 1.1
 
 Template {
-    objectName: "tweaksTemplate"
+    objectName: "stylesTemplate"
 
     Label {
         anchors.left: parent.left

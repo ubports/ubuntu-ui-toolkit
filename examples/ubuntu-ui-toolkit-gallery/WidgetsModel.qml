@@ -24,9 +24,9 @@ ListModel {
         source: "Navigation.qml"
     }
     ListElement {
-        objectName: "tweaksElement"
-        label: "Tweaks"
-        source: "Tweaks.qml"
+        objectName: "stylesElement"
+        label: "Styles"
+        source: "Styles.qml"
     }
 
     ListElement {
