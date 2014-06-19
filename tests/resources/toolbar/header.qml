@@ -182,6 +182,30 @@ MainView {
                                 placeholderText: "search..."
                             }
                         }
+//                        State {
+//                            id: headerState
+//                            name: "search"
+//                            property Action back: Action {
+//                                id: leaveSearchAction
+//                                text: "back"
+//                                iconName: "back"
+//                                onTriggered: searchPage.state = ""
+//                            }
+//                            property list<Action> actions: [
+//                                Action {
+//                                    iconName: "contact"
+//                                }
+//                            ]
+//                            property TextField input: TextField {
+//                                placeholderText: "search..."
+//                            }
+//                            PropertyChanges {
+//                                target: searchPage.head
+//                                backAction: headerState.back
+//                                actions: headerState.actions
+//                                input: headerState.input
+//                            }
+//                        }
                     ]
                 }
             }
