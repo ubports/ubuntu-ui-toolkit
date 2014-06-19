@@ -9,7 +9,7 @@
 
     \l MainView provides a header for Pages it includes.
     The text and actions of the header are determined by the \l title
-    and \l header.actions properties of the page:
+    and \l head.actions properties of the page:
 
     \qml
         import QtQuick 2.0
@@ -27,7 +27,7 @@
                     text: i18n.tr("Hello world!")
                 }
 
-                header.actions: [
+                head.actions: [
                     Action {
                         iconName: "search"
                         text: i18n.tr("Search")
