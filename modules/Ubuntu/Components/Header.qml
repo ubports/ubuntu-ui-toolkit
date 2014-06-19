@@ -39,8 +39,6 @@ AppHeader {
     }
 
     // Deprecated properties
-    // TODO: add contents here and remove from AppHeader
-    //  after adding contents override to HeaderConfiguration
 
     /*!
       \deprecated
