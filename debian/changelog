@@ -1,3 +1,13 @@
+ubuntu-ui-toolkit (0.1.47+14.10.20140619-0ubuntu1) utopic; urgency=low
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+  [ Timo Jyrinki ]
+  * Fix empty toolbar bug with Qt 5.3.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 19 Jun 2014 06:55:24 +0000
+
 ubuntu-ui-toolkit (0.1.47+14.10.20140618-0ubuntu1) utopic; urgency=medium
 
   [Leo Arias ]
