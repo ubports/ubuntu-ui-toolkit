@@ -79,7 +79,6 @@ StyledItem {
 
     /*!
       The contents of the header. If this is set, \l title will be ignored.
-      TODO TIM: DEPRECATE
      */
     property Item contents: null
     onContentsChanged: {
@@ -135,10 +134,6 @@ StyledItem {
 
     QtObject {
         id: internal
-
-        property alias customBackAction: header.__customBackAction
-        onBackActionChanged: print("WARNING: Header.__customBackAction is "+
-                                "DEPRECATED. Use header config instead.")
 
         /*!
           Track the y-position inside the flickable.
