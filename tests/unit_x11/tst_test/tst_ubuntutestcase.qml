@@ -25,15 +25,6 @@ Rectangle {
 
  Column {
      anchors.fill: parent
-     MultiPointTouchArea {
-         id: touchArea
-         width: parent.width
-         height: 100
-         touchPoints: TouchPoint {
-             id: point
-         }
-     }
-
      MouseArea {
         id: mouseArea
         objectName: "myMouseArea"
@@ -51,6 +42,15 @@ Rectangle {
            steps++;
         }
      }
+     MultiPointTouchArea {
+         id: touchArea
+         width: parent.width
+         height: 100
+         touchPoints: TouchPoint {
+             id: point
+         }
+     }
+
      Flickable {
          id: flicker
          width: parent.width
