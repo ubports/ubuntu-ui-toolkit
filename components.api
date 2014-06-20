@@ -3,6 +3,7 @@ ActionItem
     signal clicked()
     signal pressAndHold()
     property bool pressed
+    property color strokeColor
     property bool hovered
     property bool __acceptEvents
     property internal __mouseArea

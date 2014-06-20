@@ -65,6 +65,11 @@ ActionItem {
     property bool pressed: mouseArea.pressed
 
     /*!
+      If set to a color, the button has a stroke border instead of a filled shape.
+     */
+    property color strokeColor: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+
+    /*!
       True if the mouse cursor hovers over the button's mouse area.
      */
     property bool hovered: __acceptEvents && mouseArea.containsMouse
