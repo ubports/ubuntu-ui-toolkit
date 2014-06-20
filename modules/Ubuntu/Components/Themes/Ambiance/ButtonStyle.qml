@@ -129,8 +129,8 @@ Item {
     UbuntuShape {
         id: backgroundPressed
         anchors.fill: parent
-        color: background.color
-        gradientColor: background.gradientColor
+        color: stroke ? strokeColor : background.color
+        gradientColor: stroke ? strokeColor : background.gradientColor
         borderSource: "radius_pressed.sci"
         opacity: button.pressed ? 1.0 : 0.0
         Behavior on opacity {
@@ -139,7 +139,7 @@ Item {
                 easing.type: Easing.Linear
             }
         }
-        visible: background.visible
+        visible: stroke || background.visible
     }
 
     ButtonForeground {
@@ -153,7 +153,7 @@ Item {
         /* Pick either a clear or dark text color depending on the luminance of the
            background color to maintain good contrast (works in most cases)
         */
-        textColor: ColorUtils.luminance(button.color) <= 0.85 && !stroke ? "#F3F3E7" : "#888888"
+        textColor: ColorUtils.luminance(button.color) <= 0.85 && !(stroke && !pressed) ? "#F3F3E7" : "#888888"
         iconSource: button.iconSource
         iconPosition: button.iconPosition
         iconSize: units.gu(3)
