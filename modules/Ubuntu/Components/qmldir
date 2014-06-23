@@ -92,4 +92,4 @@ UbuntuListView 1.0 UbuntuListView.qml
 
 #version 1.1
 ComboButton 1.1 ComboButton.qml
-ProgressBar 1.1 ProgressBar.qml
+ProgressBar 1.1 ProgressBar11.qml
