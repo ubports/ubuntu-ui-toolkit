@@ -28,6 +28,13 @@ TestCase {
          compare(progressBar.indeterminate,newIndeterminated,"can set/get")
      }
 
+     function test_nolabel() {
+         compare(progressBar.showProgressPercentage,true,"is set by default")
+         var newShowProgressPercentage = false
+         progressBar.showProgressPercentage = newShowProgressPercentage
+         compare(progressBar.showProgressPercentage, newShowProgressPercentage,"can set/get")
+     }
+
      function test_maximumValue() {
          compare(progressBar.maximumValue,1.0,"is set to 1.0 by default")
          var newMaximumValue = 20.0
