@@ -264,7 +264,7 @@ Item {
                 caller: actionsOverflowButton
 
                 Connections {
-                    target: styledItem
+                    target: styledItem.config
                     onActionsChanged: {
                         // Ensure the popover closes when actions change and
                         // the list item below may be destroyed before its
