@@ -80,6 +80,12 @@ Item
     property string name
     property color color
     property color keyColor
+Icon 1.1
+Item
+    property string name
+    property url source
+    property color color
+    property color keyColor
 Label 0.1 1.0
 Text
     property string fontSize
