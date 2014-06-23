@@ -23,6 +23,11 @@ ListModel {
         label: "Navigation"
         source: "Navigation.qml"
     }
+    ListElement {
+        objectName: "stylesElement"
+        label: "Styles"
+        source: "Styles.qml"
+    }
 
     ListElement {
         objectName: "togglesElement"

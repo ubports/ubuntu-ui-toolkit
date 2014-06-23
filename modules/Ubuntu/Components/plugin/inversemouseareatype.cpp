@@ -276,7 +276,7 @@ void InverseMouseAreaType::updateEventFilter(bool enable)
   \internal
   Slot connected to enabledChanged signal to update the state of the handler.
  */
-void InverseMouseAreaType::updateArea()
+void InverseMouseAreaType::update()
 {
     if (!m_ready) {
         return;
@@ -286,6 +286,7 @@ void InverseMouseAreaType::updateArea()
         m_sensingArea = QuickUtils::instance().rootItem(this);
     }
     updateEventFilter(isEnabled() && isVisible() && m_topmostItem);
+    QQuickMouseArea::update();
 }
 /*!
   \internal
@@ -300,7 +301,7 @@ void InverseMouseAreaType::resetFilterOnWindowUpdate(QQuickWindow *win)
 void InverseMouseAreaType::itemChange(ItemChange change, const ItemChangeData &data)
 {
     if (change == ItemParentHasChanged && data.item) {
-        updateArea();
+        update();
     }
     QQuickMouseArea::itemChange(change, data);
 }
@@ -311,7 +312,7 @@ void InverseMouseAreaType::componentComplete()
     // by now the parents should have been resolved so we can look after the
     // topmost component for the sensingArea in case it has not been set yet
     m_ready = true;
-    updateArea();
+    update();
 }
 
 /*
