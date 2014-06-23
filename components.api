@@ -3,7 +3,6 @@ ActionItem
     signal clicked()
     signal pressAndHold()
     property bool pressed
-    property color strokeColor
     property bool hovered
     property bool __acceptEvents
     property internal __mouseArea
@@ -34,6 +33,9 @@ AbstractButton
     property Gradient gradient
     property font font
     property string iconPosition
+Button 1.1
+Button
+    property color strokeColor
 CheckBox 0.1 1.0
 AbstractButton
     property bool checked
