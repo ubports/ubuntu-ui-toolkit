@@ -28,7 +28,11 @@ TestCase {
          compare(progressBar.indeterminate,newIndeterminated,"can set/get")
      }
 
-     function test_nolabel() {
+     function test_showProgressPercentageExits() {
+         verify(progressBar.hasOwnProperty("showProgressPercentage"), "Property missing")
+     }
+
+     function test_noLabel() {
          compare(progressBar.showProgressPercentage,true,"is set by default")
          var newShowProgressPercentage = false
          progressBar.showProgressPercentage = newShowProgressPercentage
