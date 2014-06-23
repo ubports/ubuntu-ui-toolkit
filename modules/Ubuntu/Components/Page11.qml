@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*! \internal */
 // Documentation in Page11.qdoc
 Page10 {
     readonly property alias head: headerConfig
