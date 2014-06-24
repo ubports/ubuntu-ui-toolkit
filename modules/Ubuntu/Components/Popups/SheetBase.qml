@@ -19,15 +19,21 @@ import Ubuntu.Components 1.1
 
 /*!
     \qmltype SheetBase
+    \deprecated
     \inqmlmodule Ubuntu.Components.Popups 1.0
     \ingroup ubuntu-popups
     \brief Parent class of different types of sheets. Not to be used directly.
 
     Examples: See subclasses.
-    \b{This component is under heavy development.}
+    \b{Sheets are deprecated. Consider using \l Dialog, \l Popover or \l PageStack instead.}
 */
 PopupBase {
     id: sheet
+
+    Component.onCompleted: {
+        print("WARNING: Sheets are deprecated. " +
+              "Consider using Dialog, Popover or PageStack instead.")
+    }
 
     /*!
       \preliminary

@@ -19,6 +19,14 @@
 
 #include "filterbehavior.h"
 
+FilterBehavior::FilterBehavior(QObject *parent)
+    : QObject(parent)
+    , m_property(QString())
+    , m_pattern(QRegExp())
+{
+
+}
+
 QString
 FilterBehavior::property() const
 {

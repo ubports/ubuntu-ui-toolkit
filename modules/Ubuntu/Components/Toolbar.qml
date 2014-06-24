@@ -27,9 +27,9 @@ import QtQuick 2.0
 Panel {
     id: toolbar
     anchors {
-        left: parent.left
-        right: parent.right
-        bottom: parent.bottom
+        left: parent ? parent.left : undefined
+        right: parent ? parent.right : undefined
+        bottom: parent ? parent.bottom : undefined
     }
     height: background.height
 
@@ -107,8 +107,8 @@ Panel {
             if (internal.visibleTools !== toolbar.tools) {
                 if (internal.visibleTools) internal.visibleTools.parent = null;
                 internal.visibleTools = toolbar.tools;
-                if (internal.visibleTools) internal.visibleTools.parent = visibleToolsContainer;
             }
+            if (internal.visibleTools) internal.visibleTools.parent = visibleToolsContainer;
         }
     }
 

@@ -87,7 +87,7 @@ StyledItem {
       This property holds whether the scrollbar is active or passive. It is present
       for testing purposes.
     */
-    property bool __interactive: false
+    property bool __interactive: __styleInstance !== null && __styleInstance.interactive
 
     implicitWidth: internals.vertical ? units.gu(4) : flickableItem.width
     implicitHeight: !internals.vertical ? units.gu(4) : flickableItem.height
