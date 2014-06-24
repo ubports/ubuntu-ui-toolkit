@@ -470,9 +470,9 @@ PageTreeNode {
     Object {
         id: internal
 
-        // If this property is defined as type Page, even when importing Ubuntu.Components 1.0,
-        //  the type will be Page11, to which a Page10 cannot be asssigned.
-        property Page10 activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
+        // Even when using MainView 1.1, we still support Page 1.0.
+        // PageBase (=Page 1.0) is the superclass of Page 1.1.
+        property PageBase activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
 
         function isPage(item) {
             return item && item.hasOwnProperty("__isPageTreeNode") && item.__isPageTreeNode &&
