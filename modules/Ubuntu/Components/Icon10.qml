@@ -16,70 +16,11 @@
 
 import QtQuick 2.0
 
-/*!
-    \qmltype Icon
-    \inqmlmodule Ubuntu.Components 1.1
-    \ingroup ubuntu
-    \brief The Icon component displays an icon from the icon theme.
-
-    The icon theme contains a set of standard icons referred to by their name.
-    Using icons whenever possible enhances consistency accross applications.
-    Each icon has a name and can have different visual representations depending
-    on the size requested.
-
-    Icons can also be colorized. Setting the \l color property will make all pixels
-    with the \l keyColor (by default #808080) colored.
-
-    Example:
-    \qml
-    Icon {
-        width: 64
-        height: 64
-        name: "search"
-    }
-    \endqml
-
-    Example of colorization:
-    \qml
-    Icon {
-        width: 64
-        height: 64
-        name: "search"
-        color: UbuntuColors.warmGrey
-    }
-    \endqml
-
-    Icon themes are created following the
-    \l{http://standards.freedesktop.org/icon-theme-spec/icon-theme-spec-latest.html}{Freedesktop Icon Theme Specification}.
-*/
 Item {
     id: icon
 
-    /*!
-       The name of the icon to display.
-       \qmlproperty string name
-
-       \note The complete list of icons available in Ubuntu is not published yet.
-           For now please refer to the folders where the icon themes are installed:
-           \list
-             \li Ubuntu Touch: \l file:/usr/share/icons/ubuntu-mobile
-             \li Ubuntu Desktop: \l file:/usr/share/icons/ubuntu-mono-dark
-           \endlist
-           These 2 separate icon themes will be merged soon.
-    */
     property string name
-
-    /*!
-       The color that all pixels that originally are of color \l keyColor should take.
-       \qmlproperty color color
-    */
     property alias color: colorizedImage.keyColorOut
-
-    /*!
-       The color of the pixels that should be colorized.
-       By default it is set to #808080.
-       \qmlproperty color keyColor
-    */
     property alias keyColor: colorizedImage.keyColorIn
 
     Image {
