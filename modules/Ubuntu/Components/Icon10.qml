@@ -16,12 +16,19 @@
 
 import QtQuick 2.0
 
-/*! \internal */
 Item {
     id: icon
 
     property string name
+
+    /*!
+       \qmlproperty color color
+    */
     property alias color: colorizedImage.keyColorOut
+
+    /*!
+       \qmlproperty color keyColor
+    */
     property alias keyColor: colorizedImage.keyColorIn
 
     Image {
