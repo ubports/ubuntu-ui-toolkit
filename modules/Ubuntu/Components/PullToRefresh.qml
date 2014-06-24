@@ -90,6 +90,7 @@ import Ubuntu.Components 1.1
         Page {
             title: "Reuters"
             ListView {
+                id: view
                 anchors.fill: parent
                 model: XmlListModel {
                     source: "http://feeds.reuters.com/reuters/topNews"
@@ -102,11 +103,12 @@ import Ubuntu.Components 1.1
                     text: title
                 }
                 PullToRefresh {
-                    refreshing: model.status === XmlListModel.Loading
-                    onRefresh: model.reload()
-                    contentItem: Item {
+                    id: pullToRefresh
+                    refreshing: view.model.status === XmlListModel.Loading
+                    onRefresh: view.model.reload()
+                    content: Item {
                         Icon {
-                            name: releaseToRefresh ? "search" : ""
+                            name: pullToRefresh.releaseToRefresh ? "search" : ""
                             height: parent.height
                             width: height
                             anchors.horizontalCenter: parent.horizontalCenter
@@ -127,7 +129,7 @@ import Ubuntu.Components 1.1
     import Ubuntu.Components.ListItems 1.0
 
     MainView {
-    id: main
+        id: main
         width: units.gu(40)
         height: units.gu(71)
 
@@ -181,6 +183,10 @@ StyledItem {
       */
     readonly property bool releaseToRefresh: __styleInstance.manualRefresh
 
+    /*!
+      */
+    readonly property real offset: -(target.topMargin - (y + height))
+    onOffsetChanged: print(offset)
     /*!
       The property holds the visuals to be displayed when the component is revealed
       upon manual refresh. The default value is a Label showing "Pull to refresh..."
