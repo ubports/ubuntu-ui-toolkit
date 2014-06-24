@@ -101,7 +101,7 @@ Item {
             var cursor = findChild(data.input, "textCursor");
             verify(cursor, "Cursor not accessible, FAIL");
             verify(cursor.caret, "No caret is set");
-            compare(cursor.caret.visible, true, "Caret is not visible")
+            compare(cursor.caret.visible, true, "Caret is not visible");
         }
 
         function test_do_not_activate_on_pressed_data() {

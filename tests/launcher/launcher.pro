@@ -6,7 +6,8 @@ CONFIG += no_keywords
 HEADERS += MouseTouchAdaptor.h
 SOURCES += launcher.cpp \
     MouseTouchAdaptor.cpp
-launcher.path = /usr/lib/ubuntu-ui-toolkit
+installPath = $$[QT_INSTALL_LIBS]/ubuntu-ui-toolkit
+launcher.path = $$installPath
 launcher.files = launcher
 INSTALLS += launcher
 
