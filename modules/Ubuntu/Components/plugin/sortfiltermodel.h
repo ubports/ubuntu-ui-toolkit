@@ -31,14 +31,14 @@ class Q_DECL_EXPORT QSortFilterProxyModelQML : public QSortFilterProxyModel
 
     Q_PROPERTY(QAbstractItemModel* model READ sourceModel WRITE setModel NOTIFY modelChanged)
     Q_PROPERTY(int count READ count NOTIFY countChanged)
-    Q_PROPERTY(SortBehavior* sort READ sortBehavior)
-    Q_PROPERTY(FilterBehavior* filter READ filterBehavior)
+    Q_PROPERTY(SortBehavior* sort READ sortBehavior NOTIFY sortChanged)
+    Q_PROPERTY(FilterBehavior* filter READ filterBehavior NOTIFY filterChanged)
 
 public:
     explicit QSortFilterProxyModelQML(QObject *parent = 0);
 
     Q_INVOKABLE QVariantMap get(int row);
-    Q_INVOKABLE QVariant data(int row, int role);
+    QVariant data(int row, int role);
     Q_INVOKABLE int count();
     virtual bool filterAcceptsRow(int sourceRow, const QModelIndex &sourceParent) const;
 
@@ -52,14 +52,16 @@ public:
 Q_SIGNALS:
     void countChanged();
     void modelChanged();
+    void sortChanged();
+    void filterChanged();
 
 private:
     SortBehavior m_sortBehavior;
     SortBehavior* sortBehavior();
-    void sortChanged();
+    void sortChangedInternal();
     FilterBehavior m_filterBehavior;
     FilterBehavior* filterBehavior();
-    void filterChanged();
+    void filterChangedInternal();
     int roleByName(const QString& roleName) const;
 };
 
