@@ -55,6 +55,8 @@
    The name of the icon to display.
    \qmlproperty string Icon::name
 
+   If both name and source are set, name will be ignored.
+
    \note The complete list of icons available in Ubuntu is not published yet.
        For now please refer to the folders where the icon themes are installed:
        \list
@@ -65,7 +67,10 @@
 */
 
 /*!
-   The source url of the icon to display.
+   The source url of the icon to display. It has precedence over name.
+
+   If both name and source are set, name will be ignored.
+
    \since Ubuntu.Components 1.1
    \qmlproperty url Icon::source
 */

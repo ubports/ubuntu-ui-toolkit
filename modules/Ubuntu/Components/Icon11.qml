@@ -20,7 +20,7 @@ Item {
     id: icon
 
     property string name
-    property url source
+    property url source: name ? "image://theme/%1".arg(name) : ""
     property alias color: colorizedImage.keyColorOut
     property alias keyColor: colorizedImage.keyColorIn
 
@@ -32,7 +32,7 @@ Item {
         Component.onCompleted: ready = true
 
         anchors.fill: parent
-        source: ready && width > 0 && height > 0 ? (icon.source || (icon.name ? "image://theme/%1".arg(icon.name) : "")) : ""
+        source: ready && width > 0 && height > 0 ? icon.source : ""
         sourceSize {
             width: width
             height: height
