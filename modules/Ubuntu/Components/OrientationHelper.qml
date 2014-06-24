@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.2
 import QtQuick.Window 2.0
 import Ubuntu.Components 1.0
 
@@ -136,6 +136,17 @@ Item {
                     target: orientationHelper
                     rotation: 0
                 }
+                StateChangeScript {
+                    name: "anchorsScript"
+                    script: {
+                        orientationHelper.anchors.fill = null;
+                        orientationHelper.anchors.leftMargin = 0;
+                        orientationHelper.anchors.rightMargin = 0;
+                        orientationHelper.anchors.topMargin = 0;
+                        orientationHelper.anchors.bottomMargin = 0;
+                        orientationHelper.anchors.fill = orientationHelper.parent;
+                    }
+                }
             },
             State {
                 name: "180"
@@ -143,17 +154,33 @@ Item {
                     target: orientationHelper
                     rotation: 180
                 }
+                StateChangeScript {
+                    name: "anchorsScript"
+                    script: {
+                        orientationHelper.anchors.fill = null;
+                        orientationHelper.anchors.leftMargin = 0;
+                        orientationHelper.anchors.rightMargin = 0;
+                        orientationHelper.anchors.topMargin = 0;
+                        orientationHelper.anchors.bottomMargin = 0;
+                        orientationHelper.anchors.fill = orientationHelper.parent;
+                    }
+                }
             },
             State {
                 name: "270"
                 PropertyChanges {
                     target: orientationHelper
                     rotation: 270
-                    anchors {
-                        leftMargin: (parent.width - parent.height) / 2
-                        rightMargin: anchors.leftMargin
-                        topMargin: -anchors.leftMargin
-                        bottomMargin: anchors.topMargin
+                }
+                StateChangeScript {
+                    name: "anchorsScript"
+                    script: {
+                        orientationHelper.anchors.fill = null;
+                        orientationHelper.anchors.topMargin = Qt.binding(function() {return -(parent.width - parent.height) / 2});
+                        orientationHelper.anchors.bottomMargin = Qt.binding(function() {return -(parent.width - parent.height) / 2});
+                        orientationHelper.anchors.leftMargin = Qt.binding(function() {return (parent.width - parent.height) / 2});
+                        orientationHelper.anchors.rightMargin = Qt.binding(function() {return (parent.width - parent.height) / 2});
+                        orientationHelper.anchors.fill = orientationHelper.parent;
                     }
                 }
             },
@@ -162,11 +189,16 @@ Item {
                 PropertyChanges {
                     target: orientationHelper
                     rotation: 90
-                    anchors {
-                        leftMargin: (parent.width - parent.height) / 2
-                        rightMargin: anchors.leftMargin
-                        topMargin: -anchors.leftMargin
-                        bottomMargin: anchors.topMargin
+                }
+                StateChangeScript {
+                    name: "anchorsScript"
+                    script: {
+                        orientationHelper.anchors.fill = null;
+                        orientationHelper.anchors.topMargin = Qt.binding(function() {return -(parent.width - parent.height) / 2});
+                        orientationHelper.anchors.bottomMargin = Qt.binding(function() {return -(parent.width - parent.height) / 2});
+                        orientationHelper.anchors.leftMargin = Qt.binding(function() {return (parent.width - parent.height) / 2});
+                        orientationHelper.anchors.rightMargin = Qt.binding(function() {return (parent.width - parent.height) / 2});
+                        orientationHelper.anchors.fill = orientationHelper.parent;
                     }
                 }
             }
@@ -176,18 +208,20 @@ Item {
             Transition {
                 id: orientationTransition
                 ParallelAnimation {
-                    SequentialAnimation {
-                        PauseAnimation {
-                            duration: 25
-                        }
-                        PropertyAction {
-                            target: orientationHelper
-                            properties: "anchors.topMargin,anchors.bottomMargin,anchors.rightMargin,anchors.leftMargin"
-                        }
+                    /* FIXME: this is a workaround for 2 issues that trigger too many changes
+                              to the width and height of orientationHelper which creates intermediary
+                              states of the UI with unexpected sizes:
+                        1) upon state change fast-forwarding is used which means that the final values are computed and applied
+                          then immediately reverted before the actual transition is applied
+                        2) when margins are applied, width and height are updated separately
+
+                        Without these issues, regular PropertyChanges could be used to set the margins.
+                    */
+                    ScriptAction {
+                        scriptName: "anchorsScript"
                     }
-                    RotationAnimation {
+                    RotationAnimator {
                         target: orientationHelper
-                        properties: "rotation"
                         duration: UbuntuAnimation.FastDuration
                         easing: UbuntuAnimation.StandardEasing
                         direction: RotationAnimation.Shortest

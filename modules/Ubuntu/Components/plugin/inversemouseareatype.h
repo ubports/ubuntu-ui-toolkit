@@ -53,7 +53,7 @@ Q_SIGNALS:
     void topmostItemChanged();
 
 private Q_SLOTS:
-    void updateArea();
+    void update();
     void resetFilterOnWindowUpdate(QQuickWindow *win);
     
 private:

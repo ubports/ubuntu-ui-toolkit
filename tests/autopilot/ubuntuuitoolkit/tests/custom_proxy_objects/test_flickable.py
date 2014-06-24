@@ -15,6 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import subprocess
 
 import testtools
 import ubuntuuitoolkit
@@ -206,8 +207,11 @@ MainView {
         if os.path.exists(path_to_local_launcher):
             return path_to_local_launcher
         else:
+            arch = subprocess.check_output(
+                ["dpkg-architecture", "-qDEB_HOST_MULTIARCH"],
+                universal_newlines=True).strip()
             path_to_installed_launcher = os.path.join(
-                '/', 'usr', 'lib', 'ubuntu-ui-toolkit', 'launcher')
+                '/', 'usr', 'lib', arch, 'ubuntu-ui-toolkit', 'launcher')
         return path_to_installed_launcher
 
     def test_get_unity_top_container(self):

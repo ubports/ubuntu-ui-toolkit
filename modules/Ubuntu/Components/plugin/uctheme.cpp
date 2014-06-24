@@ -21,6 +21,7 @@
 #include "listener.h"
 #include "quickutils.h"
 #include "i18n.h"
+#include "ucfontutils.h"
 
 #include <QtQml/qqml.h>
 #include <QtQml/qqmlinfo.h>
@@ -32,6 +33,8 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QLibraryInfo>
 #include <QtCore/QStandardPaths>
+#include <QtGui/QGuiApplication>
+#include <QtGui/QFont>
 
 /*!
     \qmltype Theme
@@ -114,6 +117,13 @@ UCTheme::UCTheme(QObject *parent) :
 
     QObject::connect(this, SIGNAL(nameChanged()),
                      this, SLOT(loadPalette()), Qt::UniqueConnection);
+
+    // set the default font
+    QFont defaultFont;
+    defaultFont.setFamily("Ubuntu");
+    defaultFont.setPixelSize(UCFontUtils::instance().sizeToPixels("medium"));
+    defaultFont.setWeight(QFont::Light);
+    QGuiApplication::setFont(defaultFont);
 }
 
 void UCTheme::updateEnginePaths()
