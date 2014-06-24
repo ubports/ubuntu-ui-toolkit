@@ -68,7 +68,7 @@ Item {
     }
 
     UbuntuTestCase {
-        name: "TextInputCaretTest"
+        name: "TextInputCommonTest"
         when: windowShown
 
         function init() {
@@ -307,7 +307,7 @@ Item {
             ];
         }
         function test_no_caret_when_no_touchscreen(data) {
-            if (TextExtras.touchDevicePresent()) {
+            if (TestExtras.touchDevicePresent()) {
                 skip("This test cannot be executed in touch environment");
             }
 
@@ -318,6 +318,22 @@ Item {
             verify(cursor, "Cursor not accessible, FAIL");
             verify(cursor.caret, "No caret is set");
             compare(cursor.caret.visible, false, "Caret must not be visible!");
+        }
+
+        function test_select_text_with_double_click_data() {
+            return [
+                {tag: "TextField", input: textField},
+                {tag: "TextArea", input: textArea},
+            ];
+        }
+        function test_select_text_with_double_click(data) {
+            data.input.focus = true;
+            waitForRendering(data.input, 500);
+
+            mouseDoubleClick(data.input, units.gu(1), units.gu(1));
+            waitForRendering(data.input, 500);
+            expectFail(data.tag, "mouseDoubleClick() fails to trigger")
+            verify(data.input.selectedText != "", "No text selected.");
         }
     }
 }

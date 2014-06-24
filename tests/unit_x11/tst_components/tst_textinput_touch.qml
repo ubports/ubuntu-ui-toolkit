@@ -37,7 +37,9 @@ Item {
         Flickable {
             id: outerFlicker
             width: parent.width
-            height: contentHeight
+            height: units.gu(40)
+            clip: true
+            contentWidth: autoSizeTextArea.width
             contentHeight: autoSizeTextArea.height
             TextArea {
                 id: autoSizeTextArea
@@ -263,17 +265,19 @@ Item {
             compare(selectedText, data.input.selectedText, "Text selection differs!");
         }
 
-        function test_z_drag_autosizing_textarea_drags_parent_flickable_data() {
+        function test_0_drag_autosizing_textarea_drags_parent_flickable_data() {
             return [
                 {tag: "when inactive", focused: false },
                 {tag: "when active", focused: true },
             ];
         }
-        function test_z_drag_autosizing_textarea_drags_parent_flickable(data) {
+        function test_0_drag_autosizing_textarea_drags_parent_flickable(data) {
             flickerSpy.target = outerFlicker;
             autoSizeTextArea.focus = data.focused;
             var editor = findChild(autoSizeTextArea, "text_input");
+            wait(5000)
             TestExtras.touchDrag(0, editor, guPoint(0, 0), guPoint(0, 40));
+            wait(5000)
             flickerSpy.wait();
         }
     }
