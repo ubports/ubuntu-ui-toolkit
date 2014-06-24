@@ -233,6 +233,13 @@ MultiPointTouchArea {
 
     Component.onCompleted: {
         state = (main.focus) ? "" : "inactive";
+        // FIXME: Qt5.3 related! mouseEnabled is a 5.3 related property which has a positive
+        // default value. That value messes up teh current understanding (5.2) of the
+        // MultiPointTouchArea functioning. We need to set it to false until 5.3 will be the
+        // default supported Qt version, when we can have a clean property value assignment
+        if (inputHandler.hasOwnProperty("mouseEnabled")) {
+            inputHandler.mouseEnabled = false;
+        }
     }
 
     // states
