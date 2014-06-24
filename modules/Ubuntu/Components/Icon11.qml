@@ -26,6 +26,7 @@ Item {
 
     Image {
         id: image
+        objectName: "image"
 
         /* Necessary so that icons are not loaded before a size is set. */
         property bool ready: false
