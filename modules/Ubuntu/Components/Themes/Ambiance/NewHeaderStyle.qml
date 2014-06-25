@@ -187,7 +187,7 @@ Item {
             // when the bindings below is no longer active
             id: contentsContainer
             anchors.fill: parent
-            visible: styledItem.contents || styledItem.config.input
+            visible: styledItem.contents || styledItem.config.contents
         }
         Binding {
             target: styledItem.contents
@@ -202,24 +202,24 @@ Item {
             when: styledItem.contents
         }
         Binding {
-            target: styledItem.config.input
+            target: styledItem.config.contents
             property: "parent"
             value: contentsContainer
-            when: styledItem.config.input && !styledItem.contents
+            when: styledItem.config.contents && !styledItem.contents
         }
         Binding {
-            target: styledItem.config.input
+            target: styledItem.config.contents
             property: "anchors.verticalCenter"
             value: contentsContainer.verticalCenter
-            when: styledItem.config.input &&
-                  styledItem.config.input.parent === contentsContainer
+            when: styledItem.config.contents &&
+                  styledItem.config.contents.parent === contentsContainer
         }
         Binding {
-            target: styledItem.config.input
+            target: styledItem.config.contents
             property: "anchors.left"
             value: contentsContainer.left
-            when: styledItem.config.input &&
-                  styledItem.config.input.parent === contentsContainer
+            when: styledItem.config.contents &&
+                  styledItem.config.contents.parent === contentsContainer
         }
     }
 

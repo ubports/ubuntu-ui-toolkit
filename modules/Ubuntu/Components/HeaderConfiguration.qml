@@ -26,5 +26,5 @@ QtObject {
 
     property list<Action> actions
     property Action backAction: null
-    property TextField input: null
+    property Item contents: null
 }

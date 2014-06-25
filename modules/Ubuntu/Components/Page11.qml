@@ -23,8 +23,5 @@ Page10 {
     readonly property alias head: headerConfig
     HeaderConfiguration {
         id: headerConfig
-
-        // TODO document in Page.qdoc
-        property TextField input //: page.__propagated.header.input
-    }
+   }
 }

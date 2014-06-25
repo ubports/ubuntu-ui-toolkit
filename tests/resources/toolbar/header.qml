@@ -187,7 +187,7 @@ MainView {
                                 target: searchPage.head
                                 backAction: headerState.back
                                 actions: headerState.actions
-                                input: headerState.input
+                                contents: headerState.input
                             }
                         }
                     ]
