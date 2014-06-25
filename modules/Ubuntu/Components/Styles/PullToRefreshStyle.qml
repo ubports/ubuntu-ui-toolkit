@@ -27,6 +27,12 @@ import QtQuick 2.2
 
 Item {
     /*!
+      The property holds the style provided default content component. The value
+      is assigned to the \l PullToRefresh::content property.
+      */
+    property Component defaultContent
+
+    /*!
       The property holds the threshold value when the component should enter
       into \a ready-to-refresh state when dragged manually. The default value
       is the height of the component styled.

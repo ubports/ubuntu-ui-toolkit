@@ -24,37 +24,88 @@ MainView {
     width: units.gu(40)
     height: units.gu(71)
 
-    Page {
-        id: page
-        title: "Design"
-        UbuntuListView {
-            id: view
-            anchors.fill: parent
-            pullToRefresh {
-                objectName: "XmlList"
-                enabled: page.active
-                refreshing: model.status === XmlListModel.Loading
-                onRefresh: model.reload()
-                contentItem: Item {
-                    Icon {
-                        name: view.pullToRefresh.releaseToRefresh ? "search" : ""
-                        height: parent.height
-                        width: height
-                        anchors.horizontalCenter: parent.horizontalCenter
+    PageStack {
+        id: stack;
+        Component.onCompleted: push(page2Holder)
+    }
+
+    Component {
+        id: page1Holder
+        Page {
+            id: page
+            title: "Design"
+            ListView {
+                id: view
+                anchors.fill: parent
+//                PullToRefresh {
+//                    id: pullToRefresh
+//                    objectName: "XmlList"
+//                    enabled: page.active
+//                    refreshing: view.model.status === XmlListModel.Loading
+//                    onRefresh: view.model.reload()
+//                    content: Item {
+//                        Icon {
+//                            name: pullToRefresh.releaseToRefresh ? "search" : ""
+//                            height: parent.height
+//                            width: height
+//                            anchors.horizontalCenter: parent.horizontalCenter
+//                        }
+//                    }
+//                }
+                model: XmlListModel {
+                    source: "http://design.canonical.com/feed/"
+                    query: "/rss/channel/item"
+                    XmlRole { name: "title"; query: "title/string()" }
+                }
+                delegate: ListItem.Standard {
+                    width: ListView.view.width
+                    height: units.gu(5)
+                    text: modelData
+                    onClicked: {
+                        stack.push(page2Holder)
                     }
                 }
             }
-            model: XmlListModel {
-                source: "http://design.canonical.com/feed/"
-                query: "/rss/channel/item"
-                XmlRole { name: "title"; query: "title/string()" }
-            }
-            delegate: ListItem.Standard {
-                width: ListView.view.width
-                height: units.gu(5)
-                text: modelData
-                onClicked: {
-                    ListView.view.model.reload();
+        }
+    }
+
+
+    Component {
+        id: page2Holder
+        Page {
+            id: page2
+            title: "Design - Flickable"
+            Flickable {
+                id: view2
+                anchors.fill: parent
+                contentWidth: content.width
+                contentHeight: content.childrenRect.height
+                PullToRefresh {
+                    parent: view2
+                    id: refresh2
+                    refreshing: repeater.model.status === XmlListModel.Loading
+                    onRefresh: repeater.model.reload()
+                }
+
+                Column {
+                    id: content
+                    width: parent.width
+                    Repeater {
+                        id: repeater
+                        model: XmlListModel {
+                            source: "http://design.canonical.com/feed/"
+                            query: "/rss/channel/item"
+                            XmlRole { name: "title"; query: "title/string()" }
+                        }
+                        ListItem.Standard {
+                            width: view2.width
+                            height: units.gu(5)
+                            text: modelData
+                            onClicked: {
+                                stack.push(page1Holder)
+                            }
+                        }
+                    }
                 }
             }
         }

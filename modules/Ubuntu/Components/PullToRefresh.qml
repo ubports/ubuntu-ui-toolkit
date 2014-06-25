@@ -184,37 +184,19 @@ StyledItem {
     readonly property bool releaseToRefresh: __styleInstance.manualRefresh
 
     /*!
+      The property holds the offset the component is pulled from the \l target
+      Flickable's \a topMargin. The property can be used to provide animations
+      in custom contents.
       */
     readonly property real offset: -(target.topMargin - (y + height))
-    onOffsetChanged: print(offset)
+
     /*!
       The property holds the visuals to be displayed when the component is revealed
       upon manual refresh. The default value is a Label showing "Pull to refresh..."
       text when the component is pulled down till the activation threshold, and
       "Release to refresh..." after that.
       */
-    property Component contentItem: Label {
-        id: label
-        text: releaseToRefresh ? i18n.tr("Release to refresh...") : i18n.tr("Pull to refresh...")
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        Behavior on text {
-            SequentialAnimation {
-                UbuntuNumberAnimation {
-                    target: label
-                    property: "opacity"
-                    from: 1.0
-                    to: 0.0
-                }
-                UbuntuNumberAnimation {
-                    target: label
-                    property: "opacity"
-                    from: 0.0
-                    to: 1.0
-                }
-            }
-        }
-    }
+    property Component content: __styleInstance.defaultContent
 
     /*!
       The Flickable or derivate the component is attached to. This can only be

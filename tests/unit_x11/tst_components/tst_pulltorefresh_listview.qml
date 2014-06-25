@@ -64,6 +64,12 @@ Item {
             target: refresh.__styleInstance
         }
 
+        SignalSpy {
+            id: releaseToRefreshSpy
+            signalName: "releaseToRefreshChanged"
+            target: refresh
+        }
+
         function init() {
             listView.positionViewAtIndex(0, ListView.Beginning)
         }
@@ -72,15 +78,19 @@ Item {
             // wait till refresh returns to idle
             tryCompareFunction(function() {return refresh.__styleInstance.state}, "idle", 1000);
             stateSpy.clear();
+            releaseToRefreshSpy.clear();
         }
 
         function test_0_api_defaults() {
             compare(refresh.target, listView, "The target must be the parent or sibling");
-            compare(refresh.pullText, i18n.tr("Pull to refresh..."), "Default pull text differs");
-            compare(refresh.releaseText, i18n.tr("Release to refresh..."), "Default pull text differs");
+            compare(refresh.offset, 0, "The component should be at offset 0");
+            compare(refresh.releaseToRefresh, false, "The component must be inactive");
+            verify(refresh.content !== null, "Default content");
             compare(refresh.refreshing, false, "The component is not refreshing");
+            verify(refresh.hasOwnProperty("refreshing"), "No refreshing signal defined");
             // style check
             verify(refresh.__styleInstance.hasOwnProperty("activationThreshold"), "Wrong style used, has no activationThreshold defined");
+            verify(refresh.__styleInstance.hasOwnProperty("manualRefresh"), "Wrong style used, has no manualRefresh defined");
         }
 
         function test_pull_data() {
@@ -90,7 +100,6 @@ Item {
                 {tag: "refresh", height: 4 * h, xfail: false},
             ];
         }
-
         function test_pull(data) {
             var x = listView.width / 2;
             var y = units.gu(5);
@@ -99,7 +108,7 @@ Item {
             if (data.xfail) {
                 expectFailContinue(data.tag, "No refresh should be triggered");
             }
-            stateSpy.wait(500);
+            releaseToRefreshSpy.wait(500);
             if (data.xfail) {
                 expectFailContinue(data.tag, "No refresh should be triggered");
             }
@@ -117,7 +126,7 @@ Item {
             listView.positionViewAtIndex(10, ListView.Beginning)
 
             completeRefresh.restart();
-            expectFailContinue("no refresh when not on top", "")
+            expectFailContinue("no refresh when not on top", "");
             stateSpy.wait(500);
             compare(refresh.__styleInstance.state, "", "Not refreshing!");
         }

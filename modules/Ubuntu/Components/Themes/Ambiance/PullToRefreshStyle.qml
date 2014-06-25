@@ -22,13 +22,38 @@ Style.PullToRefreshStyle {
     id: style
     implicitHeight: refreshIndicatorItem.height + units.gu(5)
 
+    defaultContent: Label {
+        id: label
+        text: manualRefresh ? i18n.tr("Release to refresh...") : i18n.tr("Pull to refresh...")
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        Behavior on text {
+            SequentialAnimation {
+                UbuntuNumberAnimation {
+                    target: label
+                    property: "opacity"
+                    from: 1.0
+                    to: 0.0
+                }
+                UbuntuNumberAnimation {
+                    target: label
+                    property: "opacity"
+                    from: 0.0
+                    to: 1.0
+                }
+            }
+        }
+    }
+
     // additional configuration properties provided by the Ambiance theme
     // these properties can be used by the deriving themes to configure the label
     // and the activity indicator
     property Item label: contentLoader.item
     property alias refreshIndicator: refreshIndicatorItem
 
-    // local properties
+    /*
+      Local properties
+      */
     readonly property PullToRefresh control: styledItem
     // property to store Flickable's toipMargin at the time the pull or auto-refresh is started
     property real flickableTopMargin: 0.0
@@ -58,7 +83,7 @@ Style.PullToRefreshStyle {
     Loader {
         id: contentLoader
         anchors.fill: parent
-        sourceComponent: control.contentItem
+        sourceComponent: control.content
     }
 
     ActivityIndicator {
