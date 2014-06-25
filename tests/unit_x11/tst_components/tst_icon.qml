@@ -38,7 +38,7 @@ Item {
         function test_name() {
             icon.name = "foo";
 
-            image = findChild(icon, "image");
+            var image = findChild(icon, "image");
             compare(image.source, "image://theme/foo", "Source of the image should be image://theme/{name}.");
         }
 
@@ -46,7 +46,7 @@ Item {
             icon.name = "foo";
             icon.source = "file://foo/bar";
 
-            image = findChild(icon, "image");
+            var image = findChild(icon, "image");
             compare(image.source, "file://foo/bar", "Source of the image should equal icon.source.");
         }
     }
