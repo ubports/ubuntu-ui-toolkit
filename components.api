@@ -31,6 +31,7 @@ Button 0.1 1.0
 AbstractButton
     property color color
     property Gradient gradient
+    property font font
     property string iconPosition
 CheckBox 0.1 1.0
 AbstractButton
@@ -94,7 +95,7 @@ Empty
     property real __leftIconMargin
     property real __rightIconMargin
     property bool __iconIsItem
-    property internal children
+    default property internal children
 Caption 0.1 1.0
 Item
     property string text
@@ -140,6 +141,7 @@ ListItem.Empty
     property bool expanded
     property bool multiSelection
     property bool colourImage
+    property Component delegate
     property real containerHeight
     property int selectedIndex
     property bool currentlyExpanded
@@ -175,7 +177,7 @@ Subtitled 0.1 1.0
 Base
     property string subText
 ThinDivider 0.1 1.0
-Image
+Rectangle
 ValueSelector 0.1 1.0
 Empty
     property variant icon
@@ -204,12 +206,14 @@ PageTreeNode
 Object 0.1 1.0
 QtObject
     default property internal children
+    property list<QtObject> __defaultPropertyFix
 OptionSelector 0.1 1.0
 ListItem.Empty
     property var model
     property bool expanded
     property bool multiSelection
     property bool colourImage
+    property Component delegate
     property real containerHeight
     property int selectedIndex
     property bool currentlyExpanded
@@ -235,6 +239,8 @@ Item
 Page 0.1 1.0
 PageTreeNode
     property string title
+    property Item tools
+    property Item __customHeaderContents
     property Flickable flickable
     property list<Action> actions
 PageStack 0.1 1.0
@@ -245,6 +251,7 @@ PageTreeNode
     function push(page, properties)
     function pop()
     function clear()
+    default property list<Object> data
 Panel 0.1 1.0
 Item
     default property list<Object> contents
@@ -353,6 +360,7 @@ PopupBase 0.1 1.0
 OrientationHelper
     property Item dismissArea
     property bool grabDismissAreaEvents
+    property PropertyAnimation fadingAnimation
     function show()
     function hide()
     function __closeIfHidden()
@@ -611,6 +619,11 @@ TestCase
     function mouseLongPress(item, x, y, button, modifiers, delay)
     function tryCompareFunction(func, expectedResult, timeout)
 plugins.qmltypes
+    name: "FilterBehavior"
+    prototype: "QObject"
+    exports: ["FilterBehavior 1.1"]
+    Property { name: "property"; type: "string" }
+    Property { name: "pattern"; type: "QRegExp" }
     name: "InverseMouseAreaType"
     prototype: "QQuickMouseArea"
     exports: ["InverseMouseArea 0.1", "InverseMouseArea 1.0"]
@@ -619,6 +632,41 @@ plugins.qmltypes
     Method {
     name: "contains"
     Parameter { name: "point"; type: "QPointF" }
+    name: "QAbstractProxyModel"
+    prototype: "QAbstractItemModel"
+    Property { name: "sourceModel"; type: "QAbstractItemModel"; isPointer: true }
+    name: "QSortFilterProxyModel"
+    prototype: "QAbstractProxyModel"
+    Property { name: "filterRegExp"; type: "QRegExp" }
+    Property { name: "filterKeyColumn"; type: "int" }
+    Property { name: "dynamicSortFilter"; type: "bool" }
+    Property { name: "filterCaseSensitivity"; type: "Qt::CaseSensitivity" }
+    Property { name: "sortCaseSensitivity"; type: "Qt::CaseSensitivity" }
+    Property { name: "isSortLocaleAware"; type: "bool" }
+    Property { name: "sortRole"; type: "int" }
+    Property { name: "filterRole"; type: "int" }
+    Method {
+    name: "setFilterRegExp"
+    Parameter { name: "pattern"; type: "string" }
+    Method {
+    name: "setFilterWildcard"
+    Parameter { name: "pattern"; type: "string" }
+    Method {
+    name: "setFilterFixedString"
+    Parameter { name: "pattern"; type: "string" }
+    Method { name: "clear" }
+    Method { name: "invalidate" }
+    name: "QSortFilterProxyModelQML"
+    prototype: "QSortFilterProxyModel"
+    exports: ["SortFilterModel 1.1"]
+    Property { name: "model"; type: "QAbstractItemModel"; isPointer: true }
+    Property { name: "count"; type: "int"; isReadonly: true }
+    Property { name: "sort"; type: "SortBehavior"; isReadonly: true; isPointer: true }
+    Property { name: "filter"; type: "FilterBehavior"; isReadonly: true; isPointer: true }
+    Method {
+    name: "get"
+    Parameter { name: "row"; type: "int" }
+    Method { name: "count"; type: "int" }
     name: "ShapeItem"
     prototype: "QQuickItem"
     exports: ["Shape 0.1", "Shape 1.0"]
@@ -634,6 +682,11 @@ plugins.qmltypes
     Property { name: "borderSource"; type: "string" }
     Signal { name: "borderChanged" }
     Method { name: "gridUnitChanged" }
+    name: "SortBehavior"
+    prototype: "QObject"
+    exports: ["SortBehavior 1.1"]
+    Property { name: "property"; type: "string" }
+    Property { name: "order"; type: "Qt::SortOrder" }
     name: "UCAlarm"
     prototype: "QObject"
     exports: ["Alarm 0.1", "Alarm 1.0"]
@@ -817,6 +870,8 @@ plugins.qmltypes
     exports: ["Layouts 0.1", "Layouts 1.0"]
     Property { name: "currentLayout"; type: "string"; isReadonly: true }
     Property { name: "layouts"; type: "ULConditionalLayout"; isList: true; isReadonly: true }
+    Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
     name: "ULLayoutsAttached"
     prototype: "QObject"
     Property { name: "item"; type: "string" }
@@ -846,3 +901,51 @@ plugins.qmltypes
     prototype: "QQuickItem"
     exports: ["TextureFromImage 0.1", "TextureFromImage 1.0"]
     Property { name: "image"; type: "QImage" }
+    name: "UCTestExtras"
+    prototype: "QObject"
+    exports: ["TestExtras 1.0"]
+    Property { name: "touchPresent"; type: "bool"; isReadonly: true }
+    Method { name: "registerTouchDevice" }
+    Method {
+    name: "touchPress"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchRelease"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchClick"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchLongPress"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchDoubleClick"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchMove"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchDrag"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "from"; type: "QPoint" }
+    Parameter { name: "delta"; type: "QPoint" }
+    Parameter { name: "steps"; type: "int" }
+    Method {
+    name: "touchDrag"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "from"; type: "QPoint" }
+    Parameter { name: "delta"; type: "QPoint" }

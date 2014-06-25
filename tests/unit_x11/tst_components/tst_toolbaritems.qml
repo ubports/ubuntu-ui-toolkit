@@ -23,6 +23,7 @@ Item {
     height: 200
 
     MainView {
+        id: mainView
         anchors.fill: parent
         PageStack {
             id: pageStack0
@@ -37,7 +38,8 @@ Item {
 
         Page {
             id: page1
-            tools: ToolbarItems {
+            tools: toolbarItems
+            ToolbarItems {
                 id: toolbarItems
                 ToolbarButton {
                     id: button
@@ -93,6 +95,13 @@ Item {
             compare(page0.tools.back.visible, false, "back item not visible with only one page on the stack");
             pageStack0.pop();
             compare(pageStack0.depth, 0, "pageStack is empty after popping both pages");
+        }
+
+        function test_visible() {
+            compare(toolbarItems.visible, true, "Toolbar items are visible when in toolbar");
+            mainView.useDeprecatedToolbar = false;
+            compare(toolbarItems.visible, false, "Toolbar items are invisible when not using deprecated toolbar");
+            mainView.useDeprecatedToolbar = true;
         }
     }
 }

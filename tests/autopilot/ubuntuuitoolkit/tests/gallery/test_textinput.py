@@ -54,9 +54,7 @@ class WriteAndClearTextInputTestCase(GalleryTestCase):
         # Apply the user locale from the environment
         # The UITK does the same, so the test must be localized
         locale.setlocale(locale.LC_ALL, "")
-        item = 'Text Field'
-        self.loadItem(item)
-        self.checkPageHeader(item)
+        self.open_page('textinputsElement')
 
     def test_write_on_textfield_must_update_text(self):
         textfield = self.main_view.select_single(
@@ -78,9 +76,7 @@ class DisabledTextInputTestCase(GalleryTestCase):
 
     def setUp(self):
         super(DisabledTextInputTestCase, self).setUp()
-        item = 'Text Field'
-        self.loadItem(item)
-        self.checkPageHeader(item)
+        self.open_page('textinputsElement')
 
     def test_textfield_disabled(self):
         textfield_disabled = self.main_view.select_single(

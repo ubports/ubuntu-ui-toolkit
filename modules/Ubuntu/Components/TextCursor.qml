@@ -199,9 +199,11 @@ Ubuntu.StyledItem {
         // positions caret to the dragged position
         function positionCaret() {
             if (dragger.drag.active) {
-                handler.positionCaret(positionProperty,
-                                      dragger.thumbStartX + dragger.dragAmountX + handler.flickable.contentX,
-                                      dragger.thumbStartY + dragger.dragAmountY + handler.flickable.contentY);
+                var dx = dragger.thumbStartX + dragger.dragAmountX + handler.flickable.contentX;
+                var dy = dragger.thumbStartY + dragger.dragAmountY + handler.flickable.contentY;
+                // consider only the x-distance because of the overlays
+                dx -= handler.frameDistance.x;
+                handler.positionCaret(positionProperty, dx, dy);
             }
         }
     }

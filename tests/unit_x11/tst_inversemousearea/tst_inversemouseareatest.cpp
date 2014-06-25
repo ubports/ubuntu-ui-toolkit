@@ -22,10 +22,10 @@
 #include <QtQuick/QQuickItem>
 #include <QtCore/QEvent>
 
+#include "uctestextras.h"
 #include "inversemouseareatype.h"
 #include "ucunits.h"
 #include <private/qquickevents_p_p.h>
-#include <qpa/qwindowsysteminterface.h>
 
 #define DOUBLECLICK_TIMEOUT 400
 
@@ -78,13 +78,6 @@ private:
         return QPointF(UCUnits::instance().gu(guX), UCUnits::instance().gu(guY)).toPoint();
     }
 
-    void touchClick(QWindow *window, const QPoint &point)
-    {
-        QTest::touchEvent(window, device).press(0, point, window);
-        QTest::qWait(10);
-        QTest::touchEvent(window, device).release(0, point, window);
-    }
-
 protected Q_SLOTS:
     void capturePressed(QQuickMouseEvent *event)
     {
@@ -95,15 +88,13 @@ private Q_SLOTS:
 
     void initTestCase()
     {
+        // make sure we have a touch device installed
+        UCTestExtras::registerTouchDevice();
         QString modules("../../../modules");
         QVERIFY(QDir(modules).exists());
 
         quickView = new QQuickView(0);
         quickEngine = quickView->engine();
-
-        device = new QTouchDevice;
-        device->setType(QTouchDevice::TouchScreen);
-        QWindowSystemInterface::registerTouchDevice(device);
 
         quickView->setGeometry(0,0, 240, 320);
         //add modules folder so we have access to the plugin from QML
@@ -139,7 +130,6 @@ private Q_SLOTS:
         QVERIFY(eventCleanup.isEmpty());
     }
 
-
     void testCase_PropagateEvents()
     {
         eventCleanup.clear();
@@ -167,9 +157,13 @@ private Q_SLOTS:
         InverseMouseAreaType *area = testArea("InverseMouseAreaInWindow.qml");
         QVERIFY(area);
         quickView->show();
+        QTest::qWaitForWindowExposed(quickView);
 
         QList<QQuickWindow *> l = quickView->rootObject()->findChildren<QQuickWindow*>("isawindow");
         QVERIFY(l.count());
+
+        QQuickItem *clickArea = quickView->rootObject()->findChild<QQuickItem*>("clickArea");
+        QVERIFY(clickArea);
 
         QTest::mouseClick(l[0], Qt::LeftButton, 0, QPoint(20, 10));
         QTest::waitForEvents();
@@ -519,7 +513,7 @@ private Q_SLOTS:
         QCOMPARE(imaSpy.count(), 1);
 
         imaSpy.clear();
-        touchClick(quickView, guPoint(20, 5));
+        UCTestExtras::touchClick(0, quickView->rootObject(), guPoint(20, 5));
         QCOMPARE(imaSpy.count(), 1);
     }
 

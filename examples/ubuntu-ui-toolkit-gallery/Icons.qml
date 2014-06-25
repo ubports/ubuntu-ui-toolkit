@@ -16,6 +16,9 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.ListItems 0.1 as ListItem
+import Ubuntu.Components.Popups 1.0
+import Qt.labs.folderlistmodel 2.1
 
 Template {
     objectName: "iconsTemplate"
@@ -72,6 +75,55 @@ Template {
                 keyColor: "#bebebe"
                 width: 24
                 height: 24
+            }
+        }
+
+        TemplateRow {
+            title: i18n.tr("Theme")
+            spacing: units.gu(2)
+
+
+            Flow {
+                anchors.fill: parent
+                spacing: units.gu(2)
+
+                Repeater {
+                    model: FolderListModel {
+                        folder: "/usr/share/icons/ubuntu-mobile/actions/scalable"
+                        showDirs: false
+                        showOnlyReadable : true
+                        sortField: FolderListModel.Name
+                        nameFilters: [ "*.svg" ]
+                    }
+                    Icon {
+                        id: themedIcon
+                        name: fileBaseName || ""
+                        width: 24
+                        height: 24
+                        MouseArea {
+                            anchors.fill: parent
+                            onClicked: PopupUtils.open(iconPop, themedIcon, { 'icon': themedIcon.name })
+                        }
+                        Component {
+                            id: iconPop
+                            Popover {
+                                id: iconPopover
+                                property string icon: "N/A"
+
+                                Column {
+                                    anchors.top: parent.top
+                                    anchors.left: parent.left
+                                    anchors.right: parent.right
+
+                                    ListItem.Standard {
+                                        iconName: iconPopover.icon
+                                        text: iconPopover.icon
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

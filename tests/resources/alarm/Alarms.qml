@@ -113,7 +113,7 @@ MainView {
             id: days
             text: "Occurence"
             values: getValues()
-            visible: recurence.selectedIndex == 2
+            visible: recurence.selectedIndex !== 1
             onClicked: {
                 PopupUtils.open(Qt.resolvedUrl("AlarmDays.qml"), days, {"alarm": alarm});
             }
