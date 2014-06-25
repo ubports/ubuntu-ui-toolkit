@@ -106,6 +106,7 @@ class InitctlEnvironmentVariable(fixtures.Fixture):
         super(InitctlEnvironmentVariable, self).__init__()
         self.variables = kwargs
 
+    def setUp(self):
         super(InitctlEnvironmentVariable, self).setUp()
         for variable, value in self.variables.items():
             self._add_variable_cleanup(variable)
