@@ -35,6 +35,11 @@ ListModel {
         source: "Toggles.qml"
     }
     ListElement {
+        objectName: "toolbarElement"
+        label: "Toolbar"
+        source: "Toolbar.qml"
+    }
+    ListElement {
         objectName: "buttonsElement"
         label: "Buttons"
         source: "Buttons.qml"
