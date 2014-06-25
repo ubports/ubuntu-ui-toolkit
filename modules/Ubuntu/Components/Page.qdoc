@@ -9,7 +9,7 @@
 
     \l MainView provides a header for Pages it includes.
     The text and actions of the header are determined by the \l title
-    and \l header.actions properties of the page:
+    and \l head.actions properties of the page:
 
     \qml
         import QtQuick 2.0
@@ -27,7 +27,7 @@
                     text: i18n.tr("Hello world!")
                 }
 
-                header.actions: [
+                head.actions: [
                     Action {
                         iconName: "search"
                         text: i18n.tr("Search")
@@ -40,12 +40,8 @@
             }
         }
     \endqml
-    See \l MainView for more basic examples that show how to use the header.
+    See \l MainView for more examples on how to use the header.
     Advanced navigation structures can be created by adding Pages to a \l PageStack or \l Tabs.
-
-    A Page or \l PageStack or \l Tabs inside a Page does not update the header title or actions
-    to avoid confusion which Page is the active one that controls the current header title
-    and actions.
 */
 
 // TODO TIM: Examples.
@@ -54,8 +50,8 @@
 /*!
     \qmlproperty string Page::title
     The title of the page. Will be shown in the header of the \l MainView.
-    If the page is used inside a Tab, by default it takes the title from the Tab.
-    Otherwise, the default value is an empty string.
+    If the page is used inside a \l Tab, the default title is the \l Tab title.
+    For a Page not inside a \l Tab, the default title is an empty string.
  */
 
 /*!
@@ -103,7 +99,7 @@
             Page {
                 id: page
                 title: "example"
-                //flickable: null // uncomment to disable hiding of the header
+                //flickable: null // uncomment for a fixed header
                 Flickable {
                     id: content
                     anchors.fill: parent
@@ -120,7 +116,7 @@
     a Flickable and it fills its parent. Thus, scrolling down in the Flickable will automatically
     hide the header.
 
-    This property be set to null to avoid automatic flickable detection, which disables hiding
+    Set this property to null to avoid automatic flickable detection, which disables hiding
     of the header by scrolling in the Flickable. In cases where a flickable should control the header,
     but it is not automatically detected, the flickable property can be set.
  */

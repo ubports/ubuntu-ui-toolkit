@@ -14,9 +14,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*! \internal */
 // Documentation in Page11.qdoc
 Page10 {
-    id: page
+
+    /*!
+      \qmlproperty HeaderConfiguration head
+     */
     readonly property alias head: headerConfig
     HeaderConfiguration {
         id: headerConfig

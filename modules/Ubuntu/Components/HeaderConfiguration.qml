@@ -18,7 +18,7 @@ import QtQuick 2.0
 
 /*!
   \internal
-  Documentation of properties in Page11.qdoc
+  Documentation of properties in Page.qdoc
  */
 QtObject {
     // To be used inside a Page only.

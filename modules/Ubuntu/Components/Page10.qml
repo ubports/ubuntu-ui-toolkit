@@ -53,6 +53,9 @@ PageTreeNode {
         internal.updateActions();
     }
 
+    /*!
+      \qmlproperty list<Action> actions
+     */
     property alias actions: actionContext.actions
 
     Object {
@@ -77,7 +80,7 @@ PageTreeNode {
             actionContext.active = page.active;
         }
 
-        property Header header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
+        property AppHeader header: page.__propagated && page.__propagated.header ? page.__propagated.header : null
         // Used to position the Page when there is no flickable.
         // When there is a flickable, the header will automatically position it.
         property real headerHeight: internal.header && internal.header.visible ? internal.header.height : 0
@@ -91,8 +94,9 @@ PageTreeNode {
         Binding {
             target: tools
             property: "visible"
-            value: internal.header.useDeprecatedToolbar
-            when: internal.header && page.tools !== null
+            value: false
+            when: internal.header && !internal.header.useDeprecatedToolbar &&
+                  page.tools !== null
         }
 
         function isVerticalFlickable(object) {

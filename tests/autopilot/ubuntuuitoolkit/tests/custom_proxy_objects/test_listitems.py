@@ -120,6 +120,7 @@ MainView {
         self.assertTrue(self._item.waitingConfirmationForRemoval)
 
     def test_swipe_item_to_left(self):
+        # This will do a right to left swipe behind the scenes
         self._item.swipe_to_delete('left')
         self.assertTrue(self._item.waitingConfirmationForRemoval)
 
@@ -134,6 +135,7 @@ MainView {
         self.assertFalse(self._item.exists())
 
     def test_delete_item_moving_left(self):
+        # This will do a right to left swipe behind the scenes
         self._item.swipe_to_delete('left')
         self._item.confirm_removal()
         self.assertFalse(self._item.exists())

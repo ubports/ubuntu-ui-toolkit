@@ -19,6 +19,7 @@
 #ifndef UBUNTU_TEST_UBUNTUTESTCASE_H
 #define UBUNTU_TEST_UBUNTUTESTCASE_H
 
+#include <QtTest/QtTest>
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QQuickView>
 #include <QtTest/QSignalSpy>
@@ -40,6 +41,7 @@ public:
             qFatal("Item '%s' found with unexpected type", qPrintable(objectName));
         qFatal("No item '%s' found", qPrintable(objectName));
     }
+
 private:
     QSignalSpy* m_spy;
 };

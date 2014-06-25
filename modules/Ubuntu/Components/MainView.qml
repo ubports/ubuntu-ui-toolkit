@@ -334,7 +334,7 @@ PageTreeNode {
           The header of the MainView. Can be used to obtain the height of the header
           in \l Page to determine the area for the \l Page to fill.
          */
-        Header {
+        AppHeader {
             // FIXME We need to set an object name to this header in order to differentiate it from the ListItem.Header on Autopilot tests.
             // This is a temporary workaround while we find a better solution for https://bugs.launchpad.net/autopilot/+bug/1210265
             // --elopio - 2013-08-08
@@ -470,9 +470,9 @@ PageTreeNode {
     Object {
         id: internal
 
-        // If this property is defined as type Page, even when importing Ubuntu.Components 1.0,
-        //  the type will be Page11, to which a Page10 cannot be asssigned.
-        property Page10 activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
+        // Even when using MainView 1.1, we still support Page 1.0.
+        // PageBase (=Page 1.0) is the superclass of Page 1.1.
+        property PageBase activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
 
         function isPage(item) {
             return item && item.hasOwnProperty("__isPageTreeNode") && item.__isPageTreeNode &&
@@ -494,7 +494,7 @@ PageTreeNode {
           The header that will be propagated to the children in the page tree node.
           It is used by Tabs to bind header's tabsModel.
          */
-        property Header header: headerItem
+        property AppHeader header: headerItem
 
         /*!
           \internal
