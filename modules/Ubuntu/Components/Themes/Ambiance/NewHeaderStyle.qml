@@ -100,6 +100,7 @@ Item {
 
             iconName: "back"
             visible: styledItem.pageStack !== null &&
+                     styledItem.pageStack !== undefined &&
                      styledItem.pageStack.depth > 1 &&
                      !customBackButton.visible
 
@@ -118,7 +119,9 @@ Item {
             width: visible ? units.gu(5) : 0
 
             iconName: "navigation-menu"
-            visible: styledItem.tabsModel !== null && !backButton.visible &&
+            visible: styledItem.tabsModel !== null &&
+                     styledItem.tabsModel !== undefined &&
+                     !backButton.visible &&
                      !customBackButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", tabsButton)
