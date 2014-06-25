@@ -22,7 +22,7 @@
 #include <QtQuick/QQuickItem>
 #include <QtCore/QEvent>
 
-#include "uctestcase.h"
+#include "uctestextras.h"
 #include "inversemouseareatype.h"
 #include "ucunits.h"
 #include <private/qquickevents_p_p.h>
@@ -89,7 +89,7 @@ private Q_SLOTS:
     void initTestCase()
     {
         // make sure we have a touch device installed
-        UbuntuTestCase::registerTouchDevice();
+        UCTestExtras::registerTouchDevice();
         QString modules("../../../modules");
         QVERIFY(QDir(modules).exists());
 
@@ -513,7 +513,7 @@ private Q_SLOTS:
         QCOMPARE(imaSpy.count(), 1);
 
         imaSpy.clear();
-        UbuntuTestCase::touchClick(0, quickView, guPoint(20, 5));
+        UCTestExtras::touchClick(0, quickView->rootObject(), guPoint(20, 5));
         QCOMPARE(imaSpy.count(), 1);
     }
 
