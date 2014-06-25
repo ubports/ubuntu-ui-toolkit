@@ -65,8 +65,6 @@ Item
 Header 0.1 1.0
 AppHeader
     property string _for_autopilot
-    property var actions
-    property var __customBackAction
 Icon 0.1 1.0
 Item
     property string name
@@ -234,7 +232,7 @@ PageTreeNode
     property Item tools
     property Item __customHeaderContents
     property Flickable flickable
-    property internal actions
+    property list<Action> actions
 Page 1.1
 Page10
     readonly property HeaderConfiguration head

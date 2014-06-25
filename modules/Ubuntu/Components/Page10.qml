@@ -53,6 +53,9 @@ PageTreeNode {
         internal.updateActions();
     }
 
+    /*!
+      \qmlproperty list<Action> actions
+     */
     property alias actions: actionContext.actions
 
     Object {

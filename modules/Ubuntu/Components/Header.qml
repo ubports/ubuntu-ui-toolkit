@@ -22,7 +22,6 @@ import QtQuick 2.0
     \deprecated
 */
 AppHeader {
-    id: header
 
     /*!
       \internal
@@ -36,33 +35,5 @@ AppHeader {
               "its API may change or be removed at any moment." +
               "Please use MainView and Page instead."
               );
-    }
-
-    // Deprecated properties
-
-    /*!
-      \deprecated
-      \qmlproperty list<Action> actions
-      The list of actions actions that will be shown in the header.
-      DEPRECATED. Use Page.head.actions instead.
-     */
-    property var actions: null
-    onActionsChanged: print("WARNING: Header.actions property is DEPRECATED. "+
-                            "Use Page.head.actions instead.")
-
-    /*!
-      \internal
-      Action shown before the title. Setting this will disable the back
-      button and tabs drawer button in the new header and replace it with a button
-      representing the action below.
-      DEPRECATED. Use Page.head.backAction property instead.
-     */
-    property var __customBackAction: null
-
-    QtObject {
-        id: internal
-        property alias backAction: header.__customBackAction
-        onBackActionChanged: print("WARNING: Header.__customBackAction is DEPRECATED. "+
-                                   "Use Page.head.backAction instead.")
     }
 }
