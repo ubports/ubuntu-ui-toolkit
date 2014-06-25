@@ -904,3 +904,51 @@ plugins.qmltypes
     prototype: "QQuickItem"
     exports: ["TextureFromImage 0.1", "TextureFromImage 1.0"]
     Property { name: "image"; type: "QImage" }
+    name: "UCTestExtras"
+    prototype: "QObject"
+    exports: ["TestExtras 1.0"]
+    Property { name: "touchPresent"; type: "bool"; isReadonly: true }
+    Method { name: "registerTouchDevice" }
+    Method {
+    name: "touchPress"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchRelease"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchClick"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchLongPress"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchDoubleClick"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchMove"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchDrag"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "from"; type: "QPoint" }
+    Parameter { name: "delta"; type: "QPoint" }
+    Parameter { name: "steps"; type: "int" }
+    Method {
+    name: "touchDrag"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "from"; type: "QPoint" }
+    Parameter { name: "delta"; type: "QPoint" }
