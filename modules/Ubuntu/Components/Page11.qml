@@ -17,6 +17,9 @@
 /*! \internal */
 // Documentation in Page11.qdoc
 Page10 {
+    /*!
+      \qmlproperty HeaderConfiguration head
+     */
     readonly property alias head: headerConfig
     HeaderConfiguration {
         id: headerConfig
