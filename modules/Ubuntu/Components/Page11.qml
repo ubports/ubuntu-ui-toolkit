@@ -17,7 +17,6 @@
 /*! \internal */
 // Documentation in Page11.qdoc
 Page10 {
-
     /*!
       \qmlproperty HeaderConfiguration head
      */

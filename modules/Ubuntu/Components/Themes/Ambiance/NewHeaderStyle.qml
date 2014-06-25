@@ -180,6 +180,7 @@ Item {
             color: headerStyle.textColor
             elide: Text.ElideRight
         }
+
         Item {
             // This Item is used to make the custom header item invisible
             // when styledItem.contents is unset and its parent is not updated
@@ -220,18 +221,6 @@ Item {
             when: styledItem.config.input &&
                   styledItem.config.input.parent === contentsContainer
         }
-//        Binding {
-//            target: styledItem.config.input
-//            property: "anchors.left"
-//            value: contentsContainer.left
-//            when: styledItem.config.input //&& !styledItem.contents
-//        }
-//        Binding {
-//            target: styledItem.config.input
-//            property: "anchors.verticalCenter"
-//            value: styledItem.config.input.parent.verticalCenter //contentsContainer.verticalCenter
-//            when: styledItem.config.input !== null //&& !styledItem.contents
-//        }
     }
 
     Row {
