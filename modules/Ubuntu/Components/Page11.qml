@@ -15,10 +15,10 @@
  */
 
 /*! \internal */
-// Documentation in Page11.qdoc
+// Documentation in Page.qdoc
 Page10 {
     /*!
-      \qmlproperty HeaderConfiguration head
+      \qmlproperty PageHeadConfiguration head
      */
     readonly property alias head: headerConfig
     PageHeadConfiguration {
