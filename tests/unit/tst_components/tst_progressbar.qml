@@ -28,7 +28,7 @@ TestCase {
          compare(progressBar.indeterminate,newIndeterminated,"can set/get")
      }
 
-     function test_showProgressPercentageExits() {
+     function test_showProgressPercentageExists() {
          verify(progressBar.hasOwnProperty("showProgressPercentage"), "Property missing")
      }
 
