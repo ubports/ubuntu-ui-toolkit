@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+from autopilot import platform
+
 
 NEXUS4_DEVICE = 'Nexus4'
 NEXUS10_DEVICE = 'Nexus10'
@@ -31,6 +33,13 @@ def get_device_simulation_scenarios(devices=DEFAULT_DEVICES):
         corresponding to the selected device.
 
     """
+    scenarios = []
+    if platform.model() == 'Desktop':
+        scenarios.extend(_get_device_simulation_scenarios_for_desktop(devices))
+    return scenarios
+
+
+def _get_device_simulation_scenarios_for_desktop(devices):
     scenarios = []
     if NEXUS4_DEVICE in devices:
         scenarios.append(

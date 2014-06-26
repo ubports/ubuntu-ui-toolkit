@@ -15,12 +15,14 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import copy
+import logging
 import os
 import shutil
 import tempfile
 
 import fixtures
 from autopilot import display
+from gi.repository import Gio
 
 from ubuntuuitoolkit import base, environment
 
@@ -45,6 +47,9 @@ DEFAULT_DESKTOP_FILE_DICT = {
     'Exec': '{qmlscene} {qml_file_path}',
     'Icon': 'Not important'
 }
+
+
+logger = logging.getLogger(__name__)
 
 
 class FakeApplication(fixtures.Fixture):
@@ -166,6 +171,44 @@ class FakeHome(fixtures.Fixture):
                 os.path.join(directory, '.Xauthority'))
 
 
+class HideUnity7Launcher(fixtures.Fixture):
+
+    """Hide the Unity7 launcher if it is visible and restore it on clean up."""
+
+    _UNITYSHELL_GSETTINGS_SCHEMA = 'org.compiz.unityshell'
+    _UNITYSHELL_GSETTINGS_PATH = (
+        '/org/compiz/profiles/unity/plugins/unityshell/')
+    _UNITYSHELL_LAUNCHER_KEY = 'launcher-hide-mode'
+    _UNITYSHELL_LAUNCHER_HIDDEN_MODE = 1  # launcher hidden
+
+    def setUp(self):
+        super(HideUnity7Launcher, self).setUp()
+        self._hide_launcher()
+
+    def _hide_launcher(self):
+        if (self._UNITYSHELL_GSETTINGS_SCHEMA in
+                Gio.Settings.list_relocatable_schemas()):
+            unityshell_schema = Gio.Settings.new_with_path(
+                self._UNITYSHELL_GSETTINGS_SCHEMA,
+                self._UNITYSHELL_GSETTINGS_PATH)
+            self._hide_launcher_from_schema(unityshell_schema)
+        else:
+            logger.warning('Unity Shell gsettings schema not found.')
+
+    def _hide_launcher_from_schema(self, unityshell_schema):
+        original_mode = self._get_launcher_mode(unityshell_schema)
+        self.addCleanup(
+            self._set_launcher_mode, unityshell_schema, original_mode)
+        self._set_launcher_mode(
+            unityshell_schema, self._UNITYSHELL_LAUNCHER_HIDDEN_MODE)
+
+    def _get_launcher_mode(self, unityshell_schema):
+        return unityshell_schema.get_int(self._UNITYSHELL_LAUNCHER_KEY)
+
+    def _set_launcher_mode(self, unityshell_schema, mode):
+        unityshell_schema.set_int(self._UNITYSHELL_LAUNCHER_KEY, mode)
+
+
 class SimulateDevice(fixtures.Fixture):
 
     def __init__(self, app_width, app_height, grid_unit_px):
@@ -173,23 +216,19 @@ class SimulateDevice(fixtures.Fixture):
         self.app_width = app_width
         self.app_height = app_height
         self.grid_unit_px = grid_unit_px
+        self._screen = None
 
     def setUp(self):
         super(SimulateDevice, self).setUp()
         if self._is_geometry_larger_than_display(
                 self.app_width, self.app_height):
             scale_divisor = self._get_scale_divisor()
-            grid_unit_px = self.grid_unit_px // scale_divisor
-            grid_unit_px = self.grid_unit_px
+            self.grid_unit_px = self.grid_unit_px // scale_divisor
+            self.app_width = self.app_width // scale_divisor
+            self.app_height = self.app_height // scale_divisor
         self.useFixture(
             fixtures.EnvironmentVariable(
-                'GRID_UNIT_PX', str(grid_unit_px)))
-
-    def _is_geometry_larger_than_display(self, width, height):
-        screen = display.Display.create()
-        screen_width = screen.get_screen_width()
-        screen_height = screen.get_screen_height()
-        return (width > screen_width) or (height > screen_height)
+                'GRID_UNIT_PX', str(self.grid_unit_px)))
 
     def _get_scale_divisor(self):
         scale_divisor = 2
@@ -198,3 +237,14 @@ class SimulateDevice(fixtures.Fixture):
                 self.app_height // scale_divisor):
             scale_divisor = scale_divisor * 2
         return scale_divisor
+
+    def _is_geometry_larger_than_display(self, width, height):
+        screen = self._get_screen()
+        screen_width = screen.get_screen_width()
+        screen_height = screen.get_screen_height()
+        return (width > screen_width) or (height > screen_height)
+
+    def _get_screen(self):
+        if self._screen is None:
+            self._screen = display.Display.create()
+        return self._screen

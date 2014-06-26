@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013 Canonical Ltd.
+# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -18,10 +18,10 @@
 
 from autopilot.matchers import Eventually
 from testtools.matchers import Equals
-from ubuntuuitoolkit.tests.gallery import GalleryTestCase
+from ubuntuuitoolkit.tests import gallery
 
 
-class ButtonsTestCase(GalleryTestCase):
+class ButtonsTestCase(gallery.GalleryTestCase):
 
     scenarios = [
         ('standard button', dict(

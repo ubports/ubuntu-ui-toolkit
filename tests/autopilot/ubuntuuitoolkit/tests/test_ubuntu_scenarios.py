@@ -16,7 +16,7 @@
 
 import testtools
 
-from ubuntuuitoolkit import scenarios
+from ubuntuuitoolkit import ubuntu_scenarios
 
 
 class ScenariosTestCase(testtools.TestCase):
@@ -26,18 +26,18 @@ class ScenariosTestCase(testtools.TestCase):
             ('Simulating Nexus 4 in desktop',
              dict(app_width=768, app_height=1280, grid_unit_px=18)),
         ]
-        test_scenarios = scenarios.get_device_simulation_scenarios(
-            devices=scenarios.NEXUS4_DEVICE)
-        self.assertEqual(expected_scenarios, test_scenarios)
+        scenarios = ubuntu_scenarios.get_device_simulation_scenarios(
+            devices=ubuntu_scenarios.NEXUS4_DEVICE)
+        self.assertEqual(expected_scenarios, scenarios)
 
     def test_get_nexus_10_scenario(self):
         expected_scenarios = [
             ('Simulating Nexus 10 in desktop',
              dict(app_width=2560, app_height=1600, grid_unit_px=20))
         ]
-        test_scenarios = scenarios.get_device_simulation_scenarios(
-            devices=scenarios.NEXUS10_DEVICE)
-        self.assertEqual(expected_scenarios, test_scenarios)
+        scenarios = ubuntu_scenarios.get_device_simulation_scenarios(
+            devices=ubuntu_scenarios.NEXUS10_DEVICE)
+        self.assertEqual(expected_scenarios, scenarios)
 
     def test_get_default_scenarios_must_return_supported_devices(self):
         expected_scenarios = [
@@ -46,5 +46,5 @@ class ScenariosTestCase(testtools.TestCase):
             ('Simulating Nexus 10 in desktop',
              dict(app_width=2560, app_height=1600, grid_unit_px=20))
         ]
-        test_scenarios = scenarios.get_device_simulation_scenarios()
-        self.assertEqual(expected_scenarios, test_scenarios)
+        scenarios = ubuntu_scenarios.get_device_simulation_scenarios()
+        self.assertEqual(expected_scenarios, scenarios)

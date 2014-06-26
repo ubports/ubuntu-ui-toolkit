@@ -19,23 +19,80 @@
 import os
 import shutil
 
+import testscenarios
+from autopilot.matchers import Eventually
+from testtools.matchers import Equals
+
 import ubuntuuitoolkit
+from ubuntuuitoolkit import fixture_setup, ubuntu_scenarios
 
 
 class GalleryTestCase(ubuntuuitoolkit.tests.QMLFileAppTestCase):
+
     """Base class for gallery test cases."""
 
     local_desktop_file_path = None
 
-    def setUp(self):
-        if self._application_source_exists():
-            self.test_source_path = self._get_path_to_gallery_source()
+    @classmethod
+    def setUpClass(cls):
+        if hasattr(cls, 'scenarios'):
+            cls.scenarios = testscenarios.multiply_scenarios(
+                ubuntu_scenarios.get_device_simulation_scenarios(),
+                cls.scenarios)
         else:
-            self.test_source_path = self._get_path_to_installed_gallery()
-        assert os.path.exists(self.test_source_path)
+            cls.scenarios = ubuntu_scenarios.get_device_simulation_scenarios()
+
+    def setUp(self):
+        self.test_source_path = self._get_test_source_path()
         self.test_qml_file_path = self._get_test_qml_file_path()
         self.desktop_file_path = self._get_desktop_file_path()
+
+        if self.should_simulate_device():
+            # Hide the Unity7 launcher because it takes space that might be
+            # needed by the app with the simulated size.
+            self.useFixture(fixture_setup.HideUnity7Launcher())
+            # This sets the grid units, so it should be called before launching
+            # the app.
+            self.simulate_device()
+
         super(GalleryTestCase, self).setUp()
+
+        if self.should_simulate_device():
+            # XXX Currently we have no way to launch the application with a
+            # specific size, so we must resize it after it's launched.
+            # --elopio - 2014-06-25
+            self.resize_window()
+
+    def should_simulate_device(self):
+        return (hasattr(self, 'app_width') and hasattr(self, 'app_height') and
+                hasattr(self, 'grid_unit_px'))
+
+    def simulate_device(self):
+        simulate_device_fixture = self.useFixture(fixture_setup.SimulateDevice(
+            self.app_width, self.app_height, self.grid_unit_px))
+        self.app_width = simulate_device_fixture.app_width
+        self.app_height = simulate_device_fixture.app_height
+
+    def resize_window(self):
+        application = self.process_manager.get_running_applications()[0]
+        window = application.get_windows()[0]
+        window.resize(self.app_width, self.app_height)
+
+        def get_window_size():
+            _, _, window_width, window_height = window.geometry
+            return window_width, window_height
+
+        self.assertThat(
+            get_window_size,
+            Eventually(Equals((self.app_width, self.app_height))))
+
+    def _get_test_source_path(self):
+        if self._application_source_exists():
+            test_source_path = self._get_path_to_gallery_source()
+        else:
+            test_source_path = self._get_path_to_installed_gallery()
+        assert os.path.exists(test_source_path)
+        return test_source_path
 
     def _get_path_to_gallery_source(self):
         return os.path.join(

@@ -60,8 +60,8 @@ def get_path_to_source_root():
             os.path.dirname(__file__), '..', '..', '..', '..'))
 
 
-class QMLStringAppTestCase(base.UbuntuUIToolkitAppTestCase):
-    """Base test case for self tests that define the QML on an string."""
+class UbuntuUIToolkitWithFakeAppRunningTestCase(
+        base.UbuntuUIToolkitAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -69,13 +69,12 @@ import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(48)
-    height: units.gu(60)
+    height: units.gu(80)
 }
 """)
 
     def setUp(self):
-        super(QMLStringAppTestCase, self).setUp()
-        self.pointing_device = Pointer(self.input_device_class.create())
+        super(UbuntuUIToolkitWithFakeAppRunningTestCase, self).setUp()
         self.launch_application()
 
     def launch_application(self):
@@ -83,17 +82,23 @@ MainView {
             qml_file_contents=self.test_qml)
         self.useFixture(fake_application)
 
-        self.app = self.launch_test_application(
-            base.get_qmlscene_launch_command(),
-            '-I' + _get_module_include_path(),
-            fake_application.qml_file_path,
-            '--desktop_file_hint={0}'.format(
-                fake_application.desktop_file_path),
-            emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
-            app_type='qt')
+        desktop_file_name = os.path.basename(
+            fake_application.desktop_file_path)
+        application_name, _ = os.path.splitext(desktop_file_name)
+        self.app = self.launch_upstart_application(
+            application_name,
+            emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
 
+
+class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
+    """Base test case for self tests that define the QML on an string."""
+
+    def setUp(self):
+        super(QMLStringAppTestCase, self).setUp()
         self.assertThat(
             self.main_view.visible, Eventually(Equals(True)))
+
+        self.pointing_device = Pointer(self.input_device_class.create())
 
     @property
     def main_view(self):
