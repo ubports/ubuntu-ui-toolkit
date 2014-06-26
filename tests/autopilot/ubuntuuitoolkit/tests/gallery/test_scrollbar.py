@@ -16,10 +16,13 @@
 
 from autopilot import platform
 
+from ubuntuuitoolkit import ubuntu_scenarios
 from ubuntuuitoolkit.tests import gallery
 
 
 class ScrollBarTestCase(gallery.GalleryTestCase):
+
+    scenarios = ubuntu_scenarios.get_device_simulation_scenarios()
 
     def setUp(self):
         super(ScrollBarTestCase, self).setUp()

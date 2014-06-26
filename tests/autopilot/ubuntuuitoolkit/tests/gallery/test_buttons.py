@@ -16,14 +16,17 @@
 
 """Tests for the Ubuntu UI Toolkit Gallery - Button component"""
 
+import testscenarios
 from autopilot.matchers import Eventually
 from testtools.matchers import Equals
+
+from ubuntuuitoolkit import ubuntu_scenarios
 from ubuntuuitoolkit.tests import gallery
 
 
 class ButtonsTestCase(gallery.GalleryTestCase):
 
-    scenarios = [
+    buttons_scenarios = [
         ('standard button', dict(
             button_name="button_text", is_enabled=True, color=None, icon=None,
             text="Call")),
@@ -43,6 +46,10 @@ class ButtonsTestCase(gallery.GalleryTestCase):
             button_name="button_text_disabled", is_enabled=False, color=None,
             icon=None, text="Call"))
     ]
+
+    scenarios = testscenarios.multiply_scenarios(
+        ubuntu_scenarios.get_device_simulation_scenarios(),
+        buttons_scenarios)
 
     def test_buttons(self):
         self.open_page('buttonsElement')

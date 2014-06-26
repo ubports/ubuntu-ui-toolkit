@@ -19,12 +19,11 @@
 import os
 import shutil
 
-import testscenarios
 from autopilot.matchers import Eventually
 from testtools.matchers import Equals
 
 import ubuntuuitoolkit
-from ubuntuuitoolkit import fixture_setup, ubuntu_scenarios
+from ubuntuuitoolkit import fixture_setup
 
 
 class GalleryTestCase(ubuntuuitoolkit.tests.QMLFileAppTestCase):
@@ -32,15 +31,6 @@ class GalleryTestCase(ubuntuuitoolkit.tests.QMLFileAppTestCase):
     """Base class for gallery test cases."""
 
     local_desktop_file_path = None
-
-    @classmethod
-    def setUpClass(cls):
-        if hasattr(cls, 'scenarios'):
-            cls.scenarios = testscenarios.multiply_scenarios(
-                ubuntu_scenarios.get_device_simulation_scenarios(),
-                cls.scenarios)
-        else:
-            cls.scenarios = ubuntu_scenarios.get_device_simulation_scenarios()
 
     def setUp(self):
         self.test_source_path = self._get_test_source_path()
