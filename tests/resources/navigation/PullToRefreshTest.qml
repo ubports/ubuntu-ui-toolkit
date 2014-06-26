@@ -17,7 +17,7 @@
 import QtQuick 2.2
 import QtQuick.XmlListModel 2.0
 import Ubuntu.Components 1.1
-import Ubuntu.Components.ListItems 1.0 as ListItem
+import Ubuntu.Components.ListItems 1.0
 
 MainView {
     id: root
@@ -26,7 +26,7 @@ MainView {
 
     PageStack {
         id: stack;
-        Component.onCompleted: push(page2Holder)
+        Component.onCompleted: push(page1Holder)
     }
 
     Component {
@@ -37,27 +37,27 @@ MainView {
             ListView {
                 id: view
                 anchors.fill: parent
-//                PullToRefresh {
-//                    id: pullToRefresh
-//                    objectName: "XmlList"
-//                    enabled: page.active
-//                    refreshing: view.model.status === XmlListModel.Loading
-//                    onRefresh: view.model.reload()
-//                    content: Item {
-//                        Icon {
-//                            name: pullToRefresh.releaseToRefresh ? "search" : ""
-//                            height: parent.height
-//                            width: height
-//                            anchors.horizontalCenter: parent.horizontalCenter
-//                        }
-//                    }
-//                }
+                PullToRefresh {
+                    id: pullToRefresh
+                    objectName: "XmlList"
+                    enabled: page.active
+                    refreshing: view.model.status === XmlListModel.Loading
+                    onRefresh: view.model.reload()
+                    content: Item {
+                        Icon {
+                            name: pullToRefresh.releaseToRefresh ? "search" : ""
+                            height: parent.height
+                            width: height
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
+                    }
+                }
                 model: XmlListModel {
                     source: "http://design.canonical.com/feed/"
                     query: "/rss/channel/item"
                     XmlRole { name: "title"; query: "title/string()" }
                 }
-                delegate: ListItem.Standard {
+                delegate: Standard {
                     width: ListView.view.width
                     height: units.gu(5)
                     text: modelData
@@ -78,7 +78,6 @@ MainView {
             Flickable {
                 id: view2
                 anchors.fill: parent
-                contentWidth: content.width
                 contentHeight: content.childrenRect.height
                 PullToRefresh {
                     parent: view2
@@ -97,7 +96,7 @@ MainView {
                             query: "/rss/channel/item"
                             XmlRole { name: "title"; query: "title/string()" }
                         }
-                        ListItem.Standard {
+                        Standard {
                             width: view2.width
                             height: units.gu(5)
                             text: modelData

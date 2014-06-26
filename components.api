@@ -387,7 +387,8 @@ AnimatedItem
 PullToRefresh 1.1
 StyledItem
     readonly property bool releaseToRefresh
-    property Component contentItem
+    readonly property real offset
+    property Component content
     property Flickable target
     property bool refreshing
     signal refresh()
@@ -424,8 +425,9 @@ Item
     property font defaultFont
 PullToRefreshStyle 1.1
 Item
+    property Component defaultContent
     property real activationThreshold
-    property bool manualRefresh
+    property bool releaseToRefresh
 Switch 0.1 1.0
 CheckBox
 Tab 0.1 1.0

@@ -23,26 +23,28 @@ Style.PullToRefreshStyle {
     implicitHeight: refreshIndicatorItem.height + units.gu(5)
 
     defaultContent: Label {
-        id: label
-        text: manualRefresh ? i18n.tr("Release to refresh...") : i18n.tr("Pull to refresh...")
+        id: labelComponent
+        visible: control.enabled
+        text: releaseToRefresh ? i18n.tr("Release to refresh...") : i18n.tr("Pull to refresh...")
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         Behavior on text {
             SequentialAnimation {
                 UbuntuNumberAnimation {
-                    target: label
+                    target: labelComponent
                     property: "opacity"
                     from: 1.0
                     to: 0.0
                 }
                 UbuntuNumberAnimation {
-                    target: label
+                    target: labelComponent
                     property: "opacity"
                     from: 0.0
                     to: 1.0
                 }
             }
         }
+        onVisibleChanged: print(visible)
     }
 
     // additional configuration properties provided by the Ambiance theme
@@ -67,23 +69,52 @@ Style.PullToRefreshStyle {
     property real pointOfRelease
     // specifies the component completion
     property bool ready: false
+    // root item
+    property Item rootItem: QuickUtils.rootItem(control)
 
     anchors.fill: parent
 
-    Component.onCompleted: ready = true;
-
-    onLabelChanged: {
-        if (label) {
-            label.parent = style;
-            label.anchors.fill = style;
+    Component.onCompleted: {
+        /*
+          When the model attached to the component is refreshing during initialization,
+          this refresh will happen after the style gets completed. This refresh will
+          cause the style to enter in refreshing state, which alters the topMargin.
+          However in the same time the MainView Header will be also updated, so that
+          will also alter the topMargin. But when refreshing completes, the topMargin
+          will be restored to teh default value before the animation, and teh content
+          will be pushed under the header. We need to connect to the header changes
+          so we can reset the state and teh topMargin.
+          */
+        if (rootItem && rootItem.__propagated.header) {
+            rootItem.__propagated.header.visibleChanged.connect(fixTopMargin);
+            rootItem.__propagated.header.heightChanged.connect(fixTopMargin);
+        }
+        ready = true;
+    }
+    function fixTopMargin() {
+        if (style.state === "refreshing") {
+            /*
+              Fetch teh topMargin, force state to disabled (idle will be turned on
+              automatically when refreshing completes) and set the topMargin from
+              the header change.
+              */
+            var topMargin = control.target.topMargin;
+            style.state = "disabled";
+            control.target.topMargin = topMargin;
         }
     }
 
     // visuals
     Loader {
         id: contentLoader
-        anchors.fill: parent
         sourceComponent: control.content
+        onItemChanged: {
+            if (item) {
+                item.parent = style;
+                item.anchors.fill = style;
+            }
+        }
+        asynchronous: false
     }
 
     ActivityIndicator {
@@ -99,7 +130,7 @@ Style.PullToRefreshStyle {
             if (!ready || !control.enabled) {
                 return;
             }
-            if (!style.manualRefresh && target.refreshing) {
+            if (!style.releaseToRefresh && target.refreshing) {
                 // not a manual refresh, update flickable's starting topMargin
                 style.flickableTopMargin = control.target.topMargin;
                 style.wasAtYBeginning = control.target.atYBeginning;
@@ -122,52 +153,54 @@ Style.PullToRefreshStyle {
             style.wasAtYBeginning = control.target.atYBeginning;
             style.initialContentY = control.target.contentY;
             style.refreshing = false;
-            style.manualRefresh = false;
+            style.releaseToRefresh = false;
         }
         onMovementEnded: style.wasAtYBeginning = control.target.atYBeginning
 
         // catch when to initiate refresh
         onDraggingChanged: {
-            if (!control.parent.dragging && style.manualRefresh) {
+            if (!control.parent.dragging && style.releaseToRefresh) {
                 pointOfRelease = -(control.target.contentY - control.target.originY)
                 style.flickableTopMargin = control.target.topMargin;
                 style.refreshing = true;
-                style.manualRefresh = false;
+                style.releaseToRefresh = false;
             }
         }
         onContentYChanged: {
             if (style.wasAtYBeginning && control.enabled && control.target.dragging) {
-                style.manualRefresh = ((style.initialContentY - control.target.contentY) > style.activationThreshold);
+                style.releaseToRefresh = ((style.initialContentY - control.target.contentY) > style.activationThreshold);
             }
         }
     }
 
-//    onStateChanged: print("state=", control.objectName + "/" + state)
+    onStateChanged: {
+        /*
+           Label might not be ready when the component enters in refreshing
+           state, therefore the visible property will not be properly returned to
+           true. Because of teh same reason we cannot have a PropertyChanges either
+           as the target is not yet ready at that point.
+           */
+        if (label) {
+            label.visible = (state === "idle" || state === "ready-to-refresh");
+        }
+    }
     states: [
         State {
             name: "disabled"
             when: !control.enabled
-            PropertyChanges {
-                target: label
-                visible: false
-            }
         },
         State {
             name: "idle"
             extend: ""
-            when: ready && control.enabled && !style.refreshing && !style.manualRefresh
+            when: ready && control.enabled && !style.refreshing && !style.releaseToRefresh
         },
         State {
             name: "ready-to-refresh"
-            when: ready && control.enabled && style.manualRefresh && !style.refreshing
+            when: ready && control.enabled && style.releaseToRefresh && !style.refreshing
         },
         State {
             name: "refreshing"
             when: ready && control.enabled && style.wasAtYBeginning && style.refreshing
-            PropertyChanges {
-                target: label
-                visible: false
-            }
             PropertyChanges {
                 target: refreshIndicatorItem
                 running: true

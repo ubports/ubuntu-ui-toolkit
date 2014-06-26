@@ -89,8 +89,9 @@ Item {
             compare(refresh.refreshing, false, "The component is not refreshing");
             verify(refresh.hasOwnProperty("refreshing"), "No refreshing signal defined");
             // style check
+            verify(refresh.__styleInstance.hasOwnProperty("defaultContent"), "Wrong style used, has no defaultContent defined");
             verify(refresh.__styleInstance.hasOwnProperty("activationThreshold"), "Wrong style used, has no activationThreshold defined");
-            verify(refresh.__styleInstance.hasOwnProperty("manualRefresh"), "Wrong style used, has no manualRefresh defined");
+            verify(refresh.__styleInstance.hasOwnProperty("releaseToRefresh"), "Wrong style used, has no releaseToRefresh defined");
         }
 
         function test_pull_data() {

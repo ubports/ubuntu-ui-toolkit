@@ -40,8 +40,9 @@ Item {
     property real activationThreshold: styledItem.height
 
     /*!
-      The property holds the style specific implementation trigger when the
-      refresh control is ready to initiate refresh.
+      The property informs the component when a manual refresh can be triggered.
+      Style implementations (themes) can decide when to flip the component to be
+      ready to trigger reftesh signal.
       */
-    property bool manualRefresh: false
+    property bool releaseToRefresh: false
 }

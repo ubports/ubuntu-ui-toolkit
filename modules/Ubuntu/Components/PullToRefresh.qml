@@ -41,23 +41,27 @@ import Ubuntu.Components 1.1
         width: units.gu(40)
         height: units.gu(71)
 
+        XmlListModel {
+            id: listModel
+            source: "http://feeds.reuters.com/reuters/topNews"
+            query: "/rss/channel/item"
+            XmlRole { name: "title"; query: "title/string()" }
+        }
+
         Page {
             title: "Reuters"
             ListView {
+                id: view
                 anchors.fill: parent
-                model: XmlListModel {
-                    source: "http://feeds.reuters.com/reuters/topNews"
-                    query: "/rss/channel/item"
-                    XmlRole { name: "title"; query: "title/string()" }
-                }
+                model: listModel
                 delegate: Standard {
                     width: ListView.view.width
                     height: units.gu(5)
                     text: title
                 }
                 PullToRefresh {
-                    refreshing: model.status === XmlListModel.Loading
-                    onRefresh: model.reload()
+                    refreshing: view.model.status === XmlListModel.Loading
+                    onRefresh: view.model.reload()
                 }
             }
         }
@@ -87,16 +91,19 @@ import Ubuntu.Components 1.1
         width: units.gu(40)
         height: units.gu(71)
 
+        XmlListModel {
+            id: listModel
+            source: "http://feeds.reuters.com/reuters/topNews"
+            query: "/rss/channel/item"
+            XmlRole { name: "title"; query: "title/string()" }
+        }
+
         Page {
             title: "Reuters"
             ListView {
                 id: view
                 anchors.fill: parent
-                model: XmlListModel {
-                    source: "http://feeds.reuters.com/reuters/topNews"
-                    query: "/rss/channel/item"
-                    XmlRole { name: "title"; query: "title/string()" }
-                }
+                model: listModel
                 delegate: Standard {
                     width: ListView.view.width
                     height: units.gu(5)
@@ -147,6 +154,7 @@ import Ubuntu.Components 1.1
                 contentHeight: column.childrenRect.height
                 contentWidth: column.childrenRect.width
                 Column {
+                    id: column
                     Repeater {
                         model: rssFeed
                         Standard {
@@ -159,8 +167,8 @@ import Ubuntu.Components 1.1
 
                 PullToRefresh {
                     parent: flickable
-                    refreshing: model.status === XmlListModel.Loading
-                    onRefresh: model.reload()
+                    refreshing: rssFeed.status === XmlListModel.Loading
+                    onRefresh: rssFeed.reload()
                 }
             }
         }
@@ -181,7 +189,7 @@ StyledItem {
       from the style's releaseToRefresh property. The property can be used to
       define custom visuals for contentItem.
       */
-    readonly property bool releaseToRefresh: __styleInstance.manualRefresh
+    readonly property bool releaseToRefresh: __styleInstance.releaseToRefresh
 
     /*!
       The property holds the offset the component is pulled from the \l target
