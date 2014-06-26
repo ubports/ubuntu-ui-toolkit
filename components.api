@@ -412,6 +412,16 @@ Item
     property Gradient defaultGradient
     property color defaultDropdownColor
     property font defaultFont
+PageHeadStyle 1.1
+Item
+    property real contentHeight
+    property url separatorSource
+    property url separatorBottomSource
+    property string fontSize
+    property int fontWeight
+    property color textColor
+    property real textLeftMargin
+    property int maximumNumberOfActions
 Switch 0.1 1.0
 CheckBox
 Tab 0.1 1.0
