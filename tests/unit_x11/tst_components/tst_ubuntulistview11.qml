@@ -40,7 +40,7 @@ Item {
     // timer used to simulate the model refresh
     Timer {
         id: refreshTimer
-        interval: 200
+        interval: 500
         onTriggered: {
             dummyModel.reload();
         }

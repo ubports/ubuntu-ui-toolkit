@@ -44,7 +44,6 @@ Style.PullToRefreshStyle {
                 }
             }
         }
-        onVisibleChanged: print(visible)
     }
 
     // additional configuration properties provided by the Ambiance theme
@@ -81,11 +80,11 @@ Style.PullToRefreshStyle {
           cause the style to enter in refreshing state, which alters the topMargin.
           However in the same time the MainView Header will be also updated, so that
           will also alter the topMargin. But when refreshing completes, the topMargin
-          will be restored to teh default value before the animation, and teh content
+          will be restored to the default value before the animation, and the content
           will be pushed under the header. We need to connect to the header changes
-          so we can reset the state and teh topMargin.
+          so we can reset the state and the topMargin.
           */
-        if (rootItem && rootItem.__propagated.header) {
+        if (rootItem && rootItem.__propagated && rootItem.__propagated.header) {
             rootItem.__propagated.header.visibleChanged.connect(fixTopMargin);
             rootItem.__propagated.header.heightChanged.connect(fixTopMargin);
         }
@@ -94,7 +93,7 @@ Style.PullToRefreshStyle {
     function fixTopMargin() {
         if (style.state === "refreshing") {
             /*
-              Fetch teh topMargin, force state to disabled (idle will be turned on
+              Fetch the topMargin, force state to disabled (idle will be turned on
               automatically when refreshing completes) and set the topMargin from
               the header change.
               */
@@ -177,7 +176,7 @@ Style.PullToRefreshStyle {
         /*
            Label might not be ready when the component enters in refreshing
            state, therefore the visible property will not be properly returned to
-           true. Because of teh same reason we cannot have a PropertyChanges either
+           true. Because of the same reason we cannot have a PropertyChanges either
            as the target is not yet ready at that point.
            */
         if (label) {

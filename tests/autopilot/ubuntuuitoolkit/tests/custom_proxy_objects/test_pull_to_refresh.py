@@ -38,20 +38,6 @@ class PullToRefreshTestCase(tests.QMLFileAppTestCase):
             ubuntuuitoolkit.QQuickFlickable,
             objectName='flickableWithPullToRefresh')
 
-    def test_pull_to_refresh_on_a_flickable_without_it_must_raise_error(self):
-        if platform.model() != 'Desktop':
-            # TODO remove the skip once bug http://pad.lv/1266601 is fixed.
-            self.skipTest(
-                'Autopilot is not yet able to do a drag on the devices '
-                'without releasing the simulated finger.')
-        flickable = self.main_view.select_single(
-            ubuntuuitoolkit.QQuickFlickable,
-            objectName='flickableWithoutPullToRefresh')
-        error = self.assertRaises(
-            ubuntuuitoolkit.ToolkitException, flickable.pull_to_refresh)
-        self.assertEqual(
-            str(error), 'The flickable has no pull to refresh functionality.')
-
     def test_pull_to_refresh_must_refresh_model(self):
         self.flickable_with_pull_to_refresh.pull_to_refresh()
 
