@@ -21,7 +21,7 @@ Page10 {
       \qmlproperty HeaderConfiguration head
      */
     readonly property alias head: headerConfig
-    HeaderConfiguration {
+    PageHeadConfiguration {
         id: headerConfig
     }
 }

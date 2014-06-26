@@ -29,7 +29,7 @@ Page 0.1 Page10.qml
 internal PageTreeNode PageTreeNode.qml
 PageStack 0.1 PageStack.qml
 internal Toolbar Toolbar.qml
-internal HeaderConfiguration HeaderConfiguration.qml
+internal PageHeadConfiguration PageHeadConfiguration.qml
 internal AppHeader AppHeader.qml
 Header 0.1 Header.qml
 internal AnimatedItem AnimatedItem.qml
