@@ -33,10 +33,10 @@ def get_device_simulation_scenarios(devices=DEFAULT_DEVICES):
         corresponding to the selected device.
 
     """
-    scenarios = []
     if platform.model() == 'Desktop':
-        scenarios.extend(_get_device_simulation_scenarios_for_desktop(devices))
-    return scenarios
+        return _get_device_simulation_scenarios_for_desktop(devices)
+    else:
+        return [(platform.model(), {})]
 
 
 def _get_device_simulation_scenarios_for_desktop(devices):

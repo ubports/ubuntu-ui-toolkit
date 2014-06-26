@@ -14,6 +14,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+try:
+    from unittest import mock
+except ImportError:
+    import mock
+
 import testtools
 
 from ubuntuuitoolkit import ubuntu_scenarios
@@ -48,3 +53,10 @@ class ScenariosTestCase(testtools.TestCase):
         ]
         scenarios = ubuntu_scenarios.get_device_simulation_scenarios()
         self.assertEqual(expected_scenarios, scenarios)
+
+    def test_get_scenarios_on_device_must_return_no_simulation_scenarios(self):
+        with mock.patch('autopilot.platform.model') as mock_model:
+            mock_model.return_value = 'Not Desktop'
+            scenarios = ubuntu_scenarios.get_device_simulation_scenarios()
+
+        self.assertEqual([('Not Desktop', {})], scenarios)
