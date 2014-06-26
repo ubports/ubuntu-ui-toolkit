@@ -42,6 +42,18 @@ public:
         qFatal("No item '%s' found", qPrintable(objectName));
     }
 
+    static inline QPointF centerOf(QQuickItem *item, bool windowPos = false)
+    {
+        QPointF center;
+        if (item) {
+            center = item->boundingRect().center();
+            if (windowPos) {
+                center = item->mapToScene(center);
+            }
+        }
+        return center;
+    }
+
 private:
     QSignalSpy* m_spy;
 };
