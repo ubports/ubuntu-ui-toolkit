@@ -316,7 +316,7 @@ class HideUnity7LauncherTestCase(
 
     def setUp(self):
         if platform.model() != 'Desktop':
-            self.skipTest('We can simulate devices only on desktop.')
+            self.skipTest('Unity 7 runs only on desktop.')
         self.useFixture(fixture_setup.HideUnity7Launcher())
         super(HideUnity7LauncherTestCase, self).setUp()
 
