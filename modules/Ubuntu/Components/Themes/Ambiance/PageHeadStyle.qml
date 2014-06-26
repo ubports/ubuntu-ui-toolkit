@@ -21,14 +21,14 @@ import Ubuntu.Components.Styles 1.1 as Style
 
 Style.PageHeadStyle {
     id: headerStyle
-    property real contentHeight: units.gu(7.5)
-    property url separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
-    property url separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
-    property int fontWeight: Font.Light
-    property string fontSize: "x-large"
-    property color textColor: Theme.palette.selected.backgroundText
-    property real textLeftMargin: units.gu(2)
-    property int maximumNumberOfActions: 3
+    contentHeight: units.gu(7.5)
+    separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
+    separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
+    fontWeight: Font.Light
+    fontSize: "x-large"
+    textColor: Theme.palette.selected.backgroundText
+    textLeftMargin: units.gu(2)
+    maximumNumberOfActions: 3
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
 

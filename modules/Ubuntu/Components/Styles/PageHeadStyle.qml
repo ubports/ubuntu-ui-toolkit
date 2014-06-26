@@ -28,39 +28,39 @@ Item {
       The height of the headercontents, which is the full height of
       the header minus the separators shown at the bottom of it.
      */
-    property real contentHeight: units.gu(7.5)
+    property real contentHeight
 
     /*!
       The source of the image that separates the header from the contents of a \l MainView.
       The separator will be drawn over the contents.
      */
-    property url separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
+    property url separatorSource
 
     /*!
       The source of an additional image attached to the bottom of the separator. The contents
       of the \l MainView will be drawn on top of the separator bottom image.
      */
-    property url separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
+    property url separatorBottomSource
 
     /*!
       The size of the title font.
      */
-    property string fontSize: "x-large"
+    property string fontSize
 
     /*!
       The weight of the title font.
      */
-    property int fontWeight: Font.Light
+    property int fontWeight
 
     /*!
       The color of the title text.
      */
-    property color textColor: Theme.palette.selected.backgroundText
+    property color textColor
 
     /*!
       Left margin of title text.
      */
-    property real textLeftMargin: units.gu(2)
+    property real textLeftMargin
 
     /*!
       The number of slots for actions in the header, including the optional
@@ -68,5 +68,5 @@ Item {
       If the number of actions defined is larger than the numer of actions
       specified here, extra actions are put into an overflow.
      */
-    property int maximumNumberOfActions: 3
+    property int maximumNumberOfActions
 }
