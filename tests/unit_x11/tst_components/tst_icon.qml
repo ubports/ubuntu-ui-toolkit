@@ -25,6 +25,8 @@ Item {
 
     Icon {
         id: icon
+        width: units.gu(2)
+        height: units.gu(2)
     }
 
     UbuntuTestCase {
