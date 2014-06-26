@@ -235,7 +235,11 @@ PageTreeNode
     property list<Action> actions
 Page 1.1
 Page10
-    readonly property HeaderConfiguration head
+    readonly property PageHeadConfiguration head
+PageHeadConfiguration 1.1
+QtObject
+    property list<Action> actions
+    property Action backAction
 PageStack 0.1 1.0
 PageTreeNode
     property bool __showHeader
