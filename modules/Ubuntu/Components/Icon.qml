@@ -103,12 +103,12 @@ Item {
         id: colorizedImage
 
         anchors.fill: parent
-        visible: active && image.status == Image.Ready
+        visible: active
 
         // Whether or not a color has been set.
         property bool active: keyColorOut != Qt.rgba(0.0, 0.0, 0.0, 0.0)
 
-        property Image source: visible ? image : null
+        property Image source: active && image.status == Image.Ready ? image : null
         property color keyColorOut: Qt.rgba(0.0, 0.0, 0.0, 0.0)
         property color keyColorIn: "#808080"
         property real threshold: 0.1
