@@ -41,7 +41,7 @@ QtObject {
     property Action backAction: null
 
     /*!
-      Set this property to show this \l Item in the header instead of
+      Set this property to show this Item in the header instead of
       the title. Use a \l TextField here for implementing search in header.
       The header contents will automatically be anchored to the left and
       vertically centered inside the header.
