@@ -8,5 +8,6 @@ SUBDIRS += tst_components \
     tst_recreateview \
     tst_statesaver \
     tst_theme_engine \
-    tst_orientation tst_layouts \
+    tst_orientation \
+    tst_layouts \
     tst_mousefilters

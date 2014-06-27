@@ -176,8 +176,9 @@ ActionItem {
     /*!
       Whether the TextField should gain active focus on a mouse press. By default
       this is set to true.
+      \qmlproperty bool activeFocusOnPress
     */
-    property bool activeFocusOnPress: true
+    property alias activeFocusOnPress: editor.activeFocusOnPress
 
     /*!
       Whether the TextField should scroll when the text is longer than the width.
@@ -472,8 +473,9 @@ ActionItem {
 
       If false, the user cannot use the mouse to select text, only can use it to
       focus the input.
+      \qmlproperty bool selectByMouse
     */
-    property bool selectByMouse: true
+    property alias selectByMouse: editor.selectByMouse
 
     /*!
       This read-only property provides the text currently selected in the text input.
@@ -737,15 +739,6 @@ ActionItem {
     }
 
     /*!
-      \internal
-       Ensure focus propagation
-    */
-    function forceActiveFocus()
-    {
-        inputHandler.activateInput();
-    }
-
-    /*!
       Returns true if the natural reading direction of the editor text found between
       positions start and end is right to left.
     */
@@ -957,7 +950,7 @@ ActionItem {
     // text input
     Flickable {
         id: flicker
-        objectName: "textfield_scroller"
+        objectName: "input_scroller"
         anchors {
             left: leftPane.right
             right: clearButton.left
@@ -977,6 +970,7 @@ ActionItem {
 
         TextInput {
             id: editor
+            objectName: "text_input"
             // FocusScope will forward focus to this component
             focus: true
             anchors.verticalCenter: parent.verticalCenter
@@ -993,8 +987,8 @@ ActionItem {
             Keys.forwardTo: [control, inputHandler]
 
             // overrides
-            selectByMouse: false
-            activeFocusOnPress: false
+            selectByMouse: true
+            activeFocusOnPress: true
 
             // input selection and navigation handling
             Ubuntu.Mouse.forwardTo: [inputHandler]
@@ -1004,7 +998,6 @@ ActionItem {
                 main: control
                 input: editor
                 flickable: flicker
-                selectionModeTimeout: control.__styleInstance.selectionModeTimeout
                 /*
                   In x direction we use the Flickable x position as we can have overlays
                   which can shift the cursor caret. On y direction we only use the topMargin
