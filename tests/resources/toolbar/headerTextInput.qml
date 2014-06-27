@@ -18,7 +18,6 @@ import QtQuick 2.2
 import Ubuntu.Components 1.1
 
 MainView {
-    id: mainView
     width: units.gu(40)
     height: units.gu(50)
     useDeprecatedToolbar: false
