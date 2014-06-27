@@ -832,8 +832,6 @@ ActionItem {
             control.focus = false;
     }
 
-    onFocusChanged: Qt.inputMethod.commit()
-
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 

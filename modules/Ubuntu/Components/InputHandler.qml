@@ -289,6 +289,7 @@ Item {
         target: main
         ignoreUnknownSignals: true
         onFocusChanged: {
+            Qt.inputMethod.commit()
             state = (main.focus) ? "" : "inactive";
         }
     }
