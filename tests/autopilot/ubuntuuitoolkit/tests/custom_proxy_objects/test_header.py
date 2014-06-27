@@ -24,15 +24,24 @@ import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
 
-class HeaderToolsTestCase(tests.QMLFileAppTestCase):
+class HeaderTestCase(tests.QMLFileAppTestCase):
 
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
-    test_qml_file_path = os.path.join(
+    tools_test_qml_file_path = os.path.join(
         dir_path, 'test_header.HeaderToolsTestCase.qml')
+    actions_test_qml_file_path = os.path.join(
+        dir_path, 'test_header.HeaderActionsTestCase.qml')
+
+    scenarios = [
+        ('deprecated tools',
+            dict(test_qml_file_path=tools_test_qml_file_path)),
+        ('actions',
+            dict(test_qml_file_path=actions_test_qml_file_path))
+    ]
 
     def setUp(self):
-        super(HeaderToolsTestCase, self).setUp()
+        super(HeaderTestCase, self).setUp()
         self.header = self.main_view.get_header()
         self.label = self.app.select_single(
             'Label', objectName='clicked_label')
