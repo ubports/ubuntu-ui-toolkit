@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,6 @@
  */
 
 import QtQuick 2.2
-import QtQuick 2.0
 import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
@@ -45,11 +44,6 @@ Template {
         Timer {
             id: refreshTimer
             interval: 400
-        }
-
-        Rectangle {
-            width: 10; height: width
-            objectName: "crap"
         }
 
         UbuntuListView {
