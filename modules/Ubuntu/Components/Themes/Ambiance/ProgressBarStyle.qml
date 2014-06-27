@@ -20,7 +20,7 @@ import Ubuntu.Components 1.1
 Item {
     id: progressBarStyle
 
-    property ProgressBar progressBar: styledItem
+    property var progressBar: styledItem
 
     implicitWidth: units.gu(38)
     implicitHeight: units.gu(4)
