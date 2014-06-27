@@ -150,7 +150,7 @@ StyledItem {
     /*!
       Configuration of the header.
      */
-    property HeaderConfiguration config: null
+    property PageHeadConfiguration config: null
 
     QtObject {
         id: internal
@@ -240,5 +240,5 @@ StyledItem {
     }
 
     style: header.useDeprecatedToolbar ? Theme.createStyleComponent("HeaderStyle.qml", header) :
-                                         Theme.createStyleComponent("NewHeaderStyle.qml", header)
+                                         Theme.createStyleComponent("PageHeadStyle.qml", header)
 }

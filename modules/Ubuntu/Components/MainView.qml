@@ -347,7 +347,7 @@ PageTreeNode {
             flickable: internal.activePage ? internal.activePage.flickable : null
             pageStack: internal.activePage ? internal.activePage.pageStack : null
 
-            HeaderConfiguration {
+            PageHeadConfiguration {
                 id: headerConfig
                 // for backwards compatibility with deprecated tools property
                 actions: internal.activePage ?
