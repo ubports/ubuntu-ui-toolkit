@@ -28,7 +28,6 @@ MainView {
 
         Component.onCompleted: stack.push(tabs)
         Tabs {
-            selectedTabIndex: 4
             id: tabs
             Tab {
                 title: "Stack"
