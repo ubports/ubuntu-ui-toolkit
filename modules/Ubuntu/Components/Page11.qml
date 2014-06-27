@@ -23,5 +23,5 @@ Page10 {
     readonly property alias head: headerConfig
     PageHeadConfiguration {
         id: headerConfig
-   }
+    }
 }
