@@ -16,7 +16,76 @@
 
 import QtQuick 2.2
 
-// TODO: Document
+/*!
+    \qmltype PageHeadState
+    \inqmlmodule Ubuntu.Components 1.1
+    \ingroup ubuntu
+    \since Ubuntu.Components 1.1
+    \brief PageHeadState is a helper component to make it easier to
+        configure the page header when changing states.
+
+   This example shows how to add an action to the header that
+   enables the user to enter search/input mode:
+   \qml
+        import QtQuick 2.2
+        import Ubuntu.Components 1.1
+
+        MainView {
+            id: mainView
+            width: units.gu(40)
+            height: units.gu(50)
+            useDeprecatedToolbar: false
+
+            Page {
+                id: searchPage
+                title: "Click the icon"
+
+                Label {
+                    anchors.centerIn: parent
+                    text: searchPage.state == "search" ? "search mode" : "normal mode"
+                }
+
+                head.actions: Action {
+                    id: searchAction
+                    iconName: "search"
+                    onTriggered: searchPage.state = "search"
+                }
+
+                state: ""
+                states: [
+                    State {
+                        name: ""
+                        PropertyChanges {
+                            target: searchPage.head
+                            // needed otherwise actions will not be
+                            // returned to its original state.
+                            actions: [ searchAction ]
+                        }
+                    },
+                    PageHeadState {
+                        id: headerState
+                        name: "search"
+                        head: searchPage.head
+                        actions: [
+                            Action {
+                                iconName: "contact"
+                            }
+                        ]
+                        backAction: Action {
+                            id: leaveSearchAction
+                            text: "back"
+                            iconName: "back"
+                            onTriggered: searchPage.state = ""
+                        }
+                        contents: TextField {
+                            placeholderText: "search..."
+                        }
+                    }
+                ]
+            }
+        }
+   \endqml
+ */
 State {
     id: state
 
@@ -37,6 +106,9 @@ State {
      */
     property Action backAction
 
+    /*!
+      The contents of the header when this state is active.
+     */
     property Item contents
 
     PropertyChanges {

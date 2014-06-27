@@ -45,6 +45,8 @@ QtObject {
       the title. Use a \l TextField here for implementing search in header.
       The header contents will automatically be anchored to the left and
       vertically centered inside the header.
+      See \l PageHeadState for an example that shows how search mode can
+      be implemented.
      */
     property Item contents: null
 }
