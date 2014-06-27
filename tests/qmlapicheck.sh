@@ -16,7 +16,7 @@
 #
 ################################################################################
 QML="modules/Ubuntu/*/qmldir modules/Ubuntu/Components/Colors/UbuntuColors.qml modules/Ubuntu/Components/*/qmldir modules/Ubuntu/Components/Pickers/PickerPanel.qml"
-CPP="Ubuntu.Components Ubuntu.Layouts Ubuntu.PerformanceMetrics"
+CPP="Ubuntu.Components Ubuntu.Layouts Ubuntu.PerformanceMetrics Ubuntu.Test"
 
 echo Dumping QML API of C++ components
 echo '' > plugins.qmltypes

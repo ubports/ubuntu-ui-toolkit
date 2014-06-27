@@ -1,6 +1,6 @@
 TEMPLATE = lib
 TARGET = ../UbuntuTest
-QT += core-private qml qml-private quick quick-private
+QT += core-private qml qml-private quick quick-private gui-private testlib
 
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT += v8-private
@@ -15,9 +15,13 @@ uri = Ubuntu.Test
 
 HEADERS += \
     uctestcase.h \
+    testplugin.h \
+    uctestextras.h
 
 SOURCES += \
     uctestcase.cpp \
+    testplugin.cpp \
+    uctestextras.cpp
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)

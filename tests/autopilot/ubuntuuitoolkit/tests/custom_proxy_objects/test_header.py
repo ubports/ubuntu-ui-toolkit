@@ -14,7 +14,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import logging
 import os
+
+import fixtures
+from testtools.matchers import Contains
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
@@ -111,7 +115,7 @@ MainView {
         self.assertEqual(self.label.text, 'No button clicked.')
 
     def test_header_custom_proxy_object(self):
-        self.assertIsInstance(self.header, ubuntuuitoolkit.Header)
+        self.assertIsInstance(self.header, ubuntuuitoolkit.AppHeader)
         self.assertTrue(self.header.visible)
         self.assertEqual(self.header.title, "Test title")
 
@@ -183,4 +187,27 @@ class HeaderInCustomMainViewTestCase(tests.QMLFileAppTestCase):
 
         """
         header = self.main_view.get_header()
-        self.assertIsInstance(header, ubuntuuitoolkit.Header)
+        self.assertIsInstance(header, ubuntuuitoolkit.AppHeader)
+
+
+class DeprecatedHeaderTestCase(tests.QMLFileAppTestCase):
+
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_header.DeprecatedHeaderTestCase.qml')
+
+    @property
+    def main_view(self):
+        return self.app.select_single('QQuickItem', objectName='main')
+
+    def test_get_deprecated_header_must_log_deprecation_warning(self):
+        fake_logger = fixtures.FakeLogger(level=logging.WARNING)
+        self.useFixture(fake_logger)
+        self.main_view.select_single(ubuntuuitoolkit.Header)
+        self.assertThat(
+            fake_logger.output,
+            Contains(
+                'Header is an internal QML component of Ubuntu.Components and '
+                'its API may change or be removed at any moment. Please use '
+                'MainView and Page instead.'))
