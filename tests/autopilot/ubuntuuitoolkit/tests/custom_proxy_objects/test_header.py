@@ -22,112 +22,23 @@ from testtools.matchers import Contains
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
-from testtools.matchers import Equals
-from autopilot.matchers import Eventually
 
 
-class HeaderTestCase(tests.QMLStringAppTestCase):
+class HeaderTestCase(tests.QMLFileAppTestCase):
 
-    test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    tools_test_qml_file_path = os.path.join(
+        dir_path, 'test_header.HeaderToolsTestCase.qml')
+    actions_test_qml_file_path = os.path.join(
+        dir_path, 'test_header.HeaderActionsTestCase.qml')
 
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-
-    useDeprecatedToolbar: false
-
-    PageStack {
-        id: stack
-        Component.onCompleted: stack.push(page)
-
-        Page {
-            title: "Test title"
-            id: page
-
-            Flickable {
-                anchors.fill: parent
-                contentHeight: units.gu(120)
-                objectName: "header_test_flickable"
-
-                Label {
-                    id: label
-                    objectName: "clicked_label"
-                    anchors {
-                        top: parent.top
-                        horizontalCenter: parent.horizontalCenter
-                    }
-                    text: "No button clicked."
-                }
-
-                Button {
-                    objectName: "hide_actions_button"
-                    anchors {
-                        top: label.bottom
-                        topMargin: units.gu(5)
-                        horizontalCenter: parent.horizontalCenter
-                    }
-                    text: "Hide some actions"
-                    onClicked: {
-                        cancelAction.visible = false;
-                        for (var i=0; i < 3; i++) {
-                            buttonRepeater.itemAt(i).action.visible = false;
-                        }
-                        // only three of five visible actions left
-                    }
-                }
-                Label {
-                    id: endLabel
-                    objectName: "end_label"
-                    anchors {
-                        bottom: parent.bottom
-                        horizontalCenter: parent.horizontalCenter
-                    }
-                    text: "The end."
-                }
-            }
-
-            tools: ToolbarItems {
-                back: ToolbarButton {
-                    action: Action {
-                        id: cancelAction
-                        iconName: "cancel"
-                        text: "cancel"
-                        onTriggered: label.text = "Cancel button clicked."
-                    }
-                }
-                Repeater {
-                    id: buttonRepeater
-                    model: 5
-                    ToolbarButton {
-                        action: Action {
-                            objectName: "action" + index
-                            text: "text " + index
-                            iconName: "add"
-                            onTriggered: {
-                                label.text = "Button "+index+" clicked.";
-                            }
-                        }
-                    }
-                }
-                ToolbarButton {
-                    action: Action {
-                        objectName: "pushStackAction"
-                        text: "Push page"
-                        iconName: "add"
-                        onTriggered: stack.push(pushMe)
-                    }
-                }
-            }
-        }
-        Page {
-            title: "Pushed page"
-            id: pushMe
-        }
-    }
-}
-""")
+    scenarios = [
+        ('deprecated tools',
+            dict(test_qml_file_path=tools_test_qml_file_path)),
+        ('actions',
+            dict(test_qml_file_path=actions_test_qml_file_path))
+    ]
 
     def setUp(self):
         super(HeaderTestCase, self).setUp()
@@ -150,13 +61,6 @@ MainView {
         # and the others in the overflow.
         self.header.click_action_button('action3')
         self.assertEqual(self.label.text, 'Button 3 clicked.')
-
-    def test_click_header_overflow_action_closes_popover_bug1326963(self):
-        overflow_popover = self.main_view.select_single(
-            'Popover',
-            objectName='actions_overflow_popover')
-        self.header.click_action_button('pushStackAction')
-        self.assertThat(overflow_popover.visible, Eventually(Equals(False)))
 
     def test_click_unexisting_header_action_button(self):
         error = self.assertRaises(
