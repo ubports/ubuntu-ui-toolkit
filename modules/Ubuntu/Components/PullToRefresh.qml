@@ -78,7 +78,7 @@ import Ubuntu.Components 1.1
     As default, the component displays a Label visualizing the two states of the
     component, which is pull to refresh and release to refresh. As mentioned, this
     is driven by the threshold value specified by the style, and the state is reported
-    by the \l releaseToRefresh property. The \l contentItem specifies the visuals
+    by the \l releaseToRefresh property. The \l content specifies the visuals
     to be shown by the component. Custom implementations can hold any component,
     which will be anchor filled to the component itself.
     \qml
@@ -128,7 +128,7 @@ import Ubuntu.Components 1.1
     \endqml
 
     \note When declared as child of Flickable, set parent to the flickable explicitly
-    so the component does not land in the \c contentItem of Flickable.
+    so the component does not land in the \c content of Flickable.
     \qml
     import QtQuick 2.2
     import QtQuick.XmlListModel 2.0
@@ -187,7 +187,7 @@ StyledItem {
       The property specifies when the component is ready to trigger the refresh()
       signal. The logic is defined by the style and the value is transferred
       from the style's releaseToRefresh property. The property can be used to
-      define custom visuals for contentItem.
+      define custom visuals for \l content.
       */
     readonly property bool releaseToRefresh: __styleInstance.releaseToRefresh
 
