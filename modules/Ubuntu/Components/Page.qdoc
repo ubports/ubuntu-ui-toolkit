@@ -80,9 +80,6 @@
   Configuration of the header for this page.
  */
 
-
-// TODO: Add search state example here when we have the HeaderState component.
-
 /*!
     \qmlproperty Flickable Page::flickable
     Optional flickable that controls the header. This property
