@@ -28,8 +28,8 @@ class UCTestExtras : public QObject
 public:
     explicit UCTestExtras(QObject *parent = 0);
 
-    static bool touchDevicePresent();
 public Q_SLOTS:
+    static bool touchDevicePresent();
     static void registerTouchDevice();
     static void touchPress(int touchId, QQuickItem *item, const QPoint &point);
     static void touchRelease(int touchId, QQuickItem *item, const QPoint &point);

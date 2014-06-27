@@ -43,14 +43,14 @@ StyledItem {
     /*!
       \deprecated
       The header of the node. Propagates down from the root node.
-      This property is deprecated.
+      This property is DEPRECATED.
      */
-    property Header header: node.__propagated ? node.__propagated.header : null
+    property AppHeader header: node.__propagated ? node.__propagated.header : null
 
     /*!
       \deprecated
       The toolbar of the node. Propagates down from the root node.
-      This property is deprecated.
+      This property is DEPRECATED.
      */
     property Toolbar toolbar: node.__propagated ? node.__propagated.toolbar : null
 
@@ -109,6 +109,7 @@ StyledItem {
 
     Item {
         id: internal
+
         function isPageTreeNode(object) {
             // FIXME: Use QuickUtils.className() when it becomes available.
             return (object && object.hasOwnProperty("__isPageTreeNode") && object.__isPageTreeNode);

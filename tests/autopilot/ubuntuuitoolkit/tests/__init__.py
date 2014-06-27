@@ -150,7 +150,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
 
     def checkPageHeader(self, pageTitle):
         orientationHelper = self.getOrientationHelper()
-        header = orientationHelper.select_many("Header", title=pageTitle)[0]
+        header = orientationHelper.select_single("AppHeader", title=pageTitle)
         self.assertThat(header, Not(Is(None)))
         self.assertThat(header.visible, Eventually(Equals(True)))
         return header

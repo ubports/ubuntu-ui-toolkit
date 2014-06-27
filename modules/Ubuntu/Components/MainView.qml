@@ -334,7 +334,7 @@ PageTreeNode {
           The header of the MainView. Can be used to obtain the height of the header
           in \l Page to determine the area for the \l Page to fill.
          */
-        Header {
+        AppHeader {
             // FIXME We need to set an object name to this header in order to differentiate it from the ListItem.Header on Autopilot tests.
             // This is a temporary workaround while we find a better solution for https://bugs.launchpad.net/autopilot/+bug/1210265
             // --elopio - 2013-08-08
@@ -479,7 +479,7 @@ PageTreeNode {
           The header that will be propagated to the children in the page tree node.
           It is used by Tabs to bind header's tabsModel.
          */
-        property Header header: headerItem
+        property AppHeader header: headerItem
 
         /*!
           \internal
