@@ -86,9 +86,9 @@ Item {
             objectName: "customBackButton"
             height: parent ? parent.height : undefined
             width: visible ? units.gu(5) : 0
-            action: styledItem.__customBackAction
-            visible: null !== styledItem.__customBackAction &&
-                     styledItem.__customBackAction.visible
+            action: styledItem.config.backAction
+            visible: null !== styledItem.config.backAction &&
+                     styledItem.config.backAction.visible
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
         }
 
@@ -100,6 +100,7 @@ Item {
 
             iconName: "back"
             visible: styledItem.pageStack !== null &&
+                     styledItem.pageStack !== undefined &&
                      styledItem.pageStack.depth > 1 &&
                      !customBackButton.visible
 
@@ -118,7 +119,9 @@ Item {
             width: visible ? units.gu(5) : 0
 
             iconName: "navigation-menu"
-            visible: styledItem.tabsModel !== null && !backButton.visible &&
+            visible: styledItem.tabsModel !== null &&
+                     styledItem.tabsModel !== undefined &&
+                     !backButton.visible &&
                      !customBackButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", tabsButton)
@@ -206,7 +209,7 @@ Item {
     Row {
         id: actionsContainer
 
-        property var visibleActions: getVisibleActions(styledItem.actions)
+        property var visibleActions: getVisibleActions(styledItem.config.actions)
         function getVisibleActions(actions) {
             var visibleActionList = [];
             for (var i in actions) {
@@ -264,7 +267,7 @@ Item {
                 caller: actionsOverflowButton
 
                 Connections {
-                    target: styledItem
+                    target: styledItem.config
                     onActionsChanged: {
                         // Ensure the popover closes when actions change and
                         // the list item below may be destroyed before its
