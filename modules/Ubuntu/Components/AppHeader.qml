@@ -150,7 +150,7 @@ StyledItem {
     /*!
       Configuration of the header.
      */
-    property HeaderConfiguration config: null
+    property PageHeadConfiguration config: null
 
     QtObject {
         id: internal
