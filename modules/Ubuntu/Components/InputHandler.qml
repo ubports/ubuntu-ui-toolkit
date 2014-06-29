@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.1
 import Ubuntu.Components 1.1
 
 /*
@@ -22,9 +22,10 @@ import Ubuntu.Components 1.1
   TextField and TextArea components.
   */
 
-Item {
+MultiPointTouchArea {
     id: inputHandler
     objectName: "input_handler"
+
     // the root control
     property Item main
     // the input instance
@@ -33,10 +34,6 @@ Item {
     property Flickable flickable
     // selection cursor mode
     property bool selectionCursor: input && input.selectedText !== ""
-    // True if mouse handlig is enabled, false if flicking mode is enabled
-    readonly property bool mouseHandlingEnabled: !flickable.interactive
-    // property holding the selection mode timeout
-    property int selectionModeTimeout: 200
 
     // item filling the text input visible area, used to check teh caret handler
     // visibility
@@ -79,6 +76,7 @@ Item {
     readonly property bool singleLine: input && input.hasOwnProperty("validator")
     property var flickableList: new Array()
     property bool textChanged: false
+    property bool suppressReleaseEvent: false
     property int pressedPosition: -1
     // move properties
     property int moveStarts: -1
@@ -132,6 +130,7 @@ Item {
     }
     // selects text
     function selectText(mouse) {
+        state = "select";
         moveEnds = mousePosition(mouse);
         if (moveStarts < 0) {
             moveStarts = moveEnds;
@@ -147,11 +146,14 @@ Item {
         return p;
     }
     // focuses the input if not yet focused, and shows the context menu
-    function openContextMenu(mouse) {
+    function openContextMenu(mouse, noAutoselect) {
         var pos = mousePosition(mouse);
         if (!main.focus || !mouseInSelection(mouse)) {
             activateInput();
             input.cursorPosition = pressedPosition = mousePosition(mouse);
+            if (noAutoselect === undefined || !noAutoselect) {
+                input.selectWord();
+            }
         }
         // open context menu at the cursor position
         inputHandler.pressAndHold(input.cursorPosition);
@@ -231,6 +233,13 @@ Item {
 
     Component.onCompleted: {
         state = (main.focus) ? "" : "inactive";
+        // FIXME: Qt5.3 related! mouseEnabled is a 5.3 related property which has a positive
+        // default value. That value messes up teh current understanding (5.2) of the
+        // MultiPointTouchArea functioning. We need to set it to false until 5.3 will be the
+        // default supported Qt version, when we can have a clean property value assignment
+        if (inputHandler.hasOwnProperty("mouseEnabled")) {
+            inputHandler.mouseEnabled = false;
+        }
     }
 
     // states
@@ -259,8 +268,8 @@ Item {
                 script: {
                     // stop scrolling all the parents
                     toggleFlickablesInteractive(false);
-                    // stop selection timeout
-                    selectionTimeout.running = false;
+                    // stop touch timers
+                    touchPoint.reset();
                 }
             }
         },
@@ -289,6 +298,7 @@ Item {
         target: main
         ignoreUnknownSignals: true
         onFocusChanged: {
+            Qt.inputMethod.commit()
             state = (main.focus) ? "" : "inactive";
         }
     }
@@ -296,28 +306,26 @@ Item {
     // input specific signals
     Connections {
         target: input
-        onCursorRectangleChanged: if (!scrollingDisabled) ensureVisible()
+        onCursorRectangleChanged: ensureVisible()
         onTextChanged: textChanged = true;
+        // make sure we show the OSK
+        onActiveFocusChanged: showInputPanel()
     }
 
     // inner or outer Flickable controlling
     Connections {
         target: scroller
         // turn scrolling state on
-        onFlickStarted: if (!scrollingDisabled) state = "scrolling"
-        onMovementStarted: if (!scrollingDisabled) state = "scrolling"
+        onFlickStarted: toggleScrollingState(true)
+        onMovementStarted: toggleScrollingState(true)
         // reset to default state
-        onMovementEnded: state = ""
-    }
+        onMovementEnded: toggleScrollingState(false)
 
-    // switches the state to selection
-    Timer {
-        id: selectionTimeout
-        interval: selectionModeTimeout
-        onTriggered: {
-            if (scroller && !scroller.moving) {
-                state = "select";
+        function toggleScrollingState(turnOn) {
+            if (!main.focus) {
+                return;
             }
+            inputHandler.state = (turnOn) ? "scrolling" : ""
         }
     }
 
@@ -330,62 +338,116 @@ Item {
         }
     }
 
-    // Mouse handling
-    Mouse.forwardTo: [main]
-    Mouse.onPressed: {
-        if (input.activeFocus) {
-            // start selection timeout
-            selectionTimeout.restart();
+    // touch and mous handling
+    function handlePressed(event, touch) {
+        if (touch) {
+            // we do not have longTap or double tap, therefore we need to generate those
+            event.touch();
+        } else {
+            // consume event so it does not get forwarded to the input
+            event.accepted = true;
         }
         // remember pressed position as we need it when entering into selection state
-        pressedPosition = mousePosition(mouse);
-        // consume event so it does not get forwarded to the input
-        mouse.accepted = true;
+        pressedPosition = mousePosition(event);
     }
-    Mouse.onReleased: {
-        if (!main.focus && !main.activeFocusOnPress) {
+    function handleReleased(event, touch) {
+        if (touch) {
+            event.untouch();
+        }
+        if ((!main.focus && !main.activeFocusOnPress) || suppressReleaseEvent === true) {
+            suppressReleaseEvent = false;
             return;
         }
 
         activateInput();
-        // stop text selection timer
-        selectionTimeout.running = false;
-        if (state === "") {
-            input.cursorPosition = mousePosition(mouse);
+        if (state === "" || touch) {
+            input.cursorPosition = mousePosition(event);
         }
         moveStarts = moveEnds = -1;
         state = "";
         // check if we get right-click from the frame or the area that has no text
-        if (mouse.button === Qt.RightButton) {
+        if (event.button === Qt.RightButton) {
             // open the popover
             inputHandler.pressAndHold(input.cursorPosition);
         }
     }
-    Mouse.onPositionChanged: {
+    function handleMove(event, touch ) {
         // leave if not focus, not the left button or not in select state
-        if (!input.activeFocus || (mouse.button !== Qt.LeftButton) || (state !== "select") || !main.selectByMouse) {
+        if (!input.activeFocus || (!touch && event.button !== Qt.LeftButton) || !main.selectByMouse) {
             return;
         }
-        // stop text selection timer
-        selectionTimeout.running = false;
-        selectText(mouse);
+        selectText(event);
     }
-    Mouse.onDoubleClicked: {
+    function handleDblClick(event, touch) {
         if (main.selectByMouse) {
             input.selectWord();
             // turn selection state temporarily so the selection is not cleared on release
             state = "selection";
+            if (touch) {
+                suppressReleaseEvent = true;
+            }
         }
     }
-    Mouse.onPressAndHold: openContextMenu(mouse)
+
+    // Mouse handling
+    Mouse.forwardTo: [main]
+    Mouse.onPressed: handlePressed(mouse, false)
+    Mouse.onReleased: handleReleased(mouse, false)
+    Mouse.onPositionChanged: handleMove(mouse, false)
+    Mouse.onDoubleClicked: handleDblClick(mouse)
 
     // right button handling
     MouseArea {
         anchors.fill: parent
         acceptedButtons: Qt.RightButton
         // trigger pressAndHold
-        onReleased: openContextMenu(mouse)
+        onReleased: openContextMenu(mouse, true)
     }
+
+    // touch handling
+    touchPoints: TouchPoint {
+        id: touchPoint
+        function touch() {
+            longTap.restart();
+            if (!doubleTap.running) {
+                doubleTap.restart();
+            } else if (doubleTap.tapCount > 0) {
+                doubleTap.running = false;
+                handleDblClick(touchPoint, true);
+            }
+        }
+        function untouch() {
+            longTap.running = false;
+        }
+        function reset() {
+            longTap.running = false;
+            doubleTap.running = false;
+        }
+    }
+    Timer {
+        id: longTap
+        // sync with QQuickMouseArea constant
+        interval: 800
+        onTriggered: {
+            // do not open context menu if the input is not focus
+            if (!main.focus) {
+                return;
+            }
+
+            openContextMenu(touchPoint, false);
+            suppressReleaseEvent = true;
+        }
+    }
+    Timer {
+        id: doubleTap
+        property int tapCount: 0
+        interval: 400
+        onRunningChanged: {
+            tapCount = running;
+        }
+    }
+    onPressed: handlePressed(touchPoints[0], true)
+    onReleased: handleReleased(touchPoints[0], true)
 
     // cursors to use when text is selected
     Connections {
@@ -400,6 +462,7 @@ Item {
                                     "positionProperty": "selectionStart",
                                     "height": lineSize,
                                     "handler": inputHandler,
+                                    "objectName": "selectionStartCursor"
                                     }
                                 );
                     moveSelectionCursor(selectionStartCursor);
@@ -410,6 +473,7 @@ Item {
                                     "positionProperty": "selectionEnd",
                                     "height": lineSize,
                                     "handler": inputHandler,
+                                    "objectName": "selectionEndCursor"
                                     }
                                 );
                     moveSelectionCursor(selectionEndCursor);
