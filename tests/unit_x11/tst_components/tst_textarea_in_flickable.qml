@@ -70,17 +70,6 @@ Item {
             wait(400);
         }
 
-        function test_DoNotStealFlickEvents() {
-            inFlickable.focus = true;
-            flick(inFlickable, 50, 150, 0, -150);
-            moveSpy.wait();
-        }
-
-        function test_flicker_moves_when_inactive() {
-            flick(flickable, 50, 150, 0, -150);
-            moveSpy.wait();
-        }
-
         function test_select_state_locks_outer_flickable() {
             var handler = findChild(inFlickable, "input_handler");
             inFlickable.focus = true;
@@ -94,15 +83,15 @@ Item {
             var handler = findChild(inFlickable, "input_handler");
             inFlickable.focus = true;
             // select text
-            flick(inFlickable, 50, 50, -50, -50, handler.selectionModeTimeout + 100);
-            compare(moveSpy.count, 0, "The Flickable has moved while the TextArea was in selection mode");
+            inFlickable.select(0, 10);
             verify(inFlickable.selectedText !== "", "No text selected");
 
-            // scroll
+            // not scrollable when focused, focus locks scrolling with mouse
             moveSpy.clear();
-            flick(inFlickable, 50, 100, 0, -100);
+            mouseWheel(inFlickable, 50, 20, 0, -100);
             // wait till the move ends
-            moveSpy.wait();
+            expectFailContinue("", "cannot scroll when scroller is locked");
+            moveSpy.wait(500);
             verify(inFlickable.selectedText !== "", "There is still text selected");
         }
     }

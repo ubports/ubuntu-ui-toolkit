@@ -40,11 +40,6 @@ Item {
     property real overlaySpacing: frameSpacing / 2
 
     /*!
-      Property holding the timeout in milliseconds the component enters into selection mode.
-      */
-    property int selectionModeTimeout: 300
-
-    /*!
       The following properties define the name of the style components declaring
       the styles for the main and the selection cursors. All cursors must defive
       from TextCursorStyle.

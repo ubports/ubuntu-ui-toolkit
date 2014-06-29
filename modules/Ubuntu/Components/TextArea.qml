@@ -123,8 +123,9 @@ StyledItem {
     /*!
       The property drives whether text selection should happen with the mouse or
       not. The default value is true.
+      \qmlproperty bool selectByMouse
       */
-    property bool selectByMouse: true
+    property alias selectByMouse: editor.selectByMouse
 
     /*!
       \deprecated
@@ -179,8 +180,9 @@ StyledItem {
     /*!
       Whether the TextArea should gain active focus on a mouse press. By default this
       is set to true.
+      \qmlproperty bool activeFocusOnPress
       */
-    property bool activeFocusOnPress: true
+    property alias activeFocusOnPress: editor.activeFocusOnPress
 
     /*!
       This property specifies a base URL which is used to resolve relative URLs within
@@ -716,15 +718,6 @@ StyledItem {
         editor.undo();
     }
 
-    /*!
-      \internal
-       Ensure focus propagation
-    */
-    function forceActiveFocus()
-    {
-        inputHandler.activateInput();
-    }
-
     // logic
     /*!\internal - to remove warnings */
     Component.onCompleted: {
@@ -827,7 +820,7 @@ StyledItem {
     }
     Flickable {
         id: flicker
-        objectName: "textarea_scroller"
+        objectName: "input_scroller"
         anchors {
             fill: parent
             margins: internal.frameSpacing
@@ -842,7 +835,7 @@ StyledItem {
         // Images are not shown when text contains <img> tags
         // bug to watch: https://bugreports.qt-project.org/browse/QTBUG-27071
         TextEdit {
-            objectName: "textarea_input"
+            objectName: "text_input"
             readOnly: false
             id: editor
             focus: true
@@ -850,8 +843,8 @@ StyledItem {
             height: Math.max(control.contentHeight, editor.contentHeight)
             wrapMode: TextEdit.WrapAtWordBoundaryOrAnywhere
             mouseSelectionMode: TextEdit.SelectWords
-            selectByMouse: false
-            activeFocusOnPress: false
+            selectByMouse: true
+            activeFocusOnPress: true
             cursorDelegate: TextCursor {
                 handler: inputHandler
             }
@@ -874,7 +867,6 @@ StyledItem {
                 main: control
                 input: editor
                 flickable: flicker
-                selectionModeTimeout: control.__styleInstance.selectionModeTimeout
                 frameDistance: Qt.point(flicker.x, flicker.y)
             }
         }
