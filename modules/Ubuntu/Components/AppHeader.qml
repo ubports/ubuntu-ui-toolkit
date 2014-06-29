@@ -240,5 +240,5 @@ StyledItem {
     }
 
     style: header.useDeprecatedToolbar ? Theme.createStyleComponent("HeaderStyle.qml", header) :
-                                         Theme.createStyleComponent("NewHeaderStyle.qml", header)
+                                         Theme.createStyleComponent("PageHeadStyle.qml", header)
 }
