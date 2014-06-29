@@ -82,7 +82,8 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     def _select_all(self):
         if not self._is_all_text_selected():
-            self.pointing_device.click_object(self, press_duration=1)
+            # right click is needed
+            self.pointing_device.click_object(self, button=3)
             root = self.get_root_instance()
             main_view = root.select_single(_mainview.MainView)
             popover = main_view.get_action_selection_popover(
