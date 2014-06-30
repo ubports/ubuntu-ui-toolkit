@@ -31,27 +31,28 @@ MainView {
             title: "Test title"
             id: page
 
-            head {
-                actions: [
-                    Action {
-                        iconName: "contact"
-                        text: "action 0"
-                    },
-                    Action {
-                        iconName: "contact"
-                        text: "action 1"
-                    },
-                    Action {
-                        iconName: "contact"
-                        text: "action 2"
-                    },
-                    Action {
+            tools: ToolbarItems {
+
+                Repeater {
+                    id: buttonRepeater
+                    model: 5
+                    ToolbarButton {
+                        action: Action {
+                            objectName: "action" + index
+                            text: "text " + index
+                            iconName: "add"
+                        }
+                    }
+                }
+
+                ToolbarButton {
+                    action: Action {
                         objectName: "pushStackAction"
                         text: "Push page"
                         iconName: "add"
                         onTriggered: stack.push(pushMe)
                     }
-                ]
+                }
             }
         }
 
