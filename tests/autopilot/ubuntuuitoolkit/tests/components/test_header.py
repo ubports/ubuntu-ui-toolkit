@@ -30,6 +30,17 @@ class HeaderTestCase(tests.QMLFileAppTestCase):
     dir_path = os.path.dirname(path)
     test_qml_file_path = os.path.join(
         dir_path, 'test_header.HeaderTestCase.qml')
+    tools_test_qml_file_path = os.path.join(
+        dir_path, 'test_header.HeaderToolsTestCase.qml')
+    actions_test_qml_file_path = os.path.join(
+        dir_path, 'test_header.HeaderActionsTestCase.qml')
+
+    scenarios = [
+        ('deprecated tools',
+            dict(test_qml_file_path=tools_test_qml_file_path)),
+        ('actions',
+            dict(test_qml_file_path=actions_test_qml_file_path))
+]
 
     def setUp(self):
         super(HeaderTestCase, self).setUp()
