@@ -5,7 +5,6 @@ internal CheckBoxStyle CheckBoxStyle.qml
 internal DialogForegroundStyle DialogForegroundStyle.qml
 internal HeaderStyle HeaderStyle.qml
 internal HeaderButtonStyle HeaderButtonStyle.qml
-internal NewHeaderStyle NewHeaderStyle.qml
 MainViewStyle 0.1 MainViewStyle.qml
 ListItemOptionSelector 0.1 ListItemOptionSelector.qml
 OptionSelectorStyle 0.1 OptionSelectorStyle.qml
@@ -46,6 +45,7 @@ DialerHandStyle 1.0 DialerHandStyle.qml
 
 #version 1.1
 ComboButtonStyle 1.1 ComboButtonStyle.qml
+PageHeadStyle 1.1 PageHeadStyle.qml
 
 internal TextSelectionStartCursorStyle TextSelectionStartCursorStyle.qml
 internal TextSelectionEndCursorStyle TextSelectionEndCursorStyle.qml

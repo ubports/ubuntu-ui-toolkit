@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1 as Components
 
 /*!
     \internal
@@ -40,7 +40,7 @@ StyledItem {
     Behavior on y {
         enabled: animate && !(header.flickable && header.flickable.moving)
         SmoothedAnimation {
-            duration: UbuntuAnimation.BriskDuration
+            duration: Components.UbuntuAnimation.BriskDuration
         }
     }
 
@@ -100,17 +100,22 @@ StyledItem {
     property var pageStack: null
 
     /*!
-      \preliminary
+      \deprecated
       \qmlproperty list<Action> actions
-      The list of actions actions that will be shown in the header
+      The list of actions actions that will be shown in the header.
+      DEPRECATED. Use Page.head.actions instead.
      */
     property var actions: null
+    onActionsChanged: print("WARNING: Header.actions property is DEPRECATED. "+
+                            "Use Page.head.actions instead.")
 
     /*!
       \internal
+      \deprecated
       Action shown before the title. Setting this will disable the back
       button and tabs drawer button in the new header and replace it with a button
       representing the action below.
+      DEPRECATED. Use Page.head.backAction property instead.
      */
     property var __customBackAction: null
 
@@ -141,6 +146,11 @@ StyledItem {
       Set by \l MainView
      */
     property bool useDeprecatedToolbar: true
+
+    /*!
+      Configuration of the header.
+     */
+    property PageHeadConfiguration config: null
 
     QtObject {
         id: internal
@@ -230,5 +240,5 @@ StyledItem {
     }
 
     style: header.useDeprecatedToolbar ? Theme.createStyleComponent("HeaderStyle.qml", header) :
-                                         Theme.createStyleComponent("NewHeaderStyle.qml", header)
+                                         Theme.createStyleComponent("PageHeadStyle.qml", header)
 }
