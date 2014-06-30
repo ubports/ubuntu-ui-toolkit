@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Canonical, Ltd.
+ * Copyright (C) 2014 Canonical, Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,73 +22,39 @@ import QtQuick 2.0
 import Ubuntu.Components 1.1 as Ubuntu
 
 /*!
-   \qmltype CrossFadeImage
-   \ingroup ubuntu
-   \brief An Image like component which smoothly fades when its source is updated.
-
-   \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
-
-        CrossFadeImage {
-            width: units.gu(100)
-            height: units.gu(75)
-            source: "http://design.ubuntu.com/wp-content/uploads/ubuntu-logo14.png"
-            fadeDuration: 1000
-            MouseArea {
-                anchors.fill: parent
-                onClicked: parent.source = "http://design.ubuntu.com/wp-content/uploads/canonical-logo1.png"
-            }
-        }
-    \endqml
-    */
-
+  \internal
+  Documentation is in CrossFadeImage.qdoc
+*/
 Item {
     id: crossFadeImage
 
     /*!
-      The image being displayed. Can be a URL to any image format supported by Qt.
+      \qmlproperty url source
      */
     property url source
 
     /*!
       \qmlproperty enumeration fillMode
-
-      Defaults to \c Image.PreserveAspectFit.
-
-      \list
-        \li Image.Stretch - the image is scaled to fit
-        \li Image.PreserveAspectFit - the image is scaled uniformly to fit without cropping
-        \li Image.PreserveAspectCrop - the image is scaled uniformly to fill, cropping if necessary
-        \li Image.Tile - the image is duplicated horizontally and vertically
-        \li Image.TileVertically - the image is stretched horizontally and tiled vertically
-        \li Image.TileHorizontally - the image is stretched vertically and tiled horizontally
-        \li Image.Pad - the image is not transformed
-      \endlist
     */
     property int fillMode : Image.PreserveAspectFit
 
     /*!
-      The time over which to fade between images. Defaults to \c UbuntuAnimation.FastDuration.
-      \sa UbuntuAnimation
+      \qmlproperty int fadeDuration
     */
     property int fadeDuration: Ubuntu.UbuntuAnimation.FastDuration
 
     /*!
-      Whether the animation is running
+      \qmlproperty string fadeStyle
+    */
+    property string fadeStyle: "overlay"
+
+    /*!
+      \qnlproperty bool running
     */
     readonly property bool running: nextImageFadeIn.running
 
     /*!
-      The actual width and height of the loaded image
-      This property holds the actual width and height of the loaded image.
-
-      Unlike the width and height properties, which scale the painting of the image,
-      this property sets the actual number of pixels stored for the loaded image so that large
-      images do not use more memory than necessary.
-
-      Note: Changing this property dynamically causes the image source to be reloaded, potentially
-      even from the network, if it is not in the disk cache.
+      \qmlproperty size sourceSize
     */
     // FIXME: Support resetting sourceSize
     property size sourceSize: internals.loadingImage ? Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height) : Qt.size(0, 0)
@@ -111,15 +77,6 @@ Item {
 
     /*!
       \qmlproperty enumeration status
-
-      This property holds the status of image loading. It can be one of:
-
-      \list
-        \li Image.Null - no image has been set
-        \li Image.Ready - the image has been loaded
-        \li Image.Loading - the image is currently being loaded
-        \li Image.Error - an error occurred while loading the image
-      \endlist
     */
     readonly property int status: internals.loadingImage ? internals.loadingImage.status : Image.Null
 
@@ -151,6 +108,11 @@ Item {
             internals.currentImage = internals.nextImage;
             internals.nextImage = tmpImage;
         }
+    }
+
+    QtObject {
+        id: fadeOutDummy
+        property real opacity
     }
 
     Image {
@@ -222,12 +184,23 @@ Item {
         }
     }
 
-    UbuntuNumberAnimation {
+    ParallelAnimation {
         id: nextImageFadeIn
-        target: internals.nextImage
-        property: "opacity"
-        to: 1.0
-        duration: crossFadeImage.fadeDuration
+
+        Ubuntu.UbuntuNumberAnimation {
+            id: currentImageFadeOut
+            target: fadeStyle == "cross" ? internals.currentImage : fadeOutDummy
+            property: "opacity"
+            to: 0.0
+            duration: crossFadeImage.fadeDuration
+        }
+
+        Ubuntu.UbuntuNumberAnimation {
+            target: internals.nextImage
+            property: "opacity"
+            to: 1.0
+            duration: crossFadeImage.fadeDuration
+        }
 
         onRunningChanged: {
             if (!running) {
