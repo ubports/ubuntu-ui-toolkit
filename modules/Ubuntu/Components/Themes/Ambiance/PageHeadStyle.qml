@@ -265,13 +265,19 @@ Style.PageHeadStyle {
                 parent: QuickUtils.rootItem(actionsOverflowPopover)
                 caller: actionsOverflowButton
 
+                // Ensure the popover closes when actions change and
+                // the list item below may be destroyed before its
+                // onClicked is executed. See bug
+                // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
                 Connections {
                     target: styledItem.config
                     onActionsChanged: {
-                        // Ensure the popover closes when actions change and
-                        // the list item below may be destroyed before its
-                        // onClicked is executed. See bug
-                        // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
+                        actionsOverflowPopover.hide();
+                    }
+                }
+                Connections {
+                    target: styledItem
+                    onConfigChanged: {
                         actionsOverflowPopover.hide();
                     }
                 }
