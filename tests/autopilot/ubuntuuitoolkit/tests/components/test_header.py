@@ -38,7 +38,7 @@ class HeaderActionsOverflowTestCase(tests.QMLFileAppTestCase):
             dict(test_qml_file_path=tools_test_qml_file_path)),
         ('actions',
             dict(test_qml_file_path=actions_test_qml_file_path))
-]
+    ]
 
     def setUp(self):
         super(HeaderActionsOverflowTestCase, self).setUp()
@@ -68,10 +68,9 @@ class HeaderContentsTestCase(tests.QMLFileAppTestCase):
         super(HeaderContentsTestCase, self).setUp()
         self.header = self.main_view.get_header()
 
-    def test_contents(self):
-        """Test that setting head.contents overrides header contents.
+    def test_open_page_with_head_contents_must_change_header(self):
+        """Test that setting head.contents overrides header contents."""
 
-        """
         label = self.header.select_single(
             'Label',
             objectName='header_title_label')
@@ -86,9 +85,25 @@ class HeaderContentsTestCase(tests.QMLFileAppTestCase):
 
         self.assertEqual(label.visible, False)
         headerContents = self.header.select_single(
-            objectName='orange_header_contents'
-        )
+            objectName='orange_header_contents')
         self.assertEqual(headerContents.visible, True)
+
+    def test_close_page_with_head_contents_must_revert_header(self):
+        """Test that closing a page with head.contents reverts the header."""
+        pushButton = self.main_view.select_single(
+            'Button',
+            objectName='push_button')
+        self.pointing_device.move_to_object(pushButton)
+        self.pointing_device.click()
+
+        headerContents = self.header.select_single(
+            objectName='orange_header_contents')
+        label = self.header.select_single(
+            'Label',
+            objectName='header_title_label')
+
+        self.assertEqual(headerContents.visible, True)
+        self.assertEqual(label.visible, False)
 
         self.header.click_back_button()
         self.assertEqual(headerContents.visible, False)
