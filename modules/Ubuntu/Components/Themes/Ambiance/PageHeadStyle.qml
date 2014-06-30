@@ -14,42 +14,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.Popups 1.0
 import Ubuntu.Components.ListItems 1.0 as ListItem
+import Ubuntu.Components.Styles 1.1 as Style
 
-Item {
+Style.PageHeadStyle {
     id: headerStyle
-    /*!
-      The height of the headercontents, which is the full height of
-      the header minus the separators shown at the bottom of it.
-     */
-    property real contentHeight: units.gu(7.5)
-
-    /*!
-      The source of the image that separates the header from the contents of a \l MainView.
-      The separator will be drawn over the contents.
-     */
-    property url separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
-
-    /*!
-      The source of an additional image attached to the bottom of the separator. The contents
-      of the \l MainView will be drawn on top of the separator bottom image.
-     */
-    property url separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
-
-    property int fontWeight: Font.Light
-    property string fontSize: "x-large"
-    property color textColor: Theme.palette.selected.backgroundText
-    property real textLeftMargin: units.gu(2)
-
-    /*!
-      The number of slots for actions in the header, including the optional
-      (custom or automatic) back button in the left side of the header.
-      If the number of actions defined is larger than the numer of actions
-      specified here, extra actions are put into an overflow.
-     */
-    property int maximumNumberOfActions: 3
+    contentHeight: units.gu(7.5)
+    separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
+    separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
+    fontWeight: Font.Light
+    fontSize: "x-large"
+    textColor: Theme.palette.selected.backgroundText
+    textLeftMargin: units.gu(2)
+    maximumNumberOfActions: 3
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
 
@@ -86,9 +65,9 @@ Item {
             objectName: "customBackButton"
             height: parent ? parent.height : undefined
             width: visible ? units.gu(5) : 0
-            action: styledItem.__customBackAction
-            visible: null !== styledItem.__customBackAction &&
-                     styledItem.__customBackAction.visible
+            action: styledItem.config.backAction
+            visible: null !== styledItem.config.backAction &&
+                     styledItem.config.backAction.visible
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
         }
 
@@ -100,6 +79,7 @@ Item {
 
             iconName: "back"
             visible: styledItem.pageStack !== null &&
+                     styledItem.pageStack !== undefined &&
                      styledItem.pageStack.depth > 1 &&
                      !customBackButton.visible
 
@@ -118,7 +98,9 @@ Item {
             width: visible ? units.gu(5) : 0
 
             iconName: "navigation-menu"
-            visible: styledItem.tabsModel !== null && !backButton.visible &&
+            visible: styledItem.tabsModel !== null &&
+                     styledItem.tabsModel !== undefined &&
+                     !backButton.visible &&
                      !customBackButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", tabsButton)
@@ -206,7 +188,7 @@ Item {
     Row {
         id: actionsContainer
 
-        property var visibleActions: getVisibleActions(styledItem.actions)
+        property var visibleActions: getVisibleActions(styledItem.config.actions)
         function getVisibleActions(actions) {
             var visibleActionList = [];
             for (var i in actions) {
@@ -264,7 +246,7 @@ Item {
                 caller: actionsOverflowButton
 
                 Connections {
-                    target: styledItem
+                    target: styledItem.config
                     onActionsChanged: {
                         // Ensure the popover closes when actions change and
                         // the list item below may be destroyed before its

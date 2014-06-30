@@ -25,10 +25,11 @@ Scrollbar 0.1 Scrollbar.qml
 Object 0.1 Object.qml
 OptionSelector 0.1 OptionSelector.qml
 OptionSelectorDelegate 0.1 OptionSelectorDelegate.qml
-Page 0.1 Page.qml
+Page 0.1 Page10.qml
 internal PageTreeNode PageTreeNode.qml
 PageStack 0.1 PageStack.qml
 internal Toolbar Toolbar.qml
+internal AppHeader AppHeader.qml
 Header 0.1 Header.qml
 internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
@@ -74,7 +75,7 @@ Scrollbar 1.0 Scrollbar.qml
 Object 1.0 Object.qml
 OptionSelector 1.0 OptionSelector.qml
 OptionSelectorDelegate 1.0 OptionSelectorDelegate.qml
-Page 1.0 Page.qml
+Page 1.0 Page10.qml
 PageStack 1.0 PageStack.qml
 Header 1.0 Header.qml
 UbuntuShape 1.0 UbuntuShape.qml
@@ -94,3 +95,6 @@ UbuntuListView 1.0 UbuntuListView.qml
 ComboButton 1.1 ComboButton.qml
 PullToRefresh 1.1 PullToRefresh.qml
 UbuntuListView 1.1 UbuntuListView11.qml
+internal PageBase Page10.qml
+Page 1.1 Page11.qml
+PageHeadConfiguration 1.1 PageHeadConfiguration.qml

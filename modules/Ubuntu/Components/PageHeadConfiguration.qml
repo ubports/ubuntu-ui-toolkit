@@ -17,23 +17,26 @@
 import QtQuick 2.0
 
 /*!
-    \qmltype Header
-    \internal
-    \deprecated
-*/
-AppHeader {
+    \qmltype PageHeadConfiguration
+    \inqmlmodule Ubuntu.Components 1.1
+    \ingroup ubuntu
+    \since Ubuntu.Components 1.1
+    \brief Page.head is used to configure the header for a \l Page.
+
+    For examples how to use Page.head, see \l Page.
+ */
+QtObject {
+    // To be used inside a Page only.
+    id: headerConfig
 
     /*!
-      \internal
-      We need this property so QML exposes this class as Header instead of
-      AppHeader. This way autopilot can select the deprecated header.
-    */
-    property string _for_autopilot
+      List of actions to show in the header.
+     */
+    property list<Action> actions
 
-    Component.onCompleted: {
-        print("WARNING: Header is an internal component of Ubuntu.Components and" +
-              "its API may change or be removed at any moment." +
-              "Please use MainView and Page instead."
-              );
-    }
+    /*!
+      Overrides the default \l PageStack back button and the
+        \l Tabs drawer button in the header.
+     */
+    property Action backAction: null
 }
