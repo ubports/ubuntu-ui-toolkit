@@ -38,18 +38,21 @@ Item {
         }
 
         function test_name() {
-            icon.name = "foo";
+            icon.name = "search";
 
             var image = findChild(icon, "image");
-            compare(image.source, "image://theme/foo", "Source of the image should be image://theme/{name}.");
+            compare(image.source, "image://theme/search",
+                    "Source of the image should be image://theme/{name}.");
         }
 
         function test_source() {
-            icon.name = "foo";
-            icon.source = "file://foo/bar";
+            icon.name = "search";
+            icon.source = "/usr/share/icons/ubuntu-mobile/status/scalable/search.svg";
 
             var image = findChild(icon, "image");
-            compare(image.source, "file://foo/bar", "Source of the image should equal icon.source.");
+            compare(image.source,
+                    "file:///usr/share/icons/ubuntu-mobile/status/scalable/search.svg",
+                    "Source of the image should equal icon.source.");
         }
     }
 }
