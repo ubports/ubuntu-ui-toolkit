@@ -37,13 +37,9 @@ MainView {
                         text: "Click me"
                         onTriggered: stack.push(pageOnStack)
                     }
-                    tools: ToolbarItems {
-                        ToolbarButton {
-                            action: Action {
-                                iconName: "settings"
-                                text: "Settings"
-                            }
-                        }
+                    head.actions: Action {
+                        iconName: "settings"
+                        text: "Settings"
                     }
                 }
             }
@@ -102,13 +98,9 @@ MainView {
                         }
                         text: "Use new header"
                     }
-                    tools: ToolbarItems {
-                        ToolbarButton {
-                            action: Action {
-                                iconName: "camera-flip"
-                                text: "hello"
-                            }
-                        }
+                    head.actions: Action {
+                        iconName: "camera-flip"
+                        text: "hello"
                     }
                 }
             }
@@ -203,13 +195,9 @@ MainView {
             anchors.centerIn: parent
             text: "Use back button to return"
         }
-        tools: ToolbarItems {
-            ToolbarButton {
-                action: Action {
-                    iconName: "settings"
-                    text: "settings"
-                }
-            }
+        head.actions: Action {
+            iconName: "settings"
+            text: "settings"
         }
     }
 }
