@@ -28,15 +28,8 @@ MainView {
         Component.onCompleted: stack.push(page)
 
         Page {
-            title: "Test title"
-//            head.contents: Rectangle {
-//                color: "red"
-//                width: units.gu(10)
-//                height: units.gu(5)
-//            }
-
             id: page
-
+            title: "Test title"
             Button {
                 anchors.centerIn: parent
                 text: "push"
@@ -45,18 +38,12 @@ MainView {
         }
 
         Page {
-            title: "Invisible title"
             id: pushMe
-
+            title: "Invisible title"
             head {
-//                actions: Action {
-//                    iconName: "search"
-//                }
-
                 contents: Rectangle {
                     color: UbuntuColors.orange
                     height: units.gu(5)
-//                    width: units.gu(9)
                     width: parent ? parent.width - units.gu(2) : undefined
                 }
             }

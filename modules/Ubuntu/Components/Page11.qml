@@ -32,8 +32,10 @@ Page10 {
         id: internal
 
         // Note: The bindings below need to check whether headerConfig.contents
-        // is valid in the value, even when that is required in the Binding's "when"
-        // value, to avoid TypeErrors while/after a page becomes (in)active.
+        // is valid in the "value", even when that is required in the Binding's "when"
+        // property, to avoid TypeErrors while/after a page becomes (in)active.
+        //
+        // Note 2: contents.parent binding is made by PageHeadStyle.
         property bool hasParent: headerConfig.contents &&
                                  headerConfig.contents.parent
 
