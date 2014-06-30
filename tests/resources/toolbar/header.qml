@@ -58,8 +58,8 @@ MainView {
                     tools: ToolbarItems {
                         ToolbarButton {
                             action: Action {
-                                iconName: "search"
-                                text: "Search"
+                                iconName: "settings"
+                                text: "Settings"
                             }
                         }
                         ToolbarButton {
@@ -122,7 +122,7 @@ MainView {
                     head {
                         actions: [
                             Action {
-                                iconName: "search"
+                                iconName: "settings"
                             },
                             Action {
                                 iconName: "camera-flip"
@@ -206,8 +206,8 @@ MainView {
         tools: ToolbarItems {
             ToolbarButton {
                 action: Action {
-                    iconName: "search"
-                    text: "Search"
+                    iconName: "settings"
+                    text: "settings"
                 }
             }
         }
