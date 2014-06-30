@@ -22,7 +22,7 @@ TestCase {
      name: "ProgressBarAPI"
 
      function test_showProgressPercentageExists() {
-         verify(progressBar11.hasOwnProperty("showProgressPercentage"), "Property missing")
+         verify(progressBar.hasOwnProperty("showProgressPercentage"), "Property missing")
      }
 
      function test_noLabel() {
