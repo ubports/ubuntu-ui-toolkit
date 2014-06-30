@@ -43,8 +43,22 @@ QtObject {
     /*!
       Set this property to show this Item in the header instead of
       the title. Use a \l TextField here for implementing search in header.
+
+      The parent of this Item will be binded while the \l Page is active.
       The header contents will automatically be anchored to the left and
       vertically centered inside the header.
+
+      Example:
+      \qml
+        Page {
+            title: "Invisible title"
+            contents: Rectangle {
+                color: UbuntuColors.orange
+                height: units.gu(5)
+                width: parent ? parent.width - units.gu(2) : undefined
+            }
+        }
+      \endqml
      */
     property Item contents: null
 }

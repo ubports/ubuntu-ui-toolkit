@@ -171,38 +171,46 @@ Style.PageHeadStyle {
             anchors.fill: parent
             visible: styledItem.contents || styledItem.config.contents
         }
-        Binding {
-            target: styledItem.contents
-            property: "anchors.fill"
-            value: contentsContainer
-            when: styledItem.contents
-        }
-        Binding {
-            target: styledItem.contents
-            property: "parent"
-            value: contentsContainer
-            when: styledItem.contents
-        }
+//        Binding {
+//            target: styledItem.contents
+//            property: "anchors.fill"
+//            value: contentsContainer
+//            when: styledItem.contents
+//        }
+//        Binding {
+//            target: styledItem.contents
+//            property: "parent"
+//            value: contentsContainer
+//            when: styledItem.contents
+//        }
         Binding {
             target: styledItem.config.contents
             property: "parent"
             value: contentsContainer
             when: styledItem.config.contents && !styledItem.contents
         }
-        Binding {
-            target: styledItem.config.contents
-            property: "anchors.verticalCenter"
-            value: contentsContainer.verticalCenter
-            when: styledItem.config.contents &&
-                  styledItem.config.contents.parent === contentsContainer
-        }
-        Binding {
-            target: styledItem.config.contents
-            property: "anchors.left"
-            value: contentsContainer.left
-            when: styledItem.config.contents &&
-                  styledItem.config.contents.parent === contentsContainer
-        }
+//        Binding {
+//            target: styledItem.config.contents
+//            property: "anchors.verticalCenter"
+//            value: contentsContainer.verticalCenter
+//            when: styledItem.config.contents &&
+//                  styledItem.config.contents.parent === contentsContainer
+//        }
+//        Binding {
+//            target: styledItem.config.contents
+//            property: "anchors.left"
+//            value: contentsContainer.left
+//            when: styledItem.config.contents &&
+//                  styledItem.config.contents.parent === contentsContainer
+//        }
+        // contents is invisible when the page is not active. Make it visible here:
+//        Binding {
+//            target: styledItem.config.contents
+//            property: "visible"
+//            value: true
+//            when: styledItem.config.contents &&
+//                  styledItem.config.contents.parent === contentsContainer
+//        }
     }
 
     Row {

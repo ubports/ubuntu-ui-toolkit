@@ -14,14 +14,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import QtQuick 2.2
+
 /*! \internal */
 // Documentation in Page.qdoc
 Page10 {
+    id: page
     /*!
       \qmlproperty PageHeadConfiguration head
      */
     readonly property alias head: headerConfig
     PageHeadConfiguration {
         id: headerConfig
+    }
+
+    Object {
+        id: internal
+
+        // Note: The bindings below need to check whether headerConfig.contents
+        // is valid in the value, even when that is required in the Binding's "when"
+        // value, to avoid TypeErrors while/after a page becomes (in)active.
+        property bool hasParent: headerConfig.contents &&
+                                 headerConfig.contents.parent
+
+        Binding {
+            target: headerConfig.contents
+            property: "visible"
+            value: page.active
+            when: headerConfig.contents
+        }
+        Binding {
+            target: headerConfig.contents
+            property: "anchors.verticalCenter"
+            value: internal.hasParent ? headerConfig.contents.parent.verticalCenter :
+                                        undefined
+            when: headerConfig.contents
+        }
+        Binding {
+            target: headerConfig.contents
+            property: "anchors.left"
+            value: internal.hasParent ? headerConfig.contents.parent.left : undefined
+            when: headerConfig.contents
+        }
     }
 }
