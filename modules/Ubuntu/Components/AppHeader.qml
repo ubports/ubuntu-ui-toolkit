@@ -105,7 +105,7 @@ StyledItem {
       The list of actions actions that will be shown in the header.
       DEPRECATED. Use Page.head.actions instead.
      */
-    property var actions: null
+    property var actions
     onActionsChanged: print("WARNING: Header.actions property is DEPRECATED. "+
                             "Use Page.head.actions instead.")
 
