@@ -62,6 +62,15 @@ Item
     readonly property bool running
     property size sourceSize
     readonly property int status
+CrossFadeImage 1.1
+Item
+    property url source
+    property int fillMode
+    property int fadeDuration
+    property string fadeStyle
+    readonly property bool running
+    property size sourceSize
+    readonly property int status
 Header 0.1 1.0
 AppHeader
     property string _for_autopilot
