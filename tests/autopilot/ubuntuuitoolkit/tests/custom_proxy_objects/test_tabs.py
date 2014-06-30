@@ -116,7 +116,8 @@ class TabsTestCase(tests.QMLStringAppTestCase):
 
     def test_switch_to_opened_tab_is_not_opened_again(self):
         with mock.patch.object(
-                ubuntuuitoolkit.Header, 'switch_to_next_tab') as mock_switch:
+                ubuntuuitoolkit.AppHeader,
+                'switch_to_next_tab') as mock_switch:
             current_tab = self.main_view.switch_to_tab_by_index(0)
 
         self.assertFalse(mock_switch.called)

@@ -1,2 +1,3 @@
 module Ubuntu.Components.Styles
 ComboButtonStyle 1.1 ComboButtonStyle.qml
+PageHeadStyle 1.1 PageHeadStyle.qml

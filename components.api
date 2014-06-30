@@ -63,18 +63,8 @@ Item
     property size sourceSize
     readonly property int status
 Header 0.1 1.0
-StyledItem
-    property bool animate
-    function show()
-    function hide()
-    property string title
-    property Item contents
-    property var tabsModel
-    property var pageStack
-    property var actions
-    property var __customBackAction
-    property Flickable flickable
-    property bool useDeprecatedToolbar
+AppHeader
+    property string _for_autopilot
 Icon 0.1 1.0
 Item
     property string name
@@ -243,6 +233,13 @@ PageTreeNode
     property Item __customHeaderContents
     property Flickable flickable
     property list<Action> actions
+Page 1.1
+Page10
+    readonly property PageHeadConfiguration head
+PageHeadConfiguration 1.1
+QtObject
+    property list<Action> actions
+    property Action backAction
 PageStack 0.1 1.0
 PageTreeNode
     property bool __showHeader
@@ -418,6 +415,16 @@ Item
     property Gradient defaultGradient
     property color defaultDropdownColor
     property font defaultFont
+PageHeadStyle 1.1
+Item
+    property real contentHeight
+    property url separatorSource
+    property url separatorBottomSource
+    property string fontSize
+    property int fontWeight
+    property color textColor
+    property real textLeftMargin
+    property int maximumNumberOfActions
 Switch 0.1 1.0
 CheckBox
 Tab 0.1 1.0
