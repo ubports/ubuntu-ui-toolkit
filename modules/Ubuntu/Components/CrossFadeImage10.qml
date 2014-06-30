@@ -44,7 +44,7 @@ Item {
     property int fadeDuration: Ubuntu.UbuntuAnimation.FastDuration
 
     /*!
-      \qnlproperty bool running
+      \qmlproperty bool running
     */
     readonly property bool running: nextImageFadeIn.running
 

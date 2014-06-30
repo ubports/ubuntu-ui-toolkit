@@ -64,7 +64,7 @@
 */
 
 /*!
-  \qnlproperty bool CrossFadeImage::running
+  \qmlproperty bool CrossFadeImage::running
 
   Whether the animation is running
 */
