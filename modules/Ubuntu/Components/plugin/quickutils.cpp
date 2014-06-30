@@ -110,6 +110,18 @@ QString QuickUtils::inputMethodProvider() const
     return QString(getenv("QT_IM_MODULE"));
 }
 
+bool QuickUtils::touchScreenAvailable() const
+{
+    // publish internal context property to detect whether we have touch device or not
+    QList<const QTouchDevice*> touchDevices = QTouchDevice::devices();
+    Q_FOREACH(const QTouchDevice *device, touchDevices) {
+        if (device->type() == QTouchDevice::TouchScreen) {
+            return true;
+        }
+    }
+    return false;
+}
+
 /*!
  * \internal
  * Returns the class name (type) of a QtQuick item.

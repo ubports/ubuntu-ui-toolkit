@@ -89,6 +89,18 @@ TestCase {
         return null;
     }
 
+    /*!
+      Returns the center point of the \a item.
+      */
+    function centerOf(item) {
+        if (!item) {
+            return undefined;
+        }
+
+        var center = Qt.point(item.width / 2, item.height / 2);
+        return center;
+    }
+
 
 
 	/*!

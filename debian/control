@@ -50,10 +50,10 @@ Package: qtdeclarative5-ubuntu-ui-toolkit-plugin
 Architecture: any
 Multi-Arch: same
 Pre-Depends: dpkg (>= 1.15.6~), ${misc:Pre-Depends}
-Depends: libqt5qml-graphicaleffects | libqt5graphicaleffects5,
+Depends: qml-module-qtgraphicaleffects | libqt5qml-graphicaleffects,
          libqt5svg5,
-         qtdeclarative5-qtquick2-plugin,
-         qtdeclarative5-window-plugin,
+         qml-module-qtquick2 | qtdeclarative5-qtquick2-plugin,
+         qml-module-qtquick-window2 | qtdeclarative5-window-plugin,
          qtdeclarative5-qtfeedback-plugin,
          qtdeclarative5-unity-action-plugin (>= 1.1.0),
          ttf-ubuntu-font-family,
@@ -110,7 +110,7 @@ Architecture: any
 Depends: qmlscene,
          qtdeclarative5-ubuntu-ui-toolkit-plugin,
          ubuntu-ui-toolkit-theme,
-         qtdeclarative5-xmllistmodel-plugin,
+         qml-module-qtquick-xmllistmodel | qtdeclarative5-xmllistmodel-plugin,
          qml-module-qt-labs-folderlistmodel,
          ${misc:Depends},
          ${shlibs:Depends}
