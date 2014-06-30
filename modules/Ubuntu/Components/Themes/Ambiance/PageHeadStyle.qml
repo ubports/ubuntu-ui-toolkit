@@ -149,6 +149,7 @@ Style.PageHeadStyle {
         height: headerStyle.contentHeight
 
         Label {
+            objectName: "header_title_label"
             LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
             visible: !contentsContainer.visible
             anchors {

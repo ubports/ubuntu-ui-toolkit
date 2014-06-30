@@ -31,6 +31,7 @@ MainView {
             id: page
             title: "Test title"
             Button {
+                objectName: "push_button"
                 anchors.centerIn: parent
                 text: "push"
                 onClicked: stack.push(pushMe)
@@ -42,6 +43,7 @@ MainView {
             title: "Invisible title"
             head {
                 contents: Rectangle {
+                    objectName: "orange_header_contents"
                     color: UbuntuColors.orange
                     height: units.gu(5)
                     width: parent ? parent.width - units.gu(2) : undefined
