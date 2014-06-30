@@ -14,26 +14,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+#include "testplugin.h"
+#include <QtQml>
+#include "uctestextras.h"
 
-/*!
-    \qmltype Header
-    \internal
-    \deprecated
-*/
-AppHeader {
+static QObject *registerExtras(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
 
-    /*!
-      \internal
-      We need this property so QML exposes this class as Header instead of
-      AppHeader. This way autopilot can select the deprecated header.
-    */
-    property string _for_autopilot
+    return new UCTestExtras;
+}
 
-    Component.onCompleted: {
-        print("WARNING: Header is an internal component of Ubuntu.Components and" +
-              "its API may change or be removed at any moment." +
-              "Please use MainView and Page instead."
-              );
-    }
+void TestPlugin::registerTypes(const char *uri)
+{
+    qmlRegisterSingletonType<UCTestExtras>(uri, 1, 0, "TestExtras", registerExtras);
 }

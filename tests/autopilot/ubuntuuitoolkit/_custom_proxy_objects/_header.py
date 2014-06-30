@@ -31,8 +31,8 @@ _NO_TABS_ERROR = 'The MainView has no Tabs.'
 logger = logging.getLogger(__name__)
 
 
-class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
-    """Header Autopilot emulator."""
+class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
+    """AppHeader Autopilot emulator."""
 
     def _show_if_not_visible(self):
         if not self._is_visible():
@@ -132,7 +132,7 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException(
-                "Header.swtich_to_tab_by_index only works with new header")
+                "AppHeader.switch_to_tab_by_index only works with new header")
         else:
             self._switch_to_tab_in_drawer_by_index(index)
 
@@ -204,3 +204,14 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
         # to find the requested button
         return self.get_root_instance().select_single(
             'Standard', objectName=object_name)
+
+
+class Header(AppHeader):
+    """Autopilot helper for the deprecated Header."""
+
+    def __init__(self, *args):
+        logger.warning(
+            'Header is an internal QML component of Ubuntu.Components and '
+            'its API may change or be removed at any moment. Please use '
+            'MainView and Page instead.')
+        super(Header, self).__init__(*args)

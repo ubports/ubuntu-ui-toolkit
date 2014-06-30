@@ -14,26 +14,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+#ifndef TESTPLUGIN_H
+#define TESTPLUGIN_H
 
-/*!
-    \qmltype Header
-    \internal
-    \deprecated
-*/
-AppHeader {
+#include <QQmlExtensionPlugin>
 
-    /*!
-      \internal
-      We need this property so QML exposes this class as Header instead of
-      AppHeader. This way autopilot can select the deprecated header.
-    */
-    property string _for_autopilot
+class TestPlugin : public QQmlExtensionPlugin
+{
+    Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QQmlExtensionInterface")
 
-    Component.onCompleted: {
-        print("WARNING: Header is an internal component of Ubuntu.Components and" +
-              "its API may change or be removed at any moment." +
-              "Please use MainView and Page instead."
-              );
-    }
-}
+public:
+    void registerTypes(const char *uri);
+};
+
+#endif // TESTPLUGIN_H

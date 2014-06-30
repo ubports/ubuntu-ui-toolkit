@@ -21,6 +21,7 @@ MainView {
     id: mainView
     width: units.gu(40)
     height: units.gu(50)
+    useDeprecatedToolbar: false
 
     PageStack {
         id: stack
@@ -29,7 +30,7 @@ MainView {
         Tabs {
             id: tabs
             Tab {
-                title: "Tab 1"
+                title: "Stack"
                 page: Page {
                     Button {
                         anchors.centerIn: parent
@@ -47,7 +48,7 @@ MainView {
                 }
             }
             Tab {
-                title: "Tab 2"
+                title: "Tools"
                 page: Page {
                     Label {
                         anchors.centerIn: parent
@@ -83,7 +84,7 @@ MainView {
                 }
             }
             Tab {
-                title: "Tab 3"
+                title: "Switch"
                 page: Page {
                     Switch {
                         id: newHeaderSwitch
@@ -109,12 +110,30 @@ MainView {
                             }
                         }
                     }
-
                 }
             }
             Tab {
-                title: "Tab 4"
-                page: Page { }
+                title: "Actions"
+                page: Page {
+                    Label {
+                        anchors.centerIn: parent
+                        text: "New API"
+                    }
+                    head {
+                        actions: [
+                            Action {
+                                iconName: "search"
+                            },
+                            Action {
+                                iconName: "camera-flip"
+                            }
+                        ]
+                        backAction: Action {
+                            iconName: "clear"
+                            onTriggered: tabs.selectedTabIndex = 0
+                        }
+                    }
+                }
             }
             Tab {
                 title: "Tab 5"

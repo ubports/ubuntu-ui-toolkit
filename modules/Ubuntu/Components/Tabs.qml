@@ -303,7 +303,7 @@ PageTreeNode {
 
     Object {
         id: internal
-        property Header header: tabs.__propagated ? tabs.__propagated.header : null
+        property AppHeader header: tabs.__propagated ? tabs.__propagated.header : null
 
         /*
           List of connected Repeaters to avoid repeater "hammering" of itemAdded() signal.
