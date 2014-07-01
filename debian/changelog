@@ -1,8 +1,10 @@
-ubuntu-ui-toolkit (0.1.48-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (0.1.48+14.10.20140701.2-0ubuntu1) utopic; urgency=medium
 
+  [ Michał Sawicz ]
   * Bump version to indicate requirement for new theme icons.
+  * Change "not…in" to "…not in" in qmlapicheck.py.
 
- -- Michał Sawicz <michal.sawicz@canonical.com>  Tue, 25 Mar 2014 16:11:47 +0100
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 01 Jul 2014 15:47:29 +0000
 
 ubuntu-ui-toolkit (0.1.47+14.10.20140619-0ubuntu1) utopic; urgency=low
 
