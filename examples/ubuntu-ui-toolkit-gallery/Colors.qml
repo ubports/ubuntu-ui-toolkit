@@ -24,6 +24,8 @@ Template {
         title: "UbuntuColors"
         className: "UbuntuColors"
 
+        // Except orange, none of the colors from UbuntuComponents 1.0
+        // are included because they may be deprecated soon.
         TemplateRow {
             title: i18n.tr("Orange")
             UbuntuShape {
