@@ -99,6 +99,13 @@ static QObject *registerUbuntuColors10(QQmlEngine *engine, QJSEngine *scriptEngi
            "Ubuntu.Components", "Colors/UbuntuColors10.qml");
 }
 
+static QObject *registerUbuntuColors11(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(scriptEngine)
+    return UbuntuComponentsPlugin::registerQmlSingletonType(engine,
+           "Ubuntu.Components", "Colors/UbuntuColors.qml");
+}
+
 QUrl UbuntuComponentsPlugin::baseUrl(const QStringList& importPathList, const char* uri)
 {
     /* FIXME: remove when migrating to Qt 5.1 and use QQmlExtensionPlugin::baseUrl()
@@ -184,6 +191,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     // register 0.1 for backward compatibility
     registerTypesToVersion(uri, 0, 1);
     registerTypesToVersion(uri, 1, 0);
+    qmlRegisterSingletonType<QObject>(uri, 1, 1, "UbuntuColors", registerUbuntuColors11);
 
     // register custom event
     ForwardedEvent::registerForwardedEvent();

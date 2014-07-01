@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.2
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 
 Template {
     objectName: "colorsTemplate"
@@ -26,9 +26,44 @@ Template {
 
         TemplateRow {
             title: i18n.tr("Orange")
-
             UbuntuShape {
                 color: UbuntuColors.orange
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Light grey")
+            UbuntuShape {
+                color: UbuntuColors.lightGrey
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Dark grey")
+            UbuntuShape {
+                color: UbuntuColors.darkGrey
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Red")
+            UbuntuShape {
+                color: UbuntuColors.red
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Green")
+            UbuntuShape {
+                color: UbuntuColors.green
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Blue")
+            UbuntuShape {
+                color: UbuntuColors.blue
+            }
+        }
+        TemplateRow {
+            title: i18n.tr("Aubergine")
+            UbuntuShape {
+                color: UbuntuColors.aubergine
             }
         }
     }
