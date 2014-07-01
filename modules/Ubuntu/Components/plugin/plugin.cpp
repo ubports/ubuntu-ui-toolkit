@@ -92,11 +92,11 @@ static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
     return uriHandler;
 }
 
-static QObject *registerUbuntuColors(QQmlEngine *engine, QJSEngine *scriptEngine)
+static QObject *registerUbuntuColors10(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(scriptEngine)
     return UbuntuComponentsPlugin::registerQmlSingletonType(engine,
-           "Ubuntu.Components", "Colors/UbuntuColors.qml");
+           "Ubuntu.Components", "Colors/UbuntuColors10.qml");
 }
 
 QUrl UbuntuComponentsPlugin::baseUrl(const QStringList& importPathList, const char* uri)
@@ -154,7 +154,7 @@ void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
 
 void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, int minor)
 {
-    qmlRegisterSingletonType<QObject>(uri, major, minor, "UbuntuColors", registerUbuntuColors);
+    qmlRegisterSingletonType<QObject>(uri, major, minor, "UbuntuColors", registerUbuntuColors10);
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
