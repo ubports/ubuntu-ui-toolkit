@@ -22,41 +22,26 @@ import QtQuick 2.0
 import Ubuntu.Components 1.1 as Ubuntu
 
 /*!
+  \internal
   Documentation is in CrossFadeImage.qdoc
 */
 Item {
     id: crossFadeImage
 
-    /*!
-      \qmlproperty url source
-     */
     property url source
 
-    /*!
-      \qmlproperty enumeration fillMode
-    */
     property int fillMode : Image.PreserveAspectFit
 
-    /*!
-      \qmlproperty int fadeDuration
-    */
     property int fadeDuration: Ubuntu.UbuntuAnimation.FastDuration
 
-    /*!
-      \qmlproperty string fadeStyle
-    */
-    property string fadeStyle: "overlay"
-
-    /*!
-      \qmlproperty bool running
-    */
-    readonly property bool running: nextImageFadeIn.running
-
-    /*!
-      \qmlproperty size sourceSize
-    */
     // FIXME: Support resetting sourceSize
     property size sourceSize: internals.loadingImage ? Qt.size(internals.loadingImage.sourceSize.width, internals.loadingImage.sourceSize.height) : Qt.size(0, 0)
+
+    property string fadeStyle: "overlay"
+
+    readonly property bool running: nextImageFadeIn.running
+
+    readonly property int status: internals.loadingImage ? internals.loadingImage.status : Image.Null
 
     Binding {
         target: crossFadeImage
@@ -73,11 +58,6 @@ Item {
             internals.forcedSourceSize = sourceSize;
         }
     }
-
-    /*!
-      \qmlproperty enumeration status
-    */
-    readonly property int status: internals.loadingImage ? internals.loadingImage.status : Image.Null
 
     QtObject {
         id: internals
