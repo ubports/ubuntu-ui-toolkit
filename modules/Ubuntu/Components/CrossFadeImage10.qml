@@ -69,6 +69,7 @@ Item {
           Defines the image currently being shown
         */
         property Image currentImage: image1
+
         /*! \internal
           Defines the image being changed to
         */
