@@ -149,6 +149,7 @@ Style.PageHeadStyle {
         height: headerStyle.contentHeight
 
         Label {
+            objectName: "header_title_label"
             LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
             visible: !contentsContainer.visible
             anchors {
@@ -188,20 +189,6 @@ Style.PageHeadStyle {
             property: "parent"
             value: contentsContainer
             when: styledItem.config.contents && !styledItem.contents
-        }
-        Binding {
-            target: styledItem.config.contents
-            property: "anchors.verticalCenter"
-            value: contentsContainer.verticalCenter
-            when: styledItem.config.contents &&
-                  styledItem.config.contents.parent === contentsContainer
-        }
-        Binding {
-            target: styledItem.config.contents
-            property: "anchors.left"
-            value: contentsContainer.left
-            when: styledItem.config.contents &&
-                  styledItem.config.contents.parent === contentsContainer
         }
     }
 
@@ -265,13 +252,19 @@ Style.PageHeadStyle {
                 parent: QuickUtils.rootItem(actionsOverflowPopover)
                 caller: actionsOverflowButton
 
+                // Ensure the popover closes when actions change and
+                // the list item below may be destroyed before its
+                // onClicked is executed. See bug
+                // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
                 Connections {
                     target: styledItem.config
                     onActionsChanged: {
-                        // Ensure the popover closes when actions change and
-                        // the list item below may be destroyed before its
-                        // onClicked is executed. See bug
-                        // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
+                        actionsOverflowPopover.hide();
+                    }
+                }
+                Connections {
+                    target: styledItem
+                    onConfigChanged: {
                         actionsOverflowPopover.hide();
                     }
                 }
