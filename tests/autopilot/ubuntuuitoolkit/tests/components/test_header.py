@@ -40,7 +40,7 @@ class HeaderTestCase(tests.QMLFileAppTestCase):
             dict(test_qml_file_path=tools_test_qml_file_path)),
         ('actions',
             dict(test_qml_file_path=actions_test_qml_file_path))
-]
+    ]
 
     def setUp(self):
         super(HeaderTestCase, self).setUp()
