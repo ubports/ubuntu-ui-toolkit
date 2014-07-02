@@ -24,7 +24,6 @@ Template {
         id: crossFadeImageTemplateSection
         className: "CrossFadeImage"
 
-        Component.onCompleted: timer.start()
 
         function next() {
             if (internal.index < internal.paths.length - 1)
@@ -36,25 +35,48 @@ Template {
         QtObject {
             id: internal
             property int index: 0
-            property var paths: ["demo_image.jpg", "demo_image_2.jpg", "demo_image_3.jpg"]
+            property var paths: ["demo_image.jpg", "demo_image_2.png", "demo_image_3.png"]
+            property url source: Qt.resolvedUrl(paths[index])
+            property int fadeDuration: 1000
         }
 
         Timer {
             id: timer
-            interval: 500; running: true; repeat: true
+            interval: 2000; running: true; repeat: true
             onTriggered: crossFadeImageTemplateSection.next()
         }
 
         Column {
             spacing: units.gu(2)
+            anchors { left: parent.left; right: parent.right; }
 
             CrossFadeImage {
-                source: internal.paths[internal.index]
+                width: parent.width
+                height: units.gu(24)
+                source: internal.source
                 fadeStyle: "overlay"
+                fadeDuration: internal.fadeDuration
+
+                Label {
+                    anchors.centerIn: parent
+                    text: "fadeStyle: overlay"
+                    color: "white"; style: Text.Raised; styleColor: "black"
+                    z: 10
+                }
             }
             CrossFadeImage {
-                source: internal.paths[internal.index]
+                width: parent.width
+                height: units.gu(24)
+                source: internal.source
                 fadeStyle: "cross"
+                fadeDuration: internal.fadeDuration
+
+                Label {
+                    anchors.centerIn: parent
+                    text: "fadeStyle: cross"
+                    color: "white"; style: Text.Raised; styleColor: "black"
+                    z: 10
+                }
             }
         }
     }
