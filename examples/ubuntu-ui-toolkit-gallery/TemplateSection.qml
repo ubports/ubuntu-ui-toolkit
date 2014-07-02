@@ -46,7 +46,6 @@ Column {
             url: prefix + documentation
             visible: documentation != ""
             fontSize: "small"
-            opacity: 0.3
         }
     }
 }
