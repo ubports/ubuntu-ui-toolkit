@@ -23,7 +23,7 @@ Column {
     width: parent.width
     property string className
     property string title: className
-    property string documentation: "qml-ubuntu-components0-%1.html".arg(className.toLowerCase())
+    property string documentation: "qml-ubuntu-components-%1.html".arg(className.toLowerCase())
 
     property string description
     property url designUrl
