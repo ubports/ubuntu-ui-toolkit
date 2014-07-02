@@ -24,7 +24,6 @@ Template {
         id: crossFadeImageTemplateSection
         className: "CrossFadeImage"
 
-
         function next() {
             if (internal.index < internal.paths.length - 1)
                 internal.index++;
