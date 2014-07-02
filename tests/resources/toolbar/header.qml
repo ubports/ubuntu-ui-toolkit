@@ -153,14 +153,12 @@ MainView {
 
                     state: ""
                     states: [
-                        State {
+                        PageHeadState {
+                            // needed otherwise actions will not be
+                            // returned to its original state.
                             name: ""
-                            PropertyChanges {
-                                target: searchPage.head
-                                // needed otherwise actions will not be
-                                // returned to its original state.
-                                actions: [ searchAction ]
-                            }
+                            head: searchPage.head
+                            actions: [ searchAction ]
                         },
                         PageHeadState {
                             id: headerState
