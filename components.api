@@ -249,6 +249,7 @@ PageHeadConfiguration 1.1
 QtObject
     property list<Action> actions
     property Action backAction
+    property Item contents
 PageStack 0.1 1.0
 PageTreeNode
     property bool __showHeader
@@ -390,6 +391,14 @@ AnimatedItem
     property real minimumValue
     property real maximumValue
     property real value
+PullToRefresh 1.1
+StyledItem
+    readonly property bool releaseToRefresh
+    readonly property real offset
+    property Component content
+    property Flickable target
+    property bool refreshing
+    signal refresh()
 Scrollbar 0.1 1.0
 StyledItem
     property Flickable flickableItem
@@ -431,6 +440,11 @@ Item
     property color textColor
     property real textLeftMargin
     property int maximumNumberOfActions
+PullToRefreshStyle 1.1
+Item
+    property Component defaultContent
+    property real activationThreshold
+    property bool releaseToRefresh
 Switch 0.1 1.0
 CheckBox
 Tab 0.1 1.0
@@ -611,6 +625,9 @@ Item
 UbuntuListView 0.1 1.0
 ListView
     property int expandedIndex
+UbuntuListView 1.1
+UbuntuListView
+    property PullToRefresh pullToRefresh
 UbuntuNumberAnimation 0.1 1.0
 NumberAnimation
 UbuntuShape 0.1 1.0

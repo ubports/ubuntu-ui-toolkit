@@ -100,6 +100,12 @@ ListModel {
         source: "ListItems.qml"
     }
     ListElement {
+        objectName: "ubuntuListViewElement"
+        label: "Ubuntu ListView"
+        source: "UbuntuListViews.qml"
+    }
+
+    ListElement {
         objectName: "dialogsElement"
         label: "Dialog"
         source: "Dialog.qml"

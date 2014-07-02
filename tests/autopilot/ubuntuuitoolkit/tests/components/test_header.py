@@ -24,15 +24,24 @@ from testtools.matchers import Equals
 from ubuntuuitoolkit import tests
 
 
-class HeaderTestCase(tests.QMLFileAppTestCase):
+class HeaderActionsOverflowTestCase(tests.QMLFileAppTestCase):
 
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
-    test_qml_file_path = os.path.join(
-        dir_path, 'test_header.HeaderTestCase.qml')
+    tools_test_qml_file_path = os.path.join(
+        dir_path, 'test_header.HeaderActionsOverflowTestCase.tools.qml')
+    actions_test_qml_file_path = os.path.join(
+        dir_path, 'test_header.HeaderActionsOverflowTestCase.actions.qml')
+
+    scenarios = [
+        ('deprecated tools',
+            dict(test_qml_file_path=tools_test_qml_file_path)),
+        ('actions',
+            dict(test_qml_file_path=actions_test_qml_file_path))
+    ]
 
     def setUp(self):
-        super(HeaderTestCase, self).setUp()
+        super(HeaderActionsOverflowTestCase, self).setUp()
         self.header = self.main_view.get_header()
 
     def test_click_header_overflow_action_must_close_popover(self):
@@ -46,3 +55,57 @@ class HeaderTestCase(tests.QMLFileAppTestCase):
             objectName='actions_overflow_popover')
         self.header.click_action_button('pushStackAction')
         self.assertThat(overflow_popover.visible, Eventually(Equals(False)))
+
+
+class HeaderContentsTestCase(tests.QMLFileAppTestCase):
+
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_header.HeaderContentsTestCase.qml')
+
+    def setUp(self):
+        super(HeaderContentsTestCase, self).setUp()
+        self.header = self.main_view.get_header()
+
+    def test_open_page_with_head_contents_must_change_header(self):
+        """Test that setting head.contents overrides header contents."""
+
+        label = self.header.select_single(
+            'Label',
+            objectName='header_title_label')
+        self.assertEqual(label.visible, True)
+        self.assertEqual(label.text, 'Test title')
+
+        pushButton = self.main_view.select_single(
+            'Button',
+            objectName='push_button')
+        self.pointing_device.move_to_object(pushButton)
+        self.pointing_device.click()
+
+        self.assertEqual(label.visible, False)
+        headerContents = self.header.select_single(
+            objectName='orange_header_contents')
+        self.assertEqual(headerContents.visible, True)
+
+    def test_close_page_with_head_contents_must_revert_header(self):
+        """Test that closing a page with head.contents reverts the header."""
+        pushButton = self.main_view.select_single(
+            'Button',
+            objectName='push_button')
+        self.pointing_device.move_to_object(pushButton)
+        self.pointing_device.click()
+
+        headerContents = self.header.select_single(
+            objectName='orange_header_contents')
+        label = self.header.select_single(
+            'Label',
+            objectName='header_title_label')
+
+        self.assertEqual(headerContents.visible, True)
+        self.assertEqual(label.visible, False)
+
+        self.header.click_back_button()
+        self.assertEqual(headerContents.visible, False)
+        self.assertEqual(label.visible, True)
+        self.assertEqual(label.text, 'Test title')

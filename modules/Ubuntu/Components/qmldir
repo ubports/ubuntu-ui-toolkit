@@ -94,7 +94,8 @@ UbuntuListView 1.0 UbuntuListView.qml
 #version 1.1
 ComboButton 1.1 ComboButton.qml
 CrossFadeImage 1.1 CrossFadeImage11.qml
+PullToRefresh 1.1 PullToRefresh.qml
+UbuntuListView 1.1 UbuntuListView11.qml
 internal PageBase Page10.qml
 Page 1.1 Page11.qml
 PageHeadConfiguration 1.1 PageHeadConfiguration.qml
-

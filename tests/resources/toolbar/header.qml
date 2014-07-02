@@ -58,8 +58,8 @@ MainView {
                     tools: ToolbarItems {
                         ToolbarButton {
                             action: Action {
-                                iconName: "search"
-                                text: "Search"
+                                iconName: "settings"
+                                text: "Settings"
                             }
                         }
                         ToolbarButton {
@@ -122,7 +122,7 @@ MainView {
                     head {
                         actions: [
                             Action {
-                                iconName: "search"
+                                iconName: "settings"
                             },
                             Action {
                                 iconName: "camera-flip"
@@ -136,8 +136,61 @@ MainView {
                 }
             }
             Tab {
-                title: "Tab 5"
-                page: Page { }
+                title: "Search"
+                page: Page {
+                    id: searchPage
+
+                    Label {
+                        anchors.centerIn: parent
+                        text: searchPage.state == "search" ? "search mode" : "normal mode"
+                    }
+
+                    head.actions: Action {
+                        id: searchAction
+                        iconName: "search"
+                        onTriggered: searchPage.state = "search"
+                    }
+
+                    state: ""
+                    states: [
+                        State {
+                            name: ""
+                            PropertyChanges {
+                                target: searchPage.head
+                                // needed otherwise actions will not be
+                                // returned to its original state.
+                                actions: [ searchAction ]
+                            }
+                        },
+                        State {
+                            // TODO: The definition of this state will be
+                            // simplified a lot in a following MR that
+                            // introduces the HeaderState component.
+                            id: headerState
+                            name: "search"
+                            property Action back: Action {
+                                id: leaveSearchAction
+                                text: "back"
+                                iconName: "back"
+                                onTriggered: searchPage.state = ""
+                            }
+                            property list<Action> actions: [
+                                Action {
+                                    iconName: "contact"
+                                }
+                            ]
+                            property TextField input: TextField {
+                                placeholderText: "search..."
+                            }
+                            PropertyChanges {
+                                target: searchPage.head
+                                backAction: headerState.back
+                                actions: headerState.actions
+                                contents: headerState.input
+                            }
+                        }
+                    ]
+                }
             }
         }
     }
@@ -153,8 +206,8 @@ MainView {
         tools: ToolbarItems {
             ToolbarButton {
                 action: Action {
-                    iconName: "search"
-                    text: "Search"
+                    iconName: "settings"
+                    text: "settings"
                 }
             }
         }
