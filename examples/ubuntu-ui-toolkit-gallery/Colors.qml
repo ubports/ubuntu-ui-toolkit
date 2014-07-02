@@ -63,9 +63,9 @@ Template {
             }
         }
         TemplateRow {
-            title: i18n.tr("Aubergine")
+            title: i18n.tr("Purple")
             UbuntuShape {
-                color: UbuntuColors.aubergine
+                color: UbuntuColors.purple
             }
         }
     }
