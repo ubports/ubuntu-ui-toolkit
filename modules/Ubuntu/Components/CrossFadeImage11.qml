@@ -91,6 +91,7 @@ Item {
     }
 
     QtObject {
+        // dummy object used to disable crossfade animation
         id: fadeOutDummy
         property real opacity
     }
