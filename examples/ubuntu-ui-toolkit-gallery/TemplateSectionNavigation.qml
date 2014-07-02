@@ -43,7 +43,6 @@ Column {
         url: prefix + documentation
         visible: documentation != ""
         fontSize: "small"
-        opacity: 0.3
         anchors.left: parent.left
     }
 
@@ -51,7 +50,6 @@ Column {
         label: "Design guidelines"
         url: templateSection.designUrl
         fontSize: "small"
-        opacity: 0.3
         anchors.left: parent.left
     }
 
