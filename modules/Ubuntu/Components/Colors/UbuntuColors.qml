@@ -39,43 +39,49 @@ QtObject {
     // old colors from UbuntuColors 1.0:
 
     /*!
-       Ubuntu core color: Ubuntu orange
+      Orange. Recommended for branded elements, display progress
+      and intensity, textual links on light backgrounds.
     */
     readonly property color orange: "#DD4814"
     /*!
-       Ubuntu supporting color: light aubergine
+      \deprecated
+      Ubuntu supporting color: light aubergine
     */
     readonly property color lightAubergine: "#77216F"
     /*!
-       Ubuntu supporting color: mid aubergine
+      \deprecated
+      Ubuntu supporting color: mid aubergine
     */
     readonly property color midAubergine: "#5E2750"
     /*!
-       Ubuntu supporting color: dark aubergine
+      \deprecated
+      Ubuntu supporting color: dark aubergine
     */
     readonly property color darkAubergine: "#2C001E"
     /*!
-       Ubuntu neutral color: warm grey
+      \deprecated
+      Ubuntu neutral color: warm grey
     */
     readonly property color warmGrey: "#AEA79F"
     /*!
-       Ubuntu neutral color: cool grey
+      \deprecated
+      Ubuntu neutral color: cool grey
     */
     readonly property color coolGrey: "#333333"
 
     /*!
-       Ubuntu orange gradient
+      Ubuntu orange gradient
 
-       \sa Button::gradient
+      \sa Button::gradient
     */
     property Gradient orangeGradient: Gradient {
         GradientStop { position: 0.0; color: "#DD4814" }
         GradientStop { position: 1.0; color: "#D9722D" }
     }
     /*!
-       Ubuntu grey gradient
+      Ubuntu grey gradient
 
-       \sa Button::gradient
+      \sa Button::gradient
     */
     property Gradient greyGradient: Gradient {
         GradientStop { position: 0.0; color: "#888888" }
@@ -85,38 +91,41 @@ QtObject {
     // New colors introduced in UbuntuColors 1.1:
 
     /*!
-      Light grey
+      Light grey. Recommended for neutral action buttons and
+      secondary text.
       \since Ubuntu.Components 1.1
      */
     readonly property color lightGrey: "#888888"
 
     /*!
-      Dark grey
+      Dark grey. Recommended for text and action icons.
       \since Ubuntu.Components 1.1
      */
     readonly property color darkGrey: "#5d5d5d"
 
     /*!
-      Red
+      Red. Recommended for negative and irreversible action
+      buttons, errors and alerts.
       \since Ubuntu.Components 1.1
      */
     readonly property color red: "#fc4949"
 
     /*!
-      Green
+      Green. Recommended for positive action buttons.
       \since Ubuntu.Components 1.1
      */
     readonly property color green: "#3fb24f"
 
     /*!
-      Blue
+      Blue. Recommended for text selection and text cursor.
       \since Ubuntu.Components 1.1
      */
     readonly property color blue: "#1ab6ef"
 
     /*!
-      Aubergine
+      Purple. Recommended for proper nouns in
+      list items.
       \since Ubuntu.Components 1.1
      */
-    readonly property color aubergine: "#762572"
+    readonly property color purple: "#762572"
 }
