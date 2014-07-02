@@ -28,7 +28,7 @@ Palette {
         overlay: "#FDFDFD"
         overlayText: "#888888"
         field: "#1A000000"
-        fieldText: "#888888"
+        fieldText: "#5d5d5d" // dark gray
     }
     selected: PaletteValues {
         /* FIXME: 'background' does not come from design
@@ -37,8 +37,8 @@ Palette {
         */
         background: "#B2E6E6E6"
         backgroundText: "#888888"
-        foreground: "#DD4814"
-        foregroundText: "#F3F3E7"
+        foreground: "#1ab6ef" // blue
+        foregroundText: "#5d5d5d" // dark gray
         field: "#FFFFFF"
         fieldText: "#888888"
     }

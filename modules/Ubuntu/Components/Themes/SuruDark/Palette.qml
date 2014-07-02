@@ -33,8 +33,8 @@ Palette {
     selected: PaletteValues {
         background: "#88D6D6D6" // FIXME: not from design
         backgroundText: "#F3F3E7"
-        foreground: "#DD4814"
-        foregroundText: "#F3F3E7"
+        foreground: "#1ab6ef" // blue
+        foregroundText: "#5d5d5d" // dark gray
         field: "#FFFFFF"
         fieldText: "#888888"
     }
