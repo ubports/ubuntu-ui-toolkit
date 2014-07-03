@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,17 +14,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 0.1
+import QtQuick 2.2
 
-Label {
-    id: webLink
+// documentation in UbuntuListView11.qdoc
+UbuntuListView {
 
-    property string label: url
-    property url url
+    /*!
+      \internal
+      \qmlproperty PullToRefresh pullToRefresh
+      */
+    property alias pullToRefresh: refreshItem
 
-    textFormat: Text.StyledText
-    text: "<a href=\"%1\">%2</a>".arg(webLink.url).arg(webLink.label)
-    linkColor: UbuntuColors.orange
-    onLinkActivated: Qt.openUrlExternally(link)
+    PullToRefresh {
+        objectName: "listview_pulltorefresh"
+        id: refreshItem
+        enabled: false
+    }
 }
