@@ -148,8 +148,6 @@ MainView {
                     state: "default"
                     states: [
                         PageHeadState {
-                            // needed otherwise actions will not be
-                            // returned to its original state.
                             name: "default"
                             head: searchPage.head
                             actions: Action {

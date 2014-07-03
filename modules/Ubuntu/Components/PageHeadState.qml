@@ -48,8 +48,6 @@ import QtQuick 2.2
                 state: "default"
                 states: [
                     PageHeadState {
-                        // needed otherwise actions will not be
-                        // returned to its original state.
                         name: "default"
                         head: searchPage.head
                         actions: Action {
