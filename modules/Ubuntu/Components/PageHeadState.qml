@@ -61,6 +61,7 @@ import QtQuick 2.2
                         actions: Action {
                             iconName: "search"
                             onTriggered: searchPage.state = "search"
+                        }
                     },
                     PageHeadState {
                         id: headerState
