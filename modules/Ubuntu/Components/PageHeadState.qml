@@ -45,12 +45,6 @@ import QtQuick 2.2
                     text: searchPage.state == "search" ? "search mode" : "normal mode"
                 }
 
-                head.actions: Action {
-                    id: searchAction
-                    iconName: "search"
-                    onTriggered: searchPage.state = "search"
-                }
-
                 state: "default"
                 states: [
                     PageHeadState {
