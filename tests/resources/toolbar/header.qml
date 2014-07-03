@@ -145,48 +145,34 @@ MainView {
                         text: searchPage.state == "search" ? "search mode" : "normal mode"
                     }
 
-                    head.actions: Action {
-                        id: searchAction
-                        iconName: "search"
-                        onTriggered: searchPage.state = "search"
-                    }
-
-                    state: ""
+                    state: "default"
                     states: [
-                        State {
-                            name: ""
-                            PropertyChanges {
-                                target: searchPage.head
-                                // needed otherwise actions will not be
-                                // returned to its original state.
-                                actions: [ searchAction ]
+                        PageHeadState {
+                            name: "default"
+                            head: searchPage.head
+                            actions: Action {
+                                id: searchAction
+                                iconName: "search"
+                                onTriggered: searchPage.state = "search"
                             }
                         },
-                        State {
-                            // TODO: The definition of this state will be
-                            // simplified a lot in a following MR that
-                            // introduces the HeaderState component.
+                        PageHeadState {
                             id: headerState
                             name: "search"
-                            property Action back: Action {
-                                id: leaveSearchAction
-                                text: "back"
-                                iconName: "back"
-                                onTriggered: searchPage.state = ""
-                            }
-                            property list<Action> actions: [
+                            head: searchPage.head
+                            actions: [
                                 Action {
                                     iconName: "contact"
                                 }
                             ]
-                            property TextField input: TextField {
-                                placeholderText: "search..."
+                            backAction: Action {
+                                id: leaveSearchAction
+                                text: "back"
+                                iconName: "back"
+                                onTriggered: searchPage.state = "default"
                             }
-                            PropertyChanges {
-                                target: searchPage.head
-                                backAction: headerState.back
-                                actions: headerState.actions
-                                contents: headerState.input
+                            contents: TextField {
+                                placeholderText: "search..."
                             }
                         }
                     ]
