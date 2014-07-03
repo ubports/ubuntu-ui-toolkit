@@ -51,14 +51,16 @@ import QtQuick 2.2
                     onTriggered: searchPage.state = "search"
                 }
 
-                state: ""
+                state: "default"
                 states: [
                     PageHeadState {
                         // needed otherwise actions will not be
                         // returned to its original state.
                         name: ""
                         head: searchPage.head
-                        actions: [ searchAction ]
+                        actions: Action {
+                            iconName: "search"
+                            onTriggered: searchPage.state = "search"
                     },
                     PageHeadState {
                         id: headerState
@@ -73,7 +75,7 @@ import QtQuick 2.2
                             id: leaveSearchAction
                             text: "back"
                             iconName: "back"
-                            onTriggered: searchPage.state = ""
+                            onTriggered: searchPage.state = "default"
                         }
                         contents: TextField {
                             placeholderText: "search..."

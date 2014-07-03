@@ -145,20 +145,18 @@ MainView {
                         text: searchPage.state == "search" ? "search mode" : "normal mode"
                     }
 
-                    head.actions: Action {
-                        id: searchAction
-                        iconName: "search"
-                        onTriggered: searchPage.state = "search"
-                    }
-
-                    state: ""
+                    state: "default"
                     states: [
                         PageHeadState {
                             // needed otherwise actions will not be
                             // returned to its original state.
-                            name: ""
+                            name: "default"
                             head: searchPage.head
-                            actions: [ searchAction ]
+                            actions: Action {
+                                id: searchAction
+                                iconName: "search"
+                                onTriggered: searchPage.state = "search"
+                            }
                         },
                         PageHeadState {
                             id: headerState
@@ -173,7 +171,7 @@ MainView {
                                 id: leaveSearchAction
                                 text: "back"
                                 iconName: "back"
-                                onTriggered: searchPage.state = ""
+                                onTriggered: searchPage.state = "default"
                             }
                             contents: TextField {
                                 placeholderText: "search..."
