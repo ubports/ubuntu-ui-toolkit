@@ -50,7 +50,7 @@ import QtQuick 2.2
                     PageHeadState {
                         // needed otherwise actions will not be
                         // returned to its original state.
-                        name: ""
+                        name: "default"
                         head: searchPage.head
                         actions: Action {
                             iconName: "search"
