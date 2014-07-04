@@ -20,6 +20,8 @@ from autopilot.matchers import Eventually
 from testtools.matchers import Equals
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 
+import os
+
 
 class ButtonsTestCase(GalleryTestCase):
 
@@ -43,6 +45,11 @@ class ButtonsTestCase(GalleryTestCase):
             button_name="button_text_disabled", is_enabled=False, color=None,
             icon=None, text="Call"))
     ]
+
+    def setUp(self):
+        # Reset the locale to English
+        os.environ['LANGUAGE'] = 'en'
+        super(ButtonsTestCase, self).setUp()
 
     def test_buttons(self):
         self.open_page('buttonsElement')
