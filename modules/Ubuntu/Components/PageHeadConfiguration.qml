@@ -59,6 +59,9 @@ QtObject {
             }
         }
       \endqml
+
+      See \l PageHeadState for an example that shows how search mode can
+      be implemented.
      */
     property Item contents: null
 }

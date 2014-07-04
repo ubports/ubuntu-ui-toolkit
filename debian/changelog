@@ -13,6 +13,7 @@ ubuntu-ui-toolkit (0.1.48+14.10.20140701.2-0ubuntu2) UNRELEASED; urgency=medium
   * Print a warning when using deprecated Header component.
   * Fix empty toolbar bug with Qt 5.3. 
     Fixes: https://bugs.launchpad.net/bugs/1327189.
+  * Use icons from the new suru icon theme only
 
   [ Christian Dywan ]
   * Use orange and no translucency for links in the gallery.
