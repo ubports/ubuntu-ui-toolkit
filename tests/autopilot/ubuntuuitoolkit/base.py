@@ -32,7 +32,7 @@ def get_qmlscene_launch_command():
     # QT_SELECT=qt5 doesn't work for autopilot tests. --Mirv - 2013-10-03
     arch = subprocess.check_output(
         ["dpkg-architecture", "-qDEB_HOST_MULTIARCH"],
-        universal_newlines=True).strip()
+        universal_newlines=True, stderr=subprocess.PIPE).strip()
     return '/usr/lib/{}/qt5/bin/qmlscene'.format(arch)
 
 
