@@ -59,8 +59,17 @@ Item
     property url source
     property int fillMode
     property int fadeDuration
-    readonly property bool running
     property size sourceSize
+    readonly property bool running
+    readonly property int status
+CrossFadeImage 1.1
+Item
+    property url source
+    property int fillMode
+    property int fadeDuration
+    property size sourceSize
+    property string fadeStyle
+    readonly property bool running
     readonly property int status
 Header 0.1 1.0
 AppHeader
@@ -233,6 +242,20 @@ PageTreeNode
     property Item __customHeaderContents
     property Flickable flickable
     property list<Action> actions
+Page 1.1
+Page10
+    readonly property PageHeadConfiguration head
+PageHeadConfiguration 1.1
+QtObject
+    property list<Action> actions
+    property Action backAction
+    property Item contents
+PageHeadState 1.1
+State
+    property PageHeadConfiguration head
+    property list<Action> actions
+    property Action backAction
+    property Item contents
 PageStack 0.1 1.0
 PageTreeNode
     property bool __showHeader
@@ -374,6 +397,14 @@ AnimatedItem
     property real minimumValue
     property real maximumValue
     property real value
+PullToRefresh 1.1
+StyledItem
+    readonly property bool releaseToRefresh
+    readonly property real offset
+    property Component content
+    property Flickable target
+    property bool refreshing
+    signal refresh()
 Scrollbar 0.1 1.0
 StyledItem
     property Flickable flickableItem
@@ -405,6 +436,21 @@ Item
     property Gradient defaultGradient
     property color defaultDropdownColor
     property font defaultFont
+PageHeadStyle 1.1
+Item
+    property real contentHeight
+    property url separatorSource
+    property url separatorBottomSource
+    property string fontSize
+    property int fontWeight
+    property color textColor
+    property real textLeftMargin
+    property int maximumNumberOfActions
+PullToRefreshStyle 1.1
+Item
+    property Component defaultContent
+    property real activationThreshold
+    property bool releaseToRefresh
 Switch 0.1 1.0
 CheckBox
 Tab 0.1 1.0
@@ -585,6 +631,9 @@ Item
 UbuntuListView 0.1 1.0
 ListView
     property int expandedIndex
+UbuntuListView 1.1
+UbuntuListView
+    property PullToRefresh pullToRefresh
 UbuntuNumberAnimation 0.1 1.0
 NumberAnimation
 UbuntuShape 0.1 1.0

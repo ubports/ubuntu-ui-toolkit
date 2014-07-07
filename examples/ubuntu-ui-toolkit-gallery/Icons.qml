@@ -89,7 +89,7 @@ Template {
 
                 Repeater {
                     model: FolderListModel {
-                        folder: "/usr/share/icons/ubuntu-mobile/actions/scalable"
+                        folder: "/usr/share/icons/suru/actions/scalable"
                         showDirs: false
                         showOnlyReadable : true
                         sortField: FolderListModel.Name
