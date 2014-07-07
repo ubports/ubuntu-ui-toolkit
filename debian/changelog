@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (0.1.48+14.10.20140701.2-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (0.1.48+14.10.20140707-0ubuntu1) utopic; urgency=medium
 
   [ Tim Peeters ]
   * Fix API doc links in UITK gallery.
@@ -73,7 +73,10 @@ ubuntu-ui-toolkit (0.1.48+14.10.20140701.2-0ubuntu2) UNRELEASED; urgency=medium
   * OrientationHelper: prevent unnecessary changes of width and 
     height with a workaround.
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Thu, 03 Jul 2014 16:38:12 +0300
+  [ CI bot ]
+  * Resync trunk
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 07 Jul 2014 11:05:59 +0000
 
 ubuntu-ui-toolkit (0.1.48+14.10.20140701.2-0ubuntu1) utopic; urgency=medium
 
