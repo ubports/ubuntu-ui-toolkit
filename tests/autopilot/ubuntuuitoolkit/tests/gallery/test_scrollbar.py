@@ -67,6 +67,6 @@ class ScrollBarTestCase(gallery.GalleryTestCase):
         start_x = stop_x = x + (width // 2)
         start_y = y + (height // 0.8)
         self.pointing_device.drag(
-            start_x , start_y, stop_x, self.main_view.height)
+            start_x, start_y, stop_x, self.main_view.height)
 
         self.assertEqual(flickable.is_child_visible(bottom_section), True)
