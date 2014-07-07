@@ -1,11 +1,13 @@
 TEMPLATE = app
 QT += qml quick
 # For setSharedOpenGLContext
-QT += core-private gui-private quick-private
+QT += core-private gui-private testlib quick-private
 CONFIG += no_keywords
-SOURCES += \
-    launcher.cpp
-launcher.path = /usr/lib/ubuntu-ui-toolkit
+HEADERS += MouseTouchAdaptor.h
+SOURCES += launcher.cpp \
+    MouseTouchAdaptor.cpp
+installPath = $$[QT_INSTALL_LIBS]/ubuntu-ui-toolkit
+launcher.path = $$installPath
 launcher.files = launcher
 INSTALLS += launcher
 

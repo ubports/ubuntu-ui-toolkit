@@ -106,4 +106,11 @@
          import Ubuntu.PerformanceMetrics 1.0
      \endcode
      \annotatedlist ubuntu-performance-metrics
+
+     \part Test extensions
+     Available through:
+     \code
+         import Ubuntu Test 1.0
+     \endcode
+     \annotatedlist ubuntu-test
  */

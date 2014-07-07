@@ -69,11 +69,11 @@ TestCase {
 
     function test_title_bug1143345_bug1317902() {
         pageStack.push(page1);
-        compare(mainView.__propagated.header.title, "Title 1", "Header is correctly set by page");
+        compare(mainView.__propagated.header.title, "Title 1", "Header title is correctly set by page");
         page1.title = "New title";
         compare(mainView.__propagated.header.title, "New title", "Header title correctly updated by page");
         pageStack.push(page2);
-        compare(mainView.__propagated.header.title, "Title 2", "Header is correctly set by page");
+        compare(mainView.__propagated.header.title, "Title 2", "Header title is correctly set by page");
         pageStack.clear();
         page1.title = "Title 1";
 
