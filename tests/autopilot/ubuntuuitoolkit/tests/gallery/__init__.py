@@ -131,6 +131,9 @@ class GalleryTestCase(ubuntuuitoolkit.tests.QMLFileAppTestCase):
         list_view.click_element(page)
         element = self.main_view.select_single('Standard', objectName=page)
         element.selected.wait_for(True)
+        # Start with the toolbar closed to make the full page visible and be
+        # able to swipe it if needed.
+        self.main_view.close_toolbar()
 
     def tearDown(self):
         super(GalleryTestCase, self).tearDown()
