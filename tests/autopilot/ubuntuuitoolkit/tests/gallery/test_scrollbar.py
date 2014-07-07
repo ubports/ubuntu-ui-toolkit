@@ -62,10 +62,12 @@ class ScrollBarTestCase(gallery.GalleryTestCase):
             'QQuickFlickable', objectName='TemplateFlickable')
         self.assertEqual(flickable.is_child_visible(bottom_section), False)
 
+        self.move_mouse_to_thumb()
         mouse_thumb = self.get_mouse_thumb()
         x, y, width, height = mouse_thumb.globalRect
         start_x = stop_x = x + (width // 2)
         start_y = y + (height // 0.8)
+
         self.pointing_device.drag(
             start_x, start_y, stop_x, self.main_view.height)
 
