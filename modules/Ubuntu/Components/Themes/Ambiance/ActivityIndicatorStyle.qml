@@ -28,7 +28,7 @@ Image {
     verticalAlignment: Image.AlignVCenter
     source: "artwork/spinner.png"
 
-    RotationAnimator on rotation {
+    RotationAnimation on rotation {
         running: styledItem.running
         from: 0
         to: 360
