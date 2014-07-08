@@ -28,6 +28,11 @@ Image {
     verticalAlignment: Image.AlignVCenter
     source: "artwork/spinner.png"
 
+    /*
+      Changed from RotationAnimator to RotationAnimation to 
+      work around bug: https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1338602
+      "Activity Indicator crashes in QML/Widget mixed applications"
+    */
     RotationAnimation on rotation {
         running: styledItem.running
         from: 0
