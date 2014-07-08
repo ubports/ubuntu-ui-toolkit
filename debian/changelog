@@ -1,9 +1,9 @@
-ubuntu-ui-toolkit (0.1.49+14.10.20140707-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (0.1.49+14.10.20140707-0ubuntu1) utopic; urgency=medium
 
   * Increase upstream version to 0.1.49 due to API additions in previous
     release, which did not make it to utopic release.
 
- -- Iain Lane <iain@orangesquash.org.uk>  Tue, 08 Jul 2014 14:39:56 +0100
+ -- Iain Lane <iain@orangesquash.org.uk>  Tue, 08 Jul 2014 14:41:49 +0100
 
 ubuntu-ui-toolkit (0.1.48+14.10.20140707-0ubuntu1) utopic; urgency=medium
 
