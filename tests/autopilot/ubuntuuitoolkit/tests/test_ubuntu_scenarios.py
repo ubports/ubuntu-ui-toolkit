@@ -31,8 +31,10 @@ class ScenariosTestCase(testtools.TestCase):
             ('Simulating Nexus 4 in desktop',
              dict(app_width=768, app_height=1280, grid_unit_px=18)),
         ]
-        scenarios = ubuntu_scenarios.get_device_simulation_scenarios(
-            devices=ubuntu_scenarios.NEXUS4_DEVICE)
+        with mock.patch('autopilot.platform.model') as mock_model:
+            mock_model.return_value = 'Desktop'
+            scenarios = ubuntu_scenarios.get_device_simulation_scenarios(
+                devices=ubuntu_scenarios.NEXUS4_DEVICE)
         self.assertEqual(expected_scenarios, scenarios)
 
     def test_get_nexus_10_scenario(self):
@@ -40,8 +42,11 @@ class ScenariosTestCase(testtools.TestCase):
             ('Simulating Nexus 10 in desktop',
              dict(app_width=2560, app_height=1600, grid_unit_px=20))
         ]
-        scenarios = ubuntu_scenarios.get_device_simulation_scenarios(
-            devices=ubuntu_scenarios.NEXUS10_DEVICE)
+
+        with mock.patch('autopilot.platform.model') as mock_model:
+            mock_model.return_value = 'Desktop'
+            scenarios = ubuntu_scenarios.get_device_simulation_scenarios(
+                devices=ubuntu_scenarios.NEXUS10_DEVICE)
         self.assertEqual(expected_scenarios, scenarios)
 
     def test_get_default_scenarios_must_return_supported_devices(self):
@@ -51,7 +56,10 @@ class ScenariosTestCase(testtools.TestCase):
             ('Simulating Nexus 10 in desktop',
              dict(app_width=2560, app_height=1600, grid_unit_px=20))
         ]
-        scenarios = ubuntu_scenarios.get_device_simulation_scenarios()
+
+        with mock.patch('autopilot.platform.model') as mock_model:
+            mock_model.return_value = 'Desktop'
+            scenarios = ubuntu_scenarios.get_device_simulation_scenarios()
         self.assertEqual(expected_scenarios, scenarios)
 
     def test_get_scenarios_on_device_must_return_no_simulation_scenarios(self):
