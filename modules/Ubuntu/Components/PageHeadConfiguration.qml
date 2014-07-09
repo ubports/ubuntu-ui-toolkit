@@ -31,6 +31,23 @@ QtObject {
 
     /*!
       List of actions to show in the header.
+
+      Example:
+      \qml
+        Page {
+            title: "Custom header actions"
+            head.actions: [
+                Action {
+                    iconName: "save"
+                    text: i18n.tr("Save")
+                },
+                Action {
+                    iconName: "add"
+                    text: i18n.tr("Add")
+                }
+            ]
+        }
+      \endqml
      */
     property list<Action> actions
 
