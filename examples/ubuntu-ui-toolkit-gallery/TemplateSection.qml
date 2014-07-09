@@ -23,7 +23,7 @@ Column {
     width: parent.width
     property string className
     property string title: className
-    property string documentation: "qml-ubuntu-components0-%1.html".arg(className.toLowerCase())
+    property string documentation: "qml-ubuntu-components-%1.html".arg(className.toLowerCase())
 
     Item {
         anchors.left: parent.left
@@ -46,7 +46,6 @@ Column {
             url: prefix + documentation
             visible: documentation != ""
             fontSize: "small"
-            opacity: 0.3
         }
     }
 }

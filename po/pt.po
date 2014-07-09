@@ -1,25 +1,25 @@
-# Hebrew translation for ubuntu-ui-toolkit
-# Copyright (c) 2013 Rosetta Contributors and Canonical Ltd 2013
+# Portuguese translation for ubuntu-ui-toolkit
+# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
 # This file is distributed under the same license as the ubuntu-ui-toolkit package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-05-30 14:06+0200\n"
-"PO-Revision-Date: 2013-07-03 08:23+0000\n"
-"Last-Translator: Yaron <sh.yaron@gmail.com>\n"
-"Language-Team: Hebrew <he@li.org>\n"
+"PO-Revision-Date: 2014-07-03 18:36+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Portuguese <pt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-06-26 07:08+0000\n"
-"X-Generator: Launchpad (build 17065)\n"
+"X-Launchpad-Export-Date: 2014-07-04 06:26+0000\n"
+"X-Generator: Launchpad (build 17086)\n"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:22
 msgid "NumberAnimation"
-msgstr ""
+msgstr "Número da Animação"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:25
@@ -32,66 +32,66 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:25
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:44
 msgid "Standard"
-msgstr ""
+msgstr "Padrão"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:56
 msgid "Standard Durations"
-msgstr ""
+msgstr "Durações Padrão"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:60
 msgid "Snap"
-msgstr ""
+msgstr "Encaixar"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:96
 msgid "Fast"
-msgstr ""
+msgstr "Rápido"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:132
 msgid "Slow"
-msgstr ""
+msgstr "Lento"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:157
 msgid "Sleepy"
-msgstr ""
+msgstr "Sonolento"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:28
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:36
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:50
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:59
 msgid "Call"
-msgstr ""
+msgstr "Chamada"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:33
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:26
 msgid "Color"
-msgstr "צבע"
+msgstr "Cor"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:42
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:41
 msgid "Icon"
-msgstr "סמל"
+msgstr "Ícone"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:56
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:73
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:41
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:75
 msgid "Disabled"
-msgstr "מנוטרל"
+msgstr "Desactivado"
 
 #: examples/ubuntu-ui-toolkit-gallery/Dialog.qml:30
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:42
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:41
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:74
 msgid "Open"
-msgstr ""
+msgstr "Abrir"
 
 #: examples/ubuntu-ui-toolkit-gallery/Icons.qml:25
 msgid "Scaling"
-msgstr ""
+msgstr "Redimensionar"
 
 #: examples/ubuntu-ui-toolkit-gallery/Icons.qml:50
 msgid "Colorization"
-msgstr "צביעה"
+msgstr "Coloração"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:34
@@ -102,249 +102,251 @@ msgstr "צביעה"
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:83
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:95
 msgid "Label"
-msgstr "תווית"
+msgstr "Etiqueta"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:31
 msgid "Subtitled"
-msgstr ""
+msgstr "Legendado"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:35
 msgid "Secondary label"
-msgstr "תווית משנית"
+msgstr "Etiqueta secundária"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:50
 msgid "Progression"
-msgstr "התקדמות"
+msgstr "Progressão"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:59
 msgid "Single value"
-msgstr "ערך יחיד"
+msgstr "Valor único"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:63
 msgid "Value"
-msgstr "ערך"
+msgstr "Valor"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:68
 msgid "Multi value"
-msgstr "ריבוי ערכים"
+msgstr "Valor múltiplo"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:72
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:84
 msgid "Value 1"
-msgstr "ערך 1"
+msgstr "Valor 1"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:73
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:85
 msgid "Value 2"
-msgstr "ערך 2"
+msgstr "Valor 2"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:74
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:86
 msgid "Value 3"
-msgstr "ערך 3"
+msgstr "Valor 3"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:75
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:87
 msgid "Value 4"
-msgstr "ערך 4"
+msgstr "Valor 4"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:80
 msgid "Value selector"
-msgstr "בוחר ערכים"
+msgstr "Selector de valores"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:92
 msgid "Control"
-msgstr ""
+msgstr "Controlo"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:103
 msgid "Removable"
-msgstr ""
+msgstr "Removível"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:106
 msgid "Slide to remove"
-msgstr ""
+msgstr "Deslizar para remover"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:116
 msgid "Grouped list"
-msgstr "רשימה מקובצת"
+msgstr "Lista agrupada"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:38
 msgid "Flickable"
-msgstr ""
+msgstr "Agitável"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:74
 msgid "Action #1"
-msgstr ""
+msgstr "Acção #1"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:78
 msgid "Action #2"
-msgstr ""
+msgstr "Acção #2"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:82
 msgid "Action #3"
-msgstr ""
+msgstr "Acção #3"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:86
 msgid "Action #4"
-msgstr ""
+msgstr "Acção #4"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:90
 msgid "Action #5"
-msgstr ""
+msgstr "Acção #5"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:22
 msgid "Progress Bar"
-msgstr "פס התקדמות"
+msgstr "Barra de Progresso"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:45
 msgid "Infinite"
-msgstr "אינסופי"
+msgstr "Infinito"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:55
 msgid "Activity Indicator"
-msgstr "מחוון פעילות"
+msgstr "Indicador de Actividade"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:26
 msgid "The visual style of the Sheet is early work and thus clunky looking."
 msgstr ""
+"O estilo visual da Folha de Cálculo é trabalho inicial e assim com um "
+"aspecto desajeitado."
 
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:51
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:84
 msgid "Title"
-msgstr "כותרת"
+msgstr "Título"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:32
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:45
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:60
 #, qt-format
 msgid "value = %1"
-msgstr ""
+msgstr "valor = %1"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:37
 msgid "Live Update"
-msgstr "עדכון חי"
+msgstr "Actualização em Tempo Real"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:50
 msgid "Range"
-msgstr "טווח"
+msgstr "Intervalo"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:47
 msgid "Type me in..."
-msgstr ""
+msgstr "Escreva-me"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:53
 msgid "Password"
-msgstr "ססמה"
+msgstr "Palavra-Passe"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:63
 msgid "Numbers"
-msgstr "מספרים"
+msgstr "Números"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:87
 msgid "Default"
-msgstr "בררת מחדל"
+msgstr "Omissão"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:96
 msgid "Expanding"
-msgstr ""
+msgstr "Expandir"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:107
 msgid "Rich Text"
-msgstr ""
+msgstr "Texto Rich"
 
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:60
 msgid "Unchecked"
-msgstr ""
+msgstr "Desmarcado"
 
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:33
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:67
 msgid "Checked"
-msgstr ""
+msgstr "Marcado"
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:44
 msgid "Image"
-msgstr "תמונה"
+msgstr "Imagem"
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:57
 msgid "Radius"
-msgstr "רדיוס"
+msgstr "Raio"
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:87
 msgid "Sizes"
-msgstr "גדלים"
+msgstr "Tamanhos"
 
 #: examples/unit-converter/unit-converter.qml:147
 msgid "Clear"
-msgstr "ניקוי"
+msgstr "Limpar"
 
 #: examples/unit-converter/unit-converter.qml:161
 msgid "Lengths"
-msgstr "אורכים"
+msgstr "Comprimentos"
 
 #: examples/unit-converter/unit-converter.qml:179
 msgid "Weights"
-msgstr "גבהים"
+msgstr "Pesos"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
-msgstr "שימוש: "
+msgstr "Utilização: "
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
-msgstr "אפשרויות:"
+msgstr "Opções:"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
-msgstr ""
+msgstr "%1 está à espera de um argumento adicional: %2"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
-msgstr ""
+msgstr "%1 está à espera de um valor para o argumento: %2"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
-msgstr ""
+msgstr "%1 está à espera de argumentos adicionais: %2"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:24
 msgid "Select All"
-msgstr "בחירת הכול"
+msgstr "Seleccionar Tudo"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:29
 msgid "Select Word"
-msgstr ""
+msgstr "Seleccionar Palavra"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:34
 msgid "Cut"
-msgstr "גזירה"
+msgstr "Cortar"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:39
 msgid "Copy"
-msgstr "העתקה"
+msgstr "Copiar"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:44
 msgid "Paste"
-msgstr "הדבקה"
+msgstr "Colar"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:49
 msgid "Undo"
-msgstr "ביטול"
+msgstr "Desfazer"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:54
 msgid "Redo"
-msgstr "ביצוע חוזר"
+msgstr "Refazer"
 
 #: modules/Ubuntu/Components/ToolbarActions.qml:86
 msgid "Back"
-msgstr "חזרה"
+msgstr "Retroceder"
 
 #: tests/resources/pagestack/MyCustomPage.qml:21
 #: tests/resources/tabs/MyCustomPage.qml:21
 msgid "My custom page"
-msgstr ""
+msgstr "A minha página personalizada"
 
 #: tests/resources/pagestack/MyCustomPage.qml:33
 #: tests/resources/tabs/MyCustomPage.qml:33
@@ -352,39 +354,41 @@ msgid ""
 "This is an external page\n"
 "with a locked toolbar."
 msgstr ""
+"Esta é uma página externa\n"
+"com uma barra de ferramentas bloqueada."
 
 #: tests/resources/pagestack/PageStack.qml:38
 msgid "Root page"
-msgstr ""
+msgstr "Página Root"
 
 #: tests/resources/pagestack/PageStack.qml:44
 msgid "Page one"
-msgstr ""
+msgstr "Página um"
 
 #: tests/resources/pagestack/PageStack.qml:49
 msgid "External page"
-msgstr ""
+msgstr "Página externa"
 
 #: tests/resources/pagestack/PageStack.qml:58
 msgid "First page"
-msgstr ""
+msgstr "Primeira página"
 
 #: tests/resources/pagestack/PageStack.qml:64
 msgid "Root page (again)"
-msgstr ""
+msgstr "Página Root (novamente)"
 
 #: tests/resources/pagestack/PageStack.qml:69
 msgid "Red rectangle"
-msgstr ""
+msgstr "Rectângulo vermelho"
 
 #: tests/resources/tabs/Tabs.qml:32
 msgid "Simple page"
-msgstr ""
+msgstr "Página simples"
 
 #: tests/resources/tabs/Tabs.qml:77
 msgid "External"
-msgstr "חיצוני"
+msgstr "Externo"
 
 #: tests/resources/tabs/Tabs.qml:85
 msgid "List view"
-msgstr "תצוגת רשימה"
+msgstr "Vista em lista"

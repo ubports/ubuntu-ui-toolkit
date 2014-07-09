@@ -91,6 +91,11 @@ ListModel {
         label: "Label"
         source: "Label.qml"
     }
+    ListElement {
+        objectName: "crossFadeImageElement"
+        label: "CrossFadeImage"
+        source: "CrossFadeImage.qml"
+    }
 
     // Already in design guidelines but should be reordered
     ListElement {

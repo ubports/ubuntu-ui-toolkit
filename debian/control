@@ -56,6 +56,7 @@ Depends: qml-module-qtgraphicaleffects | libqt5qml-graphicaleffects,
          qml-module-qtquick-window2 | qtdeclarative5-window-plugin,
          qtdeclarative5-qtfeedback-plugin,
          qtdeclarative5-unity-action-plugin (>= 1.1.0),
+         suru-icon-theme,
          ttf-ubuntu-font-family,
          ubuntu-ui-toolkit-theme,
          ${misc:Depends},
@@ -125,7 +126,7 @@ Description: Qt Components for Ubuntu - demos and examples
  This package contains the component demos and example applications.
 
 Package: ubuntu-ui-toolkit-autopilot
-Architecture: all
+Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          libautopilot-qt,
@@ -134,10 +135,12 @@ Depends: ${misc:Depends},
          libqt5widgets5,
          python-autopilot (>= 1.4),
          python-fixtures,
+         python-gi,
          python-mock,
          python-testscenarios,
          python-testtools,
          python3-fixtures,
+         python3-gi,
          python3-testscenarios,
          python3-testtools,
          python3-autopilot (>= 1.4),

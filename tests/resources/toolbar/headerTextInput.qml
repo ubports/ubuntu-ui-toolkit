@@ -14,53 +14,59 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.2
 import Ubuntu.Components 1.1
 
 MainView {
-    width: units.gu(50)
-    height: units.gu(80)
+    width: units.gu(40)
+    height: units.gu(50)
     useDeprecatedToolbar: false
 
     Page {
-        title: "test page"
-
-        id: page
-
-        __customHeaderContents: Item {
-            TextField {
-                anchors {
-                    left: parent.left
-                    verticalCenter: parent.verticalCenter
-                }
-            }
-        }
+        id: searchPage
+        title: "Click the icon"
 
         Label {
             anchors.centerIn: parent
-            text: "Hello, world"
+            text: searchPage.state == "search" ? "search mode" : "normal mode"
         }
 
-        tools: ToolbarItems {
-            ToolbarButton {
-                action: Action {
-                    iconName: "contact"
-                    text: "oh"
-                    onTriggered: print("lala")
-                    enabled: false
-                }
-            }
+        head.actions: Action {
+            id: searchAction
+            iconName: "search"
+            onTriggered: searchPage.state = "search"
+        }
 
-            back: ToolbarButton {
-                action: Action {
-                    text: "cancel"
-                    iconName: "cancel"
-                    onTriggered: {
-                        page.__customHeaderContents = null;
+        state: ""
+        states: [
+            State {
+                name: ""
+                PropertyChanges {
+                    target: searchPage.head
+                    // needed otherwise actions will not be
+                    // returned to its original state.
+                    actions: [ searchAction ]
+                }
+            },
+            PageHeadState {
+                id: headerState
+                name: "search"
+                head: searchPage.head
+                actions: [
+                    Action {
+                        iconName: "contact"
                     }
+                ]
+                backAction: Action {
+                    id: leaveSearchAction
+                    text: "back"
+                    iconName: "back"
+                    onTriggered: searchPage.state = ""
                 }
-                anchors.verticalCenter: parent.verticalCenter
+                contents: TextField {
+                    placeholderText: "search..."
+                }
             }
-        }
+        ]
     }
 }

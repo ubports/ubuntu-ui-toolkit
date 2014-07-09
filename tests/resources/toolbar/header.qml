@@ -58,8 +58,8 @@ MainView {
                     tools: ToolbarItems {
                         ToolbarButton {
                             action: Action {
-                                iconName: "search"
-                                text: "Search"
+                                iconName: "settings"
+                                text: "Settings"
                             }
                         }
                         ToolbarButton {
@@ -122,22 +122,61 @@ MainView {
                     head {
                         actions: [
                             Action {
-                                iconName: "search"
+                                iconName: "settings"
                             },
                             Action {
                                 iconName: "camera-flip"
                             }
                         ]
                         backAction: Action {
-                            iconName: "clear"
+                            iconName: "close"
                             onTriggered: tabs.selectedTabIndex = 0
                         }
                     }
                 }
             }
             Tab {
-                title: "Tab 5"
-                page: Page { }
+                title: "Search"
+                page: Page {
+                    id: searchPage
+
+                    Label {
+                        anchors.centerIn: parent
+                        text: searchPage.state == "search" ? "search mode" : "normal mode"
+                    }
+
+                    state: "default"
+                    states: [
+                        PageHeadState {
+                            name: "default"
+                            head: searchPage.head
+                            actions: Action {
+                                id: searchAction
+                                iconName: "search"
+                                onTriggered: searchPage.state = "search"
+                            }
+                        },
+                        PageHeadState {
+                            id: headerState
+                            name: "search"
+                            head: searchPage.head
+                            actions: [
+                                Action {
+                                    iconName: "contact"
+                                }
+                            ]
+                            backAction: Action {
+                                id: leaveSearchAction
+                                text: "back"
+                                iconName: "back"
+                                onTriggered: searchPage.state = "default"
+                            }
+                            contents: TextField {
+                                placeholderText: "search..."
+                            }
+                        }
+                    ]
+                }
             }
         }
     }
@@ -153,8 +192,8 @@ MainView {
         tools: ToolbarItems {
             ToolbarButton {
                 action: Action {
-                    iconName: "search"
-                    text: "Search"
+                    iconName: "settings"
+                    text: "settings"
                 }
             }
         }

@@ -23,7 +23,8 @@ Label {
     property string label: url
     property url url
 
-    textFormat: Text.RichText
+    textFormat: Text.StyledText
     text: "<a href=\"%1\">%2</a>".arg(webLink.url).arg(webLink.label)
+    linkColor: UbuntuColors.orange
     onLinkActivated: Qt.openUrlExternally(link)
 }
