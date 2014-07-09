@@ -37,6 +37,19 @@ QtObject {
     /*!
       Overrides the default \l PageStack back button and the
       \l Tabs drawer button in the header.
+
+      Example:
+      \qml
+        Page {
+            title: "Back Action Page"
+            head.backAction: Action {
+                iconName: "close"
+                onTriggered: {
+                    console.log("Run custom back action")
+                }
+            }
+        }
+     \endqml
      */
     property Action backAction: null
 
