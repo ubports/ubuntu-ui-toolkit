@@ -22,14 +22,14 @@ import Ubuntu.Components 1.1
 Item {
     id: buttonStyle
 
-    property Button button: styledItem
+    property var button: styledItem
     property real minimumWidth: units.gu(10)
     property real horizontalPadding: units.gu(1)
     property color defaultColor: UbuntuColors.orange
     property font defaultFont: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
     property Gradient defaultGradient
     property real buttonFaceOffset: 0
-    property bool stroke: button.strokeColor != Qt.rgba(0.0, 0.0, 0.0, 0.0)
+    property bool stroke: button.hasOwnProperty("strokeColor") && button.strokeColor != Qt.rgba(0.0, 0.0, 0.0, 0.0)
     /*!
       The property overrides the button's default background with an item. This
       item can be used by derived styles to reuse the ButtonStyle and override
@@ -98,7 +98,7 @@ Item {
         visible: stroke && strokeBorder.status == Image.Ready
 
         property Item source: visible ? strokeBorder : null
-        property color keyColorOut: strokeColor
+        property color keyColorOut: stroke ? strokeColor : Qt.rgba(0.0, 0.0, 0.0, 0.0)
         property color keyColorIn: Qt.rgba(1.0, 1.0, 1.0, 1.0)
         property real threshold: 1.0
 
