@@ -52,7 +52,7 @@ QtObject {
       \qml
         Page {
             title: "Invisible title"
-            contents: Rectangle {
+            head.contents: Rectangle {
                 color: UbuntuColors.orange
                 height: units.gu(5)
                 width: parent ? parent.width - units.gu(2) : undefined
