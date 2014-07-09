@@ -126,7 +126,7 @@ Description: Qt Components for Ubuntu - demos and examples
  This package contains the component demos and example applications.
 
 Package: ubuntu-ui-toolkit-autopilot
-Architecture: all
+Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          libautopilot-qt,
