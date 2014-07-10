@@ -129,7 +129,7 @@ MainView {
                             }
                         ]
                         backAction: Action {
-                            iconName: "clear"
+                            iconName: "close"
                             onTriggered: tabs.selectedTabIndex = 0
                         }
                     }

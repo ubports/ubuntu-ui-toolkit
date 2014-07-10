@@ -16,12 +16,17 @@
 
 """Tests for the Ubuntu UI Toolkit Gallery"""
 
+import testscenarios
+
 import ubuntuuitoolkit
+from ubuntuuitoolkit import ubuntu_scenarios
 from ubuntuuitoolkit.tests import gallery
 
 
 class GalleryAppTestCase(gallery.GalleryTestCase):
     """Generic tests for the Gallery"""
+
+    scenarios = ubuntu_scenarios.get_device_simulation_scenarios()
 
     def test_select_main_view_must_return_main_window_emulator(self):
         main_view = self.main_view
@@ -91,12 +96,16 @@ class OpenPagesTestCase(gallery.GalleryTestCase):
         'sheets', 'animations'
     ]
 
-    scenarios = [
+    pages_scenarios = [
         (name, dict(
             element_name=name+'Element',
             template_name=name+'Template'))
         for name in names
     ]
+
+    scenarios = testscenarios.multiply_scenarios(
+        ubuntu_scenarios.get_device_simulation_scenarios(),
+        pages_scenarios)
 
     def test_open_page(self):
         self.open_page(self.element_name)
