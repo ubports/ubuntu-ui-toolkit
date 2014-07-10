@@ -1,3 +1,116 @@
+ubuntu-ui-toolkit (0.1.49+14.10.20140709-0ubuntu1) utopic; urgency=low
+
+  [ Zoltán Balogh ]
+  * Match the theme package version with the plugin's binary-package
+    version
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 09 Jul 2014 17:49:05 +0000
+
+ubuntu-ui-toolkit (0.1.49+14.10.20140707-0ubuntu1) utopic; urgency=medium
+
+  * Increase upstream version to 0.1.49 due to API additions in previous
+    release, which did not make it to utopic release.
+
+ -- Iain Lane <iain@orangesquash.org.uk>  Tue, 08 Jul 2014 14:41:49 +0100
+
+ubuntu-ui-toolkit (0.1.48+14.10.20140707-0ubuntu1) utopic; urgency=medium
+
+  [ Tim Peeters ]
+  * Fix API doc links in UITK gallery.
+  * Allow the developer to specify custom header contents. 
+    Fixes: https://bugs.launchpad.net/bugs/1324084.
+  * Close actions popover when pushing new page using the new API.
+  * Add tests for new header API.
+  * Get rid of an unneeded deprecation warning.
+  * Expose PageHeadStyle.
+  * Expose PageHeadConfiguration.
+  * New header API. Fixes: https://bugs.launchpad.net/bugs/1316676.
+  * Print a warning when using deprecated Header component.
+  * Fix empty toolbar bug with Qt 5.3. 
+    Fixes: https://bugs.launchpad.net/bugs/1327189.
+  * Use icons from the new suru icon theme only
+  * Add PageHeadState component.
+
+  [ Christian Dywan ]
+  * Use orange and no translucency for links in the gallery.
+  * Commit input changes on focus change in text components. 
+    Fixes: https://bugs.launchpad.net/bugs/1324955.
+  * Add a section for the Toolbar to the gallery. 
+    Fixes: https://bugs.launchpad.net/bugs/1312713.
+  * Add a page Tweaks to change theme and header style in the 
+    gallery. Fixes: https://bugs.launchpad.net/bugs/1211382.
+  * Multi-arch aware alternative launcher.
+
+  [ Andrea Cimitan ]
+  * Add "fadeStyle" property to the CrossFadeImage component.
+
+  [ Leo Arias ]
+  * Deprecate the swipe to delete from r2l on the autopilot helpers. 
+    Fixes: https://bugs.launchpad.net/bugs/1330352.
+  * Moved the regression autopilot test for the actions popover to 
+    the components module.
+
+  [ Zsombor Egri ]
+  * PullToRefresh component that can be used in Flickable and all 
+    its derivates to initiate model refresh.
+  * Text input UX updates Changes:
+    - text cursor carets (handlers) are shown only in touch 
+      environment
+    - long press handling
+      - long tap selects the word under pressed area (if not 
+        previously selected) and opens context menu - same as 
+        right mouse click
+      - long tap does not focus the non-focused component
+      - long mouse press with left button does not do anything
+    - tap and drag scrolls the content
+    - left mouse button press and drag selects the text
+    - text can be scrolled with mouse wheel and scrollbar only 
+      beside the touchAndDrag
+    NOTE: text caret tests are skipped when XVFB, as the 
+          activeFocusItem is not set on that environment, which 
+          causes text cursor not to be created. 
+    Fixes: https://bugs.launchpad.net/bugs/1276176.
+  * Exposing touch functions to QML test.
+  * Default font for the toolkit: Ubuntu, medium sized and light 
+    weight. Fixes: https://bugs.launchpad.net/bugs/1263963.
+  * Extend launcher to convert mouse to touch events. 
+    MouseTouchAdaptor taken from unity8 launcher.
+
+  [ Michał Sawicz ]
+  * Prefer new package names for QML modules. This fixes 
+    cross-building of dependants.
+
+  [ Florian Boucault]
+  * OrientationHelper: made rotation animation visually smoother.
+  * Icon: remove warning when Icon.visible is set to false:
+  * ShaderEffect: Property 'source' is not assigned a valid texture 
+    provider (QQuickImage*).
+  * OrientationHelper: prevent unnecessary changes of width and 
+    height with a workaround.
+
+  [ CI bot ]
+  * Resync trunk
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 07 Jul 2014 11:05:59 +0000
+
+ubuntu-ui-toolkit (0.1.48+14.10.20140701.2-0ubuntu1) utopic; urgency=medium
+
+  [ Michał Sawicz ]
+  * Bump version to indicate requirement for new theme icons.
+  * Change "not…in" to "…not in" in qmlapicheck.py.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 01 Jul 2014 15:47:29 +0000
+
+ubuntu-ui-toolkit (0.1.47+14.10.20140619-0ubuntu1) utopic; urgency=low
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+  [ Timo Jyrinki ]
+  * Fix empty toolbar bug with Qt 5.3.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 19 Jun 2014 06:55:24 +0000
+
 ubuntu-ui-toolkit (0.1.47+14.10.20140618-0ubuntu1) utopic; urgency=medium
 
   [Leo Arias ]

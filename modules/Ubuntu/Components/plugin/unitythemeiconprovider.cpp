@@ -23,7 +23,7 @@
 UnityThemeIconProvider::UnityThemeIconProvider():
   QQuickImageProvider(QQuickImageProvider::Pixmap)
 {
-    QIcon::setThemeName("ubuntu-mobile");
+    QIcon::setThemeName("suru");
 }
 
 QPixmap UnityThemeIconProvider::requestPixmap(const QString &id, QSize *realSize, const QSize &requestedSize)

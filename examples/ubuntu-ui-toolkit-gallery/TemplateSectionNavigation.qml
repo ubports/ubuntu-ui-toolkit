@@ -23,7 +23,7 @@ Column {
     width: parent.width
     property string className
     property string title: className
-    property string documentation: "qml-ubuntu-components0-%1.html".arg(className.toLowerCase())
+    property string documentation: "qml-ubuntu-components-%1.html".arg(className.toLowerCase())
 
     property string description
     property url designUrl
@@ -43,7 +43,6 @@ Column {
         url: prefix + documentation
         visible: documentation != ""
         fontSize: "small"
-        opacity: 0.3
         anchors.left: parent.left
     }
 
@@ -51,7 +50,6 @@ Column {
         label: "Design guidelines"
         url: templateSection.designUrl
         fontSize: "small"
-        opacity: 0.3
         anchors.left: parent.left
     }
 
