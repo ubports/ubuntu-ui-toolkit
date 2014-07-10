@@ -34,6 +34,7 @@ def get_host_multiarch():
             universal_newlines=True, stderr=subprocess.PIPE).strip()
     return os.environ['deb_host_multiarch']
 
+
 def get_qmlscene_launch_command():
     """Return the command to launch qmlscene for autopilot tests."""
     # We need to specify qt5 because qtchooser doesn't have a default
