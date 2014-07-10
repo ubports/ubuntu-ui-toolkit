@@ -16,6 +16,7 @@
 
 """Base classes for Autopilot tests using the Ubuntu UI Toolkit."""
 
+import os
 import subprocess
 
 from autopilot import (
@@ -25,14 +26,20 @@ from autopilot import (
 )
 
 
+def get_host_multiarch():
+    if 'deb_host_multiarch' not in os.environ:
+        # Discard errors: the one known message is "GCC not installed"
+        os.environ['deb_host_multiarch'] = subprocess.check_output(
+            ["dpkg-architecture", "-qDEB_HOST_MULTIARCH"],
+            universal_newlines=True, stderr=subprocess.PIPE).strip()
+    return os.environ['deb_host_multiarch']
+
 def get_qmlscene_launch_command():
     """Return the command to launch qmlscene for autopilot tests."""
     # We need to specify qt5 because qtchooser doesn't have a default
     # configuration on devices and it seems the environment variable
     # QT_SELECT=qt5 doesn't work for autopilot tests. --Mirv - 2013-10-03
-    arch = subprocess.check_output(
-        ["dpkg-architecture", "-qDEB_HOST_MULTIARCH"],
-        universal_newlines=True, stderr=subprocess.PIPE).strip()
+    arch = get_host_multiarch()
     return '/usr/lib/{}/qt5/bin/qmlscene'.format(arch)
 
 
