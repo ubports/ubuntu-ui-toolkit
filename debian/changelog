@@ -1,3 +1,11 @@
+ubuntu-ui-toolkit (0.1.49+14.10.20140710-0ubuntu1) utopic; urgency=low
+
+  [ Florian Boucault ]
+  * Move keyboard anchoring logic of OrientationHelper from MainView to
+    OrientationHelper itself. (LP: #1339616)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 10 Jul 2014 12:26:37 +0000
+
 ubuntu-ui-toolkit (0.1.49+14.10.20140709-0ubuntu1) utopic; urgency=low
 
   [ Zoltán Balogh ]
