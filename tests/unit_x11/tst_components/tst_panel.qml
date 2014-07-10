@@ -167,10 +167,14 @@ Item {
         }
 
         function test_clickToDeactivate() {
+            // deprecated test. This functionality is only there for backwards compatibility
+            panel.__closeOnContentsClicks = true;
             panel.open();
             compare(panel.opened && panel.align === Qt.AlignBottom, true, "Panel is opened and bottom-aligned");
             mouseClick(root, root.width / 2, 5, Qt.LeftButton);
             compare(panel.opened, false, "Panel is deactivated by clicking in the view outside of the panel");
+            // reset property to default value
+            panel.__closeOnContentsClicks = false;
         }
 
         function test_hideTimeout_bug1249031() {
