@@ -16,10 +16,13 @@
 
 from autopilot import platform
 
+from ubuntuuitoolkit import ubuntu_scenarios
 from ubuntuuitoolkit.tests import gallery
 
 
 class ScrollBarTestCase(gallery.GalleryTestCase):
+
+    scenarios = ubuntu_scenarios.get_device_simulation_scenarios()
 
     def setUp(self):
         super(ScrollBarTestCase, self).setUp()
@@ -30,9 +33,12 @@ class ScrollBarTestCase(gallery.GalleryTestCase):
     def move_mouse_to_thumb(self):
         # TODO we need a helper to move the interactive thumb.
         # --elopio 2014-05-06
-        thumb = self.scrollbar.select_single(
-            objectName='interactiveScrollbarThumb')
+        thumb = self.get_mouse_thumb()
         self.pointing_device.move_to_object(thumb)
+
+    def get_mouse_thumb(self):
+        return self.scrollbar.select_single(
+            objectName='interactiveScrollbarThumb')
 
     def test_scrollbar_must_start_without_interactive_thumb(self):
         self.assertEqual(self.scrollbar.interactive, False)
@@ -57,7 +63,12 @@ class ScrollBarTestCase(gallery.GalleryTestCase):
         self.assertEqual(flickable.is_child_visible(bottom_section), False)
 
         self.move_mouse_to_thumb()
-        x, y = self.pointing_device.position()
-        self.pointing_device.drag(x, y, x, self.main_view.height)
+        mouse_thumb = self.get_mouse_thumb()
+        x, y, width, height = mouse_thumb.globalRect
+        start_x = stop_x = x + (width // 2)
+        start_y = y + (height // 0.8)
+
+        self.pointing_device.drag(
+            start_x, start_y, stop_x, self.main_view.height)
 
         self.assertEqual(flickable.is_child_visible(bottom_section), True)
