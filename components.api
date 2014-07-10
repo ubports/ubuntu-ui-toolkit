@@ -235,6 +235,7 @@ Item
     property alias rotating
     property int __orientationAngle
     property int orientationAngle
+    property bool anchorToKeyboard
 Page 0.1 1.0
 PageTreeNode
     property string title
@@ -247,6 +248,12 @@ Page10
     readonly property PageHeadConfiguration head
 PageHeadConfiguration 1.1
 QtObject
+    property list<Action> actions
+    property Action backAction
+    property Item contents
+PageHeadState 1.1
+State
+    property PageHeadConfiguration head
     property list<Action> actions
     property Action backAction
     property Item contents

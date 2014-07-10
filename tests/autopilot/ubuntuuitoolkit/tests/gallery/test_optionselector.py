@@ -17,14 +17,20 @@
 """Tests for the Ubuntu UI Toolkit Gallery - OptionSelector component."""
 
 import ubuntuuitoolkit
+from ubuntuuitoolkit import ubuntu_scenarios
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 
 
 class OptionSelectorTestCase(GalleryTestCase):
 
+    scenarios = ubuntu_scenarios.get_device_simulation_scenarios()
+
     def setUp(self):
         super(OptionSelectorTestCase, self).setUp()
         self.open_page('optionSelectorsElement')
+        # Start with the toolbar closed to make the full page visible and be
+        # able to swipe it.
+        self.main_view.close_toolbar()
 
     def test_select_option_from_collapsed_optionselector(self):
         collapsed_option_selector = self.main_view.select_single(

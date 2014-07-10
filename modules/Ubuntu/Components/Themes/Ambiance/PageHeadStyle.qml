@@ -240,7 +240,7 @@ Style.PageHeadStyle {
             id: actionsOverflowButton
             objectName: "actions_overflow_button"
             visible: numberOfSlots.requested > numberOfSlots.right
-            iconName: "dropdown-menu"
+            iconName: "contextual-menu"
             width: visible ? units.gu(5) : 0
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionsOverflowButton)
             height: actionsContainer.height
