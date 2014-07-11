@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.Themes 0.1
 
 Palette {
@@ -22,13 +23,13 @@ Palette {
         background: "#EDEDED"
         backgroundText: "#81888888"
         base: "#1A000000"
-        baseText: "#888888"
-        foreground: "#888888"
+        baseText: UbuntuColors.lightGrey
+        foreground: UbuntuColors.lightGrey
         foregroundText: "#F3F3E7"
         overlay: "#FDFDFD"
-        overlayText: "#888888"
+        overlayText: UbuntuColors.lightGrey
         field: "#1A000000"
-        fieldText: "#5d5d5d" // dark gray
+        fieldText: UbuntuColors.darkGrey
     }
     selected: PaletteValues {
         /* FIXME: 'background' does not come from design
@@ -36,10 +37,10 @@ Palette {
            that will go away with the new design.
         */
         background: "#B2E6E6E6"
-        backgroundText: "#888888"
-        foreground: "#1ab6ef" // blue
-        foregroundText: "#5d5d5d" // dark gray
+        backgroundText: UbuntuColors.darkGrey
+        foreground: UbuntuColors.blue
+        foregroundText: UbuntuColors.darkGrey
         field: "#FFFFFF"
-        fieldText: "#888888"
+        fieldText: UbuntuColors.darkGrey
     }
 }
