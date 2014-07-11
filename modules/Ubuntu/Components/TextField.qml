@@ -979,7 +979,8 @@ ActionItem {
             }
             color: control.__styleInstance.color
             selectedTextColor: Theme.palette.selected.foregroundText
-            selectionColor: Theme.palette.selected.foreground
+            property color selCol: Theme.palette.selected.foreground
+            selectionColor: Qt.rgba(selCol.r, selCol.g, selCol.b, 0.2)
             font.pixelSize: FontUtils.sizeToPixels("medium")
             passwordCharacter: "\u2022"
             // forward keys to the root element so it can be captured outside of it
