@@ -38,7 +38,8 @@ Palette {
         */
         background: "#B2E6E6E6"
         backgroundText: UbuntuColors.darkGrey
-        foreground: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
+        selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
+        foreground: UbuntuColors.blue
         foregroundText: UbuntuColors.darkGrey
         field: "#FFFFFF"
         fieldText: UbuntuColors.darkGrey
