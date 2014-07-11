@@ -34,7 +34,7 @@ Palette {
     selected: PaletteValues {
         background: "#88D6D6D6" // FIXME: not from design
         backgroundText: "#F3F3E7"
-        foreground: UbuntuColors.blue
+        foreground: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
         foregroundText: UbuntuColors.darkGrey
         field: "#FFFFFF"
         fieldText: "#888888"
