@@ -48,7 +48,6 @@ __all__ = [
 
 from ubuntuuitoolkit import (
     base,
-    emulators,
     environment,
     fixture_setup,
     tests,
