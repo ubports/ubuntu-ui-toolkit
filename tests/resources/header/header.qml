@@ -29,6 +29,7 @@ MainView {
         Component.onCompleted: stack.push(tabs)
         Tabs {
             id: tabs
+            selectedTabIndex: 5
             Tab {
                 title: "Stack"
                 page: Page {
@@ -176,6 +177,25 @@ MainView {
                             }
                         }
                     ]
+                }
+            }
+            Tab {
+                title: "Sections"
+                page: Page {
+                    id: sectionsPage
+                    head {
+                        sections {
+                            model: ["one", "two", "three"]
+                        }
+                    }
+                    Rectangle {
+                        anchors {
+                            fill: parent
+                            margins: units.gu(2)
+                        }
+                        color: sectionsPage.head.sections.selectedIndex === 1 ?
+                                   UbuntuColors.orange : UbuntuColors.blue
+                    }
                 }
             }
         }
