@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import QtQuick 2.0
+import QtQuick 2.2
 import Ubuntu.Components 1.1
 import Ubuntu.Components.Popups 1.0
 import Ubuntu.Components.ListItems 1.0 as ListItem
@@ -40,6 +40,54 @@ Style.PageHeadStyle {
             right: parent.right
         }
         source: headerStyle.separatorSource
+
+        property var config: styledItem.config
+        onConfigChanged: print("------------------config = "+config)
+
+        property var sectionsModel: styledItem.config.sections.model
+        onSectionsModelChanged: {
+            print("sections = "+styledItem.config.sections)
+            print("new sections model = "+sectionsModel)
+        }
+
+        Rectangle {
+            color: "yellow"
+            anchors {
+                fill: parent
+            }
+
+            Row {
+                id: sectionsRow
+                anchors.fill: parent
+                Repeater {
+                    id: sectionsRepeater
+//                    visible: true
+                    model: styledItem.config.sections.model
+                    Label {
+                        text: modelData
+                        fontSize: "small"
+                        width: sectionsRow.width / sectionsRepeater.count
+                        horizontalAlignment: Text.AlignHCenter
+                        color: index === styledItem.config.sections.selectedIndex ?
+                                   Theme.palette.normal.backgroundText :
+                                   Theme.palette.selected.backgroundText
+                    }
+                }
+            }
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            visible: styledItem.config.sections.model
+            onClicked: {
+                styledItem.config.sections.selectedIndex = (styledItem.config.sections.selectedIndex + 1) % sectionsRepeater.count
+            }
+        }
+
+//        Label {
+//            anchors.centerIn: parent
+//            text: "aloha"
+//        }
     }
     Image {
         id: separatorBottom

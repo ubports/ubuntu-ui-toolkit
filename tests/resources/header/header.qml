@@ -183,9 +183,13 @@ MainView {
                 title: "Sections"
                 page: Page {
                     id: sectionsPage
+                    Component.onCompleted: print("coc.index = "+sectionsPage.head.sections.selectedIndex)
                     head {
                         sections {
-                            model: ["one", "two", "three"]
+                            model: ["pink", "navy", "lightblue", "black", "brown", "cyan", "darkgrey", "white"]
+                            onSelectedIndexChanged: {
+                                print("selected index is now "+sectionsPage.head.sections.selectedIndex)
+                            }
                         }
                     }
                     Rectangle {
@@ -193,8 +197,7 @@ MainView {
                             fill: parent
                             margins: units.gu(2)
                         }
-                        color: sectionsPage.head.sections.selectedIndex === 1 ?
-                                   UbuntuColors.orange : UbuntuColors.blue
+                        color: sectionsPage.head.sections.model[sectionsPage.head.sections.selectedIndex]
                     }
                 }
             }
