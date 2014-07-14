@@ -51,43 +51,56 @@ Style.PageHeadStyle {
         }
 
         Rectangle {
-            color: "yellow"
+            color: "transparent"
             anchors {
                 fill: parent
             }
 
             Row {
                 id: sectionsRow
+                property int itemWidth: sectionsRow.width / sectionsRepeater.count
                 anchors.fill: parent
+                enabled: styledItem.config.sections.enabled
+                opacity: enabled ? 1.0 : 0.5
+
                 Repeater {
                     id: sectionsRepeater
-//                    visible: true
+                    //                    visible: true
                     model: styledItem.config.sections.model
-                    Label {
-                        text: modelData
-                        fontSize: "small"
-                        width: sectionsRow.width / sectionsRepeater.count
-                        horizontalAlignment: Text.AlignHCenter
-                        color: index === styledItem.config.sections.selectedIndex ?
-                                   Theme.palette.normal.backgroundText :
-                                   Theme.palette.selected.backgroundText
+                    AbstractButton {
+                        id: sectionButton
+                        enabled: sectionsRow.enabled
+                        width: sectionsRow.itemWidth
+                        height: parent.height
+                        property bool selected: index === styledItem.config.sections.selectedIndex
+                        onClicked: styledItem.config.sections.selectedIndex = index;
+
+                        Label {
+                            text: modelData
+                            fontSize: "small"
+                            anchors.fill: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            color: sectionButton.selected ?
+                                       Theme.palette.normal.backgroundText :
+                                       Theme.palette.selected.backgroundText
+                        }
                     }
                 }
             }
         }
 
-        MouseArea {
-            anchors.fill: parent
-            visible: styledItem.config.sections.model
-            onClicked: {
-                styledItem.config.sections.selectedIndex = (styledItem.config.sections.selectedIndex + 1) % sectionsRepeater.count
-            }
-        }
-
-//        Label {
-//            anchors.centerIn: parent
-//            text: "aloha"
+//        MouseArea {
+//            anchors.fill: parent
+//            visible: styledItem.config.sections.model
+//            onClicked: {
+//                styledItem.config.sections.selectedIndex = (styledItem.config.sections.selectedIndex + 1) % sectionsRepeater.count
+//            }
 //        }
+
+        //        Label {
+        //            anchors.centerIn: parent
+        //            text: "aloha"
+        //        }
     }
     Image {
         id: separatorBottom

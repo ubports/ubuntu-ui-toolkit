@@ -186,7 +186,7 @@ MainView {
                     Component.onCompleted: print("coc.index = "+sectionsPage.head.sections.selectedIndex)
                     head {
                         sections {
-                            model: ["pink", "navy", "lightblue", "black", "brown", "cyan", "darkgrey", "white"]
+                            model: ["navy", "lightblue", "brown", "cyan", "darkgrey"]
                             onSelectedIndexChanged: {
                                 print("selected index is now "+sectionsPage.head.sections.selectedIndex)
                             }

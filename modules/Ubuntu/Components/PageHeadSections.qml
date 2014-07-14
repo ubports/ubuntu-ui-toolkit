@@ -29,6 +29,8 @@ QtObject {
     // To be used inside PageHeadConfiguration
     id: sections
 
+    property bool enabled: true
+
     property var model
     onModelChanged: {
         print("new model = "+model)
