@@ -625,6 +625,7 @@ QtObject
     property color overlayText
     property color field
     property color fieldText
+    property color selection
 ToolbarButton 0.1 1.0
 ActionItem
 ToolbarItems 0.1 1.0
