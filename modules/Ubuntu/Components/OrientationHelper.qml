@@ -88,6 +88,15 @@ Item {
      */
     property int orientationAngle: automaticOrientation ? Screen.angleBetween(Screen.primaryOrientation, Screen.orientation) : 0
 
+    /*!
+      \preliminary
+      The property holds if the OrientationHelper should automatically resize the
+      contents when the input method appears
+
+      The default value is false.
+      */
+    property bool anchorToKeyboard: false
+
     anchors.fill: parent
 
     Component.onCompleted: orientationTransition.enabled = transitionEnabled
@@ -143,7 +152,8 @@ Item {
                         orientationHelper.anchors.leftMargin = 0;
                         orientationHelper.anchors.rightMargin = 0;
                         orientationHelper.anchors.topMargin = 0;
-                        orientationHelper.anchors.bottomMargin = 0;
+                        // this will make sure that the keyboard does not obscure the contents
+                        orientationHelper.anchors.bottomMargin = Qt.binding(function() {return Qt.inputMethod.visible && anchorToKeyboard ? Qt.inputMethod.keyboardRectangle.height : 0});
                         orientationHelper.anchors.fill = orientationHelper.parent;
                     }
                 }
