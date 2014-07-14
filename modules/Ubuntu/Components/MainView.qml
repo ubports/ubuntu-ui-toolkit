@@ -390,7 +390,6 @@ PageTreeNode {
                      internal.activePage.head.contents !== null ||
                      internal.activePage.head.sections.model !== undefined) ?
                         internal.activePage.head : headerConfig
-            onConfigChanged: print("MV.config changed to "+config)
 
             property Item tabBar: null
             Binding {

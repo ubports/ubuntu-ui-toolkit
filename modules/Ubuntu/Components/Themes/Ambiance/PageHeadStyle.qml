@@ -41,66 +41,39 @@ Style.PageHeadStyle {
         }
         source: headerStyle.separatorSource
 
-        property var config: styledItem.config
-        onConfigChanged: print("------------------config = "+config)
-
         property var sectionsModel: styledItem.config.sections.model
-        onSectionsModelChanged: {
-            print("sections = "+styledItem.config.sections)
-            print("new sections model = "+sectionsModel)
-        }
 
-        Rectangle {
-            color: "transparent"
-            anchors {
-                fill: parent
-            }
+        Row {
+            id: sectionsRow
+            property int itemWidth: sectionsRow.width / sectionsRepeater.count
+            anchors.fill: parent
+            enabled: styledItem.config.sections.enabled
+            opacity: enabled ? 1.0 : 0.5
 
-            Row {
-                id: sectionsRow
-                property int itemWidth: sectionsRow.width / sectionsRepeater.count
-                anchors.fill: parent
-                enabled: styledItem.config.sections.enabled
-                opacity: enabled ? 1.0 : 0.5
+            Repeater {
+                id: sectionsRepeater
+                //                    visible: true
+                model: styledItem.config.sections.model
+                AbstractButton {
+                    id: sectionButton
+                    enabled: sectionsRow.enabled
+                    width: sectionsRow.itemWidth
+                    height: sectionsRow.height
+                    property bool selected: index === styledItem.config.sections.selectedIndex
+                    onClicked: styledItem.config.sections.selectedIndex = index;
 
-                Repeater {
-                    id: sectionsRepeater
-                    //                    visible: true
-                    model: styledItem.config.sections.model
-                    AbstractButton {
-                        id: sectionButton
-                        enabled: sectionsRow.enabled
-                        width: sectionsRow.itemWidth
-                        height: parent.height
-                        property bool selected: index === styledItem.config.sections.selectedIndex
-                        onClicked: styledItem.config.sections.selectedIndex = index;
-
-                        Label {
-                            text: modelData
-                            fontSize: "small"
-                            anchors.fill: parent
-                            horizontalAlignment: Text.AlignHCenter
-                            color: sectionButton.selected ?
-                                       Theme.palette.normal.backgroundText :
-                                       Theme.palette.selected.backgroundText
-                        }
+                    Label {
+                        text: modelData
+                        fontSize: "small"
+                        anchors.fill: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        color: sectionButton.selected ?
+                                   Theme.palette.normal.backgroundText :
+                                   Theme.palette.selected.backgroundText
                     }
                 }
             }
         }
-
-//        MouseArea {
-//            anchors.fill: parent
-//            visible: styledItem.config.sections.model
-//            onClicked: {
-//                styledItem.config.sections.selectedIndex = (styledItem.config.sections.selectedIndex + 1) % sectionsRepeater.count
-//            }
-//        }
-
-        //        Label {
-        //            anchors.centerIn: parent
-        //            text: "aloha"
-        //        }
     }
     Image {
         id: separatorBottom

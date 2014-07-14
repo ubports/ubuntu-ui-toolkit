@@ -30,21 +30,6 @@ QtObject {
     id: sections
 
     property bool enabled: true
-
     property var model
-    onModelChanged: {
-        print("new model = "+model)
-        print(model.length)
-    }
-    Component.onCompleted: {
-        print("self = "+sections)
-        print("oncompleted model = "+model)
-    }
     property int selectedIndex: model ? 0 : -1
-    onSelectedIndexChanged: print("section.selectedIndex = "+selectedIndex)
-
-    /*!
-      The number of sections in the header.
-     */
-//    readonly property int count: 0
 }

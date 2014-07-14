@@ -183,13 +183,9 @@ MainView {
                 title: "Sections"
                 page: Page {
                     id: sectionsPage
-                    Component.onCompleted: print("coc.index = "+sectionsPage.head.sections.selectedIndex)
                     head {
                         sections {
                             model: ["navy", "lightblue", "brown", "cyan", "darkgrey"]
-                            onSelectedIndexChanged: {
-                                print("selected index is now "+sectionsPage.head.sections.selectedIndex)
-                            }
                         }
                     }
                     Rectangle {
