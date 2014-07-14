@@ -31,12 +31,42 @@ QtObject {
 
     /*!
       List of actions to show in the header.
+
+      Example:
+      \qml
+        Page {
+            title: "Custom header actions"
+            head.actions: [
+                Action {
+                    iconName: "save"
+                    text: i18n.tr("Save")
+                },
+                Action {
+                    iconName: "add"
+                    text: i18n.tr("Add")
+                }
+            ]
+        }
+      \endqml
      */
     property list<Action> actions
 
     /*!
       Overrides the default \l PageStack back button and the
       \l Tabs drawer button in the header.
+
+      Example:
+      \qml
+        Page {
+            title: "Back Action Page"
+            head.backAction: Action {
+                iconName: "close"
+                onTriggered: {
+                    console.log("Run custom back action")
+                }
+            }
+        }
+     \endqml
      */
     property Action backAction: null
 
@@ -52,7 +82,7 @@ QtObject {
       \qml
         Page {
             title: "Invisible title"
-            contents: Rectangle {
+            head.contents: Rectangle {
                 color: UbuntuColors.orange
                 height: units.gu(5)
                 width: parent ? parent.width - units.gu(2) : undefined

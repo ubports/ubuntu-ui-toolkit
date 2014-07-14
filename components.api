@@ -49,6 +49,12 @@ QtObject
     readonly property color coolGrey
     property Gradient orangeGradient
     property Gradient greyGradient
+    readonly property color lightGrey
+    readonly property color darkGrey
+    readonly property color red
+    readonly property color green
+    readonly property color blue
+    readonly property color purple
 ComboButton 1.1
 Button
     property bool expanded
@@ -238,6 +244,7 @@ Item
     property alias rotating
     property int __orientationAngle
     property int orientationAngle
+    property bool anchorToKeyboard
 Page 0.1 1.0
 PageTreeNode
     property string title

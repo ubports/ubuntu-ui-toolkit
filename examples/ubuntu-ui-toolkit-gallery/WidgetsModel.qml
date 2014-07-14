@@ -28,7 +28,11 @@ ListModel {
         label: "Styles"
         source: "Styles.qml"
     }
-
+    ListElement {
+        objectName: "colorsElement"
+        label: "Colors"
+        source: "Colors.qml"
+    }
     ListElement {
         objectName: "togglesElement"
         label: "Toggles"
