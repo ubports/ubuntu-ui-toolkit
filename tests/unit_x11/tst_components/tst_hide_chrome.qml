@@ -61,6 +61,11 @@ Item {
         when: windowShown
         id: testCase
 
+        function cleanup() {
+            // clean buffers
+            waitForRendering(mainView, 500);
+        }
+
         function openToolbar() {
             var toolbar = mainView.__propagated.toolbar;
             toolbar.open();

@@ -21,7 +21,6 @@ from autopilot.introspection import dbus
 
 from ubuntuuitoolkit._custom_proxy_objects import (
     _common,
-    _mainview,
     _tabbar
 )
 
@@ -32,15 +31,8 @@ _NO_TABS_ERROR = 'The MainView has no Tabs.'
 logger = logging.getLogger(__name__)
 
 
-class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
-    """Header Autopilot emulator."""
-
-    def __init__(self, *args):
-        super(Header, self).__init__(*args)
-        # XXX we need a better way to keep reference to the main view.
-        # --elopio - 2014-02-26
-        self.main_view = self.get_root_instance().select_single(
-            _mainview.MainView)
+class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
+    """AppHeader Autopilot emulator."""
 
     def _show_if_not_visible(self):
         if not self._is_visible():
@@ -53,8 +45,9 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
         # FIXME This will fail if the header is not linked to a flickable that
         # fills the main view. The header has a flickable property but it
         # can't be read by autopilot. See bug http://pad.lv/1318829
+        top_container = self._get_top_container()
         start_x = stop_x = (self.globalRect.x + self.globalRect.width) // 2
-        start_y = self.main_view.globalRect.y + 5
+        start_y = top_container.globalRect.y + 5
         stop_y = start_y + self.globalRect.height
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
         self.y.wait_for(0)
@@ -139,7 +132,7 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException(
-                "Header.swtich_to_tab_by_index only works with new header")
+                "AppHeader.switch_to_tab_by_index only works with new header")
         else:
             self._switch_to_tab_in_drawer_by_index(index)
 
@@ -211,3 +204,14 @@ class Header(_common.UbuntuUIToolkitCustomProxyObjectBase):
         # to find the requested button
         return self.get_root_instance().select_single(
             'Standard', objectName=object_name)
+
+
+class Header(AppHeader):
+    """Autopilot helper for the deprecated Header."""
+
+    def __init__(self, *args):
+        logger.warning(
+            'Header is an internal QML component of Ubuntu.Components and '
+            'its API may change or be removed at any moment. Please use '
+            'MainView and Page instead.')
+        super(Header, self).__init__(*args)

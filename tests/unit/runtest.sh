@@ -38,7 +38,10 @@ function create_test_cmd {
 
 function execute_test_cmd {
   echo "Executing $_CMD $_ARGS"
-  if [ $DISPLAY ]; then
+  if [ ! -x $_TARGET ]; then
+    echo "Error: $_TARGET wasn't built!"
+    RESULT=2
+  elif [ $DISPLAY ]; then
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
     QML2_IMPORT_PATH=../../../modules:$QML2_IMPORT_PATH UBUNTU_UI_TOOLKIT_THEMES_PATH=../../../modules \

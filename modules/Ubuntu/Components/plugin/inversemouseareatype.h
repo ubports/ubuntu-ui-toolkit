@@ -32,6 +32,7 @@ public:
     Q_INVOKABLE virtual bool contains(const QPointF &point) const;
 
 protected:
+    void itemChange(ItemChange, const ItemChangeData &);
     void componentComplete();
     bool eventFilter(QObject *, QEvent *);
 

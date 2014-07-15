@@ -16,6 +16,7 @@
 
 import logging
 
+import autopilot.exceptions
 from autopilot import logging as autopilot_logging
 
 from ubuntuuitoolkit._custom_proxy_objects import _common
@@ -40,6 +41,16 @@ def _get_visible_container_bottom(containers):
 
 class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
+    @autopilot_logging.log_action(logger.info)
+    def is_child_visible(self, child):
+        """Determine if the child is visible.
+
+        A child is visible if no scrolling is needed to reveal it.
+
+        """
+        containers = self._get_containers()
+        return self._is_child_visible(child, containers)
+
     def _get_containers(self):
         """Return a list with the containers to take into account when swiping.
 
@@ -50,23 +61,6 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
         """
         containers = [self._get_top_container(), self]
         return containers
-
-    def _get_top_container(self):
-        """Return the top-most container with a globalRect."""
-        root = self.get_root_instance()
-        parent = self.get_parent()
-        top_container = None
-        while parent.id != root.id:
-            if hasattr(parent, 'globalRect'):
-                top_container = parent
-
-            parent = parent.get_parent()
-
-        if top_container is None:
-            raise _common.ToolkitException(
-                "Couldn't find the top-most container.")
-        else:
-            return top_container
 
     def _is_child_visible(self, child, containers):
         """Check if the center of the child is visible.
@@ -166,8 +160,67 @@ class QQuickFlickable(Scrollable):
         self.moving.wait_for(False)
 
     @autopilot_logging.log_action(logger.info)
-    def _scroll_to_top(self):
+    def _swipe_to_top(self):
         if not self.atYBeginning:
             containers = self._get_containers()
             while not self.atYBeginning:
                 self._swipe_to_show_more_above(containers)
+
+    @autopilot_logging.log_action(logger.info)
+    def pull_to_refresh(self):
+        """Pulls the flickable down and triggers a refresh on it.
+
+        :raises ubuntuuitoolkit.ToolkitException: If the flickable has no pull
+            to release functionality.
+
+        """
+        try:
+            pull_to_refresh = self.select_single(PullToRefresh)
+        except autopilot.exceptions.StateNotFoundError:
+            raise _common.ToolkitException(
+                'The flickable has no pull to refresh functionality.')
+        self._swipe_to_top()
+        self._swipe_to_middle()
+        pull_to_refresh.wait_for_refresh()
+
+    @autopilot_logging.log_action(logger.info)
+    def _swipe_to_middle(self):
+        start_x = stop_x = self.globalRect.x + (self.globalRect.width // 2)
+        # Start just a little under the top.
+        containers = self._get_containers()
+        top = _get_visible_container_top(containers) + 5
+        bottom = _get_visible_container_bottom(containers)
+
+        start_y = top
+        stop_y = (self.globalRect.y + bottom) // 2
+        self._slow_drag(start_x, stop_x, start_y, stop_y)
+        self.dragging.wait_for(False)
+        self.moving.wait_for(False)
+
+    @autopilot_logging.log_action(logger.info)
+    def _cancel_pull_to_refresh(self):
+        """Swipe down the list and then swipe it up to cancel the refresh."""
+        # This method is kept private because it's not for the test writers to
+        # call. It's to test pull to refresh. --elopio - 2014-05-22
+        self._swipe_to_top()
+        start_x = stop_x = self.globalRect.x + (self.globalRect.width // 2)
+        # Start just a little under the top.
+        containers = self._get_containers()
+        top = _get_visible_container_top(containers) + 5
+        bottom = _get_visible_container_bottom(containers)
+
+        start_y = top
+        stop_y = (self.globalRect.y + bottom) // 2
+        self.pointing_device.move(start_x, start_y)
+        self.pointing_device.press()
+        self.pointing_device.move(stop_x, stop_y)
+        self.pointing_device.move(start_x, start_y)
+        self.pointing_device.release()
+
+
+class PullToRefresh(_common.UbuntuUIToolkitCustomProxyObjectBase):
+    """Autopilot helper for the PullToRefresh component."""
+
+    def wait_for_refresh(self):
+        activity_indicator = self.select_single('ActivityIndicator')
+        activity_indicator.running.wait_for(False)

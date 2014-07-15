@@ -14,6 +14,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import logging
+
+import fixtures
+from testtools.matchers import Contains
+
 import ubuntuuitoolkit
 from ubuntuuitoolkit import listitems, tests
 
@@ -119,9 +124,26 @@ MainView {
         self._item.swipe_to_delete('right')
         self.assertTrue(self._item.waitingConfirmationForRemoval)
 
-    def test_swipe_item_to_left(self):
-        self._item.swipe_to_delete('left')
-        self.assertTrue(self._item.waitingConfirmationForRemoval)
+    def test_swipe_item_to_left_must_raise_exception(self):
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException,
+            self._item.swipe_to_delete,
+            'left')
+        self.assertEqual(
+            str(error),
+            'Only swiping to the right will cause the item to be deleted.')
+
+    def test_swipe_item_with_direction_must_log_deprecation_warning(self):
+        fake_logger = fixtures.FakeLogger(level=logging.WARNING)
+        self.useFixture(fake_logger)
+
+        self._item.swipe_to_delete(direction='right')
+        self.assertThat(
+            fake_logger.output,
+            Contains(
+                'The direction argument is deprecated. Now the Ubuntu SDK '
+                'only deletes list items when swiping from left to right. '
+                'Call swipe_to_delete without arguments.'))
 
     def test_swipe_item_to_wrong_direction(self):
         self.assertRaises(
@@ -130,11 +152,6 @@ MainView {
 
     def test_delete_item_moving_right(self):
         self._item.swipe_to_delete('right')
-        self._item.confirm_removal()
-        self.assertFalse(self._item.exists())
-
-    def test_delete_item_moving_left(self):
-        self._item.swipe_to_delete('left')
         self._item.confirm_removal()
         self.assertFalse(self._item.exists())
 

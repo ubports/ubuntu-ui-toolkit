@@ -63,12 +63,12 @@ for line in fileinput.input():
                 fullpath = folder + '/' + filename
                 classname = pieces[0]
                 version = pieces[1]
-                if not fullpath in inputfiles:
+                if fullpath not in inputfiles:
                     inputfiles.append(fullpath)
                     classes[fullpath] = [classname, version]
                 else:
                     versions = classes[fullpath]
-                    if not classname in versions:
+                    if classname not in versions:
                         versions.append(classname)
                     versions.append(version)
     else:
@@ -118,7 +118,7 @@ for line in fileinput.input(inputfiles, openhook=hook):
         # internal without type always relates to the next declared property
         annotated_properties['internal'] = 'internal'
 
-    if '/*' in line and not '*/' in line:
+    if '/*' in line and '*/' not in line:
         in_comment = True
         continue
     if '*/' in line:
@@ -133,7 +133,7 @@ for line in fileinput.input(inputfiles, openhook=hook):
             continue
 
     # End of function/ signal/ Item block
-    if '}' in line and not '{' in line:
+    if '}' in line and '{' not in line:
         in_block -= 1
         block_meta = {}
         if in_block == 1 and in_builtin_type:
@@ -162,7 +162,7 @@ for line in fileinput.input(inputfiles, openhook=hook):
 
         block_meta[words[0]] = line
         # Omit prototype if it comes before the name since we may skip it
-        if not 'name' in block_meta and words[0] == 'prototype':
+        if 'name' not in block_meta and words[0] == 'prototype':
             continue
 
         # Don't consider the qml variable name as a keyword
@@ -183,10 +183,10 @@ for line in fileinput.input(inputfiles, openhook=hook):
                             no_mods = no_mods.replace(mod, '')
                         name = no_mods.strip().split(' ')[2]
                         if 'internal' in annotated_properties:
-                            if not name in annotated_properties:
+                            if name not in annotated_properties:
                                 annotated_properties[name] = 'internal'
                             del annotated_properties['internal']
-                        if not name in annotated_properties:
+                        if name not in annotated_properties:
                             print('    %s' % (signature))
                             print('Error: Missing \\qmlproperty for %s' % name)
                             sys.exit(1)
@@ -199,7 +199,7 @@ for line in fileinput.input(inputfiles, openhook=hook):
                 break
 
     # Start of function/ signal/ Item block
-    if '{' in line and not '}' in line:
+    if '{' in line and '}' not in line:
         in_block += 1
         block_meta = {}
         # The parent type can affect API

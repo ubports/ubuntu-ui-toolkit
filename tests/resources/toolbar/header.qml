@@ -21,6 +21,7 @@ MainView {
     id: mainView
     width: units.gu(40)
     height: units.gu(50)
+    useDeprecatedToolbar: false
 
     PageStack {
         id: stack
@@ -29,7 +30,7 @@ MainView {
         Tabs {
             id: tabs
             Tab {
-                title: "Tab 1"
+                title: "Stack"
                 page: Page {
                     Button {
                         anchors.centerIn: parent
@@ -47,7 +48,7 @@ MainView {
                 }
             }
             Tab {
-                title: "Tab 2"
+                title: "Tools"
                 page: Page {
                     Label {
                         anchors.centerIn: parent
@@ -57,8 +58,8 @@ MainView {
                     tools: ToolbarItems {
                         ToolbarButton {
                             action: Action {
-                                iconName: "search"
-                                text: "Search"
+                                iconName: "settings"
+                                text: "Settings"
                             }
                         }
                         ToolbarButton {
@@ -83,7 +84,7 @@ MainView {
                 }
             }
             Tab {
-                title: "Tab 3"
+                title: "Switch"
                 page: Page {
                     Switch {
                         id: newHeaderSwitch
@@ -109,16 +110,73 @@ MainView {
                             }
                         }
                     }
-
                 }
             }
             Tab {
-                title: "Tab 4"
-                page: Page { }
+                title: "Actions"
+                page: Page {
+                    Label {
+                        anchors.centerIn: parent
+                        text: "New API"
+                    }
+                    head {
+                        actions: [
+                            Action {
+                                iconName: "settings"
+                            },
+                            Action {
+                                iconName: "camera-flip"
+                            }
+                        ]
+                        backAction: Action {
+                            iconName: "close"
+                            onTriggered: tabs.selectedTabIndex = 0
+                        }
+                    }
+                }
             }
             Tab {
-                title: "Tab 5"
-                page: Page { }
+                title: "Search"
+                page: Page {
+                    id: searchPage
+
+                    Label {
+                        anchors.centerIn: parent
+                        text: searchPage.state == "search" ? "search mode" : "normal mode"
+                    }
+
+                    state: "default"
+                    states: [
+                        PageHeadState {
+                            name: "default"
+                            head: searchPage.head
+                            actions: Action {
+                                id: searchAction
+                                iconName: "search"
+                                onTriggered: searchPage.state = "search"
+                            }
+                        },
+                        PageHeadState {
+                            id: headerState
+                            name: "search"
+                            head: searchPage.head
+                            actions: [
+                                Action {
+                                    iconName: "contact"
+                                }
+                            ]
+                            backAction: Action {
+                                id: leaveSearchAction
+                                text: "back"
+                                iconName: "back"
+                                onTriggered: searchPage.state = "default"
+                            }
+                            contents: TextField {
+                                placeholderText: "search..."
+                            }
+                        }
+                    ]
+                }
             }
         }
     }
@@ -134,8 +192,8 @@ MainView {
         tools: ToolbarItems {
             ToolbarButton {
                 action: Action {
-                    iconName: "search"
-                    text: "Search"
+                    iconName: "settings"
+                    text: "settings"
                 }
             }
         }

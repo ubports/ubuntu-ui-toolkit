@@ -15,6 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import tempfile
 
 try:
     # Python 3.
@@ -23,10 +24,15 @@ except ImportError:
     # Python 2 add-on: python-mock.
     import mock
 import testtools
-from autopilot import testcase as autopilot_testcase
-from testtools.matchers import Contains, Not, FileExists
+from autopilot import (
+    display,
+    platform,
+    testcase as autopilot_testcase
+)
+from autopilot.matchers import Eventually
+from testtools.matchers import Contains, Equals, FileExists, Not
 
-from ubuntuuitoolkit import base, environment, fixture_setup
+from ubuntuuitoolkit import base, environment, fixture_setup, tests
 
 
 class FakeApplicationTestCase(testtools.TestCase):
@@ -233,3 +239,169 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
         self.assertEqual(
             'original test value',
             environment.get_initctl_env_var('testenvvarforfixture'))
+
+
+class FakeHomeTestCase(testtools.TestCase):
+
+    def test_fake_home_fixture_patches_initctl_env_var(self):
+        original_home = environment.get_initctl_env_var('HOME')
+        fake_home = original_home + 'fake'
+        result = testtools.TestResult()
+
+        def inner_test():
+            class TestWithFakeHome(testtools.TestCase):
+                def test_it(self):
+                    fake_home_fixture = fixture_setup.FakeHome(fake_home)
+                    fake_home_fixture.should_copy_xauthority_file = False
+                    self.useFixture(fake_home_fixture)
+                    self.assertEqual(
+                        fake_home, environment.get_initctl_env_var('HOME'))
+            return TestWithFakeHome('test_it')
+
+        inner_test().run(result)
+
+        self.assertTrue(
+            result.wasSuccessful(),
+            'Failed to fake the home: {}'.format(result.errors))
+        self.assertEqual(
+            original_home,
+            environment.get_initctl_env_var('HOME'))
+
+    def test_fake_home_fixture_patches_env_var(self):
+        original_home = os.environ.get('HOME')
+        fake_home = tempfile.gettempdir()
+        result = testtools.TestResult()
+
+        def inner_test():
+            class TestWithFakeHome(testtools.TestCase):
+                def test_it(self):
+                    fake_home_fixture = fixture_setup.FakeHome(fake_home)
+                    fake_home_fixture.should_copy_xauthority_file = False
+                    self.useFixture(fake_home_fixture)
+                    self.assertEqual(
+                        fake_home, os.environ.get('HOME'))
+            return TestWithFakeHome('test_it')
+
+        inner_test().run(result)
+
+        self.assertTrue(
+            result.wasSuccessful(),
+            'Failed to fake the home: {}'.format(result.failures))
+        self.assertEqual(original_home, os.environ.get('HOME'))
+
+    def test_fake_home_fixture_must_create_default_directory(self):
+        original_home = os.environ.get('HOME')
+        self.useFixture(fixture_setup.FakeHome())
+
+        home_parent_directory, _ = os.path.split(os.environ.get('HOME'))
+        self.assertEqual(
+            home_parent_directory,
+            os.path.join(original_home, 'autopilot', 'fakeenv'))
+
+    def test_fake_home_fixture_must_copy_xauthority(self):
+        # Fake the home first so we don't write the xauthority on the real
+        # home.
+        self.useFixture(fixture_setup.FakeHome())
+
+        open(os.path.join(os.environ.get('HOME'), '.Xauthority'), 'w').close()
+
+        self.useFixture(fixture_setup.FakeHome())
+        self.assertTrue(
+            os.path.exists(
+                os.path.join(os.environ.get('HOME'), '.Xauthority')))
+
+
+class HideUnity7LauncherTestCase(
+        tests.UbuntuUIToolkitWithFakeAppRunningTestCase):
+
+    def setUp(self):
+        if platform.model() != 'Desktop':
+            self.skipTest('Unity 7 runs only on desktop.')
+        self.useFixture(fixture_setup.HideUnity7Launcher())
+        super(HideUnity7LauncherTestCase, self).setUp()
+
+    def test_maximized_application_must_use_all_screen_width(self):
+        application = self.process_manager.get_running_applications()[0]
+        window = application.get_windows()[0]
+
+        # Maximize window.
+        screen = display.Display.create()
+        screen_width = screen.get_screen_width()
+        screen_height = screen.get_screen_height()
+        window.resize(screen_width, screen_height)
+
+        def get_window_width():
+            _, _, window_width, _ = window.geometry
+            return window_width
+
+        self.assertThat(
+            get_window_width,
+            Eventually(Equals(screen_width)))
+
+
+class FakeDisplay(object):
+
+    """Fake display with fixed widht and height for use in tests."""
+
+    def __init__(self, width, height):
+        super(FakeDisplay, self).__init__()
+        self.width = width
+        self.height = height
+
+    def get_screen_width(self):
+        return self.width
+
+    def get_screen_height(self):
+        return self.height
+
+
+class SimulateDeviceTestCase(autopilot_testcase.AutopilotTestCase):
+
+    scenarios = [
+        ('Device equal to screen', {
+            'device_width': 100, 'device_height': 100, 'device_grid_unit': 20,
+            'screen_width': 100, 'screen_height': 100,
+            'expected_width': 100, 'expected_height': 100,
+            'expected_grid_unit': 20}),
+        ('Device smaller than screen', {
+            'device_width': 100, 'device_height': 90, 'device_grid_unit': 20,
+            'screen_width': 110, 'screen_height': 100,
+            'expected_width': 100, 'expected_height': 90,
+            'expected_grid_unit': 20}),
+        ('Device wider than screen', {
+            'device_width': 200, 'device_height': 90, 'device_grid_unit': 20,
+            'screen_width': 110, 'screen_height': 100,
+            'expected_width': 100, 'expected_height': 45,
+            'expected_grid_unit': 10}),
+        ('Device taller than screen', {
+            'device_width': 100, 'device_height': 180, 'device_grid_unit': 20,
+            'screen_width': 110, 'screen_height': 100,
+            'expected_width': 50, 'expected_height': 90,
+            'expected_grid_unit': 10}),
+        ('Device bigger than screen', {
+            'device_width': 200, 'device_height': 180, 'device_grid_unit': 20,
+            'screen_width': 110, 'screen_height': 100,
+            'expected_width': 100, 'expected_height': 90,
+            'expected_grid_unit': 10}),
+    ]
+
+    def test_simulate_device_fixture_with_size_smaller_than_screen(self):
+        """Test the simulation of a device that fits the screen.
+
+        All the attributes of the fixture must remain the same.
+
+        """
+
+        simulate_device_fixture = fixture_setup.SimulateDevice(
+            self.device_width, self.device_height, self.device_grid_unit)
+        fake_display = FakeDisplay(self.screen_width, self.screen_height)
+        simulate_device_fixture._screen = fake_display
+
+        self.useFixture(simulate_device_fixture)
+
+        self.assertEqual(
+            int(os.environ.get('GRID_UNIT_PX')), self.expected_grid_unit)
+        self.assertEqual(
+            simulate_device_fixture.app_width, self.expected_width)
+        self.assertEqual(
+            simulate_device_fixture.app_height, self.expected_height)

@@ -60,13 +60,13 @@ StyledItem {
     property url iconSource: action ? action.iconSource : (iconName ? "image://theme/" + iconName : "")
 
     /*!
-      The icon associated with the actionItem in the ubuntu-mobile icon theme.
+      The icon associated with the actionItem in the suru icon theme.
       Default value: action.iconName.
 
       \note The complete list of icons available in Ubuntu is not published yet.
             For now please refer to the folders where the icon themes are installed:
             \list
-              \li Ubuntu Touch: \l file:/usr/share/icons/ubuntu-mobile
+              \li Ubuntu Touch: \l file:/usr/share/icons/suru
               \li Ubuntu Desktop: \l file:/usr/share/icons/ubuntu-mono-dark
             \endlist
             These 2 separate icon themes will be merged soon.

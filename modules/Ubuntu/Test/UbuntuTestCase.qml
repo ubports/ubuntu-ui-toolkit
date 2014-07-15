@@ -19,9 +19,9 @@ import QtTest 1.0
 import Ubuntu.Components 1.1
 
 /*!
-    \qmlabstract UbuntuTestCase
-    \inqmlmodule Ubuntu.Test 0.1
-    \ingroup ubuntu
+    \qmltype UbuntuTestCase
+    \inqmlmodule Ubuntu.Test 1.0
+    \ingroup ubuntu-test
     \brief The UbuntuTestCase class expands the default TestCase class.
 
     \b{This component is under heavy development.}
@@ -51,6 +51,9 @@ TestCase {
 		return null;
 	}
 
+    /*!
+      Find a non-visual child such as QtObject based on objectName.
+      */
 	function findInvisibleChild(obj,objectName) {
 		var childs = new Array(0);
 		childs.push(obj)
@@ -86,6 +89,18 @@ TestCase {
         return null;
     }
 
+    /*!
+      Returns the center point of the \a item.
+      */
+    function centerOf(item) {
+        if (!item) {
+            return undefined;
+        }
+
+        var center = Qt.point(item.width / 2, item.height / 2);
+        return center;
+    }
+
 
 
 	/*!
@@ -113,7 +128,7 @@ TestCase {
       \qmlmethod UbuntuTestCase::flick(item, x, y, dx, dy, pressTimeout = -1, steps = -1, button = Qt.LeftButton, modifiers = Qt.NoModifiers, delay = -1)
 
       The function produces a flick event when executed on Flickables. When used
-      on other components it provides the same functionality as \l mouseDrag()
+      on other components it provides the same functionality as \c mouseDrag()
       function. The optional \a pressTimeout parameter can be used to introduce
       a small delay between the mouse press and the first mouse move. Setting a
       negative or zero value will disable the timeout.
@@ -169,8 +184,6 @@ TestCase {
         system of \a item into window co-ordinates and then delivered.
         If \a item is obscured by another item, or a child of \a item occupies
         that position, then the event will be delivered to the other item instead.
-
-        \sa mouseRelease(), mouseClick(), mouseDoubleClick(), mouseMove(), mouseDrag(), mouseWheel()
       */
     function mouseLongPress(item, x, y, button, modifiers, delay) {
         mousePress(item, x, y, button, modifiers, delay);

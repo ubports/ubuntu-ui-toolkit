@@ -46,6 +46,12 @@ QtObject
     readonly property color coolGrey
     property Gradient orangeGradient
     property Gradient greyGradient
+    readonly property color lightGrey
+    readonly property color darkGrey
+    readonly property color red
+    readonly property color green
+    readonly property color blue
+    readonly property color purple
 ComboButton 1.1
 Button
     property bool expanded
@@ -59,9 +65,21 @@ Item
     property url source
     property int fillMode
     property int fadeDuration
-    readonly property bool running
     property size sourceSize
+    readonly property bool running
     readonly property int status
+CrossFadeImage 1.1
+Item
+    property url source
+    property int fillMode
+    property int fadeDuration
+    property size sourceSize
+    property string fadeStyle
+    readonly property bool running
+    readonly property int status
+Header 0.1 1.0
+AppHeader
+    property string _for_autopilot
 Icon 0.1 1.0
 Item
     property string name
@@ -223,6 +241,7 @@ Item
     property alias rotating
     property int __orientationAngle
     property int orientationAngle
+    property bool anchorToKeyboard
 Page 0.1 1.0
 PageTreeNode
     property string title
@@ -230,6 +249,20 @@ PageTreeNode
     property Item __customHeaderContents
     property Flickable flickable
     property list<Action> actions
+Page 1.1
+Page10
+    readonly property PageHeadConfiguration head
+PageHeadConfiguration 1.1
+QtObject
+    property list<Action> actions
+    property Action backAction
+    property Item contents
+PageHeadState 1.1
+State
+    property PageHeadConfiguration head
+    property list<Action> actions
+    property Action backAction
+    property Item contents
 PageStack 0.1 1.0
 PageTreeNode
     property bool __showHeader
@@ -371,6 +404,14 @@ AnimatedItem
     property real minimumValue
     property real maximumValue
     property real value
+PullToRefresh 1.1
+StyledItem
+    readonly property bool releaseToRefresh
+    readonly property real offset
+    property Component content
+    property Flickable target
+    property bool refreshing
+    signal refresh()
 Scrollbar 0.1 1.0
 StyledItem
     property Flickable flickableItem
@@ -402,6 +443,21 @@ Item
     property Gradient defaultGradient
     property color defaultDropdownColor
     property font defaultFont
+PageHeadStyle 1.1
+Item
+    property real contentHeight
+    property url separatorSource
+    property url separatorBottomSource
+    property string fontSize
+    property int fontWeight
+    property color textColor
+    property real textLeftMargin
+    property int maximumNumberOfActions
+PullToRefreshStyle 1.1
+Item
+    property Component defaultContent
+    property real activationThreshold
+    property bool releaseToRefresh
 Switch 0.1 1.0
 CheckBox
 Tab 0.1 1.0
@@ -490,7 +546,6 @@ StyledItem
     function getText(start, end)
     function remove(start, end)
     function undo()
-    function forceActiveFocus()
 TextField 0.1 1.0
 ActionItem
     property bool highlighted
@@ -549,7 +604,6 @@ ActionItem
     function select(start, end)
     function selectAll()
     function selectWord()
-    function forceActiveFocus()
     function isRightToLeft(start, end)
     function moveCursorSelection(position, mode)
     function redo()
@@ -584,6 +638,9 @@ Item
 UbuntuListView 0.1 1.0
 ListView
     property int expandedIndex
+UbuntuListView 1.1
+UbuntuListView
+    property PullToRefresh pullToRefresh
 UbuntuNumberAnimation 0.1 1.0
 NumberAnimation
 UbuntuShape 0.1 1.0
@@ -601,6 +658,7 @@ TestCase
     function findChild(obj,objectName)
     function findInvisibleChild(obj,objectName)
     function findChildWithProperty(item, property, value)
+    function centerOf(item)
     function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay)
     function flick(item, x, y, dx, dy, pressTimeout, steps, button, modifiers, delay)
     function mouseLongPress(item, x, y, button, modifiers, delay)
@@ -889,3 +947,52 @@ plugins.qmltypes
     prototype: "QQuickItem"
     exports: ["TextureFromImage 0.1", "TextureFromImage 1.0"]
     Property { name: "image"; type: "QImage" }
+    name: "UCTestExtras"
+    prototype: "QObject"
+    exports: ["TestExtras 1.0"]
+    Property { name: "touchPresent"; type: "bool"; isReadonly: true }
+    Method { name: "touchDevicePresent"; type: "bool" }
+    Method { name: "registerTouchDevice" }
+    Method {
+    name: "touchPress"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchRelease"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchClick"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchLongPress"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchDoubleClick"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchMove"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "point"; type: "QPoint" }
+    Method {
+    name: "touchDrag"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "from"; type: "QPoint" }
+    Parameter { name: "delta"; type: "QPoint" }
+    Parameter { name: "steps"; type: "int" }
+    Method {
+    name: "touchDrag"
+    Parameter { name: "touchId"; type: "int" }
+    Parameter { name: "item"; type: "QQuickItem"; isPointer: true }
+    Parameter { name: "from"; type: "QPoint" }
+    Parameter { name: "delta"; type: "QPoint" }
