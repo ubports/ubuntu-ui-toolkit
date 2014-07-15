@@ -53,7 +53,7 @@ class QQuickListView(_flickable.QQuickFlickable):
         if direction is None:
             # We don't know where the object is so we start looking for it from
             # the top.
-            self._scroll_to_top()
+            self._swipe_to_top()
             direction = 'below'
 
         if direction == 'below':

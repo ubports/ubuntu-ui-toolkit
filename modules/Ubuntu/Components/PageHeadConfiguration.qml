@@ -31,12 +31,67 @@ QtObject {
 
     /*!
       List of actions to show in the header.
+
+      Example:
+      \qml
+        Page {
+            title: "Custom header actions"
+            head.actions: [
+                Action {
+                    iconName: "save"
+                    text: i18n.tr("Save")
+                },
+                Action {
+                    iconName: "add"
+                    text: i18n.tr("Add")
+                }
+            ]
+        }
+      \endqml
      */
     property list<Action> actions
 
     /*!
       Overrides the default \l PageStack back button and the
-        \l Tabs drawer button in the header.
+      \l Tabs drawer button in the header.
+
+      Example:
+      \qml
+        Page {
+            title: "Back Action Page"
+            head.backAction: Action {
+                iconName: "close"
+                onTriggered: {
+                    console.log("Run custom back action")
+                }
+            }
+        }
+     \endqml
      */
     property Action backAction: null
+
+    /*!
+      Set this property to show this Item in the header instead of
+      the title. Use a \l TextField here for implementing search in header.
+
+      The parent of this Item will be binded while the \l Page is active.
+      The header contents will automatically be anchored to the left and
+      vertically centered inside the header.
+
+      Example:
+      \qml
+        Page {
+            title: "Invisible title"
+            head.contents: Rectangle {
+                color: UbuntuColors.orange
+                height: units.gu(5)
+                width: parent ? parent.width - units.gu(2) : undefined
+            }
+        }
+      \endqml
+
+      See \l PageHeadState for an example that shows how search mode can
+      be implemented.
+     */
+    property Item contents: null
 }

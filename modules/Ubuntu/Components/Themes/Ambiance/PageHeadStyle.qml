@@ -149,8 +149,9 @@ Style.PageHeadStyle {
         height: headerStyle.contentHeight
 
         Label {
+            objectName: "header_title_label"
             LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
-            visible: !styledItem.contents
+            visible: !contentsContainer.visible
             anchors {
                 left: parent.left
                 right: parent.right
@@ -169,7 +170,7 @@ Style.PageHeadStyle {
             // when the bindings below is no longer active
             id: contentsContainer
             anchors.fill: parent
-            visible: styledItem.contents
+            visible: styledItem.contents || styledItem.config.contents
         }
         Binding {
             target: styledItem.contents
@@ -182,6 +183,12 @@ Style.PageHeadStyle {
             property: "parent"
             value: contentsContainer
             when: styledItem.contents
+        }
+        Binding {
+            target: styledItem.config.contents
+            property: "parent"
+            value: contentsContainer
+            when: styledItem.config.contents && !styledItem.contents
         }
     }
 
@@ -233,7 +240,7 @@ Style.PageHeadStyle {
             id: actionsOverflowButton
             objectName: "actions_overflow_button"
             visible: numberOfSlots.requested > numberOfSlots.right
-            iconName: "dropdown-menu"
+            iconName: "contextual-menu"
             width: visible ? units.gu(5) : 0
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionsOverflowButton)
             height: actionsContainer.height
@@ -245,13 +252,19 @@ Style.PageHeadStyle {
                 parent: QuickUtils.rootItem(actionsOverflowPopover)
                 caller: actionsOverflowButton
 
+                // Ensure the popover closes when actions change and
+                // the list item below may be destroyed before its
+                // onClicked is executed. See bug
+                // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
                 Connections {
                     target: styledItem.config
                     onActionsChanged: {
-                        // Ensure the popover closes when actions change and
-                        // the list item below may be destroyed before its
-                        // onClicked is executed. See bug
-                        // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
+                        actionsOverflowPopover.hide();
+                    }
+                }
+                Connections {
+                    target: styledItem
+                    onConfigChanged: {
                         actionsOverflowPopover.hide();
                     }
                 }

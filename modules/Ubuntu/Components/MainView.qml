@@ -244,9 +244,8 @@ PageTreeNode {
         id: canvas
 
         automaticOrientation: false
-        // this will make sure that the keyboard does not obscure the contents
+        anchorToKeyboard: mainView.anchorToKeyboard
         anchors {
-            bottomMargin: Qt.inputMethod.visible && anchorToKeyboard ? Qt.inputMethod.keyboardRectangle.height : 0
             //this is an attempt to keep the keyboard animation in sync with the content resize
             //but this does not work very well because the keyboard animation has different steps
             Behavior on bottomMargin {
@@ -387,7 +386,8 @@ PageTreeNode {
             //  the deprecated tools property.
             config: internal.activePage && internal.activePage.hasOwnProperty("head") &&
                     (internal.activePage.head.actions.length > 0 ||
-                     internal.activePage.head.backAction !== null) ?
+                     internal.activePage.head.backAction !== null ||
+                     internal.activePage.head.contents !== null) ?
                         internal.activePage.head : headerConfig
 
             property Item tabBar: null
