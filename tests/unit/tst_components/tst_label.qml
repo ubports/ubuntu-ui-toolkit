@@ -21,6 +21,11 @@ import Ubuntu.Components 1.1
 TestCase {
     name: "LabelAPI"
 
+    function test_0_defaults() {
+        compare(textCustom.font.family, "Ubuntu", "Default font family");
+        compare(textCustom.font.weight, Font.Light, "Default font weight");
+    }
+
     function test_fontSize() {
         compare(textCustom.fontSize,"medium","fontSize is 'medium' by default")
 
@@ -44,7 +49,7 @@ TestCase {
     }
 
     function test_fontWeight() {
-        compare(textCustom.font.weight, Font.Normal, "font.weight is 'normal' by default")
+        compare(textCustom.font.weight, Font.Light, "font.weight is 'light' by default")
 
         var fontWeights = [ Font.Light, Font.Normal, Font.DemiBold, Font.Bold, Font.Black ]
 

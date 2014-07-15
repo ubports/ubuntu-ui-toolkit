@@ -55,6 +55,7 @@ OrientationHelper {
     // copy value of automaticOrientation from root object (typically a MainView)
     automaticOrientation: stateWrapper.rootItem && stateWrapper.rootItem.automaticOrientation ?
                           stateWrapper.rootItem.automaticOrientation : false
+    anchorToKeyboard: true
 
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
@@ -147,10 +148,12 @@ OrientationHelper {
         sensingArea: dismissArea
         propagateComposedEvents: !grabDismissAreaEvents
         onPressed: if (__closeOnDismissAreaPress) popupBase.hide()
+        onWheel: wheel.accepted = true
     }
 
     MouseArea {
         anchors.fill: __foreground
+        onWheel: wheel.accepted = true
     }
 
     // set visible as false by default

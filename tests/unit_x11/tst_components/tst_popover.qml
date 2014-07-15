@@ -61,6 +61,7 @@ MainView {
         function cleanup() {
             popoverSpy.target = null;
             popoverSpy.clear();
+            waitForRendering(main, 500);
         }
 
         function test_dismiss_on_click_data() {

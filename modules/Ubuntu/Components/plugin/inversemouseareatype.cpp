@@ -244,11 +244,6 @@ InverseMouseAreaType::InverseMouseAreaType(QQuickItem *parent) :
      */
     QObject::connect(this, &QQuickMouseArea::windowChanged,
                      this, &InverseMouseAreaType::resetFilterOnWindowUpdate);
-
-    if (!m_sensingArea) {
-        // get sensing area upon parent change
-        QObject::connect(this, SIGNAL(parentChanged(QQuickItem*)), this, SLOT(update()));
-    }
 }
 
 InverseMouseAreaType::~InverseMouseAreaType()
@@ -291,6 +286,7 @@ void InverseMouseAreaType::update()
         m_sensingArea = QuickUtils::instance().rootItem(this);
     }
     updateEventFilter(isEnabled() && isVisible() && m_topmostItem);
+    QQuickMouseArea::update();
 }
 /*!
   \internal
@@ -300,6 +296,14 @@ void InverseMouseAreaType::resetFilterOnWindowUpdate(QQuickWindow *win)
 {
     Q_UNUSED(win);
     updateEventFilter(m_topmostItem);
+}
+
+void InverseMouseAreaType::itemChange(ItemChange change, const ItemChangeData &data)
+{
+    if (change == ItemParentHasChanged && data.item) {
+        update();
+    }
+    QQuickMouseArea::itemChange(change, data);
 }
 
 void InverseMouseAreaType::componentComplete()

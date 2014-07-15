@@ -59,4 +59,3 @@ UbuntuTestCase::warnings() const
 {
 	return m_spy->count();
 }
-

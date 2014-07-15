@@ -48,7 +48,7 @@ TestCase {
         compare(pageStack.currentPage, null, "currentPage properly reset");
     }
 
-    function test_active() {
+    function test_active_bug1260116() {
         pageStack.push(page1);
         compare(page1.active, true, "Page is active after pushing");
         pageStack.push(page2);
@@ -58,17 +58,28 @@ TestCase {
         compare(page1.active, true, "Page re-activated when on top of the stack");
         compare(page2.active, false, "Page no longer active after being popped");
         pageStack.clear();
+
+        compare(pageInStack.active, false, "Page defined inside PageStack is not active by default");
+        pageStack.push(pageInStack);
+        compare(pageInStack.active, true, "Pushing a page on PageStack makes it active");
+        pageStack.pop();
+        compare(pageInStack.active, false, "Popping a page from PageStack makes it inactive");
+        pageStack.clear();
     }
 
-    function test_title_bug1143345() {
+    function test_title_bug1143345_bug1317902() {
         pageStack.push(page1);
-        compare(mainView.__propagated.header.title, "Title 1", "Header is correctly set by page");
+        compare(mainView.__propagated.header.title, "Title 1", "Header title is correctly set by page");
         page1.title = "New title";
         compare(mainView.__propagated.header.title, "New title", "Header title correctly updated by page");
         pageStack.push(page2);
-        compare(mainView.__propagated.header.title, "Title 2", "Header is correctly set by page");
+        compare(mainView.__propagated.header.title, "Title 2", "Header title is correctly set by page");
         pageStack.clear();
         page1.title = "Title 1";
+
+        pageStack.push(pageWithPage);
+        compare(mainView.__propagated.header.title, pageWithPage.title, "Embedded page sets title of outer page");
+        pageStack.clear();
     }
 
     function test_tools_bug1126197() {
@@ -96,10 +107,24 @@ TestCase {
         pageStack.clear();
     }
 
+    function test_pop_to_tabs_bug1316736() {
+        pageStack.push(tabs);
+        tabs.selectedTabIndex = 1;
+        pageStack.push(page1);
+        compare(tabs.active, false, "Tabs on a PageStack, but not on top, are inactive");
+        pageStack.pop();
+        compare(tabs.active, true, "Tabs on top of PageStack is active");
+        compare(tabs.selectedTabIndex, 1, "Pushing and popping another page on top of Tabs does not change selectedTabsIndex");
+        pageStack.clear();
+    }
+
     MainView {
         id: mainView
         PageStack {
             id: pageStack
+            Page {
+                id: pageInStack
+            }
         }
     }
     Page {
@@ -116,8 +141,20 @@ TestCase {
             id: tools2
         }
     }
-
+    Page {
+        id: pageWithPage
+        title: "Outer"
+        Page {
+            title: "Inner"
+        }
+    }
     Tabs {
         id: tabs
+        Tab {
+            id: tab1
+        }
+        Tab {
+            id: tab2
+        }
     }
 }

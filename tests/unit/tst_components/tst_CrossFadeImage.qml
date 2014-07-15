@@ -85,15 +85,30 @@ TestCase {
         compare(running, false, "Animation is running after testcase");
     }
 
+    function test_fade_data() {
+        return [
+                    {style: "overlay"},
+                    {style: "cross"}
+                ];
+    }
 
-    function test_fade() {
+    function test_fade(data) {
+        crossFadeImage.fadeStyle = data.style;
         loadImage("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg");
         loadImage("../../../examples/ubuntu-ui-toolkit-gallery/map_icon.png");
         waitForAnimation();
         cleanupTest();
     }
 
-    function test_fadeDuration() {
+    function test_fadeDuration_data() {
+        return [
+                    {style: "overlay"},
+                    {style: "cross"}
+                ];
+    }
+
+    function test_fadeDuration(data) {
+        crossFadeImage.fadeStyle = data.style;
         fadeDuration = UbuntuAnimation.SleepyDuration;
         loadImage("../../../examples/ubuntu-ui-toolkit-gallery/demo_image.jpg");
         loadImage("../../../examples/ubuntu-ui-toolkit-gallery/map_icon.png");

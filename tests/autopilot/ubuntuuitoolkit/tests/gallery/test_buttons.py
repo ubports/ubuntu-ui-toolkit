@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013 Canonical Ltd.
+# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -16,14 +16,17 @@
 
 """Tests for the Ubuntu UI Toolkit Gallery - Button component"""
 
+import testscenarios
 from autopilot.matchers import Eventually
 from testtools.matchers import Equals
-from ubuntuuitoolkit.tests.gallery import GalleryTestCase
+
+from ubuntuuitoolkit import ubuntu_scenarios
+from ubuntuuitoolkit.tests import gallery
 
 
-class ButtonsTestCase(GalleryTestCase):
+class ButtonsTestCase(gallery.GalleryTestCase):
 
-    scenarios = [
+    buttons_scenarios = [
         ('standard button', dict(
             button_name="button_text", is_enabled=True, color=None, icon=None,
             text="Call")),
@@ -44,10 +47,12 @@ class ButtonsTestCase(GalleryTestCase):
             icon=None, text="Call"))
     ]
 
+    scenarios = testscenarios.multiply_scenarios(
+        ubuntu_scenarios.get_device_simulation_scenarios(),
+        buttons_scenarios)
+
     def test_buttons(self):
-        item = "Buttons"
-        self.loadItem(item)
-        self.checkPageHeader(item)
+        self.open_page('buttonsElement')
 
         button = self.app.select_single(objectName=self.button_name)
         self.assertIsNot(button, None)

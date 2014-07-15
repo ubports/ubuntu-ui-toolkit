@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013 Canonical Ltd.
+# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -14,15 +14,17 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-from ubuntuuitoolkit import emulators
-from ubuntuuitoolkit.tests import gallery
+import testscenarios
 
 from testtools.matchers import Equals
+
+from ubuntuuitoolkit import emulators, ubuntu_scenarios
+from ubuntuuitoolkit.tests import gallery
 
 
 class EnabledTogglesTestCase(gallery.GalleryTestCase):
 
-    scenarios = [
+    toggles_scenarios = [
         ('checkbox unchecked', dict(
             object_name='checkbox_unchecked', initial_state=False)),
         ('checkbox checked', dict(
@@ -33,12 +35,13 @@ class EnabledTogglesTestCase(gallery.GalleryTestCase):
             object_name='switch_checked', initial_state=True))
     ]
 
+    scenarios = testscenarios.multiply_scenarios(
+        ubuntu_scenarios.get_device_simulation_scenarios(),
+        toggles_scenarios)
+
     def setUp(self):
         super(EnabledTogglesTestCase, self).setUp()
-        item = "Toggles"
-        self.checkListItem(item)
-        self.loadItem(item)
-        self.checkPageHeader(item)
+        self.open_page('togglesElement')
 
     def test_change_toggles_state(self):
         toggle = self.main_view.select_single(
@@ -52,7 +55,7 @@ class EnabledTogglesTestCase(gallery.GalleryTestCase):
 
 class DisabledTogglesTestCase(gallery.GalleryTestCase):
 
-    scenarios = [
+    toggles_scenarios = [
         ('checkbox disabled unchecked', dict(
             object_name='checkbox_disabled_unchecked', initial_state=False)),
         ('checkbox disabled checked', dict(
@@ -63,12 +66,13 @@ class DisabledTogglesTestCase(gallery.GalleryTestCase):
             object_name='switch_disabled_checked', initial_state=True))
     ]
 
+    scenarios = testscenarios.multiply_scenarios(
+        ubuntu_scenarios.get_device_simulation_scenarios(),
+        toggles_scenarios)
+
     def setUp(self):
         super(DisabledTogglesTestCase, self).setUp()
-        item = "Toggles"
-        self.checkListItem(item)
-        self.loadItem(item)
-        self.checkPageHeader(item)
+        self.open_page('togglesElement')
 
     def test_change_toggles_state(self):
         toggle = self.main_view.select_single(

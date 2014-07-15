@@ -14,34 +14,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import QtQuick 2.0
-import Ubuntu.Components 1.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.Popups 1.0
 import Ubuntu.Components.ListItems 1.0 as ListItem
+import Ubuntu.Components.Styles 1.1 as Style
 
-Item {
+Style.PageHeadStyle {
     id: headerStyle
-    /*!
-      The height of the headercontents, which is the full height of
-      the header minus the separators shown at the bottom of it.
-     */
-    property real contentHeight: units.gu(7.5)
-
-    /*!
-      The source of the image that separates the header from the contents of a \l MainView.
-      The separator will be drawn over the contents.
-     */
-    property url separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
-
-    /*!
-      The source of an additional image attached to the bottom of the separator. The contents
-      of the \l MainView will be drawn on top of the separator bottom image.
-     */
-    property url separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
-
-    property int fontWeight: Font.Light
-    property string fontSize: "x-large"
-    property color textColor: Theme.palette.selected.backgroundText
-    property real textLeftMargin: units.gu(2)
+    contentHeight: units.gu(7.5)
+    separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
+    separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
+    fontWeight: Font.Light
+    fontSize: "x-large"
+    textColor: Theme.palette.selected.backgroundText
+    textLeftMargin: units.gu(2)
+    maximumNumberOfActions: 3
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
 
@@ -78,8 +65,9 @@ Item {
             objectName: "customBackButton"
             height: parent ? parent.height : undefined
             width: visible ? units.gu(5) : 0
-            action: styledItem.__customBackAction
-            visible: null !== styledItem.__customBackAction
+            action: styledItem.config.backAction
+            visible: null !== styledItem.config.backAction &&
+                     styledItem.config.backAction.visible
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
         }
 
@@ -91,6 +79,7 @@ Item {
 
             iconName: "back"
             visible: styledItem.pageStack !== null &&
+                     styledItem.pageStack !== undefined &&
                      styledItem.pageStack.depth > 1 &&
                      !customBackButton.visible
 
@@ -109,7 +98,9 @@ Item {
             width: visible ? units.gu(5) : 0
 
             iconName: "navigation-menu"
-            visible: styledItem.tabsModel !== null && !backButton.visible &&
+            visible: styledItem.tabsModel !== null &&
+                     styledItem.tabsModel !== undefined &&
+                     !backButton.visible &&
                      !customBackButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", tabsButton)
@@ -152,35 +143,76 @@ Item {
             left: leftButtonContainer.right
             right: actionsContainer.left
             top: parent.top
+            // don't keep a margin if there is already a button with spacing
+            leftMargin: leftButtonContainer.width > 0 ? 0 : headerStyle.textLeftMargin
         }
         height: headerStyle.contentHeight
 
         Label {
+            objectName: "header_title_label"
             LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
-
+            visible: !contentsContainer.visible
             anchors {
                 left: parent.left
+                right: parent.right
                 verticalCenter: parent.verticalCenter
-                // don't keep a margin if there is already a button with spacing
-                leftMargin: leftButtonContainer.width > 0 ? 0 : headerStyle.textLeftMargin
             }
             text: styledItem.title
             font.weight: headerStyle.fontWeight
             fontSize: headerStyle.fontSize
             color: headerStyle.textColor
+            elide: Text.ElideRight
+        }
+
+        Item {
+            // This Item is used to make the custom header item invisible
+            // when styledItem.contents is unset and its parent is not updated
+            // when the bindings below is no longer active
+            id: contentsContainer
+            anchors.fill: parent
+            visible: styledItem.contents || styledItem.config.contents
+        }
+        Binding {
+            target: styledItem.contents
+            property: "anchors.fill"
+            value: contentsContainer
+            when: styledItem.contents
+        }
+        Binding {
+            target: styledItem.contents
+            property: "parent"
+            value: contentsContainer
+            when: styledItem.contents
+        }
+        Binding {
+            target: styledItem.config.contents
+            property: "parent"
+            value: contentsContainer
+            when: styledItem.config.contents && !styledItem.contents
         }
     }
 
     Row {
         id: actionsContainer
 
+        property var visibleActions: getVisibleActions(styledItem.config.actions)
+        function getVisibleActions(actions) {
+            var visibleActionList = [];
+            for (var i in actions) {
+                var action = actions[i];
+                if (action.visible) {
+                    visibleActionList.push(action);
+                }
+            }
+            return visibleActionList;
+        }
+
         QtObject {
             id: numberOfSlots
-            property int requested: styledItem.actions && styledItem.actions.hasOwnProperty("length") ?
-                                         styledItem.actions.length : 0
+            property int requested: actionsContainer.visibleActions.length
             property int left: tabsButton.visible || backButton.visible ||
                                customBackButton.visible ? 1 : 0
-            property int right: 3 - left
+            property int right: headerStyle.maximumNumberOfActions - left
             property int overflow: actionsOverflowButton.visible ? 1 : 0
             property int used: Math.min(right - overflow, requested)
         }
@@ -197,7 +229,7 @@ Item {
             AbstractButton {
                 id: actionButton
                 objectName: action.objectName + "_header_button"
-                action: styledItem.actions[index]
+                action: actionsContainer.visibleActions[index]
                 style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionButton)
                 width: units.gu(5)
                 height: actionsContainer.height
@@ -208,7 +240,7 @@ Item {
             id: actionsOverflowButton
             objectName: "actions_overflow_button"
             visible: numberOfSlots.requested > numberOfSlots.right
-            iconName: "dropdown-menu"
+            iconName: "contextual-menu"
             width: visible ? units.gu(5) : 0
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionsOverflowButton)
             height: actionsContainer.height
@@ -216,9 +248,27 @@ Item {
 
             Popover {
                 id: actionsOverflowPopover
-                objectName: "actionsOverflowPopover"
+                objectName: "actions_overflow_popover"
                 parent: QuickUtils.rootItem(actionsOverflowPopover)
                 caller: actionsOverflowButton
+
+                // Ensure the popover closes when actions change and
+                // the list item below may be destroyed before its
+                // onClicked is executed. See bug
+                // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
+                Connections {
+                    target: styledItem.config
+                    onActionsChanged: {
+                        actionsOverflowPopover.hide();
+                    }
+                }
+                Connections {
+                    target: styledItem
+                    onConfigChanged: {
+                        actionsOverflowPopover.hide();
+                    }
+                }
+
                 Column {
                     anchors {
                         left: parent.left
@@ -228,7 +278,7 @@ Item {
                     Repeater {
                         model: numberOfSlots.requested - numberOfSlots.used
                         ListItem.Standard {
-                            action: styledItem.actions[numberOfSlots.used + index]
+                            action: actionsContainer.visibleActions[numberOfSlots.used + index]
                             objectName: action.objectName + "_header_overflow_button"
                             onClicked: actionsOverflowPopover.hide()
                         }

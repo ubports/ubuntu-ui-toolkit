@@ -18,20 +18,22 @@
 
 
 __all__ = [
+    'AppHeader',
     'base',
     'check_autopilot_version',
     'CheckBox',
     'environment',
     'emulators',
     'fixture_setup',
-    'Flickable',
     'get_keyboard',
     'get_pointing_device',
     'Header',
     'listitems',
     'MainView',
     'OptionSelector',
+    'pickers',
     'popups',
+    'QQuickFlickable',
     'QQuickListView',
     'TabBar',
     'Tabs',
@@ -39,6 +41,8 @@ __all__ = [
     'TextField',
     'Toolbar',
     'ToolkitException',
+    'ubuntu_scenarios',
+    'UbuntuListView11',
     'UbuntuUIToolkitCustomProxyObjectBase',
 ]
 
@@ -49,18 +53,21 @@ from ubuntuuitoolkit import (
     environment,
     fixture_setup,
     tests,
+    ubuntu_scenarios
 )
 from ubuntuuitoolkit._custom_proxy_objects import (
+    AppHeader,
     check_autopilot_version,
     CheckBox,
-    Flickable,
     get_keyboard,
     get_pointing_device,
     Header,
     listitems,
     MainView,
     OptionSelector,
+    pickers,
     popups,
+    QQuickFlickable,
     QQuickListView,
     TabBar,
     Tabs,
@@ -68,4 +75,5 @@ from ubuntuuitoolkit._custom_proxy_objects import (
     Toolbar,
     ToolkitException,
     UbuntuUIToolkitCustomProxyObjectBase,
+    UbuntuListView11,
 )

@@ -15,7 +15,7 @@ Tabs 0.1 Tabs.qml
 Label 0.1 Label.qml
 AbstractButton 0.1 AbstractButton.qml
 ActivityIndicator 0.1 ActivityIndicator.qml
-ProgressBar 0.1 ProgressBar.qml
+ProgressBar 0.1 ProgressBar10.qml
 TextField 0.1 TextField.qml
 TextArea 0.1 TextArea.qml
 Switch 0.1 Switch.qml
@@ -25,15 +25,16 @@ Scrollbar 0.1 Scrollbar.qml
 Object 0.1 Object.qml
 OptionSelector 0.1 OptionSelector.qml
 OptionSelectorDelegate 0.1 OptionSelectorDelegate.qml
-Page 0.1 Page.qml
+Page 0.1 Page10.qml
 internal PageTreeNode PageTreeNode.qml
 PageStack 0.1 PageStack.qml
 internal Toolbar Toolbar.qml
+internal AppHeader AppHeader.qml
 Header 0.1 Header.qml
 internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
 UbuntuShape 0.1 UbuntuShape.qml
-CrossFadeImage 0.1 CrossFadeImage.qml
+CrossFadeImage 0.1 CrossFadeImage10.qml
 Icon 0.1 Icon.qml
 OrientationHelper 0.1 OrientationHelper.qml
 MathUtils 0.1 mathUtils.js
@@ -64,7 +65,7 @@ Tabs 1.0 Tabs.qml
 Label 1.0 Label.qml
 AbstractButton 1.0 AbstractButton.qml
 ActivityIndicator 1.0 ActivityIndicator.qml
-ProgressBar 1.0 ProgressBar.qml
+ProgressBar 1.0 ProgressBar10.qml
 TextField 1.0 TextField.qml
 TextArea 1.0 TextArea.qml
 Switch 1.0 Switch.qml
@@ -74,11 +75,11 @@ Scrollbar 1.0 Scrollbar.qml
 Object 1.0 Object.qml
 OptionSelector 1.0 OptionSelector.qml
 OptionSelectorDelegate 1.0 OptionSelectorDelegate.qml
-Page 1.0 Page.qml
+Page 1.0 Page10.qml
 PageStack 1.0 PageStack.qml
 Header 1.0 Header.qml
 UbuntuShape 1.0 UbuntuShape.qml
-CrossFadeImage 1.0 CrossFadeImage.qml
+CrossFadeImage 1.0 CrossFadeImage10.qml
 Icon 1.0 Icon.qml
 OrientationHelper 1.0 OrientationHelper.qml
 MathUtils 1.0 mathUtils.js
@@ -92,3 +93,11 @@ UbuntuListView 1.0 UbuntuListView.qml
 
 #version 1.1
 ComboButton 1.1 ComboButton.qml
+ProgressBar 1.1 ProgressBar11.qml
+CrossFadeImage 1.1 CrossFadeImage11.qml
+PullToRefresh 1.1 PullToRefresh.qml
+UbuntuListView 1.1 UbuntuListView11.qml
+internal PageBase Page10.qml
+Page 1.1 Page11.qml
+PageHeadConfiguration 1.1 PageHeadConfiguration.qml
+PageHeadState 1.1 PageHeadState.qml

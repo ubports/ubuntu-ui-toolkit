@@ -39,31 +39,49 @@ class Empty(_common.UbuntuUIToolkitCustomProxyObjectBase):
             'QQuickItem', objectName='confirmRemovalDialog')
 
     @autopilot_logging.log_action(logger.info)
-    def swipe_to_delete(self, direction='right'):
-        """Swipe the item in a specific direction."""
+    def swipe_to_delete(self, direction='deprecated'):
+        """Swipe the item in from left to right in order to delete it.
+
+        :param direction: deprecated. The only direction that will cause a
+            delete is left to right. Do not pass any argument to this method,
+            because it will be removed in future versions.
+
+        """
+        if direction != 'deprecated':
+            logger.warn(
+                'The direction argument is deprecated. Now the Ubuntu SDK '
+                'only deletes list items when swiping from left to right. '
+                'Call swipe_to_delete without arguments.')
+        else:
+            direction = 'right'
         if self.removable:
-            self._drag_pointing_device_to_delete(direction)
-            if self.confirmRemoval:
-                self.waitingConfirmationForRemoval.wait_for(True)
-            else:
-                self._wait_until_deleted()
+            self._swipe_to_delete_removable_item(direction)
         else:
             raise _common.ToolkitException(
                 'The item "{0}" is not removable'.format(self.objectName))
 
-    def _drag_pointing_device_to_delete(self, direction):
-        x, y, w, h = self.globalRect
-        tx = x + (w // 8)
-        ty = y + (h // 2)
-
-        if direction == 'right':
-            self.pointing_device.drag(tx, ty, w, ty)
-        elif direction == 'left':
-            self.pointing_device.drag(w - (w*0.1), ty, x, ty)
-        else:
+    def _swipe_to_delete_removable_item(self, direction):
+        if direction == 'left':
+            raise _common.ToolkitException(
+                'Only swiping to the right will cause the item to be deleted.')
+        elif direction != 'right':
             raise _common.ToolkitException(
                 'Invalid direction "{0}" used on swipe to delete function'
                 .format(direction))
+
+        self._drag_pointing_device_to_delete()
+        if self.confirmRemoval:
+            self.waitingConfirmationForRemoval.wait_for(True)
+        else:
+            self._wait_until_deleted()
+
+    def _drag_pointing_device_to_delete(self):
+        x, y, width, height = self.globalRect
+        start_x = x + (width * 0.2)
+        stop_x = x + (width * 0.8)
+        start_y = stop_y = y + (height // 2)
+
+        self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
 
     def _wait_until_deleted(self):
         try:

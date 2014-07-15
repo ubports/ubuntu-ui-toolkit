@@ -21,6 +21,7 @@
 #include "listener.h"
 #include "quickutils.h"
 #include "i18n.h"
+#include "ucfontutils.h"
 
 #include <QtQml/qqml.h>
 #include <QtQml/qqmlinfo.h>
@@ -32,6 +33,8 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QLibraryInfo>
 #include <QtCore/QStandardPaths>
+#include <QtGui/QGuiApplication>
+#include <QtGui/QFont>
 
 /*!
     \qmltype Theme
@@ -81,7 +84,12 @@ QStringList themeSearchPath() {
     QStringList pathList = envPath.split(':', QString::SkipEmptyParts);
     if (pathList.isEmpty()) {
         // get the default path list from generic data location, which contains
-        // ~/.local/share and XDG_DATA_DIRS
+        // XDG_DATA_DIRS
+        QString xdgDirs = QLatin1String(getenv("XDG_DATA_DIRS"));
+        if (!xdgDirs.isEmpty()) {
+            pathList << xdgDirs.split(':', QString::SkipEmptyParts);
+        }
+        // ~/.local/share
         pathList << QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
     }
     // fix folders
@@ -109,6 +117,13 @@ UCTheme::UCTheme(QObject *parent) :
 
     QObject::connect(this, SIGNAL(nameChanged()),
                      this, SLOT(loadPalette()), Qt::UniqueConnection);
+
+    // set the default font
+    QFont defaultFont;
+    defaultFont.setFamily("Ubuntu");
+    defaultFont.setPixelSize(UCFontUtils::instance().sizeToPixels("medium"));
+    defaultFont.setWeight(QFont::Light);
+    QGuiApplication::setFont(defaultFont);
 }
 
 void UCTheme::updateEnginePaths()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -48,6 +48,7 @@
 #include "ucurihandler.h"
 #include "ucmouse.h"
 #include "ucinversemouse.h"
+#include "sortfiltermodel.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -91,7 +92,14 @@ static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
     return uriHandler;
 }
 
-static QObject *registerUbuntuColors(QQmlEngine *engine, QJSEngine *scriptEngine)
+static QObject *registerUbuntuColors10(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(scriptEngine)
+    return UbuntuComponentsPlugin::registerQmlSingletonType(engine,
+           "Ubuntu.Components", "Colors/UbuntuColors10.qml");
+}
+
+static QObject *registerUbuntuColors11(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(scriptEngine)
     return UbuntuComponentsPlugin::registerQmlSingletonType(engine,
@@ -153,7 +161,7 @@ void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
 
 void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, int minor)
 {
-    qmlRegisterSingletonType<QObject>(uri, major, minor, "UbuntuColors", registerUbuntuColors);
+    qmlRegisterSingletonType<QObject>(uri, major, minor, "UbuntuColors", registerUbuntuColors10);
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
@@ -183,9 +191,18 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     // register 0.1 for backward compatibility
     registerTypesToVersion(uri, 0, 1);
     registerTypesToVersion(uri, 1, 0);
+    qmlRegisterSingletonType<QObject>(uri, 1, 1, "UbuntuColors", registerUbuntuColors11);
 
     // register custom event
     ForwardedEvent::registerForwardedEvent();
+
+    // register parent type so that properties can get/ set it
+    qmlRegisterUncreatableType<QAbstractItemModel>(uri, 1, 1, "QAbstractItemModel", "Not instantiable");
+
+    // register 1.1 only API
+    qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
+    qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
+    qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
