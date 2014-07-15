@@ -112,12 +112,23 @@ class SectionsTestCase(tests.QMLFileAppTestCase):
     def test_select_number_of_sections(self):
         self.assertEqual(self.header.get_number_of_sections(), 3)
 
-    def test_select_section(self):
+    def test_select_sections(self):
         # initially, section 0 is selected
         self.assertEqual(self.header.get_selected_section_index(), 0)
         for index in [1, 0, 2]:
             self.header.switch_to_section_by_index(index)
             self.assertEqual(self.header.get_selected_section_index(), index)
+
+    def test_select_sections_with_sections_disabled(self):
+        self.assertEqual(self.header.get_selected_section_index(), 0)
+        sectionsEnabledSwitch = self.app.select_single('CheckBox',
+            objectName='sections_enabled_switch')
+        self.pointing_device.click_object(sectionsEnabledSwitch)
+        for index in [1, 0, 2]:
+            self.header.switch_to_section_by_index(index)
+            # cannot change section by tapping the section name in divider
+            self.assertEqual(self.header.get_selected_section_index(), 0)
+        self.pointing_device.click_object(sectionsEnabledSwitch)
 
 class CustomMainView(ubuntuuitoolkit.MainView):
     """Autopilot helper for a custom main view."""

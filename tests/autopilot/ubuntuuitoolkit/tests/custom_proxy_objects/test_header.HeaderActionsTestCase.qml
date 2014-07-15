@@ -43,6 +43,7 @@ MainView {
             }
 
             Button {
+                id: hideActionsButton
                 objectName: "hide_actions_button"
                 anchors {
                     top: label.bottom
@@ -58,6 +59,25 @@ MainView {
                     // only three of five visible actions left
                 }
             }
+            Column {
+                spacing: units.gu(1)
+                width: childrenRect.width
+                anchors {
+                    top: hideActionsButton.bottom
+                    topMargin: units.gu(2)
+                    horizontalCenter: parent.horizontalCenter
+                }
+                Label {
+                    text: "Sections enabled"
+                }
+                Switch {
+                    id: sectionsEnabledSWitch
+                    objectName: "sections_enabled_switch"
+                    checked: page.head.sections.enabled
+                    onCheckedChanged: page.head.sections.enabled = checked
+                }
+            }
+
             Label {
                 id: endLabel
                 objectName: "end_label"
