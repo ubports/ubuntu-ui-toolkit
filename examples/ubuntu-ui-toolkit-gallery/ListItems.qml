@@ -51,6 +51,7 @@ Template {
     TemplateSection {
         title: i18n.tr("ThinDivider")
         className: "ThinDivider"
+        documentation: "qml-ubuntu-components-listitems-%1.html".arg(className.toLowerCase())
 
         Column {
             anchors.left: parent.left

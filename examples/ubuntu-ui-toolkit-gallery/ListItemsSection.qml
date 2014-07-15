@@ -20,7 +20,7 @@ import Ubuntu.Components 0.1
 TemplateSection {
     id: section
     property alias delegate: repeater.delegate
-    documentation: "qml-ubuntu-components-listitems0-%1.html".arg(className.toLowerCase())
+    documentation: "qml-ubuntu-components-listitems-%1.html".arg(className.toLowerCase())
 
     Column {
         id: column
