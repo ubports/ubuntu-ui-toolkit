@@ -15,7 +15,7 @@ Tabs 0.1 Tabs.qml
 Label 0.1 Label.qml
 AbstractButton 0.1 AbstractButton.qml
 ActivityIndicator 0.1 ActivityIndicator.qml
-ProgressBar 0.1 ProgressBar.qml
+ProgressBar 0.1 ProgressBar10.qml
 TextField 0.1 TextField.qml
 TextArea 0.1 TextArea.qml
 Switch 0.1 Switch.qml
@@ -65,7 +65,7 @@ Tabs 1.0 Tabs.qml
 Label 1.0 Label.qml
 AbstractButton 1.0 AbstractButton.qml
 ActivityIndicator 1.0 ActivityIndicator.qml
-ProgressBar 1.0 ProgressBar.qml
+ProgressBar 1.0 ProgressBar10.qml
 TextField 1.0 TextField.qml
 TextArea 1.0 TextArea.qml
 Switch 1.0 Switch.qml
@@ -93,6 +93,7 @@ UbuntuListView 1.0 UbuntuListView.qml
 
 #version 1.1
 ComboButton 1.1 ComboButton.qml
+ProgressBar 1.1 ProgressBar11.qml
 CrossFadeImage 1.1 CrossFadeImage11.qml
 PullToRefresh 1.1 PullToRefresh.qml
 UbuntuListView 1.1 UbuntuListView11.qml
