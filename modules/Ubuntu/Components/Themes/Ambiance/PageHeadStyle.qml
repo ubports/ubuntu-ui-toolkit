@@ -41,26 +41,26 @@ Style.PageHeadStyle {
         }
         source: headerStyle.separatorSource
 
-        property var sectionsModel: styledItem.config.sections.model
+        property PageHeadSections sections: styledItem.config.sections
 
         Row {
             id: sectionsRow
             property int itemWidth: sectionsRow.width / sectionsRepeater.count
             anchors.fill: parent
-            enabled: styledItem.config.sections.enabled
+            enabled: separator.sections.enabled
+            visible: separator.sections.model !== undefined
             opacity: enabled ? 1.0 : 0.5
 
             Repeater {
                 id: sectionsRepeater
-                //                    visible: true
-                model: styledItem.config.sections.model
+                model: separator.sections.model
                 AbstractButton {
                     id: sectionButton
                     enabled: sectionsRow.enabled
                     width: sectionsRow.itemWidth
                     height: sectionsRow.height
-                    property bool selected: index === styledItem.config.sections.selectedIndex
-                    onClicked: styledItem.config.sections.selectedIndex = index;
+                    property bool selected: index === separator.sections.selectedIndex
+                    onClicked: separator.sections.selectedIndex = index;
 
                     Label {
                         text: modelData
