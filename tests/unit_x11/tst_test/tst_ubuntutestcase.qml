@@ -22,7 +22,7 @@ import Ubuntu.Components 1.0
 Rectangle {
  id: root
  width: 800
- height: 800
+ height: 1000
 
  Column {
      anchors.fill: parent
@@ -181,6 +181,7 @@ Rectangle {
         textField.forceActiveFocus();
         typeString("Hello Ubuntu");
         tryCompare(textField, "text", "Hello Ubuntu");
+    }
 
     SignalSpy {
         id: touchPressSpy
