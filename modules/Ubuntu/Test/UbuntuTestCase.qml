@@ -224,7 +224,7 @@ TestCase {
 		}
 	}
 
-	/* Convenience function to allow typing a full string instead of single characters */
+	/!* Convenience function to allow typing a full string instead of single characters */
 	function typeString(string) {
 		for (var i = 0; i < string.length; i++) {
 			keyClick(string[i]);
