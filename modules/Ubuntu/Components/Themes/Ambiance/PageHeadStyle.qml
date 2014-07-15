@@ -32,6 +32,10 @@ Style.PageHeadStyle {
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
 
+    // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
+    //  see also FIXME in AppHeader where this property is used.
+    property alias __sections_repeater_for_autopilot: sectionsRepeater
+
     BorderImage {
         id: separator
         anchors {
@@ -56,6 +60,7 @@ Style.PageHeadStyle {
                 model: separator.sections.model
                 AbstractButton {
                     id: sectionButton
+                    objectName: "section_button_" + index
                     enabled: sectionsRow.enabled
                     width: sectionsRow.itemWidth
                     height: sectionsRow.height

@@ -24,7 +24,7 @@ import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
 
-class HeaderTestCase(tests.QMLFileAppTestCase):
+class ActionsTestCase(tests.QMLFileAppTestCase):
 
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
@@ -41,7 +41,7 @@ class HeaderTestCase(tests.QMLFileAppTestCase):
     ]
 
     def setUp(self):
-        super(HeaderTestCase, self).setUp()
+        super(ActionsTestCase, self).setUp()
         self.header = self.main_view.get_header()
         self.label = self.app.select_single(
             'Label', objectName='clicked_label')
@@ -97,6 +97,27 @@ class HeaderTestCase(tests.QMLFileAppTestCase):
         # only three actions are visible
         self.assertEqual(overflow_button.visible, False)
 
+
+class SectionsTestCase(tests.QMLFileAppTestCase):
+
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_header.HeaderActionsTestCase.qml')
+
+    def setUp(self):
+        super(SectionsTestCase, self).setUp()
+        self.header = self.main_view.get_header()
+
+    def test_select_number_of_sections(self):
+        self.assertEqual(self.header.get_number_of_sections(), 3)
+
+    def test_select_section(self):
+        # initially, section 0 is selected
+        self.assertEqual(self.header.get_selected_section_index(), 0)
+        for index in [1, 0, 2]:
+            self.header.switch_to_section_by_index(index)
+            self.assertEqual(self.header.get_selected_section_index(), index)
 
 class CustomMainView(ubuntuuitoolkit.MainView):
     """Autopilot helper for a custom main view."""

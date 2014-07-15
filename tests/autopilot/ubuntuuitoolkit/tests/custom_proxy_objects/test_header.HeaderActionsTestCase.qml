@@ -108,6 +108,8 @@ MainView {
                     onTriggered: label.text = "Button 4 clicked."
                 }
             ]
+
+            sections.model: ["one", "two", "three"]
         }
     }
 }

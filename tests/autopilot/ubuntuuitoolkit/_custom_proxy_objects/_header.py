@@ -52,6 +52,39 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
         self.y.wait_for(0)
 
+    @autopilot_logging.log_action(logger.info)
+    def switch_to_section_by_index(self, index):
+        """Select a section in the header divider
+
+        :parameter index: The index of the section to select
+        :raise ToolkitEmulatorException: If the selection index is out of range or
+                useDeprecatedToolbar is set.
+
+        """
+        self._show_if_not_visible()
+
+        if self.useDeprecatedToolbar:
+            raise _common.ToolkitException('Old header has no sections')
+
+        try:
+            object_name = "section_button_" + str(index)
+            button = self.select_single(
+                'AbstractButton', objectName=object_name)
+        except dbus.StateNotFoundError:
+            raise _common.ToolkitException(
+                'Button for section with given index not found')
+
+        self.pointing_device.click_object(button)
+
+
+    def get_number_of_sections(self):
+        sectionsProperties = self.select_single('QQuickItem', objectName='sectionsProperties')
+        return sectionsProperties.count
+
+    def get_selected_section_index(self):
+        sectionsProperties = self.select_single('QQuickItem', objectName='sectionsProperties')
+        return sectionsProperties.selectedIndex
+
     def click_back_button(self):
         self._show_if_not_visible()
 
