@@ -284,6 +284,7 @@ Style.PageHeadStyle {
                             objectName: action.objectName + "_header_overflow_button"
                             showDivider: index !== overflowRepeater.count - 1
                             onClicked: actionsOverflowPopover.hide()
+                            iconFrame: false
                         }
                     }
                 }
