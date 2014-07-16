@@ -94,7 +94,8 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         :parameter index: The index of the tab to open.
         :return: The newly opened tab.
-        :raise ToolkitCustomProxyObjectException: If the tab index is out of range.
+        :raise ToolkitCustomProxyObjectException: If the tab index
+                is out of range.
 
         """
         if self.useDeprecatedToolbar:

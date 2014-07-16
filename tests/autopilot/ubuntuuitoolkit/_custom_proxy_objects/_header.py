@@ -124,8 +124,8 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         """Open a tab. This only supports the new tabs in the header
 
         :parameter index: The index of the tab to open.
-        :raise ToolkitCustomProxyObjectException: If the tab index is out of range or
-                useDeprecatedToolbar is set.
+        :raise ToolkitCustomProxyObjectException: If the tab index is out
+                of range or useDeprecatedToolbar is set.
 
         """
         self._show_if_not_visible()

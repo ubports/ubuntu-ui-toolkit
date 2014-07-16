@@ -23,6 +23,7 @@ from autopilot.input import Pointer
 from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
 
+import ubuntuuitoolkit
 from ubuntuuitoolkit import base, fixture_setup
 
 
@@ -87,7 +88,7 @@ MainView {
         application_name, _ = os.path.splitext(desktop_file_name)
         self.app = self.launch_upstart_application(
             application_name,
-            emulator_base=emulators.ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase)
+            emulator_base=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase)
 
 
 class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
