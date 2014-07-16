@@ -95,9 +95,10 @@ Item {
     BorderImage {
         id: shadow
         anchors.fill: parent
-        anchors.margins: square ? -units.gu(2) : -units.gu(0.5)
+        anchors.margins: square ? -units.gu(1) : -units.gu(0.5)
         anchors.topMargin: square ? 0 : anchors.margins
         source: !square ? "artwork/bubble_shadow.sci" : "artwork/header_overflow_dropshadow.sci"
+        opacity: 0.8
     }
 
     UbuntuShape {
