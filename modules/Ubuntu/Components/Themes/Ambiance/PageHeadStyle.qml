@@ -126,6 +126,7 @@ Style.PageHeadStyle {
                             visible: index !== styledItem.tabsModel.selectedIndex
                             text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
                             objectName: "tabButton" + index
+                            showDivider: index !== styledItem.tabsModel.count - 1
                             onClicked: {
                                 styledItem.tabsModel.selectedIndex = index;
                                 tabsPopover.hide();
@@ -276,10 +277,12 @@ Style.PageHeadStyle {
                         right: parent.right
                     }
                     Repeater {
+                        id: overflowRepeater
                         model: numberOfSlots.requested - numberOfSlots.used
                         ListItem.Standard {
                             action: actionsContainer.visibleActions[numberOfSlots.used + index]
                             objectName: action.objectName + "_header_overflow_button"
+                            showDivider: index !== overflowRepeater.count - 1
                             onClicked: actionsOverflowPopover.hide()
                         }
                     }
