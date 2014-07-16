@@ -18,6 +18,9 @@ import testtools
 from autopilot import input, platform
 
 from ubuntuuitoolkit import base
+import fixtures
+import logging
+from testtools.matchers import Contains
 
 
 class AppTestCase(base.UbuntuUIToolkitAppTestCase):
@@ -40,3 +43,13 @@ class TestUbuntuUIToolkitAppTestCase(testtools.TestCase):
         test = AppTestCase('_runTest')
         test.setUp()
         self.assertIs(test.input_device_class, input.Touch)
+
+    def test_import_toolkit_must_not_log_warning(self):
+        fake_logger = fixtures.FakeLogger(level=logging.WARNING)
+        self.useFixture(fake_logger)
+        self.assertFalse(
+            fake_logger.output,
+            Contains(
+                'The ubuntuuitoolkit.emulators module is deprecated. Import '
+                'the autopilot helpers from the top-level ubuntuuitoolkit '
+                'module.'))
