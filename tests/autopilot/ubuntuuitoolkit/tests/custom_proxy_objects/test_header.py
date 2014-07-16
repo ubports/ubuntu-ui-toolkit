@@ -103,7 +103,7 @@ class SectionsTestCase(tests.QMLFileAppTestCase):
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
     test_qml_file_path = os.path.join(
-        dir_path, 'test_header.HeaderActionsTestCase.qml')
+        dir_path, 'test_header.HeaderSectionsTestCase.qml')
 
     def setUp(self):
         super(SectionsTestCase, self).setUp()
