@@ -338,7 +338,7 @@ PageTreeNode {
         function connectToRepeaters(children) {
             for (var i = 0; i < children.length; i++) {
                 var child = children[i];
-                if (internal.isRepeater(child) && (internal.repeaters.indexOf(child) < 0)) {
+                if (internal.isRepeater(child) && internal.repeaters && (internal.repeaters.indexOf(child) < 0)) {
                     internal.connectRepeater(child);
                 }
             }
