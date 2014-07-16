@@ -94,7 +94,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def switch_to_next_tab(self):
         """Open the next tab.
 
-        :raise ToolkitCustomProxyObjectException: If the main view has no tabs.
+        :raise ToolkitException: If the main view has no tabs.
 
         """
         self._show_if_not_visible()
@@ -124,7 +124,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         """Open a tab. This only supports the new tabs in the header
 
         :parameter index: The index of the tab to open.
-        :raise ToolkitCustomProxyObjectException: If the tab index is out
+        :raise ToolkitException: If the tab index is out
                 of range or useDeprecatedToolbar is set.
 
         """
