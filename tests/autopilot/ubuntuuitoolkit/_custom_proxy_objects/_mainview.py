@@ -36,10 +36,10 @@ logger = logging.getLogger(__name__)
 
 
 class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
-    """MainView Autopilot emulator."""
+    """MainView Autopilot custom proxy object."""
 
     def get_header(self):
-        """Return the AppHeader emulator of the MainView."""
+        """Return the AppHeader custom proxy object of the MainView."""
         try:
             return self.select_single(
                 'AppHeader', objectName='MainView_Header')
@@ -47,7 +47,7 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
             raise _common.ToolkitException('The main view has no header.')
 
     def get_toolbar(self):
-        """Return the Toolbar emulator of the MainView."""
+        """Return the Toolbar custom proxy object of the MainView."""
         return self.select_single(_toolbar.Toolbar)
 
     @autopilot_logging.log_action(logger.info)
@@ -65,7 +65,7 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.get_toolbar().close()
 
     def get_tabs(self):
-        """Return the Tabs emulator of the MainView.
+        """Return the Tabs custom proxy object of the MainView.
 
         :raise ToolkitException: If the main view has no tabs.
 
@@ -94,7 +94,7 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         :parameter index: The index of the tab to open.
         :return: The newly opened tab.
-        :raise ToolkitEmulatorException: If the tab index is out of range.
+        :raise ToolkitCustomProxyObjectException: If the tab index is out of range.
 
         """
         if self.useDeprecatedToolbar:
@@ -115,7 +115,7 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 'Current tab index: {0}.'.format(tabs.selectedTabIndex))
             if number_of_switches >= number_of_tabs - 1:
                 # This prevents a loop. But if this error is ever raised, it's
-                # likely there's a bug on the emulator or on the QML Tab.
+                # likely there's a bug on the helper or on the QML Tab.
                 raise _common.ToolkitException(
                     'The tab with index {0} was not selected.'.format(index))
             current_tab = self.switch_to_next_tab()
@@ -165,7 +165,7 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
             'Tab with objectName "{0}" not found.'.format(object_name))
 
     def get_action_selection_popover(self, object_name):
-        """Return an ActionSelectionPopover emulator.
+        """Return an ActionSelectionPopover custom proxy object.
 
         :parameter object_name: The QML objectName property of the popover.
 

@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class ActionSelectionPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
-    """ActionSelectionPopover Autopilot emulator."""
+    """ActionSelectionPopover Autopilot custom proxy object."""
 
     def click_button_by_text(self, text):
         """Click a button on the popover.
@@ -62,7 +62,7 @@ class ActionSelectionPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
 
 class ComposerSheet(_common.UbuntuUIToolkitCustomProxyObjectBase):
-    """ComposerSheet Autopilot emulator."""
+    """ComposerSheet Autopilot custom proxy object."""
 
     def __init__(self, *args):
         super(ComposerSheet, self).__init__(*args)

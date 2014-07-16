@@ -23,7 +23,7 @@ from ubuntuuitoolkit._custom_proxy_objects import (
 
 
 class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
-    """TextField Autopilot emulator."""
+    """TextField Autopilot custom proxy object."""
 
     def __init__(self, *args):
         super(TextField, self).__init__(*args)

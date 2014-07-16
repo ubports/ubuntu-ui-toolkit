@@ -44,7 +44,7 @@ class DeprecatedSymbolsTestCase(testscenarios.TestWithScenarios):
     ]
 
     symbols_with_new_name = [
-        (ubuntuuitoolkit, 'ToolkitException', 'ToolkitEmulatorException'),
+        (ubuntuuitoolkit, 'ToolkitException', 'ToolkitCustomProxyObjectException'),
         (ubuntuuitoolkit, 'UbuntuUIToolkitCustomProxyObjectBase',
          'UbuntuUIToolkitEmulatorBase'),
         (popups, 'ActionSelectionPopover', 'ActionSelectionPopover'),
