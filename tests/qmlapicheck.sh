@@ -25,7 +25,7 @@ for i in $CPP; do
     # Silence spam on stderr due to fonts
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
-    qmlplugindump $i 0.1 modules 1>> plugins.qmltypes
+    ALARM_BACKEND=memory qmlplugindump $i 0.1 modules 1>> plugins.qmltypes
     test $? != 0 && ERRORS=1
 done
 test $ERRORS = 1 && echo Error: qmlplugindump failed && exit 1
