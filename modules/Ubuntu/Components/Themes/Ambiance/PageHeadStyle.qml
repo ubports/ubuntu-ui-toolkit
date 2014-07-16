@@ -289,6 +289,8 @@ Style.PageHeadStyle {
                             showDivider: index !== overflowRepeater.count - 1
                             onClicked: actionsOverflowPopover.hide()
                             iconFrame: false
+                            __iconWidth: units.gu(2)
+                            __iconHeight: units.gu(2)
                         }
                     }
                 }
