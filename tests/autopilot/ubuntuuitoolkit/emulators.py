@@ -51,8 +51,8 @@ __all__ = [
     'Tabs',
     'TextField',
     'Toolbar',
-    'ToolkitCustomProxyObjectException',
-    'UbuntuUIToolkitCustomProxyObjectBase',
+    'ToolkitEmulatorException',
+    'UbuntuUIToolkitEmulatorBase',
 ]
 
 
@@ -70,8 +70,8 @@ from ubuntuuitoolkit._custom_proxy_objects import (
     Tabs,
     TextField,
     Toolbar,
-    ToolkitException as ToolkitCustomProxyObjectException,
-    UbuntuUIToolkitCustomProxyObjectBase,
+    ToolkitException as ToolkitEmulatorException,
+    UbuntuUIToolkitCustomProxyObjectBase as UbuntuUIToolkitEmulatorBase,
 )
 from ubuntuuitoolkit._custom_proxy_objects.listitems import (
     Base,
