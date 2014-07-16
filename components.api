@@ -46,6 +46,12 @@ QtObject
     readonly property color coolGrey
     property Gradient orangeGradient
     property Gradient greyGradient
+    readonly property color lightGrey
+    readonly property color darkGrey
+    readonly property color red
+    readonly property color green
+    readonly property color blue
+    readonly property color purple
 ComboButton 1.1
 Button
     property bool expanded
@@ -398,6 +404,9 @@ AnimatedItem
     property real minimumValue
     property real maximumValue
     property real value
+ProgressBar 1.1
+ProgressBar
+    property bool showProgressPercentage
 PullToRefresh 1.1
 StyledItem
     readonly property bool releaseToRefresh

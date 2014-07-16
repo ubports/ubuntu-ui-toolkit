@@ -40,6 +40,7 @@ __all__ = [
     'TextField',
     'Toolbar',
     'ToolkitException',
+    'ubuntu_scenarios',
     'UbuntuListView11',
     'UbuntuUIToolkitCustomProxyObjectBase',
 ]
@@ -50,6 +51,7 @@ from ubuntuuitoolkit import (
     environment,
     fixture_setup,
     tests,
+    ubuntu_scenarios
 )
 from ubuntuuitoolkit._custom_proxy_objects import (
     AppHeader,

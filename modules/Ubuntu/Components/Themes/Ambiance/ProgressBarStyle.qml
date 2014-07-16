@@ -20,7 +20,7 @@ import Ubuntu.Components 1.1
 Item {
     id: progressBarStyle
 
-    property ProgressBar progressBar: styledItem
+    property var progressBar: styledItem
 
     implicitWidth: units.gu(38)
     implicitHeight: units.gu(4)
@@ -56,6 +56,7 @@ Item {
         color: Theme.palette.normal.baseText
         text: progressBar.indeterminate ? i18n.tr("In Progress")
               : "%1%".arg(Number(progressBarStyle.progress * 100.0).toFixed(0))
+        visible: !progressBar.hasOwnProperty("showProgressPercentage") || progressBar.showProgressPercentage
 
         SequentialAnimation on opacity {
             loops: Animation.Infinite
@@ -76,5 +77,6 @@ Item {
         rightColor: Theme.palette.normal.baseText
         progress: (progressBarStyle.progress * background.width - valueLabel.x) / valueLabel.width
         mirror: Qt.application.layoutDirection == Qt.RightToLeft
+        visible: !progressBar.hasOwnProperty("showProgressPercentage") || progressBar.showProgressPercentage
     }
 }
