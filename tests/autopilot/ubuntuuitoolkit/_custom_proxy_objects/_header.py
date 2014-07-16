@@ -77,10 +77,6 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.pointing_device.click_object(button)
 
 
-    def get_number_of_sections(self):
-        sectionsProperties = self.select_single('QQuickItem', objectName='sectionsProperties')
-        return sectionsProperties.count
-
     def get_selected_section_index(self):
         sectionsProperties = self.select_single('QQuickItem', objectName='sectionsProperties')
         return sectionsProperties.selectedIndex

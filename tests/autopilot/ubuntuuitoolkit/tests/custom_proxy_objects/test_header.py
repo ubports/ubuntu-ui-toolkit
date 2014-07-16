@@ -109,9 +109,6 @@ class SectionsTestCase(tests.QMLFileAppTestCase):
         super(SectionsTestCase, self).setUp()
         self.header = self.main_view.get_header()
 
-    def test_select_number_of_sections(self):
-        self.assertEqual(self.header.get_number_of_sections(), 3)
-
     def test_select_sections(self):
         # initially, section 0 is selected
         self.assertEqual(self.header.get_selected_section_index(), 0)
