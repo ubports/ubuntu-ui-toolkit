@@ -22,7 +22,7 @@ BubbleShape {
     target: styledItem.target
     direction: styledItem.direction
     clipContent: styledItem.clipContent
-    pointless: styledItem.pointless
+    square: styledItem.square
 
     onShowCompleted: styledItem.showCompleted()
     onHideCompleted: styledItem.hideCompleted()
