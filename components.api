@@ -407,6 +407,9 @@ AnimatedItem
     property real minimumValue
     property real maximumValue
     property real value
+ProgressBar 1.1
+ProgressBar
+    property bool showProgressPercentage
 PullToRefresh 1.1
 StyledItem
     readonly property bool releaseToRefresh

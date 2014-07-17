@@ -1,3 +1,10 @@
+ubuntu-ui-toolkit (0.1.49+14.10.20140715-0ubuntu1) utopic; urgency=low
+
+  [ Dimitri John Ledkov ]
+  * Build in parallel by default.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 15 Jul 2014 11:41:34 +0000
+
 ubuntu-ui-toolkit (0.1.49+14.10.20140710-0ubuntu1) utopic; urgency=low
 
   [ Florian Boucault ]
