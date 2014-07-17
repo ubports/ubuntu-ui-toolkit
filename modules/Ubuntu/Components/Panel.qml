@@ -625,6 +625,7 @@ Item {
 
     Item {
         id: bar
+        objectName: "bar_item"
         height: parent.height
         width: parent.width
         anchors {

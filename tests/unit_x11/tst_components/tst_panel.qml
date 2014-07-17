@@ -17,6 +17,7 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 1.1
+import Ubuntu.Test 1.0
 
 Item {
     width: 200
@@ -37,7 +38,7 @@ Item {
         }
     }
 
-    TestCase {
+    UbuntuTestCase {
         id: testCase
         name: "PanelAPI"
         when: windowShown
@@ -59,6 +60,21 @@ Item {
             compare(panel.align, Qt.AlignRight, "Can set align to right");
             panel.align = Qt.AlignBottom;
             compare(panel.align, Qt.AlignBottom, "Can set align to bottom");
+        }
+
+        function test_height() {
+            var bar = findChild(panel, "bar_item");
+            // panel is not opened
+            panel.height = 123;
+            compare(bar.y, 123, "Panel is properly closed after changing height");
+            panel.open(); wait(500);
+            compare(bar.y, 0, "Panel opens properly after changing height");
+            panel.height = 78;
+            compare(bar.y, 0, "Panel stays propery opened after changing height");
+            panel.close(); wait(500);
+            compare(bar.y, 78, "Panel closes properly after changing height");
+            panel.height = root.height / 2;
+            compare(bar.y, root.height/2, "Panel stays closed properly after changing height");
         }
 
         function test_opened() {
