@@ -133,10 +133,7 @@ StyledItem {
         // FIXME: This is a workaround to be able to get the properties of
         //  the sections in an autopilot test.
         objectName: "sectionsProperties"
-        property int count: __styleInstance.hasOwnProperty("__sections_repeater_for_autopilot") ?
-                                __styleInstance.__sections_repeater_for_autopilot.count : 0
         property int selectedIndex: header.config ? header.config.sections.selectedIndex : -1
-        property bool enabled: header.config ? header.config.sections.enabled : false
     }
 
     /*!
