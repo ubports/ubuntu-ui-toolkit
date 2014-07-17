@@ -58,6 +58,7 @@ Style.PageHeadStyle {
             Repeater {
                 id: sectionsRepeater
                 model: separator.sections.model
+                objectName: "page_head_sections_repeater"
                 AbstractButton {
                     id: sectionButton
                     objectName: "section_button_" + index
