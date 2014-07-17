@@ -96,7 +96,8 @@ Object {
     property Item contents: null
 
     /*!
-      TODO: document
+      \qmlproperty PageHeadSections sections
+      Defines the sections in the page header divider.
      */
     readonly property alias sections: headSections
     PageHeadSections {
