@@ -47,11 +47,11 @@ Item {
 
         function test_source() {
             icon.name = "search";
-            icon.source = "/usr/share/icons/ubuntu-mobile/status/scalable/search.svg";
+            icon.source = "/usr/share/icons/suru/actions/scalable/search.svg";
 
             var image = findChild(icon, "image");
             compare(image.source,
-                    "file:///usr/share/icons/ubuntu-mobile/status/scalable/search.svg",
+                    "file:///usr/share/icons/suru/actions/scalable/search.svg",
                     "Source of the image should equal icon.source.");
         }
     }
