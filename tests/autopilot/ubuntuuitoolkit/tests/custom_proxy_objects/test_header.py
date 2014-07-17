@@ -90,6 +90,7 @@ class HeaderTestCase(tests.QMLFileAppTestCase):
         self.assertEqual(overflow_button.visible, True)
 
         hide_actions_button = self.main_view.select_single(
+            'Button',
             objectName='hide_actions_button')
         self.pointing_device.click_object(hide_actions_button)
 

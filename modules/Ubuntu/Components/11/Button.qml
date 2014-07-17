@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 1.0
 
 /*
    Documentation in Button11.qdoc

@@ -70,13 +70,13 @@ class ComposerSheet(_common.UbuntuUIToolkitCustomProxyObjectBase):
     @autopilot_logging.log_action(logger.info)
     def confirm(self):
         """Confirm the composer sheet."""
-        button = self.select_single(objectName='confirmButton')
+        button = self.select_single('Button', objectName='confirmButton')
         self.pointing_device.click_object(button)
         self.wait_until_destroyed()
 
     @autopilot_logging.log_action(logger.info)
     def cancel(self):
         """Cancel the composer sheet."""
-        button = self.select_single(objectName='cancelButton')
+        button = self.select_single('Button', objectName='cancelButton')
         self.pointing_device.click_object(button)
         self.wait_until_destroyed()

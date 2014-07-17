@@ -73,7 +73,7 @@ MainView {
 
     def _open_popover(self):
         open_button = self.main_view.select_single(
-            objectName='open_popover')
+            'Button', objectName='open_popover')
         self.pointing_device.click_object(open_button)
 
     def test_click_unexisting_button(self):
@@ -146,7 +146,7 @@ MainView {
 
     def _open_composer_sheet(self):
         button = self.main_view.select_single(
-            objectName='openComposerSheetButton')
+            'Button', objectName='openComposerSheetButton')
         self.pointing_device.click_object(button)
 
     def _select_composer_sheet(self):

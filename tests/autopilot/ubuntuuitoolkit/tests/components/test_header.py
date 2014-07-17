@@ -78,6 +78,7 @@ class HeaderContentsTestCase(tests.QMLFileAppTestCase):
         self.assertEqual(label.text, 'Test title')
 
         pushButton = self.main_view.select_single(
+            'Button',
             objectName='push_button')
         self.pointing_device.move_to_object(pushButton)
         self.pointing_device.click()
@@ -90,6 +91,7 @@ class HeaderContentsTestCase(tests.QMLFileAppTestCase):
     def test_close_page_with_head_contents_must_revert_header(self):
         """Test that closing a page with head.contents reverts the header."""
         pushButton = self.main_view.select_single(
+            'Button',
             objectName='push_button')
         self.pointing_device.move_to_object(pushButton)
         self.pointing_device.click()
