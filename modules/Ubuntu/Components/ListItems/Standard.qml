@@ -116,14 +116,14 @@ Empty {
       \deprecated
       Width of the icon to be displayed
     */
-    property real __iconWidth: iconHelper.height
+    property real __iconWidth
 
     /*!
       \internal
       \deprecated
       Height of the icon to be displayed
     */
-    property real __iconHeight: Math.min(units.gu(5), listItem.height - units.gu(1))
+    property real __iconHeight
 
     /*!
       \internal
@@ -196,8 +196,8 @@ Empty {
     IconVisual {
         id: iconHelper
 
-        width: __iconWidth
-        height: __iconHeight
+        width: height
+        height: Math.min(units.gu(5), listItem.height - units.gu(1))
         anchors {
             left: parent.left
             leftMargin: listItem.__contentsMargins

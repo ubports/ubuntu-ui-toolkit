@@ -124,14 +124,32 @@ Style.PageHeadStyle {
                     }
                     Repeater {
                         model: styledItem.tabsModel
-                        ListItem.Standard {
-                            visible: index !== styledItem.tabsModel.selectedIndex
-                            text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
+                        AbstractButton {
                             objectName: "tabButton" + index
-                            showDivider: index !== styledItem.tabsModel.count - 1
                             onClicked: {
                                 styledItem.tabsModel.selectedIndex = index;
                                 tabsPopover.hide();
+                            }
+                            implicitHeight: units.gu(6) + bottomDividerLine.height
+                            width: parent ? parent.width : units.gu(31)
+
+                            Label {
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    verticalCenterOffset: units.dp(-1)
+                                    left: parent.left
+                                    leftMargin: units.gu(2)
+                                }
+                                fontSize: "medium"
+                                elide: Text.ElideRight
+                                text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
+                                color: '#5d5d5d'
+                            }
+
+                            ListItem.ThinDivider {
+                                id: bottomDividerLine
+                                anchors.bottom: parent.bottom
+                                visible: index !== styledItem.tabsModel.count
                             }
                         }
                     }
@@ -283,14 +301,45 @@ Style.PageHeadStyle {
                     Repeater {
                         id: overflowRepeater
                         model: numberOfSlots.requested - numberOfSlots.used
-                        ListItem.Standard {
+                        AbstractButton {
                             action: actionsContainer.visibleActions[numberOfSlots.used + index]
                             objectName: action.objectName + "_header_overflow_button"
-                            showDivider: index !== overflowRepeater.count - 1
                             onClicked: actionsOverflowPopover.hide()
-                            iconFrame: false
-                            __iconWidth: units.gu(2)
-                            __iconHeight: units.gu(2)
+                            implicitHeight: units.gu(6) + bottomDividerLine.height
+                            width: parent ? parent.width : units.gu(31)
+
+                            Icon {
+                                id: actionIcon
+                                name: action.iconName
+                                color: '#5d5d5d'
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    verticalCenterOffset: units.dp(-1)
+                                    left: parent.left
+                                    leftMargin: units.gu(2)
+                                }
+                                width: units.gu(2)
+                                height: units.gu(2)
+                            }
+
+                            Label {
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    verticalCenterOffset: units.dp(-1)
+                                    left: actionIcon.right
+                                    leftMargin: units.gu(2)
+                                }
+                                fontSize: "small"
+                                elide: Text.ElideRight
+                                text: action.text
+                                color: '#5d5d5d'
+                            }
+
+                            ListItem.ThinDivider {
+                                id: bottomDividerLine
+                                anchors.bottom: parent.bottom
+                                visible: index !== overflowRepeater.count - 1
+                            }
                         }
                     }
                 }
