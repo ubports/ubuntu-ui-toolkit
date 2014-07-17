@@ -41,7 +41,8 @@ if len(sys.argv) < 2 or '-h' in sys.argv or '--help' in sys.argv:
         '  package.\n'
         '\n'
         'Use the following command to see changes in the API:\n'
-        '  diff -Fqml -u components.api{,.new}\n' % (basename, basename), file=sys.stderr)
+        '  diff -Fqml -u components.api{,.new}\n' % (basename, basename),
+        file=sys.stderr)
     sys.exit(1)
 
 builtins = os.getenv('BUILTINS', '').split(',')
@@ -96,7 +97,8 @@ for line in fileinput.input(inputfiles, openhook=hook):
                         'prototype',
                         'exports']
         else:
-            print('Unknown filetype %s' % fileinput.filename(), file=sys.stderr)
+            print('Unknown filetype %s' % fileinput.filename(),
+                  file=sys.stderr)
             sys.exit(1)
         if fileinput.filename() in classes:
             classname = ' '.join(classes[fileinput.filename()])
@@ -188,7 +190,8 @@ for line in fileinput.input(inputfiles, openhook=hook):
                             del annotated_properties['internal']
                         if name not in annotated_properties:
                             print('    %s' % signature, file=sys.stderr)
-                            print('Error: Missing \\qmlproperty for %s' % name, file=sys.stderr)
+                            print('Error: Missing \\qmlproperty for %s' % name,
+                                  file=sys.stderr)
                             sys.exit(1)
                         real_type = annotated_properties[name]
                         signature = signature.replace('alias', real_type)
