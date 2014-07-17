@@ -37,7 +37,7 @@ QtObject {
     property bool enabled: true
 
     /*!
-      List of section names. Example:
+      List of strings that represent section names. Example:
       \qml
         import Ubuntu.Components 1.1
         import QtQuick 2.2
