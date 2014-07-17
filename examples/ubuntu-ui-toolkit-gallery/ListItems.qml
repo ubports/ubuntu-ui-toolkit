@@ -50,7 +50,7 @@ Template {
 
     TemplateSection {
         title: i18n.tr("ThinDivider")
-        className: "ThinDivider"
+        className: "ListItems-ThinDivider"
 
         Column {
             anchors.left: parent.left
@@ -213,7 +213,7 @@ Template {
 
     TemplateSection {
         title: i18n.tr("Grouped list")
-        className: "Header"
+        className: "ListItems-Header"
 
         Rectangle {
             color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
