@@ -114,8 +114,6 @@ Style.PageHeadStyle {
                 objectName: "tabsPopover"
                 parent: QuickUtils.rootItem(tabsPopover)
                 caller: tabsButton
-                // FIXME: How to get the real offset
-                callerMargin: -separator.height + units.gu(1.2)
                 Column {
                     anchors {
                         left: parent.left
@@ -272,8 +270,6 @@ Style.PageHeadStyle {
                 objectName: "actions_overflow_popover"
                 parent: QuickUtils.rootItem(actionsOverflowPopover)
                 caller: actionsOverflowButton
-                // FIXME: How to get the real offset
-                callerMargin: -separator.height + units.gu(1.2)
 
                 // Ensure the popover closes when actions change and
                 // the list item below may be destroyed before its
