@@ -78,6 +78,9 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
 
     def get_selected_section_index(self):
+        if self.useDeprecatedToolbar:
+            raise _common.ToolkitException('Old header has no sections')
+
         sectionsProperties = self.select_single('QQuickItem', objectName='sectionsProperties')
         return sectionsProperties.selectedIndex
 
