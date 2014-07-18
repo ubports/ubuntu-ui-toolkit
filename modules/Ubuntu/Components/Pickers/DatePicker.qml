@@ -248,7 +248,7 @@ StyledItem {
      */
     property date maximum: {
         var d = Date.prototype.midnight.call(new Date());
-        d.setFullYear(d.getFullYear() + 50);
+        d.setFullYear(d.getFullYear() + 15);
         return d;
     }
 
