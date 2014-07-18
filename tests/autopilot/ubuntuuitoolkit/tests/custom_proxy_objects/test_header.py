@@ -29,9 +29,9 @@ class ActionsTestCase(tests.QMLFileAppTestCase):
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
     tools_test_qml_file_path = os.path.join(
-        dir_path, 'test_header.HeaderToolsTestCase.qml')
+        dir_path, 'test_header.ToolsTestCase.qml')
     actions_test_qml_file_path = os.path.join(
-        dir_path, 'test_header.HeaderActionsTestCase.qml')
+        dir_path, 'test_header.ActionsTestCase.qml')
 
     scenarios = [
         ('deprecated tools',
@@ -103,10 +103,38 @@ class SectionsTestCase(tests.QMLFileAppTestCase):
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
     test_qml_file_path = os.path.join(
-        dir_path, 'test_header.HeaderSectionsTestCase.qml')
+        dir_path, 'test_header.SectionsTestCase.qml')
 
     def setUp(self):
         super(SectionsTestCase, self).setUp()
+        self.header = self.main_view.get_header()
+        # initially, section 0 is selected
+        self.assertEqual(self.header.get_selected_section_index(), 0)
+
+    def test_select_sections(self):
+        for index in [1, 0, 2]:
+            self.header.switch_to_section_by_index(index)
+            self.assertEqual(self.header.get_selected_section_index(), index)
+
+    def test_select_sections_with_sections_disabled(self):
+        sectionsEnabledSwitch = self.app.select_single('CheckBox',
+            objectName='sections_enabled_switch')
+        sectionsEnabledSwitch.uncheck()
+        for index in [1, 0, 2]:
+            self.header.switch_to_section_by_index(index)
+            # cannot change section by tapping the section name in divider
+            self.assertEqual(self.header.get_selected_section_index(), 0)
+
+
+class DeprecatedHeaderSectionsTestCase(tests.QMLFileAppTestCase):
+
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_header.DeprecatedHeaderSectionsTestCase.qml')
+
+    def setUp(self):
+        super(DeprecatedHeaderSectionsTestCase, self).setUp()
         self.header = self.main_view.get_header()
         # initially, section 0 is selected
         self.assertEqual(self.header.get_selected_section_index(), 0)
