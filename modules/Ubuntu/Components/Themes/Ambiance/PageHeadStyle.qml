@@ -114,6 +114,8 @@ Style.PageHeadStyle {
                 objectName: "tabsPopover"
                 parent: QuickUtils.rootItem(tabsPopover)
                 caller: tabsButton
+                contentWidth: units.gu(20)
+
                 Column {
                     anchors {
                         left: parent.left
@@ -270,6 +272,7 @@ Style.PageHeadStyle {
                 objectName: "actions_overflow_popover"
                 parent: QuickUtils.rootItem(actionsOverflowPopover)
                 caller: actionsOverflowButton
+                contentWidth: units.gu(20)
 
                 // Ensure the popover closes when actions change and
                 // the list item below may be destroyed before its
