@@ -57,8 +57,8 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         """Select a section in the header divider
 
         :parameter index: The index of the section to select
-        :raise ToolkitEmulatorException: If the selection index is out of range or
-                useDeprecatedToolbar is set.
+        :raise ToolkitEmulatorException: If the selection index is out of
+                range or useDeprecatedToolbar is set.
 
         """
         self._show_if_not_visible()
@@ -76,12 +76,12 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         self.pointing_device.click_object(button)
 
-
     def get_selected_section_index(self):
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException('Old header has no sections')
 
-        sectionsProperties = self.select_single('QQuickItem', objectName='sectionsProperties')
+        sectionsProperties = self.select_single(
+            'QQuickItem', objectName='sectionsProperties')
         return sectionsProperties.selectedIndex
 
     def click_back_button(self):

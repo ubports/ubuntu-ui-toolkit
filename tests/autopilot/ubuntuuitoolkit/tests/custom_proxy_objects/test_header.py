@@ -117,8 +117,8 @@ class SectionsTestCase(tests.QMLFileAppTestCase):
             self.assertEqual(self.header.get_selected_section_index(), index)
 
     def test_select_sections_with_sections_disabled(self):
-        sectionsEnabledSwitch = self.app.select_single('CheckBox',
-            objectName='sections_enabled_switch')
+        sectionsEnabledSwitch = self.app.select_single(
+            'CheckBox', objectName='sections_enabled_switch')
         sectionsEnabledSwitch.uncheck()
         for index in [1, 0, 2]:
             self.header.switch_to_section_by_index(index)
@@ -154,8 +154,8 @@ class DeprecatedHeaderSectionsTestCase(tests.QMLFileAppTestCase):
             'Old header has no sections')
 
     def test_select_sections_with_sections_disabled(self):
-        sectionsEnabledSwitch = self.app.select_single('CheckBox',
-            objectName='sections_enabled_switch')
+        sectionsEnabledSwitch = self.app.select_single(
+            'CheckBox', objectName='sections_enabled_switch')
         sectionsEnabledSwitch.uncheck()
         error = self.assertRaises(
             ubuntuuitoolkit.ToolkitException,
@@ -163,6 +163,7 @@ class DeprecatedHeaderSectionsTestCase(tests.QMLFileAppTestCase):
         self.assertEqual(
             str(error),
             'Old header has no sections')
+
 
 class CustomMainView(ubuntuuitoolkit.MainView):
     """Autopilot helper for a custom main view."""
