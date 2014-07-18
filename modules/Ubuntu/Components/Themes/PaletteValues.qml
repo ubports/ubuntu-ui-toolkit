@@ -69,4 +69,8 @@ QtObject {
        Typically used for labels and images.
     */
     property color fieldText
+    /*!
+       Color applied to selected text in editable components.
+    */
+    property color selection
 }

@@ -55,12 +55,13 @@ Item {
     // caretItem
     Image {
         id: caretItem
-        source: "artwork/teardrop-right.png"
+        source: "artwork/caret_noshadow.png"
         anchors {
-            top: parent.bottom
+            bottom: parent.top
             horizontalCenter: parent.horizontalCenter
             topMargin: -units.gu(0.5)
             horizontalCenterOffset: LayoutMirroring.enabled ? -(units.gu(0.7) - caretItem.width) : -units.gu(0.7)
         }
+        rotation: 180
     }
 }

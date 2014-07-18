@@ -55,7 +55,7 @@ Item {
     // caretItem
     Image {
         id: caretItem
-        source: "artwork/teardrop-left.png"
+        source: "artwork/caret_noshadow.png"
         anchors {
             top: parent.bottom
             horizontalCenter: parent.horizontalCenter
