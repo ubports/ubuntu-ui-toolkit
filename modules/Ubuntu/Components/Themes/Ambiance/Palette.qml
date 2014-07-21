@@ -22,7 +22,7 @@ Palette {
     normal: PaletteValues {
         background: "#EDEDED"
         backgroundText: "#81888888"
-        base: "#1A000000"
+        base: Qt.rgba(0, 0, 0, 0.1)
         baseText: UbuntuColors.lightGrey
         foreground: UbuntuColors.lightGrey
         foregroundText: "#F3F3E7"
