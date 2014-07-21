@@ -82,9 +82,11 @@ class FakeApplication(fixtures.Fixture):
         qml_file.close()
         return qml_file.name
 
-    def _named_temporary_file(self, dir=None, mode='w+t', delete=False, suffix=''):
+    def _named_temporary_file(self, dir=None, mode='w+t',
+                              delete=False, suffix=''):
         while True:
-            file = tempfile.NamedTemporaryFile(dir=dir, mode=mode, delete=delete, suffix=suffix)
+            file = tempfile.NamedTemporaryFile(dir=dir, mode=mode,
+                                               delete=delete, suffix=suffix)
             if '_' not in file.name:
                 break
         return file
@@ -93,7 +95,8 @@ class FakeApplication(fixtures.Fixture):
         desktop_file_dir = self._get_local_desktop_file_directory()
         if not os.path.exists(desktop_file_dir):
             os.makedirs(desktop_file_dir)
-        desktop_file = self._named_temporary_file(suffix='.desktop', dir=desktop_file_dir)
+        desktop_file = self._named_temporary_file(suffix='.desktop',
+                                                  dir=desktop_file_dir)
         self._desktop_file_dict['Exec'] = (
             self._desktop_file_dict['Exec'].format(
                 qmlscene=base.get_qmlscene_launch_command(),

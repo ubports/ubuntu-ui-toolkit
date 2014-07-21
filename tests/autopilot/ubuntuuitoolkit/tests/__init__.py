@@ -17,7 +17,6 @@
 """Ubuntu UI Toolkit autopilot tests."""
 
 import os
-import tempfile
 
 from autopilot.input import Pointer
 from autopilot.matchers import Eventually
