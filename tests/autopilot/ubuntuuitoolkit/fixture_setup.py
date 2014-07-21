@@ -89,6 +89,8 @@ class FakeApplication(fixtures.Fixture):
                                                delete=delete, suffix=suffix)
             if '_' not in file.name:
                 break
+            logger.debug('Discarding temporary filename %s with underscores' % file.name)
+            os.remove(file.name)
         return file
 
     def _write_test_desktop_file(self, qml_file_path):
