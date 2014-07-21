@@ -1,0 +1,77 @@
+/*
+ * Copyright 2014 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import QtQuick 2.2
+import QtTest 1.0
+import Ubuntu.Components 1.1
+import Ubuntu.Test 1.0
+
+UbuntuTestCase {
+    name: "PageHeadSectionsAPI"
+
+    MainView {
+        id: mainView
+        width: units.gu(50)
+        height: units.gu(80)
+
+        useDeprecatedToolbar: false
+
+        Page {
+            id: page
+            title: "Color test"
+            head {
+                actions: Action {
+                    iconName: "settings"
+                    text: "Settings"
+                }
+                backAction: Action {
+                    iconName: "cancel"
+                    text: "Cancel"
+                }
+            }
+        }
+    }
+
+    function initTestCase() {
+        compare(mainView.active, true, "MainView always active.");
+        compare(page.active, true, "Single page is active in MainView.");
+    }
+
+//    function test_number_of_sections() {
+//        var sectionsRepeater = findChild(mainView, "page_head_sections_repeater");
+//        compare(sectionsRepeater.count, 3, "Number of sections initialization failed.");
+//        page.head.sections.model = ["one"]
+//        compare(sectionsRepeater.count, 1, "Number of sections not updated.");
+//        page.head.sections.model = ["one", "two", "three"];
+//        compare(sectionsRepeater.count, 3, "Number of sections reverted.");
+//    }
+
+    function test_back_button_color() {
+
+    }
+
+    function test_custom_back_button_color() {
+
+    }
+
+    function test_action_button_color() {
+
+    }
+
+    function test_actions_overflow_button_color() {
+
+    }
+}
