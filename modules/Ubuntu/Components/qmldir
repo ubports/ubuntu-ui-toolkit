@@ -100,4 +100,5 @@ UbuntuListView 1.1 UbuntuListView11.qml
 internal PageBase Page10.qml
 Page 1.1 Page11.qml
 PageHeadConfiguration 1.1 PageHeadConfiguration.qml
+PageHeadSections 1.1 PageHeadSections.qml
 PageHeadState 1.1 PageHeadState.qml

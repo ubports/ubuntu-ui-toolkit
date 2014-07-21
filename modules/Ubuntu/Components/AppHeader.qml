@@ -129,6 +129,12 @@ StyledItem {
         property int count: tabsModel ? tabsModel.count : 0
         property int selectedIndex: tabsModel ? tabsModel.selectedIndex : -1
     }
+    Item {
+        // FIXME: This is a workaround to be able to get the properties of
+        //  the sections in an autopilot test.
+        objectName: "sectionsProperties"
+        property int selectedIndex: header.config ? header.config.sections.selectedIndex : -1
+    }
 
     /*!
       The flickable that controls the movement of the header.
