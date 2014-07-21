@@ -26,7 +26,8 @@ Style.PageHeadStyle {
     separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
     fontWeight: Font.Light
     fontSize: "x-large"
-    textColor: Theme.palette.selected.backgroundText
+//    textColor: Theme.palette.selected.backgroundText
+    textColor: styledItem.config.foregroundColor
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
