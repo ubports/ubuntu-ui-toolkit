@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import QtQuick 2.0
+import QtQuick 2.2
 import Ubuntu.Components 1.1
 import Ubuntu.Components.Popups 1.0
 import Ubuntu.Components.ListItems 1.0 as ListItem
@@ -32,6 +32,10 @@ Style.PageHeadStyle {
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
 
+    // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
+    //  see also FIXME in AppHeader where this property is used.
+    property alias __sections_repeater_for_autopilot: sectionsRepeater
+
     BorderImage {
         id: separator
         anchors {
@@ -40,6 +44,42 @@ Style.PageHeadStyle {
             right: parent.right
         }
         source: headerStyle.separatorSource
+
+        property PageHeadSections sections: styledItem.config.sections
+
+        Row {
+            id: sectionsRow
+            property int itemWidth: sectionsRow.width / sectionsRepeater.count
+            anchors.fill: parent
+            enabled: separator.sections.enabled
+            visible: separator.sections.model !== undefined
+            opacity: enabled ? 1.0 : 0.5
+
+            Repeater {
+                id: sectionsRepeater
+                model: separator.sections.model
+                objectName: "page_head_sections_repeater"
+                AbstractButton {
+                    id: sectionButton
+                    objectName: "section_button_" + index
+                    enabled: sectionsRow.enabled
+                    width: sectionsRow.itemWidth
+                    height: sectionsRow.height
+                    property bool selected: index === separator.sections.selectedIndex
+                    onClicked: separator.sections.selectedIndex = index;
+
+                    Label {
+                        text: modelData
+                        fontSize: "small"
+                        anchors.fill: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        color: sectionButton.selected ?
+                                   Theme.palette.normal.backgroundText :
+                                   Theme.palette.selected.backgroundText
+                    }
+                }
+            }
+        }
     }
     Image {
         id: separatorBottom

@@ -387,7 +387,8 @@ PageTreeNode {
             config: internal.activePage && internal.activePage.hasOwnProperty("head") &&
                     (internal.activePage.head.actions.length > 0 ||
                      internal.activePage.head.backAction !== null ||
-                     internal.activePage.head.contents !== null) ?
+                     internal.activePage.head.contents !== null ||
+                     internal.activePage.head.sections.model !== undefined) ?
                         internal.activePage.head : headerConfig
 
             property Item tabBar: null
