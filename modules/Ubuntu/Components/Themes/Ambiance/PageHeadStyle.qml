@@ -110,6 +110,7 @@ Style.PageHeadStyle {
             visible: null !== styledItem.config.backAction &&
                      styledItem.config.backAction.visible
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
+            property color color: styledItem.config.foregroundColor
         }
 
         AbstractButton {
@@ -126,6 +127,7 @@ Style.PageHeadStyle {
 
             text: "back"
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
+            property color color: styledItem.config.foregroundColor
 
             onTriggered: {
                 styledItem.pageStack.pop();
@@ -145,6 +147,7 @@ Style.PageHeadStyle {
                      !customBackButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", tabsButton)
+            property color color: styledItem.config.foregroundColor
 
             onTriggered: {
                 tabsPopover.show();
@@ -272,6 +275,7 @@ Style.PageHeadStyle {
                 objectName: action.objectName + "_header_button"
                 action: actionsContainer.visibleActions[index]
                 style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionButton)
+                property color color: styledItem.config.foregroundColor
                 width: units.gu(5)
                 height: actionsContainer.height
             }

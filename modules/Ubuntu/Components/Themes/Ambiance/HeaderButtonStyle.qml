@@ -26,7 +26,7 @@ Item {
     width: units.gu(5)
     height: units.gu(5)
 
-    Image {
+    Icon {
         id: icon
         anchors {
             centerIn: parent
@@ -35,9 +35,7 @@ Item {
         height: visuals.iconWidth
         source: styledItem.iconSource
         opacity: styledItem.enabled ? 1.0 : 0.3
-        sourceSize {
-            width: width
-            height: height
-        }
+
+        color: styledItem.hasOwnProperty("color") ? styledItem.color : Qt.rgba(0, 0, 0, 0)
     }
 }
