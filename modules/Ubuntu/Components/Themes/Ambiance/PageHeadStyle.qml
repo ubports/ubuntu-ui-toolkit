@@ -114,6 +114,7 @@ Style.PageHeadStyle {
                 objectName: "tabsPopover"
                 parent: QuickUtils.rootItem(tabsPopover)
                 caller: tabsButton
+                callerMargin: -units.gu(1) + units.dp(4)
                 contentWidth: units.gu(20)
 
                 Column {
@@ -272,6 +273,7 @@ Style.PageHeadStyle {
                 objectName: "actions_overflow_popover"
                 parent: QuickUtils.rootItem(actionsOverflowPopover)
                 caller: actionsOverflowButton
+                callerMargin: -units.gu(1) + units.dp(4)
                 contentWidth: units.gu(20)
 
                 // Ensure the popover closes when actions change and
