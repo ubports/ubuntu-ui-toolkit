@@ -23,7 +23,7 @@ import os
 
 if len(sys.argv) < 2 or '-h' in sys.argv or '--help' in sys.argv:
     basename = os.path.basename(sys.argv[0])
-    print (
+    sys.exit(
         'Usage:\n  env BUILTINS=foo,bar %s FILENAME [FILENAME2..N]\n\n'
         '  Generate a QML API file\n'
         'Example:\n'
@@ -42,7 +42,6 @@ if len(sys.argv) < 2 or '-h' in sys.argv or '--help' in sys.argv:
         '\n'
         'Use the following command to see changes in the API:\n'
         '  diff -Fqml -u components.api{,.new}\n' % (basename, basename))
-    sys.exit(1)
 
 builtins = os.getenv('BUILTINS', '').split(',')
 inputfiles = []
@@ -96,8 +95,7 @@ for line in fileinput.input(inputfiles, openhook=hook):
                         'prototype',
                         'exports']
         else:
-            print('Unknown filetype %s' % fileinput.filename())
-            sys.exit(1)
+            sys.exit('Unknown filetype %s' % fileinput.filename())
         if fileinput.filename() in classes:
             classname = ' '.join(classes[fileinput.filename()])
         else:
@@ -187,9 +185,9 @@ for line in fileinput.input(inputfiles, openhook=hook):
                                 annotated_properties[name] = 'internal'
                             del annotated_properties['internal']
                         if name not in annotated_properties:
-                            print('    %s' % (signature))
-                            print('Error: Missing \\qmlproperty for %s' % name)
-                            sys.exit(1)
+                            sys.exit(
+                                '    %s\nError: Missing \\qmlproperty for %s'
+                                % (signature, name))
                         real_type = annotated_properties[name]
                         signature = signature.replace('alias', real_type)
                 elif filetype == 'qmltypes':
