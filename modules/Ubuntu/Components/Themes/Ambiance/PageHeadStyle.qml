@@ -56,6 +56,7 @@ Style.PageHeadStyle {
         anchors {
             left: parent.left
             top: parent.top
+            leftMargin: width > 0 ? units.gu(1) : 0
         }
         width: childrenRect.width
         height: headerStyle.contentHeight
@@ -220,7 +221,7 @@ Style.PageHeadStyle {
         anchors {
             top: parent.top
             right: parent.right
-            rightMargin: units.gu(2)
+            rightMargin: units.gu(1)
         }
         width: childrenRect.width
         height: headerStyle.contentHeight
