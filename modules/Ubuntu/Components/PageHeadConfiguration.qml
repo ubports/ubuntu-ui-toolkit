@@ -108,10 +108,4 @@ Object {
       The color of the text and icons
      */
     property color foregroundColor: Theme.palette.selected.backgroundText
-
-    /*!
-      The background color of the header. Set to transparent by default,
-      so that the background color of the \l MainView is visible.
-     */
-    property color backgroundColor: "transparent"
 }
