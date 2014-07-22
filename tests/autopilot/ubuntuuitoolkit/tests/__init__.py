@@ -17,6 +17,7 @@
 """Ubuntu UI Toolkit autopilot tests."""
 
 import os
+import tempfile
 
 from autopilot.input import Pointer
 from autopilot.matchers import Eventually
@@ -38,8 +39,12 @@ def _write_test_desktop_file():
     desktop_file_dir = get_local_desktop_file_directory()
     if not os.path.exists(desktop_file_dir):
         os.makedirs(desktop_file_dir)
-    desktop_file = fixture_setup._named_temporary_file(
-        suffix='.desktop', dir=desktop_file_dir)
+    # Strip underscores which look like an APP_ID to Unity
+    # See https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1329141
+    chars = tempfile._RandomNameSequence.characters.strip("_")
+    tempfile._RandomNameSequence.characters = chars
+    desktop_file = tempfile.NamedTemporaryFile(
+        suffix='.desktop', dir=desktop_file_dir, delete=False)
     desktop_file.write(_DESKTOP_FILE_CONTENTS.encode('utf-8'))
     desktop_file.close()
     return desktop_file.name

@@ -84,14 +84,12 @@ class FakeApplication(fixtures.Fixture):
 
     def _named_temporary_file(self, dir=None, mode='w+t',
                               delete=False, suffix=''):
-        while True:
-            file = tempfile.NamedTemporaryFile(dir=dir, mode=mode,
-                                               delete=delete, suffix=suffix)
-            if '_' not in file.name:
-                break
-            logger.debug('Discarding temporary filename %s with underscores' % file.name)
-            os.remove(file.name)
-        return file
+        # Discard files with underscores which look like an APP_ID to Unity
+        # See https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1329141
+        chars = tempfile._RandomNameSequence.characters.strip("_")
+        tempfile._RandomNameSequence.characters = chars
+        return tempfile.NamedTemporaryFile(dir=dir, mode=mode,
+                                           delete=delete, suffix=suffix)
 
     def _write_test_desktop_file(self, qml_file_path):
         desktop_file_dir = self._get_local_desktop_file_directory()
