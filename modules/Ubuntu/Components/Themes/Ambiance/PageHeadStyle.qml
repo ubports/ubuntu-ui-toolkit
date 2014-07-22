@@ -272,7 +272,6 @@ Style.PageHeadStyle {
             visible: numberOfSlots.requested > numberOfSlots.right
             iconName: "contextual-menu"
             width: visible ? units.gu(5) : 0
-//            style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionsOverflowButton)
             height: actionsContainer.height
             onTriggered: actionsOverflowPopover.show()
 
