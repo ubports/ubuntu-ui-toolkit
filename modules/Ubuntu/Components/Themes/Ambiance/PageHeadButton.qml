@@ -38,9 +38,5 @@ AbstractButton {
         source: button.iconSource
         color: Qt.rgba(0, 0, 0, 0)
         opacity: button.enabled ? 1.0 : 0.3
-        sourceSize {
-            width: icon.width
-            height: icon.height
-        }
     }
 }
