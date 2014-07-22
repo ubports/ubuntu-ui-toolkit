@@ -56,23 +56,21 @@ Template {
             spacing: units.gu(2)
 
             Icon {
-                name: "computer-symbolic"
+                name: "stock_alarm-clock"
                 width: 24
                 height: 24
             }
 
             Icon {
-                name: "computer-symbolic"
+                name: "stock_alarm-clock"
                 color: UbuntuColors.orange
-                keyColor: "#bebebe"
                 width: 24
                 height: 24
             }
 
             Icon {
-                name: "computer-symbolic"
+                name: "stock_alarm-clock"
                 color: UbuntuColors.lightAubergine
-                keyColor: "#bebebe"
                 width: 24
                 height: 24
             }
