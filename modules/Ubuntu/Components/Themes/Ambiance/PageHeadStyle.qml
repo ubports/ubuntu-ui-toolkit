@@ -96,27 +96,23 @@ Style.PageHeadStyle {
         anchors {
             left: parent.left
             top: parent.top
+            leftMargin: width > 0 ? units.gu(1) : 0
         }
         width: childrenRect.width
         height: headerStyle.contentHeight
 
-        AbstractButton {
+        PageHeadButton {
             id: customBackButton
             objectName: "customBackButton"
-            height: parent ? parent.height : undefined
-            width: visible ? units.gu(5) : 0
             action: styledItem.config.backAction
             visible: null !== styledItem.config.backAction &&
                      styledItem.config.backAction.visible
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
-            property color color: styledItem.config.foregroundColor
+            color: styledItem.config.foregroundColor
         }
 
-        AbstractButton {
+        PageHeadButton {
             id: backButton
             objectName: "backButton"
-            height: parent ? parent.height : undefined
-            width: visible ? units.gu(5) : 0
 
             iconName: "back"
             visible: styledItem.pageStack !== null &&
@@ -125,19 +121,16 @@ Style.PageHeadStyle {
                      !customBackButton.visible
 
             text: "back"
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
-            property color color: styledItem.config.foregroundColor
+            color: styledItem.config.foregroundColor
 
             onTriggered: {
                 styledItem.pageStack.pop();
             }
         }
 
-        AbstractButton {
+        PageHeadButton {
             id: tabsButton
             objectName: "tabsButton"
-            height: parent ? parent.height : undefined
-            width: visible ? units.gu(5) : 0
 
             iconName: "navigation-menu"
             visible: styledItem.tabsModel !== null &&
@@ -145,8 +138,7 @@ Style.PageHeadStyle {
                      !backButton.visible &&
                      !customBackButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", tabsButton)
-            property color color: styledItem.config.foregroundColor
+            color: styledItem.config.foregroundColor
 
             onTriggered: {
                 tabsPopover.show();
@@ -263,32 +255,27 @@ Style.PageHeadStyle {
         anchors {
             top: parent.top
             right: parent.right
+            rightMargin: units.gu(1)
         }
         width: childrenRect.width
         height: headerStyle.contentHeight
 
         Repeater {
             model: numberOfSlots.used
-            AbstractButton {
+            PageHeadButton {
                 id: actionButton
                 objectName: action.objectName + "_header_button"
                 action: actionsContainer.visibleActions[index]
-                style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionButton)
-                property color color: styledItem.config.foregroundColor
-                width: units.gu(5)
-                height: actionsContainer.height
+                color: styledItem.config.foregroundColor
             }
         }
 
-        AbstractButton {
+        PageHeadButton {
             id: actionsOverflowButton
             objectName: "actions_overflow_button"
             visible: numberOfSlots.requested > numberOfSlots.right
             iconName: "contextual-menu"
-            width: visible ? units.gu(5) : 0
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionsOverflowButton)
-            property color color: styledItem.config.foregroundColor
-            height: actionsContainer.height
+            color: styledItem.config.foregroundColor
             onTriggered: actionsOverflowPopover.show()
 
             Popover {
