@@ -16,6 +16,51 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 1.0
+/*!
+    \qmltype Button
+    \inqmlmodule Ubuntu.Components 1.1
+    \ingroup ubuntu
+    \brief Standard Ubuntu button.
+
+    \l {http://design.ubuntu.com/apps/building-blocks/buttons}{See also the Design Guidelines on Buttons}.
+
+    Examples:
+    \qml
+        Column {
+            Button {
+                text: "Send"
+                onClicked: print("clicked text-only Button")
+            }
+            Button {
+                iconName: "compose"
+                gradient: UbuntuColors.greyGradient
+                onClicked: print("clicked icon-only Button")
+            }
+            Button {
+                iconName: "compose"
+                text: "Icon on left"
+                iconPosition: "left"
+                onClicked: print("clicked text and icon Button")
+            }
+        }
+    \endqml
+    An \l Action can be used to specify \b clicked, iconSource and text. Example:
+    \qml
+        Item {
+            Action {
+                id: action1
+                text: "Click me"
+                onTriggered: print("action!")
+                iconName: "compose"
+            }
+            Button {
+                anchors.centerIn: parent
+                action: action1
+                color: UbuntuColors.warmGrey
+            }
+       }
+    \endqml
+*/
 
 /*
    Documentation in Button11.qdoc
