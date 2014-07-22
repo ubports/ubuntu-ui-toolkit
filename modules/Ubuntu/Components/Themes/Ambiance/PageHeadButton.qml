@@ -14,10 +14,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.2
 import Ubuntu.Components 1.1
 
-Item {
+//Item {
+AbstractButton {
     id: visuals
     // styling properties
     property int iconWidth: units.gu(3)
@@ -33,8 +34,8 @@ Item {
         }
         width: visuals.iconWidth
         height: visuals.iconWidth
-        source: styledItem.iconSource
-        opacity: styledItem.enabled ? 1.0 : 0.3
+        source: visuals.iconSource
+        opacity: visuals.enabled ? 1.0 : 0.3
         sourceSize {
             width: width
             height: height
