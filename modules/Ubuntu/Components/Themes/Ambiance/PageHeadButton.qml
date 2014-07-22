@@ -17,28 +17,27 @@
 import QtQuick 2.2
 import Ubuntu.Components 1.1
 
-//Item {
 AbstractButton {
-    id: visuals
-    // styling properties
-    property int iconWidth: units.gu(3)
-    property int iconHeight: units.gu(3)
+    id: button
 
-    width: units.gu(5)
-    height: units.gu(5)
+    property int iconWidth: units.gu(3)
+    property int iconHeight: iconWidth
+
+    width: visible ? units.gu(5) : 0
+    height: parent ? parent.height : undefined
 
     Image {
         id: icon
         anchors {
             centerIn: parent
         }
-        width: visuals.iconWidth
-        height: visuals.iconWidth
-        source: visuals.iconSource
-        opacity: visuals.enabled ? 1.0 : 0.3
+        width: button.iconWidth
+        height: button.iconHeight
+        source: button.iconSource
+        opacity: button.enabled ? 1.0 : 0.3
         sourceSize {
-            width: width
-            height: height
+            width: icon.width
+            height: icon.height
         }
     }
 }
