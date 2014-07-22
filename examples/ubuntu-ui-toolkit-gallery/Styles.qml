@@ -28,7 +28,7 @@ Template {
     }
 
     OptionSelector {
-        model: [ i18n.tr('Header with Toolbar'), i18n.tr('New Style Header') ]
+        model: [ i18n.tr('New Style Header'), i18n.tr('Header with Toolbar') ]
         expanded: true
         onSelectedIndexChanged: gallery.useDeprecatedToolbar = (selectedIndex == 0)
     }
