@@ -15,12 +15,12 @@
  */
 
 import QtQuick 2.2
-import QtTest 1.0
 import Ubuntu.Components 1.1
 import Ubuntu.Test 1.0
 
 UbuntuTestCase {
     name: "PageHeadSectionsAPI"
+    id: testCase
 
     MainView {
         id: mainView
@@ -34,6 +34,7 @@ UbuntuTestCase {
             title: "Color test"
             head {
                 actions: Action {
+                    objectName: "example_action"
                     iconName: "settings"
                     text: "Settings"
                 }
@@ -45,33 +46,51 @@ UbuntuTestCase {
         }
     }
 
+    property var header
     function initTestCase() {
         compare(mainView.active, true, "MainView always active.");
         compare(page.active, true, "Single page is active in MainView.");
+        testCase.header = findChild(mainView, "MainView_Header");
     }
 
-//    function test_number_of_sections() {
-//        var sectionsRepeater = findChild(mainView, "page_head_sections_repeater");
-//        compare(sectionsRepeater.count, 3, "Number of sections initialization failed.");
-//        page.head.sections.model = ["one"]
-//        compare(sectionsRepeater.count, 1, "Number of sections not updated.");
-//        page.head.sections.model = ["one", "two", "three"];
-//        compare(sectionsRepeater.count, 3, "Number of sections reverted.");
-//    }
-
-    function test_back_button_color() {
-
+    function get_back_button() {
+        return findChild(testCase.header, "backButton");
     }
 
-    function test_custom_back_button_color() {
-
+    function get_custom_back_button() {
+        return findChild(testCase.header, "customBackButton");
     }
 
-    function test_action_button_color() {
-
+    function get_action_button(actionName) {
+        return findChild(testCase.header, actionName + "_header_button");
     }
 
-    function test_actions_overflow_button_color() {
+    function get_actions_overflow_button() {
+        return findChild(testCase.header, "actions_overflow_button");
+    }
 
+    function get_tabs_button() {
+        return findChild(testCase.header, "tabsButton");
+    }
+
+    function get_title_label() {
+        return findChild(testCase.header, "header_title_label");
+    }
+
+    function test_title_color() {
+        var title = get_title_label();
+        var test_color = "#123456";
+        page.head.foregroundColor = test_color;
+        compare(title.color, test_color, "Page head foreground color does not set title color.");
+    }
+
+    function test_button_colors() {
+        var test_color = "#654321";
+        page.head.foregroundColor = test_color;
+        compare(get_back_button().color, test_color, "Back button color does not match header foreground color.");
+        compare(get_custom_back_button().color, test_color, "Custom back button color does not match header foreground color.");
+        compare(get_actions_overflow_button().color, test_color, "Actions overflow button color does not match header foreground color.");
+        compare(get_tabs_button().color, test_color, "Tabs button color does not match header foreground color.");
+        compare(get_action_button("example_action").color, test_color, "Action button color does not match header foreground color.");
     }
 }

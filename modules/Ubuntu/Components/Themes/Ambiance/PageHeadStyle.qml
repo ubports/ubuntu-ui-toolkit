@@ -287,6 +287,7 @@ Style.PageHeadStyle {
             iconName: "contextual-menu"
             width: visible ? units.gu(5) : 0
             style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionsOverflowButton)
+            property color color: styledItem.config.foregroundColor
             height: actionsContainer.height
             onTriggered: actionsOverflowPopover.show()
 
