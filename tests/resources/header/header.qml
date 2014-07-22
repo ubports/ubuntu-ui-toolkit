@@ -37,14 +37,21 @@ MainView {
                         text: "Click me"
                         onTriggered: stack.push(pageOnStack)
                     }
-                    tools: ToolbarItems {
-                        ToolbarButton {
-                            action: Action {
-                                iconName: "settings"
-                                text: "Settings"
-                            }
+                    head {
+                        actions: Action {
+                            iconName: "settings"
+                            text: "Settings"
                         }
                     }
+
+//                    tools: ToolbarItems {
+//                        ToolbarButton {
+//                            action: Action {
+//                                iconName: "settings"
+//                                text: "Settings"
+//                            }
+//                        }
+//                    }
                 }
             }
             Tab {
@@ -207,12 +214,10 @@ MainView {
             anchors.centerIn: parent
             text: "Use back button to return"
         }
-        tools: ToolbarItems {
-            ToolbarButton {
-                action: Action {
-                    iconName: "settings"
-                    text: "settings"
-                }
+        head {
+            actions: Action {
+                iconName: "settings"
+                text: "settings"
             }
         }
     }
