@@ -150,7 +150,7 @@ Style.PageHeadStyle {
                             ListItem.ThinDivider {
                                 id: bottomDividerLine
                                 anchors.bottom: parent.bottom
-                                visible: index !== styledItem.tabsModel.count
+                                visible: index < styledItem.tabsModel.count - 1
                             }
                         }
                     }
