@@ -103,7 +103,8 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             raise _common.ToolkitException(
                 'Old header has no custom back button')
         try:
-            custom_back_button = self.select_single(objectName='customBackButton')
+            custom_back_button = self.select_single(
+                objectName='customBackButton')
         except dbus.StateNotFoundError:
             raise _common.ToolkitException(
                 'Missing custom back button in header')
