@@ -63,7 +63,7 @@ Style.PageHeadStyle {
                     id: sectionButton
                     objectName: "section_button_" + index
                     enabled: sectionsRow.enabled
-                    width: sectionsRow.itemWidth
+                    width: units.gu(10) //sectionsRow.itemWidth
                     height: sectionsRow.height
                     property bool selected: index === separator.sections.selectedIndex
                     onClicked: separator.sections.selectedIndex = index;
@@ -74,8 +74,8 @@ Style.PageHeadStyle {
                         anchors.fill: parent
                         horizontalAlignment: Text.AlignHCenter
                         color: sectionButton.selected ?
-                                   Theme.palette.normal.backgroundText :
-                                   Theme.palette.selected.backgroundText
+                                   UbuntuColors.orange :
+                                   UbuntuColors.darkGrey
                     }
                 }
             }
