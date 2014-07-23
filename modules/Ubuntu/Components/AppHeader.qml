@@ -37,6 +37,11 @@ StyledItem {
      */
     property bool animate: true
 
+    /*!
+      Animate changing to new title/actions inside the header.
+     */
+    property bool animateContents: false
+
     Behavior on y {
         enabled: animate && !(header.flickable && header.flickable.moving)
         SmoothedAnimation {

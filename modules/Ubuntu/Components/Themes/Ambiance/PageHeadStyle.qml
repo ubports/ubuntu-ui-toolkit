@@ -32,92 +32,105 @@ Style.PageHeadStyle {
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
 
-    property PageHeadConfiguration config
-    property string title
-
     Component.onCompleted: {
-        headerStyle.config = styledItem.config;
-        headerStyle.title = styledItem.title;
+        buffer.config = styledItem.config;
+        buffer.title = styledItem.title;
     }
 
-    // Calling changeAnimation.start() a second time has no effect,
-    // so below we call it whenever something changes.
-    Connections {
-        target: styledItem
-        onConfigChanged: changeAnimation.start()
-        onTitleChanged: changeAnimation.start()
-    }
+    Object {
+        id: buffer
 
-    SequentialAnimation {
-        id: changeAnimation
-        ParallelAnimation {
-            UbuntuNumberAnimation {
-                target: foreground
-                property: "opacity"
-                from: 1.0
-                to: 0.0
-            }
-            UbuntuNumberAnimation {
-                target: leftButtonContainer
-                property: "opacity"
-                from: 1.0
-                to: 0.0
-            }
-            UbuntuNumberAnimation {
-                target: actionsContainer
-                property: "opacity"
-                from: 1.0
-                to: 0.0
-            }
-            UbuntuNumberAnimation {
-                target: leftAnchor
-                properties: "x"
-                from: 0.0
-                to: -units.gu(10)
-            }
-            UbuntuNumberAnimation {
-                target: rightAnchor
-                properties: "x"
-                from: headerStyle.width
-                to: headerStyle.width + units.gu(5)
+        property PageHeadConfiguration config
+        property string title
+
+        // Calling changeAnimation.start() a second time has no effect,
+        // so below we call it whenever something changes.
+        Connections {
+            target: styledItem
+            onConfigChanged: buffer.updateConfigAndTitle()
+            onTitleChanged: buffer.updateConfigAndTitle()
+        }
+
+        function updateConfigAndTitle() {
+            if (styledItem.animateContents) {
+                changeAnimation.start();
+            } else {
+                buffer.config = styledItem.config;
+                buffer.title = styledItem.title;
             }
         }
-        ScriptAction {
-            script: {
-                headerStyle.config = styledItem.config;
-                headerStyle.title = styledItem.title;
+
+        SequentialAnimation {
+            id: changeAnimation
+            ParallelAnimation {
+                UbuntuNumberAnimation {
+                    target: foreground
+                    property: "opacity"
+                    from: 1.0
+                    to: 0.0
+                }
+                UbuntuNumberAnimation {
+                    target: leftButtonContainer
+                    property: "opacity"
+                    from: 1.0
+                    to: 0.0
+                }
+                UbuntuNumberAnimation {
+                    target: actionsContainer
+                    property: "opacity"
+                    from: 1.0
+                    to: 0.0
+                }
+                UbuntuNumberAnimation {
+                    target: leftAnchor
+                    properties: "x"
+                    from: 0.0
+                    to: -units.gu(10)
+                }
+                UbuntuNumberAnimation {
+                    target: rightAnchor
+                    properties: "x"
+                    from: headerStyle.width
+                    to: headerStyle.width + units.gu(5)
+                }
             }
-        }
-        ParallelAnimation {
-            UbuntuNumberAnimation {
-                target: foreground
-                property: "opacity"
-                from: 0.0
-                to: 1.0
+            ScriptAction {
+                script: {
+                    buffer.config = styledItem.config;
+                    buffer.title = styledItem.title;
+                }
             }
-            UbuntuNumberAnimation {
-                target: leftButtonContainer
-                property: "opacity"
-                from: 0.0
-                to: 1.0
-            }
-            UbuntuNumberAnimation {
-                target: actionsContainer
-                property: "opacity"
-                from: 0.0
-                to: 1.0
-            }
-            UbuntuNumberAnimation {
-                target: leftAnchor
-                properties: "x"
-                from: -units.gu(5)
-                to: 0
-            }
-            UbuntuNumberAnimation {
-                target: rightAnchor
-                properties: "x"
-                from: headerStyle.width + units.gu(5)
-                to: headerStyle.width
+            ParallelAnimation {
+                UbuntuNumberAnimation {
+                    target: foreground
+                    property: "opacity"
+                    from: 0.0
+                    to: 1.0
+                }
+                UbuntuNumberAnimation {
+                    target: leftButtonContainer
+                    property: "opacity"
+                    from: 0.0
+                    to: 1.0
+                }
+                UbuntuNumberAnimation {
+                    target: actionsContainer
+                    property: "opacity"
+                    from: 0.0
+                    to: 1.0
+                }
+                UbuntuNumberAnimation {
+                    target: leftAnchor
+                    properties: "x"
+                    from: -units.gu(5)
+                    to: 0
+                }
+                UbuntuNumberAnimation {
+                    target: rightAnchor
+                    properties: "x"
+                    from: headerStyle.width + units.gu(5)
+                    to: headerStyle.width
+                }
             }
         }
     }
@@ -135,7 +148,7 @@ Style.PageHeadStyle {
         }
         source: headerStyle.separatorSource
 
-        property PageHeadSections sections: headerStyle.config.sections
+        property PageHeadSections sections: buffer.config.sections
 
         Row {
             id: sectionsRow
@@ -207,9 +220,9 @@ Style.PageHeadStyle {
         PageHeadButton {
             id: customBackButton
             objectName: "customBackButton"
-            action: headerStyle.config.backAction
-            visible: null !== headerStyle.config.backAction &&
-                     headerStyle.config.backAction.visible
+            action: buffer.config.backAction
+            visible: null !== buffer.config.backAction &&
+                     buffer.config.backAction.visible
         }
 
         PageHeadButton {
@@ -292,7 +305,7 @@ Style.PageHeadStyle {
                 right: parent.right
                 verticalCenter: parent.verticalCenter
             }
-            text: headerStyle.title
+            text: buffer.title
             font.weight: headerStyle.fontWeight
             fontSize: headerStyle.fontSize
             color: headerStyle.textColor
@@ -305,7 +318,7 @@ Style.PageHeadStyle {
             // when the bindings below is no longer active
             id: contentsContainer
             anchors.fill: parent
-            visible: styledItem.contents || headerStyle.config.contents
+            visible: styledItem.contents || buffer.config.contents
         }
         Binding {
             target: styledItem.contents
@@ -320,17 +333,17 @@ Style.PageHeadStyle {
             when: styledItem.contents
         }
         Binding {
-            target: headerStyle.config.contents
+            target: buffer.config.contents
             property: "parent"
             value: contentsContainer
-            when: headerStyle.config.contents && !styledItem.contents
+            when: buffer.config.contents && !styledItem.contents
         }
     }
 
     Row {
         id: actionsContainer
 
-        property var visibleActions: getVisibleActions(headerStyle.config.actions)
+        property var visibleActions: getVisibleActions(buffer.config.actions)
         function getVisibleActions(actions) {
             var visibleActionList = [];
             for (var i in actions) {
@@ -389,7 +402,7 @@ Style.PageHeadStyle {
                 // onClicked is executed. See bug
                 // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
                 Connections {
-                    target: headerStyle.config
+                    target: buffer.config
                     onActionsChanged: {
                         actionsOverflowPopover.hide();
                     }
