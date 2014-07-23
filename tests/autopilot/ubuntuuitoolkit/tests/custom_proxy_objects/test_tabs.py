@@ -24,8 +24,8 @@ from ubuntuuitoolkit import tests
 
 
 TEST_TABS_QML_FORMAT = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
+import QtQuick 2.2
+import Ubuntu.Components 1.1
 
 MainView {{
     width: units.gu(70)

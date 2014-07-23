@@ -91,7 +91,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             raise _common.ToolkitException('Old header has no back button')
         try:
             back_button = self.select_single(
-                'AbstractButton', objectName='backButton')
+                objectName='backButton')
         except dbus.StateNotFoundError:
             raise _common.ToolkitException('Missing back button in header')
         if not back_button.visible:
@@ -106,7 +106,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 'Old header has no custom back button')
         try:
             custom_back_button = self.select_single(
-                'AbstractButton', objectName='customBackButton')
+                objectName='customBackButton')
         except dbus.StateNotFoundError:
             raise _common.ToolkitException(
                 'Missing custom back button in header')
@@ -171,7 +171,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _switch_to_tab_in_drawer_by_index(self, index):
         try:
             tabs_drawer_button = self.select_single(
-                'AbstractButton', objectName='tabsButton')
+                objectName='tabsButton')
         except dbus.StateNotFoundError:
             raise _common.ToolkitException(_NO_TABS_ERROR)
         self.pointing_device.click_object(tabs_drawer_button)
@@ -207,8 +207,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _get_action_button(self, action_object_name):
         try:
             object_name = action_object_name + "_header_button"
-            button = self.select_single(
-                'AbstractButton', objectName=object_name)
+            button = self.select_single(objectName=object_name)
         except dbus.StateNotFoundError:
             # the button is not in the header, but it may be in the overflow
             try:
@@ -222,7 +221,6 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     def _get_action_button_in_overflow(self, action_object_name):
         actions_overflow_button = self.select_single(
-            'AbstractButton',
             objectName='actions_overflow_button')
 
         if not actions_overflow_button.visible:
