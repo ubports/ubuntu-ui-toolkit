@@ -68,8 +68,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         try:
             object_name = "section_button_" + str(index)
-            button = self.select_single(
-                'AbstractButton', objectName=object_name)
+            button = self.select_single(objectName=object_name)
         except dbus.StateNotFoundError:
             raise _common.ToolkitException(
                 'Button for section with given index not found')
@@ -90,8 +89,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException('Old header has no back button')
         try:
-            back_button = self.select_single(
-                objectName='backButton')
+            back_button = self.select_single(objectName='backButton')
         except dbus.StateNotFoundError:
             raise _common.ToolkitException('Missing back button in header')
         if not back_button.visible:
@@ -170,8 +168,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     def _switch_to_tab_in_drawer_by_index(self, index):
         try:
-            tabs_drawer_button = self.select_single(
-                objectName='tabsButton')
+            tabs_drawer_button = self.select_single(objectName='tabsButton')
         except dbus.StateNotFoundError:
             raise _common.ToolkitException(_NO_TABS_ERROR)
         self.pointing_device.click_object(tabs_drawer_button)
