@@ -1,3 +1,54 @@
+ubuntu-ui-toolkit (0.1.50+14.10.20140715-0ubuntu2) UNRELEASED; urgency=medium
+
+  [ Christian Dywan ]
+  * Wrap tempfile.NamedTemporaryFile to discard underscored 
+    filenames
+  * Print errors and help to sys.stderr
+  * Fixes false positives where buttons say for example Anrufen 
+    as opposed to Call depending on the local
+  * Use memory alarm backend for API/ deployment and don't warn 
+    about it
+  * Update selection and cursor to blue 
+  * Suppress error output from dpkg-architecture.
+
+  [ Tim Peeters ]
+  * New sizes for icons and touch areas in header.
+  * Workaround for large-timestamp autopilot bug
+  * Push modules/Ubuntu/Components/qmldir in push_to_phone.sh
+  * Various design tweaks:
+    - Update CheckBox/Switch colors
+    - Use new header by default in UITK gallery
+    - Add margins for left and rightmost buttons in header
+  * Updateed font sizes
+  * Don't automatically close a Panel when the user presses next 
+    to it, and update Panel position when its height changes.
+  * Support sections in header divider.
+  * Add new colors to UbuntuColors. 
+    Fixes: https://bugs.launchpad.net/bugs/1335826.
+
+  [ Renato Filho ]
+  * Reset item state if the cancelItemRemoval() function was 
+    called after the item be removed.
+
+  [ Zeller Benjamin ]
+  * Work around LP: #1338602, RotationAnimator crashes application
+
+  [ Michael Zanetti ]
+  * Add typeString to UbuntuTestCase
+
+  [ Ugo Riboni ]
+  * Add a boolean property to allow hiding the ProgressBar label. 
+    Fixes: https://bugs.launchpad.net/bugs/1317377.
+
+  [ Nekhelesh Ramananthan ]
+  * Adds examples to Actions, backAction and fixed the contents 
+    example in the PageHeadConfiguration.
+
+  [ Leo Arias ]
+  * Simulate the supported devices on gallery autopilot tests.
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Wed, 23 Jul 2014 13:47:47 +0300
+
 ubuntu-ui-toolkit (0.1.49+14.10.20140715-0ubuntu1) utopic; urgency=low
 
   [ Dimitri John Ledkov ]
