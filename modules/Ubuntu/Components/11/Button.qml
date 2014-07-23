@@ -21,6 +21,6 @@ import Ubuntu.Components 1.0
    \internal
    Documentation in Button11.qdoc
 */
-Button10 {
+Button {
     property color strokeColor: Qt.rgba(0.0, 0.0, 0.0, 0.0)
 }
