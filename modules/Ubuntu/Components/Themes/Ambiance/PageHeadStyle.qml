@@ -85,7 +85,7 @@ Style.PageHeadStyle {
                     target: leftAnchor
                     properties: "x"
                     from: 0.0
-                    to: -units.gu(10)
+                    to: -units.gu(5)
                 }
                 UbuntuNumberAnimation {
                     target: rightAnchor
