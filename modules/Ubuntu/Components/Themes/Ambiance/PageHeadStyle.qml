@@ -83,15 +83,15 @@ Style.PageHeadStyle {
                 }
                 UbuntuNumberAnimation {
                     target: leftAnchor
-                    properties: "x"
+                    properties: "anchors.leftMargin"
                     from: 0.0
                     to: -units.gu(5)
                 }
                 UbuntuNumberAnimation {
                     target: rightAnchor
-                    properties: "x"
-                    from: headerStyle.width
-                    to: headerStyle.width + units.gu(5)
+                    properties: "anchors.rightMargin"
+                    from: 0
+                    to: -units.gu(5)
                 }
             }
             ScriptAction {
@@ -121,15 +121,15 @@ Style.PageHeadStyle {
                 }
                 UbuntuNumberAnimation {
                     target: leftAnchor
-                    properties: "x"
+                    properties: "anchors.leftMargin"
                     from: -units.gu(5)
                     to: 0
                 }
                 UbuntuNumberAnimation {
                     target: rightAnchor
-                    properties: "x"
-                    from: headerStyle.width + units.gu(5)
-                    to: headerStyle.width
+                    properties: "anchors.rightMargin"
+                    from: -units.gu(5)
+                    to: 0
                 }
             }
         }
@@ -196,15 +196,23 @@ Style.PageHeadStyle {
 
     Item {
         id: leftAnchor
-        anchors.top: parent.top
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: parent.left
+            leftMargin: 0
+        }
         width: 0
-        x: 0
     }
     Item {
         id: rightAnchor
-        anchors.top: parent.top
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            right: parent.right
+            rightMargin: 0
+        }
         width: 0
-        x: parent.width
     }
 
     Item {
