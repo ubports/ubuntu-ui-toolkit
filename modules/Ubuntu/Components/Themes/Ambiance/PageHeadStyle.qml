@@ -47,12 +47,6 @@ Style.PageHeadStyle {
         onConfigChanged: changeAnimation.start()
         onTitleChanged: changeAnimation.start()
     }
-//    Connections {
-//        target: headerStyle.config
-//        onActionsChanged: changeAnimation.start()
-//        onBackActionChanged: changeAnimation.start()
-//        onContentsChanged: changeAnimation.start()
-//    }
 
     SequentialAnimation {
         id: changeAnimation
