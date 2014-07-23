@@ -77,18 +77,26 @@ class FakeApplication(fixtures.Fixture):
         return qml_file_path, desktop_file_path
 
     def _write_test_qml_file(self):
-        qml_file = tempfile.NamedTemporaryFile(
-            mode='w+t', suffix='.qml', delete=False)
+        qml_file = self._named_temporary_file(suffix='.qml')
         qml_file.write(self._qml_file_contents)
         qml_file.close()
         return qml_file.name
+
+    def _named_temporary_file(self, dir=None, mode='w+t',
+                              delete=False, suffix=''):
+        # Discard files with underscores which look like an APP_ID to Unity
+        # See https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1329141
+        chars = tempfile._RandomNameSequence.characters.strip("_")
+        tempfile._RandomNameSequence.characters = chars
+        return tempfile.NamedTemporaryFile(dir=dir, mode=mode,
+                                           delete=delete, suffix=suffix)
 
     def _write_test_desktop_file(self, qml_file_path):
         desktop_file_dir = self._get_local_desktop_file_directory()
         if not os.path.exists(desktop_file_dir):
             os.makedirs(desktop_file_dir)
-        desktop_file = tempfile.NamedTemporaryFile(
-            mode='w+t', suffix='.desktop', dir=desktop_file_dir, delete=False)
+        desktop_file = self._named_temporary_file(suffix='.desktop',
+                                                  dir=desktop_file_dir)
         self._desktop_file_dict['Exec'] = (
             self._desktop_file_dict['Exec'].format(
                 qmlscene=base.get_qmlscene_launch_command(),
