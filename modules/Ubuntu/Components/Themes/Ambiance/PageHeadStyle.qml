@@ -49,8 +49,9 @@ Style.PageHeadStyle {
 
         Row {
             id: sectionsRow
-            property int itemWidth: sectionsRow.width / sectionsRepeater.count
-            anchors.fill: parent
+            anchors.centerIn: parent
+            width: childrenRect.width
+            height: parent.height
             enabled: separator.sections.enabled
             visible: separator.sections.model !== undefined
             opacity: enabled ? 1.0 : 0.5
@@ -61,17 +62,19 @@ Style.PageHeadStyle {
                 objectName: "page_head_sections_repeater"
                 AbstractButton {
                     id: sectionButton
+                    anchors.verticalCenter: parent.verticalCenter
                     objectName: "section_button_" + index
                     enabled: sectionsRow.enabled
-                    width: units.gu(10) //sectionsRow.itemWidth
+                    width: label.width + units.gu(4)
                     height: sectionsRow.height
                     property bool selected: index === separator.sections.selectedIndex
                     onClicked: separator.sections.selectedIndex = index;
 
                     Label {
+                        id: label
                         text: modelData
                         fontSize: "small"
-                        anchors.fill: parent
+                        anchors.centerIn: sectionButton
                         horizontalAlignment: Text.AlignHCenter
                         color: sectionButton.selected ?
                                    UbuntuColors.orange :

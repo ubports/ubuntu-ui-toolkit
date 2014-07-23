@@ -29,6 +29,7 @@ MainView {
         Component.onCompleted: stack.push(tabs)
         Tabs {
             id: tabs
+            selectedTabIndex: 5
             Tab {
                 title: "Stack"
                 page: Page {
@@ -184,7 +185,7 @@ MainView {
                     id: sectionsPage
                     head {
                         sections {
-                            model: ["navy", "lightblue", "brown", "cyan", "darkgrey"]
+                            model: ["navy", "lightblue", "brown"]
                         }
                     }
                     Rectangle {
