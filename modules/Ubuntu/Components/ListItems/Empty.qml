@@ -175,6 +175,7 @@ AbstractButton {
     function cancelItemRemoval()
     {
         priv.resetDrag()
+        priv.removed = false
     }
 
     width: parent ? parent.width : units.gu(31)

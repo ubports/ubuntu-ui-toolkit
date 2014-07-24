@@ -192,15 +192,15 @@ Item {
             verify(selectedText !== "", "No text selected!");
 
             popupSpy.target = findChild(data.input, "input_handler");
-            TestExtras.touchLongPress(0, data.input, guPoint(1, 1));
+            TestExtras.touchLongPress(0, data.input, guPoint(2, 2));
             waitForRendering(data.input, 500);
             popupSpy.wait();
             compare(data.input.selectedText, selectedText, "Text selection should be the same!");
 
             // cleanup
-            TestExtras.touchRelease(0, data.input, guPoint(1, 1));
+            TestExtras.touchRelease(0, data.input, guPoint(2, 2));
             // dismiss popover
-            TestExtras.touchClick(0, testMain, 0, 0);
+            TestExtras.touchClick(0, testMain, guPoint(0, 0));
         }
 
         function test_drag_cursor_handler_data() {
@@ -275,9 +275,7 @@ Item {
             flickerSpy.target = outerFlicker;
             autoSizeTextArea.focus = data.focused;
             var editor = findChild(autoSizeTextArea, "text_input");
-            wait(5000)
             TestExtras.touchDrag(0, editor, guPoint(0, 0), guPoint(0, 40));
-            wait(5000)
             flickerSpy.wait();
         }
     }

@@ -17,11 +17,12 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Test 1.0
+import Ubuntu.Components 1.0
 
 Rectangle {
  id: root
  width: 800
- height: 600
+ height: 1000
 
  Column {
      anchors.fill: parent
@@ -72,6 +73,9 @@ Rectangle {
              width: 1000
              height: 1000
          }
+     }
+     TextField {
+         id: textField
      }
  }
  
@@ -172,6 +176,11 @@ Rectangle {
     function test_flick_pressTimeout_long() {
         flick(flicker, flicker.width, flicker.height, -flicker.width, -flicker.height, 400, 100);
         movementSpy.wait();
+    }
+    function test_typeString() {
+        textField.forceActiveFocus();
+        typeString("Hello Ubuntu");
+        tryCompare(textField, "text", "Hello Ubuntu");
     }
 
     SignalSpy {

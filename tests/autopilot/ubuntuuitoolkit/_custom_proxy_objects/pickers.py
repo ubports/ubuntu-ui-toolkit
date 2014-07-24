@@ -127,15 +127,18 @@ class DatePicker(_common.UbuntuUIToolkitCustomProxyObjectBase):
         if not self._is_time_picker():
             raise _common.ToolkitException(
                 "Can't pick time. The picker mode is: {!r}.".format(self.mode))
-        if 'Hours' in self.mode:
-            self._pick_hour(time.hour)
-            self.hours.wait_for(time.hour)
-        if 'Minutes' in self.mode:
-            self._pick_minute(time.minute)
-            self.minutes.wait_for(time.minute)
+        # Workaround https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1346669
+        # By setting seconds, then minutes, then hours, erratic behavoir
+        # can be dealt with
         if 'Seconds' in self.mode:
             self._pick_second(time.second)
             self.seconds.wait_for(time.second)
+        if 'Minutes' in self.mode:
+            self._pick_minute(time.minute)
+            self.minutes.wait_for(time.minute)
+        if 'Hours' in self.mode:
+            self._pick_hour(time.hour)
+            self.hours.wait_for(time.hour)
 
     def _is_time_picker(self):
         mode = self.mode

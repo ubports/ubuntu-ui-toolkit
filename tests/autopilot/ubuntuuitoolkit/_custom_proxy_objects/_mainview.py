@@ -41,8 +41,7 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def get_header(self):
         """Return the AppHeader custom proxy object of the MainView."""
         try:
-            return self.select_single(
-                'AppHeader', objectName='MainView_Header')
+            return self.select_single(objectName='MainView_Header')
         except dbus.StateNotFoundError:
             raise _common.ToolkitException('The main view has no header.')
 

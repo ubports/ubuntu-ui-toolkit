@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import QtQuick 2.0
+import QtQuick 2.2
 import Ubuntu.Components 1.1
 import Ubuntu.Components.Popups 1.0
 import Ubuntu.Components.ListItems 1.0 as ListItem
@@ -32,6 +32,10 @@ Style.PageHeadStyle {
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
 
+    // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
+    //  see also FIXME in AppHeader where this property is used.
+    property alias __sections_repeater_for_autopilot: sectionsRepeater
+
     BorderImage {
         id: separator
         anchors {
@@ -40,6 +44,42 @@ Style.PageHeadStyle {
             right: parent.right
         }
         source: headerStyle.separatorSource
+
+        property PageHeadSections sections: styledItem.config.sections
+
+        Row {
+            id: sectionsRow
+            property int itemWidth: sectionsRow.width / sectionsRepeater.count
+            anchors.fill: parent
+            enabled: separator.sections.enabled
+            visible: separator.sections.model !== undefined
+            opacity: enabled ? 1.0 : 0.5
+
+            Repeater {
+                id: sectionsRepeater
+                model: separator.sections.model
+                objectName: "page_head_sections_repeater"
+                AbstractButton {
+                    id: sectionButton
+                    objectName: "section_button_" + index
+                    enabled: sectionsRow.enabled
+                    width: sectionsRow.itemWidth
+                    height: sectionsRow.height
+                    property bool selected: index === separator.sections.selectedIndex
+                    onClicked: separator.sections.selectedIndex = index;
+
+                    Label {
+                        text: modelData
+                        fontSize: "small"
+                        anchors.fill: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        color: sectionButton.selected ?
+                                   Theme.palette.normal.backgroundText :
+                                   Theme.palette.selected.backgroundText
+                    }
+                }
+            }
+        }
     }
     Image {
         id: separatorBottom
@@ -56,26 +96,22 @@ Style.PageHeadStyle {
         anchors {
             left: parent.left
             top: parent.top
+            leftMargin: width > 0 ? units.gu(1) : 0
         }
         width: childrenRect.width
         height: headerStyle.contentHeight
 
-        AbstractButton {
+        PageHeadButton {
             id: customBackButton
             objectName: "customBackButton"
-            height: parent ? parent.height : undefined
-            width: visible ? units.gu(5) : 0
             action: styledItem.config.backAction
             visible: null !== styledItem.config.backAction &&
                      styledItem.config.backAction.visible
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
         }
 
-        AbstractButton {
+        PageHeadButton {
             id: backButton
             objectName: "backButton"
-            height: parent ? parent.height : undefined
-            width: visible ? units.gu(5) : 0
 
             iconName: "back"
             visible: styledItem.pageStack !== null &&
@@ -84,18 +120,15 @@ Style.PageHeadStyle {
                      !customBackButton.visible
 
             text: "back"
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
 
             onTriggered: {
                 styledItem.pageStack.pop();
             }
         }
 
-        AbstractButton {
+        PageHeadButton {
             id: tabsButton
             objectName: "tabsButton"
-            height: parent ? parent.height : undefined
-            width: visible ? units.gu(5) : 0
 
             iconName: "navigation-menu"
             visible: styledItem.tabsModel !== null &&
@@ -103,7 +136,6 @@ Style.PageHeadStyle {
                      !backButton.visible &&
                      !customBackButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", tabsButton)
 
             onTriggered: {
                 tabsPopover.show();
@@ -220,29 +252,26 @@ Style.PageHeadStyle {
         anchors {
             top: parent.top
             right: parent.right
+            rightMargin: units.gu(1)
         }
         width: childrenRect.width
         height: headerStyle.contentHeight
 
         Repeater {
             model: numberOfSlots.used
-            AbstractButton {
+            PageHeadButton {
                 id: actionButton
                 objectName: action.objectName + "_header_button"
                 action: actionsContainer.visibleActions[index]
-                style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionButton)
-                width: units.gu(5)
-                height: actionsContainer.height
             }
         }
 
-        AbstractButton {
+        PageHeadButton {
             id: actionsOverflowButton
             objectName: "actions_overflow_button"
             visible: numberOfSlots.requested > numberOfSlots.right
             iconName: "contextual-menu"
             width: visible ? units.gu(5) : 0
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionsOverflowButton)
             height: actionsContainer.height
             onTriggered: actionsOverflowPopover.show()
 
