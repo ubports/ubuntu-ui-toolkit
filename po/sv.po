@@ -14,12 +14,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-06-26 07:08+0000\n"
-"X-Generator: Launchpad (build 17065)\n"
+"X-Launchpad-Export-Date: 2014-07-23 06:57+0000\n"
+"X-Generator: Launchpad (build 17114)\n"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:22
 msgid "NumberAnimation"
-msgstr ""
+msgstr "Sifferanimering"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:25
@@ -32,66 +32,66 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:25
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:44
 msgid "Standard"
-msgstr ""
+msgstr "Standard"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:56
 msgid "Standard Durations"
-msgstr ""
+msgstr "Standardvaraktighet"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:60
 msgid "Snap"
-msgstr ""
+msgstr "Fäst"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:96
 msgid "Fast"
-msgstr ""
+msgstr "Snabb"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:132
 msgid "Slow"
-msgstr ""
+msgstr "Långsam"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:157
 msgid "Sleepy"
-msgstr ""
+msgstr "Sömnig"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:28
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:36
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:50
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:59
 msgid "Call"
-msgstr ""
+msgstr "Ring"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:33
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:26
 msgid "Color"
-msgstr ""
+msgstr "Färg"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:42
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:41
 msgid "Icon"
-msgstr ""
+msgstr "Ikon"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:56
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:73
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:41
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:75
 msgid "Disabled"
-msgstr ""
+msgstr "Inaktiverad"
 
 #: examples/ubuntu-ui-toolkit-gallery/Dialog.qml:30
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:42
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:41
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:74
 msgid "Open"
-msgstr ""
+msgstr "Öppna"
 
 #: examples/ubuntu-ui-toolkit-gallery/Icons.qml:25
 msgid "Scaling"
-msgstr ""
+msgstr "Skalning"
 
 #: examples/ubuntu-ui-toolkit-gallery/Icons.qml:50
 msgid "Colorization"
-msgstr ""
+msgstr "Färgläggning"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:34
@@ -102,99 +102,99 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:83
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:95
 msgid "Label"
-msgstr ""
+msgstr "Etikett"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:31
 msgid "Subtitled"
-msgstr ""
+msgstr "Med undertexter"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:35
 msgid "Secondary label"
-msgstr ""
+msgstr "Underetikett"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:50
 msgid "Progression"
-msgstr ""
+msgstr "Förlopp"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:59
 msgid "Single value"
-msgstr ""
+msgstr "Enkelt värde"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:63
 msgid "Value"
-msgstr ""
+msgstr "Värde"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:68
 msgid "Multi value"
-msgstr ""
+msgstr "Flera värden"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:72
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:84
 msgid "Value 1"
-msgstr ""
+msgstr "Värde 1"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:73
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:85
 msgid "Value 2"
-msgstr ""
+msgstr "Värde 2"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:74
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:86
 msgid "Value 3"
-msgstr ""
+msgstr "Värde 3"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:75
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:87
 msgid "Value 4"
-msgstr ""
+msgstr "Värde 4"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:80
 msgid "Value selector"
-msgstr ""
+msgstr "Värdeväljare"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:92
 msgid "Control"
-msgstr ""
+msgstr "Kontroll"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:103
 msgid "Removable"
-msgstr ""
+msgstr "Flyttbar"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:106
 msgid "Slide to remove"
-msgstr ""
+msgstr "Dra för att ta bort"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:116
 msgid "Grouped list"
-msgstr ""
+msgstr "Grupperad lista"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:38
 msgid "Flickable"
-msgstr ""
+msgstr "Bläddringsbar"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:74
 msgid "Action #1"
-msgstr ""
+msgstr "Åtgärd #1"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:78
 msgid "Action #2"
-msgstr ""
+msgstr "Åtgärd #2"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:82
 msgid "Action #3"
-msgstr ""
+msgstr "Åtgärd #3"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:86
 msgid "Action #4"
-msgstr ""
+msgstr "Åtgärd #4"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:90
 msgid "Action #5"
-msgstr ""
+msgstr "Åtgärd #5"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:22
 msgid "Progress Bar"
-msgstr ""
+msgstr "Förloppsmätare"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:45
 msgid "Infinite"
@@ -202,16 +202,17 @@ msgstr "Oändlig"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:55
 msgid "Activity Indicator"
-msgstr ""
+msgstr "Aktivitetsindikator"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:26
 msgid "The visual style of the Sheet is early work and thus clunky looking."
 msgstr ""
+"Utseendet på bladet är ett tidigt utkast och ser därför lite klumpigt ut."
 
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:51
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:84
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:32
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:45
@@ -222,129 +223,129 @@ msgstr "värde = %1"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:37
 msgid "Live Update"
-msgstr ""
+msgstr "Live-uppdatering"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:50
 msgid "Range"
-msgstr ""
+msgstr "Omfång"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:47
 msgid "Type me in..."
-msgstr ""
+msgstr "Skriv in mig..."
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:53
 msgid "Password"
-msgstr ""
+msgstr "Lösenord"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:63
 msgid "Numbers"
-msgstr ""
+msgstr "Tal"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:87
 msgid "Default"
-msgstr ""
+msgstr "Standard"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:96
 msgid "Expanding"
-msgstr ""
+msgstr "Utökande"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:107
 msgid "Rich Text"
-msgstr ""
+msgstr "Formaterad text"
 
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:60
 msgid "Unchecked"
-msgstr ""
+msgstr "Okryssad"
 
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:33
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:67
 msgid "Checked"
-msgstr ""
+msgstr "Ikryssad"
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:44
 msgid "Image"
-msgstr ""
+msgstr "Bild"
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:57
 msgid "Radius"
-msgstr ""
+msgstr "Radie"
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:87
 msgid "Sizes"
-msgstr ""
+msgstr "Storlekar"
 
 #: examples/unit-converter/unit-converter.qml:147
 msgid "Clear"
-msgstr ""
+msgstr "Rensa"
 
 #: examples/unit-converter/unit-converter.qml:161
 msgid "Lengths"
-msgstr ""
+msgstr "Längder"
 
 #: examples/unit-converter/unit-converter.qml:179
 msgid "Weights"
-msgstr ""
+msgstr "Vikter"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
-msgstr ""
+msgstr "Användning: "
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
-msgstr ""
+msgstr "Alternativ:"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
-msgstr ""
+msgstr "%1 förväntar ett ytterligare argument: %2"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
-msgstr ""
+msgstr "%1 förväntar ett värde för argumentet: %2"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
-msgstr ""
+msgstr "%1 förväntar ytterligare argument: %2"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:24
 msgid "Select All"
-msgstr ""
+msgstr "Markera alla"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:29
 msgid "Select Word"
-msgstr ""
+msgstr "Markera ord"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:34
 msgid "Cut"
-msgstr ""
+msgstr "Klipp ut"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:39
 msgid "Copy"
-msgstr ""
+msgstr "Kopiera"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:44
 msgid "Paste"
-msgstr ""
+msgstr "Klistra In"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:49
 msgid "Undo"
-msgstr ""
+msgstr "Ångra"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:54
 msgid "Redo"
-msgstr ""
+msgstr "Gör om"
 
 #: modules/Ubuntu/Components/ToolbarActions.qml:86
 msgid "Back"
-msgstr ""
+msgstr "Bakåt"
 
 #: tests/resources/pagestack/MyCustomPage.qml:21
 #: tests/resources/tabs/MyCustomPage.qml:21
 msgid "My custom page"
-msgstr ""
+msgstr "Min anpassade sida"
 
 #: tests/resources/pagestack/MyCustomPage.qml:33
 #: tests/resources/tabs/MyCustomPage.qml:33
@@ -352,39 +353,41 @@ msgid ""
 "This is an external page\n"
 "with a locked toolbar."
 msgstr ""
+"Det här är en extern sida\n"
+"med en låst verktygsrad."
 
 #: tests/resources/pagestack/PageStack.qml:38
 msgid "Root page"
-msgstr ""
+msgstr "Grundsida"
 
 #: tests/resources/pagestack/PageStack.qml:44
 msgid "Page one"
-msgstr ""
+msgstr "Sida ett"
 
 #: tests/resources/pagestack/PageStack.qml:49
 msgid "External page"
-msgstr ""
+msgstr "Extern sida"
 
 #: tests/resources/pagestack/PageStack.qml:58
 msgid "First page"
-msgstr ""
+msgstr "Första sidan"
 
 #: tests/resources/pagestack/PageStack.qml:64
 msgid "Root page (again)"
-msgstr ""
+msgstr "Grundsidan (igen)"
 
 #: tests/resources/pagestack/PageStack.qml:69
 msgid "Red rectangle"
-msgstr ""
+msgstr "Röd rektangel"
 
 #: tests/resources/tabs/Tabs.qml:32
 msgid "Simple page"
-msgstr ""
+msgstr "Enkel sida"
 
 #: tests/resources/tabs/Tabs.qml:77
 msgid "External"
-msgstr ""
+msgstr "Externt"
 
 #: tests/resources/tabs/Tabs.qml:85
 msgid "List view"
-msgstr ""
+msgstr "Listvy"
