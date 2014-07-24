@@ -49,7 +49,7 @@ Item {
         anchors.fill: background
         sourceItem: background
         progress: thumb.x / thumb.barMinusThumbWidth
-        leftColor: Theme.palette.selected.foreground
+        leftColor: UbuntuColors.orange
         rightColor: Theme.palette.normal.base
         mirror: Qt.application.layoutDirection == Qt.RightToLeft
     }
