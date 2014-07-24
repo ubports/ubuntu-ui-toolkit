@@ -46,6 +46,8 @@ ubuntu-ui-toolkit (0.1.50+14.10.20140715-0ubuntu2) UNRELEASED; urgency=medium
 
   [ Leo Arias ]
   * Simulate the supported devices on gallery autopilot tests.
+  * Remove the hiding of the toolbar on the option selector 
+    gallery autopilot tests.
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Wed, 23 Jul 2014 13:47:47 +0300
 
