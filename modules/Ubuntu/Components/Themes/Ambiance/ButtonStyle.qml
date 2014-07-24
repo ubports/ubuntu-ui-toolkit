@@ -90,6 +90,7 @@ Item {
         image: backgroundSource
 
         color: backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.topColor) : __colorHack(button.color))
+        opacity: styledItem.enabled ? 1.0 : 0.6
         gradientColor: backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.bottomColor) : __colorHack(button.color))
     }
 
