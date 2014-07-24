@@ -19,7 +19,7 @@ import Ubuntu.Components 1.1
 import Ubuntu.Test 1.0
 
 UbuntuTestCase {
-    name: "PageHeadSectionsAPI"
+    name: "PageHeadColorsAPI"
     id: testCase
 
     MainView {
