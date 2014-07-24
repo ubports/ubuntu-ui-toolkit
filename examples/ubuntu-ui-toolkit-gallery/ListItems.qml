@@ -50,7 +50,7 @@ Template {
 
     TemplateSection {
         title: i18n.tr("ThinDivider")
-        className: "ThinDivider"
+        className: "ListItems-ThinDivider"
 
         Column {
             anchors.left: parent.left
@@ -198,6 +198,7 @@ Template {
     }
 
     ListItemsSection {
+        id: removableSection
         title: i18n.tr("Removable")
         className: "Standard"
         delegate: ListItem.Standard {
@@ -209,11 +210,21 @@ Template {
                 color: Theme.palette.normal.base
             }
         }
+
+        Toolkit.Button {
+            text: i18n.tr("Reset")
+            anchors.right: parent.right
+            onClicked: {
+                for (var i=0, iMax=removableSection.count; i < iMax; i++) {
+                    removableSection.itemAt(i).cancelItemRemoval()
+                }
+            }
+        }
     }
 
     TemplateSection {
         title: i18n.tr("Grouped list")
-        className: "Header"
+        className: "ListItems-Header"
 
         Rectangle {
             color: Qt.rgba(0.0, 0.0, 0.0, 0.01)

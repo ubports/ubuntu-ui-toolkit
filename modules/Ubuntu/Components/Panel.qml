@@ -443,13 +443,13 @@ Item {
       \internal
       \deprecated
       Enable the InverseMouseArea that closes the panel when the user clicks outside of the panel.
-      This functionality moved to the Toolbar/Page implementation because the mouse area needs to
-      access with the toolbar and header, but this InverseMouseArea is still in the Panel for backwards
-      compatibility in apps that use it directly. Default value is true, but it is set to false in Toolbar.
+      This functionality moved to the MainView to deal with Toolbar hiding, but this InverseMouseArea
+      is still in the Panel for backwards compatibility in apps that use it directly.
+      Default value is false.
 
       FIXME: Remove __closeOnContentsClicks and the IMA below when all apps use Toolbar instead of Panel.
      */
-    property bool __closeOnContentsClicks: true
+    property bool __closeOnContentsClicks: false
     Toolkit.InverseMouseArea {
         anchors.fill: draggingArea
         onPressed: {
@@ -625,6 +625,7 @@ Item {
 
     Item {
         id: bar
+        objectName: "bar_item"
         height: parent.height
         width: parent.width
         anchors {
@@ -637,6 +638,7 @@ Item {
         property real size: internal.orientation === Qt.Horizontal ? height : width
         //position will always be in the range 0..size, where position==0 means spread, position==size means hidden.
         property real position: panel.opened ? 0 : size
+        onSizeChanged: position = panel.opened ? 0 : size
 
         y: internal.align === Qt.AlignTop ? -position : internal.align === Qt.AlignBottom ? position : 0
         x: internal.align === Qt.AlignLeft ? -position : internal.align === Qt.AlignRight ? position : 0

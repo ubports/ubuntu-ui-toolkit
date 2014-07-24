@@ -47,7 +47,7 @@ Item {
     Component {
         id: delegate
         Rectangle {
-            width: units.dp(1)
+            width: units.dp(2)
             color: Theme.palette.selected.foreground
             visible: blinkTimer.timerShowCursor
             Timer {
@@ -70,7 +70,7 @@ Item {
     // caretItem
     Image {
         id: caretItem
-        source: "artwork/teardrop-left.png"
+        source: "artwork/caret_noshadow.png"
         anchors {
             top: parent.bottom
             horizontalCenter: parent.horizontalCenter

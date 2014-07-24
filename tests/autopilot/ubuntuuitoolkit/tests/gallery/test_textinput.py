@@ -16,7 +16,9 @@
 
 """Tests for the Ubuntu UI Toolkit Gallery - TextInput components"""
 
-from ubuntuuitoolkit import emulators
+import testscenarios
+
+from ubuntuuitoolkit import emulators, ubuntu_scenarios
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 import locale
 
@@ -31,7 +33,7 @@ class WriteAndClearTextInputTestCase(GalleryTestCase):
 
     # text_to_write is a function to ensure
     # that locale is evaluated after setUp
-    scenarios = [
+    text_input_scenarios = [
         ('standard textfield', dict(
             objectName='textfield_standard',
             text_to_write=text_to_write_string,
@@ -48,6 +50,10 @@ class WriteAndClearTextInputTestCase(GalleryTestCase):
             text_to_write=text_to_write_number,
             expected_text='-100123'))
     ]
+
+    scenarios = testscenarios.multiply_scenarios(
+        ubuntu_scenarios.get_device_simulation_scenarios(),
+        text_input_scenarios)
 
     def setUp(self):
         super(WriteAndClearTextInputTestCase, self).setUp()
@@ -73,6 +79,8 @@ class WriteAndClearTextInputTestCase(GalleryTestCase):
 
 
 class DisabledTextInputTestCase(GalleryTestCase):
+
+    scenarios = ubuntu_scenarios.get_device_simulation_scenarios()
 
     def setUp(self):
         super(DisabledTextInputTestCase, self).setUp()

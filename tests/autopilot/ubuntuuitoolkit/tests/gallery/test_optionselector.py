@@ -17,10 +17,13 @@
 """Tests for the Ubuntu UI Toolkit Gallery - OptionSelector component."""
 
 import ubuntuuitoolkit
+from ubuntuuitoolkit import ubuntu_scenarios
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 
 
 class OptionSelectorTestCase(GalleryTestCase):
+
+    scenarios = ubuntu_scenarios.get_device_simulation_scenarios()
 
     def setUp(self):
         super(OptionSelectorTestCase, self).setUp()
