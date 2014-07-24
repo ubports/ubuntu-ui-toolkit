@@ -39,7 +39,7 @@ Template {
             Button {
                 objectName: "button_color"
                 text: i18n.tr("Call")
-                color: UbuntuColors.warmGrey
+                color: UbuntuColors.green
             }
         }
 
