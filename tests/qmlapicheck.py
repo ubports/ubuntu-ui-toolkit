@@ -75,6 +75,7 @@ for line in fileinput.input():
         inputfiles.append(fileinput.filename())
         fileinput.nextfile()
 
+
 # Sort filenames to maintain a consistent order
 # Get un/versioned files in the same order
 def skipversion(filename):
