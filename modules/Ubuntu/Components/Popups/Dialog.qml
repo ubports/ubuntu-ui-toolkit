@@ -188,14 +188,14 @@ PopupBase {
                 horizontalAlignment: Text.AlignHCenter
                 text: dialog.title
                 fontSize: "large"
-                color: Qt.rgba(1, 1, 1, 0.9)
+                color: UbuntuColors.darkGrey
             }
 
             Label {
                 horizontalAlignment: Text.AlignHCenter
                 text: dialog.text
                 fontSize: "medium"
-                color: Qt.rgba(1, 1, 1, 0.6)
+                color: UbuntuColors.darkGrey
                 wrapMode: Text.Wrap
             }
 
