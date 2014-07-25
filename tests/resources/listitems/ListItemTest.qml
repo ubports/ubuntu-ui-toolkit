@@ -69,6 +69,7 @@ Item {
                     model: 100
                     ViewItem {
                         background.color: "red"
+                        background.pressedColor: "pink"
                     }
                 }
             }

@@ -36,6 +36,7 @@
  */
 void ucBindProperty(const QQmlProperty &target, const QString &script, QObject *src, QQmlContext *context)
 {
+    Q_ASSERT(src);
     QQmlAbstractBinding *prevBinding = QQmlPropertyPrivate::binding(target);
     if (!prevBinding) {
         // create new binding

@@ -46,9 +46,6 @@ private:
     UCViewItem *m_item;
     QColor m_color;
     QColor m_pressedColor;
-
-private Q_SLOTS:
-    void onPaletteUpdated();
 };
 
 #endif // UCVIEWITEMBACKGROUND_H

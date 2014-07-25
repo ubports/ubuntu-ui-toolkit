@@ -31,7 +31,8 @@ UCViewItemBackground::UCViewItemBackground(QQuickItem *parent)
     // set the z-order to be above the main item
     setZ(1);
     // set the theme pressed color
-    onPaletteUpdated();
+    QQmlProperty pressedColor(this, "pressedColor", qmlContext(this));
+    ucBindProperty(pressedColor, "selected.background", UCTheme::instance().palette());
 }
 
 UCViewItemBackground::~UCViewItemBackground()
@@ -89,27 +90,7 @@ void UCViewItemBackground::setPressedColor(const QColor &pressedColor)
 {
     if (m_pressedColor != pressedColor) {
         m_pressedColor = pressedColor;
-        QObject::disconnect(&UCTheme::instance(), SIGNAL(paletteChanged()), this, SLOT(onPaletteUpdated()));
         update();
         Q_EMIT pressedColorChanged();
-    }
-}
-
-void UCViewItemBackground::onPaletteUpdated()
-{
-    QObject *selected = UCTheme::instance().palette()->property("selected").value<QObject*>();
-    if (!selected) {
-        if (m_item) {
-            qmlInfo(m_item) << "Cannot retrieve palette!";
-        }
-    } else {
-        QColor color = selected->property("background").value<QColor>();
-        if (!color.isValid()) {
-            qmlInfo(m_item) << "canot retrieve background color from palette, defaulting to lightgray.";
-            color = Qt::lightGray;
-        }
-        setPressedColor(color);
-        // reconnect, as setPressedColor disconnects
-        QObject::connect(&UCTheme::instance(), SIGNAL(paletteChanged()), this, SLOT(onPaletteUpdated()));
     }
 }
