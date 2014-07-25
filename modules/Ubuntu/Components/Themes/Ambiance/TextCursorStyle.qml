@@ -48,7 +48,8 @@ Item {
         id: delegate
         Rectangle {
             width: units.dp(2)
-            color: Theme.palette.selected.foreground
+            // FIXME: Fix the palette and use palette values here
+            color: UbuntuColors.blue
             visible: blinkTimer.timerShowCursor
             Timer {
                 id: blinkTimer
