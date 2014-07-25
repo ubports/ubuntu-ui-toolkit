@@ -37,6 +37,7 @@ public:
     bool pressed() const;
 
 protected:
+    void classBegin();
     void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
@@ -56,9 +57,10 @@ private:
     QScopedPointer<UCViewItemPrivate> d_ptr;
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
-    Q_PRIVATE_SLOT(d_func(), void _q_heightChanged())
-    Q_PRIVATE_SLOT(d_func(), void _q_guChanged())
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
 };
+
+// property binding
+void ucBindProperty(const QQmlProperty &target, const QString &script, QObject *src, QQmlContext *context = 0);
 
 #endif // UCVIEWITEM_H

@@ -32,8 +32,6 @@ public:
         Q_ASSERT(that);
         return that->d_ptr.data();
     }
-    void _q_heightChanged();
-    void _q_guChanged();
     void _q_rebound();
     void setPressed(bool pressed);
     void listenToRebind(bool listen);

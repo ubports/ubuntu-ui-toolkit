@@ -25,6 +25,10 @@ Item {
         width: parent.width
         ViewItem {
             id: defaults
+            onClicked: {
+                print("click")
+                units.gridUnit += 3;
+            }
         }
         ViewItem {
             id: testItem

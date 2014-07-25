@@ -29,6 +29,29 @@
 #include <QtQml/private/qqmlbinding_p.h>     // for QmlBinding
 #undef foreach
 
+/*
+ * The function creates a property binding between \c target and \c src
+ * objects' \c script using the given \c context if the target has no binding.
+ * If the context is 0, the source's context will be used.
+ */
+void ucBindProperty(const QQmlProperty &target, const QString &script, QObject *src, QQmlContext *context)
+{
+    QQmlAbstractBinding *prevBinding = QQmlPropertyPrivate::binding(target);
+    if (!prevBinding) {
+        // create new binding
+        if (!context) {
+            context = qmlContext(src);
+        }
+        QQmlBinding *newBinding = new QQmlBinding(script, src, context);
+        newBinding->setTarget(target);
+        prevBinding = QQmlPropertyPrivate::setBinding(target, newBinding);
+        if (prevBinding) {
+            // destroy any previous binding
+            prevBinding->destroy();
+        }
+    }
+}
+
 UCViewItemPrivate::UCViewItemPrivate(UCViewItem *qq)
     : q_ptr(qq)
     , background(new UCViewItemBackground)
@@ -43,21 +66,6 @@ UCViewItemPrivate::UCViewItemPrivate(UCViewItem *qq)
                      q_ptr, &UCViewItem::childrenChanged);
 }
 
-// get notified when width changes, so we disconnect from GU changes
-void UCViewItemPrivate::_q_heightChanged()
-{
-    // disconnect watch signals
-    Q_Q(UCViewItem);
-    QObject::disconnect(q, SIGNAL(heightChanged()), q, SLOT(_q_heightChanged()));
-    QObject::disconnect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_guChanged()));
-}
-// listen GU change and update height
-void UCViewItemPrivate::_q_guChanged()
-{
-    Q_Q(UCViewItem);
-    qreal height = UCUnits::instance().gu(6);
-    q->setImplicitHeight(height);
-}
 void UCViewItemPrivate::_q_rebound()
 {
     setPressed(false);
@@ -103,34 +111,31 @@ UCViewItem::UCViewItem(QQuickItem *parent)
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::LeftButton);
-    // set the implicit height to 6 GU, and watch when the GU changes as well when the width changes
-    d_ptr->_q_guChanged();
-    QObject::connect(this, SIGNAL(heightChanged()), this, SLOT(_q_heightChanged()));
-    QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(_q_guChanged()));
 }
 
 UCViewItem::~UCViewItem()
 {
 }
 
+// initialize height
+void UCViewItem::classBegin()
+{
+    QQuickItem::classBegin();
+
+    QQmlProperty heightProperty(this, "height", qmlContext(this));
+    // use the root context as the units is a context property
+    ucBindProperty(heightProperty, "units.gu(6)", &UCUnits::instance(), qmlEngine(this)->rootContext());
+}
+
 void UCViewItem::componentComplete()
 {
     QQuickItem::componentComplete();
+
     // bind parent's width
     Q_D(UCViewItem);
+    QQuickItem *item = d->flickable ? d->flickable : parentItem();
     QQmlProperty widthProperty(this, "width", qmlContext(this));
-    QQmlAbstractBinding *prevBinding = QQmlPropertyPrivate::binding(widthProperty);
-    if (!prevBinding) {
-        // do the binding, and bind to the Flickable if the items are embedded into a flickable
-        QQuickItem *item = d->flickable ? d->flickable : parentItem();
-        QQmlProperty parentWidth(item, "width", qmlContext(item));
-        QQmlBinding *binding = new QQmlBinding(parentWidth.name(), item, qmlContext(item));
-        binding->setTarget(widthProperty);
-        QQmlAbstractBinding *oldBinding = QQmlPropertyPrivate::setBinding(widthProperty, binding);
-        if (oldBinding) {
-            oldBinding->destroy();
-        }
-    }
+    ucBindProperty(widthProperty, "width", item);
 }
 
 void UCViewItem::itemChange(ItemChange change, const ItemChangeData &data)
