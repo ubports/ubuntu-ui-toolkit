@@ -31,7 +31,7 @@ for i in $(ls Ubuntu/Components/*.js 2>/dev/null); do
     adb push $i /usr/lib/$ARCH/qt5/qml/Ubuntu/Components/
 done
 cd ..
-for i in ListItems Pickers Popups Colors Styles Themes artwork; do
+for i in 10 11 ListItems Pickers Popups Colors Styles Themes artwork; do
     adb push modules/Ubuntu/Components/$i/ /usr/lib/$ARCH/qt5/qml/Ubuntu/Components/$i || exit 1
 done
 # Autopilot tests should always match the Toolkit
