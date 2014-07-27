@@ -133,9 +133,9 @@ void UCViewItem::componentComplete()
     QQuickItem::componentComplete();
 
     // bind parent's width
+    QQmlProperty widthProperty(this, "width", qmlContext(this));
     Q_D(UCViewItem);
     QQuickItem *item = d->flickable ? d->flickable : parentItem();
-    QQmlProperty widthProperty(this, "width", qmlContext(this));
     ucBindProperty(widthProperty, "width", item);
 }
 
