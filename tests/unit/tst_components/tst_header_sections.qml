@@ -76,4 +76,9 @@ UbuntuTestCase {
         page.head.sections.selectedIndex = 0;
         check_selected_button(count, 0);
     }
+
+    function test_warn_when_too_many_sections() {
+        ignoreWarning("It is not recommended or supported to use more than three sections in Page.head.sections.model.")
+        page.head.sections.model = ["1", "2", "3", "4"];
+    }
 }
