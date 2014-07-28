@@ -62,12 +62,6 @@ Style.PageHeadStyle {
                 model: separator.sections.model
                 objectName: "page_head_sections_repeater"
                 AbstractButton {
-                    Rectangle {
-                        anchors.fill: parent
-//                        color: Qt.rgba(1.0, 0.0, 0.0, 0.2)
-                        color: "transparent"
-                    }
-
                     id: sectionButton
                     anchors.verticalCenter: parent ? parent.verticalCenter : undefined
                     objectName: "section_button_" + index
