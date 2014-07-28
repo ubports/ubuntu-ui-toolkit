@@ -153,8 +153,11 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
             } else {
                 qmlInfo(item) << UbuntuI18n::instance().tr("property \"%1\" of "
                     "object %2 has type %3 and cannot be set to value \"%4\" of"
-                    " type %5")
-                                 .arg(propertyName).arg(qmlContext(item)->nameForObject(item)).arg(qmlProperty.propertyTypeName()).arg(value.toString()).arg(value.typeName());
+                    " type %5").arg(propertyName)
+                               .arg(qmlContext(item)->nameForObject(item))
+                               .arg(qmlProperty.propertyTypeName())
+                               .arg(value.toString())
+                               .arg(value.typeName());
             }
         } else {
             qmlInfo(item) << UbuntuI18n::instance().tr("property \"%1\" does not exist or is not writable for object %2")
