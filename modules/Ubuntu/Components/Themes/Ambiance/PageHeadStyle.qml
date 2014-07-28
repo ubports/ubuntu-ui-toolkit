@@ -79,9 +79,10 @@ Style.PageHeadStyle {
                         horizontalAlignment: Text.AlignHCenter
                         color: sectionButton.selected ?
                                    UbuntuColors.orange :
-                                   UbuntuColors.darkGrey
+                                   Theme.palette.selected.backgroundText
                     }
 
+                    // vertical divider line
                     Rectangle {
                         anchors {
                             verticalCenter: parent.verticalCenter
@@ -90,7 +91,7 @@ Style.PageHeadStyle {
                         height: units.dp(10)
                         width: units.dp(1)
                         visible: index < sectionsRepeater.model.length - 1
-                        color: UbuntuColors.darkGrey
+                        color: Theme.palette.selected.backgroundText
                         opacity: 0.2
                     }
                 }

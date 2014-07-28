@@ -29,7 +29,6 @@ MainView {
         Component.onCompleted: stack.push(tabs)
         Tabs {
             id: tabs
-            selectedTabIndex: 5
             Tab {
                 title: "Stack"
                 page: Page {
