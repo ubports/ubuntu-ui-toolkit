@@ -69,7 +69,7 @@ QtObject {
     property var model
     onModelChanged: {
         if (model && model.length > 3) {
-            print("It is not supported or recommended to use more than three sections in the header.");
+            print("It is not supported or recommended to use more than three sections in Page.head.sections.model.");
         }
     }
 
