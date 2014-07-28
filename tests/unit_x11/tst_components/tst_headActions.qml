@@ -18,7 +18,6 @@ import QtQuick 2.2
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.1
 
-
 // NOTE: Other parts of the page head API are tested with autopilot in
 // ubuntuuitoolkit.tests.components.test_header
 
