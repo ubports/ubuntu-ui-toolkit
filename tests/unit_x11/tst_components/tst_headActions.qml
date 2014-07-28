@@ -67,8 +67,8 @@ Item {
 
         function initTestCase() {
             testCase.app_header = findChild(mainView, "MainView_Header");
-            testCase.back_button = findChild(testCase.app_header, "backButton");
-            testCase.custom_back_button = findChild(testCase.app_header, "customBackButton");
+            testCase.back_button = findChild(app_header, "backButton");
+            testCase.custom_back_button = findChild(app_header, "customBackButton");
 
             compare(page2.head.backAction, null, "Back action set by default.");
             compare(back_button.visible, false, "Back button visible with only 1 page on the stack.");
