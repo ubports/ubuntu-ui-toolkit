@@ -19,7 +19,7 @@ import Ubuntu.Components 1.0
 
 /*!
    \internal
-   Documentation in Button11.qdoc
+   Documentation in 10/Button.qml
 */
 AbstractButton {
     id: button
@@ -46,21 +46,6 @@ AbstractButton {
       The font used for the button's text.
     */
     property font font: __styleInstance ? __styleInstance.defaultFont : Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
-
-    /*!
-       The source URL of the icon to display inside the button.
-       Leave this value blank for a text-only button.
-       If \l action is set, the default iconSource is that of the action.
-       \qmlproperty url iconSource
-    */
-
-    /*!
-       The text to display in the button. If an icon was defined,
-       the text will be shown next to the icon, otherwise it will
-       be centered. Leave blank for an icon-only button.
-       If \l action is set, the default text is that of the action.
-       \qmlproperty string text
-    */
 
     /*!
        The position of the icon relative to the text. Options
