@@ -14,13 +14,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    from unittest import mock
-except ImportError:
-    import mock
-
-from autopilot import platform
-
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
