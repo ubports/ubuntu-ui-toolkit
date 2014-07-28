@@ -19,7 +19,7 @@ import Ubuntu.Test 1.0
 import Ubuntu.Components 1.1
 
 
-// NOTE: Other parts of the page head API are being tested with autopilot in
+// NOTE: Other parts of the page head API are tested with autopilot in
 // ubuntuuitoolkit.tests.components.test_header
 
 Item {
@@ -86,8 +86,8 @@ Item {
         function test_custom_back_button() {
             page2.head.backAction = customBackAction;
             pageStack.push(page2);
-            compare(back_button.visible, false, "Default back button visible with custom back action set.");
-            compare(custom_back_button.visible, true, "Custom back button invisible with back action set.");
+            compare(back_button.visible, false, "Default back button visible with custom back action.");
+            compare(custom_back_button.visible, true, "Custom back button invisible with back action.");
             pageStack.pop();
             page2.head.backAction = null;
         }
@@ -95,7 +95,7 @@ Item {
         function test_no_back_button() {
             page2.head.backAction = invisibleAction;
             pageStack.push(page2);
-            compare(back_button.visible, false, "Default back button visible with invisible custom back action set.");
+            compare(back_button.visible, false, "Default back button visible with invisible custom back action.");
             compare(custom_back_button.visible, false, "Custom back button visible with invisible custom back action.");
             pageStack.pop();
             page2.head.backAction = null;
