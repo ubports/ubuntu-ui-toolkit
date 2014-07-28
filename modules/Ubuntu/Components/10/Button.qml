@@ -19,7 +19,7 @@ import Ubuntu.Components 1.0
 
 /*!
    \internal
-   Documentation in 10/Button.qml
+   Documentation in 11/Button.qml
 */
 AbstractButton {
     id: button
