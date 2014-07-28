@@ -48,58 +48,11 @@ MainView {
         self.simple_text_area = self.main_view.select_single(
             ubuntuuitoolkit.TextArea, objectName='simple_text_area')
 
-    def test_text_area_custom_proxy_object(self):
-        self.assertIsInstance(
-            self.simple_text_area, ubuntuuitoolkit.TextArea)
-
-    def test_write(self):
-        self.simple_text_area.write('test')
-        self.assertEqual(self.simple_text_area.text, 'test')
+    def test_text_area_inherits_text_field(self):
+        self.assertTrue(
+            issubclass(ubuntuuitoolkit.TextArea, ubuntuuitoolkit.TextField))
 
     def test_clear(self):
         self.simple_text_area.write('test')
         self.simple_text_area.clear()
         self.assertEqual(self.simple_text_area.text, '')
-
-    def test_clear_and_write(self):
-        self.simple_text_area.write('test1')
-        self.simple_text_area.write('test2')
-        self.assertEqual(self.simple_text_area.text, 'test2')
-
-    def test_write_without_clear(self):
-        self.simple_text_area.write('test1')
-        self.simple_text_area.write('test2', clear=False)
-        self.assertEqual(self.simple_text_area.text, 'test1test2')
-
-    def test_write_without_clear_writes_at_the_end(self):
-        self.simple_text_area.write(
-            'long text that will fill more than half of the text area.')
-        self.simple_text_area.write('append', clear=False)
-        self.assertEqual(
-            self.simple_text_area.text,
-            'long text that will fill more than half of the text area.append')
-
-    def test_is_empty(self):
-        self.assertTrue(self.simple_text_area.is_empty())
-        self.simple_text_area.write('test')
-        self.assertFalse(self.simple_text_area.is_empty())
-
-    def test_select_all_selects_all_text(self):
-        if platform.model() != 'Desktop':
-            self.skipTest('Select all is not yet implemented on the phone.')
-        self.simple_text_area.write('Text to select.')
-        self.simple_text_area._select_all()
-
-        self.assertTrue(self.simple_text_area._is_all_text_selected())
-
-    def test_select_all_when_already_selected_must_do_nothing(self):
-        """Test for select all the text when it's already selected."""
-        if platform.model() != 'Desktop':
-            self.skipTest('Select all is not yet implemented on the phone.')
-        self.simple_text_area.write('Text to select.')
-        self.simple_text_area._select_all()
-        with mock.patch.object(
-                self.simple_text_area, 'pointing_device') as mock_device:
-            self.simple_text_area._select_all()
-
-        self.assertFalse(mock_device.called)
