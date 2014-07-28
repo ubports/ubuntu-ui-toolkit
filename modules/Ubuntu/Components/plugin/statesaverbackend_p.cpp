@@ -190,6 +190,8 @@ int StateSaverBackend::save(const QString &id, QObject *item, const QStringList 
                  * Setting these strings to QML properties usually works because the
                  * implicit type conversion from string to the type of the QML property
                  * usually works. In some cases cases however (e.g. enum) it fails.
+                 *
+                 * See Qt Bug: https://bugreports.qt-project.org/browse/QTBUG-40474
                  */
                 m_archive.data()->setValue(propertyName + "_TYPE", QVariant::fromValue((int)value.type()));
                 result++;
