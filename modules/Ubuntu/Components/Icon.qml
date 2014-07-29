@@ -90,10 +90,13 @@ Item {
         Component.onCompleted: ready = true
 
         anchors.fill: parent
-        source: ready && width > 0 && height > 0 && icon.name ? "image://theme/%1".arg(icon.name) : ""
+        source: ready && width > 0 && height > 0 && icon.name ? "image://theme/%1".arg(icon.name)
+                                                              : ""
         sourceSize {
-            width: width
-            height: height
+            // Take the width/height of the requested image with a minimum of 8 to avoid
+            // image provider errors, see bug #1349769.
+            width: Math.max(width, 8)
+            height: Math.max(height, 8)
         }
         cache: true
         visible: !colorizedImage.active
