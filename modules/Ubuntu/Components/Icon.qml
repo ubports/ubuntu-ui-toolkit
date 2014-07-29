@@ -120,8 +120,8 @@ Item {
         sourceSize {
             // Take the width/height of the requested image with a minimum of 8 to avoid
             // image provider errors, see bug #1349769.
-            width: width //Math.max(width, 8)
-            height: height //Math.max(height, 8)
+            width: 0 //width //Math.max(width, 8)
+            height: 0 //height //Math.max(height, 8)
         }
         cache: true
         visible: !colorizedImage.active
