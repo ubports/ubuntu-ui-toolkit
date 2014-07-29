@@ -46,6 +46,12 @@ QtObject
     readonly property color coolGrey
     property Gradient orangeGradient
     property Gradient greyGradient
+    readonly property color lightGrey
+    readonly property color darkGrey
+    readonly property color red
+    readonly property color green
+    readonly property color blue
+    readonly property color purple
 ComboButton 1.1
 Button
     property bool expanded
@@ -247,10 +253,16 @@ Page 1.1
 Page10
     readonly property PageHeadConfiguration head
 PageHeadConfiguration 1.1
-QtObject
+Object
     property list<Action> actions
     property Action backAction
     property Item contents
+    readonly property PageHeadSections sections
+PageHeadSections 1.1
+QtObject
+    property bool enabled
+    property var model
+    property int selectedIndex
 PageHeadState 1.1
 State
     property PageHeadConfiguration head
@@ -398,6 +410,9 @@ AnimatedItem
     property real minimumValue
     property real maximumValue
     property real value
+ProgressBar 1.1
+ProgressBar
+    property bool showProgressPercentage
 PullToRefresh 1.1
 StyledItem
     readonly property bool releaseToRefresh
@@ -620,6 +635,7 @@ QtObject
     property color overlayText
     property color field
     property color fieldText
+    property color selection
 ToolbarButton 0.1 1.0
 ActionItem
 ToolbarItems 0.1 1.0
@@ -657,6 +673,7 @@ TestCase
     function flick(item, x, y, dx, dy, pressTimeout, steps, button, modifiers, delay)
     function mouseLongPress(item, x, y, button, modifiers, delay)
     function tryCompareFunction(func, expectedResult, timeout)
+    function typeString(string)
 plugins.qmltypes
     name: "FilterBehavior"
     prototype: "QObject"

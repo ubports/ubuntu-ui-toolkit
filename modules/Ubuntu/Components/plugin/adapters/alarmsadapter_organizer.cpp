@@ -57,17 +57,14 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     , fetchRequest(0)
 {
     QString envManager(qgetenv("ALARM_BACKEND"));
-    if (!envManager.isEmpty() && QOrganizerManager::availableManagers().contains(envManager)) {
-        manager = new QOrganizerManager(envManager);
-    } else {
-        manager = QOrganizerManager::availableManagers().contains(ALARM_MANAGER) ?
-                    new QOrganizerManager(ALARM_MANAGER) : new QOrganizerManager(ALARM_MANAGER_FALLBACK);
+    if (envManager.isEmpty())
+        envManager = ALARM_MANAGER;
+    if (!QOrganizerManager::availableManagers().contains(envManager)) {
+        qWarning() << "WARNING: alarm manager" << envManager << "not installed, using" << QString(ALARM_MANAGER_FALLBACK);
+        envManager = ALARM_MANAGER_FALLBACK;
     }
+    manager = new QOrganizerManager(envManager);
     manager->setParent(q_ptr);
-    if (manager->managerName() != ALARM_MANAGER) {
-        qWarning() << "WARNING: default alarm manager not installed, using" << manager->managerName() << "manager.";
-        qWarning() << "This manager may not provide all the needed features.";
-    }
 
     QList<QOrganizerCollection> collections = manager->collections();
     if (collections.count() > 0) {

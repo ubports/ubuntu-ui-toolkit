@@ -20,7 +20,13 @@ import Ubuntu.Components 0.1
 TemplateSection {
     id: section
     property alias delegate: repeater.delegate
-    documentation: "qml-ubuntu-components-listitems0-%1.html".arg(className.toLowerCase())
+    property alias count: repeater.count
+    documentation: "qml-ubuntu-components-listitems-%1.html".arg(className.toLowerCase())
+
+    function itemAt(index)
+    {
+       return repeater.itemAt(index)
+    }
 
     Column {
         id: column

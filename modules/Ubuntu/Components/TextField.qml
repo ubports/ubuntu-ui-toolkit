@@ -979,7 +979,7 @@ ActionItem {
             }
             color: control.__styleInstance.color
             selectedTextColor: Theme.palette.selected.foregroundText
-            selectionColor: Theme.palette.selected.foreground
+            selectionColor: Theme.palette.selected.selection
             font.pixelSize: FontUtils.sizeToPixels("medium")
             passwordCharacter: "\u2022"
             // forward keys to the root element so it can be captured outside of it

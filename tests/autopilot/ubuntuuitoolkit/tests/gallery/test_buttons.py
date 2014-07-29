@@ -23,6 +23,8 @@ from testtools.matchers import Equals
 from ubuntuuitoolkit import ubuntu_scenarios
 from ubuntuuitoolkit.tests import gallery
 
+import os
+
 
 class ButtonsTestCase(gallery.GalleryTestCase):
 
@@ -50,6 +52,11 @@ class ButtonsTestCase(gallery.GalleryTestCase):
     scenarios = testscenarios.multiply_scenarios(
         ubuntu_scenarios.get_device_simulation_scenarios(),
         buttons_scenarios)
+
+    def setUp(self):
+        # Reset the locale to English
+        os.environ['LANGUAGE'] = 'en'
+        super(ButtonsTestCase, self).setUp()
 
     def test_buttons(self):
         self.open_page('buttonsElement')
