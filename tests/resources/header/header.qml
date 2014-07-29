@@ -184,7 +184,7 @@ MainView {
                     id: sectionsPage
                     head {
                         sections {
-                            model: ["navy", "lightblue", "brown", "cyan", "darkgrey"]
+                            model: ["navy", "lightblue", "brown"]
                         }
                     }
                     Rectangle {
