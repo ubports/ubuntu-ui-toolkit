@@ -24,41 +24,12 @@ import Ubuntu.Components 1.0
 AbstractButton {
     id: button
 
-    /*!
-       The background color of the button.
-
-       \sa gradient
-    */
     property color color: __styleInstance.defaultColor
 
-    /*!
-       The gradient used to fill the background of the button.
-
-       Standard Ubuntu gradients are defined in \l UbuntuColors.
-
-       If both a gradient and a color are specified, the gradient will be used.
-
-       \sa color
-    */
     property Gradient gradient: __styleInstance.defaultGradient
 
-    /*!
-      The font used for the button's text.
-    */
     property font font: __styleInstance ? __styleInstance.defaultFont : Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
 
-    /*!
-       The position of the icon relative to the text. Options
-       are "left" and "right". The default value is "left".
-
-       If only text or only an icon is defined, this
-       property is ignored and the text or icon is
-       centered horizontally and vertically in the button.
-
-       Currently this is a string value. We are waiting for
-       support for enums:
-       https://bugreports.qt-project.org/browse/QTBUG-14861
-    */
     property string iconPosition: "left"
 
     style: Theme.createStyleComponent("ButtonStyle.qml", button)
