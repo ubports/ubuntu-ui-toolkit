@@ -86,17 +86,42 @@ Item {
         id: image
 
         /* Necessary so that icons are not loaded before a size is set. */
-        property bool ready: false
-        Component.onCompleted: ready = true
+//        property bool ready: width > 0 && height > 0 && icon.name
+//        Component.onCompleted: ready = true
+
+        Component.onCompleted: setSource()
+        onWidthChanged: setSource()
+        onHeightChanged: setSource()
+        Connections {
+            target: icon
+            onNameChanged: image.setSource()
+        }
+
+        function setSource() {
+//            print("Setting source. ready = "+ready)
+//            if (ready) {
+            if (width > 0 && height > 0 && icon.name) {
+                print("width = "+width)
+                print("height = "+height)
+                sourceSize.width = width;
+                sourceSize.height = height;
+                source = "image://theme/%1".arg(icon.name);
+            } else {
+                print("NULLLLLLLLLLLLLLLLLLLLLLLLLL");
+                source = "";
+                sourceSize.width = 0;
+                sourceSize.height = 0;
+            }
+        }
 
         anchors.fill: parent
-        source: ready && width > 0 && height > 0 && icon.name ? "image://theme/%1".arg(icon.name)
-                                                              : ""
+        source: ""//ready && width > 0 && height > 0 && icon.name ? "image://theme/%1".arg(icon.name)
+//                                                              : ""
         sourceSize {
             // Take the width/height of the requested image with a minimum of 8 to avoid
             // image provider errors, see bug #1349769.
-            width: Math.max(width, 8)
-            height: Math.max(height, 8)
+            width: width //Math.max(width, 8)
+            height: height //Math.max(height, 8)
         }
         cache: true
         visible: !colorizedImage.active
