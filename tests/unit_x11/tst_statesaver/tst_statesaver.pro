@@ -26,4 +26,5 @@ OTHER_FILES += \
     RepeaterStates.qml \
     ListViewItems.qml \
     GridViewItems.qml \
-    NormalAppClose.qml
+    NormalAppClose.qml \
+    SaveEnum.qml
