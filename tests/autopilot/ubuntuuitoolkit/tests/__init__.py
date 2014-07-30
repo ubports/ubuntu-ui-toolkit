@@ -39,6 +39,10 @@ def _write_test_desktop_file():
     desktop_file_dir = get_local_desktop_file_directory()
     if not os.path.exists(desktop_file_dir):
         os.makedirs(desktop_file_dir)
+    # Strip underscores which look like an APP_ID to Unity
+    # See https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1329141
+    chars = tempfile._RandomNameSequence.characters.strip("_")
+    tempfile._RandomNameSequence.characters = chars
     desktop_file = tempfile.NamedTemporaryFile(
         suffix='.desktop', dir=desktop_file_dir, delete=False)
     desktop_file.write(_DESKTOP_FILE_CONTENTS.encode('utf-8'))

@@ -44,13 +44,15 @@ Style.PageHeadStyle {
             right: parent.right
         }
         source: headerStyle.separatorSource
+        height: sectionsRow.visible ? units.gu(3) : units.gu(2)
 
         property PageHeadSections sections: styledItem.config.sections
 
         Row {
             id: sectionsRow
-            property int itemWidth: sectionsRow.width / sectionsRepeater.count
-            anchors.fill: parent
+            anchors.centerIn: parent
+            width: childrenRect.width
+            height: parent.height
             enabled: separator.sections.enabled
             visible: separator.sections.model !== undefined
             opacity: enabled ? 1.0 : 0.5
@@ -61,21 +63,36 @@ Style.PageHeadStyle {
                 objectName: "page_head_sections_repeater"
                 AbstractButton {
                     id: sectionButton
+                    anchors.verticalCenter: parent ? parent.verticalCenter : undefined
                     objectName: "section_button_" + index
                     enabled: sectionsRow.enabled
-                    width: sectionsRow.itemWidth
-                    height: sectionsRow.height
+                    width: label.width + units.gu(4)
+                    height: sectionsRow.height + units.gu(2)
                     property bool selected: index === separator.sections.selectedIndex
                     onClicked: separator.sections.selectedIndex = index;
 
                     Label {
+                        id: label
                         text: modelData
                         fontSize: "small"
-                        anchors.fill: parent
+                        anchors.centerIn: sectionButton
                         horizontalAlignment: Text.AlignHCenter
                         color: sectionButton.selected ?
-                                   Theme.palette.normal.backgroundText :
+                                   UbuntuColors.orange :
                                    Theme.palette.selected.backgroundText
+                    }
+
+                    // vertical divider line
+                    Rectangle {
+                        anchors {
+                            verticalCenter: parent.verticalCenter
+                            right: parent.right
+                        }
+                        height: units.dp(10)
+                        width: units.dp(1)
+                        visible: index < sectionsRepeater.model.length - 1
+                        color: Theme.palette.selected.backgroundText
+                        opacity: 0.2
                     }
                 }
             }
@@ -101,22 +118,17 @@ Style.PageHeadStyle {
         width: childrenRect.width
         height: headerStyle.contentHeight
 
-        AbstractButton {
+        PageHeadButton {
             id: customBackButton
             objectName: "customBackButton"
-            height: parent ? parent.height : undefined
-            width: visible ? units.gu(5) : 0
             action: styledItem.config.backAction
             visible: null !== styledItem.config.backAction &&
                      styledItem.config.backAction.visible
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
         }
 
-        AbstractButton {
+        PageHeadButton {
             id: backButton
             objectName: "backButton"
-            height: parent ? parent.height : undefined
-            width: visible ? units.gu(5) : 0
 
             iconName: "back"
             visible: styledItem.pageStack !== null &&
@@ -125,18 +137,15 @@ Style.PageHeadStyle {
                      !customBackButton.visible
 
             text: "back"
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
 
             onTriggered: {
                 styledItem.pageStack.pop();
             }
         }
 
-        AbstractButton {
+        PageHeadButton {
             id: tabsButton
             objectName: "tabsButton"
-            height: parent ? parent.height : undefined
-            width: visible ? units.gu(5) : 0
 
             iconName: "navigation-menu"
             visible: styledItem.tabsModel !== null &&
@@ -144,7 +153,6 @@ Style.PageHeadStyle {
                      !backButton.visible &&
                      !customBackButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", tabsButton)
 
             onTriggered: {
                 tabsPopover.show();
@@ -268,23 +276,19 @@ Style.PageHeadStyle {
 
         Repeater {
             model: numberOfSlots.used
-            AbstractButton {
+            PageHeadButton {
                 id: actionButton
                 objectName: action.objectName + "_header_button"
                 action: actionsContainer.visibleActions[index]
-                style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionButton)
-                width: units.gu(5)
-                height: actionsContainer.height
             }
         }
 
-        AbstractButton {
+        PageHeadButton {
             id: actionsOverflowButton
             objectName: "actions_overflow_button"
             visible: numberOfSlots.requested > numberOfSlots.right
             iconName: "contextual-menu"
             width: visible ? units.gu(5) : 0
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionsOverflowButton)
             height: actionsContainer.height
             onTriggered: actionsOverflowPopover.show()
 
