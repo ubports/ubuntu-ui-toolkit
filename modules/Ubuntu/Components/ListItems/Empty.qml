@@ -292,7 +292,10 @@ AbstractButton {
         id: highlight
 
         z: -1
-        visible: !priv.removed && emptyListItem.swipingState === "" ? emptyListItem.selected || (emptyListItem.highlightWhenPressed && emptyListItem.pressed) : false
+        visible: !priv.removed && emptyListItem.swipingState === ""
+                 ? emptyListItem.selected
+                   || (emptyListItem.highlightWhenPressed && emptyListItem.pressed)
+                 : false
         anchors {
             left: parent.left
             right: parent.right
