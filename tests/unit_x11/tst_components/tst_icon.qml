@@ -43,7 +43,6 @@ Item {
             width: visible ? units.gu(10) : 0
             height: width
             name: "search"
-
         }
     }
 
