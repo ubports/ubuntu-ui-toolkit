@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 1.1
 
 // FIXME : move the API into Ubuntu.Components.Style
 Item {
@@ -48,7 +49,7 @@ Item {
         id: delegate
         Rectangle {
             width: units.dp(2)
-            // FIXME: Fix the palette and use palette values here
+            // FIXME: Extend the palette and use palette values here
             color: UbuntuColors.blue
             visible: blinkTimer.timerShowCursor
             Timer {

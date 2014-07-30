@@ -50,7 +50,6 @@ Item {
         Rectangle {
             width: units.dp(1)
             // FIXME: Add a new color to the palette
-            // FIXME TIM: there is a warning
             color: UbuntuColors.blue
         }
     }
