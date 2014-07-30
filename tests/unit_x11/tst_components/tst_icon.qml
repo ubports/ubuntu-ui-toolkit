@@ -53,7 +53,7 @@ Item {
         function test_updateIconSize_bug1349769() {
             icon.visible = false;
             // causes "QML Image: Failed to get image from provider: image://theme/search"
-            // warning and when sourceSize.width or sourceSize.height becomes 0 while
+            // warning when sourceSize.width or sourceSize.height becomes 0 while
             // while still trying to render the icon. Tests will pass with the warning, but
             // the MR is rejected by jenkins continuous integration.
         }
