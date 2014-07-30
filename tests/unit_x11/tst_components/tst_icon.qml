@@ -22,50 +22,41 @@ Item {
     width: units.gu(50)
     height: units.gu(50)
 
-//    id: root
-//    property real listViewHeaderHeight: units.gu(5)
-
     Row {
         anchors.centerIn: parent
         height: units.gu(10)
         width: childrenRect.width
 
         Icon {
-            // fails loading the icon when suru-icon-theme or
-            // libqt5svg5 are not installed
+            // Fails to load the icon when suru-icon-theme or libqt5svg5 are
+            // not installed. This causes a warning and rejection
+            // by jenkins continuous integration.
             name: "add"
             height: parent.height
             width: height
         }
         Icon {
-            visible: false
+            // Fails when the icon is becoming invisible when non-atomic updates
+            // cause sourceSize.width or sourceSize.height to be 0 before other
+            // properties are updated.
             id: icon
             width: visible ? units.gu(10) : 0
-            height: visible ? units.gu(10) : 0
+            height: width
             name: "search"
-            //                sourceSize {
-            //                    width: icon.width
-            //                    height: icon.height
-            //                }
+
         }
-
     }
-    Component.onCompleted: icon.visible = true
 
+    TestCase {
+        name: "Icon"
+        when: windowShown
 
-
-//    TestCase {
-//        name: "HeaderAlignment"
-//        when: windowShown
-
-//        function test_ListViewHeaderAlignment_bug1202277() {
-//            compare(listView.contentY, -root.listViewHeaderHeight - mainViewHeader.__propagated.header.height,
-//                    "ListView header is aligned with the MainView header");
-//        }
-
-//        function test_WrappedListViewHeaderAlignment_bug1261907() {
-//            compare(wrappedListView.contentY, -root.listViewHeaderHeight - mainViewHeader.__propagated.header.height,
-//                    "ListView header inside wrapped Page is aligned with the MainView header");
-//        }
-//    }
+        function test_updateIconSize_bug1349769() {
+            icon.visible = false;
+            // causes "QML Image: Failed to get image from provider: image://theme/search"
+            // warning and when sourceSize.width or sourceSize.height becomes 0 while
+            // while still trying to render the icon. Tests will pass with the warning, but
+            // the MR is rejected by jenkins continuous integration.
+        }
+    }
 }
