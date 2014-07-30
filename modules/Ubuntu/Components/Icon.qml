@@ -84,45 +84,37 @@ Item {
 
     Image {
         id: image
+        anchors.fill: parent
 
         /* Necessary so that icons are not loaded before a size is set. */
-//        property bool ready: width > 0 && height > 0 && icon.name
-//        Component.onCompleted: ready = true
-
-        Component.onCompleted: setSource()
-        onWidthChanged: setSource()
-        onHeightChanged: setSource()
-        Connections {
-            target: icon
-            onNameChanged: image.setSource()
+        source: ""
+        sourceSize {
+            width: 0
+            height: 0
         }
 
-        function setSource() {
-//            print("Setting source. ready = "+ready)
-//            if (ready) {
+        Component.onCompleted: update()
+        onWidthChanged: update()
+        onHeightChanged: update()
+        Connections {
+            target: icon
+            onNameChanged: image.update()
+        }
+
+        function update() {
+            // only set sourceSize.width, sourceSize.height and source when
+            // icon dimensions are valid, see bug #1349769.
             if (width > 0 && height > 0 && icon.name) {
-                print("width = "+width)
-                print("height = "+height)
                 sourceSize.width = width;
                 sourceSize.height = height;
                 source = "image://theme/%1".arg(icon.name);
             } else {
-                print("NULLLLLLLLLLLLLLLLLLLLLLLLLL");
                 source = "";
                 sourceSize.width = 0;
                 sourceSize.height = 0;
             }
         }
 
-        anchors.fill: parent
-        source: ""//ready && width > 0 && height > 0 && icon.name ? "image://theme/%1".arg(icon.name)
-//                                                              : ""
-        sourceSize {
-            // Take the width/height of the requested image with a minimum of 8 to avoid
-            // image provider errors, see bug #1349769.
-            width: 0 //width //Math.max(width, 8)
-            height: 0 //height //Math.max(height, 8)
-        }
         cache: true
         visible: !colorizedImage.active
     }
