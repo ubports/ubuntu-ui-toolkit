@@ -115,7 +115,7 @@ ActionItem {
     property bool highlighted: focus
 
     /*!
-      Text that appears when there is no focus and no content in the component.
+      Text that appears when there is no content in the component.
 
       \qmlproperty string placeholderText
     */

@@ -33,7 +33,7 @@ done
 echo modules/Ubuntu/Components/qmldir '->' /usr/lib/$ARCH/qt5/qml/Ubuntu/Components/
 adb push Ubuntu/Components/qmldir /usr/lib/$ARCH/qt5/qml/Ubuntu/Components/
 cd ..
-for i in ListItems Pickers Popups Colors Styles Themes artwork; do
+for i in 10 11 ListItems Pickers Popups Colors Styles Themes artwork; do
     adb push modules/Ubuntu/Components/$i/ /usr/lib/$ARCH/qt5/qml/Ubuntu/Components/$i || exit 1
 done
 # Autopilot tests should always match the Toolkit

@@ -36,8 +36,10 @@
 #include <signal.h>
 
 #define protected public
+#define private public
 #include "ucstatesaver.h"
 #include "statesaverbackend_p.h"
+#undef private
 #undef protected
 
 class tst_StateSaverTest : public QObject
@@ -59,6 +61,8 @@ private:
     {
         Q_EMIT StateSaverBackend::instance().initiateStateSaving();
         view.reset();
+        // Make sure that the state is reloaded from file
+        StateSaverBackend::instance().m_archive.data()->sync();
         view.reset(new UbuntuTestCase(file));
     }
 
@@ -66,6 +70,8 @@ private:
     {
         Q_EMIT StateSaverBackend::instance().initiateStateSaving();
         view.reset();
+        // Make sure that the state is reloaded from file
+        StateSaverBackend::instance().m_archive.data()->sync();
         view.reset(createView(file));
     }
 
@@ -169,6 +175,31 @@ private Q_SLOTS:
         Q_FOREACH(const QString &property, properties) {
             QVERIFY2(testItem->property(property.toLocal8Bit().constData()) == values.value(property), QString("verifying %1").arg(property).toLocal8Bit().constData());
         }
+    }
+
+    void test_SaveEnum()
+    {
+        /* This test is important because when saving the value of an enum
+         * property to QSettings, it is deserialized as a string. Setting that
+         * string value to an enum property fails and therefore the state
+         * restoration does not work.
+         * In most cases implicit type conversion from string to the appropriate
+         * type works.
+         */
+        QScopedPointer<QQuickView> view(createView("SaveEnum.qml"));
+        QVERIFY(view);
+        QObject *testItem = view->rootObject();
+        QVERIFY(testItem);
+
+        testItem->setProperty("horizontalAlignment", Qt::AlignRight);
+
+        resetView(view, "SaveEnum.qml");
+        QVERIFY(view);
+        testItem = view->rootObject();
+        QVERIFY(testItem);
+
+
+        QVERIFY(testItem->property("horizontalAlignment") == Qt::AlignRight);
     }
 
     void test_SavePropertyGroup()
