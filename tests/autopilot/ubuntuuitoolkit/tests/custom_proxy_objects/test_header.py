@@ -24,14 +24,14 @@ import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
 
-class HeaderTestCase(tests.QMLFileAppTestCase):
+class ActionsTestCase(tests.QMLFileAppTestCase):
 
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
     tools_test_qml_file_path = os.path.join(
-        dir_path, 'test_header.HeaderToolsTestCase.qml')
+        dir_path, 'test_header.ToolsTestCase.qml')
     actions_test_qml_file_path = os.path.join(
-        dir_path, 'test_header.HeaderActionsTestCase.qml')
+        dir_path, 'test_header.ActionsTestCase.qml')
 
     scenarios = [
         ('deprecated tools',
@@ -41,7 +41,7 @@ class HeaderTestCase(tests.QMLFileAppTestCase):
     ]
 
     def setUp(self):
-        super(HeaderTestCase, self).setUp()
+        super(ActionsTestCase, self).setUp()
         self.header = self.main_view.get_header()
         self.label = self.app.select_single(
             'Label', objectName='clicked_label')
@@ -85,7 +85,6 @@ class HeaderTestCase(tests.QMLFileAppTestCase):
     def test_overflow_button(self):
         # there are 5 actions plus a custom back action
         overflow_button = self.header.select_single(
-            'AbstractButton',
             objectName='actions_overflow_button')
         self.assertEqual(overflow_button.visible, True)
 
@@ -96,6 +95,73 @@ class HeaderTestCase(tests.QMLFileAppTestCase):
 
         # only three actions are visible
         self.assertEqual(overflow_button.visible, False)
+
+
+class SectionsTestCase(tests.QMLFileAppTestCase):
+
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_header.SectionsTestCase.qml')
+
+    def setUp(self):
+        super(SectionsTestCase, self).setUp()
+        self.header = self.main_view.get_header()
+        # initially, section 0 is selected
+        self.assertEqual(self.header.get_selected_section_index(), 0)
+
+    def test_select_sections(self):
+        for index in [1, 0, 2]:
+            self.header.switch_to_section_by_index(index)
+            self.assertEqual(self.header.get_selected_section_index(), index)
+
+    def test_select_sections_with_sections_disabled(self):
+        sectionsEnabledSwitch = self.app.select_single(
+            'CheckBox', objectName='sections_enabled_switch')
+        sectionsEnabledSwitch.uncheck()
+        for index in [1, 0, 2]:
+            self.header.switch_to_section_by_index(index)
+            # cannot change section by tapping the section name in divider
+            self.assertEqual(self.header.get_selected_section_index(), 0)
+
+
+class DeprecatedHeaderSectionsTestCase(tests.QMLFileAppTestCase):
+
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_header.DeprecatedHeaderSectionsTestCase.qml')
+
+    def setUp(self):
+        super(DeprecatedHeaderSectionsTestCase, self).setUp()
+        self.header = self.main_view.get_header()
+
+    def test_get_selection_index(self):
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException,
+            self.header.get_selected_section_index)
+        self.assertEqual(
+            str(error),
+            'Old header has no sections')
+
+    def test_select_sections(self):
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException,
+            self.header.switch_to_section_by_index, 1)
+        self.assertEqual(
+            str(error),
+            'Old header has no sections')
+
+    def test_select_sections_with_sections_disabled(self):
+        sectionsEnabledSwitch = self.app.select_single(
+            'CheckBox', objectName='sections_enabled_switch')
+        sectionsEnabledSwitch.uncheck()
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException,
+            self.header.switch_to_section_by_index, 1)
+        self.assertEqual(
+            str(error),
+            'Old header has no sections')
 
 
 class CustomMainView(ubuntuuitoolkit.MainView):

@@ -28,9 +28,6 @@ class OptionSelectorTestCase(GalleryTestCase):
     def setUp(self):
         super(OptionSelectorTestCase, self).setUp()
         self.open_page('optionSelectorsElement')
-        # Start with the toolbar closed to make the full page visible and be
-        # able to swipe it.
-        self.main_view.close_toolbar()
 
     def test_select_option_from_collapsed_optionselector(self):
         collapsed_option_selector = self.main_view.select_single(

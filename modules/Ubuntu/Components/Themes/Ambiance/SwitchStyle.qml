@@ -58,8 +58,8 @@ Item {
                 bottomMargin: switchStyle.thumbPadding
             }
 
-            color: styledItem.checked ? Theme.palette.selected.foreground
-                                      : Theme.palette.normal.foreground
+            color: styledItem.checked ? UbuntuColors.green
+                                      : Qt.rgba(0, 0, 0, 0.2)
 
             Behavior on x {
                 UbuntuNumberAnimation {
@@ -117,7 +117,7 @@ Item {
                 }
                 progress: MathUtils.clamp((thumb.x - parent.x - x) / width, 0.0, 1.0)
                 leftColor: "transparent"
-                rightColor: Theme.palette.selected.foregroundText
+                rightColor: Theme.palette.normal.foregroundText
             }
         }
 
@@ -138,7 +138,7 @@ Item {
                     source: "artwork/tick.png"
                 }
                 progress: MathUtils.clamp((thumb.x + thumb.width - parent.x - x) / width, 0.0, 1.0)
-                leftColor: Theme.palette.selected.foregroundText
+                leftColor: Theme.palette.normal.foregroundText
                 rightColor: "transparent"
             }
         }

@@ -33,6 +33,13 @@ AbstractButton
     property Gradient gradient
     property font font
     property string iconPosition
+Button 1.1
+AbstractButton
+    property color strokeColor
+    property color color
+    property Gradient gradient
+    property font font
+    property string iconPosition
 CheckBox 0.1 1.0
 AbstractButton
     property bool checked
@@ -259,10 +266,16 @@ Page 1.1
 Page10
     readonly property PageHeadConfiguration head
 PageHeadConfiguration 1.1
-QtObject
+Object
     property list<Action> actions
     property Action backAction
     property Item contents
+    readonly property PageHeadSections sections
+PageHeadSections 1.1
+QtObject
+    property bool enabled
+    property var model
+    property int selectedIndex
 PageHeadState 1.1
 State
     property PageHeadConfiguration head
@@ -635,6 +648,7 @@ QtObject
     property color overlayText
     property color field
     property color fieldText
+    property color selection
 ToolbarButton 0.1 1.0
 ActionItem
 ToolbarItems 0.1 1.0
@@ -672,6 +686,7 @@ TestCase
     function flick(item, x, y, dx, dy, pressTimeout, steps, button, modifiers, delay)
     function mouseLongPress(item, x, y, button, modifiers, delay)
     function tryCompareFunction(func, expectedResult, timeout)
+    function typeString(string)
 plugins.qmltypes
     name: "FilterBehavior"
     prototype: "QObject"

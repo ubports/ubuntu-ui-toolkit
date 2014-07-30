@@ -6,7 +6,7 @@ ActionList 0.1 ActionList.qml
 ToolbarItems 0.1 ToolbarItems.qml
 ToolbarButton 0.1 ToolbarButton.qml
 MainView 0.1 MainView.qml
-Button 0.1 Button.qml
+Button 0.1 10/Button.qml
 Panel 0.1 Panel.qml
 internal DraggingArea DraggingArea.qml
 Tab 0.1 Tab.qml
@@ -57,7 +57,7 @@ ActionList 1.0 ActionList.qml
 ToolbarItems 1.0 ToolbarItems.qml
 ToolbarButton 1.0 ToolbarButton.qml
 MainView 1.0 MainView.qml
-Button 1.0 Button.qml
+Button 1.0 10/Button.qml
 Panel 1.0 Panel.qml
 Tab 1.0 Tab.qml
 TabBar 1.0 TabBar.qml
@@ -93,6 +93,7 @@ UbuntuListView 1.0 UbuntuListView.qml
 
 #version 1.1
 ComboButton 1.1 ComboButton.qml
+Button 1.1 11/Button.qml
 ProgressBar 1.1 ProgressBar11.qml
 CrossFadeImage 1.1 CrossFadeImage11.qml
 PullToRefresh 1.1 PullToRefresh.qml
@@ -100,5 +101,6 @@ UbuntuListView 1.1 UbuntuListView11.qml
 internal PageBase Page10.qml
 Page 1.1 Page11.qml
 PageHeadConfiguration 1.1 PageHeadConfiguration.qml
+PageHeadSections 1.1 PageHeadSections.qml
 PageHeadState 1.1 PageHeadState.qml
 Icon 1.1 Icon11.qml

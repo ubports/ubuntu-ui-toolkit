@@ -54,7 +54,7 @@ Item {
             }
             PropertyChanges {
                 target: background
-                color: Theme.palette.selected.foreground
+                color: UbuntuColors.green
             }
         },
         State {
