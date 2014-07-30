@@ -152,7 +152,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         try:
             tab_button = self.get_root_instance().select_single(
-                'Standard', objectName='tabButton' + str(index))
+                'AbstractButton', objectName='tabButton' + str(index))
         except dbus.StateNotFoundError:
             raise _common.ToolkitException(
                 "Tab button {0} not found.".format(index))
@@ -203,7 +203,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         # the popover is not a child of the header, so use the root object
         # to find the requested button
         return self.get_root_instance().select_single(
-            'Standard', objectName=object_name)
+            'AbstractButton', objectName=object_name)
 
 
 class Header(AppHeader):
