@@ -17,6 +17,7 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 1.1
+import Ubuntu.Test 1.0
 
 Item {
     width: units.gu(50)
@@ -44,14 +45,19 @@ Item {
             height: width
             name: "search"
         }
+        Icon {
+            id: icon2
+            width: units.gu(10)
+            height: width
+        }
     }
 
-    TestCase {
+    UbuntuTestCase {
         name: "Icon"
         when: windowShown
 
         function cleanup() {
-            icon.name = "";
+            icon2.name = "";
         }
 
         function test_updateIconSize_bug1349769() {
@@ -63,22 +69,21 @@ Item {
         }
 
         function test_name() {
-            icon.name = "search";
+            icon2.name = "search";
 
-            var image = findChild(icon, "image");
+            var image = findChild(icon2, "image");
             compare(image.source, "image://theme/search",
                     "Source of the image should be image://theme/{name}.");
         }
 
         function test_source() {
-            icon.name = "search";
-            icon.source = "/usr/share/icons/suru/actions/scalable/search.svg";
+            icon2.name = "search";
+            icon2.source = "/usr/share/icons/suru/actions/scalable/search.svg";
 
-            var image = findChild(icon, "image");
+            var image = findChild(icon2, "image");
             compare(image.source,
                     "file:///usr/share/icons/suru/actions/scalable/search.svg",
-                    "Source of the image should equal icon.source.");
+                    "Source of the image should equal icon2.source.");
         }
-
     }
 }

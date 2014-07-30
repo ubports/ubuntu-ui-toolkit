@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Canonical, Ltd.
+ * Copyright (C) 2014 Canonical, Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ Item {
 
     Image {
         id: image
+        objectName: "image"
         anchors.fill: parent
 
         /* Necessary so that icons are not loaded before a size is set. */
@@ -48,6 +49,7 @@ Item {
         Connections {
             target: icon
             onNameChanged: image.update()
+            onSourceChanged: image.update()
         }
 
         function update() {
@@ -56,7 +58,11 @@ Item {
             if (width > 0 && height > 0 && icon.name) {
                 sourceSize.width = width;
                 sourceSize.height = height;
-                source = "image://theme/%1".arg(icon.name);
+                if (icon.hasOwnProperty("source")) {
+                    source = icon.source;
+                } else {
+                    source = "image://theme/%1".arg(icon.name);
+                }
             } else {
                 source = "";
                 sourceSize.width = 0;
