@@ -20,8 +20,8 @@ import Ubuntu.Components 1.1
 AbstractButton {
     id: button
 
-    property int iconWidth: units.gu(2)
-    property int iconHeight: iconWidth
+    property real iconWidth: units.gu(2)
+    property real iconHeight: iconWidth
 
     width: visible ? units.gu(4) : 0
     height: parent ? parent.height : undefined
