@@ -25,7 +25,8 @@ Item {
     property var button: styledItem
     property real minimumWidth: units.gu(10)
     property real horizontalPadding: units.gu(1)
-    property color defaultColor: UbuntuColors.orange
+    // FIXME: Add this color to the palette
+    property color defaultColor: "#b2b2b2"
     property font defaultFont: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
     property Gradient defaultGradient
     property real buttonFaceOffset: 0
@@ -123,6 +124,7 @@ Item {
         image: backgroundSource
 
         color: stroke ? "" : (backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.topColor) : __colorHack(button.color)))
+        opacity: styledItem.enabled ? 1.0 : 0.6
         gradientColor: stroke ? "" : (backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.bottomColor) : __colorHack(button.color)))
     }
 
