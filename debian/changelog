@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (0.1.51+14.10.20140724.2-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (0.1.51+14.10.20140731.1-0ubuntu1) utopic; urgency=medium
   [ Michał Sawicz ]
   * Add "source" property to the Icon component.
 
@@ -35,7 +35,7 @@ ubuntu-ui-toolkit (0.1.51+14.10.20140724.2-0ubuntu2) UNRELEASED; urgency=medium
     the property hasClearButton which TextArea does not have.
     Fixes: https://bugs.launchpad.net/bugs/1327354
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Thu, 31 Jul 2014 06:41:48 +0300
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 31 Jul 2014 11:12:39 +0000
 
 ubuntu-ui-toolkit (0.1.50+14.10.20140724.2-0ubuntu1) utopic; urgency=medium
 
