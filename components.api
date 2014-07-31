@@ -725,7 +725,7 @@ plugins.qmltypes
     Method { name: "count"; type: "int" }
     name: "ShapeItem"
     prototype: "QQuickItem"
-    exports: ["Shape 0.1", "UbuntuShape 1.0"]
+    exports: [
     name: "HAlignment"
     name: "VAlignment"
     Property { name: "color"; type: "QColor" }
