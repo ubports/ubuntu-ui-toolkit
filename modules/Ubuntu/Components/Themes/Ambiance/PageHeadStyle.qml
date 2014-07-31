@@ -21,7 +21,7 @@ import Ubuntu.Components.Styles 1.1 as Style
 
 Style.PageHeadStyle {
     id: headerStyle
-    contentHeight: units.gu(7.5)
+    contentHeight: units.gu(7)
     separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
     separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
     fontWeight: Font.Light
@@ -44,13 +44,15 @@ Style.PageHeadStyle {
             right: parent.right
         }
         source: headerStyle.separatorSource
+        height: sectionsRow.visible ? units.gu(3) : units.gu(2)
 
         property PageHeadSections sections: styledItem.config.sections
 
         Row {
             id: sectionsRow
-            property int itemWidth: sectionsRow.width / sectionsRepeater.count
-            anchors.fill: parent
+            anchors.centerIn: parent
+            width: childrenRect.width
+            height: parent.height
             enabled: separator.sections.enabled
             visible: separator.sections.model !== undefined
             opacity: enabled ? 1.0 : 0.5
@@ -61,21 +63,36 @@ Style.PageHeadStyle {
                 objectName: "page_head_sections_repeater"
                 AbstractButton {
                     id: sectionButton
+                    anchors.verticalCenter: parent ? parent.verticalCenter : undefined
                     objectName: "section_button_" + index
                     enabled: sectionsRow.enabled
-                    width: sectionsRow.itemWidth
-                    height: sectionsRow.height
+                    width: label.width + units.gu(4)
+                    height: sectionsRow.height + units.gu(2)
                     property bool selected: index === separator.sections.selectedIndex
                     onClicked: separator.sections.selectedIndex = index;
 
                     Label {
+                        id: label
                         text: modelData
                         fontSize: "small"
-                        anchors.fill: parent
+                        anchors.centerIn: sectionButton
                         horizontalAlignment: Text.AlignHCenter
                         color: sectionButton.selected ?
-                                   Theme.palette.normal.backgroundText :
+                                   UbuntuColors.orange :
                                    Theme.palette.selected.backgroundText
+                    }
+
+                    // vertical divider line
+                    Rectangle {
+                        anchors {
+                            verticalCenter: parent.verticalCenter
+                            right: parent.right
+                        }
+                        height: units.dp(10)
+                        width: units.dp(1)
+                        visible: index < sectionsRepeater.model.length - 1
+                        color: Theme.palette.selected.backgroundText
+                        opacity: 0.2
                     }
                 }
             }
@@ -117,7 +134,7 @@ Style.PageHeadStyle {
             visible: styledItem.pageStack !== null &&
                      styledItem.pageStack !== undefined &&
                      styledItem.pageStack.depth > 1 &&
-                     !customBackButton.visible
+                     !styledItem.config.backAction
 
             text: "back"
 

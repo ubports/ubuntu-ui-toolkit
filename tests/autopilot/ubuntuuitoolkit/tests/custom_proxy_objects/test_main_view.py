@@ -134,7 +134,8 @@ class GoBackTestCase(tests.QMLStringAppTestCase):
 
     def _go_to_page1(self):
         button = self.main_view.select_single(
-            'Button', objectName='go_to_page1')
+            'Button',
+            objectName='go_to_page1')
         self.pointing_device.click_object(button)
 
     def test_go_back(self):

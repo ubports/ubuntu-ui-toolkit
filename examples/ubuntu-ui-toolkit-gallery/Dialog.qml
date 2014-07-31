@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 import Ubuntu.Components.Popups 0.1
 
 Template {
@@ -41,16 +41,23 @@ Template {
                 id: dialogue
 
                 title: "Sample Dialog"
-                text: "Are you sure you want to delete this file?"
+                text: "Descriptive text goes here"
 
-                Button {
-                    text: "Cancel"
-                    gradient: UbuntuColors.greyGradient
-                    onClicked: PopupUtils.close(dialogue)
-                }
-                Button {
-                    text: "Delete"
-                    onClicked: PopupUtils.close(dialogue)
+                Row {
+                    id: row
+                    width: parent.width
+                    spacing: units.gu(1)
+                    Button {
+                        width: parent.width/2
+                        text: "Cancel"
+                        onClicked: PopupUtils.close(dialogue)
+                    }
+                    Button {
+                        width: parent.width/2
+                        text: "Confirm"
+                        color: UbuntuColors.green
+                        onClicked: PopupUtils.close(dialogue)
+                    }
                 }
             }
         }

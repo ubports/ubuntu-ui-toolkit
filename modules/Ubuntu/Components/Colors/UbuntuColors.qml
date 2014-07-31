@@ -95,7 +95,7 @@ QtObject {
       secondary text.
       \since Ubuntu.Components 1.1
      */
-    readonly property color lightGrey: "#888888"
+    readonly property color lightGrey: "#929292"
 
     /*!
       Dark grey. Recommended for text and action icons.
@@ -108,19 +108,19 @@ QtObject {
       buttons, errors and alerts.
       \since Ubuntu.Components 1.1
      */
-    readonly property color red: "#fc4949"
+    readonly property color red: "#f32c36"
 
     /*!
       Green. Recommended for positive action buttons.
       \since Ubuntu.Components 1.1
      */
-    readonly property color green: "#3fb24f"
+    readonly property color green: "#00a132"
 
     /*!
       Blue. Recommended for text selection and text cursor.
       \since Ubuntu.Components 1.1
      */
-    readonly property color blue: "#1ab6ef"
+    readonly property color blue: "#12a3d8"
 
     /*!
       Purple. Recommended for proper nouns in

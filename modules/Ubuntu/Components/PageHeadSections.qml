@@ -64,8 +64,14 @@ QtObject {
             }
         }
      \endqml
+     It is strongly recommended to limit the number of sections to two or three.
      */
     property var model
+    onModelChanged: {
+        if (model && model.length > 3) {
+            console.warn("It is not recommended or supported to use more than three sections in Page.head.sections.model.");
+        }
+    }
 
     /*!
       The index of the currently selected section in \l model.
