@@ -36,7 +36,6 @@ AbstractButton {
         width: button.iconWidth
         height: button.iconHeight
         source: button.iconSource
-        onNameChanged: print("button.iconName = "+name)
         color: Qt.rgba(0, 0, 0, 0)
         opacity: button.enabled ? 1.0 : 0.3
     }
