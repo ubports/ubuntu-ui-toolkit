@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Canonical Ltd.
+ * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,30 +14,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
-import Ubuntu.Components 1.1
+import QtQuick 2.0
+import Ubuntu.Components 1.0
 
+/*!
+   \internal
+   Documentation in 11/Button.qml
+*/
 AbstractButton {
     id: button
 
-    property real iconWidth: units.gu(2.5)
-    property real iconHeight: iconWidth
+    property color color: __styleInstance.defaultColor
 
-    width: visible ? units.gu(5) : 0
-    height: parent ? parent.height : undefined
+    property Gradient gradient: __styleInstance.defaultGradient
 
-    Image {
-        id: icon
-        anchors {
-            centerIn: parent
-        }
-        width: button.iconWidth
-        height: button.iconHeight
-        source: button.iconSource
-        opacity: button.enabled ? 1.0 : 0.3
-        sourceSize {
-            width: icon.width
-            height: icon.height
-        }
-    }
+    property font font: __styleInstance ? __styleInstance.defaultFont : Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
+
+    property string iconPosition: "left"
+
+    style: Theme.createStyleComponent("ButtonStyle.qml", button)
 }

@@ -33,6 +33,13 @@ AbstractButton
     property Gradient gradient
     property font font
     property string iconPosition
+Button 1.1
+AbstractButton
+    property color strokeColor
+    property color color
+    property Gradient gradient
+    property font font
+    property string iconPosition
 CheckBox 0.1 1.0
 AbstractButton
     property bool checked
