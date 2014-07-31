@@ -33,7 +33,6 @@ internal AppHeader AppHeader.qml
 Header 0.1 Header.qml
 internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
-UbuntuShape 0.1 UbuntuShape.qml
 CrossFadeImage 0.1 CrossFadeImage10.qml
 Icon 0.1 Icon.qml
 OrientationHelper 0.1 OrientationHelper.qml

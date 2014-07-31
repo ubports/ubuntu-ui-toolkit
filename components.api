@@ -660,13 +660,6 @@ UbuntuListView
     property PullToRefresh pullToRefresh
 UbuntuNumberAnimation 0.1 1.0
 NumberAnimation
-UbuntuShape 0.1 1.0
-Item
-    property color color
-    property color gradientColor
-    property string radius
-    property Item image
-    property url borderSource
 PerformanceOverlay 0.1 1.0
 Item
     property bool active
@@ -732,7 +725,7 @@ plugins.qmltypes
     Method { name: "count"; type: "int" }
     name: "ShapeItem"
     prototype: "QQuickItem"
-    exports: ["Shape 0.1", "Shape 1.0"]
+    exports: ["Shape 0.1", "UbuntuShape 1.0"]
     name: "HAlignment"
     name: "VAlignment"
     Property { name: "color"; type: "QColor" }

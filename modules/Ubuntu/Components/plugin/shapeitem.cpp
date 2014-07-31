@@ -24,6 +24,78 @@
 #include <QtQuick/QSGTextureProvider>
 #include <QtQuick/private/qquickimage_p.h>
 
+/*!
+    \qmltype UbuntuShape
+    \instantiates ShapeItem
+    \inqmlmodule Ubuntu.Components 1.1
+    \ingroup ubuntu
+    \brief The UbuntuShape item provides a standard Ubuntu shaped rounded rectangle.
+
+    The UbuntuShape is used where a rounded rectangle is needed either filled
+    with a color or an image that it crops.
+
+    When given with a \l color it is applied with an overlay blending as a
+    vertical gradient going from \l color to \l gradientColor.
+    Two corner \l radius are available, "small" (default) and "medium", that
+    determine the size of the corners.
+    Optionally, an Image can be passed that will be displayed inside the
+    UbuntuShape and cropped to fit it.
+
+    Examples:
+    \qml
+        import Ubuntu.Components 1.1
+
+        UbuntuShape {
+            color: "lightblue"
+            radius: "medium"
+        }
+    \endqml
+
+    \qml
+        import Ubuntu.Components 1.1
+
+        UbuntuShape {
+            image: Image {
+                source: "icon.png"
+            }
+        }
+    \endqml
+*/
+
+/*!
+    \qmlproperty string UbuntuShape::radius
+
+    The size of the corners among: "small" (default) and "medium".
+*/
+
+/*!
+    \qmlproperty color UbuntuShape::color
+
+    The top color of the gradient used to fill the shape. Setting only this
+    one is enough to set the overall color the shape.
+*/
+
+/*!
+    \qmlproperty color UbuntuShape::gradientColor
+
+    The bottom color of the gradient used for the overlay blending of the
+    color that fills the shape. It is optional to set this one as setting
+    \l color is enough to set the overall color of the shape.
+*/
+
+/*!
+    \deprecated
+    \qmlproperty url UbuntuShape::borderSource
+
+    The image used as a border.
+    We plan to expose that feature through styling properties.
+*/
+
+/*!
+    \qmlproperty Image UbuntuShape::image
+
+    The image used to fill the shape.
+*/
 
 // Retrieves the size of an array at compile time.
 #define ARRAY_SIZE(a) \
