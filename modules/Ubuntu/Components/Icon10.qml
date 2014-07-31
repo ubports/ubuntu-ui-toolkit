@@ -48,6 +48,7 @@ Item {
         onHeightChanged: update()
         Connections {
             target: icon
+            ignoreUnknownSignals: true
             onNameChanged: image.update()
             onSourceChanged: image.update()
         }
