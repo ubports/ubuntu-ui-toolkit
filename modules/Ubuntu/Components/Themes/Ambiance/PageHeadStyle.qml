@@ -124,7 +124,7 @@ Style.PageHeadStyle {
             action: styledItem.config.backAction
             visible: null !== styledItem.config.backAction &&
                      styledItem.config.backAction.visible
-            color: styledItem.config.foregroundColor
+//            color: styledItem.config.foregroundColor
         }
 
         PageHeadButton {
@@ -138,7 +138,7 @@ Style.PageHeadStyle {
                      !styledItem.config.backAction
 
             text: "back"
-            color: styledItem.config.foregroundColor
+//            color: styledItem.config.foregroundColor
 
             onTriggered: {
                 styledItem.pageStack.pop();
@@ -155,7 +155,7 @@ Style.PageHeadStyle {
                      !backButton.visible &&
                      !customBackButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
-            color: styledItem.config.foregroundColor
+//            color: styledItem.config.foregroundColor
 
             onTriggered: {
                 tabsPopover.show();
@@ -283,7 +283,7 @@ Style.PageHeadStyle {
                 id: actionButton
                 objectName: action.objectName + "_header_button"
                 action: actionsContainer.visibleActions[index]
-                color: styledItem.config.foregroundColor
+//                color: styledItem.config.foregroundColor
             }
         }
 
@@ -292,7 +292,7 @@ Style.PageHeadStyle {
             objectName: "actions_overflow_button"
             visible: numberOfSlots.requested > numberOfSlots.right
             iconName: "contextual-menu"
-            color: styledItem.config.foregroundColor
+//            color: styledItem.config.foregroundColor
             height: actionsContainer.height
             onTriggered: actionsOverflowPopover.show()
 
