@@ -26,7 +26,7 @@ AbstractButton {
     width: visible ? units.gu(5) : 0
     height: parent ? parent.height : undefined
 
-//    property alias color: icon.color
+    property alias color: icon.color
 
     Icon {
         id: icon
@@ -36,10 +36,8 @@ AbstractButton {
         width: button.iconWidth
         height: button.iconHeight
         source: button.iconSource
-//        onSourceChanged: print("button.iconSource = "+source)
         onNameChanged: print("button.iconName = "+name)
-//        name: button.iconName
-//        color: Qt.rgba(0, 0, 0, 0)
+        color: Qt.rgba(0, 0, 0, 0)
         opacity: button.enabled ? 1.0 : 0.3
     }
 }

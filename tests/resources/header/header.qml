@@ -42,7 +42,7 @@ MainView {
                             iconName: "settings"
                             text: "Settings"
                         }
-                      //  foregroundColor: UbuntuColors.purple
+                        foregroundColor: UbuntuColors.purple
                     }
                 }
             }
