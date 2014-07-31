@@ -92,6 +92,9 @@ Item
     property string name
     property color color
     property color keyColor
+Icon 1.1
+Icon10
+    property url source
 Label 0.1 1.0
 Text
     property string fontSize

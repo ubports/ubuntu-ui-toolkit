@@ -35,7 +35,7 @@ internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
 UbuntuShape 0.1 UbuntuShape.qml
 CrossFadeImage 0.1 CrossFadeImage10.qml
-Icon 0.1 Icon.qml
+Icon 0.1 Icon10.qml
 OrientationHelper 0.1 OrientationHelper.qml
 MathUtils 0.1 mathUtils.js
 SliderUtils 0.1 sliderUtils.js
@@ -80,7 +80,7 @@ PageStack 1.0 PageStack.qml
 Header 1.0 Header.qml
 UbuntuShape 1.0 UbuntuShape.qml
 CrossFadeImage 1.0 CrossFadeImage10.qml
-Icon 1.0 Icon.qml
+Icon 1.0 Icon10.qml
 OrientationHelper 1.0 OrientationHelper.qml
 MathUtils 1.0 mathUtils.js
 SliderUtils 1.0 sliderUtils.js
@@ -103,3 +103,4 @@ Page 1.1 Page11.qml
 PageHeadConfiguration 1.1 PageHeadConfiguration.qml
 PageHeadSections 1.1 PageHeadSections.qml
 PageHeadState 1.1 PageHeadState.qml
+Icon 1.1 Icon11.qml
