@@ -22,8 +22,8 @@ endif
 endif
 
 override_dh_build:
-	dh_auto_build
-	dh_auto_build -- docs
+	dh_auto_build --parallel
+	dh_auto_build --parallel -- docs
 
 override_dh_install:
 	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch

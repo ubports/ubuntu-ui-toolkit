@@ -145,8 +145,20 @@ int StateSaverBackend::load(const QString &id, QObject *item, const QStringList 
         }
         QQmlProperty qmlProperty(item, propertyName.toLocal8Bit().constData(), qmlContext(item));
         if (qmlProperty.isValid() && qmlProperty.isWritable()) {
-            qmlProperty.write(value);
-            result++;
+            QVariant type = m_archive.data()->value(propertyName + "_TYPE");
+            value.convert(type.toInt());
+            bool writeSuccess = qmlProperty.write(value);
+            if (writeSuccess) {
+                result++;
+            } else {
+                qmlInfo(item) << UbuntuI18n::instance().tr("property \"%1\" of "
+                    "object %2 has type %3 and cannot be set to value \"%4\" of"
+                    " type %5").arg(propertyName)
+                               .arg(qmlContext(item)->nameForObject(item))
+                               .arg(qmlProperty.propertyTypeName())
+                               .arg(value.toString())
+                               .arg(value.typeName());
+            }
         } else {
             qmlInfo(item) << UbuntuI18n::instance().tr("property \"%1\" does not exist or is not writable for object %2")
                              .arg(propertyName).arg(qmlContext(item)->nameForObject(item));
@@ -173,6 +185,15 @@ int StateSaverBackend::save(const QString &id, QObject *item, const QStringList 
             QVariant value = qmlProperty.read();
             if (static_cast<QMetaType::Type>(value.type()) != QMetaType::QObjectStar) {
                 m_archive.data()->setValue(propertyName, value);
+                /* Save the type of the property along with its value.
+                 * This is important because QSettings deserializes values as QString.
+                 * Setting these strings to QML properties usually works because the
+                 * implicit type conversion from string to the type of the QML property
+                 * usually works. In some cases cases however (e.g. enum) it fails.
+                 *
+                 * See Qt Bug: https://bugreports.qt-project.org/browse/QTBUG-40474
+                 */
+                m_archive.data()->setValue(propertyName + "_TYPE", QVariant::fromValue((int)value.type()));
                 result++;
             }
         }

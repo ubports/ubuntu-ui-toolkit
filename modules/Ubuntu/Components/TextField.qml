@@ -115,7 +115,7 @@ ActionItem {
     property bool highlighted: focus
 
     /*!
-      Text that appears when there is no focus and no content in the component.
+      Text that appears when there is no content in the component.
 
       \qmlproperty string placeholderText
     */
@@ -979,7 +979,7 @@ ActionItem {
             }
             color: control.__styleInstance.color
             selectedTextColor: Theme.palette.selected.foregroundText
-            selectionColor: Theme.palette.selected.foreground
+            selectionColor: Theme.palette.selected.selection
             font.pixelSize: FontUtils.sizeToPixels("medium")
             passwordCharacter: "\u2022"
             // forward keys to the root element so it can be captured outside of it
