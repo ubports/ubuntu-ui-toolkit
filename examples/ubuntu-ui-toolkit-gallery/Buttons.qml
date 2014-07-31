@@ -34,12 +34,22 @@ Template {
         }
 
         TemplateRow {
+            title: i18n.tr("Stroke")
+
+            Button {
+                objectName: "button_stroke"
+                text: i18n.tr("Call")
+                strokeColor: UbuntuColors.warmGrey
+            }
+        }
+
+        TemplateRow {
             title: i18n.tr("Color")
 
             Button {
                 objectName: "button_color"
                 text: i18n.tr("Call")
-                color: UbuntuColors.warmGrey
+                color: UbuntuColors.green
             }
         }
 

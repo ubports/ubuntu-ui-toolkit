@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -12,26 +12,12 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 import QtQuick 2.0
 import Ubuntu.Components 1.1
 
-Item {
-    id: ambianceStyle
-
-    property url chevron: "../../artwork/chevron_down@30.png"
-    property url tick: "../../artwork/tick@30.png"
-    property bool colourComponent: true
-
-    UbuntuShape {
-        id: background
-
-        width: styledItem.width
-        height: styledItem.height
-        radius: "medium"
-
-        color: Qt.rgba(0, 0, 0, 0.05)
-    }
+Text {
+    id: testItem
+    StateSaver.properties: "horizontalAlignment"
 }

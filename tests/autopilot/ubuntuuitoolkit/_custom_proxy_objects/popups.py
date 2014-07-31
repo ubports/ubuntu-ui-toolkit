@@ -25,6 +25,46 @@ from ubuntuuitoolkit._custom_proxy_objects import _common
 logger = logging.getLogger(__name__)
 
 
+class TextInputPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
+    """TextInputPopover Autopilot emulator ."""
+
+    def click_option_by_text(self, text):
+        """Click a button on the popover.
+
+        XXX We are receiving the text because there's no way to set the
+        objectName on the action. This is reported at
+        https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1205144
+        --elopio - 2013-07-25
+
+        :parameter text: The text of the button.
+        :raise ToolkitException: If the popover is not open.
+
+        """
+        if not self.visible:
+            raise _common.ToolkitException('The popover is not open.')
+        button = self._get_button(text)
+        if button is None:
+            raise _common.ToolkitException(
+                'Button with text "{0}" not found.'.format(text))
+        self.pointing_device.click_object(button)
+        if self.autoClose:
+            try:
+                self.visible.wait_for(False)
+            except dbus.StateNotFoundError:
+                # The popover was removed from the tree.
+                pass
+
+    def _get_button(self, text):
+        buttons = self.select_many('AbstractButton')
+        for button in buttons:
+            # workaround used in the text input's context menu to access
+            # action.text so we can get the proper button by text, action
+            # being not accessible
+            # https://bugs.launchpad.net/autopilot/+bug/1334599
+            if button.text == text:
+                return button
+
+
 class ActionSelectionPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """ActionSelectionPopover Autopilot emulator."""
 

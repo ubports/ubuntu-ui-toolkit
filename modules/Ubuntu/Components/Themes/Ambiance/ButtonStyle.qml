@@ -22,13 +22,15 @@ import Ubuntu.Components 1.1
 Item {
     id: buttonStyle
 
-    property Button button: styledItem
+    property var button: styledItem
     property real minimumWidth: units.gu(10)
     property real horizontalPadding: units.gu(1)
-    property color defaultColor: UbuntuColors.orange
+    // FIXME: Add this color to the palette
+    property color defaultColor: "#b2b2b2"
     property font defaultFont: Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
     property Gradient defaultGradient
     property real buttonFaceOffset: 0
+    property bool stroke: button.hasOwnProperty("strokeColor") && button.strokeColor != Qt.rgba(0.0, 0.0, 0.0, 0.0)
     /*!
       The property overrides the button's default background with an item. This
       item can be used by derived styles to reuse the ButtonStyle and override
@@ -82,22 +84,55 @@ Item {
     property bool isGradient: button.gradient && (button.color == defaultColor ||
                               button.gradient != defaultGradient)
 
+    Image {
+        id: strokeBorder
+        anchors.fill: parent
+        anchors.margins: -units.gu(0.5)
+        source: "artwork/stroke_button.png"
+        visible: false
+    }
+
+    ShaderEffect {
+        id: colorizedImage
+
+        anchors.fill: parent
+        visible: stroke && strokeBorder.status == Image.Ready
+
+        property Item source: visible ? strokeBorder : null
+        property color keyColorOut: stroke ? strokeColor : Qt.rgba(0.0, 0.0, 0.0, 0.0)
+        property color keyColorIn: Qt.rgba(1.0, 1.0, 1.0, 1.0)
+        property real threshold: 1.0
+
+        fragmentShader: "
+            varying highp vec2 qt_TexCoord0;
+            uniform sampler2D source;
+            uniform highp vec4 keyColorOut;
+            uniform highp vec4 keyColorIn;
+            uniform lowp float threshold;
+            uniform lowp float qt_Opacity;
+            void main() {
+                lowp vec4 sourceColor = texture2D(source, qt_TexCoord0);
+                gl_FragColor = mix(vec4(keyColorOut.rgb, 1.0) * sourceColor.a, sourceColor, step(threshold, distance(sourceColor.rgb / sourceColor.a, keyColorIn.rgb))) * qt_Opacity;
+            }"
+    }
+
     UbuntuShape {
         id: background
         anchors.fill: parent
         borderSource: "radius_idle.sci"
-        visible: (color.a != 0.0) || backgroundSource
+        visible: stroke ? false : ((color.a != 0.0) || backgroundSource)
         image: backgroundSource
 
-        color: backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.topColor) : __colorHack(button.color))
-        gradientColor: backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.bottomColor) : __colorHack(button.color))
+        color: stroke ? "" : (backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.topColor) : __colorHack(button.color)))
+        opacity: styledItem.enabled ? 1.0 : 0.6
+        gradientColor: stroke ? "" : (backgroundSource ? "#00000000" : (isGradient ? __colorHack(gradientProxy.bottomColor) : __colorHack(button.color)))
     }
 
     UbuntuShape {
         id: backgroundPressed
         anchors.fill: parent
-        color: background.color
-        gradientColor: background.gradientColor
+        color: stroke ? strokeColor : background.color
+        gradientColor: stroke ? strokeColor : background.gradientColor
         borderSource: "radius_pressed.sci"
         opacity: button.pressed ? 1.0 : 0.0
         Behavior on opacity {
@@ -106,7 +141,7 @@ Item {
                 easing.type: Easing.Linear
             }
         }
-        visible: background.visible
+        visible: stroke || background.visible
     }
 
     ButtonForeground {
@@ -120,7 +155,7 @@ Item {
         /* Pick either a clear or dark text color depending on the luminance of the
            background color to maintain good contrast (works in most cases)
         */
-        textColor: ColorUtils.luminance(button.color) <= 0.85 ? "#F3F3E7" : "#888888"
+        textColor: ColorUtils.luminance(button.color) <= 0.85 && !(stroke && !pressed) ? "#F3F3E7" : "#888888"
         iconSource: button.iconSource
         iconPosition: button.iconPosition
         iconSize: units.gu(3)

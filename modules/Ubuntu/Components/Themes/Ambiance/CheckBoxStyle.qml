@@ -65,7 +65,8 @@ Item {
             }
             PropertyChanges {
                 target: background
-                color: Theme.palette.normal.foreground
+                color: Qt.rgba(Theme.palette.normal.foreground.r, Theme.palette.normal.foreground.g,
+                               Theme.palette.normal.foreground.b, 0.2)
             }
         }
     ]
@@ -76,7 +77,7 @@ Item {
             to: "unchecked"
             ColorAnimation {
                 target: background
-                duration: UbuntuAnimation.BriskDuration
+                duration: UbuntuAnimation.FastDuration
                 easing: UbuntuAnimation.StandardEasingReverse
             }
             SequentialAnimation {
@@ -88,7 +89,7 @@ Item {
                 NumberAnimation {
                     target: tick
                     property: "anchors.verticalCenterOffset"
-                    duration: UbuntuAnimation.BriskDuration
+                    duration: UbuntuAnimation.FastDuration
                     easing: UbuntuAnimation.StandardEasingReverse
                 }
                 PropertyAction {
@@ -103,7 +104,7 @@ Item {
             to: "checked"
             ColorAnimation {
                 target: background
-                duration: UbuntuAnimation.BriskDuration
+                duration: UbuntuAnimation.FastDuration
                 easing: UbuntuAnimation.StandardEasing
             }
             SequentialAnimation {
@@ -115,7 +116,7 @@ Item {
                 NumberAnimation {
                     target: tick
                     property: "anchors.verticalCenterOffset"
-                    duration: UbuntuAnimation.BriskDuration
+                    duration: UbuntuAnimation.FastDuration
                     easing: UbuntuAnimation.StandardEasing
                 }
                 PropertyAction {

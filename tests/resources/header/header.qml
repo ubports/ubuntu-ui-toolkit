@@ -42,7 +42,7 @@ MainView {
                             iconName: "settings"
                             text: "Settings"
                         }
-                        foregroundColor: UbuntuColors.purple
+                      //  foregroundColor: UbuntuColors.purple
                     }
                 }
             }
@@ -183,7 +183,7 @@ MainView {
                     id: sectionsPage
                     head {
                         sections {
-                            model: ["navy", "lightblue", "brown", "cyan", "darkgrey"]
+                            model: ["navy", "lightblue", "brown"]
                         }
                     }
                     Rectangle {

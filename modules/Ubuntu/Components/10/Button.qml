@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2012 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -12,26 +12,25 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.0
 
-Item {
-    id: ambianceStyle
+/*!
+   \internal
+   Documentation in 11/Button.qml
+*/
+AbstractButton {
+    id: button
 
-    property url chevron: "../../artwork/chevron_down@30.png"
-    property url tick: "../../artwork/tick@30.png"
-    property bool colourComponent: true
+    property color color: __styleInstance.defaultColor
 
-    UbuntuShape {
-        id: background
+    property Gradient gradient: __styleInstance.defaultGradient
 
-        width: styledItem.width
-        height: styledItem.height
-        radius: "medium"
+    property font font: __styleInstance ? __styleInstance.defaultFont : Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
 
-        color: Qt.rgba(0, 0, 0, 0.05)
-    }
+    property string iconPosition: "left"
+
+    style: Theme.createStyleComponent("ButtonStyle.qml", button)
 }

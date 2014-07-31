@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Canonical, Ltd.
+ * Copyright (C) 2014 Canonical, Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,17 +33,43 @@ Item {
 
     Image {
         id: image
+        objectName: "image"
+        anchors.fill: parent
 
         /* Necessary so that icons are not loaded before a size is set. */
-        property bool ready: false
-        Component.onCompleted: ready = true
-
-        anchors.fill: parent
-        source: ready && width > 0 && height > 0 && icon.name ? "image://theme/%1".arg(icon.name) : ""
+        source: ""
         sourceSize {
-            width: width
-            height: height
+            width: 0
+            height: 0
         }
+
+        Component.onCompleted: update()
+        onWidthChanged: update()
+        onHeightChanged: update()
+        Connections {
+            target: icon
+            onNameChanged: image.update()
+            onSourceChanged: image.update()
+        }
+
+        function update() {
+            // only set sourceSize.width, sourceSize.height and source when
+            // icon dimensions are valid, see bug #1349769.
+            if (width > 0 && height > 0 && icon.name) {
+                sourceSize.width = width;
+                sourceSize.height = height;
+                if (icon.hasOwnProperty("source")) {
+                    source = icon.source;
+                } else {
+                    source = "image://theme/%1".arg(icon.name);
+                }
+            } else {
+                source = "";
+                sourceSize.width = 0;
+                sourceSize.height = 0;
+            }
+        }
+
         cache: true
         visible: !colorizedImage.active
     }

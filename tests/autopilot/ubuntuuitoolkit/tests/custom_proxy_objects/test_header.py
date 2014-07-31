@@ -85,7 +85,6 @@ class ActionsTestCase(tests.QMLFileAppTestCase):
     def test_overflow_button(self):
         # there are 5 actions plus a custom back action
         overflow_button = self.header.select_single(
-            'AbstractButton',
             objectName='actions_overflow_button')
         self.assertEqual(overflow_button.visible, True)
 
