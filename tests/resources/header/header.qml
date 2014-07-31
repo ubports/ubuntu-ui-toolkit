@@ -37,13 +37,12 @@ MainView {
                         text: "Click me"
                         onTriggered: stack.push(pageOnStack)
                     }
-                    tools: ToolbarItems {
-                        ToolbarButton {
-                            action: Action {
-                                iconName: "settings"
-                                text: "Settings"
-                            }
+                    head {
+                        actions: Action {
+                            iconName: "settings"
+                            text: "Settings"
                         }
+                        foregroundColor: UbuntuColors.purple
                     }
                 }
             }

@@ -48,6 +48,7 @@ Item {
         onHeightChanged: update()
         Connections {
             target: icon
+            ignoreUnknownSignals: true
             onNameChanged: image.update()
             onSourceChanged: image.update()
         }
@@ -55,7 +56,8 @@ Item {
         function update() {
             // only set sourceSize.width, sourceSize.height and source when
             // icon dimensions are valid, see bug #1349769.
-            if (width > 0 && height > 0 && icon.name) {
+            if (width > 0 && height > 0
+                    && (icon.name || (icon.hasOwnProperty("source") && icon.source))) {
                 sourceSize.width = width;
                 sourceSize.height = height;
                 if (icon.hasOwnProperty("source")) {
