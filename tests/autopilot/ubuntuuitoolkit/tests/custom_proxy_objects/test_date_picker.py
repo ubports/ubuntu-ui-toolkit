@@ -36,11 +36,19 @@ MainView {
             id: datePicker
             objectName: 'datePicker'
             mode: 'Years|Months|Days'
+            maximum: {
+                var d = new Date()
+                d.setFullYear('2030')
+                return d
+            }
+            minimum: {
+                var d = new Date()
+                d.setFullYear('1990')
+                return d
+            }
             date: {
                 var d = new Date()
-                // Make sure that the picker will have higher and lower values
-                // to select.
-                d.setFullYear(d.getFullYear() + 25)
+                d.setFullYear('2010')
                 d.setMonth('5')
                 d.setDate('15')
                 return d
@@ -50,10 +58,18 @@ MainView {
             id: timePicker
             objectName: 'timePicker'
             mode: 'Hours|Minutes|Seconds'
+            maximum: {
+                var d = new Date()
+                d.setFullYear('2030')
+                return d
+            }
+            minimum: {
+                var d = new Date()
+                d.setFullYear('1990')
+                return d
+            }
             date: {
                 var d = new Date()
-                // Make sure that the picker will have higher and lower values
-                // to select.
                 d.setHours(12)
                 d.setMinutes('30')
                 d.setSeconds('30')
@@ -133,7 +149,7 @@ class DatePickerTestCase(DatePickerBaseTestCase):
 
 class PickDateFromDatePickerTestCase(DatePickerBaseTestCase):
 
-    SELECTED_YEAR = datetime.date.today().year + 25
+    SELECTED_YEAR = 2010
     SELECTED_MONTH = 6  # June
     SELECTED_DAY = 15
 

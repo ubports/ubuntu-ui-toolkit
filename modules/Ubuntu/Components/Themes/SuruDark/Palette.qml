@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 1.1
 import Ubuntu.Components.Themes 0.1
 
 Palette {
@@ -33,8 +34,9 @@ Palette {
     selected: PaletteValues {
         background: "#88D6D6D6" // FIXME: not from design
         backgroundText: "#F3F3E7"
-        foreground: "#DD4814"
-        foregroundText: "#F3F3E7"
+        selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
+        foreground: UbuntuColors.orange
+        foregroundText: UbuntuColors.darkGrey
         field: "#FFFFFF"
         fieldText: "#888888"
     }

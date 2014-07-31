@@ -16,7 +16,8 @@
 
 import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 1.1
+// Note: See tst_progressbar11.qml for the newer API tests
+import Ubuntu.Components 1.0
 
 TestCase {
      name: "ProgressBarAPI"
@@ -26,6 +27,10 @@ TestCase {
          var newIndeterminated = true
          progressBar.indeterminate = newIndeterminated
          compare(progressBar.indeterminate,newIndeterminated,"can set/get")
+     }
+
+     function test_showProgressPercentageExists() {
+         verify(!progressBar.hasOwnProperty("showProgressPercentage"), "Property absent")
      }
 
      function test_maximumValue() {

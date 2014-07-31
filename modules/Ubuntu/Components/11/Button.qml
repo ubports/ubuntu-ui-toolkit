@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.2
+import Ubuntu.Components 1.1
 
 /*!
     \qmltype Button
@@ -59,10 +60,29 @@ import QtQuick 2.0
                 color: UbuntuColors.warmGrey
             }
        }
-    \endqml
-*/
+    \endqml*/
 AbstractButton {
     id: button
+    /*!
+      \since Ubuntu.Components 1.1
+      If set to a color, the button has a stroke border instead of a filled shape.
+    */
+    property color strokeColor: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+
+    /*!
+         \qmlproperty url Button::iconSource
+       The source URL of the icon to display inside the button.
+       Leave this value blank for a text-only button.
+       If \l action is set, the default iconSource is that of the action.
+    */
+
+    /*!
+       The text to display in the button. If an icon was defined,
+       the text will be shown next to the icon, otherwise it will
+       be centered. Leave blank for an icon-only button.
+       If \l action is set, the default text is that of the action.
+       \qmlproperty string Button::text
+    */
 
     /*!
        The background color of the button.
@@ -86,21 +106,6 @@ AbstractButton {
       The font used for the button's text.
     */
     property font font: __styleInstance ? __styleInstance.defaultFont : Qt.font({family: "Ubuntu", pixelSize: FontUtils.sizeToPixels("medium")})
-
-    /*!
-       The source URL of the icon to display inside the button.
-       Leave this value blank for a text-only button.
-       If \l action is set, the default iconSource is that of the action.
-       \qmlproperty url iconSource
-    */
-
-    /*!
-       The text to display in the button. If an icon was defined,
-       the text will be shown next to the icon, otherwise it will
-       be centered. Leave blank for an icon-only button.
-       If \l action is set, the default text is that of the action.
-       \qmlproperty string text
-    */
 
     /*!
        The position of the icon relative to the text. Options

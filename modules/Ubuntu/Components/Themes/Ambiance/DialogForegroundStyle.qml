@@ -20,11 +20,9 @@ import Ubuntu.Components 1.1
 Item {
     id: dialogForegroundStyle
 
-    visible: styledItem.dismissArea.width > units.gu(60)
-
     UbuntuShape {
         id: background
         anchors.fill: parent
-        color: Qt.rgba(0, 0, 0, 0.7)
+        color: "white"
     }
 }

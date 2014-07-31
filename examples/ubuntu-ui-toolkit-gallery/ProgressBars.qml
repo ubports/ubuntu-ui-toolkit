@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.1
 
 Template {
     objectName: "progressBarsTemplate"
@@ -51,6 +51,27 @@ Template {
                 objectName: "progressbar_indeterminate"
                 width: parent.width
                 indeterminate: true
+            }
+        }
+
+        TemplateRow {
+            title: i18n.tr("No label")
+
+            ProgressBar {
+                id: progressNoLabel
+                objectName: "progressbar_nolabel"
+                width: parent.width
+                showProgressPercentage: false
+
+                SequentialAnimation on value {
+                    loops: Animation.Infinite
+                    NumberAnimation {
+                        from: progress.minimumValue
+                        to: progress.maximumValue
+                        duration: 2000
+                    }
+                    PauseAnimation {duration: 1000}
+                }
             }
         }
     }
