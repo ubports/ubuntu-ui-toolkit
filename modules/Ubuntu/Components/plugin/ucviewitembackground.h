@@ -19,7 +19,7 @@
 
 #include <QtQuick/QQuickItem>
 
-class UCViewItem;
+class UCViewItemBase;
 class UCViewItemBackground : public QQuickItem
 {
     Q_OBJECT
@@ -43,7 +43,7 @@ Q_SIGNALS:
     void pressedColorChanged();
 
 private:
-    UCViewItem *m_item;
+    UCViewItemBase *m_item;
     QColor m_color;
     QColor m_pressedColor;
 };

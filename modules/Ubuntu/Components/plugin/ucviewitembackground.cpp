@@ -30,9 +30,6 @@ UCViewItemBackground::UCViewItemBackground(QQuickItem *parent)
     setFlag(QQuickItem::ItemHasContents, true);
     // set the z-order to be above the main item
     setZ(1);
-    // set the theme pressed color
-    QQmlProperty pressedColor(this, "pressedColor", qmlContext(this));
-    ucBindProperty(pressedColor, "selected.background", UCTheme::instance().palette());
 }
 
 UCViewItemBackground::~UCViewItemBackground()
@@ -42,7 +39,7 @@ UCViewItemBackground::~UCViewItemBackground()
 void UCViewItemBackground::itemChange(ItemChange change, const ItemChangeData &data)
 {
     if (change == ItemParentHasChanged) {
-        m_item = qobject_cast<UCViewItem*>(data.item);
+        m_item = qobject_cast<UCViewItemBase*>(data.item);
     }
     QQuickItem::itemChange(change, data);
 }
@@ -51,7 +48,7 @@ QSGNode *UCViewItemBackground::updatePaintNode(QSGNode *oldNode, UpdatePaintNode
 {
     Q_UNUSED(data);
 
-    UCViewItemPrivate *dd = UCViewItemPrivate::get(m_item);
+    UCViewItemBasePrivate *dd = UCViewItemBasePrivate::get(m_item);
     bool pressed = (dd && dd->pressed);
     QColor color = pressed ? m_pressedColor : m_color;
 

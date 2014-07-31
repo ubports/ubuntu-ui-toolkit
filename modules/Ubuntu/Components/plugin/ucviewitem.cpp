@@ -24,36 +24,7 @@
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
 
-#include <QtQml/private/qqmlabstractbinding_p.h>
-#define foreach Q_FOREACH //workaround to fix private includes
-#include <QtQml/private/qqmlbinding_p.h>     // for QmlBinding
-#undef foreach
-
-/*
- * The function creates a property binding between \c target and \c src
- * objects' \c script using the given \c context if the target has no binding.
- * If the context is 0, the source's context will be used.
- */
-void ucBindProperty(const QQmlProperty &target, const QString &script, QObject *src, QQmlContext *context)
-{
-    Q_ASSERT(src);
-    QQmlAbstractBinding *prevBinding = QQmlPropertyPrivate::binding(target);
-    if (!prevBinding) {
-        // create new binding
-        if (!context) {
-            context = qmlContext(src);
-        }
-        QQmlBinding *newBinding = new QQmlBinding(script, src, context);
-        newBinding->setTarget(target);
-        prevBinding = QQmlPropertyPrivate::setBinding(target, newBinding);
-        if (prevBinding) {
-            // destroy any previous binding
-            prevBinding->destroy();
-        }
-    }
-}
-
-UCViewItemPrivate::UCViewItemPrivate(UCViewItem *qq)
+UCViewItemBasePrivate::UCViewItemBasePrivate(UCViewItemBase *qq)
     : q_ptr(qq)
     , background(new UCViewItemBackground)
     , pressed(false)
@@ -64,10 +35,10 @@ UCViewItemPrivate::UCViewItemPrivate(UCViewItem *qq)
     // content will be redirected to the background, therefore we must report
     // children changes as it would come from the main component
     QObject::connect(background, &UCViewItemBackground::childrenChanged,
-                     q_ptr, &UCViewItem::childrenChanged);
+                     q_ptr, &UCViewItemBase::childrenChanged);
 }
 
-void UCViewItemPrivate::_q_rebound()
+void UCViewItemBasePrivate::_q_rebound()
 {
     setPressed(false);
     // disconnect the flickable
@@ -75,18 +46,18 @@ void UCViewItemPrivate::_q_rebound()
 }
 
 // set pressed flag and update background
-void UCViewItemPrivate::setPressed(bool pressed)
+void UCViewItemBasePrivate::setPressed(bool pressed)
 {
     if (this->pressed != pressed) {
         this->pressed = pressed;
         background->update();
-        Q_Q(UCViewItem);
+        Q_Q(UCViewItemBase);
         Q_EMIT q->pressedChanged();
     }
 }
 
 // connects/disconnects from the Flickable anchestor to get notified when to do rebound
-void UCViewItemPrivate::listenToRebind(bool listen)
+void UCViewItemBasePrivate::listenToRebind(bool listen)
 {
     if (flickable.isNull()) {
         return;
@@ -98,52 +69,26 @@ void UCViewItemPrivate::listenToRebind(bool listen)
     }
 }
 
-/*!
- * \qmltype ViewItem
- * \instantiates UCViewItem
- * \inqmlmodule Ubuntu.Components 1.1
- * \ingroup ubuntu
- * \brief Standard component to hold contents placed in a view cell.
- */
 
-UCViewItem::UCViewItem(QQuickItem *parent)
+/*****************************************************************************
+ */
+UCViewItemBase::UCViewItemBase(QQuickItem *parent)
     : QQuickItem(parent)
-    , d_ptr(new UCViewItemPrivate(this))
+    , d_ptr(new UCViewItemBasePrivate(this))
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::LeftButton);
 }
 
-UCViewItem::~UCViewItem()
+UCViewItemBase::~UCViewItemBase()
 {
 }
 
-// initialize height
-void UCViewItem::classBegin()
-{
-    QQuickItem::classBegin();
-
-    QQmlProperty heightProperty(this, "height", qmlContext(this));
-    // use the root context as the units is a context property
-    ucBindProperty(heightProperty, "units.gu(6)", &UCUnits::instance(), qmlEngine(this)->rootContext());
-}
-
-void UCViewItem::componentComplete()
-{
-    QQuickItem::componentComplete();
-
-    // bind parent's width
-    QQmlProperty widthProperty(this, "width", qmlContext(this));
-    Q_D(UCViewItem);
-    QQuickItem *item = d->flickable ? d->flickable : parentItem();
-    ucBindProperty(widthProperty, "width", item);
-}
-
-void UCViewItem::itemChange(ItemChange change, const ItemChangeData &data)
+void UCViewItemBase::itemChange(ItemChange change, const ItemChangeData &data)
 {
     QQuickItem::itemChange(change, data);
     if (change == ItemParentHasChanged) {
-        Q_D(UCViewItem);
+        Q_D(UCViewItemBase);
         // make sure we are not connected to the previous Flickable
         if (!d->flickable.isNull()) {
             QObject::disconnect(d->flickable.data(), SIGNAL(movementStarted()), this, SLOT(_q_rebound()));
@@ -152,25 +97,27 @@ void UCViewItem::itemChange(ItemChange change, const ItemChangeData &data)
         QQuickBasePositioner *positioner = qobject_cast<QQuickBasePositioner*>(data.item);
         if (positioner && positioner->parentItem()) {
             d->flickable = qobject_cast<QQuickFlickable*>(positioner->parentItem()->parentItem());
+            Q_EMIT flickableChanged();
         } else if (data.item && data.item->parentItem()){
             // check if we are in a Flickable then
             d->flickable = qobject_cast<QQuickFlickable*>(data.item->parentItem());
+            Q_EMIT flickableChanged();
         }
     }
 }
 
-void UCViewItem::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+void UCViewItemBase::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
     // resize background item
-    Q_D(UCViewItem);
+    Q_D(UCViewItemBase);
     QRectF rect(boundingRect());
     d->background->setSize(rect.size());
 }
-void UCViewItem::mousePressEvent(QMouseEvent *event)
+void UCViewItemBase::mousePressEvent(QMouseEvent *event)
 {
     QQuickItem::mousePressEvent(event);
-    Q_D(UCViewItem);
+    Q_D(UCViewItemBase);
     if (!d->flickable.isNull() && d->flickable->isMoving()) {
         // while moving, we cannot select any items
         return;
@@ -184,10 +131,10 @@ void UCViewItem::mousePressEvent(QMouseEvent *event)
     event->setAccepted(true);
 }
 
-void UCViewItem::mouseReleaseEvent(QMouseEvent *event)
+void UCViewItemBase::mouseReleaseEvent(QMouseEvent *event)
 {
     QQuickItem::mouseReleaseEvent(event);
-    Q_D(UCViewItem);
+    Q_D(UCViewItemBase);
     // set released
     if (d->pressed) {
         Q_EMIT clicked();
@@ -195,27 +142,33 @@ void UCViewItem::mouseReleaseEvent(QMouseEvent *event)
     d->setPressed(false);
 }
 
-UCViewItemBackground* UCViewItem::background() const
+UCViewItemBackground* UCViewItemBase::background() const
 {
-    Q_D(const UCViewItem);
+    Q_D(const UCViewItemBase);
     return d->background;
 }
 
-bool UCViewItem::pressed() const
+bool UCViewItemBase::pressed() const
 {
-    Q_D(const UCViewItem);
+    Q_D(const UCViewItemBase);
     return d->pressed;
 }
 
-QQmlListProperty<QObject> UCViewItem::data()
+QQuickFlickable *UCViewItemBase::flickable() const
 {
-    Q_D(UCViewItem);
+    Q_D(const UCViewItemBase);
+    return d->flickable;
+}
+
+QQmlListProperty<QObject> UCViewItemBase::data()
+{
+    Q_D(UCViewItemBase);
     return QQuickItemPrivate::get(d->background)->data();
 }
 
-QQmlListProperty<QQuickItem> UCViewItem::children()
+QQmlListProperty<QQuickItem> UCViewItemBase::children()
 {
-    Q_D(UCViewItem);
+    Q_D(UCViewItemBase);
     return QQuickItemPrivate::get(d->background)->children();
 }
 

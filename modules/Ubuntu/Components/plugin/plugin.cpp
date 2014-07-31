@@ -198,7 +198,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
     // ViewItem and related types
-    qmlRegisterType<UCViewItem, 1>(uri, 1, 1, "ViewItem");
+    qmlRegisterType<UCViewItemBase, 1>(uri, 1, 1, "ViewItemBase");
     qmlRegisterUncreatableType<UCViewItemBackground, 1>(uri, 1, 1, "ViewItemBackground", "not a standalone type");
 }
 

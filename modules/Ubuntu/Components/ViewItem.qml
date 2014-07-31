@@ -14,32 +14,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCVIEWITEM_P_H
-#define UCVIEWITEM_P_H
+import QtQuick 2.2
+import Ubuntu.Components 1.1
 
-#include "ucviewitem.h"
-#include <QtCore/QPointer>
+/*!
+    \qmltype ViewItem
+    \inqmlmodule Ubuntu.Components 1.1
+    \ingroup ubuntu
+    \brief The ViewItem element provides a standard item for handling list or grid items
+    with the Ubuntu patterns.
 
-class QQuickFlickable;
-class UCViewItemBasePrivate
-{
-    Q_DECLARE_PUBLIC(UCViewItemBase)
-public:
-    UCViewItemBasePrivate(UCViewItemBase *qq);
+  */
 
-    static inline UCViewItemBasePrivate *get(UCViewItemBase *that)
-    {
-        Q_ASSERT(that);
-        return that->d_ptr.data();
-    }
-    void _q_rebound();
-    void setPressed(bool pressed);
-    void listenToRebind(bool listen);
-
-    UCViewItemBase *q_ptr;
-    QPointer<QQuickFlickable> flickable;
-    UCViewItemBackground *background;
-    bool pressed:1;
-};
-
-#endif // UCVIEWITEM_P_H
+ViewItemBase {
+    width: flickable ? flickable.width : (parent ? parent.width : units.gu(30))
+    height: units.gu(6)
+    background.pressedColor: Theme.palette.selected.background
+}

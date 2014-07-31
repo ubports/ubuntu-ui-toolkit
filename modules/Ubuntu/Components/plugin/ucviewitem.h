@@ -19,9 +19,10 @@
 
 #include <QtQuick/QQuickItem>
 
+class QQuickFlickable;
 class UCViewItemBackground;
-class UCViewItemPrivate;
-class UCViewItem : public QQuickItem
+class UCViewItemBasePrivate;
+class UCViewItemBase : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(UCViewItemBackground* background READ background)
@@ -29,16 +30,18 @@ class UCViewItem : public QQuickItem
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
+
+    Q_PROPERTY(QQuickFlickable *flickable READ flickable NOTIFY flickableChanged)
 public:
-    explicit UCViewItem(QQuickItem *parent = 0);
-    ~UCViewItem();
+    explicit UCViewItemBase(QQuickItem *parent = 0);
+    ~UCViewItemBase();
 
     UCViewItemBackground* background() const;
     bool pressed() const;
 
+    QQuickFlickable *flickable() const;
+
 protected:
-    void classBegin();
-    void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
     void mousePressEvent(QMouseEvent *event);
@@ -48,13 +51,15 @@ Q_SIGNALS:
     void pressedChanged();
     void childrenChanged();
 
+    void flickableChanged();
+
     void clicked();
 
 public Q_SLOTS:
 
 private:
-    Q_DECLARE_PRIVATE(UCViewItem)
-    QScopedPointer<UCViewItemPrivate> d_ptr;
+    Q_DECLARE_PRIVATE(UCViewItemBase)
+    QScopedPointer<UCViewItemBasePrivate> d_ptr;
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
