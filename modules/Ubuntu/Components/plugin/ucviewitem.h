@@ -65,7 +65,4 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
 };
 
-// property binding
-void ucBindProperty(const QQmlProperty &target, const QString &script, QObject *src, QQmlContext *context = 0);
-
 #endif // UCVIEWITEM_H
