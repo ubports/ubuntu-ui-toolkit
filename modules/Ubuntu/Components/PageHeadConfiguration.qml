@@ -103,4 +103,9 @@ Object {
     PageHeadSections {
         id: headSections
     }
+
+    /*!
+      The color of the text and icons.
+     */
+    property color foregroundColor: Theme.palette.selected.backgroundText
 }

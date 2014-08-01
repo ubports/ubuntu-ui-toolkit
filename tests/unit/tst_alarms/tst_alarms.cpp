@@ -353,8 +353,8 @@ private Q_SLOTS:
         alarm.save();
         waitForRequest(&alarm);
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
-        QVERIFY(containsAlarm(&alarm));
         QSKIP("https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1322558");
+        QVERIFY(containsAlarm(&alarm));
 
         alarm.setDate(alarm.date().addDays(1));
         alarm.save();
