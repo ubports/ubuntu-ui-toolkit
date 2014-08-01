@@ -69,9 +69,6 @@ private Q_SLOTS:
         QTest::addColumn<QString>("document");
         QTest::addColumn<QUrl>("theme");
 
-        QTest::newRow("list with Item") << "ItemList.qml" << QUrl();
-        QTest::newRow("list with ViewItemBase") << "ViewItemBaseList.qml" << QUrl();
-        QTest::newRow("list with ViewItem") << "ViewItemList.qml" << QUrl();
         QTest::newRow("grid with Rectangle") << "RectangleGrid.qml" << QUrl();
         QTest::newRow("grid with Text") << "TextGrid.qml" << QUrl();
         QTest::newRow("grid with Label") << "LabelGrid.qml" << QUrl();
@@ -79,6 +76,9 @@ private Q_SLOTS:
         QTest::newRow("grid with UbuntuShapePair") << "PairOfUbuntuShapeGrid.qml" << QUrl();
         QTest::newRow("grid with Button") << "ButtonGrid.qml" << QUrl();
         QTest::newRow("grid with Slider") << "SliderGrid.qml" << QUrl();
+        QTest::newRow("list with Item") << "ItemList.qml" << QUrl();
+        QTest::newRow("list with ViewItemBase") << "ViewItemBaseList.qml" << QUrl();
+        QTest::newRow("list with ViewItem") << "ViewItemList.qml" << QUrl();
     }
 
     void benchmark_GridOfComponents()
