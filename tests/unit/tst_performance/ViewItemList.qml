@@ -21,10 +21,9 @@ import Ubuntu.Components.Themes.Ambiance 0.1
 Column {
     width: 800
     height: 600
-//    rows: 16
-//    columns: 16
     Repeater {
         model: 10000
-        ViewItem {}
+        ViewItem {
+        }
     }
 }
