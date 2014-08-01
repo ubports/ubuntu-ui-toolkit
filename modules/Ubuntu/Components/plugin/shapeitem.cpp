@@ -702,6 +702,17 @@ QSGMaterialShader* ShapeTexturedMaterial::createShader() const
     return new ShapeTexturedShader;
 }
 
+int ShapeTexturedMaterial::compare(const QSGMaterial* other) const
+{
+    const ShapeTexturedMaterial* otherMaterial = static_cast<const ShapeTexturedMaterial*>(other);
+    const QSGTextureProvider* otherTextureProvider = otherMaterial->imageTextureProvider();
+    const QSGTexture* otherTexture = otherTextureProvider ? otherTextureProvider->texture() : NULL;
+    const int otherTextureId = otherTexture ? otherTexture->textureId() : 0;
+    const QSGTexture* texture = imageTextureProvider_ ? imageTextureProvider_->texture() : NULL;
+    const int textureId = texture ? texture->textureId() : 0;
+    return textureId - otherTextureId;
+}
+
 void ShapeTexturedMaterial::setImage(QQuickItem* image)
 {
     imageTextureProvider_ = image ? image->textureProvider() : NULL;
@@ -801,6 +812,16 @@ QSGMaterialType* ShapeColoredMaterial::type() const
 QSGMaterialShader* ShapeColoredMaterial::createShader() const
 {
     return new ShapeColoredShader;
+}
+
+int ShapeColoredMaterial::compare(const QSGMaterial* other) const
+{
+    const ShapeColoredMaterial* otherMaterial = static_cast<const ShapeColoredMaterial*>(other);
+    if ((color_ != otherMaterial->color()) || (gradientColor_ != otherMaterial->gradientColor())) {
+        return -1;
+    } else {
+        return 0;
+    }
 }
 
 void ShapeColoredMaterial::setColor(const QColor& color)
