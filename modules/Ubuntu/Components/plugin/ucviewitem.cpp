@@ -69,8 +69,36 @@ void UCViewItemBasePrivate::listenToRebind(bool listen)
     }
 }
 
+/*!
+ * \qmltype ViewItemBase
+ * \instantiates UCViewItemBase
+ * \inherits Item
+ * \inqmlmodule Ubuntu.Components 1.1
+ * \ingroup ubuntu
+ * \brief The ViewItem element provides Ubuntu design standards for list or grid
+ * views.
+ *
+ * The component is dedicated to be used in designs with static or dynamic lists
+ * (i.e. list views where each item's layout differs or in lists where the content
+ * is determined by a given model, thus each element has the same layout). The
+ * element does not define any specific layout, components can be placed in any
+ * ways on it. However, when used in scrolling lists, the content must be chosen
+ * carefully to in order to keep the kinetic behavior and the 60 FPS if possible.
+ *
+ * The component does not set any size, therefore if used these properties should
+ * be set. Colors used are also hardcoded ones. Use \l ViewItem instead of this
+ * component, which provides bindings to theme palette and aligns to the component
+ * is embedded in.
+ *
+ * \sa ViewItem
+ */
 
-/*****************************************************************************
+/*!
+ * \qmlsignal ViewItemBase::clicked()
+ *
+ * The signal is emitted when the component gets released while the \l pressed property
+ * is set. When used in Flickable, the signal is not emitted if when the Flickable gets
+ * moved.
  */
 UCViewItemBase::UCViewItemBase(QQuickItem *parent)
     : QQuickItem(parent)
@@ -142,30 +170,98 @@ void UCViewItemBase::mouseReleaseEvent(QMouseEvent *event)
     d->setPressed(false);
 }
 
+/*!
+ * \qmlpropertygroup ::ViewItemBase::background
+ * \qmlproperty color ViewItemBase::background.color
+ * \qmlproperty color ViewItemBase::background.pressedColor
+ *
+ * background grouped property is an Item which holds the layout of the item, with
+ * abilities to show different colors when in normal state or when pressed. All
+ * properties from Item are accessible and can be used to control user defined
+ * actions or animations, with the exception of the followings:
+ * \list A
+ * \li do not alter x, y, width or height properties as those are controlled by the
+ *      item itself when leading or trailing options are revealed and will destroy
+ *      your logic
+ * \li never anchor left or right as it will block revealing the options.
+ * \endlist
+ */
 UCViewItemBackground* UCViewItemBase::background() const
 {
     Q_D(const UCViewItemBase);
     return d->background;
 }
 
+/*!
+ * \qmlproperty bool ViewItemBase::pressed
+ * True when the item is pressed. The items stays pressed when the mouse or touch
+ * is moved horizontally. When in Flickable (or ListView), the item gets un-pressed
+ * (false) when the mouse or touch is moved towards the vertical direction causing
+ * the flickable to move.
+ */
 bool UCViewItemBase::pressed() const
 {
     Q_D(const UCViewItemBase);
     return d->pressed;
 }
 
+/*!
+ * \qmlproperty Flickable ViewItemBase::flickable
+ * The property contains the Flickable the component is embedded in. The property is set
+ * in the following cases:
+ * \qml
+ * Flickable {
+ *     id: flickableItem
+ *     width: units.gu(30)
+ *     height: units.gu(30)
+ *     contentHeight: column.childrenRect.height
+ *     Column {
+ *         id: column
+ *         Repeater {
+ *             model: 100
+ *             ViewItem {
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
+ * In this case the ViewItem's flickable property points to the \c flickableItem, and
+ * parent to the \c column.
+ * \qml
+ * ListView {
+ *     id: listView
+ *     width: units.gu(30)
+ *     height: units.gu(30)
+ *     model: 100
+ *     delegate: ViewItem {
+ *     }
+ * }
+ * \endqml
+ * In this case the flickable property will contain the \c listView.
+ *
+ * In any other cases the flickable property will be set to null.
+ */
 QQuickFlickable *UCViewItemBase::flickable() const
 {
     Q_D(const UCViewItemBase);
     return d->flickable;
 }
 
+/*!
+ * \qmlproperty list<Object> ViewItemBase::data
+ * \default
+ * Overloaded default property containing all the children and resources.
+ */
 QQmlListProperty<QObject> UCViewItemBase::data()
 {
     Q_D(UCViewItemBase);
     return QQuickItemPrivate::get(d->background)->data();
 }
 
+/*!
+ * \qmlproperty list<Item> ViewItemBase::children
+ * Overloaded default property containing all the visible children of the item.
+ */
 QQmlListProperty<QQuickItem> UCViewItemBase::children()
 {
     Q_D(UCViewItemBase);

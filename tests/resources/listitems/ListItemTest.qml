@@ -23,59 +23,53 @@ Item {
 
     Column {
         width: parent.width
-        Repeater {
-            model: 10000
-            ViewItem {
-                id: defaults
-                onClicked: {
-                    print("click")
-                    units.gridUnit += 3;
+        ViewItem {
+            id: testItem
+            background.color: "green"
+            onClicked: {
+                print("click")
+                units.gridUnit += 1;
+            }
+            Item {
+                anchors.fill: parent
+            }
+        }
+
+        ListView {
+            id: view
+            clip: true
+            width: parent.width
+            height: units.gu(40)
+            model: 100
+            pressDelay: 0
+            delegate: ViewItem {
+                background.color: "blue"
+                onClicked: print(" clicked")
+                Label {
+                    text: modelData + " item"
+                    color: "white"
                 }
             }
         }
-//        ViewItem {
-//            id: testItem
-//            background.color: "green"
-//            Item {
-//                anchors.fill: parent
-//            }
-//        }
-
-//        ListView {
-//            id: view
-//            clip: true
-//            width: parent.width
-//            height: units.gu(40)
-//            model: 100
-//            pressDelay: 0
-//            delegate: ViewItem {
-//                background {
-//                    color: "blue"
-//                }
-//                onClicked: print(" clicked")
-//                Label {
-//                    text: modelData + " item"
-//                    color: "white"
-//                }
-//            }
-//        }
-//        Flickable {
-//            id: flicker
-//            width: parent.width
-//            height: units.gu(40)
-//            clip: true
-//            contentHeight: column.childrenRect.height
-//            Column {
-//                id: column
-//                width: view.width
-//                Repeater {
-//                    model: 100
-//                    ViewItem {
-//                        background.color: "red"
-//                        background.pressedColor: "pink"
-//                    }
-//                }
-//            }
-//        }
+        Flickable {
+            id: flicker
+            width: parent.width
+            height: units.gu(40)
+            clip: true
+            contentHeight: column.childrenRect.height
+            Column {
+                id: column
+                width: view.width
+                Repeater {
+                    model: 100
+                    ViewItem {
+                        background {
+                            color: "red"
+                            pressedColor: "lime"
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -898,7 +898,6 @@ plugins.qmltypes
     Parameter { name: "uris"; type: "QStringList" }
     name: "UCViewItemBackground"
     prototype: "QQuickItem"
-    exports: ["ViewItemBackground 1.1"]
     Property { name: "color"; type: "QColor" }
     Property { name: "pressedColor"; type: "QColor" }
     name: "UCViewItemBase"

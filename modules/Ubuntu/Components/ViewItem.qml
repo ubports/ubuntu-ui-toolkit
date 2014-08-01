@@ -21,13 +21,12 @@ import Ubuntu.Components 1.1
     \qmltype ViewItem
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
-    \brief The ViewItem element provides a standard item for handling list or grid items
-    with the Ubuntu patterns.
-
+    \brief The ViewItem element sets up the sizes and other bindings to satisfy
+    Ubuntu design guides. Does not bring anything in addition to ViewItemBase.
   */
 
 ViewItemBase {
-    width: flickable ? flickable.width : (parent ? parent.width : units.gu(30))
+    width: flickable ? flickable.width : (parent ? parent.width : units.gu(40))
     height: units.gu(6)
     background.pressedColor: Theme.palette.selected.background
 }

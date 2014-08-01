@@ -48,4 +48,6 @@ private:
     QColor m_pressedColor;
 };
 
+QML_DECLARE_TYPE(UCViewItemBackground)
+
 #endif // UCVIEWITEMBACKGROUND_H
