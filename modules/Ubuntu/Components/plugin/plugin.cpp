@@ -50,7 +50,7 @@
 #include "ucinversemouse.h"
 #include "sortfiltermodel.h"
 #include "ucviewitem.h"
-#include "ucviewitembackground.h"
+#include "ucviewitem_p.h"
 
 #include <sys/types.h>
 #include <unistd.h>

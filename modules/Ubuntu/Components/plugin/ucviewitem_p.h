@@ -20,7 +20,29 @@
 #include "ucviewitem.h"
 #include <QtCore/QPointer>
 
+#define DECLARE_PROPERTY(type, member, customBlock) \
+    public: \
+    void set_##member(const type &_arg_##member) \
+    { \
+        if (_arg_##member != m_##member) { \
+            m_##member = _arg_##member; \
+            customBlock; \
+            Q_EMIT member##Changed(); \
+        } \
+    } \
+    type get_##member() const \
+    { \
+        return m_##member; \
+    } \
+    Q_SIGNALS: \
+        void member##Changed(); \
+    private: \
+        type m_##member; \
+        Q_PROPERTY(type member READ get_##member WRITE set_##member NOTIFY member##Changed)
+
+
 class QQuickFlickable;
+class UCViewItemBackground;
 class UCViewItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCViewItemBase)
@@ -41,5 +63,23 @@ public:
     UCViewItemBackground *background;
     bool pressed:1;
 };
+
+class UCViewItemBackground : public QQuickItem
+{
+    Q_OBJECT
+    DECLARE_PROPERTY(QColor, color, update())
+    DECLARE_PROPERTY(QColor, pressedColor, update())
+public:
+    explicit UCViewItemBackground(QQuickItem *parent = 0);
+    ~UCViewItemBackground();
+
+protected:
+    void itemChange(ItemChange change, const ItemChangeData &data);
+    QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
+
+private:
+    UCViewItemBase *m_item;
+};
+QML_DECLARE_TYPE(UCViewItemBackground)
 
 #endif // UCVIEWITEM_P_H

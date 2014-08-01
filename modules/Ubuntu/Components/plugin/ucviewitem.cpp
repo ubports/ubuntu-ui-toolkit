@@ -18,11 +18,59 @@
 #include "uctheme.h"
 #include "ucviewitem.h"
 #include "ucviewitem_p.h"
-#include "ucviewitembackground.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
+
+/******************************************************************************
+ * ViewItemBackground
+ */
+UCViewItemBackground::UCViewItemBackground(QQuickItem *parent)
+    : QQuickItem(parent)
+    , m_color(Qt::transparent)
+    , m_pressedColor(Qt::yellow)
+    , m_item(0)
+{
+    setFlag(QQuickItem::ItemHasContents, true);
+    // set the z-order to be above the main item
+    setZ(1);
+}
+
+UCViewItemBackground::~UCViewItemBackground()
+{
+}
+
+void UCViewItemBackground::itemChange(ItemChange change, const ItemChangeData &data)
+{
+    if (change == ItemParentHasChanged) {
+        m_item = qobject_cast<UCViewItemBase*>(data.item);
+    }
+    QQuickItem::itemChange(change, data);
+}
+
+QSGNode *UCViewItemBackground::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
+{
+    Q_UNUSED(data);
+
+    UCViewItemBasePrivate *dd = UCViewItemBasePrivate::get(m_item);
+    bool pressed = (dd && dd->pressed);
+    QColor color = pressed ? m_pressedColor : m_color;
+
+    if (width() <= 0 || height() <= 0 || (color.alpha() == 0)) {
+        delete oldNode;
+        return 0;
+    }
+    QSGRectangleNode *rectNode = static_cast<QSGRectangleNode *>(oldNode);
+    if (!rectNode) {
+        rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
+    }
+    rectNode->setColor(color);
+    rectNode->setRect(boundingRect());
+    rectNode->update();
+    return rectNode;
+}
+
 
 UCViewItemBasePrivate::UCViewItemBasePrivate(UCViewItemBase *qq)
     : q_ptr(qq)
