@@ -43,11 +43,9 @@ Item {
             model: 100
             pressDelay: 0
             delegate: ViewItem {
-                background.color: "blue"
                 onClicked: print(" clicked")
                 Label {
                     text: modelData + " item"
-                    color: "white"
                 }
             }
         }
@@ -67,6 +65,7 @@ Item {
                             color: "red"
                             pressedColor: "lime"
                         }
+                        onClicked: divider.visible = !divider.visible
                     }
                 }
             }

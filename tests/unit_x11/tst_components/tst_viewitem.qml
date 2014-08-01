@@ -85,6 +85,10 @@ Item {
             compare(defaults.background.color, "#000000", "Transparent by default");
             compare(defaults.background.pressedColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
             compare(defaults.pressed, false, "Not pressed buy default");
+            compare(defaults.divider.visible, true, "divider is visible by default");
+            compare(defaults.divider.thickness, units.dp(2), "divider is 2 DP thick");
+            compare(defaults.divider.leftMargin, units.gu(2), "divider's left margin is 2GU");
+            compare(defaults.divider.rightMargin, units.gu(2), "divider's right margin is 2GU");
         }
 
         function test_children_in_background() {
@@ -142,6 +146,24 @@ Item {
             }
             compare(listItem.pressed, false, "Item is pressed still!");
             TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
+        }
+
+        function test_background_height_change_on_divider_visible() {
+            // make sure the testItem's divider is shown
+            testItem.divider.visible = true;
+            verify(testItem.background.height < testItem.height, "ViewItem's background height must be less than the item itself.");
+            testItem.divider.visible = false;
+            compare(testItem.background.height, testItem.height, "ViewItem's background height must be the same as the item itself.");
+            testItem.divider.visible = true;
+        }
+
+        function test_background_height_change_on_divider_thickness_change() {
+            // make sure the testItem's divider is shown
+            testItem.divider.visible = true;
+            var prevHeight = testItem.background.height;
+            testItem.divider.thickness = units.gu(1);
+            waitForRendering(testItem, 100);
+            verify(testItem.background.height < prevHeight, "ViewItem's background height shrinks on divider's thickness change.");
         }
     }
 }

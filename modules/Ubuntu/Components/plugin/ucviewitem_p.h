@@ -20,7 +20,28 @@
 #include "ucviewitem.h"
 #include <QtCore/QPointer>
 
+#define DECLARE_PROPERTY(type, member, customProc) \
+    public: \
+    void setter_##member(const type _arg_##member) \
+    { \
+        if (_arg_##member != m_##member) { \
+            m_##member = _arg_##member; \
+            customProc; \
+            Q_EMIT member##Changed(); \
+        } \
+    } \
+    type getter_##member() const \
+    { \
+        return m_##member; \
+    } \
+    Q_SIGNALS: \
+        void member##Changed(); \
+    private: \
+        type m_##member; \
+        Q_PROPERTY(type member READ getter_##member WRITE setter_##member NOTIFY member##Changed)
+
 class QQuickFlickable;
+class UCVIewItemDivider;
 class UCViewItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCViewItemBase)
@@ -35,11 +56,42 @@ public:
     void _q_rebound();
     void setPressed(bool pressed);
     void listenToRebind(bool listen);
+    void resize();
 
     UCViewItemBase *q_ptr;
     QPointer<QQuickFlickable> flickable;
     UCViewItemBackground *background;
+    UCVIewItemDivider *divider;
     bool pressed:1;
 };
+
+class UCVIewItemDivider : public QObject
+{
+    Q_OBJECT
+    DECLARE_PROPERTY(bool, visible, resizeAndUpdate())
+    DECLARE_PROPERTY(qreal, thickness, resizeAndUpdate())
+    DECLARE_PROPERTY(qreal, leftMargin, update())
+    DECLARE_PROPERTY(qreal, rightMargin, update())
+public:
+    explicit UCVIewItemDivider(UCViewItemBase *viewItem);
+    ~UCVIewItemDivider();
+private:
+
+    void update() {
+        m_viewItem->update();
+    }
+
+    void resizeAndUpdate() {
+        UCViewItemBasePrivate::get(m_viewItem)->resize();
+        m_viewItem->update();
+    }
+
+    QSGNode *paint(QSGNode *paintNode, const QRectF &rect);
+
+    UCViewItemBase *m_viewItem;
+    friend class UCViewItemBase;
+    friend class UCViewItemBasePrivate;
+};
+QML_DECLARE_TYPE(UCVIewItemDivider)
 
 #endif // UCVIEWITEM_P_H

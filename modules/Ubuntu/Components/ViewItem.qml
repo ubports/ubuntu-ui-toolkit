@@ -16,6 +16,7 @@
 
 import QtQuick 2.2
 import Ubuntu.Components 1.1
+import Ubuntu.Components.ListItems 1.0
 
 /*!
     \qmltype ViewItem
@@ -29,4 +30,9 @@ ViewItemBase {
     width: flickable ? flickable.width : (parent ? parent.width : units.gu(40))
     height: units.gu(6)
     background.pressedColor: Theme.palette.selected.background
+    divider {
+        thickness: units.dp(2)
+        leftMargin: units.gu(2)
+        rightMargin: units.gu(2)
+    }
 }

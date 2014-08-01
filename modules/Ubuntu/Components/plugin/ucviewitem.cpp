@@ -24,9 +24,52 @@
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
 
+/******************************************************************************
+ * Divider
+ */
+UCVIewItemDivider::UCVIewItemDivider(UCViewItemBase *viewItem)
+    : QObject(viewItem)
+    , m_visible(true)
+    , m_thickness(UCUnits::instance().dp(2))
+    , m_leftMargin(UCUnits::instance().gu(2))
+    , m_rightMargin(UCUnits::instance().gu(2))
+    , m_viewItem(viewItem)
+{
+}
+UCVIewItemDivider::~UCVIewItemDivider()
+{
+}
+
+QSGNode *UCVIewItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
+{
+    if (m_visible) {
+        QSGRectangleNode *rectNode = static_cast<QSGRectangleNode *>(paintNode);
+        if (!rectNode) {
+            rectNode = QQuickItemPrivate::get(m_viewItem)->sceneGraphContext()->createRectangleNode();
+        }
+        rectNode->setRect(QRectF(m_leftMargin, rect.height() - m_thickness,
+                                 rect.width() - m_leftMargin - m_rightMargin, m_thickness));
+        QGradientStops stops;
+        // FIXME: use palette colors!
+        stops.append(QGradientStop(0.0, QColor("#26000000")));
+        stops.append(QGradientStop(1.0, QColor("#14F3F3E7")));
+        rectNode->setGradientStops(stops);
+        rectNode->update();
+        return rectNode;
+    } else {
+        delete paintNode;
+        return 0;
+    }
+}
+
+
+/******************************************************************************
+ * ViewItemBasePrivate
+ */
 UCViewItemBasePrivate::UCViewItemBasePrivate(UCViewItemBase *qq)
     : q_ptr(qq)
     , background(new UCViewItemBackground)
+    , divider(new UCVIewItemDivider(q_ptr))
     , pressed(false)
 {
     background->setObjectName("ViewItemHolder");
@@ -67,6 +110,15 @@ void UCViewItemBasePrivate::listenToRebind(bool listen)
     } else {
         QObject::disconnect(flickable.data(), SIGNAL(movementStarted()), q_ptr, SLOT(_q_rebound()));
     }
+}
+
+void UCViewItemBasePrivate::resize()
+{
+    QRectF rect(q_ptr->boundingRect());
+    if (divider && divider->m_visible) {
+        rect.setHeight(rect.height() - divider->m_thickness);
+    }
+    background->setSize(rect.size());
 }
 
 /*!
@@ -139,9 +191,21 @@ void UCViewItemBase::geometryChanged(const QRectF &newGeometry, const QRectF &ol
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
     // resize background item
     Q_D(UCViewItemBase);
-    QRectF rect(boundingRect());
-    d->background->setSize(rect.size());
+    d->resize();
 }
+
+QSGNode *UCViewItemBase::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
+{
+    Q_UNUSED(data);
+    Q_D(UCViewItemBase);
+    if (width() <= 0 || height() <= 0 || !d->divider) {
+        delete oldNode;
+        return 0;
+    }
+    // paint divider
+    return d->divider->paint(oldNode, boundingRect());
+}
+
 void UCViewItemBase::mousePressEvent(QMouseEvent *event)
 {
     QQuickItem::mousePressEvent(event);
@@ -190,6 +254,27 @@ UCViewItemBackground* UCViewItemBase::background() const
 {
     Q_D(const UCViewItemBase);
     return d->background;
+}
+
+/*!
+ * \qmlpropertygroup ::ViewItemBase::divider
+ * \qmlproperty bool ViewItemBase::divider.visible
+ * \qmlproperty real ViewItemBase::divider.thickness
+ * \qmlproperty real ViewItemBase::divider.leftMargin
+ * \qmlproperty real ViewItemBase::divider.rightMargin
+ *
+ * This grouped property configures the thin divider shown in the bottom of the
+ * component. Controls the visibility the thickness and the margins from the left
+ * and right of the ViewItem. It is not moved togehther with the content when
+ * options are revealed.
+ *
+ * When \c visible is true, the ViewItem's content size gets thinner with the
+ * divider's \c thickness.
+ */
+UCVIewItemDivider *UCViewItemBase::divider() const
+{
+    Q_D(const UCViewItemBase);
+    return d->divider;
 }
 
 /*!

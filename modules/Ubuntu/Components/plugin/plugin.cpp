@@ -50,6 +50,7 @@
 #include "ucinversemouse.h"
 #include "sortfiltermodel.h"
 #include "ucviewitem.h"
+#include "ucviewitem_p.h"
 #include "ucviewitembackground.h"
 
 #include <sys/types.h>
@@ -208,6 +209,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     // ViewItem and related types
     qmlRegisterType<UCViewItemBase, 1>(uri, 1, 1, "ViewItemBase");
     qmlRegisterType<UCViewItemBackground>();
+    qmlRegisterType<UCVIewItemDivider>();
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
