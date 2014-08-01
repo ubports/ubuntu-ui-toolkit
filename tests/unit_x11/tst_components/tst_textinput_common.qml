@@ -111,7 +111,7 @@ Item {
             var y = data.input.height / 2;
             mouseClick(data.input, x, y, Qt.RightButton);
             popupSpy.wait();
-            var popover = findChild(testMain, "text_input_popover");
+            var popover = findChild(testMain, "text_input_contextmenu");
             verify(popover, "Cannot retrieve default TextInputPopover");
             waitForRendering(popover);
             // select all
