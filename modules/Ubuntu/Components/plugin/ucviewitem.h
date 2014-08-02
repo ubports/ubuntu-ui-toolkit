@@ -28,10 +28,10 @@ class UCViewItemBasePrivate;
 class UCViewItemBase : public QQuickItem
 {
     Q_OBJECT
-    DECLARE_PROPERTY_PRIVATE_RW(UCViewItemOptions*, leadingOptions)
-    DECLARE_PROPERTY_PRIVATE_RW(UCViewItemOptions*, trailingOptions)
-    DECLARE_PROPERTY_PRIVATE_RO(UCViewItemBackground*, background)
-    DECLARE_PROPERTY_PRIVATE_RO(UCViewItemDivider*, divider)
+    DECLARE_PROPERTY_PRIVATE_RW(UCViewItemOptions*, leadingOptions, DESIGNABLE false)
+    DECLARE_PROPERTY_PRIVATE_RW(UCViewItemOptions*, trailingOptions, DESIGNABLE false)
+    DECLARE_PROPERTY_PRIVATE_RO_NOSIGNAL(UCViewItemBackground*, background, DESIGNABLE true)
+    DECLARE_PROPERTY_PRIVATE_RO_NOSIGNAL(UCViewItemDivider*, divider, DESIGNABLE true)
     DECLARE_PROPERTY_PRIVATE_RO(bool, pressed)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
@@ -41,8 +41,6 @@ class UCViewItemBase : public QQuickItem
 public:
     explicit UCViewItemBase(QQuickItem *parent = 0);
     ~UCViewItemBase();
-
-    QQuickFlickable *flickable() const;
 
 protected:
     void itemChange(ItemChange change, const ItemChangeData &data);

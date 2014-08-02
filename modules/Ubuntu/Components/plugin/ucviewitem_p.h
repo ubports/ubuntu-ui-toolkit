@@ -18,6 +18,7 @@
 #define UCVIEWITEM_P_H
 
 #include "ucviewitem.h"
+#include "ucglobals.h"
 #include <QtCore/QPointer>
 
 class QQuickFlickable;

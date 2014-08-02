@@ -51,32 +51,22 @@
  * setter macros are to be used.
  */
 
-// declaration macros
-#define DECLARE_PROPERTY_PRIVATE_RW(type, member, ...) \
+#define DECLARE_PROPERTY_PRIVATE_RW(type, member) \
     public: \
     void set_##member(type _arg_##member); \
     type get_##member() const; \
     Q_SIGNALS: \
         void member##Changed(); \
     private: \
-        Q_PROPERTY(type member READ get_##member WRITE set_##member NOTIFY member##Changed __VA_ARGS__)
+        Q_PROPERTY(type member READ get_##member WRITE set_##member NOTIFY member##Changed)
 
-
-#define DECLARE_PROPERTY_PRIVATE_RO(type, member, ...) \
+#define DECLARE_PROPERTY_PRIVATE_RO(type, member) \
     public: \
     type get_##member() const; \
     Q_SIGNALS: \
         void member##Changed(); \
-    public: \
-        Q_PROPERTY(type member READ get_##member NOTIFY member##Changed __VA_ARGS__)
-
-
-#define DECLARE_PROPERTY_PRIVATE_RO_NOSIGNAL(type, member, ...) \
-    public: \
-    type get_##member() const; \
-    public: \
-        Q_PROPERTY(type member READ get_##member __VA_ARGS__)
-
+    private: \
+        Q_PROPERTY(type member READ get_##member NOTIFY member##Changed)
 
 #define DECLARE_LISTPROPERTY_PRIVATE(type, member) \
     public: \
