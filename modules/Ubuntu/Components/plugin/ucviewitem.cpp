@@ -26,7 +26,7 @@
 /******************************************************************************
  * Divider
  */
-UCVIewItemDivider::UCVIewItemDivider(UCViewItemBase *viewItem)
+UCViewItemDivider::UCViewItemDivider(UCViewItemBase *viewItem)
     : QObject(viewItem)
     , m_visible(true)
     , m_thickness(UCUnits::instance().dp(2))
@@ -35,11 +35,11 @@ UCVIewItemDivider::UCVIewItemDivider(UCViewItemBase *viewItem)
     , m_viewItem(viewItem)
 {
 }
-UCVIewItemDivider::~UCVIewItemDivider()
+UCViewItemDivider::~UCViewItemDivider()
 {
 }
 
-QSGNode *UCVIewItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
+QSGNode *UCViewItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
 {
     if (m_visible) {
         QSGRectangleNode *rectNode = static_cast<QSGRectangleNode *>(paintNode);
@@ -115,7 +115,7 @@ QSGNode *UCViewItemBackground::updatePaintNode(QSGNode *oldNode, UpdatePaintNode
 UCViewItemBasePrivate::UCViewItemBasePrivate(UCViewItemBase *qq)
     : q_ptr(qq)
     , background(new UCViewItemBackground)
-    , divider(new UCVIewItemDivider(q_ptr))
+    , divider(new UCViewItemDivider(q_ptr))
     , pressed(false)
 {
     background->setObjectName("ViewItemHolder");
@@ -317,7 +317,7 @@ UCViewItemBackground* UCViewItemBase::background() const
  * When \c visible is true, the ViewItem's content size gets thinner with the
  * divider's \c thickness.
  */
-UCVIewItemDivider *UCViewItemBase::divider() const
+UCViewItemDivider *UCViewItemBase::divider() const
 {
     Q_D(const UCViewItemBase);
     return d->divider;

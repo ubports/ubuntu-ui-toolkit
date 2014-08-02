@@ -21,13 +21,13 @@
 
 class QQuickFlickable;
 class UCViewItemBackground;
-class UCVIewItemDivider;
+class UCViewItemDivider;
 class UCViewItemBasePrivate;
 class UCViewItemBase : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(UCViewItemBackground* background READ background DESIGNABLE true)
-    Q_PROPERTY(UCVIewItemDivider* divider READ divider DESIGNABLE true)
+    Q_PROPERTY(UCViewItemDivider* divider READ divider DESIGNABLE true)
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
@@ -39,7 +39,7 @@ public:
     ~UCViewItemBase();
 
     UCViewItemBackground* background() const;
-    UCVIewItemDivider* divider() const;
+    UCViewItemDivider* divider() const;
     bool pressed() const;
 
     QQuickFlickable *flickable() const;

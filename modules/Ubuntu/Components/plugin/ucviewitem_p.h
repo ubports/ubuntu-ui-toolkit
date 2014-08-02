@@ -42,7 +42,7 @@
 
 
 class QQuickFlickable;
-class UCVIewItemDivider;
+class UCViewItemDivider;
 class UCViewItemBackground;
 class UCViewItemBasePrivate
 {
@@ -63,20 +63,18 @@ public:
     UCViewItemBase *q_ptr;
     QPointer<QQuickFlickable> flickable;
     UCViewItemBackground *background;
-    UCVIewItemDivider *divider;
+    UCViewItemDivider *divider;
     bool pressed:1;
 };
 
-class UCVIewItemDivider : public QObject
+class UCViewItemBackground : public QQuickItem
 {
     Q_OBJECT
-    DECLARE_PROPERTY(bool, visible, resizeAndUpdate())
-    DECLARE_PROPERTY(qreal, thickness, resizeAndUpdate())
-    DECLARE_PROPERTY(qreal, leftMargin, update())
-    DECLARE_PROPERTY(qreal, rightMargin, update())
+    DECLARE_PROPERTY(QColor, color, update())
+    DECLARE_PROPERTY(QColor, pressedColor, update())
 public:
-    explicit UCVIewItemDivider(UCViewItemBase *viewItem);
-    ~UCVIewItemDivider();
+    explicit UCViewItemBackground(QQuickItem *parent = 0);
+    ~UCViewItemBackground();
 
 protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
@@ -86,13 +84,19 @@ private:
     UCViewItemBase *m_item;
 };
 
-class UCViewItemBackground : public QQuickItem
+class UCViewItemDivider : public QObject
 {
     Q_OBJECT
-    DECLARE_PROPERTY(QColor, color, update())
-    DECLARE_PROPERTY(QColor, pressedColor, update())
-    explicit UCViewItemBackground(QQuickItem *parent = 0);
-    ~UCViewItemBackground();
+    DECLARE_PROPERTY(bool, visible, resizeAndUpdate())
+    DECLARE_PROPERTY(qreal, thickness, resizeAndUpdate())
+    DECLARE_PROPERTY(qreal, leftMargin, update())
+    DECLARE_PROPERTY(qreal, rightMargin, update())
+public:
+    explicit UCViewItemDivider(UCViewItemBase *viewItem);
+    ~UCViewItemDivider();
+
+protected:
+    QSGNode *paint(QSGNode *paintNode, const QRectF &rect);
 
 private:
     void update() {
@@ -104,13 +108,12 @@ private:
         m_viewItem->update();
     }
 
-    QSGNode *paint(QSGNode *paintNode, const QRectF &rect);
-
     UCViewItemBase *m_viewItem;
     friend class UCViewItemBase;
     friend class UCViewItemBasePrivate;
 };
-QML_DECLARE_TYPE(UCVIewItemDivider)
+
+QML_DECLARE_TYPE(UCViewItemDivider)
 QML_DECLARE_TYPE(UCViewItemBackground)
 
 #endif // UCVIEWITEM_P_H
