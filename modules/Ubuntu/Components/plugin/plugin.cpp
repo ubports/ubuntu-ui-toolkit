@@ -49,10 +49,14 @@
 #include "ucmouse.h"
 #include "ucinversemouse.h"
 #include "sortfiltermodel.h"
+#include "ucviewitem.h"
+#include "ucviewitem_p.h"
 
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdexcept>
+
+QUrl UbuntuComponentsPlugin::m_baseUrl = QUrl();
 
 /*
  * Type registration functions.
@@ -61,8 +65,7 @@
 static QObject *registerPickerPanel(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(scriptEngine)
-    return UbuntuComponentsPlugin::registerQmlSingletonType(engine,
-           "Ubuntu.Components", "Pickers/PickerPanel.qml");
+    return UbuntuComponentsPlugin::registerQmlSingletonType(engine, "Pickers/PickerPanel.qml");
 }
 
 static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
@@ -95,42 +98,18 @@ static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
 static QObject *registerUbuntuColors10(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(scriptEngine)
-    return UbuntuComponentsPlugin::registerQmlSingletonType(engine,
-           "Ubuntu.Components", "Colors/UbuntuColors10.qml");
+    return UbuntuComponentsPlugin::registerQmlSingletonType(engine, "Colors/UbuntuColors10.qml");
 }
 
 static QObject *registerUbuntuColors11(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(scriptEngine)
-    return UbuntuComponentsPlugin::registerQmlSingletonType(engine,
-           "Ubuntu.Components", "Colors/UbuntuColors.qml");
+    return UbuntuComponentsPlugin::registerQmlSingletonType(engine, "Colors/UbuntuColors.qml");
 }
 
-QUrl UbuntuComponentsPlugin::baseUrl(const QStringList& importPathList, const char* uri)
+QObject *UbuntuComponentsPlugin::registerQmlSingletonType(QQmlEngine *engine, const char* qmlFile)
 {
-    /* FIXME: remove when migrating to Qt 5.1 and use QQmlExtensionPlugin::baseUrl()
-       http://doc-snapshot.qt-project.org/qt5-stable/qtqml/qqmlextensionplugin.html#baseUrl
-    */
-    QString pluginRelativePath = QString::fromUtf8(uri).replace(".", "/").prepend("/").append("/");
-    QString pluginPath;
-    Q_FOREACH (QString importPath, importPathList) {
-        pluginPath = importPath.append(pluginRelativePath);
-        /* We verify that the directory ending in Ubuntu/Components contains the
-           file libUbuntuComponents.so therefore proving it's the right directory.
-
-           Ref.: https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197293
-        */
-        if (QFile(pluginPath + "libUbuntuComponents.so").exists()) {
-            return QUrl::fromLocalFile(pluginPath);
-        }
-    }
-
-    return QUrl();
-}
-
-QObject *UbuntuComponentsPlugin::registerQmlSingletonType(QQmlEngine *engine, const char* uri, const char* qmlFile)
-{
-    QUrl url = baseUrl(engine->importPathList(), uri).resolved(QUrl::fromLocalFile(qmlFile));
+    QUrl url = m_baseUrl.resolved(QUrl::fromLocalFile(qmlFile));
     return QuickUtils::instance().createQmlObject(url, engine);
 }
 
@@ -203,12 +182,19 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
     qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
+    // ViewItem and related types
+    qmlRegisterType<UCViewItemBase, 1>(uri, 1, 1, "ViewItemBase");
+    qmlRegisterType<UCViewItemBackground>();
+    qmlRegisterType<UCViewItemDivider>();
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
+
+    // setup baseUrl by adding a trailing / to keep resolving properly resolve local files
+    m_baseUrl = QUrl(QQmlExtensionPlugin::baseUrl().toString() + '/');
 
     // register root object watcher that sets a global property with the root object
     // that can be accessed from any object

@@ -5,7 +5,7 @@ unix {
 
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
-QT += core-private qml qml-private quick quick-private dbus
+QT += core-private qml qml-private quick quick-private gui-private dbus
 
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT += v8-private
@@ -63,7 +63,9 @@ HEADERS += plugin.h \
     ucurihandler.h \
     ucinversemouse.h \
     ucmouse.h \
-    unixsignalhandler_p.h
+    unixsignalhandler_p.h \
+    ucviewitem.h \
+    ucviewitem_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -96,7 +98,8 @@ SOURCES += plugin.cpp \
     statesaverbackend_p.cpp \
     ucurihandler.cpp \
     ucmousefilters.cpp \
-    unixsignalhandler_p.cpp
+    unixsignalhandler_p.cpp \
+    ucviewitem.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp
