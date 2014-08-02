@@ -20,30 +20,10 @@
 #include "ucviewitem.h"
 #include <QtCore/QPointer>
 
-#define DECLARE_PROPERTY(type, member, customBlock) \
-    public: \
-    void set_##member(const type &_arg_##member) \
-    { \
-        if (_arg_##member != m_##member) { \
-            m_##member = _arg_##member; \
-            customBlock; \
-            Q_EMIT member##Changed(); \
-        } \
-    } \
-    type get_##member() const \
-    { \
-        return m_##member; \
-    } \
-    Q_SIGNALS: \
-        void member##Changed(); \
-    private: \
-        type m_##member; \
-        Q_PROPERTY(type member READ get_##member WRITE set_##member NOTIFY member##Changed)
-
-
 class QQuickFlickable;
 class UCViewItemDivider;
 class UCViewItemBackground;
+class UCViewItemOptions;
 class UCViewItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCViewItemBase)
@@ -64,6 +44,8 @@ public:
     QPointer<QQuickFlickable> flickable;
     UCViewItemBackground *background;
     UCViewItemDivider *divider;
+    UCViewItemOptions *leadingOptions;
+    UCViewItemOptions *trailingOptions;
     bool pressed:1;
 };
 

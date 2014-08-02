@@ -116,6 +116,8 @@ UCViewItemBasePrivate::UCViewItemBasePrivate(UCViewItemBase *qq)
     : q_ptr(qq)
     , background(new UCViewItemBackground)
     , divider(new UCViewItemDivider(q_ptr))
+    , leadingOptions(0)
+    , trailingOptions(0)
     , pressed(false)
 {
     background->setObjectName("ViewItemHolder");
@@ -281,6 +283,24 @@ void UCViewItemBase::mouseReleaseEvent(QMouseEvent *event)
 }
 
 /*!
+ * \qmlproperty ViewItemOptions ViewItemBase::leadingOptions
+ *
+ * The property holds the options and its configuration to be revealed when swiped
+ * from left to right.
+ */
+PROPERTY_GETTER(UCViewItemBase, UCViewItemOptions*, leadingOptions)
+PROPERTY_SETTER(UCViewItemBase, UCViewItemOptions*, leadingOptions)
+
+/*!
+ * \qmlproperty ViewItemOptions ViewItemBase::trailingOptions
+ *
+ * The property holds the options and its configuration to be revealed when swiped
+ * from right to left.
+ */
+PROPERTY_GETTER(UCViewItemBase, UCViewItemOptions*, trailingOptions)
+PROPERTY_SETTER(UCViewItemBase, UCViewItemOptions*, trailingOptions)
+
+/*!
  * \qmlpropertygroup ::ViewItemBase::background
  * \qmlproperty color ViewItemBase::background.color
  * \qmlproperty color ViewItemBase::background.pressedColor
@@ -296,11 +316,7 @@ void UCViewItemBase::mouseReleaseEvent(QMouseEvent *event)
  * \li never anchor left or right as it will block revealing the options.
  * \endlist
  */
-UCViewItemBackground* UCViewItemBase::background() const
-{
-    Q_D(const UCViewItemBase);
-    return d->background;
-}
+PROPERTY_GETTER(UCViewItemBase, UCViewItemBackground*, background)
 
 /*!
  * \qmlpropertygroup ::ViewItemBase::divider
@@ -317,11 +333,7 @@ UCViewItemBackground* UCViewItemBase::background() const
  * When \c visible is true, the ViewItem's content size gets thinner with the
  * divider's \c thickness.
  */
-UCViewItemDivider *UCViewItemBase::divider() const
-{
-    Q_D(const UCViewItemBase);
-    return d->divider;
-}
+PROPERTY_GETTER(UCViewItemBase, UCViewItemDivider*, divider)
 
 /*!
  * \qmlproperty bool ViewItemBase::pressed
@@ -330,11 +342,7 @@ UCViewItemDivider *UCViewItemBase::divider() const
  * (false) when the mouse or touch is moved towards the vertical direction causing
  * the flickable to move.
  */
-bool UCViewItemBase::pressed() const
-{
-    Q_D(const UCViewItemBase);
-    return d->pressed;
-}
+PROPERTY_GETTER(UCViewItemBase, bool, pressed)
 
 /*!
  * \qmlproperty Flickable ViewItemBase::flickable
@@ -372,11 +380,7 @@ bool UCViewItemBase::pressed() const
  *
  * In any other cases the flickable property will be set to null.
  */
-QQuickFlickable *UCViewItemBase::flickable() const
-{
-    Q_D(const UCViewItemBase);
-    return d->flickable;
-}
+PROPERTY_GETTER(UCViewItemBase, QQuickFlickable *, flickable)
 
 /*!
  * \qmlproperty list<Object> ViewItemBase::data

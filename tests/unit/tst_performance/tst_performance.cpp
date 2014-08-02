@@ -79,6 +79,7 @@ private Q_SLOTS:
         QTest::newRow("list with Item") << "ItemList.qml" << QUrl();
         QTest::newRow("list with ViewItemBase") << "ViewItemBaseList.qml" << QUrl();
         QTest::newRow("list with ViewItem") << "ViewItemList.qml" << QUrl();
+        QTest::newRow("list with ViewItemBaseWithOptions") << "ViewItemBaseWithOptionsList.qml" << QUrl();
     }
 
     void benchmark_GridOfComponents()

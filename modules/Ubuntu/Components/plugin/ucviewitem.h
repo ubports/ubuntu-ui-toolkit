@@ -18,29 +18,29 @@
 #define UCVIEWITEM_H
 
 #include <QtQuick/QQuickItem>
+#include "ucglobals.h"
 
 class QQuickFlickable;
 class UCViewItemBackground;
 class UCViewItemDivider;
+class UCViewItemOptions;
 class UCViewItemBasePrivate;
 class UCViewItemBase : public QQuickItem
 {
     Q_OBJECT
-    Q_PROPERTY(UCViewItemBackground* background READ background DESIGNABLE true)
-    Q_PROPERTY(UCViewItemDivider* divider READ divider DESIGNABLE true)
-    Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
+    DECLARE_PROPERTY_PRIVATE_RW(UCViewItemOptions*, leadingOptions)
+    DECLARE_PROPERTY_PRIVATE_RW(UCViewItemOptions*, trailingOptions)
+    DECLARE_PROPERTY_PRIVATE_RO(UCViewItemBackground*, background)
+    DECLARE_PROPERTY_PRIVATE_RO(UCViewItemDivider*, divider)
+    DECLARE_PROPERTY_PRIVATE_RO(bool, pressed)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
 
-    Q_PROPERTY(QQuickFlickable *flickable READ flickable NOTIFY flickableChanged)
+    DECLARE_PROPERTY_PRIVATE_RO(QQuickFlickable*, flickable)
 public:
     explicit UCViewItemBase(QQuickItem *parent = 0);
     ~UCViewItemBase();
-
-    UCViewItemBackground* background() const;
-    UCViewItemDivider* divider() const;
-    bool pressed() const;
 
     QQuickFlickable *flickable() const;
 
@@ -52,10 +52,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
 
 Q_SIGNALS:
-    void pressedChanged();
     void childrenChanged();
-
-    void flickableChanged();
 
     void clicked();
 

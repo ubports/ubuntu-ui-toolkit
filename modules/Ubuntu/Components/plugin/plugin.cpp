@@ -51,6 +51,7 @@
 #include "sortfiltermodel.h"
 #include "ucviewitem.h"
 #include "ucviewitem_p.h"
+#include "ucviewitemoptions.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -186,6 +187,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCViewItemBase, 1>(uri, 1, 1, "ViewItemBase");
     qmlRegisterType<UCViewItemBackground>();
     qmlRegisterType<UCViewItemDivider>();
+    qmlRegisterType<UCViewItemOptions, 1>(uri, 1, 1, "ViewItemOptions");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

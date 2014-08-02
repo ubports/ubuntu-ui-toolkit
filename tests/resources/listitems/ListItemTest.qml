@@ -33,6 +33,9 @@ Item {
             Item {
                 anchors.fill: parent
             }
+            leadingOptions: ViewItemOptions {
+                backgroundColor: "blue"
+            }
         }
 
         ListView {
