@@ -110,16 +110,16 @@ class QQuickFlickable(Scrollable):
             # Check the direction of the swipe based on the position of the
             # child relative to the immediate flickable container.
             if child.globalRect.y < self.globalRect.y:
-                self._swipe_to_show_more_above(containers)
+                self.swipe_to_show_more_above(containers)
             else:
-                self._swipe_to_show_more_below(containers)
+                self.swipe_to_show_more_below(containers)
 
             if self.contentY == original_content_y:
                 raise _common.ToolkitException(
                     "Couldn't swipe in the flickable.")
 
     @autopilot_logging.log_action(logger.info)
-    def _swipe_to_show_more_above(self, containers):
+    def swipe_to_show_more_above(self, containers):
         if self.atYBeginning:
             raise _common.ToolkitException(
                 "Can't swipe more, we are already at the top of the "
@@ -128,7 +128,7 @@ class QQuickFlickable(Scrollable):
             self._swipe_to_show_more('above', containers)
 
     @autopilot_logging.log_action(logger.info)
-    def _swipe_to_show_more_below(self, containers):
+    def swipe_to_show_more_below(self, containers):
         if self.atYEnd:
             raise _common.ToolkitException(
                 "Can't swipe more, we are already at the bottom of the "
@@ -160,11 +160,18 @@ class QQuickFlickable(Scrollable):
         self.moving.wait_for(False)
 
     @autopilot_logging.log_action(logger.info)
-    def _swipe_to_top(self):
+    def swipe_to_top(self):
         if not self.atYBeginning:
             containers = self._get_containers()
             while not self.atYBeginning:
-                self._swipe_to_show_more_above(containers)
+                self.swipe_to_show_more_above(containers)
+
+    @autopilot_logging.log_action(logger.info)
+    def swipe_to_bottom(self):
+        if not self.atYEnd:
+            containers = self._get_containers()
+            while not self.atYEnd:
+                self.swipe_to_show_more_below(containers)
 
     @autopilot_logging.log_action(logger.info)
     def pull_to_refresh(self):
@@ -179,7 +186,7 @@ class QQuickFlickable(Scrollable):
         except autopilot.exceptions.StateNotFoundError:
             raise _common.ToolkitException(
                 'The flickable has no pull to refresh functionality.')
-        self._swipe_to_top()
+        self.swipe_to_top()
         self._swipe_to_middle()
         pull_to_refresh.wait_for_refresh()
 
@@ -202,7 +209,7 @@ class QQuickFlickable(Scrollable):
         """Swipe down the list and then swipe it up to cancel the refresh."""
         # This method is kept private because it's not for the test writers to
         # call. It's to test pull to refresh. --elopio - 2014-05-22
-        self._swipe_to_top()
+        self.swipe_to_top()
         start_x = stop_x = self.globalRect.x + (self.globalRect.width // 2)
         # Start just a little under the top.
         containers = self._get_containers()
