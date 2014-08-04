@@ -22,6 +22,7 @@ UCViewItemOptionsPrivate::UCViewItemOptionsPrivate(UCViewItemOptions *qq)
     : q_ptr(qq)
     , delegate(0)
     , offset(0.0)
+    , visibleOptions(0)
     , backgroundColor(Qt::red)
 {
 
@@ -39,21 +40,28 @@ UCViewItemOptions::~UCViewItemOptions()
 /*!
  * \qmlproperty Component ViewItemOptions::delegate
  */
-PROPERTY_SETTER(UCViewItemOptions, QQmlComponent*, delegate, qDebug() << "HAI")
-PROPERTY_GETTER(UCViewItemOptions, QQmlComponent*, delegate)
-
-/*!
- * \qmlproperty real ViewItemOptions::offset
- */
-PROPERTY_GETTER(UCViewItemOptions, qreal, offset)
+PROPERTY_SETTER_PRIVATE_PTYPE(UCViewItemOptions, QQmlComponent, delegate)
+PROPERTY_GETTER_PRIVATE(UCViewItemOptions, QQmlComponent*, delegate)
+PROPERTY_RESET(UCViewItemOptions, delegate){}
 
 /*!
  * \qmlproperty list<Action> ViewItemOptions::actions
  */
-LISTPROPERTY_GETTER(UCViewItemOptions, QObject, actions)
+LISTPROPERTY_GETTER_PRIVATE(UCViewItemOptions, QObject, actions)
 
 /*!
  * \qmlproperty color ViewItemOptions::backgroundColor
  */
-PROPERTY_GETTER(UCViewItemOptions, QColor, backgroundColor)
-PROPERTY_SETTER(UCViewItemOptions, QColor, backgroundColor, qDebug() << "HAI COLOR")
+PROPERTY_GETTER_PRIVATE(UCViewItemOptions, QColor, backgroundColor)
+PROPERTY_SETTER_PRIVATE(UCViewItemOptions, QColor, backgroundColor)
+PROPERTY_RESET(UCViewItemOptions, backgroundColor){}
+
+/*!
+ * \qmlproperty real ViewItemOptions::offset
+ */
+PROPERTY_GETTER_PRIVATE(UCViewItemOptions, qreal, offset)
+
+/*!
+ * \qmlproperty real ViewItemOptions::offset
+ */
+PROPERTY_GETTER_PRIVATE(UCViewItemOptions, int, visibleOptions)

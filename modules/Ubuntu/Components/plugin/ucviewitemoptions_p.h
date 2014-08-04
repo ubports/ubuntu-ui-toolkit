@@ -27,6 +27,7 @@ public:
     UCViewItemOptions *q_ptr;
     QQmlComponent *delegate;
     qreal offset;
+    int visibleOptions;
     QList<QObject*> actions;
     QColor backgroundColor;
 };

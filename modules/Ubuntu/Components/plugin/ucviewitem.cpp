@@ -23,6 +23,7 @@
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
 
+typedef QList<QQuickGradientStop*> StopList;
 /******************************************************************************
  * Divider
  */
@@ -32,8 +33,25 @@ UCViewItemDivider::UCViewItemDivider(UCViewItemBase *viewItem)
     , m_thickness(UCUnits::instance().dp(2))
     , m_leftMargin(UCUnits::instance().gu(2))
     , m_rightMargin(UCUnits::instance().gu(2))
+    , m_gradient(new QQuickGradient(this))
+    , m_color(QColor("#26000000"))
     , m_viewItem(viewItem)
 {
+    // add the default gradients
+    QQmlListProperty<QQuickGradientStop> stops = m_gradient->stops();
+    StopList *lstop = static_cast<StopList*>(stops.data);
+
+    // have 4 stops for the gradient so we have two rectangles on top of each other
+    // with the two colors
+    QQuickGradientStop *stop = new QQuickGradientStop(m_gradient);
+    stop->setPosition(0);
+    stop->setColor(QColor("#26000000"));
+    lstop->append(stop);
+
+    stop = new QQuickGradientStop(m_gradient);
+    stop->setPosition(1.0);
+    stop->setColor(QColor("#14F3F3E7"));
+    lstop->append(stop);
 }
 UCViewItemDivider::~UCViewItemDivider()
 {
@@ -41,18 +59,17 @@ UCViewItemDivider::~UCViewItemDivider()
 
 QSGNode *UCViewItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
 {
-    if (m_visible) {
+    if (m_visible && (m_color.alpha() != 0 || m_gradient)) {
         QSGRectangleNode *rectNode = static_cast<QSGRectangleNode *>(paintNode);
         if (!rectNode) {
             rectNode = QQuickItemPrivate::get(m_viewItem)->sceneGraphContext()->createRectangleNode();
         }
         rectNode->setRect(QRectF(m_leftMargin, rect.height() - m_thickness,
                                  rect.width() - m_leftMargin - m_rightMargin, m_thickness));
-        QGradientStops stops;
-        // FIXME: use palette colors!
-        stops.append(QGradientStop(0.0, QColor("#26000000")));
-        stops.append(QGradientStop(1.0, QColor("#14F3F3E7")));
-        rectNode->setGradientStops(stops);
+        rectNode->setColor(m_color);
+        if (m_gradient) {
+            rectNode->setGradientStops(m_gradient->gradientStops());
+        }
         rectNode->update();
         return rectNode;
     } else {
@@ -60,6 +77,20 @@ QSGNode *UCViewItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
         return 0;
     }
 }
+
+SIMPLE_PROPERTY(UCViewItemDivider, bool, visible, resizeAndUpdate())
+SIMPLE_PROPERTY(UCViewItemDivider, qreal, thickness, resizeAndUpdate())
+SIMPLE_PROPERTY(UCViewItemDivider, qreal, leftMargin, m_viewItem->update())
+SIMPLE_PROPERTY(UCViewItemDivider, qreal, rightMargin, m_viewItem->update())
+
+PROPERTY_GETTER(UCViewItemDivider, QQuickGradient*, gradient)
+PROPERTY_SETTER_PTYPE(UCViewItemDivider, QQuickGradient, gradient, gradientUpdate())
+PROPERTY_RESET(UCViewItemDivider, gradient)
+{
+    QObject::disconnect(m_gradient, SIGNAL(updated()), m_viewItem, SLOT(update()));
+}
+SIMPLE_PROPERTY(UCViewItemDivider, QColor, color, m_viewItem->update())
+
 /******************************************************************************
  * ViewItemBackground
  */
@@ -73,6 +104,9 @@ UCViewItemBackground::UCViewItemBackground(QQuickItem *parent)
     // set the z-order to be above the main item
     setZ(1);
 }
+
+SIMPLE_PROPERTY(UCViewItemBackground, QColor, color, update())
+SIMPLE_PROPERTY(UCViewItemBackground, QColor, pressedColor, update())
 
 UCViewItemBackground::~UCViewItemBackground()
 {
@@ -288,8 +322,9 @@ void UCViewItemBase::mouseReleaseEvent(QMouseEvent *event)
  * The property holds the options and its configuration to be revealed when swiped
  * from left to right.
  */
-PROPERTY_GETTER(UCViewItemBase, UCViewItemOptions*, leadingOptions)
-PROPERTY_SETTER(UCViewItemBase, UCViewItemOptions*, leadingOptions)
+PROPERTY_GETTER_PRIVATE(UCViewItemBase, UCViewItemOptions*, leadingOptions)
+PROPERTY_SETTER_PRIVATE_PTYPE(UCViewItemBase, UCViewItemOptions, leadingOptions)
+PROPERTY_RESET(UCViewItemBase, leadingOptions){}
 
 /*!
  * \qmlproperty ViewItemOptions ViewItemBase::trailingOptions
@@ -297,8 +332,9 @@ PROPERTY_SETTER(UCViewItemBase, UCViewItemOptions*, leadingOptions)
  * The property holds the options and its configuration to be revealed when swiped
  * from right to left.
  */
-PROPERTY_GETTER(UCViewItemBase, UCViewItemOptions*, trailingOptions)
-PROPERTY_SETTER(UCViewItemBase, UCViewItemOptions*, trailingOptions)
+PROPERTY_GETTER_PRIVATE(UCViewItemBase, UCViewItemOptions*, trailingOptions)
+PROPERTY_SETTER_PRIVATE_PTYPE(UCViewItemBase, UCViewItemOptions, trailingOptions)
+PROPERTY_RESET(UCViewItemBase, trailingOptions){}
 
 /*!
  * \qmlpropertygroup ::ViewItemBase::background
@@ -316,7 +352,7 @@ PROPERTY_SETTER(UCViewItemBase, UCViewItemOptions*, trailingOptions)
  * \li never anchor left or right as it will block revealing the options.
  * \endlist
  */
-PROPERTY_GETTER(UCViewItemBase, UCViewItemBackground*, background)
+PROPERTY_GETTER_PRIVATE(UCViewItemBase, UCViewItemBackground*, background)
 
 /*!
  * \qmlpropertygroup ::ViewItemBase::divider
@@ -324,6 +360,8 @@ PROPERTY_GETTER(UCViewItemBase, UCViewItemBackground*, background)
  * \qmlproperty real ViewItemBase::divider.thickness
  * \qmlproperty real ViewItemBase::divider.leftMargin
  * \qmlproperty real ViewItemBase::divider.rightMargin
+ * \qmlproperty Gradient ViewItemBase::divider.gradient
+ * \qmlproperty color ViewItemBase::divider.color
  *
  * This grouped property configures the thin divider shown in the bottom of the
  * component. Controls the visibility the thickness and the margins from the left
@@ -332,8 +370,28 @@ PROPERTY_GETTER(UCViewItemBase, UCViewItemBackground*, background)
  *
  * When \c visible is true, the ViewItem's content size gets thinner with the
  * divider's \c thickness.
+ *
+ * \c color and \c gradient are used to set the color or the gradient the divider
+ * should be filled with. The \c gradient has priority over \c color, and the
+ * default visuals use gradient as well. Therefore in order to have a solid color
+ * you need to set the \c gradient to null in order to get the solid fill active.
+ * \qml
+ * Column {
+ *     width: units.gu(30)
+ *     Repeater {
+ *         model: 100
+ *         ViewItem {
+ *             divider {
+ *                 color: "blue"
+ *                 gradient: null
+ *             }
+ *             // ....
+ *         }
+ *     }
+ * }
+ * \endqml
  */
-PROPERTY_GETTER(UCViewItemBase, UCViewItemDivider*, divider)
+PROPERTY_GETTER_PRIVATE(UCViewItemBase, UCViewItemDivider*, divider)
 
 /*!
  * \qmlproperty bool ViewItemBase::pressed
@@ -342,7 +400,7 @@ PROPERTY_GETTER(UCViewItemBase, UCViewItemDivider*, divider)
  * (false) when the mouse or touch is moved towards the vertical direction causing
  * the flickable to move.
  */
-PROPERTY_GETTER(UCViewItemBase, bool, pressed)
+PROPERTY_GETTER_PRIVATE(UCViewItemBase, bool, pressed)
 
 /*!
  * \qmlproperty Flickable ViewItemBase::flickable
@@ -380,7 +438,7 @@ PROPERTY_GETTER(UCViewItemBase, bool, pressed)
  *
  * In any other cases the flickable property will be set to null.
  */
-PROPERTY_GETTER(UCViewItemBase, QQuickFlickable *, flickable)
+PROPERTY_GETTER_PRIVATE(UCViewItemBase, QQuickFlickable*, flickable)
 
 /*!
  * \qmlproperty list<Object> ViewItemBase::data

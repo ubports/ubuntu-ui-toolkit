@@ -89,6 +89,9 @@ Item {
             compare(defaults.divider.thickness, units.dp(2), "divider is 2 DP thick");
             compare(defaults.divider.leftMargin, units.gu(2), "divider's left margin is 2GU");
             compare(defaults.divider.rightMargin, units.gu(2), "divider's right margin is 2GU");
+            compare(defaults.divider.color, "#000000", "color differs");
+            fuzzyCompare(defaults.divider.color.a, 0.14, 0.01, "color alpha differs");
+            compare(defaults.divider.gradient.stops.length, 2, "invalid gradient stops");
         }
 
         function test_children_in_background() {

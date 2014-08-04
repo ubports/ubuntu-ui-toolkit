@@ -66,9 +66,9 @@ HEADERS += plugin.h \
     unixsignalhandler_p.h \
     ucviewitem.h \
     ucviewitem_p.h \
+    ucglobals.h \
     ucviewitemoptions.h \
     ucviewitemoptions_p.h \
-    ucglobals.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
