@@ -132,6 +132,7 @@ static int sizeOfType(GLenum type)
 
 ShapeItem::ShapeItem(QQuickItem* parent)
     : QQuickItem(parent)
+    , provider_(NULL)
     , color_(0.0, 0.0, 0.0, 0.0)
     , gradientColor_(0.0, 0.0, 0.0, 0.0)
     , gradientColorSet_(false)
@@ -356,6 +357,12 @@ void ShapeItem::onOpenglContextDestroyed()
     }
 }
 
+void ShapeItem::providerDestroyed(QObject* object)
+{
+    Q_UNUSED(object);
+    provider_ = NULL;
+}
+
 QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data)
 {
     Q_UNUSED(data);
@@ -394,7 +401,7 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
     // detected when the texture provider exists but not the texture itself. When that's the case we
     // push the shape item in the dirty list to be handled next frame and we tell QtQuick not to
     // render the item for the current frame.
-    const QSGTextureProvider* provider = image_ ? image_->textureProvider() : NULL;
+    QSGTextureProvider* provider = image_ ? image_->textureProvider() : NULL;
     const QSGTexture* texture = provider ? provider->texture() : NULL;
     if (provider && !texture) {
         update();
@@ -403,8 +410,16 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
     }
 
     // Update the node whenever the source item's texture changes.
-    if ((dirtyFlags_ & ShapeItem::DirtyImage) && provider) {
-        QObject::connect(provider, SIGNAL(textureChanged()), this, SLOT(update()));
+    if (provider != provider_) {
+        if (provider_) {
+            QObject::disconnect(provider_, SIGNAL(textureChanged()), this, SLOT(update()));
+            QObject::disconnect(provider_, SIGNAL(destroyed()), this, SLOT(providerDestroyed()));
+        }
+        if (provider) {
+            QObject::connect(provider, SIGNAL(textureChanged()), this, SLOT(update()));
+            QObject::connect(provider, SIGNAL(destroyed()), this, SLOT(providerDestroyed()));
+        }
+        provider_ = provider;
     }
 
     ShapeNode* node = static_cast<ShapeNode*>(old_node);

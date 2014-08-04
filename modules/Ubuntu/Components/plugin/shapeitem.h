@@ -92,6 +92,7 @@ private:
 private Q_SLOTS:
     void onImagePropertiesChanged();
     void onOpenglContextDestroyed();
+    void providerDestroyed(QObject* object=0);
 
 private:
     enum DirtyFlags {
@@ -117,6 +118,7 @@ private:
         QSGTexture* low;
     };
 
+    QSGTextureProvider* provider_;
     QColor color_;
     QColor gradientColor_;
     bool gradientColorSet_;
