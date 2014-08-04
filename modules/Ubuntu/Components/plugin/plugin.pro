@@ -65,7 +65,8 @@ HEADERS += plugin.h \
     ucmouse.h \
     unixsignalhandler_p.h \
     ucviewitem.h \
-    ucviewitem_p.h
+    ucviewitem_p.h \
+    ucglobals.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \

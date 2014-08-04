@@ -47,8 +47,8 @@ public:
 class UCViewItemBackground : public QQuickItem
 {
     Q_OBJECT
-    DECLARE_PROPERTY(QColor, color, update())
-    DECLARE_PROPERTY(QColor, pressedColor, update())
+    DECLARE_PROPERTY(QColor, color)
+    DECLARE_PROPERTY(QColor, pressedColor)
 public:
     explicit UCViewItemBackground(QQuickItem *parent = 0);
     ~UCViewItemBackground();
@@ -60,6 +60,7 @@ protected:
 private:
     UCViewItemBase *m_item;
 };
+
 QML_DECLARE_TYPE(UCViewItemBackground)
 
 #endif // UCVIEWITEM_P_H

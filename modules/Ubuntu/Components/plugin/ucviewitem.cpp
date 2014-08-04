@@ -37,6 +37,9 @@ UCViewItemBackground::UCViewItemBackground(QQuickItem *parent)
     setZ(1);
 }
 
+SIMPLE_PROPERTY(UCViewItemBackground, QColor, color, update())
+SIMPLE_PROPERTY(UCViewItemBackground, QColor, pressedColor, update())
+
 UCViewItemBackground::~UCViewItemBackground()
 {
 }
@@ -234,7 +237,7 @@ void UCViewItemBase::mouseReleaseEvent(QMouseEvent *event)
  * \li never anchor left or right as it will block revealing the options.
  * \endlist
  */
-PROPERTY_GETTER(UCViewItemBase, UCViewItemBackground*, background)
+PROPERTY_GETTER_PRIVATE(UCViewItemBase, UCViewItemBackground*, background)
 
 /*!
  * \qmlproperty bool ViewItemBase::pressed
@@ -243,7 +246,7 @@ PROPERTY_GETTER(UCViewItemBase, UCViewItemBackground*, background)
  * (false) when the mouse or touch is moved towards the vertical direction causing
  * the flickable to move.
  */
-PROPERTY_GETTER(UCViewItemBase, bool, pressed)
+PROPERTY_GETTER_PRIVATE(UCViewItemBase, bool, pressed)
 
 /*!
  * \qmlproperty Flickable ViewItemBase::flickable
@@ -281,7 +284,7 @@ PROPERTY_GETTER(UCViewItemBase, bool, pressed)
  *
  * In any other cases the flickable property will be set to null.
  */
-PROPERTY_GETTER(UCViewItemBase, QQuickFlickable*, flickable)
+PROPERTY_GETTER_PRIVATE(UCViewItemBase, QQuickFlickable*, flickable)
 
 /*!
  * \qmlproperty list<Object> ViewItemBase::data
