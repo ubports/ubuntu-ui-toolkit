@@ -156,7 +156,7 @@ MainView {
         self.pointing_device.click_object(button)
         self.assertEqual(self.label.text, 'bottomButton')
 
-    def test_swipe_int_view_top_element(self):
+    def test_swipe_into_view_top_element(self):
         self.main_view.close_toolbar()
         bottomButton = self.main_view.select_single(objectName='bottomButton')
         bottomButton.swipe_into_view()
