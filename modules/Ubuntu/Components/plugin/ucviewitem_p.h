@@ -51,8 +51,8 @@ public:
 class UCViewItemBackground : public QQuickItem
 {
     Q_OBJECT
-    DECLARE_PROPERTY(QColor, color, update())
-    DECLARE_PROPERTY(QColor, pressedColor, update())
+    DECLARE_PROPERTY(QColor, color)
+    DECLARE_PROPERTY(QColor, pressedColor)
 public:
     explicit UCViewItemBackground(QQuickItem *parent = 0);
     ~UCViewItemBackground();
@@ -68,11 +68,12 @@ private:
 class UCViewItemDivider : public QObject
 {
     Q_OBJECT
-    DECLARE_PROPERTY(bool, visible, resizeAndUpdate())
-    DECLARE_PROPERTY(qreal, thickness, resizeAndUpdate())
-    DECLARE_PROPERTY(qreal, leftMargin, update())
-    DECLARE_PROPERTY(qreal, rightMargin, update())
-    DECLARE_PROPERTY_PTR(QQuickGradient, gradient, gradientUpdate())
+    DECLARE_PROPERTY(bool, visible)
+    DECLARE_PROPERTY(qreal, thickness)
+    DECLARE_PROPERTY(qreal, leftMargin)
+    DECLARE_PROPERTY(qreal, rightMargin)
+    DECLARE_PROPERTY_PTYPE(QQuickGradient, gradient)
+    DECLARE_PROPERTY(QColor, color)
 public:
     explicit UCViewItemDivider(UCViewItemBase *viewItem);
     ~UCViewItemDivider();
@@ -81,17 +82,16 @@ protected:
     QSGNode *paint(QSGNode *paintNode, const QRectF &rect);
 
 private:
-    void update() {
-        m_viewItem->update();
-    }
-
     void resizeAndUpdate() {
         UCViewItemBasePrivate::get(m_viewItem)->resize();
         m_viewItem->update();
     }
 
     void gradientUpdate() {
-
+        if (m_gradient) {
+            QObject::connect(m_gradient, SIGNAL(updated()), m_viewItem, SLOT(update()));
+            m_viewItem->update();
+        }
     }
 
     UCViewItemBase *m_viewItem;
