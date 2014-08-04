@@ -248,7 +248,7 @@ Style.PageHeadStyle {
             action: buffer.config.backAction
             visible: null !== buffer.config.backAction &&
                      buffer.config.backAction.visible
-            color: styledItem.config.foregroundColor
+            color: buffer.config.foregroundColor
         }
 
         PageHeadButton {
@@ -262,7 +262,7 @@ Style.PageHeadStyle {
                      !styledItem.config.backAction
 
             text: "back"
-            color: styledItem.config.foregroundColor
+            color: buffer.config.foregroundColor
 
             onTriggered: {
                 styledItem.pageStack.pop();
@@ -279,7 +279,7 @@ Style.PageHeadStyle {
                      !backButton.visible &&
                      !customBackButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
-            color: styledItem.config.foregroundColor
+            color: buffer.config.foregroundColor
 
             onTriggered: {
                 tabsPopover.show();
@@ -336,7 +336,7 @@ Style.PageHeadStyle {
             text: buffer.title
             font.weight: headerStyle.fontWeight
             fontSize: headerStyle.fontSize
-            color: headerStyle.textColor
+            color: buffer.config.foregroundColor
             elide: Text.ElideRight
         }
 
@@ -407,7 +407,7 @@ Style.PageHeadStyle {
                 id: actionButton
                 objectName: action.objectName + "_header_button"
                 action: actionsContainer.visibleActions[index]
-                color: styledItem.config.foregroundColor
+                color: buffer.config.foregroundColor
             }
         }
 
@@ -416,7 +416,7 @@ Style.PageHeadStyle {
             objectName: "actions_overflow_button"
             visible: numberOfSlots.requested > numberOfSlots.right
             iconName: "contextual-menu"
-            color: styledItem.config.foregroundColor
+            color: buffer.config.foregroundColor
             height: actionsContainer.height
             onTriggered: actionsOverflowPopover.show()
 
