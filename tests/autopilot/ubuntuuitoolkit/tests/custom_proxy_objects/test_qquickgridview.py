@@ -16,8 +16,19 @@
 
 import os
 
+import testtools
+
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
+
+
+class QQuickGridViewClassTestCase(testtools.TestCase):
+
+    def test_qquickgridview_custom_proxy_object_inherits_from_flickable(self):
+        self.assertTrue(
+            issubclass(
+                ubuntuuitoolkit.QQuickGridView,
+                ubuntuuitoolkit.QQuickFlickable))
 
 
 class QQuickGridViewTestCase(tests.QMLFileAppTestCase):
@@ -27,11 +38,7 @@ class QQuickGridViewTestCase(tests.QMLFileAppTestCase):
     test_qml_file_path = os.path.join(
         dir_path, 'test_qquickgridview.QQuickGridViewTestCase.qml')
 
-    def test_qquickgridview_custom_proxy_object(self):
+    def test_select_qquickgridview_must_return_custom_proxy_object(self):
         grid_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickGridView, objectName='testListView')
         self.assertIsInstance(grid_view, ubuntuuitoolkit.QQuickGridView)
-        self.assertTrue(
-            issubclass(
-                ubuntuuitoolkit.QQuickGridView,
-                ubuntuuitoolkit.QQuickFlickable))
