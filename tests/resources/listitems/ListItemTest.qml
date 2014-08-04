@@ -25,13 +25,15 @@ Item {
         width: parent.width
         ViewItem {
             id: testItem
-            background.color: "green"
+//            background.color: "green"
             onClicked: {
                 print("click")
                 units.gridUnit += 1;
             }
-            Item {
+            Label {
                 anchors.fill: parent
+                text: units.gridUnit + "PX/unit"
+//                color: "white"
             }
         }
 
@@ -39,11 +41,18 @@ Item {
             id: view
             clip: true
             width: parent.width
-            height: units.gu(40)
+            height: units.gu(20)
             model: 100
             pressDelay: 0
             delegate: ViewItem {
                 onClicked: print(" clicked")
+                divider.gradient: Gradient {
+                    GradientStop { color: "green"; position: 0.0 }
+//                    GradientStop { color: "green"; position: 0.49 }
+//                    GradientStop { color: "yellow"; position: 0.5 }
+                    GradientStop { color: "yellow"; position: 1.0 }
+                }
+
                 Label {
                     text: modelData + " item"
                 }
@@ -52,7 +61,7 @@ Item {
         Flickable {
             id: flicker
             width: parent.width
-            height: units.gu(40)
+            height: units.gu(20)
             clip: true
             contentHeight: column.childrenRect.height
             Column {
@@ -62,8 +71,16 @@ Item {
                     model: 100
                     ViewItem {
                         background {
-                            color: "red"
                             pressedColor: "lime"
+                        }
+                        divider.gradient: Gradient {
+                            GradientStop { color: "#26000000"; position: 0.0 }
+//                            GradientStop { color: "#26000000"; position: 0.49 }
+//                            GradientStop { color: "#14F3F3E7"; position: 0.5 }
+                            GradientStop { color: "#14F3F3E7"; position: 1.0 }
+                        }
+                        Label {
+                            text: modelData + " Flickable item"
                         }
                         onClicked: divider.visible = !divider.visible
                     }
