@@ -20,6 +20,7 @@
 #include "ucviewitem.h"
 #include "ucglobals.h"
 #include <QtCore/QPointer>
+#include <QtQuick/private/qquickrectangle_p.h>
 
 class QQuickFlickable;
 class UCViewItemDivider;
@@ -71,6 +72,7 @@ class UCViewItemDivider : public QObject
     DECLARE_PROPERTY(qreal, thickness, resizeAndUpdate())
     DECLARE_PROPERTY(qreal, leftMargin, update())
     DECLARE_PROPERTY(qreal, rightMargin, update())
+    DECLARE_PROPERTY_PTR(QQuickGradient, gradient, gradientUpdate())
 public:
     explicit UCViewItemDivider(UCViewItemBase *viewItem);
     ~UCViewItemDivider();
@@ -86,6 +88,10 @@ private:
     void resizeAndUpdate() {
         UCViewItemBasePrivate::get(m_viewItem)->resize();
         m_viewItem->update();
+    }
+
+    void gradientUpdate() {
+
     }
 
     UCViewItemBase *m_viewItem;

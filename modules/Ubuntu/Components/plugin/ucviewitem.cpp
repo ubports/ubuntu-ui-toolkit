@@ -23,6 +23,7 @@
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
 
+typedef QList<QQuickGradientStop*> StopList;
 /******************************************************************************
  * Divider
  */
@@ -32,8 +33,32 @@ UCViewItemDivider::UCViewItemDivider(UCViewItemBase *viewItem)
     , m_thickness(UCUnits::instance().dp(2))
     , m_leftMargin(UCUnits::instance().gu(2))
     , m_rightMargin(UCUnits::instance().gu(2))
+    , m_gradient(new QQuickGradient(this))
     , m_viewItem(viewItem)
 {
+    // add the default gradients
+    QQmlListProperty<QQuickGradientStop> stops = m_gradient->stops();
+    StopList *lstop = static_cast<StopList*>(stops.data);
+
+    QQuickGradientStop *stop = new QQuickGradientStop(m_gradient);
+    stop->setPosition(0);
+    stop->setColor(QColor("#26000000"));
+    lstop->append(stop);
+
+    stop = new QQuickGradientStop(m_gradient);
+    stop->setPosition(0.49);
+    stop->setColor(QColor("#22000000"));
+    lstop->append(stop);
+
+    stop = new QQuickGradientStop(m_gradient);
+    stop->setPosition(0.5);
+    stop->setColor(QColor("#18F3F3E7"));
+    lstop->append(stop);
+
+    stop = new QQuickGradientStop(m_gradient);
+    stop->setPosition(1.0);
+    stop->setColor(QColor("#14F3F3E7"));
+    lstop->append(stop);
 }
 UCViewItemDivider::~UCViewItemDivider()
 {
@@ -48,11 +73,7 @@ QSGNode *UCViewItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
         }
         rectNode->setRect(QRectF(m_leftMargin, rect.height() - m_thickness,
                                  rect.width() - m_leftMargin - m_rightMargin, m_thickness));
-        QGradientStops stops;
-        // FIXME: use palette colors!
-        stops.append(QGradientStop(0.0, QColor("#26000000")));
-        stops.append(QGradientStop(1.0, QColor("#14F3F3E7")));
-        rectNode->setGradientStops(stops);
+        rectNode->setGradientStops(m_gradient->gradientStops());
         rectNode->update();
         return rectNode;
     } else {

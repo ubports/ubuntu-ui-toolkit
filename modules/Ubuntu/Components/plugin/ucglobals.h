@@ -42,6 +42,26 @@
         type m_##member; \
         Q_PROPERTY(type member READ get_##member WRITE set_##member NOTIFY member##Changed)
 
+#define DECLARE_PROPERTY_PTR(type, member, ...) \
+    public: \
+    void set_##member(type *_arg_##member) \
+    { \
+        if (_arg_##member != m_##member) { \
+            m_##member = _arg_##member; \
+            __VA_ARGS__; \
+            Q_EMIT member##Changed(); \
+        } \
+    } \
+    type *get_##member() const \
+    { \
+        return m_##member; \
+    } \
+    Q_SIGNALS: \
+        void member##Changed(); \
+    private: \
+        type *m_##member; \
+        Q_PROPERTY(type* member READ get_##member WRITE set_##member NOTIFY member##Changed)
+
 /*
  * The following macros should be used together in .h and .cpp files separately,
  * where the property holder members are declared in the private class.
