@@ -51,7 +51,6 @@ class HeaderActionsOverflowTestCase(tests.QMLFileAppTestCase):
 
         """
         overflow_popover = self.main_view.select_single(
-            'Popover',
             objectName='actions_overflow_popover')
         self.header.click_action_button('pushStackAction')
         self.assertThat(overflow_popover.visible, Eventually(Equals(False)))

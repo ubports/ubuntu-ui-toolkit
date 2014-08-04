@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,26 +15,8 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components.Popups 1.0
 
-BubbleShape {
-    property alias contentItem: content
-
-    target: styledItem.target
-    direction: styledItem.direction
-    clipContent: styledItem.clipContent
-    square: styledItem.square
-
-    onShowCompleted: styledItem.showCompleted()
-    onHideCompleted: styledItem.hideCompleted()
-
-    Item {
-        id: content
-        anchors.fill: parent
-
-        Connections {
-            target: styledItem
-            onShow: show()
-            onHide: hide()
-        }
-    }
+Popover {
+    property bool square: true
 }
