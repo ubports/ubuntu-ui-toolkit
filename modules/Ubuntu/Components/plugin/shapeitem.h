@@ -146,6 +146,7 @@ public:
     ShapeTexturedMaterial();
     virtual QSGMaterialType* type() const;
     virtual QSGMaterialShader* createShader() const;
+    virtual int compare(const QSGMaterial* other) const;
     QSGTextureProvider* imageTextureProvider() const;
     void setImage(QQuickItem* image);
     QSGTexture* shapeTexture() const { return shapeTexture_; }
@@ -185,6 +186,7 @@ public:
     ShapeColoredMaterial();
     virtual QSGMaterialType* type() const;
     virtual QSGMaterialShader* createShader() const;
+    virtual int compare(const QSGMaterial* other) const;
     const QVector4D& color() const { return color_; }
     void setColor(const QColor& color);
     const QVector4D& gradientColor() const { return gradientColor_; }
