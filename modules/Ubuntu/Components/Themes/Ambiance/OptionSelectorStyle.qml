@@ -31,5 +31,7 @@ Item {
         width: styledItem.width
         height: styledItem.height
         radius: "medium"
+
+        color: Qt.rgba(0, 0, 0, 0.05)
     }
 }

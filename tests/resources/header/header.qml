@@ -42,6 +42,7 @@ MainView {
                             iconName: "settings"
                             text: "Settings"
                         }
+                        foregroundColor: UbuntuColors.purple
                     }
 
 //                    tools: ToolbarItems {

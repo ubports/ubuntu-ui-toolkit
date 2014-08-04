@@ -21,12 +21,12 @@ import Ubuntu.Components.Styles 1.1 as Style
 
 Style.PageHeadStyle {
     id: headerStyle
-    contentHeight: units.gu(7.5)
+    contentHeight: units.gu(7)
     separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
     separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
     fontWeight: Font.Light
     fontSize: "x-large"
-    textColor: Theme.palette.selected.backgroundText
+    textColor: styledItem.config.foregroundColor
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
@@ -248,6 +248,7 @@ Style.PageHeadStyle {
             action: buffer.config.backAction
             visible: null !== buffer.config.backAction &&
                      buffer.config.backAction.visible
+            color: styledItem.config.foregroundColor
         }
 
         PageHeadButton {
@@ -258,9 +259,10 @@ Style.PageHeadStyle {
             visible: styledItem.pageStack !== null &&
                      styledItem.pageStack !== undefined &&
                      styledItem.pageStack.depth > 1 &&
-                     !customBackButton.visible
+                     !styledItem.config.backAction
 
             text: "back"
+            color: styledItem.config.foregroundColor
 
             onTriggered: {
                 styledItem.pageStack.pop();
@@ -277,6 +279,7 @@ Style.PageHeadStyle {
                      !backButton.visible &&
                      !customBackButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
+            color: styledItem.config.foregroundColor
 
             onTriggered: {
                 tabsPopover.show();
@@ -404,6 +407,7 @@ Style.PageHeadStyle {
                 id: actionButton
                 objectName: action.objectName + "_header_button"
                 action: actionsContainer.visibleActions[index]
+                color: styledItem.config.foregroundColor
             }
         }
 
@@ -412,7 +416,7 @@ Style.PageHeadStyle {
             objectName: "actions_overflow_button"
             visible: numberOfSlots.requested > numberOfSlots.right
             iconName: "contextual-menu"
-            width: visible ? units.gu(5) : 0
+            color: styledItem.config.foregroundColor
             height: actionsContainer.height
             onTriggered: actionsOverflowPopover.show()
 

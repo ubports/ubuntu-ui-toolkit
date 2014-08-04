@@ -86,9 +86,9 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
             self.pointing_device.click_object(self, button=3)
             root = self.get_root_instance()
             main_view = root.select_single(_mainview.MainView)
-            popover = main_view.get_action_selection_popover(
-                'text_input_popover')
-            popover.click_button_by_text('Select All')
+            popover = main_view.get_text_input_context_menu(
+                'text_input_contextmenu')
+            popover.click_option_by_text('Select All')
 
     def _is_all_text_selected(self):
         return self.text == self.selectedText
