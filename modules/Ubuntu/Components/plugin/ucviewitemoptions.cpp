@@ -47,7 +47,7 @@ PROPERTY_RESET(UCViewItemOptions, delegate){}
 /*!
  * \qmlproperty list<Action> ViewItemOptions::actions
  */
-LISTPROPERTY_GETTER_PRIVATE(UCViewItemOptions, QObject, actions)
+LISTPROPERTY_GETTER_PRIVATE(UCViewItemOptions, QObject, options)
 
 /*!
  * \qmlproperty color ViewItemOptions::backgroundColor

@@ -28,7 +28,7 @@ public:
     QQmlComponent *delegate;
     qreal offset;
     int visibleOptions;
-    QList<QObject*> actions;
+    QList<QObject*> options;
     QColor backgroundColor;
 };
 

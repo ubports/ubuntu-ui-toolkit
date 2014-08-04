@@ -26,10 +26,11 @@ class UCViewItemOptions : public QObject
 {
     Q_OBJECT
     DECLARE_PROPERTY_PRIVATE_PTYPE(QQmlComponent, delegate)
-    DECLARE_LISTPROPERTY_PRIVATE(QObject, actions)
+    DECLARE_LISTPROPERTY_PRIVATE(QObject, options)
     DECLARE_PROPERTY_PRIVATE(QColor, backgroundColor)
     DECLARE_PROPERTY_PRIVATE_RO(qreal, offset)
     DECLARE_PROPERTY_PRIVATE_RO(int, visibleOptions)
+    Q_CLASSINFO("DefaultProperty", "options")
 public:
     explicit UCViewItemOptions(QObject *parent = 0);
     ~UCViewItemOptions();
