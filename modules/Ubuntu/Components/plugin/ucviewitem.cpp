@@ -30,28 +30,13 @@ typedef QList<QQuickGradientStop*> StopList;
 UCViewItemDivider::UCViewItemDivider(UCViewItemBase *viewItem)
     : QObject(viewItem)
     , m_visible(true)
-    , m_thickness(UCUnits::instance().dp(2))
+    , m_thickness(UCUnits::instance().dp(1))
     , m_leftMargin(UCUnits::instance().gu(2))
     , m_rightMargin(UCUnits::instance().gu(2))
-    , m_gradient(new QQuickGradient(this))
+    , m_gradient(0)
     , m_color(QColor("#26000000"))
     , m_viewItem(viewItem)
 {
-    // add the default gradients
-    QQmlListProperty<QQuickGradientStop> stops = m_gradient->stops();
-    StopList *lstop = static_cast<StopList*>(stops.data);
-
-    // have 4 stops for the gradient so we have two rectangles on top of each other
-    // with the two colors
-    QQuickGradientStop *stop = new QQuickGradientStop(m_gradient);
-    stop->setPosition(0);
-    stop->setColor(QColor("#26000000"));
-    lstop->append(stop);
-
-    stop = new QQuickGradientStop(m_gradient);
-    stop->setPosition(1.0);
-    stop->setColor(QColor("#14F3F3E7"));
-    lstop->append(stop);
 }
 UCViewItemDivider::~UCViewItemDivider()
 {
@@ -87,7 +72,9 @@ PROPERTY_GETTER(UCViewItemDivider, QQuickGradient*, gradient)
 PROPERTY_SETTER_PTYPE(UCViewItemDivider, QQuickGradient, gradient, gradientUpdate())
 PROPERTY_RESET(UCViewItemDivider, gradient)
 {
-    QObject::disconnect(m_gradient, SIGNAL(updated()), m_viewItem, SLOT(update()));
+    if (m_gradient) {
+        QObject::disconnect(m_gradient, SIGNAL(updated()), m_viewItem, SLOT(update()));
+    }
 }
 SIMPLE_PROPERTY(UCViewItemDivider, QColor, color, m_viewItem->update())
 
@@ -342,17 +329,17 @@ PROPERTY_GETTER_PRIVATE(UCViewItemBase, UCViewItemBackground*, background)
  * \qmlproperty color ViewItemBase::divider.color
  *
  * This grouped property configures the thin divider shown in the bottom of the
- * component. Controls the visibility the thickness and the margins from the left
- * and right of the ViewItem. It is not moved togehther with the content when
- * options are revealed.
+ * component. Configures the visibility, the thickness, colors and the margins
+ * from the left and right of the ViewItem. When tugged (swiped left or right to
+ * reveal the options), it is not moved together with the content.
  *
  * When \c visible is true, the ViewItem's content size gets thinner with the
  * divider's \c thickness.
  *
  * \c color and \c gradient are used to set the color or the gradient the divider
- * should be filled with. The \c gradient has priority over \c color, and the
- * default visuals use gradient as well. Therefore in order to have a solid color
- * you need to set the \c gradient to null in order to get the solid fill active.
+ * should be filled with. The \c gradient has priority over \c color, in the same
+ * way as in Rectangle. The following example will draw a gradient between green
+ * and yellow colors.
  * \qml
  * Column {
  *     width: units.gu(30)
@@ -361,13 +348,32 @@ PROPERTY_GETTER_PRIVATE(UCViewItemBase, UCViewItemBackground*, background)
  *         ViewItem {
  *             divider {
  *                 color: "blue"
- *                 gradient: null
+ *                 gradient: Gradient {
+ *                     GradientStop {
+ *                         color: "green"
+ *                         position: 0.0
+ *                     }
+ *                     GradientStop {
+ *                         color: "yellow"
+ *                         position: 1.0
+ *                     }
+ *                 }
  *             }
  *             // ....
  *         }
  *     }
  * }
  * \endqml
+ *
+ * The default values for the properties are:
+ * \list
+ * \li \c visible: true
+ * \li \c thickness: 1 GU
+ * \li \c leftMargin: 2 GU
+ * \li \c rightMargin: 2 GU
+ * \li \c color: black 15% opacity
+ * \li \c gradient: null
+ * \endlist
  */
 PROPERTY_GETTER_PRIVATE(UCViewItemBase, UCViewItemDivider*, divider)
 

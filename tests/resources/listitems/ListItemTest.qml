@@ -17,7 +17,7 @@
 import QtQuick 2.2
 import Ubuntu.Components 1.1
 
-Item {
+MainView {
     width: units.gu(50)
     height: units.gu(100)
 
@@ -25,7 +25,6 @@ Item {
         width: parent.width
         ViewItem {
             id: testItem
-//            background.color: "green"
             onClicked: {
                 print("click")
                 units.gridUnit += 1;
@@ -33,7 +32,6 @@ Item {
             Label {
                 anchors.fill: parent
                 text: units.gridUnit + "PX/unit"
-//                color: "white"
             }
         }
 
@@ -48,8 +46,6 @@ Item {
                 onClicked: print(" clicked")
                 divider.gradient: Gradient {
                     GradientStop { color: "green"; position: 0.0 }
-//                    GradientStop { color: "green"; position: 0.49 }
-//                    GradientStop { color: "yellow"; position: 0.5 }
                     GradientStop { color: "yellow"; position: 1.0 }
                 }
 
@@ -75,8 +71,6 @@ Item {
                         }
                         divider.gradient: Gradient {
                             GradientStop { color: "#26000000"; position: 0.0 }
-//                            GradientStop { color: "#26000000"; position: 0.49 }
-//                            GradientStop { color: "#14F3F3E7"; position: 0.5 }
                             GradientStop { color: "#14F3F3E7"; position: 1.0 }
                         }
                         Label {

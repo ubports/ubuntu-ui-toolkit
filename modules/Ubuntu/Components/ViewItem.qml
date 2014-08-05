@@ -31,7 +31,7 @@ ViewItemBase {
     height: units.gu(6)
     background.pressedColor: Theme.palette.selected.background
     divider {
-        thickness: units.dp(2)
+        thickness: units.dp(1)
         leftMargin: units.gu(2)
         rightMargin: units.gu(2)
     }
