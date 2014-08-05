@@ -127,7 +127,7 @@ PopupBase {
       The property holds the margins from the popover's dismissArea. The property
       is themed.
       */
-    property real edgeMargins: units.gu(2)
+    property real edgeMargins: foreground.square ? 0 : units.gu(2)
 
     /*!
       The property holds the margin from the popover's caller. The property
@@ -231,6 +231,7 @@ PopupBase {
         property point target: Qt.point(pointer.x - x, pointer.y - y)
         property string direction: pointer.direction
         property bool clipContent: true
+        property bool square: popover.hasOwnProperty("square") ? popover.square : false
 
         signal show()
         signal hide()
