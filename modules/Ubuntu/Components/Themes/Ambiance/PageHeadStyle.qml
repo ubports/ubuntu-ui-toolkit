@@ -61,8 +61,6 @@ Style.PageHeadStyle {
             onTabsModelChanged: buffer.updateConfigAndTitle()
         }
 
-        onTabsModelChanged: print("buffer.tabsModel = "+buffer.tabsModel)
-
         function updateConfigAndTitle() {
             if (styledItem.animateContents) {
                 changeAnimation.start();
