@@ -307,9 +307,6 @@ Style.PageHeadStyle {
                     Repeater {
                         model: buffer.tabsModel
                         AbstractButton {
-//                        ListItem.Standard {
-                            visible: index !== buffer.tabsModel.selectedIndex
-                            text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
                             objectName: "tabButton" + index
                             onClicked: {
                                 buffer.tabsModel.selectedIndex = index;

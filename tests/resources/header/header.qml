@@ -44,15 +44,6 @@ MainView {
                         }
                         foregroundColor: UbuntuColors.purple
                     }
-
-//                    tools: ToolbarItems {
-//                        ToolbarButton {
-//                            action: Action {
-//                                iconName: "settings"
-//                                text: "Settings"
-//                            }
-//                        }
-//                    }
                 }
             }
             Tab {
