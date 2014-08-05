@@ -259,10 +259,6 @@ Style.PageHeadStyle {
             color: buffer.config.foregroundColor
         }
 
-        // FIXME:  We are currently using styledItem.pageStack and
-        //  styledItem.tabsModel to determine visibility of the back and
-        //  tabs button. The header animation will be better when we
-        //  use the buffer for this as well.
         PageHeadButton {
             id: backButton
             objectName: "backButton"
