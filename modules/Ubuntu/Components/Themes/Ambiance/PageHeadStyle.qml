@@ -32,31 +32,42 @@ Style.PageHeadStyle {
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
 
-    Component.onCompleted: {
-        buffer.config = styledItem.config;
-        buffer.title = styledItem.title;
-    }
+    Component.onCompleted: buffer.update()
 
     Object {
         id: buffer
 
         property PageHeadConfiguration config
         property string title
+        property Item pageStack: null
+        property int pageStackDepth: 0
+        property var tabsModel: null
+
+        function update() {
+            buffer.config = styledItem.config;
+            buffer.title = styledItem.title;
+            buffer.pageStack = styledItem.pageStack;
+            buffer.pageStackDepth = buffer.pageStack ? buffer.pageStack.depth : 0;
+            buffer.tabsModel = styledItem.tabsModel ? styledItem.tabsModel : null;
+        }
 
         // Calling changeAnimation.start() a second time has no effect,
-        // so below we call it whenever something changes.
+        // so below we can call it whenever something changes.
         Connections {
             target: styledItem
             onConfigChanged: buffer.updateConfigAndTitle()
             onTitleChanged: buffer.updateConfigAndTitle()
+            onPageStackChanged: buffer.updateConfigAndTitle()
+            onTabsModelChanged: buffer.updateConfigAndTitle()
         }
+
+        onTabsModelChanged: print("buffer.tabsModel = "+buffer.tabsModel)
 
         function updateConfigAndTitle() {
             if (styledItem.animateContents) {
                 changeAnimation.start();
             } else {
-                buffer.config = styledItem.config;
-                buffer.title = styledItem.title;
+                buffer.update();
             }
         }
 
@@ -96,8 +107,7 @@ Style.PageHeadStyle {
             }
             ScriptAction {
                 script: {
-                    buffer.config = styledItem.config;
-                    buffer.title = styledItem.title;
+                    buffer.update();
                 }
             }
             ParallelAnimation {
@@ -260,16 +270,14 @@ Style.PageHeadStyle {
             objectName: "backButton"
 
             iconName: "back"
-            visible: styledItem.pageStack !== null &&
-                     styledItem.pageStack !== undefined &&
-                     styledItem.pageStack.depth > 1 &&
+            visible: buffer.pageStackDepth > 1 &&
                      !buffer.config.backAction
 
             text: "back"
             color: buffer.config.foregroundColor
 
             onTriggered: {
-                styledItem.pageStack.pop();
+                buffer.pageStack.pop();
             }
         }
 
@@ -278,11 +286,10 @@ Style.PageHeadStyle {
             objectName: "tabsButton"
 
             iconName: "navigation-menu"
-            visible: styledItem.tabsModel !== null &&
-                     styledItem.tabsModel !== undefined &&
+            visible: buffer.tabsModel !== null &&
                      !backButton.visible &&
                      !customBackButton.visible
-            text: visible ? styledItem.tabsModel.count + " tabs" : ""
+            text: visible ? buffer.tabsModel.count + " tabs" : ""
             color: buffer.config.foregroundColor
 
             onTriggered: {
@@ -301,13 +308,13 @@ Style.PageHeadStyle {
                         right: parent.right
                     }
                     Repeater {
-                        model: styledItem.tabsModel
+                        model: buffer.tabsModel
                         ListItem.Standard {
-                            visible: index !== styledItem.tabsModel.selectedIndex
+                            visible: index !== buffer.tabsModel.selectedIndex
                             text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
                             objectName: "tabButton" + index
                             onClicked: {
-                                styledItem.tabsModel.selectedIndex = index;
+                                buffer.tabsModel.selectedIndex = index;
                                 tabsPopover.hide();
                             }
                         }
