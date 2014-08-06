@@ -93,8 +93,6 @@ private Q_SLOTS:
         m_modulePath = modules.absolutePath();
         // invoke initialization
         StateSaverBackend::instance();
-
-        qDebug() << "State file saved in" << QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation);
     }
 
     void cleanupTestCase()
