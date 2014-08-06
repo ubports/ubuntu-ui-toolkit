@@ -1,3 +1,16 @@
+ubuntu-ui-toolkit (1.1.1181+14.10.20140804-0ubuntu2) UNRELEASED; urgency=medium
+
+  [ Florian Boucault ]
+  * Ubuntu Shape: store geometry before redrawing can occur so that 
+    the geometry is more reliably respected. 
+    Fixes: https://bugs.launchpad.net/bugs/1353493
+
+  [ Christian Dywan ]
+  * Square overflow panel style for header pop overs. 
+    Fixes: https://bugs.launchpad.net/bugs/1336789
+ 
+ -- Zoltán Balogh <zoltan@bakter.hu>  Wed, 06 Aug 2014 19:26:17 +0300
+
 ubuntu-ui-toolkit (1.1.1179+14.10.20140804-0ubuntu1) utopic; urgency=medium
 
   [ Florian Boucault ]
