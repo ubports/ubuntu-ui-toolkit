@@ -32,3 +32,6 @@ class TestUbuntuUIToolkitImportTestCase(testtools.TestCase):
                 'The ubuntuuitoolkit.emulators module is deprecated. Import '
                 'the autopilot helpers from the top-level ubuntuuitoolkit '
                 'module.'))
+
+        class AppTestCase(ubuntuuitoolkit.UbuntuUIToolkitAppTestCase):
+            """Empty class to avoid pyflakes error"""
