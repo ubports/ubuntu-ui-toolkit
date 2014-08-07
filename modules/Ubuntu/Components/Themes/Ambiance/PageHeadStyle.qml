@@ -29,6 +29,11 @@ Style.PageHeadStyle {
     textColor: styledItem.config.foregroundColor
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
+    objectName: "PageHeadStyle"
+
+    // workaround because autopilot cannot select the SequentalAnimation
+    // Needed in AppHeader.wait_for_animation()
+    property bool animating: changeAnimation.running
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
 
@@ -71,6 +76,8 @@ Style.PageHeadStyle {
 
         SequentialAnimation {
             id: changeAnimation
+            objectName: "changeAnimation"
+            onRunningChanged: print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx changeAnimation.running = "+running)
             ParallelAnimation {
                 UbuntuNumberAnimation {
                     target: foreground

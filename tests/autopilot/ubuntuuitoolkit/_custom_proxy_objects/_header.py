@@ -34,9 +34,10 @@ logger = logging.getLogger(__name__)
 class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """AppHeader Autopilot emulator."""
 
-    def _show_if_not_visible(self):
+    def _show_if_not_visible_and_wait_for_animation(self):
         if not self._is_visible():
             self._show()
+        self.wait_for_animation()
 
     def _is_visible(self):
         return self.y == 0
@@ -61,7 +62,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 range or useDeprecatedToolbar is set.
 
         """
-        self._show_if_not_visible()
+        self._show_if_not_visible_and_wait_for_animation()
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException('Old header has no sections')
@@ -84,7 +85,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         return sectionsProperties.selectedIndex
 
     def click_back_button(self):
-        self._show_if_not_visible()
+        self._show_if_not_visible_and_wait_for_animation()
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException('Old header has no back button')
@@ -95,9 +96,10 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         if not back_button.visible:
             raise _common.ToolkitException('Back button in header not visible')
         self.pointing_device.click_object(back_button)
+        self.wait_for_animation()
 
     def click_custom_back_button(self):
-        self._show_if_not_visible()
+        self._show_if_not_visible_and_wait_for_animation()
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException(
@@ -112,6 +114,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             raise _common.ToolkitException(
                 'Custom back button in header not visible')
         self.pointing_device.click_object(custom_back_button)
+        self.wait_for_animation()
 
     def _get_animating(self):
         if self.useDeprecatedToolbar:
@@ -120,6 +123,10 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         else:
             return False
 
+    def wait_for_animation(self):
+        style = self.select_single(objectName='PageHeadStyle')
+        style.animating.wait_for(False)
+
     @autopilot_logging.log_action(logger.info)
     def switch_to_next_tab(self):
         """Open the next tab.
@@ -127,7 +134,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         :raise ToolkitEmulatorException: If the main view has no tabs.
 
         """
-        self._show_if_not_visible()
+        self._show_if_not_visible_and_wait_for_animation()
 
         if self.useDeprecatedToolbar:
             self._switch_to_next_tab_in_deprecated_tabbar()
@@ -158,7 +165,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 useDeprecatedToolbar is set.
 
         """
-        self._show_if_not_visible()
+        self._show_if_not_visible_and_wait_for_animation()
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException(
@@ -187,6 +194,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 "Tab button {0} not found.".format(index))
 
         self.pointing_device.click_object(tab_button)
+        self.wait_for_animation()
 
     def click_action_button(self, action_object_name):
         """Click an action button of the header.
@@ -196,10 +204,11 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             name.
 
         """
-        self._show_if_not_visible()
+        self._show_if_not_visible_and_wait_for_animation()
 
         button = self._get_action_button(action_object_name)
         self.pointing_device.click_object(button)
+        self.wait_for_animation()
 
     def _get_action_button(self, action_object_name):
         try:
