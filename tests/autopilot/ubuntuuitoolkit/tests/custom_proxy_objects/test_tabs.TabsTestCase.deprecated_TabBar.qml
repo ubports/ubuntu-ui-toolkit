@@ -12,8 +12,10 @@ MainView {
             objectName: "tab1"
             title: "Tab1"
             Page {
-                head.actions: Action {
-                    text: "Test1"
+                tools: ToolbarItems {
+                    ToolbarButton {
+                        text: "Test1"
+                    }
                 }
             }
         }
@@ -21,8 +23,10 @@ MainView {
             objectName: "tab2"
             title: "Tab2"
             Page {
-                head.actions: Action {
-                    text: "Test2"
+                tools: ToolbarItems {
+                    ToolbarButton {
+                        text: "Test2"
+                    }
                 }
             }
         }
@@ -30,8 +34,10 @@ MainView {
             objectName: "tab3"
             title: "Tab3"
             Page {
-                head.actions: Action {
-                    text: "Test3"
+                tools: ToolbarItems {
+                    ToolbarButton {
+                        text: "Test3"
+                    }
                 }
             }
         }

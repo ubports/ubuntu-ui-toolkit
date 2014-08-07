@@ -11,29 +11,17 @@ MainView {
         Tab {
             objectName: "tab1"
             title: "Tab1"
-            Page {
-                head.actions: Action {
-                    text: "Test1"
-                }
-            }
+            Page { }
         }
         Tab {
             objectName: "tab2"
             title: "Tab2"
-            Page {
-                head.actions: Action {
-                    text: "Test2"
-                }
-            }
+            Page { }
         }
         Tab {
             objectName: "tab3"
             title: "Tab3"
-            Page {
-                head.actions: Action {
-                    text: "Test3"
-                }
-            }
+            Page { }
         }
     }
 }
