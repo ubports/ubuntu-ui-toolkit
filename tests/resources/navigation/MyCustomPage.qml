@@ -51,7 +51,7 @@ Page {
         ToolbarButton {
             action: Action {
                 text: "another one"
-                iconName: "contact"
+                iconSource: "call_icon.png"
             }
         }
 

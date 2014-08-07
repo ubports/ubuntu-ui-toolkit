@@ -361,7 +361,7 @@ Style.PageHeadStyle {
 
                             Icon {
                                 id: actionIcon
-                                name: action.iconName
+                                source: action.iconSource
                                 color: '#5d5d5d'
                                 anchors {
                                     verticalCenter: parent.verticalCenter
