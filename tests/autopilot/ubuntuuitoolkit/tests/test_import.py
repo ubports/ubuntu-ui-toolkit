@@ -33,5 +33,5 @@ class TestUbuntuUIToolkitImportTestCase(testtools.TestCase):
                 'the autopilot helpers from the top-level ubuntuuitoolkit '
                 'module.'))
 
-        class AppTestCase(ubuntuuitoolkit.UbuntuUIToolkitAppTestCase):
+        class BlankClass(ubuntuuitoolkit.base.UbuntuUIToolkitAppTestCase):
             """Empty class to avoid pyflakes error"""
