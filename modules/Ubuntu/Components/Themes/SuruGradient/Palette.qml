@@ -22,9 +22,9 @@ Palette {
         background: "#5E2750"
         backgroundText: "#33F3F3E7"
         base: "#19000000"
-        baseText: "#F3F3E7"
+        baseText: "#FFFF"
         foreground: "#888888"
-        foregroundText: "#F3F3E7"
+        foregroundText: "#FFFF"
         overlay: "#F5F5F5"
         overlayText: "#888888"
         field: "#19000000"
@@ -32,9 +32,9 @@ Palette {
     }
     selected: PaletteValues {
         background: "#88D6D6D6" // FIXME: not from design
-        backgroundText: "#F3F3E7"
+        backgroundText: "#FFFF"
         foreground: "#DD4814"
-        foregroundText: "#F3F3E7"
+        foregroundText: "#FFFF"
         field: "#FFFFFF"
         fieldText: "#888888"
     }

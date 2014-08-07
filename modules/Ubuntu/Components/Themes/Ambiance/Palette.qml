@@ -25,7 +25,7 @@ Palette {
         base: Qt.rgba(0, 0, 0, 0.1)
         baseText: UbuntuColors.lightGrey
         foreground: UbuntuColors.lightGrey
-        foregroundText: "#F3F3E7"
+        foregroundText: "#FFFF"
         overlay: "#FDFDFD"
         overlayText: UbuntuColors.lightGrey
         field: "#1A000000"

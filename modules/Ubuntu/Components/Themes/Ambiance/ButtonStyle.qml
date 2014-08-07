@@ -155,7 +155,7 @@ Item {
         /* Pick either a clear or dark text color depending on the luminance of the
            background color to maintain good contrast (works in most cases)
         */
-        textColor: ColorUtils.luminance(button.color) <= 0.85 && !(stroke && !pressed) ? "#F3F3E7" : "#888888"
+        textColor: ColorUtils.luminance(button.color) <= 0.85 && !(stroke && !pressed) ? "#FFFF" : "#888888"
         iconSource: button.iconSource
         iconPosition: button.iconPosition
         iconSize: units.gu(3)
