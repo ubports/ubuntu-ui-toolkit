@@ -370,7 +370,7 @@ Style.PageHeadStyle {
             text: buffer.title
             font.weight: headerStyle.fontWeight
             fontSize: headerStyle.fontSize
-            color: buffer.config.foregroundColor
+            color: "pink" // buffer.config.foregroundColor
             elide: Text.ElideRight
         }
 
