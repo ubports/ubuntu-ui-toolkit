@@ -408,9 +408,9 @@ void ShapeItem::gridUnitChanged()
 
 void ShapeItem::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
 {
-    QQuickItem::geometryChanged(newGeometry, oldGeometry);
     geometry_ = newGeometry;
     dirtyFlags_ |= ShapeItem::DirtyGeometry;
+    QQuickItem::geometryChanged(newGeometry, oldGeometry);
     update();
 }
 
