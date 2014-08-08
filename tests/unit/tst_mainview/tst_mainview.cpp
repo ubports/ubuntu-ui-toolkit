@@ -144,6 +144,20 @@ private Q_SLOTS:
         QVERIFY(QFile::exists(database));
     }
 
+    void testSettings() {
+        QQuickItem *root = loadTest("Settings.qml");
+        QVERIFY(root);
+        QQuickItem *mainView = root;
+        QString applicationName(mainView->property("applicationName").toString());
+        QCOMPARE(applicationName, QString("thats.what.she.said"));
+        QCOMPARE(QString(applicationName), QCoreApplication::organizationDomain());
+        QString configFolder(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
+        QString subFolder(configFolder + "/" + applicationName);
+        QVERIFY(QFile::exists(subFolder));
+        QString filename(subFolder + "/" + applicationName + ".conf");
+        QVERIFY(QFile::exists(filename));
+    }
+
     void testNoWarnings_bug186065() {
         // An empty MainView would suffice
         QScopedPointer<UbuntuTestCase>testCase (new UbuntuTestCase("AppName.qml"));
