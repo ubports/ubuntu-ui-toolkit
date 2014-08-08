@@ -127,7 +127,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             return False
 
     def wait_for_animation(self):
-ss        try:
+        try:
             style = self.select_single(objectName='PageHeadStyle')
             style.animating.wait_for(False)
         except dbus.StateNotFoundError:
