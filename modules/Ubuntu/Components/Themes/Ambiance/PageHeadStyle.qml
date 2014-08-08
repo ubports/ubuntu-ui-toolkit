@@ -77,7 +77,6 @@ Style.PageHeadStyle {
         SequentialAnimation {
             id: changeAnimation
             objectName: "changeAnimation"
-            onRunningChanged: print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx changeAnimation.running = "+running)
             ParallelAnimation {
                 UbuntuNumberAnimation {
                     target: foreground
@@ -370,7 +369,7 @@ Style.PageHeadStyle {
             text: buffer.title
             font.weight: headerStyle.fontWeight
             fontSize: headerStyle.fontSize
-            color: "pink" // buffer.config.foregroundColor
+            color: buffer.config.foregroundColor
             elide: Text.ElideRight
         }
 
