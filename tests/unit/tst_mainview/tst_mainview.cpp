@@ -160,7 +160,6 @@ private Q_SLOTS:
     }
 
     void testQSettings() {
-        // Note: config unlike data and cache is the parent folder
         QString applicationName("i.prefer.pi");
         UCApplication::instance().setApplicationName(applicationName);
         // QSettings with defaults
@@ -168,7 +167,6 @@ private Q_SLOTS:
         mySettings.setValue("spam", "eggs");
         // Force writing to disk
         mySettings.sync();
-        // QString settingsFile(settingsFolder + "/Unknown\\ Organization/" + appName + ".conf");
         QString configFolder(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
         QString subFolder(configFolder + "/" + applicationName);
         QVERIFY(QFile::exists(subFolder));
