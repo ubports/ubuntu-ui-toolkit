@@ -31,6 +31,7 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 #include <QCryptographicHash>
+#include <QSettings>
 
 #include "ucapplication.h"
 #include "ucunits.h"
@@ -144,13 +145,30 @@ private Q_SLOTS:
         QVERIFY(QFile::exists(database));
     }
 
-    void testSettings() {
+    void testLabsSettings() {
         QQuickItem *root = loadTest("Settings.qml");
         QVERIFY(root);
         QQuickItem *mainView = root;
         QString applicationName(mainView->property("applicationName").toString());
         QCOMPARE(applicationName, QString("thats.what.she.said"));
         QCOMPARE(QString(applicationName), QCoreApplication::organizationDomain());
+        QString configFolder(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
+        QString subFolder(configFolder + "/" + applicationName);
+        QVERIFY(QFile::exists(subFolder));
+        QString filename(subFolder + "/" + applicationName + ".conf");
+        QVERIFY(QFile::exists(filename));
+    }
+
+    void testQSettings() {
+        // Note: config unlike data and cache is the parent folder
+        QString applicationName("i.prefer.pi");
+        UCApplication::instance().setApplicationName(applicationName);
+        // QSettings with defaults
+        QSettings mySettings;
+        mySettings.setValue("spam", "eggs");
+        // Force writing to disk
+        mySettings.sync();
+        // QString settingsFile(settingsFolder + "/Unknown\\ Organization/" + appName + ".conf");
         QString configFolder(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
         QString subFolder(configFolder + "/" + applicationName);
         QVERIFY(QFile::exists(subFolder));
