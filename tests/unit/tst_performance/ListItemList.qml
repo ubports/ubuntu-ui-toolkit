@@ -22,7 +22,7 @@ Column {
     height: 600
     Repeater {
         model: 10000
-        ViewItem {
+        ListItem {
         }
     }
 }

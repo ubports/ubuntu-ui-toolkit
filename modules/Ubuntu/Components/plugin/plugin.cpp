@@ -49,8 +49,8 @@
 #include "ucmouse.h"
 #include "ucinversemouse.h"
 #include "sortfiltermodel.h"
-#include "ucviewitem.h"
-#include "ucviewitem_p.h"
+#include "uclistitem.h"
+#include "uclistitem_p.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -207,9 +207,9 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
     qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
-    // ViewItem and related types
-    qmlRegisterType<UCViewItemBase, 1>(uri, 1, 1, "ViewItemBase");
-    qmlRegisterType<UCViewItemBackground>();
+    // ListItem and related types
+    qmlRegisterType<UCListItemBase, 1>(uri, 1, 1, "ListItemBase");
+    qmlRegisterType<UCListItemBackground>();
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

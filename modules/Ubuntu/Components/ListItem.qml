@@ -25,7 +25,7 @@ import Ubuntu.Components 1.1
     Ubuntu design guides. Does not bring anything in addition to ViewItemBase.
   */
 
-ViewItemBase {
+ListItemBase {
     width: flickable ? flickable.width : (parent ? parent.width : units.gu(40))
     height: units.gu(6)
     background.pressedColor: Theme.palette.selected.background

@@ -23,7 +23,7 @@ Item {
 
     Column {
         width: parent.width
-        ViewItem {
+        ListItem {
             id: testItem
             background.color: "green"
             onClicked: {
@@ -42,7 +42,7 @@ Item {
             height: units.gu(40)
             model: 100
             pressDelay: 0
-            delegate: ViewItem {
+            delegate: ListItem {
                 onClicked: print(" clicked")
                 Label {
                     text: modelData + " item"
@@ -60,7 +60,7 @@ Item {
                 width: view.width
                 Repeater {
                     model: 100
-                    ViewItem {
+                    ListItem {
                         background {
                             color: "red"
                             pressedColor: "lime"
