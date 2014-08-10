@@ -78,7 +78,7 @@ private:
     QString stateFile(const QString &appId)
     {
         return QString("%1/%2.state")
-                .arg(QStandardPaths::standardLocations(QStandardPaths::TempLocation)[0])
+                .arg(QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation))
                 .arg(appId);
     }
 
