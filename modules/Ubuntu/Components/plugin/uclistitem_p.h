@@ -75,7 +75,7 @@ class UCListItemDivider : public QObject
     DECLARE_PROPERTY_PTYPE(QQuickGradient, gradient)
     DECLARE_PROPERTY(QColor, color)
 public:
-    explicit UCListItemDivider(UCListItemBase *viewItem);
+    explicit UCListItemDivider(UCListItemBase *listItem);
     ~UCListItemDivider();
 
 protected:
@@ -83,18 +83,18 @@ protected:
 
 private:
     void resizeAndUpdate() {
-        UCListItemBasePrivate::get(m_viewItem)->resize();
-        m_viewItem->update();
+        UCListItemBasePrivate::get(m_listItem)->resize();
+        m_listItem->update();
     }
 
     void gradientUpdate() {
         if (m_gradient) {
-            QObject::connect(m_gradient, SIGNAL(updated()), m_viewItem, SLOT(update()));
-            m_viewItem->update();
+            QObject::connect(m_gradient, SIGNAL(updated()), m_listItem, SLOT(update()));
+            m_listItem->update();
         }
     }
 
-    UCListItemBase *m_viewItem;
+    UCListItemBase *m_listItem;
     friend class UCListItemBase;
     friend class UCListItemBasePrivate;
 };

@@ -27,15 +27,15 @@ typedef QList<QQuickGradientStop*> StopList;
 /******************************************************************************
  * Divider
  */
-UCListItemDivider::UCListItemDivider(UCListItemBase *ListItem)
-    : QObject(ListItem)
+UCListItemDivider::UCListItemDivider(UCListItemBase *listItem)
+    : QObject(listItem)
     , m_visible(true)
     , m_thickness(UCUnits::instance().dp(1))
     , m_leftMargin(UCUnits::instance().gu(2))
     , m_rightMargin(UCUnits::instance().gu(2))
     , m_gradient(0)
     , m_color(QColor("#26000000"))
-    , m_ListItem(ListItem)
+    , m_listItem(listItem)
 {
 }
 UCListItemDivider::~UCListItemDivider()
@@ -47,7 +47,7 @@ QSGNode *UCListItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
     if (m_visible && (m_color.alpha() != 0 || m_gradient)) {
         QSGRectangleNode *rectNode = static_cast<QSGRectangleNode *>(paintNode);
         if (!rectNode) {
-            rectNode = QQuickItemPrivate::get(m_ListItem)->sceneGraphContext()->createRectangleNode();
+            rectNode = QQuickItemPrivate::get(m_listItem)->sceneGraphContext()->createRectangleNode();
         }
         rectNode->setRect(QRectF(m_leftMargin, rect.height() - m_thickness,
                                  rect.width() - m_leftMargin - m_rightMargin, m_thickness));
@@ -65,18 +65,18 @@ QSGNode *UCListItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
 
 SIMPLE_PROPERTY(UCListItemDivider, bool, visible, resizeAndUpdate())
 SIMPLE_PROPERTY(UCListItemDivider, qreal, thickness, resizeAndUpdate())
-SIMPLE_PROPERTY(UCListItemDivider, qreal, leftMargin, m_ListItem->update())
-SIMPLE_PROPERTY(UCListItemDivider, qreal, rightMargin, m_ListItem->update())
+SIMPLE_PROPERTY(UCListItemDivider, qreal, leftMargin, m_listItem->update())
+SIMPLE_PROPERTY(UCListItemDivider, qreal, rightMargin, m_listItem->update())
 
 PROPERTY_GETTER(UCListItemDivider, QQuickGradient*, gradient)
 PROPERTY_SETTER_PTYPE(UCListItemDivider, QQuickGradient, gradient, gradientUpdate())
 PROPERTY_RESET(UCListItemDivider, gradient)
 {
     if (m_gradient) {
-        QObject::disconnect(m_gradient, SIGNAL(updated()), m_ListItem, SLOT(update()));
+        QObject::disconnect(m_gradient, SIGNAL(updated()), m_listItem, SLOT(update()));
     }
 }
-SIMPLE_PROPERTY(UCListItemDivider, QColor, color, m_ListItem->update())
+SIMPLE_PROPERTY(UCListItemDivider, QColor, color, m_listItem->update())
 
 /******************************************************************************
  * ListItemBackground
