@@ -27,15 +27,15 @@ typedef QList<QQuickGradientStop*> StopList;
 /******************************************************************************
  * Divider
  */
-UCListItemDivider::UCListItemDivider(UCListItemBase *viewItem)
-    : QObject(viewItem)
+UCListItemDivider::UCListItemDivider(UCListItemBase *ListItem)
+    : QObject(ListItem)
     , m_visible(true)
     , m_thickness(UCUnits::instance().dp(1))
     , m_leftMargin(UCUnits::instance().gu(2))
     , m_rightMargin(UCUnits::instance().gu(2))
     , m_gradient(0)
     , m_color(QColor("#26000000"))
-    , m_viewItem(viewItem)
+    , m_ListItem(ListItem)
 {
 }
 UCListItemDivider::~UCListItemDivider()
@@ -47,7 +47,7 @@ QSGNode *UCListItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
     if (m_visible && (m_color.alpha() != 0 || m_gradient)) {
         QSGRectangleNode *rectNode = static_cast<QSGRectangleNode *>(paintNode);
         if (!rectNode) {
-            rectNode = QQuickItemPrivate::get(m_viewItem)->sceneGraphContext()->createRectangleNode();
+            rectNode = QQuickItemPrivate::get(m_ListItem)->sceneGraphContext()->createRectangleNode();
         }
         rectNode->setRect(QRectF(m_leftMargin, rect.height() - m_thickness,
                                  rect.width() - m_leftMargin - m_rightMargin, m_thickness));
@@ -65,18 +65,18 @@ QSGNode *UCListItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
 
 SIMPLE_PROPERTY(UCListItemDivider, bool, visible, resizeAndUpdate())
 SIMPLE_PROPERTY(UCListItemDivider, qreal, thickness, resizeAndUpdate())
-SIMPLE_PROPERTY(UCListItemDivider, qreal, leftMargin, m_viewItem->update())
-SIMPLE_PROPERTY(UCListItemDivider, qreal, rightMargin, m_viewItem->update())
+SIMPLE_PROPERTY(UCListItemDivider, qreal, leftMargin, m_ListItem->update())
+SIMPLE_PROPERTY(UCListItemDivider, qreal, rightMargin, m_ListItem->update())
 
 PROPERTY_GETTER(UCListItemDivider, QQuickGradient*, gradient)
 PROPERTY_SETTER_PTYPE(UCListItemDivider, QQuickGradient, gradient, gradientUpdate())
 PROPERTY_RESET(UCListItemDivider, gradient)
 {
     if (m_gradient) {
-        QObject::disconnect(m_gradient, SIGNAL(updated()), m_viewItem, SLOT(update()));
+        QObject::disconnect(m_gradient, SIGNAL(updated()), m_ListItem, SLOT(update()));
     }
 }
-SIMPLE_PROPERTY(UCListItemDivider, QColor, color, m_viewItem->update())
+SIMPLE_PROPERTY(UCListItemDivider, QColor, color, m_ListItem->update())
 
 /******************************************************************************
  * ListItemBackground
@@ -320,20 +320,20 @@ void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
 PROPERTY_GETTER_PRIVATE(UCListItemBase, UCListItemBackground*, background)
 
 /*!
- * \qmlpropertygroup ::ViewItemBase::divider
- * \qmlproperty bool ViewItemBase::divider.visible
- * \qmlproperty real ViewItemBase::divider.thickness
- * \qmlproperty real ViewItemBase::divider.leftMargin
- * \qmlproperty real ViewItemBase::divider.rightMargin
- * \qmlproperty Gradient ViewItemBase::divider.gradient
- * \qmlproperty color ViewItemBase::divider.color
+ * \qmlpropertygroup ::ListItemBase::divider
+ * \qmlproperty bool ListItemBase::divider.visible
+ * \qmlproperty real ListItemBase::divider.thickness
+ * \qmlproperty real ListItemBase::divider.leftMargin
+ * \qmlproperty real ListItemBase::divider.rightMargin
+ * \qmlproperty Gradient ListItemBase::divider.gradient
+ * \qmlproperty color ListItemBase::divider.color
  *
  * This grouped property configures the thin divider shown in the bottom of the
  * component. Configures the visibility, the thickness, colors and the margins
- * from the left and right of the ViewItem. When tugged (swiped left or right to
+ * from the left and right of the ListItem. When tugged (swiped left or right to
  * reveal the options), it is not moved together with the content.
  *
- * When \c visible is true, the ViewItem's content size gets thinner with the
+ * When \c visible is true, the ListItem's content size gets thinner with the
  * divider's \c thickness.
  *
  * \c color and \c gradient are used to set the color or the gradient the divider
@@ -345,7 +345,7 @@ PROPERTY_GETTER_PRIVATE(UCListItemBase, UCListItemBackground*, background)
  *     width: units.gu(30)
  *     Repeater {
  *         model: 100
- *         ViewItem {
+ *         ListItem {
  *             divider {
  *                 color: "blue"
  *                 gradient: Gradient {
