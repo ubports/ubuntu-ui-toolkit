@@ -18,7 +18,7 @@ import QtQuick 2.2
 import Ubuntu.Components 1.1
 
 /*!
-    \qmltype ViewItem
+    \qmltype ListItem
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief The ListItem element sets up the sizes and other bindings to satisfy

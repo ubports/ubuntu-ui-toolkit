@@ -97,7 +97,7 @@
     { \
         if (_arg_##member != m_##member) { \
             reset_##member(); \
-            m_#member = _arg_##member; \
+            m_##member = _arg_##member; \
             __VA_ARGS__; \
             Q_EMIT member##Changed(); \
         } \

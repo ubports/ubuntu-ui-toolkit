@@ -25,11 +25,11 @@ Item {
 
     Column {
         width: parent.width
-        ViewItem {
+        ListItem {
             id: defaults
             width: parent.width
         }
-        ViewItem {
+        ListItem {
             id: testItem
             width: parent.width
             background.color: "blue"
@@ -44,7 +44,7 @@ Item {
             height: units.gu(24)
             clip: true
             model: 10
-            delegate: ViewItem {
+            delegate: ListItem {
                 objectName: "listItem" + index
                 width: parent.width
             }
@@ -52,7 +52,7 @@ Item {
     }
 
     UbuntuTestCase {
-        name: "ViewItemAPI"
+        name: "ListItemAPI"
         when: windowShown
 
         SignalSpy {
