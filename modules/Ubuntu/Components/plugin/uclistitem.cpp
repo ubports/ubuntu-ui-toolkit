@@ -24,7 +24,7 @@
 #include <QtQuick/private/qquickpositioners_p.h>
 
 /******************************************************************************
- * ViewItemBackground
+ * ListItemBackground
  */
 UCListItemBackground::UCListItemBackground(QQuickItem *parent)
     : QQuickItem(parent)
@@ -80,7 +80,7 @@ UCListItemBasePrivate::UCListItemBasePrivate(UCListItemBase *qq)
     , background(new UCListItemBackground)
     , pressed(false)
 {
-    background->setObjectName("ViewItemHolder");
+    background->setObjectName("ListItemHolder");
     background->setParent(q_ptr);
     background->setParentItem(q_ptr);
     // content will be redirected to the background, therefore we must report
@@ -121,12 +121,12 @@ void UCListItemBasePrivate::listenToRebind(bool listen)
 }
 
 /*!
- * \qmltype ViewItemBase
+ * \qmltype ListItemBase
  * \instantiates UCListItemBase
  * \inherits Item
  * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu
- * \brief The ViewItem element provides Ubuntu design standards for list or grid
+ * \brief The ListItem element provides Ubuntu design standards for list or grid
  * views.
  *
  * The component is dedicated to be used in designs with static or dynamic lists
@@ -137,15 +137,15 @@ void UCListItemBasePrivate::listenToRebind(bool listen)
  * carefully to in order to keep the kinetic behavior and the 60 FPS if possible.
  *
  * The component does not set any size, therefore if used these properties should
- * be set. Colors used are also hardcoded ones. Use \l ViewItem instead of this
+ * be set. Colors used are also hardcoded ones. Use \l ListItem instead of this
  * component, which provides bindings to theme palette and aligns to the component
  * is embedded in.
  *
- * \sa ViewItem
+ * \sa ListItem
  */
 
 /*!
- * \qmlsignal ViewItemBase::clicked()
+ * \qmlsignal ListItemBase::clicked()
  *
  * The signal is emitted when the component gets released while the \l pressed property
  * is set. When used in Flickable, the signal is not emitted if when the Flickable gets
@@ -222,9 +222,9 @@ void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
 }
 
 /*!
- * \qmlpropertygroup ::ViewItemBase::background
- * \qmlproperty color ViewItemBase::background.color
- * \qmlproperty color ViewItemBase::background.pressedColor
+ * \qmlpropertygroup ::ListItemBase::background
+ * \qmlproperty color ListItemBase::background.color
+ * \qmlproperty color ListItemBase::background.pressedColor
  *
  * background grouped property is an Item which holds the layout of the item, with
  * abilities to show different colors when in normal state or when pressed. All
@@ -240,7 +240,7 @@ void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
 PROPERTY_GETTER_PRIVATE(UCListItemBase, UCListItemBackground*, background)
 
 /*!
- * \qmlproperty bool ViewItemBase::pressed
+ * \qmlproperty bool ListItemBase::pressed
  * True when the item is pressed. The items stays pressed when the mouse or touch
  * is moved horizontally. When in Flickable (or ListView), the item gets un-pressed
  * (false) when the mouse or touch is moved towards the vertical direction causing
@@ -249,7 +249,7 @@ PROPERTY_GETTER_PRIVATE(UCListItemBase, UCListItemBackground*, background)
 PROPERTY_GETTER_PRIVATE(UCListItemBase, bool, pressed)
 
 /*!
- * \qmlproperty Flickable ViewItemBase::flickable
+ * \qmlproperty Flickable ListItemBase::flickable
  * The property contains the Flickable the component is embedded in. The property is set
  * in the following cases:
  * \qml
@@ -262,13 +262,13 @@ PROPERTY_GETTER_PRIVATE(UCListItemBase, bool, pressed)
  *         id: column
  *         Repeater {
  *             model: 100
- *             ViewItem {
+ *             ListItem {
  *             }
  *         }
  *     }
  * }
  * \endqml
- * In this case the ViewItem's flickable property points to the \c flickableItem, and
+ * In this case the ListItem's flickable property points to the \c flickableItem, and
  * parent to the \c column.
  * \qml
  * ListView {
@@ -276,7 +276,7 @@ PROPERTY_GETTER_PRIVATE(UCListItemBase, bool, pressed)
  *     width: units.gu(30)
  *     height: units.gu(30)
  *     model: 100
- *     delegate: ViewItem {
+ *     delegate: ListItem {
  *     }
  * }
  * \endqml
@@ -287,7 +287,7 @@ PROPERTY_GETTER_PRIVATE(UCListItemBase, bool, pressed)
 PROPERTY_GETTER_PRIVATE(UCListItemBase, QQuickFlickable*, flickable)
 
 /*!
- * \qmlproperty list<Object> ViewItemBase::data
+ * \qmlproperty list<Object> ListItemBase::data
  * \default
  * Overloaded default property containing all the children and resources.
  */
@@ -298,7 +298,7 @@ QQmlListProperty<QObject> UCListItemBase::data()
 }
 
 /*!
- * \qmlproperty list<Item> ViewItemBase::children
+ * \qmlproperty list<Item> ListItemBase::children
  * Overloaded default property containing all the visible children of the item.
  */
 QQmlListProperty<QQuickItem> UCListItemBase::children()
