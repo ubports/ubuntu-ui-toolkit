@@ -25,7 +25,7 @@ import QtQuick 2.0
 
     For examples how to use Page.head, see \l Page.
  */
-QtObject {
+Object {
     // To be used inside a Page only.
     id: headerConfig
 
@@ -94,4 +94,18 @@ QtObject {
       be implemented.
      */
     property Item contents: null
+
+    /*!
+      \qmlproperty PageHeadSections sections
+      Defines the sections in the page header divider.
+     */
+    readonly property alias sections: headSections
+    PageHeadSections {
+        id: headSections
+    }
+
+    /*!
+      The color of the text and icons.
+     */
+    property color foregroundColor: Theme.palette.selected.backgroundText
 }

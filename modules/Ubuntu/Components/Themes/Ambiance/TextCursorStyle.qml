@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.0
+import Ubuntu.Components 1.1
 
 // FIXME : move the API into Ubuntu.Components.Style
 Item {
@@ -47,8 +48,9 @@ Item {
     Component {
         id: delegate
         Rectangle {
-            width: units.dp(1)
-            color: Theme.palette.selected.foreground
+            width: units.dp(2)
+            // FIXME: Extend the palette and use palette values here
+            color: UbuntuColors.blue
             visible: blinkTimer.timerShowCursor
             Timer {
                 id: blinkTimer
@@ -70,7 +72,7 @@ Item {
     // caretItem
     Image {
         id: caretItem
-        source: "artwork/teardrop-left.png"
+        source: "artwork/caret_noshadow.png"
         anchors {
             top: parent.bottom
             horizontalCenter: parent.horizontalCenter

@@ -14,7 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.2
+import Ubuntu.Components 1.1
 
 // FIXME : move the API into Ubuntu.Components.Style
 Item {
@@ -48,14 +49,15 @@ Item {
         id: delegate
         Rectangle {
             width: units.dp(1)
-            color: Theme.palette.selected.foreground
+            // FIXME: Add a new color to the palette
+            color: UbuntuColors.blue
         }
     }
 
     // caretItem
     Image {
         id: caretItem
-        source: "artwork/teardrop-left.png"
+        source: "artwork/caret_noshadow.png"
         anchors {
             top: parent.bottom
             horizontalCenter: parent.horizontalCenter

@@ -26,6 +26,7 @@ Build-Depends: debhelper (>= 9.0.0),
                qtdeclarative5-doc-html,
                qtwebkit5-doc-html,
                qtsvg5-doc-html,
+               libqt5svg5,
                qtscript5-doc-html,
                qtmultimedia5-doc-html,
                unity-action-doc,
@@ -110,7 +111,7 @@ Package: ubuntu-ui-toolkit-examples
 Section: devel
 Architecture: any
 Depends: qmlscene,
-         qtdeclarative5-ubuntu-ui-toolkit-plugin (= ${binary:Version}),
+         qtdeclarative5-ubuntu-ui-toolkit-plugin (= ${binary:Version}) | qtdeclarative5-ubuntu-ui-toolkit-plugin-gles,
          ubuntu-ui-toolkit-theme (= ${binary:Version}),
          qml-module-qtquick-xmllistmodel | qtdeclarative5-xmllistmodel-plugin,
          qml-module-qt-labs-folderlistmodel,

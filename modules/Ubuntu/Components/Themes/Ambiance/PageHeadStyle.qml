@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import QtQuick 2.0
+import QtQuick 2.2
 import Ubuntu.Components 1.1
 import Ubuntu.Components.Popups 1.0
 import Ubuntu.Components.ListItems 1.0 as ListItem
@@ -21,16 +21,20 @@ import Ubuntu.Components.Styles 1.1 as Style
 
 Style.PageHeadStyle {
     id: headerStyle
-    contentHeight: units.gu(7.5)
+    contentHeight: units.gu(7)
     separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
     separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
     fontWeight: Font.Light
     fontSize: "x-large"
-    textColor: Theme.palette.selected.backgroundText
+    textColor: styledItem.config.foregroundColor
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
+
+    // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
+    //  see also FIXME in AppHeader where this property is used.
+    property alias __sections_repeater_for_autopilot: sectionsRepeater
 
     BorderImage {
         id: separator
@@ -40,6 +44,59 @@ Style.PageHeadStyle {
             right: parent.right
         }
         source: headerStyle.separatorSource
+        height: sectionsRow.visible ? units.gu(3) : units.gu(2)
+
+        property PageHeadSections sections: styledItem.config.sections
+
+        Row {
+            id: sectionsRow
+            anchors.centerIn: parent
+            width: childrenRect.width
+            height: parent.height
+            enabled: separator.sections.enabled
+            visible: separator.sections.model !== undefined
+            opacity: enabled ? 1.0 : 0.5
+
+            Repeater {
+                id: sectionsRepeater
+                model: separator.sections.model
+                objectName: "page_head_sections_repeater"
+                AbstractButton {
+                    id: sectionButton
+                    anchors.verticalCenter: parent ? parent.verticalCenter : undefined
+                    objectName: "section_button_" + index
+                    enabled: sectionsRow.enabled
+                    width: label.width + units.gu(4)
+                    height: sectionsRow.height + units.gu(2)
+                    property bool selected: index === separator.sections.selectedIndex
+                    onClicked: separator.sections.selectedIndex = index;
+
+                    Label {
+                        id: label
+                        text: modelData
+                        fontSize: "small"
+                        anchors.centerIn: sectionButton
+                        horizontalAlignment: Text.AlignHCenter
+                        color: sectionButton.selected ?
+                                   UbuntuColors.orange :
+                                   Theme.palette.selected.backgroundText
+                    }
+
+                    // vertical divider line
+                    Rectangle {
+                        anchors {
+                            verticalCenter: parent.verticalCenter
+                            right: parent.right
+                        }
+                        height: units.dp(10)
+                        width: units.dp(1)
+                        visible: index < sectionsRepeater.model.length - 1
+                        color: Theme.palette.selected.backgroundText
+                        opacity: 0.2
+                    }
+                }
+            }
+        }
     }
     Image {
         id: separatorBottom
@@ -56,46 +113,41 @@ Style.PageHeadStyle {
         anchors {
             left: parent.left
             top: parent.top
+            leftMargin: width > 0 ? units.gu(1) : 0
         }
         width: childrenRect.width
         height: headerStyle.contentHeight
 
-        AbstractButton {
+        PageHeadButton {
             id: customBackButton
             objectName: "customBackButton"
-            height: parent ? parent.height : undefined
-            width: visible ? units.gu(5) : 0
             action: styledItem.config.backAction
             visible: null !== styledItem.config.backAction &&
                      styledItem.config.backAction.visible
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
+            color: styledItem.config.foregroundColor
         }
 
-        AbstractButton {
+        PageHeadButton {
             id: backButton
             objectName: "backButton"
-            height: parent ? parent.height : undefined
-            width: visible ? units.gu(5) : 0
 
             iconName: "back"
             visible: styledItem.pageStack !== null &&
                      styledItem.pageStack !== undefined &&
                      styledItem.pageStack.depth > 1 &&
-                     !customBackButton.visible
+                     !styledItem.config.backAction
 
             text: "back"
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", backButton)
+            color: styledItem.config.foregroundColor
 
             onTriggered: {
                 styledItem.pageStack.pop();
             }
         }
 
-        AbstractButton {
+        PageHeadButton {
             id: tabsButton
             objectName: "tabsButton"
-            height: parent ? parent.height : undefined
-            width: visible ? units.gu(5) : 0
 
             iconName: "navigation-menu"
             visible: styledItem.tabsModel !== null &&
@@ -103,17 +155,20 @@ Style.PageHeadStyle {
                      !backButton.visible &&
                      !customBackButton.visible
             text: visible ? styledItem.tabsModel.count + " tabs" : ""
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", tabsButton)
+            color: styledItem.config.foregroundColor
 
             onTriggered: {
                 tabsPopover.show();
             }
 
-            Popover {
+            OverflowPanel {
                 id: tabsPopover
                 objectName: "tabsPopover"
                 parent: QuickUtils.rootItem(tabsPopover)
                 caller: tabsButton
+                callerMargin: -units.gu(1) + units.dp(4)
+                contentWidth: units.gu(20)
+
                 Column {
                     anchors {
                         left: parent.left
@@ -122,13 +177,32 @@ Style.PageHeadStyle {
                     }
                     Repeater {
                         model: styledItem.tabsModel
-                        ListItem.Standard {
-                            visible: index !== styledItem.tabsModel.selectedIndex
-                            text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
+                        AbstractButton {
                             objectName: "tabButton" + index
                             onClicked: {
                                 styledItem.tabsModel.selectedIndex = index;
                                 tabsPopover.hide();
+                            }
+                            implicitHeight: units.gu(6) + bottomDividerLine.height
+                            width: parent ? parent.width : units.gu(31)
+
+                            Label {
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    verticalCenterOffset: units.dp(-1)
+                                    left: parent.left
+                                    leftMargin: units.gu(2)
+                                }
+                                fontSize: "medium"
+                                elide: Text.ElideRight
+                                text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
+                                color: '#5d5d5d'
+                            }
+
+                            ListItem.ThinDivider {
+                                id: bottomDividerLine
+                                anchors.bottom: parent.bottom
+                                visible: index < styledItem.tabsModel.count - 1
                             }
                         }
                     }
@@ -220,37 +294,37 @@ Style.PageHeadStyle {
         anchors {
             top: parent.top
             right: parent.right
+            rightMargin: units.gu(1)
         }
         width: childrenRect.width
         height: headerStyle.contentHeight
 
         Repeater {
             model: numberOfSlots.used
-            AbstractButton {
+            PageHeadButton {
                 id: actionButton
                 objectName: action.objectName + "_header_button"
                 action: actionsContainer.visibleActions[index]
-                style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionButton)
-                width: units.gu(5)
-                height: actionsContainer.height
+                color: styledItem.config.foregroundColor
             }
         }
 
-        AbstractButton {
+        PageHeadButton {
             id: actionsOverflowButton
             objectName: "actions_overflow_button"
             visible: numberOfSlots.requested > numberOfSlots.right
             iconName: "contextual-menu"
-            width: visible ? units.gu(5) : 0
-            style: Theme.createStyleComponent("HeaderButtonStyle.qml", actionsOverflowButton)
+            color: styledItem.config.foregroundColor
             height: actionsContainer.height
             onTriggered: actionsOverflowPopover.show()
 
-            Popover {
+            OverflowPanel {
                 id: actionsOverflowPopover
                 objectName: "actions_overflow_popover"
                 parent: QuickUtils.rootItem(actionsOverflowPopover)
                 caller: actionsOverflowButton
+                callerMargin: -units.gu(1) + units.dp(4)
+                contentWidth: units.gu(20)
 
                 // Ensure the popover closes when actions change and
                 // the list item below may be destroyed before its
@@ -276,11 +350,47 @@ Style.PageHeadStyle {
                         right: parent.right
                     }
                     Repeater {
+                        id: overflowRepeater
                         model: numberOfSlots.requested - numberOfSlots.used
-                        ListItem.Standard {
+                        AbstractButton {
                             action: actionsContainer.visibleActions[numberOfSlots.used + index]
                             objectName: action.objectName + "_header_overflow_button"
                             onClicked: actionsOverflowPopover.hide()
+                            implicitHeight: units.gu(6) + bottomDividerLine.height
+                            width: parent ? parent.width : units.gu(31)
+
+                            Icon {
+                                id: actionIcon
+                                name: action.iconName
+                                color: '#5d5d5d'
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    verticalCenterOffset: units.dp(-1)
+                                    left: parent.left
+                                    leftMargin: units.gu(2)
+                                }
+                                width: units.gu(2)
+                                height: units.gu(2)
+                            }
+
+                            Label {
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    verticalCenterOffset: units.dp(-1)
+                                    left: actionIcon.right
+                                    leftMargin: units.gu(2)
+                                }
+                                fontSize: "small"
+                                elide: Text.ElideRight
+                                text: action.text
+                                color: '#5d5d5d'
+                            }
+
+                            ListItem.ThinDivider {
+                                id: bottomDividerLine
+                                anchors.bottom: parent.bottom
+                                visible: index !== overflowRepeater.count - 1
+                            }
                         }
                     }
                 }

@@ -14,12 +14,12 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-06-26 07:08+0000\n"
-"X-Generator: Launchpad (build 17065)\n"
+"X-Launchpad-Export-Date: 2014-07-23 06:57+0000\n"
+"X-Generator: Launchpad (build 17114)\n"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:22
 msgid "NumberAnimation"
-msgstr ""
+msgstr "NúmeroAnimación"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:25
@@ -170,7 +170,7 @@ msgstr "Lista agrupada"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:38
 msgid "Flickable"
-msgstr ""
+msgstr "Desprazábel cun toque"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:74
 msgid "Action #1"
@@ -207,6 +207,7 @@ msgstr "Indicador de actividade"
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:26
 msgid "The visual style of the Sheet is early work and thus clunky looking."
 msgstr ""
+"O estilo visual da folla é un traballo inicial daí a fasquía pouco pulida."
 
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:51
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:84

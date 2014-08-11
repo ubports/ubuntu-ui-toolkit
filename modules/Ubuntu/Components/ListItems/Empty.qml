@@ -175,6 +175,7 @@ AbstractButton {
     function cancelItemRemoval()
     {
         priv.resetDrag()
+        priv.removed = false
     }
 
     width: parent ? parent.width : units.gu(31)
@@ -285,6 +286,23 @@ AbstractButton {
                 }
             }
         }
+    }
+
+    Rectangle {
+        id: highlight
+
+        z: -1
+        visible: !priv.removed && emptyListItem.swipingState === ""
+                 ? emptyListItem.selected
+                   || (emptyListItem.highlightWhenPressed && emptyListItem.pressed)
+                 : false
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+        }
+        height: emptyListItem.height - bottomDividerLine.height
+        color: Qt.rgba(0, 0, 0, 0.05)
     }
 
     ThinDivider {

@@ -24,6 +24,78 @@
 #include <QtQuick/QSGTextureProvider>
 #include <QtQuick/private/qquickimage_p.h>
 
+/*!
+    \qmltype UbuntuShape
+    \instantiates ShapeItem
+    \inqmlmodule Ubuntu.Components 1.1
+    \ingroup ubuntu
+    \brief The UbuntuShape item provides a standard Ubuntu shaped rounded rectangle.
+
+    The UbuntuShape is used where a rounded rectangle is needed either filled
+    with a color or an image that it crops.
+
+    When given with a \l color it is applied with an overlay blending as a
+    vertical gradient going from \l color to \l gradientColor.
+    Two corner \l radius are available, "small" (default) and "medium", that
+    determine the size of the corners.
+    Optionally, an Image can be passed that will be displayed inside the
+    UbuntuShape and cropped to fit it.
+
+    Examples:
+    \qml
+        import Ubuntu.Components 1.1
+
+        UbuntuShape {
+            color: "lightblue"
+            radius: "medium"
+        }
+    \endqml
+
+    \qml
+        import Ubuntu.Components 1.1
+
+        UbuntuShape {
+            image: Image {
+                source: "icon.png"
+            }
+        }
+    \endqml
+*/
+
+/*!
+    \qmlproperty string UbuntuShape::radius
+
+    The size of the corners among: "small" (default) and "medium".
+*/
+
+/*!
+    \qmlproperty color UbuntuShape::color
+
+    The top color of the gradient used to fill the shape. Setting only this
+    one is enough to set the overall color the shape.
+*/
+
+/*!
+    \qmlproperty color UbuntuShape::gradientColor
+
+    The bottom color of the gradient used for the overlay blending of the
+    color that fills the shape. It is optional to set this one as setting
+    \l color is enough to set the overall color of the shape.
+*/
+
+/*!
+    \deprecated
+    \qmlproperty url UbuntuShape::borderSource
+
+    The image used as a border.
+    We plan to expose that feature through styling properties.
+*/
+
+/*!
+    \qmlproperty Image UbuntuShape::image
+
+    The image used to fill the shape.
+*/
 
 // Retrieves the size of an array at compile time.
 #define ARRAY_SIZE(a) \
@@ -132,6 +204,7 @@ static int sizeOfType(GLenum type)
 
 ShapeItem::ShapeItem(QQuickItem* parent)
     : QQuickItem(parent)
+    , provider_(NULL)
     , color_(0.0, 0.0, 0.0, 0.0)
     , gradientColor_(0.0, 0.0, 0.0, 0.0)
     , gradientColorSet_(false)
@@ -335,9 +408,9 @@ void ShapeItem::gridUnitChanged()
 
 void ShapeItem::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
 {
-    QQuickItem::geometryChanged(newGeometry, oldGeometry);
     geometry_ = newGeometry;
     dirtyFlags_ |= ShapeItem::DirtyGeometry;
+    QQuickItem::geometryChanged(newGeometry, oldGeometry);
     update();
 }
 
@@ -354,6 +427,12 @@ void ShapeItem::onOpenglContextDestroyed()
         delete textureHandles.low;
         textures_.erase(it);
     }
+}
+
+void ShapeItem::providerDestroyed(QObject* object)
+{
+    Q_UNUSED(object);
+    provider_ = NULL;
 }
 
 QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data)
@@ -387,24 +466,18 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
                          Qt::DirectConnection);
     }
 
-    // The image item sets its texture in its updatePaintNode() method when QtQuick iterates through
-    // the list of dirty items. When we're notified the image item has been changed through
-    // setImage(), we mark the shape item as dirty by requesting an update. But sometimes it leads
-    // to have the shape item being queued in the dirty list before the image item. That case can be
-    // detected when the texture provider exists but not the texture itself. When that's the case we
-    // push the shape item in the dirty list to be handled next frame and we tell QtQuick not to
-    // render the item for the current frame.
-    const QSGTextureProvider* provider = image_ ? image_->textureProvider() : NULL;
-    const QSGTexture* texture = provider ? provider->texture() : NULL;
-    if (provider && !texture) {
-        update();
-        delete old_node;
-        return NULL;
-    }
-
     // Update the node whenever the source item's texture changes.
-    if ((dirtyFlags_ & ShapeItem::DirtyImage) && provider) {
-        QObject::connect(provider, SIGNAL(textureChanged()), this, SLOT(update()));
+    QSGTextureProvider* provider = image_ ? image_->textureProvider() : NULL;
+    if (provider != provider_) {
+        if (provider_) {
+            QObject::disconnect(provider_, SIGNAL(textureChanged()), this, SLOT(update()));
+            QObject::disconnect(provider_, SIGNAL(destroyed()), this, SLOT(providerDestroyed()));
+        }
+        if (provider) {
+            QObject::connect(provider, SIGNAL(textureChanged()), this, SLOT(update()));
+            QObject::connect(provider, SIGNAL(destroyed()), this, SLOT(providerDestroyed()));
+        }
+        provider_ = provider;
     }
 
     ShapeNode* node = static_cast<ShapeNode*>(old_node);
@@ -455,7 +528,8 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
         index += 3;
     node->setVertices(geometry_, radius, image_, stretched_, hAlignment_, vAlignment_,
                       textureData->coordinate[index]);
-    node->setMaterialType(image_ ? ShapeNode::TexturedMaterial : ShapeNode::ColoredMaterial);
+    const QSGTexture* texture = provider ? provider->texture() : NULL;
+    node->setMaterialType(texture ? ShapeNode::TexturedMaterial : ShapeNode::ColoredMaterial);
 
     dirtyFlags_ = ShapeItem::NotDirty;
 
@@ -687,6 +761,17 @@ QSGMaterialShader* ShapeTexturedMaterial::createShader() const
     return new ShapeTexturedShader;
 }
 
+int ShapeTexturedMaterial::compare(const QSGMaterial* other) const
+{
+    const ShapeTexturedMaterial* otherMaterial = static_cast<const ShapeTexturedMaterial*>(other);
+    const QSGTextureProvider* otherTextureProvider = otherMaterial->imageTextureProvider();
+    const QSGTexture* otherTexture = otherTextureProvider ? otherTextureProvider->texture() : NULL;
+    const int otherTextureId = otherTexture ? otherTexture->textureId() : 0;
+    const QSGTexture* texture = imageTextureProvider_ ? imageTextureProvider_->texture() : NULL;
+    const int textureId = texture ? texture->textureId() : 0;
+    return textureId - otherTextureId;
+}
+
 void ShapeTexturedMaterial::setImage(QQuickItem* image)
 {
     imageTextureProvider_ = image ? image->textureProvider() : NULL;
@@ -786,6 +871,16 @@ QSGMaterialType* ShapeColoredMaterial::type() const
 QSGMaterialShader* ShapeColoredMaterial::createShader() const
 {
     return new ShapeColoredShader;
+}
+
+int ShapeColoredMaterial::compare(const QSGMaterial* other) const
+{
+    const ShapeColoredMaterial* otherMaterial = static_cast<const ShapeColoredMaterial*>(other);
+    if ((color_ != otherMaterial->color()) || (gradientColor_ != otherMaterial->gradientColor())) {
+        return -1;
+    } else {
+        return 0;
+    }
 }
 
 void ShapeColoredMaterial::setColor(const QColor& color)

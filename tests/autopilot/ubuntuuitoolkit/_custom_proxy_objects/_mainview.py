@@ -41,8 +41,7 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def get_header(self):
         """Return the AppHeader emulator of the MainView."""
         try:
-            return self.select_single(
-                'AppHeader', objectName='MainView_Header')
+            return self.select_single(objectName='MainView_Header')
         except dbus.StateNotFoundError:
             raise _common.ToolkitException('The main view has no header.')
 
@@ -172,6 +171,15 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
         """
         return self.wait_select_single(
             popups.ActionSelectionPopover, objectName=object_name)
+
+    def get_text_input_context_menu(self, object_name):
+        """Return a TextInputContextMenu emulator.
+
+        :parameter object_name: The QML objectName property of the popover.
+
+        """
+        return self.wait_select_single(
+            popups.TextInputPopover, objectName=object_name)
 
     @autopilot_logging.log_action(logger.info)
     def go_back(self):

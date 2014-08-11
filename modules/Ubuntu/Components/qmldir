@@ -6,7 +6,7 @@ ActionList 0.1 ActionList.qml
 ToolbarItems 0.1 ToolbarItems.qml
 ToolbarButton 0.1 ToolbarButton.qml
 MainView 0.1 MainView.qml
-Button 0.1 Button.qml
+Button 0.1 10/Button.qml
 Panel 0.1 Panel.qml
 internal DraggingArea DraggingArea.qml
 Tab 0.1 Tab.qml
@@ -33,9 +33,8 @@ internal AppHeader AppHeader.qml
 Header 0.1 Header.qml
 internal AnimatedItem AnimatedItem.qml
 internal PageWrapper PageWrapper.qml
-UbuntuShape 0.1 UbuntuShape.qml
 CrossFadeImage 0.1 CrossFadeImage10.qml
-Icon 0.1 Icon.qml
+Icon 0.1 Icon10.qml
 OrientationHelper 0.1 OrientationHelper.qml
 MathUtils 0.1 mathUtils.js
 SliderUtils 0.1 sliderUtils.js
@@ -57,7 +56,7 @@ ActionList 1.0 ActionList.qml
 ToolbarItems 1.0 ToolbarItems.qml
 ToolbarButton 1.0 ToolbarButton.qml
 MainView 1.0 MainView.qml
-Button 1.0 Button.qml
+Button 1.0 10/Button.qml
 Panel 1.0 Panel.qml
 Tab 1.0 Tab.qml
 TabBar 1.0 TabBar.qml
@@ -78,9 +77,8 @@ OptionSelectorDelegate 1.0 OptionSelectorDelegate.qml
 Page 1.0 Page10.qml
 PageStack 1.0 PageStack.qml
 Header 1.0 Header.qml
-UbuntuShape 1.0 UbuntuShape.qml
 CrossFadeImage 1.0 CrossFadeImage10.qml
-Icon 1.0 Icon.qml
+Icon 1.0 Icon10.qml
 OrientationHelper 1.0 OrientationHelper.qml
 MathUtils 1.0 mathUtils.js
 SliderUtils 1.0 sliderUtils.js
@@ -93,6 +91,7 @@ UbuntuListView 1.0 UbuntuListView.qml
 
 #version 1.1
 ComboButton 1.1 ComboButton.qml
+Button 1.1 11/Button.qml
 ProgressBar 1.1 ProgressBar11.qml
 CrossFadeImage 1.1 CrossFadeImage11.qml
 PullToRefresh 1.1 PullToRefresh.qml
@@ -100,4 +99,6 @@ UbuntuListView 1.1 UbuntuListView11.qml
 internal PageBase Page10.qml
 Page 1.1 Page11.qml
 PageHeadConfiguration 1.1 PageHeadConfiguration.qml
+PageHeadSections 1.1 PageHeadSections.qml
 PageHeadState 1.1 PageHeadState.qml
+Icon 1.1 Icon11.qml

@@ -83,17 +83,17 @@ qreal UCFontUtils::sizeToPixels(const QString &size)
 qreal UCFontUtils::modularScale(const QString &size)
 {
     if (size == "xx-small") {
-        return 0.606;
+        return 0.677;
     } else if (size == "x-small") {
-        return 0.707;
+        return 0.804;
     } else if (size == "small") {
-        return 0.857;
+        return 0.931;
     } else if (size == "medium") {
-        return 1.0;
+        return 1.079;
     } else if (size == "large") {
-        return 1.414;
+        return 1.291;
     } else if (size == "x-large") {
-        return 1.905;
+        return 1.714;
     }
     return 0.0;
 }
