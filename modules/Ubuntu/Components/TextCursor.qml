@@ -64,6 +64,8 @@ Ubuntu.StyledItem {
     Connections {
         target: inputHandler
         onPressAndHold: openPopover()
+        onTextModified: typing = true
+        onTap: typing = false
     }
 
     function openPopover() {
@@ -72,18 +74,21 @@ Ubuntu.StyledItem {
         }
         // open context menu only for cursorPosition or selectionEnd
         if (positionProperty !== "selectionStart") {
+            var p;
             if (handler.main.popover === undefined) {
                 // open the default one
-                PopupUtils.open(Qt.resolvedUrl("TextInputPopover.qml"), cursorItem,
+                p = PopupUtils.open(Qt.resolvedUrl("TextInputPopover.qml"), cursorItem,
                                 {
                                     "target": handler.main
                                 })
             } else {
-                PopupUtils.open(handler.main.popover, cursorItem,
+                p = PopupUtils.open(handler.main.popover, cursorItem,
                                 {
                                     "target": handler.main
                                 })
             }
+            contextMenuVisible = true;
+            p.onVisibleChanged.connect(contextMenuHidden.bind(undefined, p));
         }
     }
 
@@ -121,6 +126,12 @@ Ubuntu.StyledItem {
         when: caret
         property: "visible"
         value: QuickUtils.touchScreenAvailable
+         && (contextMenuVisible || !typing)
+    }
+    property bool typing: false
+    property bool contextMenuVisible: false
+    function contextMenuHidden(p) {
+        contextMenuVisible = false
     }
     onXChanged: if (draggedItem.state === "") draggedItem.moveToCaret()
     onYChanged: if (draggedItem.state === "") draggedItem.moveToCaret()

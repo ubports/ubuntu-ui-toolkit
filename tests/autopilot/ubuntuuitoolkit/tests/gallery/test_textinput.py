@@ -18,9 +18,13 @@
 
 import testscenarios
 
+from autopilot import platform
+from autopilot.introspection import dbus
 from ubuntuuitoolkit import emulators, ubuntu_scenarios
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 import locale
+import os
+import unittest
 
 
 class WriteAndClearTextInputTestCase(GalleryTestCase):
@@ -94,3 +98,48 @@ class DisabledTextInputTestCase(GalleryTestCase):
         self.pointing_device.click_object(textfield_disabled)
         textfield_disabled.keyboard.type('This should not be writen')
         self.assertEqual('', textfield_disabled.text)
+
+
+class CaretTextInputTestCase(GalleryTestCase):
+
+    def setUp(self):
+        super(CaretTextInputTestCase, self).setUp()
+        self.open_page('textinputsElement')
+
+    def has_text_handlers():
+        return platform.model() != 'Desktop' \
+            or os.getenv('UBUNTU_UI_TOOLKIT_TOUCH_SCREEN', '0') == "1"
+
+    @unittest.skipIf(not has_text_handlers(), 'Phablet only')
+    def test_caret_visible_on_focus(self):
+        textfield = self.main_view.select_single(
+            emulators.TextField, objectName='textfield_standard')
+        self.assertFalse(textfield.focus)
+        try:
+            cursor = self.main_view.select_single(
+                objectName='text_cursor_style_caret')
+            # cursor.visible is always True if the select succeeds
+            self.assertFalse(cursor.visible)
+        except dbus.StateNotFoundError:
+            # Caret can't be selected because it's hidden
+            pass
+
+        self.pointing_device.click_object(textfield)
+        self.assertTrue(textfield.focus)
+        cursor = self.main_view.select_single(
+            objectName='text_cursor_style_caret')
+        self.assertTrue(cursor.visible)
+
+    @unittest.skipIf(not has_text_handlers(), 'Phablet only')
+    def test_caret_hide_while_typing(self):
+        textfield = self.main_view.select_single(
+            emulators.TextField, objectName='textfield_standard')
+
+        self.pointing_device.click_object(textfield)
+        self.assertTrue(textfield.focus)
+        cursor = self.main_view.select_single(
+            objectName='text_cursor_style_caret')
+        self.assertTrue(cursor.visible)
+
+        textfield.keyboard.type('Lorem ipsum')
+        self.assertFalse(cursor.visible)

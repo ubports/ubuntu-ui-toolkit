@@ -50,6 +50,9 @@ MultiPointTouchArea {
 
     // signal triggered when popup should be opened
     signal pressAndHold(int pos)
+    signal tap(int pos)
+    property string oldText: ""
+    signal textModified()
 
     function activateInput() {
         if (!input.activeFocus) {
@@ -307,7 +310,13 @@ MultiPointTouchArea {
     Connections {
         target: input
         onCursorRectangleChanged: ensureVisible()
-        onTextChanged: textChanged = true;
+        onTextChanged: {
+            textChanged = true;
+            if (oldText != input.text) {
+                textModified()
+                oldText = text
+            }
+        }
         // make sure we show the OSK
         onActiveFocusChanged: showInputPanel()
     }
@@ -370,6 +379,9 @@ MultiPointTouchArea {
             // open the popover
             inputHandler.pressAndHold(input.cursorPosition);
         }
+        if (event.button === Qt.LeftButton) {
+            inputHandler.tap(input.cursorPosition);
+        }
     }
     function handleMove(event, touch ) {
         // leave if not focus, not the left button or not in select state
@@ -392,7 +404,7 @@ MultiPointTouchArea {
     // Mouse handling
     Mouse.forwardTo: [main]
     Mouse.onPressed: handlePressed(mouse, false)
-    Mouse.onReleased: handleReleased(mouse, false)
+    Mouse.onReleased: { handleReleased(mouse, false) }
     Mouse.onPositionChanged: handleMove(mouse, false)
     Mouse.onDoubleClicked: handleDblClick(mouse)
 
