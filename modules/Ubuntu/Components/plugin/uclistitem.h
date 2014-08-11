@@ -14,21 +14,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCVIEWITEM_H
-#define UCVIEWITEM_H
+#ifndef UCLISTITEM_H
+#define UCLISTITEM_H
 
 #include <QtQuick/QQuickItem>
 #include "ucglobals.h"
 
 class QQuickFlickable;
-class UCViewItemBackground;
-class UCViewItemDivider;
-class UCViewItemBasePrivate;
-class UCViewItemBase : public QQuickItem
+class UCListItemBackground;
+class UCListItemDivider;
+class UCListItemBasePrivate;
+class UCListItemBase : public QQuickItem
 {
     Q_OBJECT
-    DECLARE_PROPERTY_PRIVATE_RO(UCViewItemBackground*, background, DESIGNABLE true)
-    DECLARE_PROPERTY_PRIVATE_RO(UCViewItemDivider*, divider, DESIGNABLE true)
+    DECLARE_PROPERTY_PRIVATE_RO(UCListItemBackground*, background)
+    DECLARE_PROPERTY_PRIVATE_RO(UCListItemDivider*, divider, DESIGNABLE true)
     DECLARE_PROPERTY_PRIVATE_RO(bool, pressed)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
@@ -36,8 +36,8 @@ class UCViewItemBase : public QQuickItem
 
     DECLARE_PROPERTY_PRIVATE_RO(QQuickFlickable*, flickable)
 public:
-    explicit UCViewItemBase(QQuickItem *parent = 0);
-    ~UCViewItemBase();
+    explicit UCListItemBase(QQuickItem *parent = 0);
+    ~UCListItemBase();
 
 protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
@@ -54,11 +54,11 @@ Q_SIGNALS:
 public Q_SLOTS:
 
 private:
-    Q_DECLARE_PRIVATE(UCViewItemBase)
-    QScopedPointer<UCViewItemBasePrivate> d_ptr;
+    Q_DECLARE_PRIVATE(UCListItemBase)
+    QScopedPointer<UCListItemBasePrivate> d_ptr;
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
 };
 
-#endif // UCVIEWITEM_H
+#endif // UCLISTITEM_H

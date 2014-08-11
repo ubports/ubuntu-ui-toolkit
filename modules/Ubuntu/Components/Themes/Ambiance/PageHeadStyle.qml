@@ -161,11 +161,14 @@ Style.PageHeadStyle {
                 tabsPopover.show();
             }
 
-            Popover {
+            OverflowPanel {
                 id: tabsPopover
                 objectName: "tabsPopover"
                 parent: QuickUtils.rootItem(tabsPopover)
                 caller: tabsButton
+                callerMargin: -units.gu(1) + units.dp(4)
+                contentWidth: units.gu(20)
+
                 Column {
                     anchors {
                         left: parent.left
@@ -174,13 +177,32 @@ Style.PageHeadStyle {
                     }
                     Repeater {
                         model: styledItem.tabsModel
-                        ListItem.Standard {
-                            visible: index !== styledItem.tabsModel.selectedIndex
-                            text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
+                        AbstractButton {
                             objectName: "tabButton" + index
                             onClicked: {
                                 styledItem.tabsModel.selectedIndex = index;
                                 tabsPopover.hide();
+                            }
+                            implicitHeight: units.gu(6) + bottomDividerLine.height
+                            width: parent ? parent.width : units.gu(31)
+
+                            Label {
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    verticalCenterOffset: units.dp(-1)
+                                    left: parent.left
+                                    leftMargin: units.gu(2)
+                                }
+                                fontSize: "medium"
+                                elide: Text.ElideRight
+                                text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
+                                color: '#5d5d5d'
+                            }
+
+                            ListItem.ThinDivider {
+                                id: bottomDividerLine
+                                anchors.bottom: parent.bottom
+                                visible: index < styledItem.tabsModel.count - 1
                             }
                         }
                     }
@@ -296,11 +318,13 @@ Style.PageHeadStyle {
             height: actionsContainer.height
             onTriggered: actionsOverflowPopover.show()
 
-            Popover {
+            OverflowPanel {
                 id: actionsOverflowPopover
                 objectName: "actions_overflow_popover"
                 parent: QuickUtils.rootItem(actionsOverflowPopover)
                 caller: actionsOverflowButton
+                callerMargin: -units.gu(1) + units.dp(4)
+                contentWidth: units.gu(20)
 
                 // Ensure the popover closes when actions change and
                 // the list item below may be destroyed before its
@@ -326,11 +350,47 @@ Style.PageHeadStyle {
                         right: parent.right
                     }
                     Repeater {
+                        id: overflowRepeater
                         model: numberOfSlots.requested - numberOfSlots.used
-                        ListItem.Standard {
+                        AbstractButton {
                             action: actionsContainer.visibleActions[numberOfSlots.used + index]
                             objectName: action.objectName + "_header_overflow_button"
                             onClicked: actionsOverflowPopover.hide()
+                            implicitHeight: units.gu(6) + bottomDividerLine.height
+                            width: parent ? parent.width : units.gu(31)
+
+                            Icon {
+                                id: actionIcon
+                                name: action.iconName
+                                color: '#5d5d5d'
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    verticalCenterOffset: units.dp(-1)
+                                    left: parent.left
+                                    leftMargin: units.gu(2)
+                                }
+                                width: units.gu(2)
+                                height: units.gu(2)
+                            }
+
+                            Label {
+                                anchors {
+                                    verticalCenter: parent.verticalCenter
+                                    verticalCenterOffset: units.dp(-1)
+                                    left: actionIcon.right
+                                    leftMargin: units.gu(2)
+                                }
+                                fontSize: "small"
+                                elide: Text.ElideRight
+                                text: action.text
+                                color: '#5d5d5d'
+                            }
+
+                            ListItem.ThinDivider {
+                                id: bottomDividerLine
+                                anchors.bottom: parent.bottom
+                                visible: index !== overflowRepeater.count - 1
+                            }
                         }
                     }
                 }

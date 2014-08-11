@@ -29,6 +29,7 @@ Item {
     // FIXME: This should not be necessary. See
     // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1214978
     property alias arrowSource: arrow.source
+    property bool square: false
 
     implicitWidth: units.gu(10)
     implicitHeight: units.gu(8)
@@ -94,8 +95,10 @@ Item {
     BorderImage {
         id: shadow
         anchors.fill: parent
-        anchors.margins: -units.gu(0.5)
-        source: "artwork/bubble_shadow.sci"
+        anchors.margins: square ? -units.gu(1) : -units.gu(0.5)
+        anchors.topMargin: square ? 0 : anchors.margins
+        source: !square ? "artwork/bubble_shadow.sci" : "artwork/header_overflow_dropshadow.sci"
+        opacity: 0.8
     }
 
     UbuntuShape {
@@ -103,13 +106,14 @@ Item {
         borderSource: "none"
         color: Theme.palette.normal.overlay
         image: bubbleShape.clipContent ? shapeSource : null
+        visible: !square
     }
 
     ShaderEffectSource {
         id: shapeSource
         visible: bubbleShape.clipContent
         sourceItem: bubbleShape.clipContent ? content : null
-        hideSource: true
+        hideSource: !square
         // FIXME: visible: false prevents rendering so make it a nearly
         // transparent 1x1 pixel instead
         opacity: 0.01
@@ -124,7 +128,7 @@ Item {
         Rectangle {
             id: colorRect
             anchors.fill: parent
-            color: Theme.palette.normal.overlay
+            color: square ? Theme.palette.normal.background : Theme.palette.normal.overlay
             visible: bubbleShape.clipContent
         }
     }
@@ -136,7 +140,7 @@ Item {
         Image {
             id: arrow
 
-            visible: bubbleShape.direction != "none"
+            visible: !square && bubbleShape.direction != "none"
 
             function directionToRotation(direction) {
                 switch (direction) {

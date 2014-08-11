@@ -16,8 +16,8 @@
 
 #include "ucunits.h"
 #include "uctheme.h"
-#include "ucviewitem.h"
-#include "ucviewitem_p.h"
+#include "uclistitem.h"
+#include "uclistitem_p.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -27,42 +27,27 @@ typedef QList<QQuickGradientStop*> StopList;
 /******************************************************************************
  * Divider
  */
-UCViewItemDivider::UCViewItemDivider(UCViewItemBase *viewItem)
-    : QObject(viewItem)
+UCListItemDivider::UCListItemDivider(UCListItemBase *listItem)
+    : QObject(listItem)
     , m_visible(true)
-    , m_thickness(UCUnits::instance().dp(2))
+    , m_thickness(UCUnits::instance().dp(1))
     , m_leftMargin(UCUnits::instance().gu(2))
     , m_rightMargin(UCUnits::instance().gu(2))
-    , m_gradient(new QQuickGradient(this))
+    , m_gradient(0)
     , m_color(QColor("#26000000"))
-    , m_viewItem(viewItem)
+    , m_listItem(listItem)
 {
-    // add the default gradients
-    QQmlListProperty<QQuickGradientStop> stops = m_gradient->stops();
-    StopList *lstop = static_cast<StopList*>(stops.data);
-
-    // have 4 stops for the gradient so we have two rectangles on top of each other
-    // with the two colors
-    QQuickGradientStop *stop = new QQuickGradientStop(m_gradient);
-    stop->setPosition(0);
-    stop->setColor(QColor("#26000000"));
-    lstop->append(stop);
-
-    stop = new QQuickGradientStop(m_gradient);
-    stop->setPosition(1.0);
-    stop->setColor(QColor("#14F3F3E7"));
-    lstop->append(stop);
 }
-UCViewItemDivider::~UCViewItemDivider()
+UCListItemDivider::~UCListItemDivider()
 {
 }
 
-QSGNode *UCViewItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
+QSGNode *UCListItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
 {
     if (m_visible && (m_color.alpha() != 0 || m_gradient)) {
         QSGRectangleNode *rectNode = static_cast<QSGRectangleNode *>(paintNode);
         if (!rectNode) {
-            rectNode = QQuickItemPrivate::get(m_viewItem)->sceneGraphContext()->createRectangleNode();
+            rectNode = QQuickItemPrivate::get(m_listItem)->sceneGraphContext()->createRectangleNode();
         }
         rectNode->setRect(QRectF(m_leftMargin, rect.height() - m_thickness,
                                  rect.width() - m_leftMargin - m_rightMargin, m_thickness));
@@ -78,23 +63,25 @@ QSGNode *UCViewItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
     }
 }
 
-SIMPLE_PROPERTY(UCViewItemDivider, bool, visible, resizeAndUpdate())
-SIMPLE_PROPERTY(UCViewItemDivider, qreal, thickness, resizeAndUpdate())
-SIMPLE_PROPERTY(UCViewItemDivider, qreal, leftMargin, m_viewItem->update())
-SIMPLE_PROPERTY(UCViewItemDivider, qreal, rightMargin, m_viewItem->update())
+SIMPLE_PROPERTY(UCListItemDivider, bool, visible, resizeAndUpdate())
+SIMPLE_PROPERTY(UCListItemDivider, qreal, thickness, resizeAndUpdate())
+SIMPLE_PROPERTY(UCListItemDivider, qreal, leftMargin, m_listItem->update())
+SIMPLE_PROPERTY(UCListItemDivider, qreal, rightMargin, m_listItem->update())
 
-PROPERTY_GETTER(UCViewItemDivider, QQuickGradient*, gradient)
-PROPERTY_SETTER_PTYPE(UCViewItemDivider, QQuickGradient, gradient, gradientUpdate())
-PROPERTY_RESET(UCViewItemDivider, gradient)
+PROPERTY_GETTER(UCListItemDivider, QQuickGradient*, gradient)
+PROPERTY_SETTER_PTYPE(UCListItemDivider, QQuickGradient, gradient, gradientUpdate())
+PROPERTY_RESET(UCListItemDivider, gradient)
 {
-    QObject::disconnect(m_gradient, SIGNAL(updated()), m_viewItem, SLOT(update()));
+    if (m_gradient) {
+        QObject::disconnect(m_gradient, SIGNAL(updated()), m_listItem, SLOT(update()));
+    }
 }
-SIMPLE_PROPERTY(UCViewItemDivider, QColor, color, m_viewItem->update())
+SIMPLE_PROPERTY(UCListItemDivider, QColor, color, m_listItem->update())
 
 /******************************************************************************
- * ViewItemBackground
+ * ListItemBackground
  */
-UCViewItemBackground::UCViewItemBackground(QQuickItem *parent)
+UCListItemBackground::UCListItemBackground(QQuickItem *parent)
     : QQuickItem(parent)
     , m_color(Qt::transparent)
     , m_pressedColor(Qt::yellow)
@@ -105,26 +92,26 @@ UCViewItemBackground::UCViewItemBackground(QQuickItem *parent)
     setZ(1);
 }
 
-SIMPLE_PROPERTY(UCViewItemBackground, QColor, color, update())
-SIMPLE_PROPERTY(UCViewItemBackground, QColor, pressedColor, update())
+SIMPLE_PROPERTY(UCListItemBackground, QColor, color, update())
+SIMPLE_PROPERTY(UCListItemBackground, QColor, pressedColor, update())
 
-UCViewItemBackground::~UCViewItemBackground()
+UCListItemBackground::~UCListItemBackground()
 {
 }
 
-void UCViewItemBackground::itemChange(ItemChange change, const ItemChangeData &data)
+void UCListItemBackground::itemChange(ItemChange change, const ItemChangeData &data)
 {
     if (change == ItemParentHasChanged) {
-        m_item = qobject_cast<UCViewItemBase*>(data.item);
+        m_item = qobject_cast<UCListItemBase*>(data.item);
     }
     QQuickItem::itemChange(change, data);
 }
 
-QSGNode *UCViewItemBackground::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
+QSGNode *UCListItemBackground::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
 {
     Q_UNUSED(data);
 
-    UCViewItemBasePrivate *dd = UCViewItemBasePrivate::get(m_item);
+    UCListItemBasePrivate *dd = UCListItemBasePrivate::get(m_item);
     bool pressed = (dd && dd->pressed);
     QColor color = pressed ? m_pressedColor : m_color;
 
@@ -144,24 +131,24 @@ QSGNode *UCViewItemBackground::updatePaintNode(QSGNode *oldNode, UpdatePaintNode
 
 
 /******************************************************************************
- * ViewItemBasePrivate
+ * ListItemBasePrivate
  */
-UCViewItemBasePrivate::UCViewItemBasePrivate(UCViewItemBase *qq)
+UCListItemBasePrivate::UCListItemBasePrivate(UCListItemBase *qq)
     : q_ptr(qq)
-    , background(new UCViewItemBackground)
-    , divider(new UCViewItemDivider(q_ptr))
+    , background(new UCListItemBackground)
+    , divider(new UCListItemDivider(q_ptr))
     , pressed(false)
 {
-    background->setObjectName("ViewItemHolder");
+    background->setObjectName("ListItemHolder");
     background->setParent(q_ptr);
     background->setParentItem(q_ptr);
     // content will be redirected to the background, therefore we must report
     // children changes as it would come from the main component
-    QObject::connect(background, &UCViewItemBackground::childrenChanged,
-                     q_ptr, &UCViewItemBase::childrenChanged);
+    QObject::connect(background, &UCListItemBackground::childrenChanged,
+                     q_ptr, &UCListItemBase::childrenChanged);
 }
 
-void UCViewItemBasePrivate::_q_rebound()
+void UCListItemBasePrivate::_q_rebound()
 {
     setPressed(false);
     // disconnect the flickable
@@ -169,18 +156,18 @@ void UCViewItemBasePrivate::_q_rebound()
 }
 
 // set pressed flag and update background
-void UCViewItemBasePrivate::setPressed(bool pressed)
+void UCListItemBasePrivate::setPressed(bool pressed)
 {
     if (this->pressed != pressed) {
         this->pressed = pressed;
         background->update();
-        Q_Q(UCViewItemBase);
+        Q_Q(UCListItemBase);
         Q_EMIT q->pressedChanged();
     }
 }
 
 // connects/disconnects from the Flickable anchestor to get notified when to do rebound
-void UCViewItemBasePrivate::listenToRebind(bool listen)
+void UCListItemBasePrivate::listenToRebind(bool listen)
 {
     if (flickable.isNull()) {
         return;
@@ -192,7 +179,7 @@ void UCViewItemBasePrivate::listenToRebind(bool listen)
     }
 }
 
-void UCViewItemBasePrivate::resize()
+void UCListItemBasePrivate::resize()
 {
     QRectF rect(q_ptr->boundingRect());
     if (divider && divider->m_visible) {
@@ -202,12 +189,12 @@ void UCViewItemBasePrivate::resize()
 }
 
 /*!
- * \qmltype ViewItemBase
- * \instantiates UCViewItemBase
+ * \qmltype ListItemBase
+ * \instantiates UCListItemBase
  * \inherits Item
  * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu
- * \brief The ViewItem element provides Ubuntu design standards for list or grid
+ * \brief The ListItem element provides Ubuntu design standards for list or grid
  * views.
  *
  * The component is dedicated to be used in designs with static or dynamic lists
@@ -218,37 +205,37 @@ void UCViewItemBasePrivate::resize()
  * carefully to in order to keep the kinetic behavior and the 60 FPS if possible.
  *
  * The component does not set any size, therefore if used these properties should
- * be set. Colors used are also hardcoded ones. Use \l ViewItem instead of this
+ * be set. Colors used are also hardcoded ones. Use \l ListItem instead of this
  * component, which provides bindings to theme palette and aligns to the component
  * is embedded in.
  *
- * \sa ViewItem
+ * \sa ListItem
  */
 
 /*!
- * \qmlsignal ViewItemBase::clicked()
+ * \qmlsignal ListItemBase::clicked()
  *
  * The signal is emitted when the component gets released while the \l pressed property
  * is set. When used in Flickable, the signal is not emitted if when the Flickable gets
  * moved.
  */
-UCViewItemBase::UCViewItemBase(QQuickItem *parent)
+UCListItemBase::UCListItemBase(QQuickItem *parent)
     : QQuickItem(parent)
-    , d_ptr(new UCViewItemBasePrivate(this))
+    , d_ptr(new UCListItemBasePrivate(this))
 {
     setFlag(QQuickItem::ItemHasContents, true);
     setAcceptedMouseButtons(Qt::LeftButton);
 }
 
-UCViewItemBase::~UCViewItemBase()
+UCListItemBase::~UCListItemBase()
 {
 }
 
-void UCViewItemBase::itemChange(ItemChange change, const ItemChangeData &data)
+void UCListItemBase::itemChange(ItemChange change, const ItemChangeData &data)
 {
     QQuickItem::itemChange(change, data);
     if (change == ItemParentHasChanged) {
-        Q_D(UCViewItemBase);
+        Q_D(UCListItemBase);
         // make sure we are not connected to the previous Flickable
         if (!d->flickable.isNull()) {
             QObject::disconnect(d->flickable.data(), SIGNAL(movementStarted()), this, SLOT(_q_rebound()));
@@ -266,18 +253,18 @@ void UCViewItemBase::itemChange(ItemChange change, const ItemChangeData &data)
     }
 }
 
-void UCViewItemBase::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+void UCListItemBase::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
     // resize background item
-    Q_D(UCViewItemBase);
+    Q_D(UCListItemBase);
     d->resize();
 }
 
-QSGNode *UCViewItemBase::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
+QSGNode *UCListItemBase::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
 {
     Q_UNUSED(data);
-    Q_D(UCViewItemBase);
+    Q_D(UCListItemBase);
     if (width() <= 0 || height() <= 0 || !d->divider) {
         delete oldNode;
         return 0;
@@ -286,10 +273,10 @@ QSGNode *UCViewItemBase::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *
     return d->divider->paint(oldNode, boundingRect());
 }
 
-void UCViewItemBase::mousePressEvent(QMouseEvent *event)
+void UCListItemBase::mousePressEvent(QMouseEvent *event)
 {
     QQuickItem::mousePressEvent(event);
-    Q_D(UCViewItemBase);
+    Q_D(UCListItemBase);
     if (!d->flickable.isNull() && d->flickable->isMoving()) {
         // while moving, we cannot select any items
         return;
@@ -303,10 +290,10 @@ void UCViewItemBase::mousePressEvent(QMouseEvent *event)
     event->setAccepted(true);
 }
 
-void UCViewItemBase::mouseReleaseEvent(QMouseEvent *event)
+void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
 {
     QQuickItem::mouseReleaseEvent(event);
-    Q_D(UCViewItemBase);
+    Q_D(UCListItemBase);
     // set released
     if (d->pressed) {
         Q_EMIT clicked();
@@ -315,9 +302,9 @@ void UCViewItemBase::mouseReleaseEvent(QMouseEvent *event)
 }
 
 /*!
- * \qmlpropertygroup ::ViewItemBase::background
- * \qmlproperty color ViewItemBase::background.color
- * \qmlproperty color ViewItemBase::background.pressedColor
+ * \qmlpropertygroup ::ListItemBase::background
+ * \qmlproperty color ListItemBase::background.color
+ * \qmlproperty color ListItemBase::background.pressedColor
  *
  * background grouped property is an Item which holds the layout of the item, with
  * abilities to show different colors when in normal state or when pressed. All
@@ -330,58 +317,77 @@ void UCViewItemBase::mouseReleaseEvent(QMouseEvent *event)
  * \li never anchor left or right as it will block revealing the options.
  * \endlist
  */
-PROPERTY_GETTER_PRIVATE(UCViewItemBase, UCViewItemBackground*, background)
+PROPERTY_GETTER_PRIVATE(UCListItemBase, UCListItemBackground*, background)
 
 /*!
- * \qmlpropertygroup ::ViewItemBase::divider
- * \qmlproperty bool ViewItemBase::divider.visible
- * \qmlproperty real ViewItemBase::divider.thickness
- * \qmlproperty real ViewItemBase::divider.leftMargin
- * \qmlproperty real ViewItemBase::divider.rightMargin
- * \qmlproperty Gradient ViewItemBase::divider.gradient
- * \qmlproperty color ViewItemBase::divider.color
+ * \qmlpropertygroup ::ListItemBase::divider
+ * \qmlproperty bool ListItemBase::divider.visible
+ * \qmlproperty real ListItemBase::divider.thickness
+ * \qmlproperty real ListItemBase::divider.leftMargin
+ * \qmlproperty real ListItemBase::divider.rightMargin
+ * \qmlproperty Gradient ListItemBase::divider.gradient
+ * \qmlproperty color ListItemBase::divider.color
  *
  * This grouped property configures the thin divider shown in the bottom of the
- * component. Controls the visibility the thickness and the margins from the left
- * and right of the ViewItem. It is not moved togehther with the content when
- * options are revealed.
+ * component. Configures the visibility, the thickness, colors and the margins
+ * from the left and right of the ListItem. When tugged (swiped left or right to
+ * reveal the options), it is not moved together with the content.
  *
- * When \c visible is true, the ViewItem's content size gets thinner with the
+ * When \c visible is true, the ListItem's content size gets thinner with the
  * divider's \c thickness.
  *
  * \c color and \c gradient are used to set the color or the gradient the divider
- * should be filled with. The \c gradient has priority over \c color, and the
- * default visuals use gradient as well. Therefore in order to have a solid color
- * you need to set the \c gradient to null in order to get the solid fill active.
+ * should be filled with. The \c gradient has priority over \c color, in the same
+ * way as in Rectangle. The following example will draw a gradient between green
+ * and yellow colors.
  * \qml
  * Column {
  *     width: units.gu(30)
  *     Repeater {
  *         model: 100
- *         ViewItem {
+ *         ListItem {
  *             divider {
  *                 color: "blue"
- *                 gradient: null
+ *                 gradient: Gradient {
+ *                     GradientStop {
+ *                         color: "green"
+ *                         position: 0.0
+ *                     }
+ *                     GradientStop {
+ *                         color: "yellow"
+ *                         position: 1.0
+ *                     }
+ *                 }
  *             }
  *             // ....
  *         }
  *     }
  * }
  * \endqml
+ *
+ * The default values for the properties are:
+ * \list
+ * \li \c visible: true
+ * \li \c thickness: 1 GU
+ * \li \c leftMargin: 2 GU
+ * \li \c rightMargin: 2 GU
+ * \li \c color: black 15% opacity
+ * \li \c gradient: null
+ * \endlist
  */
-PROPERTY_GETTER_PRIVATE(UCViewItemBase, UCViewItemDivider*, divider)
+PROPERTY_GETTER_PRIVATE(UCListItemBase, UCListItemDivider*, divider)
 
 /*!
- * \qmlproperty bool ViewItemBase::pressed
+ * \qmlproperty bool ListItemBase::pressed
  * True when the item is pressed. The items stays pressed when the mouse or touch
  * is moved horizontally. When in Flickable (or ListView), the item gets un-pressed
  * (false) when the mouse or touch is moved towards the vertical direction causing
  * the flickable to move.
  */
-PROPERTY_GETTER_PRIVATE(UCViewItemBase, bool, pressed)
+PROPERTY_GETTER_PRIVATE(UCListItemBase, bool, pressed)
 
 /*!
- * \qmlproperty Flickable ViewItemBase::flickable
+ * \qmlproperty Flickable ListItemBase::flickable
  * The property contains the Flickable the component is embedded in. The property is set
  * in the following cases:
  * \qml
@@ -394,13 +400,13 @@ PROPERTY_GETTER_PRIVATE(UCViewItemBase, bool, pressed)
  *         id: column
  *         Repeater {
  *             model: 100
- *             ViewItem {
+ *             ListItem {
  *             }
  *         }
  *     }
  * }
  * \endqml
- * In this case the ViewItem's flickable property points to the \c flickableItem, and
+ * In this case the ListItem's flickable property points to the \c flickableItem, and
  * parent to the \c column.
  * \qml
  * ListView {
@@ -408,7 +414,7 @@ PROPERTY_GETTER_PRIVATE(UCViewItemBase, bool, pressed)
  *     width: units.gu(30)
  *     height: units.gu(30)
  *     model: 100
- *     delegate: ViewItem {
+ *     delegate: ListItem {
  *     }
  * }
  * \endqml
@@ -416,27 +422,27 @@ PROPERTY_GETTER_PRIVATE(UCViewItemBase, bool, pressed)
  *
  * In any other cases the flickable property will be set to null.
  */
-PROPERTY_GETTER_PRIVATE(UCViewItemBase, QQuickFlickable*, flickable)
+PROPERTY_GETTER_PRIVATE(UCListItemBase, QQuickFlickable*, flickable)
 
 /*!
- * \qmlproperty list<Object> ViewItemBase::data
+ * \qmlproperty list<Object> ListItemBase::data
  * \default
  * Overloaded default property containing all the children and resources.
  */
-QQmlListProperty<QObject> UCViewItemBase::data()
+QQmlListProperty<QObject> UCListItemBase::data()
 {
-    Q_D(UCViewItemBase);
+    Q_D(UCListItemBase);
     return QQuickItemPrivate::get(d->background)->data();
 }
 
 /*!
- * \qmlproperty list<Item> ViewItemBase::children
+ * \qmlproperty list<Item> ListItemBase::children
  * Overloaded default property containing all the visible children of the item.
  */
-QQmlListProperty<QQuickItem> UCViewItemBase::children()
+QQmlListProperty<QQuickItem> UCListItemBase::children()
 {
-    Q_D(UCViewItemBase);
+    Q_D(UCListItemBase);
     return QQuickItemPrivate::get(d->background)->children();
 }
 
-#include "moc_ucviewitem.cpp"
+#include "moc_uclistitem.cpp"

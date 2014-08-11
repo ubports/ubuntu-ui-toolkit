@@ -16,22 +16,21 @@
 
 import QtQuick 2.2
 import Ubuntu.Components 1.1
-import Ubuntu.Components.ListItems 1.0
 
 /*!
-    \qmltype ViewItem
+    \qmltype ListItem
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
-    \brief The ViewItem element sets up the sizes and other bindings to satisfy
-    Ubuntu design guides. Does not bring anything in addition to ViewItemBase.
+    \brief The ListItem element sets up the sizes and other bindings to satisfy
+    Ubuntu design guides. Does not bring anything in addition to ListItemBase.
   */
 
-ViewItemBase {
+ListItemBase {
     width: flickable ? flickable.width : (parent ? parent.width : units.gu(40))
     height: units.gu(6)
     background.pressedColor: Theme.palette.selected.background
     divider {
-        thickness: units.dp(2)
+        thickness: units.dp(1)
         leftMargin: units.gu(2)
         rightMargin: units.gu(2)
     }
