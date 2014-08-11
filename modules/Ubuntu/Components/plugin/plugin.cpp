@@ -210,7 +210,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     // ListItem and related types
     qmlRegisterType<UCListItemBase, 1>(uri, 1, 1, "ListItemBase");
     qmlRegisterType<UCListItemBackground>();
-    qmlRegisterType<UCViewItemDivider>();
+    qmlRegisterType<UCListItemDivider>();
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

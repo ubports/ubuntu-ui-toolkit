@@ -24,7 +24,7 @@
 
 class QQuickFlickable;
 class UCListItemBackground;
-class UCViewItemDivider;
+class UCListItemDivider;
 class UCListItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItemBase)
@@ -44,7 +44,7 @@ public:
     UCListItemBase *q_ptr;
     QPointer<QQuickFlickable> flickable;
     UCListItemBackground *background;
-    UCViewItemDivider *divider;
+    UCListItemDivider *divider;
     bool pressed:1;
 };
 
@@ -65,7 +65,7 @@ private:
     UCListItemBase *m_item;
 };
 
-class UCViewItemDivider : public QObject
+class UCListItemDivider : public QObject
 {
     Q_OBJECT
     DECLARE_PROPERTY(bool, visible)
@@ -75,8 +75,8 @@ class UCViewItemDivider : public QObject
     DECLARE_PROPERTY_PTYPE(QQuickGradient, gradient)
     DECLARE_PROPERTY(QColor, color)
 public:
-    explicit UCViewItemDivider(UCListItemBase *viewItem);
-    ~UCViewItemDivider();
+    explicit UCListItemDivider(UCListItemBase *viewItem);
+    ~UCListItemDivider();
 
 protected:
     QSGNode *paint(QSGNode *paintNode, const QRectF &rect);
@@ -100,6 +100,6 @@ private:
 };
 
 QML_DECLARE_TYPE(UCListItemBackground)
-QML_DECLARE_TYPE(UCViewItemDivider)
+QML_DECLARE_TYPE(UCListItemDivider)
 
 #endif // UCVIEWITEM_P_H

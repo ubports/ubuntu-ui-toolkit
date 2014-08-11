@@ -22,13 +22,13 @@
 
 class QQuickFlickable;
 class UCListItemBackground;
-class UCViewItemDivider;
+class UCListItemDivider;
 class UCListItemBasePrivate;
 class UCListItemBase : public QQuickItem
 {
     Q_OBJECT
     DECLARE_PROPERTY_PRIVATE_RO(UCListItemBackground*, background)
-    DECLARE_PROPERTY_PRIVATE_RO(UCViewItemDivider*, divider, DESIGNABLE true)
+    DECLARE_PROPERTY_PRIVATE_RO(UCListItemDivider*, divider, DESIGNABLE true)
     DECLARE_PROPERTY_PRIVATE_RO(bool, pressed)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)

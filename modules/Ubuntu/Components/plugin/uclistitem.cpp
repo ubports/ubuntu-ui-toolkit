@@ -27,7 +27,7 @@ typedef QList<QQuickGradientStop*> StopList;
 /******************************************************************************
  * Divider
  */
-UCViewItemDivider::UCViewItemDivider(UCListItemBase *viewItem)
+UCListItemDivider::UCListItemDivider(UCListItemBase *viewItem)
     : QObject(viewItem)
     , m_visible(true)
     , m_thickness(UCUnits::instance().dp(1))
@@ -38,11 +38,11 @@ UCViewItemDivider::UCViewItemDivider(UCListItemBase *viewItem)
     , m_viewItem(viewItem)
 {
 }
-UCViewItemDivider::~UCViewItemDivider()
+UCListItemDivider::~UCListItemDivider()
 {
 }
 
-QSGNode *UCViewItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
+QSGNode *UCListItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
 {
     if (m_visible && (m_color.alpha() != 0 || m_gradient)) {
         QSGRectangleNode *rectNode = static_cast<QSGRectangleNode *>(paintNode);
@@ -63,20 +63,20 @@ QSGNode *UCViewItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
     }
 }
 
-SIMPLE_PROPERTY(UCViewItemDivider, bool, visible, resizeAndUpdate())
-SIMPLE_PROPERTY(UCViewItemDivider, qreal, thickness, resizeAndUpdate())
-SIMPLE_PROPERTY(UCViewItemDivider, qreal, leftMargin, m_viewItem->update())
-SIMPLE_PROPERTY(UCViewItemDivider, qreal, rightMargin, m_viewItem->update())
+SIMPLE_PROPERTY(UCListItemDivider, bool, visible, resizeAndUpdate())
+SIMPLE_PROPERTY(UCListItemDivider, qreal, thickness, resizeAndUpdate())
+SIMPLE_PROPERTY(UCListItemDivider, qreal, leftMargin, m_viewItem->update())
+SIMPLE_PROPERTY(UCListItemDivider, qreal, rightMargin, m_viewItem->update())
 
-PROPERTY_GETTER(UCViewItemDivider, QQuickGradient*, gradient)
-PROPERTY_SETTER_PTYPE(UCViewItemDivider, QQuickGradient, gradient, gradientUpdate())
-PROPERTY_RESET(UCViewItemDivider, gradient)
+PROPERTY_GETTER(UCListItemDivider, QQuickGradient*, gradient)
+PROPERTY_SETTER_PTYPE(UCListItemDivider, QQuickGradient, gradient, gradientUpdate())
+PROPERTY_RESET(UCListItemDivider, gradient)
 {
     if (m_gradient) {
         QObject::disconnect(m_gradient, SIGNAL(updated()), m_viewItem, SLOT(update()));
     }
 }
-SIMPLE_PROPERTY(UCViewItemDivider, QColor, color, m_viewItem->update())
+SIMPLE_PROPERTY(UCListItemDivider, QColor, color, m_viewItem->update())
 
 /******************************************************************************
  * ListItemBackground
@@ -136,7 +136,7 @@ QSGNode *UCListItemBackground::updatePaintNode(QSGNode *oldNode, UpdatePaintNode
 UCListItemBasePrivate::UCListItemBasePrivate(UCListItemBase *qq)
     : q_ptr(qq)
     , background(new UCListItemBackground)
-    , divider(new UCViewItemDivider(q_ptr))
+    , divider(new UCListItemDivider(q_ptr))
     , pressed(false)
 {
     background->setObjectName("ListItemHolder");
@@ -375,7 +375,7 @@ PROPERTY_GETTER_PRIVATE(UCListItemBase, UCListItemBackground*, background)
  * \li \c gradient: null
  * \endlist
  */
-PROPERTY_GETTER_PRIVATE(UCListItemBase, UCViewItemDivider*, divider)
+PROPERTY_GETTER_PRIVATE(UCListItemBase, UCListItemDivider*, divider)
 
 /*!
  * \qmlproperty bool ListItemBase::pressed
