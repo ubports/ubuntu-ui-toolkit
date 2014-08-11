@@ -150,8 +150,10 @@ private Q_SLOTS:
         QVERIFY(root);
         QQuickItem *mainView = root;
         QString applicationName(mainView->property("applicationName").toString());
-        QCOMPARE(applicationName, QString("thats.what.she.said"));
+        QCOMPARE(applicationName, QString("red.riding.hood"));
         QCOMPARE(QString(applicationName), QCoreApplication::organizationDomain());
+        QQuickItem *textField(testItem(mainView, "textfield"));
+        textField->setProperty("text", "Blue");
         QString configFolder(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
         QString subFolder(configFolder + "/" + applicationName);
         QVERIFY(QFile::exists(subFolder));

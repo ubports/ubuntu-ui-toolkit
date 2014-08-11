@@ -20,14 +20,15 @@ import Qt.labs.settings 1.0
 
 MainView {
     objectName: "settings"
-    applicationName: "thats.what.she.said"
+    applicationName: "red.riding.hood"
 
     Settings {
-        property alias joke: textField.text
+        property alias nickname: textField.text
     }
 
     TextField {
         id: textField
-        text: "It hurts a little"
+        objectName: "textfield"
+        text: "Red"
     }
 }
