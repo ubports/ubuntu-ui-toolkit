@@ -61,8 +61,6 @@ Item {
         anchors {
             bottom: parent.top
             horizontalCenter: parent.horizontalCenter
-            topMargin: -units.gu(0.5)
-            horizontalCenterOffset: LayoutMirroring.enabled ? -(units.gu(0.7) - caretItem.width) : -units.gu(0.7)
         }
         rotation: 180
     }
