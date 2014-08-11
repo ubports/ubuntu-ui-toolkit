@@ -289,6 +289,10 @@ StyledItem {
             }
             width: parent ? parent.width : 0
             clip: true
+            // grab focus when moved
+            focus: true
+            onMovementStarted: pView.forceActiveFocus()
+            onFlickStarted: pView.forceActiveFocus()
 
             model: picker.model
             delegate: picker.delegate
@@ -348,6 +352,10 @@ StyledItem {
             }
             width: parent ? parent.width : 0
             clip: true
+            // grab focus when moved
+            focus: true
+            onMovementStarted: lView.forceActiveFocus()
+            onFlickStarted: lView.forceActiveFocus()
 
             model: picker.model
             delegate: picker.delegate

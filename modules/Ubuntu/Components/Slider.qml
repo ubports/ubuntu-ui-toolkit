@@ -183,6 +183,7 @@ StyledItem {
                 slider.value = liveValue;
             }
         }
+        onClicked: slider.forceActiveFocus()
         onPositionChanged: {
             // Left button dragging
             var normalizedOffsetX = (mouseArea.mouseX - dragInitMouseX) / barMinusThumb;

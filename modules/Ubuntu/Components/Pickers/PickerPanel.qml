@@ -118,6 +118,15 @@ Object {
             "callerProperty": property
         }
 
+        // force focus on caller
+        if (caller) {
+            caller.forceActiveFocus();
+        }
+        // hide OSK if eventually open
+        if (Qt.inputMethod.visible) {
+            Qt.inputMethod.hide();
+        }
+
         if (!internal.isPhone) {
             // we have no input panel defined, or the therefore we show the picker in a Popover
             return internal.openPopover(caller, params);

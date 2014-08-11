@@ -94,6 +94,10 @@ ListView {
         }
     }
 
+    /*! \internal */
+    onMovementStarted: root.forceActiveFocus()
+    onFlickStarted: root.forceActiveFocus()
+
     /*!
       \preliminary
       Expand the item at the given index.

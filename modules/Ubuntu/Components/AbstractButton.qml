@@ -101,12 +101,14 @@ ActionItem {
 
         onClicked: {
             if (button.__acceptEvents) {
+                button.forceActiveFocus();
                 pressEffect.start()
                 button.clicked()
             }
         }
         onPressAndHold: {
             if (button.__acceptEvents) {
+                button.forceActiveFocus();
                 button.pressAndHold()
             }
         }
