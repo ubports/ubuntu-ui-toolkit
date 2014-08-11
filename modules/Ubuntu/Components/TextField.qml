@@ -904,6 +904,8 @@ ActionItem {
     AbstractButton {
         id: clearButton
         objectName: "clear_button"
+        // do not force activeFocus
+        __forceActiveFocusOnPress: false
         property url iconSource: control.__styleInstance.iconSource
         anchors {
             top: parent.top

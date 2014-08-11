@@ -37,7 +37,7 @@ Item {
         UbuntuListView {
             id: listView
             width: units.gu(50)
-            height: units.gu(40)
+            height: units.gu(20)
             clip: true
             model: 10
             delegate: ListItem.Standard {
@@ -81,13 +81,20 @@ Item {
         Slider {
             id: slider
         }
+        ComboButton {
+            id: comboButton
+            Rectangle {
+                height: comboButton.comboListHeight
+                color: "blue"
+            }
+        }
     }
 
     UbuntuTestCase {
         name: "FocusingTests"
         when: windowShown
 
-        function init() {
+        function initTestCase() {
             textField.forceActiveFocus();
         }
         function cleanup() {
@@ -95,7 +102,8 @@ Item {
             wait(200);
         }
 
-        function test_transfer_focus_data() {
+        // make this as teh very first test executed
+        function test_0_transfer_focus_data() {
             return [
                 {tag: "TextArea", previousFocused: textField, focusOn: textArea, clickToDismiss: false},
                 {tag: "Button", previousFocused: textArea, focusOn: button, clickToDismiss: false},
@@ -106,9 +114,10 @@ Item {
                 {tag: "PickerPanel", previousFocused: roundPicker, focusOn: pickerPanel, clickToDismiss: true},
                 {tag: "UbuntuListView", previousFocused: pickerPanel, focusOn: listView, clickToDismiss: false},
                 {tag: "Slider", previousFocused: listView, focusOn: slider, clickToDismiss: false},
+                {tag: "ComboButton", previousFocused: slider, focusOn: comboButton, clickToDismiss: false},
             ];
         }
-        function test_transfer_focus(data) {
+        function test_0_transfer_focus(data) {
             // perform mouse press on
             mouseClick(data.focusOn, centerOf(data.focusOn).x, centerOf(data.focusOn).y);
             compare(data.previousFocused.focus, false, "Previous focus is still set!");
@@ -116,7 +125,7 @@ Item {
             if (data.clickToDismiss) {
                 mouseClick(main, 0, 0);
             }
-            waitForRendering(data.focusOn);
+            waitForRendering(data.focusOn, 200);
         }
 
         function test_hide_osk_when_pickerpanel_opens() {
@@ -124,12 +133,41 @@ Item {
                 skip("This functionality can be tested with OSK only.");
             }
 
+            textField.forceActiveFocus();
             verify(textField.focus, "TextField is not focused");
             verify(Qt.inputMethod.visible, "OSK is hidden");
             mouseClick(pickerPanel, centerOf(pickerPanel).x, centerOf(pickerPanel).y);
             verify(!Qt.inputMethod.visible, "OSK is visible still!");
             // remove panel/popover
             mouseClick(main, 0, 0);
+        }
+
+        function test_textfield_clear_button_keeps_focus() {
+            textField.forceActiveFocus();
+            var text = textField.text;
+
+            var clearButton = findChild(textField, "clear_button");
+            verify(clearButton, "clearButton is not accessible!");
+            var center = centerOf(clearButton);
+            mouseClick(clearButton, center.x, center.y);
+            compare(textField.text, "", "Text had not been cleared?");
+            compare(textField.focus, true, "Focus had been stolen from text input");
+
+            //restore
+            textField.text = text;
+        }
+
+        function test_combo_button_dropdown_focuses_component() {
+            textField.forceActiveFocus();
+            var dropdownButton = findChild(comboButton, "combobutton_dropdown");
+            verify(dropdownButton, "dropdown button is not accessible?");
+
+            var center = centerOf(dropdownButton);
+            mouseClick(dropdownButton, center.x, center.y);
+            waitForRendering(comboButton);
+            compare(dropdownButton.focus, false, "dropdown button got focused!");
+            compare(comboButton.focus, true, "ComboButton had not been focused");
+            comboButton.expanded = false;
         }
     }
 }

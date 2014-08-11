@@ -271,6 +271,7 @@ Button {
     AbstractButton {
         id: dropDown
         objectName: "combobutton_dropdown"
+        __forceActiveFocusOnPress: false
         anchors {
             right: parent.right
             top: parent.top
@@ -281,6 +282,8 @@ Button {
         onClicked: {
             // toggle expanded
             combo.expanded = !combo.expanded;
+            // override focusing
+            combo.forceActiveFocus();
         }
     }
 
