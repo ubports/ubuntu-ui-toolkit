@@ -1,3 +1,85 @@
+ubuntu-ui-toolkit (1.1.1181+14.10.20140806-0ubuntu1) utopic; urgency=medium
+
+  [ Florian Boucault ]
+  * Ubuntu Shape: store geometry before redrawing can occur so that 
+    the geometry is more reliably respected. 
+    Fixes: https://bugs.launchpad.net/bugs/1353493
+
+  [ Christian Dywan ]
+  * Square overflow panel style for header pop overs. 
+    Fixes: https://bugs.launchpad.net/bugs/1336789
+ 
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 06 Aug 2014 16:37:33 +0000
+
+ubuntu-ui-toolkit (1.1.1179+14.10.20140804-0ubuntu1) utopic; urgency=medium
+
+  [ Florian Boucault ]
+  * UbuntuShape: removed QML proxy.
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Implemented QSGMaterial::compare() methods so that 
+    Ubuntu shapes can be batched. 
+    Fixes: https://bugs.launchpad.net/bugs/1350863.
+  * Disconnected from old texture provider signals (Ubuntushape)
+
+
+  [ Tim Peeters ]
+  * Make header text color configurable, and always match the header
+    icon colors to the header text color. 
+    Fixes: https://bugs.launchpad.net/bugs/1315884
+           https://bugs.launchpad.net/bugs/1317816.
+
+  [ Christian Dywan ]
+  * Move QSKIP for test_updateAlarm_Repeating one line up.
+
+  [ Zsombor Egri ]
+  * Text input context menu facelift.
+
+  [ Michał Sawicz ]
+   * Add "source" property to the Icon component.
+     Fixes: https://bugs.launchpad.net/bugs/1284233
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 04 Aug 2014 16:00:56 +0000
+
+ubuntu-ui-toolkit (0.1.51+14.10.20140731.1-0ubuntu1) utopic; urgency=medium
+  [ Michał Sawicz ]
+  * Add "source" property to the Icon component.
+
+  [ Tim Peeters ]
+  * Reduce header height by 0.5 grid units.
+  * Visual updates: colors, icon sizes, semi-transparent buttons.
+  * Allow app developers to disable the back button by setting an 
+    invisible back action for the page.
+  * Fix icon loading problems. 
+    Fixes: https://bugs.launchpad.net/bugs/1349769
+  * New visuals for sections in the header divider.
+
+  [ Christian Dywan ] 
+  * Implement optional strokeColor in AbstractButton. 
+    Fixes: https://bugs.launchpad.net/bugs/1332580
+
+  [ Florian Boucault]
+  * StateSaver: also save the type of each property along with its 
+    value so that we can convert them back to the right type during
+    state restoration. This makes some problematic cases such as 
+    enumeration to work.
+
+  [ Albert Astals ]
+  * Placeholder is also shown on focus
+
+  [ Martin Pitt ]
+  * Fix installability of ubuntu-ui-toolkit-examples with 
+    qtdeclarative5-ubuntu-ui-toolkit-plugin-gles. 
+    Fixes: https://bugs.launchpad.net/bugs/1346650
+
+  [ Omer Akram ]
+  * Add helper methods for TextArea. There is a separate 'clear' 
+    method because the one that exists in TextField class checks
+    the property hasClearButton which TextArea does not have.
+    Fixes: https://bugs.launchpad.net/bugs/1327354
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 31 Jul 2014 11:12:39 +0000
+
 ubuntu-ui-toolkit (0.1.50+14.10.20140724.2-0ubuntu1) utopic; urgency=medium
 
   [ Christian Dywan ]

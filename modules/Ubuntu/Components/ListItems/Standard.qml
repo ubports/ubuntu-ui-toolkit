@@ -197,7 +197,7 @@ Empty {
         id: iconHelper
 
         width: height
-        height: Math.min(units.gu(5), parent.height - units.gu(1))
+        height: Math.min(units.gu(5), listItem.height - units.gu(1))
         anchors {
             left: parent.left
             leftMargin: listItem.__contentsMargins
