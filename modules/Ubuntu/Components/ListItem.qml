@@ -22,8 +22,8 @@ import Ubuntu.Components.ListItems 1.0
     \qmltype ViewItem
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
-    \brief The ViewItem element sets up the sizes and other bindings to satisfy
-    Ubuntu design guides. Does not bring anything in addition to ViewItemBase.
+    \brief The ListItem element sets up the sizes and other bindings to satisfy
+    Ubuntu design guides. Does not bring anything in addition to ListItemBase.
   */
 
 ListItemBase {
