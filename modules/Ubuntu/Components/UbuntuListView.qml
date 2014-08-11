@@ -94,9 +94,13 @@ ListView {
         }
     }
 
-    /*! \internal */
-    onMovementStarted: root.forceActiveFocus()
-    onFlickStarted: root.forceActiveFocus()
+    /*!
+      \internal
+      Grab focus when moved, flicked or clicked
+     */
+    onMovementStarted: if (!root.focus) root.forceActiveFocus()
+    onFlickStarted: if (!root.focus) root.forceActiveFocus()
+    Toolkit.Mouse.onClicked: if (!root.focus) root.forceActiveFocus()
 
     /*!
       \preliminary

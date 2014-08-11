@@ -289,10 +289,11 @@ StyledItem {
             }
             width: parent ? parent.width : 0
             clip: true
-            // grab focus when moved
+            // grab focus when moved, flicked or only touched
             focus: true
             onMovementStarted: pView.forceActiveFocus()
             onFlickStarted: pView.forceActiveFocus()
+            Mouse.onClicked: pView.forceActiveFocus()
 
             model: picker.model
             delegate: picker.delegate
@@ -352,10 +353,11 @@ StyledItem {
             }
             width: parent ? parent.width : 0
             clip: true
-            // grab focus when moved
+            // grab focus when moved, flicked or only touched
             focus: true
-            onMovementStarted: lView.forceActiveFocus()
-            onFlickStarted: lView.forceActiveFocus()
+            onMovementStarted: pView.forceActiveFocus()
+            onFlickStarted: pView.forceActiveFocus()
+            Mouse.onClicked: pView.forceActiveFocus()
 
             model: picker.model
             delegate: picker.delegate

@@ -100,15 +100,15 @@ ActionItem {
         hoverEnabled: true
 
         onClicked: {
+            button.forceActiveFocus();
             if (button.__acceptEvents) {
-                button.forceActiveFocus();
                 pressEffect.start()
                 button.clicked()
             }
         }
         onPressAndHold: {
+            button.forceActiveFocus();
             if (button.__acceptEvents) {
-                button.forceActiveFocus();
                 button.pressAndHold()
             }
         }
