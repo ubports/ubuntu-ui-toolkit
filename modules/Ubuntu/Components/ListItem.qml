@@ -14,15 +14,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.2
 import Ubuntu.Components 1.1
+import Ubuntu.Components.ListItems 1.0
 
-Column {
-    width: 800
-    height: 600
-    Repeater {
-        model: 10000
-        ViewItem {
-        }
+/*!
+    \qmltype ViewItem
+    \inqmlmodule Ubuntu.Components 1.1
+    \ingroup ubuntu
+    \brief The ViewItem element sets up the sizes and other bindings to satisfy
+    Ubuntu design guides. Does not bring anything in addition to ViewItemBase.
+  */
+
+ListItemBase {
+    width: flickable ? flickable.width : (parent ? parent.width : units.gu(40))
+    height: units.gu(6)
+    background.pressedColor: Theme.palette.selected.background
+    divider {
+        thickness: units.dp(1)
+        leftMargin: units.gu(2)
+        rightMargin: units.gu(2)
     }
 }

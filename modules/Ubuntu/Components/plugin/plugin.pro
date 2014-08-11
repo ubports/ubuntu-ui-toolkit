@@ -64,9 +64,9 @@ HEADERS += plugin.h \
     ucinversemouse.h \
     ucmouse.h \
     unixsignalhandler_p.h \
-    ucviewitem.h \
-    ucviewitem_p.h \
-    ucglobals.h
+    ucglobals.h \
+    uclistitem.h \
+    uclistitem_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -100,7 +100,7 @@ SOURCES += plugin.cpp \
     ucurihandler.cpp \
     ucmousefilters.cpp \
     unixsignalhandler_p.cpp \
-    ucviewitem.cpp
+    uclistitem.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp

@@ -23,7 +23,7 @@ MainView {
 
     Column {
         width: parent.width
-        ViewItem {
+        ListItem {
             id: testItem
             onClicked: {
                 print("click")
@@ -42,7 +42,7 @@ MainView {
             height: units.gu(20)
             model: 100
             pressDelay: 0
-            delegate: ViewItem {
+            delegate: ListItem {
                 onClicked: print(" clicked")
                 divider.gradient: Gradient {
                     GradientStop { color: "green"; position: 0.0 }
@@ -65,7 +65,7 @@ MainView {
                 width: view.width
                 Repeater {
                     model: 100
-                    ViewItem {
+                    ListItem {
                         background {
                             pressedColor: "lime"
                         }
