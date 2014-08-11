@@ -119,9 +119,9 @@ Object {
         }
 
         // force focus on caller
-        if (caller) {
-            caller.forceActiveFocus();
-        }
+//        if (caller) {
+//            caller.forceActiveFocus();
+//        }
         // hide OSK if eventually open
         if (Qt.inputMethod.visible) {
             Qt.inputMethod.hide();
