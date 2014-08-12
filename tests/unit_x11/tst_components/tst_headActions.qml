@@ -88,6 +88,7 @@ Item {
             compare(back_button.visible, true, "Back button not visible with 2 pages on stack.");
             compare(custom_back_button.visible, false, "Showing custom back button without custom back action.");
             pageStack.pop();
+            waitHeadAnimation();
         }
 
         function test_custom_back_button() {
@@ -108,6 +109,7 @@ Item {
             compare(back_button.visible, false, "Default back button visible with invisible custom back action.");
             compare(custom_back_button.visible, false, "Custom back button visible with invisible custom back action.");
             pageStack.pop();
+            waitHeadAnimation();
             page2.head.backAction = null;
         }
     }
