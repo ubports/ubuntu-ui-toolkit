@@ -53,15 +53,15 @@ class QQuickListView(_flickable.QQuickFlickable):
         if direction is None:
             # We don't know where the object is so we start looking for it from
             # the top.
-            self._swipe_to_top()
+            self.swipe_to_top()
             direction = 'below'
 
         if direction == 'below':
             fail_condition = lambda: self.atYEnd
-            swipe_method = self._swipe_to_show_more_below
+            swipe_method = self.swipe_to_show_more_below
         elif direction == 'above':
             fail_condition = lambda: self.atYBeginning
-            swipe_method = self._swipe_to_show_more_above
+            swipe_method = self.swipe_to_show_more_above
         else:
             raise _common.ToolkitException(
                 'Invalid direction: {}'.format(direction))
