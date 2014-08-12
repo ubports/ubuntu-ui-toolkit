@@ -18,13 +18,10 @@
 
 import testscenarios
 
-from autopilot import platform
 from autopilot.introspection import dbus
 from ubuntuuitoolkit import emulators, ubuntu_scenarios
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 import locale
-import os
-import unittest
 
 
 class WriteAndClearTextInputTestCase(GalleryTestCase):
@@ -102,15 +99,14 @@ class DisabledTextInputTestCase(GalleryTestCase):
 
 class CaretTextInputTestCase(GalleryTestCase):
 
+    def get_command_line(self, command_line):
+        command_line.append('-touch')
+        return command_line
+
     def setUp(self):
         super(CaretTextInputTestCase, self).setUp()
         self.open_page('textinputsElement')
 
-    def has_text_handlers():
-        return platform.model() != 'Desktop' \
-            or os.getenv('UBUNTU_UI_TOOLKIT_TOUCH_SCREEN', '0') == "1"
-
-    @unittest.skipIf(not has_text_handlers(), 'Phablet only')
     def test_caret_visible_on_focus(self):
         textfield = self.main_view.select_single(
             emulators.TextField, objectName='textfield_standard')
@@ -130,7 +126,6 @@ class CaretTextInputTestCase(GalleryTestCase):
             objectName='text_cursor_style_caret')
         self.assertTrue(cursor.visible)
 
-    @unittest.skipIf(not has_text_handlers(), 'Phablet only')
     def test_caret_hide_while_typing(self):
         textfield = self.main_view.select_single(
             emulators.TextField, objectName='textfield_standard')

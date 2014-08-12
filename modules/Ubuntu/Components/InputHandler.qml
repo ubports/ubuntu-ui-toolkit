@@ -404,7 +404,7 @@ MultiPointTouchArea {
     // Mouse handling
     Mouse.forwardTo: [main]
     Mouse.onPressed: handlePressed(mouse, false)
-    Mouse.onReleased: { handleReleased(mouse, false) }
+    Mouse.onReleased: handleReleased(mouse, false)
     Mouse.onPositionChanged: handleMove(mouse, false)
     Mouse.onDoubleClicked: handleDblClick(mouse)
 

@@ -112,11 +112,6 @@ QString QuickUtils::inputMethodProvider() const
 
 bool QuickUtils::touchScreenAvailable() const
 {
-    // override touch screen detection
-    QString touchScreen(getenv("UBUNTU_UI_TOOLKIT_TOUCH_SCREEN"));
-    if (!touchScreen.isEmpty())
-        return touchScreen == "1";
-
     // publish internal context property to detect whether we have touch device or not
     QList<const QTouchDevice*> touchDevices = QTouchDevice::devices();
     Q_FOREACH(const QTouchDevice *device, touchDevices) {
