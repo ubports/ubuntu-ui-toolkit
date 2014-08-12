@@ -40,7 +40,6 @@ import "stack.js" as Stack
         import Ubuntu.Components 1.1
 
         MainView {
-
             width: units.gu(40)
             height: units.gu(71)
 
@@ -58,7 +57,6 @@ import "stack.js" as Stack
             Rectangle {
                 id: rect
                 color: UbuntuColors.red
-                opacity: 0.5
                 anchors {
                     left: parent.left
                     right: parent.right
