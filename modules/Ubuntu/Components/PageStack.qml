@@ -32,6 +32,45 @@ import "stack.js" as Stack
     of the stack. When more than one Pages are on the stack, the toolbar will
     automatically feature a back-button that pop the stack when triggered.
 
+    The anchors of the PageStack are set to fill its parent by default. To use
+    left/right/top/bottom anchors, explicitly set anchors.fill of the PageStack to
+    undefined:
+    \qml
+        import QtQuick 2.2
+        import Ubuntu.Components 1.1
+
+        MainView {
+
+            width: units.gu(40)
+            height: units.gu(71)
+
+            PageStack {
+                 id: mainStack
+                anchors {
+                    fill: undefined // unset the default to make the other anchors work
+                    left: parent.left
+                    right: parent.right
+                    top: parent.top
+                    bottom: rect.top
+                }
+            }
+
+            Rectangle {
+                id: rect
+                color: UbuntuColors.red
+                opacity: 0.5
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+                height: units.gu(10)
+            }
+
+            Component.onCompleted: mainStack.push(Qt.resolvedUrl("MyPage.qml"))
+        }
+    \endqml
+
     Pages that are defined inside the PageStack must initially set their visibility
     to false to avoid the pages occluding the PageStack before they are pushed.
     When pushing a \l Page, its visibility is automatically updated.
