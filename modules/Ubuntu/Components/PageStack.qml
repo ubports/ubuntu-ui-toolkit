@@ -44,7 +44,7 @@ import "stack.js" as Stack
             height: units.gu(71)
 
             PageStack {
-                 id: mainStack
+                id: mainStack
                 anchors {
                     fill: undefined // unset the default to make the other anchors work
                     left: parent.left
