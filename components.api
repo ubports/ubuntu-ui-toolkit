@@ -6,7 +6,6 @@ ActionItem
     property bool hovered
     property bool __acceptEvents
     property internal __mouseArea
-    property bool __forceActiveFocusOnPress
 Action 0.1 1.0
 UnityActions.Action
     property url iconSource

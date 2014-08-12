@@ -905,7 +905,11 @@ ActionItem {
         id: clearButton
         objectName: "clear_button"
         // do not force activeFocus
-        __forceActiveFocusOnPress: false
+        function forceActiveFocus() {
+            // override focus handling, no need to forward focus to input as
+            // the button is visible only when text input is focused
+        }
+
         property url iconSource: control.__styleInstance.iconSource
         anchors {
             top: parent.top

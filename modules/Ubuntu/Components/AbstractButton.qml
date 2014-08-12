@@ -82,12 +82,6 @@ ActionItem {
      */
     property alias __mouseArea: mouseArea
 
-    /*!
-      \internal
-      Controls whether the click/long press forces active focus on the component.
-      */
-    property bool __forceActiveFocusOnPress: true
-
     HapticsEffect {
         id: pressEffect
         attackIntensity: 0.0
@@ -106,9 +100,7 @@ ActionItem {
         hoverEnabled: true
 
         onClicked: {
-            if (button.__forceActiveFocusOnPress) {
-                button.forceActiveFocus();
-            }
+            button.forceActiveFocus();
 
             if (button.__acceptEvents) {
                 pressEffect.start()
@@ -116,9 +108,7 @@ ActionItem {
             }
         }
         onPressAndHold: {
-            if (button.__forceActiveFocusOnPress) {
-                button.forceActiveFocus();
-            }
+            button.forceActiveFocus();
 
             if (button.__acceptEvents) {
                 button.pressAndHold()
