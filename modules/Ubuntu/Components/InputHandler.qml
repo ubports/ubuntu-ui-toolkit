@@ -378,8 +378,7 @@ MultiPointTouchArea {
         if (event.button === Qt.RightButton) {
             // open the popover
             inputHandler.pressAndHold(input.cursorPosition);
-        }
-        if (event.button === Qt.LeftButton) {
+        } else {
             inputHandler.tap(input.cursorPosition);
         }
     }
