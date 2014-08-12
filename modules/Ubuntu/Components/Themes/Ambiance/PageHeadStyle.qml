@@ -53,6 +53,8 @@ Style.PageHeadStyle {
             buffer.title = styledItem.title;
             buffer.pageStack = styledItem.pageStack;
             buffer.pageStackDepth = buffer.pageStack ? buffer.pageStack.depth : 0;
+            print("new title = "+buffer.title)
+            print("new pagestack depth = "+buffer.pageStackDepth)
             buffer.tabsModel = styledItem.tabsModel ? styledItem.tabsModel : null;
         }
 

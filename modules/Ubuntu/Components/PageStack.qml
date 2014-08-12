@@ -111,6 +111,7 @@ PageTreeNode {
     //FIXME: would prefer this be readonly, but readonly properties are only bound at
     //initialisation. Trying to update it in push or pop fails. Not sure how to fix.
     property int depth: 0
+    onDepthChanged: print("PageStack.depth = "+depth)
 
     /*!
       \preliminary
@@ -126,8 +127,10 @@ PageTreeNode {
     function push(page, properties) {
         if (internal.stack.size() > 0) internal.stack.top().active = false;
         internal.stack.push(internal.createWrapper(page, properties));
-        internal.stack.top().active = true;
+
+        // update stack depth and then set the new active page
         internal.stackUpdated();
+        internal.stack.top().active = true;
     }
 
     /*!
@@ -143,8 +146,9 @@ PageTreeNode {
         internal.stack.top().active = false;
         if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
         internal.stack.pop();
-        internal.stackUpdated();
 
+        // update the stack depth and then set the new active page
+        internal.stackUpdated();
         if (internal.stack.size() > 0) internal.stack.top().active = true;
     }
 
@@ -179,7 +183,7 @@ PageTreeNode {
         }
 
         function stackUpdated() {
-            pageStack.depth =+ stack.size();
+            pageStack.depth = stack.size();
             if (pageStack.depth > 0) currentPage = stack.top().object;
             else currentPage = null;
         }

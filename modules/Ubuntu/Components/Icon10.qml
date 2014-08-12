@@ -56,11 +56,13 @@ Item {
         function update() {
             // only set sourceSize.width, sourceSize.height and source when
             // icon dimensions are valid, see bug #1349769.
+            print("setting source to "+source)
             if (width > 0 && height > 0
                     && (icon.name || (icon.hasOwnProperty("source") && icon.source))) {
                 sourceSize.width = width;
                 sourceSize.height = height;
                 if (icon.hasOwnProperty("source")) {
+                    print("name = "+icon.name+", source = "+icon.source)
                     source = icon.source;
                 } else {
                     source = "image://theme/%1".arg(icon.name);
