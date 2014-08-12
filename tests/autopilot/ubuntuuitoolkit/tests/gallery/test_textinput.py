@@ -99,6 +99,11 @@ class DisabledTextInputTestCase(GalleryTestCase):
 
 class CaretTextInputTestCase(GalleryTestCase):
 
+    scenarios = [
+        ('textfield', dict(objectName='textfield_standard')),
+        ('textarea', dict(objectName='textarea_default')),
+    ]
+
     def get_command_line(self, command_line):
         command_line.append('-touch')
         return command_line
@@ -106,11 +111,11 @@ class CaretTextInputTestCase(GalleryTestCase):
     def setUp(self):
         super(CaretTextInputTestCase, self).setUp()
         self.open_page('textinputsElement')
+        self.textfield = self.main_view.select_single(
+            objectName=self.objectName)
+        self.assertFalse(self.textfield.focus)
 
     def test_caret_visible_on_focus(self):
-        textfield = self.main_view.select_single(
-            emulators.TextField, objectName='textfield_standard')
-        self.assertFalse(textfield.focus)
         try:
             cursor = self.main_view.select_single(
                 objectName='text_cursor_style_caret')
@@ -120,21 +125,32 @@ class CaretTextInputTestCase(GalleryTestCase):
             # Caret can't be selected because it's hidden
             pass
 
-        self.pointing_device.click_object(textfield)
-        self.assertTrue(textfield.focus)
+        self.pointing_device.click_object(self.textfield)
+        self.assertTrue(self.textfield.focus)
         cursor = self.main_view.select_single(
             objectName='text_cursor_style_caret')
         self.assertTrue(cursor.visible)
 
     def test_caret_hide_while_typing(self):
-        textfield = self.main_view.select_single(
-            emulators.TextField, objectName='textfield_standard')
-
-        self.pointing_device.click_object(textfield)
-        self.assertTrue(textfield.focus)
+        self.pointing_device.click_object(self.textfield)
+        self.assertTrue(self.textfield.focus)
         cursor = self.main_view.select_single(
             objectName='text_cursor_style_caret')
         self.assertTrue(cursor.visible)
 
-        textfield.keyboard.type('Lorem ipsum')
+        self.textfield.keyboard.type('Lorem ipsum')
         self.assertFalse(cursor.visible)
+
+    def test_caret_visible_after_tapping(self):
+        self.test_caret_hide_while_typing()
+        self.pointing_device.click_object(self.textfield)
+        cursor = self.main_view.select_single(
+            objectName='text_cursor_style_caret')
+        self.assertTrue(cursor.visible)
+
+    def test_caret_visible_after_selecting(self):
+        self.test_caret_hide_while_typing()
+        self.textfield._select_all()
+        cursor = self.main_view.select_single(
+            objectName='text_cursor_style_caret_end')
+        self.assertTrue(cursor.visible)
