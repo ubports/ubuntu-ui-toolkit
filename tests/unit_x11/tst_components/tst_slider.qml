@@ -32,7 +32,8 @@ MainView {
         UbuntuListView {
             id: listView
             width: parent.width
-            height: units.gu(30)
+            height: units.gu(20)
+            clip: true
             model: 10
             delegate: Standard {
                 control: Slider {
@@ -43,10 +44,49 @@ MainView {
         UbuntuListView {
             id: listView2
             width: parent.width
-            height: units.gu(30)
+            height: units.gu(20)
+            clip: true
             model: 10
             delegate: Slider {
                 objectName: "testSlider" + index
+            }
+        }
+        Flickable {
+            id: flickable
+            width: parent.width
+            height: units.gu(20)
+            clip: true
+            contentHeight: column.height
+            Column {
+                id: column
+                width: parent.width
+                height: childrenRect.height
+                Repeater {
+                    model: 10
+                    Standard {
+                        control: Slider {
+                            objectName: "testSlider" + index
+                        }
+                    }
+                }
+            }
+        }
+        Flickable {
+            id: flickable2
+            width: parent.width
+            height: units.gu(20)
+            clip: true
+            contentHeight: column2.height
+            Column {
+                id: column2
+                width: parent.width
+                height: childrenRect.height
+                Repeater {
+                    model: 10
+                    Slider {
+                        objectName: "testSlider" + index
+                    }
+                }
             }
         }
     }
@@ -69,12 +109,14 @@ MainView {
             return [
                 {tag: "ListView with Slider in ListItem", flickable: listView},
                 {tag: "ListView with Slider alone", flickable: listView2},
+                {tag: "Flickable with Column of Slider in ListItem", flickable: flickable},
+                {tag: "Flickable with Column of Slider alone", flickable: flickable2},
             ];
         }
 
         function test_slider_blocks_flickable(data) {
             flickSpy.target = data.flickable;
-            var slider = findChild(data.flickable, "testSlider3");
+            var slider = findChild(data.flickable, "testSlider1");
             verify(slider, "cannot find test slider in " + data.tag);
             var sliderPos = slider.mapToItem(data.flickable, units.gu(10), 0);
             mouseDrag(data.flickable, sliderPos.x, sliderPos.y, units.gu(20), units.gu(20));

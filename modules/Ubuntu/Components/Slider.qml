@@ -140,6 +140,17 @@ StyledItem {
         property real dragInitMouseX: 0.0
         property real dragInitNormalizedValue: 0.0
 
+        onPressedChanged: {
+            // traverse parents to catch whether we have an ancestor Flickable
+            var pl = slider.parent;
+            while (pl && !pl.hasOwnProperty("flicking")) {
+                pl = pl.parent;
+            }
+            if (pl) {
+                pl.interactive = !pressed;
+            }
+        }
+
         function normalizedValueFromValue(value) {
             if (Qt.application.layoutDirection == Qt.RightToLeft) {
                 return MathUtils.clampAndProject(value, slider.minimumValue,
