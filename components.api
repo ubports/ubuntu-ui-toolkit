@@ -98,6 +98,8 @@ Icon10
 Label 0.1 1.0
 Text
     property string fontSize
+ListItem 1.1
+ListItemBase
 Base 0.1 1.0
 Empty
     property variant icon
@@ -664,8 +666,6 @@ UbuntuListView
     property PullToRefresh pullToRefresh
 UbuntuNumberAnimation 0.1 1.0
 NumberAnimation
-ViewItem 1.1
-ViewItemBase
 PerformanceOverlay 0.1 1.0
 Item
     property bool active
@@ -805,6 +805,19 @@ plugins.qmltypes
     name: "UCInverseMouse"
     prototype: "UCMouse"
     exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
+    name: "UCListItemBackground"
+    prototype: "QQuickItem"
+    Property { name: "color"; type: "QColor" }
+    Property { name: "pressedColor"; type: "QColor" }
+    name: "UCListItemBase"
+    prototype: "QQuickItem"
+    exports: ["ListItemBase 1.1"]
+    Property { name: "background"; type: "UCListItemBackground"; isReadonly: true; isPointer: true }
+    Property { name: "pressed"; type: "bool"; isReadonly: true }
+    Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
+    Property { name: "flickable"; type: "QQuickFlickable"; isReadonly: true; isPointer: true }
+    Signal { name: "clicked" }
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1", "Mouse 1.0"]
@@ -890,28 +903,6 @@ plugins.qmltypes
     Signal {
     name: "opened"
     Parameter { name: "uris"; type: "QStringList" }
-    name: "UCViewItemBackground"
-    prototype: "QQuickItem"
-    Property { name: "color"; type: "QColor" }
-    Property { name: "pressedColor"; type: "QColor" }
-    name: "UCViewItemBase"
-    prototype: "QQuickItem"
-    exports: ["ViewItemBase 1.1"]
-    Property { name: "background"; type: "UCViewItemBackground"; isReadonly: true; isPointer: true }
-    Property { name: "divider"; type: "UCViewItemDivider"; isReadonly: true; isPointer: true }
-    Property { name: "pressed"; type: "bool"; isReadonly: true }
-    Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-    Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
-    Property { name: "flickable"; type: "QQuickFlickable"; isReadonly: true; isPointer: true }
-    Signal { name: "clicked" }
-    name: "UCViewItemDivider"
-    prototype: "QObject"
-    Property { name: "visible"; type: "bool" }
-    Property { name: "thickness"; type: "double" }
-    Property { name: "leftMargin"; type: "double" }
-    Property { name: "rightMargin"; type: "double" }
-    Property { name: "gradient"; type: "QQuickGradient"; isPointer: true }
-    Property { name: "color"; type: "QColor" }
     name: "UbuntuI18n"
     prototype: "QObject"
     exports: ["i18n 0.1", "i18n 1.0"]
