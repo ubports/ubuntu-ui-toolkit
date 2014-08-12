@@ -97,6 +97,7 @@ Item {
             compare(back_button.visible, false, "Default back button visible with custom back action.");
             compare(custom_back_button.visible, true, "Custom back button invisible with back action.");
             pageStack.pop();
+            waitHeadAnimation();
             page2.head.backAction = null;
         }
 
