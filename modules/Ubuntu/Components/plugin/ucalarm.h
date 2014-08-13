@@ -89,6 +89,8 @@ public:
     UCAlarm(const QDateTime &dt, DaysOfWeek days = AutoDetect, const QString &message = QString(), QObject *parent = 0);
     ~UCAlarm();
 
+    bool operator==(const UCAlarm &that) const;
+
 public: // getter/setter
     bool enabled() const;
     void setEnabled(bool enabled);
