@@ -134,7 +134,7 @@ MainView {
             objectName=objectName)
         with mock.patch.object(
                 self.list_view,
-                '_swipe_to_show_more_below') as mock_swipe_down:
+                'swipe_to_show_more_below') as mock_swipe_down:
             self.list_view.click_element(objectName)
         self.assertFalse(mock_swipe_down.called)
         self.assertEqual(self.label.text, 'testListElement1')
