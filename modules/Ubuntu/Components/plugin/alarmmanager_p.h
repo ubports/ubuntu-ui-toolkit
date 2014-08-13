@@ -51,13 +51,14 @@ public:
         , originalDate(other.originalDate)
         , date(other.date)
         , message(other.message)
+        , sound(other.sound)
         , type(other.type)
         , days(other.days)
         , enabled(other.enabled)
     {
     }
 
-    bool compare(const AlarmData &other)
+    bool compare(const AlarmData &other) const
     {
         // cookie, sound, and enabled do not count on alarm equality
         return date == other.date
@@ -66,7 +67,7 @@ public:
                 && days == other.days;
     }
 
-    bool operator==(const AlarmData &other)
+    bool operator==(const AlarmData &other) const
     {
         return compare(other);
     }

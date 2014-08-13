@@ -69,7 +69,7 @@ Popover {
                   accessible. https://bugs.launchpad.net/autopilot/+bug/1334599
                   */
                 property string text: action.text
-                width: units.gu(6)
+                width: Math.max(units.gu(4), implicitWidth) + units.gu(2)
                 height: units.gu(6)
                 action: actions[modelData]
                 style: Theme.createStyleComponent("ToolbarButtonStyle.qml", button)
