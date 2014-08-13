@@ -1,3 +1,9 @@
+ubuntu-ui-toolkit (1.1.1187+14.10.20140806-0ubuntu1) utopic; urgency=medium
+
+  * PPA release
+
+ -- Benjamin Zeller <benjamin.zeller@canonical.com>  Wed, 13 Aug 2014 13:40:36 +0200
+
 ubuntu-ui-toolkit (1.1.1181+14.10.20140806-0ubuntu1) utopic; urgency=medium
 
   [ Florian Boucault ]
