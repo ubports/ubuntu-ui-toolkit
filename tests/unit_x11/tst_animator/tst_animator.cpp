@@ -20,33 +20,42 @@
  * Activity Indicator crashes in QML/Widget mixed applications
  */
 
-#include "tst_animator.h"
 #include <QTest>
 #include <QTimer>
 #include <QQuickView>
 #include <QScopedPointer>
+#include <QObject>
+#include <QEventLoop>
 
-
-void Tst_Animator::tst_animatorRegression()
+class Tst_Animator : public QObject
 {
-    QScopedPointer<QQuickView> w(new QQuickView());
-    w->setResizeMode(QQuickView::SizeRootObjectToView);
-    w->setSource(QUrl::fromLocalFile("tst_animator.qml"));
-    w->show();
+    Q_OBJECT
 
-    int countdown = 20;
+private Q_SLOTS:
+    void tst_animatorRegression ()
+    {
+        QEventLoop l;
+        QScopedPointer<QQuickView> w(new QQuickView());
+        w->setResizeMode(QQuickView::SizeRootObjectToView);
+        w->setSource(QUrl::fromLocalFile("tst_animator.qml"));
+        w->show();
 
-    QTimer t;
-    t.setInterval(100);
-    connect(&t,&QTimer::timeout,[&]{
-        w->setVisible(!w->visibility());
+        int countdown = 20;
 
-        if(--countdown == 0)
-            l.exit(0);
-    });
-    t.start();
-    l.exec();
-}
+        QTimer t;
+        t.setInterval(100);
+        connect(&t,&QTimer::timeout,[&]{
+            w->setVisible(!w->visibility());
+
+            if(--countdown == 0)
+                l.exit(0);
+        });
+        t.start();
+        l.exec();
+    }
+
+};
 
 QTEST_MAIN(Tst_Animator)
+#include "tst_animator.moc"
 
