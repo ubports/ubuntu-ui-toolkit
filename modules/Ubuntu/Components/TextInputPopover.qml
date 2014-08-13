@@ -74,6 +74,10 @@ Popover {
                 action: actions[modelData]
                 style: Theme.createStyleComponent("ToolbarButtonStyle.qml", button)
                 onClicked: popover.hide()
+
+                function forceActiveFocus(reason) {
+                    // do nothing, suppress focusing
+                }
             }
         }
     }

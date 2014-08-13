@@ -164,6 +164,12 @@ OrientationHelper {
     /*! \internal */
     onParentChanged: stateWrapper.rootItem = QuickUtils.rootItem(popupBase)
     Component.onCompleted: stateWrapper.rootItem = QuickUtils.rootItem(popupBase);
+    Component.onDestruction: {
+        // restore focus to the caller
+        if (caller) {
+            caller.forceActiveFocus(Qt.PopupFocusReason);
+        }
+    }
 
     Item {
         id: stateWrapper
@@ -211,6 +217,9 @@ OrientationHelper {
                     ScriptAction {
                         script: {
                             popupBase.visible = false;
+                            if (caller) {
+                                caller.forceActiveFocus(Qt.PopupFocusReason);
+                            }
                         }
                     }
                 }

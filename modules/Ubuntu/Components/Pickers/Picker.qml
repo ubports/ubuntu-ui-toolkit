@@ -291,9 +291,9 @@ StyledItem {
             clip: true
             // grab focus when moved, flicked or only touched
             focus: true
-            onMovementStarted: pView.forceActiveFocus()
-            onFlickStarted: pView.forceActiveFocus()
-            Mouse.onClicked: pView.forceActiveFocus()
+            onMovementStarted: pView.forceActiveFocus(Qt.MouseFocusReason)
+            onFlickStarted: pView.forceActiveFocus(Qt.MouseFocusReason)
+            Mouse.onClicked: pView.forceActiveFocus(Qt.MouseFocusReason)
 
             model: picker.model
             delegate: picker.delegate
@@ -355,9 +355,9 @@ StyledItem {
             clip: true
             // grab focus when moved, flicked or only touched
             focus: true
-            onMovementStarted: lView.forceActiveFocus()
-            onFlickStarted: lView.forceActiveFocus()
-            Mouse.onClicked: lView.forceActiveFocus()
+            onMovementStarted: lView.forceActiveFocus(Qt.MouseFocusReason)
+            onFlickStarted: lView.forceActiveFocus(Qt.MouseFocusReason)
+            Mouse.onClicked: lView.forceActiveFocus(Qt.MouseFocusReason)
 
             model: picker.model
             delegate: picker.delegate
