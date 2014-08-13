@@ -95,6 +95,7 @@ Style.PageHeadStyle {
 
                     // vertical divider line
                     Rectangle {
+                        id: bottomDividerLine
                         anchors {
                             verticalCenter: parent.verticalCenter
                             right: parent.right
