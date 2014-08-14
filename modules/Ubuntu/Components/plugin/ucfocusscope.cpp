@@ -26,7 +26,7 @@ UCFocusScope::UCFocusScope(QQuickItem *parent)
 }
 
 
-SIMPLE_PROPERTY(UCFocusScope, bool, focusable, qDebug() << "SETTER")
+SIMPLE_PROPERTY(UCFocusScope, bool, focusable, setFocusableOnChildren(m_focusable))
 
 void UCFocusScope::focusInEvent(QFocusEvent *event)
 {
