@@ -62,7 +62,7 @@
  */
 #define DECLARE_PRIVATE_PROPERTY(type, member, ...) \
     public: \
-        Q_PROPERTY(type member READ get_##member WRITE set_##member RESET reset_##member NOTIFY member##Changed __VA_ARGS__) \
+        Q_PROPERTY(type member READ get_##member WRITE set_##member NOTIFY member##Changed __VA_ARGS__) \
         type get_##member() const; \
         void set_##member(const type &arg_##member); \
     Q_SIGNALS: \
@@ -73,7 +73,7 @@
  */
 #define DECLARE_PRIVATE_PROPERTY_PTYPE(type, member, ...) \
     public: \
-        Q_PROPERTY(type* member READ get_##member WRITE set_##member RESET reset_##member NOTIFY member##Changed __VA_ARGS__) \
+        Q_PROPERTY(type* member READ get_##member WRITE set_##member NOTIFY member##Changed __VA_ARGS__) \
         type *get_##member() const; \
         void set_##member(type *arg_##member); \
     Q_SIGNALS: \
@@ -129,8 +129,7 @@
 /*
  * Setter for normal/reference types. The variadic arguments can hold custom
  * implementation for the setter which is executed after the property holder
- * has been set to the new value. The reset method is called prior to the new
- * value is set.
+ * has been set to the new value.
  */
 #define PROPERTY_PRIVATE_SETTER(_class, type, member, ...) \
     void _class::set_##member(const type &arg_##member) \
@@ -215,8 +214,7 @@
 /*
  * Setter for normal/reference types. The variadic arguments can hold custom
  * implementation for the setter which is executed after the property holder
- * has been set to the new value. The reset method is called prior to the new
- * value is set.
+ * has been set to the new value.
  */
 #define PROPERTY_SETTER(_class, type, member, ...) \
     void _class::set_##member(const type &arg_##member) \
@@ -252,7 +250,7 @@
 
 
 /*---------------------------------------------------------------------------------------
- * Getter/Setter/Reset headlines, where the implementation requires custom code.
+ * Getter/Setter headlines, where the implementation requires custom code.
  */
 #define CUSTOM_PROPERTY_GETTER(_class, type, member) \
     type _class::get_##member() const
