@@ -18,8 +18,29 @@
 
 #include "ucfocusscope.h"
 
-UCFocusScope::UCFocusScope(QQuickItem *parent) :
-    QQuickItem(parent)
+UCFocusScope::UCFocusScope(QQuickItem *parent)
+    : QQuickItem(parent)
+    , m_focusable(true)
 {
     setFlag(ItemIsFocusScope);
+}
+
+
+SIMPLE_PROPERTY(UCFocusScope, bool, focusable, qDebug() << "SETTER")
+
+void UCFocusScope::focusInEvent(QFocusEvent *event)
+{
+    QQuickItem::focusInEvent(event);
+    if (!m_focusable) {
+        setFocus(false, Qt::OtherFocusReason);
+    }
+}
+
+void UCFocusScope::setFocusableOnChildren(bool focus)
+{
+    set_focusable(focus);
+    QList<UCFocusScope*> children = findChildren<UCFocusScope*>();
+    Q_FOREACH(UCFocusScope *item, children) {
+        item->set_focusable(focus);
+    }
 }

@@ -12,33 +12,20 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCFOCUSSCOPE_H
-#define UCFOCUSSCOPE_H
+import QtQuick 2.0
+import QtTest 1.0
+import Ubuntu.Components 1.0
 
-#include <QtQuick/QQuickItem>
-#include "ucglobals.h"
+TestCase {
+     name: "StyledItemAPI"
 
-class UCFocusScope : public QQuickItem
-{
-    Q_OBJECT
-    DECLARE_PROPERTY(bool, focusable, REVISION 1)
-public:
-    explicit UCFocusScope(QQuickItem *parent = 0);
+     StyledItem {
+         id: item
+     }
 
-    Q_REVISION(1) void setFocusableOnChildren(bool focus);
-
-protected:
-    void focusInEvent(QFocusEvent *event);
-
-
-Q_SIGNALS:
-
-public Q_SLOTS:
-
-};
-
-#endif // UCFOCUSSCOPE_H
+     function test_api() {
+         tryCompare(item, "focusable", false, 0, "Property declared");
+     }
+}

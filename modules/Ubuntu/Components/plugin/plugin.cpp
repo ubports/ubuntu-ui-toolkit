@@ -204,6 +204,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<QAbstractItemModel>(uri, 1, 1, "QAbstractItemModel", "Not instantiable");
 
     // register 1.1 only API
+    qmlRegisterType<UCFocusScope, 1>(uri, 1, 1, "FocusScope");
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
     qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
