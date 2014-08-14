@@ -24,38 +24,32 @@
  * holder members are declared in the private class.
  * Place the DECLARE_ macros in the class declaration, and depending whether RO
  * or RW properties are to be declared, use the _SETTER and _GETTER macros in the
- * implementation. For instance when RW properties are declared, setter, getter and reset
- * macros are to be used. On read-only, as well as on list properties only getter need
- * to be declared. Reset methods need custom implementation.
+ * implementation. For instance when RW properties are declared, setter and getter
+ * macros are to be used. On read-only, as well as on list properties only getter needs
+ * to be declared.
+ *
+ * Setter macros can accept custom code which is executed after the property holder has
+ * been set to the new value. In any other cases a custom setter implementation must be
+ * provided. In this case one of the CUSTOM_SETTER macros can be used to provide the
+ * prototype of the method.
  *
  * If the property holder members are declared in a private class, the corresponding
- * _PRIVATE macros should be used.
+ * _PRIVATE_ macros should be used.
  *
  * Example:
  * - when the property holder members are in the private class:
  * in .h file
  *  class MyClass: public QObject {
- *      DECLARE_PROPERTY_PRIVATE_RO(qreal, rvalue)
- *      DECLARE_PROEPRTY_PRIVATE(QString, svalue)
- *      DECLARE_PROPERTY_PRIVATE_PTYPE(int, pvalue)
+ *      DECLARE_PROPERTY(qreal, rname)
+ *      DECLARE_PROPERTY(QString, sname)
+ *      DECLARE_PROPERTY(int, pname)
  *  }
  * in .cpp file
- *      PROPERTY_GETTER_PRIVATE(MyClass, qreal, rvalue)
- *      PROPERTY_SETTER_PRIVATE(MyClass, qreal, rvalue)
- *      CUSTOM_PROPERTY_RESET(MyClass, rvalue){}
+ *      SIMPLE_PROPERTY(MyClass, qreal, rname)
+ *      SIMPLE_PROPERTY(MyClass, QString, sname)
  *
- *      PROPERTY_GETTER_PRIVATE(MyClass, QString, svalue)
- *      PROPERTY_SETTER_PRIVATE(MyClass, QStrong, svalue)
- *      CUSTOM_PROPERTY_RESET(MyClass, svalue){}
- *
- *      PROPERTY_GETTER_PRIVATE(MyClass, int, pvalue)
- *      PROPERTY_SETTER_PRIVATE(MyClass, int, pvalue, *(d->pvalue) = 0)
- *      CUSTOM_PROPERTY_RESET(MyClass, pvalue)
- *      {
- *          Q_D(MyClass);
- *          free(d->pvalue);
- *          d->pvalue = 0;
- *      }
+ *      PROPERTY_GETTER(MyClass, int, pvalue)
+ *      PROPERTY_SETTER_PTYPE(MyClass, int, pvalue, *(d->pvalue) = 0)
  *
  */
 
@@ -71,7 +65,6 @@
         Q_PROPERTY(type member READ get_##member WRITE set_##member RESET reset_##member NOTIFY member##Changed __VA_ARGS__) \
         type get_##member() const; \
         void set_##member(const type &arg_##member); \
-        void reset_##member(); \
     Q_SIGNALS: \
         void member##Changed();
 
@@ -83,7 +76,6 @@
         Q_PROPERTY(type* member READ get_##member WRITE set_##member RESET reset_##member NOTIFY member##Changed __VA_ARGS__) \
         type *get_##member() const; \
         void set_##member(type *arg_##member); \
-        void reset_##member(); \
     Q_SIGNALS: \
         void member##Changed();
 
@@ -145,7 +137,6 @@
     { \
         Q_D(_class); \
         if (arg_##member != d->member) { \
-            reset_##member(); \
             d->member = arg_##member; \
             __VA_ARGS__; \
             Q_EMIT member##Changed(); \
@@ -160,7 +151,6 @@
     { \
         Q_D(_class); \
         if (arg_##member != d->member) { \
-            reset_##member(); \
             d->member = arg_##member; \
             __VA_ARGS__; \
             Q_EMIT member##Changed(); \
@@ -232,7 +222,6 @@
     void _class::set_##member(const type &arg_##member) \
     { \
         if (arg_##member != m_##member) { \
-            reset_##member(); \
             m_##member = arg_##member; \
             __VA_ARGS__; \
             Q_EMIT member##Changed(); \
@@ -246,7 +235,6 @@
     void _class::set_##member(type *arg_##member) \
     { \
         if (arg_##member != m_##member) { \
-            reset_##member(); \
             m_##member = arg_##member; \
             __VA_ARGS__; \
             Q_EMIT member##Changed(); \
@@ -278,22 +266,16 @@
 #define CUSTOM_PROPERTY_SETTER_PTYPE(_class, type, member) \
     void _class::set_##member(type *arg_##member)
 
-#define CUSTOM_PROPERTY_RESET(_class, member) \
-    void _class::reset_##member()
-
-
 /*---------------------------------------------------------------------------------------
  * Definitions for simple property implementations, to be used in .cpp files.
  */
 #define SIMPLE_PROPERTY(_class, type, member, ...) \
     PROPERTY_GETTER(_class, type, member) \
-    PROPERTY_SETTER(_class, type, member, __VA_ARGS__) \
-    CUSTOM_PROPERTY_RESET(_class, member){}
+    PROPERTY_SETTER(_class, type, member, __VA_ARGS__)
 
 #define SIMPLE_PROPERTY_PTYPE(_class, type, member, ...) \
     PROPERTY_GETTER(_class, type*, member) \
-    PROPERTY_SETTER_PTYPE(_class, type, member, __VA_ARGS__) \
-    CUSTOM_PROPERTY_RESET(_class, member){}
+    PROPERTY_SETTER_PTYPE(_class, type, member, __VA_ARGS__)
 
 #define SIMPLE_PROPERTY_RO(_class, type, member, ...) \
     PROPERTY_GETTER(_class, type, member)
@@ -301,13 +283,11 @@
 
 #define SIMPLE_PROPERTY_PRIVATE(_class, type, member, ...) \
     PROPERTY_GETTER_PRIVATE(_class, type, member) \
-    PROPERTY_SETTER_PRIVATE(_class, type, member, __VA_ARGS__) \
-    CUSTOM_PROPERTY_RESET(_class, member){}
+    PROPERTY_SETTER_PRIVATE(_class, type, member, __VA_ARGS__)
 
 #define SIMPLE_PROPERTY_PTYPE(_class, type, member, ...) \
     PROPERTY_GETTER(_class, type*, member) \
-    PROPERTY_SETTER_PTYPE(_class, type, member, __VA_ARGS__) \
-    CUSTOM_PROPERTY_RESET(_class, member){}
+    PROPERTY_SETTER_PTYPE(_class, type, member, __VA_ARGS__)
 
 #define SIMPLE_PROPERTY_PRIVATE_RO(_class, type, member, ...) \
     PROPERTY_GETTER_PRIVATE(_class, type, member)
