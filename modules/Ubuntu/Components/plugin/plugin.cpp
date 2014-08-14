@@ -49,6 +49,7 @@
 #include "ucmouse.h"
 #include "ucinversemouse.h"
 #include "sortfiltermodel.h"
+#include "ucfocusscope.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -161,6 +162,7 @@ void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
 
 void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, int minor)
 {
+    qmlRegisterType<UCFocusScope>(uri, major, minor, "FocusScope");
     qmlRegisterSingletonType<QObject>(uri, major, minor, "UbuntuColors", registerUbuntuColors10);
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
