@@ -186,6 +186,11 @@ Style.PageHeadStyle {
                             implicitHeight: units.gu(6) + bottomDividerLine.height
                             width: parent ? parent.width : units.gu(31)
 
+                            function forceActiveFocus(reason) {
+                                // consume focusing otherwise it will steal from the opened
+                                // page/component that can be a result of the action trigger
+                            }
+
                             Label {
                                 anchors {
                                     verticalCenter: parent.verticalCenter
@@ -358,6 +363,11 @@ Style.PageHeadStyle {
                             onClicked: actionsOverflowPopover.hide()
                             implicitHeight: units.gu(6) + bottomDividerLine.height
                             width: parent ? parent.width : units.gu(31)
+
+                            function forceActiveFocus(reason) {
+                                // consume focusing otherwise it will steal from the opened
+                                // page/component that can be a result of the action trigger
+                            }
 
                             Icon {
                                 id: actionIcon
