@@ -25,6 +25,7 @@ TARGET = $$qtLibraryTarget($$TARGET)
 uri = Ubuntu.Components
 
 HEADERS += plugin.h \
+    ucglobals.h \
     uctheme.h \
     ucthemesettings.h \
     i18n.h \
