@@ -60,7 +60,7 @@
 /*
  * Property declaration of a normal/reference type, similar syntax to DECLARE_PROPERTY
  */
-#define DECLARE_PROPERTY_PRIVATE(type, member, ...) \
+#define DECLARE_PRIVATE_PROPERTY(type, member, ...) \
     public: \
         Q_PROPERTY(type member READ get_##member WRITE set_##member RESET reset_##member NOTIFY member##Changed __VA_ARGS__) \
         type get_##member() const; \
@@ -71,7 +71,7 @@
 /*
  * Property declaration of a pointer type, similar syntax to DECLARE_PROEPRTY_PTYPE
  */
-#define DECLARE_PROPERTY_PRIVATE_PTYPE(type, member, ...) \
+#define DECLARE_PRIVATE_PROPERTY_PTYPE(type, member, ...) \
     public: \
         Q_PROPERTY(type* member READ get_##member WRITE set_##member RESET reset_##member NOTIFY member##Changed __VA_ARGS__) \
         type *get_##member() const; \
@@ -82,10 +82,10 @@
 /*
  * Declares read-only property. It can handle both normal and pointer types.
  * Usage:
- *  DECLARE_PROPERTY_PRIVATE(bool, bvalue, DESIGNABLE false)
- *  DECLARE_PROPERTY_PRIVATE(QObject*, object)
+ *  DECLARE_PRIVATE_PROPERTY(bool, bvalue, DESIGNABLE false)
+ *  DECLARE_PRIVATE_PROPERTY(QObject*, object)
  */
-#define DECLARE_PROPERTY_PRIVATE_RO(type, member, ...) \
+#define DECLARE_PRIVATE_READONLY_PROPERTY(type, member, ...) \
     public: \
         type get_##member() const; \
     Q_SIGNALS: \
@@ -96,7 +96,7 @@
 /*
  * List property declaration.
  */
-#define DECLARE_LISTPROPERTY_PRIVATE(type, member) \
+#define DECLARE_PRIVATE_LISTPROPERTY(type, member) \
     public: \
         QQmlListProperty<type> get_##member(); \
         Q_PROPERTY(QQmlListProperty<type> member READ get_##member)
@@ -106,10 +106,10 @@
 /*
  * Getter for both normal and pointer types
  * Usage:
- *  PROPERTY_GETTER_PRIVATE(MyClass, bool, bvalue)
- *  PROPERTY_GETTER_PRIVATE(MyClass, QObject*, object)
+ *  PROPERTY_PRIVATE_GETTER(MyClass, bool, bvalue)
+ *  PROPERTY_PRIVATE_GETTER(MyClass, QObject*, object)
  */
-#define PROPERTY_GETTER_PRIVATE(_class, type, member) \
+#define PROPERTY_PRIVATE_GETTER(_class, type, member) \
     type _class::get_##member() const \
     { \
         Q_D(const _class); \
@@ -119,7 +119,7 @@
 /*
  * Same for list properties.
  */
-#define LISTPROPERTY_GETTER_PRIVATE(_class, type, member) \
+#define LISTPROPERTY_PRIVATE_GETTER(_class, type, member) \
     QQmlListProperty<type> _class::get_##member() \
     { \
         Q_D(_class); \
@@ -132,7 +132,7 @@
  * has been set to the new value. The reset method is called prior to the new
  * value is set.
  */
-#define PROPERTY_SETTER_PRIVATE(_class, type, member, ...) \
+#define PROPERTY_PRIVATE_SETTER(_class, type, member, ...) \
     void _class::set_##member(const type &arg_##member) \
     { \
         Q_D(_class); \
@@ -146,7 +146,7 @@
 /*
  * Same for pointer types.
  */
-#define PROPERTY_SETTER_PRIVATE_PTYPE(_class, type, member, ...) \
+#define PROPERTY_PRIVATE_SETTER_PTYPE(_class, type, member, ...) \
     void _class::set_##member(type arg_##member) \
     { \
         Q_D(_class); \
@@ -170,7 +170,7 @@
  *  Q_PROPERTY(bool bvalue .....)
  */
 #define DECLARE_PROPERTY(type, member, ...) \
-    DECLARE_PROPERTY_PRIVATE(type, member, __VA_ARGS__) \
+    DECLARE_PRIVATE_PROPERTY(type, member, __VA_ARGS__) \
     private: \
         type m_##member;
 
@@ -182,21 +182,21 @@
  *  Q_PROPERTY(QObject *object .....)
  */
 #define DECLARE_PROPERTY_PTYPE(type, member, ...) \
-    DECLARE_PROPERTY_PRIVATE_PTYPE(type, member, __VA_ARGS__) \
+    DECLARE_PRIVATE_PROPERTY_PTYPE(type, member, __VA_ARGS__) \
     private: \
         type *m_##member;
 /*
  * Read-only property declaration.
  */
-#define DECLARE_PROPERTY_RO(type, member, ...) \
-    DECLARE_PROPERTY_PRIVATE_RO(type, member, __VA_ARGS__) \
+#define DECLARE_READONLY_PROPERTY(type, member, ...) \
+    DECLARE_PRIVATE_READONLY_PROPERTY(type, member, __VA_ARGS__) \
     private: \
         type m_##member;
 /*
  * List property declaration
  */
 #define DECLARE_LISTPROPERTY(type, member) \
-    DECLARE_LISTPROPERTY_PRIVATE(type, member) \
+    DECLARE_PRIVATE_LISTPROPERTY(type, member) \
     private: \
         QList<type*> m_##member;
 
@@ -277,19 +277,13 @@
     PROPERTY_GETTER(_class, type*, member) \
     PROPERTY_SETTER_PTYPE(_class, type, member, __VA_ARGS__)
 
-#define SIMPLE_PROPERTY_RO(_class, type, member, ...) \
-    PROPERTY_GETTER(_class, type, member)
 
+#define SIMPLE_PRIVATE_PROPERTY(_class, type, member, ...) \
+    PROPERTY_PRIVATE_GETTER(_class, type, member) \
+    PROPERTY_PRIVATE_SETTER(_class, type, member, __VA_ARGS__)
 
-#define SIMPLE_PROPERTY_PRIVATE(_class, type, member, ...) \
-    PROPERTY_GETTER_PRIVATE(_class, type, member) \
-    PROPERTY_SETTER_PRIVATE(_class, type, member, __VA_ARGS__)
-
-#define SIMPLE_PROPERTY_PTYPE(_class, type, member, ...) \
+#define SIMPLE_PRIVATE_PROPERTY_PTYPE(_class, type, member, ...) \
     PROPERTY_GETTER(_class, type*, member) \
     PROPERTY_SETTER_PTYPE(_class, type, member, __VA_ARGS__)
-
-#define SIMPLE_PROPERTY_PRIVATE_RO(_class, type, member, ...) \
-    PROPERTY_GETTER_PRIVATE(_class, type, member)
 
 #endif // UCGLOBALS_H
