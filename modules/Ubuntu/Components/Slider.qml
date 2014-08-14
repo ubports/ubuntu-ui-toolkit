@@ -183,12 +183,13 @@ StyledItem {
                 slider.value = liveValue;
             }
         }
-        onClicked: slider.forceActiveFocus(Qt.MouseFocusReason)
         onPositionChanged: {
             // Left button dragging
             var normalizedOffsetX = (mouseArea.mouseX - dragInitMouseX) / barMinusThumb;
             liveValue = valueFromNormalizedValue(dragInitNormalizedValue + normalizedOffsetX);
         }
+        onClicked: slider.forceActiveFocus(Qt.MouseFocusReason)
+        onLiveValueChanged: if (isPressed) slider.forceActiveFocus(Qt.MouseFocusReason)
     }
 
     style: Theme.createStyleComponent("SliderStyle.qml", slider)
