@@ -20,7 +20,7 @@
 
 UCFocusScope::UCFocusScope(QQuickItem *parent)
     : QQuickItem(parent)
-    , m_focusable(true)
+    , m_focusable(false)
 {
     setFlag(ItemIsFocusScope);
 }

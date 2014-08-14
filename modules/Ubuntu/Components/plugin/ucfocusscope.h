@@ -29,6 +29,7 @@ class UCFocusScope : public QQuickItem
 public:
     explicit UCFocusScope(QQuickItem *parent = 0);
 
+public Q_SLOTS:
     Q_REVISION(1) void setFocusableOnChildren(bool focus);
 
 protected:

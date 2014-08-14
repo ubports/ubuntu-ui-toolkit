@@ -25,7 +25,12 @@ TestCase {
          id: item
      }
 
+     FocusScope {
+         id: scope
+     }
+
      function test_api() {
-         tryCompare(item, "focusable", false, 0, "Property declared");
+         tryCompare(item, "focusable", false, 0, "Property declared and it's default value is false");
+         tryCompare(scope, "focusable", false, 0, "BUMM");
      }
 }
