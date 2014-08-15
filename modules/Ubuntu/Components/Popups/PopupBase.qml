@@ -170,7 +170,7 @@ OrientationHelper {
         property Item rootItem: QuickUtils.rootItem(popupBase)
 
         function refocusCaller() {
-            if (popupBase.caller) {
+            if (popupBase.caller && popupBase.caller.activeFocusOnMousePress) {
                 popupBase.caller.forceActiveFocus(Qt.PopupFocusReason);
             }
         }

@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import QtFeedback 5.0
+import Ubuntu.Components 1.1
 
 /*!
     \qmlabstract AbstractButton
@@ -82,6 +83,8 @@ ActionItem {
      */
     property alias __mouseArea: mouseArea
 
+    activeFocusOnMousePress: true
+
     HapticsEffect {
         id: pressEffect
         attackIntensity: 0.0
@@ -99,21 +102,15 @@ ActionItem {
         // as it might occlude the newly assigned mouse area.
         hoverEnabled: true
 
-        onClicked: {
-            if (button.focusable) {
-                button.forceActiveFocus(Qt.MouseFocusReason);
-            }
+        Mouse.forwardTo: [button]
 
+        onClicked: {
             if (button.__acceptEvents) {
                 pressEffect.start()
                 button.clicked()
             }
         }
         onPressAndHold: {
-            if (button.focusable) {
-                button.forceActiveFocus(Qt.MouseFocusReason);
-            }
-
             if (button.__acceptEvents) {
                 button.pressAndHold()
             }

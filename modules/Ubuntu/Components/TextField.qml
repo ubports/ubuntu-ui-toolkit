@@ -904,7 +904,7 @@ ActionItem {
     AbstractButton {
         id: clearButton
         objectName: "clear_button"
-        focusable: false
+        activeFocusOnMousePress: false
 
         anchors {
             top: parent.top

@@ -5,7 +5,7 @@ unix {
 
 TEMPLATE = lib
 TARGET = ../UbuntuComponents
-QT += core-private qml qml-private quick quick-private dbus
+QT += core-private qml qml-private quick quick-private gui_private dbus
 
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT += v8-private
@@ -65,7 +65,8 @@ HEADERS += plugin.h \
     ucinversemouse.h \
     ucmouse.h \
     unixsignalhandler_p.h \
-    ucfocusscope.h
+    ucfocusscope.h \
+    ucfocusscope_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \

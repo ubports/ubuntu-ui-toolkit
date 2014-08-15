@@ -206,7 +206,7 @@ PopupBase {
         id: foreground
         objectName: "popover_foreground"
 
-        focusable: false
+        activeFocusOnMousePress: false
 
         //styling properties
         property real minimumWidth: units.gu(40)

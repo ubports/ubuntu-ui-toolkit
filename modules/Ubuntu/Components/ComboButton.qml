@@ -271,10 +271,10 @@ Button {
     AbstractButton {
         id: dropDown
         objectName: "combobutton_dropdown"
-        function forceActiveFocus(reason) {
-            // overridden function to forward focusing to combo button
-            combo.forceActiveFocus(reason);
-        }
+//        function forceActiveFocus(reason) {
+//            // overridden function to forward focusing to combo button
+//            combo.forceActiveFocus(reason);
+//        }
 
         anchors {
             right: parent.right

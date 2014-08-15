@@ -157,6 +157,7 @@ StyledItem {
 
     implicitWidth: units.gu(8)
     implicitHeight: units.gu(20)
+    activeFocusOnMousePress: true
 
     style: Theme.createStyleComponent("PickerStyle.qml", picker)
 
