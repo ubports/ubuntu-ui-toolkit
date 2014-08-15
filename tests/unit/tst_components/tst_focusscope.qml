@@ -14,23 +14,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
 import QtTest 1.0
-import Ubuntu.Components 1.0
+import QtQuick 2.0
+import Ubuntu.Components 1.1
 
 TestCase {
-     name: "StyledItemAPI"
-
-     StyledItem {
-         id: item
-     }
+     name: "Ubuntu.Components.FocusScope API"
 
      FocusScope {
          id: scope
      }
 
      function test_api() {
-         tryCompare(item, "focusable", false, 0, "Property declared and it's default value is false");
-         tryCompare(scope, "focusable", false, 0, "BUMM");
+         verify(scope.hasOwnProperty("activeFocusOnMousePress"), "This is not an Ubuntu.Components FocusScope!");
      }
 }
