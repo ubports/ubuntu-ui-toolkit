@@ -126,6 +126,13 @@ StyledItem {
         when: slider.live
     }
 
+    Binding {
+        target: mouseArea.flickable
+        when: mouseArea.flickable && mouseArea.pressed
+        property: "interactive"
+        value: false
+    }
+
     MouseArea {
         id: mouseArea
         anchors.fill: parent
@@ -140,15 +147,17 @@ StyledItem {
         property real dragInitMouseX: 0.0
         property real dragInitNormalizedValue: 0.0
 
-        onPressedChanged: {
+        property Flickable flickable: {
             // traverse parents to catch whether we have an ancestor Flickable
             var pl = slider.parent;
-            while (pl && !pl.hasOwnProperty("flicking")) {
+            while (pl) {
+                if (pl.hasOwnProperty("flicking")) {
+                    return pl;
+                }
+
                 pl = pl.parent;
             }
-            if (pl) {
-                pl.interactive = !pressed;
-            }
+            return null;
         }
 
         function normalizedValueFromValue(value) {
