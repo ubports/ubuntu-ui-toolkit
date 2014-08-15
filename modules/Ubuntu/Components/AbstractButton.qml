@@ -100,7 +100,9 @@ ActionItem {
         hoverEnabled: true
 
         onClicked: {
-            button.forceActiveFocus(Qt.MouseFocusReason);
+            if (button.focusable) {
+                button.forceActiveFocus(Qt.MouseFocusReason);
+            }
 
             if (button.__acceptEvents) {
                 pressEffect.start()
@@ -108,7 +110,9 @@ ActionItem {
             }
         }
         onPressAndHold: {
-            button.forceActiveFocus(Qt.MouseFocusReason);
+            if (button.focusable) {
+                button.forceActiveFocus(Qt.MouseFocusReason);
+            }
 
             if (button.__acceptEvents) {
                 button.pressAndHold()

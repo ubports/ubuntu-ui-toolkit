@@ -28,10 +28,6 @@ AbstractButton {
 
     property alias color: icon.color
 
-    function forceActiveFocus(reason) {
-        // do not grab focus
-    }
-
     Icon {
         id: icon
         anchors {

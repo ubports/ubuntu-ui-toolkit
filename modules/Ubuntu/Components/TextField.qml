@@ -904,11 +904,7 @@ ActionItem {
     AbstractButton {
         id: clearButton
         objectName: "clear_button"
-        // eat forceActiveFocus(reason)
-        function forceActiveFocus(reason) {
-            // override focus handling, no need to forward focus to input as
-            // the button is visible only when text input is focused
-        }
+        focusable: false
 
         anchors {
             top: parent.top
