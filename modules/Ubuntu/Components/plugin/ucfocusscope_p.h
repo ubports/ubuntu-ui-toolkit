@@ -16,26 +16,31 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCFOCUSSCOPE_H
-#define UCFOCUSSCOPE_H
+#ifndef UCFOCUSSCOPE_P_H
+#define UCFOCUSSCOPE_P_H
 
-#include <QtQuick/QQuickItem>
-#include "ucglobals.h"
+#include <QtQuick/private/qquickitem_p.h>
 
-class UCFocusScopePrivate;
-class UCFocusScope : public QQuickItem
+class UCFocusScope;
+class UCFocusScopePrivate : public QQuickItemPrivate
 {
-    Q_OBJECT
-    DECLARE_PRIVATE_PROPERTY(bool, activeFocusOnMousePress, REVISION 1)
+    Q_DECLARE_PUBLIC(UCFocusScope)
 public:
-    explicit UCFocusScope(QQuickItem *parent = 0);
 
-protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
+    static UCFocusScopePrivate *get(UCFocusScope *item) {
+        return item->d_func();
+    }
 
-private:
-    Q_DECLARE_PRIVATE(UCFocusScope)
+    UCFocusScopePrivate();
+    ~UCFocusScopePrivate();
+    void init();
+
+    void setFocusable();
+    bool isParentNonFocusable();
+
+public:
+    bool activeFocusOnMousePress:1;
+    bool pressed:1;
 };
 
-#endif // UCFOCUSSCOPE_H
+#endif // UCFOCUSSCOPE_P_H

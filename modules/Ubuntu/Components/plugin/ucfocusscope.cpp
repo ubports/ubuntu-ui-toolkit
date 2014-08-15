@@ -17,49 +17,131 @@
  */
 
 #include "ucfocusscope.h"
+#include "ucfocusscope_p.h"
 
-UCFocusScope::UCFocusScope(QQuickItem *parent)
-    : QQuickItem(parent)
-    , m_focusable(false)
+UCFocusScopePrivate::UCFocusScopePrivate()
+    : activeFocusOnMousePress(false)
+    , pressed(false)
 {
-    setFlag(ItemIsFocusScope);
+}
+
+UCFocusScopePrivate::~UCFocusScopePrivate()
+{
+}
+
+void UCFocusScopePrivate::init()
+{
+    Q_Q(UCFocusScope);
+    q->setFlag(QQuickItem::ItemIsFocusScope);
 }
 
 
-CUSTOM_PROPERTY_GETTER(UCFocusScope, bool, focusable)
+void UCFocusScopePrivate::setFocusable()
 {
-    return m_focusable && ascendantFocusable();
+    Q_Q(UCFocusScope);
+    q->setAcceptedMouseButtons(activeFocusOnMousePress ? Qt::LeftButton : Qt::NoButton);
+    q->setFiltersChildMouseEvents(activeFocusOnMousePress);
+    pressed = false;
 }
 
-PROPERTY_SETTER(UCFocusScope, bool, focusable, setFocusableOnChildren(m_focusable))
-
-void UCFocusScope::focusInEvent(QFocusEvent *event)
+bool UCFocusScopePrivate::isParentNonFocusable()
 {
-    QQuickItem::focusInEvent(event);
-    if (!m_focusable) {
-        setFocus(false, Qt::OtherFocusReason);
+    Q_Q(UCFocusScope);
+    if (!activeFocusOnMousePress) {
+        qDebug() << "BREAK" << q;
+        return false;
     }
-}
-
-void UCFocusScope::setFocusableOnChildren(bool focus)
-{
-    set_focusable(focus);
-    QList<UCFocusScope*> children = findChildren<UCFocusScope*>();
-    Q_FOREACH(UCFocusScope *item, children) {
-        item->set_focusable(focus);
-    }
-}
-
-bool UCFocusScope::ascendantFocusable() const
-{
-    QQuickItem *pl = parentItem();
+    QQuickItem *pl = q->parentItem();
     while (pl) {
         UCFocusScope *scope = qobject_cast<UCFocusScope*>(pl);
         if (scope) {
-            return scope->get_focusable();
+            UCFocusScopePrivate *pscope = UCFocusScopePrivate::get(scope);
+            return pscope->isParentNonFocusable();
         }
         pl = pl->parentItem();
     }
-    return m_focusable;
+
+    return true;
 }
 
+
+/*!
+ * \qmltype FocusScope
+ * \instantiates UCFocusScope
+ * \inqmlmodule Ubuntu.Components 1.1
+ * \ingroup ubuntu
+ * \since Ubuntu.Components 1.1
+ * The component overrides the QtQuick's FocusScope component with additional
+ * functionality for focusing.
+ *
+ * FocusScope does the same as QtQuick's FocusScope with the addition that also
+ * handles focusing on mouse events. The component will be used if Ubuntu.Components
+ * 1.1 is imported.
+ *
+ * Mouse focusing can be achieved by setting \l activeFocusOnMousePress, in which
+ * case the component will grab the focus when the mouse is clicked over the component.
+ * However if one of the FocusScope's ancestor FocusScope is having the property
+ * value false, the focus will not be gained automatically.
+ *
+ * In the following example the TextField will stay focused when clicked on the
+ * Button.
+ * \qml
+ * import QtQuick 2.2
+ * import Ubuntu.Components 1.1
+ *
+ * MainView {
+ *     width: units.gu(50)
+ *     height: units.gu(100)
+ *
+ *     Page {
+ *         title: "Non-focusable input"
+ *         activeFocusOnMousePress: false
+ *         TextField {
+ *             text: "Focus won't be taken away."
+ *         }
+ *         Button {
+ *             text: "Press me"
+ *         }
+ *     }
+ * }
+ * \endqml
+ */
+UCFocusScope::UCFocusScope(QQuickItem *parent)
+    : QQuickItem(*(new UCFocusScopePrivate), parent)
+{
+    Q_D(UCFocusScope);
+    d->init();
+}
+
+/*!
+ * \qmlproperty bool FocusScope::activeFocusOnMousePress
+ * \since Ubuntu.Components 1.1
+ *
+ * The property specifies whether the FocusScope can gain focus on a mouse click
+ * or not. When the value is true, the focus will be set on the FocusScope when
+ * the mouse is clicked over the component. Note that click means that the mouse
+ * is presed and released over the component. If the press happens inside the
+ * component but the release outside, the component will not be focused.
+ *
+ * The default value is \c false.
+ */
+SIMPLE_PRIVATE_PROPERTY(UCFocusScope, bool, activeFocusOnMousePress, d->setFocusable())
+
+void UCFocusScope::mousePressEvent(QMouseEvent *event)
+{
+    QQuickItem::mousePressEvent(event);
+    Q_D(UCFocusScope);
+    d->pressed = contains(event->localPos()) && d->isParentNonFocusable();
+}
+
+void UCFocusScope::mouseReleaseEvent(QMouseEvent *event)
+{
+    QQuickItem::mouseReleaseEvent(event);
+    Q_D(UCFocusScope);
+    if (d->pressed && contains(event->localPos())) {
+        forceActiveFocus(Qt::MouseFocusReason);
+    }
+}
+
+
+#include "moc_ucfocusscope.cpp"
