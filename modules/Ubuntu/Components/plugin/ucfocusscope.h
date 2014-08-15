@@ -29,17 +29,10 @@ class UCFocusScope : public QQuickItem
 public:
     explicit UCFocusScope(QQuickItem *parent = 0);
 
-public Q_SLOTS:
-    Q_REVISION(1) void setFocusableOnChildren(bool focus);
-
 protected:
     void focusInEvent(QFocusEvent *event);
-
-
-Q_SIGNALS:
-
-public Q_SLOTS:
-
+    void setFocusableOnChildren(bool focus);
+    bool ascendantFocusable() const;
 };
 
 #endif // UCFOCUSSCOPE_H

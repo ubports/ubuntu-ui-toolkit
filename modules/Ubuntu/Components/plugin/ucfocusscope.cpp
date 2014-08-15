@@ -26,7 +26,12 @@ UCFocusScope::UCFocusScope(QQuickItem *parent)
 }
 
 
-SIMPLE_PROPERTY(UCFocusScope, bool, focusable, setFocusableOnChildren(m_focusable))
+CUSTOM_PROPERTY_GETTER(UCFocusScope, bool, focusable)
+{
+    return m_focusable && ascendantFocusable();
+}
+
+PROPERTY_SETTER(UCFocusScope, bool, focusable, setFocusableOnChildren(m_focusable))
 
 void UCFocusScope::focusInEvent(QFocusEvent *event)
 {
@@ -44,3 +49,17 @@ void UCFocusScope::setFocusableOnChildren(bool focus)
         item->set_focusable(focus);
     }
 }
+
+bool UCFocusScope::ascendantFocusable() const
+{
+    QQuickItem *pl = parentItem();
+    while (pl) {
+        UCFocusScope *scope = qobject_cast<UCFocusScope*>(pl);
+        if (scope) {
+            return scope->get_focusable();
+        }
+        pl = pl->parentItem();
+    }
+    return m_focusable;
+}
+
