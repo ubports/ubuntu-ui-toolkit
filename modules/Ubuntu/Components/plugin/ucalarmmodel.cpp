@@ -245,7 +245,7 @@ void UCAlarmModel::refresh()
     clear();
     QList<AlarmData> alarms = AlarmManager::instance().alarms();
     Q_FOREACH(const AlarmData &data, alarms) {
-        UCAlarm *alarm = new UCAlarm;
+        UCAlarm *alarm = new UCAlarm(this);
         UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
         pAlarm->rawData = data;
         m_alarms << alarm;

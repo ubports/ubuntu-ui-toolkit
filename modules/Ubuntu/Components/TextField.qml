@@ -904,24 +904,23 @@ ActionItem {
     AbstractButton {
         id: clearButton
         objectName: "clear_button"
-        property url iconSource: control.__styleInstance.iconSource
         anchors {
             top: parent.top
             right: rightPane.left
             bottom: parent.bottom
             margins: internal.spacing
         }
-        width: visible ? height : 0
+        width: visible ? icon.width : 0
         visible: control.hasClearButton &&
                     (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
 
-        Image {
+        Icon {
+            id: icon
             anchors.verticalCenter: parent.verticalCenter
-            width: units.gu(3)
+            width: units.gu(2.5)
             height: width
-            smooth: true
-            source: control.hasClearButton ? clearButton.iconSource : ""
-            onSourceChanged: print(source)
+            // use icon from icon-theme
+            name: control.hasClearButton ? "clear-search" : ""
         }
 
         onClicked: editor.text = ""
