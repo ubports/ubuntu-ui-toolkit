@@ -23,13 +23,18 @@ class UCViewItemOptionsPrivate {
     Q_DECLARE_PUBLIC(UCViewItemOptions)
 public:
     UCViewItemOptionsPrivate(UCViewItemOptions* qq);
+    static UCViewItemOptionsPrivate* get(UCViewItemOptions *options)
+    {
+        return options ? options->d_func() : 0;
+    }
 
     UCViewItemOptions *q_ptr;
     QQmlComponent *delegate;
-    qreal offset;
-    int visibleOptions;
-    QList<QObject*> options;
+    QQuickItem *panel;
     QColor backgroundColor;
+    QList<QObject*> options;
+
+    bool createPanel(bool isLeading);
 };
 
 #endif // UCVIEWITEMOPTIONS_P_H
