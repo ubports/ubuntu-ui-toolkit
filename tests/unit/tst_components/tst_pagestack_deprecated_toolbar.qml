@@ -123,7 +123,7 @@ TestCase {
 
     MainView {
         id: mainView
-        useDeprecatedToolbar: false
+        useDeprecatedToolbar: true
         PageStack {
             id: pageStack
             Page {
