@@ -31,6 +31,8 @@ public:
     explicit UCFocusScope(QQuickItem *parent = 0);
 
 protected:
+    UCFocusScope(UCFocusScopePrivate &, QQuickItem *parent);
+protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
 
