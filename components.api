@@ -802,6 +802,10 @@ plugins.qmltypes
     name: "quitWithError"
     Parameter { name: "errorMessage"; type: "string" }
     Method { name: "quitWithError" }
+    name: "UCFocusScope"
+    prototype: "QQuickItem"
+    exports: ["FocusScope 0.1", "FocusScope 1.0", "FocusScope 1.1"]
+    Property { name: "activeFocusOnMousePress"; revision: 1; type: "bool" }
     name: "UCInverseMouse"
     prototype: "UCMouse"
     exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
