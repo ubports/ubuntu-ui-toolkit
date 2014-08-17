@@ -12,32 +12,20 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCFOCUSSCOPE_H
-#define UCFOCUSSCOPE_H
+import QtTest 1.0
+import Ubuntu.Components 1.1
+import QtQuick 2.0
 
-#include <QtQuick/QQuickItem>
-#include "ucglobals.h"
+TestCase {
+     name: "Ubuntu.Components.FocusScope API"
 
-class UCFocusScopePrivate;
-class UCFocusScope : public QQuickItem
-{
-    Q_OBJECT
-    DECLARE_PRIVATE_PROPERTY(bool, activeFocusOnMousePress, REVISION 1)
-public:
-    explicit UCFocusScope(QQuickItem *parent = 0);
+     FocusScope {
+         id: scope
+     }
 
-protected:
-    UCFocusScope(UCFocusScopePrivate &, QQuickItem *parent);
-protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
-
-private:
-    Q_DECLARE_PRIVATE(UCFocusScope)
-};
-
-#endif // UCFOCUSSCOPE_H
+     function test_api() {
+         verify(!scope.hasOwnProperty("activeFocusOnMousePress"), "This is not an QtQuick FocusScope!");
+     }
+}

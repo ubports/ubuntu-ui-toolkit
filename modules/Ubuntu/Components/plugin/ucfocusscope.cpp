@@ -105,6 +105,18 @@ bool UCFocusScopePrivate::isParentNonFocusable()
  *     }
  * }
  * \endqml
+ *
+ * \note Please observe that the order of importing the modules matters! If QtQuick
+ * is imported after the Ubuntu Components, the QtQuick FocusScope will be used.
+ * \qml
+ * import Qubuntu.Components 1.1
+ * import QtQuick 2.2
+ *
+ * FocusScope {
+ *     // this will give parsing error
+ *     activeFocusOnMousePress: true
+ * }
+ * \endqml
  */
 UCFocusScope::UCFocusScope(QQuickItem *parent)
     : QQuickItem(*(new UCFocusScopePrivate), parent)
@@ -112,6 +124,14 @@ UCFocusScope::UCFocusScope(QQuickItem *parent)
     Q_D(UCFocusScope);
     d->init();
 }
+
+UCFocusScope::UCFocusScope(UCFocusScopePrivate &dd, QQuickItem *parent)
+    : QQuickItem(dd, parent)
+{
+    Q_D(UCFocusScope);
+    d->init();
+}
+
 
 /*!
  * \qmlproperty bool FocusScope::activeFocusOnMousePress
