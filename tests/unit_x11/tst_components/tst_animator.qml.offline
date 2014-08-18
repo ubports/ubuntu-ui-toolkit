@@ -18,6 +18,8 @@
 /**
  * Test to prevent regressions for bug: https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1338602
  * Activity Indicator crashes in QML/Widget mixed applications
+ *
+ * NOTE: DISABLED, MUST BE FIXED AS BREAKS SILO LANDING
  */
 
 import QtQuick 2.2

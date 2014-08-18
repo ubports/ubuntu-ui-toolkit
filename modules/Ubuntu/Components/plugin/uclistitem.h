@@ -19,22 +19,23 @@
 
 #include <QtQuick/QQuickItem>
 #include "ucglobals.h"
+#include "ucfocusscope.h"
 
 class QQuickFlickable;
 class UCListItemBackground;
 class UCListItemDivider;
 class UCListItemBasePrivate;
-class UCListItemBase : public QQuickItem
+class UCListItemBase : public UCFocusScope
 {
     Q_OBJECT
-    DECLARE_PROPERTY_PRIVATE_RO(UCListItemBackground*, background)
-    DECLARE_PROPERTY_PRIVATE_RO(UCListItemDivider*, divider, DESIGNABLE true)
-    DECLARE_PROPERTY_PRIVATE_RO(bool, pressed)
+    DECLARE_PRIVATE_READONLY_PROPERTY(UCListItemBackground*, background, CONSTANT)
+    DECLARE_PRIVATE_READONLY_PROPERTY(UCListItemDivider*, divider, DESIGNABLE true)
+    DECLARE_PRIVATE_READONLY_PROPERTY(bool, pressed)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
 
-    DECLARE_PROPERTY_PRIVATE_RO(QQuickFlickable*, flickable)
+    DECLARE_PRIVATE_READONLY_PROPERTY(QQuickFlickable*, flickable)
 public:
     explicit UCListItemBase(QQuickItem *parent = 0);
     ~UCListItemBase();
@@ -55,7 +56,6 @@ public Q_SLOTS:
 
 private:
     Q_DECLARE_PRIVATE(UCListItemBase)
-    QScopedPointer<UCListItemBasePrivate> d_ptr;
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())

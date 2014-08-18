@@ -27,20 +27,27 @@ typedef QList<QQuickGradientStop*> StopList;
 /******************************************************************************
  * Divider
  */
-UCListItemDivider::UCListItemDivider(UCListItemBase *listItem)
-    : QObject(listItem)
+UCListItemDivider::UCListItemDivider(QObject *parent)
+    : QObject(parent)
     , m_visible(true)
     , m_thickness(UCUnits::instance().dp(1))
     , m_leftMargin(UCUnits::instance().gu(2))
     , m_rightMargin(UCUnits::instance().gu(2))
     , m_gradient(0)
     , m_color(QColor("#26000000"))
-    , m_listItem(listItem)
+    , m_listItem(0)
 {
 }
 UCListItemDivider::~UCListItemDivider()
 {
 }
+
+void UCListItemDivider::init(UCListItemBase *listItem)
+{
+    QQml_setParent_noEvent(this, listItem);
+    m_listItem = listItem;
+}
+
 
 QSGNode *UCListItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
 {
@@ -69,11 +76,18 @@ SIMPLE_PROPERTY(UCListItemDivider, qreal, leftMargin, m_listItem->update())
 SIMPLE_PROPERTY(UCListItemDivider, qreal, rightMargin, m_listItem->update())
 
 PROPERTY_GETTER(UCListItemDivider, QQuickGradient*, gradient)
-PROPERTY_SETTER_PTYPE(UCListItemDivider, QQuickGradient, gradient, gradientUpdate())
-PROPERTY_RESET(UCListItemDivider, gradient)
+CUSTOM_PROPERTY_SETTER_PTYPE(UCListItemDivider, QQuickGradient, gradient)
 {
-    if (m_gradient) {
-        QObject::disconnect(m_gradient, SIGNAL(updated()), m_listItem, SLOT(update()));
+    if (m_gradient != arg_gradient) {
+        if (m_gradient) {
+            QObject::disconnect(m_gradient, SIGNAL(updated()), m_listItem, SLOT(update()));
+        }
+        m_gradient = arg_gradient;
+        if (m_gradient) {
+            QObject::connect(m_gradient, SIGNAL(updated()), m_listItem, SLOT(update()));
+            m_listItem->update();
+        }
+        Q_EMIT gradientChanged();
     }
 }
 SIMPLE_PROPERTY(UCListItemDivider, QColor, color, m_listItem->update())
@@ -87,9 +101,9 @@ UCListItemBackground::UCListItemBackground(QQuickItem *parent)
     , m_pressedColor(Qt::yellow)
     , m_item(0)
 {
-    setFlag(QQuickItem::ItemHasContents, true);
+    setFlag(QQuickItem::ItemHasContents);
     // set the z-order to be above the main item
-    setZ(1);
+//    setZ(1);
 }
 
 SIMPLE_PROPERTY(UCListItemBackground, QColor, color, update())
@@ -133,19 +147,39 @@ QSGNode *UCListItemBackground::updatePaintNode(QSGNode *oldNode, UpdatePaintNode
 /******************************************************************************
  * ListItemBasePrivate
  */
-UCListItemBasePrivate::UCListItemBasePrivate(UCListItemBase *qq)
-    : q_ptr(qq)
+UCListItemBasePrivate::UCListItemBasePrivate()
+    : UCFocusScopePrivate()
     , background(new UCListItemBackground)
-    , divider(new UCListItemDivider(q_ptr))
-    , pressed(false)
+    , divider(new UCListItemDivider)
 {
+}
+UCListItemBasePrivate::~UCListItemBasePrivate()
+{
+}
+
+void UCListItemBasePrivate::init()
+{
+    Q_Q(UCListItemBase);
     background->setObjectName("ListItemHolder");
-    background->setParent(q_ptr);
-    background->setParentItem(q_ptr);
+    QQml_setParent_noEvent(background, q);
+    background->setParentItem(q);
+    divider->init(q);
     // content will be redirected to the background, therefore we must report
     // children changes as it would come from the main component
     QObject::connect(background, &UCListItemBackground::childrenChanged,
-                     q_ptr, &UCListItemBase::childrenChanged);
+                     q, &UCListItemBase::childrenChanged);
+    q->setFlag(QQuickItem::ItemHasContents);
+    // turn activeFocusOnMousePress on
+    activeFocusOnMousePress = true;
+    setFocusable();
+}
+
+void UCListItemBasePrivate::setFocusable()
+{
+    // alsways accept mouse events
+    Q_Q(UCListItemBase);
+    q->setAcceptedMouseButtons(Qt::LeftButton);
+    q->setFiltersChildMouseEvents(true);
 }
 
 void UCListItemBasePrivate::_q_rebound()
@@ -172,16 +206,18 @@ void UCListItemBasePrivate::listenToRebind(bool listen)
     if (flickable.isNull()) {
         return;
     }
+    Q_Q(UCListItemBase);
     if (listen) {
-        QObject::connect(flickable.data(), SIGNAL(movementStarted()), q_ptr, SLOT(_q_rebound()));
+        QObject::connect(flickable.data(), SIGNAL(movementStarted()), q, SLOT(_q_rebound()));
     } else {
-        QObject::disconnect(flickable.data(), SIGNAL(movementStarted()), q_ptr, SLOT(_q_rebound()));
+        QObject::disconnect(flickable.data(), SIGNAL(movementStarted()), q, SLOT(_q_rebound()));
     }
 }
 
 void UCListItemBasePrivate::resize()
 {
-    QRectF rect(q_ptr->boundingRect());
+    Q_Q(UCListItemBase);
+    QRectF rect(q->boundingRect());
     if (divider && divider->m_visible) {
         rect.setHeight(rect.height() - divider->m_thickness);
     }
@@ -220,11 +256,10 @@ void UCListItemBasePrivate::resize()
  * moved.
  */
 UCListItemBase::UCListItemBase(QQuickItem *parent)
-    : QQuickItem(parent)
-    , d_ptr(new UCListItemBasePrivate(this))
+    : UCFocusScope(*(new UCListItemBasePrivate), parent)
 {
-    setFlag(QQuickItem::ItemHasContents, true);
-    setAcceptedMouseButtons(Qt::LeftButton);
+    Q_D(UCListItemBase);
+    d->init();
 }
 
 UCListItemBase::~UCListItemBase()
@@ -233,7 +268,7 @@ UCListItemBase::~UCListItemBase()
 
 void UCListItemBase::itemChange(ItemChange change, const ItemChangeData &data)
 {
-    QQuickItem::itemChange(change, data);
+    UCFocusScope::itemChange(change, data);
     if (change == ItemParentHasChanged) {
         Q_D(UCListItemBase);
         // make sure we are not connected to the previous Flickable
@@ -255,7 +290,7 @@ void UCListItemBase::itemChange(ItemChange change, const ItemChangeData &data)
 
 void UCListItemBase::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
-    QQuickItem::geometryChanged(newGeometry, oldGeometry);
+    UCFocusScope::geometryChanged(newGeometry, oldGeometry);
     // resize background item
     Q_D(UCListItemBase);
     d->resize();
@@ -275,6 +310,7 @@ QSGNode *UCListItemBase::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *
 
 void UCListItemBase::mousePressEvent(QMouseEvent *event)
 {
+    // skip UCFocusScope mousePressEvent
     QQuickItem::mousePressEvent(event);
     Q_D(UCListItemBase);
     if (!d->flickable.isNull() && d->flickable->isMoving()) {
@@ -292,12 +328,15 @@ void UCListItemBase::mousePressEvent(QMouseEvent *event)
 
 void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
 {
-    QQuickItem::mouseReleaseEvent(event);
     Q_D(UCListItemBase);
     // set released
     if (d->pressed) {
         Q_EMIT clicked();
     }
+    // save pressed state as UCFocusScope resets it seemlessly
+    bool wasPressed = d->pressed;
+    UCFocusScope::mouseReleaseEvent(event);
+    d->pressed = wasPressed;
     d->setPressed(false);
 }
 
@@ -317,7 +356,7 @@ void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
  * \li never anchor left or right as it will block revealing the options.
  * \endlist
  */
-PROPERTY_GETTER_PRIVATE(UCListItemBase, UCListItemBackground*, background)
+PROPERTY_PRIVATE_GETTER(UCListItemBase, UCListItemBackground*, background)
 
 /*!
  * \qmlpropertygroup ::ListItemBase::divider
@@ -375,7 +414,7 @@ PROPERTY_GETTER_PRIVATE(UCListItemBase, UCListItemBackground*, background)
  * \li \c gradient: null
  * \endlist
  */
-PROPERTY_GETTER_PRIVATE(UCListItemBase, UCListItemDivider*, divider)
+PROPERTY_PRIVATE_GETTER(UCListItemBase, UCListItemDivider*, divider)
 
 /*!
  * \qmlproperty bool ListItemBase::pressed
@@ -384,7 +423,7 @@ PROPERTY_GETTER_PRIVATE(UCListItemBase, UCListItemDivider*, divider)
  * (false) when the mouse or touch is moved towards the vertical direction causing
  * the flickable to move.
  */
-PROPERTY_GETTER_PRIVATE(UCListItemBase, bool, pressed)
+PROPERTY_PRIVATE_GETTER(UCListItemBase, bool, pressed)
 
 /*!
  * \qmlproperty Flickable ListItemBase::flickable
@@ -422,7 +461,7 @@ PROPERTY_GETTER_PRIVATE(UCListItemBase, bool, pressed)
  *
  * In any other cases the flickable property will be set to null.
  */
-PROPERTY_GETTER_PRIVATE(UCListItemBase, QQuickFlickable*, flickable)
+PROPERTY_PRIVATE_GETTER(UCListItemBase, QQuickFlickable*, flickable)
 
 /*!
  * \qmlproperty list<Object> ListItemBase::data

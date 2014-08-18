@@ -802,6 +802,10 @@ plugins.qmltypes
     name: "quitWithError"
     Parameter { name: "errorMessage"; type: "string" }
     Method { name: "quitWithError" }
+    name: "UCFocusScope"
+    prototype: "QQuickItem"
+    exports: ["FocusScope 0.1", "FocusScope 1.0", "FocusScope 1.1"]
+    Property { name: "activeFocusOnMousePress"; revision: 1; type: "bool" }
     name: "UCInverseMouse"
     prototype: "UCMouse"
     exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
@@ -810,7 +814,7 @@ plugins.qmltypes
     Property { name: "color"; type: "QColor" }
     Property { name: "pressedColor"; type: "QColor" }
     name: "UCListItemBase"
-    prototype: "QQuickItem"
+    prototype: "UCFocusScope"
     exports: ["ListItemBase 1.1"]
     Property { name: "background"; type: "UCListItemBackground"; isReadonly: true; isPointer: true }
     Property { name: "divider"; type: "UCListItemDivider"; isReadonly: true; isPointer: true }
