@@ -102,9 +102,8 @@ ActionItem {
         // as it might occlude the newly assigned mouse area.
         hoverEnabled: true
 
-        Mouse.forwardTo: [button]
-
         onClicked: {
+            button.gainFocus();
             if (button.__acceptEvents) {
                 pressEffect.start()
                 button.clicked()

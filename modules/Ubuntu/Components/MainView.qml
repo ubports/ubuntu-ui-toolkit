@@ -135,11 +135,6 @@ import QtQuick.Window 2.0
 PageTreeNode {
     id: mainView
 
-    Connections {
-        target: window
-        onActiveFocusItemChanged: print("FOCUS:", window.activeFocusItem)
-    }
-
     /*!
       \preliminary
       The property holds the application's name, which must be the same as the
