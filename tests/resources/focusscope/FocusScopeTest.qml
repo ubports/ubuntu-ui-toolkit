@@ -88,8 +88,7 @@ Item {
                         focus: true
                         objectName: "mouseArea"
                         anchors.fill: parent
-                        onClicked: parent.gainFocus()
-//                        Mouse.forwardTo: [parent]
+                        onClicked: parent.gainFocus(Qt.MouseFocusReason)
                     }
                 }
             }
