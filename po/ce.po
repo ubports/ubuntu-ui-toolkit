@@ -1,4 +1,4 @@
-# Uyghur translation for ubuntu-ui-toolkit
+# Chechen translation for ubuntu-ui-toolkit
 # Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
 # This file is distributed under the same license as the ubuntu-ui-toolkit package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
@@ -8,18 +8,18 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-05-30 14:06+0200\n"
-"PO-Revision-Date: 2014-08-06 16:20+0000\n"
+"PO-Revision-Date: 2014-08-11 10:27+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Uyghur <ug@li.org>\n"
+"Language-Team: Chechen <ce@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-08-08 06:57+0000\n"
+"X-Launchpad-Export-Date: 2014-08-12 06:33+0000\n"
 "X-Generator: Launchpad (build 17156)\n"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:22
 msgid "NumberAnimation"
-msgstr "رەقەملىك جانلاندۇرۇم"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:25
@@ -32,62 +32,62 @@ msgstr "رەقەملىك جانلاندۇرۇم"
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:25
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:44
 msgid "Standard"
-msgstr "ئۆلچەملىك"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:56
 msgid "Standard Durations"
-msgstr "ئۆلچەملىك داۋاملىشى ۋاقتى"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:60
 msgid "Snap"
-msgstr "توغرىلا"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:96
 msgid "Fast"
-msgstr "تېز"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:132
 msgid "Slow"
-msgstr "ئاستا"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:157
 msgid "Sleepy"
-msgstr "ئۇيقۇلۇق"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:28
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:36
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:50
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:59
 msgid "Call"
-msgstr "چاقىر"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:33
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:26
 msgid "Color"
-msgstr "رەڭ"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:42
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:41
 msgid "Icon"
-msgstr "سىنبەلگە"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:56
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:73
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:41
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:75
 msgid "Disabled"
-msgstr "ئىناۋەتسىز قىلىنغان"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Dialog.qml:30
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:42
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:41
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:74
 msgid "Open"
-msgstr "ئاچ"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Icons.qml:25
 msgid "Scaling"
-msgstr "كۆرسىتىش نىسبىتى"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Icons.qml:50
 msgid "Colorization"
@@ -102,15 +102,15 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:83
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:95
 msgid "Label"
-msgstr "ئەن"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:31
 msgid "Subtitled"
-msgstr "قوشۇمچە ماۋزۇ"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:35
 msgid "Secondary label"
-msgstr "ئىككىنچى دەرىجىلىك ئەن"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:50
 msgid "Progression"
@@ -118,55 +118,55 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:59
 msgid "Single value"
-msgstr "يەككە قىممەت"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:63
 msgid "Value"
-msgstr "قىممەتى"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:68
 msgid "Multi value"
-msgstr "كۆپ قىممەت"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:72
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:84
 msgid "Value 1"
-msgstr "قىممەتى 1"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:73
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:85
 msgid "Value 2"
-msgstr "قىممەتى 2"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:74
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:86
 msgid "Value 3"
-msgstr "قىممەتى 3"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:75
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:87
 msgid "Value 4"
-msgstr "قىممەتى 4"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:80
 msgid "Value selector"
-msgstr "قىممەت تاللىغۇچ"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:92
 msgid "Control"
-msgstr "تىزگىن"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:103
 msgid "Removable"
-msgstr "كۆچمە"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:106
 msgid "Slide to remove"
-msgstr "سىيرىپ ئۆچۈرۈش"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:116
 msgid "Grouped list"
-msgstr "گۇرۇپپا تىزىملىكى"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:38
 msgid "Flickable"
@@ -174,35 +174,35 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:74
 msgid "Action #1"
-msgstr "مەشغۇلات #1"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:78
 msgid "Action #2"
-msgstr "مەشغۇلات #2"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:82
 msgid "Action #3"
-msgstr "مەشغۇلات #3"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:86
 msgid "Action #4"
-msgstr "مەشغۇلات #4"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:90
 msgid "Action #5"
-msgstr "مەشغۇلات #5"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:22
 msgid "Progress Bar"
-msgstr "سۈرئەت بالداق"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:45
 msgid "Infinite"
-msgstr "چەكسىز"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:55
 msgid "Activity Indicator"
-msgstr "ئاكتىپ كۆرسەتكۈچ"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:26
 msgid "The visual style of the Sheet is early work and thus clunky looking."
@@ -211,22 +211,22 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:51
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:84
 msgid "Title"
-msgstr "ماۋزۇ"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:32
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:45
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:60
 #, qt-format
 msgid "value = %1"
-msgstr "قىممىتى= %1"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:37
 msgid "Live Update"
-msgstr "رىئال يېڭىلاش"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:50
 msgid "Range"
-msgstr "دائىرە"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:47
 msgid "Type me in..."
@@ -234,19 +234,19 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:53
 msgid "Password"
-msgstr "ئىم"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:63
 msgid "Numbers"
-msgstr "سانلار"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:87
 msgid "Default"
-msgstr "كۆڭۈلدىكى"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:96
 msgid "Expanding"
-msgstr "كېڭەيتىلگەن"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:107
 msgid "Rich Text"
@@ -255,32 +255,32 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:60
 msgid "Unchecked"
-msgstr "تاللانمىغان"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:33
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:67
 msgid "Checked"
-msgstr "تاللانغان"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:44
 msgid "Image"
-msgstr "سۈرەت"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:57
 msgid "Radius"
-msgstr "رادىئۇس"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:87
 msgid "Sizes"
-msgstr "چوڭلۇقى"
+msgstr ""
 
 #: examples/unit-converter/unit-converter.qml:147
 msgid "Clear"
-msgstr "تازىلا"
+msgstr ""
 
 #: examples/unit-converter/unit-converter.qml:161
 msgid "Lengths"
-msgstr "ئۇزۇنلۇق"
+msgstr ""
 
 #: examples/unit-converter/unit-converter.qml:179
 msgid "Weights"
@@ -288,11 +288,11 @@ msgstr ""
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
-msgstr "ئىشلىتىش ئۇسۇلى: "
+msgstr ""
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
-msgstr "تاللانمىلار:"
+msgstr ""
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
@@ -311,80 +311,80 @@ msgstr ""
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:24
 msgid "Select All"
-msgstr "ھەممىنى تاللا"
+msgstr ""
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:29
 msgid "Select Word"
-msgstr "سۆز تاللا"
+msgstr ""
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:34
 msgid "Cut"
-msgstr "كەس"
+msgstr ""
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:39
 msgid "Copy"
-msgstr "كۆچۈر"
+msgstr ""
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:44
 msgid "Paste"
-msgstr "چاپلا"
+msgstr ""
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:49
 msgid "Undo"
-msgstr "يېنىۋال"
+msgstr ""
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:54
 msgid "Redo"
-msgstr "قايتىلا"
+msgstr ""
 
 #: modules/Ubuntu/Components/ToolbarActions.qml:86
 msgid "Back"
-msgstr "كەينى"
+msgstr ""
 
 #: tests/resources/pagestack/MyCustomPage.qml:21
 #: tests/resources/tabs/MyCustomPage.qml:21
 msgid "My custom page"
-msgstr "ئىختىيارى بەتلىرىم"
+msgstr ""
 
 #: tests/resources/pagestack/MyCustomPage.qml:33
 #: tests/resources/tabs/MyCustomPage.qml:33
 msgid ""
 "This is an external page\n"
 "with a locked toolbar."
-msgstr "بۇ سىرىتقى بەت"
+msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:38
 msgid "Root page"
-msgstr "غول بەت"
+msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:44
 msgid "Page one"
-msgstr "بىرىنچى بەت"
+msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:49
 msgid "External page"
-msgstr "سىرتقى بەت"
+msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:58
 msgid "First page"
-msgstr "باش بەت"
+msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:64
 msgid "Root page (again)"
-msgstr "غول بەت (قايتا)"
+msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:69
 msgid "Red rectangle"
-msgstr "قىزىل تىك تۆت بۇلۇڭ"
+msgstr ""
 
 #: tests/resources/tabs/Tabs.qml:32
 msgid "Simple page"
-msgstr "يەككە بەت"
+msgstr ""
 
 #: tests/resources/tabs/Tabs.qml:77
 msgid "External"
-msgstr "سىرتقى"
+msgstr ""
 
 #: tests/resources/tabs/Tabs.qml:85
 msgid "List view"
-msgstr "تىزىم كۆرۈنۈش"
+msgstr ""

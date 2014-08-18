@@ -92,6 +92,18 @@ private:
         return pAlarm1->rawData.compare(pAlarm2->rawData);
     }
 
+    bool findAlarm(const QString &message, UCAlarm &result)
+    {
+        QList<AlarmData> alarms = AlarmManager::instance().alarms();
+        Q_FOREACH(AlarmData i, alarms) {
+            if (i.message == message) {
+                UCAlarmPrivate::get(&result)->rawData = i;
+                return true;
+            }
+        }
+        return false;
+    }
+
 private Q_SLOTS:
 
     void initTestCase()
@@ -501,6 +513,18 @@ private Q_SLOTS:
         alarm.setDaysOfWeek((UCAlarm::DaysOfWeek)dow);
         alarm.setDate(QDateTime::currentDateTime().addSecs(3600));
         QCOMPARE((int)alarm.daysOfWeek(), dow);
+    }
+
+    void test_sound_saving() {
+        UCAlarm alarm(QDateTime::currentDateTime().addSecs(60), "test_onetime_sound");
+        alarm.setSound(QUrl("file:///usr/share/sounds/ubuntu/ringtones/Celestial.ogg"));
+        alarm.save();
+        waitForRequest(&alarm);
+
+        UCAlarm saved;
+        QVERIFY(findAlarm("test_onetime_sound", saved));
+        QCOMPARE(alarm, saved);
+        QCOMPARE(alarm.sound().toString(), saved.sound().toString());
     }
 };
 

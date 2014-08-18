@@ -409,7 +409,7 @@ Style.PageHeadStyle {
             var visibleActionList = [];
             for (var i in actions) {
                 var action = actions[i];
-                if (action.visible) {
+                if (action && action.hasOwnProperty("visible") && action.visible) {
                     visibleActionList.push(action);
                 }
             }
