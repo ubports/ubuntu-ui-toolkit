@@ -52,7 +52,7 @@
 #include "ucfocusscope.h"
 #include "uclistitem.h"
 #include "uclistitem_p.h"
-#include "ucviewitemoptions.h"
+#include "uclistitemoptions.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -192,7 +192,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCListItemBase, 1>(uri, 1, 1, "ListItemBase");
     qmlRegisterType<UCListItemBackground>();
     qmlRegisterType<UCListItemDivider>();
-    qmlRegisterType<UCViewItemOptions, 1>(uri, 1, 1, "ViewItemOptions");
+    qmlRegisterType<UCListItemOptions, 1>(uri, 1, 1, "ListItemOptions");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

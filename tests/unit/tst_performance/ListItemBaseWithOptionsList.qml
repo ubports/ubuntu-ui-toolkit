@@ -14,27 +14,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCVIEWITEMOPTIONS_P_H
-#define UCVIEWITEMOPTIONS_P_H
+import QtQuick 2.0
+import Ubuntu.Components 1.1
 
-#include "ucviewitemoptions.h"
-
-class UCViewItemOptionsPrivate {
-    Q_DECLARE_PUBLIC(UCViewItemOptions)
-public:
-    UCViewItemOptionsPrivate(UCViewItemOptions* qq);
-    static UCViewItemOptionsPrivate* get(UCViewItemOptions *options)
-    {
-        return options ? options->d_func() : 0;
+Column {
+    width: 800
+    height: 600
+    ListItemOptions {
+        id: options1
+        backgroundColor: "blue"
+    }
+    ListItemOptions {
+        id: options2
+        backgroundColor: "blue"
     }
 
-    UCViewItemOptions *q_ptr;
-    QQmlComponent *delegate;
-    QQuickItem *panel;
-    QColor backgroundColor;
-    QList<QObject*> options;
-
-    bool createPanel(bool isLeading);
-};
-
-#endif // UCVIEWITEMOPTIONS_P_H
+    Repeater {
+        model: 10000
+        ListItemBase {
+            trailingOptions: options1
+            leadingOptions: options2
+        }
+    }
+}

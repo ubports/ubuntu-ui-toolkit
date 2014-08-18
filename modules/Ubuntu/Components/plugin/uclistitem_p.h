@@ -26,7 +26,7 @@
 class QQuickFlickable;
 class UCListItemBackground;
 class UCListItemDivider;
-class UCViewItemOptions;
+class UCListItemOptions;
 class UCListItemBasePrivate : public UCFocusScopePrivate
 {
     Q_DECLARE_PUBLIC(UCListItemBase)
@@ -52,8 +52,8 @@ public:
     QPointer<QQuickFlickable> flickable;
     UCListItemBackground *background;
     UCListItemDivider *divider;
-    UCViewItemOptions *leadingOptions;
-    UCViewItemOptions *trailingOptions;
+    UCListItemOptions *leadingOptions;
+    UCListItemOptions *trailingOptions;
 };
 
 class UCListItemBackground : public QQuickItem

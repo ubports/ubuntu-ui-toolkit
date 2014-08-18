@@ -343,20 +343,20 @@ void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
 }
 
 /*!
- * \qmlproperty ViewItemOptions ListItemBase::leadingOptions
+ * \qmlproperty ListItemOptions ListItemBase::leadingOptions
  *
  * The property holds the options and its configuration to be revealed when swiped
  * from left to right.
  */
-SIMPLE_PRIVATE_PROPERTY_PTYPE(UCListItemBase, UCViewItemOptions, leadingOptions)
+SIMPLE_PRIVATE_PROPERTY_PTYPE(UCListItemBase, UCListItemOptions, leadingOptions)
 
 /*!
- * \qmlproperty ViewItemOptions ListItemBase::trailingOptions
+ * \qmlproperty ListItemOptions ListItemBase::trailingOptions
  *
  * The property holds the options and its configuration to be revealed when swiped
  * from right to left.
  */
-SIMPLE_PRIVATE_PROPERTY_PTYPE(UCListItemBase, UCViewItemOptions, trailingOptions)
+SIMPLE_PRIVATE_PROPERTY_PTYPE(UCListItemBase, UCListItemOptions, trailingOptions)
 
 /*!
  * \qmlpropertygroup ::ListItemBase::background

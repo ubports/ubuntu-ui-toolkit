@@ -14,21 +14,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.1
+#ifndef UCLISTITEMOPTIONS_H
+#define UCLISTITEMOPTIONS_H
 
-Column {
-    width: 800
-    height: 600
-    ViewItemOptions {
-        id: options1
-        backgroundColor: "blue"
-    }
+#include <QtCore/QObject>
+#include "uclistitem_p.h"
 
-    Repeater {
-        model: 10000
-        ViewItemBase {
-            trailingOptions: options1
-        }
-    }
-}
+class QQmlComponent;
+class UCListItemOptionsPrivate;
+class UCListItemOptions : public QObject
+{
+    Q_OBJECT
+    DECLARE_PRIVATE_PROPERTY_PTYPE(QQmlComponent, delegate)
+    DECLARE_PRIVATE_LISTPROPERTY(QObject, options)
+    DECLARE_PRIVATE_PROPERTY(QColor, backgroundColor)
+    Q_CLASSINFO("DefaultProperty", "options")
+public:
+    explicit UCListItemOptions(QObject *parent = 0);
+    ~UCListItemOptions();
+
+Q_SIGNALS:
+
+public Q_SLOTS:
+
+private:
+    Q_DECLARE_PRIVATE(UCListItemOptions)
+};
+
+#endif // UCLISTITEMOPTIONS_H

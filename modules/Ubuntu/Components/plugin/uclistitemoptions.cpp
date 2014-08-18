@@ -14,28 +14,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucviewitemoptions.h"
-#include "ucviewitemoptions_p.h"
+#include "uclistitemoptions.h"
+#include "uclistitemoptions_p.h"
 #include "uclistitem_p.h"
 
-UCViewItemOptionsPrivate::UCViewItemOptionsPrivate(UCViewItemOptions *qq)
-    : q_ptr(qq)
+UCListItemOptionsPrivate::UCListItemOptionsPrivate()
+    : QObjectPrivate()
     , delegate(0)
     , panel(0)
     , backgroundColor(Qt::red)
 {
 }
+UCListItemOptionsPrivate::~UCListItemOptionsPrivate()
+{
+}
 
-bool UCViewItemOptionsPrivate::createPanel(bool isLeading)
+bool UCListItemOptionsPrivate::createPanel(bool isLeading)
 {
     Q_UNUSED(isLeading)
-//    Q_Q(UCViewItemOptions);
+//    Q_Q(UCListItemOptions);
     return false;
 }
 
 /*!
- * \qmltype ViewItemOptions
- * \instantiates UCViewItemOptions
+ * \qmltype ListItemOptions
+ * \instantiates UCListItemOptions
  * \inherits QtQObject
  * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu
@@ -70,7 +73,7 @@ bool UCViewItemOptionsPrivate::createPanel(bool isLeading)
  *     width: units.gu(40)
  *     height: units.gu(71)
  *
- *     ViewItemModel {
+ *     ListItemOptions {
  *         id: commonOptions
  *         Action {
  *             iconName: "search"
@@ -85,7 +88,7 @@ bool UCViewItemOptionsPrivate::createPanel(bool isLeading)
  *     ListView {
  *         anchors.fill: parent
  *         model: 10000
- *         delegate: ViewItem {
+ *         delegate: ListItem {
  *             trailingOptions: commonOptions
  *         }
  *     }
@@ -93,29 +96,28 @@ bool UCViewItemOptionsPrivate::createPanel(bool isLeading)
  * \endqml
  */
 
-UCViewItemOptions::UCViewItemOptions(QObject *parent)
-    : QObject(parent)
-    , d_ptr(new UCViewItemOptionsPrivate(this))
+UCListItemOptions::UCListItemOptions(QObject *parent)
+    : QObject(*(new UCListItemOptionsPrivate), parent)
 {
 }
-UCViewItemOptions::~UCViewItemOptions()
+UCListItemOptions::~UCListItemOptions()
 {
 }
 
 /*!
- * \qmlproperty Component ViewItemOptions::delegate
+ * \qmlproperty Component ListItemOptions::delegate
  * Custom delegate which overrides the default one used by the ViewItem. The default
  * value is null.
  */
-SIMPLE_PRIVATE_PROPERTY_PTYPE(UCViewItemOptions, QQmlComponent, delegate)
+SIMPLE_PRIVATE_PROPERTY_PTYPE(UCListItemOptions, QQmlComponent, delegate)
 
 /*!
- * \qmlproperty list<Action> ViewItemOptions::options
+ * \qmlproperty list<Action> ListItemOptions::options
  * \default
  * The property holds the options to be displayed. It can hold instances cached or
  * declared in place. An example of cached options:
  * \qml
- * ViewItemOptions {
+ * ListItemOptions {
  *     id: cacedOptions
  *     options: [
  *         Action {
@@ -126,11 +128,11 @@ SIMPLE_PRIVATE_PROPERTY_PTYPE(UCViewItemOptions, QQmlComponent, delegate)
  * }
  * \endqml
  */
-LISTPROPERTY_PRIVATE_GETTER(UCViewItemOptions, QObject, options)
+LISTPROPERTY_PRIVATE_GETTER(UCListItemOptions, QObject, options)
 
 /*!
- * \qmlproperty color ViewItemOptions::backgroundColor
+ * \qmlproperty color ListItemOptions::backgroundColor
  * The color used to override the panel background color holding the visualized
  * options.
  */
-SIMPLE_PRIVATE_PROPERTY(UCViewItemOptions, QColor, backgroundColor)
+SIMPLE_PRIVATE_PROPERTY(UCListItemOptions, QColor, backgroundColor)

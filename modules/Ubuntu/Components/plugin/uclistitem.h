@@ -24,15 +24,15 @@
 class QQuickFlickable;
 class UCListItemBackground;
 class UCListItemDivider;
-class UCViewItemOptions;
+class UCListItemOptions;
 class UCListItemBasePrivate;
 class UCListItemBase : public UCFocusScope
 {
     Q_OBJECT
     DECLARE_PRIVATE_READONLY_PROPERTY(UCListItemBackground*, background, CONSTANT)
     DECLARE_PRIVATE_READONLY_PROPERTY(UCListItemDivider*, divider, DESIGNABLE true)
-    DECLARE_PRIVATE_PROPERTY_PTYPE(UCViewItemOptions, leadingOptions, DESIGNABLE false)
-    DECLARE_PRIVATE_PROPERTY_PTYPE(UCViewItemOptions, trailingOptions, DESIGNABLE false)
+    DECLARE_PRIVATE_PROPERTY_PTYPE(UCListItemOptions, leadingOptions, DESIGNABLE false)
+    DECLARE_PRIVATE_PROPERTY_PTYPE(UCListItemOptions, trailingOptions, DESIGNABLE false)
     DECLARE_PRIVATE_READONLY_PROPERTY(bool, pressed)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)

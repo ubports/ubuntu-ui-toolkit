@@ -70,8 +70,8 @@ HEADERS += plugin.h \
     ucfocusscope_p.h \
     uclistitem.h \
     uclistitem_p.h \
-    ucviewitemoptions.h \
-    ucviewitemoptions_p.h
+    uclistitemoptions.h \
+    uclistitemoptions_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -107,7 +107,7 @@ SOURCES += plugin.cpp \
     unixsignalhandler_p.cpp \
     ucfocusscope.cpp \
     uclistitem.cpp \
-    ucviewitemoptions.cpp
+    uclistitemoptions.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp
