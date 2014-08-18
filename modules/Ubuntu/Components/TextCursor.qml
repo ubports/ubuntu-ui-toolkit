@@ -52,10 +52,6 @@ Ubuntu.StyledItem {
 
     // override forceActiveFocus(reason) to forward re-focusing when popup closes
     // popups re-focus caller when are hidden
-    function forceActiveFocus(reason) {
-        inputHandler.input.forceActiveFocus(reason);
-    }
-
     // returns the mapped cursor position to a position relative to the main component
     function mappedCursorPosition(pos) {
         var cpos = cursorItem[pos];
@@ -78,18 +74,21 @@ Ubuntu.StyledItem {
         }
         // open context menu only for cursorPosition or selectionEnd
         if (positionProperty !== "selectionStart") {
+            var popup;
             if (handler.main.popover === undefined) {
                 // open the default one
-                PopupUtils.open(Qt.resolvedUrl("TextInputPopover.qml"), cursorItem,
+                popup = PopupUtils.open(Qt.resolvedUrl("TextInputPopover.qml"), cursorItem,
                                 {
                                     "target": handler.main
                                 })
             } else {
-                PopupUtils.open(handler.main.popover, cursorItem,
+                popup = PopupUtils.open(handler.main.popover, cursorItem,
                                 {
                                     "target": handler.main
                                 })
             }
+            // do not grab focus!
+            popup.__foreground.activeFocusOnMousePress = false;
         }
     }
 

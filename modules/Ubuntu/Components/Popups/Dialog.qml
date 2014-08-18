@@ -157,6 +157,7 @@ PopupBase {
 
     StyledItem {
         id: foreground
+        activeFocusOnMousePress: true
         width: Math.min(minimumWidth, dialog.width)
         anchors.centerIn: parent
 

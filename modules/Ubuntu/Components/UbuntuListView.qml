@@ -98,9 +98,9 @@ ListView {
       \internal
       Grab focus when moved, flicked or clicked
      */
-    onMovementStarted: root.forceActiveFocus(Qt.MouseFocusReason)
-    onFlickStarted: root.forceActiveFocus(Qt.MouseFocusReason)
-    Toolkit.Mouse.onClicked: root.forceActiveFocus(Qt.MouseFocusReason)
+    onMovementStarted: root.gainFocus(Qt.MouseFocusReason)
+    onFlickStarted: root.gainFocus(Qt.MouseFocusReason)
+    Toolkit.Mouse.onClicked: root.gainFocus(Qt.MouseFocusReason)
 
     /*!
       \preliminary

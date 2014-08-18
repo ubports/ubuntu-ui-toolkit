@@ -253,9 +253,8 @@ StyledItem {
                 }
             }
             // focus handling
-            onMoveStarted: if (picker.activeFocusOnMousePress) loader.item.forceActiveFocus(Qt.MouseFocusReason)
-            onFlickStarted: if (picker.activeFocusOnMousePress) loader.item.forceActiveFocus(Qt.MouseFocusReason)
-//            Mouse.onClicked: pView.forceActiveFocus(Qt.MouseFocusReason)
+            onMoveStarted: picker.gainFocus(Qt.MouseFocusReason)
+            onFlickStarted: picker.gainFocus(Qt.MouseFocusReason)
         }
 
         function moveToIndex(toIndex) {
@@ -294,8 +293,8 @@ StyledItem {
             }
             width: parent ? parent.width : 0
             clip: true
-            // grab focus when moved, flicked or only touched
             focus: true
+            Mouse.onClicked: picker.gainFocus()
 
             model: picker.model
             delegate: picker.delegate
@@ -355,8 +354,8 @@ StyledItem {
             }
             width: parent ? parent.width : 0
             clip: true
-            // grab focus when moved, flicked or only touched
             focus: true
+            Mouse.onClicked: picker.gainFocus(Qt.MouseFocusReason)
 
             model: picker.model
             delegate: picker.delegate

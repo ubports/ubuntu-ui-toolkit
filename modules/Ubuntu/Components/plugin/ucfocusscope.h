@@ -31,7 +31,7 @@ public:
     explicit UCFocusScope(QQuickItem *parent = 0);
 
 public Q_SLOTS:
-    Q_REVISION(1) void gainFocus();
+    Q_REVISION(1) void gainFocus(Qt::FocusReason reason = Qt::OtherFocusReason);
 
 protected:
     UCFocusScope(UCFocusScopePrivate &, QQuickItem *parent);

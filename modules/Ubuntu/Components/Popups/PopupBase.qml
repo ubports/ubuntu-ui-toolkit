@@ -163,19 +163,30 @@ OrientationHelper {
     onVisibleChanged: stateWrapper.state = (visible) ? 'opened' : 'closed'
     /*! \internal */
     onParentChanged: stateWrapper.rootItem = QuickUtils.rootItem(popupBase)
-    Component.onCompleted: stateWrapper.rootItem = QuickUtils.rootItem(popupBase);
+    Component.onCompleted: {
+        stateWrapper.saveActiveFocus();
+        stateWrapper.rootItem = QuickUtils.rootItem(popupBase);
+    }
 
     Item {
         id: stateWrapper
         property Item rootItem: QuickUtils.rootItem(popupBase)
 
-        function refocusCaller() {
-            if (popupBase.caller && popupBase.caller.activeFocusOnMousePress) {
-                popupBase.caller.forceActiveFocus(Qt.PopupFocusReason);
-            }
+        property Item prevFocus
+
+        function saveActiveFocus() {
+            prevFocus = window.activeFocusItem;
         }
 
-        onStateChanged: print("state", state)
+        function restoreActiveFocus() {
+            if (prevFocus) {
+                if (prevFocus.hasOwnProperty("activeFocusOnMousePress")) {
+                    prevFocus.gainFocus(Qt.PopupFocusReason);
+                } else {
+                    prevFocus.forceActiveFocus(Qt.PopupFocusReason);
+                }
+            }
+        }
 
         states: [
             State {
@@ -219,7 +230,7 @@ OrientationHelper {
                     ScriptAction {
                         script: {
                             popupBase.visible = false;
-                            stateWrapper.refocusCaller();
+                            stateWrapper.restoreActiveFocus();
                         }
                     }
                 }
