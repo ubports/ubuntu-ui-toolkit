@@ -17,9 +17,15 @@
 import QtQuick 2.2
 import Ubuntu.Components 1.1
 
-Item {
+FocusScope {
     width: units.gu(50)
     height: units.gu(100)
+    activeFocusOnMousePress: true
+
+    Connections {
+        target: window
+        onActiveFocusItemChanged: print("AF=", window.activeFocusItem)
+    }
 
     Column {
         width: parent.width

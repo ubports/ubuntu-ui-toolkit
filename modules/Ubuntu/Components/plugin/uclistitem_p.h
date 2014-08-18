@@ -37,6 +37,10 @@ public:
         Q_ASSERT(that);
         return that->d_func();
     }
+
+    // override setFocusable()
+    void setFocusable();
+
     void _q_rebound();
     void setPressed(bool pressed);
     void listenToRebind(bool listen);
