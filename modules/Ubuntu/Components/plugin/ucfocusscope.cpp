@@ -88,19 +88,21 @@ bool UCFocusScopePrivate::isParentFocusable()
  * import QtQuick 2.2
  * import Ubuntu.Components 1.1
  *
- * MainView {
+ * Item {
  *     width: units.gu(50)
  *     height: units.gu(100)
  *
- *     Page {
- *         title: "Non-focusable input"
- *         activeFocusOnMousePress: false
- *         TextField {
- *             text: "Focus won't be taken away."
+ *     FocusScope {
+ *         objectName: "passiveScope"
+ *         FocusScope {
+ *             objectName: "activeScope"
+ *             activeFocusOnMousePress: false
  *         }
- *         Button {
- *             text: "Press me"
- *         }
+ *     }
+ *
+ *     Connections {
+ *         target: window
+ *         onActiveFocusItemChanged: console.debug("focus on", window.activeFocusItem)
  *     }
  * }
  * \endqml
@@ -113,6 +115,17 @@ bool UCFocusScopePrivate::isParentFocusable()
  *
  * FocusScope {
  *     // this will give parsing error
+ *     activeFocusOnMousePress: true
+ * }
+ * \endqml
+ *
+ * So either change the order of imports or do named importing.
+ * \qml
+ * import Qubuntu.Components 1.1 as Toolkit
+ * import QtQuick 2.2
+ *
+ * Toolkit.FocusScope {
+ *     // no more parsing error
  *     activeFocusOnMousePress: true
  * }
  * \endqml
