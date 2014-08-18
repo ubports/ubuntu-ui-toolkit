@@ -12,34 +12,32 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCVIEWITEMOPTIONS_H
-#define UCVIEWITEMOPTIONS_H
+#ifndef UCFOCUSSCOPE_H
+#define UCFOCUSSCOPE_H
 
-#include <QtCore/QObject>
-#include "uclistitem_p.h"
+#include <QtQuick/QQuickItem>
+#include "ucglobals.h"
 
-class QQmlComponent;
-class UCViewItemOptionsPrivate;
-class UCViewItemOptions : public QObject
+class UCFocusScopePrivate;
+class UCFocusScope : public QQuickItem
 {
     Q_OBJECT
-    DECLARE_PRIVATE_PROPERTY_PTYPE(QQmlComponent, delegate)
-    DECLARE_PRIVATE_LISTPROPERTY(QObject, options)
-    DECLARE_PRIVATE_PROPERTY(QColor, backgroundColor)
-    Q_CLASSINFO("DefaultProperty", "options")
+    DECLARE_PRIVATE_PROPERTY(bool, activeFocusOnMousePress, REVISION 1)
 public:
-    explicit UCViewItemOptions(QObject *parent = 0);
-    ~UCViewItemOptions();
+    explicit UCFocusScope(QQuickItem *parent = 0);
 
-Q_SIGNALS:
-
-public Q_SLOTS:
+protected:
+    UCFocusScope(UCFocusScopePrivate &, QQuickItem *parent);
+protected:
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 
 private:
-    Q_DECLARE_PRIVATE(UCViewItemOptions)
-    QScopedPointer<UCViewItemOptionsPrivate> d_ptr;
+    Q_DECLARE_PRIVATE(UCFocusScope)
 };
 
-#endif // UCVIEWITEMOPTIONS_H
+#endif // UCFOCUSSCOPE_H

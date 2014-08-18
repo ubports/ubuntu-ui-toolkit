@@ -17,58 +17,63 @@
 #ifndef UCVIEWITEM_P_H
 #define UCVIEWITEM_P_H
 
-#include "ucviewitem.h"
+#include "uclistitem.h"
 #include "ucglobals.h"
+#include "ucfocusscope_p.h"
 #include <QtCore/QPointer>
 #include <QtQuick/private/qquickrectangle_p.h>
 
 class QQuickFlickable;
-class UCViewItemDivider;
-class UCViewItemBackground;
+class UCListItemBackground;
+class UCListItemDivider;
 class UCViewItemOptions;
-class UCViewItemBasePrivate
+class UCListItemBasePrivate : public UCFocusScopePrivate
 {
-    Q_DECLARE_PUBLIC(UCViewItemBase)
+    Q_DECLARE_PUBLIC(UCListItemBase)
 public:
-    UCViewItemBasePrivate(UCViewItemBase *qq);
+    UCListItemBasePrivate();
+    virtual ~UCListItemBasePrivate();
+    void init();
 
-    static inline UCViewItemBasePrivate *get(UCViewItemBase *that)
+    static inline UCListItemBasePrivate *get(UCListItemBase *that)
     {
         Q_ASSERT(that);
-        return that->d_ptr.data();
+        return that->d_func();
     }
+
+    // override setFocusable()
+    void setFocusable();
+
     void _q_rebound();
     void setPressed(bool pressed);
     void listenToRebind(bool listen);
     void resize();
 
-    UCViewItemBase *q_ptr;
     QPointer<QQuickFlickable> flickable;
-    UCViewItemBackground *background;
-    UCViewItemDivider *divider;
+    UCListItemBackground *background;
+    UCListItemDivider *divider;
     UCViewItemOptions *leadingOptions;
     UCViewItemOptions *trailingOptions;
-    bool pressed:1;
 };
 
-class UCViewItemBackground : public QQuickItem
+class UCListItemBackground : public QQuickItem
 {
     Q_OBJECT
     DECLARE_PROPERTY(QColor, color)
     DECLARE_PROPERTY(QColor, pressedColor)
 public:
-    explicit UCViewItemBackground(QQuickItem *parent = 0);
-    ~UCViewItemBackground();
+    explicit UCListItemBackground(QQuickItem *parent = 0);
+    ~UCListItemBackground();
 
 protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
 
 private:
-    UCViewItemBase *m_item;
+    UCListItemBase *m_item;
 };
 
-class UCViewItemDivider : public QObject
+class UCListItemDivider : public QObject
 {
     Q_OBJECT
     DECLARE_PROPERTY(bool, visible)
@@ -78,31 +83,25 @@ class UCViewItemDivider : public QObject
     DECLARE_PROPERTY_PTYPE(QQuickGradient, gradient)
     DECLARE_PROPERTY(QColor, color)
 public:
-    explicit UCViewItemDivider(UCViewItemBase *viewItem);
-    ~UCViewItemDivider();
+    explicit UCListItemDivider(QObject *parent = 0);
+    ~UCListItemDivider();
+    void init(UCListItemBase *listItem);
 
 protected:
     QSGNode *paint(QSGNode *paintNode, const QRectF &rect);
 
 private:
     void resizeAndUpdate() {
-        UCViewItemBasePrivate::get(m_viewItem)->resize();
-        m_viewItem->update();
+        UCListItemBasePrivate::get(m_listItem)->resize();
+        m_listItem->update();
     }
 
-    void gradientUpdate() {
-        if (m_gradient) {
-            QObject::connect(m_gradient, SIGNAL(updated()), m_viewItem, SLOT(update()));
-            m_viewItem->update();
-        }
-    }
-
-    UCViewItemBase *m_viewItem;
-    friend class UCViewItemBase;
-    friend class UCViewItemBasePrivate;
+    UCListItemBase *m_listItem;
+    friend class UCListItemBase;
+    friend class UCListItemBasePrivate;
 };
 
-QML_DECLARE_TYPE(UCViewItemDivider)
-QML_DECLARE_TYPE(UCViewItemBackground)
+QML_DECLARE_TYPE(UCListItemBackground)
+QML_DECLARE_TYPE(UCListItemDivider)
 
 #endif // UCVIEWITEM_P_H

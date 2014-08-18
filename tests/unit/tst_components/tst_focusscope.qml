@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,27 +14,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import QtTest 1.0
 import QtQuick 2.0
+import Ubuntu.Components 1.1
 
-BubbleShape {
-    property alias contentItem: content
+TestCase {
+     name: "Ubuntu.Components.FocusScope API"
 
-    target: styledItem.target
-    direction: styledItem.direction
-    clipContent: styledItem.clipContent
-    square: styledItem.square
+     FocusScope {
+         id: scope
+     }
 
-    onShowCompleted: styledItem.showCompleted()
-    onHideCompleted: styledItem.hideCompleted()
-
-    Item {
-        id: content
-        anchors.fill: parent
-
-        Connections {
-            target: styledItem
-            onShow: show()
-            onHide: hide()
-        }
-    }
+     function test_api() {
+         verify(scope.hasOwnProperty("activeFocusOnMousePress"), "This is not an Ubuntu.Components FocusScope!");
+     }
 }

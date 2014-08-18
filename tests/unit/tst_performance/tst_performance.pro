@@ -20,7 +20,7 @@ OTHER_FILES += \
     TextWithImportGrid.qml \
     TextWithImportPopupsGrid.qml \
     TextWithImportPopups.qml \
-    ViewItemList.qml \
     ItemList.qml \
-    ViewItemBaseList.qml \
+    ListItemList.qml \
+    ListItemBaseList.qml \
     ViewItemBaseWithOptionsList.qml

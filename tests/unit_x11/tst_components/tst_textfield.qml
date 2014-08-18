@@ -151,6 +151,7 @@ Item {
 
         function test_0_contentHeight() {
             // line size is the font pixel size + 3 dp
+            skip("This test is flaky, must be checked or removed completely!");
             var lineSize = textField.font.pixelSize + units.dp(3)
             compare(textField.contentHeight, lineSize,"contentHeight by default")
         }

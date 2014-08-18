@@ -16,7 +16,7 @@
 
 #include "ucviewitemoptions.h"
 #include "ucviewitemoptions_p.h"
-#include "ucviewitem_p.h"
+#include "uclistitem_p.h"
 
 UCViewItemOptionsPrivate::UCViewItemOptionsPrivate(UCViewItemOptions *qq)
     : q_ptr(qq)
@@ -28,11 +28,9 @@ UCViewItemOptionsPrivate::UCViewItemOptionsPrivate(UCViewItemOptions *qq)
 
 bool UCViewItemOptionsPrivate::createPanel(bool isLeading)
 {
-    Q_Q(UCViewItemOptions);
-    UCViewItem *viewItem = qobject_cast<UCViewItem*>(q->parent());
-    if (!panel) {
-        QQmlComponent component()
-    }
+    Q_UNUSED(isLeading)
+//    Q_Q(UCViewItemOptions);
+    return false;
 }
 
 /*!
@@ -109,9 +107,7 @@ UCViewItemOptions::~UCViewItemOptions()
  * Custom delegate which overrides the default one used by the ViewItem. The default
  * value is null.
  */
-PROPERTY_SETTER_PRIVATE_PTYPE(UCViewItemOptions, QQmlComponent, delegate)
-PROPERTY_GETTER_PRIVATE(UCViewItemOptions, QQmlComponent*, delegate)
-PROPERTY_RESET(UCViewItemOptions, delegate){}
+SIMPLE_PRIVATE_PROPERTY_PTYPE(UCViewItemOptions, QQmlComponent, delegate)
 
 /*!
  * \qmlproperty list<Action> ViewItemOptions::options
@@ -130,13 +126,11 @@ PROPERTY_RESET(UCViewItemOptions, delegate){}
  * }
  * \endqml
  */
-LISTPROPERTY_GETTER_PRIVATE(UCViewItemOptions, QObject, options)
+LISTPROPERTY_PRIVATE_GETTER(UCViewItemOptions, QObject, options)
 
 /*!
  * \qmlproperty color ViewItemOptions::backgroundColor
  * The color used to override the panel background color holding the visualized
  * options.
  */
-PROPERTY_GETTER_PRIVATE(UCViewItemOptions, QColor, backgroundColor)
-PROPERTY_SETTER_PRIVATE(UCViewItemOptions, QColor, backgroundColor)
-PROPERTY_RESET(UCViewItemOptions, backgroundColor){}
+SIMPLE_PRIVATE_PROPERTY(UCViewItemOptions, QColor, backgroundColor)

@@ -17,15 +17,20 @@
 import QtQuick 2.2
 import Ubuntu.Components 1.1
 
-Item {
+MainView {
     width: units.gu(50)
     height: units.gu(100)
+    activeFocusOnMousePress: true
+
+    Connections {
+        target: window
+        onActiveFocusItemChanged: print("AF=", window.activeFocusItem)
+    }
 
     Column {
         width: parent.width
-        ViewItem {
+        ListItem {
             id: testItem
-//            background.color: "green"
             onClicked: {
                 print("click")
                 units.gridUnit += 1;
@@ -33,7 +38,6 @@ Item {
             Label {
                 anchors.fill: parent
                 text: units.gridUnit + "PX/unit"
-//                color: "white"
             }
             leadingOptions: ViewItemOptions {
                 backgroundColor: "blue"
@@ -47,12 +51,10 @@ Item {
             height: units.gu(20)
             model: 100
             pressDelay: 0
-            delegate: ViewItem {
+            delegate: ListItem {
                 onClicked: print(" clicked")
                 divider.gradient: Gradient {
                     GradientStop { color: "green"; position: 0.0 }
-//                    GradientStop { color: "green"; position: 0.49 }
-//                    GradientStop { color: "yellow"; position: 0.5 }
                     GradientStop { color: "yellow"; position: 1.0 }
                 }
 
@@ -72,14 +74,12 @@ Item {
                 width: view.width
                 Repeater {
                     model: 100
-                    ViewItem {
+                    ListItem {
                         background {
                             pressedColor: "lime"
                         }
                         divider.gradient: Gradient {
                             GradientStop { color: "#26000000"; position: 0.0 }
-//                            GradientStop { color: "#26000000"; position: 0.49 }
-//                            GradientStop { color: "#14F3F3E7"; position: 0.5 }
                             GradientStop { color: "#14F3F3E7"; position: 1.0 }
                         }
                         Label {

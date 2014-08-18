@@ -70,7 +70,7 @@ void StateSaverBackend::initialize()
         applicationName = UCApplication::instance().applicationName();
     }
     m_archive = new QSettings(QString("%1/%2.state")
-                              .arg(QStandardPaths::standardLocations(QStandardPaths::TempLocation)[0])
+                              .arg(QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation))
                               .arg(applicationName), QSettings::NativeFormat);
     m_archive->setFallbacksEnabled(false);
 }

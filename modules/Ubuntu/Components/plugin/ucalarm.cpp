@@ -343,6 +343,13 @@ UCAlarm::~UCAlarm()
 {
 }
 
+bool UCAlarm::operator==(const UCAlarm &that) const
+{
+    Q_D(const UCAlarm);
+    AlarmData const dataThat = UCAlarmPrivate::get(&that)->rawData;
+    return d->rawData == dataThat;
+}
+
 /*!
  * \qmlproperty bool Alarm::enabled
  * The property specifies whether the alarm is enabled or not. Disable dalarms

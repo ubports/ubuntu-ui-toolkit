@@ -49,8 +49,9 @@
 #include "ucmouse.h"
 #include "ucinversemouse.h"
 #include "sortfiltermodel.h"
-#include "ucviewitem.h"
-#include "ucviewitem_p.h"
+#include "ucfocusscope.h"
+#include "uclistitem.h"
+#include "uclistitem_p.h"
 #include "ucviewitemoptions.h"
 
 #include <sys/types.h>
@@ -141,6 +142,7 @@ void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
 
 void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, int minor)
 {
+    qmlRegisterType<UCFocusScope>(uri, major, minor, "FocusScope");
     qmlRegisterSingletonType<QObject>(uri, major, minor, "UbuntuColors", registerUbuntuColors10);
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
@@ -182,13 +184,14 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<QAbstractItemModel>(uri, 1, 1, "QAbstractItemModel", "Not instantiable");
 
     // register 1.1 only API
+    qmlRegisterType<UCFocusScope, 1>(uri, 1, 1, "FocusScope");
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
     qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
-    // ViewItem and related types
-    qmlRegisterType<UCViewItemBase, 1>(uri, 1, 1, "ViewItemBase");
-    qmlRegisterType<UCViewItemBackground>();
-    qmlRegisterType<UCViewItemDivider>();
+    // ListItem and related types
+    qmlRegisterType<UCListItemBase, 1>(uri, 1, 1, "ListItemBase");
+    qmlRegisterType<UCListItemBackground>();
+    qmlRegisterType<UCListItemDivider>();
     qmlRegisterType<UCViewItemOptions, 1>(uri, 1, 1, "ViewItemOptions");
 }
 
