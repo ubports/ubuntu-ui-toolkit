@@ -125,20 +125,27 @@ Item {
             pageStack.clear();
         }
 
-//        function test_tabs_inside_stack_bug1187850() {
-//            pageStack.push(tabs);
-//            compare(pageStack.currentPage, tabs, "Tabs can be pushed on a PageStack");
-//            compare(tabs.active, true, "Tabs on top of a PageStack are active");
-//            compare(mainView.__propagated.header.__styleInstance.__tabBar, tabs.tabBar, "Pushing Tabs on PageStack updates the header contents");
-//            pageStack.push(page1);
-//            compare(pageStack.currentPage, page1, "A page can be pushed on top of a Tabs");
-//            compare(tabs.active, false, "Tabs on a PageStack, but not on top, are inactive");
-//            compare(mainView.__propagated.header.__styleInstance.__tabBar, null, "Contents of inactive Tabs is not applied to header");
-//            pageStack.pop();
-//            compare(tabs.active, true, "Tabs on top of PageStack is active");
-//            compare(mainView.__propagated.header.__styleInstance.__tabBar, tabs.tabBar, "Active Tabs controls header contents");
-//            pageStack.clear();
-//        }
+        function get_tabs_button() {
+            var button = findChild(mainView, "tabsButton");
+            if (!button.visible) return null;
+            return button;
+        }
+
+        function test_tabs_inside_stack_bug1187850() {
+            compare(get_tabs_button(), null, "Without tabs there is no visible tabs button.");
+            pageStack.push(tabs);
+            compare(pageStack.currentPage, tabs, "Tabs can be pushed on a PageStack");
+            compare(tabs.active, true, "Tabs on top of a PageStack are active");
+            compare(get_tabs_button().visible, true, "Pushing tabs on pagestack enables the tabs button");
+            pageStack.push(page1);
+            compare(pageStack.currentPage, page1, "A page can be pushed on top of a Tabs");
+            compare(tabs.active, false, "Tabs on a PageStack, but not on top, are inactive");
+            compare(get_tabs_button(), null, "Contents of inactive Tabs is not applied to header");
+            pageStack.pop();
+            compare(tabs.active, true, "Tabs on top of PageStack is active");
+            compare(get_tabs_button().visible, true, "Active Tabs controls header contents");
+            pageStack.clear();
+        }
 
         function test_pop_to_tabs_bug1316736() {
             pageStack.push(tabs);
