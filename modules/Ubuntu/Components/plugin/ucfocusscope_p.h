@@ -32,11 +32,11 @@ public:
     }
 
     UCFocusScopePrivate();
-    ~UCFocusScopePrivate();
+    virtual ~UCFocusScopePrivate();
     void init();
 
-    void setFocusable();
-    bool isParentNonFocusable();
+    virtual void setFocusable();
+    bool isParentFocusable();
 
 public:
     bool activeFocusOnMousePress:1;

@@ -44,11 +44,10 @@ void UCFocusScopePrivate::setFocusable()
     pressed = false;
 }
 
-bool UCFocusScopePrivate::isParentNonFocusable()
+bool UCFocusScopePrivate::isParentFocusable()
 {
     Q_Q(UCFocusScope);
     if (!activeFocusOnMousePress) {
-        qDebug() << "BREAK" << q;
         return false;
     }
     QQuickItem *pl = q->parentItem();
@@ -56,7 +55,7 @@ bool UCFocusScopePrivate::isParentNonFocusable()
         UCFocusScope *scope = qobject_cast<UCFocusScope*>(pl);
         if (scope) {
             UCFocusScopePrivate *pscope = UCFocusScopePrivate::get(scope);
-            return pscope->isParentNonFocusable();
+            return pscope->isParentFocusable();
         }
         pl = pl->parentItem();
     }
@@ -147,20 +146,24 @@ UCFocusScope::UCFocusScope(UCFocusScopePrivate &dd, QQuickItem *parent)
  */
 SIMPLE_PRIVATE_PROPERTY(UCFocusScope, bool, activeFocusOnMousePress, d->setFocusable())
 
+// grab pressed state
 void UCFocusScope::mousePressEvent(QMouseEvent *event)
 {
     QQuickItem::mousePressEvent(event);
     Q_D(UCFocusScope);
-    d->pressed = contains(event->localPos()) && d->isParentNonFocusable();
+    d->pressed = d->isParentFocusable();
+    event->setAccepted(d->pressed);
 }
-
+// check parent items for focusable and whether the mouse had been released over the
+// component.
 void UCFocusScope::mouseReleaseEvent(QMouseEvent *event)
 {
     QQuickItem::mouseReleaseEvent(event);
     Q_D(UCFocusScope);
-    if (d->pressed && contains(event->localPos())) {
+    if (d->pressed && !hasActiveFocus() && contains(event->localPos()) && d->isParentFocusable()) {
         forceActiveFocus(Qt::MouseFocusReason);
     }
+    d->pressed = false;
 }
 
 
