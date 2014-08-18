@@ -21,6 +21,7 @@
 
 #include <QtQuick/private/qquickitem_p.h>
 
+class QQuickMouseArea;
 class UCFocusScope;
 class UCFocusScopePrivate : public QQuickItemPrivate
 {
@@ -35,7 +36,7 @@ public:
     virtual ~UCFocusScopePrivate();
     void init();
 
-    virtual void setFocusable();
+    virtual void setFocusable(bool focus);
     bool isParentFocusable();
 
 public:
