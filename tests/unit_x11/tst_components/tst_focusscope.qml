@@ -28,15 +28,18 @@ Item {
 
         FocusScope {
             id: passiveScope
+            objectName: "passiveScope"
             width: units.gu(50)
             height: units.gu(50)
 
-            Item {
+            Rectangle {
                 width: height
                 height: units.gu(20)
+                color: "red"
+                anchors.centerIn: parent
 
                 FocusScope {
-                    objectName: "active_scope"
+                    objectName: "in_passive_scope"
                     activeFocusOnMousePress: true
                     anchors.fill: parent
                 }
@@ -44,16 +47,19 @@ Item {
         }
         FocusScope {
             id: activeScope
+            objectName: "activeScope"
             width: units.gu(50)
             height: units.gu(50)
             activeFocusOnMousePress: true
 
-            Item {
+            Rectangle {
                 width: height
                 height: units.gu(20)
+                color: "green"
+                anchors.centerIn: parent
 
                 FocusScope {
-                    objectName: "active_scope"
+                    objectName: "in_active_scope"
                     activeFocusOnMousePress: true
                     anchors.fill: parent
                 }
@@ -67,12 +73,12 @@ Item {
 
          function test_scope_focusing_data() {
              return [
-                 {tag: "main scope is active", mainScope: activeScope, focusing: true},
-                         {tag: "main scope is passive", mainScope: passiveScope, focusing: false},
+                 {tag: "main scope is passive", mainScope: passiveScope, innerScope: "in_passive_scope", focusing: false},
+                 {tag: "main scope is active", mainScope: activeScope, innerScope: "in_active_scope", focusing: true},
              ];
          }
          function test_scope_focusing(data) {
-             var innerScope = findChild(data.mainScope, "active_scope");
+             var innerScope = findChild(data.mainScope, data.innerScope);
              verify(innerScope, "Cannot reach inner scope!");
              var center = centerOf(innerScope);
              mouseClick(innerScope, center.x, center.y);
@@ -80,7 +86,6 @@ Item {
                  expectFailContinue(data.tag, "inner scope should not focus either.");
              }
              compare(innerScope.activeFocus, true, "Inner scope is not focused");
-             wait(800);
          }
     }
 }

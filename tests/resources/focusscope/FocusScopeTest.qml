@@ -30,6 +30,7 @@ Item {
 
         FocusScope {
             id: passiveScope
+            objectName: "passiveScope"
             width: units.gu(50)
             height: units.gu(50)
 
@@ -40,7 +41,7 @@ Item {
                 anchors.centerIn: parent
 
                 FocusScope {
-                    objectName: "active_scope"
+                    objectName: "in_passive_scope"
                     activeFocusOnMousePress: true
                     anchors.fill: parent
                 }
@@ -48,6 +49,7 @@ Item {
         }
         FocusScope {
             id: activeScope
+            objectName: "activeScope"
             width: units.gu(50)
             height: units.gu(50)
             activeFocusOnMousePress: true
@@ -59,7 +61,7 @@ Item {
                 anchors.centerIn: parent
 
                 FocusScope {
-                    objectName: "active_scope"
+                    objectName: "in_active_scope"
                     activeFocusOnMousePress: true
                     anchors.fill: parent
                 }
