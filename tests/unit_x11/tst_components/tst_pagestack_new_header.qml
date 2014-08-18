@@ -38,16 +38,10 @@ Item {
     Page {
         id: page1
         title: "Title 1"
-        tools: ToolbarItems {
-            id: tools1
-        }
     }
     Page {
         id: page2
         title: "Title 2"
-        tools: ToolbarItems {
-            id: tools2
-        }
     }
     Page {
         id: pageWithPage
@@ -65,6 +59,7 @@ Item {
             id: tab2
         }
     }
+
     UbuntuTestCase {
         name: "PageStackAPI"
         when: windowShown
@@ -73,7 +68,6 @@ Item {
         function initTestCase() {
             compare(pageStack.currentPage, null, "is not set by default");
             compare(pageStack.__propagated, mainView.__propagated, "propagated property of pageStack equals mainView.__propagated")
-//            compare(mainView.__propagated.toolbar.tools, null, "no tools by default");
             compare(mainView.__propagated.header.title, "", "empty title by default");
         }
 
