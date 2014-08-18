@@ -19,29 +19,30 @@
 
 #include "uclistitem.h"
 #include "ucglobals.h"
+#include "ucfocusscope_p.h"
 #include <QtCore/QPointer>
 
 class QQuickFlickable;
 class UCListItemBackground;
-class UCListItemBasePrivate
+class UCListItemBasePrivate : public UCFocusScopePrivate
 {
     Q_DECLARE_PUBLIC(UCListItemBase)
 public:
-    UCListItemBasePrivate(UCListItemBase *qq);
+    UCListItemBasePrivate();
+    virtual ~UCListItemBasePrivate();
+    void init();
 
     static inline UCListItemBasePrivate *get(UCListItemBase *that)
     {
         Q_ASSERT(that);
-        return that->d_ptr.data();
+        return that->d_func();
     }
     void _q_rebound();
     void setPressed(bool pressed);
     void listenToRebind(bool listen);
 
-    UCListItemBase *q_ptr;
     QPointer<QQuickFlickable> flickable;
     UCListItemBackground *background;
-    bool pressed:1;
 };
 
 class UCListItemBackground : public QQuickItem

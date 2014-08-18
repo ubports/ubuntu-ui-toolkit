@@ -75,18 +75,28 @@ QSGNode *UCListItemBackground::updatePaintNode(QSGNode *oldNode, UpdatePaintNode
 }
 
 
-UCListItemBasePrivate::UCListItemBasePrivate(UCListItemBase *qq)
-    : q_ptr(qq)
+UCListItemBasePrivate::UCListItemBasePrivate()
+    : UCFocusScopePrivate()
     , background(new UCListItemBackground)
-    , pressed(false)
 {
+}
+UCListItemBasePrivate::~UCListItemBasePrivate()
+{
+}
+
+void UCListItemBasePrivate::init()
+{
+    Q_Q(UCListItemBase);
     background->setObjectName("ListItemHolder");
-    background->setParent(q_ptr);
-    background->setParentItem(q_ptr);
+    background->setParent(q);
+    background->setParentItem(q);
     // content will be redirected to the background, therefore we must report
     // children changes as it would come from the main component
     QObject::connect(background, &UCListItemBackground::childrenChanged,
-                     q_ptr, &UCListItemBase::childrenChanged);
+                     q, &UCListItemBase::childrenChanged);
+    q->setFlag(QQuickItem::ItemHasContents);
+    // always accept any button, no matter if focusable or not
+    q->setAcceptedMouseButtons(Qt::LeftButton);
 }
 
 void UCListItemBasePrivate::_q_rebound()
@@ -152,11 +162,10 @@ void UCListItemBasePrivate::listenToRebind(bool listen)
  * moved.
  */
 UCListItemBase::UCListItemBase(QQuickItem *parent)
-    : QQuickItem(parent)
-    , d_ptr(new UCListItemBasePrivate(this))
+    : UCFocusScope(*(new UCListItemBasePrivate), parent)
 {
-    setFlag(QQuickItem::ItemHasContents, true);
-    setAcceptedMouseButtons(Qt::LeftButton);
+    Q_D(UCListItemBase);
+    d->init();
 }
 
 UCListItemBase::~UCListItemBase()
@@ -237,7 +246,7 @@ void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
  * \li never anchor left or right as it will block revealing the options.
  * \endlist
  */
-PROPERTY_GETTER_PRIVATE(UCListItemBase, UCListItemBackground*, background)
+PROPERTY_PRIVATE_GETTER(UCListItemBase, UCListItemBackground*, background)
 
 /*!
  * \qmlproperty bool ListItemBase::pressed
@@ -246,7 +255,7 @@ PROPERTY_GETTER_PRIVATE(UCListItemBase, UCListItemBackground*, background)
  * (false) when the mouse or touch is moved towards the vertical direction causing
  * the flickable to move.
  */
-PROPERTY_GETTER_PRIVATE(UCListItemBase, bool, pressed)
+PROPERTY_PRIVATE_GETTER(UCListItemBase, bool, pressed)
 
 /*!
  * \qmlproperty Flickable ListItemBase::flickable
@@ -284,7 +293,7 @@ PROPERTY_GETTER_PRIVATE(UCListItemBase, bool, pressed)
  *
  * In any other cases the flickable property will be set to null.
  */
-PROPERTY_GETTER_PRIVATE(UCListItemBase, QQuickFlickable*, flickable)
+PROPERTY_PRIVATE_GETTER(UCListItemBase, QQuickFlickable*, flickable)
 
 /*!
  * \qmlproperty list<Object> ListItemBase::data
