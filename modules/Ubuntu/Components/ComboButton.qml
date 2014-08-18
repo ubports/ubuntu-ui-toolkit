@@ -271,7 +271,6 @@ Button {
     AbstractButton {
         id: dropDown
         objectName: "combobutton_dropdown"
-
         anchors {
             right: parent.right
             top: parent.top

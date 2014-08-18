@@ -50,8 +50,6 @@ Ubuntu.StyledItem {
     property real caretX: caret ? caret.x : 0
     property real caretY: caret ? caret.y : 0
 
-    // override forceActiveFocus(reason) to forward re-focusing when popup closes
-    // popups re-focus caller when are hidden
     // returns the mapped cursor position to a position relative to the main component
     function mappedCursorPosition(pos) {
         var cpos = cursorItem[pos];

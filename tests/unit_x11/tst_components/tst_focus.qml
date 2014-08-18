@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,6 +20,7 @@ import Ubuntu.Test 1.0
 import Ubuntu.Components 1.1
 import Ubuntu.Components.Pickers 1.0
 import Ubuntu.Components.ListItems 1.0 as ListItem
+import Ubuntu.Components.Popups 1.0
 
 Item {
     id: main
@@ -88,11 +89,51 @@ Item {
                 color: "blue"
             }
         }
+        Button {
+            id: popoverTest
+            text: "Popovers"
+            property Item popover
+            property Component popoverComponent
+            onClicked: {
+                popover = PopupUtils.open(popoverComponent)
+            }
+        }
+    }
+
+    Component {
+        id: dialogComponent
+        Dialog {
+            id: dialog
+            title: "TestDialog"
+            Button {
+                text: "close"
+                onClicked: PopupUtils.close(dialog)
+            }
+        }
+    }
+
+    Component {
+        id: popoverComponent
+        Popover {
+            id: popover
+            contentWidth: units.gu(20)
+            contentHeight: item.height
+            ListItem.Standard {
+                id: item
+                text: "close"
+                onClicked: PopupUtils.close(popover)
+            }
+        }
     }
 
     UbuntuTestCase {
         name: "FocusingTests"
         when: windowShown
+
+        SignalSpy {
+            id: popupCloseSpy
+            signalName: "onDestruction"
+        }
 
         function initTestCase() {
             textField.forceActiveFocus();
@@ -100,9 +141,11 @@ Item {
         function cleanup() {
             // empty event buffer
             wait(200);
+            popupCloseSpy.clear();
+            popupCloseSpy.target = null;
         }
 
-        // make this as teh very first test executed
+        // make this as the very first test executed
         function test_0_transfer_focus_data() {
             return [
                 {tag: "TextArea", previousFocused: textField, focusOn: textArea, clickToDismiss: false},
@@ -165,9 +208,33 @@ Item {
             var center = centerOf(dropdownButton);
             mouseClick(dropdownButton, center.x, center.y);
             waitForRendering(comboButton);
-            compare(dropdownButton.focus, false, "dropdown button got focused!");
-            compare(comboButton.focus, true, "ComboButton had not been focused");
+            compare(dropdownButton.focus, true, "Dropdown button hasn't got focused!");
+            compare(comboButton.focus, true, "ComboButton hasn't been focused!");
             comboButton.expanded = false;
+        }
+
+        function test_popover_refocus_data() {
+            return [
+                {tag: "Dialog", component: dialogComponent},
+                {tag: "Popover", component: popoverComponent},
+            ];
+        }
+
+        function test_popover_refocus(data) {
+            popoverTest.popoverComponent = data.component;
+            var center = centerOf(popoverTest);
+            mouseClick(popoverTest, center.x, center.y);
+            verify(popoverTest.focus, "Button focus not gained.");
+            waitForRendering(popoverTest.popover);
+            popupCloseSpy.target = popoverTest.popover.Component;
+
+            var closeButton = findChildWithProperty(popoverTest.popover, "text", "close");
+            verify(closeButton, "Close button not accessible");
+            center = centerOf(closeButton);
+            mouseClick(closeButton, center.x, center.y);
+            verify(!popoverTest.focus, "Button focus not lost.");
+            popupCloseSpy.wait();
+            verify(popoverTest.focus, "Button focus not restored.");
         }
     }
 }
