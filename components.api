@@ -814,7 +814,7 @@ plugins.qmltypes
     Property { name: "color"; type: "QColor" }
     Property { name: "pressedColor"; type: "QColor" }
     name: "UCListItemBase"
-    prototype: "QQuickItem"
+    prototype: "UCFocusScope"
     exports: ["ListItemBase 1.1"]
     Property { name: "background"; type: "UCListItemBackground"; isReadonly: true; isPointer: true }
     Property { name: "pressed"; type: "bool"; isReadonly: true }
