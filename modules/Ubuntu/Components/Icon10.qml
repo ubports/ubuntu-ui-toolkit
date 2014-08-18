@@ -83,7 +83,8 @@ Item {
         visible: active
 
         // Whether or not a color has been set.
-        property bool active: keyColorOut != Qt.rgba(0.0, 0.0, 0.0, 0.0) && source
+        // TODO TIM: with teh && source below tests work (?) but incorrect icon color
+        property bool active: keyColorOut != Qt.rgba(0.0, 0.0, 0.0, 0.0) //&& source
 
         property Image source: active && image.status == Image.Ready ? image : null
         property color keyColorOut: Qt.rgba(0.0, 0.0, 0.0, 0.0)
