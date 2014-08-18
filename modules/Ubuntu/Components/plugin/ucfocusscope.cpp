@@ -215,12 +215,12 @@ UCFocusScope::UCFocusScope(UCFocusScopePrivate &dd, QQuickItem *parent)
  * The function is similar to \c forceActiveFocus except that it sets focus only
  * if all the ancestors have activeFocusOnMousePressed set.
  */
-void UCFocusScope::gainFocus()
+void UCFocusScope::gainFocus(Qt::FocusReason reason)
 {
     //call overloaded only if can activate!
     Q_D(UCFocusScope);
     if (d->isParentFocusable()) {
-        QQuickItem::forceActiveFocus();
+        QQuickItem::forceActiveFocus(reason);
     }
 }
 
