@@ -19,33 +19,38 @@
 
 #include "uclistitem.h"
 #include "ucglobals.h"
+#include "ucfocusscope_p.h"
 #include <QtCore/QPointer>
 #include <QtQuick/private/qquickrectangle_p.h>
 
 class QQuickFlickable;
 class UCListItemBackground;
 class UCListItemDivider;
-class UCListItemBasePrivate
+class UCListItemBasePrivate : public UCFocusScopePrivate
 {
     Q_DECLARE_PUBLIC(UCListItemBase)
 public:
-    UCListItemBasePrivate(UCListItemBase *qq);
+    UCListItemBasePrivate();
+    virtual ~UCListItemBasePrivate();
+    void init();
 
     static inline UCListItemBasePrivate *get(UCListItemBase *that)
     {
         Q_ASSERT(that);
-        return that->d_ptr.data();
+        return that->d_func();
     }
+
+    // override setFocusable()
+    void setFocusable();
+
     void _q_rebound();
     void setPressed(bool pressed);
     void listenToRebind(bool listen);
     void resize();
 
-    UCListItemBase *q_ptr;
     QPointer<QQuickFlickable> flickable;
     UCListItemBackground *background;
     UCListItemDivider *divider;
-    bool pressed:1;
 };
 
 class UCListItemBackground : public QQuickItem
@@ -75,8 +80,9 @@ class UCListItemDivider : public QObject
     DECLARE_PROPERTY_PTYPE(QQuickGradient, gradient)
     DECLARE_PROPERTY(QColor, color)
 public:
-    explicit UCListItemDivider(UCListItemBase *listItem);
+    explicit UCListItemDivider(QObject *parent = 0);
     ~UCListItemDivider();
+    void init(UCListItemBase *listItem);
 
 protected:
     QSGNode *paint(QSGNode *paintNode, const QRectF &rect);
