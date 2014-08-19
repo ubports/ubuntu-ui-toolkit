@@ -236,7 +236,20 @@ void UCFocusScope::gainFocus(Qt::FocusReason reason)
  *
  * The default value is \c false.
  */
-SIMPLE_PRIVATE_PROPERTY(UCFocusScope, bool, activeFocusOnMousePress, d->setFocusable(d->activeFocusOnMousePress))
+bool UCFocusScope::activefocusOnMousePress() const
+{
+    Q_D(const UCFocusScope);
+    return d->activeFocusOnMousePress;
+}
+void UCFocusScope::setActiveFocusOnMousePress(bool value)
+{
+    Q_D(UCFocusScope);
+    if (d->activeFocusOnMousePress == value)
+        return;
+    d->activeFocusOnMousePress = value;
+    d->setFocusable(d->activeFocusOnMousePress);
+    Q_EMIT activeFocusOnMousePressChanged();
+}
 
 // grab pressed state
 void UCFocusScope::mousePressEvent(QMouseEvent *event)
