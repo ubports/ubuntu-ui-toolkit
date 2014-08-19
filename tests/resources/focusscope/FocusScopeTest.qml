@@ -32,11 +32,11 @@ Item {
             id: passiveScope
             objectName: "passiveScope"
             width: units.gu(50)
-            height: units.gu(50)
+            height: units.gu(20)
 
             Rectangle {
                 width: height
-                height: units.gu(20)
+                height: units.gu(10)
                 color: "red"
                 anchors.centerIn: parent
 
@@ -51,12 +51,12 @@ Item {
             id: activeScope
             objectName: "activeScope"
             width: units.gu(50)
-            height: units.gu(50)
+            height: units.gu(20)
             activeFocusOnMousePress: true
 
             Rectangle {
                 width: height
-                height: units.gu(20)
+                height: units.gu(10)
                 color: "green"
                 anchors.centerIn: parent
 
@@ -64,6 +64,32 @@ Item {
                     objectName: "in_active_scope"
                     activeFocusOnMousePress: true
                     anchors.fill: parent
+                }
+            }
+        }
+        FocusScope {
+            id: activeScope2
+            objectName: "activeScope"
+            width: units.gu(50)
+            height: units.gu(20)
+            activeFocusOnMousePress: true
+
+            Rectangle {
+                width: height
+                height: units.gu(10)
+                color: "green"
+                anchors.centerIn: parent
+
+                FocusScope {
+                    objectName: "in_active_scope"
+                    activeFocusOnMousePress: true
+                    anchors.fill: parent
+                    MouseArea {
+                        focus: true
+                        objectName: "mouseArea"
+                        anchors.fill: parent
+                        onClicked: parent.gainFocus(Qt.MouseFocusReason)
+                    }
                 }
             }
         }

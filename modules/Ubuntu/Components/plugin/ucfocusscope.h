@@ -20,19 +20,29 @@
 #define UCFOCUSSCOPE_H
 
 #include <QtQuick/QQuickItem>
-#include "ucglobals.h"
 
 class UCFocusScopePrivate;
 class UCFocusScope : public QQuickItem
 {
     Q_OBJECT
-    DECLARE_PRIVATE_PROPERTY(bool, activeFocusOnMousePress, REVISION 1)
+    Q_PROPERTY(bool activeFocusOnMousePress
+               READ activefocusOnMousePress WRITE setActiveFocusOnMousePress
+               NOTIFY activeFocusOnMousePressChanged REVISION 1)
 public:
     explicit UCFocusScope(QQuickItem *parent = 0);
 
+    bool activefocusOnMousePress() const;
+    void setActiveFocusOnMousePress(bool value);
+
+public Q_SLOTS:
+    Q_REVISION(1) void gainFocus(Qt::FocusReason reason = Qt::OtherFocusReason);
+
+Q_SIGNALS:
+    void activeFocusOnMousePressChanged();
+
 protected:
     UCFocusScope(UCFocusScopePrivate &, QQuickItem *parent);
-protected:
+
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
 

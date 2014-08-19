@@ -65,7 +65,6 @@ HEADERS += plugin.h \
     ucinversemouse.h \
     ucmouse.h \
     unixsignalhandler_p.h \
-    ucglobals.h \
     ucfocusscope.h \
     ucfocusscope_p.h \
     uclistitem.h \
