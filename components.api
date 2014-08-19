@@ -450,8 +450,8 @@ StyledItem
     signal touched(bool onThumb)
     function formatValue(v)
     property internal __internals
-StyledItem 0.1 1.0
-FocusScope
+StyledItem 0.1 1.0 1.1
+Toolkit.FocusScope
     property Component style
     readonly property Item __styleInstance
 ComboButtonStyle 1.1
@@ -806,6 +806,10 @@ plugins.qmltypes
     prototype: "QQuickItem"
     exports: ["FocusScope 0.1", "FocusScope 1.0", "FocusScope 1.1"]
     Property { name: "activeFocusOnMousePress"; revision: 1; type: "bool" }
+    Method {
+    name: "gainFocus"
+    Parameter { name: "reason"; type: "Qt::FocusReason" }
+    Method { name: "gainFocus"; revision: 1 }
     name: "UCInverseMouse"
     prototype: "UCMouse"
     exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
