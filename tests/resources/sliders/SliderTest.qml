@@ -36,7 +36,6 @@ MainView {
             clip: true
             model: 10
             interactive: true
-            onInteractiveChanged: print(interactive)
             delegate: Standard {
                 control: Slider {
                     objectName: "testSlider" + index
