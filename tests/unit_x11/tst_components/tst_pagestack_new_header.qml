@@ -27,6 +27,7 @@ Item {
 
     MainView {
         id: mainView
+        anchors.fill: parent
         useDeprecatedToolbar: false
         PageStack {
             id: pageStack
