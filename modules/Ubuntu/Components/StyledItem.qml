@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.1 as Toolkit
 
 /*!
     \qmlabstract StyledItem
@@ -45,7 +45,7 @@ import Ubuntu.Components 1.1
 
     \sa {Theme}
 */
-FocusScope {
+Toolkit.FocusScope {
     id: styledItem
 
     /*!

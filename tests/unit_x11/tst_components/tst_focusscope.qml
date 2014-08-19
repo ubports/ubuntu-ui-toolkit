@@ -30,11 +30,11 @@ Item {
             id: passiveScope
             objectName: "passiveScope"
             width: units.gu(50)
-            height: units.gu(50)
+            height: units.gu(20)
 
             Rectangle {
                 width: height
-                height: units.gu(20)
+                height: units.gu(10)
                 color: "red"
                 anchors.centerIn: parent
 
@@ -49,12 +49,12 @@ Item {
             id: activeScope
             objectName: "activeScope"
             width: units.gu(50)
-            height: units.gu(50)
+            height: units.gu(20)
             activeFocusOnMousePress: true
 
             Rectangle {
                 width: height
-                height: units.gu(20)
+                height: units.gu(10)
                 color: "green"
                 anchors.centerIn: parent
 
@@ -62,6 +62,83 @@ Item {
                     objectName: "in_active_scope"
                     activeFocusOnMousePress: true
                     anchors.fill: parent
+                }
+            }
+        }
+        FocusScope {
+            id: activeScope1
+            objectName: "activeScope"
+            width: units.gu(50)
+            height: units.gu(20)
+            activeFocusOnMousePress: true
+
+            Rectangle {
+                width: height
+                height: units.gu(10)
+                color: "green"
+                anchors.centerIn: parent
+
+                FocusScope {
+                    objectName: "in_active_scope"
+                    activeFocusOnMousePress: true
+                    anchors.fill: parent
+                    MouseArea {
+                        focus: true
+                        objectName: "mouseArea"
+                        anchors.fill: parent
+                    }
+                }
+            }
+        }
+        FocusScope {
+            id: activeScope2
+            objectName: "activeScope"
+            width: units.gu(50)
+            height: units.gu(20)
+            activeFocusOnMousePress: true
+
+            Rectangle {
+                width: height
+                height: units.gu(10)
+                color: "green"
+                anchors.centerIn: parent
+
+                FocusScope {
+                    objectName: "in_active_scope"
+                    activeFocusOnMousePress: true
+                    anchors.fill: parent
+                    MouseArea {
+                        focus: true
+                        objectName: "mouseArea"
+                        anchors.fill: parent
+                        onClicked: parent.gainFocus()
+                    }
+                }
+            }
+        }
+        FocusScope {
+            id: activeScope3
+            objectName: "activeScope"
+            width: units.gu(50)
+            height: units.gu(20)
+            activeFocusOnMousePress: true
+
+            Rectangle {
+                width: height
+                height: units.gu(10)
+                color: "green"
+                anchors.centerIn: parent
+
+                FocusScope {
+                    objectName: "in_active_scope"
+                    activeFocusOnMousePress: true
+                    anchors.fill: parent
+                    MouseArea {
+                        focus: true
+                        objectName: "mouseArea"
+                        anchors.fill: parent
+                        Mouse.forwardTo: [parent]
+                    }
                 }
             }
         }
@@ -75,6 +152,9 @@ Item {
              return [
                  {tag: "main scope is passive", mainScope: passiveScope, innerScope: "in_passive_scope", focusing: false},
                  {tag: "main scope is active", mainScope: activeScope, innerScope: "in_active_scope", focusing: true},
+                 {tag: "MouseArea as child, suppressing", mainScope: activeScope1, innerScope: "mouseArea", focusing: false},
+                 {tag: "MouseArea as child, gaining", mainScope: activeScope2, innerScope: "mouseArea", focusing: true},
+                 {tag: "MouseArea as child, forwarding", mainScope: activeScope3, innerScope: "mouseArea", focusing: true},
              ];
          }
          function test_scope_focusing(data) {
