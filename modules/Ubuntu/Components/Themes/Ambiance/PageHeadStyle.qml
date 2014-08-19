@@ -32,7 +32,8 @@ Style.PageHeadStyle {
     objectName: "PageHeadStyle"
 
     // workaround because autopilot cannot select the SequentalAnimation
-    // Needed in AppHeader.wait_for_animation()
+    // Needed in AppHeader.wait_for_animation() autopilot proxy object and
+    //  in tst_pagestack_new_header.qml unit test.
     property bool animating: changeAnimation.running
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height

@@ -163,10 +163,7 @@ PageTreeNode {
     function push(page, properties) {
         if (internal.stack.size() > 0) internal.stack.top().active = false;
         internal.stack.push(internal.createWrapper(page, properties));
-
-        // update stack depth and then set the new active page
         internal.stackUpdated();
-//        internal.stack.top().active = true;
     }
 
     /*!
@@ -182,10 +179,7 @@ PageTreeNode {
         internal.stack.top().active = false;
         if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
         internal.stack.pop();
-
-        // update the stack depth and then set the new active page
         internal.stackUpdated();
-//        if (internal.stack.size() > 0) internal.stack.top().active = true;
     }
 
     /*!
