@@ -166,7 +166,7 @@ PageTreeNode {
 
         // update stack depth and then set the new active page
         internal.stackUpdated();
-        internal.stack.top().active = true;
+//        internal.stack.top().active = true;
     }
 
     /*!
@@ -185,7 +185,7 @@ PageTreeNode {
 
         // update the stack depth and then set the new active page
         internal.stackUpdated();
-        if (internal.stack.size() > 0) internal.stack.top().active = true;
+//        if (internal.stack.size() > 0) internal.stack.top().active = true;
     }
 
     /*!
@@ -220,8 +220,12 @@ PageTreeNode {
 
         function stackUpdated() {
             pageStack.depth = stack.size();
-            if (pageStack.depth > 0) currentPage = stack.top().object;
-            else currentPage = null;
+            if (pageStack.depth > 0) {
+                internal.stack.top().active = true;
+                currentPage = stack.top().object;
+            } else {
+                currentPage = null;
+            }
         }
     }
 
