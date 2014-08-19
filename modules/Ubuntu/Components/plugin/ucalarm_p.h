@@ -31,8 +31,8 @@ public:
     UCAlarmPrivate(UCAlarm *qq);
     ~UCAlarmPrivate();
 
-    static UCAlarmPrivate *get(UCAlarm *alarm) {
-        return alarm->d_func();
+    static UCAlarmPrivate *get(const UCAlarm *alarm) {
+        return const_cast<UCAlarm*>(alarm)->d_func();
     }
 
     void setDefaults();
