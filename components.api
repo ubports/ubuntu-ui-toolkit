@@ -448,7 +448,7 @@ StyledItem
     signal touched(bool onThumb)
     function formatValue(v)
     property internal __internals
-StyledItem 0.1 1.0
+StyledItem 0.1 1.0 1.1
 Toolkit.FocusScope
     property Component style
     readonly property Item __styleInstance
