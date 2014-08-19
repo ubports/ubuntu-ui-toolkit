@@ -126,13 +126,6 @@ StyledItem {
         when: slider.live
     }
 
-    Binding {
-        target: mouseArea.flickable
-        when: mouseArea.flickable && mouseArea.pressed
-        property: "interactive"
-        value: false
-    }
-
     MouseArea {
         id: mouseArea
         anchors.fill: parent
@@ -154,12 +147,19 @@ StyledItem {
                 if (pl.hasOwnProperty("flicking")) {
                     return pl;
                 }
-
                 pl = pl.parent;
             }
             return null;
         }
 
+        states: State {
+            name: "sliding"
+            when: mouseArea.flickable && mouseArea.pressed
+            PropertyChanges {
+                target: mouseArea.flickable
+                interactive: false
+            }
+        }
         function normalizedValueFromValue(value) {
             if (Qt.application.layoutDirection == Qt.RightToLeft) {
                 return MathUtils.clampAndProject(value, slider.minimumValue,
