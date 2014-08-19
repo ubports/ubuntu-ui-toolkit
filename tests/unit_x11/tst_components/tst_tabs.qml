@@ -16,322 +16,107 @@
 
 import QtQuick 2.0
 import QtTest 1.0
+import Ubuntu.Test 1.0
 import Ubuntu.Components 1.1
 
-Item {
-    id: testCase
+MainView {
+    id: mainView
     width: units.gu(50)
     height: units.gu(80)
 
     Tabs {
-        id: emptyTabs
-    }
-
-    MainView {
-        id: mainView
-        anchors.fill: parent
-        Tabs {
-            id: tabs
-            Tab {
-                id: tab1
-                title: "tab 1"
-                page: Page {
-                    id: page1
-                    Button {
-                        id: button
-                        anchors.centerIn: parent
-                        text: "click"
-                    }
-                }
-            }
-            Tab {
-                id: tab2
-                title: "tab 2"
-                page: Page {
-                    id: page2
-                }
-            }
-            Tab {
-                id: tab3
-                title: "tab 3"
-                page: Page {
-                    id: page3
-                }
-            }
-            Tab {
-                id: tabFlick1
-                title: "flick"
-                page: Page {
-                    Flickable {
-                        id: flickable1
-                        anchors.fill: parent
-                    }
-                }
-            }
-            Tab {
-                id: tabFlick2
-                title: "flick 2"
-                page: Page {
-                    Flickable {
-                        id: flickable2
-                        anchors.fill: parent
-                    }
-                }
-            }
-            Tab {
-                id: tabFlickLoader
-                title: "load"
-                page: Loader {
-                    id: loader
-                    sourceComponent: tabs.selectedTabIndex != 5 ? null : pageComponent
-                }
-            }
-            Tab {
-                id: tabNoFlickLoader
-                title: "loadNoFlick"
-                page: Loader {
-                    id: loaderNoFlick
-                    anchors {
-                        left: parent.left
-                        right: parent.right
-                        bottom: parent.bottom
-                    }
-                    // height compes from the loaded Page
-                    sourceComponent: tabs.selectedTabIndex === 6 ? pageComponentNoFlick : null
+        id: tabs
+        Tab {
+            id: tab1
+            title: "tab 1"
+            page: Page {
+                id: page1
+                Button {
+                    id: button
+                    anchors.centerIn: parent
+                    text: "click"
                 }
             }
         }
-        Component {
-            id: pageComponent
-            Page {
-                title: "Loaded page"
-                property Flickable flick: loadedFlickable
+        Tab {
+            id: tab2
+            title: "tab 2"
+            page: Page {
+                id: page2
+            }
+        }
+        Tab {
+            id: tab3
+            title: "tab 3"
+            page: Page {
+                id: page3
+            }
+        }
+        Tab {
+            id: tabFlick1
+            title: "flick"
+            page: Page {
                 Flickable {
-                    id: loadedFlickable
+                    id: flickable1
                     anchors.fill: parent
-                    contentHeight: 1000
                 }
             }
         }
-        Component {
-            id: pageComponentNoFlick
-            Page {
-                title: "Loaded page without flickable"
+        Tab {
+            id: tabFlick2
+            title: "flick 2"
+            page: Page {
+                Flickable {
+                    id: flickable2
+                    anchors.fill: parent
+                }
+            }
+        }
+        Tab {
+            id: tabFlickLoader
+            title: "load"
+            page: Loader {
+                id: loader
+                sourceComponent: tabs.selectedTabIndex != 5 ? null : pageComponent
+            }
+        }
+        Tab {
+            id: tabNoFlickLoader
+            title: "loadNoFlick"
+            page: Loader {
+                id: loaderNoFlick
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+                // height compes from the loaded Page
+                sourceComponent: tabs.selectedTabIndex === 6 ? pageComponentNoFlick : null
             }
         }
     }
-
-    ListModel {
-        id: inputModel
-        Component.onCompleted: {
-            append({ "name": "tab 1" });
-            insert(0, { "name": "tab 0" });
-            append({ "name": "tab 3" });
-            insert(2, { "name": "tab 2" });
-        }
-    }
-
-    Tabs {
-        id: tabsWithRepeater
-        Repeater {
-            objectName: "tabsRepeater"
-            id: tabsRepeater
-            model: inputModel
-            Tab {
-                title: name
+    Component {
+        id: pageComponent
+        Page {
+            title: "Loaded page"
+            property Flickable flick: loadedFlickable
+            Flickable {
+                id: loadedFlickable
+                anchors.fill: parent
+                contentHeight: 1000
             }
         }
     }
-
-    Tabs {
-        id: repeaterTabs
-
-        Repeater {
-            objectName: "repeater"
-            id: repeater
-            Tab {
-                title: modelData
-            }
+    Component {
+        id: pageComponentNoFlick
+        Page {
+            title: "Loaded page without flickable"
         }
     }
 
-    Tabs {
-        id: twoRepeaters
-
-        Repeater {
-            objectName: "firstRepeater"
-            id: firstRepeater
-            model: inputModel
-            Tab {
-                title: name
-            }
-        }
-
-        Repeater {
-            objectName: "secondRepeater"
-            id: secondRepeater
-            model: testCase.listModel
-            Tab {
-                title: modelData
-            }
-        }
-    }
-
-    property var listModel: ["tab #0", "tab #1", "tab #2", "tab #3"];
-
-    Tabs {
-        id: twinRepeaters
-        ListModel {
-            id: twinModel
-            Component.onCompleted: {
-                append({ "name": "twintab 1" });
-                insert(0, { "name": "twintab 0" });
-                append({ "name": "twintab 3" });
-                insert(2, { "name": "twintab 2" });
-            }
-        }
-        Repeater {
-            objectName: "tabsRepeater"
-            id: twinRepeater1
-            model: twinModel
-            Tab {
-                title: name
-            }
-        }
-        Repeater {
-            objectName: "tabsRepeater"
-            id: twinRepeater2
-            model: twinModel
-            Tab {
-                title: name
-            }
-        }
-    }
-
-    TestCase {
+    UbuntuTestCase {
         name: "TabsAPI"
         when: windowShown
-
-        /*
-          The following testcases are all related to bug #1253804
-          */
-        function test_tabOrder_bug1253804() {
-            var tabsModel = tabsWithRepeater.__model;
-
-            compare(tabsRepeater.count, inputModel.count, "Incorrect number of tabs in Tabs");
-            compare(tabsModel.count, tabsRepeater.count, "Incorrect number of tabs in TabBar");
-            for (var i=0; i < tabsModel.count; i++) {
-                compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles don't match for index "+i);
-            }
-
-            //shufle
-            inputModel.move(1, 2, 1);
-            inputModel.move(3, 0, 1);
-            inputModel.move(1, 3, 1);
-            // wait few miliseconds
-            wait(50);
-            for (i=0; i < tabsModel.count; i++) {
-                compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles after shuffling don't match for index "+i);
-            }
-
-            // set it to null
-            tabsRepeater.model = null;
-            compare(tabsWithRepeater.__model.count, 0, "There are still tabs left after repeater model is reset");
-        }
-
-        function test_repeaterTabs() {
-            repeater.model = inputModel;
-            var tabsModel = repeaterTabs.__model;
-
-            compare(repeater.count, inputModel.count, "Incorrect number of tabs in Tabs");
-            compare(tabsModel.count, repeater.count, "Incorrect number of tabs in TabBar");
-            for (var i=0; i < tabsModel.count; i++) {
-                compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles don't match for index "+i);
-            }
-
-            // clear repeaterTabs
-            repeater.model = null;
-            compare(repeaterTabs.__model.count, 0, "There are still tabs left after repeater model is reset");
-        }
-
-        function test_repeaterTabs_arrayAsModel() {
-            repeater.model = testCase.listModel;
-            var tabsModel = repeaterTabs.__model;
-
-            compare(repeater.count, testCase.listModel.length, "Incorrect number of tabs in Tabs");
-            compare(tabsModel.count, repeater.count, "Incorrect number of tabs in TabBar");
-            for (var i=0; i < tabsModel.count; i++) {
-                compare(tabsModel.get(i).title, testCase.listModel[i], "Tab titles don't match for index "+i);
-            }
-
-            // shuffling elements in an array is not detectable in Repeater
-            var x = testCase.listModel[1];
-            testCase.listModel[1] = testCase.listModel[0];
-            testCase.listModel[0] = x;
-            expectFailContinue("", "Array changes are not detected by repeaters");
-            compare(tabsModel.get(0).title, testCase.listModel[0], "Tab titles don't match for index 0");
-            expectFailContinue("", "Array changes are not detected by repeaters");
-            compare(tabsModel.get(1).title, testCase.listModel[1], "Tab titles don't match for index 0");
-
-            // clear repeaterTabs
-            repeater.model = null;
-            compare(repeaterTabs.__model.count, 0, "There are still tabs left after repeater model is reset");
-
-        }
-
-        function test_twoRepeaters() {
-            var tabsModel = twoRepeaters.__model;
-            var secondRepeaterModel = secondRepeater.model;
-
-            compare(tabsModel.count, firstRepeater.count + secondRepeater.count, "Incorrect number of tabs in TabBar");
-            for (var i = 0; i < firstRepeater.count; i++) {
-                compare(tabsModel.get(i).title, inputModel.get(i).name, "Tab titles don't match for index "+i);
-            }
-            for (i = firstRepeater.count; i < firstRepeater.count + secondRepeater.count; i++) {
-                compare(tabsModel.get(i).title, secondRepeaterModel[i - firstRepeater.count], "Tab titles don't match for index "+i);
-            }
-        }
-
-        function test_twinRepeaters() {
-            var tabsModel = twinRepeaters.__model;
-
-            compare(twinRepeater1.count, twinModel.count, "Incorrect number of tabs in the first repeater");
-            compare(twinRepeater2.count, twinModel.count, "Incorrect number of tabs in the second repeater");
-            compare(tabsModel.count, twinRepeater1.count + twinRepeater2.count, "Incorrect number of tabs in TabBar");
-            for (var j = 0; j < 2; j++) {
-                for (var i = 0; i < twinModel.count; i++) {
-                    var index = j * twinModel.count + i;
-                    compare(tabsModel.get(index).title, twinModel.get(i).name, "Tab titles don't match for Tabs index " + index);
-                }
-            }
-
-            //shuffle
-            twinModel.move(1, 2, 1);
-            twinModel.move(3, 0, 1);
-            twinModel.move(1, 3, 1);
-            // wait few miliseconds till Tabs update is realized
-            wait(50);
-
-            /* FIXME
-            for (var j = 0; j < 2; j++) {
-                for (var i = 0; i < twinModel.count; i++) {
-                    var index = j * twinModel.count + i;
-                    compare(tabsModel.get(index).title, twinModel.get(i).name, "Tab titles don't match for Tabs index " + index);
-                }
-            }
-            */
-
-            // set it to null
-            twinRepeater1.model = null;
-            twinRepeater2.model = null;
-            compare(twinRepeaters.__model.count, 0, "There are still tabs left after repeater model is reset");
-        }
-
-        function test_emptyTabs() {
-            compare(emptyTabs.selectedTabIndex, -1, "The default value for selectedTabIndex is -1 when there are no tabs");
-            compare(emptyTabs.selectedTab, null, "The default selected tab is null when there are no tabs");
-            compare(emptyTabs.currentPage, null, "The default currentPage is null when there are no tabs");
-        }
 
         /* FIXME
         function test_tabsDefaults() {
@@ -412,8 +197,10 @@ Item {
 
         function test_deactivateByAppInteraction() {
             tabs.tabBar.selectionMode = true;
+            tabs.selectedTabIndex = 0;
+            waitForRendering(tabs.tabBar, 400);
             compare(tabs.tabBar.selectionMode, true, "Tab bar can be put into selection mode");
-            mouseClick(button, units.gu(1), units.gu(1), Qt.LeftButton);
+            mouseClick(button, centerOf(button).x, centerOf(button).y);
             compare(tabs.tabBar.selectionMode, false, "Tab bar deactivated by interacting with the page contents");
         }
 
