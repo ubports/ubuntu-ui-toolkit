@@ -35,7 +35,7 @@ public:
     void setActiveFocusOnPress(bool value);
 
 public Q_SLOTS:
-    Q_REVISION(1) void requestFocus(Qt::FocusReason reason = Qt::OtherFocusReason);
+    Q_REVISION(1) bool requestFocus(Qt::FocusReason reason = Qt::OtherFocusReason);
 
 Q_SIGNALS:
     void activeFocusOnPressChanged();
@@ -44,7 +44,6 @@ protected:
     UCStyledItemBase(UCStyledItemBasePrivate &, QQuickItem *parent);
 
     void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
 
 private:
     Q_DECLARE_PRIVATE(UCStyledItemBase)

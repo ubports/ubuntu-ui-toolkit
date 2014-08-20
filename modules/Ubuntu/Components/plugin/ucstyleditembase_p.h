@@ -41,7 +41,6 @@ public:
 
 public:
     bool activeFocusOnPress:1;
-    bool pressed:1;
 };
 
 #endif // UCSTYLEDITEMBASE_P_H

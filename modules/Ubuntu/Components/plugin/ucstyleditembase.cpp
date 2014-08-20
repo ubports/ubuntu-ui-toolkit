@@ -21,7 +21,6 @@
 
 UCStyledItemBasePrivate::UCStyledItemBasePrivate()
     : activeFocusOnPress(false)
-    , pressed(false)
 {
 }
 
@@ -41,7 +40,6 @@ void UCStyledItemBasePrivate::setFocusable(bool focus)
     Q_Q(UCStyledItemBase);
     q->setAcceptedMouseButtons(focus ? (Qt::LeftButton | Qt::RightButton | Qt::MiddleButton) : Qt::NoButton);
     q->setFiltersChildMouseEvents(focus);
-    pressed = false;
 }
 
 bool UCStyledItemBasePrivate::isParentFocusable()
@@ -192,15 +190,17 @@ UCStyledItemBase::UCStyledItemBase(UCStyledItemBasePrivate &dd, QQuickItem *pare
  * \qmlmethod void StyledItemBase::requestFocus()
  * \since Ubuntu.Components 1.1
  * The function is similar to \c forceActiveFocus except that it sets focus only
- * if all the ancestors have activeFocusOnPressed set.
+ * if all the ancestors have activeFocusOnPressed set. Returns true if the request
+ * succeeded.
  */
-void UCStyledItemBase::requestFocus(Qt::FocusReason reason)
+bool UCStyledItemBase::requestFocus(Qt::FocusReason reason)
 {
-    //call overloaded only if can activate!
     Q_D(UCStyledItemBase);
-    if (d->isParentFocusable()) {
+    bool focusable = d->isParentFocusable();
+    if (focusable) {
         QQuickItem::forceActiveFocus(reason);
     }
+    return focusable;
 }
 
 /*!
@@ -320,24 +320,13 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
     Q_EMIT activeFocusOnPressChanged();
 }
 
-// grab pressed state
+// grab pressed state and focus if it can be
 void UCStyledItemBase::mousePressEvent(QMouseEvent *event)
 {
     QQuickItem::mousePressEvent(event);
     Q_D(UCStyledItemBase);
-    d->pressed = d->isParentFocusable();
-    event->setAccepted(d->pressed);
-}
-// check parent items for focusable and whether the mouse had been released over the
-// component.
-void UCStyledItemBase::mouseReleaseEvent(QMouseEvent *event)
-{
-    QQuickItem::mouseReleaseEvent(event);
-    Q_D(UCStyledItemBase);
-    if (d->pressed && !hasActiveFocus() && contains(event->localPos()) && d->isParentFocusable()) {
-        forceActiveFocus(Qt::MouseFocusReason);
-    }
-    d->pressed = false;
+    // accept the event if the focus was possible.
+    event->setAccepted(requestFocus(Qt::MouseFocusReason));
 }
 
 #include "moc_ucstyleditembase.cpp"

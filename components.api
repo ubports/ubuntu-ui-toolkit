@@ -869,7 +869,7 @@ plugins.qmltypes
     Method {
     name: "requestFocus"
     Parameter { name: "reason"; type: "Qt::FocusReason" }
-    Method { name: "requestFocus"; revision: 1 }
+    Method { name: "requestFocus"; revision: 1; type: "bool" }
     name: "UCUbuntuAnimation"
     prototype: "QObject"
     exports: ["UbuntuAnimation 0.1", "UbuntuAnimation 1.0"]
