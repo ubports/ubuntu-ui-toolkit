@@ -36,9 +36,9 @@ class TabsTestCase(tests.QMLFileAppTestCase):
 
     scenarios = [
         ('deprecated TabBar',
-        dict(test_qml_file_path=deprecated_tabbar_test_qml_file_path)),
+         dict(test_qml_file_path=deprecated_tabbar_test_qml_file_path)),
         ('new header',
-        dict(test_qml_file_path=new_header_test_qml_file_path))
+         dict(test_qml_file_path=new_header_test_qml_file_path))
     ]
 
     def test_tabs_custom_proxy_object(self):
