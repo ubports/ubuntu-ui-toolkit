@@ -93,7 +93,8 @@ QSGNode *UCListItemBackground::updatePaintNode(QSGNode *oldNode, UpdatePaintNode
 
 
 UCListItemBasePrivate::UCListItemBasePrivate()
-    : UCFocusScopePrivate()
+    : UCStyledItemBasePrivate()
+    , pressed(false)
     , background(new UCListItemBackground)
 {
 }
@@ -112,8 +113,8 @@ void UCListItemBasePrivate::init()
     QObject::connect(background, &UCListItemBackground::childrenChanged,
                      q, &UCListItemBase::childrenChanged);
     q->setFlag(QQuickItem::ItemHasContents);
-    // turn activeFocusOnMousePress on
-    activeFocusOnMousePress = true;
+    // turn activeFocusOnPress on
+    activeFocusOnPress = true;
     setFocusable();
 }
 
@@ -121,7 +122,7 @@ void UCListItemBasePrivate::setFocusable()
 {
     // alsways accept mouse events
     Q_Q(UCListItemBase);
-    q->setAcceptedMouseButtons(Qt::LeftButton);
+    q->setAcceptedMouseButtons(Qt::LeftButton | Qt::MiddleButton | Qt::RightButton);
     q->setFiltersChildMouseEvents(true);
 }
 
@@ -188,7 +189,7 @@ void UCListItemBasePrivate::listenToRebind(bool listen)
  * moved.
  */
 UCListItemBase::UCListItemBase(QQuickItem *parent)
-    : UCFocusScope(*(new UCListItemBasePrivate), parent)
+    : UCStyledItemBase(*(new UCListItemBasePrivate), parent)
 {
     Q_D(UCListItemBase);
     d->init();
@@ -200,7 +201,7 @@ UCListItemBase::~UCListItemBase()
 
 void UCListItemBase::itemChange(ItemChange change, const ItemChangeData &data)
 {
-    UCFocusScope::itemChange(change, data);
+    UCStyledItemBase::itemChange(change, data);
     if (change == ItemParentHasChanged) {
         Q_D(UCListItemBase);
         // make sure we are not connected to the previous Flickable
@@ -222,7 +223,7 @@ void UCListItemBase::itemChange(ItemChange change, const ItemChangeData &data)
 
 void UCListItemBase::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
-    UCFocusScope::geometryChanged(newGeometry, oldGeometry);
+    UCStyledItemBase::geometryChanged(newGeometry, oldGeometry);
     // resize background item
     Q_D(UCListItemBase);
     QRectF rect(boundingRect());
@@ -230,8 +231,7 @@ void UCListItemBase::geometryChanged(const QRectF &newGeometry, const QRectF &ol
 }
 void UCListItemBase::mousePressEvent(QMouseEvent *event)
 {
-    // skip UCFocusScope mousePressEvent
-    QQuickItem::mousePressEvent(event);
+    UCStyledItemBase::mousePressEvent(event);
     Q_D(UCListItemBase);
     if (!d->flickable.isNull() && d->flickable->isMoving()) {
         // while moving, we cannot select any items
@@ -255,7 +255,7 @@ void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
     }
     // save pressed state as UCFocusScope resets it seemlessly
     bool wasPressed = d->pressed;
-    UCFocusScope::mouseReleaseEvent(event);
+    UCStyledItemBase::mouseReleaseEvent(event);
     d->pressed = wasPressed;
     d->setPressed(false);
 }

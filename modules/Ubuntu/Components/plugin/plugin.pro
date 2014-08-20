@@ -64,8 +64,8 @@ HEADERS += plugin.h \
     ucinversemouse.h \
     ucmouse.h \
     unixsignalhandler_p.h \
-    ucfocusscope.h \
-    ucfocusscope_p.h \
+    ucstyleditembase.h \
+    ucstyleditembase_p.h \
     uclistitem.h \
     uclistitem_p.h
 
@@ -101,7 +101,7 @@ SOURCES += plugin.cpp \
     ucurihandler.cpp \
     ucmousefilters.cpp \
     unixsignalhandler_p.cpp \
-    ucfocusscope.cpp \
+    ucstyleditembase.cpp \
     uclistitem.cpp
 
 # adapters

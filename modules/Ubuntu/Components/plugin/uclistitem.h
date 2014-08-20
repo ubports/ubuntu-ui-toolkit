@@ -18,11 +18,11 @@
 #define UCLISTITEM_H
 
 #include <QtQuick/QQuickItem>
-#include "ucfocusscope.h"
+#include "ucstyleditembase.h"
 
 class UCListItemBackground;
 class UCListItemBasePrivate;
-class UCListItemBase : public UCFocusScope
+class UCListItemBase : public UCStyledItemBase
 {
     Q_OBJECT
     Q_PROPERTY(UCListItemBackground *background READ background CONSTANT)
