@@ -23,6 +23,7 @@ Item {
     property int iconWidth: units.gu(2)
     property int iconHeight: units.gu(2)
 
+    implicitWidth: label.paintedWidth
     anchors.fill: parent
 
     Item {

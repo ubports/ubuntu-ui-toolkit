@@ -14,35 +14,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.0
 import Ubuntu.Components 1.1
+import Ubuntu.Components.ListItems 0.1 as ListItems
 
-AbstractButton {
-    id: button
+MainView {
 
-    property real iconWidth: units.gu(2.5)
-    property real iconHeight: iconWidth
+    width: units.gu(60)
+    height: units.gu(80)
+    objectName: 'mainView'
 
-    width: visible ? units.gu(5) : 0
-    height: parent ? parent.height : undefined
-
-    property alias color: icon.color
-
-    Rectangle {
-        visible: button.pressed
+    GridView {
+        objectName: 'testListView'
         anchors.fill: parent
-        color: Theme.palette.selected.background
-    }
+        clip: true
+        model: 20
 
-    Icon {
-        id: icon
-        anchors {
-            centerIn: parent
+        delegate: ListItems.Standard {
+            objectName: 'testListElement%1'.arg(index)
+            text: 'test list element %1'.arg(index)
+            height: units.gu(5)
+            width: units.gu(15)
         }
-        width: button.iconWidth
-        height: button.iconHeight
-        source: button.iconSource
-        color: Qt.rgba(0, 0, 0, 0)
-        opacity: button.enabled ? 1.0 : 0.3
     }
 }

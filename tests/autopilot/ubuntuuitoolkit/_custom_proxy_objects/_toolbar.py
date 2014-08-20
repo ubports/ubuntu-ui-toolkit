@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 
 class Toolbar(_common.UbuntuUIToolkitCustomProxyObjectBase):
-    """Toolbar Autopilot emulator."""
+    """Toolbar Autopilot custom proxy object."""
 
     @autopilot_logging.log_action(logger.info)
     def open(self):
