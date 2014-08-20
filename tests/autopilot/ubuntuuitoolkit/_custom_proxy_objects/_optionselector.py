@@ -23,7 +23,7 @@ from ubuntuuitoolkit._custom_proxy_objects import _common
 
 
 class OptionSelector(_common.UbuntuUIToolkitCustomProxyObjectBase):
-    """OptionSelector Autopilot emulator"""
+    """OptionSelector Autopilot custom proxy object"""
 
     def get_option_count(self):
         """Gets the number of items in the option selector"""

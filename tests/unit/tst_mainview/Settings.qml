@@ -14,35 +14,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.0
 import Ubuntu.Components 1.1
+import Qt.labs.settings 1.0
 
-AbstractButton {
-    id: button
+MainView {
+    objectName: "settings"
+    applicationName: "red.riding.hood"
 
-    property real iconWidth: units.gu(2.5)
-    property real iconHeight: iconWidth
-
-    width: visible ? units.gu(5) : 0
-    height: parent ? parent.height : undefined
-
-    property alias color: icon.color
-
-    Rectangle {
-        visible: button.pressed
-        anchors.fill: parent
-        color: Theme.palette.selected.background
+    Settings {
+        property alias nickname: textField.text
     }
 
-    Icon {
-        id: icon
-        anchors {
-            centerIn: parent
-        }
-        width: button.iconWidth
-        height: button.iconHeight
-        source: button.iconSource
-        color: Qt.rgba(0, 0, 0, 0)
-        opacity: button.enabled ? 1.0 : 0.3
+    TextField {
+        id: textField
+        objectName: "textfield"
+        text: "Red"
     }
 }
