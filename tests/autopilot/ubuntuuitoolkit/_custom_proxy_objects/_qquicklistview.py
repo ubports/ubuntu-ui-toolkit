@@ -68,11 +68,10 @@ class QQuickListView(_flickable.QQuickFlickable):
 
         containers = self._get_containers()
         while not fail_condition():
-            swipe_method(containers)
             try:
                 return self.select_single(objectName=object_name)
             except dbus.StateNotFoundError:
-                pass
+                swipe_method(containers)
         raise _common.ToolkitException(
             'List element with objectName "{}" not found.'.format(object_name))
 
