@@ -81,19 +81,6 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
         if not self.is_empty():
             raise _common.ToolkitException('Failed to clear the text field.')
 
-    def _go_to_end(self):
-        # XXX Here we are cheating because the on-screen keyboard doesn't have
-        # an END key. --elopio - 2014-08-20
-        self.keyboard.press_and_release('End')
-
-    def _delete_one_character(self):
-        original_text = self.text
-        # We delete with backspace because the on-screen keyboard has
-        # that key.
-        self.keyboard.press_and_release('BackSpace')
-        if len(self.text) != len(original_text) - 1:
-            raise _common.ToolkitException('Failed to delete one character.')
-
     def _select_all(self):
         if not self._is_all_text_selected():
             # right click is needed
@@ -106,3 +93,16 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     def _is_all_text_selected(self):
         return self.text == self.selectedText
+
+    def _go_to_end(self):
+        # XXX Here we are cheating because the on-screen keyboard doesn't have
+        # an END key. --elopio - 2014-08-20
+        self.keyboard.press_and_release('End')
+
+    def _delete_one_character(self):
+        original_text = self.text
+        # We delete with backspace because the on-screen keyboard has
+        # that key.
+        self.keyboard.press_and_release('BackSpace')
+        if len(self.text) != len(original_text) - 1:
+            raise _common.ToolkitException('Failed to delete one character.')
