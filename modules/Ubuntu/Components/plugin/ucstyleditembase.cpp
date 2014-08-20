@@ -32,7 +32,7 @@ UCStyledItemBasePrivate::~UCStyledItemBasePrivate()
 void UCStyledItemBasePrivate::init()
 {
     Q_Q(UCStyledItemBase);
-    q->setFlag(QQuickItem::ItemIsStyledItemBase);
+    q->setFlag(QQuickItem::ItemIsFocusScope);
 }
 
 
