@@ -14,6 +14,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+try:
+    from unittest import mock
+except ImportError:
+    import mock
+
 from autopilot import platform
 from testtools.matchers import GreaterThan
 
@@ -55,7 +60,6 @@ MainView {
 
     def test_clear_with_multiple_lines_on_touch(self):
         # This is a regrestion test for http://pad.lv/1359167
-        from unittest import mock
         self.simple_text_area.write(
             'Long text that will make it wrap into multiple lines.')
         self.assertThat(self.simple_text_area.lineCount, GreaterThan(1))
