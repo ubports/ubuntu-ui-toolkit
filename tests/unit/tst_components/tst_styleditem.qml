@@ -15,17 +15,18 @@
  */
 
 import QtTest 1.0
-import QtQuick 2.0
 import Ubuntu.Components 1.1
+import QtQuick 2.0
 
 TestCase {
-     name: "Ubuntu.Components.FocusScope API"
+     name: "StyledItemAPI"
 
-     FocusScope {
+     StyledItem {
          id: scope
      }
 
      function test_api() {
-         verify(scope.hasOwnProperty("activeFocusOnMousePress"), "This is not an Ubuntu.Components FocusScope!");
+         verify(scope.hasOwnProperty("activeFocusOnPress"), "missing activeFocusOnPressed!");
+         verify(scope.hasOwnProperty("requestFocus"), "missing requestFocus()!");
      }
 }

@@ -12,20 +12,35 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-import QtTest 1.0
-import Ubuntu.Components 1.1
-import QtQuick 2.0
+#ifndef UCSTYLEDITEMBASE_P_H
+#define UCSTYLEDITEMBASE_P_H
 
-TestCase {
-     name: "Ubuntu.Components.FocusScope API"
+#include <QtQuick/private/qquickitem_p.h>
 
-     FocusScope {
-         id: scope
-     }
+class QQuickMouseArea;
+class UCStyledItemBase;
+class UCStyledItemBasePrivate : public QQuickItemPrivate
+{
+    Q_DECLARE_PUBLIC(UCStyledItemBase)
+public:
 
-     function test_api() {
-         verify(!scope.hasOwnProperty("activeFocusOnMousePress"), "This is not an QtQuick FocusScope!");
-     }
-}
+    static UCStyledItemBasePrivate *get(UCStyledItemBase *item) {
+        return item->d_func();
+    }
+
+    UCStyledItemBasePrivate();
+    virtual ~UCStyledItemBasePrivate();
+    void init();
+
+    virtual void setFocusable(bool focus);
+    bool isParentFocusable();
+
+public:
+    bool activeFocusOnPress:1;
+};
+
+#endif // UCSTYLEDITEMBASE_P_H

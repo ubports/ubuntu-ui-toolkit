@@ -449,7 +449,7 @@ StyledItem
     function formatValue(v)
     property internal __internals
 StyledItem 0.1 1.0 1.1
-Toolkit.FocusScope
+StyledItemBase
     property Component style
     readonly property Item __styleInstance
 ComboButtonStyle 1.1
@@ -800,14 +800,6 @@ plugins.qmltypes
     name: "quitWithError"
     Parameter { name: "errorMessage"; type: "string" }
     Method { name: "quitWithError" }
-    name: "UCFocusScope"
-    prototype: "QQuickItem"
-    exports: ["FocusScope 0.1", "FocusScope 1.0", "FocusScope 1.1"]
-    Property { name: "activeFocusOnMousePress"; revision: 1; type: "bool" }
-    Method {
-    name: "gainFocus"
-    Parameter { name: "reason"; type: "Qt::FocusReason" }
-    Method { name: "gainFocus"; revision: 1 }
     name: "UCInverseMouse"
     prototype: "UCMouse"
     exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
@@ -870,6 +862,14 @@ plugins.qmltypes
     prototype: "QObject"
     Property { name: "enabled"; type: "bool" }
     Property { name: "properties"; type: "string" }
+    name: "UCStyledItemBase"
+    prototype: "QQuickItem"
+    exports: [
+    Property { name: "activeFocusOnPress"; revision: 1; type: "bool" }
+    Method {
+    name: "requestFocus"
+    Parameter { name: "reason"; type: "Qt::FocusReason" }
+    Method { name: "requestFocus"; revision: 1; type: "bool" }
     name: "UCUbuntuAnimation"
     prototype: "QObject"
     exports: ["UbuntuAnimation 0.1", "UbuntuAnimation 1.0"]
