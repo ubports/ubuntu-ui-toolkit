@@ -71,6 +71,17 @@ Style.PageHeadStyle {
                     property bool selected: index === separator.sections.selectedIndex
                     onClicked: separator.sections.selectedIndex = index;
 
+                    Rectangle {
+                        visible: parent.pressed
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                            top: parent.top
+                        }
+                        height: parent.height - bottomDividerLine.height
+                        color: Theme.palette.selected.background
+                    }
+
                     Label {
                         id: label
                         text: modelData
@@ -84,6 +95,7 @@ Style.PageHeadStyle {
 
                     // vertical divider line
                     Rectangle {
+                        id: bottomDividerLine
                         anchors {
                             verticalCenter: parent.verticalCenter
                             right: parent.right
@@ -186,6 +198,17 @@ Style.PageHeadStyle {
                             implicitHeight: units.gu(6) + bottomDividerLine.height
                             width: parent ? parent.width : units.gu(31)
 
+                            Rectangle {
+                                visible: parent.pressed
+                                anchors {
+                                    left: parent.left
+                                    right: parent.right
+                                    top: parent.top
+                                }
+                                height: parent.height - bottomDividerLine.height
+                                color: Theme.palette.selected.background
+                            }
+
                             Label {
                                 anchors {
                                     verticalCenter: parent.verticalCenter
@@ -196,7 +219,7 @@ Style.PageHeadStyle {
                                 fontSize: "medium"
                                 elide: Text.ElideRight
                                 text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
-                                color: '#5d5d5d'
+                                color: Theme.palette.selected.backgroundText
                             }
 
                             ListItem.ThinDivider {
@@ -359,10 +382,21 @@ Style.PageHeadStyle {
                             implicitHeight: units.gu(6) + bottomDividerLine.height
                             width: parent ? parent.width : units.gu(31)
 
+                            Rectangle {
+                                visible: parent.pressed
+                                anchors {
+                                    left: parent.left
+                                    right: parent.right
+                                    top: parent.top
+                                }
+                                height: parent.height - bottomDividerLine.height
+                                color: Theme.palette.selected.background
+                            }
+
                             Icon {
                                 id: actionIcon
                                 name: action.iconName
-                                color: '#5d5d5d'
+                                color: Theme.palette.selected.backgroundText
                                 anchors {
                                     verticalCenter: parent.verticalCenter
                                     verticalCenterOffset: units.dp(-1)
@@ -383,7 +417,7 @@ Style.PageHeadStyle {
                                 fontSize: "small"
                                 elide: Text.ElideRight
                                 text: action.text
-                                color: '#5d5d5d'
+                                color: Theme.palette.selected.backgroundText
                             }
 
                             ListItem.ThinDivider {
