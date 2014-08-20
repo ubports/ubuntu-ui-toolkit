@@ -64,8 +64,8 @@ HEADERS += plugin.h \
     ucinversemouse.h \
     ucmouse.h \
     unixsignalhandler_p.h \
-    ucfocusscope.h \
-    ucfocusscope_p.h
+    ucstyleditembase.h \
+    ucstyleditembase_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -99,7 +99,7 @@ SOURCES += plugin.cpp \
     ucurihandler.cpp \
     ucmousefilters.cpp \
     unixsignalhandler_p.cpp \
-    ucfocusscope.cpp
+    ucstyleditembase.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp
