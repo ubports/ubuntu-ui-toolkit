@@ -22,8 +22,6 @@ MainView {
     width: units.gu(50)
     height: units.gu(100)
 
-    property bool trueValue: true
-
     Column {
         anchors {
             fill: parent
