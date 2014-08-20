@@ -825,7 +825,7 @@ plugins.qmltypes
     Property { name: "pressed"; type: "bool"; isReadonly: true }
     Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
-    Property { name: "flickable"; type: "QQuickFlickable"; isReadonly: true; isPointer: true }
+    Property { name: "owningItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Signal { name: "clicked" }
     name: "UCListItemDivider"
     prototype: "QObject"

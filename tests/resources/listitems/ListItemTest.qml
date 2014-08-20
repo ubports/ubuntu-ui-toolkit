@@ -28,7 +28,11 @@ MainView {
     }
 
     Column {
-        width: parent.width
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
+
         ListItem {
             id: testItem
             onClicked: {
