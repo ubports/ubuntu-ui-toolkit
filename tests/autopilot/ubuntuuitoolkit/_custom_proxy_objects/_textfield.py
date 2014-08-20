@@ -70,15 +70,18 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _clear_with_keys(self):
         if platform.model() == 'Desktop':
             self._select_all()
+            self.keyboard.press_and_release('BackSpace')
         else:
             # Touch tap currently doesn't have a press_duration parameter, so
-            # we can't show the popover. Reported as bug http://pad.lv/1268782
-            # --elopio - 2014-01-13
+            # we can't select all the text.
+            # Reported as bug http://pad.lv/1268782 --elopio - 2014-01-13
             self._go_to_end()
-        while not self.is_empty():
-            # We delete with backspace because the on-screen keyboard has that
-            # key.
-            self.keyboard.press_and_release('BackSpace')
+            while self.cursorPosition != 0:
+                # We delete with backspace because the on-screen keyboard has
+                # that key.
+                self.keyboard.press_and_release('BackSpace')
+        if not self.is_empty():
+            raise _common.ToolkitException('Failed to clear the text field.')
 
     def _go_to_end(self):
         # XXX Here we are cheating because the on-scree keyboard doesn't have
