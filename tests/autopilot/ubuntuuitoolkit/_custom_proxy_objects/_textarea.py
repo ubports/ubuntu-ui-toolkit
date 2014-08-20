@@ -25,3 +25,9 @@ class TextArea(_textfield.TextField):
         if not self.is_empty():
             self._clear_with_keys()
             self.text.wait_for('')
+
+    def _go_to_end(self):
+        # We override this because the text areas can have more than one line.
+        # XXX Here we are cheating because the on-scree keyboard doesn't have
+        # a CTRL nor END keys. --elopio - 2014-08-20
+        self.keyboard.press_and_release('Ctrl+End')

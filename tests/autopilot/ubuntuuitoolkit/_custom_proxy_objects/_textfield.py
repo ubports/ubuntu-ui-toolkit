@@ -74,11 +74,16 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
             # Touch tap currently doesn't have a press_duration parameter, so
             # we can't show the popover. Reported as bug http://pad.lv/1268782
             # --elopio - 2014-01-13
-            self.keyboard.press_and_release('End')
+            self._go_to_end()
         while not self.is_empty():
             # We delete with backspace because the on-screen keyboard has that
             # key.
             self.keyboard.press_and_release('BackSpace')
+
+    def _go_to_end(self):
+        # XXX Here we are cheating because the on-scree keyboard doesn't have
+        # an END key. --elopio - 2014-08-20
+        self.keyboard.press_and_release('End')
 
     def _select_all(self):
         if not self._is_all_text_selected():
