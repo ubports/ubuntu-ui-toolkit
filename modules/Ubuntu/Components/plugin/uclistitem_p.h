@@ -18,7 +18,6 @@
 #define UCVIEWITEM_P_H
 
 #include "uclistitem.h"
-#include "ucglobals.h"
 #include "ucfocusscope_p.h"
 #include <QtCore/QPointer>
 
@@ -52,17 +51,26 @@ public:
 class UCListItemBackground : public QQuickItem
 {
     Q_OBJECT
-    DECLARE_PROPERTY(QColor, color)
-    DECLARE_PROPERTY(QColor, pressedColor)
+    Q_PROPERTY(QColor color MEMBER m_color WRITE setColor NOTIFY colorChanged)
+    Q_PROPERTY(QColor pressedColor MEMBER m_pressedColor WRITE setPressedColor NOTIFY pressedColorChanged)
 public:
     explicit UCListItemBackground(QQuickItem *parent = 0);
     ~UCListItemBackground();
+
+    void setColor(const QColor &color);
+    void setPressedColor(const QColor &color);
+
+Q_SIGNALS:
+    void colorChanged();
+    void pressedColorChanged();
 
 protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
 
 private:
+    QColor m_color;
+    QColor m_pressedColor;
     UCListItemBase *m_item;
 };
 

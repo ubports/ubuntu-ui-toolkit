@@ -28,7 +28,11 @@ FocusScope {
     }
 
     Column {
-        width: parent.width
+        anchors {
+            left: parent.left
+            right: parent.right
+        }
+
         ListItem {
             id: testItem
             background.color: "green"

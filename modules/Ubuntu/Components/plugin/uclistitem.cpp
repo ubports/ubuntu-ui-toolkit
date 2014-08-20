@@ -37,11 +37,28 @@ UCListItemBackground::UCListItemBackground(QQuickItem *parent)
 //    setZ(1);
 }
 
-SIMPLE_PROPERTY(UCListItemBackground, QColor, color, update())
-SIMPLE_PROPERTY(UCListItemBackground, QColor, pressedColor, update())
-
 UCListItemBackground::~UCListItemBackground()
 {
+}
+
+void UCListItemBackground::setColor(const QColor &color)
+{
+    if (m_color == color) {
+        return;
+    }
+    m_color = color;
+    update();
+    Q_EMIT colorChanged();
+}
+
+void UCListItemBackground::setPressedColor(const QColor &color)
+{
+    if (m_pressedColor == color) {
+        return;
+    }
+    m_pressedColor = color;
+    update();
+    Q_EMIT pressedColorChanged();
 }
 
 void UCListItemBackground::itemChange(ItemChange change, const ItemChangeData &data)
@@ -194,12 +211,12 @@ void UCListItemBase::itemChange(ItemChange change, const ItemChangeData &data)
         QQuickBasePositioner *positioner = qobject_cast<QQuickBasePositioner*>(data.item);
         if (positioner && positioner->parentItem()) {
             d->flickable = qobject_cast<QQuickFlickable*>(positioner->parentItem()->parentItem());
-            Q_EMIT flickableChanged();
         } else if (data.item && data.item->parentItem()){
             // check if we are in a Flickable then
             d->flickable = qobject_cast<QQuickFlickable*>(data.item->parentItem());
-            Q_EMIT flickableChanged();
         }
+
+        Q_EMIT owningItemChanged();
     }
 }
 
@@ -259,7 +276,11 @@ void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
  * \li never anchor left or right as it will block revealing the options.
  * \endlist
  */
-PROPERTY_PRIVATE_GETTER(UCListItemBase, UCListItemBackground*, background)
+UCListItemBackground* UCListItemBase::background() const
+{
+    Q_D(const UCListItemBase);
+    return d->background;
+}
 
 /*!
  * \qmlproperty bool ListItemBase::pressed
@@ -268,12 +289,17 @@ PROPERTY_PRIVATE_GETTER(UCListItemBase, UCListItemBackground*, background)
  * (false) when the mouse or touch is moved towards the vertical direction causing
  * the flickable to move.
  */
-PROPERTY_PRIVATE_GETTER(UCListItemBase, bool, pressed)
+bool UCListItemBase::pressed() const
+{
+    Q_D(const UCListItemBase);
+    return d->pressed;
+}
 
 /*!
- * \qmlproperty Flickable ListItemBase::flickable
- * The property contains the Flickable the component is embedded in. The property is set
- * in the following cases:
+ * \qmlproperty Item ListItemBase::owningItem
+ * The property contains the Item the component is embedded in. This can be the parent
+ * item or the ListView. In the following example the property is the same as parentItem,
+ * which is the Column (as Repeater parents all delegates to its parent).
  * \qml
  * Flickable {
  *     id: flickableItem
@@ -290,8 +316,7 @@ PROPERTY_PRIVATE_GETTER(UCListItemBase, bool, pressed)
  *     }
  * }
  * \endqml
- * In this case the ListItem's flickable property points to the \c flickableItem, and
- * parent to the \c column.
+ * In the following one the owningItem points to the ListView.
  * \qml
  * ListView {
  *     id: listView
@@ -302,11 +327,17 @@ PROPERTY_PRIVATE_GETTER(UCListItemBase, bool, pressed)
  *     }
  * }
  * \endqml
- * In this case the flickable property will contain the \c listView.
- *
- * In any other cases the flickable property will be set to null.
  */
-PROPERTY_PRIVATE_GETTER(UCListItemBase, QQuickFlickable*, flickable)
+QQuickItem *UCListItemBase::owningItem()
+{
+    // check if we are in a positioner, and if that positioner is in a Flickable
+    QQuickBasePositioner *positioner = qobject_cast<QQuickBasePositioner*>(parentItem());
+    if (positioner) {
+        return positioner;
+    }
+    Q_D(UCListItemBase);
+    return d->flickable;
+}
 
 /*!
  * \qmlproperty list<Object> ListItemBase::data

@@ -18,25 +18,27 @@
 #define UCLISTITEM_H
 
 #include <QtQuick/QQuickItem>
-#include "ucglobals.h"
 #include "ucfocusscope.h"
 
-class QQuickFlickable;
 class UCListItemBackground;
 class UCListItemBasePrivate;
 class UCListItemBase : public UCFocusScope
 {
     Q_OBJECT
-    DECLARE_PRIVATE_READONLY_PROPERTY(UCListItemBackground*, background, CONSTANT)
-    DECLARE_PRIVATE_READONLY_PROPERTY(bool, pressed)
+    Q_PROPERTY(UCListItemBackground *background READ background CONSTANT)
+    Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
 
-    DECLARE_PRIVATE_READONLY_PROPERTY(QQuickFlickable*, flickable)
+    Q_PROPERTY(QQuickItem *owningItem READ owningItem NOTIFY owningItemChanged)
 public:
     explicit UCListItemBase(QQuickItem *parent = 0);
     ~UCListItemBase();
+
+    UCListItemBackground *background() const;
+    bool pressed() const;
+    QQuickItem *owningItem();
 
 protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
@@ -45,7 +47,9 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
 
 Q_SIGNALS:
+    void pressedChanged();
     void childrenChanged();
+    void owningItemChanged();
 
     void clicked();
 
