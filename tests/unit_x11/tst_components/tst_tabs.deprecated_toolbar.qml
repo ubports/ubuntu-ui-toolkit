@@ -23,6 +23,7 @@ MainView {
     id: mainView
     width: units.gu(50)
     height: units.gu(80)
+    useDeprecatedToolbar: true
 
     Tabs {
         id: tabs
