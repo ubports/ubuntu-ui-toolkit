@@ -72,8 +72,14 @@ class QQuickListView(_flickable.QQuickFlickable):
                 return self.select_single(objectName=object_name)
             except dbus.StateNotFoundError:
                 swipe_method(containers)
-        raise _common.ToolkitException(
-            'List element with objectName "{}" not found.'.format(object_name))
+        else:
+            # We have reached the start or the end of the list.
+            try:
+                return self.select_single(objectName=object_name)
+            except dbus.StateNotFoundError:
+                raise _common.ToolkitException(
+                    'List element with objectName "{}" not found.'.format(
+                        object_name))
 
     def _is_element_clickable(self, object_name):
         child = self.select_single(objectName=object_name)
