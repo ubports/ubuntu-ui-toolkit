@@ -132,7 +132,7 @@ Package: ubuntu-ui-toolkit-autopilot
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libautopilot-qt,
+         autopilot-qt5,
          dpkg-dev,
          libqt5test5,
          libqt5widgets5,
@@ -147,6 +147,7 @@ Depends: ${misc:Depends},
          python3-testscenarios,
          python3-testtools,
          python3-autopilot (>= 1.4),
+         qttestability-autopilot,
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
 Description: Test package for Ubuntu UI Toolkit
  Autopilot tests for the ubuntu-ui-toolkit package
