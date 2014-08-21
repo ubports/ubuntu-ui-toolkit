@@ -23,8 +23,9 @@ PPA="ppa:ubuntu-sdk-team/staging"
 TIMESTAMP=`date +"%Y_%m_%d-%H_%M_%S"`
 LOGFILENAME="ap-${TIMESTAMP}"
 OUTPUTDIR=$HOME
+FILTER=uitoolkit
 
-declare -a test_suite=(
+declare -a TEST_SUITE=(
 " dropping_letters_app"
 " sudoku_app"
 " -p ubuntu-ui-toolkit-autopilot ubuntuuitoolkit"
@@ -102,7 +103,7 @@ function device_comission {
 							ubuntu-system-settings-online-accounts-autopilot
 }
 
-while getopts ":hrcnts:o:p:" opt; do
+while getopts ":hrcnts:o:p:f:" opt; do
 	case $opt in
 		m)
 			RESET=true
@@ -120,6 +121,9 @@ while getopts ":hrcnts:o:p:" opt; do
 		p)
 			PPA=$OPTARG
 			;;
+		f)
+			FILTER=$OPTARG
+			;;
 		c)
 			COMISSION=true
 			;;
@@ -134,6 +138,7 @@ while getopts ":hrcnts:o:p:" opt; do
 			echo " -n : Do not run the test set. Default ${RUNTESTS}"
 			echo " -o : Output directory. Default $OUTPUTDIR"
 			echo " -p : Source PPA for the UITK. Default $PPA"
+			echo " -f : Filter for the test suite. Defauk $FILTER"
 			exit
 			;;
 		:)
@@ -164,43 +169,45 @@ else
 fi
 
 # Run the test suite
-for test_set in "${test_suite[@]}"
+for TEST_SET in "${TEST_SUITE[@]}"
 do
-	APPNAME=${test_set##* }
-	LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-1.tests"
-	COMMAND="phablet-test-run -s ${SERIALNUMBER} $test_set >> ${LOGFILE}"
-	echo "<<<=== ${APPNAME} 1 ===>>>" >> ${LOGFILE}
-	reset
-	eval ${COMMAND}
-	egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
-	# check if the tests were successful and re-run after a reset
-	if grep -q "FAILED" ${LOGFILE}; then 
-	        if [ ${RESET} == false  ]; then
-			RESET=true
-			reset
-			RESET=false
-		else
-			reset
-		fi
-		LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-2.tests"
-		COMMAND="phablet-test-run -s ${SERIALNUMBER} $test_set > ${LOGFILE}"
-	        echo "<<<=== ${APPNAME} 2 ===>>>" >> ${LOGFILE}
+	if [[ ${TEST_SET} =~ ${FILTER} ]]; then
+		APPNAME=${TEST_SET##* }
+		LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-1.tests"
+		COMMAND="phablet-test-run -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
+		echo "<<<=== ${APPNAME} 1 ===>>>" >> ${LOGFILE}
+		reset
 		eval ${COMMAND}
 		egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
-	        if grep -q "FAILED" ${LOGFILE}; then
-	                if [ ${RESET} == false  ]; then
-        	                RESET=true
-                	        reset
-                        	RESET=false
-	                else
-        	                reset
-                	fi
-	                LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-3.tests"
-        	        COMMAND="phablet-test-run -s ${SERIALNUMBER} $test_set > ${LOGFILE}"
-		        echo "<<<=== ${APPNAME} 3 ===>>>" >> ${LOGFILE}
-	                eval ${COMMAND}
+		# check if the tests were successful and re-run after a reset
+		if grep -q "FAILED" ${LOGFILE}; then 
+		        if [ ${RESET} == false  ]; then
+				RESET=true
+				reset
+				RESET=false
+			else
+				reset
+			fi
+			LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-2.tests"
+			COMMAND="phablet-test-run -s ${SERIALNUMBER} $TEST_SET > ${LOGFILE}"
+	        	echo "<<<=== ${APPNAME} 2 ===>>>" >> ${LOGFILE}
+			eval ${COMMAND}
 			egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
-		fi
+	        	if grep -q "FAILED" ${LOGFILE}; then
+		                if [ ${RESET} == false  ]; then
+        		                RESET=true
+                		        reset
+                        		RESET=false
+		                else
+        		                reset
+                		fi
+		                LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-3.tests"
+        		        COMMAND="phablet-test-run -s ${SERIALNUMBER} $TEST_SET > ${LOGFILE}"
+			        echo "<<<=== ${APPNAME} 3 ===>>>" >> ${LOGFILE}
+		               eval ${COMMAND}
+				grep "<<<===|Ran|OK|FAILED" ${LOGFILE}
+			fi
 
+		fi
 	fi
 done
