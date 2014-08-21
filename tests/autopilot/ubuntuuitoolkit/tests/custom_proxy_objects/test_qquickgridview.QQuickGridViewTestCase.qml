@@ -14,28 +14,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.0
 import Ubuntu.Components 1.1
-import Ubuntu.Test 1.0
+import Ubuntu.Components.ListItems 0.1 as ListItems
 
 MainView {
-    width: units.gu(50)
-    height: units.gu(100)
 
-    useDeprecatedToolbar: true
+    width: units.gu(60)
+    height: units.gu(80)
+    objectName: 'mainView'
 
-    Tabs {
-        id: empty
-    }
+    GridView {
+        objectName: 'testListView'
+        anchors.fill: parent
+        clip: true
+        model: 20
 
-    UbuntuTestCase {
-        name: "EmptyTabs"
-        when: windowShown
-
-        function test_emptyTabs() {
-            compare(empty.selectedTabIndex, -1, "The default value for selectedTabIndex is -1 when there are no tabs");
-            compare(empty.selectedTab, null, "The default selected tab is null when there are no tabs");
-            compare(empty.currentPage, null, "The default currentPage is null when there are no tabs");
+        delegate: ListItems.Standard {
+            objectName: 'testListElement%1'.arg(index)
+            text: 'test list element %1'.arg(index)
+            height: units.gu(5)
+            width: units.gu(15)
         }
     }
 }

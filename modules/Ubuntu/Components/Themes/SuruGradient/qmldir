@@ -1,1 +1,4 @@
 module Ubuntu.Components.Themes.SuruGradient
+
+#version 1.1
+Palette 1.1 Palette.qml

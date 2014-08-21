@@ -14,28 +14,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.0
 import Ubuntu.Components 1.1
-import Ubuntu.Test 1.0
+import Qt.labs.settings 1.0
 
 MainView {
-    width: units.gu(50)
-    height: units.gu(100)
+    objectName: "settings"
+    applicationName: "red.riding.hood"
 
-    useDeprecatedToolbar: true
-
-    Tabs {
-        id: empty
+    Settings {
+        property alias nickname: textField.text
     }
 
-    UbuntuTestCase {
-        name: "EmptyTabs"
-        when: windowShown
-
-        function test_emptyTabs() {
-            compare(empty.selectedTabIndex, -1, "The default value for selectedTabIndex is -1 when there are no tabs");
-            compare(empty.selectedTab, null, "The default selected tab is null when there are no tabs");
-            compare(empty.currentPage, null, "The default currentPage is null when there are no tabs");
-        }
+    TextField {
+        id: textField
+        objectName: "textfield"
+        text: "Red"
     }
 }
