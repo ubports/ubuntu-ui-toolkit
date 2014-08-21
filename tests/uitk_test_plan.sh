@@ -189,7 +189,7 @@ do
 				reset
 			fi
 			LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-2.tests"
-			COMMAND="phablet-test-run -s ${SERIALNUMBER} $TEST_SET > ${LOGFILE}"
+			COMMAND="phablet-test-run -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
 	        	echo "<<<=== ${APPNAME} 2 ===>>>" >> ${LOGFILE}
 			eval ${COMMAND}
 			egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
@@ -202,7 +202,7 @@ do
         		                reset
                 		fi
 		                LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-3.tests"
-        		        COMMAND="phablet-test-run -s ${SERIALNUMBER} $TEST_SET > ${LOGFILE}"
+        		        COMMAND="phablet-test-run -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
 			        echo "<<<=== ${APPNAME} 3 ===>>>" >> ${LOGFILE}
 		               eval ${COMMAND}
 				grep "<<<===|Ran|OK|FAILED" ${LOGFILE}
