@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 class CheckBox(_common.UbuntuUIToolkitCustomProxyObjectBase):
-    """CheckBox Autopilot emulator."""
+    """CheckBox Autopilot custom proxy object."""
 
     @autopilot_logging.log_action(logger.info)
     def check(self, timeout=10):

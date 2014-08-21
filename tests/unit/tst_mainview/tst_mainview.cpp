@@ -31,6 +31,7 @@
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 #include <QCryptographicHash>
+#include <QSettings>
 
 #include "ucapplication.h"
 #include "ucunits.h"
@@ -142,6 +143,45 @@ private Q_SLOTS:
         QString hash(QCryptographicHash::hash("pacific.island.tv", QCryptographicHash::Md5).toHex());
         QString database(databaseFolder + "/" + hash + ".sqlite");
         QVERIFY(QFile::exists(database));
+    }
+
+    QString getConfFile(QString applicationName) {
+        QString configFolder(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation));
+        QString subFolder(configFolder + "/" + applicationName);
+        QString filename(subFolder + "/" + applicationName + ".conf");
+        return filename;
+    }
+
+    void testLabsSettings() {
+        QString applicationName("red.riding.hood");
+        // Delete file if it exists to avoid false positives
+        QString filename(getConfFile(applicationName));
+        QFile::remove(filename);
+
+        QQuickItem *root = loadTest("Settings.qml");
+        QVERIFY(root);
+        QQuickItem *mainView = root;
+        QCOMPARE(applicationName, mainView->property("applicationName").toString());
+        QCOMPARE(QString(applicationName), QCoreApplication::organizationDomain());
+        QQuickItem *textField(testItem(mainView, "textfield"));
+        textField->setProperty("text", "Blue");
+        delete root;
+        QVERIFY(QFile::exists(filename));
+    }
+
+    void testQSettings() {
+        QString applicationName("i.prefer.pi");
+        // Delete file if it exists to avoid false positives
+        QString filename(getConfFile(applicationName));
+        QFile::remove(filename);
+
+        UCApplication::instance().setApplicationName(applicationName);
+        // QSettings with defaults
+        QSettings mySettings;
+        mySettings.setValue("spam", "eggs");
+        // Force writing to disk
+        mySettings.sync();
+        QVERIFY(QFile::exists(filename));
     }
 
     void testNoWarnings_bug186065() {
