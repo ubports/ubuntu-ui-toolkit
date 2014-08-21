@@ -68,18 +68,4 @@ StyledItemBase {
         sourceComponent: style
         property Item styledItem: styledItem
     }
-
-    Rectangle {
-        visible: styledItem.activeFocus
-        anchors {
-            fill: parent
-            margins: -units.dp(2)
-        }
-        color: "transparent"
-        radius: units.gu(1.5)
-        border {
-            color: 'red'
-            width: units.dp(1)
-        }
-    }
 }
