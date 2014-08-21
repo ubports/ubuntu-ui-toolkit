@@ -23,7 +23,7 @@ MainView {
     width: units.gu(50)
     height: units.gu(100)
 
-    useDeprecatedToolbar: true
+    useDeprecatedToolbar: false
 
     ListModel {
         id: inputModel
@@ -113,7 +113,7 @@ MainView {
     }
 
     UbuntuTestCase {
-        name: "TabsWithRepeaterDeprecatedToolbar"
+        name: "TabsWithRepeaterNewHeader"
         when: windowShown
 
         /*
