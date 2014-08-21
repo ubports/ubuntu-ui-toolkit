@@ -302,7 +302,7 @@ StyledItem {
 
     implicitWidth: units.gu(36)
     implicitHeight: units.gu(20)
-    activeFocusOnMousePress: true
+    activeFocusOnPress: true
 
     /*! \internal */
     onMinimumChanged: {

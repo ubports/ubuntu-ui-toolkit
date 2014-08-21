@@ -86,7 +86,7 @@ PopupBase {
 
     StyledItem {
         id: foreground
-        activeFocusOnMousePress: true
+        activeFocusOnPress: true
 
         property string title
         property real contentsWidth: units.gu(64)

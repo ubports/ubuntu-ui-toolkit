@@ -220,7 +220,7 @@ ListItem.Empty {
         StyledItem {
             id: listContainer
             objectName: "listContainer"
-            activeFocusOnMousePress: true
+            activeFocusOnPress: true
 
             readonly property url chevron: __styleInstance.chevron
             readonly property url tick: __styleInstance.tick
@@ -280,9 +280,9 @@ ListItem.Empty {
                 property real itemHeight
                 signal delegateClicked(int index)
 
-                onMovementStarted: optionSelector.gainFocus(Qt.MouseFocusReason)
-                onFlickStarted: optionSelector.gainFocus(Qt.MouseFocusReason)
-                Toolkit.Mouse.onClicked: optionSelector.gainFocus(Qt.MouseFocusReason)
+                onMovementStarted: optionSelector.requestFocus(Qt.MouseFocusReason)
+                onFlickStarted: optionSelector.requestFocus(Qt.MouseFocusReason)
+                Toolkit.Mouse.onClicked: optionSelector.requestFocus(Qt.MouseFocusReason)
 
                 onDelegateClicked: optionSelector.delegateClicked(index);
                 interactive: listContainer.height !== list.contentHeight && listContainer.currentlyExpanded ? true : false

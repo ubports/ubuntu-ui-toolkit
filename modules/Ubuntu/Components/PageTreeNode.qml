@@ -101,7 +101,7 @@ StyledItem {
     property bool isLeaf: false
 
     // turn on focusing
-    activeFocusOnMousePress: true
+    activeFocusOnPress: true
 
     Binding {
         target: node.parentNode

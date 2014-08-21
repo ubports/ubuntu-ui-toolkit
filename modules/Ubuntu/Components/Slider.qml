@@ -119,7 +119,7 @@ StyledItem {
     /*! \internal */
     onValueChanged: mouseArea.liveValue = slider.value
 
-    activeFocusOnMousePress: true
+    activeFocusOnPress: true
 
     Binding {
         target: slider
@@ -190,8 +190,8 @@ StyledItem {
             var normalizedOffsetX = (mouseArea.mouseX - dragInitMouseX) / barMinusThumb;
             liveValue = valueFromNormalizedValue(dragInitNormalizedValue + normalizedOffsetX);
         }
-        onClicked: slider.gainFocus(Qt.MouseFocusReason)
-        onLiveValueChanged: if (isPressed) slider.gainFocus(Qt.MouseFocusReason)
+        onClicked: slider.requestFocus(Qt.MouseFocusReason)
+        onLiveValueChanged: if (isPressed) slider.requestFocus(Qt.MouseFocusReason)
     }
 
     style: Theme.createStyleComponent("SliderStyle.qml", slider)

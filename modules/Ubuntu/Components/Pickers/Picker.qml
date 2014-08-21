@@ -157,7 +157,7 @@ StyledItem {
 
     implicitWidth: units.gu(8)
     implicitHeight: units.gu(20)
-    activeFocusOnMousePress: true
+    activeFocusOnPress: true
 
     style: Theme.createStyleComponent("PickerStyle.qml", picker)
 
@@ -253,8 +253,8 @@ StyledItem {
                 }
             }
             // focus handling
-            onMoveStarted: picker.gainFocus(Qt.MouseFocusReason)
-            onFlickStarted: picker.gainFocus(Qt.MouseFocusReason)
+            onMoveStarted: picker.requestFocus(Qt.MouseFocusReason)
+            onFlickStarted: picker.requestFocus(Qt.MouseFocusReason)
         }
 
         function moveToIndex(toIndex) {
@@ -294,7 +294,7 @@ StyledItem {
             width: parent ? parent.width : 0
             clip: true
             focus: true
-            Mouse.onClicked: picker.gainFocus()
+            Mouse.onClicked: picker.requestFocus()
 
             model: picker.model
             delegate: picker.delegate
@@ -355,7 +355,7 @@ StyledItem {
             width: parent ? parent.width : 0
             clip: true
             focus: true
-            Mouse.onClicked: picker.gainFocus(Qt.MouseFocusReason)
+            Mouse.onClicked: picker.requestFocus(Qt.MouseFocusReason)
 
             model: picker.model
             delegate: picker.delegate

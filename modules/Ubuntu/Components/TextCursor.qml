@@ -86,7 +86,7 @@ Ubuntu.StyledItem {
                                 })
             }
             // do not grab focus!
-            popup.__foreground.activeFocusOnMousePress = false;
+            popup.__foreground.activeFocusOnPress = false;
         }
     }
 

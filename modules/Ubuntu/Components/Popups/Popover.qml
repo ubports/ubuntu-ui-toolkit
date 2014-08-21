@@ -204,7 +204,7 @@ PopupBase {
 
     StyledItem {
         id: foreground
-        activeFocusOnMousePress: true
+        activeFocusOnPress: true
         objectName: "popover_foreground"
 
         //styling properties

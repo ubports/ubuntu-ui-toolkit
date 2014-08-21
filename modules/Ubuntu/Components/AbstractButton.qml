@@ -83,7 +83,7 @@ ActionItem {
      */
     property alias __mouseArea: mouseArea
 
-    activeFocusOnMousePress: true
+    activeFocusOnPress: true
 
     HapticsEffect {
         id: pressEffect
@@ -103,7 +103,7 @@ ActionItem {
         hoverEnabled: true
 
         onClicked: {
-            button.gainFocus();
+            button.requestFocus();
             if (button.__acceptEvents) {
                 pressEffect.start()
                 button.clicked()

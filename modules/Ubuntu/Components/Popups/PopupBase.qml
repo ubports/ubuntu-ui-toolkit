@@ -180,8 +180,8 @@ OrientationHelper {
 
         function restoreActiveFocus() {
             if (prevFocus) {
-                if (prevFocus.hasOwnProperty("activeFocusOnMousePress")) {
-                    prevFocus.gainFocus(Qt.PopupFocusReason);
+                if (prevFocus.hasOwnProperty("requestFocus")) {
+                    prevFocus.requestFocus(Qt.PopupFocusReason);
                 } else {
                     prevFocus.forceActiveFocus(Qt.PopupFocusReason);
                 }

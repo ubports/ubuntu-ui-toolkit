@@ -95,7 +95,7 @@ StyledItem {
     property bool animate: true
 
     implicitHeight: units.gu(7.5)
-    activeFocusOnMousePress: true
+    activeFocusOnPress: true
 
     style: Theme.createStyleComponent("TabBarStyle.qml", tabBar)
 
