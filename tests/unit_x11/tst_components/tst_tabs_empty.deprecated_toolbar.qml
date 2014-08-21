@@ -29,7 +29,7 @@ MainView {
     }
 
     UbuntuTestCase {
-        name: "EmptyTabs"
+        name: "EmptyTabsDeprecatedToolbar"
         when: windowShown
 
         function test_emptyTabs() {
