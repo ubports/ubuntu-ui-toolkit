@@ -175,7 +175,12 @@ OrientationHelper {
         property Item prevFocus
 
         function saveActiveFocus() {
-            prevFocus = window.activeFocusItem;
+            // 'window' context property is exposed to QML after component completion
+            // before rendering is complete, therefore a simple 'if (window)' check is
+            // not enough.
+            if (typeof window != "undefined") {
+                prevFocus = window.activeFocusItem;
+            }
         }
 
         function restoreActiveFocus() {
