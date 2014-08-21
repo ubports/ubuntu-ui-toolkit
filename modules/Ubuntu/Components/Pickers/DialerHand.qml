@@ -141,6 +141,7 @@ StyledItem {
     anchors.centerIn: parent
     width: parent.width
     height: parent.height
+    activeFocusOnPress: true
     style: Theme.createStyleComponent("DialerHandStyle.qml", dialerHand)
 
     /*! \internal */
@@ -193,6 +194,7 @@ StyledItem {
             onPositionChanged:  {
                 if (internalChange) return;
                 internalChange = true;
+                dialerHand.requestFocus(Qt.MouseFocusReason);
                 var point =  mapToItem (dialerHand, mouse.x, mouse.y);
                 var diffX = (point.x - centerX);
                 var diffY = -1 * (point.y - centerY);

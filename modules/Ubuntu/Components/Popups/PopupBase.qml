@@ -163,11 +163,35 @@ OrientationHelper {
     onVisibleChanged: stateWrapper.state = (visible) ? 'opened' : 'closed'
     /*! \internal */
     onParentChanged: stateWrapper.rootItem = QuickUtils.rootItem(popupBase)
-    Component.onCompleted: stateWrapper.rootItem = QuickUtils.rootItem(popupBase);
+    Component.onCompleted: {
+        stateWrapper.saveActiveFocus();
+        stateWrapper.rootItem = QuickUtils.rootItem(popupBase);
+    }
 
     Item {
         id: stateWrapper
         property Item rootItem: QuickUtils.rootItem(popupBase)
+
+        property Item prevFocus
+
+        function saveActiveFocus() {
+            // 'window' context property is exposed to QML after component completion
+            // before rendering is complete, therefore a simple 'if (window)' check is
+            // not enough.
+            if (typeof window != "undefined") {
+                prevFocus = window.activeFocusItem;
+            }
+        }
+
+        function restoreActiveFocus() {
+            if (prevFocus) {
+                if (prevFocus.hasOwnProperty("requestFocus")) {
+                    prevFocus.requestFocus(Qt.PopupFocusReason);
+                } else {
+                    prevFocus.forceActiveFocus(Qt.PopupFocusReason);
+                }
+            }
+        }
 
         states: [
             State {
@@ -211,6 +235,7 @@ OrientationHelper {
                     ScriptAction {
                         script: {
                             popupBase.visible = false;
+                            stateWrapper.restoreActiveFocus();
                         }
                     }
                 }
