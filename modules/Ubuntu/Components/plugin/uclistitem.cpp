@@ -160,25 +160,10 @@ void UCListItemBasePrivate::listenToRebind(bool listen)
 /*!
  * \qmltype ListItemBase
  * \instantiates UCListItemBase
- * \inherits Item
  * \inqmlmodule Ubuntu.Components 1.1
  * \ingroup ubuntu
- * \brief The ListItem element provides Ubuntu design standards for list or grid
- * views.
- *
- * The component is dedicated to be used in designs with static or dynamic lists
- * (i.e. list views where each item's layout differs or in lists where the content
- * is determined by a given model, thus each element has the same layout). The
- * element does not define any specific layout, components can be placed in any
- * ways on it. However, when used in scrolling lists, the content must be chosen
- * carefully to in order to keep the kinetic behavior and the 60 FPS if possible.
- *
- * The component does not set any size, therefore if used these properties should
- * be set. Colors used are also hardcoded ones. Use \l ListItem instead of this
- * component, which provides bindings to theme palette and aligns to the component
- * is embedded in.
- *
- * \sa ListItem
+ * \qmlabstract
+ * \internal
  */
 
 /*!
