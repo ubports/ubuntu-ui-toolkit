@@ -169,26 +169,45 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
 {
     event.setCollectionId(collection.id());
     event.setAllDay(false);
-    event.setStartDateTime(AlarmData::transcodeDate(alarm.date, Qt::UTC));
-    event.setDisplayLabel(alarm.message);
+    if (alarm.changes & AlarmData::Date) {
+        event.setStartDateTime(AlarmData::transcodeDate(alarm.date, Qt::UTC));
+    }
+    if (alarm.changes & AlarmData::Message) {
+        event.setDisplayLabel(alarm.message);
+    }
 
-    if (alarm.enabled) {
-        // set visual and audible reminder serving as alarm note
-        QOrganizerItemVisualReminder visual;
-        visual.setSecondsBeforeStart(0);
-        visual.setMessage(alarm.message);
-        event.saveDetail(&visual);
+    if (alarm.changes & AlarmData::Enabled) {
+        QOrganizerItemVisualReminder visual = event.detail(QOrganizerItemDetail::TypeVisualReminder);
+        QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
 
-        QOrganizerItemAudibleReminder audible;
-        audible.setSecondsBeforeStart(0);
-        audible.setDataUrl(alarm.sound);
-        event.saveDetail(&audible);
+        if (alarm.enabled) {
+            if (visual.isEmpty()) {
+                visual.setSecondsBeforeStart(0);
+                visual.setMessage(alarm.message);
+                event.saveDetail(&visual);
+            }
+            if (audible.isEmpty()) {
+                audible.setSecondsBeforeStart(0);
+                audible.setDataUrl(alarm.sound);
+                event.saveDetail(&audible);
+            }
+        } else {
+            event.removeDetail(&visual);
+            event.removeDetail(&audible);
+        }
     }
 
     // save the sound as description as the audible reminder may be off
-    event.setDescription(alarm.sound.toString());
+    if (alarm.changes && AlarmData::Sound) {
+        event.setDescription(alarm.sound.toString());
+    }
 
-    // set repeating
+    // set repeating, reset recurrence no matter if we had it or not
+    if (((alarm.changes & AlarmData::Type) == AlarmData::Type)
+            || ((alarm.changes & AlarmData::Days) == AlarmData::Days)) {
+        QOrganizerItemRecurrence old = event.detail(QOrganizerItemDetail::TypeRecurrence);
+        event.removeDetail(&old);
+    }
     switch (alarm.type) {
     case UCAlarm::OneTime: {
         break;
@@ -207,25 +226,6 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
     default:
         break;
     }
-}
-
-void AlarmsAdapter::updateOrganizerEventFromAlarmData(const AlarmData &alarm, QOrganizerTodo &event)
-{
-    // remove affected details
-    if (!alarm.enabled || (alarm.changes & AlarmData::Enabled)) {
-        // remove previously set reminders
-        QOrganizerItemVisualReminder visual = event.detail(QOrganizerItemDetail::TypeVisualReminder);
-        event.removeDetail(&visual);
-        QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
-        event.removeDetail(&audible);
-    }
-    if (((alarm.changes & AlarmData::Type) == AlarmData::Type)
-            || ((alarm.changes & AlarmData::Days) == AlarmData::Days)) {
-        QOrganizerItemRecurrence old = event.detail(QOrganizerItemDetail::TypeRecurrence);
-        event.removeDetail(&old);
-    }
-
-    organizerEventFromAlarmData(alarm, event);
 }
 
 int AlarmsAdapter::alarmDataFromOrganizerEvent(const QOrganizerTodo &event, AlarmData &alarm)
@@ -449,8 +449,8 @@ bool AlarmRequestAdapter::save(AlarmData &alarm)
     QOrganizerTodo event;
 
     if (!alarm.cookie.isValid()) {
-        // new event
-        AlarmsAdapter::get()->organizerEventFromAlarmData(alarm, event);
+        // new event, mark all fields dirty
+        alarm.changes = AlarmData::AllFields;
     } else {
         // update existing event
         QOrganizerItemId itemId = alarm.cookie.value<QOrganizerItemId>();
@@ -459,8 +459,8 @@ bool AlarmRequestAdapter::save(AlarmData &alarm)
             setStatus(AlarmRequest::Saving, AlarmRequest::Fail, UCAlarm::AdaptationError);
             return false;
         }
-        AlarmsAdapter::get()->updateOrganizerEventFromAlarmData(alarm, event);
     }
+    AlarmsAdapter::get()->organizerEventFromAlarmData(alarm, event);
 
     QOrganizerItemSaveRequest *operation = new QOrganizerItemSaveRequest(q_ptr);
     operation->setManager(AlarmsAdapter::get()->manager);
