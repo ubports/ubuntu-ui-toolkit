@@ -133,9 +133,6 @@ while getopts ":hrcnts:o:p:f:" opt; do
 		n)
 			RUNTESTS=false
 			;;
-		l)
-			LAZY=true
-			;;
 		h)
 			echo "Usage: uitk_test_plan.sh -s [serial number] -m -c"
 			echo " -r : Reset after each tests. Default: ${RESET}"
