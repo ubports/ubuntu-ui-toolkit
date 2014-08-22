@@ -15,7 +15,7 @@
 #
 # Author: Zoltán Balogh <zoltan.baloghn@canonical.com>
 
-LAZY=false
+LAZY=true
 SERIALNUMBER=086e443edf51b915
 RESET=false
 COMISSION=false
@@ -105,13 +105,14 @@ function device_comission {
 							ubuntu-system-settings-online-accounts-autopilot
 }
 
-while getopts ":hrcnlts:o:p:f:" opt; do
+while getopts ":hrcnts:o:p:f:" opt; do
 	case $opt in
 		m)
 			RESET=true
 			;;
 		s)
 			SERIALNUMBER=$OPTARG
+			LAZY=false
 			;;
 		o)
 			if [ -d "$OPTARG" ]; then
@@ -144,7 +145,6 @@ while getopts ":hrcnlts:o:p:f:" opt; do
 			echo " -o : Output directory. Default $OUTPUTDIR"
 			echo " -p : Source PPA for the UITK. Default $PPA"
 			echo " -f : Filter for the test suite. Default $FILTER"
-			echo " -l : The tests are run on the first detected device. Default $LAZY"
 			exit
 			;;
 		:)
