@@ -207,7 +207,7 @@ do
         		        COMMAND="phablet-test-run -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
 			        echo "<<<=== ${APPNAME} 3 ===>>>" >> ${LOGFILE}
 		                eval ${COMMAND}
-				egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
+				egrep "<<<===|Ran|OK|FAILED|FAIL|ERROR:" ${LOGFILE}
 			fi
 
 		fi
