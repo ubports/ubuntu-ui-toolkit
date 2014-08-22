@@ -113,7 +113,7 @@ MainView {
     }
 
     UbuntuTestCase {
-        name: "TabsWithRepeater"
+        name: "TabsWithRepeaterDeprecatedToolbar"
         when: windowShown
 
         /*

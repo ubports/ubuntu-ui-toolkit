@@ -22,14 +22,14 @@ MainView {
     width: units.gu(50)
     height: units.gu(100)
 
-    useDeprecatedToolbar: true
+    useDeprecatedToolbar: false
 
     Tabs {
         id: empty
     }
 
     UbuntuTestCase {
-        name: "EmptyTabs"
+        name: "EmptyTabsNewHeader"
         when: windowShown
 
         function test_emptyTabs() {
