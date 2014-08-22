@@ -36,7 +36,7 @@ PageTreeNode {
     property string title: parentNode && parentNode.hasOwnProperty("title") ? parentNode.title : ""
 
     // deprecated
-    property Item tools
+    property Item tools: ToolbarItems { }
 
     /*!
       \internal
