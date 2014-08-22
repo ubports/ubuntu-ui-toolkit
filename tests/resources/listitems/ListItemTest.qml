@@ -54,10 +54,6 @@ MainView {
             pressDelay: 0
             delegate: ListItem {
                 onClicked: print(" clicked")
-                divider.gradient: Gradient {
-                    GradientStop { color: "green"; position: 0.0 }
-                    GradientStop { color: "yellow"; position: 1.0 }
-                }
 
                 Label {
                     text: modelData + " item"
@@ -78,10 +74,6 @@ MainView {
                     ListItem {
                         background {
                             pressedColor: "lime"
-                        }
-                        divider.gradient: Gradient {
-                            GradientStop { color: "#26000000"; position: 0.0 }
-                            GradientStop { color: "#14F3F3E7"; position: 1.0 }
                         }
                         Label {
                             text: modelData + " Flickable item"

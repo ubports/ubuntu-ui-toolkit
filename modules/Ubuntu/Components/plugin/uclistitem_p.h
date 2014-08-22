@@ -47,6 +47,7 @@ public:
     void listenToRebind(bool listen);
     void resize();
 
+    bool ready:1;
     QPointer<QQuickFlickable> flickable;
     UCListItemBackground *background;
     UCListItemDivider *divider;
@@ -82,11 +83,8 @@ class UCListItemDivider : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool visible MEMBER m_visible WRITE setVisible NOTIFY visibleChanged)
-    Q_PROPERTY(qreal thickness MEMBER m_thickness WRITE setThickness NOTIFY thicknessChanged)
     Q_PROPERTY(qreal leftMargin MEMBER m_leftMargin WRITE setLeftMargin NOTIFY leftMarginChanged)
     Q_PROPERTY(qreal rightMargin MEMBER m_rightMargin WRITE setRightMargin NOTIFY rightMarginChanged)
-    Q_PROPERTY(QQuickGradient *gradient MEMBER m_gradient WRITE setGradient NOTIFY gradientChanged)
-    Q_PROPERTY(QColor color MEMBER m_color WRITE setColor NOTIFY colorChanged)
 public:
     explicit UCListItemDivider(QObject *parent = 0);
     ~UCListItemDivider();
@@ -94,14 +92,15 @@ public:
 
 Q_SIGNALS:
     void visibleChanged();
-    void thicknessChanged();
     void leftMarginChanged();
     void rightMarginChanged();
-    void gradientChanged();
-    void colorChanged();
 
 protected:
     QSGNode *paint(QSGNode *paintNode, const QRectF &rect);
+
+private Q_SLOTS:
+    void unitsChanged();
+    void paletteChanged();
 
 private:
     void resizeAndUpdate() {
@@ -110,18 +109,14 @@ private:
     }
 
     void setVisible(bool visible);
-    void setThickness(qreal thickness);
     void setLeftMargin(qreal leftMargin);
     void setRightMargin(qreal rightMargin);
-    void setGradient(QQuickGradient *gradient);
-    void setColor(const QColor &color);
 
     bool m_visible;
     qreal m_thickness;
     qreal m_leftMargin;
     qreal m_rightMargin;
-    QColor m_color;
-    QQuickGradient *m_gradient;
+    QGradientStops m_gradient;
     UCListItemBase *m_listItem;
     friend class UCListItemBase;
     friend class UCListItemBasePrivate;
