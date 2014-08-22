@@ -12,35 +12,21 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCFOCUSSCOPE_P_H
-#define UCFOCUSSCOPE_P_H
+import QtTest 1.0
+import Ubuntu.Components 1.1
+import QtQuick 2.0
 
-#include <QtQuick/private/qquickitem_p.h>
+TestCase {
+     name: "StyledItemAPI"
 
-class UCFocusScope;
-class UCFocusScopePrivate : public QQuickItemPrivate
-{
-    Q_DECLARE_PUBLIC(UCFocusScope)
-public:
+     StyledItem {
+         id: scope
+     }
 
-    static UCFocusScopePrivate *get(UCFocusScope *item) {
-        return item->d_func();
-    }
-
-    UCFocusScopePrivate();
-    virtual ~UCFocusScopePrivate();
-    void init();
-
-    virtual void setFocusable();
-    bool isParentFocusable();
-
-public:
-    bool activeFocusOnMousePress:1;
-    bool pressed:1;
-};
-
-#endif // UCFOCUSSCOPE_P_H
+     function test_api() {
+         verify(scope.hasOwnProperty("activeFocusOnPress"), "missing activeFocusOnPressed!");
+         verify(scope.hasOwnProperty("requestFocus"), "missing requestFocus()!");
+     }
+}

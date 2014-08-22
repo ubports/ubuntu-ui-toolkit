@@ -14,18 +14,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtTest 1.0
 import QtQuick 2.0
 import Ubuntu.Components 1.1
+import Qt.labs.settings 1.0
 
-TestCase {
-     name: "Ubuntu.Components.FocusScope API"
+MainView {
+    objectName: "settings"
+    applicationName: "red.riding.hood"
 
-     FocusScope {
-         id: scope
-     }
+    Settings {
+        property alias nickname: textField.text
+    }
 
-     function test_api() {
-         verify(scope.hasOwnProperty("activeFocusOnMousePress"), "This is not an Ubuntu.Components FocusScope!");
-     }
+    TextField {
+        id: textField
+        objectName: "textfield"
+        text: "Red"
+    }
 }

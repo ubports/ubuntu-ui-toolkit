@@ -30,6 +30,7 @@ __all__ = [
     'pickers',
     'popups',
     'QQuickFlickable',
+    'QQuickGridView',
     'QQuickListView',
     'TabBar',
     'Tabs',
@@ -61,6 +62,9 @@ from ubuntuuitoolkit._custom_proxy_objects._optionselector import (
 )
 from ubuntuuitoolkit._custom_proxy_objects import pickers
 from ubuntuuitoolkit._custom_proxy_objects import popups
+from ubuntuuitoolkit._custom_proxy_objects._qquickgridview import (
+    QQuickGridView
+)
 from ubuntuuitoolkit._custom_proxy_objects._qquicklistview import (
     QQuickListView
 )

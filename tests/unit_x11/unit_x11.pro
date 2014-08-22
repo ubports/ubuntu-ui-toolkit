@@ -10,4 +10,5 @@ SUBDIRS += tst_components \
     tst_theme_engine \
     tst_orientation \
     tst_layouts \
-    tst_mousefilters
+    tst_mousefilters \
+    tst_animator

@@ -23,7 +23,6 @@ __all__ = [
     'check_autopilot_version',
     'CheckBox',
     'environment',
-    'emulators',
     'fixture_setup',
     'get_keyboard',
     'get_pointing_device',
@@ -34,6 +33,7 @@ __all__ = [
     'pickers',
     'popups',
     'QQuickFlickable',
+    'QQuickGridView',
     'QQuickListView',
     'TabBar',
     'Tabs',
@@ -50,7 +50,6 @@ __all__ = [
 
 from ubuntuuitoolkit import (
     base,
-    emulators,
     environment,
     fixture_setup,
     tests,
@@ -69,6 +68,7 @@ from ubuntuuitoolkit._custom_proxy_objects import (
     pickers,
     popups,
     QQuickFlickable,
+    QQuickGridView,
     QQuickListView,
     TabBar,
     Tabs,

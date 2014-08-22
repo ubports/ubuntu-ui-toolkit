@@ -16,28 +16,37 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCFOCUSSCOPE_H
-#define UCFOCUSSCOPE_H
+#ifndef UCSTYLEDITEMBASE_H
+#define UCSTYLEDITEMBASE_H
 
 #include <QtQuick/QQuickItem>
-#include "ucglobals.h"
 
-class UCFocusScopePrivate;
-class UCFocusScope : public QQuickItem
+class UCStyledItemBasePrivate;
+class UCStyledItemBase : public QQuickItem
 {
     Q_OBJECT
-    DECLARE_PRIVATE_PROPERTY(bool, activeFocusOnMousePress, REVISION 1)
+    Q_PROPERTY(bool activeFocusOnPress
+               READ activefocusOnPress WRITE setActiveFocusOnPress
+               NOTIFY activeFocusOnPressChanged REVISION 1)
 public:
-    explicit UCFocusScope(QQuickItem *parent = 0);
+    explicit UCStyledItemBase(QQuickItem *parent = 0);
+
+    bool activefocusOnPress() const;
+    void setActiveFocusOnPress(bool value);
+
+public Q_SLOTS:
+    Q_REVISION(1) bool requestFocus(Qt::FocusReason reason = Qt::OtherFocusReason);
+
+Q_SIGNALS:
+    void activeFocusOnPressChanged();
 
 protected:
-    UCFocusScope(UCFocusScopePrivate &, QQuickItem *parent);
-protected:
+    UCStyledItemBase(UCStyledItemBasePrivate &, QQuickItem *parent);
+
     void mousePressEvent(QMouseEvent *event);
-    void mouseReleaseEvent(QMouseEvent *event);
 
 private:
-    Q_DECLARE_PRIVATE(UCFocusScope)
+    Q_DECLARE_PRIVATE(UCStyledItemBase)
 };
 
-#endif // UCFOCUSSCOPE_H
+#endif // UCSTYLEDITEMBASE_H

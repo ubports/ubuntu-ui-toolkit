@@ -25,7 +25,6 @@ TARGET = $$qtLibraryTarget($$TARGET)
 uri = Ubuntu.Components
 
 HEADERS += plugin.h \
-    ucglobals.h \
     uctheme.h \
     ucthemesettings.h \
     i18n.h \
@@ -65,9 +64,8 @@ HEADERS += plugin.h \
     ucinversemouse.h \
     ucmouse.h \
     unixsignalhandler_p.h \
-    ucglobals.h \
-    ucfocusscope.h \
-    ucfocusscope_p.h \
+    ucstyleditembase.h \
+    ucstyleditembase_p.h \
     uclistitem.h \
     uclistitem_p.h \
     uclistitemoptions.h \
@@ -105,7 +103,7 @@ SOURCES += plugin.cpp \
     ucurihandler.cpp \
     ucmousefilters.cpp \
     unixsignalhandler_p.cpp \
-    ucfocusscope.cpp \
+    ucstyleditembase.cpp \
     uclistitem.cpp \
     uclistitemoptions.cpp
 

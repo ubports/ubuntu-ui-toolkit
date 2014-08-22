@@ -45,7 +45,7 @@ import Ubuntu.Components 1.1
 
     \sa {Theme}
 */
-FocusScope {
+StyledItemBase {
     id: styledItem
 
     /*!

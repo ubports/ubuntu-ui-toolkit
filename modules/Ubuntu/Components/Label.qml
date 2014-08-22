@@ -56,16 +56,4 @@ Text {
 
     font.pixelSize: FontUtils.sizeToPixels(fontSize)
     color: Theme.palette.selected.backgroundText
-
-    /* FIXME: workaround for QTBUG 35095 where Text's alignment is incorrect
-       when the width changes and LayoutMirroring is enabled.
-
-       Ref.: https://bugreports.qt-project.org/browse/QTBUG-35095
-    */
-    /*! \internal */
-    onWidthChanged: if (LayoutMirroring.enabled) {
-                        // force a relayout
-                        lineHeight += 0.00001;
-                        lineHeight -= 0.00001;
-                    }
 }
