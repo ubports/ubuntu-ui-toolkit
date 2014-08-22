@@ -302,7 +302,7 @@ AbstractButton {
             top: parent.top
         }
         height: emptyListItem.height - bottomDividerLine.height
-        color: Qt.rgba(0, 0, 0, 0.05)
+        color: Theme.palette.selected.background
     }
 
     ThinDivider {
