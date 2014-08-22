@@ -49,8 +49,6 @@ MainView {
                     pageStack.push(mainPage);
                     if (selectedWidget) {
                         pageStack.push(contentPage);
-                    } else {
-                        mainPage.forceActiveFocus()
                     }
                 }
             }
@@ -96,7 +94,6 @@ MainView {
             }
         }
     ]
-    onStateChanged: print("state=", state)
 
     property var selectedWidget: null
 
@@ -126,7 +123,6 @@ MainView {
                     progression: true
                     selected: enabled && selectedWidget == model
                     onClicked: {
-                        print("UPPP")
                         selectedWidget = model;
                         if (gallery.state == "narrow") {
                             pageStack.push(contentPage);
