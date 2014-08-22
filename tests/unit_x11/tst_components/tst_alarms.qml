@@ -57,6 +57,11 @@ Item {
             signalName: "onDataChanged"
             target: testModel
         }
+        SignalSpy {
+            id: beginResetModelSpy
+            signalName: "onBeginResetModel"
+            target: testModel
+        }
 
         function clean() {
             var i = 0;
@@ -82,6 +87,7 @@ Item {
 
         function init() {
             dataChangedSpy.clear();
+            beginResetModelSpy.clear();
         }
 
         function test_createOneTimeFail() {
@@ -190,11 +196,13 @@ Item {
             testAlarm.save();
             compare(testAlarm.error, Alarm.NoError, "fist alarm added");
             compare(dataChangedSpy.count, 0, "No dataChanged() should be emitted");
+            compare(beginResetModelSpy.count, 0, "No beginResetModel() should be emitted");
 
             dt.setDate(dt.getDate() + 2);
             testAlarm.date = dt;
             testAlarm.save();
             compare(testAlarm.error, Alarm.NoError, "updated alarm");
+            compare(beginResetModelSpy.count, 0, "No beginResetModel() should be emitted");
             dataChangedSpy.wait();
         }
 
@@ -208,9 +216,14 @@ Item {
 
             testAlarm.save();
             compare(testAlarm.error, Alarm.NoError, "fist alarm added");
+            compare(dataChangedSpy.count, 0, "No dataChanged() should be emitted");
+            compare(beginResetModelSpy.count, 0, "No beginResetModel() should be emitted");
+
             testAlarm.type = Alarm.Repeating;
             testAlarm.save();
             compare(testAlarm.error, Alarm.NoError, "updated alarm");
+            compare(beginResetModelSpy.count, 0, "No beginResetModel() should be emitted");
+            dataChangedSpy.wait();
         }
 
         function test_modelRoles() {

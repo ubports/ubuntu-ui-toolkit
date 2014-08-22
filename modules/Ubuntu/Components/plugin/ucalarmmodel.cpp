@@ -266,7 +266,6 @@ void UCAlarmModel::refresh()
  */
 void UCAlarmModel::update(const QList<QVariant> cookies)
 {
-    qDebug() << "UPDATE" << cookies;
     AlarmList alarms = AlarmManager::instance().alarms();
     Q_FOREACH(const QVariant &cookie, cookies) {
         int alarmIndex = alarms.indexOfAlarm(cookie);
