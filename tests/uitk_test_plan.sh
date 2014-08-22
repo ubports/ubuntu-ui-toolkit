@@ -175,6 +175,7 @@ if [ ${RUNTESTS} != true  ]; then
 fi
 
 if [ ${RESET} == false  ]; then
+	echo "Reset the device for testing."
         RESET=true
         reset
         RESET=false
