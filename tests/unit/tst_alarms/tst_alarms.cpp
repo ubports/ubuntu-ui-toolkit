@@ -69,7 +69,7 @@ private:
     bool containsAlarm(UCAlarm *alarm, bool trace = false)
     {
         UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
-        QList<AlarmData> alarms = AlarmManager::instance().alarms();
+        AlarmList alarms = AlarmManager::instance().alarms();
         Q_FOREACH(AlarmData i, alarms) {
             if (trace && (alarm->message() == i.message)) {
                 qDebug() << "----------------------";
@@ -94,7 +94,7 @@ private:
 
     bool findAlarm(const QString &message, UCAlarm &result)
     {
-        QList<AlarmData> alarms = AlarmManager::instance().alarms();
+        AlarmList alarms = AlarmManager::instance().alarms();
         Q_FOREACH(AlarmData i, alarms) {
             if (i.message == message) {
                 UCAlarmPrivate::get(&result)->rawData = i;

@@ -52,6 +52,12 @@ Item {
         name: "AlarmAPI"
         when: windowShown
 
+        SignalSpy {
+            id: dataChangedSpy
+            signalName: "onDataChanged"
+            target: testModel
+        }
+
         function clean() {
             var i = 0;
             while (i < testModel.count) {
@@ -72,6 +78,10 @@ Item {
 
         function cleanupTestCase() {
             clean();
+        }
+
+        function init() {
+            dataChangedSpy.clear();
         }
 
         function test_createOneTimeFail() {
@@ -179,10 +189,13 @@ Item {
 
             testAlarm.save();
             compare(testAlarm.error, Alarm.NoError, "fist alarm added");
+            compare(dataChangedSpy.count, 0, "No dataChanged() should be emitted");
 
             dt.setDate(dt.getDate() + 2);
             testAlarm.date = dt;
+            testAlarm.save();
             compare(testAlarm.error, Alarm.NoError, "updated alarm");
+            dataChangedSpy.wait();
         }
 
         function test_updateAlarm_differentType() {
@@ -196,6 +209,7 @@ Item {
             testAlarm.save();
             compare(testAlarm.error, Alarm.NoError, "fist alarm added");
             testAlarm.type = Alarm.Repeating;
+            testAlarm.save();
             compare(testAlarm.error, Alarm.NoError, "updated alarm");
         }
 
