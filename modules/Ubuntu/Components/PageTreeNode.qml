@@ -100,6 +100,9 @@ StyledItem {
      */
     property bool isLeaf: false
 
+    // turn on focusing
+    activeFocusOnPress: true
+
     Binding {
         target: node.parentNode
         property: "activeLeafNode"
