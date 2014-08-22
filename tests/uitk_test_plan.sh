@@ -43,13 +43,14 @@ declare -a TEST_SUITE=(
 " filemanager"
 " -p reminders-app-autopilot reminders"
 " -p address-book-app-autopilot address_book_app"
-" -p camera-app-autopilot camera_app"
 " -p dialer-app-autopilot dialer_app"
 " -p messaging-app-autopilot messaging_app"
 " -p ubuntu-system-settings-autopilot ubuntu_system_settings"
 " -p ubuntu-html5-ui-toolkit-autopilot ubuntu_html5_ui_toolkit"
 " -p unity-webapps-qml-autopilot unity_webapps_qml"
 " online_accounts_ui"
+" -p camera-app-autopilot camera_app"
+
 )
 
 function reset {
@@ -138,7 +139,7 @@ while getopts ":hrcnts:o:p:f:" opt; do
 			echo " -n : Do not run the test set. Default ${RUNTESTS}"
 			echo " -o : Output directory. Default $OUTPUTDIR"
 			echo " -p : Source PPA for the UITK. Default $PPA"
-			echo " -f : Filter for the test suite. Defauk $FILTER"
+			echo " -f : Filter for the test suite. Default $FILTER"
 			exit
 			;;
 		:)
@@ -147,7 +148,8 @@ while getopts ":hrcnts:o:p:f:" opt; do
 	esac
 done
 
-echo "Waiting for the device with ${SERIALNUMBER} serial number"
+echo "Waiting for the device with ${SERIALNUMBER} serial number. 
+echo "Hit Ctrl-C and se -s [serial number] to run the tests on other device."
 adb -s ${SERIALNUMBER} wait-for-device
 
 # Check if the device need to be flashed and set up for testing
@@ -204,8 +206,8 @@ do
 		                LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-3.tests"
         		        COMMAND="phablet-test-run -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
 			        echo "<<<=== ${APPNAME} 3 ===>>>" >> ${LOGFILE}
-		               eval ${COMMAND}
-				grep "<<<===|Ran|OK|FAILED" ${LOGFILE}
+		                eval ${COMMAND}
+				egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
 			fi
 
 		fi
