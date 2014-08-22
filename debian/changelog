@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.1.1206+14.10.20140813.4-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.1.1208+14.10.20140813.4-0ubuntu2) UNRELEASED; urgency=medium
 
   [ Tim Peeters ]
   * Push modules/Ubuntu/Components/qmldir in push_to_phone.sh.
@@ -14,10 +14,16 @@ ubuntu-ui-toolkit (1.1.1206+14.10.20140813.4-0ubuntu2) UNRELEASED; urgency=mediu
     failed when the element searched is on the first page of the list. 
     Fixes LP: #1342521
 
+  [ Benjamin Zeller ]
+  * Add a more stable regression test for bug LP: #1338602 
+
   [ Zsombor Egri ]
   * Introducing Ubuntu Components FocusScope which extends QtQuick 
     FocusScope with the ability to focus by mouse clicks.
   * Slider blocks Flickable while sliding. Fixes LP: #1353966
+  * Save alarms data into JSON format. Affects test environments 
+    using fallback memory manager. Does not affect EDS backend 
+    functionality. Prerequisite for further alarm changes.
 
   [ Florian Boucault ]
   * Publish palettes of the themes.
