@@ -20,17 +20,24 @@ import Ubuntu.Components 1.1
 /*!
     \qmltype ListItem
     \inqmlmodule Ubuntu.Components 1.1
+    \inherits Item
     \ingroup ubuntu
-    \brief The ListItem element sets up the sizes and other bindings to satisfy
-    Ubuntu design guides. Does not bring anything in addition to ListItemBase.
+    \brief The ListItem element provides Ubuntu design standards for list or grid
+    views.
+
+    The component is dedicated to be used in designs with static or dynamic lists
+    (i.e. list views where each item's layout differs or in lists where the content
+    is determined by a given model, thus each element has the same layout). The
+    element does not define any specific layout, components can be placed in any
+    ways on it. However, when used in list views, the content must be carefully
+    chosen to in order to keep the kinetic behavior and the highest FPS if possible.
   */
 
 ListItemBase {
-    width: flickable ? flickable.width : (parent ? parent.width : units.gu(40))
+    width: owningItem ? owningItem.width : units.gu(20)
     height: units.gu(6)
     background.pressedColor: Theme.palette.selected.background
     divider {
-        thickness: units.dp(1)
         leftMargin: units.gu(2)
         rightMargin: units.gu(2)
     }

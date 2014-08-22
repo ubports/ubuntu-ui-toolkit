@@ -18,15 +18,14 @@
 #define UCVIEWITEM_P_H
 
 #include "uclistitem.h"
-#include "ucglobals.h"
-#include "ucfocusscope_p.h"
+#include "ucstyleditembase_p.h"
 #include <QtCore/QPointer>
 #include <QtQuick/private/qquickrectangle_p.h>
 
 class QQuickFlickable;
 class UCListItemBackground;
 class UCListItemDivider;
-class UCListItemBasePrivate : public UCFocusScopePrivate
+class UCListItemBasePrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItemBase)
 public:
@@ -48,6 +47,8 @@ public:
     void listenToRebind(bool listen);
     void resize();
 
+    bool pressed:1;
+    bool ready:1;
     QPointer<QQuickFlickable> flickable;
     UCListItemBackground *background;
     UCListItemDivider *divider;
@@ -56,36 +57,51 @@ public:
 class UCListItemBackground : public QQuickItem
 {
     Q_OBJECT
-    DECLARE_PROPERTY(QColor, color)
-    DECLARE_PROPERTY(QColor, pressedColor)
+    Q_PROPERTY(QColor color MEMBER m_color WRITE setColor NOTIFY colorChanged)
+    Q_PROPERTY(QColor pressedColor MEMBER m_pressedColor WRITE setPressedColor NOTIFY pressedColorChanged)
 public:
     explicit UCListItemBackground(QQuickItem *parent = 0);
     ~UCListItemBackground();
+
+    void setColor(const QColor &color);
+    void setPressedColor(const QColor &color);
+
+Q_SIGNALS:
+    void colorChanged();
+    void pressedColorChanged();
 
 protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
 
 private:
+    QColor m_color;
+    QColor m_pressedColor;
     UCListItemBase *m_item;
 };
 
 class UCListItemDivider : public QObject
 {
     Q_OBJECT
-    DECLARE_PROPERTY(bool, visible)
-    DECLARE_PROPERTY(qreal, thickness)
-    DECLARE_PROPERTY(qreal, leftMargin)
-    DECLARE_PROPERTY(qreal, rightMargin)
-    DECLARE_PROPERTY_PTYPE(QQuickGradient, gradient)
-    DECLARE_PROPERTY(QColor, color)
+    Q_PROPERTY(bool visible MEMBER m_visible WRITE setVisible NOTIFY visibleChanged)
+    Q_PROPERTY(qreal leftMargin MEMBER m_leftMargin WRITE setLeftMargin NOTIFY leftMarginChanged)
+    Q_PROPERTY(qreal rightMargin MEMBER m_rightMargin WRITE setRightMargin NOTIFY rightMarginChanged)
 public:
     explicit UCListItemDivider(QObject *parent = 0);
     ~UCListItemDivider();
     void init(UCListItemBase *listItem);
 
+Q_SIGNALS:
+    void visibleChanged();
+    void leftMarginChanged();
+    void rightMarginChanged();
+
 protected:
     QSGNode *paint(QSGNode *paintNode, const QRectF &rect);
+
+private Q_SLOTS:
+    void unitsChanged();
+    void paletteChanged();
 
 private:
     void resizeAndUpdate() {
@@ -93,13 +109,15 @@ private:
         m_listItem->update();
     }
 
-    void gradientUpdate() {
-        if (m_gradient) {
-            QObject::connect(m_gradient, SIGNAL(updated()), m_listItem, SLOT(update()));
-            m_listItem->update();
-        }
-    }
+    void setVisible(bool visible);
+    void setLeftMargin(qreal leftMargin);
+    void setRightMargin(qreal rightMargin);
 
+    bool m_visible;
+    qreal m_thickness;
+    qreal m_leftMargin;
+    qreal m_rightMargin;
+    QGradientStops m_gradient;
     UCListItemBase *m_listItem;
     friend class UCListItemBase;
     friend class UCListItemBasePrivate;

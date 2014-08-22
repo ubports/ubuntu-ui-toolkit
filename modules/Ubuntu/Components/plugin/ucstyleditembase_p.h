@@ -16,32 +16,31 @@
  * Author: Zsombor Egri <zsombor.egri@canonical.com>
  */
 
-#ifndef UCFOCUSSCOPE_P_H
-#define UCFOCUSSCOPE_P_H
+#ifndef UCSTYLEDITEMBASE_P_H
+#define UCSTYLEDITEMBASE_P_H
 
 #include <QtQuick/private/qquickitem_p.h>
 
 class QQuickMouseArea;
-class UCFocusScope;
-class UCFocusScopePrivate : public QQuickItemPrivate
+class UCStyledItemBase;
+class UCStyledItemBasePrivate : public QQuickItemPrivate
 {
-    Q_DECLARE_PUBLIC(UCFocusScope)
+    Q_DECLARE_PUBLIC(UCStyledItemBase)
 public:
 
-    static UCFocusScopePrivate *get(UCFocusScope *item) {
+    static UCStyledItemBasePrivate *get(UCStyledItemBase *item) {
         return item->d_func();
     }
 
-    UCFocusScopePrivate();
-    virtual ~UCFocusScopePrivate();
+    UCStyledItemBasePrivate();
+    virtual ~UCStyledItemBasePrivate();
     void init();
 
     virtual void setFocusable(bool focus);
     bool isParentFocusable();
 
 public:
-    bool activeFocusOnMousePress:1;
-    bool pressed:1;
+    bool activeFocusOnPress:1;
 };
 
-#endif // UCFOCUSSCOPE_P_H
+#endif // UCSTYLEDITEMBASE_P_H

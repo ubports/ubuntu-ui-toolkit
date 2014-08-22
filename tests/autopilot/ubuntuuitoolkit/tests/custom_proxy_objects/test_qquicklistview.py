@@ -14,6 +14,11 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+try:
+    from unittest import mock
+except ImportError:
+    import mock
+
 from autopilot.introspection import dbus
 
 import ubuntuuitoolkit
@@ -100,13 +105,39 @@ MainView {
         self.list_view.click_element('testListElement4')
         self.assertEqual(self.label.text, 'testListElement4')
 
-    def test_click_element_not_created_at_start(self):
+    def test_click_element_not_created_at_start_below(self):
         objectName = 'testListElement19'
         self.assertRaises(
             dbus.StateNotFoundError,
             self.list_view.select_single,
             objectName=objectName)
         self.list_view.click_element(objectName)
+        self.assertEqual(self.label.text, 'testListElement19')
+
+    def test_click_element_from_first_page_deleted_when_swiping_down(self):
+        """Test that no more swiping is done after finding the element.
+
+        This is a regression test for bug http://pad.lv/1342521 that caused
+        us to swipe down after finding an element on the first page of the
+        list. If we were lucky, the element was still cashed so we just ended
+        up doing two extra swipes. If not, then the element will be deleted
+        from the tree and the helper failed.
+
+        """
+        # Swipe to the bottom.
+        self.list_view.click_element('testListElement19')
+
+        objectName = 'testListElement1'
+        self.assertRaises(
+            dbus.StateNotFoundError,
+            self.list_view.select_single,
+            objectName=objectName)
+        with mock.patch.object(
+                self.list_view,
+                'swipe_to_show_more_below') as mock_swipe_down:
+            self.list_view.click_element(objectName)
+        self.assertFalse(mock_swipe_down.called)
+        self.assertEqual(self.label.text, 'testListElement1')
 
     def test_click_unexisting_element(self):
         error = self.assertRaises(
