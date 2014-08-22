@@ -1,3 +1,55 @@
+ubuntu-ui-toolkit (1.1.1205+14.10.20140813.4-0ubuntu2) UNRELEASED; urgency=medium
+
+  [ Tim Peeters ]
+  * Push modules/Ubuntu/Components/qmldir in push_to_phone.sh.
+  * Add PageStack tests that use the new header.
+
+  [ Leo Arias ]
+  * On autopilot helpers, take into account that text areas can have
+    multiple lines when deleting the text. Fixes LP: #1359167
+  * Fixed the four failing autopilot open page tests.
+  * Added an autopilot custom proxy for QQuickGridView. 
+    Fixes LP: #1351670
+  * Fixed the autopilot helper to search elements on lists, that 
+    failed when the element searched is on the first page of the list. 
+    Fixes LP: #1342521
+
+  [ Zsombor Egri ]
+  * Introducing Ubuntu Components FocusScope which extends QtQuick 
+    FocusScope with the ability to focus by mouse clicks.
+  * Slider blocks Flickable while sliding. Fixes LP: #1353966
+
+  [ Florian Boucault ]
+  * Publish palettes of the themes.
+  * Removed workaround that forced relayout when layout mirroring was
+    enabled since bug was fixed in Qt. Fixes LP: #1353863
+  * Visual feedback upon press for Header.
+  * Better visual feedback upon press for List Items. 
+    Fixes LP: #1354036
+
+  [ Christian Dywan ]
+  * Set organizationDomain which Qt.labs.settings uses. 
+    Fixes LP: #1241424 and LP: #1354321
+  * Allow context menu buttons to grow wider for non-English locales
+    to fit.
+
+
+  [ Zoltán Balogh ] 
+  * Fix the desktop file for the UITK Gallery 
+    Fixes LP: #1357205 and LP: #1176918
+
+  [ Martin Pitt ]
+  * The autopilot-qt was split into Qt4 and Qt5 packages2. The 
+    libautopilot-qt used to pull qt4 packages. Avoid pulling qt4 
+    packages by depending on the Qt5 specific packages only.
+
+  [ Nicholas Skaggs ]
+  * Fix the warning for the emulators module. The warning will now 
+    only appear if you use the module directly. Fixes LP: #134169
+
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 22 Aug 2014 13:19:38 +0300
+
 ubuntu-ui-toolkit (1.1.1188+14.10.20140813.4-0ubuntu1) utopic; urgency=medium
 
   [ Tim Peeters ]
