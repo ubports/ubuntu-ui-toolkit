@@ -59,6 +59,9 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     , manager(0)
     , fetchRequest(0)
 {
+    // register QOrganizerItemId comparators so QVariant == operator can compare them
+    QMetaType::registerComparators<QOrganizerItemId>();
+
     QString envManager(qgetenv("ALARM_BACKEND"));
     if (envManager.isEmpty())
         envManager = ALARM_MANAGER;
