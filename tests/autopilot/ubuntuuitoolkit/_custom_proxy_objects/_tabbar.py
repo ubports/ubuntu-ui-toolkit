@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 class TabBar(_common.UbuntuUIToolkitCustomProxyObjectBase):
-    """TabBar Autopilot emulator."""
+    """TabBar Autopilot custom proxy object."""
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_next_tab(self):

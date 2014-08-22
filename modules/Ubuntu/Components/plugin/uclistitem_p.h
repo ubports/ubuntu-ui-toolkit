@@ -18,14 +18,14 @@
 #define UCVIEWITEM_P_H
 
 #include "uclistitem.h"
-#include "ucfocusscope_p.h"
+#include "ucstyleditembase_p.h"
 #include <QtCore/QPointer>
 #include <QtQuick/private/qquickrectangle_p.h>
 
 class QQuickFlickable;
 class UCListItemBackground;
 class UCListItemDivider;
-class UCListItemBasePrivate : public UCFocusScopePrivate
+class UCListItemBasePrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItemBase)
 public:
@@ -47,6 +47,7 @@ public:
     void listenToRebind(bool listen);
     void resize();
 
+    bool pressed:1;
     bool ready:1;
     QPointer<QQuickFlickable> flickable;
     UCListItemBackground *background;

@@ -26,9 +26,12 @@
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
+#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonObject>
+#include <QtCore/QJsonArray>
 #include <QtCore/QDebug>
 
-#define ALARM_DATABASE          "%1/alarms.database"
+#define ALARM_DATABASE          "%1/alarms.json"
 /*
  * The main alarm manager engine used from Saucy onwards is EDS (Evolution Data
  * Server) based. Any previous release uses the generic "memory" manager engine
@@ -56,6 +59,9 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     , manager(0)
     , fetchRequest(0)
 {
+    // register QOrganizerItemId comparators so QVariant == operator can compare them
+    QMetaType::registerComparators<QOrganizerItemId>();
+
     QString envManager(qgetenv("ALARM_BACKEND"));
     if (envManager.isEmpty())
         envManager = ALARM_MANAGER;
@@ -90,7 +96,7 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     // connect to manager to receive changes
     QObject::connect(manager, SIGNAL(dataChanged()), this, SLOT(fetchAlarms()));
     QObject::connect(manager, SIGNAL(itemsAdded(QList<QOrganizerItemId>)), this, SLOT(fetchAlarms()));
-    QObject::connect(manager, SIGNAL(itemsChanged(QList<QOrganizerItemId>)), this, SLOT(fetchAlarms()));
+    QObject::connect(manager, SIGNAL(itemsChanged(QList<QOrganizerItemId>)), this, SLOT(updateAlarms(QList<QOrganizerItemId>)));
     QObject::connect(manager, SIGNAL(itemsRemoved(QList<QOrganizerItemId>)), this, SLOT(fetchAlarms()));
 }
 
@@ -109,16 +115,19 @@ void AlarmsAdapter::loadAlarms()
     if (!file.open(QFile::ReadOnly)) {
         return;
     }
-    QDataStream in(&file);
+    QByteArray data = file.readAll();
+    QJsonDocument document(QJsonDocument::fromJson(data));
+    QJsonArray array = document.array();
+    for (int i = 0; i < array.size(); i++) {
+        QJsonObject object = array[i].toObject();
 
-    while (!in.atEnd()) {
         AlarmData alarm;
-
-        int type, days;
-        in >> alarm.message >> alarm.date >> alarm.sound >> type >> days >> alarm.enabled;
-        alarm.originalDate = alarm.date = AlarmData::transcodeDate(alarm.date, Qt::LocalTime);
-        alarm.type = static_cast<UCAlarm::AlarmType>(type);
-        alarm.days = static_cast<UCAlarm::DaysOfWeek>(days);
+        alarm.message = object["message"].toString();
+        alarm.originalDate = alarm.date = AlarmData::transcodeDate(QDateTime::fromString(object["date"].toString()), Qt::LocalTime);
+        alarm.sound = object["sound"].toString();
+        alarm.type = static_cast<UCAlarm::AlarmType>(object["type"].toInt());
+        alarm.days = static_cast<UCAlarm::DaysOfWeek>(object["days"].toInt());
+        alarm.enabled = object["enabled"].toBool();
 
         QOrganizerTodo event;
         organizerEventFromAlarmData(alarm, event);
@@ -141,16 +150,20 @@ void AlarmsAdapter::saveAlarms()
     if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
         return;
     }
-    QDataStream out(&file);
-
+    QJsonArray data;
     Q_FOREACH(const AlarmData &alarm, alarmList) {
-        out << alarm.message
-            << AlarmData::transcodeDate(alarm.originalDate, Qt::UTC)
-            << alarm.sound
-            << alarm.type
-            << alarm.days
-            << alarm.enabled;
+        QJsonObject object;
+        object["message"] = alarm.message;
+        object["date"] = AlarmData::transcodeDate(alarm.originalDate, Qt::UTC).toString();
+        object["sound"] = alarm.sound.toString();
+        object["type"] = QJsonValue(alarm.type);
+        object["days"] = QJsonValue(alarm.days);
+        object["enabled"] = QJsonValue(alarm.enabled);
+        data.append(object);
+
     }
+    QJsonDocument document(data);
+    file.write(document.toJson());
     file.close();
     listDirty = false;
 }
@@ -295,6 +308,48 @@ bool AlarmsAdapter::fetchAlarms()
     fetchRequest = new AlarmRequest(true, q_ptr);
     AlarmRequestAdapter *adapter = static_cast<AlarmRequestAdapter*>(AlarmRequestPrivate::get(fetchRequest));
     return adapter->fetch();
+}
+
+void AlarmsAdapter::updateAlarms(QList<QOrganizerItemId> list)
+{
+    if (list.size() < 0) {
+        return;
+    }
+    QList<QVariant> cookies;
+    QSet<QOrganizerItemId> parentId;
+    QOrganizerTodo event;
+    Q_FOREACH(const QOrganizerItemId &id, list) {
+        const QOrganizerItem item = manager->item(id);
+        if (item.type() == QOrganizerItemType::TypeTodoOccurrence) {
+            QOrganizerTodoOccurrence occurrence = static_cast<QOrganizerTodoOccurrence>(item);
+            QOrganizerItemId eventId = occurrence.parentId();
+            if (parentId.contains(eventId)) {
+                continue;
+            }
+            parentId << eventId;
+            event = static_cast<QOrganizerTodo>(manager->item(eventId));
+        } else if (item.type() == QOrganizerItemType::TypeTodo){
+            event = static_cast<QOrganizerTodo>(item);
+        } else {
+            continue;
+        }
+
+        // update alarm data
+        QVariant cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
+        int index = alarmList.indexOfAlarm(cookie);
+        if (index < 0) {
+            qFatal("The Alarm data has been updated with an unregistered item!");
+        }
+        AlarmData data = alarmList[index];
+        if (alarmDataFromOrganizerEvent(event, data) == UCAlarm::NoError) {
+            adjustAlarmOccurrence(event, data);
+        }
+        alarmList[index] = data;
+
+        // register cookie for update
+        cookies << cookie;
+    }
+    Q_EMIT q_ptr->alarmsUpdated(cookies);
 }
 
 void AlarmsAdapter::completeFetchAlarms(const QList<QOrganizerItem> &alarms)

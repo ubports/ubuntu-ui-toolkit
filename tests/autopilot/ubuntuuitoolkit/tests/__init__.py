@@ -23,7 +23,8 @@ from autopilot.input import Pointer
 from autopilot.matchers import Eventually
 from testtools.matchers import Is, Not, Equals
 
-from ubuntuuitoolkit import base, emulators, fixture_setup
+import ubuntuuitoolkit
+from ubuntuuitoolkit import base, fixture_setup
 
 
 _DESKTOP_FILE_CONTENTS = ("""[Desktop Entry]
@@ -91,7 +92,7 @@ MainView {
         application_name, _ = os.path.splitext(desktop_file_name)
         self.app = self.launch_upstart_application(
             application_name,
-            emulator_base=emulators.UbuntuUIToolkitEmulatorBase)
+            emulator_base=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase)
 
 
 class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
@@ -106,7 +107,7 @@ class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
 
     @property
     def main_view(self):
-        return self.app.select_single(emulators.MainView)
+        return self.app.select_single(ubuntuuitoolkit.MainView)
 
 
 class FlickDirection:
@@ -133,7 +134,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
             "-I" + _get_module_include_path(),
             self.test_qml_file_path,
             '--desktop_file_hint={0}'.format(desktop_file_path),
-            emulator_base=emulators.UbuntuUIToolkitEmulatorBase,
+            emulator_base=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase,
             app_type='qt')
 
         self.assertThat(
@@ -149,7 +150,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
 
     @property
     def main_view(self):
-        return self.app.select_single(emulators.MainView)
+        return self.app.select_single(ubuntuuitoolkit.MainView)
 
     def getOrientationHelper(self):
         orientationHelper = self.main_view.select_many(

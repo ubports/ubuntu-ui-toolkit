@@ -26,7 +26,7 @@ Item {
     Column {
         anchors.fill: parent
 
-        FocusScope {
+        StyledItem {
             id: passiveScope
             objectName: "passiveScope"
             width: units.gu(50)
@@ -38,19 +38,19 @@ Item {
                 color: "red"
                 anchors.centerIn: parent
 
-                FocusScope {
+                StyledItem {
                     objectName: "in_passive_scope"
-                    activeFocusOnMousePress: true
+                    activeFocusOnPress: true
                     anchors.fill: parent
                 }
             }
         }
-        FocusScope {
+        StyledItem {
             id: activeScope
             objectName: "activeScope"
             width: units.gu(50)
             height: units.gu(20)
-            activeFocusOnMousePress: true
+            activeFocusOnPress: true
 
             Rectangle {
                 width: height
@@ -58,19 +58,19 @@ Item {
                 color: "green"
                 anchors.centerIn: parent
 
-                FocusScope {
+                StyledItem {
                     objectName: "in_active_scope"
-                    activeFocusOnMousePress: true
+                    activeFocusOnPress: true
                     anchors.fill: parent
                 }
             }
         }
-        FocusScope {
+        StyledItem {
             id: activeScope1
             objectName: "activeScope"
             width: units.gu(50)
             height: units.gu(20)
-            activeFocusOnMousePress: true
+            activeFocusOnPress: true
 
             Rectangle {
                 width: height
@@ -78,9 +78,9 @@ Item {
                 color: "green"
                 anchors.centerIn: parent
 
-                FocusScope {
+                StyledItem {
                     objectName: "in_active_scope"
-                    activeFocusOnMousePress: true
+                    activeFocusOnPress: true
                     anchors.fill: parent
                     MouseArea {
                         focus: true
@@ -90,12 +90,12 @@ Item {
                 }
             }
         }
-        FocusScope {
+        StyledItem {
             id: activeScope2
             objectName: "activeScope"
             width: units.gu(50)
             height: units.gu(20)
-            activeFocusOnMousePress: true
+            activeFocusOnPress: true
 
             Rectangle {
                 width: height
@@ -103,25 +103,25 @@ Item {
                 color: "green"
                 anchors.centerIn: parent
 
-                FocusScope {
+                StyledItem {
                     objectName: "in_active_scope"
-                    activeFocusOnMousePress: true
+                    activeFocusOnPress: true
                     anchors.fill: parent
                     MouseArea {
                         focus: true
                         objectName: "mouseArea"
                         anchors.fill: parent
-                        onClicked: parent.gainFocus()
+                        onClicked: parent.requestFocus()
                     }
                 }
             }
         }
-        FocusScope {
+        StyledItem {
             id: activeScope3
             objectName: "activeScope"
             width: units.gu(50)
             height: units.gu(20)
-            activeFocusOnMousePress: true
+            activeFocusOnPress: true
 
             Rectangle {
                 width: height
@@ -129,9 +129,9 @@ Item {
                 color: "green"
                 anchors.centerIn: parent
 
-                FocusScope {
+                StyledItem {
                     objectName: "in_active_scope"
-                    activeFocusOnMousePress: true
+                    activeFocusOnPress: true
                     anchors.fill: parent
                     MouseArea {
                         focus: true
@@ -145,7 +145,7 @@ Item {
     }
 
     UbuntuTestCase {
-         name: "Ubuntu.Components.FocusScope API"
+         name: "StyledItemAPI"
          when: windowShown
 
          function test_scope_focusing_data() {
