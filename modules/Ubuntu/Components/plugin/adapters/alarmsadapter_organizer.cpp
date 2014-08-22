@@ -59,6 +59,9 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     , manager(0)
     , fetchRequest(0)
 {
+    // register QOrganizerItemId comparators so QVariant == operator can compare them
+    QMetaType::registerComparators<QOrganizerItemId>();
+
     QString envManager(qgetenv("ALARM_BACKEND"));
     if (envManager.isEmpty())
         envManager = ALARM_MANAGER;
@@ -93,7 +96,7 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     // connect to manager to receive changes
     QObject::connect(manager, SIGNAL(dataChanged()), this, SLOT(fetchAlarms()));
     QObject::connect(manager, SIGNAL(itemsAdded(QList<QOrganizerItemId>)), this, SLOT(fetchAlarms()));
-    QObject::connect(manager, SIGNAL(itemsChanged(QList<QOrganizerItemId>)), this, SLOT(fetchAlarms()));
+    QObject::connect(manager, SIGNAL(itemsChanged(QList<QOrganizerItemId>)), this, SLOT(updateAlarms(QList<QOrganizerItemId>)));
     QObject::connect(manager, SIGNAL(itemsRemoved(QList<QOrganizerItemId>)), this, SLOT(fetchAlarms()));
 }
 
@@ -305,6 +308,48 @@ bool AlarmsAdapter::fetchAlarms()
     fetchRequest = new AlarmRequest(true, q_ptr);
     AlarmRequestAdapter *adapter = static_cast<AlarmRequestAdapter*>(AlarmRequestPrivate::get(fetchRequest));
     return adapter->fetch();
+}
+
+void AlarmsAdapter::updateAlarms(QList<QOrganizerItemId> list)
+{
+    if (list.size() < 0) {
+        return;
+    }
+    QList<QVariant> cookies;
+    QSet<QOrganizerItemId> parentId;
+    QOrganizerTodo event;
+    Q_FOREACH(const QOrganizerItemId &id, list) {
+        const QOrganizerItem item = manager->item(id);
+        if (item.type() == QOrganizerItemType::TypeTodoOccurrence) {
+            QOrganizerTodoOccurrence occurrence = static_cast<QOrganizerTodoOccurrence>(item);
+            QOrganizerItemId eventId = occurrence.parentId();
+            if (parentId.contains(eventId)) {
+                continue;
+            }
+            parentId << eventId;
+            event = static_cast<QOrganizerTodo>(manager->item(eventId));
+        } else if (item.type() == QOrganizerItemType::TypeTodo){
+            event = static_cast<QOrganizerTodo>(item);
+        } else {
+            continue;
+        }
+
+        // update alarm data
+        QVariant cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
+        int index = alarmList.indexOfAlarm(cookie);
+        if (index < 0) {
+            qFatal("The Alarm data has been updated with an unregistered item!");
+        }
+        AlarmData data = alarmList[index];
+        if (alarmDataFromOrganizerEvent(event, data) == UCAlarm::NoError) {
+            adjustAlarmOccurrence(event, data);
+        }
+        alarmList[index] = data;
+
+        // register cookie for update
+        cookies << cookie;
+    }
+    Q_EMIT q_ptr->alarmsUpdated(cookies);
 }
 
 void AlarmsAdapter::completeFetchAlarms(const QList<QOrganizerItem> &alarms)

@@ -39,7 +39,7 @@ public:
     }
 
     AlarmManager *q_ptr;
-    QList<AlarmData> alarmList;
+    AlarmList alarmList;
     bool completed:1;
 
     virtual bool fetchAlarms() = 0;
