@@ -26,9 +26,12 @@
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 #include <QtCore/QStandardPaths>
+#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonObject>
+#include <QtCore/QJsonArray>
 #include <QtCore/QDebug>
 
-#define ALARM_DATABASE          "%1/alarms.database"
+#define ALARM_DATABASE          "%1/alarms.json"
 /*
  * The main alarm manager engine used from Saucy onwards is EDS (Evolution Data
  * Server) based. Any previous release uses the generic "memory" manager engine
@@ -109,16 +112,19 @@ void AlarmsAdapter::loadAlarms()
     if (!file.open(QFile::ReadOnly)) {
         return;
     }
-    QDataStream in(&file);
+    QByteArray data = file.readAll();
+    QJsonDocument document(QJsonDocument::fromJson(data));
+    QJsonArray array = document.array();
+    for (int i = 0; i < array.size(); i++) {
+        QJsonObject object = array[i].toObject();
 
-    while (!in.atEnd()) {
         AlarmData alarm;
-
-        int type, days;
-        in >> alarm.message >> alarm.date >> alarm.sound >> type >> days >> alarm.enabled;
-        alarm.originalDate = alarm.date = AlarmData::transcodeDate(alarm.date, Qt::LocalTime);
-        alarm.type = static_cast<UCAlarm::AlarmType>(type);
-        alarm.days = static_cast<UCAlarm::DaysOfWeek>(days);
+        alarm.message = object["message"].toString();
+        alarm.originalDate = alarm.date = AlarmData::transcodeDate(QDateTime::fromString(object["date"].toString()), Qt::LocalTime);
+        alarm.sound = object["sound"].toString();
+        alarm.type = static_cast<UCAlarm::AlarmType>(object["type"].toInt());
+        alarm.days = static_cast<UCAlarm::DaysOfWeek>(object["days"].toInt());
+        alarm.enabled = object["enabled"].toBool();
 
         QOrganizerTodo event;
         organizerEventFromAlarmData(alarm, event);
@@ -141,16 +147,20 @@ void AlarmsAdapter::saveAlarms()
     if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
         return;
     }
-    QDataStream out(&file);
-
+    QJsonArray data;
     Q_FOREACH(const AlarmData &alarm, alarmList) {
-        out << alarm.message
-            << AlarmData::transcodeDate(alarm.originalDate, Qt::UTC)
-            << alarm.sound
-            << alarm.type
-            << alarm.days
-            << alarm.enabled;
+        QJsonObject object;
+        object["message"] = alarm.message;
+        object["date"] = AlarmData::transcodeDate(alarm.originalDate, Qt::UTC).toString();
+        object["sound"] = alarm.sound.toString();
+        object["type"] = QJsonValue(alarm.type);
+        object["days"] = QJsonValue(alarm.days);
+        object["enabled"] = QJsonValue(alarm.enabled);
+        data.append(object);
+
     }
+    QJsonDocument document(data);
+    file.write(document.toJson());
     file.close();
     listDirty = false;
 }
