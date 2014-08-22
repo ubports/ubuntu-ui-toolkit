@@ -15,6 +15,7 @@
 #
 # Author: Zoltán Balogh <zoltan.baloghn@canonical.com>
 
+LAZY=false
 SERIALNUMBER=086e443edf51b915
 RESET=false
 COMISSION=false
@@ -104,7 +105,7 @@ function device_comission {
 							ubuntu-system-settings-online-accounts-autopilot
 }
 
-while getopts ":hrcnts:o:p:f:" opt; do
+while getopts ":hrcnlts:o:p:f:" opt; do
 	case $opt in
 		m)
 			RESET=true
@@ -131,6 +132,9 @@ while getopts ":hrcnts:o:p:f:" opt; do
 		n)
 			RUNTESTS=false
 			;;
+		l)
+			LAZY=true
+			;;
 		h)
 			echo "Usage: uitk_test_plan.sh -s [serial number] -m -c"
 			echo " -r : Reset after each tests. Default: ${RESET}"
@@ -140,6 +144,7 @@ while getopts ":hrcnts:o:p:f:" opt; do
 			echo " -o : Output directory. Default $OUTPUTDIR"
 			echo " -p : Source PPA for the UITK. Default $PPA"
 			echo " -f : Filter for the test suite. Default $FILTER"
+			echo " -l : The tests are run on the first detected device. Default $LAZY"
 			exit
 			;;
 		:)
@@ -148,9 +153,16 @@ while getopts ":hrcnts:o:p:f:" opt; do
 	esac
 done
 
-echo "Waiting for the device with ${SERIALNUMBER} serial number. 
-echo "Hit Ctrl-C and se -s [serial number] to run the tests on other device."
-adb -s ${SERIALNUMBER} wait-for-device
+if [ ${LAZY} == true ]; then
+	echo "Waiting for a device"
+	adb wait-for-device
+	SERIALNUMBER=`adb devices -l | grep -Ev "List of devices attached" | grep -Ev "emulator-" | sed "/^$/d"|sed "s/ .*//g"`
+	echo "Tests will be run on the device with ${SERIALNUMBER} serial number."
+else
+
+	echo "Waiting for the device with ${SERIALNUMBER} serial number."
+	adb -s ${SERIALNUMBER} wait-for-device
+fi
 
 # Check if the device need to be flashed and set up for testing
 if [ ${COMISSION} == true  ]; then
