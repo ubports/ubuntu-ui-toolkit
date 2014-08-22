@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.1.1205+14.10.20140813.4-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.1.1206+14.10.20140813.4-0ubuntu2) UNRELEASED; urgency=medium
 
   [ Tim Peeters ]
   * Push modules/Ubuntu/Components/qmldir in push_to_phone.sh.
@@ -34,7 +34,8 @@ ubuntu-ui-toolkit (1.1.1205+14.10.20140813.4-0ubuntu2) UNRELEASED; urgency=mediu
     to fit.
 
 
-  [ Zoltán Balogh ] 
+  [ Zoltán Balogh ]
+  * Add a script to execute the test plan on a device.
   * Fix the desktop file for the UITK Gallery 
     Fixes LP: #1357205 and LP: #1176918
 
