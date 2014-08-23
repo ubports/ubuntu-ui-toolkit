@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import QtFeedback 5.0
+import Ubuntu.Components 1.1
 
 /*!
     \qmlabstract AbstractButton
@@ -82,6 +83,8 @@ ActionItem {
      */
     property alias __mouseArea: mouseArea
 
+    activeFocusOnPress: true
+
     HapticsEffect {
         id: pressEffect
         attackIntensity: 0.0
@@ -100,6 +103,7 @@ ActionItem {
         hoverEnabled: true
 
         onClicked: {
+            button.requestFocus();
             if (button.__acceptEvents) {
                 pressEffect.start()
                 button.clicked()

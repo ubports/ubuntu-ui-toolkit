@@ -123,6 +123,24 @@ public:
     bool enabled;
 };
 
+// list of alarms
+class AlarmList: public QList<AlarmData>
+{
+public:
+    AlarmList(){}
+
+    // returns the index of the alarm matching a cookie, -1 on error
+    inline int indexOfAlarm(const QVariant &cookie)
+    {
+        for (int i = 0; i < size(); i++) {
+            if (at(i).cookie == cookie) {
+                return i;
+            }
+        }
+        return -1;
+    }
+};
+
 class AlarmRequest;
 class AlarmManagerPrivate;
 class AlarmManager : public QObject
@@ -139,10 +157,11 @@ public:
 
     static AlarmManager &instance();
 
-    QList<AlarmData> alarms() const;
+    AlarmList alarms() const;
 
 Q_SIGNALS:
     void alarmsChanged();
+    void alarmsUpdated(const QList<QVariant> &cookies);
 
 private:
     explicit AlarmManager(QObject *parent = 0);

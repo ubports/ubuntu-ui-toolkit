@@ -1,8 +1,9 @@
-ubuntu-ui-toolkit (1.1.1208+14.10.20140813.4-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.1.1214+14.10.20140813.4-0ubuntu2) UNRELEASED; urgency=medium
 
   [ Tim Peeters ]
   * Push modules/Ubuntu/Components/qmldir in push_to_phone.sh.
   * Add PageStack tests that use the new header.
+  * Add tabs unit tests using the new header.
 
   [ Leo Arias ]
   * On autopilot helpers, take into account that text areas can have
@@ -13,6 +14,8 @@ ubuntu-ui-toolkit (1.1.1208+14.10.20140813.4-0ubuntu2) UNRELEASED; urgency=mediu
   * Fixed the autopilot helper to search elements on lists, that 
     failed when the element searched is on the first page of the list. 
     Fixes LP: #1342521
+  * On the autopilot scrollbar tests, we should not assume that the
+    window is on the top left.
 
   [ Benjamin Zeller ]
   * Add a more stable regression test for bug LP: #1338602 
@@ -24,6 +27,11 @@ ubuntu-ui-toolkit (1.1.1208+14.10.20140813.4-0ubuntu2) UNRELEASED; urgency=mediu
   * Save alarms data into JSON format. Affects test environments 
     using fallback memory manager. Does not affect EDS backend 
     functionality. Prerequisite for further alarm changes.
+  * Focus handling on components. Fixes LP: #1234982
+  * Fixing alarm disabling issue. Change organiser item fields 
+    only if those were marked as changed. Fixes LP: #1360101
+  * AlamrModel is no longer reset when individual alarm is changed.
+    This avoids UI flickering in Clock app. Fixes LP: #1359112
 
   [ Florian Boucault ]
   * Publish palettes of the themes.
@@ -32,13 +40,16 @@ ubuntu-ui-toolkit (1.1.1208+14.10.20140813.4-0ubuntu2) UNRELEASED; urgency=mediu
   * Visual feedback upon press for Header.
   * Better visual feedback upon press for List Items. 
     Fixes LP: #1354036
+  * Three startup optimisations that lead to saving 160ms
+      MainView: load background asynchronously and do not cache it.
+      MainView: delay popover menus creation until when necessary.
+      Page: removed useless instantiation of ToolbarItems.
 
   [ Christian Dywan ]
   * Set organizationDomain which Qt.labs.settings uses. 
     Fixes LP: #1241424 and LP: #1354321
   * Allow context menu buttons to grow wider for non-English locales
     to fit.
-
 
   [ Zoltán Balogh ]
   * Add a script to execute the test plan on a device.
@@ -53,7 +64,6 @@ ubuntu-ui-toolkit (1.1.1208+14.10.20140813.4-0ubuntu2) UNRELEASED; urgency=mediu
   [ Nicholas Skaggs ]
   * Fix the warning for the emulators module. The warning will now 
     only appear if you use the module directly. Fixes LP: #134169
-
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 22 Aug 2014 13:19:38 +0300
 
