@@ -394,7 +394,20 @@ void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
  * The property holds the options and its configuration to be revealed when swiped
  * from left to right.
  */
-SIMPLE_PRIVATE_PROPERTY_PTYPE(UCListItemBase, UCListItemOptions, leadingOptions)
+UCListItemOptions *UCListItemBase::leadingOptions() const
+{
+    Q_D(const UCListItemBase);
+    return d->leadingOptions;
+}
+void UCListItemBase::setLeadingOptions(UCListItemOptions *options)
+{
+    Q_D(UCListItemBase);
+    if (d->leadingOptions == options) {
+        return;
+    }
+    d->leadingOptions = options;
+    Q_EMIT leadingOptionsChanged();
+}
 
 /*!
  * \qmlproperty ListItemOptions ListItemBase::trailingOptions
@@ -402,7 +415,20 @@ SIMPLE_PRIVATE_PROPERTY_PTYPE(UCListItemBase, UCListItemOptions, leadingOptions)
  * The property holds the options and its configuration to be revealed when swiped
  * from right to left.
  */
-SIMPLE_PRIVATE_PROPERTY_PTYPE(UCListItemBase, UCListItemOptions, trailingOptions)
+UCListItemOptions *UCListItemBase::trailingOptions() const
+{
+    Q_D(const UCListItemBase);
+    return d->trailingOptions;
+}
+void UCListItemBase::setTrailingOptions(UCListItemOptions *options)
+{
+    Q_D(UCListItemBase);
+    if (d->trailingOptions == options) {
+        return;
+    }
+    d->trailingOptions = options;
+    Q_EMIT trailingOptionsChanged();
+}
 
 /*!
  * \qmlpropertygroup ::ListItemBase::background

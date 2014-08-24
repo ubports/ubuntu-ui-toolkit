@@ -25,15 +25,23 @@ class UCListItemOptionsPrivate;
 class UCListItemOptions : public QObject
 {
     Q_OBJECT
-    DECLARE_PRIVATE_PROPERTY_PTYPE(QQmlComponent, delegate)
-    DECLARE_PRIVATE_LISTPROPERTY(QObject, options)
-    DECLARE_PRIVATE_PROPERTY(QColor, backgroundColor)
+    Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
+    Q_PROPERTY(QQmlListProperty<QObject> options READ options)
+    Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY backgroundColorChanged)
     Q_CLASSINFO("DefaultProperty", "options")
 public:
     explicit UCListItemOptions(QObject *parent = 0);
     ~UCListItemOptions();
 
+    QQmlComponent *delegate() const;
+    void setDelegate(QQmlComponent *delegate);
+    QQmlListProperty<QObject> options();
+    QColor backgroundColor() const;
+    void setBackgroundColor(const QColor &color);
+
 Q_SIGNALS:
+    void delegateChanged();
+    void backgroundColorChanged();
 
 public Q_SLOTS:
 

@@ -17,6 +17,9 @@
 #include "uclistitemoptions.h"
 #include "uclistitemoptions_p.h"
 #include "uclistitem_p.h"
+#include "quickutils.h"
+#include "i18n.h"
+#include <QtQml/QQmlInfo>
 
 UCListItemOptionsPrivate::UCListItemOptionsPrivate()
     : QObjectPrivate()
@@ -29,11 +32,33 @@ UCListItemOptionsPrivate::~UCListItemOptionsPrivate()
 {
 }
 
-bool UCListItemOptionsPrivate::createPanel(bool isLeading)
+void UCListItemOptionsPrivate::funcAppend(QQmlListProperty<QObject> *list, QObject *option)
 {
-    Q_UNUSED(isLeading)
-//    Q_Q(UCListItemOptions);
-    return false;
+    UCListItemOptions *_this = static_cast<UCListItemOptions*>(list->object);
+    UCListItemOptionsPrivate *plist = UCListItemOptionsPrivate::get(_this);
+    if (!QuickUtils::inherits(option, "Action")) {
+        qmlInfo(_this) << UbuntuI18n::instance().tr(QString("Option at index %1 is not an Action or a derivate of it.").arg(plist->options.size()));
+        return;
+    }
+    plist->options.append(option);
+}
+int UCListItemOptionsPrivate::funcCount(QQmlListProperty<QObject> *list)
+{
+    UCListItemOptions *_this = static_cast<UCListItemOptions*>(list->object);
+    UCListItemOptionsPrivate *plist = UCListItemOptionsPrivate::get(_this);
+    return plist->options.size();
+}
+QObject *UCListItemOptionsPrivate::funcAt(QQmlListProperty<QObject> *list, int index)
+{
+    UCListItemOptions *_this = static_cast<UCListItemOptions*>(list->object);
+    UCListItemOptionsPrivate *plist = UCListItemOptionsPrivate::get(_this);
+    return plist->options.at(index);
+}
+void UCListItemOptionsPrivate::funcClear(QQmlListProperty<QObject> *list)
+{
+    UCListItemOptions *_this = static_cast<UCListItemOptions*>(list->object);
+    UCListItemOptionsPrivate *plist = UCListItemOptionsPrivate::get(_this);
+    return plist->options.clear();
 }
 
 /*!
@@ -85,7 +110,7 @@ bool UCListItemOptionsPrivate::createPanel(bool isLeading)
  *             iconName: "copy"
  *         }
  *     }
- *     ListView {
+ *     UbuntuListView {
  *         anchors.fill: parent
  *         model: 10000
  *         delegate: ListItem {
@@ -109,7 +134,20 @@ UCListItemOptions::~UCListItemOptions()
  * Custom delegate which overrides the default one used by the ViewItem. The default
  * value is null.
  */
-SIMPLE_PRIVATE_PROPERTY_PTYPE(UCListItemOptions, QQmlComponent, delegate)
+QQmlComponent *UCListItemOptions::delegate() const
+{
+    Q_D(const UCListItemOptions);
+    return d->delegate;
+}
+void UCListItemOptions::setDelegate(QQmlComponent *delegate)
+{
+    Q_D(UCListItemOptions);
+    if (d->delegate == delegate) {
+        return;
+    }
+    d->delegate = delegate;
+    Q_EMIT delegateChanged();
+}
 
 /*!
  * \qmlproperty list<Action> ListItemOptions::options
@@ -128,11 +166,32 @@ SIMPLE_PRIVATE_PROPERTY_PTYPE(UCListItemOptions, QQmlComponent, delegate)
  * }
  * \endqml
  */
-LISTPROPERTY_PRIVATE_GETTER(UCListItemOptions, QObject, options)
+QQmlListProperty<QObject> UCListItemOptions::options()
+{
+    Q_D(UCListItemOptions);
+    return QQmlListProperty<QObject>(this, &(d->options),
+                                     &UCListItemOptionsPrivate::funcAppend,
+                                     &UCListItemOptionsPrivate::funcCount,
+                                     &UCListItemOptionsPrivate::funcAt,
+                                     &UCListItemOptionsPrivate::funcClear);
+}
 
 /*!
  * \qmlproperty color ListItemOptions::backgroundColor
  * The color used to override the panel background color holding the visualized
  * options.
  */
-SIMPLE_PRIVATE_PROPERTY(UCListItemOptions, QColor, backgroundColor)
+QColor UCListItemOptions::backgroundColor() const
+{
+    Q_D(const UCListItemOptions);
+    return d->backgroundColor;
+}
+void UCListItemOptions::setBackgroundColor(const QColor &color)
+{
+    Q_D(UCListItemOptions);
+    if (d->backgroundColor == color) {
+        return;
+    };
+    d->backgroundColor = color;
+    Q_EMIT backgroundColorChanged();
+}

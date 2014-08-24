@@ -36,7 +36,11 @@ public:
     QColor backgroundColor;
     QList<QObject*> options;
 
-    bool createPanel(bool isLeading);
+    // options list property functions
+    static void funcAppend(QQmlListProperty<QObject>*, QObject*);
+    static int funcCount(QQmlListProperty<QObject>*);
+    static QObject *funcAt(QQmlListProperty<QObject>*, int);
+    static void funcClear(QQmlListProperty<QObject>*);
 };
 
 #endif // UCLISTITEMOPTIONS_P_H

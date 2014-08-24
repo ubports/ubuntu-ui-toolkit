@@ -20,12 +20,6 @@ import Ubuntu.Components 1.1
 MainView {
     width: units.gu(50)
     height: units.gu(100)
-    activeFocusOnMousePress: true
-
-    Connections {
-        target: window
-        onActiveFocusItemChanged: print("AF=", window.activeFocusItem)
-    }
 
     Column {
         anchors {
@@ -43,8 +37,13 @@ MainView {
                 anchors.fill: parent
                 text: units.gridUnit + "PX/unit"
             }
-            leadingOptions: ViewItemOptions {
+            leadingOptions: ListItemOptions {
                 backgroundColor: "blue"
+                Action {
+                    text: "delete"
+                    iconName: "delete"
+                }
+                Object {}
             }
         }
 
