@@ -65,7 +65,11 @@ HEADERS += plugin.h \
     ucmouse.h \
     unixsignalhandler_p.h \
     ucstyleditembase.h \
-    ucstyleditembase_p.h
+    ucstyleditembase_p.h \
+    uclistitem.h \
+    uclistitem_p.h \
+    uclistitemoptions.h \
+    uclistitemoptions_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -99,7 +103,9 @@ SOURCES += plugin.cpp \
     ucurihandler.cpp \
     ucmousefilters.cpp \
     unixsignalhandler_p.cpp \
-    ucstyleditembase.cpp
+    ucstyleditembase.cpp \
+    uclistitem.cpp \
+    uclistitemoptions.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp
