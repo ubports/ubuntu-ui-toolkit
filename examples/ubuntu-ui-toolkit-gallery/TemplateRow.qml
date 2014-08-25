@@ -45,16 +45,5 @@ Item {
         anchors.leftMargin: units.gu(2)
         anchors.right: parent.right
         spacing: units.gu(2)
-
-        /* FIXME: workaround for QTBUG 35095 where Row's content is not relaidout
-           when the width changes and LayoutMirroring is enabled.
-
-           Ref.: https://bugreports.qt-project.org/browse/QTBUG-35095
-        */
-        onWidthChanged: if (LayoutMirroring.enabled) forceRelayout()
-
-        function forceRelayout() {
-            spacing = spacing + 0.00001;
-        }
     }
 }

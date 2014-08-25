@@ -18,7 +18,7 @@ from ubuntuuitoolkit._custom_proxy_objects import _common
 
 
 class Tabs(_common.UbuntuUIToolkitCustomProxyObjectBase):
-    """Tabs Autopilot emulator."""
+    """Tabs Autopilot custom proxy object."""
 
     def get_current_tab(self):
         """Return the currently selected tab."""

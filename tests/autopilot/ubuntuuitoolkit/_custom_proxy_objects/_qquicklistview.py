@@ -53,28 +53,33 @@ class QQuickListView(_flickable.QQuickFlickable):
         if direction is None:
             # We don't know where the object is so we start looking for it from
             # the top.
-            self._swipe_to_top()
+            self.swipe_to_top()
             direction = 'below'
 
         if direction == 'below':
             fail_condition = lambda: self.atYEnd
-            swipe_method = self._swipe_to_show_more_below
+            swipe_method = self.swipe_to_show_more_below
         elif direction == 'above':
             fail_condition = lambda: self.atYBeginning
-            swipe_method = self._swipe_to_show_more_above
+            swipe_method = self.swipe_to_show_more_above
         else:
             raise _common.ToolkitException(
                 'Invalid direction: {}'.format(direction))
 
         containers = self._get_containers()
         while not fail_condition():
-            swipe_method(containers)
             try:
                 return self.select_single(objectName=object_name)
             except dbus.StateNotFoundError:
-                pass
-        raise _common.ToolkitException(
-            'List element with objectName "{}" not found.'.format(object_name))
+                swipe_method(containers)
+        else:
+            # We have reached the start or the end of the list.
+            try:
+                return self.select_single(objectName=object_name)
+            except dbus.StateNotFoundError:
+                raise _common.ToolkitException(
+                    'List element with objectName "{}" not found.'.format(
+                        object_name))
 
     def _is_element_clickable(self, object_name):
         child = self.select_single(objectName=object_name)
