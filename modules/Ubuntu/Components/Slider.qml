@@ -119,6 +119,8 @@ StyledItem {
     /*! \internal */
     onValueChanged: mouseArea.liveValue = slider.value
 
+    activeFocusOnPress: true
+
     Binding {
         target: slider
         property: "value"
@@ -208,6 +210,8 @@ StyledItem {
             var normalizedOffsetX = (mouseArea.mouseX - dragInitMouseX) / barMinusThumb;
             liveValue = valueFromNormalizedValue(dragInitNormalizedValue + normalizedOffsetX);
         }
+        onClicked: slider.requestFocus(Qt.MouseFocusReason)
+        onLiveValueChanged: if (isPressed) slider.requestFocus(Qt.MouseFocusReason)
     }
 
     style: Theme.createStyleComponent("SliderStyle.qml", slider)
