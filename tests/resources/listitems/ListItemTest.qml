@@ -15,11 +15,27 @@
  */
 
 import QtQuick 2.2
+import Ubuntu.Components 1.0 as OldToolkit
 import Ubuntu.Components 1.1
 
 MainView {
     width: units.gu(50)
     height: units.gu(100)
+
+    Action {
+        objectName: "stock"
+        id: stock
+    }
+
+    ListItemOptions {
+        id: leading
+        Action {
+        }
+        Action {
+        }
+        Action {
+        }
+    }
 
     Column {
         anchors {
@@ -38,12 +54,7 @@ MainView {
                 text: units.gridUnit + "PX/unit"
             }
             leadingOptions: ListItemOptions {
-                backgroundColor: "blue"
-                Action {
-                    text: "delete"
-                    iconName: "delete"
-                }
-                Object {}
+                options: [stock]
             }
         }
 

@@ -31,9 +31,9 @@ public:
         return options->d_func();
     }
 
+    bool optionsFailure:1;
     QQmlComponent *delegate;
-    QQuickItem *panel;
-    QColor backgroundColor;
+    QQuickItem *panelItem;
     QList<QObject*> options;
 
     // options list property functions

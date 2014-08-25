@@ -22,26 +22,28 @@
 
 class QQmlComponent;
 class UCListItemOptionsPrivate;
-class UCListItemOptions : public QObject
+class UCListItemOptions : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
     Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
-    Q_PROPERTY(QQmlListProperty<QObject> options READ options)
-    Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor NOTIFY backgroundColorChanged)
+    Q_PROPERTY(QQmlListProperty<QObject> options READ options CONSTANT)
+    Q_PROPERTY(QQuickItem *panelItem READ panelItem NOTIFY panelItemChanged)
     Q_CLASSINFO("DefaultProperty", "options")
 public:
     explicit UCListItemOptions(QObject *parent = 0);
     ~UCListItemOptions();
 
+    void classBegin();
+    void componentComplete();
+
     QQmlComponent *delegate() const;
     void setDelegate(QQmlComponent *delegate);
     QQmlListProperty<QObject> options();
-    QColor backgroundColor() const;
-    void setBackgroundColor(const QColor &color);
+    QQuickItem *panelItem() const;
 
 Q_SIGNALS:
     void delegateChanged();
-    void backgroundColorChanged();
+    void panelItemChanged();
 
 public Q_SLOTS:
 

@@ -23,9 +23,9 @@
 
 UCListItemOptionsPrivate::UCListItemOptionsPrivate()
     : QObjectPrivate()
+    , optionsFailure(false)
     , delegate(0)
-    , panel(0)
-    , backgroundColor(Qt::red)
+    , panelItem(0)
 {
 }
 UCListItemOptionsPrivate::~UCListItemOptionsPrivate()
@@ -38,9 +38,13 @@ void UCListItemOptionsPrivate::funcAppend(QQmlListProperty<QObject> *list, QObje
     UCListItemOptionsPrivate *plist = UCListItemOptionsPrivate::get(_this);
     if (!QuickUtils::inherits(option, "Action")) {
         qmlInfo(_this) << UbuntuI18n::instance().tr(QString("Option at index %1 is not an Action or a derivate of it.").arg(plist->options.size()));
+        plist->optionsFailure = true;
+        plist->options.clear();
         return;
     }
-    plist->options.append(option);
+    if (!plist->optionsFailure) {
+        plist->options.append(option);
+    }
 }
 int UCListItemOptionsPrivate::funcCount(QQmlListProperty<QObject> *list)
 {
@@ -58,6 +62,7 @@ void UCListItemOptionsPrivate::funcClear(QQmlListProperty<QObject> *list)
 {
     UCListItemOptions *_this = static_cast<UCListItemOptions*>(list->object);
     UCListItemOptionsPrivate *plist = UCListItemOptionsPrivate::get(_this);
+    plist->optionsFailure = false;
     return plist->options.clear();
 }
 
@@ -129,6 +134,15 @@ UCListItemOptions::~UCListItemOptions()
 {
 }
 
+void UCListItemOptions::classBegin()
+{
+}
+
+void UCListItemOptions::componentComplete()
+{
+}
+
+
 /*!
  * \qmlproperty Component ListItemOptions::delegate
  * Custom delegate which overrides the default one used by the ViewItem. The default
@@ -158,9 +172,6 @@ void UCListItemOptions::setDelegate(QQmlComponent *delegate)
  * ListItemOptions {
  *     id: cacedOptions
  *     options: [
- *         Action {
- *             iconName: "edit"
- *         },
  *         copyAction, searchAction, cutAction
  *     ]
  * }
@@ -177,21 +188,11 @@ QQmlListProperty<QObject> UCListItemOptions::options()
 }
 
 /*!
- * \qmlproperty color ListItemOptions::backgroundColor
- * The color used to override the panel background color holding the visualized
- * options.
+ * \qmlproperty Item ListItemOptions::panelItem
+ * The property presents the Item holding the visualized options.
  */
-QColor UCListItemOptions::backgroundColor() const
+QQuickItem *UCListItemOptions::panelItem() const
 {
     Q_D(const UCListItemOptions);
-    return d->backgroundColor;
-}
-void UCListItemOptions::setBackgroundColor(const QColor &color)
-{
-    Q_D(UCListItemOptions);
-    if (d->backgroundColor == color) {
-        return;
-    };
-    d->backgroundColor = color;
-    Q_EMIT backgroundColorChanged();
+    return d->panelItem;
 }
