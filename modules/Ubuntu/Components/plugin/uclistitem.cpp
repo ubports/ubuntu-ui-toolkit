@@ -21,6 +21,7 @@
 #include "uclistitemoptions.h"
 #include "uclistitemoptions_p.h"
 #include "ucubuntuanimation.h"
+#include "propertychange_p.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -218,6 +219,7 @@ UCListItemBasePrivate::UCListItemBasePrivate()
     , ready(false)
     , xAxisMoveThresholdGU(1.0)
     , reboundAnimation(0)
+    , flickableInteractive(0)
     , background(new UCListItemBackground)
     , divider(new UCListItemDivider)
     , leadingOptions(0)
@@ -226,6 +228,7 @@ UCListItemBasePrivate::UCListItemBasePrivate()
 }
 UCListItemBasePrivate::~UCListItemBasePrivate()
 {
+    delete flickableInteractive;
 }
 
 void UCListItemBasePrivate::init()
@@ -275,6 +278,9 @@ void UCListItemBasePrivate::_q_rebound()
     reboundTo(0);
     // disconnect the flickable
     listenToRebind(false);
+    // restore flickable's interactive and cleanup
+    delete flickableInteractive;
+    flickableInteractive = 0;
 }
 
 void UCListItemBasePrivate::reboundTo(qreal x)
@@ -491,7 +497,11 @@ void UCListItemBase::mouseMoveEvent(QMouseEvent *event)
             x = (x < 0) ? 0 : x;
         }
         if (dx) {
-            // TODO: block flickable
+            // block flickable
+            if (!d->flickableInteractive && d->flickable) {
+                d->flickableInteractive = new PropertyChange(d->flickable, "interactive", false);
+            }
+            // TODO: filter window events to catch outside clicks
             d->moved = true;
             d->background->setX(x);
             update();

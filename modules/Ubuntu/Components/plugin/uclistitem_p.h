@@ -27,6 +27,7 @@ class QQuickPropertyAnimation;
 class UCListItemBackground;
 class UCListItemDivider;
 class UCListItemOptions;
+class PropertyChange;
 class UCListItemBasePrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItemBase)
@@ -59,6 +60,7 @@ public:
     QPointF pressedPos;
     QPointer<QQuickFlickable> flickable;
     QQuickPropertyAnimation *reboundAnimation;
+    PropertyChange *flickableInteractive;
     UCListItemBackground *background;
     UCListItemDivider *divider;
     UCListItemOptions *leadingOptions;

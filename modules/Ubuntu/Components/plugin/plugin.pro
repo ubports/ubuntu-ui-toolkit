@@ -69,7 +69,8 @@ HEADERS += plugin.h \
     uclistitem.h \
     uclistitem_p.h \
     uclistitemoptions.h \
-    uclistitemoptions_p.h
+    uclistitemoptions_p.h \
+    propertychange_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -105,7 +106,8 @@ SOURCES += plugin.cpp \
     unixsignalhandler_p.cpp \
     ucstyleditembase.cpp \
     uclistitem.cpp \
-    uclistitemoptions.cpp
+    uclistitemoptions.cpp \
+    propertychange_p.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp
