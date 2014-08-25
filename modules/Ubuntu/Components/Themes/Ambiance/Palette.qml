@@ -32,11 +32,7 @@ Palette {
         fieldText: UbuntuColors.darkGrey
     }
     selected: PaletteValues {
-        /* FIXME: 'background' does not come from design
-           it is used solely in the list items for the selection highlight
-           that will go away with the new design.
-        */
-        background: "#B2E6E6E6"
+        background: Qt.rgba(0, 0, 0, 0.05)
         backgroundText: UbuntuColors.darkGrey
         selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
         foreground: UbuntuColors.orange

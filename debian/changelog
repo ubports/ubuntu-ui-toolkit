@@ -1,3 +1,37 @@
+ubuntu-ui-toolkit (1.1.1188+14.10.20140813.4-0ubuntu1) utopic; urgency=medium
+
+  [ Tim Peeters ]
+  * Document the default anchors of PageStack. LP: #1349366
+
+  [ Leo Arias ]
+  * Made public the swipe methods in the flickable autopilot helper
+
+  [Michael Zanetti ]
+  * Properly parent UCAlarm objects. LP: #1337405
+
+  [ Zsombor Egri ]
+  * Alarm sounds lost during fetch fix. LP: #1338697
+  * TextField clear button size changed to 2.5 GU, artwork mosified
+    to use "clear-search" from icon-theme. LP: #1350797
+
+  [ CI bot ]
+  * Resync trunk
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 13 Aug 2014 11:31:54 +0000
+
+ubuntu-ui-toolkit (1.1.1181+14.10.20140806-0ubuntu1) utopic; urgency=medium
+
+  [ Florian Boucault ]
+  * Ubuntu Shape: store geometry before redrawing can occur so that 
+    the geometry is more reliably respected. 
+    Fixes: https://bugs.launchpad.net/bugs/1353493
+
+  [ Christian Dywan ]
+  * Square overflow panel style for header pop overs. 
+    Fixes: https://bugs.launchpad.net/bugs/1336789
+ 
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 06 Aug 2014 16:37:33 +0000
+
 ubuntu-ui-toolkit (1.1.1179+14.10.20140804-0ubuntu1) utopic; urgency=medium
 
   [ Florian Boucault ]

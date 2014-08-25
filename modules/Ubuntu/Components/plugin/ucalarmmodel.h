@@ -47,6 +47,7 @@ Q_SIGNALS:
     
 private Q_SLOTS:
     void refresh();
+    void update(const QList<QVariant> cookies);
 
 private:
     bool m_ready;

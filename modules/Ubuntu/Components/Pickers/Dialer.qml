@@ -142,6 +142,7 @@ StyledItem {
     id: dialer
     implicitWidth: size
     implicitHeight: size
+    activeFocusOnPress: true
 
     style: Theme.createStyleComponent("DialerStyle.qml", dialer)
 
