@@ -86,12 +86,8 @@ Item {
             compare(defaults.background.pressedColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
             compare(defaults.pressed, false, "Not pressed buy default");
             compare(defaults.divider.visible, true, "divider is visible by default");
-            compare(defaults.divider.thickness, units.dp(2), "divider is 2 DP thick");
             compare(defaults.divider.leftMargin, units.gu(2), "divider's left margin is 2GU");
             compare(defaults.divider.rightMargin, units.gu(2), "divider's right margin is 2GU");
-            compare(defaults.divider.color, "#000000", "color differs");
-            fuzzyCompare(defaults.divider.color.a, 0.14, 0.01, "color alpha differs");
-            compare(defaults.divider.gradient.stops.length, 2, "invalid gradient stops");
         }
 
         function test_children_in_background() {
@@ -158,15 +154,6 @@ Item {
             testItem.divider.visible = false;
             compare(testItem.background.height, testItem.height, "ListItem's background height must be the same as the item itself.");
             testItem.divider.visible = true;
-        }
-
-        function test_background_height_change_on_divider_thickness_change() {
-            // make sure the testItem's divider is shown
-            testItem.divider.visible = true;
-            var prevHeight = testItem.background.height;
-            testItem.divider.thickness = units.gu(1);
-            waitForRendering(testItem, 100);
-            verify(testItem.background.height < prevHeight, "ListItem's background height shrinks on divider's thickness change.");
         }
     }
 }

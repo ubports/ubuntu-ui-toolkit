@@ -224,8 +224,7 @@ void UCStyledItemBase::mousePressEvent(QMouseEvent *event)
 {
     QQuickItem::mousePressEvent(event);
     Q_D(UCStyledItemBase);
-    // accept the event if the focus was possible.
-    event->setAccepted(requestFocus(Qt::MouseFocusReason));
+    requestFocus(Qt::MouseFocusReason);
 }
 
 #include "moc_ucstyleditembase.cpp"

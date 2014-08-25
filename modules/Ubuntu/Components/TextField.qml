@@ -818,6 +818,7 @@ ActionItem {
     // internals
 
     opacity: enabled ? 1.0 : 0.3
+    activeFocusOnPress: true
 
     /*! \internal */
     onVisibleChanged: {
@@ -904,6 +905,8 @@ ActionItem {
     AbstractButton {
         id: clearButton
         objectName: "clear_button"
+        activeFocusOnPress: false
+
         anchors {
             top: parent.top
             right: rightPane.left

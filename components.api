@@ -822,11 +822,8 @@ plugins.qmltypes
     name: "UCListItemDivider"
     prototype: "QObject"
     Property { name: "visible"; type: "bool" }
-    Property { name: "thickness"; type: "double" }
     Property { name: "leftMargin"; type: "double" }
     Property { name: "rightMargin"; type: "double" }
-    Property { name: "gradient"; type: "QQuickGradient"; isPointer: true }
-    Property { name: "color"; type: "QColor" }
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1", "Mouse 1.0"]
