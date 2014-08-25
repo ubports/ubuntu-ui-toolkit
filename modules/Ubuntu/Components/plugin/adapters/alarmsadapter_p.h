@@ -85,7 +85,6 @@ public:
     void saveAlarms();
 
     void organizerEventFromAlarmData(const AlarmData &alarm, QOrganizerTodo &event);
-    void updateOrganizerEventFromAlarmData(const AlarmData &alarm, QOrganizerTodo &event);
     int alarmDataFromOrganizerEvent(const QOrganizerTodo &event, AlarmData &alarm);
     QSet<Qt::DayOfWeek> daysToSet(const AlarmData &alarm) const;
     void daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set);

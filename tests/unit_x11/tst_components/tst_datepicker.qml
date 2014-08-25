@@ -59,7 +59,11 @@ Item {
         function getPickerLabel(picker, name) {
             var pickerItem = findChild(picker, name);
             var pickerCurrent = findChild(pickerItem, "Picker_ViewLoader");
-            return pickerCurrent.item.currentItem.children[2];
+            // note: find Label, Picker's label uses medium font size. The lookup must be changed
+            // if the fontSize is changed!
+            var pickerLabel = findChildWithProperty(pickerCurrent.item.currentItem, "fontSize", "medium");
+            verify(pickerLabel, ("Label of %1 not accessible").arg(name));
+            return pickerLabel;
         }
         function getPickerModel(picker, name) {
             var pickerItem = findInvisibleChild(picker, name);
@@ -318,7 +322,7 @@ Item {
             picker.mode = "Years|Months|Days";
             waitPickerMoving();
 
-            var yearLabel = getPickerLabel(picker, "PickerRow_YearPicker");
+            var yearLabel = getPickerLabel(picker, "PickerRow_YearPicker", date.getFullYear());
             var monthLabel = getPickerLabel(picker, "PickerRow_MonthPicker");
             var monthModel = getPickerModel(picker, "PickerRow_MonthPicker");
             var dayLabel = getPickerLabel(picker, "PickerRow_DayPicker");
