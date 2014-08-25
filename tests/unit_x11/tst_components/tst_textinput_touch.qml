@@ -193,7 +193,7 @@ Item {
 
             popupSpy.target = findChild(data.input, "input_handler");
             TestExtras.touchLongPress(0, data.input, guPoint(2, 2));
-            waitForRendering(data.input, 500);
+            waitForRendering(data.input, 1000);
             popupSpy.wait();
             compare(data.input.selectedText, selectedText, "Text selection should be the same!");
 
