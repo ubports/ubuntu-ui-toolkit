@@ -814,8 +814,8 @@ plugins.qmltypes
     exports: ["ListItemBase 1.1"]
     Property { name: "background"; type: "UCListItemBackground"; isReadonly: true; isPointer: true }
     Property { name: "divider"; type: "UCListItemDivider"; isReadonly: true; isPointer: true }
-    Property { name: "leadingOptions"; type: "UCViewItemOptions"; isPointer: true }
-    Property { name: "trailingOptions"; type: "UCViewItemOptions"; isPointer: true }
+    Property { name: "leadingOptions"; type: "UCListItemOptions"; isPointer: true }
+    Property { name: "trailingOptions"; type: "UCListItemOptions"; isPointer: true }
     Property { name: "pressed"; type: "bool"; isReadonly: true }
     Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
@@ -826,6 +826,12 @@ plugins.qmltypes
     Property { name: "visible"; type: "bool" }
     Property { name: "leftMargin"; type: "double" }
     Property { name: "rightMargin"; type: "double" }
+    name: "UCListItemOptions"
+    prototype: "QObject"
+    exports: ["ListItemOptions 1.1"]
+    Property { name: "delegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "options"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "panelItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1", "Mouse 1.0"]
@@ -919,12 +925,6 @@ plugins.qmltypes
     Signal {
     name: "opened"
     Parameter { name: "uris"; type: "QStringList" }
-    name: "UCViewItemOptions"
-    prototype: "QObject"
-    exports: ["ViewItemOptions 1.1"]
-    Property { name: "delegate"; type: "QQmlComponent"; isPointer: true }
-    Property { name: "options"; type: "QObject"; isList: true; isReadonly: true }
-    Property { name: "backgroundColor"; type: "QColor" }
     name: "UbuntuI18n"
     prototype: "QObject"
     exports: ["i18n 0.1", "i18n 1.0"]
