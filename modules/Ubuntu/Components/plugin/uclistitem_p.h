@@ -23,6 +23,7 @@
 #include <QtQuick/private/qquickrectangle_p.h>
 
 class QQuickFlickable;
+class QQuickPropertyAnimation;
 class UCListItemBackground;
 class UCListItemDivider;
 class UCListItemOptions;
@@ -44,13 +45,20 @@ public:
     void setFocusable();
 
     void _q_rebound();
+    void reboundTo(qreal x);
     void setPressed(bool pressed);
+    void setMoved(UCListItemOptions *optionList, bool isMoved);
     void listenToRebind(bool listen);
     void resize();
 
     bool pressed:1;
+    bool moved:1;
     bool ready:1;
+    qreal xAxisMoveThresholdGU;
+    QPointF lastPos;
+    QPointF pressedPos;
     QPointer<QQuickFlickable> flickable;
+    QQuickPropertyAnimation *reboundAnimation;
     UCListItemBackground *background;
     UCListItemDivider *divider;
     UCListItemOptions *leadingOptions;

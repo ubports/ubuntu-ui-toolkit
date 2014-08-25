@@ -19,6 +19,7 @@
 #include "uclistitem_p.h"
 #include "quickutils.h"
 #include "i18n.h"
+#include "plugin.h"
 #include <QtQml/QQmlInfo>
 
 UCListItemOptionsPrivate::UCListItemOptionsPrivate()
@@ -66,6 +67,53 @@ void UCListItemOptionsPrivate::funcClear(QQmlListProperty<QObject> *list)
     return plist->options.clear();
 }
 
+void UCListItemOptionsPrivate::connectToListItem(UCListItemBase *listItem, bool leading)
+{
+    Q_Q(UCListItemOptions);
+    if (!panelItem) {
+        QUrl panelDocument = UbuntuComponentsPlugin::pluginUrl().
+                resolved(QUrl::fromLocalFile("ListItemPanel.qml"));
+        QQmlComponent component(qmlEngine(q), panelDocument);
+        if (!component.isError()) {
+            panelItem = qobject_cast<QQuickItem*>(component.beginCreate(qmlContext(q)));
+            if (panelItem) {
+                if (delegate) {
+                    panelItem->setProperty("delegate", QVariant::fromValue(delegate));
+                }
+                panelItem->setProperty("optionList", QVariant::fromValue(options));
+                component.completeCreate();
+                Q_EMIT q->panelItemChanged();
+            }
+        } else {
+            qmlInfo(q) << component.errorString();
+        }
+    }
+    if (!panelItem) {
+        return;
+    }
+    if (!connectedListItem.isNull()) {
+        //rebound previous list item
+        UCListItemBasePrivate::get(connectedListItem.data())->_q_rebound();
+    }
+    connectedListItem = listItem;
+    panelItem->setParentItem(UCListItemBasePrivate::get(listItem)->background);
+    panelItem->setProperty("leadingPanel", leading);
+}
+
+void UCListItemOptionsPrivate::disconnectFromListItem()
+{
+    if (!panelItem) {
+        return;
+    }
+    connectedListItem.clear();
+    panelItem->setParentItem(0);
+}
+
+bool UCListItemOptionsPrivate::isConnectedTo(UCListItemOptions *options, UCListItemBase *listItem)
+{
+    return options && options->d_func()->panelItem && (options->d_func()->panelItem->parentItem() == UCListItemBasePrivate::get(listItem)->background);
+}
+
 /*!
  * \qmltype ListItemOptions
  * \instantiates UCListItemOptions
@@ -90,6 +138,11 @@ void UCListItemOptionsPrivate::funcClear(QQmlListProperty<QObject> *list)
  * When tugged, panels reveal the options one by one. In case an option is revealed
  * more than 50%, the option will be snapped and revealed completely. Options can be
  * triggered by tapping.
+ *
+ * \note You can use the same ListItemOptions for leading and for trailing options
+ * the same time only if the options are used in a ListView or in a list where the
+ * list items are scrolled by the same Flickable. In any other circumstances use
+ * separate ListItemOptions for leading and trailing options.
  *
  * \section3 Notes on performance
  * When used with views, or when the amount of items of same kind to be created

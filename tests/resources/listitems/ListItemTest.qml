@@ -15,7 +15,6 @@
  */
 
 import QtQuick 2.2
-import Ubuntu.Components 1.0 as OldToolkit
 import Ubuntu.Components 1.1
 
 MainView {
@@ -56,6 +55,7 @@ MainView {
             leadingOptions: ListItemOptions {
                 options: [stock]
             }
+//            trailingOptions: leading
         }
 
         ListView {
@@ -67,7 +67,7 @@ MainView {
             pressDelay: 0
             delegate: ListItem {
                 onClicked: print(" clicked")
-
+                leadingOptions: leading
                 Label {
                     text: modelData + " item"
                 }

@@ -20,6 +20,7 @@
 #include "uclistitemoptions.h"
 #include "QtCore/private/qobject_p.h"
 
+class UCListItemBase;
 class UCListItemOptionsPrivate : public QObjectPrivate {
     Q_DECLARE_PUBLIC(UCListItemOptions)
 public:
@@ -27,13 +28,13 @@ public:
     ~UCListItemOptionsPrivate();
     static UCListItemOptionsPrivate* get(UCListItemOptions *options)
     {
-        Q_ASSERT(options);
-        return options->d_func();
+        return options ? options->d_func() : 0;
     }
 
     bool optionsFailure:1;
     QQmlComponent *delegate;
     QQuickItem *panelItem;
+    QPointer<UCListItemBase> connectedListItem;
     QList<QObject*> options;
 
     // options list property functions
@@ -41,6 +42,10 @@ public:
     static int funcCount(QQmlListProperty<QObject>*);
     static QObject *funcAt(QQmlListProperty<QObject>*, int);
     static void funcClear(QQmlListProperty<QObject>*);
+
+    void connectToListItem(UCListItemBase *listItem, bool leading);
+    void disconnectFromListItem();
+    static bool isConnectedTo(UCListItemOptions *options, UCListItemBase *listItem);
 };
 
 #endif // UCLISTITEMOPTIONS_P_H

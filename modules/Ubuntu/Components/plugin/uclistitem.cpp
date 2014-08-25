@@ -18,6 +18,9 @@
 #include "uctheme.h"
 #include "uclistitem.h"
 #include "uclistitem_p.h"
+#include "uclistitemoptions.h"
+#include "uclistitemoptions_p.h"
+#include "ucubuntuanimation.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -211,6 +214,10 @@ QSGNode *UCListItemBackground::updatePaintNode(QSGNode *oldNode, UpdatePaintNode
 UCListItemBasePrivate::UCListItemBasePrivate()
     : UCStyledItemBasePrivate()
     , pressed(false)
+    , moved(false)
+    , ready(false)
+    , xAxisMoveThresholdGU(1.0)
+    , reboundAnimation(0)
     , background(new UCListItemBackground)
     , divider(new UCListItemDivider)
     , leadingOptions(0)
@@ -236,6 +243,14 @@ void UCListItemBasePrivate::init()
     // turn activeFocusOnPress on
     activeFocusOnPress = true;
     setFocusable();
+
+    // create rebound animation
+    UCUbuntuAnimation animationCodes;
+    reboundAnimation = new QQuickPropertyAnimation(q);
+    reboundAnimation->setEasing(animationCodes.StandardEasing());
+    reboundAnimation->setDuration(animationCodes.SnapDuration());
+    reboundAnimation->setTargetObject(background);
+    reboundAnimation->setProperty("x");
 }
 
 void UCListItemBasePrivate::setFocusable()
@@ -249,9 +264,27 @@ void UCListItemBasePrivate::setFocusable()
 void UCListItemBasePrivate::_q_rebound()
 {
     setPressed(false);
+    if (leadingOptions) {
+        UCListItemOptionsPrivate::get(leadingOptions)->disconnectFromListItem();
+    }
+    if (trailingOptions) {
+        UCListItemOptionsPrivate::get(trailingOptions)->disconnectFromListItem();
+    }
+    moved = false;
+    // start animation
+    reboundTo(0);
     // disconnect the flickable
     listenToRebind(false);
 }
+
+void UCListItemBasePrivate::reboundTo(qreal x)
+{
+    qDebug() << "REBOUND";
+    reboundAnimation->setFrom(background->x());
+    reboundAnimation->setTo(x);
+    reboundAnimation->restart();
+}
+
 
 // set pressed flag and update background
 void UCListItemBasePrivate::setPressed(bool pressed)
@@ -263,6 +296,21 @@ void UCListItemBasePrivate::setPressed(bool pressed)
         Q_EMIT q->pressedChanged();
     }
 }
+// sets the moved flag but also grabs the panel from the leading/trailing options
+void UCListItemBasePrivate::setMoved(UCListItemOptions *optionsList, bool isMoved)
+{
+    UCListItemOptionsPrivate *options = UCListItemOptionsPrivate::get(optionsList);
+    if (!options) {
+        return;
+    }
+    Q_Q(UCListItemBase);
+    if (isMoved) {
+        options->connectToListItem(q, (optionsList == leadingOptions));
+    } else {
+        options->disconnectFromListItem();
+    }
+}
+
 
 // connects/disconnects from the Flickable anchestor to get notified when to do rebound
 void UCListItemBasePrivate::listenToRebind(bool listen)
@@ -366,6 +414,8 @@ void UCListItemBase::mousePressEvent(QMouseEvent *event)
         return;
     }
     d->setPressed(true);
+    d->moved = false;
+    d->lastPos = d->pressedPos = event->localPos();
     // connect the Flickable to know when to rebound
     if (!d->flickable.isNull()) {
         QObject::connect(d->flickable.data(), SIGNAL(movementStarted()), this, SLOT(_q_rebound()));
@@ -376,16 +426,77 @@ void UCListItemBase::mousePressEvent(QMouseEvent *event)
 
 void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
 {
+    UCStyledItemBase::mouseReleaseEvent(event);
     Q_D(UCListItemBase);
     // set released
-    if (d->pressed) {
+    if (d->pressed && !d->moved) {
         Q_EMIT clicked();
     }
-    // save pressed state as UCFocusScope resets it seemlessly
-    bool wasPressed = d->pressed;
-    UCStyledItemBase::mouseReleaseEvent(event);
-    d->pressed = wasPressed;
     d->setPressed(false);
+}
+
+void UCListItemBase::mouseMoveEvent(QMouseEvent *event)
+{
+    Q_D(UCListItemBase);
+    UCStyledItemBase::mouseMoveEvent(event);
+
+    // grab the scrolling only if the delta between the first press and the current
+    // pos is > xAxis threshold
+    if (d->pressed && !d->moved) {
+        // check if we can initiate the drag at all
+        qreal threshold = UCUnits::instance().gu(d->xAxisMoveThresholdGU);
+        QRectF sensingRect(d->pressedPos.x() - threshold, 0, 2 * threshold, height());
+        if (!sensingRect.contains(event->localPos())) {
+            // the press went out of the threshold area, enable move, if the direction allows it
+            qDebug() << (d->pressedPos.x() > event->localPos().x()) << d->trailingOptions;
+            d->lastPos = event->localPos();
+            d->moved = true;
+        }
+    }
+
+    bool leadingMoved = UCListItemOptionsPrivate::isConnectedTo(d->leadingOptions, this);
+    bool trailingMoved = UCListItemOptionsPrivate::isConnectedTo(d->trailingOptions, this);
+    if (d->moved) {
+        // prepare panels
+        if ((d->pressedPos.x() > event->localPos().x()) && !trailingMoved) {
+            // activate trailing options
+            d->setMoved(d->trailingOptions, true);
+            leadingMoved = UCListItemOptionsPrivate::isConnectedTo(d->leadingOptions, this);
+        } else if ((d->pressedPos.x() < event->localPos().x()) && !leadingMoved) {
+            // activate leading options
+            d->setMoved(d->leadingOptions, true);
+            trailingMoved = UCListItemOptionsPrivate::isConnectedTo(d->trailingOptions, this);
+        }
+    }
+    UCListItemOptionsPrivate *leading = UCListItemOptionsPrivate::get(d->leadingOptions);
+    UCListItemOptionsPrivate *trailing = UCListItemOptionsPrivate::get(d->trailingOptions);
+    if (leadingMoved || trailingMoved) {
+        qreal x = d->background->x();
+        qreal dx = event->localPos().x() - d->lastPos.x();
+        d->lastPos = event->localPos();
+
+        x += dx;
+        if (trailing && trailing->panelItem && (x < -trailing->panelItem->width())) {
+            x = -trailing->panelItem->width();
+        }
+        if (leading && leading->panelItem && (x > leading->panelItem->width())) {
+            x = leading->panelItem->width();
+        }
+        // fix drag coordinates
+        if (!leadingMoved) {
+            x = (x > 0) ? 0 : x;
+        }
+        if (!trailingMoved) {
+            // do not drag into negative area
+            x = (x < 0) ? 0 : x;
+        }
+        if (dx) {
+            // TODO: block flickable
+            d->moved = true;
+            d->background->setX(x);
+            update();
+        }
+    }
 }
 
 /*!
