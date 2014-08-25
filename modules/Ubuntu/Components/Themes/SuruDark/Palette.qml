@@ -23,9 +23,9 @@ Palette {
         background: "#221E1C"
         backgroundText: "#33F3F3E7"
         base: "#19000000"
-        baseText: "#FFFF"
+        baseText: "#FFFFFF"
         foreground: "#888888"
-        foregroundText: "#FFFF"
+        foregroundText: "#FFFFFF"
         overlay: "#F2F2F2"
         overlayText: "#888888"
         field: "#19000000"
@@ -33,7 +33,7 @@ Palette {
     }
     selected: PaletteValues {
         background: "#88D6D6D6" // FIXME: not from design
-        backgroundText: "#FFFF"
+        backgroundText: "#FFFFFF"
         selection: Qt.rgba(UbuntuColors.blue.r, UbuntuColors.blue.g, UbuntuColors.blue.b, 0.2)
         foreground: UbuntuColors.orange
         foregroundText: UbuntuColors.darkGrey
