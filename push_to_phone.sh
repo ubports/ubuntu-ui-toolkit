@@ -38,6 +38,7 @@ for i in 10 11 ListItems Pickers Popups Colors Styles Themes artwork; do
 done
 # Autopilot tests should always match the Toolkit
 adb push tests/autopilot/ubuntuuitoolkit/ /usr/lib/python2.7/dist-packages/ubuntuuitoolkit || exit 1
+adb push tests/autopilot/ubuntuuitoolkit/ /usr/lib/python3/dist-packages/ubuntuuitoolkit || exit 1
 adb push examples/ubuntu-ui-toolkit-gallery/ /usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery || exit 1
 # For launching the gallery easily
 adb push examples/ubuntu-ui-toolkit-gallery/*.desktop /usr/share/applications/ || exit 1
