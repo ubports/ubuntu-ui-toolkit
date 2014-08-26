@@ -305,63 +305,65 @@ Style.PageHeadStyle {
             text: visible ? buffer.tabsModel.count + " tabs" : ""
             color: buffer.config.foregroundColor
 
-            onTriggered: {
-                tabsPopover.show();
-            }
+            onTriggered: PopupUtils.open(tabsPopoverComponent, tabsButton)
 
-            OverflowPanel {
-                id: tabsPopover
-                objectName: "tabsPopover"
-                parent: QuickUtils.rootItem(tabsPopover)
-                caller: tabsButton
-                callerMargin: -units.gu(1) + units.dp(4)
-                contentWidth: units.gu(20)
+            Component {
+                id: tabsPopoverComponent
 
-                Column {
-                    anchors {
-                        left: parent.left
-                        top: parent.top
-                        right: parent.right
-                    }
-                    Repeater {
-                        model: buffer.tabsModel
-                        AbstractButton {
-                            objectName: "tabButton" + index
-                            onClicked: {
-                                buffer.tabsModel.selectedIndex = index;
-                                tabsPopover.hide();
-                            }
-                            implicitHeight: units.gu(6) + bottomDividerLine.height
-                            width: parent ? parent.width : units.gu(31)
+                OverflowPanel {
+                    id: tabsPopover
+                    objectName: "tabsPopover"
+                    callerMargin: -units.gu(1) + units.dp(4)
+                    contentWidth: units.gu(20)
+//                                    parent: QuickUtils.rootItem(tabsPopover)
 
-                            Rectangle {
-                                visible: parent.pressed
-                                anchors {
-                                    left: parent.left
-                                    right: parent.right
-                                    top: parent.top
+                    Column {
+                        anchors {
+                            left: parent.left
+                            top: parent.top
+                            right: parent.right
+                        }
+                        Repeater {
+                            model: buffer.tabsModel
+                            AbstractButton {
+                                objectName: "tabButton" + index
+                                onClicked: {
+                                    buffer.tabsModel.selectedIndex = index;
+//                                    styledItem.tabsModel.selectedIndex = index;
+                                    tabsPopover.hide();
                                 }
-                                height: parent.height - bottomDividerLine.height
-                                color: Theme.palette.selected.background
-                            }
+                                implicitHeight: units.gu(6) + bottomDividerLine.height
+                                width: parent ? parent.width : units.gu(31)
 
-                            Label {
-                                anchors {
-                                    verticalCenter: parent.verticalCenter
-                                    verticalCenterOffset: units.dp(-1)
-                                    left: parent.left
-                                    leftMargin: units.gu(2)
+                                Rectangle {
+                                    visible: parent.pressed
+                                    anchors {
+                                        left: parent.left
+                                        right: parent.right
+                                        top: parent.top
+                                    }
+                                    height: parent.height - bottomDividerLine.height
+                                    color: Theme.palette.selected.background
                                 }
-                                fontSize: "medium"
-                                elide: Text.ElideRight
-                                text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
-                                color: Theme.palette.selected.backgroundText
-                            }
 
-                            ListItem.ThinDivider {
-                                id: bottomDividerLine
-                                anchors.bottom: parent.bottom
-                                visible: index < buffer.tabsModel.count - 1
+                                Label {
+                                    anchors {
+                                        verticalCenter: parent.verticalCenter
+                                        verticalCenterOffset: units.dp(-1)
+                                        left: parent.left
+                                        leftMargin: units.gu(2)
+                                    }
+                                    fontSize: "medium"
+                                    elide: Text.ElideRight
+                                    text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
+                                    color: Theme.palette.selected.backgroundText
+                                }
+
+                                ListItem.ThinDivider {
+                                    id: bottomDividerLine
+                                    anchors.bottom: parent.bottom
+                                    visible: index < buffer.tabsModel.count - 1
+                                }
                             }
                         }
                     }
@@ -475,91 +477,95 @@ Style.PageHeadStyle {
             iconName: "contextual-menu"
             color: buffer.config.foregroundColor
             height: actionsContainer.height
-            onTriggered: actionsOverflowPopover.show()
 
-            OverflowPanel {
-                id: actionsOverflowPopover
-                objectName: "actions_overflow_popover"
-                parent: QuickUtils.rootItem(actionsOverflowPopover)
-                caller: actionsOverflowButton
-                callerMargin: -units.gu(1) + units.dp(4)
-                contentWidth: units.gu(20)
+            onTriggered: PopupUtils.open(actionsOverflowPopoverComponent, actionsOverflowButton)
 
-                // Ensure the popover closes when actions change and
-                // the list item below may be destroyed before its
-                // onClicked is executed. See bug
-                // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
-                Connections {
-                    target: buffer.config
-                    onActionsChanged: {
-                        actionsOverflowPopover.hide();
+            Component {
+                id: actionsOverflowPopoverComponent
+
+                OverflowPanel {
+                    id: actionsOverflowPopover
+                    objectName: "actions_overflow_popover"
+//                    parent: QuickUtils.rootItem(actionsOverflowPopover)
+                    callerMargin: -units.gu(1) + units.dp(4)
+                    contentWidth: units.gu(20)
+
+                    // Ensure the popover closes when actions change and
+                    // the list item below may be destroyed before its
+                    // onClicked is executed. See bug
+                    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
+                    Connections {
+                        target: styledItem.config
+                        onActionsChanged: {
+                            actionsOverflowPopover.hide();
+                        }
                     }
-                }
-                Connections {
-                    target: styledItem
-                    onConfigChanged: {
-                        actionsOverflowPopover.hide();
+                    Connections {
+                        target: styledItem
+                        onConfigChanged: {
+                            actionsOverflowPopover.hide();
+                        }
                     }
-                }
 
-                Column {
-                    anchors {
-                        left: parent.left
-                        top: parent.top
-                        right: parent.right
-                    }
-                    Repeater {
-                        id: overflowRepeater
-                        model: numberOfSlots.requested - numberOfSlots.used
-                        AbstractButton {
-                            action: actionsContainer.visibleActions[numberOfSlots.used + index]
-                            objectName: action.objectName + "_header_overflow_button"
-                            onClicked: actionsOverflowPopover.hide()
-                            implicitHeight: units.gu(6) + bottomDividerLine.height
-                            width: parent ? parent.width : units.gu(31)
+                    Column {
+                        anchors {
+                            left: parent.left
+                            top: parent.top
+                            right: parent.right
+                        }
+                        Repeater {
+                            id: overflowRepeater
+                            model: numberOfSlots.requested - numberOfSlots.used
+                            AbstractButton {
+                                action: actionsContainer.visibleActions[numberOfSlots.used + index]
+                                objectName: action.objectName + "_header_overflow_button"
+                                onClicked: actionsOverflowPopover.hide()
+                                implicitHeight: units.gu(6) + bottomDividerLine.height
+                                width: parent ? parent.width : units.gu(31)
 
-                            Rectangle {
-                                visible: parent.pressed
-                                anchors {
-                                    left: parent.left
-                                    right: parent.right
-                                    top: parent.top
+                                Rectangle {
+                                    visible: parent.pressed
+                                    anchors {
+                                        left: parent.left
+                                        right: parent.right
+                                        top: parent.top
+                                    }
+                                    height: parent.height - bottomDividerLine.height
+                                    color: Theme.palette.selected.background
                                 }
-                                height: parent.height - bottomDividerLine.height
-                                color: Theme.palette.selected.background
-                            }
 
-                            Icon {
-                                id: actionIcon
-                                name: action.iconName
-                                color: Theme.palette.selected.backgroundText
-                                anchors {
-                                    verticalCenter: parent.verticalCenter
-                                    verticalCenterOffset: units.dp(-1)
-                                    left: parent.left
-                                    leftMargin: units.gu(2)
+                                Icon {
+                                    id: actionIcon
+                                    name: action.iconName
+                                    color: Theme.palette.selected.backgroundText
+                                    anchors {
+                                        verticalCenter: parent.verticalCenter
+                                        verticalCenterOffset: units.dp(-1)
+                                        left: parent.left
+                                        leftMargin: units.gu(2)
+                                    }
+                                    width: units.gu(2)
+                                    height: units.gu(2)
                                 }
-                                width: units.gu(2)
-                                height: units.gu(2)
-                            }
 
-                            Label {
-                                anchors {
-                                    verticalCenter: parent.verticalCenter
-                                    verticalCenterOffset: units.dp(-1)
-                                    left: actionIcon.right
-                                    leftMargin: units.gu(2)
+                                Label {
+                                    anchors {
+                                        verticalCenter: parent.verticalCenter
+                                        verticalCenterOffset: units.dp(-1)
+                                        left: actionIcon.right
+                                        leftMargin: units.gu(2)
+                                    }
+                                    fontSize: "small"
+                                    elide: Text.ElideRight
+                                    text: action.text
+                                    color: Theme.palette.selected.backgroundText
                                 }
-                                fontSize: "small"
-                                elide: Text.ElideRight
-                                text: action.text
-                                color: Theme.palette.selected.backgroundText
-                            }
 
-                            ListItem.ThinDivider {
-                                id: bottomDividerLine
-                                anchors.bottom: parent.bottom
-                                visible: index !== overflowRepeater.count - 1
+                                ListItem.ThinDivider {
+                                    id: bottomDividerLine
+                                    anchors.bottom: parent.bottom
+                                    visible: index !== overflowRepeater.count - 1
+                                }
                             }
                         }
                     }

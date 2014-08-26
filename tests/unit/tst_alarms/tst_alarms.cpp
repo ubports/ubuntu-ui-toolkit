@@ -69,7 +69,7 @@ private:
     bool containsAlarm(UCAlarm *alarm, bool trace = false)
     {
         UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
-        QList<AlarmData> alarms = AlarmManager::instance().alarms();
+        AlarmList alarms = AlarmManager::instance().alarms();
         Q_FOREACH(AlarmData i, alarms) {
             if (trace && (alarm->message() == i.message)) {
                 qDebug() << "----------------------";
@@ -94,7 +94,7 @@ private:
 
     bool findAlarm(const QString &message, UCAlarm &result)
     {
-        QList<AlarmData> alarms = AlarmManager::instance().alarms();
+        AlarmList alarms = AlarmManager::instance().alarms();
         Q_FOREACH(AlarmData i, alarms) {
             if (i.message == message) {
                 UCAlarmPrivate::get(&result)->rawData = i;
@@ -102,6 +102,18 @@ private:
             }
         }
         return false;
+    }
+
+    AlarmData getAlarmDataFromAlarmCookie(UCAlarm *alarm)
+    {
+        UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
+        AlarmList alarms = AlarmManager::instance().alarms();
+        int index = alarms.indexOfAlarm(pAlarm->rawData.cookie);
+        AlarmData data;
+        if (index >= 0) {
+            data = alarms[index];
+        }
+        return data;
     }
 
 private Q_SLOTS:
@@ -525,6 +537,31 @@ private Q_SLOTS:
         QVERIFY(findAlarm("test_onetime_sound", saved));
         QCOMPARE(alarm, saved);
         QCOMPARE(alarm.sound().toString(), saved.sound().toString());
+    }
+
+    // guard bug #1360101
+    void test_create_update_and_disable_alarm() {
+        UCAlarm alarm(QDateTime::currentDateTime(), UCAlarm::AutoDetect, "test_create_update_and_disable_alarm");
+        alarm.setSound(QUrl("file:///usr/share/sounds/ubuntu/ringtones/Celestial.ogg"));
+        alarm.save();
+        waitForRequest(&alarm);
+        QVERIFY(containsAlarm(&alarm));
+
+        // update alarm to occur 1h earlier
+        QDateTime date = alarm.date();
+        date.addSecs(-60);
+        alarm.save();
+        waitForRequest(&alarm);
+        QVERIFY(containsAlarm(&alarm));
+
+        // disable alarm
+        alarm.setEnabled(false);
+        alarm.save();
+        waitForRequest(&alarm);
+        QVERIFY(containsAlarm(&alarm));
+        AlarmData data = getAlarmDataFromAlarmCookie(&alarm);
+        QVERIFY(data.cookie.isValid());
+        QCOMPARE(data.enabled, false);
     }
 };
 

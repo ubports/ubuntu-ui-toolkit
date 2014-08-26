@@ -53,7 +53,7 @@ AlarmManager &AlarmManager::instance()
     return instance;
 }
 
-QList<AlarmData> AlarmManager::alarms() const
+AlarmList AlarmManager::alarms() const
 {
     Q_D(const AlarmManager);
     return d->alarmList;

@@ -52,6 +52,17 @@ Item {
         name: "AlarmAPI"
         when: windowShown
 
+        SignalSpy {
+            id: dataChangedSpy
+            signalName: "onDataChanged"
+            target: testModel
+        }
+        SignalSpy {
+            id: beginResetModelSpy
+            signalName: "onBeginResetModel"
+            target: testModel
+        }
+
         function clean() {
             var i = 0;
             while (i < testModel.count) {
@@ -72,6 +83,11 @@ Item {
 
         function cleanupTestCase() {
             clean();
+        }
+
+        function init() {
+            dataChangedSpy.clear();
+            beginResetModelSpy.clear();
         }
 
         function test_createOneTimeFail() {
@@ -169,20 +185,32 @@ Item {
             compare(testAlarm.error, Alarm.NoError, "alarm canceled");
         }
 
-        function test_updateAlarm_sameType() {
+        function test_updateAlarm_sameType_data() {
+            var date = new Date();
+            date.setMinutes(date.getMinutes() + 10);
+            return [
+                {tag: "LaterDate", referenceDate: date, addMinutes: 10},
+                {tag: "EarlierDate", referenceDate: date, addMinutes: -5},
+            ];
+        }
+        function test_updateAlarm_sameType(data) {
+            var date = data.referenceDate;
             testAlarm.reset();
             testAlarm.message = "test";
             testAlarm.type = Alarm.OneTime;
-            var dt = new Date();
-            dt.setMinutes(dt.getMinutes() + 10);
-            testAlarm.date = dt;
+            testAlarm.date = date;
 
             testAlarm.save();
             compare(testAlarm.error, Alarm.NoError, "fist alarm added");
+            compare(dataChangedSpy.count, 0, "No dataChanged() should be emitted");
+            compare(beginResetModelSpy.count, 0, "No beginResetModel() should be emitted");
 
-            dt.setDate(dt.getDate() + 2);
-            testAlarm.date = dt;
+            date.setMinutes(date.getMinutes() + data.addMinutes);
+            testAlarm.date = date;
+            testAlarm.save();
             compare(testAlarm.error, Alarm.NoError, "updated alarm");
+            compare(beginResetModelSpy.count, 0, "No beginResetModel() should be emitted");
+            dataChangedSpy.wait();
         }
 
         function test_updateAlarm_differentType() {
@@ -195,8 +223,14 @@ Item {
 
             testAlarm.save();
             compare(testAlarm.error, Alarm.NoError, "fist alarm added");
+            compare(dataChangedSpy.count, 0, "No dataChanged() should be emitted");
+            compare(beginResetModelSpy.count, 0, "No beginResetModel() should be emitted");
+
             testAlarm.type = Alarm.Repeating;
+            testAlarm.save();
             compare(testAlarm.error, Alarm.NoError, "updated alarm");
+            compare(beginResetModelSpy.count, 0, "No beginResetModel() should be emitted");
+            dataChangedSpy.wait();
         }
 
         function test_modelRoles() {

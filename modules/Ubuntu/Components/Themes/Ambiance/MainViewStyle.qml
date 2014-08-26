@@ -47,6 +47,8 @@ Item {
         anchors.fill: parent
         source: mainViewStyle.backgroundSource
         fillMode: Image.Tile
+        asynchronous: true
+        cache: false
     }
 
     QtObject {
