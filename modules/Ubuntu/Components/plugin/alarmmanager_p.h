@@ -51,13 +51,14 @@ public:
         , originalDate(other.originalDate)
         , date(other.date)
         , message(other.message)
+        , sound(other.sound)
         , type(other.type)
         , days(other.days)
         , enabled(other.enabled)
     {
     }
 
-    bool compare(const AlarmData &other)
+    bool compare(const AlarmData &other) const
     {
         // cookie, sound, and enabled do not count on alarm equality
         return date == other.date
@@ -66,7 +67,7 @@ public:
                 && days == other.days;
     }
 
-    bool operator==(const AlarmData &other)
+    bool operator==(const AlarmData &other) const
     {
         return compare(other);
     }
@@ -122,6 +123,24 @@ public:
     bool enabled;
 };
 
+// list of alarms
+class AlarmList: public QList<AlarmData>
+{
+public:
+    AlarmList(){}
+
+    // returns the index of the alarm matching a cookie, -1 on error
+    inline int indexOfAlarm(const QVariant &cookie)
+    {
+        for (int i = 0; i < size(); i++) {
+            if (at(i).cookie == cookie) {
+                return i;
+            }
+        }
+        return -1;
+    }
+};
+
 class AlarmRequest;
 class AlarmManagerPrivate;
 class AlarmManager : public QObject
@@ -138,10 +157,11 @@ public:
 
     static AlarmManager &instance();
 
-    QList<AlarmData> alarms() const;
+    AlarmList alarms() const;
 
 Q_SIGNALS:
     void alarmsChanged();
+    void alarmsUpdated(const QList<QVariant> &cookies);
 
 private:
     explicit AlarmManager(QObject *parent = 0);

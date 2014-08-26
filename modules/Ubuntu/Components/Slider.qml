@@ -119,6 +119,8 @@ StyledItem {
     /*! \internal */
     onValueChanged: mouseArea.liveValue = slider.value
 
+    activeFocusOnPress: true
+
     Binding {
         target: slider
         property: "value"
@@ -140,6 +142,26 @@ StyledItem {
         property real dragInitMouseX: 0.0
         property real dragInitNormalizedValue: 0.0
 
+        property Flickable flickable: {
+            // traverse parents to catch whether we have an ancestor Flickable
+            var pl = slider.parent;
+            while (pl) {
+                if (pl.hasOwnProperty("flicking")) {
+                    return pl;
+                }
+                pl = pl.parent;
+            }
+            return null;
+        }
+
+        states: State {
+            name: "sliding"
+            when: mouseArea.flickable && mouseArea.pressed
+            PropertyChanges {
+                target: mouseArea.flickable
+                interactive: false
+            }
+        }
         function normalizedValueFromValue(value) {
             if (Qt.application.layoutDirection == Qt.RightToLeft) {
                 return MathUtils.clampAndProject(value, slider.minimumValue,
@@ -188,6 +210,8 @@ StyledItem {
             var normalizedOffsetX = (mouseArea.mouseX - dragInitMouseX) / barMinusThumb;
             liveValue = valueFromNormalizedValue(dragInitNormalizedValue + normalizedOffsetX);
         }
+        onClicked: slider.requestFocus(Qt.MouseFocusReason)
+        onLiveValueChanged: if (isPressed) slider.requestFocus(Qt.MouseFocusReason)
     }
 
     style: Theme.createStyleComponent("SliderStyle.qml", slider)

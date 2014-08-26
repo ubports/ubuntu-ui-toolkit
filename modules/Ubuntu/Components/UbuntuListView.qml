@@ -92,7 +92,25 @@ ListView {
             }
             animation.start();
         }
+
+        function requestFocus(reason) {
+            // lookup for the currentItem, and if it is a FocusScope, focus the view
+            // this will also focus the currentItem
+            if (root.currentItem && root.currentItem.hasOwnProperty("activeFocusOnPress")) {
+                root.forceActiveFocus(reason);
+            }
+        }
     }
+
+    focus: true
+
+    /*!
+      \internal
+      Grab focus when moved, flicked or clicked
+     */
+    onMovementStarted: priv.requestFocus(Qt.MouseFocusReason)
+    onFlickStarted: priv.requestFocus(Qt.MouseFocusReason)
+    Toolkit.Mouse.onClicked: priv.requestFocus(Qt.MouseFocusReason)
 
     /*!
       \preliminary

@@ -28,6 +28,12 @@ AbstractButton {
 
     property alias color: icon.color
 
+    Rectangle {
+        visible: button.pressed
+        anchors.fill: parent
+        color: Theme.palette.selected.background
+    }
+
     Icon {
         id: icon
         anchors {
