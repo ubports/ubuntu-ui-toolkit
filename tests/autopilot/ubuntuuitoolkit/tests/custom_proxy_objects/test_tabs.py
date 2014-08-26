@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+import os
+
 try:
     from unittest import mock
 except ImportError:
@@ -23,64 +25,20 @@ import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
 
-TEST_TABS_QML_FORMAT = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
+class TabsTestCase(tests.QMLFileAppTestCase):
 
-MainView {{
-    width: units.gu(70)
-    height: units.gu(60)
-    useDeprecatedToolbar: {use_deprecated_toolbar}
-
-    Tabs {{
-        id: tabs
-        Tab {{
-            objectName: "tab1"
-            title: "Tab1"
-            Page {{
-                tools: ToolbarItems {{
-                    ToolbarButton {{
-                        text: "Test1"
-                    }}
-                }}
-            }}
-        }}
-        Tab {{
-            objectName: "tab2"
-            title: "Tab2"
-            Page {{
-                tools: ToolbarItems {{
-                    ToolbarButton {{
-                        text: "Test2"
-                    }}
-                }}
-            }}
-        }}
-        Tab {{
-            objectName: "tab3"
-            title: "Tab3"
-            Page {{
-                tools: ToolbarItems {{
-                    ToolbarButton {{
-                        text: "Test3"
-                    }}
-                }}
-            }}
-        }}
-    }}
-}}
-""")
-
-
-class TabsTestCase(tests.QMLStringAppTestCase):
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    deprecated_tabbar_test_qml_file_path = os.path.join(
+        dir_path, 'test_tabs.TabsTestCase.deprecated_TabBar.qml')
+    new_header_test_qml_file_path = os.path.join(
+        dir_path, 'test_tabs.TabsTestCase.new_header.qml')
 
     scenarios = [
-        ('deprecated tabs', dict(
-            test_qml=TEST_TABS_QML_FORMAT.format(
-                use_deprecated_toolbar='true'))),
-        ('drawer tabs', dict(
-            test_qml=TEST_TABS_QML_FORMAT.format(
-                use_deprecated_toolbar='false')))
+        ('deprecated TabBar',
+         dict(test_qml_file_path=deprecated_tabbar_test_qml_file_path)),
+        ('new header',
+         dict(test_qml_file_path=new_header_test_qml_file_path))
     ]
 
     def test_tabs_custom_proxy_object(self):
