@@ -56,6 +56,7 @@ MainView {
             leadingOptions: ListItemOptions {
                 options: [stock]
             }
+            trailingOptions: leading
         }
 
         ListView {
@@ -67,7 +68,7 @@ MainView {
             pressDelay: 0
             delegate: ListItem {
                 onClicked: print(" clicked")
-
+                leadingOptions: leading
                 Label {
                     text: modelData + " item"
                 }
