@@ -366,9 +366,7 @@ void UCListItemBase::mousePressEvent(QMouseEvent *event)
     }
     d->setPressed(true);
     // connect the Flickable to know when to rebound
-    if (!d->flickable.isNull()) {
-        QObject::connect(d->flickable.data(), SIGNAL(movementStarted()), this, SLOT(_q_rebound()));
-    }
+    d->listenToRebind(true);
     // accept the event so we get the rest of the events as well
     event->setAccepted(true);
 }
