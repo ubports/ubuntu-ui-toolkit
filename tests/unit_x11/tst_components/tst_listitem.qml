@@ -68,6 +68,8 @@ Item {
             id: testItem
             width: parent.width
             background.color: "blue"
+            leadingOptions: leading
+            trailingOptions: leading
             Item {
                 id: contentItem
                 anchors.fill: parent
@@ -82,6 +84,8 @@ Item {
             delegate: ListItem {
                 objectName: "listItem" + index
                 width: parent.width
+                leadingOptions: leading
+                trailingOptions: trailing
             }
         }
     }
@@ -114,6 +118,8 @@ Item {
         function cleanup() {
             pressedSpy.clear();
             clickSpy.clear();
+            listView.interactive = true;
+            wait(200);
         }
 
         function test_0_defaults() {
@@ -164,7 +170,7 @@ Item {
             compare(listItem.pressed, true, "Item is not pressed?");
             // do 5 moves to be able to sense it
             var dy = 0;
-            for (var i = 1; i <= 5; i++) {
+            for (var i = 1; i <= 10; i++) {
                 dy += i * 10;
                 mouseMove(listItem, listItem.width / 2, dy);
             }
@@ -179,12 +185,14 @@ Item {
             compare(listItem.pressed, true, "Item is not pressed?");
             // do 5 moves to be able to sense it
             var dy = 0;
-            for (var i = 1; i <= 5; i++) {
+            for (var i = 1; i <= 10; i++) {
                 dy += i * 10;
                 TestExtras.touchMove(0, listItem, Qt.point(listItem.width / 2, dy));
             }
             compare(listItem.pressed, false, "Item is pressed still!");
+            // cleanup, wait few milliseconds to avoid dbl-click collision
             TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
+            wait(400);
         }
 
         function test_background_height_change_on_divider_visible() {
@@ -210,6 +218,96 @@ Item {
                 expectFailContinue(data.tag, "expected to fail");
             }
             compare(data.object.options.length, data.expected, data.tag + ": expected options differ.");
+        }
+
+        function test_touch_tug_options_data() {
+            var item = findChild(listView, "listItem0");
+            return [
+                {tag: "Trailing, mouse", item: item, pos: centerOf(item), dx: -units.gu(20), positiveDirection: false, mouse: true},
+                {tag: "Leading, mouse", item: item, pos: centerOf(item), dx: units.gu(20), positiveDirection: true, mouse: true},
+                {tag: "Trailing, touch", item: item, pos: centerOf(item), dx: -units.gu(20), positiveDirection: false, mouse: false},
+                {tag: "Leading, touch", item: item, pos: centerOf(item), dx: units.gu(20), positiveDirection: true, mouse: false},
+            ];
+        }
+        function test_touch_tug_options(data) {
+            listView.positionViewAtBeginning();
+            if (data.mouse) {
+                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+            } else {
+                TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
+            }
+            waitForRendering(data.item, 400);
+            if (data.positiveDirection) {
+                verify(data.item.background.x > 0, data.tag + " options did not show up");
+            } else {
+                verify(data.item.background.x < 0, data.tag + " options did not show up");
+            }
+
+            // dismiss
+            if (data.mouse) {
+                mouseClick(main, 1, 1);
+            } else {
+                TestExtras.touchClick(0, main, Qt.point(1, 1));
+            }
+            waitForRendering(data.item, 400);
+        }
+
+        function test_rebound_when_pressed_outside_or_clicked_data() {
+            var item0 = findChild(listView, "listItem0");
+            var item1 = findChild(listView, "listItem1");
+            return [
+                {tag: "Click on an other Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
+                {tag: "Click on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.background, mouse: true},
+                {tag: "Tap on an other Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
+                {tag: "Tap on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.background, mouse: false},
+            ];
+        }
+        function test_rebound_when_pressed_outside_or_clicked(data) {
+            listView.positionViewAtBeginning();
+            if (data.mouse) {
+                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+            } else {
+                TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
+            }
+            waitForRendering(data.item, 400);
+            verify(data.item.background.x != 0, "The component wasn't tugged!");
+            // dismiss
+            if (data.mouse) {
+                mouseClick(data.clickOn, centerOf(data.clickOn).x, centerOf(data.clickOn).y);
+            } else {
+                TestExtras.touchClick(0, data.clickOn, centerOf(data.clickOn));
+            }
+            waitForRendering(data.item, 400);
+            tryCompareFunction(function(){ return data.item.background.x; }, 0, 1000);
+        }
+
+        function test_listview_not_interactive_while_tugged_data() {
+            var item0 = findChild(listView, "listItem0");
+            var item1 = findChild(listView, "listItem1");
+            return [
+                {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.background, mouse: true},
+                {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.background, mouse: false},
+            ];
+        }
+        function test_listview_not_interactive_while_tugged(data) {
+            listView.positionViewAtBeginning();
+            if (data.mouse) {
+                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+            } else {
+                TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
+            }
+            waitForRendering(data.item, 800);
+            compare(listView.interactive, false, "The ListView is still interactive!");
+            // dismiss
+            if (data.mouse) {
+                mouseClick(data.clickOn, centerOf(data.clickOn).x, centerOf(data.clickOn).y);
+            } else {
+                TestExtras.touchClick(0, data.clickOn, centerOf(data.clickOn));
+            }
+            waitForRendering(data.item, 400);
+            tryCompareFunction(function(){ return listView.interactive; }, true, 1000);
         }
     }
 }

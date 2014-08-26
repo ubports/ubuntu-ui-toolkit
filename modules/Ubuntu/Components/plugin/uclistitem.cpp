@@ -391,9 +391,7 @@ void UCListItemBase::itemChange(ItemChange change, const ItemChangeData &data)
     if (change == ItemParentHasChanged) {
         Q_D(UCListItemBase);
         // make sure we are not connected to the previous Flickable
-        if (!d->flickable.isNull()) {
-            QObject::disconnect(d->flickable.data(), SIGNAL(movementStarted()), this, SLOT(_q_rebound()));
-        }
+        d->listenToRebind(false);
         // check if we are in a positioner, and if that positioner is in a Flickable
         QQuickBasePositioner *positioner = qobject_cast<QQuickBasePositioner*>(data.item);
         if (positioner && positioner->parentItem()) {
@@ -438,9 +436,7 @@ void UCListItemBase::mousePressEvent(QMouseEvent *event)
     d->setPressed(true);
     d->lastPos = d->pressedPos = event->localPos();
     // connect the Flickable to know when to rebound
-    if (!d->flickable.isNull()) {
-        QObject::connect(d->flickable.data(), SIGNAL(movementStarted()), this, SLOT(_q_rebound()));
-    }
+    d->listenToRebind(true);
     // accept the event so we get the rest of the events as well
     event->setAccepted(true);
 }
@@ -526,20 +522,23 @@ void UCListItemBase::mouseMoveEvent(QMouseEvent *event)
 
 bool UCListItemBase::eventFilter(QObject *target, QEvent *event)
 {
+    QPointF myPos;
     // only filter press events, and rebound when pressed outside
     if (event->type() == QEvent::MouseButtonPress) {
         QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
         QQuickWindow *window = qobject_cast<QQuickWindow*>(target);
-        QPointF myPos;
         if (window) {
             myPos = window->contentItem()->mapToItem(this, mouse->localPos());
         }
-        if (!contains(myPos)) {
-            Q_D(UCListItemBase);
-            d->_q_rebound();
-            event->accept();
-            return true;
-        }
+    } else if (event->type() == QEvent::TouchBegin) {
+        QTouchEvent *touch = static_cast<QTouchEvent*>(event);
+        myPos = mapFromScene(touch->touchPoints()[0].scenePos());
+    }
+    if (!myPos.isNull() && !contains(myPos)) {
+        Q_D(UCListItemBase);
+        d->_q_rebound();
+        event->accept();
+        return true;
     }
 
     return UCStyledItemBase::eventFilter(target, event);

@@ -21,85 +21,153 @@ MainView {
     width: units.gu(50)
     height: units.gu(100)
 
-    Action {
-        objectName: "stock"
-        id: stock
-    }
+//    Action {
+//        objectName: "stock"
+//        id: stock
+//    }
 
+//    ListItemOptions {
+//        id: leading
+//        objectName: "StockLeading"
+//        Action {
+//        }
+//        Action {
+//        }
+//        Action {
+//        }
+//    }
+
+//    Column {
+//        anchors {
+//            left: parent.left
+//            right: parent.right
+//        }
+
+//        ListItem {
+//            id: testItem
+//            objectName: "single"
+//            onClicked: {
+//                print("click")
+//                units.gridUnit += 1;
+//            }
+//            Label {
+//                anchors.fill: parent
+//                text: units.gridUnit + "PX/unit"
+//            }
+//            leadingOptions: ListItemOptions {
+//                objectName: "InlineLeading"
+//                options: [stock]
+//            }
+//            trailingOptions: leading
+//        }
+
+//        ListView {
+//            id: view
+//            clip: true
+//            width: parent.width
+//            height: units.gu(20)
+//            model: 100
+//            pressDelay: 0
+//            delegate: ListItem {
+//                objectName: "ListItem" + index
+//                onClicked: print(" clicked")
+//                leadingOptions: leading
+//                Label {
+//                    text: modelData + " item"
+//                }
+//            }
+//        }
+//        Flickable {
+//            id: flicker
+//            width: parent.width
+//            height: units.gu(20)
+//            clip: true
+//            contentHeight: column.childrenRect.height
+//            Column {
+//                id: column
+//                width: view.width
+//                Repeater {
+//                    model: 100
+//                    ListItem {
+//                        objectName: "InFlickable"+index
+//                        background {
+//                            pressedColor: "lime"
+//                        }
+//                        Label {
+//                            text: modelData + " Flickable item"
+//                        }
+//                        onClicked: divider.visible = !divider.visible
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+
+    Action {
+        id: stockAction
+    }
     ListItemOptions {
         id: leading
-        objectName: "StockLeading"
         Action {
         }
         Action {
         }
         Action {
         }
+    }
+    ListItemOptions {
+        id: trailing
+        options: [
+            stockAction,
+        ]
+    }
+    ListItemOptions {
+        id: wrongOption
+        Action {
+            id: goodAction
+        }
+        QtObject {
+            id: badAction
+        }
+        Action {
+        }
+    }
+    ListItemOptions {
+        id: optionsDefault
+        property int optionCount: options.length
     }
 
     Column {
-        anchors {
-            left: parent.left
-            right: parent.right
+        width: parent.width
+        ListItem {
+            id: defaults
+            width: parent.width
         }
-
         ListItem {
             id: testItem
-            objectName: "single"
-            onClicked: {
-                print("click")
-                units.gridUnit += 1;
-            }
-            Label {
-                anchors.fill: parent
-                text: units.gridUnit + "PX/unit"
-            }
-            leadingOptions: ListItemOptions {
-                objectName: "InlineLeading"
-                options: [stock]
-            }
+            width: parent.width
+            background.color: "blue"
+            leadingOptions: leading
             trailingOptions: leading
-        }
-
-        ListView {
-            id: view
-            clip: true
-            width: parent.width
-            height: units.gu(20)
-            model: 100
-            pressDelay: 0
-            delegate: ListItem {
-                objectName: "ListItem" + index
-                onClicked: print(" clicked")
-                leadingOptions: leading
-                Label {
-                    text: modelData + " item"
-                }
+            Item {
+                id: contentItem
+                anchors.fill: parent
             }
         }
-        Flickable {
-            id: flicker
+        ListView {
+            id: listView
             width: parent.width
-            height: units.gu(20)
+            height: units.gu(24)
             clip: true
-            contentHeight: column.childrenRect.height
-            Column {
-                id: column
-                width: view.width
-                Repeater {
-                    model: 100
-                    ListItem {
-                        objectName: "InFlickable"+index
-                        background {
-                            pressedColor: "lime"
-                        }
-                        Label {
-                            text: modelData + " Flickable item"
-                        }
-                        onClicked: divider.visible = !divider.visible
-                    }
-                }
+            model: 10
+            delegate: ListItem {
+                objectName: "listItem" + index
+                width: parent.width
+                leadingOptions: leading
+                trailingOptions: trailing
             }
         }
     }
+
 }

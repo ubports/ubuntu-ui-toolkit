@@ -38,7 +38,7 @@ Rectangle {
       */
     property var optionList
 
-    color: leadingPanel ? "red" : "white"
+    color: leadingPanel ? UbuntuColors.red : UbuntuColors.green
 
     anchors {
         left: (leadingPanel) ? undefined : (parent ? parent.right : undefined)
