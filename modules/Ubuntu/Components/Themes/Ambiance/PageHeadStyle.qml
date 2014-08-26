@@ -315,7 +315,6 @@ Style.PageHeadStyle {
                     objectName: "tabsPopover"
                     callerMargin: -units.gu(1) + units.dp(4)
                     contentWidth: units.gu(20)
-//                                    parent: QuickUtils.rootItem(tabsPopover)
 
                     Column {
                         anchors {
@@ -329,7 +328,6 @@ Style.PageHeadStyle {
                                 objectName: "tabButton" + index
                                 onClicked: {
                                     buffer.tabsModel.selectedIndex = index;
-//                                    styledItem.tabsModel.selectedIndex = index;
                                     tabsPopover.hide();
                                 }
                                 implicitHeight: units.gu(6) + bottomDividerLine.height
@@ -486,7 +484,6 @@ Style.PageHeadStyle {
                 OverflowPanel {
                     id: actionsOverflowPopover
                     objectName: "actions_overflow_popover"
-//                    parent: QuickUtils.rootItem(actionsOverflowPopover)
                     callerMargin: -units.gu(1) + units.dp(4)
                     contentWidth: units.gu(20)
 
