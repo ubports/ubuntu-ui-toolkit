@@ -170,7 +170,7 @@ Item {
             compare(listItem.pressed, true, "Item is not pressed?");
             // do 5 moves to be able to sense it
             var dy = 0;
-            for (var i = 1; i <= 10; i++) {
+            for (var i = 1; i <= 5; i++) {
                 dy += i * 10;
                 mouseMove(listItem, listItem.width / 2, dy);
             }
@@ -185,14 +185,14 @@ Item {
             compare(listItem.pressed, true, "Item is not pressed?");
             // do 5 moves to be able to sense it
             var dy = 0;
-            for (var i = 1; i <= 10; i++) {
+            for (var i = 1; i <= 5; i++) {
                 dy += i * 10;
                 TestExtras.touchMove(0, listItem, Qt.point(listItem.width / 2, dy));
             }
             compare(listItem.pressed, false, "Item is pressed still!");
             // cleanup, wait few milliseconds to avoid dbl-click collision
             TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
-            wait(400);
+//            wait(400);
         }
 
         function test_background_height_change_on_divider_visible() {
