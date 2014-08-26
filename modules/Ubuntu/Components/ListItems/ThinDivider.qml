@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-
+import "../colorUtils.js" as ColorUtils
 /*!
     \qmltype ThinDivider
     \inqmlmodule Ubuntu.Components.ListItems 1.0
@@ -48,10 +48,16 @@ Rectangle {
     anchors {
         left: (parent) ? parent.left : null
         right: (parent) ? parent.right : null
+        leftMargin: units.gu(2)
+        rightMargin: units.gu(2)
     }
     height: (visible) ? units.dp(2) : 0
+    property bool lightBackground: ColorUtils.luminance(Theme.palette.normal.background) > 0.85
+    onLightBackgroundChanged: print("lightBackground", lightBackground)
     gradient: Gradient {
-        GradientStop { position: 0.0; color: "#26000000" }
-        GradientStop { position: 1.0; color: "#14F3F3E7" }
+        GradientStop { position: 0.0; color: lightBackground ? "#26000000" : "#26FFFFFF" }
+        GradientStop { position: 0.49; color: lightBackground ? "#26000000" : "#26FFFFFF" }
+        GradientStop { position: 0.5; color: lightBackground ? "#14FFFFFF" : "#14000000" }
+        GradientStop { position: 1.0; color: lightBackground ? "#14FFFFFF" : "#14000000" }
     }
 }
