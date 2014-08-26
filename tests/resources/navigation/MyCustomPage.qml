@@ -42,6 +42,7 @@ Page {
         },
         Action {
             text: "action 2"
+            iconSource: "call_icon.png"
             iconName: "missed-call"
         },
         Action {

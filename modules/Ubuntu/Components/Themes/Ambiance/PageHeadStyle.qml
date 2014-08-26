@@ -533,7 +533,7 @@ Style.PageHeadStyle {
 
                                 Icon {
                                     id: actionIcon
-                                    name: action.iconName
+                                    source: action.iconSource
                                     color: Theme.palette.selected.backgroundText
                                     anchors {
                                         verticalCenter: parent.verticalCenter
