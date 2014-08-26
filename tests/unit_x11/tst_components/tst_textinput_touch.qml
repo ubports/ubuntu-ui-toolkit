@@ -192,7 +192,7 @@ Item {
             verify(selectedText !== "", "No text selected!");
 
             popupSpy.target = findChild(data.input, "input_handler");
-            TestExtras.touchLongPress(0, data.input, guPoint(2, 2));
+            TestExtras.touchLongPress(0, data.input, guPoint(4, 2));
             waitForRendering(data.input, 500);
             popupSpy.wait();
             compare(data.input.selectedText, selectedText, "Text selection should be the same!");
