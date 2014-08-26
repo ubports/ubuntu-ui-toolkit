@@ -78,6 +78,8 @@ Item {
         function cleanup() {
             pressedSpy.clear();
             clickSpy.clear();
+            // make sure all events are processed
+            wait(200);
         }
 
         function test_0_defaults() {
