@@ -119,6 +119,7 @@ Item {
             pressedSpy.clear();
             clickSpy.clear();
             listView.interactive = true;
+            // make sure all events are processed
             wait(200);
         }
 
