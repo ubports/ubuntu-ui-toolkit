@@ -34,7 +34,6 @@ public:
     bool optionsFailure:1;
     QQmlComponent *delegate;
     QQuickItem *panelItem;
-    QPointer<UCListItemBase> connectedListItem;
     QList<QObject*> options;
 
     // options list property functions

@@ -273,7 +273,7 @@ void UCListItemBasePrivate::_q_rebound()
     if (trailingOptions) {
         UCListItemOptionsPrivate::get(trailingOptions)->disconnectFromListItem();
     }
-    moved = false;
+    setMoved(false);
     // start animation
     reboundTo(0);
     // disconnect the flickable
@@ -285,25 +285,41 @@ void UCListItemBasePrivate::_q_rebound()
 
 void UCListItemBasePrivate::reboundTo(qreal x)
 {
-    qDebug() << "REBOUND";
     reboundAnimation->setFrom(background->x());
     reboundAnimation->setTo(x);
     reboundAnimation->restart();
 }
-
 
 // set pressed flag and update background
 void UCListItemBasePrivate::setPressed(bool pressed)
 {
     if (this->pressed != pressed) {
         this->pressed = pressed;
+        suppressClick = false;
         background->update();
         Q_Q(UCListItemBase);
         Q_EMIT q->pressedChanged();
     }
 }
+// toggles the moved flag and installs/removes event filter
+void UCListItemBasePrivate::setMoved(bool moved)
+{
+    suppressClick = moved;
+    if (this->moved == moved) {
+        return;
+    }
+    this->moved = moved;
+    Q_Q(UCListItemBase);
+    QQuickWindow *window = q->window();
+    if (moved) {
+        window->installEventFilter(q);
+    } else {
+        window->removeEventFilter(q);
+    }
+}
+
 // sets the moved flag but also grabs the panel from the leading/trailing options
-void UCListItemBasePrivate::setMoved(UCListItemOptions *optionsList, bool isMoved)
+void UCListItemBasePrivate::grabPanel(UCListItemOptions *optionsList, bool isMoved)
 {
     UCListItemOptionsPrivate *options = UCListItemOptionsPrivate::get(optionsList);
     if (!options) {
@@ -420,7 +436,6 @@ void UCListItemBase::mousePressEvent(QMouseEvent *event)
         return;
     }
     d->setPressed(true);
-    d->moved = false;
     d->lastPos = d->pressedPos = event->localPos();
     // connect the Flickable to know when to rebound
     if (!d->flickable.isNull()) {
@@ -435,8 +450,9 @@ void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
     UCStyledItemBase::mouseReleaseEvent(event);
     Q_D(UCListItemBase);
     // set released
-    if (d->pressed && !d->moved) {
+    if (d->pressed && !d->suppressClick) {
         Q_EMIT clicked();
+        d->_q_rebound();
     }
     d->setPressed(false);
 }
@@ -448,51 +464,51 @@ void UCListItemBase::mouseMoveEvent(QMouseEvent *event)
 
     // grab the scrolling only if the delta between the first press and the current
     // pos is > xAxis threshold
-    if (d->pressed && !d->moved) {
+    bool leadingAttached = UCListItemOptionsPrivate::isConnectedTo(d->leadingOptions, this);
+    bool trailingAttached = UCListItemOptionsPrivate::isConnectedTo(d->trailingOptions, this);
+    bool grabMove = d->moved;
+    if (d->pressed && !(leadingAttached || trailingAttached)) {
         // check if we can initiate the drag at all
         qreal threshold = UCUnits::instance().gu(d->xAxisMoveThresholdGU);
         QRectF sensingRect(d->pressedPos.x() - threshold, 0, 2 * threshold, height());
         if (!sensingRect.contains(event->localPos())) {
             // the press went out of the threshold area, enable move, if the direction allows it
-            qDebug() << (d->pressedPos.x() > event->localPos().x()) << d->trailingOptions;
             d->lastPos = event->localPos();
-            d->moved = true;
+            grabMove = true;
         }
     }
 
-    bool leadingMoved = UCListItemOptionsPrivate::isConnectedTo(d->leadingOptions, this);
-    bool trailingMoved = UCListItemOptionsPrivate::isConnectedTo(d->trailingOptions, this);
-    if (d->moved) {
+    if (grabMove) {
         // prepare panels
-        if ((d->pressedPos.x() > event->localPos().x()) && !trailingMoved) {
+        if ((d->pressedPos.x() > event->localPos().x()) && !trailingAttached) {
             // activate trailing options
-            d->setMoved(d->trailingOptions, true);
-            leadingMoved = UCListItemOptionsPrivate::isConnectedTo(d->leadingOptions, this);
-        } else if ((d->pressedPos.x() < event->localPos().x()) && !leadingMoved) {
+            d->grabPanel(d->trailingOptions, true);
+            trailingAttached = UCListItemOptionsPrivate::isConnectedTo(d->trailingOptions, this);
+        } else if ((d->pressedPos.x() < event->localPos().x()) && !leadingAttached) {
             // activate leading options
-            d->setMoved(d->leadingOptions, true);
-            trailingMoved = UCListItemOptionsPrivate::isConnectedTo(d->trailingOptions, this);
+            d->grabPanel(d->leadingOptions, true);
+            leadingAttached = UCListItemOptionsPrivate::isConnectedTo(d->leadingOptions, this);
         }
     }
     UCListItemOptionsPrivate *leading = UCListItemOptionsPrivate::get(d->leadingOptions);
     UCListItemOptionsPrivate *trailing = UCListItemOptionsPrivate::get(d->trailingOptions);
-    if (leadingMoved || trailingMoved) {
+    if (leadingAttached || trailingAttached) {
         qreal x = d->background->x();
         qreal dx = event->localPos().x() - d->lastPos.x();
         d->lastPos = event->localPos();
 
         x += dx;
-        if (trailing && trailing->panelItem && (x < -trailing->panelItem->width())) {
+        if (trailingAttached && trailing && trailing->panelItem && (x < -trailing->panelItem->width())) {
             x = -trailing->panelItem->width();
         }
-        if (leading && leading->panelItem && (x > leading->panelItem->width())) {
+        if (leadingAttached && leading && leading->panelItem && (x > leading->panelItem->width())) {
             x = leading->panelItem->width();
         }
         // fix drag coordinates
-        if (!leadingMoved) {
+        if (!leadingAttached) {
             x = (x > 0) ? 0 : x;
         }
-        if (!trailingMoved) {
+        if (!trailingAttached) {
             // do not drag into negative area
             x = (x < 0) ? 0 : x;
         }
@@ -501,12 +517,32 @@ void UCListItemBase::mouseMoveEvent(QMouseEvent *event)
             if (!d->flickableInteractive && d->flickable) {
                 d->flickableInteractive = new PropertyChange(d->flickable, "interactive", false);
             }
-            // TODO: filter window events to catch outside clicks
-            d->moved = true;
+            d->setMoved(true);
             d->background->setX(x);
             update();
         }
     }
+}
+
+bool UCListItemBase::eventFilter(QObject *target, QEvent *event)
+{
+    // only filter press events, and rebound when pressed outside
+    if (event->type() == QEvent::MouseButtonPress) {
+        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
+        QQuickWindow *window = qobject_cast<QQuickWindow*>(target);
+        QPointF myPos;
+        if (window) {
+            myPos = window->contentItem()->mapToItem(this, mouse->localPos());
+        }
+        if (!contains(myPos)) {
+            Q_D(UCListItemBase);
+            d->_q_rebound();
+            event->accept();
+            return true;
+        }
+    }
+
+    return UCStyledItemBase::eventFilter(target, event);
 }
 
 /*!

@@ -24,6 +24,9 @@ Rectangle {
     width: units.gu(20)
     height: parent ? parent.height : 10
 
+    /*
+      Specifies whether the panel is used to visualize leading or trailing options.
+      */
     property bool leadingPanel: false
     /*
       The delegate to be used to visualize the options
@@ -38,8 +41,8 @@ Rectangle {
     color: leadingPanel ? "red" : "white"
 
     anchors {
-        left: (parent && !leadingPanel) ? parent.right : undefined
-        right: (parent && leadingPanel) ? parent.left : undefined
+        left: (leadingPanel) ? undefined : (parent ? parent.right : undefined)
+        right: (leadingPanel) ? (parent != null ? parent.left : undefined) : undefined
         top: parent ? parent.top : undefined
         bottom: parent ? parent.bottom : undefined
     }

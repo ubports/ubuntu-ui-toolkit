@@ -91,14 +91,8 @@ void UCListItemOptionsPrivate::connectToListItem(UCListItemBase *listItem, bool 
     if (!panelItem) {
         return;
     }
-    // TODO remove rebounding, this should not happen
-    if (!connectedListItem.isNull()) {
-        //rebound previous list item
-        UCListItemBasePrivate::get(connectedListItem.data())->_q_rebound();
-    }
-    connectedListItem = listItem;
-    panelItem->setParentItem(UCListItemBasePrivate::get(listItem)->background);
     panelItem->setProperty("leadingPanel", leading);
+    panelItem->setParentItem(UCListItemBasePrivate::get(listItem)->background);
 }
 
 void UCListItemOptionsPrivate::disconnectFromListItem()
@@ -106,7 +100,6 @@ void UCListItemOptionsPrivate::disconnectFromListItem()
     if (!panelItem) {
         return;
     }
-    connectedListItem.clear();
     panelItem->setParentItem(0);
 }
 

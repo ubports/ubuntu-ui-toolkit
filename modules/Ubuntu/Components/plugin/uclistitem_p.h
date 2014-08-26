@@ -48,12 +48,14 @@ public:
     void _q_rebound();
     void reboundTo(qreal x);
     void setPressed(bool pressed);
-    void setMoved(UCListItemOptions *optionList, bool isMoved);
+    void setMoved(bool moved);
+    void grabPanel(UCListItemOptions *optionList, bool isMoved);
     void listenToRebind(bool listen);
     void resize();
 
     bool pressed:1;
     bool moved:1;
+    bool suppressClick:1;
     bool ready:1;
     qreal xAxisMoveThresholdGU;
     QPointF lastPos;
