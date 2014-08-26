@@ -40,7 +40,7 @@ PageTreeNode {
 
     Loader {
         id: toolsLoader
-        source: internal.header.useDeprecatedToolbar ? "ToolbarItems.qml" : ""
+        source: internal.header && internal.header.useDeprecatedToolbar ? "ToolbarItems.qml" : ""
         asynchronous: true
     }
 
