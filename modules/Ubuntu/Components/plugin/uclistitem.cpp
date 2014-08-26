@@ -74,9 +74,10 @@ void UCListItemDivider::paletteChanged()
     }
     // FIXME: we need a palette value for divider colors, till then base on the background
     // luminance
-    bool lightColor = (((background.red()*212 + background.green()*715 + background.blue()*73)/1000/255) <= 0.85);
-    QColor startColor = lightColor ? QColor("#26000000") : QColor("#14F3F3E7");
-    QColor endColor = lightColor ? QColor("#14F3F3E7") : QColor("#26000000");
+    qreal luminance = (background.red()*212 + background.green()*715 + background.blue()*73)/1000.0/255.0;
+    bool lightBackground = (luminance > 0.85);
+    QColor startColor = lightBackground ? QColor("#26000000") : QColor("#26FFFFFF");
+    QColor endColor = lightBackground ? QColor("#14FFFFFF") : QColor("#14000000");
 
     m_gradient.clear();
     m_gradient.append(QGradientStop(0.0, startColor));
