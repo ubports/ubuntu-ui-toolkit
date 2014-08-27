@@ -22,11 +22,15 @@ Column {
     height: 600
     ListItemOptions {
         id: options1
-        backgroundColor: "blue"
+        Action {}
+        Action {}
+        Action {}
     }
     ListItemOptions {
         id: options2
-        backgroundColor: "blue"
+        Action {}
+        Action {}
+        Action {}
     }
 
     Repeater {
