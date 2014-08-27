@@ -255,6 +255,8 @@ void UCListItemBasePrivate::init()
     reboundAnimation->setDuration(animationCodes.SnapDuration());
     reboundAnimation->setTargetObject(background);
     reboundAnimation->setProperty("x");
+    reboundAnimation->setAlwaysRunToEnd(true);
+    QObject::connect(reboundAnimation, SIGNAL(stopped()), q, SLOT(_q_completeRebinding()));
 }
 
 void UCListItemBasePrivate::setFocusable()
@@ -268,15 +270,20 @@ void UCListItemBasePrivate::setFocusable()
 void UCListItemBasePrivate::_q_rebound()
 {
     setPressed(false);
-    if (leadingOptions) {
-        UCListItemOptionsPrivate::get(leadingOptions)->disconnectFromListItem();
-    }
-    if (trailingOptions) {
-        UCListItemOptionsPrivate::get(trailingOptions)->disconnectFromListItem();
+    // initiate rebinding only if there were options tugged
+    Q_Q(UCListItemBase);
+    if (!UCListItemOptionsPrivate::isConnectedTo(leadingOptions, q) && !UCListItemOptionsPrivate::isConnectedTo(trailingOptions, q)) {
+        return;
     }
     setMoved(false);
-    // start animation
+    // rebound to zero
     reboundTo(0);
+}
+void UCListItemBasePrivate::_q_completeRebinding()
+{
+    // disconnect options
+    grabPanel(leadingOptions, false);
+    grabPanel(trailingOptions, false);
     // disconnect the flickable
     listenToRebind(false);
     // restore flickable's interactive and cleanup
@@ -322,15 +329,11 @@ void UCListItemBasePrivate::setMoved(bool moved)
 // sets the moved flag but also grabs the panel from the leading/trailing options
 void UCListItemBasePrivate::grabPanel(UCListItemOptions *optionsList, bool isMoved)
 {
-    UCListItemOptionsPrivate *options = UCListItemOptionsPrivate::get(optionsList);
-    if (!options) {
-        return;
-    }
     Q_Q(UCListItemBase);
     if (isMoved) {
-        options->connectToListItem(q, (optionsList == leadingOptions));
+        UCListItemOptionsPrivate::connectToListItem(optionsList, q, (optionsList == leadingOptions));
     } else {
-        options->disconnectFromListItem();
+        UCListItemOptionsPrivate::disconnectFromListItem(optionsList);
     }
 }
 
@@ -437,7 +440,9 @@ void UCListItemBase::mousePressEvent(QMouseEvent *event)
     d->setPressed(true);
     d->lastPos = d->pressedPos = event->localPos();
     // connect the Flickable to know when to rebound
-    d->listenToRebind(true);
+    if (!d->moved) {
+        d->listenToRebind(true);
+    }
     // accept the event so we get the rest of the events as well
     event->setAccepted(true);
 }
@@ -459,7 +464,7 @@ void UCListItemBase::mouseMoveEvent(QMouseEvent *event)
     Q_D(UCListItemBase);
     UCStyledItemBase::mouseMoveEvent(event);
 
-    // grab the scrolling only if the delta between the first press and the current
+    // grab the tugging only if the delta between the first press and the current
     // pos is > xAxis threshold
     bool leadingAttached = UCListItemOptionsPrivate::isConnectedTo(d->leadingOptions, this);
     bool trailingAttached = UCListItemOptionsPrivate::isConnectedTo(d->trailingOptions, this);
@@ -533,7 +538,10 @@ bool UCListItemBase::eventFilter(QObject *target, QEvent *event)
         }
     } else if (event->type() == QEvent::TouchBegin) {
         QTouchEvent *touch = static_cast<QTouchEvent*>(event);
-        myPos = mapFromScene(touch->touchPoints()[0].scenePos());
+        QQuickWindow *window = qobject_cast<QQuickWindow*>(target);
+        if (window) {
+            myPos = window->contentItem()->mapToItem(this, touch->touchPoints()[0].pos());
+        }
     }
     if (!myPos.isNull() && !contains(myPos)) {
         Q_D(UCListItemBase);
@@ -541,7 +549,6 @@ bool UCListItemBase::eventFilter(QObject *target, QEvent *event)
         event->accept();
         return true;
     }
-
     return UCStyledItemBase::eventFilter(target, event);
 }
 

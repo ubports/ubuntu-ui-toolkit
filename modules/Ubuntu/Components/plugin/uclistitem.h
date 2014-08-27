@@ -75,6 +75,7 @@ private:
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
+    Q_PRIVATE_SLOT(d_func(), void _q_completeRebinding())
 };
 
 #endif // UCLISTITEM_H

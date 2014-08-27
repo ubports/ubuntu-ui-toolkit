@@ -42,9 +42,11 @@ public:
     static QObject *funcAt(QQmlListProperty<QObject>*, int);
     static void funcClear(QQmlListProperty<QObject>*);
 
-    void connectToListItem(UCListItemBase *listItem, bool leading);
-    void disconnectFromListItem();
+    static void connectToListItem(UCListItemOptions *options, UCListItemBase *listItem, bool leading);
+    static void disconnectFromListItem(UCListItemOptions *options);
     static bool isConnectedTo(UCListItemOptions *options, UCListItemBase *listItem);
+
+    QQuickItem *createPanelItem();
 };
 
 #endif // UCLISTITEMOPTIONS_P_H

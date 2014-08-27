@@ -67,45 +67,57 @@ void UCListItemOptionsPrivate::funcClear(QQmlListProperty<QObject> *list)
     return plist->options.clear();
 }
 
-void UCListItemOptionsPrivate::connectToListItem(UCListItemBase *listItem, bool leading)
+void UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCListItemBase *listItem, bool leading)
 {
-    Q_Q(UCListItemOptions);
-    if (!panelItem) {
-        QUrl panelDocument = UbuntuComponentsPlugin::pluginUrl().
-                resolved(QUrl::fromLocalFile("ListItemPanel.qml"));
-        QQmlComponent component(qmlEngine(q), panelDocument);
-        if (!component.isError()) {
-            panelItem = qobject_cast<QQuickItem*>(component.beginCreate(qmlContext(q)));
-            if (panelItem) {
-                if (delegate) {
-                    panelItem->setProperty("delegate", QVariant::fromValue(delegate));
-                }
-                panelItem->setProperty("optionList", QVariant::fromValue(options));
-                component.completeCreate();
-                Q_EMIT q->panelItemChanged();
-            }
-        } else {
-            qmlInfo(q) << component.errorString();
-        }
-    }
-    if (!panelItem) {
+    UCListItemOptionsPrivate *_this = get(options);
+    if (!_this) {
         return;
     }
-    panelItem->setProperty("leadingPanel", leading);
-    panelItem->setParentItem(UCListItemBasePrivate::get(listItem)->background);
+    if (!_this->createPanelItem()) {
+        return;
+    }
+    _this->panelItem->setProperty("leadingPanel", leading);
+    _this->panelItem->setParentItem(UCListItemBasePrivate::get(listItem)->background);
 }
 
-void UCListItemOptionsPrivate::disconnectFromListItem()
+void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options)
 {
-    if (!panelItem) {
+    UCListItemOptionsPrivate *_this = get(options);
+    if (!_this || !_this->panelItem) {
         return;
     }
-    panelItem->setParentItem(0);
+    _this->panelItem->setParentItem(0);
 }
 
 bool UCListItemOptionsPrivate::isConnectedTo(UCListItemOptions *options, UCListItemBase *listItem)
 {
     return options && options->d_func()->panelItem && (options->d_func()->panelItem->parentItem() == UCListItemBasePrivate::get(listItem)->background);
+}
+
+QQuickItem *UCListItemOptionsPrivate::createPanelItem()
+{
+    if (panelItem) {
+        return panelItem;
+    }
+    Q_Q(UCListItemOptions);
+    QUrl panelDocument = UbuntuComponentsPlugin::pluginUrl().
+            resolved(QUrl::fromLocalFile("ListItemPanel.qml"));
+    QQmlComponent component(qmlEngine(q), panelDocument);
+    if (!component.isError()) {
+        panelItem = qobject_cast<QQuickItem*>(component.beginCreate(qmlContext(q)));
+        if (panelItem) {
+            QQml_setParent_noEvent(panelItem, q);
+            if (delegate) {
+                panelItem->setProperty("delegate", QVariant::fromValue(delegate));
+            }
+            panelItem->setProperty("optionList", QVariant::fromValue(options));
+            component.completeCreate();
+            Q_EMIT q->panelItemChanged();
+        }
+    } else {
+        qmlInfo(q) << component.errorString();
+    }
+    return panelItem;
 }
 
 /*!
