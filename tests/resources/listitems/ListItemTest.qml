@@ -24,16 +24,24 @@ MainView {
     Action {
         objectName: "stock"
         id: stock
+        iconName: "starred"
+        onTriggered: print(iconName, "triggered")
     }
 
     ListItemOptions {
         id: leading
         objectName: "StockLeading"
         Action {
+            iconName: "delete"
+            onTriggered: print(iconName, "triggered")
         }
         Action {
+            iconName: "camcorder"
+            onTriggered: print(iconName, "triggered")
         }
         Action {
+            iconName: "stock_website"
+            onTriggered: print(iconName, "triggered")
         }
     }
 

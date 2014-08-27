@@ -86,7 +86,7 @@ Item {
         property bool active: keyColorOut != Qt.rgba(0.0, 0.0, 0.0, 0.0) && source
 
         property Image source: active && image.status == Image.Ready ? image : null
-        property color keyColorOut: Qt.rgba(0.0, 0.0, 0.0, 0.0)
+        property color keyColorOut: "white"//Qt.rgba(0.0, 0.0, 0.0, 0.0)
         property color keyColorIn: "#808080"
         property real threshold: 0.1
 

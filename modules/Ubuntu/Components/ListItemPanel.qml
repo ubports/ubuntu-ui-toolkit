@@ -21,7 +21,8 @@ import Ubuntu.Components 1.1
   This component is the holder of the ListItem options.
   */
 Rectangle {
-    width: units.gu(20)
+    id: panel
+    width: optionsRow.childrenRect.width + 2 * optionsRow.spacing
     height: parent ? parent.height : 10
 
     /*
@@ -38,6 +39,11 @@ Rectangle {
       */
     property var optionList
 
+    /*
+      Signal emitted when an option has been triggered.
+      */
+    signal selected()
+
     color: leadingPanel ? UbuntuColors.red : UbuntuColors.green
 
     anchors {
@@ -45,5 +51,54 @@ Rectangle {
         right: (leadingPanel) ? (parent != null ? parent.left : undefined) : undefined
         top: parent ? parent.top : undefined
         bottom: parent ? parent.bottom : undefined
+    }
+
+    Row {
+        id: optionsRow
+        anchors {
+            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
+            leftMargin: spacing
+        }
+
+        Repeater {
+            model: panel.optionList
+            Loader {
+                width: Math.max(height, item ? item.width : 0)
+                anchors {
+                    top: parent.top
+                    bottom: parent.bottom
+                }
+
+                sourceComponent: panel.delegate ? panel.delegate : defaultDelegate
+                onItemChanged: {
+                    if (item) {
+                        item.objectName = "list_option_" + index
+                        item.action = modelData;
+                        item.triggered.connect(selected);
+                    }
+                }
+            }
+        }
+    }
+
+    Component {
+        id: defaultDelegate
+        AbstractButton {
+            id: optionItem
+            height: parent.height
+            width: height
+            anchors.verticalCenter: parent.verticalCenter
+
+            Icon {
+                width: units.gu(2.5)
+                height: width
+                anchors.centerIn: parent
+                name: optionItem.iconName
+                color: "white"
+                keyColor: "#808080"
+            }
+        }
     }
 }
