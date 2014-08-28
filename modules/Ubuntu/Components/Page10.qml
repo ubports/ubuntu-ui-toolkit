@@ -36,7 +36,13 @@ PageTreeNode {
     property string title: parentNode && parentNode.hasOwnProperty("title") ? parentNode.title : ""
 
     // deprecated
-    property Item tools: ToolbarItems { }
+    property Item tools: toolsLoader.item
+
+    Loader {
+        id: toolsLoader
+        source: internal.header && internal.header.useDeprecatedToolbar ? "ToolbarItems.qml" : ""
+        asynchronous: true
+    }
 
     /*!
       \internal

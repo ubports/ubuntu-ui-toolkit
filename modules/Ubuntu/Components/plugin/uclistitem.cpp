@@ -23,7 +23,18 @@
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
 
-typedef QList<QQuickGradientStop*> StopList;
+QColor getPaletteColor(const char *profile, const char *color)
+{
+    QColor result;
+    QObject *palette = UCTheme::instance().palette();
+    if (palette) {
+        QObject *paletteProfile = palette->property(profile).value<QObject*>();
+        if (paletteProfile) {
+            result = paletteProfile->property(color).value<QColor>();
+        }
+    }
+    return result;
+}
 /******************************************************************************
  * Divider
  */
@@ -35,8 +46,8 @@ UCListItemDivider::UCListItemDivider(QObject *parent)
     , m_rightMargin(UCUnits::instance().gu(2))
     , m_listItem(0)
 {
-    connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(unitsChanged()));
-    connect(&UCTheme::instance(), SIGNAL(paletteChanged()), this, SLOT(paletteChanged()));
+    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCListItemDivider::unitsChanged);
+    connect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemDivider::paletteChanged);
     unitsChanged();
     paletteChanged();
 }
@@ -60,15 +71,7 @@ void UCListItemDivider::unitsChanged()
 
 void UCListItemDivider::paletteChanged()
 {
-    QObject *palette = UCTheme::instance().palette();
-    if (!palette) {
-        return;
-    }
-    QObject *selectedPalette = palette->property("normal").value<QObject*>();
-    if (!selectedPalette) {
-        return;
-    }
-    QColor background = selectedPalette->property("background").value<QColor>();
+    QColor background = getPaletteColor("normal", "background");
     if (!background.isValid()) {
         return;
     }
@@ -147,8 +150,9 @@ UCListItemBackground::UCListItemBackground(QQuickItem *parent)
     , m_item(0)
 {
     setFlag(QQuickItem::ItemHasContents);
-    // set the z-order to be above the main item
-//    setZ(1);
+    // catch theme palette changes
+    connect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemBackground::updateColors);
+    updateColors();
 }
 
 UCListItemBackground::~UCListItemBackground()
@@ -171,9 +175,18 @@ void UCListItemBackground::setPressedColor(const QColor &color)
         return;
     }
     m_pressedColor = color;
+    // no more theme change watch
+    disconnect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemBackground::updateColors);
     update();
     Q_EMIT pressedColorChanged();
 }
+
+void UCListItemBackground::updateColors()
+{
+    m_pressedColor = getPaletteColor("selected", "background");
+    update();
+}
+
 
 void UCListItemBackground::itemChange(ItemChange change, const ItemChangeData &data)
 {

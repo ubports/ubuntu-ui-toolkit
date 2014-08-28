@@ -1,3 +1,75 @@
+ubuntu-ui-toolkit (1.1.1214+14.10.20140826-0ubuntu1) utopic; urgency=medium
+
+  [ Tim Peeters ]
+  * Push modules/Ubuntu/Components/qmldir in push_to_phone.sh.
+  * Add PageStack tests that use the new header.
+  * Add tabs unit tests using the new header.
+
+  [ Leo Arias ]
+  * On autopilot helpers, take into account that text areas can have
+    multiple lines when deleting the text. Fixes LP: #1359167
+  * Fixed the four failing autopilot open page tests.
+  * Added an autopilot custom proxy for QQuickGridView. 
+    Fixes LP: #1351670
+  * Fixed the autopilot helper to search elements on lists, that 
+    failed when the element searched is on the first page of the list. 
+    Fixes LP: #1342521
+  * On the autopilot scrollbar tests, we should not assume that the
+    window is on the top left.
+
+  [ Benjamin Zeller ]
+  * Add a more stable regression test for bug LP: #1338602 
+
+  [ Zsombor Egri ]
+  * Introducing Ubuntu Components FocusScope which extends QtQuick 
+    FocusScope with the ability to focus by mouse clicks.
+  * Slider blocks Flickable while sliding. Fixes LP: #1353966
+  * Save alarms data into JSON format. Affects test environments 
+    using fallback memory manager. Does not affect EDS backend 
+    functionality. Prerequisite for further alarm changes.
+  * Focus handling on components. Fixes LP: #1234982
+  * Fixing alarm disabling issue. Change organiser item fields 
+    only if those were marked as changed. Fixes LP: #1360101
+  * AlamrModel is no longer reset when individual alarm is changed.
+    This avoids UI flickering in Clock app. Fixes LP: #1359112
+
+  [ Florian Boucault ]
+  * Publish palettes of the themes.
+  * Removed workaround that forced relayout when layout mirroring was
+    enabled since bug was fixed in Qt. Fixes LP: #1353863
+  * Visual feedback upon press for Header.
+  * Better visual feedback upon press for List Items. 
+    Fixes LP: #1354036
+  * Three startup optimisations that lead to saving 160ms
+      MainView: load background asynchronously and do not cache it.
+      MainView: delay popover menus creation until when necessary.
+      Page: removed useless instantiation of ToolbarItems.
+
+  [ Christian Dywan ]
+  * Set organizationDomain which Qt.labs.settings uses. 
+    Fixes LP: #1241424 and LP: #1354321
+  * Allow context menu buttons to grow wider for non-English locales
+    to fit.
+
+  [ Zoltán Balogh ]
+  * Add a script to execute the test plan on a device.
+  * Fix the desktop file for the UITK Gallery 
+    Fixes LP: #1357205 and LP: #1176918
+
+  [ Martin Pitt ]
+  * The autopilot-qt was split into Qt4 and Qt5 packages2. The 
+    libautopilot-qt used to pull qt4 packages. Avoid pulling qt4 
+    packages by depending on the Qt5 specific packages only.
+
+  [ Nicholas Skaggs ]
+  * Fix the warning for the emulators module. The warning will now 
+    only appear if you use the module directly. Fixes LP: #134169
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 26 Aug 2014 16:59:18 +0000
+
 ubuntu-ui-toolkit (1.1.1188+14.10.20140813.4-0ubuntu1) utopic; urgency=medium
 
   [ Tim Peeters ]
