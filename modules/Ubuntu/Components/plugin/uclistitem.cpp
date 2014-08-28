@@ -27,20 +27,33 @@
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
 
-typedef QList<QQuickGradientStop*> StopList;
+QColor getPaletteColor(const char *profile, const char *color)
+{
+    QColor result;
+    QObject *palette = UCTheme::instance().palette();
+    if (palette) {
+        QObject *paletteProfile = palette->property(profile).value<QObject*>();
+        if (paletteProfile) {
+            result = paletteProfile->property(color).value<QColor>();
+        }
+    }
+    return result;
+}
 /******************************************************************************
  * Divider
  */
 UCListItemDivider::UCListItemDivider(QObject *parent)
     : QObject(parent)
     , m_visible(true)
+    , m_leftMarginChanged(false)
+    , m_rightMarginChanged(false)
     , m_thickness(0)
-    , m_leftMargin(UCUnits::instance().gu(2))
-    , m_rightMargin(UCUnits::instance().gu(2))
+    , m_leftMargin(0)
+    , m_rightMargin(0)
     , m_listItem(0)
 {
-    connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this, SLOT(unitsChanged()));
-    connect(&UCTheme::instance(), SIGNAL(paletteChanged()), this, SLOT(paletteChanged()));
+    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCListItemDivider::unitsChanged);
+    connect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemDivider::paletteChanged);
     unitsChanged();
     paletteChanged();
 }
@@ -57,6 +70,12 @@ void UCListItemDivider::init(UCListItemBase *listItem)
 void UCListItemDivider::unitsChanged()
 {
     m_thickness = UCUnits::instance().dp(2);
+    if (!m_leftMarginChanged) {
+        m_leftMargin = UCUnits::instance().gu(2);
+    }
+    if (!m_rightMarginChanged) {
+        m_rightMargin = UCUnits::instance().gu(2);
+    }
     if (m_listItem && UCListItemBasePrivate::get(m_listItem)->ready) {
         m_listItem->update();
     }
@@ -64,15 +83,7 @@ void UCListItemDivider::unitsChanged()
 
 void UCListItemDivider::paletteChanged()
 {
-    QObject *palette = UCTheme::instance().palette();
-    if (!palette) {
-        return;
-    }
-    QObject *selectedPalette = palette->property("normal").value<QObject*>();
-    if (!selectedPalette) {
-        return;
-    }
-    QColor background = selectedPalette->property("background").value<QColor>();
+    QColor background = getPaletteColor("normal", "background");
     if (!background.isValid()) {
         return;
     }
@@ -127,6 +138,7 @@ void UCListItemDivider::setLeftMargin(qreal leftMargin)
         return;
     }
     m_leftMargin = leftMargin;
+    m_leftMarginChanged = true;
     m_listItem->update();
     Q_EMIT leftMarginChanged();
 }
@@ -137,6 +149,7 @@ void UCListItemDivider::setRightMargin(qreal rightMargin)
         return;
     }
     m_rightMargin = rightMargin;
+    m_rightMarginChanged = true;
     m_listItem->update();
     Q_EMIT rightMarginChanged();
 }
@@ -151,8 +164,9 @@ UCListItemBackground::UCListItemBackground(QQuickItem *parent)
     , m_item(0)
 {
     setFlag(QQuickItem::ItemHasContents);
-    // set the z-order to be above the main item
-//    setZ(1);
+    // catch theme palette changes
+    connect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemBackground::updateColors);
+    updateColors();
 }
 
 UCListItemBackground::~UCListItemBackground()
@@ -175,9 +189,18 @@ void UCListItemBackground::setPressedColor(const QColor &color)
         return;
     }
     m_pressedColor = color;
+    // no more theme change watch
+    disconnect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemBackground::updateColors);
     update();
     Q_EMIT pressedColorChanged();
 }
+
+void UCListItemBackground::updateColors()
+{
+    m_pressedColor = getPaletteColor("selected", "background");
+    update();
+}
+
 
 void UCListItemBackground::itemChange(ItemChange change, const ItemChangeData &data)
 {
@@ -387,6 +410,12 @@ UCListItemBase::UCListItemBase(QQuickItem *parent)
 
 UCListItemBase::~UCListItemBase()
 {
+}
+
+void UCListItemBase::componentComplete()
+{
+    UCStyledItemBase::componentComplete();
+    d_func()->ready = true;
 }
 
 void UCListItemBase::itemChange(ItemChange change, const ItemChangeData &data)
