@@ -321,7 +321,7 @@ class InitctlGlobalEnvironmentVariableTestCase(
         def inner_test():
             class TestWithInitctlEnvVar(testtools.TestCase):
                 def test_it(self):
-                   self.useFixture(initctl_env_var)
+                    self.useFixture(initctl_env_var)
 
             return TestWithInitctlEnvVar('test_it')
 
