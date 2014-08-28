@@ -53,7 +53,9 @@ Item {
     property int fontWeight
 
     /*!
+      \deprecated
       The color of the title text.
+      Use \l Page.head.foregroundColor instead.
      */
     property color textColor
 

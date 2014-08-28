@@ -21,7 +21,7 @@ import Ubuntu.Components.Themes.Ambiance 0.1
 OptionSelectorStyle {
     id: suruGradientStyle
 
-    chevron: "artwork/chevron_down@30.png"
-    tick: "artwork/tick@30.png"
+    chevron: "artwork/chevron_down.png"
+    tick: "artwork/tick.png"
     colourComponent: false
 }
