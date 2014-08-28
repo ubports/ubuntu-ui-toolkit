@@ -87,12 +87,17 @@ MainView {
             qml_file_contents=self.test_qml)
         self.useFixture(fake_application)
 
+        if os.path.exists(_get_module_include_path()):
+            self.use_local_modules()
         desktop_file_name = os.path.basename(
             fake_application.desktop_file_path)
         application_name, _ = os.path.splitext(desktop_file_name)
         self.app = self.launch_upstart_application(
             application_name,
             emulator_base=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase)
+
+    def use_local_modules(self):
+        pass
 
 
 class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
