@@ -78,8 +78,6 @@ void UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCL
     }
     _this->panelItem->setProperty("leadingPanel", leading);
     _this->panelItem->setParentItem(UCListItemBasePrivate::get(listItem)->background);
-    // connect selected() signal to the item so we can rebound
-    QObject::connect(_this->panelItem, SIGNAL(selected()), listItem, SLOT(_q_rebound()));
 }
 
 void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options)

@@ -20,7 +20,7 @@ import Ubuntu.Components 1.1
 /*
   This component is the holder of the ListItem options.
   */
-Rectangle {
+Item {
     id: panel
     width: optionsRow.childrenRect.width + 2 * optionsRow.spacing
     height: parent ? parent.height : 10
@@ -39,13 +39,6 @@ Rectangle {
       */
     property var optionList
 
-    /*
-      Signal emitted when an option has been triggered.
-      */
-    signal selected()
-
-    color: leadingPanel ? UbuntuColors.red : UbuntuColors.green
-
     anchors {
         left: (leadingPanel) ? undefined : (parent ? parent.right : undefined)
         right: (leadingPanel) ? (parent != null ? parent.left : undefined) : undefined
@@ -62,21 +55,33 @@ Rectangle {
             leftMargin: spacing
         }
 
+        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.optionList.length) : 0
+
         Repeater {
             model: panel.optionList
-            Loader {
-                width: Math.max(height, item ? item.width : 0)
+            AbstractButton {
+                action: modelData
+                width: MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
                 anchors {
                     top: parent.top
                     bottom: parent.bottom
                 }
 
-                sourceComponent: panel.delegate ? panel.delegate : defaultDelegate
-                onItemChanged: {
-                    if (item) {
-                        item.objectName = "list_option_" + index
-                        item.action = modelData;
-                        item.triggered.connect(selected);
+                Rectangle {
+                    anchors.fill: parent
+                    // FIXME: use Palette colors instead
+                    color: panel.leadingPanel ? UbuntuColors.red : UbuntuColors.green
+                }
+
+                Loader {
+                    id: delegateLoader
+                    height: parent.height
+                    sourceComponent: panel.delegate ? panel.delegate : defaultDelegate
+                    property Action option: modelData
+                    onItemChanged: {
+                        if (item) {
+                            item.objectName = "list_option_" + index
+                        }
                     }
                 }
             }
@@ -85,19 +90,14 @@ Rectangle {
 
     Component {
         id: defaultDelegate
-        AbstractButton {
-            id: optionItem
-            height: parent.height
+        Item {
             width: height
-            anchors.verticalCenter: parent.verticalCenter
-
             Icon {
                 width: units.gu(2.5)
                 height: width
-                anchors.centerIn: parent
-                name: optionItem.iconName
+                name: option.iconName
                 color: "white"
-                keyColor: "#808080"
+                anchors.centerIn: parent
             }
         }
     }
