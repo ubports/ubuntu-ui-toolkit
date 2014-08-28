@@ -7,7 +7,7 @@ DEB_HOST_MULTI_ARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 DEB_HOST_ARCH ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
 
 # Skip tests on the archs they are known to be flaky  with current configuration
-testskip_architectures := powerpc arm64
+testskip_architectures := powerpc arm64 ppc64el
 
 %:
 	dh $@ --fail-missing

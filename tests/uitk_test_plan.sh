@@ -19,7 +19,7 @@ LAZY=true
 SERIALNUMBER=086e443edf51b915
 RESET=false
 COMISSION=false
-RUNTESTS=true
+DONOTRUNTESTS=false
 PPA="ppa:ubuntu-sdk-team/staging"
 TIMESTAMP=`date +"%Y_%m_%d-%H_%M_%S"`
 LOGFILENAME="ap-${TIMESTAMP}"
@@ -92,6 +92,7 @@ function device_comission {
 	adb -s ${SERIALNUMBER} shell apt-get update
 	# install the autopilot tests 
 	adb -s ${SERIALNUMBER} shell apt-get install -y	address-book-service-dummy \
+                                                        python3-lxml \
 							ubuntu-ui-toolkit-autopilot \
 							gallery-app-autopilot \
 							reminders-app-autopilot \
@@ -131,14 +132,14 @@ while getopts ":hrcnts:o:p:f:" opt; do
 			COMISSION=true
 			;;
 		n)
-			RUNTESTS=false
+			DONOTRUNTESTS=true
 			;;
 		h)
 			echo "Usage: uitk_test_plan.sh -s [serial number] -m -c"
 			echo " -r : Reset after each tests. Default: ${RESET}"
 			echo " -s : Use the device with the given serial number. Default: ${SERIALNUMBER}"
 			echo " -c : Comission the device with the ${PPA} enabled"
-			echo " -n : Do not run the test set. Default ${RUNTESTS}"
+			echo " -n : Do not run the test set. Default ${DONOTRUNTESTS}"
 			echo " -o : Output directory. Default $OUTPUTDIR"
 			echo " -p : Source PPA for the UITK. Default $PPA"
 			echo " -f : Filter for the test suite. Default $FILTER"
@@ -162,16 +163,16 @@ else
 fi
 
 # Check if the device need to be flashed and set up for testing
-if [ ${COMISSION} == true  ]; then
+if [ ${COMISSION} == true ]; then
 	device_comission
 fi
 
 # Check if the job is only comissioning the device
-if [ ${RUNTESTS} != true  ]; then
+if [ ${DONOTRUNTESTS} == true ]; then
         exit
 fi
 
-if [ ${RESET} == false  ]; then
+if [ ${RESET} == false ]; then
 	echo "Reset the device for testing."
         RESET=true
         reset
