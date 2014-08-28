@@ -195,14 +195,6 @@ UCListItemOptions::~UCListItemOptions()
 {
 }
 
-void UCListItemOptions::classBegin()
-{
-}
-
-void UCListItemOptions::componentComplete()
-{
-}
-
 
 /*!
  * \qmlproperty Component ListItemOptions::delegate

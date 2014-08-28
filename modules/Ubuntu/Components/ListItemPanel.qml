@@ -20,9 +20,10 @@ import Ubuntu.Components 1.1
 /*
   This component is the holder of the ListItem options.
   */
-Rectangle {
+Item {
+    id: panel
     width: units.gu(20)
-    height: parent ? parent.height : 10
+    height: parent ? parent.height : 0
 
     /*
       Specifies whether the panel is used to visualize leading or trailing options.
@@ -37,8 +38,6 @@ Rectangle {
       Options
       */
     property var optionList
-
-    color: leadingPanel ? UbuntuColors.red : UbuntuColors.green
 
     anchors {
         left: (leadingPanel) ? undefined : (parent ? parent.right : undefined)
