@@ -23,6 +23,7 @@ try:
 except ImportError:
     # Python 2 add-on: python-mock.
     import mock
+import testscenarios
 import testtools
 from autopilot import (
     display,
@@ -239,6 +240,95 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
         self.assertEqual(
             'original test value',
             environment.get_initctl_env_var('testenvvarforfixture'))
+
+
+class InitctlGlobalEnvironmentVariableTestCase(
+        testscenarios.TestWithScenarios):
+
+    scenarios = [
+        ('global unset variable', {
+            'is_variable_set': False,
+            'variable_value': 'dummy',
+            'global_value': 'value',
+            'expected_calls': [
+                mock.call.is_initctl_env_var_set(
+                    'testenvvarforfixture', global_='value'),
+                mock.call.set_initctl_env_var(
+                    'testenvvarforfixture', 'new test value', global_='value'),
+                mock.call.unset_initctl_env_var(
+                    'testenvvarforfixture', global_='value')
+            ]
+        }),
+        ('global set variable', {
+            'is_variable_set': True,
+            'variable_value': 'original_value',
+            'global_value': 'value',
+            'expected_calls': [
+                mock.call.is_initctl_env_var_set(
+                    'testenvvarforfixture', global_='value'),
+                mock.call.get_initctl_env_var(
+                    'testenvvarforfixture', global_='value'),
+                mock.call.set_initctl_env_var(
+                    'testenvvarforfixture', 'new test value', global_='value'),
+                mock.call.set_initctl_env_var(
+                    'testenvvarforfixture', 'original_value', global_='value')
+            ]
+        }),
+        ('default unset variable', {
+            'is_variable_set': False,
+            'variable_value': 'dummy',
+            'global_value': 'default',
+            'expected_calls': [
+                mock.call.is_initctl_env_var_set(
+                    'testenvvarforfixture', global_=False),
+                mock.call.set_initctl_env_var(
+                    'testenvvarforfixture', 'new test value', global_=False),
+                mock.call.unset_initctl_env_var(
+                    'testenvvarforfixture', global_=False)
+            ]
+        }),
+        ('global set variable', {
+            'is_variable_set': True,
+            'variable_value': 'original_value',
+            'global_value': 'default',
+            'expected_calls': [
+                mock.call.is_initctl_env_var_set(
+                    'testenvvarforfixture', global_=False),
+                mock.call.get_initctl_env_var(
+                    'testenvvarforfixture', global_=False),
+                mock.call.set_initctl_env_var(
+                    'testenvvarforfixture', 'new test value', global_=False),
+                mock.call.set_initctl_env_var(
+                    'testenvvarforfixture', 'original_value', global_=False)
+            ]
+        }),
+    ]
+
+    def test_use_initctl_environment_variable_with_global_unset_variable(self):
+        if self.global_value == 'default':
+            initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
+                testenvvarforfixture='new test value')
+        else:
+            initctl_env_var = fixture_setup.InitctlEnvironmentVariable(
+                testenvvarforfixture='new test value',
+                global_=self.global_value)
+
+        mock_env = mock.Mock()
+        initctl_env_var.environment = mock_env
+        mock_env.is_initctl_env_var_set.return_value = self.is_variable_set
+        mock_env.get_initctl_env_var.return_value = self.variable_value
+
+        def inner_test():
+            class TestWithInitctlEnvVar(testtools.TestCase):
+                def test_it(self):
+                   self.useFixture(initctl_env_var)
+
+            return TestWithInitctlEnvVar('test_it')
+
+        inner_test().run()
+
+        self.assertEquals(
+            self.expected_calls, mock_env.mock_calls)
 
 
 class FakeHomeTestCase(testtools.TestCase):
