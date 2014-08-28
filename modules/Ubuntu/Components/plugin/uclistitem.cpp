@@ -214,9 +214,7 @@ void UCListItemBase::itemChange(ItemChange change, const ItemChangeData &data)
     if (change == ItemParentHasChanged) {
         Q_D(UCListItemBase);
         // make sure we are not connected to the previous Flickable
-        if (!d->flickable.isNull()) {
-            QObject::disconnect(d->flickable.data(), SIGNAL(movementStarted()), this, SLOT(_q_rebound()));
-        }
+        d->listenToRebind(false);
         // check if we are in a positioner, and if that positioner is in a Flickable
         QQuickBasePositioner *positioner = qobject_cast<QQuickBasePositioner*>(data.item);
         if (positioner && positioner->parentItem()) {
@@ -248,9 +246,7 @@ void UCListItemBase::mousePressEvent(QMouseEvent *event)
     }
     d->setPressed(true);
     // connect the Flickable to know when to rebound
-    if (!d->flickable.isNull()) {
-        QObject::connect(d->flickable.data(), SIGNAL(movementStarted()), this, SLOT(_q_rebound()));
-    }
+    d->listenToRebind(true);
     // accept the event so we get the rest of the events as well
     event->setAccepted(true);
 }
