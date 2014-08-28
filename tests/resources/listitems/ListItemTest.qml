@@ -18,8 +18,11 @@ import QtQuick 2.2
 import Ubuntu.Components 1.1
 
 MainView {
+    id: main
     width: units.gu(50)
     height: units.gu(100)
+
+    property bool override: false
 
     Action {
         objectName: "stock"
@@ -48,7 +51,7 @@ MainView {
             objectName: "single"
             onClicked: {
                 print("click")
-                units.gridUnit += 1;
+                main.override = !main.override
             }
             Label {
                 anchors.fill: parent
@@ -70,10 +73,19 @@ MainView {
             pressDelay: 0
             delegate: ListItem {
                 objectName: "ListItem" + index
+                id: listItem
                 onClicked: print(" clicked")
                 leadingOptions: leading
                 Label {
                     text: modelData + " item"
+                }
+                states: State {
+                    name: "override"
+                    when: main.override
+                    PropertyChanges {
+                        target: listItem.background
+                        pressedColor: "brown"
+                    }
                 }
             }
         }

@@ -44,11 +44,16 @@ Item {
       */
     property Item caret: caretItem
 
+    /*!
+      The width of the cursor.
+      */
+    property int cursorWidth: units.dp(2)
+
     // style body
     Component {
         id: delegate
         Rectangle {
-            width: units.dp(2)
+            width: cursorWidth
             // FIXME: Extend the palette and use palette values here
             color: UbuntuColors.blue
             visible: blinkTimer.timerShowCursor
@@ -76,8 +81,7 @@ Item {
         anchors {
             top: parent.bottom
             horizontalCenter: parent.horizontalCenter
-            topMargin: -units.gu(0.5)
-            horizontalCenterOffset: LayoutMirroring.enabled ? -units.gu(0.7) : units.gu(0.7)
+            horizontalCenterOffset: (LayoutMirroring.enabled ? -1 : 1) * (implicitWidth / 2 - cursorWidth)
         }
     }
 }
