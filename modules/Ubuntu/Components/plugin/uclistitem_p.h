@@ -90,10 +90,14 @@ protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
 
+private Q_SLOTS:
+    void updateColors();
+
 private:
     QColor m_color;
     QColor m_pressedColor;
     UCListItemBase *m_item;
+    bool m_pressedColorChanged:1;
 };
 
 class UCListItemDivider : public QObject
@@ -129,7 +133,9 @@ private:
     void setLeftMargin(qreal leftMargin);
     void setRightMargin(qreal rightMargin);
 
-    bool m_visible;
+    bool m_visible:1;
+    bool m_leftMarginChanged:1;
+    bool m_rightMarginChanged:1;
     qreal m_thickness;
     qreal m_leftMargin;
     qreal m_rightMargin;
@@ -138,6 +144,8 @@ private:
     friend class UCListItemBase;
     friend class UCListItemBasePrivate;
 };
+
+QColor getPaletteColor(const char *profile, const char *color);
 
 QML_DECLARE_TYPE(UCListItemBackground)
 QML_DECLARE_TYPE(UCListItemDivider)
