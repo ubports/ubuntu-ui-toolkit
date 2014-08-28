@@ -20,6 +20,7 @@ import os
 
 from autopilot.matchers import Eventually
 from testtools.matchers import Equals
+from autopilot.introspection import dbus
 
 from ubuntuuitoolkit import tests
 
@@ -52,11 +53,16 @@ class HeaderActionsOverflowTestCase(tests.QMLFileAppTestCase):
         """
         self.header.click_action_button('pushStackAction')
         # the popover was created to click the action button
-        overflow_popover = self.main_view.select_single(
-            objectName='actions_overflow_popover')
         # popover will be closed and destroyed immediately after
         # clicking the action button
-        overflow_popover.wait_until_destroyed()
+        try:
+            overflow_popover = self.main_view.select_single(
+                objectName='actions_overflow_popover')
+            overflow_popover.wait_until_destroyed()
+        except dbus.StateNotFoundError:
+            # overflow popover was already destroyed before
+            # it could be selected
+            pass
 
 
 class HeaderContentsTestCase(tests.QMLFileAppTestCase):
