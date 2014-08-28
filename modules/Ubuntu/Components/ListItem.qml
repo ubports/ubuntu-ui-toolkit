@@ -36,5 +36,4 @@ import Ubuntu.Components 1.1
 ListItemBase {
     width: owningItem ? owningItem.width : units.gu(20)
     height: units.gu(6)
-    background.pressedColor: Theme.palette.selected.background
 }

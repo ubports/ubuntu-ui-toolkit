@@ -69,11 +69,17 @@ protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
 
+private Q_SLOTS:
+    void updateColors();
+
 private:
     QColor m_color;
     QColor m_pressedColor;
     UCListItemBase *m_item;
+    bool m_pressedColorChanged:1;
 };
+
+QColor getPaletteColor(const char *profile, const char *color);
 
 QML_DECLARE_TYPE(UCListItemBackground)
 

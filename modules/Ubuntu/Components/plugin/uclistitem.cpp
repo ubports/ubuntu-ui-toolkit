@@ -23,6 +23,20 @@
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
 
+QColor getPaletteColor(const char *profile, const char *color)
+{
+    QColor result;
+    QObject *palette = UCTheme::instance().palette();
+    if (palette) {
+        QObject *paletteProfile = palette->property(profile).value<QObject*>();
+        if (paletteProfile) {
+            result = paletteProfile->property(color).value<QColor>();
+        }
+    }
+    return result;
+}
+
+
 /******************************************************************************
  * ListItemBackground
  */
@@ -33,8 +47,9 @@ UCListItemBackground::UCListItemBackground(QQuickItem *parent)
     , m_item(0)
 {
     setFlag(QQuickItem::ItemHasContents);
-    // set the z-order to be above the main item
-//    setZ(1);
+    // catch theme palette changes
+    connect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemBackground::updateColors);
+    updateColors();
 }
 
 UCListItemBackground::~UCListItemBackground()
@@ -57,9 +72,18 @@ void UCListItemBackground::setPressedColor(const QColor &color)
         return;
     }
     m_pressedColor = color;
+    // no more theme change watch
+    disconnect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemBackground::updateColors);
     update();
     Q_EMIT pressedColorChanged();
 }
+
+void UCListItemBackground::updateColors()
+{
+    m_pressedColor = getPaletteColor("selected", "background");
+    update();
+}
+
 
 void UCListItemBackground::itemChange(ItemChange change, const ItemChangeData &data)
 {

@@ -17,15 +17,12 @@
 import QtQuick 2.2
 import Ubuntu.Components 1.1
 
-FocusScope {
+MainView {
+    id: main
     width: units.gu(50)
     height: units.gu(100)
-    activeFocusOnMousePress: true
 
-    Connections {
-        target: window
-        onActiveFocusItemChanged: print("AF=", window.activeFocusItem)
-    }
+    property bool override: false
 
     Column {
         anchors {
@@ -38,7 +35,7 @@ FocusScope {
             background.color: "green"
             onClicked: {
                 print("click")
-                units.gridUnit += 1;
+                main.override = !main.override
             }
             Item {
                 anchors.fill: parent
@@ -53,9 +50,18 @@ FocusScope {
             model: 100
             pressDelay: 0
             delegate: ListItem {
+                id: listItem
                 onClicked: print(" clicked")
                 Label {
                     text: modelData + " item"
+                }
+                states: State {
+                    name: "override"
+                    when: main.override
+                    PropertyChanges {
+                        target: listItem.background
+                        pressedColor: "brown"
+                    }
                 }
             }
         }
