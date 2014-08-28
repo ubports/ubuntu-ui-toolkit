@@ -207,6 +207,58 @@ UCListItemOptions::~UCListItemOptions()
  * Custom delegate which overrides the default one used by the ListItem. If the
  * value is null, the default delegate will be used.
  *
+ * ListItemOptions provides the \c option context property which contains the
+ * Action instance currently visualized. Using this property delegates can access
+ * the information to be visualized. The trigger is handled by the \l panelItem
+ * therefore only visualization is needed by the custom delegates. The other
+ * context property exposed to delegates is the \c index, which specifies the
+ * index of the option visualized.
+ *
+ * The delegate height is set automatically by the panelItem, and the width value
+ * is clamped between height and the maximum width of the list item divided by the
+ * number of options in the list.
+ * \qml
+ * import QtQuick 2.2
+ * import Ubuntu.Components 1.1
+ *
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     UbuntuListView {
+ *         anchors.fill: parent
+ *         model: 50
+ *         delegate: ListItem {
+ *             trailingOptions: optionsList
+ *         }
+ *         ListItemOptions {
+ *             id: optionsList
+ *             delegate: Column {
+ *                 width: height + units.gu(2)
+ *                 Icon {
+ *                     name: option.iconName
+ *                     width: units.gu(3)
+ *                     height: width
+ *                     color: "blue"
+ *                     anchors.horizontalCenter: parent.horizontalCenter
+ *                 }
+ *                 Label {
+ *                     text: option.text + "#" + index
+ *                     width: parent.width
+ *                     horizontalAlignment: Text.AlignHCenter
+ *                 }
+ *             }
+ *             Action {
+ *                 iconName: "starred"
+ *                 text: "Star"
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
+ * \note Putting a Rectangle in the delegate can be used to override the color
+ * of the panel.
+ *
  * Defaults to null.
  */
 QQmlComponent *UCListItemOptions::delegate() const

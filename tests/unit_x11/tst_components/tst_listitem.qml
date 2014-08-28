@@ -45,6 +45,9 @@ Item {
         options: [
             stockAction,
         ]
+        delegate: Item {
+            objectName: "custom_delegate"
+        }
     }
     ListItemOptions {
         id: wrongOption
@@ -199,7 +202,6 @@ Item {
             compare(listItem.pressed, false, "Item is pressed still!");
             // cleanup, wait few milliseconds to avoid dbl-click collision
             TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
-//            wait(400);
         }
 
         function test_background_height_change_on_divider_visible() {
@@ -342,6 +344,18 @@ Item {
             }
             waitForRendering(data.item, 400);
             tryCompareFunction(function(){ return data.item.background.x; }, 0, 1000);
+        }
+
+        function test_custom_trailing_delegate() {
+            listView.positionViewAtBeginning();
+            var item = findChild(listView, "listItem0");
+            flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
+            verify(trailing.panelItem, "Panel is not visible");
+            var custom = findChild(trailing.panelItem, "custom_delegate");
+            print("custom", custom)
+            verify(custom, "Custom delegate not in use");
+            // cleanup
+            mouseClick(main, 0, 0);
         }
     }
 }

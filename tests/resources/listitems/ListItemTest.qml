@@ -28,6 +28,7 @@ MainView {
         objectName: "stock"
         id: stock
         iconName: "starred"
+        text: "Staaaar"
         onTriggered: print(iconName, "triggered")
     }
 
@@ -68,6 +69,21 @@ MainView {
             leadingOptions: ListItemOptions {
                 objectName: "InlineLeading"
                 options: [stock]
+                delegate: Column {
+                    width: height + units.gu(2)
+                    Icon {
+                        width: units.gu(3)
+                        height: width
+                        name: option.iconName
+                        color: "blue"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                    Label {
+                        text: option.text + index
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+                }
             }
             trailingOptions: leading
         }

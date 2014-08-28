@@ -84,8 +84,9 @@ Item {
                     height: parent.height
                     sourceComponent: panel.delegate ? panel.delegate : defaultDelegate
                     property Action option: modelData
+                    property int index: index
                     onItemChanged: {
-                        if (item) {
+                        if (item && item.objectName === "") {
                             item.objectName = "list_option_" + index
                         }
                     }
