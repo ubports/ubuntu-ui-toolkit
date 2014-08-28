@@ -41,9 +41,11 @@ QColor getPaletteColor(const char *profile, const char *color)
 UCListItemDivider::UCListItemDivider(QObject *parent)
     : QObject(parent)
     , m_visible(true)
+    , m_leftMarginChanged(false)
+    , m_rightMarginChanged(false)
     , m_thickness(0)
-    , m_leftMargin(UCUnits::instance().gu(2))
-    , m_rightMargin(UCUnits::instance().gu(2))
+    , m_leftMargin(0)
+    , m_rightMargin(0)
     , m_listItem(0)
 {
     connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCListItemDivider::unitsChanged);
@@ -64,6 +66,12 @@ void UCListItemDivider::init(UCListItemBase *listItem)
 void UCListItemDivider::unitsChanged()
 {
     m_thickness = UCUnits::instance().dp(2);
+    if (!m_leftMarginChanged) {
+        m_leftMargin = UCUnits::instance().gu(2);
+    }
+    if (!m_rightMarginChanged) {
+        m_rightMargin = UCUnits::instance().gu(2);
+    }
     if (m_listItem && UCListItemBasePrivate::get(m_listItem)->ready) {
         m_listItem->update();
     }
@@ -126,6 +134,7 @@ void UCListItemDivider::setLeftMargin(qreal leftMargin)
         return;
     }
     m_leftMargin = leftMargin;
+    m_leftMarginChanged = true;
     m_listItem->update();
     Q_EMIT leftMarginChanged();
 }
@@ -136,6 +145,7 @@ void UCListItemDivider::setRightMargin(qreal rightMargin)
         return;
     }
     m_rightMargin = rightMargin;
+    m_rightMarginChanged = true;
     m_listItem->update();
     Q_EMIT rightMarginChanged();
 }
@@ -325,6 +335,12 @@ UCListItemBase::UCListItemBase(QQuickItem *parent)
 
 UCListItemBase::~UCListItemBase()
 {
+}
+
+void UCListItemBase::componentComplete()
+{
+    UCStyledItemBase::componentComplete();
+    d_func()->ready = true;
 }
 
 void UCListItemBase::itemChange(ItemChange change, const ItemChangeData &data)

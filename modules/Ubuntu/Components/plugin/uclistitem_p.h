@@ -117,7 +117,9 @@ private:
     void setLeftMargin(qreal leftMargin);
     void setRightMargin(qreal rightMargin);
 
-    bool m_visible;
+    bool m_visible:1;
+    bool m_leftMarginChanged:1;
+    bool m_rightMarginChanged:1;
     qreal m_thickness;
     qreal m_leftMargin;
     qreal m_rightMargin;

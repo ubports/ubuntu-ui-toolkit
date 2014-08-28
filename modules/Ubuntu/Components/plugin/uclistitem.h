@@ -44,6 +44,7 @@ public:
     QQuickItem *owningItem();
 
 protected:
+    void componentComplete();
     void itemChange(ItemChange change, const ItemChangeData &data);
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
