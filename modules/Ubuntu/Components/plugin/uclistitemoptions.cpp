@@ -52,6 +52,7 @@ void UCListItemOptionsPrivate::_q_handlePanelDrag()
     if (optionSlotWidth > 0.0) {
         optionsVisible = (int)trunc(offsetDragged / optionSlotWidth);
     }
+    qDebug() << leading << offsetDragged << optionsVisible;
 }
 
 void UCListItemOptionsPrivate::_q_handlePanelWidth()
@@ -112,7 +113,7 @@ void UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCL
 void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options)
 {
     UCListItemOptionsPrivate *_this = get(options);
-    if (!_this || !_this->panelItem) {
+    if (!_this || !_this->panelItem || !_this->panelItem->parentItem()) {
         return;
     }
 
@@ -162,7 +163,6 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
 
             // calculate option's slot size
             optionSlotWidth = panelItem->width() / options.count();
-            qDebug() << optionSlotWidth << panelItem->width() << options.count();
             // connect to panel to catch dragging
             QObject::connect(panelItem, SIGNAL(widthChanged()), q, SLOT(_q_handlePanelWidth()));
             QObject::connect(panelItem, SIGNAL(xChanged()), q, SLOT(_q_handlePanelDrag()));

@@ -279,7 +279,6 @@ void UCListItemBasePrivate::init()
     reboundAnimation->setTargetObject(background);
     reboundAnimation->setProperty("x");
     reboundAnimation->setAlwaysRunToEnd(true);
-    QObject::connect(reboundAnimation, SIGNAL(stopped()), q, SLOT(_q_completeRebinding()));
 }
 
 void UCListItemBasePrivate::setFocusable()
@@ -299,11 +298,16 @@ void UCListItemBasePrivate::_q_rebound()
         return;
     }
     setMoved(false);
-    // rebound to zero
+    //connect rebound completion so we can disconnect
+    QObject::connect(reboundAnimation, SIGNAL(stopped()), q, SLOT(_q_completeRebinding()));
+    // then rebound to zero
     reboundTo(0);
 }
 void UCListItemBasePrivate::_q_completeRebinding()
 {
+    Q_Q(UCListItemBase);
+    // disconnect animation, otherwise snapping will disconnect the panel
+    QObject::disconnect(reboundAnimation, SIGNAL(stopped()), q, SLOT(_q_completeRebinding()));
     // disconnect options
     grabPanel(leadingOptions, false);
     grabPanel(trailingOptions, false);
@@ -491,7 +495,7 @@ void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
             if (UCListItemOptionsPrivate::isConnectedTo(d->leadingOptions, this)) {
                 snapPosition = UCListItemOptionsPrivate::snap(d->leadingOptions);
             } else if (UCListItemOptionsPrivate::isConnectedTo(d->trailingOptions, this)) {
-                snapPosition = UCListItemOptionsPrivate::snap(d->trailingOptions);
+                snapPosition = -UCListItemOptionsPrivate::snap(d->trailingOptions);
             }
             if (snapPosition == 0.0) {
                 d->_q_rebound();
