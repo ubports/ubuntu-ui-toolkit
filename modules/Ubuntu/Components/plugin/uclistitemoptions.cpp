@@ -86,11 +86,6 @@ void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options
     if (!_this || !_this->panelItem) {
         return;
     }
-    UCListItemBase *listItem = qobject_cast<UCListItemBase*>(_this->panelItem->parentItem());
-    if (listItem) {
-        // disconnect selected() signal
-        QObject::disconnect(_this->panelItem, SIGNAL(selected()), listItem, SLOT(_q_rebound()));
-    }
     _this->panelItem->setParentItem(0);
 }
 
