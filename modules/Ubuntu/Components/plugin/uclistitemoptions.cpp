@@ -76,6 +76,7 @@ void UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCL
     if (!_this->createPanelItem()) {
         return;
     }
+    QObject::connect(_this->panelItem, SIGNAL(selected()), listItem, SLOT(_q_rebound()));
     _this->panelItem->setProperty("leadingPanel", leading);
     _this->panelItem->setParentItem(UCListItemBasePrivate::get(listItem)->background);
 }
@@ -85,6 +86,11 @@ void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options
     UCListItemOptionsPrivate *_this = get(options);
     if (!_this || !_this->panelItem) {
         return;
+    }
+
+    UCListItemBackground *parent = qobject_cast<UCListItemBackground*>(_this->panelItem->parentItem());
+    if (parent) {
+        QObject::connect(_this->panelItem, SIGNAL(selected()), parent->parentItem(), SLOT(_q_rebound()));
     }
     _this->panelItem->setParentItem(0);
 }

@@ -39,6 +39,11 @@ Item {
       */
     property var optionList
 
+    /*
+      Emitted when action is triggered
+      */
+    signal selected()
+
     anchors {
         left: (leadingPanel) ? undefined : (parent ? parent.right : undefined)
         right: (leadingPanel) ? (parent != null ? parent.left : undefined) : undefined
@@ -66,6 +71,7 @@ Item {
                     top: parent.top
                     bottom: parent.bottom
                 }
+                onTriggered: panel.selected()
 
                 Rectangle {
                     anchors.fill: parent
