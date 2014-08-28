@@ -27,10 +27,37 @@ UCListItemOptionsPrivate::UCListItemOptionsPrivate()
     , optionsFailure(false)
     , delegate(0)
     , panelItem(0)
+    , optionSlotWidth(0.0)
+    , offsetDragged(0.0)
+    , optionsVisible(0)
 {
 }
 UCListItemOptionsPrivate::~UCListItemOptionsPrivate()
 {
+}
+
+void UCListItemOptionsPrivate::_q_handlePanelDrag()
+{
+    UCListItemBase *listItem = qobject_cast<UCListItemBase*>(panelItem->parentItem());
+    if (!listItem) {
+        return;
+    }
+
+    bool leading = panelItem->property("leadingPanel").toBool();
+    offsetDragged = (leading) ? panelItem->width() + panelItem->x() :
+                         listItem->width() - panelItem->x();
+    if (offsetDragged < 0.0) {
+        offsetDragged = 0.0;
+    }
+    if (optionSlotWidth > 0.0) {
+        optionsVisible = (int)trunc(offsetDragged / optionSlotWidth);
+    }
+}
+
+void UCListItemOptionsPrivate::_q_handlePanelWidth()
+{
+    optionSlotWidth = panelItem->width() / options.count();
+    _q_handlePanelDrag();
 }
 
 void UCListItemOptionsPrivate::funcAppend(QQmlListProperty<QObject> *list, QObject *option)
@@ -78,7 +105,8 @@ void UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCL
     }
     QObject::connect(_this->panelItem, SIGNAL(selected()), listItem, SLOT(_q_rebound()));
     _this->panelItem->setProperty("leadingPanel", leading);
-    _this->panelItem->setParentItem(UCListItemBasePrivate::get(listItem)->background);
+    _this->panelItem->setParentItem(listItem);
+    _this->offsetDragged = 0.0;
 }
 
 void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options)
@@ -88,17 +116,29 @@ void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options
         return;
     }
 
-    UCListItemBackground *parent = qobject_cast<UCListItemBackground*>(_this->panelItem->parentItem());
-    if (parent) {
-        QObject::connect(_this->panelItem, SIGNAL(selected()), parent->parentItem(), SLOT(_q_rebound()));
-    }
+    QObject::disconnect(_this->panelItem, SIGNAL(selected()), _this->panelItem->parentItem(), SLOT(_q_rebound()));
     _this->panelItem->setParentItem(0);
 }
 
 bool UCListItemOptionsPrivate::isConnectedTo(UCListItemOptions *options, UCListItemBase *listItem)
 {
-    return options && options->d_func()->panelItem && (options->d_func()->panelItem->parentItem() == UCListItemBasePrivate::get(listItem)->background);
+    return options && options->d_func()->panelItem && (options->d_func()->panelItem->parentItem() == listItem);
 }
+
+qreal UCListItemOptionsPrivate::snap(UCListItemOptions *options)
+{
+    UCListItemOptionsPrivate *_this = get(options);
+    if (!_this || !_this->panelItem) {
+        return 0.0;
+    }
+    qreal ratio = _this->offsetDragged / _this->optionSlotWidth;
+    int visible = _this->optionsVisible;
+    if (ratio > 0.0 && (ratio - trunc(ratio)) > 0.5) {
+        visible++;
+    }
+    return visible * _this->optionSlotWidth;
+}
+
 
 QQuickItem *UCListItemOptionsPrivate::createPanelItem()
 {
@@ -119,6 +159,13 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
             panelItem->setProperty("optionList", QVariant::fromValue(options));
             component.completeCreate();
             Q_EMIT q->panelItemChanged();
+
+            // calculate option's slot size
+            optionSlotWidth = panelItem->width() / options.count();
+            qDebug() << optionSlotWidth << panelItem->width() << options.count();
+            // connect to panel to catch dragging
+            QObject::connect(panelItem, SIGNAL(widthChanged()), q, SLOT(_q_handlePanelWidth()));
+            QObject::connect(panelItem, SIGNAL(xChanged()), q, SLOT(_q_handlePanelDrag()));
         }
     } else {
         qmlInfo(q) << component.errorString();
@@ -310,3 +357,5 @@ QQuickItem *UCListItemOptions::panelItem() const
     Q_D(const UCListItemOptions);
     return d->panelItem;
 }
+
+#include "moc_uclistitemoptions.cpp"

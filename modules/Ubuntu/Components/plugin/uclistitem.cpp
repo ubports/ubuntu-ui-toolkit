@@ -481,9 +481,24 @@ void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
     UCStyledItemBase::mouseReleaseEvent(event);
     Q_D(UCListItemBase);
     // set released
-    if (d->pressed && !d->suppressClick) {
-        Q_EMIT clicked();
-        d->_q_rebound();
+    if (d->pressed) {
+        if (!d->suppressClick) {
+            Q_EMIT clicked();
+            d->_q_rebound();
+        } else {
+            // snap
+            qreal snapPosition = 0.0;
+            if (UCListItemOptionsPrivate::isConnectedTo(d->leadingOptions, this)) {
+                snapPosition = UCListItemOptionsPrivate::snap(d->leadingOptions);
+            } else if (UCListItemOptionsPrivate::isConnectedTo(d->trailingOptions, this)) {
+                snapPosition = UCListItemOptionsPrivate::snap(d->trailingOptions);
+            }
+            if (snapPosition == 0.0) {
+                d->_q_rebound();
+            } else {
+                d->reboundTo(snapPosition);
+            }
+        }
     }
     d->setPressed(false);
 }

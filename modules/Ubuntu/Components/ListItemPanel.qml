@@ -23,8 +23,9 @@ import Ubuntu.Components 1.1
 Item {
     id: panel
     width: optionsRow.childrenRect.width + 2 * optionsRow.spacing
-    height: parent ? parent.height : 0
+    height: contentItem ? contentItem.height : 0
 
+    property Item contentItem: parent ? parent.background : null
     /*
       Specifies whether the panel is used to visualize leading or trailing options.
       */
@@ -45,10 +46,10 @@ Item {
     signal selected()
 
     anchors {
-        left: (leadingPanel) ? undefined : (parent ? parent.right : undefined)
-        right: (leadingPanel) ? (parent != null ? parent.left : undefined) : undefined
-        top: parent ? parent.top : undefined
-        bottom: parent ? parent.bottom : undefined
+        left: (leadingPanel) ? undefined : (contentItem ? contentItem.right : undefined)
+        right: (leadingPanel) ? (contentItem != null ? contentItem.left : undefined) : undefined
+        top: contentItem ? contentItem.top : undefined
+        bottom: contentItem ? contentItem.bottom : undefined
     }
 
     Row {
