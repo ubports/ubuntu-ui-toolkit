@@ -32,8 +32,11 @@ class UbuntuComponentsPlugin : public QQmlExtensionPlugin
 public:
     void registerTypes(const char *uri);
     void initializeEngine(QQmlEngine *engine, const char *uri);
-    static QUrl baseUrl(const QStringList& importPathList, const char* uri);
-    static QObject *registerQmlSingletonType(QQmlEngine *engine, const char* uri, const char* qmlFile);
+    static QObject *registerQmlSingletonType(QQmlEngine *engine, const char* qmlFile);
+    static const QUrl& pluginUrl()
+    {
+        return m_baseUrl;
+    }
 
 private Q_SLOTS:
     void registerWindowContextProperty();
@@ -41,6 +44,8 @@ private Q_SLOTS:
 
 private:
     void registerTypesToVersion(const char *uri, int major, int minor);
+
+    static QUrl m_baseUrl;
 };
 #endif // UBUNTU_COMPONENTS_PLUGIN_H
 
