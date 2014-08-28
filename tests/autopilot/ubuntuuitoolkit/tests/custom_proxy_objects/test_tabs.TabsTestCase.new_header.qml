@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -12,16 +12,32 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-import QtQuick 2.0
+import QtQuick 2.2
 import Ubuntu.Components 1.1
 
-Item {
-    id: ambianceStyle
+MainView {
+    width: units.gu(70)
+    height: units.gu(60)
+    useDeprecatedToolbar: false
 
-    property url chevron: "artwork/chevron_down.png"
-    property url tick: "artwork/tick.png"
-    property bool colourComponent: true
+    Tabs {
+        id: tabs
+        Tab {
+            objectName: "tab1"
+            title: "Tab1"
+            Page { }
+        }
+        Tab {
+            objectName: "tab2"
+            title: "Tab2"
+            Page { }
+        }
+        Tab {
+            objectName: "tab3"
+            title: "Tab3"
+            Page { }
+        }
+    }
 }

@@ -64,39 +64,52 @@ Item {
         property var app_header
         property var back_button
         property var custom_back_button
+        property var head_animation
 
         function initTestCase() {
             testCase.app_header = findChild(mainView, "MainView_Header");
             testCase.back_button = findChild(app_header, "backButton");
             testCase.custom_back_button = findChild(app_header, "customBackButton");
+            testCase.head_animation = findChild(app_header, "PageHeadStyle");
 
+            waitHeadAnimation();
             compare(page2.head.backAction, null, "Back action set by default.");
             compare(back_button.visible, false, "Back button visible with only 1 page on the stack.");
             compare(custom_back_button.visible, false, "Custom back button visible without custom back action.")
         }
 
+        function waitHeadAnimation() {
+            tryCompareFunction(function(){return testCase.head_animation.animating}, false);
+        }
+
         function test_default_back_button() {
             pageStack.push(page2);
+            waitHeadAnimation();
             compare(back_button.visible, true, "Back button not visible with 2 pages on stack.");
             compare(custom_back_button.visible, false, "Showing custom back button without custom back action.");
             pageStack.pop();
+            waitHeadAnimation();
         }
 
         function test_custom_back_button() {
             page2.head.backAction = customBackAction;
             pageStack.push(page2);
+            waitHeadAnimation();
             compare(back_button.visible, false, "Default back button visible with custom back action.");
             compare(custom_back_button.visible, true, "Custom back button invisible with back action.");
             pageStack.pop();
+            waitHeadAnimation();
             page2.head.backAction = null;
         }
 
         function test_no_back_button() {
             page2.head.backAction = invisibleAction;
             pageStack.push(page2);
+            waitHeadAnimation();
             compare(back_button.visible, false, "Default back button visible with invisible custom back action.");
             compare(custom_back_button.visible, false, "Custom back button visible with invisible custom back action.");
             pageStack.pop();
+            waitHeadAnimation();
             page2.head.backAction = null;
         }
     }

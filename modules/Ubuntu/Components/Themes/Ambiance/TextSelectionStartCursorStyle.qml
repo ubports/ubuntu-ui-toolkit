@@ -44,11 +44,16 @@ Item {
       */
     property Item caret: caretItem
 
+    /*!
+      The width of the cursor.
+      */
+    property int cursorWidth: units.dp(1)
+
     // style body
     Component {
         id: delegate
         Rectangle {
-            width: units.dp(1)
+            width: cursorWidth
             // FIXME: Add a new color to the palette
             color: UbuntuColors.blue
         }
@@ -61,8 +66,7 @@ Item {
         anchors {
             bottom: parent.top
             horizontalCenter: parent.horizontalCenter
-            topMargin: -units.gu(0.5)
-            horizontalCenterOffset: LayoutMirroring.enabled ? -(units.gu(0.7) - caretItem.width) : -units.gu(0.7)
+            horizontalCenterOffset: (LayoutMirroring.enabled ? 1 : -1) * (implicitWidth / 2 - cursorWidth)
         }
         rotation: 180
     }
