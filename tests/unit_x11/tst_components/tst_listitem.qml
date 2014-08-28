@@ -316,5 +316,32 @@ Item {
             waitForRendering(data.item, 400);
             tryCompareFunction(function(){ return listView.interactive; }, true, 1000);
         }
+
+        function test_selecting_option_rebounds_data() {
+            var item0 = findChild(listView, "listItem0");
+            return [
+                {tag: "With mouse", item: item0, pos: centerOf(item0), dx: units.gu(20), options: item0.leadingOptions, select: "list_option_0", mouse: true},
+                {tag: "With touch", item: item0, pos: centerOf(item0), dx: units.gu(20), options: item0.leadingOptions, select: "list_option_0", mouse: false},
+            ]
+        }
+        function test_selecting_option_rebounds(data) {
+            listView.positionViewAtBeginning();
+            if (data.mouse) {
+                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+            } else {
+                TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
+            }
+            waitForRendering(data.item, 800);
+            var selectedOption = findChild(data.options.panelItem, data.select);
+            verify(selectedOption, "Cannot select option " + data.select);
+            // dismiss
+            if (data.mouse) {
+                mouseClick(selectedOption, centerOf(selectedOption).x, centerOf(selectedOption).y);
+            } else {
+                TestExtras.touchClick(0, selectedOption, centerOf(selectedOption));
+            }
+            waitForRendering(data.item, 400);
+            tryCompareFunction(function(){ return data.item.background.x; }, 0, 1000);
+        }
     }
 }
