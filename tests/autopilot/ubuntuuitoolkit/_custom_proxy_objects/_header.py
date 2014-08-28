@@ -67,6 +67,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             raise _common.ToolkitException('Old header has no sections')
 
         try:
+            self.wait_for_animation()
             object_name = "section_button_" + str(index)
             button = self.select_single(objectName=object_name)
         except dbus.StateNotFoundError:
@@ -79,6 +80,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException('Old header has no sections')
 
+        self.wait_for_animation()
         sectionsProperties = self.select_single(
             'QQuickItem', objectName='sectionsProperties')
         return sectionsProperties.selectedIndex
@@ -89,12 +91,14 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException('Old header has no back button')
         try:
+            self.wait_for_animation()
             back_button = self.select_single(objectName='backButton')
         except dbus.StateNotFoundError:
             raise _common.ToolkitException('Missing back button in header')
         if not back_button.visible:
             raise _common.ToolkitException('Back button in header not visible')
         self.pointing_device.click_object(back_button)
+        self.wait_for_animation()
 
     def click_custom_back_button(self):
         self._show_if_not_visible()
@@ -103,6 +107,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             raise _common.ToolkitException(
                 'Old header has no custom back button')
         try:
+            self.wait_for_animation()
             custom_back_button = self.select_single(
                 objectName='customBackButton')
         except dbus.StateNotFoundError:
@@ -112,6 +117,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             raise _common.ToolkitException(
                 'Custom back button in header not visible')
         self.pointing_device.click_object(custom_back_button)
+        self.wait_for_animation()
 
     def _get_animating(self):
         if self.useDeprecatedToolbar:
@@ -119,6 +125,14 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             return tab_bar_style.animating
         else:
             return False
+
+    def wait_for_animation(self):
+        try:
+            style = self.select_single(objectName='PageHeadStyle')
+            style.animating.wait_for(False)
+        except dbus.StateNotFoundError:
+            raise _common.ToolkitException(
+                'AppHeader is not using the new PageHeadStyle')
 
     @autopilot_logging.log_action(logger.info)
     def switch_to_next_tab(self):
@@ -143,6 +157,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self._get_animating().wait_for(False)
 
     def _switch_to_next_tab_in_drawer(self):
+        self.wait_for_animation()
         tabs_model_properties = self.select_single(
             'QQuickItem', objectName='tabsModelProperties')
         next_tab_index = (tabs_model_properties.selectedIndex
@@ -167,6 +182,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             self._switch_to_tab_in_drawer_by_index(index)
 
     def _switch_to_tab_in_drawer_by_index(self, index):
+        self.wait_for_animation()
         try:
             tabs_drawer_button = self.select_single(objectName='tabsButton')
         except dbus.StateNotFoundError:
@@ -187,6 +203,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 "Tab button {0} not found.".format(index))
 
         self.pointing_device.click_object(tab_button)
+        self.wait_for_animation()
 
     def click_action_button(self, action_object_name):
         """Click an action button of the header.
@@ -200,8 +217,10 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         button = self._get_action_button(action_object_name)
         self.pointing_device.click_object(button)
+        self.wait_for_animation()
 
     def _get_action_button(self, action_object_name):
+        self.wait_for_animation()
         try:
             object_name = action_object_name + "_header_button"
             button = self.select_single(objectName=object_name)
