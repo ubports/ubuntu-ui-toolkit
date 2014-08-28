@@ -18,8 +18,6 @@
 
 import os
 
-from autopilot.matchers import Eventually
-from testtools.matchers import Equals
 from autopilot.introspection import dbus
 
 from ubuntuuitoolkit import tests
