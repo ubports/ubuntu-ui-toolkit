@@ -66,8 +66,6 @@ class InitctlEnvironmentVariableTestCase(testtools.TestCase):
     def test_is_global_environment_variable_set_with_unset_variable(self):
         """Test is_initctl_env_var_set returns False for unset global vars."""
         variable = 'I do not exist global {}'.format(uuid.uuid1())
-        self.addCleanup(environment.unset_initctl_env_var, variable)
-        environment.set_initctl_env_var(variable, 'test value', global_=False)
 
         self.assertFalse(environment.is_initctl_env_var_set(
             variable, global_=True))
