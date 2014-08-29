@@ -22,9 +22,9 @@ import Ubuntu.Components 1.1
   */
 Item {
     id: panel
-    width: optionsRow.childrenRect.width + 2 * optionsRow.spacing
-    height: parent ? parent.background.height : 0
+    width: optionsRow.childrenRect.width
 
+    readonly property Item contentItem: parent ? parent.background : null
     /*
       Specifies whether the panel is used to visualize leading or trailing options.
       */
@@ -40,10 +40,10 @@ Item {
     property var optionList
 
     anchors {
-        left: (!leadingPanel && parent != null) ? parent.background.right : undefined
-        right: (leadingPanel && parent != null) ? parent.background.left : undefined
-        top: parent ? parent.background.top : undefined
-        bottom: parent ? parent.background.bottom : undefined
+        left: contentItem ? (leadingPanel ? undefined : contentItem.right) : undefined
+        right: contentItem ? (leadingPanel ? contentItem.left : undefined) : undefined
+        top: contentItem ? contentItem.top : undefined
+        bottom: contentItem ? contentItem.bottom : undefined
     }
 
     Row {
@@ -79,7 +79,8 @@ Item {
                     sourceComponent: panel.delegate ? panel.delegate : defaultDelegate
                     property Action option: modelData
                     onItemChanged: {
-                        if (item) {
+                        // this is needed only for testing purposes
+                        if (item && item.objectName === "") {
                             item.objectName = "list_option_" + index
                         }
                     }
