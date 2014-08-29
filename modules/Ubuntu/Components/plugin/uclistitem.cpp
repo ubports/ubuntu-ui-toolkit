@@ -522,8 +522,11 @@ void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
             } else if (d->background->x() > 0) {
                 snapPosition = UCListItemOptionsPrivate::snap(d->leadingOptions);
             }
-            if (snapPosition == 0.0) {
+            if (d->background->x() == 0.0) {
+                // do a cleanup, no need to rebound, the item has been dragged back to 0
                 d->cleanup();
+            } else if (snapPosition == 0.0){
+                d->_q_rebound();
             } else {
                 d->reboundTo(snapPosition);
             }

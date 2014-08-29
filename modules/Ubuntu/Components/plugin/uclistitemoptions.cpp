@@ -102,7 +102,7 @@ bool UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCL
     if (!_this || !_this->createPanelItem() || isConnectedTo(options, listItem)) {
         return isConnectedTo(options, listItem);
     }
-    _this->leading = true;
+    _this->leading = leading;
     _this->panelItem->setProperty("leadingPanel", leading);
     _this->panelItem->setParentItem(listItem);
     _this->offsetDragged = 0.0;
@@ -141,7 +141,7 @@ qreal UCListItemOptionsPrivate::snap(UCListItemOptions *options)
     if (ratio > 0.0 && (ratio - trunc(ratio)) > 0.5) {
         visible++;
     }
-    return visible * _this->optionSlotWidth;
+    return visible * _this->optionSlotWidth * (_this->leading ? 1 : -1);
 }
 
 
