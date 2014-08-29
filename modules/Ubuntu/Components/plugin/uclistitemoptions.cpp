@@ -203,13 +203,29 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
  *
  * When tugged, panels reveal the options one by one. In case an option is revealed
  * more than 50%, the option will be snapped and revealed completely. This is also
- * valid for the case when the option is visibl eless than 50%, in which case the
+ * valid for the case when the option is visible less than 50%, in which case the
  * option is hidden. Options can be triggered by tapping.
  *
- * \note You can use the same ListItemOptions for leading and for trailing options
- * the same time only if the options are used in a ListView or in a list where the
- * list items are scrolled by the same Flickable. In any other circumstances use
- * separate ListItemOptions for leading and trailing options.
+ * \note You cannot use the same ListItemOptions for leading and for trailing options
+ * the same time as when the item content is tugged, both options' panels will be
+ * bound to the list item, and teh same item cannot be bount to both edges. However
+ * the same set of actions can be used for both options either by using a shared
+ * set or by using the others' list. Example:
+ * \qml
+ * ListItem {
+ *     leadingOptions: ListItemOptions {
+ *         Action {
+ *             iconName: "edit"
+ *         }
+ *         Action {
+ *             iconName: "delete"
+ *         }
+ *     }
+ *     trailingOptions: ListItemOptions {
+ *         options: leadingOptions.options
+ *     }
+ * }
+ * \endqml
  *
  * \section3 Notes on performance
  * When used with views, or when the amount of items of same kind to be created

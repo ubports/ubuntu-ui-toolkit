@@ -22,6 +22,7 @@
 #include "uclistitemoptions_p.h"
 #include "ucubuntuanimation.h"
 #include "propertychange_p.h"
+#include "i18n.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -606,6 +607,8 @@ bool UCListItemBase::eventFilter(QObject *target, QEvent *event)
  *
  * The property holds the options and its configuration to be revealed when swiped
  * from left to right.
+ *
+ * \sa trailingOptions
  */
 UCListItemOptions *UCListItemBase::leadingOptions() const
 {
@@ -619,6 +622,9 @@ void UCListItemBase::setLeadingOptions(UCListItemOptions *options)
         return;
     }
     d->leadingOptions = options;
+    if (d->leadingOptions == d->trailingOptions && d->leadingOptions) {
+        qmlInfo(this) << UbuntuI18n::tr("leadingOptions and trailingOptions cannot share the same object!");
+    }
     Q_EMIT leadingOptionsChanged();
 }
 
@@ -627,6 +633,8 @@ void UCListItemBase::setLeadingOptions(UCListItemOptions *options)
  *
  * The property holds the options and its configuration to be revealed when swiped
  * from right to left.
+ *
+ * \sa leadingOptions
  */
 UCListItemOptions *UCListItemBase::trailingOptions() const
 {
@@ -640,6 +648,9 @@ void UCListItemBase::setTrailingOptions(UCListItemOptions *options)
         return;
     }
     d->trailingOptions = options;
+    if (d->leadingOptions == d->trailingOptions && d->trailingOptions) {
+        qmlInfo(this) << UbuntuI18n::tr("leadingOptions and trailingOptions cannot share the same object!");
+    }
     Q_EMIT trailingOptionsChanged();
 }
 
