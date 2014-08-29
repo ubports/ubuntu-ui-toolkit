@@ -167,6 +167,8 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
 
             // calculate option's slot size
             optionSlotWidth = panelItem->width() / options.count();
+            offsetDragged = 0.0;
+            optionsVisible = 0;
             // connect to panel to catch dragging
             QObject::connect(panelItem, SIGNAL(widthChanged()), q, SLOT(_q_handlePanelWidth()));
             QObject::connect(panelItem, SIGNAL(xChanged()), q, SLOT(_q_handlePanelDrag()));

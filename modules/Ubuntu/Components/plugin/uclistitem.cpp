@@ -517,10 +517,10 @@ void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
         } else {
             // snap
             qreal snapPosition = 0.0;
-            if (UCListItemOptionsPrivate::isConnectedTo(d->leadingOptions, this)) {
+            if (d->background->x() < 0) {
+                snapPosition = UCListItemOptionsPrivate::snap(d->trailingOptions);
+            } else if (d->background->x() > 0) {
                 snapPosition = UCListItemOptionsPrivate::snap(d->leadingOptions);
-            } else if (UCListItemOptionsPrivate::isConnectedTo(d->trailingOptions, this)) {
-                snapPosition = -UCListItemOptionsPrivate::snap(d->trailingOptions);
             }
             if (snapPosition == 0.0) {
                 d->cleanup();
