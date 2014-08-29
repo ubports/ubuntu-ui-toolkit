@@ -32,6 +32,8 @@ public:
     }
 
     bool optionsFailure:1;
+    bool connected:1;
+    bool leading:1;
     QQmlComponent *delegate;
     QQuickItem *panelItem;
     QList<QObject*> options;
@@ -48,7 +50,7 @@ public:
     static QObject *funcAt(QQmlListProperty<QObject>*, int);
     static void funcClear(QQmlListProperty<QObject>*);
 
-    static void connectToListItem(UCListItemOptions *options, UCListItemBase *listItem, bool leading);
+    static bool connectToListItem(UCListItemOptions *options, UCListItemBase *listItem, bool leading);
     static void disconnectFromListItem(UCListItemOptions *options);
     static bool isConnectedTo(UCListItemOptions *options, UCListItemBase *listItem);
     static qreal snap(UCListItemOptions *options);
