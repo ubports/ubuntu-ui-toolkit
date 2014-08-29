@@ -32,6 +32,7 @@ public:
     }
 
     bool optionsFailure:1;
+    bool connected:1;
     QQmlComponent *delegate;
     QQuickItem *panelItem;
     QList<QObject*> options;

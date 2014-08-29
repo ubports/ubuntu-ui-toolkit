@@ -313,6 +313,13 @@ void UCListItemBasePrivate::_q_completeRebinding()
     delete flickableInteractive;
     flickableInteractive = 0;
 }
+// the function performs a cleanup on mouse release without any rebound animation
+void UCListItemBasePrivate::cleanup()
+{
+    setPressed(false);
+    setMoved(false);
+    _q_completeRebinding();
+}
 
 void UCListItemBasePrivate::reboundTo(qreal x)
 {
@@ -481,9 +488,19 @@ void UCListItemBase::mouseReleaseEvent(QMouseEvent *event)
     UCStyledItemBase::mouseReleaseEvent(event);
     Q_D(UCListItemBase);
     // set released
-    if (d->pressed && !d->suppressClick) {
-        Q_EMIT clicked();
-        d->_q_rebound();
+    if (d->pressed) {
+
+        if (!d->suppressClick) {
+            Q_EMIT clicked();
+            d->_q_rebound();
+        } else {
+            // if no options list is connected, release flickable blockade
+            bool leading = UCListItemOptionsPrivate::isConnectedTo(d->leadingOptions, this);
+            bool trailing = UCListItemOptionsPrivate::isConnectedTo(d->trailingOptions, this);
+            if (!leading && !trailing) {
+                d->cleanup();
+            }
+        }
     }
     d->setPressed(false);
 }
@@ -511,6 +528,7 @@ void UCListItemBase::mouseMoveEvent(QMouseEvent *event)
 
     if (grabMove) {
         // prepare panels
+        // TODO: this causes connect/disconnect pairs for the panels that are not yet brought in, so needs fixing
         if ((d->pressedPos.x() > event->localPos().x()) && !trailingAttached) {
             // activate trailing options
             d->grabPanel(d->trailingOptions, true);
@@ -546,6 +564,7 @@ void UCListItemBase::mouseMoveEvent(QMouseEvent *event)
         if (dx) {
             // block flickable
             if (!d->flickableInteractive && d->flickable) {
+                qDebug() << "BLOCK FLICKABLE";
                 d->flickableInteractive = new PropertyChange(d->flickable, "interactive", false);
             }
             d->setMoved(true);
