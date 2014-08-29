@@ -43,8 +43,14 @@ void UCListItemOptionsPrivate::_q_handlePanelDrag()
         return;
     }
 
-    bool leading = panelItem->property("leadingPanel").toBool();
-    offsetDragged = (leading) ? panelItem->width() + panelItem->x() :
+    Q_Q(UCListItemOptions);
+    bool isLeading = panelItem->property("leadingPanel").toBool();
+    qreal backgroundX = listItem->background()->x();
+    if ((isLeading && (backgroundX <= 0.0)) ||
+            (!isLeading && (backgroundX >= 0.0))) {
+        disconnectFromListItem(q);
+    }
+    offsetDragged = (isLeading) ? panelItem->width() + panelItem->x() :
                          listItem->width() - panelItem->x();
     if (offsetDragged < 0.0) {
         offsetDragged = 0.0;
@@ -52,7 +58,6 @@ void UCListItemOptionsPrivate::_q_handlePanelDrag()
     if (optionSlotWidth > 0.0) {
         optionsVisible = (int)trunc(offsetDragged / optionSlotWidth);
     }
-    qDebug() << leading << offsetDragged << optionsVisible;
 }
 
 void UCListItemOptionsPrivate::_q_handlePanelWidth()
@@ -158,6 +163,8 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
                 panelItem->setProperty("delegate", QVariant::fromValue(delegate));
             }
             panelItem->setProperty("optionList", QVariant::fromValue(options));
+
+            QObject::connect(panelItem, SIGNAL(xChanged()), q, SLOT(_q_handlePanelDrag()));
             component.completeCreate();
             Q_EMIT q->panelItemChanged();
 

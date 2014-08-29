@@ -23,7 +23,7 @@ import Ubuntu.Components 1.1
 Item {
     id: panel
     width: optionsRow.childrenRect.width + 2 * optionsRow.spacing
-    height: contentItem ? contentItem.height : 0
+    height: parent ? parent.background.height : 0
 
     property Item contentItem: parent ? parent.background : null
     /*
@@ -46,10 +46,10 @@ Item {
     signal selected()
 
     anchors {
-        left: (leadingPanel) ? undefined : (contentItem ? contentItem.right : undefined)
-        right: (leadingPanel) ? (contentItem != null ? contentItem.left : undefined) : undefined
-        top: contentItem ? contentItem.top : undefined
-        bottom: contentItem ? contentItem.bottom : undefined
+        left: (!leadingPanel && parent != null) ? parent.background.right : undefined
+        right: (leadingPanel && parent != null) ? parent.background.left : undefined
+        top: parent ? parent.background.top : undefined
+        bottom: parent ? parent.background.bottom : undefined
     }
 
     Row {
