@@ -42,8 +42,6 @@ public:
     void _q_handlePanelDrag();
     void _q_handlePanelWidth();
 
-    void _q_handlePanelDrag();
-
     // options list property functions
     static void funcAppend(QQmlListProperty<QObject>*, QObject*);
     static int funcCount(QQmlListProperty<QObject>*);
