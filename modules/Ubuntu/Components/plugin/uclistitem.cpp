@@ -579,8 +579,8 @@ bool UCListItemBase::eventFilter(QObject *target, QEvent *event)
     if (!myPos.isNull() && !contains(myPos)) {
         Q_D(UCListItemBase);
         d->_q_rebound();
+        // only accept event, but let it be handled by the underlying or surrounding Flickables
         event->accept();
-        return true;
     }
     return UCStyledItemBase::eventFilter(target, event);
 }
