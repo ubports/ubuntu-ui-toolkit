@@ -33,6 +33,21 @@ UCListItemOptionsPrivate::~UCListItemOptionsPrivate()
 {
 }
 
+void UCListItemOptionsPrivate::_q_handlePanelDrag()
+{
+    UCListItemBase *listItem = qobject_cast<UCListItemBase*>(panelItem->parentItem());
+    if (!listItem) {
+        return;
+    }
+    Q_Q(UCListItemOptions);
+    bool isLeading = panelItem->property("leadingPanel").toBool();
+    qreal backgroundX = listItem->background()->x();
+    if ((isLeading && (backgroundX <= 0.0)) ||
+            (!isLeading && (backgroundX >= 0.0))) {
+        disconnectFromListItem(q);
+    }
+}
+
 void UCListItemOptionsPrivate::funcAppend(QQmlListProperty<QObject> *list, QObject *option)
 {
     UCListItemOptions *_this = static_cast<UCListItemOptions*>(list->object);
@@ -77,7 +92,7 @@ void UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCL
         return;
     }
     _this->panelItem->setProperty("leadingPanel", leading);
-    _this->panelItem->setParentItem(UCListItemBasePrivate::get(listItem)->background);
+    _this->panelItem->setParentItem(listItem);
 }
 
 void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options)
@@ -91,7 +106,7 @@ void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options
 
 bool UCListItemOptionsPrivate::isConnectedTo(UCListItemOptions *options, UCListItemBase *listItem)
 {
-    return options && options->d_func()->panelItem && (options->d_func()->panelItem->parentItem() == UCListItemBasePrivate::get(listItem)->background);
+    return options && options->d_func()->panelItem && (options->d_func()->panelItem->parentItem() == listItem);
 }
 
 QQuickItem *UCListItemOptionsPrivate::createPanelItem()
@@ -111,6 +126,8 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
                 panelItem->setProperty("delegate", QVariant::fromValue(delegate));
             }
             panelItem->setProperty("optionList", QVariant::fromValue(options));
+
+            QObject::connect(panelItem, SIGNAL(xChanged()), q, SLOT(_q_handlePanelDrag()));
             component.completeCreate();
             Q_EMIT q->panelItemChanged();
         }
@@ -252,3 +269,5 @@ QQuickItem *UCListItemOptions::panelItem() const
     Q_D(const UCListItemOptions);
     return d->panelItem;
 }
+
+#include "moc_uclistitemoptions.cpp"
