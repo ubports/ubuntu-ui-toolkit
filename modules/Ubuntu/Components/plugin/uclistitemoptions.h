@@ -46,6 +46,7 @@ public Q_SLOTS:
 
 private:
     Q_DECLARE_PRIVATE(UCListItemOptions)
+    Q_PRIVATE_SLOT(d_func(), void _q_handlePanelDrag())
 };
 
 #endif // UCLISTITEMOPTIONS_H

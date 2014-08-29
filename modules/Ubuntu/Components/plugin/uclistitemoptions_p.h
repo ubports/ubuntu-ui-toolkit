@@ -36,6 +36,8 @@ public:
     QQuickItem *panelItem;
     QList<QObject*> options;
 
+    void _q_handlePanelDrag();
+
     // options list property functions
     static void funcAppend(QQmlListProperty<QObject>*, QObject*);
     static int funcCount(QQmlListProperty<QObject>*);
