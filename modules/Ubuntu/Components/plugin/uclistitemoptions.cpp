@@ -26,29 +26,13 @@ UCListItemOptionsPrivate::UCListItemOptionsPrivate()
     : QObjectPrivate()
     , optionsFailure(false)
     , connected(false)
+    , leading(false)
     , delegate(0)
     , panelItem(0)
 {
 }
 UCListItemOptionsPrivate::~UCListItemOptionsPrivate()
 {
-}
-
-void UCListItemOptionsPrivate::_q_handlePanelDrag()
-{
-    if (!connected) {
-        return;
-    }
-    UCListItemBase *listItem = qobject_cast<UCListItemBase*>(panelItem->parentItem());
-    if (!listItem) {
-        return;
-    }
-    Q_Q(UCListItemOptions);
-    bool isLeading = panelItem->property("leadingPanel").toBool();
-    qreal backgroundX = listItem->background()->x();
-    if ((isLeading && (backgroundX <= 0.0)) || (!isLeading && (backgroundX >= 0.0))) {
-        disconnectFromListItem(q);
-    }
 }
 
 void UCListItemOptionsPrivate::funcAppend(QQmlListProperty<QObject> *list, QObject *option)
@@ -85,16 +69,17 @@ void UCListItemOptionsPrivate::funcClear(QQmlListProperty<QObject> *list)
     return plist->options.clear();
 }
 
-void UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCListItemBase *listItem, bool leading)
+bool UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCListItemBase *listItem, bool leading)
 {
     UCListItemOptionsPrivate *_this = get(options);
     if (!_this || !_this->createPanelItem() || isConnectedTo(options, listItem)) {
-        return;
+        return isConnectedTo(options, listItem);
     }
-    qDebug() << "CONNECTING!!!" << leading;
+    _this->leading = true;
     _this->panelItem->setProperty("leadingPanel", leading);
     _this->panelItem->setParentItem(listItem);
     _this->connected = true;
+    return true;
 }
 
 void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options)
@@ -103,9 +88,9 @@ void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options
     if (!_this || !_this->panelItem || !_this->panelItem->parentItem()) {
         return;
     }
-    qDebug() << "DISCONNECTING!!!" << _this->panelItem->property("leadingPanel").toBool();
     _this->panelItem->setParentItem(0);
     _this->connected = false;
+    _this->leading = false;
 }
 
 bool UCListItemOptionsPrivate::isConnectedTo(UCListItemOptions *options, UCListItemBase *listItem)
@@ -131,8 +116,6 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
                 panelItem->setProperty("delegate", QVariant::fromValue(delegate));
             }
             panelItem->setProperty("optionList", QVariant::fromValue(options));
-
-            QObject::connect(panelItem, SIGNAL(xChanged()), q, SLOT(_q_handlePanelDrag()));
             component.completeCreate();
             Q_EMIT q->panelItemChanged();
         }

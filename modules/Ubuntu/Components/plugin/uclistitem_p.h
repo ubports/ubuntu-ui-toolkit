@@ -51,9 +51,10 @@ public:
     void reboundTo(qreal x);
     void setPressed(bool pressed);
     void setMoved(bool moved);
-    void grabPanel(UCListItemOptions *optionList, bool isMoved);
+    bool grabPanel(UCListItemOptions *optionList, bool isMoved);
     void listenToRebind(bool listen);
     void resize();
+    void clampX(qreal &x, qreal dx);
 
     bool pressed:1;
     bool moved:1;
