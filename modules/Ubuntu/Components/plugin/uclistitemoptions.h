@@ -22,7 +22,7 @@
 
 class QQmlComponent;
 class UCListItemOptionsPrivate;
-class UCListItemOptions : public QObject, public QQmlParserStatus
+class UCListItemOptions : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
@@ -32,9 +32,6 @@ class UCListItemOptions : public QObject, public QQmlParserStatus
 public:
     explicit UCListItemOptions(QObject *parent = 0);
     ~UCListItemOptions();
-
-    void classBegin();
-    void componentComplete();
 
     QQmlComponent *delegate() const;
     void setDelegate(QQmlComponent *delegate);
