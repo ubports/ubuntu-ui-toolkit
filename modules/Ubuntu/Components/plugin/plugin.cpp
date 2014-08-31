@@ -50,6 +50,9 @@
 #include "ucinversemouse.h"
 #include "sortfiltermodel.h"
 #include "ucstyleditembase.h"
+#include "ucaction.h"
+#include "ucactioncontext.h"
+#include "ucactionmanager.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -162,6 +165,9 @@ void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
 
 void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, int minor)
 {
+    qmlRegisterType<UCAction>(uri, major, minor, "Action");
+    qmlRegisterType<UCActionContext>(uri, major, minor, "ActionContext");
+    qmlRegisterType<UCActionManager>(uri, major, minor, "ActionManager");
     qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItemBase");
     qmlRegisterSingletonType<QObject>(uri, major, minor, "UbuntuColors", registerUbuntuColors10);
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");

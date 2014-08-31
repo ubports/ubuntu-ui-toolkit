@@ -55,13 +55,97 @@ TestCase {
          compare(triggeredSignalSpy.valid, true, "triggered signal exists")
      }
 
+     function test_valid_value_type_data() {
+         return [
+            {tag: "None", type: Action.None, param: undefined},
+            {tag: "String", type: Action.String, param: "test"},
+            {tag: "Integer", type: Action.Integer, param: 100},
+            {tag: "Bool", type: Action.Bool, param: true},
+            {tag: "Real", type: Action.Real, param: 12.34},
+            {tag: "Object - QtObject", type: Action.Object, param: object},
+            {tag: "Object - Item", type: Action.Object, param: item},
+         ];
+     }
+     function test_valid_value_type(data) {
+         valueType.parameterType = data.type;
+         valueType.trigger(data.param);
+         valueTypeSpy.wait();
+         compare(valueType.parameter, data.param, "Test " + data.tag + " result differs");
+         valueTypeSpy.clear();
+     }
+
+     function test_invalid_value_type_data() {
+         return [
+            {tag: "None", type: Action.None, param: 120},
+            {tag: "String", type: Action.String, param: object},
+            {tag: "Integer", type: Action.Integer, param: "100"},
+            {tag: "Bool", type: Action.Bool, param: item},
+            {tag: "Real", type: Action.Real, param: undefined},
+            {tag: "Object - QtObject", type: Action.Object, param: true},
+            {tag: "Object - Item", type: Action.Object, param: "item"},
+         ];
+     }
+     function test_invalid_value_type(data) {
+         valueType.parameterType = data.type;
+         valueType.trigger(data.param);
+         valueTypeSpy.wait();
+         compare(valueType.parameter, undefined, "Test " + data.tag + " did not fail");
+         valueTypeSpy.clear();
+     }
+
+     function test_actionmanager() {
+         verify(manager.globalContext, "Global context is not defined");
+         compare(manager.localContexts.length, 2, "Invalid number of local contexts defined");
+     }
+
+     function test_activate_contexts_data() {
+         return [
+             {tag: "Activate context1", active: context1, inactive: context2},
+             {tag: "Activate context2", active: context2, inactive: context1},
+             {tag: "Activate context1 again", active: context1, inactive: context2},
+         ];
+     }
+     function test_activate_contexts(data) {
+         data.active.active = true;
+         verify(data.active.active, "Context activation error");
+         verify(!data.inactive.active, "Context deactivation error");
+     }
+
      Action {
          id: action
+     }
+     Action {
+         id: valueType
+         property var parameter
+         onTriggered: parameter = value
+     }
+
+     QtObject {
+         id: object
+     }
+     Item {
+         id: item
      }
 
      SignalSpy {
          id: triggeredSignalSpy
          target: action
          signalName: "triggered"
+     }
+     SignalSpy {
+         id: valueTypeSpy
+         target: valueType
+         signalName: "triggered"
+     }
+
+     ActionManager {
+         id: manager
+     }
+
+     ActionContext {
+         id: context1
+     }
+     ActionContext {
+         id: context2
      }
 }

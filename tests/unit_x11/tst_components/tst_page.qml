@@ -105,8 +105,8 @@ Item {
 
         function test_actions() {
             // FIXME: Check the contents of page.actions. This is currently not
-            //  possible because UnityActions.ActionContext.actions does not support it,
-            //  so changes to UnityActions are needed.
+            //  possible because ActionContext.actions does not support it,
+            //  so changes to ActionContext are needed.
             page.actions = [action0];
             compare(page.actions.length, 1, "Actions can be added to page actions");
             page.actions = [];

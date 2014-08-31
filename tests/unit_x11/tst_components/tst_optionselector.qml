@@ -18,7 +18,6 @@ import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 1.1
 import Ubuntu.Test 1.0
-import Ubuntu.Unity.Action 1.1 as UnityActions
 
 MainView {
     width: 400
@@ -41,7 +40,7 @@ MainView {
                 enabled: true
                 name: 'selector'
                 text: 'Selector'
-                parameterType: UnityActions.Action.Integer
+                parameterType: Action.Integer
             }
         }
 

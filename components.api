@@ -6,12 +6,6 @@ ActionItem
     property bool hovered
     property bool __acceptEvents
     property internal __mouseArea
-Action 0.1 1.0
-UnityActions.Action
-    property url iconSource
-    property string iconName
-    property bool visible
-    property Component itemHint
 ActionItem 0.1 1.0
 StyledItem
     property Action action
@@ -218,7 +212,7 @@ PageTreeNode
     property bool useDeprecatedToolbar
     default property internal contentsItem
     property list<Action> actions
-    property UnityActions.ActionManager actionManager
+    property ActionManager actionManager
 Object 0.1 1.0
 QtObject
     default property internal children
@@ -748,6 +742,60 @@ plugins.qmltypes
     exports: ["SortBehavior 1.1"]
     Property { name: "property"; type: "string" }
     Property { name: "order"; type: "Qt::SortOrder" }
+    name: "UCAction"
+    prototype: "QObject"
+    exports: ["Action 0.1", "Action 1.0"]
+    name: "Type"
+    Property { name: "name"; type: "string" }
+    Property { name: "text"; type: "string" }
+    Property { name: "iconName"; type: "string" }
+    Property { name: "description"; type: "string" }
+    Property { name: "keywords"; type: "string" }
+    Property { name: "enabled"; type: "bool" }
+    Property { name: "parameterType"; type: "Type" }
+    Property { name: "iconSource"; type: "QUrl" }
+    Property { name: "visible"; type: "bool" }
+    Property { name: "itemHint"; type: "QQmlComponent"; isPointer: true }
+    Signal {
+    name: "triggered"
+    Parameter { name: "value"; type: "QVariant" }
+    Method {
+    name: "trigger"
+    Parameter { name: "value"; type: "QVariant" }
+    Method { name: "trigger" }
+    name: "UCActionContext"
+    prototype: "QObject"
+    exports: ["ActionContext 0.1", "ActionContext 1.0"]
+    Property { name: "actions"; type: "UCAction"; isList: true; isReadonly: true }
+    Property { name: "active"; type: "bool" }
+    Signal {
+    name: "activeChanged"
+    Parameter { type: "bool" }
+    Method {
+    name: "addAction"
+    Parameter { name: "action"; type: "UCAction"; isPointer: true }
+    Method {
+    name: "removeAction"
+    Parameter { name: "action"; type: "UCAction"; isPointer: true }
+    name: "UCActionManager"
+    prototype: "QObject"
+    exports: ["ActionManager 0.1", "ActionManager 1.0"]
+    Property { name: "actions"; type: "UCAction"; isList: true; isReadonly: true }
+    Property { name: "localContexts"; type: "UCActionContext"; isList: true; isReadonly: true }
+    Property { name: "globalContext"; type: "UCActionContext"; isReadonly: true; isPointer: true }
+    Signal { name: "quit" }
+    Method {
+    name: "addAction"
+    Parameter { name: "action"; type: "UCAction"; isPointer: true }
+    Method {
+    name: "removeAction"
+    Parameter { name: "action"; type: "UCAction"; isPointer: true }
+    Method {
+    name: "addLocalContext"
+    Parameter { name: "context"; type: "UCActionContext"; isPointer: true }
+    Method {
+    name: "removeLocalContext"
+    Parameter { name: "context"; type: "UCActionContext"; isPointer: true }
     name: "UCAlarm"
     prototype: "QObject"
     exports: ["Alarm 0.1", "Alarm 1.0"]
