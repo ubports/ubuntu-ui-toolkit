@@ -103,6 +103,7 @@ bool UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCL
         return isConnectedTo(options, listItem);
     }
     _this->leading = leading;
+    _this->panelItem->setProperty("listItemIndex", UCListItemBasePrivate::get(listItem)->index);
     _this->panelItem->setProperty("leadingPanel", leading);
     _this->panelItem->setParentItem(listItem);
     _this->offsetDragged = 0.0;

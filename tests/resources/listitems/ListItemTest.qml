@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.2
+
 import Ubuntu.Components 1.1
 
 MainView {
@@ -29,7 +30,7 @@ MainView {
         id: stock
         iconName: "starred"
         text: "Staaaar"
-        onTriggered: print(iconName, "triggered")
+        onTriggered: print(iconName, "triggered", value)
     }
 
     ListItemOptions {
@@ -37,15 +38,15 @@ MainView {
         objectName: "StockLeading"
         Action {
             iconName: "delete"
-            onTriggered: print(iconName, "triggered")
+            onTriggered: print(iconName, "triggered", value)
         }
         Action {
             iconName: "camcorder"
-            onTriggered: print(iconName, "triggered")
+            onTriggered: print(iconName, "triggered", value)
         }
         Action {
             iconName: "stock_website"
-            onTriggered: print(iconName, "triggered")
+            onTriggered: print(iconName, "triggered", value)
         }
     }
 
@@ -129,11 +130,11 @@ MainView {
                         leadingOptions: ListItemOptions {
                             Action {
                                 iconName: "edit"
-                                onTriggered: print(iconName, "clicked")
+                                onTriggered: print(iconName, "triggered", value)
                             }
                             Action {
                                 iconName: "delete"
-                                onTriggered: print(iconName, "clicked")
+                                onTriggered: print(iconName, "triggered", value)
                             }
                         }
                         trailingOptions: ListItemOptions {

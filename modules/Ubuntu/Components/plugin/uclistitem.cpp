@@ -247,6 +247,7 @@ UCListItemBasePrivate::UCListItemBasePrivate()
     , pressed(false)
     , moved(false)
     , ready(false)
+    , index(-1)
     , xAxisMoveThresholdGU(1.0)
     , reboundAnimation(0)
     , flickableInteractive(0)
@@ -444,8 +445,15 @@ UCListItemBase::~UCListItemBase()
 
 void UCListItemBase::componentComplete()
 {
+    Q_D(UCListItemBase);
     UCStyledItemBase::componentComplete();
-    d_func()->ready = true;
+    d->ready = true;
+    // is there an index context property?
+    QQmlContext *context = qmlContext(this);
+    QVariant index = context->contextProperty("index");
+    if (index.isValid()) {
+        d->index = index.toInt();
+    }
 }
 
 void UCListItemBase::itemChange(ItemChange change, const ItemChangeData &data)

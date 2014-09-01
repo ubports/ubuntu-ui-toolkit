@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.2
+import Ubuntu.Unity.Action 1.1 as UnityActions
 import Ubuntu.Components 1.1
 
 /*
@@ -25,6 +26,12 @@ Item {
     width: optionsRow.childrenRect.width
 
     readonly property Item contentItem: parent ? parent.background : null
+
+    /*
+      Index of the ListItem, if the ListItem is inside a ListView or has been
+      created using a Repeater.
+      */
+    property int listItemIndex: -1
     /*
       Specifies whether the panel is used to visualize leading or trailing options.
       */
@@ -71,7 +78,15 @@ Item {
                     top: parent.top
                     bottom: parent.bottom
                 }
-                onTriggered: panel.selected()
+
+                function trigger() {
+                    if (panel.listItemIndex >= 0) {
+                        action.triggered(panel.listItemIndex);
+                    } else {
+                        action.triggered(null);
+                    }
+                    panel.selected();
+                }
 
                 Rectangle {
                     anchors.fill: parent
