@@ -23,14 +23,14 @@
 
 class UCAction;
 class UCActionContext;
-class ActionManagement : public QObject
+class ActionProxy : public QObject
 {
     Q_OBJECT
 public:
-    ~ActionManagement();
-    static ActionManagement &instance()
+    ~ActionProxy();
+    static ActionProxy &instance()
     {
-        static ActionManagement instance;
+        static ActionProxy instance;
         return instance;
     }
 
@@ -43,7 +43,7 @@ public:
     static void removeContext(UCActionContext *context);
 
 protected:
-    ActionManagement();
+    ActionProxy();
 
 protected Q_SLOTS:
     void watchContextActivation(UCActionContext *context, bool watch);

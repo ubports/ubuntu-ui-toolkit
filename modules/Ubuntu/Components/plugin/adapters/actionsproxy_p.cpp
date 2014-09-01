@@ -19,7 +19,7 @@
 
 #include <QDebug>
 
-ActionManagement::ActionManagement()
+ActionProxy::ActionProxy()
     : QObject(0)
     , globalContext(new UCActionContext)
     , globalPublished(false)
@@ -27,7 +27,7 @@ ActionManagement::ActionManagement()
     // for testing purposes
     globalContext->setObjectName("GlobalActionContext");
 }
-ActionManagement::~ActionManagement()
+ActionProxy::~ActionProxy()
 {
     // if there is still an active context clear it
     if (!m_activeContext.isNull()) {
@@ -38,19 +38,19 @@ ActionManagement::~ActionManagement()
     delete globalContext;
 }
 
-UCActionContext *ActionManagement::currentContext()
+UCActionContext *ActionProxy::currentContext()
 {
     return instance().m_activeContext;
 }
 
-const QSet<UCActionContext*> &ActionManagement::localContexts()
+const QSet<UCActionContext*> &ActionProxy::localContexts()
 {
     return instance().m_localContexts;
 }
 
 // function called by the ActionManager when completed to publish global ActionContext
 // actions.
-void ActionManagement::publishGlobalContext()
+void ActionProxy::publishGlobalContext()
 {
     if (instance().globalContext && !instance().globalPublished) {
         instance().publishContextActions(instance().globalContext);
@@ -58,7 +58,7 @@ void ActionManagement::publishGlobalContext()
 }
 
 // add a local context
-void ActionManagement::addContext(UCActionContext *context)
+void ActionProxy::addContext(UCActionContext *context)
 {
     if (!context) {
         return;
@@ -71,7 +71,7 @@ void ActionManagement::addContext(UCActionContext *context)
     instance().watchContextActivation(context, true);
 }
 // Remove a local context. If the context was active, removes the actions from the system.
-void ActionManagement::removeContext(UCActionContext *context)
+void ActionProxy::removeContext(UCActionContext *context)
 {
     if (!context) {
         return;
@@ -83,7 +83,7 @@ void ActionManagement::removeContext(UCActionContext *context)
 }
 
 // toggles context activation watching for a given context
-void ActionManagement::watchContextActivation(UCActionContext *context, bool watch)
+void ActionProxy::watchContextActivation(UCActionContext *context, bool watch)
 {
     if (!context) {
         return;
@@ -101,7 +101,7 @@ void ActionManagement::watchContextActivation(UCActionContext *context, bool wat
 }
 
 // handles the local context activation
-void ActionManagement::handleContextActivation(bool active)
+void ActionProxy::handleContextActivation(bool active)
 {
     // sender is the context changing activation
     UCActionContext *context = qobject_cast<UCActionContext*>(sender());
@@ -131,11 +131,11 @@ void ActionManagement::handleContextActivation(bool active)
     }
 }
 // empty functions for context activation/deactivation, connect to HUD
-void ActionManagement::clearContextActions(UCActionContext *context)
+void ActionProxy::clearContextActions(UCActionContext *context)
 {
     Q_UNUSED(context);
 }
-void ActionManagement::publishContextActions(UCActionContext *context)
+void ActionProxy::publishContextActions(UCActionContext *context)
 {
     Q_UNUSED(context);
 }

@@ -149,6 +149,7 @@ UCAction::UCAction(QObject *parent)
     , m_factoryIconSource(true)
     , m_enabled(true)
     , m_visible(true)
+    , m_published(false)
     , m_itemHint(0)
     , m_parameterType(None)
 {

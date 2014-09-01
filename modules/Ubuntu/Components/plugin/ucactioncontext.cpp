@@ -33,13 +33,13 @@ UCActionContext::UCActionContext(QObject *parent)
 }
 UCActionContext::~UCActionContext()
 {
-    ActionManagement::removeContext(this);
+    ActionProxy::removeContext(this);
 }
 
 void UCActionContext::componentComplete()
 {
     // add the context to the management
-    ActionManagement::addContext(this);
+    ActionProxy::addContext(this);
 }
 
 /*!
@@ -96,7 +96,7 @@ void UCActionContext::setActive(bool active)
         return;
     }
     // skip deactivation for global context
-    if (!active && (ActionManagement::instance().globalContext == this)) {
+    if (!active && (ActionProxy::instance().globalContext == this)) {
         return;
     }
     m_active = active;

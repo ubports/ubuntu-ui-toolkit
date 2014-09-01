@@ -71,6 +71,7 @@ private:
     bool m_factoryIconSource:1;
     bool m_enabled:1;
     bool m_visible:1;
+    bool m_published:1;
     QQmlComponent *m_itemHint;
     QString m_name;
     QString m_text;

@@ -29,8 +29,9 @@
  * Acts as an interface between the application and external components. Maintains
  * the global context action registration.
  *
- * There can be many ActionManager instances in an application, all will have the
- * contexts shared in between each other.
+ * There can be many ActionManager instances in an application, and all instances
+ * will have the ActionContexts shared between each other. If individual ActionManager
+ * instances add more Action objects, those will be published as well.
  */
 UCActionManager::UCActionManager(QObject *parent)
     : QObject(parent)
@@ -40,8 +41,8 @@ UCActionManager::UCActionManager(QObject *parent)
 void UCActionManager::componentComplete()
 {
     // publish global context to system
-    ActionManagement::instance().globalContext->setActive(true);
-    ActionManagement::publishGlobalContext();
+    ActionProxy::instance().globalContext->setActive(true);
+    ActionProxy::publishGlobalContext();
 }
 
 /*!
@@ -56,20 +57,20 @@ QQmlListProperty<UCAction> UCActionManager::actions()
 void UCActionManager::actionAppend(QQmlListProperty<UCAction> *list, UCAction *action)
 {
     Q_UNUSED(list);
-    ActionManagement::instance().globalContext->m_actions.insert(action);
+    ActionProxy::instance().globalContext->m_actions.insert(action);
 }
 
 void UCActionManager::actionClear(QQmlListProperty<UCAction> *list)
 {
     Q_UNUSED(list);
-    UCActionContext *context = ActionManagement::instance().globalContext;
+    UCActionContext *context = ActionProxy::instance().globalContext;
     context->m_actions.clear();
 }
 
 int UCActionManager::actionCount(QQmlListProperty<UCAction> *list)
 {
     Q_UNUSED(list);
-    return ActionManagement::instance().globalContext->m_actions.count();
+    return ActionProxy::instance().globalContext->m_actions.count();
 }
 
 /*!
@@ -83,19 +84,19 @@ QQmlListProperty<UCActionContext> UCActionManager::localContexts()
 void UCActionManager::contextAppend(QQmlListProperty<UCActionContext> *list, UCActionContext *context)
 {
     Q_UNUSED(list);
-    ActionManagement::addContext(context);
+    ActionProxy::addContext(context);
 }
 void UCActionManager::contextClear(QQmlListProperty<UCActionContext> *list)
 {
     Q_UNUSED(list);
-    Q_FOREACH(UCActionContext *context, ActionManagement::instance().localContexts().toList()) {
-        ActionManagement::removeContext(context);
+    Q_FOREACH(UCActionContext *context, ActionProxy::instance().localContexts().toList()) {
+        ActionProxy::removeContext(context);
     }
 }
 int UCActionManager::contextCount(QQmlListProperty<UCActionContext> *list)
 {
     Q_UNUSED(list);
-    return ActionManagement::instance().localContexts().count();
+    return ActionProxy::instance().localContexts().count();
 }
 
 /*!
@@ -105,7 +106,7 @@ int UCActionManager::contextCount(QQmlListProperty<UCActionContext> *list)
  */
 UCActionContext *UCActionManager::globalContext() const
 {
-    return ActionManagement::instance().globalContext;
+    return ActionProxy::instance().globalContext;
 }
 
 /*!
@@ -116,7 +117,7 @@ UCActionContext *UCActionManager::globalContext() const
 void UCActionManager::addAction(UCAction *action)
 {
     qmlInfo(this) << "WARNING: addAction() is deprecated. Declare actions designated for global context inside ActionManager.";
-    ActionManagement::instance().globalContext->addAction(action);
+    ActionProxy::instance().globalContext->addAction(action);
 }
 
 /*!
@@ -127,7 +128,7 @@ void UCActionManager::addAction(UCAction *action)
 void UCActionManager::removeAction(UCAction *action)
 {
     qmlInfo(this) << "WARNING: removeAction() is deprecated. Do not remove actions programatically.";
-    ActionManagement::instance().globalContext->removeAction(action);
+    ActionProxy::instance().globalContext->removeAction(action);
 }
 
 /*!
@@ -141,7 +142,7 @@ void UCActionManager::removeAction(UCAction *action)
 void UCActionManager::addLocalContext(UCActionContext *context)
 {
     qmlInfo(this) << "WARNING: addLocalContext() is deprecated. ActionContext declaration registers the context to the management.";
-    ActionManagement::addContext(context);
+    ActionProxy::addContext(context);
 }
 
 /*!
@@ -154,6 +155,6 @@ void UCActionManager::addLocalContext(UCActionContext *context)
  */
 void UCActionManager::removeLocalContext(UCActionContext *context)
 {
-    ActionManagement::removeContext(context);
+    ActionProxy::removeContext(context);
 }
 
