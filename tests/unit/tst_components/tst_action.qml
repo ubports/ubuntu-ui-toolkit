@@ -98,6 +98,10 @@ TestCase {
          compare(manager.localContexts.length, 2, "Invalid number of local contexts defined");
      }
 
+     function test_globalcontext_actions() {
+         compare(manager.globalContext.actions.length, 3, "Global context action count must be a sum of all manager's actions' counts");
+     }
+
      function test_activate_contexts_data() {
          return [
              {tag: "Activate context1", active: context1, inactive: context2},
@@ -137,9 +141,24 @@ TestCase {
          target: valueType
          signalName: "triggered"
      }
+     SignalSpy {
+         id: textSpy
+         target: action
+         signalName: "textChanged"
+     }
 
      ActionManager {
          id: manager
+     }
+
+     ActionManager {
+         id: manager2
+         Action {
+         }
+         Action {
+         }
+         Action {
+         }
      }
 
      ActionContext {

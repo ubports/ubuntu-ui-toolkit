@@ -52,6 +52,11 @@ public:
 
     explicit UCAction(QObject *parent = 0);
 
+    inline bool isPublished() const
+    {
+        return m_published;
+    }
+
 Q_SIGNALS:
     void nameChanged();
     void textChanged();
@@ -80,6 +85,8 @@ private:
     QString m_description;
     QString m_keywords;
     Type m_parameterType;
+
+    friend class UCActionContext;
 
     bool isValidType(QVariant::Type valueType);
     void generateName();

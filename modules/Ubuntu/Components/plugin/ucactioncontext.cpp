@@ -15,6 +15,7 @@
  */
 
 #include "ucactioncontext.h"
+#include "ucaction.h"
 #include "adapters/actionsproxy_p.h"
 
 /*!
@@ -41,6 +42,17 @@ void UCActionContext::componentComplete()
     // add the context to the management
     ActionProxy::addContext(this);
 }
+
+/*
+ * The function marks all context actions being (un)published.
+ */
+void UCActionContext::markActionsPublished(bool mark)
+{
+    Q_FOREACH(UCAction *action, m_actions) {
+        action->m_published = mark;
+    }
+}
+
 
 /*!
  * \qmlproperty list<Action> ActionContext::actions

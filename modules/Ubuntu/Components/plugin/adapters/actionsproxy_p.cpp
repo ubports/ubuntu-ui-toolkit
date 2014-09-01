@@ -22,7 +22,6 @@
 ActionProxy::ActionProxy()
     : QObject(0)
     , globalContext(new UCActionContext)
-    , globalPublished(false)
 {
     // for testing purposes
     globalContext->setObjectName("GlobalActionContext");
@@ -52,8 +51,9 @@ const QSet<UCActionContext*> &ActionProxy::localContexts()
 // actions.
 void ActionProxy::publishGlobalContext()
 {
-    if (instance().globalContext && !instance().globalPublished) {
+    if (instance().globalContext) {
         instance().publishContextActions(instance().globalContext);
+        instance().globalContext->markActionsPublished(true);
     }
 }
 
@@ -114,6 +114,7 @@ void ActionProxy::handleContextActivation(bool active)
             // the slot has been called due to the previous active deactivation,
             // so perform system cleanup
             clearContextActions(m_activeContext);
+            m_activeContext->markActionsPublished(false);
             // finally clear the context and leave
             m_activeContext.clear();
             return;
@@ -126,6 +127,7 @@ void ActionProxy::handleContextActivation(bool active)
     if (active) {
         // publish the context's actions to the system
         publishContextActions(context);
+        context->markActionsPublished(true);
         // and finally set it as active
         m_activeContext = context;
     }
@@ -135,6 +137,10 @@ void ActionProxy::clearContextActions(UCActionContext *context)
 {
     Q_UNUSED(context);
 }
+/*
+ * Publish actions of a context to the system. Implementations should make sure
+ * only unpublished actions are exported.
+ */
 void ActionProxy::publishContextActions(UCActionContext *context)
 {
     Q_UNUSED(context);

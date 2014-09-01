@@ -36,6 +36,7 @@ public:
 
     void classBegin(){}
     void componentComplete();
+    void markActionsPublished(bool mark);
 
     QQmlListProperty<UCAction> actions();
 

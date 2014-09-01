@@ -20,13 +20,14 @@
 #include <QtCore/QObject>
 #include <QtCore/QSet>
 #include <QtCore/QPointer>
+#include "ucaction.h"
 
-class UCAction;
 class UCActionContext;
 class ActionProxy : public QObject
 {
     Q_OBJECT
 public:
+
     ~ActionProxy();
     static ActionProxy &instance()
     {
@@ -52,7 +53,6 @@ protected Q_SLOTS:
     virtual void publishContextActions(UCActionContext *context);
 
 private:
-    bool globalPublished:1;
     QSet<UCActionContext*> m_localContexts;
     QPointer<UCActionContext> m_activeContext;
 };
