@@ -86,7 +86,7 @@ SheetBase {
     signal doneClicked
 
     __leftButton: Button {
-        text: i18n.dtr("ubuntu-ui-toolkit", "close")
+        text: i18n.dtr("ubuntu-ui-toolkit", "Close")
         visible: !doneButton
         /*! \internal */
         onClicked: {
@@ -96,7 +96,7 @@ SheetBase {
     }
 
     __rightButton: Button {
-        text: i18n.dtr("ubuntu-ui-toolkit", "done")
+        text: i18n.dtr("ubuntu-ui-toolkit", "Done")
         color: UbuntuColors.orange
         visible: doneButton
         /*! \internal */
