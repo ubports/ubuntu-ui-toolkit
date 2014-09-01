@@ -77,7 +77,7 @@ SheetBase {
     signal confirmClicked
 
     __leftButton: Button {
-        text: i18n.dtr("ubuntu-sdk", "cancel")
+        text: i18n.dtr("ubuntu-ui-toolkit", "cancel")
         objectName: "cancelButton"
         /*! \internal */ // avoid warning when generating documentation
         onClicked: {
@@ -87,7 +87,7 @@ SheetBase {
     }
 
     __rightButton: Button {
-        text: i18n.dtr("ubuntu-sdk", "confirm")
+        text: i18n.dtr("ubuntu-ui-toolkit", "confirm")
         objectName: "confirmButton"
         color: UbuntuColors.orange
         /*! \internal */ // avoid warning when generating documentation
