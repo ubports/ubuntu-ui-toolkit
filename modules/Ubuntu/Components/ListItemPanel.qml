@@ -15,7 +15,6 @@
  */
 
 import QtQuick 2.2
-import Ubuntu.Unity.Action 1.1 as UnityActions
 import Ubuntu.Components 1.1
 
 /*
