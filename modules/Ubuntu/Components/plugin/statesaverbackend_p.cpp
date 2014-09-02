@@ -211,7 +211,6 @@ bool StateSaverBackend::reset()
 {
     m_register.clear();
     if (m_archive) {
-        qDebug() << "RESET ARCHIVE";
         QFile archiveFile(m_archive.data()->fileName());
         return archiveFile.remove();
     }
