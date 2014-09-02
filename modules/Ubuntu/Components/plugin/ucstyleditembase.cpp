@@ -86,7 +86,7 @@ UCStyledItemBase::UCStyledItemBase(UCStyledItemBasePrivate &dd, QQuickItem *pare
 }
 
 /*!
- * \qmlmethod void StyledItemBase::requestFocus()
+ * \qmlmethod void StyledItemBase::requestFocus(Qt.FocusReason reason)
  * \since Ubuntu.Components 1.1
  * The function is similar to \c forceActiveFocus except that it sets focus only
  * if all the ancestors have activeFocusOnPressed set. Returns true if the request
@@ -96,7 +96,7 @@ bool UCStyledItemBase::requestFocus(Qt::FocusReason reason)
 {
     Q_D(UCStyledItemBase);
     bool focusable = d->isParentFocusable();
-    if (focusable) {
+    if (focusable && isEnabled()) {
         QQuickItem::forceActiveFocus(reason);
     }
     return focusable;
@@ -151,57 +151,6 @@ bool UCStyledItemBase::requestFocus(Qt::FocusReason reason)
  * }
  * \endqml
  *
- * StyledItem cannot gain focus automaically if there is a MouseArea or other
- * component grabbing mouse events placed over it. In that case the focus must
- * be grabbed by the overlapping area explicitly either by calling the \l requestFocus
- * function or by forwarding mouse events to the covered StyledItem area.
- * \qml
- * import QtQuick 2.2
- * import Ubuntu.Components 1.1
- *
- * Column {
- *     width: units.gu(50)
- *     height: units.gu(100)
- *
- *     StyledItem {
- *         id: scope1
- *         width: parent.width
- *         height: units.gu(30)
- *         activeFocusOnPress: false
- *         Rectangle {
- *             focus: true
- *             anchors {
- *                 fill: parent
- *                 margins: units.gu(1)
- *             }
- *             color: !activeFocus ? "red" : "green"
- *             MouseArea {
- *                 anchors.fill: parent
- *                 onClicked: scope1.requestFocus()
- *             }
- *         }
- *     }
- *     StyledItem {
- *         id: scope2
- *         width: parent.width
- *         height: units.gu(30)
- *         activeFocusOnPress: false
- *         Rectangle {
- *             focus: true
- *             anchors {
- *                 fill: parent
- *                 margins: units.gu(1)
- *             }
- *             color: !activeFocus ? "red" : "green"
- *             MouseArea {
- *                 anchors.fill: parent
- *                 Mouse.forwardTo: [scope2]
- *             }
- *         }
- *     }
- * }
- * \endqml
- *
  * The default value is \c false.
  */
 bool UCStyledItemBase::activefocusOnPress() const
@@ -223,8 +172,27 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
 void UCStyledItemBase::mousePressEvent(QMouseEvent *event)
 {
     QQuickItem::mousePressEvent(event);
-    Q_D(UCStyledItemBase);
     requestFocus(Qt::MouseFocusReason);
+}
+
+// filter children events as well, so we can catch mouse presses done over child
+// MouseAreas or other mouse grabbers
+bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
+{
+    // only filter pressed events
+    if (event->type() == QEvent::MouseButtonPress) {
+        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
+        // the event may occur outside of the parent's boundaries if not clipped
+        // therefore must check containment
+        QPointF point = mapFromItem(child, mouse->localPos());
+        if (contains(point)) {
+            QMouseEvent press(event->type(), point, mouse->windowPos(), mouse->screenPos(),
+                              mouse->button(), mouse->buttons(), mouse->modifiers());
+            mousePressEvent(&press);
+        }
+    }
+    // let the event be passed to children
+    return false;
 }
 
 #include "moc_ucstyleditembase.cpp"
