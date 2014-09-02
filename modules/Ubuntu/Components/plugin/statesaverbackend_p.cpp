@@ -69,7 +69,8 @@ void StateSaverBackend::initialize()
     if (applicationName.isEmpty()) {
         applicationName = UCApplication::instance().applicationName();
     }
-    m_archive = new QSettings(QString("%1/%2.state")
+    // make sure the path is in sync with https://wiki.ubuntu.com/SecurityTeam/Specifications/ApplicationConfinement
+    m_archive = new QSettings(QString("%1/confined/%2/statesaver.appstate")
                               .arg(QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation))
                               .arg(applicationName), QSettings::NativeFormat);
     m_archive->setFallbacksEnabled(false);
@@ -210,6 +211,7 @@ bool StateSaverBackend::reset()
 {
     m_register.clear();
     if (m_archive) {
+        qDebug() << "RESET ARCHIVE";
         QFile archiveFile(m_archive.data()->fileName());
         return archiveFile.remove();
     }
