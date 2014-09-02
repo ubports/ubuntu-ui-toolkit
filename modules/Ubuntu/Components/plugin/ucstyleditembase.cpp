@@ -172,7 +172,6 @@ void UCStyledItemBase::setActiveFocusOnPress(bool value)
 void UCStyledItemBase::mousePressEvent(QMouseEvent *event)
 {
     QQuickItem::mousePressEvent(event);
-    Q_D(UCStyledItemBase);
     requestFocus(Qt::MouseFocusReason);
 }
 
