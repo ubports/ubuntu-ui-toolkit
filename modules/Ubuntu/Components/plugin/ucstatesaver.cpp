@@ -153,8 +153,8 @@ void UCStateSaverAttachedPrivate::watchComponent(bool watch)
  *
  * \note Application name must be set in order to have the property states saved.
  * The proeprty can be set either through \l MainView::applicationName property or,
- * if the application's root item is not MainView, by setting \l UbuntuApplication::applicationName
- * property. The application name must be teh same as teh application's package
+ * if the application's root item is not MainView, by setting \c UbuntuApplication.applicationName
+ * property. The application name must be the same as the application's package
  * name (e.g. com.ubuntu.calendar).
  *
  * States saved are discarded when the application is closed properly. The state
