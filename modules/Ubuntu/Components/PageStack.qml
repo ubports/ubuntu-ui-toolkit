@@ -163,6 +163,7 @@ PageTreeNode {
     function push(page, properties) {
         if (internal.stack.size() > 0) internal.stack.top().active = false;
         internal.stack.push(internal.createWrapper(page, properties));
+        internal.stack.top().active = true;
         internal.stackUpdated();
     }
 
@@ -180,6 +181,8 @@ PageTreeNode {
         if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
         internal.stack.pop();
         internal.stackUpdated();
+
+        if (internal.stack.size() > 0) internal.stack.top().active = true;
     }
 
     /*!
@@ -213,13 +216,9 @@ PageTreeNode {
         }
 
         function stackUpdated() {
-            pageStack.depth = stack.size();
-            if (pageStack.depth > 0) {
-                internal.stack.top().active = true;
-                currentPage = stack.top().object;
-            } else {
-                currentPage = null;
-            }
+            pageStack.depth =+ stack.size();
+            if (pageStack.depth > 0) currentPage = stack.top().object;
+            else currentPage = null;
         }
     }
 

@@ -101,10 +101,8 @@ function deactivate(pageWrapper) {
  */
 function destroyObject(pageWrapper) {
     if (pageWrapper.canDestroy) {
+        pageWrapper.object.destroy();
         pageWrapper.object = null;
-        // Rely on garbage collector to destroy the object after all
-        // (other) references are gone. PageHeadStyle uses actions etc.
-        // of the page to show a fade-out animation after it was popped.
         pageWrapper.canDestroy = false;
     }
 }
