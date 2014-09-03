@@ -61,12 +61,6 @@ QUrl UbuntuComponentsPlugin::m_baseUrl = QUrl();
  * Type registration functions.
  */
 
-static QObject *registerPickerPanel(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(scriptEngine)
-    return UbuntuComponentsPlugin::registerQmlSingletonType(engine, "Pickers/PickerPanel.qml");
-}
-
 static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
@@ -92,18 +86,6 @@ static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
 
     UCUriHandler *uriHandler = new UCUriHandler();
     return uriHandler;
-}
-
-static QObject *registerUbuntuColors10(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(scriptEngine)
-    return UbuntuComponentsPlugin::registerQmlSingletonType(engine, "Colors/UbuntuColors10.qml");
-}
-
-static QObject *registerUbuntuColors11(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(scriptEngine)
-    return UbuntuComponentsPlugin::registerQmlSingletonType(engine, "Colors/UbuntuColors.qml");
 }
 
 QObject *UbuntuComponentsPlugin::registerQmlSingletonType(QQmlEngine *engine, const char* qmlFile)
@@ -140,7 +122,6 @@ void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
 void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, int minor)
 {
     qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItemBase");
-    qmlRegisterSingletonType<QObject>(uri, major, minor, "UbuntuColors", registerUbuntuColors10);
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
@@ -161,8 +142,6 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterSingletonType<UCUriHandler>(uri, major, minor, "UriHandler", registerUriHandler);
     qmlRegisterType<UCMouse>(uri, major, minor, "Mouse");
     qmlRegisterType<UCInverseMouse>(uri, major, minor, "InverseMouse");
-    // register QML singletons
-    qmlRegisterSingletonType<QObject>(uri, major, minor, "PickerPanel", registerPickerPanel);
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
@@ -172,7 +151,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     // register 0.1 for backward compatibility
     registerTypesToVersion(uri, 0, 1);
     registerTypesToVersion(uri, 1, 0);
-    qmlRegisterSingletonType<QObject>(uri, 1, 1, "UbuntuColors", registerUbuntuColors11);
 
     // register custom event
     ForwardedEvent::registerForwardedEvent();

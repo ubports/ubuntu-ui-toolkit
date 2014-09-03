@@ -44,6 +44,7 @@ StyledItem 0.1 StyledItem.qml
 ColorUtils 0.1 colorUtils.js
 DateUtils 0.1 dateUtils.js
 UbuntuListView 0.1 UbuntuListView.qml
+singleton UbuntuColors 0.1 10/UbuntuColors10.qml
 
 internal TextCursor TextCursor.qml
 internal TextInputPopover TextInputPopover.qml
@@ -88,6 +89,7 @@ StyledItem 1.0 StyledItem.qml
 ColorUtils 1.0 colorUtils.js
 DateUtils 1.0 dateUtils.js
 UbuntuListView 1.0 UbuntuListView.qml
+singleton UbuntuColors 1.0 10/UbuntuColors10.qml
 
 #version 1.1
 ComboButton 1.1 ComboButton.qml
@@ -103,3 +105,4 @@ PageHeadSections 1.1 PageHeadSections.qml
 PageHeadState 1.1 PageHeadState.qml
 Icon 1.1 Icon11.qml
 StyledItem 1.1 StyledItem.qml
+singleton UbuntuColors 1.1 11/UbuntuColors.qml
