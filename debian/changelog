@@ -32,7 +32,6 @@ ubuntu-ui-toolkit (1.1.1227+14.10.20140826-0ubuntu2) UNRELEASED; urgency=medium
   * Fix wrong sheet labels and pick up dtr strings. Fixes LP: #1354485
 
   [ Tim Peeters ]
-  * Add header animations
   * Fix header test
 
  -- Zoltán Balogh <zoltan@bakter.hu>  Thu, 28 Aug 2014 07:33:27 +0300
