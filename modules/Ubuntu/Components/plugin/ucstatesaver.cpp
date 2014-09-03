@@ -152,9 +152,8 @@ void UCStateSaverAttachedPrivate::watchComponent(bool watch)
  * of a component can be turned off by simply setting false to \l enabled property.
  *
  * \note Application name must be set in order to have the property states saved.
- * The proeprty can be set either through \l MainView::applicationName property or,
- * if the application's root item is not MainView, by setting \c UbuntuApplication.applicationName
- * property. The application name must be the same as the application's package
+ * The proeprty can be set either through \l MainView::applicationName property.
+ * Remember, the application name must be the same as the application's package
  * name (e.g. com.ubuntu.calendar).
  *
  * States saved are discarded when the application is closed properly. The state
