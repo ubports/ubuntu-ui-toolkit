@@ -20,28 +20,25 @@
 #include <QtQuick/QQuickItem>
 #include "ucstyleditembase.h"
 
-class UCListItemBackground;
+class UCListItemContent;
 class UCListItemDivider;
-class UCListItemBasePrivate;
-class UCListItemBase : public UCStyledItemBase
+class UCListItemPrivate;
+class UCListItem : public UCStyledItemBase
 {
     Q_OBJECT
-    Q_PROPERTY(UCListItemBackground *background READ background CONSTANT)
+    Q_PROPERTY(UCListItemContent *contentItem READ contentItem CONSTANT)
     Q_PROPERTY(UCListItemDivider *divider READ divider CONSTANT)
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
-
-    Q_PROPERTY(QQuickItem *owningItem READ owningItem NOTIFY owningItemChanged)
 public:
-    explicit UCListItemBase(QQuickItem *parent = 0);
-    ~UCListItemBase();
+    explicit UCListItem(QQuickItem *parent = 0);
+    ~UCListItem();
 
-    UCListItemBackground *background() const;
+    UCListItemContent *contentItem() const;
     UCListItemDivider *divider() const;
     bool pressed() const;
-    QQuickItem *owningItem();
 
 protected:
     void componentComplete();
@@ -54,17 +51,17 @@ protected:
 Q_SIGNALS:
     void pressedChanged();
     void childrenChanged();
-    void owningItemChanged();
 
     void clicked();
 
 public Q_SLOTS:
 
 private:
-    Q_DECLARE_PRIVATE(UCListItemBase)
+    Q_DECLARE_PRIVATE(UCListItem)
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
 };
 
 #endif // UCLISTITEM_H

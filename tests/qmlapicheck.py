@@ -48,28 +48,32 @@ inputfiles = []
 classes = {}
 for line in fileinput.input():
     if fileinput.filename()[-6:] == 'qmldir':
+        if line == '\n' or line[:1] == '#':
+            # Comments
+            continue
         if line[:8] == 'internal':
             # Internal components are not part of public API
             continue
         pieces = line.strip().split(' ')
-        if len(pieces) > 2:
-            filename = pieces[2]
-            # We only work with QML
-            if filename[-3:] == 'qml':
-                # Filenames are relative to the qmldir
-                # Foo 1.0 Foo.qml
-                folder = os.path.dirname(fileinput.filename())
-                fullpath = folder + '/' + filename
-                classname = pieces[0]
-                version = pieces[1]
-                if fullpath not in inputfiles:
-                    inputfiles.append(fullpath)
-                    classes[fullpath] = [classname, version]
-                else:
-                    versions = classes[fullpath]
-                    if classname not in versions:
-                        versions.append(classname)
-                    versions.append(version)
+        # [singleton] Foo 1.0 Foo.qml
+        if pieces[0] == 'singleton':
+            pieces.pop(0)
+        if pieces[0].islower():
+            # Unknown keyword
+            continue
+        classname, version, filename = pieces
+        if filename[-3:] == 'qml':
+            # Filenames are relative to the qmldir
+            folder = os.path.dirname(fileinput.filename())
+            fullpath = folder + '/' + filename
+            if fullpath not in inputfiles:
+                inputfiles.append(fullpath)
+                classes[fullpath] = [classname, version]
+            else:
+                versions = classes[fullpath]
+                if classname not in versions:
+                    versions.append(classname)
+                versions.append(version)
     else:
         inputfiles.append(fileinput.filename())
         fileinput.nextfile()
