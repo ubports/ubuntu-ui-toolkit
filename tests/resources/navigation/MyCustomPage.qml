@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Components 1.0
+import QtQuick 2.2
+import Ubuntu.Components 1.1
 
 Page {
     title: i18n.tr("My custom page")
@@ -30,32 +30,24 @@ Page {
                 horizontalCenter: parent.horizontalCenter
             }
 
-            text: i18n.tr("This is an external page\nwith a locked toolbar.")
+            text: i18n.tr("This is an external page.")
             color: "#757373"
         }
     }
 
-    tools: ToolbarItems {
-        ToolbarButton {
-            action: Action {
-                text: "action 1"
-                iconName: "outgoing-call"
-            }
+    head.actions: [
+        Action {
+            text: "action 1"
+            iconName: "outgoing-call"
+        },
+        Action {
+            text: "action 2"
+            iconSource: "call_icon.png"
+            iconName: "missed-call"
+        },
+        Action {
+            text: "another one"
+            iconName: "contact"
         }
-        ToolbarButton {
-            action: Action {
-                text: "action 2"
-                iconName: "missed-call"
-            }
-        }
-        ToolbarButton {
-            action: Action {
-                text: "another one"
-                iconSource: "call_icon.png"
-            }
-        }
-
-        opened: true
-        locked: true
-    }
+    ]
 }
