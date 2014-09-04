@@ -181,9 +181,6 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
 
-    // setup baseUrl by adding a trailing / to keep resolving properly resolve local files
-    m_baseUrl = QUrl(QQmlExtensionPlugin::baseUrl().toString() + '/');
-
     // register root object watcher that sets a global property with the root object
     // that can be accessed from any object
     context->setContextProperty("QuickUtils", &QuickUtils::instance());
