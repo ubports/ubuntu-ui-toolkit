@@ -18,8 +18,8 @@ import QtQuick 2.2
 import Ubuntu.Components 1.1
 
 MainView {
-    width: units.gu(60)
-    height: units.gu(50)
+    width: units.gu(70)
+    height: units.gu(60)
     useDeprecatedToolbar: false
 
     Tabs {
