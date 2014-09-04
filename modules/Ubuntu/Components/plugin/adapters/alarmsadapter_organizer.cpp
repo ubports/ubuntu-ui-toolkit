@@ -203,6 +203,15 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
     // save the sound as description as the audible reminder may be off
     if (alarm.changes && AlarmData::Sound) {
         event.setDescription(alarm.sound.toString());
+        // update audible reminder as well if alarm is enabled
+        if (alarm.enabled) {
+            QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
+            // remove the previous data, otherwise we will have two melodies
+            event.removeDetail(&audible);
+            // update sound and save
+            audible.setDataUrl(alarm.sound);
+            event.saveDetail(&audible);
+        }
     }
 
     // set repeating, reset recurrence no matter if we had it or not
