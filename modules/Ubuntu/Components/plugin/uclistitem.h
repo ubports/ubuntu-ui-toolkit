@@ -21,8 +21,8 @@
 #include "ucstyleditembase.h"
 
 class UCListItemBackground;
-class UCListItemBasePrivate;
-class UCListItemBase : public UCStyledItemBase
+class UCListItemPrivate;
+class UCListItem : public UCStyledItemBase
 {
     Q_OBJECT
     Q_PROPERTY(UCListItemBackground *background READ background CONSTANT)
@@ -30,15 +30,12 @@ class UCListItemBase : public UCStyledItemBase
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
-
-    Q_PROPERTY(QQuickItem *owningItem READ owningItem NOTIFY owningItemChanged)
 public:
-    explicit UCListItemBase(QQuickItem *parent = 0);
-    ~UCListItemBase();
+    explicit UCListItem(QQuickItem *parent = 0);
+    ~UCListItem();
 
     UCListItemBackground *background() const;
     bool pressed() const;
-    QQuickItem *owningItem();
 
 protected:
     void itemChange(ItemChange change, const ItemChangeData &data);
@@ -49,17 +46,17 @@ protected:
 Q_SIGNALS:
     void pressedChanged();
     void childrenChanged();
-    void owningItemChanged();
 
     void clicked();
 
 public Q_SLOTS:
 
 private:
-    Q_DECLARE_PRIVATE(UCListItemBase)
+    Q_DECLARE_PRIVATE(UCListItem)
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
 };
 
 #endif // UCLISTITEM_H

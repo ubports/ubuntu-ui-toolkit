@@ -37,8 +37,9 @@ MainView {
                 print("click")
                 main.override = !main.override
             }
-            Item {
+            Rectangle {
                 anchors.fill: parent
+                color: "tan"
             }
         }
 

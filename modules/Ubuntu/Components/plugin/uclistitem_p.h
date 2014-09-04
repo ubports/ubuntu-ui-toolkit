@@ -23,15 +23,15 @@
 
 class QQuickFlickable;
 class UCListItemBackground;
-class UCListItemBasePrivate : public UCStyledItemBasePrivate
+class UCListItemPrivate : public UCStyledItemBasePrivate
 {
-    Q_DECLARE_PUBLIC(UCListItemBase)
+    Q_DECLARE_PUBLIC(UCListItem)
 public:
-    UCListItemBasePrivate();
-    virtual ~UCListItemBasePrivate();
+    UCListItemPrivate();
+    virtual ~UCListItemPrivate();
     void init();
 
-    static inline UCListItemBasePrivate *get(UCListItemBase *that)
+    static inline UCListItemPrivate *get(UCListItem *that)
     {
         Q_ASSERT(that);
         return that->d_func();
@@ -41,6 +41,7 @@ public:
     void setFocusable();
 
     void _q_rebound();
+    void _q_updateSize();
     void setPressed(bool pressed);
     void listenToRebind(bool listen);
 
@@ -75,7 +76,7 @@ private Q_SLOTS:
 private:
     QColor m_color;
     QColor m_pressedColor;
-    UCListItemBase *m_item;
+    UCListItem *m_item;
     bool m_pressedColorChanged:1;
 };
 
