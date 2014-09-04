@@ -32,9 +32,9 @@ Item {
         ListItem {
             id: testItem
             width: parent.width
-            background.color: "blue"
+            contentItem.color: "blue"
             Item {
-                id: contentItem
+                id: bodyItem
                 anchors.fill: parent
             }
         }
@@ -83,14 +83,14 @@ Item {
         }
 
         function test_0_defaults() {
-            verify(defaults.background !== null, "Defaults is null");
-            compare(defaults.background.color, "#000000", "Transparent by default");
-            compare(defaults.background.pressedColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
+            verify(defaults.contentItem !== null, "Defaults is null");
+            compare(defaults.contentItem.color, "#000000", "Transparent by default");
+            compare(defaults.contentItem.pressedColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
             compare(defaults.pressed, false, "Not pressed buy default");
         }
 
-        function test_children_in_background() {
-            compare(contentItem.parent, testItem.background, "Content is not in the right holder!");
+        function test_children_in_content_item() {
+            compare(bodyItem.parent, testItem.contentItem, "Content is not in the right holder!");
         }
 
         function test_pressedChanged_on_click() {
