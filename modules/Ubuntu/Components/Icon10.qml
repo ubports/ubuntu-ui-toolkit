@@ -34,42 +34,16 @@ Item {
     Image {
         id: image
         objectName: "image"
-        anchors.fill: parent
-
-        /* Necessary so that icons are not loaded before a size is set. */
-        source: ""
-        sourceSize {
-            width: 0
-            height: 0
-        }
-
-        Component.onCompleted: update()
-        onWidthChanged: update()
-        onHeightChanged: update()
-        Connections {
-            target: icon
-            ignoreUnknownSignals: true
-            onNameChanged: image.update()
-            onSourceChanged: image.update()
-        }
-
-        function update() {
-            // only set sourceSize.width, sourceSize.height and source when
-            // icon dimensions are valid, see bug #1349769.
-            if (width > 0 && height > 0
-                    && (icon.name || (icon.hasOwnProperty("source") && icon.source))) {
-                sourceSize.width = width;
-                sourceSize.height = height;
-                if (icon.hasOwnProperty("source")) {
-                    source = icon.source;
-                } else {
-                    source = "image://theme/%1".arg(icon.name);
-                }
-            } else {
-                source = "";
-                sourceSize.width = 0;
-                sourceSize.height = 0;
-            }
+        anchors { top: parent.top; bottom: parent.bottom }
+        fillMode: Image.PreserveAspectFit;
+        sourceSize.height: height
+        source: {
+            if (icon.name)
+                return "image://theme/%1".arg(icon.name);
+            else if (icon.hasOwnProperty("source"))
+                return icon.source;
+            else
+                return "";
         }
 
         cache: true
@@ -83,7 +57,7 @@ Item {
         visible: active
 
         // Whether or not a color has been set.
-        property bool active: keyColorOut != Qt.rgba(0.0, 0.0, 0.0, 0.0) && source
+        property bool active: keyColorOut != Qt.rgba(0.0, 0.0, 0.0, 0.0)
 
         property Image source: active && image.status == Image.Ready ? image : null
         property color keyColorOut: Qt.rgba(0.0, 0.0, 0.0, 0.0)
