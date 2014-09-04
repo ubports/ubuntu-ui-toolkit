@@ -43,22 +43,6 @@ AbstractButton
 CheckBox 0.1 1.0
 AbstractButton
     property bool checked
-modules/Ubuntu/Components/Colors/UbuntuColors.qml
-QtObject
-    readonly property color orange
-    readonly property color lightAubergine
-    readonly property color midAubergine
-    readonly property color darkAubergine
-    readonly property color warmGrey
-    readonly property color coolGrey
-    property Gradient orangeGradient
-    property Gradient greyGradient
-    readonly property color lightGrey
-    readonly property color darkGrey
-    readonly property color red
-    readonly property color green
-    readonly property color blue
-    readonly property color purple
 ComboButton 1.1
 Button
     property bool expanded
@@ -353,7 +337,7 @@ StyledItem
 PickerDelegate 0.1 1.0
 AbstractButton
     readonly property Picker picker
-modules/Ubuntu/Components/Pickers/PickerPanel.qml
+PickerPanel 0.1 1.0
 Object
     function openDatePicker(caller, property, mode)
 ActionSelectionPopover 0.1 1.0
@@ -657,6 +641,32 @@ Item
     property Item pageStack
     property bool opened
     property bool locked
+UbuntuColors 1.1
+QtObject
+    readonly property color orange
+    readonly property color lightAubergine
+    readonly property color midAubergine
+    readonly property color darkAubergine
+    readonly property color warmGrey
+    readonly property color coolGrey
+    property Gradient orangeGradient
+    property Gradient greyGradient
+    readonly property color lightGrey
+    readonly property color darkGrey
+    readonly property color red
+    readonly property color green
+    readonly property color blue
+    readonly property color purple
+UbuntuColors 0.1 1.0
+QtObject
+    readonly property color orange
+    readonly property color lightAubergine
+    readonly property color midAubergine
+    readonly property color darkAubergine
+    readonly property color warmGrey
+    readonly property color coolGrey
+    property Gradient orangeGradient
+    property Gradient greyGradient
 UbuntuListView 0.1 1.0
 ListView
     property int expandedIndex
@@ -924,6 +934,17 @@ plugins.qmltypes
     Parameter { name: "singular"; type: "string" }
     Parameter { name: "plural"; type: "string" }
     Parameter { name: "n"; type: "int" }
+    prototype: "QObject"
+    name: "UbuntuColors"
+    exports: ["UbuntuColors -1.-1"]
+    Property { name: "orange"; type: "QColor"; isReadonly: true }
+    Property { name: "lightAubergine"; type: "QColor"; isReadonly: true }
+    Property { name: "midAubergine"; type: "QColor"; isReadonly: true }
+    Property { name: "darkAubergine"; type: "QColor"; isReadonly: true }
+    Property { name: "warmGrey"; type: "QColor"; isReadonly: true }
+    Property { name: "coolGrey"; type: "QColor"; isReadonly: true }
+    Property { name: "orangeGradient"; type: "QQuickGradient"; isPointer: true }
+    Property { name: "greyGradient"; type: "QQuickGradient"; isPointer: true }
     name: "ULConditionalLayout"
     prototype: "QObject"
     exports: ["ConditionalLayout 0.1", "ConditionalLayout 1.0"]
