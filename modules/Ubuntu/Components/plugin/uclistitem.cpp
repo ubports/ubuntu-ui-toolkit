@@ -38,9 +38,9 @@ QColor getPaletteColor(const char *profile, const char *color)
 
 
 /******************************************************************************
- * ListItemBackground
+ * ListItemContent
  */
-UCListItemBackground::UCListItemBackground(QQuickItem *parent)
+UCListItemContent::UCListItemContent(QQuickItem *parent)
     : QQuickItem(parent)
     , m_color(Qt::transparent)
     , m_pressedColor(Qt::yellow)
@@ -48,15 +48,15 @@ UCListItemBackground::UCListItemBackground(QQuickItem *parent)
 {
     setFlag(QQuickItem::ItemHasContents);
     // catch theme palette changes
-    connect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemBackground::updateColors);
+    connect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemContent::updateColors);
     updateColors();
 }
 
-UCListItemBackground::~UCListItemBackground()
+UCListItemContent::~UCListItemContent()
 {
 }
 
-void UCListItemBackground::setColor(const QColor &color)
+void UCListItemContent::setColor(const QColor &color)
 {
     if (m_color == color) {
         return;
@@ -66,26 +66,26 @@ void UCListItemBackground::setColor(const QColor &color)
     Q_EMIT colorChanged();
 }
 
-void UCListItemBackground::setPressedColor(const QColor &color)
+void UCListItemContent::setPressedColor(const QColor &color)
 {
     if (m_pressedColor == color) {
         return;
     }
     m_pressedColor = color;
     // no more theme change watch
-    disconnect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemBackground::updateColors);
+    disconnect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemContent::updateColors);
     update();
     Q_EMIT pressedColorChanged();
 }
 
-void UCListItemBackground::updateColors()
+void UCListItemContent::updateColors()
 {
     m_pressedColor = getPaletteColor("selected", "background");
     update();
 }
 
 
-void UCListItemBackground::itemChange(ItemChange change, const ItemChangeData &data)
+void UCListItemContent::itemChange(ItemChange change, const ItemChangeData &data)
 {
     if (change == ItemParentHasChanged) {
         m_item = qobject_cast<UCListItem*>(data.item);
@@ -93,7 +93,7 @@ void UCListItemBackground::itemChange(ItemChange change, const ItemChangeData &d
     QQuickItem::itemChange(change, data);
 }
 
-QSGNode *UCListItemBackground::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
+QSGNode *UCListItemContent::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
 {
     Q_UNUSED(data);
 
@@ -101,14 +101,12 @@ QSGNode *UCListItemBackground::updatePaintNode(QSGNode *oldNode, UpdatePaintNode
     bool pressed = (dd && dd->pressed);
     QColor color = pressed ? m_pressedColor : m_color;
 
+    delete oldNode;
     if (width() <= 0 || height() <= 0 || (color.alpha() == 0)) {
-        delete oldNode;
         return 0;
     }
-    QSGRectangleNode *rectNode = static_cast<QSGRectangleNode *>(oldNode);
-    if (!rectNode) {
-        rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
-    }
+
+    QSGRectangleNode *rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
     rectNode->setColor(color);
     rectNode->setRect(boundingRect());
     rectNode->update();
@@ -119,7 +117,7 @@ QSGNode *UCListItemBackground::updatePaintNode(QSGNode *oldNode, UpdatePaintNode
 UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
     , pressed(false)
-    , background(new UCListItemBackground)
+    , contentItem(new UCListItemContent)
 {
 }
 UCListItemPrivate::~UCListItemPrivate()
@@ -129,12 +127,12 @@ UCListItemPrivate::~UCListItemPrivate()
 void UCListItemPrivate::init()
 {
     Q_Q(UCListItem);
-    background->setObjectName("ListItemHolder");
-    QQml_setParent_noEvent(background, q);
-    background->setParentItem(q);
-    // content will be redirected to the background, therefore we must report
+    contentItem->setObjectName("ListItemHolder");
+    QQml_setParent_noEvent(contentItem, q);
+    contentItem->setParentItem(q);
+    // content will be redirected to the contentItem, therefore we must report
     // children changes as it would come from the main component
-    QObject::connect(background, &UCListItemBackground::childrenChanged,
+    QObject::connect(contentItem, &UCListItemContent::childrenChanged,
                      q, &UCListItem::childrenChanged);
     q->setFlag(QQuickItem::ItemHasContents);
     // turn activeFocusOnPress on
@@ -170,12 +168,12 @@ void UCListItemPrivate::_q_updateSize()
     q->setImplicitHeight(UCUnits::instance().gu(6));
 }
 
-// set pressed flag and update background
+// set pressed flag and update contentItem
 void UCListItemPrivate::setPressed(bool pressed)
 {
     if (this->pressed != pressed) {
         this->pressed = pressed;
-        background->update();
+        contentItem->update();
         Q_Q(UCListItem);
         Q_EMIT q->pressedChanged();
     }
@@ -208,14 +206,26 @@ void UCListItemPrivate::listenToRebind(bool listen)
  * element does not define any specific layout, components can be placed in any
  * ways on it. However, when used in list views, the content must be carefully
  * chosen to in order to keep the kinetic behavior and the highest FPS possible.
+ *
+ * \c contentItem is an essential part of the component. Beside the fact that it
+ * holds all components and resources declared as child to ListItem, it can also
+ * configure the color of the background when in normal mode or when pressed. Being
+ * an item, all other properties can be accessed or altered, with the exception
+ * of some:
+ * \list A
+ * \li do not alter \c x, \c y, \c width or \c height properties as those are
+ *      controlled by the ListItem itself when leading or trailing options are
+ *      revealed and thus will destroy your logic
+ * \li never anchor left or right anchor lines as it will block revealing the options.
+ * \endlist
  */
 
 /*!
  * \qmlsignal ListItem::clicked()
  *
  * The signal is emitted when the component gets released while the \l pressed property
- * is set. When used in Flickable, the signal is not emitted if when the Flickable gets
- * moved.
+ * is set. The signal is not emitted if the ListItem content is tugged or when used in
+ * Flickable (or ListView, GridView) and the Flickable gets moved.
  */
 UCListItem::UCListItem(QQuickItem *parent)
     : UCStyledItemBase(*(new UCListItemPrivate), parent)
@@ -259,10 +269,10 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
 void UCListItem::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
     UCStyledItemBase::geometryChanged(newGeometry, oldGeometry);
-    // resize background item
+    // resize contentItem item
     Q_D(UCListItem);
     QRectF rect(boundingRect());
-    d->background->setSize(rect.size());
+    d->contentItem->setSize(rect.size());
 }
 void UCListItem::mousePressEvent(QMouseEvent *event)
 {
@@ -294,25 +304,18 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 }
 
 /*!
- * \qmlpropertygroup ::ListItem::background
- * \qmlproperty color ListItem::background.color
- * \qmlproperty color ListItem::background.pressedColor
+ * \qmlpropertygroup ::ListItem::contentItem
+ * \qmlproperty color ListItem::contentItem.color
+ * \qmlproperty color ListItem::contentItem.pressedColor
  *
- * background grouped property is an Item which holds the layout of the item, with
- * abilities to show different colors when in normal state or when pressed. All
- * properties from Item are accessible and can be used to control user defined
- * actions or animations, with the exception of the followings:
- * \list A
- * \li do not alter x, y, width or height properties as those are controlled by the
- *      item itself when leading or trailing options are revealed and will destroy
- *      your logic
- * \li never anchor left or right as it will block revealing the options.
- * \endlist
+ * contentItem holds the components placed on a ListItem. \c color configures
+ * the color of the normal background, and \c pressedColor configures the color
+ * when pressed.
  */
-UCListItemBackground* UCListItem::background() const
+UCListItemContent* UCListItem::contentItem() const
 {
     Q_D(const UCListItem);
-    return d->background;
+    return d->contentItem;
 }
 
 /*!
@@ -336,7 +339,7 @@ bool UCListItem::pressed() const
 QQmlListProperty<QObject> UCListItem::data()
 {
     Q_D(UCListItem);
-    return QQuickItemPrivate::get(d->background)->data();
+    return QQuickItemPrivate::get(d->contentItem)->data();
 }
 
 /*!
@@ -346,7 +349,7 @@ QQmlListProperty<QObject> UCListItem::data()
 QQmlListProperty<QQuickItem> UCListItem::children()
 {
     Q_D(UCListItem);
-    return QQuickItemPrivate::get(d->background)->children();
+    return QQuickItemPrivate::get(d->contentItem)->children();
 }
 
 #include "moc_uclistitem.cpp"

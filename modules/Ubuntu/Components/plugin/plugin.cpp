@@ -167,7 +167,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
     // ListItem and related types
     qmlRegisterType<UCListItem, 1>(uri, 1, 1, "ListItem");
-    qmlRegisterType<UCListItemBackground>();
+    qmlRegisterType<UCListItemContent>();
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

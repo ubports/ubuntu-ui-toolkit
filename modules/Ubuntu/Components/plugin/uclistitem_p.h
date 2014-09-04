@@ -22,7 +22,7 @@
 #include <QtCore/QPointer>
 
 class QQuickFlickable;
-class UCListItemBackground;
+class UCListItemContent;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -47,17 +47,17 @@ public:
 
     bool pressed:1;
     QPointer<QQuickFlickable> flickable;
-    UCListItemBackground *background;
+    UCListItemContent *contentItem;
 };
 
-class UCListItemBackground : public QQuickItem
+class UCListItemContent : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(QColor color MEMBER m_color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor pressedColor MEMBER m_pressedColor WRITE setPressedColor NOTIFY pressedColorChanged)
 public:
-    explicit UCListItemBackground(QQuickItem *parent = 0);
-    ~UCListItemBackground();
+    explicit UCListItemContent(QQuickItem *parent = 0);
+    ~UCListItemContent();
 
     void setColor(const QColor &color);
     void setPressedColor(const QColor &color);
@@ -82,6 +82,6 @@ private:
 
 QColor getPaletteColor(const char *profile, const char *color);
 
-QML_DECLARE_TYPE(UCListItemBackground)
+QML_DECLARE_TYPE(UCListItemContent)
 
 #endif // UCVIEWITEM_P_H

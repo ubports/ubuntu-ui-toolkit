@@ -20,12 +20,12 @@
 #include <QtQuick/QQuickItem>
 #include "ucstyleditembase.h"
 
-class UCListItemBackground;
+class UCListItemContent;
 class UCListItemPrivate;
 class UCListItem : public UCStyledItemBase
 {
     Q_OBJECT
-    Q_PROPERTY(UCListItemBackground *background READ background CONSTANT)
+    Q_PROPERTY(UCListItemContent *contentItem READ contentItem CONSTANT)
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
@@ -34,7 +34,7 @@ public:
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
 
-    UCListItemBackground *background() const;
+    UCListItemContent *contentItem() const;
     bool pressed() const;
 
 protected:
