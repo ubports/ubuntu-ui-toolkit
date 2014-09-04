@@ -48,6 +48,7 @@ MainView {
 
         ListItem {
             id: testItem
+            contentItem.color: "lime"
             onClicked: {
                 print("click")
                 main.override = !main.override
@@ -80,7 +81,7 @@ MainView {
                     name: "override"
                     when: main.override
                     PropertyChanges {
-                        target: listItem.background
+                        target: listItem.contentItem
                         pressedColor: "brown"
                     }
                 }
@@ -98,7 +99,8 @@ MainView {
                 Repeater {
                     model: 100
                     ListItem {
-                        background {
+                        contentItem {
+                            color: "red"
                             pressedColor: "lime"
                         }
                         Label {

@@ -22,6 +22,4 @@ OTHER_FILES += \
     TextWithImportPopups.qml \
     ItemList.qml \
     ListItemList.qml \
-    ListItemBaseList.qml \
-    ListItemBaseWithOptionsList.qml \
     ListItemWithOptionsList.qml

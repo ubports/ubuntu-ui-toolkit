@@ -77,9 +77,7 @@ private Q_SLOTS:
         QTest::newRow("grid with Button") << "ButtonGrid.qml" << QUrl();
         QTest::newRow("grid with Slider") << "SliderGrid.qml" << QUrl();
         QTest::newRow("list with Item") << "ItemList.qml" << QUrl();
-        QTest::newRow("list with ListItemBase") << "ListItemBaseList.qml" << QUrl();
         QTest::newRow("list with ListItem") << "ListItemList.qml" << QUrl();
-        QTest::newRow("list with ListItemBaseWithOptions") << "ListItemBaseWithOptionsList.qml" << QUrl();
         QTest::newRow("list with ListItemWithOptions") << "ListItemWithOptionsList.qml" << QUrl();
     }
 

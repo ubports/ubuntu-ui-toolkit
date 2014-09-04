@@ -33,7 +33,7 @@ public:
     void registerTypes(const char *uri);
     void initializeEngine(QQmlEngine *engine, const char *uri);
     static QObject *registerQmlSingletonType(QQmlEngine *engine, const char* qmlFile);
-    static const QUrl& pluginUrl()
+    static const QUrl &pluginUrl()
     {
         return m_baseUrl;
     }
@@ -43,9 +43,8 @@ private Q_SLOTS:
     void setWindowContextProperty(QWindow* focusWindow);
 
 private:
-    void registerTypesToVersion(const char *uri, int major, int minor);
-
     static QUrl m_baseUrl;
+    void registerTypesToVersion(const char *uri, int major, int minor);
 };
 #endif // UBUNTU_COMPONENTS_PLUGIN_H
 

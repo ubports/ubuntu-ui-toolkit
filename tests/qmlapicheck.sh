@@ -15,7 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ################################################################################
-QML="modules/Ubuntu/*/qmldir modules/Ubuntu/Components/Colors/UbuntuColors.qml modules/Ubuntu/Components/*/qmldir modules/Ubuntu/Components/Pickers/PickerPanel.qml"
+QML="modules/Ubuntu/*/qmldir modules/Ubuntu/Components/*/qmldir"
 CPP="Ubuntu.Components Ubuntu.Layouts Ubuntu.PerformanceMetrics Ubuntu.Test"
 
 echo Dumping QML API of C++ components
