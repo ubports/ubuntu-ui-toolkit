@@ -32,6 +32,43 @@ import "stack.js" as Stack
     of the stack. When more than one Pages are on the stack, the toolbar will
     automatically feature a back-button that pop the stack when triggered.
 
+    The anchors of the PageStack are set to fill its parent by default. To use
+    left/right/top/bottom anchors, explicitly set anchors.fill of the PageStack to
+    undefined:
+    \qml
+        import QtQuick 2.2
+        import Ubuntu.Components 1.1
+
+        MainView {
+            width: units.gu(40)
+            height: units.gu(71)
+
+            PageStack {
+                id: mainStack
+                anchors {
+                    fill: undefined // unset the default to make the other anchors work
+                    left: parent.left
+                    right: parent.right
+                    top: parent.top
+                    bottom: rect.top
+                }
+            }
+
+            Rectangle {
+                id: rect
+                color: UbuntuColors.red
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+                height: units.gu(10)
+            }
+
+            Component.onCompleted: mainStack.push(Qt.resolvedUrl("MyPage.qml"))
+        }
+    \endqml
+
     Pages that are defined inside the PageStack must initially set their visibility
     to false to avoid the pages occluding the PageStack before they are pushed.
     When pushing a \l Page, its visibility is automatically updated.
@@ -126,7 +163,6 @@ PageTreeNode {
     function push(page, properties) {
         if (internal.stack.size() > 0) internal.stack.top().active = false;
         internal.stack.push(internal.createWrapper(page, properties));
-        internal.stack.top().active = true;
         internal.stackUpdated();
     }
 
@@ -144,8 +180,6 @@ PageTreeNode {
         if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
         internal.stack.pop();
         internal.stackUpdated();
-
-        if (internal.stack.size() > 0) internal.stack.top().active = true;
     }
 
     /*!
@@ -179,9 +213,13 @@ PageTreeNode {
         }
 
         function stackUpdated() {
-            pageStack.depth =+ stack.size();
-            if (pageStack.depth > 0) currentPage = stack.top().object;
-            else currentPage = null;
+            pageStack.depth = stack.size();
+            if (pageStack.depth > 0) {
+                internal.stack.top().active = true;
+                currentPage = stack.top().object;
+            } else {
+                currentPage = null;
+            }
         }
     }
 

@@ -87,7 +87,7 @@ MainView {
         self.assertEqual(element.is_flickable(), self.is_flickable)
 
 
-class SwipeIntoViewTestCase(tests.QMLStringAppTestCase):
+class SwipeFlickableTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
@@ -138,12 +138,14 @@ MainView {
 """)
 
     def setUp(self):
-        super(SwipeIntoViewTestCase, self).setUp()
+        super(SwipeFlickableTestCase, self).setUp()
+        self.flickable = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickFlickable, objectName='flickable')
         self.label = self.main_view.select_single(
             'Label', objectName='clickedLabel')
         self.assertEqual(self.label.text, 'No element clicked.')
 
-    def test_swipe_to_bottom(self):
+    def test_swipe_into_view_bottom_element(self):
         self.main_view.close_toolbar()
 
         button = self.main_view.select_single(objectName='bottomButton')
@@ -152,7 +154,7 @@ MainView {
         self.pointing_device.click_object(button)
         self.assertEqual(self.label.text, 'bottomButton')
 
-    def test_swipe_to_top(self):
+    def test_swipe_into_view_top_element(self):
         self.main_view.close_toolbar()
         bottomButton = self.main_view.select_single(objectName='bottomButton')
         bottomButton.swipe_into_view()
@@ -162,6 +164,20 @@ MainView {
 
         self.pointing_device.click_object(topButton)
         self.assertEqual(self.label.text, 'topButton')
+
+    def test_swipe_to_top_must_leave_flickable_at_y_beginning(self):
+        self.flickable.swipe_to_bottom()
+        self.assertFalse(self.flickable.atYBeginning)
+
+        self.flickable.swipe_to_top()
+        self.assertTrue(self.flickable.atYBeginning)
+
+    def test_swipe_to_bottom_must_leave_flickable_at_y_end(self):
+        self.flickable.swipe_to_top()
+        self.assertFalse(self.flickable.atYEnd)
+
+        self.flickable.swipe_to_bottom()
+        self.assertTrue(self.flickable.atYEnd)
 
 
 class UnityFlickableTestCase(tests.QMLStringAppTestCase):

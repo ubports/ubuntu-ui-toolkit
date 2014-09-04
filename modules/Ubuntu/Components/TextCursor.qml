@@ -74,21 +74,23 @@ Ubuntu.StyledItem {
         }
         // open context menu only for cursorPosition or selectionEnd
         if (positionProperty !== "selectionStart") {
-            var p;
+            var popup;
             if (handler.main.popover === undefined) {
                 // open the default one
-                p = PopupUtils.open(Qt.resolvedUrl("TextInputPopover.qml"), cursorItem,
+                popup = PopupUtils.open(Qt.resolvedUrl("TextInputPopover.qml"), cursorItem,
                                 {
                                     "target": handler.main
                                 })
             } else {
-                p = PopupUtils.open(handler.main.popover, cursorItem,
+                popup = PopupUtils.open(handler.main.popover, cursorItem,
                                 {
                                     "target": handler.main
                                 })
             }
             contextMenuVisible = true;
-            p.onVisibleChanged.connect(contextMenuHidden.bind(undefined, p));
+            popup.onVisibleChanged.connect(contextMenuHidden.bind(undefined, p));
+            // do not grab focus!
+            popup.__foreground.activeFocusOnPress = false;
         }
     }
 

@@ -23,7 +23,7 @@ from ubuntuuitoolkit._custom_proxy_objects import (
 
 
 class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
-    """TextField Autopilot emulator."""
+    """TextField Autopilot custom proxy object."""
 
     def __init__(self, *args):
         super(TextField, self).__init__(*args)
@@ -70,15 +70,16 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _clear_with_keys(self):
         if platform.model() == 'Desktop':
             self._select_all()
+            self.keyboard.press_and_release('BackSpace')
         else:
             # Touch tap currently doesn't have a press_duration parameter, so
-            # we can't show the popover. Reported as bug http://pad.lv/1268782
-            # --elopio - 2014-01-13
-            self.keyboard.press_and_release('End')
-        while not self.is_empty():
-            # We delete with backspace because the on-screen keyboard has that
-            # key.
-            self.keyboard.press_and_release('BackSpace')
+            # we can't select all the text.
+            # Reported as bug http://pad.lv/1268782 --elopio - 2014-01-13
+            self._go_to_end()
+            while self.cursorPosition != 0:
+                self._delete_one_character()
+        if not self.is_empty():
+            raise _common.ToolkitException('Failed to clear the text field.')
 
     def _select_all(self):
         if not self._is_all_text_selected():
@@ -92,3 +93,16 @@ class TextField(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
     def _is_all_text_selected(self):
         return self.text == self.selectedText
+
+    def _go_to_end(self):
+        # XXX Here we are cheating because the on-screen keyboard doesn't have
+        # an END key. --elopio - 2014-08-20
+        self.keyboard.press_and_release('End')
+
+    def _delete_one_character(self):
+        original_text = self.text
+        # We delete with backspace because the on-screen keyboard has
+        # that key.
+        self.keyboard.press_and_release('BackSpace')
+        if len(self.text) != len(original_text) - 1:
+            raise _common.ToolkitException('Failed to delete one character.')

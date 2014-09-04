@@ -21,6 +21,7 @@
 #include "ucalarm_p.h"
 #include "alarmmanager_p.h"
 #include <QtQml/QQmlPropertyMap>
+#include <QtQml/QQmlInfo>
 
 /*!
  * \qmltype AlarmModel
@@ -132,6 +133,8 @@ UCAlarmModel::UCAlarmModel(QObject *parent)
     // the delegates may cause the model data to be invalid (released) as some
     // backends may do the refresh/element removals synchronously
     connect(&AlarmManager::instance(), SIGNAL(alarmsChanged()), this, SLOT(refresh()), Qt::QueuedConnection);
+    // get individual alarm data updates
+    connect(&AlarmManager::instance(), SIGNAL(alarmsUpdated(QList<QVariant>)), this, SLOT(update(QList<QVariant>)), Qt::QueuedConnection);
     // fetch alarms
     refresh();
     m_ready = true;
@@ -243,9 +246,9 @@ void UCAlarmModel::refresh()
     }
 
     clear();
-    QList<AlarmData> alarms = AlarmManager::instance().alarms();
+    AlarmList alarms = AlarmManager::instance().alarms();
     Q_FOREACH(const AlarmData &data, alarms) {
-        UCAlarm *alarm = new UCAlarm;
+        UCAlarm *alarm = new UCAlarm(this);
         UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
         pAlarm->rawData = data;
         m_alarms << alarm;
@@ -254,5 +257,30 @@ void UCAlarmModel::refresh()
 
     if (m_ready) {
         endResetModel();
+    }
+}
+
+/*!
+ * \internal
+ * Slot updating individual alarms' data.
+ */
+void UCAlarmModel::update(const QList<QVariant> cookies)
+{
+    AlarmList alarms = AlarmManager::instance().alarms();
+    Q_FOREACH(const QVariant &cookie, cookies) {
+        int alarmIndex = alarms.indexOfAlarm(cookie);
+        AlarmData data = alarms[alarmIndex];
+
+        // the index of the m_alarm must be in sync with teh index of the alarms
+        UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(m_alarms[alarmIndex]);
+        if (pAlarm->rawData.cookie != cookie) {
+            qmlInfo(this) << "Updated alarm cookies differ!" << cookie.toString() << pAlarm->rawData.cookie.toString();
+        } else {
+            pAlarm->rawData = data;
+
+            // create index and emit dataUpdate()
+            QModelIndex modelIndex = createIndex(alarmIndex, 0);
+            Q_EMIT dataChanged(modelIndex, modelIndex);
+        }
     }
 }

@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import QtFeedback 5.0
+import Ubuntu.Components 1.1
 
 /*!
     \qmlabstract AbstractButton
@@ -81,6 +82,8 @@ ActionItem {
       To get the properties of the mouse area in subclasses.
      */
     property alias __mouseArea: mouseArea
+
+    activeFocusOnPress: true
 
     HapticsEffect {
         id: pressEffect
