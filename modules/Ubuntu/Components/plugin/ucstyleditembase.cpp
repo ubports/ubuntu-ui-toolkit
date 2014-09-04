@@ -86,7 +86,7 @@ UCStyledItemBase::UCStyledItemBase(UCStyledItemBasePrivate &dd, QQuickItem *pare
 }
 
 /*!
- * \qmlmethod void StyledItemBase::requestFocus(Qt.FocusReason reason)
+ * \qmlmethod void StyledItemBase::requestFocus(Qt::FocusReason reason)
  * \since Ubuntu.Components 1.1
  * The function is similar to \c forceActiveFocus except that it sets focus only
  * if all the ancestors have activeFocusOnPressed set. Returns true if the request

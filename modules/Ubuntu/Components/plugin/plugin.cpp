@@ -57,16 +57,11 @@
 #include <unistd.h>
 #include <stdexcept>
 
+QUrl UbuntuComponentsPlugin::m_baseUrl = QUrl();
+
 /*
  * Type registration functions.
  */
-
-static QObject *registerPickerPanel(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(scriptEngine)
-    return UbuntuComponentsPlugin::registerQmlSingletonType(engine,
-           "Ubuntu.Components", "Pickers/PickerPanel.qml");
-}
 
 static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
@@ -95,45 +90,9 @@ static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
     return uriHandler;
 }
 
-static QObject *registerUbuntuColors10(QQmlEngine *engine, QJSEngine *scriptEngine)
+QObject *UbuntuComponentsPlugin::registerQmlSingletonType(QQmlEngine *engine, const char* qmlFile)
 {
-    Q_UNUSED(scriptEngine)
-    return UbuntuComponentsPlugin::registerQmlSingletonType(engine,
-           "Ubuntu.Components", "Colors/UbuntuColors10.qml");
-}
-
-static QObject *registerUbuntuColors11(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(scriptEngine)
-    return UbuntuComponentsPlugin::registerQmlSingletonType(engine,
-           "Ubuntu.Components", "Colors/UbuntuColors.qml");
-}
-
-QUrl UbuntuComponentsPlugin::baseUrl(const QStringList& importPathList, const char* uri)
-{
-    /* FIXME: remove when migrating to Qt 5.1 and use QQmlExtensionPlugin::baseUrl()
-       http://doc-snapshot.qt-project.org/qt5-stable/qtqml/qqmlextensionplugin.html#baseUrl
-    */
-    QString pluginRelativePath = QString::fromUtf8(uri).replace(".", "/").prepend("/").append("/");
-    QString pluginPath;
-    Q_FOREACH (QString importPath, importPathList) {
-        pluginPath = importPath.append(pluginRelativePath);
-        /* We verify that the directory ending in Ubuntu/Components contains the
-           file libUbuntuComponents.so therefore proving it's the right directory.
-
-           Ref.: https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1197293
-        */
-        if (QFile(pluginPath + "libUbuntuComponents.so").exists()) {
-            return QUrl::fromLocalFile(pluginPath);
-        }
-    }
-
-    return QUrl();
-}
-
-QObject *UbuntuComponentsPlugin::registerQmlSingletonType(QQmlEngine *engine, const char* uri, const char* qmlFile)
-{
-    QUrl url = baseUrl(engine->importPathList(), uri).resolved(QUrl::fromLocalFile(qmlFile));
+    QUrl url = m_baseUrl.resolved(QUrl::fromLocalFile(qmlFile));
     return QuickUtils::instance().createQmlObject(url, engine);
 }
 
@@ -165,7 +124,6 @@ void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
 void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, int minor)
 {
     qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItemBase");
-    qmlRegisterSingletonType<QObject>(uri, major, minor, "UbuntuColors", registerUbuntuColors10);
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
@@ -186,8 +144,6 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterSingletonType<UCUriHandler>(uri, major, minor, "UriHandler", registerUriHandler);
     qmlRegisterType<UCMouse>(uri, major, minor, "Mouse");
     qmlRegisterType<UCInverseMouse>(uri, major, minor, "InverseMouse");
-    // register QML singletons
-    qmlRegisterSingletonType<QObject>(uri, major, minor, "PickerPanel", registerPickerPanel);
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
@@ -197,7 +153,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     // register 0.1 for backward compatibility
     registerTypesToVersion(uri, 0, 1);
     registerTypesToVersion(uri, 1, 0);
-    qmlRegisterSingletonType<QObject>(uri, 1, 1, "UbuntuColors", registerUbuntuColors11);
 
     // register custom event
     ForwardedEvent::registerForwardedEvent();
@@ -217,6 +172,9 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
+    // initialize baseURL
+    m_baseUrl = QUrl(baseUrl().toString() + '/');
+
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
 
