@@ -88,8 +88,12 @@ Item {
         id: strokeBorder
         anchors.fill: parent
         anchors.margins: -units.gu(0.5)
-        source: "artwork/stroke_button.png"
+        // FIXME: this PNG is way too big (462x108) and do not scale properly
+        // ie. the corners are visually incorrect at most sizes
+        source: stroke ? "artwork/stroke_button.png" : ""
         visible: false
+        cache: false
+        asynchronous: true
     }
 
     ShaderEffect {
@@ -155,7 +159,7 @@ Item {
         /* Pick either a clear or dark text color depending on the luminance of the
            background color to maintain good contrast (works in most cases)
         */
-        textColor: ColorUtils.luminance(button.color) <= 0.85 && !(stroke && !pressed) ? "#F3F3E7" : "#888888"
+        textColor: ColorUtils.luminance(button.color) <= 0.85 && !(stroke && !pressed) ? "#FFFFFF" : "#888888"
         iconSource: button.iconSource
         iconPosition: button.iconPosition
         iconSize: units.gu(3)

@@ -301,6 +301,7 @@ PageTreeNode {
                     }
                 }
                 propagateComposedEvents: true
+                enabled: mainView.useDeprecatedToolbar
             }
         }
 
