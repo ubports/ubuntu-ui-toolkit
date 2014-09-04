@@ -347,6 +347,10 @@ void UCListItemPrivate::resize()
  *      revealed and thus will destroy your logic
  * \li never anchor left or right anchor lines as it will block revealing the options.
  * \endlist
+ *
+ * Each ListItem has a thin divider shown on the bottom of the component. This
+ * divider can be configured through the \l divider grouped property, which can
+ * configure its margins from the edges of the ListItem as well as its visibility.
  */
 
 /*!
