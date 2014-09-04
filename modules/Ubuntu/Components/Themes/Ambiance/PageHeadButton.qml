@@ -39,8 +39,10 @@ AbstractButton {
         anchors {
             centerIn: parent
         }
-        width: button.iconWidth
-        height: button.iconHeight
+        // prevent trying to render the icon with an invalid source
+        // when the button is invisible by setting width and height to 0
+        width: visible ? button.iconWidth : 0
+        height: visible ? button.iconHeight : 0
         source: button.iconSource
         color: Qt.rgba(0, 0, 0, 0)
         opacity: button.enabled ? 1.0 : 0.3
