@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.0
 
 Page {
     title: i18n.tr("My custom page")
@@ -30,24 +30,32 @@ Page {
                 horizontalCenter: parent.horizontalCenter
             }
 
-            text: i18n.tr("This is an external page.")
+            text: i18n.tr("This is an external page\nwith a locked toolbar.")
             color: "#757373"
         }
     }
 
-    head.actions: [
-        Action {
-            text: "action 1"
-            iconName: "outgoing-call"
-        },
-        Action {
-            text: "action 2"
-            iconSource: "call_icon.png"
-            iconName: "missed-call"
-        },
-        Action {
-            text: "another one"
-            iconName: "contact"
+    tools: ToolbarItems {
+        ToolbarButton {
+            action: Action {
+                text: "action 1"
+                iconName: "outgoing-call"
+            }
         }
-    ]
+        ToolbarButton {
+            action: Action {
+                text: "action 2"
+                iconName: "missed-call"
+            }
+        }
+        ToolbarButton {
+            action: Action {
+                text: "another one"
+                iconSource: "call_icon.png"
+            }
+        }
+
+        opened: true
+        locked: true
+    }
 }
