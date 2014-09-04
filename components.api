@@ -82,8 +82,6 @@ Icon10
 Label 0.1 1.0
 Text
     property string fontSize
-ListItem 1.1
-ListItemBase
 Base 0.1 1.0
 Empty
     property variant icon
@@ -816,19 +814,18 @@ plugins.qmltypes
     name: "UCInverseMouse"
     prototype: "UCMouse"
     exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
-    name: "UCListItemBackground"
-    prototype: "QQuickItem"
-    Property { name: "color"; type: "QColor" }
-    Property { name: "pressedColor"; type: "QColor" }
-    name: "UCListItemBase"
+    name: "UCListItem"
     prototype: "UCStyledItemBase"
-    exports: ["ListItemBase 1.1"]
-    Property { name: "background"; type: "UCListItemBackground"; isReadonly: true; isPointer: true }
+    exports: ["ListItem 1.1"]
+    Property { name: "contentItem"; type: "UCListItemContent"; isReadonly: true; isPointer: true }
     Property { name: "pressed"; type: "bool"; isReadonly: true }
     Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
-    Property { name: "owningItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Signal { name: "clicked" }
+    name: "UCListItemContent"
+    prototype: "QQuickItem"
+    Property { name: "color"; type: "QColor" }
+    Property { name: "pressedColor"; type: "QColor" }
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1", "Mouse 1.0"]
@@ -960,6 +957,12 @@ plugins.qmltypes
     Property { name: "coolGrey"; type: "QColor"; isReadonly: true }
     Property { name: "orangeGradient"; type: "QQuickGradient"; isPointer: true }
     Property { name: "greyGradient"; type: "QQuickGradient"; isPointer: true }
+    Property { name: "lightGrey"; type: "QColor"; isReadonly: true }
+    Property { name: "darkGrey"; type: "QColor"; isReadonly: true }
+    Property { name: "red"; type: "QColor"; isReadonly: true }
+    Property { name: "green"; type: "QColor"; isReadonly: true }
+    Property { name: "blue"; type: "QColor"; isReadonly: true }
+    Property { name: "purple"; type: "QColor"; isReadonly: true }
     name: "ULConditionalLayout"
     prototype: "QObject"
     exports: ["ConditionalLayout 0.1", "ConditionalLayout 1.0"]
