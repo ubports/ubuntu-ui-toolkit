@@ -77,7 +77,8 @@ void StateSaverBackend::initialize()
         applicationName = UCApplication::instance().applicationName();
     }
     // make sure the path is in sync with https://wiki.ubuntu.com/SecurityTeam/Specifications/ApplicationConfinement
-    m_archive = new QSettings(QString("%1/confined/%2/statesaver.appstate")
+    // the file must be saved under XDG_RUNTIME_DIR/<APP_PKGNAME> path.
+    m_archive = new QSettings(QString("%1/%2/statesaver.appstate")
                               .arg(QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation))
                               .arg(applicationName), QSettings::NativeFormat);
     m_archive->setFallbacksEnabled(false);
