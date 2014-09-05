@@ -563,6 +563,23 @@ private Q_SLOTS:
         QVERIFY(data.cookie.isValid());
         QCOMPARE(data.enabled, false);
     }
+
+    void test_change_alarm_sound()
+    {
+        UCAlarm alarm(QDateTime::currentDateTime(), UCAlarm::AutoDetect, "test_change_alarm_fields_sound");
+        alarm.save();
+        waitForRequest(&alarm);
+        QVERIFY(containsAlarm(&alarm));
+
+        // do the change
+        alarm.setSound(QUrl("file:///usr/share/sounds/ubuntu/ringtones/Celestial.ogg"));
+        alarm.save();
+        waitForRequest(&alarm);
+        QVERIFY(containsAlarm(&alarm));
+
+        //verify whether we have the desired change
+        QVERIFY(AlarmManager::instance().verifyChange(&alarm, AlarmData::Sound, QVariant::fromValue(alarm.sound())));
+    }
 };
 
 QTEST_MAIN(tst_UCAlarms)
