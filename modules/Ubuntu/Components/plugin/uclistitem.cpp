@@ -202,7 +202,7 @@ void UCListItemContent::setPressedColor(const QColor &color)
 
 void UCListItemContent::updateColors()
 {
-    m_pressedColor = getPaletteColor("selected", "contentItem");
+    m_pressedColor = getPaletteColor("selected", "background");
     update();
 }
 
@@ -438,7 +438,7 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  *
  * \c contentItem is an essential part of the component. Beside the fact that it
  * holds all components and resources declared as child to ListItem, it can also
- * configure the color of the contentItem when in normal mode or when pressed. Being
+ * configure the color of the background when in normal mode or when pressed. Being
  * an item, all other properties can be accessed or altered, with the exception
  * of some:
  * \list A
