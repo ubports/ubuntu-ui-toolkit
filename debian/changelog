@@ -9,6 +9,8 @@ ubuntu-ui-toolkit (1.1.1239+14.10.20140904-0ubuntu2) UNRELEASED; urgency=medium
     child filtering properly.
   * Organizer audible reminder was not updated when Alarm sound 
     changed
+  * Exclude UbuntuColors dumped erroneously by qmlplugindump as it
+    would be a C++ type.
 
   [ Christian Dywan ]
   * Handle singleton in qmldir and explicitly skip unknown keywords.
