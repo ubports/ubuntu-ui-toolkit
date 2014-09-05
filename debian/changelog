@@ -1,3 +1,37 @@
+ubuntu-ui-toolkit (1.1.1234+14.10.20140904-0ubuntu2) UNRELEASED; urgency=medium
+
+  [ Zsombor Egri ]
+  * Use proper QML Singleton structure introduced in Qt 5.2.
+  * Move to use QQmlExtensionPlugin::baseUrl(), remove workaround. 
+    Prerequisite for transitioning to proper QML singleton use and 
+    new ListItem.
+  * Focus should not be taken by a component if disabled. Complete 
+    child filtering properly.
+
+  [ Christian Dywan ]
+  * Handle singleton in qmldir and explicitly skip unknown keywords.
+
+  [ Tim Peeters ]
+  * Revert Icon10 change from header animations MR to fix coloring 
+    of icons.
+
+  [ Lars Uebernickel ]
+  * unitythemeiconprovider: manually load icons
+    Previously, UnityThemeIconProvider used QIcon::fromTheme() to 
+    lookup and load icons. That function uses fdo's default icon 
+    lookup algorithm: it looks at the current theme and all parent
+    themes for each icon in turn. We'd prefer a breadth-first search,
+    where all icon names are looked up in the current theme before 
+    falling back to the parent themes. This change implements fdo's 
+    FindBestIcon() algorithm, which behaves like that.
+    It also now properly support rectangular icons and always returns
+    an icon with the requested size (adjusted for preserving the 
+    aspect ratio).
+    As a result, the Icon component is much simpler and only requires 
+    height to be set for rectangular icons. Fixes LP: #1324184
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 05 Sep 2014 07:12:01 +0300
+
 ubuntu-ui-toolkit (1.1.1227+14.10.20140904-0ubuntu1) utopic; urgency=medium
 
   [ Zsombor Egri ]
