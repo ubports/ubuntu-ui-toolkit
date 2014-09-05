@@ -159,6 +159,8 @@ public:
 
     AlarmList alarms() const;
 
+    bool verifyChange(UCAlarm *alarm, AlarmData::Change change, const QVariant &newData);
+
 Q_SIGNALS:
     void alarmsChanged();
     void alarmsUpdated(const QList<QVariant> &cookies);

@@ -64,12 +64,6 @@ QUrl UbuntuComponentsPlugin::m_baseUrl = QUrl();
  * Type registration functions.
  */
 
-static QObject *registerPickerPanel(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(scriptEngine)
-    return UbuntuComponentsPlugin::registerQmlSingletonType(engine, "Pickers/PickerPanel.qml");
-}
-
 static QObject *registerClipboard(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
@@ -95,24 +89,6 @@ static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
 
     UCUriHandler *uriHandler = new UCUriHandler();
     return uriHandler;
-}
-
-static QObject *registerUbuntuColors10(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(scriptEngine)
-    return UbuntuComponentsPlugin::registerQmlSingletonType(engine, "Colors/UbuntuColors10.qml");
-}
-
-static QObject *registerUbuntuColors11(QQmlEngine *engine, QJSEngine *scriptEngine)
-{
-    Q_UNUSED(scriptEngine)
-    return UbuntuComponentsPlugin::registerQmlSingletonType(engine, "Colors/UbuntuColors.qml");
-}
-
-QObject *UbuntuComponentsPlugin::registerQmlSingletonType(QQmlEngine *engine, const char* qmlFile)
-{
-    QUrl url = m_baseUrl.resolved(QUrl::fromLocalFile(qmlFile));
-    return QuickUtils::instance().createQmlObject(url, engine);
 }
 
 void UbuntuComponentsPlugin::registerWindowContextProperty()
@@ -143,7 +119,6 @@ void UbuntuComponentsPlugin::setWindowContextProperty(QWindow* focusWindow)
 void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, int minor)
 {
     qmlRegisterType<UCStyledItemBase>(uri, major, minor, "StyledItemBase");
-    qmlRegisterSingletonType<QObject>(uri, major, minor, "UbuntuColors", registerUbuntuColors10);
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
@@ -164,8 +139,6 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterSingletonType<UCUriHandler>(uri, major, minor, "UriHandler", registerUriHandler);
     qmlRegisterType<UCMouse>(uri, major, minor, "Mouse");
     qmlRegisterType<UCInverseMouse>(uri, major, minor, "InverseMouse");
-    // register QML singletons
-    qmlRegisterSingletonType<QObject>(uri, major, minor, "PickerPanel", registerPickerPanel);
 }
 
 void UbuntuComponentsPlugin::registerTypes(const char *uri)
@@ -175,7 +148,6 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     // register 0.1 for backward compatibility
     registerTypesToVersion(uri, 0, 1);
     registerTypesToVersion(uri, 1, 0);
-    qmlRegisterSingletonType<QObject>(uri, 1, 1, "UbuntuColors", registerUbuntuColors11);
 
     // register custom event
     ForwardedEvent::registerForwardedEvent();
@@ -189,19 +161,19 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
     // ListItem and related types
-    qmlRegisterType<UCListItemBase, 1>(uri, 1, 1, "ListItemBase");
-    qmlRegisterType<UCListItemBackground>();
+    qmlRegisterType<UCListItem, 1>(uri, 1, 1, "ListItem");
+    qmlRegisterType<UCListItemContent>();
     qmlRegisterType<UCListItemDivider>();
     qmlRegisterType<UCListItemOptions, 1>(uri, 1, 1, "ListItemOptions");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
+    // initialize baseURL
+    m_baseUrl = QUrl(baseUrl().toString() + '/');
+
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
-
-    // setup baseUrl by adding a trailing / to keep resolving properly resolve local files
-    m_baseUrl = QUrl(QQmlExtensionPlugin::baseUrl().toString() + '/');
 
     // register root object watcher that sets a global property with the root object
     // that can be accessed from any object
