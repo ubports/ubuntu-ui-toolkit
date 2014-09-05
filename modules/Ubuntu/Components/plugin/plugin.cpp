@@ -88,12 +88,6 @@ static QObject *registerUriHandler(QQmlEngine *engine, QJSEngine *scriptEngine)
     return uriHandler;
 }
 
-QObject *UbuntuComponentsPlugin::registerQmlSingletonType(QQmlEngine *engine, const char* qmlFile)
-{
-    QUrl url = m_baseUrl.resolved(QUrl::fromLocalFile(qmlFile));
-    return QuickUtils::instance().createQmlObject(url, engine);
-}
-
 void UbuntuComponentsPlugin::registerWindowContextProperty()
 {
     setWindowContextProperty(QGuiApplication::focusWindow());
