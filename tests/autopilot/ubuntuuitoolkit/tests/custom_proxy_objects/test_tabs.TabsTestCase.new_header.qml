@@ -27,17 +27,17 @@ MainView {
         Tab {
             objectName: "tab1"
             title: "Tab1"
-            Page { }
+            page: Page { }
         }
         Tab {
             objectName: "tab2"
             title: "Tab2"
-            Page { }
+            page: Page { }
         }
         Tab {
             objectName: "tab3"
             title: "Tab3"
-            Page { }
+            page: Page { }
         }
     }
 }

@@ -31,8 +31,8 @@ done
 test $ERRORS = 1 && echo Error: qmlplugindump failed && exit 1
 
 echo Running QML API check for $QML
-# Palette gets included in Qt 5.2 qmlplugindump even though it's qml
-BUILTINS=QQuick,QQml,U1db::,Palette python3 tests/qmlapicheck.py $QML plugins.qmltypes > components.api.new
+# Palette and UbuntuColors gets included in Qt > 5.2 qmlplugindump even though it's qml
+BUILTINS=QQuick,QQml,U1db::,Palette,UbuntuColors python3 tests/qmlapicheck.py $QML plugins.qmltypes > components.api.new
 test $? != 0 && echo Error: qmlapicheck.py failed && exit 1
 
 echo Verifying the diff between existing and generated API
