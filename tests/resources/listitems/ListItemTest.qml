@@ -58,6 +58,7 @@ MainView {
         ListItem {
             id: testItem
             objectName: "single"
+            contentItem.color: "lime"
             onClicked: {
                 print("click")
                 main.override = !main.override
@@ -107,7 +108,7 @@ MainView {
                     name: "override"
                     when: main.override
                     PropertyChanges {
-                        target: listItem.background
+                        target: listItem.contentItem
                         pressedColor: "brown"
                     }
                 }
@@ -140,7 +141,8 @@ MainView {
                             options: leadingOptions.options
                         }
 
-                        background {
+                        contentItem {
+                            color: "red"
                             pressedColor: "lime"
                         }
                         Label {

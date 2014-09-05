@@ -24,19 +24,19 @@
 
 class QQuickFlickable;
 class QQuickPropertyAnimation;
-class UCListItemBackground;
+class UCListItemContent;
 class UCListItemDivider;
 class UCListItemOptions;
 class PropertyChange;
-class UCListItemBasePrivate : public UCStyledItemBasePrivate
+class UCListItemPrivate : public UCStyledItemBasePrivate
 {
-    Q_DECLARE_PUBLIC(UCListItemBase)
+    Q_DECLARE_PUBLIC(UCListItem)
 public:
-    UCListItemBasePrivate();
-    virtual ~UCListItemBasePrivate();
+    UCListItemPrivate();
+    virtual ~UCListItemPrivate();
     void init();
 
-    static inline UCListItemBasePrivate *get(UCListItemBase *that)
+    static inline UCListItemPrivate *get(UCListItem *that)
     {
         Q_ASSERT(that);
         return that->d_func();
@@ -46,6 +46,7 @@ public:
     void setFocusable();
 
     void _q_rebound();
+    void _q_updateSize();
     void _q_completeRebinding();
     void cleanup();
     void reboundTo(qreal x);
@@ -66,20 +67,20 @@ public:
     QPointer<QQuickFlickable> flickable;
     QQuickPropertyAnimation *reboundAnimation;
     PropertyChange *flickableInteractive;
-    UCListItemBackground *background;
+    UCListItemContent *contentItem;
     UCListItemDivider *divider;
     UCListItemOptions *leadingOptions;
     UCListItemOptions *trailingOptions;
 };
 
-class UCListItemBackground : public QQuickItem
+class UCListItemContent : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(QColor color MEMBER m_color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor pressedColor MEMBER m_pressedColor WRITE setPressedColor NOTIFY pressedColorChanged)
 public:
-    explicit UCListItemBackground(QQuickItem *parent = 0);
-    ~UCListItemBackground();
+    explicit UCListItemContent(QQuickItem *parent = 0);
+    ~UCListItemContent();
 
     void setColor(const QColor &color);
     void setPressedColor(const QColor &color);
@@ -98,7 +99,7 @@ private Q_SLOTS:
 private:
     QColor m_color;
     QColor m_pressedColor;
-    UCListItemBase *m_item;
+    UCListItem *m_item;
     bool m_pressedColorChanged:1;
 };
 
@@ -111,7 +112,7 @@ class UCListItemDivider : public QObject
 public:
     explicit UCListItemDivider(QObject *parent = 0);
     ~UCListItemDivider();
-    void init(UCListItemBase *listItem);
+    void init(UCListItem *listItem);
 
 Q_SIGNALS:
     void visibleChanged();
@@ -126,8 +127,9 @@ private Q_SLOTS:
     void paletteChanged();
 
 private:
-    void resizeAndUpdate() {
-        UCListItemBasePrivate::get(m_listItem)->resize();
+    void resizeAndUpdate()
+    {
+        UCListItemPrivate::get(m_listItem)->resize();
         m_listItem->update();
     }
 
@@ -142,14 +144,14 @@ private:
     qreal m_leftMargin;
     qreal m_rightMargin;
     QGradientStops m_gradient;
-    UCListItemBase *m_listItem;
-    friend class UCListItemBase;
-    friend class UCListItemBasePrivate;
+    UCListItem *m_listItem;
+    friend class UCListItem;
+    friend class UCListItemPrivate;
 };
 
 QColor getPaletteColor(const char *profile, const char *color);
 
-QML_DECLARE_TYPE(UCListItemBackground)
+QML_DECLARE_TYPE(UCListItemContent)
 QML_DECLARE_TYPE(UCListItemDivider)
 
 #endif // UCVIEWITEM_P_H

@@ -188,6 +188,9 @@ PopupBase {
             Label {
                 horizontalAlignment: Text.AlignHCenter
                 text: dialog.title
+                wrapMode: Text.Wrap
+                maximumLineCount: 2
+                elide: Text.ElideRight
                 fontSize: "large"
                 color: UbuntuColors.darkGrey
             }

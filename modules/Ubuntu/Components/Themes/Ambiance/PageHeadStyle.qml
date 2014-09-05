@@ -29,126 +29,8 @@ Style.PageHeadStyle {
     textColor: styledItem.config.foregroundColor
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
-    objectName: "PageHeadStyle"
-
-    // workaround because autopilot cannot select the SequentalAnimation
-    // Needed in AppHeader.wait_for_animation() autopilot proxy object and
-    //  in tst_pagestack_new_header.qml unit test.
-    property bool animating: changeAnimation.running
 
     implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
-
-    Component.onCompleted: buffer.update()
-
-    Object {
-        id: buffer
-
-        property PageHeadConfiguration config
-        property string title
-        property Item pageStack: null
-        property int pageStackDepth: 0
-        property var tabsModel: null
-
-        function update() {
-            buffer.config = styledItem.config;
-            buffer.title = styledItem.title;
-            buffer.pageStack = styledItem.pageStack;
-            buffer.pageStackDepth = buffer.pageStack ? buffer.pageStack.depth : 0;
-            buffer.tabsModel = styledItem.tabsModel ? styledItem.tabsModel : null;
-        }
-
-        // Calling changeAnimation.start() a second time has no effect,
-        // so below we can call it whenever something changes.
-        Connections {
-            target: styledItem
-            onConfigChanged: buffer.updateConfigAndTitle()
-            onTitleChanged: buffer.updateConfigAndTitle()
-            onPageStackChanged: buffer.updateConfigAndTitle()
-            onTabsModelChanged: buffer.updateConfigAndTitle()
-        }
-
-        function updateConfigAndTitle() {
-            if (styledItem.animateContents) {
-                changeAnimation.start();
-            } else {
-                buffer.update();
-            }
-        }
-
-        SequentialAnimation {
-            id: changeAnimation
-            objectName: "changeAnimation"
-            ParallelAnimation {
-                UbuntuNumberAnimation {
-                    target: foreground
-                    property: "opacity"
-                    from: 1.0
-                    to: 0.0
-                }
-                UbuntuNumberAnimation {
-                    target: leftButtonContainer
-                    property: "opacity"
-                    from: 1.0
-                    to: 0.0
-                }
-                UbuntuNumberAnimation {
-                    target: actionsContainer
-                    property: "opacity"
-                    from: 1.0
-                    to: 0.0
-                }
-                UbuntuNumberAnimation {
-                    target: leftAnchor
-                    properties: "anchors.leftMargin"
-                    from: 0.0
-                    to: -units.gu(5)
-                }
-                UbuntuNumberAnimation {
-                    target: rightAnchor
-                    properties: "anchors.rightMargin"
-                    from: 0
-                    to: -units.gu(5)
-                }
-            }
-            ScriptAction {
-                script: {
-                    buffer.update();
-                }
-            }
-            ParallelAnimation {
-                UbuntuNumberAnimation {
-                    target: foreground
-                    property: "opacity"
-                    from: 0.0
-                    to: 1.0
-                }
-                UbuntuNumberAnimation {
-                    target: leftButtonContainer
-                    property: "opacity"
-                    from: 0.0
-                    to: 1.0
-                }
-                UbuntuNumberAnimation {
-                    target: actionsContainer
-                    property: "opacity"
-                    from: 0.0
-                    to: 1.0
-                }
-                UbuntuNumberAnimation {
-                    target: leftAnchor
-                    properties: "anchors.leftMargin"
-                    from: -units.gu(5)
-                    to: 0
-                }
-                UbuntuNumberAnimation {
-                    target: rightAnchor
-                    properties: "anchors.rightMargin"
-                    from: -units.gu(5)
-                    to: 0
-                }
-            }
-        }
-    }
 
     // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
     //  see also FIXME in AppHeader where this property is used.
@@ -164,7 +46,7 @@ Style.PageHeadStyle {
         source: headerStyle.separatorSource
         height: sectionsRow.visible ? units.gu(3) : units.gu(2)
 
-        property PageHeadSections sections: buffer.config.sections
+        property PageHeadSections sections: styledItem.config.sections
 
         Row {
             id: sectionsRow
@@ -239,30 +121,9 @@ Style.PageHeadStyle {
     }
 
     Item {
-        id: leftAnchor
-        anchors {
-            top: parent.top
-            bottom: parent.bottom
-            left: parent.left
-            leftMargin: 0
-        }
-        width: 0
-    }
-    Item {
-        id: rightAnchor
-        anchors {
-            top: parent.top
-            bottom: parent.bottom
-            right: parent.right
-            rightMargin: 0
-        }
-        width: 0
-    }
-
-    Item {
         id: leftButtonContainer
         anchors {
-            left: leftAnchor.right
+            left: parent.left
             top: parent.top
             leftMargin: width > 0 ? units.gu(1) : 0
         }
@@ -272,10 +133,10 @@ Style.PageHeadStyle {
         PageHeadButton {
             id: customBackButton
             objectName: "customBackButton"
-            action: buffer.config.backAction
-            visible: null !== buffer.config.backAction &&
-                     buffer.config.backAction.visible
-            color: buffer.config.foregroundColor
+            action: styledItem.config.backAction
+            visible: null !== styledItem.config.backAction &&
+                     styledItem.config.backAction.visible
+            color: styledItem.config.foregroundColor
         }
 
         PageHeadButton {
@@ -283,14 +144,16 @@ Style.PageHeadStyle {
             objectName: "backButton"
 
             iconName: "back"
-            visible: buffer.pageStackDepth > 1 &&
-                     !buffer.config.backAction
+            visible: styledItem.pageStack !== null &&
+                     styledItem.pageStack !== undefined &&
+                     styledItem.pageStack.depth > 1 &&
+                     !styledItem.config.backAction
 
             text: "back"
-            color: buffer.config.foregroundColor
+            color: styledItem.config.foregroundColor
 
             onTriggered: {
-                buffer.pageStack.pop();
+                styledItem.pageStack.pop();
             }
         }
 
@@ -299,11 +162,12 @@ Style.PageHeadStyle {
             objectName: "tabsButton"
 
             iconName: "navigation-menu"
-            visible: buffer.tabsModel !== null &&
+            visible: styledItem.tabsModel !== null &&
+                     styledItem.tabsModel !== undefined &&
                      !backButton.visible &&
                      !customBackButton.visible
-            text: visible ? buffer.tabsModel.count + " tabs" : ""
-            color: buffer.config.foregroundColor
+            text: visible ? styledItem.tabsModel.count + " tabs" : ""
+            color: styledItem.config.foregroundColor
 
             onTriggered: PopupUtils.open(tabsPopoverComponent, tabsButton)
 
@@ -323,11 +187,11 @@ Style.PageHeadStyle {
                             right: parent.right
                         }
                         Repeater {
-                            model: buffer.tabsModel
+                            model: styledItem.tabsModel
                             AbstractButton {
                                 objectName: "tabButton" + index
                                 onClicked: {
-                                    buffer.tabsModel.selectedIndex = index;
+                                    styledItem.tabsModel.selectedIndex = index;
                                     tabsPopover.hide();
                                 }
                                 implicitHeight: units.gu(6) + bottomDividerLine.height
@@ -360,7 +224,7 @@ Style.PageHeadStyle {
                                 ListItem.ThinDivider {
                                     id: bottomDividerLine
                                     anchors.bottom: parent.bottom
-                                    visible: index < buffer.tabsModel.count - 1
+                                    visible: index < styledItem.tabsModel.count - 1
                                 }
                             }
                         }
@@ -374,12 +238,12 @@ Style.PageHeadStyle {
         id: foreground
         anchors {
             left: leftButtonContainer.right
+            right: actionsContainer.left
             top: parent.top
             // don't keep a margin if there is already a button with spacing
             leftMargin: leftButtonContainer.width > 0 ? 0 : headerStyle.textLeftMargin
         }
         height: headerStyle.contentHeight
-        width: parent.width - leftButtonContainer.width - actionsContainer.width
 
         Label {
             objectName: "header_title_label"
@@ -390,10 +254,10 @@ Style.PageHeadStyle {
                 right: parent.right
                 verticalCenter: parent.verticalCenter
             }
-            text: buffer.title
+            text: styledItem.title
             font.weight: headerStyle.fontWeight
             fontSize: headerStyle.fontSize
-            color: buffer.config.foregroundColor
+            color: headerStyle.textColor
             elide: Text.ElideRight
         }
 
@@ -403,7 +267,7 @@ Style.PageHeadStyle {
             // when the bindings below is no longer active
             id: contentsContainer
             anchors.fill: parent
-            visible: styledItem.contents || buffer.config.contents
+            visible: styledItem.contents || styledItem.config.contents
         }
         Binding {
             target: styledItem.contents
@@ -418,17 +282,17 @@ Style.PageHeadStyle {
             when: styledItem.contents
         }
         Binding {
-            target: buffer.config.contents
+            target: styledItem.config.contents
             property: "parent"
             value: contentsContainer
-            when: buffer.config.contents && !styledItem.contents
+            when: styledItem.config.contents && !styledItem.contents
         }
     }
 
     Row {
         id: actionsContainer
 
-        property var visibleActions: getVisibleActions(buffer.config.actions)
+        property var visibleActions: getVisibleActions(styledItem.config.actions)
         function getVisibleActions(actions) {
             var visibleActionList = [];
             for (var i in actions) {
@@ -452,7 +316,7 @@ Style.PageHeadStyle {
 
         anchors {
             top: parent.top
-            right: rightAnchor.left
+            right: parent.right
             rightMargin: units.gu(1)
         }
         width: childrenRect.width
@@ -464,7 +328,7 @@ Style.PageHeadStyle {
                 id: actionButton
                 objectName: action.objectName + "_header_button"
                 action: actionsContainer.visibleActions[index]
-                color: buffer.config.foregroundColor
+                color: styledItem.config.foregroundColor
             }
         }
 
@@ -473,9 +337,8 @@ Style.PageHeadStyle {
             objectName: "actions_overflow_button"
             visible: numberOfSlots.requested > numberOfSlots.right
             iconName: "contextual-menu"
-            color: buffer.config.foregroundColor
+            color: styledItem.config.foregroundColor
             height: actionsContainer.height
-
             onTriggered: PopupUtils.open(actionsOverflowPopoverComponent, actionsOverflowButton)
 
             Component {

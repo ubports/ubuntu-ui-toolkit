@@ -40,7 +40,7 @@ UCListItemOptionsPrivate::~UCListItemOptionsPrivate()
 
 void UCListItemOptionsPrivate::_q_handlePanelDrag()
 {
-    UCListItemBase *listItem = qobject_cast<UCListItemBase*>(panelItem->parentItem());
+    UCListItem *listItem = qobject_cast<UCListItem*>(panelItem->parentItem());
     if (!listItem) {
         return;
     }
@@ -96,7 +96,7 @@ void UCListItemOptionsPrivate::funcClear(QQmlListProperty<QObject> *list)
     return plist->options.clear();
 }
 
-bool UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCListItemBase *listItem, bool leading)
+bool UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCListItem *listItem, bool leading)
 {
     UCListItemOptionsPrivate *_this = get(options);
     if (!_this || !_this->createPanelItem() || isConnectedTo(options, listItem)) {
@@ -124,7 +124,7 @@ void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options
     _this->leading = false;
 }
 
-bool UCListItemOptionsPrivate::isConnectedTo(UCListItemOptions *options, UCListItemBase *listItem)
+bool UCListItemOptionsPrivate::isConnectedTo(UCListItemOptions *options, UCListItem *listItem)
 {
     UCListItemOptionsPrivate *_this = get(options);
     return _this && _this->panelItem && _this->connected && (_this->panelItem->parentItem() == listItem);
