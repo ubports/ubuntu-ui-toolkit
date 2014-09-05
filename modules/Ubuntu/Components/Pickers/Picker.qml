@@ -294,7 +294,6 @@ StyledItem {
             width: parent ? parent.width : 0
             clip: true
             focus: true
-            Mouse.onClicked: picker.requestFocus()
 
             model: picker.model
             delegate: picker.delegate

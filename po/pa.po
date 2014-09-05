@@ -1,4 +1,4 @@
-# English (Australia) translation for ubuntu-ui-toolkit
+# Punjabi translation for ubuntu-ui-toolkit
 # Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
 # This file is distributed under the same license as the ubuntu-ui-toolkit package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
@@ -8,18 +8,18 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-05-30 14:06+0200\n"
-"PO-Revision-Date: 2014-08-26 10:51+0000\n"
+"PO-Revision-Date: 2014-08-30 11:52+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: English (Australia) <en_AU@li.org>\n"
+"Language-Team: Punjabi <pa@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-08-28 06:25+0000\n"
-"X-Generator: Launchpad (build 17174)\n"
+"X-Launchpad-Export-Date: 2014-08-31 07:22+0000\n"
+"X-Generator: Launchpad (build 17176)\n"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:22
 msgid "NumberAnimation"
-msgstr ""
+msgstr "ਨੰਬਰ ਐਨੀਮੇਸ਼ਨ"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:25
@@ -32,44 +32,44 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:25
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:44
 msgid "Standard"
-msgstr "Standard"
+msgstr "ਸਟੈਂਡਰਡ"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:56
 msgid "Standard Durations"
-msgstr "Standard Durations"
+msgstr "ਸਟੈਂਡਰਡ ਮਿਆਦ"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:60
 msgid "Snap"
-msgstr "Snap"
+msgstr "ਸਨੈਪ"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:96
 msgid "Fast"
-msgstr "Fast"
+msgstr "ਤੇਜ਼"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:132
 msgid "Slow"
-msgstr "Slow"
+msgstr "ਹੌਲੀ"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:157
 msgid "Sleepy"
-msgstr "Sleepy"
+msgstr "ਸੁਸਤ"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:28
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:36
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:50
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:59
 msgid "Call"
-msgstr "Call"
+msgstr "ਕਾਲ"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:33
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:26
 msgid "Color"
-msgstr "Colour"
+msgstr "ਰੰਗ"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:42
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:41
 msgid "Icon"
-msgstr "Icon"
+msgstr "ਆਈਕਾਨ"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:56
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:73
