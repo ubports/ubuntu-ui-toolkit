@@ -934,17 +934,6 @@ plugins.qmltypes
     Parameter { name: "singular"; type: "string" }
     Parameter { name: "plural"; type: "string" }
     Parameter { name: "n"; type: "int" }
-    prototype: "QObject"
-    name: "UbuntuColors"
-    exports: ["UbuntuColors -1.-1"]
-    Property { name: "orange"; type: "QColor"; isReadonly: true }
-    Property { name: "lightAubergine"; type: "QColor"; isReadonly: true }
-    Property { name: "midAubergine"; type: "QColor"; isReadonly: true }
-    Property { name: "darkAubergine"; type: "QColor"; isReadonly: true }
-    Property { name: "warmGrey"; type: "QColor"; isReadonly: true }
-    Property { name: "coolGrey"; type: "QColor"; isReadonly: true }
-    Property { name: "orangeGradient"; type: "QQuickGradient"; isPointer: true }
-    Property { name: "greyGradient"; type: "QQuickGradient"; isPointer: true }
     name: "ULConditionalLayout"
     prototype: "QObject"
     exports: ["ConditionalLayout 0.1", "ConditionalLayout 1.0"]
