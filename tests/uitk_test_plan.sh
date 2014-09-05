@@ -27,10 +27,11 @@ OUTPUTDIR=$HOME
 FILTER=.*
 
 declare -a TEST_SUITE=(
+" filemanager"
+" gallery_app"
 " dropping_letters_app"
 " sudoku_app"
 " -p ubuntu-ui-toolkit-autopilot ubuntuuitoolkit"
-" gallery_app"
 " -p webbrowser-app-autopilot webbrowser_app"
 " -n unity8"
 " shorts_app"
@@ -41,8 +42,6 @@ declare -a TEST_SUITE=(
 " ubuntu_clock_app"
 " ubuntu_calculator_app"
 " ubuntu_weather_app"
-" filemanager"
-" -p reminders-app-autopilot reminders"
 " -p address-book-app-autopilot address_book_app"
 " -p dialer-app-autopilot dialer_app"
 " -p messaging-app-autopilot messaging_app"
@@ -51,7 +50,7 @@ declare -a TEST_SUITE=(
 " -p unity-webapps-qml-autopilot unity_webapps_qml"
 " online_accounts_ui"
 " -p camera-app-autopilot camera_app"
-
+" -p reminders-app-autopilot reminders"
 )
 
 function reset {
@@ -76,7 +75,13 @@ function device_comission {
 	reset
 	echo "phablet-click-test-setup";phablet-click-test-setup -s ${SERIALNUMBER}
 	reset
-	phablet-config -s ${SERIALNUMBER} writable-image --ppa ${PPA}
+	if [ ${PPA} == "archive"  ]; then
+		echo "Set up with the archive image"
+		phablet-config -s ${SERIALNUMBER} writable-image
+	else
+		echo "Set up with the ${PPA}"
+		phablet-config -s ${SERIALNUMBER} writable-image --ppa ${PPA}
+	fi
 	reset
 	adb -s ${SERIALNUMBER} shell rm -rf /home/phablet/autopilot/ubuntuuitoolkit
 	UITK_VERSION=`adb -s ${SERIALNUMBER} shell "stty cols 250; dpkg -l"|grep qtdeclarative5-ubuntu-ui-toolkit-plugin|awk '{print $3}'`
@@ -106,9 +111,9 @@ function device_comission {
 							ubuntu-system-settings-online-accounts-autopilot
 }
 
-while getopts ":hrcnts:o:p:f:" opt; do
+while getopts ":hrcints:o:p:f:" opt; do
 	case $opt in
-		m)
+		r)
 			RESET=true
 			;;
 		s)
@@ -141,7 +146,7 @@ while getopts ":hrcnts:o:p:f:" opt; do
 			echo " -c : Comission the device with the ${PPA} enabled"
 			echo " -n : Do not run the test set. Default ${DONOTRUNTESTS}"
 			echo " -o : Output directory. Default $OUTPUTDIR"
-			echo " -p : Source PPA for the UITK. Default $PPA"
+			echo " -p : Source PPA for the UITK. Default $PPA. Use -p archive to test stock image."
 			echo " -f : Filter for the test suite. Default $FILTER"
 			exit
 			;;

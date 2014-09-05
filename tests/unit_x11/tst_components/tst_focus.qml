@@ -82,6 +82,12 @@ Item {
         Slider {
             id: slider
         }
+        StyledItem {
+            id: disabledButton
+            enabled: false
+            width: units.gu(20)
+            height: units.gu(6)
+        }
         ComboButton {
             id: comboButton
             Rectangle {
@@ -211,6 +217,7 @@ Item {
             compare(dropdownButton.focus, true, "Dropdown button hasn't got focused!");
             compare(comboButton.focus, true, "ComboButton hasn't been focused!");
             comboButton.expanded = false;
+            waitForRendering(comboButton);
         }
 
         function test_popover_refocus_data() {
@@ -235,6 +242,11 @@ Item {
             verify(!popoverTest.focus, "Button focus not lost.");
             popupCloseSpy.wait();
             verify(popoverTest.focus, "Button focus not restored.");
+        }
+
+        function test_disabled_component_does_not_focus() {
+            mousePress(disabledButton, centerOf(disabledButton).x, centerOf(disabledButton).y);
+            compare(disabledButton.focus, false, "Disabled component shoudl not focus");
         }
     }
 }

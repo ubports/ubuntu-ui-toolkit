@@ -1,4 +1,4 @@
-# English (Australia) translation for ubuntu-ui-toolkit
+# Amharic translation for ubuntu-ui-toolkit
 # Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
 # This file is distributed under the same license as the ubuntu-ui-toolkit package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-05-30 14:06+0200\n"
-"PO-Revision-Date: 2014-08-26 10:51+0000\n"
+"PO-Revision-Date: 2014-09-01 23:17+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: English (Australia) <en_AU@li.org>\n"
+"Language-Team: Amharic <am@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-08-28 06:25+0000\n"
-"X-Generator: Launchpad (build 17174)\n"
+"X-Launchpad-Export-Date: 2014-09-02 07:12+0000\n"
+"X-Generator: Launchpad (build 17192)\n"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:22
 msgid "NumberAnimation"
@@ -32,58 +32,58 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:25
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:44
 msgid "Standard"
-msgstr "Standard"
+msgstr "መደበኛ"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:56
 msgid "Standard Durations"
-msgstr "Standard Durations"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:60
 msgid "Snap"
-msgstr "Snap"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:96
 msgid "Fast"
-msgstr "Fast"
+msgstr "በፍጥነት"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:132
 msgid "Slow"
-msgstr "Slow"
+msgstr "በዝግታ"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:157
 msgid "Sleepy"
-msgstr "Sleepy"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:28
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:36
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:50
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:59
 msgid "Call"
-msgstr "Call"
+msgstr "መጥሪያ"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:33
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:26
 msgid "Color"
-msgstr "Colour"
+msgstr "ቀለም"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:42
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:41
 msgid "Icon"
-msgstr "Icon"
+msgstr "ምልክት"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:56
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:73
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:41
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:75
 msgid "Disabled"
-msgstr ""
+msgstr "ተሰናክሏል"
 
 #: examples/ubuntu-ui-toolkit-gallery/Dialog.qml:30
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:42
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:41
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:74
 msgid "Open"
-msgstr ""
+msgstr "መክፈቻ"
 
 #: examples/ubuntu-ui-toolkit-gallery/Icons.qml:25
 msgid "Scaling"
@@ -102,15 +102,15 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:83
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:95
 msgid "Label"
-msgstr ""
+msgstr "ምልክት"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:31
 msgid "Subtitled"
-msgstr ""
+msgstr "ንዑስ አርእስት"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:35
 msgid "Secondary label"
-msgstr ""
+msgstr "ሁለተኛ ምልክት"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:50
 msgid "Progression"
@@ -118,11 +118,11 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:59
 msgid "Single value"
-msgstr ""
+msgstr "ነጠላ ዋጋ"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:63
 msgid "Value"
-msgstr ""
+msgstr "ዋጋ"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:68
 msgid "Multi value"
@@ -131,42 +131,42 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:72
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:84
 msgid "Value 1"
-msgstr ""
+msgstr "ዋጋ 1"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:73
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:85
 msgid "Value 2"
-msgstr ""
+msgstr "ዋጋ 2"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:74
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:86
 msgid "Value 3"
-msgstr ""
+msgstr "ዋጋ 3"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:75
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:87
 msgid "Value 4"
-msgstr ""
+msgstr "ዋጋ 4"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:80
 msgid "Value selector"
-msgstr ""
+msgstr "ዋጋ መምረጫ"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:92
 msgid "Control"
-msgstr ""
+msgstr "መቆጣጠሪያ"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:103
 msgid "Removable"
-msgstr ""
+msgstr "የሚወልቅ"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:106
 msgid "Slide to remove"
-msgstr ""
+msgstr "ያንሸራቱ ለማውለቅ"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:116
 msgid "Grouped list"
-msgstr ""
+msgstr "የ ቡድን ዝርዝር"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:38
 msgid "Flickable"
@@ -174,23 +174,23 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:74
 msgid "Action #1"
-msgstr ""
+msgstr "ተግባር #1"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:78
 msgid "Action #2"
-msgstr ""
+msgstr "ተግባር #2"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:82
 msgid "Action #3"
-msgstr ""
+msgstr "ተግባር #3"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:86
 msgid "Action #4"
-msgstr ""
+msgstr "ተግባር #4"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:90
 msgid "Action #5"
-msgstr ""
+msgstr "ተግባር #5"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:22
 msgid "Progress Bar"
@@ -198,7 +198,7 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:45
 msgid "Infinite"
-msgstr ""
+msgstr "የማይወሰን"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:55
 msgid "Activity Indicator"
@@ -211,22 +211,22 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:51
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:84
 msgid "Title"
-msgstr ""
+msgstr "አርእስት"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:32
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:45
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:60
 #, qt-format
 msgid "value = %1"
-msgstr ""
+msgstr "ዋጋ = %1"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:37
 msgid "Live Update"
-msgstr ""
+msgstr "በቀጥታ ማሻሻያ"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:50
 msgid "Range"
-msgstr ""
+msgstr "መጠን"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:47
 msgid "Type me in..."
@@ -234,23 +234,23 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:53
 msgid "Password"
-msgstr ""
+msgstr "የመግቢያ ቃል"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:63
 msgid "Numbers"
-msgstr ""
+msgstr "ቍጥሮች"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:87
 msgid "Default"
-msgstr ""
+msgstr "ነባር"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:96
 msgid "Expanding"
-msgstr ""
+msgstr "በ ማስፋት ላይ"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:107
 msgid "Rich Text"
-msgstr ""
+msgstr "ሐብታም ጽሁፍ"
 
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:60
@@ -264,7 +264,7 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:44
 msgid "Image"
-msgstr ""
+msgstr "ምስል"
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:57
 msgid "Radius"
@@ -272,27 +272,27 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:87
 msgid "Sizes"
-msgstr ""
+msgstr "መጠን"
 
 #: examples/unit-converter/unit-converter.qml:147
 msgid "Clear"
-msgstr ""
+msgstr "ማጽጃ"
 
 #: examples/unit-converter/unit-converter.qml:161
 msgid "Lengths"
-msgstr ""
+msgstr "እርዝመት"
 
 #: examples/unit-converter/unit-converter.qml:179
 msgid "Weights"
-msgstr ""
+msgstr "ክብደት"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
-msgstr ""
+msgstr "አጠቃቀም: "
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
-msgstr ""
+msgstr "ምርጫዎች:"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
@@ -311,35 +311,35 @@ msgstr ""
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:24
 msgid "Select All"
-msgstr ""
+msgstr "ሁሉንም መምረጫ"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:29
 msgid "Select Word"
-msgstr ""
+msgstr "ቃል ይምረጡ"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:34
 msgid "Cut"
-msgstr ""
+msgstr "መቁረጫ"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:39
 msgid "Copy"
-msgstr ""
+msgstr "ኮፒ"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:44
 msgid "Paste"
-msgstr ""
+msgstr "መለጠፊያ"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:49
 msgid "Undo"
-msgstr ""
+msgstr "መተው"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:54
 msgid "Redo"
-msgstr ""
+msgstr "እንደገና መስሪያ"
 
 #: modules/Ubuntu/Components/ToolbarActions.qml:86
 msgid "Back"
-msgstr ""
+msgstr "ወደ ኋላ"
 
 #: tests/resources/pagestack/MyCustomPage.qml:21
 #: tests/resources/tabs/MyCustomPage.qml:21
@@ -359,7 +359,7 @@ msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:44
 msgid "Page one"
-msgstr ""
+msgstr "ገጽ አንድ"
 
 #: tests/resources/pagestack/PageStack.qml:49
 msgid "External page"
@@ -367,7 +367,7 @@ msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:58
 msgid "First page"
-msgstr ""
+msgstr "የ መጀመሪያ ገጽ"
 
 #: tests/resources/pagestack/PageStack.qml:64
 msgid "Root page (again)"
@@ -375,11 +375,11 @@ msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:69
 msgid "Red rectangle"
-msgstr ""
+msgstr "ቀይ አራት ማእዘን"
 
 #: tests/resources/tabs/Tabs.qml:32
 msgid "Simple page"
-msgstr ""
+msgstr "ቀላል ገጽ"
 
 #: tests/resources/tabs/Tabs.qml:77
 msgid "External"

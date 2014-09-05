@@ -26,6 +26,9 @@ class UnityThemeIconProvider: public QQuickImageProvider
 public:
     UnityThemeIconProvider();
     QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize);
+
+private:
+    QSharedPointer<class IconTheme> theme;
 };
 
 #endif
