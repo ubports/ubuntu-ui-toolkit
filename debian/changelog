@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.1.1234+14.10.20140904-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.1.1239+14.10.20140904-0ubuntu2) UNRELEASED; urgency=medium
 
   [ Zsombor Egri ]
   * Use proper QML Singleton structure introduced in Qt 5.2.
@@ -7,6 +7,8 @@ ubuntu-ui-toolkit (1.1.1234+14.10.20140904-0ubuntu2) UNRELEASED; urgency=medium
     new ListItem.
   * Focus should not be taken by a component if disabled. Complete 
     child filtering properly.
+  * Organizer audible reminder was not updated when Alarm sound 
+    changed
 
   [ Christian Dywan ]
   * Handle singleton in qmldir and explicitly skip unknown keywords.
@@ -14,6 +16,12 @@ ubuntu-ui-toolkit (1.1.1234+14.10.20140904-0ubuntu2) UNRELEASED; urgency=medium
   [ Tim Peeters ]
   * Revert Icon10 change from header animations MR to fix coloring 
     of icons.
+  * Update tabs AP tests. By moving the qml code in separate files, 
+    it is easier to modify them individually and to execute them with
+    qmlscene for testing. 
+  * Ensure active and current pages are always updated in the same 
+    order in PageStack.
+  * Update qml files in tests/resources.
 
   [ Lars Uebernickel ]
   * unitythemeiconprovider: manually load icons
