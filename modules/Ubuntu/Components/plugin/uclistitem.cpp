@@ -88,7 +88,7 @@ void UCListItemDivider::unitsChanged()
 
 void UCListItemDivider::paletteChanged()
 {
-    QColor contentItem = getPaletteColor("normal", "contentItem");
+    QColor contentItem = getPaletteColor("normal", "background");
     if (!contentItem.isValid()) {
         return;
     }
