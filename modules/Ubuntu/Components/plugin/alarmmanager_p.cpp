@@ -59,4 +59,12 @@ AlarmList AlarmManager::alarms() const
     return d->alarmList;
 }
 
+bool AlarmManager::verifyChange(UCAlarm *alarm, AlarmData::Change change, const QVariant &newData)
+{
+    Q_D(AlarmManager);
+    UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
+    return d->verifyChange(pAlarm->rawData.cookie, change, newData);
+}
+
+
 #include "moc_alarmmanager_p.cpp"
