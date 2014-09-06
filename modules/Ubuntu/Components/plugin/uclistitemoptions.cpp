@@ -84,7 +84,7 @@ bool UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCL
                          listItem, SLOT(_q_grabPanel(UCListItemOptions*)), Qt::UniqueConnection);
         return false;
     }
-    _this->leading = true;
+    _this->leading = leading;
     _this->panelItem->setProperty("leadingPanel", leading);
     _this->panelItem->setParentItem(listItem);
     _this->connected = true;
