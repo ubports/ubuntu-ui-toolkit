@@ -245,7 +245,7 @@ UCListItemPrivate::UCListItemPrivate()
     , pressed(false)
     , moved(false)
     , ready(false)
-    , xAxisMoveThresholdGU(1.0)
+    , xAxisMoveThresholdGU(1.5)
     , reboundAnimation(0)
     , flickableInteractive(0)
     , contentItem(new UCListItemContent)
@@ -316,15 +316,22 @@ void UCListItemPrivate::_q_completeRebinding()
     Q_Q(UCListItem);
     // disconnect animation, otherwise snapping will disconnect the panel
     QObject::disconnect(reboundAnimation, SIGNAL(stopped()), q, SLOT(_q_completeRebinding()));
+    // restore flickable's interactive and cleanup
+    PropertyChange::restore(flickableInteractive);
     // disconnect options
     grabPanel(leadingOptions, false);
     grabPanel(trailingOptions, false);
-    // disconnect the flickable
-    listenToRebind(false);
-    // restore flickable's interactive and cleanup
-    delete flickableInteractive;
-    flickableInteractive = 0;
 }
+
+void UCListItemPrivate::_q_grabPanel(UCListItemOptions *options)
+{
+    // dicsonnect, no more need to grab async
+    Q_Q(UCListItem);
+    QObject::disconnect(options, SIGNAL(panelDetached(UCListItemOptions*)), q, SLOT(_q_grabPanel(UCListItemOptions*)));
+    // connect the panel to the item
+    grabPanel(options, true);
+}
+
 // the function performs a cleanup on mouse release without any rebound animation
 void UCListItemPrivate::cleanup()
 {
@@ -382,7 +389,11 @@ bool UCListItemPrivate::grabPanel(UCListItemOptions *optionsList, bool isMoved)
 {
     Q_Q(UCListItem);
     if (isMoved) {
-        return UCListItemOptionsPrivate::connectToListItem(optionsList, q, (optionsList == leadingOptions));
+        bool grab = UCListItemOptionsPrivate::connectToListItem(optionsList, q, (optionsList == leadingOptions));
+        if (grab) {
+            PropertyChange::setValue(flickableInteractive, false);
+        }
+        return grab;
     } else {
         UCListItemOptionsPrivate::disconnectFromListItem(optionsList);
         return false;
@@ -456,6 +467,52 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  * Each ListItem has a thin divider shown on the bottom of the component. This
  * divider can be configured through the \l divider grouped property, which can
  * configure its margins from the edges of the ListItem as well as its visibility.
+ *
+ * ListItem can handle options that can ge tugged from front ot right of the item.
+ * These options are Action elements visualized in panels attached to the front
+ * or to the end of the item, and are revealed by swiping the item horizontally.
+ * The tug is started only after the mouse/touch move had passed a given threshold.
+ * These options are configured through the \l leadingOptions as well as \l
+ * trailingOptions properties.
+ * \qml
+ * ListItem {
+ *     id: listItem
+ *     leadingOptions: ListItemOptions {
+ *         Action {
+ *             iconName: "delete"
+ *             onTriggered: listItem.destroy()
+ *         }
+ *     }
+ *     trailingOptions: ListItemOptions {
+ *         Action {
+ *             iconName: "search"
+ *             onTriggered: {
+ *                 // do some search
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
+ * \note A ListItem cannot use the same ListItemOption instance for both leading or
+ * trailing options. If it is desired to have the same action present in both leading
+ * and trailing options, one of the ListItemOption options list can use the other's
+ * list. In the following example the list item can be deleted through both option
+ * leading and trailing options:
+ * \qml
+ * ListItem {
+ *     id: listItem
+ *     leadingOptions: ListItemOptions {
+ *         Action {
+ *             iconName: "delete"
+ *             onTriggered: listItem.destroy()
+ *         }
+ *     }
+ *     trailingOptions: ListItemOptions {
+ *         options: leadingOptions.options
+ *     }
+ * }
+ * \endqml
+ * \sa ListItemOptions
  */
 
 /*!
@@ -499,10 +556,18 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         }
 
         if (d->flickable) {
+            // create the flickableInteractive property change now
+            d->flickableInteractive = new PropertyChange(d->flickable, "interactive");
             // connect to flickable to get width changes
             QObject::connect(d->flickable, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
         } else if (data.item) {
             QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
+        } else {
+            // in case we had a flickableInteractive property change active, destroy it
+            if (d->flickableInteractive) {
+                delete d->flickableInteractive;
+                d->flickableInteractive = 0;
+            }
         }
 
         // update size
@@ -535,15 +600,13 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
     UCStyledItemBase::mousePressEvent(event);
     Q_D(UCListItem);
     if (!d->flickable.isNull() && d->flickable->isMoving()) {
-        // while moving, we cannot select any items
+        // while moving, we cannot select or tug any items
         return;
     }
     d->setPressed(true);
     d->lastPos = d->pressedPos = event->localPos();
     // connect the Flickable to know when to rebound
-    if (!d->moved) {
-        d->listenToRebind(true);
-    }
+    d->listenToRebind(true);
     // accept the event so we get the rest of the events as well
     event->setAccepted(true);
 }
@@ -554,6 +617,9 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
     Q_D(UCListItem);
     // set released
     if (d->pressed) {
+        // disconnect the flickable
+        d->listenToRebind(false);
+
         if (!d->suppressClick) {
             Q_EMIT clicked();
             d->_q_rebound();
@@ -583,15 +649,15 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     Q_D(UCListItem);
     UCStyledItemBase::mouseMoveEvent(event);
 
-    // grab the tugging only if the delta between the first press and the current
-    // pos is > xAxis threshold
+    // accept the tugging only if the move is within the threshold
     bool leadingAttached = UCListItemOptionsPrivate::isConnectedTo(d->leadingOptions, this);
     bool trailingAttached = UCListItemOptionsPrivate::isConnectedTo(d->trailingOptions, this);
     if (d->pressed && !(leadingAttached || trailingAttached)) {
         // check if we can initiate the drag at all
+        // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
         qreal threshold = UCUnits::instance().gu(d->xAxisMoveThresholdGU);
-        QRectF sensingRect(d->pressedPos.x() - threshold, 0, 2 * threshold, height());
-        if (!sensingRect.contains(event->localPos())) {
+        const QPointF &mousePos = event->localPos();
+        if ((d->pressedPos.x() - threshold) > mousePos.x() || (d->pressedPos.x() + 2 * threshold) < mousePos.x()) {
             // the press went out of the threshold area, enable move, if the direction allows it
             d->lastPos = event->localPos();
             // connect both panels
@@ -605,13 +671,15 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         qreal dx = event->localPos().x() - d->lastPos.x();
         d->lastPos = event->localPos();
 
-        if (dx) {
+        if (dx < 0 && trailingAttached) {
+            d->clampX(x, dx);
+        }
+        if (dx > 0 && leadingAttached) {
             // clamp X into allowed dragging area
             d->clampX(x, dx);
+        }
+        if (dx) {
             // block flickable
-            if (!d->flickableInteractive && d->flickable) {
-                d->flickableInteractive = new PropertyChange(d->flickable, "interactive", false);
-            }
             d->setMoved(true);
             d->contentItem->setX(x);
         }
@@ -640,9 +708,6 @@ bool UCListItem::eventFilter(QObject *target, QEvent *event)
         d->_q_rebound();
         // only accept event, but let it be handled by the underlying or surrounding Flickables
         event->accept();
-        // FIXME: grab the event, otherwise an eventual swipe on the other list item
-        // sharing the same ListItemOption will not get the options panel attached
-        return true;
     }
     return UCStyledItemBase::eventFilter(target, event);
 }

@@ -212,9 +212,9 @@ Item {
         function test_background_height_change_on_divider_visible() {
             // make sure the testItem's divider is shown
             testItem.divider.visible = true;
-            verify(testItem.background.height < testItem.height, "ListItem's background height must be less than the item itself.");
+            verify(testItem.contentItem.height < testItem.height, "ListItem's background height must be less than the item itself.");
             testItem.divider.visible = false;
-            compare(testItem.background.height, testItem.height, "ListItem's background height must be the same as the item itself.");
+            compare(testItem.contentItem.height, testItem.height, "ListItem's background height must be the same as the item itself.");
             testItem.divider.visible = true;
         }
 
@@ -252,9 +252,9 @@ Item {
             }
             waitForRendering(data.item, 400);
             if (data.positiveDirection) {
-                verify(data.item.background.x > 0, data.tag + " options did not show up");
+                verify(data.item.contentItem.x > 0, data.tag + " options did not show up");
             } else {
-                verify(data.item.background.x < 0, data.tag + " options did not show up");
+                verify(data.item.contentItem.x < 0, data.tag + " options did not show up");
             }
 
             // dismiss
@@ -271,9 +271,9 @@ Item {
             var item1 = findChild(listView, "listItem1");
             return [
                 {tag: "Click on an other Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
-                {tag: "Click on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.background, mouse: true},
+                {tag: "Click on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.contentItem, mouse: true},
                 {tag: "Tap on an other Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
-                {tag: "Tap on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.background, mouse: false},
+                {tag: "Tap on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.contentItem, mouse: false},
             ];
         }
         function test_rebound_when_pressed_outside_or_clicked(data) {
@@ -284,7 +284,7 @@ Item {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
             waitForRendering(data.item, 400);
-            verify(data.item.background.x != 0, "The component wasn't tugged!");
+            verify(data.item.contentItem.x != 0, "The component wasn't tugged!");
             // dismiss
             if (data.mouse) {
                 mouseClick(data.clickOn, centerOf(data.clickOn).x, centerOf(data.clickOn).y);
@@ -292,7 +292,7 @@ Item {
                 TestExtras.touchClick(0, data.clickOn, centerOf(data.clickOn));
             }
             waitForRendering(data.item, 400);
-            tryCompareFunction(function(){ return data.item.background.x; }, 0, 1000);
+            tryCompareFunction(function(){ return data.item.contentItem.x; }, 0, 1000);
         }
 
         function test_listview_not_interactive_while_tugged_data() {
@@ -300,9 +300,9 @@ Item {
             var item1 = findChild(listView, "listItem1");
             return [
                 {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.background, mouse: true},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: true},
                 {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.background, mouse: false},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: false},
             ];
         }
         function test_listview_not_interactive_while_tugged(data) {
@@ -348,7 +348,7 @@ Item {
                 TestExtras.touchClick(0, selectedOption, centerOf(selectedOption));
             }
             waitForRendering(data.item, 400);
-            tryCompareFunction(function(){ return data.item.background.x; }, 0, 1000);
+            tryCompareFunction(function(){ return data.item.contentItem.x; }, 0, 1000);
         }
 
         function test_custom_trailing_delegate() {
