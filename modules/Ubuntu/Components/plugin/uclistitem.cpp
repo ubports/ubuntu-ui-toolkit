@@ -44,7 +44,6 @@ QColor getPaletteColor(const char *profile, const char *color)
     }
     return result;
 }
-
 /******************************************************************************
  * Divider
  */
@@ -89,16 +88,16 @@ void UCListItemDivider::unitsChanged()
 
 void UCListItemDivider::paletteChanged()
 {
-    QColor contentItem = getPaletteColor("normal", "background");
-    if (!contentItem.isValid()) {
+    QColor background = getPaletteColor("normal", "background");
+    if (!background.isValid()) {
         return;
     }
-    // FIXME: we need a palette value for divider colors, till then base on the contentItem
+    // FIXME: we need a palette value for divider colors, till then base on the background
     // luminance
-    qreal luminance = (contentItem.red()*212 + contentItem.green()*715 + contentItem.blue()*73)/1000.0/255.0;
-    bool lightcontentItem = (luminance > 0.85);
-    QColor startColor = lightcontentItem ? QColor("#26000000") : QColor("#26FFFFFF");
-    QColor endColor = lightcontentItem ? QColor("#14FFFFFF") : QColor("#14000000");
+    qreal luminance = (background.red()*212 + background.green()*715 + background.blue()*73)/1000.0/255.0;
+    bool lightBackground = (luminance > 0.85);
+    QColor startColor = lightBackground ? QColor("#26000000") : QColor("#26FFFFFF");
+    QColor endColor = lightBackground ? QColor("#14FFFFFF") : QColor("#14000000");
 
     m_gradient.clear();
     m_gradient.append(QGradientStop(0.0, startColor));
@@ -656,8 +655,10 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         // check if we can initiate the drag at all
         // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
         qreal threshold = UCUnits::instance().gu(d->xAxisMoveThresholdGU);
-        const QPointF &mousePos = event->localPos();
-        if ((d->pressedPos.x() - threshold) > mousePos.x() || (d->pressedPos.x() + threshold) < mousePos.x()) {
+        qreal mouseX = event->localPos().x();
+        qreal pressedX = d->pressedPos.x();
+
+        if ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold))) {
             // the press went out of the threshold area, enable move, if the direction allows it
             d->lastPos = event->localPos();
             // connect both panels
