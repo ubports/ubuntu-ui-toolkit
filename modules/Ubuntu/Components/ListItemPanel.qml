@@ -45,4 +45,9 @@ Item {
         top: contentItem ? contentItem.top : undefined
         bottom: contentItem ? contentItem.bottom : undefined
     }
+
+    Rectangle {
+        anchors.fill: parent
+        color: leadingPanel ? UbuntuColors.red : UbuntuColors.green
+    }
 }

@@ -25,55 +25,52 @@
  * The class is used to save properties and their bindings while the property is
  * altered temporarily.
  */
-PropertyChange::PropertyChange()
+PropertyChange::PropertyChange(QObject *item, const char *property)
     : m_backedUp(false)
+    , qmlProperty(item, property, qmlContext(item))
 {
-}
-PropertyChange::PropertyChange(QObject *item, const char *property, const QVariant &value)
-    : m_backedUp(false)
-{
-    backupAndSet(item, property, value);
 }
 PropertyChange::~PropertyChange()
 {
-    restore();
+    restore(this);
 }
 
 /*
- * Backup the property value or binding and set a new value. Use restore to revert
- * to original value/binding.
+ * Sets a value to the property. Will back up the original values if it wasn't yet.
+ * This function can be called many times, it will not destroy the backed up value/binding.
  */
-void PropertyChange::backupAndSet(QObject *item, const char *property, const QVariant &value)
+void PropertyChange::setValue(PropertyChange *change, const QVariant &value)
 {
-    // if there was a backup previously, restore first
-    restore();
-    // set property
-    qmlProperty = QQmlProperty(item, property, qmlContext(item));
-    // backup property
-    backup.first = QQmlPropertyPrivate::setBinding(qmlProperty, 0);
-    backup.second = qmlProperty.read();
-    // finally set the given value
-    qmlProperty.write(value);
-    m_backedUp = true;
+    if (!change) {
+        return;
+    }
+    if (!change->m_backedUp) {
+        change->backup.first = QQmlPropertyPrivate::setBinding(change->qmlProperty, 0);
+        change->backup.second = change->qmlProperty.read();
+        change->m_backedUp = true;
+    }
+    change->qmlProperty.write(value);
 }
 
 /*
  * Restore backed up value or binding.
  */
-void PropertyChange::restore()
+void PropertyChange::restore(PropertyChange *change)
 {
-    if (m_backedUp) {
+    if (!change) {
+        return;
+    }
+    if (change->m_backedUp) {
         // if there was a binding, restore it
-        if (backup.first) {
-            QQmlAbstractBinding *prevBinding = QQmlPropertyPrivate::setBinding(qmlProperty, backup.first);
-            if (prevBinding && prevBinding != backup.first) {
+        if (change->backup.first) {
+            QQmlAbstractBinding *prevBinding = QQmlPropertyPrivate::setBinding(change->qmlProperty, change->backup.first);
+            if (prevBinding && prevBinding != change->backup.first) {
                 prevBinding->destroy();
             }
         } else {
             // there was no binding, restore previous value
-            qmlProperty.write(backup.second);
+            change->qmlProperty.write(change->backup.second);
         }
-        m_backedUp = false;
+        change->m_backedUp = false;
     }
 }
-

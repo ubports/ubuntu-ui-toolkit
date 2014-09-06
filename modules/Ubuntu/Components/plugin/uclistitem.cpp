@@ -244,7 +244,7 @@ UCListItemPrivate::UCListItemPrivate()
     , pressed(false)
     , moved(false)
     , ready(false)
-    , xAxisMoveThresholdGU(1.0)
+    , xAxisMoveThresholdGU(1.5)
     , reboundAnimation(0)
     , flickableInteractive(0)
     , contentItem(new UCListItemContent)
@@ -311,15 +311,26 @@ void UCListItemPrivate::_q_rebound()
 }
 void UCListItemPrivate::_q_completeRebinding()
 {
-    // disconnect options
-    grabPanel(leadingOptions, false);
-    grabPanel(trailingOptions, false);
     // disconnect the flickable
     listenToRebind(false);
     // restore flickable's interactive and cleanup
-    delete flickableInteractive;
-    flickableInteractive = 0;
+    PropertyChange::restore(flickableInteractive);
+    // disconnect options
+    grabPanel(leadingOptions, false);
+    grabPanel(trailingOptions, false);
 }
+
+void UCListItemPrivate::_q_grabPanel(UCListItemOptions *options)
+{
+    // dicsonnect, no more need to grab async
+    Q_Q(UCListItem);
+    QObject::disconnect(options, SIGNAL(panelDetached(UCListItemOptions*)), q, SLOT(_q_grabPanel(UCListItemOptions*)));
+    qDebug() << "GRAB PANEL NOW";
+    // connect the panel to the item
+    grabPanel(options, true);
+    // grab flickable now otherwise it will steal the event!
+}
+
 // the function performs a cleanup on mouse release without any rebound animation
 void UCListItemPrivate::cleanup()
 {
@@ -377,7 +388,11 @@ bool UCListItemPrivate::grabPanel(UCListItemOptions *optionsList, bool isMoved)
 {
     Q_Q(UCListItem);
     if (isMoved) {
-        return UCListItemOptionsPrivate::connectToListItem(optionsList, q, (optionsList == leadingOptions));
+        bool grab = UCListItemOptionsPrivate::connectToListItem(optionsList, q, (optionsList == leadingOptions));
+        if (grab) {
+            PropertyChange::setValue(flickableInteractive, false);
+        }
+        return grab;
     } else {
         UCListItemOptionsPrivate::disconnectFromListItem(optionsList);
         return false;
@@ -494,10 +509,18 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         }
 
         if (d->flickable) {
+            // create the flickableInteractive property change now
+            d->flickableInteractive = new PropertyChange(d->flickable, "interactive");
             // connect to flickable to get width changes
             QObject::connect(d->flickable, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
         } else if (data.item) {
             QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
+        } else {
+            // in case we had a flickableInteractive property change active, destroy it
+            if (d->flickableInteractive) {
+                delete d->flickableInteractive;
+                d->flickableInteractive = 0;
+            }
         }
 
         // update size
@@ -592,12 +615,11 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             // clamp X into allowed dragging area
             d->clampX(x, dx);
             // block flickable
-            if (!d->flickableInteractive && d->flickable) {
-                d->flickableInteractive = new PropertyChange(d->flickable, "interactive", false);
-            }
             d->setMoved(true);
             d->contentItem->setX(x);
         }
+    } else {
+//        d->lastPos = event->localPos();
     }
 }
 
@@ -625,7 +647,7 @@ bool UCListItem::eventFilter(QObject *target, QEvent *event)
         event->accept();
         // FIXME: grab the event, otherwise an eventual swipe on the other list item
         // sharing the same ListItemOption will not get the options panel attached
-        return true;
+//        return true;
     }
     return UCStyledItemBase::eventFilter(target, event);
 }

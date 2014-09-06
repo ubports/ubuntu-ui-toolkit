@@ -48,6 +48,7 @@ public:
     void _q_rebound();
     void _q_updateSize();
     void _q_completeRebinding();
+    void _q_grabPanel(UCListItemOptions *options);
     void cleanup();
     void reboundTo(qreal x);
     void setPressed(bool pressed);

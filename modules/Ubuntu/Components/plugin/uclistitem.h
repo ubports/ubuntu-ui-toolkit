@@ -74,6 +74,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_completeRebinding())
+    Q_PRIVATE_SLOT(d_func(), void _q_grabPanel(UCListItemOptions *options))
 };
 
 #endif // UCLISTITEM_H
