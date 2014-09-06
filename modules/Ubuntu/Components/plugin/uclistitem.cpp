@@ -671,14 +671,9 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         qreal dx = event->localPos().x() - d->lastPos.x();
         d->lastPos = event->localPos();
 
-        if (dx < 0 && trailingAttached) {
-            d->clampX(x, dx);
-        }
-        if (dx > 0 && leadingAttached) {
+        if (dx) {
             // clamp X into allowed dragging area
             d->clampX(x, dx);
-        }
-        if (dx) {
             // block flickable
             d->setMoved(true);
             d->contentItem->setX(x);
