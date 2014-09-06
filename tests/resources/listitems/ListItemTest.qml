@@ -115,6 +115,10 @@ MainView {
                             color: "red"
                             pressedColor: "lime"
                         }
+                        trailingOptions: ListItemOptions {
+                            options: leading.options
+                        }
+
                         Label {
                             text: modelData + " Flickable item"
                         }
