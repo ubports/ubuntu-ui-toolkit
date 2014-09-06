@@ -51,6 +51,12 @@ Item {
         bottom: contentItem ? contentItem.bottom : undefined
     }
 
+    Rectangle {
+        anchors.fill: parent
+        // FIXME: use Palette colors instead when available
+        color: leadingPanel ? UbuntuColors.red : UbuntuColors.green
+    }
+
     Row {
         id: optionsRow
         anchors {
@@ -72,12 +78,6 @@ Item {
                     bottom: parent.bottom
                 }
                 onTriggered: panel.selected()
-
-                Rectangle {
-                    anchors.fill: parent
-                    // FIXME: use Palette colors instead when available
-                    color: panel.leadingPanel ? UbuntuColors.red : UbuntuColors.green
-                }
 
                 Loader {
                     id: delegateLoader
