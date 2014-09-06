@@ -25,12 +25,11 @@ class QQmlAbstractBinding;
 class PropertyChange
 {
 public:
-    explicit PropertyChange();
-    PropertyChange(QObject *item, const char *property, const QVariant &value);
+    PropertyChange(QObject *item, const char *property);
     ~PropertyChange();
 
-    void backupAndSet(QObject *item, const char *property, const QVariant &value);
-    void restore();
+    static void setValue(PropertyChange* change, const QVariant &value);
+    static void restore(PropertyChange* change);
 private:
     bool m_backedUp;
     QQmlProperty qmlProperty;
