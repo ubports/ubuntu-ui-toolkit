@@ -657,7 +657,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
         qreal threshold = UCUnits::instance().gu(d->xAxisMoveThresholdGU);
         const QPointF &mousePos = event->localPos();
-        if ((d->pressedPos.x() - threshold) > mousePos.x() || (d->pressedPos.x() + 2 * threshold) < mousePos.x()) {
+        if ((d->pressedPos.x() - threshold) > mousePos.x() || (d->pressedPos.x() + threshold) < mousePos.x()) {
             // the press went out of the threshold area, enable move, if the direction allows it
             d->lastPos = event->localPos();
             // connect both panels

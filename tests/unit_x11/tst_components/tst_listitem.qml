@@ -370,15 +370,15 @@ Item {
             verify(option, "Options not accessible");
             var optionSize = option.width;
             return [
-                {tag: "Snap back leading, mouse", item: testItem.background, dx: optionSize / 2 - 10, list: testItem.leadingOptions, snap: false, mouse: true},
-                {tag: "Snap back leading, touch", item: testItem.background, dx: optionSize / 2 - 10, list: testItem.leadingOptions, snap: false, mouse: false},
-                {tag: "Snap out leading, mouse", item: testItem.background, dx: optionSize / 2, list: testItem.leadingOptions, snap: true, mouse: true},
-                {tag: "Snap out leading, touch", item: testItem.background, dx: optionSize / 2, list: testItem.leadingOptions, snap: true, mouse: false},
+                {tag: "Snap back leading, mouse", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingOptions, snap: false, mouse: true},
+                {tag: "Snap back leading, touch", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingOptions, snap: false, mouse: false},
+                {tag: "Snap in leading, mouse", item: testItem.contentItem, dx: optionSize / 2, list: testItem.leadingOptions, snap: true, mouse: true},
+                {tag: "Snap in leading, touch", item: testItem.contentItem, dx: optionSize / 2, list: testItem.leadingOptions, snap: true, mouse: false},
 
-                {tag: "Snap back trailing, mouse", item: testItem.background, dx: -(optionSize / 2 - 10), list: testItem.trailingOptions, snap: false, mouse: true},
-                {tag: "Snap back trailing, touch", item: testItem.background, dx: -(optionSize / 2 - 10), list: testItem.trailingOptions, snap: false, mouse: false},
-                {tag: "Snap out trailing, mouse", item: testItem.background, dx: -(optionSize / 2 + 10), list: testItem.trailingOptions, snap: true, mouse: true},
-                {tag: "Snap out trailing, touch", item: testItem.background, dx: -(optionSize / 2 + 10), list: testItem.trailingOptions, snap: true, mouse: false},
+                {tag: "Snap back trailing, mouse", item: testItem.contentItem, dx: -(optionSize / 2 - 10), list: testItem.trailingOptions, snap: false, mouse: true},
+                {tag: "Snap back trailing, touch", item: testItem.contentItem, dx: -(optionSize / 2 - 10), list: testItem.trailingOptions, snap: false, mouse: false},
+                {tag: "Snap in trailing, mouse", item: testItem.contentItem, dx: -(optionSize / 2 + 10), list: testItem.trailingOptions, snap: true, mouse: true},
+                {tag: "Snap in trailing, touch", item: testItem.contentItem, dx: -(optionSize / 2 + 10), list: testItem.trailingOptions, snap: true, mouse: false},
             ];
         }
         function test_snap(data) {
@@ -388,7 +388,7 @@ Item {
                 TestExtras.touchDrag(0, data.item, centerOf(data.item), Qt.point(data.dx, 0));
             }
 
-            waitForRendering(data.item, 500);
+            waitForRendering(data.item, 800);
             if (data.snap) {
                 verify(data.item.x != 0, "Not snapped to be visible");
             } else {
@@ -397,10 +397,11 @@ Item {
 
             // cleanup
             if (data.mouse) {
-                flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+                mouseClick(data.item, centerOf(data.item).x, centerOf(data.item).y);
             } else {
-                TestExtras.touchDrag(0, data.item, centerOf(data.item), Qt.point(data.dx, 0));
+                TestExtras.touchClick(0, data.item, centerOf(data.item));
             }
+            waitForRendering(data.item, 800);
         }
     }
 }
