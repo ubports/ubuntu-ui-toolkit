@@ -340,7 +340,7 @@ Item {
                 TestExtras.touchClick(0, selectedOption, centerOf(selectedOption));
             }
             waitForRendering(data.item, 400);
-            tryCompareFunction(function(){ return data.item.background.x; }, 0, 1000);
+            tryCompareFunction(function(){ return data.item.contentItem.x; }, 0, 1000);
         }
     }
 }
