@@ -46,6 +46,12 @@ Item {
         bottom: contentItem ? contentItem.bottom : undefined
     }
 
+    Rectangle {
+        anchors.fill: parent
+        // FIXME: use Palette colors instead when available
+        color: leadingPanel ? UbuntuColors.red : UbuntuColors.green
+    }
+
     Row {
         id: optionsRow
         anchors {
@@ -65,12 +71,6 @@ Item {
                 anchors {
                     top: parent.top
                     bottom: parent.bottom
-                }
-
-                Rectangle {
-                    anchors.fill: parent
-                    // FIXME: use Palette colors instead when available
-                    color: panel.leadingPanel ? UbuntuColors.red : UbuntuColors.green
                 }
 
                 Loader {
