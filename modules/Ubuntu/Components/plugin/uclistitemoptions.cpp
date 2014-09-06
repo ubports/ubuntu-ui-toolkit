@@ -80,7 +80,6 @@ bool UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCL
     // one is rebounding
     if (_this->panelItem->parentItem()) {
         // connect panelDetached() signal to listItem
-        qDebug() << "WAIT";
         QObject::connect(options, SIGNAL(panelDetached(UCListItemOptions*)),
                          listItem, SLOT(_q_grabPanel(UCListItemOptions*)), Qt::UniqueConnection);
         return false;

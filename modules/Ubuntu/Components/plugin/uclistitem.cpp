@@ -282,7 +282,7 @@ void UCListItemPrivate::init()
     UCUbuntuAnimation animationCodes;
     reboundAnimation = new QQuickPropertyAnimation(q);
     reboundAnimation->setEasing(animationCodes.StandardEasing());
-    reboundAnimation->setDuration(animationCodes.SleepyDuration());
+    reboundAnimation->setDuration(animationCodes.SnapDuration());
     reboundAnimation->setTargetObject(contentItem);
     reboundAnimation->setProperty("x");
     reboundAnimation->setAlwaysRunToEnd(true);
@@ -323,10 +323,8 @@ void UCListItemPrivate::_q_grabPanel(UCListItemOptions *options)
     // dicsonnect, no more need to grab async
     Q_Q(UCListItem);
     QObject::disconnect(options, SIGNAL(panelDetached(UCListItemOptions*)), q, SLOT(_q_grabPanel(UCListItemOptions*)));
-    qDebug() << "GRAB PANEL NOW";
     // connect the panel to the item
     grabPanel(options, true);
-    // grab flickable now otherwise it will steal the event!
 }
 
 // the function performs a cleanup on mouse release without any rebound animation
@@ -464,6 +462,52 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  * Each ListItem has a thin divider shown on the bottom of the component. This
  * divider can be configured through the \l divider grouped property, which can
  * configure its margins from the edges of the ListItem as well as its visibility.
+ *
+ * ListItem can handle options that can ge tugged from front ot right of the item.
+ * These options are Action elements visualized in panels attached to the front
+ * or to the end of the item, and are revealed by swiping the item horizontally.
+ * The tug is started only after the mouse/touch move had passed a given threshold.
+ * These options are configured through the \l leadingOptions as well as \l
+ * trailingOptions properties.
+ * \qml
+ * ListItem {
+ *     id: listItem
+ *     leadingOptions: ListItemOptions {
+ *         Action {
+ *             iconName: "delete"
+ *             onTriggered: listItem.destroy()
+ *         }
+ *     }
+ *     trailingOptions: ListItemOptions {
+ *         Action {
+ *             iconName: "search"
+ *             onTriggered: {
+ *                 // do some search
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
+ * \note A ListItem cannot use the same ListItemOption instance for both leading or
+ * trailing options. If it is desired to have the same action present in both leading
+ * and trailing options, one of the ListItemOption options list can use the other's
+ * list. In the following example the list item can be deleted through both option
+ * leading and trailing options:
+ * \qml
+ * ListItem {
+ *     id: listItem
+ *     leadingOptions: ListItemOptions {
+ *         Action {
+ *             iconName: "delete"
+ *             onTriggered: listItem.destroy()
+ *         }
+ *     }
+ *     trailingOptions: ListItemOptions {
+ *         options: leadingOptions.options
+ *     }
+ * }
+ * \endqml
+ * \sa ListItemOptions
  */
 
 /*!
