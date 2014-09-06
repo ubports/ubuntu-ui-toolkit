@@ -537,6 +537,7 @@ UCListItem::~UCListItem()
 void UCListItem::componentComplete()
 {
     UCStyledItemBase::componentComplete();
+    Q_D(UCListItem);
     d->ready = true;
     // is there an index context property?
     QQmlContext *context = qmlContext(this);
