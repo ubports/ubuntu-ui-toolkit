@@ -107,7 +107,7 @@ MainView {
                     name: "override"
                     when: main.override
                     PropertyChanges {
-                        target: listItem.background
+                        target: listItem.contentItem
                         pressedColor: "brown"
                     }
                 }
@@ -140,9 +140,11 @@ MainView {
                             options: leadingOptions.options
                         }
 
-                        background {
+                        contentItem {
+                            color: "red"
                             pressedColor: "lime"
                         }
+
                         Label {
                             text: modelData + " Flickable item"
                         }

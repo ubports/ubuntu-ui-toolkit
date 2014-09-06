@@ -1,7 +1,0 @@
-UbuntuColors.qml is located in the Colors subdirectory because
-QuickUtils::createQmlObject() fails if the QML file is located in a
-folder that has a qmldir file with JavaScript modules.
-
-UbuntuColors 1.1 is not in a file named UbuntuColors11.qml but in
-UbuntuColors.qml so that qdoc can properly detect the component
-name without a qmldir file.

@@ -76,14 +76,14 @@ Item {
         ListItem {
             id: testItem
             width: parent.width
-            background.color: "blue"
+            contentItem.color: "blue"
             leadingOptions: leading
             trailingOptions: ListItemOptions {
                 options: leading.options
             }
 
             Item {
-                id: contentItem
+                id: bodyItem
                 anchors.fill: parent
             }
         }
@@ -138,9 +138,9 @@ Item {
         }
 
         function test_0_defaults() {
-            verify(defaults.background !== null, "Defaults is null");
-            compare(defaults.background.color, "#000000", "Transparent by default");
-            compare(defaults.background.pressedColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
+            verify(defaults.contentItem !== null, "Defaults is null");
+            compare(defaults.contentItem.color, "#000000", "Transparent by default");
+            compare(defaults.contentItem.pressedColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
             compare(defaults.pressed, false, "Not pressed buy default");
             compare(defaults.divider.visible, true, "divider is visible by default");
             compare(defaults.divider.leftMargin, units.gu(2), "divider's left margin is 2GU");
@@ -151,8 +151,8 @@ Item {
             compare(optionsDefault.panelItem, null, "There is no panelItem created by default.");
         }
 
-        function test_children_in_background() {
-            compare(contentItem.parent, testItem.background, "Content is not in the right holder!");
+        function test_children_in_content_item() {
+            compare(bodyItem.parent, testItem.contentItem, "Content is not in the right holder!");
         }
 
         function test_pressedChanged_on_click() {
@@ -212,9 +212,9 @@ Item {
         function test_background_height_change_on_divider_visible() {
             // make sure the testItem's divider is shown
             testItem.divider.visible = true;
-            verify(testItem.background.height < testItem.height, "ListItem's background height must be less than the item itself.");
+            verify(testItem.contentItem.height < testItem.height, "ListItem's background height must be less than the item itself.");
             testItem.divider.visible = false;
-            compare(testItem.background.height, testItem.height, "ListItem's background height must be the same as the item itself.");
+            compare(testItem.contentItem.height, testItem.height, "ListItem's background height must be the same as the item itself.");
             testItem.divider.visible = true;
         }
 
@@ -252,9 +252,9 @@ Item {
             }
             waitForRendering(data.item, 400);
             if (data.positiveDirection) {
-                verify(data.item.background.x > 0, data.tag + " options did not show up");
+                verify(data.item.contentItem.x > 0, data.tag + " options did not show up");
             } else {
-                verify(data.item.background.x < 0, data.tag + " options did not show up");
+                verify(data.item.contentItem.x < 0, data.tag + " options did not show up");
             }
 
             // dismiss
@@ -271,9 +271,9 @@ Item {
             var item1 = findChild(listView, "listItem1");
             return [
                 {tag: "Click on an other Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
-                {tag: "Click on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.background, mouse: true},
+                {tag: "Click on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.contentItem, mouse: true},
                 {tag: "Tap on an other Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
-                {tag: "Tap on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.background, mouse: false},
+                {tag: "Tap on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.contentItem, mouse: false},
             ];
         }
         function test_rebound_when_pressed_outside_or_clicked(data) {
@@ -284,7 +284,7 @@ Item {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
             waitForRendering(data.item, 400);
-            verify(data.item.background.x != 0, "The component wasn't tugged!");
+            verify(data.item.contentItem.x != 0, "The component wasn't tugged!");
             // dismiss
             if (data.mouse) {
                 mouseClick(data.clickOn, centerOf(data.clickOn).x, centerOf(data.clickOn).y);
@@ -292,7 +292,7 @@ Item {
                 TestExtras.touchClick(0, data.clickOn, centerOf(data.clickOn));
             }
             waitForRendering(data.item, 400);
-            tryCompareFunction(function(){ return data.item.background.x; }, 0, 1000);
+            tryCompareFunction(function(){ return data.item.contentItem.x; }, 0, 1000);
         }
 
         function test_listview_not_interactive_while_tugged_data() {
@@ -300,9 +300,9 @@ Item {
             var item1 = findChild(listView, "listItem1");
             return [
                 {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.background, mouse: true},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: true},
                 {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.background, mouse: false},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: false},
             ];
         }
         function test_listview_not_interactive_while_tugged(data) {
@@ -348,7 +348,7 @@ Item {
                 TestExtras.touchClick(0, selectedOption, centerOf(selectedOption));
             }
             waitForRendering(data.item, 400);
-            tryCompareFunction(function(){ return data.item.background.x; }, 0, 1000);
+            tryCompareFunction(function(){ return data.item.contentItem.x; }, 0, 1000);
         }
 
         function test_custom_trailing_delegate() {
@@ -357,7 +357,6 @@ Item {
             flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
             verify(trailing.panelItem, "Panel is not visible");
             var custom = findChild(trailing.panelItem, "custom_delegate");
-            print("custom", custom)
             verify(custom, "Custom delegate not in use");
             // cleanup
             mouseClick(main, 0, 0);
@@ -370,15 +369,15 @@ Item {
             verify(option, "Options not accessible");
             var optionSize = option.width;
             return [
-                {tag: "Snap back leading, mouse", item: testItem.background, dx: optionSize / 2 - 10, list: testItem.leadingOptions, snap: false, mouse: true},
-                {tag: "Snap back leading, touch", item: testItem.background, dx: optionSize / 2 - 10, list: testItem.leadingOptions, snap: false, mouse: false},
-                {tag: "Snap out leading, mouse", item: testItem.background, dx: optionSize / 2, list: testItem.leadingOptions, snap: true, mouse: true},
-                {tag: "Snap out leading, touch", item: testItem.background, dx: optionSize / 2, list: testItem.leadingOptions, snap: true, mouse: false},
+                {tag: "Snap back leading, mouse", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingOptions, snap: false, mouse: true},
+                {tag: "Snap back leading, touch", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingOptions, snap: false, mouse: false},
+                {tag: "Snap in leading, mouse", item: testItem.contentItem, dx: optionSize / 2 + 10, list: testItem.leadingOptions, snap: true, mouse: true},
+                {tag: "Snap in leading, touch", item: testItem.contentItem, dx: optionSize / 2 + 10, list: testItem.leadingOptions, snap: true, mouse: false},
 
-                {tag: "Snap back trailing, mouse", item: testItem.background, dx: -(optionSize / 2 - 10), list: testItem.trailingOptions, snap: false, mouse: true},
-                {tag: "Snap back trailing, touch", item: testItem.background, dx: -(optionSize / 2 - 10), list: testItem.trailingOptions, snap: false, mouse: false},
-                {tag: "Snap out trailing, mouse", item: testItem.background, dx: -(optionSize / 2 + 10), list: testItem.trailingOptions, snap: true, mouse: true},
-                {tag: "Snap out trailing, touch", item: testItem.background, dx: -(optionSize / 2 + 10), list: testItem.trailingOptions, snap: true, mouse: false},
+                {tag: "Snap back trailing, mouse", item: testItem.contentItem, dx: -(optionSize / 2 - 10), list: testItem.trailingOptions, snap: false, mouse: true},
+                {tag: "Snap back trailing, touch", item: testItem.contentItem, dx: -(optionSize / 2 - 10), list: testItem.trailingOptions, snap: false, mouse: false},
+                {tag: "Snap in trailing, mouse", item: testItem.contentItem, dx: -(optionSize / 2 + 10), list: testItem.trailingOptions, snap: true, mouse: true},
+                {tag: "Snap in trailing, touch", item: testItem.contentItem, dx: -(optionSize / 2 + 10), list: testItem.trailingOptions, snap: true, mouse: false},
             ];
         }
         function test_snap(data) {
@@ -388,7 +387,7 @@ Item {
                 TestExtras.touchDrag(0, data.item, centerOf(data.item), Qt.point(data.dx, 0));
             }
 
-            waitForRendering(data.item, 500);
+            waitForRendering(data.item, 800);
             if (data.snap) {
                 verify(data.item.x != 0, "Not snapped to be visible");
             } else {
@@ -397,10 +396,11 @@ Item {
 
             // cleanup
             if (data.mouse) {
-                flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+                mouseClick(data.item, centerOf(data.item).x, centerOf(data.item).y);
             } else {
-                TestExtras.touchDrag(0, data.item, centerOf(data.item), Qt.point(data.dx, 0));
+                TestExtras.touchClick(0, data.item, centerOf(data.item));
             }
+            waitForRendering(data.item, 800);
         }
     }
 }

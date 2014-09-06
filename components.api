@@ -43,22 +43,6 @@ AbstractButton
 CheckBox 0.1 1.0
 AbstractButton
     property bool checked
-modules/Ubuntu/Components/Colors/UbuntuColors.qml
-QtObject
-    readonly property color orange
-    readonly property color lightAubergine
-    readonly property color midAubergine
-    readonly property color darkAubergine
-    readonly property color warmGrey
-    readonly property color coolGrey
-    property Gradient orangeGradient
-    property Gradient greyGradient
-    readonly property color lightGrey
-    readonly property color darkGrey
-    readonly property color red
-    readonly property color green
-    readonly property color blue
-    readonly property color purple
 ComboButton 1.1
 Button
     property bool expanded
@@ -98,8 +82,6 @@ Icon10
 Label 0.1 1.0
 Text
     property string fontSize
-ListItem 1.1
-ListItemBase
 Base 0.1 1.0
 Empty
     property variant icon
@@ -355,7 +337,7 @@ StyledItem
 PickerDelegate 0.1 1.0
 AbstractButton
     readonly property Picker picker
-modules/Ubuntu/Components/Pickers/PickerPanel.qml
+PickerPanel 0.1 1.0
 Object
     function openDatePicker(caller, property, mode)
 ActionSelectionPopover 0.1 1.0
@@ -659,6 +641,32 @@ Item
     property Item pageStack
     property bool opened
     property bool locked
+UbuntuColors 1.1
+QtObject
+    readonly property color orange
+    readonly property color lightAubergine
+    readonly property color midAubergine
+    readonly property color darkAubergine
+    readonly property color warmGrey
+    readonly property color coolGrey
+    property Gradient orangeGradient
+    property Gradient greyGradient
+    readonly property color lightGrey
+    readonly property color darkGrey
+    readonly property color red
+    readonly property color green
+    readonly property color blue
+    readonly property color purple
+UbuntuColors 0.1 1.0
+QtObject
+    readonly property color orange
+    readonly property color lightAubergine
+    readonly property color midAubergine
+    readonly property color darkAubergine
+    readonly property color warmGrey
+    readonly property color coolGrey
+    property Gradient orangeGradient
+    property Gradient greyGradient
 UbuntuListView 0.1 1.0
 ListView
     property int expandedIndex
@@ -806,22 +814,21 @@ plugins.qmltypes
     name: "UCInverseMouse"
     prototype: "UCMouse"
     exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
-    name: "UCListItemBackground"
-    prototype: "QQuickItem"
-    Property { name: "color"; type: "QColor" }
-    Property { name: "pressedColor"; type: "QColor" }
-    name: "UCListItemBase"
+    name: "UCListItem"
     prototype: "UCStyledItemBase"
-    exports: ["ListItemBase 1.1"]
-    Property { name: "background"; type: "UCListItemBackground"; isReadonly: true; isPointer: true }
+    exports: ["ListItem 1.1"]
+    Property { name: "contentItem"; type: "UCListItemContent"; isReadonly: true; isPointer: true }
     Property { name: "divider"; type: "UCListItemDivider"; isReadonly: true; isPointer: true }
     Property { name: "leadingOptions"; type: "UCListItemOptions"; isPointer: true }
     Property { name: "trailingOptions"; type: "UCListItemOptions"; isPointer: true }
     Property { name: "pressed"; type: "bool"; isReadonly: true }
     Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
-    Property { name: "owningItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Signal { name: "clicked" }
+    name: "UCListItemContent"
+    prototype: "QQuickItem"
+    Property { name: "color"; type: "QColor" }
+    Property { name: "pressedColor"; type: "QColor" }
     name: "UCListItemDivider"
     prototype: "QObject"
     Property { name: "visible"; type: "bool" }
@@ -833,6 +840,9 @@ plugins.qmltypes
     Property { name: "delegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "options"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "panelItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
+    Signal {
+    name: "panelDetached"
+    Parameter { name: "options"; type: "UCListItemOptions"; isPointer: true }
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1", "Mouse 1.0"]

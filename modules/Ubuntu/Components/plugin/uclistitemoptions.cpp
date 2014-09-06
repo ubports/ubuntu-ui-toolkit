@@ -40,7 +40,7 @@ UCListItemOptionsPrivate::~UCListItemOptionsPrivate()
 
 void UCListItemOptionsPrivate::_q_handlePanelDrag()
 {
-    UCListItemBase *listItem = qobject_cast<UCListItemBase*>(panelItem->parentItem());
+    UCListItem *listItem = qobject_cast<UCListItem*>(panelItem->parentItem());
     if (!listItem) {
         return;
     }
@@ -96,14 +96,23 @@ void UCListItemOptionsPrivate::funcClear(QQmlListProperty<QObject> *list)
     return plist->options.clear();
 }
 
-bool UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCListItemBase *listItem, bool leading)
+bool UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCListItem *listItem, bool leading)
 {
     UCListItemOptionsPrivate *_this = get(options);
     if (!_this || !_this->createPanelItem() || isConnectedTo(options, listItem)) {
         return isConnectedTo(options, listItem);
     }
+    // check if the panel is still connected to a ListItem
+    // this may happen if there is a swipe over an other item while the previous
+    // one is rebounding
+    if (_this->panelItem->parentItem()) {
+        // connect panelDetached() signal to listItem
+        QObject::connect(options, SIGNAL(panelDetached(UCListItemOptions*)),
+                         listItem, SLOT(_q_grabPanel(UCListItemOptions*)), Qt::UniqueConnection);
+        return false;
+    }
     _this->leading = leading;
-    _this->panelItem->setProperty("listItemIndex", UCListItemBasePrivate::get(listItem)->index);
+    _this->panelItem->setProperty("listItemIndex", UCListItemPrivate::get(listItem)->index);
     _this->panelItem->setProperty("leadingPanel", leading);
     _this->panelItem->setParentItem(listItem);
     _this->offsetDragged = 0.0;
@@ -123,9 +132,11 @@ void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options
     _this->panelItem->setParentItem(0);
     _this->connected = false;
     _this->leading = false;
+    // emit detached signal so we can connect to other list item if someone is waiting for that
+    Q_EMIT options->panelDetached(options);
 }
 
-bool UCListItemOptionsPrivate::isConnectedTo(UCListItemOptions *options, UCListItemBase *listItem)
+bool UCListItemOptionsPrivate::isConnectedTo(UCListItemOptions *options, UCListItem *listItem)
 {
     UCListItemOptionsPrivate *_this = get(options);
     return _this && _this->panelItem && _this->connected && (_this->panelItem->parentItem() == listItem);

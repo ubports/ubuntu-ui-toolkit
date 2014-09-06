@@ -1,4 +1,4 @@
-# English (Australia) translation for ubuntu-ui-toolkit
+# Indonesian translation for ubuntu-ui-toolkit
 # Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
 # This file is distributed under the same license as the ubuntu-ui-toolkit package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-05-30 14:06+0200\n"
-"PO-Revision-Date: 2014-08-26 10:51+0000\n"
+"PO-Revision-Date: 2014-08-31 05:21+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: English (Australia) <en_AU@li.org>\n"
+"Language-Team: Indonesian <id@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-08-28 06:25+0000\n"
-"X-Generator: Launchpad (build 17174)\n"
+"X-Launchpad-Export-Date: 2014-09-01 07:29+0000\n"
+"X-Generator: Launchpad (build 17176)\n"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:22
 msgid "NumberAnimation"
@@ -32,58 +32,58 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:25
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:44
 msgid "Standard"
-msgstr "Standard"
+msgstr "Standar"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:56
 msgid "Standard Durations"
-msgstr "Standard Durations"
+msgstr "Durasi Standar"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:60
 msgid "Snap"
-msgstr "Snap"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:96
 msgid "Fast"
-msgstr "Fast"
+msgstr "Cepat"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:132
 msgid "Slow"
-msgstr "Slow"
+msgstr "Lambat"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:157
 msgid "Sleepy"
-msgstr "Sleepy"
+msgstr "Mengantuk"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:28
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:36
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:50
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:59
 msgid "Call"
-msgstr "Call"
+msgstr "Panggil"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:33
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:26
 msgid "Color"
-msgstr "Colour"
+msgstr "Warna"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:42
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:41
 msgid "Icon"
-msgstr "Icon"
+msgstr "Ikon"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:56
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:73
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:41
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:75
 msgid "Disabled"
-msgstr ""
+msgstr "Dinonaktifkan"
 
 #: examples/ubuntu-ui-toolkit-gallery/Dialog.qml:30
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:42
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:41
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:74
 msgid "Open"
-msgstr ""
+msgstr "Buka"
 
 #: examples/ubuntu-ui-toolkit-gallery/Icons.qml:25
 msgid "Scaling"
@@ -91,7 +91,7 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Icons.qml:50
 msgid "Colorization"
-msgstr ""
+msgstr "Pewarnaan"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:34
@@ -102,7 +102,7 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:83
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:95
 msgid "Label"
-msgstr ""
+msgstr "Label"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:31
 msgid "Subtitled"
@@ -110,7 +110,7 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:35
 msgid "Secondary label"
-msgstr ""
+msgstr "Label sekunder"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:50
 msgid "Progression"
@@ -118,11 +118,11 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:59
 msgid "Single value"
-msgstr ""
+msgstr "Nilai tunggal"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:63
 msgid "Value"
-msgstr ""
+msgstr "Nilai"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:68
 msgid "Multi value"
@@ -131,22 +131,22 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:72
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:84
 msgid "Value 1"
-msgstr ""
+msgstr "Nilai 1"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:73
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:85
 msgid "Value 2"
-msgstr ""
+msgstr "Nilai 2"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:74
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:86
 msgid "Value 3"
-msgstr ""
+msgstr "Nilai 3"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:75
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:87
 msgid "Value 4"
-msgstr ""
+msgstr "Nilai 4"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:80
 msgid "Value selector"
@@ -154,11 +154,11 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:92
 msgid "Control"
-msgstr ""
+msgstr "Kendali"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:103
 msgid "Removable"
-msgstr ""
+msgstr "Dapat Dilepas"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:106
 msgid "Slide to remove"
@@ -174,35 +174,35 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:74
 msgid "Action #1"
-msgstr ""
+msgstr "Aksi #1"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:78
 msgid "Action #2"
-msgstr ""
+msgstr "Aksi #2"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:82
 msgid "Action #3"
-msgstr ""
+msgstr "Aksi #3"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:86
 msgid "Action #4"
-msgstr ""
+msgstr "Aksi #4"
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:90
 msgid "Action #5"
-msgstr ""
+msgstr "Aksi #5"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:22
 msgid "Progress Bar"
-msgstr ""
+msgstr "Bilah Kemajuan"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:45
 msgid "Infinite"
-msgstr ""
+msgstr "Tak hingga"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:55
 msgid "Activity Indicator"
-msgstr ""
+msgstr "Indikator Aktivitas"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:26
 msgid "The visual style of the Sheet is early work and thus clunky looking."
@@ -211,14 +211,14 @@ msgstr ""
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:51
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:84
 msgid "Title"
-msgstr ""
+msgstr "Judul"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:32
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:45
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:60
 #, qt-format
 msgid "value = %1"
-msgstr ""
+msgstr "nilai = %1"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:37
 msgid "Live Update"
@@ -234,15 +234,15 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:53
 msgid "Password"
-msgstr ""
+msgstr "Sandi"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:63
 msgid "Numbers"
-msgstr ""
+msgstr "Angka"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:87
 msgid "Default"
-msgstr ""
+msgstr "Baku"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:96
 msgid "Expanding"
@@ -264,15 +264,15 @@ msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:44
 msgid "Image"
-msgstr ""
+msgstr "Citra"
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:57
 msgid "Radius"
-msgstr ""
+msgstr "Jari-jari"
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:87
 msgid "Sizes"
-msgstr ""
+msgstr "Ukuran"
 
 #: examples/unit-converter/unit-converter.qml:147
 msgid "Clear"
@@ -280,19 +280,19 @@ msgstr ""
 
 #: examples/unit-converter/unit-converter.qml:161
 msgid "Lengths"
-msgstr ""
+msgstr "Panjang"
 
 #: examples/unit-converter/unit-converter.qml:179
 msgid "Weights"
-msgstr ""
+msgstr "Berat"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
-msgstr ""
+msgstr "Cara pakai: "
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
-msgstr ""
+msgstr "Opsi:"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format

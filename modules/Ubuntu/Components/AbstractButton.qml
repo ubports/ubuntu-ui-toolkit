@@ -103,7 +103,6 @@ ActionItem {
         hoverEnabled: true
 
         onClicked: {
-            button.requestFocus();
             if (button.__acceptEvents) {
                 pressEffect.start()
                 button.clicked()

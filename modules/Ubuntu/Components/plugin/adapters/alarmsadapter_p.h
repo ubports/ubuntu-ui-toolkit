@@ -86,8 +86,10 @@ public:
 
     void organizerEventFromAlarmData(const AlarmData &alarm, QOrganizerTodo &event);
     int alarmDataFromOrganizerEvent(const QOrganizerTodo &event, AlarmData &alarm);
-    QSet<Qt::DayOfWeek> daysToSet(const AlarmData &alarm) const;
+    QSet<Qt::DayOfWeek> daysToSet(int days) const;
     void daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set);
+
+    bool verifyChange(const QVariant &cookie, AlarmData::Change change, const QVariant &value);
 
 public Q_SLOTS:
     bool fetchAlarms();

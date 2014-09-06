@@ -20,14 +20,14 @@
 #include <QtQuick/QQuickItem>
 #include "ucstyleditembase.h"
 
-class UCListItemBackground;
+class UCListItemContent;
 class UCListItemDivider;
 class UCListItemOptions;
-class UCListItemBasePrivate;
-class UCListItemBase : public UCStyledItemBase
+class UCListItemPrivate;
+class UCListItem : public UCStyledItemBase
 {
     Q_OBJECT
-    Q_PROPERTY(UCListItemBackground *background READ background CONSTANT)
+    Q_PROPERTY(UCListItemContent *contentItem READ contentItem CONSTANT)
     Q_PROPERTY(UCListItemDivider *divider READ divider CONSTANT)
     Q_PROPERTY(UCListItemOptions *leadingOptions READ leadingOptions WRITE setLeadingOptions NOTIFY leadingOptionsChanged DESIGNABLE false)
     Q_PROPERTY(UCListItemOptions *trailingOptions READ trailingOptions WRITE setTrailingOptions NOTIFY trailingOptionsChanged DESIGNABLE false)
@@ -35,20 +35,17 @@ class UCListItemBase : public UCStyledItemBase
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
-
-    Q_PROPERTY(QQuickItem *owningItem READ owningItem NOTIFY owningItemChanged)
 public:
-    explicit UCListItemBase(QQuickItem *parent = 0);
-    ~UCListItemBase();
+    explicit UCListItem(QQuickItem *parent = 0);
+    ~UCListItem();
 
-    UCListItemBackground *background() const;
+    UCListItemContent *contentItem() const;
     UCListItemDivider *divider() const;
     UCListItemOptions *leadingOptions() const;
     void setLeadingOptions(UCListItemOptions *options);
     UCListItemOptions *trailingOptions() const;
     void setTrailingOptions(UCListItemOptions *options);
     bool pressed() const;
-    QQuickItem *owningItem();
 
 protected:
     void componentComplete();
@@ -65,18 +62,19 @@ Q_SIGNALS:
     void trailingOptionsChanged();
     void pressedChanged();
     void childrenChanged();
-    void owningItemChanged();
 
     void clicked();
 
 public Q_SLOTS:
 
 private:
-    Q_DECLARE_PRIVATE(UCListItemBase)
+    Q_DECLARE_PRIVATE(UCListItem)
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_completeRebinding())
+    Q_PRIVATE_SLOT(d_func(), void _q_grabPanel(UCListItemOptions *options))
 };
 
 #endif // UCLISTITEM_H

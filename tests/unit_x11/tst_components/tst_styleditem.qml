@@ -90,58 +90,6 @@ Item {
                 }
             }
         }
-        StyledItem {
-            id: activeScope2
-            objectName: "activeScope"
-            width: units.gu(50)
-            height: units.gu(20)
-            activeFocusOnPress: true
-
-            Rectangle {
-                width: height
-                height: units.gu(10)
-                color: "green"
-                anchors.centerIn: parent
-
-                StyledItem {
-                    objectName: "in_active_scope"
-                    activeFocusOnPress: true
-                    anchors.fill: parent
-                    MouseArea {
-                        focus: true
-                        objectName: "mouseArea"
-                        anchors.fill: parent
-                        onClicked: parent.requestFocus()
-                    }
-                }
-            }
-        }
-        StyledItem {
-            id: activeScope3
-            objectName: "activeScope"
-            width: units.gu(50)
-            height: units.gu(20)
-            activeFocusOnPress: true
-
-            Rectangle {
-                width: height
-                height: units.gu(10)
-                color: "green"
-                anchors.centerIn: parent
-
-                StyledItem {
-                    objectName: "in_active_scope"
-                    activeFocusOnPress: true
-                    anchors.fill: parent
-                    MouseArea {
-                        focus: true
-                        objectName: "mouseArea"
-                        anchors.fill: parent
-                        Mouse.forwardTo: [parent]
-                    }
-                }
-            }
-        }
     }
 
     UbuntuTestCase {
@@ -152,9 +100,7 @@ Item {
              return [
                  {tag: "main scope is passive", mainScope: passiveScope, innerScope: "in_passive_scope", focusing: false},
                  {tag: "main scope is active", mainScope: activeScope, innerScope: "in_active_scope", focusing: true},
-                 {tag: "MouseArea as child, suppressing", mainScope: activeScope1, innerScope: "mouseArea", focusing: false},
-                 {tag: "MouseArea as child, gaining", mainScope: activeScope2, innerScope: "mouseArea", focusing: true},
-                 {tag: "MouseArea as child, forwarding", mainScope: activeScope3, innerScope: "mouseArea", focusing: true},
+                 {tag: "MouseArea as child, gaining", mainScope: activeScope1, innerScope: "mouseArea", focusing: true},
              ];
          }
          function test_scope_focusing(data) {

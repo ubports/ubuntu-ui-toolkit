@@ -24,13 +24,14 @@ Item {
     id: panel
     width: optionsRow.childrenRect.width
 
-    readonly property Item contentItem: parent ? parent.background : null
+    readonly property Item contentItem: parent ? parent.contentItem : null
 
     /*
       Index of the ListItem, if the ListItem is inside a ListView or has been
       created using a Repeater.
       */
     property int listItemIndex: -1
+
     /*
       Specifies whether the panel is used to visualize leading or trailing options.
       */
@@ -55,6 +56,12 @@ Item {
         right: contentItem ? (leadingPanel ? contentItem.left : undefined) : undefined
         top: contentItem ? contentItem.top : undefined
         bottom: contentItem ? contentItem.bottom : undefined
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        // FIXME: use Palette colors instead when available
+        color: leadingPanel ? UbuntuColors.red : UbuntuColors.green
     }
 
     Row {
@@ -85,12 +92,6 @@ Item {
                         action.triggered(null);
                     }
                     panel.selected();
-                }
-
-                Rectangle {
-                    anchors.fill: parent
-                    // FIXME: use Palette colors instead when available
-                    color: panel.leadingPanel ? UbuntuColors.red : UbuntuColors.green
                 }
 
                 Loader {
