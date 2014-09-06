@@ -282,7 +282,7 @@ void UCListItemPrivate::init()
     UCUbuntuAnimation animationCodes;
     reboundAnimation = new QQuickPropertyAnimation(q);
     reboundAnimation->setEasing(animationCodes.StandardEasing());
-    reboundAnimation->setDuration(animationCodes.SnapDuration());
+    reboundAnimation->setDuration(animationCodes.SleepyDuration());
     reboundAnimation->setTargetObject(contentItem);
     reboundAnimation->setProperty("x");
     reboundAnimation->setAlwaysRunToEnd(true);
@@ -311,8 +311,6 @@ void UCListItemPrivate::_q_rebound()
 }
 void UCListItemPrivate::_q_completeRebinding()
 {
-    // disconnect the flickable
-    listenToRebind(false);
     // restore flickable's interactive and cleanup
     PropertyChange::restore(flickableInteractive);
     // disconnect options
@@ -553,15 +551,13 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
     UCStyledItemBase::mousePressEvent(event);
     Q_D(UCListItem);
     if (!d->flickable.isNull() && d->flickable->isMoving()) {
-        // while moving, we cannot select any items
+        // while moving, we cannot select or tug any items
         return;
     }
     d->setPressed(true);
     d->lastPos = d->pressedPos = event->localPos();
     // connect the Flickable to know when to rebound
-    if (!d->moved) {
-        d->listenToRebind(true);
-    }
+    d->listenToRebind(true);
     // accept the event so we get the rest of the events as well
     event->setAccepted(true);
 }
@@ -572,6 +568,8 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
     Q_D(UCListItem);
     // set released
     if (d->pressed) {
+        // disconnect the flickable
+        d->listenToRebind(false);
 
         if (!d->suppressClick) {
             Q_EMIT clicked();
@@ -589,15 +587,15 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     Q_D(UCListItem);
     UCStyledItemBase::mouseMoveEvent(event);
 
-    // grab the tugging only if the delta between the first press and the current
-    // pos is > xAxis threshold
+    // accept the tugging only if the move is within the threshold
     bool leadingAttached = UCListItemOptionsPrivate::isConnectedTo(d->leadingOptions, this);
     bool trailingAttached = UCListItemOptionsPrivate::isConnectedTo(d->trailingOptions, this);
     if (d->pressed && !(leadingAttached || trailingAttached)) {
         // check if we can initiate the drag at all
+        // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
         qreal threshold = UCUnits::instance().gu(d->xAxisMoveThresholdGU);
-        QRectF sensingRect(d->pressedPos.x() - threshold, 0, 2 * threshold, height());
-        if (!sensingRect.contains(event->localPos())) {
+        const QPointF &mousePos = event->localPos();
+        if ((d->pressedPos.x() - threshold) > mousePos.x() || (d->pressedPos.x() + 2 * threshold) < mousePos.x()) {
             // the press went out of the threshold area, enable move, if the direction allows it
             d->lastPos = event->localPos();
             // connect both panels
@@ -611,15 +609,18 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         qreal dx = event->localPos().x() - d->lastPos.x();
         d->lastPos = event->localPos();
 
-        if (dx) {
+        if (dx < 0 && trailingAttached) {
+            d->clampX(x, dx);
+        }
+        if (dx > 0 && leadingAttached) {
             // clamp X into allowed dragging area
             d->clampX(x, dx);
+        }
+        if (dx) {
             // block flickable
             d->setMoved(true);
             d->contentItem->setX(x);
         }
-    } else {
-//        d->lastPos = event->localPos();
     }
 }
 
@@ -645,9 +646,6 @@ bool UCListItem::eventFilter(QObject *target, QEvent *event)
         d->_q_rebound();
         // only accept event, but let it be handled by the underlying or surrounding Flickables
         event->accept();
-        // FIXME: grab the event, otherwise an eventual swipe on the other list item
-        // sharing the same ListItemOption will not get the options panel attached
-//        return true;
     }
     return UCStyledItemBase::eventFilter(target, event);
 }
