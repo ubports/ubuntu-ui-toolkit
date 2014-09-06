@@ -127,6 +127,7 @@ protected:
 private Q_SLOTS:
     void unitsChanged();
     void paletteChanged();
+    void onListViewCountCanged();
 
 private:
     void resizeAndUpdate()
@@ -140,6 +141,7 @@ private:
     void setRightMargin(qreal rightMargin);
 
     bool m_visible:1;
+    bool m_lastItem:1;
     bool m_leftMarginChanged:1;
     bool m_rightMarginChanged:1;
     qreal m_thickness;

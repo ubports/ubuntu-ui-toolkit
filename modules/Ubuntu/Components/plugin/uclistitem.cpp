@@ -23,6 +23,7 @@
 #include "ucubuntuanimation.h"
 #include "propertychange_p.h"
 #include "i18n.h"
+#include "quickutils.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -50,6 +51,7 @@ QColor getPaletteColor(const char *profile, const char *color)
 UCListItemDivider::UCListItemDivider(QObject *parent)
     : QObject(parent)
     , m_visible(true)
+    , m_lastItem(false)
     , m_leftMarginChanged(false)
     , m_rightMarginChanged(false)
     , m_thickness(0)
@@ -109,9 +111,15 @@ void UCListItemDivider::paletteChanged()
     }
 }
 
+void UCListItemDivider::onListViewCountCanged()
+{
+    UCListItemPrivate *listItem = UCListItemPrivate::get(m_listItem);
+    m_lastItem = listItem->index == (listItem->flickable->property("count").toInt() - 1);
+}
+
 QSGNode *UCListItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
 {
-    if (m_visible && (m_gradient.size() > 0)) {
+    if (m_visible && !m_lastItem && (m_gradient.size() > 0)) {
         QSGRectangleNode *rectNode = static_cast<QSGRectangleNode *>(paintNode);
         if (!rectNode) {
             rectNode = QQuickItemPrivate::get(m_listItem)->sceneGraphContext()->createRectangleNode();
@@ -468,6 +476,8 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  * Each ListItem has a thin divider shown on the bottom of the component. This
  * divider can be configured through the \l divider grouped property, which can
  * configure its margins from the edges of the ListItem as well as its visibility.
+ * When used in \c ListView or \l UbuntuListView, the last list item will not
+ * show the divider no matter of the visible property value set.
  *
  * ListItem can handle options that can ge tugged from front ot right of the item.
  * These options are Action elements visualized in panels attached to the front
@@ -544,6 +554,13 @@ void UCListItem::componentComplete()
     QVariant index = context->contextProperty("index");
     if (index.isValid()) {
         d->index = index.toInt();
+        // where we have an index, we may have a ListView (or a Repeater)
+        if (QuickUtils::inherits(d->flickable, "QQuickListView")) {
+            // ListView has count property, so we can connect to its change and based on that
+            // we know if this is the last item or not
+            QObject::connect(d->flickable, SIGNAL(countChanged()), d->divider, SLOT(onListViewCountCanged()));
+            d->divider->onListViewCountCanged();
+        }
     }
 }
 
