@@ -152,9 +152,9 @@ Item {
         function test_background_height_change_on_divider_visible() {
             // make sure the testItem's divider is shown
             testItem.divider.visible = true;
-            verify(testItem.background.height < testItem.height, "ListItem's background height must be less than the item itself.");
+            verify(testItem.contentItem.height < testItem.height, "ListItem's background height must be less than the item itself.");
             testItem.divider.visible = false;
-            compare(testItem.background.height, testItem.height, "ListItem's background height must be the same as the item itself.");
+            compare(testItem.contentItem.height, testItem.height, "ListItem's background height must be the same as the item itself.");
             testItem.divider.visible = true;
         }
     }
