@@ -357,7 +357,6 @@ Item {
             flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
             verify(trailing.panelItem, "Panel is not visible");
             var custom = findChild(trailing.panelItem, "custom_delegate");
-            print("custom", custom)
             verify(custom, "Custom delegate not in use");
             // cleanup
             mouseClick(main, 0, 0);
@@ -372,8 +371,8 @@ Item {
             return [
                 {tag: "Snap back leading, mouse", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingOptions, snap: false, mouse: true},
                 {tag: "Snap back leading, touch", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingOptions, snap: false, mouse: false},
-                {tag: "Snap in leading, mouse", item: testItem.contentItem, dx: optionSize / 2, list: testItem.leadingOptions, snap: true, mouse: true},
-                {tag: "Snap in leading, touch", item: testItem.contentItem, dx: optionSize / 2, list: testItem.leadingOptions, snap: true, mouse: false},
+                {tag: "Snap in leading, mouse", item: testItem.contentItem, dx: optionSize / 2 + 10, list: testItem.leadingOptions, snap: true, mouse: true},
+                {tag: "Snap in leading, touch", item: testItem.contentItem, dx: optionSize / 2 + 10, list: testItem.leadingOptions, snap: true, mouse: false},
 
                 {tag: "Snap back trailing, mouse", item: testItem.contentItem, dx: -(optionSize / 2 - 10), list: testItem.trailingOptions, snap: false, mouse: true},
                 {tag: "Snap back trailing, touch", item: testItem.contentItem, dx: -(optionSize / 2 - 10), list: testItem.trailingOptions, snap: false, mouse: false},
