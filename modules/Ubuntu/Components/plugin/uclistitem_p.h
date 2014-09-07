@@ -56,6 +56,7 @@ public:
     bool grabPanel(UCListItemOptions *optionList, bool isMoved);
     void listenToRebind(bool listen);
     void resize();
+    void update();
     void clampX(qreal &x, qreal dx);
 
     bool pressed:1;
@@ -127,12 +128,12 @@ protected:
 private Q_SLOTS:
     void unitsChanged();
     void paletteChanged();
-    void onListViewCountCanged();
+    void onOwnerCountCanged(QObject *owner = 0);
 
 private:
     void resizeAndUpdate()
     {
-        UCListItemPrivate::get(m_listItem)->resize();
+        m_listItem->resize();
         m_listItem->update();
     }
 
@@ -148,7 +149,7 @@ private:
     qreal m_leftMargin;
     qreal m_rightMargin;
     QGradientStops m_gradient;
-    UCListItem *m_listItem;
+    UCListItemPrivate *m_listItem;
     friend class UCListItem;
     friend class UCListItemPrivate;
 };

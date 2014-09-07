@@ -122,8 +122,10 @@ MainView {
             Column {
                 id: column
                 width: view.width
+                property alias count: repeater.count
                 Repeater {
-                    model: 100
+                    id: repeater
+                    model: 10
                     ListItem {
                         objectName: "InFlickable"+index
                         leadingOptions: ListItemOptions {

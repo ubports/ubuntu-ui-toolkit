@@ -20,7 +20,9 @@ import Ubuntu.Components 1.1
 Column {
     width: 800
     height: 600
+    property alias count: repeater.count
     Repeater {
+        id: repeater
         model: 10000
         ListItem {
         }

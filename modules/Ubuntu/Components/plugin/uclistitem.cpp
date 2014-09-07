@@ -71,7 +71,7 @@ UCListItemDivider::~UCListItemDivider()
 void UCListItemDivider::init(UCListItem *listItem)
 {
     QQml_setParent_noEvent(this, listItem);
-    m_listItem = listItem;
+    m_listItem = UCListItemPrivate::get(listItem);
 }
 
 void UCListItemDivider::unitsChanged()
@@ -83,7 +83,7 @@ void UCListItemDivider::unitsChanged()
     if (!m_rightMarginChanged) {
         m_rightMargin = UCUnits::instance().gu(2);
     }
-    if (m_listItem && UCListItemPrivate::get(m_listItem)->ready) {
+    if (m_listItem) {
         m_listItem->update();
     }
 }
@@ -106,15 +106,18 @@ void UCListItemDivider::paletteChanged()
     m_gradient.append(QGradientStop(0.49, startColor));
     m_gradient.append(QGradientStop(0.5, endColor));
     m_gradient.append(QGradientStop(1.0, endColor));
-    if (m_listItem && UCListItemPrivate::get(m_listItem)->ready) {
+    if (m_listItem) {
         m_listItem->update();
     }
 }
 
-void UCListItemDivider::onListViewCountCanged()
+void UCListItemDivider::onOwnerCountCanged(QObject *owner)
 {
-    UCListItemPrivate *listItem = UCListItemPrivate::get(m_listItem);
-    m_lastItem = listItem->index == (listItem->flickable->property("count").toInt() - 1);
+    if (!owner) {
+        owner = sender();
+    }
+    Q_ASSERT(owner);
+    m_lastItem = m_listItem && m_listItem->ready && m_listItem->index == (owner->property("count").toInt() - 1);
 }
 
 QSGNode *UCListItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
@@ -122,7 +125,7 @@ QSGNode *UCListItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
     if (m_visible && !m_lastItem && (m_gradient.size() > 0)) {
         QSGRectangleNode *rectNode = static_cast<QSGRectangleNode *>(paintNode);
         if (!rectNode) {
-            rectNode = QQuickItemPrivate::get(m_listItem)->sceneGraphContext()->createRectangleNode();
+            rectNode = m_listItem->sceneGraphContext()->createRectangleNode();
         }
         rectNode->setRect(QRectF(m_leftMargin, rect.height() - m_thickness,
                                  rect.width() - m_leftMargin - m_rightMargin, m_thickness));
@@ -434,6 +437,14 @@ void UCListItemPrivate::resize()
     contentItem->setSize(rect.size());
 }
 
+void UCListItemPrivate::update()
+{
+    if (ready) {
+        Q_Q(UCListItem);
+        q->update();
+    }
+}
+
 void UCListItemPrivate::clampX(qreal &x, qreal dx)
 {
     UCListItemOptionsPrivate *leading = UCListItemOptionsPrivate::get(leadingOptions);
@@ -477,7 +488,27 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  * divider can be configured through the \l divider grouped property, which can
  * configure its margins from the edges of the ListItem as well as its visibility.
  * When used in \c ListView or \l UbuntuListView, the last list item will not
- * show the divider no matter of the visible property value set.
+ * show the divider no matter of the visible property value set. In other
+ * circumstances declaring a \c count property in the ListItem's parent item
+ * or Flickable can help applying the last item detection logic.
+ * \qml
+ * Column {
+ *     width: units.gu(40)
+ *     // bring count to Column from Repeater
+ *     property alias count: repeater.count
+ *     Repeater {
+ *         model: 10
+ *         ListItem {
+ *             Label {
+ *                 anchors.fill: parent
+ *                 horizontalCenter: Text.AlignHCenter
+ *                 verticalCenter: Text.AlignVCenter
+ *                 text: "Item #" + modelData
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
  *
  * ListItem can handle options that can ge tugged from front ot right of the item.
  * These options are Action elements visualized in panels attached to the front
@@ -554,12 +585,17 @@ void UCListItem::componentComplete()
     QVariant index = context->contextProperty("index");
     if (index.isValid()) {
         d->index = index.toInt();
-        // where we have an index, we may have a ListView (or a Repeater)
-        if (QuickUtils::inherits(d->flickable, "QQuickListView")) {
-            // ListView has count property, so we can connect to its change and based on that
-            // we know if this is the last item or not
-            QObject::connect(d->flickable, SIGNAL(countChanged()), d->divider, SLOT(onListViewCountCanged()));
-            d->divider->onListViewCountCanged();
+        /* We only deal with ListView, as for other cases we would need to check the children
+         * changes, which would have an enormous impact on performance in case of huge amount
+         * of items. However, if the parent item, or Flickable declares a "count" property,
+         * the ListItem will take use of it!
+         */
+        QQuickItem *countOwner = (d->flickable && d->flickable->property("count").isValid()) ?
+                    d->flickable :
+                    (d->parentItem && d->parentItem->property("count").isValid()) ? d->parentItem : 0;
+        if (countOwner) {
+            QObject::connect(countOwner, SIGNAL(countChanged()), d->divider, SLOT(onOwnerCountCanged()), Qt::DirectConnection);
+            d->divider->onOwnerCountCanged(countOwner);
         }
     }
 }
@@ -593,6 +629,8 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
                 delete d->flickableInteractive;
                 d->flickableInteractive = 0;
             }
+            // mar as not ready, so no action should be performed which depends on readyness
+            d->ready = false;
         }
 
         // update size
