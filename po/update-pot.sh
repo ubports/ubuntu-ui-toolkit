@@ -48,6 +48,9 @@ xgettext \
     --add-comments=TRANSLATORS \
     --keyword=tr \
     --keyword=tr:1,2 \
+    --keyword=dtr:2 \
+    --keyword=dtr:2,3 \
+    --package-name $DOMAIN \
     --package-name $DOMAIN \
     --copyright-holder "Canonical Ltd"
 

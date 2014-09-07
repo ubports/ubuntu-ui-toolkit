@@ -25,7 +25,18 @@ public:
     Register()
     {
         qmlRegisterType<TabsModel>("TestObjects", 0, 1, "TabsModel");
+
+        savedDataDirs = qgetenv("XDG_DATA_DIRS");
+        qputenv("XDG_DATA_DIRS", "/usr/share");
     }
+
+    ~Register()
+    {
+        qputenv("XDG_DATA_DIRS", savedDataDirs);
+    }
+
+private:
+    QByteArray savedDataDirs;
 };
 
 Register r;

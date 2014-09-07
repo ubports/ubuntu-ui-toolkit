@@ -342,7 +342,6 @@ PageTreeNode {
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
             animate: canvas.animate
-            animateContents: canvas.animate
 
             title: internal.activePage ? internal.activePage.title : ""
             flickable: internal.activePage ? internal.activePage.flickable : null
