@@ -144,7 +144,8 @@ void UCListItemDivider::setVisible(bool visible)
         return;
     }
     m_visible = visible;
-    resizeAndUpdate();
+    m_listItem->resize();
+    m_listItem->update();
     Q_EMIT visibleChanged();
 }
 
@@ -439,10 +440,11 @@ void UCListItemPrivate::resize()
 
 void UCListItemPrivate::update()
 {
-    if (ready) {
-        Q_Q(UCListItem);
-        q->update();
+    if (!ready) {
+        return;
     }
+    Q_Q(UCListItem);
+    q->update();
 }
 
 void UCListItemPrivate::clampX(qreal &x, qreal dx)
