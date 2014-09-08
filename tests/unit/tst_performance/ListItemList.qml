@@ -21,7 +21,7 @@ Column {
     width: 800
     height: 600
     Repeater {
-        model: 10000
+        model: 5000
         ListItem {
         }
     }
