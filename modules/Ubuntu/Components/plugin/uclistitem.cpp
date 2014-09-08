@@ -29,6 +29,12 @@
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
 
+#include <QtQml/private/qqmlabstractbinding_p.h>
+#define foreach Q_FOREACH //workaround to fix private includes
+#include <QtQml/private/qqmlbinding_p.h>     // for QmlBinding
+#undef foreach
+
+
 #define MIN(x, y)           ((x < y) ? x : y)
 #define MAX(x, y)           ((x > y) ? x : y)
 #define CLAMP(v, min, max)  (min <= max) ? MAX(min, MIN(v, max)) : MAX(max, MIN(v, min))
@@ -476,6 +482,25 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
     x = CLAMP(x, min, max);
 }
 
+void UCListItemPrivate::autoLeadingOptions()
+{
+    Q_Q(UCListItem);
+    if (flickable && flickable->property("leadingOptions").isValid()) {
+        QQmlProperty prop(flickable, "leadingOptions", qmlContext(flickable));
+        QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(prop);
+        // set the value first, then bind
+        q->setLeadingOptions(prop.read().value<UCListItemOptions*>());
+        if (binding) {
+            // set the binding to our leadingOptions property
+            QQmlProperty leadingOptionsProperty(q, "leadingOptions", qmlContext(q));
+            QQmlAbstractBinding *oldBinding = QQmlPropertyPrivate::setBinding(leadingOptionsProperty, binding);
+            if (oldBinding && (oldBinding != binding)) {
+                oldBinding->destroy();
+            }
+        }
+    }
+}
+
 /*!
  * \qmltype ListItem
  * \instantiates UCListItem
@@ -617,6 +642,9 @@ void UCListItem::componentComplete()
             d->divider->onOwnerCountCanged(countOwner);
         }
     }
+
+    // check if the parent ListView has leadingOptions defined, if yes, use it!
+    d->autoLeadingOptions();
 }
 
 void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)

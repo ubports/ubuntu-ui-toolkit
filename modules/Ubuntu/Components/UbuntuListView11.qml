@@ -15,6 +15,7 @@
  */
 
 import QtQuick 2.2
+import Ubuntu.Components 1.1
 
 // documentation in UbuntuListView11.qdoc
 UbuntuListView {
@@ -24,6 +25,28 @@ UbuntuListView {
       \qmlproperty PullToRefresh pullToRefresh
       */
     property alias pullToRefresh: refreshItem
+
+    /*!
+      \internal
+      \qmlproperty Action deleteAction
+      */
+    property Action deleteAction: Action {
+        iconName: "delete"
+        onTriggered: {
+            // delete the index from model if possible
+        }
+    }
+
+    /*!
+      \internal
+      \qmlproperty ListItemOptions leadingOptions
+      Use binding so we can set it to each ListItem as binding!
+      */
+    property ListItemOptions leadingOptions: stockLeadingOption
+    ListItemOptions {
+        id: stockLeadingOption
+        options: [deleteAction]
+    }
 
     PullToRefresh {
         objectName: "listview_pulltorefresh"
