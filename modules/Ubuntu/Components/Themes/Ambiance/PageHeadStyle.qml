@@ -141,6 +141,89 @@ Style.PageHeadStyle {
         width: 0
     }
 
+    function animateOut() {
+        outAnimation.start();
+    }
+    function animateIn() {
+        inAnimation.start();
+    }
+
+//    SequentialAnimation {
+//        id: changeAnimation
+//        objectName: "changeAnimation"
+        ParallelAnimation {
+            id: outAnimation
+            UbuntuNumberAnimation {
+                target: foreground
+                property: "opacity"
+                from: 1.0
+                to: 0.0
+            }
+            UbuntuNumberAnimation {
+                target: leftButtonContainer
+                property: "opacity"
+                from: 1.0
+                to: 0.0
+            }
+            UbuntuNumberAnimation {
+                target: actionsContainer
+                property: "opacity"
+                from: 1.0
+                to: 0.0
+            }
+            UbuntuNumberAnimation {
+                target: leftAnchor
+                properties: "anchors.leftMargin"
+                from: 0.0
+                to: -units.gu(5)
+            }
+            UbuntuNumberAnimation {
+                target: rightAnchor
+                properties: "anchors.rightMargin"
+                from: 0
+                to: -units.gu(5)
+            }
+        }
+//        ScriptAction {
+//            script: {
+//                buffer.update();
+//            }
+//        }
+        ParallelAnimation {
+            id: inAnimation
+            UbuntuNumberAnimation {
+                target: foreground
+                property: "opacity"
+                from: 0.0
+                to: 1.0
+            }
+            UbuntuNumberAnimation {
+                target: leftButtonContainer
+                property: "opacity"
+                from: 0.0
+                to: 1.0
+            }
+            UbuntuNumberAnimation {
+                target: actionsContainer
+                property: "opacity"
+                from: 0.0
+                to: 1.0
+            }
+            UbuntuNumberAnimation {
+                target: leftAnchor
+                properties: "anchors.leftMargin"
+                from: -units.gu(5)
+                to: 0
+            }
+            UbuntuNumberAnimation {
+                target: rightAnchor
+                properties: "anchors.rightMargin"
+                from: -units.gu(5)
+                to: 0
+            }
+        }
+//    }
+
     Item {
         id: leftButtonContainer
         anchors {
@@ -278,7 +361,7 @@ Style.PageHeadStyle {
             text: styledItem.title
             font.weight: headerStyle.fontWeight
             fontSize: headerStyle.fontSize
-//            color: headerStyle.textColor
+            //            color: headerStyle.textColor
             color: styledItem.config.foregroundColor
             elide: Text.ElideRight
         }

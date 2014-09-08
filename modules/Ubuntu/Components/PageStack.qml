@@ -155,15 +155,32 @@ PageTreeNode {
      */
     property Item currentPage: null
 
+    // TODO: make internal, use property
+    function canAnimateHeader() {
+        if (!pageStack.__propagated) return false;
+        if (!pageStack.__propagated.header) return false;
+        if (!pageStack.__propagated.header.__styleInstance) return false;
+        if (!pageStack.__propagated.header.__styleInstance.hasOwnProperty("animateIn")) return false;
+        if (!pageStack.__propagated.header.__styleInstance.hasOwnProperty("animateOut")) return false;
+        return true;
+    }
+
     /*!
       \preliminary
       Push a page to the stack, and apply the given (optional) properties to the page.
       The pushed page may be an Item, Component or URL.
      */
     function push(page, properties) {
+        if (pageStack.canAnimateHeader()) {
+            header.__styleInstance.animateOut();
+        }
         if (internal.stack.size() > 0) internal.stack.top().active = false;
         internal.stack.push(internal.createWrapper(page, properties));
         internal.stackUpdated();
+
+        if (pageStack.canAnimateHeader()) {
+            header.__styleInstance.animateIn();
+        }
     }
 
     /*!
@@ -176,10 +193,18 @@ PageTreeNode {
             print("WARNING: Trying to pop an empty PageStack. Ignoring.");
             return;
         }
+        if (pageStack.canAnimateHeader()) {
+            header.__styleInstance.animateOut();
+        }
+
         internal.stack.top().active = false;
         if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
         internal.stack.pop();
         internal.stackUpdated();
+
+        if (pageStack.canAnimateHeader()) {
+            header.__styleInstance.animateIn();
+        }
     }
 
     /*!
