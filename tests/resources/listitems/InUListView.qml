@@ -41,21 +41,15 @@ MainView {
                 }
             }
 
-//            model: ListModel {
-//                Component.onCompleted: {
-//                    for (var i = 0; i < 20; i++)
-//                        append({data: "List item mode #" + i})
-//                }
-//            }
-            model: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
-//            leadingOptions: null
+            model: ListModel {
+                Component.onCompleted: {
+                    for (var i = 0; i < 20; i++)
+                        append({data: "List item mode #" + i})
+                }
+            }
 
             delegate: ListItem {
                 trailingOptions: stockOptions
-//                leadingOptions: ListItemOptions {
-//                    options: stockOptions.options
-//                }
 
                 Label {
                     anchors.fill: parent

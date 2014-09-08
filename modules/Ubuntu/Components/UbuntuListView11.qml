@@ -37,7 +37,6 @@ UbuntuListView {
         options: Action {
             iconName: "delete"
             onTriggered: {
-                print("TYPE:", Object.prototype.toString.call(listView.model));
                 // delete the index from model if possible
                 if (Object.prototype.toString.call(listView.model) === "[object Number]") {
                     // the model is a number, decrement it
