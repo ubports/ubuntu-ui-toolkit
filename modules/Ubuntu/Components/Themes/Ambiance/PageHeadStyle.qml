@@ -121,9 +121,30 @@ Style.PageHeadStyle {
     }
 
     Item {
+        id: leftAnchor
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: parent.left
+            leftMargin: 0
+        }
+        width: 0
+    }
+    Item {
+        id: rightAnchor
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            right: parent.right
+            rightMargin: 0
+        }
+        width: 0
+    }
+
+    Item {
         id: leftButtonContainer
         anchors {
-            left: parent.left
+            left: leftAnchor.right
             top: parent.top
             leftMargin: width > 0 ? units.gu(1) : 0
         }
@@ -238,11 +259,11 @@ Style.PageHeadStyle {
         id: foreground
         anchors {
             left: leftButtonContainer.right
-            right: actionsContainer.left
             top: parent.top
             // don't keep a margin if there is already a button with spacing
             leftMargin: leftButtonContainer.width > 0 ? 0 : headerStyle.textLeftMargin
         }
+        width: parent.width - leftButtonContainer.width - actionsContainer.width
         height: headerStyle.contentHeight
 
         Label {
@@ -257,7 +278,8 @@ Style.PageHeadStyle {
             text: styledItem.title
             font.weight: headerStyle.fontWeight
             fontSize: headerStyle.fontSize
-            color: headerStyle.textColor
+//            color: headerStyle.textColor
+            color: styledItem.config.foregroundColor
             elide: Text.ElideRight
         }
 
@@ -316,7 +338,7 @@ Style.PageHeadStyle {
 
         anchors {
             top: parent.top
-            right: parent.right
+            right: rightAnchor.left
             rightMargin: units.gu(1)
         }
         width: childrenRect.width
