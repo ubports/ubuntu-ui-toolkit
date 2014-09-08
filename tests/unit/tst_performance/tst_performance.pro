@@ -21,4 +21,6 @@ OTHER_FILES += \
     TextWithImportPopupsGrid.qml \
     TextWithImportPopups.qml \
     ItemList.qml \
-    ListItemList.qml
+    ListItemList.qml \
+    ListItemsEmptyList.qml \
+    ListItemsBaseList.qml
