@@ -115,24 +115,36 @@ class FakeApplication(fixtures.Fixture):
 class InitctlEnvironmentVariable(fixtures.Fixture):
     """Set the value of initctl environment variables."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, global_=False, **kwargs):
         super(InitctlEnvironmentVariable, self).__init__()
+        # Added one level of indirection to be able to spy the calls to
+        # environment during tests.
+        self.environment = environment
         self.variables = kwargs
+        self.global_ = global_
 
     def setUp(self):
         super(InitctlEnvironmentVariable, self).setUp()
         for variable, value in self.variables.items():
             self._add_variable_cleanup(variable)
-            environment.set_initctl_env_var(variable, value)
+            self.environment.set_initctl_env_var(
+                variable, value, global_=self.global_)
 
     def _add_variable_cleanup(self, variable):
-        if environment.is_initctl_env_var_set(variable):
-            original_value = environment.get_initctl_env_var(variable)
+        if self.environment.is_initctl_env_var_set(
+                variable, global_=self.global_):
+            original_value = self.environment.get_initctl_env_var(
+                variable, global_=self.global_)
             self.addCleanup(
-                environment.set_initctl_env_var, variable,
-                original_value)
+                self.environment.set_initctl_env_var,
+                variable,
+                original_value,
+                global_=self.global_)
         else:
-            self.addCleanup(environment.unset_initctl_env_var, variable)
+            self.addCleanup(
+                self.environment.unset_initctl_env_var,
+                variable,
+                global_=self.global_)
 
 
 class FakeHome(fixtures.Fixture):
