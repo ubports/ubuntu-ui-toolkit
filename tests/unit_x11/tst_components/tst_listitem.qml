@@ -437,5 +437,33 @@ Item {
             // check the action param
             compare(action.param, data.result, "Action parameter differs");
         }
+
+        SignalSpy {
+            id: panelItemSpy
+            signalName: "onXChanged"
+        }
+
+        function test_disabled_item_locked_data() {
+            var item0 = findChild(listView, "listItem0");
+            return [
+                // drag same amount as height is
+                {tag: "Simple item, leading", item: testItem, enabled: false, dx: testItem.height},
+                {tag: "Simple item, trailing", item: testItem, enabled: false, dx: -testItem.height},
+                {tag: "ListView item, leading", item: item0, enabled: false, dx: item0.height},
+                {tag: "ListView item, trailing", item: item0, enabled: false, dx: -item0.height},
+            ];
+        }
+        function test_disabled_item_locked(data) {
+            var oldEnabled = data.item.enabled;
+            panelItemSpy.clear();
+            panelItemSpy.target = data.item;
+            // tug
+            flick(data.item.contentItem, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+            compare(panelItemSpy.count, 0, "Item had been tugged despite being disabled!");
+            // check opacity
+            fuzzyCompare(data.item.opacity, 0.5, 0.1, "Disabled item must be 50% transparent");
+            //cleanup
+            data.item.enabled = oldEnabled;
+        }
     }
 }
