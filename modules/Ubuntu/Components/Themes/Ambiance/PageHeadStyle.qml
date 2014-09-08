@@ -141,18 +141,52 @@ Style.PageHeadStyle {
         width: 0
     }
 
+    states: [
+        State {
+            name: "IN"
+            PropertyChanges {
+                target: foreground
+                opacity: 1.0
+            }
+            PropertyChanges {
+                target: leftButtonContainer
+                opacity: 1.0
+            }
+            PropertyChanges {
+                target: actionsContainer
+                opacity: 1.0
+            }
+        },
+        State {
+            name: "OUT"
+            PropertyChanges {
+                target: foreground
+                opacity: 0.0
+            }
+            PropertyChanges {
+                target: leftButtonContainer
+                opacity: 0.0
+            }
+            PropertyChanges {
+                target: actionsContainer
+                opacity: 0.0
+            }
+        }
+    ]
+
+
     function animateOut() {
-        outAnimation.start();
+        state = "OUT";
     }
     function animateIn() {
-        inAnimation.start();
+        state = "IN"
     }
 
-//    SequentialAnimation {
-//        id: changeAnimation
-//        objectName: "changeAnimation"
-        ParallelAnimation {
-            id: outAnimation
+    transitions: [
+        Transition {
+            from: "IN"
+            to: "OUT"
+
             UbuntuNumberAnimation {
                 target: foreground
                 property: "opacity"
@@ -183,14 +217,10 @@ Style.PageHeadStyle {
                 from: 0
                 to: -units.gu(5)
             }
-        }
-//        ScriptAction {
-//            script: {
-//                buffer.update();
-//            }
-//        }
-        ParallelAnimation {
-            id: inAnimation
+        },
+        Transition {
+            from: "OUT"
+            to: "IN"
             UbuntuNumberAnimation {
                 target: foreground
                 property: "opacity"
@@ -222,7 +252,7 @@ Style.PageHeadStyle {
                 to: 0
             }
         }
-//    }
+    ]
 
     Item {
         id: leftButtonContainer
