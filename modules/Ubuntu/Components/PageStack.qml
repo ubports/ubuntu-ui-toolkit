@@ -165,11 +165,10 @@ PageTreeNode {
         internal.propertiesToPush = properties;
         if (internal.animateHeader && internal.stack.size() > 0) {
             internal.headStyle.animateOut();
-            internal.headStyle.animateOutFinished.connect(internal.createAndPush)
+            internal.headStyle.animateOutFinished.connect(internal.createAndPush);
         } else {
             internal.createAndPush();
         }
-
     }
 
     /*!
