@@ -42,14 +42,14 @@ UbuntuListView {
                 if (Object.prototype.toString.call(listView.model) === "[object Number]") {
                     // the model is a number, decrement it
                     listView.model = listView.count - 1;
-                    print("HUKK");
                 } else if (Object.prototype.toString.call(listView.model) === "[object Array]") {
-                    // the model is an array, remove the item
-                    listView.model = listView.model.splice(value, 1);
+                    // the model is an array, remove the item from index
+                    var array = listView.model;
+                    array.splice(value, 1);
+                    listView.model = array;
                 } else {
                     // we can only have an object
                     if (listView.model.hasOwnProperty("remove")) {
-                        print("REMOVED")
                         listView.model.remove(value, 1);
                     }
                 }

@@ -41,12 +41,13 @@ MainView {
                 }
             }
 
-            model: ListModel {
-                Component.onCompleted: {
-                    for (var i = 0; i < 20; i++)
-                        append({data: "List item mode #" + i})
-                }
-            }
+//            model: ListModel {
+//                Component.onCompleted: {
+//                    for (var i = 0; i < 20; i++)
+//                        append({data: "List item mode #" + i})
+//                }
+//            }
+            model: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
 //            leadingOptions: null
 
@@ -60,7 +61,7 @@ MainView {
                     anchors.fill: parent
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
-                    text: modelData
+                    text: modelData + " @index " + index
                 }
             }
         }
