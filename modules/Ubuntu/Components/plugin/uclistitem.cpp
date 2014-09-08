@@ -68,7 +68,7 @@ UCListItemDivider::~UCListItemDivider()
 void UCListItemDivider::init(UCListItem *listItem)
 {
     QQml_setParent_noEvent(this, listItem);
-    m_listItem = listItem;
+    m_listItem = UCListItemPrivate::get(listItem);
 }
 
 void UCListItemDivider::unitsChanged()
@@ -80,7 +80,7 @@ void UCListItemDivider::unitsChanged()
     if (!m_rightMarginChanged) {
         m_rightMargin = UCUnits::instance().gu(2);
     }
-    if (m_listItem && UCListItemPrivate::get(m_listItem)->ready) {
+    if (m_listItem) {
         m_listItem->update();
     }
 }
@@ -103,7 +103,7 @@ void UCListItemDivider::paletteChanged()
     m_gradient.append(QGradientStop(0.49, startColor));
     m_gradient.append(QGradientStop(0.5, endColor));
     m_gradient.append(QGradientStop(1.0, endColor));
-    if (m_listItem && UCListItemPrivate::get(m_listItem)->ready) {
+    if (m_listItem) {
         m_listItem->update();
     }
 }
@@ -113,7 +113,7 @@ QSGNode *UCListItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
     if (m_visible && (m_gradient.size() > 0)) {
         QSGRectangleNode *rectNode = static_cast<QSGRectangleNode *>(paintNode);
         if (!rectNode) {
-            rectNode = QQuickItemPrivate::get(m_listItem)->sceneGraphContext()->createRectangleNode();
+            rectNode = m_listItem->sceneGraphContext()->createRectangleNode();
         }
         rectNode->setRect(QRectF(m_leftMargin, rect.height() - m_thickness,
                                  rect.width() - m_leftMargin - m_rightMargin, m_thickness));
@@ -132,7 +132,8 @@ void UCListItemDivider::setVisible(bool visible)
         return;
     }
     m_visible = visible;
-    resizeAndUpdate();
+    m_listItem->resize();
+    m_listItem->update();
     Q_EMIT visibleChanged();
 }
 
@@ -417,6 +418,15 @@ void UCListItemPrivate::resize()
         rect.setHeight(rect.height() - divider->m_thickness);
     }
     contentItem->setSize(rect.size());
+}
+
+void UCListItemPrivate::update()
+{
+    if (!ready) {
+        return;
+    }
+    Q_Q(UCListItem);
+    q->update();
 }
 
 void UCListItemPrivate::clampX(qreal &x, qreal dx)
