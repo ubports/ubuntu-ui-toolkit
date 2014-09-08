@@ -18,8 +18,7 @@
 
 import os
 
-from autopilot.matchers import Eventually
-from testtools.matchers import Equals
+from autopilot.introspection import dbus
 
 from ubuntuuitoolkit import tests
 
@@ -50,10 +49,18 @@ class HeaderActionsOverflowTestCase(tests.QMLFileAppTestCase):
         Regression test for http://pad.lv/1326963
 
         """
-        overflow_popover = self.main_view.select_single(
-            objectName='actions_overflow_popover')
         self.header.click_action_button('pushStackAction')
-        self.assertThat(overflow_popover.visible, Eventually(Equals(False)))
+        # the popover was created to click the action button
+        # popover will be closed and destroyed immediately after
+        # clicking the action button
+        try:
+            overflow_popover = self.main_view.select_single(
+                objectName='actions_overflow_popover')
+            overflow_popover.wait_until_destroyed()
+        except dbus.StateNotFoundError:
+            # overflow popover was already destroyed before
+            # it could be selected
+            pass
 
 
 class HeaderContentsTestCase(tests.QMLFileAppTestCase):
@@ -81,7 +88,6 @@ class HeaderContentsTestCase(tests.QMLFileAppTestCase):
             objectName='push_button')
         self.pointing_device.move_to_object(pushButton)
         self.pointing_device.click()
-        self.header.wait_for_animation()
 
         self.assertEqual(label.visible, False)
         headerContents = self.header.select_single(
@@ -95,7 +101,6 @@ class HeaderContentsTestCase(tests.QMLFileAppTestCase):
             objectName='push_button')
         self.pointing_device.move_to_object(pushButton)
         self.pointing_device.click()
-        self.header.wait_for_animation()
 
         headerContents = self.header.select_single(
             objectName='orange_header_contents')

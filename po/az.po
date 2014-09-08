@@ -1,4 +1,4 @@
-# Norwegian Bokmal translation for ubuntu-ui-toolkit
+# Azerbaijani translation for ubuntu-ui-toolkit
 # Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
 # This file is distributed under the same license as the ubuntu-ui-toolkit package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
@@ -8,18 +8,18 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2013-05-30 14:06+0200\n"
-"PO-Revision-Date: 2014-08-14 12:11+0000\n"
-"Last-Translator: Åka Sikrom <Unknown>\n"
-"Language-Team: Norwegian Bokmal <nb@li.org>\n"
+"PO-Revision-Date: 2014-08-22 08:00+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Azerbaijani <az@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-08-15 06:22+0000\n"
-"X-Generator: Launchpad (build 17156)\n"
+"X-Launchpad-Export-Date: 2014-08-23 07:11+0000\n"
+"X-Generator: Launchpad (build 17163)\n"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:22
 msgid "NumberAnimation"
-msgstr "Tallanimasjon"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:25
@@ -36,62 +36,62 @@ msgstr "Standard"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:56
 msgid "Standard Durations"
-msgstr "Standard varighet"
+msgstr "Standard Müddətlər"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:60
 msgid "Snap"
-msgstr "Festing"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:96
 msgid "Fast"
-msgstr "Rask"
+msgstr "Sürətli"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:132
 msgid "Slow"
-msgstr "Treg"
+msgstr "Yavaş"
 
 #: examples/ubuntu-ui-toolkit-gallery/Animations.qml:157
 msgid "Sleepy"
-msgstr "Søvnig"
+msgstr "Yuxulu"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:28
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:36
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:50
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:59
 msgid "Call"
-msgstr "Ring"
+msgstr "Zəng"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:33
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:26
 msgid "Color"
-msgstr "Farge"
+msgstr "Rəng"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:42
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:41
 msgid "Icon"
-msgstr "Ikon"
+msgstr "Piktoqram"
 
 #: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:56
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:73
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:41
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:75
 msgid "Disabled"
-msgstr "Slått av"
+msgstr "Qeyri-fəal"
 
 #: examples/ubuntu-ui-toolkit-gallery/Dialog.qml:30
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:42
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:41
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:74
 msgid "Open"
-msgstr "Åpen"
+msgstr "Aç"
 
 #: examples/ubuntu-ui-toolkit-gallery/Icons.qml:25
 msgid "Scaling"
-msgstr "Skalering"
+msgstr "Miqyaslama"
 
 #: examples/ubuntu-ui-toolkit-gallery/Icons.qml:50
 msgid "Colorization"
-msgstr "Fargelegging"
+msgstr "Rəngləndirmə"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:34
@@ -102,171 +102,169 @@ msgstr "Fargelegging"
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:83
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:95
 msgid "Label"
-msgstr "Etikett"
+msgstr "Nişan"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:31
 msgid "Subtitled"
-msgstr "Undertitulert"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:35
 msgid "Secondary label"
-msgstr "Sekundær etikett"
+msgstr "İkinci nişan"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:50
 msgid "Progression"
-msgstr "Utvikling"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:59
 msgid "Single value"
-msgstr "Enkeltverdi"
+msgstr "Tək dəyər"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:63
 msgid "Value"
-msgstr "Verdi"
+msgstr "Dəyər"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:68
 msgid "Multi value"
-msgstr "Multiverdi"
+msgstr "Çoxlu dəyər"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:72
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:84
 msgid "Value 1"
-msgstr "Verdi 1"
+msgstr "Dəyər 1"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:73
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:85
 msgid "Value 2"
-msgstr "Verdi 2"
+msgstr "Dəyər 2"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:74
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:86
 msgid "Value 3"
-msgstr "Verdi 3"
+msgstr "Dəyər 3"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:75
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:87
 msgid "Value 4"
-msgstr "Verdi 4"
+msgstr "Dəyər4"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:80
 msgid "Value selector"
-msgstr "Verdivelger"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:92
 msgid "Control"
-msgstr "Kontroll"
+msgstr "İdarə"
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:103
 msgid "Removable"
-msgstr "Kan fjernes"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:106
 msgid "Slide to remove"
-msgstr "Skyv for å fjerne"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:116
 msgid "Grouped list"
-msgstr "Gruppert liste"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:38
 msgid "Flickable"
-msgstr "Flyttbart"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:74
 msgid "Action #1"
-msgstr "Handling #1"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:78
 msgid "Action #2"
-msgstr "Handling #2"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:82
 msgid "Action #3"
-msgstr "Handling #3"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:86
 msgid "Action #4"
-msgstr "Handling #4"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Popover.qml:90
 msgid "Action #5"
-msgstr "Handling #5"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:22
 msgid "Progress Bar"
-msgstr "Framdriftslinje"
+msgstr "İrəliləmə Çubuğu"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:45
 msgid "Infinite"
-msgstr "Uendelig"
+msgstr "Sonsuz"
 
 #: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:55
 msgid "Activity Indicator"
-msgstr "Aktivitetsindikator"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:26
 msgid "The visual style of the Sheet is early work and thus clunky looking."
 msgstr ""
-"Arkets visuelle stil er i en tidlig utviklingsfase, og kan derfor se litt "
-"rar ut."
 
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:51
 #: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:84
 msgid "Title"
-msgstr "Tittel"
+msgstr "Başlıq"
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:32
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:45
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:60
 #, qt-format
 msgid "value = %1"
-msgstr "verdi = %1"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:37
 msgid "Live Update"
-msgstr "Live-oppdatering"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:50
 msgid "Range"
-msgstr "Rekkevidde"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:47
 msgid "Type me in..."
-msgstr "Skriv navnet mitt …"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:53
 msgid "Password"
-msgstr "Passord"
+msgstr "Şifrə"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:63
 msgid "Numbers"
-msgstr "Tall"
+msgstr "Rəqəmlər"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:87
 msgid "Default"
-msgstr "Standard"
+msgstr "Varsayılan"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:96
 msgid "Expanding"
-msgstr "Utvidende"
+msgstr "İnkişaf edən"
 
 #: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:107
 msgid "Rich Text"
-msgstr "Rik tekst"
+msgstr "Zəngin Mətn"
 
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:26
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:60
 msgid "Unchecked"
-msgstr "Ikke avkrysset"
+msgstr "Yoxlanılmamış"
 
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:33
 #: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:67
 msgid "Checked"
-msgstr "Avkrysset"
+msgstr "Yoxlanılmış"
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:44
 msgid "Image"
-msgstr "Bilde"
+msgstr ""
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:57
 msgid "Radius"
@@ -274,79 +272,79 @@ msgstr "Radius"
 
 #: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:87
 msgid "Sizes"
-msgstr "Størrelser"
+msgstr "Ölcülər"
 
 #: examples/unit-converter/unit-converter.qml:147
 msgid "Clear"
-msgstr "Tøm"
+msgstr "Təmizlə"
 
 #: examples/unit-converter/unit-converter.qml:161
 msgid "Lengths"
-msgstr "Lengder"
+msgstr "Uzunluqlar"
 
 #: examples/unit-converter/unit-converter.qml:179
 msgid "Weights"
-msgstr "Vekt"
+msgstr ""
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
-msgstr "Bruk: "
+msgstr "İstifadə: "
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
-msgstr "Valg:"
+msgstr "Seçimlər:"
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
-msgstr "%1 forventer et annet argument: %2"
+msgstr ""
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
-msgstr "%1 forventer en verdi for argumentet: %2"
+msgstr ""
 
 #: modules/Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
-msgstr "%1 forventer flere argumenter: %2"
+msgstr ""
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:24
 msgid "Select All"
-msgstr "Velg alt"
+msgstr "Hamısını Seç"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:29
 msgid "Select Word"
-msgstr "Velg ord"
+msgstr "Sözü Seç"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:34
 msgid "Cut"
-msgstr "Klipp ut"
+msgstr "Kəs"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:39
 msgid "Copy"
-msgstr "Kopier"
+msgstr "Kopyala"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:44
 msgid "Paste"
-msgstr "Lim inn"
+msgstr "Əlavə et"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:49
 msgid "Undo"
-msgstr "Angre"
+msgstr "Geri qaytar"
 
 #: modules/Ubuntu/Components/TextInputPopover.qml:54
 msgid "Redo"
-msgstr "Gjør om"
+msgstr "Yenidən icra et"
 
 #: modules/Ubuntu/Components/ToolbarActions.qml:86
 msgid "Back"
-msgstr "Tilbake"
+msgstr "Geri"
 
 #: tests/resources/pagestack/MyCustomPage.qml:21
 #: tests/resources/tabs/MyCustomPage.qml:21
 msgid "My custom page"
-msgstr "Min side"
+msgstr "Mənim şəxsi səhifəm"
 
 #: tests/resources/pagestack/MyCustomPage.qml:33
 #: tests/resources/tabs/MyCustomPage.qml:33
@@ -354,41 +352,39 @@ msgid ""
 "This is an external page\n"
 "with a locked toolbar."
 msgstr ""
-"Dette er en ekstern side\n"
-"med låst verktøylinje."
 
 #: tests/resources/pagestack/PageStack.qml:38
 msgid "Root page"
-msgstr "Rotside"
+msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:44
 msgid "Page one"
-msgstr "Side én"
+msgstr "Səhifə bir"
 
 #: tests/resources/pagestack/PageStack.qml:49
 msgid "External page"
-msgstr "Ekstern side"
+msgstr "Xarici səhifə"
 
 #: tests/resources/pagestack/PageStack.qml:58
 msgid "First page"
-msgstr "Første side"
+msgstr "Birinci səhifə"
 
 #: tests/resources/pagestack/PageStack.qml:64
 msgid "Root page (again)"
-msgstr "Rotside (igjen)"
+msgstr ""
 
 #: tests/resources/pagestack/PageStack.qml:69
 msgid "Red rectangle"
-msgstr "Rødt rektangel"
+msgstr ""
 
 #: tests/resources/tabs/Tabs.qml:32
 msgid "Simple page"
-msgstr "Enkel side"
+msgstr "Sadə səhifə"
 
 #: tests/resources/tabs/Tabs.qml:77
 msgid "External"
-msgstr "Ekstern"
+msgstr "Xarici"
 
 #: tests/resources/tabs/Tabs.qml:85
 msgid "List view"
-msgstr "Listevisning"
+msgstr "Siyahı görünüşü"

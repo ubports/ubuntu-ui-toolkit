@@ -203,6 +203,15 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
     // save the sound as description as the audible reminder may be off
     if (alarm.changes && AlarmData::Sound) {
         event.setDescription(alarm.sound.toString());
+        // update audible reminder as well if alarm is enabled
+        if (alarm.enabled) {
+            QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
+            // remove the previous data, otherwise we will have two melodies
+            event.removeDetail(&audible);
+            // update sound and save
+            audible.setDataUrl(alarm.sound);
+            event.saveDetail(&audible);
+        }
     }
 
     // set repeating, reset recurrence no matter if we had it or not
@@ -221,7 +230,7 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
             rule.setFrequency(QOrganizerRecurrenceRule::Daily);
         } else if (alarm.days) {
             rule.setFrequency(QOrganizerRecurrenceRule::Weekly);
-            rule.setDaysOfWeek(daysToSet(alarm));
+            rule.setDaysOfWeek(daysToSet(alarm.days));
         }
         event.setRecurrenceRule(rule);
         break;
@@ -274,11 +283,11 @@ int AlarmsAdapter::alarmDataFromOrganizerEvent(const QOrganizerTodo &event, Alar
     return UCAlarm::NoError;
 }
 
-QSet<Qt::DayOfWeek> AlarmsAdapter::daysToSet(const AlarmData &alarm) const
+QSet<Qt::DayOfWeek> AlarmsAdapter::daysToSet(int days) const
 {
     QSet<Qt::DayOfWeek> result;
     for (Qt::DayOfWeek day = Qt::Monday; day <= Qt::Sunday; day = static_cast<Qt::DayOfWeek>(static_cast<int>(day) + 1)) {
-        if (alarm.days & (1 << (static_cast<int>(day) - 1)))
+        if (days & (1 << (static_cast<int>(day) - 1)))
             result << day;
     }
     return result;
@@ -298,6 +307,73 @@ void AlarmsAdapter::daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set)
 /*-----------------------------------------------------------------------------
  * Abstract methods
  */
+bool AlarmsAdapter::verifyChange(const QVariant &cookie, AlarmData::Change change, const QVariant &value)
+{
+    QOrganizerItemId id = cookie.value<QOrganizerItemId>();
+    QOrganizerTodo todo = static_cast<QOrganizerTodo>(manager->item(id));
+    if (todo.isEmpty()) {
+        return false;
+    }
+
+    switch (change) {
+        case AlarmData::Enabled:
+        {
+            QOrganizerItemVisualReminder visual = todo.detail(QOrganizerItemDetail::TypeVisualReminder);
+            QOrganizerItemAudibleReminder audible = todo.detail(QOrganizerItemDetail::TypeAudibleReminder);
+            return (visual.isEmpty() && audible.isEmpty()) == value.toBool();
+        }
+        case AlarmData::Date:
+        {
+            return todo.startDateTime() == value.toDateTime();
+        }
+        case AlarmData::Message:
+        {
+            return todo.displayLabel() == value.toString();
+        }
+        case AlarmData::Sound:
+        {
+            // it is enough to check teh audible presence, as they are added/removed in pair with visual reminder
+            QOrganizerItemAudibleReminder audible = todo.detail(QOrganizerItemDetail::TypeAudibleReminder);
+            bool result = todo.description() == value.toString();
+            if (result && !audible.isEmpty()) {
+                // check whether the reminder has the same sound
+                result = audible.dataUrl().toString() == value.toString();
+            }
+            return result;
+        }
+        case AlarmData::Type:
+        {
+            QOrganizerRecurrenceRule rule = todo.recurrenceRule();
+            QOrganizerRecurrenceRule::Frequency frequency = rule.frequency();
+            UCAlarm::AlarmType type = static_cast<UCAlarm::AlarmType>(value.toInt());
+            return (type == UCAlarm::OneTime && frequency == QOrganizerRecurrenceRule::Invalid) ||
+                    (type == UCAlarm::Repeating &&
+                            (frequency == QOrganizerRecurrenceRule::Daily ||
+                             frequency == QOrganizerRecurrenceRule::Weekly));
+        }
+        case AlarmData::Days:
+        {
+            // this only checks the days set
+            QOrganizerRecurrenceRule rule = todo.recurrenceRule();
+            QOrganizerRecurrenceRule::Frequency frequency = rule.frequency();
+            if (frequency == QOrganizerRecurrenceRule::Invalid) {
+                return false;
+            }
+            int days = value.toInt();
+            if (days == UCAlarm::Daily && frequency == QOrganizerRecurrenceRule::Daily) {
+                return true;
+            }
+            if (frequency == QOrganizerRecurrenceRule::Weekly) {
+                return rule.daysOfWeek() == daysToSet(days);
+            }
+            return false;
+        }
+    default:
+        return false;
+        break;
+    }
+}
+
 bool AlarmsAdapter::fetchAlarms()
 {
     if (fetchRequest) {
