@@ -51,6 +51,21 @@ Item {
       */
     signal selected()
 
+    /*
+      Function called by ListItemOptions when the panel is rebount.
+      */
+    function triggerAction() {
+        if (savedAction) {
+            if (panel.listItemIndex >= 0) {
+                savedAction.triggered(panel.listItemIndex);
+            } else {
+                savedAction.triggered(null);
+            }
+        }
+    }
+
+    property Action savedAction: null
+
     anchors {
         left: contentItem ? (leadingPanel ? undefined : contentItem.right) : undefined
         right: contentItem ? (leadingPanel ? contentItem.left : undefined) : undefined
@@ -86,11 +101,7 @@ Item {
                 }
 
                 function trigger() {
-                    if (panel.listItemIndex >= 0) {
-                        action.triggered(panel.listItemIndex);
-                    } else {
-                        action.triggered(null);
-                    }
+                    savedAction = action;
                     panel.selected();
                 }
 

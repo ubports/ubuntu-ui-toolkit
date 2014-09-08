@@ -44,7 +44,7 @@ MainView {
             model: ListModel {
                 Component.onCompleted: {
                     for (var i = 0; i < 20; i++)
-                        append({tag: i})
+                        append({data: "List item mode #" + i})
                 }
             }
 
@@ -60,7 +60,7 @@ MainView {
                     anchors.fill: parent
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
-                    text: "ListItem #" + modelData
+                    text: modelData
                 }
             }
         }
