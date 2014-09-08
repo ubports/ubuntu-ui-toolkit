@@ -23,7 +23,7 @@ Column {
     property alias count: repeater.count
     Repeater {
         id: repeater
-        model: 10000
+        model: 5000
         ListItem {
         }
     }

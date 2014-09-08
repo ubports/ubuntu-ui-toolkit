@@ -133,12 +133,6 @@ private Q_SLOTS:
     void onOwnerCountCanged(QObject *owner = 0);
 
 private:
-    void resizeAndUpdate()
-    {
-        m_listItem->resize();
-        m_listItem->update();
-    }
-
     void setVisible(bool visible);
     void setLeftMargin(qreal leftMargin);
     void setRightMargin(qreal rightMargin);
