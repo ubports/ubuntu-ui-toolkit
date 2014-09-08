@@ -22,6 +22,7 @@ import Ubuntu.Unity.Action 1.1 as UnityActions
   Documentation is in Page.qdoc
 */
 PageTreeNode {
+    Component.onDestruction: print("destroying Page "+page.title)
     id: page
     anchors {
         left: parent ? parent.left : undefined

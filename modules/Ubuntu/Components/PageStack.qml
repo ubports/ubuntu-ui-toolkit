@@ -171,16 +171,15 @@ PageTreeNode {
       The pushed page may be an Item, Component or URL.
      */
     function push(page, properties) {
-        if (pageStack.canAnimateHeader()) {
+        internal.pageToPush = page;
+        internal.propertiesToPush = properties;
+        if (internal.animateHeader && internal.stack.size() > 0) {
             header.__styleInstance.animateOut();
+            header.__styleInstance.animateOutFinished.connect(internal.createAndPush)
+        } else {
+            internal.createAndPush()//page, properties);
         }
-        if (internal.stack.size() > 0) internal.stack.top().active = false;
-        internal.stack.push(internal.createWrapper(page, properties));
-        internal.stackUpdated();
 
-        if (pageStack.canAnimateHeader()) {
-            header.__styleInstance.animateIn();
-        }
     }
 
     /*!
@@ -193,17 +192,11 @@ PageTreeNode {
             print("WARNING: Trying to pop an empty PageStack. Ignoring.");
             return;
         }
-        if (pageStack.canAnimateHeader()) {
+        if (internal.animateHeader) {
+            header.__styleInstance.animateOutFinished.connect(internal.popAndDestroy);
             header.__styleInstance.animateOut();
-        }
-
-        internal.stack.top().active = false;
-        if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
-        internal.stack.pop();
-        internal.stackUpdated();
-
-        if (pageStack.canAnimateHeader()) {
-            header.__styleInstance.animateIn();
+        } else {
+            internal.popAndDestroy();
         }
     }
 
@@ -222,6 +215,48 @@ PageTreeNode {
 
     QtObject {
         id: internal
+
+        property bool animateHeader: {
+            if (!pageStack.__propagated) return false;
+            if (!pageStack.__propagated.header) return false;
+            if (!pageStack.__propagated.header.__styleInstance) return false;
+            if (!pageStack.__propagated.header.__styleInstance.hasOwnProperty("animateIn")) return false;
+            if (!pageStack.__propagated.header.__styleInstance.hasOwnProperty("animateOut")) return false;
+            return true;
+        }
+
+        property var pageToPush
+        property var propertiesToPush
+
+        function createAndPush() {//page, properties) {
+            if (internal.animateHeader) {
+                header.__styleInstance.animateOutFinished.disconnect(internal.createAndPush);
+            }
+
+            if (internal.stack.size() > 0) internal.stack.top().active = false;
+            internal.stack.push(internal.createWrapper(pageToPush, propertiesToPush));
+            internal.stackUpdated();
+
+            if (internal.animateHeader) {
+                header.__styleInstance.animateIn();
+            }
+        }
+
+        function popAndDestroy() {
+            if (internal.animateHeader) {
+                header.__styleInstance.animateOutFinished.disconnect(internal.popAndDestroy);
+            }
+
+            print("pop.... aaaaand destroy!!")
+            internal.stack.top().active = false;
+            if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
+            internal.stack.pop();
+            internal.stackUpdated();
+
+            if (internal.animateHeader) {
+                header.__styleInstance.animateIn();
+            }
+        }
 
         /*!
           The instance of the stack from javascript

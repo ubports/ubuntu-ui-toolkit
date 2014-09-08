@@ -141,52 +141,69 @@ Style.PageHeadStyle {
         state = "OUT";
     }
     function animateIn() {
-        state = "IN"
+        state = "IN";
     }
+
+    signal animateOutFinished()
+    signal animateInFinished()
 
     transitions: [
         Transition {
             from: "IN"
             to: "OUT"
-            UbuntuNumberAnimation {
-                target: allContents
-                property: "opacity"
-                from: 1.0
-                to: 0.0
-            }
-            UbuntuNumberAnimation {
-                target: leftAnchor
-                properties: "anchors.leftMargin"
-                from: 0.0
-                to: -units.gu(5)
-            }
-            UbuntuNumberAnimation {
-                target: rightAnchor
-                properties: "anchors.rightMargin"
-                from: 0
-                to: -units.gu(5)
+            SequentialAnimation {
+                ParallelAnimation {
+                    UbuntuNumberAnimation {
+                        target: allContents
+                        property: "opacity"
+                        from: 1.0
+                        to: 0.0
+                    }
+                    UbuntuNumberAnimation {
+                        target: leftAnchor
+                        properties: "anchors.leftMargin"
+                        from: 0.0
+                        to: -units.gu(5)
+                    }
+                    UbuntuNumberAnimation {
+                        target: rightAnchor
+                        properties: "anchors.rightMargin"
+                        from: 0
+                        to: -units.gu(5)
+                    }
+                }
+                ScriptAction {
+                    script: headerStyle.animateOutFinished()
+                }
             }
         },
         Transition {
             from: "OUT"
             to: "IN"
-            UbuntuNumberAnimation {
-                target: allContents
-                property: "opacity"
-                from: 0.0
-                to: 1.0
-            }
-            UbuntuNumberAnimation {
-                target: leftAnchor
-                properties: "anchors.leftMargin"
-                from: -units.gu(5)
-                to: 0
-            }
-            UbuntuNumberAnimation {
-                target: rightAnchor
-                properties: "anchors.rightMargin"
-                from: -units.gu(5)
-                to: 0
+            SequentialAnimation {
+                ParallelAnimation {
+                    UbuntuNumberAnimation {
+                        target: allContents
+                        property: "opacity"
+                        from: 0.0
+                        to: 1.0
+                    }
+                    UbuntuNumberAnimation {
+                        target: leftAnchor
+                        properties: "anchors.leftMargin"
+                        from: -units.gu(5)
+                        to: 0
+                    }
+                    UbuntuNumberAnimation {
+                        target: rightAnchor
+                        properties: "anchors.rightMargin"
+                        from: -units.gu(5)
+                        to: 0
+                    }
+                }
+                ScriptAction {
+                    script: headerStyle.animateInFinished()
+                }
             }
         }
     ]
