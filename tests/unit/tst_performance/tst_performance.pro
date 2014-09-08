@@ -23,3 +23,5 @@ OTHER_FILES += \
     ItemList.qml \
     ListItemList.qml \
     ListItemWithOptionsList.qml
+    ListItemsEmptyList.qml \
+    ListItemsBaseList.qml
