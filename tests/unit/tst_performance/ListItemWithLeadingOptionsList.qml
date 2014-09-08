@@ -20,6 +20,7 @@ import Ubuntu.Components 1.1
 Column {
     width: 800
     height: 600
+    property ListItemOptions leadingOptions: options1
     ListItemOptions {
         id: options1
         Action {}
@@ -35,7 +36,6 @@ Column {
         model: 5000
         ListItem {
             trailingOptions: options1
-            leadingOptions: options2
         }
     }
 }

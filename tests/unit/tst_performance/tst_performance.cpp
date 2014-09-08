@@ -79,9 +79,10 @@ private Q_SLOTS:
         QTest::newRow("list with QtQuick Item") << "ItemList.qml" << QUrl();
         QTest::newRow("list with new ListItem") << "ListItemList.qml" << QUrl();
         QTest::newRow("list with new ListItem with options") << "ListItemWithOptionsList.qml" << QUrl();
+        QTest::newRow("list with new ListItem using default leadingOptions") << "ListItemWithLeadingOptionsList.qml" << QUrl();
         QTest::newRow("list with new ListItem with inline options") << "ListItemWithInlineOptionsList.qml" << QUrl();
         QTest::newRow("list with ListItems.Empty (equivalent to the new ListItem") << "ListItemsEmptyList.qml" << QUrl();
-        QTest::newRow("list with ListItems.Base (one icon, one label and one chevron)") << "ListItemsBaseList.qml" << QUrl();
+//        QTest::newRow("list with ListItems.Base (one icon, one label and one chevron)") << "ListItemsBaseList.qml" << QUrl();
     }
 
     void benchmark_GridOfComponents()
