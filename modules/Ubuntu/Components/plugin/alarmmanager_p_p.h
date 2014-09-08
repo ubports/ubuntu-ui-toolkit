@@ -43,6 +43,10 @@ public:
     bool completed:1;
 
     virtual bool fetchAlarms() = 0;
+
+    // function to verify whether the given alarm property has a given value set
+    // used for testing purposes
+    virtual bool verifyChange(const QVariant &cookie, AlarmData::Change change, const QVariant &value) = 0;
 };
 
 AlarmManagerPrivate * createAlarmsAdapter(AlarmManager *alarms);

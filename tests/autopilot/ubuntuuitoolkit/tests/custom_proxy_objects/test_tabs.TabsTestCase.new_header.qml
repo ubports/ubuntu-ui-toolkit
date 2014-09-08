@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -12,33 +12,32 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
-#include <QtQuickTest/quicktest.h>
-#include <qqml.h>
 
-#include "tabsmodel.h"
+import QtQuick 2.2
+import Ubuntu.Components 1.1
 
-class Register
-{
-public:
-    Register()
-    {
-        qmlRegisterType<TabsModel>("TestObjects", 0, 1, "TabsModel");
+MainView {
+    width: units.gu(70)
+    height: units.gu(60)
+    useDeprecatedToolbar: false
 
-        savedDataDirs = qgetenv("XDG_DATA_DIRS");
-        qputenv("XDG_DATA_DIRS", "/usr/share");
+    Tabs {
+        id: tabs
+        Tab {
+            objectName: "tab1"
+            title: "Tab1"
+            page: Page { }
+        }
+        Tab {
+            objectName: "tab2"
+            title: "Tab2"
+            page: Page { }
+        }
+        Tab {
+            objectName: "tab3"
+            title: "Tab3"
+            page: Page { }
+        }
     }
-
-    ~Register()
-    {
-        qputenv("XDG_DATA_DIRS", savedDataDirs);
-    }
-
-private:
-    QByteArray savedDataDirs;
-};
-
-Register r;
-
-QUICK_TEST_MAIN(components)
+}

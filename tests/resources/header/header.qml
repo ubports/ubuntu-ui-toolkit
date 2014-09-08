@@ -206,13 +206,9 @@ MainView {
             anchors.centerIn: parent
             text: "Use back button to return"
         }
-        tools: ToolbarItems {
-            ToolbarButton {
-                action: Action {
-                    iconName: "settings"
-                    text: "settings"
-                }
-            }
+        head.actions: Action {
+            iconName: "settings"
+            text: "settings"
         }
     }
 }
