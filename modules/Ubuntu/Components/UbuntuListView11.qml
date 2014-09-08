@@ -28,24 +28,18 @@ UbuntuListView {
 
     /*!
       \internal
-      \qmlproperty Action deleteAction
-      */
-    property Action deleteAction: Action {
-        iconName: "delete"
-        onTriggered: {
-            // delete the index from model if possible
-        }
-    }
-
-    /*!
-      \internal
       \qmlproperty ListItemOptions leadingOptions
       Use binding so we can set it to each ListItem as binding!
       */
     property ListItemOptions leadingOptions: stockLeadingOption
     ListItemOptions {
         id: stockLeadingOption
-        options: [deleteAction]
+        options: Action {
+            iconName: "delete"
+            onTriggered: {
+                // delete the index from model if possible
+            }
+        }
     }
 
     PullToRefresh {

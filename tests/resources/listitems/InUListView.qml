@@ -48,14 +48,12 @@ MainView {
                 }
             }
 
-            leadingOptions: newLeading
-            ListItemOptions {
-                id: newLeading
-                options: stockOptions.options
-            }
-
             delegate: ListItem {
                 trailingOptions: stockOptions
+                leadingOptions: ListItemOptions {
+                    options: stockOptions.options
+                }
+
                 Label {
                     anchors.fill: parent
                     horizontalAlignment: Text.AlignHCenter

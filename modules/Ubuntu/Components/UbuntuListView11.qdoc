@@ -36,3 +36,12 @@
   }
   \endqml
   */
+
+/*!
+ * \qmlproperty ListItemOptions leadingOptions
+ * The property holds the default leading options defined by the UbuntuListView.
+ * The option list can be overridden either by specifying a different \l ListItemOption
+ * instance to the property or doing the same in \l ListItem itself. The default
+ * option list contains a single delete action, which removes the model data from
+ * the triggered index.
+ */

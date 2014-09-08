@@ -487,7 +487,7 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
 void UCListItemPrivate::autoLeadingOptions()
 {
     Q_Q(UCListItem);
-    if (flickable && flickable->property("leadingOptions").isValid()) {
+    if (flickable && flickable->property("leadingOptions").isValid() && !leadingOptions) {
         QQmlProperty prop(flickable, "leadingOptions", qmlContext(flickable));
         QQmlAbstractBinding *binding = QQmlPropertyPrivate::binding(prop);
         // set the value first, then bind
