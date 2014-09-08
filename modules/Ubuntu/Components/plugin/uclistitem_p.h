@@ -1,0 +1,162 @@
+/*
+ * Copyright 2014 Canonical Ltd.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#ifndef UCVIEWITEM_P_H
+#define UCVIEWITEM_P_H
+
+#include "uclistitem.h"
+#include "ucstyleditembase_p.h"
+#include <QtCore/QPointer>
+#include <QtQuick/private/qquickrectangle_p.h>
+
+class QQuickFlickable;
+class QQuickPropertyAnimation;
+class UCListItemContent;
+class UCListItemDivider;
+class UCListItemOptions;
+class PropertyChange;
+class UCListItemPrivate : public UCStyledItemBasePrivate
+{
+    Q_DECLARE_PUBLIC(UCListItem)
+public:
+    UCListItemPrivate();
+    virtual ~UCListItemPrivate();
+    void init();
+
+    static inline UCListItemPrivate *get(UCListItem *that)
+    {
+        Q_ASSERT(that);
+        return that->d_func();
+    }
+
+    // override setFocusable()
+    void setFocusable();
+
+    void _q_rebound();
+    void _q_updateSize();
+    void _q_completeRebinding();
+    void _q_grabPanel(UCListItemOptions *options);
+    void cleanup();
+    void reboundTo(qreal x);
+    void setPressed(bool pressed);
+    void setMoved(bool moved);
+    bool grabPanel(UCListItemOptions *optionList, bool isMoved);
+    void listenToRebind(bool listen);
+    void resize();
+    void update();
+    void clampX(qreal &x, qreal dx);
+
+    bool pressed:1;
+    bool moved:1;
+    bool suppressClick:1;
+    bool ready:1;
+    int index;
+    qreal xAxisMoveThresholdGU;
+    QPointF lastPos;
+    QPointF pressedPos;
+    QPointer<QQuickFlickable> flickable;
+    QQuickPropertyAnimation *reboundAnimation;
+    PropertyChange *flickableInteractive;
+    UCListItemContent *contentItem;
+    UCListItemDivider *divider;
+    UCListItemOptions *leadingOptions;
+    UCListItemOptions *trailingOptions;
+};
+
+class UCListItemContent : public QQuickItem
+{
+    Q_OBJECT
+    Q_PROPERTY(QColor color MEMBER m_color WRITE setColor NOTIFY colorChanged)
+    Q_PROPERTY(QColor pressedColor MEMBER m_pressedColor WRITE setPressedColor NOTIFY pressedColorChanged)
+public:
+    explicit UCListItemContent(QQuickItem *parent = 0);
+    ~UCListItemContent();
+
+    void setColor(const QColor &color);
+    void setPressedColor(const QColor &color);
+
+Q_SIGNALS:
+    void colorChanged();
+    void pressedColorChanged();
+
+protected:
+    void itemChange(ItemChange change, const ItemChangeData &data);
+    QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
+
+private Q_SLOTS:
+    void updateColors();
+
+private:
+    QColor m_color;
+    QColor m_pressedColor;
+    UCListItem *m_item;
+    bool m_pressedColorChanged:1;
+};
+
+class UCListItemDivider : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(bool visible MEMBER m_visible WRITE setVisible NOTIFY visibleChanged)
+    Q_PROPERTY(qreal leftMargin MEMBER m_leftMargin WRITE setLeftMargin NOTIFY leftMarginChanged)
+    Q_PROPERTY(qreal rightMargin MEMBER m_rightMargin WRITE setRightMargin NOTIFY rightMarginChanged)
+public:
+    explicit UCListItemDivider(QObject *parent = 0);
+    ~UCListItemDivider();
+    void init(UCListItem *listItem);
+
+Q_SIGNALS:
+    void visibleChanged();
+    void leftMarginChanged();
+    void rightMarginChanged();
+
+protected:
+    QSGNode *paint(QSGNode *paintNode, const QRectF &rect);
+
+private Q_SLOTS:
+    void unitsChanged();
+    void paletteChanged();
+    void onOwnerCountCanged(QObject *owner = 0);
+
+private:
+    void resizeAndUpdate()
+    {
+        m_listItem->resize();
+        m_listItem->update();
+    }
+
+    void setVisible(bool visible);
+    void setLeftMargin(qreal leftMargin);
+    void setRightMargin(qreal rightMargin);
+
+    bool m_visible:1;
+    bool m_lastItem:1;
+    bool m_leftMarginChanged:1;
+    bool m_rightMarginChanged:1;
+    qreal m_thickness;
+    qreal m_leftMargin;
+    qreal m_rightMargin;
+    QGradientStops m_gradient;
+    UCListItemPrivate *m_listItem;
+    friend class UCListItem;
+    friend class UCListItemPrivate;
+};
+
+QColor getPaletteColor(const char *profile, const char *color);
+
+QML_DECLARE_TYPE(UCListItemContent)
+QML_DECLARE_TYPE(UCListItemDivider)
+
+#endif // UCVIEWITEM_P_H
