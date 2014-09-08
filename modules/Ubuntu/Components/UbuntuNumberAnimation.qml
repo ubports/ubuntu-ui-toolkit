@@ -51,6 +51,6 @@ import Ubuntu.Components 1.0
     \l UbuntuAnimation manually in order to ensure consistency.
 */
 NumberAnimation {
-    duration: UbuntuAnimation.FastDuration
+    duration: UbuntuAnimation.SlowDuration //FastDuration
     easing: UbuntuAnimation.StandardEasing
 }
