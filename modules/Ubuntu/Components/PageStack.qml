@@ -155,16 +155,6 @@ PageTreeNode {
      */
     property Item currentPage: null
 
-    // TODO: make internal, use property
-    function canAnimateHeader() {
-        if (!pageStack.__propagated) return false;
-        if (!pageStack.__propagated.header) return false;
-        if (!pageStack.__propagated.header.__styleInstance) return false;
-        if (!pageStack.__propagated.header.__styleInstance.hasOwnProperty("animateIn")) return false;
-        if (!pageStack.__propagated.header.__styleInstance.hasOwnProperty("animateOut")) return false;
-        return true;
-    }
-
     /*!
       \preliminary
       Push a page to the stack, and apply the given (optional) properties to the page.
@@ -174,10 +164,10 @@ PageTreeNode {
         internal.pageToPush = page;
         internal.propertiesToPush = properties;
         if (internal.animateHeader && internal.stack.size() > 0) {
-            header.__styleInstance.animateOut();
-            header.__styleInstance.animateOutFinished.connect(internal.createAndPush)
+            internal.headStyle.animateOut();
+            internal.headStyle.animateOutFinished.connect(internal.createAndPush)
         } else {
-            internal.createAndPush()//page, properties);
+            internal.createAndPush();
         }
 
     }
@@ -193,8 +183,8 @@ PageTreeNode {
             return;
         }
         if (internal.animateHeader) {
-            header.__styleInstance.animateOutFinished.connect(internal.popAndDestroy);
-            header.__styleInstance.animateOut();
+            internal.headStyle.animateOutFinished.connect(internal.popAndDestroy);
+            internal.headStyle.animateOut();
         } else {
             internal.popAndDestroy();
         }
@@ -216,21 +206,28 @@ PageTreeNode {
     QtObject {
         id: internal
 
+        property Item headStyle: (pageStack.__propagated
+                                      && pageStack.__propagated.header
+                                      && pageStack.__propagated.header.__styleInstance)
+                                    ? pageStack.__propagated.header.__styleInstance
+                                    : null
+
         property bool animateHeader: {
-            if (!pageStack.__propagated) return false;
-            if (!pageStack.__propagated.header) return false;
-            if (!pageStack.__propagated.header.__styleInstance) return false;
-            if (!pageStack.__propagated.header.__styleInstance.hasOwnProperty("animateIn")) return false;
-            if (!pageStack.__propagated.header.__styleInstance.hasOwnProperty("animateOut")) return false;
+            if (!headStyle) return false;
+            if (!headStyle) return false;
+            if (!headStyle.hasOwnProperty("animateIn")) return false;
+            if (!headStyle.hasOwnProperty("animateOut")) return false;
+            if (!headStyle.hasOwnProperty("animateInFinished")) return false;
+            if (!headStyle.hasOwnProperty("animateOutFinished")) return false;
             return true;
         }
 
         property var pageToPush
         property var propertiesToPush
 
-        function createAndPush() {//page, properties) {
+        function createAndPush() {
             if (internal.animateHeader) {
-                header.__styleInstance.animateOutFinished.disconnect(internal.createAndPush);
+                headStyle.animateOutFinished.disconnect(internal.createAndPush);
             }
 
             if (internal.stack.size() > 0) internal.stack.top().active = false;
@@ -238,13 +235,13 @@ PageTreeNode {
             internal.stackUpdated();
 
             if (internal.animateHeader) {
-                header.__styleInstance.animateIn();
+                headStyle.animateIn();
             }
         }
 
         function popAndDestroy() {
             if (internal.animateHeader) {
-                header.__styleInstance.animateOutFinished.disconnect(internal.popAndDestroy);
+                headStyle.animateOutFinished.disconnect(internal.popAndDestroy);
             }
 
             print("pop.... aaaaand destroy!!")
@@ -254,7 +251,7 @@ PageTreeNode {
             internal.stackUpdated();
 
             if (internal.animateHeader) {
-                header.__styleInstance.animateIn();
+                headStyle.animateIn();
             }
         }
 
