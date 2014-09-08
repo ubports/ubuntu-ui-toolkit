@@ -457,8 +457,9 @@ Item {
             var oldEnabled = data.item.enabled;
             panelItemSpy.clear();
             panelItemSpy.target = data.item;
+            data.item.enabled = false;
             // tug
-            flick(data.item.contentItem, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+            flick(data.item.contentItem, centerOf(data.item.contentItem).x, centerOf(data.item.contentItem).y, data.dx, 0);
             compare(panelItemSpy.count, 0, "Item had been tugged despite being disabled!");
             // check opacity
             fuzzyCompare(data.item.opacity, 0.5, 0.1, "Disabled item must be 50% transparent");

@@ -259,6 +259,7 @@ UCListItemPrivate::UCListItemPrivate()
     , xAxisMoveThresholdGU(1.5)
     , reboundAnimation(0)
     , flickableInteractive(0)
+    , disabledOpacity(0)
     , contentItem(new UCListItemContent)
     , divider(new UCListItemDivider)
     , leadingOptions(0)
@@ -268,6 +269,7 @@ UCListItemPrivate::UCListItemPrivate()
 UCListItemPrivate::~UCListItemPrivate()
 {
     delete flickableInteractive;
+    delete disabledOpacity;
 }
 
 void UCListItemPrivate::init()
@@ -290,6 +292,9 @@ void UCListItemPrivate::init()
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
 
+    // watch enabledChanged()
+    QObject::connect(q, SIGNAL(enabledChanged()), q, SLOT(_q_dimmDisabled()), Qt::DirectConnection);
+
     // create rebound animation
     UCUbuntuAnimation animationCodes;
     reboundAnimation = new QQuickPropertyAnimation(q);
@@ -306,6 +311,20 @@ void UCListItemPrivate::setFocusable()
     Q_Q(UCListItem);
     q->setAcceptedMouseButtons(Qt::LeftButton | Qt::MiddleButton | Qt::RightButton);
     q->setFiltersChildMouseEvents(true);
+}
+
+void UCListItemPrivate::_q_dimmDisabled()
+{
+    Q_Q(UCListItem);
+    if (q->isEnabled()) {
+        PropertyChange::restore(disabledOpacity);
+    } else {
+        // this is the first time we need to create the property change
+        if (!disabledOpacity) {
+            disabledOpacity = new PropertyChange(q, "opacity");
+        }
+        PropertyChange::setValue(disabledOpacity, 0.5);
+    }
 }
 
 void UCListItemPrivate::_q_rebound()

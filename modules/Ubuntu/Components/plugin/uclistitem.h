@@ -71,6 +71,7 @@ private:
     Q_DECLARE_PRIVATE(UCListItem)
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
+    Q_PRIVATE_SLOT(d_func(), void _q_dimmDisabled())
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_completeRebinding())

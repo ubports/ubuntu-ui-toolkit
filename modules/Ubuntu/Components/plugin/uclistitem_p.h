@@ -45,6 +45,7 @@ public:
     // override setFocusable()
     void setFocusable();
 
+    void _q_dimmDisabled();
     void _q_rebound();
     void _q_updateSize();
     void _q_completeRebinding();
@@ -70,6 +71,7 @@ public:
     QPointer<QQuickFlickable> flickable;
     QQuickPropertyAnimation *reboundAnimation;
     PropertyChange *flickableInteractive;
+    PropertyChange *disabledOpacity;
     UCListItemContent *contentItem;
     UCListItemDivider *divider;
     UCListItemOptions *leadingOptions;
