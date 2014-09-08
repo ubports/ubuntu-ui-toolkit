@@ -319,7 +319,7 @@ void UCListItemPrivate::_q_dimmDisabled()
     Q_Q(UCListItem);
     if (q->isEnabled()) {
         PropertyChange::restore(disabledOpacity);
-    } else {
+    } else if (opacity() != 0.5) {
         // this is the first time we need to create the property change
         if (!disabledOpacity) {
             disabledOpacity = new PropertyChange(q, "opacity");
