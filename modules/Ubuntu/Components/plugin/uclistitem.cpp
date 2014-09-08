@@ -415,6 +415,9 @@ void UCListItemPrivate::setMoved(bool moved)
     this->moved = moved;
     Q_Q(UCListItem);
     QQuickWindow *window = q->window();
+    if (!window) {
+        return;
+    }
     if (moved) {
         window->installEventFilter(q);
     } else {

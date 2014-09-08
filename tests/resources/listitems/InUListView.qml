@@ -48,11 +48,13 @@ MainView {
                 }
             }
 
+//            leadingOptions: null
+
             delegate: ListItem {
                 trailingOptions: stockOptions
-                leadingOptions: ListItemOptions {
-                    options: stockOptions.options
-                }
+//                leadingOptions: ListItemOptions {
+//                    options: stockOptions.options
+//                }
 
                 Label {
                     anchors.fill: parent

@@ -19,7 +19,7 @@ import Ubuntu.Components 1.1
 
 // documentation in UbuntuListView11.qdoc
 UbuntuListView {
-
+    id: listView
     /*!
       \internal
       \qmlproperty PullToRefresh pullToRefresh
@@ -37,7 +37,22 @@ UbuntuListView {
         options: Action {
             iconName: "delete"
             onTriggered: {
+                print("TYPE:", Object.prototype.toString.call(listView.model));
                 // delete the index from model if possible
+                if (Object.prototype.toString.call(listView.model) === "[object Number]") {
+                    // the model is a number, decrement it
+                    listView.model = listView.count - 1;
+                    print("HUKK");
+                } else if (Object.prototype.toString.call(listView.model) === "[object Array]") {
+                    // the model is an array, remove the item
+                    listView.model = listView.model.splice(value, 1);
+                } else {
+                    // we can only have an object
+                    if (listView.model.hasOwnProperty("remove")) {
+                        print("REMOVED")
+                        listView.model.remove(value, 1);
+                    }
+                }
             }
         }
     }
