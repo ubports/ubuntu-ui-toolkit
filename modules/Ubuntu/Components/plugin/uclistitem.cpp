@@ -360,20 +360,20 @@ void UCListItemPrivate::_q_grabPanel(UCListItemOptions *options)
     grabPanel(options, true);
 }
 
-void UCListItemPrivate::_q_updateIndex(QObject *owner)
+void UCListItemPrivate::_q_updateIndex(QObject *ownerItem)
 {
     Q_Q(UCListItem);
-    if (!owner) {
-        owner = q->sender();
+    if (!ownerItem) {
+        ownerItem = q->sender();
     }
-    Q_ASSERT(owner);
+    Q_ASSERT(ownerItem);
     // update the index as well
     QQmlContext *context = qmlContext(q);
     if (context) {
         QVariant indexProperty = context->contextProperty("index");
         index = indexProperty.isValid() ? indexProperty.toInt() : -1;
     }
-    divider->m_lastItem = ready && index == (owner->property("count").toInt() - 1);
+    divider->m_lastItem = ready && index == (ownerItem->property("count").toInt() - 1);
 }
 
 // the function performs a cleanup on mouse release without any rebound animation
@@ -645,7 +645,8 @@ void UCListItem::componentComplete()
                 d->flickable :
                 (d->parentItem && d->parentItem->property("count").isValid()) ? d->parentItem : 0;
     if (countOwner) {
-        QObject::connect(countOwner, SIGNAL(countChanged()), this, SLOT(_q_updateIndex()), Qt::DirectConnection);
+        QObject::connect(countOwner, SIGNAL(countChanged()),
+                         this, SLOT(_q_updateIndex()), Qt::DirectConnection);
         d->_q_updateIndex(countOwner);
     }
 

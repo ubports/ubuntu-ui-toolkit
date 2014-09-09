@@ -54,17 +54,13 @@ Item {
     /*
       Function called by ListItemOptions when the panel is rebount.
       */
-    function triggerAction() {
-        if (savedAction) {
-            if (panel.listItemIndex >= 0) {
-                savedAction.triggered(panel.listItemIndex);
-            } else {
-                savedAction.triggered(null);
-            }
+    function fireAction() {
+        if (selectedAction) {
+            selectedAction.triggered(listItemIndex >= 0 ? listItemIndex : null);
+            selectedAction = null;
         }
     }
-
-    property Action savedAction: null
+    property Action selectedAction: null
 
     anchors {
         left: contentItem ? (leadingPanel ? undefined : contentItem.right) : undefined
@@ -101,7 +97,9 @@ Item {
                 }
 
                 function trigger() {
-                    savedAction = action;
+                    // save the action as we trigger when the rebound animation is over
+                    // to make sure we properly clean up the blockade of teh Flickables
+                    panel.selectedAction = action;
                     panel.selected();
                 }
 

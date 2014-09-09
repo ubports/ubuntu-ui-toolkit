@@ -126,6 +126,11 @@ Item {
             target: testItem;
         }
 
+        SignalSpy {
+            id: actionSpy
+            signalName: "triggered"
+        }
+
         function centerOf(item) {
             return Qt.point(item.width / 2, item.height / 2);
         }
@@ -138,6 +143,7 @@ Item {
         function cleanup() {
             pressedSpy.clear();
             clickSpy.clear();
+            actionSpy.clear();
             listView.interactive = true;
             // tap on the first item to make sure we are rebounding all
             mouseClick(defaults, 0, 0);
@@ -413,12 +419,12 @@ Item {
 
         function test_verify_action_value_data() {
             return [
-                        {tag: "Undefined", item: testItem, result: undefined},
-                        {tag: "Index 0", item: findChild(listView, "listItem0"), result: 0},
-                        {tag: "Index 1", item: findChild(listView, "listItem1"), result: 1},
-                        {tag: "Index 2", item: findChild(listView, "listItem2"), result: 2},
-                        {tag: "Index 3", item: findChild(listView, "listItem3"), result: 3},
-                    ];
+                {tag: "Undefined", item: testItem, result: undefined},
+                {tag: "Index 0", item: findChild(listView, "listItem0"), result: 0},
+                {tag: "Index 1", item: findChild(listView, "listItem1"), result: 1},
+                {tag: "Index 2", item: findChild(listView, "listItem2"), result: 2},
+                {tag: "Index 3", item: findChild(listView, "listItem3"), result: 3},
+            ];
         }
         function test_verify_action_value(data) {
             var option = findChild(data.item.leadingOptions.panelItem, "list_option_0");
@@ -426,6 +432,8 @@ Item {
             // we test the last action, as we tug the first action on leading, which means teh alst will be accessible
             var len = data.item.leadingOptions.options.length;
             var action = data.item.leadingOptions.options[len - 1];
+            actionSpy.target = action;
+            actionSpy.clear();
             // tug options in
             flick(data.item.contentItem, centerOf(data.item.contentItem).x, centerOf(data.item.contentItem).y, option.width, 0);
             waitForRendering(data.item.contentItem, 800);
@@ -435,6 +443,7 @@ Item {
             waitForRendering(data.item.contentItem, 800);
 
             // check the action param
+            actionSpy.wait();
             compare(action.param, data.result, "Action parameter differs");
         }
 
