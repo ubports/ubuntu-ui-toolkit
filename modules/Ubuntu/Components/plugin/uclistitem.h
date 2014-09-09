@@ -32,6 +32,8 @@ class UCListItem : public UCStyledItemBase
     Q_PROPERTY(UCListItemOptions *leadingOptions READ leadingOptions WRITE setLeadingOptions NOTIFY leadingOptionsChanged DESIGNABLE false)
     Q_PROPERTY(UCListItemOptions *trailingOptions READ trailingOptions WRITE setTrailingOptions NOTIFY trailingOptionsChanged DESIGNABLE false)
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
+    Q_PROPERTY(bool selectable READ selectable WRITE setSelectable NOTIFY selectableChanged)
+    Q_PROPERTY(bool selected READ selected WRITE setSelected NOTIFY selectedChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
@@ -46,6 +48,10 @@ public:
     UCListItemOptions *trailingOptions() const;
     void setTrailingOptions(UCListItemOptions *options);
     bool pressed() const;
+    bool selectable() const;
+    void setSelectable(bool selectable);
+    bool selected() const;
+    void setSelected(bool selected);
 
 protected:
     void componentComplete();
@@ -61,6 +67,8 @@ Q_SIGNALS:
     void leadingOptionsChanged();
     void trailingOptionsChanged();
     void pressedChanged();
+    void selectableChanged();
+    void selectedChanged();
     void childrenChanged();
 
     void clicked();
@@ -77,6 +85,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_completeRebinding())
     Q_PRIVATE_SLOT(d_func(), void _q_grabPanel(UCListItemOptions *options))
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex(QObject *ownerItem = 0))
+    Q_PRIVATE_SLOT(d_func(), void _q_updateSelected())
 };
 
 #endif // UCLISTITEM_H

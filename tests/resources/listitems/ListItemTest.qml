@@ -49,15 +49,22 @@ MainView {
         }
     }
 
+    property bool selectable: false
     Column {
         anchors {
             left: parent.left
             right: parent.right
         }
 
+        Button {
+            text: "Selectable " + (selectable ? "OFF" : "ON")
+            onClicked: selectable = !selectable
+        }
+
         ListItem {
             id: testItem
             objectName: "single"
+            selectable: main.selectable
             onClicked: {
                 print("click")
                 main.override = !main.override
@@ -98,6 +105,8 @@ MainView {
             delegate: ListItem {
                 objectName: "ListItem" + index
                 id: listItem
+                selectable: main.selectable
+                selected: true
                 onClicked: print(" clicked")
                 leadingOptions: leading
                 Label {
@@ -128,6 +137,7 @@ MainView {
                     model: 10
                     ListItem {
                         objectName: "InFlickable"+index
+                        selectable: main.selectable
                         leadingOptions: ListItemOptions {
                             Action {
                                 iconName: "edit"

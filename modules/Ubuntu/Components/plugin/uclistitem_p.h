@@ -51,6 +51,7 @@ public:
     void _q_completeRebinding();
     void _q_grabPanel(UCListItemOptions *options);
     void _q_updateIndex(QObject *ownerItem = 0);
+    void _q_updateSelected();
     void cleanup();
     void reboundTo(qreal x);
     void setPressed(bool pressed);
@@ -61,11 +62,15 @@ public:
     void update();
     void clampX(qreal &x, qreal dx);
     void autoLeadingOptions();
+    QQuickItem *createSelectionPanel();
+    void toggleSelectionMode();
 
     bool pressed:1;
     bool moved:1;
     bool suppressClick:1;
     bool ready:1;
+    bool selectable:1;
+    bool selected:1;
     int index;
     qreal xAxisMoveThresholdGU;
     QPointF lastPos;
@@ -78,6 +83,7 @@ public:
     UCListItemDivider *divider;
     UCListItemOptions *leadingOptions;
     UCListItemOptions *trailingOptions;
+    QQuickItem *selectionPanel;
 };
 
 class UCListItemContent : public QQuickItem
