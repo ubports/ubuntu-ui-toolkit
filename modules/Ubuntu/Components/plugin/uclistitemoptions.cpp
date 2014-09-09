@@ -184,6 +184,9 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
             // connect to panel to catch dragging
             QObject::connect(panelItem, SIGNAL(widthChanged()), q, SLOT(_q_handlePanelWidth()));
             QObject::connect(panelItem, SIGNAL(xChanged()), q, SLOT(_q_handlePanelDrag()));
+            // connect panel detaching to trigger selected action when
+            QObject::connect(q, SIGNAL(panelDetached(UCListItemOptions*)),
+                             panelItem, SLOT(fireAction()), Qt::DirectConnection);
         }
     } else {
         qmlInfo(q) << component.errorString();
