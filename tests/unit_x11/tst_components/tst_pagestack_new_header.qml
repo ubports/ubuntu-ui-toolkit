@@ -92,6 +92,16 @@ Item {
             compare(pageStack.currentPage, null, "currentPage properly reset");
         }
 
+        function test_page_order() {
+            compare(pageStack.depth, 0, "depth is 0 initially");
+            pageStack.push(page1);
+            pageStack.push(page2);
+            compare(pageStack.currentPage, page2, "last pushed page is on top");
+            pageStack.pop();
+            compare(pageStack.currentPage, page1, "popping puts previously pushed page on top");
+            pageStack.clear();
+        }
+
         function test_active_bug1260116() {
             pageStack.push(page1);
             compare(page1.active, true, "Page is active after pushing");
