@@ -91,6 +91,7 @@ Item {
         function test_0_defaults() {
             verify(ubuntuListView.hasOwnProperty("pullToRefresh"), "PullToRefresh is missing");
             compare(ubuntuListView.pullToRefresh.enabled, false, "PullToRefresh functionality is disabled by default");
+            verify(ubuntuListView.leadingOptions, "LeadingOptions is not defined!");
         }
 
         function test_pullToRefresh_manual_refresh() {
