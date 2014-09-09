@@ -161,11 +161,12 @@ PageTreeNode {
       The pushed page may be an Item, Component or URL.
      */
     function push(page, properties) {
+        internal.finishPreviousAction();
         internal.pageToPush = page;
         internal.propertiesToPush = properties;
         if (internal.animateHeader && internal.stack.size() > 0) {
-            internal.headStyle.animateOut();
             internal.headStyle.animateOutFinished.connect(internal.createAndPush);
+            internal.headStyle.animateOut();
         } else {
             internal.createAndPush();
         }
@@ -177,6 +178,7 @@ PageTreeNode {
       Do not do anything if 0 or 1 items are on the stack.
      */
     function pop() {
+        internal.finishPreviousAction();
         if (internal.stack.size() < 1) {
             print("WARNING: Trying to pop an empty PageStack. Ignoring.");
             return;
@@ -204,7 +206,6 @@ PageTreeNode {
 
     QtObject {
         id: internal
-
         property Item headStyle: (pageStack.__propagated
                                       && pageStack.__propagated.header
                                       && pageStack.__propagated.header.__styleInstance)
@@ -221,6 +222,12 @@ PageTreeNode {
             return true;
         }
 
+        function finishPreviousAction() {
+            if (internal.animateHeader && internal.headStyle.state == "OUT") {
+                internal.headStyle.animateOutFinished();
+            }
+        }
+
         property var pageToPush
         property var propertiesToPush
 
@@ -232,10 +239,6 @@ PageTreeNode {
             if (internal.stack.size() > 0) internal.stack.top().active = false;
             internal.stack.push(internal.createWrapper(pageToPush, propertiesToPush));
             internal.stackUpdated();
-
-            if (internal.animateHeader) {
-                headStyle.animateIn();
-            }
         }
 
         function popAndDestroy() {
@@ -248,10 +251,6 @@ PageTreeNode {
             if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
             internal.stack.pop();
             internal.stackUpdated();
-
-            if (internal.animateHeader) {
-                headStyle.animateIn();
-            }
         }
 
         /*!
@@ -273,6 +272,10 @@ PageTreeNode {
             if (pageStack.depth > 0) {
                 internal.stack.top().active = true;
                 currentPage = stack.top().object;
+
+                if (internal.animateHeader) {
+                    headStyle.animateIn();
+                }
             } else {
                 currentPage = null;
             }
