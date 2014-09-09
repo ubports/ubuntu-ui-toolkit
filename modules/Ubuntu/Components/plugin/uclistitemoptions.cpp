@@ -357,6 +357,10 @@ void UCListItemOptions::setDelegate(QQmlComponent *delegate)
         return;
     }
     d->delegate = delegate;
+    if (d->panelItem) {
+        // update panel's delegate as well
+        d->panelItem->setProperty("delegate", QVariant::fromValue(delegate));
+    }
     Q_EMIT delegateChanged();
 }
 
