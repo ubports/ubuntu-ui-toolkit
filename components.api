@@ -823,6 +823,8 @@ plugins.qmltypes
     Property { name: "leadingOptions"; type: "UCListItemOptions"; isPointer: true }
     Property { name: "trailingOptions"; type: "UCListItemOptions"; isPointer: true }
     Property { name: "pressed"; type: "bool"; isReadonly: true }
+    Property { name: "selectable"; type: "bool" }
+    Property { name: "selected"; type: "bool" }
     Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
     Signal { name: "clicked" }
