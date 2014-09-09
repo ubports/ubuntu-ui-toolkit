@@ -132,9 +132,6 @@ void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options
     _this->panelItem->setParentItem(0);
     _this->connected = false;
     _this->leading = false;
-    // trigger the action if there was any
-    const QMetaObject *mo = _this->panelItem->metaObject();
-    mo->invokeMethod(_this->panelItem, "triggerAction");
     // emit detached signal so we can connect to other list item if someone is waiting for that
     Q_EMIT options->panelDetached(options);
 }
