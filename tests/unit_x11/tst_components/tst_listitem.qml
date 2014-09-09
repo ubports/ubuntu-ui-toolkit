@@ -131,8 +131,14 @@ Item {
             signalName: "triggered"
         }
 
-        function centerOf(item) {
-            return Qt.point(item.width / 2, item.height / 2);
+        SignalSpy {
+            id: xChangeSpy
+            signalName: "xChanged"
+        }
+
+        function waitReboundCompletion(item) {
+            var prevX;
+            tryCompareFunction(function() { var b = prevX == item.contentItem.x; prevX = item.contentItem.x; return b; }, true, 1000);
         }
 
         function initTestCase() {
@@ -141,9 +147,13 @@ Item {
         }
 
         function cleanup() {
+            testItem.selected = false;
+            testItem.selectable = false;
+            waitForRendering(testItem, 200);
             pressedSpy.clear();
             clickSpy.clear();
             actionSpy.clear();
+            xChangeSpy.clear();
             listView.interactive = true;
             // tap on the first item to make sure we are rebounding all
             mouseClick(defaults, 0, 0);
@@ -474,6 +484,35 @@ Item {
             fuzzyCompare(data.item.opacity, 0.5, 0.1, "Disabled item must be 50% transparent");
             //cleanup
             data.item.enabled = oldEnabled;
+        }
+
+        function test_toggle_selectable_data() {
+            return [
+                {tag: "When not selected", selected: false},
+                {tag: "When selected", selected: true},
+            ]
+        }
+        function test_toggle_selectable(data) {
+            xChangeSpy.target = testItem.contentItem;
+            testItem.selectable = true;
+            waitForRendering(testItem.contentItem, 800);
+            testItem.selected = data.selected;
+            xChangeSpy.wait();
+        }
+
+        function test_no_tug_when_selectable() {
+            xChangeSpy.target = null;
+            testItem.selectable = true;
+            // wait till animation to selection mode ends
+            waitReboundCompletion(testItem);
+
+            // try to tug leading
+            xChangeSpy.target = testItem.contentItem;
+            xChangeSpy.clear();
+            compare(xChangeSpy.count, 0, "Wrong signal count!");
+            flick(testItem.contentItem, centerOf(testItem.contentItem).x, centerOf(testItem.contentItem).y, testItem.contentItem.width / 2, 0);
+            wait(1000)
+            compare(xChangeSpy.count, 0, "No tug allowed when in selection mode");
         }
     }
 }
