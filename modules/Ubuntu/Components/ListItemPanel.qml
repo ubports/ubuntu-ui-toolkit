@@ -51,6 +51,14 @@ Item {
       */
     signal selected()
 
+    function fireAction() {
+        if (selectedAction) {
+            selectedAction.triggered(listItemIndex >= 0 ? listItemIndex : null);
+            selectedAction = null;
+        }
+    }
+    property Action selectedAction: null
+
     anchors {
         left: contentItem ? (leadingPanel ? undefined : contentItem.right) : undefined
         right: contentItem ? (leadingPanel ? contentItem.left : undefined) : undefined
@@ -86,11 +94,9 @@ Item {
                 }
 
                 function trigger() {
-                    if (panel.listItemIndex >= 0) {
-                        action.triggered(panel.listItemIndex);
-                    } else {
-                        action.triggered(null);
-                    }
+                    // save the action as we trigger when the rebound animation is over
+                    // to make sure we properly clean up the blockade of teh Flickables
+                    panel.selectedAction = action;
                     panel.selected();
                 }
 
