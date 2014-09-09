@@ -44,6 +44,7 @@ protected:
     UCStyledItemBase(UCStyledItemBasePrivate &, QQuickItem *parent);
 
     void mousePressEvent(QMouseEvent *event);
+    bool childMouseEventFilter(QQuickItem *child, QEvent *event);
 
 private:
     Q_DECLARE_PRIVATE(UCStyledItemBase)

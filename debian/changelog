@@ -1,3 +1,47 @@
+ubuntu-ui-toolkit (1.1.1227+14.10.20140904-0ubuntu1) utopic; urgency=medium
+
+  [ Zsombor Egri ]
+  * Thin divider adjustments.
+  * Dialog title is wrapped into maximum two lines, then elides. 
+    Fixes LP: #1354376
+
+  [Florian Boucault ]
+  * Page: only compile and load ToolbarItems if strictly necessary.
+  * Fixed usage of images across the board:
+    - Made images as small as possible:
+      - ListItemDivider6px.png
+      - bubble_shadow*.png
+      - header_overflow_dropshadow.png
+  * Removed direct references to @GU in OptionSelector
+  * Button's stroke_button.png now loaded only when necessary, 
+    asynchronously and not cached.
+  * Removed unused ListItemDivider24px.png.
+
+  [ Ugo Riboni ]
+  * Disable the mousearea on top of the content when using the new
+    header, as it is useless and it interferes with other input 
+    elements in the content area. Fixes LP: #1358327
+
+
+  [ Christian Dywan ]
+  * Update caret visuals and position.
+  * Use iconSource for actions in the overflow panel. 
+    Fixes LP: #1354036, LP: #1354811
+  * Replace off white with pure white. Fixes LP: #1354077
+  * Push Python3 dist-packages to Phone in addition to Python2.7
+  * Fix wrong sheet labels and pick up dtr strings. Fixes LP: #1354485
+
+  [ Tim Peeters ]
+  * Fix header test
+
+  [ CI bot ]
+  * Resync trunk
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 04 Sep 2014 07:57:06 +0000
+
 ubuntu-ui-toolkit (1.1.1214+14.10.20140826-0ubuntu1) utopic; urgency=medium
 
   [ Tim Peeters ]

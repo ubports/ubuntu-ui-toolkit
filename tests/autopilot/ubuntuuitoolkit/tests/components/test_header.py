@@ -88,7 +88,6 @@ class HeaderContentsTestCase(tests.QMLFileAppTestCase):
             objectName='push_button')
         self.pointing_device.move_to_object(pushButton)
         self.pointing_device.click()
-        self.header.wait_for_animation()
 
         self.assertEqual(label.visible, False)
         headerContents = self.header.select_single(
@@ -102,7 +101,6 @@ class HeaderContentsTestCase(tests.QMLFileAppTestCase):
             objectName='push_button')
         self.pointing_device.move_to_object(pushButton)
         self.pointing_device.click()
-        self.header.wait_for_animation()
 
         headerContents = self.header.select_single(
             objectName='orange_header_contents')

@@ -21,7 +21,6 @@ usr/lib/*/qt5/qml/Ubuntu/Components/Popups/*.qml
 usr/lib/*/qt5/qml/Ubuntu/Components/Popups/*.js
 usr/lib/*/qt5/qml/Ubuntu/Components/Pickers/*.qml
 usr/lib/*/qt5/qml/Ubuntu/Components/Pickers/qmldir
-usr/lib/*/qt5/qml/Ubuntu/Components/Colors/*.qml
 usr/lib/*/qt5/qml/Ubuntu/Components/Styles/*.qml
 usr/lib/*/qt5/qml/Ubuntu/Components/Styles/qmldir
 usr/lib/*/qt5/qml/Ubuntu/Test
