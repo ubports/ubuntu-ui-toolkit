@@ -511,7 +511,6 @@ Item {
             xChangeSpy.clear();
             compare(xChangeSpy.count, 0, "Wrong signal count!");
             flick(testItem.contentItem, centerOf(testItem.contentItem).x, centerOf(testItem.contentItem).y, testItem.contentItem.width / 2, 0);
-            wait(1000)
             compare(xChangeSpy.count, 0, "No tug allowed when in selection mode");
         }
     }
