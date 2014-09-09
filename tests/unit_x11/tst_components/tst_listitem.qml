@@ -352,7 +352,6 @@ Item {
             flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
             verify(trailing.panelItem, "Panel is not visible");
             var custom = findChild(trailing.panelItem, "custom_delegate");
-            print("custom", custom)
             verify(custom, "Custom delegate not in use");
             // cleanup
             mouseClick(main, 0, 0);
