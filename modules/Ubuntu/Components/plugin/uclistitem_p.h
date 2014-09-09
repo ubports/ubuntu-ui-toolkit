@@ -49,6 +49,7 @@ public:
     void _q_updateSize();
     void _q_completeRebinding();
     void _q_grabPanel(UCListItemOptions *options);
+    void _q_updateIndex(QObject *ownerItem = 0);
     void cleanup();
     void reboundTo(qreal x);
     void setPressed(bool pressed);
@@ -128,7 +129,6 @@ protected:
 private Q_SLOTS:
     void unitsChanged();
     void paletteChanged();
-    void onOwnerCountCanged(QObject *owner = 0);
 
 private:
     void setVisible(bool visible);

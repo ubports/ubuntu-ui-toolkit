@@ -111,15 +111,6 @@ void UCListItemDivider::paletteChanged()
     }
 }
 
-void UCListItemDivider::onOwnerCountCanged(QObject *owner)
-{
-    if (!owner) {
-        owner = sender();
-    }
-    Q_ASSERT(owner);
-    m_lastItem = m_listItem && m_listItem->ready && m_listItem->index == (owner->property("count").toInt() - 1);
-}
-
 QSGNode *UCListItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
 {
     if (m_visible && !m_lastItem && (m_gradient.size() > 0)) {
@@ -343,6 +334,23 @@ void UCListItemPrivate::_q_grabPanel(UCListItemOptions *options)
     // connect the panel to the item
     grabPanel(options, true);
 }
+
+void UCListItemPrivate::_q_updateIndex(QObject *ownerItem)
+{
+    Q_Q(UCListItem);
+    if (!ownerItem) {
+        ownerItem = q->sender();
+    }
+    Q_ASSERT(ownerItem);
+    // update the index as well
+    QQmlContext *context = qmlContext(q);
+    if (context) {
+        QVariant indexProperty = context->contextProperty("index");
+        index = indexProperty.isValid() ? indexProperty.toInt() : -1;
+    }
+    divider->m_lastItem = ready && index == (ownerItem->property("count").toInt() - 1);
+}
+
 
 // the function performs a cleanup on mouse release without any rebound animation
 void UCListItemPrivate::cleanup()
@@ -582,23 +590,18 @@ void UCListItem::componentComplete()
     UCStyledItemBase::componentComplete();
     Q_D(UCListItem);
     d->ready = true;
-    // is there an index context property?
-    QQmlContext *context = qmlContext(this);
-    QVariant index = context->contextProperty("index");
-    if (index.isValid()) {
-        d->index = index.toInt();
-        /* We only deal with ListView, as for other cases we would need to check the children
-         * changes, which would have an enormous impact on performance in case of huge amount
-         * of items. However, if the parent item, or Flickable declares a "count" property,
-         * the ListItem will take use of it!
-         */
-        QQuickItem *countOwner = (d->flickable && d->flickable->property("count").isValid()) ?
-                    d->flickable :
-                    (d->parentItem && d->parentItem->property("count").isValid()) ? d->parentItem : 0;
-        if (countOwner) {
-            QObject::connect(countOwner, SIGNAL(countChanged()), d->divider, SLOT(onOwnerCountCanged()), Qt::DirectConnection);
-            d->divider->onOwnerCountCanged(countOwner);
-        }
+    /* We only deal with ListView, as for other cases we would need to check the children
+     * changes, which would have an enormous impact on performance in case of huge amount
+     * of items. However, if the parent item, or Flickable declares a "count" property,
+     * the ListItem will take use of it!
+     */
+    QQuickItem *countOwner = (d->flickable && d->flickable->property("count").isValid()) ?
+                d->flickable :
+                (d->parentItem && d->parentItem->property("count").isValid()) ? d->parentItem : 0;
+    if (countOwner) {
+        QObject::connect(countOwner, SIGNAL(countChanged()),
+                         this, SLOT(_q_updateIndex()), Qt::DirectConnection);
+        d->_q_updateIndex(countOwner);
     }
 }
 
