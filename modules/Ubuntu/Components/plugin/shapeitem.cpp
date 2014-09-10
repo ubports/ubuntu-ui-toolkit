@@ -217,7 +217,6 @@ ShapeItem::ShapeItem(QQuickItem* parent)
     , vAlignment_(ShapeItem::AlignVCenter)
     , gridUnit_(UCUnits::instance().gridUnit())
     , geometry_()
-    , dirtyFlags_(ShapeItem::DirtyAll)
 {
     setFlag(ItemHasContents);
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
@@ -231,11 +230,9 @@ void ShapeItem::setColor(const QColor& color)
 {
     if (color_ != color) {
         color_ = color;
-        dirtyFlags_ |= ShapeItem::DirtyColor;
         // gradientColor has the same value as color unless it was manually set
         if (!gradientColorSet_) {
             gradientColor_ = color;
-            dirtyFlags_ |= ShapeItem::DirtyGradientColor;
             Q_EMIT gradientColorChanged();
         }
         update();
@@ -248,7 +245,6 @@ void ShapeItem::setGradientColor(const QColor& gradientColor)
     gradientColorSet_ = true;
     if (gradientColor_ != gradientColor) {
         gradientColor_ = gradientColor;
-        dirtyFlags_ |= ShapeItem::DirtyGradientColor;
         update();
         Q_EMIT gradientColorChanged();
     }
@@ -259,7 +255,6 @@ void ShapeItem::setRadius(const QString& radius)
     if (radiusString_ != radius) {
         radiusString_ = radius;
         radius_ = (radius == "medium") ? ShapeItem::MediumRadius : ShapeItem::SmallRadius;
-        dirtyFlags_ |= ShapeItem::DirtyRadius;
         update();
         Q_EMIT radiusChanged();
     }
@@ -275,7 +270,6 @@ void ShapeItem::setBorderSource(const QString& borderSource)
         else
             border_ = ShapeItem::RawBorder;
         borderSource_ = borderSource;
-        dirtyFlags_ |= ShapeItem::DirtyBorder;
         update();
         Q_EMIT borderSourceChanged();
     }
@@ -299,7 +293,6 @@ void ShapeItem::setImage(const QVariant& image)
             image_->setParentItem(this);
             image_->setVisible(false);
         }
-        dirtyFlags_ |= ShapeItem::DirtyImage;
         update();
         Q_EMIT imageChanged();
     }
@@ -371,7 +364,6 @@ void ShapeItem::setStretched(bool stretched)
 {
     if (stretched_ != stretched) {
         stretched_ = stretched;
-        dirtyFlags_ |= ShapeItem::DirtyStretched;
         update();
         Q_EMIT stretchedChanged();
     }
@@ -381,7 +373,6 @@ void ShapeItem::setHorizontalAlignment(HAlignment hAlignment)
 {
     if (hAlignment_ != hAlignment) {
         hAlignment_ = hAlignment;
-        dirtyFlags_ |= ShapeItem::DirtyHAlignment;
         update();
         Q_EMIT horizontalAlignmentChanged();
     }
@@ -391,7 +382,6 @@ void ShapeItem::setVerticalAlignment(VAlignment vAlignment)
 {
     if (vAlignment_ != vAlignment) {
         vAlignment_ = vAlignment;
-        dirtyFlags_ |= ShapeItem::DirtyVAlignment;
         update();
         Q_EMIT verticalAlignmentChanged();
     }
@@ -402,14 +392,12 @@ void ShapeItem::gridUnitChanged()
     gridUnit_ = UCUnits::instance().gridUnit();
     setImplicitWidth(8 * gridUnit_);
     setImplicitHeight(8 * gridUnit_);
-    dirtyFlags_ |= ShapeItem::DirtyGridUnit;
     update();
 }
 
 void ShapeItem::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
 {
     geometry_ = newGeometry;
-    dirtyFlags_ |= ShapeItem::DirtyGeometry;
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
     update();
 }
@@ -530,8 +518,6 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
                       textureData->coordinate[index]);
     const QSGTexture* texture = provider ? provider->texture() : NULL;
     node->setMaterialType(texture ? ShapeNode::TexturedMaterial : ShapeNode::ColoredMaterial);
-
-    dirtyFlags_ = ShapeItem::NotDirty;
 
     return node;
 }
