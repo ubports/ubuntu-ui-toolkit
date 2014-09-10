@@ -3,7 +3,7 @@ include( documentation/documentation.pri )
 TEMPLATE = subdirs
 SUBDIRS += modules/ubuntu-ui-toolkit.pro tests examples po/po.pro
 
-tests/unit.depends = modules/ubuntu-ui-toolkit.pro
+tests.depends = modules/ubuntu-ui-toolkit.pro
 
 # additional 'make test' target required by continuous integration system
 test.target = test
