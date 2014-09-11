@@ -832,6 +832,8 @@ plugins.qmltypes
     Property { name: "visible"; type: "bool" }
     Property { name: "leftMargin"; type: "double" }
     Property { name: "rightMargin"; type: "double" }
+    Property { name: "colorFrom"; type: "QColor" }
+    Property { name: "colorTo"; type: "QColor" }
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1", "Mouse 1.0"]
