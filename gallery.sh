@@ -22,5 +22,5 @@ then
 	examples/ubuntu-ui-toolkit-gallery/gallery -testability &
 	autopilot vis
 else
-	examples/ubuntu-ui-toolkit-gallery/gallery
+	examples/ubuntu-ui-toolkit-gallery/gallery $@
 fi
