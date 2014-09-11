@@ -18,3 +18,6 @@
 export QML_IMPORT_PATH=$PWD/modules
 export QML2_IMPORT_PATH=$PWD/modules
 export UBUNTU_UI_TOOLKIT_THEMES_PATH=$PWD/modules
+/sbin/initctl set-env --global QML_IMPORT_PATH=$PWD/modules
+/sbin/initctl set-env --global QML2_IMPORT_PATH=$PWD/modules
+/sbin/initctl set-env --global UBUNTU_UI_TOOLKIT_THEMES_PATH=$PWD/modules
