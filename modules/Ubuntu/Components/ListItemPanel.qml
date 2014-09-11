@@ -51,8 +51,9 @@ Item {
       */
     signal selected()
 
-    function fireAction() {
-        if (selectedAction) {
+    // fire selected action when parent is removed
+    onParentChanged: {
+        if (!parent && selectedAction) {
             selectedAction.triggered(listItemIndex >= 0 ? listItemIndex : null);
             selectedAction = null;
         }
