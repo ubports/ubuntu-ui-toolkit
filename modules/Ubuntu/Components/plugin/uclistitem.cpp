@@ -345,15 +345,6 @@ void UCListItemPrivate::_q_completeRebinding()
     grabPanel(trailingOptions, false);
 }
 
-void UCListItemPrivate::_q_grabPanel(UCListItemOptions *options)
-{
-    // dicsonnect, no more need to grab async
-    Q_Q(UCListItem);
-    QObject::disconnect(options, SIGNAL(panelDetached(UCListItemOptions*)), q, SLOT(_q_grabPanel(UCListItemOptions*)));
-    // connect the panel to the item
-    grabPanel(options, true);
-}
-
 void UCListItemPrivate::_q_updateIndex(QObject *ownerItem)
 {
     Q_Q(UCListItem);
@@ -369,7 +360,6 @@ void UCListItemPrivate::_q_updateIndex(QObject *ownerItem)
     }
     divider->m_lastItem = ready && index == (ownerItem->property("count").toInt() - 1);
 }
-
 
 // the function performs a cleanup on mouse release without any rebound animation
 void UCListItemPrivate::cleanup()
