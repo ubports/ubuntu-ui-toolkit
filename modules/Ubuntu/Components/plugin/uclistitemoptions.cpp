@@ -106,9 +106,8 @@ bool UCListItemOptionsPrivate::connectToListItem(UCListItemOptions *options, UCL
     // this may happen if there is a swipe over an other item while the previous
     // one is rebounding
     if (_this->panelItem->parentItem()) {
-        // connect panelDetached() signal to listItem
-        QObject::connect(options, SIGNAL(panelDetached(UCListItemOptions*)),
-                         listItem, SLOT(_q_grabPanel(UCListItemOptions*)), Qt::UniqueConnection);
+        // set the requesting listItem as queuedItem
+        _this->queuedItem = listItem;
         return false;
     }
     _this->leading = leading;
@@ -132,8 +131,12 @@ void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options
     _this->panelItem->setParentItem(0);
     _this->connected = false;
     _this->leading = false;
-    // emit detached signal so we can connect to other list item if someone is waiting for that
-    Q_EMIT options->panelDetached(options);
+    // if there was a queuedItem, make it grab the options list
+    if (_this->queuedItem) {
+        UCListItemPrivate::get(_this->queuedItem.data())->grabPanel(options, true);
+        // remove item from queue
+        _this->queuedItem.clear();
+    }
 }
 
 bool UCListItemOptionsPrivate::isConnectedTo(UCListItemOptions *options, UCListItem *listItem)
