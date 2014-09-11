@@ -840,9 +840,6 @@ plugins.qmltypes
     Property { name: "delegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "options"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "panelItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
-    Signal {
-    name: "panelDetached"
-    Parameter { name: "options"; type: "UCListItemOptions"; isPointer: true }
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1", "Mouse 1.0"]
