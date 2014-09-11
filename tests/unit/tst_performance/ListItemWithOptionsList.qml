@@ -28,7 +28,7 @@ Column {
     }
 
     Repeater {
-        model: 10000
+        model: 5000
         ListItem {
             trailingOptions: options1
             leadingOptions: options2
