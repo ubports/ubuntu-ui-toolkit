@@ -37,6 +37,7 @@ public:
     QQmlComponent *delegate;
     QQuickItem *panelItem;
     QList<QObject*> options;
+    QPointer<UCListItem> queuedItem;
 
     // options list property functions
     static void funcAppend(QQmlListProperty<QObject>*, QObject*);
