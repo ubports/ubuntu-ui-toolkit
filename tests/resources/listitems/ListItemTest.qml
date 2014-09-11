@@ -107,6 +107,8 @@ MainView {
                             color: "red"
                             pressedColor: "lime"
                         }
+                        divider.colorFrom: UbuntuColors.green
+
                         trailingOptions: ListItemOptions {
                             options: leading.options
                         }
