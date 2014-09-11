@@ -51,11 +51,9 @@ Item {
       */
     signal selected()
 
-    /*
-      Function called by ListItemOptions when the panel is rebount.
-      */
-    function fireAction() {
-        if (selectedAction) {
+    // fire selected action when parent is removed
+    onParentChanged: {
+        if (!parent && selectedAction) {
             selectedAction.triggered(listItemIndex >= 0 ? listItemIndex : null);
             selectedAction = null;
         }
