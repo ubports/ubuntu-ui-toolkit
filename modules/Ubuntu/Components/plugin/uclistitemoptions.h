@@ -42,8 +42,6 @@ Q_SIGNALS:
     void delegateChanged();
     void panelItemChanged();
 
-    void panelDetached(UCListItemOptions *options);
-
 public Q_SLOTS:
 
 private:
