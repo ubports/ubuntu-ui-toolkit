@@ -70,7 +70,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         // FIXME: use Palette colors instead when available
-        color: leadingPanel ? UbuntuColors.red : UbuntuColors.green
+        color: leadingPanel ? UbuntuColors.red : "#00000000"
     }
 
     Row {
@@ -88,7 +88,8 @@ Item {
             model: panel.optionList
             AbstractButton {
                 action: modelData
-                width: MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
+                width: (!visible || !enabled) ?
+                           0 : MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
                 anchors {
                     top: parent.top
                     bottom: parent.bottom
@@ -126,7 +127,8 @@ Item {
                 width: units.gu(2.5)
                 height: width
                 name: option.iconName
-                color: "white"
+                // FIXME: use Palette colors instead when available
+                color: panel.leadingPanel ? "white" : UbuntuColors.lightGrey
                 anchors.centerIn: parent
             }
         }
