@@ -120,17 +120,17 @@ function device_comission {
 	echo -e "Original UITK version:\t\e[31m${UITK_VERSION}\e[0m"
 	echo "Updating APT";adb shell "echo 0000 |sudo -S apt-get update  2>&1|grep -v password"
 	echo "Install the UITK packages"
-	adb -s ${SERIALNUMBER} shell "echo 0000|sudo -S apt-get install -y qtdeclarative5-ubuntu-ui-toolkit-plugin \
-			  						    ubuntu-ui-toolkit-autopilot \
-    		    							    ubuntu-ui-toolkit-theme 2>&1 |grep -v password > /dev/null"
+	adb -s ${SERIALNUMBER} shell "echo 0000|sudo -S apt-get install --yes --force-yes qtdeclarative5-ubuntu-ui-toolkit-plugin \
+			  								  ubuntu-ui-toolkit-autopilot \
+    		    									  ubuntu-ui-toolkit-theme 2>&1 |grep -v password > /dev/null"
 	UITK_VERSION=`adb -s ${SERIALNUMBER} shell "stty cols 250; dpkg -l"|grep qtdeclarative5-ubuntu-ui-toolkit-plugin|awk '{print $3}'`
 	echo -e "New UITK version:\t\e[31m${UITK_VERSION}\e[0m"
 	# update
 	adb -s ${SERIALNUMBER} shell "echo 0000 |sudo -S apt-get update 2>&1|grep -v password > /dev/null"
 	# install the autopilot tests 
-	adb -s ${SERIALNUMBER} shell "echo 0000 |sudo -S apt-get install -y	address-book-service-dummy \
-                                                       				python3-lxml \
-										ubuntu-ui-toolkit-autopilot \
+	adb -s ${SERIALNUMBER} shell "echo 0000 |sudo -S apt-get install --yes --force-yes address-book-service-dummy \
+	                                                       				    python3-lxml \
+	 i    										ubuntu-ui-toolkit-autopilot \
 										gallery-app-autopilot \
 										reminders-app-autopilot \
 										address-book-app-autopilot \
