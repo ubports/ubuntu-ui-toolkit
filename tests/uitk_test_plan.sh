@@ -25,10 +25,21 @@ TIMESTAMP=`date +"%Y_%m_%d-%H_%M_%S"`
 LOGFILENAME="ap-${TIMESTAMP}"
 OUTPUTDIR=$HOME
 FILTER=.*
+RTM=true
+DISTRO="ubuntu-rtm" 
+SERIES="14.09"
+CHANNEL="ubuntu-touch/${DISTRO}/${SERIES}-proposed"
+PWD="0000"
+
 
 declare -a TEST_SUITE=(
+" -p reminders-app-autopilot reminders"
+" -p dialer-app-autopilot dialer_app"
+" -p messaging-app-autopilot messaging_app"
+" -p ubuntu-system-settings-autopilot ubuntu_system_settings"
+" -p ubuntu-html5-ui-toolkit-autopilot ubuntu_html5_ui_toolkit"
+" -p unity-webapps-qml-autopilot unity_webapps_qml"
 " filemanager"
-" gallery_app"
 " dropping_letters_app"
 " sudoku_app"
 " -p ubuntu-ui-toolkit-autopilot ubuntuuitoolkit"
@@ -43,75 +54,99 @@ declare -a TEST_SUITE=(
 " ubuntu_calculator_app"
 " ubuntu_weather_app"
 " -p address-book-app-autopilot address_book_app"
-" -p dialer-app-autopilot dialer_app"
-" -p messaging-app-autopilot messaging_app"
-" -p ubuntu-system-settings-autopilot ubuntu_system_settings"
-" -p ubuntu-html5-ui-toolkit-autopilot ubuntu_html5_ui_toolkit"
-" -p unity-webapps-qml-autopilot unity_webapps_qml"
 " online_accounts_ui"
+" gallery_app"
 " -p camera-app-autopilot camera_app"
-" -p reminders-app-autopilot reminders"
+
 )
 
+function network {
+        if phablet-network -s ${SERIALNUMBER} 2>&1|grep -q Error; then
+                echo "Reset and try again."
+                reset -f
+                phablet-network -s ${SERIALNUMBER} 2>&1
+        else
+                echo "The phabet-network gave no error."
+        fi
+}
+
 function reset {
-	if [ ${RESET} == true  ]; then
-		adb shell reboot;sleep 5
+ 	if [ ${RESET} == true  -o  x"$1" == x-f ]; then
+		echo "Reset"
+		adb shell "echo 0000|sudo -S reboot 2>&1|grep -v password";sleep 5
 		/usr/share/qtcreator/ubuntu/scripts/device_wait_for_shell ${SERIALNUMBER} > /dev/null
-		phablet-config autopilot --dbus-probe enable
-		adb shell powerd-cli display on |egrep -v "Display State requested, cookie is|Press ctrl-c to exit" &
+		network
+		phablet-config autopilot --dbus-probe enable 2>&1 > /dev/null
+		adb shell powerd-cli display on |egrep -v "Display State requested, cookie is|Press ctrl-c to exit|not fully supported." &
+		adb shell powerd-cli active |egrep -v "requested, cookie is|Press ctrl-c to exit|not fully supported." &
 		sleep 60
+                adb shell "sudo -u phablet -i gdbus call --session --dest com.canonical.UnityGreeter --object-path / --method com.canonical.UnityGreeter.HideGreeter"
+                adb shell "echo 0000|sudo -S dbus-send --system --print-reply --dest=org.freedesktop.Accounts /org/freedesktop/Accounts/User32011 org.freedesktop.DBus.Properties.Set string:com.canonical.unity.AccountsService string:demo-edges variant:boolean:false  2>&1|grep -v password|grep -v \(\)"
 	fi
 }
 
 function device_comission {
-	# flash the latest image
-	ubuntu-device-flash --serial=${SERIALNUMBER} --channel=ubuntu-touch/utopic-proposed --wipe 
 	adb -s ${SERIALNUMBER} wait-for-device
-	echo "Disable the intro wizard";phablet-config -s ${SERIALNUMBER} welcome-wizard --disable
-	sleep 60
-	echo "Disable the edge swiping lecture";phablet-config -s ${SERIALNUMBER} edges-intro --disable
-	echo "clone the network";phablet-network -s ${SERIALNUMBER}
-	sleep 60
-	reset
-	echo "phablet-click-test-setup";phablet-click-test-setup -s ${SERIALNUMBER}
-	reset
+	# Avoid https://bugs.launchpad.net/gallery-app/+bug/1363190
+	adb shell "echo 0000 |sudo -S rm -rf /userdata/user-data/phablet/.cache/com.ubuntu.gallery 2>&1|grep -v password"
+        # flash the latest image
+	echo -e "Flashing \e[31m${CHANNEL}\e[0m"
+	ubuntu-device-flash --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --developer-mode --password=0000
+        echo "Sleep for 5 minutes"
+        sleep 300
+	echo -e "Disable the intro wizard";phablet-config -s ${SERIALNUMBER}  welcome-wizard --disable
+	echo -e "Disable the edge swiping lecture ";phablet-config -s ${SERIALNUMBER} edges-intro --disable
+        echo -e "Clone the network "
+	network
+	echo -e "phablet-click-test-setup  \e[31m${DISTRO} ${SERIES}\e[0m";phablet-click-test-setup --distribution=${DISTRO} --series=${SERIES} 2>&1 > /dev/null
 	if [ ${PPA} == "archive"  ]; then
 		echo "Set up with the archive image"
-		phablet-config -s ${SERIALNUMBER} writable-image
+		phablet-config -s ${SERIALNUMBER} writable-image -r 0000 2>&1 > /dev/null
+		network
 	else
-		echo "Set up with the ${PPA}"
-		phablet-config -s ${SERIALNUMBER} writable-image --ppa ${PPA}
+		if [[ "$PPA" =~ [^0-9]* ]]; then
+			echo -e"Set up with the silo \e[31m${PPA}\e[0m"
+			phablet-config -s ${SERIALNUMBER} writable-image -r 0000 2>&1 > /dev/null
+			network
+			adb shell "echo 0000|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/ci-train-ppa-service/landing-${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/silo-${PPA}.list'"
+			adb shell "echo 0000|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
+		else
+			echo  -e "Set up with the PPA \e[31m${PPA}\e[0m"
+			phablet-config -s ${SERIALNUMBER} writable-image -r 0000 -p ${PPA} 2>&1 > /dev/null
+		fi
 	fi
-	reset
 	adb -s ${SERIALNUMBER} shell rm -rf /home/phablet/autopilot/ubuntuuitoolkit
 	UITK_VERSION=`adb -s ${SERIALNUMBER} shell "stty cols 250; dpkg -l"|grep qtdeclarative5-ubuntu-ui-toolkit-plugin|awk '{print $3}'`
-	echo "Original UITK version:\t${UITK_VERSION}"
-	echo "update";adb shell apt-get update
-	echo "install the UITK from the silo"
-	adb -s ${SERIALNUMBER} shell apt-get install -y qtdeclarative5-ubuntu-ui-toolkit-plugin \
-							ubuntu-ui-toolkit-autopilot \
-							ubuntu-ui-toolkit-theme
+	echo -e "Original UITK version:\t\e[31m${UITK_VERSION}\e[0m"
+	echo "Updating APT";adb shell "echo 0000 |sudo -S apt-get update  2>&1|grep -v password"
+	echo "Install the UITK packages"
+	adb -s ${SERIALNUMBER} shell "echo 0000|sudo -S apt-get install -y qtdeclarative5-ubuntu-ui-toolkit-plugin \
+			  						    ubuntu-ui-toolkit-autopilot \
+    		    							    ubuntu-ui-toolkit-theme 2>&1 |grep -v password > /dev/null"
 	UITK_VERSION=`adb -s ${SERIALNUMBER} shell "stty cols 250; dpkg -l"|grep qtdeclarative5-ubuntu-ui-toolkit-plugin|awk '{print $3}'`
-	echo "New UITK version:\t${UITK_VERSION}"
+	echo -e "New UITK version:\t\e[31m${UITK_VERSION}\e[0m"
 	# update
-	adb -s ${SERIALNUMBER} shell apt-get update
+	adb -s ${SERIALNUMBER} shell "echo 0000 |sudo -S apt-get update 2>&1|grep -v password > /dev/null"
 	# install the autopilot tests 
-	adb -s ${SERIALNUMBER} shell apt-get install -y	address-book-service-dummy \
-                                                        python3-lxml \
-							ubuntu-ui-toolkit-autopilot \
-							gallery-app-autopilot \
-							reminders-app-autopilot \
-							address-book-app-autopilot \
-							messaging-app-autopilot \
-							dialer-app-autopilot \
-							camera-app-autopilot \
-							webbrowser-app-autopilot \
-							mediaplayer-app-autopilot \
-							unity8-autopilot \
-							ubuntu-system-settings-online-accounts-autopilot
+	adb -s ${SERIALNUMBER} shell "echo 0000 |sudo -S apt-get install -y	address-book-service-dummy \
+                                                       				python3-lxml \
+										ubuntu-ui-toolkit-autopilot \
+										gallery-app-autopilot \
+										reminders-app-autopilot \
+										address-book-app-autopilot \
+										messaging-app-autopilot \
+										dialer-app-autopilot \
+										camera-app-autopilot \
+										webbrowser-app-autopilot \
+										mediaplayer-app-autopilot \
+										unity8-autopilot \
+										unity-webapps-qml-autopilot \
+										ubuntu-system-settings-autopilot\
+										ubuntu-html5-ui-toolkit-autopilot \
+										ubuntu-system-settings-online-accounts-autopilot 2>&1 | grep -v password > /dev/null"
 }
 
-while getopts ":hrcints:o:p:f:" opt; do
+while getopts ":hrcintdus:o:p:f:" opt; do
 	case $opt in
 		r)
 			RESET=true
@@ -139,6 +174,12 @@ while getopts ":hrcints:o:p:f:" opt; do
 		n)
 			DONOTRUNTESTS=true
 			;;
+		u)
+			RTM=false
+			CHANNEL="ubuntu-touch/utopic-proposed"
+			DISTRO="ubuntu"
+			SERIES="utopic"
+			;;
 		h)
 			echo "Usage: uitk_test_plan.sh -s [serial number] -m -c"
 			echo " -r : Reset after each tests. Default: ${RESET}"
@@ -146,8 +187,9 @@ while getopts ":hrcints:o:p:f:" opt; do
 			echo " -c : Comission the device with the ${PPA} enabled"
 			echo " -n : Do not run the test set. Default ${DONOTRUNTESTS}"
 			echo " -o : Output directory. Default $OUTPUTDIR"
-			echo " -p : Source PPA for the UITK. Default $PPA. Use -p archive to test stock image."
+			echo " -p : Source PPA for the UITK. Default $PPA. Use -p archive to test stock image or -p [0-9]* to set a silo."
 			echo " -f : Filter for the test suite. Default $FILTER"
+			echo " -u : Provision the Development release of Ubuntu. Default is RTM."
 			exit
 			;;
 		:)
@@ -177,14 +219,8 @@ if [ ${DONOTRUNTESTS} == true ]; then
         exit
 fi
 
-if [ ${RESET} == false ]; then
-	echo "Reset the device for testing."
-        RESET=true
-        reset
-        RESET=false
-else
-        reset
-fi
+# Reset the device for testing
+#reset -f
 
 # Run the test suite
 for TEST_SET in "${TEST_SUITE[@]}"
@@ -199,26 +235,14 @@ do
 		egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
 		# check if the tests were successful and re-run after a reset
 		if grep -q "FAILED" ${LOGFILE}; then 
-		        if [ ${RESET} == false  ]; then
-				RESET=true
-				reset
-				RESET=false
-			else
-				reset
-			fi
+			reset -f
 			LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-2.tests"
 			COMMAND="phablet-test-run -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
 	        	echo "<<<=== ${APPNAME} 2 ===>>>" >> ${LOGFILE}
 			eval ${COMMAND}
 			egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
 	        	if grep -q "FAILED" ${LOGFILE}; then
-		                if [ ${RESET} == false  ]; then
-        		                RESET=true
-                		        reset
-                        		RESET=false
-		                else
-        		                reset
-                		fi
+        		        reset -f
 		                LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-3.tests"
         		        COMMAND="phablet-test-run -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
 			        echo "<<<=== ${APPNAME} 3 ===>>>" >> ${LOGFILE}
