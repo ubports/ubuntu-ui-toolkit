@@ -128,9 +128,9 @@ void UCListItemOptionsPrivate::disconnectFromListItem(UCListItemOptions *options
     }
 
     QObject::disconnect(_this->panelItem, SIGNAL(selected()), _this->panelItem->parentItem(), SLOT(_q_rebound()));
-    _this->panelItem->setParentItem(0);
     _this->connected = false;
     _this->leading = false;
+    _this->panelItem->setParentItem(0);
     // if there was a queuedItem, make it grab the options list
     if (_this->queuedItem) {
         UCListItemPrivate::get(_this->queuedItem.data())->grabPanel(options, true);
@@ -187,9 +187,6 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
             // connect to panel to catch dragging
             QObject::connect(panelItem, SIGNAL(widthChanged()), q, SLOT(_q_handlePanelWidth()));
             QObject::connect(panelItem, SIGNAL(xChanged()), q, SLOT(_q_handlePanelDrag()));
-            // connect panel detaching to trigger selected action when
-            QObject::connect(q, SIGNAL(panelDetached(UCListItemOptions*)),
-                             panelItem, SLOT(fireAction()), Qt::DirectConnection);
         }
     } else {
         qmlInfo(q) << component.errorString();
