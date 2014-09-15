@@ -48,6 +48,6 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        color: leadingPanel ? UbuntuColors.red : UbuntuColors.green
+        color: leadingPanel ? UbuntuColors.red : "white"
     }
 }
