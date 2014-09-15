@@ -102,7 +102,7 @@ class CaretTextInputTestCase(GalleryTestCase):
     scenarios = [
         ('textfield', dict(objectName='textfield_standard')),
         ('textarea', dict(objectName='textarea_default')),
-        ('textarea', dict(objectName='textfield_customstyle')),
+        ('customfield', dict(objectName='textfield_customstyle')),
     ]
 
     def get_command_line(self, command_line):
