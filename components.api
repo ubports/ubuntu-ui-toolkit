@@ -673,6 +673,8 @@ ListView
 UbuntuListView 1.1
 UbuntuListView
     property PullToRefresh pullToRefresh
+UbuntuListView 1.2
+UbuntuListView
     property ListItemOptions leadingOptions
 UbuntuNumberAnimation 0.1 1.0
 NumberAnimation

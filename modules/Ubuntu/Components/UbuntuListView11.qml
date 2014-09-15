@@ -26,36 +26,6 @@ UbuntuListView {
       */
     property alias pullToRefresh: refreshItem
 
-    /*!
-      \internal
-      \qmlproperty ListItemOptions leadingOptions
-      Use binding so we can set it to each ListItem as binding!
-      */
-    property ListItemOptions leadingOptions: stockLeadingOption
-    ListItemOptions {
-        id: stockLeadingOption
-        options: Action {
-            iconName: "delete"
-            onTriggered: {
-                // delete the index from model if possible
-                if (Object.prototype.toString.call(listView.model) === "[object Number]") {
-                    // the model is a number, decrement it
-                    listView.model = listView.count - 1;
-                } else if (Object.prototype.toString.call(listView.model) === "[object Array]") {
-                    // the model is an array, remove the item from index
-                    var array = listView.model;
-                    array.splice(value, 1);
-                    listView.model = array;
-                } else {
-                    // we can only have an object
-                    if (listView.model.hasOwnProperty("remove")) {
-                        listView.model.remove(value, 1);
-                    }
-                }
-            }
-        }
-    }
-
     PullToRefresh {
         objectName: "listview_pulltorefresh"
         id: refreshItem
