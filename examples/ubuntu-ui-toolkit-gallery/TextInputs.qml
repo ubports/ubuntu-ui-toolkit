@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 0.1
+import Ubuntu.Components.Themes.Ambiance 0.1
 
 Template {
     objectName: "textinputsTemplate"
@@ -40,6 +41,21 @@ Template {
     TemplateSection {
         title: "Single line"
         className: "TextField"
+
+        TemplateRow {
+            title: i18n.tr('Custom Style')
+
+            TextField {
+                objectName: "textfield_customstyle"
+                width: parent.width
+                style: TextFieldStyle {
+                    overlaySpacing: 0
+                    frameSpacing: 0
+                    background: Item {}
+                    color: UbuntuColors.lightAubergine
+                }
+            }
+        }
 
         TemplateRow {
             title: i18n.tr("Standard")
