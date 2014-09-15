@@ -146,8 +146,9 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
  * \qmltype ListItemOptions
  * \instantiates UCListItemOptions
  * \inherits QtQObject
- * \inqmlmodule Ubuntu.Components 1.1
- * \ingroup ubuntu
+ * \inqmlmodule Ubuntu.Components 1.2
+ * \since Ubuntu.Components 1.2
+ * \ingroup unstable-ubuntu-listitems
  * \brief Provides configuration for options to be added to a ListItem.
  *
  * ListItem accepts options that can be configured to appear when tugged to left
@@ -180,7 +181,7 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
  * instances. In this way we can reduce the creation time of the items:
  * \qml
  * import QtQuick 2.2
- * import Ubuntu.Components 1.1
+ * import Ubuntu.Components 1.2
  *
  * MainView {
  *     width: units.gu(40)

@@ -373,7 +373,7 @@ void UCListItemPrivate::_q_updateSize()
     Q_Q(UCListItem);
     QQuickItem *owner = flickable ? flickable : parentItem;
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
-    q->setImplicitHeight(UCUnits::instance().gu(6));
+    q->setImplicitHeight(UCUnits::instance().gu(7));
 }
 
 // set pressed flag and update contentItem
@@ -469,8 +469,9 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
 /*!
  * \qmltype ListItem
  * \instantiates UCListItem
- * \inqmlmodule Ubuntu.Components 1.1
- * \ingroup ubuntu
+ * \inqmlmodule Ubuntu.Components 1.2
+ * \ingroup unstable-ubuntu-listitems
+ * \since Ubuntu.Components 1.2
  * \brief The ListItem element provides Ubuntu design standards for list or grid
  * views.
  *
