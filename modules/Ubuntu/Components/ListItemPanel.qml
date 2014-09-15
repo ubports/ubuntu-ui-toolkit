@@ -67,6 +67,7 @@ Item {
             model: panel.optionList
             AbstractButton {
                 action: modelData
+                visible: action.visible && action.enabled
                 width: (!visible || !enabled) ?
                            0 : MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
                 anchors {
