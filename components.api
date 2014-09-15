@@ -835,6 +835,8 @@ plugins.qmltypes
     Property { name: "visible"; type: "bool" }
     Property { name: "leftMargin"; type: "double" }
     Property { name: "rightMargin"; type: "double" }
+    Property { name: "colorFrom"; type: "QColor" }
+    Property { name: "colorTo"; type: "QColor" }
     name: "UCListItemOptions"
     prototype: "QObject"
     exports: ["ListItemOptions 1.1"]
