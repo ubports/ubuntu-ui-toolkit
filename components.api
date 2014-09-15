@@ -671,8 +671,10 @@ UbuntuListView 0.1 1.0
 ListView
     property int expandedIndex
 UbuntuListView 1.1
-UbuntuListView
+Version10.UbuntuListView
     property PullToRefresh pullToRefresh
+UbuntuListView 1.2
+Version11.UbuntuListView
     property ListItemOptions leadingOptions
 UbuntuNumberAnimation 0.1 1.0
 NumberAnimation
@@ -817,21 +819,19 @@ plugins.qmltypes
     exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
     name: "UCListItem"
     prototype: "UCStyledItemBase"
-    exports: ["ListItem 1.1"]
-    Property { name: "contentItem"; type: "UCListItemContent"; isReadonly: true; isPointer: true }
+    exports: ["ListItem 1.2"]
+    Property { name: "contentItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Property { name: "divider"; type: "UCListItemDivider"; isReadonly: true; isPointer: true }
     Property { name: "leadingOptions"; type: "UCListItemOptions"; isPointer: true }
     Property { name: "trailingOptions"; type: "UCListItemOptions"; isPointer: true }
     Property { name: "pressed"; type: "bool"; isReadonly: true }
+    Property { name: "color"; type: "QColor" }
+    Property { name: "pressedColor"; type: "QColor" }
     Property { name: "selectable"; type: "bool" }
     Property { name: "selected"; type: "bool" }
     Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
     Signal { name: "clicked" }
-    name: "UCListItemContent"
-    prototype: "QQuickItem"
-    Property { name: "color"; type: "QColor" }
-    Property { name: "pressedColor"; type: "QColor" }
     name: "UCListItemDivider"
     prototype: "QObject"
     Property { name: "visible"; type: "bool" }
@@ -841,7 +841,7 @@ plugins.qmltypes
     Property { name: "colorTo"; type: "QColor" }
     name: "UCListItemOptions"
     prototype: "QObject"
-    exports: ["ListItemOptions 1.1"]
+    exports: ["ListItemOptions 1.2"]
     Property { name: "delegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "options"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "panelItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }

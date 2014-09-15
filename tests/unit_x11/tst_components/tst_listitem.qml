@@ -17,7 +17,7 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Test 1.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 Item {
     id: main
@@ -84,7 +84,7 @@ Item {
         ListItem {
             id: testItem
             width: parent.width
-            contentItem.color: "blue"
+            color: "blue"
             leadingOptions: leading
             trailingOptions: ListItemOptions {
                 options: leading.options
@@ -98,7 +98,7 @@ Item {
         ListView {
             id: listView
             width: parent.width
-            height: units.gu(24)
+            height: units.gu(28)
             clip: true
             model: 10
             delegate: ListItem {
@@ -163,8 +163,8 @@ Item {
 
         function test_0_defaults() {
             verify(defaults.contentItem !== null, "Defaults is null");
-            compare(defaults.contentItem.color, "#000000", "Transparent by default");
-            compare(defaults.contentItem.pressedColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
+            compare(defaults.color, "#000000", "Transparent by default");
+            compare(defaults.pressedColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
             compare(defaults.pressed, false, "Not pressed buy default");
             compare(defaults.divider.visible, true, "divider is visible by default");
             compare(defaults.divider.leftMargin, units.gu(2), "divider's left margin is 2GU");
