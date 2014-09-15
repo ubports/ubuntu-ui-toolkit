@@ -838,7 +838,7 @@ plugins.qmltypes
     Property { name: "colorTo"; type: "QColor" }
     name: "UCListItemOptions"
     prototype: "QObject"
-    exports: ["ListItemOptions 1.1"]
+    exports: ["ListItemOptions 1.2"]
     Property { name: "delegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "options"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "panelItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
