@@ -816,7 +816,7 @@ plugins.qmltypes
     exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
     name: "UCListItem"
     prototype: "UCStyledItemBase"
-    exports: ["ListItem 1.1"]
+    exports: ["ListItem 1.2"]
     Property { name: "contentItem"; type: "UCListItemContent"; isReadonly: true; isPointer: true }
     Property { name: "pressed"; type: "bool"; isReadonly: true }
     Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
