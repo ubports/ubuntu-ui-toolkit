@@ -111,6 +111,8 @@ class UCListItemDivider : public QObject
     Q_PROPERTY(bool visible MEMBER m_visible WRITE setVisible NOTIFY visibleChanged)
     Q_PROPERTY(qreal leftMargin MEMBER m_leftMargin WRITE setLeftMargin NOTIFY leftMarginChanged)
     Q_PROPERTY(qreal rightMargin MEMBER m_rightMargin WRITE setRightMargin NOTIFY rightMarginChanged)
+    Q_PROPERTY(QColor colorFrom MEMBER m_colorFrom WRITE setColorFrom NOTIFY colorFromChanged)
+    Q_PROPERTY(QColor colorTo MEMBER m_colorTo WRITE setColorTo NOTIFY colorToChanged)
 public:
     explicit UCListItemDivider(QObject *parent = 0);
     ~UCListItemDivider();
@@ -120,6 +122,8 @@ Q_SIGNALS:
     void visibleChanged();
     void leftMarginChanged();
     void rightMarginChanged();
+    void colorFromChanged();
+    void colorToChanged();
 
 protected:
     QSGNode *paint(QSGNode *paintNode, const QRectF &rect);
@@ -129,16 +133,23 @@ private Q_SLOTS:
     void paletteChanged();
 
 private:
+    void updateGradient();
     void setVisible(bool visible);
     void setLeftMargin(qreal leftMargin);
     void setRightMargin(qreal rightMargin);
+    void setColorFrom(const QColor &color);
+    void setColorTo(const QColor &color);
 
     bool m_visible:1;
     bool m_leftMarginChanged:1;
     bool m_rightMarginChanged:1;
+    bool m_colorFromChanged:1;
+    bool m_colorToChanged:1;
     qreal m_thickness;
     qreal m_leftMargin;
     qreal m_rightMargin;
+    QColor m_colorFrom;
+    QColor m_colorTo;
     QGradientStops m_gradient;
     UCListItemPrivate *m_listItem;
     friend class UCListItem;
