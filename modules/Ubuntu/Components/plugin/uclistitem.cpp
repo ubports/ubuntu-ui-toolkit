@@ -112,20 +112,17 @@ void UCListItemDivider::updateGradient()
     }
 }
 
-QSGNode *UCListItemDivider::paint(QSGNode *paintNode, const QRectF &rect)
+QSGNode *UCListItemDivider::paint(const QRectF &rect)
 {
     if (m_visible && (m_gradient.size() > 0)) {
-        QSGRectangleNode *rectNode = static_cast<QSGRectangleNode *>(paintNode);
-        if (!rectNode) {
-            rectNode = m_listItem->sceneGraphContext()->createRectangleNode();
-        }
+        // the parent always recreates the node, so no worries for the existing child node
+        QSGRectangleNode *rectNode = m_listItem->sceneGraphContext()->createRectangleNode();
         rectNode->setRect(QRectF(m_leftMargin, rect.height() - m_thickness,
                                  rect.width() - m_leftMargin - m_rightMargin, m_thickness));
         rectNode->setGradientStops(m_gradient);
         rectNode->update();
         return rectNode;
     } else {
-        delete paintNode;
         return 0;
     }
 }
@@ -405,18 +402,27 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     QColor color = d->pressed ? d->pressedColor : d->color;
 
     delete oldNode;
-    if (width() <= 0 || height() <= 0 || (color.alpha() == 0)) {
+    if (width() <= 0 || height() <= 0) {
         return 0;
     }
 
-    QSGRectangleNode *rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
-    rectNode->setColor(color);
-    rectNode->setRect(boundingRect());
-    if (d->divider) {
-        d->divider->paint(rectNode, boundingRect());
+    QSGRectangleNode *rectNode = 0;
+    if (color.alpha() > 0) {
+        rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
+        rectNode->setColor(color);
+        rectNode->setRect(boundingRect());
+        rectNode->update();
     }
-    rectNode->update();
-    return rectNode;
+    oldNode = rectNode;
+    if (d->divider && d->divider->m_visible) {
+        QSGNode * dividerNode = d->divider->paint(boundingRect());
+        if (dividerNode && oldNode) {
+            oldNode->appendChildNode(dividerNode);
+        } else if (dividerNode) {
+            oldNode = dividerNode;
+        }
+    }
+    return oldNode;
 }
 
 void UCListItem::mousePressEvent(QMouseEvent *event)
