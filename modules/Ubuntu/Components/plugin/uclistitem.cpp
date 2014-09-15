@@ -320,7 +320,7 @@ void UCListItemPrivate::_q_updateSize()
     Q_Q(UCListItem);
     QQuickItem *owner = flickable ? flickable : parentItem;
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
-    q->setImplicitHeight(UCUnits::instance().gu(6));
+    q->setImplicitHeight(UCUnits::instance().gu(7));
 }
 
 // set pressed flag and update contentItem
