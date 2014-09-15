@@ -817,18 +817,16 @@ plugins.qmltypes
     name: "UCListItem"
     prototype: "UCStyledItemBase"
     exports: ["ListItem 1.2"]
-    Property { name: "contentItem"; type: "UCListItemContent"; isReadonly: true; isPointer: true }
+    Property { name: "contentItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Property { name: "divider"; type: "UCListItemDivider"; isReadonly: true; isPointer: true }
     Property { name: "leadingOptions"; type: "UCListItemOptions"; isPointer: true }
     Property { name: "trailingOptions"; type: "UCListItemOptions"; isPointer: true }
     Property { name: "pressed"; type: "bool"; isReadonly: true }
+    Property { name: "color"; type: "QColor" }
+    Property { name: "pressedColor"; type: "QColor" }
     Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
     Signal { name: "clicked" }
-    name: "UCListItemContent"
-    prototype: "QQuickItem"
-    Property { name: "color"; type: "QColor" }
-    Property { name: "pressedColor"; type: "QColor" }
     name: "UCListItemDivider"
     prototype: "QObject"
     Property { name: "visible"; type: "bool" }

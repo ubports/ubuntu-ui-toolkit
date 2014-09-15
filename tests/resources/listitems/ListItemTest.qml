@@ -49,7 +49,7 @@ MainView {
         ListItem {
             id: testItem
             objectName: "single"
-            contentItem.color: "lime"
+            color: "lime"
             onClicked: {
                 print("click")
                 main.override = !main.override
@@ -84,7 +84,7 @@ MainView {
                     name: "override"
                     when: main.override
                     PropertyChanges {
-                        target: listItem.contentItem
+                        target: listItem
                         pressedColor: "brown"
                     }
                 }
@@ -103,10 +103,8 @@ MainView {
                     model: 100
                     ListItem {
                         objectName: "InFlickable"+index
-                        contentItem {
-                            color: "red"
-                            pressedColor: "lime"
-                        }
+                        color: "red"
+                        pressedColor: "lime"
                         divider.colorFrom: UbuntuColors.green
 
                         trailingOptions: ListItemOptions {
