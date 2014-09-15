@@ -49,7 +49,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         // FIXME: use Palette colors instead when available
-        color: leadingPanel ? UbuntuColors.red : "#00000000"
+        color: leadingPanel ? UbuntuColors.red : "white"
     }
 
     Row {
