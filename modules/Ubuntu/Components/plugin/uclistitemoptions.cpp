@@ -58,7 +58,15 @@ void UCListItemOptionsPrivate::_q_handlePanelDrag()
 
 void UCListItemOptionsPrivate::_q_handlePanelWidth()
 {
-    optionSlotWidth = panelItem->width() / options.count();
+    // check how many options are visible && enabled
+    // FIXME: use Actions API when moved to C++
+    int count = 0;
+    for (int i = 0; i < options.count(); i++) {
+        if (options[i]->property("visible").toBool() && options[i]->property("enabled").toBool()) {
+            count++;
+        }
+    }
+    optionSlotWidth = panelItem->width() / count;
     _q_handlePanelDrag();
 }
 
