@@ -125,7 +125,7 @@ void UCListItemDivider::updateGradient()
 
 QSGNode *UCListItemDivider::paint(const QRectF &rect)
 {
-    if (m_visible && (m_gradient.size() > 0)) {
+    if (m_visible && !m_lastItem && (m_gradient.size() > 0)) {
         // the parent always recreates the node, so no worries for the existing child node
         QSGRectangleNode *rectNode = m_listItem->sceneGraphContext()->createRectangleNode();
         rectNode->setRect(QRectF(m_leftMargin, rect.height() - m_thickness,
