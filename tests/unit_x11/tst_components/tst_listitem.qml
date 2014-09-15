@@ -169,6 +169,10 @@ Item {
             compare(defaults.divider.visible, true, "divider is visible by default");
             compare(defaults.divider.leftMargin, units.gu(2), "divider's left margin is 2GU");
             compare(defaults.divider.rightMargin, units.gu(2), "divider's right margin is 2GU");
+            compare(defaults.divider.colorFrom, "#000000", "colorFrom differs.");
+            fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
+            compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
+            fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
 
             compare(optionsDefault.delegate, null, "ListItemOptions has no delegate set by default.");
             compare(optionsDefault.options.length, 0, "ListItemOptions has no options set.");

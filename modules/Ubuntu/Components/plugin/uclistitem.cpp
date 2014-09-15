@@ -61,6 +61,8 @@ UCListItemDivider::UCListItemDivider(QObject *parent)
     , m_lastItem(false)
     , m_leftMarginChanged(false)
     , m_rightMarginChanged(false)
+    , m_colorFromChanged(false)
+    , m_colorToChanged(false)
     , m_thickness(0)
     , m_leftMargin(0)
     , m_rightMargin(0)
@@ -103,16 +105,26 @@ void UCListItemDivider::paletteChanged()
     }
     // FIXME: we need a palette value for divider colors, till then base on the background
     // luminance
-    qreal luminance = (background.red()*212 + background.green()*715 + background.blue()*73)/1000.0/255.0;
-    bool lightBackground = (luminance > 0.85);
-    QColor startColor = lightBackground ? QColor("#26000000") : QColor("#26FFFFFF");
-    QColor endColor = lightBackground ? QColor("#14FFFFFF") : QColor("#14000000");
+    if (!m_colorFromChanged || !m_colorToChanged) {
+        qreal luminance = (background.red()*212 + background.green()*715 + background.blue()*73)/1000.0/255.0;
+        bool lightBackground = (luminance > 0.85);
+        if (!m_colorFromChanged) {
+            m_colorFrom = lightBackground ? QColor("#26000000") : QColor("#26FFFFFF");
+        }
+        if (!m_colorToChanged) {
+            m_colorTo = lightBackground ? QColor("#14FFFFFF") : QColor("#14000000");
+        }
+        updateGradient();
+    }
+}
 
+void UCListItemDivider::updateGradient()
+{
     m_gradient.clear();
-    m_gradient.append(QGradientStop(0.0, startColor));
-    m_gradient.append(QGradientStop(0.49, startColor));
-    m_gradient.append(QGradientStop(0.5, endColor));
-    m_gradient.append(QGradientStop(1.0, endColor));
+    m_gradient.append(QGradientStop(0.0, m_colorFrom));
+    m_gradient.append(QGradientStop(0.49, m_colorFrom));
+    m_gradient.append(QGradientStop(0.5, m_colorTo));
+    m_gradient.append(QGradientStop(1.0, m_colorTo));
     if (m_listItem) {
         m_listItem->update();
     }
@@ -167,6 +179,28 @@ void UCListItemDivider::setRightMargin(qreal rightMargin)
     m_rightMarginChanged = true;
     m_listItem->update();
     Q_EMIT rightMarginChanged();
+}
+
+void UCListItemDivider::setColorFrom(const QColor &color)
+{
+    if (m_colorFrom == color) {
+        return;
+    }
+    m_colorFrom = color;
+    m_colorFromChanged = true;
+    updateGradient();
+    Q_EMIT colorFromChanged();
+}
+
+void UCListItemDivider::setColorTo(const QColor &color)
+{
+    if (m_colorTo == color) {
+        return;
+    }
+    m_colorTo = color;
+    m_colorToChanged = true;
+    updateGradient();
+    Q_EMIT colorToChanged();
 }
 
 /******************************************************************************
