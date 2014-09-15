@@ -160,11 +160,10 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
     qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
-    // ListItem and related types
-    qmlRegisterType<UCListItem, 1>(uri, 1, 1, "ListItem");
-    qmlRegisterType<UCListItemContent>();
+    // ListItem and related types, released to 1.2
+    qmlRegisterType<UCListItem, 2>(uri, 1, 2, "ListItem");
     qmlRegisterType<UCListItemDivider>();
-    qmlRegisterType<UCListItemOptions, 1>(uri, 1, 1, "ListItemOptions");
+    qmlRegisterType<UCListItemOptions, 2>(uri, 1, 2, "ListItemOptions");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
