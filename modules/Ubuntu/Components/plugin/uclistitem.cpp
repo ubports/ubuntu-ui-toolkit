@@ -76,7 +76,7 @@ void UCListItemPrivate::init()
 
 void UCListItemPrivate::setFocusable()
 {
-    // alsways accept mouse events
+    // always accept mouse events
     Q_Q(UCListItem);
     q->setAcceptedMouseButtons(Qt::LeftButton | Qt::MiddleButton | Qt::RightButton);
     q->setFiltersChildMouseEvents(true);
@@ -145,10 +145,12 @@ void UCListItemPrivate::listenToRebind(bool listen)
  * ways on it. However, when used in list views, the content must be carefully
  * chosen to in order to keep the kinetic behavior and the highest FPS possible.
  *
- * \c contentItem is an essential part of the component. Beside the fact that it
- * holds all components and resources declared as child to ListItem, it can also
- * configure the color of the background when in normal mode or when pressed. Being
- * an item, all other properties can be accessed or altered, with the exception
+ * The component provides two color properties which configures the item's background
+ * when normal or pressed. This can be configures through \l color and \l pressedColor
+ * properties.
+ *
+ * \c contentItem holds all components and resources declared as child to ListItem.
+ * Being an Item, all other properties can be accessed or altered, with the exception
  * of some:
  * \list A
  * \li do not alter \c x, \c y, \c width or \c height properties as those are
