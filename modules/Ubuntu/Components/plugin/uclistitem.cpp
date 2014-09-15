@@ -344,7 +344,7 @@ void UCListItemPrivate::_q_updateSelected()
     Q_Q(UCListItem);
     bool checked = selectionPanel->property("checked").toBool();
     q->setSelected(checked);
-    contentItem->update();
+    update();
 }
 
 // the function performs a cleanup on mouse release without any rebound animation
@@ -722,7 +722,7 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     Q_UNUSED(data);
 
     Q_D(UCListItem);
-    QColor color = d->pressed ? d->pressedColor : d->color;
+    QColor color = (d->pressed || (d->selectable && d->selected))? d->pressedColor : d->color;
 
     delete oldNode;
     if (width() <= 0 || height() <= 0) {
