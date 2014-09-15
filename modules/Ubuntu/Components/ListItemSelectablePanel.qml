@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.2
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 /*
   This component is the holder of the ListItem selection checkbox.
