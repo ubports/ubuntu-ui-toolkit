@@ -16,9 +16,10 @@
 
 import QtQuick 2.2
 import Ubuntu.Components 1.2
+import Ubuntu.Components 1.1 as Version11
 
 // documentation in UbuntuListView11.qdoc
-UbuntuListView {
+Version11.UbuntuListView {
     id: listView
 
     /*!
