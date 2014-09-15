@@ -186,89 +186,15 @@ void UCListItemDivider::setColorTo(const QColor &color)
 }
 
 /******************************************************************************
- * ListItemContent
- */
-UCListItemContent::UCListItemContent(QQuickItem *parent)
-    : QQuickItem(parent)
-    , m_color(Qt::transparent)
-    , m_pressedColor(Qt::yellow)
-    , m_item(0)
-{
-    setFlag(QQuickItem::ItemHasContents);
-    // catch theme palette changes
-    connect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemContent::updateColors);
-    updateColors();
-}
-
-UCListItemContent::~UCListItemContent()
-{
-}
-
-void UCListItemContent::setColor(const QColor &color)
-{
-    if (m_color == color) {
-        return;
-    }
-    m_color = color;
-    update();
-    Q_EMIT colorChanged();
-}
-
-void UCListItemContent::setPressedColor(const QColor &color)
-{
-    if (m_pressedColor == color) {
-        return;
-    }
-    m_pressedColor = color;
-    // no more theme change watch
-    disconnect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemContent::updateColors);
-    update();
-    Q_EMIT pressedColorChanged();
-}
-
-void UCListItemContent::updateColors()
-{
-    m_pressedColor = getPaletteColor("selected", "background");
-    update();
-}
-
-
-void UCListItemContent::itemChange(ItemChange change, const ItemChangeData &data)
-{
-    if (change == ItemParentHasChanged) {
-        m_item = qobject_cast<UCListItem*>(data.item);
-    }
-    QQuickItem::itemChange(change, data);
-}
-
-QSGNode *UCListItemContent::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
-{
-    Q_UNUSED(data);
-
-    UCListItemPrivate *dd = UCListItemPrivate::get(m_item);
-    bool pressed = (dd && dd->pressed);
-    QColor color = pressed ? m_pressedColor : m_color;
-
-    delete oldNode;
-    if (width() <= 0 || height() <= 0 || (color.alpha() == 0)) {
-        return 0;
-    }
-
-    QSGRectangleNode *rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
-    rectNode->setColor(color);
-    rectNode->setRect(boundingRect());
-    rectNode->update();
-    return rectNode;
-}
-
-
-/******************************************************************************
- * ListItemBasePrivate
+ * ListItemPrivate
  */
 UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
     , pressed(false)
-    , contentItem(new UCListItemContent)
+    , pressedColorChanged(false)
+    , color(Qt::transparent)
+    , pressedColor(Qt::transparent)
+    , contentItem(new QQuickItem)
     , divider(new UCListItemDivider)
 {
 }
@@ -285,12 +211,16 @@ void UCListItemPrivate::init()
     divider->init(q);
     // content will be redirected to the contentItem, therefore we must report
     // children changes as it would come from the main component
-    QObject::connect(contentItem, &UCListItemContent::childrenChanged,
+    QObject::connect(contentItem, &QQuickItem::childrenChanged,
                      q, &UCListItem::childrenChanged);
     q->setFlag(QQuickItem::ItemHasContents);
     // turn activeFocusOnPress on
     activeFocusOnPress = true;
     setFocusable();
+
+    // catch theme palette changes
+    QObject::connect(&UCTheme::instance(), SIGNAL(paletteChanged()), q, SLOT(_q_updateColors()));
+    _q_updateColors();
 
     // watch size change and set implicit size;
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
@@ -299,10 +229,17 @@ void UCListItemPrivate::init()
 
 void UCListItemPrivate::setFocusable()
 {
-    // alsways accept mouse events
+    // always accept mouse events
     Q_Q(UCListItem);
     q->setAcceptedMouseButtons(Qt::LeftButton | Qt::MiddleButton | Qt::RightButton);
     q->setFiltersChildMouseEvents(true);
+}
+
+void UCListItemPrivate::_q_updateColors()
+{
+    Q_Q(UCListItem);
+    pressedColor = getPaletteColor("selected", "background");
+    q->update();
 }
 
 void UCListItemPrivate::_q_rebound()
@@ -326,8 +263,8 @@ void UCListItemPrivate::setPressed(bool pressed)
 {
     if (this->pressed != pressed) {
         this->pressed = pressed;
-        contentItem->update();
         Q_Q(UCListItem);
+        q->update();
         Q_EMIT q->pressedChanged();
     }
 }
@@ -381,10 +318,12 @@ void UCListItemPrivate::update()
  * ways on it. However, when used in list views, the content must be carefully
  * chosen to in order to keep the kinetic behavior and the highest FPS possible.
  *
- * \c contentItem is an essential part of the component. Beside the fact that it
- * holds all components and resources declared as child to ListItem, it can also
- * configure the color of the background when in normal mode or when pressed. Being
- * an item, all other properties can be accessed or altered, with the exception
+ * The component provides two color properties which configures the item's background
+ * when normal or pressed. This can be configures through \l color and \l pressedColor
+ * properties.
+ *
+ * \c contentItem holds all components and resources declared as child to ListItem.
+ * Being an Item, all other properties can be accessed or altered, with the exception
  * of some:
  * \list A
  * \li do not alter \c x, \c y, \c width or \c height properties as those are
@@ -461,13 +400,23 @@ void UCListItem::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeo
 QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
 {
     Q_UNUSED(data);
+
     Q_D(UCListItem);
-    if (width() <= 0 || height() <= 0 || !d->divider) {
-        delete oldNode;
+    QColor color = d->pressed ? d->pressedColor : d->color;
+
+    delete oldNode;
+    if (width() <= 0 || height() <= 0 || (color.alpha() == 0)) {
         return 0;
     }
-    // paint divider
-    return d->divider->paint(oldNode, boundingRect());
+
+    QSGRectangleNode *rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
+    rectNode->setColor(color);
+    rectNode->setRect(boundingRect());
+    if (d->divider) {
+        d->divider->paint(rectNode, boundingRect());
+    }
+    rectNode->update();
+    return rectNode;
 }
 
 void UCListItem::mousePressEvent(QMouseEvent *event)
@@ -478,11 +427,13 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         // while moving, we cannot select any items
         return;
     }
-    d->setPressed(true);
-    // connect the Flickable to know when to rebound
-    d->listenToRebind(true);
-    // accept the event so we get the rest of the events as well
-    event->setAccepted(true);
+    if (event->button() == Qt::LeftButton) {
+        d->setPressed(true);
+        // connect the Flickable to know when to rebound
+        d->listenToRebind(true);
+        // accept the event so we get the rest of the events as well
+        event->setAccepted(true);
+    }
 }
 
 void UCListItem::mouseReleaseEvent(QMouseEvent *event)
@@ -500,15 +451,11 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 }
 
 /*!
- * \qmlpropertygroup ::ListItem::contentItem
- * \qmlproperty color ListItem::contentItem.color
- * \qmlproperty color ListItem::contentItem.pressedColor
+ * \qmlproperty Item ListItem::contentItem
  *
- * contentItem holds the components placed on a ListItem. \c color configures
- * the color of the normal background, and \c pressedColor configures the color
- * when pressed.
+ * contentItem holds the components placed on a ListItem.
  */
-UCListItemContent* UCListItem::contentItem() const
+QQuickItem* UCListItem::contentItem() const
 {
     Q_D(const UCListItem);
     return d->contentItem;
@@ -552,6 +499,48 @@ bool UCListItem::pressed() const
 {
     Q_D(const UCListItem);
     return d->pressed;
+}
+
+/*!
+ * \qmlproperty color ListItem::color
+ * Configures the color of the normal background. The default value is transparent.
+ */
+QColor UCListItem::color() const
+{
+    Q_D(const UCListItem);
+    return d->color;
+}
+void UCListItem::setColor(const QColor &color)
+{
+    Q_D(UCListItem);
+    if (d->color == color) {
+        return;
+    }
+    d->color = color;
+    update();
+    Q_EMIT colorChanged();
+}
+
+/*!
+ * \qmlproperty color ListItem::pressedColor
+ * Configures the color when pressed. Defaults to the theme palette's background color.
+ */
+QColor UCListItem::pressedColor() const
+{
+    Q_D(const UCListItem);
+    return d->pressedColor;
+}
+void UCListItem::setPressedColor(const QColor &color)
+{
+    Q_D(UCListItem);
+    if (d->pressedColor == color) {
+        return;
+    }
+    d->pressedColor = color;
+    // no more theme change watch
+    disconnect(&UCTheme::instance(), SIGNAL(paletteChanged()), this, SLOT(_q_updateColors()));
+    update();
+    Q_EMIT pressedColorChanged();
 }
 
 /*!
