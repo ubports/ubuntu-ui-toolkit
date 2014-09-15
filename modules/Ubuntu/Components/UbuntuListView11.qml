@@ -15,11 +15,10 @@
  */
 
 import QtQuick 2.2
-import Ubuntu.Components 1.1
 
 // documentation in UbuntuListView11.qdoc
 UbuntuListView {
-    id: listView
+
     /*!
       \internal
       \qmlproperty PullToRefresh pullToRefresh
