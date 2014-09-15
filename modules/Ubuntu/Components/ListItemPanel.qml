@@ -70,7 +70,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         // FIXME: use Palette colors instead when available
-        color: leadingPanel ? UbuntuColors.red : "#00000000"
+        color: leadingPanel ? UbuntuColors.red : "white"
     }
 
     Row {
@@ -128,7 +128,7 @@ Item {
                 height: width
                 name: option.iconName
                 // FIXME: use Palette colors instead when available
-                color: panel.leadingPanel ? "white" : UbuntuColors.lightGrey
+                color: panel.leadingPanel ? "white" : UbuntuColors.darkGrey
                 anchors.centerIn: parent
             }
         }
