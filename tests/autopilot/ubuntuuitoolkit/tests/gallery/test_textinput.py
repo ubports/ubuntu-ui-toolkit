@@ -151,7 +151,8 @@ class CaretTextInputTestCase(GalleryTestCase):
 
     def test_caret_visible_after_selecting(self):
         self.test_caret_hide_while_typing()
-        self.textfield._select_all()
+        # Select a character
+        self.keyboard.press_and_release('Shift+Left')
         cursor = self.main_view.select_single(
             objectName='text_cursor_style_caret_end')
         self.assertTrue(cursor.visible)
