@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.2
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 MainView {
     id: main
@@ -63,7 +63,7 @@ MainView {
         ListItem {
             id: testItem
             objectName: "single"
-            contentItem.color: "lime"
+            color: "lime"
             onClicked: {
                 print("click")
                 main.override = !main.override
@@ -113,7 +113,7 @@ MainView {
                     name: "override"
                     when: main.override
                     PropertyChanges {
-                        target: listItem.contentItem
+                        target: listItem
                         pressedColor: "brown"
                     }
                 }
@@ -146,10 +146,8 @@ MainView {
                             options: leadingOptions.options
                         }
 
-                        contentItem {
-                            color: "red"
-                            pressedColor: "lime"
-                        }
+                        color: "red"
+                        pressedColor: "lime"
                         divider.colorFrom: UbuntuColors.green
 
                         Label {
