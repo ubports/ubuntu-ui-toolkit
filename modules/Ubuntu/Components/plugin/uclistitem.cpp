@@ -195,8 +195,9 @@ void UCListItemPrivate::listenToRebind(bool listen)
 /*!
  * \qmltype ListItem
  * \instantiates UCListItem
- * \inqmlmodule Ubuntu.Components 1.1
- * \ingroup ubuntu
+ * \inqmlmodule Ubuntu.Components 1.2
+ * \ingroup unstable-ubuntu-listitems
+ * \since Ubuntu.Components 1.2
  * \brief The ListItem element provides Ubuntu design standards for list or grid
  * views.
  *
