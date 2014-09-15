@@ -152,10 +152,6 @@ MainView {
                         }
                         divider.colorFrom: UbuntuColors.green
 
-                        trailingOptions: ListItemOptions {
-                            options: leading.options
-                        }
-
                         Label {
                             text: modelData + " Flickable item"
                         }
