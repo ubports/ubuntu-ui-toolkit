@@ -98,7 +98,7 @@ Item {
         ListView {
             id: listView
             width: parent.width
-            height: units.gu(24)
+            height: units.gu(28)
             clip: true
             model: 10
             delegate: ListItem {
