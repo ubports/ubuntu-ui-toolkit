@@ -164,7 +164,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCListItem, 2>(uri, 1, 2, "ListItem");
     qmlRegisterType<UCListItemContent>();
     qmlRegisterType<UCListItemDivider>();
-    qmlRegisterType<UCListItemOptions, 1>(uri, 1, 1, "ListItemOptions");
+    qmlRegisterType<UCListItemOptions, 2>(uri, 1, 2, "ListItemOptions");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
