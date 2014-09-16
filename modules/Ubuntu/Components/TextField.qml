@@ -855,8 +855,8 @@ ActionItem {
             if (inputMethodHints != Qt.ImhNone)
                 return
 
-            if (type == Toolki.Action.Integer
-             || type == Toolkit.Action.Real)
+            if (type == Ubuntu.Action.Integer
+             || type == Ubuntu.Action.Real)
                 inputMethodHints = Qt.ImhDigitsOnly
         }
     }

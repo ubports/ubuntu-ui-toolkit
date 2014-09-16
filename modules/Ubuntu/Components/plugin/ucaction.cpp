@@ -67,7 +67,7 @@
  * \endcode
  *
  * Actions are used to populate different Popovers like \l ActionSelectionPopover
- * as well as to define actions for pages, or when defining options in \l ListItemOptions.
+ * as well as to define actions for pages, or when defining options in \c ListItemOptions.
  *
  * Examples: See \l Page
  */

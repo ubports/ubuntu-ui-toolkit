@@ -112,7 +112,7 @@ UCActionContext *UCActionManager::globalContext() const
 /*!
  * \qmlmethod ActionManager::addAction(Action action)
  * \deprecated
- * This is a shorthand for \code ActionManager.globalContext.addAction(action) call.
+ * This is a shorthand for \c ActionManager.globalContext.addAction(action) call.
  */
 void UCActionManager::addAction(UCAction *action)
 {
@@ -123,7 +123,7 @@ void UCActionManager::addAction(UCAction *action)
 /*!
  * \qmlmethod ActionManager::removeAction(Action action)
  * \deprecated
- * This is a shorthand for \code ActionManager.globalContext.removeAction(action) call.
+ * This is a shorthand for \c ActionManager.globalContext.removeAction(action) call.
  */
 void UCActionManager::removeAction(UCAction *action)
 {
