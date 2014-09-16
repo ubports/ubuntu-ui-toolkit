@@ -70,6 +70,9 @@ void UCListItemOptionsPrivate::_q_handlePanelWidth()
     _q_handlePanelDrag();
 }
 
+/*
+ * Callback functions for QQmlListProperty handling append(), count(), at() and clear() list functions.
+ */
 void UCListItemOptionsPrivate::funcAppend(QQmlListProperty<QObject> *list, QObject *option)
 {
     UCListItemOptions *_this = static_cast<UCListItemOptions*>(list->object);
@@ -212,10 +215,9 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
  * \brief Provides configuration for options to be added to a ListItem.
  *
  * ListItem accepts options that can be configured to appear when tugged to left
- * or right. There is no limitation on how many options can be displayed on both
- * sides, this depends on the space available. However design guides say that it
- * can be a maximum of one option on the left (leadng) and a maximum of 3 options
- * on the right (trailing) side of a ListItem.
+ * or right. The API does not limit the number of options to be assigned for leading
+ * or trailing actions, however the design constrains are allowing a maximum of
+ * 1 option on leading- and a maximum of 3 options on trailing side of teh ListItem.
  *
  * The options are Action instances or elements derived from Action. The default
  * visualization of the options can be overridden using the \l delegate property,
