@@ -1025,8 +1025,6 @@ void UCListItem::setPressedColor(const QColor &color)
  * trailing side and dimmed. The checkbox which will reflect and drive the \l selected
  * state.
  * Defaults to false.
- * \note it is recommended to be used with UbuntuListView which can drive all the
- * ListItem's selectable.
  */
 bool UCListItem::selectable() const
 {
