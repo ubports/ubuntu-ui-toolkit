@@ -61,7 +61,7 @@ void UCActionManager::actionAppend(QQmlListProperty<QObject> *list, QObject *act
     Q_UNUSED(list);
     UCAction *toolkitAction = qobject_cast<UCAction*>(action);
     if (!toolkitAction) {
-        qmlInfo(action) << "Invalid Action. Please use Action from Ubuntu.Components.";
+        qmlInfo(action) << "Unity.Action deprecated. Please use Action from Ubuntu.Components.";
         return;
     }
     ActionProxy::instance().globalContext->m_actions.insert(toolkitAction);
@@ -97,7 +97,7 @@ void UCActionManager::contextAppend(QQmlListProperty<QObject> *list, QObject *co
     Q_UNUSED(list);
     UCActionContext *toolkitContext = qobject_cast<UCActionContext*>(context);
     if (!toolkitContext) {
-        qmlInfo(context) << "Invalid ActionContext. Please use ActionContext from Ubuntu.Components.";
+        qmlInfo(context) << "Unity.Action deprecatedContext. Please use ActionContext from Ubuntu.Components.";
         return;
     }
     ActionProxy::addContext(toolkitContext);
@@ -139,7 +139,7 @@ void UCActionManager::addAction(QObject *action)
         return;
     }
     if (!qobject_cast<UCAction*>(action)) {
-        qmlInfo(action) << "Invalid Action. Please use Action from Ubuntu.Components.";
+        qmlInfo(action) << "Unity.Action deprecated. Please use Action from Ubuntu.Components.";
         return;
     }
     ActionProxy::instance().globalContext->addAction(action);
@@ -158,7 +158,7 @@ void UCActionManager::removeAction(QObject *action)
     }
     UCAction *toolkitAction = qobject_cast<UCAction*>(action);
     if (!toolkitAction) {
-        qmlInfo(action) << "Invalid Action. Please use Action from Ubuntu.Components.";
+        qmlInfo(action) << "Unity.Action deprecated. Please use Action from Ubuntu.Components.";
         return;
     }
     ActionProxy::instance().globalContext->removeAction(toolkitAction);
@@ -180,7 +180,7 @@ void UCActionManager::addLocalContext(QObject *context)
     }
     UCActionContext *toolkitContext = qobject_cast<UCActionContext*>(context);
     if (!toolkitContext) {
-        qmlInfo(context) << "Invalid ActionContext. Please use ActionContext from Ubuntu.Components.";
+        qmlInfo(context) << "Unity.ActionContext deprecated. Please use ActionContext from Ubuntu.Components.";
         return;
     }
     ActionProxy::addContext(toolkitContext);
@@ -202,7 +202,7 @@ void UCActionManager::removeLocalContext(QObject *context)
     }
     UCActionContext *toolkitContext = qobject_cast<UCActionContext*>(context);
     if (!toolkitContext) {
-        qmlInfo(context) << "Invalid ActionContext. Please use ActionContext from Ubuntu.Components.";
+        qmlInfo(context) << "Unity.ActionContext deprecated. Please use ActionContext from Ubuntu.Components.";
         return;
     }
     ActionProxy::removeContext(toolkitContext);

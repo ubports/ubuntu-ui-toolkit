@@ -119,17 +119,17 @@ TestCase {
      }
 
      function test_unity_action_not_in_context() {
-//         verify(!contains(manager.globalContext.actions, unityAction, "Unity Action cannot be registered"));
+         verify(!contains(manager.globalContext.actions, unityAction, "Unity Action cannot be registered"));
      }
 
      function test_cannot_add_unity_action_to_global_context() {
          manager.globalContext.addAction(stockUnityAction);
-//         verify(!contains(manager.globalContext.actions, stockUnityAction, "Unity Action cannot be registered"));
+         verify(!contains(manager.globalContext.actions, stockUnityAction, "Unity Action cannot be registered"));
      }
 
      function test_cannot_add_unity_action_to_local_context() {
          context1.addAction(stockUnityAction);
-//         verify(!contains(context1.actions, stockUnityAction, "Unity Action cannot be registered"));
+         verify(!contains(context1.actions, stockUnityAction, "Unity Action cannot be registered"));
      }
      function test_activate_contexts_data() {
          return [

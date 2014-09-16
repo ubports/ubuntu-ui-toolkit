@@ -134,7 +134,7 @@ void UCActionContext::addAction(QObject *action)
 {
     UCAction *toolkitAction = qobject_cast<UCAction*>(action);
     if (!toolkitAction) {
-        qmlInfo(action) << "Invalid Action. Please use Action from Ubuntu.Components.";
+        qmlInfo(action) << "Unity.Action deprecated. Please use Action from Ubuntu.Components.";
         return;
     }
     if (m_actions.contains(toolkitAction)) {
@@ -156,7 +156,7 @@ void UCActionContext::removeAction(QObject *action)
     }
     UCAction *toolkitAction = qobject_cast<UCAction*>(action);
     if (!toolkitAction) {
-        qmlInfo(action) << "Invalid Action. Please use Action from Ubuntu.Components.";
+        qmlInfo(action) << "Unity.Action deprecated. Please use Action from Ubuntu.Components.";
         return;
     }
     m_actions.remove(toolkitAction);
