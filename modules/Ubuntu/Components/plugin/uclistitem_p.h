@@ -61,7 +61,6 @@ public:
     void resize();
     void update();
     void clampX(qreal &x, qreal dx);
-    void autoLeadingOptions();
     QQuickItem *createSelectionPanel();
     void toggleSelectionMode();
 

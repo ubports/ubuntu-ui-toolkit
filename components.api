@@ -671,11 +671,8 @@ UbuntuListView 0.1 1.0
 ListView
     property int expandedIndex
 UbuntuListView 1.1
-Version10.UbuntuListView
+UbuntuListView
     property PullToRefresh pullToRefresh
-UbuntuListView 1.2
-Version11.UbuntuListView
-    property ListItemOptions leadingOptions
 UbuntuNumberAnimation 0.1 1.0
 NumberAnimation
 PerformanceOverlay 0.1 1.0

@@ -23,6 +23,8 @@ Column {
     ListItemOptions {
         id: options1
         Action {}
+        Action {}
+        Action {}
     }
     ListItemOptions {
         id: options2
