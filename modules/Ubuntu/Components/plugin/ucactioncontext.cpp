@@ -59,25 +59,34 @@ void UCActionContext::markActionsPublished(bool mark)
  * \default
  * List of Actions in this ActionContext.
  */
-QQmlListProperty<UCAction> UCActionContext::actions()
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+QQmlListProperty<QObject> UCActionContext::actions()
 {
-    return QQmlListProperty<UCAction>(this, 0, UCActionContext::append, UCActionContext::count, 0, UCActionContext::clear);
+    return QQmlListProperty<QObject>(this, 0, UCActionContext::append, UCActionContext::count, 0, UCActionContext::clear);
 }
-void UCActionContext::append(QQmlListProperty<UCAction> *list, UCAction *action)
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+void UCActionContext::append(QQmlListProperty<QObject> *list, QObject *action)
 {
     UCActionContext *context = qobject_cast<UCActionContext*>(list->object);
     if (context) {
-        context->m_actions.insert(action);
+        UCAction *toolkitAction = qobject_cast<UCAction*>(action);
+        if (toolkitAction) {
+            context->m_actions.insert(toolkitAction);
+        } else {
+            qmlInfo(action) << "Invalid Action. Please use Action from Ubuntu.Components.";
+        }
     }
 }
-void UCActionContext::clear(QQmlListProperty<UCAction> *list)
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+void UCActionContext::clear(QQmlListProperty<QObject> *list)
 {
     UCActionContext *context = qobject_cast<UCActionContext*>(list->object);
     if (context) {
         context->m_actions.clear();
     }
 }
-int UCActionContext::count(QQmlListProperty<UCAction> *list)
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+int UCActionContext::count(QQmlListProperty<QObject> *list)
 {
     UCActionContext *context = qobject_cast<UCActionContext*>(list->object);
     if (context) {
@@ -120,13 +129,19 @@ void UCActionContext::setActive(bool active)
  * \deprecated
  * Adds an Action to the context programatically.
  */
-void UCActionContext::addAction(UCAction *action)
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+void UCActionContext::addAction(QObject *action)
 {
     qmlInfo(this) << "WARNING: addAction() is deprecated. Declare Actions dedicated for a context within the ActionContext.";
-    if (m_actions.contains(action)) {
+    UCAction *toolkitAction = qobject_cast<UCAction*>(action);
+    if (!toolkitAction) {
+        qmlInfo(action) << "Invalid Action. Please use Action from Ubuntu.Components.";
         return;
     }
-    m_actions.insert(action);
+    if (m_actions.contains(toolkitAction)) {
+        return;
+    }
+    m_actions.insert(toolkitAction);
 }
 
 /*!
@@ -134,8 +149,17 @@ void UCActionContext::addAction(UCAction *action)
  * \deprecated
  * Removes an action from the context programatically.
  */
-void UCActionContext::removeAction(UCAction *action)
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+void UCActionContext::removeAction(QObject *action)
 {
     qmlInfo(this) << "WARNING: removeAction() is deprecated.";
-    m_actions.remove(action);
+    if (!action) {
+        return;
+    }
+    UCAction *toolkitAction = qobject_cast<UCAction*>(action);
+    if (!toolkitAction) {
+        qmlInfo(action) << "Invalid Action. Please use Action from Ubuntu.Components.";
+        return;
+    }
+    m_actions.remove(toolkitAction);
 }

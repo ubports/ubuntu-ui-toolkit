@@ -48,26 +48,35 @@ void UCActionManager::componentComplete()
 /*!
  * \qmlproperty list<Action> ActionManager::actions
  * \default
- * A list of actions in teh global context.
+ * A list of actions in the global context.
  */
-QQmlListProperty<UCAction> UCActionManager::actions()
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+QQmlListProperty<QObject> UCActionManager::actions()
 {
-    return QQmlListProperty<UCAction>(this, 0, actionAppend, actionCount, 0, actionClear);
+    return QQmlListProperty<QObject>(this, 0, actionAppend, actionCount, 0, actionClear);
 }
-void UCActionManager::actionAppend(QQmlListProperty<UCAction> *list, UCAction *action)
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+void UCActionManager::actionAppend(QQmlListProperty<QObject> *list, QObject *action)
 {
     Q_UNUSED(list);
-    ActionProxy::instance().globalContext->m_actions.insert(action);
+    UCAction *toolkitAction = qobject_cast<UCAction*>(action);
+    if (!toolkitAction) {
+        qmlInfo(action) << "Invalid Action. Please use Action from Ubuntu.Components.";
+        return;
+    }
+    ActionProxy::instance().globalContext->m_actions.insert(toolkitAction);
 }
 
-void UCActionManager::actionClear(QQmlListProperty<UCAction> *list)
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+void UCActionManager::actionClear(QQmlListProperty<QObject> *list)
 {
     Q_UNUSED(list);
     UCActionContext *context = ActionProxy::instance().globalContext;
     context->m_actions.clear();
 }
 
-int UCActionManager::actionCount(QQmlListProperty<UCAction> *list)
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+int UCActionManager::actionCount(QQmlListProperty<QObject> *list)
 {
     Q_UNUSED(list);
     return ActionProxy::instance().globalContext->m_actions.count();
@@ -77,23 +86,32 @@ int UCActionManager::actionCount(QQmlListProperty<UCAction> *list)
  * \qmlproperty list<ActionContext> ActionManager::localContexts
  * List of local contexts.
  */
-QQmlListProperty<UCActionContext> UCActionManager::localContexts()
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+QQmlListProperty<QObject> UCActionManager::localContexts()
 {
-    return QQmlListProperty<UCActionContext>(this, 0, contextAppend, contextCount, 0, contextClear);
+    return QQmlListProperty<QObject>(this, 0, contextAppend, contextCount, 0, contextClear);
 }
-void UCActionManager::contextAppend(QQmlListProperty<UCActionContext> *list, UCActionContext *context)
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+void UCActionManager::contextAppend(QQmlListProperty<QObject> *list, QObject *context)
 {
     Q_UNUSED(list);
-    ActionProxy::addContext(context);
+    UCActionContext *toolkitContext = qobject_cast<UCActionContext*>(context);
+    if (!toolkitContext) {
+        qmlInfo(context) << "Invalid ActionContext. Please use ActionContext from Ubuntu.Components.";
+        return;
+    }
+    ActionProxy::addContext(toolkitContext);
 }
-void UCActionManager::contextClear(QQmlListProperty<UCActionContext> *list)
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+void UCActionManager::contextClear(QQmlListProperty<QObject> *list)
 {
     Q_UNUSED(list);
     Q_FOREACH(UCActionContext *context, ActionProxy::instance().localContexts().toList()) {
         ActionProxy::removeContext(context);
     }
 }
-int UCActionManager::contextCount(QQmlListProperty<UCActionContext> *list)
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+int UCActionManager::contextCount(QQmlListProperty<QObject> *list)
 {
     Q_UNUSED(list);
     return ActionProxy::instance().localContexts().count();
@@ -114,9 +132,17 @@ UCActionContext *UCActionManager::globalContext() const
  * \deprecated
  * This is a shorthand for \c ActionManager.globalContext.addAction(action) call.
  */
-void UCActionManager::addAction(UCAction *action)
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+void UCActionManager::addAction(QObject *action)
 {
     qmlInfo(this) << "WARNING: addAction() is deprecated. Declare actions designated for global context inside ActionManager.";
+    if (!action) {
+        return;
+    }
+    if (!qobject_cast<UCAction*>(action)) {
+        qmlInfo(action) << "Invalid Action. Please use Action from Ubuntu.Components.";
+        return;
+    }
     ActionProxy::instance().globalContext->addAction(action);
 }
 
@@ -125,10 +151,19 @@ void UCActionManager::addAction(UCAction *action)
  * \deprecated
  * This is a shorthand for \c ActionManager.globalContext.removeAction(action) call.
  */
-void UCActionManager::removeAction(UCAction *action)
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+void UCActionManager::removeAction(QObject *action)
 {
     qmlInfo(this) << "WARNING: removeAction() is deprecated. Do not remove actions programatically.";
-    ActionProxy::instance().globalContext->removeAction(action);
+    if (!action) {
+        return;
+    }
+    UCAction *toolkitAction = qobject_cast<UCAction*>(action);
+    if (!toolkitAction) {
+        qmlInfo(action) << "Invalid Action. Please use Action from Ubuntu.Components.";
+        return;
+    }
+    ActionProxy::instance().globalContext->removeAction(toolkitAction);
 }
 
 /*!
@@ -139,10 +174,19 @@ void UCActionManager::removeAction(UCAction *action)
  * This is deprecated. ActionContext instances are added autimatically to the
  * action management stystem when declared and removed when destroyed.
  */
-void UCActionManager::addLocalContext(UCActionContext *context)
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+void UCActionManager::addLocalContext(QObject *context)
 {
     qmlInfo(this) << "WARNING: addLocalContext() is deprecated. ActionContext declaration registers the context to the management.";
-    ActionProxy::addContext(context);
+    if (!context) {
+        return;
+    }
+    UCActionContext *toolkitContext = qobject_cast<UCActionContext*>(context);
+    if (!toolkitContext) {
+        qmlInfo(context) << "Invalid ActionContext. Please use ActionContext from Ubuntu.Components.";
+        return;
+    }
+    ActionProxy::addContext(toolkitContext);
 }
 
 /*!
@@ -153,8 +197,16 @@ void UCActionManager::addLocalContext(UCActionContext *context)
  * This is deprecated. ActionContext instances are added autimatically to the
  * action management stystem when declared and removed when destroyed.
  */
-void UCActionManager::removeLocalContext(UCActionContext *context)
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+void UCActionManager::removeLocalContext(QObject *context)
 {
-    ActionProxy::removeContext(context);
+    if (!context) {
+        return;
+    }
+    UCActionContext *toolkitContext = qobject_cast<UCActionContext*>(context);
+    if (!toolkitContext) {
+        qmlInfo(context) << "Invalid ActionContext. Please use ActionContext from Ubuntu.Components.";
+        return;
+    }
+    ActionProxy::removeContext(toolkitContext);
 }
-

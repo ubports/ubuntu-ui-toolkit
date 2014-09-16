@@ -27,7 +27,7 @@ class UCAction;
 class UCActionContext : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<UCAction> actions READ actions)
+    Q_PROPERTY(QQmlListProperty<QObject> actions READ actions)
     Q_PROPERTY(bool active MEMBER m_active WRITE setActive NOTIFY activeChanged)
     Q_CLASSINFO("DefaultProperty", "actions")
 public:
@@ -38,7 +38,7 @@ public:
     void componentComplete();
     void markActionsPublished(bool mark);
 
-    QQmlListProperty<UCAction> actions();
+    QQmlListProperty<QObject> actions();
 
     void setActive(bool active);
 
@@ -46,17 +46,17 @@ Q_SIGNALS:
     void activeChanged(bool);
 
 public Q_SLOTS:
-    void addAction(UCAction *action);
-    void removeAction(UCAction *action);
+    void addAction(QObject *action);
+    void removeAction(QObject *action);
 
 private:
     bool m_active;
     QSet<UCAction*> m_actions;
     friend class UCActionManager;
 
-    static void append(QQmlListProperty<UCAction> *list, UCAction *action);
-    static void clear(QQmlListProperty<UCAction> *list);
-    static int count(QQmlListProperty<UCAction> *list);
+    static void append(QQmlListProperty<QObject> *list, QObject *action);
+    static void clear(QQmlListProperty<QObject> *list);
+    static int count(QQmlListProperty<QObject> *list);
 };
 
 QML_DECLARE_TYPE(UCActionContext)

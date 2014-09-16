@@ -17,9 +17,20 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 1.1
+// FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
+import Ubuntu.Unity.Action 1.1 as Unity
 
 TestCase {
      name: "ActionAPI"
+
+     function contains(list, entry) {
+         for (var i = 0; i < list.length; i++) {
+             if (list[i] == entry) {
+                 return true;
+             }
+         }
+         return false;
+     }
 
      function initTestCase() {
          compare(action.text, "", "text is empty string set by default")
@@ -102,6 +113,24 @@ TestCase {
          compare(manager.globalContext.actions.length, 3, "Global context action count must be a sum of all manager's actions' counts");
      }
 
+     function test_add_unity_actioncontext_failure() {
+         manager.addLocalContext(unityContext);
+         verify(!contains(manager.localContexts, unityContext), "Unity ActionContext cannot be added");
+     }
+
+     function test_unity_action_not_in_context() {
+//         verify(!contains(manager.globalContext.actions, unityAction, "Unity Action cannot be registered"));
+     }
+
+     function test_cannot_add_unity_action_to_global_context() {
+         manager.globalContext.addAction(stockUnityAction);
+//         verify(!contains(manager.globalContext.actions, stockUnityAction, "Unity Action cannot be registered"));
+     }
+
+     function test_cannot_add_unity_action_to_local_context() {
+         context1.addAction(stockUnityAction);
+//         verify(!contains(context1.actions, stockUnityAction, "Unity Action cannot be registered"));
+     }
      function test_activate_contexts_data() {
          return [
              {tag: "Activate context1", active: context1, inactive: context2},
@@ -122,6 +151,9 @@ TestCase {
          id: valueType
          property var parameter
          onTriggered: parameter = value
+     }
+     Unity.Action {
+         id: stockUnityAction
      }
 
      QtObject {
@@ -159,6 +191,9 @@ TestCase {
          }
          Action {
          }
+         Unity.Action {
+             id: unityAction
+         }
      }
 
      ActionContext {
@@ -166,5 +201,9 @@ TestCase {
      }
      ActionContext {
          id: context2
+     }
+
+     Unity.ActionContext {
+         id: unityContext
      }
 }
