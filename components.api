@@ -776,36 +776,36 @@ plugins.qmltypes
     name: "UCActionContext"
     prototype: "QObject"
     exports: ["ActionContext 0.1", "ActionContext 1.0"]
-    Property { name: "actions"; type: "UCAction"; isList: true; isReadonly: true }
+    Property { name: "actions"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "active"; type: "bool" }
     Signal {
     name: "activeChanged"
     Parameter { type: "bool" }
     Method {
     name: "addAction"
-    Parameter { name: "action"; type: "UCAction"; isPointer: true }
+    Parameter { name: "action"; type: "QObject"; isPointer: true }
     Method {
     name: "removeAction"
-    Parameter { name: "action"; type: "UCAction"; isPointer: true }
+    Parameter { name: "action"; type: "QObject"; isPointer: true }
     name: "UCActionManager"
     prototype: "QObject"
     exports: ["ActionManager 0.1", "ActionManager 1.0"]
-    Property { name: "actions"; type: "UCAction"; isList: true; isReadonly: true }
-    Property { name: "localContexts"; type: "UCActionContext"; isList: true; isReadonly: true }
+    Property { name: "actions"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "localContexts"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "globalContext"; type: "UCActionContext"; isReadonly: true; isPointer: true }
     Signal { name: "quit" }
     Method {
     name: "addAction"
-    Parameter { name: "action"; type: "UCAction"; isPointer: true }
+    Parameter { name: "action"; type: "QObject"; isPointer: true }
     Method {
     name: "removeAction"
-    Parameter { name: "action"; type: "UCAction"; isPointer: true }
+    Parameter { name: "action"; type: "QObject"; isPointer: true }
     Method {
     name: "addLocalContext"
-    Parameter { name: "context"; type: "UCActionContext"; isPointer: true }
+    Parameter { name: "context"; type: "QObject"; isPointer: true }
     Method {
     name: "removeLocalContext"
-    Parameter { name: "context"; type: "UCActionContext"; isPointer: true }
+    Parameter { name: "context"; type: "QObject"; isPointer: true }
     name: "UCAlarm"
     prototype: "QObject"
     exports: ["Alarm 0.1", "Alarm 1.0"]
