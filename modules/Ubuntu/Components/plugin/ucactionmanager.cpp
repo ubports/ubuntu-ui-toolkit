@@ -135,7 +135,6 @@ UCActionContext *UCActionManager::globalContext() const
 // FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
 void UCActionManager::addAction(QObject *action)
 {
-    qmlInfo(this) << "WARNING: addAction() is deprecated. Declare actions designated for global context inside ActionManager.";
     if (!action) {
         return;
     }
@@ -154,7 +153,6 @@ void UCActionManager::addAction(QObject *action)
 // FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
 void UCActionManager::removeAction(QObject *action)
 {
-    qmlInfo(this) << "WARNING: removeAction() is deprecated. Do not remove actions programatically.";
     if (!action) {
         return;
     }
@@ -177,7 +175,6 @@ void UCActionManager::removeAction(QObject *action)
 // FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
 void UCActionManager::addLocalContext(QObject *context)
 {
-    qmlInfo(this) << "WARNING: addLocalContext() is deprecated. ActionContext declaration registers the context to the management.";
     if (!context) {
         return;
     }

@@ -132,7 +132,6 @@ void UCActionContext::setActive(bool active)
 // FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
 void UCActionContext::addAction(QObject *action)
 {
-    qmlInfo(this) << "WARNING: addAction() is deprecated. Declare Actions dedicated for a context within the ActionContext.";
     UCAction *toolkitAction = qobject_cast<UCAction*>(action);
     if (!toolkitAction) {
         qmlInfo(action) << "Invalid Action. Please use Action from Ubuntu.Components.";
@@ -152,7 +151,6 @@ void UCActionContext::addAction(QObject *action)
 // FIXME: do cleanup https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1369874
 void UCActionContext::removeAction(QObject *action)
 {
-    qmlInfo(this) << "WARNING: removeAction() is deprecated.";
     if (!action) {
         return;
     }
