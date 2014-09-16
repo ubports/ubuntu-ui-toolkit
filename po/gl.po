@@ -7,387 +7,355 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2013-05-30 14:06+0200\n"
+"POT-Creation-Date: 2014-09-01 19:02+0200\n"
 "PO-Revision-Date: 2013-07-21 20:10+0000\n"
 "Last-Translator: Miguel Anxo Bouzada <mbouzada@gmail.com>\n"
 "Language-Team: Galician <gl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-07-23 06:57+0000\n"
-"X-Generator: Launchpad (build 17114)\n"
+"X-Launchpad-Export-Date: 2014-09-06 07:28+0000\n"
+"X-Generator: Launchpad (build 17196)\n"
 
-#: examples/ubuntu-ui-toolkit-gallery/Animations.qml:22
-msgid "NumberAnimation"
-msgstr "NúmeroAnimación"
-
-#: examples/ubuntu-ui-toolkit-gallery/Animations.qml:26
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:25
-#: examples/ubuntu-ui-toolkit-gallery/Dialog.qml:27
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:23
-#: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:26
-#: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:59
-#: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:38
-#: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:71
-#: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:25
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:44
-msgid "Standard"
-msgstr "Estándar"
-
-#: examples/ubuntu-ui-toolkit-gallery/Animations.qml:56
-msgid "Standard Durations"
-msgstr "Duracións estándares"
-
-#: examples/ubuntu-ui-toolkit-gallery/Animations.qml:60
-msgid "Snap"
-msgstr "Axustar"
-
-#: examples/ubuntu-ui-toolkit-gallery/Animations.qml:96
-msgid "Fast"
-msgstr "Rápida"
-
-#: examples/ubuntu-ui-toolkit-gallery/Animations.qml:132
-msgid "Slow"
-msgstr "Lenta"
-
-#: examples/ubuntu-ui-toolkit-gallery/Animations.qml:157
-msgid "Sleepy"
-msgstr "Adurmiñado"
-
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:28
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:36
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:50
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:59
-msgid "Call"
-msgstr "Chamar"
-
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:33
-#: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:26
-msgid "Color"
-msgstr "Cor"
-
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:42
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:41
-msgid "Icon"
-msgstr "Icona"
-
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:56
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:73
-#: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:41
-#: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:75
-msgid "Disabled"
-msgstr "Desactivado"
-
-#: examples/ubuntu-ui-toolkit-gallery/Dialog.qml:30
-#: examples/ubuntu-ui-toolkit-gallery/Popover.qml:42
-#: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:41
-#: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:74
-msgid "Open"
-msgstr "Aberto"
-
-#: examples/ubuntu-ui-toolkit-gallery/Icons.qml:25
-msgid "Scaling"
-msgstr "Escala"
-
-#: examples/ubuntu-ui-toolkit-gallery/Icons.qml:50
-msgid "Colorization"
-msgstr "Coloración"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:26
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:34
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:44
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:53
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:62
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:71
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:83
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:95
-msgid "Label"
-msgstr "Etiqueta"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:31
-msgid "Subtitled"
-msgstr "Subtitulado"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:35
-msgid "Secondary label"
-msgstr "Etiqueta secundaria"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:50
-msgid "Progression"
-msgstr "Evolución"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:59
-msgid "Single value"
-msgstr "Valor único"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:63
-msgid "Value"
-msgstr "Valor"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:68
-msgid "Multi value"
-msgstr "Valor múltiple"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:72
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:84
-msgid "Value 1"
-msgstr "Valor 1"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:73
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:85
-msgid "Value 2"
-msgstr "Valor 2"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:74
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:86
-msgid "Value 3"
-msgstr "Valor 3"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:75
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:87
-msgid "Value 4"
-msgstr "Valor 4"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:80
-msgid "Value selector"
-msgstr "Selector de valor"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:92
-msgid "Control"
-msgstr "Control"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:103
-msgid "Removable"
-msgstr "Extraíbel"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:106
-msgid "Slide to remove"
-msgstr "Deslice para retirar"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:116
-msgid "Grouped list"
-msgstr "Lista agrupada"
-
-#: examples/ubuntu-ui-toolkit-gallery/Popover.qml:38
-msgid "Flickable"
-msgstr "Desprazábel cun toque"
-
-#: examples/ubuntu-ui-toolkit-gallery/Popover.qml:74
-msgid "Action #1"
-msgstr "Acción n.º 1"
-
-#: examples/ubuntu-ui-toolkit-gallery/Popover.qml:78
-msgid "Action #2"
-msgstr "Acción n.º 2"
-
-#: examples/ubuntu-ui-toolkit-gallery/Popover.qml:82
-msgid "Action #3"
-msgstr "Acción n.º 3"
-
-#: examples/ubuntu-ui-toolkit-gallery/Popover.qml:86
-msgid "Action #4"
-msgstr "Acción n.º 4"
-
-#: examples/ubuntu-ui-toolkit-gallery/Popover.qml:90
-msgid "Action #5"
-msgstr "Acción n.º 5"
-
-#: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:22
-msgid "Progress Bar"
-msgstr "Barra de progreso"
-
-#: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:45
-msgid "Infinite"
-msgstr "Infinito"
-
-#: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:55
-msgid "Activity Indicator"
-msgstr "Indicador de actividade"
-
-#: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:26
-msgid "The visual style of the Sheet is early work and thus clunky looking."
-msgstr ""
-"O estilo visual da folla é un traballo inicial daí a fasquía pouco pulida."
-
-#: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:51
-#: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:84
-msgid "Title"
-msgstr "Titulo"
-
-#: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:32
-#: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:45
-#: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:60
+#: Ubuntu/Components/plugin/statesaverbackend_p.cpp:154
 #, qt-format
-msgid "value = %1"
-msgstr "valor = %1"
+msgid ""
+"property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
+"of type %5"
+msgstr ""
+"a propiedade «%1» do obxecto %2 ten o tipo %3 e non pode tomar o valor «%4» "
+"do tipo %5"
 
-#: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:37
-msgid "Live Update"
-msgstr "Actualización en vivo"
+#: Ubuntu/Components/plugin/statesaverbackend_p.cpp:163
+#, qt-format
+msgid "property \"%1\" does not exist or is not writable for object %2"
+msgstr "a propiedade «%1» non existe ou non é escribíbel para o obxecto %2"
 
-#: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:50
-msgid "Range"
-msgstr "Intervalo"
+#: Ubuntu/Components/plugin/ucalarm.cpp:42
+#: Ubuntu/Components/plugin/ucalarm.cpp:136
+msgid "Alarm"
+msgstr "Alarma"
 
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:47
-msgid "Type me in..."
-msgstr "Escríbame..."
+#: Ubuntu/Components/plugin/ucalarm.cpp:684
+#: Ubuntu/Components/plugin/ucalarm.cpp:716
+msgid "Alarm has a pending operation."
+msgstr "A alarma ten unha operación pendente."
 
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:53
-msgid "Password"
-msgstr "Contrasinal"
-
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:63
-msgid "Numbers"
-msgstr "Números"
-
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:87
-msgid "Default"
-msgstr "Predeterminado"
-
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:96
-msgid "Expanding"
-msgstr "Expansíbel"
-
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:107
-msgid "Rich Text"
-msgstr "Texto mellorado"
-
-#: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:26
-#: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:60
-msgid "Unchecked"
-msgstr "Non seleccionado"
-
-#: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:33
-#: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:67
-msgid "Checked"
-msgstr "Seleccionado"
-
-#: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:44
-msgid "Image"
-msgstr "Imaxe"
-
-#: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:57
-msgid "Radius"
-msgstr "Radio"
-
-#: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:87
-msgid "Sizes"
-msgstr "Tamaños"
-
-#: examples/unit-converter/unit-converter.qml:147
-msgid "Clear"
-msgstr "Limpar"
-
-#: examples/unit-converter/unit-converter.qml:161
-msgid "Lengths"
-msgstr "Lonxitudes"
-
-#: examples/unit-converter/unit-converter.qml:179
-msgid "Weights"
-msgstr "Pesos"
-
-#: modules/Ubuntu/Components/plugin/ucarguments.cpp:188
+#: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
 msgstr "Uso: "
 
-#: modules/Ubuntu/Components/plugin/ucarguments.cpp:209
+#: Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
 msgstr "Opcións:"
 
-#: modules/Ubuntu/Components/plugin/ucarguments.cpp:498
+#: Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
 msgstr "%1 está agardando por un argumento adicional: %2"
 
-#: modules/Ubuntu/Components/plugin/ucarguments.cpp:503
+#: Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
 msgstr "%1 está agardando por un valor para o argumento: %2"
 
-#: modules/Ubuntu/Components/plugin/ucarguments.cpp:520
+#: Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
 msgstr "%1 está agardando por argumentos adicionais: %2"
 
-#: modules/Ubuntu/Components/TextInputPopover.qml:24
+#: Ubuntu/Components/plugin/ucmousefilters.cpp:1064
+msgid "Ignoring AfterItem priority for InverseMouse filters."
+msgstr "Ignorando a prioridade AfterItem  para filtros InverseMouse."
+
+#: Ubuntu/Components/plugin/ucstatesaver.cpp:46
+msgid "Warning: attachee must have an ID. State will not be saved."
+msgstr "Aviso: o anexo debe ter un ID. Non se gardará o estado."
+
+#: Ubuntu/Components/plugin/ucstatesaver.cpp:56
+#, qt-format
+msgid ""
+"Warning: attachee's UUID is already registered, state won't be saved: %1"
+msgstr "Aviso: o UUID do anexo xa se rexistrou, non se gardará o estado: %1"
+
+#: Ubuntu/Components/plugin/ucstatesaver.cpp:102
+#, qt-format
+msgid ""
+"All the parents must have an id.\n"
+"State saving disabled for %1, class %2"
+msgstr ""
+"Todos os pais deben ter un identificador.\n"
+"Desactivouse o gardado do estado para %1, clase %2"
+
+#: Ubuntu/Components/plugin/uctheme.cpp:233
+msgid "Theme not found: "
+msgstr "Non foi posíbel atopar o tema: "
+
+#: Ubuntu/Components/Popups/ComposerSheet.qml:80
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: Ubuntu/Components/Popups/ComposerSheet.qml:90
+msgid "Confirm"
+msgstr "Confirmar"
+
+#: Ubuntu/Components/Popups/DefaultSheet.qml:89
+msgid "Close"
+msgstr "Pechar"
+
+#: Ubuntu/Components/Popups/DefaultSheet.qml:99
+msgid "Done"
+msgstr "Feito"
+
+#: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
 msgstr "Selecionar todo"
 
-#: modules/Ubuntu/Components/TextInputPopover.qml:29
-msgid "Select Word"
-msgstr "Seleccionar palabra"
-
-#: modules/Ubuntu/Components/TextInputPopover.qml:34
+#: Ubuntu/Components/TextInputPopover.qml:33
 msgid "Cut"
 msgstr "Cortar"
 
-#: modules/Ubuntu/Components/TextInputPopover.qml:39
+#: Ubuntu/Components/TextInputPopover.qml:42
 msgid "Copy"
 msgstr "Copiar"
 
-#: modules/Ubuntu/Components/TextInputPopover.qml:44
+#: Ubuntu/Components/TextInputPopover.qml:49
 msgid "Paste"
 msgstr "Pegar"
 
-#: modules/Ubuntu/Components/TextInputPopover.qml:49
-msgid "Undo"
-msgstr "Desfacer"
+#: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
+msgid "In Progress"
+msgstr "En proceso"
 
-#: modules/Ubuntu/Components/TextInputPopover.qml:54
-msgid "Redo"
-msgstr "Refacer"
+#: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
+msgid "Release to refresh..."
+msgstr "Soltar para actualizar..."
 
-#: modules/Ubuntu/Components/ToolbarActions.qml:86
-msgid "Back"
-msgstr "Atrás"
+#: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
+msgid "Pull to refresh..."
+msgstr "Tirar para actualizar..."
 
-#: tests/resources/pagestack/MyCustomPage.qml:21
-#: tests/resources/tabs/MyCustomPage.qml:21
-msgid "My custom page"
-msgstr "A miña páxina personalizada"
+#~ msgid "Color"
+#~ msgstr "Cor"
 
-#: tests/resources/pagestack/MyCustomPage.qml:33
-#: tests/resources/tabs/MyCustomPage.qml:33
-msgid ""
-"This is an external page\n"
-"with a locked toolbar."
-msgstr ""
-"Esta é unha páxina externa cunha\n"
-"barra de ferramentas bloqueada."
+#~ msgid "Snap"
+#~ msgstr "Axustar"
 
-#: tests/resources/pagestack/PageStack.qml:38
-msgid "Root page"
-msgstr "Páxina raíz"
+#~ msgid "Standard"
+#~ msgstr "Estándar"
 
-#: tests/resources/pagestack/PageStack.qml:44
-msgid "Page one"
-msgstr "Primeira páxina"
+#~ msgid "Sleepy"
+#~ msgstr "Adurmiñado"
 
-#: tests/resources/pagestack/PageStack.qml:49
-msgid "External page"
-msgstr "Páxina externa"
+#~ msgid "Call"
+#~ msgstr "Chamar"
 
-#: tests/resources/pagestack/PageStack.qml:58
-msgid "First page"
-msgstr "Primeira páxina"
+#~ msgid "Fast"
+#~ msgstr "Rápida"
 
-#: tests/resources/pagestack/PageStack.qml:64
-msgid "Root page (again)"
-msgstr "Páxina raíz (outra vez)"
+#~ msgid "Slow"
+#~ msgstr "Lenta"
 
-#: tests/resources/pagestack/PageStack.qml:69
-msgid "Red rectangle"
-msgstr "Rectángulo vermello"
+#~ msgid "Icon"
+#~ msgstr "Icona"
 
-#: tests/resources/tabs/Tabs.qml:32
-msgid "Simple page"
-msgstr "Páxina única"
+#~ msgid "Progression"
+#~ msgstr "Evolución"
 
-#: tests/resources/tabs/Tabs.qml:77
-msgid "External"
-msgstr "Externa"
+#~ msgid "Colorization"
+#~ msgstr "Coloración"
 
-#: tests/resources/tabs/Tabs.qml:85
-msgid "List view"
-msgstr "Vista de lista"
+#~ msgid "Scaling"
+#~ msgstr "Escala"
+
+#~ msgid "Open"
+#~ msgstr "Aberto"
+
+#~ msgid "Disabled"
+#~ msgstr "Desactivado"
+
+#~ msgid "Secondary label"
+#~ msgstr "Etiqueta secundaria"
+
+#~ msgid "Subtitled"
+#~ msgstr "Subtitulado"
+
+#~ msgid "Label"
+#~ msgstr "Etiqueta"
+
+#~ msgid "Value"
+#~ msgstr "Valor"
+
+#~ msgid "Single value"
+#~ msgstr "Valor único"
+
+#~ msgid "Multi value"
+#~ msgstr "Valor múltiple"
+
+#~ msgid "Value 1"
+#~ msgstr "Valor 1"
+
+#~ msgid "Value 2"
+#~ msgstr "Valor 2"
+
+#~ msgid "Value 3"
+#~ msgstr "Valor 3"
+
+#~ msgid "Value selector"
+#~ msgstr "Selector de valor"
+
+#~ msgid "Control"
+#~ msgstr "Control"
+
+#~ msgid "Removable"
+#~ msgstr "Extraíbel"
+
+#~ msgid "Slide to remove"
+#~ msgstr "Deslice para retirar"
+
+#~ msgid "Grouped list"
+#~ msgstr "Lista agrupada"
+
+#~ msgid "Value 4"
+#~ msgstr "Valor 4"
+
+#~ msgid "Infinite"
+#~ msgstr "Infinito"
+
+#~ msgid "Action #1"
+#~ msgstr "Acción n.º 1"
+
+#~ msgid "Action #3"
+#~ msgstr "Acción n.º 3"
+
+#~ msgid "Action #2"
+#~ msgstr "Acción n.º 2"
+
+#~ msgid "Action #4"
+#~ msgstr "Acción n.º 4"
+
+#~ msgid "Progress Bar"
+#~ msgstr "Barra de progreso"
+
+#~ msgid "Activity Indicator"
+#~ msgstr "Indicador de actividade"
+
+#~ msgid "Action #5"
+#~ msgstr "Acción n.º 5"
+
+#~ msgid "Expanding"
+#~ msgstr "Expansíbel"
+
+#~ msgid "Numbers"
+#~ msgstr "Números"
+
+#~ msgid "Default"
+#~ msgstr "Predeterminado"
+
+#~ msgid "Password"
+#~ msgstr "Contrasinal"
+
+#~ msgid "Range"
+#~ msgstr "Intervalo"
+
+#~ msgid "Title"
+#~ msgstr "Titulo"
+
+#, qt-format
+#~ msgid "value = %1"
+#~ msgstr "valor = %1"
+
+#~ msgid "Rich Text"
+#~ msgstr "Texto mellorado"
+
+#~ msgid "Image"
+#~ msgstr "Imaxe"
+
+#~ msgid "Radius"
+#~ msgstr "Radio"
+
+#~ msgid "Unchecked"
+#~ msgstr "Non seleccionado"
+
+#~ msgid "Checked"
+#~ msgstr "Seleccionado"
+
+#~ msgid "Weights"
+#~ msgstr "Pesos"
+
+#~ msgid "Sizes"
+#~ msgstr "Tamaños"
+
+#~ msgid "Clear"
+#~ msgstr "Limpar"
+
+#~ msgid "Lengths"
+#~ msgstr "Lonxitudes"
+
+#~ msgid "Select Word"
+#~ msgstr "Seleccionar palabra"
+
+#~ msgid "Redo"
+#~ msgstr "Refacer"
+
+#~ msgid "Undo"
+#~ msgstr "Desfacer"
+
+#~ msgid "My custom page"
+#~ msgstr "A miña páxina personalizada"
+
+#~ msgid "Back"
+#~ msgstr "Atrás"
+
+#~ msgid "Page one"
+#~ msgstr "Primeira páxina"
+
+#~ msgid "External page"
+#~ msgstr "Páxina externa"
+
+#~ msgid "First page"
+#~ msgstr "Primeira páxina"
+
+#~ msgid "External"
+#~ msgstr "Externa"
+
+#~ msgid "List view"
+#~ msgstr "Vista de lista"
+
+#~ msgid ""
+#~ "This is an external page\n"
+#~ "with a locked toolbar."
+#~ msgstr ""
+#~ "Esta é unha páxina externa cunha\n"
+#~ "barra de ferramentas bloqueada."
+
+#~ msgid "Simple page"
+#~ msgstr "Páxina única"
+
+#~ msgid "Red rectangle"
+#~ msgstr "Rectángulo vermello"
+
+#~ msgid "Type me in..."
+#~ msgstr "Escríbame..."
+
+#~ msgid "Live Update"
+#~ msgstr "Actualización en vivo"
+
+#~ msgid "Standard Durations"
+#~ msgstr "Duracións estándares"
+
+#~ msgid "Root page"
+#~ msgstr "Páxina raíz"
+
+#~ msgid "Root page (again)"
+#~ msgstr "Páxina raíz (outra vez)"
+
+#~ msgid "NumberAnimation"
+#~ msgstr "NúmeroAnimación"
+
+#~ msgid "The visual style of the Sheet is early work and thus clunky looking."
+#~ msgstr ""
+#~ "O estilo visual da folla é un traballo inicial daí a fasquía pouco pulida."
+
+#~ msgid "Flickable"
+#~ msgstr "Desprazábel cun toque"
