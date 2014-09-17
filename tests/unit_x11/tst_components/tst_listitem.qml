@@ -75,8 +75,8 @@ Item {
         ]
     }
     ListItemActions {
-        id: optionsDefault
-        property int optionCount: options.length
+        id: actionsDefault
+        property int optionCount: actions.length
     }
 
     Column {
@@ -167,9 +167,9 @@ Item {
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
 
-            compare(optionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
-            compare(optionsDefault.actions.length, 0, "ListItemActions has no options set.");
-            compare(optionsDefault.panelItem, null, "There is no panelItem created by default.");
+            compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
+            compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
+            compare(actionsDefault.panelItem, null, "There is no panelItem created by default.");
         }
 
         function test_children_in_content_item() {
@@ -240,7 +240,7 @@ Item {
         }
 
         // ListItemActions tests
-        function test_valid_options_data() {
+        function test_valid_actions_data() {
             return [
                 {tag: "Inline Actions", object: leading, expected: 3, xfail: false},
                 {tag: "Stock Actions", object: trailing, expected: 1, xfail: false},
@@ -248,14 +248,14 @@ Item {
                 {tag: "Wrong Actions", object: wrongOption, expected: 0, xfail: false},
             ];
         }
-        function test_valid_options(data) {
+        function test_valid_actions(data) {
             if (data.xfail) {
                 expectFailContinue(data.tag, "expected to fail");
             }
-            compare(data.object.actions.length, data.expected, data.tag + ": expected options differ.");
+            compare(data.object.actions.length, data.expected, data.tag + ": expected actions differ.");
         }
 
-        function test_touch_tug_options_data() {
+        function test_touch_tug_actions_data() {
             var item = findChild(listView, "listItem0");
             return [
                 {tag: "Trailing, mouse", item: item, pos: centerOf(item), dx: -units.gu(20), positiveDirection: false, mouse: true},
@@ -264,7 +264,7 @@ Item {
                 {tag: "Leading, touch", item: item, pos: centerOf(item), dx: units.gu(20), positiveDirection: true, mouse: false},
             ];
         }
-        function test_touch_tug_options(data) {
+        function test_touch_tug_actions(data) {
             listView.positionViewAtBeginning();
             if (data.mouse) {
                 flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
@@ -273,9 +273,9 @@ Item {
             }
             waitForRendering(data.item, 400);
             if (data.positiveDirection) {
-                verify(data.item.contentItem.x > 0, data.tag + " options did not show up");
+                verify(data.item.contentItem.x > 0, data.tag + " actions did not show up");
             } else {
-                verify(data.item.contentItem.x < 0, data.tag + " options did not show up");
+                verify(data.item.contentItem.x < 0, data.tag + " actions did not show up");
             }
 
             // dismiss
@@ -348,8 +348,8 @@ Item {
         function test_selecting_option_rebounds_data() {
             var item0 = findChild(listView, "listItem0");
             return [
-                {tag: "With mouse", item: item0, pos: centerOf(item0), dx: units.gu(20), options: item0.leadingActions, select: "list_option_0", mouse: true},
-                {tag: "With touch", item: item0, pos: centerOf(item0), dx: units.gu(20), options: item0.leadingActions, select: "list_option_0", mouse: false},
+                {tag: "With mouse", item: item0, pos: centerOf(item0), dx: units.gu(20), actions: item0.leadingActions, select: "list_option_0", mouse: true},
+                {tag: "With touch", item: item0, pos: centerOf(item0), dx: units.gu(20), actions: item0.leadingActions, select: "list_option_0", mouse: false},
             ]
         }
         function test_selecting_option_rebounds(data) {
@@ -360,7 +360,7 @@ Item {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
             waitForRendering(data.item, 800);
-            var selectedOption = findChild(data.options.panelItem, data.select);
+            var selectedOption = findChild(data.actions.panelItem, data.select);
             verify(selectedOption, "Cannot select option " + data.select);
             // dismiss
             if (data.mouse) {
@@ -387,18 +387,18 @@ Item {
         function test_snap_data() {
             verify(testItem.leadingActions.panelItem, "Panel had not been created!");
             var option = findChild(testItem.leadingActions.panelItem, "list_option_0");
-            verify(option, "Options not accessible");
-            var optionSize = option.width;
+            verify(option, "actions not accessible");
+            var actionsize = option.width;
             return [
-                {tag: "Snap back leading, mouse", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: true},
-                {tag: "Snap back leading, touch", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: false},
-                {tag: "Snap in leading, mouse", item: testItem.contentItem, dx: optionSize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: true},
-                {tag: "Snap in leading, touch", item: testItem.contentItem, dx: optionSize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: false},
+                {tag: "Snap back leading, mouse", item: testItem.contentItem, dx: actionsize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: true},
+                {tag: "Snap back leading, touch", item: testItem.contentItem, dx: actionsize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: false},
+                {tag: "Snap in leading, mouse", item: testItem.contentItem, dx: actionsize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: true},
+                {tag: "Snap in leading, touch", item: testItem.contentItem, dx: actionsize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: false},
 
-                {tag: "Snap back trailing, mouse", item: testItem.contentItem, dx: -(optionSize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: true},
-                {tag: "Snap back trailing, touch", item: testItem.contentItem, dx: -(optionSize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: false},
-                {tag: "Snap in trailing, mouse", item: testItem.contentItem, dx: -(optionSize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: true},
-                {tag: "Snap in trailing, touch", item: testItem.contentItem, dx: -(optionSize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: false},
+                {tag: "Snap back trailing, mouse", item: testItem.contentItem, dx: -(actionsize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: true},
+                {tag: "Snap back trailing, touch", item: testItem.contentItem, dx: -(actionsize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: false},
+                {tag: "Snap in trailing, mouse", item: testItem.contentItem, dx: -(actionsize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: true},
+                {tag: "Snap in trailing, touch", item: testItem.contentItem, dx: -(actionsize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: false},
             ];
         }
         function test_snap(data) {
@@ -434,14 +434,14 @@ Item {
             ];
         }
         function test_verify_action_value(data) {
-            var option = findChild(data.item.leadingOptions.panelItem, "list_option_0");
-            verify(option, "Options panel cannot be reached");
+            var option = findChild(data.item.leadingActions.panelItem, "list_option_0");
+            verify(option, "actions panel cannot be reached");
             // we test the last action, as we tug the first action on leading, which means teh alst will be accessible
-            var len = data.item.leadingOptions.options.length;
-            var action = data.item.leadingOptions.options[len - 1];
+            var len = data.item.leadingActions.actions.length;
+            var action = data.item.leadingActions.actions[len - 1];
             actionSpy.target = action;
             actionSpy.clear();
-            // tug options in
+            // tug actions in
             flick(data.item.contentItem, centerOf(data.item.contentItem).x, centerOf(data.item.contentItem).y, option.width, 0);
             waitForRendering(data.item.contentItem, 800);
 
