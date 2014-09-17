@@ -305,7 +305,7 @@ UCListItemOptions::~UCListItemOptions()
  *                     horizontalAlignment: Text.AlignHCenter
  *                 }
  *             }
- *             Action {
+ *             options: Action {
  *                 iconName: "starred"
  *                 text: "Star"
  *             }
