@@ -231,11 +231,10 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
  * valid for the case when the option is visible less than 50%, in which case the
  * option is hidden. Options can be triggered by tapping.
  *
- * \note You cannot use the same ListItemOptions for leading and for trailing options
- * the same time as when the item content is tugged, both options' panels will be
- * bound to the list item, and the same item cannot be bount to both edges. However
- * the same set of actions can be used for both options either by using a shared
- * set or by using the others' list. Example:
+ * \note You can use the same ListItemOptions for leading and for trailing options
+ * the same time only if the instance is used by different groups of list items,
+ * where one group uses it as leading and other group as trailing. In any other
+ * circumstances use separate ListItemOptions for leading and trailing options.
  * \qml
  * import QtQuick 2.2
  * import Ubuntu.Components 1.2
