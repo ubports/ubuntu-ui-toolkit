@@ -28,7 +28,7 @@ Item {
         id: stockAction
         iconName: "starred"
     }
-    ListItemOptions {
+    ListItemActions {
         id: leading
         actions: [
             Action {
@@ -42,7 +42,7 @@ Item {
             }
         ]
     }
-    ListItemOptions {
+    ListItemActions {
         id: trailing
         actions: [
             stockAction,
@@ -51,7 +51,7 @@ Item {
             objectName: "custom_delegate"
         }
     }
-    ListItemOptions {
+    ListItemActions {
         id: wrongOption
         actions: [
             Action {
@@ -66,7 +66,7 @@ Item {
             }
         ]
     }
-    ListItemOptions {
+    ListItemActions {
         id: optionsDefault
         property int optionCount: options.length
     }
@@ -81,11 +81,10 @@ Item {
             id: testItem
             width: parent.width
             color: "blue"
-            leadingOptions: leading
-            trailingOptions: ListItemOptions {
+            leadingActions: leading
+            trailingActions: ListItemActions {
                 actions: leading.actions
             }
-
             Item {
                 id: bodyItem
                 anchors.fill: parent
@@ -100,8 +99,8 @@ Item {
             delegate: ListItem {
                 objectName: "listItem" + index
                 width: parent.width
-                leadingOptions: leading
-                trailingOptions: trailing
+                leadingActions: leading
+                trailingActions: trailing
             }
         }
     }
@@ -154,8 +153,8 @@ Item {
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
 
-            compare(optionsDefault.delegate, null, "ListItemOptions has no delegate set by default.");
-            compare(optionsDefault.actions.length, 0, "ListItemOptions has no options set.");
+            compare(optionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
+            compare(optionsDefault.actions.length, 0, "ListItemActions has no options set.");
             compare(optionsDefault.panelItem, null, "There is no panelItem created by default.");
         }
 
@@ -226,7 +225,7 @@ Item {
             testItem.divider.visible = true;
         }
 
-        // ListItemOptions tests
+        // ListItemActions tests
         function test_valid_options_data() {
             return [
                 {tag: "Inline Actions", object: leading, expected: 3, xfail: false},
@@ -335,8 +334,8 @@ Item {
         function test_selecting_option_rebounds_data() {
             var item0 = findChild(listView, "listItem0");
             return [
-                {tag: "With mouse", item: item0, pos: centerOf(item0), dx: units.gu(20), options: item0.leadingOptions, select: "list_option_0", mouse: true},
-                {tag: "With touch", item: item0, pos: centerOf(item0), dx: units.gu(20), options: item0.leadingOptions, select: "list_option_0", mouse: false},
+                {tag: "With mouse", item: item0, pos: centerOf(item0), dx: units.gu(20), options: item0.leadingActions, select: "list_option_0", mouse: true},
+                {tag: "With touch", item: item0, pos: centerOf(item0), dx: units.gu(20), options: item0.leadingActions, select: "list_option_0", mouse: false},
             ]
         }
         function test_selecting_option_rebounds(data) {
@@ -372,20 +371,20 @@ Item {
 
         // execute as last so we make sure we have the panel created
         function test_snap_data() {
-            verify(testItem.leadingOptions.panelItem, "Panel had not been created!");
-            var option = findChild(testItem.leadingOptions.panelItem, "list_option_0");
+            verify(testItem.leadingActions.panelItem, "Panel had not been created!");
+            var option = findChild(testItem.leadingActions.panelItem, "list_option_0");
             verify(option, "Options not accessible");
             var optionSize = option.width;
             return [
-                {tag: "Snap back leading, mouse", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingOptions, snap: false, mouse: true},
-                {tag: "Snap back leading, touch", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingOptions, snap: false, mouse: false},
-                {tag: "Snap in leading, mouse", item: testItem.contentItem, dx: optionSize / 2 + 10, list: testItem.leadingOptions, snap: true, mouse: true},
-                {tag: "Snap in leading, touch", item: testItem.contentItem, dx: optionSize / 2 + 10, list: testItem.leadingOptions, snap: true, mouse: false},
+                {tag: "Snap back leading, mouse", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: true},
+                {tag: "Snap back leading, touch", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: false},
+                {tag: "Snap in leading, mouse", item: testItem.contentItem, dx: optionSize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: true},
+                {tag: "Snap in leading, touch", item: testItem.contentItem, dx: optionSize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: false},
 
-                {tag: "Snap back trailing, mouse", item: testItem.contentItem, dx: -(optionSize / 2 - 10), list: testItem.trailingOptions, snap: false, mouse: true},
-                {tag: "Snap back trailing, touch", item: testItem.contentItem, dx: -(optionSize / 2 - 10), list: testItem.trailingOptions, snap: false, mouse: false},
-                {tag: "Snap in trailing, mouse", item: testItem.contentItem, dx: -(optionSize / 2 + 10), list: testItem.trailingOptions, snap: true, mouse: true},
-                {tag: "Snap in trailing, touch", item: testItem.contentItem, dx: -(optionSize / 2 + 10), list: testItem.trailingOptions, snap: true, mouse: false},
+                {tag: "Snap back trailing, mouse", item: testItem.contentItem, dx: -(optionSize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: true},
+                {tag: "Snap back trailing, touch", item: testItem.contentItem, dx: -(optionSize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: false},
+                {tag: "Snap in trailing, mouse", item: testItem.contentItem, dx: -(optionSize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: true},
+                {tag: "Snap in trailing, touch", item: testItem.contentItem, dx: -(optionSize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: false},
             ];
         }
         function test_snap(data) {
