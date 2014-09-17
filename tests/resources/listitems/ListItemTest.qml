@@ -29,10 +29,10 @@ MainView {
         id: stock
     }
 
-    ListItemOptions {
+    ListItemActions {
         id: leading
         objectName: "StockLeading"
-        options: [
+        actions: [
             Action {
             },
             Action {
@@ -60,11 +60,11 @@ MainView {
                 anchors.fill: parent
                 text: units.gridUnit + "PX/unit"
             }
-            leadingOptions: ListItemOptions {
+            leadingActions: ListItemActions {
                 objectName: "InlineLeading"
-                options: [stock]
+                actions: [stock]
             }
-            trailingOptions: leading
+            trailingActions: leading
         }
 
         ListView {
@@ -78,7 +78,7 @@ MainView {
                 objectName: "ListItem" + index
                 id: listItem
                 onClicked: print(" clicked")
-                leadingOptions: leading
+                leadingActions: leading
                 Label {
                     text: modelData + " item"
                 }
@@ -109,8 +109,8 @@ MainView {
                         pressedColor: "lime"
                         divider.colorFrom: UbuntuColors.green
 
-                        trailingOptions: ListItemOptions {
-                            options: leading.options
+                        trailingActions: ListItemActions {
+                            actions: leading.actions
                         }
 
                         Label {

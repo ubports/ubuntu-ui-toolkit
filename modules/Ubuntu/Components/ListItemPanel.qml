@@ -38,9 +38,9 @@ Item {
     property Component delegate
 
     /*
-      Options
+      Actions
       */
-    property var optionList
+    property var actionList
 
     anchors {
         left: contentItem ? (leadingPanel ? undefined : contentItem.right) : undefined

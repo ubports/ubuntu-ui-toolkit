@@ -18,8 +18,8 @@
 #include "uctheme.h"
 #include "uclistitem.h"
 #include "uclistitem_p.h"
-#include "uclistitemoptions.h"
-#include "uclistitemoptions_p.h"
+#include "uclistitemactions.h"
+#include "uclistitemactions_p.h"
 #include "ucubuntuanimation.h"
 #include "propertychange_p.h"
 #include <QtQml/QQmlInfo>
@@ -206,8 +206,8 @@ UCListItemPrivate::UCListItemPrivate()
     , flickableInteractive(0)
     , contentItem(new QQuickItem)
     , divider(new UCListItemDivider)
-    , leadingOptions(0)
-    , trailingOptions(0)
+    , leadingActions(0)
+    , trailingActions(0)
 {
 }
 UCListItemPrivate::~UCListItemPrivate()
@@ -268,9 +268,9 @@ void UCListItemPrivate::_q_updateColors()
 void UCListItemPrivate::_q_rebound()
 {
     setPressed(false);
-    // initiate rebinding only if there were options tugged
+    // initiate rebinding only if there were actions tugged
     Q_Q(UCListItem);
-    if (!UCListItemOptionsPrivate::isConnectedTo(leadingOptions, q) && !UCListItemOptionsPrivate::isConnectedTo(trailingOptions, q)) {
+    if (!UCListItemActionsPrivate::isConnectedTo(leadingActions, q) && !UCListItemActionsPrivate::isConnectedTo(trailingActions, q)) {
         return;
     }
     setMoved(false);
@@ -281,9 +281,9 @@ void UCListItemPrivate::_q_completeRebinding()
 {
     // restore flickable's interactive and cleanup
     PropertyChange::restore(flickableInteractive);
-    // disconnect options
-    grabPanel(leadingOptions, false);
-    grabPanel(trailingOptions, false);
+    // disconnect actions
+    grabPanel(leadingActions, false);
+    grabPanel(trailingActions, false);
 }
 
 // the function performs a cleanup on mouse release without any rebound animation
@@ -338,18 +338,18 @@ void UCListItemPrivate::setMoved(bool moved)
     }
 }
 
-// sets the moved flag but also grabs the panels from the leading/trailing options
-bool UCListItemPrivate::grabPanel(UCListItemOptions *optionsList, bool isMoved)
+// sets the moved flag but also grabs the panels from the leading/trailing actions
+bool UCListItemPrivate::grabPanel(UCListItemActions *actionsList, bool isMoved)
 {
     Q_Q(UCListItem);
     if (isMoved) {
-        bool grab = UCListItemOptionsPrivate::connectToListItem(optionsList, q, (optionsList == leadingOptions));
+        bool grab = UCListItemActionsPrivate::connectToListItem(actionsList, q, (actionsList == leadingActions));
         if (grab) {
             PropertyChange::setValue(flickableInteractive, false);
         }
         return grab;
     } else {
-        UCListItemOptionsPrivate::disconnectFromListItem(optionsList);
+        UCListItemActionsPrivate::disconnectFromListItem(actionsList);
         return false;
     }
 }
@@ -390,8 +390,8 @@ void UCListItemPrivate::update()
 
 void UCListItemPrivate::clampX(qreal &x, qreal dx)
 {
-    UCListItemOptionsPrivate *leading = UCListItemOptionsPrivate::get(leadingOptions);
-    UCListItemOptionsPrivate *trailing = UCListItemOptionsPrivate::get(trailingOptions);
+    UCListItemActionsPrivate *leading = UCListItemActionsPrivate::get(leadingActions);
+    UCListItemActionsPrivate *trailing = UCListItemActionsPrivate::get(trailingActions);
     x += dx;
     // min cannot be less than the trailing's panel width
     qreal min = (trailing && trailing->panelItem) ? -trailing->panelItem->width() : 0;
@@ -425,25 +425,25 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  * of some:
  * \list A
  * \li do not alter \c x, \c y, \c width or \c height properties as those are
- *      controlled by the ListItem itself when leading or trailing options are
+ *      controlled by the ListItem itself when leading or trailing actions are
  *      revealed and thus will destroy your logic
- * \li never anchor left or right anchor lines as it will block revealing the options.
+ * \li never anchor left or right anchor lines as it will block revealing the actions.
  * \endlist
  *
  * Each ListItem has a thin divider shown on the bottom of the component. This
  * divider can be configured through the \l divider grouped property, which can
  * configure its margins from the edges of the ListItem as well as its visibility.
  *
- * ListItem can handle options that can get tugged from front to back of the item.
- * These options are Action elements visualized in panels attached to the front
+ * ListItem can handle actions that can get tugged from front to back of the item.
+ * These actions are Action elements visualized in panels attached to the front
  * or to the back of the item, and are revealed by swiping the item horizontally.
  * The tug is started only after the mouse/touch move had passed a given threshold.
- * These options are configured through the \l leadingOptions as well as \l
- * trailingOptions properties.
+ * These actions are configured through the \l leadingActions as well as \l
+ * trailingActions properties.
  * \qml
  * ListItem {
  *     id: listItem
- *     leadingOptions: ListItemOptions {
+ *     leadingActions: ListItemActions {
  *         actions: [
  *             Action {
  *                 iconName: "delete"
@@ -451,7 +451,7 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  *             }
  *         ]
  *     }
- *     trailingOptions: ListItemOptions {
+ *     trailingActions: ListItemActions {
  *         actions: [
  *             Action {
  *                 iconName: "search"
@@ -464,16 +464,16 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  * }
  * \endqml
  * \note When a list item is tugged, it automatically connects both leading and
- * trailing options to the list item. This implies that a ListItem cannot use
- * the same ListItemOptions instance for both leading and trailing options. If
+ * trailing actions to the list item. This implies that a ListItem cannot use
+ * the same ListItemActions instance for both leading and trailing actions. If
  * it is desired to have the same action present in both leading and trailing
- * options, one of the ListItemOptions options list can use the other's list. In
+ * actions, one of the ListItemActions actions list can use the other's list. In
  * the following example the list item can be deleted through both leading and
- * trailing options:
+ * trailing actions:
  * \qml
  * ListItem {
  *     id: listItem
- *     leadingOptions: ListItemOptions {
+ *     leadingActions: ListItemActions {
  *         actions: [
  *             Action {
  *                 iconName: "delete"
@@ -481,12 +481,12 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  *             }
  *         ]
  *     }
- *     trailingOptions: ListItemOptions {
- *         options: leadingOptions.options
+ *     trailingActions: ListItemActions {
+ *         actions: leadingActions.actions
  *     }
  * }
  * \endqml
- * \sa ListItemOptions
+ * \sa ListItemActions
  */
 
 /*!
@@ -619,7 +619,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             Q_EMIT clicked();
             d->_q_rebound();
         } else if (d->contentItem->x() == 0.0) {
-            // if no options list is connected, release flickable blockade
+            // if no actions list is connected, release flickable blockade
             d->cleanup();
         }
     }
@@ -632,8 +632,8 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     UCStyledItemBase::mouseMoveEvent(event);
 
     // accept the tugging only if the move is within the threshold
-    bool leadingAttached = UCListItemOptionsPrivate::isConnectedTo(d->leadingOptions, this);
-    bool trailingAttached = UCListItemOptionsPrivate::isConnectedTo(d->trailingOptions, this);
+    bool leadingAttached = UCListItemActionsPrivate::isConnectedTo(d->leadingActions, this);
+    bool trailingAttached = UCListItemActionsPrivate::isConnectedTo(d->trailingActions, this);
     if (d->pressed && !(leadingAttached || trailingAttached)) {
         // check if we can initiate the drag at all
         // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
@@ -645,8 +645,8 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             // the press went out of the threshold area, enable move, if the direction allows it
             d->lastPos = event->localPos();
             // connect both panels
-            leadingAttached = d->grabPanel(d->leadingOptions, true);
-            trailingAttached = d->grabPanel(d->trailingOptions, true);
+            leadingAttached = d->grabPanel(d->leadingActions, true);
+            trailingAttached = d->grabPanel(d->trailingActions, true);
         }
     }
 
@@ -692,45 +692,45 @@ bool UCListItem::eventFilter(QObject *target, QEvent *event)
 }
 
 /*!
- * \qmlproperty ListItemOptions ListItem::leadingOptions
+ * \qmlproperty ListItemActions ListItem::leadingActions
  *
- * The property holds the options and its configuration to be revealed when swiped
+ * The property holds the actions and its configuration to be revealed when swiped
  * from left to right.
  */
-UCListItemOptions *UCListItem::leadingOptions() const
+UCListItemActions *UCListItem::leadingActions() const
 {
     Q_D(const UCListItem);
-    return d->leadingOptions;
+    return d->leadingActions;
 }
-void UCListItem::setLeadingOptions(UCListItemOptions *options)
+void UCListItem::setLeadingActions(UCListItemActions *actions)
 {
     Q_D(UCListItem);
-    if (d->leadingOptions == options) {
+    if (d->leadingActions == actions) {
         return;
     }
-    d->leadingOptions = options;
-    Q_EMIT leadingOptionsChanged();
+    d->leadingActions = actions;
+    Q_EMIT leadingActionsChanged();
 }
 
 /*!
- * \qmlproperty ListItemOptions ListItem::trailingOptions
+ * \qmlproperty ListItemActions ListItem::trailingActions
  *
- * The property holds the options and its configuration to be revealed when swiped
+ * The property holds the actions and its configuration to be revealed when swiped
  * from right to left.
  */
-UCListItemOptions *UCListItem::trailingOptions() const
+UCListItemActions *UCListItem::trailingActions() const
 {
     Q_D(const UCListItem);
-    return d->trailingOptions;
+    return d->trailingActions;
 }
-void UCListItem::setTrailingOptions(UCListItemOptions *options)
+void UCListItem::setTrailingActions(UCListItemActions *actions)
 {
     Q_D(UCListItem);
-    if (d->trailingOptions == options) {
+    if (d->trailingActions == actions) {
         return;
     }
-    d->trailingOptions = options;
-    Q_EMIT trailingOptionsChanged();
+    d->trailingActions = actions;
+    Q_EMIT trailingActionsChanged();
 }
 
 /*!
@@ -752,7 +752,7 @@ QQuickItem* UCListItem::contentItem() const
  *
  * This grouped property configures the thin divider shown in the bottom of the
  * component. Configures the visibility and the margins from the left and right
- * of the ListItem. When tugged (swiped left or right to reveal the options),
+ * of the ListItem. When tugged (swiped left or right to reveal the actions),
  * it is not moved together with the content.
  *
  * When \c visible is true, the ListItem's content size gets thinner with the
