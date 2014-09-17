@@ -91,7 +91,7 @@ Item {
             color: "blue"
             leadingOptions: leading
             trailingOptions: ListItemOptions {
-                options: leading.options
+                actions: leading.actions
             }
 
             Item {
