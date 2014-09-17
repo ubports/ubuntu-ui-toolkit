@@ -1,9 +1,3 @@
-ubuntu-ui-toolkit (1.1.1231+14.10.20140908-0ubuntu2) utopic; urgency=medium
-
-  * 
-
- -- Zsombor Egri (Tauri) <zsombor.egri@canonical.com>  Tue, 16 Sep 2014 11:23:32 +0300
-
 ubuntu-ui-toolkit (1.1.1239+14.10.20140908-0ubuntu1) utopic; urgency=medium
 
   [ Zsombor Egri ]
