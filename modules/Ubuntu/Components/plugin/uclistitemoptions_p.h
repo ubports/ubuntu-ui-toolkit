@@ -37,6 +37,7 @@ public:
     QQmlComponent *delegate;
     QQuickItem *panelItem;
     QList<QObject*> options;
+    QList<QObject*> data;
     QPointer<UCListItem> queuedItem;
     qreal optionSlotWidth;
     qreal offsetDragged;
