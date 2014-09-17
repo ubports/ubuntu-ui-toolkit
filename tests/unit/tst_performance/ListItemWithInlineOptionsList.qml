@@ -25,14 +25,16 @@ Column {
         model: 5000
         ListItem {
             trailingOptions: ListItemOptions {
-                Action {}
-                Action {}
-                Action {}
+                options: [
+                    Action {}
+                ]
             }
             leadingOptions: ListItemOptions {
-                Action {}
-                Action {}
-                Action {}
+                options: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
             }
         }
     }

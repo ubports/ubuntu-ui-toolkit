@@ -35,23 +35,33 @@ MainView {
     ListItemOptions {
         id: leading
         objectName: "StockLeading"
-        Action {
-            iconName: "delete"
-            onTriggered: print(iconName, "triggered", value)
-        }
-        Action {
-            iconName: "alarm-clock"
-            enabled: false
-            onTriggered: print(iconName, "triggered")
-        }
-        Action {
-            iconName: "camcorder"
-            onTriggered: print(iconName, "triggered", value)
-        }
-        Action {
-            iconName: "stock_website"
-            onTriggered: print(iconName, "triggered", value)
-        }
+        options: [
+            Action {
+                iconName: "delete"
+                onTriggered: print(iconName, "triggered")
+            },
+            Action {
+                iconName: "alarm-clock"
+                enabled: false
+                onTriggered: print(iconName, "triggered")
+            },
+            Action {
+                iconName: "camcorder"
+                onTriggered: print(iconName, "triggered")
+            },
+            Action {
+                iconName: "stock_website"
+                onTriggered: print(iconName, "triggered")
+            },
+            Action {
+                iconName: "starred"
+                onTriggered: print(iconName, "triggered")
+            },
+            Action {
+                iconName: "go-home"
+                onTriggered: print(iconName, "triggered")
+            }
+        ]
     }
 
     property bool selectable: false
@@ -145,14 +155,16 @@ MainView {
                         objectName: "InFlickable"+index
                         selectable: main.selectable
                         leadingOptions: ListItemOptions {
-                            Action {
-                                iconName: "edit"
-                                onTriggered: print(iconName, "triggered", value)
-                            }
-                            Action {
-                                iconName: "delete"
-                                onTriggered: print(iconName, "triggered", value)
-                            }
+                            options: [
+                                Action {
+                                    iconName: "edit"
+                                    onTriggered: print(iconName, "clicked", value)
+                                },
+                                Action {
+                                    iconName: "delete"
+                                    onTriggered: print(iconName, "clicked", value)
+                                }
+                            ]
                         }
                         trailingOptions: ListItemOptions {
                             options: leadingOptions.options
