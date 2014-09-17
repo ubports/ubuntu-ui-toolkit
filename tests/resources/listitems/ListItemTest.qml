@@ -32,7 +32,7 @@ MainView {
         onTriggered: print(iconName, "triggered", value)
     }
 
-    ListItemOptions {
+    ListItemActions {
         id: leading
         objectName: "StockLeading"
         actions: [
@@ -82,7 +82,7 @@ MainView {
                 anchors.fill: parent
                 text: units.gridUnit + "PX/unit"
             }
-            leadingOptions: ListItemOptions {
+            leadingActions: ListItemActions {
                 objectName: "InlineLeading"
                 actions: [stock]
                 delegate: Column {
@@ -90,18 +90,28 @@ MainView {
                     Icon {
                         width: units.gu(3)
                         height: width
-                        name: option.iconName
+                        name: action.iconName
                         color: "blue"
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     Label {
-                        text: option.text + index
+                        text: action.text + index
                         width: parent.width
                         horizontalAlignment: Text.AlignHCenter
                     }
                 }
             }
-            trailingOptions: leading
+            trailingActions: leading
+        }
+        ListItem {
+            Label {
+                anchors.fill: parent
+                text: "Another standalone ListItem"
+            }
+            leadingActions: testItem.leadingActions
+            trailingActions: ListItemActions {
+                actions: leading.actions
+            }
         }
 
         ListView {
@@ -115,7 +125,7 @@ MainView {
                 objectName: "ListItem" + index
                 id: listItem
                 onClicked: print(" clicked")
-                leadingOptions: leading
+                leadingActions: leading
                 Label {
                     text: modelData + " item"
                 }
@@ -135,6 +145,11 @@ MainView {
             height: units.gu(20)
             clip: true
             contentHeight: column.childrenRect.height
+            ListItemActions {
+                id: trailing
+                actions: leading.actions
+            }
+
             Column {
                 id: column
                 width: view.width
@@ -142,25 +157,11 @@ MainView {
                     model: 100
                     ListItem {
                         objectName: "InFlickable"+index
-                        leadingOptions: ListItemOptions {
-                            actions: [
-                                Action {
-                                    iconName: "edit"
-                                    onTriggered: print(iconName, "clicked", value)
-                                },
-                                Action {
-                                    iconName: "delete"
-                                    onTriggered: print(iconName, "clicked", value)
-                                }
-                            ]
-                        }
-                        trailingOptions: ListItemOptions {
-                            actions: leading.actions
-                        }
-
                         color: "red"
                         pressedColor: "lime"
                         divider.colorFrom: UbuntuColors.green
+                        leadingActions: leading
+                        trailingActions: trailing
 
                         Label {
                             text: modelData + " Flickable item"
