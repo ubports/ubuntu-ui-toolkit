@@ -30,15 +30,17 @@ Item {
     }
     ListItemOptions {
         id: leading
-        Action {
-            iconName: "starred"
-        }
-        Action {
-            iconName: "starred"
-        }
-        Action {
-            iconName: "starred"
-        }
+        options: [
+            Action {
+                iconName: "starred"
+            },
+            Action {
+                iconName: "starred"
+            },
+            Action {
+                iconName: "starred"
+            }
+        ]
     }
     ListItemOptions {
         id: trailing
@@ -48,16 +50,18 @@ Item {
     }
     ListItemOptions {
         id: wrongOption
-        Action {
-            id: goodAction
-            iconName: "starred"
-        }
-        QtObject {
-            id: badAction
-        }
-        Action {
-            iconName: "starred"
-        }
+        options: [
+            Action {
+                id: goodAction
+                iconName: "starred"
+            },
+            QtObject {
+                id: badAction
+            },
+            Action {
+                iconName: "starred"
+            }
+        ]
     }
     ListItemOptions {
         id: optionsDefault
