@@ -88,7 +88,7 @@ Ubuntu.StyledItem {
                                 })
             }
             contextMenuVisible = true;
-            popup.onVisibleChanged.connect(contextMenuHidden.bind(undefined, p));
+            popup.onVisibleChanged.connect(contextMenuHidden.bind(undefined, popup));
             // do not grab focus!
             popup.__foreground.activeFocusOnPress = false;
         }
