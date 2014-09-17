@@ -545,7 +545,7 @@ void UCListItemPrivate::toggleSelectionMode()
  * ListItem {
  *     id: listItem
  *     leadingOptions: ListItemOptions {
- *         options: [
+ *         actions: [
  *             Action {
  *                 iconName: "delete"
  *                 onTriggered: listItem.destroy()
@@ -553,7 +553,7 @@ void UCListItemPrivate::toggleSelectionMode()
  *         ]
  *     }
  *     trailingOptions: ListItemOptions {
- *         options: [
+ *         actions: [
  *             Action {
  *                 iconName: "search"
  *                 onTriggered: {
@@ -566,16 +566,16 @@ void UCListItemPrivate::toggleSelectionMode()
  * \endqml
  * \note When a list item is tugged, it automatically connects both leading and
  * trailing options to the list item. This implies that a ListItem cannot use
- * the same ListItemOption instance for both leading and trailing options. If
+ * the same ListItemOptions instance for both leading and trailing options. If
  * it is desired to have the same action present in both leading and trailing
- * options, one of the ListItemOption options list can use the other's list. In
+ * options, one of the ListItemOptions options list can use the other's list. In
  * the following example the list item can be deleted through both leading and
  * trailing options:
  * \qml
  * ListItem {
  *     id: listItem
  *     leadingOptions: ListItemOptions {
- *         options: [
+ *         actions: [
  *             Action {
  *                 iconName: "delete"
  *                 onTriggered: listItem.destroy()
