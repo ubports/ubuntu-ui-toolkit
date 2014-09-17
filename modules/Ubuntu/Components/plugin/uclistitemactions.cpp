@@ -210,10 +210,12 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
  * }
  * \endqml
  *
- * \section3 Notes on performance
+ * \section3 Using with ListViews
  * When used with views, or when the amount of items of same kind to be created
- * is huge, it is recommended to use cached actions as well as cached ListItemActions
- * instances. In this way we can reduce the creation time of the items:
+ * is huge, it is recommended to use cached ListItemActions instances to reduce
+ * creation time and to be able to handle rebounding and flicking properly. If
+ * each ListItem crteates its own ListItemOptions instance the Flickable view may
+ * be blocked and action visualization will also break.
  * \qml
  * import QtQuick 2.2
  * import Ubuntu.Components 1.2

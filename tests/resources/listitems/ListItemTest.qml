@@ -87,6 +87,16 @@ MainView {
             }
             trailingActions: leading
         }
+        ListItem {
+            Label {
+                anchors.fill: parent
+                text: "Another standalone ListItem"
+            }
+            leadingActions: testItem.leadingActions
+            trailingActions: ListItemActions {
+                actions: leading.actions
+            }
+        }
 
         ListView {
             id: view
@@ -119,6 +129,11 @@ MainView {
             height: units.gu(20)
             clip: true
             contentHeight: column.childrenRect.height
+            ListItemActions {
+                id: trailing
+                actions: leading.actions
+            }
+
             Column {
                 id: column
                 width: view.width
@@ -129,10 +144,7 @@ MainView {
                         color: "red"
                         pressedColor: "lime"
                         divider.colorFrom: UbuntuColors.green
-
-                        trailingActions: ListItemActions {
-                            actions: leading.actions
-                        }
+                        trailingActions: trailing
 
                         Label {
                             text: modelData + " Flickable item"
