@@ -31,7 +31,7 @@ MainView {
         onTriggered: print(iconName, "triggered")
     }
 
-    ListItemOptions {
+    ListItemActions {
         id: leading
         objectName: "StockLeading"
         actions: [
@@ -81,11 +81,11 @@ MainView {
                 anchors.fill: parent
                 text: units.gridUnit + "PX/unit"
             }
-            leadingOptions: ListItemOptions {
+            leadingActions: ListItemActions {
                 objectName: "InlineLeading"
                 actions: [stock]
             }
-            trailingOptions: leading
+            trailingActions: leading
         }
 
         ListView {
@@ -99,7 +99,7 @@ MainView {
                 objectName: "ListItem" + index
                 id: listItem
                 onClicked: print(" clicked")
-                leadingOptions: leading
+                leadingActions: leading
                 Label {
                     text: modelData + " item"
                 }
@@ -130,7 +130,7 @@ MainView {
                         pressedColor: "lime"
                         divider.colorFrom: UbuntuColors.green
 
-                        trailingOptions: ListItemOptions {
+                        trailingActions: ListItemActions {
                             actions: leading.actions
                         }
 
