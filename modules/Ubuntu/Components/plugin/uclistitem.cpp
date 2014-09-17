@@ -439,9 +439,9 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  * divider can be configured through the \l divider grouped property, which can
  * configure its margins from the edges of the ListItem as well as its visibility.
  *
- * ListItem can handle options that can ge tugged from front ot right of the item.
+ * ListItem can handle options that can get tugged from front to back of the item.
  * These options are Action elements visualized in panels attached to the front
- * or to the end of the item, and are revealed by swiping the item horizontally.
+ * or to the back of the item, and are revealed by swiping the item horizontally.
  * The tug is started only after the mouse/touch move had passed a given threshold.
  * These options are configured through the \l leadingOptions as well as \l
  * trailingOptions properties.
@@ -449,34 +449,42 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  * ListItem {
  *     id: listItem
  *     leadingOptions: ListItemOptions {
- *         Action {
- *             iconName: "delete"
- *             onTriggered: listItem.destroy()
- *         }
+ *         options: [
+ *             Action {
+ *                 iconName: "delete"
+ *                 onTriggered: listItem.destroy()
+ *             }
+ *         ]
  *     }
  *     trailingOptions: ListItemOptions {
- *         Action {
- *             iconName: "search"
- *             onTriggered: {
- *                 // do some search
+ *         options: [
+ *             Action {
+ *                 iconName: "search"
+ *                 onTriggered: {
+ *                     // do some search
+ *                 }
  *             }
- *         }
+ *         ]
  *     }
  * }
  * \endqml
- * \note A ListItem cannot use the same ListItemOption instance for both leading or
- * trailing options. If it is desired to have the same action present in both leading
- * and trailing options, one of the ListItemOption options list can use the other's
- * list. In the following example the list item can be deleted through both option
- * leading and trailing options:
+ * \note When a list item is tugged, it automatically connects both leading and
+ * trailing options to the list item. This implies that a ListItem cannot use
+ * the same ListItemOption instance for both leading and trailing options. If
+ * it is desired to have the same action present in both leading and trailing
+ * options, one of the ListItemOption options list can use the other's list. In
+ * the following example the list item can be deleted through both leading and
+ * trailing options:
  * \qml
  * ListItem {
  *     id: listItem
  *     leadingOptions: ListItemOptions {
- *         Action {
- *             iconName: "delete"
- *             onTriggered: listItem.destroy()
- *         }
+ *         options: [
+ *             Action {
+ *                 iconName: "delete"
+ *                 onTriggered: listItem.destroy()
+ *             }
+ *         ]
  *     }
  *     trailingOptions: ListItemOptions {
  *         options: leadingOptions.options
