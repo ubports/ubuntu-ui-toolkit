@@ -30,7 +30,7 @@ Item {
     }
     ListItemOptions {
         id: leading
-        options: [
+        actions: [
             Action {
                 iconName: "starred"
             },
@@ -44,13 +44,13 @@ Item {
     }
     ListItemOptions {
         id: trailing
-        options: [
+        actions: [
             stockAction,
         ]
     }
     ListItemOptions {
         id: wrongOption
-        options: [
+        actions: [
             Action {
                 id: goodAction
                 iconName: "starred"
@@ -147,7 +147,7 @@ Item {
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
 
             compare(optionsDefault.delegate, null, "ListItemOptions has no delegate set by default.");
-            compare(optionsDefault.options.length, 0, "ListItemOptions has no options set.");
+            compare(optionsDefault.actions.length, 0, "ListItemOptions has no options set.");
             compare(optionsDefault.panelItem, null, "There is no panelItem created by default.");
         }
 
@@ -231,7 +231,7 @@ Item {
             if (data.xfail) {
                 expectFailContinue(data.tag, "expected to fail");
             }
-            compare(data.object.options.length, data.expected, data.tag + ": expected options differ.");
+            compare(data.object.actions.length, data.expected, data.tag + ": expected options differ.");
         }
 
         function test_touch_tug_options_data() {

@@ -838,7 +838,7 @@ plugins.qmltypes
     prototype: "QObject"
     exports: ["ListItemOptions 1.2"]
     Property { name: "delegate"; type: "QQmlComponent"; isPointer: true }
-    Property { name: "options"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "actions"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "panelItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     name: "UCMouse"
