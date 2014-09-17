@@ -61,8 +61,8 @@ void UCListItemOptionsPrivate::_q_handlePanelWidth()
     // check how many options are visible && enabled
     // FIXME: use Actions API when moved to C++
     int count = 0;
-    for (int i = 0; i < options.count(); i++) {
-        if (options[i]->property("visible").toBool() && options[i]->property("enabled").toBool()) {
+    for (int i = 0; i < actions.count(); i++) {
+        if (actions[i]->property("visible").toBool() && actions[i]->property("enabled").toBool()) {
             count++;
         }
     }
@@ -192,9 +192,9 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
             Q_EMIT q->panelItemChanged();
 
             // calculate option's slot size
-            optionSlotWidth = panelItem->width() / options.count();
             offsetDragged = 0.0;
             optionsVisible = 0;
+            _q_handlePanelWidth();
             // connect to panel to catch dragging
             QObject::connect(panelItem, SIGNAL(widthChanged()), q, SLOT(_q_handlePanelWidth()));
             QObject::connect(panelItem, SIGNAL(xChanged()), q, SLOT(_q_handlePanelDrag()));
