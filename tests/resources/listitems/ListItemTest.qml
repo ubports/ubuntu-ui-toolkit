@@ -143,14 +143,16 @@ MainView {
                     ListItem {
                         objectName: "InFlickable"+index
                         leadingOptions: ListItemOptions {
-                            Action {
-                                iconName: "edit"
-                                onTriggered: print(iconName, "clicked")
-                            }
-                            Action {
-                                iconName: "delete"
-                                onTriggered: print(iconName, "clicked")
-                            }
+                            options: [
+                                Action {
+                                    iconName: "edit"
+                                    onTriggered: print(iconName, "clicked")
+                                },
+                                Action {
+                                    iconName: "delete"
+                                    onTriggered: print(iconName, "clicked")
+                                }
+                            ]
                         }
                         trailingOptions: ListItemOptions {
                             options: leadingOptions.options
