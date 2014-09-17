@@ -29,12 +29,14 @@ Item {
     }
     ListItemOptions {
         id: leading
-        Action {
-        }
-        Action {
-        }
-        Action {
-        }
+        options: [
+            Action {
+            },
+            Action {
+            },
+            Action {
+            }
+        ]
     }
     ListItemOptions {
         id: trailing
@@ -44,14 +46,16 @@ Item {
     }
     ListItemOptions {
         id: wrongOption
-        Action {
-            id: goodAction
-        }
-        QtObject {
-            id: badAction
-        }
-        Action {
-        }
+        options: [
+            Action {
+                id: goodAction
+            },
+            QtObject {
+                id: badAction
+            },
+            Action {
+            }
+        ]
     }
     ListItemOptions {
         id: optionsDefault

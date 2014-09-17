@@ -32,12 +32,14 @@ MainView {
     ListItemOptions {
         id: leading
         objectName: "StockLeading"
-        Action {
-        }
-        Action {
-        }
-        Action {
-        }
+        options: [
+            Action {
+            },
+            Action {
+            },
+            Action {
+            }
+        ]
     }
 
     Column {

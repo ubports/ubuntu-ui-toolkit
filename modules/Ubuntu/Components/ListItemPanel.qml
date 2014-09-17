@@ -24,6 +24,9 @@ Item {
     id: panel
     width: units.gu(20)
 
+    /*
+      Property holding the ListItem's contentItem instance
+      */
     readonly property Item contentItem: parent ? parent.contentItem : null
     /*
       Specifies whether the panel is used to visualize leading or trailing options.

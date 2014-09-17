@@ -28,7 +28,6 @@ class UCListItemOptions : public QObject
     Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
     Q_PROPERTY(QQmlListProperty<QObject> options READ options CONSTANT)
     Q_PROPERTY(QQuickItem *panelItem READ panelItem NOTIFY panelItemChanged)
-    Q_CLASSINFO("DefaultProperty", "options")
 public:
     explicit UCListItemOptions(QObject *parent = 0);
     ~UCListItemOptions();
