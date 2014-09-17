@@ -849,7 +849,7 @@ ActionItem {
         property real lineSpacing: units.dp(3)
         property real lineSize: editor.font.pixelSize + lineSpacing
 
-        property int type: action ? action.parameterType : Toolkit.Action.None
+        property int type: action ? action.parameterType : Ubuntu.Action.None
         onTypeChanged: {
             // Don't undo explicitly specified hints
             if (inputMethodHints != Qt.ImhNone)
