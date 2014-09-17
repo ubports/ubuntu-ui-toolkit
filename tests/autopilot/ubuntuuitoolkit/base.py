@@ -54,6 +54,7 @@ def get_qmlscene_launch_command():
     arch = get_host_multiarch()
     return '/usr/lib/{}/qt5/bin/qmlscene'.format(arch)
 
+
 def get_toolkit_launcher_command():
     root = ubuntuuitoolkit.tests.get_path_to_source_root()
     path_to_local_launcher = os.path.join(
