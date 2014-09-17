@@ -22,7 +22,7 @@ Column {
     height: 600
     ListItemOptions {
         id: options1
-        options: [Action {}]
+        actions: [Action {}]
     }
     ListItemOptions {
         id: options2
