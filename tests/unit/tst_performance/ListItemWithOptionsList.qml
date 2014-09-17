@@ -26,7 +26,7 @@ Column {
     }
     ListItemOptions {
         id: options2
-        options: [
+        actions: [
             Action {},
             Action {},
             Action {}

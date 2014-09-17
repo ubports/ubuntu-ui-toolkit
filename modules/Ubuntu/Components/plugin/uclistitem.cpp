@@ -444,7 +444,7 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  * ListItem {
  *     id: listItem
  *     leadingOptions: ListItemOptions {
- *         options: [
+ *         actions: [
  *             Action {
  *                 iconName: "delete"
  *                 onTriggered: listItem.destroy()
@@ -452,7 +452,7 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  *         ]
  *     }
  *     trailingOptions: ListItemOptions {
- *         options: [
+ *         actions: [
  *             Action {
  *                 iconName: "search"
  *                 onTriggered: {
@@ -474,7 +474,7 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  * ListItem {
  *     id: listItem
  *     leadingOptions: ListItemOptions {
- *         options: [
+ *         actions: [
  *             Action {
  *                 iconName: "delete"
  *                 onTriggered: listItem.destroy()
