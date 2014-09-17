@@ -34,7 +34,7 @@ MainView {
     ListItemOptions {
         id: leading
         objectName: "StockLeading"
-        options: [
+        actions: [
             Action {
                 iconName: "delete"
                 onTriggered: print(iconName, "triggered")
@@ -83,7 +83,7 @@ MainView {
             }
             leadingOptions: ListItemOptions {
                 objectName: "InlineLeading"
-                options: [stock]
+                actions: [stock]
             }
             trailingOptions: leading
         }
@@ -131,7 +131,7 @@ MainView {
                         divider.colorFrom: UbuntuColors.green
 
                         trailingOptions: ListItemOptions {
-                            options: leading.options
+                            actions: leading.actions
                         }
 
                         Label {
