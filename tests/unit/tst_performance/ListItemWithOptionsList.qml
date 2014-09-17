@@ -22,15 +22,15 @@ Column {
     height: 600
     ListItemOptions {
         id: options1
-        Action {}
-        Action {}
-        Action {}
+        options: [Action {}]
     }
     ListItemOptions {
         id: options2
-        Action {}
-        Action {}
-        Action {}
+        options: [
+            Action {},
+            Action {},
+            Action {}
+        ]
     }
 
     Repeater {

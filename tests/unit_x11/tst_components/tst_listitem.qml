@@ -32,21 +32,23 @@ Item {
     }
     ListItemOptions {
         id: leading
-        Action {
-            iconName: "delete"
-            property var param
-            onTriggered: param = value
-        }
-        Action {
-            iconName: "edit"
-            property var param
-            onTriggered: param = value
-        }
-        Action {
-            iconName: "camcorder"
-            property var param
-            onTriggered: param = value
-        }
+        options: [
+            Action {
+                iconName: "delete"
+                property var param
+                onTriggered: param = value
+            },
+            Action {
+                iconName: "edit"
+                property var param
+                onTriggered: param = value
+            },
+            Action {
+                iconName: "camcorder"
+                property var param
+                onTriggered: param = value
+            }
+        ]
     }
     ListItemOptions {
         id: trailing
@@ -59,16 +61,18 @@ Item {
     }
     ListItemOptions {
         id: wrongOption
-        Action {
-            id: goodAction
-            iconName: "starred"
-        }
-        QtObject {
-            id: badAction
-        }
-        Action {
-            iconName: "starred"
-        }
+        options: [
+            Action {
+                id: goodAction
+                iconName: "starred"
+            },
+            QtObject {
+                id: badAction
+            },
+            Action {
+                iconName: "starred"
+            }
+        ]
     }
     ListItemOptions {
         id: optionsDefault

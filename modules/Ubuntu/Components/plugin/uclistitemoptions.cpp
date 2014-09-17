@@ -232,23 +232,43 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
  * valid for the case when the option is visible less than 50%, in which case the
  * option is hidden. Options can be triggered by tapping.
  *
- * \note You cannot use the same ListItemOptions for leading and for trailing options
- * the same time as when the item content is tugged, both options' panels will be
- * bound to the list item, and teh same item cannot be bount to both edges. However
- * the same set of actions can be used for both options either by using a shared
- * set or by using the others' list. Example:
+ * \note You can use the same ListItemOptions for leading and for trailing options
+ * the same time only if the instance is used by different groups of list items,
+ * where one group uses it as leading and other group as trailing. In any other
+ * circumstances use separate ListItemOptions for leading and trailing options.
  * \qml
- * ListItem {
- *     leadingOptions: ListItemOptions {
- *         Action {
- *             iconName: "edit"
- *         }
- *         Action {
- *             iconName: "delete"
- *         }
+ * import QtQuick 2.2
+ * import Ubuntu.Components 1.2
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     ListItemOptions {
+ *         id: sharedOptions
+ *         options: [
+ *             Action {
+ *                 iconName: "search"
+ *             },
+ *             Action {
+ *                 iconName: "edit"
+ *             },
+ *             Action {
+ *                 iconName: "copy"
+ *             }
+ *         ]
  *     }
- *     trailingOptions: ListItemOptions {
- *         options: leadingOptions.options
+ *
+ *     Column {
+ *         ListItem {
+ *             leadingOptions: sharedOptions
+ *         }
+ *         UbuntuListView {
+ *             anchors.fill: parent
+ *             model: 10000
+ *             delegate: ListItem {
+ *                 trailingOptions: sharedOptions
+ *             }
+ *         }
  *     }
  * }
  * \endqml
@@ -270,15 +290,17 @@ QQuickItem *UCListItemOptionsPrivate::createPanelItem()
  *         model: 10000
  *         ListItemOptions {
  *             id: commonOptions
- *             Action {
- *                 iconName: "search"
- *             }
- *             Action {
- *                 iconName: "edit"
- *             }
- *             Action {
- *                 iconName: "copy"
- *             }
+ *             options: [
+ *                 Action {
+ *                     iconName: "search"
+ *                 },
+ *                 Action {
+ *                     iconName: "edit"
+ *                 },
+ *                 Action {
+ *                     iconName: "copy"
+ *                 }
+ *             ]
  *         }
  *         delegate: ListItem {
  *             trailingOptions: commonOptions
@@ -377,7 +399,6 @@ void UCListItemOptions::setDelegate(QQmlComponent *delegate)
 
 /*!
  * \qmlproperty list<Action> ListItemOptions::options
- * \default
  * The property holds the options to be displayed. It can hold instances cached or
  * declared in place. An example of cached options:
  * \qml
@@ -408,6 +429,18 @@ QQuickItem *UCListItemOptions::panelItem() const
 {
     Q_D(const UCListItemOptions);
     return d->panelItem;
+}
+
+/*!
+ * \internal
+ * \qmlproperty list<QtObject> ListItemOptions::data
+ * \default
+ * The property holds any additional content added to the ListItemOptions.
+ */
+QQmlListProperty<QObject> UCListItemOptions::data()
+{
+    Q_D(UCListItemOptions);
+    return QQmlListProperty<QObject>(this, d->data);
 }
 
 #include "moc_uclistitemoptions.cpp"
