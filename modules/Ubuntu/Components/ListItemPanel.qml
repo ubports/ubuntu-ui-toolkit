@@ -88,7 +88,7 @@ Item {
                     id: delegateLoader
                     height: parent.height
                     sourceComponent: panel.delegate ? panel.delegate : defaultDelegate
-                    property Action option: modelData
+                    property Action action: modelData
                     property int index: index
                     onItemChanged: {
                         // this is needed only for testing purposes
@@ -108,7 +108,7 @@ Item {
             Icon {
                 width: units.gu(2.5)
                 height: width
-                name: option.iconName
+                name: action.iconName
                 // FIXME: use Palette colors instead when available
                 color: panel.leadingPanel ? "white" : UbuntuColors.darkGrey
                 anchors.centerIn: parent

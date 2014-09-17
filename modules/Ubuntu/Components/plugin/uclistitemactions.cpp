@@ -276,7 +276,7 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
  * When used with views, or when the amount of items of same kind to be created
  * is huge, it is recommended to use cached ListItemActions instances to reduce
  * creation time and to be able to handle rebounding and flicking properly. If
- * each ListItem crteates its own ListItemOptions instance the Flickable view may
+ * each ListItem crteates its own ListItemActions instance the Flickable view may
  * be blocked and action visualization will also break.
  * \qml
  * import QtQuick 2.2
@@ -325,16 +325,16 @@ UCListItemActions::~UCListItemActions()
  * Custom delegate which overrides the default one used by the ListItem. If the
  * value is null, the default delegate will be used.
  *
- * ListItemOptions provides the \c option context property which contains the
+ * ListItemActions provides the \c action context property which contains the
  * Action instance currently visualized. Using this property delegates can access
  * the information to be visualized. The trigger is handled by the \l panelItem
  * therefore only visualization is needed by the custom delegates. The other
  * context property exposed to delegates is the \c index, which specifies the
- * index of the option visualized.
+ * index of the action visualized.
  *
  * The delegate height is set automatically by the panelItem, and the width value
  * is clamped between height and the maximum width of the list item divided by the
- * number of options in the list.
+ * number of actions in the list.
  * \qml
  * import QtQuick 2.2
  * import Ubuntu.Components 1.2
@@ -347,14 +347,14 @@ UCListItemActions::~UCListItemActions()
  *         anchors.fill: parent
  *         model: 50
  *         delegate: ListItem {
- *             trailingOptions: optionsList
+ *             trailingActions: optionsList
  *         }
- *         ListItemOptions {
+ *         ListItemActions {
  *             id: optionsList
  *             delegate: Column {
  *                 width: height + units.gu(2)
  *                 Icon {
- *                     name: option.iconName
+ *                     name: action.iconName
  *                     width: units.gu(3)
  *                     height: width
  *                     color: "blue"
@@ -366,7 +366,7 @@ UCListItemActions::~UCListItemActions()
  *                     horizontalAlignment: Text.AlignHCenter
  *                 }
  *             }
- *             options: Action {
+ *             actions: Action {
  *                 iconName: "starred"
  *                 text: "Star"
  *             }
