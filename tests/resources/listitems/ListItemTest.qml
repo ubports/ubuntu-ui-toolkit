@@ -31,7 +31,7 @@ MainView {
         onTriggered: print(iconName, "triggered")
     }
 
-    ListItemOptions {
+    ListItemActions {
         id: leading
         objectName: "StockLeading"
         actions: [
@@ -81,11 +81,21 @@ MainView {
                 anchors.fill: parent
                 text: units.gridUnit + "PX/unit"
             }
-            leadingOptions: ListItemOptions {
+            leadingActions: ListItemActions {
                 objectName: "InlineLeading"
                 actions: [stock]
             }
-            trailingOptions: leading
+            trailingActions: leading
+        }
+        ListItem {
+            Label {
+                anchors.fill: parent
+                text: "Another standalone ListItem"
+            }
+            leadingActions: testItem.leadingActions
+            trailingActions: ListItemActions {
+                actions: leading.actions
+            }
         }
 
         ListView {
@@ -99,7 +109,7 @@ MainView {
                 objectName: "ListItem" + index
                 id: listItem
                 onClicked: print(" clicked")
-                leadingOptions: leading
+                leadingActions: leading
                 Label {
                     text: modelData + " item"
                 }
@@ -119,6 +129,11 @@ MainView {
             height: units.gu(20)
             clip: true
             contentHeight: column.childrenRect.height
+            ListItemActions {
+                id: trailing
+                actions: leading.actions
+            }
+
             Column {
                 id: column
                 width: view.width
@@ -129,10 +144,7 @@ MainView {
                         color: "red"
                         pressedColor: "lime"
                         divider.colorFrom: UbuntuColors.green
-
-                        trailingOptions: ListItemOptions {
-                            actions: leading.actions
-                        }
+                        trailingActions: trailing
 
                         Label {
                             text: modelData + " Flickable item"

@@ -38,9 +38,9 @@ Item {
     property Component delegate
 
     /*
-      Options
+      Actions
       */
-    property var optionList
+    property var actionList
 
     /*
       Emitted when action is triggered
@@ -69,10 +69,10 @@ Item {
             leftMargin: spacing
         }
 
-        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.optionList.length) : 0
+        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.actionList.length) : 0
 
         Repeater {
-            model: panel.optionList
+            model: panel.actionList
             AbstractButton {
                 action: modelData
                 visible: action.visible && action.enabled

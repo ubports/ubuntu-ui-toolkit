@@ -28,7 +28,7 @@ Item {
         id: stockAction
         iconName: "starred"
     }
-    ListItemOptions {
+    ListItemActions {
         id: leading
         actions: [
             Action {
@@ -42,13 +42,13 @@ Item {
             }
         ]
     }
-    ListItemOptions {
+    ListItemActions {
         id: trailing
         actions: [
             stockAction,
         ]
     }
-    ListItemOptions {
+    ListItemActions {
         id: wrongOption
         actions: [
             Action {
@@ -63,7 +63,7 @@ Item {
             }
         ]
     }
-    ListItemOptions {
+    ListItemActions {
         id: optionsDefault
         property int optionCount: options.length
     }
@@ -78,8 +78,8 @@ Item {
             id: testItem
             width: parent.width
             color: "blue"
-            leadingOptions: leading
-            trailingOptions: leading
+            leadingActions: leading
+            trailingActions: leading
             Item {
                 id: bodyItem
                 anchors.fill: parent
@@ -94,8 +94,8 @@ Item {
             delegate: ListItem {
                 objectName: "listItem" + index
                 width: parent.width
-                leadingOptions: leading
-                trailingOptions: trailing
+                leadingActions: leading
+                trailingActions: trailing
             }
         }
     }
@@ -146,8 +146,8 @@ Item {
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
 
-            compare(optionsDefault.delegate, null, "ListItemOptions has no delegate set by default.");
-            compare(optionsDefault.actions.length, 0, "ListItemOptions has no options set.");
+            compare(optionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
+            compare(optionsDefault.actions.length, 0, "ListItemActions has no options set.");
             compare(optionsDefault.panelItem, null, "There is no panelItem created by default.");
         }
 
@@ -218,7 +218,7 @@ Item {
             testItem.divider.visible = true;
         }
 
-        // ListItemOptions tests
+        // ListItemActions tests
         function test_valid_options_data() {
             return [
                 {tag: "Inline Actions", object: leading, expected: 3, xfail: false},
