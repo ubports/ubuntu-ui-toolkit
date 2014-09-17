@@ -134,6 +134,20 @@ Template {
                 textFormat: TextEdit.RichText
                 text: richText
                 width: parent.width
+                height: units.gu(25)
+            }
+        }
+
+        TemplateRow {
+            title: i18n.tr("Right aligned")
+
+            TextArea {
+                objectName: "textarea_right"
+                textFormat: TextEdit.RichText
+                text: richText
+                width: parent.width
+                height: units.gu(25)
+                horizontalAlignment: TextEdit.AlignRight
             }
         }
     }

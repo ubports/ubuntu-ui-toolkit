@@ -116,6 +116,15 @@ class CaretTextInputTestCase(GalleryTestCase):
             objectName=self.objectName)
         self.assertFalse(self.textfield.focus)
 
+        # Get textfield to the top half of the screen
+        # Otherwise the OSK may interfere with test cases
+        flickable = self.main_view.select_single(
+            'QQuickFlickable', objectName='TemplateFlickable')
+        textarea_right = self.main_view.select_single(
+            objectName='textarea_right')
+        flickable.swipe_child_into_view(textarea_right)
+        flickable.swipe_child_into_view(self.textfield)
+
     def test_caret_visible_on_focus(self):
         try:
             cursor = self.main_view.select_single(
