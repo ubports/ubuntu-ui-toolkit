@@ -133,7 +133,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
     def launch_application(self):
         desktop_file_path = self._get_desktop_file_path()
         command_line = [
-            base.get_qmlscene_launch_command(),
+            base.get_toolkit_launcher_command(),
             "-I", _get_module_include_path(),
             self.test_qml_file_path,
             '--desktop_file_hint={0}'.format(desktop_file_path)

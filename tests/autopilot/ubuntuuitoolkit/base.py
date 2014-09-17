@@ -16,6 +16,8 @@
 
 """Base classes for Autopilot tests using the Ubuntu UI Toolkit."""
 
+import logging
+
 import os
 import subprocess
 import ubuntuuitoolkit
@@ -25,6 +27,9 @@ from autopilot import (
     platform,
     testcase
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_host_multiarch():
@@ -37,7 +42,19 @@ def get_host_multiarch():
 
 
 def get_qmlscene_launch_command():
-    """Return the command to launch qmlscene for autopilot tests."""
+    """Return the command to launch qmlscene for autopilot tests.
+
+    This function is deprecated. Use get_toolkit_launcher_command() instead.
+    """
+    logger.warn('This function is deprecated. '
+                'Use get_toolkit_launcher_command() instead.')
+    # We need to specify qt5 because qtchooser doesn't have a default
+    # configuration on devices and it seems the environment variable
+    # QT_SELECT=qt5 doesn't work for autopilot tests. --Mirv - 2013-10-03
+    arch = get_host_multiarch()
+    return '/usr/lib/{}/qt5/bin/qmlscene'.format(arch)
+
+def get_toolkit_launcher_command():
     root = ubuntuuitoolkit.tests.get_path_to_source_root()
     path_to_local_launcher = os.path.join(
         root, 'tests', 'launcher', 'launcher')
