@@ -51,6 +51,14 @@ MainView {
             Action {
                 iconName: "stock_website"
                 onTriggered: print(iconName, "triggered")
+            },
+            Action {
+                iconName: "starred"
+                onTriggered: print(iconName, "triggered")
+            },
+            Action {
+                iconName: "go-home"
+                onTriggered: print(iconName, "triggered")
             }
         ]
     }
