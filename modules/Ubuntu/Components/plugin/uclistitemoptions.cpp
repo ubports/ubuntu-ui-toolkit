@@ -312,4 +312,16 @@ QQuickItem *UCListItemOptions::panelItem() const
     return d->panelItem;
 }
 
+/*!
+ * \internal
+ * \qmlproperty list<QtObject> ListItemOptions::data
+ * \default
+ * The property holds any additional content added to the ListItemOptions.
+ */
+QQmlListProperty<QObject> UCListItemOptions::data()
+{
+    Q_D(UCListItemOptions);
+    return QQmlListProperty<QObject>(this, d->data);
+}
+
 #include "moc_uclistitemoptions.cpp"
