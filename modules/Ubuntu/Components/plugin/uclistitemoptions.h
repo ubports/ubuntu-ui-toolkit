@@ -26,7 +26,7 @@ class UCListItemOptions : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
-    Q_PROPERTY(QQmlListProperty<QObject> options READ options CONSTANT)
+    Q_PROPERTY(QQmlListProperty<QObject> actions READ actions CONSTANT)
     Q_PROPERTY(QQuickItem *panelItem READ panelItem NOTIFY panelItemChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data)
     Q_CLASSINFO("DefaultProperty", "data")
@@ -36,7 +36,7 @@ public:
 
     QQmlComponent *delegate() const;
     void setDelegate(QQmlComponent *delegate);
-    QQmlListProperty<QObject> options();
+    QQmlListProperty<QObject> actions();
     QQuickItem *panelItem() const;
     QQmlListProperty<QObject> data();
 
