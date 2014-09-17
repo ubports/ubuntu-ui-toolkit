@@ -459,27 +459,7 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  * divider can be configured through the \l divider grouped property, which can
  * configure its margins from the edges of the ListItem as well as its visibility.
  * When used in \c ListView or \l UbuntuListView, the last list item will not
- * show the divider no matter of the visible property value set. In other
- * circumstances declaring a \c count property in the ListItem's parent item
- * or Flickable can help applying the last item detection logic.
- * \qml
- * Column {
- *     width: units.gu(40)
- *     // bring count to Column from Repeater
- *     property alias count: repeater.count
- *     Repeater {
- *         model: 10
- *         ListItem {
- *             Label {
- *                 anchors.fill: parent
- *                 horizontalCenter: Text.AlignHCenter
- *                 verticalCenter: Text.AlignVCenter
- *                 text: "Item #" + modelData
- *             }
- *         }
- *     }
- * }
- * \endqml
+ * show the divider no matter of the visible property value set.
  *
  * ListItem can handle options that can get tugged from front to back of the item.
  * These options are Action elements visualized in panels attached to the front
