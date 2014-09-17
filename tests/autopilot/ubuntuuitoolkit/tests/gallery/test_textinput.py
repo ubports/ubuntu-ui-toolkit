@@ -18,7 +18,6 @@
 
 import testscenarios
 
-from autopilot.introspection import dbus
 from ubuntuuitoolkit import emulators, ubuntu_scenarios
 from ubuntuuitoolkit.tests.gallery import GalleryTestCase
 import locale
@@ -95,73 +94,3 @@ class DisabledTextInputTestCase(GalleryTestCase):
         self.pointing_device.click_object(textfield_disabled)
         textfield_disabled.keyboard.type('This should not be writen')
         self.assertEqual('', textfield_disabled.text)
-
-
-class CaretTextInputTestCase(GalleryTestCase):
-
-    scenarios = [
-        ('textfield', dict(objectName='textfield_standard')),
-        ('textarea', dict(objectName='textarea_default')),
-        ('customfield', dict(objectName='textfield_customstyle')),
-    ]
-
-    def get_command_line(self, command_line):
-        command_line.append('-touch')
-        return command_line
-
-    def setUp(self):
-        super(CaretTextInputTestCase, self).setUp()
-        self.open_page('textinputsElement')
-        self.textfield = self.main_view.select_single(
-            objectName=self.objectName)
-        self.assertFalse(self.textfield.focus)
-
-        # Get textfield to the top half of the screen
-        # Otherwise the OSK may interfere with test cases
-        flickable = self.main_view.select_single(
-            'QQuickFlickable', objectName='TemplateFlickable')
-        textarea_right = self.main_view.select_single(
-            objectName='textarea_right')
-        flickable.swipe_child_into_view(textarea_right)
-        flickable.swipe_child_into_view(self.textfield)
-
-    def test_caret_visible_on_focus(self):
-        try:
-            cursor = self.main_view.select_single(
-                objectName='text_cursor_style_caret')
-            # cursor.visible is always True if the select succeeds
-            self.assertFalse(cursor.visible)
-        except dbus.StateNotFoundError:
-            # Caret can't be selected because it's hidden
-            pass
-
-        self.pointing_device.click_object(self.textfield)
-        self.assertTrue(self.textfield.focus)
-        cursor = self.main_view.select_single(
-            objectName='text_cursor_style_caret')
-        self.assertTrue(cursor.visible)
-
-    def test_caret_hide_while_typing(self):
-        self.pointing_device.click_object(self.textfield)
-        self.assertTrue(self.textfield.focus)
-        cursor = self.main_view.select_single(
-            objectName='text_cursor_style_caret')
-        self.assertTrue(cursor.visible)
-
-        self.textfield.keyboard.type('Lorem ipsum')
-        self.assertFalse(cursor.visible)
-
-    def test_caret_visible_after_tapping(self):
-        self.test_caret_hide_while_typing()
-        self.pointing_device.click_object(self.textfield)
-        cursor = self.main_view.select_single(
-            objectName='text_cursor_style_caret')
-        self.assertTrue(cursor.visible)
-
-    def test_caret_visible_after_selecting(self):
-        self.test_caret_hide_while_typing()
-        # Select a character
-        self.keyboard.press_and_release('Shift+Left')
-        cursor = self.main_view.select_single(
-            objectName='text_cursor_style_caret_end')
-        self.assertTrue(cursor.visible)
