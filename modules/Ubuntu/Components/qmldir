@@ -1,6 +1,5 @@
 module Ubuntu.Components
 plugin UbuntuComponents
-Action 0.1 Action.qml
 ActionItem 0.1 ActionItem.qml
 ActionList 0.1 ActionList.qml
 ToolbarItems 0.1 ToolbarItems.qml
@@ -51,7 +50,6 @@ internal TextInputPopover TextInputPopover.qml
 internal InputHandler InputHandler.qml
 
 #version 1.0
-Action 1.0 Action.qml
 ActionItem 1.0 ActionItem.qml
 ActionList 1.0 ActionList.qml
 ToolbarItems 1.0 ToolbarItems.qml
@@ -106,7 +104,5 @@ PageHeadState 1.1 PageHeadState.qml
 Icon 1.1 Icon11.qml
 StyledItem 1.1 StyledItem.qml
 singleton UbuntuColors 1.1 11/UbuntuColors.qml
-
-#version 1.2
 internal ListItemPanel ListItemPanel.qml
 internal ListItemSelectablePanel ListItemSelectablePanel.qml

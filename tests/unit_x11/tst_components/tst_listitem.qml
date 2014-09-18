@@ -60,23 +60,7 @@ Item {
         }
     }
     ListItemActions {
-        id: wrongOption
-        actions: [
-            Action {
-                id: goodAction
-                iconName: "starred"
-            },
-            QtObject {
-                id: badAction
-            },
-            Action {
-                iconName: "starred"
-            }
-        ]
-    }
-    ListItemActions {
         id: actionsDefault
-        property int optionCount: actions.length
     }
 
     Column {
@@ -247,22 +231,6 @@ Item {
             testItem.divider.visible = false;
             compare(testItem.contentItem.height, testItem.height, "ListItem's background height must be the same as the item itself.");
             testItem.divider.visible = true;
-        }
-
-        // ListItemActions tests
-        function test_valid_actions_data() {
-            return [
-                {tag: "Inline Actions", object: leading, expected: 3, xfail: false},
-                {tag: "Stock Actions", object: trailing, expected: 1, xfail: false},
-                {tag: "Wrong Actions", object: wrongOption, expected: 3, xfail: true},
-                {tag: "Wrong Actions", object: wrongOption, expected: 0, xfail: false},
-            ];
-        }
-        function test_valid_actions(data) {
-            if (data.xfail) {
-                expectFailContinue(data.tag, "expected to fail");
-            }
-            compare(data.object.actions.length, data.expected, data.tag + ": expected actions differ.");
         }
 
         function test_touch_tug_actions_data() {

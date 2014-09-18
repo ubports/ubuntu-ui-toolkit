@@ -7,388 +7,352 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2013-05-30 14:06+0200\n"
-"PO-Revision-Date: 2014-08-14 12:11+0000\n"
+"POT-Creation-Date: 2014-09-01 19:02+0200\n"
+"PO-Revision-Date: 2014-09-07 06:50+0000\n"
 "Last-Translator: Åka Sikrom <Unknown>\n"
 "Language-Team: Norwegian Bokmal <nb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-08-15 06:22+0000\n"
-"X-Generator: Launchpad (build 17156)\n"
+"X-Launchpad-Export-Date: 2014-09-08 06:55+0000\n"
+"X-Generator: Launchpad (build 17196)\n"
 
-#: examples/ubuntu-ui-toolkit-gallery/Animations.qml:22
-msgid "NumberAnimation"
-msgstr "Tallanimasjon"
-
-#: examples/ubuntu-ui-toolkit-gallery/Animations.qml:26
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:25
-#: examples/ubuntu-ui-toolkit-gallery/Dialog.qml:27
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:23
-#: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:26
-#: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:59
-#: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:38
-#: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:71
-#: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:25
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:44
-msgid "Standard"
-msgstr "Standard"
-
-#: examples/ubuntu-ui-toolkit-gallery/Animations.qml:56
-msgid "Standard Durations"
-msgstr "Standard varighet"
-
-#: examples/ubuntu-ui-toolkit-gallery/Animations.qml:60
-msgid "Snap"
-msgstr "Festing"
-
-#: examples/ubuntu-ui-toolkit-gallery/Animations.qml:96
-msgid "Fast"
-msgstr "Rask"
-
-#: examples/ubuntu-ui-toolkit-gallery/Animations.qml:132
-msgid "Slow"
-msgstr "Treg"
-
-#: examples/ubuntu-ui-toolkit-gallery/Animations.qml:157
-msgid "Sleepy"
-msgstr "Søvnig"
-
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:28
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:36
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:50
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:59
-msgid "Call"
-msgstr "Ring"
-
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:33
-#: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:26
-msgid "Color"
-msgstr "Farge"
-
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:42
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:41
-msgid "Icon"
-msgstr "Ikon"
-
-#: examples/ubuntu-ui-toolkit-gallery/Buttons.qml:56
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:73
-#: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:41
-#: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:75
-msgid "Disabled"
-msgstr "Slått av"
-
-#: examples/ubuntu-ui-toolkit-gallery/Dialog.qml:30
-#: examples/ubuntu-ui-toolkit-gallery/Popover.qml:42
-#: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:41
-#: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:74
-msgid "Open"
-msgstr "Åpen"
-
-#: examples/ubuntu-ui-toolkit-gallery/Icons.qml:25
-msgid "Scaling"
-msgstr "Skalering"
-
-#: examples/ubuntu-ui-toolkit-gallery/Icons.qml:50
-msgid "Colorization"
-msgstr "Fargelegging"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:26
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:34
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:44
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:53
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:62
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:71
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:83
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:95
-msgid "Label"
-msgstr "Etikett"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:31
-msgid "Subtitled"
-msgstr "Undertitulert"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:35
-msgid "Secondary label"
-msgstr "Sekundær etikett"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:50
-msgid "Progression"
-msgstr "Utvikling"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:59
-msgid "Single value"
-msgstr "Enkeltverdi"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:63
-msgid "Value"
-msgstr "Verdi"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:68
-msgid "Multi value"
-msgstr "Multiverdi"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:72
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:84
-msgid "Value 1"
-msgstr "Verdi 1"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:73
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:85
-msgid "Value 2"
-msgstr "Verdi 2"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:74
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:86
-msgid "Value 3"
-msgstr "Verdi 3"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:75
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:87
-msgid "Value 4"
-msgstr "Verdi 4"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:80
-msgid "Value selector"
-msgstr "Verdivelger"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:92
-msgid "Control"
-msgstr "Kontroll"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:103
-msgid "Removable"
-msgstr "Kan fjernes"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:106
-msgid "Slide to remove"
-msgstr "Skyv for å fjerne"
-
-#: examples/ubuntu-ui-toolkit-gallery/ListItems.qml:116
-msgid "Grouped list"
-msgstr "Gruppert liste"
-
-#: examples/ubuntu-ui-toolkit-gallery/Popover.qml:38
-msgid "Flickable"
-msgstr "Flyttbart"
-
-#: examples/ubuntu-ui-toolkit-gallery/Popover.qml:74
-msgid "Action #1"
-msgstr "Handling #1"
-
-#: examples/ubuntu-ui-toolkit-gallery/Popover.qml:78
-msgid "Action #2"
-msgstr "Handling #2"
-
-#: examples/ubuntu-ui-toolkit-gallery/Popover.qml:82
-msgid "Action #3"
-msgstr "Handling #3"
-
-#: examples/ubuntu-ui-toolkit-gallery/Popover.qml:86
-msgid "Action #4"
-msgstr "Handling #4"
-
-#: examples/ubuntu-ui-toolkit-gallery/Popover.qml:90
-msgid "Action #5"
-msgstr "Handling #5"
-
-#: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:22
-msgid "Progress Bar"
-msgstr "Framdriftslinje"
-
-#: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:45
-msgid "Infinite"
-msgstr "Uendelig"
-
-#: examples/ubuntu-ui-toolkit-gallery/ProgressBars.qml:55
-msgid "Activity Indicator"
-msgstr "Aktivitetsindikator"
-
-#: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:26
-msgid "The visual style of the Sheet is early work and thus clunky looking."
-msgstr ""
-"Arkets visuelle stil er i en tidlig utviklingsfase, og kan derfor se litt "
-"rar ut."
-
-#: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:51
-#: examples/ubuntu-ui-toolkit-gallery/Sheet.qml:84
-msgid "Title"
-msgstr "Tittel"
-
-#: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:32
-#: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:45
-#: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:60
+#: Ubuntu/Components/plugin/statesaverbackend_p.cpp:154
 #, qt-format
-msgid "value = %1"
-msgstr "verdi = %1"
+msgid ""
+"property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
+"of type %5"
+msgstr ""
 
-#: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:37
-msgid "Live Update"
-msgstr "Live-oppdatering"
+#: Ubuntu/Components/plugin/statesaverbackend_p.cpp:163
+#, qt-format
+msgid "property \"%1\" does not exist or is not writable for object %2"
+msgstr ""
 
-#: examples/ubuntu-ui-toolkit-gallery/Sliders.qml:50
-msgid "Range"
-msgstr "Rekkevidde"
+#: Ubuntu/Components/plugin/ucalarm.cpp:42
+#: Ubuntu/Components/plugin/ucalarm.cpp:136
+msgid "Alarm"
+msgstr "Alarm"
 
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:47
-msgid "Type me in..."
-msgstr "Skriv navnet mitt …"
+#: Ubuntu/Components/plugin/ucalarm.cpp:684
+#: Ubuntu/Components/plugin/ucalarm.cpp:716
+msgid "Alarm has a pending operation."
+msgstr ""
 
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:53
-msgid "Password"
-msgstr "Passord"
-
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:63
-msgid "Numbers"
-msgstr "Tall"
-
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:87
-msgid "Default"
-msgstr "Standard"
-
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:96
-msgid "Expanding"
-msgstr "Utvidende"
-
-#: examples/ubuntu-ui-toolkit-gallery/TextInputs.qml:107
-msgid "Rich Text"
-msgstr "Rik tekst"
-
-#: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:26
-#: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:60
-msgid "Unchecked"
-msgstr "Ikke avkrysset"
-
-#: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:33
-#: examples/ubuntu-ui-toolkit-gallery/Toggles.qml:67
-msgid "Checked"
-msgstr "Avkrysset"
-
-#: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:44
-msgid "Image"
-msgstr "Bilde"
-
-#: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:57
-msgid "Radius"
-msgstr "Radius"
-
-#: examples/ubuntu-ui-toolkit-gallery/UbuntuShape.qml:87
-msgid "Sizes"
-msgstr "Størrelser"
-
-#: examples/unit-converter/unit-converter.qml:147
-msgid "Clear"
-msgstr "Tøm"
-
-#: examples/unit-converter/unit-converter.qml:161
-msgid "Lengths"
-msgstr "Lengder"
-
-#: examples/unit-converter/unit-converter.qml:179
-msgid "Weights"
-msgstr "Vekt"
-
-#: modules/Ubuntu/Components/plugin/ucarguments.cpp:188
+#: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
 msgstr "Bruk: "
 
-#: modules/Ubuntu/Components/plugin/ucarguments.cpp:209
+#: Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
 msgstr "Valg:"
 
-#: modules/Ubuntu/Components/plugin/ucarguments.cpp:498
+#: Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
 msgstr "%1 forventer et annet argument: %2"
 
-#: modules/Ubuntu/Components/plugin/ucarguments.cpp:503
+#: Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
 msgstr "%1 forventer en verdi for argumentet: %2"
 
-#: modules/Ubuntu/Components/plugin/ucarguments.cpp:520
+#: Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
 msgstr "%1 forventer flere argumenter: %2"
 
-#: modules/Ubuntu/Components/TextInputPopover.qml:24
+#: Ubuntu/Components/plugin/ucmousefilters.cpp:1064
+msgid "Ignoring AfterItem priority for InverseMouse filters."
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucstatesaver.cpp:46
+msgid "Warning: attachee must have an ID. State will not be saved."
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucstatesaver.cpp:56
+#, qt-format
+msgid ""
+"Warning: attachee's UUID is already registered, state won't be saved: %1"
+msgstr ""
+
+#: Ubuntu/Components/plugin/ucstatesaver.cpp:102
+#, qt-format
+msgid ""
+"All the parents must have an id.\n"
+"State saving disabled for %1, class %2"
+msgstr ""
+
+#: Ubuntu/Components/plugin/uctheme.cpp:233
+msgid "Theme not found: "
+msgstr "Fant ikke tema: "
+
+#: Ubuntu/Components/Popups/ComposerSheet.qml:80
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: Ubuntu/Components/Popups/ComposerSheet.qml:90
+msgid "Confirm"
+msgstr "Bekreft"
+
+#: Ubuntu/Components/Popups/DefaultSheet.qml:89
+msgid "Close"
+msgstr "Lukk"
+
+#: Ubuntu/Components/Popups/DefaultSheet.qml:99
+msgid "Done"
+msgstr "Ferdig"
+
+#: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
 msgstr "Velg alt"
 
-#: modules/Ubuntu/Components/TextInputPopover.qml:29
-msgid "Select Word"
-msgstr "Velg ord"
-
-#: modules/Ubuntu/Components/TextInputPopover.qml:34
+#: Ubuntu/Components/TextInputPopover.qml:33
 msgid "Cut"
 msgstr "Klipp ut"
 
-#: modules/Ubuntu/Components/TextInputPopover.qml:39
+#: Ubuntu/Components/TextInputPopover.qml:42
 msgid "Copy"
 msgstr "Kopier"
 
-#: modules/Ubuntu/Components/TextInputPopover.qml:44
+#: Ubuntu/Components/TextInputPopover.qml:49
 msgid "Paste"
 msgstr "Lim inn"
 
-#: modules/Ubuntu/Components/TextInputPopover.qml:49
-msgid "Undo"
-msgstr "Angre"
+#: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
+msgid "In Progress"
+msgstr "Pågår"
 
-#: modules/Ubuntu/Components/TextInputPopover.qml:54
-msgid "Redo"
-msgstr "Gjør om"
+#: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
+msgid "Release to refresh..."
+msgstr "Slipp for å oppdatere …"
 
-#: modules/Ubuntu/Components/ToolbarActions.qml:86
-msgid "Back"
-msgstr "Tilbake"
+#: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
+msgid "Pull to refresh..."
+msgstr "Dra for å oppdatere …"
 
-#: tests/resources/pagestack/MyCustomPage.qml:21
-#: tests/resources/tabs/MyCustomPage.qml:21
-msgid "My custom page"
-msgstr "Min side"
+#~ msgid "Color"
+#~ msgstr "Farge"
 
-#: tests/resources/pagestack/MyCustomPage.qml:33
-#: tests/resources/tabs/MyCustomPage.qml:33
-msgid ""
-"This is an external page\n"
-"with a locked toolbar."
-msgstr ""
-"Dette er en ekstern side\n"
-"med låst verktøylinje."
+#~ msgid "Icon"
+#~ msgstr "Ikon"
 
-#: tests/resources/pagestack/PageStack.qml:38
-msgid "Root page"
-msgstr "Rotside"
+#~ msgid "Standard Durations"
+#~ msgstr "Standard varighet"
 
-#: tests/resources/pagestack/PageStack.qml:44
-msgid "Page one"
-msgstr "Side én"
+#~ msgid "Snap"
+#~ msgstr "Festing"
 
-#: tests/resources/pagestack/PageStack.qml:49
-msgid "External page"
-msgstr "Ekstern side"
+#~ msgid "NumberAnimation"
+#~ msgstr "Tallanimasjon"
 
-#: tests/resources/pagestack/PageStack.qml:58
-msgid "First page"
-msgstr "Første side"
+#~ msgid "Standard"
+#~ msgstr "Standard"
 
-#: tests/resources/pagestack/PageStack.qml:64
-msgid "Root page (again)"
-msgstr "Rotside (igjen)"
+#~ msgid "Sleepy"
+#~ msgstr "Søvnig"
 
-#: tests/resources/pagestack/PageStack.qml:69
-msgid "Red rectangle"
-msgstr "Rødt rektangel"
+#~ msgid "Call"
+#~ msgstr "Ring"
 
-#: tests/resources/tabs/Tabs.qml:32
-msgid "Simple page"
-msgstr "Enkel side"
+#~ msgid "Fast"
+#~ msgstr "Rask"
 
-#: tests/resources/tabs/Tabs.qml:77
-msgid "External"
-msgstr "Ekstern"
+#~ msgid "Slow"
+#~ msgstr "Treg"
 
-#: tests/resources/tabs/Tabs.qml:85
-msgid "List view"
-msgstr "Listevisning"
+#~ msgid "Colorization"
+#~ msgstr "Fargelegging"
+
+#~ msgid "Scaling"
+#~ msgstr "Skalering"
+
+#~ msgid "Open"
+#~ msgstr "Åpen"
+
+#~ msgid "Disabled"
+#~ msgstr "Slått av"
+
+#~ msgid "Progression"
+#~ msgstr "Utvikling"
+
+#~ msgid "Secondary label"
+#~ msgstr "Sekundær etikett"
+
+#~ msgid "Label"
+#~ msgstr "Etikett"
+
+#~ msgid "Value"
+#~ msgstr "Verdi"
+
+#~ msgid "Single value"
+#~ msgstr "Enkeltverdi"
+
+#~ msgid "Multi value"
+#~ msgstr "Multiverdi"
+
+#~ msgid "Value 1"
+#~ msgstr "Verdi 1"
+
+#~ msgid "Value 2"
+#~ msgstr "Verdi 2"
+
+#~ msgid "Value 3"
+#~ msgstr "Verdi 3"
+
+#~ msgid "Value 4"
+#~ msgstr "Verdi 4"
+
+#~ msgid "Value selector"
+#~ msgstr "Verdivelger"
+
+#~ msgid "Control"
+#~ msgstr "Kontroll"
+
+#~ msgid "Removable"
+#~ msgstr "Kan fjernes"
+
+#~ msgid "Slide to remove"
+#~ msgstr "Skyv for å fjerne"
+
+#~ msgid "Grouped list"
+#~ msgstr "Gruppert liste"
+
+#~ msgid "Infinite"
+#~ msgstr "Uendelig"
+
+#~ msgid "Progress Bar"
+#~ msgstr "Framdriftslinje"
+
+#~ msgid "Action #1"
+#~ msgstr "Handling #1"
+
+#~ msgid "Action #3"
+#~ msgstr "Handling #3"
+
+#~ msgid "Action #2"
+#~ msgstr "Handling #2"
+
+#~ msgid "Action #5"
+#~ msgstr "Handling #5"
+
+#~ msgid "Action #4"
+#~ msgstr "Handling #4"
+
+#~ msgid "The visual style of the Sheet is early work and thus clunky looking."
+#~ msgstr ""
+#~ "Arkets visuelle stil er i en tidlig utviklingsfase, og kan derfor se litt "
+#~ "rar ut."
+
+#~ msgid "Activity Indicator"
+#~ msgstr "Aktivitetsindikator"
+
+#~ msgid "Expanding"
+#~ msgstr "Utvidende"
+
+#~ msgid "Numbers"
+#~ msgstr "Tall"
+
+#~ msgid "Default"
+#~ msgstr "Standard"
+
+#~ msgid "Type me in..."
+#~ msgstr "Skriv navnet mitt …"
+
+#~ msgid "Password"
+#~ msgstr "Passord"
+
+#~ msgid "Live Update"
+#~ msgstr "Live-oppdatering"
+
+#~ msgid "Range"
+#~ msgstr "Rekkevidde"
+
+#~ msgid "Title"
+#~ msgstr "Tittel"
+
+#, qt-format
+#~ msgid "value = %1"
+#~ msgstr "verdi = %1"
+
+#~ msgid "Rich Text"
+#~ msgstr "Rik tekst"
+
+#~ msgid "Image"
+#~ msgstr "Bilde"
+
+#~ msgid "Radius"
+#~ msgstr "Radius"
+
+#~ msgid "Checked"
+#~ msgstr "Avkrysset"
+
+#~ msgid "Lengths"
+#~ msgstr "Lengder"
+
+#~ msgid "Weights"
+#~ msgstr "Vekt"
+
+#~ msgid "Sizes"
+#~ msgstr "Størrelser"
+
+#~ msgid "Clear"
+#~ msgstr "Tøm"
+
+#~ msgid "Unchecked"
+#~ msgstr "Ikke avkrysset"
+
+#~ msgid "Select Word"
+#~ msgstr "Velg ord"
+
+#~ msgid "Redo"
+#~ msgstr "Gjør om"
+
+#~ msgid "Undo"
+#~ msgstr "Angre"
+
+#~ msgid "Red rectangle"
+#~ msgstr "Rødt rektangel"
+
+#~ msgid "Simple page"
+#~ msgstr "Enkel side"
+
+#~ msgid "Back"
+#~ msgstr "Tilbake"
+
+#~ msgid "My custom page"
+#~ msgstr "Min side"
+
+#~ msgid ""
+#~ "This is an external page\n"
+#~ "with a locked toolbar."
+#~ msgstr ""
+#~ "Dette er en ekstern side\n"
+#~ "med låst verktøylinje."
+
+#~ msgid "Root page"
+#~ msgstr "Rotside"
+
+#~ msgid "Page one"
+#~ msgstr "Side én"
+
+#~ msgid "External page"
+#~ msgstr "Ekstern side"
+
+#~ msgid "First page"
+#~ msgstr "Første side"
+
+#~ msgid "Root page (again)"
+#~ msgstr "Rotside (igjen)"
+
+#~ msgid "Subtitled"
+#~ msgstr "Undertitulert"
+
+#~ msgid "List view"
+#~ msgstr "Listevisning"
+
+#~ msgid "External"
+#~ msgstr "Ekstern"
+
+#~ msgid "Flickable"
+#~ msgstr "Flyttbart"
