@@ -52,6 +52,12 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
         self.y.wait_for(0)
 
+    def wait_for_animation(self):
+        # FIXME: Dummy function so that we can already call it in the apps
+        # The real implementation will be done when header animations
+        # are added in PageHeadStyle.qml
+        return
+
     @autopilot_logging.log_action(logger.info)
     def switch_to_section_by_index(self, index):
         """Select a section in the header divider
