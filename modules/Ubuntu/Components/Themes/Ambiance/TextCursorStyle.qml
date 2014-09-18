@@ -62,7 +62,8 @@ Item {
                 interval: cursorStyle.cursorVisibleTimeout
                 running: (cursorStyle.cursorVisibleTimeout > 0) &&
                          (cursorStyle.cursorHiddenTimeout > 0) &&
-                         styledItem.visible
+                         styledItem.visible &&
+                         styledItem.positionProperty === "cursorPosition"
                 repeat: true
                 property bool timerShowCursor: true
                 onTriggered: {
@@ -79,9 +80,11 @@ Item {
         id: caretItem
         source: "artwork/caret_noshadow.png"
         anchors {
-            top: parent.bottom
+            top: styledItem.positionProperty === "selectionStart" ? undefined : parent.bottom
+            bottom: styledItem.positionProperty === "selectionStart" ? parent.top : undefined
             horizontalCenter: parent.horizontalCenter
             horizontalCenterOffset: (LayoutMirroring.enabled ? -1 : 1) * (implicitWidth / 2 - cursorWidth)
         }
+        rotation: styledItem.positionProperty === "selectionStart" ? 180 : 0
     }
 }
