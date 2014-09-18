@@ -15,7 +15,6 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Unity.Action 1.1 as UnityActions
 import Ubuntu.Components 1.1 as Ubuntu
 
 /*!
@@ -850,14 +849,14 @@ ActionItem {
         property real lineSpacing: units.dp(3)
         property real lineSize: editor.font.pixelSize + lineSpacing
 
-        property int type: action ? action.parameterType : 0
+        property int type: action ? action.parameterType : Ubuntu.Action.None
         onTypeChanged: {
             // Don't undo explicitly specified hints
             if (inputMethodHints != Qt.ImhNone)
                 return
 
-            if (type == UnityActions.Action.Integer
-             || type == UnityActions.Action.Real)
+            if (type == Ubuntu.Action.Integer
+             || type == Ubuntu.Action.Real)
                 inputMethodHints = Qt.ImhDigitsOnly
         }
     }
