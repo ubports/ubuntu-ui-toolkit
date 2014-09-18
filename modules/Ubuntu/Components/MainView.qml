@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Unity.Action 1.1 as UnityActions
+import QtQuick 2.2
+import Ubuntu.Components 1.1 as Toolkit
 import Ubuntu.PerformanceMetrics 1.0
 import QtQuick.Window 2.0
 
@@ -465,7 +465,8 @@ PageTreeNode {
       over the actions, e.g. if one wants to add/remove actions dynamically, create
       specific action contexts, etc.
 
-      \qmlproperty UnityActions.ActionManager actionManager
+      \qmlproperty ActionManager actionManager
+      \readonly
      */
     property alias actionManager: unityActionManager
 
@@ -481,7 +482,7 @@ PageTreeNode {
                     item.hasOwnProperty("title") && item.hasOwnProperty("tools");
         }
 
-        UnityActions.ActionManager {
+        Toolkit.ActionManager {
             id: unityActionManager
             onQuit: {
                 // FIXME Wire this up to the application lifecycle management API instead of quit().
