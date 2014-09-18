@@ -22,15 +22,15 @@
 
 class UCListItemContent;
 class UCListItemDivider;
-class UCListItemOptions;
+class UCListItemActions;
 class UCListItemPrivate;
 class UCListItem : public UCStyledItemBase
 {
     Q_OBJECT
     Q_PROPERTY(QQuickItem *contentItem READ contentItem CONSTANT)
     Q_PROPERTY(UCListItemDivider *divider READ divider CONSTANT)
-    Q_PROPERTY(UCListItemOptions *leadingOptions READ leadingOptions WRITE setLeadingOptions NOTIFY leadingOptionsChanged DESIGNABLE false)
-    Q_PROPERTY(UCListItemOptions *trailingOptions READ trailingOptions WRITE setTrailingOptions NOTIFY trailingOptionsChanged DESIGNABLE false)
+    Q_PROPERTY(UCListItemActions *leadingActions READ leadingActions WRITE setLeadingActions NOTIFY leadingActionsChanged DESIGNABLE false)
+    Q_PROPERTY(UCListItemActions *trailingActions READ trailingActions WRITE setTrailingActions NOTIFY trailingActionsChanged DESIGNABLE false)
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor pressedColor READ pressedColor WRITE setPressedColor NOTIFY pressedColorChanged)
@@ -43,10 +43,10 @@ public:
 
     QQuickItem *contentItem() const;
     UCListItemDivider *divider() const;
-    UCListItemOptions *leadingOptions() const;
-    void setLeadingOptions(UCListItemOptions *options);
-    UCListItemOptions *trailingOptions() const;
-    void setTrailingOptions(UCListItemOptions *options);
+    UCListItemActions *leadingActions() const;
+    void setLeadingActions(UCListItemActions *options);
+    UCListItemActions *trailingActions() const;
+    void setTrailingActions(UCListItemActions *options);
     bool pressed() const;
     QColor color() const;
     void setColor(const QColor &color);
@@ -64,8 +64,8 @@ protected:
     bool eventFilter(QObject *, QEvent *);
 
 Q_SIGNALS:
-    void leadingOptionsChanged();
-    void trailingOptionsChanged();
+    void leadingActionsChanged();
+    void trailingActionsChanged();
     void pressedChanged();
     void colorChanged();
     void pressedColorChanged();
