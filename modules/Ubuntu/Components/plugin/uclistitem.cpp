@@ -472,11 +472,14 @@ QQuickItem* UCListItem::contentItem() const
  * \qmlproperty bool ListItem::divider.visible
  * \qmlproperty real ListItem::divider.leftMargin
  * \qmlproperty real ListItem::divider.rightMargin
+ * \qmlproperty real ListItem::divider.colorFrom
+ * \qmlproperty real ListItem::divider.colorTo
  *
  * This grouped property configures the thin divider shown in the bottom of the
  * component. Configures the visibility and the margins from the left and right
  * of the ListItem. When tugged (swiped left or right to reveal the options),
- * it is not moved together with the content.
+ * it is not moved together with the content. \c colorFrom and \c colorTo configure
+ * the starting and ending colors of the divider.
  *
  * When \c visible is true, the ListItem's content size gets thinner with the
  * divider's \c thickness.
