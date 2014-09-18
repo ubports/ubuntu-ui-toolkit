@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.1.1252+14.10.20140918-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.1.1255+14.10.20140918-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Zsombor Egri ]
   * Sheet header button space reservation made button presence
@@ -21,6 +21,7 @@ ubuntu-ui-toolkit (1.1.1252+14.10.20140918-0ubuntu1) UNRELEASED; urgency=medium
   [ Christian Dywan ]
   * Specify /sbin when calling initctl just like autopilot does.
   * Change gallery to use launcher to allow -touch argument.
+  * Overflow panel button 0.5 opacity if disabled Fixes LP: #1369640
 
   [ Leo Arias ]
   * On autopilot tests launched by upstart, use the local modules
