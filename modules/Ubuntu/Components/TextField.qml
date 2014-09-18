@@ -972,6 +972,7 @@ ActionItem {
             // FocusScope will forward focus to this component
             focus: true
             anchors.fill: parent
+            verticalAlignment: TextInput.AlignVCenter
             cursorDelegate: TextCursor {
                 handler: inputHandler
             }
