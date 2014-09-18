@@ -66,11 +66,15 @@ HEADERS += plugin.h \
     unixsignalhandler_p.h \
     ucstyleditembase.h \
     ucstyleditembase_p.h \
+    ucaction.h \
+    ucactioncontext.h \
+    ucactionmanager.h \
+    adapters/actionsproxy_p.h \
     uclistitem.h \
     uclistitem_p.h \
-    propertychange_p.h \
     uclistitemactions.h \
-    uclistitemactions_p.h
+    uclistitemactions_p.h \
+    propertychange_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -105,9 +109,13 @@ SOURCES += plugin.cpp \
     ucmousefilters.cpp \
     unixsignalhandler_p.cpp \
     ucstyleditembase.cpp \
+    ucaction.cpp \
+    ucactioncontext.cpp \
+    ucactionmanager.cpp \
+    adapters/actionsproxy_p.cpp \
     uclistitem.cpp \
-    propertychange_p.cpp \
-    uclistitemactions.cpp
+    uclistitemactions.cpp \
+    propertychange_p.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp

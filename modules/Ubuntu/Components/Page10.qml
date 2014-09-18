@@ -14,8 +14,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import Ubuntu.Unity.Action 1.1 as UnityActions
+import QtQuick 2.2
+import Ubuntu.Components 1.1 as Toolkit
 
 /*!
   \internal
@@ -67,19 +67,9 @@ PageTreeNode {
     Object {
         id: internal
 
-        UnityActions.ActionContext {
+        // Toolkit ActionContext registers automatically to ActionManager
+        Toolkit.ActionContext {
             id: actionContext
-
-            property var actionManager: page.__propagated &&
-                                        page.__propagated.hasOwnProperty("actionManager") ?
-                                            page.__propagated.actionManager : null
-
-            onActionManagerChanged: addLocalContext(actionManager)
-            Component.onCompleted: addLocalContext(actionManager)
-
-            function addLocalContext(manager) {
-                if (manager) manager.addLocalContext(actionContext);
-            }
         }
 
         function updateActions() {
