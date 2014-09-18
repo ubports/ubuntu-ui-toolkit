@@ -23,42 +23,46 @@ from autopilot import logging as autopilot_logging
 logger = logging.getLogger(__name__)
 
 
-def is_initctl_env_var_set(variable):
+def is_initctl_env_var_set(variable, global_=False):
     """Check True if an initctl environment variable is set.
 
     :param variable: The name of the variable to check.
+    :param global: if True, the method will operate on the global environment
+        table. Default is False.
     :return: True if the variable is set. False otherwise.
 
     """
     try:
-        get_initctl_env_var(variable)
+        get_initctl_env_var(variable, global_)
         return True
     except subprocess.CalledProcessError:
         return False
 
 
-def get_initctl_env_var(variable):
+def get_initctl_env_var(variable, global_=False):
     """Return the value of an initctl environment variable."""
+    command = ['/sbin/initctl', 'get-env', variable]
+    if global_:
+        command += ['--global']
     output = subprocess.check_output(
-        ['/sbin/initctl', 'get-env', variable],
-        stderr=subprocess.STDOUT,
-        universal_newlines=True)
+        command, stderr=subprocess.STDOUT, universal_newlines=True)
     return output.rstrip()
 
 
 @autopilot_logging.log_action(logger.info)
-def set_initctl_env_var(variable, value):
+def set_initctl_env_var(variable, value, global_=False):
     """Set the value of an initctl environment variable."""
-    subprocess.call(
-        ['/sbin/initctl', 'set-env', '%s=%s' % (variable, value)],
-        stderr=subprocess.STDOUT,
-        universal_newlines=True)
+    command = ['/sbin/initctl', 'set-env', '%s=%s' % (variable, value)]
+    if global_:
+        command += ['--global']
+    subprocess.call(command, stderr=subprocess.STDOUT, universal_newlines=True)
 
 
 @autopilot_logging.log_action(logger.info)
-def unset_initctl_env_var(variable):
+def unset_initctl_env_var(variable, global_=False):
     """Remove an initctl environment variable."""
+    command = ['/sbin/initctl', 'unset-env', variable]
+    if global_:
+        command += ['--global']
     subprocess.call(
-        ['/sbin/initctl', 'unset-env', variable],
-        stderr=subprocess.STDOUT,
-        universal_newlines=True)
+        command, stderr=subprocess.STDOUT, universal_newlines=True)
