@@ -66,6 +66,10 @@ HEADERS += plugin.h \
     unixsignalhandler_p.h \
     ucstyleditembase.h \
     ucstyleditembase_p.h \
+    ucaction.h \
+    ucactioncontext.h \
+    ucactionmanager.h \
+    adapters/actionsproxy_p.h \
     uclistitem.h \
     uclistitem_p.h \
     uclistitemoptions.h \
@@ -104,6 +108,10 @@ SOURCES += plugin.cpp \
     ucmousefilters.cpp \
     unixsignalhandler_p.cpp \
     ucstyleditembase.cpp \
+    ucaction.cpp \
+    ucactioncontext.cpp \
+    ucactionmanager.cpp \
+    adapters/actionsproxy_p.cpp \
     uclistitem.cpp \
     uclistitemoptions.cpp
 
