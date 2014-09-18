@@ -85,10 +85,10 @@ Item {
             leftMargin: spacing
         }
 
-        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.actionList.length) : 0
+        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.actionList.actions.length) : 0
 
         Repeater {
-            model: panel.actionList
+            model: panel.actionList.actions
             AbstractButton {
                 action: modelData
                 visible: action.visible && action.enabled

@@ -31,12 +31,11 @@ public:
         return actions ? actions->d_func() : 0;
     }
 
-    bool actionsFailure:1;
     bool connected:1;
     bool leading:1;
     QQmlComponent *delegate;
     QQuickItem *panelItem;
-    QList<QObject*> actions;
+    QList<UCAction*> actions;
     QList<QObject*> data;
     QPointer<UCListItem> queuedItem;
     qreal optionSlotWidth;
@@ -45,12 +44,6 @@ public:
 
     void _q_handlePanelDrag();
     void _q_handlePanelWidth();
-
-    // options list property functions
-    static void funcAppend(QQmlListProperty<QObject>*, QObject*);
-    static int funcCount(QQmlListProperty<QObject>*);
-    static QObject *funcAt(QQmlListProperty<QObject>*, int);
-    static void funcClear(QQmlListProperty<QObject>*);
 
     static bool connectToListItem(UCListItemActions *options, UCListItem *listItem, bool leading);
     static void disconnectFromListItem(UCListItemActions *options);
