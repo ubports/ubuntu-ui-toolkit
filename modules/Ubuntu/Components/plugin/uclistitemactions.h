@@ -14,15 +14,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCLISTITEMOPTIONS_H
-#define UCLISTITEMOPTIONS_H
+#ifndef UCLISTITEMACTIONS_H
+#define UCLISTITEMACTIONS_H
 
 #include <QtCore/QObject>
 #include "uclistitem_p.h"
 
 class QQmlComponent;
-class UCListItemOptionsPrivate;
-class UCListItemOptions : public QObject
+class UCListItemActionsPrivate;
+class UCListItemActions : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
@@ -31,8 +31,8 @@ class UCListItemOptions : public QObject
     Q_PROPERTY(QQmlListProperty<QObject> data READ data)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
-    explicit UCListItemOptions(QObject *parent = 0);
-    ~UCListItemOptions();
+    explicit UCListItemActions(QObject *parent = 0);
+    ~UCListItemActions();
 
     QQmlComponent *delegate() const;
     void setDelegate(QQmlComponent *delegate);
@@ -47,9 +47,9 @@ Q_SIGNALS:
 public Q_SLOTS:
 
 private:
-    Q_DECLARE_PRIVATE(UCListItemOptions)
+    Q_DECLARE_PRIVATE(UCListItemActions)
     Q_PRIVATE_SLOT(d_func(), void _q_handlePanelDrag())
     Q_PRIVATE_SLOT(d_func(), void _q_handlePanelWidth())
 };
 
-#endif // UCLISTITEMOPTIONS_H
+#endif // UCLISTITEMACTIONS_H

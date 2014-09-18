@@ -14,21 +14,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCLISTITEMOPTIONS_P_H
-#define UCLISTITEMOPTIONS_P_H
+#ifndef UCLISTITEMACTIONS_P_H
+#define UCLISTITEMACTIONS_P_H
 
-#include "uclistitemoptions.h"
+#include "uclistitemactions.h"
 #include "QtCore/private/qobject_p.h"
 
 class UCListItem;
-class UCListItemOptionsPrivate : public QObjectPrivate {
-    Q_DECLARE_PUBLIC(UCListItemOptions)
+class UCListItemActionsPrivate : public QObjectPrivate {
+    Q_DECLARE_PUBLIC(UCListItemActions)
 public:
-    UCListItemOptionsPrivate();
-    ~UCListItemOptionsPrivate();
-    static UCListItemOptionsPrivate* get(UCListItemOptions *options)
+    UCListItemActionsPrivate();
+    ~UCListItemActionsPrivate();
+    static UCListItemActionsPrivate* get(UCListItemActions *actions)
     {
-        return options ? options->d_func() : 0;
+        return actions ? actions->d_func() : 0;
     }
 
     bool actionsFailure:1;
@@ -52,12 +52,12 @@ public:
     static QObject *funcAt(QQmlListProperty<QObject>*, int);
     static void funcClear(QQmlListProperty<QObject>*);
 
-    static bool connectToListItem(UCListItemOptions *options, UCListItem *listItem, bool leading);
-    static void disconnectFromListItem(UCListItemOptions *options);
-    static bool isConnectedTo(UCListItemOptions *options, UCListItem *listItem);
-    static qreal snap(UCListItemOptions *options);
+    static bool connectToListItem(UCListItemActions *options, UCListItem *listItem, bool leading);
+    static void disconnectFromListItem(UCListItemActions *options);
+    static bool isConnectedTo(UCListItemActions *options, UCListItem *listItem);
+    static qreal snap(UCListItemActions *options);
 
     QQuickItem *createPanelItem();
 };
 
-#endif // UCLISTITEMOPTIONS_P_H
+#endif // UCLISTITEMACTIONS_P_H
