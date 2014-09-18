@@ -95,7 +95,7 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
             if (delegate) {
                 panelItem->setProperty("delegate", QVariant::fromValue(delegate));
             }
-            panelItem->setProperty("actionList", QVariant::fromValue(actions));
+            panelItem->setProperty("actionList", QVariant::fromValue(q));
             component.completeCreate();
             Q_EMIT q->panelItemChanged();
         }
