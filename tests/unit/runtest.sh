@@ -77,7 +77,8 @@ function execute_test_cmd {
                 tst_theme_engine \
                 tst_tabs.qml \
                 tst_textfield.qml \
-                tst_mousefilters'
+                tst_mousefilters \
+                tst_action.qml'
     if [ $WARNINGS -ne 0 ]; then
       if [[ $EXCEPTIONS == *$_TARGET_$_TESTFILE* ]]; then
         echo "FIXME: $WARNINGS warnings - Known problematic test"
