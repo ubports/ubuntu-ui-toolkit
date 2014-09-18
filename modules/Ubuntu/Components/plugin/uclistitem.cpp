@@ -410,7 +410,8 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     if (color.alpha() > 0) {
         rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
         rectNode->setColor(color);
-        rectNode->setRect(boundingRect());
+        // cover only the area of the contentItem
+        rectNode->setRect(d->contentItem->boundingRect());
         rectNode->update();
     }
     oldNode = rectNode;
