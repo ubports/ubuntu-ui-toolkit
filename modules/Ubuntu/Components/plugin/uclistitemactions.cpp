@@ -21,10 +21,10 @@
 #include "i18n.h"
 #include "plugin.h"
 #include <QtQml/QQmlInfo>
+#include "ucaction.h"
 
 UCListItemActionsPrivate::UCListItemActionsPrivate()
     : QObjectPrivate()
-    , actionsFailure(false)
     , connected(false)
     , leading(false)
     , delegate(0)
@@ -33,43 +33,6 @@ UCListItemActionsPrivate::UCListItemActionsPrivate()
 }
 UCListItemActionsPrivate::~UCListItemActionsPrivate()
 {
-}
-
-/*
- * Callback functions for QQmlListProperty handling append(), count(), at() and clear() list functions.
- */
-void UCListItemActionsPrivate::funcAppend(QQmlListProperty<QObject> *list, QObject *action)
-{
-    UCListItemActions *_this = static_cast<UCListItemActions*>(list->object);
-    UCListItemActionsPrivate *plist = UCListItemActionsPrivate::get(_this);
-    if (!QuickUtils::inherits(action, "Action")) {
-        qmlInfo(_this) << UbuntuI18n::instance().tr(QString("Action at index %1 is not an Action or a derivate of it.").arg(plist->actions.size()));
-        plist->actionsFailure = true;
-        plist->actions.clear();
-        return;
-    }
-    if (!plist->actionsFailure) {
-        plist->actions.append(action);
-    }
-}
-int UCListItemActionsPrivate::funcCount(QQmlListProperty<QObject> *list)
-{
-    UCListItemActions *_this = static_cast<UCListItemActions*>(list->object);
-    UCListItemActionsPrivate *plist = UCListItemActionsPrivate::get(_this);
-    return plist->actions.size();
-}
-QObject *UCListItemActionsPrivate::funcAt(QQmlListProperty<QObject> *list, int index)
-{
-    UCListItemActions *_this = static_cast<UCListItemActions*>(list->object);
-    UCListItemActionsPrivate *plist = UCListItemActionsPrivate::get(_this);
-    return plist->actions.at(index);
-}
-void UCListItemActionsPrivate::funcClear(QQmlListProperty<QObject> *list)
-{
-    UCListItemActions *_this = static_cast<UCListItemActions*>(list->object);
-    UCListItemActionsPrivate *plist = UCListItemActionsPrivate::get(_this);
-    plist->actionsFailure = false;
-    return plist->actions.clear();
 }
 
 bool UCListItemActionsPrivate::connectToListItem(UCListItemActions *actions, UCListItem *listItem, bool leading)
@@ -154,7 +117,7 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
  * ListItem accepts actions that can be configured to appear when tugged to left
  * or right. The API does not limit the number of actions to be assigned for leading
  * or trailing actions, however the design constrains are allowing a maximum of
- * 1 action on leading- and a maximum of 3 actions on trailing side of teh ListItem.
+ * 1 action on leading- and a maximum of 3 actions on trailing side of the ListItem.
  *
  * The \l actions are Action instances or elements derived from Action. The default
  * visualization of the actions can be overridden using the \l delegate property,
@@ -255,7 +218,6 @@ UCListItemActions::~UCListItemActions()
 {
 }
 
-
 /*!
  * \qmlproperty Component ListItemActions::delegate
  * Custom delegate which overrides the default one used by the ListItem. If the
@@ -291,14 +253,10 @@ void UCListItemActions::setDelegate(QQmlComponent *delegate)
  * }
  * \endqml
  */
-QQmlListProperty<QObject> UCListItemActions::actions()
+QQmlListProperty<UCAction> UCListItemActions::actions()
 {
     Q_D(UCListItemActions);
-    return QQmlListProperty<QObject>(this, &(d->actions),
-                                     &UCListItemActionsPrivate::funcAppend,
-                                     &UCListItemActionsPrivate::funcCount,
-                                     &UCListItemActionsPrivate::funcAt,
-                                     &UCListItemActionsPrivate::funcClear);
+    return QQmlListProperty<UCAction>(this, d->actions);
 }
 
 /*!

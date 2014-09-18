@@ -21,12 +21,13 @@
 #include "uclistitem_p.h"
 
 class QQmlComponent;
+class UCAction;
 class UCListItemActionsPrivate;
 class UCListItemActions : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
-    Q_PROPERTY(QQmlListProperty<QObject> actions READ actions CONSTANT)
+    Q_PROPERTY(QQmlListProperty<UCAction> actions READ actions CONSTANT)
     Q_PROPERTY(QQuickItem *panelItem READ panelItem NOTIFY panelItemChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data)
     Q_CLASSINFO("DefaultProperty", "data")
@@ -36,15 +37,13 @@ public:
 
     QQmlComponent *delegate() const;
     void setDelegate(QQmlComponent *delegate);
-    QQmlListProperty<QObject> actions();
+    QQmlListProperty<UCAction> actions();
     QQuickItem *panelItem() const;
     QQmlListProperty<QObject> data();
 
 Q_SIGNALS:
     void delegateChanged();
     void panelItemChanged();
-
-public Q_SLOTS:
 
 private:
     Q_DECLARE_PRIVATE(UCListItemActions)

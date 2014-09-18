@@ -45,21 +45,7 @@ Item {
         ]
     }
     ListItemActions {
-        id: wrongOption
-        actions: [
-            Action {
-                id: goodAction
-            },
-            QtObject {
-                id: badAction
-            },
-            Action {
-            }
-        ]
-    }
-    ListItemActions {
-        id: optionsDefault
-        property int optionCount: options.length
+        id: actionsDefault
     }
 
     Column {
@@ -140,9 +126,9 @@ Item {
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
 
-            compare(optionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
-            compare(optionsDefault.actions.length, 0, "ListItemActions has no options set.");
-            compare(optionsDefault.panelItem, null, "There is no panelItem created by default.");
+            compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
+            compare(actionsDefault.actions.length, 0, "ListItemActions has no options set.");
+            compare(actionsDefault.panelItem, null, "There is no panelItem created by default.");
         }
 
         function test_children_in_content_item() {
@@ -210,22 +196,6 @@ Item {
             testItem.divider.visible = false;
             compare(testItem.contentItem.height, testItem.height, "ListItem's background height must be the same as the item itself.");
             testItem.divider.visible = true;
-        }
-
-        // ListItemActions tests
-        function test_valid_options_data() {
-            return [
-                {tag: "Inline Actions", object: leading, expected: 3, xfail: false},
-                {tag: "Stock Actions", object: trailing, expected: 1, xfail: false},
-                {tag: "Wrong Actions", object: wrongOption, expected: 3, xfail: true},
-                {tag: "Wrong Actions", object: wrongOption, expected: 0, xfail: false},
-            ];
-        }
-        function test_valid_options(data) {
-            if (data.xfail) {
-                expectFailContinue(data.tag, "expected to fail");
-            }
-            compare(data.object.actions.length, data.expected, data.tag + ": expected options differ.");
         }
 
         function test_touch_tug_options_data() {
