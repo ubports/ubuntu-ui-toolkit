@@ -117,8 +117,11 @@ QSGNode *UCListItemDivider::paint(const QRectF &rect)
     if (m_visible && (m_gradient.size() > 0)) {
         // the parent always recreates the node, so no worries for the existing child node
         QSGRectangleNode *rectNode = m_listItem->sceneGraphContext()->createRectangleNode();
-        rectNode->setRect(QRectF(m_leftMargin, rect.height() - m_thickness,
-                                 rect.width() - m_leftMargin - m_rightMargin, m_thickness));
+        // margins are only applied when the ListItem is in normal state, when pressed,
+        // the divider is painted from edge to edge
+        qreal left = (m_listItem && m_listItem->pressed) ? 0 : m_leftMargin;
+        qreal right = (m_listItem && m_listItem->pressed) ? rect.width() : rect.width() - m_leftMargin - m_rightMargin;
+        rectNode->setRect(QRectF(left, rect.height() - m_thickness, right, m_thickness));
         rectNode->setGradientStops(m_gradient);
         rectNode->update();
         return rectNode;
