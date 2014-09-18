@@ -964,15 +964,17 @@ ActionItem {
         boundsBehavior: Flickable.StopAtBounds
         // need to forward events as events occurred on topMargin area are not grabbed by the MouseArea.
         Ubuntu.Mouse.forwardTo: [inputHandler]
+
         clip: true
+        contentWidth: editor.contentWidth
+        contentHeight: editor.contentHeight
 
         TextInput {
             id: editor
             objectName: "text_input"
             // FocusScope will forward focus to this component
             focus: true
-            anchors.fill: parent
-            verticalAlignment: TextInput.AlignVCenter
+            anchors.verticalCenter: parent.verticalCenter
             cursorDelegate: TextCursor {
                 handler: inputHandler
             }
