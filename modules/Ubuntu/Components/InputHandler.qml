@@ -434,6 +434,10 @@ MultiPointTouchArea {
                 return;
             }
 
+            // do not open context menu if this is scrolling
+            if (touchPoint.startY - touchPoint.y < -units.dp(2))
+                return;
+
             openContextMenu(touchPoint, false);
             suppressReleaseEvent = true;
         }
