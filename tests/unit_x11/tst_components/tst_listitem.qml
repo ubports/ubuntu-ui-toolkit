@@ -27,35 +27,25 @@ Item {
     Action {
         id: stockAction
     }
-    ListItemOptions {
+    ListItemActions {
         id: leading
-        Action {
-        }
-        Action {
-        }
-        Action {
-        }
+        actions: [
+            Action {
+            },
+            Action {
+            },
+            Action {
+            }
+        ]
     }
-    ListItemOptions {
+    ListItemActions {
         id: trailing
-        options: [
+        actions: [
             stockAction,
         ]
     }
-    ListItemOptions {
-        id: wrongOption
-        Action {
-            id: goodAction
-        }
-        QtObject {
-            id: badAction
-        }
-        Action {
-        }
-    }
-    ListItemOptions {
-        id: optionsDefault
-        property int optionCount: options.length
+    ListItemActions {
+        id: actionsDefault
     }
 
     Column {
@@ -131,9 +121,9 @@ Item {
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
 
-            compare(optionsDefault.delegate, null, "ListItemOptions has no delegate set by default.");
-            compare(optionsDefault.options.length, 0, "ListItemOptions has no options set.");
-            compare(optionsDefault.panelItem, null, "There is no panelItem created by default.");
+            compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
+            compare(actionsDefault.actions.length, 0, "ListItemActions has no options set.");
+            compare(actionsDefault.panelItem, null, "There is no panelItem created by default.");
         }
 
         function test_children_in_content_item() {
@@ -200,22 +190,6 @@ Item {
             testItem.divider.visible = false;
             compare(testItem.contentItem.height, testItem.height, "ListItem's background height must be the same as the item itself.");
             testItem.divider.visible = true;
-        }
-
-        // ListItemOptions tests
-        function test_valid_options_data() {
-            return [
-                {tag: "Inline Actions", object: leading, expected: 3, xfail: false},
-                {tag: "Stock Actions", object: trailing, expected: 1, xfail: false},
-                {tag: "Wrong Actions", object: wrongOption, expected: 3, xfail: true},
-                {tag: "Wrong Actions", object: wrongOption, expected: 0, xfail: false},
-            ];
-        }
-        function test_valid_options(data) {
-            if (data.xfail) {
-                expectFailContinue(data.tag, "expected to fail");
-            }
-            compare(data.object.options.length, data.expected, data.tag + ": expected options differ.");
         }
     }
 }

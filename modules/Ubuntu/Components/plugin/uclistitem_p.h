@@ -25,7 +25,7 @@
 class QQuickFlickable;
 class UCListItemContent;
 class UCListItemDivider;
-class UCListItemOptions;
+class UCListItemActions;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -59,8 +59,8 @@ public:
     QPointer<QQuickFlickable> flickable;
     QQuickItem *contentItem;
     UCListItemDivider *divider;
-    UCListItemOptions *leadingOptions;
-    UCListItemOptions *trailingOptions;
+    UCListItemActions *leadingActions;
+    UCListItemActions *trailingActions;
 };
 
 class UCListItemDivider : public QObject

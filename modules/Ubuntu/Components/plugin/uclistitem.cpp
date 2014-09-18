@@ -196,8 +196,8 @@ UCListItemPrivate::UCListItemPrivate()
     , pressedColor(Qt::transparent)
     , contentItem(new QQuickItem)
     , divider(new UCListItemDivider)
-    , leadingOptions(0)
-    , trailingOptions(0)
+    , leadingActions(0)
+    , trailingActions(0)
 {
 }
 UCListItemPrivate::~UCListItemPrivate()
@@ -329,9 +329,9 @@ void UCListItemPrivate::update()
  * of some:
  * \list A
  * \li do not alter \c x, \c y, \c width or \c height properties as those are
- *      controlled by the ListItem itself when leading or trailing options are
+ *      controlled by the ListItem itself when leading or trailing actions are
  *      revealed and thus will destroy your logic
- * \li never anchor left or right anchor lines as it will block revealing the options.
+ * \li never anchor left or right anchor lines as it will block revealing the actions.
  * \endlist
  *
  * Each ListItem has a thin divider shown on the bottom of the component. This
@@ -463,45 +463,45 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 }
 
 /*!
- * \qmlproperty ListItemOptions ListItem::leadingOptions
+ * \qmlproperty ListItemActions ListItem::leadingActions
  *
- * The property holds the options and its configuration to be revealed when swiped
+ * The property holds the actions and its configuration to be revealed when swiped
  * from left to right.
  */
-UCListItemOptions *UCListItem::leadingOptions() const
+UCListItemActions *UCListItem::leadingActions() const
 {
     Q_D(const UCListItem);
-    return d->leadingOptions;
+    return d->leadingActions;
 }
-void UCListItem::setLeadingOptions(UCListItemOptions *options)
+void UCListItem::setLeadingActions(UCListItemActions *actions)
 {
     Q_D(UCListItem);
-    if (d->leadingOptions == options) {
+    if (d->leadingActions == actions) {
         return;
     }
-    d->leadingOptions = options;
-    Q_EMIT leadingOptionsChanged();
+    d->leadingActions = actions;
+    Q_EMIT leadingActionsChanged();
 }
 
 /*!
- * \qmlproperty ListItemOptions ListItem::trailingOptions
+ * \qmlproperty ListItemActions ListItem::trailingActions
  *
- * The property holds the options and its configuration to be revealed when swiped
+ * The property holds the actions and its configuration to be revealed when swiped
  * from right to left.
  */
-UCListItemOptions *UCListItem::trailingOptions() const
+UCListItemActions *UCListItem::trailingActions() const
 {
     Q_D(const UCListItem);
-    return d->trailingOptions;
+    return d->trailingActions;
 }
-void UCListItem::setTrailingOptions(UCListItemOptions *options)
+void UCListItem::setTrailingActions(UCListItemActions *actions)
 {
     Q_D(UCListItem);
-    if (d->trailingOptions == options) {
+    if (d->trailingActions == actions) {
         return;
     }
-    d->trailingOptions = options;
-    Q_EMIT trailingOptionsChanged();
+    d->trailingActions = actions;
+    Q_EMIT trailingActionsChanged();
 }
 
 /*!
@@ -525,7 +525,7 @@ QQuickItem* UCListItem::contentItem() const
  *
  * This grouped property configures the thin divider shown in the bottom of the
  * component. Configures the visibility and the margins from the left and right
- * of the ListItem. When tugged (swiped left or right to reveal the options),
+ * of the ListItem. When tugged (swiped left or right to reveal the actions),
  * it is not moved together with the content. \c colorFrom and \c colorTo configure
  * the starting and ending colors of the divider.
  *

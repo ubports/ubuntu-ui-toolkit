@@ -29,14 +29,16 @@ MainView {
         id: stock
     }
 
-    ListItemOptions {
+    ListItemActions {
         id: leading
-        Action {
-        }
-        Action {
-        }
-        Action {
-        }
+        actions: [
+            Action {
+            },
+            Action {
+            },
+            Action {
+            }
+        ]
     }
 
     Column {
@@ -56,10 +58,10 @@ MainView {
                 anchors.fill: parent
                 text: units.gridUnit + "PX/unit"
             }
-            leadingOptions: ListItemOptions {
-                options: [stock]
+            leadingActions: ListItemActions {
+                actions: [stock]
             }
-            trailingOptions: leading
+            trailingActions: leading
         }
 
         ListView {
@@ -72,7 +74,7 @@ MainView {
             delegate: ListItem {
                 id: listItem
                 onClicked: print(" clicked")
-                leadingOptions: leading
+                leadingActions: leading
                 Label {
                     text: modelData + " item"
                 }

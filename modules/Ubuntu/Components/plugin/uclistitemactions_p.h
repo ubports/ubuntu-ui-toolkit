@@ -14,33 +14,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCLISTITEMOPTIONS_P_H
-#define UCLISTITEMOPTIONS_P_H
+#ifndef UCLISTITEMACTIONS_P_H
+#define UCLISTITEMACTIONS_P_H
 
-#include "uclistitemoptions.h"
+#include "uclistitemactions.h"
 #include "QtCore/private/qobject_p.h"
 
-class UCListItemOptionsPrivate : public QObjectPrivate {
-    Q_DECLARE_PUBLIC(UCListItemOptions)
+class UCListItemActionsPrivate : public QObjectPrivate {
+    Q_DECLARE_PUBLIC(UCListItemActions)
 public:
-    UCListItemOptionsPrivate();
-    ~UCListItemOptionsPrivate();
-    static UCListItemOptionsPrivate* get(UCListItemOptions *options)
+    UCListItemActionsPrivate();
+    ~UCListItemActionsPrivate();
+    static UCListItemActionsPrivate* get(UCListItemActions *actions)
     {
-        Q_ASSERT(options);
-        return options->d_func();
+        Q_ASSERT(actions);
+        return actions->d_func();
     }
 
-    bool optionsFailure:1;
     QQmlComponent *delegate;
     QQuickItem *panelItem;
-    QList<QObject*> options;
+    QList<UCAction*> actions;
+    QList<QObject*> data;
 
     // options list property functions
-    static void funcAppend(QQmlListProperty<QObject>*, QObject*);
-    static int funcCount(QQmlListProperty<QObject>*);
-    static QObject *funcAt(QQmlListProperty<QObject>*, int);
-    static void funcClear(QQmlListProperty<QObject>*);
+    static void funcAppend(QQmlListProperty<UCAction>*, UCAction*);
+    static int funcCount(QQmlListProperty<UCAction>*);
+    static QObject *funcAt(QQmlListProperty<UCAction>*, int);
+    static void funcClear(QQmlListProperty<UCAction>*);
 };
 
-#endif // UCLISTITEMOPTIONS_P_H
+#endif // UCLISTITEMACTIONS_P_H

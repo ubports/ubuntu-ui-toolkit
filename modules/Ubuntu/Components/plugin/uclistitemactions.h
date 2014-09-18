@@ -14,38 +14,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UCLISTITEMOPTIONS_H
-#define UCLISTITEMOPTIONS_H
+#ifndef UCLISTITEMACTIONS_H
+#define UCLISTITEMACTIONS_H
 
 #include <QtCore/QObject>
 #include "uclistitem_p.h"
 
 class QQmlComponent;
-class UCListItemOptionsPrivate;
-class UCListItemOptions : public QObject
+class UCAction;
+class UCListItemActionsPrivate;
+class UCListItemActions : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
-    Q_PROPERTY(QQmlListProperty<QObject> options READ options CONSTANT)
+    Q_PROPERTY(QQmlListProperty<UCAction> actions READ actions CONSTANT)
     Q_PROPERTY(QQuickItem *panelItem READ panelItem NOTIFY panelItemChanged)
-    Q_CLASSINFO("DefaultProperty", "options")
+    Q_PROPERTY(QQmlListProperty<QObject> data READ data)
+    Q_CLASSINFO("DefaultProperty", "data")
 public:
-    explicit UCListItemOptions(QObject *parent = 0);
-    ~UCListItemOptions();
+    explicit UCListItemActions(QObject *parent = 0);
+    ~UCListItemActions();
 
     QQmlComponent *delegate() const;
     void setDelegate(QQmlComponent *delegate);
-    QQmlListProperty<QObject> options();
+    QQmlListProperty<UCAction> actions();
     QQuickItem *panelItem() const;
+    QQmlListProperty<QObject> data();
 
 Q_SIGNALS:
     void delegateChanged();
     void panelItemChanged();
 
-public Q_SLOTS:
-
 private:
-    Q_DECLARE_PRIVATE(UCListItemOptions)
+    Q_DECLARE_PRIVATE(UCListItemActions)
 };
 
-#endif // UCLISTITEMOPTIONS_H
+#endif // UCLISTITEMACTIONS_H
