@@ -64,6 +64,8 @@ Ubuntu.StyledItem {
     Connections {
         target: inputHandler
         onPressAndHold: openPopover()
+        onTextModified: typing = true
+        onTap: typing = false
     }
 
     function openPopover() {
@@ -85,6 +87,8 @@ Ubuntu.StyledItem {
                                     "target": handler.main
                                 })
             }
+            contextMenuVisible = true;
+            popup.onVisibleChanged.connect(contextMenuHidden.bind(undefined, popup));
             // do not grab focus!
             popup.__foreground.activeFocusOnPress = false;
         }
@@ -124,6 +128,12 @@ Ubuntu.StyledItem {
         when: caret
         property: "visible"
         value: QuickUtils.touchScreenAvailable
+         && (contextMenuVisible || !typing)
+    }
+    property bool typing: false
+    property bool contextMenuVisible: false
+    function contextMenuHidden(p) {
+        contextMenuVisible = false
     }
     onXChanged: if (draggedItem.state === "") draggedItem.moveToCaret()
     onYChanged: if (draggedItem.state === "") draggedItem.moveToCaret()

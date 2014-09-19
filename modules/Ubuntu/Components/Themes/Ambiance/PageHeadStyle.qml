@@ -406,6 +406,7 @@ Style.PageHeadStyle {
                                     }
                                     width: units.gu(2)
                                     height: units.gu(2)
+                                    opacity: action.enabled ? 1.0 : 0.5
                                 }
 
                                 Label {
@@ -419,6 +420,7 @@ Style.PageHeadStyle {
                                     elide: Text.ElideRight
                                     text: action.text
                                     color: Theme.palette.selected.backgroundText
+                                    opacity: action.enabled ? 1.0 : 0.5
                                 }
 
                                 ListItem.ThinDivider {
