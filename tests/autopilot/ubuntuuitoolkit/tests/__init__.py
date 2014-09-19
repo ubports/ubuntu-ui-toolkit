@@ -141,13 +141,19 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         self.pointing_device = Pointer(self.input_device_class.create())
         self.launch_application()
 
+    def get_command_line(self, command_line):
+        return command_line
+
     def launch_application(self):
         desktop_file_path = self._get_desktop_file_path()
-        self.app = self.launch_test_application(
-            base.get_qmlscene_launch_command(),
-            "-I" + _get_module_include_path(),
+        command_line = [
+            base.get_toolkit_launcher_command(),
+            "-I", _get_module_include_path(),
             self.test_qml_file_path,
-            '--desktop_file_hint={0}'.format(desktop_file_path),
+            '--desktop_file_hint={0}'.format(desktop_file_path)
+            ]
+        self.app = self.launch_test_application(
+            *self.get_command_line(command_line),
             emulator_base=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase,
             app_type='qt')
 
