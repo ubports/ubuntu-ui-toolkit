@@ -78,6 +78,7 @@ Item {
     Image {
         id: caretItem
         source: "artwork/caret_noshadow.png"
+        objectName: "text_cursor_style_caret"
         anchors {
             top: parent.bottom
             horizontalCenter: parent.horizontalCenter
