@@ -20,18 +20,18 @@ import Ubuntu.Components 1.2
 Column {
     width: 800
     height: 600
-    ListItemOptions {
-        id: options1
+    ListItemActions {
+        id: actions1
     }
-    ListItemOptions {
-        id: options2
+    ListItemActions {
+        id: actions2
     }
 
     Repeater {
         model: 5000
         ListItem {
-            trailingOptions: options1
-            leadingOptions: options2
+            trailingActions: actions1
+            leadingActions: actions2
         }
     }
 }
