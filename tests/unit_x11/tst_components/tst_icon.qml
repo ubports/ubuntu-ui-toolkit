@@ -50,6 +50,14 @@ Item {
             width: units.gu(10)
             height: width
         }
+        Icon {
+            // Regression test for bug #1371509
+            // Will print "QML QQuickImage: Failed to get image from provider" when broken.
+            id: icon3
+            width: units.gu(10)
+            height: width
+            source: Qt.resolvedUrl("tst_icon-select.png")
+        }
     }
 
     UbuntuTestCase {
