@@ -90,7 +90,7 @@ Item {
 
             var image = findChild(icon2, "image");
             compare(image.source,
-                    "image://theme/search",
+                    "file:///usr/share/icons/suru/actions/scalable/search.svg",
                     "Source of the image should equal icon2.source.");
         }
     }
