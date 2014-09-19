@@ -54,7 +54,15 @@ QImage UCScalingImageProvider::requestImage(const QString &id, QSize *size, cons
             scaledSize = realSize * scaleFactor;
         }
         if (requestedSize.isValid() && (requestedSize.width() < realSize.width() || requestedSize.height() < realSize.height())) {
-            constrainedSize = scaledSize.scaled(requestedSize, Qt::KeepAspectRatio);
+            if (requestedSize.width() > 0 && requestedSize.height() == 0 && scaledSize.width() > 0) {
+                constrainedSize.setWidth(requestedSize.width());
+                constrainedSize.setHeight(scaledSize.height() * requestedSize.width() / scaledSize.width());
+            } else if (requestedSize.height() > 0 && requestedSize.width() == 0 && scaledSize.height() > 0) {
+                constrainedSize.setHeight(requestedSize.height());
+                constrainedSize.setWidth(scaledSize.width() * requestedSize.height() / scaledSize.height());
+            } else {
+                constrainedSize = scaledSize.scaled(requestedSize, Qt::KeepAspectRatio);
+            }
         }
 
         if (constrainedSize.isValid()) {

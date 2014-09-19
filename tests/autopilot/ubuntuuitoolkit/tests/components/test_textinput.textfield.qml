@@ -15,26 +15,20 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.1
 
-Column {
-    width: 800
-    height: 600
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
 
-    Repeater {
-        model: 5000
-        ListItem {
-            trailingActions: ListItemActions {
-                actions: [
-                    Action {}
-                ]
-            }
-            leadingActions: ListItemActions {
-                actions: [
-                    Action {},
-                    Action {},
-                    Action {}
-                ]
+    Page {
+        title: "Textfield"
+
+        Column {
+            TextField {
+                objectName: "textfield"
+                placeholderText: "Type here"
+                width: units.gu(15)
             }
         }
     }
