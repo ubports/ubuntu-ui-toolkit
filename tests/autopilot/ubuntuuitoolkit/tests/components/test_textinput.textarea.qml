@@ -15,26 +15,21 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.2
+import Ubuntu.Components 1.1
 
-Column {
-    width: 800
-    height: 600
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
 
-    Repeater {
-        model: 5000
-        ListItem {
-            trailingActions: ListItemActions {
-                actions: [
-                    Action {}
-                ]
-            }
-            leadingActions: ListItemActions {
-                actions: [
-                    Action {},
-                    Action {},
-                    Action {}
-                ]
+    Page {
+        title: "Textarea"
+
+        Column {
+            TextArea {
+                objectName: "textarea"
+                text: "Lorem ipsum dolor sit amet."
+                width: units.gu(25)
+                height: units.gu(25)
             }
         }
     }

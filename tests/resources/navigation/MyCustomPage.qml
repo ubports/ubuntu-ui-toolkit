@@ -47,6 +47,7 @@ Page {
         Action {
             text: "another one"
             iconSource: "call_icon.png"
+            enabled: false
         }
     ]
 }
