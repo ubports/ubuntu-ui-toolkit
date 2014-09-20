@@ -60,7 +60,7 @@ Item {
                 top: parent.top
                 bottom: parent.bottom
             }
-            width: visuals.buttonContainerWidth
+            width: styledItem.leftButton ? visuals.buttonContainerWidth : 0
             Component.onCompleted: header.updateButton(styledItem.leftButton, leftButtonContainer)
         }
 
@@ -71,7 +71,7 @@ Item {
                 top: parent.top
                 bottom: parent.bottom
             }
-            width: visuals.buttonContainerWidth
+            width: styledItem.rightButton ? visuals.buttonContainerWidth : 0
             Component.onCompleted: header.updateButton(styledItem.rightButton, rightButtonContainer)
         }
 
