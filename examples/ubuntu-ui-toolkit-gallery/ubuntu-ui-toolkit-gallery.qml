@@ -40,7 +40,6 @@ MainView {
     LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
-    StateSaver.properties: "width, height, state"
     state: width >= units.gu(80) ? "wide" : "narrow"
     states: [
         State {
@@ -109,15 +108,8 @@ MainView {
         onFlickableChanged: if (!flickable) widgetList.topMargin = 0;
 
         Rectangle {
-            id: menu
             color: Qt.rgba(0.0, 0.0, 0.0, 0.01)
             anchors.fill: parent
-
-            property int selectedPage: -1
-            property bool initialPage: true
-            StateSaver.properties: "selectedPage, initialPage"
-
-            Component.onCompleted: widgetList.currentIndex = selectedPage
 
             ListView {
                 id: widgetList
@@ -131,19 +123,10 @@ MainView {
                     progression: true
                     selected: enabled && selectedWidget == model
                     onClicked: {
-                        menu.initialPage = false;
-                        menu.selectedPage = index;
-                        widgetList.currentIndex = index;
-                    }
-                }
-                onCurrentIndexChanged: {
-                    if (currentIndex < 0 || menu.initialPage) {
-                        return;
-                    }
-
-                    selectedWidget = model.get(currentIndex);
-                    if (gallery.state == "narrow") {
-                        pageStack.push(contentPage);
+                        selectedWidget = model;
+                        if (gallery.state == "narrow") {
+                            pageStack.push(contentPage);
+                        }
                     }
                 }
             }
