@@ -151,6 +151,9 @@ void UCStateSaverAttachedPrivate::watchComponent(bool watch)
  * time, as well as when the application is deactivated. Automatic serialization
  * of a component can be turned off by simply setting false to \l enabled property.
  *
+ * \note The application name must be set correctly to the package name so that
+ * state saving can work (e.g. com.ubuntu.calendar) through \l MainView::applicationName.
+ *
  * States saved are discarded when the application is closed properly. The state
  * loading is ignored (but not discarded) when the application is launched through
  * UriHandler.
