@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.1.1262+14.10.20140922-0ubuntu1) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.1.1262+14.10.20140922.2-0ubuntu1) utopic; urgency=medium
 
   [ Leo Arias ]
   * Add logging to the textfield autopilot helpers Fixes LP: #1361750
@@ -25,6 +25,7 @@ ubuntu-ui-toolkit (1.1.1262+14.10.20140922-0ubuntu1) UNRELEASED; urgency=medium
   [ Zoltán Balogh ]
   * Updated test plan execution for RTM images and for new phablet
     tools.
+  * New test plan script
 
   [ Christian Dywan ]
   * Specify /sbin when calling initctl just like autopilot does.
@@ -45,7 +46,7 @@ ubuntu-ui-toolkit (1.1.1262+14.10.20140922-0ubuntu1) UNRELEASED; urgency=medium
   [ Christian Dywan ]
   * Change gallery to use launcher to allow -touch argument.
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Thu, 18 Sep 2014 06:16:55 +0300
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 22 Sep 2014 15:52:55 +0000
 
 ubuntu-ui-toolkit (1.1.1239+14.10.20140908-0ubuntu1) utopic; urgency=medium
 
