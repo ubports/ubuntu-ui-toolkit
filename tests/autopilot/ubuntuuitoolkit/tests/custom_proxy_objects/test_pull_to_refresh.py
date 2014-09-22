@@ -39,6 +39,9 @@ class PullToRefreshTestCase(tests.QMLFileAppTestCase):
             objectName='flickableWithPullToRefresh')
 
     def test_pull_to_refresh_must_refresh_model(self):
+        # TODO disabled due bug #1372446
+        self.skipTest(
+            'Try to reproduce consistently, bug logged in #1372446')
         self.flickable_with_pull_to_refresh.pull_to_refresh()
 
         self.assertEqual(self.label.text, 'Refreshed.')
