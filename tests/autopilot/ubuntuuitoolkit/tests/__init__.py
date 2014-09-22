@@ -87,12 +87,26 @@ MainView {
             qml_file_contents=self.test_qml)
         self.useFixture(fake_application)
 
+        local_modules_path = _get_module_include_path()
+        if os.path.exists(local_modules_path):
+            self.use_local_modules(local_modules_path)
         desktop_file_name = os.path.basename(
             fake_application.desktop_file_path)
         application_name, _ = os.path.splitext(desktop_file_name)
         self.app = self.launch_upstart_application(
             application_name,
             emulator_base=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase)
+
+    def use_local_modules(self, local_modules_path):
+        env_vars = [
+            'QML_IMPORT_PATH',
+            'QML2_IMPORT_PATH',
+            'UBUNTU_UI_TOOLKIT_THEMES_PATH'
+        ]
+        kwargs = {'global_': True}
+        for env in env_vars:
+            kwargs[env] = local_modules_path
+        self.useFixture(fixture_setup.InitctlEnvironmentVariable(**kwargs))
 
 
 class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
@@ -127,13 +141,19 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         self.pointing_device = Pointer(self.input_device_class.create())
         self.launch_application()
 
+    def get_command_line(self, command_line):
+        return command_line
+
     def launch_application(self):
         desktop_file_path = self._get_desktop_file_path()
-        self.app = self.launch_test_application(
-            base.get_qmlscene_launch_command(),
-            "-I" + _get_module_include_path(),
+        command_line = [
+            base.get_toolkit_launcher_command(),
+            "-I", _get_module_include_path(),
             self.test_qml_file_path,
-            '--desktop_file_hint={0}'.format(desktop_file_path),
+            '--desktop_file_hint={0}'.format(desktop_file_path)
+            ]
+        self.app = self.launch_test_application(
+            *self.get_command_line(command_line),
             emulator_base=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase,
             app_type='qt')
 

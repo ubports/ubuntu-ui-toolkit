@@ -49,8 +49,6 @@ Rectangle {
     anchors {
         left: (parent) ? parent.left : null
         right: (parent) ? parent.right : null
-        leftMargin: units.gu(2)
-        rightMargin: units.gu(2)
     }
     height: (visible) ? units.dp(2) : 0
     // a private property to catch theme background color change
