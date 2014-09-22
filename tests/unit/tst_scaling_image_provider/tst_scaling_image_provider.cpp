@@ -71,6 +71,8 @@ private Q_SLOTS:
         QTest::newRow("upscaling, smaller width")            << inputFile << "2.0" << QSize(50, 1000) << QSize(256, 512) << QSize(50, 100);
         QTest::newRow("upscaling, smaller height")           << inputFile << "2.0" << QSize(1000, 50) << QSize(256, 512) << QSize(25, 50);
         QTest::newRow("upscaling, smaller width and height") << inputFile << "2.0" << QSize(50, 50) << QSize(256, 512) << QSize(25, 50);
+        QTest::newRow("upscaling, smaller width and no height") << inputFile << "2.0" << QSize(50, 0) << QSize(256, 512) << QSize(50, 100);
+        QTest::newRow("upscaling, smaller height and no width") << inputFile << "2.0" << QSize(0, 50) << QSize(256, 512) << QSize(25, 50);
     }
 
     void respectRequestedSize() {

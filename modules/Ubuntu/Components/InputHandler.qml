@@ -50,6 +50,9 @@ MultiPointTouchArea {
 
     // signal triggered when popup should be opened
     signal pressAndHold(int pos)
+    signal tap(int pos)
+    property string oldText: ""
+    signal textModified()
 
     function activateInput() {
         if (!input.activeFocus) {
@@ -76,6 +79,7 @@ MultiPointTouchArea {
     readonly property bool singleLine: input && input.hasOwnProperty("validator")
     property var flickableList: new Array()
     property bool textChanged: false
+    property var popover
     property bool suppressReleaseEvent: false
     property int pressedPosition: -1
     // move properties
@@ -307,7 +311,13 @@ MultiPointTouchArea {
     Connections {
         target: input
         onCursorRectangleChanged: ensureVisible()
-        onTextChanged: textChanged = true;
+        onTextChanged: {
+            textChanged = true;
+            if (oldText != input.text) {
+                textModified()
+                oldText = text
+            }
+        }
         // make sure we show the OSK
         onActiveFocusChanged: showInputPanel()
     }
@@ -369,6 +379,8 @@ MultiPointTouchArea {
         if (event.button === Qt.RightButton) {
             // open the popover
             inputHandler.pressAndHold(input.cursorPosition);
+        } else {
+            inputHandler.tap(input.cursorPosition);
         }
     }
     function handleMove(event, touch ) {
@@ -403,6 +415,7 @@ MultiPointTouchArea {
         // trigger pressAndHold
         onReleased: openContextMenu(mouse, true)
     }
+    Keys.onMenuPressed: inputHandler.pressAndHold(input.cursorPosition);
 
     // touch handling
     touchPoints: TouchPoint {
@@ -433,6 +446,10 @@ MultiPointTouchArea {
             if (!main.focus) {
                 return;
             }
+
+            // do not open context menu if this is scrolling
+            if (touchPoint.startY - touchPoint.y < -units.dp(2))
+                return;
 
             openContextMenu(touchPoint, false);
             suppressReleaseEvent = true;

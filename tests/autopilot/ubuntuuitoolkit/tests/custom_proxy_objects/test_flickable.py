@@ -14,11 +14,9 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-import os
-
 import testtools
 import ubuntuuitoolkit
-from ubuntuuitoolkit import fixture_setup, tests
+from ubuntuuitoolkit import tests
 from ubuntuuitoolkit._custom_proxy_objects import _common
 
 
@@ -200,32 +198,9 @@ MainView {
 }
 """)
 
-    def launch_application(self):
-        fake_application = fixture_setup.FakeApplication(
-            qml_file_contents=self.test_qml)
-        self.useFixture(fake_application)
-
-        self.app = self.launch_test_application(
-            self.get_alternate_launch_command(),
-            '-engine',
-            '-I', tests._get_module_include_path(),
-            fake_application.qml_file_path,
-            '--desktop_file_hint={0}'.format(
-                fake_application.desktop_file_path),
-            emulator_base=ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase,
-            app_type='qt')
-
-    def get_alternate_launch_command(self):
-        root = tests.get_path_to_source_root()
-        path_to_local_launcher = os.path.join(
-            root, 'tests', 'launcher', 'launcher')
-        if os.path.exists(path_to_local_launcher):
-            return path_to_local_launcher
-        else:
-            arch = ubuntuuitoolkit.base.get_host_multiarch()
-            path_to_installed_launcher = os.path.join(
-                '/', 'usr', 'lib', arch, 'ubuntu-ui-toolkit', 'launcher')
-        return path_to_installed_launcher
+    def get_command_line(self, command_line):
+        command_line.append('-engine')
+        return command_line
 
     def test_get_unity_top_container(self):
         """Test that we can get the top cointainer in Unity."""
