@@ -80,7 +80,7 @@ Item {
     Image {
         id: caretItem
         source: "artwork/caret_noshadow.png"
-        objectName: "text_cursor_style_caret"
+        objectName: "text_cursor_style_caret_" + styledItem.positionProperty
         anchors {
             top: styledItem.positionProperty === "selectionStart" ? undefined : parent.bottom
             bottom: styledItem.positionProperty === "selectionStart" ? parent.top : undefined
