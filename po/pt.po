@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-09-06 07:28+0000\n"
+"X-Launchpad-Export-Date: 2014-09-23 07:06+0000\n"
 "X-Generator: Launchpad (build 17196)\n"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:154
@@ -23,21 +23,23 @@ msgid ""
 "property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
 "of type %5"
 msgstr ""
+"propriedade \"%1\" do objeto %2 tem o tipo %3 e não pode ser definido o "
+"valor \"%4\" do tipo %5"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:163
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
-msgstr ""
+msgstr "propriedade \"%1\" não existe ou não editável para o objecto %2"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:42
 #: Ubuntu/Components/plugin/ucalarm.cpp:136
 msgid "Alarm"
-msgstr ""
+msgstr "Alarme"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:684
 #: Ubuntu/Components/plugin/ucalarm.cpp:716
 msgid "Alarm has a pending operation."
-msgstr ""
+msgstr "O allarme tem uma operação pendente."
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
@@ -64,17 +66,17 @@ msgstr "%1 está à espera de argumentos adicionais: %2"
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1064
 msgid "Ignoring AfterItem priority for InverseMouse filters."
-msgstr ""
+msgstr "Ignorando prioriedade depoisdoitem para filtros de iversãoderato."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
-msgstr ""
+msgstr "Aviso: o anexo deverá ter uma Id.. O estado não será guardado."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:56
 #, qt-format
 msgid ""
 "Warning: attachee's UUID is already registered, state won't be saved: %1"
-msgstr ""
+msgstr "Aviso: UUID anexado já está registado, estado não pode ser salvo: %1"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:102
 #, qt-format
@@ -82,26 +84,28 @@ msgid ""
 "All the parents must have an id.\n"
 "State saving disabled for %1, class %2"
 msgstr ""
+"Todas as origens devem ter uma id.\n"
+"Estado de guardar desactivado para %1, classe %2"
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
-msgstr ""
+msgstr "Tema não encontrado: "
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:80
 msgid "Cancel"
-msgstr ""
+msgstr "Cancelar"
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:90
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmar"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:89
 msgid "Close"
-msgstr ""
+msgstr "Fechar"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:99
 msgid "Done"
-msgstr ""
+msgstr "Concluído"
 
 #: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
@@ -121,238 +125,12 @@ msgstr "Colar"
 
 #: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
 msgid "In Progress"
-msgstr ""
+msgstr "Em Progresso"
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."
-msgstr ""
+msgstr "Largar para actualizar..."
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
-msgstr ""
-
-#~ msgid "Color"
-#~ msgstr "Cor"
-
-#~ msgid "Standard Durations"
-#~ msgstr "Durações Padrão"
-
-#~ msgid "Snap"
-#~ msgstr "Encaixar"
-
-#~ msgid "Standard"
-#~ msgstr "Padrão"
-
-#~ msgid "Sleepy"
-#~ msgstr "Sonolento"
-
-#~ msgid "Call"
-#~ msgstr "Chamada"
-
-#~ msgid "Fast"
-#~ msgstr "Rápido"
-
-#~ msgid "Slow"
-#~ msgstr "Lento"
-
-#~ msgid "Icon"
-#~ msgstr "Ícone"
-
-#~ msgid "Secondary label"
-#~ msgstr "Etiqueta secundária"
-
-#~ msgid "Colorization"
-#~ msgstr "Coloração"
-
-#~ msgid "Scaling"
-#~ msgstr "Redimensionar"
-
-#~ msgid "Open"
-#~ msgstr "Abrir"
-
-#~ msgid "Disabled"
-#~ msgstr "Desactivado"
-
-#~ msgid "Progression"
-#~ msgstr "Progressão"
-
-#~ msgid "Subtitled"
-#~ msgstr "Legendado"
-
-#~ msgid "Label"
-#~ msgstr "Etiqueta"
-
-#~ msgid "Value"
-#~ msgstr "Valor"
-
-#~ msgid "Single value"
-#~ msgstr "Valor único"
-
-#~ msgid "Multi value"
-#~ msgstr "Valor múltiplo"
-
-#~ msgid "Value 1"
-#~ msgstr "Valor 1"
-
-#~ msgid "Value 2"
-#~ msgstr "Valor 2"
-
-#~ msgid "Value 3"
-#~ msgstr "Valor 3"
-
-#~ msgid "Value 4"
-#~ msgstr "Valor 4"
-
-#~ msgid "Value selector"
-#~ msgstr "Selector de valores"
-
-#~ msgid "Removable"
-#~ msgstr "Removível"
-
-#~ msgid "Slide to remove"
-#~ msgstr "Deslizar para remover"
-
-#~ msgid "Grouped list"
-#~ msgstr "Lista agrupada"
-
-#~ msgid "Control"
-#~ msgstr "Controlo"
-
-#~ msgid "Infinite"
-#~ msgstr "Infinito"
-
-#~ msgid "Action #1"
-#~ msgstr "Acção #1"
-
-#~ msgid "Flickable"
-#~ msgstr "Agitável"
-
-#~ msgid "Action #3"
-#~ msgstr "Acção #3"
-
-#~ msgid "Action #2"
-#~ msgstr "Acção #2"
-
-#~ msgid "Action #5"
-#~ msgstr "Acção #5"
-
-#~ msgid "Progress Bar"
-#~ msgstr "Barra de Progresso"
-
-#~ msgid "The visual style of the Sheet is early work and thus clunky looking."
-#~ msgstr ""
-#~ "O estilo visual da Folha de Cálculo é trabalho inicial e assim com um "
-#~ "aspecto desajeitado."
-
-#~ msgid "Activity Indicator"
-#~ msgstr "Indicador de Actividade"
-
-#~ msgid "Action #4"
-#~ msgstr "Acção #4"
-
-#~ msgid "Expanding"
-#~ msgstr "Expandir"
-
-#~ msgid "Numbers"
-#~ msgstr "Números"
-
-#~ msgid "Default"
-#~ msgstr "Omissão"
-
-#~ msgid "Type me in..."
-#~ msgstr "Escreva-me"
-
-#~ msgid "Password"
-#~ msgstr "Palavra-Passe"
-
-#~ msgid "Live Update"
-#~ msgstr "Actualização em Tempo Real"
-
-#~ msgid "Range"
-#~ msgstr "Intervalo"
-
-#~ msgid "Title"
-#~ msgstr "Título"
-
-#, qt-format
-#~ msgid "value = %1"
-#~ msgstr "valor = %1"
-
-#~ msgid "Rich Text"
-#~ msgstr "Texto Rich"
-
-#~ msgid "Image"
-#~ msgstr "Imagem"
-
-#~ msgid "Radius"
-#~ msgstr "Raio"
-
-#~ msgid "Unchecked"
-#~ msgstr "Desmarcado"
-
-#~ msgid "Checked"
-#~ msgstr "Marcado"
-
-#~ msgid "Lengths"
-#~ msgstr "Comprimentos"
-
-#~ msgid "Sizes"
-#~ msgstr "Tamanhos"
-
-#~ msgid "Clear"
-#~ msgstr "Limpar"
-
-#~ msgid "Weights"
-#~ msgstr "Pesos"
-
-#~ msgid "Redo"
-#~ msgstr "Refazer"
-
-#~ msgid "Select Word"
-#~ msgstr "Seleccionar Palavra"
-
-#~ msgid "Undo"
-#~ msgstr "Desfazer"
-
-#~ msgid "Simple page"
-#~ msgstr "Página simples"
-
-#~ msgid "Back"
-#~ msgstr "Retroceder"
-
-#~ msgid "My custom page"
-#~ msgstr "A minha página personalizada"
-
-#~ msgid ""
-#~ "This is an external page\n"
-#~ "with a locked toolbar."
-#~ msgstr ""
-#~ "Esta é uma página externa\n"
-#~ "com uma barra de ferramentas bloqueada."
-
-#~ msgid "Root page"
-#~ msgstr "Página Root"
-
-#~ msgid "Page one"
-#~ msgstr "Página um"
-
-#~ msgid "External page"
-#~ msgstr "Página externa"
-
-#~ msgid "First page"
-#~ msgstr "Primeira página"
-
-#~ msgid "Root page (again)"
-#~ msgstr "Página Root (novamente)"
-
-#~ msgid "Red rectangle"
-#~ msgstr "Rectângulo vermelho"
-
-#~ msgid "List view"
-#~ msgstr "Vista em lista"
-
-#~ msgid "NumberAnimation"
-#~ msgstr "Número da Animação"
-
-#~ msgid "External"
-#~ msgstr "Externo"
+msgstr "Puxar para actualizar"
