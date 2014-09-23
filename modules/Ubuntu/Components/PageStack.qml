@@ -214,7 +214,6 @@ PageTreeNode {
 
         property bool animateHeader: {
             if (!headStyle) return false;
-            if (!headStyle) return false;
             if (!headStyle.hasOwnProperty("animateIn")) return false;
             if (!headStyle.hasOwnProperty("animateOut")) return false;
             if (!headStyle.hasOwnProperty("animateInFinished")) return false;
