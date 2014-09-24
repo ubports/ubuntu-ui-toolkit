@@ -25,13 +25,12 @@
 
 UCListItemActionsPrivate::UCListItemActionsPrivate()
     : QObjectPrivate()
-    , connected(false)
-    , leading(false)
     , delegate(0)
     , panelItem(0)
     , optionSlotWidth(0.0)
     , offsetDragged(0.0)
     , optionsVisible(0)
+    , status(UCListItemActions::Disconnected)
 {
 }
 UCListItemActionsPrivate::~UCListItemActionsPrivate()
@@ -46,7 +45,7 @@ void UCListItemActionsPrivate::_q_handlePanelDrag()
     }
 
     Q_Q(UCListItemActions);
-    offsetDragged = (leading) ? panelItem->width() + panelItem->x() :
+    offsetDragged = (status == UCListItemActions::Leading) ? panelItem->width() + panelItem->x() :
                          listItem->width() - panelItem->x();
     if (offsetDragged < 0.0) {
         offsetDragged = 0.0;
@@ -70,6 +69,16 @@ void UCListItemActionsPrivate::_q_handlePanelWidth()
     _q_handlePanelDrag();
 }
 
+UCListItemActionsAttached *UCListItemActionsPrivate::attachedObject()
+{
+    if (!panelItem) {
+        return 0;
+    }
+    return static_cast<UCListItemActionsAttached*>(
+                qmlAttachedPropertiesObject<UCListItemActions>(panelItem, false));
+}
+
+
 bool UCListItemActionsPrivate::connectToListItem(UCListItemActions *actions, UCListItem *listItem, bool leading)
 {
     UCListItemActionsPrivate *_this = get(actions);
@@ -84,13 +93,10 @@ bool UCListItemActionsPrivate::connectToListItem(UCListItemActions *actions, UCL
         _this->queuedItem = listItem;
         return false;
     }
-    _this->leading = leading;
-    _this->panelItem->setProperty("listItemIndex", UCListItemPrivate::get(listItem)->index);
-    _this->panelItem->setProperty("leadingPanel", leading);
     _this->panelItem->setParentItem(listItem);
     _this->offsetDragged = 0.0;
-    QObject::connect(_this->panelItem, SIGNAL(selected()), _this->panelItem->parentItem(), SLOT(_q_rebound()));
-    _this->connected = true;
+    _this->status = leading ? UCListItemActions::Leading : UCListItemActions::Trailing;
+    Q_EMIT actions->statusChanged();
     return true;
 }
 
@@ -101,10 +107,9 @@ void UCListItemActionsPrivate::disconnectFromListItem(UCListItemActions *actions
         return;
     }
 
-    QObject::disconnect(_this->panelItem, SIGNAL(selected()), _this->panelItem->parentItem(), SLOT(_q_rebound()));
-    _this->connected = false;
-    _this->leading = false;
     _this->panelItem->setParentItem(0);
+    _this->status = UCListItemActions::Disconnected;
+    Q_EMIT actions->statusChanged();
     // if there was a queuedItem, make it grab the actions list
     if (_this->queuedItem) {
         UCListItemPrivate::get(_this->queuedItem.data())->grabPanel(actions, true);
@@ -116,7 +121,9 @@ void UCListItemActionsPrivate::disconnectFromListItem(UCListItemActions *actions
 bool UCListItemActionsPrivate::isConnectedTo(UCListItemActions *actions, UCListItem *listItem)
 {
     UCListItemActionsPrivate *_this = get(actions);
-    return _this && _this->panelItem && _this->connected && (_this->panelItem->parentItem() == listItem);
+    return _this && _this->panelItem &&
+            (_this->status != UCListItemActions::Disconnected) &&
+            (_this->panelItem->parentItem() == listItem);
 }
 
 qreal UCListItemActionsPrivate::snap(UCListItemActions *options)
@@ -130,7 +137,7 @@ qreal UCListItemActionsPrivate::snap(UCListItemActions *options)
     if (ratio > 0.0 && (ratio - trunc(ratio)) > 0.5) {
         visible++;
     }
-    return visible * _this->optionSlotWidth * (_this->leading ? 1 : -1);
+    return visible * _this->optionSlotWidth * (_this->status == UCListItemActions::Leading ? 1 : -1);
 }
 
 
@@ -147,10 +154,7 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
         panelItem = qobject_cast<QQuickItem*>(component.beginCreate(qmlContext(q)));
         if (panelItem) {
             QQml_setParent_noEvent(panelItem, q);
-            if (delegate) {
-                panelItem->setProperty("delegate", QVariant::fromValue(delegate));
-            }
-            panelItem->setProperty("actionList", QVariant::fromValue(q));
+            qmlAttachedPropertiesObject<UCListItemActions>(panelItem);
             component.completeCreate();
             Q_EMIT q->panelItemChanged();
 
@@ -283,6 +287,34 @@ UCListItemActions::~UCListItemActions()
 {
 }
 
+UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *owner)
+{
+    UCListItemActionsAttached *attached = new UCListItemActionsAttached(owner);
+    /*
+     * The attached property can be attached to any item, therefore if used in panelItem
+     * or the ListItemAttached dirrectly, we can get the container from the closest
+     * ListItemAction
+     * However, if the given owner is ListItemPanel, we only set the list.
+     */
+    if (QuickUtils::className(owner) == "ListItemPanel") {
+        attached->setList(qobject_cast<UCListItemActions*>(owner->parent()));
+    } else {
+        QObject *pl = owner;
+        while (pl) {
+            UCListItemActions *actions = qobject_cast<UCListItemActions*>(pl);
+            if (actions) {
+                attached->setList(actions);
+                break;
+            }
+            pl = pl->parent();
+        }
+    }
+    if (!attached->container()) {
+        qmlInfo(owner) << UbuntuI18n::instance().tr("Warning: Attached ListItemActions object will be inactive in this context!");
+    }
+    return attached;
+}
+
 /*!
  * \qmlproperty Component ListItemActions::delegate
  * Custom delegate which overrides the default one used by the ListItem. If the
@@ -401,6 +433,23 @@ QQmlListProperty<QObject> UCListItemActions::data()
 {
     Q_D(UCListItemActions);
     return QQmlListProperty<QObject>(this, d->data);
+}
+
+/*!
+ * \qmlproperty enum ListItemActions::status
+ * \readonly
+ * The property holds the status of the ListItemActions, whether is connected
+ * as leading or as trailing action list to a \l ListItem. Possible valueas are:
+ * \list A
+ *  \li \b \c Disconnected - default, the actions list is not connected to any \l ListItem
+ *  \li \b \c LeadingOptions - the actions list is connected as leading list
+ *  \li \b \c TrailingOptions - the actions list is connected as trailing list
+ * \endlist
+ */
+UCListItemActions::Status UCListItemActions::status() const
+{
+    Q_D(const UCListItemActions);
+    return d->status;
 }
 
 #include "moc_uclistitemactions.cpp"
