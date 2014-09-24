@@ -9,4 +9,6 @@ autopilot2_module.files = autopilot/ubuntuuitoolkit/*
 
 SUBDIRS += launcher
 
+SUBDIRS += apicheck
+
 INSTALLS += autopilot_module autopilot2_module
