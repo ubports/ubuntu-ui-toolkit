@@ -1,3 +1,53 @@
+ubuntu-ui-toolkit (1.1.1262+14.10.20140922.2-0ubuntu1) utopic; urgency=medium
+
+  [ Leo Arias ]
+  * Add logging to the textfield autopilot helpers Fixes LP: #1361750
+
+  [ Zsombor Egri ]
+  * Sheet header button space reservation made button presence
+    dependent. Fixes: LP: #1356636
+  * Tweaks for ListItem dividers. Header margins and font weight
+    updated.
+  * Exclude UbuntuColors dumped erroneously by qmlplugindump as it
+    would be a C++ type.
+  * Organizer audible reminder wasn't updated when Alarm sound
+    changed.
+  * Fix for a wrong Action reference
+  * Removing dependency towards Unity.Action, ActionContext and 
+    ActionManager QML API transferred to UI Toolkit. 
+    Fixes LP: #1234339, LP: #1294298.
+  * Fixing wrong path used in saving state file. Fixes LP: #1363112
+
+  [ Loïc Molinari ]
+  * Fixed parallel build, tests/unit_x11 had no rules.
+    Fixes LP: #1367850
+
+  [ Zoltán Balogh ]
+  * Updated test plan execution for RTM images and for new phablet
+    tools.
+  * New test plan script
+
+  [ Christian Dywan ]
+  * Specify /sbin when calling initctl just like autopilot does.
+  * Change gallery to use launcher to allow -touch argument.
+  * Overflow panel button 0.5 opacity if disabled Fixes LP: #1369640
+  * Open text context menu when pressing Menu key.
+  * Do not open context menu when dragging.
+  * Hide text input handlers while typing. Fixes LP: #1343821
+
+  [ Albert Astals ]
+  * Make the scaling provider respect requestedSizes with one of the
+    values 0 
+
+  [ Leo Arias ]
+  * On autopilot tests launched by upstart, use the local modules
+    if running from a branch.
+
+  [ Christian Dywan ]
+  * Change gallery to use launcher to allow -touch argument.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 22 Sep 2014 15:52:55 +0000
+
 ubuntu-ui-toolkit (1.1.1239+14.10.20140908-0ubuntu1) utopic; urgency=medium
 
   [ Zsombor Egri ]
