@@ -50,6 +50,14 @@ Item {
             width: units.gu(10)
             height: width
         }
+        Icon {
+            // Regression test for bug #1371509
+            // Will print "QML QQuickImage: Failed to get image from provider" when broken.
+            id: icon3
+            width: units.gu(10)
+            height: width
+            source: Qt.resolvedUrl("tst_icon-select.png")
+        }
     }
 
     UbuntuTestCase {
@@ -82,7 +90,7 @@ Item {
 
             var image = findChild(icon2, "image");
             compare(image.source,
-                    "image://theme/search",
+                    "file:///usr/share/icons/suru/actions/scalable/search.svg",
                     "Source of the image should equal icon2.source.");
         }
     }

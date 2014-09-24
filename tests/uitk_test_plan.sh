@@ -20,7 +20,7 @@ SERIALNUMBER=086e443edf51b915
 RESET=false
 COMISSION=false
 DONOTRUNTESTS=false
-PPA="ppa:ubuntu-sdk-team/staging"
+PPA="ubuntu-sdk-team/staging"
 TIMESTAMP=`date +"%Y_%m_%d-%H_%M_%S"`
 LOGFILENAME="ap-${TIMESTAMP}"
 OUTPUTDIR=$HOME
@@ -30,32 +30,33 @@ DISTRO="ubuntu-rtm"
 SERIES="14.09"
 CHANNEL="ubuntu-touch/${DISTRO}/${SERIES}-proposed"
 PWD="0000"
+BOOTTIME=300
     
 declare -a TEST_SUITE=(
-    " -p reminders-app-autopilot reminders"
     " -p dialer-app-autopilot dialer_app"
     " -p messaging-app-autopilot messaging_app"
+    " -p reminders-app-autopilot reminders"
     " -p ubuntu-system-settings-autopilot ubuntu_system_settings"
     " -p ubuntu-html5-ui-toolkit-autopilot ubuntu_html5_ui_toolkit"
     " -p unity-webapps-qml-autopilot unity_webapps_qml"
-    " filemanager"
+    " -p address-book-app-autopilot address_book_app" 
     " dropping_letters_app"
     " sudoku_app"
     " -p ubuntu-ui-toolkit-autopilot ubuntuuitoolkit"
     " -p webbrowser-app-autopilot webbrowser_app"
     " shorts_app"
-    " calendar_app"
+    " ubuntu_weather_app"
+    " online_accounts_ui"
+    " filemanager"
+    " calendar_app" 
     " music_app"
     " -p mediaplayer-app-autopilot mediaplayer_app"
     " ubuntu_terminal_app"
     " ubuntu_clock_app"
     " ubuntu_calculator_app"
-    " ubuntu_weather_app"
-    " -p address-book-app-autopilot address_book_app"
-    " online_accounts_ui"
     " gallery_app"
-    " -n unity8"
-    " -p camera-app-autopilot camera_app"
+#    " -n unity8"
+#    " -p camera-app-autopilot camera_app"
 )
 
 
@@ -80,6 +81,28 @@ AP_PACKAGES="address-book-service-dummy \
              ubuntu-html5-ui-toolkit-autopilot \
              ubuntu-system-settings-online-accounts-autopilot"
 
+sleep_indicator () {
+    if [ -z "$1" ]; then
+	i=1
+	while [  $(adb get-state  -s ${SERIALNUMBER}) == "unknown" ]
+	do
+		echo -ne "Wait: $i seconds\r"
+		sleep 1
+		i=$[$i+1]
+	done
+	echo -ne '\n'
+	return
+    fi
+    SLEEP=$1
+    for (( LOOPVAR=1; LOOPVAR<= ${SLEEP}; LOOPVAR++ ))
+    do
+        echo -ne "Wait: $SLEEP/$LOOPVAR seconds\r"
+        sleep 1
+    done
+    echo -ne '\n'
+    return 0
+}
+
 function network {
         if phablet-network -s ${SERIALNUMBER} 2>&1|grep -q Error; then
                 echo "Reset and try again."
@@ -90,18 +113,19 @@ function network {
 
 function reset {
      if [ ${RESET} == true  -o  x"$1" == x-f ]; then
-        adb shell "echo 0000|sudo -S reboot 2>&1|grep -v password";sleep 5
+        adb -s ${SERIALNUMBER} shell "echo 0000|sudo -S reboot 2>&1|grep -v password"
+        sleep_indicator 120
         /usr/share/qtcreator/ubuntu/scripts/device_wait_for_shell ${SERIALNUMBER} > /dev/null
-        sleep 60
+        sleep_indicator 10
         network
-        phablet-config autopilot --dbus-probe enable 2>&1 > /dev/null
-        adb shell powerd-cli display on |egrep -v "Display State requested, cookie is|Press ctrl-c to exit|not fully supported." &
-        adb shell powerd-cli active |egrep -v "requested, cookie is|Press ctrl-c to exit|not fully supported." &
-        sleep 60
-        adb shell "sudo -u phablet -i gdbus call --session --dest com.canonical.UnityGreeter \
+        phablet-config -s ${SERIALNUMBER} autopilot --dbus-probe enable 2>&1 > /dev/null
+        adb -s ${SERIALNUMBER} shell powerd-cli display on |egrep -v "Display State requested, cookie is|Press ctrl-c to exit|not fully supported." &
+        adb -s ${SERIALNUMBER} shell powerd-cli active |egrep -v "requested, cookie is|Press ctrl-c to exit|not fully supported." &
+        sleep_indicator 10
+        adb -s ${SERIALNUMBER} shell "sudo -u phablet -i gdbus call --session --dest com.canonical.UnityGreeter \
                                                  --object-path / \
                                                  --method com.canonical.UnityGreeter.HideGreeter|grep -v '\(\)'"
-        adb shell "echo 0000|sudo -S dbus-send   --system --print-reply \
+        adb -s ${SERIALNUMBER} shell "echo 0000|sudo -S dbus-send   --system --print-reply \
                                                  --dest=org.freedesktop.Accounts \
                                                  /org/freedesktop/Accounts/User32011 \
                                                  org.freedesktop.DBus.Properties.Set \
@@ -113,40 +137,50 @@ function reset {
 function device_comission {
     adb -s ${SERIALNUMBER} wait-for-device
     # Avoid https://bugs.launchpad.net/gallery-app/+bug/1363190
-    adb shell "echo 0000 |sudo -S rm -rf /userdata/user-data/phablet/.cache/com.ubuntu.gallery 2>&1|grep -v password"
+    adb -s ${SERIALNUMBER} shell "echo 0000 |sudo -S rm -rf /userdata/user-data/phablet/.cache/com.ubuntu.gallery 2>&1|grep -v password"
     # flash the latest image
     echo -e "Flashing \e[31m${CHANNEL}\e[0m"
     ubuntu-device-flash --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --developer-mode --password=0000 
-    echo "Sleep for 5 minutes"
-    sleep 300
+    sleep_indicator ${BOOTTIME}
     echo -e "Disable the intro wizard"
     phablet-config -s ${SERIALNUMBER}  welcome-wizard --disable
     echo -e "Disable the edge swiping lecture "
     phablet-config -s ${SERIALNUMBER} edges-intro --disable
     echo -e "Clone the network "
     network
+    adb -s ${SERIALNUMBER} shell "echo 0000|sudo -S reboot 2>&1|grep -v password"
+    sleep_indicator 120
     echo -e "phablet-click-test-setup  \e[31m${DISTRO} ${SERIES}\e[0m"
-    phablet-click-test-setup --distribution=${DISTRO} --series=${SERIES} 2>&1 > /dev/null
+    phablet-click-test-setup -s ${SERIALNUMBER} --distribution=${DISTRO} --series=${SERIES} 2>&1 
+    echo "Sleep after phablet-click-test-setup";sleep_indicator 120
     if [ ${PPA} == "archive"  ]; then
         echo "Set up with the archive image"
         phablet-config -s ${SERIALNUMBER} writable-image -r 0000 2>&1 > /dev/null
+        echo "Sleep after phablet-config";sleep_indicator 120
         network
     else
-        if [[ "$PPA" =~ [^0-9]* ]]; then
+        if [[ "$PPA" =~ ^[0-9]{3}$ ]]; then
             echo -e "Set up with the silo \e[31m${PPA}\e[0m"
             phablet-config -s ${SERIALNUMBER} writable-image -r 0000 2>&1 > /dev/null
+	    sleep_indicator 120
             network
-            adb shell "echo 0000|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/ci-train-ppa-service/landing-${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/silo-${PPA}.list'"
-            adb shell "echo 0000|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
+            adb -s ${SERIALNUMBER} shell "echo 0000|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/ci-train-ppa-service/landing-${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/silo-${PPA}.list'"
+            adb -s ${SERIALNUMBER} shell "echo 0000|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
         else
             echo  -e "Set up with the PPA \e[31m${PPA}\e[0m"
-            phablet-config -s ${SERIALNUMBER} writable-image -r 0000 -p ${PPA} 2>&1 > /dev/null
+            phablet-config -s ${SERIALNUMBER} writable-image -r 0000  2>&1 > /dev/null
+	    sleep_indicator 120
+            network
+            adb -s ${SERIALNUMBER} shell "echo 0000|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/testing-ppa.list'"
+            adb -s ${SERIALNUMBER} shell "echo 0000|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
+
         fi
     fi
     adb -s ${SERIALNUMBER} shell rm -rf /home/phablet/autopilot/ubuntuuitoolkit
     UITK_VERSION=`adb -s ${SERIALNUMBER} shell "stty cols 250; dpkg -l"|grep qtdeclarative5-ubuntu-ui-toolkit-plugin|awk '{print $3}'`
     echo -e "Original UITK version:\t\e[31m${UITK_VERSION}\e[0m"
-    echo "Updating APT";adb shell "echo 0000 |sudo -S apt-get update  2>&1|grep -v password > /dev/null"
+    echo "Updating APT";
+    adb -s ${SERIALNUMBER} shell "echo 0000 |sudo -S apt-get update  2>&1|grep -v password > /dev/null"
     echo "Install the UITK packages"
     adb -s ${SERIALNUMBER} shell "echo 0000|sudo -S apt-get install --yes --force-yes ${UITK_PACKAGES} 2>&1 |grep -v password > /dev/null"
     UITK_VERSION=`adb -s ${SERIALNUMBER} shell "stty cols 250; dpkg -l"|grep qtdeclarative5-ubuntu-ui-toolkit-plugin|awk '{print $3}'`
@@ -245,21 +279,21 @@ do
         eval ${COMMAND}
         egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
         # check if the tests were successful and re-run after a reset
-        if grep -q "FAILED" ${LOGFILE}; then 
-            reset -f
-            LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-2.tests"
-            COMMAND="phablet-test-run -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
-                echo "<<<=== ${APPNAME} 2 ===>>>" >> ${LOGFILE}
-            eval ${COMMAND}
-            egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
-                if grep -q "FAILED" ${LOGFILE}; then
-                        reset -f
-                        LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-3.tests"
-                        COMMAND="phablet-test-run -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
-                    echo "<<<=== ${APPNAME} 3 ===>>>" >> ${LOGFILE}
-                        eval ${COMMAND}
-                egrep "<<<===|Ran|OK|FAILED|FAIL|ERROR:" ${LOGFILE}
-            fi
-        fi
+#        if grep -q "FAILED" ${LOGFILE}; then 
+#            reset -f
+#            LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-2.tests"
+#            COMMAND="phablet-test-run -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
+#                echo "<<<=== ${APPNAME} 2 ===>>>" >> ${LOGFILE}
+#            eval ${COMMAND}
+#            egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
+#                if grep -q "FAILED" ${LOGFILE}; then
+#                        reset -f
+#                        LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-3.tests"
+#                        COMMAND="phablet-test-run -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
+#                    echo "<<<=== ${APPNAME} 3 ===>>>" >> ${LOGFILE}
+#                        eval ${COMMAND}
+#                egrep "<<<===|Ran|OK|FAILED|FAIL|ERROR:" ${LOGFILE}
+#           fi
+#        fi
     fi
 done
