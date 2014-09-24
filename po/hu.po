@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-09-06 07:28+0000\n"
+"X-Launchpad-Export-Date: 2014-09-23 07:06+0000\n"
 "X-Generator: Launchpad (build 17196)\n"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:154
@@ -28,11 +28,13 @@ msgstr ""
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
 msgstr ""
+"a(z) „%1” tulajdonság nem létezik vagy nem írható a következő objektum "
+"számára: %2"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:42
 #: Ubuntu/Components/plugin/ucalarm.cpp:136
 msgid "Alarm"
-msgstr ""
+msgstr "Riasztás"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:684
 #: Ubuntu/Components/plugin/ucalarm.cpp:716
@@ -85,23 +87,23 @@ msgstr ""
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
-msgstr ""
+msgstr "Nem található téma: "
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:80
 msgid "Cancel"
-msgstr ""
+msgstr "Mégse"
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:90
 msgid "Confirm"
-msgstr ""
+msgstr "Megerősítés"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:89
 msgid "Close"
-msgstr ""
+msgstr "Bezárás"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:99
 msgid "Done"
-msgstr ""
+msgstr "Kész"
 
 #: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
@@ -121,230 +123,12 @@ msgstr "Beillesztés"
 
 #: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
 msgid "In Progress"
-msgstr ""
+msgstr "Folyamatban"
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."
-msgstr ""
+msgstr "Engedje le a frissítéshez…"
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
-msgstr ""
-
-#~ msgid "Color"
-#~ msgstr "Szín"
-
-#~ msgid "Icon"
-#~ msgstr "Ikon"
-
-#~ msgid "Standard"
-#~ msgstr "Általános"
-
-#~ msgid "Sleepy"
-#~ msgstr "Álmos"
-
-#~ msgid "Fast"
-#~ msgstr "Gyors"
-
-#~ msgid "Slow"
-#~ msgstr "Lassú"
-
-#~ msgid "Disabled"
-#~ msgstr "Kikapcsolva"
-
-#~ msgid "Colorization"
-#~ msgstr "Színezés"
-
-#~ msgid "Scaling"
-#~ msgstr "Átméretezés"
-
-#~ msgid "Open"
-#~ msgstr "Nyitott"
-
-#~ msgid "Secondary label"
-#~ msgstr "Másodlagos címke"
-
-#~ msgid "Subtitled"
-#~ msgstr "Feliratozott"
-
-#~ msgid "Label"
-#~ msgstr "Címke"
-
-#~ msgid "Value"
-#~ msgstr "Érték"
-
-#~ msgid "Single value"
-#~ msgstr "Egy értékű"
-
-#~ msgid "Multi value"
-#~ msgstr "Több értékű"
-
-#~ msgid "Value 1"
-#~ msgstr "1. érték"
-
-#~ msgid "Value 2"
-#~ msgstr "2. érték"
-
-#~ msgid "Value 3"
-#~ msgstr "3. érték"
-
-#~ msgid "Value 4"
-#~ msgstr "4. érték"
-
-#~ msgid "Value selector"
-#~ msgstr "Érték kiválasztó"
-
-#~ msgid "Control"
-#~ msgstr "Vezérlő"
-
-#~ msgid "Removable"
-#~ msgstr "Eltávolítható"
-
-#~ msgid "Slide to remove"
-#~ msgstr "Csúsztassa az eltávolításhoz"
-
-#~ msgid "Grouped list"
-#~ msgstr "Csoportosított lista"
-
-#~ msgid "Infinite"
-#~ msgstr "Végtelen"
-
-#~ msgid "Action #1"
-#~ msgstr "1. művelet"
-
-#~ msgid "Action #3"
-#~ msgstr "3. művelet"
-
-#~ msgid "Action #2"
-#~ msgstr "2. művelet"
-
-#~ msgid "Action #5"
-#~ msgstr "5. művelet"
-
-#~ msgid "Action #4"
-#~ msgstr "4. művelet"
-
-#~ msgid "Progress Bar"
-#~ msgstr "Állapotjelző"
-
-#~ msgid "Activity Indicator"
-#~ msgstr "Aktivitás jelző"
-
-#~ msgid "Expanding"
-#~ msgstr "Kiterjesztett"
-
-#~ msgid "Numbers"
-#~ msgstr "Számok"
-
-#~ msgid "Default"
-#~ msgstr "Alapértelmezett"
-
-#~ msgid "Type me in..."
-#~ msgstr "Gépeljen ide"
-
-#~ msgid "Password"
-#~ msgstr "Jelszó"
-
-#~ msgid "Live Update"
-#~ msgstr "Élő frissítés"
-
-#~ msgid "Range"
-#~ msgstr "Tartomány"
-
-#~ msgid "Title"
-#~ msgstr "Fejléc"
-
-#, qt-format
-#~ msgid "value = %1"
-#~ msgstr "érték = %1"
-
-#~ msgid "Image"
-#~ msgstr "Kép"
-
-#~ msgid "Radius"
-#~ msgstr "Sugár"
-
-#~ msgid "Unchecked"
-#~ msgstr "Nem bejelölt"
-
-#~ msgid "Checked"
-#~ msgstr "Bejelölt"
-
-#~ msgid "Lengths"
-#~ msgstr "Hosszúságok"
-
-#~ msgid "Weights"
-#~ msgstr "Súlyok"
-
-#~ msgid "Sizes"
-#~ msgstr "Méretek"
-
-#~ msgid "Clear"
-#~ msgstr "Törlés"
-
-#~ msgid "Select Word"
-#~ msgstr "Szó kijelölése"
-
-#~ msgid "Redo"
-#~ msgstr "Újra"
-
-#~ msgid "Undo"
-#~ msgstr "Visszavonás"
-
-#~ msgid "Red rectangle"
-#~ msgstr "Piros négyszög"
-
-#~ msgid "Back"
-#~ msgstr "Vissza"
-
-#~ msgid "My custom page"
-#~ msgstr "Személyes lapom"
-
-#~ msgid ""
-#~ "This is an external page\n"
-#~ "with a locked toolbar."
-#~ msgstr ""
-#~ "Ez egy külső lap\n"
-#~ "zárolt eszköztárral."
-
-#~ msgid "Root page"
-#~ msgstr "Gyökér lap"
-
-#~ msgid "Page one"
-#~ msgstr "Első lap"
-
-#~ msgid "External page"
-#~ msgstr "Külső lap"
-
-#~ msgid "First page"
-#~ msgstr "Első lap"
-
-#~ msgid "Root page (again)"
-#~ msgstr "Gyökér lap (újra)"
-
-#~ msgid "Simple page"
-#~ msgstr "Egyszerű lap"
-
-#~ msgid "List view"
-#~ msgstr "Listanézet"
-
-#~ msgid "External"
-#~ msgstr "Külső"
-
-#~ msgid "Standard Durations"
-#~ msgstr "Szabványos hosszak"
-
-#~ msgid "Snap"
-#~ msgstr "Illesztés"
-
-#~ msgid "Call"
-#~ msgstr "Hívás"
-
-#~ msgid "The visual style of the Sheet is early work and thus clunky looking."
-#~ msgstr "A lap vizuális stílusa kiinduló munka, és emiatt néz ki otrombán."
-
-#~ msgid "Progression"
-#~ msgstr "Előrehaladás"
-
-#~ msgid "Rich Text"
-#~ msgstr "Rich Text"
+msgstr "Húzza a frissítéshez…"
