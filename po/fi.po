@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-09-06 07:28+0000\n"
+"X-Launchpad-Export-Date: 2014-09-23 07:06+0000\n"
 "X-Generator: Launchpad (build 17196)\n"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:154
@@ -130,108 +130,3 @@ msgstr ""
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
 msgstr ""
-
-#~ msgid "Color"
-#~ msgstr "Väri"
-
-#~ msgid "Icon"
-#~ msgstr "Kuvake"
-
-#~ msgid "Value"
-#~ msgstr "Arvo"
-
-#~ msgid "Progress Bar"
-#~ msgstr "Edistymispalkki"
-
-#~ msgid "Default"
-#~ msgstr "Oletus"
-
-#~ msgid "Password"
-#~ msgstr "Salasana"
-
-#~ msgid "Image"
-#~ msgstr "Kuva"
-
-#~ msgid "Redo"
-#~ msgstr "Tee uudelleen"
-
-#~ msgid "Undo"
-#~ msgstr "Kumoa"
-
-#~ msgid "Back"
-#~ msgstr "Edellinen"
-
-#~ msgid "First page"
-#~ msgstr "Ensimmäinen sivu"
-
-#~ msgid "Standard Durations"
-#~ msgstr "Tavalliset kestot"
-
-#~ msgid "Snap"
-#~ msgstr "Tarttuminen"
-
-#~ msgid "Standard"
-#~ msgstr "Tavallinen"
-
-#~ msgid "Sleepy"
-#~ msgstr "Unelias"
-
-#~ msgid "Fast"
-#~ msgstr "Nopea"
-
-#~ msgid "Slow"
-#~ msgstr "Hidas"
-
-#~ msgid "Call"
-#~ msgstr "Puhelu"
-
-#~ msgid "Open"
-#~ msgstr "Avaa"
-
-#~ msgid "Disabled"
-#~ msgstr "Pois käytöstä"
-
-#~ msgid "Colorization"
-#~ msgstr "Väritys"
-
-#~ msgid "Scaling"
-#~ msgstr "Skaalaus"
-
-#~ msgid "Label"
-#~ msgstr "Nimike"
-
-#~ msgid "External"
-#~ msgstr "Ulkoinen"
-
-#~ msgid "Red rectangle"
-#~ msgstr "Punainen suorakulmio"
-
-#~ msgid "Simple page"
-#~ msgstr "Yksinkertainen sivu"
-
-#~ msgid "List view"
-#~ msgstr "Luettelonäkymä"
-
-#~ msgid "Select Word"
-#~ msgstr "Valitse sana"
-
-#~ msgid "Radius"
-#~ msgstr "Säde"
-
-#~ msgid "Unchecked"
-#~ msgstr "Ei valittu"
-
-#~ msgid "Checked"
-#~ msgstr "Valittu"
-
-#~ msgid "Weights"
-#~ msgstr "Painot"
-
-#~ msgid "Sizes"
-#~ msgstr "Koot"
-
-#~ msgid "Clear"
-#~ msgstr "Tyhjennä"
-
-#~ msgid "Lengths"
-#~ msgstr "Pituudet"
