@@ -135,6 +135,29 @@ QString QuickUtils::className(QObject *item)
     return result.left(result.indexOf("_QML"));
 }
 
+/*!
+ * \internal
+ * The function checks whether an item inherits a given class name.
+ */
+bool QuickUtils::inherits(QObject *object, const QString &fromClass)
+{
+    if (!object || fromClass.isEmpty()) {
+        return false;
+    }
+    const QMetaObject *mo = object->metaObject();
+    QString className;
+    while (mo) {
+        className = mo->className();
+        className = className.left(className.indexOf("_QML"));
+        if (className == fromClass) {
+            return true;
+        }
+        mo = mo->superClass();
+    }
+    return false;
+}
+
+
 
 /*!
  * \internal

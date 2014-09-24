@@ -19,4 +19,10 @@ OTHER_FILES += \
     TextWithImport.qml \
     TextWithImportGrid.qml \
     TextWithImportPopupsGrid.qml \
-    TextWithImportPopups.qml
+    TextWithImportPopups.qml \
+    ItemList.qml \
+    ListItemList.qml \
+    ListItemWithOptionsList.qml \
+    ListItemWithInlineOptionsList.qml \
+    ListItemsEmptyList.qml \
+    ListItemsBaseList.qml
