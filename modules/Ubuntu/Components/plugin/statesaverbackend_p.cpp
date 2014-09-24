@@ -43,11 +43,11 @@ StateSaverBackend::StateSaverBackend(QObject *parent)
                      this, &StateSaverBackend::reset);
     QObject::connect(&QuickUtils::instance(), &QuickUtils::deactivated,
                      this, &StateSaverBackend::initiateStateSaving);
+    // catch eventual app name changes so we can have different path for the states if needed
+    QObject::connect(&UCApplication::instance(), &UCApplication::applicationNameChanged,
+                     this, &StateSaverBackend::initialize);
     if (!qgetenv("APP_ID").isEmpty() || !UCApplication::instance().applicationName().isEmpty()) {
         initialize();
-    } else {
-        QObject::connect(&UCApplication::instance(), &UCApplication::applicationNameChanged,
-                         this, &StateSaverBackend::initialize);
     }
 
     UnixSignalHandler::instance().connectSignal(UnixSignalHandler::Terminate);
@@ -65,11 +65,20 @@ StateSaverBackend::~StateSaverBackend()
 
 void StateSaverBackend::initialize()
 {
+    if (m_archive) {
+        // delete previous archive
+        QFile archiveFile(m_archive.data()->fileName());
+        archiveFile.remove();
+        delete m_archive.data();
+        m_archive.clear();
+    }
     QString applicationName(qgetenv("APP_ID"));
     if (applicationName.isEmpty()) {
         applicationName = UCApplication::instance().applicationName();
     }
-    m_archive = new QSettings(QString("%1/%2.state")
+    // make sure the path is in sync with https://wiki.ubuntu.com/SecurityTeam/Specifications/ApplicationConfinement
+    // the file must be saved under XDG_RUNTIME_DIR/<APP_PKGNAME> path.
+    m_archive = new QSettings(QString("%1/%2/statesaver.appstate")
                               .arg(QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation))
                               .arg(applicationName), QSettings::NativeFormat);
     m_archive->setFallbacksEnabled(false);

@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-09-06 07:28+0000\n"
+"X-Launchpad-Export-Date: 2014-09-23 07:07+0000\n"
 "X-Generator: Launchpad (build 17196)\n"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:154
@@ -23,21 +23,24 @@ msgid ""
 "property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
 "of type %5"
 msgstr ""
+"la propriété « %1 » de l'objet %2 est de type %3 et ne peut pas être définie "
+"à la valeur « %4 » de type %5"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:163
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
 msgstr ""
+"La propriété « %1 » n'existe pas ou ne peut pas être écrite pour l'objet %2"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:42
 #: Ubuntu/Components/plugin/ucalarm.cpp:136
 msgid "Alarm"
-msgstr ""
+msgstr "Alarme"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:684
 #: Ubuntu/Components/plugin/ucalarm.cpp:716
 msgid "Alarm has a pending operation."
-msgstr ""
+msgstr "L'alarme a une opération en cours"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
@@ -82,26 +85,28 @@ msgid ""
 "All the parents must have an id.\n"
 "State saving disabled for %1, class %2"
 msgstr ""
+"Tous les parents doivent avoir un ID.\n"
+"L'enregistrement de l'état est désactivé pour %1, classe %2"
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
-msgstr ""
+msgstr "Thème introuvable "
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:80
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:90
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmer"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:89
 msgid "Close"
-msgstr ""
+msgstr "Fermer"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:99
 msgid "Done"
-msgstr ""
+msgstr "Terminé"
 
 #: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
@@ -121,234 +126,12 @@ msgstr "Coller"
 
 #: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
 msgid "In Progress"
-msgstr ""
+msgstr "En cours"
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."
-msgstr ""
+msgstr "Relâcher pour rafraîchir..."
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
-msgstr ""
-
-#~ msgid "Color"
-#~ msgstr "Couleur"
-
-#~ msgid "Standard Durations"
-#~ msgstr "Durées standards"
-
-#~ msgid "NumberAnimation"
-#~ msgstr "AnimationNombre"
-
-#~ msgid "Standard"
-#~ msgstr "Standard"
-
-#~ msgid "Sleepy"
-#~ msgstr "Somnolant"
-
-#~ msgid "Call"
-#~ msgstr "Appeler"
-
-#~ msgid "Fast"
-#~ msgstr "Rapide"
-
-#~ msgid "Slow"
-#~ msgstr "Lent"
-
-#~ msgid "Icon"
-#~ msgstr "Icône"
-
-#~ msgid "Secondary label"
-#~ msgstr "Étiquette secondaire"
-
-#~ msgid "Colorization"
-#~ msgstr "Colorisation"
-
-#~ msgid "Scaling"
-#~ msgstr "Mise à l'échelle"
-
-#~ msgid "Open"
-#~ msgstr "Ouvrir"
-
-#~ msgid "Disabled"
-#~ msgstr "Désactivé"
-
-#~ msgid "Progression"
-#~ msgstr "Progression"
-
-#~ msgid "Subtitled"
-#~ msgstr "Sous-titré"
-
-#~ msgid "Label"
-#~ msgstr "Étiquette"
-
-#~ msgid "Value"
-#~ msgstr "Valeur"
-
-#~ msgid "Single value"
-#~ msgstr "Valeur unique"
-
-#~ msgid "Multi value"
-#~ msgstr "Valeurs multiples"
-
-#~ msgid "Value 1"
-#~ msgstr "Valeur 1"
-
-#~ msgid "Value 2"
-#~ msgstr "Valeur 2"
-
-#~ msgid "Value 3"
-#~ msgstr "Valeur 3"
-
-#~ msgid "Value 4"
-#~ msgstr "Valeur 4"
-
-#~ msgid "Value selector"
-#~ msgstr "Sélecteur de valeur"
-
-#~ msgid "Control"
-#~ msgstr "Contrôle"
-
-#~ msgid "Removable"
-#~ msgstr "Amovible"
-
-#~ msgid "Slide to remove"
-#~ msgstr "Glisser pour supprimer"
-
-#~ msgid "Grouped list"
-#~ msgstr "Liste groupée"
-
-#~ msgid "Infinite"
-#~ msgstr "Infinie"
-
-#~ msgid "The visual style of the Sheet is early work and thus clunky looking."
-#~ msgstr ""
-#~ "Le style visuel de la feuille est une ébauche et manque donc de raffinement."
-
-#~ msgid "Action #1"
-#~ msgstr "Action no 1"
-
-#~ msgid "Flickable"
-#~ msgstr "Tirable"
-
-#~ msgid "Action #3"
-#~ msgstr "Action no 3"
-
-#~ msgid "Action #2"
-#~ msgstr "Action no 2"
-
-#~ msgid "Action #5"
-#~ msgstr "Action no 5"
-
-#~ msgid "Progress Bar"
-#~ msgstr "Barre de progression"
-
-#~ msgid "Activity Indicator"
-#~ msgstr "Indicateur d'activité"
-
-#~ msgid "Action #4"
-#~ msgstr "Action no 4"
-
-#~ msgid "Expanding"
-#~ msgstr "Expansion"
-
-#~ msgid "Numbers"
-#~ msgstr "Nombres"
-
-#~ msgid "Type me in..."
-#~ msgstr "Tapez-moi..."
-
-#~ msgid "Password"
-#~ msgstr "Mot de passe"
-
-#~ msgid "Live Update"
-#~ msgstr "Mise à jour automatique"
-
-#~ msgid "Range"
-#~ msgstr "Portée"
-
-#~ msgid "Title"
-#~ msgstr "Titre"
-
-#, qt-format
-#~ msgid "value = %1"
-#~ msgstr "valeur = %1"
-
-#~ msgid "Rich Text"
-#~ msgstr "Texte enrichi"
-
-#~ msgid "Default"
-#~ msgstr "Valeur par défaut"
-
-#~ msgid "Image"
-#~ msgstr "Image"
-
-#~ msgid "Radius"
-#~ msgstr "Rayon"
-
-#~ msgid "Unchecked"
-#~ msgstr "Décochée"
-
-#~ msgid "Checked"
-#~ msgstr "Cochée"
-
-#~ msgid "Lengths"
-#~ msgstr "Longueurs"
-
-#~ msgid "Sizes"
-#~ msgstr "Tailles"
-
-#~ msgid "Clear"
-#~ msgstr "Effacer"
-
-#~ msgid "Weights"
-#~ msgstr "Poids"
-
-#~ msgid "Select Word"
-#~ msgstr "Choisir le mot"
-
-#~ msgid "Redo"
-#~ msgstr "Rétablir"
-
-#~ msgid "Undo"
-#~ msgstr "Annuler"
-
-#~ msgid "Simple page"
-#~ msgstr "Page simple"
-
-#~ msgid "Back"
-#~ msgstr "Retour"
-
-#~ msgid "My custom page"
-#~ msgstr "Ma page personnalisée"
-
-#~ msgid ""
-#~ "This is an external page\n"
-#~ "with a locked toolbar."
-#~ msgstr ""
-#~ "Ceci est une page externe\n"
-#~ "avec une barre d'outils verrouillée."
-
-#~ msgid "Root page"
-#~ msgstr "Page racine"
-
-#~ msgid "Page one"
-#~ msgstr "Page une"
-
-#~ msgid "External page"
-#~ msgstr "Page externe"
-
-#~ msgid "First page"
-#~ msgstr "Première page"
-
-#~ msgid "Root page (again)"
-#~ msgstr "Page racine (de nouveau)"
-
-#~ msgid "Red rectangle"
-#~ msgstr "Rectangle rouge"
-
-#~ msgid "List view"
-#~ msgstr "Vue en liste"
-
-#~ msgid "External"
-#~ msgstr "Externe"
+msgstr "Tirer pour rafraîchir..."
