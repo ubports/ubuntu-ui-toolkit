@@ -28,7 +28,6 @@ class UCListItemActions : public QObject
     Q_OBJECT
     Q_PROPERTY(QQmlComponent *delegate READ delegate WRITE setDelegate NOTIFY delegateChanged)
     Q_PROPERTY(QQmlListProperty<UCAction> actions READ actions CONSTANT)
-    Q_PROPERTY(QQuickItem *panelItem READ panelItem NOTIFY panelItemChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
@@ -38,12 +37,10 @@ public:
     QQmlComponent *delegate() const;
     void setDelegate(QQmlComponent *delegate);
     QQmlListProperty<UCAction> actions();
-    QQuickItem *panelItem() const;
     QQmlListProperty<QObject> data();
 
 Q_SIGNALS:
     void delegateChanged();
-    void panelItemChanged();
 
 private:
     Q_DECLARE_PRIVATE(UCListItemActions)
