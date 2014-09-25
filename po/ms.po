@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-09-06 07:28+0000\n"
+"X-Launchpad-Export-Date: 2014-09-23 07:06+0000\n"
 "X-Generator: Launchpad (build 17196)\n"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:154
@@ -23,21 +23,23 @@ msgid ""
 "property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
 "of type %5"
 msgstr ""
+"sifat \"%1\" bagi objek %2 mempunyai jenis %3 dan tidak boleh ditetapkan ke "
+"nilai \"%4\" bagi jenis %5"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:163
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
-msgstr ""
+msgstr "sifat \"%1\" tidak wujud atau tidak boleh ditulis untuk objek %2"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:42
 #: Ubuntu/Components/plugin/ucalarm.cpp:136
 msgid "Alarm"
-msgstr ""
+msgstr "Penggera"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:684
 #: Ubuntu/Components/plugin/ucalarm.cpp:716
 msgid "Alarm has a pending operation."
-msgstr ""
+msgstr "Penggera mempunyai operasi tertangguh."
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
@@ -64,17 +66,17 @@ msgstr "%1 menjangkakan argumen tambahan: %2"
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1064
 msgid "Ignoring AfterItem priority for InverseMouse filters."
-msgstr ""
+msgstr "Mengabai keutamaan AfterItem untuk penapis InverseMouse."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
-msgstr ""
+msgstr "Amaran: lampiran mestilah mempunyai ID. Keadaan tidak akan disimpan."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:56
 #, qt-format
 msgid ""
 "Warning: attachee's UUID is already registered, state won't be saved: %1"
-msgstr ""
+msgstr "Amaran: lampiran UUID sudah berdaftar, keadaan tidak disimpan: %1"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:102
 #, qt-format
@@ -82,26 +84,28 @@ msgid ""
 "All the parents must have an id.\n"
 "State saving disabled for %1, class %2"
 msgstr ""
+"Semua induk mesti mempunyai id.\n"
+"Penyimpanan keadaan dilumpuhkan untuk %1, kelas %2"
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
-msgstr ""
+msgstr "Tema tidak ditemui: "
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:80
 msgid "Cancel"
-msgstr ""
+msgstr "Batal"
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:90
 msgid "Confirm"
-msgstr ""
+msgstr "Sahkan"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:89
 msgid "Close"
-msgstr ""
+msgstr "Tutup"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:99
 msgid "Done"
-msgstr ""
+msgstr "Selesai"
 
 #: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
@@ -121,236 +125,12 @@ msgstr "Tampal"
 
 #: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
 msgid "In Progress"
-msgstr ""
+msgstr "Dalam Proses"
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."
-msgstr ""
+msgstr "Lepaskan untuk segar semula..."
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
-msgstr ""
-
-#~ msgid "Color"
-#~ msgstr "Warna"
-
-#~ msgid "Icon"
-#~ msgstr "Ikon"
-
-#~ msgid "Standard Durations"
-#~ msgstr "Tempoh Piawai"
-
-#~ msgid "Snap"
-#~ msgstr "Lekat"
-
-#~ msgid "NumberAnimation"
-#~ msgstr "BilanganAnimasi"
-
-#~ msgid "Standard"
-#~ msgstr "Piawai"
-
-#~ msgid "Sleepy"
-#~ msgstr "Mengantuk"
-
-#~ msgid "Call"
-#~ msgstr "Panggilan"
-
-#~ msgid "Fast"
-#~ msgstr "Pantas"
-
-#~ msgid "Slow"
-#~ msgstr "Perlahan"
-
-#~ msgid "Secondary label"
-#~ msgstr "Label sekunder"
-
-#~ msgid "Colorization"
-#~ msgstr "Pewarnaan"
-
-#~ msgid "Scaling"
-#~ msgstr "Penskalaan"
-
-#~ msgid "Open"
-#~ msgstr "Buka"
-
-#~ msgid "Disabled"
-#~ msgstr "Dilumpuhkan"
-
-#~ msgid "Progression"
-#~ msgstr "Kemajuan"
-
-#~ msgid "Subtitled"
-#~ msgstr "Bersarikata"
-
-#~ msgid "Label"
-#~ msgstr "Label"
-
-#~ msgid "Value"
-#~ msgstr "Nilai"
-
-#~ msgid "Single value"
-#~ msgstr "Satu Nilai"
-
-#~ msgid "Multi value"
-#~ msgstr "Nilai berbilang"
-
-#~ msgid "Value 1"
-#~ msgstr "Nilai 1"
-
-#~ msgid "Value 2"
-#~ msgstr "Nilai 2"
-
-#~ msgid "Value 3"
-#~ msgstr "Nilai 3"
-
-#~ msgid "Value 4"
-#~ msgstr "Nilai 4"
-
-#~ msgid "Value selector"
-#~ msgstr "Pemilih nilai"
-
-#~ msgid "Removable"
-#~ msgstr "Boleh Alih"
-
-#~ msgid "Slide to remove"
-#~ msgstr "Leret untuk buang"
-
-#~ msgid "Grouped list"
-#~ msgstr "Senarai terkumpul"
-
-#~ msgid "Control"
-#~ msgstr "Kawalan"
-
-#~ msgid "Infinite"
-#~ msgstr "Tidak terhingga"
-
-#~ msgid "Action #1"
-#~ msgstr "Aksi #1"
-
-#~ msgid "Action #3"
-#~ msgstr "Aksi #3"
-
-#~ msgid "Action #2"
-#~ msgstr "Aksi #2"
-
-#~ msgid "Action #5"
-#~ msgstr "Aksi #5"
-
-#~ msgid "Action #4"
-#~ msgstr "Aksi #4"
-
-#~ msgid "Progress Bar"
-#~ msgstr "Palang Kemajuan"
-
-#~ msgid "Activity Indicator"
-#~ msgstr "Penunjuk Aktiviti"
-
-#~ msgid "Numbers"
-#~ msgstr "Nombor"
-
-#~ msgid "Default"
-#~ msgstr "Lalai"
-
-#~ msgid "Type me in..."
-#~ msgstr "Taip saya dalam..."
-
-#~ msgid "Password"
-#~ msgstr "Kata Laluan"
-
-#~ msgid "Live Update"
-#~ msgstr "Kemaskini Langsung"
-
-#~ msgid "Range"
-#~ msgstr "Julat"
-
-#~ msgid "Title"
-#~ msgstr "Tajuk"
-
-#, qt-format
-#~ msgid "value = %1"
-#~ msgstr "nilai = %1"
-
-#~ msgid "Expanding"
-#~ msgstr "Mengembang"
-
-#~ msgid "Rich Text"
-#~ msgstr "Teks Rich"
-
-#~ msgid "Sizes"
-#~ msgstr "Saiz"
-
-#~ msgid "Radius"
-#~ msgstr "Jejari"
-
-#~ msgid "Unchecked"
-#~ msgstr "Tidak Ditanda"
-
-#~ msgid "Checked"
-#~ msgstr "Ditanda"
-
-#~ msgid "Lengths"
-#~ msgstr "Panjang"
-
-#~ msgid "Weights"
-#~ msgstr "Lebar"
-
-#~ msgid "Clear"
-#~ msgstr "Kosongkan"
-
-#~ msgid "Image"
-#~ msgstr "Imej"
-
-#~ msgid "Redo"
-#~ msgstr "Buat Semula"
-
-#~ msgid "Undo"
-#~ msgstr "Buat Asal"
-
-#~ msgid "Red rectangle"
-#~ msgstr "Segiempat merah"
-
-#~ msgid "Simple page"
-#~ msgstr "Halaman ringkas"
-
-#~ msgid "Back"
-#~ msgstr "Undur"
-
-#~ msgid "My custom page"
-#~ msgstr "Halaman suai saya"
-
-#~ msgid ""
-#~ "This is an external page\n"
-#~ "with a locked toolbar."
-#~ msgstr ""
-#~ "Ini adalah halaman luaran\n"
-#~ "dengan palang alat berkunci."
-
-#~ msgid "Root page"
-#~ msgstr "Laman root"
-
-#~ msgid "Page one"
-#~ msgstr "Halaman satu"
-
-#~ msgid "External page"
-#~ msgstr "Halaman luaran"
-
-#~ msgid "First page"
-#~ msgstr "Halaman pertama"
-
-#~ msgid "Root page (again)"
-#~ msgstr "Halaman root (lagi)"
-
-#~ msgid "External"
-#~ msgstr "Luaran"
-
-#~ msgid "List view"
-#~ msgstr "Paparan senarai"
-
-#~ msgid "Select Word"
-#~ msgstr "Pilih Perkataan"
-
-#~ msgid "The visual style of the Sheet is early work and thus clunky looking."
-#~ msgstr "Gaya visual Lembaran adalah kerja awal dan kelihatan tidak sempurna."
-
-#~ msgid "Flickable"
-#~ msgstr "Boleh Diselak"
+msgstr "Tarik untuk segar semula..."
