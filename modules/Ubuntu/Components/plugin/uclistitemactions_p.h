@@ -49,6 +49,7 @@ public:
     static void disconnectFromListItem(UCListItemActions *options);
     static bool isConnectedTo(UCListItemActions *options, UCListItem *listItem);
     static qreal snap(UCListItemActions *options);
+    static void setDragging(UCListItemActions *actions, UCListItem *listItem, bool dragging);
 
     QQuickItem *createPanelItem();
 };

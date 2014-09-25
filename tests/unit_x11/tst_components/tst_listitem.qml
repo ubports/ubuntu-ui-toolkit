@@ -160,12 +160,11 @@ Item {
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
             compare(actionsDefault.panelItem, null, "There is no panelItem created by default.");
-            compare(actionsDefault.status, ListItemActions.Disconnected, "The actions list is disconnected");
 
             compare(actionsDefault.ListItemActions.container, actionsDefault, "The attached container points to the actions list");
             compare(actionsDefault.ListItemActions.listItem, null, "No attached ListItem by default");
             compare(actionsDefault.ListItemActions.listItemIndex, -1, "No attached ListItem index by default");
-            compare(actionsDefault.ListItemActions.offsetVisible, 0, "No attached offsetVisible set by default");
+            compare(actionsDefault.ListItemActions.offset, 0, "No attached offset set by default");
             compare(actionsDefault.ListItemActions.status, ListItemActions.Disconnected, "The attached status is disconnected");
             compare(actionsDefault.ListItemActions.dragging, false, "The attached dragging is false");
         }

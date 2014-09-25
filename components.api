@@ -883,13 +883,13 @@ plugins.qmltypes
     Property { name: "actions"; type: "UCAction"; isList: true; isReadonly: true }
     Property { name: "panelItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-    Property { name: "status"; type: "Status"; isReadonly: true }
+    Signal { name: "__statusChanged" }
     name: "UCListItemActionsAttached"
     prototype: "QObject"
     Property { name: "container"; type: "UCListItemActions"; isPointer: true }
     Property { name: "listItem"; type: "UCListItem"; isReadonly: true; isPointer: true }
     Property { name: "listItemIndex"; type: "int"; isReadonly: true }
-    Property { name: "offsetVisible"; type: "double"; isReadonly: true }
+    Property { name: "offset"; type: "double"; isReadonly: true }
     Property { name: "status"; type: "UCListItemActions::Status"; isReadonly: true }
     Property { name: "dragging"; type: "bool" }
     Method {

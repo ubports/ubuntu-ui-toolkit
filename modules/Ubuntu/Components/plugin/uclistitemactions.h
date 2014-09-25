@@ -31,7 +31,6 @@ class UCListItemActions : public QObject
     Q_PROPERTY(QQmlListProperty<UCAction> actions READ actions CONSTANT)
     Q_PROPERTY(QQuickItem *panelItem READ panelItem NOTIFY panelItemChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data)
-    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
     Q_CLASSINFO("DefaultProperty", "data")
     Q_ENUMS(Status)
 public:
@@ -51,12 +50,13 @@ public:
     QQmlListProperty<UCAction> actions();
     QQuickItem *panelItem() const;
     QQmlListProperty<QObject> data();
-    Status status() const;
 
 Q_SIGNALS:
     void delegateChanged();
     void panelItemChanged();
-    void statusChanged();
+
+    // keep it as private signal
+    void __statusChanged();
 
 private:
     Q_DECLARE_PRIVATE(UCListItemActions)
@@ -70,7 +70,7 @@ class UCListItemActionsAttached : public QObject
     Q_PROPERTY(UCListItemActions *container MEMBER m_container NOTIFY containerChanged)
     Q_PROPERTY(UCListItem *listItem READ listItem NOTIFY listItemChanged)
     Q_PROPERTY(int listItemIndex READ listItemIndex NOTIFY listItemIndexChanged)
-    Q_PROPERTY(qreal offsetVisible READ offsetVisible NOTIFY offsetVisibleChanged)
+    Q_PROPERTY(qreal offset READ offset NOTIFY offsetChanged)
     Q_PROPERTY(UCListItemActions::Status status READ status NOTIFY statusChanged)
     Q_PROPERTY(bool dragging MEMBER m_dragging NOTIFY draggingChanged)
 public:
@@ -81,7 +81,7 @@ public:
     UCListItem *listItem();
     int listItemIndex();
     void setDrag(bool value);
-    qreal offsetVisible();
+    qreal offset();
     UCListItemActions::Status status();
 
     UCListItemActions *container() const
@@ -96,7 +96,7 @@ Q_SIGNALS:
     void containerChanged();
     void listItemChanged();
     void listItemIndexChanged();
-    void offsetVisibleChanged();
+    void offsetChanged();
     void statusChanged();
     void draggingChanged();
 

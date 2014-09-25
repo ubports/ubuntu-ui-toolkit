@@ -44,11 +44,11 @@ void UCListItemActionsAttached::setList(UCListItemActions *list)
     m_container = list;
     if (!m_container.isNull()) {
         // connect to get status updates, listItem and index changes
-        connect(m_container.data(), &UCListItemActions::statusChanged,
+        connect(m_container.data(), &UCListItemActions::__statusChanged,
                 this, &UCListItemActionsAttached::statusChanged);
-        connect(m_container.data(), &UCListItemActions::statusChanged,
+        connect(m_container.data(), &UCListItemActions::__statusChanged,
                 this, &UCListItemActionsAttached::listItemChanged);
-        connect(m_container.data(), &UCListItemActions::statusChanged,
+        connect(m_container.data(), &UCListItemActions::__statusChanged,
                 this, &UCListItemActionsAttached::listItemIndexChanged);
     }
     Q_EMIT containerChanged();
@@ -106,11 +106,11 @@ void UCListItemActionsAttached::setDrag(bool value)
 }
 
 /*!
- * \qmlattachedproperty real ListItemActions::offsetVisible
+ * \qmlattachedproperty real ListItemActions::offset
  * The property returns the offset the \l panelItem is visible. This can be used
  * to do different animations on the panel and on the action visualizations.
  */
-qreal UCListItemActionsAttached::offsetVisible()
+qreal UCListItemActionsAttached::offset()
 {
     if (m_container.isNull()) {
         return 0.0;
@@ -121,7 +121,13 @@ qreal UCListItemActionsAttached::offsetVisible()
 /*!
  * \qmlattachedproperty enum ListItemActions::status
  * \readonly
- * This is the proxied \c status property of \l ListItemActions.
+ * The property holds the status of the ListItemActions, whether is connected
+ * as leading or as trailing action list to a \l ListItem. Possible valueas are:
+ * \list A
+ *  \li \b Disconnected - default, the actions list is not connected to any \l ListItem
+ *  \li \b LeadingOptions - the actions list is connected as leading list
+ *  \li \b TrailingOptions - the actions list is connected as trailing list
+ * \endlist
  */
 UCListItemActions::Status UCListItemActionsAttached::status()
 {
@@ -154,7 +160,7 @@ void UCListItemActionsAttached::snapToPosition(qreal position)
         return;
     }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    position *= (m_container->status() == UCListItemActions::Leading) ? 1 : -1;
+    position *= (status() == UCListItemActions::Leading) ? 1 : -1;
     if (position == 0.0) {
         listItem->_q_rebound();
     } else {
