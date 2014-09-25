@@ -886,7 +886,7 @@ plugins.qmltypes
     Signal { name: "__draggingChanged" }
     name: "UCListItemActionsAttached"
     prototype: "QObject"
-    Property { name: "container"; type: "UCListItemActions"; isPointer: true }
+    Property { name: "container"; type: "UCListItemActions"; isReadonly: true; isPointer: true }
     Property { name: "listItem"; type: "UCListItem"; isReadonly: true; isPointer: true }
     Property { name: "listItemIndex"; type: "int"; isReadonly: true }
     Property { name: "offset"; type: "double"; isReadonly: true }

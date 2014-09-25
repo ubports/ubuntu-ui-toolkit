@@ -65,7 +65,7 @@ private:
 class UCListItemActionsAttached : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(UCListItemActions *container MEMBER m_container NOTIFY containerChanged)
+    Q_PROPERTY(UCListItemActions *container READ container NOTIFY containerChanged)
     Q_PROPERTY(UCListItem *listItem READ listItem NOTIFY listItemChanged)
     Q_PROPERTY(int listItemIndex READ listItemIndex NOTIFY listItemIndexChanged)
     Q_PROPERTY(qreal offset READ offset NOTIFY offsetChanged)
