@@ -222,30 +222,42 @@ PageTreeNode {
             return true;
         }
 
+        // Call this function before pushing or popping to ensure correct order
+        // of pushes/pops on the stack. This terminates any currently running
+        // header transition.
         function finishPreviousAction() {
+            // no action required when animating IN because the PageStack was
+            // already updated before that transition started.
             if (internal.animateHeader && internal.headStyle.state == "OUT") {
+                // force instant update of the PageStack without waiting for
+                // the OUT animation to finish:
                 internal.headStyle.animateOutFinished();
             }
         }
 
+        // The page and properties to push on the stack when the OUT animation
+        // finishes.
         property var pageToPush
         property var propertiesToPush
 
+        // Called when the header animate OUT transition finishes for push() or instantly
+        // when header animations are disabled. Disconnects headStyle.animateOutFinished()
+        // and pushes pageToPush with propertiesToPush on the stack.
         function createAndPush() {
             if (internal.animateHeader) {
                 headStyle.animateOutFinished.disconnect(internal.createAndPush);
             }
-
             if (internal.stack.size() > 0) internal.stack.top().active = false;
             internal.stack.push(internal.createWrapper(pageToPush, propertiesToPush));
             internal.stackUpdated();
         }
 
+        // Called when header animate OUT transition finishes for pop() or instantly
+        // when header animations are disabled. Disconnects headStyle.animateOutFinished.
         function popAndDestroy() {
             if (internal.animateHeader) {
                 headStyle.animateOutFinished.disconnect(internal.popAndDestroy);
             }
-
             internal.stack.top().active = false;
             if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
             internal.stack.pop();
@@ -266,6 +278,8 @@ PageTreeNode {
             return wrapperObject;
         }
 
+        // Update depth and makes the Item on top of the stack active, and
+        // then animates IN the new header contents if header animations are enabled.
         function stackUpdated() {
             pageStack.depth = stack.size();
             if (pageStack.depth > 0) {
