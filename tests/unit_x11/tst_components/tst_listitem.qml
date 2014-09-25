@@ -118,6 +118,11 @@ Item {
             signalName: "triggered"
         }
 
+        SignalSpy {
+            id: draggingSpy
+            signalName: "draggingChanged"
+        }
+
         function centerOf(item) {
             return Qt.point(item.width / 2, item.height / 2);
         }
@@ -131,6 +136,7 @@ Item {
             pressedSpy.clear();
             clickSpy.clear();
             actionSpy.clear();
+            draggingSpy.clear();
             listView.interactive = true;
             // tap on the first item to make sure we are rebounding all
             mouseClick(defaults, 0, 0);
@@ -154,6 +160,14 @@ Item {
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
             compare(actionsDefault.panelItem, null, "There is no panelItem created by default.");
+            compare(actionsDefault.status, ListItemActions.Disconnected, "The actions list is disconnected");
+
+            compare(actionsDefault.ListItemActions.container, actionsDefault, "The attached container points to the actions list");
+            compare(actionsDefault.ListItemActions.listItem, null, "No attached ListItem by default");
+            compare(actionsDefault.ListItemActions.listItemIndex, -1, "No attached ListItem index by default");
+            compare(actionsDefault.ListItemActions.offsetVisible, 0, "No attached offsetVisible set by default");
+            compare(actionsDefault.ListItemActions.status, ListItemActions.Disconnected, "The attached status is disconnected");
+            compare(actionsDefault.ListItemActions.dragging, false, "The attached dragging is false");
         }
 
         function test_children_in_content_item() {
@@ -252,6 +266,46 @@ Item {
             } else {
                 TestExtras.touchClick(0, main, Qt.point(1, 1));
             }
+            waitForRendering(data.item, 400);
+        }
+
+        function test_attached_dragging_data() {
+            var item = findChild(listView, "listItem0");
+            return [
+                {tag: "Trailing", item: item, pos: centerOf(item), dx: -units.gu(20), actionList: item.trailingActions},
+                {tag: "Leading", item: item, pos: centerOf(item), dx: units.gu(20), actionList: item.leadingActions},
+            ];
+        }
+        function test_attached_dragging(data) {
+            listView.positionViewAtBeginning();
+            draggingSpy.target = data.actionList.ListItemActions;
+            flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+            waitForRendering(data.item, 400);
+            draggingSpy.wait(500);
+            compare(draggingSpy.count, 2, "The dragging hadn't been changed twice.");
+
+            // dismiss
+            mouseClick(main, 1, 1);
+            waitForRendering(data.item, 400);
+        }
+
+        function test_attached_listitem_data() {
+            var item = findChild(listView, "listItem3");
+            return [
+                {tag: "Trailing", item: item, pos: centerOf(item), dx: -units.gu(20), actionList: item.trailingActions, index: 3},
+                {tag: "Leading", item: item, pos: centerOf(item), dx: units.gu(20), actionList: item.leadingActions, index: 3},
+            ];
+        }
+        function test_attached_listitem(data) {
+            listView.positionViewAtBeginning();
+            flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+            waitForRendering(data.item, 400);
+            compare(data.actionList.ListItemActions.listItem, data.item, "The attached listItem differs from the actual item using the list.");
+            compare(data.actionList.ListItemActions.listItemIndex, data.index, "The attached listItem index is wrong.");
+            verify(data.actionList.ListItemActions.status != ListItemActions.Disconnected, "The attached status is wrong.");
+
+            // dismiss
+            mouseClick(main, 1, 1);
             waitForRendering(data.item, 400);
         }
 

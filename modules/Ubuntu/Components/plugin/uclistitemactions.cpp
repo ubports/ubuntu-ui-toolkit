@@ -304,7 +304,7 @@ UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *own
             UCListItemActions *actions = qobject_cast<UCListItemActions*>(pl);
             if (actions) {
                 attached->setList(actions);
-                break;
+                return attached;
             }
             pl = pl->parent();
         }

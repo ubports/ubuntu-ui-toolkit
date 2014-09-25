@@ -86,7 +86,7 @@ public:
 
     UCListItemActions *container() const
     {
-        return m_container;
+        return m_container.data();
     }
 
 public Q_SLOTS:
@@ -101,7 +101,7 @@ Q_SIGNALS:
     void draggingChanged();
 
 private:
-    UCListItemActions *m_container;
+    QPointer<UCListItemActions> m_container;
     bool m_dragging;
     friend class UCListItemAction;
 };

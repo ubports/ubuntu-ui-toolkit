@@ -94,7 +94,7 @@ Item {
                     // save the action as we trigger when the rebound animation is over
                     // to make sure we properly clean up the blockade of the Flickables
                     panel.selectedAction = action;
-                    panel.listItemIndex -= panel.ListItemActions.listItemIndex;
+                    panel.listItemIndex = panel.ListItemActions.listItemIndex;
                     panel.ListItemActions.snapToPosition(0.0);
                 }
 
