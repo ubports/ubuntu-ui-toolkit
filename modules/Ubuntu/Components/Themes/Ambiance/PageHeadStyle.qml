@@ -21,6 +21,7 @@ import Ubuntu.Components.Styles 1.1 as Style
 
 Style.PageHeadStyle {
     id: headerStyle
+    objectName: "PageHeadStyle" // used in unit tests
     contentHeight: units.gu(7)
     separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
     separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
@@ -37,7 +38,8 @@ Style.PageHeadStyle {
     property alias __sections_repeater_for_autopilot: sectionsRepeater
 
     // Used by unit tests and autopilot tests to wait for animations to finish
-    readonly property bool animating: leftAnchor.anchors.leftMargin < 0
+    readonly property bool animating: headerStyle.state == "OUT"
+                                      || leftAnchor.anchors.leftMargin < 0
     onAnimatingChanged: print("animating = "+animating)
 
     BorderImage {
