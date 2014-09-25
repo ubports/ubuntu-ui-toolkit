@@ -96,10 +96,6 @@ Item {
             target: testItem;
         }
 
-        function centerOf(item) {
-            return Qt.point(item.width / 2, item.height / 2);
-        }
-
         function initTestCase() {
             TestExtras.registerTouchDevice();
             waitForRendering(main);

@@ -24,6 +24,9 @@ Item {
     id: panel
     width: units.gu(20)
 
+    // for testing
+    objectName: "ListItemPanel"
+
     /*
       Property holding the ListItem's contentItem instance
       */

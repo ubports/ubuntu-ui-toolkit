@@ -92,12 +92,13 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
         panelItem = qobject_cast<QQuickItem*>(component.beginCreate(qmlContext(q)));
         if (panelItem) {
             QQml_setParent_noEvent(panelItem, q);
+            // add panelItem to data so we can access it in case is needed (i.e. tests)
+            data.append(panelItem);
             if (delegate) {
                 panelItem->setProperty("delegate", QVariant::fromValue(delegate));
             }
             panelItem->setProperty("actionList", QVariant::fromValue(actions));
             component.completeCreate();
-            Q_EMIT q->panelItemChanged();
         }
     } else {
         qmlInfo(q) << component.errorString();
