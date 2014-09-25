@@ -147,12 +147,13 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
         panelItem = qobject_cast<QQuickItem*>(component.beginCreate(qmlContext(q)));
         if (panelItem) {
             QQml_setParent_noEvent(panelItem, q);
+            // add panelItem to data so we can access it in case is needed (i.e. tests)
+            data.append(panelItem);
             if (delegate) {
                 panelItem->setProperty("delegate", QVariant::fromValue(delegate));
             }
             panelItem->setProperty("actionList", QVariant::fromValue(q));
             component.completeCreate();
-            Q_EMIT q->panelItemChanged();
 
             // calculate option's slot size
             offsetDragged = 0.0;
@@ -186,7 +187,7 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
  * visualization of the actions can be overridden using the \l delegate property,
  * and the default implementation uses the \c name property of the Action.
  *
- * The leading and trailing actions are placed on \l panelItem, which is created
+ * The leading and trailing actions are placed on a panel item, which is created
  * the first time the actions are accessed. The colors of the panel is taken from
  * the theme's palette.
  *
@@ -378,17 +379,6 @@ QQmlListProperty<UCAction> UCListItemActions::actions()
 {
     Q_D(UCListItemActions);
     return QQmlListProperty<UCAction>(this, d->actions);
-}
-
-/*!
- * \qmlproperty Item ListItemActions::panelItem
- * The property presents the Item holding the visualized actions. The panel is
- * created when used the first time is used.
- */
-QQuickItem *UCListItemActions::panelItem() const
-{
-    Q_D(const UCListItemActions);
-    return d->panelItem;
 }
 
 /*!
