@@ -103,6 +103,10 @@ Item {
             target: testItem;
         }
 
+        function panelItem(actionList) {
+            return findInvisibleChild(actionList, "ListItemPanel");
+        }
+
         function initTestCase() {
             TestExtras.registerTouchDevice();
             waitForRendering(main);
@@ -293,8 +297,8 @@ Item {
         function test_selecting_option_rebounds_data() {
             var item0 = findChild(listView, "listItem0");
             return [
-                {tag: "With mouse", item: item0, pos: centerOf(item0), dx: units.gu(20), options: item0.leadingOptions, select: "list_option_0", mouse: true},
-                {tag: "With touch", item: item0, pos: centerOf(item0), dx: units.gu(20), options: item0.leadingOptions, select: "list_option_0", mouse: false},
+                {tag: "With mouse", item: item0, pos: centerOf(item0), dx: units.gu(20), options: item0.leadingActions, select: "list_option_0", mouse: true},
+                {tag: "With touch", item: item0, pos: centerOf(item0), dx: units.gu(20), options: item0.leadingActions, select: "list_option_0", mouse: false},
             ]
         }
         function test_selecting_option_rebounds(data) {
@@ -305,7 +309,7 @@ Item {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
             waitForRendering(data.item, 800);
-            var selectedOption = findChild(data.options.panelItem, data.select);
+            var selectedOption = findChild(panelItem(data.options), data.select);
             verify(selectedOption, "Cannot select option " + data.select);
             // dismiss
             if (data.mouse) {
