@@ -339,9 +339,9 @@ Item {
         // execute as last so we make sure we have the panel created
         function test_snap_data() {
             verify(panelItem(testItem.leadingActions), "Panel had not been created!");
-            var option = findChild(panelItem(testItem.leadingActions), "list_option_0");
-            verify(option, "Options not accessible");
-            var optionSize = option.width;
+            var action = findChild(panelItem(testItem.leadingActions), "list_option_0");
+            verify(action, "Options not accessible");
+            var actionSize = option.width;
             return [
                 {tag: "Snap back leading, mouse", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: true},
                 {tag: "Snap back leading, touch", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: false},
