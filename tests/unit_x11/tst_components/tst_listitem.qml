@@ -338,8 +338,8 @@ Item {
 
         // execute as last so we make sure we have the panel created
         function test_snap_data() {
-            verify(testItem.leadingActions.panelItem, "Panel had not been created!");
-            var option = findChild(testItem.leadingActions.panelItem, "list_option_0");
+            verify(panelItem(testItem.leadingActions), "Panel had not been created!");
+            var option = findChild(panelItem(testItem.leadingActions), "list_option_0");
             verify(option, "Options not accessible");
             var optionSize = option.width;
             return [
