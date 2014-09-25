@@ -21,7 +21,6 @@
 
 UCListItemActionsAttached::UCListItemActionsAttached(QObject *parent)
     : QObject(parent)
-    , m_dragging(false)
 {
 }
 
@@ -50,6 +49,8 @@ void UCListItemActionsAttached::setList(UCListItemActions *list)
                 this, &UCListItemActionsAttached::listItemChanged);
         connect(m_container.data(), &UCListItemActions::__statusChanged,
                 this, &UCListItemActionsAttached::listItemIndexChanged);
+        connect(m_container.data(), &UCListItemActions::__draggingChanged,
+                this, &UCListItemActionsAttached::draggingChanged);
     }
     Q_EMIT containerChanged();
 }
@@ -96,13 +97,12 @@ int UCListItemActionsAttached::listItemIndex() {
  * The property notifies whether the panel is dragged or not. The property does
  * not notify the rebounding.
  */
-void UCListItemActionsAttached::setDrag(bool value)
+bool UCListItemActionsAttached::dragging()
 {
-    if (value == m_dragging) {
-        return;
+    if (m_container.isNull()) {
+        return 0.0;
     }
-    m_dragging = value;
-    Q_EMIT draggingChanged();
+    return UCListItemActionsPrivate::get(m_container)->dragging;
 }
 
 /*!

@@ -271,6 +271,7 @@ Item {
             waitForRendering(data.item, 400);
         }
 
+        // make sure this is executed as one of the last tests due to requirement to have the panelItem created
         function test_attached_dragging_data() {
             var item = findChild(listView, "listItem0");
             return [

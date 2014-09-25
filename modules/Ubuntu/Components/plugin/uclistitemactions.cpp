@@ -25,6 +25,7 @@
 
 UCListItemActionsPrivate::UCListItemActionsPrivate()
     : QObjectPrivate()
+    , dragging(false)
     , delegate(0)
     , panelItem(0)
     , optionSlotWidth(0.0)
@@ -143,11 +144,12 @@ qreal UCListItemActionsPrivate::snap(UCListItemActions *options)
 void UCListItemActionsPrivate::setDragging(UCListItemActions *actions, UCListItem *listItem, bool dragging)
 {
     UCListItemActionsPrivate *_this = get(actions);
-    if (!_this || !_this->panelItem || !isConnectedTo(actions, listItem)) {
+    if (!_this || !_this->panelItem || !isConnectedTo(actions, listItem) || (_this->dragging == dragging)) {
         return;
     }
 
-    _this->attachedObject()->setDrag(dragging);
+    _this->dragging = dragging;
+    Q_EMIT actions->__draggingChanged();
 }
 
 QQuickItem *UCListItemActionsPrivate::createPanelItem()
@@ -319,7 +321,7 @@ UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *own
             UCListItemActions *actions = qobject_cast<UCListItemActions*>(pl);
             if (actions) {
                 attached->setList(actions);
-                return attached;
+                break;
             }
             pl = pl->parent();
         }

@@ -31,6 +31,7 @@ public:
         return actions ? actions->d_func() : 0;
     }
 
+    bool dragging:1;
     QQmlComponent *delegate;
     QQuickItem *panelItem;
     QList<UCAction*> actions;

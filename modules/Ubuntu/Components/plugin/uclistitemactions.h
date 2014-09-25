@@ -54,6 +54,7 @@ Q_SIGNALS:
 
     // keep it as private signal
     void __statusChanged();
+    void __draggingChanged();
 
 private:
     Q_DECLARE_PRIVATE(UCListItemActions)
@@ -69,7 +70,7 @@ class UCListItemActionsAttached : public QObject
     Q_PROPERTY(int listItemIndex READ listItemIndex NOTIFY listItemIndexChanged)
     Q_PROPERTY(qreal offset READ offset NOTIFY offsetChanged)
     Q_PROPERTY(UCListItemActions::Status status READ status NOTIFY statusChanged)
-    Q_PROPERTY(bool dragging MEMBER m_dragging NOTIFY draggingChanged)
+    Q_PROPERTY(bool dragging READ dragging NOTIFY draggingChanged)
 public:
     UCListItemActionsAttached(QObject *parent = 0);
     ~UCListItemActionsAttached();
@@ -77,7 +78,7 @@ public:
 
     UCListItem *listItem();
     int listItemIndex();
-    void setDrag(bool value);
+    bool dragging();
     qreal offset();
     UCListItemActions::Status status();
 
@@ -99,7 +100,6 @@ Q_SIGNALS:
 
 private:
     QPointer<UCListItemActions> m_container;
-    bool m_dragging;
     friend class UCListItemAction;
 };
 
