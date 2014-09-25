@@ -700,6 +700,9 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             } else {
                 d->reboundTo(snapPosition);
             }
+            // unset dragging in panel item
+            UCListItemActionsPrivate::setDragging(d->leadingActions, this, false);
+            UCListItemActionsPrivate::setDragging(d->trailingActions, this, false);
         }
     }
     d->setPressed(false);
@@ -740,6 +743,9 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             // block flickable
             d->setMoved(true);
             d->contentItem->setX(x);
+            // set dragging in panel item
+            UCListItemActionsPrivate::setDragging(d->leadingActions, this, true);
+            UCListItemActionsPrivate::setDragging(d->trailingActions, this, true);
         }
     }
 }
