@@ -341,17 +341,17 @@ Item {
             verify(panelItem(testItem.leadingActions), "Panel had not been created!");
             var action = findChild(panelItem(testItem.leadingActions), "list_option_0");
             verify(action, "Options not accessible");
-            var actionSize = option.width;
+            var actionSize = action.width;
             return [
-                {tag: "Snap back leading, mouse", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: true},
-                {tag: "Snap back leading, touch", item: testItem.contentItem, dx: optionSize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: false},
-                {tag: "Snap in leading, mouse", item: testItem.contentItem, dx: optionSize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: true},
-                {tag: "Snap in leading, touch", item: testItem.contentItem, dx: optionSize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: false},
+                {tag: "Snap back leading, mouse", item: testItem.contentItem, dx: actionSize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: true},
+                {tag: "Snap back leading, touch", item: testItem.contentItem, dx: actionSize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: false},
+                {tag: "Snap in leading, mouse", item: testItem.contentItem, dx: actionSize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: true},
+                {tag: "Snap in leading, touch", item: testItem.contentItem, dx: actionSize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: false},
 
-                {tag: "Snap back trailing, mouse", item: testItem.contentItem, dx: -(optionSize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: true},
-                {tag: "Snap back trailing, touch", item: testItem.contentItem, dx: -(optionSize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: false},
-                {tag: "Snap in trailing, mouse", item: testItem.contentItem, dx: -(optionSize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: true},
-                {tag: "Snap in trailing, touch", item: testItem.contentItem, dx: -(optionSize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: false},
+                {tag: "Snap back trailing, mouse", item: testItem.contentItem, dx: -(actionSize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: true},
+                {tag: "Snap back trailing, touch", item: testItem.contentItem, dx: -(actionSize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: false},
+                {tag: "Snap in trailing, mouse", item: testItem.contentItem, dx: -(actionSize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: true},
+                {tag: "Snap in trailing, touch", item: testItem.contentItem, dx: -(actionSize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: false},
             ];
         }
         function test_snap(data) {
