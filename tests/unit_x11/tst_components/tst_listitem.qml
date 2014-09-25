@@ -105,8 +105,8 @@ Item {
             target: testItem;
         }
 
-        function centerOf(item) {
-            return Qt.point(item.width / 2, item.height / 2);
+        function panelItem(actionList) {
+            return findInvisibleChild(actionList, "ListItemPanel");
         }
 
         function initTestCase() {
@@ -139,7 +139,6 @@ Item {
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no options set.");
-            compare(actionsDefault.panelItem, null, "There is no panelItem created by default.");
         }
 
         function test_children_in_content_item() {
@@ -314,7 +313,7 @@ Item {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
             waitForRendering(data.item, 800);
-            var selectedOption = findChild(data.options.panelItem, data.select);
+            var selectedOption = findChild(panelItem(data.options), data.select);
             verify(selectedOption, "Cannot select option " + data.select);
             // dismiss
             if (data.mouse) {
@@ -330,8 +329,8 @@ Item {
             listView.positionViewAtBeginning();
             var item = findChild(listView, "listItem0");
             flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
-            verify(trailing.panelItem, "Panel is not visible");
-            var custom = findChild(trailing.panelItem, "custom_delegate");
+            verify(panelItem(trailing), "Panel is not visible");
+            var custom = findChild(panelItem(trailing), "custom_delegate");
             verify(custom, "Custom delegate not in use");
             // cleanup
             mouseClick(main, 0, 0);
