@@ -325,8 +325,8 @@ Item {
             listView.positionViewAtBeginning();
             var item = findChild(listView, "listItem0");
             flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
-            verify(trailing.panelItem, "Panel is not visible");
-            var custom = findChild(trailing.panelItem, "custom_delegate");
+            verify(panelItem(trailing), "Panel is not visible");
+            var custom = findChild(panelItem(trailing), "custom_delegate");
             verify(custom, "Custom delegate not in use");
             // cleanup
             mouseClick(main, 0, 0);
