@@ -123,7 +123,7 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
  * visualization of the actions can be overridden using the \l delegate property,
  * and the default implementation uses the \c name property of the Action.
  *
- * The leading and trailing actions are placed on \l panelItem, which is created
+ * The leading and trailing actions are placed on a panel item, which is created
  * the first time the actions are accessed. The colors of the panel is taken from
  * the theme's palette.
  *
@@ -257,17 +257,6 @@ QQmlListProperty<UCAction> UCListItemActions::actions()
 {
     Q_D(UCListItemActions);
     return QQmlListProperty<UCAction>(this, d->actions);
-}
-
-/*!
- * \qmlproperty Item ListItemActions::panelItem
- * The property presents the Item holding the visualized actions. The panel is
- * created when used the first time is used.
- */
-QQuickItem *UCListItemActions::panelItem() const
-{
-    Q_D(const UCListItemActions);
-    return d->panelItem;
 }
 
 /*!
