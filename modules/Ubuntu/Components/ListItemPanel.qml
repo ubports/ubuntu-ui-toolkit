@@ -24,7 +24,7 @@ Item {
     id: panel
     width: optionsRow.childrenRect.width
 
-    // for testing purposes
+    // for testing
     objectName: "ListItemPanel"
 
     /*

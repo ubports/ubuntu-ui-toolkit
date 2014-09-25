@@ -165,7 +165,7 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
         panelItem = qobject_cast<QQuickItem*>(component.beginCreate(qmlContext(q)));
         if (panelItem) {
             QQml_setParent_noEvent(panelItem, q);
-            // append panelItem into data, otherwise won't get found in the tests
+            // add panelItem to data so we can access it in case is needed (i.e. tests)
             data.append(panelItem);
             UCListItemActionsAttached *attached = static_cast<UCListItemActionsAttached*>(
                         qmlAttachedPropertiesObject<UCListItemActions>(panelItem));
@@ -207,7 +207,7 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
  * visualization of the actions can be overridden using the \l delegate property,
  * and the default implementation uses the \c name property of the Action.
  *
- * The leading and trailing actions are placed on \l panelItem, which is created
+ * The leading and trailing actions are placed on a panel item, which is created
  * the first time the actions are accessed. The colors of the panel is taken from
  * the theme's palette.
  *
