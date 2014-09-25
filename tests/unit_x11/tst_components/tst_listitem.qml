@@ -291,14 +291,14 @@ Item {
             tryCompareFunction(function(){ return listView.interactive; }, true, 1000);
         }
 
-        function test_selecting_option_rebounds_data() {
+        function test_selecting_action_rebounds_data() {
             var item0 = findChild(listView, "listItem0");
             return [
                 {tag: "With mouse", item: item0, pos: centerOf(item0), dx: units.gu(20), actions: item0.leadingActions, select: "list_option_0", mouse: true},
                 {tag: "With touch", item: item0, pos: centerOf(item0), dx: units.gu(20), actions: item0.leadingActions, select: "list_option_0", mouse: false},
             ]
         }
-        function test_selecting_option_rebounds(data) {
+        function test_selecting_action_rebounds(data) {
             listView.positionViewAtBeginning();
             if (data.mouse) {
                 flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
