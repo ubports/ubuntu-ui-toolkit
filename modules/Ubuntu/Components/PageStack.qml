@@ -245,8 +245,7 @@ PageTreeNode {
         property var propertiesToPush
 
         // Called when the header animate OUT transition finishes for push() or instantly
-        // when header animations are disabled. Disconnects headStyle.animateOutFinished()
-        // and pushes pageToPush with propertiesToPush on the stack.
+        // when header animations are disabled.
         function createAndPush() {
             if (internal.animateHeader) {
                 headStyle.animateOutFinished.disconnect(internal.createAndPush);
@@ -257,7 +256,7 @@ PageTreeNode {
         }
 
         // Called when header animate OUT transition finishes for pop() or instantly
-        // when header animations are disabled. Disconnects headStyle.animateOutFinished.
+        // when header animations are disabled.
         function popAndDestroy() {
             if (internal.animateHeader) {
                 headStyle.animateOutFinished.disconnect(internal.popAndDestroy);
