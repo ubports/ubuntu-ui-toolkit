@@ -183,7 +183,8 @@ PageTreeNode {
             print("WARNING: Trying to pop an empty PageStack. Ignoring.");
             return;
         }
-        if (internal.animateHeader) {
+        // do not animate if there is no page to animate back in after popping
+        if (internal.animateHeader && internal.stack.size() > 1) {
             internal.headStyle.animateOutFinished.connect(internal.popAndDestroy);
             internal.headStyle.animateOut();
         } else {
@@ -245,7 +246,6 @@ PageTreeNode {
                 headStyle.animateOutFinished.disconnect(internal.popAndDestroy);
             }
 
-            print("pop.... aaaaand destroy!!")
             internal.stack.top().active = false;
             if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
             internal.stack.pop();

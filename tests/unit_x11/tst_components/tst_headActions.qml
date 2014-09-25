@@ -71,7 +71,6 @@ Item {
             testCase.back_button = findChild(app_header, "backButton");
             testCase.custom_back_button = findChild(app_header, "customBackButton");
             testCase.head_style = findChild(app_header, "PageHeadStyle");
-            print("head_style = "+testCase.head_style)
 
             wait_for_animation();
             compare(page2.head.backAction, null, "Back action set by default.");

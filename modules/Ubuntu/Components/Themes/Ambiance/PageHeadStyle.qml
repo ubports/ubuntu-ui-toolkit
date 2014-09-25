@@ -40,7 +40,6 @@ Style.PageHeadStyle {
     // Used by unit tests and autopilot tests to wait for animations to finish
     readonly property bool animating: headerStyle.state == "OUT"
                                       || leftAnchor.anchors.leftMargin < 0
-    onAnimatingChanged: print("animating = "+animating)
 
     BorderImage {
         id: separator

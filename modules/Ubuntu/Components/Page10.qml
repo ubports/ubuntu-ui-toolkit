@@ -22,7 +22,6 @@ import Ubuntu.Components 1.1 as Toolkit
   Documentation is in Page.qdoc
 */
 PageTreeNode {
-    Component.onDestruction: print("destroying Page "+page.title)
     id: page
     anchors {
         left: parent ? parent.left : undefined
