@@ -123,6 +123,10 @@ Item {
             signalName: "draggingChanged"
         }
 
+        function panelItem(actionList) {
+            return findInvisibleChild(actionList, "ListItemPanel")
+        }
+
         function centerOf(item) {
             return Qt.point(item.width / 2, item.height / 2);
         }
@@ -159,7 +163,6 @@ Item {
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
-            compare(actionsDefault.panelItem, null, "There is no panelItem created by default.");
 
             compare(actionsDefault.ListItemActions.container, actionsDefault, "The attached container points to the actions list");
             compare(actionsDefault.ListItemActions.listItem, null, "No attached ListItem by default");
@@ -381,7 +384,8 @@ Item {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
             waitForRendering(data.item, 800);
-            var selectedOption = findChild(data.actions.panelItem, data.select);
+            var panel = panelItem(data.actions);
+            var selectedOption = findChild(panel, data.select);
             verify(selectedOption, "Cannot select option " + data.select);
             // dismiss
             if (data.mouse) {
@@ -397,8 +401,8 @@ Item {
             listView.positionViewAtBeginning();
             var item = findChild(listView, "listItem0");
             flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
-            verify(trailing.panelItem, "Panel is not visible");
-            var custom = findChild(trailing.panelItem, "custom_delegate");
+            verify(panelItem(trailing), "Panel is not visible");
+            var custom = findChild(panelItem(trailing), "custom_delegate");
             verify(custom, "Custom delegate not in use");
             // cleanup
             mouseClick(main, 0, 0);
@@ -406,8 +410,8 @@ Item {
 
         // execute as last so we make sure we have the panel created
         function test_snap_data() {
-            verify(testItem.leadingActions.panelItem, "Panel had not been created!");
-            var option = findChild(testItem.leadingActions.panelItem, "list_option_0");
+            verify(panelItem(testItem.leadingActions), "Panel had not been created!");
+            var option = findChild(panelItem(testItem.leadingActions), "list_option_0");
             verify(option, "actions not accessible");
             var actionsize = option.width;
             return [
@@ -455,7 +459,7 @@ Item {
             ];
         }
         function test_verify_action_value(data) {
-            var option = findChild(data.item.leadingActions.panelItem, "list_option_0");
+            var option = findChild(panelItem(data.item.leadingActions), "list_option_0");
             verify(option, "actions panel cannot be reached");
             // we test the last action, as we tug the first action on leading, which means teh alst will be accessible
             var len = data.item.leadingActions.actions.length;

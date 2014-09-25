@@ -163,6 +163,8 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
         panelItem = qobject_cast<QQuickItem*>(component.beginCreate(qmlContext(q)));
         if (panelItem) {
             QQml_setParent_noEvent(panelItem, q);
+            // append panelItem into data, otherwise won't get found in the tests
+            data.append(panelItem);
             UCListItemActionsAttached *attached = static_cast<UCListItemActionsAttached*>(
                         qmlAttachedPropertiesObject<UCListItemActions>(panelItem));
             component.completeCreate();

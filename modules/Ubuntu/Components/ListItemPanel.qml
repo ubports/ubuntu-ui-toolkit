@@ -24,6 +24,9 @@ Item {
     id: panel
     width: optionsRow.childrenRect.width
 
+    // for testing purposes
+    objectName: "ListItemPanel"
+
     /*
       Property holding the ListItem's contentItem instance
       */
