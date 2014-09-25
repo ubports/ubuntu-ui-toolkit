@@ -103,10 +103,6 @@ Item {
             target: testItem;
         }
 
-        function centerOf(item) {
-            return Qt.point(item.width / 2, item.height / 2);
-        }
-
         function initTestCase() {
             TestExtras.registerTouchDevice();
             waitForRendering(main);
@@ -135,7 +131,6 @@ Item {
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no options set.");
-            compare(actionsDefault.panelItem, null, "There is no panelItem created by default.");
         }
 
         function test_children_in_content_item() {
