@@ -64,12 +64,15 @@ Item {
         property var app_header
         property var back_button
         property var custom_back_button
+        property var head_animating
 
         function initTestCase() {
             testCase.app_header = findChild(mainView, "MainView_Header");
             testCase.back_button = findChild(app_header, "backButton");
             testCase.custom_back_button = findChild(app_header, "customBackButton");
+            testCase.head_animating = findChild(app_header, "PageHeadStyle");
 
+            waitHeadAnimation();
             compare(page2.head.backAction, null, "Back action set by default.");
             compare(back_button.visible, false, "Back button visible with only 1 page on the stack.");
             compare(custom_back_button.visible, false, "Custom back button visible without custom back action.")

@@ -36,6 +36,10 @@ Style.PageHeadStyle {
     //  see also FIXME in AppHeader where this property is used.
     property alias __sections_repeater_for_autopilot: sectionsRepeater
 
+    // Used by unit tests and autopilot tests to wait for animations to finish
+    readonly property bool animating: leftAnchor.anchors.leftMargin < 0
+    onAnimatingChanged: print("animating = "+animating)
+
     BorderImage {
         id: separator
         anchors {
@@ -149,6 +153,7 @@ Style.PageHeadStyle {
 
     transitions: [
         Transition {
+            id: transitionOut
             from: "IN"
             to: "OUT"
             SequentialAnimation {
@@ -178,6 +183,7 @@ Style.PageHeadStyle {
             }
         },
         Transition {
+            id: transitionIn
             from: "OUT"
             to: "IN"
             SequentialAnimation {
