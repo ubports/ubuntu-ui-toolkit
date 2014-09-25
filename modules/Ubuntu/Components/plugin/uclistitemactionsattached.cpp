@@ -149,7 +149,7 @@ void UCListItemActionsAttached::snapToPosition(qreal position)
     if (status() == UCListItemActions::Disconnected) {
         return;
     }
-    QQuickItem *panelItem = m_container->panelItem();
+    QQuickItem *panelItem = UCListItemActionsPrivate::get(m_container)->panelItem;
     if (!panelItem) {
         // we don't have the panel created yet
         return;

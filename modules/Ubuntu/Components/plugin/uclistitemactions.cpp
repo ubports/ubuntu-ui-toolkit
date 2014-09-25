@@ -166,7 +166,6 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
             UCListItemActionsAttached *attached = static_cast<UCListItemActionsAttached*>(
                         qmlAttachedPropertiesObject<UCListItemActions>(panelItem));
             component.completeCreate();
-            Q_EMIT q->panelItemChanged();
 
             // calculate option's slot size
             offsetDragged = 0.0;
@@ -424,17 +423,6 @@ QQmlListProperty<UCAction> UCListItemActions::actions()
 {
     Q_D(UCListItemActions);
     return QQmlListProperty<UCAction>(this, d->actions);
-}
-
-/*!
- * \qmlproperty Item ListItemActions::panelItem
- * The property presents the Item holding the visualized actions. The panel is
- * created when used the first time is used.
- */
-QQuickItem *UCListItemActions::panelItem() const
-{
-    Q_D(const UCListItemActions);
-    return d->panelItem;
 }
 
 /*!
