@@ -213,7 +213,7 @@ PageTreeNode {
                                     ? pageStack.__propagated.header.__styleInstance
                                     : null
 
-        property bool animateHeader: {
+        function headerCanAnimate() {
             if (!headStyle) return false;
             if (!headStyle.hasOwnProperty("animateIn")) return false;
             if (!headStyle.hasOwnProperty("animateOut")) return false;
@@ -221,6 +221,10 @@ PageTreeNode {
             if (!headStyle.hasOwnProperty("animateOutFinished")) return false;
             return true;
         }
+
+        // FIXME: Replace false by headerCanAnimate() below to enable
+        //  header animations.
+        property bool animateHeader: false
 
         // Call this function before pushing or popping to ensure correct order
         // of pushes/pops on the stack. This terminates any currently running
