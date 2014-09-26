@@ -97,15 +97,15 @@ Item {
                     // save the action as we trigger when the rebound animation is over
                     // to make sure we properly clean up the blockade of the Flickables
                     panel.selectedAction = action;
-                    panel.listItemIndex = panel.ListItemActions.listItemIndex;
-                    panel.ListItemActions.snapToPosition(0.0);
+                    panel.listItemIndex = ListItemActions.listItemIndex;
+                    ListItemActions.snapToPosition(0.0);
                 }
 
                 Loader {
                     id: delegateLoader
                     height: parent.height
-                    sourceComponent: (panel.ListItemActions.container && panel.ListItemActions.container.delegate) ?
-                                         panel.ListItemActions.container.delegate : defaultDelegate
+                    sourceComponent: (ListItemActions.container && ListItemActions.container.delegate) ?
+                                         ListItemActions.container.delegate : defaultDelegate
                     property Action action: modelData
                     property int index: index
                     onItemChanged: {
