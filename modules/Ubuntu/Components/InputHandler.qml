@@ -79,6 +79,7 @@ MultiPointTouchArea {
     readonly property bool singleLine: input && input.hasOwnProperty("validator")
     property var flickableList: new Array()
     property bool textChanged: false
+    property var popover
     property bool suppressReleaseEvent: false
     property int pressedPosition: -1
     // move properties
@@ -414,6 +415,7 @@ MultiPointTouchArea {
         // trigger pressAndHold
         onReleased: openContextMenu(mouse, true)
     }
+    Keys.onMenuPressed: inputHandler.pressAndHold(input.cursorPosition);
 
     // touch handling
     touchPoints: TouchPoint {
@@ -444,6 +446,10 @@ MultiPointTouchArea {
             if (!main.focus) {
                 return;
             }
+
+            // do not open context menu if this is scrolling
+            if (touchPoint.startY - touchPoint.y < -units.dp(2))
+                return;
 
             openContextMenu(touchPoint, false);
             suppressReleaseEvent = true;

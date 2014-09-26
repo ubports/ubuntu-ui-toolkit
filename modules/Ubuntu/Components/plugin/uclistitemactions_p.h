@@ -31,8 +31,7 @@ public:
         return actions ? actions->d_func() : 0;
     }
 
-    bool connected:1;
-    bool leading:1;
+    bool dragging:1;
     QQmlComponent *delegate;
     QQuickItem *panelItem;
     QList<UCAction*> actions;
@@ -41,14 +40,17 @@ public:
     qreal optionSlotWidth;
     qreal offsetDragged;
     int optionsVisible;
+    UCListItemActions::Status status;
 
     void _q_handlePanelDrag();
     void _q_handlePanelWidth();
+    UCListItemActionsAttached *attachedObject();
 
     static bool connectToListItem(UCListItemActions *options, UCListItem *listItem, bool leading);
     static void disconnectFromListItem(UCListItemActions *options);
     static bool isConnectedTo(UCListItemActions *options, UCListItem *listItem);
     static qreal snap(UCListItemActions *options);
+    static void setDragging(UCListItemActions *actions, UCListItem *listItem, bool dragging);
 
     QQuickItem *createPanelItem();
 };

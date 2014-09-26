@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-09-06 07:28+0000\n"
+"X-Launchpad-Export-Date: 2014-09-23 07:07+0000\n"
 "X-Generator: Launchpad (build 17196)\n"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:154
@@ -32,7 +32,7 @@ msgstr ""
 #: Ubuntu/Components/plugin/ucalarm.cpp:42
 #: Ubuntu/Components/plugin/ucalarm.cpp:136
 msgid "Alarm"
-msgstr ""
+msgstr "قوڭغۇراق"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:684
 #: Ubuntu/Components/plugin/ucalarm.cpp:716
@@ -85,23 +85,23 @@ msgstr ""
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
-msgstr ""
+msgstr "باش تېما تېپىلمىدى "
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:80
 msgid "Cancel"
-msgstr ""
+msgstr "ئەمەلدىن قالدۇر"
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:90
 msgid "Confirm"
-msgstr ""
+msgstr "جەزملە"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:89
 msgid "Close"
-msgstr ""
+msgstr "ياپ"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:99
 msgid "Done"
-msgstr ""
+msgstr "تامام"
 
 #: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
@@ -130,204 +130,3 @@ msgstr ""
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
 msgstr ""
-
-#~ msgid "Color"
-#~ msgstr "رەڭ"
-
-#~ msgid "Icon"
-#~ msgstr "سىنبەلگە"
-
-#~ msgid "Snap"
-#~ msgstr "توغرىلا"
-
-#~ msgid "Standard"
-#~ msgstr "ئۆلچەملىك"
-
-#~ msgid "Sleepy"
-#~ msgstr "ئۇيقۇلۇق"
-
-#~ msgid "Call"
-#~ msgstr "چاقىر"
-
-#~ msgid "Fast"
-#~ msgstr "تېز"
-
-#~ msgid "Slow"
-#~ msgstr "ئاستا"
-
-#~ msgid "Scaling"
-#~ msgstr "كۆرسىتىش نىسبىتى"
-
-#~ msgid "Open"
-#~ msgstr "ئاچ"
-
-#~ msgid "Disabled"
-#~ msgstr "ئىناۋەتسىز قىلىنغان"
-
-#~ msgid "Label"
-#~ msgstr "ئەن"
-
-#~ msgid "Single value"
-#~ msgstr "يەككە قىممەت"
-
-#~ msgid "Multi value"
-#~ msgstr "كۆپ قىممەت"
-
-#~ msgid "Control"
-#~ msgstr "تىزگىن"
-
-#~ msgid "Removable"
-#~ msgstr "كۆچمە"
-
-#~ msgid "Infinite"
-#~ msgstr "چەكسىز"
-
-#~ msgid "Action #1"
-#~ msgstr "مەشغۇلات #1"
-
-#~ msgid "Action #3"
-#~ msgstr "مەشغۇلات #3"
-
-#~ msgid "Action #2"
-#~ msgstr "مەشغۇلات #2"
-
-#~ msgid "Action #5"
-#~ msgstr "مەشغۇلات #5"
-
-#~ msgid "Action #4"
-#~ msgstr "مەشغۇلات #4"
-
-#~ msgid "Progress Bar"
-#~ msgstr "سۈرئەت بالداق"
-
-#~ msgid "Activity Indicator"
-#~ msgstr "ئاكتىپ كۆرسەتكۈچ"
-
-#~ msgid "Expanding"
-#~ msgstr "كېڭەيتىلگەن"
-
-#~ msgid "Numbers"
-#~ msgstr "سانلار"
-
-#~ msgid "Default"
-#~ msgstr "كۆڭۈلدىكى"
-
-#~ msgid "Password"
-#~ msgstr "ئىم"
-
-#~ msgid "Live Update"
-#~ msgstr "رىئال يېڭىلاش"
-
-#~ msgid "Range"
-#~ msgstr "دائىرە"
-
-#~ msgid "Title"
-#~ msgstr "ماۋزۇ"
-
-#, qt-format
-#~ msgid "value = %1"
-#~ msgstr "قىممىتى= %1"
-
-#~ msgid "Image"
-#~ msgstr "سۈرەت"
-
-#~ msgid "Radius"
-#~ msgstr "رادىئۇس"
-
-#~ msgid "Unchecked"
-#~ msgstr "تاللانمىغان"
-
-#~ msgid "Checked"
-#~ msgstr "تاللانغان"
-
-#~ msgid "Clear"
-#~ msgstr "تازىلا"
-
-#~ msgid "Sizes"
-#~ msgstr "چوڭلۇقى"
-
-#~ msgid "Select Word"
-#~ msgstr "سۆز تاللا"
-
-#~ msgid "Redo"
-#~ msgstr "قايتىلا"
-
-#~ msgid "Undo"
-#~ msgstr "يېنىۋال"
-
-#~ msgid "Red rectangle"
-#~ msgstr "قىزىل تىك تۆت بۇلۇڭ"
-
-#~ msgid "Back"
-#~ msgstr "كەينى"
-
-#~ msgid "My custom page"
-#~ msgstr "ئىختىيارى بەتلىرىم"
-
-#~ msgid "Root page"
-#~ msgstr "غول بەت"
-
-#~ msgid "Page one"
-#~ msgstr "بىرىنچى بەت"
-
-#~ msgid "External page"
-#~ msgstr "سىرتقى بەت"
-
-#~ msgid "First page"
-#~ msgstr "باش بەت"
-
-#~ msgid "Root page (again)"
-#~ msgstr "غول بەت (قايتا)"
-
-#~ msgid "Simple page"
-#~ msgstr "يەككە بەت"
-
-#~ msgid "List view"
-#~ msgstr "تىزىم كۆرۈنۈش"
-
-#~ msgid "External"
-#~ msgstr "سىرتقى"
-
-#~ msgid "Standard Durations"
-#~ msgstr "ئۆلچەملىك داۋاملىشى ۋاقتى"
-
-#~ msgid "NumberAnimation"
-#~ msgstr "رەقەملىك جانلاندۇرۇم"
-
-#~ msgid "Secondary label"
-#~ msgstr "ئىككىنچى دەرىجىلىك ئەن"
-
-#~ msgid "Subtitled"
-#~ msgstr "قوشۇمچە ماۋزۇ"
-
-#~ msgid "Value"
-#~ msgstr "قىممەتى"
-
-#~ msgid "Value 1"
-#~ msgstr "قىممەتى 1"
-
-#~ msgid "Value 2"
-#~ msgstr "قىممەتى 2"
-
-#~ msgid "Value 3"
-#~ msgstr "قىممەتى 3"
-
-#~ msgid "Value 4"
-#~ msgstr "قىممەتى 4"
-
-#~ msgid "Value selector"
-#~ msgstr "قىممەت تاللىغۇچ"
-
-#~ msgid "Grouped list"
-#~ msgstr "گۇرۇپپا تىزىملىكى"
-
-#~ msgid "Slide to remove"
-#~ msgstr "سىيرىپ ئۆچۈرۈش"
-
-#~ msgid "Lengths"
-#~ msgstr "ئۇزۇنلۇق"
-
-#~ msgid ""
-#~ "This is an external page\n"
-#~ "with a locked toolbar."
-#~ msgstr "بۇ سىرىتقى بەت"

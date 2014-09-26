@@ -123,9 +123,18 @@ Item {
             signalName: "xChanged"
         }
 
+        SignalSpy {
+            id: draggingSpy
+            signalName: "draggingChanged"
+        }
+
         function waitReboundCompletion(item) {
             var prevX;
             tryCompareFunction(function() { var b = prevX == item.contentItem.x; prevX = item.contentItem.x; return b; }, true, 1000);
+        }
+
+        function panelItem(actionList) {
+            return findInvisibleChild(actionList, "ListItemPanel")
         }
 
         function initTestCase() {
@@ -141,6 +150,7 @@ Item {
             clickSpy.clear();
             actionSpy.clear();
             xChangeSpy.clear();
+            draggingSpy.clear();
             listView.interactive = true;
             // tap on the first item to make sure we are rebounding all
             mouseClick(defaults, 0, 0);
@@ -163,7 +173,13 @@ Item {
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
-            compare(actionsDefault.panelItem, null, "There is no panelItem created by default.");
+
+            compare(actionsDefault.ListItemActions.container, actionsDefault, "The attached container points to the actions list");
+            compare(actionsDefault.ListItemActions.listItem, null, "No attached ListItem by default");
+            compare(actionsDefault.ListItemActions.listItemIndex, -1, "No attached ListItem index by default");
+            compare(actionsDefault.ListItemActions.offset, 0, "No attached offset set by default");
+            compare(actionsDefault.ListItemActions.status, ListItemActions.Disconnected, "The attached status is disconnected");
+            compare(actionsDefault.ListItemActions.dragging, false, "The attached dragging is false");
         }
 
         function test_children_in_content_item() {
@@ -265,6 +281,47 @@ Item {
             waitForRendering(data.item, 400);
         }
 
+        // make sure this is executed as one of the last tests due to requirement to have the panelItem created
+        function test_attached_dragging_data() {
+            var item = findChild(listView, "listItem0");
+            return [
+                {tag: "Trailing", item: item, pos: centerOf(item), dx: -units.gu(20), actionList: item.trailingActions},
+                {tag: "Leading", item: item, pos: centerOf(item), dx: units.gu(20), actionList: item.leadingActions},
+            ];
+        }
+        function test_attached_dragging(data) {
+            listView.positionViewAtBeginning();
+            draggingSpy.target = data.actionList.ListItemActions;
+            flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+            waitForRendering(data.item, 400);
+            draggingSpy.wait(500);
+            compare(draggingSpy.count, 2, "The dragging hadn't been changed twice.");
+
+            // dismiss
+            mouseClick(main, 1, 1);
+            waitForRendering(data.item, 400);
+        }
+
+        function test_attached_listitem_data() {
+            var item = findChild(listView, "listItem3");
+            return [
+                {tag: "Trailing", item: item, pos: centerOf(item), dx: -units.gu(20), actionList: item.trailingActions, index: 3},
+                {tag: "Leading", item: item, pos: centerOf(item), dx: units.gu(20), actionList: item.leadingActions, index: 3},
+            ];
+        }
+        function test_attached_listitem(data) {
+            listView.positionViewAtBeginning();
+            flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+            waitForRendering(data.item, 400);
+            compare(data.actionList.ListItemActions.listItem, data.item, "The attached listItem differs from the actual item using the list.");
+            compare(data.actionList.ListItemActions.listItemIndex, data.index, "The attached listItem index is wrong.");
+            verify(data.actionList.ListItemActions.status != ListItemActions.Disconnected, "The attached status is wrong.");
+
+            // dismiss
+            mouseClick(main, 1, 1);
+            waitForRendering(data.item, 400);
+        }
+
         function test_rebound_when_pressed_outside_or_clicked_data() {
             var item0 = findChild(listView, "listItem0");
             var item1 = findChild(listView, "listItem1");
@@ -323,14 +380,14 @@ Item {
             tryCompareFunction(function(){ return listView.interactive; }, true, 1000);
         }
 
-        function test_selecting_option_rebounds_data() {
+        function test_selecting_action_rebounds_data() {
             var item0 = findChild(listView, "listItem0");
             return [
                 {tag: "With mouse", item: item0, pos: centerOf(item0), dx: units.gu(20), actions: item0.leadingActions, select: "list_option_0", mouse: true},
                 {tag: "With touch", item: item0, pos: centerOf(item0), dx: units.gu(20), actions: item0.leadingActions, select: "list_option_0", mouse: false},
             ]
         }
-        function test_selecting_option_rebounds(data) {
+        function test_selecting_action_rebounds(data) {
             listView.positionViewAtBeginning();
             if (data.mouse) {
                 flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
@@ -338,7 +395,7 @@ Item {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
             waitForRendering(data.item, 800);
-            var selectedOption = findChild(data.actions.panelItem, data.select);
+            var selectedOption = findChild(panelItem(data.actions), data.select);
             verify(selectedOption, "Cannot select option " + data.select);
             // dismiss
             if (data.mouse) {
@@ -354,8 +411,8 @@ Item {
             listView.positionViewAtBeginning();
             var item = findChild(listView, "listItem0");
             flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
-            verify(trailing.panelItem, "Panel is not visible");
-            var custom = findChild(trailing.panelItem, "custom_delegate");
+            verify(panelItem(trailing), "Panel is not visible");
+            var custom = findChild(panelItem(trailing), "custom_delegate");
             verify(custom, "Custom delegate not in use");
             // cleanup
             mouseClick(main, 0, 0);
@@ -363,20 +420,20 @@ Item {
 
         // execute as last so we make sure we have the panel created
         function test_snap_data() {
-            verify(testItem.leadingActions.panelItem, "Panel had not been created!");
-            var option = findChild(testItem.leadingActions.panelItem, "list_option_0");
-            verify(option, "actions not accessible");
-            var actionsize = option.width;
+            verify(panelItem(testItem.leadingActions), "Panel had not been created!");
+            var action = findChild(panelItem(testItem.leadingActions), "list_option_0");
+            verify(action, "Options not accessible");
+            var actionSize = action.width;
             return [
-                {tag: "Snap back leading, mouse", item: testItem.contentItem, dx: actionsize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: true},
-                {tag: "Snap back leading, touch", item: testItem.contentItem, dx: actionsize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: false},
-                {tag: "Snap in leading, mouse", item: testItem.contentItem, dx: actionsize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: true},
-                {tag: "Snap in leading, touch", item: testItem.contentItem, dx: actionsize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: false},
+                {tag: "Snap back leading, mouse", item: testItem.contentItem, dx: actionSize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: true},
+                {tag: "Snap back leading, touch", item: testItem.contentItem, dx: actionSize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: false},
+                {tag: "Snap in leading, mouse", item: testItem.contentItem, dx: actionSize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: true},
+                {tag: "Snap in leading, touch", item: testItem.contentItem, dx: actionSize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: false},
 
-                {tag: "Snap back trailing, mouse", item: testItem.contentItem, dx: -(actionsize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: true},
-                {tag: "Snap back trailing, touch", item: testItem.contentItem, dx: -(actionsize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: false},
-                {tag: "Snap in trailing, mouse", item: testItem.contentItem, dx: -(actionsize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: true},
-                {tag: "Snap in trailing, touch", item: testItem.contentItem, dx: -(actionsize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: false},
+                {tag: "Snap back trailing, mouse", item: testItem.contentItem, dx: -(actionSize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: true},
+                {tag: "Snap back trailing, touch", item: testItem.contentItem, dx: -(actionSize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: false},
+                {tag: "Snap in trailing, mouse", item: testItem.contentItem, dx: -(actionSize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: true},
+                {tag: "Snap in trailing, touch", item: testItem.contentItem, dx: -(actionSize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: false},
             ];
         }
         function test_snap(data) {
@@ -412,7 +469,7 @@ Item {
             ];
         }
         function test_verify_action_value(data) {
-            var option = findChild(data.item.leadingActions.panelItem, "list_option_0");
+            var option = findChild(panelItem(data.item.leadingActions), "list_option_0");
             verify(option, "actions panel cannot be reached");
             // we test the last action, as we tug the first action on leading, which means teh alst will be accessible
             var len = data.item.leadingActions.actions.length;
