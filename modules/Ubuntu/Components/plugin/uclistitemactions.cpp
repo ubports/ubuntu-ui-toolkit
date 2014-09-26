@@ -169,6 +169,16 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
             data.append(panelItem);
             UCListItemActionsAttached *attached = static_cast<UCListItemActionsAttached*>(
                         qmlAttachedPropertiesObject<UCListItemActions>(panelItem));
+            if (attached) {
+                if (!attached->container()) {
+                    attached->setList(q);
+                } else {
+                    // container is set, but we need to emit the signal again so we get the
+                    // attached props updated for those cases when the attached property is
+                    // created before the statement above
+                    Q_EMIT attached->containerChanged();
+                }
+            }
             component.completeCreate();
 
             // calculate option's slot size
@@ -308,6 +318,8 @@ UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *own
 {
     UCListItemActionsAttached *attached = new UCListItemActionsAttached(owner);
     /*
+     * Detect the attachee, whether is it the panelItem, the ListItemAction owned
+     * by the
      * The attached property can be attached to any item, therefore if used in panelItem
      * or the ListItemAttached dirrectly, we can get the container from the closest
      * ListItemAction
@@ -316,18 +328,24 @@ UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *own
     if (QuickUtils::className(owner) == "ListItemPanel") {
         attached->setList(qobject_cast<UCListItemActions*>(owner->parent()));
     } else {
-        QObject *pl = owner;
-        while (pl) {
-            UCListItemActions *actions = qobject_cast<UCListItemActions*>(pl);
-            if (actions) {
-                attached->setList(actions);
-                break;
+        // the only QObject we can attach this is ListItemActions itself, do not deal with any other QObject!
+        UCListItemActions *actions = qobject_cast<UCListItemActions*>(owner);
+        if (actions) {
+            attached->setList(actions);
+        } else {
+            QQuickItem *item = qobject_cast<QQuickItem*>(owner);
+            while (item) {
+                if (QuickUtils::className(item) == "ListItemPanel") {
+                    attached->setList(qobject_cast<UCListItemActions*>(item->parent()));
+                    break;
+                }
+                item = item->parentItem();
             }
-            pl = pl->parent();
         }
-    }
-    if (!attached->container()) {
-        qmlInfo(owner) << UbuntuI18n::instance().tr("Warning: Attached ListItemActions object will be inactive in this context!");
+        if (!attached->container()) {
+            qmlInfo(owner) << UbuntuI18n::instance().
+                              tr("Warning: Attached ListItemActions object will be inactive in this context!");
+        }
     }
     return attached;
 }
