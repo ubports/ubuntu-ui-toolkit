@@ -357,12 +357,12 @@ UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *own
  *
  * ListItemActions provides the \c action context property which contains the
  * Action instance currently visualized. Using this property delegates can access
- * the information to be visualized. The trigger is handled by the \l panelItem
- * therefore only visualization is needed by the custom delegates. The other
- * context property exposed to delegates is the \c index, which specifies the
- * index of the action visualized.
+ * the information to be visualized. The action is triggered by the panel item
+ * holding teh visualized action, therefore only visualization is needed by the
+ * custom delegate. The other context property exposed to delegates is the \c
+ * index, which specifies the index of the action visualized.
  *
- * The delegate height is set automatically by the panelItem, and the width value
+ * The delegate height is set automatically by the panel item, and the width value
  * is clamped between height and the maximum width of the list item divided by the
  * number of actions in the list.
  * \qml

@@ -32,7 +32,7 @@ UCListItemActionsAttached::~UCListItemActionsAttached()
 /*!
  * \qmlattachedproperty ListItemActions ListItemActions::container
  * \readonly
- * The property holds the instance of the ListItemActions the \l panelItem is
+ * The property holds the instance of the \l ListItemActions the panel item is
  * attached to.
  */
 void UCListItemActionsAttached::setList(UCListItemActions *list)
@@ -107,8 +107,9 @@ bool UCListItemActionsAttached::dragging()
 
 /*!
  * \qmlattachedproperty real ListItemActions::offset
- * The property returns the offset the \l panelItem is visible. This can be used
- * to do different animations on the panel and on the action visualizations.
+ * The property returns the offset the panel item holding the visualized actions
+ * is visible. This can be used to do different animations on the panel and on
+ * the action visualizations.
  */
 qreal UCListItemActionsAttached::offset()
 {
