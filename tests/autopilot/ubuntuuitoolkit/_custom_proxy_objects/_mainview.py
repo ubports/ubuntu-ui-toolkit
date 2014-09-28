@@ -190,6 +190,7 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
             toolbar.click_back_button()
         else:
             self.get_header().click_back_button()
+            self.get_header().wait_for_animation()
 
     @autopilot_logging.log_action(logger.info)
     def click_action_button(self, action_object_name):
