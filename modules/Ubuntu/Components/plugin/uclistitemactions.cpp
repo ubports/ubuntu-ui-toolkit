@@ -318,33 +318,25 @@ UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *own
 {
     UCListItemActionsAttached *attached = new UCListItemActionsAttached(owner);
     /*
-     * Detect the attachee, whether is it the panelItem, the ListItemAction owned
-     * by the
-     * The attached property can be attached to any item, therefore if used in panelItem
-     * or the ListItemAttached dirrectly, we can get the container from the closest
-     * ListItemAction
-     * However, if the given owner is ListItemPanel, we only set the list.
+     * Detect the attachee, whether is it the ListItemAction, or a child item of
+     * the panelItem. The panelItem itself cannot be detected, as the object can be
+     * attached during the call of component.beginCreate() from createItem().
      */
-    if (QuickUtils::className(owner) == "ListItemPanel") {
-        attached->setList(qobject_cast<UCListItemActions*>(owner->parent()));
+    // the only QObject we can attach this is ListItemActions itself, do not deal with any other QObject!
+    UCListItemActions *actions = qobject_cast<UCListItemActions*>(owner);
+    if (actions) {
+        attached->setList(actions);
     } else {
-        // the only QObject we can attach this is ListItemActions itself, do not deal with any other QObject!
-        UCListItemActions *actions = qobject_cast<UCListItemActions*>(owner);
-        if (actions) {
-            attached->setList(actions);
-        } else {
-            QQuickItem *item = qobject_cast<QQuickItem*>(owner);
-            while (item) {
-                if (QuickUtils::className(item) == "ListItemPanel") {
-                    attached->setList(qobject_cast<UCListItemActions*>(item->parent()));
-                    break;
-                }
-                item = item->parentItem();
+        QQuickItem *item = qobject_cast<QQuickItem*>(owner);
+        while (item) {
+            // has item our attached property?
+            UCListItemActionsAttached *itemAttached = static_cast<UCListItemActionsAttached*>(
+                        qmlAttachedPropertiesObject<UCListItemActions>(item, false));
+            if (itemAttached) {
+                attached->setList(itemAttached->container());
+                break;
             }
-        }
-        if (!attached->container()) {
-            qmlInfo(owner) << UbuntuI18n::instance().
-                              tr("Warning: Attached ListItemActions object will be inactive in this context!");
+            item = item->parentItem();
         }
     }
     return attached;
