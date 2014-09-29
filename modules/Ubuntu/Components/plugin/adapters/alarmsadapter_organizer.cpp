@@ -42,6 +42,10 @@
 #define ALARM_MANAGER_FALLBACK  "memory"
 #define ALARM_COLLECTION        "Alarms"
 
+// special tags used as workaround for bug #1361702
+const char *tagAlarmService = "x-canonical-alarm";
+const char *tagDisabledAlarm = "x-canonical-disabled";
+
 QTORGANIZER_USE_NAMESPACE
 
 /*-----------------------------------------------------------------------------
@@ -170,6 +174,10 @@ void AlarmsAdapter::saveAlarms()
 
 void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganizerTodo &event)
 {
+    // add x-canonical-alarm tag as agreed in bug #1361702
+    if (!event.tags().contains(tagAlarmService)) {
+        event.addTag(tagAlarmService);
+    }
     event.setCollectionId(collection.id());
     event.setAllDay(false);
     if (alarm.changes & AlarmData::Date) {
@@ -179,24 +187,29 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
         event.setDisplayLabel(alarm.message);
     }
 
-    if (alarm.changes & AlarmData::Enabled) {
-        QOrganizerItemVisualReminder visual = event.detail(QOrganizerItemDetail::TypeVisualReminder);
-        QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
+    // make sure we have the attachments saved in any case
+    QOrganizerItemVisualReminder visual = event.detail(QOrganizerItemDetail::TypeVisualReminder);
+    if (visual.isEmpty()) {
+        visual.setSecondsBeforeStart(0);
+        visual.setMessage(alarm.message);
+        event.saveDetail(&visual);
+    }
+    QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
+    if (audible.isEmpty()) {
+        audible.setSecondsBeforeStart(0);
+        audible.setDataUrl(alarm.sound);
+        event.saveDetail(&audible);
+    }
 
+    if (alarm.changes & AlarmData::Enabled) {
         if (alarm.enabled) {
-            if (visual.isEmpty()) {
-                visual.setSecondsBeforeStart(0);
-                visual.setMessage(alarm.message);
-                event.saveDetail(&visual);
-            }
-            if (audible.isEmpty()) {
-                audible.setSecondsBeforeStart(0);
-                audible.setDataUrl(alarm.sound);
-                event.saveDetail(&audible);
-            }
+            // remove eventual x-canonical-disabled tag as agreed in bug #1361702
+            QStringList tags = event.tags();
+            tags.removeAll(tagDisabledAlarm);
+            event.setTags(tags);
         } else {
-            event.removeDetail(&visual);
-            event.removeDetail(&audible);
+            // tag the alarm as disabled, using x-canonical-disabled as agreed in bug #1361702
+            event.addTag(tagDisabledAlarm);
         }
     }
 
@@ -253,9 +266,7 @@ int AlarmsAdapter::alarmDataFromOrganizerEvent(const QOrganizerTodo &event, Alar
     alarm.originalDate = alarm.date;
 
     // check if the alarm is enabled or not
-    QOrganizerItemVisualReminder visual = event.detail(QOrganizerItemDetail::TypeVisualReminder);
-    QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
-    alarm.enabled = !visual.isEmpty() && !audible.isEmpty();
+    alarm.enabled = !event.tags().contains(tagDisabledAlarm);
 
     // repeating
     QOrganizerRecurrenceRule rule = event.recurrenceRule();
@@ -306,6 +317,14 @@ void AlarmsAdapter::daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set)
 
 /*-----------------------------------------------------------------------------
  * Abstract methods
+ * verify the adaptation layer for the stored data
+ * expected value type based on change:
+ * - AlarmData::Enabled - bool
+ * - AlarmData::Date - QDateTime
+ * - AlarmData::Message - QString
+ * - AlarmData::Sound - QString
+ * - AlarmData::Type - UCAlarm::Type
+ * - AlarmData::Days - UCAlarm::DaysOfWeek
  */
 bool AlarmsAdapter::verifyChange(const QVariant &cookie, AlarmData::Change change, const QVariant &value)
 {
@@ -318,9 +337,19 @@ bool AlarmsAdapter::verifyChange(const QVariant &cookie, AlarmData::Change chang
     switch (change) {
         case AlarmData::Enabled:
         {
-            QOrganizerItemVisualReminder visual = todo.detail(QOrganizerItemDetail::TypeVisualReminder);
-            QOrganizerItemAudibleReminder audible = todo.detail(QOrganizerItemDetail::TypeAudibleReminder);
-            return (visual.isEmpty() && audible.isEmpty()) == value.toBool();
+            Q_ASSERT(value.type() == QVariant::Bool);
+            if (value.toBool()) {
+                return !todo.tags().contains(tagDisabledAlarm) && todo.tags().contains(tagAlarmService);
+            } else {
+                // check if we have the attachments still
+                QOrganizerItemVisualReminder visual = todo.detail(QOrganizerItemDetail::TypeVisualReminder);
+                QOrganizerItemAudibleReminder audible = todo.detail(QOrganizerItemDetail::TypeAudibleReminder);
+                if (visual.isEmpty() || audible.isEmpty()) {
+                    // we don't, return failure
+                    return false;
+                }
+                return todo.tags().contains(tagDisabledAlarm) && todo.tags().contains(tagAlarmService);
+            }
         }
         case AlarmData::Date:
         {
