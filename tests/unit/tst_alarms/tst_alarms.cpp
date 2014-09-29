@@ -580,6 +580,29 @@ private Q_SLOTS:
         //verify whether we have the desired change
         QVERIFY(AlarmManager::instance().verifyChange(&alarm, AlarmData::Sound, QVariant::fromValue(alarm.sound())));
     }
+
+    void test_check_alarm_tags_data()
+    {
+        QTest::addColumn<QString>("message");
+        QTest::addColumn<bool>("enabled");
+
+        QTest::newRow("enabled") << "enabled" << true;
+        QTest::newRow("disabled") << "disabled" << false;
+    }
+    void test_check_alarm_tags()
+    {
+        QFETCH(QString, message);
+        QFETCH(bool, enabled);
+
+        UCAlarm alarm(QDateTime::currentDateTime().addDays(1), "test_check_alarm_tags_" + message);
+        alarm.setEnabled(enabled);
+        alarm.save();
+        waitForRequest(&alarm);
+        QVERIFY(containsAlarm(&alarm));
+
+        // check the tags
+        QVERIFY(AlarmManager::instance().verifyChange(&alarm, AlarmData::Enabled, enabled));
+    }
 };
 
 QTEST_MAIN(tst_UCAlarms)
