@@ -59,7 +59,7 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
     def test_caret_visible_on_focus(self):
         try:
             cursor = self.main_view.select_single(
-                objectName='text_cursor_style_caret')
+                objectName='text_cursor_style_caret_cursorPosition')
             # cursor.visible is always True if the select succeeds
             self.assertFalse(cursor.visible)
         except dbus.StateNotFoundError:
@@ -69,14 +69,14 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
         self.pointing_device.click_object(self.textfield)
         self.assertTrue(self.textfield.focus)
         cursor = self.main_view.select_single(
-            objectName='text_cursor_style_caret')
+            objectName='text_cursor_style_caret_cursorPosition')
         self.assertTrue(cursor.visible)
 
     def test_caret_hide_while_typing(self):
         self.pointing_device.click_object(self.textfield)
         self.assertTrue(self.textfield.focus)
         cursor = self.main_view.select_single(
-            objectName='text_cursor_style_caret')
+            objectName='text_cursor_style_caret_cursorPosition')
         self.assertTrue(cursor.visible)
 
         self.textfield.keyboard.type('Lorem ipsum')
@@ -86,7 +86,7 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
         self.test_caret_hide_while_typing()
         self.pointing_device.click_object(self.textfield)
         cursor = self.main_view.select_single(
-            objectName='text_cursor_style_caret')
+            objectName='text_cursor_style_caret_cursorPosition')
         self.assertTrue(cursor.visible)
 
     def test_caret_visible_after_selecting(self):
@@ -94,5 +94,5 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
         # Select a character
         self.keyboard.press_and_release('Shift+Left')
         cursor = self.main_view.select_single(
-            objectName='text_cursor_style_caret_end')
+            objectName='text_cursor_style_caret_selectionEnd')
         self.assertTrue(cursor.visible)
