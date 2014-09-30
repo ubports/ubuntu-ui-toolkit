@@ -290,8 +290,5 @@ PopupBase {
     /*! \internal */
     onHeightChanged: internal.updatePosition()
     /*! \internal */
-    onRotatingChanged: {
-        hide();
-        internal.updatePosition();
-    }
+    onRotatingChanged: hide()
 }
