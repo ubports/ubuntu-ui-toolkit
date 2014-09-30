@@ -99,7 +99,7 @@ Object {
     /*!
       Choose a preset for the header visuals and behavior.
       The default is an empty string "".
-      By setting this to "selection", title and contents will be hidden and
+      By setting this to "selection", title will be hidden and
       actions will be represented by icons with a label.
       TODO: automatic back button?
      */
