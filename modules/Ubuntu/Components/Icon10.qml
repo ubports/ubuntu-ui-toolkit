@@ -46,10 +46,10 @@ Item {
         }
 
         source: {
-            if (icon.name)
-                return "image://theme/%1".arg(icon.name);
-            else if (icon.hasOwnProperty("source"))
+            if (icon.hasOwnProperty("source"))
                 return icon.source;
+            else if (icon.name)
+                return "image://theme/%1".arg(icon.name);
             else
                 return "";
         }
