@@ -94,7 +94,7 @@ public:
 
 public Q_SLOTS:
     bool fetchAlarms();
-    void updateAlarms(QList<QOrganizerItemId> list);
+    void updateAlarms(const QList<QOrganizerItemId> &list);
 
 protected:
     AlarmRequest *fetchRequest;

@@ -195,7 +195,11 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
         event.saveDetail(&visual);
     }
     QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
-    if (audible.isEmpty()) {
+    if (audible.dataUrl() != alarm.sound) {
+        if (!audible.isEmpty()) {
+            // remove previous attachment
+            event.removeDetail(&audible);
+        }
         audible.setSecondsBeforeStart(0);
         audible.setDataUrl(alarm.sound);
         event.saveDetail(&audible);
@@ -210,20 +214,6 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
         } else {
             // tag the alarm as disabled, using x-canonical-disabled as agreed in bug #1361702
             event.addTag(tagDisabledAlarm);
-        }
-    }
-
-    // save the sound as description as the audible reminder may be off
-    if (alarm.changes && AlarmData::Sound) {
-        event.setDescription(alarm.sound.toString());
-        // update audible reminder as well if alarm is enabled
-        if (alarm.enabled) {
-            QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
-            // remove the previous data, otherwise we will have two melodies
-            event.removeDetail(&audible);
-            // update sound and save
-            audible.setDataUrl(alarm.sound);
-            event.saveDetail(&audible);
         }
     }
 
@@ -262,7 +252,8 @@ int AlarmsAdapter::alarmDataFromOrganizerEvent(const QOrganizerTodo &event, Alar
     alarm.cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
     alarm.message = event.displayLabel();
     alarm.date = AlarmData::transcodeDate(event.startDateTime().toUTC(), Qt::LocalTime);
-    alarm.sound = QUrl(event.description());
+    QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
+    alarm.sound = audible.dataUrl();
     alarm.originalDate = alarm.date;
 
     // check if the alarm is enabled or not
@@ -341,13 +332,6 @@ bool AlarmsAdapter::verifyChange(const QVariant &cookie, AlarmData::Change chang
             if (value.toBool()) {
                 return !todo.tags().contains(tagDisabledAlarm) && todo.tags().contains(tagAlarmService);
             } else {
-                // check if we have the attachments still
-                QOrganizerItemVisualReminder visual = todo.detail(QOrganizerItemDetail::TypeVisualReminder);
-                QOrganizerItemAudibleReminder audible = todo.detail(QOrganizerItemDetail::TypeAudibleReminder);
-                if (visual.isEmpty() || audible.isEmpty()) {
-                    // we don't, return failure
-                    return false;
-                }
                 return todo.tags().contains(tagDisabledAlarm) && todo.tags().contains(tagAlarmService);
             }
         }
@@ -361,14 +345,9 @@ bool AlarmsAdapter::verifyChange(const QVariant &cookie, AlarmData::Change chang
         }
         case AlarmData::Sound:
         {
-            // it is enough to check teh audible presence, as they are added/removed in pair with visual reminder
+            // it is enough to check the audible presence, as they are added/removed in pair with visual reminder
             QOrganizerItemAudibleReminder audible = todo.detail(QOrganizerItemDetail::TypeAudibleReminder);
-            bool result = todo.description() == value.toString();
-            if (result && !audible.isEmpty()) {
-                // check whether the reminder has the same sound
-                result = audible.dataUrl().toString() == value.toString();
-            }
-            return result;
+            return audible.dataUrl().toString() == value.toString();
         }
         case AlarmData::Type:
         {
@@ -422,7 +401,7 @@ bool AlarmsAdapter::compareCookies(const QVariant &cookie1, const QVariant &cook
     return id1 == id2;
 }
 
-void AlarmsAdapter::updateAlarms(QList<QOrganizerItemId> list)
+void AlarmsAdapter::updateAlarms(const QList<QOrganizerItemId> &list)
 {
     if (list.size() < 0) {
         return;
@@ -451,11 +430,6 @@ void AlarmsAdapter::updateAlarms(QList<QOrganizerItemId> list)
         int index = alarmList.indexOfAlarm(cookie);
         if (index < 0) {
             qCritical("The Alarm data has been updated with an unregistered item, skipping!");
-            qDebug() << "cookie" << event.id().toString();
-            qDebug() << "message" << event.displayLabel();
-            qDebug() << "date" << AlarmData::transcodeDate(event.startDateTime().toUTC(), Qt::LocalTime);
-            QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
-            qDebug() << "audio" << audible.dataUrl();
             continue;
         }
         AlarmData data = alarmList[index];
@@ -579,10 +553,6 @@ bool AlarmRequestAdapter::save(AlarmData &alarm)
         if (event.isEmpty()) {
             setStatus(AlarmRequest::Saving, AlarmRequest::Fail, UCAlarm::AdaptationError);
             return false;
-        }
-        qDebug() << "UPDATING" << event.id().toString();
-        if (!AlarmsAdapter::get()->alarmList.contains(alarm)) {
-            qDebug() << "WARNING!!!! ALARM DATA NOT IN LIST" << AlarmsAdapter::get()->alarmList.length();
         }
     }
     AlarmsAdapter::get()->organizerEventFromAlarmData(alarm, event);
