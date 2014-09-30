@@ -15,34 +15,28 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ################################################################################
-QML="modules/Ubuntu/*/qmldir modules/Ubuntu/Components/*/qmldir"
-CPP="Ubuntu.Components Ubuntu.Layouts Ubuntu.PerformanceMetrics Ubuntu.Test"
+CPP="Ubuntu.Components Ubuntu.Layouts Ubuntu.Components.ListItems Ubuntu.PerformanceMetrics Ubuntu.Test"
 
-echo Dumping QML API of C++ components
-echo '' > plugins.qmltypes
 ERRORS=0
+echo Dumping QML API as JSON
 for i in $CPP; do
+    j=1.0
+    test "$i" = "Ubuntu.Components" && j=1.1
+    echo "Processing $i $j"
     # Silence spam on stderr due to fonts
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
-    ALARM_BACKEND=memory qmlplugindump $i 0.1 modules 1>> plugins.qmltypes
-    test $? != 0 && ERRORS=1
+    env ALARM_BACKEND=memory $(dirname $0)/apicheck --json $i $j modules 1> $i.api.new
+    test $? != 0 && echo Error: apicheck failed && ERRORS=1
+    echo Verifying the diff between existing and generated API
+    diff -u $i.api $i.api.new
+    test $? != 0 && echo Error: Differences in API. Did you forget to update $i.api? && ERRORS=1
 done
-test $ERRORS = 1 && echo Error: qmlplugindump failed && exit 1
-
-echo Running QML API check for $QML
-# Palette and UbuntuColors gets included in Qt > 5.2 qmlplugindump even though it's qml
-BUILTINS=QQuick,QQml,U1db::,Palette,UbuntuColors python3 tests/qmlapicheck.py $QML plugins.qmltypes > components.api.new
-test $? != 0 && echo Error: qmlapicheck.py failed && exit 1
-
-echo Verifying the diff between existing and generated API
-diff -Fqml -u components.api components.api.new
-test $? != 0 && ERRORS=1
 
 if [ "x$ERRORS" != "x1" ]; then
     echo API is all fine.
     exit 0
 else
-    echo API test failed with errors. Did you forget to update components.api?
+    echo API test failed with errors.
     exit 1
 fi

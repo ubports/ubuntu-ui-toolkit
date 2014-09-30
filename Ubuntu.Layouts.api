@@ -1,0 +1,67 @@
+{
+    "ConditionalLayout": {
+        "defaultProperty": "layout",
+        "exports": [
+            "ConditionalLayout 0.1",
+            "ConditionalLayout 1.0"
+        ],
+        "layout": {
+            "isPointer": true,
+            "type": "Component"
+        },
+        "name": {
+            "type": "string"
+        },
+        "prototype": "QtObject",
+        "when": {
+            "isPointer": true,
+            "type": "QQmlBinding"
+        }
+    },
+    "ItemLayout": {
+        "defaultProperty": "data",
+        "exports": [
+            "ItemLayout 0.1",
+            "ItemLayout 1.0"
+        ],
+        "item": {
+            "type": "string"
+        },
+        "prototype": "Item"
+    },
+    "Layouts": {
+        "attachedType": "ULLayoutsAttached",
+        "children": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "Item"
+        },
+        "currentLayout": {
+            "isReadonly": true,
+            "type": "string"
+        },
+        "data": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "QtObject"
+        },
+        "defaultProperty": "data",
+        "exports": [
+            "Layouts 0.1",
+            "Layouts 1.0"
+        ],
+        "layouts": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "ConditionalLayout"
+        },
+        "prototype": "Item"
+    },
+    "ULLayoutsAttached": {
+        "item": {
+            "type": "string"
+        },
+        "prototype": "QtObject"
+    },
+    "namespace": "Ubuntu.Layouts"
+}

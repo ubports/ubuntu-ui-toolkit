@@ -50,6 +50,9 @@
 #include <QtCore/private/qmetaobject_p.h>
 #include <QtQml/private/qqmldirparser_p.h>
 #include <QJSEngine>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 #include <iostream>
 #include <algorithm>
@@ -142,6 +145,9 @@ static QHash<QByteArray, QByteArray> cppToId;
 */
 QByteArray convertToId(const QByteArray &cppName)
 {
+    QList<const QQmlType*>types(qmlTypesByCppName[cppName].toList());
+    if (!types.isEmpty())
+        return QString(types[0]->qmlTypeName()).split("/")[1].toUtf8();
     return cppToId.value(cppName, cppName);
 }
 
@@ -170,7 +176,6 @@ QByteArray convertToId(const QMetaObject *mo)
     return className;
 }
 
-
 // Collect all metaobjects for types registered with qmlRegisterType() without parameters
 void collectReachableMetaObjectsWithoutQmlName( QSet<const QMetaObject *>& metas ) {
     Q_FOREACH (const QQmlType *ty, QQmlMetaType::qmlAllTypes()) {
@@ -194,8 +199,6 @@ QSet<const QMetaObject *> collectReachableMetaObjects(QQmlEngine *engine,
 
     QHash<QByteArray, QSet<QByteArray> > extensions;
     Q_FOREACH (const QQmlType *ty, QQmlMetaType::qmlTypes()) {
-        //if(!QString(ty->typeName()).startsWith("Q"))
-        //std::cout << "ty " << qPrintable(ty->typeName()) << "\n";
         if (!ty->isCreatable())
             noncreatables.insert(ty->metaObject());
         if (ty->isSingleton())
@@ -334,11 +337,11 @@ public:
 
 class Dumper
 {
+    QJsonObject* json;
     QString relocatableModuleUri;
-    int indent;
 
 public:
-    Dumper(): indent(1) {}
+    Dumper(QJsonObject* json): json(json) {}
 
     void setRelocatableModuleUri(const QString &uri)
     {
@@ -356,26 +359,24 @@ public:
         if (qmlTyName.startsWith("/")) {
             qmlTyName.remove(0, 1);
         }
-        const QString exportString = enquote(
-                    QString("%1 %2.%3").arg(
-                        qmlTyName,
-                        QString::number(majorVersion),
-                        QString::number(minorVersion)));
+        const QString exportString = QString("%1 %2.%3").arg(
+            qmlTyName).arg(majorVersion).arg( minorVersion);
         return exportString;
     }
 
-    void writeMetaContent(const QMetaObject *meta, KnownAttributes *knownAttributes = 0)
+    void writeMetaContent(QJsonObject* object, const QMetaObject *meta, KnownAttributes *knownAttributes = 0)
     {
         QSet<QString> implicitSignals;
         for (int index = meta->propertyOffset(); index < meta->propertyCount(); ++index) {
             const QMetaProperty &property = meta->property(index);
-            dump(property, knownAttributes);
+            dump(object, property, knownAttributes);
             if (knownAttributes)
                 knownAttributes->knownMethod(QByteArray(property.name()).append("Changed"),
                                              0, property.revision());
             implicitSignals.insert(QString("%1Changed").arg(QString::fromUtf8(property.name())));
         }
 
+        QJsonArray methods;
         if (meta == &QObject::staticMetaObject) {
             // for QObject, hide deleteLater() and onDestroyed
             for (int index = meta->methodOffset(); index < meta->methodCount(); ++index) {
@@ -385,33 +386,40 @@ public:
                         || signature == QByteArrayLiteral("destroyed()")
                         || signature == QByteArrayLiteral("deleteLater()"))
                     continue;
-                dump(method, implicitSignals, knownAttributes);
+                dump(&methods, method, implicitSignals, knownAttributes);
             }
 
             // and add toString(), destroy() and destroy(int)
             if (!knownAttributes || !knownAttributes->knownMethod(QByteArray("toString"), 0, 0)) {
-                writeStartObject(QLatin1String("Method"));
-                writeScriptBinding(QLatin1String("name"), enquote(QLatin1String("toString")));
-                writeEndObject();
+                QJsonObject method;
+                method["type"] = "function";
+                method["name"] = "toString";
+                methods.append(method);
             }
             if (!knownAttributes || !knownAttributes->knownMethod(QByteArray("destroy"), 0, 0)) {
-                writeStartObject(QLatin1String("Method"));
-                writeScriptBinding(QLatin1String("name"), enquote(QLatin1String("destroy")));
-                writeEndObject();
+                QJsonObject method;
+                method["type"] = "function";
+                method["name"] = "destroy";
+                methods.append(method);
             }
             if (!knownAttributes || !knownAttributes->knownMethod(QByteArray("destroy"), 1, 0)) {
-                writeStartObject(QLatin1String("Method"));
-                writeScriptBinding(QLatin1String("name"), enquote(QLatin1String("destroy")));
-                writeStartObject(QLatin1String("Parameter"));
-                writeScriptBinding(QLatin1String("name"), enquote(QLatin1String("delay")));
-                writeScriptBinding(QLatin1String("type"), enquote(QLatin1String("int")));
-                writeEndObject();
-                writeEndObject();
+                QJsonObject method;
+                method["type"] = "function";
+                method["name"] = "destroy";
+                QJsonArray parameters;
+                QJsonObject parameter;
+                parameter["type"] = "int";
+                parameter["name"] = "delay";
+                method.insert("parameters", parameters);
+                methods.append(method);
             }
         } else {
-            for (int index = meta->methodOffset(); index < meta->methodCount(); ++index)
-                dump(meta->method(index), implicitSignals, knownAttributes);
+            for (int index = meta->methodOffset(); index < meta->methodCount(); ++index) {
+                dump(&methods, meta->method(index), implicitSignals, knownAttributes);
+            }
         }
+        if (!methods.empty())
+            object->insert("methods", methods);
     }
 
     QString getPrototypeNameForCompositeType(const QMetaObject *metaObject, QSet<QByteArray> &defaultReachableNames,
@@ -440,96 +448,44 @@ public:
     void dumpComposite(QQmlEngine *engine, const QQmlType *compositeType, QSet<QByteArray> &defaultReachableNames)
     {
         QQmlComponent e(engine, compositeType->sourceUrl());
-        QObject *object = e.create();
+        QObject *qtobject = e.create();
 
-        if (!object)
+        if (!qtobject)
             return;
 
+        QJsonObject object;
         QString qmlTyName = compositeType->qmlTypeName();
-        writeStartObject(qmlTyName);
 
-        const QMetaObject *mainMeta = object->metaObject();
+        const QMetaObject *mainMeta = qtobject->metaObject();
 
         QList<const QMetaObject *> objectsToMerge;
         KnownAttributes knownAttributes;
         // Get C++ base class name for the composite type
         QString prototypeName = getPrototypeNameForCompositeType(mainMeta, defaultReachableNames,
                                                                  &objectsToMerge);
-        writeScriptBinding(enquote("prototype"), enquote(prototypeName));
+        object.insert("prototype", prototypeName);
 
         const QString exportString = getExportString(qmlTyName, compositeType->majorVersion(), compositeType->minorVersion());
-        writeArrayBinding(enquote("exports"), QStringList() << exportString);
-        writeArrayBinding(enquote("exportMetaObjectRevisions"), QStringList() << QString::number(compositeType->minorVersion()));
-        writeBooleanBinding(enquote("isComposite"), true);
+        object.insert("exports", QJsonArray::fromStringList(QStringList() << exportString));
+        object.insert("exportMetaObjectRevisions", QJsonArray::fromStringList((QStringList() << QString::number(compositeType->minorVersion()))));
+        object.insert("isComposite", true);
 
         if (compositeType->isSingleton()) {
-            writeBooleanBinding(enquote("isCreatable"), false);
-            writeBooleanBinding(enquote("isSingleton"), true);
+            object.insert("isCreatable", false);
+            object.insert("isSingleton", true);
         }
 
         for (int index = mainMeta->classInfoCount() - 1 ; index >= 0 ; --index) {
             QMetaClassInfo classInfo = mainMeta->classInfo(index);
             if (QLatin1String(classInfo.name()) == QLatin1String("DefaultProperty")) {
-                writeScriptBinding(enquote("defaultProperty"), enquote(classInfo.value()));
+                object.insert("defaultProperty", classInfo.value());
                 break;
             }
         }
 
         Q_FOREACH (const QMetaObject *meta, objectsToMerge)
-            writeMetaContent(meta, &knownAttributes);
-
-        writeEndObject();
-    }
-
-    void writeIndent()
-    {
-        for(int i = 0; i < indent; i++)
-            std::cout << "    ";
-    }
-
-    void writeStartObject(const QString& type)
-    {
-        writeIndent();
-        std::cout << qPrintable(QString("%1: {\n").arg(enquote(type)));
-        indent++;
-    }
-
-    void writeEndObject()
-    {
-        indent--;
-        writeIndent();
-        std::cout << "},\n";
-    }
-
-    void writeScriptBinding(const QString& name, const QString& value)
-    {
-        writeIndent();
-        std::cout << qPrintable(QString("%1: %2,\n").arg(name).arg(value));
-    }
-
-    void writeBooleanBinding(const QString &name, bool value)
-    {
-         writeScriptBinding(name, value ? "true" : "false");
-    }
-
-    void writeArrayBinding(const QString &name, const QStringList &elements)
-    {
-         writeScriptBinding(name, QString("[ %1 ]").arg(elements.join(", ")));
-    }
-
-    void writeScriptObjectLiteralBinding(const QString &name, const QList<QPair<QString, QString> > &keyValue)
-    {
-        writeIndent();
-        std::cout << qPrintable(QString("%1: [\n").arg(enquote(name)));
-        indent++;
-        for (int i = 0; i < keyValue.size(); ++i) {
-             const QString key = keyValue.at(i).first;
-             const QString value = keyValue.at(i).second;
-             writeScriptBinding(key, value);
-        }
-        indent--;
-        writeIndent();
-        std::cout << "]\n";
+            writeMetaContent(&object, meta, &knownAttributes);
+        json->insert(qmlTyName, object);
     }
 
     void dump(const QMetaObject *meta, bool isUncreatable, bool isSingleton)
@@ -556,34 +512,32 @@ public:
             std::sort(exportStrings.begin(), exportStrings.end());
         }
 
-        QByteArray id = convertToId(meta);
-        writeStartObject(id);
+        QJsonObject object;
 
         for (int index = meta->classInfoCount() - 1 ; index >= 0 ; --index) {
             QMetaClassInfo classInfo = meta->classInfo(index);
             if (QLatin1String(classInfo.name()) == QLatin1String("DefaultProperty")) {
-                writeScriptBinding(enquote("defaultProperty"), enquote(classInfo.value()));
+                object.insert("defaultProperty", classInfo.value());
                 break;
             }
         }
 
         if (meta->superClass())
-            writeScriptBinding(enquote("prototype"), enquote(convertToId(meta->superClass())));
+            object.insert("prototype", QString(convertToId(meta->superClass())));
 
         if (!qmlTypes.isEmpty()) {
-            writeArrayBinding(enquote("exports"), exportStrings);
+            object.insert("exports", QJsonArray::fromStringList(exportStrings));
 
             if (isUncreatable)
-                writeBooleanBinding(enquote("isCreatable"), false);
+                object.insert("isCreatable", false);
             if (isSingleton)
-                writeBooleanBinding(enquote("isSingleton"), true);
+                object.insert("isSingleton", true);
 
             if (const QMetaObject *attachedType = (*qmlTypes.begin())->attachedPropertiesType()) {
                 // Can happen when a type is registered that returns itself as attachedPropertiesType()
                 // because there is no creatable type to attach to.
                 if (attachedType != meta) {
-                    writeScriptBinding(enquote("attachedType"), enquote(
-                                       convertToId(attachedType)));
+                    object.insert("attachedType", QString(convertToId(attachedType)));
                 }
             }
         }
@@ -591,24 +545,13 @@ public:
         for (int index = meta->enumeratorOffset(); index < meta->enumeratorCount(); ++index)
             dump(meta->enumerator(index));
 
-        writeMetaContent(meta);
+        writeMetaContent(&object, meta);
 
-        writeEndObject();
-    }
-
-    void writeEasingCurve()
-    {
-        writeStartObject(enquote("QEasingCurve"));
-        writeScriptBinding(enquote("prototype"), enquote("QQmlEasingValueType"));
-        writeEndObject();
+        QByteArray id = convertToId(meta);
+        json->insert(id, object);
     }
 
 private:
-    static QString enquote(const QString &string)
-    {
-        return QString("\"%1\"").arg(string);
-    }
-
     /* Removes pointer and list annotations from a type name, returning
        what was removed in isList and isPointer
     */
@@ -630,38 +573,40 @@ private:
         *typeName = convertToId(*typeName);
     }
 
-    void writeTypeProperties(QByteArray typeName, bool isWritable)
+    void writeTypeProperties(QJsonObject* object, QByteArray typeName, bool isWritable)
     {
         bool isList = false, isPointer = false;
         removePointerAndList(&typeName, &isList, &isPointer);
 
         // Strip internal _QMLTYPE_xy suffix
         QString normalizedType = QString(typeName).split("_")[0];
-        writeScriptBinding(enquote("type"), enquote(normalizedType));
+        object->insert("type", normalizedType);
 
         if (isList)
-            writeScriptBinding(enquote("isList"), "true");
+            object->insert("isList", true);
         if (!isWritable)
-            writeScriptBinding(enquote("isReadonly"), "true");
+            object->insert("isReadonly", true);
         if (isPointer)
-            writeScriptBinding(enquote("isPointer"), "true");
+            object->insert("isPointer", true);
     }
 
-    void dump(const QMetaProperty &prop, KnownAttributes *knownAttributes = 0)
+    void dump(QJsonObject* object, const QMetaProperty &prop, KnownAttributes *knownAttributes = 0)
     {
         int revision = prop.revision();
         QByteArray propName = prop.name();
         if (knownAttributes && knownAttributes->knownProperty(propName, revision))
             return;
-        writeStartObject(prop.name());
-        if (revision)
-            writeScriptBinding(enquote("revision"), QString::number(revision));
-        writeTypeProperties(prop.typeName(), prop.isWritable());
+        if (QString(propName).startsWith("__"))
+            return;
 
-        writeEndObject();
+        QJsonObject property;
+        if (revision)
+            property["revision"] = revision;
+        writeTypeProperties(&property, prop.typeName(), prop.isWritable());
+        object->insert(prop.name(), property);
     }
 
-    void dump(const QMetaMethod &meth, const QSet<QString> &implicitSignals,
+    void dump(QJsonArray* array, const QMetaMethod &meth, const QSet<QString> &implicitSignals,
               KnownAttributes *knownAttributes = 0)
     {
         if (meth.methodType() == QMetaMethod::Signal) {
@@ -686,40 +631,43 @@ private:
         int revision = meth.revision();
         if (knownAttributes && knownAttributes->knownMethod(name, meth.parameterNames().size(), revision))
             return;
-        writeStartObject(name);
+
+        QJsonObject method;
         if (meth.methodType() == QMetaMethod::Signal)
-            writeScriptBinding(enquote("type"), enquote("Signal"));
+            method["type"] = "signal";
         else
-            writeScriptBinding(enquote("type"), enquote("Method"));
+            method["type"] = "function";
 
         if (revision)
-            writeScriptBinding(enquote("revision"), QString::number(revision));
+            method["revision"] = QString::number(revision);
 
         if (typeName != QLatin1String("void"))
-            writeScriptBinding(enquote("returns"), enquote(typeName));
+            method["returns"] = typeName;
 
+        QJsonArray parameters;
         for (int i = 0; i < meth.parameterTypes().size(); ++i) {
             QByteArray argName = meth.parameterNames().at(i);
-            writeStartObject(argName);
-            writeTypeProperties(meth.parameterTypes().at(i), true);
-            writeEndObject();
+            QJsonObject parameter;
+            parameter["name"] = QString(argName);
+            writeTypeProperties(&parameter, meth.parameterTypes().at(i), true);
+            parameters.append(parameter);
         }
-
-        writeEndObject();
+        if (!parameters.empty())
+            method.insert("parameters", parameters);
+        method.insert("name", QString(name));
+        array->append(method);
     }
 
     void dump(const QMetaEnum &e)
     {
-        writeStartObject(e.name());
-        writeScriptBinding(enquote("type"), enquote("Enum"));
+        QJsonObject object;
+        object["prototype"] = "Enum";
 
         QList<QPair<QString, QString> > namesValues;
         for (int index = 0; index < e.keyCount(); ++index) {
-            namesValues.append(qMakePair(enquote(QString::fromUtf8(e.key(index))), QString::number(e.value(index))));
+            object[e.key(index)] = QString::number(e.value(index));
         }
-
-        writeScriptObjectLiteralBinding("values", namesValues);
-        writeEndObject();
+        json->insert(e.name(), object);
     }
 };
 
@@ -743,9 +691,9 @@ void sigSegvHandler(int) {
 void printUsage(const QString &appName)
 {
     std::cerr << qPrintable(QString(
-                                 "Usage: %1 [-v] [-noinstantiate] [-defaultplatform] [-[non]relocatable] module.uri version [module/import/path]\n"
-                                 "       %1 [-v] [-noinstantiate] -path path/to/qmldir/directory [version]\n"
-                                 "Example: %1 Qt.labs.folderlistmodel 2.0 /home/user/dev/qt-install/imports").arg(
+                                 "Usage: %1 [-v] [-noinstantiate] [-defaultplatform] [-[non]relocatable] [-qml] [-json] module.uri version [module/import/path]\n"
+                                 "       %1 [-v] [-noinstantiate] [-qml] [-json] -path path/to/qmldir/directory [version]\n"
+                                 "Example: %1 -json Qt.labs.folderlistmodel 2.0 /home/user/dev/qt-install/imports").arg(
                                  appName)) << std::endl;
 }
 
@@ -801,6 +749,7 @@ int main(int argc, char *argv[])
     QString pluginImportUri;
     QString pluginImportVersion;
     bool relocatable = true;
+    bool output_json = false, output_qml = false;
     enum Action { Uri, Path };
     Action action = Uri;
     {
@@ -819,6 +768,12 @@ int main(int argc, char *argv[])
             } else if (arg == QLatin1String("--relocatable")
                         || arg == QLatin1String("-relocatable")) {
                 relocatable = true;
+            } else if (arg == QLatin1String("--json")
+                        || arg == QLatin1String("-json")) {
+                output_json = true;
+            } else if (arg == QLatin1String("--qml")
+                        || arg == QLatin1String("-qml")) {
+                output_qml = true;
             } else if (arg == QLatin1String("--noinstantiate")
                        || arg == QLatin1String("-noinstantiate")) {
                 creatable = false;
@@ -842,9 +797,12 @@ int main(int argc, char *argv[])
                 return EXIT_INVALIDARGUMENTS;
             }
             pluginImportUri = positionalArgs[1];
-            pluginImportVersion = positionalArgs[2];
-            if (positionalArgs.size() >= 4)
-                pluginImportPath = positionalArgs[3];
+            if (positionalArgs[2].toDouble() != 0.0) {
+                pluginImportVersion = positionalArgs[2];
+                if (positionalArgs.size() >= 4)
+                    pluginImportPath = positionalArgs[3];
+            } else
+                pluginImportPath = positionalArgs[2];
         } else if (action == Path) {
             if (positionalArgs.size() != 2 && positionalArgs.size() != 3) {
                 std::cerr << "Incorrect number of positional arguments" << std::endl;
@@ -855,6 +813,10 @@ int main(int argc, char *argv[])
                 pluginImportVersion = positionalArgs[2];
         }
     }
+
+    // By default output JSON
+    if (!output_json and !output_qml)
+        output_json = true;
 
     QQmlEngine engine;
     if (!pluginImportPath.isEmpty()) {
@@ -872,6 +834,7 @@ int main(int argc, char *argv[])
         c.setData(code, QUrl::fromLocalFile(pluginImportPath + "/loadqtquick2.qml"));
         c.create();
         if (!c.errors().isEmpty()) {
+            std::cerr << "Failed to load QtQuick2 built-in" << std::endl;
             Q_FOREACH (const QQmlError &error, c.errors())
                 std::cerr << qPrintable( error.toString() ) << std::endl;
             return EXIT_IMPORTERROR;
@@ -883,9 +846,6 @@ int main(int argc, char *argv[])
     QSet<const QMetaObject *> singletonMetas;
     QSet<const QMetaObject *> defaultReachable = collectReachableMetaObjects(&engine, uncreatableMetas, singletonMetas);
     QList<QQmlType *> defaultTypes = QQmlMetaType::qmlTypes();
-    /* Q_FOREACH(QQmlType* t, defaultTypes){
-        std::cout << "t " << qPrintable(t->typeName()) << "\n";
-    } */
 
     // add some otherwise unreachable QMetaObjects
     defaultReachable.insert(&QQuickMouseEvent::staticMetaObject);
@@ -909,21 +869,12 @@ int main(int argc, char *argv[])
                                                       QString::number(qtObjectType->minorVersion())).toUtf8();
     }
 
-    // find all QMetaObjects reachable when the specified module is imported
-    if (action != Path) {
-        importCode += QString("import %0 %1\n").arg(pluginImportUri, pluginImportVersion).toLatin1();
-    } else {
-        // pluginImportVersion can be empty
-        importCode += QString("import \".\" %2\n").arg(pluginImportVersion).toLatin1();
-    }
-
-    // Create a component with all QML types to add them to the type system
-    QByteArray code = importCode;
-    code += "Column {\n";
-
-    QString pluginModulePath(pluginImportPath + "/" + pluginImportUri.replace(".", "/"));
+    QString pluginModulePath(pluginImportPath + "/" + QString(pluginImportUri).replace(".", "/"));
     QFile f(pluginModulePath + "/qmldir");
-    f.open(QIODevice::ReadOnly);
+    if (!f.open(QIODevice::ReadOnly)) {
+        std::cerr << "Failed to read " << qPrintable(f.fileName()) << std::endl;
+        return EXIT_IMPORTERROR;
+    }
     QQmlDirParser p;
     p.parse(f.readAll());
     if (p.hasError()) {
@@ -932,24 +883,46 @@ int main(int argc, char *argv[])
             std::cerr << qPrintable( error.toString() ) << std::endl;
         return EXIT_IMPORTERROR;
     }
+    if (pluginImportUri.isEmpty())
+        pluginImportUri = p.typeNamespace();
+
+    // find all QMetaObjects reachable when the specified module is imported
+    if (action != Path) {
+        importCode += QString("import %0 %1 as A\n").arg(pluginImportUri, pluginImportVersion).toLatin1();
+    } else {
+        // pluginImportVersion can be empty
+        importCode += QString("import %1 %2 as A\n").arg(pluginImportUri).arg(pluginImportVersion).toLatin1();
+    }
+
+    // Create a component with all QML types to add them to the type system
+    QByteArray code = importCode;
+    code += "Column {\n";
 
     Q_FOREACH(QQmlDirParser::Component c, p.components()) {
         if (c.internal)
             continue;
-        code += QString("%1 {}\n").arg(c.typeName);
+        if (c.majorVersion + "." + c.minorVersion != pluginImportVersion)
+            continue;
+        code += QString("A.%1 {}\n").arg(c.typeName);
     }
 
     code += "}";
     if (verbose)
-        std::cout << "Importing QML components:" << std::endl << qPrintable(code) << std::endl;
+        std::cerr << "Importing QML components:" << std::endl << qPrintable(code) << std::endl;
 
     QQmlComponent c(&engine);
     c.setData(code, QUrl::fromLocalFile(pluginImportPath + "/typelist.qml"));
+    std::cerr << "Creating QML component for " << qPrintable(pluginImportUri) << std::endl;
     c.create();
-    if (c.errors().isEmpty()) {
-        Q_FOREACH (const QQmlError &error, c.errors())
+    if (!c.errors().isEmpty()) {
+        Q_FOREACH (const QQmlError &error, c.errors()) {
+            // Despite the error we get all type information we need from singletons
+            if (error.description().contains(QRegExp("(Composite Singleton Type .+|Element) is not creatable")))
+                continue;
+            std::cerr << "Failed to load " << qPrintable(pluginImportUri) << std::endl;
             std::cerr << qPrintable( error.toString() ) << std::endl;
-        return EXIT_IMPORTERROR;
+            return EXIT_IMPORTERROR;
+        }
     }
 
     QSet<const QMetaObject *> candidates = collectReachableMetaObjects(&engine, uncreatableMetas, singletonMetas, defaultTypes);
@@ -969,8 +942,9 @@ int main(int argc, char *argv[])
     cppToId.insert("QString", "string");
     cppToId.insert("QQmlEasingValueType::Type", "Type");
 
-    // start dumping data
-    std::cout << qPrintable(QString("{ \"%1\": \"%2\",").arg("namespace").arg(pluginImportUri.replace("/", "."))) << std::endl;
+    // create an object that will be the API description
+    QJsonObject json;
+    json["namespace"] = pluginImportUri;
 
     QMap<QString, QString> scripts;
     Q_FOREACH(QQmlDirParser::Script s, p.scripts()) {
@@ -983,12 +957,11 @@ int main(int argc, char *argv[])
     }
 
     Q_FOREACH(QString nameSpace, scripts.uniqueKeys()) {
-        QString script(
-            "    \"%1\": {\n"
-            "        type: \"script\",\n"
-            "        exports: [ \"%2\" ]\n    },");
-        QString exports(QStringList(scripts.values(nameSpace)).join(", "));
-        std::cout << qPrintable(script.arg(nameSpace).arg(exports)) << std::endl;
+        QJsonObject script;
+        script["type"] = "script";
+        QJsonArray exports(QJsonArray::fromStringList(scripts.values(nameSpace)));
+        script["exports"] = exports;
+        json[nameSpace] = script;
     }
 
     // put the metaobjects into a map so they are always dumped in the same order
@@ -996,7 +969,7 @@ int main(int argc, char *argv[])
     Q_FOREACH (const QMetaObject *meta, metas)
         nameToMeta.insert(convertToId(meta), meta);
 
-    Dumper dumper;
+    Dumper dumper(&json);
     if (relocatable)
         dumper.setRelocatableModuleUri(pluginImportUri);
     Q_FOREACH (const QMetaObject *meta, nameToMeta) {
@@ -1005,12 +978,75 @@ int main(int argc, char *argv[])
     Q_FOREACH (const QQmlType *compositeType, qmlTypesByCompositeName)
         dumper.dumpComposite(&engine, compositeType, defaultReachableNames);
 
-    // define QEasingCurve as an extension of QQmlEasingValueType, this way
-    // properties using the QEasingCurve type get useful type information.
-    if (pluginImportUri.isEmpty())
-        dumper.writeEasingCurve();
+    if (output_json) {
+        // write JSON representation of the API
+        QJsonDocument jsonDoc(json);
+        std::cout << qPrintable(jsonDoc.toJson());
+    }
 
-    std::cout << "}";
+    if (output_qml) {
+        // write QML representation of the API
+        Q_FOREACH(const QString& key, json.keys()) {
+            QJsonValue value(json[key]);
+            if (value.isObject()) {
+                QJsonObject object(value.toObject());
+                QString signature;
+                QJsonArray exports(object["exports"].toArray());
+                QStringList exportsSl;
+                Q_FOREACH(QJsonValue expor, exports) {
+                    exportsSl.append(expor.toString());
+                }
+                if (!exportsSl.isEmpty())
+                    signature += exportsSl.join(" ");
+                else
+                    signature += key;
+                signature += " " + object["prototype"].toString();
+                if (object.contains("isSingleton"))
+                    signature += " singleton";
+                signature += "\n";
+                Q_FOREACH(const QString& fieldName, object.keys()) {
+                    if (fieldName == "exports" || fieldName == "prototype" || fieldName == "type")
+                        continue;
+                    if (fieldName == "methods") {
+                        QJsonArray values(object[fieldName].toArray());
+                        Q_FOREACH(const QJsonValue& value, values) {
+                            QJsonObject valu(value.toObject());
+                            signature += "    ";
+                            signature += valu["type"].toString() + " ";
+                            if (valu.contains("returns"))
+                                signature += valu["returns"].toString() + " ";
+                            signature += valu["name"].toString();
+                            if (valu.contains("parameters")) {
+                                QStringList args;
+                                Q_FOREACH(const QJsonValue& parameterValue, valu["parameters"].toArray()) {
+                                    QJsonObject parameter(parameterValue.toObject());
+                                    args.append(parameter["type"].toString() + " " + parameter["name"].toString());
+                                }
+                                signature += "(" + args.join(", ") + ")";
+                                }
+                            signature += "\n";
+                        }
+                        continue;
+                    }
+                    QJsonObject field(object[fieldName].toObject());
+                    if (!field.contains("type") && object["prototype"] != "Enum")
+                        continue;
+                    signature += "    ";
+                    if (object["prototype"] != "Enum") {
+                        if (object["defaultProperty"] == fieldName)
+                            signature += "default ";
+                        if (field.contains("isReadonly"))
+                            signature += "readonly ";
+                        signature += "property ";
+                    }
+                    signature += QString(convertToId(field["type"].toString().toUtf8())) + " ";
+                    signature += fieldName;
+                    signature += "\n";
+                }
+                std::cout << qPrintable(signature);
+            }
+        }
+    }
 
     // workaround to avoid crashes on exit
     QTimer timer;

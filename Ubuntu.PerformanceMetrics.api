@@ -1,0 +1,85 @@
+{
+    "CpuUsage": {
+        "defaultProperty": "data",
+        "exports": [
+            "CpuUsage 0.1",
+            "CpuUsage 1.0"
+        ],
+        "graphModel": {
+            "isPointer": true,
+            "isReadonly": true,
+            "type": "UPMGraphModel"
+        },
+        "period": {
+            "type": "int"
+        },
+        "prototype": "Item",
+        "samplingInterval": {
+            "type": "int"
+        }
+    },
+    "RenderingTimes": {
+        "defaultProperty": "data",
+        "exports": [
+            "RenderingTimes 0.1",
+            "RenderingTimes 1.0"
+        ],
+        "graphModel": {
+            "isPointer": true,
+            "isReadonly": true,
+            "type": "UPMGraphModel"
+        },
+        "methods": [
+            {
+                "name": "frameRendered",
+                "parameters": [
+                    {
+                        "name": "renderTime",
+                        "type": "qlonglong"
+                    }
+                ],
+                "type": "signal"
+            }
+        ],
+        "period": {
+            "type": "int"
+        },
+        "prototype": "Item",
+        "samples": {
+            "type": "int"
+        },
+        "timerType": {
+            "type": "RenderTimer::TimerType"
+        }
+    },
+    "TextureFromImage": {
+        "defaultProperty": "data",
+        "exports": [
+            "TextureFromImage 0.1",
+            "TextureFromImage 1.0"
+        ],
+        "image": {
+            "type": "QImage"
+        },
+        "prototype": "Item"
+    },
+    "UPMGraphModel": {
+        "currentValue": {
+            "isReadonly": true,
+            "type": "int"
+        },
+        "image": {
+            "isReadonly": true,
+            "type": "QImage"
+        },
+        "prototype": "QtObject",
+        "samples": {
+            "type": "int"
+        },
+        "shift": {
+            "isReadonly": true,
+            "type": "int"
+        }
+    },
+    "namespace": "Ubuntu.PerformanceMetrics"
+}

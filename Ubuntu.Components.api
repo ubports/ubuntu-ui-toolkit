@@ -1,0 +1,1280 @@
+{
+    "Action": {
+        "description": {
+            "type": "string"
+        },
+        "enabled": {
+            "type": "bool"
+        },
+        "exports": [
+            "Action 0.1",
+            "Action 1.0"
+        ],
+        "iconName": {
+            "type": "string"
+        },
+        "iconSource": {
+            "type": "QUrl"
+        },
+        "itemHint": {
+            "isPointer": true,
+            "type": "Component"
+        },
+        "keywords": {
+            "type": "string"
+        },
+        "methods": [
+            {
+                "name": "triggered",
+                "parameters": [
+                    {
+                        "name": "value",
+                        "type": "QVariant"
+                    }
+                ],
+                "type": "signal"
+            },
+            {
+                "name": "trigger",
+                "parameters": [
+                    {
+                        "name": "value",
+                        "type": "QVariant"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "trigger",
+                "type": "function"
+            }
+        ],
+        "name": {
+            "type": "string"
+        },
+        "parameterType": {
+            "type": "Type"
+        },
+        "prototype": "QtObject",
+        "text": {
+            "type": "string"
+        },
+        "visible": {
+            "type": "bool"
+        }
+    },
+    "ActionContext": {
+        "actions": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "QtObject"
+        },
+        "active": {
+            "type": "bool"
+        },
+        "defaultProperty": "actions",
+        "exports": [
+            "ActionContext 0.1",
+            "ActionContext 1.0"
+        ],
+        "methods": [
+            {
+                "name": "activeChanged",
+                "parameters": [
+                    {
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "type": "signal"
+            },
+            {
+                "name": "addAction",
+                "parameters": [
+                    {
+                        "isPointer": true,
+                        "name": "action",
+                        "type": "QtObject"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "removeAction",
+                "parameters": [
+                    {
+                        "isPointer": true,
+                        "name": "action",
+                        "type": "QtObject"
+                    }
+                ],
+                "type": "function"
+            }
+        ],
+        "prototype": "QtObject"
+    },
+    "ActionManager": {
+        "actions": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "QtObject"
+        },
+        "defaultProperty": "actions",
+        "exports": [
+            "ActionManager 0.1",
+            "ActionManager 1.0"
+        ],
+        "globalContext": {
+            "isPointer": true,
+            "isReadonly": true,
+            "type": "ActionContext"
+        },
+        "localContexts": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "QtObject"
+        },
+        "methods": [
+            {
+                "name": "quit",
+                "type": "signal"
+            },
+            {
+                "name": "addAction",
+                "parameters": [
+                    {
+                        "isPointer": true,
+                        "name": "action",
+                        "type": "QtObject"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "removeAction",
+                "parameters": [
+                    {
+                        "isPointer": true,
+                        "name": "action",
+                        "type": "QtObject"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "addLocalContext",
+                "parameters": [
+                    {
+                        "isPointer": true,
+                        "name": "context",
+                        "type": "QtObject"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "removeLocalContext",
+                "parameters": [
+                    {
+                        "isPointer": true,
+                        "name": "context",
+                        "type": "QtObject"
+                    }
+                ],
+                "type": "function"
+            }
+        ],
+        "prototype": "QtObject"
+    },
+    "Alarm": {
+        "date": {
+            "type": "QDateTime"
+        },
+        "daysOfWeek": {
+            "type": "DaysOfWeek"
+        },
+        "enabled": {
+            "type": "bool"
+        },
+        "error": {
+            "isReadonly": true,
+            "type": "int"
+        },
+        "exports": [
+            "Alarm 0.1",
+            "Alarm 1.0"
+        ],
+        "message": {
+            "type": "string"
+        },
+        "methods": [
+            {
+                "name": "statusChanged",
+                "parameters": [
+                    {
+                        "name": "operation",
+                        "type": "Operation"
+                    }
+                ],
+                "type": "signal"
+            },
+            {
+                "name": "save",
+                "type": "function"
+            },
+            {
+                "name": "cancel",
+                "type": "function"
+            },
+            {
+                "name": "reset",
+                "type": "function"
+            }
+        ],
+        "prototype": "QtObject",
+        "sound": {
+            "type": "QUrl"
+        },
+        "status": {
+            "isReadonly": true,
+            "type": "Status"
+        },
+        "type": {
+            "type": "AlarmType"
+        }
+    },
+    "AlarmModel": {
+        "count": {
+            "isReadonly": true,
+            "type": "int"
+        },
+        "exports": [
+            "AlarmModel 0.1",
+            "AlarmModel 1.0"
+        ],
+        "methods": [
+            {
+                "name": "get",
+                "parameters": [
+                    {
+                        "name": "index",
+                        "type": "int"
+                    }
+                ],
+                "returns": "UCAlarm*",
+                "type": "function"
+            }
+        ],
+        "prototype": "QAbstractListModel"
+    },
+    "AlarmType": {
+        "OneTime": "0",
+        "Repeating": "1",
+        "prototype": "Enum"
+    },
+    "Argument": {
+        "exports": [
+            "Argument 0.1",
+            "Argument 1.0"
+        ],
+        "help": {
+            "type": "string"
+        },
+        "methods": [
+            {
+                "name": "at",
+                "parameters": [
+                    {
+                        "name": "i",
+                        "type": "int"
+                    }
+                ],
+                "returns": "QVariant",
+                "type": "function"
+            }
+        ],
+        "name": {
+            "type": "string"
+        },
+        "prototype": "QtObject",
+        "required": {
+            "type": "bool"
+        },
+        "valueNames": {
+            "type": "QStringList"
+        }
+    },
+    "Arguments": {
+        "arguments": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "Argument"
+        },
+        "defaultArgument": {
+            "isPointer": true,
+            "type": "Argument"
+        },
+        "defaultProperty": "arguments",
+        "error": {
+            "isReadonly": true,
+            "type": "bool"
+        },
+        "errorMessage": {
+            "isReadonly": true,
+            "type": "string"
+        },
+        "exports": [
+            "Arguments 0.1",
+            "Arguments 1.0"
+        ],
+        "methods": [
+            {
+                "name": "printUsage",
+                "type": "function"
+            },
+            {
+                "name": "quitWithError",
+                "parameters": [
+                    {
+                        "name": "errorMessage",
+                        "type": "string"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "quitWithError",
+                "type": "function"
+            }
+        ],
+        "prototype": "QtObject",
+        "values": {
+            "isPointer": true,
+            "isReadonly": true,
+            "type": "QQmlPropertyMap"
+        }
+    },
+    "Clipboard": {
+        "data": {
+            "isPointer": true,
+            "isReadonly": true,
+            "type": "MimeData"
+        },
+        "exports": [
+            "Clipboard 0.1",
+            "Clipboard 1.0"
+        ],
+        "isCreatable": false,
+        "isSingleton": true,
+        "methods": [
+            {
+                "name": "push",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "type": "QVariant"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "clear",
+                "type": "function"
+            },
+            {
+                "name": "newData",
+                "returns": "QQuickMimeData*",
+                "type": "function"
+            }
+        ],
+        "prototype": "QtObject"
+    },
+    "ColorUtils": {
+        "exports": [
+            "ColorUtils 1.0",
+            "ColorUtils 0.1"
+        ],
+        "type": "script"
+    },
+    "DateUtils": {
+        "exports": [
+            "DateUtils 1.0",
+            "DateUtils 0.1"
+        ],
+        "type": "script"
+    },
+    "DayOfWeek": {
+        "AutoDetect": "128",
+        "Daily": "127",
+        "Friday": "16",
+        "Monday": "1",
+        "Saturday": "32",
+        "Sunday": "64",
+        "Thursday": "8",
+        "Tuesday": "2",
+        "Wednesday": "4",
+        "prototype": "Enum"
+    },
+    "DaysOfWeek": {
+        "AutoDetect": "128",
+        "Daily": "127",
+        "Friday": "16",
+        "Monday": "1",
+        "Saturday": "32",
+        "Sunday": "64",
+        "Thursday": "8",
+        "Tuesday": "2",
+        "Wednesday": "4",
+        "prototype": "Enum"
+    },
+    "Error": {
+        "AdaptationError": "100",
+        "EarlyDate": "2",
+        "InvalidDate": "1",
+        "InvalidEvent": "5",
+        "NoDaysOfWeek": "3",
+        "NoError": "0",
+        "OneTimeOnMoreDays": "4",
+        "OperationPending": "6",
+        "prototype": "Enum"
+    },
+    "FilterBehavior": {
+        "exports": [
+            "FilterBehavior 1.1"
+        ],
+        "isCreatable": false,
+        "pattern": {
+            "type": "QRegExp"
+        },
+        "property": {
+            "type": "string"
+        },
+        "prototype": "QtObject"
+    },
+    "HAlignment": {
+        "AlignHCenter": "1",
+        "AlignLeft": "0",
+        "AlignRight": "2",
+        "prototype": "Enum"
+    },
+    "InverseMouse": {
+        "exports": [
+            "InverseMouse 0.1",
+            "InverseMouse 1.0"
+        ],
+        "prototype": "Mouse"
+    },
+    "InverseMouseArea": {
+        "defaultProperty": "data",
+        "exports": [
+            "InverseMouseArea 0.1",
+            "InverseMouseArea 1.0"
+        ],
+        "methods": [
+            {
+                "name": "contains",
+                "parameters": [
+                    {
+                        "name": "point",
+                        "type": "QPointF"
+                    }
+                ],
+                "returns": "bool",
+                "type": "function"
+            }
+        ],
+        "prototype": "MouseArea",
+        "sensingArea": {
+            "isPointer": true,
+            "type": "Item"
+        },
+        "topmostItem": {
+            "type": "bool"
+        }
+    },
+    "MathUtils": {
+        "exports": [
+            "MathUtils 1.0",
+            "MathUtils 0.1"
+        ],
+        "type": "script"
+    },
+    "MimeData": {
+        "color": {
+            "type": "QColor"
+        },
+        "data": {
+            "type": "QVariant"
+        },
+        "exports": [
+            "MimeData 0.1",
+            "MimeData 1.0"
+        ],
+        "formats": {
+            "isReadonly": true,
+            "type": "QStringList"
+        },
+        "html": {
+            "type": "string"
+        },
+        "methods": [
+            {
+                "name": "typeChanged",
+                "type": "signal"
+            }
+        ],
+        "prototype": "QtObject",
+        "text": {
+            "type": "string"
+        },
+        "urls": {
+            "type": "QList<QUrl>"
+        }
+    },
+    "Mouse": {
+        "acceptedButtons": {
+            "isReadonly": true,
+            "type": "Qt::MouseButtons"
+        },
+        "clickAndHoldThreshold": {
+            "type": "int"
+        },
+        "enabled": {
+            "type": "bool"
+        },
+        "exports": [
+            "Mouse 0.1",
+            "Mouse 1.0"
+        ],
+        "forwardTo": {
+            "isList": true,
+            "isReadonly": true,
+            "type": "Item"
+        },
+        "hoverEnabled": {
+            "isReadonly": true,
+            "type": "bool"
+        },
+        "methods": [
+            {
+                "name": "pressed",
+                "parameters": [
+                    {
+                        "isPointer": true,
+                        "name": "mouse",
+                        "type": "QQuickMouseEvent"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "host",
+                        "type": "Item"
+                    }
+                ],
+                "type": "signal"
+            },
+            {
+                "name": "released",
+                "parameters": [
+                    {
+                        "isPointer": true,
+                        "name": "mouse",
+                        "type": "QQuickMouseEvent"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "host",
+                        "type": "Item"
+                    }
+                ],
+                "type": "signal"
+            },
+            {
+                "name": "clicked",
+                "parameters": [
+                    {
+                        "isPointer": true,
+                        "name": "mouse",
+                        "type": "QQuickMouseEvent"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "host",
+                        "type": "Item"
+                    }
+                ],
+                "type": "signal"
+            },
+            {
+                "name": "pressAndHold",
+                "parameters": [
+                    {
+                        "isPointer": true,
+                        "name": "mouse",
+                        "type": "QQuickMouseEvent"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "host",
+                        "type": "Item"
+                    }
+                ],
+                "type": "signal"
+            },
+            {
+                "name": "doubleClicked",
+                "parameters": [
+                    {
+                        "isPointer": true,
+                        "name": "mouse",
+                        "type": "QQuickMouseEvent"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "host",
+                        "type": "Item"
+                    }
+                ],
+                "type": "signal"
+            },
+            {
+                "name": "positionChanged",
+                "parameters": [
+                    {
+                        "isPointer": true,
+                        "name": "mouse",
+                        "type": "QQuickMouseEvent"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "host",
+                        "type": "Item"
+                    }
+                ],
+                "type": "signal"
+            },
+            {
+                "name": "entered",
+                "parameters": [
+                    {
+                        "isPointer": true,
+                        "name": "event",
+                        "type": "QQuickMouseEvent"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "host",
+                        "type": "Item"
+                    }
+                ],
+                "type": "signal"
+            },
+            {
+                "name": "exited",
+                "parameters": [
+                    {
+                        "isPointer": true,
+                        "name": "event",
+                        "type": "QQuickMouseEvent"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "host",
+                        "type": "Item"
+                    }
+                ],
+                "type": "signal"
+            }
+        ],
+        "priority": {
+            "type": "Priority"
+        },
+        "prototype": "QtObject"
+    },
+    "Operation": {
+        "Canceling": "2",
+        "NoOperation": "0",
+        "Reseting": "3",
+        "Saving": "1",
+        "prototype": "Enum"
+    },
+    "Priority": {
+        "AfterItem": "1",
+        "BeforeItem": "0",
+        "prototype": "Enum"
+    },
+    "QAbstractProxyModel": {
+        "prototype": "QAbstractItemModel",
+        "sourceModel": {
+            "isPointer": true,
+            "type": "QAbstractItemModel"
+        }
+    },
+    "QQmlPropertyMap": {
+        "methods": [
+            {
+                "name": "valueChanged",
+                "parameters": [
+                    {
+                        "name": "key",
+                        "type": "string"
+                    },
+                    {
+                        "name": "value",
+                        "type": "QVariant"
+                    }
+                ],
+                "type": "signal"
+            },
+            {
+                "name": "keys",
+                "returns": "QStringList",
+                "type": "function"
+            }
+        ],
+        "prototype": "QtObject"
+    },
+    "QQuickImageBase": {
+        "defaultProperty": "data",
+        "exports": [
+            "QQuickImageBase 0.1",
+            "QQuickImageBase 1.0"
+        ],
+        "methods": [
+            {
+                "name": "sourceChanged",
+                "parameters": [
+                    {
+                        "name": "",
+                        "type": "QUrl"
+                    }
+                ],
+                "type": "signal"
+            },
+            {
+                "name": "sourceChanged",
+                "parameters": [
+                    {
+                        "name": "",
+                        "type": "QUrl"
+                    }
+                ],
+                "type": "signal"
+            }
+        ],
+        "prototype": "QQuickImageBase",
+        "source": {
+            "type": "QUrl"
+        }
+    },
+    "QSortFilterProxyModel": {
+        "dynamicSortFilter": {
+            "type": "bool"
+        },
+        "filterCaseSensitivity": {
+            "type": "Qt::CaseSensitivity"
+        },
+        "filterKeyColumn": {
+            "type": "int"
+        },
+        "filterRegExp": {
+            "type": "QRegExp"
+        },
+        "filterRole": {
+            "type": "int"
+        },
+        "isSortLocaleAware": {
+            "type": "bool"
+        },
+        "methods": [
+            {
+                "name": "setFilterRegExp",
+                "parameters": [
+                    {
+                        "name": "pattern",
+                        "type": "string"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "setFilterWildcard",
+                "parameters": [
+                    {
+                        "name": "pattern",
+                        "type": "string"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "setFilterFixedString",
+                "parameters": [
+                    {
+                        "name": "pattern",
+                        "type": "string"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "clear",
+                "type": "function"
+            },
+            {
+                "name": "invalidate",
+                "type": "function"
+            }
+        ],
+        "prototype": "QAbstractProxyModel",
+        "sortCaseSensitivity": {
+            "type": "Qt::CaseSensitivity"
+        },
+        "sortRole": {
+            "type": "int"
+        }
+    },
+    "ScrollbarUtils": {
+        "exports": [
+            "ScrollbarUtils 1.0",
+            "ScrollbarUtils 0.1"
+        ],
+        "type": "script"
+    },
+    "SliderUtils": {
+        "exports": [
+            "SliderUtils 1.0",
+            "SliderUtils 0.1"
+        ],
+        "type": "script"
+    },
+    "SortBehavior": {
+        "exports": [
+            "SortBehavior 1.1"
+        ],
+        "isCreatable": false,
+        "order": {
+            "type": "Qt::SortOrder"
+        },
+        "property": {
+            "type": "string"
+        },
+        "prototype": "QtObject"
+    },
+    "SortFilterModel": {
+        "count": {
+            "isReadonly": true,
+            "type": "int"
+        },
+        "exports": [
+            "SortFilterModel 1.1"
+        ],
+        "filter": {
+            "isPointer": true,
+            "isReadonly": true,
+            "type": "FilterBehavior"
+        },
+        "methods": [
+            {
+                "name": "get",
+                "parameters": [
+                    {
+                        "name": "row",
+                        "type": "int"
+                    }
+                ],
+                "returns": "QVariantMap",
+                "type": "function"
+            },
+            {
+                "name": "count",
+                "returns": "int",
+                "type": "function"
+            }
+        ],
+        "model": {
+            "isPointer": true,
+            "type": "QAbstractItemModel"
+        },
+        "prototype": "QSortFilterProxyModel",
+        "sort": {
+            "isPointer": true,
+            "isReadonly": true,
+            "type": "SortBehavior"
+        }
+    },
+    "StateSaver": {
+        "attachedType": "UCStateSaverAttached",
+        "exports": [
+            "StateSaver 0.1",
+            "StateSaver 1.0"
+        ],
+        "prototype": "QtObject"
+    },
+    "Status": {
+        "Fail": "3",
+        "InProgress": "2",
+        "Ready": "1",
+        "prototype": "Enum"
+    },
+    "StyledItemBase": {
+        "activeFocusOnPress": {
+            "revision": 1,
+            "type": "bool"
+        },
+        "defaultProperty": "data",
+        "exports": [
+            "StyledItemBase 0.1",
+            "StyledItemBase 1.0",
+            "StyledItemBase 1.1"
+        ],
+        "methods": [
+            {
+                "name": "requestFocus",
+                "parameters": [
+                    {
+                        "name": "reason",
+                        "type": "Qt::FocusReason"
+                    }
+                ],
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            },
+            {
+                "name": "requestFocus",
+                "returns": "bool",
+                "revision": "1",
+                "type": "function"
+            }
+        ],
+        "prototype": "Item"
+    },
+    "Type": {
+        "Bool": "3",
+        "Integer": "2",
+        "None": "0",
+        "Object": "255",
+        "Real": "4",
+        "String": "1",
+        "prototype": "Enum"
+    },
+    "UCStateSaverAttached": {
+        "enabled": {
+            "type": "bool"
+        },
+        "properties": {
+            "type": "string"
+        },
+        "prototype": "QtObject"
+    },
+    "UCUnits": {
+        "exports": [
+            "UCUnits 0.1",
+            "UCUnits 1.0"
+        ],
+        "gridUnit": {
+            "type": "float"
+        },
+        "isCreatable": false,
+        "methods": [
+            {
+                "name": "dp",
+                "parameters": [
+                    {
+                        "name": "value",
+                        "type": "float"
+                    }
+                ],
+                "returns": "float",
+                "type": "function"
+            },
+            {
+                "name": "gu",
+                "parameters": [
+                    {
+                        "name": "value",
+                        "type": "float"
+                    }
+                ],
+                "returns": "float",
+                "type": "function"
+            }
+        ],
+        "prototype": "QtObject"
+    },
+    "UbuntuAnimation": {
+        "BriskDuration": {
+            "isReadonly": true,
+            "type": "int"
+        },
+        "FastDuration": {
+            "isReadonly": true,
+            "type": "int"
+        },
+        "SleepyDuration": {
+            "isReadonly": true,
+            "type": "int"
+        },
+        "SlowDuration": {
+            "isReadonly": true,
+            "type": "int"
+        },
+        "SnapDuration": {
+            "isReadonly": true,
+            "type": "int"
+        },
+        "StandardEasing": {
+            "isReadonly": true,
+            "type": "QEasingCurve"
+        },
+        "StandardEasingReverse": {
+            "isReadonly": true,
+            "type": "QEasingCurve"
+        },
+        "exports": [
+            "UbuntuAnimation 0.1",
+            "UbuntuAnimation 1.0"
+        ],
+        "isCreatable": false,
+        "isSingleton": true,
+        "prototype": "QtObject"
+    },
+    "UbuntuColors": {
+        "blue": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "coolGrey": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "darkAubergine": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "darkGrey": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "exportMetaObjectRevisions": [
+            "-1"
+        ],
+        "exports": [
+            "UbuntuColors -1.-1"
+        ],
+        "green": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "greyGradient": {
+            "isPointer": true,
+            "type": "Gradient"
+        },
+        "isComposite": true,
+        "isCreatable": false,
+        "isSingleton": true,
+        "lightAubergine": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "lightGrey": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "midAubergine": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "orange": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "orangeGradient": {
+            "isPointer": true,
+            "type": "Gradient"
+        },
+        "prototype": "QtObject",
+        "purple": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "red": {
+            "isReadonly": true,
+            "type": "QColor"
+        },
+        "warmGrey": {
+            "isReadonly": true,
+            "type": "QColor"
+        }
+    },
+    "UbuntuShape": {
+        "borderSource": {
+            "type": "string"
+        },
+        "color": {
+            "type": "QColor"
+        },
+        "defaultProperty": "data",
+        "exports": [
+            "Shape 0.1",
+            "Shape 1.0",
+            "UbuntuShape 0.1",
+            "UbuntuShape 1.0"
+        ],
+        "gradientColor": {
+            "type": "QColor"
+        },
+        "horizontalAlignment": {
+            "type": "HAlignment"
+        },
+        "image": {
+            "type": "QVariant"
+        },
+        "methods": [
+            {
+                "name": "borderChanged",
+                "type": "signal"
+            },
+            {
+                "name": "gridUnitChanged",
+                "type": "function"
+            }
+        ],
+        "prototype": "Item",
+        "radius": {
+            "type": "string"
+        },
+        "stretched": {
+            "type": "bool"
+        },
+        "verticalAlignment": {
+            "type": "VAlignment"
+        }
+    },
+    "UriHandler": {
+        "exports": [
+            "UriHandler 0.1",
+            "UriHandler 1.0"
+        ],
+        "isCreatable": false,
+        "isSingleton": true,
+        "methods": [
+            {
+                "name": "opened",
+                "parameters": [
+                    {
+                        "name": "uris",
+                        "type": "QStringList"
+                    }
+                ],
+                "type": "signal"
+            }
+        ],
+        "prototype": "QtObject"
+    },
+    "VAlignment": {
+        "AlignBottom": "2",
+        "AlignTop": "0",
+        "AlignVCenter": "1",
+        "prototype": "Enum"
+    },
+    "i18n": {
+        "domain": {
+            "type": "string"
+        },
+        "exports": [
+            "i18n 0.1",
+            "i18n 1.0"
+        ],
+        "isCreatable": false,
+        "language": {
+            "type": "string"
+        },
+        "methods": [
+            {
+                "name": "bindtextdomain",
+                "parameters": [
+                    {
+                        "name": "domain_name",
+                        "type": "string"
+                    },
+                    {
+                        "name": "dir_name",
+                        "type": "string"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "tr",
+                "parameters": [
+                    {
+                        "name": "text",
+                        "type": "string"
+                    }
+                ],
+                "returns": "string",
+                "type": "function"
+            },
+            {
+                "name": "tr",
+                "parameters": [
+                    {
+                        "name": "singular",
+                        "type": "string"
+                    },
+                    {
+                        "name": "plural",
+                        "type": "string"
+                    },
+                    {
+                        "name": "n",
+                        "type": "int"
+                    }
+                ],
+                "returns": "string",
+                "type": "function"
+            },
+            {
+                "name": "dtr",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "type": "string"
+                    },
+                    {
+                        "name": "text",
+                        "type": "string"
+                    }
+                ],
+                "returns": "string",
+                "type": "function"
+            },
+            {
+                "name": "dtr",
+                "parameters": [
+                    {
+                        "name": "domain",
+                        "type": "string"
+                    },
+                    {
+                        "name": "singular",
+                        "type": "string"
+                    },
+                    {
+                        "name": "plural",
+                        "type": "string"
+                    },
+                    {
+                        "name": "n",
+                        "type": "int"
+                    }
+                ],
+                "returns": "string",
+                "type": "function"
+            }
+        ],
+        "prototype": "QtObject"
+    },
+    "namespace": "Ubuntu.Components"
+}

@@ -1,0 +1,190 @@
+{
+    "TestExtras": {
+        "exports": [
+            "TestExtras 1.0"
+        ],
+        "isCreatable": false,
+        "isSingleton": true,
+        "methods": [
+            {
+                "name": "touchDevicePresent",
+                "returns": "bool",
+                "type": "function"
+            },
+            {
+                "name": "registerTouchDevice",
+                "type": "function"
+            },
+            {
+                "name": "touchPress",
+                "parameters": [
+                    {
+                        "name": "touchId",
+                        "type": "int"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "item",
+                        "type": "Item"
+                    },
+                    {
+                        "name": "point",
+                        "type": "QPoint"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "touchRelease",
+                "parameters": [
+                    {
+                        "name": "touchId",
+                        "type": "int"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "item",
+                        "type": "Item"
+                    },
+                    {
+                        "name": "point",
+                        "type": "QPoint"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "touchClick",
+                "parameters": [
+                    {
+                        "name": "touchId",
+                        "type": "int"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "item",
+                        "type": "Item"
+                    },
+                    {
+                        "name": "point",
+                        "type": "QPoint"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "touchLongPress",
+                "parameters": [
+                    {
+                        "name": "touchId",
+                        "type": "int"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "item",
+                        "type": "Item"
+                    },
+                    {
+                        "name": "point",
+                        "type": "QPoint"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "touchDoubleClick",
+                "parameters": [
+                    {
+                        "name": "touchId",
+                        "type": "int"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "item",
+                        "type": "Item"
+                    },
+                    {
+                        "name": "point",
+                        "type": "QPoint"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "touchMove",
+                "parameters": [
+                    {
+                        "name": "touchId",
+                        "type": "int"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "item",
+                        "type": "Item"
+                    },
+                    {
+                        "name": "point",
+                        "type": "QPoint"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "touchDrag",
+                "parameters": [
+                    {
+                        "name": "touchId",
+                        "type": "int"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "item",
+                        "type": "Item"
+                    },
+                    {
+                        "name": "from",
+                        "type": "QPoint"
+                    },
+                    {
+                        "name": "delta",
+                        "type": "QPoint"
+                    },
+                    {
+                        "name": "steps",
+                        "type": "int"
+                    }
+                ],
+                "type": "function"
+            },
+            {
+                "name": "touchDrag",
+                "parameters": [
+                    {
+                        "name": "touchId",
+                        "type": "int"
+                    },
+                    {
+                        "isPointer": true,
+                        "name": "item",
+                        "type": "Item"
+                    },
+                    {
+                        "name": "from",
+                        "type": "QPoint"
+                    },
+                    {
+                        "name": "delta",
+                        "type": "QPoint"
+                    }
+                ],
+                "type": "function"
+            }
+        ],
+        "prototype": "QtObject",
+        "touchPresent": {
+            "isReadonly": true,
+            "type": "bool"
+        }
+    },
+    "namespace": "Ubuntu.Test"
+}

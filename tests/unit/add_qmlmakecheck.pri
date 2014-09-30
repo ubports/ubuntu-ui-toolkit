@@ -7,6 +7,3 @@ check.commands = "set -e;"
 for(TEST, TESTS) {
   check.commands += ../../unit/runtest.sh $${TARGET} $${TEST} minimal;
 }
-check.commands += cd ../../..;
-check.commands += sh tests/qmlapicheck.sh || exit 1;
-check.commands += cd tests/unit
