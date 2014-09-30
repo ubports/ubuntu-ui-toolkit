@@ -21,6 +21,7 @@ import Ubuntu.Components.Styles 1.1 as Style
 
 Style.PageHeadStyle {
     id: headerStyle
+    objectName: "PageHeadStyle" // used in unit tests
     contentHeight: units.gu(7)
     separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
     separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
@@ -35,6 +36,10 @@ Style.PageHeadStyle {
     // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
     //  see also FIXME in AppHeader where this property is used.
     property alias __sections_repeater_for_autopilot: sectionsRepeater
+
+    // Used by unit tests and autopilot tests to wait for animations to finish
+    readonly property bool animating: headerStyle.state == "OUT"
+                                      || leftAnchor.anchors.leftMargin < 0
 
     BorderImage {
         id: separator
@@ -120,111 +125,227 @@ Style.PageHeadStyle {
         source: headerStyle.separatorBottomSource
     }
 
-    Item {
-        id: leftButtonContainer
-        anchors {
-            left: parent.left
-            top: parent.top
-            leftMargin: width > 0 ? units.gu(1) : 0
-        }
-        width: childrenRect.width
-        height: headerStyle.contentHeight
-
-        PageHeadButton {
-            id: customBackButton
-            objectName: "customBackButton"
-            action: styledItem.config.backAction
-            visible: null !== styledItem.config.backAction &&
-                     styledItem.config.backAction.visible
-            color: styledItem.config.foregroundColor
-        }
-
-        PageHeadButton {
-            id: backButton
-            objectName: "backButton"
-
-            iconName: "back"
-            visible: styledItem.pageStack !== null &&
-                     styledItem.pageStack !== undefined &&
-                     styledItem.pageStack.depth > 1 &&
-                     !styledItem.config.backAction
-
-            text: "back"
-            color: styledItem.config.foregroundColor
-
-            onTriggered: {
-                styledItem.pageStack.pop();
+    states: [
+        State {
+            name: "IN"
+            PropertyChanges {
+                target: allContents
+                opacity: 1.0
+            }
+        },
+        State {
+            name: "OUT"
+            PropertyChanges {
+                target: allContents
+                opacity: 0.0
             }
         }
+    ]
 
-        PageHeadButton {
-            id: tabsButton
-            objectName: "tabsButton"
+    function animateOut() {
+        state = "OUT";
+    }
+    function animateIn() {
+        state = "IN";
+    }
 
-            iconName: "navigation-menu"
-            visible: styledItem.tabsModel !== null &&
-                     styledItem.tabsModel !== undefined &&
-                     !backButton.visible &&
-                     !customBackButton.visible
-            text: visible ? styledItem.tabsModel.count + " tabs" : ""
-            color: styledItem.config.foregroundColor
+    signal animateOutFinished()
+    signal animateInFinished()
 
-            onTriggered: PopupUtils.open(tabsPopoverComponent, tabsButton)
+    transitions: [
+        Transition {
+            id: transitionOut
+            from: "IN"
+            to: "OUT"
+            SequentialAnimation {
+                ParallelAnimation {
+                    UbuntuNumberAnimation {
+                        target: allContents
+                        property: "opacity"
+                        from: 1.0
+                        to: 0.0
+                    }
+                    UbuntuNumberAnimation {
+                        target: leftAnchor
+                        properties: "anchors.leftMargin"
+                        from: 0.0
+                        to: -units.gu(5)
+                    }
+                    UbuntuNumberAnimation {
+                        target: rightAnchor
+                        properties: "anchors.rightMargin"
+                        from: 0
+                        to: -units.gu(5)
+                    }
+                }
+                ScriptAction {
+                    script: headerStyle.animateOutFinished()
+                }
+            }
+        },
+        Transition {
+            id: transitionIn
+            from: "OUT"
+            to: "IN"
+            SequentialAnimation {
+                ParallelAnimation {
+                    UbuntuNumberAnimation {
+                        target: allContents
+                        property: "opacity"
+                        from: 0.0
+                        to: 1.0
+                    }
+                    UbuntuNumberAnimation {
+                        target: leftAnchor
+                        properties: "anchors.leftMargin"
+                        from: -units.gu(5)
+                        to: 0
+                    }
+                    UbuntuNumberAnimation {
+                        target: rightAnchor
+                        properties: "anchors.rightMargin"
+                        from: -units.gu(5)
+                        to: 0
+                    }
+                }
+                ScriptAction {
+                    script: headerStyle.animateInFinished()
+                }
+            }
+        }
+    ]
 
-            Component {
-                id: tabsPopoverComponent
+    Item {
+        id: allContents
+        anchors.fill: parent
 
-                OverflowPanel {
-                    id: tabsPopover
-                    objectName: "tabsPopover"
-                    callerMargin: -units.gu(1) + units.dp(4)
-                    contentWidth: units.gu(20)
+        Item {
+            id: leftAnchor
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                left: parent.left
+                leftMargin: 0
+            }
+            width: 0
+        }
+        Item {
+            id: rightAnchor
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                right: parent.right
+                rightMargin: 0
+            }
+            width: 0
+        }
 
-                    Column {
-                        anchors {
-                            left: parent.left
-                            top: parent.top
-                            right: parent.right
-                        }
-                        Repeater {
-                            model: styledItem.tabsModel
-                            AbstractButton {
-                                objectName: "tabButton" + index
-                                onClicked: {
-                                    styledItem.tabsModel.selectedIndex = index;
-                                    tabsPopover.hide();
-                                }
-                                implicitHeight: units.gu(6) + bottomDividerLine.height
-                                width: parent ? parent.width : units.gu(31)
+        Item {
+            id: leftButtonContainer
+            anchors {
+                left: leftAnchor.right
+                top: parent.top
+                leftMargin: width > 0 ? units.gu(1) : 0
+            }
+            width: childrenRect.width
+            height: headerStyle.contentHeight
 
-                                Rectangle {
-                                    visible: parent.pressed
-                                    anchors {
-                                        left: parent.left
-                                        right: parent.right
-                                        top: parent.top
+            PageHeadButton {
+                id: customBackButton
+                objectName: "customBackButton"
+                action: styledItem.config.backAction
+                visible: null !== styledItem.config.backAction &&
+                         styledItem.config.backAction.visible
+                color: styledItem.config.foregroundColor
+            }
+
+            PageHeadButton {
+                id: backButton
+                objectName: "backButton"
+
+                iconName: "back"
+                visible: styledItem.pageStack !== null &&
+                         styledItem.pageStack !== undefined &&
+                         styledItem.pageStack.depth > 1 &&
+                         !styledItem.config.backAction
+
+                text: "back"
+                color: styledItem.config.foregroundColor
+
+                onTriggered: {
+                    styledItem.pageStack.pop();
+                }
+            }
+
+            PageHeadButton {
+                id: tabsButton
+                objectName: "tabsButton"
+
+                iconName: "navigation-menu"
+                visible: styledItem.tabsModel !== null &&
+                         styledItem.tabsModel !== undefined &&
+                         !backButton.visible &&
+                         !customBackButton.visible
+                text: visible ? styledItem.tabsModel.count + " tabs" : ""
+                color: styledItem.config.foregroundColor
+
+                onTriggered: PopupUtils.open(tabsPopoverComponent, tabsButton)
+
+                Component {
+                    id: tabsPopoverComponent
+
+                    OverflowPanel {
+                        id: tabsPopover
+                        objectName: "tabsPopover"
+                        callerMargin: -units.gu(1) + units.dp(4)
+                        contentWidth: units.gu(20)
+
+                        Column {
+                            anchors {
+                                left: parent.left
+                                top: parent.top
+                                right: parent.right
+                            }
+                            Repeater {
+                                model: styledItem.tabsModel
+                                AbstractButton {
+                                    objectName: "tabButton" + index
+                                    onClicked: {
+                                        styledItem.tabsModel.selectedIndex = index;
+                                        tabsPopover.hide();
                                     }
-                                    height: parent.height - bottomDividerLine.height
-                                    color: Theme.palette.selected.background
-                                }
+                                    implicitHeight: units.gu(6) + bottomDividerLine.height
+                                    width: parent ? parent.width : units.gu(31)
 
-                                Label {
-                                    anchors {
-                                        verticalCenter: parent.verticalCenter
-                                        verticalCenterOffset: units.dp(-1)
-                                        left: parent.left
-                                        leftMargin: units.gu(2)
+                                    Rectangle {
+                                        visible: parent.pressed
+                                        anchors {
+                                            left: parent.left
+                                            right: parent.right
+                                            top: parent.top
+                                        }
+                                        height: parent.height - bottomDividerLine.height
+                                        color: Theme.palette.selected.background
                                     }
-                                    fontSize: "medium"
-                                    elide: Text.ElideRight
-                                    text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
-                                    color: Theme.palette.selected.backgroundText
-                                }
 
-                                ListItem.ThinDivider {
-                                    id: bottomDividerLine
-                                    anchors.bottom: parent.bottom
-                                    visible: index < styledItem.tabsModel.count - 1
+                                    Label {
+                                        anchors {
+                                            verticalCenter: parent.verticalCenter
+                                            verticalCenterOffset: units.dp(-1)
+                                            left: parent.left
+                                            leftMargin: units.gu(2)
+                                        }
+                                        fontSize: "medium"
+                                        elide: Text.ElideRight
+                                        text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
+                                        color: Theme.palette.selected.backgroundText
+                                    }
+
+                                    ListItem.ThinDivider {
+                                        id: bottomDividerLine
+                                        anchors.bottom: parent.bottom
+                                        visible: index < styledItem.tabsModel.count - 1
+                                    }
                                 }
                             }
                         }
@@ -232,201 +353,202 @@ Style.PageHeadStyle {
                 }
             }
         }
-    }
-
-    Item {
-        id: foreground
-        anchors {
-            left: leftButtonContainer.right
-            right: actionsContainer.left
-            top: parent.top
-            // don't keep a margin if there is already a button with spacing
-            leftMargin: leftButtonContainer.width > 0 ? 0 : headerStyle.textLeftMargin
-        }
-        height: headerStyle.contentHeight
-
-        Label {
-            objectName: "header_title_label"
-            LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
-            visible: !contentsContainer.visible
-            anchors {
-                left: parent.left
-                right: parent.right
-                verticalCenter: parent.verticalCenter
-            }
-            text: styledItem.title
-            font.weight: headerStyle.fontWeight
-            fontSize: headerStyle.fontSize
-            color: headerStyle.textColor
-            elide: Text.ElideRight
-        }
 
         Item {
-            // This Item is used to make the custom header item invisible
-            // when styledItem.contents is unset and its parent is not updated
-            // when the bindings below is no longer active
-            id: contentsContainer
-            anchors.fill: parent
-            visible: styledItem.contents || styledItem.config.contents
-        }
-        Binding {
-            target: styledItem.contents
-            property: "anchors.fill"
-            value: contentsContainer
-            when: styledItem.contents
-        }
-        Binding {
-            target: styledItem.contents
-            property: "parent"
-            value: contentsContainer
-            when: styledItem.contents
-        }
-        Binding {
-            target: styledItem.config.contents
-            property: "parent"
-            value: contentsContainer
-            when: styledItem.config.contents && !styledItem.contents
-        }
-    }
+            id: foreground
+            anchors {
+                left: leftButtonContainer.right
+                top: parent.top
+                // don't keep a margin if there is already a button with spacing
+                leftMargin: leftButtonContainer.width > 0 ? 0 : headerStyle.textLeftMargin
+            }
+            width: parent.width - leftButtonContainer.width - actionsContainer.width
+            height: headerStyle.contentHeight
 
-    Row {
-        id: actionsContainer
+            Label {
+                objectName: "header_title_label"
+                LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
+                visible: !contentsContainer.visible
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                }
+                text: styledItem.title
+                font.weight: headerStyle.fontWeight
+                fontSize: headerStyle.fontSize
+                //            color: headerStyle.textColor
+                color: styledItem.config.foregroundColor
+                elide: Text.ElideRight
+            }
 
-        property var visibleActions: getVisibleActions(styledItem.config.actions)
-        function getVisibleActions(actions) {
-            var visibleActionList = [];
-            for (var i in actions) {
-                var action = actions[i];
-                if (action && action.hasOwnProperty("visible") && action.visible) {
-                    visibleActionList.push(action);
+            Item {
+                // This Item is used to make the custom header item invisible
+                // when styledItem.contents is unset and its parent is not updated
+                // when the bindings below is no longer active
+                id: contentsContainer
+                anchors.fill: parent
+                visible: styledItem.contents || styledItem.config.contents
+            }
+            Binding {
+                target: styledItem.contents
+                property: "anchors.fill"
+                value: contentsContainer
+                when: styledItem.contents
+            }
+            Binding {
+                target: styledItem.contents
+                property: "parent"
+                value: contentsContainer
+                when: styledItem.contents
+            }
+            Binding {
+                target: styledItem.config.contents
+                property: "parent"
+                value: contentsContainer
+                when: styledItem.config.contents && !styledItem.contents
+            }
+        }
+
+        Row {
+            id: actionsContainer
+
+            property var visibleActions: getVisibleActions(styledItem.config.actions)
+            function getVisibleActions(actions) {
+                var visibleActionList = [];
+                for (var i in actions) {
+                    var action = actions[i];
+                    if (action && action.hasOwnProperty("visible") && action.visible) {
+                        visibleActionList.push(action);
+                    }
+                }
+                return visibleActionList;
+            }
+
+            QtObject {
+                id: numberOfSlots
+                property int requested: actionsContainer.visibleActions.length
+                property int left: tabsButton.visible || backButton.visible ||
+                                   customBackButton.visible ? 1 : 0
+                property int right: headerStyle.maximumNumberOfActions - left
+                property int overflow: actionsOverflowButton.visible ? 1 : 0
+                property int used: Math.min(right - overflow, requested)
+            }
+
+            anchors {
+                top: parent.top
+                right: rightAnchor.left
+                rightMargin: units.gu(1)
+            }
+            width: childrenRect.width
+            height: headerStyle.contentHeight
+
+            Repeater {
+                model: numberOfSlots.used
+                PageHeadButton {
+                    id: actionButton
+                    objectName: action.objectName + "_header_button"
+                    action: actionsContainer.visibleActions[index]
+                    color: styledItem.config.foregroundColor
                 }
             }
-            return visibleActionList;
-        }
 
-        QtObject {
-            id: numberOfSlots
-            property int requested: actionsContainer.visibleActions.length
-            property int left: tabsButton.visible || backButton.visible ||
-                               customBackButton.visible ? 1 : 0
-            property int right: headerStyle.maximumNumberOfActions - left
-            property int overflow: actionsOverflowButton.visible ? 1 : 0
-            property int used: Math.min(right - overflow, requested)
-        }
-
-        anchors {
-            top: parent.top
-            right: parent.right
-            rightMargin: units.gu(1)
-        }
-        width: childrenRect.width
-        height: headerStyle.contentHeight
-
-        Repeater {
-            model: numberOfSlots.used
             PageHeadButton {
-                id: actionButton
-                objectName: action.objectName + "_header_button"
-                action: actionsContainer.visibleActions[index]
+                id: actionsOverflowButton
+                objectName: "actions_overflow_button"
+                visible: numberOfSlots.requested > numberOfSlots.right
+                iconName: "contextual-menu"
                 color: styledItem.config.foregroundColor
-            }
-        }
+                height: actionsContainer.height
+                onTriggered: PopupUtils.open(actionsOverflowPopoverComponent, actionsOverflowButton)
 
-        PageHeadButton {
-            id: actionsOverflowButton
-            objectName: "actions_overflow_button"
-            visible: numberOfSlots.requested > numberOfSlots.right
-            iconName: "contextual-menu"
-            color: styledItem.config.foregroundColor
-            height: actionsContainer.height
-            onTriggered: PopupUtils.open(actionsOverflowPopoverComponent, actionsOverflowButton)
+                Component {
+                    id: actionsOverflowPopoverComponent
 
-            Component {
-                id: actionsOverflowPopoverComponent
+                    OverflowPanel {
+                        id: actionsOverflowPopover
+                        objectName: "actions_overflow_popover"
+                        callerMargin: -units.gu(1) + units.dp(4)
+                        contentWidth: units.gu(20)
 
-                OverflowPanel {
-                    id: actionsOverflowPopover
-                    objectName: "actions_overflow_popover"
-                    callerMargin: -units.gu(1) + units.dp(4)
-                    contentWidth: units.gu(20)
-
-                    // Ensure the popover closes when actions change and
-                    // the list item below may be destroyed before its
-                    // onClicked is executed. See bug
-                    // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
-                    Connections {
-                        target: styledItem.config
-                        onActionsChanged: {
-                            actionsOverflowPopover.hide();
+                        // Ensure the popover closes when actions change and
+                        // the list item below may be destroyed before its
+                        // onClicked is executed. See bug
+                        // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1326963
+                        Connections {
+                            target: styledItem.config
+                            onActionsChanged: {
+                                actionsOverflowPopover.hide();
+                            }
                         }
-                    }
-                    Connections {
-                        target: styledItem
-                        onConfigChanged: {
-                            actionsOverflowPopover.hide();
+                        Connections {
+                            target: styledItem
+                            onConfigChanged: {
+                                actionsOverflowPopover.hide();
+                            }
                         }
-                    }
 
-                    Column {
-                        anchors {
-                            left: parent.left
-                            top: parent.top
-                            right: parent.right
-                        }
-                        Repeater {
-                            id: overflowRepeater
-                            model: numberOfSlots.requested - numberOfSlots.used
-                            AbstractButton {
-                                action: actionsContainer.visibleActions[numberOfSlots.used + index]
-                                objectName: action.objectName + "_header_overflow_button"
-                                onClicked: actionsOverflowPopover.hide()
-                                implicitHeight: units.gu(6) + bottomDividerLine.height
-                                width: parent ? parent.width : units.gu(31)
+                        Column {
+                            anchors {
+                                left: parent.left
+                                top: parent.top
+                                right: parent.right
+                            }
+                            Repeater {
+                                id: overflowRepeater
+                                model: numberOfSlots.requested - numberOfSlots.used
+                                AbstractButton {
+                                    action: actionsContainer.visibleActions[numberOfSlots.used + index]
+                                    objectName: action.objectName + "_header_overflow_button"
+                                    onClicked: actionsOverflowPopover.hide()
+                                    implicitHeight: units.gu(6) + bottomDividerLine.height
+                                    width: parent ? parent.width : units.gu(31)
 
-                                Rectangle {
-                                    visible: parent.pressed
-                                    anchors {
-                                        left: parent.left
-                                        right: parent.right
-                                        top: parent.top
+                                    Rectangle {
+                                        visible: parent.pressed
+                                        anchors {
+                                            left: parent.left
+                                            right: parent.right
+                                            top: parent.top
+                                        }
+                                        height: parent.height - bottomDividerLine.height
+                                        color: Theme.palette.selected.background
                                     }
-                                    height: parent.height - bottomDividerLine.height
-                                    color: Theme.palette.selected.background
-                                }
 
-                                Icon {
-                                    id: actionIcon
-                                    source: action.iconSource
-                                    color: Theme.palette.selected.backgroundText
-                                    anchors {
-                                        verticalCenter: parent.verticalCenter
-                                        verticalCenterOffset: units.dp(-1)
-                                        left: parent.left
-                                        leftMargin: units.gu(2)
+                                    Icon {
+                                        id: actionIcon
+                                        source: action.iconSource
+                                        color: Theme.palette.selected.backgroundText
+                                        anchors {
+                                            verticalCenter: parent.verticalCenter
+                                            verticalCenterOffset: units.dp(-1)
+                                            left: parent.left
+                                            leftMargin: units.gu(2)
+                                        }
+                                        width: units.gu(2)
+                                        height: units.gu(2)
+                                        opacity: action.enabled ? 1.0 : 0.5
                                     }
-                                    width: units.gu(2)
-                                    height: units.gu(2)
-                                    opacity: action.enabled ? 1.0 : 0.5
-                                }
 
-                                Label {
-                                    anchors {
-                                        verticalCenter: parent.verticalCenter
-                                        verticalCenterOffset: units.dp(-1)
-                                        left: actionIcon.right
-                                        leftMargin: units.gu(2)
+                                    Label {
+                                        anchors {
+                                            verticalCenter: parent.verticalCenter
+                                            verticalCenterOffset: units.dp(-1)
+                                            left: actionIcon.right
+                                            leftMargin: units.gu(2)
+                                        }
+                                        fontSize: "small"
+                                        elide: Text.ElideRight
+                                        text: action.text
+                                        color: Theme.palette.selected.backgroundText
+                                        opacity: action.enabled ? 1.0 : 0.5
                                     }
-                                    fontSize: "small"
-                                    elide: Text.ElideRight
-                                    text: action.text
-                                    color: Theme.palette.selected.backgroundText
-                                    opacity: action.enabled ? 1.0 : 0.5
-                                }
 
-                                ListItem.ThinDivider {
-                                    id: bottomDividerLine
-                                    anchors.bottom: parent.bottom
-                                    visible: index !== overflowRepeater.count - 1
+                                    ListItem.ThinDivider {
+                                        id: bottomDividerLine
+                                        anchors.bottom: parent.bottom
+                                        visible: index !== overflowRepeater.count - 1
+                                    }
                                 }
                             }
                         }
