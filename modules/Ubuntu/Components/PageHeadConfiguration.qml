@@ -104,6 +104,7 @@ Object {
       TODO: automatic back button?
      */
     property string preset: ""
+    onPresetChanged: print("config.preset = "+preset)
 
     /*!
       \qmlproperty PageHeadSections sections

@@ -28,6 +28,8 @@ AbstractButton {
 
     property alias color: icon.color
 
+    onStateChanged: print("new header button state = "+state)
+
     Rectangle {
         visible: button.pressed
         anchors.fill: parent
@@ -46,5 +48,19 @@ AbstractButton {
         source: button.iconSource
         color: Qt.rgba(0, 0, 0, 0)
         opacity: button.enabled ? 1.0 : 0.3
+    }
+
+    Label {
+        id: label
+        anchors {
+            top: icon.bottom
+            topMargin: units.gu(0.5)
+            horizontalCenter: icon.horizontalCenter
+        }
+        color: button.color
+        visible: button.state == "IconAndLabel"
+        opacity: button.enabled ? 1.0 : 0.3
+        text: button.text
+        fontSize: "xx-small"
     }
 }

@@ -26,18 +26,61 @@ MainView {
     Page {
         id: page
         title: "Demo"
-        head {
-            actions: [
-                Action {
-                    iconName: "select"
-                    text: "Select"
-                    onTriggered: page.head.preset = "select"
+
+        state: "default"
+        states: [
+            PageHeadState {
+                name: "default"
+                head: page.head
+                actions: [
+                    Action {
+                        iconName: "contact"
+                        text: "Contact"
+                    }
+                ]
+            },
+            State {
+                id: selectState
+                name: "select"
+
+                property Action returnAction: Action {
+                    iconName: "back"
+                    text: "Back"
+                    onTriggered: page.state = "default"
                 }
-            ]
-        }
+                property list<Action> actions: [
+                    Action {
+                        iconName: "select"
+                        text: "Select All"
+                    },
+                    Action {
+                        iconName: "delete"
+                        text: "Delete"
+                    }
+
+                ]
+
+                PropertyChanges {
+                    target: page.head
+                    backAction: selectState.returnAction
+                    actions: selectState.actions
+                    preset: "select"
+                }
+            }
+        ]
+
         Label {
+            id: pageLabel
             anchors.centerIn: parent
-            text: "Click the select icon in the header"
+            text: "Use back button to leave selection mode."
+            visible: page.state == "select"
+        }
+
+        Button {
+            anchors.centerIn: parent
+            onClicked: page.state = "select"
+            visible: page.state != "select"
+            text: "selection mode"
         }
     }
 }

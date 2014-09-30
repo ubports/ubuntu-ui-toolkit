@@ -450,6 +450,8 @@ Style.PageHeadStyle {
                     objectName: action.objectName + "_header_button"
                     action: actionsContainer.visibleActions[index]
                     color: styledItem.config.foregroundColor
+                    state: styledItem.config.preset == "select" ?
+                               "IconAndLabel" : ""
                 }
             }
 
