@@ -415,6 +415,13 @@ bool AlarmsAdapter::fetchAlarms()
     return adapter->fetch();
 }
 
+bool AlarmsAdapter::compareCookies(const QVariant &cookie1, const QVariant &cookie2)
+{
+    QOrganizerItemId id1 = cookie1.value<QOrganizerItemId>();
+    QOrganizerItemId id2 = cookie2.value<QOrganizerItemId>();
+    return id1 == id2;
+}
+
 void AlarmsAdapter::updateAlarms(QList<QOrganizerItemId> list)
 {
     if (list.size() < 0) {
@@ -443,7 +450,13 @@ void AlarmsAdapter::updateAlarms(QList<QOrganizerItemId> list)
         QVariant cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
         int index = alarmList.indexOfAlarm(cookie);
         if (index < 0) {
-            qFatal("The Alarm data has been updated with an unregistered item!");
+            qCritical("The Alarm data has been updated with an unregistered item, skipping!");
+            qDebug() << "cookie" << event.id().toString();
+            qDebug() << "message" << event.displayLabel();
+            qDebug() << "date" << AlarmData::transcodeDate(event.startDateTime().toUTC(), Qt::LocalTime);
+            QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
+            qDebug() << "audio" << audible.dataUrl();
+            continue;
         }
         AlarmData data = alarmList[index];
         if (alarmDataFromOrganizerEvent(event, data) == UCAlarm::NoError) {
@@ -566,6 +579,10 @@ bool AlarmRequestAdapter::save(AlarmData &alarm)
         if (event.isEmpty()) {
             setStatus(AlarmRequest::Saving, AlarmRequest::Fail, UCAlarm::AdaptationError);
             return false;
+        }
+        qDebug() << "UPDATING" << event.id().toString();
+        if (!AlarmsAdapter::get()->alarmList.contains(alarm)) {
+            qDebug() << "WARNING!!!! ALARM DATA NOT IN LIST" << AlarmsAdapter::get()->alarmList.length();
         }
     }
     AlarmsAdapter::get()->organizerEventFromAlarmData(alarm, event);

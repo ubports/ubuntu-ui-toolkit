@@ -50,20 +50,23 @@ private:
             adapter->fetchAlarms();
         }
         if (adapter->fetchRequest) {
-            adapter->fetchRequest->wait();
+            adapter->fetchRequest->wait(1000);
         }
         QTest::waitForEvents();
+        QTest::qWait(400);
     }
 
-    void waitForRequest(UCAlarm *alarm)
+    void waitForRequest(UCAlarm *alarm, bool fetch = true)
     {
         UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
         if (pAlarm->request) {
-            pAlarm->request->wait();
+            pAlarm->request->wait(1000);
         }
         QTest::waitForEvents();
         // also complete any pending fetch!
-        syncFetch();
+        if (fetch) {
+            syncFetch();
+        }
     }
 
     bool containsAlarm(UCAlarm *alarm, bool trace = false)
@@ -136,7 +139,7 @@ private Q_SLOTS:
             UCAlarm *alarm = model.get(i);
             if (alarm && alarm->message().startsWith("test_")) {
                 alarm->cancel();
-                waitForRequest(alarm);
+                waitForRequest(alarm, false);
                 i = 0;
             } else {
                 i++;
@@ -567,6 +570,7 @@ private Q_SLOTS:
     void test_change_alarm_sound()
     {
         UCAlarm alarm(QDateTime::currentDateTime(), UCAlarm::AutoDetect, "test_change_alarm_fields_sound");
+        alarm.setSound(QUrl("file:///usr/share/sounds/ubuntu/ringtones/Suru arpeggio.ogg"));
         alarm.save();
         waitForRequest(&alarm);
         QVERIFY(containsAlarm(&alarm));
@@ -593,8 +597,12 @@ private Q_SLOTS:
     {
         QFETCH(QString, message);
         QFETCH(bool, enabled);
+        if (!enabled) {
+            qDebug() << "NOW";
+        }
 
         UCAlarm alarm(QDateTime::currentDateTime().addDays(1), "test_check_alarm_tags_" + message);
+        alarm.setSound(QUrl("file:///usr/share/sounds/ubuntu/ringtones/Suru arpeggio.ogg"));
         alarm.setEnabled(enabled);
         alarm.save();
         waitForRequest(&alarm);

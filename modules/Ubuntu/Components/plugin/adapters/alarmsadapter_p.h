@@ -90,6 +90,7 @@ public:
     void daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set);
 
     bool verifyChange(const QVariant &cookie, AlarmData::Change change, const QVariant &value);
+    bool compareCookies(const QVariant &cookie1, const QVariant &cookie2);
 
 public Q_SLOTS:
     bool fetchAlarms();
