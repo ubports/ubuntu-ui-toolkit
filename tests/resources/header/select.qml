@@ -57,9 +57,7 @@ MainView {
                         iconName: "delete"
                         text: "Delete"
                     }
-
                 ]
-
                 PropertyChanges {
                     target: page.head
                     backAction: selectState.returnAction
