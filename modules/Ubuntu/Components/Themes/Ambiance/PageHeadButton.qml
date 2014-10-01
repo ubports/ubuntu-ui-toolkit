@@ -52,6 +52,7 @@ AbstractButton {
         id: labelComponent
         Label {
             id: label
+            objectName: button.objectName + "_label"
             color: button.color
             opacity: button.enabled ? 1.0 : 0.3
             text: button.text
