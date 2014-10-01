@@ -44,8 +44,8 @@ Item {
       from TextCursorStyle.
       */
     property string mainCursorStyle: "TextCursorStyle.qml"
-    property string selectionStartCursorStyle: "TextSelectionStartCursorStyle.qml"
-    property string selectionEndCursorStyle: "TextSelectionEndCursorStyle.qml"
+    property string selectionStartCursorStyle: "TextCursorStyle.qml"
+    property string selectionEndCursorStyle: "TextCursorStyle.qml"
 
     // style body
     anchors.fill: parent
