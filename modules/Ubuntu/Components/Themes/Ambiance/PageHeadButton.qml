@@ -28,8 +28,6 @@ AbstractButton {
 
     property alias color: icon.color
 
-    onStateChanged: print("new header button state = "+state)
-
     Rectangle {
         visible: button.pressed
         anchors.fill: parent

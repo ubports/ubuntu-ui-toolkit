@@ -175,7 +175,6 @@ Object {
       \endqml
      */
     property string preset: ""
-    onPresetChanged: print("config.preset = "+preset)
 
     /*!
       \qmlproperty PageHeadSections sections
