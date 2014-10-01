@@ -160,7 +160,6 @@ Object {
                 ]
 
                 Label {
-                    id: pageLabel
                     anchors.centerIn: parent
                     text: "Use back button to leave selection mode."
                     visible: page.state == "select"
