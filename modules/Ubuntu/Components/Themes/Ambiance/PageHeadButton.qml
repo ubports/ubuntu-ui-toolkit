@@ -48,17 +48,22 @@ AbstractButton {
         opacity: button.enabled ? 1.0 : 0.3
     }
 
-    Label {
-        id: label
+    Component {
+        id: labelComponent
+        Label {
+            id: label
+            color: button.color
+            opacity: button.enabled ? 1.0 : 0.3
+            text: button.text
+            fontSize: "xx-small"
+        }
+    }
+    Loader {
         anchors {
             top: icon.bottom
             topMargin: units.gu(0.5)
-            horizontalCenter: icon.horizontalCenter
+            horizontalCenter: parent.horizontalCenter
         }
-        color: button.color
-        visible: button.state == "IconAndLabel"
-        opacity: button.enabled ? 1.0 : 0.3
-        text: button.text
-        fontSize: "xx-small"
+        sourceComponent: button.state === "IconAndLabel" ? labelComponent : null
     }
 }
