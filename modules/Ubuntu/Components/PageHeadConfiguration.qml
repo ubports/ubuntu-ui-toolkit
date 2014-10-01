@@ -96,6 +96,8 @@ Object {
      */
     property Item contents: null
 
+    // FIXME: The example below can be much simplified using PageHeadState
+    //  when bug #1345775 has been fixed.
     /*!
       Choose a preset for the header visuals and behavior.
       The default is an empty string "".

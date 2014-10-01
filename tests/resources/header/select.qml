@@ -17,6 +17,9 @@
 import QtQuick 2.2
 import Ubuntu.Components 1.1
 
+// FIXME: This example can be much simplified using PageHeadState
+//  when bug #1345775 has been fixed.
+
 MainView {
     id: mainView
     width: units.gu(40)
