@@ -109,7 +109,31 @@ class Base(Empty):
 
 
 class Expandable(Empty):
-    pass
+
+    @autopilot_logging.log_action(logger.info)
+    def expand(self):
+        if not self.expanded:
+            self._click_always_visible_section()
+            self.expanded.wait_for(True)
+            self.height.wait_for(self.expandedHeight)
+        else:
+            logger.debug('The item is already expanded.')
+
+    @autopilot_logging.log_action(logger.debug)
+    def _click_always_visible_section(self):
+        self.pointing_device.move(
+            self.globalRect.x + self.globalRect.width // 2,
+            self.globalRect.y + self.collapsedHeight // 2)
+        self.pointing_device.click()
+
+    @autopilot_logging.log_action(logger.info)
+    def collapse(self):
+        if self.expanded:
+            self._click_always_visible_section()
+            self.expanded.wait_for(False)
+            self.height.wait_for(self.collapsedHeight)
+        else:
+            logger.debug('The item is already collapsed.')
 
 
 class Standard(Empty):
