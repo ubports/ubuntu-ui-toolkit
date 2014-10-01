@@ -62,7 +62,9 @@ Item {
                 interval: cursorStyle.cursorVisibleTimeout
                 running: (cursorStyle.cursorVisibleTimeout > 0) &&
                          (cursorStyle.cursorHiddenTimeout > 0) &&
-                         styledItem.visible
+                         styledItem.visible &&
+                         !styledItem.contextMenuVisible &&
+                         styledItem.positionProperty === "cursorPosition"
                 repeat: true
                 property bool timerShowCursor: true
                 onTriggered: {
@@ -78,11 +80,15 @@ Item {
     Image {
         id: caretItem
         source: "artwork/caret_noshadow.png"
-        objectName: "text_cursor_style_caret"
+        objectName: "text_cursor_style_caret_" + styledItem.positionProperty
         anchors {
-            top: parent.bottom
+            top: styledItem.positionProperty === "selectionStart" ? undefined : parent.bottom
+            bottom: styledItem.positionProperty === "selectionStart" ? parent.top : undefined
             horizontalCenter: parent.horizontalCenter
-            horizontalCenterOffset: (LayoutMirroring.enabled ? -1 : 1) * (implicitWidth / 2 - cursorWidth)
+            horizontalCenterOffset: styledItem.positionProperty === "cursorPosition"
+            ? 0
+            : (LayoutMirroring.enabled ? -1 : 1) * (implicitWidth / 2 - cursorWidth)
         }
+        rotation: styledItem.positionProperty === "selectionStart" ? 180 : 0
     }
 }
