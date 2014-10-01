@@ -43,7 +43,7 @@ MainView {
                 id: selectState
                 name: "select"
 
-                property Action returnAction: Action {
+                property Action leaveSelect: Action {
                     iconName: "back"
                     text: "Back"
                     onTriggered: page.state = "default"
@@ -60,7 +60,7 @@ MainView {
                 ]
                 PropertyChanges {
                     target: page.head
-                    backAction: selectState.returnAction
+                    backAction: selectState.leaveSelect
                     actions: selectState.actions
                     preset: "select"
                 }
