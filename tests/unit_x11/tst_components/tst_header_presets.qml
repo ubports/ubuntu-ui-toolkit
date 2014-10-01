@@ -47,11 +47,6 @@ Item {
 
         property var action_button
 
-        property var app_header
-        property var back_button
-        property var custom_back_button
-        property var head_style
-
         function initTestCase() {
             testCase.action_button = findChild(mainView, "selectAction_header_button");
             compare(action_button.visible, true, "Header action button is not visible.");
