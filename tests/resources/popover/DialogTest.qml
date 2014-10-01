@@ -41,7 +41,7 @@ MainView {
         Dialog {
              id: stylesDialog
              property real labelwidth: units.gu(11)
-             title: "Title"
+//             title: "Title"
              //text: "text"
 
              OptionSelector {

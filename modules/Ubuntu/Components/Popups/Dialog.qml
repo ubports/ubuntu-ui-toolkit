@@ -193,6 +193,7 @@ PopupBase {
                 elide: Text.ElideRight
                 fontSize: "large"
                 color: UbuntuColors.darkGrey
+                visible: (text !== "")
             }
 
             Label {
@@ -201,6 +202,7 @@ PopupBase {
                 fontSize: "medium"
                 color: UbuntuColors.darkGrey
                 wrapMode: Text.Wrap
+                visible: (text !== "")
             }
 
             onChildrenChanged: updateChildrenWidths()
