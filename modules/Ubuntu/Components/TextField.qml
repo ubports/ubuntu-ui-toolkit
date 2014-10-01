@@ -914,6 +914,7 @@ ActionItem {
         }
         width: visible ? icon.width : 0
         visible: control.hasClearButton &&
+                 !control.readOnly &&
                     (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
 
         Icon {
@@ -922,7 +923,7 @@ ActionItem {
             width: units.gu(2.5)
             height: width
             // use icon from icon-theme
-            name: control.hasClearButton ? "clear-search" : ""
+            name: control.hasClearButton && !control.readOnly ? "clear-search" : ""
         }
 
         onClicked: editor.text = ""
