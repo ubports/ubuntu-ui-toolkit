@@ -108,6 +108,10 @@ class Base(Empty):
     pass
 
 
+class Expandable(Empty):
+    pass
+
+
 class Standard(Empty):
     pass
 
