@@ -58,15 +58,19 @@ Item {
             compare(page.head.preset, "", "Default header preset is not empty string.");
         }
 
-        function test_default_preset_no_label() {
+        function test_default_preset() {
             var label = findChild(action_button, "selectAction_header_button_label");
             compare(label, null, "Header button label defined in default header.");
+            var title = findChild(mainView, "header_title_label");
+            compare(title.visible, true, "No title visible with default preset.");
         }
 
-        function test_select_preset_has_label() {
+        function test_select_preset() {
             page.head.preset = "select";
             var label = findChild(action_button, "selectAction_header_button_label");
             compare(label.visible, true, "Header button has no visible label in selection mode.");
+            var title = findChild(mainView, "header_title_label");
+            compare(title.visible, false, "Title visible in select preset.");
             page.head.preset = "";
         }
     }
