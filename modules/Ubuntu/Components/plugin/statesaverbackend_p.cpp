@@ -74,9 +74,6 @@ void StateSaverBackend::initialize()
     }
     QString applicationName(UCApplication::instance().applicationName());
     if (applicationName.isEmpty()) {
-        applicationName = qgetenv("APP_ID");
-    }
-    if (applicationName.isEmpty()) {
         qCritical() << "[StateSaver] Cannot create appstate file, application name not defined.";
         return;
     }
