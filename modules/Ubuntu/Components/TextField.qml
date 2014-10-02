@@ -944,7 +944,7 @@ ActionItem {
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
         color: Theme.palette.normal.backgroundText
-        fontSize: "medium"
+        font: editor.font
         elide: Text.ElideRight
     }
 
