@@ -36,7 +36,7 @@ function projectValue(x, xmin, xmax, ymin, ymax) {
     return ((x - xmin) * ymax - (x - xmax) * ymin) / (xmax - xmin)
 }
 
-// Linearly project a value x, but in addition to projectValue it's clamed to xmin/ xmax first
+// Linearly project a value x, but in addition to projectValue it's clamped to xmin/ xmax first
 function clampAndProject(x, xmin, xmax, ymin, ymax) {
     return projectValue(clamp(x, xmin, xmax), xmin, xmax, ymin, ymax)
 }
