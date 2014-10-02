@@ -88,5 +88,20 @@ TestCase {
         clamped = MathUtils.clamp(clampValue, minValue, maxValue)
         compare(clamped, maxValue, "clamped value not within range")
     }
+
+    function test_lerp() {
+        var lerped = MathUtils.lerp(0.25, 90, 0)
+        compare(lerped, 67.5)
+    }
+
+    function test_project_value() {
+        var projectedValue = MathUtils.projectValue(5, 1, 100, 2, 200)
+        compare(projectedValue, 10)
+    }
+
+    function test_clamp_and_project() {
+        var clampedAndProjectedValue = MathUtils.clampAndProject(5, 1, 10, 2, 200)
+        compare(clampedAndProjectedValue, 90)
+    }
 }
 
