@@ -149,5 +149,6 @@ Depends: ${misc:Depends},
          python3-autopilot (>= 1.4),
          qttestability-autopilot,
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
+         qtdeclarative5-ubuntu-ui-toolkit-plugin (>= ${source:Version}),
 Description: Test package for Ubuntu UI Toolkit
  Autopilot tests for the ubuntu-ui-toolkit package
