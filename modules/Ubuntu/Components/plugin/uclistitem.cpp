@@ -200,13 +200,13 @@ void UCListItemDivider::setColorTo(const QColor &color)
 UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
     , pressed(false)
-    , pressedColorChanged(false)
+    , highlightColorChanged(false)
     , moved(false)
     , ready(false)
     , index(-1)
     , xAxisMoveThresholdGU(1.5)
     , color(Qt::transparent)
-    , pressedColor(Qt::transparent)
+    , highlightColor(Qt::transparent)
     , reboundAnimation(0)
     , flickableInteractive(0)
     , contentItem(new QQuickItem)
@@ -265,7 +265,7 @@ void UCListItemPrivate::setFocusable()
 void UCListItemPrivate::_q_updateColors()
 {
     Q_Q(UCListItem);
-    pressedColor = getPaletteColor("selected", "background");
+    highlightColor = getPaletteColor("selected", "background");
     q->update();
 }
 
@@ -427,7 +427,7 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
  * chosen to in order to keep the kinetic behavior and the highest FPS possible.
  *
  * The component provides two color properties which configures the item's background
- * when normal or pressed. This can be configures through \l color and \l pressedColor
+ * when normal or pressed. This can be configures through \l color and \l highlightColor
  * properties.
  *
  * \c contentItem holds all components and resources declared as child to ListItem.
@@ -579,7 +579,7 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     Q_UNUSED(data);
 
     Q_D(UCListItem);
-    QColor color = d->pressed ? d->pressedColor : d->color;
+    QColor color = d->pressed ? d->highlightColor : d->color;
 
     delete oldNode;
     if (width() <= 0 || height() <= 0) {
@@ -849,25 +849,25 @@ void UCListItem::setColor(const QColor &color)
 }
 
 /*!
- * \qmlproperty color ListItem::pressedColor
+ * \qmlproperty color ListItem::highlightColor
  * Configures the color when pressed. Defaults to the theme palette's background color.
  */
-QColor UCListItem::pressedColor() const
+QColor UCListItem::highlightColor() const
 {
     Q_D(const UCListItem);
-    return d->pressedColor;
+    return d->highlightColor;
 }
-void UCListItem::setPressedColor(const QColor &color)
+void UCListItem::setHighlightColor(const QColor &color)
 {
     Q_D(UCListItem);
-    if (d->pressedColor == color) {
+    if (d->highlightColor == color) {
         return;
     }
-    d->pressedColor = color;
+    d->highlightColor = color;
     // no more theme change watch
     disconnect(&UCTheme::instance(), SIGNAL(paletteChanged()), this, SLOT(_q_updateColors()));
     update();
-    Q_EMIT pressedColorChanged();
+    Q_EMIT highlightColorChanged();
 }
 
 /*!
