@@ -118,7 +118,7 @@ MainView {
                     when: main.override
                     PropertyChanges {
                         target: listItem
-                        pressedColor: "brown"
+                        highlightColor: "brown"
                     }
                 }
             }
@@ -142,7 +142,7 @@ MainView {
                     ListItem {
                         objectName: "InFlickable"+index
                         color: "red"
-                        pressedColor: "lime"
+                        highlightColor: "lime"
                         divider.colorFrom: UbuntuColors.green
                         trailingActions: trailing
 
