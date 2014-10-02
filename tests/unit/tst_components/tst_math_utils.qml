@@ -99,4 +99,3 @@ TestCase {
         compare(clampedAndProjectedValue, 90)
     }
 }
-
