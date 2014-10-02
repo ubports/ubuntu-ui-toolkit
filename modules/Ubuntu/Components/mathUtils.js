@@ -16,7 +16,7 @@
 
 .pragma library
 
-// Ensure the vale x is between min and max
+// Ensure the value x is between min and max
 function clamp(x, min, max) {
     if (min <= max) {
         return Math.max(min, Math.min(x, max));
@@ -26,7 +26,7 @@ function clamp(x, min, max) {
     }
 }
 
-// Get the linear interpolation of x
+// Get the linear interpolation
 function lerp(delta, from, to) {
     return ((1.0 - delta) * from) + (delta * to);
 }
@@ -36,7 +36,7 @@ function projectValue(x, xmin, xmax, ymin, ymax) {
     return ((x - xmin) * ymax - (x - xmax) * ymin) / (xmax - xmin)
 }
 
-// Clamd and project
+// Linearly project a value x, but in addition to projectValue it's clamed to xmin/ xmax first
 function clampAndProject(x, xmin, xmax, ymin, ymax) {
     return projectValue(clamp(x, xmin, xmax), xmin, xmax, ymin, ymax)
 }
