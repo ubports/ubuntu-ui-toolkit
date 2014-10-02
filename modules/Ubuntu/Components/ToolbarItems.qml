@@ -139,7 +139,7 @@ Item {
     property Item back: ToolbarButton {
         objectName: "back_toolbar_button"
         iconSource: Qt.resolvedUrl("artwork/back.png")
-        text: i18n.dtr('ubuntu-ui-toolkit', 'Back')
+        text: i18n.dtr('ubuntu-ui-toolkit', "Back")
         visible: toolbarItems.pageStack && toolbarItems.pageStack.depth > 1
         /*!
           If there is a \l PageStack of sufficient depth, triggering the back button
