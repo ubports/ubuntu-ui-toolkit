@@ -33,7 +33,7 @@ class UCListItem : public UCStyledItemBase
     Q_PROPERTY(UCListItemActions *trailingActions READ trailingActions WRITE setTrailingActions NOTIFY trailingActionsChanged DESIGNABLE false)
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
-    Q_PROPERTY(QColor pressedColor READ pressedColor WRITE setPressedColor NOTIFY pressedColorChanged)
+    Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor NOTIFY highlightColorChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
     Q_CLASSINFO("DefaultProperty", "data")
@@ -50,8 +50,8 @@ public:
     bool pressed() const;
     QColor color() const;
     void setColor(const QColor &color);
-    QColor pressedColor() const;
-    void setPressedColor(const QColor &color);
+    QColor highlightColor() const;
+    void setHighlightColor(const QColor &color);
 
 protected:
     void componentComplete();
@@ -66,7 +66,7 @@ Q_SIGNALS:
     void trailingActionsChanged();
     void pressedChanged();
     void colorChanged();
-    void pressedColorChanged();
+    void highlightColorChanged();
     void childrenChanged();
 
     void clicked();

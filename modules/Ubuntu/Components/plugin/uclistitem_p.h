@@ -52,10 +52,10 @@ public:
     void update();
 
     bool pressed:1;
-    bool pressedColorChanged:1;
+    bool highlightColorChanged:1;
     bool ready:1;
     QColor color;
-    QColor pressedColor;
+    QColor highlightColor;
     QPointer<QQuickFlickable> flickable;
     QQuickItem *contentItem;
     UCListItemDivider *divider;
