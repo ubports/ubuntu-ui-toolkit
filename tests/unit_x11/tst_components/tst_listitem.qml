@@ -161,7 +161,7 @@ Item {
         function test_0_defaults() {
             verify(defaults.contentItem !== null, "Defaults is null");
             compare(defaults.color, "#000000", "Transparent by default");
-            compare(defaults.pressedColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
+            compare(defaults.highlightColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
             compare(defaults.pressed, false, "Not pressed buy default");
             compare(defaults.divider.visible, true, "divider is visible by default");
             compare(defaults.divider.leftMargin, units.gu(2), "divider's left margin is 2GU");

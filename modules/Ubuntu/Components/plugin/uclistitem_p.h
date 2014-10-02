@@ -65,7 +65,7 @@ public:
     void toggleSelectionMode();
 
     bool pressed:1;
-    bool pressedColorChanged:1;
+    bool highlightColorChanged:1;
     bool moved:1;
     bool suppressClick:1;
     bool ready:1;
@@ -76,7 +76,7 @@ public:
     QPointF lastPos;
     QPointF pressedPos;
     QColor color;
-    QColor pressedColor;
+    QColor highlightColor;
     QPointer<QQuickFlickable> flickable;
     QQuickPropertyAnimation *reboundAnimation;
     PropertyChange *flickableInteractive;
