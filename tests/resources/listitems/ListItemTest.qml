@@ -62,7 +62,7 @@ MainView {
                     when: main.override
                     PropertyChanges {
                         target: listItem
-                        pressedColor: "brown"
+                        highlightColor: "brown"
                     }
                 }
             }
@@ -80,7 +80,7 @@ MainView {
                     model: 100
                     ListItem {
                         color: "red"
-                        pressedColor: "lime"
+                        highlightColor: "lime"
                         divider.colorFrom: UbuntuColors.green
 
                         Label {

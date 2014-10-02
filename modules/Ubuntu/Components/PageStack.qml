@@ -161,9 +161,15 @@ PageTreeNode {
       The pushed page may be an Item, Component or URL.
      */
     function push(page, properties) {
-        if (internal.stack.size() > 0) internal.stack.top().active = false;
-        internal.stack.push(internal.createWrapper(page, properties));
-        internal.stackUpdated();
+        internal.finishPreviousAction();
+        internal.pageToPush = page;
+        internal.propertiesToPush = properties;
+        if (internal.animateHeader && internal.stack.size() > 0) {
+            internal.headStyle.animateOutFinished.connect(internal.createAndPush);
+            internal.headStyle.animateOut();
+        } else {
+            internal.createAndPush();
+        }
     }
 
     /*!
@@ -172,14 +178,18 @@ PageTreeNode {
       Do not do anything if 0 or 1 items are on the stack.
      */
     function pop() {
+        internal.finishPreviousAction();
         if (internal.stack.size() < 1) {
             print("WARNING: Trying to pop an empty PageStack. Ignoring.");
             return;
         }
-        internal.stack.top().active = false;
-        if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
-        internal.stack.pop();
-        internal.stackUpdated();
+        // do not animate if there is no page to animate back in after popping
+        if (internal.animateHeader && internal.stack.size() > 1) {
+            internal.headStyle.animateOutFinished.connect(internal.popAndDestroy);
+            internal.headStyle.animateOut();
+        } else {
+            internal.popAndDestroy();
+        }
     }
 
     /*!
@@ -197,6 +207,65 @@ PageTreeNode {
 
     QtObject {
         id: internal
+        property Item headStyle: (pageStack.__propagated
+                                      && pageStack.__propagated.header
+                                      && pageStack.__propagated.header.__styleInstance)
+                                    ? pageStack.__propagated.header.__styleInstance
+                                    : null
+
+        function headerCanAnimate() {
+            if (!headStyle) return false;
+            if (!headStyle.hasOwnProperty("animateIn")) return false;
+            if (!headStyle.hasOwnProperty("animateOut")) return false;
+            if (!headStyle.hasOwnProperty("animateInFinished")) return false;
+            if (!headStyle.hasOwnProperty("animateOutFinished")) return false;
+            return true;
+        }
+
+        // FIXME: Replace false by headerCanAnimate() below to enable
+        //  header animations.
+        property bool animateHeader: false
+
+        // Call this function before pushing or popping to ensure correct order
+        // of pushes/pops on the stack. This terminates any currently running
+        // header transition.
+        function finishPreviousAction() {
+            // no action required when animating IN because the PageStack was
+            // already updated before that transition started.
+            if (internal.animateHeader && internal.headStyle.state == "OUT") {
+                // force instant update of the PageStack without waiting for
+                // the OUT animation to finish:
+                internal.headStyle.animateOutFinished();
+            }
+        }
+
+        // The page and properties to push on the stack when the OUT animation
+        // finishes.
+        property var pageToPush
+        property var propertiesToPush
+
+        // Called when the header animate OUT transition finishes for push() or instantly
+        // when header animations are disabled.
+        function createAndPush() {
+            if (internal.animateHeader) {
+                headStyle.animateOutFinished.disconnect(internal.createAndPush);
+            }
+            if (internal.stack.size() > 0) internal.stack.top().active = false;
+            internal.stack.push(internal.createWrapper(pageToPush, propertiesToPush));
+            internal.stackUpdated();
+        }
+
+        // Called when header animate OUT transition finishes for pop() or instantly
+        // when header animations are disabled.
+        function popAndDestroy() {
+            if (internal.animateHeader) {
+                headStyle.animateOutFinished.disconnect(internal.popAndDestroy);
+            }
+            internal.stack.top().active = false;
+            if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
+            internal.stack.pop();
+            internal.stackUpdated();
+        }
 
         /*!
           The instance of the stack from javascript
@@ -212,11 +281,17 @@ PageTreeNode {
             return wrapperObject;
         }
 
+        // Update depth and makes the Item on top of the stack active, and
+        // then animates IN the new header contents if header animations are enabled.
         function stackUpdated() {
             pageStack.depth = stack.size();
             if (pageStack.depth > 0) {
                 internal.stack.top().active = true;
                 currentPage = stack.top().object;
+
+                if (internal.animateHeader) {
+                    headStyle.animateIn();
+                }
             } else {
                 currentPage = null;
             }

@@ -137,6 +137,7 @@ class GoBackTestCase(tests.QMLStringAppTestCase):
             'Button',
             objectName='go_to_page1')
         self.pointing_device.click_object(button)
+        self.header.wait_for_animation()
 
     def test_go_back(self):
         self._go_to_page1()
