@@ -75,10 +75,9 @@ void StateSaverBackend::initialize()
     QString applicationName(UCApplication::instance().applicationName());
     if (applicationName.isEmpty()) {
         applicationName = qgetenv("APP_ID");
-        qDebug() << "[StateSaver] APP_ID" << applicationName;
     }
     if (applicationName.isEmpty()) {
-        qDebug() << "[StateSaver] EMPTY APPNAME";
+        qCritical() << "[StateSaver] Cannot create appstate file, application name not defined.";
         return;
     }
     // make sure the path is in sync with https://wiki.ubuntu.com/SecurityTeam/Specifications/ApplicationConfinement
@@ -86,15 +85,16 @@ void StateSaverBackend::initialize()
     // NOTE!!: we cannot use QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation)
     // as that is going to perform a chmod +w on the path, see bug #1359831. Therefore we must
     // fetch the XDG_RUNTIME_DIR either from QStandardPaths::standardLocations() or from env var
+    // see bug https://bugreports.qt-project.org/browse/QTBUG-41735
     QStringList runtimeDirs = QStandardPaths::standardLocations(QStandardPaths::RuntimeLocation);
     QString runtimeDir = (runtimeDirs.size() > 0 && !runtimeDirs[0].isEmpty()) ? runtimeDirs[0] : qgetenv("XDG_RUNTIME_DIR");
     if (runtimeDir.isEmpty()) {
-        qWarning() << "[StateSaver] No XDG_RUNTIME_DIR path set, cannot create appstate file.";
+        qCritical() << "[StateSaver] No XDG_RUNTIME_DIR path set, cannot create appstate file.";
         return;
     }
-    QString path = QString("%1/%2/statesaver.appstate").arg(runtimeDir).arg(applicationName);
-    qDebug() << "[StateSaver] PATH" << path;
-    m_archive = new QSettings(path, QSettings::NativeFormat);
+    m_archive = new QSettings(QString("%1/%2/statesaver.appstate").
+                              arg(runtimeDir).
+                              arg(applicationName), QSettings::NativeFormat);
     m_archive->setFallbacksEnabled(false);
 }
 
