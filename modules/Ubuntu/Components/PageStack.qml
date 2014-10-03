@@ -201,6 +201,7 @@ PageTreeNode {
       Deactivate the active page and clear the stack.
      */
     function clear() {
+        internal.finishPreviousAction();
         while (internal.stack.size() > 0) {
             internal.stack.top().active = false;
             if (internal.stack.top().canDestroy) internal.stack.top().destroyObject();
