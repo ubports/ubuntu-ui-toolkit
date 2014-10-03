@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.2
 import "stack.js" as Stack
 
 /*!
@@ -159,17 +159,22 @@ PageTreeNode {
       \preliminary
       Push a page to the stack, and apply the given (optional) properties to the page.
       The pushed page may be an Item, Component or URL.
+      The function returns the Item that was pushed, or the Item that was created from
+      the Component or URL.
      */
     function push(page, properties) {
         internal.finishPreviousAction();
-        internal.pageToPush = page;
-        internal.propertiesToPush = properties;
+        internal.pageWrapper = internal.createWrapper(page, properties);
+        var pageObject = internal.pageWrapper.object;
+
         if (internal.animateHeader && internal.stack.size() > 0) {
-            internal.headStyle.animateOutFinished.connect(internal.createAndPush);
+            internal.headStyle.animateOutFinished.connect(internal.pushWrapperObject);
             internal.headStyle.animateOut();
         } else {
-            internal.createAndPush();
+            internal.pushWrapperObject();
         }
+        print("returning page "+pageObject);
+        return pageObject;
     }
 
     /*!
@@ -224,7 +229,7 @@ PageTreeNode {
 
         // FIXME: Replace false by headerCanAnimate() below to enable
         //  header animations.
-        property bool animateHeader: false
+        property bool animateHeader: headerCanAnimate() //false
 
         // Call this function before pushing or popping to ensure correct order
         // of pushes/pops on the stack. This terminates any currently running
@@ -239,19 +244,19 @@ PageTreeNode {
             }
         }
 
-        // The page and properties to push on the stack when the OUT animation
-        // finishes.
-        property var pageToPush
-        property var propertiesToPush
+        // The PageWrapper to push on the stack when the OUT animation finishes.
+        property var pageWrapper: null
 
         // Called when the header animate OUT transition finishes for push() or instantly
-        // when header animations are disabled.
-        function createAndPush() {
+        // when header animations are disabled. Pushes internal.pageWrapper and then
+        // sets it to null.
+        function pushWrapperObject() {
             if (internal.animateHeader) {
-                headStyle.animateOutFinished.disconnect(internal.createAndPush);
+                headStyle.animateOutFinished.disconnect(internal.pushWrapperObject);
             }
             if (internal.stack.size() > 0) internal.stack.top().active = false;
-            internal.stack.push(internal.createWrapper(pageToPush, propertiesToPush));
+            internal.stack.push(internal.pageWrapper);
+            internal.pageWrapper = null;
             internal.stackUpdated();
         }
 
@@ -278,6 +283,7 @@ PageTreeNode {
             wrapperObject.reference = page;
             wrapperObject.pageStack = pageStack;
             wrapperObject.properties = properties;
+            print("created wrapper object "+wrapperObject)
             return wrapperObject;
         }
 
