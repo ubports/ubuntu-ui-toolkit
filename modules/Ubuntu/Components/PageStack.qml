@@ -280,9 +280,11 @@ PageTreeNode {
         function createWrapper(page, properties) {
             var wrapperComponent = Qt.createComponent("PageWrapper.qml");
             var wrapperObject = wrapperComponent.createObject(pageStack);
-            wrapperObject.reference = page;
             wrapperObject.pageStack = pageStack;
             wrapperObject.properties = properties;
+            // set reference last because it will trigger creation of the object
+            //  with specified properties.
+            wrapperObject.reference = page;
             print("created wrapper object "+wrapperObject)
             return wrapperObject;
         }
