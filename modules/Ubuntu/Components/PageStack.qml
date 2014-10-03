@@ -173,7 +173,6 @@ PageTreeNode {
         } else {
             internal.pushWrapperObject();
         }
-        print("returning page "+pageObject);
         return pageObject;
     }
 
@@ -229,7 +228,7 @@ PageTreeNode {
 
         // FIXME: Replace false by headerCanAnimate() below to enable
         //  header animations.
-        property bool animateHeader: headerCanAnimate() //false
+        property bool animateHeader: false
 
         // Call this function before pushing or popping to ensure correct order
         // of pushes/pops on the stack. This terminates any currently running
@@ -285,7 +284,6 @@ PageTreeNode {
             // set reference last because it will trigger creation of the object
             //  with specified properties.
             wrapperObject.reference = page;
-            print("created wrapper object "+wrapperObject)
             return wrapperObject;
         }
 
