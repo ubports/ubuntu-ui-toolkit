@@ -245,7 +245,7 @@ PageTreeNode {
             }
         }
 
-        // The PageWrapper to push on the stack when the OUT animation finishes.
+        // The PageWrapper to be pushed on the stack by pushWrapperObject().
         property var pageWrapper: null
 
         // Called when the header animate OUT transition finishes for push() or instantly
