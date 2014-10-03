@@ -1,3 +1,33 @@
+ubuntu-ui-toolkit (1.1.1269+14.10.20141001-0ubuntu1) 14.09; urgency=medium
+
+  [ Tim Peeters ]
+  * Add Autopilot wait_for_animation() dummy function.
+  * Implement header animations in PageHeadStyle and prepare 
+    PageStack for enabling the animations.
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Removed useless dirty flags.
+
+  [ Zsombor Egri ]
+  *  Use tags as workaround for an alarm and an additional one for a 
+     disabled alarm. The alarm should always save the visual and 
+     audible reminder attachments no matter if disabled or not. 
+     Fixes LP: #1361702
+
+  [ Christian Dywan ]
+  * Selection handler should be centered and not blinking. 
+    Fixes LP: #1371205
+  * Hide pop over when changing orientation. 
+    Fixes LP: #1369506 and LP: #1375837
+
+  [ CI bot ]
+  * Resync trunk
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 01 Oct 2014 08:21:27 +0000
+
 ubuntu-ui-toolkit (1.1.1262+14.10.20140922.2-0ubuntu1) utopic; urgency=medium
 
   [ Leo Arias ]
