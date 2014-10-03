@@ -160,7 +160,8 @@ PageTreeNode {
       Push a page to the stack, and apply the given (optional) properties to the page.
       The pushed page may be an Item, Component or URL.
       The function returns the Item that was pushed, or the Item that was created from
-      the Component or URL.
+      the Component or URL. Depending on the animation of the header, the returned
+      Page may or may not be active and on top of the PageStack yet.
      */
     function push(page, properties) {
         internal.finishPreviousAction();
