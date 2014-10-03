@@ -249,8 +249,7 @@ PageTreeNode {
         property var pageWrapper: null
 
         // Called when the header animate OUT transition finishes for push() or instantly
-        // when header animations are disabled. Pushes internal.pageWrapper and then
-        // sets it to null.
+        // when header animations are disabled.
         function pushWrapperObject() {
             if (internal.animateHeader) {
                 headStyle.animateOutFinished.disconnect(internal.pushWrapperObject);
