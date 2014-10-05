@@ -368,7 +368,7 @@ Style.PageHeadStyle {
             Label {
                 objectName: "header_title_label"
                 LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
-                visible: !contentsContainer.visible
+                visible: !contentsContainer.visible && styledItem.config.preset === ""
                 anchors {
                     left: parent.left
                     right: parent.right
@@ -450,6 +450,8 @@ Style.PageHeadStyle {
                     objectName: action.objectName + "_header_button"
                     action: actionsContainer.visibleActions[index]
                     color: styledItem.config.foregroundColor
+                    state: styledItem.config.preset === "select" ?
+                               "IconAndLabel" : ""
                 }
             }
 
