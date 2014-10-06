@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 1.1
+import Ubuntu.Components.Popups 1.0
 
 MainView {
     width: units.gu(48)
@@ -55,9 +56,10 @@ MainView {
                 objectName: "dialog_huge"
                 Column {
                     Repeater {
-                        model: 1000
+                        model: 50
 
                         Button {
+                            objectName: "buttlet%1".arg(index)
                             text: "Button %1".arg(index)
                         }
                     }
