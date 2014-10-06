@@ -73,7 +73,6 @@ function execute_test_cmd {
                 tst_performance \
                 tst_inversemousearea \
                 tst_listitems_base.qml \
-                tst_statesaver \
                 tst_theme_engine \
                 tst_tabs.qml \
                 tst_textfield.qml \

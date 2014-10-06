@@ -262,9 +262,12 @@ private Q_SLOTS:
 
     void test_InvalidUID()
     {
+        QString filePath(QFileInfo("InvalidUID.qml").absoluteFilePath());
+        QString objectId(filePath.replace("/", "_") + ":21:5:testItem");
+        UbuntuTestCase::ignoreWarning("InvalidUID.qml", 20, 1,
+            QString("QML Item: All the parents must have an id.\nState saving disabled for %1, class %2")
+            .arg(objectId).arg("QQuickItem"), 2);
         QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("InvalidUID.qml"));
-        QVERIFY(view);
-        QCOMPARE(view->warnings(), 1);
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
 
@@ -272,7 +275,6 @@ private Q_SLOTS:
 
         resetView(view, "InvalidUID.qml");
         QVERIFY(view);
-        QCOMPARE(view->warnings(), 1);
         testItem = view->rootObject()->findChild<QObject*>("updated");
         QVERIFY(testItem == 0);
     }
@@ -294,17 +296,15 @@ private Q_SLOTS:
 
     void test_InvalidGroupProperty()
     {
+        UbuntuTestCase::ignoreWarning("InvalidGroupProperty.qml", 24, 29,
+            "QML QtObject: Warning: attachee must have an ID. State will not be saved.", 2);
         QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("InvalidGroupProperty.qml"));
-        QVERIFY(view);
-        QCOMPARE(view->warnings(), 1);
         QObject *testItem = view->rootObject()->findChild<QObject*>("testItem");
         QVERIFY(testItem);
 
         testItem->setObjectName("group");
 
         resetView(view, "InvalidGroupProperty.qml");
-        QVERIFY(view);
-        QCOMPARE(view->warnings(), 1);
         testItem = view->rootObject()->findChild<QObject*>("group");
         QVERIFY(testItem == 0);
     }
@@ -413,8 +413,9 @@ private Q_SLOTS:
 
     void test_ComponentsWithStateSaversNoId()
     {
+        UbuntuTestCase::ignoreWarning("ComponentsWithStateSaversNoId.qml", 25, 5,
+            "QML Rectangle: Warning: attachee must have an ID. State will not be saved.");
         QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("ComponentsWithStateSaversNoId.qml"));
-        QVERIFY(view);
         QObject *control1 = view->rootObject()->findChild<QObject*>("control1");
         QVERIFY(control1);
         QObject *control2 = view->rootObject()->findChild<QObject*>("control2");
@@ -422,7 +423,6 @@ private Q_SLOTS:
         UCStateSaverAttached *stateSaver1 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control1, false));
         QVERIFY(stateSaver1);
         QVERIFY(stateSaver1->enabled() == false);
-        QCOMPARE(view->warnings(), 1);
         UCStateSaverAttached *stateSaver2 = qobject_cast<UCStateSaverAttached*>(qmlAttachedPropertiesObject<UCStateSaver>(control2, false));
         QVERIFY(stateSaver2);
         QVERIFY(stateSaver2->enabled());
