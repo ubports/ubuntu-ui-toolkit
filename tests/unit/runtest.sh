@@ -62,13 +62,13 @@ function execute_test_cmd {
                 tst_arguments \
                 tst_mainview \
                 tst_popups_actionselectionpopover.qml \
-                tst_layouts tst_datepicker.qml \
+                tst_datepicker.qml \
                 tst_listitems_valueselector.qml \
                 tst_listitems_itemselector.qml \
                 tst_ubuntu_shape \
                 tst_page.qml \
                 tst_qquick_image_extension \
-                tst_listitems_divider.qml tst_layouts \
+                tst_listitems_divider.qml \
                 tst_checkbox.qml \
                 tst_performance \
                 tst_inversemousearea \
