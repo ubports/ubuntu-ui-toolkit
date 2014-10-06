@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -202,9 +202,17 @@ static int sizeOfType(GLenum type)
 
 // --- QtQuick item ---
 
+MaterialData::MaterialData()
+    : shapeTexture(NULL)
+    , imageTextureProvider(NULL)
+    , color(qRgba(0, 0, 0, 0))
+    , gradientColor(qRgba(0, 0, 0, 0))
+    , shapeTextureFiltering(QSGTexture::Nearest)
+{
+}
+
 ShapeItem::ShapeItem(QQuickItem* parent)
     : QQuickItem(parent)
-    , provider_(NULL)
     , color_(0.0, 0.0, 0.0, 0.0)
     , gradientColor_(0.0, 0.0, 0.0, 0.0)
     , gradientColorSet_(false)
@@ -217,6 +225,7 @@ ShapeItem::ShapeItem(QQuickItem* parent)
     , vAlignment_(ShapeItem::AlignVCenter)
     , gridUnit_(UCUnits::instance().gridUnit())
     , geometry_()
+    , materialData_()
 {
     setFlag(ItemHasContents);
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
@@ -230,9 +239,17 @@ void ShapeItem::setColor(const QColor& color)
 {
     if (color_ != color) {
         color_ = color;
+        const int alpha = color.alpha();
+        QRgb colorPremultiplied = qRgba(
+            (color.red() * alpha) / 255,
+            (color.green() * alpha) / 255,
+            (color.blue() * alpha) / 255,
+            alpha);
+        materialData_.color = colorPremultiplied;
         // gradientColor has the same value as color unless it was manually set
         if (!gradientColorSet_) {
             gradientColor_ = color;
+            materialData_.gradientColor = colorPremultiplied;
             Q_EMIT gradientColorChanged();
         }
         update();
@@ -245,6 +262,12 @@ void ShapeItem::setGradientColor(const QColor& gradientColor)
     gradientColorSet_ = true;
     if (gradientColor_ != gradientColor) {
         gradientColor_ = gradientColor;
+        const int alpha = gradientColor.alpha();
+        materialData_.gradientColor = qRgba(
+            (gradientColor.red() * alpha) / 255,
+            (gradientColor.green() * alpha) / 255,
+            (gradientColor.blue() * alpha) / 255,
+            alpha);
         update();
         Q_EMIT gradientColorChanged();
     }
@@ -420,7 +443,7 @@ void ShapeItem::onOpenglContextDestroyed()
 void ShapeItem::providerDestroyed(QObject* object)
 {
     Q_UNUSED(object);
-    provider_ = NULL;
+    materialData_.imageTextureProvider = NULL;
 }
 
 QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data)
@@ -456,16 +479,18 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
 
     // Update the node whenever the source item's texture changes.
     QSGTextureProvider* provider = image_ ? image_->textureProvider() : NULL;
-    if (provider != provider_) {
-        if (provider_) {
-            QObject::disconnect(provider_, SIGNAL(textureChanged()), this, SLOT(update()));
-            QObject::disconnect(provider_, SIGNAL(destroyed()), this, SLOT(providerDestroyed()));
+    if (provider != materialData_.imageTextureProvider) {
+        if (materialData_.imageTextureProvider) {
+            QObject::disconnect(materialData_.imageTextureProvider, SIGNAL(textureChanged()),
+                                this, SLOT(update()));
+            QObject::disconnect(materialData_.imageTextureProvider, SIGNAL(destroyed()),
+                                this, SLOT(providerDestroyed()));
         }
         if (provider) {
             QObject::connect(provider, SIGNAL(textureChanged()), this, SLOT(update()));
             QObject::connect(provider, SIGNAL(destroyed()), this, SLOT(providerDestroyed()));
         }
-        provider_ = provider;
+        materialData_.imageTextureProvider = provider;
     }
 
     ShapeNode* node = static_cast<ShapeNode*>(old_node);
@@ -473,51 +498,39 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
         node = new ShapeNode(this);
     }
 
-    ShapeTexturedMaterial* texturedMaterial = node->texturedMaterial();
-    ShapeColoredMaterial* coloredMaterial = node->coloredMaterial();
     TextureData* textureData;
-    QSGTexture* textureHandle;
     if (gridUnit_ > lowHighTextureThreshold) {
         textureData = &shapeTextureHigh;
-        textureHandle = textureHandles.high;
+        materialData_.shapeTexture = textureHandles.high;
     } else {
         textureData = &shapeTextureLow;
-        textureHandle = textureHandles.low;
+        materialData_.shapeTexture = textureHandles.low;
     }
 
     // Set the shape texture to be used by the materials depending on current grid unit. The radius
     // is set considering the current grid unit and the texture raster grid unit. When the item size
-    // is less than 2 radii, the radius is scaled down anyhow.
+    // is less than 2 radii, the radius is scaled down.
     float radius = (radius_ == ShapeItem::SmallRadius) ?
         textureData->smallRadius : textureData->mediumRadius;
     const float scaleFactor = gridUnit_ / textureData->gridUnit;
-    radius *= scaleFactor;
-    int scaledDown = 0;
+    materialData_.shapeTextureFiltering = QSGTexture::Nearest;
     if (scaleFactor != 1.0f) {
-        scaledDown |= 1;
+        radius *= scaleFactor;
+        materialData_.shapeTextureFiltering = QSGTexture::Linear;
     }
     const float halfMinWidthHeight = qMin(geometry_.width(), geometry_.height()) * 0.5f;
     if (radius > halfMinWidthHeight) {
         radius = halfMinWidthHeight;
-        scaledDown |= 1;
+        materialData_.shapeTextureFiltering = QSGTexture::Linear;
     }
-    coloredMaterial->setShapeTexture(textureHandle, !!scaledDown);
-    texturedMaterial->setShapeTexture(textureHandle, !!scaledDown);
 
-    // Update the other material properties.
-    coloredMaterial->setColor(color_);
-    coloredMaterial->setGradientColor(gradientColor_);
-    texturedMaterial->setImage(image_);
-
-    // Update node vertices and type.
-    int index = (border_ == ShapeItem::RawBorder) ?
-        0 : (border_ == ShapeItem::IdleBorder) ? 1 : 2;
+    // Update vertices and material.
+    int index = (border_ == ShapeItem::RawBorder) ? 0 : (border_ == ShapeItem::IdleBorder) ? 1 : 2;
     if (radius_ == ShapeItem::SmallRadius)
         index += 3;
     node->setVertices(geometry_, radius, image_, stretched_, hAlignment_, vAlignment_,
                       textureData->coordinate[index]);
-    const QSGTexture* texture = provider ? provider->texture() : NULL;
-    node->setMaterialType(texture ? ShapeNode::TexturedMaterial : ShapeNode::ColoredMaterial);
+    node->setMaterialData(provider && provider->texture(), &materialData_);
 
     return node;
 }
@@ -714,24 +727,29 @@ void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* im
     markDirty(DirtyGeometry);
 }
 
-void ShapeNode::setMaterialType(ShapeNode::MaterialType material)
+void ShapeNode::setMaterialData(bool textured, MaterialData* materialData)
 {
-    if (currentMaterial_ != material) {
-        if (material == ShapeNode::ColoredMaterial)
-            setMaterial(&coloredMaterial_);
-        else
+    if (textured) {
+        texturedMaterial_.setData(materialData);
+        if (currentMaterial_ != ShapeNode::TexturedMaterial) {
             setMaterial(&texturedMaterial_);
-        currentMaterial_ = material;
-        markDirty(DirtyMaterial);
+            currentMaterial_ = ShapeNode::TexturedMaterial;
+            markDirty(DirtyMaterial);
+        }
+    } else {
+        coloredMaterial_.setData(materialData);
+        if (currentMaterial_ != ShapeNode::ColoredMaterial) {
+            setMaterial(&coloredMaterial_);
+            currentMaterial_ = ShapeNode::ColoredMaterial;
+            markDirty(DirtyMaterial);
+        }
     }
 }
 
 // --- Scene graph textured material ---
 
 ShapeTexturedMaterial::ShapeTexturedMaterial()
-    : imageTextureProvider_(NULL)
-    , shapeTexture_(NULL)
-    , filtering_(QSGTexture::Nearest)
+    : data_()
 {
     setFlag(Blending);
 }
@@ -750,28 +768,18 @@ QSGMaterialShader* ShapeTexturedMaterial::createShader() const
 int ShapeTexturedMaterial::compare(const QSGMaterial* other) const
 {
     const ShapeTexturedMaterial* otherMaterial = static_cast<const ShapeTexturedMaterial*>(other);
-    const QSGTextureProvider* otherTextureProvider = otherMaterial->imageTextureProvider();
+    const QSGTextureProvider* otherTextureProvider = otherMaterial->data()->imageTextureProvider;
     const QSGTexture* otherTexture = otherTextureProvider ? otherTextureProvider->texture() : NULL;
     const int otherTextureId = otherTexture ? otherTexture->textureId() : 0;
-    const QSGTexture* texture = imageTextureProvider_ ? imageTextureProvider_->texture() : NULL;
+    const QSGTexture* texture =
+        data_.imageTextureProvider ? data_.imageTextureProvider->texture() : NULL;
     const int textureId = texture ? texture->textureId() : 0;
     return textureId - otherTextureId;
 }
 
-void ShapeTexturedMaterial::setImage(QQuickItem* image)
+void ShapeTexturedMaterial::setData(MaterialData* data)
 {
-    imageTextureProvider_ = image ? image->textureProvider() : NULL;
-}
-
-QSGTextureProvider* ShapeTexturedMaterial::imageTextureProvider() const
-{
-    return imageTextureProvider_;
-}
-
-void ShapeTexturedMaterial::setShapeTexture(QSGTexture* texture, bool scaledDown)
-{
-    shapeTexture_ = texture;
-    filtering_ = scaledDown ? QSGTexture::Linear : QSGTexture::Nearest;
+    memcpy(&data_, data, sizeof(MaterialData));
 }
 
 // -- Scene graph textured material shader ---
@@ -809,20 +817,20 @@ void ShapeTexturedShader::updateState(const RenderState& state, QSGMaterial* new
                                       QSGMaterial* oldEffect)
 {
     Q_UNUSED(oldEffect);
-    ShapeTexturedMaterial* material = static_cast<ShapeTexturedMaterial*>(newEffect);
+    const MaterialData* data = static_cast<ShapeTexturedMaterial*>(newEffect)->data();
 
     // Bind textures.
     glFuncs_->glActiveTexture(GL_TEXTURE1);
-    QSGTextureProvider* provider = material->imageTextureProvider();
+    QSGTextureProvider* provider = data->imageTextureProvider;
     QSGTexture* texture = provider ? provider->texture() : NULL;
     if (texture)
         texture->bind();
     else
         glBindTexture(GL_TEXTURE_2D, 0);
     glFuncs_->glActiveTexture(GL_TEXTURE0);
-    QSGTexture* shapeTexture = material->shapeTexture();
+    QSGTexture* shapeTexture = data->shapeTexture;
     if (shapeTexture) {
-        shapeTexture->setFiltering(material->filtering());
+        shapeTexture->setFiltering(data->shapeTextureFiltering);
         shapeTexture->setHorizontalWrapMode(QSGTexture::ClampToEdge);
         shapeTexture->setVerticalWrapMode(QSGTexture::ClampToEdge);
         shapeTexture->bind();
@@ -840,10 +848,7 @@ void ShapeTexturedShader::updateState(const RenderState& state, QSGMaterial* new
 // --- Scene graph colored material ---
 
 ShapeColoredMaterial::ShapeColoredMaterial()
-    : color_(0.0, 0.0, 0.0, 0.0)
-    , gradientColor_(0.0, 0.0, 0.0, 0.0)
-    , shapeTexture_(NULL)
-    , filtering_(QSGTexture::Nearest)
+    : data_()
 {
     setFlag(Blending);
 }
@@ -861,34 +866,17 @@ QSGMaterialShader* ShapeColoredMaterial::createShader() const
 
 int ShapeColoredMaterial::compare(const QSGMaterial* other) const
 {
-    const ShapeColoredMaterial* otherMaterial = static_cast<const ShapeColoredMaterial*>(other);
-    if ((color_ != otherMaterial->color()) || (gradientColor_ != otherMaterial->gradientColor())) {
+    const MaterialData* otherData = static_cast<const ShapeColoredMaterial*>(other)->data();
+    if ((data_.color != otherData->color) || (data_.gradientColor != otherData->gradientColor)) {
         return -1;
     } else {
         return 0;
     }
 }
 
-void ShapeColoredMaterial::setColor(const QColor& color)
+void ShapeColoredMaterial::setData(MaterialData* data)
 {
-    // Premultiply color components by alpha.
-    const float alpha = color.alphaF();
-    color_ = QVector4D(color.redF() * alpha, color.greenF() * alpha,
-                           color.blueF() * alpha, alpha);
-}
-
-void ShapeColoredMaterial::setGradientColor(const QColor& gradientColor)
-{
-    // Premultiply color components by alpha.
-    const float alpha = gradientColor.alphaF();
-    gradientColor_ = QVector4D(gradientColor.redF() * alpha, gradientColor.greenF() * alpha,
-                               gradientColor.blueF() * alpha, alpha);
-}
-
-void ShapeColoredMaterial::setShapeTexture(QSGTexture* texture, bool scaledDown)
-{
-    shapeTexture_ = texture;
-    filtering_ = scaledDown ? QSGTexture::Linear : QSGTexture::Nearest;
+    memcpy(&data_, data, sizeof(MaterialData));
 }
 
 // -- Scene graph colored material shader ---
@@ -926,12 +914,12 @@ void ShapeColoredShader::updateState(const RenderState& state, QSGMaterial* newE
                                      QSGMaterial* oldEffect)
 {
     Q_UNUSED(oldEffect);
-    ShapeColoredMaterial* material = static_cast<ShapeColoredMaterial*>(newEffect);
+    const MaterialData* data = static_cast<ShapeColoredMaterial*>(newEffect)->data();
 
     // Bind texture.
-    QSGTexture* shapeTexture = material->shapeTexture();
+    QSGTexture* shapeTexture = data->shapeTexture;
     if (shapeTexture) {
-        shapeTexture->setFiltering(material->filtering());
+        shapeTexture->setFiltering(data->shapeTextureFiltering);
         shapeTexture->setHorizontalWrapMode(QSGTexture::ClampToEdge);
         shapeTexture->setVerticalWrapMode(QSGTexture::ClampToEdge);
         shapeTexture->bind();
@@ -944,6 +932,11 @@ void ShapeColoredShader::updateState(const RenderState& state, QSGMaterial* newE
         program()->setUniformValue(matrixId_, state.combinedMatrix());
     if (state.isOpacityDirty())
         program()->setUniformValue(opacityId_, state.opacity());
-    program()->setUniformValue(colorId_, material->color());
-    program()->setUniformValue(gradientColorId_, material->gradientColor());
+    const float inv255 = 1.0f / 255.0f;
+    QRgb c = data->color;
+    program()->setUniformValue(colorId_, QVector4D(
+        qRed(c) * inv255, qGreen(c) * inv255, qBlue(c) * inv255, qAlpha(c) * inv255));
+    c = data->gradientColor;
+    program()->setUniformValue(gradientColorId_, QVector4D(
+        qRed(c) * inv255, qGreen(c) * inv255, qBlue(c) * inv255, qAlpha(c) * inv255));
 }

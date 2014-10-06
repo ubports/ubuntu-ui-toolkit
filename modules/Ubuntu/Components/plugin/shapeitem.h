@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -24,6 +24,16 @@
 #include <QtQuick/qsgflatcolormaterial.h>
 #include <QtQuick/qsgtexture.h>
 #include <QtGui/QOpenGLFunctions>
+
+struct MaterialData
+{
+    MaterialData();
+    QSGTexture* shapeTexture;
+    QSGTextureProvider* imageTextureProvider;
+    QRgb color;
+    QRgb gradientColor;
+    QSGTexture::Filtering shapeTextureFiltering;
+};
 
 // QtQuick item.
 
@@ -101,7 +111,6 @@ private:
         QSGTexture* low;
     };
 
-    QSGTextureProvider* provider_;
     QColor color_;
     QColor gradientColor_;
     bool gradientColorSet_;
@@ -115,6 +124,8 @@ private:
     VAlignment vAlignment_;
     float gridUnit_;
     QRectF geometry_;
+    MaterialData materialData_;
+
     static QHash<QOpenGLContext*, TextureHandles> textures_;
 
     Q_DISABLE_COPY(ShapeItem)
@@ -129,16 +140,11 @@ public:
     virtual QSGMaterialType* type() const;
     virtual QSGMaterialShader* createShader() const;
     virtual int compare(const QSGMaterial* other) const;
-    QSGTextureProvider* imageTextureProvider() const;
-    void setImage(QQuickItem* image);
-    QSGTexture* shapeTexture() const { return shapeTexture_; }
-    QSGTexture::Filtering filtering() const { return filtering_; }
-    void setShapeTexture(QSGTexture* shapeTexture, bool scaledDown);
+    const MaterialData* data() const { return &data_; }
+    void setData(MaterialData* data);
 
 private:
-    QSGTextureProvider* imageTextureProvider_;
-    QSGTexture* shapeTexture_;
-    QSGTexture::Filtering filtering_;
+    MaterialData data_;
 };
 
 // Scene graph textured material shader.
@@ -169,19 +175,11 @@ public:
     virtual QSGMaterialType* type() const;
     virtual QSGMaterialShader* createShader() const;
     virtual int compare(const QSGMaterial* other) const;
-    const QVector4D& color() const { return color_; }
-    void setColor(const QColor& color);
-    const QVector4D& gradientColor() const { return gradientColor_; }
-    void setGradientColor(const QColor& gradientColor);
-    QSGTexture* shapeTexture() const { return shapeTexture_; }
-    QSGTexture::Filtering filtering() const { return filtering_; }
-    void setShapeTexture(QSGTexture* shapeTexture, bool scaledDown);
+    const MaterialData* data() const { return &data_; }
+    void setData(MaterialData* data);
 
 private:
-    QVector4D color_;
-    QVector4D gradientColor_;
-    QSGTexture* shapeTexture_;
-    QSGTexture::Filtering filtering_;
+    MaterialData data_;
 };
 
 // Scene graph colored material shader.
@@ -219,17 +217,16 @@ public:
         float imageCoordinate[2];
         float padding[2];  // Ensure a 32 bytes stride.
     };
-    enum MaterialType { TexturedMaterial, ColoredMaterial };
 
     ShapeNode(ShapeItem* item);
-    ShapeTexturedMaterial* texturedMaterial() { return &texturedMaterial_; }
-    ShapeColoredMaterial* coloredMaterial() { return &coloredMaterial_; }
     void setVertices(const QRectF& geometry, float radius, QQuickItem* image, bool stretched,
                      ShapeItem::HAlignment hAlignment, ShapeItem::VAlignment vAlignment,
                      float shapeCoordinate[][2]);
-    void setMaterialType(MaterialType material);
+    void setMaterialData(bool textured, MaterialData* materialData);
 
 private:
+    enum MaterialType { TexturedMaterial, ColoredMaterial };
+
     ShapeItem* item_;
     QSGGeometry geometry_;
     ShapeTexturedMaterial texturedMaterial_;
