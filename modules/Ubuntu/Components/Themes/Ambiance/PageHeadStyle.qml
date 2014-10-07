@@ -361,8 +361,10 @@ Style.PageHeadStyle {
                 top: parent.top
                 // don't keep a margin if there is already a button with spacing
                 leftMargin: leftButtonContainer.width > 0 ? 0 : headerStyle.textLeftMargin
-                right: actionsContainer.left
             }
+            width: parent.width - anchors.leftMargin
+                   - leftButtonContainer.anchors.leftMargin - leftButtonContainer.width
+                   - actionsContainer.anchors.rightMargin - actionsContainer.width
             height: headerStyle.contentHeight
 
             Label {
