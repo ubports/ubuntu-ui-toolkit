@@ -363,7 +363,6 @@ Style.PageHeadStyle {
                 leftMargin: leftButtonContainer.width > 0 ? 0 : headerStyle.textLeftMargin
                 right: actionsContainer.left
             }
-//            width: parent.width - leftButtonContainer.width - actionsContainer.width
             height: headerStyle.contentHeight
 
             Label {

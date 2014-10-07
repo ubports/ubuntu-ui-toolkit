@@ -63,9 +63,8 @@ MainView {
                     iconName: "back"
                     onTriggered: searchPage.state = ""
                 }
-                contents: Rectangle {
-                    color: "red"
-                    anchors.fill: parent
+                contents: TextField {
+                    placeholderText: "search..."
                 }
             }
         ]
