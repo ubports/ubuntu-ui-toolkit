@@ -24,7 +24,7 @@
   \internal
   Initialize pageWrapper.object.
  */
-function __initPage(pageWrapper) {
+function initPage(pageWrapper) {
     var pageComponent;
 
     if (pageWrapper.reference.createObject) {
@@ -74,7 +74,7 @@ function __initPage(pageWrapper) {
  */
 function activate(pageWrapper) {
     if (!pageWrapper.object) {
-        __initPage(pageWrapper);
+        initPage(pageWrapper);
     }
     // Having the same page pushed multiple times on a stack changes
     // the parent of the page object. Change it back here.

@@ -71,6 +71,7 @@ PageTreeNode {
       \preliminary
       Properties are use to initialize a new object, or if reference
       is already an object, properties are copied to the object when activated.
+      Set properties before setting the reference.
      */
     property var properties
 
@@ -80,6 +81,7 @@ PageTreeNode {
     onReferenceChanged: {
         Utils.deactivate(pageWrapper);
         if (pageWrapper.object) pageWrapper.object = null;
+        Utils.initPage(pageWrapper);
         if (pageWrapper.active && reference) {
             Utils.activate(pageWrapper);
         }
