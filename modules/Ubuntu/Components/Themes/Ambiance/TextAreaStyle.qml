@@ -29,7 +29,7 @@ Item {
     /*!
       Background fill color
       */
-    property color backgroundColor: (styledItem.focus || styledItem.highlighted) ? Theme.palette.selected.field : Theme.palette.normal.field
+    property color backgroundColor: (styledItem.focus || styledItem.highlighted) && !styledItem.readOnly ? Theme.palette.selected.field : Theme.palette.normal.field
     property color errorColor: UbuntuColors.orange
 
     /*!
