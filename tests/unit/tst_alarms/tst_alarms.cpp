@@ -392,7 +392,6 @@ private Q_SLOTS:
         alarm.save();
         waitAndFetch(&alarm);
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
-//        QSKIP("https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1322558");
         QVERIFY(containsAlarm(&alarm));
 
         alarm.setDate(alarm.date().addDays(1));
@@ -582,13 +581,13 @@ private Q_SLOTS:
     void test_change_alarm_sound()
     {
         UCAlarm alarm(QDateTime::currentDateTime(), UCAlarm::AutoDetect, "test_change_alarm_fields_sound");
-        alarm.setSound(QUrl("file:///usr/share/sounds/ubuntu/ringtones/Suru arpeggio.ogg"));
+        alarm.setSound(QUrl("file:///usr/share/sounds/ubuntu/ringtones/Bliss.ogg"));
         alarm.save();
         waitAndFetch(&alarm);
         QVERIFY(containsAlarm(&alarm));
 
         // do the change
-        alarm.setSound(QUrl("file:///usr/share/sounds/ubuntu/ringtones/Celestial.ogg"));
+        alarm.setSound(QUrl("file:///usr/share/sounds/ubuntu/ringtones/Sparkle.ogg"));
         alarm.save();
         waitForUpdate(&alarm);
         QVERIFY(containsAlarm(&alarm));
@@ -611,7 +610,7 @@ private Q_SLOTS:
         QFETCH(bool, enabled);
 
         UCAlarm alarm(QDateTime::currentDateTime().addDays(1), "test_check_alarm_tags_" + message);
-        alarm.setSound(QUrl("file:///usr/share/sounds/ubuntu/ringtones/Suru arpeggio.ogg"));
+        alarm.setSound(QUrl("file:///usr/share/sounds/ubuntu/ringtones/Marimbach.ogg"));
         alarm.setEnabled(enabled);
         alarm.save();
         waitAndFetch(&alarm);
