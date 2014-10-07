@@ -101,28 +101,29 @@ TestCase {
         return center;
     }
 
+    /*!
+        Move Mouse from x,y to distance of dx, dy divided to steps with a stepdelay (ms).
+    */
+    function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay) {
+        mouseMove(item, x, y);
+        var abs_dx = Math.abs(dx)
+        var abs_dy = Math.abs(dy)
+        var step_dx = dx / steps;
+        var step_dy = dy /steps;
 
+        var ix = 0;
+        var iy = 0;
 
-	/*!
-		Move Mouse from x,y to distance of dx, dy divided to steps with a stepdelay (ms).
-	*/
-	function mouseMoveSlowly(item,x,y,dx,dy,steps,stepdelay) {
-		mouseMove(item,x,y);
-		var step_dx = dx/steps;
-		var step_dy = dy/steps;
-
-		var ix = 0;
-		var iy = 0;
-		for (var step=0; step<steps; step++) {
-			if (ix<dx) {
-				ix += step_dx;
-			}
-			if (iy<dx) {
-				iy += step_dy;
-			}
-			mouseMove(item,x + ix,y + iy,stepdelay);
-		}
-	}
+        for (var step=0; step < steps; step++) {
+            if (ix < abs_dx) {
+                ix += step_dx;
+            }
+            if (iy < abs_dy) {
+                iy += step_dy;
+            }
+            mouseMove(item, x + ix, y + iy, stepdelay);
+        }
+    }
 
     /*!
       \qmlmethod UbuntuTestCase::flick(item, x, y, dx, dy, pressTimeout = -1, steps = -1, button = Qt.LeftButton, modifiers = Qt.NoModifiers, delay = -1)
