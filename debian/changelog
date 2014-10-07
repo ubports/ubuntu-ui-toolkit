@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.1.1279+14.10.20141001-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.1.1279+14.10.20141007-0ubuntu1) 14.09; urgency=medium
 
   [ Michael Sheldon ]
   * Removes the keyboard anchor animation as this is now implemented
@@ -25,7 +25,10 @@ ubuntu-ui-toolkit (1.1.1279+14.10.20141001-0ubuntu2) UNRELEASED; urgency=medium
   * autopilot package should source-depend on QML plugin. 
     Fixes LP: #1236085.
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Tue, 07 Oct 2014 14:44:24 +0300
+  [ CI bot ]
+  * Resync trunk
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 07 Oct 2014 12:09:39 +0000
 
 ubuntu-ui-toolkit (1.1.1269+14.10.20141001-0ubuntu1) 14.09; urgency=medium
 
