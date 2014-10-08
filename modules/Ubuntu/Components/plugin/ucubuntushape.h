@@ -179,10 +179,8 @@ private:
 
 struct TextureData;
 
-class ShapeNode : public QObject, public QSGGeometryNode
+class ShapeNode : public QSGGeometryNode
 {
-    Q_OBJECT
-
 public:
     struct Vertex {
         float position[2];
