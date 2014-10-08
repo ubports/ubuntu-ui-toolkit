@@ -51,32 +51,15 @@ function execute_test_cmd {
     RESULT=${PIPESTATUS[0]}
     WARNINGS=$(grep -c qwarn $_XML)
     EXCEPTIONS='tst_components_benchmark \
-                tst_toolbaritems.qml \
                 tst_tabbar.qml \
-                tst_alarms \
-                tst_pickerpanel.qml \
-                tst_picker.qml \
-                tst_i18n \
                 tst_listitems_standard.qml \
                 tst_optionselector.qml \
-                tst_mainview \
-                tst_popups_actionselectionpopover.qml \
-                tst_datepicker.qml \
-                tst_listitems_valueselector.qml \
                 tst_listitems_itemselector.qml \
-                tst_ubuntu_shape \
-                tst_page.qml \
                 tst_qquick_image_extension \
-                tst_listitems_divider.qml \
-                tst_checkbox.qml \
-                tst_performance \
-                tst_inversemousearea \
-                tst_listitems_base.qml \
                 tst_theme_engine \
                 tst_tabs.qml \
-                tst_textfield.qml \
                 tst_mousefilters \
-                tst_action.qml'
+                '
     if [ $WARNINGS -ne 0 ]; then
       if [[ $EXCEPTIONS == *$_TARGET_$_TESTFILE* ]]; then
         echo "FIXME: $WARNINGS warnings - Known problematic test"
