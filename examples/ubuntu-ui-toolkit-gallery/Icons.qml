@@ -79,10 +79,11 @@ Template {
         TemplateRow {
             title: i18n.tr("Theme")
             spacing: units.gu(2)
-
+            height: iconFlow.height
 
             Flow {
-                anchors.fill: parent
+                id: iconFlow
+                width: parent.width
                 spacing: units.gu(2)
 
                 Repeater {
