@@ -25,16 +25,6 @@
 #include <QtQuick/qsgtexture.h>
 #include <QtGui/QOpenGLFunctions>
 
-struct MaterialData
-{
-    MaterialData();
-    QSGTexture* shapeTexture;
-    QSGTextureProvider* imageTextureProvider;
-    QRgb color;
-    QRgb gradientColor;
-    QSGTexture::Filtering shapeTextureFiltering;
-};
-
 // QtQuick item.
 
 class ShapeItem : public QQuickItem
@@ -111,8 +101,11 @@ private:
         QSGTexture* low;
     };
 
+    QSGTextureProvider* imageTextureProvider_;
     QColor color_;
+    QRgb colorPremultiplied_;
     QColor gradientColor_;
+    QRgb gradientColorPremultiplied_;
     bool gradientColorSet_;
     QString radiusString_;
     Radius radius_;
@@ -124,32 +117,45 @@ private:
     VAlignment vAlignment_;
     float gridUnit_;
     QRectF geometry_;
-    MaterialData materialData_;
 
     static QHash<QOpenGLContext*, TextureHandles> textures_;
 
     Q_DISABLE_COPY(ShapeItem)
 };
 
-// Scene graph textured material.
+// Scene graph material.
 
-class ShapeTexturedMaterial : public QSGMaterial
+class ShapeMaterial : public QSGMaterial
 {
 public:
-    ShapeTexturedMaterial();
+    struct Data
+    {
+        enum { ColoredFlag = (1 << 0) };
+        QSGTexture* shapeTexture;
+        QSGTextureProvider* imageTextureProvider;
+        QRgb color;
+        QRgb gradientColor;
+        QSGTexture::Filtering shapeTextureFiltering;
+        quint8 flags;
+    };
+
+    ShapeMaterial();
     virtual QSGMaterialType* type() const;
     virtual QSGMaterialShader* createShader() const;
     virtual int compare(const QSGMaterial* other) const;
-    const MaterialData* data() const { return &data_; }
-    void setData(MaterialData* data);
+    const Data* constData() const { return &data_; }
+    Data* data() { return &data_; }
 
 private:
-    MaterialData data_;
+    // ShapeItem::updatePaintNode() directly writes data and ShapeShader::updateState() directly
+    // reads from it. We don't bother with getters/setters since it's only meant to be used by the
+    // UbuntuShape implementation and makes it easier to maintain.
+    Data data_;
 };
 
-// Scene graph textured material shader.
+// Scene graph shader.
 
-class ShapeTexturedShader : public QSGMaterialShader
+class ShapeShader : public QSGMaterialShader
 {
 public:
     virtual char const* const* attributeNames() const;
@@ -161,45 +167,12 @@ private:
     virtual const char* vertexShader() const;
     virtual const char* fragmentShader() const;
 
-    int matrixId_;
-    int opacityId_;
     QOpenGLFunctions* glFuncs_;
-};
-
-// Scene graph colored material.
-
-class ShapeColoredMaterial : public QSGMaterial
-{
-public:
-    ShapeColoredMaterial();
-    virtual QSGMaterialType* type() const;
-    virtual QSGMaterialShader* createShader() const;
-    virtual int compare(const QSGMaterial* other) const;
-    const MaterialData* data() const { return &data_; }
-    void setData(MaterialData* data);
-
-private:
-    MaterialData data_;
-};
-
-// Scene graph colored material shader.
-
-class ShapeColoredShader : public QSGMaterialShader
-{
-public:
-    virtual char const* const* attributeNames() const;
-    virtual void initialize();
-    virtual void updateState(
-        const RenderState& state, QSGMaterial* newEffect, QSGMaterial* oldEffect);
-
-private:
-    virtual const char* vertexShader() const;
-    virtual const char* fragmentShader() const;
-
     int matrixId_;
     int opacityId_;
-    int colorId_;
-    int gradientColorId_;
+    int color1Id_;
+    int color2Id_;
+    int coloredId_;
 };
 
 // Scene graph node.
@@ -219,19 +192,15 @@ public:
     };
 
     ShapeNode(ShapeItem* item);
+    ShapeMaterial* material() { return &material_; }
     void setVertices(const QRectF& geometry, float radius, QQuickItem* image, bool stretched,
                      ShapeItem::HAlignment hAlignment, ShapeItem::VAlignment vAlignment,
                      float shapeCoordinate[][2]);
-    void setMaterialData(bool textured, MaterialData* materialData);
 
 private:
-    enum MaterialType { TexturedMaterial, ColoredMaterial };
-
     ShapeItem* item_;
     QSGGeometry geometry_;
-    ShapeTexturedMaterial texturedMaterial_;
-    ShapeColoredMaterial coloredMaterial_;
-    MaterialType currentMaterial_;
+    ShapeMaterial material_;
 };
 
 QML_DECLARE_TYPE(ShapeItem)
