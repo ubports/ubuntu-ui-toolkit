@@ -31,7 +31,7 @@
 #include "ucscalingimageprovider.h"
 #include "ucqquickimageextension.h"
 #include "quickutils.h"
-#include "shapeitem.h"
+#include "ucubuntushape.h"
 #include "inversemouseareatype.h"
 #include "qquickclipboard.h"
 #include "qquickmimedata.h"
@@ -125,9 +125,9 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterUncreatableType<UbuntuI18n>(uri, major, minor, "i18n", "Singleton object");
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
-    qmlRegisterType<ShapeItem>(uri, major, minor, "UbuntuShape");
+    qmlRegisterType<UCUbuntuShape>(uri, major, minor, "UbuntuShape");
     // FIXME/DEPRECATED: Shape is exported for backwards compatibity only
-    qmlRegisterType<ShapeItem>(uri, major, minor, "Shape");
+    qmlRegisterType<UCUbuntuShape>(uri, major, minor, "Shape");
     qmlRegisterType<InverseMouseAreaType>(uri, major, minor, "InverseMouseArea");
     qmlRegisterType<QQuickMimeData>(uri, major, minor, "MimeData");
     qmlRegisterSingletonType<QQuickClipboard>(uri, major, minor, "Clipboard", registerClipboard);

@@ -16,8 +16,8 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#include "shapeitem.h"
-#include "shapeitemtexture.h"
+#include "ucubuntushape.h"
+#include "ucubuntushapetexture.h"
 #include "ucunits.h"
 #include <QtCore/QPointer>
 #include <QtQuick/QQuickWindow>
@@ -26,7 +26,7 @@
 
 /*!
     \qmltype UbuntuShape
-    \instantiates ShapeItem
+    \instantiates UCUbuntuShape
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief The UbuntuShape item provides a standard Ubuntu shaped rounded rectangle.
@@ -105,7 +105,7 @@
 const float lowHighTextureThreshold = 11.0f;
 
 // Map of windows and associated textures.
-QHash<QOpenGLContext*, ShapeItem::TextureHandles> ShapeItem::textures_;
+QHash<QOpenGLContext*, UCUbuntuShape::TextureHandles> UCUbuntuShape::textures_;
 
 static const char* const shapeVertexShader =
     "uniform lowp mat4 matrix;                                                                   \n"
@@ -205,7 +205,7 @@ static int sizeOfType(GLenum type)
 
 // --- QtQuick item ---
 
-ShapeItem::ShapeItem(QQuickItem* parent)
+UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     : QQuickItem(parent)
     , imageTextureProvider_(NULL)
     , color_(0.0, 0.0, 0.0, 0.0)
@@ -214,12 +214,12 @@ ShapeItem::ShapeItem(QQuickItem* parent)
     , gradientColorPremultiplied_(qRgba(0, 0, 0, 0))
     , gradientColorSet_(false)
     , radiusString_("small")
-    , radius_(ShapeItem::SmallRadius)
-    , border_(ShapeItem::IdleBorder)
+    , radius_(UCUbuntuShape::SmallRadius)
+    , border_(UCUbuntuShape::IdleBorder)
     , image_(NULL)
     , stretched_(true)
-    , hAlignment_(ShapeItem::AlignHCenter)
-    , vAlignment_(ShapeItem::AlignVCenter)
+    , hAlignment_(UCUbuntuShape::AlignHCenter)
+    , vAlignment_(UCUbuntuShape::AlignVCenter)
     , gridUnit_(UCUnits::instance().gridUnit())
     , geometry_()
 {
@@ -231,7 +231,7 @@ ShapeItem::ShapeItem(QQuickItem* parent)
     update();
 }
 
-void ShapeItem::setColor(const QColor& color)
+void UCUbuntuShape::setColor(const QColor& color)
 {
     if (color_ != color) {
         color_ = color;
@@ -253,7 +253,7 @@ void ShapeItem::setColor(const QColor& color)
     }
 }
 
-void ShapeItem::setGradientColor(const QColor& gradientColor)
+void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 {
     gradientColorSet_ = true;
     if (gradientColor_ != gradientColor) {
@@ -269,32 +269,32 @@ void ShapeItem::setGradientColor(const QColor& gradientColor)
     }
 }
 
-void ShapeItem::setRadius(const QString& radius)
+void UCUbuntuShape::setRadius(const QString& radius)
 {
     if (radiusString_ != radius) {
         radiusString_ = radius;
-        radius_ = (radius == "medium") ? ShapeItem::MediumRadius : ShapeItem::SmallRadius;
+        radius_ = (radius == "medium") ? UCUbuntuShape::MediumRadius : UCUbuntuShape::SmallRadius;
         update();
         Q_EMIT radiusChanged();
     }
 }
 
-void ShapeItem::setBorderSource(const QString& borderSource)
+void UCUbuntuShape::setBorderSource(const QString& borderSource)
 {
     if (borderSource_ != borderSource) {
         if (borderSource.endsWith(QString("radius_idle.sci")))
-            border_ = ShapeItem::IdleBorder;
+            border_ = UCUbuntuShape::IdleBorder;
         else if (borderSource.endsWith(QString("radius_pressed.sci")))
-            border_ = ShapeItem::PressedBorder;
+            border_ = UCUbuntuShape::PressedBorder;
         else
-            border_ = ShapeItem::RawBorder;
+            border_ = UCUbuntuShape::RawBorder;
         borderSource_ = borderSource;
         update();
         Q_EMIT borderSourceChanged();
     }
 }
 
-void ShapeItem::setImage(const QVariant& image)
+void UCUbuntuShape::setImage(const QVariant& image)
 {
     QQuickItem* newImage = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(image));
     if (image_ != newImage) {
@@ -317,11 +317,11 @@ void ShapeItem::setImage(const QVariant& image)
     }
 }
 
-void ShapeItem::updateFromImageProperties(QQuickItem* image)
+void UCUbuntuShape::updateFromImageProperties(QQuickItem* image)
 {
     int alignment;
 
-    // ShapeItem::stretched depends on image::fillMode
+    // UCUbuntuShape::stretched depends on image::fillMode
     QQuickImage::FillMode fillMode = (QQuickImage::FillMode)image->property("fillMode").toInt();
     if (fillMode == QQuickImage::PreserveAspectCrop) {
         setStretched(false);
@@ -329,30 +329,30 @@ void ShapeItem::updateFromImageProperties(QQuickItem* image)
         setStretched(true);
     }
 
-    // ShapeItem::horizontalAlignment depends on image::horizontalAlignment
+    // UCUbuntuShape::horizontalAlignment depends on image::horizontalAlignment
     int imageHorizontalAlignment = image->property("horizontalAlignment").toInt();
     if (imageHorizontalAlignment == Qt::AlignLeft) {
-        alignment = ShapeItem::AlignLeft;
+        alignment = UCUbuntuShape::AlignLeft;
     } else if (imageHorizontalAlignment == Qt::AlignRight) {
-        alignment = ShapeItem::AlignRight;
+        alignment = UCUbuntuShape::AlignRight;
     } else {
-        alignment = ShapeItem::AlignHCenter;
+        alignment = UCUbuntuShape::AlignHCenter;
     }
-    setHorizontalAlignment(static_cast<ShapeItem::HAlignment>(alignment));
+    setHorizontalAlignment(static_cast<UCUbuntuShape::HAlignment>(alignment));
 
-    // ShapeItem::verticalAlignment depends on image::verticalAlignment
+    // UCUbuntuShape::verticalAlignment depends on image::verticalAlignment
     int imageVerticalAlignment = image->property("verticalAlignment").toInt();
     if (imageVerticalAlignment == Qt::AlignTop) {
-        alignment = ShapeItem::AlignTop;
+        alignment = UCUbuntuShape::AlignTop;
     } else if (imageVerticalAlignment == Qt::AlignBottom) {
-        alignment = ShapeItem::AlignBottom;
+        alignment = UCUbuntuShape::AlignBottom;
     } else {
-        alignment = ShapeItem::AlignVCenter;
+        alignment = UCUbuntuShape::AlignVCenter;
     }
-    setVerticalAlignment(static_cast<ShapeItem::VAlignment>(alignment));
+    setVerticalAlignment(static_cast<UCUbuntuShape::VAlignment>(alignment));
 }
 
-void ShapeItem::connectToPropertyChange(QObject* sender, const char* property,
+void UCUbuntuShape::connectToPropertyChange(QObject* sender, const char* property,
                                         QObject* receiver, const char* slot)
 {
     int propertyIndex = sender->metaObject()->indexOfProperty(property);
@@ -366,20 +366,20 @@ void ShapeItem::connectToPropertyChange(QObject* sender, const char* property,
     }
 }
 
-void ShapeItem::connectToImageProperties(QQuickItem* image)
+void UCUbuntuShape::connectToImageProperties(QQuickItem* image)
 {
     connectToPropertyChange(image, "fillMode", this, "onImagePropertiesChanged()");
     connectToPropertyChange(image, "horizontalAlignment", this, "onImagePropertiesChanged()");
     connectToPropertyChange(image, "verticalAlignment", this, "onImagePropertiesChanged()");
 }
 
-void ShapeItem::onImagePropertiesChanged()
+void UCUbuntuShape::onImagePropertiesChanged()
 {
     QQuickItem* image = qobject_cast<QQuickItem*>(sender());
     updateFromImageProperties(image);
 }
 
-void ShapeItem::setStretched(bool stretched)
+void UCUbuntuShape::setStretched(bool stretched)
 {
     if (stretched_ != stretched) {
         stretched_ = stretched;
@@ -388,7 +388,7 @@ void ShapeItem::setStretched(bool stretched)
     }
 }
 
-void ShapeItem::setHorizontalAlignment(HAlignment hAlignment)
+void UCUbuntuShape::setHorizontalAlignment(HAlignment hAlignment)
 {
     if (hAlignment_ != hAlignment) {
         hAlignment_ = hAlignment;
@@ -397,7 +397,7 @@ void ShapeItem::setHorizontalAlignment(HAlignment hAlignment)
     }
 }
 
-void ShapeItem::setVerticalAlignment(VAlignment vAlignment)
+void UCUbuntuShape::setVerticalAlignment(VAlignment vAlignment)
 {
     if (vAlignment_ != vAlignment) {
         vAlignment_ = vAlignment;
@@ -406,7 +406,7 @@ void ShapeItem::setVerticalAlignment(VAlignment vAlignment)
     }
 }
 
-void ShapeItem::gridUnitChanged()
+void UCUbuntuShape::gridUnitChanged()
 {
     gridUnit_ = UCUnits::instance().gridUnit();
     setImplicitWidth(8 * gridUnit_);
@@ -414,14 +414,14 @@ void ShapeItem::gridUnitChanged()
     update();
 }
 
-void ShapeItem::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
+void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
 {
     geometry_ = newGeometry;
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
     update();
 }
 
-void ShapeItem::onOpenglContextDestroyed()
+void UCUbuntuShape::onOpenglContextDestroyed()
 {
     QOpenGLContext* context = qobject_cast<QOpenGLContext*>(sender());
     if (Q_UNLIKELY(!context)) return;
@@ -436,13 +436,13 @@ void ShapeItem::onOpenglContextDestroyed()
     }
 }
 
-void ShapeItem::providerDestroyed(QObject* object)
+void UCUbuntuShape::providerDestroyed(QObject* object)
 {
     Q_UNUSED(object);
     imageTextureProvider_ = NULL;
 }
 
-QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data)
+QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data)
 {
     Q_UNUSED(data);
 
@@ -507,7 +507,7 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
     // Set the shape texture to be used by the materials depending on current grid unit. The radius
     // is set considering the current grid unit and the texture raster grid unit. When the item size
     // is less than 2 radii, the radius is scaled down.
-    float radius = (radius_ == ShapeItem::SmallRadius) ?
+    float radius = (radius_ == UCUbuntuShape::SmallRadius) ?
         textureData->smallRadius : textureData->mediumRadius;
     const float scaleFactor = gridUnit_ / textureData->gridUnit;
     materialData->shapeTextureFiltering = QSGTexture::Nearest;
@@ -537,8 +537,9 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
     }
 
     // Update vertices and material.
-    int index = (border_ == ShapeItem::RawBorder) ? 0 : (border_ == ShapeItem::IdleBorder) ? 1 : 2;
-    if (radius_ == ShapeItem::SmallRadius)
+    int index = (border_ == UCUbuntuShape::RawBorder) ?
+        0 : (border_ == UCUbuntuShape::IdleBorder) ? 1 : 2;
+    if (radius_ == UCUbuntuShape::SmallRadius)
         index += 3;
     node->setVertices(geometry_, radius, image_, stretched_, hAlignment_, vAlignment_,
                       textureData->coordinate[index]);
@@ -548,7 +549,7 @@ QSGNode* ShapeItem::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data
 
 // --- Scene graph node ---
 
-ShapeNode::ShapeNode(ShapeItem* item)
+ShapeNode::ShapeNode(UCUbuntuShape* item)
     : QSGGeometryNode()
     , item_(item)
     , geometry_(getAttributes(), shapeMesh.vertexCount, shapeMesh.indexCount, shapeMesh.indexType)
@@ -565,8 +566,8 @@ ShapeNode::ShapeNode(ShapeItem* item)
 }
 
 void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* image, bool stretched,
-                            ShapeItem::HAlignment hAlignment, ShapeItem::VAlignment vAlignment,
-                            float shapeCoordinate[][2])
+                            UCUbuntuShape::HAlignment hAlignment,
+                            UCUbuntuShape::VAlignment vAlignment, float shapeCoordinate[][2])
 {
     ShapeNode::Vertex* vertices = reinterpret_cast<ShapeNode::Vertex*>(geometry_.vertexData());
     const QSGTextureProvider* provider = image ? image->textureProvider() : NULL;

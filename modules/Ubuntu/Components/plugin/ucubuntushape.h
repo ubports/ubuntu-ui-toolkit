@@ -16,8 +16,8 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-#ifndef UBUNTU_COMPONENTS_SHAPE_H
-#define UBUNTU_COMPONENTS_SHAPE_H
+#ifndef UCUBUNTUSHAPE_H
+#define UCUBUNTUSHAPE_H
 
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QSGNode>
@@ -27,7 +27,7 @@
 
 // QtQuick item.
 
-class ShapeItem : public QQuickItem
+class UCUbuntuShape : public QQuickItem
 {
     Q_OBJECT
     Q_ENUMS(HAlignment)
@@ -43,7 +43,7 @@ class ShapeItem : public QQuickItem
     Q_PROPERTY(QString borderSource READ borderSource WRITE setBorderSource NOTIFY borderSourceChanged)
 
 public:
-    ShapeItem(QQuickItem* parent=0);
+    UCUbuntuShape(QQuickItem* parent=0);
 
     enum Radius { SmallRadius, MediumRadius };
     enum Border { RawBorder, IdleBorder, PressedBorder };
@@ -120,7 +120,7 @@ private:
 
     static QHash<QOpenGLContext*, TextureHandles> textures_;
 
-    Q_DISABLE_COPY(ShapeItem)
+    Q_DISABLE_COPY(UCUbuntuShape)
 };
 
 // Scene graph material.
@@ -147,9 +147,9 @@ public:
     Data* data() { return &data_; }
 
 private:
-    // ShapeItem::updatePaintNode() directly writes data and ShapeShader::updateState() directly
-    // reads from it. We don't bother with getters/setters since it's only meant to be used by the
-    // UbuntuShape implementation and makes it easier to maintain.
+    // UCUbuntuShape::updatePaintNode() directly writes to data and ShapeShader::updateState()
+    // directly reads from it. We don't bother with getters/setters since it's only meant to be used
+    // by the UbuntuShape implementation and makes it easier to maintain.
     Data data_;
 };
 
@@ -191,18 +191,18 @@ public:
         float padding[2];  // Ensure a 32 bytes stride.
     };
 
-    ShapeNode(ShapeItem* item);
+    ShapeNode(UCUbuntuShape* item);
     ShapeMaterial* material() { return &material_; }
     void setVertices(const QRectF& geometry, float radius, QQuickItem* image, bool stretched,
-                     ShapeItem::HAlignment hAlignment, ShapeItem::VAlignment vAlignment,
-                     float shapeCoordinate[][2]);
+                     UCUbuntuShape::HAlignment hAlignment,
+                     UCUbuntuShape::VAlignment vAlignment, float shapeCoordinate[][2]);
 
 private:
-    ShapeItem* item_;
+    UCUbuntuShape* item_;
     QSGGeometry geometry_;
     ShapeMaterial material_;
 };
 
-QML_DECLARE_TYPE(ShapeItem)
+QML_DECLARE_TYPE(UCUbuntuShape)
 
-#endif // UBUNTU_COMPONENTS_SHAPE_H
+#endif // UCUBUNTUSHAPE_H
