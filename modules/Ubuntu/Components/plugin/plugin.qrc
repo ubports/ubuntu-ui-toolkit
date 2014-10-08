@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/shaders">
+        <file>ucubuntushape.frag</file>
+        <file>ucubuntushape.vert</file>
+    </qresource>
+</RCC>

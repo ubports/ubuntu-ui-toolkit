@@ -112,6 +112,13 @@ SOURCES += plugin.cpp \
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp
 
+RESOURCES += \
+    plugin.qrc
+
+OTHER_FILES += \
+    ucubuntushape.vert \
+    ucubuntushape.frag
+
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 target.path = $$installPath

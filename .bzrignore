@@ -2,6 +2,7 @@ Makefile
 modules/Makefile.ubuntu-ui-toolkit
 modules/Ubuntu/Components/Makefile.ubuntu-ui-toolkit
 modules/Ubuntu/Components/plugin/Makefile.ubuntu-ui-toolkit
+modules/Ubuntu/Components/plugin/qrc_plugin.cpp
 documentation/html/*
 *.moc
 moc_*.cpp

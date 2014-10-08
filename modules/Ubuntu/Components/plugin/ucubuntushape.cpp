@@ -108,52 +108,6 @@ const float lowHighTextureThreshold = 11.0f;
 // Map of windows and associated textures.
 QHash<QOpenGLContext*, UCUbuntuShape::TextureHandles> UCUbuntuShape::textures_;
 
-static const char* const shapeVertexShader =
-    "uniform lowp mat4 matrix;                                                                   \n"
-    "attribute lowp vec4 positionAttrib;                                                         \n"
-    "attribute lowp vec2 shapeCoordAttrib;                                                       \n"
-    "attribute lowp vec2 imageCoordAttrib;                                                       \n"
-    "varying lowp vec2 shapeCoord;                                                               \n"
-    "varying lowp vec2 imageCoord;                                                               \n"
-    "void main()                                                                                 \n"
-    "{                                                                                           \n"
-    "    shapeCoord = shapeCoordAttrib;                                                          \n"
-    "    imageCoord = imageCoordAttrib;                                                          \n"
-    "    gl_Position = matrix * positionAttrib;                                                  \n"
-    "}";
-
-// Static flow control (branching on a uniform value) is fast on most GPUs (including ultra-low
-// power ones) because it allows to use the same shader execution path for an entire draw call. We
-// rely on that technique here (often called "uber-shader" solution) to avoid the complexity of
-// dealing with a multiple shaders solution.
-static const char* const shapeFragmentShader =
-    "uniform lowp float opacity;                                                                 \n"
-    "uniform sampler2D shapeTexture;                                                             \n"
-    "uniform sampler2D imageTexture;                                                             \n"
-    "uniform lowp vec4 color1;                                                                   \n"
-    "uniform lowp vec4 color2;                                                                   \n"
-    "uniform lowp bool colored;                                                                  \n"
-    "varying lowp vec2 shapeCoord;                                                               \n"
-    "varying lowp vec2 imageCoord;                                                               \n"
-    "void main(void)                                                                             \n"
-    "{                                                                                           \n"
-    //   Early texture fetch to cover latency as best as possible.
-    "    lowp vec4 shapeData = texture2D(shapeTexture, shapeCoord);                              \n"
-
-    //   Get the shaped color. Note that static flow control prevents evaluating the texture fetch
-    //   in case of a colored shape.
-    "    lowp vec4 color;                                                                        \n"
-    "    if (colored) {                                                                          \n"
-    "        color = mix(color1, color2, imageCoord.t) * vec4(shapeData.b);                      \n"
-    "    } else {                                                                                \n"
-    "        color = texture2D(imageTexture, imageCoord) * vec4(shapeData.b);                    \n"
-    "    }                                                                                       \n"
-
-    //   Standard Porter/Duff source over blending.
-    "    lowp vec4 blend = shapeData.gggr + vec4(1.0 - shapeData.r) * color;                     \n"
-    "    gl_FragColor = blend * vec4(opacity);                                                   \n"
-    "}";
-
 class ShapeMaterial : public QSGMaterial
 {
 public:
@@ -187,15 +141,13 @@ private:
 class ShapeShader : public QSGMaterialShader
 {
 public:
+    ShapeShader();
     virtual char const* const* attributeNames() const;
     virtual void initialize();
     virtual void updateState(
         const RenderState& state, QSGMaterial* newEffect, QSGMaterial* oldEffect);
 
 private:
-    virtual const char* vertexShader() const;
-    virtual const char* fragmentShader() const;
-
     QOpenGLFunctions* glFuncs_;
     int matrixId_;
     int opacityId_;
@@ -204,14 +156,11 @@ private:
     int coloredId_;
 };
 
-const char *ShapeShader::vertexShader() const
+ShapeShader::ShapeShader()
+    : QSGMaterialShader()
 {
-    return shapeVertexShader;
-}
-
-const char* ShapeShader::fragmentShader() const
-{
-    return shapeFragmentShader;
+    setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":/shaders/ucubuntushape.vert"));
+    setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":/shaders/ucubuntushape.frag"));
 }
 
 char const* const* ShapeShader::attributeNames() const
