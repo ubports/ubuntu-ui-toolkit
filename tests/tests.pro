@@ -10,3 +10,7 @@ autopilot2_module.files = autopilot/ubuntuuitoolkit/*
 SUBDIRS += launcher
 
 INSTALLS += autopilot_module autopilot2_module
+
+check.commands += cd ../..;
+check.commands += sh tests/qmlapicheck.sh || exit 1;
+check.commands += cd tests
