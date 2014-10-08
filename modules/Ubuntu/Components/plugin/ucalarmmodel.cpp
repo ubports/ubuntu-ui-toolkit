@@ -127,15 +127,18 @@ UCAlarmModel::UCAlarmModel(QObject *parent)
     , m_ready(false)
 {
     m_roles = AlarmUtils::roles();
-    m_roles.insert(m_roles.count(), "model");
     // keep in sync with alarms collection changes
     // make sure the connection is asynchronous, as changes made in in-place in
     // the delegates may cause the model data to be invalid (released) as some
     // backends may do the refresh/element removals synchronously
     connect(&AlarmManager::instance(), SIGNAL(alarmsChanged()), this, SLOT(refresh()), Qt::QueuedConnection);
     // get individual alarm data updates
-    connect(&AlarmManager::instance(), SIGNAL(alarmsUpdated(QList<QVariant>)), this, SLOT(update(QList<QVariant>)), Qt::QueuedConnection);
+    connect(&AlarmManager::instance(), SIGNAL(alarmUpdated(int)), this, SLOT(update(int)), Qt::QueuedConnection);
+    // data removal must be direct
+    connect(&AlarmManager::instance(), SIGNAL(alarmRemoveStarted(int)), this, SLOT(removeStarted(int)), Qt::DirectConnection);
+    connect(&AlarmManager::instance(), SIGNAL(alarmRemoveFinished()), this, SLOT(removeFinished()), Qt::DirectConnection);
     // fetch alarms
+    AlarmManager::instance().fetchAlarms();
     refresh();
     m_ready = true;
 }
@@ -159,15 +162,8 @@ QVariant UCAlarmModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    const QString roleName = m_roles.value(role);
     UCAlarm *alarm = AlarmManager::instance().alarmAt(idx);
-    if (roleName == "model") {
-        return QVariant::fromValue(const_cast<UCAlarm*>(alarm));
-    } else if (!roleName.isEmpty()){
-        return alarm->property(roleName.toLocal8Bit());
-    }
-
-    return QVariant();
+    return AlarmUtils::roleData(role, alarm);
 }
 
 QHash<int, QByteArray> UCAlarmModel::roleNames() const
@@ -208,10 +204,7 @@ QHash<int, QByteArray> UCAlarmModel::roleNames() const
  */
 UCAlarm* UCAlarmModel::get(int index)
 {
-    if ((index >= 0) && (index < AlarmManager::instance().alarmCount())) {
-        return AlarmManager::instance().alarmAt(index);
-    }
-    return 0;
+    return AlarmManager::instance().alarmAt(index);
 }
 
 /*!
@@ -233,7 +226,6 @@ void UCAlarmModel::refresh()
         beginResetModel();
     }
 
-//    AlarmManager::instance().fetchAlarms();
     Q_EMIT countChanged();
 
     if (m_ready) {
@@ -243,26 +235,32 @@ void UCAlarmModel::refresh()
 
 /*!
  * \internal
- * Slot updating individual alarms' data.
+ * Slot updating individual alarm's data.
  */
-void UCAlarmModel::update(const QList<QVariant> cookies)
+void UCAlarmModel::update(int index)
 {
-    Q_UNUSED(cookies);
-//    AlarmList alarms = AlarmManager::instance().alarms();
-//    Q_FOREACH(const QVariant &cookie, cookies) {
-//        int alarmIndex = alarms.indexOfAlarm(cookie);
-//        AlarmData data = alarms[alarmIndex];
+    // create index and emit dataUpdate()
+    QModelIndex modelIndex = createIndex(index, 0);
+    Q_EMIT dataChanged(modelIndex, modelIndex);
+}
 
-//        // the index of the m_alarm must be in sync with teh index of the alarms
-//        UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(m_alarms[alarmIndex]);
-//        if (pAlarm->rawData.cookie != cookie) {
-//            qmlInfo(this) << "Updated alarm cookies differ!" << cookie.toString() << pAlarm->rawData.cookie.toString();
-//        } else {
-//            pAlarm->rawData = data;
+/*!
+ * \internal
+ * Slot starting removing individual alarm.
+ */
+void UCAlarmModel::removeStarted(int index)
+{
+    QModelIndex modelIndex = createIndex(index, 0);
+    beginRemoveRows(modelIndex, index, index);
+    qDebug() << "REMOVING INDEX" << index;
+}
 
-//            // create index and emit dataUpdate()
-//            QModelIndex modelIndex = createIndex(alarmIndex, 0);
-//            Q_EMIT dataChanged(modelIndex, modelIndex);
-//        }
-//    }
+/*!
+ * \internal
+ * Slot finalizing removing individual alarm.
+ */
+void UCAlarmModel::removeFinished()
+{
+    endRemoveRows();
+    Q_EMIT countChanged();
 }

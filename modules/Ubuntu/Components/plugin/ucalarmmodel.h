@@ -44,10 +44,12 @@ public:
     
 Q_SIGNALS:
     void countChanged();
-    
+
 private Q_SLOTS:
     void refresh();
-    void update(const QList<QVariant> cookies);
+    void update(int index);
+    void removeStarted(int index);
+    void removeFinished();
 
 private:
     bool m_ready;

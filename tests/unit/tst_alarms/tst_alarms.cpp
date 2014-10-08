@@ -44,6 +44,15 @@ private:
 
     QSignalSpy *updateSpy;
 
+    void waitForRequest(UCAlarm *alarm)
+    {
+        UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
+        if (pAlarm->request) {
+            pAlarm->request->wait();
+        }
+        QTest::waitForEvents();
+    }
+
     void syncFetch()
     {
         // initiate fetch
@@ -61,23 +70,13 @@ private:
 
     void waitForUpdate(UCAlarm *alarm)
     {
-//        QSignalSpy spy(&AlarmManager::instance(), SIGNAL(alarmsUpdated(QList<QVariant>)));
-        UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
-        if (pAlarm->request) {
-            pAlarm->request->wait();
-        }
-        QTest::waitForEvents();
-//        spy.wait(1000);
+        waitForRequest(alarm);
         updateSpy->wait(1000);
     }
 
     void waitAndFetch(UCAlarm *alarm)
     {
-        UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
-        if (pAlarm->request) {
-            pAlarm->request->wait();
-        }
-        QTest::waitForEvents();
+        waitForRequest(alarm);
         // also complete any pending fetch!
         syncFetch();
     }
@@ -110,7 +109,7 @@ private Q_SLOTS:
         if (adapter->fetchRequest) {
             adapter->fetchRequest->wait();
         }
-        updateSpy = new QSignalSpy(&AlarmManager::instance(), SIGNAL(alarmsUpdated(QList<QVariant>)));
+        updateSpy = new QSignalSpy(&AlarmManager::instance(), SIGNAL(alarmUpdated(int)));
     }
 
     void cleanupTestCase() {
@@ -121,6 +120,7 @@ private Q_SLOTS:
             UCAlarm *alarm = model.get(i);
             if (alarm && alarm->message().startsWith("test_")) {
                 alarm->cancel();
+//                waitForRequest(alarm);
                 waitAndFetch(alarm);
                 i = 0;
             } else {
@@ -370,7 +370,7 @@ private Q_SLOTS:
         alarm.save();
         waitAndFetch(&alarm);
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
-        QSKIP("https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1322558");
+//        QSKIP("https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1322558");
         QVERIFY(containsAlarm(&alarm));
 
         alarm.setDate(alarm.date().addDays(1));

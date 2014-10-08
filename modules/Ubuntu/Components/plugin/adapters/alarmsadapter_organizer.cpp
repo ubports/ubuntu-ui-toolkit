@@ -322,19 +322,48 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     }
 }
 
+void AlarmsAdapter::alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> > list)
+{
+    typedef QPair<QOrganizerItemId,QOrganizerManager::Operation> OperationPair;
+    Q_FOREACH(const OperationPair &op, list) {
+        switch (op.second) {
+        case QOrganizerManager::Add: {
+            fetchAlarms();
+            break;
+        }
+        case QOrganizerManager::Change: {
+            int index = updateAlarm(op.first);
+            if (index >= 0) {
+                Q_EMIT q_ptr->alarmUpdated(index);
+            }
+            break;
+        }
+        case QOrganizerManager::Remove: {
+            removeAlarm(op.first);
+            break;
+        }
+        }
+    }
+}
+
+void AlarmsAdapter::alarmDataChange()
+{
+    qDebug() << "DATACHANGED";
+    fetchAlarms();
+}
+
+
 void AlarmsAdapter::init()
 {
     completed = true;
     loadAlarms();
 
     // connect to manager to receive changes
-    QObject::connect(manager, SIGNAL(dataChanged()), this, SLOT(fetchAlarms()));
-    QObject::connect(manager, SIGNAL(itemsAdded(QList<QOrganizerItemId>)), this, SLOT(fetchAlarms()));
-    QObject::connect(manager, SIGNAL(itemsChanged(QList<QOrganizerItemId>)), this, SLOT(updateAlarms(QList<QOrganizerItemId>)));
-    QObject::connect(manager, SIGNAL(itemsRemoved(QList<QOrganizerItemId>)), this, SLOT(fetchAlarms()));
+    QObject::connect(manager, SIGNAL(itemsModified(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> >)),
+                     this, SLOT(alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> >)), Qt::DirectConnection);
+    QObject::connect(manager, SIGNAL(dataChanged()), this, SLOT(alarmDataChange()));
 
-    // do the first fetch
-    fetchAlarms();
+    QObject::connect(manager, SIGNAL(dataChanged()), this, SLOT(fetchAlarms()));
 }
 
 AlarmsAdapter::~AlarmsAdapter()
@@ -650,47 +679,68 @@ bool AlarmsAdapter::compareCookies(const QVariant &cookie1, const QVariant &cook
     return id1 == id2;
 }
 
-void AlarmsAdapter::updateAlarms(const QList<QOrganizerItemId> &list)
+// returns a todo event from an ID, which can be an occurence
+QOrganizerTodo AlarmsAdapter::todoItem(const QOrganizerItemId &id)
 {
-    if (list.size() < 0) {
-        return;
-    }
-    QList<QVariant> cookies;
-    QSet<QOrganizerItemId> parentId;
     QOrganizerTodo event;
-    Q_FOREACH(const QOrganizerItemId &id, list) {
+    if (!id.isNull()) {
         const QOrganizerItem item = manager->item(id);
         if (item.type() == QOrganizerItemType::TypeTodoOccurrence) {
             QOrganizerTodoOccurrence occurrence = static_cast<QOrganizerTodoOccurrence>(item);
             QOrganizerItemId eventId = occurrence.parentId();
-            if (parentId.contains(eventId)) {
-                continue;
-            }
-            parentId << eventId;
             event = static_cast<QOrganizerTodo>(manager->item(eventId));
         } else if (item.type() == QOrganizerItemType::TypeTodo){
             event = static_cast<QOrganizerTodo>(item);
-        } else {
-            continue;
         }
-
-        // update alarm data
-        int index = alarmList.indexOfAlarm(event.id());
-        if (index < 0) {
-            qCritical("The Alarm data has been updated with an unregistered item, skipping!");
-            continue;
-        }
-        // use UCAlarm to ease conversions
-        UCAlarm alarm;
-        AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
-        pAlarm->setData(event);
-        adjustAlarmOccurrence(*pAlarm);
-        alarmList[index] = pAlarm->data();
-
-        // register cookie for update
-        cookies << QVariant::fromValue(pAlarm->data().id());
     }
-    Q_EMIT q_ptr->alarmsUpdated(cookies);
+    return event;
+}
+
+// updates an alarm and returns the index, -1 on error
+int AlarmsAdapter::updateAlarm(const QOrganizerItemId &id)
+{
+    QOrganizerTodo event = todoItem(id);
+    if (event.isEmpty()) {
+        return -1;
+    }
+    // update alarm data
+    int index = alarmList.indexOfAlarm(event.id());
+    if (index < 0) {
+        qCritical("The Alarm data has been updated with an unregistered item, skipping!");
+        return -1;
+    }
+    // use UCAlarm to ease conversions
+    UCAlarm alarm;
+    AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
+    pAlarm->setData(event);
+    adjustAlarmOccurrence(*pAlarm);
+    alarmList[index] = pAlarm->data();
+
+    return index;
+}
+
+// removes an alarm from the list
+int AlarmsAdapter::removeAlarm(const QOrganizerItemId &id)
+{
+    qDebug() << "REMOVE 1";
+    if (id.isNull()) {
+        return -1;
+    }
+    qDebug() << "REMOVE 2";
+    int index = alarmList.indexOfAlarm(id);
+    if (index < 0) {
+        // this may be an item we don't handle, organizer manager may report us
+        // other calendar event removals as well.
+        qDebug() << manager->item(id);
+        return -1;
+    }
+    qDebug() << "REMOVE 3";
+    // emit removal start
+    Q_EMIT q_ptr->alarmRemoveStarted(index);
+    alarmList.removeAt(index);
+    Q_EMIT q_ptr->alarmRemoveFinished();
+    qDebug() << "REMOVE 4";
+    return index;
 }
 
 void AlarmsAdapter::completeFetchAlarms(const QList<QOrganizerItem> &alarms)
@@ -940,7 +990,7 @@ void AlarmRequestAdapter::_q_updateProgress()
     if (completed) {
         // cleanup request
         m_request->deleteLater();
-        m_request = 0;
+//        m_request = 0;
 
         if (autoDelete) {
             q_ptr->deleteLater();
@@ -972,7 +1022,7 @@ void AlarmRequestAdapter::completeUpdate()
         return;
     }
     AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(alarm));
-    QOrganizerItemSaveRequest *save = qobject_cast<QOrganizerItemSaveRequest*>(m_request);
+    QOrganizerItemSaveRequest *save = qobject_cast<QOrganizerItemSaveRequest*>(m_request.data());
     pAlarm->setData(save->items()[0]);
     pAlarm->changes = AlarmManager::NoChange;
 }
@@ -992,6 +1042,6 @@ void AlarmRequestAdapter::completeFetch()
 {
     AlarmManager *manager = static_cast<AlarmManager*>(q_ptr->parent());
     AlarmsAdapter *owner = AlarmsAdapter::get(manager);
-    QOrganizerItemFetchRequest *fetch = static_cast<QOrganizerItemFetchRequest *>(m_request);
+    QOrganizerItemFetchRequest *fetch = static_cast<QOrganizerItemFetchRequest *>(m_request.data());
     owner->completeFetchAlarms(fetch->items());
 }

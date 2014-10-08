@@ -40,18 +40,19 @@ public:
         hash.insert(i++, QByteArray("daysOfWeek"));
         hash.insert(i++, QByteArray("sound"));
         hash.insert(i++, QByteArray("enabled"));
+        hash.insert(i++, QByteArray("model"));
         return hash;
     }
 
-    QVariant roleData(int role, const UCAlarm &alarm) const {
+    static QVariant roleData(int role, UCAlarm *alarm) {
         switch (role) {
-        case 0: return alarm.message();
-        case 1: return alarm.date();
-        case 2: return alarm.type();
-        case 3: return static_cast<int>(alarm.daysOfWeek());
-        case 4: return alarm.sound();
-        case 5: return alarm.enabled();
-        default: return QVariant();
+        case 0: return alarm->message();
+        case 1: return alarm->date();
+        case 2: return alarm->type();
+        case 3: return static_cast<int>(alarm->daysOfWeek());
+        case 4: return alarm->sound();
+        case 5: return alarm->enabled();
+        default: return QVariant::fromValue(alarm);
         }
     }
 
@@ -110,7 +111,9 @@ public:
 
 Q_SIGNALS:
     void alarmsChanged();
-    void alarmsUpdated(const QList<QVariant> &cookies);
+    void alarmUpdated(int index);
+    void alarmRemoveStarted(int index);
+    void alarmRemoveFinished();
 
 private:
     explicit AlarmManager(QObject *parent = 0);

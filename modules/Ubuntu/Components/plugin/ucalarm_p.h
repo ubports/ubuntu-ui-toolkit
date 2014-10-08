@@ -22,6 +22,7 @@
 #include "ucalarm.h"
 #include "alarmmanager_p.h"
 #include <QtCore/QDateTime>
+#include <QtCore/QPointer>
 #include <QtQml/QQmlListProperty>
 
 class UCAlarmPrivate
@@ -54,7 +55,7 @@ public:
     virtual UCAlarm::Error checkAlarm() = 0;
 
     UCAlarm *q_ptr;
-    AlarmRequest *request;
+    QPointer<AlarmRequest> request;
     unsigned int changes;
     int error;
     UCAlarm::Status status;

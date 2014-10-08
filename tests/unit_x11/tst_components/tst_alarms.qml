@@ -54,12 +54,12 @@ Item {
 
         SignalSpy {
             id: dataChangedSpy
-            signalName: "onDataChanged"
+            signalName: "dataChanged"
             target: testModel
         }
         SignalSpy {
             id: beginResetModelSpy
-            signalName: "onBeginResetModel"
+            signalName: "beginResetModel"
             target: testModel
         }
 

@@ -86,7 +86,7 @@ public:
     void _q_updateProgress();
 
 private:
-    QOrganizerAbstractRequest *m_request;
+    QPointer<QOrganizerAbstractRequest> m_request;
 
     AlarmRequest::Operation requestTypeToOperation();
     void completeUpdate();
@@ -151,11 +151,17 @@ public:
 
 public Q_SLOTS:
     bool fetchAlarms();
-    void updateAlarms(const QList<QOrganizerItemId> &list);
+
+private Q_SLOTS:
+    void alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> >);
+    void alarmDataChange();
 
 protected:
     AlarmRequest *fetchRequest;
     AlarmList alarmList;
+    QOrganizerTodo todoItem(const QOrganizerItemId &id);
+    int updateAlarm(const QOrganizerItemId &id);
+    int removeAlarm(const QOrganizerItemId &id);
 };
 
 
