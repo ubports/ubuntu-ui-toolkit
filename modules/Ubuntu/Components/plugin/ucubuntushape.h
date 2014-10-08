@@ -21,11 +21,8 @@
 
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QSGNode>
-#include <QtQuick/qsgflatcolormaterial.h>
 #include <QtQuick/qsgtexture.h>
 #include <QtGui/QOpenGLFunctions>
-
-// QtQuick item.
 
 class UCUbuntuShape : public QQuickItem
 {
@@ -121,82 +118,6 @@ private:
     static QHash<QOpenGLContext*, TextureHandles> textures_;
 
     Q_DISABLE_COPY(UCUbuntuShape)
-};
-
-// Scene graph material.
-
-class ShapeMaterial : public QSGMaterial
-{
-public:
-    struct Data
-    {
-        enum { ColoredFlag = (1 << 0) };
-        QSGTexture* shapeTexture;
-        QSGTextureProvider* imageTextureProvider;
-        QRgb color;
-        QRgb gradientColor;
-        QSGTexture::Filtering shapeTextureFiltering;
-        quint8 flags;
-    };
-
-    ShapeMaterial();
-    virtual QSGMaterialType* type() const;
-    virtual QSGMaterialShader* createShader() const;
-    virtual int compare(const QSGMaterial* other) const;
-    const Data* constData() const { return &data_; }
-    Data* data() { return &data_; }
-
-private:
-    // UCUbuntuShape::updatePaintNode() directly writes to data and ShapeShader::updateState()
-    // directly reads from it. We don't bother with getters/setters since it's only meant to be used
-    // by the UbuntuShape implementation and makes it easier to maintain.
-    Data data_;
-};
-
-// Scene graph shader.
-
-class ShapeShader : public QSGMaterialShader
-{
-public:
-    virtual char const* const* attributeNames() const;
-    virtual void initialize();
-    virtual void updateState(
-        const RenderState& state, QSGMaterial* newEffect, QSGMaterial* oldEffect);
-
-private:
-    virtual const char* vertexShader() const;
-    virtual const char* fragmentShader() const;
-
-    QOpenGLFunctions* glFuncs_;
-    int matrixId_;
-    int opacityId_;
-    int color1Id_;
-    int color2Id_;
-    int coloredId_;
-};
-
-// Scene graph node.
-
-class ShapeNode : public QSGGeometryNode
-{
-public:
-    struct Vertex {
-        float position[2];
-        float shapeCoordinate[2];
-        float imageCoordinate[2];
-        float padding[2];  // Ensure a 32 bytes stride.
-    };
-
-    ShapeNode(UCUbuntuShape* item);
-    ShapeMaterial* material() { return &material_; }
-    void setVertices(const QRectF& geometry, float radius, QQuickItem* image, bool stretched,
-                     UCUbuntuShape::HAlignment hAlignment,
-                     UCUbuntuShape::VAlignment vAlignment, float shapeCoordinate[][2]);
-
-private:
-    UCUbuntuShape* item_;
-    QSGGeometry geometry_;
-    ShapeMaterial material_;
 };
 
 QML_DECLARE_TYPE(UCUbuntuShape)
