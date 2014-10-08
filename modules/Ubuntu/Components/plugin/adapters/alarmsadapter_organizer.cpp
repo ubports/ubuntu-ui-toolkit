@@ -57,6 +57,8 @@ AlarmDataAdapter::AlarmDataAdapter(UCAlarm *qq)
     if (!event.tags().contains(tagAlarmService)) {
         event.addTag(tagAlarmService);
     }
+    event.setCollectionId(AlarmsAdapter::get()->collection.id());
+    event.setAllDay(false);
 }
 
 AlarmDataAdapter::~AlarmDataAdapter()
@@ -207,10 +209,10 @@ void AlarmDataAdapter::save()
     if (event.id().managerUri().isEmpty()) {
         changes = AlarmManager::AllFields;
     }
+    QOrganizerTodo todo = event;
     QOrganizerItemSaveRequest *saveRequest = new QOrganizerItemSaveRequest(q_ptr);
-    saveRequest->setItem(event);
+    saveRequest->setItem(todo);
     request = saveRequest;
-    qDebug() << "SAVE" << event;
     startOperation(UCAlarm::Saving, SLOT(completeSave()));
 }
 
@@ -236,20 +238,17 @@ bool AlarmDataAdapter::wait(int msec)
 
 void AlarmDataAdapter::startOperation(UCAlarm::Operation operation, const char *completionSlot)
 {
-    event.setCollectionId(AlarmsAdapter::get()->collection.id());
-    event.setAllDay(false);
     request->setManager(AlarmsAdapter::get()->manager);
     AlarmsAdapter::get()->listDirty = true;
     _q_syncStatus(operation, UCAlarm::InProgress, UCAlarm::NoError);
     QObject::connect(request.data(), SIGNAL(resultsAvailable()), q_ptr, completionSlot);
     if (!request->start()) {
-        _q_syncStatus(operation, UCAlarm::Ready, AlarmsAdapter::OrganizerError);
+        _q_syncStatus(operation, UCAlarm::Ready, AlarmsAdapter::UnhandledRequest);
     }
 }
 
 void AlarmDataAdapter::completeSave()
 {
-    qDebug() << "SAVED" << request->state();
     // we either get error or success
     if (request->state() != QOrganizerAbstractRequest::FinishedState) {
         return;
@@ -265,6 +264,11 @@ void AlarmDataAdapter::completeSave()
         } else {
             setData(save->items()[0]);
             changes = AlarmManager::NoChange;
+            // also update the alarm at index
+            int index = AlarmsAdapter::get()->alarmList.indexOfAlarm(event.id());
+            if (index >= 0) {
+                AlarmsAdapter::get()->alarmList[index] = event;
+            }
         }
     }
 
@@ -283,6 +287,7 @@ void AlarmDataAdapter::completeCancel()
         _q_syncStatus(UCAlarm::Saving, UCAlarm::Fail, AlarmsAdapter::OrganizerError + error);
     } else {
         // complete save
+        AlarmsAdapter::get()->removeAlarm(event.index);
         setData(QOrganizerTodo());
         changes = AlarmManager::NoChange;
     }
@@ -416,20 +421,17 @@ void AlarmsAdapter::alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManage
     Q_FOREACH(const OperationPair &op, list) {
         switch (op.second) {
             case QOrganizerManager::Add: {
-                qDebug() << "ALARM ADDED";
                 fetchAlarms();
                 break;
             }
             case QOrganizerManager::Change: {
                 int index = updateAlarm(op.first);
                 if (index >= 0) {
-                    qDebug() << "ALARM CHANGED";
                     Q_EMIT q_ptr->alarmUpdated(index);
                 }
                 break;
             }
             case QOrganizerManager::Remove: {
-                qDebug() << "ALARM REMOVED";
                 removeAlarm(op.first);
                 break;
             }

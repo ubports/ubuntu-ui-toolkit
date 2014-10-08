@@ -108,6 +108,7 @@ public: // getter/setter
     int error() const;
     Status status() const;
     QVariant cookie() const;
+    void wait(int msec = 0);
 
 Q_SIGNALS:
     void enabledChanged();

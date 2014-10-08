@@ -54,7 +54,7 @@ public:
 
     void save();
     void cancel();
-    bool wait(int msec = 5000);
+    bool wait(int msec);
     void completeSave();
     void completeCancel();
 
@@ -131,20 +131,20 @@ public:
     bool compareCookies(const QVariant &cookie1, const QVariant &cookie2);
     UCAlarmPrivate *createAlarmData(UCAlarm *alarm);
 
+    int removeAlarm(const QOrganizerItemId &id);
+
 public Q_SLOTS:
     bool fetchAlarms();
 
 private Q_SLOTS:
     void completeFetchAlarms();
     void alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> >);
-    void alarmDataChange();
 
 protected:
     QPointer<QOrganizerItemFetchRequest> fetchRequest;
     AlarmList alarmList;
     QOrganizerTodo todoItem(const QOrganizerItemId &id);
     int updateAlarm(const QOrganizerItemId &id);
-    int removeAlarm(const QOrganizerItemId &id);
 };
 
 
