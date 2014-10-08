@@ -16,14 +16,13 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-#define protected public
+//#define protected public
 #include "ucalarm.h"
 #include "ucalarm_p.h"
 #include "alarmmanager_p.h"
 #include "ucalarmmodel.h"
-#include "alarmrequest_p.h"
 #include "adapters/alarmsadapter_p.h"
-#undef protected
+//#undef protected
 
 #include "uctestcase.h"
 #include <QtCore/QString>
@@ -47,9 +46,7 @@ private:
     void waitForRequest(UCAlarm *alarm)
     {
         UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
-        if (pAlarm->request) {
-            pAlarm->request->wait();
-        }
+        pAlarm->wait();
         QTest::waitForEvents();
     }
 
@@ -58,12 +55,7 @@ private:
         // initiate fetch
         QSignalSpy spy(&AlarmManager::instance(), SIGNAL(alarmsChanged()));
         AlarmsAdapter *adapter = AlarmsAdapter::get();
-        if (!adapter->fetchRequest) {
-            adapter->fetchAlarms();
-        }
-        if (adapter->fetchRequest) {
-            adapter->fetchRequest->wait();
-        }
+        adapter->fetchAlarms();
         QTest::waitForEvents();
         spy.wait(200);
     }
@@ -105,10 +97,10 @@ private Q_SLOTS:
     {
         AlarmManager::instance();
         // wait for the first fetch completion
-        AlarmsAdapter *adapter = AlarmsAdapter::get();
-        if (adapter->fetchRequest) {
-            adapter->fetchRequest->wait();
-        }
+//        AlarmsAdapter *adapter = AlarmsAdapter::get();
+//        if (adapter->fetchRequest) {
+//            adapter->fetchRequest->waitForFinished();
+//        }
         updateSpy = new QSignalSpy(&AlarmManager::instance(), SIGNAL(alarmUpdated(int)));
     }
 
@@ -148,7 +140,7 @@ private Q_SLOTS:
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
     }
-
+/*
     void test_repeating_autoDetect()
     {
         UCAlarm alarm(QDateTime::currentDateTime().addSecs(20), UCAlarm::AutoDetect, "test_repeating_autoDetect");
@@ -596,6 +588,7 @@ private Q_SLOTS:
         // check the tags
         QVERIFY(AlarmManager::instance().verifyChange(&alarm, AlarmManager::Enabled, enabled));
     }
+    */
 };
 
 QTEST_MAIN(tst_UCAlarms)

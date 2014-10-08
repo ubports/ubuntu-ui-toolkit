@@ -19,13 +19,11 @@
 #include "ucalarm.h"
 #include "ucalarm_p.h"
 #include "alarmmanager_p.h"
-#include "alarmrequest_p.h"
 #include "i18n.h"
 #include <QtQml/QQmlInfo>
 
 UCAlarmPrivate::UCAlarmPrivate(UCAlarm *qq)
     : q_ptr(qq)
-    , request(0)
     , changes(0)
     , error(UCAlarm::NoError)
     , status(UCAlarm::Ready)
@@ -43,21 +41,6 @@ void UCAlarmPrivate::setDefaults()
     setMessage(UbuntuI18n::instance().tr("Alarm"));
     setType(UCAlarm::OneTime);
     setDaysOfWeek(dayOfWeek(date));
-}
-
-bool UCAlarmPrivate::createRequest()
-{
-    Q_Q(UCAlarm);
-    if (request) {
-        return true;
-    }
-    request = new AlarmRequest(q);
-    if (!request) {
-        return false;
-    }
-    QObject::connect(request, SIGNAL(statusChanged(int,int,int)),
-                     q, SLOT(_q_syncStatus(int,int,int)));
-    return true;
 }
 
 void UCAlarmPrivate::_q_syncStatus(int operation, int status, int error) {
@@ -82,6 +65,10 @@ void UCAlarmPrivate::_q_syncStatus(int operation, int status, int error) {
             if (changes & AlarmManager::Days)
                 Q_EMIT q->daysOfWeekChanged();
             changes = 0;
+
+            // emit completed signal only if ready status was reached
+            // with or without error
+            Q_EMIT q->completed();
         }
 
         Q_EMIT q->statusChanged(static_cast<UCAlarm::Operation>(operation));
@@ -295,10 +282,18 @@ UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly()
  * alarms at the same time.
  */
 
+/*!
+ * \qmlsignal void Alarm::completed
+ * \since Ubuntu.Components 1.2
+ * The signal is emitted when the outstanding \l save, \l cancel or \l reset request
+ * completes with or without error.
+ */
+
 UCAlarm::UCAlarm(QObject *parent)
     : QObject(parent)
     , d_ptr(AlarmManager::createAlarmData(this))
 {
+    d_ptr->setDefaults();
 }
 
 UCAlarm::UCAlarm(const QDateTime &dt, const QString &message, QObject *parent)
@@ -334,10 +329,6 @@ UCAlarm::~UCAlarm()
 
 bool UCAlarm::operator==(const UCAlarm &that) const
 {
-//    qDebug() << "COMPARE" << date() << "||" << that.date();
-//    qDebug() << "COMPARE" << message() << "||" << that.message();
-//    qDebug() << "COMPARE" << type() << "||" << that.type();
-//    qDebug() << "COMPARE" << daysOfWeek() << "||" << that.daysOfWeek();
     return date() == that.date() &&
             message() == that.message() &&
             type() == that.type() &&
@@ -352,14 +343,12 @@ bool UCAlarm::operator==(const UCAlarm &that) const
  */
 bool UCAlarm::enabled() const
 {
-    Q_D(const UCAlarm);
-    return d->enabled();
+    return d_ptr->enabled();
 }
 void UCAlarm::setEnabled(bool enabled)
 {
-    Q_D(UCAlarm);
-    if (d->setEnabled(enabled)) {
-        d->changes |= AlarmManager::Enabled;
+    if (d_ptr->setEnabled(enabled)) {
+        d_ptr->changes |= AlarmManager::Enabled;
         Q_EMIT enabledChanged();
     }
 }
@@ -372,14 +361,12 @@ void UCAlarm::setEnabled(bool enabled)
  */
 QDateTime UCAlarm::date() const
 {
-    Q_D(const UCAlarm);
-    return d->date();
+    return d_ptr->date();
 }
 void UCAlarm::setDate(const QDateTime &date)
 {
-    Q_D(UCAlarm);
-    if (d->setDate(AlarmUtils::normalizeDate(date))) {
-        d->changes |= AlarmManager::Date;
+    if (d_ptr->setDate(AlarmUtils::normalizeDate(date))) {
+        d_ptr->changes |= AlarmManager::Date;
         Q_EMIT dateChanged();
         return;
     }
@@ -392,14 +379,12 @@ void UCAlarm::setDate(const QDateTime &date)
  */
 QString UCAlarm::message() const
 {
-    Q_D(const UCAlarm);
-    return d->message();
+    return d_ptr->message();
 }
 void UCAlarm::setMessage(const QString &message)
 {
-    Q_D(UCAlarm);
-    if (d->setMessage(message)) {
-        d->changes |= AlarmManager::Message;
+    if (d_ptr->setMessage(message)) {
+        d_ptr->changes |= AlarmManager::Message;
         Q_EMIT messageChanged();
     }
 }
@@ -427,14 +412,12 @@ void UCAlarm::setMessage(const QString &message)
  */
 UCAlarm::AlarmType UCAlarm::type() const
 {
-    Q_D(const UCAlarm);
-    return d->type();
+    return d_ptr->type();
 }
 void UCAlarm::setType(UCAlarm::AlarmType type)
 {
-    Q_D(UCAlarm);
-    if (d->setType(type)) {
-        d->changes |= AlarmManager::Type;
+    if (d_ptr->setType(type)) {
+        d_ptr->changes |= AlarmManager::Type;
         Q_EMIT typeChanged();
     }
 }
@@ -490,14 +473,12 @@ void UCAlarm::setType(UCAlarm::AlarmType type)
  */
 UCAlarm::DaysOfWeek UCAlarm::daysOfWeek() const
 {
-    Q_D(const UCAlarm);
-    return d->daysOfWeek();
+    return d_ptr->daysOfWeek();
 }
 void UCAlarm::setDaysOfWeek(UCAlarm::DaysOfWeek days)
 {
-    Q_D(UCAlarm);
-    if (d->setDaysOfWeek(days)) {
-        d->changes |= AlarmManager::Days;
+    if (d_ptr->setDaysOfWeek(days)) {
+        d_ptr->changes |= AlarmManager::Days;
         Q_EMIT daysOfWeekChanged();
     }
 }
@@ -511,14 +492,12 @@ void UCAlarm::setDaysOfWeek(UCAlarm::DaysOfWeek days)
  */
 QUrl UCAlarm::sound() const
 {
-    Q_D(const UCAlarm);
-    return d->sound();
+    return d_ptr->sound();
 }
 void UCAlarm::setSound(const QUrl &sound)
 {
-    Q_D(UCAlarm);
-    if (d->setSound(sound)) {
-        d->changes |= AlarmManager::Sound;
+    if (d_ptr->setSound(sound)) {
+        d_ptr->changes |= AlarmManager::Sound;
         Q_EMIT soundChanged();
     }
 }
@@ -565,8 +544,7 @@ void UCAlarm::setSound(const QUrl &sound)
  */
 int UCAlarm::error() const
 {
-    Q_D(const UCAlarm);
-    return d->error;
+    return d_ptr->error;
 }
 
 /*!
@@ -632,8 +610,7 @@ int UCAlarm::error() const
  */
 UCAlarm::Status UCAlarm::status() const
 {
-    Q_D(const UCAlarm);
-    return d->status;
+    return d_ptr->status;
 }
 
 /*!
@@ -660,29 +637,24 @@ UCAlarm::Status UCAlarm::status() const
  */
 void UCAlarm::save()
 {
-    Q_D(UCAlarm);
-    if (d->status == InProgress) {
+    if (d_ptr->status == InProgress) {
         qmlInfo(this) << UbuntuI18n::instance().tr("Alarm has a pending operation.");
         return;
     }
 
-    d->error = NoError;
-    d->status = Ready;
+    d_ptr->error = NoError;
+    d_ptr->status = Ready;
 
-    if (message().isEmpty()) {
-        setMessage(UbuntuI18n::instance().tr("Alarm"));
-        d->changes |= AlarmManager::Message;
+    if (d_ptr->message().isEmpty()) {
+        d_ptr->setMessage(UbuntuI18n::instance().tr("Alarm"));
+        d_ptr->changes |= AlarmManager::Message;
     }
 
-    UCAlarm::Error result = d->checkAlarm();
+    UCAlarm::Error result = d_ptr->checkAlarm();
     if (result != UCAlarm::NoError) {
-        d->_q_syncStatus(Saving, Fail, result);
+        d_ptr->_q_syncStatus(Saving, Fail, result);
     } else {
-        // the alarm has been modified, therefore update the original date as well
-//        d->rawData.originalDate = d->rawData.date;
-        if (d->createRequest()) {
-            d->request->save(this);
-        }
+        d_ptr->save();
     }
 }
 
@@ -697,17 +669,14 @@ void UCAlarm::save()
  */
 void UCAlarm::cancel()
 {
-    Q_D(UCAlarm);
-    if (d->status == InProgress) {
+    if (d_ptr->status == InProgress) {
         qmlInfo(this) << UbuntuI18n::instance().tr("Alarm has a pending operation.");
         return;
     }
 
-    d->error = NoError;
-    d->status = Ready;
-    if (d->createRequest()) {
-        d->request->remove(this);
-    }
+    d_ptr->error = NoError;
+    d_ptr->status = Ready;
+    d_ptr->cancel();
 }
 
 /*!
@@ -720,13 +689,11 @@ void UCAlarm::cancel()
  */
 void UCAlarm::reset()
 {
-    Q_D(UCAlarm);
-    d->_q_syncStatus(Reseting, InProgress, NoError);
+    d_ptr->_q_syncStatus(Reseting, InProgress, NoError);
 
-//    d->rawData = AlarmData();
-    d->setDefaults();
-    d->changes = AlarmManager::AllFields;
-    d->_q_syncStatus(Reseting, Ready, NoError);
+    d_ptr->setDefaults();
+    d_ptr->changes = AlarmManager::AllFields;
+    d_ptr->_q_syncStatus(Reseting, Ready, NoError);
 }
 
 /*!
@@ -735,8 +702,7 @@ void UCAlarm::reset()
  */
 QVariant UCAlarm::cookie() const
 {
-    Q_D(const UCAlarm);
-    return d->cookie();
+    return d_ptr->cookie();
 }
 
 #include "moc_ucalarm.cpp"

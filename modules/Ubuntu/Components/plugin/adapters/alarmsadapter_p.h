@@ -20,7 +20,6 @@
 #define ALARMSADAPTER_P_H
 
 #include "alarmmanager_p_p.h"
-#include "alarmrequest_p_p.h"
 
 #include <qorganizer.h>
 #include <qorganizermanager.h>
@@ -53,6 +52,12 @@ public:
     QVariant cookie() const;
     UCAlarm::Error checkAlarm();
 
+    void save();
+    void cancel();
+    bool wait(int msec = 5000);
+    void completeSave();
+    void completeCancel();
+
 // adaptation specific data
     void adjustDowSettings(UCAlarm::AlarmType type, UCAlarm::DaysOfWeek days);
     static QSet<Qt::DayOfWeek> daysToSet(int days);
@@ -68,30 +73,9 @@ protected:
     QOrganizerTodo event;
     UCAlarm::AlarmType alarmType;
     UCAlarm::DaysOfWeek dow;
-};
+    QPointer<QOrganizerAbstractRequest> request;
 
-class AlarmRequestAdapter : public AlarmRequestPrivate
-{
-public:
-    AlarmRequestAdapter(AlarmRequest *parent, bool autoDelete);
-
-    // adaptation methods
-    bool save(UCAlarm *alarm);
-    bool remove(UCAlarm *alarm);
-    bool wait(int msec);
-    bool fetch();
-
-    bool start(QOrganizerAbstractRequest *operation);
-
-    void _q_updateProgress();
-
-private:
-    QPointer<QOrganizerAbstractRequest> m_request;
-
-    AlarmRequest::Operation requestTypeToOperation();
-    void completeUpdate();
-    void completeRemove();
-    void completeFetch();
+    void startOperation(UCAlarm::Operation operation, const char *completionSlot);
 };
 
 // list of alarms
@@ -138,7 +122,6 @@ public:
     int alarmCount();
     void getAlarmAt(const UCAlarm &alarm, int index) const;
     bool findAlarm(const UCAlarm &alarm, const QVariant &cookie) const;
-    void completeFetchAlarms(const QList<QOrganizerItem> &alarmList);
     void adjustAlarmOccurrence(AlarmDataAdapter &alarm);
 
     void loadAlarms();
@@ -147,17 +130,17 @@ public:
     bool verifyChange(UCAlarm *alarm, AlarmManager::Change change, const QVariant &value);
     bool compareCookies(const QVariant &cookie1, const QVariant &cookie2);
     UCAlarmPrivate *createAlarmData(UCAlarm *alarm);
-    AlarmRequestPrivate *createAlarmRequestData(AlarmRequest *request, bool autoDelete);
 
 public Q_SLOTS:
     bool fetchAlarms();
 
 private Q_SLOTS:
+    void completeFetchAlarms();
     void alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> >);
     void alarmDataChange();
 
 protected:
-    AlarmRequest *fetchRequest;
+    QPointer<QOrganizerItemFetchRequest> fetchRequest;
     AlarmList alarmList;
     QOrganizerTodo todoItem(const QOrganizerItemId &id);
     int updateAlarm(const QOrganizerItemId &id);

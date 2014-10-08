@@ -33,9 +33,9 @@ public:
 
     static AlarmManagerPrivate *get(AlarmManager *instance = 0) {
         if (!instance) {
-            return AlarmManager::instance().d_func();
+            return AlarmManager::instance().d_ptr.data();
         } else {
-            return instance->d_func();
+            return instance->d_ptr.data();
         }
     }
 
@@ -56,8 +56,6 @@ public:
 
     // creates an alarm data adaptation object
     virtual UCAlarmPrivate *createAlarmData(UCAlarm *alarm) = 0;
-    virtual AlarmRequestPrivate * createAlarmRequestData(AlarmRequest *request, bool autoDelete) = 0;
-
 };
 
 AlarmManagerPrivate * createAlarmsAdapter(AlarmManager *alarms);

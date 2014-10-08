@@ -33,7 +33,7 @@ public:
     ~UCAlarmPrivate();
 
     static UCAlarmPrivate *get(const UCAlarm *alarm) {
-        return const_cast<UCAlarm*>(alarm)->d_func();
+        return const_cast<UCAlarm*>(alarm)->d_ptr.data();
     }
 
     void setDefaults();
@@ -54,8 +54,14 @@ public:
     virtual QVariant cookie() const = 0;
     virtual UCAlarm::Error checkAlarm() = 0;
 
+    virtual void save() = 0;
+    virtual void cancel() = 0;
+    virtual bool wait(int msec = 5000) = 0;
+    virtual void completeSave() = 0;
+    virtual void completeCancel() = 0;
+
+    // common privates
     UCAlarm *q_ptr;
-    QPointer<AlarmRequest> request;
     unsigned int changes;
     int error;
     UCAlarm::Status status;
@@ -69,8 +75,6 @@ public:
     UCAlarm::Error adjustDow();
     UCAlarm::Error checkOneTime();
     UCAlarm::Error checkRepeatingWeekly();
-
-    bool createRequest();
 
     // private slots
     void _q_syncStatus(int operation, int status, int error);

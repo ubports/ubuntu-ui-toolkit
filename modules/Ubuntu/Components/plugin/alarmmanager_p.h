@@ -107,7 +107,6 @@ public:
     bool verifyChange(UCAlarm *alarm, Change change, const QVariant &newData);
     bool compareCookies(const QVariant &cookie1, const QVariant &cookie2);
     static UCAlarmPrivate *createAlarmData(UCAlarm *alarm);
-    static AlarmRequestPrivate *createAlarmRequestData(AlarmRequest *request, bool autoDelete);
 
 Q_SIGNALS:
     void alarmsChanged();
@@ -118,7 +117,8 @@ Q_SIGNALS:
 private:
     explicit AlarmManager(QObject *parent = 0);
     Q_DISABLE_COPY(AlarmManager)
-    Q_DECLARE_PRIVATE(AlarmManager)
+//    Q_DECLARE_PRIVATE(AlarmManager)
+    friend class AlarmManagerPrivate;
     QScopedPointer<AlarmManagerPrivate> d_ptr;
 };
 
