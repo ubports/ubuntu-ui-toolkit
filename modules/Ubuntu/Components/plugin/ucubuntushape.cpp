@@ -25,79 +25,6 @@
 #include <QtQuick/qsgflatcolormaterial.h>
 #include <QtQuick/private/qquickimage_p.h>
 
-/*!
-    \qmltype UbuntuShape
-    \instantiates UCUbuntuShape
-    \inqmlmodule Ubuntu.Components 1.1
-    \ingroup ubuntu
-    \brief The UbuntuShape item provides a standard Ubuntu shaped rounded rectangle.
-
-    The UbuntuShape is used where a rounded rectangle is needed either filled
-    with a color or an image that it crops.
-
-    When given with a \l color it is applied with an overlay blending as a
-    vertical gradient going from \l color to \l gradientColor.
-    Two corner \l radius are available, "small" (default) and "medium", that
-    determine the size of the corners.
-    Optionally, an Image can be passed that will be displayed inside the
-    UbuntuShape and cropped to fit it.
-
-    Examples:
-    \qml
-        import Ubuntu.Components 1.1
-
-        UbuntuShape {
-            color: "lightblue"
-            radius: "medium"
-        }
-    \endqml
-
-    \qml
-        import Ubuntu.Components 1.1
-
-        UbuntuShape {
-            image: Image {
-                source: "icon.png"
-            }
-        }
-    \endqml
-*/
-
-/*!
-    \qmlproperty string UbuntuShape::radius
-
-    The size of the corners among: "small" (default) and "medium".
-*/
-
-/*!
-    \qmlproperty color UbuntuShape::color
-
-    The top color of the gradient used to fill the shape. Setting only this
-    one is enough to set the overall color the shape.
-*/
-
-/*!
-    \qmlproperty color UbuntuShape::gradientColor
-
-    The bottom color of the gradient used for the overlay blending of the
-    color that fills the shape. It is optional to set this one as setting
-    \l color is enough to set the overall color of the shape.
-*/
-
-/*!
-    \deprecated
-    \qmlproperty url UbuntuShape::borderSource
-
-    The image used as a border.
-    We plan to expose that feature through styling properties.
-*/
-
-/*!
-    \qmlproperty Image UbuntuShape::image
-
-    The image used to fill the shape.
-*/
-
 // Retrieves the size of an array at compile time.
 #define ARRAY_SIZE(a) \
     ((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
@@ -524,6 +451,43 @@ void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* im
 
 // --- QtQuick item ---
 
+/*!
+    \qmltype UbuntuShape
+    \instantiates UCUbuntuShape
+    \inqmlmodule Ubuntu.Components 1.1
+    \ingroup ubuntu
+    \brief The UbuntuShape item provides a standard Ubuntu shaped rounded rectangle.
+
+    The UbuntuShape is used where a rounded rectangle is needed either filled
+    with a color or an image that it crops.
+
+    When given with a \l color it is applied with an overlay blending as a
+    vertical gradient going from \l color to \l gradientColor.
+    Two corner \l radius are available, "small" (default) and "medium", that
+    determine the size of the corners.
+    Optionally, an Image can be passed that will be displayed inside the
+    UbuntuShape and cropped to fit it.
+
+    Examples:
+    \qml
+        import Ubuntu.Components 1.1
+
+        UbuntuShape {
+            color: "lightblue"
+            radius: "medium"
+        }
+    \endqml
+
+    \qml
+        import Ubuntu.Components 1.1
+
+        UbuntuShape {
+            image: Image {
+                source: "icon.png"
+            }
+        }
+    \endqml
+*/
 UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     : QQuickItem(parent)
     , imageTextureProvider_(NULL)
@@ -550,6 +514,12 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     update();
 }
 
+/*!
+    \qmlproperty color UbuntuShape::color
+
+    The top color of the gradient used to fill the shape. Setting only this
+    one is enough to set the overall color the shape.
+*/
 void UCUbuntuShape::setColor(const QColor& color)
 {
     if (color_ != color) {
@@ -572,6 +542,13 @@ void UCUbuntuShape::setColor(const QColor& color)
     }
 }
 
+/*!
+    \qmlproperty color UbuntuShape::gradientColor
+
+    The bottom color of the gradient used for the overlay blending of the
+    color that fills the shape. It is optional to set this one as setting
+    \l color is enough to set the overall color of the shape.
+*/
 void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 {
     gradientColorSet_ = true;
@@ -588,6 +565,11 @@ void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
     }
 }
 
+/*!
+    \qmlproperty string UbuntuShape::radius
+
+    The size of the corners among: "small" (default) and "medium".
+*/
 void UCUbuntuShape::setRadius(const QString& radius)
 {
     if (radiusString_ != radius) {
@@ -598,6 +580,13 @@ void UCUbuntuShape::setRadius(const QString& radius)
     }
 }
 
+/*!
+    \deprecated
+    \qmlproperty url UbuntuShape::borderSource
+
+    The image used as a border.
+    We plan to expose that feature through styling properties.
+*/
 void UCUbuntuShape::setBorderSource(const QString& borderSource)
 {
     if (borderSource_ != borderSource) {
@@ -613,6 +602,11 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
     }
 }
 
+/*!
+    \qmlproperty Image UbuntuShape::image
+
+    The image used to fill the shape.
+*/
 void UCUbuntuShape::setImage(const QVariant& image)
 {
     QQuickItem* newImage = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(image));
