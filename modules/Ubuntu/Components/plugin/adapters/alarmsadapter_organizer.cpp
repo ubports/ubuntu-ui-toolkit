@@ -25,6 +25,7 @@
 
 #include <QtCore/QFile>
 #include <QtCore/QDir>
+#include <QtCore/QTimeZone>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
@@ -127,7 +128,7 @@ void AlarmsAdapter::loadAlarms()
 
         AlarmData alarm;
         alarm.message = object["message"].toString();
-        alarm.originalDate = alarm.date = AlarmData::transcodeDate(QDateTime::fromString(object["date"].toString()), Qt::LocalTime);
+        alarm.originalDate = alarm.date = QDateTime::fromString(object["date"].toString());
         alarm.sound = object["sound"].toString();
         alarm.type = static_cast<UCAlarm::AlarmType>(object["type"].toInt());
         alarm.days = static_cast<UCAlarm::DaysOfWeek>(object["days"].toInt());
@@ -158,7 +159,7 @@ void AlarmsAdapter::saveAlarms()
     Q_FOREACH(const AlarmData &alarm, alarmList) {
         QJsonObject object;
         object["message"] = alarm.message;
-        object["date"] = AlarmData::transcodeDate(alarm.originalDate, Qt::UTC).toString();
+        object["date"] = alarm.originalDate.toString();
         object["sound"] = alarm.sound.toString();
         object["type"] = QJsonValue(alarm.type);
         object["days"] = QJsonValue(alarm.days);
@@ -181,7 +182,8 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
     event.setCollectionId(collection.id());
     event.setAllDay(false);
     if (alarm.changes & AlarmData::Date) {
-        event.setStartDateTime(AlarmData::transcodeDate(alarm.date, Qt::UTC));
+        // use invalid timezone to sinalize floating time
+        event.setStartDateTime(QDateTime(alarm.date.date(), alarm.date.time(), QTimeZone()));
     }
     if (alarm.changes & AlarmData::Message) {
         event.setDisplayLabel(alarm.message);
@@ -251,7 +253,7 @@ int AlarmsAdapter::alarmDataFromOrganizerEvent(const QOrganizerTodo &event, Alar
 
     alarm.cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
     alarm.message = event.displayLabel();
-    alarm.date = AlarmData::transcodeDate(event.startDateTime().toUTC(), Qt::LocalTime);
+    alarm.date = AlarmData::transcodeDate(event.startDateTime(), Qt::LocalTime);
     QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
     alarm.sound = audible.dataUrl();
     alarm.originalDate = alarm.date;
@@ -337,7 +339,8 @@ bool AlarmsAdapter::verifyChange(const QVariant &cookie, AlarmData::Change chang
         }
         case AlarmData::Date:
         {
-            return todo.startDateTime() == value.toDateTime();
+            return AlarmData::transcodeDate(todo.startDateTime(), Qt::LocalTime) ==
+                   AlarmData::transcodeDate(value.toDateTime(), Qt::LocalTime);
         }
         case AlarmData::Message:
         {
@@ -486,7 +489,7 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
     }
     // with EDS we need to query the occurrences separately as the fetch reports only the main events
     // with fallback manager this does not reduce the performance and does work the same way.
-    QDateTime currentDate = AlarmData::normalizeDate(QDateTime::currentDateTime());
+    QDateTime currentDate = QDateTime::currentDateTime();
     if (alarm.date > currentDate) {
         // no need to adjust date, the event occurs in the future
         return;
@@ -499,10 +502,6 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
         endDate = startDate.addDays(8);
     }
 
-    // transcode both dates
-    startDate = AlarmData::transcodeDate(startDate, Qt::UTC);
-    endDate = AlarmData::transcodeDate(endDate, Qt::UTC);
-
     QList<QOrganizerItem> occurrences = manager->itemOccurrences(event, startDate, endDate, 10);
     // get the first occurrence and use the date from it
     if ((occurrences.length() > 0) && (occurrences[0].type() == QOrganizerItemType::TypeTodoOccurrence)) {
@@ -512,7 +511,7 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
             // check if the date is after the current datetime
             // the first occurrence is the one closest to the currentDate, therefore we can safely
             // set that startDate to the alarm
-            alarm.date = AlarmData::transcodeDate(occurrence.startDateTime().toUTC(), Qt::LocalTime);
+            alarm.date = AlarmData::transcodeDate(occurrence.startDateTime(), Qt::LocalTime);
             if (alarm.date > currentDate) {
                 // we have the proper date set, leave
                 break;
