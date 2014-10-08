@@ -107,7 +107,7 @@ public:
         if (dt.timeSpec() == targetSpec) {
             return normalizeDate(dt);
         }
-        return QDateTime(dt.date(), dt.time(), targetSpec);
+        return QDateTime(dt.date(), normalizeDate(dt).time(), targetSpec);
     }
 
     unsigned int changes;
