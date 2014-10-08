@@ -59,7 +59,6 @@ function execute_test_cmd {
                 tst_i18n \
                 tst_listitems_standard.qml \
                 tst_optionselector.qml \
-                tst_arguments \
                 tst_mainview \
                 tst_popups_actionselectionpopover.qml \
                 tst_datepicker.qml \
