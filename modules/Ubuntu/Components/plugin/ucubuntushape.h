@@ -177,8 +177,6 @@ private:
 
 // Scene graph node.
 
-struct TextureData;
-
 class ShapeNode : public QSGGeometryNode
 {
 public:
