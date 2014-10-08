@@ -42,6 +42,8 @@ public:
 
 private:
 
+    QSignalSpy *updateSpy;
+
     void syncFetch()
     {
         // initiate fetch
@@ -59,13 +61,14 @@ private:
 
     void waitForUpdate(UCAlarm *alarm)
     {
-        QSignalSpy spy(&AlarmManager::instance(), SIGNAL(alarmsUpdated(QList<QVariant>)));
+//        QSignalSpy spy(&AlarmManager::instance(), SIGNAL(alarmsUpdated(QList<QVariant>)));
         UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
         if (pAlarm->request) {
             pAlarm->request->wait();
         }
         QTest::waitForEvents();
-        spy.wait();
+//        spy.wait(1000);
+        updateSpy->wait(1000);
     }
 
     void waitAndFetch(UCAlarm *alarm)
@@ -81,52 +84,20 @@ private:
 
     bool containsAlarm(UCAlarm *alarm, bool trace = false)
     {
-        UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
-        AlarmList alarms = AlarmManager::instance().alarms();
-        Q_FOREACH(AlarmData i, alarms) {
-            if (trace && (alarm->message() == i.message)) {
+        for (int i = 0; i < AlarmManager::instance().alarmCount(); i++) {
+            const UCAlarm *element = AlarmManager::instance().alarmAt(i);
+            if (trace && (alarm->message() == element->message())) {
                 qDebug() << "----------------------";
                 qDebug() << "Alarm data:" << alarm->message();
-                qDebug() << alarm->date() << i.date;
-                qDebug() << alarm->type() << i.type;
-                qDebug() << alarm->daysOfWeek() << i.days;
+                qDebug() << alarm->date() << element->date();
+                qDebug() << alarm->type() << element->type();
+                qDebug() << alarm->daysOfWeek() << element->daysOfWeek();
             }
-            if (i == pAlarm->rawData) {
+            if (*element == *alarm) {
                 return true;
             }
         }
         return false;
-    }
-
-    bool compareAlarms(UCAlarm *alarm1, UCAlarm *alarm2)
-    {
-        UCAlarmPrivate *pAlarm1 = UCAlarmPrivate::get(alarm1);
-        UCAlarmPrivate *pAlarm2 = UCAlarmPrivate::get(alarm2);
-        return pAlarm1->rawData.compare(pAlarm2->rawData);
-    }
-
-    bool findAlarm(const QString &message, UCAlarm &result)
-    {
-        AlarmList alarms = AlarmManager::instance().alarms();
-        Q_FOREACH(AlarmData i, alarms) {
-            if (i.message == message) {
-                UCAlarmPrivate::get(&result)->rawData = i;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    AlarmData getAlarmDataFromAlarmCookie(UCAlarm *alarm)
-    {
-        UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
-        AlarmList alarms = AlarmManager::instance().alarms();
-        int index = alarms.indexOfAlarm(pAlarm->rawData.cookie);
-        AlarmData data;
-        if (index >= 0) {
-            data = alarms[index];
-        }
-        return data;
     }
 
 private Q_SLOTS:
@@ -134,11 +105,12 @@ private Q_SLOTS:
     void initTestCase()
     {
         AlarmManager::instance();
-        // make sure the first fetch is completed
+        // wait for the first fetch completion
         AlarmsAdapter *adapter = AlarmsAdapter::get();
         if (adapter->fetchRequest) {
             adapter->fetchRequest->wait();
         }
+        updateSpy = new QSignalSpy(&AlarmManager::instance(), SIGNAL(alarmsUpdated(QList<QVariant>)));
     }
 
     void cleanupTestCase() {
@@ -155,6 +127,12 @@ private Q_SLOTS:
                 i++;
             }
         }
+        delete updateSpy;
+    }
+
+    void cleanup()
+    {
+        updateSpy->clear();
     }
 
     void test_singleShotAlarmXFail() {
@@ -354,7 +332,7 @@ private Q_SLOTS:
         QVERIFY(containsAlarm(&alarm));
 
         alarm.setDate(QDateTime::currentDateTime().addDays(5));
-        QVERIFY(!compareAlarms(&alarm, &copy));
+        QVERIFY(!(alarm == copy));
 
         alarm.save();
         // do not fetch!
@@ -376,7 +354,7 @@ private Q_SLOTS:
         QVERIFY(containsAlarm(&alarm));
 
         alarm.setType(UCAlarm::Repeating);
-        QVERIFY(!compareAlarms(&alarm, &copy));
+        QVERIFY(!(alarm == copy));
         alarm.save();
         // do not fetch
         waitForUpdate(&alarm);
@@ -441,10 +419,10 @@ private Q_SLOTS:
 
         alarm.save();
         waitAndFetch(&alarm);
-        QTest::qWait(2000);
+        QTest::qWait(3000);
         syncFetch();
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
-        QVERIFY(containsAlarm(&nextAlarm));
+        QVERIFY(containsAlarm(&nextAlarm, true));
     }
 
     void test_correctAlarmOrderWeekly()
@@ -461,7 +439,7 @@ private Q_SLOTS:
         QTest::qWait(2000);
         syncFetch();
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
-        QVERIFY(containsAlarm(&nextAlarm));
+        QVERIFY(containsAlarm(&nextAlarm, true));
     }
 
     void test_transcodeDate_data()
@@ -485,8 +463,8 @@ private Q_SLOTS:
         QFETCH(int, dstSpec);
         QFETCH(bool, xfail);
 
-        QDateTime srcDate = AlarmData::normalizeDate(QDateTime(date.date(), date.time(), (Qt::TimeSpec)srcSpec));
-        QDateTime dstDate(AlarmData::transcodeDate(srcDate, (Qt::TimeSpec)dstSpec));
+        QDateTime srcDate = AlarmUtils::normalizeDate(QDateTime(date.date(), date.time(), (Qt::TimeSpec)srcSpec));
+        QDateTime dstDate(AlarmUtils::transcodeDate(srcDate, (Qt::TimeSpec)dstSpec));
         QCOMPARE(srcDate.date(), dstDate.date());
         QCOMPARE(srcDate.time(), dstDate.time());
         if (xfail) {
@@ -547,10 +525,10 @@ private Q_SLOTS:
         alarm.save();
         waitAndFetch(&alarm);
 
-        UCAlarm saved;
-        QVERIFY(findAlarm("test_onetime_sound", saved));
-        QCOMPARE(alarm, saved);
-        QCOMPARE(alarm.sound().toString(), saved.sound().toString());
+        const UCAlarm *saved = AlarmManager::instance().findAlarm(alarm.cookie());
+        QVERIFY(saved);
+        QCOMPARE(alarm, *saved);
+        QCOMPARE(alarm.sound().toString(), saved->sound().toString());
     }
 
     // guard bug #1360101
@@ -573,9 +551,7 @@ private Q_SLOTS:
         alarm.save();
         waitForUpdate(&alarm);
         QVERIFY(containsAlarm(&alarm));
-        AlarmData data = getAlarmDataFromAlarmCookie(&alarm);
-        QVERIFY(data.cookie.isValid());
-        QCOMPARE(data.enabled, false);
+        QVERIFY(AlarmManager::instance().verifyChange(&alarm, AlarmManager::Enabled, false));
     }
 
     void test_change_alarm_sound()
@@ -593,7 +569,7 @@ private Q_SLOTS:
         QVERIFY(containsAlarm(&alarm));
 
         //verify whether we have the desired change
-        QVERIFY(AlarmManager::instance().verifyChange(&alarm, AlarmData::Sound, QVariant::fromValue(alarm.sound())));
+        QVERIFY(AlarmManager::instance().verifyChange(&alarm, AlarmManager::Sound, QVariant::fromValue(alarm.sound())));
     }
 
     void test_check_alarm_tags_data()
@@ -617,7 +593,7 @@ private Q_SLOTS:
         QVERIFY(containsAlarm(&alarm));
 
         // check the tags
-        QVERIFY(AlarmManager::instance().verifyChange(&alarm, AlarmData::Enabled, enabled));
+        QVERIFY(AlarmManager::instance().verifyChange(&alarm, AlarmManager::Enabled, enabled));
     }
 };
 

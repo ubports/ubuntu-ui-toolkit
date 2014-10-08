@@ -25,51 +25,10 @@
 
 #include "ucalarm.h"
 
-class AlarmData {
+class AlarmUtils {
 public:
-    enum Change {
-        NoChange    = 0,
-        Enabled     = 0x0001,
-        Date        = 0x0002,
-        Message     = 0x0004,
-        Sound       = 0x0008,
-        Type        = 0x0010,
-        Days        = 0x0020,
-        AllFields   = 0x00FF
-    };
-
-    AlarmData()
-        : changes(0)
-        , type(UCAlarm::OneTime)
-        , days(UCAlarm::AutoDetect)
-        , enabled(true)
+    AlarmUtils()
     {
-    }
-    AlarmData(const AlarmData &other)
-        : changes(0)
-        , cookie(other.cookie)
-        , originalDate(other.originalDate)
-        , date(other.date)
-        , message(other.message)
-        , sound(other.sound)
-        , type(other.type)
-        , days(other.days)
-        , enabled(other.enabled)
-    {
-    }
-
-    bool compare(const AlarmData &other) const
-    {
-        // cookie, sound, and enabled do not count on alarm equality
-        return date == other.date
-                && message == other.message
-                && type == other.type
-                && days == other.days;
-    }
-
-    bool operator==(const AlarmData &other) const
-    {
-        return compare(other);
     }
 
     static QHash<int, QByteArray> roles() {
@@ -84,14 +43,14 @@ public:
         return hash;
     }
 
-    QVariant roleData(int role) const {
+    QVariant roleData(int role, const UCAlarm &alarm) const {
         switch (role) {
-        case 0: return message;
-        case 1: return date;
-        case 2: return type;
-        case 3: return static_cast<int>(days);
-        case 4: return sound;
-        case 5: return enabled;
+        case 0: return alarm.message();
+        case 1: return alarm.date();
+        case 2: return alarm.type();
+        case 3: return static_cast<int>(alarm.daysOfWeek());
+        case 4: return alarm.sound();
+        case 5: return alarm.enabled();
         default: return QVariant();
         }
     }
@@ -109,22 +68,11 @@ public:
         }
         return QDateTime(dt.date(), normalizeDate(dt).time(), targetSpec);
     }
-
-    unsigned int changes;
-    QVariant cookie;
-
-    // data members
-    QDateTime originalDate;
-    QDateTime date;
-    QString message;
-    QUrl sound;
-    UCAlarm::AlarmType type;
-    UCAlarm::DaysOfWeek days;
-    bool enabled;
 };
 
 class AlarmRequest;
 class AlarmManagerPrivate;
+class AlarmRequestPrivate;
 class AlarmList;
 class AlarmManager : public QObject
 {
@@ -135,15 +83,30 @@ public:
         Progress,
         Error
     };
+    enum Change {
+        NoChange    = 0,
+        Enabled     = 0x0001,
+        Date        = 0x0002,
+        Message     = 0x0004,
+        Sound       = 0x0008,
+        Type        = 0x0010,
+        Days        = 0x0020,
+        AllFields   = 0x00FF
+    };
 
     ~AlarmManager();
 
     static AlarmManager &instance();
 
-    AlarmList alarms() const;
+    bool fetchAlarms();
+    int alarmCount();
+    UCAlarm *alarmAt(int index) const;
+    UCAlarm *findAlarm(const QVariant &cookie) const;
 
-    bool verifyChange(UCAlarm *alarm, AlarmData::Change change, const QVariant &newData);
+    bool verifyChange(UCAlarm *alarm, Change change, const QVariant &newData);
     bool compareCookies(const QVariant &cookie1, const QVariant &cookie2);
+    static UCAlarmPrivate *createAlarmData(UCAlarm *alarm);
+    static AlarmRequestPrivate *createAlarmRequestData(AlarmRequest *request, bool autoDelete);
 
 Q_SIGNALS:
     void alarmsChanged();
@@ -154,24 +117,6 @@ private:
     Q_DISABLE_COPY(AlarmManager)
     Q_DECLARE_PRIVATE(AlarmManager)
     QScopedPointer<AlarmManagerPrivate> d_ptr;
-};
-
-// list of alarms
-class AlarmList: public QList<AlarmData>
-{
-public:
-    AlarmList(){}
-
-    // returns the index of the alarm matching a cookie, -1 on error
-    inline int indexOfAlarm(const QVariant &cookie)
-    {
-        for (int i = 0; i < size(); i++) {
-            if (AlarmManager::instance().compareCookies(at(i).cookie, cookie)) {
-                return i;
-            }
-        }
-        return -1;
-    }
 };
 
 #endif // ALARMMANAGER_H

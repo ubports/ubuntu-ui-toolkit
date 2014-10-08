@@ -49,6 +49,231 @@ const char *tagDisabledAlarm = "x-canonical-disabled";
 QTORGANIZER_USE_NAMESPACE
 
 /*-----------------------------------------------------------------------------
+ * Adaptation layer for Alarm Data.
+ */
+AlarmDataAdapter::AlarmDataAdapter(UCAlarm *qq)
+    : UCAlarmPrivate(qq)
+{
+    // add x-canonical-alarm tag as agreed in bug #1361702
+    if (!event.tags().contains(tagAlarmService)) {
+        event.addTag(tagAlarmService);
+    }
+    event.id() = QOrganizerItemId();
+    setDefaults();
+}
+
+AlarmDataAdapter::~AlarmDataAdapter()
+{
+}
+
+bool AlarmDataAdapter::enabled() const
+{
+    return !event.tags().contains(tagDisabledAlarm);
+}
+bool AlarmDataAdapter::setEnabled(bool enabled)
+{
+    if (enabled == this->enabled()) {
+        return false;
+    }
+    if (enabled) {
+        // remove eventual x-canonical-disabled tag as agreed in bug #1361702
+        QStringList tags = event.tags();
+        tags.removeAll(tagDisabledAlarm);
+        event.setTags(tags);
+    } else {
+        // tag the alarm as disabled, using x-canonical-disabled as agreed in bug #1361702
+        event.addTag(tagDisabledAlarm);
+    }
+    return true;
+}
+
+QDateTime AlarmDataAdapter::date() const
+{
+    return AlarmUtils::transcodeDate(event.startDateTime().toUTC(), Qt::LocalTime);
+}
+bool AlarmDataAdapter::setDate(const QDateTime &date)
+{
+    if (this->date() == date) {
+        return false;
+    }
+    event.setStartDateTime(AlarmUtils::transcodeDate(date, Qt::UTC));
+    return true;
+}
+
+QString AlarmDataAdapter::message() const
+{
+    return event.displayLabel();
+}
+bool AlarmDataAdapter::setMessage(const QString &message)
+{
+    if (event.displayLabel() == message) {
+        return false;
+    }
+    event.setDisplayLabel(message);
+    // set the visual attachment
+    QOrganizerItemVisualReminder visual = event.detail(QOrganizerItemDetail::TypeVisualReminder);
+    if (!visual.isEmpty()) {
+        // remove previous attachment
+        event.removeDetail(&visual);
+    }
+    visual.setSecondsBeforeStart(0);
+    visual.setMessage(message);
+    event.saveDetail(&visual);
+    return true;
+}
+
+UCAlarm::AlarmType AlarmDataAdapter::type() const
+{
+    return alarmType;
+}
+bool AlarmDataAdapter::setType(UCAlarm::AlarmType type)
+{
+    if (alarmType == type) {
+        return false;
+    }
+    alarmType = type;
+    return true;
+}
+
+UCAlarm::DaysOfWeek AlarmDataAdapter::daysOfWeek() const
+{
+    return dow;
+}
+bool AlarmDataAdapter::setDaysOfWeek(UCAlarm::DaysOfWeek days)
+{
+    if (days == dow) {
+        return false;
+    }
+    dow = days;
+    return true;
+}
+
+QUrl AlarmDataAdapter::sound() const
+{
+    QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
+    return audible.dataUrl();
+}
+bool AlarmDataAdapter::setSound(const QUrl &sound)
+{
+    QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
+    if (audible.dataUrl() == sound) {
+        return false;
+    }
+
+    // make sure we have the attachments saved in any case
+    if (!audible.isEmpty()) {
+        // remove previous attachment
+        event.removeDetail(&audible);
+    }
+    audible.setSecondsBeforeStart(0);
+    audible.setDataUrl(sound);
+    event.saveDetail(&audible);
+    return true;
+}
+
+QVariant AlarmDataAdapter::cookie() const
+{
+    return QVariant::fromValue(event.id());
+}
+
+UCAlarm::Error AlarmDataAdapter::checkAlarm()
+{
+    QDateTime dt = date();
+    if (!dt.isValid()) {
+        return UCAlarm::InvalidDate;
+    }
+
+    setDate(AlarmUtils::normalizeDate(dt));
+
+    // check type first as it may alter start day
+    UCAlarm::Error result = UCAlarm::NoError;
+    UCAlarm::AlarmType alarmType = type();
+    if (alarmType == UCAlarm::OneTime) {
+       result = checkOneTime();
+    } else if (alarmType == UCAlarm::Repeating) {
+       result = checkRepeatingWeekly();
+    }
+
+    if (result == UCAlarm::NoError) {
+        // update recurrence
+        adjustDowSettings(alarmType, dow);
+    }
+
+    return result;
+}
+
+void AlarmDataAdapter::adjustDowSettings(UCAlarm::AlarmType type, UCAlarm::DaysOfWeek days)
+{
+    QOrganizerItemRecurrence old = event.detail(QOrganizerItemDetail::TypeRecurrence);
+    event.removeDetail(&old);
+
+    switch (type) {
+    case UCAlarm::OneTime: {
+        break;
+    }
+    case UCAlarm::Repeating: {
+        QOrganizerRecurrenceRule rule;
+        if (days == UCAlarm::AutoDetect) {
+            rule.setFrequency(QOrganizerRecurrenceRule::Weekly);
+            rule.setDaysOfWeek(daysToSet(dayOfWeek(date())));
+        } else if (days == UCAlarm::Daily) {
+            rule.setFrequency(QOrganizerRecurrenceRule::Daily);
+        } else if (days) {
+            rule.setFrequency(QOrganizerRecurrenceRule::Weekly);
+            rule.setDaysOfWeek(daysToSet(days));
+        }
+        event.setRecurrenceRule(rule);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+QSet<Qt::DayOfWeek> AlarmDataAdapter::daysToSet(int days)
+{
+    QSet<Qt::DayOfWeek> result;
+    for (Qt::DayOfWeek day = Qt::Monday; day <= Qt::Sunday; day = static_cast<Qt::DayOfWeek>(static_cast<int>(day) + 1)) {
+        if (days & (1 << (static_cast<int>(day) - 1)))
+            result << day;
+    }
+    return result;
+}
+
+UCAlarm::DaysOfWeek AlarmDataAdapter::daysFromSet(const QSet<Qt::DayOfWeek> &set)
+{
+    UCAlarm::DaysOfWeek days = 0;
+    QSetIterator<Qt::DayOfWeek> i(set);
+    while (i.hasNext()) {
+        int day = static_cast<int>(i.next());
+        days |= static_cast<UCAlarm::DayOfWeek>(1 << (day - 1));
+    }
+    return days;
+}
+
+void AlarmDataAdapter::setData(const QOrganizerTodo &data)
+{
+    event = data;
+    QOrganizerRecurrenceRule rule = event.recurrenceRule();
+    switch (rule.frequency()) {
+    case QOrganizerRecurrenceRule::Weekly: {
+        alarmType = UCAlarm::Repeating;
+        dow = daysFromSet(rule.daysOfWeek());
+        break;
+    }
+    case QOrganizerRecurrenceRule::Daily: {
+        alarmType = UCAlarm::Repeating;
+        dow = UCAlarm::Daily;
+        break;
+    }
+    default:
+        alarmType = UCAlarm::OneTime;
+        dow = dayOfWeek(date());
+        break;
+    }
+}
+
+/*-----------------------------------------------------------------------------
  * Adaptation layer for Alarms.
  */
 AlarmManagerPrivate * createAlarmsAdapter(AlarmManager *alarms)
@@ -95,6 +320,11 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
             collection = manager->defaultCollection();
         }
     }
+}
+
+void AlarmsAdapter::init()
+{
+    completed = true;
     loadAlarms();
 
     // connect to manager to receive changes
@@ -102,11 +332,24 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     QObject::connect(manager, SIGNAL(itemsAdded(QList<QOrganizerItemId>)), this, SLOT(fetchAlarms()));
     QObject::connect(manager, SIGNAL(itemsChanged(QList<QOrganizerItemId>)), this, SLOT(updateAlarms(QList<QOrganizerItemId>)));
     QObject::connect(manager, SIGNAL(itemsRemoved(QList<QOrganizerItemId>)), this, SLOT(fetchAlarms()));
+
+    // do the first fetch
+    fetchAlarms();
 }
 
 AlarmsAdapter::~AlarmsAdapter()
 {
     saveAlarms();
+}
+
+UCAlarmPrivate * AlarmsAdapter::createAlarmData(UCAlarm *alarm)
+{
+    return new AlarmDataAdapter(alarm);
+}
+
+AlarmRequestPrivate * AlarmsAdapter::createAlarmRequestData(AlarmRequest *request, bool autoDelete)
+{
+    return new AlarmRequestAdapter(request, autoDelete);
 }
 
 // load fallback manager data
@@ -125,16 +368,17 @@ void AlarmsAdapter::loadAlarms()
     for (int i = 0; i < array.size(); i++) {
         QJsonObject object = array[i].toObject();
 
-        AlarmData alarm;
-        alarm.message = object["message"].toString();
-        alarm.originalDate = alarm.date = AlarmData::transcodeDate(QDateTime::fromString(object["date"].toString()), Qt::LocalTime);
-        alarm.sound = object["sound"].toString();
-        alarm.type = static_cast<UCAlarm::AlarmType>(object["type"].toInt());
-        alarm.days = static_cast<UCAlarm::DaysOfWeek>(object["days"].toInt());
-        alarm.enabled = object["enabled"].toBool();
+        // use UCAlarm to save store JSON data
+        UCAlarm alarm;
+        alarm.setMessage(object["message"].toString());
+        alarm.setDate(AlarmUtils::transcodeDate(QDateTime::fromString(object["date"].toString()), Qt::LocalTime));
+        alarm.setSound(object["sound"].toString());
+        alarm.setType(static_cast<UCAlarm::AlarmType>(object["type"].toInt()));
+        alarm.setDaysOfWeek(static_cast<UCAlarm::DaysOfWeek>(object["days"].toInt()));
+        alarm.setEnabled(object["enabled"].toBool());
 
-        QOrganizerTodo event;
-        organizerEventFromAlarmData(alarm, event);
+        AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
+        QOrganizerTodo event = pAlarm->data();
         manager->saveItem(&event);
     }
     file.close();
@@ -155,14 +399,19 @@ void AlarmsAdapter::saveAlarms()
         return;
     }
     QJsonArray data;
-    Q_FOREACH(const AlarmData &alarm, alarmList) {
+    UCAlarm alarm;
+    AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
+    Q_FOREACH(const QOrganizerTodo &todo, alarmList) {
+
+        // create an UCAlarm and set its event to ease conversions
+        pAlarm->setData(todo);
         QJsonObject object;
-        object["message"] = alarm.message;
-        object["date"] = AlarmData::transcodeDate(alarm.originalDate, Qt::UTC).toString();
-        object["sound"] = alarm.sound.toString();
-        object["type"] = QJsonValue(alarm.type);
-        object["days"] = QJsonValue(alarm.days);
-        object["enabled"] = QJsonValue(alarm.enabled);
+        object["message"] = alarm.message();
+        object["date"] = AlarmUtils::transcodeDate(alarm.date(), Qt::UTC).toString();
+        object["sound"] = alarm.sound().toString();
+        object["type"] = QJsonValue(alarm.type());
+        object["days"] = QJsonValue(alarm.daysOfWeek());
+        object["enabled"] = QJsonValue(alarm.enabled());
         data.append(object);
 
     }
@@ -172,138 +421,114 @@ void AlarmsAdapter::saveAlarms()
     listDirty = false;
 }
 
-void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganizerTodo &event)
-{
-    // add x-canonical-alarm tag as agreed in bug #1361702
-    if (!event.tags().contains(tagAlarmService)) {
-        event.addTag(tagAlarmService);
-    }
-    event.setCollectionId(collection.id());
-    event.setAllDay(false);
-    if (alarm.changes & AlarmData::Date) {
-        event.setStartDateTime(AlarmData::transcodeDate(alarm.date, Qt::UTC));
-    }
-    if (alarm.changes & AlarmData::Message) {
-        event.setDisplayLabel(alarm.message);
-    }
+//void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganizerTodo &event)
+//{
+//    event.setCollectionId(collection.id());
+//    event.setAllDay(false);
+//    if (alarm.changes & AlarmData::Date) {
+//        event.setStartDateTime(AlarmUtils::transcodeDate(alarm.date, Qt::UTC));
+//    }
+//    if (alarm.changes & AlarmData::Message) {
+//        event.setDisplayLabel(alarm.message);
+//    }
 
-    // make sure we have the attachments saved in any case
-    QOrganizerItemVisualReminder visual = event.detail(QOrganizerItemDetail::TypeVisualReminder);
-    if (visual.isEmpty()) {
-        visual.setSecondsBeforeStart(0);
-        visual.setMessage(alarm.message);
-        event.saveDetail(&visual);
-    }
-    QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
-    if (audible.dataUrl() != alarm.sound) {
-        if (!audible.isEmpty()) {
-            // remove previous attachment
-            event.removeDetail(&audible);
-        }
-        audible.setSecondsBeforeStart(0);
-        audible.setDataUrl(alarm.sound);
-        event.saveDetail(&audible);
-    }
+//    // make sure we have the attachments saved in any case
+//    QOrganizerItemVisualReminder visual = event.detail(QOrganizerItemDetail::TypeVisualReminder);
+//    if (visual.isEmpty()) {
+//        visual.setSecondsBeforeStart(0);
+//        visual.setMessage(alarm.message);
+//        event.saveDetail(&visual);
+//    }
+//    QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
+//    if (audible.dataUrl() != alarm.sound) {
+//        if (!audible.isEmpty()) {
+//            // remove previous attachment
+//            event.removeDetail(&audible);
+//        }
+//        audible.setSecondsBeforeStart(0);
+//        audible.setDataUrl(alarm.sound);
+//        event.saveDetail(&audible);
+//    }
 
-    if (alarm.changes & AlarmData::Enabled) {
-        if (alarm.enabled) {
-            // remove eventual x-canonical-disabled tag as agreed in bug #1361702
-            QStringList tags = event.tags();
-            tags.removeAll(tagDisabledAlarm);
-            event.setTags(tags);
-        } else {
-            // tag the alarm as disabled, using x-canonical-disabled as agreed in bug #1361702
-            event.addTag(tagDisabledAlarm);
-        }
-    }
+//    if (alarm.changes & AlarmData::Enabled) {
+//        if (alarm.enabled) {
+//            // remove eventual x-canonical-disabled tag as agreed in bug #1361702
+//            QStringList tags = event.tags();
+//            tags.removeAll(tagDisabledAlarm);
+//            event.setTags(tags);
+//        } else {
+//            // tag the alarm as disabled, using x-canonical-disabled as agreed in bug #1361702
+//            event.addTag(tagDisabledAlarm);
+//        }
+//    }
 
-    // set repeating, reset recurrence no matter if we had it or not
-    if (((alarm.changes & AlarmData::Type) == AlarmData::Type)
-            || ((alarm.changes & AlarmData::Days) == AlarmData::Days)) {
-        QOrganizerItemRecurrence old = event.detail(QOrganizerItemDetail::TypeRecurrence);
-        event.removeDetail(&old);
-    }
-    switch (alarm.type) {
-    case UCAlarm::OneTime: {
-        break;
-    }
-    case UCAlarm::Repeating: {
-        QOrganizerRecurrenceRule rule;
-        if (alarm.days == UCAlarm::Daily) {
-            rule.setFrequency(QOrganizerRecurrenceRule::Daily);
-        } else if (alarm.days) {
-            rule.setFrequency(QOrganizerRecurrenceRule::Weekly);
-            rule.setDaysOfWeek(daysToSet(alarm.days));
-        }
-        event.setRecurrenceRule(rule);
-        break;
-    }
-    default:
-        break;
-    }
-}
+//    // set repeating, reset recurrence no matter if we had it or not
+//    if (((alarm.changes & AlarmData::Type) == AlarmData::Type)
+//            || ((alarm.changes & AlarmData::Days) == AlarmData::Days)) {
+//        QOrganizerItemRecurrence old = event.detail(QOrganizerItemDetail::TypeRecurrence);
+//        event.removeDetail(&old);
+//    }
+//    switch (alarm.type) {
+//    case UCAlarm::OneTime: {
+//        break;
+//    }
+//    case UCAlarm::Repeating: {
+//        QOrganizerRecurrenceRule rule;
+//        if (alarm.days == UCAlarm::Daily) {
+//            rule.setFrequency(QOrganizerRecurrenceRule::Daily);
+//        } else if (alarm.days) {
+//            rule.setFrequency(QOrganizerRecurrenceRule::Weekly);
+//            rule.setDaysOfWeek(daysToSet(alarm.days));
+//        }
+//        event.setRecurrenceRule(rule);
+//        break;
+//    }
+//    default:
+//        break;
+//    }
+//}
 
-int AlarmsAdapter::alarmDataFromOrganizerEvent(const QOrganizerTodo &event, AlarmData &alarm)
-{
-    if (event.isEmpty()) {
-        return FetchedEventEmpty;
-    }
+//int AlarmsAdapter::alarmDataFromOrganizerEvent(const QOrganizerTodo &event, AlarmData &alarm)
+//{
+//    if (event.isEmpty()) {
+//        return FetchedEventEmpty;
+//    }
 
-    alarm.cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
-    alarm.message = event.displayLabel();
-    alarm.date = AlarmData::transcodeDate(event.startDateTime().toUTC(), Qt::LocalTime);
-    QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
-    alarm.sound = audible.dataUrl();
-    alarm.originalDate = alarm.date;
+//    alarm.cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
+//    alarm.message = event.displayLabel();
+//    alarm.date = AlarmUtils::transcodeDate(event.startDateTime().toUTC(), Qt::LocalTime);
+//    QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
+//    alarm.sound = audible.dataUrl();
+//    alarm.originalDate = alarm.date;
 
-    // check if the alarm is enabled or not
-    alarm.enabled = !event.tags().contains(tagDisabledAlarm);
+//    // check if the alarm is enabled or not
+//    alarm.enabled = !event.tags().contains(tagDisabledAlarm);
 
-    // repeating
-    QOrganizerRecurrenceRule rule = event.recurrenceRule();
-    switch (rule.frequency()) {
-    case QOrganizerRecurrenceRule::Invalid: {
-        alarm.type = UCAlarm::OneTime;
-        alarm.days = UCAlarmPrivate::dayOfWeek(alarm.date);
-        break;
-    }
-    case QOrganizerRecurrenceRule::Daily: {
-        alarm.type = UCAlarm::Repeating;
-        alarm.days = UCAlarm::Daily;
-        break;
-    }
-    case QOrganizerRecurrenceRule::Weekly: {
-        alarm.type = UCAlarm::Repeating;
-        daysFromSet(alarm, rule.daysOfWeek());
-        break;
-    }
-    default:
-        // fallback to OneTime, no error reported
-        return UnhandledEventType;
-    }
+//    // repeating
+//    QOrganizerRecurrenceRule rule = event.recurrenceRule();
+//    switch (rule.frequency()) {
+//    case QOrganizerRecurrenceRule::Invalid: {
+//        alarm.type = UCAlarm::OneTime;
+//        alarm.days = UCAlarmPrivate::dayOfWeek(alarm.date);
+//        break;
+//    }
+//    case QOrganizerRecurrenceRule::Daily: {
+//        alarm.type = UCAlarm::Repeating;
+//        alarm.days = UCAlarm::Daily;
+//        break;
+//    }
+//    case QOrganizerRecurrenceRule::Weekly: {
+//        alarm.type = UCAlarm::Repeating;
+//        daysFromSet(alarm, rule.daysOfWeek());
+//        break;
+//    }
+//    default:
+//        // fallback to OneTime, no error reported
+//        return UnhandledEventType;
+//    }
 
-    return UCAlarm::NoError;
-}
-
-QSet<Qt::DayOfWeek> AlarmsAdapter::daysToSet(int days) const
-{
-    QSet<Qt::DayOfWeek> result;
-    for (Qt::DayOfWeek day = Qt::Monday; day <= Qt::Sunday; day = static_cast<Qt::DayOfWeek>(static_cast<int>(day) + 1)) {
-        if (days & (1 << (static_cast<int>(day) - 1)))
-            result << day;
-    }
-    return result;
-}
-
-void AlarmsAdapter::daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set)
-{
-    alarm.days = 0;
-    QSetIterator<Qt::DayOfWeek> i(set);
-    while (i.hasNext()) {
-        int day = static_cast<int>(i.next());
-        alarm.days |= static_cast<UCAlarm::DayOfWeek>(1 << (day - 1));
-    }
-}
+//    return UCAlarm::NoError;
+//}
 
 
 /*-----------------------------------------------------------------------------
@@ -317,16 +542,17 @@ void AlarmsAdapter::daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set)
  * - AlarmData::Type - UCAlarm::Type
  * - AlarmData::Days - UCAlarm::DaysOfWeek
  */
-bool AlarmsAdapter::verifyChange(const QVariant &cookie, AlarmData::Change change, const QVariant &value)
+bool AlarmsAdapter::verifyChange(UCAlarm *alarm, AlarmManager::Change change, const QVariant &value)
 {
-    QOrganizerItemId id = cookie.value<QOrganizerItemId>();
+    AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(alarm));
+    QOrganizerItemId id = pAlarm->data().id();
     QOrganizerTodo todo = static_cast<QOrganizerTodo>(manager->item(id));
     if (todo.isEmpty()) {
         return false;
     }
 
     switch (change) {
-        case AlarmData::Enabled:
+        case AlarmManager::Enabled:
         {
             Q_ASSERT(value.type() == QVariant::Bool);
             if (value.toBool()) {
@@ -335,21 +561,21 @@ bool AlarmsAdapter::verifyChange(const QVariant &cookie, AlarmData::Change chang
                 return todo.tags().contains(tagDisabledAlarm) && todo.tags().contains(tagAlarmService);
             }
         }
-        case AlarmData::Date:
+        case AlarmManager::Date:
         {
             return todo.startDateTime() == value.toDateTime();
         }
-        case AlarmData::Message:
+        case AlarmManager::Message:
         {
             return todo.displayLabel() == value.toString();
         }
-        case AlarmData::Sound:
+        case AlarmManager::Sound:
         {
             // it is enough to check the audible presence, as they are added/removed in pair with visual reminder
             QOrganizerItemAudibleReminder audible = todo.detail(QOrganizerItemDetail::TypeAudibleReminder);
             return audible.dataUrl().toString() == value.toString();
         }
-        case AlarmData::Type:
+        case AlarmManager::Type:
         {
             QOrganizerRecurrenceRule rule = todo.recurrenceRule();
             QOrganizerRecurrenceRule::Frequency frequency = rule.frequency();
@@ -359,7 +585,7 @@ bool AlarmsAdapter::verifyChange(const QVariant &cookie, AlarmData::Change chang
                             (frequency == QOrganizerRecurrenceRule::Daily ||
                              frequency == QOrganizerRecurrenceRule::Weekly));
         }
-        case AlarmData::Days:
+        case AlarmManager::Days:
         {
             // this only checks the days set
             QOrganizerRecurrenceRule rule = todo.recurrenceRule();
@@ -372,7 +598,7 @@ bool AlarmsAdapter::verifyChange(const QVariant &cookie, AlarmData::Change chang
                 return true;
             }
             if (frequency == QOrganizerRecurrenceRule::Weekly) {
-                return rule.daysOfWeek() == daysToSet(days);
+                return rule.daysOfWeek() == AlarmDataAdapter::daysToSet(days);
             }
             return false;
         }
@@ -392,6 +618,29 @@ bool AlarmsAdapter::fetchAlarms()
     fetchRequest = new AlarmRequest(true, q_ptr);
     AlarmRequestAdapter *adapter = static_cast<AlarmRequestAdapter*>(AlarmRequestPrivate::get(fetchRequest));
     return adapter->fetch();
+}
+
+int AlarmsAdapter::alarmCount()
+{
+    return alarmList.count();
+}
+void AlarmsAdapter::getAlarmAt(const UCAlarm &alarm, int index) const
+{
+    Q_ASSERT(index >= 0 && index < alarmList.count());
+    AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
+    pAlarm->setData(alarmList[index]);
+}
+
+bool AlarmsAdapter::findAlarm(const UCAlarm &alarm, const QVariant &cookie) const
+{
+    QOrganizerItemId id = cookie.value<QOrganizerItemId>();
+    QOrganizerItem item = manager->item(id);
+    if (item.type() == QOrganizerItemType::TypeTodo) {
+        AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
+        pAlarm->setData(static_cast<QOrganizerTodo>(item));
+        return true;
+    }
+    return false;
 }
 
 bool AlarmsAdapter::compareCookies(const QVariant &cookie1, const QVariant &cookie2)
@@ -426,20 +675,20 @@ void AlarmsAdapter::updateAlarms(const QList<QOrganizerItemId> &list)
         }
 
         // update alarm data
-        QVariant cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
-        int index = alarmList.indexOfAlarm(cookie);
+        int index = alarmList.indexOfAlarm(event.id());
         if (index < 0) {
             qCritical("The Alarm data has been updated with an unregistered item, skipping!");
             continue;
         }
-        AlarmData data = alarmList[index];
-        if (alarmDataFromOrganizerEvent(event, data) == UCAlarm::NoError) {
-            adjustAlarmOccurrence(event, data);
-        }
-        alarmList[index] = data;
+        // use UCAlarm to ease conversions
+        UCAlarm alarm;
+        AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
+        pAlarm->setData(event);
+        adjustAlarmOccurrence(*pAlarm);
+        alarmList[index] = pAlarm->data();
 
         // register cookie for update
-        cookies << cookie;
+        cookies << QVariant::fromValue(pAlarm->data().id());
     }
     Q_EMIT q_ptr->alarmsUpdated(cookies);
 }
@@ -465,11 +714,13 @@ void AlarmsAdapter::completeFetchAlarms(const QList<QOrganizerItem> &alarms)
         } else {
             continue;
         }
-        AlarmData alarm;
-        if (alarmDataFromOrganizerEvent(event, alarm) == UCAlarm::NoError) {
-            adjustAlarmOccurrence(event, alarm);
-            alarmList << alarm;
-        }
+
+        // use UCAlarm to ease conversions
+        UCAlarm alarm;
+        AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
+        pAlarm->setData(event);
+        adjustAlarmOccurrence(*pAlarm);
+        alarmList << pAlarm->data();
     }
 
     saveAlarms();
@@ -479,31 +730,31 @@ void AlarmsAdapter::completeFetchAlarms(const QList<QOrganizerItem> &alarms)
     fetchRequest = 0;
 }
 
-void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData &alarm)
+void AlarmsAdapter::adjustAlarmOccurrence(AlarmDataAdapter &alarm)
 {
-    if (alarm.type == UCAlarm::OneTime) {
+    if (alarm.type() == UCAlarm::OneTime) {
         return;
     }
     // with EDS we need to query the occurrences separately as the fetch reports only the main events
     // with fallback manager this does not reduce the performance and does work the same way.
-    QDateTime currentDate = AlarmData::normalizeDate(QDateTime::currentDateTime());
-    if (alarm.date > currentDate) {
+    QDateTime currentDate = AlarmUtils::normalizeDate(QDateTime::currentDateTime());
+    if (alarm.date() > currentDate) {
         // no need to adjust date, the event occurs in the future
         return;
     }
     QDateTime startDate;
     QDateTime endDate;
-    if (alarm.type == UCAlarm::Repeating) {
+    if (alarm.type() == UCAlarm::Repeating) {
         // 8 days is enough from the starting date (or current date depending on the start date)
-        startDate = (alarm.date > currentDate) ? alarm.date : currentDate;
+        startDate = (alarm.date() > currentDate) ? alarm.date() : currentDate;
         endDate = startDate.addDays(8);
     }
 
     // transcode both dates
-    startDate = AlarmData::transcodeDate(startDate, Qt::UTC);
-    endDate = AlarmData::transcodeDate(endDate, Qt::UTC);
+    startDate = AlarmUtils::transcodeDate(startDate, Qt::UTC);
+    endDate = AlarmUtils::transcodeDate(endDate, Qt::UTC);
 
-    QList<QOrganizerItem> occurrences = manager->itemOccurrences(event, startDate, endDate, 10);
+    QList<QOrganizerItem> occurrences = manager->itemOccurrences(alarm.data(), startDate, endDate, 10);
     // get the first occurrence and use the date from it
     if ((occurrences.length() > 0) && (occurrences[0].type() == QOrganizerItemType::TypeTodoOccurrence)) {
         // loop till we get a proper future due date
@@ -512,8 +763,8 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
             // check if the date is after the current datetime
             // the first occurrence is the one closest to the currentDate, therefore we can safely
             // set that startDate to the alarm
-            alarm.date = AlarmData::transcodeDate(occurrence.startDateTime().toUTC(), Qt::LocalTime);
-            if (alarm.date > currentDate) {
+            alarm.setDate(occurrence.startDateTime());
+            if (alarm.date() > currentDate) {
                 // we have the proper date set, leave
                 break;
             }
@@ -525,11 +776,6 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
  * AlarmRequestAdapter implementation
  */
 
-AlarmRequestPrivate * createAlarmRequest(AlarmRequest *request, bool autoDelete)
-{
-    return new AlarmRequestAdapter(request, autoDelete);
-}
-
 AlarmRequestAdapter::AlarmRequestAdapter(AlarmRequest *parent, bool autoDelete)
     : AlarmRequestPrivate(parent, autoDelete)
     , m_request(0)
@@ -539,24 +785,15 @@ AlarmRequestAdapter::AlarmRequestAdapter(AlarmRequest *parent, bool autoDelete)
 /*
  * Save or update an alarm. Returns false on operation error.
  */
-bool AlarmRequestAdapter::save(AlarmData &alarm)
+bool AlarmRequestAdapter::save(UCAlarm *alarm)
 {
-    QOrganizerTodo event;
-
-    if (!alarm.cookie.isValid()) {
-        // new event, mark all fields dirty
-        alarm.changes = AlarmData::AllFields;
-    } else {
-        // update existing event
-        QOrganizerItemId itemId = alarm.cookie.value<QOrganizerItemId>();
-        event = AlarmsAdapter::get()->manager->item(itemId);
-        if (event.isEmpty()) {
-            setStatus(AlarmRequest::Saving, AlarmRequest::Fail, UCAlarm::AdaptationError);
-            return false;
-        }
+    AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(alarm));
+    QOrganizerTodo event = pAlarm->data();
+    event.setCollectionId(AlarmsAdapter::get()->collection.id());
+    event.setAllDay(false);
+    if (event.id().managerUri().isEmpty()) {
+        pAlarm->changes = AlarmManager::AllFields;
     }
-    AlarmsAdapter::get()->organizerEventFromAlarmData(alarm, event);
-
     QOrganizerItemSaveRequest *operation = new QOrganizerItemSaveRequest(q_ptr);
     operation->setManager(AlarmsAdapter::get()->manager);
     operation->setItem(event);
@@ -567,16 +804,16 @@ bool AlarmRequestAdapter::save(AlarmData &alarm)
 /*
  * Removes an alarm from the collection. Returns false on failure.
  */
-bool AlarmRequestAdapter::remove(AlarmData &alarm)
+bool AlarmRequestAdapter::remove(UCAlarm *alarm)
 {
-    if (!alarm.cookie.isValid()) {
+    AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(alarm));
+    QOrganizerTodo event = pAlarm->data();
+    event.setCollectionId(AlarmsAdapter::get()->collection.id());
+    event.setAllDay(false);
+    if (event.id().managerUri().isEmpty()) {
         setStatus(AlarmRequest::Canceling, AlarmRequest::Fail, UCAlarm::InvalidEvent);
         return false;
     }
-
-    QOrganizerTodo event;
-    AlarmsAdapter::get()->organizerEventFromAlarmData(alarm, event);
-    event.setId(alarm.cookie.value<QOrganizerItemId>());
 
     QOrganizerItemRemoveRequest *operation = new QOrganizerItemRemoveRequest(q_ptr);
     operation->setManager(AlarmsAdapter::get()->manager);
@@ -606,7 +843,7 @@ bool AlarmRequestAdapter::fetch()
 
     // set sort order
     QOrganizerItemSortOrder sortOrder;
-    sortOrder.setDirection(Qt::AscendingOrder);
+    sortOrder.setDirection(Qt::DescendingOrder);
     sortOrder.setDetail(QOrganizerItemDetail::TypeTodoTime, QOrganizerTodoTime::FieldStartDateTime);
     operation->setSorting(QList<QOrganizerItemSortOrder>() << sortOrder);
 
@@ -734,10 +971,10 @@ void AlarmRequestAdapter::completeUpdate()
     if (!alarm) {
         return;
     }
-    UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
+    AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(alarm));
     QOrganizerItemSaveRequest *save = qobject_cast<QOrganizerItemSaveRequest*>(m_request);
-    pAlarm->rawData.cookie = QVariant::fromValue<QOrganizerItemId>(save->items()[0].id());
-    pAlarm->rawData.changes = AlarmData::NoChange;
+    pAlarm->setData(save->items()[0]);
+    pAlarm->changes = AlarmManager::NoChange;
 }
 
 void AlarmRequestAdapter::completeRemove()
@@ -746,9 +983,9 @@ void AlarmRequestAdapter::completeRemove()
     if (!alarm) {
         return;
     }
-    UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
-    pAlarm->rawData.cookie = QVariant();
-    pAlarm->rawData.changes = AlarmData::NoChange;
+    AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(alarm));
+    pAlarm->setData(QOrganizerTodo());
+    pAlarm->changes = AlarmManager::NoChange;
 }
 
 void AlarmRequestAdapter::completeFetch()

@@ -48,28 +48,61 @@ AlarmManager &AlarmManager::instance()
 {
     static AlarmManager instance;
     if (!instance.d_func()->completed) {
-        instance.d_func()->fetchAlarms();
+        instance.d_func()->init();
     }
     return instance;
 }
 
-AlarmList AlarmManager::alarms() const
-{
-    Q_D(const AlarmManager);
-    return d->alarmList;
-}
-
-bool AlarmManager::verifyChange(UCAlarm *alarm, AlarmData::Change change, const QVariant &newData)
+bool AlarmManager::fetchAlarms()
 {
     Q_D(AlarmManager);
-    UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
-    return d->verifyChange(pAlarm->rawData.cookie, change, newData);
+    return d->fetchAlarms();
+}
+
+int AlarmManager::alarmCount()
+{
+    Q_D(AlarmManager);
+    return d->alarmCount();
+}
+
+UCAlarm *AlarmManager::alarmAt(int index) const
+{
+    static UCAlarm alarm;
+    Q_D(const AlarmManager);
+    d->getAlarmAt(alarm, index);
+    return &alarm;
+}
+
+UCAlarm *AlarmManager::findAlarm(const QVariant &cookie) const
+{
+    static UCAlarm alarm;
+    Q_D(const AlarmManager);
+    if (!d->findAlarm(alarm, cookie)) {
+        return 0;
+    };
+    return &alarm;
+}
+
+bool AlarmManager::verifyChange(UCAlarm *alarm, Change change, const QVariant &newData)
+{
+    Q_D(AlarmManager);
+    return d->verifyChange(alarm, change, newData);
 }
 
 bool AlarmManager::compareCookies(const QVariant &cookie1, const QVariant &cookie2)
 {
     Q_D(AlarmManager);
     return d->compareCookies(cookie1, cookie2);
+}
+
+UCAlarmPrivate *AlarmManager::createAlarmData(UCAlarm *alarm)
+{
+    return AlarmManagerPrivate::get()->createAlarmData(alarm);
+}
+
+AlarmRequestPrivate *AlarmManager::createAlarmRequestData(AlarmRequest *request, bool autoDelete)
+{
+    return AlarmManagerPrivate::get()->createAlarmRequestData(request, autoDelete);
 }
 
 #include "moc_alarmmanager_p.cpp"

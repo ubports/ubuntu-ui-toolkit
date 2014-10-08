@@ -126,7 +126,7 @@ UCAlarmModel::UCAlarmModel(QObject *parent)
     : QAbstractListModel(parent)
     , m_ready(false)
 {
-    m_roles = AlarmData::roles();
+    m_roles = AlarmUtils::roles();
     m_roles.insert(m_roles.count(), "model");
     // keep in sync with alarms collection changes
     // make sure the connection is asynchronous, as changes made in in-place in
@@ -141,19 +141,7 @@ UCAlarmModel::UCAlarmModel(QObject *parent)
 }
 UCAlarmModel::~UCAlarmModel()
 {
-    clear();
 }
-
-void UCAlarmModel::clear()
-{
-    if (m_alarms.count()) {
-        Q_FOREACH(UCAlarm *alarm, m_alarms) {
-            delete alarm;
-        }
-        m_alarms.clear();
-    }
-}
-
 
 int UCAlarmModel::rowCount(const QModelIndex &parent) const
 {
@@ -167,16 +155,16 @@ QVariant UCAlarmModel::data(const QModelIndex &index, int role) const
     }
 
     int idx = index.row();
-    if ((idx >= m_alarms.count()) || (idx < 0)) {
+    if ((idx >= AlarmManager::instance().alarmCount()) || (idx < 0)) {
         return QVariant();
     }
 
     const QString roleName = m_roles.value(role);
+    UCAlarm *alarm = AlarmManager::instance().alarmAt(idx);
     if (roleName == "model") {
-        const UCAlarm *alarm = m_alarms[idx];
         return QVariant::fromValue(const_cast<UCAlarm*>(alarm));
     } else if (!roleName.isEmpty()){
-        return m_alarms[idx]->property(roleName.toLocal8Bit());
+        return alarm->property(roleName.toLocal8Bit());
     }
 
     return QVariant();
@@ -220,8 +208,8 @@ QHash<int, QByteArray> UCAlarmModel::roleNames() const
  */
 UCAlarm* UCAlarmModel::get(int index)
 {
-    if ((index >= 0) && (index < m_alarms.count())) {
-        return m_alarms[index];
+    if ((index >= 0) && (index < AlarmManager::instance().alarmCount())) {
+        return AlarmManager::instance().alarmAt(index);
     }
     return 0;
 }
@@ -232,12 +220,12 @@ UCAlarm* UCAlarmModel::get(int index)
  */
 int UCAlarmModel::count() const
 {
-    return m_alarms.count();
+    return AlarmManager::instance().alarmCount();
 }
 
 /*!
  * \internal
- * The slot prepares the views for the dataChanged() signal.
+ * The slot forces an alarm refresh on the alarm manager.
  */
 void UCAlarmModel::refresh()
 {
@@ -245,14 +233,7 @@ void UCAlarmModel::refresh()
         beginResetModel();
     }
 
-    clear();
-    AlarmList alarms = AlarmManager::instance().alarms();
-    Q_FOREACH(const AlarmData &data, alarms) {
-        UCAlarm *alarm = new UCAlarm(this);
-        UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
-        pAlarm->rawData = data;
-        m_alarms << alarm;
-    }
+//    AlarmManager::instance().fetchAlarms();
     Q_EMIT countChanged();
 
     if (m_ready) {
@@ -266,21 +247,22 @@ void UCAlarmModel::refresh()
  */
 void UCAlarmModel::update(const QList<QVariant> cookies)
 {
-    AlarmList alarms = AlarmManager::instance().alarms();
-    Q_FOREACH(const QVariant &cookie, cookies) {
-        int alarmIndex = alarms.indexOfAlarm(cookie);
-        AlarmData data = alarms[alarmIndex];
+    Q_UNUSED(cookies);
+//    AlarmList alarms = AlarmManager::instance().alarms();
+//    Q_FOREACH(const QVariant &cookie, cookies) {
+//        int alarmIndex = alarms.indexOfAlarm(cookie);
+//        AlarmData data = alarms[alarmIndex];
 
-        // the index of the m_alarm must be in sync with teh index of the alarms
-        UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(m_alarms[alarmIndex]);
-        if (pAlarm->rawData.cookie != cookie) {
-            qmlInfo(this) << "Updated alarm cookies differ!" << cookie.toString() << pAlarm->rawData.cookie.toString();
-        } else {
-            pAlarm->rawData = data;
+//        // the index of the m_alarm must be in sync with teh index of the alarms
+//        UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(m_alarms[alarmIndex]);
+//        if (pAlarm->rawData.cookie != cookie) {
+//            qmlInfo(this) << "Updated alarm cookies differ!" << cookie.toString() << pAlarm->rawData.cookie.toString();
+//        } else {
+//            pAlarm->rawData = data;
 
-            // create index and emit dataUpdate()
-            QModelIndex modelIndex = createIndex(alarmIndex, 0);
-            Q_EMIT dataChanged(modelIndex, modelIndex);
-        }
-    }
+//            // create index and emit dataUpdate()
+//            QModelIndex modelIndex = createIndex(alarmIndex, 0);
+//            Q_EMIT dataChanged(modelIndex, modelIndex);
+//        }
+//    }
 }

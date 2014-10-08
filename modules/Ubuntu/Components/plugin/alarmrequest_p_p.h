@@ -39,12 +39,10 @@ public:
 
     void setStatus(AlarmRequest::Operation operation, AlarmRequest::Status status, int error = UCAlarm::NoError);
 
-    virtual bool save(AlarmData &alarm) = 0;
-    virtual bool remove(AlarmData &alarm) = 0;
+    virtual bool save(UCAlarm *alarm) = 0;
+    virtual bool remove(UCAlarm *alarm) = 0;
     virtual bool wait(int msec) = 0;
     virtual void _q_updateProgress() = 0;
 };
-
-AlarmRequestPrivate * createAlarmRequest(AlarmRequest *request, bool autoDelete);
 
 #endif // ALARMREQUEST_P_P_H

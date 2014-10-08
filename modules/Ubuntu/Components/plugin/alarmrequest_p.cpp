@@ -46,13 +46,13 @@ void AlarmRequestPrivate::setStatus(AlarmRequest::Operation operation, AlarmRequ
 
 AlarmRequest::AlarmRequest(QObject *parent)
     : QObject(parent)
-    , d_ptr(createAlarmRequest(this, false))
+    , d_ptr(AlarmManager::createAlarmRequestData(this, false))
 {
 }
 
 AlarmRequest::AlarmRequest(bool autoDelete, QObject *parent)
     : QObject(parent)
-    , d_ptr(createAlarmRequest(this, autoDelete))
+    , d_ptr(AlarmManager::createAlarmRequestData(this, autoDelete))
 {
 }
 AlarmRequest::~AlarmRequest()
@@ -66,12 +66,12 @@ int AlarmRequest::error() const {
     return d_func()->error;
 }
 
-bool AlarmRequest::save(AlarmData &alarm)
+bool AlarmRequest::save(UCAlarm *alarm)
 {
     return d_func()->save(alarm);
 }
 
-bool AlarmRequest::remove(AlarmData &alarm)
+bool AlarmRequest::remove(UCAlarm *alarm)
 {
     return d_func()->remove(alarm);
 }

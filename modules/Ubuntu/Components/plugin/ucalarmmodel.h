@@ -52,8 +52,6 @@ private Q_SLOTS:
 private:
     bool m_ready;
     QHash<int, QByteArray> m_roles;
-    QList<UCAlarm*> m_alarms;
-    void clear();
 };
 
 #endif // UCALARMSMODEL_H

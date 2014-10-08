@@ -32,14 +32,52 @@ QTORGANIZER_USE_NAMESPACE
  * Adaptation layer for Alarms.
  */
 
+class AlarmDataAdapter : public UCAlarmPrivate
+{
+public:
+    AlarmDataAdapter(UCAlarm *qq);
+    ~AlarmDataAdapter();
+
+    bool enabled() const;
+    bool setEnabled(bool enabled);
+    QDateTime date() const;
+    bool setDate(const QDateTime &date);
+    QString message() const;
+    bool setMessage(const QString &message);
+    UCAlarm::AlarmType type() const;
+    bool setType(UCAlarm::AlarmType type);
+    UCAlarm::DaysOfWeek daysOfWeek() const;
+    bool setDaysOfWeek(UCAlarm::DaysOfWeek days);
+    QUrl sound() const;
+    bool setSound(const QUrl &sound);
+    QVariant cookie() const;
+    UCAlarm::Error checkAlarm();
+
+// adaptation specific data
+    void adjustDowSettings(UCAlarm::AlarmType type, UCAlarm::DaysOfWeek days);
+    static QSet<Qt::DayOfWeek> daysToSet(int days);
+    static UCAlarm::DaysOfWeek daysFromSet(const QSet<Qt::DayOfWeek> &set);
+
+    inline QOrganizerTodo const &data()
+    {
+        return event;
+    }
+    void setData(const QOrganizerTodo &data);
+
+protected:
+    QOrganizerTodo event;
+    UCAlarm::AlarmType alarmType;
+    UCAlarm::DaysOfWeek dow;
+};
+
 class AlarmRequestAdapter : public AlarmRequestPrivate
 {
 public:
     AlarmRequestAdapter(AlarmRequest *parent, bool autoDelete);
 
     // adaptation methods
-    bool save(AlarmData &alarm);
-    bool remove(AlarmData &alarm);
+    bool save(UCAlarm *alarm);
+    bool remove(UCAlarm *alarm);
     bool wait(int msec);
     bool fetch();
 
@@ -54,6 +92,24 @@ private:
     void completeUpdate();
     void completeRemove();
     void completeFetch();
+};
+
+// list of alarms
+class AlarmList: public QList<QOrganizerTodo>
+{
+public:
+    AlarmList(){}
+
+    // returns the index of the alarm matching a cookie, -1 on error
+    inline int indexOfAlarm(const QOrganizerItemId &id)
+    {
+        for (int i = 0; i < size(); i++) {
+            if (id == at(i).id()) {
+                return i;
+            }
+        }
+        return -1;
+    }
 };
 
 class AlarmsAdapter : public QObject, public AlarmManagerPrivate
@@ -78,19 +134,20 @@ public:
     QOrganizerManager *manager;
     QOrganizerCollection collection;
 
+    void init();
+    int alarmCount();
+    void getAlarmAt(const UCAlarm &alarm, int index) const;
+    bool findAlarm(const UCAlarm &alarm, const QVariant &cookie) const;
     void completeFetchAlarms(const QList<QOrganizerItem> &alarmList);
-    void adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData &alarm);
+    void adjustAlarmOccurrence(AlarmDataAdapter &alarm);
 
     void loadAlarms();
     void saveAlarms();
 
-    void organizerEventFromAlarmData(const AlarmData &alarm, QOrganizerTodo &event);
-    int alarmDataFromOrganizerEvent(const QOrganizerTodo &event, AlarmData &alarm);
-    QSet<Qt::DayOfWeek> daysToSet(int days) const;
-    void daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set);
-
-    bool verifyChange(const QVariant &cookie, AlarmData::Change change, const QVariant &value);
+    bool verifyChange(UCAlarm *alarm, AlarmManager::Change change, const QVariant &value);
     bool compareCookies(const QVariant &cookie1, const QVariant &cookie2);
+    UCAlarmPrivate *createAlarmData(UCAlarm *alarm);
+    AlarmRequestPrivate *createAlarmRequestData(AlarmRequest *request, bool autoDelete);
 
 public Q_SLOTS:
     bool fetchAlarms();
@@ -98,6 +155,7 @@ public Q_SLOTS:
 
 protected:
     AlarmRequest *fetchRequest;
+    AlarmList alarmList;
 };
 
 

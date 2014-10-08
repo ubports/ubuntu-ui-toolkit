@@ -46,8 +46,8 @@ public:
     Status status() const;
     int error() const;
 
-    bool save(AlarmData &alarm);
-    bool remove(AlarmData &alarm);
+    bool save(UCAlarm *alarm);
+    bool remove(UCAlarm *alarm);
 
 protected:
     bool wait(int msec = 0);

@@ -37,9 +37,25 @@ public:
 
     void setDefaults();
 
-    UCAlarm* q_ptr;
+    // adaptation API
+    virtual bool enabled() const = 0;
+    virtual bool setEnabled(bool enabled) = 0;
+    virtual QDateTime date() const = 0;
+    virtual bool setDate(const QDateTime &date) = 0;
+    virtual QString message() const = 0;
+    virtual bool setMessage(const QString &message) = 0;
+    virtual UCAlarm::AlarmType type() const = 0;
+    virtual bool setType(UCAlarm::AlarmType type) = 0;
+    virtual UCAlarm::DaysOfWeek daysOfWeek() const = 0;
+    virtual bool setDaysOfWeek(UCAlarm::DaysOfWeek days) = 0;
+    virtual QUrl sound() const = 0;
+    virtual bool setSound(const QUrl &sound) = 0;
+    virtual QVariant cookie() const = 0;
+    virtual UCAlarm::Error checkAlarm() = 0;
+
+    UCAlarm *q_ptr;
     AlarmRequest *request;
-    AlarmData rawData;
+    unsigned int changes;
     int error;
     UCAlarm::Status status;
 
@@ -49,7 +65,6 @@ public:
     static int firstDayOfWeek(UCAlarm::DaysOfWeek days);
     static int nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay);
     static bool multipleDaysSet(UCAlarm::DaysOfWeek days);
-    UCAlarm::Error checkAlarm();
     UCAlarm::Error adjustDow();
     UCAlarm::Error checkOneTime();
     UCAlarm::Error checkRepeatingWeekly();
