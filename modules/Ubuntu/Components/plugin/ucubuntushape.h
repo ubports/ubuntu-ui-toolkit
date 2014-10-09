@@ -92,12 +92,6 @@ private Q_SLOTS:
     void providerDestroyed(QObject* object=0);
 
 private:
-    struct TextureHandles {
-        TextureHandles(): high(0), low(0) {}
-        QSGTexture* high;
-        QSGTexture* low;
-    };
-
     QSGTextureProvider* imageTextureProvider_;
     QColor color_;
     QRgb colorPremultiplied_;
@@ -114,8 +108,6 @@ private:
     VAlignment vAlignment_;
     float gridUnit_;
     QRectF geometry_;
-
-    static QHash<QOpenGLContext*, TextureHandles> textures_;
 
     Q_DISABLE_COPY(UCUbuntuShape)
 };

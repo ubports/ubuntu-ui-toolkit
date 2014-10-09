@@ -25,16 +25,6 @@
 #include <QtQuick/qsgflatcolormaterial.h>
 #include <QtQuick/private/qquickimage_p.h>
 
-// Retrieves the size of an array at compile time.
-#define ARRAY_SIZE(a) \
-    ((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
-
-// Threshold in grid unit defining the texture quality to be used.
-const float lowHighTextureThreshold = 11.0f;
-
-// Map of windows and associated textures.
-QHash<QOpenGLContext*, UCUbuntuShape::TextureHandles> UCUbuntuShape::textures_;
-
 class ShapeMaterial : public QSGMaterial
 {
 public:
@@ -218,6 +208,9 @@ static const unsigned short shapeMeshIndices[] __attribute__((aligned(16))) = {
     11, 8,                        // Degenerate triangles.
     8, 12, 9, 13, 10, 14, 11, 15  // Triangles 13 to 18
 };
+
+#define ARRAY_SIZE(a) \
+    ((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
 
 static const struct {
     const unsigned short* const indices;
@@ -451,6 +444,18 @@ void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* im
 
 // --- QtQuick item ---
 
+struct ShapeTextures
+{
+    ShapeTextures() : high(0), low(0) {}
+    QSGTexture* high;
+    QSGTexture* low;
+};
+
+static QHash<QOpenGLContext*, ShapeTextures> shapeTexturesHash;
+
+// Threshold in grid unit defining the texture quality to be used.
+const float lowHighTextureThreshold = 11.0f;
+
 /*!
     \qmltype UbuntuShape
     \instantiates UCUbuntuShape
@@ -666,15 +671,13 @@ void UCUbuntuShape::updateFromImageProperties(QQuickItem* image)
 }
 
 void UCUbuntuShape::connectToPropertyChange(QObject* sender, const char* property,
-                                        QObject* receiver, const char* slot)
+                                            QObject* receiver, const char* slot)
 {
     int propertyIndex = sender->metaObject()->indexOfProperty(property);
     if (propertyIndex != -1) {
         QMetaMethod changeSignal = sender->metaObject()->property(propertyIndex).notifySignal();
-
         int slotIndex = receiver->metaObject()->indexOfSlot(slot);
         QMetaMethod updateSlot = receiver->metaObject()->method(slotIndex);
-
         QObject::connect(sender, changeSignal, receiver, updateSlot);
     }
 }
@@ -737,15 +740,16 @@ void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& old
 void UCUbuntuShape::onOpenglContextDestroyed()
 {
     QOpenGLContext* context = qobject_cast<QOpenGLContext*>(sender());
-    if (Q_UNLIKELY(!context)) return;
+    if (Q_UNLIKELY(!context)) {
+        return;
+    }
 
-    QHash<QOpenGLContext*, TextureHandles>::iterator it =
-        textures_.find(context);
-    if (it != textures_.end()) {
-        TextureHandles &textureHandles = it.value();
-        delete textureHandles.high;
-        delete textureHandles.low;
-        textures_.erase(it);
+    QHash<QOpenGLContext*, ShapeTextures>::iterator it = shapeTexturesHash.find(context);
+    if (it != shapeTexturesHash.end()) {
+        ShapeTextures &shapeTextures = it.value();
+        delete shapeTextures.high;
+        delete shapeTextures.low;
+        shapeTexturesHash.erase(it);
     }
 }
 
@@ -759,31 +763,24 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
 {
     Q_UNUSED(data);
 
-    // FIXME(loicm) Shape textures are stored in the read-only data section of the plugin as it
-    //     avoids having to deal with paths for now. It should preferably be loaded from a file.
-
-    // OpenGL allocates textures per context, so we store textures reused by
-    // all shape instances per context as well
+    // OpenGL allocates textures per context, so we store textures reused by all shape instances
+    // per context as well.
     QOpenGLContext* openglContext = window() ? window()->openglContext() : NULL;
     if (Q_UNLIKELY(!openglContext)) {
-        qCritical() << "Window has no GL context!";
+        qCritical() << "Window has no OpenGL context!";
         delete old_node;
         return NULL;
     }
-
-    TextureHandles &textureHandles = textures_[openglContext];
-    // If the hash table didn't contain an entry for the current context, the
-    // line above has just caused the creation of a default-constructed value.
-    if (!textureHandles.high) {
-        textureHandles.high = window()->createTextureFromImage(
+    ShapeTextures &shapeTextures = shapeTexturesHash[openglContext];
+    if (!shapeTextures.high) {
+        shapeTextures.high = window()->createTextureFromImage(
             QImage(shapeTextureHigh.data, shapeTextureHigh.width, shapeTextureHigh.height,
                    QImage::Format_ARGB32_Premultiplied));
-        textureHandles.low = window()->createTextureFromImage(
+        shapeTextures.low = window()->createTextureFromImage(
             QImage(shapeTextureLow.data, shapeTextureLow.width, shapeTextureLow.height,
                    QImage::Format_ARGB32_Premultiplied));
         QObject::connect(openglContext, SIGNAL(aboutToBeDestroyed()),
-                         this, SLOT(onOpenglContextDestroyed()),
-                         Qt::DirectConnection);
+                         this, SLOT(onOpenglContextDestroyed()), Qt::DirectConnection);
     }
 
     ShapeNode* node = static_cast<ShapeNode*>(old_node);
@@ -811,10 +808,10 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
     TextureData* textureData;
     if (gridUnit_ > lowHighTextureThreshold) {
         textureData = &shapeTextureHigh;
-        materialData->shapeTexture = textureHandles.high;
+        materialData->shapeTexture = shapeTextures.high;
     } else {
         textureData = &shapeTextureLow;
-        materialData->shapeTexture = textureHandles.low;
+        materialData->shapeTexture = shapeTextures.low;
     }
 
     // Set the shape texture to be used by the materials depending on current grid unit. The radius
