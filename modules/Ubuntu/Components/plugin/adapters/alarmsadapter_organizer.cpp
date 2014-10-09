@@ -128,7 +128,7 @@ void AlarmsAdapter::loadAlarms()
 
         AlarmData alarm;
         alarm.message = object["message"].toString();
-        alarm.originalDate = alarm.date = AlarmData::transcodeDate(QDateTime::fromString(object["date"].toString()), Qt::LocalTime);
+        alarm.originalDate = alarm.date = QDateTime::fromString(object["date"].toString());
         alarm.sound = object["sound"].toString();
         alarm.type = static_cast<UCAlarm::AlarmType>(object["type"].toInt());
         alarm.days = static_cast<UCAlarm::DaysOfWeek>(object["days"].toInt());
@@ -159,7 +159,7 @@ void AlarmsAdapter::saveAlarms()
     Q_FOREACH(const AlarmData &alarm, alarmList) {
         QJsonObject object;
         object["message"] = alarm.message;
-        object["date"] = AlarmData::transcodeDate(alarm.originalDate, Qt::LocalTime).toString();
+        object["date"] = alarm.originalDate.toString();
         object["sound"] = alarm.sound.toString();
         object["type"] = QJsonValue(alarm.type);
         object["days"] = QJsonValue(alarm.days);
@@ -182,9 +182,11 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
     event.setCollectionId(collection.id());
     event.setAllDay(false);
     if (alarm.changes & AlarmData::Date) {
-        // use invalid timezone to sinalize floating time
         QDateTime dt = AlarmData::normalizeDate(alarm.date);
-        dt = QDateTime(dt.date(), dt.time(), QTimeZone());
+        // use invalid timezone to sinalize floating time, this is valid only for EDS backend
+        if (manager->managerName() == ALARM_MANAGER) {
+            dt = QDateTime(dt.date(), dt.time(), QTimeZone());
+        }
         event.setStartDateTime(dt);
     }
     if (alarm.changes & AlarmData::Message) {
