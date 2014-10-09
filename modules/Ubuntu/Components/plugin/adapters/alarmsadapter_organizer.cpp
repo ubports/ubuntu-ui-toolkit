@@ -25,6 +25,7 @@
 
 #include <QtCore/QFile>
 #include <QtCore/QDir>
+#include <QtCore/QTimeZone>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
@@ -127,7 +128,7 @@ void AlarmsAdapter::loadAlarms()
 
         AlarmData alarm;
         alarm.message = object["message"].toString();
-        alarm.originalDate = alarm.date = AlarmData::transcodeDate(QDateTime::fromString(object["date"].toString()), Qt::LocalTime);
+        alarm.originalDate = alarm.date = QDateTime::fromString(object["date"].toString());
         alarm.sound = object["sound"].toString();
         alarm.type = static_cast<UCAlarm::AlarmType>(object["type"].toInt());
         alarm.days = static_cast<UCAlarm::DaysOfWeek>(object["days"].toInt());
@@ -158,7 +159,7 @@ void AlarmsAdapter::saveAlarms()
     Q_FOREACH(const AlarmData &alarm, alarmList) {
         QJsonObject object;
         object["message"] = alarm.message;
-        object["date"] = AlarmData::transcodeDate(alarm.originalDate, Qt::UTC).toString();
+        object["date"] = alarm.originalDate.toString();
         object["sound"] = alarm.sound.toString();
         object["type"] = QJsonValue(alarm.type);
         object["days"] = QJsonValue(alarm.days);
@@ -181,7 +182,12 @@ void AlarmsAdapter::organizerEventFromAlarmData(const AlarmData &alarm, QOrganiz
     event.setCollectionId(collection.id());
     event.setAllDay(false);
     if (alarm.changes & AlarmData::Date) {
-        event.setStartDateTime(AlarmData::transcodeDate(alarm.date, Qt::UTC));
+        QDateTime dt = AlarmData::normalizeDate(alarm.date);
+        // use invalid timezone to sinalize floating time, this is valid only for EDS backend
+        if (manager->managerName() == ALARM_MANAGER) {
+            dt = QDateTime(dt.date(), dt.time(), QTimeZone());
+        }
+        event.setStartDateTime(dt);
     }
     if (alarm.changes & AlarmData::Message) {
         event.setDisplayLabel(alarm.message);
@@ -251,7 +257,7 @@ int AlarmsAdapter::alarmDataFromOrganizerEvent(const QOrganizerTodo &event, Alar
 
     alarm.cookie = QVariant::fromValue<QOrganizerItemId>(event.id());
     alarm.message = event.displayLabel();
-    alarm.date = AlarmData::transcodeDate(event.startDateTime().toUTC(), Qt::LocalTime);
+    alarm.date = AlarmData::transcodeDate(event.startDateTime(), Qt::LocalTime);
     QOrganizerItemAudibleReminder audible = event.detail(QOrganizerItemDetail::TypeAudibleReminder);
     alarm.sound = audible.dataUrl();
     alarm.originalDate = alarm.date;
@@ -499,10 +505,6 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
         endDate = startDate.addDays(8);
     }
 
-    // transcode both dates
-    startDate = AlarmData::transcodeDate(startDate, Qt::UTC);
-    endDate = AlarmData::transcodeDate(endDate, Qt::UTC);
-
     QList<QOrganizerItem> occurrences = manager->itemOccurrences(event, startDate, endDate, 10);
     // get the first occurrence and use the date from it
     if ((occurrences.length() > 0) && (occurrences[0].type() == QOrganizerItemType::TypeTodoOccurrence)) {
@@ -512,7 +514,7 @@ void AlarmsAdapter::adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData
             // check if the date is after the current datetime
             // the first occurrence is the one closest to the currentDate, therefore we can safely
             // set that startDate to the alarm
-            alarm.date = AlarmData::transcodeDate(occurrence.startDateTime().toUTC(), Qt::LocalTime);
+            alarm.date = AlarmData::transcodeDate(occurrence.startDateTime(), Qt::LocalTime);
             if (alarm.date > currentDate) {
                 // we have the proper date set, leave
                 break;
@@ -574,13 +576,9 @@ bool AlarmRequestAdapter::remove(AlarmData &alarm)
         return false;
     }
 
-    QOrganizerTodo event;
-    AlarmsAdapter::get()->organizerEventFromAlarmData(alarm, event);
-    event.setId(alarm.cookie.value<QOrganizerItemId>());
-
-    QOrganizerItemRemoveRequest *operation = new QOrganizerItemRemoveRequest(q_ptr);
+    QOrganizerItemRemoveByIdRequest *operation = new QOrganizerItemRemoveByIdRequest(q_ptr);
     operation->setManager(AlarmsAdapter::get()->manager);
-    operation->setItem(event);
+    operation->setItemId(alarm.cookie.value<QOrganizerItemId>());
     AlarmsAdapter::get()->listDirty = true;
     return start(operation);
 }
@@ -631,7 +629,7 @@ bool AlarmRequestAdapter::start(QOrganizerAbstractRequest *operation)
     completed = false;
     // make sure we are in progress state
     setStatus(requestTypeToOperation(), AlarmRequest::InProgress);
-    QObject::connect(m_request, SIGNAL(resultsAvailable()), q_ptr, SLOT(_q_updateProgress()));
+    QObject::connect(m_request, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)), q_ptr, SLOT(_q_updateProgress()));
     if (m_request->start()) {
         // check if the request got completed without having the slot called (some engines may do that)
         if (!completed && m_request->state() >= QOrganizerAbstractRequest::CanceledState) {
@@ -648,11 +646,11 @@ bool AlarmRequestAdapter::start(QOrganizerAbstractRequest *operation)
 void AlarmRequestAdapter::_q_updateProgress()
 {
     completed = true;
-
     QOrganizerAbstractRequest::State state = m_request->state();
     AlarmRequest::Operation opCode = requestTypeToOperation();
     switch (state) {
     case QOrganizerAbstractRequest::InactiveState: {
+        completed = false;
         setStatus(opCode, AlarmRequest::Ready);
         break;
     }
@@ -717,7 +715,7 @@ AlarmRequest::Operation AlarmRequestAdapter::requestTypeToOperation()
     case QOrganizerAbstractRequest::ItemSaveRequest: {
         return AlarmRequest::Saving;
     }
-    case QOrganizerAbstractRequest::ItemRemoveRequest: {
+    case QOrganizerAbstractRequest::ItemRemoveByIdRequest: {
         return AlarmRequest::Canceling;
     }
     case QOrganizerAbstractRequest::ItemFetchRequest: {
