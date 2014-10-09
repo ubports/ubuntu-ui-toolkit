@@ -86,13 +86,18 @@ private Q_SLOTS:
 
     void initTestCase()
     {
-        QCoreApplication::setApplicationName("tst_statesaver");
+        QCoreApplication::setApplicationName("savedstate");
         QCoreApplication::setOrganizationName("");
         QDir modules ("../../../modules");
         QVERIFY(modules.exists());
         m_modulePath = modules.absolutePath();
         // XDG_RUNTIME_DIR may not be set in a test environment
-        QString testRuntimeDir(QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/tst_statesaver");
+        QDir tempDir(QStandardPaths::writableLocation(QStandardPaths::TempLocation));
+        QString testRuntimeDir(tempDir.filePath("tst_statesaver"));
+        // Remove to guarantee subsequent test runs are consistent
+        QDir(testRuntimeDir).removeRecursively();
+        // Create manually to avoid wrong ownership
+        tempDir.mkdir("tst_statesaver");
         setenv("XDG_RUNTIME_DIR", testRuntimeDir.toUtf8(), 1);
         // invoke initialization
         StateSaverBackend::instance();
