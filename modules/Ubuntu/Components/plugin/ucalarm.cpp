@@ -705,4 +705,14 @@ QVariant UCAlarm::cookie() const
     return d_ptr->cookie();
 }
 
+/*!
+ * \internal
+ * Wait for operation completion for a given msec timeout. The default timeout is 0,
+ * meaning the wait will be infinite.
+ */
+void UCAlarm::wait(int msec)
+{
+    d_ptr->wait(msec);
+}
+
 #include "moc_ucalarm.cpp"

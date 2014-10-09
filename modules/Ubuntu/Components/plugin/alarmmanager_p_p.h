@@ -48,8 +48,6 @@ public:
     virtual void getAlarmAt(const UCAlarm &alarm, int index) const = 0;
     virtual bool findAlarm(const UCAlarm &alarm, const QVariant &cookie) const = 0;
 
-    virtual bool compareCookies(const QVariant &cookie1, const QVariant &cookie2) = 0;
-
     // function to verify whether the given alarm property has a given value set
     // used for testing purposes
     virtual bool verifyChange(UCAlarm *alarm, AlarmManager::Change change, const QVariant &value) = 0;

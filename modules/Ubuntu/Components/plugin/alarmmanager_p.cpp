@@ -84,11 +84,6 @@ bool AlarmManager::verifyChange(UCAlarm *alarm, Change change, const QVariant &n
     return d_ptr->verifyChange(alarm, change, newData);
 }
 
-bool AlarmManager::compareCookies(const QVariant &cookie1, const QVariant &cookie2)
-{
-    return d_ptr->compareCookies(cookie1, cookie2);
-}
-
 UCAlarmPrivate *AlarmManager::createAlarmData(UCAlarm *alarm)
 {
     return AlarmManagerPrivate::get()->createAlarmData(alarm);

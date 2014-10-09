@@ -24,6 +24,7 @@
 
 #include <QtCore/QFile>
 #include <QtCore/QDir>
+#include <QtCore/QTimeZone>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
@@ -88,14 +89,19 @@ bool AlarmDataAdapter::setEnabled(bool enabled)
 
 QDateTime AlarmDataAdapter::date() const
 {
-    return AlarmUtils::transcodeDate(event.startDateTime().toUTC(), Qt::LocalTime);
+    return QDateTime(event.startDateTime().date(), event.startDateTime().time(), Qt::LocalTime);
 }
 bool AlarmDataAdapter::setDate(const QDateTime &date)
 {
     if (this->date() == date) {
         return false;
     }
-    event.setStartDateTime(AlarmUtils::transcodeDate(date, Qt::UTC));
+    QDateTime dt = AlarmUtils::normalizeDate(date);
+    if (AlarmsAdapter::get()->manager->managerName() == ALARM_MANAGER) {
+        // use invalid timezone to simulate floating time for EDS backend
+        dt = QDateTime(dt.date(), dt.time(), QTimeZone());
+    }
+    event.setStartDateTime(dt);
     return true;
 }
 
@@ -206,6 +212,10 @@ UCAlarm::Error AlarmDataAdapter::checkAlarm()
  */
 void AlarmDataAdapter::save()
 {
+    // if we have an inactive request, delete it
+    if (request && !request->isActive()) {
+        delete request;
+    }
     if (event.id().managerUri().isEmpty()) {
         changes = AlarmManager::AllFields;
     }
@@ -218,12 +228,16 @@ void AlarmDataAdapter::save()
 
 void AlarmDataAdapter::cancel()
 {
+    // if we have an inactive request, delete it
+    if (request && !request->isActive()) {
+        delete request;
+    }
     if (event.id().managerUri().isEmpty()) {
         _q_syncStatus(UCAlarm::Canceling, UCAlarm::Fail, UCAlarm::InvalidEvent);
         return;
     }
-    QOrganizerItemRemoveRequest *cancelRequest = new QOrganizerItemRemoveRequest(q_ptr);
-    cancelRequest->setItem(event);
+    QOrganizerItemRemoveByIdRequest *cancelRequest = new QOrganizerItemRemoveByIdRequest(q_ptr);
+    cancelRequest->setItemId(event.id());
     request = cancelRequest;
     startOperation(UCAlarm::Canceling, SLOT(completeCancel()));
 }
@@ -265,15 +279,13 @@ void AlarmDataAdapter::completeSave()
             setData(save->items()[0]);
             changes = AlarmManager::NoChange;
             // also update the alarm at index
-            int index = AlarmsAdapter::get()->alarmList.indexOfAlarm(event.id());
-            if (index >= 0) {
-                AlarmsAdapter::get()->alarmList[index] = event;
-            }
+            AlarmsAdapter::get()->updateAlarm(event.id());
+            _q_syncStatus(UCAlarm::Saving, UCAlarm::Ready, UCAlarm::NoError);
         }
     }
 
     // delete request
-    request->deleteLater();
+//    request->deleteLater();
 }
 
 void AlarmDataAdapter::completeCancel()
@@ -287,13 +299,14 @@ void AlarmDataAdapter::completeCancel()
         _q_syncStatus(UCAlarm::Saving, UCAlarm::Fail, AlarmsAdapter::OrganizerError + error);
     } else {
         // complete save
-        AlarmsAdapter::get()->removeAlarm(event.index);
+        AlarmsAdapter::get()->removeAlarm(event.id());
         setData(QOrganizerTodo());
         changes = AlarmManager::NoChange;
+        _q_syncStatus(UCAlarm::Saving, UCAlarm::Ready, UCAlarm::NoError);
     }
 
     // delete request
-    request->deleteLater();
+//    request->deleteLater();
 }
 
 void AlarmDataAdapter::adjustDowSettings(UCAlarm::AlarmType type, UCAlarm::DaysOfWeek days)
@@ -421,17 +434,20 @@ void AlarmsAdapter::alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManage
     Q_FOREACH(const OperationPair &op, list) {
         switch (op.second) {
             case QOrganizerManager::Add: {
+                qDebug() << "FETCH";
                 fetchAlarms();
                 break;
             }
             case QOrganizerManager::Change: {
                 int index = updateAlarm(op.first);
                 if (index >= 0) {
+                    qDebug() << "UPDATE";
                     Q_EMIT q_ptr->alarmUpdated(index);
                 }
                 break;
             }
             case QOrganizerManager::Remove: {
+                qDebug() << "REMOVE";
                 removeAlarm(op.first);
                 break;
             }
@@ -479,7 +495,7 @@ void AlarmsAdapter::loadAlarms()
         // use UCAlarm to save store JSON data
         UCAlarm alarm;
         alarm.setMessage(object["message"].toString());
-        alarm.setDate(AlarmUtils::transcodeDate(QDateTime::fromString(object["date"].toString()), Qt::LocalTime));
+        alarm.setDate(QDateTime::fromString(object["date"].toString()));
         alarm.setSound(object["sound"].toString());
         alarm.setType(static_cast<UCAlarm::AlarmType>(object["type"].toInt()));
         alarm.setDaysOfWeek(static_cast<UCAlarm::DaysOfWeek>(object["days"].toInt()));
@@ -515,7 +531,7 @@ void AlarmsAdapter::saveAlarms()
         pAlarm->setData(todo);
         QJsonObject object;
         object["message"] = alarm.message();
-        object["date"] = AlarmUtils::transcodeDate(alarm.date(), Qt::UTC).toString();
+        object["date"] = alarm.date().toString();
         object["sound"] = alarm.sound().toString();
         object["type"] = QJsonValue(alarm.type());
         object["days"] = QJsonValue(alarm.daysOfWeek());
@@ -659,13 +675,6 @@ bool AlarmsAdapter::findAlarm(const UCAlarm &alarm, const QVariant &cookie) cons
     return false;
 }
 
-bool AlarmsAdapter::compareCookies(const QVariant &cookie1, const QVariant &cookie2)
-{
-    QOrganizerItemId id1 = cookie1.value<QOrganizerItemId>();
-    QOrganizerItemId id2 = cookie2.value<QOrganizerItemId>();
-    return id1 == id2;
-}
-
 // returns a todo event from an ID, which can be an occurence
 QOrganizerTodo AlarmsAdapter::todoItem(const QOrganizerItemId &id)
 {
@@ -693,7 +702,8 @@ int AlarmsAdapter::updateAlarm(const QOrganizerItemId &id)
     // update alarm data
     int index = alarmList.indexOfAlarm(event.id());
     if (index < 0) {
-        qCritical("The Alarm data has been updated with an unregistered item, skipping!");
+        // it can be that the organizer item ID is not an alarm or it is an occurrence of
+        // an organizer event
         return -1;
     }
     // use UCAlarm to ease conversions
@@ -709,24 +719,20 @@ int AlarmsAdapter::updateAlarm(const QOrganizerItemId &id)
 // removes an alarm from the list
 int AlarmsAdapter::removeAlarm(const QOrganizerItemId &id)
 {
-    qDebug() << "REMOVE 1";
     if (id.isNull()) {
         return -1;
     }
-    qDebug() << "REMOVE 2";
     int index = alarmList.indexOfAlarm(id);
     if (index < 0) {
         // this may be an item we don't handle, organizer manager may report us
         // other calendar event removals as well.
-        qDebug() << manager->item(id);
         return -1;
     }
-    qDebug() << "REMOVE 3";
     // emit removal start
     Q_EMIT q_ptr->alarmRemoveStarted(index);
     alarmList.removeAt(index);
+    qDebug() << "REMOVE-FINISHED";
     Q_EMIT q_ptr->alarmRemoveFinished();
-    qDebug() << "REMOVE 4";
     return index;
 }
 
@@ -785,10 +791,6 @@ void AlarmsAdapter::adjustAlarmOccurrence(AlarmDataAdapter &alarm)
         startDate = (alarm.date() > currentDate) ? alarm.date() : currentDate;
         endDate = startDate.addDays(8);
     }
-
-    // transcode both dates
-    startDate = AlarmUtils::transcodeDate(startDate, Qt::UTC);
-    endDate = AlarmUtils::transcodeDate(endDate, Qt::UTC);
 
     QList<QOrganizerItem> occurrences = manager->itemOccurrences(alarm.data(), startDate, endDate, 10);
     // get the first occurrence and use the date from it

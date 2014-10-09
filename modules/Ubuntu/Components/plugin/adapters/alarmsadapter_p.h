@@ -128,9 +128,9 @@ public:
     void saveAlarms();
 
     bool verifyChange(UCAlarm *alarm, AlarmManager::Change change, const QVariant &value);
-    bool compareCookies(const QVariant &cookie1, const QVariant &cookie2);
     UCAlarmPrivate *createAlarmData(UCAlarm *alarm);
 
+    int updateAlarm(const QOrganizerItemId &id);
     int removeAlarm(const QOrganizerItemId &id);
 
 public Q_SLOTS:
@@ -144,7 +144,6 @@ protected:
     QPointer<QOrganizerItemFetchRequest> fetchRequest;
     AlarmList alarmList;
     QOrganizerTodo todoItem(const QOrganizerItemId &id);
-    int updateAlarm(const QOrganizerItemId &id);
 };
 
 

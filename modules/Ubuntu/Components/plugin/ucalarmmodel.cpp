@@ -252,7 +252,6 @@ void UCAlarmModel::removeStarted(int index)
 {
     QModelIndex modelIndex = createIndex(index, 0);
     beginRemoveRows(modelIndex, index, index);
-    qDebug() << "REMOVING INDEX" << index;
 }
 
 /*!

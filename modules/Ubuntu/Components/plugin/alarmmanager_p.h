@@ -61,14 +61,6 @@ public:
         time.setHMS(time.hour(), time.minute(), time.second());
         return QDateTime(dt.date(), time, dt.timeSpec());
     }
-
-    // the function normalizes and transcodes the date into UTC/LocalTime equivalent
-    static QDateTime transcodeDate(const QDateTime &dt, Qt::TimeSpec targetSpec) {
-        if (dt.timeSpec() == targetSpec) {
-            return normalizeDate(dt);
-        }
-        return QDateTime(dt.date(), normalizeDate(dt).time(), targetSpec);
-    }
 };
 
 class AlarmRequest;
@@ -105,7 +97,6 @@ public:
     UCAlarm *findAlarm(const QVariant &cookie) const;
 
     bool verifyChange(UCAlarm *alarm, Change change, const QVariant &newData);
-    bool compareCookies(const QVariant &cookie1, const QVariant &cookie2);
     static UCAlarmPrivate *createAlarmData(UCAlarm *alarm);
 
 Q_SIGNALS:
