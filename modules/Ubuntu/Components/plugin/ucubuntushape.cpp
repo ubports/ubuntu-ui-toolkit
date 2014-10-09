@@ -453,6 +453,9 @@ struct ShapeTextures
 
 static QHash<QOpenGLContext*, ShapeTextures> shapeTexturesHash;
 
+const float implicitGridUnitWidth = 8.0f;
+const float implicitGridUnitHeight = 8.0f;
+
 // Threshold in grid unit defining the texture quality to be used.
 const float lowHighTextureThreshold = 11.0f;
 
@@ -514,8 +517,8 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     setFlag(ItemHasContents);
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
                      SLOT(gridUnitChanged()));
-    setImplicitWidth(8 * gridUnit_);
-    setImplicitHeight(8 * gridUnit_);
+    setImplicitWidth(implicitGridUnitWidth * gridUnit_);
+    setImplicitHeight(implicitGridUnitHeight * gridUnit_);
     update();
 }
 
@@ -748,8 +751,8 @@ void UCUbuntuShape::onOpenglContextDestroyed()
 void UCUbuntuShape::gridUnitChanged()
 {
     gridUnit_ = UCUnits::instance().gridUnit();
-    setImplicitWidth(8 * gridUnit_);
-    setImplicitHeight(8 * gridUnit_);
+    setImplicitWidth(implicitGridUnitWidth * gridUnit_);
+    setImplicitHeight(implicitGridUnitHeight * gridUnit_);
     update();
 }
 
