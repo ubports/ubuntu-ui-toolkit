@@ -40,10 +40,12 @@ public:
     }
 
     AlarmManager *q_ptr;
+    // used by alarmAt() and findAlarm() methods
+    UCAlarm *alarmHolder;
     bool completed:1;
 
     virtual void init() = 0;
-    virtual bool fetchAlarms() = 0;
+    virtual bool fetchAlarms(bool force) = 0;
     virtual int alarmCount() = 0;
     virtual void getAlarmAt(const UCAlarm &alarm, int index) const = 0;
     virtual bool findAlarm(const UCAlarm &alarm, const QVariant &cookie) const = 0;

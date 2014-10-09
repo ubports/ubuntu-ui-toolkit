@@ -65,10 +65,6 @@ void UCAlarmPrivate::_q_syncStatus(int operation, int status, int error) {
             if (changes & AlarmManager::Days)
                 Q_EMIT q->daysOfWeekChanged();
             changes = 0;
-
-            // emit completed signal only if ready status was reached
-            // with or without error
-            Q_EMIT q->completed();
         }
 
         Q_EMIT q->statusChanged(static_cast<UCAlarm::Operation>(operation));
@@ -691,6 +687,7 @@ void UCAlarm::reset()
 {
     d_ptr->_q_syncStatus(Reseting, InProgress, NoError);
 
+    d_ptr->reset();
     d_ptr->setDefaults();
     d_ptr->changes = AlarmManager::AllFields;
     d_ptr->_q_syncStatus(Reseting, Ready, NoError);
@@ -703,16 +700,6 @@ void UCAlarm::reset()
 QVariant UCAlarm::cookie() const
 {
     return d_ptr->cookie();
-}
-
-/*!
- * \internal
- * Wait for operation completion for a given msec timeout. The default timeout is 0,
- * meaning the wait will be infinite.
- */
-void UCAlarm::wait(int msec)
-{
-    d_ptr->wait(msec);
 }
 
 #include "moc_ucalarm.cpp"

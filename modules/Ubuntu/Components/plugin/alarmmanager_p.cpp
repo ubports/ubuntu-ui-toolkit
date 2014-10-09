@@ -23,6 +23,7 @@
 
 AlarmManagerPrivate::AlarmManagerPrivate(AlarmManager *qq)
     : q_ptr(qq)
+    , alarmHolder(0)
     , completed(false)
 {
 }
@@ -49,13 +50,14 @@ AlarmManager &AlarmManager::instance()
     static AlarmManager instance;
     if (!instance.d_ptr->completed) {
         instance.d_ptr->init();
+        instance.d_ptr->alarmHolder = new UCAlarm(&instance);
     }
     return instance;
 }
 
-bool AlarmManager::fetchAlarms()
+bool AlarmManager::fetchAlarms(bool force)
 {
-    return d_ptr->fetchAlarms();
+    return d_ptr->fetchAlarms(force);
 }
 
 int AlarmManager::alarmCount()
@@ -65,18 +67,16 @@ int AlarmManager::alarmCount()
 
 UCAlarm *AlarmManager::alarmAt(int index) const
 {
-    static UCAlarm alarm;
-    d_ptr->getAlarmAt(alarm, index);
-    return &alarm;
+    d_ptr->getAlarmAt(*d_ptr->alarmHolder, index);
+    return d_ptr->alarmHolder;
 }
 
 UCAlarm *AlarmManager::findAlarm(const QVariant &cookie) const
 {
-    static UCAlarm alarm;
-    if (!d_ptr->findAlarm(alarm, cookie)) {
+    if (!d_ptr->findAlarm(*d_ptr->alarmHolder, cookie)) {
         return 0;
     };
-    return &alarm;
+    return d_ptr->alarmHolder;
 }
 
 bool AlarmManager::verifyChange(UCAlarm *alarm, Change change, const QVariant &newData)

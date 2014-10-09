@@ -56,7 +56,7 @@ public:
 
     virtual void save() = 0;
     virtual void cancel() = 0;
-    virtual bool wait(int msec) = 0;
+    virtual void reset() = 0;
     virtual void completeSave() = 0;
     virtual void completeCancel() = 0;
 

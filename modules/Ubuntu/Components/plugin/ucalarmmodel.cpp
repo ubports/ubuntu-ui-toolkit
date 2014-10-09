@@ -124,14 +124,13 @@
 
 UCAlarmModel::UCAlarmModel(QObject *parent)
     : QAbstractListModel(parent)
-    , m_ready(false)
 {
-    m_roles = AlarmUtils::roles();
     // keep in sync with alarms collection changes
     // make sure the connection is asynchronous, as changes made in in-place in
     // the delegates may cause the model data to be invalid (released) as some
     // backends may do the refresh/element removals synchronously
-    connect(&AlarmManager::instance(), SIGNAL(alarmsChanged()), this, SLOT(refresh()), Qt::QueuedConnection);
+    connect(&AlarmManager::instance(), SIGNAL(alarmsRefreshStarted()), this, SLOT(refreshStart()), Qt::QueuedConnection);
+    connect(&AlarmManager::instance(), SIGNAL(alarmsRefreshed()), this, SLOT(refreshEnd()), Qt::QueuedConnection);
     // get individual alarm data updates
     connect(&AlarmManager::instance(), SIGNAL(alarmUpdated(int)), this, SLOT(update(int)), Qt::QueuedConnection);
     // data removal must be direct
@@ -139,8 +138,7 @@ UCAlarmModel::UCAlarmModel(QObject *parent)
     connect(&AlarmManager::instance(), SIGNAL(alarmRemoveFinished()), this, SLOT(removeFinished()), Qt::DirectConnection);
     // fetch alarms
     AlarmManager::instance().fetchAlarms();
-    refresh();
-    m_ready = true;
+    Q_EMIT countChanged();
 }
 UCAlarmModel::~UCAlarmModel()
 {
@@ -168,12 +166,12 @@ QVariant UCAlarmModel::data(const QModelIndex &index, int role) const
 
 QHash<int, QByteArray> UCAlarmModel::roleNames() const
 {
-    return m_roles;
+    return AlarmUtils::roles();
 }
 
 /*!
  * \qmlmethod Alarm AlarmModel::get(int index)
- * Returns the copy of the alarm event at \a index in the model. This allows the
+ * Returns the reference of the alarm event at \a index in the model. This allows the
  * alarm data to be modified and updated either through normal component binding
  * or in Javascript functions.
  *
@@ -218,19 +216,21 @@ int UCAlarmModel::count() const
 
 /*!
  * \internal
- * The slot forces an alarm refresh on the alarm manager.
+ * The slot prepares the model reset.
  */
-void UCAlarmModel::refresh()
+void UCAlarmModel::refreshStart()
 {
-    if (m_ready) {
-        beginResetModel();
-    }
+    beginResetModel();
+}
 
+/*!
+ * \internal
+ * The slot finalizes the model reset.
+ */
+void UCAlarmModel::refreshEnd()
+{
+    endResetModel();
     Q_EMIT countChanged();
-
-    if (m_ready) {
-        endResetModel();
-    }
 }
 
 /*!

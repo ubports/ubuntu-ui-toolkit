@@ -46,14 +46,11 @@ Q_SIGNALS:
     void countChanged();
 
 private Q_SLOTS:
-    void refresh();
+    void refreshStart();
+    void refreshEnd();
     void update(int index);
     void removeStarted(int index);
     void removeFinished();
-
-private:
-    bool m_ready;
-    QHash<int, QByteArray> m_roles;
 };
 
 #endif // UCALARMSMODEL_H

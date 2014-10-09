@@ -54,6 +54,7 @@ public:
 
     void save();
     void cancel();
+    void reset();
     bool wait(int msec);
     void completeSave();
     void completeCancel();
@@ -118,6 +119,7 @@ public:
     QOrganizerManager *manager;
     QOrganizerCollection collection;
 
+    bool fetchAlarms(bool force);
     void init();
     int alarmCount();
     void getAlarmAt(const UCAlarm &alarm, int index) const;
@@ -133,11 +135,9 @@ public:
     int updateAlarm(const QOrganizerItemId &id);
     int removeAlarm(const QOrganizerItemId &id);
 
-public Q_SLOTS:
-    bool fetchAlarms();
-
 private Q_SLOTS:
     void completeFetchAlarms();
+    void forceFetch();
     void alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> >);
 
 protected:
@@ -145,6 +145,5 @@ protected:
     AlarmList alarmList;
     QOrganizerTodo todoItem(const QOrganizerItemId &id);
 };
-
 
 #endif // ALARMSADAPTER_P_H

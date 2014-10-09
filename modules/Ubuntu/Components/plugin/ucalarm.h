@@ -121,8 +121,6 @@ Q_SIGNALS:
     void errorChanged();
     void statusChanged(Operation operation);
 
-    Q_REVISION(2) void completed();
-
 public Q_SLOTS:
     void save();
     void cancel();

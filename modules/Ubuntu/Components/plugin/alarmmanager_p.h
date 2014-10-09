@@ -27,21 +27,8 @@
 
 class AlarmUtils {
 public:
-    AlarmUtils()
-    {
-    }
-
     static QHash<int, QByteArray> roles() {
-        QHash<int, QByteArray> hash;
-        int i = 0;
-        hash.insert(i++, QByteArray("message"));
-        hash.insert(i++, QByteArray("date"));
-        hash.insert(i++, QByteArray("type"));
-        hash.insert(i++, QByteArray("daysOfWeek"));
-        hash.insert(i++, QByteArray("sound"));
-        hash.insert(i++, QByteArray("enabled"));
-        hash.insert(i++, QByteArray("model"));
-        return hash;
+        return instance().m_roles;
     }
 
     static QVariant roleData(int role, UCAlarm *alarm) {
@@ -60,6 +47,24 @@ public:
         QTime time = dt.time();
         time.setHMS(time.hour(), time.minute(), time.second());
         return QDateTime(dt.date(), time, dt.timeSpec());
+    }
+private:
+    QHash<int, QByteArray> m_roles;
+    AlarmUtils()
+    {
+        int i = 0;
+        m_roles.insert(i++, QByteArray("message"));
+        m_roles.insert(i++, QByteArray("date"));
+        m_roles.insert(i++, QByteArray("type"));
+        m_roles.insert(i++, QByteArray("daysOfWeek"));
+        m_roles.insert(i++, QByteArray("sound"));
+        m_roles.insert(i++, QByteArray("enabled"));
+        m_roles.insert(i++, QByteArray("model"));
+    }
+    static AlarmUtils &instance()
+    {
+        static AlarmUtils instance;
+        return instance;
     }
 };
 
@@ -91,7 +96,7 @@ public:
 
     static AlarmManager &instance();
 
-    bool fetchAlarms();
+    bool fetchAlarms(bool force = false);
     int alarmCount();
     UCAlarm *alarmAt(int index) const;
     UCAlarm *findAlarm(const QVariant &cookie) const;
@@ -100,7 +105,8 @@ public:
     static UCAlarmPrivate *createAlarmData(UCAlarm *alarm);
 
 Q_SIGNALS:
-    void alarmsChanged();
+    void alarmsRefreshStarted();
+    void alarmsRefreshed();
     void alarmUpdated(int index);
     void alarmRemoveStarted(int index);
     void alarmRemoveFinished();
