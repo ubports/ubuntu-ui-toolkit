@@ -722,14 +722,6 @@ void UCUbuntuShape::setVerticalAlignment(VAlignment vAlignment)
     }
 }
 
-void UCUbuntuShape::gridUnitChanged()
-{
-    gridUnit_ = UCUnits::instance().gridUnit();
-    setImplicitWidth(8 * gridUnit_);
-    setImplicitHeight(8 * gridUnit_);
-    update();
-}
-
 void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
 {
     geometry_ = newGeometry;
@@ -751,6 +743,14 @@ void UCUbuntuShape::onOpenglContextDestroyed()
         delete shapeTextures.low;
         shapeTexturesHash.erase(it);
     }
+}
+
+void UCUbuntuShape::gridUnitChanged()
+{
+    gridUnit_ = UCUnits::instance().gridUnit();
+    setImplicitWidth(8 * gridUnit_);
+    setImplicitHeight(8 * gridUnit_);
+    update();
 }
 
 void UCUbuntuShape::providerDestroyed(QObject* object)

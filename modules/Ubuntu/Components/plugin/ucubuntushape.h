@@ -63,7 +63,6 @@ public:
     void setHorizontalAlignment(HAlignment horizontalAlignment);
     VAlignment verticalAlignment() const { return vAlignment_; }
     void setVerticalAlignment(VAlignment verticalAlignment);
-    Q_SLOT void gridUnitChanged();
 
 Q_SIGNALS:
     void colorChanged();
@@ -89,6 +88,7 @@ private:
 private Q_SLOTS:
     void onImagePropertiesChanged();
     void onOpenglContextDestroyed();
+    void gridUnitChanged();
     void providerDestroyed(QObject* object=0);
 
 private:
