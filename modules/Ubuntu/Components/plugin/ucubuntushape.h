@@ -35,9 +35,12 @@ class UCUbuntuShape : public QQuickItem
     Q_PROPERTY(QString radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(QVariant image READ image WRITE setImage NOTIFY imageChanged)
     Q_PROPERTY(bool stretched READ stretched WRITE setStretched NOTIFY stretchedChanged)
-    Q_PROPERTY(HAlignment horizontalAlignment READ horizontalAlignment WRITE setHorizontalAlignment NOTIFY horizontalAlignmentChanged)
-    Q_PROPERTY(VAlignment verticalAlignment READ verticalAlignment WRITE setVerticalAlignment NOTIFY verticalAlignmentChanged)
-    Q_PROPERTY(QString borderSource READ borderSource WRITE setBorderSource NOTIFY borderSourceChanged)
+    Q_PROPERTY(HAlignment horizontalAlignment READ horizontalAlignment WRITE setHorizontalAlignment
+               NOTIFY horizontalAlignmentChanged)
+    Q_PROPERTY(VAlignment verticalAlignment READ verticalAlignment WRITE setVerticalAlignment
+               NOTIFY verticalAlignmentChanged)
+    Q_PROPERTY(QString borderSource READ borderSource WRITE setBorderSource
+               NOTIFY borderSourceChanged)
 
 public:
     UCUbuntuShape(QQuickItem* parent=0);
