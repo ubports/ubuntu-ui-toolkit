@@ -91,6 +91,9 @@ private Q_SLOTS:
         QDir modules ("../../../modules");
         QVERIFY(modules.exists());
         m_modulePath = modules.absolutePath();
+        // XDG_RUNTIME_DIR may not be set in a test environment
+        QString testRuntimeDir(QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/tst_statesaver");
+        setenv("XDG_RUNTIME_DIR", testRuntimeDir.toUtf8(), 1);
         // invoke initialization
         StateSaverBackend::instance();
     }
