@@ -230,7 +230,7 @@ QString UCTheme::parentThemeName(const QString& themeName)
     QString parentTheme;
     QUrl themePath = pathFromThemeName(themeName);
     if (!themePath.isValid()) {
-        qWarning() << UbuntuI18n::instance().tr("Theme not found: ") << themeName;
+        qWarning() << qPrintable(UbuntuI18n::instance().tr("Theme not found: \"%1\"").arg(themeName));
     } else {
         QFile file(themePath.resolved(PARENT_THEME_FILE).toLocalFile());
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
