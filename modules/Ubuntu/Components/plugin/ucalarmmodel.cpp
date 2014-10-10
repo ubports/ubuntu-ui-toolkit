@@ -291,7 +291,9 @@ void UCAlarmModel::insertFinished()
  */
 void UCAlarmModel::moveStarted(int from, int to)
 {
-    beginMoveRows(QModelIndex(), from, from, QModelIndex(), to);
+    removeStarted(from);
+    removeFinished();
+    insertStarted(to);
 }
 
 /*!
@@ -300,5 +302,5 @@ void UCAlarmModel::moveStarted(int from, int to)
  */
 void UCAlarmModel::moveFinished()
 {
-    endMoveRows();
+    insertFinished();
 }

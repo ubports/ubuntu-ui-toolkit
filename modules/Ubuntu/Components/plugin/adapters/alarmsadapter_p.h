@@ -88,6 +88,7 @@ public:
     void clear()
     {
         data.clear();
+        idHash.clear();
     }
     int count() const
     {
@@ -95,43 +96,37 @@ public:
     }
     const QOrganizerTodo operator[](int index) const
     {
-        return data[index];
+        QDateTime dt = data.keys()[index];
+        return data.value(dt);
     }
     int update(int index, const QOrganizerTodo &alarm)
     {
-        data.removeAt(index);
-        data.insert(index, alarm);
-        return index;
+        removeAt(index);
+        return insert(alarm);
     }
     int insert(const QOrganizerTodo &alarm)
     {
-        int index = indexOf(alarm.id());
-        if (index >= 0) {
-            data.removeAt(index);
-            data.insert(index, alarm);
-        } else {
-            data.append(alarm);
-            index = data.count() - 1;
-        }
-        return index;
+        QDateTime dt = AlarmUtils::normalizeDate(alarm.startDateTime());
+        idHash.insert(alarm.id(), dt);
+        data.insert(dt, alarm);
+        return indexOf(alarm.id());
     }
     // returns the index of the alarm matching a cookie, -1 on error
     int indexOf(const QOrganizerItemId &id)
     {
-        for (int i = 0; i < data.count(); i++) {
-            if (id == data[i].id()) {
-                return i;
-            }
-        }
-        return -1;
+        QDateTime dt = idHash.value(id);
+        return data.keys().indexOf(dt);
     }
     void removeAt(int index)
     {
-        data.removeAt(index);
+        QOrganizerTodo alarm = data.value(data.keys()[index]);
+        data.remove(idHash.value(alarm.id()));
+        idHash.remove(alarm.id());
     }
 
 private:
-    QList<QOrganizerTodo> data;
+    QMap<QDateTime, QOrganizerTodo> data;
+    QHash<QOrganizerItemId, QDateTime> idHash;
 };
 
 class AlarmsAdapter : public QObject, public AlarmManagerPrivate
