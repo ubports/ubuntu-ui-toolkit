@@ -427,20 +427,17 @@ void AlarmsAdapter::alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManage
             break;
         }
         case QOrganizerManager::Change: {
-            int index = updateAlarm(op.first);
-            if (index >= 0) {
-                Q_EMIT q_ptr->alarmUpdated(index);
-            }
+            updateAlarm(op.first);
             break;
         }
         case QOrganizerManager::Remove: {
             removeAlarm(op.first);
             // save alarm data
-            saveAlarms();
             break;
         }
         }
     }
+    saveAlarms();
 }
 
 void AlarmsAdapter::init()
@@ -699,53 +696,54 @@ void AlarmsAdapter::insertAlarm(const QOrganizerItemId &id)
     adjustAlarmOccurrence(*pAlarm);
 
     // insert and get the index
-    alarmList << pAlarm->data();
-    int index = alarmList.indexOf(event.id());
+    int index = alarmList.insert(pAlarm->data());
     Q_EMIT q_ptr->alarmInsertStarted(index);
     Q_EMIT q_ptr->alarmInsertFinished();
 }
 
 // updates an alarm and returns the index, -1 on error
-int AlarmsAdapter::updateAlarm(const QOrganizerItemId &id)
+void AlarmsAdapter::updateAlarm(const QOrganizerItemId &id)
 {
     QOrganizerTodo event = todoItem(id);
     if (event.isEmpty()) {
-        return -1;
+        return;
     }
     // update alarm data
     int index = alarmList.indexOf(event.id());
     if (index < 0) {
         // it can be that the organizer item ID is not an alarm or it is an occurrence of
         // an organizer event
-        return -1;
+        return;
     }
     // use UCAlarm to ease conversions
     UCAlarm alarm;
     AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
     pAlarm->setData(event);
     adjustAlarmOccurrence(*pAlarm);
-    alarmList.update(index, pAlarm->data());
-
-    return index;
+    int newIndex = alarmList.update(index, pAlarm->data());
+    if (newIndex == index) {
+        Q_EMIT q_ptr->alarmUpdated(index);
+    } else {
+        // TODO: need to emit move operation!
+    }
 }
 
 // removes an alarm from the list
-int AlarmsAdapter::removeAlarm(const QOrganizerItemId &id)
+void AlarmsAdapter::removeAlarm(const QOrganizerItemId &id)
 {
     if (id.isNull()) {
-        return -1;
+        return;
     }
     int index = alarmList.indexOf(id);
     if (index < 0) {
         // this may be an item we don't handle, organizer manager may report us
         // other calendar event removals as well.
-        return -1;
+        return;
     }
     // emit removal start
     Q_EMIT q_ptr->alarmRemoveStarted(index);
     alarmList.removeAt(index);
     Q_EMIT q_ptr->alarmRemoveFinished();
-    return index;
 }
 
 void AlarmsAdapter::completeFetchAlarms()
@@ -778,7 +776,7 @@ void AlarmsAdapter::completeFetchAlarms()
         AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
         pAlarm->setData(event);
         adjustAlarmOccurrence(*pAlarm);
-        alarmList << pAlarm->data();
+        alarmList.insert(pAlarm->data());
     }
 
     saveAlarms();

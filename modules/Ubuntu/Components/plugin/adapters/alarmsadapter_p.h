@@ -97,20 +97,23 @@ public:
     {
         return data[index];
     }
-    AlarmList &update(int index, const QOrganizerTodo &alarm)
+    int update(int index, const QOrganizerTodo &alarm)
     {
         data.removeAt(index);
-        data.append(alarm);
-        return *this;
+        data.insert(index, alarm);
+        return index;
     }
-    AlarmList &operator<<(const QOrganizerTodo &alarm)
+    int insert(const QOrganizerTodo &alarm)
     {
         int index = indexOf(alarm.id());
         if (index >= 0) {
             data.removeAt(index);
+            data.insert(index, alarm);
+        } else {
+            data.append(alarm);
+            index = data.count() - 1;
         }
-        data << alarm;
-        return *this;
+        return index;
     }
     // returns the index of the alarm matching a cookie, -1 on error
     int indexOf(const QOrganizerItemId &id)
@@ -165,8 +168,8 @@ public:
     UCAlarmPrivate *createAlarmData(UCAlarm *alarm);
 
     void insertAlarm(const QOrganizerItemId &id);
-    int updateAlarm(const QOrganizerItemId &id);
-    int removeAlarm(const QOrganizerItemId &id);
+    void updateAlarm(const QOrganizerItemId &id);
+    void removeAlarm(const QOrganizerItemId &id);
 
 private Q_SLOTS:
     void completeFetchAlarms();
