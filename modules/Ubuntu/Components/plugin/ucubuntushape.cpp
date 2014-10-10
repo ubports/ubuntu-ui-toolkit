@@ -191,7 +191,7 @@ public:
 
     ShapeNode(UCUbuntuShape* item);
     ShapeMaterial* material() { return &material_; }
-    void setVertices(const QRectF& geometry, float radius, QQuickItem* image, bool stretched,
+    void setVertices(float width, float height, float radius, QQuickItem* image, bool stretched,
                      UCUbuntuShape::HAlignment hAlignment,
                      UCUbuntuShape::VAlignment vAlignment, float shapeCoordinate[][2]);
 
@@ -270,15 +270,13 @@ ShapeNode::ShapeNode(UCUbuntuShape* item)
     setFlag(UsePreprocess, false);
 }
 
-void ShapeNode::setVertices(const QRectF& geometry, float radius, QQuickItem* image, bool stretched,
-                            UCUbuntuShape::HAlignment hAlignment,
+void ShapeNode::setVertices(float width, float height, float radius, QQuickItem* image,
+                            bool stretched, UCUbuntuShape::HAlignment hAlignment,
                             UCUbuntuShape::VAlignment vAlignment, float shapeCoordinate[][2])
 {
     ShapeNode::Vertex* vertices = reinterpret_cast<ShapeNode::Vertex*>(geometry_.vertexData());
     const QSGTextureProvider* provider = image ? image->textureProvider() : NULL;
     const QSGTexture* texture = provider ? provider->texture() : NULL;
-    const float width = geometry.width();
-    const float height = geometry.height();
     float topCoordinate;
     float bottomCoordinate;
     float leftCoordinate;
@@ -510,7 +508,6 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , hAlignment_(UCUbuntuShape::AlignHCenter)
     , vAlignment_(UCUbuntuShape::AlignVCenter)
     , gridUnit_(UCUnits::instance().gridUnit())
-    , geometry_()
 {
     setFlag(ItemHasContents);
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
@@ -714,7 +711,6 @@ void UCUbuntuShape::setVerticalAlignment(VAlignment vAlignment)
 
 void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
 {
-    geometry_ = newGeometry;
     QQuickItem::geometryChanged(newGeometry, oldGeometry);
     update();
 }
@@ -815,7 +811,9 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
         radius *= scaleFactor;
         materialData->shapeTextureFiltering = QSGTexture::Linear;
     }
-    const float halfMinWidthHeight = qMin(geometry_.width(), geometry_.height()) * 0.5f;
+    const float geometryWidth = width();
+    const float geometryHeight = height();
+    const float halfMinWidthHeight = qMin(geometryWidth, geometryHeight) * 0.5f;
     if (radius > halfMinWidthHeight) {
         radius = halfMinWidthHeight;
         materialData->shapeTextureFiltering = QSGTexture::Linear;
@@ -846,8 +844,8 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
         0 : (border_ == UCUbuntuShape::IdleBorder) ? 1 : 2;
     if (radius_ == UCUbuntuShape::SmallRadius)
         index += 3;
-    node->setVertices(geometry_, radius, image_, stretched_, hAlignment_, vAlignment_,
-                      textureData->coordinate[index]);
+    node->setVertices(geometryWidth, geometryHeight, radius, image_, stretched_, hAlignment_,
+                      vAlignment_, textureData->coordinate[index]);
 
     return node;
 }

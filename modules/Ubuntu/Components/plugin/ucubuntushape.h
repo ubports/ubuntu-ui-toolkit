@@ -108,7 +108,6 @@ private:
     HAlignment hAlignment_;
     VAlignment vAlignment_;
     float gridUnit_;
-    QRectF geometry_;
 
     Q_DISABLE_COPY(UCUbuntuShape)
 };
