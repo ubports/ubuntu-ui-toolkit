@@ -103,7 +103,7 @@ Item {
             dt.setMinutes(dt.getMinutes() + 10);
             testAlarm.date = dt;
 
-            modelSpy.signalName = "modelReset";
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
             modelSpy.wait();
             compare(testAlarm.error, Alarm.NoError, 'alarm date must be greater than the current time');
@@ -115,7 +115,7 @@ Item {
             testAlarm.date = new Date();
             testAlarm.type = Alarm.AutoDetect;
 
-            modelSpy.signalName = "modelReset";
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
             modelSpy.wait();
             compare(testAlarm.error, Alarm.NoError, 'repating AutoDetect alarm');
@@ -127,7 +127,7 @@ Item {
             testAlarm.date = new Date();
             testAlarm.type = Alarm.Daily;
 
-            modelSpy.signalName = "modelReset";
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
             modelSpy.wait();
             compare(testAlarm.error, Alarm.NoError, 'repating Daily alarm');
@@ -140,7 +140,7 @@ Item {
             testAlarm.type = Alarm.Repeating;
             testAlarm.daysOfWeek = Alarm.Monday;
 
-            modelSpy.signalName = "modelReset";
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
             modelSpy.wait();
             compare(testAlarm.error, Alarm.NoError, 'repating on a given day alarm');
@@ -152,7 +152,7 @@ Item {
             testAlarm.date = new Date();
             testAlarm.type = Alarm.Monday | Alarm.Friday;
 
-            modelSpy.signalName = "modelReset";
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
             modelSpy.wait();
             compare(testAlarm.error, Alarm.NoError, 'repating on multiple days alarm');
@@ -186,7 +186,7 @@ Item {
             dt.setMinutes(dt.getMinutes() + 10);
             testAlarm.date = dt;
 
-            modelSpy.signalName = "modelReset";
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
             modelSpy.wait();
             modelSpy.clear();
@@ -211,7 +211,7 @@ Item {
             testAlarm.type = Alarm.OneTime;
             testAlarm.date = date;
 
-            modelSpy.signalName = "modelReset";
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
             modelSpy.wait();
             compare(testAlarm.error, Alarm.NoError, "fist alarm added");
@@ -231,7 +231,7 @@ Item {
             dt.setMinutes(dt.getMinutes() + 10);
             testAlarm.date = dt;
 
-            modelSpy.signalName = "modelReset";
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
             modelSpy.wait();
             compare(testAlarm.error, Alarm.NoError, "fist alarm added");
@@ -251,7 +251,7 @@ Item {
             testAlarm.type = Alarm.Repeating;
             testAlarm.daysOfWeek = Alarm.Monday;
 
-            modelSpy.signalName = "modelReset";
+            modelSpy.signalName = "rowsInserted";
             testAlarm.save();
             modelSpy.wait();
             verify(testModel.count > 0, "alarm added");
