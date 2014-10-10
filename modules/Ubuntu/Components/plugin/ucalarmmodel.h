@@ -53,6 +53,8 @@ private Q_SLOTS:
     void removeFinished();
     void insertStarted(int index);
     void insertFinished();
+    void moveStarted(int from, int to);
+    void moveFinished();
 };
 
 #endif // UCALARMSMODEL_H

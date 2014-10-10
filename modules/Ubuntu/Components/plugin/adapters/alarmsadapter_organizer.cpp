@@ -724,7 +724,8 @@ void AlarmsAdapter::updateAlarm(const QOrganizerItemId &id)
     if (newIndex == index) {
         Q_EMIT q_ptr->alarmUpdated(index);
     } else {
-        // TODO: need to emit move operation!
+        Q_EMIT q_ptr->alarmMoveStarted(index, newIndex);
+        Q_EMIT q_ptr->alarmMoveFinished();
     }
 }
 

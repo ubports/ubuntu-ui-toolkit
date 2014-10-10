@@ -39,6 +39,9 @@ class tst_UCAlarms : public QObject
 public:
     tst_UCAlarms() {}
 
+Q_SIGNALS:
+    void alarmUpdated();
+
 private:
 
     QSignalSpy *insertSpy;
@@ -108,8 +111,13 @@ private Q_SLOTS:
     {
         AlarmManager::instance();
 
+        // connect alarmUpdated() and alarmMoveFinished to teh test signal so we get either of those on alarm updates
+
+        connect(&AlarmManager::instance(), SIGNAL(alarmUpdated(int)), this, SIGNAL(alarmUpdated()));
+        connect(&AlarmManager::instance(), SIGNAL(alarmMoveFinished()), this, SIGNAL(alarmUpdated()));
+
         insertSpy = new QSignalSpy(&AlarmManager::instance(), SIGNAL(alarmInsertFinished()));
-        updateSpy = new QSignalSpy(&AlarmManager::instance(), SIGNAL(alarmUpdated(int)));
+        updateSpy = new QSignalSpy(this, SIGNAL(alarmUpdated()));
         cancelSpy = new QSignalSpy(&AlarmManager::instance(), SIGNAL(alarmRemoveFinished()));
     }
 

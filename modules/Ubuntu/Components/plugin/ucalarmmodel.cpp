@@ -284,3 +284,21 @@ void UCAlarmModel::insertFinished()
     endInsertRows();
     Q_EMIT countChanged();
 }
+
+/*!
+ * \internal
+ * Slot starting moving an individual alarm.
+ */
+void UCAlarmModel::moveStarted(int from, int to)
+{
+    beginMoveRows(QModelIndex(), from, from, QModelIndex(), to);
+}
+
+/*!
+ * \internal
+ * Slot finalizing moving an individual alarm.
+ */
+void UCAlarmModel::moveFinished()
+{
+    endMoveRows();
+}

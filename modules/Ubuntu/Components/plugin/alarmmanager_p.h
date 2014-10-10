@@ -112,6 +112,8 @@ Q_SIGNALS:
     void alarmRemoveFinished();
     void alarmInsertStarted(int index);
     void alarmInsertFinished();
+    void alarmMoveStarted(int from, int to);
+    void alarmMoveFinished();
 
 private:
     explicit AlarmManager(QObject *parent = 0);
