@@ -499,10 +499,8 @@ const float lowHighTextureThreshold = 11.0f;
 UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     : QQuickItem(parent)
     , imageTextureProvider_(NULL)
-    , color_(0.0, 0.0, 0.0, 0.0)
-    , colorPremultiplied_(qRgba(0, 0, 0, 0))
-    , gradientColor_(0.0, 0.0, 0.0, 0.0)
-    , gradientColorPremultiplied_(qRgba(0, 0, 0, 0))
+    , color_(qRgba(0, 0, 0, 0))
+    , gradientColor_(qRgba(0, 0, 0, 0))
     , gradientColorSet_(false)
     , radiusString_("small")
     , radius_(UCUbuntuShape::SmallRadius)
@@ -530,19 +528,12 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
 */
 void UCUbuntuShape::setColor(const QColor& color)
 {
-    if (color_ != color) {
-        color_ = color;
-        const int alpha = color.alpha();
-        const QRgb colorPremultiplied = qRgba(
-            (color.red() * alpha) / 255,
-            (color.green() * alpha) / 255,
-            (color.blue() * alpha) / 255,
-            alpha);
-        colorPremultiplied_ = colorPremultiplied;
-        // gradientColor has the same value as color unless it was manually set
+    const QRgb colorRgb = qRgba(color.red(), color.green(), color.blue(), color.alpha());
+    if (color_ != colorRgb) {
+        color_ = colorRgb;
+        // gradientColor has the same value as color unless it was explicitly set.
         if (!gradientColorSet_) {
-            gradientColor_ = color;
-            gradientColorPremultiplied_ = colorPremultiplied;
+            gradientColor_ = colorRgb;
             Q_EMIT gradientColorChanged();
         }
         update();
@@ -560,14 +551,10 @@ void UCUbuntuShape::setColor(const QColor& color)
 void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 {
     gradientColorSet_ = true;
-    if (gradientColor_ != gradientColor) {
-        gradientColor_ = gradientColor;
-        const int alpha = gradientColor.alpha();
-        gradientColorPremultiplied_ = qRgba(
-            (gradientColor.red() * alpha) / 255,
-            (gradientColor.green() * alpha) / 255,
-            (gradientColor.blue() * alpha) / 255,
-            alpha);
+    const QRgb gradientColorRgb = qRgba(
+        gradientColor.red(), gradientColor.green(), gradientColor.blue(), gradientColor.alpha());
+    if (gradientColor_ != gradientColorRgb) {
+        gradientColor_ = gradientColorRgb;
         update();
         Q_EMIT gradientColorChanged();
     }
@@ -844,8 +831,13 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
         materialData->flags &= ~ShapeMaterial::Data::ColoredFlag;
     } else {
         materialData->imageTextureProvider = NULL;
-        materialData->color = colorPremultiplied_;
-        materialData->gradientColor = gradientColorPremultiplied_;
+        quint32 a = qAlpha(color_);
+        materialData->color = qRgba(
+            (qRed(color_) * a) / 255, (qGreen(color_) * a) / 255, (qBlue(color_) * a) / 255, a);
+        a = qAlpha(gradientColor_);
+        materialData->gradientColor = qRgba(
+            (qRed(gradientColor_) * a) / 255, (qGreen(gradientColor_) * a) / 255,
+            (qBlue(gradientColor_) * a) / 255, a);
         materialData->flags |= ShapeMaterial::Data::ColoredFlag;
     }
 

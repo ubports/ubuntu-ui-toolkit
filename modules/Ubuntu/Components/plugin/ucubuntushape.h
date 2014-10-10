@@ -96,10 +96,8 @@ private Q_SLOTS:
 
 private:
     QSGTextureProvider* imageTextureProvider_;
-    QColor color_;
-    QRgb colorPremultiplied_;
-    QColor gradientColor_;
-    QRgb gradientColorPremultiplied_;
+    QRgb color_;
+    QRgb gradientColor_;
     bool gradientColorSet_;
     QString radiusString_;
     Radius radius_;
