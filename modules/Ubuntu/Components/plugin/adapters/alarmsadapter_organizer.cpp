@@ -273,7 +273,9 @@ void AlarmDataAdapter::completeSave()
             setData(save->items()[0]);
             changes = AlarmManager::NoChange;
             // also update the alarm at index
-            AlarmsAdapter::get()->updateAlarm(event.id());
+            if (AlarmsAdapter::get()->updateAlarm(event.id()) < 0) {
+                AlarmsAdapter::get()->insertAlarm(event.id());
+            }
             _q_syncStatus(UCAlarm::Saving, UCAlarm::Ready, UCAlarm::NoError);
         }
     }
@@ -433,25 +435,27 @@ void AlarmsAdapter::alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManage
     typedef QPair<QOrganizerItemId,QOrganizerManager::Operation> OperationPair;
     Q_FOREACH(const OperationPair &op, list) {
         switch (op.second) {
-            case QOrganizerManager::Add: {
-                // FIXME: storage optimization needed, do not fetch the whole list, only the
-                // added one and insert into the set; till then force fetch
-                fetchAlarms(true);
-                break;
+        case QOrganizerManager::Add: {
+            qDebug() << "OP-ADD";
+            insertAlarm(op.first);
+            // FIXME: storage optimization needed, do not fetch the whole list, only the
+            // added one and insert into the set; till then force fetch
+//            fetchAlarms(true);
+            break;
+        }
+        case QOrganizerManager::Change: {
+            int index = updateAlarm(op.first);
+            if (index >= 0) {
+                Q_EMIT q_ptr->alarmUpdated(index);
             }
-            case QOrganizerManager::Change: {
-                int index = updateAlarm(op.first);
-                if (index >= 0) {
-                    Q_EMIT q_ptr->alarmUpdated(index);
-                }
-                break;
-            }
-            case QOrganizerManager::Remove: {
-                removeAlarm(op.first);
-                // save alarm data
-                saveAlarms();
-                break;
-            }
+            break;
+        }
+        case QOrganizerManager::Remove: {
+            removeAlarm(op.first);
+            // save alarm data
+            saveAlarms();
+            break;
+        }
         }
     }
 }
@@ -705,6 +709,31 @@ QOrganizerTodo AlarmsAdapter::todoItem(const QOrganizerItemId &id)
         }
     }
     return event;
+}
+
+void AlarmsAdapter::insertAlarm(const QOrganizerItemId &id)
+{
+    QOrganizerTodo event = todoItem(id);
+    if (event.isEmpty()) {
+        return;
+    }
+    // if we have the alarm registered, leave
+    if (alarmList.indexOf(event.id()) >= 0) {
+        qDebug() << "ALARM REGISTERED";
+        return;
+    }
+    // use UCAlarm to fix date
+    UCAlarm alarm;
+    AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
+    pAlarm->setData(event);
+    adjustAlarmOccurrence(*pAlarm);
+
+    // insert and get the index
+    alarmList << pAlarm->data();
+    int index = alarmList.indexOf(event.id());
+    qDebug() << "INSERT @" << index;
+    Q_EMIT q_ptr->alarmInsertStarted(index);
+    Q_EMIT q_ptr->alarmInsertFinished();
 }
 
 // updates an alarm and returns the index, -1 on error

@@ -133,6 +133,9 @@ UCAlarmModel::UCAlarmModel(QObject *parent)
     connect(&AlarmManager::instance(), SIGNAL(alarmsRefreshed()), this, SLOT(refreshEnd()), Qt::QueuedConnection);
     // get individual alarm data updates
     connect(&AlarmManager::instance(), SIGNAL(alarmUpdated(int)), this, SLOT(update(int)), Qt::QueuedConnection);
+    // get individual alarm insertion
+    connect(&AlarmManager::instance(), SIGNAL(alarmInsertStarted(int)), this, SLOT(insertStarted(int)), Qt::DirectConnection);
+    connect(&AlarmManager::instance(), SIGNAL(alarmInsertFinished()), this, SLOT(insertFinished()), Qt::DirectConnection);
     // data removal must be direct
     connect(&AlarmManager::instance(), SIGNAL(alarmRemoveStarted(int)), this, SLOT(removeStarted(int)), Qt::DirectConnection);
     connect(&AlarmManager::instance(), SIGNAL(alarmRemoveFinished()), this, SLOT(removeFinished()), Qt::DirectConnection);
@@ -261,5 +264,25 @@ void UCAlarmModel::removeStarted(int index)
 void UCAlarmModel::removeFinished()
 {
     endRemoveRows();
+    Q_EMIT countChanged();
+}
+
+/*!
+ * \internal
+ * Slot starting inserting an individual alarm.
+ */
+void UCAlarmModel::insertStarted(int index)
+{
+    QModelIndex modelIndex = createIndex(index, 0);
+    beginInsertRows(modelIndex, index, index);
+}
+
+/*!
+ * \internal
+ * Slot finalizing inserting an individual alarm.
+ */
+void UCAlarmModel::insertFinished()
+{
+    endInsertRows();
     Q_EMIT countChanged();
 }

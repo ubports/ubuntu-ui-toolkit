@@ -110,6 +110,8 @@ Q_SIGNALS:
     void alarmUpdated(int index);
     void alarmRemoveStarted(int index);
     void alarmRemoveFinished();
+    void alarmInsertStarted(int index);
+    void alarmInsertFinished();
 
 private:
     explicit AlarmManager(QObject *parent = 0);

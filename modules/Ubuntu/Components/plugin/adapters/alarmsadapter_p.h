@@ -166,6 +166,7 @@ public:
     bool verifyChange(UCAlarm *alarm, AlarmManager::Change change, const QVariant &value);
     UCAlarmPrivate *createAlarmData(UCAlarm *alarm);
 
+    void insertAlarm(const QOrganizerItemId &id);
     int updateAlarm(const QOrganizerItemId &id);
     int removeAlarm(const QOrganizerItemId &id);
 
