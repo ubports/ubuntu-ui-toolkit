@@ -114,7 +114,6 @@ Q_SIGNALS:
 private:
     explicit AlarmManager(QObject *parent = 0);
     Q_DISABLE_COPY(AlarmManager)
-//    Q_DECLARE_PRIVATE(AlarmManager)
     friend class AlarmManagerPrivate;
     QScopedPointer<AlarmManagerPrivate> d_ptr;
 };

@@ -422,7 +422,7 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     }
 }
 
-// slot called when teh organizer cannot determine the change, thus forced fetch is needed
+// slot called when the organizer cannot determine the change, thus forced fetch is needed
 void AlarmsAdapter::forceFetch()
 {
     fetchAlarms(true);
