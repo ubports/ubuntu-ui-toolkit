@@ -66,5 +66,10 @@ bool AlarmManager::verifyChange(UCAlarm *alarm, AlarmData::Change change, const 
     return d->verifyChange(pAlarm->rawData.cookie, change, newData);
 }
 
+bool AlarmManager::compareCookies(const QVariant &cookie1, const QVariant &cookie2)
+{
+    Q_D(AlarmManager);
+    return d->compareCookies(cookie1, cookie2);
+}
 
 #include "moc_alarmmanager_p.cpp"

@@ -1,3 +1,65 @@
+ubuntu-ui-toolkit (1.1.1279+14.10.20141007-0ubuntu1) 14.09; urgency=medium
+
+  [ Michael Sheldon ]
+  * Removes the keyboard anchor animation as this is now implemented
+    in the keyboard.
+
+  [ Tim Peeters ]
+  * PageStack push returns the pushed page. Fixes LP: #1361919
+  * Add selection mode as a preset to the header configuration. 
+    Fixes LP: #1370146.
+
+  [ Zsombor Egri ]
+  * Fix Dialog foreground sizing. Fixes LP: #1337555, LP: #1337556.
+  * Workaround for StateSaver to fall back to use qgetenv() when 
+    QStandardPaths fails to return XDG_RUNTIME_DIR path. 
+    Fixes LP: #1363112.
+
+  [ Christian Dywan ]
+  * Add unit tests for MathUtils API. 
+    Fixes LP: #1244685.
+  * Text field hint should use the same font as the editor. 
+    Fixes LP: #1237400.
+  * Read-only text fields mustn't have a clear button. 
+    Fixes LP: #1337257.
+  * autopilot package should source-depend on QML plugin. 
+    Fixes LP: #1236085.
+
+  [ CI bot ]
+  * Resync trunk
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 07 Oct 2014 12:09:39 +0000
+
+ubuntu-ui-toolkit (1.1.1269+14.10.20141001-0ubuntu1) 14.09; urgency=medium
+
+  [ Tim Peeters ]
+  * Add Autopilot wait_for_animation() dummy function.
+  * Implement header animations in PageHeadStyle and prepare 
+    PageStack for enabling the animations.
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Removed useless dirty flags.
+
+  [ Zsombor Egri ]
+  *  Use tags as workaround for an alarm and an additional one for a 
+     disabled alarm. The alarm should always save the visual and 
+     audible reminder attachments no matter if disabled or not. 
+     Fixes LP: #1361702
+
+  [ Christian Dywan ]
+  * Selection handler should be centered and not blinking. 
+    Fixes LP: #1371205
+  * Hide pop over when changing orientation. 
+    Fixes LP: #1369506 and LP: #1375837
+
+  [ CI bot ]
+  * Resync trunk
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 01 Oct 2014 08:21:27 +0000
+
 ubuntu-ui-toolkit (1.1.1262+14.10.20140922.2-0ubuntu1) utopic; urgency=medium
 
   [ Leo Arias ]
