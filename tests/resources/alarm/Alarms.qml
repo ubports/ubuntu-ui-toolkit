@@ -18,12 +18,14 @@ import QtQuick 2.0
 import Ubuntu.Components 1.1
 import Ubuntu.Components.ListItems 1.0
 import Ubuntu.Components.Popups 1.0
+import Ubuntu.Components.Pickers 1.0
 
 MainView {
     id: mainView
     width: units.gu(80)
     height: units.gu(71)
     objectName: "mainView"
+    useDeprecatedToolbar: false
 
     AlarmModel{
         id: alarmModel
@@ -58,14 +60,24 @@ MainView {
                 text: alarm.message
             }
         }
-        Standard {
-            text: "Date"
-            control: TextField {
-                id: date
-                objectName: "alarm_date"
-                text: alarm.date.toString()
+
+        Row {
+            height: units.gu(6)
+            spacing: units.gu(1)
+            Button {
+                id: dateChooser
+                text: "Date: " + date.toDateString()
+                property date date: new Date()
+                onClicked: PickerPanel.openDatePicker(dateChooser, "date", "Years|Months|Days")
+            }
+            Button {
+                id: timeChooser
+                text: "Time: " + time.toTimeString()
+                property date time: new Date()
+                onClicked: PickerPanel.openDatePicker(timeChooser, "time", "Hours|Minutes")
             }
         }
+
         Standard {
             text: "Enabled"
             control: Switch {
@@ -136,7 +148,11 @@ MainView {
                 text: "Save"
                 onClicked: {
                     alarm.message = message.text;
-                    alarm.date = new Date(date.text);
+                    var date = new Date();
+                    date.setTime(timeChooser.time.getTime());
+                    date.setDate(dateChooser.date.getDate());
+                    print("DATE", date, dateChooser.date.toDateString())
+                    alarm.date = date;
                     alarm.save();
                 }
             }

@@ -431,11 +431,7 @@ void AlarmsAdapter::alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManage
     Q_FOREACH(const OperationPair &op, list) {
         switch (op.second) {
         case QOrganizerManager::Add: {
-            qDebug() << "OP-ADD";
             insertAlarm(op.first);
-            // FIXME: storage optimization needed, do not fetch the whole list, only the
-            // added one and insert into the set; till then force fetch
-//            fetchAlarms(true);
             break;
         }
         case QOrganizerManager::Change: {
@@ -714,7 +710,6 @@ void AlarmsAdapter::insertAlarm(const QOrganizerItemId &id)
     }
     // if we have the alarm registered, leave
     if (alarmList.indexOf(event.id()) >= 0) {
-        qDebug() << "ALARM REGISTERED";
         return;
     }
     // use UCAlarm to fix date
@@ -726,7 +721,6 @@ void AlarmsAdapter::insertAlarm(const QOrganizerItemId &id)
     // insert and get the index
     alarmList << pAlarm->data();
     int index = alarmList.indexOf(event.id());
-    qDebug() << "INSERT @" << index;
     Q_EMIT q_ptr->alarmInsertStarted(index);
     Q_EMIT q_ptr->alarmInsertFinished();
 }

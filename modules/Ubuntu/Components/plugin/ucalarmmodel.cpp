@@ -253,8 +253,7 @@ void UCAlarmModel::update(int index)
  */
 void UCAlarmModel::removeStarted(int index)
 {
-    QModelIndex modelIndex = createIndex(index, 0);
-    beginRemoveRows(modelIndex, index, index);
+    beginRemoveRows(QModelIndex(), index, index);
 }
 
 /*!
@@ -273,8 +272,7 @@ void UCAlarmModel::removeFinished()
  */
 void UCAlarmModel::insertStarted(int index)
 {
-    QModelIndex modelIndex = createIndex(index, 0);
-    beginInsertRows(modelIndex, index, index);
+    beginInsertRows(QModelIndex(), index, index);
 }
 
 /*!
