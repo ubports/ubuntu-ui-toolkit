@@ -149,11 +149,9 @@ public:
         return static_cast<AlarmsAdapter*>(AlarmManagerPrivate::get(instance));
     }
 
-    bool listDirty:1;
     QOrganizerManager *manager;
     QOrganizerCollection collection;
 
-    bool fetchAlarms(bool force);
     void init();
     int alarmCount();
     void getAlarmAt(const UCAlarm &alarm, int index) const;
@@ -172,7 +170,7 @@ public:
 
 private Q_SLOTS:
     void completeFetchAlarms();
-    void forceFetch();
+    bool fetchAlarms();
     void alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> >);
 
 protected:

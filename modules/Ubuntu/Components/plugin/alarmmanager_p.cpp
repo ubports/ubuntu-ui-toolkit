@@ -55,9 +55,9 @@ AlarmManager &AlarmManager::instance()
     return instance;
 }
 
-bool AlarmManager::fetchAlarms(bool force)
+bool AlarmManager::fetchAlarms()
 {
-    return d_ptr->fetchAlarms(force);
+    return d_ptr->fetchAlarms();
 }
 
 int AlarmManager::alarmCount()

@@ -96,7 +96,7 @@ public:
 
     static AlarmManager &instance();
 
-    bool fetchAlarms(bool force = false);
+    bool fetchAlarms();
     int alarmCount();
     UCAlarm *alarmAt(int index) const;
     UCAlarm *findAlarm(const QVariant &cookie) const;

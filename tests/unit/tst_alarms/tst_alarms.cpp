@@ -49,8 +49,7 @@ private:
     {
         // initiate fetch
         QSignalSpy spy(&AlarmManager::instance(), SIGNAL(alarmsRefreshed()));
-        AlarmsAdapter *adapter = AlarmsAdapter::get();
-        adapter->fetchAlarms(true);
+        AlarmManager::instance().fetchAlarms();
         spy.wait();
     }
 

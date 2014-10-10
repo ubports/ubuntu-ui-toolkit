@@ -246,7 +246,6 @@ void AlarmDataAdapter::reset()
 void AlarmDataAdapter::startOperation(UCAlarm::Operation operation, const char *completionSlot)
 {
     request->setManager(AlarmsAdapter::get()->manager);
-    AlarmsAdapter::get()->listDirty = true;
     _q_syncStatus(operation, UCAlarm::InProgress, UCAlarm::NoError);
     QObject::connect(request.data(), SIGNAL(stateChanged(QOrganizerAbstractRequest::State)), q_ptr, completionSlot);
     if (!request->start()) {
@@ -382,7 +381,6 @@ AlarmManagerPrivate * createAlarmsAdapter(AlarmManager *alarms)
 AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     : QObject(qq)
     , AlarmManagerPrivate(qq)
-    , listDirty(true) // make sure we proceed with the first full fetch!
     , manager(0)
 {
     // register QOrganizerItemId comparators so QVariant == operator can compare them
@@ -419,12 +417,6 @@ AlarmsAdapter::AlarmsAdapter(AlarmManager *qq)
     }
 }
 
-// slot called when the organizer cannot determine the change, thus forced fetch is needed
-void AlarmsAdapter::forceFetch()
-{
-    fetchAlarms(true);
-}
-
 void AlarmsAdapter::alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> > list)
 {
     typedef QPair<QOrganizerItemId,QOrganizerManager::Operation> OperationPair;
@@ -459,7 +451,7 @@ void AlarmsAdapter::init()
     // connect to manager to receive changes
     QObject::connect(manager, SIGNAL(itemsModified(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> >)),
                      this, SLOT(alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> >)));
-    QObject::connect(manager, SIGNAL(dataChanged()), this, SLOT(forceFetch()));
+    QObject::connect(manager, SIGNAL(dataChanged()), this, SLOT(fetchAlarms()));
 }
 
 AlarmsAdapter::~AlarmsAdapter()
@@ -507,7 +499,7 @@ void AlarmsAdapter::loadAlarms()
 // save fallback manager data only
 void AlarmsAdapter::saveAlarms()
 {
-    if ((manager->managerName() != ALARM_MANAGER_FALLBACK) || !listDirty) {
+    if (manager->managerName() != ALARM_MANAGER_FALLBACK) {
         return;
     }
     QDir dir(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
@@ -537,7 +529,6 @@ void AlarmsAdapter::saveAlarms()
     QJsonDocument document(data);
     file.write(document.toJson());
     file.close();
-    listDirty = false;
 }
 
 /*-----------------------------------------------------------------------------
@@ -617,22 +608,11 @@ bool AlarmsAdapter::verifyChange(UCAlarm *alarm, AlarmManager::Change change, co
     }
 }
 
-bool AlarmsAdapter::fetchAlarms(bool force)
+bool AlarmsAdapter::fetchAlarms()
 {
     if (fetchRequest && fetchRequest->isActive()) {
         // there is already a fetch request ongoing, exit
         return false;
-    }
-
-    if (force) {
-        // force listDirty!
-        listDirty = true;
-    }
-    if (!listDirty) {
-        // the alarm list is complete, do not initiate new fetch
-        Q_EMIT q_ptr->alarmsRefreshStarted();
-        Q_EMIT q_ptr->alarmsRefreshed();
-        return true;
     }
 
     if (!fetchRequest) {
@@ -803,7 +783,6 @@ void AlarmsAdapter::completeFetchAlarms()
 
     saveAlarms();
     completed = true;
-    listDirty = false;
     Q_EMIT q_ptr->alarmsRefreshed();
 }
 
