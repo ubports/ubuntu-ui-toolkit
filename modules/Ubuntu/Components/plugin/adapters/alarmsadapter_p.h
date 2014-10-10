@@ -80,21 +80,55 @@ protected:
 };
 
 // list of alarms
-class AlarmList: public QList<QOrganizerTodo>
+class AlarmList
 {
 public:
     AlarmList(){}
 
-    // returns the index of the alarm matching a cookie, -1 on error
-    inline int indexOfAlarm(const QOrganizerItemId &id)
+    void clear()
     {
-        for (int i = 0; i < size(); i++) {
-            if (id == at(i).id()) {
+        data.clear();
+    }
+    int count() const
+    {
+        return data.count();
+    }
+    const QOrganizerTodo operator[](int index) const
+    {
+        return data[index];
+    }
+    AlarmList &update(int index, const QOrganizerTodo &alarm)
+    {
+        data.removeAt(index);
+        data.append(alarm);
+        return *this;
+    }
+    AlarmList &operator<<(const QOrganizerTodo &alarm)
+    {
+        int index = indexOf(alarm.id());
+        if (index >= 0) {
+            data.removeAt(index);
+        }
+        data << alarm;
+        return *this;
+    }
+    // returns the index of the alarm matching a cookie, -1 on error
+    int indexOf(const QOrganizerItemId &id)
+    {
+        for (int i = 0; i < data.count(); i++) {
+            if (id == data[i].id()) {
                 return i;
             }
         }
         return -1;
     }
+    void removeAt(int index)
+    {
+        data.removeAt(index);
+    }
+
+private:
+    QList<QOrganizerTodo> data;
 };
 
 class AlarmsAdapter : public QObject, public AlarmManagerPrivate

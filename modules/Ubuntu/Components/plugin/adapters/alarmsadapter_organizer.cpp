@@ -526,10 +526,9 @@ void AlarmsAdapter::saveAlarms()
     QJsonArray data;
     UCAlarm alarm;
     AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
-    Q_FOREACH(const QOrganizerTodo &todo, alarmList) {
-
+    for(int i = 0; i < alarmList.count(); i++) {
         // create an UCAlarm and set its event to ease conversions
-        pAlarm->setData(todo);
+        pAlarm->setData(alarmList[i]);
         QJsonObject object;
         object["message"] = alarm.message();
         object["date"] = alarm.date().toString();
@@ -716,7 +715,7 @@ int AlarmsAdapter::updateAlarm(const QOrganizerItemId &id)
         return -1;
     }
     // update alarm data
-    int index = alarmList.indexOfAlarm(event.id());
+    int index = alarmList.indexOf(event.id());
     if (index < 0) {
         // it can be that the organizer item ID is not an alarm or it is an occurrence of
         // an organizer event
@@ -727,7 +726,7 @@ int AlarmsAdapter::updateAlarm(const QOrganizerItemId &id)
     AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
     pAlarm->setData(event);
     adjustAlarmOccurrence(*pAlarm);
-    alarmList[index] = pAlarm->data();
+    alarmList.update(index, pAlarm->data());
 
     return index;
 }
@@ -738,7 +737,7 @@ int AlarmsAdapter::removeAlarm(const QOrganizerItemId &id)
     if (id.isNull()) {
         return -1;
     }
-    int index = alarmList.indexOfAlarm(id);
+    int index = alarmList.indexOf(id);
     if (index < 0) {
         // this may be an item we don't handle, organizer manager may report us
         // other calendar event removals as well.
