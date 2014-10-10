@@ -272,10 +272,6 @@ void AlarmDataAdapter::completeSave()
         } else {
             setData(save->items()[0]);
             changes = AlarmManager::NoChange;
-            // also update the alarm at index
-            if (AlarmsAdapter::get()->updateAlarm(event.id()) < 0) {
-                AlarmsAdapter::get()->insertAlarm(event.id());
-            }
             _q_syncStatus(UCAlarm::Saving, UCAlarm::Ready, UCAlarm::NoError);
         }
     }
@@ -292,7 +288,6 @@ void AlarmDataAdapter::completeCancel()
         _q_syncStatus(UCAlarm::Canceling, UCAlarm::Fail, AlarmsAdapter::OrganizerError + error);
     } else {
         // complete save
-        AlarmsAdapter::get()->removeAlarm(event.id());
         setData(QOrganizerTodo());
         changes = AlarmManager::NoChange;
         _q_syncStatus(UCAlarm::Canceling, UCAlarm::Ready, UCAlarm::NoError);
