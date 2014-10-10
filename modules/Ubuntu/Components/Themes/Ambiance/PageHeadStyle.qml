@@ -362,13 +362,15 @@ Style.PageHeadStyle {
                 // don't keep a margin if there is already a button with spacing
                 leftMargin: leftButtonContainer.width > 0 ? 0 : headerStyle.textLeftMargin
             }
-            width: parent.width - leftButtonContainer.width - actionsContainer.width
+            width: parent.width - anchors.leftMargin
+                   - leftButtonContainer.anchors.leftMargin - leftButtonContainer.width
+                   - actionsContainer.anchors.rightMargin - actionsContainer.width
             height: headerStyle.contentHeight
 
             Label {
                 objectName: "header_title_label"
                 LayoutMirroring.enabled: Qt.application.layoutDirection == Qt.RightToLeft
-                visible: !contentsContainer.visible
+                visible: !contentsContainer.visible && styledItem.config.preset === ""
                 anchors {
                     left: parent.left
                     right: parent.right
@@ -450,6 +452,8 @@ Style.PageHeadStyle {
                     objectName: action.objectName + "_header_button"
                     action: actionsContainer.visibleActions[index]
                     color: styledItem.config.foregroundColor
+                    state: styledItem.config.preset === "select" ?
+                               "IconAndLabel" : ""
                 }
             }
 
