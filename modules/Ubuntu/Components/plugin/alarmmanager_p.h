@@ -123,26 +123,9 @@ public:
     bool enabled;
 };
 
-// list of alarms
-class AlarmList: public QList<AlarmData>
-{
-public:
-    AlarmList(){}
-
-    // returns the index of the alarm matching a cookie, -1 on error
-    inline int indexOfAlarm(const QVariant &cookie)
-    {
-        for (int i = 0; i < size(); i++) {
-            if (at(i).cookie == cookie) {
-                return i;
-            }
-        }
-        return -1;
-    }
-};
-
 class AlarmRequest;
 class AlarmManagerPrivate;
+class AlarmList;
 class AlarmManager : public QObject
 {
     Q_OBJECT
@@ -160,6 +143,7 @@ public:
     AlarmList alarms() const;
 
     bool verifyChange(UCAlarm *alarm, AlarmData::Change change, const QVariant &newData);
+    bool compareCookies(const QVariant &cookie1, const QVariant &cookie2);
 
 Q_SIGNALS:
     void alarmsChanged();
@@ -170,6 +154,24 @@ private:
     Q_DISABLE_COPY(AlarmManager)
     Q_DECLARE_PRIVATE(AlarmManager)
     QScopedPointer<AlarmManagerPrivate> d_ptr;
+};
+
+// list of alarms
+class AlarmList: public QList<AlarmData>
+{
+public:
+    AlarmList(){}
+
+    // returns the index of the alarm matching a cookie, -1 on error
+    inline int indexOfAlarm(const QVariant &cookie)
+    {
+        for (int i = 0; i < size(); i++) {
+            if (AlarmManager::instance().compareCookies(at(i).cookie, cookie)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 };
 
 #endif // ALARMMANAGER_H
