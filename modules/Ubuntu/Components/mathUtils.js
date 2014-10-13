@@ -16,9 +16,7 @@
 
 .pragma library
 
-// FIXME(loicm) It would be better to have these functions available in a global
-//     set of common native C++ functions.
-
+// Ensure the value x is between min and max
 function clamp(x, min, max) {
     if (min <= max) {
         return Math.max(min, Math.min(x, max));
@@ -28,8 +26,9 @@ function clamp(x, min, max) {
     }
 }
 
-function lerp(x, a, b) {
-    return ((1.0 - x) * a) + (x * b);
+// Get the linear interpolation
+function lerp(delta, from, to) {
+    return ((1.0 - delta) * from) + (delta * to);
 }
 
 // Linearly project a value x from [xmin, xmax] into [ymin, ymax]
@@ -37,6 +36,7 @@ function projectValue(x, xmin, xmax, ymin, ymax) {
     return ((x - xmin) * ymax - (x - xmax) * ymin) / (xmax - xmin)
 }
 
+// Linearly project a value x, but in addition to projectValue it's clamped to xmin/xmax first
 function clampAndProject(x, xmin, xmax, ymin, ymax) {
     return projectValue(clamp(x, xmin, xmax), xmin, xmax, ymin, ymax)
 }
