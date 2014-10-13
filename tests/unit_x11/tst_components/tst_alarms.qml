@@ -262,6 +262,8 @@ Item {
             modelSpy.signalName = "rowsInserted";
             testAlarm.save();
             modelSpy.wait();
+            waitForRendering(roleTest);
+
             verify(testModel.count > 0, "alarm added");
             var item = findChild(roleTest, "roleItem");
             verify(item, "has children");

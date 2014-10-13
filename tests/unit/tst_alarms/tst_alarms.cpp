@@ -53,7 +53,7 @@ private:
         // initiate fetch
         QSignalSpy spy(&AlarmManager::instance(), SIGNAL(alarmsRefreshed()));
         AlarmManager::instance().fetchAlarms();
-        spy.wait();
+        spy.wait(1000);
     }
 
     // the function should be used when a new alarm event is added
@@ -61,7 +61,7 @@ private:
     void waitForInsert()
     {
         if (!insertSpy->count()) {
-            insertSpy->wait();
+            insertSpy->wait(1000);
         }
         insertSpy->clear();
     }
@@ -71,7 +71,7 @@ private:
     void waitForUpdate()
     {
         if (!updateSpy->count()) {
-            updateSpy->wait();
+            updateSpy->wait(1000);
         }
         updateSpy->clear();
     }
@@ -82,7 +82,7 @@ private:
     void waitForRemove()
     {
         if (!cancelSpy->count()) {
-            cancelSpy->wait();
+            cancelSpy->wait(1000);
         }
         cancelSpy->clear();
     }
@@ -126,6 +126,7 @@ private Q_SLOTS:
         // model may have an outstanding fetch, so wait for its completion!
         QSignalSpy spy(&AlarmManager::instance(), SIGNAL(alarmsRefreshed()));
         UCAlarmModel model;
+        model.componentComplete();
         spy.wait();
         int i = 0;
         while (i < model.count()) {

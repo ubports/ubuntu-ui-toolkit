@@ -140,12 +140,18 @@ UCAlarmModel::UCAlarmModel(QObject *parent)
     // get individual alamr move, must be direct
     connect(&AlarmManager::instance(), SIGNAL(alarmMoveStarted(int,int)), this, SLOT(moveStarted(int,int)), Qt::DirectConnection);
     connect(&AlarmManager::instance(), SIGNAL(alarmMoveFinished()), this, SLOT(moveFinished()), Qt::DirectConnection);
-    // fetch alarms
-    AlarmManager::instance().fetchAlarms();
-    Q_EMIT countChanged();
 }
 UCAlarmModel::~UCAlarmModel()
 {
+}
+
+void UCAlarmModel::classBegin()
+{
+}
+void UCAlarmModel::componentComplete()
+{
+    // fetch alarms
+    AlarmManager::instance().fetchAlarms();
 }
 
 int UCAlarmModel::rowCount(const QModelIndex &parent) const

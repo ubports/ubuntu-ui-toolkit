@@ -630,11 +630,8 @@ bool AlarmsAdapter::fetchAlarms()
         QObject::connect(fetchRequest, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)), this, SLOT(completeFetchAlarms()));
     }
 
-    bool ok = fetchRequest->start();
-    if (ok) {
-        Q_EMIT q_ptr->alarmsRefreshStarted();
-    }
-    return ok;
+    Q_EMIT q_ptr->alarmsRefreshStarted();
+    return fetchRequest->start();
 }
 
 int AlarmsAdapter::alarmCount()
