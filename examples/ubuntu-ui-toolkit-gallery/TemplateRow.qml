@@ -33,7 +33,7 @@ Item {
         text: templateRow.title
         width: templateRow.titleWidth
         anchors.left: parent.left
-        anchors.verticalCenter: contentRow.verticalCenter
+        anchors.top: contentRow.top
         elide: Text.ElideRight
         font.weight: Font.Light
     }
