@@ -339,6 +339,8 @@ private Q_SLOTS:
         waitForInsert();
         QCOMPARE(alarm1.error(), (int)UCAlarm::NoError);
         QCOMPARE(alarm2.error(), (int)UCAlarm::NoError);
+        QVERIFY(containsAlarm(&alarm1));
+        QVERIFY(containsAlarm(&alarm2));
     }
 
     void test_twoAlarmsOnSameTime2()
@@ -353,6 +355,8 @@ private Q_SLOTS:
         waitForInsert();
         QCOMPARE(alarm1.error(), (int)UCAlarm::NoError);
         QCOMPARE(alarm2.error(), (int)UCAlarm::NoError);
+        QVERIFY(containsAlarm(&alarm2));
+        QVERIFY(containsAlarm(&alarm1));
     }
 
     void test_updateAlarm_SameType()
