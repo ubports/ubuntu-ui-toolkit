@@ -725,12 +725,6 @@ void AlarmsAdapter::updateAlarm(const QOrganizerItemId &id)
     if (newIndex == index) {
         Q_EMIT q_ptr->alarmUpdated(index);
     } else {
-        // need to move the alarm in the model as well!
-//        Q_EMIT q_ptr->alarmRemoveStarted(index);
-//        Q_EMIT q_ptr->alarmRemoveFinished();
-//        Q_EMIT q_ptr->alarmInsertStarted(newIndex);
-//        Q_EMIT q_ptr->alarmInsertFinished();
-        // alt
         qDebug() << QString("UPDATED %1->%2").arg(index).arg(newIndex);
         Q_EMIT q_ptr->alarmMoveStarted(index, newIndex);
         Q_EMIT q_ptr->alarmMoveFinished();

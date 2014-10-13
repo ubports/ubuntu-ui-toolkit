@@ -142,6 +142,8 @@ UCAlarm::Error UCAlarmPrivate::checkOneTime()
     if (result != UCAlarm::NoError) {
         return result;
     }
+    // fetch the dow again as adjustment may alter it!
+    dow = daysOfWeek();
 
     // fix lp:1319401 - dayOfWeek omitted if set to other than AutoDetect
     QDateTime alarmDate = date();
