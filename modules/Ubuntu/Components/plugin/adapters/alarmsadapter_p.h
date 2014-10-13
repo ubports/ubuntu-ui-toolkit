@@ -109,8 +109,8 @@ public:
     int insert(const QOrganizerTodo &alarm)
     {
         QDateTime dt = AlarmUtils::normalizeDate(alarm.startDateTime());
-        idHash.insert(alarm.id(), dt);
-        data.insert(dt, alarm);
+        idHash.insertMulti(alarm.id(), dt);
+        data.insertMulti(dt, alarm);
         return indexOf(alarm.id());
     }
     // returns the index of the alarm matching the id, -1 on error

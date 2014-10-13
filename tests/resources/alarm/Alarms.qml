@@ -67,13 +67,13 @@ MainView {
             Button {
                 id: dateChooser
                 text: "Date: " + date.toDateString()
-                property date date: new Date()
+                property date date: new Date(alarm.date)
                 onClicked: PickerPanel.openDatePicker(dateChooser, "date", "Years|Months|Days")
             }
             Button {
                 id: timeChooser
                 text: "Time: " + time.toTimeString()
-                property date time: new Date()
+                property date time: new Date(alarm.date)
                 onClicked: PickerPanel.openDatePicker(timeChooser, "time", "Hours|Minutes")
             }
         }

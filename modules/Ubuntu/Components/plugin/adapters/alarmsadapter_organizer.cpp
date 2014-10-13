@@ -214,9 +214,8 @@ void AlarmDataAdapter::save()
     if (event.id().managerUri().isEmpty()) {
         changes = AlarmManager::AllFields;
     }
-    QOrganizerTodo todo = event;
     QOrganizerItemSaveRequest *saveRequest = new QOrganizerItemSaveRequest(q_ptr);
-    saveRequest->setItem(todo);
+    saveRequest->setItem(event);
     request = saveRequest;
     startOperation(UCAlarm::Saving, SLOT(completeSave()));
 }
@@ -727,10 +726,14 @@ void AlarmsAdapter::updateAlarm(const QOrganizerItemId &id)
         Q_EMIT q_ptr->alarmUpdated(index);
     } else {
         // need to move the alarm in the model as well!
-        Q_EMIT q_ptr->alarmRemoveStarted(index);
-        Q_EMIT q_ptr->alarmRemoveFinished();
-        Q_EMIT q_ptr->alarmInsertStarted(newIndex);
-        Q_EMIT q_ptr->alarmInsertFinished();
+//        Q_EMIT q_ptr->alarmRemoveStarted(index);
+//        Q_EMIT q_ptr->alarmRemoveFinished();
+//        Q_EMIT q_ptr->alarmInsertStarted(newIndex);
+//        Q_EMIT q_ptr->alarmInsertFinished();
+        // alt
+        qDebug() << QString("UPDATED %1->%2").arg(index).arg(newIndex);
+        Q_EMIT q_ptr->alarmMoveStarted(index, newIndex);
+        Q_EMIT q_ptr->alarmMoveFinished();
     }
 }
 
@@ -749,6 +752,7 @@ void AlarmsAdapter::removeAlarm(const QOrganizerItemId &id)
     // emit removal start
     Q_EMIT q_ptr->alarmRemoveStarted(index);
     alarmList.removeAt(index);
+    qDebug() << QString("REMOVED @%1").arg(index);
     Q_EMIT q_ptr->alarmRemoveFinished();
 }
 
@@ -783,6 +787,7 @@ void AlarmsAdapter::completeFetchAlarms()
         pAlarm->setData(event);
         adjustAlarmOccurrence(*pAlarm);
         alarmList.insert(pAlarm->data());
+        qDebug() << "FETCH INSERT" << alarmList.count();
     }
 
     saveAlarms();

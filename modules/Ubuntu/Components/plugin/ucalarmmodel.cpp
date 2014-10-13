@@ -139,6 +139,9 @@ UCAlarmModel::UCAlarmModel(QObject *parent)
     // data removal must be direct
     connect(&AlarmManager::instance(), SIGNAL(alarmRemoveStarted(int)), this, SLOT(removeStarted(int)), Qt::DirectConnection);
     connect(&AlarmManager::instance(), SIGNAL(alarmRemoveFinished()), this, SLOT(removeFinished()), Qt::DirectConnection);
+    // data move must be direct
+    connect(&AlarmManager::instance(), SIGNAL(alarmMoveStarted(int,int)), this, SLOT(moveStarted(int,int)), Qt::DirectConnection);
+    connect(&AlarmManager::instance(), SIGNAL(alarmMoveFinished()), this, SLOT(moveFinished()), Qt::DirectConnection);
     // fetch alarms
     AlarmManager::instance().fetchAlarms();
     Q_EMIT countChanged();
@@ -291,9 +294,10 @@ void UCAlarmModel::insertFinished()
  */
 void UCAlarmModel::moveStarted(int from, int to)
 {
-    removeStarted(from);
-    removeFinished();
-    insertStarted(to);
+    beginMoveRows(QModelIndex(), from, from, QModelIndex(), to);
+//    removeStarted(from);
+//    removeFinished();
+//    insertStarted(to);
 }
 
 /*!
@@ -302,5 +306,6 @@ void UCAlarmModel::moveStarted(int from, int to)
  */
 void UCAlarmModel::moveFinished()
 {
-    insertFinished();
+    endMoveRows();
+//    insertFinished();
 }

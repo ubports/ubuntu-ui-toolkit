@@ -40,7 +40,7 @@ void UCAlarmPrivate::setDefaults()
     setDate(date);
     setMessage(UbuntuI18n::instance().tr("Alarm"));
     setType(UCAlarm::OneTime);
-    setDaysOfWeek(dayOfWeek(date));
+    setDaysOfWeek(UCAlarm::AutoDetect);
 }
 
 void UCAlarmPrivate::_q_syncStatus(int operation, int status, int error) {

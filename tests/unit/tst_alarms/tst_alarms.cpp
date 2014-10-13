@@ -124,21 +124,21 @@ private Q_SLOTS:
     void cleanupTestCase() {
         // remove all test alarms
         // model may have an outstanding fetch, so wait for its completion!
-        QSignalSpy spy(&AlarmManager::instance(), SIGNAL(alarmsRefreshed()));
-        UCAlarmModel model;
-        spy.wait();
-        int i = 0;
-        qDebug() << model.count();
-        while (i < model.count()) {
-            UCAlarm *alarm = model.get(i);
-            if (alarm && alarm->message().startsWith("test_")) {
-                alarm->cancel();
-                waitForRemove();
-                i = 0;
-            } else {
-                i++;
-            }
-        }
+//        QSignalSpy spy(&AlarmManager::instance(), SIGNAL(alarmsRefreshed()));
+//        UCAlarmModel model;
+//        spy.wait();
+//        int i = 0;
+//        while (i < model.count()) {
+//            qDebug() << model.count();
+//            UCAlarm *alarm = model.get(i);
+//            if (alarm && alarm->message().startsWith("test_")) {
+//                alarm->cancel();
+//                waitForRemove();
+//                i = 0;
+//            } else {
+//                i++;
+//            }
+//        }
 
         delete cancelSpy;
         delete updateSpy;
@@ -149,8 +149,25 @@ private Q_SLOTS:
     {
         // clear each spy count
         insertSpy->clear();
-        cancelSpy->clear();
         updateSpy->clear();
+        cancelSpy->clear();
+
+        // remove test alarms so we do not interfere with the other alarms created
+        QSignalSpy spy(&AlarmManager::instance(), SIGNAL(alarmsRefreshed()));
+        UCAlarmModel model;
+        spy.wait();
+        int i = 0;
+        while (i < model.count()) {
+            qDebug() << model.count();
+            UCAlarm *alarm = model.get(i);
+            if (alarm && alarm->message().startsWith("test_")) {
+                alarm->cancel();
+                waitForRemove();
+                i = 0;
+            } else {
+                i++;
+            }
+        }
     }
 
     void test_singleShotAlarmXFail() {
