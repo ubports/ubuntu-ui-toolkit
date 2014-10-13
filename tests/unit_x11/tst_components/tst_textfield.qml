@@ -260,6 +260,8 @@ Item {
             compare(textField.readOnly, false, "readOnly is false by default")
             textField.readOnly = true
             compare(textField.readOnly, true, "set/get")
+            var clearButton = findChild(textField, "clear_button")
+            compare(clearButton.visible, false, "readOnly must not provide a clear button")
         }
 
         function test_0_secondaryItem() {
