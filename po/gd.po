@@ -1,20 +1,20 @@
-# Occitan (post 1500) translation for ubuntu-ui-toolkit
-# Copyright (c) 2013 Rosetta Contributors and Canonical Ltd 2013
+# Gaelic; Scottish translation for ubuntu-ui-toolkit
+# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
 # This file is distributed under the same license as the ubuntu-ui-toolkit package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2014-09-01 19:02+0200\n"
-"PO-Revision-Date: 2013-10-15 16:29+0000\n"
-"Last-Translator: Cédric VALMARY (Tot en òc) <cvalmary@yahoo.fr>\n"
-"Language-Team: Occitan (post 1500) <oc@li.org>\n"
+"PO-Revision-Date: 2014-09-30 16:22+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Gaelic; Scottish <gd@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-09-24 07:31+0000\n"
+"X-Launchpad-Export-Date: 2014-10-01 06:21+0000\n"
 "X-Generator: Launchpad (build 17196)\n"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:154
@@ -23,47 +23,44 @@ msgid ""
 "property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
 "of type %5"
 msgstr ""
-"La proprietat « %1 » de l'objècte %2 es de tipe %3 e pòt pas èsser definit a "
-"la valor « %4 » del tipe %5"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:163
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
 msgstr ""
-"La proprietat « %1 » existís pas o es pas inscriptibla per l'objècte %2"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:42
 #: Ubuntu/Components/plugin/ucalarm.cpp:136
 msgid "Alarm"
-msgstr "Alarma"
+msgstr "Caismeachd"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:684
 #: Ubuntu/Components/plugin/ucalarm.cpp:716
 msgid "Alarm has a pending operation."
-msgstr "L'alarma a una operacion en espèra."
+msgstr "Tha gnìomh ri dhèiligeadh aig a' chaismeachd."
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
-msgstr "Utilizacion : "
+msgstr "Cleachdadh: "
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
-msgstr "Opcions :"
+msgstr "Roghainnean:"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
-msgstr "%1 espèra un argument suplementari : %2"
+msgstr ""
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
-msgstr "%1 espèra una valor coma argument : %2"
+msgstr ""
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
-msgstr "%1 espèra d'arguments suplementaris : %2"
+msgstr ""
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1064
 msgid "Ignoring AfterItem priority for InverseMouse filters."
@@ -88,43 +85,43 @@ msgstr ""
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
-msgstr ""
+msgstr "Cha deach an t-ùrlar a lorg: "
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:80
 msgid "Cancel"
-msgstr ""
+msgstr "Sguir dheth"
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:90
 msgid "Confirm"
-msgstr ""
+msgstr "Dearbhaich"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:89
 msgid "Close"
-msgstr ""
+msgstr "Dùin"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:99
 msgid "Done"
-msgstr ""
+msgstr "Dèanta"
 
 #: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
-msgstr ""
+msgstr "Tagh na h-uile"
 
 #: Ubuntu/Components/TextInputPopover.qml:33
 msgid "Cut"
-msgstr ""
+msgstr "Gearr às"
 
 #: Ubuntu/Components/TextInputPopover.qml:42
 msgid "Copy"
-msgstr ""
+msgstr "Dèan lethbhreac"
 
 #: Ubuntu/Components/TextInputPopover.qml:49
 msgid "Paste"
-msgstr ""
+msgstr "Cuir ann"
 
 #: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
 msgid "In Progress"
-msgstr ""
+msgstr "A' dol air adhart"
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."

@@ -47,4 +47,24 @@ AbstractButton {
         color: Qt.rgba(0, 0, 0, 0)
         opacity: button.enabled ? 1.0 : 0.3
     }
+
+    Component {
+        id: labelComponent
+        Label {
+            id: label
+            objectName: button.objectName + "_label"
+            color: button.color
+            opacity: button.enabled ? 1.0 : 0.3
+            text: button.text
+            fontSize: "xx-small"
+        }
+    }
+    Loader {
+        anchors {
+            top: icon.bottom
+            topMargin: units.gu(0.5)
+            horizontalCenter: parent.horizontalCenter
+        }
+        sourceComponent: button.state === "IconAndLabel" ? labelComponent : null
+    }
 }
