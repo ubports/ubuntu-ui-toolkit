@@ -272,6 +272,7 @@ void AlarmDataAdapter::completeSave()
             setData(save->items()[0]);
             changes = AlarmManager::NoChange;
             _q_syncStatus(UCAlarm::Saving, UCAlarm::Ready, UCAlarm::NoError);
+            qDebug() << "SAVED";
         }
     }
 }
@@ -618,7 +619,7 @@ bool AlarmsAdapter::fetchAlarms()
 
         // set sort order
         QOrganizerItemSortOrder sortOrder;
-        sortOrder.setDirection(Qt::DescendingOrder);
+        sortOrder.setDirection(Qt::AscendingOrder);
         sortOrder.setDetail(QOrganizerItemDetail::TypeTodoTime, QOrganizerTodoTime::FieldStartDateTime);
         fetchRequest->setSorting(QList<QOrganizerItemSortOrder>() << sortOrder);
 
@@ -699,6 +700,7 @@ void AlarmsAdapter::insertAlarm(const QOrganizerItemId &id)
     int index = alarmList.insert(pAlarm->data());
     Q_EMIT q_ptr->alarmInsertStarted(index);
     Q_EMIT q_ptr->alarmInsertFinished();
+    qDebug() << "INSERTED";
 }
 
 // updates an alarm and returns the index, -1 on error
@@ -724,7 +726,7 @@ void AlarmsAdapter::updateAlarm(const QOrganizerItemId &id)
     if (newIndex == index) {
         Q_EMIT q_ptr->alarmUpdated(index);
     } else {
-        qDebug() << "MOVE!!!" << index << newIndex;
+        // need to move the alarm in the model as well!
         Q_EMIT q_ptr->alarmRemoveStarted(index);
         Q_EMIT q_ptr->alarmRemoveFinished();
         Q_EMIT q_ptr->alarmInsertStarted(newIndex);

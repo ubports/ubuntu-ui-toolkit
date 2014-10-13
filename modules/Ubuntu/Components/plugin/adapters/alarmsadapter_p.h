@@ -99,11 +99,13 @@ public:
         QDateTime dt = data.keys()[index];
         return data.value(dt);
     }
+    // update event at index, returns the new event index
     int update(int index, const QOrganizerTodo &alarm)
     {
         removeAt(index);
         return insert(alarm);
     }
+    // insert an alarm event into the list
     int insert(const QOrganizerTodo &alarm)
     {
         QDateTime dt = AlarmUtils::normalizeDate(alarm.startDateTime());
@@ -111,12 +113,13 @@ public:
         data.insert(dt, alarm);
         return indexOf(alarm.id());
     }
-    // returns the index of the alarm matching a cookie, -1 on error
+    // returns the index of the alarm matching the id, -1 on error
     int indexOf(const QOrganizerItemId &id)
     {
         QDateTime dt = idHash.value(id);
         return data.keys().indexOf(dt);
     }
+    // remove alarm at index
     void removeAt(int index)
     {
         QOrganizerTodo alarm = data.value(data.keys()[index]);
@@ -125,7 +128,9 @@ public:
     }
 
 private:
+    // ordered map by occurrence date, ascending
     QMap<QDateTime, QOrganizerTodo> data;
+    // lookup hash based on event id
     QHash<QOrganizerItemId, QDateTime> idHash;
 };
 

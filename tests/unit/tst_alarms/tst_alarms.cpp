@@ -145,6 +145,14 @@ private Q_SLOTS:
         delete insertSpy;
     }
 
+    void cleanup()
+    {
+        // clear each spy count
+        insertSpy->clear();
+        cancelSpy->clear();
+        updateSpy->clear();
+    }
+
     void test_singleShotAlarmXFail() {
         UCAlarm alarm;
         alarm.save();
@@ -355,13 +363,13 @@ private Q_SLOTS:
     {
         QDateTime dt = QDateTime::currentDateTime().addSecs(120);
         UCAlarm alarm(dt, "test_updateAlarm_DifferentType");
-        UCAlarm copy(dt, "test_updateAlarm_DifferentType");
 
         alarm.save();
         waitForInsert();
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
         QVERIFY(containsAlarm(&alarm));
 
+        UCAlarm copy(dt, "test_updateAlarm_DifferentType");
         alarm.setType(UCAlarm::Repeating);
         QVERIFY(!(alarm == copy));
         alarm.save();
