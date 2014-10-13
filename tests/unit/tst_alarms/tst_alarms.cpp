@@ -57,7 +57,7 @@ private:
     }
 
     // the function should be used when a new alarm event is added
-    // which causes a fetch operation.
+    // which causes an insert operation.
     void waitForInsert()
     {
         if (!insertSpy->count()) {
@@ -111,7 +111,7 @@ private Q_SLOTS:
     {
         AlarmManager::instance();
 
-        // connect alarmUpdated() and alarmMoveFinished to teh test signal so we get either of those on alarm updates
+        // connect alarmUpdated() and alarmMoveFinished to the test signal so we get either of those on alarm updates
 
         connect(&AlarmManager::instance(), SIGNAL(alarmUpdated(int)), this, SIGNAL(alarmUpdated()));
         connect(&AlarmManager::instance(), SIGNAL(alarmMoveFinished()), this, SIGNAL(alarmUpdated()));
@@ -124,21 +124,20 @@ private Q_SLOTS:
     void cleanupTestCase() {
         // remove all test alarms
         // model may have an outstanding fetch, so wait for its completion!
-//        QSignalSpy spy(&AlarmManager::instance(), SIGNAL(alarmsRefreshed()));
-//        UCAlarmModel model;
-//        spy.wait();
-//        int i = 0;
-//        while (i < model.count()) {
-//            qDebug() << model.count();
-//            UCAlarm *alarm = model.get(i);
-//            if (alarm && alarm->message().startsWith("test_")) {
-//                alarm->cancel();
-//                waitForRemove();
-//                i = 0;
-//            } else {
-//                i++;
-//            }
-//        }
+        QSignalSpy spy(&AlarmManager::instance(), SIGNAL(alarmsRefreshed()));
+        UCAlarmModel model;
+        spy.wait();
+        int i = 0;
+        while (i < model.count()) {
+            UCAlarm *alarm = model.get(i);
+            if (alarm && alarm->message().startsWith("test_")) {
+                alarm->cancel();
+                waitForRemove();
+                i = 0;
+            } else {
+                i++;
+            }
+        }
 
         delete cancelSpy;
         delete updateSpy;
@@ -151,23 +150,6 @@ private Q_SLOTS:
         insertSpy->clear();
         updateSpy->clear();
         cancelSpy->clear();
-
-        // remove test alarms so we do not interfere with the other alarms created
-        QSignalSpy spy(&AlarmManager::instance(), SIGNAL(alarmsRefreshed()));
-        UCAlarmModel model;
-        spy.wait();
-        int i = 0;
-        while (i < model.count()) {
-            qDebug() << model.count();
-            UCAlarm *alarm = model.get(i);
-            if (alarm && alarm->message().startsWith("test_")) {
-                alarm->cancel();
-                waitForRemove();
-                i = 0;
-            } else {
-                i++;
-            }
-        }
     }
 
     void test_singleShotAlarmXFail() {

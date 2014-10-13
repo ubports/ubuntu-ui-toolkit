@@ -126,20 +126,18 @@ UCAlarmModel::UCAlarmModel(QObject *parent)
     : QAbstractListModel(parent)
 {
     // keep in sync with alarms collection changes
-    // make sure the connection is asynchronous, as changes made in in-place in
-    // the delegates may cause the model data to be invalid (released) as some
-    // backends may do the refresh/element removals synchronously
-    connect(&AlarmManager::instance(), SIGNAL(alarmsRefreshStarted()), this, SLOT(refreshStart()), Qt::QueuedConnection);
-    connect(&AlarmManager::instance(), SIGNAL(alarmsRefreshed()), this, SLOT(refreshEnd()), Qt::QueuedConnection);
+    // some of the connections can be asynchronous, others synchronous
+    connect(&AlarmManager::instance(), SIGNAL(alarmsRefreshStarted()), this, SLOT(refreshStart()), Qt::DirectConnection);
+    connect(&AlarmManager::instance(), SIGNAL(alarmsRefreshed()), this, SLOT(refreshEnd()), Qt::DirectConnection);
     // get individual alarm data updates
-    connect(&AlarmManager::instance(), SIGNAL(alarmUpdated(int)), this, SLOT(update(int)), Qt::QueuedConnection);
+    connect(&AlarmManager::instance(), SIGNAL(alarmUpdated(int)), this, SLOT(update(int)), Qt::DirectConnection);
     // get individual alarm insertion
     connect(&AlarmManager::instance(), SIGNAL(alarmInsertStarted(int)), this, SLOT(insertStarted(int)), Qt::DirectConnection);
     connect(&AlarmManager::instance(), SIGNAL(alarmInsertFinished()), this, SLOT(insertFinished()), Qt::DirectConnection);
-    // data removal must be direct
+    // get individual alarm removal, must be direct
     connect(&AlarmManager::instance(), SIGNAL(alarmRemoveStarted(int)), this, SLOT(removeStarted(int)), Qt::DirectConnection);
     connect(&AlarmManager::instance(), SIGNAL(alarmRemoveFinished()), this, SLOT(removeFinished()), Qt::DirectConnection);
-    // data move must be direct
+    // get individual alamr move, must be direct
     connect(&AlarmManager::instance(), SIGNAL(alarmMoveStarted(int,int)), this, SLOT(moveStarted(int,int)), Qt::DirectConnection);
     connect(&AlarmManager::instance(), SIGNAL(alarmMoveFinished()), this, SLOT(moveFinished()), Qt::DirectConnection);
     // fetch alarms

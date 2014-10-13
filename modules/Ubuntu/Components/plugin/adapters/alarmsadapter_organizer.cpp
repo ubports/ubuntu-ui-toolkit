@@ -271,7 +271,6 @@ void AlarmDataAdapter::completeSave()
             setData(save->items()[0]);
             changes = AlarmManager::NoChange;
             _q_syncStatus(UCAlarm::Saving, UCAlarm::Ready, UCAlarm::NoError);
-            qDebug() << "SAVED";
         }
     }
 }
@@ -699,7 +698,6 @@ void AlarmsAdapter::insertAlarm(const QOrganizerItemId &id)
     int index = alarmList.insert(pAlarm->data());
     Q_EMIT q_ptr->alarmInsertStarted(index);
     Q_EMIT q_ptr->alarmInsertFinished();
-    qDebug() << "INSERTED";
 }
 
 // updates an alarm and returns the index, -1 on error
@@ -725,7 +723,6 @@ void AlarmsAdapter::updateAlarm(const QOrganizerItemId &id)
     if (newIndex == index) {
         Q_EMIT q_ptr->alarmUpdated(index);
     } else {
-        qDebug() << QString("UPDATED %1->%2").arg(index).arg(newIndex);
         Q_EMIT q_ptr->alarmMoveStarted(index, newIndex);
         Q_EMIT q_ptr->alarmMoveFinished();
     }
@@ -746,7 +743,6 @@ void AlarmsAdapter::removeAlarm(const QOrganizerItemId &id)
     // emit removal start
     Q_EMIT q_ptr->alarmRemoveStarted(index);
     alarmList.removeAt(index);
-    qDebug() << QString("REMOVED @%1").arg(index);
     Q_EMIT q_ptr->alarmRemoveFinished();
 }
 
@@ -781,7 +777,6 @@ void AlarmsAdapter::completeFetchAlarms()
         pAlarm->setData(event);
         adjustAlarmOccurrence(*pAlarm);
         alarmList.insert(pAlarm->data());
-        qDebug() << "FETCH INSERT" << alarmList.count();
     }
 
     saveAlarms();

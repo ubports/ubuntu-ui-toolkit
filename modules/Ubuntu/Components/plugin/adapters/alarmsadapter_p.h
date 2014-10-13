@@ -96,8 +96,8 @@ public:
     }
     const QOrganizerTodo operator[](int index) const
     {
-        QDateTime dt = data.keys()[index];
-        return data.value(dt);
+        QPair<QDateTime, QOrganizerItemId> key = data.keys()[index];
+        return data.value(key);
     }
     // update event at index, returns the new event index
     int update(int index, const QOrganizerTodo &alarm)
@@ -109,28 +109,29 @@ public:
     int insert(const QOrganizerTodo &alarm)
     {
         QDateTime dt = AlarmUtils::normalizeDate(alarm.startDateTime());
-        idHash.insertMulti(alarm.id(), dt);
-        data.insertMulti(dt, alarm);
+        idHash.insert(alarm.id(), dt);
+        data.insert(QPair<QDateTime, QOrganizerItemId>(dt, alarm.id()), alarm);
         return indexOf(alarm.id());
     }
     // returns the index of the alarm matching the id, -1 on error
     int indexOf(const QOrganizerItemId &id)
     {
         QDateTime dt = idHash.value(id);
-        return data.keys().indexOf(dt);
+        QPair<QDateTime, QOrganizerItemId> key(dt, id);
+        return data.keys().indexOf(key);
     }
     // remove alarm at index
     void removeAt(int index)
     {
-        QOrganizerTodo alarm = data.value(data.keys()[index]);
-        data.remove(idHash.value(alarm.id()));
-        idHash.remove(alarm.id());
+        QPair<QDateTime, QOrganizerItemId> key = data.keys()[index];
+        data.remove(key);
+        idHash.remove(key.second);
     }
 
 private:
-    // ordered map by occurrence date, ascending
-    QMap<QDateTime, QOrganizerTodo> data;
-    // lookup hash based on event id
+    // ordered map by occurrence date + event id, ascending
+    QMap< QPair<QDateTime, QOrganizerItemId>, QOrganizerTodo> data;
+    // alarms ordered based on even id
     QHash<QOrganizerItemId, QDateTime> idHash;
 };
 

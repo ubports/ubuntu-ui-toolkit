@@ -88,6 +88,11 @@ Item {
             modelSpy.clear();
         }
 
+        function cleanup() {
+            // clear the added test alarm
+            clean();
+        }
+
         function test_createOneTimeFail() {
             testAlarm.reset();
             testAlarm.date = new Date();
@@ -218,6 +223,8 @@ Item {
 
             date.setMinutes(date.getMinutes() + data.addMinutes);
             testAlarm.date = date;
+            modelSpy.clear();
+            // watch dataChanged, as there should be no event around it
             modelSpy.signalName = "dataChanged";
             testAlarm.save();
             modelSpy.wait();
@@ -237,6 +244,7 @@ Item {
             compare(testAlarm.error, Alarm.NoError, "fist alarm added");
 
             testAlarm.type = Alarm.Repeating;
+            modelSpy.clear();
             modelSpy.signalName = "dataChanged";
             testAlarm.save();
             modelSpy.wait();
