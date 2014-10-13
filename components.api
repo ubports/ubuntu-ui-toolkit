@@ -246,6 +246,7 @@ Object
     property list<Action> actions
     property Action backAction
     property Item contents
+    property string preset
     readonly property PageHeadSections sections
     property color foregroundColor
 PageHeadSections 1.1

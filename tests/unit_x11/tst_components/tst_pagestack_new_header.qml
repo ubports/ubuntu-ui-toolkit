@@ -61,6 +61,13 @@ Item {
         }
     }
 
+    Component {
+        id: pageComponent
+        Page {
+            title: "Page from component"
+        }
+    }
+
     UbuntuTestCase {
         name: "PageStackAPI"
         when: windowShown
@@ -203,6 +210,20 @@ Item {
             wait_for_animation();
             compare(tabs.active, true, "Tabs on top of PageStack is active");
             compare(tabs.selectedTabIndex, 1, "Pushing and popping another page on top of Tabs does not change selectedTabsIndex");
+            pageStack.clear();
+            wait_for_animation();
+        }
+
+        function test_push_return_values() {
+            var pushedPage = pageStack.push(page1);
+            compare(pushedPage, page1,
+                    "PageStack.push() returns pushed Page");
+            pushedPage = pageStack.push(pageComponent);
+            compare(pushedPage.title, "Page from component",
+                    "PageStack.push() returns Page created from Component");
+            pushedPage = pageStack.push(Qt.resolvedUrl("MyExternalPage.qml"));
+            compare(pushedPage.title, "Page from QML file",
+                    "PageStack.push() returns Page created from QML file");
             pageStack.clear();
             wait_for_animation();
         }
