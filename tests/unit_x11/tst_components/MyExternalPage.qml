@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2012-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,22 +14,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick 2.2
 import Ubuntu.Components 1.1
 
-MainView {
-    width: units.gu(48)
-    height: units.gu(60)
-    applicationName: 'localizedApp'
-
-    Page {
-        objectName: 'page'
-        title: i18n.dtr('localizedApp', "Welcome")
-        Button {
-            objectName: 'button'
-            anchors.centerIn: parent
-            text: i18n.tr('Count the kilometres')
-            width: units.gu(15)
-        }
-    }
+Page {
+    title: "Page from QML file"
 }
