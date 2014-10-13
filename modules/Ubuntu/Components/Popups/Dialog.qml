@@ -171,43 +171,48 @@ PopupBase {
         property real itemSpacing: units.gu(2)
         property Item dismissArea: dialog.dismissArea
 
-        height: Math.min(childrenRect.height, dialog.height)
+        height: Math.min(contentsColumn.height + foreground.margins, dialog.height)
 
-        Column {
-            id: contentsColumn
-            anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
-                margins: foreground.margins
-            }
-            spacing: foreground.itemSpacing
-            height: childrenRect.height + foreground.margins
-            onWidthChanged: updateChildrenWidths();
+        Flickable {
+            anchors.fill: parent
+            anchors.margins: foreground.margins
+            contentWidth: contentsColumn.width
+            contentHeight: contentsColumn.height - foreground.margins
+            boundsBehavior: Flickable.StopAtBounds
 
-            Label {
-                horizontalAlignment: Text.AlignHCenter
-                text: dialog.title
-                wrapMode: Text.Wrap
-                maximumLineCount: 2
-                elide: Text.ElideRight
-                fontSize: "large"
-                color: UbuntuColors.darkGrey
-            }
+            Column {
+                id: contentsColumn
+                spacing: foreground.itemSpacing
+                width: foreground.width - foreground.margins * 2 - foreground.itemSpacing
+                height: childrenRect.height + foreground.margins
+                onWidthChanged: updateChildrenWidths();
 
-            Label {
-                horizontalAlignment: Text.AlignHCenter
-                text: dialog.text
-                fontSize: "medium"
-                color: UbuntuColors.darkGrey
-                wrapMode: Text.Wrap
-            }
+                Label {
+                    horizontalAlignment: Text.AlignHCenter
+                    text: dialog.title
+                    wrapMode: Text.Wrap
+                    maximumLineCount: 2
+                    elide: Text.ElideRight
+                    fontSize: "large"
+                    color: UbuntuColors.darkGrey
+                    visible: (text !== "")
+                }
 
-            onChildrenChanged: updateChildrenWidths()
+                Label {
+                    horizontalAlignment: Text.AlignHCenter
+                    text: dialog.text
+                    fontSize: "medium"
+                    color: UbuntuColors.darkGrey
+                    wrapMode: Text.Wrap
+                    visible: (text !== "")
+                }
 
-            function updateChildrenWidths() {
-                for (var i = 0; i < children.length; i++) {
-                    children[i].width = contentsColumn.width;
+                onChildrenChanged: updateChildrenWidths()
+
+                function updateChildrenWidths() {
+                    for (var i = 0; i < children.length; i++) {
+                        children[i].width = contentsColumn.width;
+                    }
                 }
             }
         }
