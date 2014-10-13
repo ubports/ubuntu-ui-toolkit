@@ -136,7 +136,7 @@ Item {
 
         onWindowActiveChanged: {
             if(automaticOrientation)
-                applyOrientation()
+                applyOrientation();
         }
 
         state: orientationAngle.toString()
