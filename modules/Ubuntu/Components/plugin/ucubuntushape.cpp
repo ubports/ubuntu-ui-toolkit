@@ -30,11 +30,15 @@ class ShapeMaterial : public QSGMaterial
 public:
     struct Data
     {
-        enum { ColoredFlag = (1 << 0) };
+        // Flags must be kept in sync with GLSL fragment shader.
+        enum { ColoredFlag = (1 << 0), OverlaidFlag = (1 << 1) };
         QSGTexture* shapeTexture;
         QSGTextureProvider* imageTextureProvider;
         QRgb color;
         QRgb gradientColor;
+        QRgb overlayColor;
+        quint16 atlasTransform[4];
+        quint16 overlaySteps[4];
         QSGTexture::Filtering shapeTextureFiltering;
         quint8 flags;
     };
@@ -68,9 +72,12 @@ private:
     QOpenGLFunctions* glFuncs_;
     int matrixId_;
     int opacityId_;
+    int atlasTransformId_;
     int color1Id_;
     int color2Id_;
-    int coloredId_;
+    int overlayColorId_;
+    int overlayStepsId_;
+    int flagsId_;
 };
 
 ShapeShader::ShapeShader()
@@ -83,7 +90,7 @@ ShapeShader::ShapeShader()
 char const* const* ShapeShader::attributeNames() const
 {
     static char const* const attributes[] = {
-        "positionAttrib", "shapeCoordAttrib", "imageCoordAttrib", 0
+        "positionAttrib", "shapeCoordAttrib", "quadCoordAttrib", 0
     };
     return attributes;
 }
@@ -97,15 +104,21 @@ void ShapeShader::initialize()
     glFuncs_ = QOpenGLContext::currentContext()->functions();
     matrixId_ = program()->uniformLocation("matrix");
     opacityId_ = program()->uniformLocation("opacity");
+    atlasTransformId_ = program()->uniformLocation("atlasTransform");
     color1Id_ = program()->uniformLocation("color1");
     color2Id_ = program()->uniformLocation("color2");
-    coloredId_ = program()->uniformLocation("colored");
+    overlayColorId_ = program()->uniformLocation("overlayColor");
+    overlayStepsId_ = program()->uniformLocation("overlaySteps");
+    flagsId_ = program()->uniformLocation("flags");
 }
 
 void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
                               QSGMaterial* oldEffect)
 {
     Q_UNUSED(oldEffect);
+
+    const float inv255 = 1.0f / 255.0f;
+    const float u16ToF32 = 1.0f / static_cast<float>(0xffff);
     const ShapeMaterial::Data* data = static_cast<ShapeMaterial*>(newEffect)->constData();
 
     // Bind shape texture.
@@ -120,17 +133,15 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
     }
 
     if (data->flags & ShapeMaterial::Data::ColoredFlag) {
-        // Bind color uniforms.
-        const float inv255 = 1.0f / 255.0f;
+        // Update color uniforms.
         QRgb c = data->color;
         program()->setUniformValue(color1Id_, QVector4D(
             qRed(c) * inv255, qGreen(c) * inv255, qBlue(c) * inv255, qAlpha(c) * inv255));
         c = data->gradientColor;
         program()->setUniformValue(color2Id_, QVector4D(
             qRed(c) * inv255, qGreen(c) * inv255, qBlue(c) * inv255, qAlpha(c) * inv255));
-        program()->setUniformValue(coloredId_, true);
     } else {
-        // Bind image texture and uniform.
+        // Bind image texture.
         glFuncs_->glActiveTexture(GL_TEXTURE1);
         QSGTextureProvider* provider = data->imageTextureProvider;
         QSGTexture* texture = provider ? provider->texture() : NULL;
@@ -140,10 +151,25 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
             glBindTexture(GL_TEXTURE_2D, 0);
         }
         glFuncs_->glActiveTexture(GL_TEXTURE0);
-        program()->setUniformValue(coloredId_, false);
+        // Update image uniforms.
+        program()->setUniformValue(atlasTransformId_, QVector4D(
+            data->atlasTransform[0] * u16ToF32, data->atlasTransform[1] * u16ToF32,
+            data->atlasTransform[2] * u16ToF32, data->atlasTransform[3] * u16ToF32));
     }
 
-    // Bind QtQuick engine uniforms.
+    if (data->flags & ShapeMaterial::Data::OverlaidFlag) {
+        // Update overlay uniforms.
+        const QRgb c = data->overlayColor;
+        program()->setUniformValue(overlayColorId_, QVector4D(
+            qRed(c) * inv255, qGreen(c) * inv255, qBlue(c) * inv255, qAlpha(c) * inv255));
+        program()->setUniformValue(overlayStepsId_, QVector4D(
+            data->overlaySteps[0] * u16ToF32, data->overlaySteps[1] * u16ToF32,
+            data->overlaySteps[2] * u16ToF32, data->overlaySteps[3] * u16ToF32));
+    }
+
+    program()->setUniformValue(flagsId_, data->flags);
+
+    // Update QtQuick engine uniforms.
     if (state.isMatrixDirty()) {
         program()->setUniformValue(matrixId_, state.combinedMatrix());
     }
@@ -185,7 +211,7 @@ public:
     struct Vertex {
         float position[2];
         float shapeCoordinate[2];
-        float imageCoordinate[2];
+        float quadCoordinate[2];
         float padding[2];  // Ensure a 32 bytes stride.
     };
 
@@ -222,8 +248,8 @@ static const struct {
     int positionType;     // OpenGL type of the position components.
     int shapeCoordCount;  // Number of components per shape texture coordinate.
     int shapeCoordType;   // OpenGL type of the shape texture coordinate components.
-    int imageCoordCount;  // Number of components per image texture coordinate.
-    int imageCoordType;   // OpenGL type of the image texture coordinate components.
+    int quadCoordCount;   // Number of components per quad texture coordinate.
+    int quadCoordType;    // OpenGL type of the quad texture coordinate components.
     int indexType;        // OpenGL type of the indices.
 } shapeMesh = {
     shapeMeshIndices, ARRAY_SIZE(shapeMeshIndices),
@@ -235,7 +261,7 @@ static const QSGGeometry::AttributeSet& getAttributes()
     static QSGGeometry::Attribute data[] = {
         QSGGeometry::Attribute::create(0, shapeMesh.positionCount, shapeMesh.positionType, true),
         QSGGeometry::Attribute::create(1, shapeMesh.shapeCoordCount, shapeMesh.shapeCoordType),
-        QSGGeometry::Attribute::create(2, shapeMesh.imageCoordCount, shapeMesh.imageCoordType)
+        QSGGeometry::Attribute::create(2, shapeMesh.quadCoordCount, shapeMesh.quadCoordType)
     };
     static QSGGeometry::AttributeSet attributes = {
         shapeMesh.attributeCount, shapeMesh.stride, data
@@ -322,120 +348,109 @@ void ShapeNode::setVertices(float width, float height, float radius, QQuickItem*
         radiusCoordinateWidth = radius / width;
     }
 
-    // Scale and translate coordinates of textures packed in an atlas.
-    if (texture && texture->isAtlasTexture()) {
-        const QRectF srcSubRect = texture->normalizedTextureSubRect();
-        topCoordinate = topCoordinate * srcSubRect.height() + srcSubRect.y();
-        bottomCoordinate = bottomCoordinate * srcSubRect.height() + srcSubRect.y();
-        leftCoordinate = leftCoordinate * srcSubRect.width() + srcSubRect.x();
-        rightCoordinate = rightCoordinate * srcSubRect.width() + srcSubRect.x();
-        radiusCoordinateHeight = radiusCoordinateHeight * srcSubRect.height();
-        radiusCoordinateWidth = radiusCoordinateWidth * srcSubRect.width();
-    }
-
     // Set top row of 4 vertices.
     vertices[0].position[0] = 0.0f;
     vertices[0].position[1] = 0.0f;
     vertices[0].shapeCoordinate[0] = shapeCoordinate[0][0];
     vertices[0].shapeCoordinate[1] = shapeCoordinate[0][1];
-    vertices[0].imageCoordinate[0] = leftCoordinate;
-    vertices[0].imageCoordinate[1] = topCoordinate;
+    vertices[0].quadCoordinate[0] = leftCoordinate;
+    vertices[0].quadCoordinate[1] = topCoordinate;
     vertices[1].position[0] = radius;
     vertices[1].position[1] = 0.0f;
     vertices[1].shapeCoordinate[0] = shapeCoordinate[1][0];
     vertices[1].shapeCoordinate[1] = shapeCoordinate[1][1];
-    vertices[1].imageCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
-    vertices[1].imageCoordinate[1] = topCoordinate;
+    vertices[1].quadCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
+    vertices[1].quadCoordinate[1] = topCoordinate;
     vertices[2].position[0] = width - radius;
     vertices[2].position[1] = 0.0f;
     vertices[2].shapeCoordinate[0] = shapeCoordinate[2][0];
     vertices[2].shapeCoordinate[1] = shapeCoordinate[2][1];
-    vertices[2].imageCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
-    vertices[2].imageCoordinate[1] = topCoordinate;
+    vertices[2].quadCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
+    vertices[2].quadCoordinate[1] = topCoordinate;
     vertices[3].position[0] = width;
     vertices[3].position[1] = 0.0f;
     vertices[3].shapeCoordinate[0] = shapeCoordinate[3][0];
     vertices[3].shapeCoordinate[1] = shapeCoordinate[3][1];
-    vertices[3].imageCoordinate[0] = rightCoordinate;
-    vertices[3].imageCoordinate[1] = topCoordinate;
+    vertices[3].quadCoordinate[0] = rightCoordinate;
+    vertices[3].quadCoordinate[1] = topCoordinate;
 
     // Set middle-top row of 4 vertices.
     vertices[4].position[0] = 0.0f;
     vertices[4].position[1] = radius;
     vertices[4].shapeCoordinate[0] = shapeCoordinate[4][0];
     vertices[4].shapeCoordinate[1] = shapeCoordinate[4][1];
-    vertices[4].imageCoordinate[0] = leftCoordinate;
-    vertices[4].imageCoordinate[1] = topCoordinate + radiusCoordinateHeight;
+    vertices[4].quadCoordinate[0] = leftCoordinate;
+    vertices[4].quadCoordinate[1] = topCoordinate + radiusCoordinateHeight;
     vertices[5].position[0] = radius;
     vertices[5].position[1] = radius;
     vertices[5].shapeCoordinate[0] = shapeCoordinate[5][0];
     vertices[5].shapeCoordinate[1] = shapeCoordinate[5][1];
-    vertices[5].imageCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
-    vertices[5].imageCoordinate[1] = topCoordinate + radiusCoordinateHeight;
+    vertices[5].quadCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
+    vertices[5].quadCoordinate[1] = topCoordinate + radiusCoordinateHeight;
     vertices[6].position[0] = width - radius;
     vertices[6].position[1] = radius;
     vertices[6].shapeCoordinate[0] = shapeCoordinate[6][0];
     vertices[6].shapeCoordinate[1] = shapeCoordinate[6][1];
-    vertices[6].imageCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
-    vertices[6].imageCoordinate[1] = topCoordinate + radiusCoordinateHeight;
+    vertices[6].quadCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
+    vertices[6].quadCoordinate[1] = topCoordinate + radiusCoordinateHeight;
     vertices[7].position[0] = width;
     vertices[7].position[1] = radius;
     vertices[7].shapeCoordinate[0] = shapeCoordinate[7][0];
     vertices[7].shapeCoordinate[1] = shapeCoordinate[7][1];
-    vertices[7].imageCoordinate[0] = rightCoordinate;
-    vertices[7].imageCoordinate[1] = topCoordinate + radiusCoordinateHeight;
+    vertices[7].quadCoordinate[0] = rightCoordinate;
+    vertices[7].quadCoordinate[1] = topCoordinate + radiusCoordinateHeight;
 
     // Set middle-bottom row of 4 vertices.
     vertices[8].position[0] = 0.0f;
     vertices[8].position[1] = height - radius;
     vertices[8].shapeCoordinate[0] = shapeCoordinate[8][0];
     vertices[8].shapeCoordinate[1] = shapeCoordinate[8][1];
-    vertices[8].imageCoordinate[0] = leftCoordinate;
-    vertices[8].imageCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
+    vertices[8].quadCoordinate[0] = leftCoordinate;
+    vertices[8].quadCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
     vertices[9].position[0] = radius;
     vertices[9].position[1] = height - radius;
     vertices[9].shapeCoordinate[0] = shapeCoordinate[9][0];
     vertices[9].shapeCoordinate[1] = shapeCoordinate[9][1];
-    vertices[9].imageCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
-    vertices[9].imageCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
+    vertices[9].quadCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
+    vertices[9].quadCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
     vertices[10].position[0] = width - radius;
     vertices[10].position[1] = height - radius;
     vertices[10].shapeCoordinate[0] = shapeCoordinate[10][0];
     vertices[10].shapeCoordinate[1] = shapeCoordinate[10][1];
-    vertices[10].imageCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
-    vertices[10].imageCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
+    vertices[10].quadCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
+    vertices[10].quadCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
     vertices[11].position[0] = width;
     vertices[11].position[1] = height - radius;
     vertices[11].shapeCoordinate[0] = shapeCoordinate[11][0];
     vertices[11].shapeCoordinate[1] = shapeCoordinate[11][1];
-    vertices[11].imageCoordinate[0] = rightCoordinate;
-    vertices[11].imageCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
+    vertices[11].quadCoordinate[0] = rightCoordinate;
+    vertices[11].quadCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
 
     // Set bottom row of 4 vertices.
     vertices[12].position[0] = 0.0f;
     vertices[12].position[1] = height;
     vertices[12].shapeCoordinate[0] = shapeCoordinate[12][0];
     vertices[12].shapeCoordinate[1] = shapeCoordinate[12][1];
-    vertices[12].imageCoordinate[0] = leftCoordinate;
-    vertices[12].imageCoordinate[1] = bottomCoordinate;
+    vertices[12].quadCoordinate[0] = leftCoordinate;
+    vertices[12].quadCoordinate[1] = bottomCoordinate;
     vertices[13].position[0] = radius;
     vertices[13].position[1] = height;
     vertices[13].shapeCoordinate[0] = shapeCoordinate[13][0];
     vertices[13].shapeCoordinate[1] = shapeCoordinate[13][1];
-    vertices[13].imageCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
-    vertices[13].imageCoordinate[1] = bottomCoordinate;
+    vertices[13].quadCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
+    vertices[13].quadCoordinate[1] = bottomCoordinate;
     vertices[14].position[0] = width - radius;
     vertices[14].position[1] = height;
     vertices[14].shapeCoordinate[0] = shapeCoordinate[14][0];
     vertices[14].shapeCoordinate[1] = shapeCoordinate[14][1];
-    vertices[14].imageCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
-    vertices[14].imageCoordinate[1] = bottomCoordinate;
+    vertices[14].quadCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
+    vertices[14].quadCoordinate[1] = bottomCoordinate;
     vertices[15].position[0] = width;
     vertices[15].position[1] = height;
     vertices[15].shapeCoordinate[0] = shapeCoordinate[15][0];
     vertices[15].shapeCoordinate[1] = shapeCoordinate[15][1];
-    vertices[15].imageCoordinate[0] = rightCoordinate;
-    vertices[15].imageCoordinate[1] = bottomCoordinate;
+    vertices[15].quadCoordinate[0] = rightCoordinate;
+    vertices[15].quadCoordinate[1] = bottomCoordinate;
 
     markDirty(DirtyGeometry);
 }
@@ -508,6 +523,11 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , hAlignment_(UCUbuntuShape::AlignHCenter)
     , vAlignment_(UCUbuntuShape::AlignVCenter)
     , gridUnit_(UCUnits::instance().gridUnit())
+    , overlayX_(0)
+    , overlayY_(0)
+    , overlayWidth_(0)
+    , overlayHeight_(0)
+    , overlayColor_(qRgba(0, 0, 0, 0))
 {
     setFlag(ItemHasContents);
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
@@ -619,6 +639,83 @@ void UCUbuntuShape::setImage(const QVariant& image)
         }
         update();
         Q_EMIT imageChanged();
+    }
+}
+
+/*!
+ * \qmlproperty rect UbuntuShape::overlayGeometry
+ *
+ * This property defines the rectangle geometry (x, y, width, height) overlaying the UbuntuShape.
+ * To disable the overlay, set \l overlayGeometry to the empty rectangle (x and/or y equal
+ * 0). Default value is the empty rectangle.
+ *
+ * It is defined by a position and a size in normalized coordinates (in the range [0.0, 1.0]). An
+ * overlay covering all the bottom part and starting from the middle of an UbuntuShape can be done
+ * like this:
+ *
+ * \qml
+ *     UbuntuShape {
+ *         width: 200; height: 200
+ *         overlayGeometry: Qt.rect(0.0, 0.5, 1.0, 0.5)
+ *     }
+ * \endqml
+ *
+ * Specifying a position and size in pixels can be done by dividing the values by the size. Here is
+ * an example doing the same as the previous one:
+ *
+ * \qml
+ *     UbuntuShape {
+ *         width: 200; height: 200
+ *         overlayGeometry: Qt.rect(100.0 / width, 100.0 / height,
+ *                                  200.0 / width, 100.0 / height)
+ *     }
+ * \endqml
+ *
+ * \note The area potentially exceeding the UbuntuShape is cropped.
+ */
+void UCUbuntuShape::setOverlayGeometry(const QRectF& overlayGeometry)
+{
+    // Crop rectangle and convert to 16-bit unsigned integer.
+    const float x = qMax(0.0f, qMin(1.0f, static_cast<float>(overlayGeometry.x())));
+    float width = qMax(0.0f, static_cast<float>(overlayGeometry.width()));
+    if ((x + width) > 1.0f) {
+        width += 1.0f - (x + width);
+    }
+    const float y = qMax(0.0f, qMin(1.0f, static_cast<float>(overlayGeometry.y())));
+    float height = qMax(0.0f, static_cast<float>(overlayGeometry.height()));
+    if ((y + height) > 1.0f) {
+        height += 1.0f - (y + height);
+    }
+    const quint16 overlayX = static_cast<quint16>(x * 0xffff);
+    const quint16 overlayY = static_cast<quint16>(y * 0xffff);
+    const quint16 overlayWidth = static_cast<quint16>(width * 0xffff);
+    const quint16 overlayHeight = static_cast<quint16>(height * 0xffff);
+
+    if ((overlayX_ != overlayX) || (overlayY_ != overlayY) ||
+        (overlayWidth_ != overlayWidth) || (overlayHeight_ != overlayHeight)) {
+        overlayX_ = overlayX;
+        overlayY_ = overlayY;
+        overlayWidth_ = overlayWidth;
+        overlayHeight_ = overlayHeight;
+        update();
+        Q_EMIT overlayGeometryChanged();
+    }
+}
+
+/*!
+ * \qmlproperty color UbuntuShape2::overlayColor
+ *
+ * This property defines the color of the rectangle overlaying the UbuntuShape. Default value is
+ * transparent black.
+ */
+void UCUbuntuShape::setOverlayColor(const QColor& overlayColor)
+{
+    const QRgb overlayColorRgb = qRgba(
+        overlayColor.red(), overlayColor.green(), overlayColor.blue(), overlayColor.alpha());
+    if (overlayColor_ != overlayColorRgb) {
+        overlayColor_ = overlayColorRgb;
+        update();
+        Q_EMIT overlayColorChanged();
     }
 }
 
@@ -819,14 +916,19 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
         materialData->shapeTextureFiltering = QSGTexture::Linear;
     }
 
-    // Set remaining material data. Colors have to be set to 0 in case of a colored shape and
-    // provider has to be set to NULL in case of a textured shape for ShapeMaterial::compare() to
-    // behave correctly.
+    // Set remaining material data.
+    quint8 flags = 0;
     if (provider && provider->texture()) {
+        const QRectF subRect = provider->texture()->normalizedTextureSubRect();
         materialData->imageTextureProvider = imageTextureProvider_;
+        // Colors have to be set to 0 so that 2 shapes with images (in the same atlas) but different
+        // colors can be batched together (ShapeMaterial::compare() uses memcmp()).
         materialData->color = qRgba(0, 0, 0, 0);
         materialData->gradientColor = qRgba(0, 0, 0, 0);
-        materialData->flags &= ~ShapeMaterial::Data::ColoredFlag;
+        materialData->atlasTransform[0] = static_cast<quint16>(subRect.width() * 0xffff);
+        materialData->atlasTransform[1] = static_cast<quint16>(subRect.height() * 0xffff);
+        materialData->atlasTransform[2] = static_cast<quint16>(subRect.x() * 0xffff);
+        materialData->atlasTransform[3] = static_cast<quint16>(subRect.y() * 0xffff);
     } else {
         materialData->imageTextureProvider = NULL;
         quint32 a = qAlpha(color_);
@@ -836,8 +938,32 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
         materialData->gradientColor = qRgba(
             (qRed(gradientColor_) * a) / 255, (qGreen(gradientColor_) * a) / 255,
             (qBlue(gradientColor_) * a) / 255, a);
-        materialData->flags |= ShapeMaterial::Data::ColoredFlag;
+        materialData->atlasTransform[0] = 0;
+        materialData->atlasTransform[1] = 0;
+        materialData->atlasTransform[2] = 0;
+        materialData->atlasTransform[3] = 0;
+        flags |= ShapeMaterial::Data::ColoredFlag;
     }
+    if ((overlayWidth_ != 0) && (overlayHeight_ != 0)) {
+        const quint32 a = qAlpha(overlayColor_);
+        materialData->overlayColor = qRgba(
+            (qRed(overlayColor_) * a) / 255, (qGreen(overlayColor_) * a) / 255,
+            (qBlue(overlayColor_) * a) / 255, a);
+        materialData->overlaySteps[0] = overlayX_;
+        materialData->overlaySteps[1] = overlayY_;
+        materialData->overlaySteps[2] = overlayX_ + overlayWidth_;
+        materialData->overlaySteps[3] = overlayY_ + overlayHeight_;
+        flags |= ShapeMaterial::Data::OverlaidFlag;
+    } else {
+        // Overlay data has to be set to 0 so that shapes with different values can be batched
+        // together (ShapeMaterial::compare() uses memcmp()).
+        materialData->overlayColor = qRgba(0, 0, 0, 0);
+        materialData->overlaySteps[0] = 0;
+        materialData->overlaySteps[1] = 0;
+        materialData->overlaySteps[2] = 0;
+        materialData->overlaySteps[3] = 0;
+    }
+    materialData->flags = flags;
 
     // Update vertices and material.
     int index = (border_ == UCUbuntuShape::RawBorder) ?

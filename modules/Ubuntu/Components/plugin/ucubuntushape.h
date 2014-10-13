@@ -42,6 +42,12 @@ class UCUbuntuShape : public QQuickItem
     Q_PROPERTY(QString borderSource READ borderSource WRITE setBorderSource
                NOTIFY borderSourceChanged)
 
+    // Overlay properties.
+    Q_PROPERTY(QRectF overlayGeometry READ overlayGeometry WRITE setOverlayGeometry
+               NOTIFY overlayGeometryChanged)
+    Q_PROPERTY(QColor overlayColor READ overlayColor WRITE setOverlayColor
+               NOTIFY overlayColorChanged)
+
 public:
     UCUbuntuShape(QQuickItem* parent=0);
 
@@ -66,6 +72,13 @@ public:
     void setHorizontalAlignment(HAlignment horizontalAlignment);
     VAlignment verticalAlignment() const { return vAlignment_; }
     void setVerticalAlignment(VAlignment verticalAlignment);
+    QRectF overlayGeometry() const {
+        const float u16ToF32 = 1.0f / static_cast<float>(0xffff);;
+        return QRectF(overlayX_ * u16ToF32, overlayY_ * u16ToF32, overlayWidth_ * u16ToF32,
+                      overlayHeight_ * u16ToF32); }
+    void setOverlayGeometry(const QRectF& overlayGeometry);
+    QColor overlayColor() const { return overlayColor_; }
+    void setOverlayColor(const QColor& overlayColor);
 
 Q_SIGNALS:
     void colorChanged();
@@ -77,6 +90,8 @@ Q_SIGNALS:
     void horizontalAlignmentChanged();
     void verticalAlignmentChanged();
     void borderSourceChanged();
+    void overlayGeometryChanged();
+    void overlayColorChanged();
 
 protected:
     virtual void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry);
@@ -108,6 +123,11 @@ private:
     HAlignment hAlignment_;
     VAlignment vAlignment_;
     float gridUnit_;
+    quint16 overlayX_;
+    quint16 overlayY_;
+    quint16 overlayWidth_;
+    quint16 overlayHeight_;
+    QRgb overlayColor_;
 
     Q_DISABLE_COPY(UCUbuntuShape)
 };
