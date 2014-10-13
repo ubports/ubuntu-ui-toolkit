@@ -135,7 +135,7 @@ Item {
         }
 
         onWindowActiveChanged: {
-            if(automaticOrientation)
+            if (automaticOrientation)
                 applyOrientation();
         }
 
