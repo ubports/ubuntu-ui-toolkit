@@ -44,6 +44,8 @@ public:
 
     virtual bool fetchAlarms() = 0;
 
+    virtual bool compareCookies(const QVariant &cookie1, const QVariant &cookie2) = 0;
+
     // function to verify whether the given alarm property has a given value set
     // used for testing purposes
     virtual bool verifyChange(const QVariant &cookie, AlarmData::Change change, const QVariant &value) = 0;

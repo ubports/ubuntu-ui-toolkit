@@ -36,9 +36,48 @@ MainView {
         }
     }
 
-    Button {
-        text: "Open dialog"
-        onClicked: PopupUtils.open(dialog)
+    Component {
+        id: expanding
+        Dialog {
+             id: stylesDialog
+             property real labelwidth: units.gu(11)
+//             title: "Title"
+             //text: "text"
+
+             OptionSelector {
+                  model: ["One", "Two", "Three"]
+             }
+
+             Row {
+                 Label {
+                     text: "Slider"
+                     verticalAlignment: Text.AlignVCenter
+                     width: labelwidth
+                     height: fontScaleSlider.height
+                 }
+
+                 Slider {
+                     id: fontScaleSlider
+                     width: parent.width - labelwidth
+                     minimumValue: 0
+                     maximumValue: 12
+                 }
+             }
+             Button {
+                 text: i18n.tr("Close")
+                 onClicked: PopupUtils.close(stylesDialog)
+             }
+        }
     }
 
+    Column {
+        Button {
+            text: "Open dialog"
+            onClicked: PopupUtils.open(dialog)
+        }
+        Button {
+            text: "Open expanding dialog"
+            onClicked: PopupUtils.open(expanding)
+        }
+    }
 }
