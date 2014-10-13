@@ -410,7 +410,7 @@ AbstractButton {
                         width: units.gu(5)
                     }
                     Label {
-                        text: i18n.dtr('ubuntu-ui-toolkit', 'Delete')
+                        text: i18n.dtr('ubuntu-ui-toolkit', "Delete")
                         verticalAlignment: Text.AlignVCenter
                         anchors {
                             verticalCenter: parent.verticalCenter

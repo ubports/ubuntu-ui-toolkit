@@ -96,6 +96,87 @@ Object {
      */
     property Item contents: null
 
+    // FIXME: The example below can be much simplified using PageHeadState
+    //  when bug #1345775 has been fixed.
+    /*!
+      Choose a preset for the header visuals and behavior.
+      The default is an empty string "".
+      By setting this to "selection", title will be hidden and
+      actions will be represented by icons with a label.
+
+      Example:
+      \qml
+        import QtQuick 2.2
+        import Ubuntu.Components 1.1
+
+        MainView {
+            id: mainView
+            width: units.gu(40)
+            height: units.gu(50)
+            useDeprecatedToolbar: false
+
+            Page {
+                id: page
+                title: "Demo"
+
+                state: "default"
+                states: [
+                    PageHeadState {
+                        name: "default"
+                        head: page.head
+                        actions: [
+                            Action {
+                                iconName: "contact"
+                                text: "Contact"
+                            }
+                        ]
+                    },
+                    State {
+                        id: selectState
+                        name: "select"
+
+                        property Action leaveSelect: Action {
+                            iconName: "back"
+                            text: "Back"
+                            onTriggered: page.state = "default"
+                        }
+                        property list<Action> actions: [
+                            Action {
+                                iconName: "select"
+                                text: "Select All"
+                            },
+                            Action {
+                                iconName: "delete"
+                                text: "Delete"
+                            }
+                        ]
+                        PropertyChanges {
+                            target: page.head
+                            backAction: selectState.leaveSelect
+                            actions: selectState.actions
+                            preset: "select"
+                        }
+                    }
+                ]
+
+                Label {
+                    anchors.centerIn: parent
+                    text: "Use back button to leave selection mode."
+                    visible: page.state == "select"
+                }
+
+                Button {
+                    anchors.centerIn: parent
+                    onClicked: page.state = "select"
+                    visible: page.state != "select"
+                    text: "selection mode"
+                }
+            }
+        }
+      \endqml
+     */
+    property string preset: ""
+
     /*!
       \qmlproperty PageHeadSections sections
       Defines the sections in the page header divider.
