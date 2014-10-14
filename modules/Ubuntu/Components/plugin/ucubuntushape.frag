@@ -10,7 +10,6 @@
 uniform lowp float opacity;
 uniform sampler2D shapeTexture;
 uniform sampler2D imageTexture;
-uniform lowp vec4 atlasTransform;
 uniform lowp vec4 color1;
 uniform lowp vec4 color2;
 uniform lowp vec4 overlayColor;
@@ -19,6 +18,7 @@ uniform lowp int flags;
 
 varying mediump vec2 shapeCoord;
 varying mediump vec2 quadCoord;
+varying mediump vec2 imageCoord;
 
 const lowp int COLORED_FLAG  = 0x1;
 const lowp int OVERLAID_FLAG = 0x2;
@@ -35,7 +35,7 @@ void main(void)
     if (flags & COLORED_FLAG) {
         color = mix(color1, color2, quadCoord.t);
     } else {
-        color = texture2D(imageTexture, quadCoord * atlasTransform.xy + atlasTransform.zw);
+        color = texture2D(imageTexture, imageCoord);
     }
 
     // Get the overlay color and blend it over the current color.
