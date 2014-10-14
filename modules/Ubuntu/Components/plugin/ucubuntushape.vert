@@ -11,19 +11,16 @@ varying mediump vec2 shapeCoord;
 varying mediump vec2 quadCoord;
 varying mediump vec2 imageCoord;
 
-const lowp int COLORED_FLAG  = 0x1;
+const lowp int TEXTURED_FLAG = 0x1;
 const lowp int OVERLAID_FLAG = 0x2;
 
 void main()
 {
     shapeCoord = shapeCoordAttrib;
+    quadCoord = quadCoordAttrib;
 
-    if (!(flags & COLORED_FLAG)) {
+    if (flags & TEXTURED_FLAG) {
         imageCoord = quadCoordAttrib * atlasTransform.xy + atlasTransform.zw;
-    }
-
-    if (flags & (COLORED_FLAG | OVERLAID_FLAG)) {
-        quadCoord = quadCoordAttrib;
     }
 
     gl_Position = matrix * positionAttrib;

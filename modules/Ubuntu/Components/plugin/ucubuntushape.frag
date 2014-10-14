@@ -6,12 +6,13 @@
 // FIXME(loicm)
 //  - Check GPU behavior with regards to static flow control.
 //  - Ensure binary flag testing doesn't prevent static flow control.
+//  - Binary operator '&' is supported starting from GLSL 1.3 (OpenGL 3).
 
 uniform lowp float opacity;
 uniform sampler2D shapeTexture;
 uniform sampler2D imageTexture;
-uniform lowp vec4 color1;
-uniform lowp vec4 color2;
+uniform lowp vec4 backgroundColor;
+uniform lowp vec4 secondaryBackgroundColor;
 uniform lowp vec4 overlayColor;
 uniform mediump vec4 overlaySteps;
 uniform lowp int flags;
@@ -20,22 +21,21 @@ varying mediump vec2 shapeCoord;
 varying mediump vec2 quadCoord;
 varying mediump vec2 imageCoord;
 
-const lowp int COLORED_FLAG  = 0x1;
+const lowp int TEXTURED_FLAG = 0x1;
 const lowp int OVERLAID_FLAG = 0x2;
 
 void main(void)
 {
-    lowp vec4 color;
-
     // Early texture fetch to cover latency as best as possible.
     lowp vec4 shapeData = texture2D(shapeTexture, shapeCoord);
 
-    // Get the background color (static flow control prevents evaluating the texture fetch in case
-    // of a colored shape).
-    if (flags & COLORED_FLAG) {
-        color = mix(color1, color2, quadCoord.t);
-    } else {
-        color = texture2D(imageTexture, imageCoord);
+    // Get the background color.
+    lowp vec4 color = mix(backgroundColor, secondaryBackgroundColor, quadCoord.t);
+
+    // Blend the image over the current color (static flow control prevents the texture fetch).
+    if (flags & TEXTURED_FLAG) {
+        lowp vec4 image = texture2D(imageTexture, imageCoord);
+        color = vec4(1.0 - image.a) * color + image;
     }
 
     // Get the overlay color and blend it over the current color.

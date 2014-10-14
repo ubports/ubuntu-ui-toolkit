@@ -31,11 +31,11 @@ public:
     struct Data
     {
         // Flags must be kept in sync with GLSL fragment shader.
-        enum { ColoredFlag = (1 << 0), OverlaidFlag = (1 << 1) };
+        enum { TexturedFlag = (1 << 0), OverlaidFlag = (1 << 1) };
         QSGTexture* shapeTexture;
         QSGTextureProvider* imageTextureProvider;
-        QRgb color;
-        QRgb gradientColor;
+        QRgb backgroundColor;
+        QRgb secondaryBackgroundColor;
         QRgb overlayColor;
         quint16 atlasTransform[4];
         quint16 overlaySteps[4];
@@ -73,8 +73,8 @@ private:
     int matrixId_;
     int opacityId_;
     int atlasTransformId_;
-    int color1Id_;
-    int color2Id_;
+    int backgroundColorId_;
+    int secondaryBackgroundColorId_;
     int overlayColorId_;
     int overlayStepsId_;
     int flagsId_;
@@ -105,8 +105,8 @@ void ShapeShader::initialize()
     matrixId_ = program()->uniformLocation("matrix");
     opacityId_ = program()->uniformLocation("opacity");
     atlasTransformId_ = program()->uniformLocation("atlasTransform");
-    color1Id_ = program()->uniformLocation("color1");
-    color2Id_ = program()->uniformLocation("color2");
+    backgroundColorId_ = program()->uniformLocation("backgroundColor");
+    secondaryBackgroundColorId_ = program()->uniformLocation("secondaryBackgroundColor");
     overlayColorId_ = program()->uniformLocation("overlayColor");
     overlayStepsId_ = program()->uniformLocation("overlaySteps");
     flagsId_ = program()->uniformLocation("flags");
@@ -120,6 +120,7 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
     const float inv255 = 1.0f / 255.0f;
     const float u16ToF32 = 1.0f / static_cast<float>(0xffff);
     const ShapeMaterial::Data* data = static_cast<ShapeMaterial*>(newEffect)->constData();
+    QRgb c;
 
     // Bind shape texture.
     QSGTexture* shapeTexture = data->shapeTexture;
@@ -132,15 +133,15 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    if (data->flags & ShapeMaterial::Data::ColoredFlag) {
-        // Update color uniforms.
-        QRgb c = data->color;
-        program()->setUniformValue(color1Id_, QVector4D(
-            qRed(c) * inv255, qGreen(c) * inv255, qBlue(c) * inv255, qAlpha(c) * inv255));
-        c = data->gradientColor;
-        program()->setUniformValue(color2Id_, QVector4D(
-            qRed(c) * inv255, qGreen(c) * inv255, qBlue(c) * inv255, qAlpha(c) * inv255));
-    } else {
+    // Update color uniforms.
+    c = data->backgroundColor;
+    program()->setUniformValue(backgroundColorId_, QVector4D(
+        qRed(c) * inv255, qGreen(c) * inv255, qBlue(c) * inv255, qAlpha(c) * inv255));
+    c = data->secondaryBackgroundColor;
+    program()->setUniformValue(secondaryBackgroundColorId_, QVector4D(
+        qRed(c) * inv255, qGreen(c) * inv255, qBlue(c) * inv255, qAlpha(c) * inv255));
+
+    if (data->flags & ShapeMaterial::Data::TexturedFlag) {
         // Bind image texture.
         glFuncs_->glActiveTexture(GL_TEXTURE1);
         QSGTextureProvider* provider = data->imageTextureProvider;
@@ -159,7 +160,7 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
 
     if (data->flags & ShapeMaterial::Data::OverlaidFlag) {
         // Update overlay uniforms.
-        const QRgb c = data->overlayColor;
+        c = data->overlayColor;
         program()->setUniformValue(overlayColorId_, QVector4D(
             qRed(c) * inv255, qGreen(c) * inv255, qBlue(c) * inv255, qAlpha(c) * inv255));
         program()->setUniformValue(overlayStepsId_, QVector4D(
@@ -514,12 +515,13 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , imageTextureProvider_(NULL)
     , color_(qRgba(0, 0, 0, 0))
     , gradientColor_(qRgba(0, 0, 0, 0))
-    , gradientColorSet_(false)
+    , backgroundColor_(qRgba(0, 0, 0, 0))
+    , secondaryBackgroundColor_(qRgba(0, 0, 0, 0))
+    , backgroundMode_(UCUbuntuShape::BackgroundColor)
     , radiusString_("small")
     , radius_(UCUbuntuShape::SmallRadius)
     , border_(UCUbuntuShape::IdleBorder)
     , image_(NULL)
-    , stretched_(true)
     , hAlignment_(UCUbuntuShape::AlignHCenter)
     , vAlignment_(UCUbuntuShape::AlignVCenter)
     , gridUnit_(UCUnits::instance().gridUnit())
@@ -528,6 +530,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , overlayWidth_(0)
     , overlayHeight_(0)
     , overlayColor_(qRgba(0, 0, 0, 0))
+    , flags_(UCUbuntuShape::StretchedFlag)
 {
     setFlag(ItemHasContents);
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
@@ -538,10 +541,13 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
 }
 
 /*!
-    \qmlproperty color UbuntuShape::color
-
-    The top color of the gradient used to fill the shape. Setting only this
-    one is enough to set the overall color the shape.
+ * \deprecated
+ * \qmlproperty color UbuntuShape::color
+ *
+ * This property defines the color used to fill the UbuntuShape when there is no \image set. If \l
+ * gradientColor is set, this property defines the top color of the gradient.
+ *
+ * \note Use \l backgroundColor, \l secondaryBackgroundColor and \l backgroundMode instead. 
 */
 void UCUbuntuShape::setColor(const QColor& color)
 {
@@ -549,7 +555,7 @@ void UCUbuntuShape::setColor(const QColor& color)
     if (color_ != colorRgb) {
         color_ = colorRgb;
         // gradientColor has the same value as color unless it was explicitly set.
-        if (!gradientColorSet_) {
+        if (!(flags_ & UCUbuntuShape::GradientColorSetFlag)) {
             gradientColor_ = colorRgb;
             Q_EMIT gradientColorChanged();
         }
@@ -559,15 +565,18 @@ void UCUbuntuShape::setColor(const QColor& color)
 }
 
 /*!
-    \qmlproperty color UbuntuShape::gradientColor
-
-    The bottom color of the gradient used for the overlay blending of the
-    color that fills the shape. It is optional to set this one as setting
-    \l color is enough to set the overall color of the shape.
-*/
+ * \deprecated
+ * \qmlproperty color UbuntuShape::gradientColor
+ *
+ * This property defines the bottom color used for the vertical gradient filling the UbuntuShape
+ * when there is no \image set. As long as this property is not set, a single color (defined by \l
+ * color) is used to fill the UbuntuShape.
+ *
+ * \note Use \l backgroundColor, \l secondaryBackgroundColor and \l backgroundMode instead.
+ */
 void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 {
-    gradientColorSet_ = true;
+    flags_ |= UCUbuntuShape::GradientColorSetFlag;
     const QRgb gradientColorRgb = qRgba(
         gradientColor.red(), gradientColor.green(), gradientColor.blue(), gradientColor.alpha());
     if (gradientColor_ != gradientColorRgb) {
@@ -703,7 +712,7 @@ void UCUbuntuShape::setOverlayGeometry(const QRectF& overlayGeometry)
 }
 
 /*!
- * \qmlproperty color UbuntuShape2::overlayColor
+ * \qmlproperty color UbuntuShape::overlayColor
  *
  * This property defines the color of the rectangle overlaying the UbuntuShape. Default value is
  * transparent black.
@@ -716,6 +725,65 @@ void UCUbuntuShape::setOverlayColor(const QColor& overlayColor)
         overlayColor_ = overlayColorRgb;
         update();
         Q_EMIT overlayColorChanged();
+    }
+}
+
+/*!
+ * \qmlproperty color UbuntuShape::backgroundColor
+ * \qmlproperty color UbuntuShape::secondaryBackgroundColor
+ *
+ * These properties define the background colors of the UbuntuShape. \c secondaryBackgroundColor is
+ * used only when \l backgroundMode is set to \c VerticalGradient. Default value is transparent
+ * black for both.
+ *
+ * \note Setting one of these properties disables the support for the deprecated properties \l color
+ * and \l gradientColor.
+ */
+void UCUbuntuShape::setBackgroundColor(const QColor& backgroundColor)
+{
+    flags_ |= UCUbuntuShape::BackgroundApiSetFlag;
+    const QRgb backgroundColorRgb = qRgba(
+        backgroundColor.red(), backgroundColor.green(), backgroundColor.blue(),
+        backgroundColor.alpha());
+    if (backgroundColor_ != backgroundColorRgb) {
+        backgroundColor_ = backgroundColorRgb;
+        update();
+        Q_EMIT backgroundColorChanged();
+    }
+}
+
+void UCUbuntuShape::setSecondaryBackgroundColor(const QColor& secondaryBackgroundColor)
+{
+    flags_ |= UCUbuntuShape::BackgroundApiSetFlag;
+    const QRgb secondaryBackgroundColorRgb = qRgba(
+        secondaryBackgroundColor.red(), secondaryBackgroundColor.green(),
+        secondaryBackgroundColor.blue(), secondaryBackgroundColor.alpha());
+    if (secondaryBackgroundColor_ != secondaryBackgroundColorRgb) {
+        secondaryBackgroundColor_ = secondaryBackgroundColorRgb;
+        update();
+        Q_EMIT secondaryBackgroundColorChanged();
+    }
+}
+
+/*!
+ * \qmlproperty enumeration UbuntuShape::backgroundMode
+ *
+ * This property defines the mode used by the UbuntuShape to render its background. Default value
+ * is \c BackgroundColor.
+ *
+ * \list
+ * \li UbuntuShape.BackgroundColor - background color is \l backgroundColor
+ * \li UbuntuShape.VerticalGradient - background color is a vertical gradient from
+ *     \l backgroundColor (top) to \l secondaryBackgroundColor (bottom)
+ * \endlist
+ */
+void UCUbuntuShape::setBackgroundMode(BackgroundMode backgroundMode)
+{
+    flags_ |= UCUbuntuShape::BackgroundApiSetFlag;
+    if (backgroundMode_ != backgroundMode) {
+        backgroundMode_ = backgroundMode;
+        update();
+        Q_EMIT backgroundModeChanged();
     }
 }
 
@@ -781,8 +849,12 @@ void UCUbuntuShape::onImagePropertiesChanged()
 
 void UCUbuntuShape::setStretched(bool stretched)
 {
-    if (stretched_ != stretched) {
-        stretched_ = stretched;
+    if (!!(flags_ & UCUbuntuShape::StretchedFlag) != stretched) {
+        if (stretched) {
+            flags_ |= UCUbuntuShape::StretchedFlag;
+        } else {
+            flags_ &= ~UCUbuntuShape::StretchedFlag;
+        }
         update();
         Q_EMIT stretchedChanged();
     }
@@ -916,34 +988,49 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
         materialData->shapeTextureFiltering = QSGTexture::Linear;
     }
 
-    // Set remaining material data.
     quint8 flags = 0;
+
+    // Update background material data.
+    if (flags_ & UCUbuntuShape::BackgroundApiSetFlag) {
+        // BackgroundApiSetFlag is flagged as soon as one of the background property API is set. It
+        // allows to keep the support for the deprecated color and gradientColor properties.
+        quint32 a = qAlpha(backgroundColor_);
+        materialData->backgroundColor = qRgba(
+            (qRed(backgroundColor_) * a) / 255, (qGreen(backgroundColor_) * a) / 255,
+            (qBlue(backgroundColor_) * a) / 255, a);
+        const QRgb color = (backgroundMode_ == UCUbuntuShape::BackgroundColor) ?
+            backgroundColor_ : secondaryBackgroundColor_;
+        a = qAlpha(color);
+        materialData->secondaryBackgroundColor = qRgba(
+            (qRed(color) * a) / 255, (qGreen(color) * a) / 255, (qBlue(color) * a) / 255, a);
+    } else {
+        quint32 a = qAlpha(color_);
+        materialData->backgroundColor = qRgba(
+            (qRed(color_) * a) / 255, (qGreen(color_) * a) / 255, (qBlue(color_) * a) / 255, a);
+        a = qAlpha(gradientColor_);
+        materialData->secondaryBackgroundColor = qRgba(
+            (qRed(gradientColor_) * a) / 255, (qGreen(gradientColor_) * a) / 255,
+            (qBlue(gradientColor_) * a) / 255, a);
+    }
+
+    // Update image material data.
     if (provider && provider->texture()) {
         const QRectF subRect = provider->texture()->normalizedTextureSubRect();
         materialData->imageTextureProvider = imageTextureProvider_;
-        // Colors have to be set to 0 so that 2 shapes with images (in the same atlas) but different
-        // colors can be batched together (ShapeMaterial::compare() uses memcmp()).
-        materialData->color = qRgba(0, 0, 0, 0);
-        materialData->gradientColor = qRgba(0, 0, 0, 0);
         materialData->atlasTransform[0] = static_cast<quint16>(subRect.width() * 0xffff);
         materialData->atlasTransform[1] = static_cast<quint16>(subRect.height() * 0xffff);
         materialData->atlasTransform[2] = static_cast<quint16>(subRect.x() * 0xffff);
         materialData->atlasTransform[3] = static_cast<quint16>(subRect.y() * 0xffff);
+        flags |= ShapeMaterial::Data::TexturedFlag;
     } else {
         materialData->imageTextureProvider = NULL;
-        quint32 a = qAlpha(color_);
-        materialData->color = qRgba(
-            (qRed(color_) * a) / 255, (qGreen(color_) * a) / 255, (qBlue(color_) * a) / 255, a);
-        a = qAlpha(gradientColor_);
-        materialData->gradientColor = qRgba(
-            (qRed(gradientColor_) * a) / 255, (qGreen(gradientColor_) * a) / 255,
-            (qBlue(gradientColor_) * a) / 255, a);
         materialData->atlasTransform[0] = 0;
         materialData->atlasTransform[1] = 0;
         materialData->atlasTransform[2] = 0;
         materialData->atlasTransform[3] = 0;
-        flags |= ShapeMaterial::Data::ColoredFlag;
     }
+
+    // Update overlay material data.
     if ((overlayWidth_ != 0) && (overlayHeight_ != 0)) {
         const quint32 a = qAlpha(overlayColor_);
         materialData->overlayColor = qRgba(
@@ -963,6 +1050,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
         materialData->overlaySteps[2] = 0;
         materialData->overlaySteps[3] = 0;
     }
+
     materialData->flags = flags;
 
     // Update vertices and material.
@@ -970,8 +1058,9 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
         0 : (border_ == UCUbuntuShape::IdleBorder) ? 1 : 2;
     if (radius_ == UCUbuntuShape::SmallRadius)
         index += 3;
-    node->setVertices(geometryWidth, geometryHeight, radius, image_, stretched_, hAlignment_,
-                      vAlignment_, textureData->coordinate[index]);
+    node->setVertices(geometryWidth, geometryHeight, radius, image_,
+                      !!(flags_ & UCUbuntuShape::StretchedFlag), hAlignment_, vAlignment_,
+                      textureData->coordinate[index]);
 
     return node;
 }
