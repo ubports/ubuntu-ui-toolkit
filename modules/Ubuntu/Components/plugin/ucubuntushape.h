@@ -27,6 +27,7 @@
 class UCUbuntuShape : public QQuickItem
 {
     Q_OBJECT
+
     Q_ENUMS(HAlignment)
     Q_ENUMS(VAlignment)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
@@ -41,6 +42,9 @@ class UCUbuntuShape : public QQuickItem
                NOTIFY verticalAlignmentChanged)
     Q_PROPERTY(QString borderSource READ borderSource WRITE setBorderSource
                NOTIFY borderSourceChanged)
+
+    // Source properties.
+    Q_PROPERTY(QVariant source READ source WRITE setSource NOTIFY sourceChanged)
 
     // Background properties.
     Q_ENUMS(BackgroundMode)
@@ -82,6 +86,8 @@ public:
     void setHorizontalAlignment(HAlignment horizontalAlignment);
     VAlignment verticalAlignment() const { return vAlignment_; }
     void setVerticalAlignment(VAlignment verticalAlignment);
+    QVariant source() const { return QVariant::fromValue(item_); }
+    void setSource(const QVariant& source);
     QColor backgroundColor() const { return backgroundColor_; }
     void setBackgroundColor(const QColor& backgroundColor);
     QColor secondaryBackgroundColor() const { return secondaryBackgroundColor_; }
@@ -89,7 +95,7 @@ public:
     BackgroundMode backgroundMode() const { return backgroundMode_; }
     void setBackgroundMode(BackgroundMode backgroundMode);
     QRectF overlayGeometry() const {
-        const float u16ToF32 = 1.0f / static_cast<float>(0xffff);;
+        const float u16ToF32 = 1.0f / static_cast<float>(0xffff);
         return QRectF(overlayX_ * u16ToF32, overlayY_ * u16ToF32, overlayWidth_ * u16ToF32,
                       overlayHeight_ * u16ToF32); }
     void setOverlayGeometry(const QRectF& overlayGeometry);
@@ -106,6 +112,7 @@ Q_SIGNALS:
     void horizontalAlignmentChanged();
     void verticalAlignmentChanged();
     void borderSourceChanged();
+    void sourceChanged();
     void backgroundColorChanged();
     void secondaryBackgroundColorChanged();
     void backgroundModeChanged();
@@ -116,12 +123,6 @@ protected:
     virtual void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry);
     virtual QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*);
 
-private:
-    void updateFromImageProperties(QQuickItem* image);
-    void connectToPropertyChange(QObject* sender, const char* property,
-                                 QObject* receiver, const char* slot);
-    void connectToImageProperties(QQuickItem* image);
-
 private Q_SLOTS:
     void onImagePropertiesChanged();
     void onOpenglContextDestroyed();
@@ -129,11 +130,21 @@ private Q_SLOTS:
     void providerDestroyed(QObject* object=0);
 
 private:
+    void updateFromImageProperties(QQuickItem* image);
+    void connectToPropertyChange(QObject* sender, const char* property,
+                                 QObject* receiver, const char* slot);
+    void connectToImageProperties(QQuickItem* image);
+    void dropImageSupport();
+
     enum {
         GradientColorSetFlag = (1 << 0),
         StretchedFlag        = (1 << 1),
-        BackgroundApiSetFlag = (1 << 2)
+        BackgroundApiSetFlag = (1 << 2),
+        SourceApiSetFlag = (1 << 3),
     };
+
+    QQuickItem* image_;
+    QQuickItem* item_;
     QSGTextureProvider* imageTextureProvider_;
     QRgb color_;
     QRgb gradientColor_;
@@ -144,7 +155,6 @@ private:
     Radius radius_;
     QString borderSource_;
     Border border_;
-    QQuickItem* image_;
     HAlignment hAlignment_;
     VAlignment vAlignment_;
     float gridUnit_;

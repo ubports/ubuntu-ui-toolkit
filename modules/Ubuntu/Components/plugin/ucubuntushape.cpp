@@ -218,8 +218,8 @@ public:
 
     ShapeNode(UCUbuntuShape* item);
     ShapeMaterial* material() { return &material_; }
-    void setVertices(float width, float height, float radius, QQuickItem* image, bool stretched,
-                     UCUbuntuShape::HAlignment hAlignment,
+    void setVertices(float width, float height, float radius, const QQuickItem* item,
+                     bool stretched, UCUbuntuShape::HAlignment hAlignment,
                      UCUbuntuShape::VAlignment vAlignment, float shapeCoordinate[][2]);
 
 private:
@@ -297,12 +297,12 @@ ShapeNode::ShapeNode(UCUbuntuShape* item)
     setFlag(UsePreprocess, false);
 }
 
-void ShapeNode::setVertices(float width, float height, float radius, QQuickItem* image,
+void ShapeNode::setVertices(float width, float height, float radius, const QQuickItem* item,
                             bool stretched, UCUbuntuShape::HAlignment hAlignment,
                             UCUbuntuShape::VAlignment vAlignment, float shapeCoordinate[][2])
 {
     ShapeNode::Vertex* vertices = reinterpret_cast<ShapeNode::Vertex*>(geometry_.vertexData());
-    const QSGTextureProvider* provider = image ? image->textureProvider() : NULL;
+    const QSGTextureProvider* provider = item ? item->textureProvider() : NULL;
     const QSGTexture* texture = provider ? provider->texture() : NULL;
     float topCoordinate;
     float bottomCoordinate;
@@ -512,6 +512,8 @@ const float lowHighTextureThreshold = 11.0f;
 */
 UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     : QQuickItem(parent)
+    , image_(NULL)
+    , item_(NULL)
     , imageTextureProvider_(NULL)
     , color_(qRgba(0, 0, 0, 0))
     , gradientColor_(qRgba(0, 0, 0, 0))
@@ -521,7 +523,6 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , radiusString_("small")
     , radius_(UCUbuntuShape::SmallRadius)
     , border_(UCUbuntuShape::IdleBorder)
-    , image_(NULL)
     , hAlignment_(UCUbuntuShape::AlignHCenter)
     , vAlignment_(UCUbuntuShape::AlignVCenter)
     , gridUnit_(UCUnits::instance().gridUnit())
@@ -624,30 +625,37 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
 }
 
 /*!
-    \qmlproperty Image UbuntuShape::image
-
-    The image used to fill the shape.
-*/
-void UCUbuntuShape::setImage(const QVariant& image)
+ * \qmlproperty variant UbuntuShape::source
+ *
+ * This property holds the source \c Image or \c ShaderEffectSource rendered in the UbuntuShape. It
+ * is blended over the \l backgroundColor. Default value is \c null.
+ *
+ * In the case of an \c {Image}-based source, the fill modes and alignments set on the \c Image are
+ * not monitored, use the corresponding properties of the UbuntuShape instead. The only property
+ * that is monitored on both \c Image and \c ShaderEffectSource sources is \c smooth.
+ *
+ * \qml
+ *     UbuntuShape {
+ *         source: Image { source: "ubuntu.png" }
+ *     }
+ * \endqml
+ *
+ * \note Setting this property disables the support for the deprecated properties \l image,
+ *  \l horizontalAlignment, \l verticalAlignment and \l stretched.
+ */
+void UCUbuntuShape::setSource(const QVariant& source)
 {
-    QQuickItem* newImage = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(image));
-    if (image_ != newImage) {
-        image_ = newImage;
-
-        // update values of properties that depend on properties of the image
-        QObject::disconnect(image_);
-        if (newImage != NULL) {
-            updateFromImageProperties(newImage);
-            connectToImageProperties(newImage);
-        }
-
-        if (image_ && !image_->parentItem()) {
-            // Inlined images need a parent and must not be visible.
-            image_->setParentItem(this);
-            image_->setVisible(false);
+    QQuickItem* item = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(source));
+    if (item_ != item) {
+        dropImageSupport();
+        item_ = item;
+        // Inlined images need a parent and must not be visible.
+        if (item_ && !item_->parentItem()) {
+            item_->setParentItem(this);
+            item_->setVisible(false);
         }
         update();
-        Q_EMIT imageChanged();
+        Q_EMIT sourceChanged();
     }
 }
 
@@ -776,6 +784,9 @@ void UCUbuntuShape::setSecondaryBackgroundColor(const QColor& secondaryBackgroun
  * \li UbuntuShape.VerticalGradient - background color is a vertical gradient from
  *     \l backgroundColor (top) to \l secondaryBackgroundColor (bottom)
  * \endlist
+ *
+ * \note Setting this properties disables the support for the deprecated properties \l color and \l
+ * gradientColor.
  */
 void UCUbuntuShape::setBackgroundMode(BackgroundMode backgroundMode)
 {
@@ -787,11 +798,44 @@ void UCUbuntuShape::setBackgroundMode(BackgroundMode backgroundMode)
     }
 }
 
+/*!
+ * \deprecated
+ * \qmlproperty Image UbuntuShape::image
+ *
+ * This property holds the \c Image or \c ShaderEffectSource rendered in the UbuntuShape. In case of
+ * an \c Image, it watches for fillMode (\c Image.PreserveAspectCrop), \c horizontalAlignment and \c
+ * verticalAlignment property changes. Default value is \c null.
+ *
+ * \note Use \l source instead.
+ */
+void UCUbuntuShape::setImage(const QVariant& image)
+{
+    QQuickItem* newImage = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(image));
+    if (image_ != newImage) {
+        image_ = newImage;
+        if (!(flags_ & UCUbuntuShape::SourceApiSetFlag)) {
+            // Watch for property changes.
+            QObject::disconnect(image_);
+            if (newImage != NULL) {
+                updateFromImageProperties(newImage);
+                connectToImageProperties(newImage);
+            }
+            // Inlined images need a parent and must not be visible.
+            if (image_ && !image_->parentItem()) {
+                image_->setParentItem(this);
+                image_->setVisible(false);
+            }
+            update();
+        }
+        Q_EMIT imageChanged();
+    }
+}
+
 void UCUbuntuShape::updateFromImageProperties(QQuickItem* image)
 {
     int alignment;
 
-    // UCUbuntuShape::stretched depends on image::fillMode
+    // UCUbuntuShape::stretched depends on Image::fillMode.
     QQuickImage::FillMode fillMode = (QQuickImage::FillMode)image->property("fillMode").toInt();
     if (fillMode == QQuickImage::PreserveAspectCrop) {
         setStretched(false);
@@ -799,7 +843,7 @@ void UCUbuntuShape::updateFromImageProperties(QQuickItem* image)
         setStretched(true);
     }
 
-    // UCUbuntuShape::horizontalAlignment depends on image::horizontalAlignment
+    // UCUbuntuShape::horizontalAlignment depends on Image::horizontalAlignment.
     int imageHorizontalAlignment = image->property("horizontalAlignment").toInt();
     if (imageHorizontalAlignment == Qt::AlignLeft) {
         alignment = UCUbuntuShape::AlignLeft;
@@ -810,7 +854,7 @@ void UCUbuntuShape::updateFromImageProperties(QQuickItem* image)
     }
     setHorizontalAlignment(static_cast<UCUbuntuShape::HAlignment>(alignment));
 
-    // UCUbuntuShape::verticalAlignment depends on image::verticalAlignment
+    // UCUbuntuShape::verticalAlignment depends on Image::verticalAlignment.
     int imageVerticalAlignment = image->property("verticalAlignment").toInt();
     if (imageVerticalAlignment == Qt::AlignTop) {
         alignment = UCUbuntuShape::AlignTop;
@@ -875,6 +919,16 @@ void UCUbuntuShape::setVerticalAlignment(VAlignment vAlignment)
         vAlignment_ = vAlignment;
         update();
         Q_EMIT verticalAlignmentChanged();
+    }
+}
+
+void UCUbuntuShape::dropImageSupport()
+{
+    flags_ |= UCUbuntuShape::SourceApiSetFlag;
+    if (image_) {
+        QObject::disconnect(image_);
+        image_ = NULL;
+        Q_EMIT imageChanged();
     }
 }
 
@@ -945,7 +999,8 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
     ShapeMaterial::Data* materialData = node->material()->data();
 
     // Update the item whenever the source item's texture changes.
-    QSGTextureProvider* provider = image_ ? image_->textureProvider() : NULL;
+    const QQuickItem* item = (flags_ & UCUbuntuShape::SourceApiSetFlag) ? item_ : image_;
+    QSGTextureProvider* provider = item ? item->textureProvider() : NULL;
     if (provider != imageTextureProvider_) {
         if (imageTextureProvider_) {
             QObject::disconnect(imageTextureProvider_, SIGNAL(textureChanged()),
@@ -1058,7 +1113,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
         0 : (border_ == UCUbuntuShape::IdleBorder) ? 1 : 2;
     if (radius_ == UCUbuntuShape::SmallRadius)
         index += 3;
-    node->setVertices(geometryWidth, geometryHeight, radius, image_,
+    node->setVertices(geometryWidth, geometryHeight, radius, item,
                       !!(flags_ & UCUbuntuShape::StretchedFlag), hAlignment_, vAlignment_,
                       textureData->coordinate[index]);
 
