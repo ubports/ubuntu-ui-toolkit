@@ -548,7 +548,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
  * This property defines the color used to fill the UbuntuShape when there is no \image set. If \l
  * gradientColor is set, this property defines the top color of the gradient.
  *
- * \note Use \l backgroundColor, \l secondaryBackgroundColor and \l backgroundMode instead. 
+ * \note Use \l backgroundColor, \l secondaryBackgroundColor and \l backgroundMode instead.
 */
 void UCUbuntuShape::setColor(const QColor& color)
 {
@@ -560,7 +560,9 @@ void UCUbuntuShape::setColor(const QColor& color)
             gradientColor_ = colorRgb;
             Q_EMIT gradientColorChanged();
         }
-        update();
+        if (!(flags_ & UCUbuntuShape::BackgroundApiSetFlag)) {
+            update();
+        }
         Q_EMIT colorChanged();
     }
 }
@@ -582,7 +584,9 @@ void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
         gradientColor.red(), gradientColor.green(), gradientColor.blue(), gradientColor.alpha());
     if (gradientColor_ != gradientColorRgb) {
         gradientColor_ = gradientColorRgb;
-        update();
+        if (!(flags_ & UCUbuntuShape::BackgroundApiSetFlag)) {
+            update();
+        }
         Q_EMIT gradientColorChanged();
     }
 }
