@@ -29,7 +29,7 @@ RTM=true
 DISTRO="ubuntu-rtm" 
 SERIES="14.09"
 CHANNEL="ubuntu-touch/${DISTRO}/${SERIES}-proposed"
-PWD="${PWD}"
+PASSWORD="0000"
 BOOTTIME=500
 ONLYCOMPARE=false
     
@@ -118,7 +118,7 @@ function network {
 
 function reset {
      if [ ${RESET} == true  -o  x"$1" == x-f ]; then
-        adb -s ${SERIALNUMBER} shell "echo ${PWD}|sudo -S reboot 2>&1|grep -v password"
+        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
         sleep_indicator 120
         /usr/share/qtcreator/ubuntu/scripts/device_wait_for_shell ${SERIALNUMBER} > /dev/null
         sleep_indicator 10
@@ -129,7 +129,7 @@ function reset {
         sleep_indicator 10
         adb -s ${SERIALNUMBER} shell amixer -D pulse set Master 1+ mute 2>&1 > /dev/null
         adb -s ${SERIALNUMBER} shell "gdbus call --session --dest com.canonical.UnityGreeter --object-path / --method com.canonical.UnityGreeter.HideGreeter|grep -v '\(\)'"
-        adb -s ${SERIALNUMBER} shell "echo ${PWD}|sudo -S dbus-send   --system --print-reply \
+        adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S dbus-send   --system --print-reply \
                                                  --dest=org.freedesktop.Accounts \
                                                  /org/freedesktop/Accounts/User32011 \
                                                  org.freedesktop.DBus.Properties.Set \
@@ -141,10 +141,10 @@ function reset {
 function device_comission {
     adb -s ${SERIALNUMBER} wait-for-device
     # Avoid https://bugs.launchpad.net/gallery-app/+bug/1363190
-    adb -s ${SERIALNUMBER} shell "echo ${PWD} |sudo -S rm -rf /userdata/user-data/phablet/.cache/com.ubuntu.gallery 2>&1|grep -v password"
+    adb -s ${SERIALNUMBER} shell "echo ${PASSWORD} |sudo -S rm -rf /userdata/user-data/phablet/.cache/com.ubuntu.gallery 2>&1|grep -v password"
     # flash the latest image
     echo -e "Flashing \e[31m${CHANNEL}\e[0m"
-    ubuntu-device-flash --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --developer-mode --password=${PWD} 
+    ubuntu-device-flash --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --developer-mode --password=${PASSWORD} 
     sleep_indicator ${BOOTTIME}
     echo -e "Disable the intro wizard"
     phablet-config -s ${SERIALNUMBER}  welcome-wizard --disable
@@ -152,7 +152,7 @@ function device_comission {
     phablet-config -s ${SERIALNUMBER} edges-intro --disable
     echo -e "Clone the network "
     network
-    adb -s ${SERIALNUMBER} shell "echo ${PWD}|sudo -S reboot 2>&1|grep -v password"
+    adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S reboot 2>&1|grep -v password"
     sleep_indicator 120
     echo -e "phablet-click-test-setup  \e[31m${DISTRO} ${SERIES}\e[0m"
     phablet-click-test-setup -s ${SERIALNUMBER} --distribution=${DISTRO} --series=${SERIES} 2>&1 
@@ -160,25 +160,25 @@ function device_comission {
     sleep_indicator 120
     if [ ${PPA} == "archive"  ]; then
         echo "Set up with the archive image"
-        phablet-config -s ${SERIALNUMBER} writable-image -r ${PWD} 2>&1 > /dev/null
+        phablet-config -s ${SERIALNUMBER} writable-image -r ${PASSWORD} 2>&1 > /dev/null
         echo "Sleep after phablet-config";
         sleep_indicator 120
         network
     else
         if [[ "$PPA" =~ ^[0-9]{3}$ ]]; then
             echo -e "Set up with the silo \e[31m${PPA}\e[0m"
-            phablet-config -s ${SERIALNUMBER} writable-image -r ${PWD} 2>&1 > /dev/null
+            phablet-config -s ${SERIALNUMBER} writable-image -r ${PASSWORD} 2>&1 > /dev/null
 	    sleep_indicator 120
             network
-            adb -s ${SERIALNUMBER} shell "echo ${PWD}|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/ci-train-ppa-service/landing-${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/silo-${PPA}.list'"
-            adb -s ${SERIALNUMBER} shell "echo ${PWD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/ci-train-ppa-service/landing-${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/silo-${PPA}.list'"
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
         else
             echo  -e "Set up with the PPA \e[31m${PPA}\e[0m"
-            phablet-config -s ${SERIALNUMBER} writable-image -r ${PWD}  2>&1 > /dev/null
+            phablet-config -s ${SERIALNUMBER} writable-image -r ${PASSWORD}  2>&1 > /dev/null
 	    sleep_indicator 120
             network
-            adb -s ${SERIALNUMBER} shell "echo ${PWD}|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/testing-ppa.list'"
-            adb -s ${SERIALNUMBER} shell "echo ${PWD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S  bash -c 'echo \"deb http://ppa.launchpad.net/${PPA}/${DISTRO} ${SERIES} main\" > /etc/apt/sources.list.d/testing-ppa.list'"
+            adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get update 2>&1|grep -v password > /dev/null"
 
         fi
     fi
@@ -186,15 +186,15 @@ function device_comission {
     UITK_VERSION=`adb -s ${SERIALNUMBER} shell "stty cols 250; dpkg -l"|grep qtdeclarative5-ubuntu-ui-toolkit-plugin|awk '{print $3}'`
     echo -e "Original UITK version:\t\e[31m${UITK_VERSION}\e[0m"
     echo "Updating APT";
-    adb -s ${SERIALNUMBER} shell "echo ${PWD} |sudo -S apt-get update  2>&1|grep -v password > /dev/null"
+    adb -s ${SERIALNUMBER} shell "echo ${PASSWORD} |sudo -S apt-get update  2>&1|grep -v password > /dev/null"
     echo "Install the UITK packages"
-    adb -s ${SERIALNUMBER} shell "echo ${PWD}|sudo -S apt-get install --yes --force-yes ${UITK_PACKAGES} 2>&1 |grep -v password > /dev/null"
+    adb -s ${SERIALNUMBER} shell "echo ${PASSWORD}|sudo -S apt-get install --yes --force-yes ${UITK_PACKAGES} 2>&1 |grep -v password > /dev/null"
     UITK_VERSION=`adb -s ${SERIALNUMBER} shell "stty cols 250; dpkg -l"|grep qtdeclarative5-ubuntu-ui-toolkit-plugin|awk '{print $3}'`
     echo -e "New UITK version:\t\e[31m${UITK_VERSION}\e[0m"
     # Update APT
-    adb -s ${SERIALNUMBER} shell "echo ${PWD} |sudo -S apt-get update 2>&1|grep -v password > /dev/null"
+    adb -s ${SERIALNUMBER} shell "echo ${PASSWORD} |sudo -S apt-get update 2>&1|grep -v password > /dev/null"
     # Install the autopilot tests for the apps
-    adb -s ${SERIALNUMBER} shell "echo ${PWD} |sudo -S apt-get install --yes --force-yes ${AP_PACKAGES} 2>&1 | grep -v password > /dev/null"
+    adb -s ${SERIALNUMBER} shell "echo ${PASSWORD} |sudo -S apt-get install --yes --force-yes ${AP_PACKAGES} 2>&1 | grep -v password > /dev/null"
 }
 
 function compare_results {
@@ -340,7 +340,7 @@ if [ ${DONOTRUNTESTS} != true ]; then
        if [[ ${TEST_SET} =~ ${FILTER} ]]; then
            APPNAME=${TEST_SET##* }
            LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-1-${PPA}.tests"
-           COMMAND="phablet-test-run -r ${PWD} -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
+           COMMAND="phablet-test-run -r ${PASSWORD} -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
            echo "<<<=== ${APPNAME} 1 ===>>>" >> ${LOGFILE}
            reset
            eval ${COMMAND}
@@ -349,7 +349,7 @@ if [ ${DONOTRUNTESTS} != true ]; then
            if grep -q "FAILED" ${LOGFILE}; then 
                reset -f
                LOGFILE="$OUTPUTDIR/${LOGFILENAME}-${APPNAME}-2-${PPA}.tests"
-               COMMAND="phablet-test-run -r ${PWD} -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
+               COMMAND="phablet-test-run -r ${PASSWORD} -s ${SERIALNUMBER} $TEST_SET >> ${LOGFILE}"
                echo "<<<=== ${APPNAME} 2 ===>>>" >> ${LOGFILE}
                eval ${COMMAND}
                egrep "<<<===|Ran|OK|FAILED" ${LOGFILE}
