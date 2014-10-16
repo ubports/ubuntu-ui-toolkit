@@ -30,16 +30,9 @@ class UCUbuntuShape : public QQuickItem
 
     Q_ENUMS(HAlignment)
     Q_ENUMS(VAlignment)
-    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
-    Q_PROPERTY(QColor gradientColor READ gradientColor WRITE setGradientColor
-               NOTIFY gradientColorChanged)
+
+    // Shape properties.
     Q_PROPERTY(QString radius READ radius WRITE setRadius NOTIFY radiusChanged)
-    Q_PROPERTY(QVariant image READ image WRITE setImage NOTIFY imageChanged)
-    Q_PROPERTY(bool stretched READ stretched WRITE setStretched NOTIFY stretchedChanged)
-    Q_PROPERTY(HAlignment horizontalAlignment READ horizontalAlignment WRITE setHorizontalAlignment
-               NOTIFY horizontalAlignmentChanged)
-    Q_PROPERTY(VAlignment verticalAlignment READ verticalAlignment WRITE setVerticalAlignment
-               NOTIFY verticalAlignmentChanged)
     Q_PROPERTY(QString borderSource READ borderSource WRITE setBorderSource
                NOTIFY borderSourceChanged)
 
@@ -63,6 +56,17 @@ class UCUbuntuShape : public QQuickItem
     Q_PROPERTY(QColor overlayColor READ overlayColor WRITE setOverlayColor
                NOTIFY overlayColorChanged)
 
+    // Deprecated properties.
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
+    Q_PROPERTY(QColor gradientColor READ gradientColor WRITE setGradientColor
+               NOTIFY gradientColorChanged)
+    Q_PROPERTY(QVariant image READ image WRITE setImage NOTIFY imageChanged)
+    Q_PROPERTY(bool stretched READ stretched WRITE setStretched NOTIFY stretchedChanged)
+    Q_PROPERTY(HAlignment horizontalAlignment READ horizontalAlignment WRITE setHorizontalAlignment
+               NOTIFY horizontalAlignmentChanged)
+    Q_PROPERTY(VAlignment verticalAlignment READ verticalAlignment WRITE setVerticalAlignment
+               NOTIFY verticalAlignmentChanged)
+
 public:
     UCUbuntuShape(QQuickItem* parent=0);
 
@@ -72,32 +76,23 @@ public:
     enum VAlignment { AlignTop = 0, AlignVCenter = 1, AlignBottom = 2 };
     enum BackgroundMode { BackgroundColor = 0, VerticalGradient = 1 };
 
-    QColor color() const { return color_; }
-    void setColor(const QColor& color);
-    QColor gradientColor() const { return gradientColor_; }
-    void setGradientColor(const QColor& gradientColor);
     QString radius() const { return radiusString_; }
     void setRadius(const QString& radius);
     QString borderSource() const { return borderSource_; }
     void setBorderSource(const QString& borderSource);
-    QVariant image() const { return QVariant::fromValue(image_); }
-    void setImage(const QVariant& image);
-    bool stretched() const { return !!(flags_ & UCUbuntuShape::StretchedFlag); }
-    void setStretched(bool stretched);
-    HAlignment horizontalAlignment() const { return hAlignment_; }
-    void setHorizontalAlignment(HAlignment horizontalAlignment);
-    VAlignment verticalAlignment() const { return vAlignment_; }
-    void setVerticalAlignment(VAlignment verticalAlignment);
+
     QVariant source() const { return QVariant::fromValue(source_); }
     void setSource(const QVariant& source);
     float sourceOpacity() const { return sourceOpacity_ / static_cast<float>(0xff); }
     void setSourceOpacity(float sourceOpacity);
+
     QColor backgroundColor() const { return backgroundColor_; }
     void setBackgroundColor(const QColor& backgroundColor);
     QColor secondaryBackgroundColor() const { return secondaryBackgroundColor_; }
     void setSecondaryBackgroundColor(const QColor& secondaryBackgroundColor);
     BackgroundMode backgroundMode() const { return backgroundMode_; }
     void setBackgroundMode(BackgroundMode backgroundMode);
+
     QRectF overlayGeometry() const {
         const float u16ToF32 = 1.0f / static_cast<float>(0xffff);
         return QRectF(overlayX_ * u16ToF32, overlayY_ * u16ToF32, overlayWidth_ * u16ToF32,
@@ -106,23 +101,39 @@ public:
     QColor overlayColor() const { return overlayColor_; }
     void setOverlayColor(const QColor& overlayColor);
 
+    QColor color() const { return color_; }
+    void setColor(const QColor& color);
+    QColor gradientColor() const { return gradientColor_; }
+    void setGradientColor(const QColor& gradientColor);
+    QVariant image() const { return QVariant::fromValue(image_); }
+    void setImage(const QVariant& image);
+    bool stretched() const { return !!(flags_ & UCUbuntuShape::StretchedFlag); }
+    void setStretched(bool stretched);
+    HAlignment horizontalAlignment() const { return hAlignment_; }
+    void setHorizontalAlignment(HAlignment horizontalAlignment);
+    VAlignment verticalAlignment() const { return vAlignment_; }
+    void setVerticalAlignment(VAlignment verticalAlignment);
+
 Q_SIGNALS:
+    void radiusChanged();
+    void borderSourceChanged();
+
+    void sourceChanged();
+    void sourceOpacityChanged();
+
+    void backgroundColorChanged();
+    void secondaryBackgroundColorChanged();
+    void backgroundModeChanged();
+
+    void overlayGeometryChanged();
+    void overlayColorChanged();
+
     void colorChanged();
     void gradientColorChanged();
-    void radiusChanged();
-    void borderChanged();
     void imageChanged();
     void stretchedChanged();
     void horizontalAlignmentChanged();
     void verticalAlignmentChanged();
-    void borderSourceChanged();
-    void sourceChanged();
-    void sourceOpacityChanged();
-    void backgroundColorChanged();
-    void secondaryBackgroundColorChanged();
-    void backgroundModeChanged();
-    void overlayGeometryChanged();
-    void overlayColorChanged();
 
 protected:
     virtual void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry);

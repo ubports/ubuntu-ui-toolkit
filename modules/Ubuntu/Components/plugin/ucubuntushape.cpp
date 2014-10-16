@@ -478,42 +478,36 @@ const float implicitGridUnitHeight = 8.0f;
 const float lowHighTextureThreshold = 11.0f;
 
 /*!
-    \qmltype UbuntuShape
-    \instantiates UCUbuntuShape
-    \inqmlmodule Ubuntu.Components 1.1
-    \ingroup ubuntu
-    \brief The UbuntuShape item provides a standard Ubuntu shaped rounded rectangle.
-
-    The UbuntuShape is used where a rounded rectangle is needed either filled
-    with a color or an image that it crops.
-
-    When given with a \l color it is applied with an overlay blending as a
-    vertical gradient going from \l color to \l gradientColor.
-    Two corner \l radius are available, "small" (default) and "medium", that
-    determine the size of the corners.
-    Optionally, an Image can be passed that will be displayed inside the
-    UbuntuShape and cropped to fit it.
-
-    Examples:
-    \qml
-        import Ubuntu.Components 1.1
-
-        UbuntuShape {
-            color: "lightblue"
-            radius: "medium"
-        }
-    \endqml
-
-    \qml
-        import Ubuntu.Components 1.1
-
-        UbuntuShape {
-            image: Image {
-                source: "icon.png"
-            }
-        }
-    \endqml
-*/
+ * \qmltype UbuntuShape
+ * \instantiates UCUbuntuShape
+ * \inqmlmodule Ubuntu.Components 1.1
+ * \ingroup ubuntu
+ * \brief The base graphical component of the Ubuntu UI Toolkit.
+ *
+ * The UbuntuShape is a rounded rectangle (based on a \l
+ * {https://en.wikipedia.org/wiki/Squircle}{squircle}) that can shape a set layers composed, from
+ * back to front, of a background color (solid or linear gradient), an optional source Item and a
+ * rectangle overlay. Different properties allow to change the look of the shape and its layers.
+ *
+ * Examples:
+ * \qml
+ *     import Ubuntu.Components 1.1
+ *
+ *     UbuntuShape {
+ *         backgroundColor: "lightblue"
+ *     }
+ * \endqml
+ *
+ * \qml
+ *     import Ubuntu.Components 1.1
+ *
+ *     UbuntuShape {
+ *         source: Image {
+ *            source: "icon.png"
+ *        }
+ *    }
+ * \endqml
+ */
 UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     : QQuickItem(parent)
     , image_(NULL)
@@ -547,60 +541,11 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
 }
 
 /*!
- * \deprecated
- * \qmlproperty color UbuntuShape::color
+ * \qmlproperty string UbuntuShape::radius
  *
- * This property defines the color used to fill the UbuntuShape when there is no \image set. If \l
- * gradientColor is set, this property defines the top color of the gradient.
- *
- * \note Use \l backgroundColor, \l secondaryBackgroundColor and \l backgroundMode instead.
-*/
-void UCUbuntuShape::setColor(const QColor& color)
-{
-    const QRgb colorRgb = qRgba(color.red(), color.green(), color.blue(), color.alpha());
-    if (color_ != colorRgb) {
-        color_ = colorRgb;
-        // gradientColor has the same value as color unless it was explicitly set.
-        if (!(flags_ & UCUbuntuShape::GradientColorSetFlag)) {
-            gradientColor_ = colorRgb;
-            Q_EMIT gradientColorChanged();
-        }
-        if (!(flags_ & UCUbuntuShape::BackgroundApiSetFlag)) {
-            update();
-        }
-        Q_EMIT colorChanged();
-    }
-}
-
-/*!
- * \deprecated
- * \qmlproperty color UbuntuShape::gradientColor
- *
- * This property defines the bottom color used for the vertical gradient filling the UbuntuShape
- * when there is no \image set. As long as this property is not set, a single color (defined by \l
- * color) is used to fill the UbuntuShape.
- *
- * \note Use \l backgroundColor, \l secondaryBackgroundColor and \l backgroundMode instead.
+ * This property defines the size of the corners. Supported values are \c "small" and \c
+ * "medium". Default value is \c "small".
  */
-void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
-{
-    flags_ |= UCUbuntuShape::GradientColorSetFlag;
-    const QRgb gradientColorRgb = qRgba(
-        gradientColor.red(), gradientColor.green(), gradientColor.blue(), gradientColor.alpha());
-    if (gradientColor_ != gradientColorRgb) {
-        gradientColor_ = gradientColorRgb;
-        if (!(flags_ & UCUbuntuShape::BackgroundApiSetFlag)) {
-            update();
-        }
-        Q_EMIT gradientColorChanged();
-    }
-}
-
-/*!
-    \qmlproperty string UbuntuShape::radius
-
-    The size of the corners among: "small" (default) and "medium".
-*/
 void UCUbuntuShape::setRadius(const QString& radius)
 {
     if (radiusString_ != radius) {
@@ -612,12 +557,13 @@ void UCUbuntuShape::setRadius(const QString& radius)
 }
 
 /*!
-    \deprecated
-    \qmlproperty url UbuntuShape::borderSource
-
-    The image used as a border.
-    We plan to expose that feature through styling properties.
-*/
+ * \qmlproperty url UbuntuShape::borderSource
+ *
+ * This property defines the look of the shape borders. It doesn't support custom sources anymore.
+ * The supported hard-coded urls are \c "radius_idle.sci" providing an "idle button" look and
+ * "radius_pressed.sci" providing a "pressed button" look. Any other urls (the empty one "" for
+ * instance) disables styling.
+ */
 void UCUbuntuShape::setBorderSource(const QString& borderSource)
 {
     if (borderSource_ != borderSource) {
@@ -685,6 +631,68 @@ void UCUbuntuShape::setSourceOpacity(float sourceOpacity)
         sourceOpacity_ = sourceOpacityPacked;
         update();
         Q_EMIT sourceOpacityChanged();
+    }
+}
+
+/*!
+ * \qmlproperty color UbuntuShape::backgroundColor
+ * \qmlproperty color UbuntuShape::secondaryBackgroundColor
+ *
+ * These properties define the background colors of the UbuntuShape. \c secondaryBackgroundColor is
+ * used only when \l backgroundMode is set to \c VerticalGradient. Default value is transparent
+ * black for both.
+ *
+ * \note Setting one of these properties disables the support for the deprecated properties \l color
+ * and \l gradientColor.
+ */
+void UCUbuntuShape::setBackgroundColor(const QColor& backgroundColor)
+{
+    flags_ |= UCUbuntuShape::BackgroundApiSetFlag;
+    const QRgb backgroundColorRgb = qRgba(
+        backgroundColor.red(), backgroundColor.green(), backgroundColor.blue(),
+        backgroundColor.alpha());
+    if (backgroundColor_ != backgroundColorRgb) {
+        backgroundColor_ = backgroundColorRgb;
+        update();
+        Q_EMIT backgroundColorChanged();
+    }
+}
+
+void UCUbuntuShape::setSecondaryBackgroundColor(const QColor& secondaryBackgroundColor)
+{
+    flags_ |= UCUbuntuShape::BackgroundApiSetFlag;
+    const QRgb secondaryBackgroundColorRgb = qRgba(
+        secondaryBackgroundColor.red(), secondaryBackgroundColor.green(),
+        secondaryBackgroundColor.blue(), secondaryBackgroundColor.alpha());
+    if (secondaryBackgroundColor_ != secondaryBackgroundColorRgb) {
+        secondaryBackgroundColor_ = secondaryBackgroundColorRgb;
+        update();
+        Q_EMIT secondaryBackgroundColorChanged();
+    }
+}
+
+/*!
+ * \qmlproperty enumeration UbuntuShape::backgroundMode
+ *
+ * This property defines the mode used by the UbuntuShape to render its background. Default value
+ * is \c BackgroundColor.
+ *
+ * \list
+ * \li UbuntuShape.BackgroundColor - background color is \l backgroundColor
+ * \li UbuntuShape.VerticalGradient - background color is a vertical gradient from
+ *     \l backgroundColor (top) to \l secondaryBackgroundColor (bottom)
+ * \endlist
+ *
+ * \note Setting this properties disables the support for the deprecated properties \l color and \l
+ * gradientColor.
+ */
+void UCUbuntuShape::setBackgroundMode(BackgroundMode backgroundMode)
+{
+    flags_ |= UCUbuntuShape::BackgroundApiSetFlag;
+    if (backgroundMode_ != backgroundMode) {
+        backgroundMode_ = backgroundMode;
+        update();
+        Q_EMIT backgroundModeChanged();
     }
 }
 
@@ -766,64 +774,53 @@ void UCUbuntuShape::setOverlayColor(const QColor& overlayColor)
 }
 
 /*!
- * \qmlproperty color UbuntuShape::backgroundColor
- * \qmlproperty color UbuntuShape::secondaryBackgroundColor
+ * \deprecated
+ * \qmlproperty color UbuntuShape::color
  *
- * These properties define the background colors of the UbuntuShape. \c secondaryBackgroundColor is
- * used only when \l backgroundMode is set to \c VerticalGradient. Default value is transparent
- * black for both.
+ * This property defines the color used to fill the UbuntuShape when there is no \image set. If \l
+ * gradientColor is set, this property defines the top color of the gradient. Default value is
+ * transparent black.
  *
- * \note Setting one of these properties disables the support for the deprecated properties \l color
- * and \l gradientColor.
+ * \note Use \l backgroundColor, \l secondaryBackgroundColor and \l backgroundMode instead.
  */
-void UCUbuntuShape::setBackgroundColor(const QColor& backgroundColor)
+void UCUbuntuShape::setColor(const QColor& color)
 {
-    flags_ |= UCUbuntuShape::BackgroundApiSetFlag;
-    const QRgb backgroundColorRgb = qRgba(
-        backgroundColor.red(), backgroundColor.green(), backgroundColor.blue(),
-        backgroundColor.alpha());
-    if (backgroundColor_ != backgroundColorRgb) {
-        backgroundColor_ = backgroundColorRgb;
-        update();
-        Q_EMIT backgroundColorChanged();
-    }
-}
-
-void UCUbuntuShape::setSecondaryBackgroundColor(const QColor& secondaryBackgroundColor)
-{
-    flags_ |= UCUbuntuShape::BackgroundApiSetFlag;
-    const QRgb secondaryBackgroundColorRgb = qRgba(
-        secondaryBackgroundColor.red(), secondaryBackgroundColor.green(),
-        secondaryBackgroundColor.blue(), secondaryBackgroundColor.alpha());
-    if (secondaryBackgroundColor_ != secondaryBackgroundColorRgb) {
-        secondaryBackgroundColor_ = secondaryBackgroundColorRgb;
-        update();
-        Q_EMIT secondaryBackgroundColorChanged();
+    const QRgb colorRgb = qRgba(color.red(), color.green(), color.blue(), color.alpha());
+    if (color_ != colorRgb) {
+        color_ = colorRgb;
+        // gradientColor has the same value as color unless it was explicitly set.
+        if (!(flags_ & UCUbuntuShape::GradientColorSetFlag)) {
+            gradientColor_ = colorRgb;
+            Q_EMIT gradientColorChanged();
+        }
+        if (!(flags_ & UCUbuntuShape::BackgroundApiSetFlag)) {
+            update();
+        }
+        Q_EMIT colorChanged();
     }
 }
 
 /*!
- * \qmlproperty enumeration UbuntuShape::backgroundMode
+ * \deprecated
+ * \qmlproperty color UbuntuShape::gradientColor
  *
- * This property defines the mode used by the UbuntuShape to render its background. Default value
- * is \c BackgroundColor.
+ * This property defines the bottom color used for the vertical gradient filling the UbuntuShape
+ * when there is no \image set. As long as this property is not set, a single color (defined by \l
+ * color) is used to fill the UbuntuShape.
  *
- * \list
- * \li UbuntuShape.BackgroundColor - background color is \l backgroundColor
- * \li UbuntuShape.VerticalGradient - background color is a vertical gradient from
- *     \l backgroundColor (top) to \l secondaryBackgroundColor (bottom)
- * \endlist
- *
- * \note Setting this properties disables the support for the deprecated properties \l color and \l
- * gradientColor.
+ * \note Use \l backgroundColor, \l secondaryBackgroundColor and \l backgroundMode instead.
  */
-void UCUbuntuShape::setBackgroundMode(BackgroundMode backgroundMode)
+void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 {
-    flags_ |= UCUbuntuShape::BackgroundApiSetFlag;
-    if (backgroundMode_ != backgroundMode) {
-        backgroundMode_ = backgroundMode;
-        update();
-        Q_EMIT backgroundModeChanged();
+    flags_ |= UCUbuntuShape::GradientColorSetFlag;
+    const QRgb gradientColorRgb = qRgba(
+        gradientColor.red(), gradientColor.green(), gradientColor.blue(), gradientColor.alpha());
+    if (gradientColor_ != gradientColorRgb) {
+        gradientColor_ = gradientColorRgb;
+        if (!(flags_ & UCUbuntuShape::BackgroundApiSetFlag)) {
+            update();
+        }
+        Q_EMIT gradientColorChanged();
     }
 }
 
@@ -860,66 +857,9 @@ void UCUbuntuShape::setImage(const QVariant& image)
     }
 }
 
-void UCUbuntuShape::updateFromImageProperties(QQuickItem* image)
-{
-    int alignment;
-
-    // UCUbuntuShape::stretched depends on Image::fillMode.
-    QQuickImage::FillMode fillMode = (QQuickImage::FillMode)image->property("fillMode").toInt();
-    if (fillMode == QQuickImage::PreserveAspectCrop) {
-        setStretched(false);
-    } else {
-        setStretched(true);
-    }
-
-    // UCUbuntuShape::horizontalAlignment depends on Image::horizontalAlignment.
-    int imageHorizontalAlignment = image->property("horizontalAlignment").toInt();
-    if (imageHorizontalAlignment == Qt::AlignLeft) {
-        alignment = UCUbuntuShape::AlignLeft;
-    } else if (imageHorizontalAlignment == Qt::AlignRight) {
-        alignment = UCUbuntuShape::AlignRight;
-    } else {
-        alignment = UCUbuntuShape::AlignHCenter;
-    }
-    setHorizontalAlignment(static_cast<UCUbuntuShape::HAlignment>(alignment));
-
-    // UCUbuntuShape::verticalAlignment depends on Image::verticalAlignment.
-    int imageVerticalAlignment = image->property("verticalAlignment").toInt();
-    if (imageVerticalAlignment == Qt::AlignTop) {
-        alignment = UCUbuntuShape::AlignTop;
-    } else if (imageVerticalAlignment == Qt::AlignBottom) {
-        alignment = UCUbuntuShape::AlignBottom;
-    } else {
-        alignment = UCUbuntuShape::AlignVCenter;
-    }
-    setVerticalAlignment(static_cast<UCUbuntuShape::VAlignment>(alignment));
-}
-
-void UCUbuntuShape::connectToPropertyChange(QObject* sender, const char* property,
-                                            QObject* receiver, const char* slot)
-{
-    int propertyIndex = sender->metaObject()->indexOfProperty(property);
-    if (propertyIndex != -1) {
-        QMetaMethod changeSignal = sender->metaObject()->property(propertyIndex).notifySignal();
-        int slotIndex = receiver->metaObject()->indexOfSlot(slot);
-        QMetaMethod updateSlot = receiver->metaObject()->method(slotIndex);
-        QObject::connect(sender, changeSignal, receiver, updateSlot);
-    }
-}
-
-void UCUbuntuShape::connectToImageProperties(QQuickItem* image)
-{
-    connectToPropertyChange(image, "fillMode", this, "onImagePropertiesChanged()");
-    connectToPropertyChange(image, "horizontalAlignment", this, "onImagePropertiesChanged()");
-    connectToPropertyChange(image, "verticalAlignment", this, "onImagePropertiesChanged()");
-}
-
-void UCUbuntuShape::onImagePropertiesChanged()
-{
-    QQuickItem* image = qobject_cast<QQuickItem*>(sender());
-    updateFromImageProperties(image);
-}
-
+// Deprecation layer. Even though "stretched" is exposed as a QML property, it's only been used when
+// there was a QML UbuntuShape proxy. This is why we don't provide doc for it. We'll still have to
+// maintain it for a while for compatibility reasons.
 void UCUbuntuShape::setStretched(bool stretched)
 {
     if (!!(flags_ & UCUbuntuShape::StretchedFlag) != stretched) {
@@ -933,6 +873,7 @@ void UCUbuntuShape::setStretched(bool stretched)
     }
 }
 
+// Deprecation layer. Same comment as setStretched().
 void UCUbuntuShape::setHorizontalAlignment(HAlignment hAlignment)
 {
     if (hAlignment_ != hAlignment) {
@@ -942,6 +883,7 @@ void UCUbuntuShape::setHorizontalAlignment(HAlignment hAlignment)
     }
 }
 
+// Deprecation layer. Same comment as setStretched().
 void UCUbuntuShape::setVerticalAlignment(VAlignment vAlignment)
 {
     if (vAlignment_ != vAlignment) {
@@ -951,6 +893,71 @@ void UCUbuntuShape::setVerticalAlignment(VAlignment vAlignment)
     }
 }
 
+// Deprecation layer.
+void UCUbuntuShape::updateFromImageProperties(QQuickItem* image)
+{
+    int alignment;
+
+    // UbuntuShape::stretched depends on Image::fillMode.
+    QQuickImage::FillMode fillMode = (QQuickImage::FillMode)image->property("fillMode").toInt();
+    if (fillMode == QQuickImage::PreserveAspectCrop) {
+        setStretched(false);
+    } else {
+        setStretched(true);
+    }
+
+    // UbuntuShape::horizontalAlignment depends on Image::horizontalAlignment.
+    int imageHorizontalAlignment = image->property("horizontalAlignment").toInt();
+    if (imageHorizontalAlignment == Qt::AlignLeft) {
+        alignment = UCUbuntuShape::AlignLeft;
+    } else if (imageHorizontalAlignment == Qt::AlignRight) {
+        alignment = UCUbuntuShape::AlignRight;
+    } else {
+        alignment = UCUbuntuShape::AlignHCenter;
+    }
+    setHorizontalAlignment(static_cast<UCUbuntuShape::HAlignment>(alignment));
+
+    // UbuntuShape::verticalAlignment depends on Image::verticalAlignment.
+    int imageVerticalAlignment = image->property("verticalAlignment").toInt();
+    if (imageVerticalAlignment == Qt::AlignTop) {
+        alignment = UCUbuntuShape::AlignTop;
+    } else if (imageVerticalAlignment == Qt::AlignBottom) {
+        alignment = UCUbuntuShape::AlignBottom;
+    } else {
+        alignment = UCUbuntuShape::AlignVCenter;
+    }
+    setVerticalAlignment(static_cast<UCUbuntuShape::VAlignment>(alignment));
+}
+
+// Deprecation layer.
+void UCUbuntuShape::connectToPropertyChange(QObject* sender, const char* property,
+                                            QObject* receiver, const char* slot)
+{
+    int propertyIndex = sender->metaObject()->indexOfProperty(property);
+    if (propertyIndex != -1) {
+        QMetaMethod changeSignal = sender->metaObject()->property(propertyIndex).notifySignal();
+        int slotIndex = receiver->metaObject()->indexOfSlot(slot);
+        QMetaMethod updateSlot = receiver->metaObject()->method(slotIndex);
+        QObject::connect(sender, changeSignal, receiver, updateSlot);
+    }
+}
+
+// Deprecation layer.
+void UCUbuntuShape::connectToImageProperties(QQuickItem* image)
+{
+    connectToPropertyChange(image, "fillMode", this, "onImagePropertiesChanged()");
+    connectToPropertyChange(image, "horizontalAlignment", this, "onImagePropertiesChanged()");
+    connectToPropertyChange(image, "verticalAlignment", this, "onImagePropertiesChanged()");
+}
+
+// Deprecation layer.
+void UCUbuntuShape::onImagePropertiesChanged()
+{
+    QQuickItem* image = qobject_cast<QQuickItem*>(sender());
+    updateFromImageProperties(image);
+}
+
+// Deprecation layer.
 void UCUbuntuShape::dropImageSupport()
 {
     flags_ |= UCUbuntuShape::SourceApiSetFlag;
