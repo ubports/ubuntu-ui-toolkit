@@ -165,13 +165,13 @@ private:
     QRgb gradientColor_;
     QRgb backgroundColor_;
     QRgb secondaryBackgroundColor_;
-    BackgroundMode backgroundMode_;
     QString radiusString_;
-    Radius radius_;
     QString borderSource_;
-    Border border_;
-    HAlignment hAlignment_;
-    VAlignment vAlignment_;
+    BackgroundMode backgroundMode_ : 1;
+    Radius radius_ : 1;
+    Border border_ : 2;
+    HAlignment hAlignment_ : 2;
+    VAlignment vAlignment_ : 2;
     float gridUnit_;
     quint16 overlayX_;
     quint16 overlayY_;
