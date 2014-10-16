@@ -10,7 +10,7 @@
 
 uniform lowp float opacity;
 uniform sampler2D shapeTexture;
-uniform sampler2D imageTexture;
+uniform sampler2D sourceTexture;
 uniform lowp vec4 backgroundColor;
 uniform lowp vec4 secondaryBackgroundColor;
 uniform lowp vec4 overlayColor;
@@ -19,7 +19,7 @@ uniform lowp int flags;
 
 varying mediump vec2 shapeCoord;
 varying mediump vec2 quadCoord;
-varying mediump vec2 imageCoord;
+varying mediump vec2 sourceCoord;
 
 const lowp int TEXTURED_FLAG = 0x1;
 const lowp int OVERLAID_FLAG = 0x2;
@@ -32,10 +32,10 @@ void main(void)
     // Get the background color.
     lowp vec4 color = mix(backgroundColor, secondaryBackgroundColor, quadCoord.t);
 
-    // Blend the image over the current color (static flow control prevents the texture fetch).
+    // Blend the source over the current color (static flow control prevents the texture fetch).
     if (flags & TEXTURED_FLAG) {
-        lowp vec4 image = texture2D(imageTexture, imageCoord);
-        color = vec4(1.0 - image.a) * color + image;
+        lowp vec4 source = texture2D(sourceTexture, sourceCoord);
+        color = vec4(1.0 - source.a) * color + source;
     }
 
     // Get the overlay color and blend it over the current color.

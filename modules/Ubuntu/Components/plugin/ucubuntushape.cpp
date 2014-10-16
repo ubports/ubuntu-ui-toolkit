@@ -33,7 +33,7 @@ public:
         // Flags must be kept in sync with GLSL fragment shader.
         enum { TexturedFlag = (1 << 0), OverlaidFlag = (1 << 1) };
         QSGTexture* shapeTexture;
-        QSGTextureProvider* imageTextureProvider;
+        QSGTextureProvider* sourceTextureProvider;
         QRgb backgroundColor;
         QRgb secondaryBackgroundColor;
         QRgb overlayColor;
@@ -100,7 +100,7 @@ void ShapeShader::initialize()
     QSGMaterialShader::initialize();
     program()->bind();
     program()->setUniformValue("shapeTexture", 0);
-    program()->setUniformValue("imageTexture", 1);
+    program()->setUniformValue("sourceTexture", 1);
     glFuncs_ = QOpenGLContext::currentContext()->functions();
     matrixId_ = program()->uniformLocation("matrix");
     opacityId_ = program()->uniformLocation("opacity");
@@ -144,7 +144,7 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
     if (data->flags & ShapeMaterial::Data::TexturedFlag) {
         // Bind image texture.
         glFuncs_->glActiveTexture(GL_TEXTURE1);
-        QSGTextureProvider* provider = data->imageTextureProvider;
+        QSGTextureProvider* provider = data->sourceTextureProvider;
         QSGTexture* texture = provider ? provider->texture() : NULL;
         if (texture) {
             texture->bind();
@@ -218,7 +218,7 @@ public:
 
     ShapeNode(UCUbuntuShape* item);
     ShapeMaterial* material() { return &material_; }
-    void setVertices(float width, float height, float radius, const QQuickItem* item,
+    void setVertices(float width, float height, float radius, const QQuickItem* source,
                      bool stretched, UCUbuntuShape::HAlignment hAlignment,
                      UCUbuntuShape::VAlignment vAlignment, float shapeCoordinate[][2]);
 
@@ -297,12 +297,12 @@ ShapeNode::ShapeNode(UCUbuntuShape* item)
     setFlag(UsePreprocess, false);
 }
 
-void ShapeNode::setVertices(float width, float height, float radius, const QQuickItem* item,
+void ShapeNode::setVertices(float width, float height, float radius, const QQuickItem* source,
                             bool stretched, UCUbuntuShape::HAlignment hAlignment,
                             UCUbuntuShape::VAlignment vAlignment, float shapeCoordinate[][2])
 {
     ShapeNode::Vertex* vertices = reinterpret_cast<ShapeNode::Vertex*>(geometry_.vertexData());
-    const QSGTextureProvider* provider = item ? item->textureProvider() : NULL;
+    const QSGTextureProvider* provider = source ? source->textureProvider() : NULL;
     const QSGTexture* texture = provider ? provider->texture() : NULL;
     float topCoordinate;
     float bottomCoordinate;
@@ -513,8 +513,8 @@ const float lowHighTextureThreshold = 11.0f;
 UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     : QQuickItem(parent)
     , image_(NULL)
-    , item_(NULL)
-    , imageTextureProvider_(NULL)
+    , source_(NULL)
+    , sourceTextureProvider_(NULL)
     , color_(qRgba(0, 0, 0, 0))
     , gradientColor_(qRgba(0, 0, 0, 0))
     , backgroundColor_(qRgba(0, 0, 0, 0))
@@ -649,16 +649,16 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
  */
 void UCUbuntuShape::setSource(const QVariant& source)
 {
-    QQuickItem* item = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(source));
-    if (item_ != item) {
+    QQuickItem* newSource = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(source));
+    if (source_ != newSource) {
         dropImageSupport();
-        item_ = item;
-        // Inlined images need a parent and must not be visible.
-        if (item_ && !item_->parentItem()) {
-            item_->setParentItem(this);
-            item_->setVisible(false);
+        if (newSource && !newSource->parentItem()) {
+            // Inlined images need a parent and must not be visible.
+            newSource->setParentItem(this);
+            newSource->setVisible(false);
         }
         update();
+        source_ = newSource;
         Q_EMIT sourceChanged();
     }
 }
@@ -816,21 +816,21 @@ void UCUbuntuShape::setImage(const QVariant& image)
 {
     QQuickItem* newImage = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(image));
     if (image_ != newImage) {
-        image_ = newImage;
+        QObject::disconnect(image_);
         if (!(flags_ & UCUbuntuShape::SourceApiSetFlag)) {
-            // Watch for property changes.
-            QObject::disconnect(image_);
-            if (newImage != NULL) {
+            if (newImage) {
+                // Watch for property changes.
                 updateFromImageProperties(newImage);
                 connectToImageProperties(newImage);
-            }
-            // Inlined images need a parent and must not be visible.
-            if (image_ && !image_->parentItem()) {
-                image_->setParentItem(this);
-                image_->setVisible(false);
+                if (!newImage->parentItem()) {
+                    // Inlined images need a parent and must not be visible.
+                    newImage->setParentItem(this);
+                    newImage->setVisible(false);
+                }
             }
             update();
         }
+        image_ = newImage;
         Q_EMIT imageChanged();
     }
 }
@@ -969,7 +969,7 @@ void UCUbuntuShape::gridUnitChanged()
 void UCUbuntuShape::providerDestroyed(QObject* object)
 {
     Q_UNUSED(object);
-    imageTextureProvider_ = NULL;
+    sourceTextureProvider_ = NULL;
 }
 
 QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data)
@@ -1002,21 +1002,21 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
     }
     ShapeMaterial::Data* materialData = node->material()->data();
 
-    // Update the item whenever the source item's texture changes.
-    const QQuickItem* item = (flags_ & UCUbuntuShape::SourceApiSetFlag) ? item_ : image_;
-    QSGTextureProvider* provider = item ? item->textureProvider() : NULL;
-    if (provider != imageTextureProvider_) {
-        if (imageTextureProvider_) {
-            QObject::disconnect(imageTextureProvider_, SIGNAL(textureChanged()),
+    // Update the shape item whenever the source item's texture changes.
+    const QQuickItem* source = (flags_ & UCUbuntuShape::SourceApiSetFlag) ? source_ : image_;
+    QSGTextureProvider* provider = source ? source->textureProvider() : NULL;
+    if (provider != sourceTextureProvider_) {
+        if (sourceTextureProvider_) {
+            QObject::disconnect(sourceTextureProvider_, SIGNAL(textureChanged()),
                                 this, SLOT(update()));
-            QObject::disconnect(imageTextureProvider_, SIGNAL(destroyed()),
+            QObject::disconnect(sourceTextureProvider_, SIGNAL(destroyed()),
                                 this, SLOT(providerDestroyed()));
         }
         if (provider) {
             QObject::connect(provider, SIGNAL(textureChanged()), this, SLOT(update()));
             QObject::connect(provider, SIGNAL(destroyed()), this, SLOT(providerDestroyed()));
         }
-        imageTextureProvider_ = provider;
+        sourceTextureProvider_ = provider;
     }
 
     TextureData* textureData;
@@ -1075,14 +1075,14 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
     // Update image material data.
     if (provider && provider->texture()) {
         const QRectF subRect = provider->texture()->normalizedTextureSubRect();
-        materialData->imageTextureProvider = imageTextureProvider_;
+        materialData->sourceTextureProvider = provider;
         materialData->atlasTransform[0] = static_cast<quint16>(subRect.width() * 0xffff);
         materialData->atlasTransform[1] = static_cast<quint16>(subRect.height() * 0xffff);
         materialData->atlasTransform[2] = static_cast<quint16>(subRect.x() * 0xffff);
         materialData->atlasTransform[3] = static_cast<quint16>(subRect.y() * 0xffff);
         flags |= ShapeMaterial::Data::TexturedFlag;
     } else {
-        materialData->imageTextureProvider = NULL;
+        materialData->sourceTextureProvider = NULL;
         materialData->atlasTransform[0] = 0;
         materialData->atlasTransform[1] = 0;
         materialData->atlasTransform[2] = 0;
@@ -1117,7 +1117,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
         0 : (border_ == UCUbuntuShape::IdleBorder) ? 1 : 2;
     if (radius_ == UCUbuntuShape::SmallRadius)
         index += 3;
-    node->setVertices(geometryWidth, geometryHeight, radius, item,
+    node->setVertices(geometryWidth, geometryHeight, radius, source,
                       !!(flags_ & UCUbuntuShape::StretchedFlag), hAlignment_, vAlignment_,
                       textureData->coordinate[index]);
 

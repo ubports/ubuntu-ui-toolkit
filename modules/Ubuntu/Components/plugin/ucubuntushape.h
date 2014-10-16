@@ -86,7 +86,7 @@ public:
     void setHorizontalAlignment(HAlignment horizontalAlignment);
     VAlignment verticalAlignment() const { return vAlignment_; }
     void setVerticalAlignment(VAlignment verticalAlignment);
-    QVariant source() const { return QVariant::fromValue(item_); }
+    QVariant source() const { return QVariant::fromValue(source_); }
     void setSource(const QVariant& source);
     QColor backgroundColor() const { return backgroundColor_; }
     void setBackgroundColor(const QColor& backgroundColor);
@@ -140,12 +140,12 @@ private:
         GradientColorSetFlag = (1 << 0),
         StretchedFlag        = (1 << 1),
         BackgroundApiSetFlag = (1 << 2),
-        SourceApiSetFlag = (1 << 3),
+        SourceApiSetFlag     = (1 << 3),
     };
 
     QQuickItem* image_;
-    QQuickItem* item_;
-    QSGTextureProvider* imageTextureProvider_;
+    QQuickItem* source_;
+    QSGTextureProvider* sourceTextureProvider_;
     QRgb color_;
     QRgb gradientColor_;
     QRgb backgroundColor_;

@@ -9,7 +9,7 @@ attribute lowp vec2 quadCoordAttrib;
 // FIXME(loicm) Optimize by reducing/packing varyings.
 varying mediump vec2 shapeCoord;
 varying mediump vec2 quadCoord;
-varying mediump vec2 imageCoord;
+varying mediump vec2 sourceCoord;
 
 const lowp int TEXTURED_FLAG = 0x1;
 const lowp int OVERLAID_FLAG = 0x2;
@@ -20,7 +20,7 @@ void main()
     quadCoord = quadCoordAttrib;
 
     if (flags & TEXTURED_FLAG) {
-        imageCoord = quadCoordAttrib * atlasTransform.xy + atlasTransform.zw;
+        sourceCoord = quadCoordAttrib * atlasTransform.xy + atlasTransform.zw;
     }
 
     gl_Position = matrix * positionAttrib;
