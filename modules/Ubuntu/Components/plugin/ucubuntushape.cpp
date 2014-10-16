@@ -117,7 +117,7 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
 {
     Q_UNUSED(oldEffect);
 
-    const float inv255 = 1.0f / 255.0f;
+    const float u8toF32 = 1.0f / 255.0f;
     const float u16ToF32 = 1.0f / static_cast<float>(0xffff);
     const ShapeMaterial::Data* data = static_cast<ShapeMaterial*>(newEffect)->constData();
     QRgb c;
@@ -136,10 +136,10 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
     // Update color uniforms.
     c = data->backgroundColor;
     program()->setUniformValue(backgroundColorId_, QVector4D(
-        qRed(c) * inv255, qGreen(c) * inv255, qBlue(c) * inv255, qAlpha(c) * inv255));
+        qRed(c) * u8toF32, qGreen(c) * u8toF32, qBlue(c) * u8toF32, qAlpha(c) * u8toF32));
     c = data->secondaryBackgroundColor;
     program()->setUniformValue(secondaryBackgroundColorId_, QVector4D(
-        qRed(c) * inv255, qGreen(c) * inv255, qBlue(c) * inv255, qAlpha(c) * inv255));
+        qRed(c) * u8toF32, qGreen(c) * u8toF32, qBlue(c) * u8toF32, qAlpha(c) * u8toF32));
 
     if (data->flags & ShapeMaterial::Data::TexturedFlag) {
         // Bind image texture.
@@ -162,7 +162,7 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
         // Update overlay uniforms.
         c = data->overlayColor;
         program()->setUniformValue(overlayColorId_, QVector4D(
-            qRed(c) * inv255, qGreen(c) * inv255, qBlue(c) * inv255, qAlpha(c) * inv255));
+            qRed(c) * u8toF32, qGreen(c) * u8toF32, qBlue(c) * u8toF32, qAlpha(c) * u8toF32));
         program()->setUniformValue(overlayStepsId_, QVector4D(
             data->overlaySteps[0] * u16ToF32, data->overlaySteps[1] * u16ToF32,
             data->overlaySteps[2] * u16ToF32, data->overlaySteps[3] * u16ToF32));
