@@ -776,6 +776,8 @@ StyledItem {
     // grab Enter/Return keys which may be stolen from parent components of TextArea
     // due to forwarded keys from TextEdit
     Keys.onPressed: {
+        if (readOnly)
+            return;
         if ((event.key === Qt.Key_Enter) || (event.key === Qt.Key_Return)) {
             if (editor.textFormat === TextEdit.RichText) {
                 // FIXME: use control.paste("<br />") instead when paste() gets sich text support

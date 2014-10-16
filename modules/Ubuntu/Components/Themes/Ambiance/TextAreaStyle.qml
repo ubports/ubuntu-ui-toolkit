@@ -61,6 +61,7 @@ Item {
         onErrorChanged: (error) ? visuals.errorColor : visuals.backgroundColor;
         color: visuals.backgroundColor;
         anchors.fill: parent
+        visible: !styledItem.readOnly
     }
 
     Loader {
