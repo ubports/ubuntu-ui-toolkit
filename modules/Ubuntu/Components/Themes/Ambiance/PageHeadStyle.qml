@@ -540,6 +540,7 @@ Style.PageHeadStyle {
                                             verticalCenterOffset: units.dp(-1)
                                             left: actionIcon.right
                                             leftMargin: units.gu(2)
+                                            right: parent.right
                                         }
                                         fontSize: "small"
                                         elide: Text.ElideRight
