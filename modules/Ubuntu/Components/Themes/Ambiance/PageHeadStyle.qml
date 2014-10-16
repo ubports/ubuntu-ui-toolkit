@@ -440,7 +440,7 @@ Style.PageHeadStyle {
             anchors {
                 top: parent.top
                 right: rightAnchor.left
-                rightMargin: units.gu(1)
+                rightMargin: actionsContainer.width > 0 ? units.gu(1) : 0
             }
             width: childrenRect.width
             height: headerStyle.contentHeight
