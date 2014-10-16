@@ -34,6 +34,7 @@ public:
         enum { TexturedFlag = (1 << 0), OverlaidFlag = (1 << 1) };
         QSGTexture* shapeTexture;
         QSGTextureProvider* sourceTextureProvider;
+        quint8 sourceOpacity;
         QRgb backgroundColor;
         QRgb secondaryBackgroundColor;
         QRgb overlayColor;
@@ -72,6 +73,7 @@ private:
     QOpenGLFunctions* glFuncs_;
     int matrixId_;
     int opacityId_;
+    int sourceOpacityId_;
     int atlasTransformId_;
     int backgroundColorId_;
     int secondaryBackgroundColorId_;
@@ -104,6 +106,7 @@ void ShapeShader::initialize()
     glFuncs_ = QOpenGLContext::currentContext()->functions();
     matrixId_ = program()->uniformLocation("matrix");
     opacityId_ = program()->uniformLocation("opacity");
+    sourceOpacityId_ = program()->uniformLocation("sourceOpacity");
     atlasTransformId_ = program()->uniformLocation("atlasTransform");
     backgroundColorId_ = program()->uniformLocation("backgroundColor");
     secondaryBackgroundColorId_ = program()->uniformLocation("secondaryBackgroundColor");
@@ -153,6 +156,7 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
         }
         glFuncs_->glActiveTexture(GL_TEXTURE0);
         // Update image uniforms.
+        program()->setUniformValue(sourceOpacityId_, data->sourceOpacity * u8toF32);
         program()->setUniformValue(atlasTransformId_, QVector4D(
             data->atlasTransform[0] * u16ToF32, data->atlasTransform[1] * u16ToF32,
             data->atlasTransform[2] * u16ToF32, data->atlasTransform[3] * u16ToF32));
@@ -531,6 +535,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , overlayWidth_(0)
     , overlayHeight_(0)
     , overlayColor_(qRgba(0, 0, 0, 0))
+    , sourceOpacity_(255)
     , flags_(UCUbuntuShape::StretchedFlag)
 {
     setFlag(ItemHasContents);
@@ -644,8 +649,8 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
  *     }
  * \endqml
  *
- * \note Setting this property disables the support for the deprecated properties \l image,
- *  \l horizontalAlignment, \l verticalAlignment and \l stretched.
+ * \note Setting this property disables the support for the deprecated \l image, \l
+ *  horizontalAlignment, \l verticalAlignment and \l stretched properties.
  */
 void UCUbuntuShape::setSource(const QVariant& source)
 {
@@ -660,6 +665,26 @@ void UCUbuntuShape::setSource(const QVariant& source)
         update();
         source_ = newSource;
         Q_EMIT sourceChanged();
+    }
+}
+
+/*!
+ * \qmlproperty real UbuntuShape2::sourceOpacity
+ *
+ * This property defines the opacity of \l source in the range [0.0, 1.0]. Default value is \c 1.0.
+ *
+ * \note Setting this property disables the support for the deprecated \l image, \l
+ *  horizontalAlignment, \l verticalAlignment and \l stretched properties.
+ */
+void UCUbuntuShape::setSourceOpacity(float sourceOpacity)
+{
+    const quint8 sourceOpacityPacked =
+        qMax(0.0f, qMin(1.0f, sourceOpacity)) * static_cast<float>(0xff);
+    if (sourceOpacity_ != sourceOpacityPacked) {
+        dropImageSupport();
+        sourceOpacity_ = sourceOpacityPacked;
+        update();
+        Q_EMIT sourceOpacityChanged();
     }
 }
 
@@ -1073,9 +1098,10 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
     }
 
     // Update image material data.
-    if (provider && provider->texture()) {
+    if (sourceOpacity_ && provider && provider->texture()) {
         const QRectF subRect = provider->texture()->normalizedTextureSubRect();
         materialData->sourceTextureProvider = provider;
+        materialData->sourceOpacity = sourceOpacity_;
         materialData->atlasTransform[0] = static_cast<quint16>(subRect.width() * 0xffff);
         materialData->atlasTransform[1] = static_cast<quint16>(subRect.height() * 0xffff);
         materialData->atlasTransform[2] = static_cast<quint16>(subRect.x() * 0xffff);
@@ -1083,6 +1109,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
         flags |= ShapeMaterial::Data::TexturedFlag;
     } else {
         materialData->sourceTextureProvider = NULL;
+        materialData->sourceOpacity = 0;
         materialData->atlasTransform[0] = 0;
         materialData->atlasTransform[1] = 0;
         materialData->atlasTransform[2] = 0;

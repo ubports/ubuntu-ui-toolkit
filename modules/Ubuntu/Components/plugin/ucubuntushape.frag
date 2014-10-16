@@ -8,13 +8,14 @@
 //  - Ensure binary flag testing doesn't prevent static flow control.
 //  - Binary operator '&' is supported starting from GLSL 1.3 (OpenGL 3).
 
-uniform lowp float opacity;
 uniform sampler2D shapeTexture;
 uniform sampler2D sourceTexture;
 uniform lowp vec4 backgroundColor;
 uniform lowp vec4 secondaryBackgroundColor;
 uniform lowp vec4 overlayColor;
 uniform mediump vec4 overlaySteps;
+uniform lowp float sourceOpacity;
+uniform lowp float opacity;
 uniform lowp int flags;
 
 varying mediump vec2 shapeCoord;
@@ -34,7 +35,7 @@ void main(void)
 
     // Blend the source over the current color (static flow control prevents the texture fetch).
     if (flags & TEXTURED_FLAG) {
-        lowp vec4 source = texture2D(sourceTexture, sourceCoord);
+        lowp vec4 source = texture2D(sourceTexture, sourceCoord) * sourceOpacity;
         color = vec4(1.0 - source.a) * color + source;
     }
 

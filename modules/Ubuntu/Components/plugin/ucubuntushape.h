@@ -45,6 +45,8 @@ class UCUbuntuShape : public QQuickItem
 
     // Source properties.
     Q_PROPERTY(QVariant source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(float sourceOpacity READ sourceOpacity WRITE setSourceOpacity
+               NOTIFY sourceOpacityChanged)
 
     // Background properties.
     Q_ENUMS(BackgroundMode)
@@ -88,6 +90,8 @@ public:
     void setVerticalAlignment(VAlignment verticalAlignment);
     QVariant source() const { return QVariant::fromValue(source_); }
     void setSource(const QVariant& source);
+    float sourceOpacity() const { return sourceOpacity_ / static_cast<float>(0xff); }
+    void setSourceOpacity(float sourceOpacity);
     QColor backgroundColor() const { return backgroundColor_; }
     void setBackgroundColor(const QColor& backgroundColor);
     QColor secondaryBackgroundColor() const { return secondaryBackgroundColor_; }
@@ -113,6 +117,7 @@ Q_SIGNALS:
     void verticalAlignmentChanged();
     void borderSourceChanged();
     void sourceChanged();
+    void sourceOpacityChanged();
     void backgroundColorChanged();
     void secondaryBackgroundColorChanged();
     void backgroundModeChanged();
@@ -163,6 +168,7 @@ private:
     quint16 overlayWidth_;
     quint16 overlayHeight_;
     QRgb overlayColor_;
+    quint8 sourceOpacity_;
     quint8 flags_;
 
     Q_DISABLE_COPY(UCUbuntuShape)
