@@ -70,8 +70,6 @@ class UCUbuntuShape : public QQuickItem
 public:
     UCUbuntuShape(QQuickItem* parent=0);
 
-    enum Radius { SmallRadius, MediumRadius };
-    enum Border { RawBorder, IdleBorder, PressedBorder };
     enum HAlignment { AlignLeft = 0, AlignHCenter = 1, AlignRight = 2 };
     enum VAlignment { AlignTop = 0, AlignVCenter = 1, AlignBottom = 2 };
     enum BackgroundMode { SolidColor = 0, VerticalGradient = 1 };
@@ -151,6 +149,8 @@ private:
     void connectToImageProperties(QQuickItem* image);
     void dropImageSupport();
 
+    enum Radius { SmallRadius, MediumRadius };
+    enum Border { RawBorder, IdleBorder, PressedBorder };
     enum {
         GradientColorSetFlag = (1 << 0),
         StretchedFlag        = (1 << 1),
