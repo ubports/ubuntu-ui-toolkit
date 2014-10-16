@@ -136,7 +136,6 @@ Q_SIGNALS:
     void verticalAlignmentChanged();
 
 protected:
-    virtual void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry);
     virtual QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*);
 
 private Q_SLOTS:

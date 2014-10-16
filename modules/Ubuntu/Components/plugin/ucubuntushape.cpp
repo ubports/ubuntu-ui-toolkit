@@ -968,12 +968,6 @@ void UCUbuntuShape::dropImageSupport()
     }
 }
 
-void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
-{
-    QQuickItem::geometryChanged(newGeometry, oldGeometry);
-    update();
-}
-
 void UCUbuntuShape::onOpenglContextDestroyed()
 {
     QOpenGLContext* context = qobject_cast<QOpenGLContext*>(sender());
