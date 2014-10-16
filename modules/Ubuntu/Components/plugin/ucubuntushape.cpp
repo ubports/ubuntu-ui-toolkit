@@ -517,7 +517,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , gradientColor_(qRgba(0, 0, 0, 0))
     , backgroundColor_(qRgba(0, 0, 0, 0))
     , secondaryBackgroundColor_(qRgba(0, 0, 0, 0))
-    , backgroundMode_(UCUbuntuShape::BackgroundColor)
+    , backgroundMode_(UCUbuntuShape::SolidColor)
     , radiusString_("small")
     , radius_(UCUbuntuShape::SmallRadius)
     , border_(UCUbuntuShape::IdleBorder)
@@ -675,11 +675,11 @@ void UCUbuntuShape::setSecondaryBackgroundColor(const QColor& secondaryBackgroun
  * \qmlproperty enumeration UbuntuShape::backgroundMode
  *
  * This property defines the mode used by the UbuntuShape to render its background. Default value
- * is \c BackgroundColor.
+ * is \c SolidColor.
  *
  * \list
- * \li UbuntuShape.BackgroundColor - background color is \l backgroundColor
- * \li UbuntuShape.VerticalGradient - background color is a vertical gradient from
+ * \li UbuntuShape.SolidColor - background color is \l backgroundColor
+ * \li UbuntuShape.VerticalGradient - background color is a linear vertical gradient from
  *     \l backgroundColor (top) to \l secondaryBackgroundColor (bottom)
  * \endlist
  *
@@ -1089,7 +1089,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
         materialData->backgroundColor = qRgba(
             (qRed(backgroundColor_) * a) / 255, (qGreen(backgroundColor_) * a) / 255,
             (qBlue(backgroundColor_) * a) / 255, a);
-        const QRgb color = (backgroundMode_ == UCUbuntuShape::BackgroundColor) ?
+        const QRgb color = (backgroundMode_ == UCUbuntuShape::SolidColor) ?
             backgroundColor_ : secondaryBackgroundColor_;
         a = qAlpha(color);
         materialData->secondaryBackgroundColor = qRgba(

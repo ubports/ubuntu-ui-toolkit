@@ -74,7 +74,7 @@ public:
     enum Border { RawBorder, IdleBorder, PressedBorder };
     enum HAlignment { AlignLeft = 0, AlignHCenter = 1, AlignRight = 2 };
     enum VAlignment { AlignTop = 0, AlignVCenter = 1, AlignBottom = 2 };
-    enum BackgroundMode { BackgroundColor = 0, VerticalGradient = 1 };
+    enum BackgroundMode { SolidColor = 0, VerticalGradient = 1 };
 
     QString radius() const { return radiusString_; }
     void setRadius(const QString& radius);
