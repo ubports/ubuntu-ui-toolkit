@@ -62,8 +62,7 @@ void UCListItemPrivate::init()
                      q, &UCListItem::childrenChanged);
     q->setFlag(QQuickItem::ItemHasContents);
     // turn activeFocusOnPress on
-    activeFocusOnPress = true;
-    setFocusable();
+    q->setActiveFocusOnPress(true);
 
     // catch theme palette changes
     QObject::connect(&UCTheme::instance(), SIGNAL(paletteChanged()), q, SLOT(_q_updateColors()));
@@ -72,14 +71,6 @@ void UCListItemPrivate::init()
     // watch size change and set implicit size;
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
-}
-
-void UCListItemPrivate::setFocusable()
-{
-    // always accept mouse events
-    Q_Q(UCListItem);
-    q->setAcceptedMouseButtons(Qt::LeftButton | Qt::MiddleButton | Qt::RightButton);
-    q->setFiltersChildMouseEvents(true);
 }
 
 void UCListItemPrivate::_q_updateColors()
