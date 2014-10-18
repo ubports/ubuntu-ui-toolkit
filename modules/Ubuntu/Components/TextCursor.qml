@@ -129,6 +129,7 @@ Ubuntu.StyledItem {
     }
     property bool typing: false
     property bool contextMenuVisible: false
+    property bool readOnly: handler.main.readOnly
     function contextMenuHidden(p) {
         contextMenuVisible = false
     }
