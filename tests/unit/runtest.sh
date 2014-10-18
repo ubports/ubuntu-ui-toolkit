@@ -53,7 +53,6 @@ function execute_test_cmd {
     EXCEPTIONS='tst_components_benchmark \
                 tst_toolbaritems.qml \
                 tst_tabbar.qml \
-                tst_alarms \
                 tst_pickerpanel.qml \
                 tst_picker.qml \
                 tst_i18n \

@@ -25,8 +25,62 @@
 
 #include "ucalarm.h"
 
-class AlarmData {
+class AlarmUtils {
 public:
+    static QHash<int, QByteArray> roles() {
+        return instance().m_roles;
+    }
+
+    static QVariant roleData(int role, UCAlarm *alarm) {
+        switch (role) {
+        case 0: return alarm->message();
+        case 1: return alarm->date();
+        case 2: return alarm->type();
+        case 3: return static_cast<int>(alarm->daysOfWeek());
+        case 4: return alarm->sound();
+        case 5: return alarm->enabled();
+        default: return QVariant::fromValue(alarm);
+        }
+    }
+
+    static QDateTime normalizeDate(const QDateTime &dt) {
+        QTime time = dt.time();
+        time.setHMS(time.hour(), time.minute(), time.second());
+        return QDateTime(dt.date(), time, dt.timeSpec());
+    }
+private:
+    QHash<int, QByteArray> m_roles;
+    AlarmUtils()
+    {
+        int i = 0;
+        m_roles.insert(i++, QByteArray("message"));
+        m_roles.insert(i++, QByteArray("date"));
+        m_roles.insert(i++, QByteArray("type"));
+        m_roles.insert(i++, QByteArray("daysOfWeek"));
+        m_roles.insert(i++, QByteArray("sound"));
+        m_roles.insert(i++, QByteArray("enabled"));
+        m_roles.insert(i++, QByteArray("model"));
+    }
+    static AlarmUtils &instance()
+    {
+        static AlarmUtils instance;
+        return instance;
+    }
+};
+
+class AlarmRequest;
+class AlarmManagerPrivate;
+class AlarmRequestPrivate;
+class AlarmList;
+class AlarmManager : public QObject
+{
+    Q_OBJECT
+public:
+    enum Status {
+        Ready = 1,
+        Progress,
+        Error
+    };
     enum Change {
         NoChange    = 0,
         Enabled     = 0x0001,
@@ -38,140 +92,34 @@ public:
         AllFields   = 0x00FF
     };
 
-    AlarmData()
-        : changes(0)
-        , type(UCAlarm::OneTime)
-        , days(UCAlarm::AutoDetect)
-        , enabled(true)
-    {
-    }
-    AlarmData(const AlarmData &other)
-        : changes(0)
-        , cookie(other.cookie)
-        , originalDate(other.originalDate)
-        , date(other.date)
-        , message(other.message)
-        , sound(other.sound)
-        , type(other.type)
-        , days(other.days)
-        , enabled(other.enabled)
-    {
-    }
-
-    bool compare(const AlarmData &other) const
-    {
-        // cookie, sound, and enabled do not count on alarm equality
-        return date == other.date
-                && message == other.message
-                && type == other.type
-                && days == other.days;
-    }
-
-    bool operator==(const AlarmData &other) const
-    {
-        return compare(other);
-    }
-
-    static QHash<int, QByteArray> roles() {
-        QHash<int, QByteArray> hash;
-        int i = 0;
-        hash.insert(i++, QByteArray("message"));
-        hash.insert(i++, QByteArray("date"));
-        hash.insert(i++, QByteArray("type"));
-        hash.insert(i++, QByteArray("daysOfWeek"));
-        hash.insert(i++, QByteArray("sound"));
-        hash.insert(i++, QByteArray("enabled"));
-        return hash;
-    }
-
-    QVariant roleData(int role) const {
-        switch (role) {
-        case 0: return message;
-        case 1: return date;
-        case 2: return type;
-        case 3: return static_cast<int>(days);
-        case 4: return sound;
-        case 5: return enabled;
-        default: return QVariant();
-        }
-    }
-
-    static QDateTime normalizeDate(const QDateTime &dt) {
-        QTime time = dt.time();
-        time.setHMS(time.hour(), time.minute(), time.second());
-        return QDateTime(dt.date(), time, dt.timeSpec());
-    }
-
-    // the function normalizes and transcodes the date into UTC/LocalTime equivalent
-    static QDateTime transcodeDate(const QDateTime &dt, Qt::TimeSpec targetSpec) {
-        if (dt.timeSpec() == targetSpec) {
-            return normalizeDate(dt);
-        }
-        return QDateTime(dt.date(), normalizeDate(dt).time(), targetSpec);
-    }
-
-    unsigned int changes;
-    QVariant cookie;
-
-    // data members
-    QDateTime originalDate;
-    QDateTime date;
-    QString message;
-    QUrl sound;
-    UCAlarm::AlarmType type;
-    UCAlarm::DaysOfWeek days;
-    bool enabled;
-};
-
-class AlarmRequest;
-class AlarmManagerPrivate;
-class AlarmList;
-class AlarmManager : public QObject
-{
-    Q_OBJECT
-public:
-    enum Status {
-        Ready = 1,
-        Progress,
-        Error
-    };
-
     ~AlarmManager();
 
     static AlarmManager &instance();
 
-    AlarmList alarms() const;
+    bool fetchAlarms();
+    int alarmCount();
+    UCAlarm *alarmAt(int index) const;
+    UCAlarm *findAlarm(const QVariant &cookie) const;
 
-    bool verifyChange(UCAlarm *alarm, AlarmData::Change change, const QVariant &newData);
-    bool compareCookies(const QVariant &cookie1, const QVariant &cookie2);
+    bool verifyChange(UCAlarm *alarm, Change change, const QVariant &newData);
+    static UCAlarmPrivate *createAlarmData(UCAlarm *alarm);
 
 Q_SIGNALS:
-    void alarmsChanged();
-    void alarmsUpdated(const QList<QVariant> &cookies);
+    void alarmsRefreshStarted();
+    void alarmsRefreshed();
+    void alarmUpdated(int index);
+    void alarmRemoveStarted(int index);
+    void alarmRemoveFinished();
+    void alarmInsertStarted(int index);
+    void alarmInsertFinished();
+    void alarmMoveStarted(int from, int to);
+    void alarmMoveFinished();
 
 private:
     explicit AlarmManager(QObject *parent = 0);
     Q_DISABLE_COPY(AlarmManager)
-    Q_DECLARE_PRIVATE(AlarmManager)
+    friend class AlarmManagerPrivate;
     QScopedPointer<AlarmManagerPrivate> d_ptr;
-};
-
-// list of alarms
-class AlarmList: public QList<AlarmData>
-{
-public:
-    AlarmList(){}
-
-    // returns the index of the alarm matching a cookie, -1 on error
-    inline int indexOfAlarm(const QVariant &cookie)
-    {
-        for (int i = 0; i < size(); i++) {
-            if (AlarmManager::instance().compareCookies(at(i).cookie, cookie)) {
-                return i;
-            }
-        }
-        return -1;
-    }
 };
 
 #endif // ALARMMANAGER_H
