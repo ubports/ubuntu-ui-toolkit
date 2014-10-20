@@ -1,6 +1,6 @@
 unix {
     CONFIG += link_pkgconfig
-    PKGCONFIG += gio-2.0 thumbnailer dbus-1 libnih-dbus
+    PKGCONFIG += gio-2.0 dbus-1 libnih-dbus
 }
 
 TEMPLATE = lib
@@ -50,7 +50,6 @@ HEADERS += plugin.h \
     alarmmanager_p.h \
     ucalarmmodel.h \
     unitythemeiconprovider.h \
-    thumbnailgenerator.h \
     alarmrequest_p.h \
     alarmrequest_p_p.h \
     adapters/alarmsadapter_p.h \
@@ -98,7 +97,6 @@ SOURCES += plugin.cpp \
     alarmmanager_p.cpp \
     ucalarmmodel.cpp \
     unitythemeiconprovider.cpp \
-    thumbnailgenerator.cpp \
     alarmrequest_p.cpp \
     ucstatesaver.cpp \
     sortbehavior.cpp \
