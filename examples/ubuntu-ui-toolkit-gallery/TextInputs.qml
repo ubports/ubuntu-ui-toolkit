@@ -74,10 +74,22 @@ Template {
         }
 
         TemplateRow {
+            title: i18n.tr("Read-only")
+
+            TextField {
+                objectName: "textfield_read_only"
+                text: i18n.tr("Nobody type here")
+                readOnly: true
+                width: parent.width
+            }
+        }
+
+        TemplateRow {
             title: i18n.tr("Disabled")
 
             TextField {
                 objectName: "textfield_disabled"
+                text: i18n.tr("No interaction allowed")
                 enabled: false
                 width: parent.width
             }

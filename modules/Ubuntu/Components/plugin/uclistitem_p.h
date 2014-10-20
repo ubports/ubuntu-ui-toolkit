@@ -42,9 +42,6 @@ public:
         return that->d_func();
     }
 
-    // override setFocusable()
-    void setFocusable();
-
     void _q_updateColors();
     void _q_rebound();
     void _q_updateSize();
