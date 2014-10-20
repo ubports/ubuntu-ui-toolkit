@@ -35,7 +35,6 @@
 #include "inversemouseareatype.h"
 #include "qquickclipboard.h"
 #include "qquickmimedata.h"
-#include "thumbnailgenerator.h"
 #include "ucubuntuanimation.h"
 #include "ucfontutils.h"
 #include "ucarguments.h"
@@ -220,12 +219,6 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 
     // register icon provider
     engine->addImageProvider(QLatin1String("theme"), new UnityThemeIconProvider);
-
-    try {
-        engine->addImageProvider(QLatin1String("thumbnailer"), new ThumbnailGenerator);
-    } catch(std::runtime_error &e) {
-        qDebug() << "Could not create thumbnailer: " << e.what();
-    }
 
     // Necessary for Screen.orientation (from import QtQuick.Window 2.0) to work
     QGuiApplication::primaryScreen()->setOrientationUpdateMask(

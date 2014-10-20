@@ -144,8 +144,8 @@ Item {
             compare(defaults.highlightColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
             compare(defaults.pressed, false, "Not pressed buy default");
             compare(defaults.divider.visible, true, "divider is visible by default");
-            compare(defaults.divider.leftMargin, units.gu(2), "divider's left margin is 2GU");
-            compare(defaults.divider.rightMargin, units.gu(2), "divider's right margin is 2GU");
+            compare(defaults.divider.leftMargin, units.dp(2), "divider's left margin is 2GU");
+            compare(defaults.divider.rightMargin, units.dp(2), "divider's right margin is 2GU");
             compare(defaults.divider.colorFrom, "#000000", "colorFrom differs.");
             fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
