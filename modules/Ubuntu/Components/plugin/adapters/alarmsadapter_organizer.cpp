@@ -452,7 +452,6 @@ void AlarmsAdapter::init()
 
 AlarmsAdapter::~AlarmsAdapter()
 {
-    saveAlarms();
 }
 
 UCAlarmPrivate * AlarmsAdapter::createAlarmData(UCAlarm *alarm)
