@@ -26,6 +26,7 @@ class UCActionContext;
 class UCActionManager : public QObject, public QQmlParserStatus
 {
     Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
     Q_PROPERTY(QQmlListProperty<QObject> actions READ actions)
     Q_PROPERTY(QQmlListProperty<QObject> localContexts READ localContexts)
     Q_PROPERTY(UCActionContext *globalContext READ globalContext CONSTANT)
