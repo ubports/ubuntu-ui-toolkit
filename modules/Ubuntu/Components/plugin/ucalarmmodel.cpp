@@ -151,7 +151,7 @@ void UCAlarmModel::classBegin()
 void UCAlarmModel::componentComplete()
 {
     // fetch alarms
-    AlarmManager::instance().fetchAlarms();
+    refresh();
 }
 
 int UCAlarmModel::rowCount(const QModelIndex &parent) const
@@ -222,6 +222,17 @@ UCAlarm* UCAlarmModel::get(int index)
 int UCAlarmModel::count() const
 {
     return AlarmManager::instance().alarmCount();
+}
+
+/*!
+ * \qmlmethod refresh()
+ * The function refreshes the model by invalidating the alarm cache. Use this
+ * function only if the refresh is absolutely required, otherwise it will cause
+ * performance problems.
+ */
+void UCAlarmModel::refresh()
+{
+    AlarmManager::instance().fetchAlarms();
 }
 
 /*!
