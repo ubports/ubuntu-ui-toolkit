@@ -63,6 +63,7 @@ Item {
                 running: (cursorStyle.cursorVisibleTimeout > 0) &&
                          (cursorStyle.cursorHiddenTimeout > 0) &&
                          styledItem.visible &&
+                         !styledItem.readOnly &&
                          !styledItem.contextMenuVisible &&
                          styledItem.positionProperty === "cursorPosition"
                 repeat: true
