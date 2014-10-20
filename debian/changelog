@@ -1,3 +1,13 @@
+ubuntu-ui-toolkit (1.1.1279.1+14.10.20141014-0ubuntu1) 14.09; urgency=low
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+  [ Tim Peeters ]
+  * Fix margins in header contents.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 14 Oct 2014 14:40:58 +0000
+
 ubuntu-ui-toolkit (1.1.1279+14.10.20141007-0ubuntu1) 14.09; urgency=medium
 
   [ Michael Sheldon ]
