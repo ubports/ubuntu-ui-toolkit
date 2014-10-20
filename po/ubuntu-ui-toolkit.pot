@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-01 19:02+0200\n"
+"POT-Creation-Date: 2014-10-20 10:20-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,14 +17,18 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: Ubuntu/Components/plugin/statesaverbackend_p.cpp:154
+#: Ubuntu/Components/ListItems/Empty.qml:413
+msgid "Delete"
+msgstr ""
+
+#: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
 #, qt-format
 msgid ""
 "property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
 "of type %5"
 msgstr ""
 
-#: Ubuntu/Components/plugin/statesaverbackend_p.cpp:163
+#: Ubuntu/Components/plugin/statesaverbackend_p.cpp:185
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
 msgstr ""
@@ -129,4 +133,8 @@ msgstr ""
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
+msgstr ""
+
+#: Ubuntu/Components/ToolbarItems.qml:142
+msgid "Back"
 msgstr ""
