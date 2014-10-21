@@ -31,45 +31,27 @@ Item {
     */
     property alias keyColor: colorizedImage.keyColorIn
 
+    implicitWidth: image.implicitWidth
+    implicitHeight: image.implicitHeight
+
     Image {
         id: image
         objectName: "image"
         anchors.fill: parent
+        fillMode: Image.PreserveAspectFit
 
-        /* Necessary so that icons are not loaded before a size is set. */
-        source: ""
         sourceSize {
-            width: 0
-            height: 0
+            width: icon.width
+            height: icon.height
         }
 
-        Component.onCompleted: update()
-        onWidthChanged: update()
-        onHeightChanged: update()
-        Connections {
-            target: icon
-            ignoreUnknownSignals: true
-            onNameChanged: image.update()
-            onSourceChanged: image.update()
-        }
-
-        function update() {
-            // only set sourceSize.width, sourceSize.height and source when
-            // icon dimensions are valid, see bug #1349769.
-            if (width > 0 && height > 0
-                    && (icon.name || (icon.hasOwnProperty("source") && icon.source))) {
-                sourceSize.width = width;
-                sourceSize.height = height;
-                if (icon.hasOwnProperty("source")) {
-                    source = icon.source;
-                } else {
-                    source = "image://theme/%1".arg(icon.name);
-                }
-            } else {
-                source = "";
-                sourceSize.width = 0;
-                sourceSize.height = 0;
-            }
+        source: {
+            if (icon.hasOwnProperty("source"))
+                return icon.source;
+            else if (icon.name)
+                return "image://theme/%1".arg(icon.name);
+            else
+                return "";
         }
 
         cache: true
