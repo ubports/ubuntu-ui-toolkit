@@ -134,7 +134,10 @@ Item {
                 window.contentOrientation = Screen.orientation
         }
 
-        onWindowActiveChanged: applyOrientation()
+        onWindowActiveChanged: {
+            if (automaticOrientation)
+                applyOrientation();
+        }
 
         state: orientationAngle.toString()
 
