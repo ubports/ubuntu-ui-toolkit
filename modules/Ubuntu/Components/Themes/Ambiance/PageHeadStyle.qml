@@ -23,15 +23,15 @@ Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
     contentHeight: units.gu(7)
-    separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
-    separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
+//    separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
+//    separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
     fontWeight: Font.Light
     fontSize: "x-large"
     textColor: styledItem.config.foregroundColor
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
-    implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
+    implicitHeight: headerStyle.contentHeight + separator.height //+ separatorBottom.height
 
     // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
     //  see also FIXME in AppHeader where this property is used.
@@ -41,15 +41,40 @@ Style.PageHeadStyle {
     readonly property bool animating: headerStyle.state == "OUT"
                                       || leftAnchor.anchors.leftMargin < 0
 
-    BorderImage {
+//    BorderImage {
+    Rectangle {
         id: separator
         anchors {
             bottom: parent.bottom
             left: parent.left
             right: parent.right
         }
-        source: headerStyle.separatorSource
+
         height: sectionsRow.visible ? units.gu(3) : units.gu(2)
+//        source: headerStyle.separatorSource
+        color: "#e0e0e0"
+
+        // top shadow
+        Rectangle {
+            anchors {
+                top: parent.top
+                left: parent.left
+                right: parent.right
+            }
+            height: units.dp(1)
+            color: Qt.darker(parent.color, 1.1)
+        }
+
+        // bottom highlight
+        Rectangle {
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+            height: units.dp(1)
+            color: Qt.lighter(parent.color, 1.2)
+        }
 
         property PageHeadSections sections: styledItem.config.sections
 
@@ -115,15 +140,15 @@ Style.PageHeadStyle {
             }
         }
     }
-    Image {
-        id: separatorBottom
-        anchors {
-            top: separator.bottom
-            left: parent.left
-            right: parent.right
-        }
-        source: headerStyle.separatorBottomSource
-    }
+//    Image {
+//        id: separatorBottom
+//        anchors {
+//            top: separator.bottom
+//            left: parent.left
+//            right: parent.right
+//        }
+//        source: headerStyle.separatorBottomSource
+//    }
 
     states: [
         State {
