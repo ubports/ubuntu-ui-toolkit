@@ -179,6 +179,40 @@ MainView {
         self.flickable.swipe_to_bottom()
         self.assertTrue(self.flickable.atYEnd)
 
+    def test_swipe_to_show_more_above_with_containers(self):
+        """Swipe to show more above must receive containers as parameter."""
+        self.flickable.swipe_to_bottom()
+        self.assertTrue(self.flickable.atYEnd)
+
+        containers = self.flickable._get_containers()
+        self.flickable.swipe_to_show_more_above(containers)
+        self.assertFalse(self.flickable.atYEnd)
+
+    def test_swipe_to_show_more_above_without_arguments(self):
+        """Calling swipe to show more above must get containers by default."""
+        self.flickable.swipe_to_bottom()
+        self.assertTrue(self.flickable.atYEnd)
+
+        self.flickable.swipe_to_show_more_above()
+        self.assertFalse(self.flickable.atYEnd)
+
+    def test_swipe_to_show_more_below_with_containers(self):
+        """Swipe to show more below must receive containers as parameter."""
+        self.flickable.swipe_to_top()
+        self.assertTrue(self.flickable.atYBeginning)
+
+        containers = self.flickable._get_containers()
+        self.flickable.swipe_to_show_more_below(containers)
+        self.assertFalse(self.flickable.atYBeginning)
+
+    def test_swipe_to_show_more_below_without_arguments(self):
+        """Calling swipe to show more below must get containers by default."""
+        self.flickable.swipe_to_top()
+        self.assertTrue(self.flickable.atYBeginning)
+
+        self.flickable.swipe_to_show_more_below()
+        self.assertFalse(self.flickable.atYBeginning)
+
 
 class UnityFlickableTestCase(tests.QMLStringAppTestCase):
 

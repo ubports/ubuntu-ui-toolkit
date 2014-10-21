@@ -119,7 +119,7 @@ class QQuickFlickable(Scrollable):
                     "Couldn't swipe in the flickable.")
 
     @autopilot_logging.log_action(logger.info)
-    def swipe_to_show_more_above(self, containers):
+    def swipe_to_show_more_above(self, containers=None):
         if self.atYBeginning:
             raise _common.ToolkitException(
                 "Can't swipe more, we are already at the top of the "
@@ -128,7 +128,7 @@ class QQuickFlickable(Scrollable):
             self._swipe_to_show_more('above', containers)
 
     @autopilot_logging.log_action(logger.info)
-    def swipe_to_show_more_below(self, containers):
+    def swipe_to_show_more_below(self, containers=None):
         if self.atYEnd:
             raise _common.ToolkitException(
                 "Can't swipe more, we are already at the bottom of the "
@@ -136,7 +136,9 @@ class QQuickFlickable(Scrollable):
         else:
             self._swipe_to_show_more('below', containers)
 
-    def _swipe_to_show_more(self, direction, containers):
+    def _swipe_to_show_more(self, direction, containers=None):
+        if containers is None:
+            containers = self._get_containers()
         start_x = stop_x = self.globalRect.x + (self.globalRect.width // 2)
         # Start and stop just a little under the top and a little over the
         # bottom.
