@@ -23,8 +23,8 @@ Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
     contentHeight: units.gu(7)
-//    separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
-//    separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
+    separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
+    separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
     fontWeight: Font.Light
     fontSize: "x-large"
     textColor: styledItem.config.foregroundColor
@@ -41,8 +41,7 @@ Style.PageHeadStyle {
     readonly property bool animating: headerStyle.state == "OUT"
                                       || leftAnchor.anchors.leftMargin < 0
 
-//    BorderImage {
-    Rectangle {
+    StyledItem {
         id: separator
         anchors {
             bottom: parent.bottom
@@ -51,30 +50,14 @@ Style.PageHeadStyle {
         }
 
         height: sectionsRow.visible ? units.gu(3) : units.gu(2)
-//        source: headerStyle.separatorSource
-        color: "#e0e0e0"
 
-        // top shadow
-        Rectangle {
-            anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
-            }
-            height: units.dp(1)
-            color: Qt.darker(parent.color, 1.1)
-        }
+        // properties needed for the separator style:
+        // separatorSource and separatorBottomSource are needed for the deprecated
+        // HeadSeparatorImageStyle.
+        property url separatorSource: headerStyle.separatorSource
+        property url separatorBottomSource: headerStyle.separatorBottomSource
 
-        // bottom highlight
-        Rectangle {
-            anchors {
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
-            }
-            height: units.dp(1)
-            color: Qt.lighter(parent.color, 1.2)
-        }
+        style: Theme.createStyleComponent("HeadSeparatorImageStyle.qml", separator)
 
         property PageHeadSections sections: styledItem.config.sections
 
@@ -140,15 +123,6 @@ Style.PageHeadStyle {
             }
         }
     }
-//    Image {
-//        id: separatorBottom
-//        anchors {
-//            top: separator.bottom
-//            left: parent.left
-//            right: parent.right
-//        }
-//        source: headerStyle.separatorBottomSource
-//    }
 
     states: [
         State {
