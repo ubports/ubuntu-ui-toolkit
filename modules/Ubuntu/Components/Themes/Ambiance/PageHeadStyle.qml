@@ -57,6 +57,7 @@ Style.PageHeadStyle {
         property url separatorSource: headerStyle.separatorSource
         property url separatorBottomSource: headerStyle.separatorBottomSource
 
+        // TODO TIM: select the correct style depending on separatorSource
         style: Theme.createStyleComponent("HeadSeparatorImageStyle.qml", separator)
 
         property PageHeadSections sections: styledItem.config.sections
