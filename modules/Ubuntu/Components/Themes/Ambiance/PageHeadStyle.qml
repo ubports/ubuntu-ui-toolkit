@@ -31,7 +31,7 @@ Style.PageHeadStyle {
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
-    implicitHeight: headerStyle.contentHeight + separator.height //+ separatorBottom.height
+    implicitHeight: headerStyle.contentHeight + separator.height
 
     // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
     //  see also FIXME in AppHeader where this property is used.
