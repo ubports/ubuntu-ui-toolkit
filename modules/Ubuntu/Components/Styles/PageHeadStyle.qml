@@ -33,16 +33,12 @@ Item {
     /*!
       The source of the image that separates the header from the contents of a \l MainView.
       The separator will be drawn over the contents.
-      Deprecated in Ubuntu.Components 1.2
-      \deprecated
      */
     property url separatorSource
 
     /*!
       The source of an additional image attached to the bottom of the separator. The contents
       of the \l MainView will be drawn on top of the separator bottom image.
-      Deprecated in Ubuntu.Components 1.2
-      \deprecated
      */
     property url separatorBottomSource
 
