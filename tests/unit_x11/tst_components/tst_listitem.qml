@@ -472,8 +472,7 @@ Item {
             var option = findChild(panelItem(data.item.leadingActions), "list_option_0");
             verify(option, "actions panel cannot be reached");
             // we test the last action, as we tug the first action on leading, which means teh alst will be accessible
-            var len = data.item.leadingActions.actions.length;
-            var action = data.item.leadingActions.actions[len - 1];
+            var action = data.item.leadingActions.actions[0];
             actionSpy.target = action;
             actionSpy.clear();
             // tug actions in
@@ -481,7 +480,7 @@ Item {
             waitForRendering(data.item.contentItem, 800);
 
             // select the option
-            mouseClick(data.item, centerOf(option).x, centerOf(option).y);
+            mouseClick(option, centerOf(option).x, centerOf(option).y);
             waitForRendering(data.item.contentItem, 800);
 
             // check the action param

@@ -133,12 +133,10 @@ qreal UCListItemActionsPrivate::snap(UCListItemActions *options)
     if (!_this || !_this->panelItem) {
         return 0.0;
     }
-    qreal ratio = _this->offsetDragged / _this->optionSlotWidth;
-    int visible = _this->optionsVisible;
-    if (ratio > 0.0 && (ratio - trunc(ratio)) > 0.5) {
-        visible++;
+    if (_this->offsetDragged > _this->optionSlotWidth * 0.5) {
+        return _this->panelItem->width() * (_this->status == UCListItemActions::Leading ? 1 : -1);
     }
-    return visible * _this->optionSlotWidth * (_this->status == UCListItemActions::Leading ? 1 : -1);
+    return 0.0;
 }
 
 void UCListItemActionsPrivate::setDragging(UCListItemActions *actions, UCListItem *listItem, bool dragging)
