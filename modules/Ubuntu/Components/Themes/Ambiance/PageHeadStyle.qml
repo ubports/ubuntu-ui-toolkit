@@ -23,8 +23,8 @@ Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
     contentHeight: units.gu(7)
-    separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
-    separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
+    separatorSource: "" // use the new separator
+    separatorBottomSource: ""
     fontWeight: Font.Light
     fontSize: "x-large"
     textColor: styledItem.config.foregroundColor
