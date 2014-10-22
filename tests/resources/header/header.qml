@@ -22,6 +22,12 @@ MainView {
     width: units.gu(40)
     height: units.gu(50)
     useDeprecatedToolbar: false
+//    backgroundColor: "#333333"
+//    backgroundColor: UbuntuColors.purple
+
+    headerColor: "#343C60"
+    backgroundColor: "#6A69A2"
+    footerColor: "#8896D5"
 
     PageStack {
         id: stack
@@ -29,6 +35,7 @@ MainView {
         Component.onCompleted: stack.push(tabs)
         Tabs {
             id: tabs
+            selectedTabIndex: 1
             Tab {
                 title: "Stack"
                 page: Page {

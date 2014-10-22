@@ -37,6 +37,11 @@ StyledItem {
      */
     property bool animate: true
 
+    /*!
+      The background color of the separator.
+     */
+    property color separatorColor: "#e0e0e0"
+
     Behavior on y {
         enabled: animate && !(header.flickable && header.flickable.moving)
         SmoothedAnimation {

@@ -21,7 +21,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         id: separatorRect
-        color: "#e0e0e0"
+        color: styledItem.backgroundColor
 
         // top shadow
         Rectangle {

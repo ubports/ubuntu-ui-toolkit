@@ -61,6 +61,10 @@ Style.PageHeadStyle {
         // HeadSeparatorImageStyle.
         property url separatorSource: headerStyle.separatorSource
         property url separatorBottomSource: headerStyle.separatorBottomSource
+
+        // backgroundColor is used in the new HeadSeparatorStyle
+        property color backgroundColor: styledItem.separatorColor
+
         property bool useOldDivider: "" != separatorSource
 
         style: useOldDivider ? Theme.createStyleComponent("HeadSeparatorImageStyle.qml", separator)
