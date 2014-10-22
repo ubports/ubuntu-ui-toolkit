@@ -57,7 +57,6 @@ Style.PageHeadStyle {
 
         height: sectionsRow.visible ? units.gu(3) : units.gu(2)
 
-        // properties needed for the separator style:
         // separatorSource and separatorBottomSource are needed for the deprecated
         // HeadSeparatorImageStyle.
         property url separatorSource: headerStyle.separatorSource
