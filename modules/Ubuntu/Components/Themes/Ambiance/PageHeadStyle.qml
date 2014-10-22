@@ -41,6 +41,9 @@ Style.PageHeadStyle {
     readonly property bool animating: headerStyle.state == "OUT"
                                       || leftAnchor.anchors.leftMargin < 0
 
+    // For unity8
+    property alias __separator_visible: separator.visible
+
     StyledItem {
         id: separator
         anchors {
@@ -56,9 +59,10 @@ Style.PageHeadStyle {
         // HeadSeparatorImageStyle.
         property url separatorSource: headerStyle.separatorSource
         property url separatorBottomSource: headerStyle.separatorBottomSource
+        property bool useOldDivider: "" != separatorSource
 
-        // TODO TIM: select the correct style depending on separatorSource
-        style: Theme.createStyleComponent("HeadSeparatorImageStyle.qml", separator)
+        style: useOldDivider ? Theme.createStyleComponent("HeadSeparatorImageStyle.qml", separator)
+                             : Theme.createStyleComponent("HeadSeparatorStyle.qml", separator)
 
         property PageHeadSections sections: styledItem.config.sections
 
