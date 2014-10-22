@@ -112,6 +112,13 @@ class Expandable(Empty):
 
     @autopilot_logging.log_action(logger.info)
     def expand(self):
+        """Expand an expandable list item.
+
+        If the item is already expanded, no action will be executed.
+        If you want to check if the item is expanded, you can use the
+        ``expanded`` property.
+
+        """
         if not self.expanded:
             self._click_always_visible_section()
             self.expanded.wait_for(True)
@@ -128,6 +135,13 @@ class Expandable(Empty):
 
     @autopilot_logging.log_action(logger.info)
     def collapse(self):
+        """Collapse an expandable list item.
+
+        If the item is already collapsed, no action will be executed.
+        If you want to check if the item is expanded, you can use the
+        ``expanded`` property.
+
+        """
         if self.expanded:
             self._click_always_visible_section()
             self.expanded.wait_for(False)
