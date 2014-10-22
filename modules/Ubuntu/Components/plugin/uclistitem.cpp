@@ -244,8 +244,8 @@ void UCListItemPrivate::init()
     // create rebound animation
     UCUbuntuAnimation animationCodes;
     reboundAnimation = new QQuickPropertyAnimation(q);
-    reboundAnimation->setEasing(animationCodes.StandardEasing());
-    reboundAnimation->setDuration(animationCodes.SnapDuration());
+    reboundAnimation->setEasing(QEasingCurve(QEasingCurve::OutElastic));
+    reboundAnimation->setDuration(animationCodes.FastDuration());
     reboundAnimation->setTargetObject(contentItem);
     reboundAnimation->setProperty("x");
     reboundAnimation->setAlwaysRunToEnd(true);
