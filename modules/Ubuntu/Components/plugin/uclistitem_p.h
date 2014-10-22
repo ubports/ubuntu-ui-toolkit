@@ -98,7 +98,7 @@ Q_SIGNALS:
     void colorToChanged();
 
 protected:
-    QSGNode *paint(const QRectF &rect);
+    QSGNode *paint(QSGNode *node, const QRectF &rect);
 
 private Q_SLOTS:
     void unitsChanged();

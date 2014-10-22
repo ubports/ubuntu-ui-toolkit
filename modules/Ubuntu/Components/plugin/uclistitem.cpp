@@ -123,22 +123,23 @@ void UCListItemDivider::updateGradient()
     }
 }
 
-QSGNode *UCListItemDivider::paint(const QRectF &rect)
+QSGNode *UCListItemDivider::paint(QSGNode *node, const QRectF &rect)
 {
-    if (m_visible && !m_lastItem && (m_gradient.size() > 0)) {
-        // the parent always recreates the node, so no worries for the existing child node
-        QSGRectangleNode *rectNode = m_listItem->sceneGraphContext()->createRectangleNode();
-        // margins are only applied when the ListItem is in normal state, when pressed,
-        // the divider is painted from edge to edge
-        qreal left = (m_listItem && m_listItem->pressed) ? 0 : m_leftMargin;
-        qreal right = (m_listItem && m_listItem->pressed) ? rect.width() : rect.width() - m_leftMargin - m_rightMargin;
-        rectNode->setRect(QRectF(left, rect.height() - m_thickness, right, m_thickness));
-        rectNode->setGradientStops(m_gradient);
-        rectNode->update();
-        return rectNode;
-    } else {
-        return 0;
+    QSGRectangleNode *dividerNode = static_cast<QSGRectangleNode*>(node);
+    if (m_visible && (m_gradient.size() > 0) && ((m_colorFrom.alphaF() >= (1.0f / 255.0f)) || (m_colorTo.alphaF() >= (1.0f / 255.0f)))) {
+        if (!dividerNode) {
+            dividerNode = m_listItem->sceneGraphContext()->createRectangleNode();
+        }
+        QRectF divider(m_leftMargin, rect.height() - m_thickness, rect.width() - m_leftMargin - m_rightMargin, m_thickness);
+        dividerNode->setRect(divider);
+        dividerNode->setGradientStops(m_gradient);
+        dividerNode->update();
+        return dividerNode;
+    } else if (node) {
+        // delete the node
+        delete node;
     }
+    return 0;
 }
 
 void UCListItemDivider::setVisible(bool visible)
@@ -248,8 +249,8 @@ void UCListItemPrivate::init()
     // create rebound animation
     UCUbuntuAnimation animationCodes;
     reboundAnimation = new QQuickPropertyAnimation(q);
-    reboundAnimation->setEasing(animationCodes.StandardEasing());
-    reboundAnimation->setDuration(animationCodes.SnapDuration());
+    reboundAnimation->setEasing(QEasingCurve(QEasingCurve::OutElastic));
+    reboundAnimation->setDuration(animationCodes.FastDuration());
     reboundAnimation->setTargetObject(contentItem);
     reboundAnimation->setProperty("x");
     reboundAnimation->setAlwaysRunToEnd(true);
@@ -601,27 +602,47 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     Q_D(UCListItem);
     QColor color = d->pressed ? d->highlightColor : d->color;
 
-    delete oldNode;
     if (width() <= 0 || height() <= 0) {
+        delete oldNode;
         return 0;
     }
 
     QSGRectangleNode *rectNode = 0;
-    if (color.alpha() > 0) {
+    rectNode = static_cast<QSGRectangleNode*>(oldNode);
+    if (!rectNode) {
         rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
+    }
+    if (color.alphaF() >= (1.0f / 255.0f)) {
         rectNode->setColor(color);
         // cover only the area of the contentItem
         rectNode->setRect(d->contentItem->boundingRect());
+        rectNode->setGradientStops(QGradientStops());
+        rectNode->setAntialiasing(true);
+        rectNode->setAntialiasing(false);
         rectNode->update();
+    } else {
+        // delete node, this will delete the divider node as well
+        delete rectNode;
+        rectNode = 0;
     }
     oldNode = rectNode;
+    QSGNode *dividerNode = oldNode ? oldNode->childAtIndex(0) : 0;
     if (d->divider && d->divider->m_visible) {
-        QSGNode * dividerNode = d->divider->paint(boundingRect());
-        if (dividerNode && oldNode) {
-            oldNode->appendChildNode(dividerNode);
-        } else if (dividerNode) {
-            oldNode = dividerNode;
+        QSGNode *newNode = d->divider->paint(dividerNode, boundingRect());
+        if (newNode != dividerNode && oldNode) {
+            if (dividerNode) {
+                oldNode->removeChildNode(dividerNode);
+            }
+            if (newNode) {
+                oldNode->appendChildNode(newNode);
+            }
         }
+        if (!oldNode) {
+            oldNode = newNode;
+        }
+    } else if (dividerNode) {
+        // the divider painter node may be still added as child, so remove it
+        oldNode->removeChildNode(dividerNode);
     }
     return oldNode;
 }
