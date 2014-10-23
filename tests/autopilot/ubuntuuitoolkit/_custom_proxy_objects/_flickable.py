@@ -77,14 +77,14 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _slow_drag(self, start_x, stop_x, start_y, stop_y):
         # If we drag too fast, we end up scrolling more than what we
         # should, sometimes missing the  element we are looking for.
+        original_content_y = self.contentY
+
         # I found that when the flickDeceleration is 1500, the rate should be
         # 5 and that when it's 100, the rate should be 1. With those two points
-        # we can get that the following equation.
+        # we can get the following equation.
         # XXX The deceleration might not be linear with respect to the rate,
         # but this works for the two types of scrollables we have for now.
         # --elopio - 2014-05-08
-        original_content_y = self.contentY
-
         rate = (self.flickDeceleration + 250) / 350
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=rate)
 
