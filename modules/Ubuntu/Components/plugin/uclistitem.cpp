@@ -576,7 +576,6 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
         // cover only the area of the contentItem
         rectNode->setRect(d->contentItem->boundingRect());
         rectNode->setGradientStops(QGradientStops());
-        qDebug() << "color" << color;
         rectNode->setAntialiasing(true);
         rectNode->setAntialiasing(false);
         rectNode->update();
