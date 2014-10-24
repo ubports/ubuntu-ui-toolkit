@@ -45,7 +45,7 @@ Style.PageHeadStyle {
 
     // for Unity8
     // FIXME: Remove this property when we introduce a header preset that does not
-    //  have a divider.
+    //  have a separator.
     property alias __separator_visible: divider.visible
 
     StyledItem {
