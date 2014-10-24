@@ -208,6 +208,7 @@ UCListItemPrivate::UCListItemPrivate()
     , ready(false)
     , index(-1)
     , xAxisMoveThresholdGU(1.5)
+    , overshootGU(2)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
     , reboundAnimation(0)
@@ -254,8 +255,10 @@ void UCListItemPrivate::init()
     // create rebound animation
     UCUbuntuAnimation animationCodes;
     reboundAnimation = new QQuickPropertyAnimation(q);
-    reboundAnimation->setEasing(QEasingCurve(QEasingCurve::OutBack));
-    reboundAnimation->setDuration(animationCodes.SnapDuration());
+    QEasingCurve easing(QEasingCurve::OutElastic);
+    easing.setPeriod(0.5);
+    reboundAnimation->setEasing(easing);
+    reboundAnimation->setDuration(animationCodes.BriskDuration());
     reboundAnimation->setTargetObject(contentItem);
     reboundAnimation->setProperty("x");
     reboundAnimation->setAlwaysRunToEnd(true);
@@ -433,9 +436,9 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
     UCListItemActionsPrivate *trailing = UCListItemActionsPrivate::get(trailingActions);
     x += dx;
     // min cannot be less than the trailing's panel width
-    qreal min = (trailing && trailing->panelItem) ? -trailing->panelItem->width() : 0;
+    qreal min = (trailing && trailing->panelItem) ? -trailing->panelItem->width() - UCUnits::instance().gu(overshootGU): 0;
     // max cannot be bigger than 0 or the leading's width in case we have leading panel
-    qreal max = (leading && leading->panelItem) ? leading->panelItem->width() : 0;
+    qreal max = (leading && leading->panelItem) ? leading->panelItem->width() + UCUnits::instance().gu(overshootGU): 0;
     x = CLAMP(x, min, max);
 }
 

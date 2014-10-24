@@ -65,6 +65,7 @@ public:
     bool ready:1;
     int index;
     qreal xAxisMoveThresholdGU;
+    qreal overshootGU;
     QPointF lastPos;
     QPointF pressedPos;
     QColor color;
