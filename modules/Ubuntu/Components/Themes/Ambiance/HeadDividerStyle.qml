@@ -20,7 +20,7 @@ Item {
 
     property color color: styledItem.backgroundColor
 
-    // Do not make the following two colors public as they may be deprecated soon.
+    // Do not make the following two colors part of the style API as they may be deprecated soon.
     property color topColor: Qt.darker(color, 1.1)
     property color bottomColor: Qt.lighter(color, 1.2)
 
