@@ -105,6 +105,12 @@ Item {
             target: testItem;
         }
 
+        SignalSpy {
+            id: interactiveSpy
+            signalName: "interactiveChanged"
+            target: listView
+        }
+
         function panelItem(actionList) {
             return findInvisibleChild(actionList, "ListItemPanel");
         }
@@ -117,6 +123,7 @@ Item {
         function cleanup() {
             pressedSpy.clear();
             clickSpy.clear();
+            interactiveSpy.clear();
             listView.interactive = true;
             // tap on the first item to make sure we are rebounding all
             mouseClick(defaults, 0, 0);
@@ -273,10 +280,10 @@ Item {
             var item0 = findChild(listView, "listItem0");
             var item1 = findChild(listView, "listItem1");
             return [
-                {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: true},
-                {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: false},
+                {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(40), clickOn: item1, mouse: true},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(40), clickOn: item0.contentItem, mouse: true},
+                {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(40), clickOn: item1, mouse: false},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(40), clickOn: item0.contentItem, mouse: false},
             ];
         }
         function test_listview_not_interactive_while_tugged(data) {
@@ -286,8 +293,11 @@ Item {
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
-            waitForRendering(data.item, 800);
-            compare(listView.interactive, false, "The ListView is still interactive!");
+            waitForRendering(data.item, 1000);
+            interactiveSpy.wait();
+            // interactive should be changed twice
+            verify(interactiveSpy.count > 0, "Listview interactive did not change.");
+            compare(listView.interactive, true, "The ListView is still not interactive!");
             // dismiss
             if (data.mouse) {
                 mouseClick(data.clickOn, centerOf(data.clickOn).x, centerOf(data.clickOn).y);
