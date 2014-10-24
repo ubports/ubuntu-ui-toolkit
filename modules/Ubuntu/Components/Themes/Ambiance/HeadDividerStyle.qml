@@ -28,26 +28,26 @@ Item {
         anchors.fill: parent
         color: dividerStyle.color
 
-        // top shadow
-        Rectangle {
-            anchors {
-                top: parent.top
-                left: parent.left
-                right: parent.right
+        gradient: Gradient {
+            // top shadow
+            GradientStop {
+                position: 0.05
+                color: dividerStyle.topColor
             }
-            height: units.dp(1)
-            color: dividerStyle.topColor
-        }
-
-        // bottom highlight
-        Rectangle {
-            anchors {
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
+            // middle (background)
+            GradientStop {
+                position: 0.1
+                color: dividerStyle.color
             }
-            height: units.dp(1)
-            color: dividerStyle.bottomColor
+            GradientStop {
+                position: 0.9
+                color: dividerStyle.color
+            }
+            // bottom highlight
+            GradientStop {
+                position: 0.95
+                color: dividerStyle.bottomColor
+            }
         }
     }
 }
