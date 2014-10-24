@@ -34,7 +34,7 @@ MainView {
                 subText: "Subtitle"
             }
         }
-        ThinDivider{}
+        ThinDivider {}
         Repeater {
             model: 5
             Subtitled {
