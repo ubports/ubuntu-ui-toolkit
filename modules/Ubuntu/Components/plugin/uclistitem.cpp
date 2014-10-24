@@ -397,9 +397,9 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
     UCListItemActionsPrivate *trailing = UCListItemActionsPrivate::get(trailingActions);
     x += dx;
     // min cannot be less than the trailing's panel width
-    qreal min = (trailing && trailing->panelItem) ? -trailing->panelItem->width() : 0;
+    qreal min = (trailing && trailing->panelItem) ? -trailing->panelItem->width() - UCUnits::instance().gu(overshootGU): 0;
     // max cannot be bigger than 0 or the leading's width in case we have leading panel
-    qreal max = (leading && leading->panelItem) ? leading->panelItem->width() : 0;
+    qreal max = (leading && leading->panelItem) ? leading->panelItem->width() + UCUnits::instance().gu(overshootGU): 0;
     x = CLAMP(x, min, max);
 }
 
