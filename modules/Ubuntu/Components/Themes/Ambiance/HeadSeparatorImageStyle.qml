@@ -16,7 +16,7 @@
 import QtQuick 2.2
 
 // This is the old DEPRECATED header separator, which is here for backwards compatibility.
-// The new header separator is in HeadSeparatorStyle.qml.
+// The new header divider is in HeadDividerStyle.qml.
 Item {
     id: separatorStyle
     BorderImage {

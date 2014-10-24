@@ -16,11 +16,8 @@
 import QtQuick 2.2
 
 Item {
-    id: separatorStyle
-
     Rectangle {
         anchors.fill: parent
-        id: separatorRect
         color: styledItem.backgroundColor
 
         // top shadow

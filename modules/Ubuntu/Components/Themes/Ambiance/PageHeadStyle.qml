@@ -23,7 +23,7 @@ Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
     contentHeight: units.gu(7)
-    separatorSource: "" // use the new separator
+    separatorSource: "" // use the new divider
     separatorBottomSource: ""
     fontWeight: Font.Light
     fontSize: "x-large"
@@ -31,7 +31,7 @@ Style.PageHeadStyle {
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
-    implicitHeight: headerStyle.contentHeight + separator.height
+    implicitHeight: headerStyle.contentHeight + divider.height
 
     // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
     //  see also FIXME in AppHeader where this property is used.
@@ -44,11 +44,11 @@ Style.PageHeadStyle {
 
     // for Unity8
     // FIXME: Remove this property when we introduce a header preset that does not
-    //  have a separator.
-    property alias __separator_visible: separator.visible
+    //  have a divider.
+    property alias __separator_visible: divider.visible
 
     StyledItem {
-        id: separator
+        id: divider
         anchors {
             bottom: parent.bottom
             left: parent.left
@@ -62,13 +62,13 @@ Style.PageHeadStyle {
         property url separatorSource: headerStyle.separatorSource
         property url separatorBottomSource: headerStyle.separatorBottomSource
 
-        // backgroundColor is used in the new HeadSeparatorStyle
-        property color backgroundColor: styledItem.separatorColor
+        // backgroundColor is used in the new HeadDividerStyle
+        property color backgroundColor: styledItem.dividerColor
 
         property bool useOldDivider: "" != separatorSource
 
-        style: useOldDivider ? Theme.createStyleComponent("HeadSeparatorImageStyle.qml", separator)
-                             : Theme.createStyleComponent("HeadSeparatorStyle.qml", separator)
+        style: useOldDivider ? Theme.createStyleComponent("HeadSeparatorImageStyle.qml", divider)
+                             : Theme.createStyleComponent("HeadDividerStyle.qml", divider)
 
         property PageHeadSections sections: styledItem.config.sections
 
@@ -77,13 +77,13 @@ Style.PageHeadStyle {
             anchors.centerIn: parent
             width: childrenRect.width
             height: parent.height
-            enabled: separator.sections.enabled
-            visible: separator.sections.model !== undefined
+            enabled: divider.sections.enabled
+            visible: divider.sections.model !== undefined
             opacity: enabled ? 1.0 : 0.5
 
             Repeater {
                 id: sectionsRepeater
-                model: separator.sections.model
+                model: divider.sections.model
                 objectName: "page_head_sections_repeater"
                 AbstractButton {
                     id: sectionButton
@@ -92,8 +92,8 @@ Style.PageHeadStyle {
                     enabled: sectionsRow.enabled
                     width: label.width + units.gu(4)
                     height: sectionsRow.height + units.gu(2)
-                    property bool selected: index === separator.sections.selectedIndex
-                    onClicked: separator.sections.selectedIndex = index;
+                    property bool selected: index === divider.sections.selectedIndex
+                    onClicked: divider.sections.selectedIndex = index;
 
                     Rectangle {
                         visible: parent.pressed
