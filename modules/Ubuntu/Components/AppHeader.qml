@@ -38,9 +38,9 @@ StyledItem {
     property bool animate: true
 
     /*!
-      The background color of the divider.
+      The background color of the divider. Value set by MainView.
      */
-    property color dividerColor: "#e0e0e0"
+    property color dividerColor
 
     Behavior on y {
         enabled: animate && !(header.flickable && header.flickable.moving)
