@@ -43,7 +43,6 @@ Style.PageHeadStyle {
     readonly property bool animating: headerStyle.state == "OUT"
                                       || leftAnchor.anchors.leftMargin < 0
 
-
     // for Unity8
     // FIXME: Remove this property when we introduce a header preset that does not
     //  have a divider.
