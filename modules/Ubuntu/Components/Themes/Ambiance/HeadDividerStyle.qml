@@ -31,21 +31,21 @@ Item {
         gradient: Gradient {
             // top shadow
             GradientStop {
-                position: 0.05
+                position: 0.02
                 color: dividerStyle.topColor
             }
             // middle (background)
             GradientStop {
-                position: 0.1
+                position: 0.05
                 color: dividerStyle.color
             }
             GradientStop {
-                position: 0.9
+                position: 0.95
                 color: dividerStyle.color
             }
             // bottom highlight
             GradientStop {
-                position: 0.95
+                position: 0.98
                 color: dividerStyle.bottomColor
             }
         }
