@@ -16,9 +16,17 @@
 import QtQuick 2.2
 
 Item {
+    id: dividerStyle
+
+    property color color: styledItem.backgroundColor
+
+    // Do not make the following two colors public as they may be deprecated soon.
+    property color topColor: Qt.darker(color, 1.1)
+    property color bottomColor: Qt.lighter(color, 1.2)
+
     Rectangle {
         anchors.fill: parent
-        color: styledItem.backgroundColor
+        color: dividerStyle.color
 
         // top shadow
         Rectangle {
@@ -28,7 +36,7 @@ Item {
                 right: parent.right
             }
             height: units.dp(1)
-            color: Qt.darker(parent.color, 1.1)
+            color: dividerStyle.topColor
         }
 
         // bottom highlight
@@ -39,7 +47,7 @@ Item {
                 bottom: parent.bottom
             }
             height: units.dp(1)
-            color: Qt.lighter(parent.color, 1.2)
+            color: dividerStyle.bottomColor
         }
     }
 }
