@@ -58,7 +58,11 @@ Item {
     }
 
     Rectangle {
-        anchors.fill: parent
+        anchors {
+            fill: parent
+            leftMargin: leadingPanel ? -units.gu(20) : 0
+            rightMargin: leadingPanel ? 0 : -units.gu(20)
+        }
         // FIXME: use Palette colors instead when available
         color: leadingPanel ? UbuntuColors.red : "white"
     }

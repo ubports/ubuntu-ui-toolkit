@@ -62,6 +62,7 @@ public:
     bool suppressClick:1;
     bool ready:1;
     qreal xAxisMoveThresholdGU;
+    qreal overshootGU;
     QPointF lastPos;
     QPointF pressedPos;
     QColor color;
