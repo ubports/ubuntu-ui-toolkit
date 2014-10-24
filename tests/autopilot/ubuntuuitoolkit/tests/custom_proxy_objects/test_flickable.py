@@ -14,10 +14,14 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+try:
+    from unittest import mock
+except ImportError:
+    import mock
+
 import testtools
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
-from ubuntuuitoolkit._custom_proxy_objects import _common
 
 
 class FlickableTestCase(testtools.TestCase):
@@ -27,7 +31,7 @@ class FlickableTestCase(testtools.TestCase):
         dummy_id = (0, 0)
         dummy_flicking = (0, 'dummy')
         state_with_flicking = {'id': dummy_id, 'flicking': dummy_flicking}
-        element = _common.UbuntuUIToolkitCustomProxyObjectBase(
+        element = ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase(
             state_with_flicking, '/dummy'.encode(), 'dummy')
 
         with element.no_automatic_refreshing():
@@ -37,7 +41,7 @@ class FlickableTestCase(testtools.TestCase):
         """is_flickable returns False if flickable property doesn't exist."""
         dummy_id = (0, 0)
         state_without_flicking = {'id': dummy_id}
-        element = _common.UbuntuUIToolkitCustomProxyObjectBase(
+        element = ubuntuuitoolkit.UbuntuUIToolkitCustomProxyObjectBase(
             state_without_flicking, '/dummy'.encode(), 'dummy')
 
         with element.no_automatic_refreshing():
@@ -212,6 +216,18 @@ MainView {
 
         self.flickable.swipe_to_show_more_below()
         self.assertFalse(self.flickable.atYBeginning)
+
+    def test_failed_drag_must_raise_exception(self):
+        dummy_coordinates = (0, 0, 10, 10)
+        # Patch the pointing device so it does nothing and the swipe fails.
+        with mock.patch.object(self.flickable, 'pointing_device'):
+            error = self.assertRaises(
+                ubuntuuitoolkit.ToolkitException,
+                self.flickable._slow_drag,
+                *dummy_coordinates
+            )
+
+        self.assertEqual('Could not swipe in the flickable.', str(error))
 
 
 class UnityFlickableTestCase(tests.QMLStringAppTestCase):
