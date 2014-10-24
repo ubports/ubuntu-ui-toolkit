@@ -22,6 +22,7 @@
 #include "plugin.h"
 #include <QtQml/QQmlInfo>
 #include "ucaction.h"
+#include "ucunits.h"
 
 UCListItemActionsPrivate::UCListItemActionsPrivate()
     : QObjectPrivate()
@@ -125,12 +126,11 @@ qreal UCListItemActionsPrivate::snap(UCListItemActions *options)
     if (!_this || !_this->panelItem) {
         return 0.0;
     }
-    qreal ratio = _this->offsetDragged / _this->optionSlotWidth;
-    int visible = _this->optionsVisible;
-    if (ratio > 0.0 && (ratio - trunc(ratio)) > 0.5) {
-        visible++;
+    // if the drag is > overshootGU, snap in, otherwise snap out
+    if (_this->offsetDragged > UCUnits::instance().gu(2)) {
+        return _this->panelItem->width() * (_this->leading ? 1 : -1);
     }
-    return visible * _this->optionSlotWidth * (_this->leading ? 1 : -1);
+    return 0.0;
 }
 
 
