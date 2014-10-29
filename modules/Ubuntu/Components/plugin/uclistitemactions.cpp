@@ -126,7 +126,8 @@ qreal UCListItemActionsPrivate::snap(UCListItemActions *options)
         return 0.0;
     }
     // if the drag is > overshootGU, snap in, otherwise snap out
-    if (_this->offsetDragged > UCUnits::instance().gu(2)) {
+    UCListItemPrivate *listItem = UCListItemPrivate::get(static_cast<UCListItem*>(_this->panelItem->parentItem()));
+    if (_this->offsetDragged > UCUnits::instance().gu(listItem->overshootGU)) {
         return _this->panelItem->width() * (_this->leading ? 1 : -1);
     }
     return 0.0;
