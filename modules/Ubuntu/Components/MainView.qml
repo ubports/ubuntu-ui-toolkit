@@ -245,13 +245,6 @@ PageTreeNode {
 
         automaticOrientation: false
         anchorToKeyboard: mainView.anchorToKeyboard
-        anchors {
-            //this is an attempt to keep the keyboard animation in sync with the content resize
-            //but this does not work very well because the keyboard animation has different steps
-            Behavior on bottomMargin {
-                NumberAnimation { easing.type: Easing.InOutQuad }
-            }
-        }
 
         // clip the contents so that it does not overlap the header
         Item {
@@ -342,6 +335,7 @@ PageTreeNode {
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
             animate: canvas.animate
+            dividerColor: Qt.darker(background.headerColor, 1.1)
 
             title: internal.activePage ? internal.activePage.title : ""
             flickable: internal.activePage ? internal.activePage.flickable : null

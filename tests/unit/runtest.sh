@@ -53,6 +53,8 @@ function execute_test_cmd {
     EXCEPTIONS='tst_components_benchmark \
                 tst_tabbar.qml \
                 tst_qquick_image_extension \
+                tst_page.qml \
+                tst_toolbar.qml \
                 tst_tabs.qml \
                 '
     if [ $WARNINGS -ne 0 ]; then
