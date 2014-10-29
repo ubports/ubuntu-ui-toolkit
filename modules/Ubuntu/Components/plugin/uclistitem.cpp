@@ -127,7 +127,7 @@ void UCListItemDivider::updateGradient()
 QSGNode *UCListItemDivider::paint(QSGNode *node, const QRectF &rect)
 {
     QSGRectangleNode *dividerNode = static_cast<QSGRectangleNode*>(node);
-    if (m_visible && (m_gradient.size() > 0) && ((m_colorFrom.alphaF() >= (1.0f / 255.0f)) || (m_colorTo.alphaF() >= (1.0f / 255.0f)))) {
+    if (m_visible && !m_lastItem && (m_gradient.size() > 0) && ((m_colorFrom.alphaF() >= (1.0f / 255.0f)) || (m_colorTo.alphaF() >= (1.0f / 255.0f)))) {
         if (!dividerNode) {
             dividerNode = m_listItem->sceneGraphContext()->createRectangleNode();
         }
@@ -211,6 +211,7 @@ UCListItemPrivate::UCListItemPrivate()
     , selected(false)
     , index(-1)
     , xAxisMoveThresholdGU(1.5)
+    , overshootGU(2)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
     , reboundAnimation(0)
@@ -258,8 +259,10 @@ void UCListItemPrivate::init()
     // create rebound animation
     UCUbuntuAnimation animationCodes;
     reboundAnimation = new QQuickPropertyAnimation(q);
-    reboundAnimation->setEasing(QEasingCurve(QEasingCurve::OutBack));
-    reboundAnimation->setDuration(animationCodes.SnapDuration());
+    QEasingCurve easing(QEasingCurve::OutElastic);
+    easing.setPeriod(0.5);
+    reboundAnimation->setEasing(easing);
+    reboundAnimation->setDuration(animationCodes.BriskDuration());
     reboundAnimation->setTargetObject(contentItem);
     reboundAnimation->setProperty("x");
     reboundAnimation->setAlwaysRunToEnd(true);
@@ -336,8 +339,8 @@ void UCListItemPrivate::_q_updateSelected()
     update();
 }
 
-// the function performs a cleanup on mouse release without any rebound animation
-void UCListItemPrivate::cleanup()
+// the function performs a rebound on mouse release without any animation
+void UCListItemPrivate::promptRebount()
 {
     setPressed(false);
     setMoved(false);
@@ -445,9 +448,9 @@ void UCListItemPrivate::clampX(qreal &x, qreal dx)
     UCListItemActionsPrivate *trailing = UCListItemActionsPrivate::get(trailingActions);
     x += dx;
     // min cannot be less than the trailing's panel width
-    qreal min = (trailing && trailing->panelItem) ? -trailing->panelItem->width() : 0;
+    qreal min = (trailing && trailing->panelItem) ? -trailing->panelItem->width() - UCUnits::instance().gu(overshootGU): 0;
     // max cannot be bigger than 0 or the leading's width in case we have leading panel
-    qreal max = (leading && leading->panelItem) ? leading->panelItem->width() : 0;
+    qreal max = (leading && leading->panelItem) ? leading->panelItem->width() + UCUnits::instance().gu(overshootGU): 0;
     x = CLAMP(x, min, max);
 }
 
@@ -765,7 +768,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             }
             if (d->contentItem->x() == 0.0) {
                 // do a cleanup, no need to rebound, the item has been dragged back to 0
-                d->cleanup();
+                d->promptRebount();
             } else if (snapPosition == 0.0){
                 d->_q_rebound();
             } else {
@@ -871,6 +874,14 @@ void UCListItem::setLeadingActions(UCListItemActions *actions)
     if (d->leadingActions == actions) {
         return;
     }
+    // snap out before we change the actions
+    d->promptRebount();
+    // then delete panelItem
+    if (d->leadingActions) {
+        UCListItemActionsPrivate *list = UCListItemActionsPrivate::get(d->leadingActions);
+        delete list->panelItem;
+        list->panelItem = 0;
+    }
     d->leadingActions = actions;
     if (d->leadingActions == d->trailingActions && d->leadingActions) {
         qmlInfo(this) << UbuntuI18n::tr("leadingActions and trailingActions cannot share the same object!");
@@ -896,6 +907,14 @@ void UCListItem::setTrailingActions(UCListItemActions *actions)
     Q_D(UCListItem);
     if (d->trailingActions == actions) {
         return;
+    }
+    // snap out before we change the actions
+    d->promptRebount();
+    // then delete panelItem
+    if (d->trailingActions) {
+        UCListItemActionsPrivate *list = UCListItemActionsPrivate::get(d->trailingActions);
+        delete list->panelItem;
+        list->panelItem = 0;
     }
     d->trailingActions = actions;
     if (d->leadingActions == d->trailingActions && d->trailingActions) {
