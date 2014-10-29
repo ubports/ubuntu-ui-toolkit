@@ -41,6 +41,11 @@ Style.PageHeadStyle {
     readonly property bool animating: headerStyle.state == "OUT"
                                       || leftAnchor.anchors.leftMargin < 0
 
+    // for Unity8
+    // FIXME: Remove this property when we introduce a header preset that does not
+    //  have a separator.
+    property alias __separator_visible: separator.visible
+
     BorderImage {
         id: separator
         anchors {
@@ -123,6 +128,7 @@ Style.PageHeadStyle {
             right: parent.right
         }
         source: headerStyle.separatorBottomSource
+        visible: separator.visible
     }
 
     states: [
