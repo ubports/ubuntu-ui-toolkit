@@ -416,13 +416,12 @@ Item {
         function test_verify_action_value(data) {
             var option = findChild(panelItem(data.item.leadingActions), "list_option_0");
             verify(option, "actions panel cannot be reached");
-            // we test the last action, as we tug the first action on leading, which means teh alst will be accessible
-            var len = data.item.leadingActions.actions.length;
-            var action = data.item.leadingActions.actions[len - 1];
+            // we test the first action
+            var action = data.item.leadingActions.actions[0];
             actionSpy.target = action;
             actionSpy.clear();
             // tug actions in
-            flick(data.item.contentItem, centerOf(data.item.contentItem).x, centerOf(data.item.contentItem).y, option.width, 0);
+            flick(data.item.contentItem, centerOf(data.item.contentItem).x, centerOf(data.item.contentItem).y, units.gu(5), 0);
             waitForRendering(data.item.contentItem, 800);
 
             // select the option
