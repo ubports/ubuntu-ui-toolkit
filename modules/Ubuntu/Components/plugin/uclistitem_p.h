@@ -46,7 +46,7 @@ public:
     void _q_rebound();
     void _q_updateSize();
     void _q_completeRebinding();
-    void cleanup();
+    void promptRebount();
     void reboundTo(qreal x);
     void setPressed(bool pressed);
     void setMoved(bool moved);
