@@ -126,7 +126,7 @@ void UCListItemDivider::updateGradient()
 QSGNode *UCListItemDivider::paint(QSGNode *node, const QRectF &rect)
 {
     QSGRectangleNode *dividerNode = static_cast<QSGRectangleNode*>(node);
-    if (m_visible && (m_gradient.size() > 0) && ((m_colorFrom.alphaF() >= (1.0f / 255.0f)) || (m_colorTo.alphaF() >= (1.0f / 255.0f)))) {
+    if (m_visible && !m_lastItem && (m_gradient.size() > 0) && ((m_colorFrom.alphaF() >= (1.0f / 255.0f)) || (m_colorTo.alphaF() >= (1.0f / 255.0f)))) {
         if (!dividerNode) {
             dividerNode = m_listItem->sceneGraphContext()->createRectangleNode();
         }
@@ -306,6 +306,7 @@ void UCListItemPrivate::_q_updateIndex(QObject *ownerItem)
         index = indexProperty.isValid() ? indexProperty.toInt() : -1;
     }
     divider->m_lastItem = ready && index == (ownerItem->property("count").toInt() - 1);
+    qDebug() << "LAST" << index << divider->m_lastItem;
 }
 
 // the function performs a rebound on mouse release without any animation
