@@ -325,7 +325,6 @@ void UCListItemPrivate::_q_updateIndex(QObject *ownerItem)
         index = indexProperty.isValid() ? indexProperty.toInt() : -1;
     }
     divider->m_lastItem = ready && index == (ownerItem->property("count").toInt() - 1);
-    qDebug() << "LAST" << index << divider->m_lastItem;
 }
 
 // the function performs a rebound on mouse release without any animation
