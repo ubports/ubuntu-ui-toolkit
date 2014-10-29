@@ -63,7 +63,7 @@ void UCListItemActionsPrivate::_q_handlePanelWidth()
     // FIXME: use Actions API when moved to C++
     int count = 0;
     for (int i = 0; i < actions.count(); i++) {
-        if (actions[i]->property("visible").toBool() && actions[i]->property("enabled").toBool()) {
+        if (actions[i]->property("visible").toBool()) {
             count++;
         }
     }
