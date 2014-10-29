@@ -558,9 +558,6 @@ private Q_SLOTS:
     void test_normalAppClose()
     {
         QProcess testApp;
-        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-        env.insert("APP_ID", "NormalAppClose");
-        testApp.setProcessEnvironment(env);
         testApp.start("qmlscene", QStringList() << "-I" <<  "../../../modules" << "NormalAppClose.qml");
         testApp.waitForFinished();
 
@@ -571,9 +568,6 @@ private Q_SLOTS:
     void test_SigTerm()
     {
         QProcess testApp;
-        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-        env.insert("APP_ID", "SimpleApp");
-        testApp.setProcessEnvironment(env);
         testApp.start("qmlscene -I ../../../modules SimpleApp.qml");
         testApp.waitForStarted();
 
@@ -588,9 +582,6 @@ private Q_SLOTS:
     void test_SigInt()
     {
         QProcess testApp;
-        QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-        env.insert("APP_ID", "SimpleApp");
-        testApp.setProcessEnvironment(env);
         testApp.start("qmlscene -I ../../../modules SimpleApp.qml");
         testApp.waitForStarted();
 
@@ -609,7 +600,7 @@ private Q_SLOTS:
         testApp.waitForFinished();
 
         QString fileName = stateFile("SimpleApp");
-        QVERIFY(QFile(fileName).exists());
+        QVERIFY2(QFile(fileName).exists(), qPrintable(fileName));
         // clean the file
         QFile::remove(fileName);
     }
