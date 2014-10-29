@@ -14,13 +14,41 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+try:
+    from unittest import mock
+except ImportError:
+    import mock
+
 import logging
+import os
 
 import fixtures
+import testtools
 from testtools.matchers import Contains
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import listitems, tests
+
+
+class ListItemsTestCase(testtools.TestCase):
+
+    def test_supported_class(self):
+        self.assertTrue(issubclass(
+            listitems.Base, listitems.Empty))
+        self.assertTrue(issubclass(
+            listitems.Expandable, listitems.Empty))
+        self.assertTrue(issubclass(
+            listitems.ItemSelector, listitems.Empty))
+        self.assertTrue(issubclass(
+            listitems.Standard, listitems.Empty))
+        self.assertTrue(issubclass(
+            listitems.SingleControl, listitems.Empty))
+        self.assertTrue(issubclass(
+            listitems.MultiValue, listitems.Base))
+        self.assertTrue(issubclass(
+            listitems.SingleValue, listitems.Base))
+        self.assertTrue(issubclass(
+            listitems.Subtitled, listitems.Base))
 
 
 class SwipeToDeleteTestCase(tests.QMLStringAppTestCase):
@@ -97,22 +125,6 @@ MainView {
             listitems.Standard, objectName='listitem_standard')
         self.assertTrue(self._item.exists())
 
-    def test_supported_class(self):
-        self.assertTrue(issubclass(
-            listitems.Base, listitems.Empty))
-        self.assertTrue(issubclass(
-            listitems.ItemSelector, listitems.Empty))
-        self.assertTrue(issubclass(
-            listitems.Standard, listitems.Empty))
-        self.assertTrue(issubclass(
-            listitems.SingleControl, listitems.Empty))
-        self.assertTrue(issubclass(
-            listitems.MultiValue, listitems.Base))
-        self.assertTrue(issubclass(
-            listitems.SingleValue, listitems.Base))
-        self.assertTrue(issubclass(
-            listitems.Subtitled, listitems.Base))
-
     def test_standard_custom_proxy_object(self):
         self.assertIsInstance(self._item, listitems.Standard)
 
@@ -185,3 +197,40 @@ MainView {
             objectName='listitem_destroyed_on_remove_without_confirm')
         item.swipe_to_delete()
         self.assertFalse(item.exists())
+
+
+class ExpandableTestCase(tests.QMLFileAppTestCase):
+
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_listitems.ExpandableTestCase.qml')
+
+    def setUp(self):
+        super(ExpandableTestCase, self).setUp()
+        self.test_expandable = self.main_view.select_single(
+            listitems.Expandable, objectName='expandable0')
+
+    def test_expand_item(self):
+        self.test_expandable.expand()
+        self.assertTrue(self.test_expandable.expanded)
+
+    def test_expand_already_expanded_item_must_do_nothing(self):
+        self.test_expandable.expand()
+
+        # Replace the pointer with None, so we make sure it's not being called.
+        with mock.patch.object(self.test_expandable, 'pointing_device', None):
+            self.test_expandable.expand()
+
+    def test_collapse_item(self):
+        self.test_expandable.expand()
+
+        self.test_expandable.collapse()
+        self.assertFalse(self.test_expandable.expanded)
+
+    def test_collapse_already_collapsed_item_must_do_nothing(self):
+        self.test_expandable.collapse()
+
+        # Replace the pointer with None, so we make sure it's not being called.
+        with mock.patch.object(self.test_expandable, 'pointing_device', None):
+            self.test_expandable.collapse()

@@ -55,8 +55,10 @@ Item {
         actions: [
             stockAction,
         ]
-        delegate: Item {
+        delegate: Rectangle {
             objectName: "custom_delegate"
+            width: units.gu(10)
+            color: "green"
         }
     }
     ListItemActions {
@@ -117,6 +119,11 @@ Item {
             id: actionSpy
             signalName: "triggered"
         }
+        SignalSpy {
+            id: interactiveSpy
+            signalName: "interactiveChanged"
+            target: listView
+        }
 
         SignalSpy {
             id: draggingSpy
@@ -137,6 +144,7 @@ Item {
             clickSpy.clear();
             actionSpy.clear();
             draggingSpy.clear();
+            interactiveSpy.clear();
             listView.interactive = true;
             // tap on the first item to make sure we are rebounding all
             mouseClick(defaults, 0, 0);
@@ -264,7 +272,7 @@ Item {
             } else {
                 TestExtras.touchClick(0, main, Qt.point(1, 1));
             }
-            waitForRendering(data.item, 400);
+            tryCompareFunction(function() { return listView.interactive; }, true, 1000);
         }
 
         // make sure this is executed as one of the last tests due to requirement to have the panelItem created
@@ -333,7 +341,6 @@ Item {
             } else {
                 TestExtras.touchClick(0, data.clickOn, centerOf(data.clickOn));
             }
-            waitForRendering(data.item, 400);
             tryCompareFunction(function(){ return data.item.contentItem.x; }, 0, 1000);
         }
 
@@ -341,28 +348,30 @@ Item {
             var item0 = findChild(listView, "listItem0");
             var item1 = findChild(listView, "listItem1");
             return [
-                {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: true},
-                {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: false},
+                {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(19), dy: units.gu(2), clickOn: item1, mouse: true},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(19), dy: units.gu(2), clickOn: item0.contentItem, mouse: true},
+                {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(19), dy: units.gu(2), clickOn: item1, mouse: false},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(19), dy: units.gu(2), clickOn: item0.contentItem, mouse: false},
             ];
         }
         function test_listview_not_interactive_while_tugged(data) {
             listView.positionViewAtBeginning();
+            compare(listView.interactive, true, "ListView is not interactive");
             if (data.mouse) {
-                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+                flick(data.item, data.pos.x, data.pos.y, data.dx, data.dy);
             } else {
-                TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
+                TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, data.dy));
             }
             waitForRendering(data.item, 800);
             compare(listView.interactive, false, "The ListView is still interactive!");
+            // interactive should be changed at least once!
+            verify(interactiveSpy.count > 0, "Listview interactive did not change.");
             // dismiss
             if (data.mouse) {
                 mouseClick(data.clickOn, centerOf(data.clickOn).x, centerOf(data.clickOn).y);
             } else {
                 TestExtras.touchClick(0, data.clickOn, centerOf(data.clickOn));
             }
-            waitForRendering(data.item, 400);
             tryCompareFunction(function(){ return listView.interactive; }, true, 1000);
         }
 
@@ -389,7 +398,6 @@ Item {
             } else {
                 TestExtras.touchClick(0, selectedOption, centerOf(selectedOption));
             }
-            waitForRendering(data.item, 400);
             tryCompareFunction(function(){ return data.item.contentItem.x; }, 0, 1000);
         }
 
@@ -402,24 +410,27 @@ Item {
             verify(custom, "Custom delegate not in use");
             // cleanup
             mouseClick(main, 0, 0);
+            tryCompareFunction(function() { return listView.interactive; }, true, 1000);
         }
 
         // execute as last so we make sure we have the panel created
         function test_snap_data() {
-            verify(panelItem(testItem.leadingActions), "Panel had not been created!");
-            var action = findChild(panelItem(testItem.leadingActions), "list_option_0");
-            verify(action, "Options not accessible");
-            var actionSize = action.width;
-            return [
-                {tag: "Snap back leading, mouse", item: testItem.contentItem, dx: actionSize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: true},
-                {tag: "Snap back leading, touch", item: testItem.contentItem, dx: actionSize / 2 - 10, list: testItem.leadingActions, snap: false, mouse: false},
-                {tag: "Snap in leading, mouse", item: testItem.contentItem, dx: actionSize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: true},
-                {tag: "Snap in leading, touch", item: testItem.contentItem, dx: actionSize / 2 + 10, list: testItem.leadingActions, snap: true, mouse: false},
+            var listItem = findChild(listView, "listItem0");
+            verify(listItem, "ListItem cannot be found");
+            verify(panelItem(listItem.leadingActions), "Leading panel had not been created!");
+            verify(panelItem(listItem.trailingActions), "Trailing panel had not been created!");
 
-                {tag: "Snap back trailing, mouse", item: testItem.contentItem, dx: -(actionSize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: true},
-                {tag: "Snap back trailing, touch", item: testItem.contentItem, dx: -(actionSize / 2 - 10), list: testItem.trailingActions, snap: false, mouse: false},
-                {tag: "Snap in trailing, mouse", item: testItem.contentItem, dx: -(actionSize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: true},
-                {tag: "Snap in trailing, touch", item: testItem.contentItem, dx: -(actionSize / 2 + 10), list: testItem.trailingActions, snap: true, mouse: false},
+            return [
+                // the list snaps out if the panel is dragged in > overshoot GU (hardcoded for now)
+                {tag: "Snap out leading, mouse", item: listItem.contentItem, dx: units.gu(1), list: listItem.leadingActions, snap: false, mouse: true},
+                {tag: "Snap out leading, touch", item: listItem.contentItem, dx: units.gu(1), list: listItem.leadingActions, snap: false, mouse: false},
+                {tag: "Snap in leading, mouse", item: listItem.contentItem, dx: units.gu(4), list: listItem.leadingActions, snap: true, mouse: true},
+                {tag: "Snap in leading, touch", item: listItem.contentItem, dx: units.gu(4), list: listItem.leadingActions, snap: true, mouse: false},
+
+                {tag: "Snap out trailing, mouse", item: listItem.contentItem, dx: -units.gu(1), list: listItem.trailingActions, snap: false, mouse: true},
+                {tag: "Snap out trailing, touch", item: listItem.contentItem, dx: -units.gu(1), list: listItem.trailingActions, snap: false, mouse: false},
+                {tag: "Snap in trailing, mouse", item: listItem.contentItem, dx: -units.gu(4), list: listItem.trailingActions, snap: true, mouse: true},
+                {tag: "Snap in trailing, touch", item: listItem.contentItem, dx: -units.gu(4), list: listItem.trailingActions, snap: true, mouse: false},
             ];
         }
         function test_snap(data) {
@@ -431,18 +442,20 @@ Item {
 
             waitForRendering(data.item, 800);
             if (data.snap) {
-                verify(data.item.x != 0, "Not snapped to be visible");
+                verify(data.item.x != 0.0, "Not snapped to be visible");
             } else {
-                verify(data.item.x == 0, "Not snapped back");
+                tryCompareFunction(function() {return data.item.x; }, 0.0, 1000, "Not snapped back");
             }
 
             // cleanup
-            if (data.mouse) {
-                mouseClick(data.item, centerOf(data.item).x, centerOf(data.item).y);
-            } else {
-                TestExtras.touchClick(0, data.item, centerOf(data.item));
+            if (data.snap) {
+                if (data.mouse) {
+                    mouseClick(data.item, centerOf(data.item).x, centerOf(data.item).y);
+                } else {
+                    TestExtras.touchClick(0, data.item, centerOf(data.item));
+                }
+                tryCompareFunction(function() { return listView.interactive; }, true, 1000);
             }
-            waitForRendering(data.item, 800);
         }
 
         function test_verify_action_value_data() {
@@ -457,12 +470,12 @@ Item {
         function test_verify_action_value(data) {
             var option = findChild(panelItem(data.item.leadingActions), "list_option_0");
             verify(option, "actions panel cannot be reached");
-            // we test the last action, as we tug the first action on leading, which means teh alst will be accessible
+            // we test the first action
             var action = data.item.leadingActions.actions[0];
             actionSpy.target = action;
             actionSpy.clear();
             // tug actions in
-            flick(data.item.contentItem, centerOf(data.item.contentItem).x, centerOf(data.item.contentItem).y, option.width, 0);
+            flick(data.item.contentItem, centerOf(data.item.contentItem).x, centerOf(data.item.contentItem).y, units.gu(5), 0);
             waitForRendering(data.item.contentItem, 800);
 
             // select the option
