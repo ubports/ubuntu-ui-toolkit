@@ -291,6 +291,17 @@ void UCListItemPrivate::_q_completeRebinding()
  * The property signals the move of the list item's content. It is set whenever
  * the content is tugged and reset when the snapping and rebounding animations
  * complete.
+ *
+ * \sa movingStarted, movingEnded
+ */
+
+/*!
+ * \qmlsignal ListItem::movingStarted
+ * Signal emitted when the moving of the list item content is started.
+ */
+/*!
+ * \qmlsignal ListItem::movingEnded
+ * Signal emitted when the moving of the list item content is ended.
  */
 bool UCListItemPrivate::isMoving() const
 {
@@ -303,8 +314,12 @@ void UCListItemPrivate::setContentMoved(bool move)
         return;
     }
     contentMoving = move;
-    qDebug() << "MOVING" << move;
     Q_Q(UCListItem);
+    if (move) {
+        Q_EMIT q->movingStarted();
+    } else {
+        Q_EMIT q->movingEnded();
+    }
     Q_EMIT q->movingChanged();
 }
 
@@ -659,6 +674,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
         // disconnect the flickable
         d->listenToRebind(false);
 
+        d->setContentMoved(true);
         if (!d->suppressClick) {
             Q_EMIT clicked();
             d->_q_rebound();

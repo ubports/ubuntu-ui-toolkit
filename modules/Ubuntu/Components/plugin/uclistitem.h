@@ -74,6 +74,8 @@ Q_SIGNALS:
     void movingChanged();
 
     void clicked();
+    void movingStarted();
+    void movingEnded();
 
 public Q_SLOTS:
 
