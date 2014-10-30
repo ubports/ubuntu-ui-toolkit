@@ -96,6 +96,11 @@ Item {
         when: windowShown
 
         SignalSpy {
+            id: movingSpy
+            signalName: "movingEnded"
+        }
+
+        SignalSpy {
             id: pressedSpy
             signalName: "pressedChanged"
             target: testItem
@@ -117,20 +122,30 @@ Item {
             return findInvisibleChild(actionList, "ListItemPanel");
         }
 
+        function rebound(item) {
+            movingSpy.target = item;
+            movingSpy.clear();
+            mouseClick(item, centerOf(item).x, centerOf(item).y);
+            if (item.moving) {
+                movingSpy.wait();
+            }
+            movingSpy.target = null;
+        }
+
         function initTestCase() {
             TestExtras.registerTouchDevice();
             waitForRendering(main);
         }
 
         function cleanup() {
+            movingSpy.clear();
             pressedSpy.clear();
             clickSpy.clear();
             interactiveSpy.clear();
             listView.interactive = true;
-            // tap on the first item to make sure we are rebounding all
-            mouseClick(defaults, 0, 0);
-            // make sure all events are processed
-            wait(200);
+            // make sure we collapse
+            mouseClick(defaults, 0, 0)
+            movingSpy.target = null;
         }
 
         function test_0_defaults() {
@@ -241,12 +256,7 @@ Item {
             }
 
             // dismiss
-            if (data.mouse) {
-                mouseClick(main, 1, 1);
-            } else {
-                TestExtras.touchClick(0, main, Qt.point(1, 1));
-            }
-            tryCompareFunction(function() { return listView.interactive; }, true, 1000);
+            rebound(data.item);
         }
 
         function test_rebound_when_pressed_outside_or_clicked_data() {
@@ -269,12 +279,7 @@ Item {
             waitForRendering(data.item, 400);
             verify(data.item.contentItem.x != 0, "The component wasn't tugged!");
             // dismiss
-            if (data.mouse) {
-                mouseClick(data.clickOn, centerOf(data.clickOn).x, centerOf(data.clickOn).y);
-            } else {
-                TestExtras.touchClick(0, data.clickOn, centerOf(data.clickOn));
-            }
-            tryCompareFunction(function(){ return data.item.contentItem.x; }, 0, 1000);
+            rebound(data.item);
         }
 
         function test_listview_not_interactive_while_tugged_data() {
@@ -300,12 +305,7 @@ Item {
             // interactive should be changed at least once!
             verify(interactiveSpy.count > 0, "Listview interactive did not change.");
             // dismiss
-            if (data.mouse) {
-                mouseClick(data.clickOn, centerOf(data.clickOn).x, centerOf(data.clickOn).y);
-            } else {
-                TestExtras.touchClick(0, data.clickOn, centerOf(data.clickOn));
-            }
-            tryCompareFunction(function(){ return listView.interactive; }, true, 1000);
+            rebound(data.item);
         }
 
         function test_selecting_action_rebounds_data() {
@@ -325,13 +325,15 @@ Item {
             waitForRendering(data.item, 800);
             var selectedOption = findChild(panelItem(data.actions), data.select);
             verify(selectedOption, "Cannot select option " + data.select);
+
             // dismiss
+            movingSpy.target = data.item;
             if (data.mouse) {
                 mouseClick(selectedOption, centerOf(selectedOption).x, centerOf(selectedOption).y);
             } else {
                 TestExtras.touchClick(0, selectedOption, centerOf(selectedOption));
             }
-            tryCompareFunction(function(){ return data.item.contentItem.x; }, 0, 1000);
+            movingSpy.wait();
         }
 
         function test_custom_trailing_delegate() {
@@ -342,8 +344,7 @@ Item {
             var custom = findChild(panelItem(trailing), "custom_delegate");
             verify(custom, "Custom delegate not in use");
             // cleanup
-            mouseClick(main, 0, 0);
-            tryCompareFunction(function() { return listView.interactive; }, true, 1000);
+            rebound(item);
         }
 
         // execute as last so we make sure we have the panel created
@@ -381,14 +382,7 @@ Item {
             }
 
             // cleanup
-            if (data.snap) {
-                if (data.mouse) {
-                    mouseClick(data.item, centerOf(data.item).x, centerOf(data.item).y);
-                } else {
-                    TestExtras.touchClick(0, data.item, centerOf(data.item));
-                }
-                tryCompareFunction(function() { return listView.interactive; }, true, 1000);
-            }
+            rebound(data.item);
         }
     }
 }

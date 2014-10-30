@@ -60,9 +60,9 @@ Item {
     Rectangle {
         anchors {
             fill: parent
-            // add overshoot margins to cover the background when tugged
-            leftMargin: leadingPanel ? -units.gu(2) : 0
-            rightMargin: leadingPanel ? 0 : -units.gu(2)
+            // add twice the overshoot margins to cover the background when tugged
+            leftMargin: leadingPanel ? -units.gu(8) : 0
+            rightMargin: leadingPanel ? 0 : -units.gu(8)
         }
         // FIXME: use Palette colors instead when available
         color: leadingPanel ? UbuntuColors.red : "white"
