@@ -331,7 +331,7 @@ Item {
             var custom = findChild(panelItem(trailing), "custom_delegate");
             verify(custom, "Custom delegate not in use");
             // cleanup
-            mouseClick(main, 0, 0);
+            rebound(item);
         }
     }
 }
