@@ -309,8 +309,15 @@ Item {
             waitForRendering(data.item, 800);
             var selectedOption = findChild(panelItem(data.actions), data.select);
             verify(selectedOption, "Cannot select option " + data.select);
+
             // dismiss
-            rebound(selectedOption);
+            movingSpy.target = data.item;
+            if (data.mouse) {
+                mouseClick(selectedOption, centerOf(selectedOption).x, centerOf(selectedOption).y);
+            } else {
+                TestExtras.touchClick(0, selectedOption, centerOf(selectedOption));
+            }
+            movingSpy.wait();
         }
     }
 }
