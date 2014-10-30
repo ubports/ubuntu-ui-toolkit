@@ -46,10 +46,11 @@ public:
     void _q_rebound();
     void _q_updateSize();
     void _q_completeRebinding();
+    void _q_completeSnapping();
     bool isMoving() const;
     void setContentMoved(bool move);
     void promptRebound();
-    void reboundTo(qreal x);
+    void reboundTo(qreal x, const char *method);
     void setPressed(bool pressed);
     void setTugged(bool tugged);
     bool grabPanel(UCListItemActions *optionList, bool isTugged);

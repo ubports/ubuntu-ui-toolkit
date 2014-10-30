@@ -273,22 +273,25 @@ void UCListItemPrivate::_q_rebound()
         return;
     }
     setTugged(false);
-    //connect rebound completion so we can disconnect
-    QObject::connect(reboundAnimation, SIGNAL(stopped()), q, SLOT(_q_completeRebinding()));
+    // connect rebound completion so we can disconnect the action lists
     // then rebound to zero
-    reboundTo(0);
+    reboundTo(0, "_q_completeRebinding()");
 }
 void UCListItemPrivate::_q_completeRebinding()
 {
-    Q_Q(UCListItem);
     // disconnect animation, otherwise snapping will disconnect the panel
-    QObject::disconnect(reboundAnimation, SIGNAL(stopped()), q, SLOT(_q_completeRebinding()));
+    QObject::disconnect(reboundAnimation, 0, 0, 0);
     // restore flickable's interactive and cleanup
     PropertyChange::restore(flickableInteractive);
     // disconnect actions
     grabPanel(leadingActions, false);
     grabPanel(trailingActions, false);
     // set contentMoved to false
+    setContentMoved(false);
+}
+void UCListItemPrivate::_q_completeSnapping()
+{
+    QObject::disconnect(reboundAnimation, 0, 0, 0);
     setContentMoved(false);
 }
 
@@ -336,9 +339,16 @@ void UCListItemPrivate::promptRebound()
     setTugged(false);
     _q_completeRebinding();
 }
-
-void UCListItemPrivate::reboundTo(qreal x)
+// rebounds to a given x position, connecting a slot signature
+void UCListItemPrivate::reboundTo(qreal x, const char *signature)
 {
+    if (signature) {
+        const QMetaObject *moListItem = q_ptr->metaObject();
+        const QMetaMethod slot = moListItem->method(moListItem->indexOfMethod(signature));
+        const QMetaObject *moAnimation = reboundAnimation->metaObject();
+        const QMetaMethod signal = moAnimation->method(moAnimation->indexOfSignal("stopped()"));
+        QObject::connect(reboundAnimation, signal, q_ptr, slot);
+    }
     reboundAnimation->setFrom(contentItem->x());
     reboundAnimation->setTo(x);
     reboundAnimation->restart();
@@ -698,7 +708,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             } else if (snapPosition == 0.0){
                 d->_q_rebound();
             } else {
-                d->reboundTo(snapPosition);
+                d->reboundTo(snapPosition, "_q_completeSnapping()");
             }
         }
     }

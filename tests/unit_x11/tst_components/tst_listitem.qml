@@ -243,12 +243,13 @@ Item {
         }
         function test_touch_tug_options(data) {
             listView.positionViewAtBeginning();
+            movingSpy.target = data.item;
             if (data.mouse) {
                 flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
-            waitForRendering(data.item, 400);
+            movingSpy.wait();
             if (data.positiveDirection) {
                 verify(data.item.contentItem.x > 0, data.tag + " options did not show up");
             } else {
@@ -295,12 +296,13 @@ Item {
         function test_listview_not_interactive_while_tugged(data) {
             listView.positionViewAtBeginning();
             compare(listView.interactive, true, "ListView is not interactive");
+            movingSpy.target = data.item;
             if (data.mouse) {
                 flick(data.item, data.pos.x, data.pos.y, data.dx, data.dy);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, data.dy));
             }
-            waitForRendering(data.item, 800);
+            movingSpy.wait();
             compare(listView.interactive, false, "The ListView is still interactive!");
             // interactive should be changed at least once!
             verify(interactiveSpy.count > 0, "Listview interactive did not change.");
@@ -339,10 +341,12 @@ Item {
         function test_custom_trailing_delegate() {
             listView.positionViewAtBeginning();
             var item = findChild(listView, "listItem0");
+            movingSpy.target = item;
             flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
             verify(panelItem(trailing), "Panel is not visible");
             var custom = findChild(panelItem(trailing), "custom_delegate");
             verify(custom, "Custom delegate not in use");
+            movingSpy.wait();
             // cleanup
             rebound(item);
         }
@@ -356,33 +360,24 @@ Item {
 
             return [
                 // the list snaps out if the panel is dragged in > overshoot GU (hardcoded for now)
-                {tag: "Snap out leading, mouse", item: listItem.contentItem, dx: units.gu(1), list: listItem.leadingActions, snap: false, mouse: true},
-                {tag: "Snap out leading, touch", item: listItem.contentItem, dx: units.gu(1), list: listItem.leadingActions, snap: false, mouse: false},
-                {tag: "Snap in leading, mouse", item: listItem.contentItem, dx: units.gu(4), list: listItem.leadingActions, snap: true, mouse: true},
-                {tag: "Snap in leading, touch", item: listItem.contentItem, dx: units.gu(4), list: listItem.leadingActions, snap: true, mouse: false},
-
-                {tag: "Snap out trailing, mouse", item: listItem.contentItem, dx: -units.gu(1), list: listItem.trailingActions, snap: false, mouse: true},
-                {tag: "Snap out trailing, touch", item: listItem.contentItem, dx: -units.gu(1), list: listItem.trailingActions, snap: false, mouse: false},
-                {tag: "Snap in trailing, mouse", item: listItem.contentItem, dx: -units.gu(4), list: listItem.trailingActions, snap: true, mouse: true},
-                {tag: "Snap in trailing, touch", item: listItem.contentItem, dx: -units.gu(4), list: listItem.trailingActions, snap: true, mouse: false},
+                {tag: "Snap out leading, mouse", item: listItem, dx: units.gu(2), list: listItem.leadingActions, snap: false},
+                {tag: "Snap in leading, mouse", item: listItem, dx: units.gu(4), list: listItem.leadingActions, snap: true},
+                {tag: "Snap out trailing, mouse", item: listItem, dx: -units.gu(2), list: listItem.trailingActions, snap: false},
+                {tag: "Snap in trailing, mouse", item: listItem, dx: -units.gu(4), list: listItem.trailingActions, snap: true},
             ];
         }
         function test_snap(data) {
-            if (data.mouse) {
-                flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
-            } else {
-                TestExtras.touchDrag(0, data.item, centerOf(data.item), Qt.point(data.dx, 0));
-            }
-
-            waitForRendering(data.item, 800);
+            movingSpy.target = data.item;
+            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+            movingSpy.wait();
+            movingSpy.clear();
             if (data.snap) {
-                verify(data.item.x != 0.0, "Not snapped to be visible");
+                verify(data.item.contentItem.x != 0.0, "Not snapped to be visible");
+                // cleanup
+                rebound(data.item);
             } else {
-                tryCompareFunction(function() {return data.item.x; }, 0.0, 1000, "Not snapped back");
+                tryCompareFunction(function() {return data.item.contentItem.x; }, 0.0, 1000, "Not snapped back");
             }
-
-            // cleanup
-            rebound(data.item);
         }
     }
 }
