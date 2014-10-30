@@ -36,6 +36,7 @@ class UCListItem : public UCStyledItemBase
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor NOTIFY highlightColorChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
+    Q_PRIVATE_PROPERTY(d_func(), bool moving READ isMoving NOTIFY movingChanged)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
     explicit UCListItem(QQuickItem *parent = 0);
@@ -70,6 +71,7 @@ Q_SIGNALS:
     void colorChanged();
     void highlightColorChanged();
     void childrenChanged();
+    void movingChanged();
 
     void clicked();
 

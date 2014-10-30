@@ -201,8 +201,9 @@ UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
     , pressed(false)
     , highlightColorChanged(false)
-    , moved(false)
+    , tugged(false)
     , ready(false)
+    , contentMoving(false)
     , xAxisMoveThresholdGU(1.5)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
@@ -270,7 +271,7 @@ void UCListItemPrivate::_q_rebound()
     if (!UCListItemActionsPrivate::isConnectedTo(leadingActions, q) && !UCListItemActionsPrivate::isConnectedTo(trailingActions, q)) {
         return;
     }
-    setMoved(false);
+    setTugged(false);
     // rebound to zero
     reboundTo(0);
 }
@@ -281,13 +282,37 @@ void UCListItemPrivate::_q_completeRebinding()
     // disconnect actions
     grabPanel(leadingActions, false);
     grabPanel(trailingActions, false);
+    // set contentMoved to false
+    setContentMoved(false);
 }
 
-// the function performs a cleanup on mouse release without any rebound animation
-void UCListItemPrivate::cleanup()
+/*!
+ * \qmlproperty bool ListItem::moved
+ * The property signals the move of the list item's content. It is set whenever
+ * the content is tugged and reset when the snapping and rebounding animations
+ * complete.
+ */
+bool UCListItemPrivate::isMoving() const
+{
+    return contentMoving;
+}
+// the function drives the moving property
+void UCListItemPrivate::setContentMoved(bool move)
+{
+    if (contentMoving == move) {
+        return;
+    }
+    contentMoving = move;
+    qDebug() << "MOVING" << move;
+    Q_Q(UCListItem);
+    Q_EMIT q->movingChanged();
+}
+
+// the function performs a prompt rebound on mouse release without any animation
+void UCListItemPrivate::promptRebound()
 {
     setPressed(false);
-    setMoved(false);
+    setTugged(false);
     _q_completeRebinding();
 }
 
@@ -296,6 +321,7 @@ void UCListItemPrivate::reboundTo(qreal x)
     reboundAnimation->setFrom(contentItem->x());
     reboundAnimation->setTo(x);
     reboundAnimation->restart();
+    setContentMoved(true);
 }
 
 // called when units size changes
@@ -318,28 +344,28 @@ void UCListItemPrivate::setPressed(bool pressed)
         Q_EMIT q->pressedChanged();
     }
 }
-// toggles the moved flag and installs/removes event filter
-void UCListItemPrivate::setMoved(bool moved)
+// toggles the tugged flag and installs/removes event filter
+void UCListItemPrivate::setTugged(bool tugged)
 {
-    suppressClick = moved;
-    if (this->moved == moved) {
+    suppressClick = tugged;
+    if (this->tugged == tugged) {
         return;
     }
-    this->moved = moved;
+    this->tugged = tugged;
     Q_Q(UCListItem);
     QQuickWindow *window = q->window();
-    if (moved) {
+    if (tugged) {
         window->installEventFilter(q);
     } else {
         window->removeEventFilter(q);
     }
 }
 
-// sets the moved flag but also grabs the panels from the leading/trailing actions
-bool UCListItemPrivate::grabPanel(UCListItemActions *actionsList, bool isMoved)
+// sets the tugged flag but also grabs the panels from the leading/trailing actions
+bool UCListItemPrivate::grabPanel(UCListItemActions *actionsList, bool isTugged)
 {
     Q_Q(UCListItem);
-    if (isMoved) {
+    if (isTugged) {
         bool grab = UCListItemActionsPrivate::connectToListItem(actionsList, q, (actionsList == leadingActions));
         if (grab) {
             PropertyChange::setValue(flickableInteractive, false);
@@ -638,7 +664,9 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             d->_q_rebound();
         } else if (d->contentItem->x() == 0.0) {
             // if no actions list is connected, release flickable blockade
-            d->cleanup();
+            d->promptRebound();
+        } else {
+            d->setContentMoved(false);
         }
     }
     d->setPressed(false);
@@ -674,10 +702,11 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         d->lastPos = event->localPos();
 
         if (dx) {
+            d->setContentMoved(true);
             // clamp X into allowed dragging area
             d->clampX(x, dx);
             // block flickable
-            d->setMoved(true);
+            d->setTugged(true);
             d->contentItem->setX(x);
         }
     }
