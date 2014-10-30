@@ -89,6 +89,11 @@ Item {
         when: windowShown
 
         SignalSpy {
+            id: movingSpy
+            signalName: "movingEnded"
+        }
+
+        SignalSpy {
             id: pressedSpy
             signalName: "pressedChanged"
             target: testItem
@@ -104,17 +109,30 @@ Item {
             return findInvisibleChild(actionList, "ListItemPanel");
         }
 
+        function rebound(item) {
+            movingSpy.target = item;
+            movingSpy.clear();
+            mouseClick(item, centerOf(item).x, centerOf(item).y);
+            if (item.moving) {
+                movingSpy.wait();
+            }
+            movingSpy.target = null;
+        }
+
         function initTestCase() {
             TestExtras.registerTouchDevice();
             waitForRendering(main);
         }
 
         function cleanup() {
+            movingSpy.clear();
             pressedSpy.clear();
             clickSpy.clear();
             listView.interactive = true;
+            // make sure we collapse
+            mouseClick(defaults, 0, 0)
+            movingSpy.target = null;
             // make sure all events are processed
-            wait(200);
         }
 
         function test_0_defaults() {
@@ -225,12 +243,7 @@ Item {
             }
 
             // dismiss
-            if (data.mouse) {
-                mouseClick(main, 1, 1);
-            } else {
-                TestExtras.touchClick(0, main, Qt.point(1, 1));
-            }
-            waitForRendering(data.item, 400);
+            rebound(data.item);
         }
 
         function test_rebound_when_pressed_outside_or_clicked_data() {
@@ -253,13 +266,7 @@ Item {
             waitForRendering(data.item, 400);
             verify(data.item.contentItem.x != 0, "The component wasn't tugged!");
             // dismiss
-            if (data.mouse) {
-                mouseClick(data.clickOn, centerOf(data.clickOn).x, centerOf(data.clickOn).y);
-            } else {
-                TestExtras.touchClick(0, data.clickOn, centerOf(data.clickOn));
-            }
-            waitForRendering(data.item, 400);
-            tryCompareFunction(function(){ return data.item.contentItem.x; }, 0, 1000);
+            rebound(data.item);
         }
 
         function test_listview_not_interactive_while_tugged_data() {
@@ -282,13 +289,7 @@ Item {
             waitForRendering(data.item, 800);
             compare(listView.interactive, false, "The ListView is still interactive!");
             // dismiss
-            if (data.mouse) {
-                mouseClick(data.clickOn, centerOf(data.clickOn).x, centerOf(data.clickOn).y);
-            } else {
-                TestExtras.touchClick(0, data.clickOn, centerOf(data.clickOn));
-            }
-            waitForRendering(data.item, 400);
-            tryCompareFunction(function(){ return listView.interactive; }, true, 1000);
+            rebound(data.item);
         }
 
         function test_selecting_action_rebounds_data() {
@@ -309,13 +310,7 @@ Item {
             var selectedOption = findChild(panelItem(data.actions), data.select);
             verify(selectedOption, "Cannot select option " + data.select);
             // dismiss
-            if (data.mouse) {
-                mouseClick(selectedOption, centerOf(selectedOption).x, centerOf(selectedOption).y);
-            } else {
-                TestExtras.touchClick(0, selectedOption, centerOf(selectedOption));
-            }
-            waitForRendering(data.item, 400);
-            tryCompareFunction(function(){ return data.item.contentItem.x; }, 0, 1000);
+            rebound(selectedOption);
         }
     }
 }
