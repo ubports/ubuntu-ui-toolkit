@@ -1,3 +1,13 @@
+ubuntu-ui-toolkit (1.1.1298+14.10.20141030~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ CI bot ]
+  * Resync trunk
+
+  [ Timo Jyrinki ]
+  * Modify test .desktop file (LP: #1382414) (LP: #1382414)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 30 Oct 2014 07:39:12 +0000
+
 ubuntu-ui-toolkit (1.1.1298+14.10.20141016.1-0ubuntu1) 14.09; urgency=medium
 
   [ Jussi Pakkanen]
