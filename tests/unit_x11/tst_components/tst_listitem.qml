@@ -410,12 +410,14 @@ Item {
             actionSpy.target = action;
             actionSpy.clear();
             // tug actions in
+            movingSpy.target = data.item;
             flick(data.item.contentItem, centerOf(data.item.contentItem).x, centerOf(data.item.contentItem).y, units.gu(5), 0);
-            waitForRendering(data.item.contentItem, 800);
+            movingSpy.wait();
 
             // select the option
+            movingSpy.clear();
             mouseClick(data.item, centerOf(option).x, centerOf(option).y);
-            waitForRendering(data.item.contentItem, 800);
+            movingSpy.wait();
 
             // check the action param
             actionSpy.wait();
