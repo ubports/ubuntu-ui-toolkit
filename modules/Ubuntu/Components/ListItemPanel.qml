@@ -108,7 +108,6 @@ Item {
                     top: parent.top
                     bottom: parent.bottom
                 }
-                opacity: enabled ? 1.0 : 0.5
 
                 function trigger() {
                     // save the action as we trigger when the rebound animation is over
