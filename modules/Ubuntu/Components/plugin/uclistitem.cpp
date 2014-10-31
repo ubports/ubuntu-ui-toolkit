@@ -205,7 +205,6 @@ UCListItemPrivate::UCListItemPrivate()
     , tugged(false)
     , ready(false)
     , contentMoving(false)
-    , index(-1)
     , xAxisMoveThresholdGU(1.5)
     , overshootGU(2)
     , color(Qt::transparent)
@@ -294,6 +293,15 @@ void UCListItemPrivate::_q_completeSnapping()
 {
     QObject::disconnect(reboundAnimation, 0, 0, 0);
     setContentMoved(false);
+}
+
+int UCListItemPrivate::index()
+{
+    Q_Q(UCListItem);
+    // is there an index context property?
+    QQmlContext *context = qmlContext(q);
+    QVariant index = context->contextProperty("index");
+    return index.isValid() ? index.toInt() : -1;
 }
 
 /*!
@@ -568,12 +576,6 @@ void UCListItem::componentComplete()
     UCStyledItemBase::componentComplete();
     Q_D(UCListItem);
     d->ready = true;
-    // is there an index context property?
-    QQmlContext *context = qmlContext(this);
-    QVariant index = context->contextProperty("index");
-    if (index.isValid()) {
-        d->index = index.toInt();
-    }
 }
 
 void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)

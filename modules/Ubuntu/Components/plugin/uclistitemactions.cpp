@@ -86,7 +86,7 @@ bool UCListItemActionsPrivate::connectToListItem(UCListItemActions *actions, UCL
         return false;
     }
     _this->leading = leading;
-    _this->panelItem->setProperty("listItemIndex", UCListItemPrivate::get(listItem)->index);
+    _this->panelItem->setProperty("listItemIndex", UCListItemPrivate::get(listItem)->index());
     _this->panelItem->setProperty("leadingPanel", leading);
     _this->panelItem->setParentItem(listItem);
     _this->offsetDragged = 0.0;

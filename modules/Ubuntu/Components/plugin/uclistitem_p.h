@@ -47,6 +47,7 @@ public:
     void _q_updateSize();
     void _q_completeRebinding();
     void _q_completeSnapping();
+    int index();
     bool isMoving() const;
     void setContentMoved(bool move);
     void promptRebound();
@@ -65,7 +66,6 @@ public:
     bool suppressClick:1;
     bool ready:1;
     bool contentMoving:1;
-    int index;
     qreal xAxisMoveThresholdGU;
     qreal overshootGU;
     QPointF lastPos;
