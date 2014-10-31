@@ -67,26 +67,35 @@ Item {
     Rectangle {
         anchors {
             fill: parent
-            // add twice the overshoot margins to cover the background when tugged
-            leftMargin: leadingPanel ? -units.gu(8) : 0
-            rightMargin: leadingPanel ? 0 : -units.gu(8)
+            // add 4 times the overshoot margins to cover the background when tugged
+            leftMargin: leadingPanel ? -units.gu(4 * ListItemActions.overshoot) : 0
+            rightMargin: leadingPanel ? 0 : -units.gu(4 * ListItemActions.overshoot)
         }
         // FIXME: use Palette colors instead when available
         color: leadingPanel ? UbuntuColors.red : "white"
     }
 
+    // track drag dirrection, so we know in which direction we should snap
+    property real prevX: 0.0
+    property bool leftToRight: false
+    onXChanged: {
+        leftToRight = prevX < x;
+        prevX = x;
+    }
     // default snapping!
     ListItemActions.onDraggingChanged: {
-        if (ListItemActions.dragging || !visible) {
+        if (ListItemActions.dragging) {
+            // the dragging got started, set prevX
+            prevX = panel.x;
             return;
         }
-        if (ListItemActions.offset > ListItemActions.overshoot) {
-            // snap in
-            ListItemActions.snapToPosition(panel.width);
-        } else {
-            // snap out
-            ListItemActions.snapToPosition(0.0);
+        if (!visible) {
+            return;
         }
+        // snap in if the offset is bigger than the overshoot and the direction of the drag is to reveal the panel
+        var snapPos = (ListItemActions.offset > ListItemActions.overshoot &&
+                       (leftToRight && leadingPanel || !leftToRight && !leadingPanel)) ? panel.width : 0.0;
+        ListItemActions.snapToPosition(snapPos);
     }
 
     Row {
