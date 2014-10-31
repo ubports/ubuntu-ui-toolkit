@@ -76,9 +76,9 @@ Item {
     Rectangle {
         anchors {
             fill: parent
-            // add overshoot margins to cover the background when tugged
-            leftMargin: leadingPanel ? -units.gu(2) : 0
-            rightMargin: leadingPanel ? 0 : -units.gu(2)
+            // add twice the overshoot margins to cover the background when tugged
+            leftMargin: leadingPanel ? -units.gu(8) : 0
+            rightMargin: leadingPanel ? 0 : -units.gu(8)
         }
         // FIXME: use Palette colors instead when available
         color: leadingPanel ? UbuntuColors.red : "white"
@@ -99,8 +99,10 @@ Item {
             model: panel.actionList.actions
             AbstractButton {
                 action: modelData
-                visible: action.visible && action.enabled
-                width: (!visible || !enabled) ?
+                visible: action.visible
+                enabled: action.enabled
+                opacity: enabled ? 1.0 : 0.5
+                width: (!visible) ?
                            0 : MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
                 anchors {
                     top: parent.top

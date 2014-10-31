@@ -104,6 +104,11 @@ Item {
         when: windowShown
 
         SignalSpy {
+            id: movingSpy
+            signalName: "movingEnded"
+        }
+
+        SignalSpy {
             id: pressedSpy
             signalName: "pressedChanged"
             target: testItem
@@ -129,21 +134,31 @@ Item {
             return findInvisibleChild(actionList, "ListItemPanel");
         }
 
+        function rebound(item) {
+            movingSpy.target = item;
+            movingSpy.clear();
+            mouseClick(item, centerOf(item).x, centerOf(item).y);
+            if (item.moving) {
+                movingSpy.wait();
+            }
+            movingSpy.target = null;
+        }
+
         function initTestCase() {
             TestExtras.registerTouchDevice();
             waitForRendering(main);
         }
 
         function cleanup() {
+            movingSpy.clear();
             pressedSpy.clear();
             clickSpy.clear();
             actionSpy.clear();
             interactiveSpy.clear();
             listView.interactive = true;
-            // tap on the first item to make sure we are rebounding all
-            mouseClick(defaults, 0, 0);
-            // make sure all events are processed
-            wait(200);
+            // make sure we collapse
+            mouseClick(defaults, 0, 0)
+            movingSpy.target = null;
         }
 
         function test_0_defaults() {
@@ -241,12 +256,13 @@ Item {
         }
         function test_touch_tug_actions(data) {
             listView.positionViewAtBeginning();
+            movingSpy.target = data.item;
             if (data.mouse) {
                 flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
-            waitForRendering(data.item, 400);
+            movingSpy.wait();
             if (data.positiveDirection) {
                 verify(data.item.contentItem.x > 0, data.tag + " actions did not show up");
             } else {
@@ -254,12 +270,7 @@ Item {
             }
 
             // dismiss
-            if (data.mouse) {
-                mouseClick(main, 1, 1);
-            } else {
-                TestExtras.touchClick(0, main, Qt.point(1, 1));
-            }
-            tryCompareFunction(function() { return listView.interactive; }, true, 1000);
+            rebound(data.item);
         }
 
         function test_rebound_when_pressed_outside_or_clicked_data() {
@@ -282,12 +293,7 @@ Item {
             waitForRendering(data.item, 400);
             verify(data.item.contentItem.x != 0, "The component wasn't tugged!");
             // dismiss
-            if (data.mouse) {
-                mouseClick(data.clickOn, centerOf(data.clickOn).x, centerOf(data.clickOn).y);
-            } else {
-                TestExtras.touchClick(0, data.clickOn, centerOf(data.clickOn));
-            }
-            tryCompareFunction(function(){ return data.item.contentItem.x; }, 0, 1000);
+            rebound(data.item);
         }
 
         function test_listview_not_interactive_while_tugged_data() {
@@ -303,22 +309,18 @@ Item {
         function test_listview_not_interactive_while_tugged(data) {
             listView.positionViewAtBeginning();
             compare(listView.interactive, true, "ListView is not interactive");
+            movingSpy.target = data.item;
             if (data.mouse) {
                 flick(data.item, data.pos.x, data.pos.y, data.dx, data.dy);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, data.dy));
             }
-            waitForRendering(data.item, 800);
+            movingSpy.wait();
             compare(listView.interactive, false, "The ListView is still interactive!");
             // interactive should be changed at least once!
             verify(interactiveSpy.count > 0, "Listview interactive did not change.");
             // dismiss
-            if (data.mouse) {
-                mouseClick(data.clickOn, centerOf(data.clickOn).x, centerOf(data.clickOn).y);
-            } else {
-                TestExtras.touchClick(0, data.clickOn, centerOf(data.clickOn));
-            }
-            tryCompareFunction(function(){ return listView.interactive; }, true, 1000);
+            rebound(data.item);
         }
 
         function test_selecting_action_rebounds_data() {
@@ -338,25 +340,28 @@ Item {
             waitForRendering(data.item, 800);
             var selectedOption = findChild(panelItem(data.actions), data.select);
             verify(selectedOption, "Cannot select option " + data.select);
+
             // dismiss
+            movingSpy.target = data.item;
             if (data.mouse) {
                 mouseClick(selectedOption, centerOf(selectedOption).x, centerOf(selectedOption).y);
             } else {
                 TestExtras.touchClick(0, selectedOption, centerOf(selectedOption));
             }
-            tryCompareFunction(function(){ return data.item.contentItem.x; }, 0, 1000);
+            movingSpy.wait();
         }
 
         function test_custom_trailing_delegate() {
             listView.positionViewAtBeginning();
             var item = findChild(listView, "listItem0");
+            movingSpy.target = item;
             flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
             verify(panelItem(trailing), "Panel is not visible");
             var custom = findChild(panelItem(trailing), "custom_delegate");
             verify(custom, "Custom delegate not in use");
+            movingSpy.wait();
             // cleanup
-            mouseClick(main, 0, 0);
-            tryCompareFunction(function() { return listView.interactive; }, true, 1000);
+            rebound(item);
         }
 
         // execute as last so we make sure we have the panel created
@@ -368,39 +373,23 @@ Item {
 
             return [
                 // the list snaps out if the panel is dragged in > overshoot GU (hardcoded for now)
-                {tag: "Snap out leading, mouse", item: listItem.contentItem, dx: units.gu(1), list: listItem.leadingActions, snap: false, mouse: true},
-                {tag: "Snap out leading, touch", item: listItem.contentItem, dx: units.gu(1), list: listItem.leadingActions, snap: false, mouse: false},
-                {tag: "Snap in leading, mouse", item: listItem.contentItem, dx: units.gu(4), list: listItem.leadingActions, snap: true, mouse: true},
-                {tag: "Snap in leading, touch", item: listItem.contentItem, dx: units.gu(4), list: listItem.leadingActions, snap: true, mouse: false},
-
-                {tag: "Snap out trailing, mouse", item: listItem.contentItem, dx: -units.gu(1), list: listItem.trailingActions, snap: false, mouse: true},
-                {tag: "Snap out trailing, touch", item: listItem.contentItem, dx: -units.gu(1), list: listItem.trailingActions, snap: false, mouse: false},
-                {tag: "Snap in trailing, mouse", item: listItem.contentItem, dx: -units.gu(4), list: listItem.trailingActions, snap: true, mouse: true},
-                {tag: "Snap in trailing, touch", item: listItem.contentItem, dx: -units.gu(4), list: listItem.trailingActions, snap: true, mouse: false},
+                {tag: "Snap out leading, mouse", item: listItem, dx: units.gu(2), list: listItem.leadingActions, snap: false},
+                {tag: "Snap in leading, mouse", item: listItem, dx: units.gu(4), list: listItem.leadingActions, snap: true},
+                {tag: "Snap out trailing, mouse", item: listItem, dx: -units.gu(2), list: listItem.trailingActions, snap: false},
+                {tag: "Snap in trailing, mouse", item: listItem, dx: -units.gu(4), list: listItem.trailingActions, snap: true},
             ];
         }
         function test_snap(data) {
-            if (data.mouse) {
-                flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
-            } else {
-                TestExtras.touchDrag(0, data.item, centerOf(data.item), Qt.point(data.dx, 0));
-            }
-
-            waitForRendering(data.item, 800);
+            movingSpy.target = data.item;
+            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+            movingSpy.wait();
+            movingSpy.clear();
             if (data.snap) {
-                verify(data.item.x != 0.0, "Not snapped to be visible");
+                verify(data.item.contentItem.x != 0.0, "Not snapped to be visible");
+                // cleanup
+                rebound(data.item);
             } else {
-                tryCompareFunction(function() {return data.item.x; }, 0.0, 1000, "Not snapped back");
-            }
-
-            // cleanup
-            if (data.snap) {
-                if (data.mouse) {
-                    mouseClick(data.item, centerOf(data.item).x, centerOf(data.item).y);
-                } else {
-                    TestExtras.touchClick(0, data.item, centerOf(data.item));
-                }
-                tryCompareFunction(function() { return listView.interactive; }, true, 1000);
+                tryCompareFunction(function() {return data.item.contentItem.x; }, 0.0, 1000, "Not snapped back");
             }
         }
 
@@ -421,12 +410,14 @@ Item {
             actionSpy.target = action;
             actionSpy.clear();
             // tug actions in
+            movingSpy.target = data.item;
             flick(data.item.contentItem, centerOf(data.item.contentItem).x, centerOf(data.item.contentItem).y, units.gu(5), 0);
-            waitForRendering(data.item.contentItem, 800);
+            movingSpy.wait();
 
             // select the option
+            movingSpy.clear();
             mouseClick(data.item, centerOf(option).x, centerOf(option).y);
-            waitForRendering(data.item.contentItem, 800);
+            movingSpy.wait();
 
             // check the action param
             actionSpy.wait();

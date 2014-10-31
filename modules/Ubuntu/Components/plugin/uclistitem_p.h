@@ -46,12 +46,16 @@ public:
     void _q_rebound();
     void _q_updateSize();
     void _q_completeRebinding();
+    void _q_completeSnapping();
     void _q_updateIndex(QObject *ownerItem = 0);
-    void promptRebount();
-    void reboundTo(qreal x);
+    int index();
+    bool isMoving() const;
+    void setContentMoved(bool move);
+    void promptRebound();
+    void reboundTo(qreal x, const char *method);
     void setPressed(bool pressed);
-    void setMoved(bool moved);
-    bool grabPanel(UCListItemActions *optionList, bool isMoved);
+    void setTugged(bool tugged);
+    bool grabPanel(UCListItemActions *optionList, bool isTugged);
     void listenToRebind(bool listen);
     void resize();
     void update();
@@ -59,10 +63,10 @@ public:
 
     bool pressed:1;
     bool highlightColorChanged:1;
-    bool moved:1;
+    bool tugged:1;
     bool suppressClick:1;
     bool ready:1;
-    int index;
+    bool contentMoving:1;
     qreal xAxisMoveThresholdGU;
     qreal overshootGU;
     QPointF lastPos;
