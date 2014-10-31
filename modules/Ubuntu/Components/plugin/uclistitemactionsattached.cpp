@@ -189,6 +189,6 @@ void UCListItemActionsAttached::snapToPosition(qreal position)
     if (position == 0.0) {
         listItem->_q_rebound();
     } else {
-        listItem->reboundTo(position, "_q_completeSnapping()");
+        listItem->snapTo(position);
     }
 }

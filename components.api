@@ -898,6 +898,7 @@ plugins.qmltypes
     Property { name: "offset"; type: "double"; isReadonly: true }
     Property { name: "status"; type: "UCListItemActions::Status"; isReadonly: true }
     Property { name: "dragging"; type: "bool"; isReadonly: true }
+    Property { name: "overshoot"; type: "double"; isReadonly: true }
     Method {
     name: "snapToPosition"
     Parameter { name: "position"; type: "double" }

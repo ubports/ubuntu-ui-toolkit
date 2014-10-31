@@ -300,7 +300,7 @@ void UCListItemPrivate::_q_rebound()
     setTugged(false);
     // connect rebound completion so we can disconnect the action lists
     // then rebound to zero
-    reboundTo(0, "_q_completeRebinding()");
+    snapTo(0);
 }
 void UCListItemPrivate::_q_completeRebinding()
 {
@@ -387,15 +387,15 @@ void UCListItemPrivate::promptRebound()
     setTugged(false);
     _q_completeRebinding();
 }
-// rebounds to a given x position, connecting a slot signature
-void UCListItemPrivate::reboundTo(qreal x, const char *signature)
+// rebounds or snaps to a given x position
+void UCListItemPrivate::snapTo(qreal x)
 {
-    if (signature) {
-        const QMetaObject *moListItem = q_ptr->metaObject();
-        const QMetaMethod slot = moListItem->method(moListItem->indexOfMethod(signature));
-        const QMetaObject *moAnimation = reboundAnimation->metaObject();
-        const QMetaMethod signal = moAnimation->method(moAnimation->indexOfSignal("stopped()"));
-        QObject::connect(reboundAnimation, signal, q_ptr, slot);
+    // if the value given is 0.0, we snap out (rebound), otherwise we snap in
+    if (x != 0.0) {
+        // snap
+        QObject::connect(reboundAnimation, SIGNAL(stopped()), q_ptr, SLOT(_q_completeSnapping()));
+    } else {
+        QObject::connect(reboundAnimation, SIGNAL(stopped()), q_ptr, SLOT(_q_completeRebinding()));
     }
     reboundAnimation->setFrom(contentItem->x());
     reboundAnimation->setTo(x);
