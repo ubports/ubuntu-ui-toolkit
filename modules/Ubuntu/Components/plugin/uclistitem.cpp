@@ -535,11 +535,11 @@ void UCListItemPrivate::toggleSelectionMode()
     if (selectable) {
         // move and dimm content item
         selectionPanel->setVisible(true);
-        reboundTo(selectionPanel->width(), "_q_completeSnapping()");
+        snapTo(selectionPanel->width());
         QObject::connect(selectionPanel, SIGNAL(checkedChanged()), q, SLOT(_q_updateSelected()));
     } else {
         // remove content item dimming and destroy selection panel as well
-        reboundTo(0.0, "_q_completeSnapping()");
+        snapTo(0.0);
         selectionPanel->setVisible(false);
         QObject::disconnect(selectionPanel, SIGNAL(checkedChanged()), q, SLOT(_q_updateSelected()));
     }
