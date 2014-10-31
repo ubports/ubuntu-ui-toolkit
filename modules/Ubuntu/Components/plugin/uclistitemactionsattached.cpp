@@ -88,7 +88,7 @@ int UCListItemActionsAttached::listItemIndex() {
         return -1;
     }
     QQuickItem *listItem = panelItem->parentItem();
-    return listItem ? UCListItemPrivate::get(static_cast<UCListItem*>(listItem))->index : -1;
+    return listItem ? UCListItemPrivate::get(static_cast<UCListItem*>(listItem))->index() : -1;
 }
 
 /*!
@@ -165,6 +165,6 @@ void UCListItemActionsAttached::snapToPosition(qreal position)
     if (position == 0.0) {
         listItem->_q_rebound();
     } else {
-        listItem->reboundTo(position);
+        listItem->reboundTo(position, "_q_completeSnapping()");
     }
 }
