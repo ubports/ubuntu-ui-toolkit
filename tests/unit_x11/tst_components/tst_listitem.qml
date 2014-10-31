@@ -297,14 +297,13 @@ Item {
         function test_attached_dragging(data) {
             listView.positionViewAtBeginning();
             draggingSpy.target = data.actionList.ListItemActions;
+            movingSpy.target = data.item;
             flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
-            waitForRendering(data.item, 400);
-            draggingSpy.wait(500);
+            movingSpy.wait();
             compare(draggingSpy.count, 2, "The dragging hadn't been changed twice.");
 
             // dismiss
-            mouseClick(main, 1, 1);
-            waitForRendering(data.item, 400);
+            rebound(data.item);
         }
 
         function test_attached_listitem_data() {
@@ -316,15 +315,15 @@ Item {
         }
         function test_attached_listitem(data) {
             listView.positionViewAtBeginning();
+            movingSpy.target = data.item;
             flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
-            waitForRendering(data.item, 400);
+            movingSpy.wait();
             compare(data.actionList.ListItemActions.listItem, data.item, "The attached listItem differs from the actual item using the list.");
             compare(data.actionList.ListItemActions.listItemIndex, data.index, "The attached listItem index is wrong.");
             verify(data.actionList.ListItemActions.status != ListItemActions.Disconnected, "The attached status is wrong.");
 
             // dismiss
-            mouseClick(main, 1, 1);
-            waitForRendering(data.item, 400);
+            rebound(data.item);
         }
 
         function test_rebound_when_pressed_outside_or_clicked_data() {

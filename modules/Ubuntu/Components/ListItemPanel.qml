@@ -75,6 +75,20 @@ Item {
         color: leadingPanel ? UbuntuColors.red : "white"
     }
 
+    // default snapping!
+    ListItemActions.onDraggingChanged: {
+        if (ListItemActions.dragging || !visible) {
+            return;
+        }
+        if (ListItemActions.offset > ListItemActions.overshoot) {
+            // snap in
+            ListItemActions.snapToPosition(panel.width);
+        } else {
+            // snap out
+            ListItemActions.snapToPosition(0.0);
+        }
+    }
+
     Row {
         id: optionsRow
         anchors {

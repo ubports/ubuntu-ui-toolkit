@@ -18,6 +18,7 @@
 #include "uclistitem_p.h"
 #include "uclistitemactions.h"
 #include "uclistitemactions_p.h"
+#include "ucunits.h"
 
 UCListItemActionsAttached::UCListItemActionsAttached(QObject *parent)
     : QObject(parent)
@@ -77,7 +78,7 @@ UCListItem *UCListItemActionsAttached::listItem()
  * \qmlattachedproperty int ListItemActions::listItemIndex
  * \readonly
  * Holds the index of the \l ListItem within a view, if the \l ListItem is used
- * in a modelled view. Otherwise it is set to -1.
+ * in a model driven view. Otherwise it is set to -1.
  */
 int UCListItemActionsAttached::listItemIndex() {
     if (m_container.isNull()) {
@@ -136,6 +137,29 @@ UCListItemActions::Status UCListItemActionsAttached::status()
         return UCListItemActions::Disconnected;
     }
     return UCListItemActionsPrivate::get(m_container)->status;
+}
+
+/*!
+ * \qmlproperty real ListItemActions::overshoot
+ * The property holds the overshoot value set for the list item.
+ */
+qreal UCListItemActionsAttached::overshoot()
+{
+    if (status() == UCListItemActions::Disconnected) {
+        return 0.0;
+    }
+    QQuickItem *panelItem = UCListItemActionsPrivate::get(m_container)->panelItem;
+    if (!panelItem) {
+        // we don't have the panel created yet
+        return 0.0;
+    }
+    UCListItem *item = static_cast<UCListItem*>(panelItem->parentItem());
+    if (!item) {
+        // no ListItem attached
+        return 0.0;
+    }
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    return UCUnits::instance().gu(listItem->overshootGU);
 }
 
 /*!
