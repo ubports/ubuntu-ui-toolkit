@@ -79,6 +79,7 @@ public:
     QPointF pressedPos;
     QColor color;
     QColor highlightColor;
+    QPointer<UCListItemAttached> attachedObject;
     QPointer<QQuickItem> countOwner;
     QPointer<QQuickFlickable> flickable;
     QQuickPropertyAnimation *reboundAnimation;

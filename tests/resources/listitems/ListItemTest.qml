@@ -128,11 +128,11 @@ MainView {
             height: units.gu(20)
             model: 10
             pressDelay: 0
+            ListItem.onSelectedIndexesChanged: print("LISTVIEW INDEXES=", ListItem.selectedIndexes)
             delegate: ListItem {
                 objectName: "ListItem" + index
                 id: listItem
                 selectable: main.selectable
-                selected: true
                 onClicked: print(" clicked")
                 leadingActions: leading
                 Label {
@@ -163,6 +163,8 @@ MainView {
                 id: column
                 width: view.width
                 property alias count: repeater.count
+                ListItem.onSelectedIndexesChanged: print("INDEXES=", ListItem.selectedIndexes)
+
                 Repeater {
                     id: repeater
                     model: 10

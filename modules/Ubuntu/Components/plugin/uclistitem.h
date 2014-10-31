@@ -24,6 +24,7 @@ class UCListItemContent;
 class UCListItemDivider;
 class UCListItemActions;
 class UCListItemPrivate;
+class UCListItemAttached;
 class UCListItem : public UCStyledItemBase
 {
     Q_OBJECT
@@ -43,6 +44,8 @@ class UCListItem : public UCStyledItemBase
 public:
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
+
+    static UCListItemAttached *qmlAttachedProperties(QObject *owner);
 
     QQuickItem *contentItem() const;
     UCListItemDivider *divider() const;
@@ -99,6 +102,28 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
     Q_PRIVATE_SLOT(d_func(), void _q_completeSnapping())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSelected())
+};
+QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
+
+class UCListItemAttached : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QList<int> selectedIndexes READ selectedIndexes NOTIFY selectedIndexesChanged)
+    Q_PROPERTY(QList<QQuickItem*> selectedItems READ selectedItems NOTIFY selectedItemsChanged)
+public:
+    explicit UCListItemAttached(QObject *parent = 0);
+
+    QList<int> selectedIndexes() const;
+    QList<QQuickItem*> selectedItems() const;
+
+Q_SIGNALS:
+    void selectedIndexesChanged();
+    void selectedItemsChanged();
+
+private:
+    QList<int> m_indexes;
+    QList<QQuickItem*> m_items;
+    friend class UCListItem;
 };
 
 #endif // UCLISTITEM_H
