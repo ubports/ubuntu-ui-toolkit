@@ -51,7 +51,6 @@ QColor getPaletteColor(const char *profile, const char *color)
 UCListItemDivider::UCListItemDivider(QObject *parent)
     : QObject(parent)
     , m_visible(true)
-    , m_lastItem(false)
     , m_leftMarginChanged(false)
     , m_rightMarginChanged(false)
     , m_colorFromChanged(false)
@@ -126,7 +125,8 @@ void UCListItemDivider::updateGradient()
 QSGNode *UCListItemDivider::paint(QSGNode *node, const QRectF &rect)
 {
     QSGRectangleNode *dividerNode = static_cast<QSGRectangleNode*>(node);
-    if (m_visible && !m_lastItem && (m_gradient.size() > 0) && ((m_colorFrom.alphaF() >= (1.0f / 255.0f)) || (m_colorTo.alphaF() >= (1.0f / 255.0f)))) {
+    bool lastItem = m_listItem->countOwner ? (m_listItem->index() == (m_listItem->countOwner->property("count").toInt() - 1)): false;
+    if (m_visible && !lastItem && (m_gradient.size() > 0) && ((m_colorFrom.alphaF() >= (1.0f / 255.0f)) || (m_colorTo.alphaF() >= (1.0f / 255.0f)))) {
         if (!dividerNode) {
             dividerNode = m_listItem->sceneGraphContext()->createRectangleNode();
         }
@@ -297,21 +297,10 @@ void UCListItemPrivate::_q_completeSnapping()
     setContentMoved(false);
 }
 
-void UCListItemPrivate::_q_updateIndex(QObject *ownerItem)
+void UCListItemPrivate::_q_updateIndex()
 {
     Q_Q(UCListItem);
-    if (!ownerItem) {
-        ownerItem = q->sender();
-    }
-    Q_ASSERT(ownerItem);
-    // update the index as well
-    int index = -1;
-    QQmlContext *context = qmlContext(q);
-    if (context) {
-        QVariant indexProperty = context->contextProperty("index");
-        index = indexProperty.isValid() ? indexProperty.toInt() : -1;
-    }
-    divider->m_lastItem = ready && index == (ownerItem->property("count").toInt() - 1);
+    q->update();
 }
 
 int UCListItemPrivate::index()
@@ -602,13 +591,13 @@ void UCListItem::componentComplete()
      * of items. However, if the parent item, or Flickable declares a "count" property,
      * the ListItem will take use of it!
      */
-    QQuickItem *countOwner = (d->flickable && d->flickable->property("count").isValid()) ?
+    d->countOwner = (d->flickable && d->flickable->property("count").isValid()) ?
                 d->flickable :
                 (d->parentItem && d->parentItem->property("count").isValid()) ? d->parentItem : 0;
-    if (countOwner) {
-        QObject::connect(countOwner, SIGNAL(countChanged()),
+    if (d->countOwner) {
+        QObject::connect(d->countOwner.data(), SIGNAL(countChanged()),
                          this, SLOT(_q_updateIndex()), Qt::DirectConnection);
-        d->_q_updateIndex(countOwner);
+        update();
     }
 }
 

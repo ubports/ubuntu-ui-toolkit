@@ -47,7 +47,7 @@ public:
     void _q_updateSize();
     void _q_completeRebinding();
     void _q_completeSnapping();
-    void _q_updateIndex(QObject *ownerItem = 0);
+    void _q_updateIndex();
     int index();
     bool isMoving() const;
     void setContentMoved(bool move);
@@ -73,6 +73,7 @@ public:
     QPointF pressedPos;
     QColor color;
     QColor highlightColor;
+    QPointer<QQuickItem> countOwner;
     QPointer<QQuickFlickable> flickable;
     QQuickPropertyAnimation *reboundAnimation;
     PropertyChange *flickableInteractive;
@@ -118,7 +119,6 @@ private:
     void setColorTo(const QColor &color);
 
     bool m_visible:1;
-    bool m_lastItem:1;
     bool m_leftMarginChanged:1;
     bool m_rightMarginChanged:1;
     bool m_colorFromChanged:1;
