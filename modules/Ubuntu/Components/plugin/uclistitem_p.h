@@ -53,7 +53,7 @@ public:
     bool isMoving() const;
     void setContentMoved(bool move);
     void promptRebound();
-    void reboundTo(qreal x, const char *method);
+    void snapTo(qreal x);
     void setPressed(bool pressed);
     void setTugged(bool tugged);
     bool grabPanel(UCListItemActions *optionList, bool isTugged);
