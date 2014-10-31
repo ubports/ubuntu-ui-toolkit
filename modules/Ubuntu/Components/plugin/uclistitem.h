@@ -36,6 +36,7 @@ class UCListItem : public UCStyledItemBase
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor NOTIFY highlightColorChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
+    Q_PRIVATE_PROPERTY(d_func(), bool moving READ isMoving NOTIFY movingChanged)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
     explicit UCListItem(QQuickItem *parent = 0);
@@ -70,8 +71,11 @@ Q_SIGNALS:
     void colorChanged();
     void highlightColorChanged();
     void childrenChanged();
+    void movingChanged();
 
     void clicked();
+    void movingStarted();
+    void movingEnded();
 
 public Q_SLOTS:
 
@@ -84,7 +88,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_completeRebinding())
-    Q_PRIVATE_SLOT(d_func(), void _q_updateIndex(QObject *ownerItem = 0))
+    Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
+    Q_PRIVATE_SLOT(d_func(), void _q_completeSnapping())
 };
 
 #endif // UCLISTITEM_H
