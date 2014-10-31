@@ -128,20 +128,6 @@ bool UCListItemActionsPrivate::isConnectedTo(UCListItemActions *actions, UCListI
             (_this->panelItem->parentItem() == listItem);
 }
 
-qreal UCListItemActionsPrivate::snap(UCListItemActions *options)
-{
-    UCListItemActionsPrivate *_this = get(options);
-    if (!_this || !_this->panelItem) {
-        return 0.0;
-    }
-    // if the drag is > overshootGU, snap in, otherwise snap out
-    UCListItemPrivate *listItem = UCListItemPrivate::get(static_cast<UCListItem*>(_this->panelItem->parentItem()));
-    if (_this->offsetDragged > UCUnits::instance().gu(listItem->overshootGU)) {
-        return _this->panelItem->width() * (_this->status == UCListItemActions::Leading ? 1 : -1);
-    }
-    return 0.0;
-}
-
 void UCListItemActionsPrivate::setDragging(UCListItemActions *actions, UCListItem *listItem, bool dragging)
 {
     UCListItemActionsPrivate *_this = get(actions);

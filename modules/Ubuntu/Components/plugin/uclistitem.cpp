@@ -750,21 +750,6 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             Q_EMIT clicked();
             d->_q_rebound();
         } else {
-            // snap
-//            qreal snapPosition = 0.0;
-//            if (d->contentItem->x() < 0) {
-//                snapPosition = UCListItemActionsPrivate::snap(d->trailingActions);
-//            } else if (d->contentItem->x() > 0) {
-//                snapPosition = UCListItemActionsPrivate::snap(d->leadingActions);
-//            }
-//            if (d->contentItem->x() == 0.0) {
-//                // do a cleanup, no need to rebound, the item has been dragged back to 0
-//                d->promptRebound();
-//            } else if (snapPosition == 0.0){
-//                d->_q_rebound();
-//            } else {
-//                d->reboundTo(snapPosition, "_q_completeSnapping()");
-//            }
             // unset dragging in panel item
             UCListItemActionsPrivate::setDragging(d->leadingActions, this, false);
             UCListItemActionsPrivate::setDragging(d->trailingActions, this, false);
