@@ -875,7 +875,10 @@ plugins.qmltypes
     Property { name: "highlightColor"; type: "QColor" }
     Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
+    Property { name: "moving"; type: "bool"; isReadonly: true }
     Signal { name: "clicked" }
+    Signal { name: "movingStarted" }
+    Signal { name: "movingEnded" }
     name: "UCListItemActions"
     prototype: "QObject"
     exports: ["ListItemActions 1.2"]
