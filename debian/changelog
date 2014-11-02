@@ -1,5 +1,6 @@
-ubuntu-ui-toolkit (1.1.1311+14.10.20141030~rtm-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.1.1311+15.04.20141102-0ubuntu1) vivid; urgency=medium
 
+  [ Zoltán Balogh ]
   [ Christian Dywan <christian.dywan@canonical.com>
   * Explicitly use Orange in Slider and ProgressBar. 
     Fixes: LP: #1372585.
@@ -28,7 +29,7 @@ ubuntu-ui-toolkit (1.1.1311+14.10.20141030~rtm-0ubuntu2) UNRELEASED; urgency=med
    Fixes: LP: #1324469.
  
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 31 Oct 2014 15:52:14 +0100
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sun, 02 Nov 2014 13:01:56 +0000
 
 ubuntu-ui-toolkit (1.1.1298+14.10.20141030~rtm-0ubuntu1) 14.09; urgency=low
 
