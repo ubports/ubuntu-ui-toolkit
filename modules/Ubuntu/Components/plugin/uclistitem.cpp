@@ -325,6 +325,7 @@ void UCListItemPrivate::_q_updateIndex()
     Q_Q(UCListItem);
     q->update();
 }
+
 // returns the index of the list item when used in model driven views,
 // and the child index in other cases
 int UCListItemPrivate::index()
