@@ -29,11 +29,22 @@ Style.PageHeadStyle {
     separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
     fontWeight: Font.Light
     fontSize: "x-large"
-    textColor: styledItem.config.foregroundColor
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
+    /*!
+      The color of the title text
+     */
+    textColor: styledItem.config.foregroundColor
+
+    /*!
+      The background color of the divider at the bottom of the header
+     */
     property color dividerColor: styledItem.dividerColor
+
+    /*!
+      The background color of the tabs panel and the actions overflow panel
+     */
     property color panelColor: styledItem.panelColor
 
     implicitHeight: headerStyle.contentHeight + divider.height
