@@ -64,7 +64,7 @@ Item {
     /*!
       The color of the title text.
      */
-    property color textColor
+    property color titleColor
 
     /*!
       The background color of the tabs panel and the actions overflow panel.

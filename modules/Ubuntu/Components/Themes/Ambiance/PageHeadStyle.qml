@@ -33,7 +33,7 @@ Style.PageHeadStyle {
     maximumNumberOfActions: 3
 
     buttonColor: styledItem.config.foregroundColor
-    textColor: styledItem.config.foregroundColor
+    titleColor: styledItem.config.foregroundColor
     panelBackgroundColor: styledItem.panelColor
     panelHighlightColor: Theme.palette.selected.background
     panelForegroundColor: Theme.palette.selected.backgroundText
@@ -408,7 +408,7 @@ Style.PageHeadStyle {
                 text: styledItem.title
                 font.weight: headerStyle.fontWeight
                 fontSize: headerStyle.fontSize
-                color: headerStyle.textColor
+                color: headerStyle.titleColor
                 elide: Text.ElideRight
             }
 
