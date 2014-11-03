@@ -32,9 +32,8 @@ Style.PageHeadStyle {
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
-    foregroundColor: styledItem.config.foregroundColor
-    buttonColor: foregroundColor
-    textColor: foregroundColor
+    buttonColor: styledItem.config.foregroundColor
+    textColor: styledItem.config.foregroundColor
     panelBackgroundColor: styledItem.panelColor
     panelHighlightColor: Theme.palette.selected.background
     panelForegroundColor: Theme.palette.selected.backgroundText

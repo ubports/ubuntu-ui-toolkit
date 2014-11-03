@@ -57,11 +57,6 @@ Item {
     property int fontWeight
 
     /*!
-      The color of the title text and buttons in the header.
-     */
-    property color foregroundColor
-
-    /*!
       The color of the buttons in the header. Overrides foregroundColor.
      */
     property color buttonColor
