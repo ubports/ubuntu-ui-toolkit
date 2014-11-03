@@ -25,8 +25,8 @@ Style.PageHeadStyle {
     contentHeight: units.gu(7)
     // FIXME: After After https://code.launchpad.net/~mzanetti/unity8/new-pageheader-api/+merge/239242
     //  lands, set separatorSource and separatorBottomSource to "" in order to use the new divider.
-    separatorSource: "" //artwork/PageHeaderBaseDividerLight.sci"
-    separatorBottomSource: ""//artwork/PageHeaderBaseDividerBottom.png"
+    separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
+    separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
     fontWeight: Font.Light
     fontSize: "x-large"
     textColor: styledItem.config.foregroundColor
