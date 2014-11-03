@@ -108,22 +108,22 @@ QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
 class UCListItemAttached : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QList<int> selectedIndexes READ selectedIndexes NOTIFY selectedIndexesChanged)
-    Q_PROPERTY(QList<QQuickItem*> selectedItems READ selectedItems NOTIFY selectedItemsChanged)
+    Q_PROPERTY(QList<int> selectedIndexes READ selectedIndexes WRITE setSelectedIndexes NOTIFY selectedIndexesChanged)
 public:
     explicit UCListItemAttached(QObject *parent = 0);
 
     QList<int> selectedIndexes() const;
-    QList<QQuickItem*> selectedItems() const;
+    void setSelectedIndexes(const QList<int> &list);
+
+    void addSelectedItem(UCListItem *item);
+    void removeSelectedItem(UCListItem *item);
+    bool isItemSelected(UCListItem *item);
 
 Q_SIGNALS:
     void selectedIndexesChanged();
-    void selectedItemsChanged();
 
 private:
     QList<int> m_indexes;
-    QList<QQuickItem*> m_items;
-    friend class UCListItem;
 };
 
 #endif // UCLISTITEM_H

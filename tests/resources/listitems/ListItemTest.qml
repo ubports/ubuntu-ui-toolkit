@@ -29,7 +29,10 @@ MainView {
         id: stock
         iconName: "starred"
         text: "Staaaar"
-        onTriggered: print(iconName, "triggered", value)
+        onTriggered: {
+            print(iconName, "triggered", value)
+            view.ListItem.selectedIndexes = [1, 2, 9];
+        }
     }
 
     ListItemActions {
@@ -128,6 +131,7 @@ MainView {
             height: units.gu(20)
             model: 10
             pressDelay: 0
+//            ListItem.selectedIndexes: [9,3,4]
             ListItem.onSelectedIndexesChanged: print("LISTVIEW INDEXES=", ListItem.selectedIndexes)
             delegate: ListItem {
                 objectName: "ListItem" + index

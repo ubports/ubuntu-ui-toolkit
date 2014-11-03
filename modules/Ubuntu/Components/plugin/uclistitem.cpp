@@ -325,14 +325,17 @@ void UCListItemPrivate::_q_updateIndex()
     Q_Q(UCListItem);
     q->update();
 }
-
+// returns the index of the list item when used in model driven views,
+// and the child index in other cases
 int UCListItemPrivate::index()
 {
     Q_Q(UCListItem);
     // is there an index context property?
     QQmlContext *context = qmlContext(q);
     QVariant index = context->contextProperty("index");
-    return index.isValid() ? index.toInt() : -1;
+    return index.isValid() ?
+                index.toInt() :
+                (parentItem ? QQuickItemPrivate::get(parentItem)->childItems.indexOf(q) : -1);
 }
 
 /*!
@@ -536,6 +539,10 @@ void UCListItemPrivate::toggleSelectionMode()
         // move and dimm content item
         selectionPanel->setVisible(true);
         snapTo(selectionPanel->width());
+        // sync selected flag with the attached selection array
+        if (attachedObject) {
+            q->setSelected(attachedObject->isItemSelected(q));
+        }
         QObject::connect(selectionPanel, SIGNAL(checkedChanged()), q, SLOT(_q_updateSelected()));
     } else {
         // remove content item dimming and destroy selection panel as well
@@ -676,12 +683,7 @@ void UCListItem::componentComplete()
 
     // get the selected state from the attached object
     if (d->attachedObject) {
-        if (d->attachedObject->m_indexes.contains(d->index())) {
-            setSelected(true);
-        } else if (d->selected) {
-            d->attachedObject->m_indexes.append(d->index());
-            Q_EMIT d->attachedObject->selectedIndexesChanged();
-        }
+        setSelected(d->attachedObject->isItemSelected(this));
     }
 }
 
@@ -694,22 +696,21 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         d->listenToRebind(false);
         // check if we are in a positioner, and if that positioner is in a Flickable
         QQuickBasePositioner *positioner = qobject_cast<QQuickBasePositioner*>(data.item);
-        if (positioner) {
-            // attache ListItem properties to this
-            d->attachedObject = static_cast<UCListItemAttached*>(
-                        qmlAttachedPropertiesObject<UCListItem>(positioner));
-        }
         if (positioner && positioner->parentItem()) {
             // count owner is a positioner
             d->flickable = qobject_cast<QQuickFlickable*>(positioner->parentItem()->parentItem());
         } else if (data.item && data.item->parentItem()){
             // check if we are in a Flickable then
             d->flickable = qobject_cast<QQuickFlickable*>(data.item->parentItem());
-            if (d->flickable) {
-                // attache ListItem properties to this
-                d->attachedObject = static_cast<UCListItemAttached*>(
-                            qmlAttachedPropertiesObject<UCListItem>(d->flickable));
-            }
+        }
+
+        // attach ListItem properties to the flickable or parentItem
+        if (d->flickable) {
+            d->attachedObject = static_cast<UCListItemAttached*>(
+                        qmlAttachedPropertiesObject<UCListItem>(d->flickable));
+        } else if (data.item) {
+            d->attachedObject = static_cast<UCListItemAttached*>(
+                        qmlAttachedPropertiesObject<UCListItem>(data.item));
         }
 
         if (d->flickable) {
@@ -1138,13 +1139,10 @@ void UCListItem::setSelected(bool selected)
     d->selected = selected;
     // update attached list
     if (d->attachedObject) {
-        int index = d->index();
-        if (selected && !d->attachedObject->m_indexes.contains(index)) {
-            d->attachedObject->m_indexes.append(index);
-            Q_EMIT d->attachedObject->selectedIndexesChanged();
-        } else if (!selected) {
-            d->attachedObject->m_indexes.removeAll(index);
-            Q_EMIT d->attachedObject->selectedIndexesChanged();
+        if (selected) {
+            d->attachedObject->addSelectedItem(this);
+        } else {
+            d->attachedObject->removeSelectedItem(this);
         }
     }
     // update panel as well
@@ -1190,32 +1188,45 @@ UCListItemAttached::UCListItemAttached(QObject *parent)
 
 /*!
  * \qmlattachedproperty list<int> ListItem::selectedIndexes
- * The property contains the indexes of the selected ListItems in a model driven
- * view (i.e. ListView). It is automatically attached to ListViews.
+ * The property is automatically attached to the ListItem's parent item, or to
+ * the ListView when used with ListView. Contains the indexes of the ListItems
+ * marked as selected. The indexes are model indexes when used in ListView, and
+ * child indexes in other contexts.
  * \note Setting the ListItem's \l selected property to \c true will add the
- * item index to the selection list automatically. Therefore it is recommended
- * to set the list first which will drive the selection on the list items in
- * the view automatically.
- * \sa selectedItems
+ * item index to the selection list automatically, and may destroy the initial
+ * state of the selection. Therefore it is recommended to drive the selection
+ * through the attached property rather through the \l ListItem::selected property.
+ * \sa ListItem::selectable, ListItem::selected
  */
 QList<int> UCListItemAttached::selectedIndexes() const
 {
     return m_indexes;
 }
-
-/*!
- * \qmlattachedproperty list<Item> ListItem::selectedItems
- * The property contains the selected ListItems in a positioner (i.e. Column).
- * It is automatically attached to positioners.
- * \note Setting the ListItem's \l selected property to \c true will add the
- * item to the selection list automatically. Therefore it is recommended to set
- * the list first which will drive the selection on the list items in the
- * positioner automatically.
- * \sa selectedIndexes
- */
-QList<QQuickItem*> UCListItemAttached::selectedItems() const
+void UCListItemAttached::setSelectedIndexes(const QList<int> &list)
 {
-    return m_items;
+    if (m_indexes == list) {
+        return;
+    }
+    m_indexes = list;
+    Q_EMIT selectedIndexesChanged();
+}
+
+void UCListItemAttached::addSelectedItem(UCListItem *item)
+{
+    int index = UCListItemPrivate::get(item)->index();
+    if (!m_indexes.contains(index)) {
+        m_indexes.append(index);
+        Q_EMIT selectedIndexesChanged();
+    }
+}
+void UCListItemAttached::removeSelectedItem(UCListItem *item)
+{
+    m_indexes.removeAll(UCListItemPrivate::get(item)->index());
+}
+
+bool UCListItemAttached::isItemSelected(UCListItem *item)
+{
+    return m_indexes.contains(UCListItemPrivate::get(item)->index());
 }
 
 #include "moc_uclistitem.cpp"

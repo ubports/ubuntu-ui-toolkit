@@ -904,8 +904,7 @@ plugins.qmltypes
     Parameter { name: "position"; type: "double" }
     name: "UCListItemAttached"
     prototype: "QObject"
-    Property { name: "selectedIndexes"; type: "QList<int>"; isReadonly: true }
-    Property { name: "selectedItems"; type: "QList<QQuickItem*>"; isReadonly: true }
+    Property { name: "selectedIndexes"; type: "QList<int>" }
     name: "UCListItemDivider"
     prototype: "QObject"
     Property { name: "visible"; type: "bool" }
