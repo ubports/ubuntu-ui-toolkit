@@ -28,11 +28,16 @@ Item {
     /*!
       The background color of the bubble.
      */
-    // FIXME: Rename to color
-    property color bubbleColor: square ? Theme.palette.normal.background : Theme.palette.normal.overlay
+    property color color: square ? Theme.palette.normal.background : Theme.palette.normal.overlay
+
+    /*!
+      \deprecated
+     */
+    property alias bubbleColor: bubbleShape.color
 
     /*!
       The opacity of the background of the bubble.
+      \deprecated
      */
     // FIXME: Do not expose this property if we don't use it.
     property real bubbleOpacity: 1.0
@@ -142,7 +147,7 @@ Item {
         Rectangle {
             id: colorRect
             anchors.fill: parent
-            color: bubbleShape.bubbleColor
+            color: bubbleShape.color
             opacity: bubbleShape.bubbleOpacity
             visible: bubbleShape.clipContent
         }

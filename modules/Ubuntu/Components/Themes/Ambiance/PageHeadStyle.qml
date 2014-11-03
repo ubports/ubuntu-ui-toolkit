@@ -316,6 +316,14 @@ Style.PageHeadStyle {
                         callerMargin: -units.gu(1) + units.dp(4)
                         contentWidth: units.gu(20)
 
+                        Binding {
+                            target: tabsPopover.__foreground.__styleInstance
+                            property: "color"
+                            value: headerStyle.panelColor
+                            when: tabsPopover.__foreground &&
+                                  tabsPopover.__foreground.__styleInstance
+                        }
+
                         Column {
                             anchors {
                                 left: parent.left
