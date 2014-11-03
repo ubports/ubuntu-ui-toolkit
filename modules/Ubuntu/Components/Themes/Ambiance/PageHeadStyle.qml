@@ -499,6 +499,14 @@ Style.PageHeadStyle {
                         callerMargin: -units.gu(1) + units.dp(4)
                         contentWidth: units.gu(20)
 
+                        Binding {
+                            target: actionsOverflowPopover.__foreground.__styleInstance
+                            property: "color"
+                            value: headerStyle.panelColor
+                            when: actionsOverflowPopover.__foreground &&
+                                  actionsOverflowPopover.__foreground.__styleInstance
+                        }
+
                         // Ensure the popover closes when actions change and
                         // the list item below may be destroyed before its
                         // onClicked is executed. See bug
