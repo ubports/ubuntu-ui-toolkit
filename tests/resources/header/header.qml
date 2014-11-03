@@ -32,7 +32,6 @@ MainView {
             Tab {
                 title: "Colors"
                 page: Page {
-
                     head.actions: [
                         Action {
                             iconName: "close"
