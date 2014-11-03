@@ -128,7 +128,7 @@ Item {
         Rectangle {
             id: colorRect
             anchors.fill: parent
-            color: square ? Theme.palette.normal.background : Theme.palette.normal.overlay
+            color: "red" //square ? Theme.palette.normal.background : Theme.palette.normal.overlay
             visible: bubbleShape.clipContent
         }
     }

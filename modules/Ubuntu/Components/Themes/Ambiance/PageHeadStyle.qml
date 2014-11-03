@@ -25,13 +25,16 @@ Style.PageHeadStyle {
     contentHeight: units.gu(7)
     // FIXME: After After https://code.launchpad.net/~mzanetti/unity8/new-pageheader-api/+merge/239242
     //  lands, set separatorSource and separatorBottomSource to "" in order to use the new divider.
-    separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
-    separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
+    separatorSource: "" //artwork/PageHeaderBaseDividerLight.sci"
+    separatorBottomSource: ""//artwork/PageHeaderBaseDividerBottom.png"
     fontWeight: Font.Light
     fontSize: "x-large"
     textColor: styledItem.config.foregroundColor
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
+
+    property color dividerColor: styledItem.dividerColor
+    property color panelColor: styledItem.panelColor
 
     implicitHeight: headerStyle.contentHeight + divider.height
 
@@ -64,7 +67,7 @@ Style.PageHeadStyle {
         property url separatorBottomSource: headerStyle.separatorBottomSource
 
         // backgroundColor is used in the new HeadDividerStyle
-        property color backgroundColor: styledItem.dividerColor
+        property color backgroundColor: headerStyle.dividerColor
 
         // FIXME: After https://code.launchpad.net/~mzanetti/unity8/new-pageheader-api/+merge/239242
         //  lands, set the value of useOldDivider to: "" != separatorSource
