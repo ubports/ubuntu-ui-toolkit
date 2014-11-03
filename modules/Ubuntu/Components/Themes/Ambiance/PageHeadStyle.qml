@@ -34,11 +34,6 @@ Style.PageHeadStyle {
     maximumNumberOfActions: 3
 
     /*!
-      The background color of the divider at the bottom of the header
-     */
-    property color dividerColor: styledItem.dividerColor
-
-    /*!
       The background color of the tabs panel and the actions overflow panel
      */
     property color panelColor: styledItem.panelColor
@@ -74,7 +69,7 @@ Style.PageHeadStyle {
         property url separatorBottomSource: headerStyle.separatorBottomSource
 
         // backgroundColor is used in the new HeadDividerStyle
-        property color backgroundColor: headerStyle.dividerColor
+        property color backgroundColor: styledItem.dividerColor
 
         // FIXME: After https://code.launchpad.net/~mzanetti/unity8/new-pageheader-api/+merge/239242
         //  lands, set the value of useOldDivider to: "" != separatorSource
