@@ -93,4 +93,4 @@ class DisabledTextInputTestCase(GalleryTestCase):
 
         self.pointing_device.click_object(textfield_disabled)
         textfield_disabled.keyboard.type('This should not be writen')
-        self.assertEqual('', textfield_disabled.text)
+        self.assertEqual('No interaction allowed', textfield_disabled.text)
