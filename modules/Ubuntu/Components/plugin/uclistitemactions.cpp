@@ -242,7 +242,7 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
  * When used with views, or when the amount of items of same kind to be created
  * is huge, it is recommended to use cached ListItemActions instances to reduce
  * creation time and to be able to handle rebounding and flicking properly. If
- * each ListItem crteates its own ListItemActions instance the Flickable view may
+ * each ListItem creates its own ListItemActions instance the Flickable view may
  * be blocked and action visualization will also break.
  * \qml
  * import QtQuick 2.2
@@ -275,6 +275,14 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
  *     }
  * }
  * \endqml
+ * \section3 Action parameter types
+ * Actions handled by the ListItem are all triggered with the ListItem's index
+ * as parameter. This index can either be the model index when used with ListView,
+ * or the child index from the parentItem's childItems list. Actions can use this
+ * parameter to identify the instance of the ListItem on which it was executed.
+ * However this will only work if the \l {Action::parameterType}{parameterType}
+ * will be set to Action.Integer or not set at all, in which case the ListItem
+ * will set the type to Action.Integer.
  */
 
 UCListItemActions::UCListItemActions(QObject *parent)
@@ -326,7 +334,7 @@ UCListItemActions::~UCListItemActions()
  *                     anchors.horizontalCenter: parent.horizontalCenter
  *                 }
  *                 Label {
- *                     text: option.text + "#" + index
+ *                     text: action.text + "#" + index
  *                     width: parent.width
  *                     horizontalAlignment: Text.AlignHCenter
  *                 }
