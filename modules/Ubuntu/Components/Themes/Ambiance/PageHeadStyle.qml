@@ -41,7 +41,7 @@ Style.PageHeadStyle {
     /*!
       The background color of the tabs panel and the actions overflow panel.
      */
-    property color panelColor: styledItem.panelColor
+    property color panelBackgroundColor: styledItem.panelColor
 
     /*!
       The background color of the tapped item in the panel.
@@ -336,7 +336,7 @@ Style.PageHeadStyle {
                         Binding {
                             target: tabsPopover.__foreground.__styleInstance
                             property: "color"
-                            value: headerStyle.panelColor
+                            value: headerStyle.panelBackgroundColor
                             when: tabsPopover.__foreground &&
                                   tabsPopover.__foreground.__styleInstance
                         }
@@ -518,7 +518,7 @@ Style.PageHeadStyle {
                         Binding {
                             target: actionsOverflowPopover.__foreground.__styleInstance
                             property: "color"
-                            value: headerStyle.panelColor
+                            value: headerStyle.panelBackgroundColor
                             when: actionsOverflowPopover.__foreground &&
                                   actionsOverflowPopover.__foreground.__styleInstance
                         }
