@@ -30,18 +30,6 @@ Item {
      */
     property color color: square ? Theme.palette.normal.background : Theme.palette.normal.overlay
 
-    /*!
-      \deprecated
-     */
-    property alias bubbleColor: bubbleShape.color
-
-    /*!
-      The opacity of the background of the bubble.
-      \deprecated
-     */
-    // FIXME: Do not expose this property if we don't use it.
-    property real bubbleOpacity: 1.0
-
     property point target
     property string direction: "down"
     property bool clipContent: false
@@ -148,7 +136,6 @@ Item {
             id: colorRect
             anchors.fill: parent
             color: bubbleShape.color
-            opacity: bubbleShape.bubbleOpacity
             visible: bubbleShape.clipContent
         }
     }
