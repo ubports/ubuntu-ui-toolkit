@@ -59,49 +59,9 @@ Item {
     property int fontWeight
 
     /*!
-      The color of the buttons in the header.
-     */
-    property color buttonColor
-
-    /*!
-      The color of the title text.
-     */
-    property color titleColor
-
-    /*!
       \deprecated
      */
-    property alias textColor: pageHeadStyle.titleColor
-
-    /*!
-      The background color of the tabs panel and the actions overflow panel.
-     */
-    property color panelBackgroundColor
-
-    /*!
-      The background color of the tapped item in the panel.
-     */
-    property color panelHighlightColor
-
-    /*!
-      The foreground color (icon and text) of actions in the panel.
-     */
-    property color panelForegroundColor
-
-    /*!
-      The text color of unselected sections and the section divider.
-     */
-    property color sectionColor
-
-    /*!
-      The text color of the selected section.
-     */
-    property color selectedSectionColor
-
-    /*!
-      The background color of the pressed section.
-     */
-    property color sectionHighlightColor
+    property color textColor: pageHeadStyle.titleColor
 
     /*!
       Left margin of title text.

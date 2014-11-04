@@ -32,14 +32,46 @@ Style.PageHeadStyle {
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
-    buttonColor: styledItem.config.foregroundColor
-    titleColor: styledItem.config.foregroundColor
-    panelBackgroundColor: styledItem.panelColor
-    panelHighlightColor: Theme.palette.selected.background
-    panelForegroundColor: Theme.palette.selected.backgroundText
-    sectionColor: Theme.palette.selected.backgroundText
-    selectedSectionColor: UbuntuColors.orange
-    sectionHighlightColor: Theme.palette.selected.background
+    /*!
+      The color of the buttons in the header.
+     */
+    property color buttonColor: styledItem.config.foregroundColor
+
+    /*!
+      The color of the title text.
+     */
+    property color titleColor: styledItem.config.foregroundColor
+    textColor: titleColor
+
+    /*!
+      The background color of the tabs panel and the actions overflow panel.
+     */
+    property color panelBackgroundColor: styledItem.panelColor
+
+    /*!
+      The background color of the tapped item in the panel.
+     */
+    property color panelHighlightColor: Theme.palette.selected.background
+
+    /*!
+      The foreground color (icon and text) of actions in the panel.
+     */
+    property color panelForegroundColor: Theme.palette.selected.backgroundText
+
+    /*!
+      The text color of unselected sections and the section divider.
+     */
+    property color sectionColor: Theme.palette.selected.backgroundText
+
+    /*!
+      The text color of the selected section.
+     */
+    property color selectedSectionColor: UbuntuColors.orange
+
+    /*!
+      The background color of the pressed section.
+     */
+    property color sectionHighlightColor: Theme.palette.selected.background
 
     implicitHeight: headerStyle.contentHeight + divider.height
 
