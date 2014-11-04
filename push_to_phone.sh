@@ -17,7 +17,7 @@
 # Author: Christian Dywan <christian.dywan@canonical.com>
 
 ARCH=arm-linux-gnueabihf
-DEST=/usr/lib/$ARCH/qt5/qml/Ubuntu/Components/
+DEST=/usr/lib/$ARCH/qt5/qml/Ubuntu/Components
 RUN=$XDG_RUNTIME_DIR/$(basename $0)
 STONE=/tmp/$(basename $0)
 
@@ -32,6 +32,7 @@ phablet-config writable-image || exit 1
 rm -Rf $RUN
 mkdir -p $RUN
 echo '#!/bin/sh' > $RUN/copy.sh
+echo echo Updating Ubuntu.Components... >> $RUN/copy.sh
 echo cd $STONE >> $RUN/copy.sh
 echo DEST=$DEST >> $RUN/copy.sh
 
@@ -42,23 +43,24 @@ for i in $(ls Ubuntu/Components/*.qml Ubuntu/Components/*.js Ubuntu/Components/q
     adb push $i $STONE/c/$i || exit 1
 done
 cd ..
-echo cp -R c/ "\$DEST" >> $RUN/copy.sh
+echo cp -R c/Ubuntu/Components/* "\$DEST" '|| exit 1' >> $RUN/copy.sh
 
 for i in 10 11 ListItems Pickers Popups Styles Themes artwork; do
     adb push modules/Ubuntu/Components/$i/ $STONE/$i || exit 1
-    echo cp -R $i/ "\$DEST"/$i >> $RUN/copy.sh || exit 1
+    echo cp -R $i/ "\$DEST"/$i >> $RUN/copy.sh '|| exit 1' || exit 1
 done
 
 # Autopilot tests should always match the Toolkit
 adb push tests/autopilot/ubuntuuitoolkit/ $STONE/ap || exit 1
-echo cp -R ap/ /usr/lib/python2.7/dist-packages/ubuntuuitoolkit >> $RUN/copy.sh || exit 1
-echo cp -R ap/ /usr/lib/python3/dist-packages/ubuntuuitoolkit >> $RUN/copy.sh || exit 1
+echo cp -R ap/ /usr/lib/python2.7/dist-packages/ubuntuuitoolkit '|| exit 1' >> $RUN/copy.sh || exit 1
+echo cp -R ap/ /usr/lib/python3/dist-packages/ubuntuuitoolkit '|| exit 1' >> $RUN/copy.sh || exit 1
 adb push examples/ubuntu-ui-toolkit-gallery/ $STONE/ex >> $RUN/copy.sh || exit 1
-echo cp -R ex/ /usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery
+echo cp -R ex/ /usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery '|| exit 1'
 
 # For launching the gallery easily
-echo cp ex/*.desktop /usr/share/applications/ >> $RUN/copy.sh || exit 1
+echo cp ex/*.desktop /usr/share/applications/ '|| exit 1' >> $RUN/copy.sh || exit 1
 
+echo echo ...OK >> $RUN/copy.sh
 chmod +x $RUN/copy.sh
 adb push $RUN/copy.sh $STONE/copy.sh || exit 1
 adb shell "echo $PW | sudo --stdin $STONE/copy.sh"
