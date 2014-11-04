@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-09-24 07:30+0000\n"
-"X-Generator: Launchpad (build 17196)\n"
+"X-Launchpad-Export-Date: 2014-10-23 07:23+0000\n"
+"X-Generator: Launchpad (build 17203)\n"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:154
 #, qt-format
@@ -23,58 +23,62 @@ msgid ""
 "property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
 "of type %5"
 msgstr ""
+"eigenschap \"%1\" van object %2 is van type %3 en kan niet worden ingesteld "
+"op waarde \"%4\" van type %5"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:163
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
 msgstr ""
+"eigenschap \"%1\" bestaat niet of is niet beschrijfbaar voor object %2"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:42
 #: Ubuntu/Components/plugin/ucalarm.cpp:136
 msgid "Alarm"
-msgstr ""
+msgstr "Wekker"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:684
 #: Ubuntu/Components/plugin/ucalarm.cpp:716
 msgid "Alarm has a pending operation."
-msgstr ""
+msgstr "Wekker heeft een lopende operatie."
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
-msgstr ""
+msgstr "Gebruik: "
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
-msgstr ""
+msgstr "Opties:"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
-msgstr ""
+msgstr "%1 verwacht een extra argument: %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
-msgstr ""
+msgstr "%1 verwacht een waarde voor het argument: %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
-msgstr ""
+msgstr "%1 verwacht extra argumenten: %2"
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1064
 msgid "Ignoring AfterItem priority for InverseMouse filters."
-msgstr ""
+msgstr "Afteritem-prioriteit voor InverseMouse-filters wordt genegeerd."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
-msgstr ""
+msgstr "Opgelet: gebruiker moet een ID hebben. Er wordt niet opgeslagen."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:56
 #, qt-format
 msgid ""
 "Warning: attachee's UUID is already registered, state won't be saved: %1"
 msgstr ""
+"Opgelet: de opgegeven UUID is al in gebruik. Er wordt niet opgeslagen: %1"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:102
 #, qt-format
@@ -82,51 +86,53 @@ msgid ""
 "All the parents must have an id.\n"
 "State saving disabled for %1, class %2"
 msgstr ""
+"Alle ouders moeten een ID hebben.\n"
+"Opslaan van status uitgezet voor %1, klasse %2"
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
-msgstr ""
+msgstr "Thema niet gevonden: "
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:80
 msgid "Cancel"
-msgstr ""
+msgstr "Annuleren"
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:90
 msgid "Confirm"
-msgstr ""
+msgstr "Bevestigen"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:89
 msgid "Close"
-msgstr ""
+msgstr "Sluiten"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:99
 msgid "Done"
-msgstr ""
+msgstr "Klaar"
 
 #: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
-msgstr ""
+msgstr "Alles selecteren"
 
 #: Ubuntu/Components/TextInputPopover.qml:33
 msgid "Cut"
-msgstr ""
+msgstr "Knippen"
 
 #: Ubuntu/Components/TextInputPopover.qml:42
 msgid "Copy"
-msgstr ""
+msgstr "Kopiëren"
 
 #: Ubuntu/Components/TextInputPopover.qml:49
 msgid "Paste"
-msgstr ""
+msgstr "Plakken"
 
 #: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
 msgid "In Progress"
-msgstr ""
+msgstr "Bezig"
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."
-msgstr ""
+msgstr "Loslaten om te verversen…"
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
-msgstr ""
+msgstr "Trekken om te verversen…"
