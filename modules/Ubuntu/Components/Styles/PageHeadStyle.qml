@@ -24,8 +24,6 @@ import QtQuick 2.0
     The component defines the style API for the page header component.
   */
 Item {
-    id: pageHeadStyle
-
     /*!
       The height of the headercontents, which is the full height of
       the header minus the separators shown at the bottom of it.
@@ -61,7 +59,7 @@ Item {
     /*!
       \deprecated
      */
-    property color textColor: pageHeadStyle.titleColor
+    property color textColor
 
     /*!
       Left margin of title text.

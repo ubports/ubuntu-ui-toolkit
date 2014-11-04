@@ -41,7 +41,6 @@ Style.PageHeadStyle {
       The color of the title text.
      */
     property color titleColor: styledItem.config.foregroundColor
-    textColor: titleColor
 
     /*!
       The background color of the tabs panel and the actions overflow panel.
