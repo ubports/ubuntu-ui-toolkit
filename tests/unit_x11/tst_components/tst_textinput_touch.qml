@@ -82,12 +82,16 @@ Item {
         function init() {
             textField.cursorPosition = 0;
             textArea.cursorPosition = 0;
+            emptyTextField.cursorPosition = 0;
+            emptyTextArea.cursorPosition = 0;
         }
         function cleanup() {
             textField.cursorPosition = 1;
             textArea.cursorPosition = 1;
             textField.focus = false;
             textArea.focus = false;
+            emptyTextField.focus = false;
+            emptyTextArea.focus = false;
             autoSizeTextArea.focus = false;
             popupSpy.target = null;
             popupSpy.clear();
@@ -194,7 +198,9 @@ Item {
             ];
         }
         function test_longtap_when_empty(data) {
-            data.input.focus = true;
+            TestExtras.touchClick(0, data.input, centerOf(data.input));
+            waitForRendering(data.input, 500);
+
             popupSpy.target = findChild(data.input, "input_handler");
 
             TestExtras.touchLongPress(0, data.input, guPoint(1, 1));
@@ -206,6 +212,7 @@ Item {
             TestExtras.touchRelease(0, data.input, guPoint(1, 1));
             // dismiss popover
             TestExtras.touchClick(0, testMain, 0, 0);
+            waitForRendering(data.input, 500);
         }
 
         function test_long_tap_on_selected_text_data() {
