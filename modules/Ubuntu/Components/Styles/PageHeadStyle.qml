@@ -57,7 +57,7 @@ Item {
     property int fontWeight
 
     /*!
-      The color of the title text.
+      \deprecated
      */
     property color textColor
 
