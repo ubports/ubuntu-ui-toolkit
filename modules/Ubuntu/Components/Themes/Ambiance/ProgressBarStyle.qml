@@ -20,6 +20,11 @@ import Ubuntu.Components 1.1
 Item {
     id: progressBarStyle
 
+    property color foregroundColor: UbuntuColors.orange
+    property color foregroundTextColor: '#FFFFFF'
+    property color backgroundColor: Theme.palette.normal.base
+    property color backgroundTextColor: Theme.palette.normal.baseText
+
     property var progressBar: styledItem
 
     implicitWidth: units.gu(38)
@@ -31,7 +36,7 @@ Item {
         /* The color must be white for PartialColorizeUbuntuShape to accurately
            replace the white with leftColor and rightColor
         */
-        color: progressBar.indeterminate ? Theme.palette.normal.base : "white"
+        color: progressBar.indeterminate ? backgroundColor : "#FFFFFF"
     }
 
     property real progress: progressBar.indeterminate ? 0.0
@@ -44,8 +49,8 @@ Item {
         anchors.fill: background
         sourceItem: progressBar.indeterminate ? null : background
         progress: progressBarStyle.progress
-        leftColor: Theme.palette.selected.foreground
-        rightColor: Theme.palette.normal.base
+        leftColor: foregroundColor
+        rightColor: backgroundColor
         mirror: Qt.application.layoutDirection == Qt.RightToLeft
     }
 
@@ -53,7 +58,7 @@ Item {
         id: valueLabel
         anchors.centerIn: background
         fontSize: "medium"
-        color: Theme.palette.normal.baseText
+        color: backgroundTextColor
         text: progressBar.indeterminate ? i18n.tr("In Progress")
               : "%1%".arg(Number(progressBarStyle.progress * 100.0).toFixed(0))
         visible: !progressBar.hasOwnProperty("showProgressPercentage") || progressBar.showProgressPercentage
@@ -73,8 +78,8 @@ Item {
     PartialColorize {
         anchors.fill: valueLabel
         sourceItem: progressBar.indeterminate ? null : valueLabel
-        leftColor: Theme.palette.selected.foregroundText
-        rightColor: Theme.palette.normal.baseText
+        leftColor: foregroundTextColor
+        rightColor: backgroundTextColor
         progress: (progressBarStyle.progress * background.width - valueLabel.x) / valueLabel.width
         mirror: Qt.application.layoutDirection == Qt.RightToLeft
         visible: !progressBar.hasOwnProperty("showProgressPercentage") || progressBar.showProgressPercentage
