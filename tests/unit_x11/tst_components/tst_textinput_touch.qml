@@ -48,6 +48,14 @@ Item {
                 text: "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1"
             }
         }
+        TextField {
+            id: emptyTextField
+            text: ""
+        }
+        TextArea {
+            id: emptyTextArea
+            text: ""
+        }
     }
 
     UbuntuTestCase {
@@ -172,6 +180,27 @@ Item {
             waitForRendering(data.input, 500);
             popupSpy.wait();
             verify(data.input.selectedText !== "", "There should be text selected!");
+
+            // cleanup
+            TestExtras.touchRelease(0, data.input, guPoint(1, 1));
+            // dismiss popover
+            TestExtras.touchClick(0, testMain, 0, 0);
+        }
+
+        function test_longtap_when_empty_data() {
+            return [
+                {tag: "TextField", input: emptyTextField},
+                {tag: "TextArea", input: emptyTextArea},
+            ];
+        }
+        function test_longtap_when_empty(data) {
+            data.input.focus = true;
+            popupSpy.target = findChild(data.input, "input_handler");
+
+            TestExtras.touchLongPress(0, data.input, guPoint(1, 1));
+            waitForRendering(data.input, 500);
+            popupSpy.wait();
+            compare(popupSpy.count, 1, "Copy/paste popup should be displayed.");
 
             // cleanup
             TestExtras.touchRelease(0, data.input, guPoint(1, 1));

@@ -198,7 +198,7 @@ Item {
         function test_0_alignments() {
             compare(textField.horizontalAlignment, TextInput.AlignLeft, "horizontalAlignmen is Left by default")
             compare(textField.effectiveHorizontalAlignment, TextInput.AlignLeft, "effectiveHorizontalAlignmen is Left by default")
-            compare(textField.verticalAlignment, TextInput.AlignTop, "verticalAlignmen is Top by default")
+            compare(textField.verticalAlignment, TextInput.AlignVCenter, "verticalAlignmen is VCenter by default")
         }
 
         function test_hasClearButton() {
