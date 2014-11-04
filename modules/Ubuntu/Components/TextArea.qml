@@ -852,7 +852,7 @@ StyledItem {
             }
             color: control.__styleInstance.color
             selectedTextColor: Theme.palette.selected.foregroundText
-            selectionColor: Theme.palette.selected.selection
+            selectionColor: Theme.palette.selected.foreground
             font.pixelSize: FontUtils.sizeToPixels("medium")
             // forward keys to the root element so it can be captured outside of it
             // as well as to InputHandler to handle PageUp/PageDown keys

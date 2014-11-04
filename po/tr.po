@@ -14,53 +14,53 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-09-24 07:31+0000\n"
-"X-Generator: Launchpad (build 17196)\n"
+"X-Launchpad-Export-Date: 2014-10-23 07:24+0000\n"
+"X-Generator: Launchpad (build 17203)\n"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:154
 #, qt-format
 msgid ""
 "property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
 "of type %5"
-msgstr ""
+msgstr "%2 nesnesinin %1 niteliği %3 tür, %4 veya %5 olarak ayarlanamaz."
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:163
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
-msgstr ""
+msgstr "\"%1\" özelliği \"%2\" nesnesi için yok veya yazılabilir değil"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:42
 #: Ubuntu/Components/plugin/ucalarm.cpp:136
 msgid "Alarm"
-msgstr ""
+msgstr "Uyarı"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:684
 #: Ubuntu/Components/plugin/ucalarm.cpp:716
 msgid "Alarm has a pending operation."
-msgstr ""
+msgstr "Alarm onay bekliyor."
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
-msgstr ""
+msgstr "Kullanımı: "
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
-msgstr ""
+msgstr "Seçenekler:"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
-msgstr ""
+msgstr "%1 bir ek argüman bekliyor: %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
-msgstr ""
+msgstr "%1 argüman için bir değer bekliyor: %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
-msgstr ""
+msgstr "%1 argüman için bir değer bekliyor: %2"
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1064
 msgid "Ignoring AfterItem priority for InverseMouse filters."
