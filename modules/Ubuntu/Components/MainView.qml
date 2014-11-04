@@ -335,6 +335,7 @@ PageTreeNode {
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
             animate: canvas.animate
+            dividerColor: Qt.darker(background.headerColor, 1.1)
 
             title: internal.activePage ? internal.activePage.title : ""
             flickable: internal.activePage ? internal.activePage.flickable : null
