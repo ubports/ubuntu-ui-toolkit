@@ -1,3 +1,98 @@
+ubuntu-ui-toolkit (1.1.1298+14.10.20141030~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ CI bot ]
+  * Resync trunk
+
+  [ Timo Jyrinki ]
+  * Modify test .desktop file (LP: #1382414) (LP: #1382414)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 30 Oct 2014 07:39:12 +0000
+
+ubuntu-ui-toolkit (1.1.1298+14.10.20141016.1-0ubuntu1) 14.09; urgency=medium
+
+  [ Jussi Pakkanen]
+  * Remove the thumbnailer image provider here, because thumbnailer 
+    provides it by itself Fixes LP: #1368492
+
+  [ Lars Uebernickel ]
+  * Icon: size correctly even if no or only one dimension is given
+
+  [ Michael Sheldon] 
+  * Check that orientation changes are acceptable before applying new
+    orientation based on active window change. Fixes LP: #1375306
+
+  [ Zoltán Balogh ]
+  * Updated test plan executer
+
+  [ Zeller Benjamin ]
+  * RenderTimer includes EGL platform files in the rendertime header,
+    which can cause problems when included after QDataStream. The 
+    EGL headers pull the XLib files which define the Symbol Status.
+  * Preparing qmlapicheck to support out of source builds for the 
+    cmake migration
+
+  [ Renato Filho ]
+  * Save alarms in invalid time zone. Use invalid time zone to 
+    floating time alarms.
+
+  [ Tim Peeters ]
+  * Make icons from theme in showcase gallery scrollable. 
+    Fixes: LP: #1336279.
+  * Fix width of header contents. Fixes LP: #1378261.
+
+  [ Sebastien Bacher ]
+  * Don't use simple quotes around translatable strings, xgetting 
+    ignore those. Fixes LP: #1378774.
+
+  [ Zsombor Egri ] 
+  * Alarm update regression caused by EDS changes. Also fixes Tags 
+    update. Requires qtorganizer5-eds updates as well!. 
+    Fixes LP: #1364949.
+  * Forgotten Interface declaration in objects. Fixes LP: #1378298
+
+  [ Christian Dywan ]
+  * Make dialog contents scrollable. Fixes LP: #1376763
+  * Make mouseMoveSlowly work with a negative distance. 
+    Fixes LP: #1343334
+  * Read-only text entries don't blink or visibly take focus 
+    Fixes LP: #1370571
+  * Anchor overflow button labels to the right. 
+    Fixes LP: #1354812 LP: #1378247
+  * Don't allow inserting a line break into readOnly text areas. 
+    Fixes LP: #1334344
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 16 Oct 2014 13:01:01 +0000
+
+ubuntu-ui-toolkit (1.1.1286+14.10.20141007-0ubuntu2) UNRELEASED; urgency=medium
+
+  [ Renato Filho ]
+  * Save alarms in invalid time zone. Use invalid time zone to 
+    floating time alarms.
+
+  [ Tim Peeters ]
+  * Make icons from theme in showcase gallery scrollable. 
+    Fixes: LP: #1336279.
+  * Fix width of header contents. Fixes LP: #1378261.
+
+  [ Sebastien Bacher ]
+  * Don't use simple quotes around translatable strings, xgetting 
+    ignore those. Fixes LP: #1378774.
+
+  [ Zsombor Egri ] 
+  * Alarm update regression caused by EDS changes. Also fixes Tags 
+    update. Requires qtorganizer5-eds updates as well!. 
+    Fixes LP: #1364949.
+
+  [ Christian Dywan ]
+  * Make dialog contents scrollable. Fixes LP: #1376763
+  * Make mouseMoveSlowly work with a negative distance. 
+    Fixes LP: #1343334
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 10 Oct 2014 11:19:10 +0300
+
 ubuntu-ui-toolkit (1.1.1279.1+14.10.20141014-0ubuntu1) 14.09; urgency=low
 
   [ Ubuntu daily release ]
