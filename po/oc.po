@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-09-24 07:31+0000\n"
-"X-Generator: Launchpad (build 17196)\n"
+"X-Launchpad-Export-Date: 2014-10-23 07:24+0000\n"
+"X-Generator: Launchpad (build 17203)\n"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:154
 #, qt-format
@@ -88,27 +88,27 @@ msgstr ""
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
-msgstr ""
+msgstr "Tèma introbable : "
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:80
 msgid "Cancel"
-msgstr ""
+msgstr "Abandonar"
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:90
 msgid "Confirm"
-msgstr ""
+msgstr "Confirmar"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:89
 msgid "Close"
-msgstr ""
+msgstr "Tampar"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:99
 msgid "Done"
-msgstr ""
+msgstr "Acabat"
 
 #: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
-msgstr ""
+msgstr "Seleccionar tot"
 
 #: Ubuntu/Components/TextInputPopover.qml:33
 msgid "Cut"
