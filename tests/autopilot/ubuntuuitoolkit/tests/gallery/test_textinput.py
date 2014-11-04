@@ -16,7 +16,6 @@
 
 """Tests for the Ubuntu UI Toolkit Gallery - TextInput components"""
 
-import platform
 import testscenarios
 
 from ubuntuuitoolkit import emulators, ubuntu_scenarios
@@ -92,9 +91,7 @@ class DisabledTextInputTestCase(GalleryTestCase):
             emulators.TextField, objectName='textfield_disabled')
         self.assertFalse(textfield_disabled.enabled)
 
+        disabled_text = textfield_disabled.text
         self.pointing_device.click_object(textfield_disabled)
         textfield_disabled.keyboard.type('This should not be written')
-        if platform.dist()[2] == 'vivid':
-            self.assertEqual('', textfield_disabled.text)
-        else:
-            self.assertEqual('No interaction allowed', textfield_disabled.text)
+        self.assertEqual(disabled_text, textfield_disabled.text)
