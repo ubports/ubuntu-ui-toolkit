@@ -51,3 +51,5 @@ Palette 1.1 Palette.qml
 internal TextSelectionStartCursorStyle TextSelectionStartCursorStyle.qml
 internal TextSelectionEndCursorStyle TextSelectionEndCursorStyle.qml
 internal OverflowPanel OverflowPanel.qml
+internal HeadSeparatorImageStyle HeadSeparatorImageStyle.qml
+internal HeadDividerStyle HeadDividerStyle.qml

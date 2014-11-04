@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-09-24 07:30+0000\n"
-"X-Generator: Launchpad (build 17196)\n"
+"X-Launchpad-Export-Date: 2014-10-23 07:24+0000\n"
+"X-Generator: Launchpad (build 17203)\n"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:154
 #, qt-format
@@ -23,21 +23,23 @@ msgid ""
 "property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
 "of type %5"
 msgstr ""
+"ទ្រព្យសម្បត្ដិ \"%1\" នៃវត្ថុ %2 មានប្រភេទ %3 និងមិនអាចត្រូវបានកំណត់ទៅតម្លៃ "
+"\"%4\" របស់ប្រភេទ %5"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:163
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
-msgstr ""
+msgstr "ទ្រព្យសម្បត្តិ \"%1\" មិនមាននៅ ឬមិនអាចសរសេរឱ្យវត្ថុ %2 បាន"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:42
 #: Ubuntu/Components/plugin/ucalarm.cpp:136
 msgid "Alarm"
-msgstr ""
+msgstr "ជូនដំណឹង"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:684
 #: Ubuntu/Components/plugin/ucalarm.cpp:716
 msgid "Alarm has a pending operation."
-msgstr ""
+msgstr "ជូនដំណឹង មានការប្រតិ​ប​ត្ដិ​ការ​រង់ចាំ"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
@@ -64,17 +66,20 @@ msgstr "%1 រំពឹង​តម្លៃ​អាគុយម៉ង់​ប
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1064
 msgid "Ignoring AfterItem priority for InverseMouse filters."
-msgstr ""
+msgstr "កំពុងមិនអើពើអាទិភាព AfterItem សម្រាប់តម្រង InverseMouse ។"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
 msgstr ""
+"ការព្រមាន ៖ attachee ត្រូវមានលេខសម្គាល់ ។ រដ្ឋនឹងមិនត្រូវបានរក្សាទុក ។"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:56
 #, qt-format
 msgid ""
 "Warning: attachee's UUID is already registered, state won't be saved: %1"
 msgstr ""
+"ការព្រមាន ៖ UUID របស់ attachee ត្រូវបានចុះឈ្មោះរួចហើយ "
+"រដ្ឋនឹងមិនត្រូវបានរក្សាទុក ៖ %1"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:102
 #, qt-format
@@ -82,26 +87,28 @@ msgid ""
 "All the parents must have an id.\n"
 "State saving disabled for %1, class %2"
 msgstr ""
+"ឪពុកម្តាយទាំងអស់ត្រូវមានលេខសម្គាល់មួយ ។\n"
+"បានបិទការសន្សំរបស់រដ្ឋសម្រាប់ %1 ក្រុម %2"
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
-msgstr ""
+msgstr "រក​មិន​ឃើញ​ប្រធានបទ​ ៖ "
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:80
 msgid "Cancel"
-msgstr ""
+msgstr "បោះបង់"
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:90
 msgid "Confirm"
-msgstr ""
+msgstr "បញ្ជាក់"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:89
 msgid "Close"
-msgstr ""
+msgstr "បិទ"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:99
 msgid "Done"
-msgstr ""
+msgstr "ធ្វើរួច​"
 
 #: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
@@ -121,12 +128,12 @@ msgstr "បិទភ្ជាប់"
 
 #: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
 msgid "In Progress"
-msgstr ""
+msgstr "កំពុង​ដំណើរការ"
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."
-msgstr ""
+msgstr "ដោះលែង​ក្នងការធ្វើឱ្យ​ស្រស់..."
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
-msgstr ""
+msgstr "ទាញ​ក្នុង​ការ​ធ្វើ​ឱ្យ​ស្រស់..."
