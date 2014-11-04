@@ -23,6 +23,8 @@ Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
     contentHeight: units.gu(7)
+    // FIXME: After After https://code.launchpad.net/~mzanetti/unity8/new-pageheader-api/+merge/239242
+    //  lands, set separatorSource and separatorBottomSource to "" in order to use the new divider.
     separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
     separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
     fontWeight: Font.Light
@@ -31,7 +33,7 @@ Style.PageHeadStyle {
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
-    implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
+    implicitHeight: headerStyle.contentHeight + divider.height
 
     // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
     //  see also FIXME in AppHeader where this property is used.
@@ -44,17 +46,32 @@ Style.PageHeadStyle {
     // for Unity8
     // FIXME: Remove this property when we introduce a header preset that does not
     //  have a separator.
-    property alias __separator_visible: separator.visible
+    property alias __separator_visible: divider.visible
 
-    BorderImage {
-        id: separator
+    StyledItem {
+        id: divider
         anchors {
             bottom: parent.bottom
             left: parent.left
             right: parent.right
         }
-        source: headerStyle.separatorSource
+
         height: sectionsRow.visible ? units.gu(3) : units.gu(2)
+
+        // separatorSource and separatorBottomSource are needed for the deprecated
+        // HeadSeparatorImageStyle.
+        property url separatorSource: headerStyle.separatorSource
+        property url separatorBottomSource: headerStyle.separatorBottomSource
+
+        // backgroundColor is used in the new HeadDividerStyle
+        property color backgroundColor: styledItem.dividerColor
+
+        // FIXME: After https://code.launchpad.net/~mzanetti/unity8/new-pageheader-api/+merge/239242
+        //  lands, set the value of useOldDivider to: "" != separatorSource
+        property bool useOldDivider: false
+
+        style: useOldDivider ? Theme.createStyleComponent("HeadSeparatorImageStyle.qml", divider)
+                             : Theme.createStyleComponent("HeadDividerStyle.qml", divider)
 
         property PageHeadSections sections: styledItem.config.sections
 
@@ -63,13 +80,13 @@ Style.PageHeadStyle {
             anchors.centerIn: parent
             width: childrenRect.width
             height: parent.height
-            enabled: separator.sections.enabled
-            visible: separator.sections.model !== undefined
+            enabled: divider.sections.enabled
+            visible: divider.sections.model !== undefined
             opacity: enabled ? 1.0 : 0.5
 
             Repeater {
                 id: sectionsRepeater
-                model: separator.sections.model
+                model: divider.sections.model
                 objectName: "page_head_sections_repeater"
                 AbstractButton {
                     id: sectionButton
@@ -78,8 +95,8 @@ Style.PageHeadStyle {
                     enabled: sectionsRow.enabled
                     width: label.width + units.gu(4)
                     height: sectionsRow.height + units.gu(2)
-                    property bool selected: index === separator.sections.selectedIndex
-                    onClicked: separator.sections.selectedIndex = index;
+                    property bool selected: index === divider.sections.selectedIndex
+                    onClicked: divider.sections.selectedIndex = index;
 
                     Rectangle {
                         visible: parent.pressed
@@ -119,16 +136,6 @@ Style.PageHeadStyle {
                 }
             }
         }
-    }
-    Image {
-        id: separatorBottom
-        anchors {
-            top: separator.bottom
-            left: parent.left
-            right: parent.right
-        }
-        source: headerStyle.separatorBottomSource
-        visible: separator.visible
     }
 
     states: [
