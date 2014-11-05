@@ -141,8 +141,8 @@ Ubuntu.StyledItem {
     Item {
         id: draggedItem
         objectName: cursorItem.positionProperty + "_draggeditem"
-        width: caret ? Math.max(caret.width, units.gu(2)) : 0
-        height: caret ? Math.max(caret.height, units.gu(2)) : 0
+        width: caret ? units.gu(4) : 0
+        height: caret ? cursorItem.height : 0
         parent: handler.main
         visible: cursorItem.visible && (cursorItem.opacity > 0.0) && QuickUtils.touchScreenAvailable
 
@@ -190,15 +190,15 @@ Ubuntu.StyledItem {
         // aligns the draggedItem to the caret and resets the dragger
         function moveToCaret(cx, cy) {
             if (cx === undefined && cy === undefined) {
-                cx = mappedCursorPosition("x") + caretX;
-                cy = mappedCursorPosition("y") + caretY;
+                cx = mappedCursorPosition("x");
+                cy = mappedCursorPosition("y");
             } else {
                 // move mouse position to caret
                 cx += draggedItem.x;
                 cy += draggedItem.y;
             }
 
-            draggedItem.x = cx;
+            draggedItem.x = cx - draggedItem.width / 2;
             draggedItem.y = cy;
             dragger.resetDrag();
         }
