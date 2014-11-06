@@ -196,6 +196,7 @@ UCListItemPrivate::UCListItemPrivate()
     , overshootGU(2)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
+    , attachedProperties(0)
     , contentItem(new QQuickItem)
     , divider(new UCListItemDivider)
     , leadingActions(0)
@@ -244,6 +245,11 @@ void UCListItemPrivate::_q_rebound()
     listenToRebind(false);
 }
 
+void UCListItemPrivate::promptRebound()
+{
+    setPressed(false);
+}
+
 // called when units size changes
 void UCListItemPrivate::_q_updateSize()
 {
@@ -280,14 +286,9 @@ void UCListItemPrivate::setPressed(bool pressed)
 // connects/disconnects from the Flickable anchestor to get notified when to do rebound
 void UCListItemPrivate::listenToRebind(bool listen)
 {
-    if (flickable.isNull()) {
-        return;
-    }
-    Q_Q(UCListItem);
-    if (listen) {
-        QObject::connect(flickable.data(), SIGNAL(movementStarted()), q, SLOT(_q_rebound()));
-    } else {
-        QObject::disconnect(flickable.data(), SIGNAL(movementStarted()), q, SLOT(_q_rebound()));
+    if (attachedProperties) {
+        Q_Q(UCListItem);
+        attachedProperties->listenToRebind(q, listen);
     }
 }
 
@@ -363,6 +364,11 @@ UCListItem::~UCListItem()
 {
 }
 
+UCListItemAttached *UCListItem::qmlAttachedProperties(QObject *owner)
+{
+    return new UCListItemAttached(owner);
+}
+
 void UCListItem::componentComplete()
 {
     UCStyledItemBase::componentComplete();
@@ -385,12 +391,17 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             d->flickable = qobject_cast<QQuickFlickable*>(data.item->parentItem());
         }
 
+        // attach ListItem properties to the flickable or to the parent item
         if (d->flickable) {
-            // connect to flickable to get width changes
-            QObject::connect(d->flickable, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
+            d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(d->flickable));
         } else if (data.item) {
-            QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
+            d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(data.item));
+        } else {
+            // about to be deleted or reparrented, disable attached
+            d->attachedProperties = 0;
         }
+
+        QObject::connect(d->flickable ? d->flickable : data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
 
         // update size
         d->_q_updateSize();
@@ -441,7 +452,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
 {
     UCStyledItemBase::mousePressEvent(event);
     Q_D(UCListItem);
-    if (!d->flickable.isNull() && d->flickable->isMoving()) {
+    if (d->attachedProperties && d->attachedProperties->isMoving()) {
         // while moving, we cannot select any items
         return;
     }
@@ -449,22 +460,20 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         d->setPressed(true);
         // connect the Flickable to know when to rebound
         d->listenToRebind(true);
-        // accept the event so we get the rest of the events as well
-        event->setAccepted(true);
     }
+    // accept the event so we get the rest of the events as well
+    event->setAccepted(true);
 }
 
 void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 {
+    UCStyledItemBase::mouseReleaseEvent(event);
     Q_D(UCListItem);
     // set released
     if (d->pressed) {
+        d->listenToRebind(false);
         Q_EMIT clicked();
     }
-    // save pressed state as UCFocusScope resets it seemlessly
-    bool wasPressed = d->pressed;
-    UCStyledItemBase::mouseReleaseEvent(event);
-    d->pressed = wasPressed;
     d->setPressed(false);
 }
 

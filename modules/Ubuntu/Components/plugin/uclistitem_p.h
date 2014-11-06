@@ -42,6 +42,7 @@ public:
 
     void _q_updateColors();
     void _q_rebound();
+    void promptRebound();
     void _q_updateSize();
     int index();
     void setPressed(bool pressed);
@@ -56,10 +57,31 @@ public:
     QColor color;
     QColor highlightColor;
     QPointer<QQuickFlickable> flickable;
+    UCListItemAttached *attachedProperties;
     QQuickItem *contentItem;
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
+};
+
+class PropertyChange;
+class UCListItemAttachedPrivate
+{
+    Q_DECLARE_PUBLIC(UCListItemAttached)
+public:
+    UCListItemAttachedPrivate(UCListItemAttached *qq);
+    ~UCListItemAttachedPrivate();
+
+    void init();
+
+    struct Record {
+        QPointer<QQuickFlickable> flickable;
+        PropertyChange *interactive;
+    };
+
+    UCListItemAttached *q_ptr;
+    QList<Record> list;
+    QPointer<UCListItem> bountItem;
 };
 
 class UCListItemDivider : public QObject

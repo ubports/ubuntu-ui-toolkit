@@ -23,6 +23,7 @@
 class UCListItemContent;
 class UCListItemDivider;
 class UCListItemActions;
+class UCListItemAttached;
 class UCListItemPrivate;
 class UCListItem : public UCStyledItemBase
 {
@@ -40,6 +41,8 @@ class UCListItem : public UCStyledItemBase
 public:
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
+
+    static UCListItemAttached *qmlAttachedProperties(QObject *owner);
 
     QQuickItem *contentItem() const;
     UCListItemDivider *divider() const;
@@ -80,6 +83,28 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateColors())
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
+};
+
+QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
+
+class UCListItemAttachedPrivate;
+class UCListItemAttached : public QObject
+{
+    Q_OBJECT
+public:
+    UCListItemAttached(QObject *owner);
+    ~UCListItemAttached();
+
+    bool listenToRebind(UCListItem *item, bool listen);
+    void disableInteractive(bool disable);
+    bool isMoving();
+    bool isBountTo(UCListItem *item);
+
+private Q_SLOTS:
+    void unbindItem();
+private:
+    Q_DECLARE_PRIVATE(UCListItemAttached)
+    QScopedPointer<UCListItemAttachedPrivate> d_ptr;
 };
 
 #endif // UCLISTITEM_H
