@@ -31,8 +31,8 @@ Item {
          width = 0.0 (before SwitchStyle is loaded)
          width = implicitWidth (after SwitchStyle is loaded)
     */
-    width: implicitWidth
-    height: implicitHeight
+//    width: implicitWidth
+//    height: implicitHeight
     implicitWidth: units.gu(6)
     implicitHeight: units.gu(3)
     opacity: styledItem.enabled ? 1.0 : 0.5
@@ -66,13 +66,13 @@ Item {
 
             Behavior on x {
                 UbuntuNumberAnimation {
-                    duration: UbuntuAnimation.BriskDuration
+                    duration: UbuntuAnimation.FastDuration
                     easing: UbuntuAnimation.StandardEasing
                 }
             }
             Behavior on color {
                 ColorAnimation {
-                    duration: UbuntuAnimation.BriskDuration
+                    duration: UbuntuAnimation.FastDuration
                     easing: UbuntuAnimation.StandardEasing
                 }
             }
