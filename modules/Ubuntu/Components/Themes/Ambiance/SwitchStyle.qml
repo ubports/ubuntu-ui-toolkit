@@ -78,11 +78,15 @@ Item {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: parent.left
-                    rightMargin: switchStyle.thumbPadding * 3.0
+                    rightMargin: switchStyle.thumbPadding * 2.0
                 }
                 rightColor: Theme.palette.normal.backgroundText
                 source: Image {
-                    source: "artwork/cross.png"
+                    source: "image://theme/close"
+                    sourceSize {
+                        width: thumb.width - 2*switchStyle.thumbPadding
+                        height: thumb.height - 2*switchStyle.thumbPadding
+                    }
                 }
             }
 
@@ -117,7 +121,11 @@ Item {
             PartialColorize {
                 anchors.centerIn: parent
                 source: Image {
-                    source: "artwork/cross.png"
+                    source: "image://theme/close"
+                    sourceSize {
+                        width: thumb.width - 2*switchStyle.thumbPadding
+                        height: thumb.height - 2*switchStyle.thumbPadding
+                    }
                 }
                 progress: MathUtils.clamp((thumb.x - parent.x - x) / width, 0.0, 1.0)
                 leftColor: "transparent"
