@@ -401,7 +401,9 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             d->attachedProperties = 0;
         }
 
-        QObject::connect(d->flickable ? d->flickable : data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
+        if (data.item) {
+            QObject::connect(d->flickable ? d->flickable : data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
+        }
 
         // update size
         d->_q_updateSize();

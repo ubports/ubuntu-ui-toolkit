@@ -33,7 +33,7 @@ UCListItemAttachedPrivate::~UCListItemAttachedPrivate()
     q->disableInteractive(false);
     Q_FOREACH(const Record &record, list) {
         QObject::disconnect(record.flickable.data(), &QQuickFlickable::movementStarted,
-                         q, 0);
+                         q, &UCListItemAttached::unbindItem);
         delete record.interactive;
     }
 }
