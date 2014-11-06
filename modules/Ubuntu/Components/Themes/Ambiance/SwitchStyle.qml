@@ -145,8 +145,7 @@ Item {
                 bottomMargin: switchStyle.thumbPadding
             }
 
-            property real iconSize: Math.min(width - 2*switchStyle.iconPadding,
-                                             height - 2*switchStyle.iconPadding)
+            property real iconSize: Math.min(width, height) - 2*switchStyle.iconPadding
 
             PartialColorize {
                 anchors {
