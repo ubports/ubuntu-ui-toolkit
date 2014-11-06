@@ -24,6 +24,7 @@ class UCListItemContent;
 class UCListItemDivider;
 class UCListItemActions;
 class UCListItemAttached;
+class QQuickPropertyAnimation;
 class UCListItemPrivate;
 class UCListItem : public UCStyledItemBase
 {
@@ -37,6 +38,7 @@ class UCListItem : public UCStyledItemBase
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor NOTIFY highlightColorChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
+    Q_PRIVATE_PROPERTY(d_func(), QQuickPropertyAnimation *snapAnimation READ snapAnimation WRITE setSnapAnimation NOTIFY snapAnimationChanged)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
     explicit UCListItem(QQuickItem *parent = 0);
@@ -71,6 +73,7 @@ Q_SIGNALS:
     void colorChanged();
     void highlightColorChanged();
     void childrenChanged();
+    void snapAnimationChanged();
 
     void clicked();
 

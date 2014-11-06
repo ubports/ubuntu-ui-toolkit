@@ -22,6 +22,8 @@
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
+#include <QtQuick/private/qquickanimation_p.h>
+#include "ucubuntuanimation.h"
 
 QColor getPaletteColor(const char *profile, const char *color)
 {
@@ -35,6 +37,105 @@ QColor getPaletteColor(const char *profile, const char *color)
     }
     return result;
 }
+/******************************************************************************
+ * SnapAnimator
+ */
+UCListItemSnapAnimator::UCListItemSnapAnimator(UCListItem *item)
+    : QObject(item)
+    , item(item)
+    , defaultAnimation(0)
+{
+}
+UCListItemSnapAnimator::~UCListItemSnapAnimator()
+{
+    // make sure we cannot animate anymore, for safety
+    item = 0;
+}
+
+void UCListItemSnapAnimator::setCustomAnimation(QQuickPropertyAnimation *animation)
+{
+    if (animation) {
+        // delete default animation so we use this
+        delete defaultAnimation;
+        defaultAnimation = 0;
+    }
+}
+
+bool UCListItemSnapAnimator::snap(qreal to)
+{
+    if (!item) {
+        return false;
+    }
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    QQuickPropertyAnimation *snap = listItem->snap ? listItem->snap : getDefaultAnimation();
+    if (!snap) {
+        return false;
+    }
+    snap->setTargetObject(listItem->contentItem);
+    if (to == 0.0) {
+        QObject::connect(snap, &QQuickAbstractAnimation::stopped,
+                         this, &UCListItemSnapAnimator::snapOut);
+    } else {
+        QObject::connect(snap, &QQuickAbstractAnimation::stopped,
+                         this, &UCListItemSnapAnimator::snapIn);
+    }
+    if (snap->properties().isEmpty() && snap->property().isEmpty()) {
+        snap->setProperty("x");
+    }
+    snap->setFrom(listItem->contentItem->property(snap->property().toLocal8Bit().constData()));
+    snap->setTo(to);
+    snap->setAlwaysRunToEnd(true);
+    // FIXME - this will be used later
+//    listItem->setContentMoved(true);
+    snap->start();
+    return true;
+}
+
+void UCListItemSnapAnimator::snapOut()
+{
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    QQuickAbstractAnimation *snap = listItem->snap ? listItem->snap : getDefaultAnimation();
+    // disconnect animation, otherwise snapping will disconnect the panel
+    QObject::disconnect(snap, 0, 0, 0);
+    // restore flickable's interactive and cleanup
+    listItem->attachedProperties->disableInteractive(false);
+    // no need to listen flickables any longer
+    listItem->attachedProperties->listenToRebind(item, false);
+    // disconnect actions - FIXME thsi will be used later
+//    listItem->grabPanel(listItem->leadingActions, false);
+//    listItem->grabPanel(listItem->trailingActions, false);
+    // set contentMoved to false - FIXME used later
+//    listItem->setContentMoved(false);
+}
+
+void UCListItemSnapAnimator::snapIn()
+{
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    QQuickAbstractAnimation *snap = listItem->snap ? listItem->snap : getDefaultAnimation();
+    QObject::disconnect(snap, 0, 0, 0);
+//    listItem->setContentMoved(false);
+}
+
+QQuickPropertyAnimation *UCListItemSnapAnimator::getDefaultAnimation()
+{
+    if (defaultAnimation) {
+        return defaultAnimation;
+    }
+
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    // create rebound animation
+    UCUbuntuAnimation animationCodes;
+    defaultAnimation = new QQuickPropertyAnimation(this);
+    QEasingCurve easing(QEasingCurve::OutElastic);
+    easing.setPeriod(0.5);
+    defaultAnimation->setEasing(easing);
+    defaultAnimation->setDuration(animationCodes.BriskDuration());
+    defaultAnimation->setTargetObject(listItem->contentItem);
+    defaultAnimation->setProperty("x");
+    defaultAnimation->setAlwaysRunToEnd(true);
+    return defaultAnimation;
+}
+
 /******************************************************************************
  * Divider
  */
@@ -201,6 +302,8 @@ UCListItemPrivate::UCListItemPrivate()
     , divider(new UCListItemDivider)
     , leadingActions(0)
     , trailingActions(0)
+    , snap(0)
+    , animator(0)
 {
 }
 UCListItemPrivate::~UCListItemPrivate()
@@ -637,5 +740,28 @@ QQmlListProperty<QQuickItem> UCListItem::children()
     Q_D(UCListItem);
     return QQuickItemPrivate::get(d->contentItem)->children();
 }
+
+/*!
+ * \qmlproperty PropertyAnimation ListItem::snap
+ * The property holds the animation to be performed on snapping. If set to null,
+ * the default animation will be used. Defaults to null.
+ */
+QQuickPropertyAnimation *UCListItemPrivate::snapAnimation() const
+{
+    return snap;
+}
+void UCListItemPrivate::setSnapAnimation(QQuickPropertyAnimation *animation)
+{
+    if (snap == animation) {
+        return;
+    }
+    snap = animation;
+    if (animator) {
+        animator->setCustomAnimation(snap);
+    }
+    Q_Q(UCListItem);
+    Q_EMIT q->snapAnimationChanged();
+}
+
 
 #include "moc_uclistitem.cpp"

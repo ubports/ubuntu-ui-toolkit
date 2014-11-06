@@ -26,6 +26,7 @@ class QQuickFlickable;
 class UCListItemContent;
 class UCListItemDivider;
 class UCListItemActions;
+class UCListItemSnapAnimator;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -62,6 +63,12 @@ public:
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
+    QQuickPropertyAnimation *snap;
+    UCListItemSnapAnimator *animator;
+
+    // getters/setters
+    QQuickPropertyAnimation *snapAnimation() const;
+    void setSnapAnimation(QQuickPropertyAnimation *animation);
 };
 
 class PropertyChange;
@@ -138,5 +145,28 @@ private:
 QColor getPaletteColor(const char *profile, const char *color);
 
 QML_DECLARE_TYPE(UCListItemDivider)
+
+class QQuickPropertyAnimation;
+class UCListItemSnapAnimator : public QObject
+{
+    Q_OBJECT
+public:
+    UCListItemSnapAnimator(UCListItem *item);
+    ~UCListItemSnapAnimator();
+
+    void setCustomAnimation(QQuickPropertyAnimation *animation);
+    bool snap(qreal to);
+
+public Q_SLOTS:
+    void snapOut();
+    void snapIn();
+
+    QQuickPropertyAnimation *getDefaultAnimation();
+
+private:
+    bool active;
+    UCListItem *item;
+    QQuickPropertyAnimation *defaultAnimation;
+};
 
 #endif // UCVIEWITEM_P_H

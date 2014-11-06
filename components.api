@@ -875,6 +875,7 @@ plugins.qmltypes
     Property { name: "highlightColor"; type: "QColor" }
     Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
+    Property { name: "snapAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
     Signal { name: "clicked" }
     name: "UCListItemActions"
     prototype: "QObject"
