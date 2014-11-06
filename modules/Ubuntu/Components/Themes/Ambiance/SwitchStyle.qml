@@ -31,18 +31,43 @@ Item {
          width = 0.0 (before SwitchStyle is loaded)
          width = implicitWidth (after SwitchStyle is loaded)
     */
-    width: implicitWidth
-    height: implicitHeight
+//    width: implicitWidth
+//    height: implicitHeight
     implicitWidth: units.gu(6)
     implicitHeight: units.gu(3)
     opacity: styledItem.enabled ? 1.0 : 0.5
     LayoutMirroring.enabled: false
     LayoutMirroring.childrenInherit: true
 
+    /*!
+      The background color of the switch.
+     */
+    property color backgroundColor: Theme.palette.normal.base
+
+    /*!
+      The background color of the thumb when the switch is checked.
+     */
+    property color checkedThumbColor: UbuntuColors.green
+
+    /*!
+      The background color of the thumb when the switch is not checked.
+     */
+    property color uncheckedThumbColor: Qt.rgba(0, 0, 0, 0.2)
+
+    /*!
+      The foreground color of the icon that is currently selected.
+     */
+    property color selectedIconColor: Theme.palette.normal.foregroundText
+
+   /*!
+     The color of the icon that is not currently selected.
+    */
+    property color unselectedIconColor: Theme.palette.normal.backgroundText
+
     UbuntuShape {
         id: background
         anchors.fill: parent
-        color: Theme.palette.normal.base
+        color: switchStyle.backgroundColor
         clip: true
 
         UbuntuShape {
@@ -61,8 +86,8 @@ Item {
             property real iconSize: Math.min(width - 2*switchStyle.thumbPadding,
                                              height - 2*switchStyle.thumbPadding)
 
-            color: styledItem.checked ? UbuntuColors.green
-                                      : Qt.rgba(0, 0, 0, 0.2)
+            color: styledItem.checked ? switchStyle.checkedThumbColor
+                                      : switchStyle.uncheckedThumbColor
 
             Behavior on x {
                 UbuntuNumberAnimation {
@@ -83,7 +108,7 @@ Item {
                     right: parent.left
                     rightMargin: (parent.width - thumb.iconSize)/2 + switchStyle.thumbPadding
                 }
-                rightColor: Theme.palette.normal.backgroundText
+                rightColor: switchStyle.unselectedIconColor
                 source: Image {
                     source: "image://theme/close"
                     sourceSize {
@@ -99,7 +124,7 @@ Item {
                     left: parent.right
                     leftMargin: (parent.width - thumb.iconSize)/2 + switchStyle.thumbPadding
                 }
-                rightColor: Theme.palette.normal.backgroundText
+                rightColor: switchStyle.unselectedIconColor
                 source: Image {
                     source: "image://theme/tick"
                     sourceSize {
@@ -132,7 +157,7 @@ Item {
                 }
                 progress: MathUtils.clamp((thumb.x - parent.x - x) / width, 0.0, 1.0)
                 leftColor: "transparent"
-                rightColor: Theme.palette.normal.foregroundText
+                rightColor: switchStyle.selectedIconColor
             }
         }
 
@@ -157,7 +182,7 @@ Item {
                     }
                 }
                 progress: MathUtils.clamp((thumb.x + thumb.width - parent.x - x) / width, 0.0, 1.0)
-                leftColor: Theme.palette.normal.foregroundText
+                leftColor: switchStyle.selectedIconColor
                 rightColor: "transparent"
             }
         }
