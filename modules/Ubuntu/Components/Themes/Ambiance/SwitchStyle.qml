@@ -94,7 +94,11 @@ Item {
                 }
                 rightColor: Theme.palette.normal.backgroundText
                 source: Image {
-                    source: "artwork/tick.png"
+                    source: "image://theme/tick"
+                    sourceSize {
+                        width: thumb.width - 2*switchStyle.thumbPadding
+                        height: thumb.height - 2*switchStyle.thumbPadding
+                    }
                 }
             }
         }
@@ -135,8 +139,11 @@ Item {
             PartialColorize {
                 anchors.centerIn: parent
                 source: Image {
-                    source: "artwork/tick.png"
-                }
+                    source: "image://theme/tick"
+                    sourceSize {
+                        width: thumb.width - 2*switchStyle.thumbPadding
+                        height: thumb.height - 2*switchStyle.thumbPadding
+                    }                }
                 progress: MathUtils.clamp((thumb.x + thumb.width - parent.x - x) / width, 0.0, 1.0)
                 leftColor: Theme.palette.normal.foregroundText
                 rightColor: "transparent"
