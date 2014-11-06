@@ -20,7 +20,15 @@ import Ubuntu.Components 1.1
 Item {
     id: switchStyle
 
+    /*!
+      The padding between the thumb and the outside border of the switch.
+     */
     property real thumbPadding: units.gu(0.33)
+
+    /*!
+      The padding between the icon and the border of the thumb.
+     */
+    property real iconPadding: thumbPadding
 
     implicitWidth: units.gu(6)
     implicitHeight: units.gu(3)
@@ -137,14 +145,14 @@ Item {
                 bottomMargin: switchStyle.thumbPadding
             }
 
-            property real iconSize: Math.min(width - 2*switchStyle.thumbPadding,
-                                             height - 2*switchStyle.thumbPadding)
+            property real iconSize: Math.min(width - 2*switchStyle.iconPadding,
+                                             height - 2*switchStyle.iconPadding)
 
             PartialColorize {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: parent.left
-                    rightMargin: (parent.width - thumb.iconSize)/2 + switchStyle.thumbPadding
+                    rightMargin: switchStyle.iconPadding + switchStyle.thumbPadding
                 }
                 rightColor: switchStyle.unselectedIconColor
                 source: Image {
@@ -160,7 +168,7 @@ Item {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.right
-                    leftMargin: (parent.width - thumb.iconSize)/2 + switchStyle.thumbPadding
+                    leftMargin: switchStyle.iconPadding + switchStyle.thumbPadding
                 }
                 rightColor: switchStyle.unselectedIconColor
                 source: Image {
