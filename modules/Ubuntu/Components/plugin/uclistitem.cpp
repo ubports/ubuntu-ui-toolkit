@@ -287,7 +287,7 @@ void UCListItemPrivate::_q_completeRebinding()
 }
 
 /*!
- * \qmlproperty bool ListItem::moved
+ * \qmlproperty bool ListItem::moving
  * The property signals the move of the list item's content. It is set whenever
  * the content is tugged and reset when the snapping and rebounding animations
  * complete.
@@ -322,6 +322,107 @@ void UCListItemPrivate::setContentMoved(bool move)
     }
     Q_EMIT q->movingChanged();
 }
+
+/*!
+ * \qmlproperty Component ListItem::actionsDelegate
+ * The property configures the component visualizing and triggering the actions is
+ * created from. The default delegate is taken from the current theme.
+ *
+ * Custom delegates are responsible to visualize and handle snapping and triggering
+ * of the actions listed in a given action list. The same delegate must handle both
+ * leading and trailing actions at the same time. The actions amongst other action
+ * list related properties can be accessed through the \l ListItemActions attached
+ * properties.
+ *
+ * The following example illustrates how a custom panel can be implemented. The
+ * actions are triggered each time the tug is stopped. There will be only one
+ * action shown depending how far the content is tugged, and the color of the
+ * panel is changing depending on which action is shown.
+ * \qml
+ * import QtQuick 2.2
+ * import Ubuntu.Components 1.2
+ *
+ * UbuntuListView {
+ *     model: 100
+ *     delegate: ListItem {
+ *         StandardLayout {
+ *             captions.title.text: "Caption (title text)"
+ *             details {
+ *                 title.text: "Text"
+ *                 subtitle.text: "Text"
+ *             }
+ *         }
+ *         trailingActions: trailing
+ *         actionsDelegate: Rectangle {
+ *             id: panel
+ *             property bool leadingPanel: ListItemActions.status == ListItemActions.Leading
+ *             property Item contentItem: (ListItemActions.container && ListItemActions.container.connectedItem) ?
+ *                                            ListItemActions.container.connectedItem.contentItem : null
+ *             anchors {
+ *                 left: contentItem ? contentItem.right : undefined
+ *                 top: contentItem ? contentItem.top : undefined
+ *                 bottom: contentItem ? contentItem.bottom : undefined
+ *             }
+ *             width: contentItem ? (contentItem.width - units.gu(10)) : 0
+ *             color: colors[visibleAction]
+ *
+ *             property real slotSize: panel.width / ListItemActions.container.actions.length
+ *             // give a small margin so we don't jump to the next item
+ *             property int visibleAction: (slotSize > 0) ?
+ *                      MathUtils.clamp((ListItemActions.offsetVisible - 1) / slotSize, 0, 3) : 0
+ *             property var colors: [UbuntuColors.blue, UbuntuColors.lightGrey, UbuntuColors.coolGrey]
+ *
+ *             Item {
+ *                 anchors {
+ *                     left: parent.left
+ *                     top: parent.top
+ *                     bottom: parent.bottom
+ *                 }
+ *                 width: height
+ *                 Icon {
+ *                     width: units.gu(3)
+ *                     height: width
+ *                     anchors.centerIn: parent
+ *                     color: "white"
+ *                     name: panel.ListItemActions.container.actions[visibleAction].iconName
+ *                 }
+ *             }
+ *
+ *             ListItemActions.onDraggingChanged: {
+ *                 if (!ListItemActions.dragging) {
+ *                     // snap first, then trigger
+ *                     ListItemActions.snapToPosition((visibleAction + 1) * slotSize);
+ *                     panel.ListItemActions.container.actions[visibleAction].triggered(panel.ListItemActions.itemIndex)
+ *                 }
+ *             }
+ *         }
+ *     }
+ *     ListItemActions {
+ *         id: trailing
+ *         actions: [
+ *             Action {
+ *                 iconName: "alarm-clock"
+ *                 onTriggered: print(iconName, "triggered", value)
+ *             },
+ *             Action {
+ *                 iconName: "camcorder"
+ *                 onTriggered: print(iconName, "triggered", value)
+ *             },
+ *             Action {
+ *                 iconName: "stock_website"
+ *                 onTriggered: print(iconName, "triggered", value)
+ *             }
+ *         ]
+ *     }
+ * }
+ * \endqml
+ */
+QQmlComponent *UCListItemPrivate::actionsDelegate() const
+{
+
+}
+void UCListItemPrivate::setActionsDelegate(QQmlComponent *deleagte)
+
 
 // the function performs a prompt rebound on mouse release without any animation
 void UCListItemPrivate::promptRebound()

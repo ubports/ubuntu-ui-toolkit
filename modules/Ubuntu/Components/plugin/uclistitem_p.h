@@ -46,8 +46,6 @@ public:
     void _q_rebound();
     void _q_updateSize();
     void _q_completeRebinding();
-    bool isMoving() const;
-    void setContentMoved(bool move);
     void promptRebound();
     void reboundTo(qreal x);
     void setPressed(bool pressed);
@@ -76,6 +74,12 @@ public:
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
+
+    // getters/setters
+    bool isMoving() const;
+    void setContentMoved(bool move);
+    QQmlComponent *actionsDelegate() const;
+    void setActionsDelegate(QQmlComponent *deleagte);
 };
 
 class UCListItemDivider : public QObject
