@@ -22,17 +22,6 @@ Item {
 
     property real thumbPadding: units.gu(0.33)
 
-    /* FIXME: setting the width and height is required because in the case no width
-       is set on the Switch, then even though the width is set eventually to
-       implicitWidth, it still goes through the value 0.0 which triggers an
-       undesired animation if the Switch is checked.
-
-       Example, values of width at instantiation:
-         width = 0.0 (before SwitchStyle is loaded)
-         width = implicitWidth (after SwitchStyle is loaded)
-    */
-//    width: implicitWidth
-//    height: implicitHeight
     implicitWidth: units.gu(6)
     implicitHeight: units.gu(3)
     opacity: styledItem.enabled ? 1.0 : 0.5
@@ -82,10 +71,65 @@ Item {
 
         UbuntuShape {
             id: thumb
+            states: [
+                State {
+                    name: "checked"
+                    when: styledItem.checked
+                    PropertyChanges {
+                        target: thumb
+                        x: rightThumbPosition.x
+                        color: switchStyle.checkedThumbColor
+                    }
+                },
+                State {
+                    name: "unchecked"
+                    when: !styledItem.checked
+                    PropertyChanges {
+                        target: thumb
+                        x: leftThumbPosition.x
+                        color: switchStyle.uncheckedThumbColor
+                    }
+                }
+            ]
+
+            transitions: [
+                // Avoid animations on width changes (during initialization)
+                // by explicitly setting from and to for the Transitions.
+                Transition {
+                    from: "unchecked"
+                    to: "checked"
+                    UbuntuNumberAnimation {
+                        target: thumb
+                        properties: "x"
+                        duration: UbuntuAnimation.FastDuration
+                        easing: UbuntuAnimation.StandardEasing
+                    }
+                    ColorAnimation {
+                        target: thumb
+                        properties: "color"
+                        duration: UbuntuAnimation.FastDuration
+                        easing: UbuntuAnimation.StandardEasing
+                    }
+                },
+                Transition {
+                    from: "checked"
+                    to: "unchecked"
+                    UbuntuNumberAnimation {
+                        target: thumb
+                        properties: "x"
+                        duration: UbuntuAnimation.FastDuration
+                        easing: UbuntuAnimation.StandardEasing
+                    }
+                    ColorAnimation {
+                        target: thumb
+                        properties: "color"
+                        duration: UbuntuAnimation.FastDuration
+                        easing: UbuntuAnimation.StandardEasing
+                    }
+                }
+            ]
 
             width: (background.width - switchStyle.thumbPadding * 3.0) / 2.0
-            x: styledItem.checked ? rightThumbPosition.x : leftThumbPosition.x
-
             anchors {
                 top: parent.top
                 bottom: parent.bottom
@@ -95,22 +139,6 @@ Item {
 
             property real iconSize: Math.min(width - 2*switchStyle.thumbPadding,
                                              height - 2*switchStyle.thumbPadding)
-
-            color: styledItem.checked ? switchStyle.checkedThumbColor
-                                      : switchStyle.uncheckedThumbColor
-
-            Behavior on x {
-                UbuntuNumberAnimation {
-                    duration: UbuntuAnimation.FastDuration
-                    easing: UbuntuAnimation.StandardEasing
-                }
-            }
-            Behavior on color {
-                ColorAnimation {
-                    duration: UbuntuAnimation.FastDuration
-                    easing: UbuntuAnimation.StandardEasing
-                }
-            }
 
             PartialColorize {
                 anchors {
