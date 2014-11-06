@@ -29,6 +29,7 @@ UCListItemActionsPrivate::UCListItemActionsPrivate()
     , status(UCListItemActions::Disconnected)
     , offsetDragged(0)
     , delegate(0)
+    , panelDelegate(0)
     , panelItem(0)
 {
 }
@@ -36,24 +37,65 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
 {
 }
 
+void UCListItemActionsPrivate::_q_updateDraggedOffset()
+{
+    UCListItem *listItem = qobject_cast<UCListItem*>(panelItem->parentItem());
+    if (!listItem) {
+        return;
+    }
+
+    Q_Q(UCListItemActions);
+    offsetDragged = (status == UCListItemActions::Leading) ? panelItem->width() + panelItem->x() :
+                         listItem->width() - panelItem->x();
+    if (offsetDragged < 0.0) {
+        offsetDragged = 0.0;
+    }
+}
+
+UCListItemActionsAttached *UCListItemActionsPrivate::attachedObject()
+{
+    if (!panelItem) {
+        return 0;
+    }
+    return static_cast<UCListItemActionsAttached*>(
+                qmlAttachedPropertiesObject<UCListItemActions>(panelItem, false));
+}
+
+
 bool UCListItemActionsPrivate::connectToListItem(UCListItemActions *actions, UCListItem *listItem, bool leading)
 {
     UCListItemActionsPrivate *_this = get(actions);
-    if (!_this || !_this->createPanelItem() || isConnectedTo(actions, listItem)) {
-        return isConnectedTo(actions, listItem);
+    if (!_this) {
+        return false;
     }
+    // do we have a panel created already?
+    if (_this->panelItem) {
+        if (isConnectedTo(actions, listItem)) {
+            return true;
+        }
+        if (_this->panelItem->parentItem() && _this->panelItem->parentItem() != listItem) {
+            // set the requesting listItem as queuedItem
+            _this->queuedItem = listItem;
+            return false;
+        }
+    }
+    // no parent set or panelItem yet, proceed with panel creation
+    UCListItemPrivate *pItem = UCListItemPrivate::get(listItem);
+    if (!pItem->actionsPanel) {
+        // perhaps we did not get it from the theme yet, try to fetch it
+        pItem->updateActionsPanel();
+    }
+    if (!_this->createPanelItem(pItem->actionsPanel)) {
+        return false;
+    }
+
     // check if the panel is still connected to a ListItem
     // this may happen if there is a swipe over an other item while the previous
     // one is rebounding
-    if (_this->panelItem->parentItem()) {
-        // set the requesting listItem as queuedItem
-        _this->queuedItem = listItem;
-        return false;
-    }
-    _this->status = leading ? UCListItemActions::Leading : UCListItemActions::Trailing;
-    _this->panelItem->setProperty("leadingPanel", leading);
     _this->panelItem->setParentItem(listItem);
-    _this->connected = true;
+    _this->offsetDragged = 0.0;
+    _this->status = leading ? UCListItemActions::Leading : UCListItemActions::Trailing;
+    Q_EMIT actions->statusChanged(_this->status);
     return true;
 }
 
@@ -63,9 +105,10 @@ void UCListItemActionsPrivate::disconnectFromListItem(UCListItemActions *actions
     if (!_this || !_this->panelItem || !_this->panelItem->parentItem()) {
         return;
     }
+
     _this->panelItem->setParentItem(0);
-    _this->connected = false;
-    _this->leading = false;
+    _this->status = UCListItemActions::Disconnected;
+    Q_EMIT actions->statusChanged(_this->status);
     // if there was a queuedItem, make it grab the actions list
     if (_this->queuedItem) {
         UCListItemPrivate::get(_this->queuedItem.data())->grabPanel(actions, true);
@@ -77,33 +120,62 @@ void UCListItemActionsPrivate::disconnectFromListItem(UCListItemActions *actions
 bool UCListItemActionsPrivate::isConnectedTo(UCListItemActions *actions, UCListItem *listItem)
 {
     UCListItemActionsPrivate *_this = get(actions);
-    return _this && _this->panelItem && _this->connected && (_this->panelItem->parentItem() == listItem);
+    return _this && _this->panelItem &&
+            (_this->status != UCListItemActions::Disconnected) &&
+            (_this->panelItem->parentItem() == listItem);
 }
 
-QQuickItem *UCListItemActionsPrivate::createPanelItem()
+QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *delegate)
 {
-    if (panelItem) {
+    if (panelItem && panelDelegate == delegate) {
         return panelItem;
     }
+    // delete the panel if the next item's actionsDelegate differs from the
+    // one this panel was created from
+    if (panelDelegate != delegate) {
+        delete panelItem;
+        panelItem = 0;
+    }
+
     Q_Q(UCListItemActions);
-    QUrl panelDocument = UbuntuComponentsPlugin::pluginUrl().
-            resolved(QUrl::fromLocalFile("ListItemPanel.qml"));
-    QQmlComponent component(qmlEngine(q), panelDocument);
-    if (!component.isError()) {
-        panelItem = qobject_cast<QQuickItem*>(component.beginCreate(qmlContext(q)));
+    if (!delegate) {
+        qmlInfo(q) << UbuntuI18n::instance().tr("actionsDelegate not set!");
+        return 0;
+    }
+
+    panelDelegate = delegate;
+    if (!panelDelegate->isError()) {
+        panelItem = qobject_cast<QQuickItem*>(panelDelegate->beginCreate(qmlContext(q)));
         if (panelItem) {
             QQml_setParent_noEvent(panelItem, q);
             // add panelItem to data so we can access it in case is needed (i.e. tests)
             data.append(panelItem);
-            if (delegate) {
-                panelItem->setProperty("delegate", QVariant::fromValue(delegate));
+            // create attached property!
+            UCListItemActionsAttached *attached = static_cast<UCListItemActionsAttached*>(
+                        qmlAttachedPropertiesObject<UCListItemActions>(panelItem));
+            if (!attached->container()) {
+                attached->setList(q);
+            } else {
+                // container is set, but we need to emit the signal again so we get the
+                // attached props updated for those cases when the attached property is
+                // created before the statement above
+                Q_EMIT attached->containerChanged();
             }
-            panelItem->setProperty("actionList", QVariant::fromValue(actions));
-            component.completeCreate();
+            panelDelegate->completeCreate();
+
+            // calculate option's slot size
+            offsetDragged = 0.0;
+            // connect to panel to catch dragging
+            QObject::connect(panelItem, SIGNAL(xChanged()), q, SLOT(_q_updateDraggedOffset()));
+            if (attached) {
+                QObject::connect(panelItem, &QQuickItem::xChanged,
+                                 attached, &UCListItemActionsAttached::offsetChanged);
+            }
         }
     } else {
-        qmlInfo(q) << component.errorString();
+        qmlInfo(q) << panelDelegate->errorString();
     }
+
     return panelItem;
 }
 

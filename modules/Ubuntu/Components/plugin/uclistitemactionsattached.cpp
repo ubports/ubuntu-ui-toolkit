@@ -42,6 +42,10 @@ void UCListItemActionsAttached::setList(UCListItemActions *list)
         return;
     }
     m_container = list;
+    if (!m_container.isNull()) {
+        QObject::connect(m_container.data(), &UCListItemActions::statusChanged,
+                         this, &UCListItemActionsAttached::statusChanged);
+    }
     Q_EMIT containerChanged();
 }
 

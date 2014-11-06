@@ -50,9 +50,11 @@ public:
 
 Q_SIGNALS:
     void delegateChanged();
+    void statusChanged(Status status);
 
 private:
     Q_DECLARE_PRIVATE(UCListItemActions)
+    Q_PRIVATE_SLOT(d_func(), void _q_updateDraggedOffset())
 };
 
 class UCListItemActionsAttached : public QObject

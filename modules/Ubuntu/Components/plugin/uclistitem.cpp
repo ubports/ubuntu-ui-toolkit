@@ -205,6 +205,8 @@ UCListItemPrivate::UCListItemPrivate()
     , suppressClick(false)
     , contentMoving(false)
     , ready(false)
+    , customPanel(false)
+    , customColor(false)
     , xAxisMoveThresholdGU(1.5)
     , overshootGU(2)
     , color(Qt::transparent)
@@ -215,6 +217,7 @@ UCListItemPrivate::UCListItemPrivate()
     , divider(new UCListItemDivider)
     , leadingActions(0)
     , trailingActions(0)
+    , actionsPanel(0)
 {
 }
 UCListItemPrivate::~UCListItemPrivate()
@@ -237,9 +240,9 @@ void UCListItemPrivate::init()
     // turn activeFocusOnPress on
     q->setActiveFocusOnPress(true);
 
-    // catch theme palette changes
-    QObject::connect(&UCTheme::instance(), SIGNAL(paletteChanged()), q, SLOT(_q_updateColors()));
-    _q_updateColors();
+    // catch theme changes
+    QObject::connect(&UCTheme::instance(), SIGNAL(nameChanged()), q, SLOT(_q_updateThemedData()));
+    _q_updateThemedData();
 
     // watch size change and set implicit size;
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
@@ -258,11 +261,15 @@ void UCListItemPrivate::init()
     QObject::connect(reboundAnimation, SIGNAL(stopped()), q, SLOT(_q_completeRebinding()));
 }
 
-void UCListItemPrivate::_q_updateColors()
+void UCListItemPrivate::_q_updateThemedData()
 {
-    Q_Q(UCListItem);
-    highlightColor = getPaletteColor("selected", "background");
-    q->update();
+    // update colors, panels
+    if (!customColor) {
+        Q_Q(UCListItem);
+        highlightColor = getPaletteColor("selected", "background");
+        q->update();
+    }
+    updateActionsPanel();
 }
 
 void UCListItemPrivate::_q_rebound()
@@ -421,11 +428,41 @@ void UCListItemPrivate::setContentMoved(bool move)
  */
 QQmlComponent *UCListItemPrivate::actionsDelegate() const
 {
-
+    return actionsPanel;
 }
-void UCListItemPrivate::setActionsDelegate(QQmlComponent *deleagte)
+void UCListItemPrivate::setActionsDelegate(QQmlComponent *delegate)
 {
+    if (actionsPanel == delegate) {
+        return;
+    }
+    // make sure we're rebound before we change the panel component
+    promptRebound();
+    if (!customPanel) {
+        // delete theme created delegate
+        delete actionsPanel;
+        actionsPanel = 0;
+    }
+    actionsPanel = delegate;
+    customPanel = (actionsPanel == 0);
+    Q_Q(UCListItem);
+    if (ready && !customPanel) {
+        // need to get the default one from the theme
+        actionsPanel = UCTheme::instance().createStyleComponent("ListItemPanel.qml", q);
+    }
+    Q_EMIT q->actionsDelegateChanged();
+}
 
+// update themed components
+void UCListItemPrivate::updateActionsPanel()
+{
+    if (!ready) {
+        return;
+    }
+    if (!customPanel) {
+        delete actionsPanel;
+        Q_Q(UCListItem);
+        actionsPanel = UCTheme::instance().createStyleComponent("ListItemPanel.qml", q);
+    }
 }
 
 // the function performs a prompt rebound on mouse release without any animation
@@ -1005,7 +1042,7 @@ void UCListItem::setHighlightColor(const QColor &color)
     }
     d->highlightColor = color;
     // no more theme change watch
-    disconnect(&UCTheme::instance(), SIGNAL(paletteChanged()), this, SLOT(_q_updateColors()));
+    d->customColor = true;
     update();
     Q_EMIT highlightColorChanged();
 }

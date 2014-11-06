@@ -36,16 +36,20 @@ public:
     qreal offsetDragged;
 
     QQmlComponent *delegate;
+    QQmlComponent *panelDelegate;
     QQuickItem *panelItem;
     QList<UCAction*> actions;
     QList<QObject*> data;
     QPointer<UCListItem> queuedItem;
 
+    void _q_updateDraggedOffset();
+    UCListItemActionsAttached *attachedObject();
+
     static bool connectToListItem(UCListItemActions *options, UCListItem *listItem, bool leading);
     static void disconnectFromListItem(UCListItemActions *options);
     static bool isConnectedTo(UCListItemActions *options, UCListItem *listItem);
 
-    QQuickItem *createPanelItem();
+    QQuickItem *createPanelItem(QQmlComponent *delegate);
 };
 
 #endif // UCLISTITEMACTIONS_P_H

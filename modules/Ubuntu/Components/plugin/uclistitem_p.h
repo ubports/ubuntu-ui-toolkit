@@ -42,7 +42,7 @@ public:
         return that->d_func();
     }
 
-    void _q_updateColors();
+    void _q_updateThemedData();
     void _q_rebound();
     void _q_updateSize();
     void _q_completeRebinding();
@@ -63,6 +63,8 @@ public:
     bool suppressClick:1;
     bool contentMoving:1;
     bool ready:1;
+    bool customPanel:1;
+    bool customColor:1;
     qreal xAxisMoveThresholdGU;
     qreal overshootGU;
     QPointF lastPos;
@@ -76,12 +78,14 @@ public:
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
+    QQmlComponent *actionsPanel;
 
     // getters/setters
     bool isMoving() const;
     void setContentMoved(bool move);
     QQmlComponent *actionsDelegate() const;
-    void setActionsDelegate(QQmlComponent *deleagte);
+    void setActionsDelegate(QQmlComponent *delegate);
+    void updateActionsPanel();
 };
 
 class UCListItemDivider : public QObject
