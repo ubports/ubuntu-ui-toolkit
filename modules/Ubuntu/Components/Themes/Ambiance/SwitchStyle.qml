@@ -20,7 +20,7 @@ import Ubuntu.Components 1.1
 Item {
     id: switchStyle
 
-    property real thumbPadding: units.gu(0.5)
+    property real thumbPadding: units.gu(0.33)
 
     /* FIXME: setting the width and height is required because in the case no width
        is set on the Switch, then even though the width is set eventually to
@@ -33,8 +33,8 @@ Item {
     */
     width: implicitWidth
     height: implicitHeight
-    implicitWidth: units.gu(8)
-    implicitHeight: units.gu(4)
+    implicitWidth: units.gu(6)
+    implicitHeight: units.gu(3)
     opacity: styledItem.enabled ? 1.0 : 0.5
     LayoutMirroring.enabled: false
     LayoutMirroring.childrenInherit: true
