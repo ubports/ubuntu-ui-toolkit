@@ -1,24 +1,23 @@
 ubuntu-ui-toolkit (1.1.1311+15.04.20141102-0ubuntu1) vivid; urgency=medium
 
-  [ Zoltán Balogh ]
-  [ Christian Dywan <christian.dywan@canonical.com>
+  [ Christian Dywan ]
   * Explicitly use Orange in Slider and ProgressBar. 
     Fixes: LP: #1372585.
   * Copy components correctly in push_to_phone.sh and make copy.sh 
     more robust.
   * Make push_to_phone.sh use a temporary folder and sudo.
 
-  [ Zsombor Egri <zsombor.egri@canonical.com>
+  [ Zsombor Egri ] 
   * ThinDivider margins rolled back to edge-to-edge. Divider colors
     adjusted with design. Fixes: LP: #1380766.
 
-  [ Tim Peeters <tim.peeters@canonical.com>
+  [ Tim Peeters ] 
   * Add updated header divider to use rectangles instead of images,
     and to auto-detect its color. Fixes: LP: #1372590.
   * Add internal property to hide the header separator. 
     Needed in Unity8.
 
-  [ Leonardo Arias Fonseca <leo.arias@canonical.com>
+  [ Leonardo Arias Fonseca ] 
   * Fixed the infinite loop when running flickable tests. 
     Fixes: LP: #1384703.
   * Added an autopilot helper for expandable list items. 
