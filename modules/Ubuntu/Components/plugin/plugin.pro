@@ -68,7 +68,11 @@ HEADERS += plugin.h \
     ucaction.h \
     ucactioncontext.h \
     ucactionmanager.h \
-    adapters/actionsproxy_p.h
+    adapters/actionsproxy_p.h \
+    uclistitem.h \
+    uclistitem_p.h \
+    uclistitemactions.h \
+    uclistitemactions_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -105,7 +109,9 @@ SOURCES += plugin.cpp \
     ucaction.cpp \
     ucactioncontext.cpp \
     ucactionmanager.cpp \
-    adapters/actionsproxy_p.cpp
+    adapters/actionsproxy_p.cpp \
+    uclistitem.cpp \
+    uclistitemactions.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp
