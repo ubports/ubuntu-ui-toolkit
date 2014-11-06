@@ -25,8 +25,9 @@
 
 UCListItemActionsPrivate::UCListItemActionsPrivate()
     : QObjectPrivate()
-    , connected(false)
-    , leading(false)
+    , dragging(false)
+    , status(UCListItemActions::Disconnected)
+    , offsetDragged(0)
     , delegate(0)
     , panelItem(0)
 {
@@ -49,7 +50,7 @@ bool UCListItemActionsPrivate::connectToListItem(UCListItemActions *actions, UCL
         _this->queuedItem = listItem;
         return false;
     }
-    _this->leading = leading;
+    _this->status = leading ? UCListItemActions::Leading : UCListItemActions::Trailing;
     _this->panelItem->setProperty("leadingPanel", leading);
     _this->panelItem->setParentItem(listItem);
     _this->connected = true;
@@ -174,10 +175,12 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
  * }
  * \endqml
  *
- * \section3 Notes on performance
+ * \section3 Using with ListViews
  * When used with views, or when the amount of items of same kind to be created
- * is huge, it is recommended to use cached actions as well as cached ListItemActions
- * instances. In this way we can reduce the creation time of the items:
+ * is huge, it is recommended to use cached ListItemActions instances to reduce
+ * creation time and to be able to handle rebounding and flicking properly. If
+ * each ListItem creates its own ListItemActions instance the Flickable view may
+ * be blocked and action visualization will also break.
  * \qml
  * import QtQuick 2.2
  * import Ubuntu.Components 1.2
@@ -209,6 +212,11 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem()
  *     }
  * }
  * \endqml
+ *
+ * \section3 Attached properties
+ * ListItemActions provides a set of attached properties to the panels visualizing
+ * the actions. These properties can be used by implementations visualizing the
+ * actions.
  */
 
 UCListItemActions::UCListItemActions(QObject *parent)
@@ -217,6 +225,28 @@ UCListItemActions::UCListItemActions(QObject *parent)
 }
 UCListItemActions::~UCListItemActions()
 {
+}
+
+UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *owner)
+{
+    /*
+     * Detect the attachee, whether is it a child item of the panelItem. The panelItem
+     * itself cannot be detected, as the object can be attached during the call of
+     * component.beginCreate().
+     */
+    UCListItemActionsAttached *attached = new UCListItemActionsAttached(owner);
+    QQuickItem *item = qobject_cast<QQuickItem*>(owner);
+    while (item) {
+        // has item our attached property?
+        UCListItemActionsAttached *itemAttached = static_cast<UCListItemActionsAttached*>(
+                    qmlAttachedPropertiesObject<UCListItemActions>(item, false));
+        if (itemAttached) {
+            attached->setList(itemAttached->container());
+            break;
+        }
+        item = item->parentItem();
+    }
+    return attached;
 }
 
 /*!

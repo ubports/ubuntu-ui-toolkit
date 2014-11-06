@@ -48,6 +48,7 @@ public:
     void _q_completeRebinding();
     void promptRebound();
     void reboundTo(qreal x);
+    int index();
     void setPressed(bool pressed);
     void setTugged(bool tugged);
     bool grabPanel(UCListItemActions *optionList, bool isTugged);
@@ -60,9 +61,10 @@ public:
     bool highlightColorChanged:1;
     bool tugged:1;
     bool suppressClick:1;
-    bool ready:1;
     bool contentMoving:1;
+    bool ready:1;
     qreal xAxisMoveThresholdGU;
+    qreal overshootGU;
     QPointF lastPos;
     QPointF pressedPos;
     QColor color;

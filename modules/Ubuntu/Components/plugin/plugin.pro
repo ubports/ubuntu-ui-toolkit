@@ -113,6 +113,7 @@ SOURCES += plugin.cpp \
     adapters/actionsproxy_p.cpp \
     uclistitem.cpp \
     uclistitemactions.cpp \
+    uclistitemactionsattached.cpp \
     propertychange_p.cpp
 
 # adapters

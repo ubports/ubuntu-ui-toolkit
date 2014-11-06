@@ -202,9 +202,11 @@ UCListItemPrivate::UCListItemPrivate()
     , pressed(false)
     , highlightColorChanged(false)
     , tugged(false)
-    , ready(false)
+    , suppressClick(false)
     , contentMoving(false)
+    , ready(false)
     , xAxisMoveThresholdGU(1.5)
+    , overshootGU(2)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
     , reboundAnimation(0)
@@ -422,7 +424,9 @@ QQmlComponent *UCListItemPrivate::actionsDelegate() const
 
 }
 void UCListItemPrivate::setActionsDelegate(QQmlComponent *deleagte)
+{
 
+}
 
 // the function performs a prompt rebound on mouse release without any animation
 void UCListItemPrivate::promptRebound()
@@ -447,6 +451,19 @@ void UCListItemPrivate::_q_updateSize()
     QQuickItem *owner = flickable ? flickable : parentItem;
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
     q->setImplicitHeight(UCUnits::instance().gu(7));
+}
+
+// returns the index of the list item when used in model driven views,
+// and the child index in other cases
+int UCListItemPrivate::index()
+{
+    Q_Q(UCListItem);
+    // is there an index context property?
+    QQmlContext *context = qmlContext(q);
+    QVariant index = context->contextProperty("index");
+    return index.isValid() ?
+                index.toInt() :
+                (parentItem ? QQuickItemPrivate::get(parentItem)->childItems.indexOf(q) : -1);
 }
 
 // set pressed flag and update contentItem

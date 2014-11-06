@@ -31,8 +31,10 @@ public:
         return actions ? actions->d_func() : 0;
     }
 
-    bool connected:1;
-    bool leading:1;
+    bool dragging:1;
+    UCListItemActions::Status status;
+    qreal offsetDragged;
+
     QQmlComponent *delegate;
     QQuickItem *panelItem;
     QList<UCAction*> actions;
