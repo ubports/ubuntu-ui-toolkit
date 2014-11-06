@@ -43,6 +43,7 @@ public:
     void _q_updateColors();
     void _q_rebound();
     void _q_updateSize();
+    int index();
     void setPressed(bool pressed);
     void listenToRebind(bool listen);
     void resize();
@@ -51,6 +52,7 @@ public:
     bool pressed:1;
     bool highlightColorChanged:1;
     bool ready:1;
+    qreal overshootGU;
     QColor color;
     QColor highlightColor;
     QPointer<QQuickFlickable> flickable;

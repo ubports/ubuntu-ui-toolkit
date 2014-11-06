@@ -23,6 +23,9 @@
 
 UCListItemActionsPrivate::UCListItemActionsPrivate()
     : QObjectPrivate()
+    , dragging(false)
+    , status(UCListItemActions::Disconnected)
+    , offsetDragged(0)
     , delegate(0)
     , panelItem(0)
 {
@@ -53,15 +56,58 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
  * the first time the actions are accessed. The colors of the panel is taken from
  * the theme's palette.
  *
- * When tugged, panels reveal the actions one by one. In case an option is revealed
- * more than 50%, the option will be snapped and revealed completely. This is also
- * valid for the case when the option is visibl eless than 50%, in which case the
- * option is hidden. Actions can be triggered by tapping.
+ * When tugged, panels reveal the actions one by one. In case an action is revealed
+ * more than 50%, the action will be snapped and revealed completely. This is also
+ * valid for the case when the action is visible less than 50%, in which case the
+ * action is hidden. Actions can be triggered by tapping.
  *
- * \section3 Notes on performance
+ * \note You can use the same ListItemActions for leading and for trailing actions
+ * the same time only if the instance is used by different groups of list items,
+ * where one group uses it as leading and other group as trailing. In any other
+ * circumstances use separate ListItemActions for leading and trailing actions.
+ * \qml
+ * import QtQuick 2.2
+ * import Ubuntu.Components 1.2
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     ListItemActions {
+ *         id: sharedActions
+ *         actions: [
+ *             Action {
+ *                 iconName: "search"
+ *             },
+ *             Action {
+ *                 iconName: "edit"
+ *             },
+ *             Action {
+ *                 iconName: "copy"
+ *             }
+ *         ]
+ *     }
+ *
+ *     Column {
+ *         ListItem {
+ *             leadingActions: sharedActions
+ *         }
+ *         UbuntuListView {
+ *             anchors.fill: parent
+ *             model: 10000
+ *             delegate: ListItem {
+ *                 trailingActions: sharedActions
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * \section3 Using with ListViews
  * When used with views, or when the amount of items of same kind to be created
- * is huge, it is recommended to use cached actions as well as cached ListItemActions
- * instances. In this way we can reduce the creation time of the items:
+ * is huge, it is recommended to use cached ListItemActions instances to reduce
+ * creation time and to be able to handle rebounding and flicking properly. If
+ * each ListItem creates its own ListItemActions instance the Flickable view may
+ * be blocked and action visualization will also break.
  * \qml
  * import QtQuick 2.2
  * import Ubuntu.Components 1.2
@@ -93,6 +139,11 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
  *     }
  * }
  * \endqml
+ *
+ * \section3 Attached properties
+ * ListItemActions provides a set of attached properties to the panels visualizing
+ * the actions. These properties can be used by implementations visualizing the
+ * actions.
  */
 
 UCListItemActions::UCListItemActions(QObject *parent)
@@ -101,6 +152,28 @@ UCListItemActions::UCListItemActions(QObject *parent)
 }
 UCListItemActions::~UCListItemActions()
 {
+}
+
+UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *owner)
+{
+    /*
+     * Detect the attachee, whether is it a child item of the panelItem. The panelItem
+     * itself cannot be detected, as the object can be attached during the call of
+     * component.beginCreate().
+     */
+    UCListItemActionsAttached *attached = new UCListItemActionsAttached(owner);
+    QQuickItem *item = qobject_cast<QQuickItem*>(owner);
+    while (item) {
+        // has item our attached property?
+        UCListItemActionsAttached *itemAttached = static_cast<UCListItemActionsAttached*>(
+                    qmlAttachedPropertiesObject<UCListItemActions>(item, false));
+        if (itemAttached) {
+            attached->setList(itemAttached->container());
+            break;
+        }
+        item = item->parentItem();
+    }
+    return attached;
 }
 
 /*!

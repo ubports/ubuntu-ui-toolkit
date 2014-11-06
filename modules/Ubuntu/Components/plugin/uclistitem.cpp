@@ -192,6 +192,8 @@ UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
     , pressed(false)
     , highlightColorChanged(false)
+    , ready(false)
+    , overshootGU(2)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
     , contentItem(new QQuickItem)
@@ -249,6 +251,19 @@ void UCListItemPrivate::_q_updateSize()
     QQuickItem *owner = flickable ? flickable : parentItem;
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
     q->setImplicitHeight(UCUnits::instance().gu(7));
+}
+
+// returns the index of the list item when used in model driven views,
+// and the child index in other cases
+int UCListItemPrivate::index()
+{
+    Q_Q(UCListItem);
+    // is there an index context property?
+    QQmlContext *context = qmlContext(q);
+    QVariant index = context->contextProperty("index");
+    return index.isValid() ?
+                index.toInt() :
+                (parentItem ? QQuickItemPrivate::get(parentItem)->childItems.indexOf(q) : -1);
 }
 
 // set pressed flag and update contentItem
