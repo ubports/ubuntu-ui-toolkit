@@ -116,8 +116,8 @@ qreal UCListItemActionsAttached::offset()
  * as leading or as trailing action list to a \l ListItem. Possible valueas are:
  * \list A
  *  \li \b Disconnected - default, the actions list is not connected to any \l ListItem
- *  \li \b LeadingOptions - the actions list is connected as leading list
- *  \li \b TrailingOptions - the actions list is connected as trailing list
+ *  \li \b Leading - the actions list is connected as leading list
+ *  \li \b Trailing - the actions list is connected as trailing list
  * \endlist
  */
 UCListItemActions::Status UCListItemActionsAttached::status()
