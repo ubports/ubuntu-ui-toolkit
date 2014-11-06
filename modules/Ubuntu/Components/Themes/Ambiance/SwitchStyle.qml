@@ -67,12 +67,12 @@ Item {
     /*!
       The source of the selected icon when the switch is checked.
      */
-    property url checkedImageSource: "image://theme/tick"
+    property url checkedIconSource: "image://theme/tick"
 
     /*!
       The source of the selected icon when the switch is not checked.
      */
-    property url uncheckedImageSource: "image://theme/close"
+    property url uncheckedIconSource: "image://theme/close"
 
     UbuntuShape {
         id: background
@@ -120,7 +120,7 @@ Item {
                 }
                 rightColor: switchStyle.unselectedIconColor
                 source: Image {
-                    source: switchStyle.uncheckedImageSource
+                    source: switchStyle.uncheckedIconSource
                     sourceSize {
                         width: thumb.iconSize
                         height: thumb.iconSize
@@ -136,7 +136,7 @@ Item {
                 }
                 rightColor: switchStyle.unselectedIconColor
                 source: Image {
-                    source: switchStyle.checkedImageSource
+                    source: switchStyle.checkedIconSource
                     sourceSize {
                         width: thumb.iconSize
                         height: thumb.iconSize
@@ -159,7 +159,7 @@ Item {
             PartialColorize {
                 anchors.centerIn: parent
                 source: Image {
-                    source: switchStyle.uncheckedImageSource
+                    source: switchStyle.uncheckedIconSource
                     sourceSize {
                         width: thumb.iconSize
                         height: thumb.iconSize
@@ -185,7 +185,7 @@ Item {
             PartialColorize {
                 anchors.centerIn: parent
                 source: Image {
-                    source: switchStyle.checkedImageSource
+                    source: switchStyle.checkedIconSource
                     sourceSize {
                         width: thumb.iconSize
                         height: thumb.iconSize
