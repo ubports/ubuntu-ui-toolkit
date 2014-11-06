@@ -58,6 +58,9 @@ Item {
                 bottomMargin: switchStyle.thumbPadding
             }
 
+            property real iconSize: Math.min(width - 2*switchStyle.thumbPadding,
+                                             height - 2*switchStyle.thumbPadding)
+
             color: styledItem.checked ? UbuntuColors.green
                                       : Qt.rgba(0, 0, 0, 0.2)
 
@@ -78,14 +81,14 @@ Item {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     right: parent.left
-                    rightMargin: switchStyle.thumbPadding * 2.0
+                    rightMargin: (parent.width - thumb.iconSize)/2 + switchStyle.thumbPadding
                 }
                 rightColor: Theme.palette.normal.backgroundText
                 source: Image {
                     source: "image://theme/close"
                     sourceSize {
-                        width: thumb.width - 2*switchStyle.thumbPadding
-                        height: thumb.height - 2*switchStyle.thumbPadding
+                        width: thumb.iconSize
+                        height: thumb.iconSize
                     }
                 }
             }
@@ -94,14 +97,14 @@ Item {
                 anchors {
                     verticalCenter: parent.verticalCenter
                     left: parent.right
-                    leftMargin: switchStyle.thumbPadding * 2.0
+                    leftMargin: (parent.width - thumb.iconSize)/2 + switchStyle.thumbPadding
                 }
                 rightColor: Theme.palette.normal.backgroundText
                 source: Image {
                     source: "image://theme/tick"
                     sourceSize {
-                        width: thumb.width - 2*switchStyle.thumbPadding
-                        height: thumb.height - 2*switchStyle.thumbPadding
+                        width: thumb.iconSize
+                        height: thumb.iconSize
                     }
                 }
             }
@@ -123,8 +126,8 @@ Item {
                 source: Image {
                     source: "image://theme/close"
                     sourceSize {
-                        width: thumb.width - 2*switchStyle.thumbPadding
-                        height: thumb.height - 2*switchStyle.thumbPadding
+                        width: thumb.iconSize
+                        height: thumb.iconSize
                     }
                 }
                 progress: MathUtils.clamp((thumb.x - parent.x - x) / width, 0.0, 1.0)
@@ -149,9 +152,10 @@ Item {
                 source: Image {
                     source: "image://theme/tick"
                     sourceSize {
-                        width: thumb.width - 2*switchStyle.thumbPadding
-                        height: thumb.height - 2*switchStyle.thumbPadding
-                    }                }
+                        width: thumb.iconSize
+                        height: thumb.iconSize
+                    }
+                }
                 progress: MathUtils.clamp((thumb.x + thumb.width - parent.x - x) / width, 0.0, 1.0)
                 leftColor: Theme.palette.normal.foregroundText
                 rightColor: "transparent"
