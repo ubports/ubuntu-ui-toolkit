@@ -195,6 +195,7 @@ Ubuntu.StyledItem {
             Ubuntu.Mouse.onPressAndHold: handler.main.selectWord()
             Ubuntu.Mouse.onDoubleClicked: handler.main.selectWord()
             Ubuntu.Mouse.clickAndHoldThreshold: units.gu(2)
+            Ubuntu.Mouse.enabled: enabled
         }
 
         // aligns the draggedItem to the caret and resets the dragger
