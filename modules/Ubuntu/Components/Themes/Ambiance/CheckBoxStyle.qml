@@ -21,19 +21,35 @@ Item {
     id: checkBoxStyle
 
     /*!
-      The image to show inside the checkbox when it is checked.
+      The padding between the background shape and the outside border of the checkbox.
      */
-    property url tickSource: "image://theme/tick"
+    property real backgroundPadding: units.gu(0.33)
 
     /*!
-      The padding between the thumb and the outside border of the checkbox.
+      The background color when the checkbox is not checked.
      */
-    property real thumbPadding: units.gu(0.33)
+    property color uncheckedBackgroundColor: Qt.rgba(Theme.palette.normal.foreground.r, Theme.palette.normal.foreground.g,
+                                                     Theme.palette.normal.foreground.b, 0.2)
+
+    /*!
+      The background color when the checkbox is checked.
+     */
+    property color checkedBackgroundColor: UbuntuColors.green
+
+    /*!
+      The image to show inside the checkbox when it is checked.
+     */
+    property url iconSource: "image://theme/tick"
+
+    /*!
+      The color of the icon.
+     */
+    property color iconColor: Theme.palette.normal.foregroundText
 
     /*!
       The padding between the icon and the border of the thumb.
      */
-    property real iconPadding: thumbPadding
+    property real iconPadding: backgroundPadding
 
     opacity: enabled ? 1.0 : 0.5
 
@@ -44,18 +60,18 @@ Item {
         id: background
         anchors {
             fill: parent
-            margins: checkBoxStyle.thumbPadding
+            margins: checkBoxStyle.backgroundPadding
         }
         property real iconSize: Math.min(width, height) - 2*checkBoxStyle.iconPadding
 
         Icon {
-            color: "white"
+            color: checkBoxStyle.iconColor
             width: background.iconSize
             height: background.iconSize
             id: tick
             anchors.centerIn: parent
             smooth: true
-            source: tickSource
+            source: checkBoxStyle.iconSource
             visible: styledItem.checked || transitionToChecked.running || transitionToUnchecked.running
         }
 
@@ -69,7 +85,7 @@ Item {
                 }
                 PropertyChanges {
                     target: background
-                    color: UbuntuColors.green
+                    color: checkBoxStyle.checkedBackgroundColor
                 }
             },
             State {
@@ -80,8 +96,7 @@ Item {
                 }
                 PropertyChanges {
                     target: background
-                    color: Qt.rgba(Theme.palette.normal.foreground.r, Theme.palette.normal.foreground.g,
-                                   Theme.palette.normal.foreground.b, 0.2)
+                    color: checkBoxStyle.uncheckedBackgroundColor
                 }
             }
         ]
