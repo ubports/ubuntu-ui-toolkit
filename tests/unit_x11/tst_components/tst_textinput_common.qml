@@ -175,38 +175,6 @@ Item {
             cursorRectSpy.target = null;
         }
 
-        function test_press_and_hold_does_nothing_data() {
-            return [
-                {tag: "TextField", input: textField, withTextSelected: false},
-                {tag: "TextArea", input: textArea, withTextSelected: false},
-                {tag: "TextField", input: textField, withTextSelected: true},
-                {tag: "TextArea", input: textArea, withTextSelected: true},
-            ];
-        }
-
-        function test_press_and_hold_does_nothing(data) {
-            var handler = findChild(data.input, "input_handler");
-            popupSpy.target = handler;
-
-            data.input.focus = true;
-            if (data.withTextSelected) {
-                // select the first 20 characters
-                data.input.select(0, 20);
-            }
-
-            // press and hold over selected text
-            mouseLongPress(data.input, units.gu(7), y);
-            waitForRendering(data.input);
-            expectFailContinue(data.tag, "Should not open popover");
-            popupSpy.wait(400);
-
-            if (data.withTextSelected) {
-                // text selection must not be cleared
-                verify(data.input.selectedText !== "", "Selected text cleared!");
-            }
-            mouseRelease(data.input, units.gu(7), y);
-        }
-
         function test_scroll_when_not_focused_data() {
             return [
                 // dx and dy are in eights of a degree; see QWheelEvent::angleDelta() for more details.
