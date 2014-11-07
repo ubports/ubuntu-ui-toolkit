@@ -98,7 +98,7 @@ void UCListItemSnapAnimator::snapOut()
     // disconnect animation, otherwise snapping will disconnect the panel
     QObject::disconnect(snap, 0, 0, 0);
     // restore flickable's interactive and cleanup
-    listItem->attachedProperties->disableInteractive(false);
+    listItem->attachedProperties->disableInteractive(item, false);
     // no need to listen flickables any longer
     listItem->attachedProperties->listenToRebind(item, false);
     // disconnect actions - FIXME thsi will be used later
