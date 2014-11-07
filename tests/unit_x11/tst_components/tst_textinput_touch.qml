@@ -37,7 +37,7 @@ Item {
         Flickable {
             id: outerFlicker
             width: parent.width
-            height: units.gu(40)
+            height: units.gu(20)
             clip: true
             contentWidth: autoSizeTextArea.width
             contentHeight: autoSizeTextArea.height
