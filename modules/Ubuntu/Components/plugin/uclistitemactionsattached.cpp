@@ -43,14 +43,18 @@ void UCListItemActionsAttached::setList(UCListItemActions *list)
     }
     m_container = list;
     if (!m_container.isNull()) {
+        // connect statusChanged() to update status, listItem, listItemIndex and overshoot values
         QObject::connect(m_container.data(), &UCListItemActions::statusChanged,
                          this, &UCListItemActionsAttached::statusChanged);
         QObject::connect(m_container.data(), &UCListItemActions::statusChanged,
                          this, &UCListItemActionsAttached::listItemChanged);
         QObject::connect(m_container.data(), &UCListItemActions::statusChanged,
                          this, &UCListItemActionsAttached::listItemIndexChanged);
+        QObject::connect(m_container.data(), &UCListItemActions::statusChanged,
+                         this, &UCListItemActionsAttached::overshootChanged);
 
         UCListItemActionsPrivate *actions = UCListItemActionsPrivate::get(m_container.data());
+        // connect panel's xChanged to update the dragged offset
         QObject::connect(actions->panelItem, &QQuickItem::xChanged,
                          this, &UCListItemActionsAttached::offsetChanged);
     }

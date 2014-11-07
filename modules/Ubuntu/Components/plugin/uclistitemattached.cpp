@@ -21,6 +21,13 @@
 #include "propertychange_p.h"
 #include <QtQuick/private/qquickflickable_p.h>
 
+/*
+ * The properties are attached to the ListItem's parent item or to its closest
+ * Flickable parent, when embedded in ListView or Flickable. There will be only
+ * one attached property per Flickable for all embedded child ListItems, enabling
+ * in this way the controlling of the interactive flag of the Flickable and all
+ * its ascendant Flickables.
+ */
 UCListItemAttachedPrivate::UCListItemAttachedPrivate(UCListItemAttached *qq)
     : q_ptr(qq)
     , globalDisabled(false)
@@ -34,7 +41,8 @@ UCListItemAttachedPrivate::~UCListItemAttachedPrivate()
     Q_FOREACH(const Record &record, list) {
         QObject::disconnect(record.flickable.data(), &QQuickFlickable::movementStarted,
                          q, &UCListItemAttached::unbindItem);
-        // deleting PropertyChange will restore interactive's original binding/value
+        // deleting PropertyChange will restore the saved property
+        // to its original binding/value
         delete record.interactive;
     }
 }
@@ -90,6 +98,7 @@ bool UCListItemAttached::listenToRebind(UCListItem *item, bool listen)
     return result;
 }
 
+// reports true if any of the ascendant flickables is moving
 bool UCListItemAttached::isMoving()
 {
     Q_D(UCListItemAttached);
@@ -101,6 +110,7 @@ bool UCListItemAttached::isMoving()
     return false;
 }
 
+// returns true if the given ListItem is bount to listen on moving changes
 bool UCListItemAttached::isBountTo(UCListItem *item)
 {
     Q_D(UCListItemAttached);
