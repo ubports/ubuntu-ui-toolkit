@@ -194,7 +194,6 @@ Item {
         function test_longtap_when_empty_data() {
             return [
                 {tag: "TextField", input: emptyTextField},
-                {tag: "TextArea", input: emptyTextArea},
             ];
         }
         function test_longtap_when_empty(data) {
