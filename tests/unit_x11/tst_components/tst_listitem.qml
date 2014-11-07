@@ -46,6 +46,7 @@ Item {
         id: trailing
         actions: [
             stockAction,
+            stockAction,
         ]
     }
     ListItemActions {
@@ -249,7 +250,6 @@ Item {
         function test_touch_tug_options(data) {
             listView.positionViewAtBeginning();
             movingSpy.target = data.item;
-            wait(2000)
             if (data.mouse) {
                 flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
@@ -286,7 +286,7 @@ Item {
             }
             movingSpy.wait();
             verify(data.item.contentItem.x != 0, "The component wasn't tugged!");
-            // dismiss
+            // dismiss by clickin on different item and wait for snap out of the test item
             rebound(data.clickOn, data.item)
         }
 
@@ -295,9 +295,9 @@ Item {
             var item1 = findChild(listView, "listItem1");
             return [
                 {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: true},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item1, mouse: true},
                 {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: false},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item1, mouse: false},
             ];
         }
         function test_listview_not_interactive_while_tugged(data) {
@@ -312,7 +312,7 @@ Item {
             movingSpy.wait();
             compare(listView.interactive, true, "The ListView is still non-interactive!");
             compare(interactiveSpy.count, 2, "Less/more times changed!");
-            // dismiss
+            // dismiss by clickin on different item and wait for snap out of the test item
             rebound(data.clickOn, data.item);
         }
 
