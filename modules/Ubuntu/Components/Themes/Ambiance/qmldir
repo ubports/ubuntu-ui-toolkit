@@ -13,7 +13,6 @@ internal ScrollbarStyle ScrollbarStyle.qml
 internal SelectionCursorStyle SelectionCursorStyle.qml
 internal SheetForegroundStyle SheetForegroundStyle.qml
 internal SliderStyle SliderStyle.qml
-internal SwitchStyle SwitchStyle.qml
 TabBarStyle 0.1 TabBarStyle.qml
 TextAreaStyle 0.1 TextAreaStyle.qml
 internal TextCursorStyle TextCursorStyle.qml
@@ -47,6 +46,7 @@ ComboButtonStyle 1.1 ComboButtonStyle.qml
 PullToRefreshStyle 1.1 PullToRefreshStyle.qml
 PageHeadStyle 1.1 PageHeadStyle.qml
 Palette 1.1 Palette.qml
+SwitchStyle 1.1 SwitchStyle.qml
 
 internal TextSelectionStartCursorStyle TextSelectionStartCursorStyle.qml
 internal TextSelectionEndCursorStyle TextSelectionEndCursorStyle.qml
