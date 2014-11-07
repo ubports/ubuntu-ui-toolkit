@@ -210,8 +210,11 @@ void UCListItemActionsAttached::snapToPosition(qreal position)
     if (position == 0.0) {
         listItem->_q_rebound();
     } else {
-        // FIXME: implement snaping
-        listItem->contentItem->setX(position);
+        if (listItem->animator) {
+            listItem->animator->snap(position);
+        } else {
+            listItem->contentItem->setX(position);
+        }
     }
 }
 

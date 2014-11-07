@@ -42,6 +42,23 @@ MainView {
         ]
     }
 
+    property list<Action> leadingArray: [
+        Action {
+            iconName: "delete"
+        }
+    ]
+    property list<Action> trailingArray: [
+        Action {
+            iconName: "search"
+        },
+        Action {
+            iconName: "edit"
+        },
+        Action {
+            iconName: "copy"
+        }
+    ]
+
     Column {
         anchors {
             left: parent.left
@@ -109,8 +126,11 @@ MainView {
                         highlightColor: "lime"
                         divider.colorFrom: UbuntuColors.green
 
+                        leadingActions: ListItemActions {
+                            actions: leadingArray
+                        }
                         trailingActions: ListItemActions {
-                            actions: leading.actions
+                            actions: trailingArray
                         }
 
                         Label {

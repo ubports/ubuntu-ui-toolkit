@@ -410,7 +410,7 @@ void UCListItemPrivate::setContentMoved(bool move)
 }
 
 /*!
- * \qmlproperty Component ListItem::actionsDelegate
+ * \qmlproperty QQmlComponent ListItem::actionsDelegate
  * The property configures the component visualizing and triggering the actions is
  * created from. The default delegate is taken from the current theme.
  *
@@ -1172,7 +1172,7 @@ QQmlListProperty<QQuickItem> UCListItem::children()
 }
 
 /*!
- * \qmlproperty PropertyAnimation ListItem::snap
+ * \qmlproperty PropertyAnimation ListItem::snapAnimation
  * The property holds the animation to be performed on snapping. If set to null,
  * the default animation will be used. Defaults to null.
  */
