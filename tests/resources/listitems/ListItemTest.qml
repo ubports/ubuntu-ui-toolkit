@@ -107,12 +107,12 @@ MainView {
                     Icon {
                         width: units.gu(3)
                         height: width
-                        name: option.iconName
+                        name: action.iconName
                         color: "blue"
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     Label {
-                        text: option.text + index
+                        text: action.text + index
                         width: parent.width
                         horizontalAlignment: Text.AlignHCenter
                     }

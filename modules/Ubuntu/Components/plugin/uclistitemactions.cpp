@@ -394,19 +394,20 @@ UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *own
 
 /*!
  * \qmlproperty Component ListItemActions::delegate
- * Custom delegate which overrides the default one used by the ListItem. If the
- * value is null, the default delegate will be used.
+ * The property holds the custom delegate to visualize the actions listed in the
+ * ListItemActions. When set to null, the default delegate specified by the \l
+ * ListItem::actionsDelegate will be used.
  *
- * ListItemOptions provides the \c action context property which contains the
- * Action instance currently visualized. Using this property delegates can access
+ * ListItemActions provides the \c action context property which contains the
+ * Action instance visualized. Using this property delegates can access
  * the information to be visualized. The action is triggered by the panel item
- * holding teh visualized action, therefore only visualization is needed by the
+ * holding the visualized action, therefore only visualization is needed by the
  * custom delegate. The other context property exposed to delegates is the \c
  * index, which specifies the index of the action visualized.
  *
  * The delegate height is set automatically by the panel item, and the width value
  * is clamped between height and the maximum width of the list item divided by the
- * number of options in the list.
+ * number of actions in the list.
  * \qml
  * import QtQuick 2.2
  * import Ubuntu.Components 1.2
@@ -419,26 +420,26 @@ UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *own
  *         anchors.fill: parent
  *         model: 50
  *         delegate: ListItem {
- *             trailingOptions: optionsList
+ *             trailingActions: actionsList
  *         }
- *         ListItemOptions {
- *             id: optionsList
+ *         ListItemActions {
+ *             id: actionsList
  *             delegate: Column {
  *                 width: height + units.gu(2)
  *                 Icon {
- *                     name: option.iconName
+ *                     name: action.iconName
  *                     width: units.gu(3)
  *                     height: width
  *                     color: "blue"
  *                     anchors.horizontalCenter: parent.horizontalCenter
  *                 }
  *                 Label {
- *                     text: option.text + "#" + index
+ *                     text: action.text + "#" + index
  *                     width: parent.width
  *                     horizontalAlignment: Text.AlignHCenter
  *                 }
  *             }
- *             options: Action {
+ *             actions: Action {
  *                 iconName: "starred"
  *                 text: "Star"
  *             }
@@ -463,10 +464,6 @@ void UCListItemActions::setDelegate(QQmlComponent *delegate)
         return;
     }
     d->delegate = delegate;
-    if (d->panelItem) {
-        // update panel's delegate as well
-        d->panelItem->setProperty("delegate", QVariant::fromValue(delegate));
-    }
     Q_EMIT delegateChanged();
 }
 
