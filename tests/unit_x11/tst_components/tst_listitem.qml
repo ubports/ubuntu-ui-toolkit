@@ -202,6 +202,8 @@ Item {
             }
             compare(listItem.pressed, false, "Item is pressed still!");
             mouseRelease(listItem, listItem.width / 2, dy);
+            // dismiss
+            rebound(listItem);
         }
         function test_touch_click_on_listitem() {
             var listItem = findChild(listView, "listItem0");
@@ -218,6 +220,8 @@ Item {
             compare(listItem.pressed, false, "Item is pressed still!");
             // cleanup, wait few milliseconds to avoid dbl-click collision
             TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
+            // dismiss
+            rebound(listItem);
         }
 
         function test_background_height_change_on_divider_visible() {
@@ -241,6 +245,7 @@ Item {
         function test_touch_tug_options(data) {
             listView.positionViewAtBeginning();
             movingSpy.target = data.item;
+            wait(2000)
             if (data.mouse) {
                 flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
@@ -304,7 +309,7 @@ Item {
             compare(listView.interactive, true, "The ListView is still non-interactive!");
             compare(interactiveSpy.count, 2, "Less/more times changed!");
             // dismiss
-            rebound(data.item);
+            rebound(data.item, data.clickOn);
         }
     }
 }
