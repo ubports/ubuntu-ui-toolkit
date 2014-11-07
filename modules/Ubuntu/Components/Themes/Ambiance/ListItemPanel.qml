@@ -52,7 +52,6 @@ Item {
       */
     property bool leadingPanel: panel.ListItemActions.status == panel.ListItemActions.Leading
 
-
     anchors {
         left: contentItem ? (leadingPanel ? undefined : contentItem.right) : undefined
         right: contentItem ? (leadingPanel ? contentItem.left : undefined) : undefined
@@ -96,6 +95,7 @@ Item {
         Repeater {
             model: panel.ListItemActions.container.actions
             AbstractButton {
+                objectName: modelData.objectName
                 visible: modelData.visible
                 enabled: modelData.enabled
                 opacity: modelData.enabled ? 1.0 : 0.5
@@ -116,13 +116,6 @@ Item {
                     height: parent.height
                     sourceComponent: panel.ListItemActions.delegate ? panel.ListItemActions.delegate : defaultDelegate
                     property Action action: modelData
-                    onItemChanged: {
-                        // this is needed only for testing purposes
-                        if (item && item.objectName === "") {
-                            item.objectName = modelData.objectName;
-                            print(item.objectName);
-                        }
-                    }
                 }
             }
         }

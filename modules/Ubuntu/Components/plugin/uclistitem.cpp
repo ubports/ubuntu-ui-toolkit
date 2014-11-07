@@ -335,7 +335,7 @@ void UCListItemPrivate::init()
     // content will be redirected to the contentItem, therefore we must report
     // children changes as it would come from the main component
     QObject::connect(contentItem, &QQuickItem::childrenChanged,
-                     q, &UCListItem::childrenChanged);
+                     q, &UCListItem::listItemChildrenChanged);
     q->setFlag(QQuickItem::ItemHasContents);
     // turn activeFocusOnPress on
     q->setActiveFocusOnPress(true);
@@ -1151,24 +1151,23 @@ void UCListItem::setHighlightColor(const QColor &color)
 }
 
 /*!
- * \qmlproperty list<Object> ListItem::data
+ * \qmlproperty list<Object> ListItem::listItemData
  * \default
  * Overloaded default property containing all the children and resources.
  */
-QQmlListProperty<QObject> UCListItem::data()
+QQmlListProperty<QObject> UCListItemPrivate::data()
 {
-    Q_D(UCListItem);
-    return QQuickItemPrivate::get(d->contentItem)->data();
+    return QQuickItemPrivate::get(contentItem)->data();
 }
 
 /*!
- * \qmlproperty list<Item> ListItem::children
+ * \qmlproperty list<Item> ListItem::listItemChildren
+ * \internal
  * Overloaded default property containing all the visible children of the item.
  */
-QQmlListProperty<QQuickItem> UCListItem::children()
+QQmlListProperty<QQuickItem> UCListItemPrivate::children()
 {
-    Q_D(UCListItem);
-    return QQuickItemPrivate::get(d->contentItem)->children();
+    return QQuickItemPrivate::get(contentItem)->children();
 }
 
 /*!

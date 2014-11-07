@@ -322,8 +322,8 @@ Item {
         function test_selecting_action_rebounds_data() {
             var item0 = findChild(listView, "listItem0");
             return [
-                {tag: "With mouse", item: item0, pos: centerOf(item0), dx: units.gu(20), actions: "Leading", select: "list_option_0", mouse: true},
-                {tag: "With touch", item: item0, pos: centerOf(item0), dx: units.gu(20), actions: "Leading", select: "list_option_0", mouse: false},
+                {tag: "With mouse", item: item0, pos: centerOf(item0), dx: units.gu(20), actions: "Leading", select: "leading_1", mouse: true},
+                {tag: "With touch", item: item0, pos: centerOf(item0), dx: units.gu(20), actions: "Leading", select: "leading_1", mouse: false},
             ]
         }
         function test_selecting_action_rebounds(data) {

@@ -80,6 +80,8 @@ public:
     QQmlComponent *actionsPanel;
 
     // getters/setters
+    QQmlListProperty<QObject> data();
+    QQmlListProperty<QQuickItem> children();
     bool isMoving() const;
     void setContentMoved(bool move);
     QQmlComponent *actionsDelegate() const;

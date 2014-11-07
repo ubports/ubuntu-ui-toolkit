@@ -36,12 +36,12 @@ class UCListItem : public UCStyledItemBase
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor NOTIFY highlightColorChanged)
-    Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
-    Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QObject> listItemData READ data DESIGNABLE false)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QQuickItem> listItemChildren READ children NOTIFY listItemChildrenChanged DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQuickPropertyAnimation *snapAnimation READ snapAnimation WRITE setSnapAnimation NOTIFY snapAnimationChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool moving READ isMoving NOTIFY movingChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlComponent *actionsDelegate READ actionsDelegate WRITE setActionsDelegate NOTIFY actionsDelegateChanged)
-    Q_CLASSINFO("DefaultProperty", "data")
+    Q_CLASSINFO("DefaultProperty", "listItemData")
 public:
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
@@ -76,7 +76,7 @@ Q_SIGNALS:
     void pressedChanged();
     void colorChanged();
     void highlightColorChanged();
-    void childrenChanged();
+    void listItemChildrenChanged();
     void snapAnimationChanged();
     void movingChanged();
     void actionsDelegateChanged();
@@ -89,8 +89,6 @@ public Q_SLOTS:
 
 private:
     Q_DECLARE_PRIVATE(UCListItem)
-    QQmlListProperty<QObject> data();
-    QQmlListProperty<QQuickItem> children();
     Q_PRIVATE_SLOT(d_func(), void _q_updateThemedData())
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
