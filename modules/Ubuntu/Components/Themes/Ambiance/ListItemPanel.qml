@@ -96,18 +96,17 @@ Item {
         Repeater {
             model: panel.ListItemActions.container.actions
             AbstractButton {
-                action: modelData
-                visible: action.visible
-                enabled: action.enabled
-                opacity: action.enabled ? 1.0 : 0.5
-                width: (!action.visible) ?
+                visible: modelData.visible
+                enabled: modelData.enabled
+                opacity: modelData.enabled ? 1.0 : 0.5
+                width: (!modelData.visible) ?
                            0 : MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
                 anchors {
                     top: parent.top
                     bottom: parent.bottom
                 }
                 onTriggered: {
-                    optionsRow.selectedAction = action;
+                    optionsRow.selectedAction = modelData;
                     optionsRow.listItemIndex = panel.ListItemActions.listItemIndex;
                     panel.ListItemActions.snapToPosition(0.0);
                 }
@@ -120,7 +119,8 @@ Item {
                     onItemChanged: {
                         // this is needed only for testing purposes
                         if (item && item.objectName === "") {
-                            item.objectName = "list_option_" + index
+                            item.objectName = modelData.objectName;
+                            print(item.objectName);
                         }
                     }
                 }

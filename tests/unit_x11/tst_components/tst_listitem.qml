@@ -26,18 +26,22 @@ Item {
 
     Action {
         id: stockAction
+        objectName: "stock_action"
         iconName: "starred"
     }
     ListItemActions {
         id: leading
         actions: [
             Action {
+                objectName: "leading_1"
                 iconName: "starred"
             },
             Action {
+                objectName: "leading_2"
                 iconName: "starred"
             },
             Action {
+                objectName: "leading_3"
                 iconName: "starred"
             }
         ]
@@ -45,7 +49,6 @@ Item {
     ListItemActions {
         id: trailing
         actions: [
-            stockAction,
             stockAction,
         ]
     }
@@ -111,8 +114,8 @@ Item {
             signalName: "interactiveChanged"
         }
 
-        function panelItem(actionList) {
-            return findInvisibleChild(actionList, "ListItemPanel");
+        function panelItem(item, panel) {
+            return findChild(item, "ListItemPanel" + panel);
         }
 
         function rebound(item, watchTarget) {
@@ -271,9 +274,9 @@ Item {
             var item1 = findChild(listView, "listItem1");
             return [
                 {tag: "Click on an other Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
-                {tag: "Click on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.contentItem, mouse: true},
+                {tag: "Click on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0, mouse: true},
                 {tag: "Tap on an other Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
-                {tag: "Tap on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.contentItem, mouse: false},
+                {tag: "Tap on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0, mouse: false},
             ];
         }
         function test_rebound_when_pressed_outside_or_clicked(data) {
@@ -319,8 +322,8 @@ Item {
         function test_selecting_action_rebounds_data() {
             var item0 = findChild(listView, "listItem0");
             return [
-                {tag: "With mouse", item: item0, pos: centerOf(item0), dx: units.gu(20), actions: item0.leadingActions, select: "list_option_0", mouse: true},
-                {tag: "With touch", item: item0, pos: centerOf(item0), dx: units.gu(20), actions: item0.leadingActions, select: "list_option_0", mouse: false},
+                {tag: "With mouse", item: item0, pos: centerOf(item0), dx: units.gu(20), actions: "Leading", select: "list_option_0", mouse: true},
+                {tag: "With touch", item: item0, pos: centerOf(item0), dx: units.gu(20), actions: "Leading", select: "list_option_0", mouse: false},
             ]
         }
         function test_selecting_action_rebounds(data) {
@@ -332,7 +335,10 @@ Item {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
             movingSpy.wait();
-            var selectedOption = findChild(panelItem(data.actions), data.select);
+            verify(data.item.contentItem.x > 0, "Not snapped in!");
+            var panel = panelItem(data.item, data.actions);
+            verify(panel, "panelItem not found");
+            var selectedOption = findChild(panel, data.select);
             verify(selectedOption, "Cannot select option " + data.select);
 
             // dismiss
@@ -343,6 +349,7 @@ Item {
                 TestExtras.touchClick(0, selectedOption, centerOf(selectedOption));
             }
             movingSpy.wait();
+            fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Content not snapped out");
         }
     }
 }
