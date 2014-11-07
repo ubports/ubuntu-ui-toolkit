@@ -76,7 +76,7 @@ MainView {
             iconName: "edit"
         },
         Action {
-            iconName: "copy"
+            iconName: "email"
         }
     ]
 

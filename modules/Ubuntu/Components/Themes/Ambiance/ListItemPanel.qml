@@ -21,6 +21,22 @@ import Ubuntu.Components 1.2
   This component is the holder of the ListItem options.
   */
 Item {
+
+    // styling properties
+
+    /*
+      Panel's background color
+      */
+    // FIXME: use Palette colors instead when available
+    property color backgroundColor: (leadingPanel ? UbuntuColors.red : "white")
+
+    /*
+      Color used in coloring the icons
+      */
+    // FIXME: use Palette colors instead when available
+    property color foregroundColor: panel.leadingPanel ? "white" : UbuntuColors.darkGrey
+
+    // panel implementation
     id: panel
     width: optionsRow.childrenRect.width
 
@@ -35,10 +51,6 @@ Item {
       Specifies whether the panel is used to visualize leading or trailing options.
       */
     property bool leadingPanel: panel.ListItemActions.status == panel.ListItemActions.Leading
-    /*
-      The delegate to be used to visualize the options
-      */
-    property Component delegate
 
     anchors {
         left: contentItem ? (leadingPanel ? undefined : contentItem.right) : undefined
@@ -55,8 +67,7 @@ Item {
             leftMargin: leadingPanel ? -units.gu(4 * panel.ListItemActions.overshoot) : 0
             rightMargin: leadingPanel ? 0 : -units.gu(4 * panel.ListItemActions.overshoot)
         }
-        // FIXME: use Palette colors instead when available
-        color: (leadingPanel ? UbuntuColors.red : "white")
+        color: panel.backgroundColor
     }
 
     Row {
@@ -68,10 +79,10 @@ Item {
             leftMargin: spacing
         }
 
-        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.actionList.actions.length) : 0
+        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.ListItemActions.container.actions.length) : 0
 
         Repeater {
-            model: panel.actionList.actions
+            model: panel.ListItemActions.container.actions
             AbstractButton {
                 action: modelData
                 visible: action.visible
@@ -87,8 +98,8 @@ Item {
                 Loader {
                     id: delegateLoader
                     height: parent.height
-                    sourceComponent: panel.delegate ? panel.delegate : defaultDelegate
-                    property Action option: modelData
+                    sourceComponent: panel.ListItemActions.delegate ? panel.ListItemActions.delegate : defaultDelegate
+                    property Action action: modelData
                     onItemChanged: {
                         // this is needed only for testing purposes
                         if (item && item.objectName === "") {
@@ -107,9 +118,8 @@ Item {
             Icon {
                 width: units.gu(2.5)
                 height: width
-                name: option.iconName
-                // FIXME: use Palette colors instead when available
-                color: panel.leadingPanel ? "white" : UbuntuColors.darkGrey
+                name: action.iconName
+                color: panel.foregroundColor
                 anchors.centerIn: parent
             }
         }
