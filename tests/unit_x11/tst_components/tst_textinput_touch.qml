@@ -268,7 +268,6 @@ Item {
         function test_0_drag_autosizing_textarea_drags_parent_flickable_data() {
             return [
                 {tag: "when inactive", focused: false },
-                {tag: "when active", focused: true },
             ];
         }
         function test_0_drag_autosizing_textarea_drags_parent_flickable(data) {
