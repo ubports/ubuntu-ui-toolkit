@@ -86,6 +86,9 @@ Item {
             top: styledItem.positionProperty === "selectionStart" ? undefined : parent.bottom
             bottom: styledItem.positionProperty === "selectionStart" ? parent.top : undefined
             horizontalCenter: parent.horizontalCenter
+            horizontalCenterOffset: styledItem.positionProperty === "cursorPosition"
+            ? 0
+            : (LayoutMirroring.enabled ? -1 : 1) * (implicitWidth / 2 - cursorWidth)
         }
         rotation: styledItem.positionProperty === "selectionStart" ? 180 : 0
     }
