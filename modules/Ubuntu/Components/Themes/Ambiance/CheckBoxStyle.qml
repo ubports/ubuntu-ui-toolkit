@@ -23,7 +23,12 @@ Item {
     /*!
       The image to show inside the checkbox when it is checked.
      */
-    property url tickSource: "artwork/tick.png"
+    property url tickSource: "image://theme/tick"
+
+    /*!
+      The padding between the icon and the border of the checkbox.
+     */
+    property real iconPadding: units.gu(0.33)
 
     opacity: enabled ? 1.0 : 0.5
 
@@ -36,7 +41,12 @@ Item {
         anchors.margins: units.gu(0.5)
     }
 
-    Image {
+//    Image {
+    Icon {
+        color: "white"
+        property real iconSize: Math.min(parent.width, parent.height) - 2*checkBoxStyle.iconPadding
+        width: iconSize
+        height: iconSize
         id: tick
         anchors.centerIn: parent
         smooth: true
