@@ -36,7 +36,10 @@ Popover {
             // It is applicable for ReadOnly's TextFields and TextAreas
             enabled: target && target.selectedText !== "" && target.canPaste
             visible: target.selectedText !== ""
-            onTriggered: target.cut()
+            onTriggered: {
+                PopupUtils.close(popover);
+                target.cut();
+            }
         },
         Action {
             text: i18n.dtr('ubuntu-ui-toolkit', "Copy")
@@ -49,10 +52,19 @@ Popover {
             text: i18n.dtr('ubuntu-ui-toolkit', "Paste")
             iconName: "edit-paste"
             enabled: target && target.canPaste
-            onTriggered: target.paste()
+            onTriggered: {
+                PopupUtils.close(popover);
+                target.paste();
+            }
         }
     ]
 
+    // removes hide animation
+    function hide() {
+        popover.visible = false;
+    }
+
+    autoClose: false
     contentHeight: row.childrenRect.height
     contentWidth: row.childrenRect.width
     Row {
@@ -73,7 +85,6 @@ Popover {
                 height: units.gu(6)
                 action: actions[modelData]
                 style: Theme.createStyleComponent("ToolbarButtonStyle.qml", button)
-                onClicked: popover.hide()
             }
         }
     }

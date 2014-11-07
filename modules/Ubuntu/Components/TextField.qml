@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 1.1 as Ubuntu
+import Ubuntu.Components.Popups 1.0
 
 /*!
     \qmltype TextField
@@ -991,6 +992,7 @@ ActionItem {
             // overrides
             selectByMouse: true
             activeFocusOnPress: true
+            onActiveFocusChanged: if (!activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
 
             // input selection and navigation handling
             Ubuntu.Mouse.forwardTo: [inputHandler]
