@@ -46,7 +46,10 @@ Popover {
             iconName: "edit-copy"
             enabled: target && target.selectedText !== ""
             visible: target.selectedText !== ""
-            onTriggered: target.copy()
+            onTriggered: {
+                PopupUtils.close(popover);
+                target.copy();
+            }
         },
         Action {
             text: i18n.dtr('ubuntu-ui-toolkit', "Paste")
