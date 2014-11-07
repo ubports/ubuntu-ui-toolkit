@@ -71,6 +71,7 @@ public:
     UCListItemActionsAttached(QObject *parent = 0);
     ~UCListItemActionsAttached();
     void setList(UCListItemActions *list);
+    void connectListItem(UCListItem *item, bool connect);
 
     UCListItemActions *container() const
     {

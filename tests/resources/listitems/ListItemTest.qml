@@ -79,7 +79,6 @@ MainView {
                 id: listItem
                 onClicked: print(" clicked")
                 leadingActions: leading
-                onMovingChanged: print("moving", moving)
                 Label {
                     text: modelData + " item"
                 }

@@ -26,6 +26,8 @@
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
+#include <QtQuick/private/qquickanimation_p.h>
+#include "ucubuntuanimation.h"
 
 #define MIN(x, y)           ((x < y) ? x : y)
 #define MAX(x, y)           ((x > y) ? x : y)
@@ -43,6 +45,105 @@ QColor getPaletteColor(const char *profile, const char *color)
     }
     return result;
 }
+/******************************************************************************
+ * SnapAnimator
+ */
+UCListItemSnapAnimator::UCListItemSnapAnimator(UCListItem *item)
+    : QObject(item)
+    , item(item)
+    , defaultAnimation(0)
+{
+}
+UCListItemSnapAnimator::~UCListItemSnapAnimator()
+{
+    // make sure we cannot animate anymore, for safety
+    item = 0;
+    qDebug() << "DESTROY ANIMATOR";
+}
+
+void UCListItemSnapAnimator::setCustomAnimation(QQuickPropertyAnimation *animation)
+{
+    if (animation) {
+        // delete default animation so we use this
+        delete defaultAnimation;
+        defaultAnimation = 0;
+    }
+}
+
+bool UCListItemSnapAnimator::snap(qreal to)
+{
+    if (!item) {
+        return false;
+    }
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    QQuickPropertyAnimation *snap = listItem->snap ? listItem->snap : getDefaultAnimation();
+    if (!snap) {
+        return false;
+    }
+    snap->setTargetObject(listItem->contentItem);
+    if (to == 0.0) {
+        QObject::connect(snap, &QQuickAbstractAnimation::stopped,
+                         this, &UCListItemSnapAnimator::snapOut);
+    } else {
+        QObject::connect(snap, &QQuickAbstractAnimation::stopped,
+                         this, &UCListItemSnapAnimator::snapIn);
+    }
+    if (snap->properties().isEmpty() && snap->property().isEmpty()) {
+        snap->setProperty("x");
+    }
+    snap->setFrom(listItem->contentItem->property(snap->property().toLocal8Bit().constData()));
+    snap->setTo(to);
+    snap->setAlwaysRunToEnd(true);
+    listItem->setContentMoved(true);
+    snap->start();
+    return true;
+}
+
+void UCListItemSnapAnimator::snapOut()
+{
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    QQuickAbstractAnimation *snap = listItem->snap ? listItem->snap : getDefaultAnimation();
+    // disconnect animation, otherwise snapping will disconnect the panel
+    QObject::disconnect(snap, 0, 0, 0);
+    // restore flickable's interactive and cleanup
+    listItem->attachedProperties->disableInteractive(item, false);
+    // no need to listen flickables any longer
+    listItem->attachedProperties->listenToRebind(item, false);
+    // disconnect actions
+    listItem->grabPanel(listItem->leadingActions, false);
+    listItem->grabPanel(listItem->trailingActions, false);
+    // set contentMoved to false
+    listItem->setContentMoved(false);
+}
+
+void UCListItemSnapAnimator::snapIn()
+{
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    QQuickAbstractAnimation *snap = listItem->snap ? listItem->snap : getDefaultAnimation();
+    QObject::disconnect(snap, 0, 0, 0);
+    listItem->setContentMoved(false);
+}
+
+QQuickPropertyAnimation *UCListItemSnapAnimator::getDefaultAnimation()
+{
+    if (defaultAnimation) {
+        return defaultAnimation;
+    }
+
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    // create rebound animation
+    UCUbuntuAnimation animationCodes;
+    defaultAnimation = new QQuickPropertyAnimation(this);
+    QEasingCurve easing(QEasingCurve::OutElastic);
+    easing.setPeriod(0.5);
+    defaultAnimation->setEasing(easing);
+    defaultAnimation->setDuration(animationCodes.BriskDuration());
+    defaultAnimation->setTargetObject(listItem->contentItem);
+    defaultAnimation->setProperty("x");
+    defaultAnimation->setAlwaysRunToEnd(true);
+    return defaultAnimation;
+}
+
 /******************************************************************************
  * Divider
  */
@@ -211,18 +312,18 @@ UCListItemPrivate::UCListItemPrivate()
     , overshootGU(2)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
-    , reboundAnimation(0)
-    , flickableInteractive(0)
+    , attachedProperties(0)
     , contentItem(new QQuickItem)
     , divider(new UCListItemDivider)
     , leadingActions(0)
     , trailingActions(0)
+    , snap(0)
+    , animator(0)
     , actionsPanel(0)
 {
 }
 UCListItemPrivate::~UCListItemPrivate()
 {
-    delete flickableInteractive;
 }
 
 void UCListItemPrivate::init()
@@ -247,18 +348,6 @@ void UCListItemPrivate::init()
     // watch size change and set implicit size;
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
-
-    // create rebound animation
-    UCUbuntuAnimation animationCodes;
-    reboundAnimation = new QQuickPropertyAnimation(q);
-    QEasingCurve easing(QEasingCurve::OutElastic);
-    easing.setPeriod(0.5);
-    reboundAnimation->setEasing(easing);
-    reboundAnimation->setDuration(animationCodes.BriskDuration());
-    reboundAnimation->setTargetObject(contentItem);
-    reboundAnimation->setProperty("x");
-    reboundAnimation->setAlwaysRunToEnd(true);
-    QObject::connect(reboundAnimation, SIGNAL(stopped()), q, SLOT(_q_completeRebinding()));
 }
 
 void UCListItemPrivate::_q_updateThemedData()
@@ -282,19 +371,8 @@ void UCListItemPrivate::_q_rebound()
     }
     setTugged(false);
     // rebound to zero
-    reboundTo(0);
+    animator->snap(0);
 }
-void UCListItemPrivate::_q_completeRebinding()
-{
-    // restore flickable's interactive and cleanup
-    PropertyChange::restore(flickableInteractive);
-    // disconnect actions
-    grabPanel(leadingActions, false);
-    grabPanel(trailingActions, false);
-    // set contentMoved to false
-    setContentMoved(false);
-}
-
 /*!
  * \qmlproperty bool ListItem::moving
  * The property signals the move of the list item's content. It is set whenever
@@ -325,9 +403,9 @@ void UCListItemPrivate::setContentMoved(bool move)
     contentMoving = move;
     Q_Q(UCListItem);
     if (move) {
-        Q_EMIT q->movingStarted();
+        Q_EMIT q->movementStarted();
     } else {
-        Q_EMIT q->movingEnded();
+        Q_EMIT q->movementEnded();
     }
     Q_EMIT q->movingChanged();
 }
@@ -470,15 +548,9 @@ void UCListItemPrivate::promptRebound()
 {
     setPressed(false);
     setTugged(false);
-    _q_completeRebinding();
-}
-
-void UCListItemPrivate::reboundTo(qreal x)
-{
-    reboundAnimation->setFrom(contentItem->x());
-    reboundAnimation->setTo(x);
-    reboundAnimation->restart();
-    setContentMoved(true);
+    if (animator) {
+        animator->snapOut();
+    }
 }
 
 // called when units size changes
@@ -537,8 +609,8 @@ bool UCListItemPrivate::grabPanel(UCListItemActions *actionsList, bool isTugged)
     Q_Q(UCListItem);
     if (isTugged) {
         bool grab = UCListItemActionsPrivate::connectToListItem(actionsList, q, (actionsList == leadingActions));
-        if (grab) {
-            PropertyChange::setValue(flickableInteractive, false);
+        if (attachedProperties) {
+            attachedProperties->disableInteractive(q, true);
         }
         return grab;
     } else {
@@ -551,14 +623,9 @@ bool UCListItemPrivate::grabPanel(UCListItemActions *actionsList, bool isTugged)
 // connects/disconnects from the Flickable anchestor to get notified when to do rebound
 void UCListItemPrivate::listenToRebind(bool listen)
 {
-    if (flickable.isNull()) {
-        return;
-    }
-    Q_Q(UCListItem);
-    if (listen) {
-        QObject::connect(flickable.data(), SIGNAL(movementStarted()), q, SLOT(_q_rebound()));
-    } else {
-        QObject::disconnect(flickable.data(), SIGNAL(movementStarted()), q, SLOT(_q_rebound()));
+    if (attachedProperties) {
+        Q_Q(UCListItem);
+        attachedProperties->listenToRebind(q, listen);
     }
 }
 
@@ -700,6 +767,11 @@ UCListItem::~UCListItem()
 {
 }
 
+UCListItemAttached *UCListItem::qmlAttachedProperties(QObject *owner)
+{
+    return new UCListItemAttached(owner);
+}
+
 void UCListItem::componentComplete()
 {
     UCStyledItemBase::componentComplete();
@@ -722,19 +794,19 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             d->flickable = qobject_cast<QQuickFlickable*>(data.item->parentItem());
         }
 
+        // attach ListItem properties to the flickable or to the parent item
         if (d->flickable) {
-            // create the flickableInteractive property change now
-            d->flickableInteractive = new PropertyChange(d->flickable, "interactive");
             // connect to flickable to get width changes
-            QObject::connect(d->flickable, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
+            d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(d->flickable));
         } else if (data.item) {
-            QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
+            d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(data.item));
         } else {
-            // in case we had a flickableInteractive property change active, destroy it
-            if (d->flickableInteractive) {
-                delete d->flickableInteractive;
-                d->flickableInteractive = 0;
-            }
+            // about to be deleted or reparrented, disable attached
+            d->attachedProperties = 0;
+        }
+
+        if (data.item) {
+            QObject::connect(d->flickable ? d->flickable : data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
         }
 
         // update size
@@ -806,8 +878,8 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
 {
     UCStyledItemBase::mousePressEvent(event);
     Q_D(UCListItem);
-    if (!d->flickable.isNull() && d->flickable->isMoving()) {
-        // while moving, we cannot select or tug any items
+    if (d->attachedProperties && d->attachedProperties->isMoving()) {
+        // while moving, we cannot select any items
         return;
     }
     if (event->button() == Qt::LeftButton) {
@@ -815,9 +887,14 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         d->lastPos = d->pressedPos = event->localPos();
         // connect the Flickable to know when to rebound
         d->listenToRebind(true);
-        // accept the event so we get the rest of the events as well
-        event->setAccepted(true);
+        // if it was moved, grab the panels
+        if (d->tugged) {
+            d->grabPanel(d->leadingActions, true);
+            d->grabPanel(d->trailingActions, true);
+        }
     }
+    // accept the event so we get the rest of the events as well
+    event->setAccepted(true);
 }
 
 void UCListItem::mouseReleaseEvent(QMouseEvent *event)
@@ -826,8 +903,10 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
     Q_D(UCListItem);
     // set released
     if (d->pressed) {
-        // disconnect the flickable
         d->listenToRebind(false);
+        if (d->attachedProperties) {
+            d->attachedProperties->disableInteractive(this, false);
+        }
 
         d->setContentMoved(true);
         if (!d->suppressClick) {
@@ -861,9 +940,16 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         if ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold))) {
             // the press went out of the threshold area, enable move, if the direction allows it
             d->lastPos = event->localPos();
-            // connect both panels
+            // tries to connect both panels so we do no longer need to take care which
+            // got connected ad which not; this may fail in case of shared ListItemActions,
+            // as then the panel is shared between the list items, and the panel might be
+            // still in use in other panels. See UCListItemActionsPrivate::connectToListItem
             leadingAttached = d->grabPanel(d->leadingActions, true);
             trailingAttached = d->grabPanel(d->trailingActions, true);
+            // create animator if not created yet
+            if (!d->animator) {
+                d->animator = new UCListItemSnapAnimator(this);
+            }
         }
     }
 
@@ -879,6 +965,23 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             // block flickable
             d->setTugged(true);
             d->contentItem->setX(x);
+            // decide which panel is visible by checking the contentItem's X coordinates
+            if (d->contentItem->x() > 0) {
+                if (leadingAttached) {
+                    UCListItemActionsPrivate::get(d->leadingActions)->panelItem->setVisible(true);
+                }
+                if (trailingAttached) {
+                    UCListItemActionsPrivate::get(d->trailingActions)->panelItem->setVisible(false);
+                }
+            } else if (d->contentItem->x() < 0) {
+                // trailing revealed
+                if (leadingAttached) {
+                    UCListItemActionsPrivate::get(d->leadingActions)->panelItem->setVisible(false);
+                }
+                if (trailingAttached) {
+                    UCListItemActionsPrivate::get(d->trailingActions)->panelItem->setVisible(true);
+                }
+            }
         }
     }
 }
@@ -1067,5 +1170,28 @@ QQmlListProperty<QQuickItem> UCListItem::children()
     Q_D(UCListItem);
     return QQuickItemPrivate::get(d->contentItem)->children();
 }
+
+/*!
+ * \qmlproperty PropertyAnimation ListItem::snap
+ * The property holds the animation to be performed on snapping. If set to null,
+ * the default animation will be used. Defaults to null.
+ */
+QQuickPropertyAnimation *UCListItemPrivate::snapAnimation() const
+{
+    return snap;
+}
+void UCListItemPrivate::setSnapAnimation(QQuickPropertyAnimation *animation)
+{
+    if (snap == animation) {
+        return;
+    }
+    snap = animation;
+    if (animator) {
+        animator->setCustomAnimation(snap);
+    }
+    Q_Q(UCListItem);
+    Q_EMIT q->snapAnimationChanged();
+}
+
 
 #include "moc_uclistitem.cpp"

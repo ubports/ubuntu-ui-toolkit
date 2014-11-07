@@ -114,6 +114,7 @@ SOURCES += plugin.cpp \
     uclistitem.cpp \
     uclistitemactions.cpp \
     uclistitemactionsattached.cpp \
+    uclistitemattached.cpp \
     propertychange_p.cpp
 
 # adapters

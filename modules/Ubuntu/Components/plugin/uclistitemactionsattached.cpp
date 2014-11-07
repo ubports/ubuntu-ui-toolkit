@@ -45,8 +45,27 @@ void UCListItemActionsAttached::setList(UCListItemActions *list)
     if (!m_container.isNull()) {
         QObject::connect(m_container.data(), &UCListItemActions::statusChanged,
                          this, &UCListItemActionsAttached::statusChanged);
+        QObject::connect(m_container.data(), &UCListItemActions::statusChanged,
+                         this, &UCListItemActionsAttached::listItemChanged);
+        QObject::connect(m_container.data(), &UCListItemActions::statusChanged,
+                         this, &UCListItemActionsAttached::listItemIndexChanged);
+
+        UCListItemActionsPrivate *actions = UCListItemActionsPrivate::get(m_container.data());
+        QObject::connect(actions->panelItem, &QQuickItem::xChanged,
+                         this, &UCListItemActionsAttached::offsetChanged);
     }
     Q_EMIT containerChanged();
+}
+
+void UCListItemActionsAttached::connectListItem(UCListItem *item, bool connect)
+{
+    if (connect) {
+        QObject::connect(item, &UCListItem::movingChanged,
+                         this, &UCListItemActionsAttached::draggingChanged);
+    } else {
+        QObject::disconnect(item, &UCListItem::movingChanged,
+                            this, &UCListItemActionsAttached::draggingChanged);
+    }
 }
 
 /*!
@@ -94,9 +113,14 @@ int UCListItemActionsAttached::listItemIndex() {
 bool UCListItemActionsAttached::dragging()
 {
     if (m_container.isNull()) {
-        return 0.0;
+        return false;
     }
-    return UCListItemActionsPrivate::get(m_container)->dragging;
+    QQuickItem *panelItem = UCListItemActionsPrivate::get(m_container)->panelItem;
+    if (!panelItem) {
+        return false;
+    }
+    QQuickItem *listItem = panelItem->parentItem();
+    return listItem ? UCListItemPrivate::get(static_cast<UCListItem*>(listItem))->contentMoving : false;
 }
 
 /*!
