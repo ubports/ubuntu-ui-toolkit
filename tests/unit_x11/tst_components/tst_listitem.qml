@@ -59,7 +59,7 @@ Item {
             width: parent.width
             color: "blue"
             leadingActions: leading
-            trailingActions: leading
+            trailingActions: trailing
             Item {
                 id: bodyItem
                 anchors.fill: parent
