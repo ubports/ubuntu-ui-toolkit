@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.2
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 /*
   This component is the holder of the ListItem options.
@@ -25,7 +25,7 @@ Item {
     width: optionsRow.childrenRect.width
 
     // for testing
-    objectName: "ListItemPanel"
+    objectName: "ListItemPanel" + (leadingPanel ? "Leading" : "Trailing")
 
     /*
       Property holding the ListItem's contentItem instance
@@ -34,16 +34,11 @@ Item {
     /*
       Specifies whether the panel is used to visualize leading or trailing options.
       */
-    property bool leadingPanel: false
+    property bool leadingPanel: panel.ListItemActions.status == panel.ListItemActions.Leading
     /*
       The delegate to be used to visualize the options
       */
     property Component delegate
-
-    /*
-      Actions
-      */
-    property var actionList
 
     anchors {
         left: contentItem ? (leadingPanel ? undefined : contentItem.right) : undefined
@@ -53,9 +48,15 @@ Item {
     }
 
     Rectangle {
-        anchors.fill: parent
+        objectName: "panel_background"
+        anchors {
+            fill: parent
+            // add 4 times the overshoot margins to cover the background when tugged
+            leftMargin: leadingPanel ? -units.gu(4 * panel.ListItemActions.overshoot) : 0
+            rightMargin: leadingPanel ? 0 : -units.gu(4 * panel.ListItemActions.overshoot)
+        }
         // FIXME: use Palette colors instead when available
-        color: leadingPanel ? UbuntuColors.red : "white"
+        color: (leadingPanel ? UbuntuColors.red : "white")
     }
 
     Row {
