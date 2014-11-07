@@ -242,7 +242,7 @@ Item {
                 {tag: "TextField click on selection", input: textField, selectChars: 10, clickPos: Qt.point(10, textField.height / 2)},
                 {tag: "TextArea click on selection", input: textArea, selectChars: 40, clickPos: Qt.point(20, 20)},
                 {tag: "TextField click beside selection", input: textField, selectChars: 5, clickPos: Qt.point(textField.width / 2, textField.height / 2)},
-                {tag: "TextArea click beside selection", input: textArea, selectChars: 5, clickPos: Qt.point(textArea.width / 2, textArea.height / 2)},
+                {tag: "TextArea click beside selection", input: textArea, selectChars: 1, clickPos: Qt.point(textArea.width / 2, textArea.height / 2)},
             ];
         }
         function test_clear_selection_on_click(data) {
