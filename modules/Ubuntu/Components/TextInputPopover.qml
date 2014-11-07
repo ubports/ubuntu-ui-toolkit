@@ -26,6 +26,7 @@ Popover {
         Action {
             text: i18n.dtr('ubuntu-ui-toolkit', "Select All")
             iconName: "edit-select-all"
+            enabled: target.text !== ""
             visible: target && target.selectedText === ""
             onTriggered: target.selectAll()
         },
