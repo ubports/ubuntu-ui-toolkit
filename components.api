@@ -373,6 +373,7 @@ PopupBase
     function show()
     function hide()
     function __makeInvisible()
+    function updatePosition()
 PopupBase 0.1 1.0
 OrientationHelper
     property Item dismissArea
