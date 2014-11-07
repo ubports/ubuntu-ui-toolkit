@@ -35,7 +35,7 @@ Popover {
             iconName: "edit-cut"
             // If paste/editing is not possible, then disable also "Cut" operation
             // It is applicable for ReadOnly's TextFields and TextAreas
-            enabled: target && target.selectedText !== "" && target.canPaste
+            enabled: target && target.selectedText !== "" && !target.readOnly
             visible: target.selectedText !== ""
             onTriggered: {
                 PopupUtils.close(popover);
