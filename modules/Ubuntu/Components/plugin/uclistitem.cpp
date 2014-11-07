@@ -58,7 +58,6 @@ UCListItemSnapAnimator::~UCListItemSnapAnimator()
 {
     // make sure we cannot animate anymore, for safety
     item = 0;
-    qDebug() << "DESTROY ANIMATOR";
 }
 
 void UCListItemSnapAnimator::setCustomAnimation(QQuickPropertyAnimation *animation)
@@ -603,7 +602,7 @@ void UCListItemPrivate::setTugged(bool tugged)
     }
 }
 
-// sets the tugged flag but also grabs the panels from the leading/trailing actions
+// grabs the panels from the leading/trailing actions and disables all ascending flickables
 bool UCListItemPrivate::grabPanel(UCListItemActions *actionsList, bool isTugged)
 {
     Q_Q(UCListItem);
@@ -648,7 +647,8 @@ void UCListItemPrivate::update()
     q->update();
 }
 
-void UCListItemPrivate::clampX(qreal &x, qreal dx)
+// clamps the X value and moves the contentItem to the new X value
+void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
 {
     UCListItemActionsPrivate *leading = UCListItemActionsPrivate::get(leadingActions);
     UCListItemActionsPrivate *trailing = UCListItemActionsPrivate::get(trailingActions);
@@ -961,7 +961,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         if (dx) {
             d->setContentMoved(true);
             // clamp X into allowed dragging area
-            d->clampX(x, dx);
+            d->clampAndMoveX(x, dx);
             // block flickable
             d->setTugged(true);
             d->contentItem->setX(x);

@@ -53,7 +53,7 @@ public:
     void listenToRebind(bool listen);
     void resize();
     void update();
-    void clampX(qreal &x, qreal dx);
+    void clampAndMoveX(qreal &x, qreal dx);
 
     bool pressed:1;
     bool highlightColorChanged:1;
