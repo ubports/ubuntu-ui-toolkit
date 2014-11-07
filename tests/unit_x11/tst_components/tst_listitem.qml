@@ -51,7 +51,9 @@ Item {
         actions: [
             stockAction,
         ]
-        delegate: Item {
+        delegate: Rectangle {
+            width: units.gu(10)
+            color: "green"
             objectName: "custom_delegate"
         }
     }
@@ -359,8 +361,8 @@ Item {
             listView.positionViewAtBeginning();
             var item = findChild(listView, "listItem0");
             flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
-            verify(panelItem(trailing), "Panel is not visible");
-            var custom = findChild(panelItem(trailing), "custom_delegate");
+            verify(panelItem(item, "Trailing"), "Panel is not visible");
+            var custom = findChild(panelItem(item, "Trailing"), "custom_delegate");
             verify(custom, "Custom delegate not in use");
             // cleanup
             rebound(item);
