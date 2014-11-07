@@ -39,8 +39,10 @@ UCListItemAttachedPrivate::~UCListItemAttachedPrivate()
     // clear property change objects
     Q_Q(UCListItemAttached);
     Q_FOREACH(const Record &record, list) {
-        QObject::disconnect(record.flickable.data(), &QQuickFlickable::movementStarted,
-                         q, &UCListItemAttached::unbindItem);
+        if (record.flickable.data()) {
+            QObject::disconnect(record.flickable.data(), &QQuickFlickable::movementStarted,
+                                q, &UCListItemAttached::unbindItem);
+        }
         // deleting PropertyChange will restore the saved property
         // to its original binding/value
         delete record.interactive;
