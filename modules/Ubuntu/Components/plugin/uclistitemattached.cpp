@@ -21,8 +21,16 @@
 #include "propertychange_p.h"
 #include <QtQuick/private/qquickflickable_p.h>
 
+/*
+ * The properties are attached to the ListItem's parent item or to its closest
+ * Flickable parent, when embedded in ListView or Flickable. There will be only
+ * one attached property per Flickable for all embedded child ListItems, enabling
+ * in this way the controlling of the interactive flag of the Flickable and all
+ * its ascendant Flickables.
+ */
 UCListItemAttachedPrivate::UCListItemAttachedPrivate(UCListItemAttached *qq)
     : q_ptr(qq)
+    , globalDisabled(false)
 {
 }
 
@@ -30,10 +38,11 @@ UCListItemAttachedPrivate::~UCListItemAttachedPrivate()
 {
     // clear property change objects
     Q_Q(UCListItemAttached);
-    q->disableInteractive(false);
     Q_FOREACH(const Record &record, list) {
         QObject::disconnect(record.flickable.data(), &QQuickFlickable::movementStarted,
                          q, &UCListItemAttached::unbindItem);
+        // deleting PropertyChange will restore the saved property
+        // to its original binding/value
         delete record.interactive;
     }
 }
@@ -75,20 +84,21 @@ UCListItemAttached::~UCListItemAttached()
 bool UCListItemAttached::listenToRebind(UCListItem *item, bool listen)
 {
     // we cannot bind the item until we have an other one bount
+    bool result = false;
     Q_D(UCListItemAttached);
     if (listen) {
         if (d->bountItem.isNull() || (d->bountItem == item)) {
             d->bountItem = item;
-            return true;
+            result = true;
         }
-        return false;
     } else if (d->bountItem == item) {
         d->bountItem.clear();
-        return true;
+        result = true;
     }
-    return false;
+    return result;
 }
 
+// reports true if any of the ascendant flickables is moving
 bool UCListItemAttached::isMoving()
 {
     Q_D(UCListItemAttached);
@@ -100,15 +110,40 @@ bool UCListItemAttached::isMoving()
     return false;
 }
 
+// returns true if the given ListItem is bount to listen on moving changes
 bool UCListItemAttached::isBountTo(UCListItem *item)
 {
     Q_D(UCListItemAttached);
     return d->bountItem == item;
 }
 
-void UCListItemAttached::disableInteractive(bool disable)
+/*
+ * Disable/enable interactive flag for the ascendant flickables. The item is used
+ * to detect whether the sam item is trying to enable the flickables which disabled
+ * it before. The enabled/disabled states are not equivalent to the enabled/disabled
+ * state of the interactive flag.
+ * When disabled, always the last item disabling will be kept as active disabler,
+ * and only the active disabler can enable (restore) the interactive flag state.
+ */
+void UCListItemAttached::disableInteractive(UCListItem *item, bool disable)
 {
     Q_D(UCListItemAttached);
+    if ((d->globalDisabled && disable) || (!d->globalDisabled && disable)) {
+        // disabling or re-disabling
+        d->disablerItem = item;
+        if (d->globalDisabled == disable) {
+            // was already disabled, leave
+            return;
+        }
+        d->globalDisabled = disable;
+    } else if (d->globalDisabled && !disable && d->disablerItem == item) {
+        // the one disabled it will enable
+        d->globalDisabled = disable;
+        d->disablerItem.clear();
+    } else {
+        // none of the above, leave
+        return;
+    }
     Q_FOREACH(const UCListItemAttachedPrivate::Record &record, d->list) {
         if (disable) {
             PropertyChange::setValue(record.interactive, false);

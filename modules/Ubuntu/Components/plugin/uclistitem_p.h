@@ -80,8 +80,10 @@ public:
     };
 
     UCListItemAttached *q_ptr;
+    bool globalDisabled;
     QList<Record> list;
     QPointer<UCListItem> bountItem;
+    QPointer<UCListItem> disablerItem;
 };
 
 class UCListItemDivider : public QObject

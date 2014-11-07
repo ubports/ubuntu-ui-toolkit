@@ -96,7 +96,7 @@ public:
     ~UCListItemAttached();
 
     bool listenToRebind(UCListItem *item, bool listen);
-    void disableInteractive(bool disable);
+    void disableInteractive(UCListItem *item, bool disable);
     bool isMoving();
     bool isBountTo(UCListItem *item);
 
