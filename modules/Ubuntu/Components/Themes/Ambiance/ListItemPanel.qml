@@ -87,8 +87,8 @@ Item {
                 action: modelData
                 visible: action.visible
                 enabled: action.enabled
-                opacity: enabled ? 1.0 : 0.5
-                width: (!visible) ?
+                opacity: action.enabled ? 1.0 : 0.5
+                width: (!action.visible) ?
                            0 : MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
                 anchors {
                     top: parent.top
