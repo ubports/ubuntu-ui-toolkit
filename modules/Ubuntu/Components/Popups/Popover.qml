@@ -187,10 +187,6 @@ PopupBase {
         visible = false;
     }
 
-    function updatePosition() {
-        internal.updatePosition();
-    }
-
     QtObject {
         id: internal
         property bool portrait: width < height
