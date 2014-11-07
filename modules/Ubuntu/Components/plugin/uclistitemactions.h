@@ -50,6 +50,7 @@ public:
 
 Q_SIGNALS:
     void delegateChanged();
+    void statusChanged(Status status);
 
 private:
     Q_DECLARE_PRIVATE(UCListItemActions)
