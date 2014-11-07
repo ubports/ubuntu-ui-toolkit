@@ -56,7 +56,7 @@ Item {
             width: cursorWidth
             // FIXME: Extend the palette and use palette values here
             color: UbuntuColors.blue
-            visible: blinkTimer.timerShowCursor
+            visible: blinkTimer.timerShowCursor || !blinkTimer.running
             Timer {
                 id: blinkTimer
                 interval: cursorStyle.cursorVisibleTimeout

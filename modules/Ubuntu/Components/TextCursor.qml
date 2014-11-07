@@ -71,7 +71,12 @@ Ubuntu.StyledItem {
             }
         }
         onTextModified: typing = true
-        onTap: typing = false
+        onTap: {
+            typing = false
+            if (handler.popover != null) {
+                PopupUtils.close(handler.popover);
+            }
+        }
     }
 
     function openPopover() {
@@ -90,9 +95,20 @@ Ubuntu.StyledItem {
         var component = handler.main.popover;
         if (component === undefined)
             component = Qt.resolvedUrl("TextInputPopover.qml");
-        var popup = PopupUtils.open(component, cursorItem, {
-            "target": handler.main
-        });
+
+        var popup;
+        if (fakeCursor.visible) {
+            popup = PopupUtils.open(component, cursorItem, {
+                "target": handler.main,
+            });
+        } else {
+            // if the cursor is out of the visible viewport, anchor the
+            // contextual menu to the input field
+            popup = PopupUtils.open(component, handler.main, {
+                "target": handler.main,
+            });
+            cursorItem.Component.onDestruction.connect(popup.__closePopup);
+        }
         contextMenuVisible = true;
         popup.onVisibleChanged.connect(contextMenuHidden.bind(undefined, popup));
         // do not grab focus!
@@ -143,24 +159,8 @@ Ubuntu.StyledItem {
         contextMenuVisible = false
     }
 
-    function updatePopoverOnMovement() {
-        if (handler.popover) {
-            if (handler.main.selectedText == "") {
-                PopupUtils.close(handler.popover)
-            } else {
-                handler.popover.updatePosition();
-            }
-        }
-    }
-
-    onXChanged: {
-        updatePopoverOnMovement();
-        if (!draggedItemMouseArea.pressed) draggedItem.moveToCaret()
-    }
-    onYChanged: {
-        updatePopoverOnMovement();
-        if (!draggedItemMouseArea.pressed) draggedItem.moveToCaret()
-    }
+    onXChanged: if (!draggedItemMouseArea.pressed) draggedItem.moveToCaret()
+    onYChanged: if (!draggedItemMouseArea.pressed) draggedItem.moveToCaret()
     Component.onCompleted: draggedItem.moveToCaret()
 
     //dragged item
@@ -271,6 +271,17 @@ Ubuntu.StyledItem {
                     dragAmountY = amount;
                     draggedItem.positionCaret()
                 }
+            }
+        }
+
+        onDragActiveChanged: {
+            // close contextual menu when dragging and reopen it at the end of the drag
+            if (dragActive) {
+                if (handler.popover != null) {
+                    PopupUtils.close(handler.popover);
+                }
+            } else {
+                handler.pressAndHold(-1);
             }
         }
     }

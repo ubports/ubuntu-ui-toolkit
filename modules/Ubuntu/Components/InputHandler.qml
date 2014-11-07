@@ -497,8 +497,6 @@ MultiPointTouchArea {
                                 );
                     moveSelectionCursor(selectionEndCursor);
                 }
-                // ensure that a popover is shown when text is selected
-                inputHandler.pressAndHold(inputHandler.input.cursorPosition);
             } else {
                 if (selectionStartCursor) {
                     selectionStartCursor.destroy();
