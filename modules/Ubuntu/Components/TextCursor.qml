@@ -192,7 +192,10 @@ Ubuntu.StyledItem {
             }
             Ubuntu.Mouse.forwardTo: [dragger]
             Ubuntu.Mouse.onClicked: openPopover()
-            Ubuntu.Mouse.onPressAndHold: handler.main.selectWord()
+            Ubuntu.Mouse.onPressAndHold: {
+                handler.main.selectWord();
+                handler.pressAndHold(-1);
+            }
             Ubuntu.Mouse.onDoubleClicked: handler.main.selectWord()
             Ubuntu.Mouse.clickAndHoldThreshold: units.gu(2)
             Ubuntu.Mouse.enabled: enabled
