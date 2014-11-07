@@ -873,8 +873,8 @@ plugins.qmltypes
     Property { name: "pressed"; type: "bool"; isReadonly: true }
     Property { name: "color"; type: "QColor" }
     Property { name: "highlightColor"; type: "QColor" }
-    Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-    Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
+    Property { name: "listItemData"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
     Property { name: "snapAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
     Property { name: "moving"; type: "bool"; isReadonly: true }
     Property { name: "actionsDelegate"; type: "QQmlComponent"; isPointer: true }
