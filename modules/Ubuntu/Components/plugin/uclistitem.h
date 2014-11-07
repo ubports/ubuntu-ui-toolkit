@@ -23,6 +23,8 @@
 class UCListItemContent;
 class UCListItemDivider;
 class UCListItemActions;
+class UCListItemAttached;
+class QQuickPropertyAnimation;
 class UCListItemPrivate;
 class UCListItem : public UCStyledItemBase
 {
@@ -36,11 +38,15 @@ class UCListItem : public UCStyledItemBase
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor NOTIFY highlightColorChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
-    Q_PRIVATE_PROPERTY(d_func(), bool moving READ isMoving NOTIFY movingChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQuickPropertyAnimation *snapAnimation READ snapAnimation WRITE setSnapAnimation NOTIFY snapAnimationChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool moving READ isMoving NOTIFY movingChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlComponent *actionsDelegate READ actionsDelegate WRITE setActionsDelegate NOTIFY actionsDelegateChanged)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
+
+    static UCListItemAttached *qmlAttachedProperties(QObject *owner);
 
     QQuickItem *contentItem() const;
     UCListItemDivider *divider() const;
@@ -71,11 +77,13 @@ Q_SIGNALS:
     void colorChanged();
     void highlightColorChanged();
     void childrenChanged();
+    void snapAnimationChanged();
     void movingChanged();
+    void actionsDelegateChanged();
 
     void clicked();
-    void movingStarted();
-    void movingEnded();
+    void movementStarted();
+    void movementEnded();
 
 public Q_SLOTS:
 
@@ -83,10 +91,31 @@ private:
     Q_DECLARE_PRIVATE(UCListItem)
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
-    Q_PRIVATE_SLOT(d_func(), void _q_updateColors())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateThemedData())
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
-    Q_PRIVATE_SLOT(d_func(), void _q_completeRebinding())
+};
+
+QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
+
+class UCListItemAttachedPrivate;
+class UCListItemAttached : public QObject
+{
+    Q_OBJECT
+public:
+    UCListItemAttached(QObject *owner);
+    ~UCListItemAttached();
+
+    bool listenToRebind(UCListItem *item, bool listen);
+    void disableInteractive(UCListItem *item, bool disable);
+    bool isMoving();
+    bool isBountTo(UCListItem *item);
+
+private Q_SLOTS:
+    void unbindItem();
+private:
+    Q_DECLARE_PRIVATE(UCListItemAttached)
+    QScopedPointer<UCListItemAttachedPrivate> d_ptr;
 };
 
 #endif // UCLISTITEM_H

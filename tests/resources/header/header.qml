@@ -19,8 +19,8 @@ import Ubuntu.Components 1.1
 
 MainView {
     id: mainView
-    width: units.gu(40)
-    height: units.gu(50)
+    width: units.gu(50)
+    height: units.gu(70)
     useDeprecatedToolbar: false
 
     PageStack {
@@ -32,6 +32,21 @@ MainView {
             Tab {
                 title: "Colors"
                 page: Page {
+                    head.actions: [
+                        Action {
+                            iconName: "close"
+                            text: "one"
+                        },
+                        Action {
+                            iconName: "close"
+                            text: "two"
+                        },
+                        Action {
+                            iconName: "close"
+                            text: "three"
+                        }
+                    ]
+
                     Column {
                         height: childrenRect.height
                         width: parent.width - units.gu(8)

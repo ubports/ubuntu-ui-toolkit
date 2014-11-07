@@ -63,7 +63,7 @@ Item {
             width: parent.width
             color: "blue"
             leadingActions: leading
-            trailingActions: leading
+            trailingActions: trailing
             Item {
                 id: bodyItem
                 anchors.fill: parent
@@ -90,7 +90,7 @@ Item {
 
         SignalSpy {
             id: movingSpy
-            signalName: "movingEnded"
+            signalName: "movementEnded"
         }
 
         SignalSpy {
@@ -105,15 +105,24 @@ Item {
             target: testItem;
         }
 
+        SignalSpy {
+            id: interactiveSpy
+            signalName: "interactiveChanged"
+        }
+
         function panelItem(actionList) {
             return findInvisibleChild(actionList, "ListItemPanel");
         }
 
-        function rebound(item) {
-            movingSpy.target = item;
+        function rebound(item, watchTarget) {
+            if (watchTarget === undefined) {
+                watchTarget = item;
+            }
+
+            movingSpy.target = watchTarget;
             movingSpy.clear();
             mouseClick(item, centerOf(item).x, centerOf(item).y);
-            if (item.moving) {
+            if (watchTarget.moving) {
                 movingSpy.wait();
             }
             movingSpy.target = null;
@@ -132,7 +141,9 @@ Item {
             // make sure we collapse
             mouseClick(defaults, 0, 0)
             movingSpy.target = null;
-            // make sure all events are processed
+            movingSpy.clear();
+            interactiveSpy.target = null;
+            interactiveSpy.clear();
         }
 
         function test_0_defaults() {
@@ -147,6 +158,9 @@ Item {
             fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
+            compare(defaults.snapAnimation, null, "No custom animation is set by default");
+            compare(defaults.moving, false, "default is not moving");
+            verify(defaults.actionsDelegate == null, "ActionsDelegate is set first time is tugged.");
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no options set.");
@@ -192,6 +206,8 @@ Item {
             }
             compare(listItem.pressed, false, "Item is pressed still!");
             mouseRelease(listItem, listItem.width / 2, dy);
+            // dismiss
+            rebound(listItem);
         }
         function test_touch_click_on_listitem() {
             var listItem = findChild(listView, "listItem0");
@@ -208,6 +224,8 @@ Item {
             compare(listItem.pressed, false, "Item is pressed still!");
             // cleanup, wait few milliseconds to avoid dbl-click collision
             TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
+            // dismiss
+            rebound(listItem);
         }
 
         function test_background_height_change_on_divider_visible() {
@@ -230,12 +248,14 @@ Item {
         }
         function test_touch_tug_options(data) {
             listView.positionViewAtBeginning();
+            movingSpy.target = data.item;
+            wait(2000)
             if (data.mouse) {
                 flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
-            waitForRendering(data.item, 400);
+            movingSpy.wait();
             if (data.positiveDirection) {
                 verify(data.item.contentItem.x > 0, data.tag + " options did not show up");
             } else {
@@ -258,15 +278,16 @@ Item {
         }
         function test_rebound_when_pressed_outside_or_clicked(data) {
             listView.positionViewAtBeginning();
+            movingSpy.target = data.item;
             if (data.mouse) {
                 flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
-            waitForRendering(data.item, 400);
+            movingSpy.wait();
             verify(data.item.contentItem.x != 0, "The component wasn't tugged!");
             // dismiss
-            rebound(data.item);
+            rebound(data.clickOn, data.item)
         }
 
         function test_listview_not_interactive_while_tugged_data() {
@@ -281,15 +302,18 @@ Item {
         }
         function test_listview_not_interactive_while_tugged(data) {
             listView.positionViewAtBeginning();
+            movingSpy.target = data.item;
+            interactiveSpy.target = listView;
             if (data.mouse) {
                 flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
-            waitForRendering(data.item, 800);
-            compare(listView.interactive, false, "The ListView is still interactive!");
+            movingSpy.wait();
+            compare(listView.interactive, true, "The ListView is still non-interactive!");
+            compare(interactiveSpy.count, 2, "Less/more times changed!");
             // dismiss
-            rebound(data.item);
+            rebound(data.clickOn, data.item);
         }
 
         function test_selecting_action_rebounds_data() {
@@ -301,17 +325,18 @@ Item {
         }
         function test_selecting_action_rebounds(data) {
             listView.positionViewAtBeginning();
+            movingSpy.target = data.item;
             if (data.mouse) {
                 flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
-            waitForRendering(data.item, 800);
+            movingSpy.wait();
             var selectedOption = findChild(panelItem(data.actions), data.select);
             verify(selectedOption, "Cannot select option " + data.select);
 
             // dismiss
-            movingSpy.target = data.item;
+            movingSpy.clear();
             if (data.mouse) {
                 mouseClick(selectedOption, centerOf(selectedOption).x, centerOf(selectedOption).y);
             } else {
