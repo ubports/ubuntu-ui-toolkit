@@ -22,6 +22,7 @@
 
 class QQmlComponent;
 class UCAction;
+class UCListItemActionsAttached;
 class UCListItemActionsPrivate;
 class UCListItemActions : public QObject
 {
@@ -30,9 +31,17 @@ class UCListItemActions : public QObject
     Q_PROPERTY(QQmlListProperty<UCAction> actions READ actions CONSTANT)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data)
     Q_CLASSINFO("DefaultProperty", "data")
+    Q_ENUMS(Status)
 public:
+    enum Status {
+        Disconnected,
+        Leading,
+        Trailing
+    };
     explicit UCListItemActions(QObject *parent = 0);
     ~UCListItemActions();
+
+    static UCListItemActionsAttached *qmlAttachedProperties(QObject *owner);
 
     QQmlComponent *delegate() const;
     void setDelegate(QQmlComponent *delegate);
@@ -41,11 +50,59 @@ public:
 
 Q_SIGNALS:
     void delegateChanged();
+    void statusChanged(Status status);
 
 private:
     Q_DECLARE_PRIVATE(UCListItemActions)
-    Q_PRIVATE_SLOT(d_func(), void _q_handlePanelDrag())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateDraggedOffset())
     Q_PRIVATE_SLOT(d_func(), void _q_handlePanelWidth())
 };
+
+class UCListItemActionsAttached : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(UCListItemActions *container READ container NOTIFY containerChanged)
+    Q_PROPERTY(UCListItem *listItem READ listItem NOTIFY listItemChanged)
+    Q_PROPERTY(int listItemIndex READ listItemIndex NOTIFY listItemIndexChanged)
+    Q_PROPERTY(qreal offset READ offset NOTIFY offsetChanged)
+    Q_PROPERTY(UCListItemActions::Status status READ status NOTIFY statusChanged)
+    Q_PROPERTY(bool dragging READ dragging NOTIFY draggingChanged)
+    Q_PROPERTY(qreal overshoot READ overshoot NOTIFY overshootChanged)
+public:
+    UCListItemActionsAttached(QObject *parent = 0);
+    ~UCListItemActionsAttached();
+    void setList(UCListItemActions *list);
+    void connectListItem(UCListItem *item, bool connect);
+
+    UCListItemActions *container() const
+    {
+        return m_container.data();
+    }
+    UCListItem *listItem();
+    int listItemIndex();
+    bool dragging();
+    qreal offset();
+    UCListItemActions::Status status();
+    qreal overshoot();
+
+
+public Q_SLOTS:
+    void snapToPosition(qreal position);
+
+Q_SIGNALS:
+    void containerChanged();
+    void listItemChanged();
+    void listItemIndexChanged();
+    void offsetChanged();
+    void statusChanged();
+    void draggingChanged();
+    void overshootChanged();
+
+private:
+    QPointer<UCListItemActions> m_container;
+    friend class UCListItemAction;
+};
+
+QML_DECLARE_TYPEINFO(UCListItemActions, QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // UCLISTITEMACTIONS_H
