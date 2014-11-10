@@ -27,7 +27,7 @@
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
 #include <QtQuick/private/qquickanimation_p.h>
-#include "ucubuntuanimation.h"
+#include "uclistitemstyle.h"
 
 #define MIN(x, y)           ((x < y) ? x : y)
 #define MAX(x, y)           ((x > y) ? x : y)
@@ -125,22 +125,11 @@ void UCListItemSnapAnimator::snapIn()
 
 QQuickPropertyAnimation *UCListItemSnapAnimator::getDefaultAnimation()
 {
-    if (defaultAnimation) {
-        return defaultAnimation;
-    }
-
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    // create rebound animation
-    UCUbuntuAnimation animationCodes;
-    defaultAnimation = new QQuickPropertyAnimation(this);
-    QEasingCurve easing(QEasingCurve::OutElastic);
-    easing.setPeriod(0.5);
-    defaultAnimation->setEasing(easing);
-    defaultAnimation->setDuration(animationCodes.BriskDuration());
-    defaultAnimation->setTargetObject(listItem->contentItem);
-    defaultAnimation->setProperty("x");
-    defaultAnimation->setAlwaysRunToEnd(true);
-    return defaultAnimation;
+    if (!listItem->styleItem && listItem->loadStyle()) {
+        listItem->initStyleItem();
+    }
+    return listItem->styleItem ? listItem->styleItem->m_snapAnimation : 0;
 }
 
 /******************************************************************************
@@ -305,7 +294,7 @@ UCListItemPrivate::UCListItemPrivate()
     , suppressClick(false)
     , contentMoving(false)
     , ready(false)
-    , customPanel(false)
+    , customStyle(false)
     , customColor(false)
     , xAxisMoveThresholdGU(1.5)
     , overshootGU(2)
@@ -318,7 +307,8 @@ UCListItemPrivate::UCListItemPrivate()
     , trailingActions(0)
     , snap(0)
     , animator(0)
-    , actionsPanel(0)
+    , styleComponent(0)
+    , styleItem(0)
 {
 }
 UCListItemPrivate::~UCListItemPrivate()
@@ -357,7 +347,7 @@ void UCListItemPrivate::_q_updateThemedData()
         highlightColor = getPaletteColor("selected", "background");
         q->update();
     }
-    updateActionsPanel();
+    loadStyle();
 }
 
 void UCListItemPrivate::_q_rebound()
@@ -410,136 +400,78 @@ void UCListItemPrivate::setContentMoved(bool move)
 }
 
 /*!
- * \qmlproperty QQmlComponent ListItem::actionsDelegate
- * The property configures the component visualizing and triggering the actions is
- * created from. The default delegate is taken from the current theme.
- *
- * Custom delegates are responsible to visualize and handle snapping and triggering
- * of the actions listed in a given action list. The same delegate must handle both
- * leading and trailing actions at the same time. The actions amongst other action
- * list related properties can be accessed through the \l ListItemActions attached
- * properties.
- *
- * The following example illustrates how a custom panel can be implemented. The
- * actions are triggered each time the tug is stopped. There will be only one
- * action shown depending how far the content is tugged, and the color of the
- * panel is changing depending on which action is shown.
- * \qml
- * import QtQuick 2.2
- * import Ubuntu.Components 1.2
- *
- * UbuntuListView {
- *     model: 100
- *     delegate: ListItem {
- *         StandardLayout {
- *             captions.title.text: "Caption (title text)"
- *             details {
- *                 title.text: "Text"
- *                 subtitle.text: "Text"
- *             }
- *         }
- *         trailingActions: trailing
- *         actionsDelegate: Rectangle {
- *             id: panel
- *             property bool leadingPanel: ListItemActions.status == ListItemActions.Leading
- *             property Item contentItem: (ListItemActions.container && ListItemActions.container.connectedItem) ?
- *                                            ListItemActions.container.connectedItem.contentItem : null
- *             anchors {
- *                 left: contentItem ? contentItem.right : undefined
- *                 top: contentItem ? contentItem.top : undefined
- *                 bottom: contentItem ? contentItem.bottom : undefined
- *             }
- *             width: contentItem ? (contentItem.width - units.gu(10)) : 0
- *             color: colors[visibleAction]
- *
- *             property real slotSize: panel.width / ListItemActions.container.actions.length
- *             // give a small margin so we don't jump to the next item
- *             property int visibleAction: (slotSize > 0) ?
- *                      MathUtils.clamp((ListItemActions.offsetVisible - 1) / slotSize, 0, 3) : 0
- *             property var colors: [UbuntuColors.blue, UbuntuColors.lightGrey, UbuntuColors.coolGrey]
- *
- *             Item {
- *                 anchors {
- *                     left: parent.left
- *                     top: parent.top
- *                     bottom: parent.bottom
- *                 }
- *                 width: height
- *                 Icon {
- *                     width: units.gu(3)
- *                     height: width
- *                     anchors.centerIn: parent
- *                     color: "white"
- *                     name: panel.ListItemActions.container.actions[visibleAction].iconName
- *                 }
- *             }
- *
- *             ListItemActions.onDraggingChanged: {
- *                 if (!ListItemActions.dragging) {
- *                     // snap first, then trigger
- *                     ListItemActions.snapToPosition((visibleAction + 1) * slotSize);
- *                     panel.ListItemActions.container.actions[visibleAction].triggered(panel.ListItemActions.itemIndex)
- *                 }
- *             }
- *         }
- *     }
- *     ListItemActions {
- *         id: trailing
- *         actions: [
- *             Action {
- *                 iconName: "alarm-clock"
- *                 onTriggered: print(iconName, "triggered", value)
- *             },
- *             Action {
- *                 iconName: "camcorder"
- *                 onTriggered: print(iconName, "triggered", value)
- *             },
- *             Action {
- *                 iconName: "stock_website"
- *                 onTriggered: print(iconName, "triggered", value)
- *             }
- *         ]
- *     }
- * }
- * \endqml
+ * \qmlproperty Component ListItem::style
+ * Holds the style of the component defining the components visualizing the leading/
+ * trailing actions, selection and dragging mode handlers as well as different
+ * animations. The component does not assume any visuals present in the style,
+ * and will load its content only when requested, i.e. either of the mentioned
+ * components are visualized.
  */
-QQmlComponent *UCListItemPrivate::actionsDelegate() const
+QQmlComponent *UCListItemPrivate::style() const
 {
-    return actionsPanel;
+    return styleComponent;
 }
-void UCListItemPrivate::setActionsDelegate(QQmlComponent *delegate)
+void UCListItemPrivate::setStyle(QQmlComponent *delegate)
 {
-    if (actionsPanel == delegate) {
+    if (styleComponent == delegate) {
         return;
     }
+    Q_Q(UCListItem);
     // make sure we're rebound before we change the panel component
     promptRebound();
-    if (!customPanel) {
-        // delete theme created delegate
-        delete actionsPanel;
-        actionsPanel = 0;
+    if (styleItem) {
+        delete styleItem;
+        styleItem = 0;
+        Q_EMIT q->__styleInstanceChanged();
     }
-    actionsPanel = delegate;
-    customPanel = (actionsPanel == 0);
-    Q_Q(UCListItem);
-    if (ready && !customPanel) {
-        // need to get the default one from the theme
-        actionsPanel = UCTheme::instance().createStyleComponent("ListItemPanel.qml", q);
-    }
-    Q_EMIT q->actionsDelegateChanged();
+    delete styleComponent;
+    customStyle = (delegate == 0);
+    styleComponent = delegate;
+    loadStyle();
+    Q_EMIT q->styleChanged();
 }
 
 // update themed components
-void UCListItemPrivate::updateActionsPanel()
+bool UCListItemPrivate::loadStyle()
 {
     if (!ready) {
+        return false;
+    }
+    if (!customStyle && !styleComponent) {
+        Q_Q(UCListItem);
+        if (styleItem) {
+            delete styleItem;
+            styleItem = 0;
+            Q_EMIT q->__styleInstanceChanged();
+        }
+        delete styleComponent;
+        styleComponent = UCTheme::instance().createStyleComponent("ListItemStyle.qml", q);
+    }
+    return (styleComponent != NULL);
+}
+// creates the style item
+void UCListItemPrivate::initStyleItem()
+{
+    if (!styleComponent || styleItem) {
         return;
     }
-    if (!customPanel) {
-        delete actionsPanel;
-        Q_Q(UCListItem);
-        actionsPanel = UCTheme::instance().createStyleComponent("ListItemPanel.qml", q);
+    Q_Q(UCListItem);
+    QObject *object = styleComponent->beginCreate(qmlContext(q));
+    styleItem = qobject_cast<UCListItemStyle*>(object);
+    if (!styleItem) {
+        delete object;
     }
+    QQml_setParent_noEvent(styleItem, q);
+    styleComponent->completeCreate();
+}
+
+/*!
+ * \qmlproperty Item ListItem::__styleInstance
+ * \internal
+ */
+QQuickItem *UCListItemPrivate::styleInstance() const
+{
+    return styleItem;
 }
 
 // the function performs a prompt rebound on mouse release without any animation
@@ -775,6 +707,8 @@ UCListItemAttached *UCListItem::qmlAttachedProperties(QObject *owner)
 void UCListItem::componentComplete()
 {
     UCStyledItemBase::componentComplete();
+    // must load the theme!
+    Q_D(UCListItem);
     d_func()->ready = true;
 }
 
@@ -1163,6 +1097,7 @@ QQmlListProperty<QObject> UCListItem::data()
 
 /*!
  * \qmlproperty list<Item> ListItem::children
+ * \internal
  * Overloaded default property containing all the visible children of the item.
  */
 QQmlListProperty<QQuickItem> UCListItem::children()
@@ -1192,6 +1127,5 @@ void UCListItemPrivate::setSnapAnimation(QQuickPropertyAnimation *animation)
     Q_Q(UCListItem);
     Q_EMIT q->snapAnimationChanged();
 }
-
 
 #include "moc_uclistitem.cpp"
