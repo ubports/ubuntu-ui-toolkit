@@ -389,13 +389,14 @@ Item {
             movingSpy.target = data.item;
             flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
             movingSpy.wait();
+            waitForRendering(data.item, 400);
             movingSpy.clear();
             if (data.snapIn) {
                 verify(data.item.contentItem.x != 0.0, "Not snapped to be visible");
                 // cleanup
                 rebound(data.item);
             } else {
-                tryCompareFunction(function() {return data.item.contentItem.x; }, 0.0, 1000, "Not snapped back");
+                tryCompareFunction(function() { return data.item.contentItem.x; }, 0.0, 1000, "Not snapped back");
             }
         }
     }
