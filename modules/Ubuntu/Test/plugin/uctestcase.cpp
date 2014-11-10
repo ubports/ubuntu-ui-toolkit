@@ -54,8 +54,7 @@ UbuntuTestCase::UbuntuTestCase(const QString& file, QWindow* parent) : QQuickVie
 /*!
  * The number of all warnings from the point of loading the first line of QML code.
  */
-int
-UbuntuTestCase::warnings() const
+int UbuntuTestCase::warnings() const
 {
 	return m_spy->count();
 }
@@ -63,8 +62,8 @@ UbuntuTestCase::warnings() const
 /*!
  * Ignore an expected warning message created using qmlInfo.
  */
-void
-UbuntuTestCase::ignoreWarning(const QString& fileName, uint line, uint column, const QString& message, uint occurences)
+void UbuntuTestCase::ignoreWarning(const QString& fileName, uint line,
+    uint column, const QString& message, uint occurences)
 {
     for (uint i = 0; i < occurences; i++) {
         QString url(QUrl::fromLocalFile(QFileInfo(fileName).absoluteFilePath()).toEncoded());
