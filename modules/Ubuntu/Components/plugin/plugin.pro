@@ -73,7 +73,8 @@ HEADERS += plugin.h \
     uclistitem_p.h \
     uclistitemactions.h \
     uclistitemactions_p.h \
-    propertychange_p.h
+    propertychange_p.h \
+    uclistitemstyle.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -115,7 +116,8 @@ SOURCES += plugin.cpp \
     uclistitemactions.cpp \
     uclistitemactionsattached.cpp \
     uclistitemattached.cpp \
-    propertychange_p.cpp
+    propertychange_p.cpp \
+    uclistitemstyle.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp

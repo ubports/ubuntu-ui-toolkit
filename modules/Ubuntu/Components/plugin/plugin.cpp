@@ -55,6 +55,7 @@
 #include "uclistitem.h"
 #include "uclistitem_p.h"
 #include "uclistitemactions.h"
+#include "uclistitemstyle.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -175,6 +176,10 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
 {
     // initialize baseURL
     m_baseUrl = QUrl(baseUrl().toString() + '/');
+
+    // register internal styles
+    const char *styleUri = "Ubuntu.Components.Styles";
+    qmlRegisterType<UCListItemStyle, 2>(styleUri, 1, 2, "ListItemStyle");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
