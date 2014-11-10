@@ -52,6 +52,7 @@ function execute_test_cmd {
     WARNINGS=$(grep -c qwarn $_XML)
     EXCEPTIONS='tst_components_benchmark \
                 tst_tabbar.qml \
+                tst_datepicker.qml \
                 tst_qquick_image_extension \
                 tst_page.qml \
                 tst_toolbar.qml \
