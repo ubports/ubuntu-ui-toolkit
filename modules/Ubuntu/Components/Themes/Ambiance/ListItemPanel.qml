@@ -86,8 +86,8 @@ Item {
         prevX = x;
     }
     // default snapping!
-    ListItemActions.onDraggingChanged: {
-        if (ListItemActions.dragging) {
+    ListItemActions.onFlickingChanged: {
+        if (ListItemActions.flicking) {
             // the dragging got started, set prevX
             prevX = panel.x;
             return;

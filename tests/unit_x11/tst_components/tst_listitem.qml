@@ -376,15 +376,13 @@ Item {
         function test_snap_data() {
             var listItem = findChild(listView, "listItem0");
             verify(listItem, "ListItem cannot be found");
-            verify(panelItem(listItem.leadingActions), "Leading panel had not been created!");
-            verify(panelItem(listItem.trailingActions), "Trailing panel had not been created!");
 
             return [
                 // the list snaps out if the panel is dragged in > overshoot GU (hardcoded for now)
-                {tag: "Snap out leading, mouse", item: listItem, dx: units.gu(2), list: listItem.leadingActions, snap: false},
-                {tag: "Snap in leading, mouse", item: listItem, dx: units.gu(4), list: listItem.leadingActions, snap: true},
-                {tag: "Snap out trailing, mouse", item: listItem, dx: -units.gu(2), list: listItem.trailingActions, snap: false},
-                {tag: "Snap in trailing, mouse", item: listItem, dx: -units.gu(4), list: listItem.trailingActions, snap: true},
+                {tag: "Snap out leading", item: listItem, dx: units.gu(2), snapIn: false},
+                {tag: "Snap in leading", item: listItem, dx: units.gu(4), snapIn: true},
+                {tag: "Snap out trailing", item: listItem, dx: -units.gu(2), snapIn: false},
+                {tag: "Snap in trailing", item: listItem, dx: -units.gu(4), snapIn: true},
             ];
         }
         function test_snap(data) {
@@ -392,7 +390,7 @@ Item {
             flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
             movingSpy.wait();
             movingSpy.clear();
-            if (data.snap) {
+            if (data.snapIn) {
                 verify(data.item.contentItem.x != 0.0, "Not snapped to be visible");
                 // cleanup
                 rebound(data.item);
