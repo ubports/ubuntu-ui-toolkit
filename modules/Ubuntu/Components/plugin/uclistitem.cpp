@@ -130,22 +130,6 @@ QQuickPropertyAnimation *UCListItemSnapAnimator::getDefaultAnimation()
         listItem->initStyleItem();
     }
     return listItem->styleItem ? listItem->styleItem->m_snapAnimation : 0;
-//    if (defaultAnimation) {
-//        return defaultAnimation;
-//    }
-
-//    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-//    // create rebound animation
-//    UCUbuntuAnimation animationCodes;
-//    defaultAnimation = new QQuickPropertyAnimation(this);
-//    QEasingCurve easing(QEasingCurve::OutElastic);
-//    easing.setPeriod(0.5);
-//    defaultAnimation->setEasing(easing);
-//    defaultAnimation->setDuration(animationCodes.BriskDuration());
-//    defaultAnimation->setTargetObject(listItem->contentItem);
-//    defaultAnimation->setProperty("x");
-//    defaultAnimation->setAlwaysRunToEnd(true);
-//    return defaultAnimation;
 }
 
 /******************************************************************************
@@ -434,13 +418,14 @@ void UCListItemPrivate::setStyle(QQmlComponent *delegate)
     }
     Q_Q(UCListItem);
     // make sure we're rebound before we change the panel component
+    promptRebound();
     if (styleItem) {
         delete styleItem;
         styleItem = 0;
         Q_EMIT q->__styleInstanceChanged();
     }
     delete styleComponent;
-    customStyle = true;
+    customStyle = (delegate == 0);
     styleComponent = delegate;
     loadStyle();
     Q_EMIT q->styleChanged();
@@ -452,7 +437,7 @@ bool UCListItemPrivate::loadStyle()
     if (!ready) {
         return false;
     }
-    if (!customStyle) {
+    if (!customStyle && !styleComponent) {
         Q_Q(UCListItem);
         if (styleItem) {
             delete styleItem;
@@ -1142,6 +1127,5 @@ void UCListItemPrivate::setSnapAnimation(QQuickPropertyAnimation *animation)
     Q_Q(UCListItem);
     Q_EMIT q->snapAnimationChanged();
 }
-
 
 #include "moc_uclistitem.cpp"
