@@ -57,9 +57,9 @@ Rectangle {
     property bool __lightBackground: ColorUtils.luminance(Theme.palette.normal.background) > 0.85
     // use a gradient of 4 steps instead of instantiating two Rectangles for performance reasons
     gradient: Gradient {
-        GradientStop { position: 0.0; color: __lightBackground ? "#26000000" : "#26FFFFFF" }
-        GradientStop { position: 0.49; color: __lightBackground ? "#26000000" : "#26FFFFFF" }
-        GradientStop { position: 0.5; color: __lightBackground ? "#14FFFFFF" : "#14000000" }
-        GradientStop { position: 1.0; color: __lightBackground ? "#14FFFFFF" : "#14000000" }
+        GradientStop { position: 0.0; color: __lightBackground ? Qt.rgba(0, 0, 0, 0.1) : Qt.rgba(0, 0, 0, 0.4) }
+        GradientStop { position: 0.49; color: __lightBackground ? Qt.rgba(0, 0, 0, 0.1) : Qt.rgba(0, 0, 0, 0.4) }
+        GradientStop { position: 0.5; color: __lightBackground ? Qt.rgba(1, 1, 1, 0.4) : Qt.rgba(1, 1, 1, 0.1) }
+        GradientStop { position: 1.0; color: __lightBackground ? Qt.rgba(1, 1, 1, 0.4) : Qt.rgba(1, 1, 1, 0.1) }
     }
 }
