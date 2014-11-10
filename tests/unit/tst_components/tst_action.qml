@@ -131,13 +131,13 @@ TestCase {
          verify(!contains(manager.globalContext.actions, unityAction, "Unity Action cannot be registered"));
      }
 
-     function test_a_cannot_add_unity_action_to_global_context() {
+     function test_0_cannot_add_unity_action_to_global_context() {
          ignoreQMLWarning(':166:6: QML Action: Unity.Action deprecated. Please use Action from Ubuntu.Components.');
          manager.globalContext.addAction(stockUnityAction);
          verify(!contains(manager.globalContext.actions, stockUnityAction, "Unity Action cannot be registered"));
      }
 
-     function test_b_cannot_add_unity_action_to_local_context() {
+     function test_1_cannot_add_unity_action_to_local_context() {
          ignoreQMLWarning(':166:6: QML Action: Unity.Action deprecated. Please use Action from Ubuntu.Components.');
          context1.addAction(stockUnityAction);
          verify(!contains(context1.actions, stockUnityAction, "Unity Action cannot be registered"));

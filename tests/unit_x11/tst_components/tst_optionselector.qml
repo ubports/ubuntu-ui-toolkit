@@ -113,7 +113,7 @@ MainView {
              compare(selector.text, newText, "set/get");
          }
 
-         function test_a_selectedIndex() {
+         function test_0_selectedIndex() {
             compare(selector.selectedIndex, 0, "selectedIndex is 0 by default");
          }
 
