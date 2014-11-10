@@ -877,11 +877,14 @@ plugins.qmltypes
     Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
     Property { name: "snapAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
     Property { name: "moving"; type: "bool"; isReadonly: true }
+    Property { name: "flicking"; type: "bool"; isReadonly: true }
     Property { name: "style"; type: "QQmlComponent"; isPointer: true }
     Property { name: "__styleInstance"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Signal { name: "clicked" }
     Signal { name: "movementStarted" }
     Signal { name: "movementEnded" }
+    Signal { name: "flickStarted" }
+    Signal { name: "flickEnded" }
     name: "UCListItemActions"
     prototype: "QObject"
     exports: ["ListItemActions 1.2"]
@@ -899,7 +902,7 @@ plugins.qmltypes
     Property { name: "listItemIndex"; type: "int"; isReadonly: true }
     Property { name: "offset"; type: "double"; isReadonly: true }
     Property { name: "status"; type: "UCListItemActions::Status"; isReadonly: true }
-    Property { name: "dragging"; type: "bool"; isReadonly: true }
+    Property { name: "flicking"; type: "bool"; isReadonly: true }
     Property { name: "overshoot"; type: "double"; isReadonly: true }
     Method {
     name: "snapToPosition"

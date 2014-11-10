@@ -64,11 +64,11 @@ void UCListItemActionsAttached::setList(UCListItemActions *list)
 void UCListItemActionsAttached::connectListItem(UCListItem *item, bool connect)
 {
     if (connect) {
-        QObject::connect(item, &UCListItem::draggedChanged,
-                         this, &UCListItemActionsAttached::draggingChanged);
+        QObject::connect(item, &UCListItem::flickingChanged,
+                         this, &UCListItemActionsAttached::flickingChanged);
     } else {
-        QObject::disconnect(item, &UCListItem::draggedChanged,
-                            this, &UCListItemActionsAttached::draggingChanged);
+        QObject::disconnect(item, &UCListItem::flickingChanged,
+                            this, &UCListItemActionsAttached::flickingChanged);
     }
 }
 
@@ -109,12 +109,12 @@ int UCListItemActionsAttached::listItemIndex() {
 }
 
 /*!
- * \qmlattachedproperty bool ListItemActions::dragging
+ * \qmlattachedproperty bool ListItemActions::flicking
  * \readonly
- * The property notifies whether the panel is dragged or not. The property does
+ * The property notifies whether the panel is dragged/tugged or not. The property does
  * not notify the rebounding.
  */
-bool UCListItemActionsAttached::dragging()
+bool UCListItemActionsAttached::flicking()
 {
     if (m_container.isNull()) {
         return false;
@@ -124,7 +124,7 @@ bool UCListItemActionsAttached::dragging()
         return false;
     }
     QQuickItem *listItem = panelItem->parentItem();
-    return listItem ? UCListItemPrivate::get(static_cast<UCListItem*>(listItem))->dragged : false;
+    return listItem ? UCListItemPrivate::get(static_cast<UCListItem*>(listItem))->flicked : false;
 }
 
 /*!

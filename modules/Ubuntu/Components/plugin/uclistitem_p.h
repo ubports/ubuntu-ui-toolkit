@@ -64,7 +64,7 @@ public:
     bool ready:1;
     bool customStyle:1;
     bool customColor:1;
-    bool dragged:1;
+    bool flicked:1;
     qreal xAxisMoveThresholdGU;
     qreal overshootGU;
     QPointF lastPos;
@@ -89,8 +89,8 @@ public:
     QQmlListProperty<QQuickItem> children();
     bool isMoving() const;
     void setContentMoved(bool move);
-    bool isDragged() const;
-    void setDragged(bool value);
+    bool isFlicking() const;
+    void setFlicking(bool value);
     QQmlComponent *style() const;
     void setStyle(QQmlComponent *delegate);
     bool loadStyle();

@@ -40,7 +40,7 @@ class UCListItem : public UCStyledItemBase
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QQuickItem> listItemChildren READ children NOTIFY listItemChildrenChanged DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQuickPropertyAnimation *snapAnimation READ snapAnimation WRITE setSnapAnimation NOTIFY snapAnimationChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool moving READ isMoving NOTIFY movingChanged)
-    Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool dragged READ isDragged NOTIFY draggedChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool flicking READ isFlicking NOTIFY flickingChanged)
     // FIXME move these to StyledItemBase with subtheming
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlComponent *style READ style WRITE setStyle NOTIFY styleChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQuickItem *__styleInstance READ styleInstance NOTIFY __styleInstanceChanged)
@@ -82,11 +82,13 @@ Q_SIGNALS:
     void listItemChildrenChanged();
     void snapAnimationChanged();
     void movingChanged();
-    void draggedChanged();
+    void flickingChanged();
 
     void clicked();
     void movementStarted();
     void movementEnded();
+    void flickStarted();
+    void flickEnded();
 
     void styleChanged();
     void __styleInstanceChanged();

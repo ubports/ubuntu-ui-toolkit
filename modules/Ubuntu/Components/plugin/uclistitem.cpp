@@ -297,7 +297,7 @@ UCListItemPrivate::UCListItemPrivate()
     , ready(false)
     , customStyle(false)
     , customColor(false)
-    , dragged(false)
+    , flicked(false)
     , xAxisMoveThresholdGU(1.5)
     , overshootGU(2)
     , color(Qt::transparent)
@@ -403,23 +403,23 @@ void UCListItemPrivate::setContentMoved(bool move)
 }
 
 /*!
- * \qmlproperty bool dragged ListItem::dragged
+ * \qmlproperty bool ListItem::flicking
  * \readonly
  * \internal
  * Notifies the dragging/tugging event.
  */
-bool UCListItemPrivate::isDragged() const
+bool UCListItemPrivate::isFlicking() const
 {
-    return dragged;
+    return flicked;
 }
-void UCListItemPrivate::setDragged(bool value)
+void UCListItemPrivate::setFlicking(bool value)
 {
-    if (dragged == value) {
+    if (flicked == value) {
         return;
     }
-    dragged = value;
+    flicked = value;
     Q_Q(UCListItem);
-    Q_EMIT q->draggedChanged();
+    Q_EMIT q->flickingChanged();
 }
 
 /*!
@@ -865,7 +865,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             d->attachedProperties->disableInteractive(this, false);
         }
 
-        d->setDragged(false);
+        d->setFlicking(false);
         d->setContentMoved(true);
         if (!d->suppressClick) {
             Q_EMIT clicked();
@@ -912,7 +912,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         d->lastPos = event->localPos();
 
         if (dx) {
-            d->setDragged(true);
+            d->setFlicking(true);
             d->setContentMoved(true);
             // clamp X into allowed dragging area
             d->clampAndMoveX(x, dx);
