@@ -877,7 +877,8 @@ plugins.qmltypes
     Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
     Property { name: "snapAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
     Property { name: "moving"; type: "bool"; isReadonly: true }
-    Property { name: "actionsDelegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "style"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "__styleInstance"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Signal { name: "clicked" }
     Signal { name: "movementStarted" }
     Signal { name: "movementEnded" }
@@ -911,6 +912,13 @@ plugins.qmltypes
     Property { name: "rightMargin"; type: "double" }
     Property { name: "colorFrom"; type: "QColor" }
     Property { name: "colorTo"; type: "QColor" }
+    name: "UCListItemStyle"
+    prototype: "QQuickItem"
+    exports: ["Ubuntu.Components.Styles/ListItemStyle 1.2"]
+    Property { name: "actionsDelegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "selectionDelegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "dragHandlerDelegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "snapAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1", "Mouse 1.0"]
