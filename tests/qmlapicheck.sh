@@ -33,7 +33,7 @@ for i in $CPP; do
     # https://bugreports.qt-project.org/browse/QTBUG-36243
     modulePath=${i//./\/}
     pushd "$BLDDIR/../modules/${modulePath}"
-    ALARM_BACKEND=memory qmlplugindump $i 0.1 ../../ 1>> $BLDDIR/plugins.qmltypes
+    ALARM_BACKEND=memory qmlplugindump -noinstantiate $i 0.1 ../../ 1>> $BLDDIR/plugins.qmltypes
     test $? != 0 && ERRORS=1
     popd
 done
