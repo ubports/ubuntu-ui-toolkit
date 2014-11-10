@@ -28,6 +28,7 @@ class UCListItemContent;
 class UCListItemDivider;
 class UCListItemActions;
 class UCListItemSnapAnimator;
+class UCListItemStyle;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -61,7 +62,7 @@ public:
     bool suppressClick:1;
     bool contentMoving:1;
     bool ready:1;
-    bool customPanel:1;
+    bool customStyle:1;
     bool customColor:1;
     bool dragged:1;
     qreal xAxisMoveThresholdGU;
@@ -78,7 +79,10 @@ public:
     UCListItemActions *trailingActions;
     QQuickPropertyAnimation *snap;
     UCListItemSnapAnimator *animator;
-    QQmlComponent *actionsPanel;
+
+    // FIXME move these to StyledItemBase togehther with subtheming.
+    QQmlComponent *styleComponent;
+    UCListItemStyle *styleItem;
 
     // getters/setters
     QQmlListProperty<QObject> data();
@@ -87,9 +91,11 @@ public:
     void setContentMoved(bool move);
     bool isDragged() const;
     void setDragged(bool value);
-    QQmlComponent *actionsDelegate() const;
-    void setActionsDelegate(QQmlComponent *delegate);
-    void updateActionsPanel();
+    QQmlComponent *style() const;
+    void setStyle(QQmlComponent *delegate);
+    bool loadStyle();
+    void initStyleItem();
+    QQuickItem *styleInstance() const;
     QQuickPropertyAnimation *snapAnimation() const;
     void setSnapAnimation(QQuickPropertyAnimation *animation);
 };

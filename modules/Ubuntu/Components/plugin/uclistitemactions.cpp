@@ -23,6 +23,7 @@
 #include <QtQml/QQmlInfo>
 #include "ucaction.h"
 #include "ucunits.h"
+#include "uclistitemstyle.h"
 
 UCListItemActionsPrivate::UCListItemActionsPrivate()
     : QObjectPrivate()
@@ -104,11 +105,10 @@ bool UCListItemActionsPrivate::connectToListItem(UCListItemActions *actions, UCL
     }
     // no parent set or panelItem yet, proceed with panel creation
     UCListItemPrivate *pItem = UCListItemPrivate::get(listItem);
-    if (!pItem->actionsPanel) {
-        // perhaps we did not get it from the theme yet, try to fetch it
-        pItem->updateActionsPanel();
+    if (!pItem->styleItem && pItem->loadStyle()) {
+        pItem->initStyleItem();
     }
-    if (!_this->createPanelItem(pItem->actionsPanel)) {
+    if (pItem->styleItem && !_this->createPanelItem(pItem->styleItem->m_actionsDelegate)) {
         return false;
     }
 
