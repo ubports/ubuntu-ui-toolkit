@@ -137,7 +137,7 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         # Discard popover by tap
         self.pointing_device.move(
             self.textfield.globalRect.x + self.textfield.width * 0.7,
-            self.textfield.globalRect.y + self.textfield.height / 10)
+            self.textfield.globalRect.y + self.textfield.height // 10)
         self.pointing_device.click()
 
         self._assert_not_visible(objectName='text_input_contextmenu')
@@ -158,7 +158,7 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         cursor = self.main_view.select_single(
             objectName='text_cursor_style_cursorPosition')
         x, y = get_center_point(cursor)
-        self.pointing_device.drag(x, y, x + self.textfield.width / 2, y)
+        self.pointing_device.drag(x, y, x + self.textfield.width // 2, y)
         self.assert_buttons(['Select All', 'Paste'])
         self.assert_discard_popover()
 
@@ -168,8 +168,8 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         self.pointing_device.click_object(self.textfield)
         self.textfield.keyboard.type('Lorem ipsum')
         self.pointing_device.move(
-            self.textfield.globalRect.x + self.textfield.width / 8,
-            self.textfield.globalRect.y + self.textfield.height / 2)
+            self.textfield.globalRect.x + self.textfield.width // 8,
+            self.textfield.globalRect.y + self.textfield.height // 2)
         # Long press to select a word
         # FIXME: input.Mouse doesn't support long press
         # press_duration doesn't work here
