@@ -45,6 +45,8 @@ ComboButtonStyle 1.1 ComboButtonStyle.qml
 PullToRefreshStyle 1.1 PullToRefreshStyle.qml
 PageHeadStyle 1.1 PageHeadStyle.qml
 Palette 1.1 Palette.qml
+ButtonStyle 1.1 ButtonStyle.qml
+SliderStyle 1.1 SliderStyle.qml
 SwitchStyle 1.1 SwitchStyle.qml
 CheckBoxStyle 1.1 CheckBoxStyle.qml
 
