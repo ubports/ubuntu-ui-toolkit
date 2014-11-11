@@ -1,3 +1,25 @@
+ubuntu-ui-toolkit (1.1.1311+15.04.20141111-0ubuntu1) vivid; urgency=low
+
+  [ Zsombor Egri ]
+  * Zsombor Egri's "Ignore QT_IM_MODULE values like ibus, none or
+    compose." for Qt 5.3.2 specific fix.
+
+  [ Chris Gagnon ]
+  * Zsombor Egri's "Ignore QT_IM_MODULE values like ibus, none or
+    compose." for Qt 5.3.2 specific fix.
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+  [ Christian Dywan ]
+  * Update po/ubuntu-ui-toolkit.pot
+
+  [ Tim Peeters ]
+  * Zsombor Egri's "Ignore QT_IM_MODULE values like ibus, none or
+    compose." for Qt 5.3.2 specific fix.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 11 Nov 2014 06:06:52 +0000
+
 ubuntu-ui-toolkit (1.1.1311+15.04.20141102-0ubuntu1) vivid; urgency=medium
 
   [ Zoltán Balogh ]
