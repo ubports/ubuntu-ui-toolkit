@@ -86,7 +86,7 @@ Item {
 
         SignalSpy {
             id: movingSpy
-            signalName: "movementEnded"
+            signalName: "contentMovementEnded"
         }
 
         SignalSpy {

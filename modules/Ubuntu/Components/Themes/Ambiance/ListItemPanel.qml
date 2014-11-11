@@ -22,6 +22,14 @@ import Ubuntu.Components 1.2
   */
 Item {
     id: panel
+
+    // styling properties
+    /*
+      Color of teh background.
+      */
+    // FIXME: use Palette colors instead when available
+    property color backgroundColor: (leadingPanel ? UbuntuColors.red : "white")
+
     width: units.gu(20)
 
     // for testing
@@ -35,10 +43,6 @@ Item {
       Specifies whether the panel is used to visualize leading or trailing options.
       */
     readonly property bool leadingPanel: panel.ListItemActions.status == panel.ListItemActions.Leading
-    /*
-      The delegate to be used to visualize the options
-      */
-    property Component delegate
 
     anchors {
         left: contentItem ? (leadingPanel ? undefined : contentItem.right) : undefined
@@ -55,7 +59,6 @@ Item {
             leftMargin: leadingPanel ? -units.gu(4 * panel.ListItemActions.overshoot) : 0
             rightMargin: leadingPanel ? 0 : -units.gu(4 * panel.ListItemActions.overshoot)
         }
-        // FIXME: use Palette colors instead when available
-        color: (leadingPanel ? UbuntuColors.red : "white")
+        color: panel.backgroundColor
     }
 }

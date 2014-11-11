@@ -61,11 +61,12 @@ class UCListItemActionsAttached : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(UCListItemActions *container READ container NOTIFY containerChanged)
+    Q_PROPERTY(QQmlListProperty<UCAction> visibleActions READ visibleActions NOTIFY visibleActionsChanged)
     Q_PROPERTY(UCListItem *listItem READ listItem NOTIFY listItemChanged)
     Q_PROPERTY(int listItemIndex READ listItemIndex NOTIFY listItemIndexChanged)
     Q_PROPERTY(qreal offset READ offset NOTIFY offsetChanged)
     Q_PROPERTY(UCListItemActions::Status status READ status NOTIFY statusChanged)
-    Q_PROPERTY(bool dragging READ dragging NOTIFY draggingChanged)
+    Q_PROPERTY(bool swiping READ swiping NOTIFY swipingChanged)
     Q_PROPERTY(qreal overshoot READ overshoot NOTIFY overshootChanged)
 public:
     UCListItemActionsAttached(QObject *parent = 0);
@@ -77,9 +78,10 @@ public:
     {
         return m_container.data();
     }
+    QQmlListProperty<UCAction> visibleActions();
     UCListItem *listItem();
     int listItemIndex();
-    bool dragging();
+    bool swiping();
     qreal offset();
     UCListItemActions::Status status();
     qreal overshoot();
@@ -90,16 +92,21 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void containerChanged();
+    void visibleActionsChanged();
     void listItemChanged();
     void listItemIndexChanged();
     void offsetChanged();
     void statusChanged();
-    void draggingChanged();
+    void swipingChanged();
     void overshootChanged();
 
 private:
     QPointer<UCListItemActions> m_container;
+    QList<UCAction*> m_visibleActions;
     friend class UCListItemAction;
+
+private Q_SLOTS:
+    void updateVisibleActions();
 };
 
 QML_DECLARE_TYPEINFO(UCListItemActions, QML_HAS_ATTACHED_PROPERTIES)

@@ -51,22 +51,12 @@ QColor getPaletteColor(const char *profile, const char *color)
 UCListItemSnapAnimator::UCListItemSnapAnimator(UCListItem *item)
     : QObject(item)
     , item(item)
-    , defaultAnimation(0)
 {
 }
 UCListItemSnapAnimator::~UCListItemSnapAnimator()
 {
     // make sure we cannot animate anymore, for safety
     item = 0;
-}
-
-void UCListItemSnapAnimator::setCustomAnimation(QQuickPropertyAnimation *animation)
-{
-    if (animation) {
-        // delete default animation so we use this
-        delete defaultAnimation;
-        defaultAnimation = 0;
-    }
 }
 
 bool UCListItemSnapAnimator::snap(qreal to)
@@ -289,15 +279,15 @@ void UCListItemDivider::setColorTo(const QColor &color)
 UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
     , pressed(false)
+    , contentMoved(false)
     , highlightColorChanged(false)
     , tugged(false)
     , suppressClick(false)
-    , contentMoving(false)
     , ready(false)
     , customStyle(false)
     , customColor(false)
     , xAxisMoveThresholdGU(1.5)
-    , overshootGU(2)
+    , overshoot(UCUnits::instance().gu(2))
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
     , attachedProperties(0)
@@ -362,43 +352,6 @@ void UCListItemPrivate::_q_rebound()
     // rebound to zero
     animator->snap(0);
 }
-/*!
- * \qmlproperty bool ListItem::moving
- * The property signals the move of the list item's content. It is set whenever
- * the content is tugged and reset when the snapping and rebounding animations
- * complete.
- *
- * \sa movingStarted, movingEnded
- */
-
-/*!
- * \qmlsignal ListItem::movingStarted
- * Signal emitted when the moving of the list item content is started.
- */
-/*!
- * \qmlsignal ListItem::movingEnded
- * Signal emitted when the moving of the list item content is ended.
- */
-bool UCListItemPrivate::isMoving() const
-{
-    return contentMoving;
-}
-// the function drives the moving property
-void UCListItemPrivate::setContentMoved(bool move)
-{
-    if (contentMoving == move) {
-        return;
-    }
-    contentMoving = move;
-    Q_Q(UCListItem);
-    if (move) {
-        Q_EMIT q->movementStarted();
-    } else {
-        Q_EMIT q->movementEnded();
-    }
-    Q_EMIT q->movingChanged();
-}
-
 /*!
  * \qmlproperty Component ListItem::style
  * Holds the style of the component defining the components visualizing the leading/
@@ -491,6 +444,8 @@ void UCListItemPrivate::_q_updateSize()
     QQuickItem *owner = flickable ? flickable : parentItem;
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
     q->setImplicitHeight(UCUnits::instance().gu(7));
+    // update overshoot value
+    overshoot = UCUnits::instance().gu(2);
 }
 
 // returns the index of the list item when used in model driven views,
@@ -1043,6 +998,43 @@ bool UCListItem::pressed() const
 }
 
 /*!
+ * \qmlproperty bool ListItem::contentMoving
+ * \readonly
+ * The property describes whether the content is moving or not. The content is
+ * moved when tugged or when snapping in or out, and lasts till the snapping
+ * animation completes.
+ */
+
+/*!
+ * \qmlsignal ListItem::contentMovementStarted()
+ * The signal is emitted when the content movement has started.
+ */
+
+/*!
+ * \qmlsignal UCListItemPrivate::contentMovementEnded
+ * The signal is emitted when the content movement has ended.
+ */
+bool UCListItemPrivate::contentMoving() const
+{
+    return contentMoved;
+}
+void UCListItemPrivate::setContentMoving(bool moved)
+{
+    if (contentMoved == moved) {
+        return;
+    }
+    contentMoved = moved;
+    Q_Q(UCListItem);
+    if (contentMoved) {
+        Q_EMIT q->contentMovementStarted();
+    } else {
+        Q_EMIT q->contentMovementEnded();
+    }
+    Q_EMIT q->contentMovingChanged();
+
+}
+
+/*!
  * \qmlproperty color ListItem::color
  * Configures the color of the normal background. The default value is transparent.
  */
@@ -1121,9 +1113,6 @@ void UCListItemPrivate::setSnapAnimation(QQuickPropertyAnimation *animation)
         return;
     }
     snap = animation;
-    if (animator) {
-        animator->setCustomAnimation(snap);
-    }
     Q_Q(UCListItem);
     Q_EMIT q->snapAnimationChanged();
 }

@@ -19,6 +19,7 @@
 #include "uclistitemactions.h"
 #include "uclistitemactions_p.h"
 #include "ucunits.h"
+#include "ucaction.h"
 
 UCListItemActionsAttached::UCListItemActionsAttached(QObject *parent)
     : QObject(parent)
@@ -57,8 +58,58 @@ void UCListItemActionsAttached::setList(UCListItemActions *list)
         // connect panel's xChanged to update the dragged offset
         QObject::connect(actions->panelItem, &QQuickItem::xChanged,
                          this, &UCListItemActionsAttached::offsetChanged);
+
+        // connect actions to get updates about visible changes
+        Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(m_container)->actions) {
+            QObject::connect(action, &UCAction::visibleChanged,
+                             this, &UCListItemActionsAttached::updateVisibleActions);
+        }
     }
     Q_EMIT containerChanged();
+    Q_EMIT visibleActionsChanged();
+}
+
+void UCListItemActionsAttached::connectListItem(UCListItem *item, bool connect)
+{
+    if (!item) {
+        return;
+    }
+    if (connect) {
+        QObject::connect(item, &UCListItem::pressedChanged,
+                         this, &UCListItemActionsAttached::swipingChanged);
+        QObject::connect(item, &UCListItem::contentMovingChanged,
+                         this, &UCListItemActionsAttached::swipingChanged);
+    } else {
+        QObject::disconnect(item, &UCListItem::pressedChanged,
+                            this, &UCListItemActionsAttached::swipingChanged);
+        QObject::disconnect(item, &UCListItem::contentMovingChanged,
+                            this, &UCListItemActionsAttached::swipingChanged);
+    }
+}
+
+
+// private slot to update visible actions
+void UCListItemActionsAttached::updateVisibleActions()
+{
+    m_visibleActions.clear();
+    if (!m_container.isNull()) {
+        Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(m_container)->actions) {
+            if (action->m_visible) {
+                m_visibleActions << action;
+            }
+        }
+    }
+    Q_EMIT visibleActionsChanged();
+}
+
+/*!
+ * \qmlproperty list<Action> ListItemActions::visibleActions
+ * Holds the list of visible actions. This is a convenience property to help action
+ * visualization panel implementations to consider only visible actions.
+ */
+QQmlListProperty<UCAction> UCListItemActionsAttached::visibleActions()
+{
+    return QQmlListProperty<UCAction>(this, m_visibleActions);
 }
 
 void UCListItemActionsAttached::connectListItem(UCListItem *item, bool connect)
@@ -109,22 +160,22 @@ int UCListItemActionsAttached::listItemIndex() {
 }
 
 /*!
- * \qmlattachedproperty bool ListItemActions::dragging
+ * \qmlattachedproperty bool ListItemActions::swiping
  * \readonly
- * The property notifies whether the panel is dragged or not. The property does
- * not notify the rebounding.
+ * The property notifies whether the panel is dragged/tugged (pressed and moving)
+ * or not. The property does not notify the rebounding.
  */
-bool UCListItemActionsAttached::dragging()
+bool UCListItemActionsAttached::swiping()
 {
     if (m_container.isNull()) {
         return false;
     }
-    QQuickItem *panelItem = UCListItemActionsPrivate::get(m_container)->panelItem;
-    if (!panelItem) {
+    UCListItem *item = static_cast<UCListItem*>(UCListItemActionsPrivate::get(m_container)->panelItem);
+    if (!item) {
         return false;
     }
-    QQuickItem *listItem = panelItem->parentItem();
-    return listItem ? UCListItemPrivate::get(static_cast<UCListItem*>(listItem))->contentMoving : false;
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    return listItem->pressed && listItem->contentMoved;
 }
 
 /*!
@@ -179,8 +230,7 @@ qreal UCListItemActionsAttached::overshoot()
         // no ListItem attached
         return 0.0;
     }
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    return UCUnits::instance().gu(listItem->overshootGU);
+    return UCListItemPrivate::get(item)->overshoot;
 }
 
 /*!

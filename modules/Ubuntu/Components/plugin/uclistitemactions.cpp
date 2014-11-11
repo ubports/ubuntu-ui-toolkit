@@ -26,7 +26,6 @@
 
 UCListItemActionsPrivate::UCListItemActionsPrivate()
     : QObjectPrivate()
-    , dragging(false)
     , status(UCListItemActions::Disconnected)
     , offsetDragged(0)
     , delegate(0)
