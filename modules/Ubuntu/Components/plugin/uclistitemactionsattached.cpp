@@ -23,13 +23,13 @@
 
 UCListItemActionsAttached::UCListItemActionsAttached(QObject *parent)
     : QObject(parent)
+    , m_swiping(false)
 {
 }
 
 UCListItemActionsAttached::~UCListItemActionsAttached()
 {
 }
-
 
 /*!
  * \qmlattachedproperty ListItemActions ListItemActions::container
@@ -76,17 +76,16 @@ void UCListItemActionsAttached::connectListItem(UCListItem *item, bool connect)
     }
     if (connect) {
         QObject::connect(item, &UCListItem::pressedChanged,
-                         this, &UCListItemActionsAttached::swipingChanged);
+                         this, &UCListItemActionsAttached::updateSwipeState);
         QObject::connect(item, &UCListItem::contentMovingChanged,
-                         this, &UCListItemActionsAttached::swipingChanged);
+                         this, &UCListItemActionsAttached::updateSwipeState);
     } else {
         QObject::disconnect(item, &UCListItem::pressedChanged,
-                            this, &UCListItemActionsAttached::swipingChanged);
+                            this, &UCListItemActionsAttached::updateSwipeState);
         QObject::disconnect(item, &UCListItem::contentMovingChanged,
-                            this, &UCListItemActionsAttached::swipingChanged);
+                            this, &UCListItemActionsAttached::updateSwipeState);
     }
 }
-
 
 // private slot to update visible actions
 void UCListItemActionsAttached::updateVisibleActions()
@@ -100,6 +99,25 @@ void UCListItemActionsAttached::updateVisibleActions()
         }
     }
     Q_EMIT visibleActionsChanged();
+}
+
+// private slot updating swipe state
+void UCListItemActionsAttached::updateSwipeState()
+{
+    if (m_container.isNull()) {
+        return;
+    }
+    QQuickItem *panelItem = UCListItemActionsPrivate::get(m_container)->panelItem;
+    if (!panelItem || !panelItem->parentItem()) {
+        return;
+    }
+    UCListItem *item = static_cast<UCListItem*>(panelItem->parentItem());
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    bool swiped = listItem->pressed && listItem->contentMoved;
+    if (swiped != m_swiping) {
+        m_swiping = swiped;
+        Q_EMIT swipingChanged();
+    }
 }
 
 /*!
@@ -156,15 +174,7 @@ int UCListItemActionsAttached::listItemIndex() {
  */
 bool UCListItemActionsAttached::swiping()
 {
-    if (m_container.isNull()) {
-        return false;
-    }
-    UCListItem *item = static_cast<UCListItem*>(UCListItemActionsPrivate::get(m_container)->panelItem);
-    if (!item) {
-        return false;
-    }
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    return listItem->pressed && listItem->contentMoved;
+    return m_swiping;
 }
 
 /*!
