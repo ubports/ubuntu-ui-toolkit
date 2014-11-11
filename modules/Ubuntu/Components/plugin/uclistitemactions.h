@@ -102,10 +102,12 @@ Q_SIGNALS:
 private:
     QPointer<UCListItemActions> m_container;
     QList<UCAction*> m_visibleActions;
+    bool m_swiping;
     friend class UCListItemAction;
 
 private Q_SLOTS:
     void updateVisibleActions();
+    void updateSwipeState();
 };
 
 QML_DECLARE_TYPEINFO(UCListItemActions, QML_HAS_ATTACHED_PROPERTIES)
