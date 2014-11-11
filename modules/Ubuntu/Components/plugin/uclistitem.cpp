@@ -194,7 +194,7 @@ UCListItemPrivate::UCListItemPrivate()
     , highlightColorChanged(false)
     , ready(false)
     , flicked(false)
-    , overshootGU(2)
+    , overshoot(UCUnits::instance().gu(2))
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
     , contentItem(new QQuickItem)
@@ -252,6 +252,8 @@ void UCListItemPrivate::_q_updateSize()
     QQuickItem *owner = flickable ? flickable : parentItem;
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
     q->setImplicitHeight(UCUnits::instance().gu(7));
+    // update overshoot value
+    overshoot = UCUnits::instance().gu(2);
 }
 
 // returns the index of the list item when used in model driven views,

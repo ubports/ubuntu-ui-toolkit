@@ -199,8 +199,7 @@ qreal UCListItemActionsAttached::overshoot()
         // no ListItem attached
         return 0.0;
     }
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    return UCUnits::instance().gu(listItem->overshootGU);
+    return UCListItemPrivate::get(item)->overshoot;
 }
 
 /*!

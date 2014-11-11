@@ -53,7 +53,7 @@ public:
     bool highlightColorChanged:1;
     bool ready:1;
     bool flicked:1;
-    qreal overshootGU;
+    qreal overshoot;
     QColor color;
     QColor highlightColor;
     QPointer<QQuickFlickable> flickable;
