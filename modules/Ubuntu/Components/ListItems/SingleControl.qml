@@ -56,7 +56,7 @@ Empty {
 
     /*! \internal */
     onClicked: if (control && control.enabled && control.hasOwnProperty("clicked")) control.clicked()
-    pressed: __mouseArea.pressed || (control && control.pressed)
+    pressed: __mouseArea.pressed || (control && control.hasOwnProperty("pressed") && control.pressed)
     /*! \internal */
     onPressedChanged: if (control && control.enabled && control.hasOwnProperty("pressed")) control.pressed = singleControlListItem.pressed
 

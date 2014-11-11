@@ -60,7 +60,7 @@ TestCase {
              enabled: true
              name: "check"
              text: "Check"
-             parameterType: Action.Boolean
+             parameterType: Action.Bool
          }
      }
 

@@ -37,6 +37,16 @@ StyledItem {
      */
     property bool animate: true
 
+    /*!
+      The background color of the divider. Value set by MainView.
+     */
+    property color dividerColor
+
+    /*!
+      The background color of the panel. Value set by MainView.
+     */
+    property color panelColor
+
     Behavior on y {
         enabled: animate && !(header.flickable && header.flickable.moving)
         SmoothedAnimation {

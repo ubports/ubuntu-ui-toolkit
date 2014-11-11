@@ -32,13 +32,17 @@ Item {
 
     /*!
       The source of the image that separates the header from the contents of a \l MainView.
-      The separator will be drawn over the contents.
+      The separator will be drawn over the contents. Set to empty string to use the new
+      header separator.
+      \deprecated
      */
     property url separatorSource
 
     /*!
       The source of an additional image attached to the bottom of the separator. The contents
       of the \l MainView will be drawn on top of the separator bottom image.
+      This property is ignored when separatorSource is an empty string.
+      \deprecated
      */
     property url separatorBottomSource
 
@@ -53,7 +57,7 @@ Item {
     property int fontWeight
 
     /*!
-      The color of the title text.
+      \deprecated
      */
     property color textColor
 

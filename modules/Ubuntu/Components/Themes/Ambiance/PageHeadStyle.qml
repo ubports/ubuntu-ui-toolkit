@@ -23,15 +23,56 @@ Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
     contentHeight: units.gu(7)
+    // FIXME: After After https://code.launchpad.net/~mzanetti/unity8/new-pageheader-api/+merge/239242
+    //  lands, set separatorSource and separatorBottomSource to "" in order to use the new divider.
     separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
     separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
     fontWeight: Font.Light
     fontSize: "x-large"
-    textColor: styledItem.config.foregroundColor
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
-    implicitHeight: headerStyle.contentHeight + separator.height + separatorBottom.height
+    /*!
+      The color of the buttons in the header.
+     */
+    property color buttonColor: styledItem.config.foregroundColor
+
+    /*!
+      The color of the title text.
+     */
+    property color titleColor: styledItem.config.foregroundColor
+
+    /*!
+      The background color of the tabs panel and the actions overflow panel.
+     */
+    property color panelBackgroundColor: styledItem.panelColor
+
+    /*!
+      The background color of the tapped item in the panel.
+     */
+    property color panelHighlightColor: Theme.palette.selected.background
+
+    /*!
+      The foreground color (icon and text) of actions in the panel.
+     */
+    property color panelForegroundColor: Theme.palette.selected.backgroundText
+
+    /*!
+      The text color of unselected sections and the section divider.
+     */
+    property color sectionColor: Theme.palette.selected.backgroundText
+
+    /*!
+      The text color of the selected section.
+     */
+    property color selectedSectionColor: UbuntuColors.orange
+
+    /*!
+      The background color of the pressed section.
+     */
+    property color sectionHighlightColor: Theme.palette.selected.background
+
+    implicitHeight: headerStyle.contentHeight + divider.height
 
     // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
     //  see also FIXME in AppHeader where this property is used.
@@ -41,15 +82,35 @@ Style.PageHeadStyle {
     readonly property bool animating: headerStyle.state == "OUT"
                                       || leftAnchor.anchors.leftMargin < 0
 
-    BorderImage {
-        id: separator
+    // for Unity8
+    // FIXME: Remove this property when we introduce a header preset that does not
+    //  have a separator.
+    property alias __separator_visible: divider.visible
+
+    StyledItem {
+        id: divider
         anchors {
             bottom: parent.bottom
             left: parent.left
             right: parent.right
         }
-        source: headerStyle.separatorSource
+
         height: sectionsRow.visible ? units.gu(3) : units.gu(2)
+
+        // separatorSource and separatorBottomSource are needed for the deprecated
+        // HeadSeparatorImageStyle.
+        property url separatorSource: headerStyle.separatorSource
+        property url separatorBottomSource: headerStyle.separatorBottomSource
+
+        // backgroundColor is used in the new HeadDividerStyle
+        property color backgroundColor: styledItem.dividerColor
+
+        // FIXME: After https://code.launchpad.net/~mzanetti/unity8/new-pageheader-api/+merge/239242
+        //  lands, set the value of useOldDivider to: "" != separatorSource
+        property bool useOldDivider: false
+
+        style: useOldDivider ? Theme.createStyleComponent("HeadSeparatorImageStyle.qml", divider)
+                             : Theme.createStyleComponent("HeadDividerStyle.qml", divider)
 
         property PageHeadSections sections: styledItem.config.sections
 
@@ -58,13 +119,13 @@ Style.PageHeadStyle {
             anchors.centerIn: parent
             width: childrenRect.width
             height: parent.height
-            enabled: separator.sections.enabled
-            visible: separator.sections.model !== undefined
+            enabled: divider.sections.enabled
+            visible: divider.sections.model !== undefined
             opacity: enabled ? 1.0 : 0.5
 
             Repeater {
                 id: sectionsRepeater
-                model: separator.sections.model
+                model: divider.sections.model
                 objectName: "page_head_sections_repeater"
                 AbstractButton {
                     id: sectionButton
@@ -73,8 +134,8 @@ Style.PageHeadStyle {
                     enabled: sectionsRow.enabled
                     width: label.width + units.gu(4)
                     height: sectionsRow.height + units.gu(2)
-                    property bool selected: index === separator.sections.selectedIndex
-                    onClicked: separator.sections.selectedIndex = index;
+                    property bool selected: index === divider.sections.selectedIndex
+                    onClicked: divider.sections.selectedIndex = index;
 
                     Rectangle {
                         visible: parent.pressed
@@ -84,7 +145,7 @@ Style.PageHeadStyle {
                             top: parent.top
                         }
                         height: parent.height - bottomDividerLine.height
-                        color: Theme.palette.selected.background
+                        color: headerStyle.sectionHighlightColor
                     }
 
                     Label {
@@ -94,8 +155,8 @@ Style.PageHeadStyle {
                         anchors.centerIn: sectionButton
                         horizontalAlignment: Text.AlignHCenter
                         color: sectionButton.selected ?
-                                   UbuntuColors.orange :
-                                   Theme.palette.selected.backgroundText
+                                   headerStyle.selectedSectionColor :
+                                   headerStyle.sectionColor
                     }
 
                     // vertical divider line
@@ -108,21 +169,12 @@ Style.PageHeadStyle {
                         height: units.dp(10)
                         width: units.dp(1)
                         visible: index < sectionsRepeater.model.length - 1
-                        color: Theme.palette.selected.backgroundText
+                        color: headerStyle.sectionColor
                         opacity: 0.2
                     }
                 }
             }
         }
-    }
-    Image {
-        id: separatorBottom
-        anchors {
-            top: separator.bottom
-            left: parent.left
-            right: parent.right
-        }
-        source: headerStyle.separatorBottomSource
     }
 
     states: [
@@ -287,7 +339,7 @@ Style.PageHeadStyle {
                          !backButton.visible &&
                          !customBackButton.visible
                 text: visible ? styledItem.tabsModel.count + " tabs" : ""
-                color: styledItem.config.foregroundColor
+                color: headerStyle.buttonColor
 
                 onTriggered: PopupUtils.open(tabsPopoverComponent, tabsButton)
 
@@ -299,6 +351,14 @@ Style.PageHeadStyle {
                         objectName: "tabsPopover"
                         callerMargin: -units.gu(1) + units.dp(4)
                         contentWidth: units.gu(20)
+
+                        Binding {
+                            target: tabsPopover.__foreground.__styleInstance
+                            property: "color"
+                            value: headerStyle.panelBackgroundColor
+                            when: tabsPopover.__foreground &&
+                                  tabsPopover.__foreground.__styleInstance
+                        }
 
                         Column {
                             anchors {
@@ -325,7 +385,7 @@ Style.PageHeadStyle {
                                             top: parent.top
                                         }
                                         height: parent.height - bottomDividerLine.height
-                                        color: Theme.palette.selected.background
+                                        color: headerStyle.panelHighlightColor
                                     }
 
                                     Label {
@@ -338,7 +398,7 @@ Style.PageHeadStyle {
                                         fontSize: "medium"
                                         elide: Text.ElideRight
                                         text: tab.title // FIXME: only "title" doesn't work with i18n.tr(). Why not?
-                                        color: Theme.palette.selected.backgroundText
+                                        color: headerStyle.panelForegroundColor
                                     }
 
                                     ListItem.ThinDivider {
@@ -379,8 +439,7 @@ Style.PageHeadStyle {
                 text: styledItem.title
                 font.weight: headerStyle.fontWeight
                 fontSize: headerStyle.fontSize
-                //            color: headerStyle.textColor
-                color: styledItem.config.foregroundColor
+                color: headerStyle.titleColor
                 elide: Text.ElideRight
             }
 
@@ -451,7 +510,7 @@ Style.PageHeadStyle {
                     id: actionButton
                     objectName: action.objectName + "_header_button"
                     action: actionsContainer.visibleActions[index]
-                    color: styledItem.config.foregroundColor
+                    color: headerStyle.buttonColor
                     state: styledItem.config.preset === "select" ?
                                "IconAndLabel" : ""
                 }
@@ -462,7 +521,7 @@ Style.PageHeadStyle {
                 objectName: "actions_overflow_button"
                 visible: numberOfSlots.requested > numberOfSlots.right
                 iconName: "contextual-menu"
-                color: styledItem.config.foregroundColor
+                color: headerStyle.buttonColor
                 height: actionsContainer.height
                 onTriggered: PopupUtils.open(actionsOverflowPopoverComponent, actionsOverflowButton)
 
@@ -474,6 +533,14 @@ Style.PageHeadStyle {
                         objectName: "actions_overflow_popover"
                         callerMargin: -units.gu(1) + units.dp(4)
                         contentWidth: units.gu(20)
+
+                        Binding {
+                            target: actionsOverflowPopover.__foreground.__styleInstance
+                            property: "color"
+                            value: headerStyle.panelBackgroundColor
+                            when: actionsOverflowPopover.__foreground &&
+                                  actionsOverflowPopover.__foreground.__styleInstance
+                        }
 
                         // Ensure the popover closes when actions change and
                         // the list item below may be destroyed before its
@@ -516,13 +583,13 @@ Style.PageHeadStyle {
                                             top: parent.top
                                         }
                                         height: parent.height - bottomDividerLine.height
-                                        color: Theme.palette.selected.background
+                                        color: headerStyle.panelHighlightColor
                                     }
 
                                     Icon {
                                         id: actionIcon
                                         source: action.iconSource
-                                        color: Theme.palette.selected.backgroundText
+                                        color: headerStyle.panelForegroundColor
                                         anchors {
                                             verticalCenter: parent.verticalCenter
                                             verticalCenterOffset: units.dp(-1)
@@ -545,7 +612,7 @@ Style.PageHeadStyle {
                                         fontSize: "small"
                                         elide: Text.ElideRight
                                         text: action.text
-                                        color: Theme.palette.selected.backgroundText
+                                        color: headerStyle.panelForegroundColor
                                         opacity: action.enabled ? 1.0 : 0.5
                                     }
 

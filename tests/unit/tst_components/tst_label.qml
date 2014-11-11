@@ -35,16 +35,10 @@ TestCase {
         {
 
             var newFontSize = fontSizes[i]
-            console.debug("Testing with fontSize " + newFontSize)
-
             textCustom.fontSize = newFontSize
-
-            try {
+            if (newFontSize == 'xx-small')
                 expectFail("","https://bugs.launchpad.net/tavastia/+bug/1076771")
-                compare(textCustom.newFontSize,newFontSize,"Can set/get " + newFontSize)
-            } catch(err) {
-                console.debug("Found a bug, continuing for the other items in list..")
-            }
+            compare(textCustom.newFontSize, newFontSize, "Can set/get " + newFontSize)
         }
     }
 

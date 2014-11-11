@@ -83,7 +83,7 @@ Item {
             model: dynamicModel
             circular: true
             delegate: PickerDelegate {
-                Label {text: modelData}
+                Label { text: modelData ? modelData : "" }
             }
         }
     }

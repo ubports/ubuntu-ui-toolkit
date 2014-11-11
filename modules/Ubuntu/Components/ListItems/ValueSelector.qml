@@ -210,8 +210,7 @@ Empty {
                     id: accordionIcon
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
-                    // TODO: Replace this placeholder graphic with the official one.
-                    source: "artwork/ListItemProgressionArrow.png"
+                    source: "artwork/chevron.png"
                     opacity: enabled ? 1.0 : 0.5
                     rotation: expanded ? 270 : 90
                     width: implicitWidth / 1.5
