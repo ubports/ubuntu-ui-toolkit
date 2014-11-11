@@ -104,6 +104,7 @@ MainView {
                 actions: [stock]
                 delegate: Column {
                     width: height + units.gu(2)
+                    anchors.verticalCenter: parent.verticalCenter
                     Icon {
                         width: units.gu(3)
                         height: width

@@ -62,6 +62,7 @@ class UCListItemActionsAttached : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(UCListItemActions *container READ container NOTIFY containerChanged)
+    Q_PROPERTY(QQmlListProperty<UCAction> visibleActions READ visibleActions NOTIFY visibleActionsChanged)
     Q_PROPERTY(UCListItem *listItem READ listItem NOTIFY listItemChanged)
     Q_PROPERTY(int listItemIndex READ listItemIndex NOTIFY listItemIndexChanged)
     Q_PROPERTY(qreal offset READ offset NOTIFY offsetChanged)
@@ -78,6 +79,7 @@ public:
     {
         return m_container.data();
     }
+    QQmlListProperty<UCAction> visibleActions();
     UCListItem *listItem();
     int listItemIndex();
     bool flicking();
@@ -91,6 +93,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void containerChanged();
+    void visibleActionsChanged();
     void listItemChanged();
     void listItemIndexChanged();
     void offsetChanged();
@@ -100,9 +103,9 @@ Q_SIGNALS:
 
 private:
     QPointer<UCListItemActions> m_container;
+    QList<UCAction*> m_visibleActions;
     friend class UCListItemAction;
 };
-
 QML_DECLARE_TYPEINFO(UCListItemActions, QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // UCLISTITEMACTIONS_H

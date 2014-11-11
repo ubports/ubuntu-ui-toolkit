@@ -19,6 +19,7 @@
 #include "uclistitemactions.h"
 #include "uclistitemactions_p.h"
 #include "ucunits.h"
+#include "ucaction.h"
 
 UCListItemActionsAttached::UCListItemActionsAttached(QObject *parent)
     : QObject(parent)
@@ -57,8 +58,15 @@ void UCListItemActionsAttached::setList(UCListItemActions *list)
         // connect panel's xChanged to update the dragged offset
         QObject::connect(actions->panelItem, &QQuickItem::xChanged,
                          this, &UCListItemActionsAttached::offsetChanged);
+
+        // connect each action visible signal so we keep the visible actions updated
+        Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(m_container.data())->actions) {
+            QObject::connect(action, &UCAction::visibleChanged,
+                             this, &UCListItemActionsAttached::visibleActionsChanged);
+        }
     }
     Q_EMIT containerChanged();
+    Q_EMIT visibleActionsChanged();
 }
 
 void UCListItemActionsAttached::connectListItem(UCListItem *item, bool connect)
@@ -70,6 +78,24 @@ void UCListItemActionsAttached::connectListItem(UCListItem *item, bool connect)
         QObject::disconnect(item, &UCListItem::flickingChanged,
                             this, &UCListItemActionsAttached::flickingChanged);
     }
+}
+
+/*!
+ * \qmlproperty list<Action> ListItemActions::visibleActions
+ * Holds the list of visible actions. This is a convenience property to help action
+ * visualization panel implementations to consider only visible actions.
+ */
+QQmlListProperty<UCAction> UCListItemActionsAttached::visibleActions()
+{
+    m_visibleActions.clear();
+    if (!m_container.isNull()) {
+        Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(m_container)->actions) {
+            if (action->property("visible").toBool()) {
+                m_visibleActions << action;
+            }
+        }
+    }
+    return QQmlListProperty<UCAction>(this, m_visibleActions);
 }
 
 /*!

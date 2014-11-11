@@ -38,7 +38,11 @@ Item {
 
     // panel implementation
     id: panel
-    width: optionsRow.childrenRect.width
+    // width must be calculated based on the amount of visible actions, as Row width will change gradually
+    // based on the progress of Repeater, and snapping in tests may occur earlier than all the action
+    // visualizations are constructed
+    width: Math.max(panel.ListItemActions.visibleActions.length * MathUtils.clamp(actionButtonWidth, height, optionsRow.maxItemWidth),
+                    optionsRow.childrenRect.width)
 
     // for testing
     objectName: "ListItemPanel" + (leadingPanel ? "Leading" : "Trailing")
@@ -49,24 +53,14 @@ Item {
     readonly property Item contentItem: parent ? parent.contentItem : null
 
     /*
-      Index of the ListItem, if the ListItem is inside a ListView or has been
-      created using a Repeater.
-      */
-    property int listItemIndex: -1
-
-    /*
       Specifies whether the panel is used to visualize leading or trailing options.
       */
-    property bool leadingPanel: panel.ListItemActions.status == panel.ListItemActions.Leading
+    readonly property bool leadingPanel: panel.ListItemActions.status == panel.ListItemActions.Leading
 
-    // fire selected action when parent is removed
-    onParentChanged: {
-        if (!parent && selectedAction) {
-            selectedAction.triggered(listItemIndex >= 0 ? listItemIndex : null);
-            selectedAction = null;
-        }
-    }
-    property Action selectedAction: null
+    /*
+      Configures the width of the icon visualizing the action.
+      */
+    property real actionButtonWidth: units.gu(2.5)
 
     anchors {
         left: contentItem ? (leadingPanel ? undefined : contentItem.right) : undefined
@@ -89,6 +83,9 @@ Item {
     // handle action triggering
     ListItemActions.onStatusChanged: {
         if (ListItemActions.status === ListItemActions.Disconnected && optionsRow.selectedAction) {
+            if (optionsRow.selectedAction.parameterType === Action.None) {
+                optionsRow.selectedAction.parameterType = Action.Integer;
+            }
             optionsRow.selectedAction.trigger(optionsRow.listItemIndex >= 0 ? optionsRow.listItemIndex : null);
             optionsRow.selectedAction = null;
         }
@@ -113,7 +110,7 @@ Item {
         }
         // snap in if the offset is bigger than the overshoot and the direction of the drag is to reveal the panel
         var snapPos = (ListItemActions.offset > ListItemActions.overshoot &&
-                       (leftToRight && leadingPanel || !leftToRight && !leadingPanel)) ? panel.width : 0.0;
+                       ((leftToRight && leadingPanel) || (!leftToRight && !leadingPanel))) ? panel.width : 0.0;
         ListItemActions.snapToPosition(snapPos);
     }
 
@@ -126,25 +123,24 @@ Item {
             leftMargin: spacing
         }
 
-        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.ListItemActions.container.actions.length) : 0
+        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.ListItemActions.visibleActions.length) : 0
 
         property Action selectedAction
         property int listItemIndex
 
         Repeater {
-            model: panel.ListItemActions.container.actions
+            model: panel.ListItemActions.visibleActions
             AbstractButton {
+                action: modelData
                 objectName: modelData.objectName
-                visible: modelData.visible
                 enabled: modelData.enabled
                 opacity: modelData.enabled ? 1.0 : 0.5
-                width: (!modelData.visible) ?
-                           0 : MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
+                width: MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
                 anchors {
                     top: parent.top
                     bottom: parent.bottom
                 }
-                onTriggered: {
+                function trigger() {
                     optionsRow.selectedAction = modelData;
                     optionsRow.listItemIndex = panel.ListItemActions.listItemIndex;
                     panel.ListItemActions.snapToPosition(0.0);
@@ -166,7 +162,7 @@ Item {
         Item {
             width: height
             Icon {
-                width: units.gu(2.5)
+                width: actionButtonWidth
                 height: width
                 name: action.iconName
                 color: panel.foregroundColor

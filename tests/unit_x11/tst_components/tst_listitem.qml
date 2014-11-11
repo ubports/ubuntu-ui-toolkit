@@ -124,7 +124,7 @@ Item {
 
         SignalSpy {
             id: actionSpy
-            signalName: "triggered"
+            signalName: "onTriggered"
         }
         SignalSpy {
             id: interactiveSpy
@@ -260,7 +260,7 @@ Item {
             testItem.divider.visible = true;
         }
 
-        function test_touch_tug_actions_data() {
+        function test_tug_actions_data() {
             var item = findChild(listView, "listItem0");
             return [
                 {tag: "Trailing, mouse", item: item, pos: centerOf(item), dx: -units.gu(20), positiveDirection: false, mouse: true},
@@ -269,7 +269,7 @@ Item {
                 {tag: "Leading, touch", item: item, pos: centerOf(item), dx: units.gu(20), positiveDirection: true, mouse: false},
             ];
         }
-        function test_touch_tug_actions(data) {
+        function test_tug_actions(data) {
             listView.positionViewAtBeginning();
             movingSpy.target = data.item;
             if (data.mouse) {
@@ -414,34 +414,41 @@ Item {
         }
 
         function test_verify_action_value_data() {
+            var item0 = findChild(listView, "listItem0");
+            var item1 = findChild(listView, "listItem1");
+            var item2 = findChild(listView, "listItem2");
+            var item3 = findChild(listView, "listItem3");
             return [
                 // testItem is the child item @index 1 in the topmost Column.
                 {tag: "Undefined", item: testItem, result: 1},
-                {tag: "Index 0", item: findChild(listView, "listItem0"), result: 0},
-                {tag: "Index 1", item: findChild(listView, "listItem1"), result: 1},
-                {tag: "Index 2", item: findChild(listView, "listItem2"), result: 2},
-                {tag: "Index 3", item: findChild(listView, "listItem3"), result: 3},
+                {tag: "Index 0", item: item0, result: 0},
+                {tag: "Index 1", item: item1, result: 1},
+                {tag: "Index 2", item: item2, result: 2},
+                {tag: "Index 3", item: item3, result: 3},
             ];
         }
         function test_verify_action_value(data) {
-            var option = findChild(panelItem(data.item.leadingActions), "list_option_0");
-            verify(option, "actions panel cannot be reached");
-            // we test the first action
-            var action = data.item.leadingActions.actions[0];
-            actionSpy.target = action;
-            actionSpy.clear();
             // tug actions in
             movingSpy.target = data.item;
-            flick(data.item.contentItem, centerOf(data.item.contentItem).x, centerOf(data.item.contentItem).y, units.gu(5), 0);
+            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, units.gu(20), 0, 100, 10);
             movingSpy.wait();
+            verify(data.item.contentItem.x != 0.0, "Not snapped in");
+
+            var panel = panelItem(data.item, "Leading");
+            var option = findChild(panel, "leading_2");
+            verify(option, "actions panel cannot be reached");
+            // we test the action closest to the list item's contentItem
+            var action = data.item.leadingActions.actions[1];
+            action.param = undefined;
+            actionSpy.target = action;
 
             // select the option
             movingSpy.clear();
-            mouseClick(data.item, centerOf(option).x, centerOf(option).y);
+            mouseClick(option, centerOf(option).x, centerOf(option).y);
             movingSpy.wait();
 
             // check the action param
-            actionSpy.wait();
+            actionSpy.wait()
             compare(action.param, data.result, "Action parameter differs");
         }
     }
