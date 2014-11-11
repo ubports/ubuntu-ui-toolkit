@@ -23,13 +23,13 @@
 
 UCListItemActionsAttached::UCListItemActionsAttached(QObject *parent)
     : QObject(parent)
+    , m_swiping(false)
 {
 }
 
 UCListItemActionsAttached::~UCListItemActionsAttached()
 {
 }
-
 
 /*!
  * \qmlattachedproperty ListItemActions ListItemActions::container
@@ -114,8 +114,8 @@ void UCListItemActionsAttached::updateSwipeState()
     UCListItem *item = static_cast<UCListItem*>(panelItem->parentItem());
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
     bool swiped = listItem->pressed && listItem->contentMoved;
-    if (swiped != m_swiped) {
-        m_swiped = swiped;
+    if (swiped != m_swiping) {
+        m_swiping = swiped;
         Q_EMIT swipingChanged();
     }
 }
@@ -174,7 +174,7 @@ int UCListItemActionsAttached::listItemIndex() {
  */
 bool UCListItemActionsAttached::swiping()
 {
-    return m_swiped;
+    return m_swiping;
 }
 
 /*!

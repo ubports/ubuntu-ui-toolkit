@@ -61,8 +61,4 @@ Item {
         }
         color: panel.backgroundColor
     }
-
-    ListItemActions.onSwipingChanged: {
-        print("swiping=", ListItemActions.swiping)
-    }
 }

@@ -103,7 +103,7 @@ Q_SIGNALS:
 private:
     QPointer<UCListItemActions> m_container;
     QList<UCAction*> m_visibleActions;
-    bool m_swiped;
+    bool m_swiping;
     friend class UCListItemAction;
 
 private Q_SLOTS:
