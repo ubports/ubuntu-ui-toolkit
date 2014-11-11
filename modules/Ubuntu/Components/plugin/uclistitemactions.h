@@ -65,12 +65,13 @@ class UCListItemActionsAttached : public QObject
     Q_PROPERTY(int listItemIndex READ listItemIndex NOTIFY listItemIndexChanged)
     Q_PROPERTY(qreal offset READ offset NOTIFY offsetChanged)
     Q_PROPERTY(UCListItemActions::Status status READ status NOTIFY statusChanged)
-    Q_PROPERTY(bool flicking READ flicking NOTIFY flickingChanged)
+    Q_PROPERTY(bool swiping READ swiping NOTIFY swipingChanged)
     Q_PROPERTY(qreal overshoot READ overshoot NOTIFY overshootChanged)
 public:
     UCListItemActionsAttached(QObject *parent = 0);
     ~UCListItemActionsAttached();
     void setList(UCListItemActions *list);
+    void connectListItem(UCListItem *item, bool connect);
 
     UCListItemActions *container() const
     {
@@ -79,7 +80,7 @@ public:
     QQmlListProperty<UCAction> visibleActions();
     UCListItem *listItem();
     int listItemIndex();
-    bool flicking();
+    bool swiping();
     qreal offset();
     UCListItemActions::Status status();
     qreal overshoot();
@@ -95,7 +96,7 @@ Q_SIGNALS:
     void listItemIndexChanged();
     void offsetChanged();
     void statusChanged();
-    void flickingChanged();
+    void swipingChanged();
     void overshootChanged();
 
 private:
@@ -103,7 +104,7 @@ private:
     QList<UCAction*> m_visibleActions;
     friend class UCListItemAction;
 
-private Q_SLOT:
+private Q_SLOTS:
     void updateVisibleActions();
 };
 

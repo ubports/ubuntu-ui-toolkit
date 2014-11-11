@@ -69,6 +69,25 @@ void UCListItemActionsAttached::setList(UCListItemActions *list)
     Q_EMIT visibleActionsChanged();
 }
 
+void UCListItemActionsAttached::connectListItem(UCListItem *item, bool connect)
+{
+    if (!item) {
+        return;
+    }
+    if (connect) {
+        QObject::connect(item, &UCListItem::pressedChanged,
+                         this, &UCListItemActionsAttached::swipingChanged);
+        QObject::connect(item, &UCListItem::contentMovingChanged,
+                         this, &UCListItemActionsAttached::swipingChanged);
+    } else {
+        QObject::disconnect(item, &UCListItem::pressedChanged,
+                            this, &UCListItemActionsAttached::swipingChanged);
+        QObject::disconnect(item, &UCListItem::contentMovingChanged,
+                            this, &UCListItemActionsAttached::swipingChanged);
+    }
+}
+
+
 // private slot to update visible actions
 void UCListItemActionsAttached::updateVisibleActions()
 {
@@ -130,12 +149,12 @@ int UCListItemActionsAttached::listItemIndex() {
 }
 
 /*!
- * \qmlattachedproperty bool ListItemActions::flicking
+ * \qmlattachedproperty bool ListItemActions::swiping
  * \readonly
- * The property notifies whether the panel is dragged/tugged or not. The property
- * does not notify the rebounding.
+ * The property notifies whether the panel is dragged/tugged (pressed and moving)
+ * or not. The property does not notify the rebounding.
  */
-bool UCListItemActionsAttached::flicking()
+bool UCListItemActionsAttached::swiping()
 {
     if (m_container.isNull()) {
         return false;
@@ -144,7 +163,8 @@ bool UCListItemActionsAttached::flicking()
     if (!item) {
         return false;
     }
-    return UCListItemPrivate::get(item)->flicked;
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    return listItem->pressed && listItem->contentMoved;
 }
 
 /*!

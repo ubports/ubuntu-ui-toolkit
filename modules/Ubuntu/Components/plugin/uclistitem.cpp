@@ -191,9 +191,9 @@ void UCListItemDivider::setColorTo(const QColor &color)
 UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
     , pressed(false)
+    , contentMoved(false)
     , highlightColorChanged(false)
     , ready(false)
-    , flicked(false)
     , overshoot(UCUnits::instance().gu(2))
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
@@ -565,6 +565,43 @@ bool UCListItem::pressed() const
 {
     Q_D(const UCListItem);
     return d->pressed;
+}
+
+/*!
+ * \qmlproperty bool ListItem::contentMoving
+ * \readonly
+ * The property describes whether the content is moving or not. The content is
+ * moved when tugged or when snapping in or out, and lasts till the snapping
+ * animation completes.
+ */
+
+/*!
+ * \qmlsignal ListItem::contentMovementStarted()
+ * The signal is emitted when the content movement has started.
+ */
+
+/*!
+ * \qmlsignal UCListItemPrivate::contentMovementEnded
+ * The signal is emitted when the content movement has ended.
+ */
+bool UCListItemPrivate::contentMoving() const
+{
+    return contentMoved;
+}
+void UCListItemPrivate::setContentMoving(bool moved)
+{
+    if (contentMoved == moved) {
+        return;
+    }
+    contentMoved = moved;
+    Q_Q(UCListItem);
+    if (contentMoved) {
+        Q_EMIT q->contentMovementStarted();
+    } else {
+        Q_EMIT q->contentMovementEnded();
+    }
+    Q_EMIT q->contentMovingChanged();
+
 }
 
 /*!

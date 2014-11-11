@@ -50,9 +50,9 @@ public:
     void update();
 
     bool pressed:1;
+    bool contentMoved:1;
     bool highlightColorChanged:1;
     bool ready:1;
-    bool flicked:1;
     qreal overshoot;
     QColor color;
     QColor highlightColor;
@@ -61,6 +61,10 @@ public:
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
+
+    // getter/setters
+    bool contentMoving() const;
+    void setContentMoving(bool moved);
 };
 
 class UCListItemDivider : public QObject
