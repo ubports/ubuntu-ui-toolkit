@@ -902,6 +902,39 @@ ActionItem {
         }
     }
 
+    AbstractButton {
+        id: clearButton
+        objectName: "clear_button"
+        activeFocusOnPress: false
+
+        anchors {
+            top: parent.top
+            right: rightPane.left
+            bottom: parent.bottom
+            margins: internal.spacing
+        }
+        /* draggedItemMouseArea and dragger in TextCursor are reparented to the
+           TextField and end up being on top of the clear button.
+           Ensure that the clear button receives touch/mouse events first.
+        */
+        z: 100
+        width: visible ? icon.width : 0
+        visible: control.hasClearButton &&
+                 !control.readOnly &&
+                    (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
+
+        Icon {
+            id: icon
+            anchors.verticalCenter: parent.verticalCenter
+            width: units.gu(2.5)
+            height: width
+            // use icon from icon-theme
+            name: control.hasClearButton && !control.readOnly ? "clear-search" : ""
+        }
+
+        onClicked: editor.text = ""
+    }
+
     // hint text
     Label {
         id: hint
@@ -982,34 +1015,6 @@ ActionItem {
                 frameDistance: Qt.point(flicker.x, flicker.topMargin)
             }
         }
-    }
-
-    AbstractButton {
-        id: clearButton
-        objectName: "clear_button"
-        activeFocusOnPress: false
-
-        anchors {
-            top: parent.top
-            right: rightPane.left
-            bottom: parent.bottom
-            margins: internal.spacing
-        }
-        width: visible ? icon.width : 0
-        visible: control.hasClearButton &&
-                 !control.readOnly &&
-                    (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
-
-        Icon {
-            id: icon
-            anchors.verticalCenter: parent.verticalCenter
-            width: units.gu(2.5)
-            height: width
-            // use icon from icon-theme
-            name: control.hasClearButton && !control.readOnly ? "clear-search" : ""
-        }
-
-        onClicked: editor.text = ""
     }
 
     Component.onCompleted: {
