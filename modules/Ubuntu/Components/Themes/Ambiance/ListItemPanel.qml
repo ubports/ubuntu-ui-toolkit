@@ -34,7 +34,7 @@ Item {
     /*
       Specifies whether the panel is used to visualize leading or trailing options.
       */
-    property bool leadingPanel: panel.ListItemActions.status == panel.ListItemActions.Leading
+    readonly property bool leadingPanel: panel.ListItemActions.status == panel.ListItemActions.Leading
     /*
       The delegate to be used to visualize the options
       */
