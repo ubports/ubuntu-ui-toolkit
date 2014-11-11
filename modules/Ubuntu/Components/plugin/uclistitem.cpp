@@ -83,7 +83,7 @@ bool UCListItemSnapAnimator::snap(qreal to)
     snap->setFrom(listItem->contentItem->property(snap->property().toLocal8Bit().constData()));
     snap->setTo(to);
     snap->setAlwaysRunToEnd(true);
-    listItem->setContentMoved(true);
+    listItem->setContentMoving(true);
     snap->start();
     return true;
 }
@@ -102,7 +102,7 @@ void UCListItemSnapAnimator::snapOut()
     listItem->grabPanel(listItem->leadingActions, false);
     listItem->grabPanel(listItem->trailingActions, false);
     // set contentMoved to false
-    listItem->setContentMoved(false);
+    listItem->setContentMoving(false);
 }
 
 void UCListItemSnapAnimator::snapIn()
@@ -110,7 +110,7 @@ void UCListItemSnapAnimator::snapIn()
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
     QQuickAbstractAnimation *snap = listItem->snap ? listItem->snap : getDefaultAnimation();
     QObject::disconnect(snap, 0, 0, 0);
-    listItem->setContentMoved(false);
+    listItem->setContentMoving(false);
 }
 
 QQuickPropertyAnimation *UCListItemSnapAnimator::getDefaultAnimation()
@@ -797,7 +797,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             d->attachedProperties->disableInteractive(this, false);
         }
 
-        d->setContentMoved(true);
+        d->setContentMoving(true);
         if (!d->suppressClick) {
             Q_EMIT clicked();
             d->_q_rebound();
@@ -805,7 +805,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             // if no actions list is connected, release flickable blockade
             d->promptRebound();
         } else {
-            d->setContentMoved(false);
+            d->setContentMoving(false);
         }
     }
     d->setPressed(false);
@@ -848,7 +848,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         d->lastPos = event->localPos();
 
         if (dx) {
-            d->setContentMoved(true);
+            d->setContentMoving(true);
             // clamp X into allowed dragging area
             d->clampAndMoveX(x, dx);
             // block flickable
@@ -1030,6 +1030,7 @@ void UCListItemPrivate::setContentMoving(bool moved)
     } else {
         Q_EMIT q->contentMovementEnded();
     }
+    qDebug() << "MOVING" << contentMoved << q->objectName();
     Q_EMIT q->contentMovingChanged();
 
 }

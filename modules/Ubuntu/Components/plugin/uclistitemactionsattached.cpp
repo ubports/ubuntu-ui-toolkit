@@ -76,17 +76,16 @@ void UCListItemActionsAttached::connectListItem(UCListItem *item, bool connect)
     }
     if (connect) {
         QObject::connect(item, &UCListItem::pressedChanged,
-                         this, &UCListItemActionsAttached::swipingChanged);
+                         this, &UCListItemActionsAttached::updateSwipeState);
         QObject::connect(item, &UCListItem::contentMovingChanged,
-                         this, &UCListItemActionsAttached::swipingChanged);
+                         this, &UCListItemActionsAttached::updateSwipeState);
     } else {
         QObject::disconnect(item, &UCListItem::pressedChanged,
-                            this, &UCListItemActionsAttached::swipingChanged);
+                            this, &UCListItemActionsAttached::updateSwipeState);
         QObject::disconnect(item, &UCListItem::contentMovingChanged,
-                            this, &UCListItemActionsAttached::swipingChanged);
+                            this, &UCListItemActionsAttached::updateSwipeState);
     }
 }
-
 
 // private slot to update visible actions
 void UCListItemActionsAttached::updateVisibleActions()
@@ -102,6 +101,25 @@ void UCListItemActionsAttached::updateVisibleActions()
     Q_EMIT visibleActionsChanged();
 }
 
+// private slot updating swipe state
+void UCListItemActionsAttached::updateSwipeState()
+{
+    if (m_container.isNull()) {
+        return;
+    }
+    QQuickItem *panelItem = UCListItemActionsPrivate::get(m_container)->panelItem;
+    if (!panelItem || !panelItem->parentItem()) {
+        return;
+    }
+    UCListItem *item = static_cast<UCListItem*>(panelItem->parentItem());
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    bool swiped = listItem->pressed && listItem->contentMoved;
+    if (swiped != m_swiped) {
+        m_swiped = swiped;
+        Q_EMIT swipingChanged();
+    }
+}
+
 /*!
  * \qmlproperty list<Action> ListItemActions::visibleActions
  * Holds the list of visible actions. This is a convenience property to help action
@@ -110,17 +128,6 @@ void UCListItemActionsAttached::updateVisibleActions()
 QQmlListProperty<UCAction> UCListItemActionsAttached::visibleActions()
 {
     return QQmlListProperty<UCAction>(this, m_visibleActions);
-}
-
-void UCListItemActionsAttached::connectListItem(UCListItem *item, bool connect)
-{
-    if (connect) {
-        QObject::connect(item, &UCListItem::movingChanged,
-                         this, &UCListItemActionsAttached::draggingChanged);
-    } else {
-        QObject::disconnect(item, &UCListItem::movingChanged,
-                            this, &UCListItemActionsAttached::draggingChanged);
-    }
 }
 
 /*!
@@ -167,15 +174,7 @@ int UCListItemActionsAttached::listItemIndex() {
  */
 bool UCListItemActionsAttached::swiping()
 {
-    if (m_container.isNull()) {
-        return false;
-    }
-    UCListItem *item = static_cast<UCListItem*>(UCListItemActionsPrivate::get(m_container)->panelItem);
-    if (!item) {
-        return false;
-    }
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    return listItem->pressed && listItem->contentMoved;
+    return m_swiped;
 }
 
 /*!
