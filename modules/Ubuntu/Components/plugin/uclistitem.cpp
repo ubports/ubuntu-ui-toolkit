@@ -43,22 +43,12 @@ QColor getPaletteColor(const char *profile, const char *color)
 UCListItemSnapAnimator::UCListItemSnapAnimator(UCListItem *item)
     : QObject(item)
     , item(item)
-    , defaultAnimation(0)
 {
 }
 UCListItemSnapAnimator::~UCListItemSnapAnimator()
 {
     // make sure we cannot animate anymore, for safety
     item = 0;
-}
-
-void UCListItemSnapAnimator::setCustomAnimation(QQuickPropertyAnimation *animation)
-{
-    if (animation) {
-        // delete default animation so we use this
-        delete defaultAnimation;
-        defaultAnimation = 0;
-    }
 }
 
 bool UCListItemSnapAnimator::snap(qreal to)
@@ -118,22 +108,8 @@ void UCListItemSnapAnimator::snapIn()
 
 QQuickPropertyAnimation *UCListItemSnapAnimator::getDefaultAnimation()
 {
-    if (defaultAnimation) {
-        return defaultAnimation;
-    }
-
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    // create rebound animation
-    UCUbuntuAnimation animationCodes;
-    defaultAnimation = new QQuickPropertyAnimation(this);
-    QEasingCurve easing(QEasingCurve::OutElastic);
-    easing.setPeriod(0.5);
-    defaultAnimation->setEasing(easing);
-    defaultAnimation->setDuration(animationCodes.BriskDuration());
-    defaultAnimation->setTargetObject(listItem->contentItem);
-    defaultAnimation->setProperty("x");
-    defaultAnimation->setAlwaysRunToEnd(true);
-    return defaultAnimation;
+    // FIXME - return teh animation from the style
+    return 0;
 }
 
 /******************************************************************************
@@ -796,9 +772,6 @@ void UCListItemPrivate::setSnapAnimation(QQuickPropertyAnimation *animation)
         return;
     }
     snap = animation;
-    if (animator) {
-        animator->setCustomAnimation(snap);
-    }
     Q_Q(UCListItem);
     Q_EMIT q->snapAnimationChanged();
 }

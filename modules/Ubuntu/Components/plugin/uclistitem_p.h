@@ -159,7 +159,6 @@ public:
     UCListItemSnapAnimator(UCListItem *item);
     ~UCListItemSnapAnimator();
 
-    void setCustomAnimation(QQuickPropertyAnimation *animation);
     bool snap(qreal to);
 
 public Q_SLOTS:
@@ -171,7 +170,6 @@ public Q_SLOTS:
 private:
     bool active;
     UCListItem *item;
-    QQuickPropertyAnimation *defaultAnimation;
 };
 
 #endif // UCVIEWITEM_P_H
