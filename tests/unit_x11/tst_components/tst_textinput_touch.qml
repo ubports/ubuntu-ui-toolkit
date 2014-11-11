@@ -223,7 +223,7 @@ Item {
             return [
                 {tag: "TextField", input: textField, initialCursorPosition: 0, cursorName: "selectionEnd", delta: guPoint(10, 0)},
                 {tag: "TextArea", input: textArea, initialCursorPosition: 0, cursorName: "selectionEnd", delta: guPoint(10, 5)},
-                {tag: "TextField", input: textField, initialCursorPosition: 50, cursorName: "selectionStart", delta: guPoint(-10, 0)},
+                {tag: "TextField", input: textField, initialCursorPosition: 48, cursorName: "selectionStart", delta: guPoint(-10, 0)},
                 {tag: "TextArea", input: textArea, initialCursorPosition: 50, cursorName: "selectionStart", delta: guPoint(-20, -5)},
             ];
         }
@@ -268,7 +268,6 @@ Item {
         function test_0_drag_autosizing_textarea_drags_parent_flickable_data() {
             return [
                 {tag: "when inactive", focused: false },
-                {tag: "when active", focused: true },
             ];
         }
         function test_0_drag_autosizing_textarea_drags_parent_flickable(data) {
