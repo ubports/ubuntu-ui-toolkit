@@ -34,6 +34,7 @@ class UCListItem : public UCStyledItemBase
     Q_PROPERTY(UCListItemActions *leadingActions READ leadingActions WRITE setLeadingActions NOTIFY leadingActionsChanged DESIGNABLE false)
     Q_PROPERTY(UCListItemActions *trailingActions READ trailingActions WRITE setTrailingActions NOTIFY trailingActionsChanged DESIGNABLE false)
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool contentMoving READ contentMoving NOTIFY contentMovingChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor NOTIFY highlightColorChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
@@ -70,12 +71,16 @@ Q_SIGNALS:
     void leadingActionsChanged();
     void trailingActionsChanged();
     void pressedChanged();
+    void contentMovingChanged();
     void colorChanged();
     void highlightColorChanged();
     void childrenChanged();
     void snapAnimationChanged();
 
     void clicked();
+
+    void contentMovementStarted();
+    void contentMovementEnded();
 
 public Q_SLOTS:
 

@@ -52,9 +52,10 @@ public:
     void update();
 
     bool pressed:1;
+    bool contentMoved:1;
     bool highlightColorChanged:1;
     bool ready:1;
-    qreal overshootGU;
+    qreal overshoot;
     QColor color;
     QColor highlightColor;
     QPointer<QQuickFlickable> flickable;
@@ -66,7 +67,9 @@ public:
     QQuickPropertyAnimation *snap;
     UCListItemSnapAnimator *animator;
 
-    // getters/setters
+    // getter/setters
+    bool contentMoving() const;
+    void setContentMoving(bool moved);
     QQuickPropertyAnimation *snapAnimation() const;
     void setSnapAnimation(QQuickPropertyAnimation *animation);
 };
