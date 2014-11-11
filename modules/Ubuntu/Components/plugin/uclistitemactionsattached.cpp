@@ -19,6 +19,7 @@
 #include "uclistitemactions.h"
 #include "uclistitemactions_p.h"
 #include "ucunits.h"
+#include "ucaction.h"
 
 UCListItemActionsAttached::UCListItemActionsAttached(QObject *parent)
     : QObject(parent)
@@ -57,8 +58,39 @@ void UCListItemActionsAttached::setList(UCListItemActions *list)
         // connect panel's xChanged to update the dragged offset
         QObject::connect(actions->panelItem, &QQuickItem::xChanged,
                          this, &UCListItemActionsAttached::offsetChanged);
+
+        // connect actions to get updates about visible changes
+        Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(m_container)->actions) {
+            QObject::connect(action, &UCAction::visibleChanged,
+                             this, &UCListItemActionsAttached::updateVisibleActions);
+        }
     }
     Q_EMIT containerChanged();
+    Q_EMIT visibleActionsChanged();
+}
+
+// private slot to update visible actions
+void UCListItemActionsAttached::updateVisibleActions()
+{
+    m_visibleActions.clear();
+    if (!m_container.isNull()) {
+        Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(m_container)->actions) {
+            if (action->m_visible) {
+                m_visibleActions << action;
+            }
+        }
+    }
+    Q_EMIT visibleActionsChanged();
+}
+
+/*!
+ * \qmlproperty list<Action> ListItemActions::visibleActions
+ * Holds the list of visible actions. This is a convenience property to help action
+ * visualization panel implementations to consider only visible actions.
+ */
+QQmlListProperty<UCAction> UCListItemActionsAttached::visibleActions()
+{
+    return QQmlListProperty<UCAction>(this, m_visibleActions);
 }
 
 /*!
@@ -98,17 +130,21 @@ int UCListItemActionsAttached::listItemIndex() {
 }
 
 /*!
- * \qmlattachedproperty bool ListItemActions::dragging
+ * \qmlattachedproperty bool ListItemActions::flicking
  * \readonly
- * The property notifies whether the panel is dragged or not. The property does
- * not notify the rebounding.
+ * The property notifies whether the panel is dragged/tugged or not. The property
+ * does not notify the rebounding.
  */
-bool UCListItemActionsAttached::dragging()
+bool UCListItemActionsAttached::flicking()
 {
     if (m_container.isNull()) {
-        return 0.0;
+        return false;
     }
-    return UCListItemActionsPrivate::get(m_container)->dragging;
+    UCListItem *item = static_cast<UCListItem*>(UCListItemActionsPrivate::get(m_container)->panelItem);
+    if (!item) {
+        return false;
+    }
+    return UCListItemPrivate::get(item)->flicked;
 }
 
 /*!

@@ -52,6 +52,7 @@ public:
     bool pressed:1;
     bool highlightColorChanged:1;
     bool ready:1;
+    bool flicked:1;
     qreal overshootGU;
     QColor color;
     QColor highlightColor;
