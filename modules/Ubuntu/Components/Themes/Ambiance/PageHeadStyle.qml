@@ -33,6 +33,11 @@ Style.PageHeadStyle {
     textLeftMargin: units.gu(2)
     maximumNumberOfActions: 3
 
+    /*!
+      The background color of the tabs panel and the actions overflow panel.
+     */
+    property color panelBackgroundColor: styledItem.panelColor
+
     implicitHeight: headerStyle.contentHeight + divider.height
 
     // FIXME: Workaround to get sectionsRepeater.count in autopilot tests,
@@ -313,6 +318,14 @@ Style.PageHeadStyle {
                         callerMargin: -units.gu(1) + units.dp(4)
                         contentWidth: units.gu(20)
 
+                        Binding {
+                            target: tabsPopover.__foreground.__styleInstance
+                            property: "color"
+                            value: headerStyle.panelBackgroundColor
+                            when: tabsPopover.__foreground &&
+                                  tabsPopover.__foreground.__styleInstance
+                        }
+
                         Column {
                             anchors {
                                 left: parent.left
@@ -487,6 +500,14 @@ Style.PageHeadStyle {
                         objectName: "actions_overflow_popover"
                         callerMargin: -units.gu(1) + units.dp(4)
                         contentWidth: units.gu(20)
+
+                        Binding {
+                            target: actionsOverflowPopover.__foreground.__styleInstance
+                            property: "color"
+                            value: headerStyle.panelBackgroundColor
+                            when: actionsOverflowPopover.__foreground &&
+                                  actionsOverflowPopover.__foreground.__styleInstance
+                        }
 
                         // Ensure the popover closes when actions change and
                         // the list item below may be destroyed before its
