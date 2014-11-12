@@ -51,14 +51,18 @@ Item {
         actions: [
             stockAction,
         ]
-        delegate: Rectangle {
+    }
+    ListItemActions {
+        id: actionsDefault
+    }
+
+    Component {
+        id: customDelegate
+        Rectangle {
             width: units.gu(10)
             color: "green"
             objectName: "custom_delegate"
         }
-    }
-    ListItemActions {
-        id: actionsDefault
     }
 
     Column {
@@ -155,6 +159,7 @@ Item {
             movingSpy.clear();
             interactiveSpy.target = null;
             interactiveSpy.clear();
+            trailing.delegate = null;
         }
 
         function test_0_defaults() {
@@ -391,11 +396,13 @@ Item {
         }
 
         function test_custom_trailing_delegate() {
+            trailing.delegate = customDelegate;
             listView.positionViewAtBeginning();
             var item = findChild(listView, "listItem0");
             flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
-            verify(panelItem(item, "Trailing"), "Panel is not visible");
-            var custom = findChild(panelItem(item, "Trailing"), "custom_delegate");
+            var panel = panelItem(item, false);
+            verify(panel, "Panel is not visible");
+            var custom = findChild(panel, "custom_delegate");
             verify(custom, "Custom delegate not in use");
             // cleanup
             rebound(item);
