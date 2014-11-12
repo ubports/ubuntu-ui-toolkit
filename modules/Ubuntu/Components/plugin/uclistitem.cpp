@@ -70,6 +70,8 @@ bool UCListItemSnapAnimator::snap(qreal to)
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
     QQuickPropertyAnimation *snap = getDefaultAnimation();
     if (!snap) {
+        // no animation, so we simply position the component
+        listItem->contentItem->setX(to);
         return false;
     }
     snap->setTargetObject(listItem->contentItem);
@@ -91,16 +93,28 @@ bool UCListItemSnapAnimator::snap(qreal to)
     return true;
 }
 
+void UCListItemSnapAnimator::complete()
+{
+    QQuickPropertyAnimation *snap = getDefaultAnimation();
+    if (snap && snap->isRunning()) {
+        snap->complete();
+    }
+}
+
 void UCListItemSnapAnimator::snapOut()
 {
+    if (senderSignalIndex() >= 0) {
+        // disconnect animation, otherwise snapping will disconnect the panel
+        QQuickAbstractAnimation *snap = getDefaultAnimation();
+        QObject::disconnect(snap, 0, 0, 0);
+    }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    QQuickAbstractAnimation *snap = getDefaultAnimation();
-    // disconnect animation, otherwise snapping will disconnect the panel
-    QObject::disconnect(snap, 0, 0, 0);
-    // restore flickable's interactive and cleanup
-    listItem->attachedProperties->disableInteractive(item, false);
-    // no need to listen flickables any longer
-    listItem->attachedProperties->listenToRebind(item, false);
+    if (listItem->attachedProperties) {
+        // restore flickable's interactive and cleanup
+        listItem->attachedProperties->disableInteractive(item, false);
+        // no need to listen flickables any longer
+        listItem->attachedProperties->listenToRebind(item, false);
+    }
     // disconnect actions
     listItem->grabPanel(listItem->leadingActions, false);
     listItem->grabPanel(listItem->trailingActions, false);
@@ -110,8 +124,11 @@ void UCListItemSnapAnimator::snapOut()
 
 void UCListItemSnapAnimator::snapIn()
 {
-    QQuickAbstractAnimation *snap = getDefaultAnimation();
-    QObject::disconnect(snap, 0, 0, 0);
+    if (senderSignalIndex() >= 0) {
+        // disconnect animation
+        QQuickAbstractAnimation *snap = getDefaultAnimation();
+        QObject::disconnect(snap, 0, 0, 0);
+    }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
     listItem->setContentMoving(false);
 }
@@ -338,6 +355,9 @@ void UCListItemPrivate::init()
 
     // watch enabledChanged()
     QObject::connect(q, SIGNAL(enabledChanged()), q, SLOT(_q_dimmDisabled()), Qt::DirectConnection);
+
+    // create the animator
+    animator = new UCListItemSnapAnimator(q);
 }
 
 void UCListItemPrivate::_q_updateThemedData()
@@ -470,11 +490,11 @@ QQuickItem *UCListItemPrivate::styleInstance() const
 // the function performs a prompt rebound on mouse release without any animation
 void UCListItemPrivate::promptRebound()
 {
+    // stop any animation and rebound
+    animator->complete();
     setPressed(false);
     setTugged(false);
-    if (animator) {
-        animator->snapOut();
-    }
+    animator->snapOut();
 }
 
 // set pressed flag and update background
@@ -620,19 +640,16 @@ void UCListItemPrivate::toggleSelectionMode()
     if (selectable) {
         // move and dimm content item
         selectionPanel->setVisible(true);
-        if (animator) {
-            animator->snap(selectionPanel->width());
-        }
+        promptRebound();
+        animator->snap(selectionPanel->width());
         // sync selected flag with the attached selection array
-        if (attachedObject) {
-            q->setSelected(attachedObject->isItemSelected(q));
+        if (attachedProperties) {
+            q->setSelected(UCListItemAttachedPrivate::get(attachedProperties)->isItemSelected(q));
         }
         QObject::connect(selectionPanel, SIGNAL(checkedChanged()), q, SLOT(_q_updateSelected()));
     } else {
         // remove content item dimming and destroy selection panel as well
-        if (animator) {
-            animator->snap(0.0);
-        }
+        animator->snap(0.0);
         selectionPanel->setVisible(false);
         QObject::disconnect(selectionPanel, SIGNAL(checkedChanged()), q, SLOT(_q_updateSelected()));
     }
@@ -766,8 +783,8 @@ void UCListItem::componentComplete()
     }
 
     // get the selected state from the attached object
-    if (d->attachedObject) {
-        setSelected(d->attachedObject->isItemSelected(this));
+    if (d->attachedProperties) {
+        setSelected(UCListItemAttachedPrivate::get(d->attachedProperties)->isItemSelected(this));
     }
 }
 
@@ -945,10 +962,6 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             // still in use in other panels. See UCListItemActionsPrivate::connectToListItem
             leadingAttached = d->grabPanel(d->leadingActions, true);
             trailingAttached = d->grabPanel(d->trailingActions, true);
-            // create animator if not created yet
-            if (!d->animator) {
-                d->animator = new UCListItemSnapAnimator(this);
-            }
         }
     }
 
@@ -1254,11 +1267,11 @@ void UCListItem::setSelected(bool selected)
     }
     d->selected = selected;
     // update attached list
-    if (d->attachedObject) {
+    if (d->attachedProperties) {
         if (selected) {
-            d->attachedObject->addSelectedItem(this);
+            UCListItemAttachedPrivate::get(d->attachedProperties)->addSelectedItem(this);
         } else {
-            d->attachedObject->removeSelectedItem(this);
+            UCListItemAttachedPrivate::get(d->attachedProperties)->removeSelectedItem(this);
         }
     }
     // update panel as well

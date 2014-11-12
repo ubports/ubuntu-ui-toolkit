@@ -111,29 +111,6 @@ Item {
         ListItemActions.snapToPosition(snapPos);
     }
 
-    // track drag dirrection, so we know in which direction we should snap
-    property real prevX: 0.0
-    property bool leftToRight: false
-    onXChanged: {
-        leftToRight = prevX < x;
-        prevX = x;
-    }
-    // default snapping!
-    ListItemActions.onDraggingChanged: {
-        if (ListItemActions.dragging) {
-            // the dragging got started, set prevX
-            prevX = panel.x;
-            return;
-        }
-        if (!visible) {
-            return;
-        }
-        // snap in if the offset is bigger than the overshoot and the direction of the drag is to reveal the panel
-        var snapPos = (ListItemActions.offset > ListItemActions.overshoot &&
-                       (leftToRight && leadingPanel || !leftToRight && !leadingPanel)) ? panel.width : 0.0;
-        ListItemActions.snapToPosition(snapPos);
-    }
-
     Row {
         id: optionsRow
         anchors {

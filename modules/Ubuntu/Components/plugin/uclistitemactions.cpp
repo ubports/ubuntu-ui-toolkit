@@ -29,8 +29,9 @@ UCListItemActionsPrivate::UCListItemActionsPrivate()
     : QObjectPrivate()
     , status(UCListItemActions::Disconnected)
     , offsetDragged(0)
-    , offsetDragged(0.0)
-    , status(UCListItemActions::Disconnected)
+    , delegate(0)
+    , panelDelegate(0)
+    , panelItem(0)
 {
 }
 UCListItemActionsPrivate::~UCListItemActionsPrivate()
@@ -378,7 +379,6 @@ UCListItemActions::~UCListItemActions()
 
 UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *owner)
 {
-    UCListItemActionsAttached *attached = new UCListItemActionsAttached(owner);
     /*
      * Detect the attachee, whether is it a child item of the panelItem. The panelItem
      * itself cannot be detected, as the object can be attached during the call of

@@ -79,7 +79,6 @@ public:
     QPointF pressedPos;
     QColor color;
     QColor highlightColor;
-    QPointer<UCListItemAttached> attachedObject;
     QPointer<QQuickItem> countOwner;
     QPointer<QQuickFlickable> flickable;
     QPointer<UCListItemAttached> attachedProperties;
@@ -114,6 +113,11 @@ class UCListItemAttachedPrivate
 public:
     UCListItemAttachedPrivate(UCListItemAttached *qq);
     ~UCListItemAttachedPrivate();
+
+    static UCListItemAttachedPrivate *get(UCListItemAttached *item)
+    {
+        return item->d_func();
+    }
 
     void init();
     void addSelectedItem(UCListItem *item);
@@ -197,6 +201,7 @@ public:
     ~UCListItemSnapAnimator();
 
     bool snap(qreal to);
+    void complete();
 
 public Q_SLOTS:
     void snapOut();
