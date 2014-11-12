@@ -33,6 +33,7 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
 {
 }
 
+// FIXME - fis ListItemStyle::snapAnimation to a link when property available
 /*!
  * \qmltype ListItemActions
  * \instantiates UCListItemActions
@@ -102,15 +103,31 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
  * \endqml
  *
  * \section3 Using with ListViews
- * When used with views, or when the amount of items of same kind to be created
- * is huge, it is recommended to use cached ListItemActions instances to reduce
- * creation time and to be able to handle rebounding and flicking properly. If
- * each ListItem creates its own ListItemActions instance the Flickable view may
- * be blocked and action visualization will also break.
+ * ListItemActions instances can be shared between ListItem instances within the
+ * same view. When shared, the memory footprint of the view will be lot smaller,
+ * as there will be no individual panel created for each list's actions visualization.
+ * Depending on how long the initialization of the component used in \c ListItem::actionsDelegate
+ * takes, creation time will be also reduced to one time per view.
+ * However, this implies that swiping a new ListItem content while another one is
+ * swiped will result in showing the newly swiped item's panel delayed, as the
+ * panel can be shown only after the previous item's snapping is completed. Depending
+ * on the \c ListItemStyle::snapAnimation duration, this may take some time, and the
+ * response time of the UI can become unacceptable.
+ *
+ * Having individual ListItemActions instances increases the memory footprint,
+ * however the UI will be more responsive as swiping individual ListItems will
+ * not have to wait till the previous ListItem's panel is snapped out (rebount).
+ * On the other hand, memory consumption will increase signifficantly doe to
+ * separate panel creation, and performance may decrease with up to 40%, depending
+ * on how "badly" are the actions declared, within the ListItemActions or as shared
+ * actions.
+ *
+ * The example above illustrates how to share ListItemActions between ListItem
+ * delegates, which can be the worst-performant but most lightwaight memory consumer
+ * setup. The following example illustrates the worst case:
  * \qml
  * import QtQuick 2.2
  * import Ubuntu.Components 1.2
- *
  * MainView {
  *     width: units.gu(40)
  *     height: units.gu(71)
@@ -118,22 +135,67 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
  *     UbuntuListView {
  *         anchors.fill: parent
  *         model: 10000
- *         ListItemActions {
- *             id: commonActions
- *             actions: [
- *                 Action {
- *                     iconName: "search"
- *                 },
- *                 Action {
- *                     iconName: "edit"
- *                 },
- *                 Action {
- *                     iconName: "copy"
- *                 }
- *             ]
- *         }
  *         delegate: ListItem {
- *             trailingActions: commonActions
+ *             leadingActions: ListItemActions {
+ *                 actions: [
+ *                     Action {
+ *                         iconName: "delete"
+ *                     }
+ *                 ]
+ *             }
+ *             trailingActions: ListItemActions {
+ *                 actions: [
+ *                     Action {
+ *                         iconName: "search"
+ *                     },
+ *                     Action {
+ *                         iconName: "edit"
+ *                     },
+ *                     Action {
+ *                         iconName: "copy"
+ *                     }
+ *                 ]
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * This example can be optimized by sharing the action arrays between the items:
+ * \qml
+ * import QtQuick 2.2
+ * import Ubuntu.Components 1.2
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     property list<Action> leading: [
+ *         Action {
+ *             iconName: "delete"
+ *         }
+ *     ]
+ *     property list<Action> trailing: [
+ *         Action {
+ *             iconName: "search"
+ *         },
+ *         Action {
+ *             iconName: "edit"
+ *         },
+ *         Action {
+ *             iconName: "copy"
+ *         }
+ *     ]
+ *
+ *     UbuntuListView {
+ *         anchors.fill: parent
+ *         model: 10000
+ *         delegate: ListItem {
+ *             leadingActions: ListItemActions {
+ *                 actions: leading
+ *             }
+ *             trailingActions: ListItemActions {
+ *                 actions: trailing
+ *             }
  *         }
  *     }
  * }
@@ -204,7 +266,7 @@ void UCListItemActions::setDelegate(QQmlComponent *delegate)
  * declared in place. An example of cached actions:
  * \qml
  * ListItemActions {
- *     id: cacedActions
+ *     id: cachedActions
  *     actions: [
  *         copyAction, searchAction, cutAction
  *     ]
