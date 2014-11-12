@@ -52,7 +52,6 @@ QColor getPaletteColor(const char *profile, const char *color)
 UCListItemSnapAnimator::UCListItemSnapAnimator(UCListItem *item)
     : QObject(item)
     , item(item)
-    , defaultAnimation(0)
 {
 }
 UCListItemSnapAnimator::~UCListItemSnapAnimator()
@@ -61,22 +60,13 @@ UCListItemSnapAnimator::~UCListItemSnapAnimator()
     item = 0;
 }
 
-void UCListItemSnapAnimator::setCustomAnimation(QQuickPropertyAnimation *animation)
-{
-    if (animation) {
-        // delete default animation so we use this
-        delete defaultAnimation;
-        defaultAnimation = 0;
-    }
-}
-
 bool UCListItemSnapAnimator::snap(qreal to)
 {
     if (!item) {
         return false;
     }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    QQuickPropertyAnimation *snap = listItem->snap ? listItem->snap : getDefaultAnimation();
+    QQuickPropertyAnimation *snap = getDefaultAnimation();
     if (!snap) {
         return false;
     }
@@ -94,7 +84,7 @@ bool UCListItemSnapAnimator::snap(qreal to)
     snap->setFrom(listItem->contentItem->property(snap->property().toLocal8Bit().constData()));
     snap->setTo(to);
     snap->setAlwaysRunToEnd(true);
-    listItem->setContentMoved(true);
+    listItem->setContentMoving(true);
     snap->start();
     return true;
 }
@@ -102,7 +92,7 @@ bool UCListItemSnapAnimator::snap(qreal to)
 void UCListItemSnapAnimator::snapOut()
 {
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    QQuickAbstractAnimation *snap = listItem->snap ? listItem->snap : getDefaultAnimation();
+    QQuickAbstractAnimation *snap = getDefaultAnimation();
     // disconnect animation, otherwise snapping will disconnect the panel
     QObject::disconnect(snap, 0, 0, 0);
     // restore flickable's interactive and cleanup
@@ -113,15 +103,15 @@ void UCListItemSnapAnimator::snapOut()
     listItem->grabPanel(listItem->leadingActions, false);
     listItem->grabPanel(listItem->trailingActions, false);
     // set contentMoved to false
-    listItem->setContentMoved(false);
+    listItem->setContentMoving(false);
 }
 
 void UCListItemSnapAnimator::snapIn()
 {
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    QQuickAbstractAnimation *snap = listItem->snap ? listItem->snap : getDefaultAnimation();
+    QQuickAbstractAnimation *snap = getDefaultAnimation();
     QObject::disconnect(snap, 0, 0, 0);
-    listItem->setContentMoved(false);
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    listItem->setContentMoving(false);
 }
 
 QQuickPropertyAnimation *UCListItemSnapAnimator::getDefaultAnimation()
@@ -290,16 +280,16 @@ void UCListItemDivider::setColorTo(const QColor &color)
 UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
     , pressed(false)
+    , contentMoved(false)
     , highlightColorChanged(false)
     , tugged(false)
     , suppressClick(false)
-    , contentMoving(false)
     , ready(false)
     , customStyle(false)
     , customColor(false)
     , flicked(false)
     , xAxisMoveThresholdGU(1.5)
-    , overshootGU(2)
+    , overshoot(UCUnits::instance().gu(2))
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
     , attachedProperties(0)
@@ -307,7 +297,6 @@ UCListItemPrivate::UCListItemPrivate()
     , divider(new UCListItemDivider)
     , leadingActions(0)
     , trailingActions(0)
-    , snap(0)
     , animator(0)
     , styleComponent(0)
     , styleItem(0)
@@ -363,63 +352,6 @@ void UCListItemPrivate::_q_rebound()
     setTugged(false);
     // rebound to zero
     animator->snap(0);
-}
-
-/*!
- * \qmlproperty bool ListItem::moving
- * The property signals the move of the list item's content. It is set whenever
- * the content is tugged and reset when the snapping and rebounding animations
- * complete.
- *
- * \sa movingStarted, movingEnded
- */
-
-/*!
- * \qmlsignal ListItem::movingStarted
- * Signal emitted when the moving of the list item content is started.
- */
-/*!
- * \qmlsignal ListItem::movingEnded
- * Signal emitted when the moving of the list item content is ended.
- */
-bool UCListItemPrivate::isMoving() const
-{
-    return contentMoving;
-}
-// the function drives the moving property
-void UCListItemPrivate::setContentMoved(bool move)
-{
-    if (contentMoving == move) {
-        return;
-    }
-    contentMoving = move;
-    Q_Q(UCListItem);
-    if (move) {
-        Q_EMIT q->movementStarted();
-    } else {
-        Q_EMIT q->movementEnded();
-    }
-    Q_EMIT q->movingChanged();
-}
-
-/*!
- * \qmlproperty bool ListItem::flicking
- * \readonly
- * \internal
- * Notifies the dragging/tugging event.
- */
-bool UCListItemPrivate::isFlicking() const
-{
-    return flicked;
-}
-void UCListItemPrivate::setFlicking(bool value)
-{
-    if (flicked == value) {
-        return;
-    }
-    flicked = value;
-    Q_Q(UCListItem);
-    Q_EMIT q->flickingChanged();
 }
 
 /*!
@@ -514,6 +446,8 @@ void UCListItemPrivate::_q_updateSize()
     QQuickItem *owner = flickable ? flickable : parentItem;
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
     q->setImplicitHeight(UCUnits::instance().gu(7));
+    // update overshoot value
+    overshoot = UCUnits::instance().gu(2);
 }
 
 // returns the index of the list item when used in model driven views,
@@ -623,30 +557,23 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * \since Ubuntu.Components 1.2
  * \brief The ListItem element provides Ubuntu design standards for list or grid
  * views.
- *
- * The component is dedicated to be used in designs with static or dynamic lists
- * (i.e. list views where each item's layout differs or in lists where the content
- * is determined by a given model, thus each element has the same layout). The
- * element does not define any specific layout, components can be placed in any
- * ways on it. However, when used in list views, the content must be carefully
- * chosen to in order to keep the kinetic behavior and the highest FPS possible.
+ * The ListItem component was designed to be used in a list view. It does not
+ * define any specific layout, but while its contents can be freely chosen by
+ * the developer, care must be taken to keep the contents light in order to ensure
+ * good performance when used in long list views.
  *
  * The component provides two color properties which configures the item's background
- * when normal or pressed. This can be configures through \l color and \l highlightColor
+ * when normal or pressed. This can be configured through \l color and \l highlightColor
  * properties.
  *
  * \c contentItem holds all components and resources declared as child to ListItem.
- * Being an Item, all other properties can be accessed or altered, with the exception
- * of some:
- * \list A
- * \li do not alter \c x, \c y, \c width or \c height properties as those are
- *      controlled by the ListItem itself when leading or trailing actions are
- *      revealed and thus will destroy your logic
- * \li never anchor left or right anchor lines as it will block revealing the actions.
- * \endlist
+ * Being an Item, all properties can be accessed or altered. However, make sure you
+ * never change \c x, \c y, \c width, \c height or \c anchors properties as those are
+ * controlled by the ListItem itself when leading or trailing actions are revealed
+ * and thus might cause the component to misbehave.
  *
  * Each ListItem has a thin divider shown on the bottom of the component. This
- * divider can be configured through the \l divider grouped property, which can
+ * divider can be configured through the \c divider grouped property, which can
  * configure its margins from the edges of the ListItem as well as its visibility.
  *
  * ListItem can handle actions that can get tugged from front to back of the item.
@@ -708,7 +635,7 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * \qmlsignal ListItem::clicked()
  *
  * The signal is emitted when the component gets released while the \l pressed property
- * is set. The signal is not emitted if the ListItem content is tugged or when used in
+ * is set. The signal is not emitted if the ListItem content is swiped or when used in
  * Flickable (or ListView, GridView) and the Flickable gets moved.
  */
 UCListItem::UCListItem(QQuickItem *parent)
@@ -865,8 +792,6 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             d->attachedProperties->disableInteractive(this, false);
         }
 
-        d->setFlicking(false);
-        d->setContentMoved(true);
         if (!d->suppressClick) {
             Q_EMIT clicked();
             d->_q_rebound();
@@ -912,8 +837,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         d->lastPos = event->localPos();
 
         if (dx) {
-            d->setFlicking(true);
-            d->setContentMoved(true);
+            d->setContentMoving(true);
             // clamp X into allowed dragging area
             d->clampAndMoveX(x, dx);
             // block flickable
@@ -1055,8 +979,8 @@ QQuickItem* UCListItem::contentItem() const
  *
  * This grouped property configures the thin divider shown in the bottom of the
  * component. Configures the visibility and the margins from the left and right
- * of the ListItem. When tugged (swiped left or right to reveal the actions),
- * it is not moved together with the content. \c colorFrom and \c colorTo configure
+ * of the ListItem. When swiped left or right to reveal the actions, it is not
+ * moved together with the content. \c colorFrom and \c colorTo configure
  * the starting and ending colors of the divider.
  *
  * When \c visible is true, the ListItem's content size gets thinner with the
@@ -1086,6 +1010,43 @@ bool UCListItem::pressed() const
 {
     Q_D(const UCListItem);
     return d->pressed;
+}
+
+/*!
+ * \qmlproperty bool ListItem::contentMoving
+ * \readonly
+ * The property describes whether the content is moving or not. The content is
+ * moved when swiped or when snapping in or out, and lasts till the snapping
+ * animation completes.
+ */
+
+/*!
+ * \qmlsignal ListItem::contentMovementStarted()
+ * The signal is emitted when the content movement has started.
+ */
+
+/*!
+ * \qmlsignal UCListItemPrivate::contentMovementEnded
+ * The signal is emitted when the content movement has ended.
+ */
+bool UCListItemPrivate::contentMoving() const
+{
+    return contentMoved;
+}
+void UCListItemPrivate::setContentMoving(bool moved)
+{
+    if (contentMoved == moved) {
+        return;
+    }
+    contentMoved = moved;
+    Q_Q(UCListItem);
+    if (contentMoved) {
+        Q_EMIT q->contentMovementStarted();
+    } else {
+        Q_EMIT q->contentMovementEnded();
+    }
+    Q_EMIT q->contentMovingChanged();
+
 }
 
 /*!
@@ -1133,6 +1094,7 @@ void UCListItem::setHighlightColor(const QColor &color)
 /*!
  * \qmlproperty list<Object> ListItem::listItemData
  * \default
+ * \internal
  * Overloaded default property containing all the children and resources.
  */
 QQmlListProperty<QObject> UCListItemPrivate::data()
@@ -1148,28 +1110,6 @@ QQmlListProperty<QObject> UCListItemPrivate::data()
 QQmlListProperty<QQuickItem> UCListItemPrivate::children()
 {
     return QQuickItemPrivate::get(contentItem)->children();
-}
-
-/*!
- * \qmlproperty PropertyAnimation ListItem::snapAnimation
- * The property holds the animation to be performed on snapping. If set to null,
- * the default animation will be used. Defaults to null.
- */
-QQuickPropertyAnimation *UCListItemPrivate::snapAnimation() const
-{
-    return snap;
-}
-void UCListItemPrivate::setSnapAnimation(QQuickPropertyAnimation *animation)
-{
-    if (snap == animation) {
-        return;
-    }
-    snap = animation;
-    if (animator) {
-        animator->setCustomAnimation(snap);
-    }
-    Q_Q(UCListItem);
-    Q_EMIT q->snapAnimationChanged();
 }
 
 #include "moc_uclistitem.cpp"
