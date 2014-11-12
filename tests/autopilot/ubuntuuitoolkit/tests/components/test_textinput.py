@@ -158,7 +158,6 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         # Insert Mode
         self.pointing_device.click_object(self.textfield)
         self.textfield.keyboard.type('Lorem ipsum')
-        #self.pointing_device.click_object(self.textfield)
         cursor = self.main_view.select_single(
             objectName='text_cursor_style_cursorPosition')
         x, y = get_center_point(cursor)
