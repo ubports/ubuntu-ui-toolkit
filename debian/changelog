@@ -1,14 +1,16 @@
-ubuntu-ui-toolkit (1.1.1298+15.04.20141107.2~rtm-0ubuntu1) 14.09; urgency=low
-
+ubuntu-ui-toolkit (1.1.1298+15.04.20141111.2~rtm-0ubuntu1) 14.09; urgency=low
+ 
+  [ Ubuntu daily release ]
+  * New rebuild forced
+ 
   [ Florian Boucault ]
-  * TextField: make sure that a long press always works even when the
-    field is empty by ensuring the TextInput's size is set properly.
-    (LP: #1384403)
-
+  * Many TextField/TextArea fixes improving user experience greatly and
+    making it more in line with the design:
+ 
   [ Christian Dywan ]
   * Update po/ubuntu-ui-toolkit.pot
-
- -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 07 Nov 2014 12:35:11 +0000
+ 
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 11 Nov 2014 11:25:44 +0000
 
 ubuntu-ui-toolkit (1.1.1298+14.10.20141030~rtm-0ubuntu1) 14.09; urgency=low
 
