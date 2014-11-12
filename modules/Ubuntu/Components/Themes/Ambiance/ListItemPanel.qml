@@ -23,29 +23,31 @@ import Ubuntu.Components 1.2
 Item {
 
     // styling properties
-
     /*
-      Panel's background color
+      Color of the background.
       */
     // FIXME: use Palette colors instead when available
     property color backgroundColor: (leadingPanel ? UbuntuColors.red : "white")
 
     /*
-      Color used in coloring the icons
+      Color used in coloring the icons.
       */
     // FIXME: use Palette colors instead when available
-    property color foregroundColor: panel.leadingPanel ? "white" : UbuntuColors.darkGrey
+    property color foregroundColor: leadingPanel ? "white" : UbuntuColors.darkGrey
+
+    /*
+      Specifies the width of the component visualizing the action.
+      */
+    property real visualizedActionWidth: units.gu(2.5)
 
     // panel implementation
     id: panel
-    // width must be calculated based on the amount of visible actions, as Row width will change gradually
-    // based on the progress of Repeater, and snapping in tests may occur earlier than all the action
-    // visualizations are constructed
-    width: Math.max(panel.ListItemActions.visibleActions.length * MathUtils.clamp(actionButtonWidth, height, optionsRow.maxItemWidth),
-                    optionsRow.childrenRect.width)
+    width: Math.max(
+               optionsRow.childrenRect.width,
+               ListItemActions.visibleActions.length * MathUtils.clamp(visualizedActionWidth, height, optionsRow.maxItemWidth))
 
     // for testing
-    objectName: "ListItemPanel" + (leadingPanel ? "Leading" : "Trailing")
+    objectName: (leadingPanel ? "LeadingListItemPanel" : "TrailingListItemPanel")
 
     /*
       Property holding the ListItem's contentItem instance
@@ -55,12 +57,7 @@ Item {
     /*
       Specifies whether the panel is used to visualize leading or trailing options.
       */
-    readonly property bool leadingPanel: panel.ListItemActions.status == panel.ListItemActions.Leading
-
-    /*
-      Configures the width of the icon visualizing the action.
-      */
-    property real actionButtonWidth: units.gu(2.5)
+    readonly property bool leadingPanel: panel.ListItemActions.status == ListItemActions.Leading
 
     anchors {
         left: contentItem ? (leadingPanel ? undefined : contentItem.right) : undefined
@@ -99,8 +96,8 @@ Item {
         prevX = x;
     }
     // default snapping!
-    ListItemActions.onFlickingChanged: {
-        if (ListItemActions.flicking) {
+    ListItemActions.onSwipingChanged: {
+        if (ListItemActions.swiping) {
             // the dragging got started, set prevX
             prevX = panel.x;
             return;
@@ -132,9 +129,8 @@ Item {
             model: panel.ListItemActions.visibleActions
             AbstractButton {
                 action: modelData
-                objectName: modelData.objectName
-                enabled: modelData.enabled
-                opacity: modelData.enabled ? 1.0 : 0.5
+                enabled: action.enabled
+                opacity: action.enabled ? 1.0 : 0.5
                 width: MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
                 anchors {
                     top: parent.top
@@ -152,6 +148,12 @@ Item {
                     sourceComponent: panel.ListItemActions.container.delegate ? panel.ListItemActions.container.delegate : defaultDelegate
                     property Action action: modelData
                     property int index: index
+                    onItemChanged: {
+                        // use action's objectName to identify the visualized action
+                        if (item && item.objectName === "") {
+                            item.objectName = modelData.objectName;
+                        }
+                    }
                 }
             }
         }
@@ -162,7 +164,7 @@ Item {
         Item {
             width: height
             Icon {
-                width: actionButtonWidth
+                width: panel.visualizedActionWidth
                 height: width
                 name: action.iconName
                 color: panel.foregroundColor

@@ -871,20 +871,16 @@ plugins.qmltypes
     Property { name: "leadingActions"; type: "UCListItemActions"; isPointer: true }
     Property { name: "trailingActions"; type: "UCListItemActions"; isPointer: true }
     Property { name: "pressed"; type: "bool"; isReadonly: true }
+    Property { name: "contentMoving"; type: "bool"; isReadonly: true }
     Property { name: "color"; type: "QColor" }
     Property { name: "highlightColor"; type: "QColor" }
     Property { name: "listItemData"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
-    Property { name: "snapAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
-    Property { name: "moving"; type: "bool"; isReadonly: true }
-    Property { name: "flicking"; type: "bool"; isReadonly: true }
     Property { name: "style"; type: "QQmlComponent"; isPointer: true }
     Property { name: "__styleInstance"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Signal { name: "clicked" }
-    Signal { name: "movementStarted" }
-    Signal { name: "movementEnded" }
-    Signal { name: "flickStarted" }
-    Signal { name: "flickEnded" }
+    Signal { name: "contentMovementStarted" }
+    Signal { name: "contentMovementEnded" }
     name: "UCListItemActions"
     prototype: "QObject"
     exports: ["ListItemActions 1.2"]
@@ -898,11 +894,12 @@ plugins.qmltypes
     name: "UCListItemActionsAttached"
     prototype: "QObject"
     Property { name: "container"; type: "UCListItemActions"; isReadonly: true; isPointer: true }
+    Property { name: "visibleActions"; type: "UCAction"; isList: true; isReadonly: true }
     Property { name: "listItem"; type: "UCListItem"; isReadonly: true; isPointer: true }
     Property { name: "listItemIndex"; type: "int"; isReadonly: true }
     Property { name: "offset"; type: "double"; isReadonly: true }
     Property { name: "status"; type: "UCListItemActions::Status"; isReadonly: true }
-    Property { name: "flicking"; type: "bool"; isReadonly: true }
+    Property { name: "swiping"; type: "bool"; isReadonly: true }
     Property { name: "overshoot"; type: "double"; isReadonly: true }
     Method {
     name: "snapToPosition"

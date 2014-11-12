@@ -67,7 +67,7 @@ class UCListItemActionsAttached : public QObject
     Q_PROPERTY(int listItemIndex READ listItemIndex NOTIFY listItemIndexChanged)
     Q_PROPERTY(qreal offset READ offset NOTIFY offsetChanged)
     Q_PROPERTY(UCListItemActions::Status status READ status NOTIFY statusChanged)
-    Q_PROPERTY(bool flicking READ flicking NOTIFY flickingChanged)
+    Q_PROPERTY(bool swiping READ swiping NOTIFY swipingChanged)
     Q_PROPERTY(qreal overshoot READ overshoot NOTIFY overshootChanged)
 public:
     UCListItemActionsAttached(QObject *parent = 0);
@@ -82,7 +82,7 @@ public:
     QQmlListProperty<UCAction> visibleActions();
     UCListItem *listItem();
     int listItemIndex();
-    bool flicking();
+    bool swiping();
     qreal offset();
     UCListItemActions::Status status();
     qreal overshoot();
@@ -98,13 +98,18 @@ Q_SIGNALS:
     void listItemIndexChanged();
     void offsetChanged();
     void statusChanged();
-    void flickingChanged();
+    void swipingChanged();
     void overshootChanged();
 
 private:
     QPointer<UCListItemActions> m_container;
     QList<UCAction*> m_visibleActions;
+    bool m_swiping;
     friend class UCListItemAction;
+
+private Q_SLOTS:
+    void updateVisibleActions();
+    void updateSwipeState();
 };
 QML_DECLARE_TYPEINFO(UCListItemActions, QML_HAS_ATTACHED_PROPERTIES)
 

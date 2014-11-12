@@ -23,13 +23,13 @@
 
 UCListItemActionsAttached::UCListItemActionsAttached(QObject *parent)
     : QObject(parent)
+    , m_swiping(false)
 {
 }
 
 UCListItemActionsAttached::~UCListItemActionsAttached()
 {
 }
-
 
 /*!
  * \qmlattachedproperty ListItemActions ListItemActions::container
@@ -59,11 +59,12 @@ void UCListItemActionsAttached::setList(UCListItemActions *list)
         QObject::connect(actions->panelItem, &QQuickItem::xChanged,
                          this, &UCListItemActionsAttached::offsetChanged);
 
-        // connect each action visible signal so we keep the visible actions updated
-        Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(m_container.data())->actions) {
+        // connect actions to get updates about visible changes
+        Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(m_container)->actions) {
             QObject::connect(action, &UCAction::visibleChanged,
-                             this, &UCListItemActionsAttached::visibleActionsChanged);
+                             this, &UCListItemActionsAttached::updateVisibleActions);
         }
+        updateVisibleActions();
     }
     Q_EMIT containerChanged();
     Q_EMIT visibleActionsChanged();
@@ -71,13 +72,63 @@ void UCListItemActionsAttached::setList(UCListItemActions *list)
 
 void UCListItemActionsAttached::connectListItem(UCListItem *item, bool connect)
 {
-    if (connect) {
-        QObject::connect(item, &UCListItem::flickingChanged,
-                         this, &UCListItemActionsAttached::flickingChanged);
-    } else {
-        QObject::disconnect(item, &UCListItem::flickingChanged,
-                            this, &UCListItemActionsAttached::flickingChanged);
+    if (!item) {
+        return;
     }
+    if (connect) {
+        QObject::connect(item, &UCListItem::pressedChanged,
+                         this, &UCListItemActionsAttached::updateSwipeState);
+        QObject::connect(item, &UCListItem::contentMovingChanged,
+                         this, &UCListItemActionsAttached::updateSwipeState);
+    } else {
+        QObject::disconnect(item, &UCListItem::pressedChanged,
+                            this, &UCListItemActionsAttached::updateSwipeState);
+        QObject::disconnect(item, &UCListItem::contentMovingChanged,
+                            this, &UCListItemActionsAttached::updateSwipeState);
+    }
+}
+
+// private slot to update visible actions
+void UCListItemActionsAttached::updateVisibleActions()
+{
+    m_visibleActions.clear();
+    if (!m_container.isNull()) {
+        Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(m_container)->actions) {
+            if (action->m_visible) {
+                m_visibleActions << action;
+            }
+        }
+    }
+    Q_EMIT visibleActionsChanged();
+}
+
+// private slot updating swipe state
+void UCListItemActionsAttached::updateSwipeState()
+{
+    if (m_container.isNull()) {
+        return;
+    }
+    QQuickItem *panelItem = UCListItemActionsPrivate::get(m_container)->panelItem;
+    if (!panelItem || !panelItem->parentItem()) {
+        return;
+    }
+    UCListItem *item = static_cast<UCListItem*>(panelItem->parentItem());
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    bool swiped = listItem->pressed && listItem->contentMoved;
+    if (swiped != m_swiping) {
+        m_swiping = swiped;
+        Q_EMIT swipingChanged();
+    }
+}
+
+/*!
+ * \qmlattachedproperty list<Action> ListItemActions::visibleActions
+ * Holds the list of visible actions. This is a convenience property to help action
+ * visualization panel implementations to consider only visible actions.
+ */
+QQmlListProperty<UCAction> UCListItemActionsAttached::visibleActions()
+{
+    return QQmlListProperty<UCAction>(this, m_visibleActions);
 }
 
 /*!
@@ -135,22 +186,14 @@ int UCListItemActionsAttached::listItemIndex() {
 }
 
 /*!
- * \qmlattachedproperty bool ListItemActions::flicking
+ * \qmlattachedproperty bool ListItemActions::swiping
  * \readonly
- * The property notifies whether the panel is dragged/tugged or not. The property does
+ * The property notifies whether the panel is swiped or not. The property does
  * not notify the rebounding.
  */
-bool UCListItemActionsAttached::flicking()
+bool UCListItemActionsAttached::swiping()
 {
-    if (m_container.isNull()) {
-        return false;
-    }
-    QQuickItem *panelItem = UCListItemActionsPrivate::get(m_container)->panelItem;
-    if (!panelItem) {
-        return false;
-    }
-    QQuickItem *listItem = panelItem->parentItem();
-    return listItem ? UCListItemPrivate::get(static_cast<UCListItem*>(listItem))->flicked : false;
+    return m_swiping;
 }
 
 /*!
@@ -205,8 +248,7 @@ qreal UCListItemActionsAttached::overshoot()
         // no ListItem attached
         return 0.0;
     }
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    return UCUnits::instance().gu(listItem->overshootGU);
+    return UCListItemPrivate::get(item)->overshoot;
 }
 
 /*!

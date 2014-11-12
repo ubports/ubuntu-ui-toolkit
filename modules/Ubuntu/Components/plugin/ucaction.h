@@ -87,6 +87,7 @@ private:
     Type m_parameterType;
 
     friend class UCActionContext;
+    friend class UCListItemActionsAttached;
 
     bool isValidType(QVariant::Type valueType);
     void generateName();
