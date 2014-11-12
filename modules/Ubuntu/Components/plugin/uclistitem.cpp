@@ -327,7 +327,7 @@ void UCListItemPrivate::update()
  * good performance when used in long list views.
  *
  * The component provides two color properties which configures the item's background
- * when normal or pressed. This can be configures through \l color and \l highlightColor
+ * when normal or pressed. This can be configured through \l color and \l highlightColor
  * properties.
  *
  * \c contentItem holds all components and resources declared as child to ListItem.
