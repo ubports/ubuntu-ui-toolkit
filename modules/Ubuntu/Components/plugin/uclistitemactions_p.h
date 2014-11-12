@@ -31,26 +31,26 @@ public:
         return actions ? actions->d_func() : 0;
     }
 
-    bool connected:1;
-    bool leading:1;
+    UCListItemActions::Status status;
+    qreal offsetDragged;
+    qreal optionSlotWidth;
+
     QQmlComponent *delegate;
+    QQmlComponent *panelDelegate;
     QQuickItem *panelItem;
     QList<UCAction*> actions;
     QList<QObject*> data;
     QPointer<UCListItem> queuedItem;
-    qreal optionSlotWidth;
-    qreal offsetDragged;
-    int optionsVisible;
 
-    void _q_handlePanelDrag();
+    void _q_updateDraggedOffset();
     void _q_handlePanelWidth();
+    UCListItemActionsAttached *attachedObject();
 
     static bool connectToListItem(UCListItemActions *options, UCListItem *listItem, bool leading);
     static void disconnectFromListItem(UCListItemActions *options);
     static bool isConnectedTo(UCListItemActions *options, UCListItem *listItem);
-    static qreal snap(UCListItemActions *options);
 
-    QQuickItem *createPanelItem();
+    QQuickItem *createPanelItem(QQmlComponent *delegate);
 };
 
 #endif // UCLISTITEMACTIONS_P_H

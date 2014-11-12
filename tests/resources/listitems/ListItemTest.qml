@@ -64,6 +64,23 @@ MainView {
         ]
     }
 
+    property list<Action> leadingArray: [
+        Action {
+            iconName: "delete"
+        }
+    ]
+    property list<Action> trailingArray: [
+        Action {
+            iconName: "search"
+        },
+        Action {
+            iconName: "edit"
+        },
+        Action {
+            iconName: "email"
+        }
+    ]
+
     Column {
         anchors {
             left: parent.left
@@ -87,6 +104,7 @@ MainView {
                 actions: [stock]
                 delegate: Column {
                     width: height + units.gu(2)
+                    anchors.verticalCenter: parent.verticalCenter
                     Icon {
                         width: units.gu(3)
                         height: width
@@ -162,8 +180,13 @@ MainView {
                         color: "red"
                         highlightColor: "lime"
                         divider.colorFrom: UbuntuColors.green
-                        leadingActions: leading
-                        trailingActions: trailing
+
+                        leadingActions: ListItemActions {
+                            actions: leadingArray
+                        }
+                        trailingActions: ListItemActions {
+                            actions: trailingArray
+                        }
 
                         Label {
                             text: modelData + " Flickable item"
