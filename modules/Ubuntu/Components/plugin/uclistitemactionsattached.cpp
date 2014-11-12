@@ -169,8 +169,8 @@ int UCListItemActionsAttached::listItemIndex() {
 /*!
  * \qmlattachedproperty bool ListItemActions::swiping
  * \readonly
- * The property notifies whether the panel is dragged/tugged (pressed and moving)
- * or not. The property does not notify the rebounding.
+ * The property notifies whether the panel is swiped or not. The property does
+ * not notify the rebounding.
  */
 bool UCListItemActionsAttached::swiping()
 {
