@@ -797,7 +797,6 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             d->attachedProperties->disableInteractive(this, false);
         }
 
-        d->setContentMoving(true);
         if (!d->suppressClick) {
             Q_EMIT clicked();
             d->_q_rebound();
@@ -1030,7 +1029,6 @@ void UCListItemPrivate::setContentMoving(bool moved)
     } else {
         Q_EMIT q->contentMovementEnded();
     }
-    qDebug() << "MOVING" << contentMoved << q->objectName();
     Q_EMIT q->contentMovingChanged();
 
 }

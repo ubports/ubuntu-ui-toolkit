@@ -73,6 +73,7 @@ Item {
             model: 10
             delegate: ListItem {
                 objectName: "listItem" + index
+                color: "lightgray"
                 width: parent.width
                 leadingActions: leading
                 trailingActions: trailing
@@ -151,8 +152,9 @@ Item {
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
             compare(defaults.snapAnimation, null, "No custom animation is set by default");
-            compare(defaults.moving, false, "default is not moving");
-            verify(defaults.actionsDelegate == null, "ActionsDelegate is set first time is tugged.");
+            compare(defaults.contentMoving, false, "default is not moving");
+            compare(defaults.style, null, "Style is loaded upon first use.");
+            compare(defaults.__styleInstance, null, "__styleInstance must be null.");
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no options set.");
@@ -282,25 +284,34 @@ Item {
             var item1 = findChild(listView, "listItem1");
             return [
                 {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: true},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0, mouse: true},
                 {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: false},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0, mouse: false},
             ];
         }
         function test_listview_not_interactive_while_tugged(data) {
             listView.positionViewAtBeginning();
             movingSpy.target = data.item;
             interactiveSpy.target = listView;
+            function log() { print(listView.interactive) }
+            function logMove() { print("moveEnded") }
+            listView.interactiveChanged.connect(log);
+            data.item.contentMovementEnded.connect(logMove);
             if (data.mouse) {
                 flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
             movingSpy.wait();
+            listView.interactiveChanged.disconnect(log);
+            data.item.contentMovementEnded.disconnect(logMove);
             compare(listView.interactive, true, "The ListView is still non-interactive!");
             compare(interactiveSpy.count, 2, "Less/more times changed!");
+            // check if it snapped in
+            verify(data.item.contentItem.x != 0.0, "Not snapped in!!");
             // dismiss
-            rebound(data.item);
+            rebound(data.item, data.clickOn);
+            fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Not snapped out!!");
         }
     }
 }
