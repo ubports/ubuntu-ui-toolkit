@@ -112,10 +112,11 @@ Item {
                 watchTarget = item;
             }
 
+            movingSpy.target = null;
             movingSpy.target = watchTarget;
             movingSpy.clear();
             mouseClick(item, centerOf(item).x, centerOf(item).y);
-            if (watchTarget.moving) {
+            if (watchTarget.contentMoving) {
                 movingSpy.wait();
             }
             movingSpy.target = null;
@@ -283,33 +284,31 @@ Item {
             var item1 = findChild(listView, "listItem1");
             return [
                 {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0, mouse: true},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: true},
                 {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0, mouse: false},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: false},
             ];
         }
         function test_listview_not_interactive_while_tugged(data) {
             listView.positionViewAtBeginning();
             movingSpy.target = data.item;
             interactiveSpy.target = listView;
-            function log() { print(listView.interactive) }
-            function logMove() { print("moveEnded") }
-            listView.interactiveChanged.connect(log);
-            data.item.contentMovementEnded.connect(logMove);
             if (data.mouse) {
                 flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
             movingSpy.wait();
-            listView.interactiveChanged.disconnect(log);
-            data.item.contentMovementEnded.disconnect(logMove);
+            // animation should no longer be running!
+            verify(!data.item.__styleInstance.snapAnimation.running, "Animation is still running!");
             compare(listView.interactive, true, "The ListView is still non-interactive!");
             compare(interactiveSpy.count, 2, "Less/more times changed!");
             // check if it snapped in
             verify(data.item.contentItem.x != 0.0, "Not snapped in!!");
             // dismiss
             rebound(data.clickOn, data.item);
+            // animation should no longer be running!
+            verify(!data.item.__styleInstance.snapAnimation.running, "Animation is still running!");
             fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Not snapped out!!");
         }
     }
