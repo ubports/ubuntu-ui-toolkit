@@ -392,7 +392,7 @@ MultiPointTouchArea {
     }
     function handleDblClick(event, touch) {
         if (main.selectByMouse) {
-            input.selectWord();
+            openContextMenu(event, false);
             // turn selection state temporarily so the selection is not cleared on release
             state = "selection";
             if (touch) {
@@ -448,13 +448,15 @@ MultiPointTouchArea {
             }
 
             // do not open context menu if this is scrolling
-            if (touchPoint.startY - touchPoint.y < -units.dp(2))
+            if (touchPoint.startY - touchPoint.y < -units.gu(2))
                 return;
 
             openContextMenu(touchPoint, false);
             suppressReleaseEvent = true;
         }
     }
+
+    property bool doubleTapInProgress: doubleTap.running
     Timer {
         id: doubleTap
         property int tapCount: 0
