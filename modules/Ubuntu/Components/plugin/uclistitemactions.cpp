@@ -42,7 +42,7 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
  * \ingroup unstable-ubuntu-listitems
  * \brief Provides configuration for actions to be added to a ListItem.
  *
- * ListItem accepts actions that can be configured to appear when tugged to left
+ * ListItem accepts actions that can be configured to appear when swiped to left
  * or right. The API does not limit the number of actions to be assigned for leading
  * or trailing actions, however the design constrains are allowing a maximum of
  * 1 action on leading- and a maximum of 3 actions on trailing side of the ListItem.
@@ -55,7 +55,7 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
  * the first time the actions are accessed. The colors of the panel is taken from
  * the theme's palette.
  *
- * When tugged, panels reveal the actions one by one. In case an action is revealed
+ * When swiped, panels reveal the actions one by one. In case an action is revealed
  * more than 50%, the action will be snapped and revealed completely. This is also
  * valid for the case when the action is visible less than 50%, in which case the
  * action is hidden. Actions can be triggered by tapping.

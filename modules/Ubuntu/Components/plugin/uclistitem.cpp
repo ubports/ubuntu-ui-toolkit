@@ -352,7 +352,7 @@ void UCListItemPrivate::update()
  * \qmlsignal ListItem::clicked()
  *
  * The signal is emitted when the component gets released while the \l pressed property
- * is set. The signal is not emitted if the ListItem content is tugged or when used in
+ * is set. The signal is not emitted if the ListItem content is swiped or when used in
  * Flickable (or ListView, GridView) and the Flickable gets moved.
  */
 UCListItem::UCListItem(QQuickItem *parent)
@@ -534,8 +534,8 @@ QQuickItem* UCListItem::contentItem() const
  *
  * This grouped property configures the thin divider shown in the bottom of the
  * component. Configures the visibility and the margins from the left and right
- * of the ListItem. When tugged (swiped left or right to reveal the actions),
- * it is not moved together with the content. \c colorFrom and \c colorTo configure
+ * of the ListItem. When swiped left or right to reveal the actions, it is not
+ * moved together with the content. \c colorFrom and \c colorTo configure
  * the starting and ending colors of the divider.
  *
  * When \c visible is true, the ListItem's content size gets thinner with the
@@ -571,7 +571,7 @@ bool UCListItem::pressed() const
  * \qmlproperty bool ListItem::contentMoving
  * \readonly
  * The property describes whether the content is moving or not. The content is
- * moved when tugged or when snapping in or out, and lasts till the snapping
+ * moved when swiped or when snapping in or out, and lasts till the snapping
  * animation completes.
  */
 
