@@ -23,25 +23,31 @@ import Ubuntu.Components 1.2
 Item {
 
     // styling properties
-
     /*
-      Panel's background color
+      Color of the background.
       */
     // FIXME: use Palette colors instead when available
     property color backgroundColor: (leadingPanel ? UbuntuColors.red : "white")
 
     /*
-      Color used in coloring the icons
+      Color used in coloring the icons.
       */
     // FIXME: use Palette colors instead when available
-    property color foregroundColor: panel.leadingPanel ? "white" : UbuntuColors.darkGrey
+    property color foregroundColor: leadingPanel ? "white" : UbuntuColors.darkGrey
+
+    /*
+      Specifies the width of the component visualizing the action.
+      */
+    property real visualizedActionWidth: units.gu(2.5)
 
     // panel implementation
     id: panel
-    width: optionsRow.childrenRect.width
+    width: Math.max(
+               optionsRow.childrenRect.width,
+               ListItemActions.visibleActions.length * MathUtils.clamp(visualizedActionWidth, height, optionsRow.maxItemWidth))
 
     // for testing
-    objectName: "ListItemPanel" + (leadingPanel ? "Leading" : "Trailing")
+    objectName: (leadingPanel ? "LeadingListItemPanel" : "TrailingListItemPanel")
 
     /*
       Property holding the ListItem's contentItem instance
@@ -50,7 +56,7 @@ Item {
     /*
       Specifies whether the panel is used to visualize leading or trailing options.
       */
-    property bool leadingPanel: panel.ListItemActions.status == panel.ListItemActions.Leading
+    readonly property bool leadingPanel: panel.ListItemActions.status == ListItemActions.Leading
 
     anchors {
         left: contentItem ? (leadingPanel ? undefined : contentItem.right) : undefined
@@ -87,25 +93,23 @@ Item {
             leftMargin: spacing
         }
 
-        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.ListItemActions.container.actions.length) : 0
+        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.ListItemActions.visibleActions.length) : 0
 
         property Action selectedAction
         property int listItemIndex
 
         Repeater {
-            model: panel.ListItemActions.container.actions
+            model: panel.ListItemActions.visibleActions
             AbstractButton {
-                objectName: modelData.objectName
-                visible: modelData.visible
-                enabled: modelData.enabled
-                opacity: modelData.enabled ? 1.0 : 0.5
-                width: (!modelData.visible) ?
-                           0 : MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
+                action: modelData
+                enabled: action.enabled
+                opacity: action.enabled ? 1.0 : 0.5
+                width: MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
                 anchors {
                     top: parent.top
                     bottom: parent.bottom
                 }
-                onTriggered: {
+                function trigger() {
                     optionsRow.selectedAction = modelData;
                     optionsRow.listItemIndex = panel.ListItemActions.listItemIndex;
                     panel.ListItemActions.snapToPosition(0.0);
@@ -116,6 +120,13 @@ Item {
                     height: parent.height
                     sourceComponent: panel.ListItemActions.delegate ? panel.ListItemActions.delegate : defaultDelegate
                     property Action action: modelData
+                    property int index: index
+                    onItemChanged: {
+                        // use action's objectName to identify the visualized action
+                        if (item && item.objectName === "") {
+                            item.objectName = modelData.objectName;
+                        }
+                    }
                 }
             }
         }
@@ -126,7 +137,7 @@ Item {
         Item {
             width: height
             Icon {
-                width: units.gu(2.5)
+                width: panel.visualizedActionWidth
                 height: width
                 name: action.iconName
                 color: panel.foregroundColor
