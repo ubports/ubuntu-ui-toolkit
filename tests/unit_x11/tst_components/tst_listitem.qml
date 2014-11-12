@@ -160,8 +160,6 @@ Item {
             pressedSpy.clear();
             clickSpy.clear();
             actionSpy.clear();
-            xChangeSpy.clear();
-            draggingSpy.clear();
             interactiveSpy.clear();
             listView.interactive = true;
             // make sure we collapse
@@ -191,13 +189,6 @@ Item {
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
-
-            compare(actionsDefault.ListItemActions.container, actionsDefault, "The attached container points to the actions list");
-            compare(actionsDefault.ListItemActions.listItem, null, "No attached ListItem by default");
-            compare(actionsDefault.ListItemActions.listItemIndex, -1, "No attached ListItem index by default");
-            compare(actionsDefault.ListItemActions.offset, 0, "No attached offset set by default");
-            compare(actionsDefault.ListItemActions.status, ListItemActions.Disconnected, "The attached status is disconnected");
-            compare(actionsDefault.ListItemActions.dragging, false, "The attached dragging is false");
         }
 
         function test_children_in_content_item() {
@@ -299,31 +290,11 @@ Item {
             rebound(data.item);
         }
 
-        // make sure this is executed as one of the last tests due to requirement to have the panelItem created
-        function test_attached_dragging_data() {
-            var item = findChild(listView, "listItem0");
-            return [
-                {tag: "Trailing", item: item, pos: centerOf(item), dx: -units.gu(20), actionList: item.trailingActions},
-                {tag: "Leading", item: item, pos: centerOf(item), dx: units.gu(20), actionList: item.leadingActions},
-            ];
-        }
-        function test_attached_dragging(data) {
-            listView.positionViewAtBeginning();
-            draggingSpy.target = data.actionList.ListItemActions;
-            movingSpy.target = data.item;
-            flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
-            movingSpy.wait();
-            compare(draggingSpy.count, 2, "The dragging hadn't been changed twice.");
-
-            // dismiss
-            rebound(data.item);
-        }
-
         function test_attached_listitem_data() {
             var item = findChild(listView, "listItem3");
             return [
-                {tag: "Trailing", item: item, pos: centerOf(item), dx: -units.gu(20), actionList: item.trailingActions, index: 3},
-                {tag: "Leading", item: item, pos: centerOf(item), dx: units.gu(20), actionList: item.leadingActions, index: 3},
+                {tag: "Trailing", item: item, pos: centerOf(item), dx: -units.gu(20), leading: true, index: 3},
+                {tag: "Leading", item: item, pos: centerOf(item), dx: units.gu(20), leading: true, index: 3},
             ];
         }
         function test_attached_listitem(data) {
@@ -331,9 +302,11 @@ Item {
             movingSpy.target = data.item;
             flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
             movingSpy.wait();
-            compare(data.actionList.ListItemActions.listItem, data.item, "The attached listItem differs from the actual item using the list.");
-            compare(data.actionList.ListItemActions.listItemIndex, data.index, "The attached listItem index is wrong.");
-            verify(data.actionList.ListItemActions.status != ListItemActions.Disconnected, "The attached status is wrong.");
+            var panel = panelItem(data.item, data.leading);
+            verify(panel, "No panel found");
+            compare(panel.ListItemActions.listItem, data.item, "The attached listItem differs from the actual item using the list.");
+            compare(panel.ListItemActions.listItemIndex, data.index, "The attached listItem index is wrong.");
+            verify(panel.ListItemActions.status != ListItemActions.Disconnected, "The attached status is wrong.");
 
             // dismiss
             rebound(data.item);
@@ -610,25 +583,26 @@ Item {
             ]
         }
         function test_toggle_selectable(data) {
-            xChangeSpy.target = testItem.contentItem;
-            testItem.selectable = true;
-            waitForRendering(testItem.contentItem, 800);
             testItem.selected = data.selected;
-            xChangeSpy.wait();
+            movingSpy.target = testItem;
+            testItem.selectable = true;
+            movingSpy.wait();
+            // cleanup
+            movingSpy.clear();
+            testItem.selectable = false;
+            movingSpy.wait();
         }
 
         function test_no_tug_when_selectable() {
-            xChangeSpy.target = null;
+            movingSpy.target = testItem;
             testItem.selectable = true;
             // wait till animation to selection mode ends
-            waitReboundCompletion(testItem);
+            movingSpy.wait();
 
             // try to tug leading
-            xChangeSpy.target = testItem.contentItem;
-            xChangeSpy.clear();
-            compare(xChangeSpy.count, 0, "Wrong signal count!");
-            flick(testItem.contentItem, centerOf(testItem.contentItem).x, centerOf(testItem.contentItem).y, testItem.contentItem.width / 2, 0);
-            compare(xChangeSpy.count, 0, "No tug allowed when in selection mode");
+            movingSpy.clear();
+            flick(testItem, centerOf(testItem).x, centerOf(testItem).y, units.gu(10), 0);
+            compare(movingSpy.count, 0, "No tug allowed when in selection mode");
         }
     }
 }
