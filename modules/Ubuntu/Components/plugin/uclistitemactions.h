@@ -55,7 +55,6 @@ Q_SIGNALS:
 private:
     Q_DECLARE_PRIVATE(UCListItemActions)
     Q_PRIVATE_SLOT(d_func(), void _q_updateDraggedOffset())
-    Q_PRIVATE_SLOT(d_func(), void _q_handlePanelWidth())
 };
 
 class UCListItemActionsAttached : public QObject
