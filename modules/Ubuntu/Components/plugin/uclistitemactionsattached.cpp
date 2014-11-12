@@ -132,24 +132,6 @@ QQmlListProperty<UCAction> UCListItemActionsAttached::visibleActions()
 }
 
 /*!
- * \qmlproperty list<Action> ListItemActions::visibleActions
- * Holds the list of visible actions. This is a convenience property to help action
- * visualization panel implementations to consider only visible actions.
- */
-QQmlListProperty<UCAction> UCListItemActionsAttached::visibleActions()
-{
-    m_visibleActions.clear();
-    if (!m_container.isNull()) {
-        Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(m_container)->actions) {
-            if (action->property("visible").toBool()) {
-                m_visibleActions << action;
-            }
-        }
-    }
-    return QQmlListProperty<UCAction>(this, m_visibleActions);
-}
-
-/*!
  * \qmlattachedproperty ListItem ListItemActions::listItem
  * \readonly
  * The property reports the connected \l ListItem to the list of actions.
