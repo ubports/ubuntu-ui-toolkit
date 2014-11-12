@@ -64,7 +64,6 @@ public:
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
-    QQuickPropertyAnimation *snap;
     UCListItemSnapAnimator *animator;
 
     // getter/setters
