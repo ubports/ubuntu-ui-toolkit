@@ -108,7 +108,7 @@ bool UCListItemActionsPrivate::connectToListItem(UCListItemActions *actions, UCL
     if (!pItem->styleItem && pItem->loadStyle()) {
         pItem->initStyleItem();
     }
-    if (pItem->styleItem && !_this->createPanelItem(pItem->styleItem->m_actionsDelegate)) {
+    if (!pItem->styleItem || (pItem->styleItem && !_this->createPanelItem(pItem->styleItem->m_actionsDelegate))) {
         return false;
     }
 
