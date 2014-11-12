@@ -57,15 +57,15 @@ public:
     void clampAndMoveX(qreal &x, qreal dx);
 
     bool pressed:1;
+    bool contentMoved:1;
     bool highlightColorChanged:1;
     bool tugged:1;
     bool suppressClick:1;
-    bool contentMoving:1;
     bool ready:1;
     bool customStyle:1;
     bool customColor:1;
     qreal xAxisMoveThresholdGU;
-    qreal overshootGU;
+    qreal overshoot;
     QPointF lastPos;
     QPointF pressedPos;
     QColor color;
@@ -76,7 +76,6 @@ public:
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
-    QQuickPropertyAnimation *snap;
     UCListItemSnapAnimator *animator;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
@@ -86,15 +85,13 @@ public:
     // getters/setters
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
-    bool isMoving() const;
-    void setContentMoved(bool move);
+    bool contentMoving() const;
+    void setContentMoving(bool moved);
     QQmlComponent *style() const;
     void setStyle(QQmlComponent *delegate);
     bool loadStyle();
     void initStyleItem();
     QQuickItem *styleInstance() const;
-    QQuickPropertyAnimation *snapAnimation() const;
-    void setSnapAnimation(QQuickPropertyAnimation *animation);
 };
 
 class PropertyChange;
@@ -182,7 +179,6 @@ public:
     UCListItemSnapAnimator(UCListItem *item);
     ~UCListItemSnapAnimator();
 
-    void setCustomAnimation(QQuickPropertyAnimation *animation);
     bool snap(qreal to);
 
 public Q_SLOTS:
@@ -194,7 +190,6 @@ public Q_SLOTS:
 private:
     bool active;
     UCListItem *item;
-    QQuickPropertyAnimation *defaultAnimation;
 };
 
 #endif // UCVIEWITEM_P_H

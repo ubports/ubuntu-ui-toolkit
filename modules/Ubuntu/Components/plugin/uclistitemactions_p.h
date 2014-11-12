@@ -31,7 +31,6 @@ public:
         return actions ? actions->d_func() : 0;
     }
 
-    bool dragging:1;
     UCListItemActions::Status status;
     qreal offsetDragged;
 
