@@ -78,6 +78,7 @@ Item {
             model: 10
             delegate: ListItem {
                 objectName: "listItem" + index
+                color: "lightgray"
                 width: parent.width
                 leadingActions: leading
                 trailingActions: trailing
@@ -91,7 +92,7 @@ Item {
 
         SignalSpy {
             id: movingSpy
-            signalName: "movementEnded"
+            signalName: "contentMovementEnded"
         }
 
         SignalSpy {
@@ -116,10 +117,11 @@ Item {
                 watchTarget = item;
             }
 
+            movingSpy.target = null;
             movingSpy.target = watchTarget;
             movingSpy.clear();
             mouseClick(item, centerOf(item).x, centerOf(item).y);
-            if (watchTarget.moving) {
+            if (watchTarget.contentMoving) {
                 movingSpy.wait();
             }
             movingSpy.target = null;
@@ -155,9 +157,9 @@ Item {
             fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
-            compare(defaults.snapAnimation, null, "No custom animation is set by default");
-            compare(defaults.moving, false, "default is not moving");
-            verify(defaults.actionsDelegate == null, "ActionsDelegate is set first time is tugged.");
+            compare(defaults.contentMoving, false, "default is not moving");
+            compare(defaults.style, null, "Style is loaded upon first use.");
+            compare(defaults.__styleInstance, null, "__styleInstance must be null.");
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no options set.");
@@ -306,10 +308,17 @@ Item {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
             movingSpy.wait();
+            // animation should no longer be running!
+            verify(!data.item.__styleInstance.snapAnimation.running, "Animation is still running!");
             compare(listView.interactive, true, "The ListView is still non-interactive!");
             compare(interactiveSpy.count, 2, "Less/more times changed!");
-            // dismiss by clickin on different item and wait for snap out of the test item
+            // check if it snapped in
+            verify(data.item.contentItem.x != 0.0, "Not snapped in!!");
+            // dismiss
             rebound(data.clickOn, data.item);
+            // animation should no longer be running!
+            verify(!data.item.__styleInstance.snapAnimation.running, "Animation is still running!");
+            fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Not snapped out!!");
         }
     }
 }

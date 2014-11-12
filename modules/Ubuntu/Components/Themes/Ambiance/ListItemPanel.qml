@@ -23,18 +23,17 @@ import Ubuntu.Components 1.2
 Item {
 
     // styling properties
-
     /*
-      Panel's background color
+      Color of the background.
       */
     // FIXME: use Palette colors instead when available
     property color backgroundColor: (leadingPanel ? UbuntuColors.red : "white")
 
     /*
-      Color used in coloring the icons
+      Color used in coloring the icons.
       */
     // FIXME: use Palette colors instead when available
-    property color foregroundColor: panel.leadingPanel ? "white" : UbuntuColors.darkGrey
+    property color foregroundColor: leadingPanel ? "white" : UbuntuColors.darkGrey
 
     // panel implementation
     id: panel
@@ -50,7 +49,7 @@ Item {
     /*
       Specifies whether the panel is used to visualize leading or trailing options.
       */
-    property bool leadingPanel: panel.ListItemActions.status == panel.ListItemActions.Leading
+    readonly property bool leadingPanel: panel.ListItemActions.status == ListItemActions.Leading
 
     anchors {
         left: contentItem ? (leadingPanel ? undefined : contentItem.right) : undefined
@@ -79,17 +78,15 @@ Item {
             leftMargin: spacing
         }
 
-        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.ListItemActions.container.actions.length) : 0
+        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.ListItemActions.visibleActions.length) : 0
 
         Repeater {
-            model: panel.ListItemActions.container.actions
+            model: panel.ListItemActions.visibleActions
             AbstractButton {
                 action: modelData
-                visible: action.visible
                 enabled: action.enabled
                 opacity: action.enabled ? 1.0 : 0.5
-                width: (!action.visible) ?
-                           0 : MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
+                width: MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
                 anchors {
                     top: parent.top
                     bottom: parent.bottom
