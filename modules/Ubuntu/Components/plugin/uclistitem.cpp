@@ -65,7 +65,7 @@ bool UCListItemSnapAnimator::snap(qreal to)
         return false;
     }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    QQuickPropertyAnimation *snap = listItem->snap ? listItem->snap : getDefaultAnimation();
+    QQuickPropertyAnimation *snap = getDefaultAnimation();
     if (!snap) {
         return false;
     }
@@ -91,7 +91,7 @@ bool UCListItemSnapAnimator::snap(qreal to)
 void UCListItemSnapAnimator::snapOut()
 {
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    QQuickAbstractAnimation *snap = listItem->snap ? listItem->snap : getDefaultAnimation();
+    QQuickAbstractAnimation *snap = getDefaultAnimation();
     // disconnect animation, otherwise snapping will disconnect the panel
     QObject::disconnect(snap, 0, 0, 0);
     // restore flickable's interactive and cleanup
@@ -107,9 +107,9 @@ void UCListItemSnapAnimator::snapOut()
 
 void UCListItemSnapAnimator::snapIn()
 {
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    QQuickAbstractAnimation *snap = listItem->snap ? listItem->snap : getDefaultAnimation();
+    QQuickAbstractAnimation *snap = getDefaultAnimation();
     QObject::disconnect(snap, 0, 0, 0);
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
     listItem->setContentMoving(false);
 }
 
@@ -295,7 +295,6 @@ UCListItemPrivate::UCListItemPrivate()
     , divider(new UCListItemDivider)
     , leadingActions(0)
     , trailingActions(0)
-    , snap(0)
     , animator(0)
     , styleComponent(0)
     , styleItem(0)
@@ -1088,25 +1087,6 @@ QQmlListProperty<QQuickItem> UCListItem::children()
 {
     Q_D(UCListItem);
     return QQuickItemPrivate::get(d->contentItem)->children();
-}
-
-/*!
- * \qmlproperty PropertyAnimation ListItem::snapAnimation
- * The property holds the animation to be performed on snapping. If set to null,
- * the default animation will be used. Defaults to null.
- */
-QQuickPropertyAnimation *UCListItemPrivate::snapAnimation() const
-{
-    return snap;
-}
-void UCListItemPrivate::setSnapAnimation(QQuickPropertyAnimation *animation)
-{
-    if (snap == animation) {
-        return;
-    }
-    snap = animation;
-    Q_Q(UCListItem);
-    Q_EMIT q->snapAnimationChanged();
 }
 
 #include "moc_uclistitem.cpp"

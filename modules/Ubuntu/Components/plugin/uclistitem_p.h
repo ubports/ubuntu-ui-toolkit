@@ -76,7 +76,6 @@ public:
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
-    QQuickPropertyAnimation *snap;
     UCListItemSnapAnimator *animator;
 
     // FIXME move these to StyledItemBase togehther with subtheming.

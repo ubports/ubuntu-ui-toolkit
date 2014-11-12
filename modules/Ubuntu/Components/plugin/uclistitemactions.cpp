@@ -188,7 +188,6 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *panel)
     return panelItem;
 }
 
-// FIXME - fis ListItemStyle::snapAnimation to a link when property available
 /*!
  * \qmltype ListItemActions
  * \instantiates UCListItemActions
