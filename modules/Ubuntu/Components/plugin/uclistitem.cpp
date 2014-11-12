@@ -321,13 +321,10 @@ void UCListItemPrivate::update()
  * \since Ubuntu.Components 1.2
  * \brief The ListItem element provides Ubuntu design standards for list or grid
  * views.
- *
- * The component is dedicated to be used in designs with static or dynamic lists
- * (i.e. list views where each item's layout differs or in lists where the content
- * is determined by a given model, thus each element has the same layout). The
- * element does not define any specific layout, components can be placed in any
- * ways on it. However, when used in list views, the content must be carefully
- * chosen to in order to keep the kinetic behavior and the highest FPS possible.
+ * The ListItem component was designed to be used in a list view. It does not
+ * define any specific layout, but while its contents can be freely chosen by
+ * the developer, care must be taken to keep the contents light in order to ensure
+ * good performance when used in long list views.
  *
  * The component provides two color properties which configures the item's background
  * when normal or pressed. This can be configures through \l color and \l highlightColor
