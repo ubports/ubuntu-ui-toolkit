@@ -35,6 +35,7 @@ QuickUtils::QuickUtils(QObject *parent) :
     m_rootView(0)
 {
     QGuiApplication::instance()->installEventFilter(this);
+    m_omitIM << "ibus" << "none" << "compose";
 }
 
 /*!
@@ -107,7 +108,9 @@ QQuickItem *QuickUtils::rootItem(QObject *object)
 
 QString QuickUtils::inputMethodProvider() const
 {
-    return QString(getenv("QT_IM_MODULE"));
+    QString im(getenv("QT_IM_MODULE"));
+
+    return m_omitIM.contains(im) ? QString() : im;
 }
 
 bool QuickUtils::touchScreenAvailable() const
