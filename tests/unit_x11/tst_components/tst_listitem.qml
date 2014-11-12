@@ -27,8 +27,6 @@ Item {
     Action {
         id: stockAction
         iconName: "starred"
-        property var param
-        onTriggered: param = value
         objectName: "stockAction"
     }
     ListItemActions {
@@ -37,20 +35,14 @@ Item {
             Action {
                 iconName: "starred"
                 objectName: "leading_1"
-                property var param
-                onTriggered: param = value
             },
             Action {
                 iconName: "edit"
                 objectName: "leading_2"
-                property var param
-                onTriggered: param = value
             },
             Action {
                 iconName: "camcorder"
                 objectName: "leading_3"
-                property var param
-                onTriggered: param = value
             }
         ]
     }
@@ -497,11 +489,11 @@ Item {
             var item3 = findChild(listView, "listItem3");
             return [
                 // testItem is the child item @index 1 in the topmost Column.
-                {tag: "Undefined", item: testItem, result: 1},
-                {tag: "Index 0", item: item0, result: 0},
-                {tag: "Index 1", item: item1, result: 1},
-                {tag: "Index 2", item: item2, result: 2},
-                {tag: "Index 3", item: item3, result: 3},
+                {tag: "Standalone item, child index 1", item: testItem, result: 1},
+                {tag: "ListView, item index 0", item: item0, result: 0},
+                {tag: "ListView, item index 1", item: item1, result: 1},
+                {tag: "ListView, item index 2", item: item2, result: 2},
+                {tag: "ListView, item index 3", item: item3, result: 3},
             ];
         }
         function test_verify_action_value(data) {
@@ -516,7 +508,6 @@ Item {
             verify(option, "actions panel cannot be reached");
             // we test the action closest to the list item's contentItem
             var action = data.item.leadingActions.actions[1];
-            action.param = undefined;
             actionSpy.target = action;
 
             // select the option
@@ -525,8 +516,10 @@ Item {
             movingSpy.wait();
 
             // check the action param
-            actionSpy.wait()
-            compare(action.param, data.result, "Action parameter differs");
+            actionSpy.wait();
+            // SignalSpy.signalArguments[0] is an array of arguments, where the index is set as index 0
+            var param = actionSpy.signalArguments[0];
+            compare(param[0], data.result, "Action parameter differs");
         }
     }
 }
