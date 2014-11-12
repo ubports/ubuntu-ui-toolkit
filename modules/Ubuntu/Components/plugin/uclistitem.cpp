@@ -332,6 +332,9 @@ void UCListItemPrivate::init()
     // watch size change and set implicit size;
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
+
+    // watch enabledChanged()
+    QObject::connect(q, SIGNAL(enabledChanged()), q, SLOT(_q_dimmDisabled()), Qt::DirectConnection);
 }
 
 void UCListItemPrivate::_q_updateThemedData()
