@@ -240,9 +240,7 @@ OrientationHelper {
                     ScriptAction {
                         script: {
                             popupBase.visible = false;
-                            if (eventGrabber.enabled) {
-                                stateWrapper.restoreActiveFocus();
-                            }
+                            stateWrapper.restoreActiveFocus();
                         }
                     }
                 }

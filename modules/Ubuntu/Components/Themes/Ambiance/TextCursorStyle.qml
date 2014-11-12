@@ -53,11 +53,10 @@ Item {
     Component {
         id: delegate
         Rectangle {
-            objectName: "text_cursor_style_" + styledItem.positionProperty
             width: cursorWidth
             // FIXME: Extend the palette and use palette values here
             color: UbuntuColors.blue
-            visible: blinkTimer.timerShowCursor || !blinkTimer.running
+            visible: blinkTimer.timerShowCursor
             Timer {
                 id: blinkTimer
                 interval: cursorStyle.cursorVisibleTimeout
