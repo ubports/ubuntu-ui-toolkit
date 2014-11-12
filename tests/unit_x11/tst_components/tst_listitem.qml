@@ -439,5 +439,42 @@ Item {
                 tryCompareFunction(function() { return data.item.contentItem.x; }, 0.0, 1000, "Not snapped back");
             }
         }
+
+        function test_snap_gesture_data() {
+            var listItem = findChild(listView, "listItem0");
+            var front = Qt.point(units.gu(1), listItem.height / 2);
+            var rear = Qt.point(listItem.width - units.gu(1), listItem.height / 2);
+            return [
+                // the first dx must be big enough to drag the panel in, it is always the last dx value
+                // which decides the snap direction
+                {tag: "Snap out, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(2)], snapIn: false},
+                {tag: "Snap in, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(1), units.gu(1)], snapIn: true},
+                // have less first dx as the trailing panel is shorter
+                {tag: "Snap out, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(2)], snapIn: false},
+                {tag: "Snap in, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(1), -units.gu(1)], snapIn: true},
+            ];
+        }
+        function test_snap_gesture(data) {
+            // performe the moves
+            movingSpy.target = data.item;
+            var pos = data.grabPos;
+            mousePress(data.item.contentItem, pos.x, pos.y);
+            for (var i in data.dx) {
+                var dx = data.dx[i];
+                mouseMoveSlowly(data.item.contentItem, pos.x, pos.y, dx, 0, 5, 100);
+                pos.x += dx;
+            }
+            mouseRelease(data.item.contentItem, pos.x, pos.y);
+            movingSpy.wait();
+
+            if (data.snapIn) {
+                // the contenTitem must be dragged in (snapIn)
+                verify(data.item.contentItem.x != 0.0, "Not snapped in!");
+                // dismiss
+                rebound(data.item);
+            } else {
+                fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Not snapped out!");
+            }
+        }
     }
 }
