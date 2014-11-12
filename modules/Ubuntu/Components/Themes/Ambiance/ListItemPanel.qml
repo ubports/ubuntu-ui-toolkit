@@ -35,12 +35,19 @@ Item {
     // FIXME: use Palette colors instead when available
     property color foregroundColor: leadingPanel ? "white" : UbuntuColors.darkGrey
 
+    /*
+      Specifies the width of the component visualizing the action.
+      */
+    property real visualizedActionWidth: units.gu(2.5)
+
     // panel implementation
     id: panel
-    width: optionsRow.childrenRect.width
+    width: Math.max(
+               optionsRow.childrenRect.width,
+               ListItemActions.visibleActions.length * MathUtils.clamp(visualizedActionWidth, height, optionsRow.maxItemWidth))
 
     // for testing
-    objectName: "ListItemPanel" + (leadingPanel ? "Leading" : "Trailing")
+    objectName: (leadingPanel ? "LeadingListItemPanel" : "TrailingListItemPanel")
 
     /*
       Property holding the ListItem's contentItem instance
@@ -97,10 +104,11 @@ Item {
                     height: parent.height
                     sourceComponent: panel.ListItemActions.delegate ? panel.ListItemActions.delegate : defaultDelegate
                     property Action action: modelData
+                    property int index: index
                     onItemChanged: {
-                        // this is needed only for testing purposes
+                        // use action's objectName to identify the visualized action
                         if (item && item.objectName === "") {
-                            item.objectName = "list_option_" + index
+                            item.objectName = modelData.objectName;
                         }
                     }
                 }
@@ -113,7 +121,7 @@ Item {
         Item {
             width: height
             Icon {
-                width: units.gu(2.5)
+                width: panel.visualizedActionWidth
                 height: width
                 name: action.iconName
                 color: panel.foregroundColor

@@ -27,18 +27,22 @@ Item {
     Action {
         id: stockAction
         iconName: "starred"
+        objectName: "stockAction"
     }
     ListItemActions {
         id: leading
         actions: [
             Action {
                 iconName: "starred"
+                objectName: "leading_1"
             },
             Action {
                 iconName: "starred"
+                objectName: "leading_2"
             },
             Action {
                 iconName: "starred"
+                objectName: "leading_3"
             }
         ]
     }
@@ -110,6 +114,10 @@ Item {
         SignalSpy {
             id: interactiveSpy
             signalName: "interactiveChanged"
+        }
+
+        function panelItem(item, leading) {
+            return findInvisibleChild(item, (leading ? "LeadingListItemPanel" : "TrailingListItemPanel"));
         }
 
         function rebound(item, watchTarget) {
@@ -284,7 +292,7 @@ Item {
             }
             movingSpy.wait();
             verify(data.item.contentItem.x != 0, "The component wasn't tugged!");
-            // dismiss by clickin on different item and wait for snap out of the test item
+            // dismiss
             rebound(data.clickOn, data.item)
         }
 
@@ -293,9 +301,9 @@ Item {
             var item1 = findChild(listView, "listItem1");
             return [
                 {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item1, mouse: true},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: true},
                 {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
-                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item1, mouse: false},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: false},
             ];
         }
         function test_listview_not_interactive_while_tugged(data) {
@@ -319,6 +327,30 @@ Item {
             // animation should no longer be running!
             verify(!data.item.__styleInstance.snapAnimation.running, "Animation is still running!");
             fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Not snapped out!!");
+        }
+
+        function test_visualized_actions_data() {
+            var listItem0 = findChild(listView, "listItem0");
+            var listItem1 = findChild(listView, "listItem1");
+            return [
+                {tag: "Leading actions", item: listItem0, leading: true, expected: ["leading_1", "leading_2", "leading_3"]},
+                {tag: "Trailing actions", item: listItem0, leading: false, expected: ["stockAction"]},
+            ];
+        }
+        function test_visualized_actions(data) {
+            movingSpy.target = data.item;
+            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.leading ? units.gu(20) : -units.gu(20), 0);
+            movingSpy.wait();
+
+            // check if the action is visible
+            var panel = panelItem(data.item, data.leading);
+            verify(panel, "Panel not visible");
+            for (var i in data.expected) {
+                var actionItem = findChild(panel, data.expected[i]);
+                verify(actionItem, data.expected[i] + " action not found");
+            }
+            // dismiss
+            rebound(data.item);
         }
     }
 }

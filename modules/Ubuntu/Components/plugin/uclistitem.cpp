@@ -1068,25 +1068,24 @@ void UCListItem::setHighlightColor(const QColor &color)
 }
 
 /*!
- * \qmlproperty list<Object> ListItem::data
+ * \qmlproperty list<Object> ListItem::listItemData
  * \default
+ * \internal
  * Overloaded default property containing all the children and resources.
  */
-QQmlListProperty<QObject> UCListItem::data()
+QQmlListProperty<QObject> UCListItemPrivate::data()
 {
-    Q_D(UCListItem);
-    return QQuickItemPrivate::get(d->contentItem)->data();
+    return QQuickItemPrivate::get(contentItem)->data();
 }
 
 /*!
- * \qmlproperty list<Item> ListItem::children
+ * \qmlproperty list<Item> ListItem::listItemChildren
  * \internal
  * Overloaded default property containing all the visible children of the item.
  */
-QQmlListProperty<QQuickItem> UCListItem::children()
+QQmlListProperty<QQuickItem> UCListItemPrivate::children()
 {
-    Q_D(UCListItem);
-    return QQuickItemPrivate::get(d->contentItem)->children();
+    return QQuickItemPrivate::get(contentItem)->children();
 }
 
 #include "moc_uclistitem.cpp"

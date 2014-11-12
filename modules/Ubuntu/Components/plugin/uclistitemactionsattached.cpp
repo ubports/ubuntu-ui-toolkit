@@ -64,6 +64,7 @@ void UCListItemActionsAttached::setList(UCListItemActions *list)
             QObject::connect(action, &UCAction::visibleChanged,
                              this, &UCListItemActionsAttached::updateVisibleActions);
         }
+        updateVisibleActions();
     }
     Q_EMIT containerChanged();
     Q_EMIT visibleActionsChanged();
