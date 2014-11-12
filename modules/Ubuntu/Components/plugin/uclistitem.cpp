@@ -331,14 +331,10 @@ void UCListItemPrivate::update()
  * properties.
  *
  * \c contentItem holds all components and resources declared as child to ListItem.
- * Being an Item, all other properties can be accessed or altered, with the exception
- * of some:
- * \list A
- * \li do not alter \c x, \c y, \c width or \c height properties as those are
- *      controlled by the ListItem itself when leading or trailing actions are
- *      revealed and thus will destroy your logic
- * \li never anchor left or right anchor lines as it will block revealing the actions.
- * \endlist
+ * Being an Item, all properties can be accessed or altered. However, make sure you
+ * never change \c x, \c y, \c width, \c height or \anchors properties as those are
+ * controlled by the ListItem itself when leading or trailing actions are revealed
+ * and thus might cause the component to misbehave.
  *
  * Each ListItem has a thin divider shown on the bottom of the component. This
  * divider can be configured through the \l divider grouped property, which can
