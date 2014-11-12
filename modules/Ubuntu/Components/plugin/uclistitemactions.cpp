@@ -39,20 +39,6 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
 {
 }
 
-void UCListItemActionsPrivate::_q_handlePanelWidth()
-{
-    // check how many options are visible && enabled
-    // FIXME: use Actions API when moved to C++
-    int count = 0;
-    for (int i = 0; i < actions.count(); i++) {
-        if (actions[i]->property("visible").toBool() && actions[i]->property("enabled").toBool()) {
-            count++;
-        }
-    }
-    optionSlotWidth = panelItem->width() / count;
-    _q_updateDraggedOffset();
-}
-
 void UCListItemActionsPrivate::_q_updateDraggedOffset()
 {
     UCListItem *listItem = qobject_cast<UCListItem*>(panelItem->parentItem());
@@ -194,9 +180,7 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *panel)
 
             // calculate option's slot size
             offsetDragged = 0.0;
-            _q_handlePanelWidth();
             // connect to panel to catch dragging
-            QObject::connect(panelItem, SIGNAL(widthChanged()), q, SLOT(_q_handlePanelWidth()));
             QObject::connect(panelItem, SIGNAL(xChanged()), q, SLOT(_q_updateDraggedOffset()));
         }
     } else {

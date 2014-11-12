@@ -43,7 +43,6 @@ public:
     QPointer<UCListItem> queuedItem;
 
     void _q_updateDraggedOffset();
-    void _q_handlePanelWidth();
     UCListItemActionsAttached *attachedObject();
 
     static bool connectToListItem(UCListItemActions *options, UCListItem *listItem, bool leading);
