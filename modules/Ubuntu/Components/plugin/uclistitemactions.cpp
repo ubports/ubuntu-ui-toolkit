@@ -188,6 +188,7 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *panel)
     return panelItem;
 }
 
+// FIXME - fis ListItemStyle::snapAnimation to a link when property available
 /*!
  * \qmltype ListItemActions
  * \instantiates UCListItemActions
@@ -197,7 +198,7 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *panel)
  * \ingroup unstable-ubuntu-listitems
  * \brief Provides configuration for actions to be added to a ListItem.
  *
- * ListItem accepts actions that can be configured to appear when tugged to left
+ * ListItem accepts actions that can be configured to appear when swiped to left
  * or right. The API does not limit the number of actions to be assigned for leading
  * or trailing actions, however the design constrains are allowing a maximum of
  * 1 action on leading- and a maximum of 3 actions on trailing side of the ListItem.
@@ -210,7 +211,7 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *panel)
  * the first time the actions are accessed. The colors of the panel is taken from
  * the theme's palette.
  *
- * When tugged, panels reveal the actions one by one. In case an action is revealed
+ * When swiped, panels reveal the actions one by one. In case an action is revealed
  * more than 50%, the action will be snapped and revealed completely. This is also
  * valid for the case when the action is visible less than 50%, in which case the
  * action is hidden. Actions can be triggered by tapping.
@@ -262,14 +263,14 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *panel)
  * as there will be no individual panel created for each list's actions visualization.
  * Depending on how long the initialization of the component used in \c ListItem::actionsDelegate
  * takes, creation time will be also reduced to one time per view.
- * However, this implies that tugging a new ListItem content while another one is
- * tugged will result in showing the newly tugged item's panel delayed, as the
+ * However, this implies that swiping a new ListItem content while another one is
+ * swiped will result in showing the newly swiped item's panel delayed, as the
  * panel can be shown only after the previous item's snapping is completed. Depending
- * on the \l ListItem::snapAnimation duration, this may take some time, and the
+ * on the \l {ListItemStyle::snapAnimation}{snapAnimation} duration, this may take some time, and the
  * response time of the UI can become unacceptable.
  *
  * Having individual ListItemActions instances increases the memory footprint,
- * however the UI will be more responsive as tugging individual ListItems will
+ * however the UI will be more responsive as swiping individual ListItems will
  * not have to wait till the previous ListItem's panel is snapped out (rebount).
  * On the other hand, memory consumption will increase signifficantly doe to
  * separate panel creation, and performance may decrease with up to 40%, depending
@@ -419,7 +420,7 @@ void UCListItemActions::setDelegate(QQmlComponent *delegate)
  * declared in place. An example of cached actions:
  * \qml
  * ListItemActions {
- *     id: cacedActions
+ *     id: cachedActions
  *     actions: [
  *         copyAction, searchAction, cutAction
  *     ]

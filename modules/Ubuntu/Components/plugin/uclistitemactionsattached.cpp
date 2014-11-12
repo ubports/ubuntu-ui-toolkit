@@ -121,7 +121,7 @@ void UCListItemActionsAttached::updateSwipeState()
 }
 
 /*!
- * \qmlproperty list<Action> ListItemActions::visibleActions
+ * \qmlattachedproperty list<Action> ListItemActions::visibleActions
  * Holds the list of visible actions. This is a convenience property to help action
  * visualization panel implementations to consider only visible actions.
  */
@@ -169,8 +169,8 @@ int UCListItemActionsAttached::listItemIndex() {
 /*!
  * \qmlattachedproperty bool ListItemActions::swiping
  * \readonly
- * The property notifies whether the panel is dragged/tugged (pressed and moving)
- * or not. The property does not notify the rebounding.
+ * The property notifies whether the panel is swiped or not. The property does
+ * not notify the rebounding.
  */
 bool UCListItemActionsAttached::swiping()
 {
