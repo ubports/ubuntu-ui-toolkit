@@ -116,10 +116,10 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
  *
  * Having individual ListItemActions instances increases the memory footprint,
  * however the UI will be more responsive as swiping individual ListItems will
- * not have to wait till the previous ListItem's panel is snapped out (rebount).
- * On the other hand, memory consumption will increase signifficantly doe to
+ * not have to wait till the previous ListItem's panel is snapped out (rebound).
+ * On the other hand, memory consumption will increase significantly due to
  * separate panel creation, and performance may decrease with up to 40%, depending
- * on how "badly" are the actions declared, within the ListItemActions or as shared
+ * on what way are the actions declared, within the ListItemActions or as shared
  * actions.
  *
  * The example above illustrates how to share ListItemActions between ListItem
