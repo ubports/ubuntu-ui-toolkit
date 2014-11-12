@@ -19,9 +19,11 @@
 #include "uclistitemactions.h"
 #include "uclistitemactions_p.h"
 #include "ucunits.h"
+#include "ucaction.h"
 
 UCListItemActionsAttached::UCListItemActionsAttached(QObject *parent)
     : QObject(parent)
+    , m_swiping(false)
 {
 }
 
@@ -29,12 +31,11 @@ UCListItemActionsAttached::~UCListItemActionsAttached()
 {
 }
 
-
 /*!
  * \qmlattachedproperty ListItemActions ListItemActions::container
  * \readonly
- * The property holds the instance of the \l ListItemActions the panel item is
- * attached to.
+ * The property holds the instance of the \l ListItemActions the ListItem's actions
+ * panel is visualizing.
  */
 void UCListItemActionsAttached::setList(UCListItemActions *list)
 {
@@ -43,17 +44,91 @@ void UCListItemActionsAttached::setList(UCListItemActions *list)
     }
     m_container = list;
     if (!m_container.isNull()) {
-        // connect to get status updates, listItem and index changes
-        connect(m_container.data(), &UCListItemActions::__statusChanged,
-                this, &UCListItemActionsAttached::statusChanged);
-        connect(m_container.data(), &UCListItemActions::__statusChanged,
-                this, &UCListItemActionsAttached::listItemChanged);
-        connect(m_container.data(), &UCListItemActions::__statusChanged,
-                this, &UCListItemActionsAttached::listItemIndexChanged);
-        connect(m_container.data(), &UCListItemActions::__draggingChanged,
-                this, &UCListItemActionsAttached::draggingChanged);
+        // connect statusChanged() to update status, listItem, listItemIndex and overshoot values
+        QObject::connect(m_container.data(), &UCListItemActions::statusChanged,
+                         this, &UCListItemActionsAttached::statusChanged);
+        QObject::connect(m_container.data(), &UCListItemActions::statusChanged,
+                         this, &UCListItemActionsAttached::listItemChanged);
+        QObject::connect(m_container.data(), &UCListItemActions::statusChanged,
+                         this, &UCListItemActionsAttached::listItemIndexChanged);
+        QObject::connect(m_container.data(), &UCListItemActions::statusChanged,
+                         this, &UCListItemActionsAttached::overshootChanged);
+
+        UCListItemActionsPrivate *actions = UCListItemActionsPrivate::get(m_container.data());
+        // connect panel's xChanged to update the dragged offset
+        QObject::connect(actions->panelItem, &QQuickItem::xChanged,
+                         this, &UCListItemActionsAttached::offsetChanged);
+
+        // connect actions to get updates about visible changes
+        Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(m_container)->actions) {
+            QObject::connect(action, &UCAction::visibleChanged,
+                             this, &UCListItemActionsAttached::updateVisibleActions);
+        }
+        updateVisibleActions();
     }
     Q_EMIT containerChanged();
+    Q_EMIT visibleActionsChanged();
+}
+
+void UCListItemActionsAttached::connectListItem(UCListItem *item, bool connect)
+{
+    if (!item) {
+        return;
+    }
+    if (connect) {
+        QObject::connect(item, &UCListItem::pressedChanged,
+                         this, &UCListItemActionsAttached::updateSwipeState);
+        QObject::connect(item, &UCListItem::contentMovingChanged,
+                         this, &UCListItemActionsAttached::updateSwipeState);
+    } else {
+        QObject::disconnect(item, &UCListItem::pressedChanged,
+                            this, &UCListItemActionsAttached::updateSwipeState);
+        QObject::disconnect(item, &UCListItem::contentMovingChanged,
+                            this, &UCListItemActionsAttached::updateSwipeState);
+    }
+}
+
+// private slot to update visible actions
+void UCListItemActionsAttached::updateVisibleActions()
+{
+    m_visibleActions.clear();
+    if (!m_container.isNull()) {
+        Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(m_container)->actions) {
+            if (action->m_visible) {
+                m_visibleActions << action;
+            }
+        }
+    }
+    Q_EMIT visibleActionsChanged();
+}
+
+// private slot updating swipe state
+void UCListItemActionsAttached::updateSwipeState()
+{
+    if (m_container.isNull()) {
+        return;
+    }
+    QQuickItem *panelItem = UCListItemActionsPrivate::get(m_container)->panelItem;
+    if (!panelItem || !panelItem->parentItem()) {
+        return;
+    }
+    UCListItem *item = static_cast<UCListItem*>(panelItem->parentItem());
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    bool swiped = listItem->pressed && listItem->contentMoved;
+    if (swiped != m_swiping) {
+        m_swiping = swiped;
+        Q_EMIT swipingChanged();
+    }
+}
+
+/*!
+ * \qmlattachedproperty list<Action> ListItemActions::visibleActions
+ * Holds the list of visible actions. This is a convenience property to help action
+ * visualization panel implementations to consider only visible actions.
+ */
+QQmlListProperty<UCAction> UCListItemActionsAttached::visibleActions()
+{
+    return QQmlListProperty<UCAction>(this, m_visibleActions);
 }
 
 /*!
@@ -93,17 +168,14 @@ int UCListItemActionsAttached::listItemIndex() {
 }
 
 /*!
- * \qmlattachedproperty bool ListItemActions::dragging
+ * \qmlattachedproperty bool ListItemActions::swiping
  * \readonly
- * The property notifies whether the panel is dragged or not. The property does
+ * The property notifies whether the panel is swiped or not. The property does
  * not notify the rebounding.
  */
-bool UCListItemActionsAttached::dragging()
+bool UCListItemActionsAttached::swiping()
 {
-    if (m_container.isNull()) {
-        return 0.0;
-    }
-    return UCListItemActionsPrivate::get(m_container)->dragging;
+    return m_swiping;
 }
 
 /*!
@@ -127,8 +199,8 @@ qreal UCListItemActionsAttached::offset()
  * as leading or as trailing action list to a \l ListItem. Possible valueas are:
  * \list A
  *  \li \b Disconnected - default, the actions list is not connected to any \l ListItem
- *  \li \b LeadingOptions - the actions list is connected as leading list
- *  \li \b TrailingOptions - the actions list is connected as trailing list
+ *  \li \b Leading - the actions list is connected as leading list
+ *  \li \b Trailing - the actions list is connected as trailing list
  * \endlist
  */
 UCListItemActions::Status UCListItemActionsAttached::status()
@@ -158,8 +230,7 @@ qreal UCListItemActionsAttached::overshoot()
         // no ListItem attached
         return 0.0;
     }
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    return UCUnits::instance().gu(listItem->overshootGU);
+    return UCListItemPrivate::get(item)->overshoot;
 }
 
 /*!
@@ -189,6 +260,12 @@ void UCListItemActionsAttached::snapToPosition(qreal position)
     if (position == 0.0) {
         listItem->_q_rebound();
     } else {
-        listItem->snapTo(position);
+        if (listItem->animator) {
+            listItem->animator->snap(position);
+        } else {
+            listItem->contentItem->setX(position);
+        }
     }
 }
+
+

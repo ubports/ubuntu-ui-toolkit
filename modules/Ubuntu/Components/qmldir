@@ -104,5 +104,3 @@ PageHeadState 1.1 PageHeadState.qml
 Icon 1.1 Icon11.qml
 StyledItem 1.1 StyledItem.qml
 singleton UbuntuColors 1.1 11/UbuntuColors.qml
-internal ListItemPanel ListItemPanel.qml
-internal ListItemSelectablePanel ListItemSelectablePanel.qml

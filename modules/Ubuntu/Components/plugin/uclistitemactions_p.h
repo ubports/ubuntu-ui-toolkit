@@ -31,27 +31,24 @@ public:
         return actions ? actions->d_func() : 0;
     }
 
-    bool dragging:1;
+    UCListItemActions::Status status;
+    qreal offsetDragged;
+
     QQmlComponent *delegate;
+    QQmlComponent *panelDelegate;
     QQuickItem *panelItem;
     QList<UCAction*> actions;
     QList<QObject*> data;
     QPointer<UCListItem> queuedItem;
-    qreal optionSlotWidth;
-    qreal offsetDragged;
-    int optionsVisible;
-    UCListItemActions::Status status;
 
-    void _q_handlePanelDrag();
-    void _q_handlePanelWidth();
+    void _q_updateDraggedOffset();
     UCListItemActionsAttached *attachedObject();
 
     static bool connectToListItem(UCListItemActions *options, UCListItem *listItem, bool leading);
     static void disconnectFromListItem(UCListItemActions *options);
     static bool isConnectedTo(UCListItemActions *options, UCListItem *listItem);
-    static void setDragging(UCListItemActions *actions, UCListItem *listItem, bool dragging);
 
-    QQuickItem *createPanelItem();
+    QQuickItem *createPanelItem(QQmlComponent *delegate);
 };
 
 #endif // UCLISTITEMACTIONS_P_H

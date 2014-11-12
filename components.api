@@ -871,16 +871,18 @@ plugins.qmltypes
     Property { name: "leadingActions"; type: "UCListItemActions"; isPointer: true }
     Property { name: "trailingActions"; type: "UCListItemActions"; isPointer: true }
     Property { name: "pressed"; type: "bool"; isReadonly: true }
+    Property { name: "contentMoving"; type: "bool"; isReadonly: true }
     Property { name: "color"; type: "QColor" }
     Property { name: "highlightColor"; type: "QColor" }
     Property { name: "selectable"; type: "bool" }
     Property { name: "selected"; type: "bool" }
-    Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-    Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
-    Property { name: "moving"; type: "bool"; isReadonly: true }
+    Property { name: "listItemData"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
+    Property { name: "style"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "__styleInstance"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Signal { name: "clicked" }
-    Signal { name: "movingStarted" }
-    Signal { name: "movingEnded" }
+    Signal { name: "contentMovementStarted" }
+    Signal { name: "contentMovementEnded" }
     name: "UCListItemActions"
     prototype: "QObject"
     exports: ["ListItemActions 1.2"]
@@ -888,16 +890,18 @@ plugins.qmltypes
     Property { name: "delegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "actions"; type: "UCAction"; isList: true; isReadonly: true }
     Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-    Signal { name: "__statusChanged" }
-    Signal { name: "__draggingChanged" }
+    Signal {
+    name: "statusChanged"
+    Parameter { name: "status"; type: "Status" }
     name: "UCListItemActionsAttached"
     prototype: "QObject"
     Property { name: "container"; type: "UCListItemActions"; isReadonly: true; isPointer: true }
+    Property { name: "visibleActions"; type: "UCAction"; isList: true; isReadonly: true }
     Property { name: "listItem"; type: "UCListItem"; isReadonly: true; isPointer: true }
     Property { name: "listItemIndex"; type: "int"; isReadonly: true }
     Property { name: "offset"; type: "double"; isReadonly: true }
     Property { name: "status"; type: "UCListItemActions::Status"; isReadonly: true }
-    Property { name: "dragging"; type: "bool"; isReadonly: true }
+    Property { name: "swiping"; type: "bool"; isReadonly: true }
     Property { name: "overshoot"; type: "double"; isReadonly: true }
     Method {
     name: "snapToPosition"
@@ -912,6 +916,13 @@ plugins.qmltypes
     Property { name: "rightMargin"; type: "double" }
     Property { name: "colorFrom"; type: "QColor" }
     Property { name: "colorTo"; type: "QColor" }
+    name: "UCListItemStyle"
+    prototype: "QQuickItem"
+    exports: ["Ubuntu.Components.Styles/ListItemStyle 1.2"]
+    Property { name: "actionsDelegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "selectionDelegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "dragHandlerDelegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "snapAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1", "Mouse 1.0"]

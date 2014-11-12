@@ -59,6 +59,7 @@ protected:
 private:
     explicit QuickUtils(QObject *parent = 0);
     QPointer<QQuickView> m_rootView;
+    QStringList m_omitIM;
 
     void lookupQuickView();
 };
