@@ -198,7 +198,7 @@ Item {
         }
         function test_longtap_when_empty(data) {
             TestExtras.touchClick(0, data.input, centerOf(data.input));
-            waitForRendering(data.input, 500);
+            wait(500);
 
             popupSpy.target = findChild(data.input, "input_handler");
 
