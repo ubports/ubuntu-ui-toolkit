@@ -116,7 +116,7 @@ void UCListItemSnapAnimator::snapOut()
     listItem->grabPanel(listItem->leadingActions, false);
     listItem->grabPanel(listItem->trailingActions, false);
     // set contentMoved to false - FIXME used later
-    listItem->setContentMoved(false);
+    listItem->setContentMoving(false);
 }
 
 void UCListItemSnapAnimator::snapIn()
@@ -127,7 +127,7 @@ void UCListItemSnapAnimator::snapIn()
         QObject::disconnect(snap, 0, 0, 0);
     }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    listItem->setContentMoved(false);
+    listItem->setContentMoving(false);
 }
 
 QQuickPropertyAnimation *UCListItemSnapAnimator::getDefaultAnimation()
