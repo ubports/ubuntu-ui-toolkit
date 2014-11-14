@@ -158,6 +158,7 @@ public:
     ~UCListItemSnapAnimator();
 
     bool snap(qreal to);
+    void complete();
 
 public Q_SLOTS:
     void snapOut();
