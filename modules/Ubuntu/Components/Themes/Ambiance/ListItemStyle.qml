@@ -1,6 +1,3 @@
-import QtQuick 2.3
-import Ubuntu.Components.Styles 1.2 as Styles
-import Ubuntu.Components 1.2
 /*
  * Copyright 2014 Canonical Ltd.
  *
@@ -17,6 +14,10 @@ import Ubuntu.Components 1.2
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import QtQuick 2.3
+import Ubuntu.Components.Styles 1.2 as Styles
+import Ubuntu.Components 1.2
+
 Styles.ListItemStyle {
 
     actionsDelegate: ListItemPanel{}
@@ -31,4 +32,32 @@ Styles.ListItemStyle {
         alwaysRunToEnd: true
     }
 
+    // the selection/multiselection panel
+    selectionDelegate: Item {
+        id: selectionPanel
+        width: checkbox.width + 2 * units.gu(2)
+        /*
+          Internally used to link to the list item's content. The parent item is the ListItem itself.
+          */
+        readonly property Item contentItem: parent ? parent.contentItem : null
+
+        anchors {
+            right: contentItem ? contentItem.left : undefined
+            top: contentItem ? contentItem.top : undefined
+            bottom: contentItem ? contentItem.bottom : undefined
+        }
+
+        CheckBox {
+            id: checkbox
+            anchors.centerIn: parent
+            checked: selectionPanel.parent ? selectionPanel.parent.selected : false
+
+            Binding {
+                target: selectionPanel.parent
+                property: "selected"
+                value: checkbox.checked
+                when: selectionPanel.parent
+            }
+        }
+    }
 }

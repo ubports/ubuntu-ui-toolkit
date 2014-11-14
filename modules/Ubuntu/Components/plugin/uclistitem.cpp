@@ -385,14 +385,6 @@ void UCListItemPrivate::_q_dimmDisabled()
     }
 }
 
-void UCListItemPrivate::_q_updateSelected()
-{
-    Q_Q(UCListItem);
-    bool checked = selectionPanel->property("checked").toBool();
-    q->setSelected(checked);
-    update();
-}
-
 void UCListItemPrivate::_q_rebound()
 {
     setPressed(false);
@@ -612,21 +604,27 @@ QQuickItem *UCListItemPrivate::createSelectionPanel()
 {
     Q_Q(UCListItem);
     if (!selectionPanel) {
-        QUrl panelDocument = UbuntuComponentsPlugin::pluginUrl().
-                resolved(QUrl::fromLocalFile("ListItemSelectablePanel.qml"));
-        QQmlComponent component(qmlEngine(q), panelDocument);
-        if (!component.isError()) {
-            selectionPanel = qobject_cast<QQuickItem*>(component.beginCreate(qmlContext(q)));
-            if (selectionPanel) {
-                QQml_setParent_noEvent(selectionPanel, q);
-                selectionPanel->setParentItem(q);
-                selectionPanel->setVisible(false);
-                selectionPanel->setProperty("checked", selected);
-                // complete component creation
-                component.completeCreate();
+        // get the component from the style
+        if (!styleComponent) {
+            loadStyle();
+        }
+        if (!styleItem) {
+            initStyleItem();
+        }
+        if (styleItem && styleItem->m_selectionDelegate) {
+            if (!styleItem->m_selectionDelegate->isError()) {
+                selectionPanel = qobject_cast<QQuickItem*>(
+                            styleItem->m_selectionDelegate->beginCreate(qmlContext(q)));
+                if (selectionPanel) {
+                    QQml_setParent_noEvent(selectionPanel, q);
+                    selectionPanel->setParentItem(q);
+                    selectionPanel->setVisible(false);
+                    // complete component creation
+                    styleItem->m_selectionDelegate->completeCreate();
+                }
+            } else {
+                qmlInfo(q) << styleItem->m_selectionDelegate->errorString();
             }
-        } else {
-            qmlInfo(q) << component.errorString();
         }
     }
     return selectionPanel;
@@ -646,14 +644,11 @@ void UCListItemPrivate::toggleSelectionMode()
         if (attachedProperties) {
             q->setSelected(UCListItemAttachedPrivate::get(attachedProperties)->isItemSelected(q));
         }
-        QObject::connect(selectionPanel, SIGNAL(checkedChanged()), q, SLOT(_q_updateSelected()));
     } else {
         // remove content item dimming and destroy selection panel as well
         animator->snap(0.0);
         selectionPanel->setVisible(false);
-        QObject::disconnect(selectionPanel, SIGNAL(checkedChanged()), q, SLOT(_q_updateSelected()));
     }
-    _q_updateSelected();
 }
 
 /*!
@@ -782,6 +777,10 @@ void UCListItem::componentComplete()
         update();
     }
 
+    // toggle selection mode if has been set by a binding
+    if (d->selectable) {
+        d->toggleSelectionMode();
+    }
     // get the selected state from the attached object
     if (d->attachedProperties) {
         setSelected(UCListItemAttachedPrivate::get(d->attachedProperties)->isItemSelected(this));
@@ -1273,10 +1272,6 @@ void UCListItem::setSelected(bool selected)
         } else {
             UCListItemAttachedPrivate::get(d->attachedProperties)->removeSelectedItem(this);
         }
-    }
-    // update panel as well
-    if (d->selectionPanel) {
-        d->selectionPanel->setProperty("checked", d->selected);
     }
     Q_EMIT selectedChanged();
 }

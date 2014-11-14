@@ -47,6 +47,7 @@ private:
     QQmlComponent *m_dragHandlerDelegate;
     QQuickPropertyAnimation *m_snapAnimation;
 
+    friend class UCListItemPrivate;
     friend class UCListItemActionsPrivate;
     friend class UCListItemSnapAnimator;
 };

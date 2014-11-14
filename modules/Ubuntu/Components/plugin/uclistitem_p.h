@@ -50,7 +50,6 @@ public:
     void _q_updateSize();
     void _q_updateIndex();
     void _q_dimmDisabled();
-    void _q_updateSelected();
     int index();
     void setPressed(bool pressed);
     void setTugged(bool tugged);
