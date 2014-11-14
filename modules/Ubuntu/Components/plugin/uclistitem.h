@@ -97,7 +97,7 @@ class UCListItemAttached : public QObject
 {
     Q_OBJECT
 public:
-    UCListItemAttached(QObject *owner);
+    explicit UCListItemAttached(QObject *owner);
     ~UCListItemAttached();
 
     bool listenToRebind(UCListItem *item, bool listen);
