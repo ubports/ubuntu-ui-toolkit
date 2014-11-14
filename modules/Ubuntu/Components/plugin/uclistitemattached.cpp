@@ -154,7 +154,7 @@ bool UCListItemAttached::isBountTo(UCListItem *item)
 
 /*
  * Disable/enable interactive flag for the ascendant flickables. The item is used
- * to detect whether the sam item is trying to enable the flickables which disabled
+ * to detect whether the same item is trying to enable the flickables which disabled
  * it before. The enabled/disabled states are not equivalent to the enabled/disabled
  * state of the interactive flag.
  * When disabled, always the last item disabling will be kept as active disabler,
