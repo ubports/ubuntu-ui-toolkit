@@ -69,6 +69,8 @@ bool UCListItemSnapAnimator::snap(qreal to)
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
     QQuickPropertyAnimation *snap = getDefaultAnimation();
     if (!snap) {
+        // no animation, so we simply position the component
+        listItem->contentItem->setX(to);
         return false;
     }
     snap->setTargetObject(listItem->contentItem);
@@ -90,27 +92,42 @@ bool UCListItemSnapAnimator::snap(qreal to)
     return true;
 }
 
+void UCListItemSnapAnimator::complete()
+{
+    QQuickPropertyAnimation *snap = getDefaultAnimation();
+    if (snap && snap->isRunning()) {
+        snap->complete();
+    }
+}
+
 void UCListItemSnapAnimator::snapOut()
 {
+    if (senderSignalIndex() >= 0) {
+        // disconnect animation, otherwise snapping will disconnect the panel
+        QQuickAbstractAnimation *snap = getDefaultAnimation();
+        QObject::disconnect(snap, 0, 0, 0);
+    }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    QQuickAbstractAnimation *snap = getDefaultAnimation();
-    // disconnect animation, otherwise snapping will disconnect the panel
-    QObject::disconnect(snap, 0, 0, 0);
-    // restore flickable's interactive and cleanup
-    listItem->attachedProperties->disableInteractive(item, false);
-    // no need to listen flickables any longer
-    listItem->attachedProperties->listenToRebind(item, false);
-    // disconnect actions
+    if (listItem->attachedProperties) {
+        // restore flickable's interactive and cleanup
+        listItem->attachedProperties->disableInteractive(item, false);
+        // no need to listen flickables any longer
+        listItem->attachedProperties->listenToRebind(item, false);
+    }
+    // disconnect actions - FIXME this will be used later
     listItem->grabPanel(listItem->leadingActions, false);
     listItem->grabPanel(listItem->trailingActions, false);
-    // set contentMoved to false
+    // set contentMoved to false - FIXME used later
     listItem->setContentMoving(false);
 }
 
 void UCListItemSnapAnimator::snapIn()
 {
-    QQuickAbstractAnimation *snap = getDefaultAnimation();
-    QObject::disconnect(snap, 0, 0, 0);
+    if (senderSignalIndex() >= 0) {
+        // disconnect animation
+        QQuickAbstractAnimation *snap = getDefaultAnimation();
+        QObject::disconnect(snap, 0, 0, 0);
+    }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
     listItem->setContentMoving(false);
 }
