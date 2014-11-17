@@ -108,16 +108,15 @@ public:
     UCListItemAttachedPrivate(UCListItemAttached *qq);
     ~UCListItemAttachedPrivate();
 
-    void init();
-
-    struct Record {
-        QPointer<QQuickFlickable> flickable;
-        PropertyChange *interactive;
-    };
+    void clearFlickableList();
+    void buildFlickablesList();
+    void clearChangesList();
+    void buildChangesList(const QVariant &newValue);
 
     UCListItemAttached *q_ptr;
     bool globalDisabled;
-    QList<Record> list;
+    QList< QPointer<QQuickFlickable> > flickables;
+    QList< PropertyChange* > changes;
     QPointer<UCListItem> bountItem;
     QPointer<UCListItem> disablerItem;
 };
@@ -186,6 +185,7 @@ public:
     ~UCListItemSnapAnimator();
 
     bool snap(qreal to);
+    void complete();
 
 public Q_SLOTS:
     void snapOut();
