@@ -118,20 +118,19 @@ public:
         return item->d_func();
     }
 
-    void init();
+    void clearFlickableList();
+    void buildFlickablesList();
+    void clearChangesList();
+    void buildChangesList(const QVariant &newValue);
     void addSelectedItem(UCListItem *item);
     void removeSelectedItem(UCListItem *item);
     bool isItemSelected(UCListItem *item);
 
-    struct Record {
-        QPointer<QQuickFlickable> flickable;
-        PropertyChange *interactive;
-    };
-
     UCListItemAttached *q_ptr;
     bool globalDisabled;
-    QList<Record> list;
     QList<int> indexList;
+    QList< QPointer<QQuickFlickable> > flickables;
+    QList< PropertyChange* > changes;
     QPointer<UCListItem> bountItem;
     QPointer<UCListItem> disablerItem;
 };

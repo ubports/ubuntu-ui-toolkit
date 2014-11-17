@@ -118,7 +118,7 @@ void UCListItemSnapAnimator::snapOut()
     // disconnect actions
     listItem->grabPanel(listItem->leadingActions, false);
     listItem->grabPanel(listItem->trailingActions, false);
-    // set contentMoved to false
+    // set contentMoved to false - FIXME used later
     listItem->setContentMoving(false);
 }
 

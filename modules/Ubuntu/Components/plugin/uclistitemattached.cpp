@@ -36,20 +36,54 @@ UCListItemAttachedPrivate::UCListItemAttachedPrivate(UCListItemAttached *qq)
 
 UCListItemAttachedPrivate::~UCListItemAttachedPrivate()
 {
-    // clear property change objects
+    clearChangesList();
+    clearFlickableList();
+}
+
+// disconnect all flickables
+void UCListItemAttachedPrivate::clearFlickableList()
+{
     Q_Q(UCListItemAttached);
-    Q_FOREACH(const Record &record, list) {
-        if (record.flickable.data()) {
-            QObject::disconnect(record.flickable.data(), &QQuickFlickable::movementStarted,
-                                q, &UCListItemAttached::unbindItem);
+    Q_FOREACH(const QPointer<QQuickFlickable> &flickable, flickables) {
+        if (flickable.data())
+        QObject::disconnect(flickable.data(), &QQuickFlickable::movementStarted,
+                            q, &UCListItemAttached::unbindItem);
+    }
+    flickables.clear();
+}
+// connect all flickables
+void UCListItemAttachedPrivate::buildFlickablesList()
+{
+    Q_Q(UCListItemAttached);
+    QQuickItem *item = qobject_cast<QQuickItem*>(q->parent());
+    if (!item) {
+        return;
+    }
+    clearFlickableList();
+    while (item) {
+        QQuickFlickable *flickable = qobject_cast<QQuickFlickable*>(item);
+        if (flickable) {
+            QObject::connect(flickable, &QQuickFlickable::movementStarted,
+                             q, &UCListItemAttached::unbindItem);
+            flickables << flickable;
         }
-        // deleting PropertyChange will restore the saved property
-        // to its original binding/value
-        delete record.interactive;
+        item = item->parentItem();
     }
 }
 
-void UCListItemAttachedPrivate::init()
+void UCListItemAttachedPrivate::clearChangesList()
+{
+    // clear property change objects
+    Q_Q(UCListItemAttached);
+    Q_FOREACH(PropertyChange *change, changes) {
+        // deleting PropertyChange will restore the saved property
+        // to its original binding/value
+        delete change;
+    }
+    changes.clear();
+}
+
+void UCListItemAttachedPrivate::buildChangesList(const QVariant &newValue)
 {
     // collect all ascendant flickables
     Q_Q(UCListItemAttached);
@@ -57,15 +91,13 @@ void UCListItemAttachedPrivate::init()
     if (!item) {
         return;
     }
+    clearChangesList();
     while (item) {
         QQuickFlickable *flickable = qobject_cast<QQuickFlickable*>(item);
         if (flickable) {
-            Record record;
-            record.flickable = flickable;
-            record.interactive = new PropertyChange(item, "interactive");
-            list.append(record);
-            QObject::connect(flickable, &QQuickFlickable::movementStarted,
-                             q, &UCListItemAttached::unbindItem);
+            PropertyChange *change = new PropertyChange(item, "interactive");
+            PropertyChange::setValue(change, newValue);
+            changes << change;
         }
         item = item->parentItem();
     }
@@ -75,7 +107,6 @@ UCListItemAttached::UCListItemAttached(QObject *owner)
     : QObject(owner)
     , d_ptr(new UCListItemAttachedPrivate(this))
 {
-    d_ptr->init();
 }
 
 UCListItemAttached::~UCListItemAttached()
@@ -91,6 +122,8 @@ bool UCListItemAttached::listenToRebind(UCListItem *item, bool listen)
     if (listen) {
         if (d->bountItem.isNull() || (d->bountItem == item)) {
             d->bountItem = item;
+            // rebuild flickable list
+            d->buildFlickablesList();
             result = true;
         }
     } else if (d->bountItem == item) {
@@ -104,8 +137,8 @@ bool UCListItemAttached::listenToRebind(UCListItem *item, bool listen)
 bool UCListItemAttached::isMoving()
 {
     Q_D(UCListItemAttached);
-    Q_FOREACH(const UCListItemAttachedPrivate::Record &record, d->list) {
-        if (record.flickable && record.flickable->isMoving()) {
+    Q_FOREACH(const QPointer<QQuickFlickable> &flickable, d->flickables) {
+        if (flickable && flickable->isMoving()) {
             return true;
         }
     }
@@ -121,7 +154,7 @@ bool UCListItemAttached::isBountTo(UCListItem *item)
 
 /*
  * Disable/enable interactive flag for the ascendant flickables. The item is used
- * to detect whether the sam item is trying to enable the flickables which disabled
+ * to detect whether the same item is trying to enable the flickables which disabled
  * it before. The enabled/disabled states are not equivalent to the enabled/disabled
  * state of the interactive flag.
  * When disabled, always the last item disabling will be kept as active disabler,
@@ -146,12 +179,11 @@ void UCListItemAttached::disableInteractive(UCListItem *item, bool disable)
         // none of the above, leave
         return;
     }
-    Q_FOREACH(const UCListItemAttachedPrivate::Record &record, d->list) {
-        if (disable) {
-            PropertyChange::setValue(record.interactive, false);
-        } else {
-            PropertyChange::restore(record.interactive);
-        }
+    if (disable) {
+        // (re)build changes list with disabling the interactive value
+        d->buildChangesList(false);
+    } else {
+        d->clearChangesList();
     }
 }
 
@@ -159,7 +191,7 @@ void UCListItemAttached::unbindItem()
 {
     Q_D(UCListItemAttached);
     if (d->bountItem) {
-        // depending on content item's X coordinate, we either rebound or prompt drop
+        // depending on content item's X coordinate, we either do animated or prompt rebind
         if (d->bountItem->contentItem()->x() != 0.0) {
             // content is not in origin, rebind
             UCListItemPrivate::get(d->bountItem.data())->_q_rebound();
@@ -169,6 +201,8 @@ void UCListItemAttached::unbindItem()
         }
         d->bountItem.clear();
     }
+    // clear binding list
+    d->clearFlickableList();
 }
 
 /*!
