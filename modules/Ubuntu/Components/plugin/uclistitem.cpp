@@ -331,7 +331,7 @@ void UCListItemPrivate::init()
     // content will be redirected to the contentItem, therefore we must report
     // children changes as it would come from the main component
     QObject::connect(contentItem, &QQuickItem::childrenChanged,
-                     q, &UCListItem::childrenChanged);
+                     q, &UCListItem::listItemChildrenChanged);
     q->setFlag(QQuickItem::ItemHasContents);
     // turn activeFocusOnPress on
     q->setActiveFocusOnPress(true);
