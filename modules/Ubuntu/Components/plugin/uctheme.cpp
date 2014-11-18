@@ -77,7 +77,6 @@
 
 const QString THEME_FOLDER_FORMAT("%1/%2/");
 const QString PARENT_THEME_FILE("parent_theme");
-const char *ENV_PATH = "UBUNTU_UI_TOOLKIT_THEMES_PATH";
 
 QStringList themeSearchPath() {
     QString envPath = QLatin1String(getenv("UBUNTU_UI_TOOLKIT_THEMES_PATH"));
@@ -92,6 +91,14 @@ QStringList themeSearchPath() {
         // ~/.local/share
         pathList << QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
     }
+
+    // append QML import path(s); we must explicitly support env override here
+    QString qml2ImportPath(getenv("QML2_IMPORT_PATH"));
+    if (qml2ImportPath.isEmpty())
+        pathList << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath);
+    else
+        pathList << qml2ImportPath.split(':', QString::SkipEmptyParts);
+
     // fix folders
     QStringList result;
     Q_FOREACH(const QString &path, pathList) {
@@ -99,8 +106,6 @@ QStringList themeSearchPath() {
             result << path + '/';
         }
     }
-    // append standard QML2_IMPORT_PATH value
-    result << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath);
     return result;
 }
 
@@ -230,7 +235,7 @@ QString UCTheme::parentThemeName(const QString& themeName)
     QString parentTheme;
     QUrl themePath = pathFromThemeName(themeName);
     if (!themePath.isValid()) {
-        qWarning() << UbuntuI18n::instance().tr("Theme not found: ") << themeName;
+        qWarning() << qPrintable(UbuntuI18n::instance().tr("Theme not found: \"%1\"").arg(themeName));
     } else {
         QFile file(themePath.resolved(PARENT_THEME_FILE).toLocalFile());
         if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {

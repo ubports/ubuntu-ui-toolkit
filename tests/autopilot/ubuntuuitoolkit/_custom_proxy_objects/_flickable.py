@@ -77,14 +77,19 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
     def _slow_drag(self, start_x, stop_x, start_y, stop_y):
         # If we drag too fast, we end up scrolling more than what we
         # should, sometimes missing the  element we are looking for.
+        original_content_y = self.contentY
+
         # I found that when the flickDeceleration is 1500, the rate should be
         # 5 and that when it's 100, the rate should be 1. With those two points
-        # we can get that the following equation.
+        # we can get the following equation.
         # XXX The deceleration might not be linear with respect to the rate,
         # but this works for the two types of scrollables we have for now.
         # --elopio - 2014-05-08
         rate = (self.flickDeceleration + 250) / 350
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y, rate=rate)
+
+        if self.contentY == original_content_y:
+            raise _common.ToolkitException('Could not swipe in the flickable.')
 
 
 class QQuickFlickable(Scrollable):
@@ -105,7 +110,6 @@ class QQuickFlickable(Scrollable):
 
     @autopilot_logging.log_action(logger.info)
     def _swipe_non_visible_child_into_view(self, child, containers):
-        original_content_y = self.contentY
         while not self._is_child_visible(child, containers):
             # Check the direction of the swipe based on the position of the
             # child relative to the immediate flickable container.
@@ -114,12 +118,8 @@ class QQuickFlickable(Scrollable):
             else:
                 self.swipe_to_show_more_below(containers)
 
-            if self.contentY == original_content_y:
-                raise _common.ToolkitException(
-                    "Couldn't swipe in the flickable.")
-
     @autopilot_logging.log_action(logger.info)
-    def swipe_to_show_more_above(self, containers):
+    def swipe_to_show_more_above(self, containers=None):
         if self.atYBeginning:
             raise _common.ToolkitException(
                 "Can't swipe more, we are already at the top of the "
@@ -128,7 +128,7 @@ class QQuickFlickable(Scrollable):
             self._swipe_to_show_more('above', containers)
 
     @autopilot_logging.log_action(logger.info)
-    def swipe_to_show_more_below(self, containers):
+    def swipe_to_show_more_below(self, containers=None):
         if self.atYEnd:
             raise _common.ToolkitException(
                 "Can't swipe more, we are already at the bottom of the "
@@ -136,7 +136,9 @@ class QQuickFlickable(Scrollable):
         else:
             self._swipe_to_show_more('below', containers)
 
-    def _swipe_to_show_more(self, direction, containers):
+    def _swipe_to_show_more(self, direction, containers=None):
+        if containers is None:
+            containers = self._get_containers()
         start_x = stop_x = self.globalRect.x + (self.globalRect.width // 2)
         # Start and stop just a little under the top and a little over the
         # bottom.

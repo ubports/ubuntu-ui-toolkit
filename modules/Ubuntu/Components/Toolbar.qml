@@ -43,7 +43,6 @@ Panel {
     __openOnHover: true
 
     /*!
-      \preliminary
       The list of \l Actions to be shown on the toolbar
      */
     property Item tools: null

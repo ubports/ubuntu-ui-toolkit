@@ -21,45 +21,44 @@ import Ubuntu.Components 1.1
 TestCase {
     name: "LabelAPI"
 
+    function cleanup() {
+        textCustom.fontSize = "medium";
+        textCustom.font.weight = Font.Light;
+    }
+
     function test_0_defaults() {
         compare(textCustom.font.family, "Ubuntu", "Default font family");
         compare(textCustom.font.weight, Font.Light, "Default font weight");
-    }
-
-    function test_fontSize() {
         compare(textCustom.fontSize,"medium","fontSize is 'medium' by default")
-
-        var fontSizes = ["xx-small", "x-small", "small", "medium", "large", "x-large", "xx-large" ]
-
-        for (var i=0;i<fontSizes.length;i++)
-        {
-
-            var newFontSize = fontSizes[i]
-            console.debug("Testing with fontSize " + newFontSize)
-
-            textCustom.fontSize = newFontSize
-
-            try {
-                expectFail("","https://bugs.launchpad.net/tavastia/+bug/1076771")
-                compare(textCustom.newFontSize,newFontSize,"Can set/get " + newFontSize)
-            } catch(err) {
-                console.debug("Found a bug, continuing for the other items in list..")
-            }
-        }
     }
 
-    function test_fontWeight() {
-        compare(textCustom.font.weight, Font.Light, "font.weight is 'light' by default")
+    function test_fontSize_data() {
+        return [
+            {tag: "xx-small"},
+            {tag: "x-small"},
+            {tag: "small"},
+            {tag: "medium"},
+            {tag: "large"},
+            {tag: "x-large"},
+        ];
+    }
+    function test_fontSize(data) {
+        textCustom.fontSize = data.tag;
+        compare(textCustom.fontSize, data.tag, "Can set/get " + data.tag)
+    }
 
-        var fontWeights = [ Font.Light, Font.Normal, Font.DemiBold, Font.Bold, Font.Black ]
-
-        for (var i in fontWeights)
-        {
-            var newFontWeight = fontWeights[i]
-            textCustom.font.weight = newFontWeight
-
-            compare(textCustom.font.weight, newFontWeight, "can set/get " + newFontWeight)
-        }
+    function test_fontWeight_data() {
+        return [
+            {tag: "Light", weight: Font.Light},
+            {tag: "Normal", weight: Font.Normal},
+            {tag: "DemiBold", weight: Font.DemiBold},
+            {tag: "Bold", weight: Font.Bold},
+            {tag: "Black", weight: Font.Black},
+        ];
+    }
+    function test_fontWeight(data) {
+        textCustom.font.weight = data.weight
+        compare(textCustom.font.weight, data.weight, "can set/get " + data.weight);
     }
 
     function test_boldWeightConflict() {
