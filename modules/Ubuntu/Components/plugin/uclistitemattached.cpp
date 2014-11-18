@@ -37,11 +37,11 @@ UCListItemAttachedPrivate::UCListItemAttachedPrivate(UCListItemAttached *qq)
 UCListItemAttachedPrivate::~UCListItemAttachedPrivate()
 {
     clearChangesList();
-    clearFlickableList();
+    clearFlickablesList();
 }
 
 // disconnect all flickables
-void UCListItemAttachedPrivate::clearFlickableList()
+void UCListItemAttachedPrivate::clearFlickablesList()
 {
     Q_Q(UCListItemAttached);
     Q_FOREACH(const QPointer<QQuickFlickable> &flickable, flickables) {
@@ -51,6 +51,7 @@ void UCListItemAttachedPrivate::clearFlickableList()
     }
     flickables.clear();
 }
+
 // connect all flickables
 void UCListItemAttachedPrivate::buildFlickablesList()
 {
@@ -59,7 +60,7 @@ void UCListItemAttachedPrivate::buildFlickablesList()
     if (!item) {
         return;
     }
-    clearFlickableList();
+    clearFlickablesList();
     while (item) {
         QQuickFlickable *flickable = qobject_cast<QQuickFlickable*>(item);
         if (flickable) {
@@ -113,21 +114,21 @@ UCListItemAttached::~UCListItemAttached()
 {
 }
 
-// register item to be rebount
+// register item to be rebound
 bool UCListItemAttached::listenToRebind(UCListItem *item, bool listen)
 {
-    // we cannot bind the item until we have an other one bount
+    // we cannot bind the item until we have an other one bound
     bool result = false;
     Q_D(UCListItemAttached);
     if (listen) {
-        if (d->bountItem.isNull() || (d->bountItem == item)) {
-            d->bountItem = item;
+        if (d->boundItem.isNull() || (d->boundItem == item)) {
+            d->boundItem = item;
             // rebuild flickable list
             d->buildFlickablesList();
             result = true;
         }
-    } else if (d->bountItem == item) {
-        d->bountItem.clear();
+    } else if (d->boundItem == item) {
+        d->boundItem.clear();
         result = true;
     }
     return result;
@@ -145,11 +146,11 @@ bool UCListItemAttached::isMoving()
     return false;
 }
 
-// returns true if the given ListItem is bount to listen on moving changes
-bool UCListItemAttached::isBountTo(UCListItem *item)
+// returns true if the given ListItem is bound to listen on moving changes
+bool UCListItemAttached::isBoundTo(UCListItem *item)
 {
     Q_D(UCListItemAttached);
-    return d->bountItem == item;
+    return d->boundItem == item;
 }
 
 /*
@@ -163,20 +164,20 @@ bool UCListItemAttached::isBountTo(UCListItem *item)
 void UCListItemAttached::disableInteractive(UCListItem *item, bool disable)
 {
     Q_D(UCListItemAttached);
-    if ((d->globalDisabled && disable) || (!d->globalDisabled && disable)) {
+    if (disable) {
         // disabling or re-disabling
         d->disablerItem = item;
         if (d->globalDisabled == disable) {
             // was already disabled, leave
             return;
         }
-        d->globalDisabled = disable;
-    } else if (d->globalDisabled && !disable && d->disablerItem == item) {
+        d->globalDisabled = true;
+    } else if (d->globalDisabled && d->disablerItem == item) {
         // the one disabled it will enable
-        d->globalDisabled = disable;
+        d->globalDisabled = false;
         d->disablerItem.clear();
     } else {
-        // none of the above, leave
+        // !disabled && (!globalDisabled || item != d->disablerItem)
         return;
     }
     if (disable) {
@@ -190,19 +191,19 @@ void UCListItemAttached::disableInteractive(UCListItem *item, bool disable)
 void UCListItemAttached::unbindItem()
 {
     Q_D(UCListItemAttached);
-    if (d->bountItem) {
+    if (d->boundItem) {
         // depending on content item's X coordinate, we either do animated or prompt rebind
-        if (d->bountItem->contentItem()->x() != 0.0) {
+        if (d->boundItem->contentItem()->x() != 0.0) {
             // content is not in origin, rebind
-            UCListItemPrivate::get(d->bountItem.data())->_q_rebound();
+            UCListItemPrivate::get(d->boundItem.data())->_q_rebound();
         } else {
             // do some cleanup
-            UCListItemPrivate::get(d->bountItem.data())->promptRebound();
+            UCListItemPrivate::get(d->boundItem.data())->promptRebound();
         }
-        d->bountItem.clear();
+        d->boundItem.clear();
     }
     // clear binding list
-    d->clearFlickableList();
+    d->clearFlickablesList();
 }
 
 /*!

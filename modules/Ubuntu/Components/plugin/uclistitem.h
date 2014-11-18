@@ -121,7 +121,7 @@ public:
     bool listenToRebind(UCListItem *item, bool listen);
     void disableInteractive(UCListItem *item, bool disable);
     bool isMoving();
-    bool isBountTo(UCListItem *item);
+    bool isBoundTo(UCListItem *item);
 
     QList<int> selectedIndexes() const;
     void setSelectedIndexes(const QList<int> &list);
