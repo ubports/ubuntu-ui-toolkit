@@ -64,7 +64,6 @@ StyledItem {
     // FIXME(loicm) Add Support for the stepSize property.
 
     // /*!
-    //    \preliminary
     //    The distance between two selectable values in the range defined by
     //    [minimumValue, maximumValue].
     // */
