@@ -341,6 +341,7 @@ void UCListItemPrivate::_q_rebound()
     listenToRebind(false);
 }
 
+// rebound without animation
 void UCListItemPrivate::promptRebound()
 {
     setPressed(false);
@@ -488,7 +489,7 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         } else if (data.item) {
             d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(data.item));
         } else {
-            // about to be deleted or reparrented, disable attached
+            // about to be deleted or reparented, disable attached
             d->attachedProperties = 0;
         }
 
