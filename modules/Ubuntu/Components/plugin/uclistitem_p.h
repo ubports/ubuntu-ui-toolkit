@@ -105,7 +105,7 @@ public:
     UCListItemAttachedPrivate(UCListItemAttached *qq);
     ~UCListItemAttachedPrivate();
 
-    void clearFlickableList();
+    void clearFlickablesList();
     void buildFlickablesList();
     void clearChangesList();
     void buildChangesList(const QVariant &newValue);
@@ -114,7 +114,7 @@ public:
     bool globalDisabled;
     QList< QPointer<QQuickFlickable> > flickables;
     QList< PropertyChange* > changes;
-    QPointer<UCListItem> bountItem;
+    QPointer<UCListItem> boundItem;
     QPointer<UCListItem> disablerItem;
 };
 
