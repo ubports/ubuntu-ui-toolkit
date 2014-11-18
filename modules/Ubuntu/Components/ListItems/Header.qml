@@ -45,7 +45,6 @@ Item {
     }
 
     /*!
-     \preliminary
      The text that is shown as the header text.
      \qmlproperty string text
     */
