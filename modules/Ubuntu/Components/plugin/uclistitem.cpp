@@ -473,7 +473,7 @@ QQuickItem *UCListItemPrivate::styleInstance() const
     return styleItem;
 }
 
-// the function performs a prompt rebound on mouse release without any animation
+// rebound without animation
 void UCListItemPrivate::promptRebound()
 {
     setPressed(false);
@@ -744,9 +744,9 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         } else if (data.item) {
             d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(data.item));
         } else {
-            // mar as not ready, so no action should be performed which depends on readyness
+            // mark as not ready, so no action should be performed which depends on readyness
             d->ready = false;
-            // about to be deleted or reparrented, disable attached
+            // about to be deleted or reparented, disable attached
             d->attachedProperties = 0;
         }
 
