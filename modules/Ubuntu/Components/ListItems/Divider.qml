@@ -24,7 +24,6 @@ import Ubuntu.Components 1.1
     \brief Divider to break up list items into groups.
 
     Examples: see \l Header
-    \b{This component is under heavy development.}
 */
 Image {
     source: "artwork/ListItemDivider6px.png"
