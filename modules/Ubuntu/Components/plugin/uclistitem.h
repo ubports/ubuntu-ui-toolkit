@@ -103,7 +103,7 @@ public:
     bool listenToRebind(UCListItem *item, bool listen);
     void disableInteractive(UCListItem *item, bool disable);
     bool isMoving();
-    bool isBountTo(UCListItem *item);
+    bool isBoundTo(UCListItem *item);
 
 private Q_SLOTS:
     void unbindItem();
