@@ -60,8 +60,6 @@ import Ubuntu.Components 1.1
             }
         }
     \endqml
-
-    \b{This component is under heavy development.}
 */
 
 Empty {

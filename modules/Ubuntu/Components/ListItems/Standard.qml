@@ -57,7 +57,6 @@ import Ubuntu.Components 1.1
             }
         }
     \endqml
-    \b{This component is under heavy development.}
 */
 Empty {
     id: listItem
@@ -76,7 +75,6 @@ Empty {
     property variant icon: iconSource != "" ? iconSource : undefined
 
     /*!
-      \preliminary
       The location of the icon to show in the list item if iconSource failed to load (optional).
       \qmlproperty url fallbackIconSource
      */
@@ -100,13 +98,11 @@ Empty {
     property alias fallbackIconName: iconHelper.fallbackIconName
 
     /*!
-      \preliminary
       The text that is shown in the list item as a label.
       \qmlproperty string text
      */
 
     /*!
-      \preliminary
       Show or hide the progression symbol.
      */
     property bool progression: false
@@ -140,7 +136,6 @@ Empty {
     property real __rightIconMargin
 
     /*!
-      \preliminary
       An optional control that is displayed inside the list item.
       The width of the control must be specified in order to determine
       the layout of the list item.
@@ -150,7 +145,6 @@ Empty {
     property alias control: controlContainer.control
 
     /*!
-      \preliminary
       Show or hide the frame around the icon
       \qmlproperty bool iconFrame
      */
