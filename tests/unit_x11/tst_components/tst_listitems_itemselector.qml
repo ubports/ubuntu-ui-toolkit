@@ -100,15 +100,18 @@ Item {
              compare(selector.text, newText, "set/get");
          }
 
-         function test_selectedIndex() {
+         function test_0_selectedIndex() {
             compare(selector.selectedIndex, 0, "selectedIndex is 0 by default");
          }
 
          function test_model() {
+             selector.delegate = null;
              selector.model = undefined;
              var newValues = ["value0","value1","value2","value3"];
              selector.model = newValues;
              compare(selector.model, newValues, "set/get");
+             selector.model = customModel;
+             selector.delegate = selectorDelegate
          }
 
          function test_custom_model_delegate() {

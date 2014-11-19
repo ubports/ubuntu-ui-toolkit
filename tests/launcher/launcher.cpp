@@ -34,6 +34,7 @@
 #include <QtCore/QCommandLineOption>
 #include "MouseTouchAdaptor.h"
 #include <QtGui/QTouchDevice>
+#include <QtQml/qqml.h>
 
 bool touchDevicePresent()
 {
@@ -42,6 +43,16 @@ bool touchDevicePresent()
             return true;
     }
     return false;
+}
+
+static QObject *s_testRootObject = 0;
+static QObject *testRootObject(QQmlEngine *engine, QJSEngine *jsEngine)
+{
+    Q_UNUSED(jsEngine);
+    if (!s_testRootObject) {
+        s_testRootObject = new QObject(engine);
+    }
+    return s_testRootObject;
 }
 
 int main(int argc, const char *argv[])
@@ -109,6 +120,9 @@ int main(int argc, const char *argv[])
             return 1;
         }
     }
+
+    // Allow manual execution of unit tests using Qt.Test
+    qmlRegisterSingletonType<QObject>("Qt.test.qtestroot", 1, 0, "QTestRootObject", testRootObject);
 
     QQmlEngine* engine;
     // The default constructor affects the components tree (autopilot vis)

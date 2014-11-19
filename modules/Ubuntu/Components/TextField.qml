@@ -25,8 +25,6 @@ import Ubuntu.Components 1.1 as Ubuntu
     Input constraints can be set through validator or inputMask. Setting echoMode
     to an appropriate value enables TextField to be used as password input field.
 
-    \b{This component is under heavy development.}
-
     \l {http://design.ubuntu.com/apps/building-blocks/text-field}{See also the Design Guidelines on the Text Field}.
 
     Example:

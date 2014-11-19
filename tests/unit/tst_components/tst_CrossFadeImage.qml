@@ -45,7 +45,6 @@ TestCase {
     }
 
     function loadImage(url) {
-        console.log("Loading image...");
         source = url;
 
         signalSpy.signalName = "statusChanged";
@@ -61,7 +60,6 @@ TestCase {
         }
 
         compare(status, Image.Ready, "Image not ready");
-        console.log("Image loaded.");
     }
 
     function waitForAnimation() {
@@ -74,7 +72,6 @@ TestCase {
         }
 
         signalSpy.clear();
-        console.log("Waiting for animation to finish...");
         signalSpy.wait();
         compare(running, false, "Animation did not stop within 5 seconds.");
 
