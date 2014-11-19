@@ -86,14 +86,11 @@ Item {
         }
 
         function test_icon() {
+            ignoreWarning("WARNING: ListItems.Standard.icon is DEPRECATED. Use iconName and iconSource instead.")
             compare(listItemStandard.icon,undefined,"icon is not set by default")
 
-            // test with item
-            listItemStandard.icon = testItem
-            compare(listItemStandard.icon,testItem,"set/get from Item")
-
             // test with url
-            var newIcon = "../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png"
+            var newIcon = "../../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png"
             listItemStandard.icon = newIcon
             compare(listItemStandard.icon,newIcon,"set/get from url")
         }

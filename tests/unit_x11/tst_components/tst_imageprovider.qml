@@ -15,16 +15,34 @@
  */
 
 import QtQuick 2.0
+import QtTest 1.0
 import Ubuntu.Components 1.1
+import Ubuntu.Test 1.0
 
 Item {
-    property var boolArray: [false, false]
-    property var intArray: [1, 2]
-    property var realArray: [10.1, 20.2]
-    property var stringArray: ["false", "false"]
-    id: testItem
-    objectName: "testItem"
-    StateSaver.properties: "boolArray, intArray, realArray, stringArray"
+    width: units.gu(50)
+    height: units.gu(100)
 
-    Component.onCompleted: UbuntuApplication.applicationName = "SimpleApp"
+    Image {
+        id: test
+        width: units.gu(20)
+        height: units.gu(20)
+        source: "/usr/share/icons/ubuntu-mobile/actions/scalable/add.svg"
+    }
+
+    UbuntuTestCase {
+        name: "ImageExtension"
+        when: windowShown
+
+        SignalSpy {
+            id: sourceChangeSpy
+            signalName: "sourceChanged"
+        }
+
+        function test_sourceChanged() {
+            sourceChangeSpy.target = test;
+            test.source = "/usr/share/icons/ubuntu-mobile/actions/scalable/delete.svg";
+            sourceChangeSpy.wait();
+        }
+    }
 }

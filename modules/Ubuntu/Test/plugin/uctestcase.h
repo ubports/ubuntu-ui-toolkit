@@ -54,6 +54,8 @@ public:
         return center;
     }
 
+    static void ignoreWarning(const QString& fileName, uint line, uint column, const QString& message, uint occurences=1);
+
 private:
     QSignalSpy* m_spy;
 };

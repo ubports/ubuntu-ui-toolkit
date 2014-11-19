@@ -26,7 +26,6 @@ import Ubuntu.Components 1.0
     ListItems will usually include this line at the bottom of the item
     to give a visually pleasing list of items. But a divider line can
     also be inserted manually using this component.
-    \b{This component is under heavy development.}
 
     Examples:
     \qml

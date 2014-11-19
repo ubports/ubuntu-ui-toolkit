@@ -40,21 +40,16 @@ import QtQuick 2.0
             }
         }
     \endqml
-
-    \b{This component is under heavy development.}
-
 */
 Base {
     id: listItem
 
     /*!
-      \preliminary
       The text that is shown in the list item as a label.
       \qmlproperty string text
      */
 
     /*!
-      \preliminary
       \qmlproperty string value
       The values that will be shown next to the label text
      */
