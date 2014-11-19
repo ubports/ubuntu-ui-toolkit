@@ -35,7 +35,6 @@ PageTreeNode {
     property string title
 
     /*!
-      \preliminary
       \deprecated
       The location of the icon that is displayed inside the button used to select this tab (optional).
       Either \l title or iconSource, or both must be defined.

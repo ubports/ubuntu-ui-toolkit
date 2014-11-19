@@ -1,3 +1,48 @@
+ubuntu-ui-toolkit (1.1.1311+15.04.20141111-0ubuntu1) vivid; urgency=low
+
+  [ Zsombor Egri ]
+  * Zsombor Egri's "Ignore QT_IM_MODULE values like ibus, none or
+    compose." for Qt 5.3.2 specific fix.
+
+  [ Christian Dywan ]
+  * Update po/ubuntu-ui-toolkit.pot
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 11 Nov 2014 06:06:52 +0000
+
+ubuntu-ui-toolkit (1.1.1311+15.04.20141102-0ubuntu1) vivid; urgency=medium
+
+  [ Zoltán Balogh ]
+  [ Christian Dywan ]
+  * Explicitly use Orange in Slider and ProgressBar. 
+    Fixes: LP: #1372585.
+  * Copy components correctly in push_to_phone.sh and make copy.sh 
+    more robust.
+  * Make push_to_phone.sh use a temporary folder and sudo.
+  [ Zoltán Balogh ]
+  [ Zsombor Egri ] 
+  * ThinDivider margins rolled back to edge-to-edge. Divider colors
+    adjusted with design. Fixes: LP: #1380766.
+  [ Zoltán Balogh ]
+  [ Tim Peeters ] 
+  * Add updated header divider to use rectangles instead of images,
+    and to auto-detect its color. Fixes: LP: #1372590.
+  * Add internal property to hide the header separator. 
+    Needed in Unity8.
+  [ Zoltán Balogh ]
+  [ Leonardo Arias Fonseca ] 
+  * Fixed the infinite loop when running flickable tests. 
+    Fixes: LP: #1384703.
+  * Added an autopilot helper for expandable list items. 
+    Fixes: LP: #1340227.
+  * The autopilot helpers to swipe to show more now get the flickable
+    containers by default. Fixes: LP: #1365674.
+  * Replaced the tabs for spaces in UbuntuTestCase. 
+   Fixes: LP: #1324469.
+   Fixes: LP: #1324469.
+ 
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sun, 02 Nov 2014 13:01:56 +0000
+
 ubuntu-ui-toolkit (1.1.1298+14.10.20141030~rtm-0ubuntu1) 14.09; urgency=low
 
   [ CI bot ]

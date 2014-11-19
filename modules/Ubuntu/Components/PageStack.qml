@@ -142,7 +142,6 @@ PageTreeNode {
     }
 
     /*!
-      \preliminary
       The current size of the stack
      */
     //FIXME: would prefer this be readonly, but readonly properties are only bound at
@@ -150,13 +149,11 @@ PageTreeNode {
     property int depth: 0
 
     /*!
-      \preliminary
       The currently active page
      */
     property Item currentPage: null
 
     /*!
-      \preliminary
       Push a page to the stack, and apply the given (optional) properties to the page.
       The pushed page may be an Item, Component or URL.
       The function returns the Item that was pushed, or the Item that was created from
@@ -178,7 +175,6 @@ PageTreeNode {
     }
 
     /*!
-      \preliminary
       Pop the top item from the stack if the stack size is at least 1.
       Do not do anything if 0 or 1 items are on the stack.
      */
@@ -198,7 +194,6 @@ PageTreeNode {
     }
 
     /*!
-      \preliminary
       Deactivate the active page and clear the stack.
      */
     function clear() {

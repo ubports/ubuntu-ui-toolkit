@@ -61,7 +61,6 @@ OrientationHelper {
     LayoutMirroring.childrenInherit: true
 
     /*!
-      \preliminary
       Make the popup visible. Reparent to the background area object first if needed.
       Only use this function if you handle memory management. Otherwise use
       PopupUtils.open() to do it automatically.
@@ -76,7 +75,6 @@ OrientationHelper {
     }
 
     /*!
-      \preliminary
       Hide the popup.
       Only use this function if you handle memory management. Otherwise use
       PopupUtils.close() to do it automatically.
