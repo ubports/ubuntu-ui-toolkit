@@ -35,14 +35,12 @@ import Ubuntu.Components 1.1
             }
         }
     \endqml
-    \b{This component is under heavy development.}
 */
 Item {
     height: captionText.height + units.gu(1)
     width: parent ? parent.width : units.gu(31)
 
     /*!
-      \preliminary
       The text that is shown in the list item as a label.
       \qmlproperty string text
      */

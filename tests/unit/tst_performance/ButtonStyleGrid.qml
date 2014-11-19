@@ -16,7 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 1.1
-import Ubuntu.Components.Themes.Ambiance 0.1
+import Ubuntu.Components.Themes.Ambiance 1.1
 
 Grid {
     width: 800
@@ -32,6 +32,8 @@ Grid {
             property url iconSource
             property string iconPosition: "left"
             property color color
+            property Gradient gradient
+            property font font
 
             ButtonStyle {
                 property Item styledItem: thisItem

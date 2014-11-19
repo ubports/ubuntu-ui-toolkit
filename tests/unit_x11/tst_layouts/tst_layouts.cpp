@@ -289,6 +289,7 @@ private Q_SLOTS:
 
     void testCase_NestedLayouts_ExtraLarge()
     {
+        QTest::ignoreMessage(QtWarningMsg, "\"There are still \"1\" items in the process of being created at engine destruction.\"");
         QScopedPointer<QQuickView> view(loadTest("NestedLayouts.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
@@ -362,6 +363,12 @@ private Q_SLOTS:
 
     void testCase_CurrentLayoutChange()
     {
+        UbuntuTestCase::ignoreWarning("CurrentLayoutChange.qml", 30, 13,
+            "QML ConditionalLayout: ERROR: no container specified for layout \"portrait\". ConditionalLayout cannot be activated without a container.");
+        UbuntuTestCase::ignoreWarning("CurrentLayoutChange.qml", 35, 13,
+            "QML ConditionalLayout: ERROR: no container specified for layout \"landscape\". ConditionalLayout cannot be activated without a container.");
+        UbuntuTestCase::ignoreWarning("CurrentLayoutChange.qml", 30, 13,
+            "QML ConditionalLayout: WARNING: Cannot activate layout \"portrait\" with no container specified. Falling back to default layout.");
         QScopedPointer<QQuickView> view(loadTest("CurrentLayoutChange.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
@@ -379,6 +386,10 @@ private Q_SLOTS:
 
     void testCase_PositioningOnLayoutChange()
     {
+        UbuntuTestCase::ignoreWarning("PositioningOnLayoutChange.qml", 42, 13,
+            "QML ConditionalLayout: WARNING: Cannot activate layout \"landscape\" with no container specified. Falling back to default layout.", 2);
+        UbuntuTestCase::ignoreWarning("PositioningOnLayoutChange.qml", 42, 13,
+            "QML ConditionalLayout: ERROR: no container specified for layout \"landscape\". ConditionalLayout cannot be activated without a container.");
         QScopedPointer<QQuickView> view(loadTest("PositioningOnLayoutChange.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
@@ -401,6 +412,8 @@ private Q_SLOTS:
 
     void testCase_LaidOutItemsOutsideOfLayout()
     {
+        UbuntuTestCase::ignoreWarning("LaidOutItemsOutsideOfLayout.qml", 44, 5,
+            "QML Rectangle: ERROR: Item that is not a child of a Layouts component will not be laid out.");
         QScopedPointer<QQuickView> view(loadTest("LaidOutItemsOutsideOfLayout.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
@@ -902,6 +915,8 @@ private Q_SLOTS:
     // the following tests guard bug #1280359
     void testCase_ItemInstanceAsProperty()
     {
+        UbuntuTestCase::ignoreWarning("ItemInstanceAsProperty.qml", 45, 17,
+            "QML ItemLayout: WARNING: item \"object2\" not specified or has been specified for layout by more than one active ItemLayout");
         QScopedPointer<QQuickView> view(loadTest("ItemInstanceAsProperty.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
@@ -919,6 +934,8 @@ private Q_SLOTS:
 
     void testCase_DialerCrash()
     {
+        UbuntuTestCase::ignoreWarning("DialerCrash.qml", 45, 17,
+            "QML ItemLayout: WARNING: item \"object2\" not specified or has been specified for layout by more than one active ItemLayout");
         QScopedPointer<QQuickView> view(loadTest("DialerCrash.qml"));
         QVERIFY(view);
         QQuickItem *root = view->rootObject();
