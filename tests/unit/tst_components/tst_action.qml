@@ -23,6 +23,10 @@ import Ubuntu.Unity.Action 1.1 as Unity
 TestCase {
      name: "ActionAPI"
 
+     TestUtil {
+         id: util
+     }
+
      function contains(list, entry) {
          for (var i = 0; i < list.length; i++) {
              if (list[i] == entry) {
@@ -113,7 +117,12 @@ TestCase {
          compare(manager.globalContext.actions.length, 3, "Global context action count must be a sum of all manager's actions' counts");
      }
 
+     function ignoreQMLWarning(message) {
+         ignoreWarning(util.callerFile() + message);
+     }
+
      function test_add_unity_actioncontext_failure() {
+         ignoreQMLWarning(':217:6: QML ActionContext: Unity.ActionContext deprecated. Please use ActionContext from Ubuntu.Components.');
          manager.addLocalContext(unityContext);
          verify(!contains(manager.localContexts, unityContext), "Unity ActionContext cannot be added");
      }
@@ -122,12 +131,14 @@ TestCase {
          verify(!contains(manager.globalContext.actions, unityAction, "Unity Action cannot be registered"));
      }
 
-     function test_cannot_add_unity_action_to_global_context() {
+     function test_0_cannot_add_unity_action_to_global_context() {
+         ignoreQMLWarning(':166:6: QML Action: Unity.Action deprecated. Please use Action from Ubuntu.Components.');
          manager.globalContext.addAction(stockUnityAction);
          verify(!contains(manager.globalContext.actions, stockUnityAction, "Unity Action cannot be registered"));
      }
 
-     function test_cannot_add_unity_action_to_local_context() {
+     function test_1_cannot_add_unity_action_to_local_context() {
+         ignoreQMLWarning(':166:6: QML Action: Unity.Action deprecated. Please use Action from Ubuntu.Components.');
          context1.addAction(stockUnityAction);
          verify(!contains(context1.actions, stockUnityAction, "Unity Action cannot be registered"));
      }

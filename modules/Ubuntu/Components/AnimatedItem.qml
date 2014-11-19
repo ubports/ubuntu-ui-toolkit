@@ -29,7 +29,6 @@ import QtQuick 2.0
 StyledItem {
     id: root
     /*!
-      \preliminary
       \deprecated
       Specifies whether the component is on the visible area of the Flickable or not.
     */

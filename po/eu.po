@@ -7,17 +7,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2014-09-01 19:02+0200\n"
+"POT-Creation-Date: 2014-11-05 14:29+0100\n"
 "PO-Revision-Date: 2014-09-13 11:42+0000\n"
 "Last-Translator: Ibai Oihanguren Sala <Unknown>\n"
 "Language-Team: Basque <eu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-10-23 07:23+0000\n"
-"X-Generator: Launchpad (build 17203)\n"
+"X-Launchpad-Export-Date: 2014-11-06 06:32+0000\n"
+"X-Generator: Launchpad (build 17223)\n"
 
-#: Ubuntu/Components/plugin/statesaverbackend_p.cpp:154
+#: Ubuntu/Components/ListItems/Empty.qml:413
+msgid "Delete"
+msgstr ""
+
+#: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
 #, qt-format
 msgid ""
 "property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
@@ -26,7 +30,7 @@ msgstr ""
 "%2 objektuaren \"%1\" propietatea %3 motakoa da eta ezin zaio %5 motako "
 "\"%4\" balioa jarri"
 
-#: Ubuntu/Components/plugin/statesaverbackend_p.cpp:163
+#: Ubuntu/Components/plugin/statesaverbackend_p.cpp:185
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
 msgstr ""
@@ -137,3 +141,7 @@ msgstr "Askatu freskatzeko..."
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
 msgstr "Tiratu freskatzeko..."
+
+#: Ubuntu/Components/ToolbarItems.qml:142
+msgid "Back"
+msgstr ""

@@ -30,16 +30,13 @@ class QQuickImageBase;
 class UCQQuickImageExtension : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QUrl source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QUrl source READ source WRITE setSource)
 
 public:
     explicit UCQQuickImageExtension(QObject *parent = 0);
 
     QUrl source() const;
     virtual void setSource(const QUrl& url);
-
-Q_SIGNALS:
-    void sourceChanged(const QUrl &);
 
 protected Q_SLOTS:
     void reloadSource();

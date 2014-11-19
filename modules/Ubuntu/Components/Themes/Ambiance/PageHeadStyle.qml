@@ -140,11 +140,12 @@ Style.PageHeadStyle {
                     Rectangle {
                         visible: parent.pressed
                         anchors {
+                            verticalCenter: parent.verticalCenter
                             left: parent.left
                             right: parent.right
-                            top: parent.top
+                            rightMargin: verticalDividerLine.width
                         }
-                        height: parent.height - bottomDividerLine.height
+                        height: sectionsRow.height
                         color: headerStyle.sectionHighlightColor
                     }
 
@@ -161,7 +162,7 @@ Style.PageHeadStyle {
 
                     // vertical divider line
                     Rectangle {
-                        id: bottomDividerLine
+                        id: verticalDividerLine
                         anchors {
                             verticalCenter: parent.verticalCenter
                             right: parent.right
