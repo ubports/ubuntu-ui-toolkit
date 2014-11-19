@@ -92,8 +92,7 @@
     (like the empty one "") disables styling. Default value is \c
     "radius_idle.sci".
 
-    \note This was an internal property that shouldn't have been exposed, hence
-    the ugly API. We plan to expose that feature through styling properties.
+    \note We plan to expose that feature through styling properties.
 */
 
 /*!
