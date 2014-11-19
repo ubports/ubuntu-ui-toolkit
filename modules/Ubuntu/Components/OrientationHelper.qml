@@ -48,7 +48,6 @@ Item {
     id: orientationHelper
 
     /*!
-      \preliminary
       Sets whether it will be automatically rotating when the device is.
 
       The default value is true.
@@ -57,7 +56,6 @@ Item {
      */
     property bool automaticOrientation: true
     /*!
-      \preliminary
       Sets whether the rotation transition is performed.
 
       The default value is true.
@@ -66,7 +64,6 @@ Item {
      */
     property bool transitionEnabled: true
     /*!
-      \preliminary
       Exposes whether the orientationTransition is running.
 
       \qmlproperty alias rotating
@@ -89,7 +86,6 @@ Item {
     property int orientationAngle: automaticOrientation ? Screen.angleBetween(Screen.primaryOrientation, Screen.orientation) : 0
 
     /*!
-      \preliminary
       The property holds if the OrientationHelper should automatically resize the
       contents when the input method appears
 

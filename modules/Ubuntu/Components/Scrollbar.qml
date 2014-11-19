@@ -62,14 +62,12 @@ StyledItem {
     id: scrollbar
 
     /*!
-      \preliminary
         This property holds the flickable item (Flickable, ListView or GridView)
         the Scrollbar is attached to.
       */
     property Flickable flickableItem: null
 
     /*!
-      \preliminary
       The property defines the alignment of the scrollbar to the flickableItem.
       The implementation handles the alignment as follows:
         \list

@@ -24,7 +24,7 @@ Item {
     id: main
     width: units.gu(50); height: units.gu(100)
 
-    property bool hasOSK: QuickUtils.inputMethodProvider !== ""
+    property bool hasOSK: false
 
     Column {
         TextArea {
@@ -86,6 +86,10 @@ Item {
     UbuntuTestCase {
         name: "TextAreaAPI"
         when: windowShown
+
+        function init() {
+            main.hasOSK = QuickUtils.inputMethodProvider !== ""
+        }
 
         function cleanup() {
             textArea.focus =

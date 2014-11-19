@@ -119,6 +119,7 @@ Item {
         }
 
         function test_1_changeModeYD() {
+            ignoreWarning('Invalid DatePicker mode: Years|Days')
             var newMode = "Years|Days";
             var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
@@ -183,6 +184,7 @@ Item {
         }
 
         function test_1_changeModeHS() {
+            ignoreWarning('Invalid DatePicker mode: Hours|Seconds')
             var newMode = "Hours|Seconds";
             var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
@@ -220,6 +222,7 @@ Item {
         }
 
         function test_1_changeModeYMDHMS() {
+            ignoreWarning('Date and Time picking not allowed at the same time.')
             var newMode = "Years|Months|Days|Hours|Minutes|Seconds";
             var pickerCount = 6 + 1; // +1 is the Repeater
             picker.mode = newMode;
@@ -230,6 +233,7 @@ Item {
         }
 
         function test_1_changeModeYH() {
+            ignoreWarning('Date and Time picking not allowed at the same time.')
             var newMode = "Years|Hours";
             var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
@@ -240,6 +244,7 @@ Item {
         }
 
         function test_1_changeModeUnhandled() {
+            ignoreWarning('Unhandled mode flag: Whatever. Mode will not be set!')
             var newMode = "Years|Whatever";
             var pickerCount = 2 + 1; // +1 is the Repeater
             picker.mode = newMode;
