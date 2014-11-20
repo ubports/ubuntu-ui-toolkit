@@ -56,8 +56,6 @@ import Ubuntu.Components 1.1 as Toolkit
             }
         }
     \endqml
-
-    \b{This component is under heavy development.}
 */
 
 ListView {
@@ -113,7 +111,6 @@ ListView {
     Toolkit.Mouse.onClicked: priv.requestFocus(Qt.MouseFocusReason)
 
     /*!
-      \preliminary
       Expand the item at the given index.
      */
     onExpandedIndexChanged: {
