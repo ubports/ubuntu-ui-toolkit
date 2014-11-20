@@ -225,7 +225,7 @@ int UCAlarmModel::count() const
 }
 
 /*!
- * \qmlmethod refresh()
+ * \qmlmethod AlarmModel::refresh()
  * The function refreshes the model by invalidating the alarm cache. Use this
  * function only if the refresh is absolutely required, otherwise it will cause
  * performance problems.
