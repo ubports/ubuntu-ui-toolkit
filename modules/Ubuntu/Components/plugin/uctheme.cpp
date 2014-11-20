@@ -96,7 +96,7 @@ QStringList themeSearchPath() {
     QString qml2ImportPath(getenv("QML2_IMPORT_PATH"));
     if (!qml2ImportPath.isEmpty())
         pathList << qml2ImportPath.split(':', QString::SkipEmptyParts);
-    pathList << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath);
+    pathList << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath).split(':', QString::SkipEmptyParts);
 
     // fix folders
     QStringList result;
