@@ -35,7 +35,7 @@ Template {
             }
 
             UbuntuShape {
-                objectName: "ubuntushape_color_lightblue"
+                objectName: "ubuntushape_color_lightaubergine"
                 color: UbuntuColors.lightAubergine
             }
 

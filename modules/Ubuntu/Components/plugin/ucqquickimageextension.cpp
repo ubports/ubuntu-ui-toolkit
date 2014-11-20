@@ -53,7 +53,6 @@ void UCQQuickImageExtension::setSource(const QUrl& url)
     if (url != m_source) {
         m_source = url;
         reloadSource();
-        Q_EMIT sourceChanged(m_source);
     }
 }
 

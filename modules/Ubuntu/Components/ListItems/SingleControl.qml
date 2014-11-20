@@ -40,15 +40,12 @@ import Ubuntu.Components.ListItems 1.0
             }
         }
     \endqml
-
-    \b{This component is under heavy development.}
 */
 // TODO: Add more examples when more types of controls become available.
 Empty {
     id: singleControlListItem
 
     /*!
-      \preliminary
       The control of this SingleControl list item.
       The control will automatically be re-parented to, and centered in, this list item.
      */
@@ -56,7 +53,7 @@ Empty {
 
     /*! \internal */
     onClicked: if (control && control.enabled && control.hasOwnProperty("clicked")) control.clicked()
-    pressed: __mouseArea.pressed || (control && control.pressed)
+    pressed: __mouseArea.pressed || (control && control.hasOwnProperty("pressed") && control.pressed)
     /*! \internal */
     onPressedChanged: if (control && control.enabled && control.hasOwnProperty("pressed")) control.pressed = singleControlListItem.pressed
 

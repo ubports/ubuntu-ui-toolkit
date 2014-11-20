@@ -27,8 +27,6 @@ import QtQuick 2.0
     be used to set boolean options. The behavior is the same as \l CheckBox, the
     only difference is the graphical style.
 
-    \b{This component is under heavy development.}
-
     \l {http://design.ubuntu.com/apps/building-blocks/toggles}{See also the Design Guidelines on Toggles}.
 
     Example:

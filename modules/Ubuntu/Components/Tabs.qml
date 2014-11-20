@@ -155,7 +155,6 @@ PageTreeNode {
     anchors.fill: parent
 
     /*!
-      \preliminary
       \qmlproperty int selectedTabIndex
       The index of the currently selected tab.
       The first tab is 0, and -1 means that no tab is selected.
@@ -164,7 +163,6 @@ PageTreeNode {
     property alias selectedTabIndex: tabsModel.selectedIndex
 
     /*!
-      \preliminary
       The currently selected tab.
      */
     readonly property Tab selectedTab: (selectedTabIndex < 0) || (tabsModel.count <= selectedTabIndex) ?
