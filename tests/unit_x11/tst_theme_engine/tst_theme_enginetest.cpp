@@ -43,6 +43,9 @@ private Q_SLOTS:
     void testThemesRelativePathWithParentXDGDATA();
     void testThemesRelativePathWithParentNoVariablesSet();
     void testThemesRelativePathWithParentOneXDGPathSet();
+    void testNoImportPathSet();
+    void testBogusImportPathSet();
+    void testMultipleImportPathsSet();
 };
 
 void tst_UCTheme::initTestCase()
@@ -191,6 +194,45 @@ void tst_UCTheme::testThemesRelativePathWithParentOneXDGPathSet()
 
     QCOMPARE(component != NULL, true);
     QCOMPARE(component->status(), QQmlComponent::Ready);}
+
+void tst_UCTheme::testNoImportPathSet()
+{
+    if (!QFile(QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath) + "/Ubuntu/Components").exists())
+        QSKIP("This can only be tested if the UITK is installed");
+
+    qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+    qputenv("XDG_DATA_DIRS", "");
+    qputenv("QML2_IMPORT_PATH", "");
+
+    UCTheme theme;
+    QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+}
+
+void tst_UCTheme::testBogusImportPathSet()
+{
+    if (!QFile(QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath) + "/Ubuntu/Components").exists())
+        QSKIP("This can only be tested if the UITK is installed");
+
+    qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+    qputenv("XDG_DATA_DIRS", "");
+    qputenv("QML2_IMPORT_PATH", "/no/plugins/here");
+
+    UCTheme theme;
+    QCOMPARE(theme.name(), QString("Ubuntu.Components.Themes.Ambiance"));
+}
+
+void tst_UCTheme::testMultipleImportPathsSet()
+{
+    if (!QFile(QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath) + "/Ubuntu/Components").exists())
+        QSKIP("This can only be tested if the UITK is installed");
+
+    qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
+    qputenv("XDG_DATA_DIRS", "");
+    qputenv("QML2_IMPORT_PATH", "/no/plugins/here:.");
+
+    UCTheme theme;
+    theme.setName("TestModule.TestTheme");
+}
 
 QTEST_MAIN(tst_UCTheme)
 
