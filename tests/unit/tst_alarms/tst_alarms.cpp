@@ -16,13 +16,11 @@
  * Author: Florian Boucault <florian.boucault@canonical.com>
  */
 
-//#define protected public
 #include "ucalarm.h"
 #include "ucalarm_p.h"
 #include "alarmmanager_p.h"
 #include "ucalarmmodel.h"
 #include "adapters/alarmsadapter_p.h"
-//#undef protected
 
 #include "uctestcase.h"
 #include <QtCore/QString>
@@ -391,7 +389,6 @@ private Q_SLOTS:
         alarm.save();
         waitForInsert();
         QCOMPARE(alarm.error(), (int)UCAlarm::NoError);
-//        QSKIP("https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1322558");
         QVERIFY(containsAlarm(&alarm));
 
         alarm.setDate(alarm.date().addDays(1));

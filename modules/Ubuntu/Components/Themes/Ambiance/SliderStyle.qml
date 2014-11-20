@@ -26,6 +26,9 @@ import Ubuntu.Components 1.1
 Item {
     id: sliderStyle
 
+    property color foregroundColor: UbuntuColors.orange
+    property color backgroundColor: Theme.palette.normal.base
+
     property real thumbSpacing: units.gu(0)
     property Item bar: background
     property Item thumb: thumb
@@ -49,8 +52,8 @@ Item {
         anchors.fill: background
         sourceItem: background
         progress: thumb.x / thumb.barMinusThumbWidth
-        leftColor: Theme.palette.selected.foreground
-        rightColor: Theme.palette.normal.base
+        leftColor: foregroundColor
+        rightColor: backgroundColor
         mirror: Qt.application.layoutDirection == Qt.RightToLeft
     }
 

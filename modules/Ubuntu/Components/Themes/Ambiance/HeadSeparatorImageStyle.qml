@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -12,12 +12,25 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
+import QtQuick 2.2
 
-import QtQuick 2.0
-import Ubuntu.Components.Themes.Ambiance 0.1
-
-OptionSelectorStyle {
-    id: suruDarkStyle
+// This is the old DEPRECATED header separator, which is here for backwards compatibility.
+// The new header divider is in HeadDividerStyle.qml.
+Item {
+    id: separatorStyle
+    BorderImage {
+        id: separatorImage
+        anchors.fill: parent
+        source: styledItem.separatorSource
+    }
+    Image {
+        id: separatorBottom
+        anchors {
+            top: separatorImage.bottom
+            left: parent.left
+            right: parent.right
+        }
+        source: styledItem.separatorBottomSource
+    }
 }

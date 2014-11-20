@@ -91,6 +91,7 @@ class DisabledTextInputTestCase(GalleryTestCase):
             emulators.TextField, objectName='textfield_disabled')
         self.assertFalse(textfield_disabled.enabled)
 
+        disabled_text = textfield_disabled.text
         self.pointing_device.click_object(textfield_disabled)
-        textfield_disabled.keyboard.type('This should not be writen')
-        self.assertEqual('', textfield_disabled.text)
+        textfield_disabled.keyboard.type('This should not be written')
+        self.assertEqual(disabled_text, textfield_disabled.text)

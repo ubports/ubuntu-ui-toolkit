@@ -280,13 +280,6 @@ UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly()
  * alarms at the same time.
  */
 
-/*!
- * \qmlsignal void Alarm::completed
- * \since Ubuntu.Components 1.2
- * The signal is emitted when the outstanding \l save, \l cancel or \l reset request
- * completes with or without error.
- */
-
 UCAlarm::UCAlarm(QObject *parent)
     : QObject(parent)
     , d_ptr(AlarmManager::createAlarmData(this))
@@ -464,7 +457,8 @@ void UCAlarm::setType(UCAlarm::AlarmType type)
  * \row
  *  \li Alarm.AutoDetect
  *  \li 0x80
- *  \li The alarm day will be detected from the alarm date.
+ *  \li The alarm day will be detected from the alarm date at the time the alarm
+ *      is saved.
  * \endtable
  *
  * The default value is Alarm.AutoDetect.

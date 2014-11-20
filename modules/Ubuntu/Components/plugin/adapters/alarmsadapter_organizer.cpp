@@ -452,7 +452,6 @@ void AlarmsAdapter::init()
 
 AlarmsAdapter::~AlarmsAdapter()
 {
-    saveAlarms();
 }
 
 UCAlarmPrivate * AlarmsAdapter::createAlarmData(UCAlarm *alarm)
@@ -486,6 +485,8 @@ void AlarmsAdapter::loadAlarms()
         alarm.setEnabled(object["enabled"].toBool());
 
         AlarmDataAdapter *pAlarm = static_cast<AlarmDataAdapter*>(UCAlarmPrivate::get(&alarm));
+        // call checkAlarm to complete field checks (i.e. type vs daysOfWeek, kick date, etc)
+        pAlarm->checkAlarm();
         QOrganizerTodo event = pAlarm->data();
         manager->saveItem(&event);
     }
@@ -776,7 +777,6 @@ void AlarmsAdapter::completeFetchAlarms()
         alarmList.insert(pAlarm->data());
     }
 
-    saveAlarms();
     completed = true;
     Q_EMIT q_ptr->alarmsRefreshed();
 }

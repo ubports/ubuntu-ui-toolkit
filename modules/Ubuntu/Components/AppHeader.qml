@@ -37,6 +37,16 @@ StyledItem {
      */
     property bool animate: true
 
+    /*!
+      The background color of the divider. Value set by MainView.
+     */
+    property color dividerColor
+
+    /*!
+      The background color of the panel. Value set by MainView.
+     */
+    property color panelColor
+
     Behavior on y {
         enabled: animate && !(header.flickable && header.flickable.moving)
         SmoothedAnimation {
@@ -86,14 +96,12 @@ StyledItem {
     }
 
     /*!
-      \preliminary
       A model of tabs to represent in the header.
       This is automatically set by \l Tabs.
      */
     property var tabsModel: null
 
     /*!
-      \preliminary
       If it is possible to pop this PageStack, a back button will be
       shown in the header.
      */

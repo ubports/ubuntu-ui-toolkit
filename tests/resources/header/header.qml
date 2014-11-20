@@ -19,8 +19,8 @@ import Ubuntu.Components 1.1
 
 MainView {
     id: mainView
-    width: units.gu(40)
-    height: units.gu(50)
+    width: units.gu(50)
+    height: units.gu(70)
     useDeprecatedToolbar: false
 
     PageStack {
@@ -29,6 +29,70 @@ MainView {
         Component.onCompleted: stack.push(tabs)
         Tabs {
             id: tabs
+            Tab {
+                title: "Colors"
+                page: Page {
+                    head.actions: [
+                        Action {
+                            iconName: "close"
+                            text: "one"
+                        },
+                        Action {
+                            iconName: "close"
+                            text: "two"
+                        },
+                        Action {
+                            iconName: "close"
+                            text: "three"
+                        }
+                    ]
+
+                    Column {
+                        height: childrenRect.height
+                        width: parent.width - units.gu(8)
+                        spacing: units.gu(1)
+                        anchors.centerIn: parent
+
+                        Button {
+                            anchors {
+                                left: parent.left
+                                right: parent.right
+                            }
+                            text: "Light"
+                            onTriggered: {
+                                mainView.backgroundColor = "#eeeeee";
+                                mainView.headerColor = mainView.backgroundColor;
+                                mainView.footerColor = mainView.backgroundColor;
+                            }
+                        }
+                        Button {
+                            anchors {
+                                left: parent.left
+                                right: parent.right
+                            }
+                            text: "Dark"
+                            onTriggered: {
+                                mainView.backgroundColor = "#333333";
+                                mainView.headerColor = mainView.backgroundColor;
+                                mainView.footerColor = mainView.backgroundColor;
+                            }
+                        }
+                        Button {
+                            anchors {
+                                left: parent.left
+                                right: parent.right
+                            }
+                            text: "Gradient"
+                            onTriggered: {
+                                mainView.backgroundColor = "#6A69A2";
+                                mainView.headerColor ="#343C60";
+                                mainView.footerColor = "#8896D5";
+                            }
+                        }
+                    }
+                }
+            }
+
             Tab {
                 title: "Stack"
                 page: Page {

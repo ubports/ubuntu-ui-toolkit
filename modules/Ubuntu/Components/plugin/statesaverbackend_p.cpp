@@ -46,7 +46,7 @@ StateSaverBackend::StateSaverBackend(QObject *parent)
     // catch eventual app name changes so we can have different path for the states if needed
     QObject::connect(&UCApplication::instance(), &UCApplication::applicationNameChanged,
                      this, &StateSaverBackend::initialize);
-    if (!qgetenv("APP_ID").isEmpty() || !UCApplication::instance().applicationName().isEmpty()) {
+    if (!UCApplication::instance().applicationName().isEmpty()) {
         initialize();
     }
 
