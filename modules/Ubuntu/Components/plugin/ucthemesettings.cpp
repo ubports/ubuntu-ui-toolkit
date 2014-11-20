@@ -37,7 +37,7 @@ UCThemeSettings::UCThemeSettings(QObject *parent) :
     m_settings(SETTINGS_FILE_FORMAT.arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)), QSettings::IniFormat)
 {
     // fundamental features rely on the default theme, so abort if it's absent
-    Q_ASSERT (!QFile(pathFromThemeName(DEFAULT_THEME)).exists());
+    Q_ASSERT (QFile(pathFromThemeName(DEFAULT_THEME)).exists());
 
     // check if there is a theme settings file, if not, create one
     if (!QFile::exists(m_settings.fileName())) {
