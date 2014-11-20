@@ -136,7 +136,7 @@ public:
     void setGradientColor(const QColor& gradientColor);
     QVariant image() const { return QVariant::fromValue(image_); }
     void setImage(const QVariant& image);
-    bool stretched() const { return !!(flags_ & StretchedFlag); }
+    bool stretched() const { return !!(flags_ & Stretched); }
     void setStretched(bool stretched);
     HAlignment horizontalAlignment() const { return imageHorizontalAlignment_; }
     void setHorizontalAlignment(HAlignment horizontalAlignment);
@@ -195,11 +195,11 @@ private:
     enum Radius { SmallRadius, MediumRadius };
     enum Border { RawBorder, IdleBorder, PressedBorder };
     enum {
-        GradientColorSetFlag     = (1 << 0),
-        StretchedFlag            = (1 << 1),
-        BackgroundApiSetFlag     = (1 << 2),
-        SourceApiSetFlag         = (1 << 3),
-        DirtySourceTransformFlag = (1 << 4)
+        GradientColorSet     = (1 << 0),
+        Stretched            = (1 << 1),
+        BackgroundApiSet     = (1 << 2),
+        SourceApiSet         = (1 << 3),
+        DirtySourceTransform = (1 << 4)
     };
 
     QQuickItem* image_;
