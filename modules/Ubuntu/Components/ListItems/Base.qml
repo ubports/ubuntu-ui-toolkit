@@ -25,7 +25,6 @@ import Ubuntu.Components 1.1
         an icon and a progression symbol.
 
     Examples: See subclasses
-    \b{This component is under heavy development.}
 */
 Empty {
     id: baseListItem
@@ -44,7 +43,6 @@ Empty {
     property variant icon: iconSource != "" ? iconSource : undefined
 
     /*!
-      \preliminary
       The location of the icon to show in the list item if iconSource failed to load (optional).
       \qmlproperty url fallbackIconSource
      */
@@ -68,13 +66,11 @@ Empty {
     property alias fallbackIconName: iconHelper.fallbackIconName
 
     /*!
-      \preliminary
       Show or hide the progression symbol.
      */
     property bool progression: false
 
     /*!
-      \preliminary
       Show or hide the frame around the icon
       \qmlproperty bool iconFrame
      */

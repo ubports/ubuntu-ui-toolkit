@@ -21,7 +21,6 @@ import QtQuick 2.0
     \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief List item displaying multiple values.
-    \b{This component is under heavy development.}
 
     Examples:
     \qml
@@ -46,7 +45,6 @@ Base {
     id: multiValueListItem
 
     /*!
-      \preliminary
       The list of values that will be shown under the label text
      */
     property variant values

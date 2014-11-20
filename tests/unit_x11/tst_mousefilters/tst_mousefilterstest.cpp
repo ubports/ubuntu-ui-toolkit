@@ -215,6 +215,7 @@ private Q_SLOTS:
 
     void testCase_pressedOutsideTextInputAfter()
     {
+        UbuntuTestCase::ignoreWarning("FilterInverseTextInputAfter.qml", 23, 5, "QML TextInput: Ignoring AfterItem priority for InverseMouse filters.");
         QScopedPointer<UbuntuTestCase> view(new UbuntuTestCase("FilterInverseTextInputAfter.qml"));
         QCOMPARE(view->warnings(), 1);
         UCInverseMouse *filter = attachedFilter<UCInverseMouse>(view->rootObject(), "FilterOwner");
@@ -564,12 +565,14 @@ private Q_SLOTS:
 
     void testCase_mouseFilterAttachedToNonItem()
     {
+        UbuntuTestCase::ignoreWarning("MouseFilterAttachedToNonItem.qml", 21, 5, "QML QtObject: Warning: Mouse filter can only be attached to Items.");
         QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("MouseFilterAttachedToNonItem.qml"));
         QCOMPARE(testCase->warnings(), 1);
     }
 
     void testCase_inverseMouseFilterAttachedToNonItem()
     {
+        UbuntuTestCase::ignoreWarning("InverseMouseFilterAttachedToNonItem.qml", 21, 5, "QML QtObject: Warning: InverseMouse filter can only be attached to Items.");
         QScopedPointer<UbuntuTestCase> testCase(new UbuntuTestCase("InverseMouseFilterAttachedToNonItem.qml"));
         QCOMPARE(testCase->warnings(), 1);
     }

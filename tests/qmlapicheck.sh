@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 #
 # Copyright 2013 Canonical Ltd.
 #
@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ################################################################################
+SRCDIR=$PWD
 BLDDIR=$1
 if [ -z "$BLDDIR" ]; then
     echo "Usage: " $(basename $0) "BUILDFOLDER"
@@ -31,11 +32,9 @@ for i in $CPP; do
     # Silence spam on stderr due to fonts
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
-    modulePath=${i//./\/}
-    pushd "$BLDDIR/../modules/${modulePath}"
-    ALARM_BACKEND=memory qmlplugindump -noinstantiate $i 0.1 ../../ 1>> $BLDDIR/plugins.qmltypes
+    env UBUNTU_UI_TOOLKIT_THEMES_PATH=$SRCDIR/modules ALARM_BACKEND=memory \
+        qmlplugindump -noinstantiate $i 0.1 $SRCDIR/modules 1>> $BLDDIR/plugins.qmltypes
     test $? != 0 && ERRORS=1
-    popd
 done
 test $ERRORS = 1 && echo Error: qmlplugindump failed && exit 1
 

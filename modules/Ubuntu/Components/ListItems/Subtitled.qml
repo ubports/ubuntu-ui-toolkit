@@ -22,7 +22,6 @@ import Ubuntu.Components 1.1
     \inqmlmodule Ubuntu.Components.ListItems 1.0
     \ingroup ubuntu-listitems
     \brief List item displaying a second string under the main label.
-    \b{This component is under heavy development.}
 
     Examples:
     \qml
@@ -70,7 +69,6 @@ Base {
     __height: Math.max(middleVisuals.height, units.gu(6))
 
     /*!
-      \preliminary
       The list of strings that will be shown under the label text
       \qmlproperty string subText
      */
