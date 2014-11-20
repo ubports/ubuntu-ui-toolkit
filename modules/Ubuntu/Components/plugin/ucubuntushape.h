@@ -28,18 +28,33 @@ class UCUbuntuShape : public QQuickItem
 {
     Q_OBJECT
 
-    Q_ENUMS(HAlignment)
-    Q_ENUMS(VAlignment)
-
     // Shape properties.
     Q_PROPERTY(QString radius READ radius WRITE setRadius NOTIFY radiusChanged)
     Q_PROPERTY(QString borderSource READ borderSource WRITE setBorderSource
                NOTIFY borderSourceChanged)
 
     // Source properties.
+    Q_ENUMS(FillMode)
+    Q_ENUMS(WrapMode)
+    Q_ENUMS(HAlignment)
+    Q_ENUMS(VAlignment)
     Q_PROPERTY(QVariant source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(float sourceOpacity READ sourceOpacity WRITE setSourceOpacity
                NOTIFY sourceOpacityChanged)
+    Q_PROPERTY(FillMode sourceFillMode READ sourceFillMode WRITE setSourceFillMode
+               NOTIFY sourceFillModeChanged)
+    Q_PROPERTY(WrapMode sourceHorizontalWrapMode READ sourceHorizontalWrapMode
+               WRITE setSourceHorizontalWrapMode NOTIFY sourceHorizontalWrapModeChanged)
+    Q_PROPERTY(WrapMode sourceVerticalWrapMode READ sourceVerticalWrapMode
+               WRITE setSourceVerticalWrapMode NOTIFY sourceVerticalWrapModeChanged)
+    Q_PROPERTY(HAlignment sourceHorizontalAlignment READ sourceHorizontalAlignment
+               WRITE setSourceHorizontalAlignment NOTIFY sourceHorizontalAlignmentChanged)
+    Q_PROPERTY(VAlignment sourceVerticalAlignment READ sourceVerticalAlignment
+               WRITE setSourceVerticalAlignment NOTIFY sourceVerticalAlignmentChanged)
+    Q_PROPERTY(QVector2D sourceTranslation READ sourceTranslation WRITE setSourceTranslation
+               NOTIFY sourceTranslationChanged)
+    Q_PROPERTY(QVector2D sourceScale READ sourceScale WRITE setSourceScale
+               NOTIFY sourceScaleChanged)
 
     // Background properties.
     Q_ENUMS(BackgroundMode)
@@ -70,9 +85,11 @@ class UCUbuntuShape : public QQuickItem
 public:
     UCUbuntuShape(QQuickItem* parent=0);
 
+    enum BackgroundMode { SolidColor = 0, VerticalGradient = 1 };
     enum HAlignment { AlignLeft = 0, AlignHCenter = 1, AlignRight = 2 };
     enum VAlignment { AlignTop = 0, AlignVCenter = 1, AlignBottom = 2 };
-    enum BackgroundMode { SolidColor = 0, VerticalGradient = 1 };
+    enum FillMode { Stretch = 0, PreserveAspectFit = 1, PreserveAspectCrop = 2, Pad = 3 };
+    enum WrapMode { Transparent = 0, Repeat = 1 };
 
     QString radius() const { return radiusString_; }
     void setRadius(const QString& radius);
@@ -83,6 +100,20 @@ public:
     void setSource(const QVariant& source);
     float sourceOpacity() const { return sourceOpacity_ / static_cast<float>(0xff); }
     void setSourceOpacity(float sourceOpacity);
+    FillMode sourceFillMode() const { return sourceFillMode_; }
+    void setSourceFillMode(FillMode sourceFillMode);
+    WrapMode sourceHorizontalWrapMode() const { return sourceHorizontalWrapMode_; }
+    void setSourceHorizontalWrapMode(WrapMode sourceHorizontalWrapMode);
+    WrapMode sourceVerticalWrapMode() const { return sourceVerticalWrapMode_; }
+    void setSourceVerticalWrapMode(WrapMode sourceVerticalWrapMode);
+    HAlignment sourceHorizontalAlignment() const { return sourceHorizontalAlignment_; }
+    void setSourceHorizontalAlignment(HAlignment sourceHorizontalAlignment);
+    VAlignment sourceVerticalAlignment() const { return sourceVerticalAlignment_; }
+    void setSourceVerticalAlignment(VAlignment sourceVerticalAlignment);
+    QVector2D sourceTranslation() const { return sourceTranslation_; }
+    void setSourceTranslation(const QVector2D& sourceTranslation);
+    QVector2D sourceScale() const { return sourceScale_; }
+    void setSourceScale(const QVector2D& sourceScale);
 
     QColor backgroundColor() const { return backgroundColor_; }
     void setBackgroundColor(const QColor& backgroundColor);
@@ -105,11 +136,11 @@ public:
     void setGradientColor(const QColor& gradientColor);
     QVariant image() const { return QVariant::fromValue(image_); }
     void setImage(const QVariant& image);
-    bool stretched() const { return !!(flags_ & UCUbuntuShape::StretchedFlag); }
+    bool stretched() const { return !!(flags_ & StretchedFlag); }
     void setStretched(bool stretched);
-    HAlignment horizontalAlignment() const { return hAlignment_; }
+    HAlignment horizontalAlignment() const { return imageHorizontalAlignment_; }
     void setHorizontalAlignment(HAlignment horizontalAlignment);
-    VAlignment verticalAlignment() const { return vAlignment_; }
+    VAlignment verticalAlignment() const { return imageVerticalAlignment_; }
     void setVerticalAlignment(VAlignment verticalAlignment);
 
 Q_SIGNALS:
@@ -118,6 +149,13 @@ Q_SIGNALS:
 
     void sourceChanged();
     void sourceOpacityChanged();
+    void sourceFillModeChanged();
+    void sourceHorizontalWrapModeChanged();
+    void sourceVerticalWrapModeChanged();
+    void sourceHorizontalAlignmentChanged();
+    void sourceVerticalAlignmentChanged();
+    void sourceTranslationChanged();
+    void sourceScaleChanged();
 
     void backgroundColorChanged();
     void secondaryBackgroundColorChanged();
@@ -135,12 +173,14 @@ Q_SIGNALS:
 
 protected:
     virtual QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*);
+    virtual void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry);
 
 private Q_SLOTS:
     void onImagePropertiesChanged();
     void onOpenglContextDestroyed();
     void gridUnitChanged();
     void providerDestroyed(QObject* object=0);
+    void textureChanged();
 
 private:
     void updateFromImageProperties(QQuickItem* image);
@@ -148,14 +188,18 @@ private:
                                  QObject* receiver, const char* slot);
     void connectToImageProperties(QQuickItem* image);
     void dropImageSupport();
+    void updateSourceTransform(float itemWidth, float itemHeight, FillMode fillMode,
+                               HAlignment horizontalAlignment, VAlignment verticalAlignment,
+                               const QSize& textureSize);
 
     enum Radius { SmallRadius, MediumRadius };
     enum Border { RawBorder, IdleBorder, PressedBorder };
     enum {
-        GradientColorSetFlag = (1 << 0),
-        StretchedFlag        = (1 << 1),
-        BackgroundApiSetFlag = (1 << 2),
-        SourceApiSetFlag     = (1 << 3),
+        GradientColorSetFlag     = (1 << 0),
+        StretchedFlag            = (1 << 1),
+        BackgroundApiSetFlag     = (1 << 2),
+        SourceApiSetFlag         = (1 << 3),
+        DirtySourceTransformFlag = (1 << 4)
     };
 
     QQuickItem* image_;
@@ -167,17 +211,25 @@ private:
     QRgb secondaryBackgroundColor_;
     QString radiusString_;
     QString borderSource_;
-    BackgroundMode backgroundMode_ : 1;
-    Radius radius_ : 1;
-    Border border_ : 2;
-    HAlignment hAlignment_ : 2;
-    VAlignment vAlignment_ : 2;
     float gridUnit_;
+    QVector2D sourceScale_;
+    QVector2D sourceTranslation_;
+    QVector4D sourceTransform_;
     quint16 overlayX_;
     quint16 overlayY_;
     quint16 overlayWidth_;
     quint16 overlayHeight_;
     QRgb overlayColor_;
+    Radius radius_ : 1;
+    Border border_ : 2;
+    HAlignment imageHorizontalAlignment_ : 2;
+    VAlignment imageVerticalAlignment_ : 2;
+    BackgroundMode backgroundMode_ : 1;
+    HAlignment sourceHorizontalAlignment_ : 2;
+    VAlignment sourceVerticalAlignment_ : 2;
+    FillMode sourceFillMode_ : 2;
+    WrapMode sourceHorizontalWrapMode_ : 1;
+    WrapMode sourceVerticalWrapMode_ : 1;
     quint8 sourceOpacity_;
     quint8 flags_;
 

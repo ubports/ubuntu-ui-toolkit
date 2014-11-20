@@ -16,6 +16,10 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
+// FIXME(loicm) Add support for the repeat wrap mode. For a standard unique texture it's easy, the
+//     problem comes with texture atlases. So in that case we've got to extract a unique texture
+//     from it using QSGTexture::removedFromAtlas().
+
 #include "ucubuntushape.h"
 #include "ucubuntushapetexture.h"
 #include "ucunits.h"
@@ -24,6 +28,7 @@
 #include <QtQuick/QSGTextureProvider>
 #include <QtQuick/qsgflatcolormaterial.h>
 #include <QtQuick/private/qquickimage_p.h>
+#include <math.h>
 
 class ShapeMaterial : public QSGMaterial
 {
@@ -38,7 +43,6 @@ public:
         QRgb backgroundColor;
         QRgb secondaryBackgroundColor;
         QRgb overlayColor;
-        quint16 atlasTransform[4];
         quint16 overlaySteps[4];
         QSGTexture::Filtering shapeTextureFiltering;
         quint8 flags;
@@ -74,7 +78,6 @@ private:
     int matrixId_;
     int opacityId_;
     int sourceOpacityId_;
-    int atlasTransformId_;
     int backgroundColorId_;
     int secondaryBackgroundColorId_;
     int overlayColorId_;
@@ -92,7 +95,7 @@ ShapeShader::ShapeShader()
 char const* const* ShapeShader::attributeNames() const
 {
     static char const* const attributes[] = {
-        "positionAttrib", "shapeCoordAttrib", "quadCoordAttrib", 0
+        "positionAttrib", "shapeCoordAttrib", "quadCoordAttrib", "sourceCoordAttrib", 0
     };
     return attributes;
 }
@@ -107,7 +110,6 @@ void ShapeShader::initialize()
     matrixId_ = program()->uniformLocation("matrix");
     opacityId_ = program()->uniformLocation("opacity");
     sourceOpacityId_ = program()->uniformLocation("sourceOpacity");
-    atlasTransformId_ = program()->uniformLocation("atlasTransform");
     backgroundColorId_ = program()->uniformLocation("backgroundColor");
     secondaryBackgroundColorId_ = program()->uniformLocation("secondaryBackgroundColor");
     overlayColorId_ = program()->uniformLocation("overlayColor");
@@ -150,16 +152,15 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
         QSGTextureProvider* provider = data->sourceTextureProvider;
         QSGTexture* texture = provider ? provider->texture() : NULL;
         if (texture) {
+            texture->setHorizontalWrapMode(QSGTexture::Repeat);
+            texture->setVerticalWrapMode(QSGTexture::Repeat);
             texture->bind();
         } else {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
         glFuncs_->glActiveTexture(GL_TEXTURE0);
-        // Update image uniforms.
+        // Update image uniform.
         program()->setUniformValue(sourceOpacityId_, data->sourceOpacity * u8toF32);
-        program()->setUniformValue(atlasTransformId_, QVector4D(
-            data->atlasTransform[0] * u16ToF32, data->atlasTransform[1] * u16ToF32,
-            data->atlasTransform[2] * u16ToF32, data->atlasTransform[3] * u16ToF32));
     }
 
     if (data->flags & ShapeMaterial::Data::OverlaidFlag) {
@@ -213,18 +214,20 @@ int ShapeMaterial::compare(const QSGMaterial* other) const
 class ShapeNode : public QSGGeometryNode
 {
 public:
+    // FIXME(loicm) Storing lower precision data types could be more efficent. On PowerVR, for
+    //     instance, that requires a conversion so the trade-off between shader cycles and bandwidth
+    //     requirements must be verified.
     struct Vertex {
         float position[2];
         float shapeCoordinate[2];
         float quadCoordinate[2];
-        float padding[2];  // Ensure a 32 bytes stride.
+        float sourceCoordinate[4];
     };
 
     ShapeNode(UCUbuntuShape* item);
     ShapeMaterial* material() { return &material_; }
-    void setVertices(float width, float height, float radius, const QQuickItem* source,
-                     bool stretched, UCUbuntuShape::HAlignment hAlignment,
-                     UCUbuntuShape::VAlignment vAlignment, float shapeCoordinate[][2]);
+    void setVertices(float width, float height, float radius, float shapeCoordinate[][2],
+                     const QVector4D& sourceTransform, const QRectF& textureRect);
 
 private:
     UCUbuntuShape* item_;
@@ -245,20 +248,23 @@ static const unsigned short shapeMeshIndices[] __attribute__((aligned(16))) = {
 
 static const struct {
     const unsigned short* const indices;
-    int indexCount;       // Number of indices.
-    int vertexCount;      // Number of vertices.
-    int attributeCount;   // Number of attributes.
-    int stride;           // Offset in bytes from one vertex to the other.
-    int positionCount;    // Number of components per position.
-    int positionType;     // OpenGL type of the position components.
-    int shapeCoordCount;  // Number of components per shape texture coordinate.
-    int shapeCoordType;   // OpenGL type of the shape texture coordinate components.
-    int quadCoordCount;   // Number of components per quad texture coordinate.
-    int quadCoordType;    // OpenGL type of the quad texture coordinate components.
-    int indexType;        // OpenGL type of the indices.
+    int indexCount;        // Number of indices.
+    int vertexCount;       // Number of vertices.
+    int attributeCount;    // Number of attributes.
+    int stride;            // Offset in bytes from one vertex to the other.
+    int positionCount;     // Number of components per position.
+    int positionType;      // OpenGL type of the position components.
+    int shapeCoordCount;   // Number of components per shape texture coordinate.
+    int shapeCoordType;    // OpenGL type of the shape texture coordinate components.
+    int quadCoordCount;    // Number of components per quad coordinate.
+    int quadCoordType;     // OpenGL type of the quad coordinate components.
+    int sourceCoordCount;  // Number of components per source texture coordinate.
+    int sourceCoordType;   // OpenGL type of the source texture coordinate components.
+    int indexType;         // OpenGL type of the indices.
 } shapeMesh = {
     shapeMeshIndices, ARRAY_SIZE(shapeMeshIndices),
-    16, 3, sizeof(ShapeNode::Vertex), 2, GL_FLOAT, 2, GL_FLOAT, 2, GL_FLOAT, GL_UNSIGNED_SHORT
+    16, 4, sizeof(ShapeNode::Vertex), 2, GL_FLOAT, 2, GL_FLOAT, 2, GL_FLOAT, 4, GL_FLOAT,
+    GL_UNSIGNED_SHORT
 };
 
 static const QSGGeometry::AttributeSet& getAttributes()
@@ -266,7 +272,8 @@ static const QSGGeometry::AttributeSet& getAttributes()
     static QSGGeometry::Attribute data[] = {
         QSGGeometry::Attribute::create(0, shapeMesh.positionCount, shapeMesh.positionType, true),
         QSGGeometry::Attribute::create(1, shapeMesh.shapeCoordCount, shapeMesh.shapeCoordType),
-        QSGGeometry::Attribute::create(2, shapeMesh.quadCoordCount, shapeMesh.quadCoordType)
+        QSGGeometry::Attribute::create(2, shapeMesh.quadCoordCount, shapeMesh.quadCoordType),
+        QSGGeometry::Attribute::create(3, shapeMesh.sourceCoordCount, shapeMesh.sourceCoordType)
     };
     static QSGGeometry::AttributeSet attributes = {
         shapeMesh.attributeCount, shapeMesh.stride, data
@@ -301,161 +308,188 @@ ShapeNode::ShapeNode(UCUbuntuShape* item)
     setFlag(UsePreprocess, false);
 }
 
-void ShapeNode::setVertices(float width, float height, float radius, const QQuickItem* source,
-                            bool stretched, UCUbuntuShape::HAlignment hAlignment,
-                            UCUbuntuShape::VAlignment vAlignment, float shapeCoordinate[][2])
+void ShapeNode::setVertices(float width, float height, float radius, float shapeCoordinate[][2],
+                            const QVector4D& sourceTransform, const QRectF& textureRect)
 {
     ShapeNode::Vertex* vertices = reinterpret_cast<ShapeNode::Vertex*>(geometry_.vertexData());
-    const QSGTextureProvider* provider = source ? source->textureProvider() : NULL;
-    const QSGTexture* texture = provider ? provider->texture() : NULL;
-    float topCoordinate;
-    float bottomCoordinate;
-    float leftCoordinate;
-    float rightCoordinate;
-    float radiusCoordinateWidth;
-    float radiusCoordinateHeight;
-
-    // FIXME(loicm) With a NxM image, a preserve aspect crop fill mode and a width
-    //     component size of N (or a height component size of M), changing the the
-    //     height (or width) breaks the 1:1 texel/pixel mapping for odd values.
-    if (!stretched && texture) {
-        // Preserve source image aspect ratio cropping areas exceeding destination rectangle.
-        const float factors[3] = { 0.0f, 0.5f, 1.0f };
-        const QSize srcSize = texture->textureSize();
-        const float srcRatio = static_cast<float>(srcSize.width()) / srcSize.height();
-        const float dstRatio = static_cast<float>(width) / height;
-        if (dstRatio <= srcRatio) {
-            const float inCoordinateSize = dstRatio / srcRatio;
-            const float outCoordinateSize = 1.0f - inCoordinateSize;
-            topCoordinate = 0.0f;
-            bottomCoordinate = 1.0f;
-            leftCoordinate = outCoordinateSize * factors[hAlignment];
-            rightCoordinate = 1.0f - (outCoordinateSize * (1.0f - factors[hAlignment]));
-            radiusCoordinateHeight = radius / height;
-            radiusCoordinateWidth = (radius / width) * inCoordinateSize;
-        } else {
-            const float inCoordinateSize = srcRatio / dstRatio;
-            const float outCoordinateSize = 1.0f - inCoordinateSize;
-            topCoordinate = outCoordinateSize * factors[vAlignment];
-            bottomCoordinate = 1.0f - (outCoordinateSize * (1.0f - factors[vAlignment]));
-            leftCoordinate = 0.0f;
-            rightCoordinate = 1.0f;
-            radiusCoordinateHeight = (radius / height) * inCoordinateSize;
-            radiusCoordinateWidth = radius / width;
-        }
-    } else {
-        // Don't preserve source image aspect ratio stretching it in destination rectangle.
-        topCoordinate = 0.0f;
-        bottomCoordinate = 1.0f;
-        leftCoordinate = 0.0f;
-        rightCoordinate = 1.0f;
-        radiusCoordinateHeight = radius / height;
-        radiusCoordinateWidth = radius / width;
-    }
+    const float sourceSx1 = sourceTransform.x() * textureRect.width();
+    const float sourceSy1 = sourceTransform.y() * textureRect.height();
+    const float sourceTx1 = sourceTransform.z() * textureRect.width() + textureRect.x();
+    const float sourceTy1 = sourceTransform.w() * textureRect.height() + textureRect.y();
+    const float sourceSx2 = sourceTransform.x() * 2.0f;
+    const float sourceSy2 = sourceTransform.y() * 2.0f;
+    const float sourceTx2 = sourceTransform.z() * 2.0f - 1.0f;
+    const float sourceTy2 = sourceTransform.w() * 2.0f - 1.0f;
+    const float radiusW = radius / width;
+    const float radiusH = radius / height;
 
     // Set top row of 4 vertices.
     vertices[0].position[0] = 0.0f;
     vertices[0].position[1] = 0.0f;
     vertices[0].shapeCoordinate[0] = shapeCoordinate[0][0];
     vertices[0].shapeCoordinate[1] = shapeCoordinate[0][1];
-    vertices[0].quadCoordinate[0] = leftCoordinate;
-    vertices[0].quadCoordinate[1] = topCoordinate;
+    vertices[0].quadCoordinate[0] = 0.0f;
+    vertices[0].quadCoordinate[1] = 0.0f;
+    vertices[0].sourceCoordinate[0] = sourceTx1;
+    vertices[0].sourceCoordinate[1] = sourceTy1;
+    vertices[0].sourceCoordinate[2] = sourceTx2;
+    vertices[0].sourceCoordinate[3] = sourceTy2;
     vertices[1].position[0] = radius;
     vertices[1].position[1] = 0.0f;
     vertices[1].shapeCoordinate[0] = shapeCoordinate[1][0];
     vertices[1].shapeCoordinate[1] = shapeCoordinate[1][1];
-    vertices[1].quadCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
-    vertices[1].quadCoordinate[1] = topCoordinate;
+    vertices[1].quadCoordinate[0] = radiusW;
+    vertices[1].quadCoordinate[1] = 0.0f;
+    vertices[1].sourceCoordinate[0] = radiusW * sourceSx1 + sourceTx1;
+    vertices[1].sourceCoordinate[1] = sourceTy1;
+    vertices[1].sourceCoordinate[2] = radiusW * sourceSx2 + sourceTx2;
+    vertices[1].sourceCoordinate[3] = sourceTy2;
     vertices[2].position[0] = width - radius;
     vertices[2].position[1] = 0.0f;
     vertices[2].shapeCoordinate[0] = shapeCoordinate[2][0];
     vertices[2].shapeCoordinate[1] = shapeCoordinate[2][1];
-    vertices[2].quadCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
-    vertices[2].quadCoordinate[1] = topCoordinate;
+    vertices[2].quadCoordinate[0] = 1.0f - radiusW;
+    vertices[2].quadCoordinate[1] = 0.0f;
+    vertices[2].sourceCoordinate[0] = (1.0f - radiusW) * sourceSx1 + sourceTx1;
+    vertices[2].sourceCoordinate[1] = sourceTy1;
+    vertices[2].sourceCoordinate[2] = (1.0f - radiusW) * sourceSx2 + sourceTx2;
+    vertices[2].sourceCoordinate[3] = sourceTy2;
     vertices[3].position[0] = width;
     vertices[3].position[1] = 0.0f;
     vertices[3].shapeCoordinate[0] = shapeCoordinate[3][0];
     vertices[3].shapeCoordinate[1] = shapeCoordinate[3][1];
-    vertices[3].quadCoordinate[0] = rightCoordinate;
-    vertices[3].quadCoordinate[1] = topCoordinate;
+    vertices[3].quadCoordinate[0] = 1.0f;
+    vertices[3].quadCoordinate[1] = 0.0f;
+    vertices[3].sourceCoordinate[0] = sourceSx1 + sourceTx1;
+    vertices[3].sourceCoordinate[1] = sourceTy1;
+    vertices[3].sourceCoordinate[2] = sourceSx2 + sourceTx2;
+    vertices[3].sourceCoordinate[3] = sourceTy2;
 
     // Set middle-top row of 4 vertices.
     vertices[4].position[0] = 0.0f;
     vertices[4].position[1] = radius;
     vertices[4].shapeCoordinate[0] = shapeCoordinate[4][0];
     vertices[4].shapeCoordinate[1] = shapeCoordinate[4][1];
-    vertices[4].quadCoordinate[0] = leftCoordinate;
-    vertices[4].quadCoordinate[1] = topCoordinate + radiusCoordinateHeight;
+    vertices[4].quadCoordinate[0] = 0.0f;
+    vertices[4].quadCoordinate[1] = radiusH;
+    vertices[4].sourceCoordinate[0] = sourceTx1;
+    vertices[4].sourceCoordinate[1] = radiusH * sourceSy1 + sourceTy1;
+    vertices[4].sourceCoordinate[2] = sourceTx2;
+    vertices[4].sourceCoordinate[3] = radiusH * sourceSy2 + sourceTy2;
     vertices[5].position[0] = radius;
     vertices[5].position[1] = radius;
     vertices[5].shapeCoordinate[0] = shapeCoordinate[5][0];
     vertices[5].shapeCoordinate[1] = shapeCoordinate[5][1];
-    vertices[5].quadCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
-    vertices[5].quadCoordinate[1] = topCoordinate + radiusCoordinateHeight;
+    vertices[5].quadCoordinate[0] = radiusW;
+    vertices[5].quadCoordinate[1] = radiusH;
+    vertices[5].sourceCoordinate[0] = radiusW * sourceSx1 + sourceTx1;
+    vertices[5].sourceCoordinate[1] = radiusH * sourceSy1 + sourceTy1;
+    vertices[5].sourceCoordinate[2] = radiusW * sourceSx2 + sourceTx2;
+    vertices[5].sourceCoordinate[3] = radiusH * sourceSy2 + sourceTy2;
     vertices[6].position[0] = width - radius;
     vertices[6].position[1] = radius;
     vertices[6].shapeCoordinate[0] = shapeCoordinate[6][0];
     vertices[6].shapeCoordinate[1] = shapeCoordinate[6][1];
-    vertices[6].quadCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
-    vertices[6].quadCoordinate[1] = topCoordinate + radiusCoordinateHeight;
+    vertices[6].quadCoordinate[0] = 1.0f - radiusW;
+    vertices[6].quadCoordinate[1] = radiusH;
+    vertices[6].sourceCoordinate[0] = (1.0f - radiusW) * sourceSx1 + sourceTx1;
+    vertices[6].sourceCoordinate[1] = radiusH * sourceSy1 + sourceTy1;
+    vertices[6].sourceCoordinate[2] = (1.0f - radiusW) * sourceSx2 + sourceTx2;
+    vertices[6].sourceCoordinate[3] = radiusH * sourceSy2 + sourceTy2;
     vertices[7].position[0] = width;
     vertices[7].position[1] = radius;
     vertices[7].shapeCoordinate[0] = shapeCoordinate[7][0];
     vertices[7].shapeCoordinate[1] = shapeCoordinate[7][1];
-    vertices[7].quadCoordinate[0] = rightCoordinate;
-    vertices[7].quadCoordinate[1] = topCoordinate + radiusCoordinateHeight;
+    vertices[7].quadCoordinate[0] = 1.0f;
+    vertices[7].quadCoordinate[1] = radiusH;
+    vertices[7].sourceCoordinate[0] = sourceSx1 + sourceTx1;
+    vertices[7].sourceCoordinate[1] = radiusH * sourceSy1 + sourceTy1;
+    vertices[7].sourceCoordinate[2] = sourceSx2 + sourceTx2;
+    vertices[7].sourceCoordinate[3] = radiusH * sourceSy2 + sourceTy2;
 
     // Set middle-bottom row of 4 vertices.
     vertices[8].position[0] = 0.0f;
     vertices[8].position[1] = height - radius;
     vertices[8].shapeCoordinate[0] = shapeCoordinate[8][0];
     vertices[8].shapeCoordinate[1] = shapeCoordinate[8][1];
-    vertices[8].quadCoordinate[0] = leftCoordinate;
-    vertices[8].quadCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
+    vertices[8].quadCoordinate[0] = 0.0f;
+    vertices[8].quadCoordinate[1] = 1.0f - radiusH;
+    vertices[8].sourceCoordinate[0] = sourceTx1;
+    vertices[8].sourceCoordinate[1] = (1.0f - radiusH) * sourceSy1 + sourceTy1;
+    vertices[8].sourceCoordinate[2] = sourceTx2;
+    vertices[8].sourceCoordinate[3] = (1.0f - radiusH) * sourceSy2 + sourceTy2;
     vertices[9].position[0] = radius;
     vertices[9].position[1] = height - radius;
     vertices[9].shapeCoordinate[0] = shapeCoordinate[9][0];
     vertices[9].shapeCoordinate[1] = shapeCoordinate[9][1];
-    vertices[9].quadCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
-    vertices[9].quadCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
+    vertices[9].quadCoordinate[0] = radiusW;
+    vertices[9].quadCoordinate[1] = 1.0f - radiusH;
+    vertices[9].sourceCoordinate[0] = radiusW * sourceSx1 + sourceTx1;
+    vertices[9].sourceCoordinate[1] = (1.0f - radiusH) * sourceSy1 + sourceTy1;
+    vertices[9].sourceCoordinate[2] = radiusW * sourceSx2 + sourceTx2;
+    vertices[9].sourceCoordinate[3] = (1.0f - radiusH) * sourceSy2 + sourceTy2;
     vertices[10].position[0] = width - radius;
     vertices[10].position[1] = height - radius;
     vertices[10].shapeCoordinate[0] = shapeCoordinate[10][0];
     vertices[10].shapeCoordinate[1] = shapeCoordinate[10][1];
-    vertices[10].quadCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
-    vertices[10].quadCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
+    vertices[10].quadCoordinate[0] = 1.0f - radiusW;
+    vertices[10].quadCoordinate[1] = 1.0f - radiusH;
+    vertices[10].sourceCoordinate[0] = (1.0f - radiusW) * sourceSx1 + sourceTx1;
+    vertices[10].sourceCoordinate[1] = (1.0f - radiusH) * sourceSy1 + sourceTy1;
+    vertices[10].sourceCoordinate[2] = (1.0f - radiusW) * sourceSx2 + sourceTx2;
+    vertices[10].sourceCoordinate[3] = (1.0f - radiusH) * sourceSy2 + sourceTy2;
     vertices[11].position[0] = width;
     vertices[11].position[1] = height - radius;
     vertices[11].shapeCoordinate[0] = shapeCoordinate[11][0];
     vertices[11].shapeCoordinate[1] = shapeCoordinate[11][1];
-    vertices[11].quadCoordinate[0] = rightCoordinate;
-    vertices[11].quadCoordinate[1] = bottomCoordinate - radiusCoordinateHeight;
+    vertices[11].quadCoordinate[0] = 1.0f;
+    vertices[11].quadCoordinate[1] = 1.0f - radiusH;
+    vertices[11].sourceCoordinate[0] = sourceSx1 + sourceTx1;
+    vertices[11].sourceCoordinate[1] = (1.0f - radiusH) * sourceSy1 + sourceTy1;
+    vertices[11].sourceCoordinate[2] = sourceSx2 + sourceTx2;
+    vertices[11].sourceCoordinate[3] = (1.0f - radiusH) * sourceSy2 + sourceTy2;
 
     // Set bottom row of 4 vertices.
     vertices[12].position[0] = 0.0f;
     vertices[12].position[1] = height;
     vertices[12].shapeCoordinate[0] = shapeCoordinate[12][0];
     vertices[12].shapeCoordinate[1] = shapeCoordinate[12][1];
-    vertices[12].quadCoordinate[0] = leftCoordinate;
-    vertices[12].quadCoordinate[1] = bottomCoordinate;
+    vertices[12].quadCoordinate[0] = 0.0f;
+    vertices[12].quadCoordinate[1] = 1.0f;
+    vertices[12].sourceCoordinate[0] = sourceTx1;
+    vertices[12].sourceCoordinate[1] = sourceSy1 + sourceTy1;
+    vertices[12].sourceCoordinate[2] = sourceTx2;
+    vertices[12].sourceCoordinate[3] = sourceSy2 + sourceTy2;
     vertices[13].position[0] = radius;
     vertices[13].position[1] = height;
     vertices[13].shapeCoordinate[0] = shapeCoordinate[13][0];
     vertices[13].shapeCoordinate[1] = shapeCoordinate[13][1];
-    vertices[13].quadCoordinate[0] = leftCoordinate + radiusCoordinateWidth;
-    vertices[13].quadCoordinate[1] = bottomCoordinate;
+    vertices[13].quadCoordinate[0] = radiusW;
+    vertices[13].quadCoordinate[1] = 1.0f;
+    vertices[13].sourceCoordinate[0] = radiusW * sourceSx1 + sourceTx1;
+    vertices[13].sourceCoordinate[1] = sourceSy1 + sourceTy1;
+    vertices[13].sourceCoordinate[2] = radiusW * sourceSx2 + sourceTx2;
+    vertices[13].sourceCoordinate[3] = sourceSy2 + sourceTy2;
     vertices[14].position[0] = width - radius;
     vertices[14].position[1] = height;
     vertices[14].shapeCoordinate[0] = shapeCoordinate[14][0];
     vertices[14].shapeCoordinate[1] = shapeCoordinate[14][1];
-    vertices[14].quadCoordinate[0] = rightCoordinate - radiusCoordinateWidth;
-    vertices[14].quadCoordinate[1] = bottomCoordinate;
+    vertices[14].quadCoordinate[0] = 1.0f - radiusW;
+    vertices[14].quadCoordinate[1] = 1.0f;
+    vertices[14].sourceCoordinate[0] = (1.0f - radiusW) * sourceSx1 + sourceTx1;
+    vertices[14].sourceCoordinate[1] = sourceSy1 + sourceTy1;
+    vertices[14].sourceCoordinate[2] = (1.0f - radiusW) * sourceSx2 + sourceTx2;
+    vertices[14].sourceCoordinate[3] = sourceSy2 + sourceTy2;
     vertices[15].position[0] = width;
     vertices[15].position[1] = height;
     vertices[15].shapeCoordinate[0] = shapeCoordinate[15][0];
     vertices[15].shapeCoordinate[1] = shapeCoordinate[15][1];
-    vertices[15].quadCoordinate[0] = rightCoordinate;
-    vertices[15].quadCoordinate[1] = bottomCoordinate;
+    vertices[15].quadCoordinate[0] = 1.0f;
+    vertices[15].quadCoordinate[1] = 1.0f;
+    vertices[15].sourceCoordinate[0] = sourceSx1 + sourceTx1;
+    vertices[15].sourceCoordinate[1] = sourceSy1 + sourceTy1;
+    vertices[15].sourceCoordinate[2] = sourceSx2 + sourceTx2;
+    vertices[15].sourceCoordinate[3] = sourceSy2 + sourceTy2;
 
     markDirty(DirtyGeometry);
 }
@@ -518,17 +552,26 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , backgroundColor_(qRgba(0, 0, 0, 0))
     , secondaryBackgroundColor_(qRgba(0, 0, 0, 0))
     , radiusString_("small")
-    , backgroundMode_(UCUbuntuShape::SolidColor)
-    , radius_(UCUbuntuShape::SmallRadius)
-    , border_(UCUbuntuShape::IdleBorder)
-    , hAlignment_(UCUbuntuShape::AlignHCenter)
-    , vAlignment_(UCUbuntuShape::AlignVCenter)
+    , borderSource_("radius_idle.sci")
     , gridUnit_(UCUnits::instance().gridUnit())
+    , sourceScale_(1.0f, 1.0f)
+    , sourceTranslation_(0.0f, 0.0f)
+    , sourceTransform_(1.0f, 1.0f, 0.0f, 0.0f)
     , overlayX_(0)
     , overlayY_(0)
     , overlayWidth_(0)
     , overlayHeight_(0)
     , overlayColor_(qRgba(0, 0, 0, 0))
+    , radius_(UCUbuntuShape::SmallRadius)
+    , border_(UCUbuntuShape::IdleBorder)
+    , imageHorizontalAlignment_(UCUbuntuShape::AlignHCenter)
+    , imageVerticalAlignment_(UCUbuntuShape::AlignVCenter)
+    , backgroundMode_(UCUbuntuShape::SolidColor)
+    , sourceHorizontalAlignment_(UCUbuntuShape::AlignHCenter)
+    , sourceVerticalAlignment_(UCUbuntuShape::AlignVCenter)
+    , sourceFillMode_(UCUbuntuShape::Stretch)
+    , sourceHorizontalWrapMode_(UCUbuntuShape::Transparent)
+    , sourceVerticalWrapMode_(UCUbuntuShape::Transparent)
     , sourceOpacity_(255)
     , flags_(UCUbuntuShape::StretchedFlag)
 {
@@ -559,10 +602,12 @@ void UCUbuntuShape::setRadius(const QString& radius)
 /*!
  * \qmlproperty url UbuntuShape::borderSource
  *
- * This property defines the look of the shape borders. It doesn't support custom sources anymore.
- * The supported hard-coded urls are \c "radius_idle.sci" providing an "idle button" look and
- * "radius_pressed.sci" providing a "pressed button" look. Any other urls (the empty one "" for
- * instance) disables styling.
+ * This property defines the look of the shape borders. The supported strings are \c
+ * "radius_idle.sci" providing an idle button style and "radius_pressed.sci" providing a pressed
+ * button style. Any other strings (like the empty one "") disables styling. Default value is \c
+ * "radius_idle.sci".
+ *
+ * \note This was an internal property that shouldn't have been exposed, hence the ugly API.
  */
 void UCUbuntuShape::setBorderSource(const QString& borderSource)
 {
@@ -582,12 +627,14 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
 /*!
  * \qmlproperty variant UbuntuShape::source
  *
- * This property holds the source \c Image or \c ShaderEffectSource rendered in the UbuntuShape. It
- * is blended over the \l backgroundColor. Default value is \c null.
+ * This property holds the source \c Image, \c AnimatedImage or \c ShaderEffectSource rendered in
+ * the UbuntuShape. It is blended over the \l backgroundColor. Default value is \c null.
  *
- * In the case of an \c {Image}-based source, the fill modes and alignments set on the \c Image are
- * not monitored, use the corresponding properties of the UbuntuShape instead. The only property
- * that is monitored on both \c Image and \c ShaderEffectSource sources is \c smooth.
+ * The fill modes and alignments set on the \c Image (and \c AnimatedImage) are not monitored, use
+ * the corresponding UbuntuShape properties instead.
+ *
+ * The sampling filter is set through the given \c Item \c smooth property. Set it to \c false for
+ * nearest-neighbour sampling, to \c true for bilinear sampling.
  *
  * \qml
  *     UbuntuShape {
@@ -596,7 +643,7 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
  * \endqml
  *
  * \note Setting this property disables the support for the deprecated \l image, \l
- *  horizontalAlignment, \l verticalAlignment and \l stretched properties.
+ * horizontalAlignment, \l verticalAlignment and \l stretched properties.
  */
 void UCUbuntuShape::setSource(const QVariant& source)
 {
@@ -608,6 +655,7 @@ void UCUbuntuShape::setSource(const QVariant& source)
             newSource->setParentItem(this);
             newSource->setVisible(false);
         }
+        flags_ |= UCUbuntuShape::DirtySourceTransformFlag;
         update();
         source_ = newSource;
         Q_EMIT sourceChanged();
@@ -615,12 +663,12 @@ void UCUbuntuShape::setSource(const QVariant& source)
 }
 
 /*!
- * \qmlproperty real UbuntuShape2::sourceOpacity
+ * \qmlproperty real UbuntuShape::sourceOpacity
  *
  * This property defines the opacity of \l source in the range [0.0, 1.0]. Default value is \c 1.0.
  *
  * \note Setting this property disables the support for the deprecated \l image, \l
- *  horizontalAlignment, \l verticalAlignment and \l stretched properties.
+ * horizontalAlignment, \l verticalAlignment and \l stretched properties.
  */
 void UCUbuntuShape::setSourceOpacity(float sourceOpacity)
 {
@@ -631,6 +679,165 @@ void UCUbuntuShape::setSourceOpacity(float sourceOpacity)
         sourceOpacity_ = sourceOpacityPacked;
         update();
         Q_EMIT sourceOpacityChanged();
+    }
+}
+
+/*!
+ * \qmlproperty enumeration UbuntuShape::sourceFillMode
+ *
+ * This properties defines the fill modes used to render the source. Default value is \c Stretch.
+ *
+ * \list
+ * \li UbuntuShape.Stretch - the source is scaled non-uniformly to fit
+ * \li UbuntuShape.PreserveAspectFit - the source is scaled uniformly to fit without cropping
+ * \li UbuntuShape.PreserveAspectCrop - the source is scaled uniformly to fit with cropping
+ * \li UbuntuShape.Pad - the source is not scaled
+ * \endlist
+ *
+ * \note Setting this property disables the support for the deprecated \l image, \l
+ * horizontalAlignment, \l verticalAlignment and \l stretched properties.
+ */
+void UCUbuntuShape::setSourceFillMode(UCUbuntuShape::FillMode sourceFillMode)
+{
+    if (sourceFillMode_ != sourceFillMode) {
+        dropImageSupport();
+        sourceFillMode_ = sourceFillMode;
+        flags_ |= UCUbuntuShape::DirtySourceTransformFlag;
+        update();
+        Q_EMIT sourceFillModeChanged();
+    }
+}
+
+/*!
+ * \qmlproperty enumeration UbuntuShape::sourceHorizontalWrapMode
+ * \qmlproperty enumeration UbuntuShape::sourceVerticalWrapMode
+ *
+ * These properties define the wrap modes used to render the source outside of content. Default
+ * value is \c Transparent.
+ *
+ * \list
+ * \li UbuntuShape.Transparent - the source is clamped to transparent
+ * \li UbuntuShape.Repeat - the source is duplicated (not implemented yet)
+ * \endlist
+ *
+ * Make sure \c Repeat is used only when needed (in case of an \c Image source) as it requires the
+ * underlying texture to be extracted from its atlas, preventing the QtQuick renderer to batch the
+ * UbuntuShape with others.
+ *
+ * \note Some OpenGL ES 2 implementations do not support \c Repeat with non-power-of-two sized
+ * sources.
+ * \note Setting this property disables the support for the deprecated \l image, \l
+ * horizontalAlignment, \l verticalAlignment and \l stretched properties.
+ */
+void UCUbuntuShape::setSourceHorizontalWrapMode(UCUbuntuShape::WrapMode sourceHorizontalWrapMode)
+{
+    if (sourceHorizontalWrapMode_ != sourceHorizontalWrapMode) {
+        dropImageSupport();
+        sourceHorizontalWrapMode_ = sourceHorizontalWrapMode;
+        update();
+        Q_EMIT sourceHorizontalWrapModeChanged();
+    }
+}
+
+void UCUbuntuShape::setSourceVerticalWrapMode(UCUbuntuShape::WrapMode sourceVerticalWrapMode)
+{
+    if (sourceVerticalWrapMode_ != sourceVerticalWrapMode) {
+        dropImageSupport();
+        sourceVerticalWrapMode_ = sourceVerticalWrapMode;
+        update();
+        Q_EMIT sourceVerticalWrapModeChanged();
+    }
+}
+
+/*!
+ * \qmlproperty enumeration UbuntuShape::sourceHorizontalAlignment
+ * \qmlproperty HAlignment UbuntuShape::sourceVerticalAlignment
+ *
+ * These properties define the horizontal and vertical alignments used to render the source. Default
+ * value is \c AlignLeft for \l sourceHorizontalAlignment and \c AlignTop for \l
+ * sourceVerticalAlignment.
+ *
+ * \list
+ * \li UbuntuShape.AlignLeft - the source is aligned to the left
+ * \li UbuntuShape.AlignHCenter - the source is aligned to the horizontal center
+ * \li UbuntuShape.AlignRight - the source is aligned to the right
+ * \endlist
+ *
+ * \list
+ * \li UbuntuShape.AlignTop - the source is aligned to the top
+ * \li UbuntuShape.AlignVCenter - the source is aligned to the vertical center
+ * \li UbuntuShape.AlignBottom - the source is aligned to the bottom
+ * \endlist
+ *
+ * \note Setting this property disables the support for the deprecated \l image, \l
+ * horizontalAlignment, \l verticalAlignment and \l stretched properties.
+ */
+void UCUbuntuShape::setSourceHorizontalAlignment(
+    UCUbuntuShape::HAlignment sourceHorizontalAlignment)
+{
+    if (sourceHorizontalAlignment_ != sourceHorizontalAlignment) {
+        dropImageSupport();
+        sourceHorizontalAlignment_ = sourceHorizontalAlignment;
+        flags_ |= UCUbuntuShape::DirtySourceTransformFlag;
+        update();
+        Q_EMIT sourceHorizontalAlignmentChanged();
+    }
+}
+
+void UCUbuntuShape::setSourceVerticalAlignment(UCUbuntuShape::VAlignment sourceVerticalAlignment)
+{
+    if (sourceVerticalAlignment_ != sourceVerticalAlignment) {
+        dropImageSupport();
+        sourceVerticalAlignment_ = sourceVerticalAlignment;
+        flags_ |= UCUbuntuShape::DirtySourceTransformFlag;
+        update();
+        Q_EMIT sourceVerticalAlignmentChanged();
+    }
+}
+
+/*!
+ * \qmlproperty vector2d UbuntuShape::sourceTranslation
+ *
+ * This property holds the 2D translation in normalized coordinates used to render the
+ * source. Default value is \c {Qt.vector2d(0.0, 0.0)}.
+ *
+ * It can be used, for instance, to create infinite scrolling animations (using \c Repeat wrap
+ * mode).
+ *
+ * \note Setting this property disables the support for the deprecated \l image, \l
+ * horizontalAlignment, \l verticalAlignment and \l stretched properties.
+ */
+void UCUbuntuShape::setSourceTranslation(const QVector2D& sourceTranslation)
+{
+    if (sourceTranslation_ != sourceTranslation) {
+        dropImageSupport();
+        sourceTranslation_ = sourceTranslation;
+        flags_ |= UCUbuntuShape::DirtySourceTransformFlag;
+        update();
+        Q_EMIT sourceTranslationChanged();
+    }
+}
+
+/*!
+ * \qmlproperty vector2d UbuntuShape::sourceScale
+ *
+ * This property holds the 2D scale used to render the source. Default value is \c {Qt.vector2d(1.0,
+ * 1.0)}.
+ *
+ * It can be used to flip the source horizontally and/or vertically with -1.0, to achieve pulsing
+ * animations, etc.
+ *
+ * \note Setting this property disables the support for the deprecated \l image, \l
+ * horizontalAlignment, \l verticalAlignment and \l stretched properties.
+ */
+void UCUbuntuShape::setSourceScale(const QVector2D& sourceScale)
+{
+    if (sourceScale_ != sourceScale) {
+        dropImageSupport();
+        sourceScale_ = sourceScale;
+        flags_ |= UCUbuntuShape::DirtySourceTransformFlag;
+        update();
+        Q_EMIT sourceScaleChanged();
     }
 }
 
@@ -700,7 +907,7 @@ void UCUbuntuShape::setBackgroundMode(BackgroundMode backgroundMode)
  * \qmlproperty rect UbuntuShape::overlayGeometry
  *
  * This property defines the rectangle geometry (x, y, width, height) overlaying the UbuntuShape.
- * To disable the overlay, set \l overlayGeometry to the empty rectangle (x and/or y equal
+ * To disable the overlay, set \l overlayGeometry to the empty rectangle (x and/or y set to
  * 0). Default value is the empty rectangle.
  *
  * It is defined by a position and a size in normalized coordinates (in the range [0.0, 1.0]). An
@@ -829,8 +1036,8 @@ void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
  * \qmlproperty Image UbuntuShape::image
  *
  * This property holds the \c Image or \c ShaderEffectSource rendered in the UbuntuShape. In case of
- * an \c Image, it watches for fillMode (\c Image.PreserveAspectCrop), \c horizontalAlignment and \c
- * verticalAlignment property changes. Default value is \c null.
+ * an \c Image, it watches for fillMode (\c Image.Stretch and\c Image.PreserveAspectCrop),
+ * \c horizontalAlignment and \c verticalAlignment property changes. Default value is \c null.
  *
  * \note Use \l source instead.
  */
@@ -850,6 +1057,7 @@ void UCUbuntuShape::setImage(const QVariant& image)
                     newImage->setVisible(false);
                 }
             }
+            flags_ |= UCUbuntuShape::DirtySourceTransformFlag;
             update();
         }
         image_ = newImage;
@@ -868,26 +1076,29 @@ void UCUbuntuShape::setStretched(bool stretched)
         } else {
             flags_ &= ~UCUbuntuShape::StretchedFlag;
         }
+        flags_ |= UCUbuntuShape::DirtySourceTransformFlag;
         update();
         Q_EMIT stretchedChanged();
     }
 }
 
 // Deprecation layer. Same comment as setStretched().
-void UCUbuntuShape::setHorizontalAlignment(HAlignment hAlignment)
+void UCUbuntuShape::setHorizontalAlignment(HAlignment horizontalAlignment)
 {
-    if (hAlignment_ != hAlignment) {
-        hAlignment_ = hAlignment;
+    if (imageHorizontalAlignment_ != horizontalAlignment) {
+        imageHorizontalAlignment_ = horizontalAlignment;
+        flags_ |= UCUbuntuShape::DirtySourceTransformFlag;
         update();
         Q_EMIT horizontalAlignmentChanged();
     }
 }
 
 // Deprecation layer. Same comment as setStretched().
-void UCUbuntuShape::setVerticalAlignment(VAlignment vAlignment)
+void UCUbuntuShape::setVerticalAlignment(VAlignment verticalAlignment)
 {
-    if (vAlignment_ != vAlignment) {
-        vAlignment_ = vAlignment;
+    if (imageVerticalAlignment_ != verticalAlignment) {
+        imageVerticalAlignment_ = verticalAlignment;
+        flags_ |= UCUbuntuShape::DirtySourceTransformFlag;
         update();
         Q_EMIT verticalAlignmentChanged();
     }
@@ -968,6 +1179,12 @@ void UCUbuntuShape::dropImageSupport()
     }
 }
 
+void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
+{
+    QQuickItem::geometryChanged(newGeometry, oldGeometry);
+    flags_ |= UCUbuntuShape::DirtySourceTransformFlag;
+}
+
 void UCUbuntuShape::onOpenglContextDestroyed()
 {
     QOpenGLContext* context = qobject_cast<QOpenGLContext*>(sender());
@@ -996,6 +1213,57 @@ void UCUbuntuShape::providerDestroyed(QObject* object)
 {
     Q_UNUSED(object);
     sourceTextureProvider_ = NULL;
+}
+
+void UCUbuntuShape::textureChanged()
+{
+    flags_ |= UCUbuntuShape::DirtySourceTransformFlag;
+    update();
+}
+
+// Gets the nearest boundary to coord in the texel grid of the given size.
+static Q_DECL_CONSTEXPR float roundTextureCoord(float coord, float size)
+{
+    return roundf(coord * size) / size;
+}
+
+void UCUbuntuShape::updateSourceTransform(float itemWidth, float itemHeight, FillMode fillMode,
+                                          HAlignment horizontalAlignment,
+                                          VAlignment verticalAlignment, const QSize& textureSize)
+{
+    float fillSx, fillSy;
+    if (fillMode == PreserveAspectFit) {
+        const float textureRatio = static_cast<float>(textureSize.width()) / textureSize.height();
+        const float itemRatio = itemWidth / itemHeight;
+        fillSx = (textureRatio < itemRatio) ? (itemRatio / textureRatio) : 1.0f;
+        fillSy = (textureRatio < itemRatio) ? 1.0f : (textureRatio / itemRatio);
+    } else if (fillMode == PreserveAspectCrop) {
+        const float textureRatio = static_cast<float>(textureSize.width()) / textureSize.height();
+        const float itemRatio = itemWidth / itemHeight;
+        fillSx = (textureRatio < itemRatio) ? 1.0f : (itemRatio / textureRatio);
+        fillSy = (textureRatio < itemRatio) ? (textureRatio / itemRatio) : 1.0f;
+    } else if (fillMode == Pad) {
+        fillSx = itemWidth / textureSize.width();
+        fillSy = itemHeight / textureSize.height();
+    } else {
+        fillSx = 1.0f;
+        fillSy = 1.0f;
+    }
+
+    const float sourceSxInv = 1.0f / sourceScale_.x();
+    const float sourceSyInv = 1.0f / sourceScale_.y();
+    // Multiplied by fillS* so that the translation unit is in shape normalized coordinates.
+    const float sourceTx = (sourceTranslation_.x() * sourceSxInv) * fillSx;
+    const float sourceTy = (sourceTranslation_.y() * sourceSyInv) * fillSy;
+    const float sx = fillSx * sourceSxInv;
+    const float sy = fillSy * sourceSyInv;
+    const float factorTable[3] = { 0.0f, 0.5f, 1.0f };
+    const float hFactor = factorTable[static_cast<int>(horizontalAlignment)];
+    const float vFactor = factorTable[static_cast<int>(verticalAlignment)];
+    const float tx = roundTextureCoord(hFactor * (1.0f - sx) - sourceTx, textureSize.width());
+    const float ty = roundTextureCoord(vFactor * (1.0f - sy) - sourceTy, textureSize.height());
+
+    sourceTransform_ = QVector4D(sx, sy, tx, ty);
 }
 
 QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* data)
@@ -1028,29 +1296,61 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
     }
     ShapeMaterial::Data* materialData = node->material()->data();
 
+    const float itemWidth = width();
+    const float itemHeight = height();
+
+    // Get the texture and update the source transform if needed.
+    QSGTextureProvider* provider;
+    QSGTexture* texture;
+    QRectF textureRect(0.0f, 0.0f, 1.0f, 1.0f);
+    if (flags_ & SourceApiSetFlag) {
+        provider = source_ ? source_->textureProvider() : NULL;
+        texture = provider ? provider->texture() : NULL;
+        if (texture) {
+            textureRect = texture->normalizedTextureSubRect();
+            if (flags_ & DirtySourceTransformFlag) {
+                updateSourceTransform(itemWidth, itemHeight, sourceFillMode_,
+                                      sourceHorizontalAlignment_, sourceVerticalAlignment_,
+                                      texture->textureSize());
+                flags_ &= ~DirtySourceTransformFlag;
+            }
+        }
+    } else {
+        provider = image_ ? image_->textureProvider() : NULL;
+        texture = provider ? provider->texture() : NULL;
+        if (texture) {
+            textureRect = texture->normalizedTextureSubRect();
+            if (flags_ & DirtySourceTransformFlag) {
+                FillMode imageFillMode = (flags_ & StretchedFlag) ? Stretch : PreserveAspectCrop;
+                updateSourceTransform(itemWidth, itemHeight, imageFillMode,
+                                      imageHorizontalAlignment_, imageVerticalAlignment_,
+                                      texture->textureSize());
+                flags_ &= ~DirtySourceTransformFlag;
+            }
+        }
+    }
+
     // Update the shape item whenever the source item's texture changes.
-    const QQuickItem* source = (flags_ & UCUbuntuShape::SourceApiSetFlag) ? source_ : image_;
-    QSGTextureProvider* provider = source ? source->textureProvider() : NULL;
     if (provider != sourceTextureProvider_) {
         if (sourceTextureProvider_) {
             QObject::disconnect(sourceTextureProvider_, SIGNAL(textureChanged()),
-                                this, SLOT(update()));
+                                this, SLOT(textureChanged()));
             QObject::disconnect(sourceTextureProvider_, SIGNAL(destroyed()),
                                 this, SLOT(providerDestroyed()));
         }
         if (provider) {
-            QObject::connect(provider, SIGNAL(textureChanged()), this, SLOT(update()));
+            QObject::connect(provider, SIGNAL(textureChanged()), this, SLOT(textureChanged()));
             QObject::connect(provider, SIGNAL(destroyed()), this, SLOT(providerDestroyed()));
         }
         sourceTextureProvider_ = provider;
     }
 
-    TextureData* textureData;
+    ShapeTextureData* shapeTextureData;
     if (gridUnit_ > lowHighTextureThreshold) {
-        textureData = &shapeTextureHigh;
+        shapeTextureData = &shapeTextureHigh;
         materialData->shapeTexture = shapeTextures.high;
     } else {
-        textureData = &shapeTextureLow;
+        shapeTextureData = &shapeTextureLow;
         materialData->shapeTexture = shapeTextures.low;
     }
 
@@ -1058,16 +1358,14 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
     // is set considering the current grid unit and the texture raster grid unit. When the item size
     // is less than 2 radii, the radius is scaled down.
     float radius = (radius_ == UCUbuntuShape::SmallRadius) ?
-        textureData->smallRadius : textureData->mediumRadius;
-    const float scaleFactor = gridUnit_ / textureData->gridUnit;
+        shapeTextureData->smallRadius : shapeTextureData->mediumRadius;
+    const float scaleFactor = gridUnit_ / shapeTextureData->gridUnit;
     materialData->shapeTextureFiltering = QSGTexture::Nearest;
     if (scaleFactor != 1.0f) {
         radius *= scaleFactor;
         materialData->shapeTextureFiltering = QSGTexture::Linear;
     }
-    const float geometryWidth = width();
-    const float geometryHeight = height();
-    const float halfMinWidthHeight = qMin(geometryWidth, geometryHeight) * 0.5f;
+    const float halfMinWidthHeight = qMin(itemWidth, itemHeight) * 0.5f;
     if (radius > halfMinWidthHeight) {
         radius = halfMinWidthHeight;
         materialData->shapeTextureFiltering = QSGTexture::Linear;
@@ -1098,23 +1396,14 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
             (qBlue(gradientColor_) * a) / 255, a);
     }
 
-    // Update image material data.
-    if (sourceOpacity_ && provider && provider->texture()) {
-        const QRectF subRect = provider->texture()->normalizedTextureSubRect();
-        materialData->sourceTextureProvider = provider;
+    // Update source material data.
+    if (texture && sourceOpacity_) {
+        materialData->sourceTextureProvider = sourceTextureProvider_;
         materialData->sourceOpacity = sourceOpacity_;
-        materialData->atlasTransform[0] = static_cast<quint16>(subRect.width() * 0xffff);
-        materialData->atlasTransform[1] = static_cast<quint16>(subRect.height() * 0xffff);
-        materialData->atlasTransform[2] = static_cast<quint16>(subRect.x() * 0xffff);
-        materialData->atlasTransform[3] = static_cast<quint16>(subRect.y() * 0xffff);
         flags |= ShapeMaterial::Data::TexturedFlag;
     } else {
         materialData->sourceTextureProvider = NULL;
         materialData->sourceOpacity = 0;
-        materialData->atlasTransform[0] = 0;
-        materialData->atlasTransform[1] = 0;
-        materialData->atlasTransform[2] = 0;
-        materialData->atlasTransform[3] = 0;
     }
 
     // Update overlay material data.
@@ -1140,14 +1429,13 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* old_node, UpdatePaintNodeData* 
 
     materialData->flags = flags;
 
-    // Update vertices and material.
+    // Update vertices.
     int index = (border_ == UCUbuntuShape::RawBorder) ?
         0 : (border_ == UCUbuntuShape::IdleBorder) ? 1 : 2;
     if (radius_ == UCUbuntuShape::SmallRadius)
         index += 3;
-    node->setVertices(geometryWidth, geometryHeight, radius, source,
-                      !!(flags_ & UCUbuntuShape::StretchedFlag), hAlignment_, vAlignment_,
-                      textureData->coordinate[index]);
+    node->setVertices(itemWidth, itemHeight, radius, shapeTextureData->coordinate[index],
+                      sourceTransform_, textureRect);
 
     return node;
 }

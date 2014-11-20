@@ -20,7 +20,7 @@ uniform lowp int flags;
 
 varying mediump vec2 shapeCoord;
 varying mediump vec2 quadCoord;
-varying mediump vec2 sourceCoord;
+varying mediump vec4 sourceCoord;
 
 const lowp int TEXTURED_FLAG = 0x1;
 const lowp int OVERLAID_FLAG = 0x2;
@@ -35,7 +35,9 @@ void main(void)
 
     // Blend the source over the current color (static flow control prevents the texture fetch).
     if (flags & TEXTURED_FLAG) {
-        lowp vec4 source = texture2D(sourceTexture, sourceCoord) * sourceOpacity;
+        lowp vec2 axisMask = -sign((sourceCoord.zw * sourceCoord.zw) - vec2(1.0));
+        lowp float mask = clamp(axisMask.x + axisMask.y, 0.0, 1.0);
+        lowp vec4 source = texture2D(sourceTexture, sourceCoord) * sourceOpacity * mask;
         color = vec4(1.0 - source.a) * color + source;
     }
 
