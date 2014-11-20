@@ -52,6 +52,7 @@
 #include "ucaction.h"
 #include "ucactioncontext.h"
 #include "ucactionmanager.h"
+#include "systemsettings_p.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -185,6 +186,14 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
                      i18nChangeListener, SLOT(updateContextProperty()));
     QObject::connect(&UbuntuI18n::instance(), SIGNAL(languageChanged()),
                      i18nChangeListener, SLOT(updateContextProperty()));
+
+    // WORKAROUND: expose a context property that can be used from AbstractButton to
+    // control tactile feedback
+    context->setContextProperty("isHapticsFeedbackEnabled", SystemSettings::instance().vibraEnabled());
+    ContextPropertyChangeListener *hapticsListener =
+            new ContextPropertyChangeListener(context, "isHapticsFeedbackEnabled");
+    QObject::connect(&SystemSettings::instance(), &SystemSettings::vibraEnabledChanged,
+                     hapticsListener, &ContextPropertyChangeListener::updateContextProperty);
 
     // We can't use 'Application' because it exists (undocumented)
     context->setContextProperty("UbuntuApplication", &UCApplication::instance());
