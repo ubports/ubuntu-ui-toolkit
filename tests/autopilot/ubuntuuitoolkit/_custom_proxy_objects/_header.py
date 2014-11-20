@@ -34,6 +34,9 @@ logger = logging.getLogger(__name__)
 class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """AppHeader Autopilot custom proxy object."""
 
+    def ensure_visible(self):
+        self._show_if_not_visible()
+
     def _show_if_not_visible(self):
         if not self._is_visible():
             self._show()

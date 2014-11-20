@@ -24,6 +24,30 @@ import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
 
 
+class HideShowTestCase(tests.QMLFileAppTestCase):
+
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(dir_path,
+        'test_header.HideShowTestCase.qml')
+
+    def setUp(self):
+        super(HideShowTestCase, self).setUp()
+        self.header = self.main_view.get_header()
+
+    def test_show_header(self):
+        """Test that header.ensure_visible() shows the header.
+        """
+
+        # TODO: Test header visible initially
+        # Scroll down to hide the header
+        self.list_view = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickListView, objectName='testListView')
+        self.list_view.click_element('testListElement19')
+        # TODO: Test header invisible
+        self.header.ensure_visible()
+        # TODO: test header visible
+
 class ActionsTestCase(tests.QMLFileAppTestCase):
 
     path = os.path.abspath(__file__)
