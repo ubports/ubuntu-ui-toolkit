@@ -136,7 +136,6 @@ PageTreeNode {
     id: mainView
 
     /*!
-      \preliminary
       The property holds the application's name, which must be the same as the
       desktop file's name.
       The name also sets the name of the QCoreApplication and defaults for data
@@ -147,7 +146,6 @@ PageTreeNode {
     property string applicationName: ""
 
     /*!
-      \preliminary
       The property holds if the application should automatically resize the
       contents when the input method appears
 
@@ -215,7 +213,6 @@ PageTreeNode {
     active: true
 
     /*!
-      \preliminary
       Sets whether the application will be automatically rotating when the
       device is.
 

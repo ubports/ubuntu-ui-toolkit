@@ -26,7 +26,7 @@ Item {
     id: main
     width: units.gu(50); height: units.gu(100)
 
-    property bool hasOSK: QuickUtils.inputMethodProvider !== ""
+    property bool hasOSK: false
 
     Flow {
         anchors {
@@ -142,6 +142,7 @@ Item {
         }
 
         function initTestCase() {
+            main.hasOSK = QuickUtils.inputMethodProvider !== ""
             textField.forceActiveFocus();
         }
         function cleanup() {
