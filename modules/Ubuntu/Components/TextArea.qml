@@ -611,7 +611,6 @@ StyledItem {
     }
 
     /*!
-      \preliminary
       Places the clipboard or the data given as parameter into the text input.
       The selected text will be replaces with the data.
     */

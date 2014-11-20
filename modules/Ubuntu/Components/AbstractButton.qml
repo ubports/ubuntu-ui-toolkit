@@ -24,8 +24,6 @@ import Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief The AbstractButton class defines the behavior of the button.
 
-    \b{This component is under heavy development.}
-
     This class defines the behavior of the button: it defines the MouseArea
     and the states.
     All components deriving from this class support haptic feedback out of the box.

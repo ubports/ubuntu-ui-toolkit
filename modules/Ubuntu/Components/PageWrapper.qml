@@ -23,28 +23,23 @@ import "PageWrapperUtils.js" as Utils
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
     \brief Internal class used by \l PageStack
-
-    \b{This component is under heavy development.}
 */
 PageTreeNode {
     id: pageWrapper
     anchors.fill: parent
 
     /*!
-      \preliminary
       The reference to the page object. This can be the page
       itself (which is an Item), but also a url pointing to a QML file.
      */
     property var reference
 
     /*!
-      \preliminary
       The initialized page object, or null if the object needs to be created.
      */
     property Item object: null
 
     /*!
-      \preliminary
       This variable will be true if \l object holds an object that was created
       from the given reference, and thus can be destroyed when no the page is deactivated.
      */
@@ -68,7 +63,6 @@ PageTreeNode {
     visible: active
 
     /*!
-      \preliminary
       Properties are use to initialize a new object, or if reference
       is already an object, properties are copied to the object when activated.
       Set properties before setting the reference.
