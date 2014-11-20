@@ -457,7 +457,8 @@ void UCAlarm::setType(UCAlarm::AlarmType type)
  * \row
  *  \li Alarm.AutoDetect
  *  \li 0x80
- *  \li The alarm day will be detected from the alarm date.
+ *  \li The alarm day will be detected from the alarm date at the time the alarm
+ *      is saved.
  * \endtable
  *
  * The default value is Alarm.AutoDetect.

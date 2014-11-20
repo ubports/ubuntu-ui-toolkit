@@ -22,7 +22,7 @@ import Ubuntu.Components.Pickers 1.0
 
 MainView {
     id: mainView
-    width: units.gu(80)
+    width: units.gu(40)
     height: units.gu(71)
     objectName: "mainView"
     useDeprecatedToolbar: false
@@ -93,10 +93,10 @@ MainView {
                     }
                 }
             }
-            ValueSelector {
+            ItemSelector {
                 id: recurence
                 text: "Recurence"
-                values: ["OneTime", "Daily", "Weekly"]
+                model: ["OneTime", "Daily", "Weekly"]
                 selectedIndex: {
                     if (alarm.type == Alarm.OneTime)
                         return 0;
@@ -118,6 +118,7 @@ MainView {
                         break;
                     case 2:
                         alarm.type = Alarm.Repeating;
+                        aalrm.daysOfWeek = Alarm.AutoDetect;
                         break;
                     }
                 }
@@ -125,9 +126,9 @@ MainView {
 
             MultiValue {
                 id: days
-                text: "Occurence"
+                text: "Occurrence"
                 values: getValues()
-                visible: recurence.selectedIndex !== 1
+                visible: recurence.selectedIndex === 2
                 onClicked: {
                     PopupUtils.open(Qt.resolvedUrl("AlarmDays.qml"), days, {"alarm": alarm});
                 }
