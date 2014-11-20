@@ -59,7 +59,7 @@ Item {
         anchors.centerIn: background
         fontSize: "medium"
         color: backgroundTextColor
-        text: progressBar.indeterminate ? i18n.tr("In Progress")
+        text: progressBar.indeterminate ? i18n.dtr("ubuntu-ui-toolkit", "In Progress")
               : "%1%".arg(Number(progressBarStyle.progress * 100.0).toFixed(0))
         visible: !progressBar.hasOwnProperty("showProgressPercentage") || progressBar.showProgressPercentage
 

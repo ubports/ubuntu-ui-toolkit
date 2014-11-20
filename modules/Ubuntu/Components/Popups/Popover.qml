@@ -153,7 +153,6 @@ PopupBase {
     property alias foregroundStyle: foreground.style
 
     /*!
-      \preliminary
       Make the popover visible. Reparent to the background area object first if needed.
       Only use this function if you handle memory management. Otherwise use
       PopupUtils.open() to do it automatically.
@@ -170,7 +169,6 @@ PopupBase {
     }
 
     /*!
-      \preliminary
       Hide the popover.
       Only use this function if you handle memory management. Otherwise use
       PopupUtils.close() to do it automatically.
