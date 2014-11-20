@@ -42,6 +42,11 @@ OrientationHelper {
     property bool grabDismissAreaEvents: true
 
     /*!
+        Whether it should reparent itself to the scene's root item. The default is true.
+     */
+    property bool reparentToRootItem: true
+
+    /*!
       \internal
       FIXME: publish this property once agreed
       */
@@ -66,11 +71,15 @@ OrientationHelper {
       PopupUtils.open() to do it automatically.
     */
     function show() {
-        if (!dismissArea)
-            dismissArea = stateWrapper.rootItem
+        if (reparentToRootItem) {
+            parent = stateWrapper.rootItem;
+        }
+
+        if (!dismissArea) {
+            dismissArea = parent
+        }
 
         // Without setting the parent, mapFromItem() breaks in internalPopupUtils.
-        parent = stateWrapper.rootItem;
         stateWrapper.state = 'opened';
     }
 
