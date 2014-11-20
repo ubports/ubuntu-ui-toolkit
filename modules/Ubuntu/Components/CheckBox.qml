@@ -26,8 +26,6 @@ import QtQuick 2.0
 
     \l {http://design.ubuntu.com/apps/building-blocks/toggles}{See also the Design Guidelines on Toggles}.
 
-    \b{This component is under heavy development.}
-
     Example:
     \qml
     Item {
@@ -41,7 +39,6 @@ AbstractButton {
     id: checkBox
 
     /*!
-      \preliminary
       Specifies whether the checkbox is checked or not. By default the property
       is set to false.
     */

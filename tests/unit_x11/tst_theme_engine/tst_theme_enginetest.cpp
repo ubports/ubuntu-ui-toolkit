@@ -20,6 +20,7 @@
 #include <QtQml/QQmlEngine>
 #include <QtQml/QQmlComponent>
 #include "uctheme.h"
+#include "uctestcase.h"
 
 Q_DECLARE_METATYPE(QList<QQmlError>)
 
@@ -67,6 +68,8 @@ void tst_UCTheme::testNameDefault()
 
 void tst_UCTheme::testNameSet()
 {
+    QTest::ignoreMessage(QtWarningMsg, "Theme not found: \"MyBeautifulTheme\"");
+
     UCTheme theme;
     theme.setName("MyBeautifulTheme");
     QCOMPARE(theme.name(), QString("MyBeautifulTheme"));
@@ -77,6 +80,11 @@ void tst_UCTheme::testCreateStyleComponent()
     QFETCH(QString, styleName);
     QFETCH(QString, parentName);
     QFETCH(bool, success);
+
+    if (parentName.isEmpty())
+        QTest::ignoreMessage(QtWarningMsg, "QQmlComponent: Component is not ready");
+    else if (styleName == "NotExistingTestStyle.qml")
+        UbuntuTestCase::ignoreWarning(parentName, 19, 1, "QML Item: Warning: Style NotExistingTestStyle.qml not found in theme TestModule.TestTheme");
 
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", ".");
 
@@ -151,6 +159,8 @@ void tst_UCTheme::testThemesRelativePathWithParentXDGDATA()
 
 void tst_UCTheme::testThemesRelativePathWithParentNoVariablesSet()
 {
+    UbuntuTestCase::ignoreWarning("Parent.qml", 19, 1, "QML Item: Warning: Style TestStyle.qml not found in theme Ubuntu.Components.Themes.Ambiance");
+
     qputenv("UBUNTU_UI_TOOLKIT_THEMES_PATH", "");
     qputenv("XDG_DATA_DIRS", "");
 

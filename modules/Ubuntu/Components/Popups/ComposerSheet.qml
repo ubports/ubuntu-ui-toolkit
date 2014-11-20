@@ -65,13 +65,11 @@ SheetBase {
     id: composer
 
     /*!
-      \preliminary
       The user clicked the "cancel" button.
     */
     signal cancelClicked
 
     /*!
-      \preliminary
       The user clicked the "confirm" button.
      */
     signal confirmClicked
