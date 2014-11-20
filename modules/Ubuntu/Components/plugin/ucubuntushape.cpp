@@ -1293,6 +1293,11 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
 
     const QSizeF itemSize = QSize(width(), height());
 
+    if (itemSize.isEmpty()) {
+        delete oldNode;
+        return NULL;
+    }
+
     // OpenGL allocates textures per context, so we store textures reused by all shape instances
     // per context as well.
     QOpenGLContext* openglContext = window() ? window()->openglContext() : NULL;
