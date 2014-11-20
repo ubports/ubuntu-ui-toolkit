@@ -234,7 +234,6 @@ void tst_UCTheme::testMultipleImportPathsSet()
     theme.setName("TestModule.TestTheme");
 }
 
-
 QTEST_MAIN(tst_UCTheme)
 
 #include "tst_theme_enginetest.moc"
