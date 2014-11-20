@@ -118,7 +118,7 @@ MainView {
                         break;
                     case 2:
                         alarm.type = Alarm.Repeating;
-                        aalrm.daysOfWeek = Alarm.AutoDetect;
+                        alarm.daysOfWeek = Alarm.AutoDetect;
                         break;
                     }
                 }
