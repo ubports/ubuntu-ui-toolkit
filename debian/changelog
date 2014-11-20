@@ -1,3 +1,67 @@
+ubuntu-ui-toolkit (1.1.1338+15.04.20141111-0ubuntu2) UNRELEASED; urgency=medium
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Added detailed doc for borderSource. Fixes LP: #1354753
+  * [Gallery] Fixed bad object naming. Fixes LP: #1240555
+  
+  [ Chris Gagnoni ]
+  * fix compare string in
+    ubuntuuitoolkit.tests.gallery.test_textinput.DisabledTextInputTestCase.
+    Fixes LP: #1388896
+
+  [ Christian Dywan ]
+  * autopilot package needs to depend on python-autopilot-trace.
+    Fixes LP: #1385326
+  * Check if pressed is a property before using its value.
+    Fixes LP: #1384376
+  * Fix toolkit gallery translation template.
+    Ignore expected warnings in unit tests. Fixes LP: #1272431
+  * Make it clear that ToolbarItems is deprecated.
+  * Always append QML2 import path regardless of QML2_IMPORT_PATH
+  * Depend on dbus to ensure /etc/machine-id exists.
+  * Allow manual execution of unit tests using Qt.Test.
+
+  [ Tim Peeters]
+  * Add color properties to PageHeadStyle.
+  * Fix the ItemSelector style for SuruDark and SuruGradient themes.
+    Fixes LP: #1389112
+  * Fix the panel colors for the tabs and actions overflow in the
+    header. Fixes LP: #1386208
+  * Fix the size of the highlight when clicking a section in the header
+    divider. Fixes LP: #1372932.
+  * Fix untranslated "In Progress" label. Fixes LP: #1391617
+  * Remove \preliminary tags and "under heavy development" text in
+    docs. Fixes LP: #1389119.
+  * Small fix in documentation for PageHeadConfiguration.
+  * Update the CheckBox style:
+      - Expose color and padding properties
+      - Make icon themable
+      - use theme icon by default
+      - Update default size.
+    Fixes LP: #1372582, LP: #1390440.
+  * Various tweaks to SwitchStyle:
+      - Scaling of icons when changing the size of the Switch,
+      - Smaller default Switch size, Use icons from theme,
+      - Make check/uncheck animation faster, Prevent animations on
+        width change (during initialization),
+      - Expose SwitchStyle in Themes.Ambience, Add all visualization
+        parameters as properties to SwitchStyle.
+    Fixes LP: #1211483, LP: #1332092, LP: #1368711, LP: #1372582,
+    LP: #1381008
+
+  [ Zoltán Balogh ]
+  * Use absolute path for the UITK Gallery icon. Fixes LP: #1304874
+
+  [ Zsombor Egri ]
+  * Fixing typo in the Label test case. Refactoring tests to use data
+    driven test. Fixes LP: #1076771.
+  * Ignore QT_IM_MODULE values like ibus, none or compose.
+    Fixes LP: #1382121.
+  * Remove overloaded signal, we should use the default signals
+    whenever we override a property. Fixes LP: #1194778.
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Thu, 20 Nov 2014 14:25:26 +0200
+
 ubuntu-ui-toolkit (1.1.1311+15.04.20141111-0ubuntu1) vivid; urgency=low
 
   [ Zsombor Egri ]
