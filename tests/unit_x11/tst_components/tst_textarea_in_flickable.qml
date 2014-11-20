@@ -23,8 +23,6 @@ Item {
     id: root
     width: units.gu(50); height: units.gu(100)
 
-    property bool hasOSK: QuickUtils.inputMethodProvider !== ""
-
     Flickable {
         id: flickable
         anchors.fill: parent

@@ -30,17 +30,17 @@ Template {
             height: units.gu(8)
 
             UbuntuShape {
-                objectName: "ubuntushape_color_orange"
+                objectName: "ubuntushape_backgroundcolor_orange"
                 backgroundColor: UbuntuColors.orange
             }
 
             UbuntuShape {
-                objectName: "ubuntushape_color_lightAubergine"
+                objectName: "ubuntushape_backgroundcolor_lightaubergine"
                 backgroundColor: UbuntuColors.lightAubergine
             }
 
             UbuntuShape {
-                objectName: "ubuntushape_color_gradient"
+                objectName: "ubuntushape_verticalgradient"
                 backgroundColor: UbuntuColors.green
                 secondaryBackgroundColor: UbuntuColors.darkGrey
                 backgroundMode: UbuntuShape.VerticalGradient

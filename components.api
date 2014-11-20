@@ -246,6 +246,7 @@ Object
     property list<Action> actions
     property Action backAction
     property Item contents
+    property string preset
     readonly property PageHeadSections sections
     property color foregroundColor
 PageHeadSections 1.1
@@ -908,12 +909,6 @@ plugins.qmltypes
     prototype: "QQuickImageBase"
     exports: ["QQuickImageBase 0.1", "QQuickImageBase 1.0"]
     Property { name: "source"; type: "QUrl" }
-    Signal {
-    name: "sourceChanged"
-    Parameter { type: "QUrl" }
-    Signal {
-    name: "sourceChanged"
-    Parameter { type: "QUrl" }
     name: "UCStateSaver"
     prototype: "QObject"
     exports: ["StateSaver 0.1", "StateSaver 1.0"]

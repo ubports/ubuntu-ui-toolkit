@@ -29,7 +29,7 @@ cat $DOC_PATH/qdoc.err
 test ! -s $DOC_PATH/qdoc.err || exit 1
 echo docs: Offline done.
 
-qhelpgenerator -o "$DOC_PATH/ubuntuuserinterfacetoolkit.qch" "$DOC_PATH/offline/ubuntuuserinterfacetoolkit.qhp"
+qhelpgenerator -o "$DOC_PATH/ubuntuuserinterfacetoolkit.qch" "$DOC_PATH/offline/ubuntuuserinterfacetoolkit.qhp" | grep -v ' does not exist! Skipping it'
 echo docs: qch done: $DOC_PATH
 
 # Online docs. Run qdoc twice: the second run with indexes for cross-referencing

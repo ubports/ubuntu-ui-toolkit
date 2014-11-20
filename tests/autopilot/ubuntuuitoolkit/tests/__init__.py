@@ -29,7 +29,7 @@ from ubuntuuitoolkit import base, fixture_setup
 
 _DESKTOP_FILE_CONTENTS = ("""[Desktop Entry]
 Type=Application
-Exec=Not important
+Exec=/usr/bin/whoami
 Path=Not important
 Name=Test app
 Icon=Not important

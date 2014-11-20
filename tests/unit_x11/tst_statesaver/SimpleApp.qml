@@ -25,4 +25,6 @@ Item {
     id: testItem
     objectName: "testItem"
     StateSaver.properties: "boolArray, intArray, realArray, stringArray"
+
+    Component.onCompleted: UbuntuApplication.applicationName = "SimpleApp"
 }

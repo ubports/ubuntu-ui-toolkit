@@ -24,7 +24,7 @@ Item {
     id: main
     width: units.gu(50); height: units.gu(100)
 
-    property bool hasOSK: QuickUtils.inputMethodProvider !== ""
+    property bool hasOSK: false
 
     Column {
         TextArea {
@@ -86,6 +86,10 @@ Item {
     UbuntuTestCase {
         name: "TextAreaAPI"
         when: windowShown
+
+        function init() {
+            main.hasOSK = QuickUtils.inputMethodProvider !== ""
+        }
 
         function cleanup() {
             textArea.focus =
@@ -191,6 +195,16 @@ Item {
 
         function test_0_readOnly() {
             compare(textArea.readOnly,textEdit.readOnly,"TextArea.readOnly is same as TextEdit.readOnly")
+
+            textArea.text = "ab";
+            textArea.cursorPosition = 1;
+            textArea.textFormat = TextEdit.PlainText;
+            keyClick(Qt.Key_Return);
+            compare("ab", textArea.text, "No split occurred in plain area");
+
+            textArea.textFormat = TextEdit.RichText;
+            keyClick(Qt.Key_Return);
+            compare(textArea.text.indexOf("<br />"), -1, "No split occurred in rich area");
         }
 
         function test_0_renderType() {

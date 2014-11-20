@@ -600,15 +600,15 @@ void UCUbuntuShape::setRadius(const QString& radius)
 }
 
 /*!
- * \qmlproperty url UbuntuShape::borderSource
+ * \qmlproperty string UbuntuShape::borderSource
  *
  * This property defines the look of the shape borders. The supported strings are \c
  * "radius_idle.sci" providing an idle button style and "radius_pressed.sci" providing a pressed
  * button style. Any other strings (like the empty one "") disables styling. Default value is \c
  * "radius_idle.sci".
  *
- * \note This was an internal property that shouldn't have been exposed, hence the ugly API.
- */
+ * \note We plan to expose that feature with styling properties.
+*/
 void UCUbuntuShape::setBorderSource(const QString& borderSource)
 {
     if (borderSource_ != borderSource) {

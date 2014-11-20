@@ -84,6 +84,8 @@ for line in fileinput.input():
 def skipversion(filename):
     for v in ['10', '11']:
         filename = filename.replace(v + '/', '')
+    if filename[-8:] == 'qmltypes':
+        filename = os.path.basename(filename)
     return filename
 inputfiles.sort(key=skipversion)
 
@@ -110,7 +112,7 @@ for line in fileinput.input(inputfiles, openhook=hook):
         if fileinput.filename() in classes:
             classname = ' '.join(classes[fileinput.filename()])
         else:
-            classname = fileinput.filename()
+            classname = os.path.basename(fileinput.filename())
         print(classname)
 
     line = line.split('//')[0]

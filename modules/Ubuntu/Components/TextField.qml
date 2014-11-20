@@ -25,8 +25,6 @@ import Ubuntu.Components 1.1 as Ubuntu
     Input constraints can be set through validator or inputMask. Setting echoMode
     to an appropriate value enables TextField to be used as password input field.
 
-    \b{This component is under heavy development.}
-
     \l {http://design.ubuntu.com/apps/building-blocks/text-field}{See also the Design Guidelines on the Text Field}.
 
     Example:
@@ -914,6 +912,7 @@ ActionItem {
         }
         width: visible ? icon.width : 0
         visible: control.hasClearButton &&
+                 !control.readOnly &&
                     (control.activeFocus && ((editor.text != "") || editor.inputMethodComposing))
 
         Icon {
@@ -922,7 +921,7 @@ ActionItem {
             width: units.gu(2.5)
             height: width
             // use icon from icon-theme
-            name: control.hasClearButton ? "clear-search" : ""
+            name: control.hasClearButton && !control.readOnly ? "clear-search" : ""
         }
 
         onClicked: editor.text = ""
@@ -943,7 +942,7 @@ ActionItem {
         // hint is shown till user types something in the field
         visible: (editor.text == "") && !editor.inputMethodComposing
         color: Theme.palette.normal.backgroundText
-        fontSize: "medium"
+        font: editor.font
         elide: Text.ElideRight
     }
 
@@ -980,7 +979,7 @@ ActionItem {
             }
             color: control.__styleInstance.color
             selectedTextColor: Theme.palette.selected.foregroundText
-            selectionColor: Theme.palette.selected.selection
+            selectionColor: Theme.palette.selected.foreground
             font.pixelSize: FontUtils.sizeToPixels("medium")
             passwordCharacter: "\u2022"
             // forward keys to the root element so it can be captured outside of it

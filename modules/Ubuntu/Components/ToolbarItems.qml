@@ -20,7 +20,10 @@ import QtQuick 2.0
     \qmltype ToolbarItems
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
+    \deprecated
     \brief Row of Items to be placed in a toolbar.
+
+    \b DEPRECATED: DO NOT USE THIS. USE \b head.actions IN \l Page INSTEAD.
 
     Each \l Page has a tools property that can be set to change the tools of toolbar supplied
     by \l MainView when the \l Page is active. Each ToolbarItems consists of a set of
@@ -139,7 +142,7 @@ Item {
     property Item back: ToolbarButton {
         objectName: "back_toolbar_button"
         iconSource: Qt.resolvedUrl("artwork/back.png")
-        text: i18n.dtr('ubuntu-ui-toolkit', 'Back')
+        text: i18n.dtr('ubuntu-ui-toolkit', "Back")
         visible: toolbarItems.pageStack && toolbarItems.pageStack.depth > 1
         /*!
           If there is a \l PageStack of sufficient depth, triggering the back button

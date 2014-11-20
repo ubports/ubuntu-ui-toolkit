@@ -24,7 +24,7 @@ MainView {
 
     Page {
         objectName: 'page'
-        title: i18n.dtr('localizedApp', 'Welcome')
+        title: i18n.dtr('localizedApp', "Welcome")
         Button {
             objectName: 'button'
             anchors.centerIn: parent
