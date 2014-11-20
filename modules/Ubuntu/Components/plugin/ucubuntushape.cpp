@@ -637,7 +637,7 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
         }
     \endqml
 
-    or with an Image id:
+    or with an \c Image \c id:
 
     \qml
         Item {
