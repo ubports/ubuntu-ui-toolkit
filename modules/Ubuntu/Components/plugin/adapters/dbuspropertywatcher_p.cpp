@@ -69,7 +69,9 @@ void DBusPropertyWatcher::syncProperties(const QString &serviceInterface)
     }
     Q_FOREACH(const QString &property, watchedProperties) {
         QVariant value = readProperty(serviceInterface.isEmpty() ? iface.interface() : serviceInterface, property);
-        Q_EMIT propertyChanged(property, value);
+        if (value.isValid()) {
+            Q_EMIT propertyChanged(property, value);
+        }
     }
 }
 

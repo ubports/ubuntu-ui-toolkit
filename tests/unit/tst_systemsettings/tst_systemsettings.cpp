@@ -39,6 +39,14 @@ private Q_SLOTS:
         SystemSettings::instance();
     }
 
+    void test_vibraEnabled_on_if_no_systemsetting_defined()
+    {
+        SystemSettingsPrivate *pSettings = SystemSettingsPrivate::get(&SystemSettings::instance());
+        if (!pSettings->hasProperty("OtherVibrate")) {
+            // verify that the vibration is turned on
+            QVERIFY(SystemSettings::instance().vibraEnabled());
+        }
+    }
     void test_vibraEnabled_change()
     {
         SystemSettingsPrivate *pSettings = SystemSettingsPrivate::get(&SystemSettings::instance());
