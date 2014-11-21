@@ -20,6 +20,7 @@ ubuntu-ui-toolkit (1.1.1338+15.04.20141111-0ubuntu2) UNRELEASED; urgency=medium
   * Always append QML2 import path regardless of QML2_IMPORT_PATH
   * Depend on dbus to ensure /etc/machine-id exists.
   * Allow manual execution of unit tests using Qt.Test.
+  * Autopilot package needs to depend on QtTest
 
   [ Tim Peeters]
   * Add color properties to PageHeadStyle.
