@@ -23,4 +23,6 @@ SUBDIRS += tst_units \
     tst_arguments \
     tst_argument \
     tst_alarms \
-    tst_theme
+    tst_theme \
+    tst_dbuswatcher \
+    tst_systemsettings

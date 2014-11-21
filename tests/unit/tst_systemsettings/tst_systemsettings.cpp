@@ -14,37 +14,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "uctestcase.h"
 #include "systemsettings_p.h"
-#include "systemsettings_p_p.h"
+#include <QtCore/QString>
+#include <QtCore/QTextCodec>
+#include <QtCore/QDebug>
+#include <QtTest/QTest>
+#include <QtTest/QSignalSpy>
 
-SystemSettingsPrivate::SystemSettingsPrivate(SystemSettings *qq)
-    : q_ptr(qq)
-    , vibrate(true)
+class tst_SystemSettings : public QObject
 {
-}
+    Q_OBJECT
 
-SystemSettingsPrivate::~SystemSettingsPrivate()
-{
-}
+public:
+    tst_SystemSettings() {}
 
-/*
- * The class maintains the access to some common system settings required by the
- * toolkit. The private class serves the adaptation interface.
- */
-SystemSettings::SystemSettings(QObject *parent)
-    : QObject(parent)
-    , d_ptr(createSystemSettingsAdaptation(this))
-{
-    Q_D(SystemSettings);
-    d->init();
-}
+private:
 
-SystemSettings::~SystemSettings()
-{
-}
+private Q_SLOTS:
 
-bool SystemSettings::vibraEnabled() const
-{
-    Q_D(const SystemSettings);
-    return d->vibrate;
-}
+    void initTestCase()
+    {
+    }
+
+    void cleanupTestCase()
+    {
+    }
+
+};
+
+QTEST_MAIN(tst_SystemSettings)
+
+#include "tst_systemsettings.moc"

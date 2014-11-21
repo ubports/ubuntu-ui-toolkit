@@ -56,6 +56,24 @@ DBusPropertyWatcher::DBusPropertyWatcher(const QDBusConnection &connection, cons
 }
 
 /*
+ * Reads the values of the properties to be watched. The method will work only
+ * if there are specific properties to watch for. serviceInterface is the DBus
+ * interface the properties are retrieved from, which may be different from the
+ * watcher interface. If null string is given, the sync will use the watched
+ * interface.
+ */
+void DBusPropertyWatcher::syncProperties(const QString &serviceInterface)
+{
+    if (watchedProperties.isEmpty()) {
+        return;
+    }
+    Q_FOREACH(const QString &property, watchedProperties) {
+        QVariant value = readProperty(serviceInterface.isEmpty() ? iface.interface() : serviceInterface, property);
+        Q_EMIT propertyChanged(property, value);
+    }
+}
+
+/*
  * Setup interface connections on ownership change
  */
 void DBusPropertyWatcher::onOwnerChanged(const QString &serviceName, const QString &oldOwner, const QString &newOwner)

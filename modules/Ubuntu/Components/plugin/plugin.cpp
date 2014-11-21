@@ -191,7 +191,8 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
     // control tactile feedback
     context->setContextProperty("isHapticsFeedbackEnabled", SystemSettings::instance().vibraEnabled());
     ContextPropertyChangeListener *hapticsListener =
-            new ContextPropertyChangeListener(context, "isHapticsFeedbackEnabled");
+            new ContextPropertyChangeListener(context, "isHapticsFeedbackEnabled",
+                                              &SystemSettings::instance(), "vibraEnabled");
     QObject::connect(&SystemSettings::instance(), &SystemSettings::vibraEnabledChanged,
                      hapticsListener, &ContextPropertyChangeListener::updateContextProperty);
 

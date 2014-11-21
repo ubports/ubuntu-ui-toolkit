@@ -53,7 +53,7 @@ void SystemSettingsDBus::init()
     QObject::connect(&accountsWatcher, SIGNAL(propertyChanged(QString,QVariant)),
                      q, SLOT(propertyChanged(QString,QVariant)));
     // get the value for each watched property
-    accountsWatcher->fetchValues();
+    accountsWatcher.syncProperties("com.ubuntu.touch.AccountsService.Sound");
 }
 
 void SystemSettingsDBus::propertyChanged(const QString &property, const QVariant &value)

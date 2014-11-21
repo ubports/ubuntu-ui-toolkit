@@ -18,15 +18,23 @@
 
 #include <QQmlContext>
 
-ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context, const QString &contextProperty) :
+ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context, const QString &contextProperty,
+                                                             QObject *source, const QString &sourceProperty) :
     QObject(context),
     m_context(context),
-    m_contextProperty(contextProperty)
+    m_contextProperty(contextProperty),
+    m_source(source),
+    m_sourceProperty(sourceProperty)
 {
 }
 
 void ContextPropertyChangeListener::updateContextProperty()
 {
-    QVariant value = m_context->contextProperty(m_contextProperty);
+    QVariant value;
+    if (m_source && !m_sourceProperty.isEmpty()) {
+        value = m_source->property(m_sourceProperty.toLocal8Bit().constData());
+    } else {
+        value = m_context->contextProperty(m_contextProperty);
+    }
     m_context->setContextProperty(m_contextProperty, value);
 }

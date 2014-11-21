@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,24 +14,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef UBUNTU_COMPONENTS_LISTENER_H
-#define UBUNTU_COMPONENTS_LISTENER_H
+#include "uctestcase.h"
+#include "adapters/dbuspropertywatcher_p.h"
+#include <QtCore/QString>
+#include <QtCore/QTextCodec>
+#include <QtCore/QDebug>
+#include <QtTest/QTest>
+#include <QtTest/QSignalSpy>
 
-#include <QObject>
-
-class QQmlContext;
-
-class ContextPropertyChangeListener : public QObject
+class tst_DBusPropertyWatcher : public QObject
 {
     Q_OBJECT
+
 public:
-    explicit ContextPropertyChangeListener(QQmlContext* context, const QString& contextProperty, QObject *source = 0, const QString &sourceProperty = QString());
-    Q_SLOT void updateContextProperty();
-    QQmlContext* m_context;
-    QString m_contextProperty;
-    QObject *m_source;
-    QString m_sourceProperty;
-    QList<int> t;
+    tst_DBusPropertyWatcher() {}
+
+private:
+
+private Q_SLOTS:
+
+    void initTestCase()
+    {
+    }
+
+    void cleanupTestCase()
+    {
+    }
+
 };
 
-#endif // UBUNTU_COMPONENTS_PLUGIN_H
+QTEST_MAIN(tst_DBusPropertyWatcher)
+
+#include "tst_dbuswatcher.moc"

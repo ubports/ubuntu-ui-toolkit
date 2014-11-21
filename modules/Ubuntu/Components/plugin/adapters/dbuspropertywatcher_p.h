@@ -27,6 +27,7 @@ class DBusPropertyWatcher : public QObject
     Q_OBJECT
 public:
     explicit DBusPropertyWatcher(const QDBusConnection &connection, const QString &service, const QString &path, const QString &iface, const QStringList &properties, QObject *parent = 0);
+    void syncProperties(const QString &serviceInterface = QString());
 
 Q_SIGNALS:
     void propertyChanged(const QString &property, const QVariant &value);
