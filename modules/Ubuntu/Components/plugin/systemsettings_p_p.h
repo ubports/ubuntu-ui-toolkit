@@ -25,7 +25,6 @@ public:
     virtual ~SystemSettingsPrivate();
 
     virtual void init(SystemSettings *qq);
-    virtual void updateVibraEnabled() = 0;
 
 protected:
     SystemSettings *q_ptr;

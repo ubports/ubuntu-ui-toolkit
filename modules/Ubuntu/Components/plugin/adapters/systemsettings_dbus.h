@@ -19,16 +19,21 @@
 
 #include <QtCore/QObject>
 #include "systemsettings_p_p.h"
+#include "dbuspropertywatcher_p.h"
 
 class SystemSettingsDBus : public QObject, public SystemSettingsPrivate
 {
     Q_OBJECT
 public:
     SystemSettingsDBus(QObject *parent = 0);
-    ~SystemSettingsDBus();
 
-public Q_SLOTS:
-    void updateVibraEnabled();
+    void init(SystemSettings *qq);
+
+private Q_SLOTS:
+    void vibrateChanged(const QString &property, const QVariant &value);
+
+private:
+    DBusPropertyWatcher accountsWatcher;
 };
 
 #endif // SYSTEMSETTINGS_DBUS_H
