@@ -977,6 +977,15 @@ plugins.qmltypes
     Parameter { name: "singular"; type: "string" }
     Parameter { name: "plural"; type: "string" }
     Parameter { name: "n"; type: "int" }
+    Method {
+    name: "ctr"
+    Parameter { name: "context"; type: "string" }
+    Parameter { name: "text"; type: "string" }
+    Method {
+    name: "dctr"
+    Parameter { name: "domain"; type: "string" }
+    Parameter { name: "context"; type: "string" }
+    Parameter { name: "text"; type: "string" }
     name: "ULConditionalLayout"
     prototype: "QObject"
     exports: ["ConditionalLayout 0.1", "ConditionalLayout 1.0"]
