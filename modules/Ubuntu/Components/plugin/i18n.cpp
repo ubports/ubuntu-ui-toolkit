@@ -19,14 +19,14 @@
 #include "i18n.h"
 #include <QtCore/QDir>
 
-#include <stdlib.h>
-#include <locale.h>
-
 namespace C {
 #include <libintl.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 }
+
+#include <stdlib.h>
+#include <locale.h>
 
 /*!
  * \qmltype i18n
