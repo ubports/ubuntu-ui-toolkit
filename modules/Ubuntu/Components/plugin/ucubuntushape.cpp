@@ -1282,10 +1282,15 @@ void UCUbuntuShape::updateSourceTransform(float itemWidth, float itemHeight, Fil
     const float factorTable[3] = { 0.0f, 0.5f, 1.0f };
     const float hFactor = factorTable[static_cast<int>(horizontalAlignment)];
     const float vFactor = factorTable[static_cast<int>(verticalAlignment)];
-    const float tx = roundTextureCoord(hFactor * (1.0f - sx) - sourceTx, textureSize.width());
-    const float ty = roundTextureCoord(vFactor * (1.0f - sy) - sourceTy, textureSize.height());
+    const float tx = hFactor * (1.0f - sx) - sourceTx;
+    const float ty = vFactor * (1.0f - sy) - sourceTy;
 
-    sourceTransform_ = QVector4D(sx, sy, tx, ty);
+    // Rounding is important to get padded texture perfectly mapped to the pixel grid. It shouldn't
+    // be necessary when there's a scaling but we make it consistent by applying the scale factors
+    // to the texture size, so that there's no ugly position jumps with big scaling values.
+    sourceTransform_ = QVector4D(
+        sx, sy, roundTextureCoord(tx, textureSize.width() * sourceScale_.x()),
+        roundTextureCoord(ty, textureSize.height() * sourceScale_.y()));
 }
 
 QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data)
