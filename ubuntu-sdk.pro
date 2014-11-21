@@ -45,8 +45,16 @@ equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     DOC_SRC = documentation
 }
 
-DOC_PATH=$$system(pwd)/documentation
+DOC_PATH=$$PWD/documentation
 docs.target = docs
 docs.commands = SRC=$$DOC_SRC ./documentation/docs.sh $$DOC_PATH;
 QMAKE_EXTRA_TARGETS += docs
+
+#helper files
+OTHER_FILES += \
+    features/ubuntu_qml_module.prf \
+    features/coverage.prf \
+    .qmake.conf
+
+
 

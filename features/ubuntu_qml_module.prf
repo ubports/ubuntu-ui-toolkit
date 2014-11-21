@@ -1,0 +1,89 @@
+# mymodule.installPath="path/to/install"
+# mymodule.files=*.qml
+# mymodule.depends=someothertarget
+
+defineReplace(qmlModStripSrcDir) {
+    return($$relative_path($$1, $$_PRO_FILE_PWD_))
+}
+
+defineReplace(expandFilePath) {
+    allfiles=
+    for(curr,1) {
+        message("EXPANDING: $${curr}")
+        RESULT = $$find(curr, "^/")
+        count(RESULT, 0){
+            allfiles += $$files($$_PRO_FILE_PWD_/$$curr)
+        } else {
+            #absolute path
+            allfiles += $$files($$curr)
+        }
+    }
+
+    return($$allfiles)
+}
+
+defineReplace(generateUuid) {
+    _uuid = $$system(uuidgen)
+    isEmpty(_uuid): error("Could not create a UUID, uuidgen is required to build this project.")
+    return($${_uuid})
+}
+
+defineReplace(readVarValueByName) {
+    eval("_value=\$\$$${1}")
+    return($$_value)
+}
+
+for(qml_module, UBUNTU_QML_MODULE_FILES){
+
+    defined($${qml_module}.files,var) {
+        _files=$$readVarValueByName($${qml_module}.files)
+        filelist+=$$_files
+    } else {
+        message("Found string entry $${qml_module}")
+        filelist+=$$qml_module
+    }
+
+    #make QtCreator show our files
+    OTHER_FILES += $${filelist}
+
+    filelist=$$expandFilePath($${filelist})
+    message("FILELIST: $${filelist}")
+
+    for(copyf, filelist) {
+        #add a suffix to the variable name to make sure its unique
+        _varname = $$generateUuid()
+
+        #make sure the file is copied again when it changes
+        _qml_mod_sourcetarget$${_varname}.target   = $$copyf
+        _qml_mod_sourcetarget$${_varname}.commands =
+
+        target_name       = "$${OUT_PWD}/$$qmlModStripSrcDir($${copyf})"
+        _qml_mod_target$${_varname}.target   = $$target_name
+        _qml_mod_target$${_varname}.commands = $$QMAKE_COPY $${copyf} $$target_name
+        _qml_mod_target$${_varname}.depends  = $$copyf
+
+        defined($${qml_module}.depends,var) {
+            eval("_depends=\$\$$${qml_module}.depends")
+            _qml_mod_target$${_varname}.depends += $$_depends
+        }
+
+        QMAKE_EXTRA_TARGETS += _qml_mod_sourcetarget$${_varname} _qml_mod_target$${_varname}
+        message($${QMAKE_EXTRA_TARGETS})
+        PRE_TARGETDEPS += $$target_name
+    }
+
+    defined($${qml_module}.installPath,var) {
+
+        #add a suffix to the variable name to make sure its unique
+        _varname = $$generateUuid()
+        eval("_installPath=\$\$$${qml_module}.installPath")
+        eval("_files=\$\$$${qml_module}.files")
+
+        qml_files_$${_varname}.path  = $$_installPath
+        qml_files_$${_varname}.files = $$_files
+
+        INSTALLS += qml_files_$${_varname}
+    }
+}
+
+message("OTHERFILES_: $$OTHER_FILES")
