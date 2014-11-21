@@ -586,7 +586,6 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , backgroundColor_(qRgba(0, 0, 0, 0))
     , secondaryBackgroundColor_(qRgba(0, 0, 0, 0))
     , borderSource_("radius_idle.sci")
-    , gridUnit_(UCUnits::instance().gridUnit())
     , sourceScale_(1.0f, 1.0f)
     , sourceTranslation_(0.0f, 0.0f)
     , sourceTransform_(1.0f, 1.0f, 0.0f, 0.0f)
@@ -611,8 +610,9 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     setFlag(ItemHasContents);
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
                      SLOT(gridUnitChanged()));
-    setImplicitWidth(implicitGridUnitWidth * gridUnit_);
-    setImplicitHeight(implicitGridUnitHeight * gridUnit_);
+    const float gridUnit = UCUnits::instance().gridUnit();
+    setImplicitWidth(implicitGridUnitWidth * gridUnit);
+    setImplicitHeight(implicitGridUnitHeight * gridUnit);
     update();
 }
 
@@ -1284,9 +1284,9 @@ void UCUbuntuShape::onOpenglContextDestroyed()
 
 void UCUbuntuShape::gridUnitChanged()
 {
-    gridUnit_ = UCUnits::instance().gridUnit();
-    setImplicitWidth(implicitGridUnitWidth * gridUnit_);
-    setImplicitHeight(implicitGridUnitHeight * gridUnit_);
+    const float gridUnit = UCUnits::instance().gridUnit();
+    setImplicitWidth(implicitGridUnitWidth * gridUnit);
+    setImplicitHeight(implicitGridUnitHeight * gridUnit);
     update();
 }
 
@@ -1387,7 +1387,6 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     if (!node) {
         node = new ShapeNode(this);
     }
-    ShapeMaterial::Data* materialData = node->material()->data();
 
     // Get the texture info and update the source transform if needed.
     QSGTextureProvider* provider = source_ ? source_->textureProvider() : NULL;
@@ -1427,8 +1426,11 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         sourceTextureProvider_ = provider;
     }
 
+    ShapeMaterial::Data* materialData = node->material()->data();
+    const float gridUnit = UCUnits::instance().gridUnit();
+
     ShapeTextureData* shapeTextureData;
-    if (gridUnit_ > lowHighTextureThreshold) {
+    if (gridUnit > lowHighTextureThreshold) {
         shapeTextureData = &shapeTextureHigh;
         materialData->shapeTexture = shapeTextures.high;
     } else {
@@ -1441,7 +1443,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     // is less than 2 radii, the radius is scaled down.
     float radius = (radius_ == SmallRadius) ?
         shapeTextureData->smallRadius : shapeTextureData->mediumRadius;
-    const float scaleFactor = gridUnit_ / shapeTextureData->gridUnit;
+    const float scaleFactor = gridUnit / shapeTextureData->gridUnit;
     materialData->shapeTextureFiltering = QSGTexture::Nearest;
     if (scaleFactor != 1.0f) {
         radius *= scaleFactor;

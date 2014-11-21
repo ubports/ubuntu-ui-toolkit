@@ -210,7 +210,6 @@ private:
     QRgb backgroundColor_;
     QRgb secondaryBackgroundColor_;
     QString borderSource_;
-    float gridUnit_;
     QVector2D sourceScale_;
     QVector2D sourceTranslation_;
     QVector4D sourceTransform_;
