@@ -28,12 +28,12 @@ Item {
       Color of teh background.
       */
     // FIXME: use Palette colors instead when available
-    property color backgroundColor: (leadingPanel ? UbuntuColors.red : "white")
+    property color backgroundColor: (leading ? UbuntuColors.red : "white")
 
     width: units.gu(20)
 
-    // for testing
-    objectName: "ListItemPanel" + (leadingPanel ? "Leading" : "Trailing")
+    // used for module/autopilot testing
+    objectName: "ListItemPanel" + (leading ? "Leading" : "Trailing")
 
     /*
       Property holding the ListItem's contentItem instance
@@ -42,11 +42,11 @@ Item {
     /*
       Specifies whether the panel is used to visualize leading or trailing options.
       */
-    readonly property bool leadingPanel: panel.ListItemActions.status == panel.ListItemActions.Leading
+    readonly property bool leading: panel.ListItemActions.status == panel.ListItemActions.Leading
 
     anchors {
-        left: contentItem ? (leadingPanel ? undefined : contentItem.right) : undefined
-        right: contentItem ? (leadingPanel ? contentItem.left : undefined) : undefined
+        left: contentItem ? (leading ? undefined : contentItem.right) : undefined
+        right: contentItem ? (leading ? contentItem.left : undefined) : undefined
         top: contentItem ? contentItem.top : undefined
         bottom: contentItem ? contentItem.bottom : undefined
     }
@@ -56,8 +56,8 @@ Item {
         anchors {
             fill: parent
             // add 4 times the overshoot margins to cover the background when tugged
-            leftMargin: leadingPanel ? -units.gu(4 * panel.ListItemActions.overshoot) : 0
-            rightMargin: leadingPanel ? 0 : -units.gu(4 * panel.ListItemActions.overshoot)
+            leftMargin: leading ? -units.gu(4 * panel.ListItemActions.overshoot) : 0
+            rightMargin: leading ? 0 : -units.gu(4 * panel.ListItemActions.overshoot)
         }
         color: panel.backgroundColor
     }
