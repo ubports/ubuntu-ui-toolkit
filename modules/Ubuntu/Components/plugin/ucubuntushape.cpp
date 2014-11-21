@@ -966,7 +966,7 @@ void UCUbuntuShape::setBackgroundMode(BackgroundMode backgroundMode)
 */
 void UCUbuntuShape::setOverlayGeometry(const QRectF& overlayGeometry)
 {
-    // Crop rectangle and convert to 16-bit unsigned integer.
+    // Crop rectangle and pack to 16-bit unsigned integer.
     const float x = qMax(0.0f, qMin(1.0f, static_cast<float>(overlayGeometry.x())));
     float width = qMax(0.0f, static_cast<float>(overlayGeometry.width()));
     if ((x + width) > 1.0f) {
@@ -1276,7 +1276,7 @@ void UCUbuntuShape::updateSourceTransform(float itemWidth, float itemHeight, Fil
 
     const float sourceSxInv = 1.0f / sourceScale_.x();
     const float sourceSyInv = 1.0f / sourceScale_.y();
-    // Multiplied by fillS* so that the translation unit is in shape normalized coordinates.
+    // Multiplied by fillS* so that the translation unit is in normalized item coordinates.
     const float sourceTx = (sourceTranslation_.x() * sourceSxInv) * fillSx;
     const float sourceTy = (sourceTranslation_.y() * sourceSyInv) * fillSy;
     const float sx = fillSx * sourceSxInv;
