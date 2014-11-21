@@ -1,6 +1,30 @@
-# mymodule.installPath="path/to/install"
-# mymodule.files=*.qml
-# mymodule.depends=someothertarget
+# Provides a feature file for easy dependency handling of
+# qml module dependencies that are not compiled.
+#
+# To automatically copy and update qml/js/whatever files in the
+# builddirectory, its possible to add them to the UBUNTU_QML_MODULE_FILES
+# variable in 2 different ways:
+#
+# 1) Just as a wildcard or filename:
+#     UBUNTU_QML_MODULE_FILES += *.qml \
+#                                *.js \
+#                                *.png
+#
+# 2) By adding them in a structure which provides more functionality:
+#
+#     #specifying a install path will automatically create a install target
+#     #and install all files specified in the .files subvar
+#     mymodule.installPath="/path/to/install"
+#
+#     # The required files
+#     mymodule.files=*.qml \
+#                    *.js \
+#                    *.png
+#
+#     # This will add a dependency to the automatically created target
+#     mymodule.depends=someothertarget
+#
+# Note: The files are automatically added to OTHER_FILES so they are visible in the QtC project tree
 
 defineReplace(qmlModStripSrcDir) {
     return($$relative_path($$1, $$_PRO_FILE_PWD_))
@@ -39,15 +63,15 @@ for(qml_module, UBUNTU_QML_MODULE_FILES){
         _files=$$readVarValueByName($${qml_module}.files)
         filelist+=$$_files
     } else {
-        message("Found string entry $${qml_module}")
         filelist+=$$qml_module
     }
 
     #make QtCreator show our files
     OTHER_FILES += $${filelist}
 
+    #make sure we only have absolute path entries in our list
     filelist=$$expandFilePath($${filelist})
-    message("FILELIST: $${filelist}")
+    filelist=$$unique(filelist)
 
     for(copyf, filelist) {
         #add a suffix to the variable name to make sure its unique
@@ -63,12 +87,11 @@ for(qml_module, UBUNTU_QML_MODULE_FILES){
         _qml_mod_target$${_varname}.depends  = $$copyf
 
         defined($${qml_module}.depends,var) {
-            eval("_depends=\$\$$${qml_module}.depends")
+            _depends = $$readVarValueByName($${qml_module}.depends)
             _qml_mod_target$${_varname}.depends += $$_depends
         }
 
         QMAKE_EXTRA_TARGETS += _qml_mod_sourcetarget$${_varname} _qml_mod_target$${_varname}
-        message($${QMAKE_EXTRA_TARGETS})
         PRE_TARGETDEPS += $$target_name
     }
 
@@ -76,8 +99,8 @@ for(qml_module, UBUNTU_QML_MODULE_FILES){
 
         #add a suffix to the variable name to make sure its unique
         _varname = $$generateUuid()
-        eval("_installPath=\$\$$${qml_module}.installPath")
-        eval("_files=\$\$$${qml_module}.files")
+        _installPath=$$readVarValueByName($${qml_module}.installPath)
+        _files=$$readVarValueByName($${qml_module}.files)
 
         qml_files_$${_varname}.path  = $$_installPath
         qml_files_$${_varname}.files = $$_files
@@ -85,5 +108,3 @@ for(qml_module, UBUNTU_QML_MODULE_FILES){
         INSTALLS += qml_files_$${_varname}
     }
 }
-
-message("OTHERFILES_: $$OTHER_FILES")
