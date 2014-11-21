@@ -96,7 +96,8 @@ public:
     QString borderSource() const { return borderSource_; }
     void setBorderSource(const QString& borderSource);
 
-    QVariant source() const { return QVariant::fromValue(source_); }
+    QVariant source() const {
+        return QVariant::fromValue((flags_ & SourceApiSet) ? source_ : NULL); }
     void setSource(const QVariant& source);
     float sourceOpacity() const { return sourceOpacity_ / static_cast<float>(0xff); }
     void setSourceOpacity(float sourceOpacity);
@@ -134,7 +135,7 @@ public:
     void setColor(const QColor& color);
     QColor gradientColor() const { return gradientColor_; }
     void setGradientColor(const QColor& gradientColor);
-    QVariant image() const { return QVariant::fromValue(image_); }
+    QVariant image() const { return QVariant::fromValue((flags_ & SourceApiSet) ? NULL : source_); }
     void setImage(const QVariant& image);
     bool stretched() const { return !!(flags_ & Stretched); }
     void setStretched(bool stretched);
@@ -202,7 +203,6 @@ private:
         DirtySourceTransform = (1 << 4)
     };
 
-    QQuickItem* image_;
     QQuickItem* source_;
     QSGTextureProvider* sourceTextureProvider_;
     QRgb color_;

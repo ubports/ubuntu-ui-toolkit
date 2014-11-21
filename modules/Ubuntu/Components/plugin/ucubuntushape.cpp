@@ -579,7 +579,6 @@ const float lowHighTextureThreshold = 11.0f;
 */
 UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     : QQuickItem(parent)
-    , image_(NULL)
     , source_(NULL)
     , sourceTextureProvider_(NULL)
     , color_(qRgba(0, 0, 0, 0))
@@ -704,17 +703,20 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
 */
 void UCUbuntuShape::setSource(const QVariant& source)
 {
+    dropImageSupport();
+
     QQuickItem* newSource = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(source));
     if (source_ != newSource) {
-        dropImageSupport();
-        if (newSource && !newSource->parentItem()) {
-            // Inlined images need a parent and must not be visible.
-            newSource->setParentItem(this);
-            newSource->setVisible(false);
+        if (newSource) {
+            if (!newSource->parentItem()) {
+                // Inlined images need a parent and must not be visible.
+                newSource->setParentItem(this);
+                newSource->setVisible(false);
+            }
+            flags_ |= DirtySourceTransform;
         }
-        flags_ |= DirtySourceTransform;
-        update();
         source_ = newSource;
+        update();
         Q_EMIT sourceChanged();
     }
 }
@@ -728,10 +730,11 @@ void UCUbuntuShape::setSource(const QVariant& source)
 */
 void UCUbuntuShape::setSourceOpacity(float sourceOpacity)
 {
+    dropImageSupport();
+
     const quint8 sourceOpacityPacked =
         qMax(0.0f, qMin(1.0f, sourceOpacity)) * static_cast<float>(0xff);
     if (sourceOpacity_ != sourceOpacityPacked) {
-        dropImageSupport();
         sourceOpacity_ = sourceOpacityPacked;
         update();
         Q_EMIT sourceOpacityChanged();
@@ -756,8 +759,9 @@ void UCUbuntuShape::setSourceOpacity(float sourceOpacity)
 */
 void UCUbuntuShape::setSourceFillMode(UCUbuntuShape::FillMode sourceFillMode)
 {
+    dropImageSupport();
+
     if (sourceFillMode_ != sourceFillMode) {
-        dropImageSupport();
         sourceFillMode_ = sourceFillMode;
         flags_ |= DirtySourceTransform;
         update();
@@ -789,8 +793,9 @@ void UCUbuntuShape::setSourceFillMode(UCUbuntuShape::FillMode sourceFillMode)
 */
 void UCUbuntuShape::setSourceHorizontalWrapMode(UCUbuntuShape::WrapMode sourceHorizontalWrapMode)
 {
+    dropImageSupport();
+
     if (sourceHorizontalWrapMode_ != sourceHorizontalWrapMode) {
-        dropImageSupport();
         sourceHorizontalWrapMode_ = sourceHorizontalWrapMode;
         update();
         Q_EMIT sourceHorizontalWrapModeChanged();
@@ -799,8 +804,9 @@ void UCUbuntuShape::setSourceHorizontalWrapMode(UCUbuntuShape::WrapMode sourceHo
 
 void UCUbuntuShape::setSourceVerticalWrapMode(UCUbuntuShape::WrapMode sourceVerticalWrapMode)
 {
+    dropImageSupport();
+
     if (sourceVerticalWrapMode_ != sourceVerticalWrapMode) {
-        dropImageSupport();
         sourceVerticalWrapMode_ = sourceVerticalWrapMode;
         update();
         Q_EMIT sourceVerticalWrapModeChanged();
@@ -823,8 +829,9 @@ void UCUbuntuShape::setSourceVerticalWrapMode(UCUbuntuShape::WrapMode sourceVert
 void UCUbuntuShape::setSourceHorizontalAlignment(
     UCUbuntuShape::HAlignment sourceHorizontalAlignment)
 {
+    dropImageSupport();
+
     if (sourceHorizontalAlignment_ != sourceHorizontalAlignment) {
-        dropImageSupport();
         sourceHorizontalAlignment_ = sourceHorizontalAlignment;
         flags_ |= DirtySourceTransform;
         update();
@@ -847,8 +854,9 @@ void UCUbuntuShape::setSourceHorizontalAlignment(
 */
 void UCUbuntuShape::setSourceVerticalAlignment(UCUbuntuShape::VAlignment sourceVerticalAlignment)
 {
+    dropImageSupport();
+
     if (sourceVerticalAlignment_ != sourceVerticalAlignment) {
-        dropImageSupport();
         sourceVerticalAlignment_ = sourceVerticalAlignment;
         flags_ |= DirtySourceTransform;
         update();
@@ -868,8 +876,9 @@ void UCUbuntuShape::setSourceVerticalAlignment(UCUbuntuShape::VAlignment sourceV
 */
 void UCUbuntuShape::setSourceTranslation(const QVector2D& sourceTranslation)
 {
+    dropImageSupport();
+
     if (sourceTranslation_ != sourceTranslation) {
-        dropImageSupport();
         sourceTranslation_ = sourceTranslation;
         flags_ |= DirtySourceTransform;
         update();
@@ -899,8 +908,9 @@ void UCUbuntuShape::setSourceTranslation(const QVector2D& sourceTranslation)
 */
 void UCUbuntuShape::setSourceScale(const QVector2D& sourceScale)
 {
+    dropImageSupport();
+
     if (sourceScale_ != sourceScale) {
-        dropImageSupport();
         sourceScale_ = sourceScale;
         flags_ |= DirtySourceTransform;
         update();
@@ -917,6 +927,7 @@ void UCUbuntuShape::setSourceScale(const QVector2D& sourceScale)
 void UCUbuntuShape::setBackgroundColor(const QColor& backgroundColor)
 {
     flags_ |= UCUbuntuShape::BackgroundApiSet;
+
     const QRgb backgroundColorRgb = qRgba(
         backgroundColor.red(), backgroundColor.green(), backgroundColor.blue(),
         backgroundColor.alpha());
@@ -937,6 +948,7 @@ void UCUbuntuShape::setBackgroundColor(const QColor& backgroundColor)
 void UCUbuntuShape::setSecondaryBackgroundColor(const QColor& secondaryBackgroundColor)
 {
     flags_ |= BackgroundApiSet;
+
     const QRgb secondaryBackgroundColorRgb = qRgba(
         secondaryBackgroundColor.red(), secondaryBackgroundColor.green(),
         secondaryBackgroundColor.blue(), secondaryBackgroundColor.alpha());
@@ -963,6 +975,7 @@ void UCUbuntuShape::setSecondaryBackgroundColor(const QColor& secondaryBackgroun
 void UCUbuntuShape::setBackgroundMode(BackgroundMode backgroundMode)
 {
     flags_ |= BackgroundApiSet;
+
     if (backgroundMode_ != backgroundMode) {
         backgroundMode_ = backgroundMode;
         update();
@@ -1104,10 +1117,9 @@ void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 */
 void UCUbuntuShape::setImage(const QVariant& image)
 {
-    QQuickItem* newImage = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(image));
-    if (image_ != newImage) {
-        QObject::disconnect(image_);
-        if (!(flags_ & SourceApiSet)) {
+    if (!(flags_ & SourceApiSet)) {
+        QQuickItem* newImage = qobject_cast<QQuickItem*>(qvariant_cast<QObject*>(image));
+        if (source_ != newImage) {
             if (newImage) {
                 // Watch for property changes.
                 updateFromImageProperties(newImage);
@@ -1117,12 +1129,13 @@ void UCUbuntuShape::setImage(const QVariant& image)
                     newImage->setParentItem(this);
                     newImage->setVisible(false);
                 }
+                flags_ |= DirtySourceTransform;
             }
-            flags_ |= DirtySourceTransform;
+            QObject::disconnect(source_);
             update();
+            source_ = newImage;
+            Q_EMIT imageChanged();
         }
-        image_ = newImage;
-        Q_EMIT imageChanged();
     }
 }
 
@@ -1131,37 +1144,43 @@ void UCUbuntuShape::setImage(const QVariant& image)
 // maintain it for a while for compatibility reasons.
 void UCUbuntuShape::setStretched(bool stretched)
 {
-    if (!!(flags_ & Stretched) != stretched) {
-        if (stretched) {
-            flags_ |= Stretched;
-        } else {
-            flags_ &= ~Stretched;
+    if (!(flags_ & SourceApiSet)) {
+        if (!!(flags_ & Stretched) != stretched) {
+            if (stretched) {
+                flags_ |= Stretched;
+            } else {
+                flags_ &= ~Stretched;
+            }
+            flags_ |= DirtySourceTransform;
+            update();
+            Q_EMIT stretchedChanged();
         }
-        flags_ |= DirtySourceTransform;
-        update();
-        Q_EMIT stretchedChanged();
     }
 }
 
 // Deprecation layer. Same comment as setStretched().
 void UCUbuntuShape::setHorizontalAlignment(HAlignment horizontalAlignment)
 {
-    if (imageHorizontalAlignment_ != horizontalAlignment) {
-        imageHorizontalAlignment_ = horizontalAlignment;
-        flags_ |= DirtySourceTransform;
-        update();
-        Q_EMIT horizontalAlignmentChanged();
+    if (!(flags_ & SourceApiSet)) {
+        if (imageHorizontalAlignment_ != horizontalAlignment) {
+            imageHorizontalAlignment_ = horizontalAlignment;
+            flags_ |= DirtySourceTransform;
+            update();
+            Q_EMIT horizontalAlignmentChanged();
+        }
     }
 }
 
 // Deprecation layer. Same comment as setStretched().
 void UCUbuntuShape::setVerticalAlignment(VAlignment verticalAlignment)
 {
-    if (imageVerticalAlignment_ != verticalAlignment) {
-        imageVerticalAlignment_ = verticalAlignment;
-        flags_ |= DirtySourceTransform;
-        update();
-        Q_EMIT verticalAlignmentChanged();
+    if (!(flags_ & SourceApiSet)) {
+        if (imageVerticalAlignment_ != verticalAlignment) {
+            imageVerticalAlignment_ = verticalAlignment;
+            flags_ |= DirtySourceTransform;
+            update();
+            Q_EMIT verticalAlignmentChanged();
+        }
     }
 }
 
@@ -1232,11 +1251,14 @@ void UCUbuntuShape::onImagePropertiesChanged()
 // Deprecation layer.
 void UCUbuntuShape::dropImageSupport()
 {
-    flags_ |= SourceApiSet;
-    if (image_) {
-        QObject::disconnect(image_);
-        image_ = NULL;
-        Q_EMIT imageChanged();
+    if (!(flags_ & SourceApiSet)) {
+        flags_ |= SourceApiSet;
+        if (source_) {
+            QObject::disconnect(source_);
+            source_ = NULL;
+            update();
+            Q_EMIT imageChanged();
+        }
     }
 }
 
@@ -1367,40 +1389,26 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     }
     ShapeMaterial::Data* materialData = node->material()->data();
 
-    // Get the texture and update the source transform if needed.
-    QSGTextureProvider* provider;
-    QSGTexture* texture;
+    // Get the texture info and update the source transform if needed.
+    QSGTextureProvider* provider = source_ ? source_->textureProvider() : NULL;
+    const QSGTexture* texture = provider ? provider->texture() : NULL;
     QRectF textureRect(0.0f, 0.0f, 1.0f, 1.0f);
-    if (flags_ & SourceApiSet) {
-        provider = source_ ? source_->textureProvider() : NULL;
-        texture = provider ? provider->texture() : NULL;
-        if (texture) {
-            if (sourceHorizontalWrapMode_ == Transparent &&
-                sourceVerticalWrapMode_ == Transparent) {
-                textureRect = texture->normalizedTextureSubRect();
-            }
-            if (flags_ & DirtySourceTransform) {
+    if (texture) {
+        if (sourceHorizontalWrapMode_ == Transparent && sourceVerticalWrapMode_ == Transparent) {
+            textureRect = texture->normalizedTextureSubRect();
+        }
+        if (flags_ & DirtySourceTransform) {
+            if (flags_ & SourceApiSet) {
                 updateSourceTransform(itemSize.width(), itemSize.height(), sourceFillMode_,
                                       sourceHorizontalAlignment_, sourceVerticalAlignment_,
                                       texture->textureSize());
-                flags_ &= ~DirtySourceTransform;
-            }
-        }
-    } else {
-        provider = image_ ? image_->textureProvider() : NULL;
-        texture = provider ? provider->texture() : NULL;
-        if (texture) {
-            if (sourceHorizontalWrapMode_ == Transparent &&
-                sourceVerticalWrapMode_ == Transparent) {
-                textureRect = texture->normalizedTextureSubRect();
-            }
-            if (flags_ & DirtySourceTransform) {
+            } else {
                 FillMode imageFillMode = (flags_ & Stretched) ? Stretch : PreserveAspectCrop;
                 updateSourceTransform(itemSize.width(), itemSize.height(), imageFillMode,
                                       imageHorizontalAlignment_, imageVerticalAlignment_,
                                       texture->textureSize());
-                flags_ &= ~DirtySourceTransform;
             }
+            flags_ &= ~DirtySourceTransform;
         }
     }
 
