@@ -16,8 +16,11 @@
 
 #include "uctestcase.h"
 #include "systemsettings_p.h"
+#include "systemsettings_p_p.h"
+#include <QtDBus/QDBusConnection>
+#include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusReply>
 #include <QtCore/QString>
-#include <QtCore/QTextCodec>
 #include <QtCore/QDebug>
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
@@ -29,16 +32,30 @@ class tst_SystemSettings : public QObject
 public:
     tst_SystemSettings() {}
 
-private:
-
 private Q_SLOTS:
 
     void initTestCase()
     {
+        SystemSettings::instance();
     }
 
-    void cleanupTestCase()
+    void test_vibraEnabled_change()
     {
+        SystemSettingsPrivate *pSettings = SystemSettingsPrivate::get(&SystemSettings::instance());
+        if (!pSettings->hasProperty("OtherVibrate")) {
+            QSKIP("OtherVibrate system property not defined, test skipped.");
+        }
+
+        QSignalSpy vibraSpy(&SystemSettings::instance(), SIGNAL(vibraEnabledChanged()));
+        bool oldValue = SystemSettings::instance().vibraEnabled();
+        QVERIFY(pSettings->testProperty("OtherVibrate", !oldValue));
+        vibraSpy.wait(400);
+        QCOMPARE(vibraSpy.count(), 1);
+
+        //restore original value
+        vibraSpy.clear();
+        pSettings->testProperty("OtherVibrate", oldValue);
+        vibraSpy.wait(400);
     }
 
 };

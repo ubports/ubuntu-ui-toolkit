@@ -20,7 +20,6 @@
 #include "dbuspropertywatcher_p.h"
 
 // DBus adaptation
-#include <QDebug>
 
 SystemSettingsPrivate *createSystemSettingsAdaptation(SystemSettings *qq)
 {
@@ -42,7 +41,7 @@ SystemSettingsDBus::SystemSettingsDBus(SystemSettings *qq)
                       ACCOUNTS_SERVICE,
                       ACCOUNTS_PATH,
                       ACCOUNTS_IFACE,
-                      (QStringList() << VIBRA_PROPERTY << "IncomingCallVibrate"))
+                      (QStringList() << VIBRA_PROPERTY))
 {
 }
 
@@ -58,10 +57,19 @@ void SystemSettingsDBus::init()
 
 void SystemSettingsDBus::propertyChanged(const QString &property, const QVariant &value)
 {
-    qDebug() << property << value;
     if (property == VIBRA_PROPERTY) {
         vibrate = value.toBool();
         Q_Q(SystemSettings);
         Q_EMIT q->vibraEnabledChanged();
     }
+}
+
+bool SystemSettingsDBus::hasProperty(const QString &property)
+{
+    return accountsWatcher.readProperty("com.ubuntu.touch.AccountsService.Sound", property).isValid();
+}
+
+bool SystemSettingsDBus::testProperty(const QString &property, const QVariant &value)
+{
+    return accountsWatcher.writeProperty("com.ubuntu.touch.AccountsService.Sound", property, value);
 }

@@ -74,6 +74,40 @@ void DBusPropertyWatcher::syncProperties(const QString &serviceInterface)
 }
 
 /*
+ * Read the property value synchronously.
+ */
+QVariant DBusPropertyWatcher::readProperty(const QString &interface, const QString &property)
+{
+    if (objectPath.isEmpty()) {
+        return QVariant();
+    }
+    QDBusInterface readIFace(iface.interface(), objectPath, "org.freedesktop.DBus.Properties", connection);
+    if (!readIFace.isValid()) {
+        // invalid interface
+        return QVariant();
+    }
+    QDBusReply<QDBusVariant> reply = readIFace.call("Get", interface, property);
+    return reply.isValid() ? reply.value().variant() : QVariant();
+}
+
+/*
+ * Write a property value synchronously. The interface represents the service interface writing teh properties.
+ */
+bool DBusPropertyWatcher::writeProperty(const QString &interface, const QString &property, const QVariant &value)
+{
+    if (objectPath.isEmpty()) {
+        return false;
+    }
+    QDBusInterface writeIFace(iface.interface(), objectPath, "org.freedesktop.DBus.Properties", connection);
+    if (!writeIFace.isValid()) {
+        // invalid interface
+        return false;
+    }
+    QDBusMessage msg = writeIFace.call("Set", interface, property, QVariant::fromValue(QDBusVariant(value)));
+    return msg.type() == QDBusMessage::ReplyMessage;
+}
+
+/*
  * Setup interface connections on ownership change
  */
 void DBusPropertyWatcher::onOwnerChanged(const QString &serviceName, const QString &oldOwner, const QString &newOwner)
@@ -120,22 +154,4 @@ void DBusPropertyWatcher::setupInterface()
             this,
             SLOT(onPropertiesChanged(QString,QVariantMap,QStringList)));
     }
-}
-
-/*
- * Read the property value synchronously.
- */
-QVariant DBusPropertyWatcher::readProperty(const QString &interface, const QString &property)
-{
-    if (objectPath.isEmpty()) {
-        // no path specified!
-        return QVariant();
-    }
-    QDBusInterface readIFace(service, objectPath, "org.freedesktop.DBus.Properties", connection);
-    if (!readIFace.isValid()) {
-        // invalid interface
-        return QVariant();
-    }
-    QDBusReply<QDBusVariant> reply = readIFace.call("Get", interface, property);
-    return reply.isValid() ? reply.value().variant() : QVariant();
 }

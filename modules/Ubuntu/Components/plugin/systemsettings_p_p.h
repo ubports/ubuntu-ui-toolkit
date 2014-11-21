@@ -25,10 +25,16 @@ public:
     SystemSettingsPrivate(SystemSettings *qq);
     virtual ~SystemSettingsPrivate();
 
+    static SystemSettingsPrivate *get(SystemSettings *settings);
+
     // initialize adaptation layer
     virtual void init() = 0;
     // catch property changes and report
     virtual void propertyChanged(const QString &property, const QVariant &value) = 0;
+    // testing function, checks whether a property is defined or not.
+    virtual bool hasProperty(const QString &property) = 0;
+    // testing function, sets a property value
+    virtual bool testProperty(const QString &property, const QVariant &value) = 0;
 
     SystemSettings *q_ptr;
     bool vibrate:1;

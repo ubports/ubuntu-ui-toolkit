@@ -27,6 +27,12 @@ SystemSettingsPrivate::~SystemSettingsPrivate()
 {
 }
 
+SystemSettingsPrivate *SystemSettingsPrivate::get(SystemSettings *settings)
+{
+    return settings->d_ptr;
+}
+
+
 /*
  * The class maintains the access to some common system settings required by the
  * toolkit. The private class serves the adaptation interface.

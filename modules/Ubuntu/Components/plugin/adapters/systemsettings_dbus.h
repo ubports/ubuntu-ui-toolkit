@@ -31,6 +31,8 @@ public:
     // interface
     void init();
     void propertyChanged(const QString &property, const QVariant &value);
+    bool hasProperty(const QString &property);
+    bool testProperty(const QString &property, const QVariant &value);
 
 private:
     DBusPropertyWatcher accountsWatcher;

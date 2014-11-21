@@ -28,6 +28,8 @@ class DBusPropertyWatcher : public QObject
 public:
     explicit DBusPropertyWatcher(const QDBusConnection &connection, const QString &service, const QString &path, const QString &iface, const QStringList &properties, QObject *parent = 0);
     void syncProperties(const QString &serviceInterface = QString());
+    QVariant readProperty(const QString &interface, const QString &property);
+    bool writeProperty(const QString &interface, const QString &property, const QVariant &value);
 
 Q_SIGNALS:
     void propertyChanged(const QString &property, const QVariant &value);
@@ -45,7 +47,6 @@ private:
     QStringList watchedProperties;
 
     void setupInterface();
-    QVariant readProperty(const QString &interface, const QString &property);
 };
 
 #endif // DBUSPROPERTYWATCHER_P_H
