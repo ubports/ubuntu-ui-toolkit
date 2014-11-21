@@ -97,6 +97,7 @@ Item {
         }
 
         function test_1_modeSet_YD() {
+            ignoreWarning("Invalid DatePicker mode: Years|Days")
             modeSet.mode = "Years|Days" ;
             mouseClick(modeSet, units.gu(1), units.gu(1));
             verify(modeSet.panel !== null, "the picker is opened");
@@ -132,6 +133,7 @@ Item {
         }
 
         function test_1_modeSet_HS() {
+            ignoreWarning("Invalid DatePicker mode: Hours|Seconds")
             modeSet.mode = "Hours|Seconds" ;
             mouseClick(modeSet, units.gu(1), units.gu(1));
             verify(modeSet.panel !== null, "the picker is opened");
@@ -190,6 +192,7 @@ Item {
         }
 
         function test_3_modeSet_YD() {
+            ignoreWarning("Invalid DatePicker mode: Years|Days")
             modeSet.mode = "Years|Days" ;
             mouseClick(modeSet, units.gu(1), units.gu(1));
             verify(modeSet.panel !== null, "the picker is opened");
@@ -225,6 +228,7 @@ Item {
         }
 
         function test_3_modeSet_HS() {
+            ignoreWarning("Invalid DatePicker mode: Hours|Seconds")
             modeSet.mode = "Hours|Seconds" ;
             mouseClick(modeSet, units.gu(1), units.gu(1));
             verify(modeSet.panel !== null, "the picker is opened");

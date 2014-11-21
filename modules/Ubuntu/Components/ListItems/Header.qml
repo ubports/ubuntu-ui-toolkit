@@ -34,7 +34,6 @@ import QtQuick 2.0
             ListItem.Standard { text: "Item four" }
         }
     \endqml
-    \b{This component is under heavy development.}
 */
 
 Item {
@@ -45,7 +44,6 @@ Item {
     }
 
     /*!
-     \preliminary
      The text that is shown as the header text.
      \qmlproperty string text
     */
