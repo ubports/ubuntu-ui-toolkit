@@ -104,7 +104,6 @@ ActionItem {
 
         onClicked: {
             if (button.__acceptEvents) {
-                print("TACTILE?", isHapticsFeedbackEnabled);
                 if (isHapticsFeedbackEnabled) {
                     pressEffect.start();
                 }

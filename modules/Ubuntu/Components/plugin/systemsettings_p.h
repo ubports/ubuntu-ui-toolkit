@@ -18,8 +18,9 @@
 #define SYSTEMSETTINGS_P_H
 
 #include <QtCore/QObject>
+#include "systemsettings_p_p.h"
 
-class SystemSettingsPrivate;
+//class SystemSettingsPrivate;
 class SystemSettings : public QObject
 {
     Q_OBJECT
@@ -41,11 +42,12 @@ Q_SIGNALS:
 protected:
     explicit SystemSettings(QObject *parent = 0);
 
-    QScopedPointer<SystemSettingsPrivate> d_ptr;
-    friend class SystemSettingsPrivate;
+    SystemSettingsPrivate *d_ptr;
+    Q_DECLARE_PRIVATE_D(d_ptr, SystemSettings)
+    Q_PRIVATE_SLOT(d_func(), void propertyChanged(const QString &property, const QVariant &value))
 };
 
 // platform dependent system setting
-SystemSettingsPrivate *createSystemSettingsAdaptation();
+SystemSettingsPrivate *createSystemSettingsAdaptation(SystemSettings *qq);
 
 #endif // SYSTEMSETTINGS_P_H

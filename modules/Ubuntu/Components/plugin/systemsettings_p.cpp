@@ -17,8 +17,8 @@
 #include "systemsettings_p.h"
 #include "systemsettings_p_p.h"
 
-SystemSettingsPrivate::SystemSettingsPrivate()
-    : q_ptr(0)
+SystemSettingsPrivate::SystemSettingsPrivate(SystemSettings *qq)
+    : q_ptr(qq)
     , vibrate(false)
 {
 }
@@ -27,20 +27,16 @@ SystemSettingsPrivate::~SystemSettingsPrivate()
 {
 }
 
-void SystemSettingsPrivate::init(SystemSettings *qq)
-{
-    q_ptr = qq;
-}
-
 /*
  * The class maintains the access to some common system settings required by the
  * toolkit. The private class serves the adaptation interface.
  */
 SystemSettings::SystemSettings(QObject *parent)
     : QObject(parent)
-    , d_ptr(createSystemSettingsAdaptation())
+    , d_ptr(createSystemSettingsAdaptation(this))
 {
-    d_ptr->init(this);
+    Q_D(SystemSettings);
+    d->init();
 }
 
 SystemSettings::~SystemSettings()
@@ -49,5 +45,6 @@ SystemSettings::~SystemSettings()
 
 bool SystemSettings::vibraEnabled() const
 {
-    return d_ptr->vibrate;
+    Q_D(const SystemSettings);
+    return d->vibrate;
 }

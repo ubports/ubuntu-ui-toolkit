@@ -20,10 +20,11 @@
 #include "dbuspropertywatcher_p.h"
 
 // DBus adaptation
+#include <QDebug>
 
-SystemSettingsPrivate *createSystemSettingsAdaptation()
+SystemSettingsPrivate *createSystemSettingsAdaptation(SystemSettings *qq)
 {
-    return new SystemSettingsDBus;
+    return new SystemSettingsDBus(qq);
 }
 
 /******************************************************************************
@@ -35,30 +36,32 @@ SystemSettingsPrivate *createSystemSettingsAdaptation()
 #define ACCOUNTS_IFACE      "org.freedesktop.Accounts"
 #define VIBRA_PROPERTY      "OtherVibrate"
 
-SystemSettingsDBus::SystemSettingsDBus(QObject *parent)
-    : QObject(parent)
+SystemSettingsDBus::SystemSettingsDBus(SystemSettings *qq)
+    : SystemSettingsPrivate(qq)
     , accountsWatcher(QDBusConnection::systemBus(),
                       ACCOUNTS_SERVICE,
                       ACCOUNTS_PATH,
                       ACCOUNTS_IFACE,
-                      (QStringList() << VIBRA_PROPERTY))
+                      (QStringList() << VIBRA_PROPERTY << "IncomingCallVibrate"))
 {
 }
 
-void SystemSettingsDBus::init(SystemSettings *qq)
+// connect accounts watcher to get property changes
+void SystemSettingsDBus::init()
 {
-    SystemSettingsPrivate::init(qq);
-    connect(&accountsWatcher, &DBusPropertyWatcher::propertyChanged,
-            this, &SystemSettingsDBus::vibrateChanged);
+    Q_Q(SystemSettings);
+    QObject::connect(&accountsWatcher, SIGNAL(propertyChanged(QString,QVariant)),
+                     q, SLOT(propertyChanged(QString,QVariant)));
+    // get the value for each watched property
+    accountsWatcher->fetchValues();
 }
 
-void SystemSettingsDBus::vibrateChanged(const QString &property, const QVariant &value)
+void SystemSettingsDBus::propertyChanged(const QString &property, const QVariant &value)
 {
-    Q_UNUSED(property);
+    qDebug() << property << value;
     if (property == VIBRA_PROPERTY) {
         vibrate = value.toBool();
-        Q_EMIT q_ptr->vibraEnabledChanged();
+        Q_Q(SystemSettings);
+        Q_EMIT q->vibraEnabledChanged();
     }
 }
-
-#include "moc_systemsettings_dbus.cpp"

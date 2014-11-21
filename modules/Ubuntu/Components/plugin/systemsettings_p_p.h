@@ -19,17 +19,19 @@
 
 #include "systemsettings_p.h"
 
+class SystemSettings;
 class SystemSettingsPrivate {
 public:
-    SystemSettingsPrivate();
+    SystemSettingsPrivate(SystemSettings *qq);
     virtual ~SystemSettingsPrivate();
 
-    virtual void init(SystemSettings *qq);
+    // initialize adaptation layer
+    virtual void init() = 0;
+    // catch property changes and report
+    virtual void propertyChanged(const QString &property, const QVariant &value) = 0;
 
-protected:
     SystemSettings *q_ptr;
     bool vibrate:1;
-    friend class SystemSettings;
 };
 
 #endif // SYSTEMSETTINGS_P_P_H
