@@ -733,7 +733,7 @@ plugins.qmltypes
     name: "get"
     Parameter { name: "row"; type: "int" }
     Method { name: "count"; type: "int" }
-    name: "ShapeItem"
+    name: "UbuntuShape"
     prototype: "QQuickItem"
     exports: [
     name: "HAlignment"

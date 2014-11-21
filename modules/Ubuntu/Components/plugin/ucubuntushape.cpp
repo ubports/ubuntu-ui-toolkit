@@ -585,7 +585,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
 /*! \qmlproperty string UbuntuShape::radius
 
     This property defines the corner radius. Two fixed values are supported: \c "small" and \c
-    "medium". Default value is \c "small".
+    "medium". The default value is \c "small".
 */
 void UCUbuntuShape::setRadius(const QString& radius)
 {
@@ -601,8 +601,8 @@ void UCUbuntuShape::setRadius(const QString& radius)
 
     This property defines the look of the shape borders. The supported strings are \c
     "radius_idle.sci" providing an idle button style and \c "radius_pressed.sci" providing a pressed
-    button style. Any other strings (like the empty one \c "") disables styling. Default value is \c
-    "radius_idle.sci".
+    button style. Any other strings (like the empty one \c "") disables styling. The default value
+    is \c "radius_idle.sci".
 */
 void UCUbuntuShape::setBorderSource(const QString& borderSource)
 {
@@ -626,8 +626,8 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
 
     This property sets the source provider of a texture rendered in the UbuntuShape. Supported types
     are \c Image, \c AnimatedImage (to render a GIF image for instance) and \c ShaderEffectSource
-    (to embed a UI previously rendered with QML). It is blended over the background color. Default
-    value is \c null.
+    (to embed a UI previously rendered with QML). It is blended over the background color. The
+    default value is \c null.
 
     It can be set either with an inlined Image:
 
@@ -686,7 +686,8 @@ void UCUbuntuShape::setSource(const QVariant& source)
 
 /*! \qmlproperty real UbuntuShape::sourceOpacity
 
-    This property defines the opacity of \l source in the range [0.0, 1.0]. Default value is \c 1.0.
+    This property holds the opacity of the \l source texture. Opacity is specified as a number
+    between 0.0 (fully transparent) and 1.0 (fully opaque). The default value is 1.0.
 
     \note Setting this disables support for the deprecated \l image property.
 */
@@ -704,9 +705,9 @@ void UCUbuntuShape::setSourceOpacity(float sourceOpacity)
 
 /*! \qmlproperty enumeration UbuntuShape::sourceFillMode
 
-    This properties defines how the source texture fills the UbuntuShape. The modes are the same as
-    the ones used by Image, minus the tiling which is exposed through wrapping properties (\l
-    sourceHorizontalWrapMode and \l sourceVerticalWrapMode). Default value is \c
+    This properties defines how the \l source texture fills the UbuntuShape. The modes are the same
+    as the ones used by Image, minus the tiling which is exposed through wrapping properties (\l
+    sourceHorizontalWrapMode and \l sourceVerticalWrapMode). The default value is \c
     UbuntuShape.Stretch.
 
     \note Setting this disables support for the deprecated \l image property.
@@ -733,9 +734,9 @@ void UCUbuntuShape::setSourceFillMode(UCUbuntuShape::FillMode sourceFillMode)
     \qmlproperty enumeration UbuntuShape::sourceVerticalWrapMode
 
     When the \l sourceFillMode is set to \c UbuntuShape.Pad or \c UbuntuShape.PreserveAspectFit or
-    when the \l sourceScale and/or \l sourceTranslation properties are changed, the source texture
-    might not cover the entire UbuntuShape area. This property defines how the source texture wraps
-    outside of its content area. Default value is \c UbuntuShape.Transparent.
+    when the \l sourceScale and/or \l sourceTranslation properties are changed, the \l source
+    texture might not cover the entire UbuntuShape area. This property defines how the source
+    texture wraps outside of its content area. The default value is \c UbuntuShape.Transparent.
 
     Ensure \c UbuntuShape.Repeat is used only when needed (in case of an \c Image or \c
     AnimatedImage source) as it requires the underlying texture to be extracted from its atlas. That
@@ -773,8 +774,8 @@ void UCUbuntuShape::setSourceVerticalWrapMode(UCUbuntuShape::WrapMode sourceVert
 
 /*! \qmlproperty enumeration UbuntuShape::sourceHorizontalAlignment
 
-    This property defines how the source texture is horizontally aligned inside the UbuntuShape
-    area. Default value is \c UbuntuShape.AlignLeft.
+    This property defines how the \l source texture is horizontally aligned inside the UbuntuShape
+    area. The default value is \c UbuntuShape.AlignLeft.
 
     \note Setting this disables support for the deprecated \l image property.
 
@@ -798,8 +799,8 @@ void UCUbuntuShape::setSourceHorizontalAlignment(
 
 /*! \qmlproperty enumeration UbuntuShape::sourceVerticalAlignment
 
-    This property defines how the source texture is vertically aligned inside the UbuntuShape
-    area. Default value is \c UbuntuShape.AlignTop.
+    This property defines how the \l source texture is vertically aligned inside the UbuntuShape
+    area. The default value is \c UbuntuShape.AlignTop.
 
     \note Setting this disables support for the deprecated \l image property.
 
@@ -823,10 +824,10 @@ void UCUbuntuShape::setSourceVerticalAlignment(UCUbuntuShape::VAlignment sourceV
 /*! \qmlproperty vector2d UbuntuShape::sourceTranslation
 
     This property defines the two-component vector in normalized item coordinates used to translate
-    the source texture. Default value is \c {Qt.vector2d(0.0,0.0)}.
+    the \l source texture. The default value is \c {Qt.vector2d(0.0,0.0)}.
 
-    That can be used to put the source texture at a precise position, to create infinite scrolling
-    animations (using the \c UbuntuShape.Repeat wrap mode), etc.
+    That can be used to put the \l source texture at a precise position, to create infinite
+    scrolling animations (using the \c UbuntuShape.Repeat wrap mode), etc.
 
     \note Setting this disables support for the deprecated \l image property.
 */
@@ -843,14 +844,14 @@ void UCUbuntuShape::setSourceTranslation(const QVector2D& sourceTranslation)
 
 /*! \qmlproperty vector2d UbuntuShape::sourceScale
 
-    This property defines the two-component vector used to scale the source texture. The texture is
-    scaled at the alignment point defined by \l sourceHorizontalAlignment and \l
-    sourceVerticalAlignment. Default value is \c {Qt.vector2d(1.0,1.0)}.
+    This property defines the two-component vector used to scale the \l source texture. The texture
+    is scaled at the alignment point defined by \l sourceHorizontalAlignment and \l
+    sourceVerticalAlignment. The default value is \c {Qt.vector2d(1.0,1.0)}.
 
-    That can be used to change the size of the source texture, to flip it horizontally and/or
+    That can be used to change the size of the \l source texture, to flip it horizontally and/or
     vertically, to achieve pulsing animations, etc.
 
-    Here is a code sample showing how to flip a source texture horizontally:
+    Here is a code sample showing how to apply an horizontal flip:
 
     \qml
         UbuntuShape {
@@ -874,7 +875,7 @@ void UCUbuntuShape::setSourceScale(const QVector2D& sourceScale)
 
 /*! \qmlproperty color UbuntuShape::backgroundColor
 
-    This property defines the background color. Default value is transparent black.
+    This property defines the background color. The default value is transparent black.
 
     \note Setting this disables support for the deprecated \l color and \l gradientColor properties.
 */
@@ -894,7 +895,7 @@ void UCUbuntuShape::setBackgroundColor(const QColor& backgroundColor)
 /*! \qmlproperty color UbuntuShape::secondaryBackgroundColor
 
     This property defines the secondary background color. It is used when \l backgroundMode is set
-    to \c UbuntuShape.VerticalGradient. Default value is transparent black.
+    to \c UbuntuShape.VerticalGradient. The default value is transparent black.
 
     \note Setting this disables support for the deprecated \l color and \l gradientColor properties.
 */
@@ -913,7 +914,8 @@ void UCUbuntuShape::setSecondaryBackgroundColor(const QColor& secondaryBackgroun
 
 /*! \qmlproperty enumeration UbuntuShape::backgroundMode
 
-    This property defines the background rendering mode. Default value is \c UbuntuShape.SolidColor.
+    This property defines the background rendering mode. The default value is \c
+    UbuntuShape.SolidColor.
 
     \note Setting this disables support for the deprecated \l color and \l gradientColor properties.
 
@@ -935,7 +937,7 @@ void UCUbuntuShape::setBackgroundMode(BackgroundMode backgroundMode)
 
 /*! \qmlproperty rect UbuntuShape::overlayGeometry
 
-    This property sets the overlay rectangle. Default value is the empty rectangle.
+    This property sets the overlay rectangle. The default value is the empty rectangle.
 
     It is defined by a position and a size in normalized item coordinates (in the range between 0
     and 1) with the origin at the top-left corner. An overlay covering the bottom part and starting
@@ -993,7 +995,7 @@ void UCUbuntuShape::setOverlayGeometry(const QRectF& overlayGeometry)
 
 /*! \qmlproperty color UbuntuShape::overlayColor
 
-    This property sets the color of the overlay rectangle defined by \l overlayGeometry. Default
+    This property sets the color of the overlay rectangle defined by \l overlayGeometry. The default
     value is transparent black.
 */
 void UCUbuntuShape::setOverlayColor(const QColor& overlayColor)
@@ -1011,8 +1013,8 @@ void UCUbuntuShape::setOverlayColor(const QColor& overlayColor)
     \deprecated
 
     This property defines the color used to fill the UbuntuShape when there is no \l image set. If
-    \l gradientColor is set, this property defines the top color of the gradient. Default value is
-    transparent black.
+    \l gradientColor is set, this property defines the top color of the gradient. The default value
+    is transparent black.
 
     \note Use \l backgroundColor, \l secondaryBackgroundColor and \l backgroundMode instead.
 */
@@ -1061,7 +1063,7 @@ void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 
     This property holds the \c Image or \c ShaderEffectSource rendered in the UbuntuShape. In case
     of an \c Image, it watches for fillMode (\c Image.Stretch and\c Image.PreserveAspectCrop), \c
-    horizontalAlignment and \c verticalAlignment property changes. Default value is \c null.
+    horizontalAlignment and \c verticalAlignment property changes. The default value is \c null.
 
     \note Use \l source instead.
 */
