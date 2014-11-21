@@ -15,9 +15,14 @@
  */
 
 #include "uctestcase.h"
+// access private data of the watcher in testing
+#define private public
 #include "adapters/dbuspropertywatcher_p.h"
+#undef private
 #include <QtCore/QString>
-#include <QtCore/QTextCodec>
+#include <QtDBus/QDBusConnection>
+#include <QtDBus/QDBusInterface>
+#include <QtDBus/QDBusReply>
 #include <QtCore/QDebug>
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
@@ -31,6 +36,17 @@ public:
 
 private:
 
+    bool setDBusValue(DBusPropertyWatcher *watcher, const QString &interface, const QString &property, const QVariant &value)
+    {
+        QDBusInterface iface(watcher->iface.interface(), watcher->objectPath,
+                             "org.freedesktop.DBus.Properties", watcher->connection);
+        if (iface.isValid()) {
+            QDBusMessage msg = iface.call("Set", interface, property, QVariant::fromValue(QDBusVariant(value)));
+            return msg.type() == QDBusMessage::ReplyMessage;
+        }
+        return false;
+    }
+
 private Q_SLOTS:
 
     void initTestCase()
@@ -39,6 +55,73 @@ private Q_SLOTS:
 
     void cleanupTestCase()
     {
+    }
+
+    void test_change_single_property()
+    {
+        DBusPropertyWatcher watcher(QDBusConnection::systemBus(),
+                                    "org.freedesktop.Accounts",
+                                    "/org/freedesktop/Accounts",
+                                    "org.freedesktop.Accounts",
+                                    QStringList("IncomingCallVibrate"));
+        QSignalSpy propertyChangeSpy(&watcher, SIGNAL(propertyChanged(QString,QVariant)));
+        watcher.syncProperties("com.ubuntu.touch.AccountsService.Sound");
+        propertyChangeSpy.wait(400);
+        QCOMPARE(propertyChangeSpy.count(), 1);
+
+        QList<QVariant> arguments = propertyChangeSpy.takeFirst();
+        QCOMPARE(arguments.at(0).toString(), QString("IncomingCallVibrate"));
+
+        // save original value and set a new one
+        bool originalValue = arguments.at(1).toBool();
+
+        propertyChangeSpy.clear();
+        bool newValue = !originalValue;
+        QVERIFY(setDBusValue(&watcher, "com.ubuntu.touch.AccountsService.Sound", "IncomingCallVibrate", newValue));
+        propertyChangeSpy.wait(400);
+        QCOMPARE(propertyChangeSpy.count(), 1);
+        arguments = propertyChangeSpy.takeFirst();
+        QCOMPARE(arguments.at(0).toString(), QString("IncomingCallVibrate"));
+        QCOMPARE(arguments.at(1).toBool(), newValue);
+
+        // restore original value
+        setDBusValue(&watcher, "com.ubuntu.touch.AccountsService.Sound", "IncomingCallVibrate", originalValue);
+        propertyChangeSpy.wait(400);
+    }
+
+    void test_change_multiple_property()
+    {
+        QStringList watchedProperties = (QStringList() << "IncomingCallVibrate" << "DialpadSoundsEnabled");
+        DBusPropertyWatcher watcher(QDBusConnection::systemBus(),
+                                    "org.freedesktop.Accounts",
+                                    "/org/freedesktop/Accounts",
+                                    "org.freedesktop.Accounts",
+                                    watchedProperties);
+        QSignalSpy propertyChangeSpy(&watcher, SIGNAL(propertyChanged(QString,QVariant)));
+        watcher.syncProperties("com.ubuntu.touch.AccountsService.Sound");
+        propertyChangeSpy.wait(400);
+        QCOMPARE(propertyChangeSpy.count(), 2);
+
+        QList<QVariant> arguments = propertyChangeSpy.takeFirst();
+        QCOMPARE(arguments.at(0).toString(), QString("IncomingCallVibrate"));
+        arguments = propertyChangeSpy.takeFirst();
+        QCOMPARE(arguments.at(0).toString(), QString("DialpadSoundsEnabled"));
+
+        // save original value and set a new one
+        bool originalValue = arguments.at(1).toBool();
+
+        propertyChangeSpy.clear();
+        bool newValue = !originalValue;
+        QVERIFY(setDBusValue(&watcher, "com.ubuntu.touch.AccountsService.Sound", "DialpadSoundsEnabled", newValue));
+        propertyChangeSpy.wait(400);
+        QCOMPARE(propertyChangeSpy.count(), 1);
+        arguments = propertyChangeSpy.takeFirst();
+        QCOMPARE(arguments.at(0).toString(), QString("DialpadSoundsEnabled"));
+        QCOMPARE(arguments.at(1).toBool(), newValue);
+
+        // restore original value
+        setDBusValue(&watcher, "com.ubuntu.touch.AccountsService.Sound", "DialpadSoundsEnabled", originalValue);
+        propertyChangeSpy.wait(400);
     }
 
 };
