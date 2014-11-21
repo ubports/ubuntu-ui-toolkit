@@ -629,7 +629,7 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
     (to embed a UI previously rendered with QML). It is blended over the background color. The
     default value is \c null.
 
-    It can be set either with an inlined Image:
+    It can be set either with an inlined \c Image:
 
     \qml
         Item {
@@ -654,8 +654,8 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
         }
     \endqml
 
-    Note that in this case, the Image is stored in the scene tree as any other items. So setting it
-    as not visible might be needed.
+    Note that in this case, the \c Image is stored in the scene tree as any other items. So setting
+    it as not visible might be needed.
 
     The \l{https://en.wikipedia.org/wiki/Texture_filtering}{sampling filter} is set through the
     given Item's \c smooth property. Set it to \c false for nearest-neighbor filtering or to \c true
@@ -706,7 +706,7 @@ void UCUbuntuShape::setSourceOpacity(float sourceOpacity)
 /*! \qmlproperty enumeration UbuntuShape::sourceFillMode
 
     This properties defines how the \l source texture fills the UbuntuShape. The modes are the same
-    as the ones used by Image, minus the tiling which is exposed through wrapping properties (\l
+    as the ones used by \c Image, minus the tiling which is exposed through wrapping properties (\l
     sourceHorizontalWrapMode and \l sourceVerticalWrapMode). The default value is \c
     UbuntuShape.Stretch.
 
