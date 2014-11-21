@@ -551,7 +551,6 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , gradientColor_(qRgba(0, 0, 0, 0))
     , backgroundColor_(qRgba(0, 0, 0, 0))
     , secondaryBackgroundColor_(qRgba(0, 0, 0, 0))
-    , radiusString_("small")
     , borderSource_("radius_idle.sci")
     , gridUnit_(UCUnits::instance().gridUnit())
     , sourceScale_(1.0f, 1.0f)
@@ -590,9 +589,9 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
 */
 void UCUbuntuShape::setRadius(const QString& radius)
 {
-    if (radiusString_ != radius) {
-        radiusString_ = radius;
-        radius_ = (radius == "medium") ? MediumRadius : SmallRadius;
+    const Radius newRadius = (radius == "medium") ? MediumRadius : SmallRadius;
+    if (radius_ != newRadius) {
+        radius_ = newRadius;
         update();
         Q_EMIT radiusChanged();
     }
@@ -615,6 +614,8 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
         } else {
             border_ = RawBorder;
         }
+        // It's useless to store the string (and takes a few bytes) but we used to return the string
+        // given by the user, so we can't remove it for compatibility reasons.
         borderSource_ = borderSource;
         update();
         Q_EMIT borderSourceChanged();

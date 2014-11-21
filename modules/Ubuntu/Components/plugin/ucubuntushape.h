@@ -91,7 +91,7 @@ public:
     enum FillMode { Stretch = 0, PreserveAspectFit = 1, PreserveAspectCrop = 2, Pad = 3 };
     enum WrapMode { Transparent = 0, Repeat = 1 };
 
-    QString radius() const { return radiusString_; }
+    QString radius() const { return (radius_ == SmallRadius) ? "small" : "medium"; }
     void setRadius(const QString& radius);
     QString borderSource() const { return borderSource_; }
     void setBorderSource(const QString& borderSource);
@@ -209,7 +209,6 @@ private:
     QRgb gradientColor_;
     QRgb backgroundColor_;
     QRgb secondaryBackgroundColor_;
-    QString radiusString_;
     QString borderSource_;
     float gridUnit_;
     QVector2D sourceScale_;
