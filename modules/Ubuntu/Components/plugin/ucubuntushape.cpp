@@ -16,10 +16,6 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
-// FIXME(loicm) Add support for the repeat wrap mode. For a standard unique texture it's easy, the
-//     problem comes with texture atlases. So in that case we've got to extract a unique texture
-//     from it using QSGTexture::removedFromAtlas().
-
 #include "ucubuntushape.h"
 #include "ucubuntushapetexture.h"
 #include "ucunits.h"
@@ -36,7 +32,13 @@ public:
     struct Data
     {
         // Flags must be kept in sync with GLSL fragment shader.
-        enum { Textured = (1 << 0), Overlaid = (1 << 1) };
+        enum {
+            Textured =             (1 << 0),
+            Overlaid =             (1 << 1),
+            HorizontallyRepeated = (1 << 2),
+            VerticallyRepeated =   (1 << 3),
+            Repeated =             (HorizontallyRepeated | VerticallyRepeated)
+        };
         QSGTexture* shapeTexture;
         QSGTextureProvider* sourceTextureProvider;
         quint8 sourceOpacity;
@@ -58,7 +60,7 @@ public:
 private:
     // UCUbuntuShape::updatePaintNode() directly writes to data and ShapeShader::updateState()
     // directly reads from it. We don't bother with getters/setters since it's only meant to be used
-    // by the UbuntuShape implementation and makes it easier to maintain.
+    // by the UbuntuShape implementation and makes maintainance easier.
     Data data_;
 };
 
@@ -152,8 +154,19 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
         QSGTextureProvider* provider = data->sourceTextureProvider;
         QSGTexture* texture = provider ? provider->texture() : NULL;
         if (texture) {
-            texture->setHorizontalWrapMode(QSGTexture::Repeat);
-            texture->setVerticalWrapMode(QSGTexture::Repeat);
+            if (data->flags & ShapeMaterial::Data::Repeated) {
+                if (texture->isAtlasTexture()) {
+                    // A texture in an atlas can't be repeated with builtin GPU facility (exposed by
+                    // GL_REPEAT with OpenGL), so we extract it and create a new dedicated one.
+                    texture = texture->removedFromAtlas();
+                }
+                texture->setHorizontalWrapMode(
+                    data->flags & ShapeMaterial::Data::HorizontallyRepeated ?
+                    QSGTexture::Repeat : QSGTexture::ClampToEdge);
+                texture->setVerticalWrapMode(
+                    data->flags & ShapeMaterial::Data::VerticallyRepeated ?
+                    QSGTexture::Repeat : QSGTexture::ClampToEdge);
+            }
             texture->bind();
         } else {
             glBindTexture(GL_TEXTURE_2D, 0);
@@ -206,7 +219,11 @@ QSGMaterialShader* ShapeMaterial::createShader() const
 int ShapeMaterial::compare(const QSGMaterial* other) const
 {
     const ShapeMaterial::Data* otherData = static_cast<const ShapeMaterial*>(other)->constData();
-    return memcmp(&data_, otherData, sizeof(ShapeMaterial::Data));
+    const int diff = memcmp(&data_, otherData, sizeof(ShapeMaterial::Data));
+    // Repeat wrap modes force textures to be extracted from their atlases. Since we just store the
+    // texture provider in the material data (not the texture as we want to do the extracion at
+    // QSGShader::updateState() time), we make the comparison fail when repeat wrapping is set.
+    return diff | (data_.flags & ShapeMaterial::Data::Repeated);
 }
 
 // --- Scene graph node ---
@@ -227,6 +244,7 @@ public:
     ShapeNode(UCUbuntuShape* item);
     ShapeMaterial* material() { return &material_; }
     void setVertices(float width, float height, float radius, float shapeCoordinate[][2],
+                     UCUbuntuShape::WrapMode hWrap, UCUbuntuShape::WrapMode vWrap,
                      const QVector4D& sourceTransform, const QRectF& textureRect);
 
 private:
@@ -309,19 +327,36 @@ ShapeNode::ShapeNode(UCUbuntuShape* item)
 }
 
 void ShapeNode::setVertices(float width, float height, float radius, float shapeCoordinate[][2],
+                            UCUbuntuShape::WrapMode hWrap, UCUbuntuShape::WrapMode vWrap,
                             const QVector4D& sourceTransform, const QRectF& textureRect)
 {
     ShapeNode::Vertex* vertices = reinterpret_cast<ShapeNode::Vertex*>(geometry_.vertexData());
+    const float radiusW = radius / width;
+    const float radiusH = radius / height;
+
+    // Get transformation for source texture coordinates.
     const float sourceSx1 = sourceTransform.x() * textureRect.width();
     const float sourceSy1 = sourceTransform.y() * textureRect.height();
     const float sourceTx1 = sourceTransform.z() * textureRect.width() + textureRect.x();
     const float sourceTy1 = sourceTransform.w() * textureRect.height() + textureRect.y();
-    const float sourceSx2 = sourceTransform.x() * 2.0f;
-    const float sourceSy2 = sourceTransform.y() * 2.0f;
-    const float sourceTx2 = sourceTransform.z() * 2.0f - 1.0f;
-    const float sourceTy2 = sourceTransform.w() * 2.0f - 1.0f;
-    const float radiusW = radius / width;
-    const float radiusH = radius / height;
+
+    // Get transformation for source mask coordinates. In case of a repeat wrap mode, the
+    // transformation is made so that the mask takes the whole area.
+    float sourceSx2, sourceTx2, sourceSy2, sourceTy2;
+    if (hWrap == UCUbuntuShape::Transparent) {
+        sourceSx2 = sourceTransform.x() * 2.0f;
+        sourceTx2 = sourceTransform.z() * 2.0f - 1.0f;
+    } else {
+        sourceSx2 = 2.0f;
+        sourceTx2 = -1.0f;
+    }
+    if (vWrap == UCUbuntuShape::Transparent) {
+        sourceSy2 = sourceTransform.y() * 2.0f;
+        sourceTy2 = sourceTransform.w() * 2.0f - 1.0f;
+    } else {
+        sourceSy2 = 2.0f;
+        sourceTy2 = -1.0f;
+    }
 
     // Set top row of 4 vertices.
     vertices[0].position[0] = 0.0f;
@@ -1340,7 +1375,10 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         provider = source_ ? source_->textureProvider() : NULL;
         texture = provider ? provider->texture() : NULL;
         if (texture) {
-            textureRect = texture->normalizedTextureSubRect();
+            if (sourceHorizontalWrapMode_ == Transparent &&
+                sourceVerticalWrapMode_ == Transparent) {
+                textureRect = texture->normalizedTextureSubRect();
+            }
             if (flags_ & DirtySourceTransform) {
                 updateSourceTransform(itemSize.width(), itemSize.height(), sourceFillMode_,
                                       sourceHorizontalAlignment_, sourceVerticalAlignment_,
@@ -1352,7 +1390,10 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         provider = image_ ? image_->textureProvider() : NULL;
         texture = provider ? provider->texture() : NULL;
         if (texture) {
-            textureRect = texture->normalizedTextureSubRect();
+            if (sourceHorizontalWrapMode_ == Transparent &&
+                sourceVerticalWrapMode_ == Transparent) {
+                textureRect = texture->normalizedTextureSubRect();
+            }
             if (flags_ & DirtySourceTransform) {
                 FillMode imageFillMode = (flags_ & Stretched) ? Stretch : PreserveAspectCrop;
                 updateSourceTransform(itemSize.width(), itemSize.height(), imageFillMode,
@@ -1433,6 +1474,12 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     if (texture && sourceOpacity_) {
         materialData->sourceTextureProvider = sourceTextureProvider_;
         materialData->sourceOpacity = sourceOpacity_;
+        if (sourceHorizontalWrapMode_ == Repeat) {
+            flags |= ShapeMaterial::Data::HorizontallyRepeated;
+        }
+        if (sourceVerticalWrapMode_ == Repeat) {
+            flags |= ShapeMaterial::Data::VerticallyRepeated;
+        }
         flags |= ShapeMaterial::Data::Textured;
     } else {
         materialData->sourceTextureProvider = NULL;
@@ -1468,7 +1515,8 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         index += 3;
     }
     node->setVertices(itemSize.width(), itemSize.height(), radius,
-                      shapeTextureData->coordinate[index], sourceTransform_, textureRect);
+                      shapeTextureData->coordinate[index], sourceHorizontalWrapMode_,
+                      sourceVerticalWrapMode_, sourceTransform_, textureRect);
 
     return node;
 }
