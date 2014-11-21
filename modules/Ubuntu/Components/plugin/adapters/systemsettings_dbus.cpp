@@ -19,7 +19,6 @@
 #include "systemsettings_dbus.h"
 #include "dbuspropertywatcher_p.h"
 
-#include <QDebug>
 // DBus adaptation
 
 SystemSettingsPrivate *createSystemSettingsAdaptation()
@@ -34,14 +33,15 @@ SystemSettingsPrivate *createSystemSettingsAdaptation()
 #define ACCOUNTS_SERVICE    "org.freedesktop.Accounts"
 #define ACCOUNTS_PATH       "/org/freedesktop/Accounts"
 #define ACCOUNTS_IFACE      "org.freedesktop.Accounts"
+#define VIBRA_PROPERTY      "OtherVibrate"
 
 SystemSettingsDBus::SystemSettingsDBus(QObject *parent)
     : QObject(parent)
     , accountsWatcher(QDBusConnection::systemBus(),
-                      "org.freedesktop.Accounts",
-                      "/org/freedesktop/Accounts",
-                      "org.freedesktop.Accounts",
-                      QStringList("OtherVibrate"))
+                      ACCOUNTS_SERVICE,
+                      ACCOUNTS_PATH,
+                      ACCOUNTS_IFACE,
+                      (QStringList() << VIBRA_PROPERTY))
 {
 }
 
@@ -54,11 +54,10 @@ void SystemSettingsDBus::init(SystemSettings *qq)
 
 void SystemSettingsDBus::vibrateChanged(const QString &property, const QVariant &value)
 {
-//    Q_UNUSED(property);
-    qDebug() << property;
-    if (property == "OtherVibrate") {
-    vibrate = value.toBool();
-    Q_EMIT q_ptr->vibraEnabledChanged();
+    Q_UNUSED(property);
+    if (property == VIBRA_PROPERTY) {
+        vibrate = value.toBool();
+        Q_EMIT q_ptr->vibraEnabledChanged();
     }
 }
 
