@@ -116,9 +116,13 @@ public:
     QVector2D sourceScale() const { return sourceScale_; }
     void setSourceScale(const QVector2D& sourceScale);
 
-    QColor backgroundColor() const { return backgroundColor_; }
+    QColor backgroundColor() const {
+        return QColor(qRed(backgroundColor_), qGreen(backgroundColor_), qBlue(backgroundColor_),
+                      qAlpha(backgroundColor_)); }
     void setBackgroundColor(const QColor& backgroundColor);
-    QColor secondaryBackgroundColor() const { return secondaryBackgroundColor_; }
+    QColor secondaryBackgroundColor() const {
+        return QColor(qRed(secondaryBackgroundColor_), qGreen(secondaryBackgroundColor_),
+                      qBlue(secondaryBackgroundColor_), qAlpha(secondaryBackgroundColor_)); }
     void setSecondaryBackgroundColor(const QColor& secondaryBackgroundColor);
     BackgroundMode backgroundMode() const { return backgroundMode_; }
     void setBackgroundMode(BackgroundMode backgroundMode);
@@ -131,9 +135,12 @@ public:
     QColor overlayColor() const { return overlayColor_; }
     void setOverlayColor(const QColor& overlayColor);
 
-    QColor color() const { return color_; }
+    QColor color() const {
+        return QColor(qRed(color_), qGreen(color_), qBlue(color_), qAlpha(color_)); }
     void setColor(const QColor& color);
-    QColor gradientColor() const { return gradientColor_; }
+    QColor gradientColor() const {
+        return QColor(qRed(gradientColor_), qGreen(gradientColor_), qBlue(gradientColor_),
+                      qAlpha(gradientColor_)); }
     void setGradientColor(const QColor& gradientColor);
     QVariant image() const { return QVariant::fromValue((flags_ & SourceApiSet) ? NULL : source_); }
     void setImage(const QVariant& image);
