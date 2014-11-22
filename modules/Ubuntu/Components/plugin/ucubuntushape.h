@@ -177,8 +177,8 @@ protected:
     virtual void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry);
 
 private Q_SLOTS:
-    void onImagePropertiesChanged();
-    void onOpenglContextDestroyed();
+    void imagePropertiesChanged();
+    void openglContextDestroyed();
     void gridUnitChanged();
     void providerDestroyed(QObject* object=0);
     void textureChanged();

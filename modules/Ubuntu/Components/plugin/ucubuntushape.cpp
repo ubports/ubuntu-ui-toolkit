@@ -33,11 +33,11 @@ public:
     {
         // Flags must be kept in sync with GLSL fragment shader.
         enum {
-            Textured =             (1 << 0),
-            Overlaid =             (1 << 1),
+            Textured             = (1 << 0),
+            Overlaid             = (1 << 1),
             HorizontallyRepeated = (1 << 2),
-            VerticallyRepeated =   (1 << 3),
-            Repeated =             (HorizontallyRepeated | VerticallyRepeated)
+            VerticallyRepeated   = (1 << 3),
+            Repeated             = (HorizontallyRepeated | VerticallyRepeated)
         };
         QSGTexture* shapeTexture;
         QSGTextureProvider* sourceTextureProvider;
@@ -76,7 +76,7 @@ public:
         const RenderState& state, QSGMaterial* newEffect, QSGMaterial* oldEffect);
 
 private:
-    QOpenGLFunctions* glFuncs_;
+    QOpenGLFunctions* functions_;
     int matrixId_;
     int opacityId_;
     int sourceOpacityId_;
@@ -105,10 +105,12 @@ char const* const* ShapeShader::attributeNames() const
 void ShapeShader::initialize()
 {
     QSGMaterialShader::initialize();
+
     program()->bind();
     program()->setUniformValue("shapeTexture", 0);
     program()->setUniformValue("sourceTexture", 1);
-    glFuncs_ = QOpenGLContext::currentContext()->functions();
+
+    functions_ = QOpenGLContext::currentContext()->functions();
     matrixId_ = program()->uniformLocation("matrix");
     opacityId_ = program()->uniformLocation("opacity");
     sourceOpacityId_ = program()->uniformLocation("sourceOpacity");
@@ -150,7 +152,7 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
 
     if (data->flags & ShapeMaterial::Data::Textured) {
         // Bind image texture.
-        glFuncs_->glActiveTexture(GL_TEXTURE1);
+        functions_->glActiveTexture(GL_TEXTURE1);
         QSGTextureProvider* provider = data->sourceTextureProvider;
         QSGTexture* texture = provider ? provider->texture() : NULL;
         if (texture) {
@@ -171,7 +173,7 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
         } else {
             glBindTexture(GL_TEXTURE_2D, 0);
         }
-        glFuncs_->glActiveTexture(GL_TEXTURE0);
+        functions_->glActiveTexture(GL_TEXTURE0);
         // Update image uniform.
         program()->setUniformValue(sourceOpacityId_, data->sourceOpacity * u8toF32);
     }
@@ -220,8 +222,8 @@ int ShapeMaterial::compare(const QSGMaterial* other) const
 {
     const ShapeMaterial::Data* otherData = static_cast<const ShapeMaterial*>(other)->constData();
     const int diff = memcmp(&data_, otherData, sizeof(ShapeMaterial::Data));
-    // Repeat wrap modes force textures to be extracted from their atlases. Since we just store the
-    // texture provider in the material data (not the texture as we want to do the extracion at
+    // Repeat wrap modes require textures to be extracted from their atlases. Since we just store
+    // the texture provider in the material data (not the texture as we want to do the extracion at
     // QSGShader::updateState() time), we make the comparison fail when repeat wrapping is set.
     return diff | (data_.flags & ShapeMaterial::Data::Repeated);
 }
@@ -330,7 +332,7 @@ void ShapeNode::setVertices(float width, float height, float radius, float shape
                             UCUbuntuShape::WrapMode hWrap, UCUbuntuShape::WrapMode vWrap,
                             const QVector4D& sourceTransform, const QRectF& textureRect)
 {
-    ShapeNode::Vertex* vertices = reinterpret_cast<ShapeNode::Vertex*>(geometry_.vertexData());
+    Vertex* vertices = reinterpret_cast<ShapeNode::Vertex*>(geometry_.vertexData());
     const float radiusW = radius / width;
     const float radiusH = radius / height;
 
@@ -1014,7 +1016,7 @@ void UCUbuntuShape::setBackgroundMode(BackgroundMode backgroundMode)
 */
 void UCUbuntuShape::setOverlayGeometry(const QRectF& overlayGeometry)
 {
-    // Crop rectangle and pack to 16-bit unsigned integer.
+    // Crop rectangle and pack to 16-bit unsigned integers.
     const float x = qMax(0.0f, qMin(1.0f, static_cast<float>(overlayGeometry.x())));
     float width = qMax(0.0f, static_cast<float>(overlayGeometry.width()));
     if ((x + width) > 1.0f) {
@@ -1095,6 +1097,7 @@ void UCUbuntuShape::setColor(const QColor& color)
 void UCUbuntuShape::setGradientColor(const QColor& gradientColor)
 {
     flags_ |= GradientColorSet;
+
     const QRgb gradientColorRgb = qRgba(
         gradientColor.red(), gradientColor.green(), gradientColor.blue(), gradientColor.alpha());
     if (gradientColor_ != gradientColorRgb) {
@@ -1236,13 +1239,13 @@ void UCUbuntuShape::connectToPropertyChange(QObject* sender, const char* propert
 // Deprecation layer.
 void UCUbuntuShape::connectToImageProperties(QQuickItem* image)
 {
-    connectToPropertyChange(image, "fillMode", this, "onImagePropertiesChanged()");
-    connectToPropertyChange(image, "horizontalAlignment", this, "onImagePropertiesChanged()");
-    connectToPropertyChange(image, "verticalAlignment", this, "onImagePropertiesChanged()");
+    connectToPropertyChange(image, "fillMode", this, "imagePropertiesChanged()");
+    connectToPropertyChange(image, "horizontalAlignment", this, "imagePropertiesChanged()");
+    connectToPropertyChange(image, "verticalAlignment", this, "imagePropertiesChanged()");
 }
 
 // Deprecation layer.
-void UCUbuntuShape::onImagePropertiesChanged()
+void UCUbuntuShape::imagePropertiesChanged()
 {
     QQuickItem* image = qobject_cast<QQuickItem*>(sender());
     updateFromImageProperties(image);
@@ -1268,7 +1271,7 @@ void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& old
     flags_ |= DirtySourceTransform;
 }
 
-void UCUbuntuShape::onOpenglContextDestroyed()
+void UCUbuntuShape::openglContextDestroyed()
 {
     QOpenGLContext* context = qobject_cast<QOpenGLContext*>(sender());
     if (context) {
@@ -1380,7 +1383,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
             QImage(shapeTextureLow.data, shapeTextureLow.width, shapeTextureLow.height,
                    QImage::Format_ARGB32_Premultiplied));
         QObject::connect(openglContext, SIGNAL(aboutToBeDestroyed()),
-                         this, SLOT(onOpenglContextDestroyed()), Qt::DirectConnection);
+                         this, SLOT(openglContextDestroyed()), Qt::DirectConnection);
     }
 
     ShapeNode* node = static_cast<ShapeNode*>(oldNode);
