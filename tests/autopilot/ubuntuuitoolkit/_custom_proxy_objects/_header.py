@@ -35,9 +35,6 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """AppHeader Autopilot custom proxy object."""
 
     def ensure_visible(self):
-        self._show_if_not_visible()
-
-    def _show_if_not_visible(self):
         if not self._is_visible():
             self._show()
 
@@ -70,7 +67,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 range or useDeprecatedToolbar is set.
 
         """
-        self._show_if_not_visible()
+        self.ensure_visible()
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException('Old header has no sections')
@@ -95,7 +92,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         return sectionsProperties.selectedIndex
 
     def click_back_button(self):
-        self._show_if_not_visible()
+        self.ensure_visible()
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException('Old header has no back button')
@@ -110,7 +107,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         self.wait_for_animation()
 
     def click_custom_back_button(self):
-        self._show_if_not_visible()
+        self.ensure_visible()
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException(
@@ -142,7 +139,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
         :raise ToolkitException: If the main view has no tabs.
 
         """
-        self._show_if_not_visible()
+        self.ensure_visible()
 
         if self.useDeprecatedToolbar:
             self._switch_to_next_tab_in_deprecated_tabbar()
@@ -174,7 +171,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 of range or useDeprecatedToolbar is set.
 
         """
-        self._show_if_not_visible()
+        self.ensure_visible()
 
         if self.useDeprecatedToolbar:
             raise _common.ToolkitException(
@@ -214,7 +211,7 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             name.
 
         """
-        self._show_if_not_visible()
+        self.ensure_visible()
 
         button = self._get_action_button(action_object_name)
         self.pointing_device.click_object(button)
