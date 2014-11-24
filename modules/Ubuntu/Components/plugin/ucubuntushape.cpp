@@ -661,6 +661,20 @@ void UCUbuntuShape::setBorderSource(const QString& borderSource)
     }
 }
 
+// Deprecation layer.
+void UCUbuntuShape::dropImageSupport()
+{
+    if (!(flags_ & SourceApiSet)) {
+        flags_ |= SourceApiSet;
+        if (source_) {
+            QObject::disconnect(source_);
+            source_ = NULL;
+            update();
+            Q_EMIT imageChanged();
+        }
+    }
+}
+
 /*! \qmlproperty variant UbuntuShape::source
 
     This property sets the source provider of a texture rendered in the UbuntuShape. Supported types
@@ -1268,20 +1282,6 @@ void UCUbuntuShape::imagePropertiesChanged()
 {
     QQuickItem* image = qobject_cast<QQuickItem*>(sender());
     updateFromImageProperties(image);
-}
-
-// Deprecation layer.
-void UCUbuntuShape::dropImageSupport()
-{
-    if (!(flags_ & SourceApiSet)) {
-        flags_ |= SourceApiSet;
-        if (source_) {
-            QObject::disconnect(source_);
-            source_ = NULL;
-            update();
-            Q_EMIT imageChanged();
-        }
-    }
 }
 
 void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
