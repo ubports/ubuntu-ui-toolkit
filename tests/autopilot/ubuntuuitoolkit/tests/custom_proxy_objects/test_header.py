@@ -28,7 +28,8 @@ class HideShowTestCase(tests.QMLFileAppTestCase):
 
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
-    test_qml_file_path = os.path.join(dir_path,
+    test_qml_file_path = os.path.join(
+        dir_path,
         'test_header.HideShowTestCase.qml')
 
     def setUp(self):
@@ -50,6 +51,7 @@ class HideShowTestCase(tests.QMLFileAppTestCase):
         self.assertEquals(self.header._is_visible(), False)
         self.header.ensure_visible()
         self.assertEquals(self.header._is_visible(), True)
+
 
 class ActionsTestCase(tests.QMLFileAppTestCase):
 
