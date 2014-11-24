@@ -39,10 +39,22 @@ Item {
             signalName: "sourceChanged"
         }
 
+        SignalSpy {
+            id: visibleChangedSpy
+            signalName: "visibleChanged"
+        }
+
         function test_sourceChanged() {
             sourceChangeSpy.target = test;
             test.source = "/usr/share/icons/ubuntu-mobile/actions/scalable/delete.svg";
             sourceChangeSpy.wait();
+        }
+
+        function test_sourceNOTIFYable() {
+            /* Test source through visible to cover NOTIFYable errors */
+            visibleChangedSpy.target = test;
+            test.source = "/usr/share/icons/ubuntu-mobile/actions/scalable/delete.svg";
+            visibleChangedSpy.wait();
         }
     }
 }
