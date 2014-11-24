@@ -39,7 +39,7 @@ class HideShowTestCase(tests.QMLFileAppTestCase):
         """Test that header.ensure_visible() shows the header.
         """
 
-        self.assertEquals(self.header._is_visible(), False)
+        self.assertEquals(self.header._is_visible(), True)
         # Scroll down to hide the header
         self.list_view = self.main_view.select_single(
             ubuntuuitoolkit.QQuickListView, objectName='testListView')
