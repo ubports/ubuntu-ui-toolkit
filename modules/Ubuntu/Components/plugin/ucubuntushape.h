@@ -115,14 +115,17 @@ public:
     void setSourceTranslation(const QVector2D& sourceTranslation);
     QVector2D sourceScale() const { return sourceScale_; }
     void setSourceScale(const QVector2D& sourceScale);
-
     QColor backgroundColor() const {
-        return QColor(qRed(backgroundColor_), qGreen(backgroundColor_), qBlue(backgroundColor_),
-                      qAlpha(backgroundColor_)); }
+        return (flags_ & BackgroundApiSet) ?
+            QColor(qRed(backgroundColor_), qGreen(backgroundColor_), qBlue(backgroundColor_),
+                   qAlpha(backgroundColor_)) :
+            QColor(0, 0, 0, 0); }
     void setBackgroundColor(const QColor& backgroundColor);
     QColor secondaryBackgroundColor() const {
-        return QColor(qRed(secondaryBackgroundColor_), qGreen(secondaryBackgroundColor_),
-                      qBlue(secondaryBackgroundColor_), qAlpha(secondaryBackgroundColor_)); }
+        return (flags_ & BackgroundApiSet) ?
+            QColor(qRed(secondaryBackgroundColor_), qGreen(secondaryBackgroundColor_),
+                   qBlue(secondaryBackgroundColor_), qAlpha(secondaryBackgroundColor_)) :
+            QColor(0, 0, 0, 0); }
     void setSecondaryBackgroundColor(const QColor& secondaryBackgroundColor);
     BackgroundMode backgroundMode() const { return backgroundMode_; }
     void setBackgroundMode(BackgroundMode backgroundMode);
@@ -136,11 +139,16 @@ public:
     void setOverlayColor(const QColor& overlayColor);
 
     QColor color() const {
-        return QColor(qRed(color_), qGreen(color_), qBlue(color_), qAlpha(color_)); }
+        return (flags_ & BackgroundApiSet) ?
+            QColor(0, 0, 0, 0) :
+            QColor(qRed(backgroundColor_), qGreen(backgroundColor_), qBlue(backgroundColor_),
+                   qAlpha(backgroundColor_)); }
     void setColor(const QColor& color);
     QColor gradientColor() const {
-        return QColor(qRed(gradientColor_), qGreen(gradientColor_), qBlue(gradientColor_),
-                      qAlpha(gradientColor_)); }
+        return (flags_ & BackgroundApiSet) ?
+            QColor(0, 0, 0, 0) :
+            QColor(qRed(secondaryBackgroundColor_), qGreen(secondaryBackgroundColor_),
+                   qBlue(secondaryBackgroundColor_), qAlpha(secondaryBackgroundColor_)); }
     void setGradientColor(const QColor& gradientColor);
     QVariant image() const { return QVariant::fromValue((flags_ & SourceApiSet) ? NULL : source_); }
     void setImage(const QVariant& image);
@@ -195,6 +203,7 @@ private:
     void connectToPropertyChange(QObject* sender, const char* property,
                                  QObject* receiver, const char* slot);
     void connectToImageProperties(QQuickItem* image);
+    void dropColorSupport();
     void dropImageSupport();
     void updateSourceTransform(float itemWidth, float itemHeight, FillMode fillMode,
                                HAlignment horizontalAlignment, VAlignment verticalAlignment,
@@ -212,8 +221,6 @@ private:
 
     QQuickItem* source_;
     QSGTextureProvider* sourceTextureProvider_;
-    QRgb color_;
-    QRgb gradientColor_;
     QRgb backgroundColor_;
     QRgb secondaryBackgroundColor_;
     QString borderSource_;

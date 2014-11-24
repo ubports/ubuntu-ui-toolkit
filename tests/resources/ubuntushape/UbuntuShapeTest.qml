@@ -37,7 +37,7 @@ Item {
     property real scaleFactor: 1.0
     property real scale: 1.0
 
-    // Overlay text properties.
+    // Overlay text properties. French keymapping... :)
     property string textOverlayString:
         "Zoom            (scroll):   x " + root.scaleFactor.toFixed(1) + "\n\n" +
         "Background colors  (a/z):   " + shape.backgroundColor + ", " + shape.secondaryBackgroundColor + "\n" +
@@ -53,12 +53,13 @@ Item {
         "Source valign        (g):   " + root.sourceVAlignmentTable[shape.sourceVerticalAlignment] + "\n" +
         "Source translation (h/j):   " + shape.sourceTranslation.x.toFixed(2) + ", " + shape.sourceTranslation.y.toFixed(2) + "\n" +
         "Source scale       (k/l):   " + shape.sourceScale.x.toFixed(2) + ", " + shape.sourceScale.y.toFixed(2) + "\n\n" +
-        "Image                (m):   " + shape.image + "\n" +
+        "Image (deprecated)   (m):   " + shape.image + "\n" +
         "Image fill           (w):   " + root.imageFillModeTable[img1.fillMode] + "\n" +
         "Image halign         (x):   " + img1.horizontalAlignment + "\n" +
         "Image valign         (c):   " + img1.verticalAlignment + "\n\n" +
         "Radius               (v):   " + "\"" + shape.radius + "\"\n" +
-        "Border               (b):   " + "\"" + shape.borderSource + "\""
+        "Border               (b):   " + "\"" + shape.borderSource + "\"\n\n" +
+        "Colors (deprecated) (n/,):  " + shape.color + ", " + shape.gradientColor
 
     // Main scene.
     Item {
@@ -73,7 +74,7 @@ Item {
         }
 
         // Put the UbuntuShape source image in the middle of a texture atlas. We use img1.
-        Image { id: img1; visible: false; source: "img1.png"; }
+        Image { id: img1; visible: false; source: "/usr/share/icons/Humanity/apps/192/yelp-icon-big.svg"; }
         Image { id: img2; visible: false; source: "img2.png"; }
         Image { id: img3; visible: false; source: "img3.png"; }
         Image { id: img4; visible: false; source: "img4.png"; }
@@ -85,7 +86,6 @@ Item {
             anchors.rightMargin: 100
             anchors.topMargin: 100
             anchors.bottomMargin: 100
-            backgroundColor: Qt.rgba(1.0, 1.0, 1.0, 0.4)
         }
     }
 
@@ -301,6 +301,14 @@ Item {
             } else {
                 shape.borderSource = "radius_idle.sci";
             }
+
+        // Colors.
+        } else if (event.key == Qt.Key_N) {
+            shape.color = Qt.rgba(
+                Math.random(), Math.random(), Math.random(), Math.random());
+        } else if (event.key == Qt.Key_Comma) {
+            shape.gradientColor = Qt.rgba(
+                Math.random(), Math.random(), Math.random(), Math.random());
         }
     }
 }
