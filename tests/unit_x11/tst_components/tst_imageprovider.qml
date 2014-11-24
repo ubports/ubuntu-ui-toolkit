@@ -53,7 +53,7 @@ Item {
         function test_sourceNOTIFYable() {
             /* Test source through visible to cover NOTIFYable errors */
             visibleChangedSpy.target = test;
-            test.source = "/usr/share/icons/ubuntu-mobile/actions/scalable/delete.svg";
+            test.source = "/usr/share/icons/ubuntu-mobile/actions/scalable/help.svg";
             visibleChangedSpy.wait();
         }
     }
