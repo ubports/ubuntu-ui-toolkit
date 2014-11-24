@@ -125,7 +125,7 @@ Item {
         }
 
         function panelItem(item, leading) {
-            return findInvisibleChild(item, (leading ? "LeadingListItemPanel" : "TrailingListItemPanel"));
+            return findInvisibleChild(item, (leading ? "ListItemPanelLeading" : "ListItemPanelTrailing"));
         }
 
         function rebound(item, watchTarget) {

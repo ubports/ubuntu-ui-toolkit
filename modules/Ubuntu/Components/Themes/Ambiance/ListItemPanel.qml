@@ -33,7 +33,7 @@ Item {
       Color used in coloring the icons.
       */
     // FIXME: use Palette colors instead when available
-    property color foregroundColor: leadingPanel ? "white" : UbuntuColors.darkGrey
+    property color foregroundColor: leading ? "white" : UbuntuColors.darkGrey
 
     /*
       Specifies the width of the component visualizing the action.
@@ -136,6 +136,12 @@ Item {
                     optionsRow.selectedAction = modelData;
                     optionsRow.listItemIndex = panel.ListItemActions.listItemIndex;
                     panel.ListItemActions.snapToPosition(0.0);
+                }
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: Theme.palette.selected.background
+                    visible: pressed
                 }
 
                 Loader {
