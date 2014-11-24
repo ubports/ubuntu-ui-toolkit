@@ -329,7 +329,7 @@ UCListItemPrivate::UCListItemPrivate()
     , pressed(false)
     , contentMoved(false)
     , highlightColorChanged(false)
-    , tugged(false)
+    , swiped(false)
     , suppressClick(false)
     , ready(false)
     , customStyle(false)
@@ -393,10 +393,11 @@ void UCListItemPrivate::_q_rebound()
     setPressed(false);
     // initiate rebinding only if there were actions tugged
     Q_Q(UCListItem);
-    if (!UCListItemActionsPrivate::isConnectedTo(leadingActions, q) && !UCListItemActionsPrivate::isConnectedTo(trailingActions, q)) {
+    if (!UCListItemActionsPrivate::isConnectedTo(leadingActions, q) &&
+        !UCListItemActionsPrivate::isConnectedTo(trailingActions, q)) {
         return;
     }
-    setTugged(false);
+    setSwiped(false);
     // rebound to zero
     animator->snap(0);
 }
@@ -406,8 +407,8 @@ void UCListItemPrivate::_q_rebound()
  * Holds the style of the component defining the components visualizing the leading/
  * trailing actions, selection and dragging mode handlers as well as different
  * animations. The component does not assume any visuals present in the style,
- * and will load its content only when requested, i.e. either of the mentioned
- * components are visualized.
+ * and will load its content only when requested.
+ * \sa ListItemStyle
  */
 QQmlComponent *UCListItemPrivate::style() const
 {
@@ -480,7 +481,7 @@ QQuickItem *UCListItemPrivate::styleInstance() const
 void UCListItemPrivate::promptRebound()
 {
     setPressed(false);
-    setTugged(false);
+    setSwiped(false);
     if (animator) {
         animator->snapOut();
     }
@@ -522,16 +523,16 @@ void UCListItemPrivate::setPressed(bool pressed)
     }
 }
 // toggles the tugged flag and installs/removes event filter
-void UCListItemPrivate::setTugged(bool tugged)
+void UCListItemPrivate::setSwiped(bool swiped)
 {
-    suppressClick = tugged;
-    if (this->tugged == tugged) {
+    suppressClick = swiped;
+    if (this->swiped == swiped) {
         return;
     }
-    this->tugged = tugged;
+    this->swiped = swiped;
     Q_Q(UCListItem);
     QQuickWindow *window = q->window();
-    if (tugged) {
+    if (swiped) {
         window->installEventFilter(q);
     } else {
         window->removeEventFilter(q);
@@ -676,6 +677,8 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * }
  * \endqml
  * \sa ListItemActions
+ *
+ * The component is styled using the \l ListItemStyle style interface.
  */
 
 /*!
@@ -819,7 +822,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         // connect the Flickable to know when to rebound
         d->listenToRebind(true);
         // if it was moved, grab the panels
-        if (d->tugged) {
+        if (d->swiped) {
             d->grabPanel(d->leadingActions, true);
             d->grabPanel(d->trailingActions, true);
         }
@@ -888,7 +891,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             // clamp X into allowed dragging area
             d->clampAndMoveX(x, dx);
             // block flickable
-            d->setTugged(true);
+            d->setSwiped(true);
             d->contentItem->setX(x);
             // decide which panel is visible by checking the contentItem's X coordinates
             if (d->contentItem->x() > 0) {
