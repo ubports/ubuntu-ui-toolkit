@@ -74,7 +74,7 @@ Item {
         }
 
         // Put the UbuntuShape source image in the middle of a texture atlas. We use img1.
-        Image { id: img1; visible: false; source: "/usr/share/icons/Humanity/apps/192/yelp-icon-big.svg"; }
+        Image { id: img1; visible: false; source: "img1.png"; }
         Image { id: img2; visible: false; source: "img2.png"; }
         Image { id: img3; visible: false; source: "img3.png"; }
         Image { id: img4; visible: false; source: "img4.png"; }
@@ -249,20 +249,20 @@ Item {
             shape.sourceVerticalAlignment = (shape.sourceVerticalAlignment + 1) % 3;
         } else if (event.key == Qt.Key_H) {
             shape.sourceTranslation = Qt.vector2d(
-                shape.sourceTranslation.x + ((event.modifiers & shift) ? 0.05 : -0.05),
+                shape.sourceTranslation.x + ((event.modifiers & shift) ? 0.01 : -0.01),
                 shape.sourceTranslation.y);
         } else if (event.key == Qt.Key_J) {
             shape.sourceTranslation = Qt.vector2d(
                 shape.sourceTranslation.x,
-                shape.sourceTranslation.y + ((event.modifiers & shift) ? 0.05 : -0.05));
+                shape.sourceTranslation.y + ((event.modifiers & shift) ? 0.01 : -0.01));
         } else if (event.key == Qt.Key_K) {
             shape.sourceScale = Qt.vector2d(
-                shape.sourceScale.x + ((event.modifiers & shift) ? 0.05 : -0.05),
+                shape.sourceScale.x + ((event.modifiers & shift) ? 0.02 : -0.02),
                 shape.sourceScale.y);
         } else if (event.key == Qt.Key_L) {
             shape.sourceScale = Qt.vector2d(
                 shape.sourceScale.x,
-                shape.sourceScale.y + ((event.modifiers & shift) ? 0.05 : -0.05));
+                shape.sourceScale.y + ((event.modifiers & shift) ? 0.02 : -0.02));
 
         // Image.
         } else if (event.key == Qt.Key_M) {
