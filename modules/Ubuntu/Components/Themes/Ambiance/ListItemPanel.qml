@@ -115,6 +115,12 @@ Item {
                     panel.ListItemActions.snapToPosition(0.0);
                 }
 
+                Rectangle {
+                    anchors.fill: parent
+                    color: Theme.palette.selected.background
+                    visible: pressed
+                }
+
                 Loader {
                     id: delegateLoader
                     height: parent.height
