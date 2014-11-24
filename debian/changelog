@@ -1,3 +1,19 @@
+ubuntu-ui-toolkit (1.1.1341+15.04.20141121-0ubuntu2) UNRELEASED; urgency=medium
+
+  [ Christian Dywan ]
+  * Re-introduce NOTIFY to Image under a different name.
+   Fixes LP: #1395690 LP: #1395793
+
+  [ Florian Boucault ] 
+  * TextArea/TextField: make sure that the copy/paste popup is far
+    enough from the finger for it to be visible and legible. 
+    Fixes LP: #1384422
+
+  [ Zoltán Balogh ]
+  * Updated test plan executer script
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Tue, 25 Nov 2014 00:03:35 +0200
+
 ubuntu-ui-toolkit (1.1.1338+15.04.20141121-0ubuntu1) vivid; urgency=medium
 
   [ Loïc Molinari ]

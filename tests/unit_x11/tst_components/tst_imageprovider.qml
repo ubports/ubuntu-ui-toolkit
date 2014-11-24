@@ -23,11 +23,20 @@ Item {
     width: units.gu(50)
     height: units.gu(100)
 
-    Image {
-        id: test
-        width: units.gu(20)
-        height: units.gu(20)
-        source: "/usr/share/icons/ubuntu-mobile/actions/scalable/add.svg"
+    Column {
+        Image {
+            id: test
+            width: units.gu(20)
+            height: units.gu(20)
+            source: "/usr/share/icons/ubuntu-mobile/actions/scalable/add.svg"
+            visible: source != ""
+        }
+        Image {
+            id: bindingTest
+            width: units.gu(20)
+            height: units.gu(20)
+            visible: source != ""
+        }
     }
 
     UbuntuTestCase {
@@ -39,10 +48,22 @@ Item {
             signalName: "sourceChanged"
         }
 
+        SignalSpy {
+            id: visibleChangedSpy
+            signalName: "visibleChanged"
+        }
+
         function test_sourceChanged() {
             sourceChangeSpy.target = test;
             test.source = "/usr/share/icons/ubuntu-mobile/actions/scalable/delete.svg";
             sourceChangeSpy.wait();
+        }
+
+        function test_sourceNOTIFYable() {
+            /* Test source through visible to cover NOTIFYable errors */
+            visibleChangedSpy.target = bindingTest;
+            bindingTest.source = "/usr/share/icons/ubuntu-mobile/actions/scalable/help.svg";
+            visibleChangedSpy.wait();
         }
     }
 }
