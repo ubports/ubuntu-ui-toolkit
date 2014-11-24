@@ -40,14 +40,14 @@ license.target = license
 license.commands = ./tests/license/checklicense.sh
 QMAKE_EXTRA_TARGETS += license
 
-DOC_SRC = .
+DOC_SRC = $$PWD
 equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
-    DOC_SRC = documentation
+    DOC_SRC = $$PWD/documentation
 }
 
-DOC_PATH=$$PWD/documentation
+DOC_PATH=$$OUT_PWD/documentation
 docs.target = docs
-docs.commands = SRC=$$DOC_SRC ./documentation/docs.sh $$DOC_PATH;
+docs.commands = SRC=$$DOC_SRC $$PWD/documentation/docs.sh $$DOC_PATH;
 QMAKE_EXTRA_TARGETS += docs
 
 #helper files

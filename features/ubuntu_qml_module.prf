@@ -1,4 +1,4 @@
-# Provides a feature file for easy dependency handling of
+# Provides a feature file for easy handling of
 # qml module dependencies that are not compiled.
 #
 # To automatically copy and update qml/js/whatever files in the
@@ -12,8 +12,8 @@
 #
 # 2) By adding them in a structure which provides more functionality:
 #
-#     #specifying a install path will automatically create a install target
-#     #and install all files specified in the .files subvar
+#     # specifying a install path will automatically create a install target
+#     # and install all files specified in the .files subvar
 #     mymodule.installPath="/path/to/install"
 #
 #     # The required files
@@ -21,10 +21,13 @@
 #                    *.js \
 #                    *.png
 #
-#     # This will add a dependency to the automatically created target
+#     # This will add a dependency to the internally created target
 #     mymodule.depends=someothertarget
 #
 # Note: The files are automatically added to OTHER_FILES so they are visible in the QtC project tree
+#
+# WARNING: Use only files that are part of the project tree, otherwise the buildfile could be copied to a place
+#          outside of the buildfolder
 
 defineReplace(qmlModStripSrcDir) {
     return($$relative_path($$1, $$_PRO_FILE_PWD_))
@@ -33,7 +36,6 @@ defineReplace(qmlModStripSrcDir) {
 defineReplace(expandFilePath) {
     allfiles=
     for(curr,1) {
-        message("EXPANDING: $${curr}")
         RESULT = $$find(curr, "^/")
         count(RESULT, 0){
             allfiles += $$files($$_PRO_FILE_PWD_/$$curr)
@@ -59,6 +61,7 @@ defineReplace(readVarValueByName) {
 
 for(qml_module, UBUNTU_QML_MODULE_FILES){
 
+    filelist=
     defined($${qml_module}.files,var) {
         _files=$$readVarValueByName($${qml_module}.files)
         filelist+=$$_files
@@ -69,30 +72,36 @@ for(qml_module, UBUNTU_QML_MODULE_FILES){
     #make QtCreator show our files
     OTHER_FILES += $${filelist}
 
-    #make sure we only have absolute path entries in our list
-    filelist=$$expandFilePath($${filelist})
-    filelist=$$unique(filelist)
+    #copy files only when shadowbuilding
+    !equals(PWD, $${OUT_PWD}) {
 
-    for(copyf, filelist) {
-        #add a suffix to the variable name to make sure its unique
-        _varname = $$generateUuid()
+        #make sure we only have absolute path entries in our list
+        filelist=$$expandFilePath($${filelist})
+        filelist=$$unique(filelist)
 
-        #make sure the file is copied again when it changes
-        _qml_mod_sourcetarget$${_varname}.target   = $$copyf
-        _qml_mod_sourcetarget$${_varname}.commands =
+        for(copyf, filelist) {
+            #add a suffix to the variable name to make sure its unique
+            _varname = $$generateUuid()
 
-        target_name       = "$${OUT_PWD}/$$qmlModStripSrcDir($${copyf})"
-        _qml_mod_target$${_varname}.target   = $$target_name
-        _qml_mod_target$${_varname}.commands = $$QMAKE_COPY $${copyf} $$target_name
-        _qml_mod_target$${_varname}.depends  = $$copyf
+            #make sure the file is copied again when it changes
+            _qml_mod_sourcetarget$${_varname}.target   = $$copyf
+            _qml_mod_sourcetarget$${_varname}.commands =
 
-        defined($${qml_module}.depends,var) {
-            _depends = $$readVarValueByName($${qml_module}.depends)
-            _qml_mod_target$${_varname}.depends += $$_depends
+            target_name       = "$${OUT_PWD}/$$qmlModStripSrcDir($${copyf})"
+            target_dir        = $$dirname(target_name)
+
+            _qml_mod_target$${_varname}.target   = $$target_name
+            _qml_mod_target$${_varname}.commands = $$QMAKE_MKDIR $${target_dir} && $$QMAKE_COPY $${copyf} $$target_name
+            _qml_mod_target$${_varname}.depends  = $$copyf
+
+            defined($${qml_module}.depends,var) {
+                _depends = $$readVarValueByName($${qml_module}.depends)
+                _qml_mod_target$${_varname}.depends += $$_depends
+            }
+
+            QMAKE_EXTRA_TARGETS += _qml_mod_sourcetarget$${_varname} _qml_mod_target$${_varname}
+            PRE_TARGETDEPS += $$target_name
         }
-
-        QMAKE_EXTRA_TARGETS += _qml_mod_sourcetarget$${_varname} _qml_mod_target$${_varname}
-        PRE_TARGETDEPS += $$target_name
     }
 
     defined($${qml_module}.installPath,var) {
