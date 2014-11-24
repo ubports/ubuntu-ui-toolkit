@@ -42,12 +42,14 @@ public:
         Q_ASSERT(that);
         return that->d_func();
     }
+    void setFocusable(bool focus);
 
     void _q_updateThemedData();
     void _q_rebound();
     void promptRebound();
     void _q_updateSize();
     int index();
+    bool canHighlight(QMouseEvent *event);
     void setPressed(bool pressed);
     void setSwiped(bool tugged);
     bool grabPanel(UCListItemActions *optionList, bool isTugged);

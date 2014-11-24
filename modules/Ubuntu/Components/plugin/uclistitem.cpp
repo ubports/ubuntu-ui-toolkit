@@ -27,6 +27,7 @@
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
 #include <QtQuick/private/qquickanimation_p.h>
+#include <QtQuick/private/qquickmousearea_p.h>
 #include "uclistitemstyle.h"
 
 #define MIN(x, y)           ((x < y) ? x : y)
@@ -375,6 +376,14 @@ void UCListItemPrivate::init()
     _q_updateSize();
 }
 
+void UCListItemPrivate::setFocusable(bool focus)
+{
+    // disable children event filtering
+    UCStyledItemBasePrivate::setFocusable(focus);
+    Q_Q(UCListItem);
+    q->setFiltersChildMouseEvents(false);
+}
+
 void UCListItemPrivate::_q_updateThemedData()
 {
     // update colors, panels
@@ -506,6 +515,22 @@ int UCListItemPrivate::index()
     return index.isValid() ?
                 index.toInt() :
                 (parentItem ? QQuickItemPrivate::get(parentItem)->childItems.indexOf(q) : -1);
+}
+
+// returns true if the highlight is possible
+bool UCListItemPrivate::canHighlight(QMouseEvent *event)
+{
+    // localPos is a position relative to ListItem which will give us a child from
+    // from the original coordinates; therefore we must map the position to the contentItem
+   Q_Q(UCListItem);
+   QPointF myPos = q->mapToItem(contentItem, event->localPos());
+   QQuickItem *child = contentItem->childAt(myPos.x(), myPos.y());
+   bool activeComponent = child && (child->acceptedMouseButtons() & event->button()) && !qobject_cast<QQuickText*>(child);
+   // do highlight if not pressed above the active component, and the component has either
+   // action, leading or trailing actions list or at least an active child component declared
+   QQuickMouseArea *ma = q->findChild<QQuickMouseArea*>();
+   bool activeMouseArea = ma && ma->isEnabled();
+   return !activeComponent && (leadingActions || trailingActions || activeMouseArea);
 }
 
 // set pressed flag and update contentItem
@@ -813,7 +838,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         // while moving, we cannot select any items
         return;
     }
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton && d->canHighlight(event)) {
         d->setPressed(true);
         d->lastPos = d->pressedPos = event->localPos();
         // connect the Flickable to know when to rebound
@@ -914,6 +939,24 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             }
         }
     }
+}
+
+bool UCListItem::childMouseEventFilter(QQuickItem *child, QEvent *event)
+{
+    QEvent::Type type = event->type();
+    if (type == QEvent::MouseButtonPress) {
+        // suppress click event if pressed over an active area, except Text, which can also handle
+        // mouse clicks when content is an URL
+        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
+        if (child->isEnabled() && (child->acceptedMouseButtons() & mouse->button()) && !qobject_cast<QQuickText*>(child)) {
+            Q_D(UCListItem);
+            d->suppressClick = true;
+        }
+    } else if (type == QEvent::MouseButtonRelease) {
+        Q_D(UCListItem);
+        d->suppressClick = false;
+    }
+    return UCStyledItemBase::childMouseEventFilter(child, event);
 }
 
 bool UCListItem::eventFilter(QObject *target, QEvent *event)
