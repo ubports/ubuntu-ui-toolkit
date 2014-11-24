@@ -51,8 +51,9 @@ public:
     void _q_updateIndex();
     void _q_dimmDisabled();
     int index();
+    bool canHighlight(QMouseEvent *event);
     void setPressed(bool pressed);
-    void setTugged(bool tugged);
+    void setSwiped(bool tugged);
     bool grabPanel(UCListItemActions *optionList, bool isTugged);
     void listenToRebind(bool listen);
     void resize();
@@ -62,7 +63,7 @@ public:
     bool pressed:1;
     bool contentMoved:1;
     bool highlightColorChanged:1;
-    bool tugged:1;
+    bool swiped:1;
     bool suppressClick:1;
     bool ready:1;
     bool customStyle:1;

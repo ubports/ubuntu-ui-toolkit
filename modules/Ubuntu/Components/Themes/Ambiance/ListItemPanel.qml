@@ -27,13 +27,13 @@ Item {
       Color of the background.
       */
     // FIXME: use Palette colors instead when available
-    property color backgroundColor: (leadingPanel ? UbuntuColors.red : "white")
+    property color backgroundColor: (leading ? UbuntuColors.red : "white")
 
     /*
       Color used in coloring the icons.
       */
     // FIXME: use Palette colors instead when available
-    property color foregroundColor: leadingPanel ? "white" : UbuntuColors.darkGrey
+    property color foregroundColor: leading ? "white" : UbuntuColors.darkGrey
 
     /*
       Specifies the width of the component visualizing the action.
@@ -46,8 +46,8 @@ Item {
                optionsRow.childrenRect.width,
                ListItemActions.visibleActions.length * MathUtils.clamp(visualizedActionWidth, height, optionsRow.maxItemWidth))
 
-    // for testing
-    objectName: (leadingPanel ? "LeadingListItemPanel" : "TrailingListItemPanel")
+    // used for module/autopilot testing
+    objectName: "ListItemPanel" + (leading ? "Leading" : "Trailing")
 
     /*
       Property holding the ListItem's contentItem instance
@@ -57,11 +57,11 @@ Item {
     /*
       Specifies whether the panel is used to visualize leading or trailing options.
       */
-    readonly property bool leadingPanel: panel.ListItemActions.status == ListItemActions.Leading
+    readonly property bool leading: panel.ListItemActions.status == panel.ListItemActions.Leading
 
     anchors {
-        left: contentItem ? (leadingPanel ? undefined : contentItem.right) : undefined
-        right: contentItem ? (leadingPanel ? contentItem.left : undefined) : undefined
+        left: contentItem ? (leading ? undefined : contentItem.right) : undefined
+        right: contentItem ? (leading ? contentItem.left : undefined) : undefined
         top: contentItem ? contentItem.top : undefined
         bottom: contentItem ? contentItem.bottom : undefined
     }
@@ -71,8 +71,8 @@ Item {
         anchors {
             fill: parent
             // add 4 times the overshoot margins to cover the background when tugged
-            leftMargin: leadingPanel ? -units.gu(4 * panel.ListItemActions.overshoot) : 0
-            rightMargin: leadingPanel ? 0 : -units.gu(4 * panel.ListItemActions.overshoot)
+            leftMargin: leading ? -units.gu(4 * panel.ListItemActions.overshoot) : 0
+            rightMargin: leading ? 0 : -units.gu(4 * panel.ListItemActions.overshoot)
         }
         color: panel.backgroundColor
     }
@@ -140,6 +140,12 @@ Item {
                     optionsRow.selectedAction = modelData;
                     optionsRow.listItemIndex = panel.ListItemActions.listItemIndex;
                     panel.ListItemActions.snapToPosition(0.0);
+                }
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: Theme.palette.selected.background
+                    visible: pressed
                 }
 
                 Loader {
