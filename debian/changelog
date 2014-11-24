@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.1.1341+15.04.20141121-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.1.1341+15.04.20141124-0ubuntu1) vivid; urgency=medium
 
   [ Christian Dywan ]
   * Re-introduce NOTIFY to Image under a different name.
@@ -12,7 +12,7 @@ ubuntu-ui-toolkit (1.1.1341+15.04.20141121-0ubuntu2) UNRELEASED; urgency=medium
   [ Zoltán Balogh ]
   * Updated test plan executer script
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Tue, 25 Nov 2014 00:03:35 +0200
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 24 Nov 2014 22:14:25 +0000
 
 ubuntu-ui-toolkit (1.1.1338+15.04.20141121-0ubuntu1) vivid; urgency=medium
 
