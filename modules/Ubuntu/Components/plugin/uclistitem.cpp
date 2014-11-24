@@ -376,14 +376,6 @@ void UCListItemPrivate::init()
     _q_updateSize();
 }
 
-void UCListItemPrivate::setFocusable(bool focus)
-{
-    // disable children event filtering
-    UCStyledItemBasePrivate::setFocusable(focus);
-    Q_Q(UCListItem);
-    q->setFiltersChildMouseEvents(false);
-}
-
 void UCListItemPrivate::_q_updateThemedData()
 {
     // update colors, panels

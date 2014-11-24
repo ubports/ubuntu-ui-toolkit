@@ -179,24 +179,14 @@ void UCStyledItemBase::mousePressEvent(QMouseEvent *event)
 // MouseAreas or other mouse grabbers
 bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
 {
-    Q_UNUSED(child);
-    if (event->type() == QEvent::MouseButtonPress ||
-        event->type() == QEvent::MouseButtonRelease ||
-        event->type() == QEvent::MouseMove) {
-        // send mouse event
+    // only filter pressed events
+    if (event->type() == QEvent::MouseButtonPress) {
         QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
         // the event may occur outside of the parent's boundaries if not clipped
         // therefore must check containment
-        QPointF localPos = mapFromScene(mouse->windowPos());
-        if (contains(localPos)) {
-            QScopedPointer<QMouseEvent> mouseEvent(QQuickWindowPrivate::cloneMouseEvent(mouse, &localPos));
-            if (event->type() == QEvent::MouseButtonPress) {
-                mousePressEvent(mouseEvent.data());
-            } else if (event->type() == QEvent::MouseButtonRelease) {
-                mouseReleaseEvent(mouseEvent.data());
-            } else {
-                mouseMoveEvent(mouseEvent.data());
-            }
+        QPointF point = mapFromItem(child, mouse->localPos());
+        if (contains(point)) {
+            requestFocus(Qt::MouseFocusReason);
         }
     }
     // let the event be passed to children

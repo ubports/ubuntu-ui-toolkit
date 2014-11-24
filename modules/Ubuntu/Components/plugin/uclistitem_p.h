@@ -42,7 +42,6 @@ public:
         Q_ASSERT(that);
         return that->d_func();
     }
-    void setFocusable(bool focus);
 
     void _q_updateThemedData();
     void _q_rebound();
