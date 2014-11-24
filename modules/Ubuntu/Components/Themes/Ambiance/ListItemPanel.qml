@@ -33,7 +33,7 @@ Item {
       Color used in coloring the icons.
       */
     // FIXME: use Palette colors instead when available
-    property color foregroundColor: leadingPanel ? "white" : UbuntuColors.darkGrey
+    property color foregroundColor: leading ? "white" : UbuntuColors.darkGrey
 
     /*
       Specifies the width of the component visualizing the action.
