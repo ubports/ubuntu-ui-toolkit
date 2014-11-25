@@ -259,8 +259,8 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *panel)
  * ListItemActions instances can be shared between ListItem instances within the
  * same view. When shared, the memory footprint of the view will be lot smaller,
  * as there will be no individual panel created for each list's actions visualization.
- * Depending on how long the initialization of the component used in \c ListItem::actionsDelegate
- * takes, creation time will be also reduced to one time per view.
+ * Depending on how long the initialization of the component used in \l {ListItemStyle::actionsDelegate}
+ * {actionsDelegate} takes, creation time will be also reduced to one time per view.
  * However, this implies that swiping a new ListItem content while another one is
  * swiped will result in showing the newly swiped item's panel delayed, as the
  * panel can be shown only after the previous item's snapping is completed. Depending
@@ -403,7 +403,7 @@ UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *own
  * \qmlproperty Component ListItemActions::delegate
  * The property holds the custom delegate to visualize the actions listed in the
  * ListItemActions. When set to null, the default delegate specified by the \l
- * ListItem::actionsDelegate will be used.
+ * {ListItemStyle::actionsDelegate}{actionsDelegate} will be used.
  *
  * ListItemActions provides the \c action context property which contains the
  * Action instance currently visualized. Using this property delegates can access
