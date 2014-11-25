@@ -104,30 +104,6 @@ Template {
         }
 
         TemplateRow {
-            title: i18n.tr("Overlay")
-            titleWidth: units.gu(7)
-            height: units.gu(8)
-
-            UbuntuShape {
-                objectName: "ubuntushape_image_overlay"
-                image: Image {
-                    source: "map_icon.png"
-                    fillMode: Image.PreserveAspectCrop
-                }
-                overlayColor: Qt.rgba(0.0, 0.0, 0.0, 0.5)
-                overlayGeometry: Qt.rect(0.0, 0.5, 1.0, 0.5)
-            }
-
-            UbuntuShape {
-                objectName: "ubuntushape_color_overlay"
-                radius: "medium"
-                backgroundColor: UbuntuColors.lightAubergine
-                overlayColor: Qt.rgba(1.0, 1.0, 1.0, 0.25)
-                overlayGeometry: Qt.rect(0.25, 0.25, 0.5, 0.5)
-            }
-        }
-
-        TemplateRow {
             title: i18n.tr("Sizes")
             titleWidth: units.gu(7)
             height: units.gu(20)

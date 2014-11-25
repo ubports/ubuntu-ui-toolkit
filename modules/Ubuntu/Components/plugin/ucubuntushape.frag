@@ -10,8 +10,6 @@
 
 uniform sampler2D shapeTexture;
 uniform sampler2D sourceTexture;
-uniform lowp vec4 overlayColor;
-uniform mediump vec4 overlaySteps;
 uniform lowp float sourceOpacity;
 uniform lowp float opacity;
 uniform lowp int flags;
@@ -21,7 +19,6 @@ varying mediump vec4 sourceCoord;
 varying lowp vec4 backgroundColor;
 
 const lowp int TEXTURED_FLAG = 0x1;
-const lowp int OVERLAID_FLAG = 0x2;
 
 void main(void)
 {
@@ -36,14 +33,6 @@ void main(void)
         lowp float mask = clamp(axisMask.x + axisMask.y, 0.0, 1.0);
         lowp vec4 source = texture2D(sourceTexture, sourceCoord) * sourceOpacity * mask;
         color = vec4(1.0 - source.a) * color + source;
-    }
-
-    // Get the overlay color and blend it over the current color.
-    if (flags & OVERLAID_FLAG) {
-        /* mediump vec4 steps = step(overlaySteps, quadCoord.stst); */
-        /* steps.xy = -steps.xy * steps.zw + steps.xy; */
-        lowp vec4 overlay = vec4(0.0, 0.0, 0.0, 0.0);//vec4(steps.x * steps.y) * overlayColor;
-        color = vec4(1.0 - overlay.a) * color + overlay;
     }
 
     // Shape the current color with the mask.

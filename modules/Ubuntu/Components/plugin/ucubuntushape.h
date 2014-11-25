@@ -65,12 +65,6 @@ class UCUbuntuShape : public QQuickItem
     Q_PROPERTY(BackgroundMode backgroundMode READ backgroundMode WRITE setBackgroundMode
                NOTIFY backgroundModeChanged)
 
-    // Overlay properties.
-    Q_PROPERTY(QRectF overlayGeometry READ overlayGeometry WRITE setOverlayGeometry
-               NOTIFY overlayGeometryChanged)
-    Q_PROPERTY(QColor overlayColor READ overlayColor WRITE setOverlayColor
-               NOTIFY overlayColorChanged)
-
     // Deprecated properties.
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor gradientColor READ gradientColor WRITE setGradientColor
@@ -130,14 +124,6 @@ public:
     BackgroundMode backgroundMode() const { return backgroundMode_; }
     void setBackgroundMode(BackgroundMode backgroundMode);
 
-    QRectF overlayGeometry() const {
-        const float u16ToF32 = 1.0f / static_cast<float>(0xffff);
-        return QRectF(overlayX_ * u16ToF32, overlayY_ * u16ToF32, overlayWidth_ * u16ToF32,
-                      overlayHeight_ * u16ToF32); }
-    void setOverlayGeometry(const QRectF& overlayGeometry);
-    QColor overlayColor() const { return overlayColor_; }
-    void setOverlayColor(const QColor& overlayColor);
-
     QColor color() const {
         return (flags_ & BackgroundApiSet) ?
             QColor(0, 0, 0, 0) :
@@ -176,9 +162,6 @@ Q_SIGNALS:
     void backgroundColorChanged();
     void secondaryBackgroundColorChanged();
     void backgroundModeChanged();
-
-    void overlayGeometryChanged();
-    void overlayColorChanged();
 
     void colorChanged();
     void gradientColorChanged();
@@ -227,11 +210,6 @@ private:
     QVector2D sourceScale_;
     QVector2D sourceTranslation_;
     QVector4D sourceTransform_;
-    quint16 overlayX_;
-    quint16 overlayY_;
-    quint16 overlayWidth_;
-    quint16 overlayHeight_;
-    QRgb overlayColor_;
     Radius radius_ : 1;
     Border border_ : 2;
     HAlignment imageHorizontalAlignment_ : 2;

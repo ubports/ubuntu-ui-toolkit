@@ -34,16 +34,13 @@ public:
         // Flags must be kept in sync with GLSL fragment shader.
         enum {
             Textured             = (1 << 0),
-            Overlaid             = (1 << 1),
-            HorizontallyRepeated = (1 << 2),
-            VerticallyRepeated   = (1 << 3),
+            HorizontallyRepeated = (1 << 1),
+            VerticallyRepeated   = (1 << 2),
             Repeated             = (HorizontallyRepeated | VerticallyRepeated)
         };
         QSGTexture* shapeTexture;
         QSGTextureProvider* sourceTextureProvider;
         quint8 sourceOpacity;
-        QRgb overlayColor;
-        quint16 overlaySteps[4];
         QSGTexture::Filtering shapeTextureFiltering;
         quint8 flags;
     };
@@ -79,8 +76,6 @@ private:
     int opacityId_;
     int sourceOpacityId_;
     int secondaryBackgroundColorId_;
-    int overlayColorId_;
-    int overlayStepsId_;
     int flagsId_;
 };
 
@@ -111,8 +106,6 @@ void ShapeShader::initialize()
     matrixId_ = program()->uniformLocation("matrix");
     opacityId_ = program()->uniformLocation("opacity");
     sourceOpacityId_ = program()->uniformLocation("sourceOpacity");
-    overlayColorId_ = program()->uniformLocation("overlayColor");
-    overlayStepsId_ = program()->uniformLocation("overlaySteps");
     flagsId_ = program()->uniformLocation("flags");
 }
 
@@ -121,8 +114,6 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
 {
     Q_UNUSED(oldEffect);
 
-    const float u8toF32 = 1.0f / 255.0f;
-    const float u16ToF32 = 1.0f / static_cast<float>(0xffff);
     const ShapeMaterial::Data* data = static_cast<ShapeMaterial*>(newEffect)->constData();
 
     // Bind shape texture.
@@ -161,17 +152,8 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
         }
         functions_->glActiveTexture(GL_TEXTURE0);
         // Update image uniform.
+        const float u8toF32 = 1.0f / 255.0f;
         program()->setUniformValue(sourceOpacityId_, data->sourceOpacity * u8toF32);
-    }
-
-    if (data->flags & ShapeMaterial::Data::Overlaid) {
-        // Update overlay uniforms.
-        const QRgb c = data->overlayColor;
-        program()->setUniformValue(overlayColorId_, QVector4D(
-            qRed(c) * u8toF32, qGreen(c) * u8toF32, qBlue(c) * u8toF32, qAlpha(c) * u8toF32));
-        program()->setUniformValue(overlayStepsId_, QVector4D(
-            data->overlaySteps[0] * u16ToF32, data->overlaySteps[1] * u16ToF32,
-            data->overlaySteps[2] * u16ToF32, data->overlaySteps[3] * u16ToF32));
     }
 
     program()->setUniformValue(flagsId_, data->flags);
@@ -560,9 +542,9 @@ const float lowHighTextureThreshold = 11.0f;
     \brief The base graphical component of the Ubuntu UI Toolkit.
 
     The UbuntuShape is a rounded rectangle (based on a \l
-    {https://en.wikipedia.org/wiki/Squircle}{squircle}) that can shape a set layers composed, from
-    back to front, of a background color (solid or linear gradient), an optional source texture and
-    a rectangle overlay. Different properties allow to change the look of the shape and its layers.
+    {https://en.wikipedia.org/wiki/Squircle}{squircle}) that can shape, from back to front, a
+    background color (solid or linear gradient) and an optional source texture. Different properties
+    allow to change the look of the shape.
 
     Examples:
 
@@ -594,11 +576,6 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , sourceScale_(1.0f, 1.0f)
     , sourceTranslation_(0.0f, 0.0f)
     , sourceTransform_(1.0f, 1.0f, 0.0f, 0.0f)
-    , overlayX_(0)
-    , overlayY_(0)
-    , overlayWidth_(0)
-    , overlayHeight_(0)
-    , overlayColor_(qRgba(0, 0, 0, 0))
     , radius_(SmallRadius)
     , border_(IdleBorder)
     , imageHorizontalAlignment_(AlignHCenter)
@@ -1018,80 +995,6 @@ void UCUbuntuShape::setBackgroundMode(BackgroundMode backgroundMode)
     }
 }
 
-/*! \qmlproperty rect UbuntuShape::overlayGeometry
-
-    This property sets the overlay rectangle. The default value is the empty rectangle.
-
-    It is defined by a position and a size in normalized item coordinates (in the range between 0
-    and 1) with the origin at the top-left corner. An overlay covering the bottom part and starting
-    at the vertical center can be done like that:
-
-    \qml
-        UbuntuShape {
-            width: 200; height: 200
-            overlayColor: Qt.rgba(0.0, 0.0, 0.5, 0.5)
-            overlayGeometry: Qt.rect(0.0, 0.5, 1.0, 0.5)
-        }
-    \endqml
-
-    Converting a position and a size in pixels to normalized item coordinates can be done with a
-    division by the size. Here is an equivalent of the previous code sample:
-
-    \qml
-        UbuntuShape {
-            width: 200; height: 200
-            overlayColor: Qt.rgba(0.0, 0.0, 0.5, 0.5)
-            overlayGeometry: Qt.rect(100.0/width, 100.0/height, 200.0/width, 100.0/height)
-        }
-    \endqml
-
-    A geometry exceeding the item area is cropped.
-*/
-void UCUbuntuShape::setOverlayGeometry(const QRectF& overlayGeometry)
-{
-    // Crop rectangle and pack to 16-bit unsigned integers.
-    const float x = qMax(0.0f, qMin(1.0f, static_cast<float>(overlayGeometry.x())));
-    float width = qMax(0.0f, static_cast<float>(overlayGeometry.width()));
-    if ((x + width) > 1.0f) {
-        width += 1.0f - (x + width);
-    }
-    const float y = qMax(0.0f, qMin(1.0f, static_cast<float>(overlayGeometry.y())));
-    float height = qMax(0.0f, static_cast<float>(overlayGeometry.height()));
-    if ((y + height) > 1.0f) {
-        height += 1.0f - (y + height);
-    }
-    const quint16 overlayX = static_cast<quint16>(x * 0xffff);
-    const quint16 overlayY = static_cast<quint16>(y * 0xffff);
-    const quint16 overlayWidth = static_cast<quint16>(width * 0xffff);
-    const quint16 overlayHeight = static_cast<quint16>(height * 0xffff);
-
-    if ((overlayX_ != overlayX) || (overlayY_ != overlayY) ||
-        (overlayWidth_ != overlayWidth) || (overlayHeight_ != overlayHeight)) {
-        overlayX_ = overlayX;
-        overlayY_ = overlayY;
-        overlayWidth_ = overlayWidth;
-        overlayHeight_ = overlayHeight;
-        update();
-        Q_EMIT overlayGeometryChanged();
-    }
-}
-
-/*! \qmlproperty color UbuntuShape::overlayColor
-
-    This property sets the color of the overlay rectangle defined by \l overlayGeometry. The default
-    value is transparent black.
-*/
-void UCUbuntuShape::setOverlayColor(const QColor& overlayColor)
-{
-    const QRgb overlayColorRgb = qRgba(
-        overlayColor.red(), overlayColor.green(), overlayColor.blue(), overlayColor.alpha());
-    if (overlayColor_ != overlayColorRgb) {
-        overlayColor_ = overlayColorRgb;
-        update();
-        Q_EMIT overlayColorChanged();
-    }
-}
-
 /*! \qmlproperty color UbuntuShape::color
     \deprecated
 
@@ -1477,9 +1380,8 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         materialData->shapeTextureFiltering = QSGTexture::Linear;
     }
 
+    // Update material data.
     quint8 flags = 0;
-
-    // Update source material data.
     if (texture && sourceOpacity_) {
         materialData->sourceTextureProvider = sourceTextureProvider_;
         materialData->sourceOpacity = sourceOpacity_;
@@ -1494,28 +1396,6 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         materialData->sourceTextureProvider = NULL;
         materialData->sourceOpacity = 0;
     }
-
-    // Update overlay material data.
-    if ((overlayWidth_ != 0) && (overlayHeight_ != 0)) {
-        const quint32 a = qAlpha(overlayColor_);
-        materialData->overlayColor = qRgba(
-            (qRed(overlayColor_) * a) / 255, (qGreen(overlayColor_) * a) / 255,
-            (qBlue(overlayColor_) * a) / 255, a);
-        materialData->overlaySteps[0] = overlayX_;
-        materialData->overlaySteps[1] = overlayY_;
-        materialData->overlaySteps[2] = overlayX_ + overlayWidth_;
-        materialData->overlaySteps[3] = overlayY_ + overlayHeight_;
-        flags |= ShapeMaterial::Data::Overlaid;
-    } else {
-        // Overlay data has to be set to 0 so that shapes with different values can be batched
-        // together (ShapeMaterial::compare() uses memcmp()).
-        materialData->overlayColor = qRgba(0, 0, 0, 0);
-        materialData->overlaySteps[0] = 0;
-        materialData->overlaySteps[1] = 0;
-        materialData->overlaySteps[2] = 0;
-        materialData->overlaySteps[3] = 0;
-    }
-
     materialData->flags = flags;
 
     // Select the right shape texture coordinates.
