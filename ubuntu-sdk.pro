@@ -51,7 +51,7 @@ equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
 
 DOC_PATH=$$OUT_PWD/documentation
 docs.target = docs
-docs.commands = cd $$PWD; SRC=$$DOC_SRC $$PWD/documentation/docs.sh $$DOC_PATH;
+docs.commands = cd $$PWD; SRC=$$PWD/documentation BLD=$$ROOT_BUILD_DIR/documentation $$PWD/documentation/docs.sh $$DOC_PATH
 QMAKE_EXTRA_TARGETS += docs
 
 #helper files
