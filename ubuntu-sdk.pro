@@ -22,12 +22,16 @@ test_api.depends = sub-modules-ubuntu-ui-toolkit-pro
 QMAKE_EXTRA_TARGETS += test_api
 
 test_components.target = test-components
-test_components.commands = cd $$OUT_PWD/tests/autopilot; python3 -m autopilot.run run ubuntuuitoolkit
+test_components.commands = cd $$OUT_PWD/tests/autopilot;
+test_components2.commands += env UITK_BUILD_ROOT="$${ROOT_BUILD_DIR}" UITK_SOURCE_ROOT="$${ROOT_SOURCE_DIR}" UBUNTU_UI_TOOLKIT_AUTOPILOT_FROM_SOURCE=1
+test_components2.commands += python3 -m autopilot.run run ubuntuuitoolkit
 test_components.depends = sub-modules-ubuntu-ui-toolkit-pro
 QMAKE_EXTRA_TARGETS += test_components
 
 test_components2.target = test-components2
-test_components2.commands = cd $$OUT_PWD/tests/autopilot; python2 -m autopilot.run run ubuntuuitoolkit
+test_components2.commands  = cd $$PWD/tests/autopilot;
+test_components2.commands += env UITK_BUILD_ROOT="$${ROOT_BUILD_DIR}" UITK_SOURCE_ROOT="$${ROOT_SOURCE_DIR}" UBUNTU_UI_TOOLKIT_AUTOPILOT_FROM_SOURCE=1
+test_components2.commands += python2 -m autopilot.run run ubuntuuitoolkit
 test_components2.depends = sub-modules-ubuntu-ui-toolkit-pro
 QMAKE_EXTRA_TARGETS += test_components2
 
