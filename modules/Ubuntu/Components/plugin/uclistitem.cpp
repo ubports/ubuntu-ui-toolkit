@@ -685,7 +685,6 @@ void UCListItemPrivate::setupSelectionMode()
     }
     Q_Q(UCListItem);
     if (selectable) {
-        promptRebound();
         // sync selected flag with the attached selection array
         if (attachedProperties) {
             q->setSelected(UCListItemAttachedPrivate::get(attachedProperties)->isItemSelected(q));
@@ -1306,6 +1305,9 @@ void UCListItem::setSelectable(bool selectable)
         return;
     }
     // make sure the selection mode panel is prepared; selection panel must take care of the visuals
+    if (selectable) {
+        d->promptRebound();
+    }
     d->setupSelectionMode();
     d->selectable = selectable;
     Q_EMIT selectableChanged();

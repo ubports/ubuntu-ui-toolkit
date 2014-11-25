@@ -155,7 +155,7 @@ Item {
         function cleanup() {
             testItem.selected = false;
             testItem.selectable = false;
-            waitForRendering(testItem, 200);
+            waitForRendering(testItem.contentItem, 400);
             movingSpy.clear();
             pressedSpy.clear();
             clickSpy.clear();
@@ -584,20 +584,16 @@ Item {
         }
         function test_toggle_selectable(data) {
             testItem.selected = data.selected;
-            movingSpy.target = testItem;
             testItem.selectable = true;
-            movingSpy.wait();
-            // cleanup
-            movingSpy.clear();
-            testItem.selectable = false;
-            movingSpy.wait();
+            waitForRendering(testItem.contentItem);
+            verify(findChildWithProperty(testItem, "inSelectionMode", true));
         }
 
         function test_no_tug_when_selectable() {
             movingSpy.target = testItem;
             testItem.selectable = true;
             // wait till animation to selection mode ends
-            movingSpy.wait();
+            waitForRendering(testItem.contentItem);
 
             // try to tug leading
             movingSpy.clear();

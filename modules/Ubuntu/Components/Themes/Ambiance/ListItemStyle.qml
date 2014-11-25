@@ -67,6 +67,8 @@ Styles.ListItemStyle {
             PropertyAnimation {
                 target: selectionPanel.parent.contentItem
                 property: "x"
+                easing: UbuntuAnimation.StandardEasing
+                duration: UbuntuAnimation.FastDuration
             }
         }
 
