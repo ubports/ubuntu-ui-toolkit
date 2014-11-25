@@ -404,7 +404,7 @@ void UCListItemPrivate::_q_rebound()
 }
 
 /*!
- * \qmlproperty Component ListItem::style
+ * \qmlproperty Component ListItem::stylea
  * Holds the style of the component defining the components visualizing the leading/
  * trailing actions, selection and dragging mode handlers as well as different
  * animations. The component does not assume any visuals present in the style,
@@ -1111,7 +1111,7 @@ bool UCListItem::pressed() const
  */
 
 /*!
- * \qmlsignal UCListItemPrivate::contentMovementEnded
+ * \qmlsignal ListItem::contentMovementEnded()
  * The signal is emitted when the content movement has ended.
  */
 bool UCListItemPrivate::contentMoving() const
