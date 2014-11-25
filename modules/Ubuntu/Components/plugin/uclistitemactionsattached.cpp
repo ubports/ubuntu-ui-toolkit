@@ -212,7 +212,7 @@ UCListItemActions::Status UCListItemActionsAttached::status()
 }
 
 /*!
- * \qmlproperty real ListItemActions::overshoot
+ * \qmlattachedproperty real ListItemActions::overshoot
  * The property holds the overshoot value set for the list item.
  */
 qreal UCListItemActionsAttached::overshoot()
