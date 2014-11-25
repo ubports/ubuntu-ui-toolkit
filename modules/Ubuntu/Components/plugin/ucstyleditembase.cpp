@@ -190,7 +190,7 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
         }
     }
     // let the event be passed to children
-    return false;
+    return QQuickItem::childMouseEventFilter(child, event);
 }
 
 #include "moc_ucstyleditembase.cpp"
