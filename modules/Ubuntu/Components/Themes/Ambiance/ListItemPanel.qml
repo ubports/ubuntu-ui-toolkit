@@ -103,7 +103,7 @@ Item {
         }
         // snap in if the offset is bigger than the overshoot and the direction of the drag is to reveal the panel
         var snapPos = (ListItemActions.offset > ListItemActions.overshoot &&
-                       (leftToRight && leadingPanel || !leftToRight && !leadingPanel)) ? panel.width : 0.0;
+                       (leftToRight && leading || !leftToRight && !leading)) ? panel.width : 0.0;
         ListItemActions.snapToPosition(snapPos);
     }
 
