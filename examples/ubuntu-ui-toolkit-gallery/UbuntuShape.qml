@@ -35,14 +35,11 @@ Template {
             }
 
             UbuntuShape {
-                objectName: "ubuntushape_backgroundcolor_lightaubergine"
-                backgroundColor: UbuntuColors.lightAubergine
-            }
-
-            UbuntuShape {
                 objectName: "ubuntushape_verticalgradient"
-                backgroundColor: UbuntuColors.green
-                secondaryBackgroundColor: UbuntuColors.darkGrey
+                backgroundColor: UbuntuColors.lightAubergine
+                secondaryBackgroundColor: Qt.rgba(
+                    UbuntuColors.lightAubergine.r, UbuntuColors.lightAubergine.g,
+                    UbuntuColors.lightAubergine.b, 0.25)
                 backgroundMode: UbuntuShape.VerticalGradient
             }
         }
@@ -53,20 +50,16 @@ Template {
             height: units.gu(8)
 
             UbuntuShape {
-                objectName: "ubuntushape_image"
-                image: Image {
-                    source: "map_icon.png"
-                    fillMode: Image.PreserveAspectCrop
-                }
+                objectName: "ubuntushape_preserveaspectcrop"
+                source: Image { source: "map_icon.png" }
+                sourceFillMode: UbuntuShape.PreserveAspectCrop
             }
 
             UbuntuShape {
-                objectName: "ubuntushape_image_background"
-                backgroundColor: UbuntuColors.orange
-                image: Image {
-                    source: "images.png"
-                    fillMode: Image.PreserveAspectFit
-                }
+                objectName: "ubuntushape_pad"
+                backgroundColor: UbuntuColors.warmGrey
+                source: Image { source: "images.png" }
+                sourceFillMode: UbuntuShape.Pad
             }
         }
 
