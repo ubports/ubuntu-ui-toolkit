@@ -18,23 +18,17 @@
 // power ones) because it allows to use the same shader execution path for an entire draw call. We
 // rely on that technique here (also known as "uber-shader" solution) to avoid the complexity of
 // dealing with a multiple shaders solution.
-
-// FIXME(loicm)
-//  - Check GPU behavior with regards to static flow control.
-//  - Ensure binary flag testing doesn't prevent static flow control.
-//  - Binary operator '&' is supported starting from GLSL 1.3 (OpenGL 3).
+// FIXME(loicm) Validate GPU behavior with regards to static flow control.
 
 uniform sampler2D shapeTexture;
 uniform sampler2D sourceTexture;
 uniform lowp float sourceOpacity;
 uniform lowp float opacity;
-uniform lowp int flags;
+uniform lowp bool textured;
 
 varying mediump vec2 shapeCoord;
 varying mediump vec4 sourceCoord;
 varying lowp vec4 backgroundColor;
-
-const lowp int TEXTURED_FLAG = 0x1;
 
 void main(void)
 {
@@ -43,11 +37,13 @@ void main(void)
 
     lowp vec4 color = backgroundColor;
 
-    // Blend the source over the current color (static flow control prevents the texture fetch).
-    if (flags & TEXTURED_FLAG) {
+    // FIXME(loicm) Would be better to use a bitfield but bitwise ops have only been integrated in
+    // GLSL 1.3 (OpenGL 3) and GLSL ES 3.0 (OpenGL ES 3),
+    if (textured) {
+        // Blend the source over the current color (static flow control prevents the texture fetch).
         lowp vec2 axisMask = -sign((sourceCoord.zw * sourceCoord.zw) - vec2(1.0));
         lowp float mask = clamp(axisMask.x + axisMask.y, 0.0, 1.0);
-        lowp vec4 source = texture2D(sourceTexture, sourceCoord) * sourceOpacity * mask;
+        lowp vec4 source = texture2D(sourceTexture, sourceCoord.st) * vec4(sourceOpacity * mask);
         color = vec4(1.0 - source.a) * color + source;
     }
 

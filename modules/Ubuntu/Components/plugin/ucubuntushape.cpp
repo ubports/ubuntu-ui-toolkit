@@ -76,7 +76,7 @@ private:
     int opacityId_;
     int sourceOpacityId_;
     int secondaryBackgroundColorId_;
-    int flagsId_;
+    int texturedId_;
 };
 
 ShapeShader::ShapeShader()
@@ -106,7 +106,7 @@ void ShapeShader::initialize()
     matrixId_ = program()->uniformLocation("matrix");
     opacityId_ = program()->uniformLocation("opacity");
     sourceOpacityId_ = program()->uniformLocation("sourceOpacity");
-    flagsId_ = program()->uniformLocation("flags");
+    texturedId_ = program()->uniformLocation("textured");
 }
 
 void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
@@ -156,7 +156,7 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
         program()->setUniformValue(sourceOpacityId_, data->sourceOpacity * u8toF32);
     }
 
-    program()->setUniformValue(flagsId_, data->flags);
+    program()->setUniformValue(texturedId_, !!(data->flags & ShapeMaterial::Data::Textured));
 
     // Update QtQuick engine uniforms.
     if (state.isMatrixDirty()) {

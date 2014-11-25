@@ -15,7 +15,7 @@
 // Author: Loïc Molinari <loic.molinari@canonical.com>
 
 uniform mediump mat4 matrix;
-uniform lowp int flags;
+uniform lowp bool textured;
 
 attribute mediump vec4 positionAttrib;
 attribute mediump vec2 shapeCoordAttrib;
@@ -27,14 +27,14 @@ varying mediump vec2 shapeCoord;
 varying mediump vec4 sourceCoord;
 varying lowp vec4 backgroundColor;
 
-const lowp int TEXTURED_FLAG = 0x1;
-
 void main()
 {
     shapeCoord = shapeCoordAttrib;
     backgroundColor = backgroundColorAttrib;
 
-    if (flags & TEXTURED_FLAG) {
+    // FIXME(loicm) Would be better to use a bitfield but bitwise ops have only been integrated in
+    // GLSL 1.3 (OpenGL 3) and GLSL ES 3.0 (OpenGL ES 3),
+    if (textured) {
         sourceCoord = sourceCoordAttrib;
     }
 
