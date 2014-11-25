@@ -179,7 +179,7 @@ Item {
             compare(defaults.__styleInstance, null, "__styleInstance must be null.");
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
-            compare(actionsDefault.actions.length, 0, "ListItemActions has no options set.");
+            compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
         }
 
         function test_children_in_content_item() {
@@ -253,7 +253,7 @@ Item {
             testItem.divider.visible = true;
         }
 
-        function test_touch_tug_options_data() {
+        function test_tug_actions_data() {
             var item = findChild(listView, "listItem0");
             return [
                 {tag: "Trailing, mouse", item: item, pos: centerOf(item), dx: -units.gu(20), positiveDirection: false, mouse: true},
@@ -262,7 +262,7 @@ Item {
                 {tag: "Leading, touch", item: item, pos: centerOf(item), dx: units.gu(20), positiveDirection: true, mouse: false},
             ];
         }
-        function test_touch_tug_options(data) {
+        function test_tug_actions(data) {
             listView.positionViewAtBeginning();
             movingSpy.target = data.item;
             if (data.mouse) {
@@ -272,9 +272,9 @@ Item {
             }
             movingSpy.wait();
             if (data.positiveDirection) {
-                verify(data.item.contentItem.x > 0, data.tag + " options did not show up");
+                verify(data.item.contentItem.x > 0, data.tag + " actions did not show up");
             } else {
-                verify(data.item.contentItem.x < 0, data.tag + " options did not show up");
+                verify(data.item.contentItem.x < 0, data.tag + " actions did not show up");
             }
 
             // dismiss
@@ -381,15 +381,15 @@ Item {
             verify(data.item.contentItem.x > 0, "Not snapped in!");
             var panel = panelItem(data.item, data.leading);
             verify(panel, "panelItem not found");
-            var selectedOption = findChild(panel, data.select);
-            verify(selectedOption, "Cannot select option " + data.select);
+            var selectedAction = findChild(panel, data.select);
+            verify(selectedAction, "Cannot select action " + data.select);
 
             // dismiss
             movingSpy.clear();
             if (data.mouse) {
-                mouseClick(selectedOption, centerOf(selectedOption).x, centerOf(selectedOption).y);
+                mouseClick(selectedAction, centerOf(selectedAction).x, centerOf(selectedAction).y);
             } else {
-                TestExtras.touchClick(0, selectedOption, centerOf(selectedOption));
+                TestExtras.touchClick(0, selectedAction, centerOf(selectedAction));
             }
             movingSpy.wait();
             fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Content not snapped out");
