@@ -3,7 +3,6 @@
 # Instead add a 'make check' manually.
 
 check.target = check
-check.commands += env QML_IMPORT_PATH=$${ROOT_BUILD_DIR}/modules
-check.commands += QML2_IMPORT_PATH=$${ROOT_BUILD_DIR}/modules
-check.commands += UBUNTU_UI_TOOLKIT_THEMES_PATH=$${ROOT_BUILD_DIR}/modules
+check.commands += cd $$_PRO_FILE_PWD_;
+check.commands += env LD_LIBRARY_PATH=$${ROOT_BUILD_DIR}/modules/Ubuntu/Components:$${ROOT_BUILD_DIR}/modules/Ubuntu/Layouts:$${ROOT_BUILD_DIR}/modules/Ubuntu/PerformanceMetrics:$${ROOT_BUILD_DIR}/modules/Ubuntu/Test
 check.commands += '$${ROOT_SOURCE_DIR}/tests/unit/runtest.sh "$$OUT_PWD/$${TARGET}" "$$OUT_PWD/$${TARGET}" minimal "$${ROOT_BUILD_DIR}"';
