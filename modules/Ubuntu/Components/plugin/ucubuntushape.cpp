@@ -572,7 +572,6 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
     , sourceTextureProvider_(NULL)
     , backgroundColor_(qRgba(0, 0, 0, 0))
     , secondaryBackgroundColor_(qRgba(0, 0, 0, 0))
-    , borderSource_("radius_idle.sci")
     , sourceScale_(1.0f, 1.0f)
     , sourceTranslation_(0.0f, 0.0f)
     , sourceTransform_(1.0f, 1.0f, 0.0f, 0.0f)
@@ -622,17 +621,16 @@ void UCUbuntuShape::setRadius(const QString& radius)
 */
 void UCUbuntuShape::setBorderSource(const QString& borderSource)
 {
-    if (borderSource_ != borderSource) {
-        if (borderSource.endsWith(QString("radius_idle.sci"))) {
-            border_ = IdleBorder;
-        } else if (borderSource.endsWith(QString("radius_pressed.sci"))) {
-            border_ = PressedBorder;
-        } else {
-            border_ = RawBorder;
-        }
-        // It's useless to store the string (and takes a few bytes) but we used to return the string
-        // given by the user, so we can't remove it for compatibility reasons.
-        borderSource_ = borderSource;
+    Border border;
+    if (borderSource.endsWith(QString("radius_idle.sci"))) {
+        border = IdleBorder;
+    } else if (borderSource.endsWith(QString("radius_pressed.sci"))) {
+        border = PressedBorder;
+    } else {
+        border = RawBorder;
+    }
+    if (border_ != border) {
+        border_ = border;
         update();
         Q_EMIT borderSourceChanged();
     }

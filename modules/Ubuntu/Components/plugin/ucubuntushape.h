@@ -87,7 +87,9 @@ public:
 
     QString radius() const { return (radius_ == SmallRadius) ? "small" : "medium"; }
     void setRadius(const QString& radius);
-    QString borderSource() const { return borderSource_; }
+    QString borderSource() const {
+        return (border_ == IdleBorder) ? "radius_idle.sci" :
+                ((border_ == PressedBorder) ? "radius_pressed.sci" : ""); }
     void setBorderSource(const QString& borderSource);
 
     QVariant source() const {
@@ -206,7 +208,6 @@ private:
     QSGTextureProvider* sourceTextureProvider_;
     QRgb backgroundColor_;
     QRgb secondaryBackgroundColor_;
-    QString borderSource_;
     QVector2D sourceScale_;
     QVector2D sourceTranslation_;
     QVector4D sourceTransform_;
