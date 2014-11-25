@@ -3,4 +3,7 @@
 # Instead add a 'make check' manually.
 
 check.target = check
-check.commands = ../../unit/runtest.sh $${TARGET} $${TARGET} minimal;
+check.commands += env QML_IMPORT_PATH=$${ROOT_BUILD_DIR}/modules
+check.commands += QML2_IMPORT_PATH=$${ROOT_BUILD_DIR}/modules
+check.commands += UBUNTU_UI_TOOLKIT_THEMES_PATH=$${ROOT_BUILD_DIR}/modules
+check.commands += '$${ROOT_SOURCE_DIR}/tests/unit/runtest.sh "$$OUT_PWD/$${TARGET}" "$$OUT_PWD/$${TARGET}" minimal "$${ROOT_BUILD_DIR}"';

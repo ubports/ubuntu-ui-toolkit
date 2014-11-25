@@ -12,3 +12,7 @@ components.target = $$PRE_TARGETDEPS
 components.commands = cd $$COMPONENTS_PATH/plugin && $(QMAKE) && make
 QMAKE_EXTRA_TARGETS += components
 
+DEFINES+=UBUNTU_COMPONENT_PATH='\\"$${ROOT_BUILD_DIR}/modules/Ubuntu/Components\\"'
+DEFINES+=UBUNTU_QML_IMPORT_PATH='\\"$${ROOT_BUILD_DIR}/modules\\"'
+DEFINES+=UBUNTU_SOURCE_ROOT='\\"$${ROOT_SOURCE_DIR}\\"'
+DEFINES+=UBUNTU_BUILD_ROOT='\\"$${ROOT_BUILD_DIR}\\"'

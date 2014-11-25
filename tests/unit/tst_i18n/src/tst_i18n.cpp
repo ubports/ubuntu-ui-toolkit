@@ -82,7 +82,7 @@ private Q_SLOTS:
         // Verify that we set it correctly
         QVERIFY(QFileInfo(testAppDir + "/share/locale/en/LC_MESSAGES/localizedApp.mo").exists());
 
-        QString modules("../../../modules");
+        QString modules(UBUNTU_QML_IMPORT_PATH);
         QVERIFY(QDir(modules).exists());
 
         view = new QQuickView;

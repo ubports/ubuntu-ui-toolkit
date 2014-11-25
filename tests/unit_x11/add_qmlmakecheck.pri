@@ -8,6 +8,10 @@ check.target = check
 !contains(QMAKE_HOST.arch,armv7l) {
  check.commands = "set -e;"
  for(TEST, TESTS) {
-  check.commands += ../../unit/runtest.sh $${TARGET} $${TEST};
+  check.commands += cd $$_PRO_FILE_PWD_;
+  check.commands += env QML_IMPORT_PATH=$${ROOT_BUILD_DIR}/modules
+  check.commands += QML2_IMPORT_PATH=$${ROOT_BUILD_DIR}/modules
+  check.commands += UBUNTU_UI_TOOLKIT_THEMES_PATH=$${ROOT_BUILD_DIR}/modules
+  check.commands += '$${ROOT_SOURCE_DIR}/tests/unit/runtest.sh "$$OUT_PWD/$${TARGET}" "$${TEST}" "" "$${ROOT_BUILD_DIR}"';
  }
 }
