@@ -909,6 +909,8 @@ plugins.qmltypes
     prototype: "QQuickImageBase"
     exports: ["QQuickImageBase 0.1", "QQuickImageBase 1.0"]
     Property { name: "source"; type: "QUrl" }
+    Signal { name: "extendedSourceChanged" }
+    Signal { name: "extendedSourceChanged" }
     name: "UCStateSaver"
     prototype: "QObject"
     exports: ["StateSaver 0.1", "StateSaver 1.0"]

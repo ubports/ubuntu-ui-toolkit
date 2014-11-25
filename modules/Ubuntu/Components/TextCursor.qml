@@ -63,12 +63,12 @@ Ubuntu.StyledItem {
       */
     Connections {
         target: inputHandler
-        onPressAndHold: openPopover()
+        onPressAndHold: openPopover(fromTouch)
         onTextModified: typing = true
         onTap: typing = false
     }
 
-    function openPopover() {
+    function openPopover(fromTouch) {
         if (!visible || opacity === 0.0 || dragger.drag.active) {
             return;
         }
@@ -81,7 +81,8 @@ Ubuntu.StyledItem {
             if (component === undefined)
                 component = Qt.resolvedUrl("TextInputPopover.qml");
             var popup = PopupUtils.open(component, cursorItem, {
-                "target": handler.main
+                "target": handler.main,
+                "callerMargin": fromTouch ? units.gu(2) : 0
             });
             contextMenuVisible = true;
             popup.onVisibleChanged.connect(contextMenuHidden.bind(undefined, popup));
