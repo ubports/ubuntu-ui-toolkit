@@ -36,9 +36,8 @@ class HideShowTestCase(tests.QMLFileAppTestCase):
         super(HideShowTestCase, self).setUp()
         self.header = self.main_view.get_header()
 
-    def test_show_header(self):
-        """Test that header.ensure_visible() shows the header.
-        """
+    def test_ensure_header_visible_must_show_it_when_not_visible(self):
+        """Test that header.ensure_visible() shows the header."""
 
         # NOTE: Using the internal _is_visible() function here.
         # It is not made public because besides testing the
