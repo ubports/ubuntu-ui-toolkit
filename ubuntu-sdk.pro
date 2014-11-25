@@ -23,8 +23,8 @@ QMAKE_EXTRA_TARGETS += test_api
 
 test_components.target = test-components
 test_components.commands = cd $$OUT_PWD/tests/autopilot;
-test_components2.commands += env UITK_BUILD_ROOT="$${ROOT_BUILD_DIR}" UITK_SOURCE_ROOT="$${ROOT_SOURCE_DIR}" UBUNTU_UI_TOOLKIT_AUTOPILOT_FROM_SOURCE=1
-test_components2.commands += python3 -m autopilot.run run ubuntuuitoolkit
+test_components.commands += env UITK_BUILD_ROOT="$${ROOT_BUILD_DIR}" UITK_SOURCE_ROOT="$${ROOT_SOURCE_DIR}" UBUNTU_UI_TOOLKIT_AUTOPILOT_FROM_SOURCE=1
+test_components.commands += python3 -m autopilot.run run ubuntuuitoolkit
 test_components.depends = sub-modules-ubuntu-ui-toolkit-pro
 QMAKE_EXTRA_TARGETS += test_components
 
@@ -51,7 +51,7 @@ equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
 
 DOC_PATH=$$OUT_PWD/documentation
 docs.target = docs
-docs.commands = SRC=$$DOC_SRC $$PWD/documentation/docs.sh $$DOC_PATH;
+docs.commands = cd $$PWD; SRC=$$DOC_SRC $$PWD/documentation/docs.sh $$DOC_PATH;
 QMAKE_EXTRA_TARGETS += docs
 
 #helper files
