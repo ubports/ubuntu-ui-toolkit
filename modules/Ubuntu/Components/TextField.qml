@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 1.1 as Ubuntu
+import Ubuntu.Components.Popups 1.0
 
 /*!
     \qmltype TextField
@@ -910,6 +911,11 @@ ActionItem {
             bottom: parent.bottom
             margins: internal.spacing
         }
+        /* draggedItemMouseArea and dragger in TextCursor are reparented to the
+           TextField and end up being on top of the clear button.
+           Ensure that the clear button receives touch/mouse events first.
+        */
+        z: 100
         width: visible ? icon.width : 0
         visible: control.hasClearButton &&
                  !control.readOnly &&
@@ -974,6 +980,9 @@ ActionItem {
             // FocusScope will forward focus to this component
             focus: true
             anchors.verticalCenter: parent.verticalCenter
+            verticalAlignment: TextInput.AlignVCenter
+            width: flicker.width
+            height: flicker.height
             cursorDelegate: TextCursor {
                 handler: inputHandler
             }
@@ -989,6 +998,7 @@ ActionItem {
             // overrides
             selectByMouse: true
             activeFocusOnPress: true
+            onActiveFocusChanged: if (!activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
 
             // input selection and navigation handling
             Ubuntu.Mouse.forwardTo: [inputHandler]
