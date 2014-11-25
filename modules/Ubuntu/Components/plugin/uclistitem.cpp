@@ -431,7 +431,7 @@ void UCListItemPrivate::_q_updateIndex()
 }
 
 /*!
- * \qmlproperty Component ListItem::stylea
+ * \qmlproperty Component ListItem::style
  * Holds the style of the component defining the components visualizing the leading/
  * trailing actions, selection and dragging mode handlers as well as different
  * animations. The component does not assume any visuals present in the style,
