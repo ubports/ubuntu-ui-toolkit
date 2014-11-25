@@ -24,12 +24,15 @@
  * \since Ubuntu.Components.Styles 1.2
  * \brief Style API for ListItem component.
  *
- * The component defines the style API for the ListItem component. Provides the
- * default actions visualization panel, snap animation, selection mode and drag
- * handler delegates. ListItem treats the style differently compared to the other
- * components, as it will load it only when needed, to load the components defining
- * the look and feel of the different configurable elements of the component,
- * and will ignore any visuals declared in the style.
+ * Style API for the ListItem component which provides actions, select and
+ * drag handler delegates, and snap animation via its properties.
+ * ListItem treats the style differently compared to the other components,
+ * as it:
+ * \list
+ *  \li - loads the style only when needed
+ *  \li - gets delegates and snap animation from the style properties
+ *  \li - ignores any other visuals defined in the style.
+ * \endlist
  */
 UCListItemStyle::UCListItemStyle(QQuickItem *parent) :
     QQuickItem(parent)

@@ -76,6 +76,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+    bool childMouseEventFilter(QQuickItem *child, QEvent *event);
     bool eventFilter(QObject *, QEvent *);
 
 Q_SIGNALS:
