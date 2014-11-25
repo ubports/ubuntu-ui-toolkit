@@ -50,6 +50,9 @@ public:
 Q_SIGNALS:
     void countChanged();
 
+public Q_SLOTS:
+    Q_REVISION(1) void refresh();
+
 private Q_SLOTS:
     void refreshStart();
     void refreshEnd();
