@@ -733,21 +733,34 @@ plugins.qmltypes
     name: "get"
     Parameter { name: "row"; type: "int" }
     Method { name: "count"; type: "int" }
-    name: "UbuntuShape"
+    name: "UCUbuntuShape"
     prototype: "QQuickItem"
     exports: [
+    name: "BackgroundMode"
     name: "HAlignment"
     name: "VAlignment"
+    name: "FillMode"
+    name: "WrapMode"
+    Property { name: "radius"; type: "string" }
+    Property { name: "borderSource"; type: "string" }
+    Property { name: "source"; type: "QVariant" }
+    Property { name: "sourceOpacity"; type: "float" }
+    Property { name: "sourceFillMode"; type: "FillMode" }
+    Property { name: "sourceHorizontalWrapMode"; type: "WrapMode" }
+    Property { name: "sourceVerticalWrapMode"; type: "WrapMode" }
+    Property { name: "sourceHorizontalAlignment"; type: "HAlignment" }
+    Property { name: "sourceVerticalAlignment"; type: "VAlignment" }
+    Property { name: "sourceTranslation"; type: "QVector2D" }
+    Property { name: "sourceScale"; type: "QVector2D" }
+    Property { name: "backgroundColor"; type: "QColor" }
+    Property { name: "secondaryBackgroundColor"; type: "QColor" }
+    Property { name: "backgroundMode"; type: "BackgroundMode" }
     Property { name: "color"; type: "QColor" }
     Property { name: "gradientColor"; type: "QColor" }
-    Property { name: "radius"; type: "string" }
     Property { name: "image"; type: "QVariant" }
     Property { name: "stretched"; type: "bool" }
     Property { name: "horizontalAlignment"; type: "HAlignment" }
     Property { name: "verticalAlignment"; type: "VAlignment" }
-    Property { name: "borderSource"; type: "string" }
-    Signal { name: "borderChanged" }
-    Method { name: "gridUnitChanged" }
     name: "SortBehavior"
     prototype: "QObject"
     exports: ["SortBehavior 1.1"]
