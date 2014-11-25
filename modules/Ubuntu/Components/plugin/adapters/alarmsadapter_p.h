@@ -20,7 +20,6 @@
 #define ALARMSADAPTER_P_H
 
 #include "alarmmanager_p_p.h"
-#include "alarmrequest_p_p.h"
 
 #include <qorganizer.h>
 #include <qorganizermanager.h>
@@ -32,28 +31,108 @@ QTORGANIZER_USE_NAMESPACE
  * Adaptation layer for Alarms.
  */
 
-class AlarmRequestAdapter : public AlarmRequestPrivate
+class AlarmDataAdapter : public UCAlarmPrivate
 {
 public:
-    AlarmRequestAdapter(AlarmRequest *parent, bool autoDelete);
+    AlarmDataAdapter(UCAlarm *qq);
+    ~AlarmDataAdapter();
 
-    // adaptation methods
-    bool save(AlarmData &alarm);
-    bool remove(AlarmData &alarm);
+    bool enabled() const;
+    bool setEnabled(bool enabled);
+    QDateTime date() const;
+    bool setDate(const QDateTime &date);
+    QString message() const;
+    bool setMessage(const QString &message);
+    UCAlarm::AlarmType type() const;
+    bool setType(UCAlarm::AlarmType type);
+    UCAlarm::DaysOfWeek daysOfWeek() const;
+    bool setDaysOfWeek(UCAlarm::DaysOfWeek days);
+    QUrl sound() const;
+    bool setSound(const QUrl &sound);
+    QVariant cookie() const;
+    UCAlarm::Error checkAlarm();
+
+    void save();
+    void cancel();
+    void reset();
     bool wait(int msec);
-    bool fetch();
+    void completeSave();
+    void completeCancel();
 
-    bool start(QOrganizerAbstractRequest *operation);
+// adaptation specific data
+    void adjustDowSettings(UCAlarm::AlarmType type, UCAlarm::DaysOfWeek days);
+    static QSet<Qt::DayOfWeek> daysToSet(int days);
+    static UCAlarm::DaysOfWeek daysFromSet(const QSet<Qt::DayOfWeek> &set);
 
-    void _q_updateProgress();
+    inline QOrganizerTodo const &data()
+    {
+        return event;
+    }
+    void setData(const QOrganizerTodo &data);
+
+protected:
+    QOrganizerTodo event;
+    UCAlarm::AlarmType alarmType;
+    UCAlarm::DaysOfWeek dow;
+    QPointer<QOrganizerAbstractRequest> request;
+
+    void startOperation(UCAlarm::Operation operation, const char *completionSlot);
+};
+
+// list of alarms
+class AlarmList
+{
+public:
+    AlarmList(){}
+
+    void clear()
+    {
+        data.clear();
+        idHash.clear();
+    }
+    int count() const
+    {
+        return data.count();
+    }
+    const QOrganizerTodo operator[](int index) const
+    {
+        QPair<QDateTime, QOrganizerItemId> key = data.keys()[index];
+        return data.value(key);
+    }
+    // update event at index, returns the new event index
+    int update(int index, const QOrganizerTodo &alarm)
+    {
+        removeAt(index);
+        return insert(alarm);
+    }
+    // insert an alarm event into the list
+    int insert(const QOrganizerTodo &alarm)
+    {
+        QDateTime dt = AlarmUtils::normalizeDate(alarm.startDateTime());
+        idHash.insert(alarm.id(), dt);
+        data.insert(QPair<QDateTime, QOrganizerItemId>(dt, alarm.id()), alarm);
+        return indexOf(alarm.id());
+    }
+    // returns the index of the alarm matching the id, -1 on error
+    int indexOf(const QOrganizerItemId &id)
+    {
+        QDateTime dt = idHash.value(id);
+        QPair<QDateTime, QOrganizerItemId> key(dt, id);
+        return data.keys().indexOf(key);
+    }
+    // remove alarm at index
+    void removeAt(int index)
+    {
+        QPair<QDateTime, QOrganizerItemId> key = data.keys()[index];
+        data.remove(key);
+        idHash.remove(key.second);
+    }
 
 private:
-    QOrganizerAbstractRequest *m_request;
-
-    AlarmRequest::Operation requestTypeToOperation();
-    void completeUpdate();
-    void completeRemove();
-    void completeFetch();
+    // ordered map by occurrence date + event id, ascending
+    QMap< QPair<QDateTime, QOrganizerItemId>, QOrganizerTodo> data;
+    // alarms ordered based on even id
+    QHash<QOrganizerItemId, QDateTime> idHash;
 };
 
 class AlarmsAdapter : public QObject, public AlarmManagerPrivate
@@ -74,31 +153,34 @@ public:
         return static_cast<AlarmsAdapter*>(AlarmManagerPrivate::get(instance));
     }
 
-    bool listDirty:1;
     QOrganizerManager *manager;
     QOrganizerCollection collection;
 
-    void completeFetchAlarms(const QList<QOrganizerItem> &alarmList);
-    void adjustAlarmOccurrence(const QOrganizerTodo &event, AlarmData &alarm);
+    void init();
+    int alarmCount();
+    void getAlarmAt(const UCAlarm &alarm, int index) const;
+    bool findAlarm(const UCAlarm &alarm, const QVariant &cookie) const;
+    void adjustAlarmOccurrence(AlarmDataAdapter &alarm);
 
     void loadAlarms();
     void saveAlarms();
 
-    void organizerEventFromAlarmData(const AlarmData &alarm, QOrganizerTodo &event);
-    int alarmDataFromOrganizerEvent(const QOrganizerTodo &event, AlarmData &alarm);
-    QSet<Qt::DayOfWeek> daysToSet(int days) const;
-    void daysFromSet(AlarmData &alarm, QSet<Qt::DayOfWeek> set);
+    bool verifyChange(UCAlarm *alarm, AlarmManager::Change change, const QVariant &value);
+    UCAlarmPrivate *createAlarmData(UCAlarm *alarm);
 
-    bool verifyChange(const QVariant &cookie, AlarmData::Change change, const QVariant &value);
-    bool compareCookies(const QVariant &cookie1, const QVariant &cookie2);
+    void insertAlarm(const QOrganizerItemId &id);
+    void updateAlarm(const QOrganizerItemId &id);
+    void removeAlarm(const QOrganizerItemId &id);
 
-public Q_SLOTS:
+private Q_SLOTS:
+    void completeFetchAlarms();
     bool fetchAlarms();
-    void updateAlarms(const QList<QOrganizerItemId> &list);
+    void alarmOperation(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> >);
 
 protected:
-    AlarmRequest *fetchRequest;
+    QPointer<QOrganizerItemFetchRequest> fetchRequest;
+    AlarmList alarmList;
+    QOrganizerTodo todoItem(const QOrganizerItemId &id);
 };
-
 
 #endif // ALARMSADAPTER_P_H
