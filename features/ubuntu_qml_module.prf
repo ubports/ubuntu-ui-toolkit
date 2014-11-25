@@ -73,7 +73,7 @@ for(qml_module, UBUNTU_QML_MODULE_FILES){
     OTHER_FILES += $${filelist}
 
     #copy files only when shadowbuilding
-    !equals(PWD, $${OUT_PWD}) {
+    !equals(PWD, $$shadowed($${PWD})) {
 
         #make sure we only have absolute path entries in our list
         filelist=$$expandFilePath($${filelist})
