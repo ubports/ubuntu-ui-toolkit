@@ -668,7 +668,6 @@ QQuickItem *UCListItemPrivate::createSelectionPanel()
                 if (selectionPanel) {
                     QQml_setParent_noEvent(selectionPanel, q);
                     selectionPanel->setParentItem(q);
-                    selectionPanel->setVisible(false);
                     // complete component creation
                     styleItem->m_selectionDelegate->completeCreate();
                 }
@@ -679,25 +678,18 @@ QQuickItem *UCListItemPrivate::createSelectionPanel()
     }
     return selectionPanel;
 }
-void UCListItemPrivate::toggleSelectionMode()
+void UCListItemPrivate::setupSelectionMode()
 {
     if (!createSelectionPanel()) {
         return;
     }
     Q_Q(UCListItem);
     if (selectable) {
-        // move and dimm content item
-        selectionPanel->setVisible(true);
         promptRebound();
-        animator->snap(selectionPanel->width());
         // sync selected flag with the attached selection array
         if (attachedProperties) {
             q->setSelected(UCListItemAttachedPrivate::get(attachedProperties)->isItemSelected(q));
         }
-    } else {
-        // remove content item dimming and destroy selection panel as well
-        animator->snap(0.0);
-        selectionPanel->setVisible(false);
     }
 }
 
@@ -831,7 +823,7 @@ void UCListItem::componentComplete()
 
     // toggle selection mode if has been set by a binding
     if (d->selectable) {
-        d->toggleSelectionMode();
+        d->setupSelectionMode();
     }
     // get the selected state from the attached object
     if (d->attachedProperties) {
@@ -1313,8 +1305,9 @@ void UCListItem::setSelectable(bool selectable)
     if (d->selectable == selectable) {
         return;
     }
+    // make sure the selection mode panel is prepared; selection panel must take care of the visuals
+    d->setupSelectionMode();
     d->selectable = selectable;
-    d->toggleSelectionMode();
     Q_EMIT selectableChanged();
 }
 

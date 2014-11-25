@@ -61,7 +61,7 @@ public:
     void clampX(qreal &x, qreal dx);
     void clampAndMoveX(qreal &x, qreal dx);
     QQuickItem *createSelectionPanel();
-    void toggleSelectionMode();
+    void setupSelectionMode();
 
     bool pressed:1;
     bool contentMoved:1;

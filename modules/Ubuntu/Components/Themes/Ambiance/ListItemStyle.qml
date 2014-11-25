@@ -37,6 +37,11 @@ Styles.ListItemStyle {
         id: selectionPanel
         width: checkbox.width + 2 * units.gu(2)
         /*
+          Set if the ListItem is in selection mode
+          */
+        readonly property bool inSelectionMode: parent ? parent.selectable : false
+
+        /*
           Internally used to link to the list item's content. The parent item is the ListItem itself.
           */
         readonly property Item contentItem: parent ? parent.contentItem : null
@@ -46,6 +51,26 @@ Styles.ListItemStyle {
             top: contentItem ? contentItem.top : undefined
             bottom: contentItem ? contentItem.bottom : undefined
         }
+
+        states: State {
+            name: "enabled"
+            PropertyChanges {
+                target: selectionPanel.parent.contentItem
+                x: selectionPanel.width
+            }
+        }
+
+        transitions: Transition {
+            from: ""
+            to: "enabled"
+            reversible: true
+            PropertyAnimation {
+                target: selectionPanel.parent.contentItem
+                property: "x"
+            }
+        }
+
+        state: inSelectionMode ? "enabled" : ""
 
         CheckBox {
             id: checkbox

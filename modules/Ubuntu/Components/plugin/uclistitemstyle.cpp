@@ -54,7 +54,11 @@ void UCListItemStyle::setActionsDelegate(QQmlComponent *delegate)
 
 /*!
  * \qmlproperty Component ListItemStyle::selectionDelegate
- * Holds the component handling the selection mode.
+ * Holds the component handling the selection mode. The component is responsible
+ * to handle the visualization of the component, including the changes to be
+ * applied over the ListItem visuals i.e. pushing the \l {ListItem::contentItem}
+ * {contentItem}, animating the changes, etc. ListItem will set the visible property
+ * of this component to true when selectable, and false when the component is removed.
  */
 void UCListItemStyle::setSelectionDelegate(QQmlComponent *delegate)
 {
