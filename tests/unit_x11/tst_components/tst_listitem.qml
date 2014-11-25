@@ -413,15 +413,15 @@ Item {
             verify(data.item.contentItem.x > 0, "Not snapped in!");
             var panel = panelItem(data.item, data.leading);
             verify(panel, "panelItem not found");
-            var selectedOption = findChild(panel, data.select);
-            verify(selectedOption, "Cannot select option " + data.select);
+            var selectedAction = findChild(panel, data.select);
+            verify(selectedAction, "Cannot select action " + data.select);
 
             // dismiss
             movingSpy.clear();
             if (data.mouse) {
-                mouseClick(selectedOption, centerOf(selectedOption).x, centerOf(selectedOption).y);
+                mouseClick(selectedAction, centerOf(selectedAction).x, centerOf(selectedAction).y);
             } else {
-                TestExtras.touchClick(0, selectedOption, centerOf(selectedOption));
+                TestExtras.touchClick(0, selectedAction, centerOf(selectedAction));
             }
             movingSpy.wait();
             fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Content not snapped out");
@@ -482,7 +482,7 @@ Item {
                 // have less first dx as the trailing panel is shorter
                 {tag: "Snap out, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(2)], snapIn: false},
                 {tag: "Snap in, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(1), -units.gu(1)], snapIn: true},
-            ]
+            ];
         }
         function test_snap_gesture(data) {
             // performe the moves
@@ -529,15 +529,14 @@ Item {
             verify(data.item.contentItem.x != 0.0, "Not snapped in");
 
             var panel = panelItem(data.item, "Leading");
-            var option = findChild(panel, "leading_2");
-            verify(option, "actions panel cannot be reached");
+            var action = findChild(panel, "leading_2");
+            verify(action, "actions panel cannot be reached");
             // we test the action closest to the list item's contentItem
-            var action = data.item.leadingActions.actions[1];
-            actionSpy.target = action;
+            actionSpy.target = data.item.leadingActions.actions[1];
 
-            // select the option
+            // select the action
             movingSpy.clear();
-            mouseClick(option, centerOf(option).x, centerOf(option).y);
+            mouseClick(action, centerOf(action).x, centerOf(action).y);
             movingSpy.wait();
 
             // check the action param

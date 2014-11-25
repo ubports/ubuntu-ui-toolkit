@@ -109,6 +109,7 @@ private Q_SLOTS:
     void updateVisibleActions();
     void updateSwipeState();
 };
+
 QML_DECLARE_TYPEINFO(UCListItemActions, QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // UCLISTITEMACTIONS_H
