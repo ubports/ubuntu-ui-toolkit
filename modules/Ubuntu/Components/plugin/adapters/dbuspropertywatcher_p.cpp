@@ -21,8 +21,6 @@
 #include "i18n.h"
 #include <QtQml/QQmlInfo>
 
-#include <QDebug>
-
 #define DYNAMIC_PROPERTY    "__q_proeprty"
 
 UCServicePropertiesPrivate *createServicePropertiesAdapter(UCServiceProperties *owner)

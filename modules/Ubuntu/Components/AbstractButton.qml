@@ -104,9 +104,7 @@ ActionItem {
 
         onClicked: {
             if (button.__acceptEvents) {
-                if (isHapticsFeedbackEnabled) {
-                    pressEffect.start();
-                }
+                pressEffect.start();
                 button.clicked()
             }
         }
