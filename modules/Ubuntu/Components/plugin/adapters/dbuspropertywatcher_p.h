@@ -22,31 +22,34 @@
 #include <QtDBus/QDBusServiceWatcher>
 #include <QtDBus/QDBusInterface>
 
-class DBusPropertyWatcher : public QObject
+#include "ucserviceproperties_p.h"
+
+class QDBusPendingCallWatcher;
+class DBusServiceProperties : public QObject, public UCServicePropertiesPrivate
 {
     Q_OBJECT
+    Q_DECLARE_PUBLIC(UCServiceProperties)
 public:
-    explicit DBusPropertyWatcher(const QDBusConnection &connection, const QString &service, const QString &path, const QString &iface, const QStringList &properties, QObject *parent = 0);
-    void syncProperties(const QString &serviceInterface = QString());
-    QVariant readProperty(const QString &interface, const QString &property);
-    bool writeProperty(const QString &interface, const QString &property, const QVariant &value);
+    DBusServiceProperties(UCServiceProperties *qq);
 
-Q_SIGNALS:
-    void propertyChanged(const QString &property, const QVariant &value);
+    bool init();
+    bool fetchPropertyValues();
+    bool readProperty(const QString &property);
+    // for testing purposes only!!!
+    bool testProperty(const QString &property, const QVariant &value);
 
-private Q_SLOTS:
-    void onOwnerChanged(const QString &serviceName, const QString &oldOwner, const QString &newOwner);
-    void onPropertiesChanged(const QString &iface, const QVariantMap &properties, const QStringList &invalidated);
-
-private:
+    QStringList scannedProperties;
     QDBusConnection connection;
-    QDBusServiceWatcher watcher;
-    QDBusInterface iface;
-    QString service;
+    QDBusServiceWatcher *watcher;
+    QDBusInterface *iface;
     QString objectPath;
-    QStringList watchedProperties;
 
-    void setupInterface();
+    bool setupInterface();
+
+public Q_SLOTS:
+    void readFinished(QDBusPendingCallWatcher *watcher);
+    void changeServiceOwner(const QString &serviceName, const QString &oldOwner, const QString &newOwner);
+    void updateProperties(const QString &iface, const QVariantMap &map, const QStringList &invalidated);
 };
 
 #endif // DBUSPROPERTYWATCHER_P_H

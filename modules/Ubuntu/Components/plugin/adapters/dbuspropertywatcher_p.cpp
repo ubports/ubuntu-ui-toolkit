@@ -18,101 +18,194 @@
 #include <QtDBus/QDBusReply>
 #include <unistd.h>
 #include <sys/types.h>
+#include "i18n.h"
+#include <QtQml/QQmlInfo>
 
-/*
- * The class watches a dbus service on a given connection, path and interface for
- * different property changes. The properties parameter specifies the properties
- * to be watched. Multiple properties can be requested to be watched on the same
- * path and interface at the same time. If the property list is empty, the watcher
- * will report all the property changes on the path + interface.
- *
- * The property changes are reported thru the propertyChanged() signal.
- *
- * Example of use:
- * 1) watch all Accounts property changes
- * DBusPropertyWatcher watch(DBusConnection::systemBus(), "com.freedesktop.Accounts", "/com/freedesktop/Accounts",
- *                           "com.freedesktop.Accounts");
- *
- * 2) watch one property change
- * DBusPropertyWatcher watch(DBusConnection::systemBus(), "com.freedesktop.Accounts", "/com/freedesktop/Accounts",
- *                           "com.freedesktop.Accounts", QStringList("OtherVibrate"));
- *
- * 3) watch selected properties
- * DBusPropertyWatcher watch(DBusConnection::systemBus(), "com.freedesktop.Accounts", "/com/freedesktop/Accounts",
- *                           "com.freedesktop.Accounts",
- *                          (QStringList() << "IncomingCallVibrate" << "OtherVibrate"));
- */
-DBusPropertyWatcher::DBusPropertyWatcher(const QDBusConnection &connection, const QString &service, const QString &path, const QString &iface, const QStringList &properties = QStringList(), QObject *parent)
-    : QObject(parent)
-    , connection(connection)
-    , watcher(service, connection, QDBusServiceWatcher::WatchForOwnerChange)
-    , iface(service, path, iface, connection)
-    , service(service)
-    , watchedProperties(properties)
+#include <QDebug>
+
+#define DYNAMIC_PROPERTY    "__q_proeprty"
+
+UCServicePropertiesPrivate *createServicePropertiesAdapter(UCServiceProperties *owner)
 {
-    QObject::connect(&watcher, &QDBusServiceWatcher::serviceOwnerChanged,
-                     this, &DBusPropertyWatcher::onOwnerChanged);
-    setupInterface();
+    return new DBusServiceProperties(owner);
 }
 
-/*
- * Reads the values of the properties to be watched. The method will work only
- * if there are specific properties to watch for. serviceInterface is the DBus
- * interface the properties are retrieved from, which may be different from the
- * watcher interface. If null string is given, the sync will use the watched
- * interface.
- */
-void DBusPropertyWatcher::syncProperties(const QString &serviceInterface)
+DBusServiceProperties::DBusServiceProperties(UCServiceProperties *qq)
+    : UCServicePropertiesPrivate(qq)
+    , connection("")
+    , watcher(0)
+    , iface(0)
 {
-    if (watchedProperties.isEmpty()) {
-        return;
+}
+
+bool DBusServiceProperties::init()
+{
+    // crear all previous connections
+    setStatus(UCServiceProperties::Inactive);
+    delete iface;
+    iface = 0;
+    delete watcher;
+    watcher = 0;
+    setError(QString());
+
+    if (service.isEmpty() || path.isEmpty()) {
+        setStatus(UCServiceProperties::ConnectionError);
+        setError(UbuntuI18n::instance().tr("No service/path specified"));
+        return false;
     }
-    Q_FOREACH(const QString &property, watchedProperties) {
-        QVariant value = readProperty(serviceInterface.isEmpty() ? iface.interface() : serviceInterface, property);
-        if (value.isValid()) {
-            Q_EMIT propertyChanged(property, value);
+
+    switch (type) {
+        case UCServiceProperties::System:
+        {
+            connection = QDBusConnection::systemBus();
+            break;
+        }
+        case UCServiceProperties::Session:
+        {
+            connection = QDBusConnection::sessionBus();
+            break;
+        }
+        default:
+        {
+            setStatus(UCServiceProperties::ConnectionError);
+            setError(UbuntuI18n::instance().tr("Invalid bus type: %1.").arg(type));
+            return false;
         }
     }
+
+    Q_Q(UCServiceProperties);
+    // connect dbus watcher to catch OwnerChnaged
+    watcher = new QDBusServiceWatcher(service, connection, QDBusServiceWatcher::WatchForOwnerChange, q);
+    // connect interface
+    iface = new QDBusInterface(service, path, interface, connection, q);
+    if (!iface->isValid()) {
+        setStatus(UCServiceProperties::ConnectionError);
+        setError(iface->lastError().message());
+        return false;
+    }
+    // connect watcher to get owner changes
+    QObject::connect(watcher, SIGNAL(serviceOwnerChanged(QString,QString,QString)),
+                     this, SLOT(changeServiceOwner(QString,QString,QString)));
+    return setupInterface();
 }
 
 /*
- * Read the property value synchronously.
+ * Connect dbus signal identified by (service, path, iface, name) quaduple to a
+ * slot to receive property changes.
  */
-QVariant DBusPropertyWatcher::readProperty(const QString &interface, const QString &property)
+bool DBusServiceProperties::setupInterface()
 {
-    if (objectPath.isEmpty()) {
-        return QVariant();
+    QDBusReply<QDBusObjectPath> dbusObjectPath = iface->call("FindUserById", qlonglong(getuid()));
+    if (dbusObjectPath.isValid()) {
+        objectPath = dbusObjectPath.value().path();
+        iface->connection().connect(
+            service,
+            objectPath,
+            "org.freedesktop.DBus.Properties",
+            "PropertiesChanged",
+            this,
+            SLOT(updateProperties(QString,QVariantMap,QStringList)));
+        return true;
     }
-    QDBusInterface readIFace(iface.interface(), objectPath, "org.freedesktop.DBus.Properties", connection);
-    if (!readIFace.isValid()) {
-        // invalid interface
-        return QVariant();
+
+    setStatus(UCServiceProperties::ConnectionError);
+    setError(dbusObjectPath.error().message());
+    return false;
+}
+
+bool DBusServiceProperties::fetchPropertyValues()
+{
+    scannedProperties = properties;
+    Q_FOREACH(QString property, properties) {
+        readProperty(property);
     }
-    QDBusReply<QDBusVariant> reply = readIFace.call("Get", interface, property);
-    return reply.isValid() ? reply.value().variant() : QVariant();
+    return true;
 }
 
 /*
- * Write a property value synchronously. The interface represents the service interface writing teh properties.
+ * Reads a property value from the adaptorInterface asynchronously.
  */
-bool DBusPropertyWatcher::writeProperty(const QString &interface, const QString &property, const QVariant &value)
+bool DBusServiceProperties::readProperty(const QString &property)
+{
+    if ((status < UCServiceProperties::Synchronizing) || objectPath.isEmpty()) {
+        return false;
+    }
+    QDBusInterface readIFace(iface->interface(), objectPath, "org.freedesktop.DBus.Properties", connection);
+    if (!readIFace.isValid()) {
+        // report invalid interface only if the property's first letter was with capital one!
+        if (property[0].isUpper()) {
+            setError(readIFace.lastError().message());
+        }
+        return false;
+    }
+    Q_Q(UCServiceProperties);
+    QDBusPendingCall pending = readIFace.asyncCall("Get", adaptor, property);
+    if (pending.isError()) {
+        setError(pending.error().message());
+        return false;
+    }
+    QDBusPendingCallWatcher *callWatcher = new QDBusPendingCallWatcher(pending, q);
+    QObject::connect(callWatcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+                     this, SLOT(readFinished(QDBusPendingCallWatcher*)));
+
+    // set a dynamic property so we know which property are we reading
+    callWatcher->setProperty(DYNAMIC_PROPERTY, property);
+    return true;
+}
+
+/*
+ * Writes a property value to theadaptorInterface synchronously. It is for pure testing purposes.
+ */
+bool DBusServiceProperties::testProperty(const QString &property, const QVariant &value)
 {
     if (objectPath.isEmpty()) {
         return false;
     }
-    QDBusInterface writeIFace(iface.interface(), objectPath, "org.freedesktop.DBus.Properties", connection);
+    QDBusInterface writeIFace(iface->interface(), objectPath, "org.freedesktop.DBus.Properties", connection);
     if (!writeIFace.isValid()) {
         // invalid interface
         return false;
     }
-    QDBusMessage msg = writeIFace.call("Set", interface, property, QVariant::fromValue(QDBusVariant(value)));
+    QDBusMessage msg = writeIFace.call("Set", adaptor, property, QVariant::fromValue(QDBusVariant(value)));
     return msg.type() == QDBusMessage::ReplyMessage;
 }
 
 /*
- * Setup interface connections on ownership change
+ * Slot called when the async read operation finishes.
  */
-void DBusPropertyWatcher::onOwnerChanged(const QString &serviceName, const QString &oldOwner, const QString &newOwner)
+void DBusServiceProperties::readFinished(QDBusPendingCallWatcher *call)
+{
+    Q_Q(UCServiceProperties);
+    QDBusPendingReply<QVariant> reply = *call;
+    QString property = call->property(DYNAMIC_PROPERTY).toString();
+    scannedProperties.removeAll(property);
+    if (reply.isError()) {
+        // remove the property from being watched, as it has no property like that
+        properties.removeAll(property);
+        if (property[0].isUpper()) {
+            // report error!
+            setError(reply.error().message());
+        }
+    } else {
+        // update watched property value
+        // make sure we have lower case when the property value is updated
+        property[0] = property[0].toLower();
+        q->setProperty(property.toLocal8Bit().constData(), reply.value());
+    }
+
+    if ((status == UCServiceProperties::Synchronizing) && scannedProperties.isEmpty()) {
+        // set status to active
+        setStatus(UCServiceProperties::Active);
+    }
+
+    // delete watcher
+    call->deleteLater();
+}
+
+/*
+ * Slot called when service owner is changed.
+ */
+void DBusServiceProperties::changeServiceOwner(const QString &serviceName, const QString &oldOwner, const QString &newOwner)
 {
     Q_UNUSED(oldOwner);
     Q_UNUSED(newOwner);
@@ -123,37 +216,13 @@ void DBusPropertyWatcher::onOwnerChanged(const QString &serviceName, const QStri
 }
 
 /*
- * Check the properties invalidated, and report the ones watched
+ * Slot called when the properties are changed in the service.
  */
-void DBusPropertyWatcher::onPropertiesChanged(const QString &interface, const QVariantMap &properties, const QStringList &invalidated)
+void DBusServiceProperties::updateProperties(const QString &onInterface, const QVariantMap &map, const QStringList &invalidated)
 {
-    Q_UNUSED(properties);
-    bool reportAll = watchedProperties.isEmpty();
+    Q_UNUSED(onInterface);
+    Q_UNUSED(map);
     Q_FOREACH(const QString &property, invalidated) {
-        if (reportAll || watchedProperties.contains(property)) {
-            QVariant value = readProperty(interface, property);
-            Q_EMIT propertyChanged(property, value);
-        }
-    }
-}
-
-/*
- * Connect dbus signal identified by (service, path, iface, name) quaduple to a slot to receive
- * property changes.
- */
-void DBusPropertyWatcher::setupInterface()
-{
-    QDBusReply<QDBusObjectPath> qObjectPath = iface.call(
-                "FindUserById", qlonglong(getuid()));
-
-    if (qObjectPath.isValid()) {
-        objectPath = qObjectPath.value().path();
-        iface.connection().connect(
-            service,
-            objectPath,
-            "org.freedesktop.DBus.Properties",
-            "PropertiesChanged",
-            this,
-            SLOT(onPropertiesChanged(QString,QVariantMap,QStringList)));
+        readProperty(property);
     }
 }

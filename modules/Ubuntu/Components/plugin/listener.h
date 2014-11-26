@@ -25,13 +25,10 @@ class ContextPropertyChangeListener : public QObject
 {
     Q_OBJECT
 public:
-    explicit ContextPropertyChangeListener(QQmlContext* context, const QString& contextProperty, QObject *source = 0, const QString &sourceProperty = QString());
+    explicit ContextPropertyChangeListener(QQmlContext* context, const QString& contextProperty);
     Q_SLOT void updateContextProperty();
     QQmlContext* m_context;
     QString m_contextProperty;
-    QObject *m_source;
-    QString m_sourceProperty;
-    QList<int> t;
 };
 
 #endif // UBUNTU_COMPONENTS_PLUGIN_H

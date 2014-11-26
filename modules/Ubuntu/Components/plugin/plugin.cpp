@@ -52,7 +52,7 @@
 #include "ucaction.h"
 #include "ucactioncontext.h"
 #include "ucactionmanager.h"
-#include "systemsettings_p.h"
+#include "ucserviceproperties.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -163,6 +163,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
     qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
+    qmlRegisterType<UCServiceProperties, 1>(uri, 1, 1, "ServiceProperties");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
@@ -186,15 +187,6 @@ void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *ur
                      i18nChangeListener, SLOT(updateContextProperty()));
     QObject::connect(&UbuntuI18n::instance(), SIGNAL(languageChanged()),
                      i18nChangeListener, SLOT(updateContextProperty()));
-
-    // WORKAROUND: expose a context property that can be used from AbstractButton to
-    // control tactile feedback
-    context->setContextProperty("isHapticsFeedbackEnabled", SystemSettings::instance().vibraEnabled());
-    ContextPropertyChangeListener *hapticsListener =
-            new ContextPropertyChangeListener(context, "isHapticsFeedbackEnabled",
-                                              &SystemSettings::instance(), "vibraEnabled");
-    QObject::connect(&SystemSettings::instance(), &SystemSettings::vibraEnabledChanged,
-                     hapticsListener, &ContextPropertyChangeListener::updateContextProperty);
 
     // We can't use 'Application' because it exists (undocumented)
     context->setContextProperty("UbuntuApplication", &UCApplication::instance());

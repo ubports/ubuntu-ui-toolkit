@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,19 +14,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "listener.h"
+import QtQuick 2.3
+import Ubuntu.Components 1.1
 
-#include <QQmlContext>
+Item {
+    property alias service: service
+    ServiceProperties {
+        id: service
+        service: "org.freedesktop.Accounts"
+        serviceInterface: "org.freedesktop.Accounts"
+        path: "/org/freedesktop/Accounts"
+        adaptorInterface: "com.ubuntu.touch.AccountsService.Sound"
 
-ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context, const QString &contextProperty) :
-    QObject(context),
-    m_context(context),
-    m_contextProperty(contextProperty)
-{
-}
-
-void ContextPropertyChangeListener::updateContextProperty()
-{
-    QVariant value = m_context->contextProperty(m_contextProperty);
-    m_context->setContextProperty(m_contextProperty, value);
+        property bool incomingCallVibrate: true
+    }
 }
