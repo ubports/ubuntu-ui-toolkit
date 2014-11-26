@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.1.1347+15.04.20141124-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.1.1347+15.04.20141126-0ubuntu1) vivid; urgency=medium
 
   [ Zsombor Egri ]
   * Expose refresh() function in revision 1 (Ubuntu.Components 1.1). 
@@ -18,7 +18,7 @@ ubuntu-ui-toolkit (1.1.1347+15.04.20141124-0ubuntu2) UNRELEASED; urgency=medium
     like "All" translated to two different strings in the translated 
     language if different contexts are given. Fixes LP: #1394904
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Wed, 26 Nov 2014 10:16:13 +0200
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 26 Nov 2014 08:33:25 +0000
 
 ubuntu-ui-toolkit (1.1.1341+15.04.20141124-0ubuntu1) vivid; urgency=medium
 
