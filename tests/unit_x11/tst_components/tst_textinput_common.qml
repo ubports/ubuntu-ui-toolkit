@@ -175,38 +175,6 @@ Item {
             cursorRectSpy.target = null;
         }
 
-        function test_press_and_hold_does_nothing_data() {
-            return [
-                {tag: "TextField", input: textField, withTextSelected: false},
-                {tag: "TextArea", input: textArea, withTextSelected: false},
-                {tag: "TextField", input: textField, withTextSelected: true},
-                {tag: "TextArea", input: textArea, withTextSelected: true},
-            ];
-        }
-
-        function test_press_and_hold_does_nothing(data) {
-            var handler = findChild(data.input, "input_handler");
-            popupSpy.target = handler;
-
-            data.input.focus = true;
-            if (data.withTextSelected) {
-                // select the first 20 characters
-                data.input.select(0, 20);
-            }
-
-            // press and hold over selected text
-            mouseLongPress(data.input, units.gu(7), y);
-            waitForRendering(data.input);
-            expectFailContinue(data.tag, "Should not open popover");
-            popupSpy.wait(400);
-
-            if (data.withTextSelected) {
-                // text selection must not be cleared
-                verify(data.input.selectedText !== "", "Selected text cleared!");
-            }
-            mouseRelease(data.input, units.gu(7), y);
-        }
-
         function test_scroll_when_not_focused_data() {
             return [
                 // dx and dy are in eights of a degree; see QWheelEvent::angleDelta() for more details.
@@ -274,7 +242,7 @@ Item {
                 {tag: "TextField click on selection", input: textField, selectChars: 10, clickPos: Qt.point(10, textField.height / 2)},
                 {tag: "TextArea click on selection", input: textArea, selectChars: 40, clickPos: Qt.point(20, 20)},
                 {tag: "TextField click beside selection", input: textField, selectChars: 5, clickPos: Qt.point(textField.width / 2, textField.height / 2)},
-                {tag: "TextArea click beside selection", input: textArea, selectChars: 5, clickPos: Qt.point(textArea.width / 2, textArea.height / 2)},
+                {tag: "TextArea click beside selection", input: textArea, selectChars: 1, clickPos: Qt.point(textArea.width / 2, textArea.height / 2)},
             ];
         }
         function test_clear_selection_on_click(data) {
