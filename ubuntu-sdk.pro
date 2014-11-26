@@ -60,5 +60,8 @@ OTHER_FILES += \
     features/coverage.prf \
     .qmake.conf
 
-
-
+message(PATH INFO STARTS HERE)
+message($$shadowed($$_PRO_FILE_PWD_))
+message($$_PRO_FILE_PWD_)
+message($$OUT_PWD)
+message($$PWD)

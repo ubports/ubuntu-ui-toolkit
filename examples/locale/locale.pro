@@ -1,4 +1,4 @@
-TEMPLATE = subdirs
+TEMPLATE = aux
 
 filetypes = qml png svg js jpg qmlproject desktop
 

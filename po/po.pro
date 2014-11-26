@@ -1,4 +1,4 @@
-TEMPLATE = subdirs
+TEMPLATE = aux
 
 PROJECTNAME = ubuntu-ui-toolkit
 

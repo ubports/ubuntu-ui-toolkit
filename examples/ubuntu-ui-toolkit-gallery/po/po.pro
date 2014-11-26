@@ -1,4 +1,4 @@
-TEMPLATE = subdirs
+TEMPLATE = aux
 
 MO_FILES = $$system(ls *.po)
 

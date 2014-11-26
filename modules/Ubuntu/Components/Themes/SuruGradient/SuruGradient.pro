@@ -1,4 +1,4 @@
-TEMPLATE = subdirs
+TEMPLATE = aux
 CONFIG+=ubuntu_qml_module
 
 uri = Ubuntu.Components.Themes.SuruGradient
