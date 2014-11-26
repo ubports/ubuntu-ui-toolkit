@@ -26,11 +26,6 @@ Dialog {
 
     title: "Choose days"
 
-    Button {
-        text: "Done"
-        onClicked: PopupUtils.close(root);
-    }
-
     ListModel {
         id: daysModel
         ListElement {
@@ -63,28 +58,24 @@ Dialog {
         }
     }
 
-    Column {
-        anchors {
-            left: contents.left
-            top: contents.top
-            right: contents.right
-        }
-        height: childrenRect.height
-        Repeater {
-            model: daysModel
-            Standard {
-                text: day
-                control: CheckBox {
-                    checked: (alarm.daysOfWeek & flag) == flag
-                    onCheckedChanged: {
-                        if (checked) {
-                            alarm.daysOfWeek |= flag;
-                        } else {
-                            alarm.daysOfWeek &= ~flag;
-                        }
+    Repeater {
+        model: daysModel
+        Standard {
+            text: day
+            control: CheckBox {
+                checked: (alarm.daysOfWeek & flag) == flag
+                onCheckedChanged: {
+                    if (checked) {
+                        alarm.daysOfWeek |= flag;
+                    } else {
+                        alarm.daysOfWeek &= ~flag;
                     }
                 }
             }
         }
+    }
+    Button {
+        text: "Done"
+        onClicked: PopupUtils.close(root);
     }
 }

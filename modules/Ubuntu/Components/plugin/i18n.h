@@ -46,6 +46,8 @@ public:
     Q_INVOKABLE QString tr(const QString& singular, const QString& plural, int n);
     Q_INVOKABLE QString dtr(const QString& domain, const QString& text);
     Q_INVOKABLE QString dtr(const QString& domain, const QString& singular, const QString& plural, int n);
+    Q_INVOKABLE QString ctr(const QString& context, const QString& text);
+    Q_INVOKABLE QString dctr(const QString& domain, const QString& context, const QString& text);
 
     // getter
     QString domain() const;
