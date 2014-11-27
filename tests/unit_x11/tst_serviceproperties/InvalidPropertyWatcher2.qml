@@ -27,5 +27,6 @@ Item {
         adaptorInterface: "com.ubuntu.touch.AccountsService.Sound"
 
         property bool thisIsAnInvalidPropertyToWatch: true
+        property bool incomingCallVibrate: true
     }
 }

@@ -21,7 +21,7 @@
 #include "i18n.h"
 #include <QtQml/QQmlInfo>
 
-#define DYNAMIC_PROPERTY    "__q_proeprty"
+#define DYNAMIC_PROPERTY    "__q_property"
 
 UCServicePropertiesPrivate *createServicePropertiesAdapter(UCServiceProperties *owner)
 {
@@ -38,7 +38,7 @@ DBusServiceProperties::DBusServiceProperties(UCServiceProperties *qq)
 
 bool DBusServiceProperties::init()
 {
-    // crear all previous connections
+    // crear previous connections
     setStatus(UCServiceProperties::Inactive);
     delete iface;
     iface = 0;
@@ -72,7 +72,7 @@ bool DBusServiceProperties::init()
     }
 
     Q_Q(UCServiceProperties);
-    // connect dbus watcher to catch OwnerChnaged
+    // connect dbus watcher to catch OwnerChanged
     watcher = new QDBusServiceWatcher(service, connection, QDBusServiceWatcher::WatchForOwnerChange, q);
     // connect interface
     iface = new QDBusInterface(service, path, interface, connection, q);
@@ -128,18 +128,18 @@ bool DBusServiceProperties::readProperty(const QString &property)
     if ((status < UCServiceProperties::Synchronizing) || objectPath.isEmpty()) {
         return false;
     }
+    Q_Q(UCServiceProperties);
     QDBusInterface readIFace(iface->interface(), objectPath, "org.freedesktop.DBus.Properties", connection);
     if (!readIFace.isValid()) {
         // report invalid interface only if the property's first letter was with capital one!
         if (property[0].isUpper()) {
-            setError(readIFace.lastError().message());
+            qmlInfo(q) << readIFace.lastError().message();
         }
         return false;
     }
-    Q_Q(UCServiceProperties);
     QDBusPendingCall pending = readIFace.asyncCall("Get", adaptor, property);
     if (pending.isError()) {
-        setError(pending.error().message());
+        qmlInfo(q) << pending.error().message();
         return false;
     }
     QDBusPendingCallWatcher *callWatcher = new QDBusPendingCallWatcher(pending, q);
@@ -182,7 +182,7 @@ void DBusServiceProperties::readFinished(QDBusPendingCallWatcher *call)
         properties.removeAll(property);
         if (property[0].isUpper()) {
             // report error!
-            setError(reply.error().message());
+            qmlInfo(q) << reply.error().message();
         }
     } else {
         // update watched property value

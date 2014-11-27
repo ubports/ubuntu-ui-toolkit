@@ -31,6 +31,15 @@ public:
 
 private:
 
+    // FIXME use UbuntuTestCase::ignoreWaring in Vivid
+    void ignoreWarning(const QString& fileName, uint line, uint column, const QString& message, uint occurences=1)
+    {
+        for (uint i = 0; i < occurences; i++) {
+            QString url(QUrl::fromLocalFile(QFileInfo(fileName).absoluteFilePath()).toEncoded());
+            QString warning(QString("%1:%2:%3: %4").arg(url).arg(line).arg(column).arg(message));
+            QTest::ignoreMessage(QtWarningMsg, warning.toUtf8());
+        }
+    }
 
 private Q_SLOTS:
 
@@ -60,6 +69,7 @@ private Q_SLOTS:
 
     void test_invalid_property()
     {
+        ignoreWarning("InvalidPropertyWatcher.qml", 22, 5, "QML ServiceProperties: No such property 'ThisIsAnInvalidPropertyToWatch'");
         QScopedPointer<UbuntuTestCase> test(new UbuntuTestCase("InvalidPropertyWatcher.qml"));
         UCServiceProperties *watcher = static_cast<UCServiceProperties*>(test->rootObject()->property("service").value<QObject*>());
         QVERIFY(watcher);
@@ -67,9 +77,22 @@ private Q_SLOTS:
             QSignalSpy wait(watcher, SIGNAL(statusChanged()));
             wait.wait();
         }
+        // error should not be set
+        QVERIFY(watcher->property("error").toString().isEmpty());
+    }
 
-        // error should be set
-        QVERIFY(!watcher->property("error").toString().isEmpty());
+    void test_one_valid_one_invalid_property()
+    {
+        ignoreWarning("InvalidPropertyWatcher2.qml", 22, 5, "QML ServiceProperties: No such property 'ThisIsAnInvalidPropertyToWatch'");
+        QScopedPointer<UbuntuTestCase> test(new UbuntuTestCase("InvalidPropertyWatcher2.qml"));
+        UCServiceProperties *watcher = static_cast<UCServiceProperties*>(test->rootObject()->property("service").value<QObject*>());
+        QVERIFY(watcher);
+        if (watcher->property("status").toInt() != UCServiceProperties::Active) {
+            QSignalSpy wait(watcher, SIGNAL(statusChanged()));
+            wait.wait();
+        }
+        // error should not be set
+        QVERIFY(watcher->property("error").toString().isEmpty());
     }
 
     void test_change_connection_props_data()
@@ -77,15 +100,16 @@ private Q_SLOTS:
         QTest::addColumn<QString>("property");
         QTest::addColumn<QString>("value");
 
-        QTest::newRow("Changing servcie:") << "service" << "anything.else";
-        QTest::newRow("Changing interface:") << "serviceInterface" << "anything.else";
-        QTest::newRow("Changing adaptor:") << "adaptorInterface" << "anything.else";
+        QTest::newRow("Changing servcie") << "service" << "anything.else";
+        QTest::newRow("Changing interface") << "serviceInterface" << "anything.else";
+        QTest::newRow("Changing adaptor") << "adaptorInterface" << "anything.else";
     }
     void test_change_connection_props()
     {
         QFETCH(QString, property);
         QFETCH(QString, value);
 
+        ignoreWarning("IncomingCallVibrateWatcher.qml", 22, 5, "QML ServiceProperties: Changing connection parameters forbidden.");
         QScopedPointer<UbuntuTestCase> test(new UbuntuTestCase("IncomingCallVibrateWatcher.qml"));
         UCServiceProperties *watcher = static_cast<UCServiceProperties*>(test->rootObject()->property("service").value<QObject*>());
         QVERIFY(watcher);
@@ -97,8 +121,8 @@ private Q_SLOTS:
         // try to change the property
         QSignalSpy errorSpy(watcher, SIGNAL(errorChanged()));
         watcher->setProperty(property.toLocal8Bit().constData(), value);
-        errorSpy.wait(400);
-        QCOMPARE(errorSpy.count(), 1);
+        // no error should be reported
+        QCOMPARE(errorSpy.count(), 0);
     }
 
 };

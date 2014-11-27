@@ -4,4 +4,5 @@ SOURCES += \
 
 OTHER_FILES += \
     IncomingCallVibrateWatcher.qml \
-    InvalidPropertyWatcher.qml
+    InvalidPropertyWatcher.qml \
+    InvalidPropertyWatcher2.qml
