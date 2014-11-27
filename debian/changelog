@@ -1,3 +1,25 @@
+ubuntu-ui-toolkit (1.1.1347+15.04.20141126-0ubuntu1) vivid; urgency=medium
+
+  [ Zsombor Egri ]
+  * Expose refresh() function in revision 1 (Ubuntu.Components 1.1). 
+    Fixes LP: #1380559
+  * Alarm adaptation refactored to support change granular model 
+    updates. Fixes LP: #1322558, LP: #1360359, LP: #1370649, 
+    LP: #1380553
+  * Fix Header thin divider margins, restored to original no-margins. 
+    Fixes LP: #1380766.
+
+  [ Tim Peeters ]
+  * Add ensure_visible() function to header AP helper. 
+    Fixes LP: #1363591
+
+  [ Albert Astals Cid ] 
+  * Add context support for i18n.tr calls. This allows to have strings 
+    like "All" translated to two different strings in the translated 
+    language if different contexts are given. Fixes LP: #1394904
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 26 Nov 2014 08:33:25 +0000
+
 ubuntu-ui-toolkit (1.1.1341+15.04.20141124-0ubuntu1) vivid; urgency=medium
 
   [ Christian Dywan ]
