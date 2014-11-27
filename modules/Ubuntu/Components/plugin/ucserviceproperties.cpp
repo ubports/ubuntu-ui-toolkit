@@ -59,9 +59,7 @@ void UCServicePropertiesPrivate::setStatus(UCServiceProperties::Status status)
 
 void printLocked(UCServiceProperties *owner)
 {
-    QString msg(UbuntuI18n::instance().tr("Changing connection parameters forbidden."));
-    qmlInfo(owner) << msg;
-    UCServicePropertiesPrivate::get(owner)->setError(msg);
+    qmlInfo(owner) << UbuntuI18n::instance().tr("Changing connection parameters forbidden.");
 }
 
 /*!
