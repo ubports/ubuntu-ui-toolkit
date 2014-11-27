@@ -28,7 +28,7 @@ UbuntuTestCase {
     }
 
     function initTestCase() {
-        var settings = findInvisibleChild(Haptics, "system_effect_settings");
+        var settings = findChild(Haptics, "system_effect_settings");
         verify(settings, "system settings watcher not found");
         tryCompareFunction(function() { return settings.status === ServiceProperties.Active; }, true, 1000);
     }
@@ -37,7 +37,6 @@ UbuntuTestCase {
         verify(Haptics.hasOwnProperty("enabled"), "missing property 'enabled'");
         verify(Haptics.hasOwnProperty("effect"), "missing property 'effect'");
         verify(Haptics.hasOwnProperty("play"), "missing function 'play'");
-        verify(Haptics.hasOwnProperty("playCustomEffect"), "missing function 'playCustomEffect'");
     }
 
     function test_play() {
@@ -48,7 +47,7 @@ UbuntuTestCase {
     }
 
     function test_custom_play() {
-        Haptics.playCustomEffect({attackTime: 10, attackIntensity: 0.5, duration: 1200});
+        Haptics.play({attackTime: 10, attackIntensity: 0.5, duration: 1200});
         if (Haptics.enabled && Haptics.effect.running) {
             compare(Haptics.effect.attackTime, 10, "attack time not modified");
             compare(Haptics.effect.attackIntensity, 0.5, "attack intensity not modified");

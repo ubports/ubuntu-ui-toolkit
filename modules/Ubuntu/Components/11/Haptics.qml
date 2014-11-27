@@ -27,9 +27,8 @@ import Ubuntu.Components 1.1
   of the feedback is controlled by the system settings.
 
   Supports global feedback as well as custom feedback. Global feedback can be
-  configured through its properties, and \l play function will always play the
-  default configuration. To have custom feedback, the \l playCustomEffect function
-  must be used.
+  configured through its properties, and \l play function will play the default
+  configuration, or a custom one if parameter is given.
 
   Example of using Haptics:
   \qml
@@ -53,7 +52,7 @@ import Ubuntu.Components 1.1
   }
   \endqml
 
-  Custom effects can be played using \l playCustomEffect function as follows:
+  Custom effects can be played as follows:
   \qml
   import QtQuick 2.3
   import Ubuntu.Components 1.1
@@ -70,7 +69,7 @@ import Ubuntu.Components 1.1
       }
       MouseArea {
           anchors.fill: parent
-          onClicked: Haptics.playCustomEffect({duration: 25, attackIntensity: 0.7})
+          onClicked: Haptics.play({duration: 25, attackIntensity: 0.7})
       }
   }
   \endqml
@@ -79,7 +78,7 @@ import Ubuntu.Components 1.1
   functions, use those only if you want to have feedback independent on what the
   system setting is.
  */
-Item {
+Object {
 
     /*!
       \qmlproperty bool enabled
@@ -99,46 +98,45 @@ Item {
     property alias effect: effect
 
     /*!
-      The function plays the feedback with the configuration specified in \l effect.
-      The function exists if there is a haptics effect running, or if the effects
-      are blocked by the system settings.
-      */
-    function play() {
-        if (!vibra.otherVibrate) {
-            return;
-        }
-        if (!effect.running) {
-            effect.start();
-        }
-    }
+      \qmlmethod play([customEffect])
+      The function plays the feedback with the configuration specified in \l effect
+      if no parameter is given. Custom effect can be played by specifying the effect
+      properties in a JSON object in \c customEffect.
 
-    /*!
-      The function plays a custom effect. Any ongoing haptics effect will be stopped,
-      settings restored and a new one will be started. The custom settings properties
-      (the ones which are required to be different from the ones defined in the \l effect)
-      must be specified in the parameter in a JSON object. No effect is played if the
-      haptics are blocked by the system settings.
+      The function will exit unconditionaly if playing the effects is blocked by
+      system settings.
+
+      The function will not stop any ongoing haptics effect oplayed, if that one
+      was a default haptics effect. In case of custom effects, the previous effect
+      will be stopped, and settings will be restored before the new haptics will
+      be played. The custom settings properties (the ones which are required to
+      be different from the ones defined in the \l effect) must be specified in
+      the parameter in a JSON object.
       */
-    function playCustomEffect(customProperties) {
+    function play(customEffect) {
         if (!vibra.otherVibrate) {
             return;
         }
-        // stop any running effect; any custom effect will be restored
-        if (effect.running) {
+        if (effectData.data) {
+            // we have a custom effect playing, stop it
             effect.stop();
         }
-
-        // prepare custom effect
-        customData.backup(customProperties);
+        if (effect.running) {
+            // this is a global effect, leave
+            return;
+        }
+        if (customEffect) {
+            effectData.backup(customEffect);
+        }
         effect.start();
     }
 
     QtObject {
-        id: customData
+        id: effectData
         property var data
 
-        function backup(customProperties) {
-            data = customProperties;
+        function backup(customEffect) {
+            data = customEffect;
             for (var p in data) {
                 var value = data[p];
                 data[p] = effect[p];
@@ -165,7 +163,7 @@ Item {
 
         onStateChanged: {
             if (state == HapticsEffect.Stopped) {
-                customData.restore();
+                effectData.restore();
             }
         }
     }

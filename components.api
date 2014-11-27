@@ -63,11 +63,10 @@ Item
     readonly property bool running
     readonly property int status
 Haptics 0.1 1.0
-Item
+Object
     readonly property bool enabled
     property HapticsEffect effect
-    function play()
-    function playCustomEffect(customProperties)
+    function play(customEffect)
 Header 0.1 1.0
 AppHeader
     property string _for_autopilot
@@ -1059,15 +1058,21 @@ plugins.qmltypes
     Parameter { name: "singular"; type: "string" }
     Parameter { name: "plural"; type: "string" }
     Parameter { name: "n"; type: "int" }
-    prototype: "QQuickItem"
+    prototype: "QObject"
     name: "Haptics"
     exports: ["Haptics -1.-1"]
     Property { name: "enabled"; type: "bool"; isReadonly: true }
     Property { name: "effect"; type: "QDeclarativeHapticsEffect"; isReadonly: true; isPointer: true }
-    Method { name: "play"; type: "QVariant" }
     Method {
-    name: "playCustomEffect"
-    Parameter { name: "customProperties"; type: "QVariant" }
+    name: "play"
+    Parameter { name: "customEffect"; type: "QVariant" }
+    Property { name: "__defaultPropertyFix"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "children"; type: "QObject"; isList: true; isReadonly: true }
+    prototype: "QObject"
+    name: "Object"
+    exports: ["Object -1.-1"]
+    Property { name: "__defaultPropertyFix"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "children"; type: "QObject"; isList: true; isReadonly: true }
     name: "ULConditionalLayout"
     prototype: "QObject"
     exports: ["ConditionalLayout 0.1", "ConditionalLayout 1.0"]
