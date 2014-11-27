@@ -64,6 +64,7 @@ Item
     readonly property int status
 Haptics 0.1 1.0
 Item
+    readonly property bool enabled
     property HapticsEffect effect
     function play()
     function playCustomEffect(customProperties)
@@ -1061,6 +1062,7 @@ plugins.qmltypes
     prototype: "QQuickItem"
     name: "Haptics"
     exports: ["Haptics -1.-1"]
+    Property { name: "enabled"; type: "bool"; isReadonly: true }
     Property { name: "effect"; type: "QDeclarativeHapticsEffect"; isReadonly: true; isPointer: true }
     Method { name: "play"; type: "QVariant" }
     Method {

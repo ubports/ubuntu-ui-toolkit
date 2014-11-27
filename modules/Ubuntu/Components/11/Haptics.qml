@@ -82,6 +82,13 @@ import Ubuntu.Components 1.1
 Item {
 
     /*!
+      \qmlproperty bool enabled
+      \readonly
+      The property specifies whether the haptics feedback is enabled or not by the system.
+      */
+    readonly property alias enabled: vibra.otherVibrate
+
+    /*!
       \qmlproperty HapticsEffect effect
       The property defines the settings of the haptics effect used by the component.
       The default setting is a haptics effect with a duration of 10 milliseconds
@@ -132,19 +139,17 @@ Item {
 
         function backup(customProperties) {
             data = customProperties;
-            for (var p in customProperties) {
+            for (var p in data) {
+                var value = data[p];
                 data[p] = effect[p];
-                effect[p] = customProperties[p];
+                effect[p] = value;
             }
-            effect.stateChanged.connect(restore);
         }
         function restore() {
-            if (effect.state == HapticsEffect.Stopped) {
-                for (var p in data) {
-                    effect[p] = data[p];
-                }
-                effect.stateChanged.disconnect(restore);
+            for (var p in data) {
+                effect[p] = data[p];
             }
+            data = undefined;
         }
     }
 
@@ -157,10 +162,17 @@ Item {
         duration: 10
         fadeTime: 50
         fadeIntensity: 0.0
+
+        onStateChanged: {
+            if (state == HapticsEffect.Stopped) {
+                customData.restore();
+            }
+        }
     }
 
     // watch system settings for otherVibrate
     ServiceProperties {
+        objectName: "system_effect_settings"
         id: vibra
         service: "org.freedesktop.Accounts"
         serviceInterface: "org.freedesktop.Accounts"
