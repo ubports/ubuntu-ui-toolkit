@@ -84,7 +84,7 @@ Item {
         }
     }
 
-    // track drag dirrection, so we know in which direction we should snap
+    // track drag dirrection, so we know in which dirrection we should snap
     property real prevX: 0.0
     property bool leftToRight: false
     onXChanged: {
