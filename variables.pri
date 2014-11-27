@@ -1,2 +1,0 @@
-ROOT_SOURCE_DIR=$$PWD
-ROOT_BUILD_DIR=$$shadowed($$PWD)

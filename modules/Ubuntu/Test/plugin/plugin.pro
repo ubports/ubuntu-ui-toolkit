@@ -1,5 +1,3 @@
-include(../../../../variables.pri)
-
 TEMPLATE = lib
 TARGET = ../UbuntuTest
 QT += core-private qml qml-private quick quick-private gui-private testlib
