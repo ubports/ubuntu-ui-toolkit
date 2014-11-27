@@ -93,6 +93,7 @@ ActionItem {
 
         onClicked: {
             if (button.__acceptEvents) {
+                // FIXME (Vivid) call this in the style rather than from AbstractButton
                 Haptics.play();
                 button.clicked()
             }
