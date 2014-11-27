@@ -2,6 +2,8 @@
 # adds a 'make install' that installs the test cases, which we do not want.
 # Instead add a 'make check' manually.
 
+include(../../variables.pri)
+
 check.target = check
 check.commands = "set -e;"
 for(TEST, TESTS) {

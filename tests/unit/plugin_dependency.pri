@@ -1,3 +1,5 @@
+include(../../variables.pri)
+
 COMPONENTS_PATH = ../../../modules/Ubuntu/Components
 INCLUDEPATH += $$COMPONENTS_PATH/plugin
 INCLUDEPATH += ../../../modules/Ubuntu/Test/plugin

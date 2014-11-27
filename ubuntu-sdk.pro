@@ -1,4 +1,5 @@
 include( documentation/documentation.pri )
+include( variables.pri )
 
 TEMPLATE = subdirs
 SUBDIRS += modules/ubuntu-ui-toolkit.pro tests examples po/po.pro
@@ -57,11 +58,4 @@ QMAKE_EXTRA_TARGETS += docs
 #helper files
 OTHER_FILES += \
     features/ubuntu_qml_module.prf \
-    features/coverage.prf \
-    .qmake.conf
-
-message(PATH INFO STARTS HERE)
-message($$shadowed($$_PRO_FILE_PWD_))
-message($$_PRO_FILE_PWD_)
-message($$OUT_PWD)
-message($$PWD)
+    features/coverage.prf
