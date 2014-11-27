@@ -79,7 +79,7 @@ import Ubuntu.Components 1.1
   functions, use those only if you want to have feedback independent on what the
   system setting is.
  */
-Object {
+Item {
 
     /*!
       \qmlproperty HapticsEffect effect
@@ -103,7 +103,6 @@ Object {
         if (!effect.running) {
             effect.start();
         }
-        print("haptic")
     }
 
     /*!
@@ -125,7 +124,6 @@ Object {
         // prepare custom effect
         customData.backup(customProperties);
         effect.start();
-        print("haptic")
     }
 
     QtObject {
