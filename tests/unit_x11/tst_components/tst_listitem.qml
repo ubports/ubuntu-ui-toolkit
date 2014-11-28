@@ -82,6 +82,15 @@ Item {
                 anchors.fill: parent
             }
         }
+        ListItem {
+            id: controlItem
+            Button {
+                id: button
+                objectName: "button_in_list"
+                anchors.centerIn: parent
+                text: "Button"
+            }
+        }
         ListView {
             id: listView
             width: parent.width
@@ -156,6 +165,9 @@ Item {
             testItem.selected = false;
             testItem.selectable = false;
             waitForRendering(testItem.contentItem, 400);
+            controlItem.selected = false;
+            controlItem.selectable = false;
+            waitForRendering(controlItem.contentItem, 400);
             movingSpy.clear();
             pressedSpy.clear();
             clickSpy.clear();
@@ -586,6 +598,34 @@ Item {
             testItem.selectable = true;
             waitForRendering(testItem.contentItem);
             verify(findChildWithProperty(testItem, "inSelectionMode", true));
+            compare(testItem.contentItem.enabled, false, "contentItem is not disabled.");
+        }
+
+        SignalSpy {
+            id: selectedSpy
+            signalName: "selectedChanged"
+        }
+
+        function test_toggle_selected_data() {
+            return [
+                        // item = <test-item>, clickOk: <item-to-click-on>, offsetX|Y: <clickOn offset clicked>
+                        {tag: "Click over selection", item: controlItem, clickOn: "listitem_select", offsetX: units.gu(0.5), offsetY: units.gu(0.5)},
+                        {tag: "Click over contentItem", item: controlItem, clickOn: "ListItemHolder", offsetX: units.gu(0.5), offsetY: units.gu(0.5)},
+                        {tag: "Click over control", item: controlItem, clickOn: "button_in_list", offsetX: units.gu(0.5), offsetY: units.gu(0.5)},
+                    ];
+        }
+        function test_toggle_selected(data) {
+            // make test item selectable first, so the panel is created
+            data.item.selectable = true;
+            waitForRendering(data.item.contentItem);
+            // get the control to click on
+            var clickOn = findChild(data.item, data.clickOn);
+            verify(clickOn, "control to be clicked on not found");
+            // click on the selection and check selected changed
+            selectedSpy.target = data.item;
+            selectedSpy.clear();
+            mouseClick(clickOn, data.offsetX, data.offsetY);
+            selectedSpy.wait();
         }
 
         function test_no_tug_when_selectable() {

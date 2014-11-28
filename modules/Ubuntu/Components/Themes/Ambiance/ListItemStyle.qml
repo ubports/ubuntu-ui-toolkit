@@ -76,6 +76,8 @@ Styles.ListItemStyle {
 
         CheckBox {
             id: checkbox
+            // for unit and autopilot tests
+            objectName: "listitem_select"
             anchors.centerIn: parent
             checked: selectionPanel.parent ? selectionPanel.parent.selected : false
 

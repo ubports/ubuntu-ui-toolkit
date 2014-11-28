@@ -149,7 +149,7 @@ MainView {
             height: units.gu(20)
             model: 10
             pressDelay: 0
-//            ListItem.selectedIndexes: [9,3,4]
+            ListItem.selectedIndexes: [9,3,4]
             ListItem.onSelectedIndexesChanged: print("LISTVIEW INDEXES=", ListItem.selectedIndexes)
             delegate: ListItem {
                 objectName: "ListItem" + index

@@ -556,7 +556,8 @@ bool UCListItemPrivate::canHighlight(QMouseEvent *event)
    Q_Q(UCListItem);
    QPointF myPos = q->mapToItem(contentItem, event->localPos());
    QQuickItem *child = contentItem->childAt(myPos.x(), myPos.y());
-   bool activeComponent = child && (child->acceptedMouseButtons() & event->button()) && !qobject_cast<QQuickText*>(child);
+   bool activeComponent = child && (child->acceptedMouseButtons() & event->button()) &&
+           child->isEnabled() && !qobject_cast<QQuickText*>(child);
    // do highlight if not pressed above the active component, and the component has either
    // action, leading or trailing actions list or at least an active child component declared
    QQuickMouseArea *ma = q->findChild<QQuickMouseArea*>();
