@@ -88,7 +88,7 @@ Item {
         }
     }
 
-    // track drag dirrection, so we know in which direction we should snap
+    // track drag dirrection, so we know in which dirrection we should snap
     property real prevX: 0.0
     property bool leftToRight: false
     onXChanged: {
@@ -128,6 +128,7 @@ Item {
         Repeater {
             model: panel.ListItemActions.visibleActions
             AbstractButton {
+                id: actionButton
                 action: modelData
                 enabled: action.enabled
                 opacity: action.enabled ? 1.0 : 0.5
@@ -154,6 +155,7 @@ Item {
                     sourceComponent: panel.ListItemActions.container.delegate ? panel.ListItemActions.container.delegate : defaultDelegate
                     property Action action: modelData
                     property int index: index
+                    property bool pressed: actionButton.pressed
                     onItemChanged: {
                         // use action's objectName to identify the visualized action
                         if (item && item.objectName === "") {
