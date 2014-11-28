@@ -205,6 +205,22 @@ PageTreeNode {
         property color headerColor: backgroundColor
         property color backgroundColor: Theme.palette.normal.background
         property color footerColor: backgroundColor
+
+        /*
+          As we don't know the order the property bindings and onXXXChanged signals are evaluated
+          we should rely only on one property when changing the theme to avoid intermediate
+          theme changes due to properties being evaluated separately.
+
+          Qt bug: https://bugreports.qt-project.org/browse/QTBUG-11712
+          */
+        property string theme: (ColorUtils.luminance(backgroundColor) >= 0.85) ?
+                                   "Ambiance" : "SuruDark"
+        onThemeChanged: {
+            // only change the theme if the current one is a system one.
+            if (theme !== "" && (Theme.name.search("Ubuntu.Components.Themes") >= 0)) {
+                Theme.name = "Ubuntu.Components.Themes.%1".arg(theme);
+            }
+        }
     }
 
     /*!
