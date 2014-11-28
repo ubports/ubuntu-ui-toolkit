@@ -40,7 +40,7 @@ ActionItem {
 
     /*!
        This handler is called when there is a mouse click on the button
-       and the button is not disabled. If \l action is defined,
+       and the button is not disabled. If \b action is defined,
        the action will be triggered.
     */
     signal clicked()
