@@ -227,7 +227,7 @@ OrientationHelper 0.1 1.0
 Item
     property bool automaticOrientation
     property bool transitionEnabled
-    property alias rotating
+    readonly property bool rotating
     property int __orientationAngle
     property int orientationAngle
     property bool anchorToKeyboard
