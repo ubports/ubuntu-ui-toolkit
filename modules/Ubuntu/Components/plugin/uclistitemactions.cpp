@@ -415,9 +415,15 @@ UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *own
  * custom delegate. The other context property exposed to delegates is the \c
  * index, which specifies the index of the action visualized.
  *
- * The delegate height is set automatically by the panel item, and the width value
- * is clamped between height and the maximum width of the list item divided by the
- * number of actions in the list.
+ * Specifying a custom delegate will not override the triggering logic of the
+ * action, that will be still handled by the panel itself. However custom delegates
+ * may still need to distinguish the pressed/released state visually. This can
+ * be achieved using the \c pressed context property, which informs the delegate
+ * about the pressed state of the action.
+ *
+ * The delegate height is set automatically by the panel item, only the width must
+ * be specified which will be clamped between height and the maximum width of the
+ * list item divided by the number of actions in the list.
  * \qml
  * import QtQuick 2.2
  * import Ubuntu.Components 1.2
@@ -440,7 +446,7 @@ UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *own
  *                     name: action.iconName
  *                     width: units.gu(3)
  *                     height: width
- *                     color: "blue"
+ *                     color: pressed ? "blue" : "lightblue"
  *                     anchors.horizontalCenter: parent.horizontalCenter
  *                 }
  *                 Label {
