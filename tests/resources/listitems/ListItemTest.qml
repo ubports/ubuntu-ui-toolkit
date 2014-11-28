@@ -160,6 +160,11 @@ MainView {
                 Label {
                     text: modelData + " item"
                 }
+                Button {
+                    text: "Pressme..."
+                    anchors.centerIn: parent
+                }
+
                 states: State {
                     name: "override"
                     when: main.override

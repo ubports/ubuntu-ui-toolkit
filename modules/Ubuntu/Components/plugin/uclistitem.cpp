@@ -840,7 +840,6 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         // check if we are in a positioner, and if that positioner is in a Flickable
         QQuickBasePositioner *positioner = qobject_cast<QQuickBasePositioner*>(data.item);
         if (positioner && positioner->parentItem()) {
-            // count owner is a positioner
             d->flickable = qobject_cast<QQuickFlickable*>(positioner->parentItem()->parentItem());
         } else if (data.item && data.item->parentItem()){
             // check if we are in a Flickable then
@@ -933,7 +932,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
 {
     UCStyledItemBase::mousePressEvent(event);
     Q_D(UCListItem);
-    if (d->selectable || (d->attachedProperties && d->attachedProperties->isMoving())) {
+    if (d->attachedProperties && d->attachedProperties->isMoving()) {
         // while moving, we cannot select any items
         return;
     }
@@ -942,10 +941,12 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         d->lastPos = d->pressedPos = event->localPos();
         // connect the Flickable to know when to rebound
         d->listenToRebind(true);
-        // if it was moved, grab the panels
-        if (d->swiped) {
-            d->grabPanel(d->leadingActions, true);
-            d->grabPanel(d->trailingActions, true);
+        if (!d->selectable) {
+            // if it was moved, grab the panels
+            if (d->swiped) {
+                d->grabPanel(d->leadingActions, true);
+                d->grabPanel(d->trailingActions, true);
+            }
         }
     }
     // accept the event so we get the rest of the events as well
@@ -956,10 +957,6 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 {
     UCStyledItemBase::mouseReleaseEvent(event);
     Q_D(UCListItem);
-    if (d->selectable) {
-        // no move is allowed while selectable mode is on
-        return;
-    }
     // set released
     if (d->pressed) {
         d->listenToRebind(false);
@@ -967,7 +964,10 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             d->attachedProperties->disableInteractive(this, false);
         }
 
-        if (!d->suppressClick) {
+        if (d->selectable) {
+            // toggle selection
+            setSelected(!d->selected);
+        } else if (!d->suppressClick) {
             Q_EMIT clicked();
             d->_q_rebound();
         }
@@ -1310,6 +1310,8 @@ void UCListItem::setSelectable(bool selectable)
     }
     d->setupSelectionMode();
     d->selectable = selectable;
+    // disable contentIten from handling events
+    d->contentItem->setEnabled(!d->selectable);
     Q_EMIT selectableChanged();
 }
 
