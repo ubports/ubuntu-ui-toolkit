@@ -359,10 +359,9 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *panel)
  * Actions handled by the ListItem are all triggered with the ListItem's index
  * as parameter. This index can either be the model index when used with ListView,
  * or the child index from the parentItem's childItems list. Actions can use this
- * parameter to identify the instance of the ListItem on which it was executed.
- * However this will only work if the \l {Action::parameterType}{parameterType}
- * will be set to Action.Integer or not set at all, in which case the ListItem
- * will set the type to Action.Integer.
+ * parameter to identify the instance of the ListItem on which it was executed,
+ * in which case ListItem will change the type from \c Actions.None to \c Actions.Integer
+ * when it is triggered.
  *
  * \section3 Attached properties
  * ListItemActions provides a set of attached properties to the panels visualizing
