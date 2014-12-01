@@ -165,9 +165,7 @@ void UCListItemSnapAnimator::snapIn()
 QQuickPropertyAnimation *UCListItemSnapAnimator::getDefaultAnimation()
 {
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    if (!listItem->styleItem && listItem->loadStyle()) {
-        listItem->initStyleItem();
-    }
+    listItem->initStyleItem();
     return listItem->styleItem ? listItem->styleItem->m_snapAnimation : 0;
 }
 
@@ -335,9 +333,10 @@ UCListItemPrivate::UCListItemPrivate()
     , ready(false)
     , customStyle(false)
     , customColor(false)
+    , customOvershoot(false)
     , flicked(false)
     , xAxisMoveThresholdGU(1.5)
-    , overshoot(UCUnits::instance().gu(2))
+    , overshoot(0)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
     , attachedProperties(0)
@@ -386,7 +385,7 @@ void UCListItemPrivate::_q_updateThemedData()
         highlightColor = getPaletteColor("selected", "background");
         q->update();
     }
-    loadStyle();
+    loadStyle(true);
 }
 
 void UCListItemPrivate::_q_rebound()
@@ -431,19 +430,19 @@ void UCListItemPrivate::setStyle(QQmlComponent *delegate)
     delete styleComponent;
     customStyle = (delegate == 0);
     styleComponent = delegate;
-    loadStyle();
+    loadStyle(false);
     Q_EMIT q->styleChanged();
 }
 
 // update themed components
-bool UCListItemPrivate::loadStyle()
+bool UCListItemPrivate::loadStyle(bool reload)
 {
     if (!ready) {
         return false;
     }
-    if (!customStyle && !styleComponent) {
+    if (!customStyle) {
         Q_Q(UCListItem);
-        if (styleItem) {
+        if (reload && styleItem) {
             delete styleItem;
             styleItem = 0;
             Q_EMIT q->__styleInstanceChanged();
@@ -456,7 +455,7 @@ bool UCListItemPrivate::loadStyle()
 // creates the style item
 void UCListItemPrivate::initStyleItem()
 {
-    if (!styleComponent || styleItem) {
+    if (!styleItem && !loadStyle(false)) {
         return;
     }
     Q_Q(UCListItem);
@@ -464,9 +463,18 @@ void UCListItemPrivate::initStyleItem()
     styleItem = qobject_cast<UCListItemStyle*>(object);
     if (!styleItem) {
         delete object;
+        styleComponent->completeCreate();
+        return;
     }
     QQml_setParent_noEvent(styleItem, q);
     styleComponent->completeCreate();
+    Q_EMIT q->__styleInstanceChanged();
+
+    // get the overshoot value from the style!
+    if (!customOvershoot) {
+        overshoot = styleItem->m_swipeOvershoot;
+        Q_EMIT q->swipeOvershootChanged();
+    }
 }
 
 /*!
@@ -1174,6 +1182,25 @@ void UCListItem::setHighlightColor(const QColor &color)
     d->customColor = true;
     update();
     Q_EMIT highlightColorChanged();
+}
+
+/*!
+ * \qmlproperty real ListItem::swipeOvershoot
+ * The property configures the overshoot value on swiping. Its default value is configured by the style.
+ */
+qreal UCListItemPrivate::swipeOvershoot() const
+{
+    return overshoot;
+}
+void UCListItemPrivate::setSwipeOvershoot(qreal overshoot)
+{
+    if (this->overshoot == overshoot) {
+        return;
+    }
+    this->overshoot = overshoot;
+    update();
+    Q_Q(UCListItem);
+    Q_EMIT q->swipeOvershootChanged();
 }
 
 /*!

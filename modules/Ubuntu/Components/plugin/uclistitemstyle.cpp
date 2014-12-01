@@ -34,8 +34,13 @@
  *  \li - ignores any other visuals defined in the style.
  * \endlist
  */
-UCListItemStyle::UCListItemStyle(QQuickItem *parent) :
-    QQuickItem(parent)
+UCListItemStyle::UCListItemStyle(QQuickItem *parent)
+    : QQuickItem(parent)
+    , m_actionsDelegate(0)
+    , m_selectionDelegate(0)
+    , m_dragHandlerDelegate(0)
+    , m_snapAnimation(0)
+    , m_swipeOvershoot(0)
 {
 }
 
@@ -43,50 +48,23 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent) :
  * \qmlproperty Component ListItemStyle::actionsDelegate
  * Specifies the component visualizing the leading/trailing actions.
  */
-void UCListItemStyle::setActionsDelegate(QQmlComponent *delegate)
-{
-    if (m_actionsDelegate == delegate) {
-        return;
-    }
-    m_actionsDelegate = delegate;
-    Q_EMIT actionsDelegateChanged();
-}
 
 /*!
  * \qmlproperty Component ListItemStyle::selectionDelegate
  * Holds the component handling the selection mode.
  */
-void UCListItemStyle::setSelectionDelegate(QQmlComponent *delegate)
-{
-    if (m_selectionDelegate == delegate) {
-        return;
-    }
-    m_selectionDelegate = delegate;
-    Q_EMIT selectionDelegateChanged();
-}
 
 /*!
  * \qmlproperty Component ListItemStyle::dragHandlerDelegate
  * Holds the component shown when dragging mode is enabled.
  */
-void UCListItemStyle::setDragHandlerDelegate(QQmlComponent *delegate)
-{
-    if (m_dragHandlerDelegate == delegate) {
-        return;
-    }
-    m_dragHandlerDelegate = delegate;
-    Q_EMIT dragHandlerDelegateChanged();
-}
 
 /*!
  * \qmlproperty PropertyAnimation ListItemStyle::snapAnimation
  * Holds the animation used in animating when snapped in or out.
  */
-void UCListItemStyle::setSnapAnimation(QQuickPropertyAnimation *animation)
-{
-    if (m_snapAnimation == animation) {
-        return;
-    }
-    m_snapAnimation = animation;
-    Q_EMIT snapAnimationChanged();
-}
+
+/*!
+ * \qmlproperty real ListItemStyle::swipeOvershoot
+ * The property specifies the overshoot value of the ListItem.
+ */

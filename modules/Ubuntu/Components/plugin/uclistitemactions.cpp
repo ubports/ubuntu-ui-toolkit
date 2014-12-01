@@ -91,9 +91,7 @@ bool UCListItemActionsPrivate::connectToListItem(UCListItemActions *actions, UCL
     }
     // no parent set or panelItem yet, proceed with panel creation
     UCListItemPrivate *pItem = UCListItemPrivate::get(listItem);
-    if (!pItem->styleItem && pItem->loadStyle()) {
-        pItem->initStyleItem();
-    }
+    pItem->initStyleItem();
     if (!pItem->styleItem || (pItem->styleItem && !_this->createPanelItem(pItem->styleItem->m_actionsDelegate))) {
         return false;
     }
