@@ -135,7 +135,7 @@ void UCListItemSnapAnimator::snapOut()
         // restore flickable's interactive and cleanup
         listItem->attachedProperties->disableInteractive(item, false);
         // no need to listen flickables any longer
-        listItem->attachedProperties->listenToRebind(item, false);
+        listItem->listenToRebind(false);
     }
     // disconnect actions
     listItem->grabPanel(listItem->leadingActions, false);
@@ -905,6 +905,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
     // set released
     if (d->pressed) {
         d->listenToRebind(false);
+        // re-enable interactive flags, but keep listening on Flickable moving changes
         if (d->attachedProperties) {
             d->attachedProperties->disableInteractive(this, false);
         }
@@ -991,6 +992,8 @@ bool UCListItem::childMouseEventFilter(QQuickItem *child, QEvent *event)
         if (child->isEnabled() && (child->acceptedMouseButtons() & mouse->button()) && !qobject_cast<QQuickText*>(child)) {
             Q_D(UCListItem);
             d->suppressClick = true;
+            // listen for flickable to be able to rebind if movement started there!
+            d->listenToRebind(true);
         }
     } else if (type == QEvent::MouseButtonRelease) {
         Q_D(UCListItem);
