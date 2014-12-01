@@ -503,8 +503,6 @@ void UCListItemPrivate::_q_updateSize()
     QQuickItem *owner = flickable ? flickable : parentItem;
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
     q->setImplicitHeight(UCUnits::instance().gu(7));
-    // update overshoot value
-    overshoot = UCUnits::instance().gu(2);
 }
 
 // returns the index of the list item when used in model driven views,
@@ -1198,6 +1196,7 @@ void UCListItemPrivate::setSwipeOvershoot(qreal overshoot)
         return;
     }
     this->overshoot = overshoot;
+    customOvershoot = true;
     update();
     Q_Q(UCListItem);
     Q_EMIT q->swipeOvershootChanged();
