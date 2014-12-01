@@ -905,7 +905,6 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
     // set released
     if (d->pressed) {
         d->listenToRebind(false);
-        // re-enable interactive flags, but keep listening on Flickable moving changes
         if (d->attachedProperties) {
             d->attachedProperties->disableInteractive(this, false);
         }
