@@ -1,4 +1,5 @@
 TEMPLATE = aux
+TARGET = muha
 
 PROJECTNAME = ubuntu-ui-toolkit
 
@@ -22,6 +23,8 @@ potfile.commands += cd $$PWD; $$PWD/update-pot.sh ubuntu-ui-toolkit-gallery $$PW
 
 ## Installation steps for mo files. 'make install'
 MO_FILES = $$files(*.po)
+
+message($$MO_FILES)
 
 install_mo_commands =
 for(po_file, MO_FILES) {

@@ -1,7 +1,7 @@
 include( documentation/documentation.pri )
 
 TEMPLATE = subdirs
-SUBDIRS += modules/ubuntu-ui-toolkit.pro tests examples po/po.pro
+SUBDIRS += modules/ubuntu-ui-toolkit.pro tests examples po
 
 tests.depends = sub-modules-ubuntu-ui-toolkit-pro
 

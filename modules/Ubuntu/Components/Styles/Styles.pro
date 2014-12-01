@@ -2,7 +2,7 @@ TEMPLATE=aux
 
 CONFIG+=ubuntu_qml_module
 
-uri = Ubuntu.Components
+uri = Ubuntu.Components.Styles
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
 
 # qmldir file
