@@ -20,6 +20,7 @@ import Ubuntu.Components 1.2
 
 Styles.ListItemStyle {
 
+    swipeOvershoot: units.gu(2)
     actionsDelegate: ListItemPanel{}
 
     snapAnimation: PropertyAnimation {

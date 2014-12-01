@@ -19,6 +19,7 @@
 
 #include "uclistitemactions.h"
 #include "QtCore/private/qobject_p.h"
+#include <QtQml/QQmlListProperty>
 
 class UCListItem;
 class UCListItemActionsPrivate : public QObjectPrivate {
@@ -47,6 +48,11 @@ public:
     static bool connectToListItem(UCListItemActions *options, UCListItem *listItem, bool leading);
     static void disconnectFromListItem(UCListItemActions *options);
     static bool isConnectedTo(UCListItemActions *options, UCListItem *listItem);
+
+    static int actions_count(QQmlListProperty<UCAction> *p);
+    static void actions_append(QQmlListProperty<UCAction> *p, UCAction *v);
+    static UCAction *actions_at(QQmlListProperty<UCAction>*, int);
+    static void actions_clear(QQmlListProperty<UCAction>*);
 
     QQuickItem *createPanelItem(QQmlComponent *delegate);
 };

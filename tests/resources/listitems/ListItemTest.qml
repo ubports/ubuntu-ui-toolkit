@@ -201,6 +201,7 @@ MainView {
                         color: "red"
                         highlightColor: "lime"
                         divider.colorFrom: UbuntuColors.green
+                        swipeOvershoot: units.gu(10)
 
                         leadingActions: ListItemActions {
                             actions: leadingArray

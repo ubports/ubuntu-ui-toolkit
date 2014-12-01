@@ -67,7 +67,6 @@ class UCListItemActionsAttached : public QObject
     Q_PROPERTY(qreal offset READ offset NOTIFY offsetChanged)
     Q_PROPERTY(UCListItemActions::Status status READ status NOTIFY statusChanged)
     Q_PROPERTY(bool swiping READ swiping NOTIFY swipingChanged)
-    Q_PROPERTY(qreal overshoot READ overshoot NOTIFY overshootChanged)
 public:
     UCListItemActionsAttached(QObject *parent = 0);
     ~UCListItemActionsAttached();
@@ -84,7 +83,6 @@ public:
     bool swiping();
     qreal offset();
     UCListItemActions::Status status();
-    qreal overshoot();
 
 public Q_SLOTS:
     void snapToPosition(qreal position);
@@ -97,7 +95,6 @@ Q_SIGNALS:
     void offsetChanged();
     void statusChanged();
     void swipingChanged();
-    void overshootChanged();
 
 private:
     QPointer<UCListItemActions> m_container;

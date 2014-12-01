@@ -136,7 +136,7 @@ void UCListItemSnapAnimator::snapOut()
         // restore flickable's interactive and cleanup
         listItem->attachedProperties->disableInteractive(item, false);
         // no need to listen flickables any longer
-        listItem->attachedProperties->listenToRebind(item, false);
+        listItem->listenToRebind(false);
     }
     // disconnect actions
     listItem->grabPanel(listItem->leadingActions, false);
@@ -167,9 +167,7 @@ void UCListItemSnapAnimator::snapIn()
 QQuickPropertyAnimation *UCListItemSnapAnimator::getDefaultAnimation()
 {
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    if (!listItem->styleItem && listItem->loadStyle()) {
-        listItem->initStyleItem();
-    }
+    listItem->initStyleItem();
     return listItem->styleItem ? listItem->styleItem->m_snapAnimation : 0;
 }
 
@@ -340,8 +338,9 @@ UCListItemPrivate::UCListItemPrivate()
     , selected(false)
     , customStyle(false)
     , customColor(false)
+    , customOvershoot(false)
     , xAxisMoveThresholdGU(1.5)
-    , overshoot(UCUnits::instance().gu(2))
+    , overshoot(0)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
     , attachedProperties(0)
@@ -399,7 +398,7 @@ void UCListItemPrivate::_q_updateThemedData()
         highlightColor = getPaletteColor("selected", "background");
         q->update();
     }
-    loadStyle();
+    loadStyle(true);
 }
 
 void UCListItemPrivate::_q_dimmDisabled()
@@ -464,19 +463,19 @@ void UCListItemPrivate::setStyle(QQmlComponent *delegate)
     delete styleComponent;
     customStyle = (delegate == 0);
     styleComponent = delegate;
-    loadStyle();
+    loadStyle(false);
     Q_EMIT q->styleChanged();
 }
 
 // update themed components
-bool UCListItemPrivate::loadStyle()
+bool UCListItemPrivate::loadStyle(bool reload)
 {
     if (!ready) {
         return false;
     }
-    if (!customStyle && !styleComponent) {
+    if (!customStyle) {
         Q_Q(UCListItem);
-        if (styleItem) {
+        if (reload && styleItem) {
             delete styleItem;
             styleItem = 0;
             Q_EMIT q->__styleInstanceChanged();
@@ -489,7 +488,7 @@ bool UCListItemPrivate::loadStyle()
 // creates the style item
 void UCListItemPrivate::initStyleItem()
 {
-    if (!styleComponent || styleItem) {
+    if (!styleItem && !loadStyle(false)) {
         return;
     }
     Q_Q(UCListItem);
@@ -497,9 +496,18 @@ void UCListItemPrivate::initStyleItem()
     styleItem = qobject_cast<UCListItemStyle*>(object);
     if (!styleItem) {
         delete object;
+        styleComponent->completeCreate();
+        return;
     }
     QQml_setParent_noEvent(styleItem, q);
     styleComponent->completeCreate();
+    Q_EMIT q->__styleInstanceChanged();
+
+    // get the overshoot value from the style!
+    if (!customOvershoot) {
+        overshoot = styleItem->m_swipeOvershoot;
+        Q_EMIT q->swipeOvershootChanged();
+    }
 }
 
 /*!
@@ -531,8 +539,6 @@ void UCListItemPrivate::_q_updateSize()
     QQuickItem *owner = flickable ? flickable : parentItem;
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
     q->setImplicitHeight(UCUnits::instance().gu(7));
-    // update overshoot value
-    overshoot = UCUnits::instance().gu(2);
 }
 
 // returns the index of the list item when used in model driven views,
@@ -656,12 +662,7 @@ QQuickItem *UCListItemPrivate::createSelectionPanel()
     Q_Q(UCListItem);
     if (!selectionPanel) {
         // get the component from the style
-        if (!styleComponent) {
-            loadStyle();
-        }
-        if (!styleItem) {
-            initStyleItem();
-        }
+        initStyleItem();
         if (styleItem && styleItem->m_selectionDelegate) {
             if (!styleItem->m_selectionDelegate->isError()) {
                 selectionPanel = qobject_cast<QQuickItem*>(
@@ -1051,6 +1052,8 @@ bool UCListItem::childMouseEventFilter(QQuickItem *child, QEvent *event)
         if (child->isEnabled() && (child->acceptedMouseButtons() & mouse->button()) && !qobject_cast<QQuickText*>(child)) {
             Q_D(UCListItem);
             d->suppressClick = true;
+            // listen for flickable to be able to rebind if movement started there!
+            d->listenToRebind(true);
         }
     } else if (type == QEvent::MouseButtonRelease) {
         Q_D(UCListItem);
@@ -1342,6 +1345,33 @@ void UCListItem::setSelected(bool selected)
         }
     }
     Q_EMIT selectedChanged();
+}
+
+/*!
+ * \qmlproperty real ListItem::swipeOvershoot
+ * The property configures the overshoot value on swiping. Its default value is
+ * configured by the \l {ListItemStyle}{style}. Any positive value overrides the
+ * default value, and any negative value resets it back to the default.
+ */
+qreal UCListItemPrivate::swipeOvershoot() const
+{
+    return overshoot;
+}
+void UCListItemPrivate::setSwipeOvershoot(qreal overshoot)
+{
+    // same value should be guarded only if the style hasn't been loaded yet
+    // swipeOvershoot can be set to 0 prior the style is loaded.
+    if (this->overshoot == overshoot && styleItem) {
+        return;
+    }
+    customOvershoot = (overshoot >= 0.0);
+    this->overshoot = (overshoot < 0.0) ?
+                // reset, use style to get the overshoot value
+                (styleItem ? styleItem->m_swipeOvershoot : 0.0) :
+                overshoot;
+    update();
+    Q_Q(UCListItem);
+    Q_EMIT q->swipeOvershootChanged();
 }
 
 /*!

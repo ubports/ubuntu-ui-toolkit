@@ -871,6 +871,7 @@ plugins.qmltypes
     Property { name: "leadingActions"; type: "UCListItemActions"; isPointer: true }
     Property { name: "trailingActions"; type: "UCListItemActions"; isPointer: true }
     Property { name: "pressed"; type: "bool"; isReadonly: true }
+    Property { name: "swipeOvershoot"; type: "double" }
     Property { name: "contentMoving"; type: "bool"; isReadonly: true }
     Property { name: "color"; type: "QColor" }
     Property { name: "highlightColor"; type: "QColor" }
@@ -902,7 +903,6 @@ plugins.qmltypes
     Property { name: "offset"; type: "double"; isReadonly: true }
     Property { name: "status"; type: "UCListItemActions::Status"; isReadonly: true }
     Property { name: "swiping"; type: "bool"; isReadonly: true }
-    Property { name: "overshoot"; type: "double"; isReadonly: true }
     Method {
     name: "snapToPosition"
     Parameter { name: "position"; type: "double" }
@@ -923,6 +923,7 @@ plugins.qmltypes
     Property { name: "selectionDelegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "dragHandlerDelegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "snapAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
+    Property { name: "swipeOvershoot"; type: "double" }
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1", "Mouse 1.0"]
