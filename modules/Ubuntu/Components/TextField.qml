@@ -26,8 +26,6 @@ import Ubuntu.Components.Popups 1.0
     Input constraints can be set through validator or inputMask. Setting echoMode
     to an appropriate value enables TextField to be used as password input field.
 
-    \b{This component is under heavy development.}
-
     \l {http://design.ubuntu.com/apps/building-blocks/text-field}{See also the Design Guidelines on the Text Field}.
 
     Example:
@@ -982,6 +980,9 @@ ActionItem {
             // FocusScope will forward focus to this component
             focus: true
             anchors.verticalCenter: parent.verticalCenter
+            verticalAlignment: TextInput.AlignVCenter
+            width: flicker.width
+            height: flicker.height
             cursorDelegate: TextCursor {
                 handler: inputHandler
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -12,12 +12,20 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-import QtQuick 2.0
-import Ubuntu.Components.Themes.Ambiance 0.1
+import QtQuick 2.3
+import Ubuntu.Components 1.1
 
-OptionSelectorStyle {
-    id: suruDarkStyle
+Item {
+    property alias service: service
+    ServiceProperties {
+        id: service
+        service: "org.freedesktop.Accounts"
+        serviceInterface: "org.freedesktop.Accounts"
+        path: "/org/freedesktop/Accounts"
+        adaptorInterface: "com.ubuntu.touch.AccountsService.Sound"
+
+        property bool incomingCallVibrate: true
+    }
 }

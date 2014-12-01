@@ -84,11 +84,15 @@
 */
 
 /*!
-    \deprecated
-    \qmlproperty url UbuntuShape::borderSource
+    \qmlproperty string UbuntuShape::borderSource
 
-    The image used as a border.
-    We plan to expose that feature through styling properties.
+    This property defines the look of the shape borders. The supported strings
+    are \c "radius_idle.sci" providing an idle button style and
+    "radius_pressed.sci" providing a pressed button style. Any other strings
+    (like the empty one "") disables styling. Default value is \c
+    "radius_idle.sci".
+
+    \note We plan to expose that feature through styling properties.
 */
 
 /*!

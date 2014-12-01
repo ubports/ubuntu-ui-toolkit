@@ -37,7 +37,7 @@ Item {
         Flickable {
             id: outerFlicker
             width: parent.width
-            height: units.gu(40)
+            height: units.gu(20)
             clip: true
             contentWidth: autoSizeTextArea.width
             contentHeight: autoSizeTextArea.height
@@ -47,6 +47,14 @@ Item {
                 maximumLineCount: 0
                 text: "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1"
             }
+        }
+        TextField {
+            id: emptyTextField
+            text: ""
+        }
+        TextArea {
+            id: emptyTextArea
+            text: ""
         }
     }
 
@@ -74,12 +82,16 @@ Item {
         function init() {
             textField.cursorPosition = 0;
             textArea.cursorPosition = 0;
+            emptyTextField.cursorPosition = 0;
+            emptyTextArea.cursorPosition = 0;
         }
         function cleanup() {
             textField.cursorPosition = 1;
             textArea.cursorPosition = 1;
             textField.focus = false;
             textArea.focus = false;
+            emptyTextField.focus = false;
+            emptyTextArea.focus = false;
             autoSizeTextArea.focus = false;
             popupSpy.target = null;
             popupSpy.clear();
@@ -177,6 +189,29 @@ Item {
             TestExtras.touchRelease(0, data.input, guPoint(1, 1));
             // dismiss popover
             TestExtras.touchClick(0, testMain, 0, 0);
+        }
+
+        function test_longtap_when_empty_data() {
+            return [
+                {tag: "TextField", input: emptyTextField},
+            ];
+        }
+        function test_longtap_when_empty(data) {
+            TestExtras.touchClick(0, data.input, centerOf(data.input));
+            wait(500);
+
+            popupSpy.target = findChild(data.input, "input_handler");
+
+            TestExtras.touchLongPress(0, data.input, guPoint(1, 1));
+            waitForRendering(data.input, 500);
+            popupSpy.wait();
+            compare(popupSpy.count, 1, "Copy/paste popup should be displayed.");
+
+            // cleanup
+            TestExtras.touchRelease(0, data.input, guPoint(1, 1));
+            // dismiss popover
+            TestExtras.touchClick(0, testMain, 0, 0);
+            waitForRendering(data.input, 500);
         }
 
         function test_long_tap_on_selected_text_data() {

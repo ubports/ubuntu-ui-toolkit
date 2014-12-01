@@ -23,10 +23,6 @@ Style.PageHeadStyle {
     id: headerStyle
     objectName: "PageHeadStyle" // used in unit tests
     contentHeight: units.gu(7)
-    // FIXME: After After https://code.launchpad.net/~mzanetti/unity8/new-pageheader-api/+merge/239242
-    //  lands, set separatorSource and separatorBottomSource to "" in order to use the new divider.
-    separatorSource: "artwork/PageHeaderBaseDividerLight.sci"
-    separatorBottomSource: "artwork/PageHeaderBaseDividerBottom.png"
     fontWeight: Font.Light
     fontSize: "x-large"
     textLeftMargin: units.gu(2)
@@ -105,12 +101,7 @@ Style.PageHeadStyle {
         // backgroundColor is used in the new HeadDividerStyle
         property color backgroundColor: styledItem.dividerColor
 
-        // FIXME: After https://code.launchpad.net/~mzanetti/unity8/new-pageheader-api/+merge/239242
-        //  lands, set the value of useOldDivider to: "" != separatorSource
-        property bool useOldDivider: false
-
-        style: useOldDivider ? Theme.createStyleComponent("HeadSeparatorImageStyle.qml", divider)
-                             : Theme.createStyleComponent("HeadDividerStyle.qml", divider)
+        style: Theme.createStyleComponent("HeadDividerStyle.qml", divider)
 
         property PageHeadSections sections: styledItem.config.sections
 
@@ -140,11 +131,12 @@ Style.PageHeadStyle {
                     Rectangle {
                         visible: parent.pressed
                         anchors {
+                            verticalCenter: parent.verticalCenter
                             left: parent.left
                             right: parent.right
-                            top: parent.top
+                            rightMargin: verticalDividerLine.width
                         }
-                        height: parent.height - bottomDividerLine.height
+                        height: sectionsRow.height
                         color: headerStyle.sectionHighlightColor
                     }
 
@@ -161,7 +153,7 @@ Style.PageHeadStyle {
 
                     // vertical divider line
                     Rectangle {
-                        id: bottomDividerLine
+                        id: verticalDividerLine
                         anchors {
                             verticalCenter: parent.verticalCenter
                             right: parent.right

@@ -67,7 +67,7 @@ Ubuntu.StyledItem {
             // open context menu only for cursorPosition or selectionStart as to
             // ensure that only one popover gets opened
             if (positionProperty !== "selectionEnd") {
-                openPopover();
+                openPopover(fromTouch);
             }
         }
         onTextModified: typing = true
@@ -194,7 +194,7 @@ Ubuntu.StyledItem {
             Ubuntu.Mouse.onClicked: openPopover()
             Ubuntu.Mouse.onPressAndHold: {
                 handler.main.selectWord();
-                handler.pressAndHold(-1);
+                handler.pressAndHold(-1, false);
             }
             Ubuntu.Mouse.onDoubleClicked: handler.main.selectWord()
             Ubuntu.Mouse.clickAndHoldThreshold: units.gu(2)
@@ -284,7 +284,7 @@ Ubuntu.StyledItem {
                     PopupUtils.close(handler.popover);
                 }
             } else {
-                handler.pressAndHold(-1);
+                handler.pressAndHold(-1, false);
             }
         }
     }
