@@ -510,7 +510,6 @@ Item {
             listView.positionViewAtEnd();
             var listItem = findChild(listView, "listItem" + data.index);
             verify(listItem, "Cannot get list item for testing");
-            listItem.Component.onDestruction.connect(function() {print("KILLED")})
 
             compare(listItem.swipeOvershoot, 0.0, "No overshoot should be set yet!");
             listItem.swipeOvershoot = data.value;
