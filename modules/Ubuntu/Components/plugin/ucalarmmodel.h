@@ -20,16 +20,21 @@
 #define UCALARMSMODEL_H
 
 #include <QtCore/QAbstractListModel>
+#include <QtQml/QQmlParserStatus>
 #include "ucalarm.h"
 
 class UCAlarm;
-class UCAlarmModel : public QAbstractListModel
+class UCAlarmModel : public QAbstractListModel, public QQmlParserStatus
 {
     Q_OBJECT
+    Q_INTERFACES(QQmlParserStatus)
     Q_PROPERTY(int count READ count NOTIFY countChanged)
 public:
     explicit UCAlarmModel(QObject *parent = 0);
     ~UCAlarmModel();
+
+    void classBegin();
+    void componentComplete();
 
     int rowCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
@@ -44,16 +49,20 @@ public:
     
 Q_SIGNALS:
     void countChanged();
-    
-private Q_SLOTS:
-    void refresh();
-    void update(const QList<QVariant> cookies);
 
-private:
-    bool m_ready;
-    QHash<int, QByteArray> m_roles;
-    QList<UCAlarm*> m_alarms;
-    void clear();
+public Q_SLOTS:
+    Q_REVISION(1) void refresh();
+
+private Q_SLOTS:
+    void refreshStart();
+    void refreshEnd();
+    void update(int index);
+    void removeStarted(int index);
+    void removeFinished();
+    void insertStarted(int index);
+    void insertFinished();
+    void moveStarted(int from, int to);
+    void moveFinished();
 };
 
 #endif // UCALARMSMODEL_H

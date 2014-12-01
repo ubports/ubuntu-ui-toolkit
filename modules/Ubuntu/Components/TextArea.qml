@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 1.1 as Ubuntu
+import Ubuntu.Components.Popups 1.0
 import "mathUtils.js" as MathUtils
 
 /*!
@@ -611,7 +612,6 @@ StyledItem {
     }
 
     /*!
-      \preliminary
       Places the clipboard or the data given as parameter into the text input.
       The selected text will be replaces with the data.
     */
@@ -847,12 +847,13 @@ StyledItem {
             mouseSelectionMode: TextEdit.SelectWords
             selectByMouse: true
             activeFocusOnPress: true
+            onActiveFocusChanged: if (!activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
             cursorDelegate: TextCursor {
                 handler: inputHandler
             }
             color: control.__styleInstance.color
             selectedTextColor: Theme.palette.selected.foregroundText
-            selectionColor: Theme.palette.selected.selection
+            selectionColor: Theme.palette.selected.foreground
             font.pixelSize: FontUtils.sizeToPixels("medium")
             // forward keys to the root element so it can be captured outside of it
             // as well as to InputHandler to handle PageUp/PageDown keys

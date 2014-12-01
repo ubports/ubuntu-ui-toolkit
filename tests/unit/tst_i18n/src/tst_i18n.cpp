@@ -118,6 +118,26 @@ private Q_SLOTS:
         QCOMPARE(applicationName, QCoreApplication::applicationName());
         QCOMPARE(applicationName, i18n->domain());
 
+        // There no translation happens
+        QQuickItem* page(testItem(mainView, "page"));
+        QVERIFY(page);
+        QCOMPARE(page->property("title").toString(), QString("Welcome"));
+        QQuickItem* button(testItem(page, "button"));
+        QVERIFY(button);
+        QCOMPARE(button->property("text").toString(), QString("Count the kilometres"));
+        QQuickItem* all1(testItem(page, "all1"));
+        QVERIFY(all1);
+        QCOMPARE(all1->property("text").toString(), QString("All"));
+        QQuickItem* all2(testItem(page, "all2"));
+        QVERIFY(all2);
+        QCOMPARE(all2->property("text").toString(), QString("All"));
+
+        // There no translation happens in C++ either
+        QCOMPARE(i18n->dtr(i18n->domain(), QString("Welcome")), QString("Welcome"));
+        QCOMPARE(i18n->tr(QString("Count the kilometres")), QString("Count the kilometres"));
+        QCOMPARE(i18n->ctr(QString("All Contacts"), QString("All")), QString("All"));
+        QCOMPARE(i18n->ctr(QString("All Calls"), QString("All")), QString("All"));
+
         // Was the locale folder detected and set?
         QString boundDomain(C::bindtextdomain(i18n->domain().toUtf8(), ((const char*)0)));
         QString testAppDir(QCoreApplication::applicationDirPath() + "/localizedApp");
@@ -145,16 +165,16 @@ private Q_SLOTS:
         spy.wait();
 
         // Inspect translated strings in QML
-        QQuickItem* page(testItem(mainView, "page"));
-        QVERIFY(page);
         QCOMPARE(page->property("title").toString(), QString("Greets"));
-        QQuickItem* button(testItem(page, "button"));
-        QVERIFY(button);
         QCOMPARE(button->property("text").toString(), QString("Count the clicks"));
+        QCOMPARE(all1->property("text").toString(), QString("Todos"));
+        QCOMPARE(all2->property("text").toString(), QString("Todas"));
 
         // Translate in C++
         QCOMPARE(i18n->dtr(i18n->domain(), QString("Welcome")), QString("Greets"));
         QCOMPARE(i18n->tr(QString("Count the kilometres")), QString("Count the clicks"));
+        QCOMPARE(i18n->ctr(QString("All Contacts"), QString("All")), QString("Todos"));
+        QCOMPARE(i18n->ctr(QString("All Calls"), QString("All")), QString("Todas"));
     }
 };
 

@@ -16,6 +16,7 @@
 
 import QtQuick 2.0
 import Ubuntu.Components 1.1 as Ubuntu
+import Ubuntu.Components.Popups 1.0
 
 /*!
     \qmltype TextField
@@ -24,8 +25,6 @@ import Ubuntu.Components 1.1 as Ubuntu
     \brief The TextField element displays a single line of editable plain text.
     Input constraints can be set through validator or inputMask. Setting echoMode
     to an appropriate value enables TextField to be used as password input field.
-
-    \b{This component is under heavy development.}
 
     \l {http://design.ubuntu.com/apps/building-blocks/text-field}{See also the Design Guidelines on the Text Field}.
 
@@ -912,6 +911,11 @@ ActionItem {
             bottom: parent.bottom
             margins: internal.spacing
         }
+        /* draggedItemMouseArea and dragger in TextCursor are reparented to the
+           TextField and end up being on top of the clear button.
+           Ensure that the clear button receives touch/mouse events first.
+        */
+        z: 100
         width: visible ? icon.width : 0
         visible: control.hasClearButton &&
                  !control.readOnly &&
@@ -976,12 +980,15 @@ ActionItem {
             // FocusScope will forward focus to this component
             focus: true
             anchors.verticalCenter: parent.verticalCenter
+            verticalAlignment: TextInput.AlignVCenter
+            width: flicker.width
+            height: flicker.height
             cursorDelegate: TextCursor {
                 handler: inputHandler
             }
             color: control.__styleInstance.color
             selectedTextColor: Theme.palette.selected.foregroundText
-            selectionColor: Theme.palette.selected.selection
+            selectionColor: Theme.palette.selected.foreground
             font.pixelSize: FontUtils.sizeToPixels("medium")
             passwordCharacter: "\u2022"
             // forward keys to the root element so it can be captured outside of it
@@ -991,6 +998,7 @@ ActionItem {
             // overrides
             selectByMouse: true
             activeFocusOnPress: true
+            onActiveFocusChanged: if (!activeFocus && inputHandler.popover) PopupUtils.close(inputHandler.popover)
 
             // input selection and navigation handling
             Ubuntu.Mouse.forwardTo: [inputHandler]

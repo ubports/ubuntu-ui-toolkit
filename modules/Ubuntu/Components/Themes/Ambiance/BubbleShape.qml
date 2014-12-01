@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Canonical Ltd.
+ * Copyright 2013-2014 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -20,16 +20,23 @@ import Ubuntu.Components 1.1
 Item {
     id: bubbleShape
 
+    /*!
+      Do not use an UbuntuShape but a Rectangle as the background of the BubbleShape.
+     */
+    property bool square: false
+
+    /*!
+      The background color of the bubble.
+     */
+    property color color: square ? Theme.palette.normal.background : Theme.palette.normal.overlay
+
     property point target
     property string direction: "down"
     property bool clipContent: false
     default property alias children: content.children
-    property alias bubbleColor: colorRect.color
-    property alias bubbleOpacity: colorRect.opacity
     // FIXME: This should not be necessary. See
     // https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1214978
     property alias arrowSource: arrow.source
-    property bool square: false
 
     implicitWidth: units.gu(10)
     implicitHeight: units.gu(8)
@@ -128,7 +135,7 @@ Item {
         Rectangle {
             id: colorRect
             anchors.fill: parent
-            color: square ? Theme.palette.normal.background : Theme.palette.normal.overlay
+            color: bubbleShape.color
             visible: bubbleShape.clipContent
         }
     }

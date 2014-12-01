@@ -26,6 +26,8 @@
 #include <QtTest/QTest>
 #include <QtTest/QSignalSpy>
 
+#include "uctestcase.h"
+
 class tst_UCArguments : public QObject
 {
     Q_OBJECT
@@ -73,6 +75,10 @@ private:
         QTest::newRow(dataTag.toLocal8Bit().constData()) << commandLine << expectedError;
     }
 
+    void testCommandLineUsage(QString commandLine, bool expectedError, bool usage=false, QString dataTag=QString()) {
+        QTest::newRow(dataTag.toLocal8Bit().constData()) << commandLine << expectedError << usage;
+    }
+
     void testCommandLineForUnicode(QString argumentValue) {
         QTest::newRow(argumentValue.toLocal8Bit().constData()) << QString("--unicodeArgument ").append(argumentValue) << argumentValue;
     }
@@ -111,6 +117,10 @@ private Q_SLOTS:
         setCommandLine(commandLine);
 
         UCArguments arguments;
+        if (error) {
+            QString usage(arguments.usage());
+            QTest::ignoreMessage(QtWarningMsg, usage.toUtf8());
+        }
         arguments.componentComplete();
 
         QCOMPARE(arguments.error(), error);
@@ -169,6 +179,7 @@ private Q_SLOTS:
     void testOneRequiredNamedBoolArgument() {
         QFETCH(QString, commandLine);
         QFETCH(bool, error);
+        QFETCH(bool, usage);
 
         setCommandLine(commandLine);
 
@@ -176,6 +187,10 @@ private Q_SLOTS:
         UCArgument boolArgument;
         boolArgument.setName("boolArgument");
         arguments.appendArguments(&boolArgument);
+        if (error)
+            QTest::ignoreMessage(QtWarningMsg, "binary is expecting an additional argument: --boolArgument");
+        if (error && usage)
+            QTest::ignoreMessage(QtWarningMsg, arguments.usage().toUtf8());
         arguments.componentComplete();
 
         QCOMPARE(arguments.values()->property("boolArgument").type(), QVariant::Bool);
@@ -186,20 +201,22 @@ private Q_SLOTS:
     void testOneRequiredNamedBoolArgument_data() {
         QTest::addColumn<QString>("commandLine");
         QTest::addColumn<bool>("error");
-        testCommandLine("", true, "NO ARGUMENTS");
-        testCommandLine("--boolArgument", false);
-        testCommandLine("--boolArgument --boolArgument", false);
-        testCommandLine("--boolArgument --otherBool", false);
-        testCommandLine("--boolArgument --otherArg1=value --otherArg2 value", false);
-        testCommandLine("--boolArgument --otherArg=value defaultValue1 defaultValue2", false);
-        testCommandLine("--otherArg=value --boolArgument defaultValue1 defaultValue2", false);
-        testCommandLine("--otherArg=value defaultValue1 defaultValue2 --boolArgument", false);
-        testCommandLine("--otherArg=value defaultValue1 defaultValue2", true);
+        QTest::addColumn<bool>("usage");
+        testCommandLineUsage("", true, true, "NO ARGUMENTS");
+        testCommandLineUsage("--boolArgument", false);
+        testCommandLineUsage("--boolArgument --boolArgument", false);
+        testCommandLineUsage("--boolArgument --otherBool", false);
+        testCommandLineUsage("--boolArgument --otherArg1=value --otherArg2 value", false);
+        testCommandLineUsage("--boolArgument --otherArg=value defaultValue1 defaultValue2", false);
+        testCommandLineUsage("--otherArg=value --boolArgument defaultValue1 defaultValue2", false);
+        testCommandLineUsage("--otherArg=value defaultValue1 defaultValue2 --boolArgument", false);
+        testCommandLineUsage("--otherArg=value defaultValue1 defaultValue2", true, true);
     }
 
     void testOneRequiredNamedArgument() {
         QFETCH(QString, commandLine);
         QFETCH(bool, error);
+        QFETCH(bool, usage);
 
         setCommandLine(commandLine);
 
@@ -212,6 +229,10 @@ private Q_SLOTS:
         argument1.setValueNames(valueNames);
         arguments.appendArguments(&argument1);
 
+        if (error)
+            QTest::ignoreMessage(QtWarningMsg, "binary is expecting an additional argument: --argument1=VALUE1");
+        if (error && usage)
+            QTest::ignoreMessage(QtWarningMsg, arguments.usage().toUtf8());
         arguments.componentComplete();
 
         QCOMPARE(arguments.error(), error);
@@ -226,19 +247,21 @@ private Q_SLOTS:
     void testOneRequiredNamedArgument_data() {
         QTest::addColumn<QString>("commandLine");
         QTest::addColumn<bool>("error");
-        testCommandLine("", true, "NO ARGUMENTS");
-        testCommandLine("--argument1=value1", false);
-        testCommandLine("--argument1 value1", false);
-        testCommandLine("--otherArgument --argument1 value1", false);
-        testCommandLine("--argument1 value1 --otherArgument", false);
-        testCommandLine("--argument1 value1 defaultValue --otherArgument", false);
-        testCommandLine("--argument1=value1 defaultValue --otherArgument=value", false);
-        testCommandLine("--argument1 value1 defaultValue", false);
+        QTest::addColumn<bool>("usage");
+        testCommandLineUsage("", true, true, "NO ARGUMENTS");
+        testCommandLineUsage("--argument1=value1", false);
+        testCommandLineUsage("--argument1 value1", false);
+        testCommandLineUsage("--otherArgument --argument1 value1", false);
+        testCommandLineUsage("--argument1 value1 --otherArgument", false);
+        testCommandLineUsage("--argument1 value1 defaultValue --otherArgument", false);
+        testCommandLineUsage("--argument1=value1 defaultValue --otherArgument=value", false);
+        testCommandLineUsage("--argument1 value1 defaultValue", false);
     }
 
     void testTwoRequiredNamedArguments() {
         QFETCH(QString, commandLine);
         QFETCH(bool, error);
+        QFETCH(bool, usage);
 
         setCommandLine(commandLine);
 
@@ -256,6 +279,12 @@ private Q_SLOTS:
         argument2.setValueNames(valueNames);
         arguments.appendArguments(&argument2);
 
+        if (error && commandLine == "--argument1=value1 value2 --argument2=value1")
+            QTest::ignoreMessage(QtWarningMsg, "binary is expecting a value for argument: --argument2=VALUE1 VALUE2");
+        else if (error)
+            QTest::ignoreMessage(QtWarningMsg, "binary is expecting an additional argument: --argument1=VALUE1 VALUE2");
+        if (error && usage)
+            QTest::ignoreMessage(QtWarningMsg, arguments.usage().toUtf8());
         arguments.componentComplete();
 
         QCOMPARE(arguments.error(), error);
@@ -270,19 +299,21 @@ private Q_SLOTS:
     void testTwoRequiredNamedArguments_data() {
         QTest::addColumn<QString>("commandLine");
         QTest::addColumn<bool>("error");
-        testCommandLine("", true, "NO ARGUMENTS");
-        testCommandLine("--argument1=value1 value2 --argument2=value1 value2", false);
-        testCommandLine("--argument1 value1 value2 --argument2 value1 value2", false);
-        testCommandLine("--otherArgument --argument1 value1 value2 --argument2 value1 value2", false);
-        testCommandLine("--argument1 value1 value2 --argument2 value1 value2 --otherArgument", false);
-        testCommandLine("--argument1 value1 value2 --argument2 value1 value2 defaultValue --otherArgument", false);
-        testCommandLine("--argument1 value1 value2 --argument2 value1 value2 defaultValue", false);
-        testCommandLine("--argument1=value1 value2 --argument2=value1", true);
+        QTest::addColumn<bool>("usage");
+        testCommandLineUsage("", true, "NO ARGUMENTS");
+        testCommandLineUsage("--argument1=value1 value2 --argument2=value1 value2", false);
+        testCommandLineUsage("--argument1 value1 value2 --argument2 value1 value2", false);
+        testCommandLineUsage("--otherArgument --argument1 value1 value2 --argument2 value1 value2", false);
+        testCommandLineUsage("--argument1 value1 value2 --argument2 value1 value2 --otherArgument", false);
+        testCommandLineUsage("--argument1 value1 value2 --argument2 value1 value2 defaultValue --otherArgument", false);
+        testCommandLineUsage("--argument1 value1 value2 --argument2 value1 value2 defaultValue", false);
+        testCommandLineUsage("--argument1=value1 value2 --argument2=value1", true, true);
     }
 
     void testRequiredDefaultArgument() {
         QFETCH(QString, commandLine);
         QFETCH(bool, error);
+        QFETCH(bool, usage);
 
         setCommandLine(commandLine);
 
@@ -293,6 +324,10 @@ private Q_SLOTS:
         UCArgument defaultArgument;
         defaultArgument.setValueNames(valueNames);
         arguments.setDefaultArgument(&defaultArgument);
+        if (error)
+            QTest::ignoreMessage(QtWarningMsg, "binary is expecting additional arguments: DEFAULTVALUE1 DEFAULTVALUE2");
+        if (error && usage)
+            QTest::ignoreMessage(QtWarningMsg, arguments.usage().toUtf8());
         arguments.componentComplete();
 
         QCOMPARE(arguments.error(), error);
@@ -311,13 +346,14 @@ private Q_SLOTS:
     void testRequiredDefaultArgument_data() {
         QTest::addColumn<QString>("commandLine");
         QTest::addColumn<bool>("error");
-        testCommandLine("", true, "NO ARGUMENTS");
-        testCommandLine("--boolArgument", true);
-        testCommandLine("--boolArgument --otherArg1=value --otherArg2 value", true);
-        testCommandLine("--boolArgument --otherArg=value defaultValue1 defaultValue2", false);
-        testCommandLine("--otherArg=value --boolArgument defaultValue1 defaultValue2", false);
-        testCommandLine("--otherArg=value defaultValue1 defaultValue2 --boolArgument", false);
-        testCommandLine("--otherArg=value defaultValue1 defaultValue2", false);
+        QTest::addColumn<bool>("usage");
+        testCommandLineUsage("", true, true, "NO ARGUMENTS");
+        testCommandLineUsage("--boolArgument", true, true);
+        testCommandLineUsage("--boolArgument --otherArg1=value --otherArg2 value", true, true);
+        testCommandLineUsage("--boolArgument --otherArg=value defaultValue1 defaultValue2", false, false);
+        testCommandLineUsage("--otherArg=value --boolArgument defaultValue1 defaultValue2", false, false);
+        testCommandLineUsage("--otherArg=value defaultValue1 defaultValue2 --boolArgument", false, false);
+        testCommandLineUsage("--otherArg=value defaultValue1 defaultValue2", false, false);
     }
 
     void testAPIdefaultArgument() {
@@ -346,6 +382,8 @@ private Q_SLOTS:
 
     void testAPIprintUsage() {
         UCArguments arguments;
+        QString usage(arguments.usage());
+        QTest::ignoreMessage(QtWarningMsg, usage.toUtf8());
         arguments.printUsage();
     }
 
@@ -356,6 +394,7 @@ private Q_SLOTS:
         QCOMPARE(arguments.error(), false);
         QCOMPARE(arguments.errorMessage(), QString());
 
+        QTest::ignoreMessage(QtWarningMsg, errorMessage.toUtf8());
         arguments.quitWithError(errorMessage);
 
         QCOMPARE(arguments.error(), true);

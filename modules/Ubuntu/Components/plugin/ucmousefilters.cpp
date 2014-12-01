@@ -784,6 +784,7 @@ void UCMouse::setEnabled(bool enabled)
             m_owner->installEventFilter(this);
         } else {
             m_owner->removeEventFilter(this);
+            m_pressAndHoldTimer.stop();
         }
         Q_EMIT enabledChanged();
     }
