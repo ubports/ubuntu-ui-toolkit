@@ -62,7 +62,7 @@ public:
         QSGTexture* shapeTexture;
         QSGTextureProvider* sourceTextureProvider;
         quint8 sourceOpacity;
-        QSGTexture::Filtering shapeTextureFiltering;
+        quint8 shapeTextureFiltering;
         quint8 flags;
     };
 

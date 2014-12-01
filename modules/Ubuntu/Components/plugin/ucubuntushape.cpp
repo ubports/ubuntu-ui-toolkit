@@ -70,7 +70,7 @@ void ShapeShader::updateState(
     // Bind shape texture.
     QSGTexture* shapeTexture = data->shapeTexture;
     if (shapeTexture) {
-        shapeTexture->setFiltering(data->shapeTextureFiltering);
+        shapeTexture->setFiltering(static_cast<QSGTexture::Filtering>(data->shapeTextureFiltering));
         shapeTexture->setHorizontalWrapMode(QSGTexture::ClampToEdge);
         shapeTexture->setVerticalWrapMode(QSGTexture::ClampToEdge);
         shapeTexture->bind();
@@ -122,6 +122,9 @@ void ShapeShader::updateState(
 
 ShapeMaterial::ShapeMaterial()
 {
+    // The whole struct (with the padding bytes) must be initialized for memcmp() to work as
+    // expected in ShapeMaterial::compare().
+    memset(&data_, 0x00, sizeof(Data));
     setFlag(Blending);
 }
 
