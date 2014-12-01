@@ -166,6 +166,7 @@ Item {
             interactiveSpy.target = null;
             interactiveSpy.clear();
             trailing.delegate = null;
+            listView.positionViewAtBeginning();
         }
 
         function test_0_defaults() {
@@ -173,7 +174,7 @@ Item {
             compare(defaults.color, "#000000", "Transparent by default");
             compare(defaults.highlightColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
             compare(defaults.pressed, false, "Not pressed buy default");
-            compare(defaults.swipeOvershoot, 0, "No overshoot till the style is loaded!");
+            compare(defaults.swipeOvershoot, 0.0, "No overshoot till the style is loaded!");
             compare(defaults.divider.visible, true, "divider is visible by default");
             compare(defaults.divider.leftMargin, units.dp(2), "divider's left margin is 2GU");
             compare(defaults.divider.rightMargin, units.dp(2), "divider's right margin is 2GU");
@@ -489,7 +490,7 @@ Item {
             var listItem = findChild(listView, "listItem" + (listView.count - 1));
             verify(listItem, "Cannot get list item for testing");
 
-            compare(listItem.swipeOvershoot, 0, "No overshoot should be set yet!");
+            compare(listItem.swipeOvershoot, 0.0, "No overshoot should be set yet!");
             // now swipe
             movingSpy.target = listItem;
             flick(listItem.contentItem, centerOf(listItem).x, centerOf(listItem).y, units.gu(5), 0);
@@ -500,19 +501,29 @@ Item {
             rebound(listItem);
         }
 
-        function test_custom_overshoot() {
+        function test_custom_overshoot_data() {
+            // use different items to make sure the style doesn't update the overshoot values during the test
+            return [
+                {tag: "Positive value", index: listView.count - 1, value: units.gu(10), expected: units.gu(10)},
+                {tag: "Zero value", index: listView.count - 2, value: 0, expected: 0},
+                // synchronize the expected value with the one from Ambiance theme!
+                {tag: "Negative value", index: listView.count - 3, value: -1, expected: units.gu(2)},
+            ];
+        }
+        function test_custom_overshoot(data) {
             // scroll to the last ListView element and test on that, to make sure we don't have the style loaded for that component
             listView.positionViewAtEnd();
-            var listItem = findChild(listView, "listItem" + (listView.count - 1));
+            var listItem = findChild(listView, "listItem" + data.index);
             verify(listItem, "Cannot get list item for testing");
+            listItem.Component.onDestruction.connect(function() {print("KILLED")})
 
-            compare(listItem.swipeOvershoot, 0, "No overshoot should be set yet!");
-            listItem.swipeOvershoot = units.gu(10);
+            compare(listItem.swipeOvershoot, 0.0, "No overshoot should be set yet!");
+            listItem.swipeOvershoot = data.value;
             // now swipe
             movingSpy.target = listItem;
             flick(listItem.contentItem, centerOf(listItem).x, centerOf(listItem).y, units.gu(5), 0);
             movingSpy.wait();
-            compare(listItem.swipeOvershoot, units.gu(10), "Overshoot differs from one set!");
+            compare(listItem.swipeOvershoot, data.expected, "Overshoot differs from one set!");
 
             // cleanup
             rebound(listItem);
