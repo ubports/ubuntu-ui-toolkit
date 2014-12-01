@@ -26,6 +26,7 @@ LOGFILENAME="ap-${TIMESTAMP}"
 OUTPUTDIR=$HOME
 FILTER=.*
 RTM=true
+REVISION=105
 DISTRO="ubuntu-rtm" 
 SERIES="14.09"
 CHANNEL="ubuntu-touch/${DISTRO}/${SERIES}-proposed"
@@ -44,7 +45,7 @@ declare -a TEST_SUITE=(
     " -p mediaplayer-app-autopilot mediaplayer_app"
     " dropping_letters_app"
     " -p dialer-app-autopilot dialer_app"
-#hangs    " -p reminders-app-autopilot reminders"
+# hangs    " -p reminders-app-autopilot reminders"
     " shorts_app"
     " ubuntu_weather_app"
     " -p ubuntu-system-settings-autopilot ubuntu_system_settings"
@@ -59,8 +60,10 @@ declare -a TEST_SUITE=(
 
 UITK_PACKAGES="qtdeclarative5-ubuntu-ui-toolkit-plugin \
                ubuntu-ui-toolkit-autopilot \
-               ubuntu-ui-toolkit-theme \
-               qtorganizer5-eds"
+               ubuntu-ui-toolkit-theme"
+#UITK_PACKAGES="unity8 unity8-common unity8-private"
+#UITK_PACKAGES="qtmir-android qtdeclarative5-qtmir-plugin"
+
 
 AP_PACKAGES="address-book-service-dummy \
              python3-lxml \
@@ -144,7 +147,10 @@ function device_comission {
     adb -s ${SERIALNUMBER} shell "echo ${PASSWORD} |sudo -S rm -rf /userdata/user-data/phablet/.cache/com.ubuntu.gallery 2>&1|grep -v password"
     # flash the latest image
     echo -e "Flashing \e[31m${CHANNEL}\e[0m"
+
+#    ubuntu-device-flash --serial=${SERIALNUMBER} --channel=${CHANNEL} --revision=${REVISION} --wipe --developer-mode --password=${PASSWORD} 
     ubuntu-device-flash --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --developer-mode --password=${PASSWORD} 
+
     sleep_indicator ${BOOTTIME}
     echo -e "Disable the intro wizard"
     phablet-config -s ${SERIALNUMBER}  welcome-wizard --disable
@@ -220,7 +226,7 @@ function compare_results {
     done
 }
 
-while getopts ":hrcintdus:o:p:f:" opt; do
+while getopts ":hrcintdusv:o:p:f:" opt; do
     case $opt in
         r)
             RESET=true
@@ -242,6 +248,9 @@ while getopts ":hrcintdus:o:p:f:" opt; do
         f)
             FILTER=$OPTARG
             ;;
+        v)
+            REVISION=$OPTARG
+            ;;
         c)
             COMISSION=true
             ;;
@@ -253,9 +262,9 @@ while getopts ":hrcintdus:o:p:f:" opt; do
             ;;
         u)
             RTM=false
-            CHANNEL="ubuntu-touch/utopic-proposed"
+            CHANNEL="ubuntu-touch/devel-proposed"
             DISTRO="ubuntu"
-            SERIES="utopic"
+            SERIES="vivid"
             ;;
         h)
             echo "Usage: uitk_test_plan.sh -s [serial number] -m -c"

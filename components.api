@@ -834,6 +834,7 @@ plugins.qmltypes
     prototype: "QAbstractListModel"
     exports: ["AlarmModel 0.1", "AlarmModel 1.0"]
     Property { name: "count"; type: "int"; isReadonly: true }
+    Method { name: "refresh"; revision: 1 }
     Method {
     name: "get"
     Parameter { name: "index"; type: "int" }
@@ -911,6 +912,18 @@ plugins.qmltypes
     Property { name: "source"; type: "QUrl" }
     Signal { name: "extendedSourceChanged" }
     Signal { name: "extendedSourceChanged" }
+    name: "UCServiceProperties"
+    prototype: "QObject"
+    exports: ["ServiceProperties 1.1"]
+    name: "ServiceType"
+    name: "Status"
+    Property { name: "type"; revision: 1; type: "ServiceType" }
+    Property { name: "service"; revision: 1; type: "string" }
+    Property { name: "path"; revision: 1; type: "string" }
+    Property { name: "serviceInterface"; revision: 1; type: "string" }
+    Property { name: "adaptorInterface"; revision: 1; type: "string" }
+    Property { name: "error"; revision: 1; type: "string"; isReadonly: true }
+    Property { name: "status"; revision: 1; type: "Status"; isReadonly: true }
     name: "UCStateSaver"
     prototype: "QObject"
     exports: ["StateSaver 0.1", "StateSaver 1.0"]
@@ -979,6 +992,15 @@ plugins.qmltypes
     Parameter { name: "singular"; type: "string" }
     Parameter { name: "plural"; type: "string" }
     Parameter { name: "n"; type: "int" }
+    Method {
+    name: "ctr"
+    Parameter { name: "context"; type: "string" }
+    Parameter { name: "text"; type: "string" }
+    Method {
+    name: "dctr"
+    Parameter { name: "domain"; type: "string" }
+    Parameter { name: "context"; type: "string" }
+    Parameter { name: "text"; type: "string" }
     name: "ULConditionalLayout"
     prototype: "QObject"
     exports: ["ConditionalLayout 0.1", "ConditionalLayout 1.0"]
