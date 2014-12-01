@@ -71,8 +71,8 @@ Item {
         anchors {
             fill: parent
             // add 4 times the overshoot margins to cover the background when tugged
-            leftMargin: leading ? -units.gu(4 * panel.ListItemActions.overshoot) : 0
-            rightMargin: leading ? 0 : -units.gu(4 * panel.ListItemActions.overshoot)
+            leftMargin: (leading && panel.ListItemActions.listItem) ? -units.gu(4 * panel.ListItemActions.listItem.swipeOvershoot) : 0
+            rightMargin: (!leading && panel.ListItemActions.listItem) ? -units.gu(4 * panel.ListItemActions.listItem.swipeOvershoot) : 0
         }
         color: panel.backgroundColor
     }
@@ -80,15 +80,12 @@ Item {
     // handle action triggering
     ListItemActions.onStatusChanged: {
         if (ListItemActions.status === ListItemActions.Disconnected && actionsRow.selectedAction) {
-            if (actionsRow.selectedAction.parameterType === Action.None) {
-                actionsRow.selectedAction.parameterType = Action.Integer;
-            }
             actionsRow.selectedAction.trigger(actionsRow.listItemIndex >= 0 ? actionsRow.listItemIndex : null);
             actionsRow.selectedAction = null;
         }
     }
 
-    // track drag dirrection, so we know in which dirrection we should snap
+    // track drag direction, so we know in which direction we should snap
     property real prevX: 0.0
     property bool leftToRight: false
     onXChanged: {
@@ -106,8 +103,8 @@ Item {
             return;
         }
         // snap in if the offset is bigger than the overshoot and the direction of the drag is to reveal the panel
-        var snapPos = (ListItemActions.offset > ListItemActions.overshoot &&
-                       ((leftToRight && leading) || (!leftToRight && !leading))) ? panel.width : 0.0;
+        var snapPos = (ListItemActions.offset > ListItemActions.listItem.swipeOvershoot &&
+                       (leftToRight && leading || !leftToRight && !leading)) ? panel.width : 0.0;
         ListItemActions.snapToPosition(snapPos);
     }
 

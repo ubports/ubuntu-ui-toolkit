@@ -1,6 +1,3 @@
-import QtQuick 2.3
-import Ubuntu.Components.Styles 1.2 as Styles
-import Ubuntu.Components 1.2
 /*
  * Copyright 2014 Canonical Ltd.
  *
@@ -17,8 +14,13 @@ import Ubuntu.Components 1.2
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import QtQuick 2.3
+import Ubuntu.Components.Styles 1.2 as Styles
+import Ubuntu.Components 1.2
+
 Styles.ListItemStyle {
 
+    swipeOvershoot: units.gu(2)
     actionsDelegate: ListItemPanel{}
 
     snapAnimation: PropertyAnimation {

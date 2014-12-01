@@ -88,6 +88,7 @@ private:
 
     friend class UCActionContext;
     friend class UCListItemActionsAttached;
+    friend class UCListItemActionsPrivate;
 
     bool isValidType(QVariant::Type valueType);
     void generateName();
