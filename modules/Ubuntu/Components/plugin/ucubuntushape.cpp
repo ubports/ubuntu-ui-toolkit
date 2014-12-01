@@ -16,74 +16,25 @@
  * Author: Loïc Molinari <loic.molinari@canonical.com>
  */
 
+// FIXME(loicm) Storing lower precision data types in the vertex buffer could be more efficent. On
+//     PowerVR, for instance, that requires a conversion so the trade-off between shader cycles and
+//     bandwidth requirements must be benchmarked.
+
 #include "ucubuntushape.h"
 #include "ucubuntushapetexture.h"
 #include "ucunits.h"
 #include <QtCore/QPointer>
 #include <QtQuick/QQuickWindow>
 #include <QtQuick/QSGTextureProvider>
-#include <QtQuick/qsgflatcolormaterial.h>
 #include <QtQuick/private/qquickimage_p.h>
 #include <math.h>
 
-class ShapeMaterial : public QSGMaterial
-{
-public:
-    struct Data
-    {
-        // Flags must be kept in sync with GLSL fragment shader.
-        enum {
-            Textured             = (1 << 0),
-            HorizontallyRepeated = (1 << 1),
-            VerticallyRepeated   = (1 << 2),
-            Repeated             = (HorizontallyRepeated | VerticallyRepeated)
-        };
-        QSGTexture* shapeTexture;
-        QSGTextureProvider* sourceTextureProvider;
-        quint8 sourceOpacity;
-        QSGTexture::Filtering shapeTextureFiltering;
-        quint8 flags;
-    };
-
-    ShapeMaterial();
-    virtual QSGMaterialType* type() const;
-    virtual QSGMaterialShader* createShader() const;
-    virtual int compare(const QSGMaterial* other) const;
-    const Data* constData() const { return &data_; }
-    Data* data() { return &data_; }
-
-private:
-    // UCUbuntuShape::updatePaintNode() directly writes to data and ShapeShader::updateState()
-    // directly reads from it. We don't bother with getters/setters since it's only meant to be used
-    // by the UbuntuShape implementation and makes maintainance easier.
-    Data data_;
-};
-
-// -- Scene graph shader ---
-
-class ShapeShader : public QSGMaterialShader
-{
-public:
-    ShapeShader();
-    virtual char const* const* attributeNames() const;
-    virtual void initialize();
-    virtual void updateState(
-        const RenderState& state, QSGMaterial* newEffect, QSGMaterial* oldEffect);
-
-private:
-    QOpenGLFunctions* functions_;
-    int matrixId_;
-    int opacityId_;
-    int sourceOpacityId_;
-    int secondaryBackgroundColorId_;
-    int texturedId_;
-};
+// --- Scene graph shader ---
 
 ShapeShader::ShapeShader()
-    : QSGMaterialShader()
 {
-    setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":/shaders/ucubuntushape.vert"));
-    setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":/shaders/ucubuntushape.frag"));
+    setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":/uc/shaders/shape.vert"));
+    setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":/uc/shaders/shape.frag"));
 }
 
 char const* const* ShapeShader::attributeNames() const
@@ -109,8 +60,8 @@ void ShapeShader::initialize()
     texturedId_ = program()->uniformLocation("textured");
 }
 
-void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
-                              QSGMaterial* oldEffect)
+void ShapeShader::updateState(
+    const RenderState& state, QSGMaterial* newEffect, QSGMaterial* oldEffect)
 {
     Q_UNUSED(oldEffect);
 
@@ -170,7 +121,6 @@ void ShapeShader::updateState(const RenderState& state, QSGMaterial* newEffect,
 // --- Scene graph material ---
 
 ShapeMaterial::ShapeMaterial()
-    : data_()
 {
     setFlag(Blending);
 }
@@ -188,334 +138,55 @@ QSGMaterialShader* ShapeMaterial::createShader() const
 
 int ShapeMaterial::compare(const QSGMaterial* other) const
 {
-    const ShapeMaterial::Data* otherData = static_cast<const ShapeMaterial*>(other)->constData();
-    const int diff = memcmp(&data_, otherData, sizeof(ShapeMaterial::Data));
     // Repeat wrap modes require textures to be extracted from their atlases. Since we just store
-    // the texture provider in the material data (not the texture as we want to do the extracion at
+    // the texture provider in the material data (not the texture as we want to do the extraction at
     // QSGShader::updateState() time), we make the comparison fail when repeat wrapping is set.
-    return diff | (data_.flags & ShapeMaterial::Data::Repeated);
+    const ShapeMaterial::Data* otherData = static_cast<const ShapeMaterial*>(other)->constData();
+    return memcmp(&data_, otherData, sizeof(data_)) | (data_.flags & ShapeMaterial::Data::Repeated);
 }
 
 // --- Scene graph node ---
 
-class ShapeNode : public QSGGeometryNode
-{
-public:
-    // FIXME(loicm) Storing lower precision data types could be more efficent. On PowerVR, for
-    //     instance, that requires a conversion so the trade-off between shader cycles and bandwidth
-    //     requirements must be verified.
-    struct Vertex {
-        float position[2];
-        float shapeCoordinate[2];
-        float sourceCoordinate[4];
-        quint32 backgroundColor;
-    };
-
-    ShapeNode(UCUbuntuShape* item);
-    ShapeMaterial* material() { return &material_; }
-    void setVertices(float width, float height, float radius, float shapeCoordinate[][2],
-                     UCUbuntuShape::WrapMode hWrap, UCUbuntuShape::WrapMode vWrap,
-                     const QVector4D& sourceTransform, const QRectF& textureRect,
-                     QRgb backgroundColor, QRgb secondaryBackgroundColor);
-
-private:
-    UCUbuntuShape* item_;
-    QSGGeometry geometry_;
-    ShapeMaterial material_;
-};
-
-static const unsigned short shapeMeshIndices[] __attribute__((aligned(16))) = {
-    0, 4, 1, 5, 2, 6, 3, 7,       // Triangles 1 to 6.
-    7, 4,                         // Degenerate triangles.
-    4, 8, 5, 9, 6, 10, 7, 11,     // Triangles 7 to 12.
-    11, 8,                        // Degenerate triangles.
-    8, 12, 9, 13, 10, 14, 11, 15  // Triangles 13 to 18
-};
-
-#define ARRAY_SIZE(a) \
-    ((sizeof(a) / sizeof(*(a))) / static_cast<size_t>(!(sizeof(a) % sizeof(*(a)))))
-
-static const struct {
-    const unsigned short* const indices;
-    int indexCount;           // Number of indices.
-    int vertexCount;          // Number of vertices.
-    int attributeCount;       // Number of attributes.
-    int stride;               // Offset in bytes from one vertex to the other.
-    int positionCount;        // Number of components per position.
-    int positionType;         // OpenGL type of the position components.
-    int shapeCoordCount;      // Number of components per shape texture coordinate.
-    int shapeCoordType;       // OpenGL type of the shape texture coordinate components.
-    int sourceCoordCount;     // Number of components per source texture coordinate.
-    int sourceCoordType;      // OpenGL type of the source texture coordinate components.
-    int backgroundColorCount; // Number of components per quad coordinate.
-    int backgroundColorType;  // OpenGL type of the quad coordinate components.
-    int indexType;            // OpenGL type of the indices.
-} shapeMesh = {
-    shapeMeshIndices, ARRAY_SIZE(shapeMeshIndices),
-    16, 4, sizeof(ShapeNode::Vertex), 2, GL_FLOAT, 2, GL_FLOAT, 4, GL_FLOAT, 4, GL_UNSIGNED_BYTE,
-    GL_UNSIGNED_SHORT
-};
-
-static const QSGGeometry::AttributeSet& getAttributes()
-{
-    static QSGGeometry::Attribute data[] = {
-        QSGGeometry::Attribute::create(0, shapeMesh.positionCount, shapeMesh.positionType, true),
-        QSGGeometry::Attribute::create(1, shapeMesh.shapeCoordCount, shapeMesh.shapeCoordType),
-        QSGGeometry::Attribute::create(2, shapeMesh.sourceCoordCount, shapeMesh.sourceCoordType),
-        QSGGeometry::Attribute::create(3, shapeMesh.backgroundColorCount,
-                                       shapeMesh.backgroundColorType)
-    };
-    static QSGGeometry::AttributeSet attributes = {
-        shapeMesh.attributeCount, shapeMesh.stride, data
-    };
-    return attributes;
-}
-
-// Gets the size in bytes of an OpenGL type in the range [GL_BYTE, GL_DOUBLE].
-static int sizeOfType(GLenum type)
-{
-    static int sizes[] = {
-        sizeof(char), sizeof(unsigned char), sizeof(short), sizeof(unsigned short), sizeof(int),
-        sizeof(unsigned int), sizeof(float), 2, 3, 4, sizeof(double)
-    };
-    Q_ASSERT(type >= 0x1400 && type <= 0x140a);
-    return sizes[type - 0x1400];
-}
-
-ShapeNode::ShapeNode(UCUbuntuShape* item)
+ShapeNode::ShapeNode()
     : QSGGeometryNode()
-    , item_(item)
-    , geometry_(getAttributes(), shapeMesh.vertexCount, shapeMesh.indexCount, shapeMesh.indexType)
+    , geometry_(attributeSet(), vertexCount, indexCount, indexType)
     , material_()
 {
-    memcpy(geometry_.indexData(), shapeMesh.indices,
-           shapeMesh.indexCount * sizeOfType(shapeMesh.indexType));
-    geometry_.setDrawingMode(GL_TRIANGLE_STRIP);
-    geometry_.setIndexDataPattern(QSGGeometry::StaticPattern);
-    geometry_.setVertexDataPattern(QSGGeometry::AlwaysUploadPattern);
+    memcpy(geometry_.indexData(), indices(), indexCount * indexTypeSize);
+    geometry_.setDrawingMode(drawingMode);
+    geometry_.setIndexDataPattern(indexDataPattern);
+    geometry_.setVertexDataPattern(vertexDataPattern);
     setGeometry(&geometry_);
     setMaterial(&material_);
-    setFlag(UsePreprocess, false);
 }
 
-// Pack a premultiplied 32-bit ABGR integer.
-static quint32 packPremultipliedABGR32(quint32 a, quint32 b, quint32 g, quint32 r)
+// static
+const unsigned short* ShapeNode::indices()
 {
-    const quint32 pb = ((b * a) + 0xff) >> 8;
-    const quint32 pg = ((g * a) + 0xff) >> 8;
-    const quint32 pr = ((r * a) + 0xff) >> 8;
-    return (a << 24) | ((pb & 0xff) << 16) | ((pg & 0xff) << 8) | (pr & 0xff);
+    // Don't forget to update indexCount if changed.
+    static const unsigned short indices[] = {
+        0, 4, 1, 5, 2, 6, 3, 7,       // Triangles 1 to 6.
+        7, 4,                         // Degenerate triangles.
+        4, 8, 5, 9, 6, 10, 7, 11,     // Triangles 7 to 12.
+        11, 8,                        // Degenerate triangles.
+        8, 12, 9, 13, 10, 14, 11, 15  // Triangles 13 to 18.
+    };
+    return indices;
 }
 
-// Lerp c1 and c2 with t in the range [0, 255]. Return value is a premultiplied 32-bit ABGR integer.
-static quint32 lerpColor(qint32 t, QRgb c1, QRgb c2)
+// static
+const QSGGeometry::AttributeSet& ShapeNode::attributeSet()
 {
-    const quint32 a = qAlpha(c1) + ((t * (qAlpha(c2) - qAlpha(c1)) + 0xff) >> 8);
-    const quint32 b = qBlue(c1) + ((t * (qBlue(c2) - qBlue(c1)) + 0xff) >> 8);
-    const quint32 g = qGreen(c1) + ((t * (qGreen(c2) - qGreen(c1)) + 0xff) >> 8);
-    const quint32 r = qRed(c1) + ((t * (qRed(c2) - qRed(c1)) + 0xff) >> 8);
-    return packPremultipliedABGR32(a, b, g, r);
-}
-
-void ShapeNode::setVertices(float width, float height, float radius, float shapeCoordinate[][2],
-                            UCUbuntuShape::WrapMode hWrap, UCUbuntuShape::WrapMode vWrap,
-                            const QVector4D& sourceTransform, const QRectF& textureRect,
-                            QRgb backgroundColor, QRgb secondaryBackgroundColor)
-{
-    Vertex* vertices = reinterpret_cast<ShapeNode::Vertex*>(geometry_.vertexData());
-    const float radiusW = radius / width;
-    const float radiusH = radius / height;
-
-    // Get transformation for source texture coordinates.
-    const float sourceSx1 = sourceTransform.x() * textureRect.width();
-    const float sourceSy1 = sourceTransform.y() * textureRect.height();
-    const float sourceTx1 = sourceTransform.z() * textureRect.width() + textureRect.x();
-    const float sourceTy1 = sourceTransform.w() * textureRect.height() + textureRect.y();
-
-    // Get transformation for source mask coordinates. In case of a repeat wrap mode, the
-    // transformation is made so that the mask takes the whole area.
-    float sourceSx2, sourceTx2, sourceSy2, sourceTy2;
-    if (hWrap == UCUbuntuShape::Transparent) {
-        sourceSx2 = sourceTransform.x() * 2.0f;
-        sourceTx2 = sourceTransform.z() * 2.0f - 1.0f;
-    } else {
-        sourceSx2 = 2.0f;
-        sourceTx2 = -1.0f;
-    }
-    if (vWrap == UCUbuntuShape::Transparent) {
-        sourceSy2 = sourceTransform.y() * 2.0f;
-        sourceTy2 = sourceTransform.w() * 2.0f - 1.0f;
-    } else {
-        sourceSy2 = 2.0f;
-        sourceTy2 = -1.0f;
-    }
-
-    // Get colors in 32-bit premultiplied ABGR format.
-    const float f32toS32 = 255.0f;
-    const quint32 backgroundColorRow1 = packPremultipliedABGR32(
-        qAlpha(backgroundColor), qBlue(backgroundColor), qGreen(backgroundColor),
-        qRed(backgroundColor));
-    const quint32 backgroundColorRow2 = lerpColor(
-        radiusH * f32toS32, backgroundColor, secondaryBackgroundColor);
-    const quint32 backgroundColorRow3 = lerpColor(
-        (1.0f - radiusH) * f32toS32, backgroundColor, secondaryBackgroundColor);
-    const quint32 backgroundColorRow4 = packPremultipliedABGR32(
-        qAlpha(secondaryBackgroundColor), qBlue(secondaryBackgroundColor),
-        qGreen(secondaryBackgroundColor), qRed(secondaryBackgroundColor));
-
-    // Set top row of 4 vertices.
-    vertices[0].position[0] = 0.0f;
-    vertices[0].position[1] = 0.0f;
-    vertices[0].shapeCoordinate[0] = shapeCoordinate[0][0];
-    vertices[0].shapeCoordinate[1] = shapeCoordinate[0][1];
-    vertices[0].sourceCoordinate[0] = sourceTx1;
-    vertices[0].sourceCoordinate[1] = sourceTy1;
-    vertices[0].sourceCoordinate[2] = sourceTx2;
-    vertices[0].sourceCoordinate[3] = sourceTy2;
-    vertices[0].backgroundColor = backgroundColorRow1;
-    vertices[1].position[0] = radius;
-    vertices[1].position[1] = 0.0f;
-    vertices[1].shapeCoordinate[0] = shapeCoordinate[1][0];
-    vertices[1].shapeCoordinate[1] = shapeCoordinate[1][1];
-    vertices[1].sourceCoordinate[0] = radiusW * sourceSx1 + sourceTx1;
-    vertices[1].sourceCoordinate[1] = sourceTy1;
-    vertices[1].sourceCoordinate[2] = radiusW * sourceSx2 + sourceTx2;
-    vertices[1].sourceCoordinate[3] = sourceTy2;
-    vertices[1].backgroundColor = backgroundColorRow1;
-    vertices[2].position[0] = width - radius;
-    vertices[2].position[1] = 0.0f;
-    vertices[2].shapeCoordinate[0] = shapeCoordinate[2][0];
-    vertices[2].shapeCoordinate[1] = shapeCoordinate[2][1];
-    vertices[2].sourceCoordinate[0] = (1.0f - radiusW) * sourceSx1 + sourceTx1;
-    vertices[2].sourceCoordinate[1] = sourceTy1;
-    vertices[2].sourceCoordinate[2] = (1.0f - radiusW) * sourceSx2 + sourceTx2;
-    vertices[2].sourceCoordinate[3] = sourceTy2;
-    vertices[2].backgroundColor = backgroundColorRow1;
-    vertices[3].position[0] = width;
-    vertices[3].position[1] = 0.0f;
-    vertices[3].shapeCoordinate[0] = shapeCoordinate[3][0];
-    vertices[3].shapeCoordinate[1] = shapeCoordinate[3][1];
-    vertices[3].sourceCoordinate[0] = sourceSx1 + sourceTx1;
-    vertices[3].sourceCoordinate[1] = sourceTy1;
-    vertices[3].sourceCoordinate[2] = sourceSx2 + sourceTx2;
-    vertices[3].sourceCoordinate[3] = sourceTy2;
-    vertices[3].backgroundColor = backgroundColorRow1;
-
-    // Set middle-top row of 4 vertices.
-    vertices[4].position[0] = 0.0f;
-    vertices[4].position[1] = radius;
-    vertices[4].shapeCoordinate[0] = shapeCoordinate[4][0];
-    vertices[4].shapeCoordinate[1] = shapeCoordinate[4][1];
-    vertices[4].sourceCoordinate[0] = sourceTx1;
-    vertices[4].sourceCoordinate[1] = radiusH * sourceSy1 + sourceTy1;
-    vertices[4].sourceCoordinate[2] = sourceTx2;
-    vertices[4].sourceCoordinate[3] = radiusH * sourceSy2 + sourceTy2;
-    vertices[4].backgroundColor = backgroundColorRow2;
-    vertices[5].position[0] = radius;
-    vertices[5].position[1] = radius;
-    vertices[5].shapeCoordinate[0] = shapeCoordinate[5][0];
-    vertices[5].shapeCoordinate[1] = shapeCoordinate[5][1];
-    vertices[5].sourceCoordinate[0] = radiusW * sourceSx1 + sourceTx1;
-    vertices[5].sourceCoordinate[1] = radiusH * sourceSy1 + sourceTy1;
-    vertices[5].sourceCoordinate[2] = radiusW * sourceSx2 + sourceTx2;
-    vertices[5].sourceCoordinate[3] = radiusH * sourceSy2 + sourceTy2;
-    vertices[5].backgroundColor = backgroundColorRow2;
-    vertices[6].position[0] = width - radius;
-    vertices[6].position[1] = radius;
-    vertices[6].shapeCoordinate[0] = shapeCoordinate[6][0];
-    vertices[6].shapeCoordinate[1] = shapeCoordinate[6][1];
-    vertices[6].sourceCoordinate[0] = (1.0f - radiusW) * sourceSx1 + sourceTx1;
-    vertices[6].sourceCoordinate[1] = radiusH * sourceSy1 + sourceTy1;
-    vertices[6].sourceCoordinate[2] = (1.0f - radiusW) * sourceSx2 + sourceTx2;
-    vertices[6].sourceCoordinate[3] = radiusH * sourceSy2 + sourceTy2;
-    vertices[6].backgroundColor = backgroundColorRow2;
-    vertices[7].position[0] = width;
-    vertices[7].position[1] = radius;
-    vertices[7].shapeCoordinate[0] = shapeCoordinate[7][0];
-    vertices[7].shapeCoordinate[1] = shapeCoordinate[7][1];
-    vertices[7].sourceCoordinate[0] = sourceSx1 + sourceTx1;
-    vertices[7].sourceCoordinate[1] = radiusH * sourceSy1 + sourceTy1;
-    vertices[7].sourceCoordinate[2] = sourceSx2 + sourceTx2;
-    vertices[7].sourceCoordinate[3] = radiusH * sourceSy2 + sourceTy2;
-    vertices[7].backgroundColor = backgroundColorRow2;
-
-    // Set middle-bottom row of 4 vertices.
-    vertices[8].position[0] = 0.0f;
-    vertices[8].position[1] = height - radius;
-    vertices[8].shapeCoordinate[0] = shapeCoordinate[8][0];
-    vertices[8].shapeCoordinate[1] = shapeCoordinate[8][1];
-    vertices[8].sourceCoordinate[0] = sourceTx1;
-    vertices[8].sourceCoordinate[1] = (1.0f - radiusH) * sourceSy1 + sourceTy1;
-    vertices[8].sourceCoordinate[2] = sourceTx2;
-    vertices[8].sourceCoordinate[3] = (1.0f - radiusH) * sourceSy2 + sourceTy2;
-    vertices[8].backgroundColor = backgroundColorRow3;
-    vertices[9].position[0] = radius;
-    vertices[9].position[1] = height - radius;
-    vertices[9].shapeCoordinate[0] = shapeCoordinate[9][0];
-    vertices[9].shapeCoordinate[1] = shapeCoordinate[9][1];
-    vertices[9].sourceCoordinate[0] = radiusW * sourceSx1 + sourceTx1;
-    vertices[9].sourceCoordinate[1] = (1.0f - radiusH) * sourceSy1 + sourceTy1;
-    vertices[9].sourceCoordinate[2] = radiusW * sourceSx2 + sourceTx2;
-    vertices[9].sourceCoordinate[3] = (1.0f - radiusH) * sourceSy2 + sourceTy2;
-    vertices[9].backgroundColor = backgroundColorRow3;
-    vertices[10].position[0] = width - radius;
-    vertices[10].position[1] = height - radius;
-    vertices[10].shapeCoordinate[0] = shapeCoordinate[10][0];
-    vertices[10].shapeCoordinate[1] = shapeCoordinate[10][1];
-    vertices[10].sourceCoordinate[0] = (1.0f - radiusW) * sourceSx1 + sourceTx1;
-    vertices[10].sourceCoordinate[1] = (1.0f - radiusH) * sourceSy1 + sourceTy1;
-    vertices[10].sourceCoordinate[2] = (1.0f - radiusW) * sourceSx2 + sourceTx2;
-    vertices[10].sourceCoordinate[3] = (1.0f - radiusH) * sourceSy2 + sourceTy2;
-    vertices[10].backgroundColor = backgroundColorRow3;
-    vertices[11].position[0] = width;
-    vertices[11].position[1] = height - radius;
-    vertices[11].shapeCoordinate[0] = shapeCoordinate[11][0];
-    vertices[11].shapeCoordinate[1] = shapeCoordinate[11][1];
-    vertices[11].sourceCoordinate[0] = sourceSx1 + sourceTx1;
-    vertices[11].sourceCoordinate[1] = (1.0f - radiusH) * sourceSy1 + sourceTy1;
-    vertices[11].sourceCoordinate[2] = sourceSx2 + sourceTx2;
-    vertices[11].sourceCoordinate[3] = (1.0f - radiusH) * sourceSy2 + sourceTy2;
-    vertices[11].backgroundColor = backgroundColorRow3;
-
-    // Set bottom row of 4 vertices.
-    vertices[12].position[0] = 0.0f;
-    vertices[12].position[1] = height;
-    vertices[12].shapeCoordinate[0] = shapeCoordinate[12][0];
-    vertices[12].shapeCoordinate[1] = shapeCoordinate[12][1];
-    vertices[12].sourceCoordinate[0] = sourceTx1;
-    vertices[12].sourceCoordinate[1] = sourceSy1 + sourceTy1;
-    vertices[12].sourceCoordinate[2] = sourceTx2;
-    vertices[12].sourceCoordinate[3] = sourceSy2 + sourceTy2;
-    vertices[12].backgroundColor = backgroundColorRow4;
-    vertices[13].position[0] = radius;
-    vertices[13].position[1] = height;
-    vertices[13].shapeCoordinate[0] = shapeCoordinate[13][0];
-    vertices[13].shapeCoordinate[1] = shapeCoordinate[13][1];
-    vertices[13].sourceCoordinate[0] = radiusW * sourceSx1 + sourceTx1;
-    vertices[13].sourceCoordinate[1] = sourceSy1 + sourceTy1;
-    vertices[13].sourceCoordinate[2] = radiusW * sourceSx2 + sourceTx2;
-    vertices[13].sourceCoordinate[3] = sourceSy2 + sourceTy2;
-    vertices[13].backgroundColor = backgroundColorRow4;
-    vertices[14].position[0] = width - radius;
-    vertices[14].position[1] = height;
-    vertices[14].shapeCoordinate[0] = shapeCoordinate[14][0];
-    vertices[14].shapeCoordinate[1] = shapeCoordinate[14][1];
-    vertices[14].sourceCoordinate[0] = (1.0f - radiusW) * sourceSx1 + sourceTx1;
-    vertices[14].sourceCoordinate[1] = sourceSy1 + sourceTy1;
-    vertices[14].sourceCoordinate[2] = (1.0f - radiusW) * sourceSx2 + sourceTx2;
-    vertices[14].sourceCoordinate[3] = sourceSy2 + sourceTy2;
-    vertices[14].backgroundColor = backgroundColorRow4;
-    vertices[15].position[0] = width;
-    vertices[15].position[1] = height;
-    vertices[15].shapeCoordinate[0] = shapeCoordinate[15][0];
-    vertices[15].shapeCoordinate[1] = shapeCoordinate[15][1];
-    vertices[15].sourceCoordinate[0] = sourceSx1 + sourceTx1;
-    vertices[15].sourceCoordinate[1] = sourceSy1 + sourceTy1;
-    vertices[15].sourceCoordinate[2] = sourceSx2 + sourceTx2;
-    vertices[15].sourceCoordinate[3] = sourceSy2 + sourceTy2;
-    vertices[15].backgroundColor = backgroundColorRow4;
-
-    markDirty(DirtyGeometry);
+    static const QSGGeometry::Attribute attributes[] = {
+        QSGGeometry::Attribute::create(0, 2, GL_FLOAT, true),
+        QSGGeometry::Attribute::create(1, 2, GL_FLOAT),
+        QSGGeometry::Attribute::create(2, 4, GL_FLOAT),
+        QSGGeometry::Attribute::create(3, 4, GL_UNSIGNED_BYTE)
+    };
+    static const QSGGeometry::AttributeSet attributeSet = {
+        4, sizeof(Vertex), attributes
+    };
+    return attributeSet;
 }
 
 // --- QtQuick item ---
@@ -539,12 +210,12 @@ const float lowHighTextureThreshold = 11.0f;
     \instantiates UCUbuntuShape
     \inqmlmodule Ubuntu.Components 1.1
     \ingroup ubuntu
-    \brief The base graphical component of the Ubuntu UI Toolkit.
+    \brief Rounded rectangle containing a source image blended over a background color.
 
     The UbuntuShape is a rounded rectangle (based on a \l
-    {https://en.wikipedia.org/wiki/Squircle}{squircle}) that can shape, from back to front, a
-    background color (solid or linear gradient) and an optional source texture. Different properties
-    allow to change the look of the shape.
+    {https://en.wikipedia.org/wiki/Squircle}{squircle}) containing an optional source image blended
+    over a background color (solid or linear gradient). Different properties allow to change the
+    look of the shape.
 
     Examples:
 
@@ -771,7 +442,7 @@ void UCUbuntuShape::setSourceFillMode(UCUbuntuShape::FillMode sourceFillMode)
     texture might not cover the entire UbuntuShape area. This property defines how the source
     texture wraps outside of its content area. The default value is \c UbuntuShape.Transparent.
 
-    Ensure \c UbuntuShape.Repeat is used only when needed (in case of an \c Image or \c
+    Ensure \c UbuntuShape.Repeat is used only when necessary (in case of an \c Image or \c
     AnimatedImage source) as it requires the underlying texture to be extracted from its atlas. That
     slows down the rendering speed since it prevents the QtQuick renderer to batch the UbuntuShape
     with others.
@@ -917,12 +588,12 @@ void UCUbuntuShape::dropColorSupport()
 {
     if (!(flags_ & BackgroundApiSet)) {
         flags_ |= BackgroundApiSet;
-        backgroundColor_ = qRgba(0, 0, 0, 0);
-        secondaryBackgroundColor_ = qRgba(0, 0, 0, 0);
         if (backgroundColor_) {
+            backgroundColor_ = qRgba(0, 0, 0, 0);
             Q_EMIT colorChanged();
         }
         if (secondaryBackgroundColor_) {
+            secondaryBackgroundColor_ = qRgba(0, 0, 0, 0);
             Q_EMIT gradientColorChanged();
         }
     }
@@ -1158,8 +829,8 @@ void UCUbuntuShape::updateFromImageProperties(QQuickItem* image)
 }
 
 // Deprecation layer.
-void UCUbuntuShape::connectToPropertyChange(QObject* sender, const char* property,
-                                            QObject* receiver, const char* slot)
+void UCUbuntuShape::connectToPropertyChange(
+    QObject* sender, const char* property, QObject* receiver, const char* slot)
 {
     int propertyIndex = sender->metaObject()->indexOfProperty(property);
     if (propertyIndex != -1) {
@@ -1231,9 +902,9 @@ static Q_DECL_CONSTEXPR float roundTextureCoord(float coord, float size)
     return roundf(coord * size) / size;
 }
 
-void UCUbuntuShape::updateSourceTransform(float itemWidth, float itemHeight, FillMode fillMode,
-                                          HAlignment horizontalAlignment,
-                                          VAlignment verticalAlignment, const QSize& textureSize)
+void UCUbuntuShape::updateSourceTransform(
+    float itemWidth, float itemHeight, FillMode fillMode, HAlignment horizontalAlignment,
+    VAlignment verticalAlignment, const QSize& textureSize)
 {
     float fillSx, fillSy;
     if (fillMode == PreserveAspectFit) {
@@ -1275,25 +946,42 @@ void UCUbuntuShape::updateSourceTransform(float itemWidth, float itemHeight, Fil
         roundTextureCoord(ty, textureSize.height() * sourceScale_.y()));
 }
 
+// Pack a premultiplied 32-bit ABGR integer.
+static quint32 packColor(quint32 a, quint32 b, quint32 g, quint32 r)
+{
+    const quint32 pb = ((b * a) + 0xff) >> 8;
+    const quint32 pg = ((g * a) + 0xff) >> 8;
+    const quint32 pr = ((r * a) + 0xff) >> 8;
+    return (a << 24) | ((pb & 0xff) << 16) | ((pg & 0xff) << 8) | (pr & 0xff);
+}
+
+// Lerp c1 and c2 with t in the range [0, 255]. Return value is a premultiplied 32-bit ABGR integer.
+static quint32 lerpColor(quint32 t, QRgb c1, QRgb c2)
+{
+    const quint32 a = qAlpha(c1) + ((t * (qAlpha(c2) - qAlpha(c1)) + 0xff) >> 8);
+    const quint32 b = qBlue(c1) + ((t * (qBlue(c2) - qBlue(c1)) + 0xff) >> 8);
+    const quint32 g = qGreen(c1) + ((t * (qGreen(c2) - qGreen(c1)) + 0xff) >> 8);
+    const quint32 r = qRed(c1) + ((t * (qRed(c2) - qRed(c1)) + 0xff) >> 8);
+    return packColor(a, b, g, r);
+}
+
 QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data)
 {
     Q_UNUSED(data);
 
-    const QSizeF itemSize = QSize(width(), height());
-
+    const QSizeF itemSize(width(), height());
     if (itemSize.isEmpty()) {
         delete oldNode;
         return NULL;
     }
 
+    QSGNode* node = oldNode ? oldNode : createSceneGraphNode();
+    Q_ASSERT(node);
+
     // OpenGL allocates textures per context, so we store textures reused by all shape instances
     // per context as well.
     QOpenGLContext* openglContext = window() ? window()->openglContext() : NULL;
-    if (!openglContext) {
-        qCritical() << "Window has no OpenGL context!";
-        delete oldNode;
-        return NULL;
-    }
+    Q_ASSERT(openglContext);
     ShapeTextures &shapeTextures = shapeTexturesHash[openglContext];
     if (!shapeTextures.high) {
         shapeTextures.high = window()->createTextureFromImage(
@@ -1306,29 +994,24 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
                          this, SLOT(openglContextDestroyed()), Qt::DirectConnection);
     }
 
-    ShapeNode* node = static_cast<ShapeNode*>(oldNode);
-    if (!node) {
-        node = new ShapeNode(this);
-    }
-
     // Get the texture info and update the source transform if needed.
     QSGTextureProvider* provider = source_ ? source_->textureProvider() : NULL;
-    const QSGTexture* texture = provider ? provider->texture() : NULL;
-    QRectF textureRect(0.0f, 0.0f, 1.0f, 1.0f);
-    if (texture) {
+    QSGTexture* sourceTexture = provider ? provider->texture() : NULL;
+    QRectF sourceTextureRect(0.0f, 0.0f, 1.0f, 1.0f);
+    if (sourceTexture) {
         if (sourceHorizontalWrapMode_ == Transparent && sourceVerticalWrapMode_ == Transparent) {
-            textureRect = texture->normalizedTextureSubRect();
+            sourceTextureRect = sourceTexture->normalizedTextureSubRect();
         }
         if (flags_ & DirtySourceTransform) {
             if (flags_ & SourceApiSet) {
                 updateSourceTransform(itemSize.width(), itemSize.height(), sourceFillMode_,
                                       sourceHorizontalAlignment_, sourceVerticalAlignment_,
-                                      texture->textureSize());
+                                      sourceTexture->textureSize());
             } else {
                 FillMode imageFillMode = (flags_ & Stretched) ? Stretch : PreserveAspectCrop;
                 updateSourceTransform(itemSize.width(), itemSize.height(), imageFillMode,
                                       imageHorizontalAlignment_, imageVerticalAlignment_,
-                                      texture->textureSize());
+                                      sourceTexture->textureSize());
             }
             flags_ &= ~DirtySourceTransform;
         }
@@ -1349,38 +1032,107 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         sourceTextureProvider_ = provider;
     }
 
-    ShapeMaterial::Data* materialData = node->material()->data();
     const float gridUnit = UCUnits::instance().gridUnit();
-
     ShapeTextureData* shapeTextureData;
+    QSGTexture* shapeTexture;
     if (gridUnit > lowHighTextureThreshold) {
         shapeTextureData = &shapeTextureHigh;
-        materialData->shapeTexture = shapeTextures.high;
+        shapeTexture = shapeTextures.high;
     } else {
         shapeTextureData = &shapeTextureLow;
-        materialData->shapeTexture = shapeTextures.low;
+        shapeTexture = shapeTextures.low;
     }
 
     // Set the shape texture to be used by the materials depending on current grid unit. The radius
     // is set considering the current grid unit and the texture raster grid unit. When the item size
     // is less than 2 radii, the radius is scaled down.
+    QSGTexture::Filtering shapeTextureFiltering;
     float radius = (radius_ == SmallRadius) ?
         shapeTextureData->smallRadius : shapeTextureData->mediumRadius;
     const float scaleFactor = gridUnit / shapeTextureData->gridUnit;
-    materialData->shapeTextureFiltering = QSGTexture::Nearest;
+    shapeTextureFiltering = QSGTexture::Nearest;
     if (scaleFactor != 1.0f) {
         radius *= scaleFactor;
-        materialData->shapeTextureFiltering = QSGTexture::Linear;
+        shapeTextureFiltering = QSGTexture::Linear;
     }
     const float halfMinWidthHeight = qMin(itemSize.width(), itemSize.height()) * 0.5f;
     if (radius > halfMinWidthHeight) {
         radius = halfMinWidthHeight;
-        materialData->shapeTextureFiltering = QSGTexture::Linear;
+        shapeTextureFiltering = QSGTexture::Linear;
     }
 
-    // Update material data.
+    updateMaterial(node, shapeTexture, shapeTextureFiltering, sourceTexture);
+
+    // Select the right shape texture coordinates.
+    int index = (border_ == RawBorder) ? 0 : (border_ == IdleBorder) ? 1 : 2;
+    if (radius_ == SmallRadius) {
+        index += 3;
+    }
+
+    // Get the affine transformation for the source texture coordinates.
+    const QVector4D sourceCoordTransform(
+        sourceTransform_.x() * sourceTextureRect.width(),
+        sourceTransform_.y() * sourceTextureRect.height(),
+        sourceTransform_.z() * sourceTextureRect.width() + sourceTextureRect.x(),
+        sourceTransform_.w() * sourceTextureRect.height() + sourceTextureRect.y());
+
+    // Get the affine transformation for the source mask coordinates, pixels lying inside the mask
+    // (values in the range [-1, 1]) will be textured in the fragment shader. In case of a repeat
+    // wrap mode, the transformation is made so that the mask takes the whole area.
+    const QVector4D sourceMaskTransform(
+        sourceHorizontalWrapMode_ == Transparent ? sourceTransform_.x() * 2.0f : 2.0f,
+        sourceVerticalWrapMode_ == Transparent ? sourceTransform_.y() * 2.0f : 2.0f,
+        sourceHorizontalWrapMode_ == Transparent ? sourceTransform_.z() * 2.0f - 1.0f : -1.0f,
+        sourceVerticalWrapMode_ == Transparent ? sourceTransform_.w() * 2.0f - 1.0f : -1.0f);
+
+    // Select and pack the lerp'd and premultiplied background colors.
+    QRgb color[2];
+    if (flags_ & BackgroundApiSet) {
+        color[0] = backgroundColor_;
+        color[1] = (backgroundMode_ == SolidColor) ? backgroundColor_ : secondaryBackgroundColor_;
+    } else {
+        if (!sourceTexture) {
+            color[0] = backgroundColor_;
+            // For API compatibility reasons, secondaryBackgroundColor_ is set to backgroundColor_
+            // as long as setGradientColor() isn't called, so we can safely use it here.
+            color[1] = secondaryBackgroundColor_;
+        } else {
+            // The deprecated image API was created such that whenever an image is set, the
+            // background color is transparent.
+            color[0] = qRgba(0, 0, 0, 0);
+            color[1] = qRgba(0, 0, 0, 0);
+        }
+    }
+    const quint32 radiusHeight = static_cast<quint32>((radius / itemSize.height()) * 255.0f);
+    const quint32 backgroundColor[4] = {
+        packColor(qAlpha(color[0]), qBlue(color[0]), qGreen(color[0]), qRed(color[0])),
+        lerpColor(radiusHeight, color[0], color[1]),
+        lerpColor(255 - radiusHeight, color[0], color[1]),
+        packColor(qAlpha(color[1]), qBlue(color[1]), qGreen(color[1]), qRed(color[1]))
+    };
+
+    updateGeometry(
+        node, itemSize.width(), itemSize.height(), radius, shapeTextureData->coordinate[index],
+        sourceCoordTransform, sourceMaskTransform, backgroundColor);
+
+    return node;
+}
+
+QSGNode* UCUbuntuShape::createSceneGraphNode() const
+{
+    return new ShapeNode;
+}
+
+void UCUbuntuShape::updateMaterial(
+    QSGNode* node, QSGTexture* shapeTexture, QSGTexture::Filtering shapeTextureFiltering,
+    QSGTexture* sourceTexture)
+{
+    ShapeNode* shapeNode = static_cast<ShapeNode*>(node);
+    ShapeMaterial::Data* materialData = shapeNode->material()->data();
     quint8 flags = 0;
-    if (texture && sourceOpacity_) {
+
+    materialData->shapeTexture = shapeTexture;
+    if (sourceTexture && sourceOpacity_) {
         materialData->sourceTextureProvider = sourceTextureProvider_;
         materialData->sourceOpacity = sourceOpacity_;
         if (sourceHorizontalWrapMode_ == Repeat) {
@@ -1394,38 +1146,174 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
         materialData->sourceTextureProvider = NULL;
         materialData->sourceOpacity = 0;
     }
+    materialData->shapeTextureFiltering = shapeTextureFiltering;
     materialData->flags = flags;
+}
 
-    // Select the right shape texture coordinates.
-    int index = (border_ == RawBorder) ? 0 : (border_ == IdleBorder) ? 1 : 2;
-    if (radius_ == SmallRadius) {
-        index += 3;
-    }
+void UCUbuntuShape::updateGeometry(
+    QSGNode* node, float width, float height, float radius, const float shapeCoordinate[][2],
+    const QVector4D& sourceCoordTransform, const QVector4D& sourceMaskTransform,
+    const quint32 backgroundColor[4])
+{
+    ShapeNode* shapeNode = static_cast<ShapeNode*>(node);
+    ShapeNode::Vertex* v = reinterpret_cast<ShapeNode::Vertex*>(
+        shapeNode->geometry()->vertexData());
 
-    // Select the background color.
-    QRgb backgroundColor, secondaryBackgroundColor;
-    if (flags_ & BackgroundApiSet) {
-        backgroundColor = backgroundColor_;
-        secondaryBackgroundColor =
-            (backgroundMode_ == SolidColor) ? backgroundColor_ : secondaryBackgroundColor_;
-    } else {
-        if (!texture) {
-            backgroundColor = backgroundColor_;
-            // For API compatibility reasons, secondaryBackgroundColor_ is set to backgroundColor_
-            // as long as setGradientColor() isn't called, so we can safely set it here.
-            secondaryBackgroundColor = secondaryBackgroundColor_;
-        } else {
-            // The deprecated image API was created such that whenever an image is set, the
-            // background color is transparent.
-            backgroundColor = qRgba(0, 0, 0, 0);
-            secondaryBackgroundColor = qRgba(0, 0, 0, 0);
-        }
-    }
+    // Convert radius to normalized coordinates.
+    const float rw = radius / width;
+    const float rh = radius / height;
 
-    node->setVertices(itemSize.width(), itemSize.height(), radius,
-                      shapeTextureData->coordinate[index], sourceHorizontalWrapMode_,
-                      sourceVerticalWrapMode_, sourceTransform_, textureRect, backgroundColor,
-                      secondaryBackgroundColor);
+    // Set top row of 4 vertices.
+    v[0].position[0] = 0.0f;
+    v[0].position[1] = 0.0f;
+    v[0].shapeCoordinate[0] = shapeCoordinate[0][0];
+    v[0].shapeCoordinate[1] = shapeCoordinate[0][1];
+    v[0].sourceCoordinate[0] = sourceCoordTransform.z();
+    v[0].sourceCoordinate[1] = sourceCoordTransform.w();
+    v[0].sourceCoordinate[2] = sourceMaskTransform.z();
+    v[0].sourceCoordinate[3] = sourceMaskTransform.w();
+    v[0].backgroundColor = backgroundColor[0];
+    v[1].position[0] = radius;
+    v[1].position[1] = 0.0f;
+    v[1].shapeCoordinate[0] = shapeCoordinate[1][0];
+    v[1].shapeCoordinate[1] = shapeCoordinate[1][1];
+    v[1].sourceCoordinate[0] = rw * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[1].sourceCoordinate[1] = sourceCoordTransform.w();
+    v[1].sourceCoordinate[2] = rw * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[1].sourceCoordinate[3] = sourceMaskTransform.w();
+    v[1].backgroundColor = backgroundColor[0];
+    v[2].position[0] = width - radius;
+    v[2].position[1] = 0.0f;
+    v[2].shapeCoordinate[0] = shapeCoordinate[2][0];
+    v[2].shapeCoordinate[1] = shapeCoordinate[2][1];
+    v[2].sourceCoordinate[0] = (1.0f - rw) * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[2].sourceCoordinate[1] = sourceCoordTransform.w();
+    v[2].sourceCoordinate[2] = (1.0f - rw) * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[2].sourceCoordinate[3] = sourceMaskTransform.w();
+    v[2].backgroundColor = backgroundColor[0];
+    v[3].position[0] = width;
+    v[3].position[1] = 0.0f;
+    v[3].shapeCoordinate[0] = shapeCoordinate[3][0];
+    v[3].shapeCoordinate[1] = shapeCoordinate[3][1];
+    v[3].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[3].sourceCoordinate[1] = sourceCoordTransform.w();
+    v[3].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[3].sourceCoordinate[3] = sourceMaskTransform.w();
+    v[3].backgroundColor = backgroundColor[0];
 
-    return node;
+    // Set middle-top row of 4 vertices.
+    v[4].position[0] = 0.0f;
+    v[4].position[1] = radius;
+    v[4].shapeCoordinate[0] = shapeCoordinate[4][0];
+    v[4].shapeCoordinate[1] = shapeCoordinate[4][1];
+    v[4].sourceCoordinate[0] = sourceCoordTransform.z();
+    v[4].sourceCoordinate[1] = rh * sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[4].sourceCoordinate[2] = sourceMaskTransform.z();
+    v[4].sourceCoordinate[3] = rh * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[4].backgroundColor = backgroundColor[1];
+    v[5].position[0] = radius;
+    v[5].position[1] = radius;
+    v[5].shapeCoordinate[0] = shapeCoordinate[5][0];
+    v[5].shapeCoordinate[1] = shapeCoordinate[5][1];
+    v[5].sourceCoordinate[0] = rw * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[5].sourceCoordinate[1] = rh * sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[5].sourceCoordinate[2] = rw * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[5].sourceCoordinate[3] = rh * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[5].backgroundColor = backgroundColor[1];
+    v[6].position[0] = width - radius;
+    v[6].position[1] = radius;
+    v[6].shapeCoordinate[0] = shapeCoordinate[6][0];
+    v[6].shapeCoordinate[1] = shapeCoordinate[6][1];
+    v[6].sourceCoordinate[0] = (1.0f - rw) * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[6].sourceCoordinate[1] = rh * sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[6].sourceCoordinate[2] = (1.0f - rw) * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[6].sourceCoordinate[3] = rh * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[6].backgroundColor = backgroundColor[1];
+    v[7].position[0] = width;
+    v[7].position[1] = radius;
+    v[7].shapeCoordinate[0] = shapeCoordinate[7][0];
+    v[7].shapeCoordinate[1] = shapeCoordinate[7][1];
+    v[7].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[7].sourceCoordinate[1] = rh * sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[7].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[7].sourceCoordinate[3] = rh * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[7].backgroundColor = backgroundColor[1];
+
+    // Set middle-bottom row of 4 vertices.
+    v[8].position[0] = 0.0f;
+    v[8].position[1] = height - radius;
+    v[8].shapeCoordinate[0] = shapeCoordinate[8][0];
+    v[8].shapeCoordinate[1] = shapeCoordinate[8][1];
+    v[8].sourceCoordinate[0] = sourceCoordTransform.z();
+    v[8].sourceCoordinate[1] = (1.0f - rh) * sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[8].sourceCoordinate[2] = sourceMaskTransform.z();
+    v[8].sourceCoordinate[3] = (1.0f - rh) * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[8].backgroundColor = backgroundColor[2];
+    v[9].position[0] = radius;
+    v[9].position[1] = height - radius;
+    v[9].shapeCoordinate[0] = shapeCoordinate[9][0];
+    v[9].shapeCoordinate[1] = shapeCoordinate[9][1];
+    v[9].sourceCoordinate[0] = rw * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[9].sourceCoordinate[1] = (1.0f - rh) * sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[9].sourceCoordinate[2] = rw * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[9].sourceCoordinate[3] = (1.0f - rh) * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[9].backgroundColor = backgroundColor[2];
+    v[10].position[0] = width - radius;
+    v[10].position[1] = height - radius;
+    v[10].shapeCoordinate[0] = shapeCoordinate[10][0];
+    v[10].shapeCoordinate[1] = shapeCoordinate[10][1];
+    v[10].sourceCoordinate[0] = (1.0f - rw) * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[10].sourceCoordinate[1] = (1.0f - rh) * sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[10].sourceCoordinate[2] = (1.0f - rw) * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[10].sourceCoordinate[3] = (1.0f - rh) * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[10].backgroundColor = backgroundColor[2];
+    v[11].position[0] = width;
+    v[11].position[1] = height - radius;
+    v[11].shapeCoordinate[0] = shapeCoordinate[11][0];
+    v[11].shapeCoordinate[1] = shapeCoordinate[11][1];
+    v[11].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[11].sourceCoordinate[1] = (1.0f - rh) * sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[11].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[11].sourceCoordinate[3] = (1.0f - rh) * sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[11].backgroundColor = backgroundColor[2];
+
+    // Set bottom row of 4 vertices.
+    v[12].position[0] = 0.0f;
+    v[12].position[1] = height;
+    v[12].shapeCoordinate[0] = shapeCoordinate[12][0];
+    v[12].shapeCoordinate[1] = shapeCoordinate[12][1];
+    v[12].sourceCoordinate[0] = sourceCoordTransform.z();
+    v[12].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[12].sourceCoordinate[2] = sourceMaskTransform.z();
+    v[12].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[12].backgroundColor = backgroundColor[3];
+    v[13].position[0] = radius;
+    v[13].position[1] = height;
+    v[13].shapeCoordinate[0] = shapeCoordinate[13][0];
+    v[13].shapeCoordinate[1] = shapeCoordinate[13][1];
+    v[13].sourceCoordinate[0] = rw * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[13].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[13].sourceCoordinate[2] = rw * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[13].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[13].backgroundColor = backgroundColor[3];
+    v[14].position[0] = width - radius;
+    v[14].position[1] = height;
+    v[14].shapeCoordinate[0] = shapeCoordinate[14][0];
+    v[14].shapeCoordinate[1] = shapeCoordinate[14][1];
+    v[14].sourceCoordinate[0] = (1.0f - rw) * sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[14].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[14].sourceCoordinate[2] = (1.0f - rw) * sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[14].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[14].backgroundColor = backgroundColor[3];
+    v[15].position[0] = width;
+    v[15].position[1] = height;
+    v[15].shapeCoordinate[0] = shapeCoordinate[15][0];
+    v[15].shapeCoordinate[1] = shapeCoordinate[15][1];
+    v[15].sourceCoordinate[0] = sourceCoordTransform.x() + sourceCoordTransform.z();
+    v[15].sourceCoordinate[1] = sourceCoordTransform.y() + sourceCoordTransform.w();
+    v[15].sourceCoordinate[2] = sourceMaskTransform.x() + sourceMaskTransform.z();
+    v[15].sourceCoordinate[3] = sourceMaskTransform.y() + sourceMaskTransform.w();
+    v[15].backgroundColor = backgroundColor[3];
+
+    node->markDirty(QSGNode::DirtyGeometry);
 }

@@ -22,7 +22,93 @@
 #include <QtQuick/QQuickItem>
 #include <QtQuick/QSGNode>
 #include <QtQuick/qsgtexture.h>
+#include <QtQuick/qsgmaterial.h>
 #include <QtGui/QOpenGLFunctions>
+
+class UCUbuntuShape;
+
+// --- Scene graph shader ---
+
+class ShapeShader : public QSGMaterialShader
+{
+public:
+    ShapeShader();
+    virtual char const* const* attributeNames() const;
+    virtual void initialize();
+    virtual void updateState(
+        const RenderState& state, QSGMaterial* newEffect, QSGMaterial* oldEffect);
+
+private:
+    QOpenGLFunctions* functions_;
+    int matrixId_;
+    int opacityId_;
+    int sourceOpacityId_;
+    int secondaryBackgroundColorId_;
+    int texturedId_;
+};
+
+// --- Scene graph material ---
+
+class ShapeMaterial : public QSGMaterial
+{
+public:
+    struct Data {
+        enum {
+            Textured             = (1 << 0),
+            HorizontallyRepeated = (1 << 1),
+            VerticallyRepeated   = (1 << 2),
+            Repeated             = (HorizontallyRepeated | VerticallyRepeated)
+        };
+        QSGTexture* shapeTexture;
+        QSGTextureProvider* sourceTextureProvider;
+        quint8 sourceOpacity;
+        QSGTexture::Filtering shapeTextureFiltering;
+        quint8 flags;
+    };
+
+    ShapeMaterial();
+    virtual QSGMaterialType* type() const;
+    virtual QSGMaterialShader* createShader() const;
+    virtual int compare(const QSGMaterial* other) const;
+    const Data* constData() const { return &data_; }
+    Data* data() { return &data_; }
+
+private:
+    Data data_;
+};
+
+// --- Scene graph node ---
+
+class ShapeNode : public QSGGeometryNode
+{
+public:
+    struct Vertex {
+        float position[2];
+        float shapeCoordinate[2];
+        float sourceCoordinate[4];
+        quint32 backgroundColor;
+    };
+
+    static const int indexCount = 28;
+    static const int indexType = GL_UNSIGNED_SHORT;
+    static const int indexTypeSize = sizeof(unsigned short);
+    static const int vertexCount = 16;
+    static const QSGGeometry::DataPattern indexDataPattern = QSGGeometry::StaticPattern;
+    static const QSGGeometry::DataPattern vertexDataPattern = QSGGeometry::AlwaysUploadPattern;
+    static const GLenum drawingMode = GL_TRIANGLE_STRIP;
+    static const unsigned short* indices();
+    static const QSGGeometry::AttributeSet& attributeSet();
+
+    ShapeNode();
+    ShapeMaterial* material() { return &material_; }
+    QSGGeometry* geometry() { return &geometry_; }
+
+private:
+    QSGGeometry geometry_;
+    ShapeMaterial material_;
+};
+
+// --- QtQuick item ---
 
 class UCUbuntuShape : public QQuickItem
 {
@@ -173,8 +259,18 @@ Q_SIGNALS:
     void verticalAlignmentChanged();
 
 protected:
-    virtual QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*);
+    virtual QSGNode* updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* data);
     virtual void geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry);
+
+    // Virtual functions for extended shapes.
+    virtual QSGNode* createSceneGraphNode() const;
+    virtual void updateMaterial(
+        QSGNode* node, QSGTexture* shapeTexture, QSGTexture::Filtering shapeTextureFiltering,
+        QSGTexture* sourceTexture);
+    virtual void updateGeometry(
+        QSGNode* node, float width, float height, float radius, const float shapeCoordinate[][2],
+        const QVector4D& sourceCoordTransform, const QVector4D& sourceMaskTransform,
+        const quint32 backgroundColor[4]);
 
 private Q_SLOTS:
     void imagePropertiesChanged();
@@ -185,14 +281,14 @@ private Q_SLOTS:
 
 private:
     void updateFromImageProperties(QQuickItem* image);
-    void connectToPropertyChange(QObject* sender, const char* property,
-                                 QObject* receiver, const char* slot);
+    void connectToPropertyChange(
+        QObject* sender, const char* property, QObject* receiver, const char* slot);
     void connectToImageProperties(QQuickItem* image);
     void dropColorSupport();
     void dropImageSupport();
-    void updateSourceTransform(float itemWidth, float itemHeight, FillMode fillMode,
-                               HAlignment horizontalAlignment, VAlignment verticalAlignment,
-                               const QSize& textureSize);
+    void updateSourceTransform(
+        float itemWidth, float itemHeight, FillMode fillMode, HAlignment horizontalAlignment,
+        VAlignment verticalAlignment, const QSize& textureSize);
 
     enum Radius { SmallRadius, MediumRadius };
     enum Border { RawBorder, IdleBorder, PressedBorder };
@@ -229,4 +325,4 @@ private:
 
 QML_DECLARE_TYPE(UCUbuntuShape)
 
-#endif // UCUBUNTUSHAPE_H
+#endif  // UCUBUNTUSHAPE_H

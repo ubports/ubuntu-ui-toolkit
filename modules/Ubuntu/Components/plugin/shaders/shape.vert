@@ -30,13 +30,14 @@ varying lowp vec4 backgroundColor;
 void main()
 {
     shapeCoord = shapeCoordAttrib;
-    backgroundColor = backgroundColorAttrib;
 
     // FIXME(loicm) Would be better to use a bitfield but bitwise ops have only been integrated in
-    // GLSL 1.3 (OpenGL 3) and GLSL ES 3.0 (OpenGL ES 3),
+    //     GLSL 1.3 (OpenGL 3) and GLSL ES 3 (OpenGL ES 3).
     if (textured) {
         sourceCoord = sourceCoordAttrib;
     }
+
+    backgroundColor = backgroundColorAttrib;
 
     gl_Position = matrix * positionAttrib;
 }

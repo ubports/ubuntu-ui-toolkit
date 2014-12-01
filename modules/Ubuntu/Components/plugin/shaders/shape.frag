@@ -38,7 +38,7 @@ void main(void)
     lowp vec4 color = backgroundColor;
 
     // FIXME(loicm) Would be better to use a bitfield but bitwise ops have only been integrated in
-    // GLSL 1.3 (OpenGL 3) and GLSL ES 3.0 (OpenGL ES 3),
+    //     GLSL 1.3 (OpenGL 3) and GLSL ES 3 (OpenGL ES 3).
     if (textured) {
         // Blend the source over the current color (static flow control prevents the texture fetch).
         lowp vec2 axisMask = -sign((sourceCoord.zw * sourceCoord.zw) - vec2(1.0));
@@ -50,7 +50,7 @@ void main(void)
     // Shape the current color with the mask.
     color *= vec4(shapeData.b);
 
-    // Blend the border color over the current color.
+    // Blend the border over the current color.
     color = vec4(1.0 - shapeData.r) * color + shapeData.gggr;
 
     gl_FragColor = color * vec4(opacity);

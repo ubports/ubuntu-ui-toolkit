@@ -114,8 +114,8 @@ RESOURCES += \
     plugin.qrc
 
 OTHER_FILES += \
-    ucubuntushape.vert \
-    ucubuntushape.frag
+    shaders/shape.vert \
+    shaders/shape.frag
 
 # deployment rules for the plugin
 installPath = $$[QT_INSTALL_QML]/$$replace(uri, \\., /)
