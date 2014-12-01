@@ -80,9 +80,6 @@ Item {
     // handle action triggering
     ListItemActions.onStatusChanged: {
         if (ListItemActions.status === ListItemActions.Disconnected && actionsRow.selectedAction) {
-            if (actionsRow.selectedAction.parameterType === Action.None) {
-                actionsRow.selectedAction.parameterType = Action.Integer;
-            }
             actionsRow.selectedAction.trigger(actionsRow.listItemIndex >= 0 ? actionsRow.listItemIndex : null);
             actionsRow.selectedAction = null;
         }

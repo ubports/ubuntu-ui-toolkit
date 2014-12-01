@@ -494,10 +494,37 @@ void UCListItemActions::setDelegate(QQmlComponent *delegate)
  * }
  * \endqml
  */
+int UCListItemActionsPrivate::actions_count(QQmlListProperty<UCAction> *p)
+{
+    return reinterpret_cast<QList<UCAction *> *>(p->data)->count();
+}
+void UCListItemActionsPrivate::actions_append(QQmlListProperty<UCAction> *p, UCAction *v)
+{
+    // check action type before adding it
+    if (v->m_parameterType == UCAction::None) {
+        v->setProperty("parameterType", UCAction::Integer);
+    }
+    reinterpret_cast<QList<UCAction *> *>(p->data)->append(v);
+}
+UCAction *UCListItemActionsPrivate::actions_at(QQmlListProperty<UCAction> *p, int i)
+{
+    return reinterpret_cast<QList<UCAction *> *>(p->data)->at(i);
+}
+
+void UCListItemActionsPrivate::actions_clear(QQmlListProperty<UCAction> *p)
+{
+    reinterpret_cast<QList<UCAction *> *>(p->data)->clear();
+}
+
 QQmlListProperty<UCAction> UCListItemActions::actions()
 {
     Q_D(UCListItemActions);
-    return QQmlListProperty<UCAction>(this, d->actions);
+    return QQmlListProperty<UCAction>(this, &d->actions,
+                                      UCListItemActionsPrivate::actions_append,
+                                      UCListItemActionsPrivate::actions_count,
+                                      UCListItemActionsPrivate::actions_at,
+                                      UCListItemActionsPrivate::actions_clear
+                                      );
 }
 
 /*!
