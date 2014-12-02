@@ -64,15 +64,18 @@ def get_path_to_build_root():
         return os.environ["UITK_BUILD_ROOT"]
     return _guess_root_path()
 
+
 def get_path_to_source_root():
     if "UITK_SOURCE_ROOT" in os.environ:
         return os.environ["UITK_SOURCE_ROOT"]
     return _guess_root_path()
 
+
 def _guess_root_path():
     return os.path.abspath(
         os.path.join(
             os.path.dirname(__file__), '..', '..', '..', '..'))
+
 
 class UbuntuUIToolkitWithFakeAppRunningTestCase(
         base.UbuntuUIToolkitAppTestCase):
