@@ -22,6 +22,8 @@
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
+#include <QtQuick/private/qquickanimation_p.h>
+#include "ucubuntuanimation.h"
 
 QColor getPaletteColor(const char *profile, const char *color)
 {
@@ -35,6 +37,128 @@ QColor getPaletteColor(const char *profile, const char *color)
     }
     return result;
 }
+/******************************************************************************
+ * SnapAnimator
+ *
+ * The class handles the animation executed when the ListItemAction panel is
+ * swiped. The animation is executed from the swipe position the mouse/touch is
+ * released to the desired position given in snap(). The action panel is assumed
+ * to be anchored to the ListItem.contentItem left or right, depending on which
+ * action list is swiped in. Therefore the animator only changes the ListItem.contentItem
+ * x coordinate.
+ * The animation is defined by the style.
+ */
+UCListItemSnapAnimator::UCListItemSnapAnimator(UCListItem *item)
+    : QObject(item)
+    , item(item)
+{
+}
+UCListItemSnapAnimator::~UCListItemSnapAnimator()
+{
+    // make sure we cannot animate anymore, for safety
+    item = 0;
+}
+
+/*
+ * Snap the ListItem.contentItem in or out, depending on the position specified
+ * in "to" parameter. If the position is 0, a snap out will be executed - see
+ * snapOut(). In any other cases a snap in action will be performed - see snapIn().
+ */
+bool UCListItemSnapAnimator::snap(qreal to)
+{
+    if (!item) {
+        return false;
+    }
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    QQuickPropertyAnimation *snap = getDefaultAnimation();
+    if (!snap) {
+        // no animation, so we simply position the component
+        listItem->contentItem->setX(to);
+        return false;
+    }
+    snap->setTargetObject(listItem->contentItem);
+    if (to == 0.0) {
+        QObject::connect(snap, &QQuickAbstractAnimation::stopped,
+                         this, &UCListItemSnapAnimator::snapOut);
+    } else {
+        QObject::connect(snap, &QQuickAbstractAnimation::stopped,
+                         this, &UCListItemSnapAnimator::snapIn);
+    }
+    if (snap->properties().isEmpty() && snap->property().isEmpty()) {
+        snap->setProperty("x");
+    }
+    snap->setFrom(listItem->contentItem->property(snap->property().toLocal8Bit().constData()));
+    snap->setTo(to);
+    snap->setAlwaysRunToEnd(true);
+    // FIXME - this will be used later
+//    listItem->setContentMoved(true);
+    snap->start();
+    return true;
+}
+
+/*
+ * The function completes a running snap animation.
+ */
+void UCListItemSnapAnimator::complete()
+{
+    QQuickPropertyAnimation *snap = getDefaultAnimation();
+    if (snap && snap->isRunning()) {
+        snap->complete();
+    }
+}
+
+/*
+ * Snap out is performed when the ListItem.contentItem returns back to its original
+ * X coordinates (0). At this point both leading and trailing action panels will
+ * be disconnected, ascending Flickables will get unlocked (interactive value restored
+ * to the state before they were locked) and ListItem.contentMoving will be reset.
+ */
+void UCListItemSnapAnimator::snapOut()
+{
+    if (senderSignalIndex() >= 0) {
+        // disconnect animation, otherwise snapping will disconnect the panel
+        QQuickAbstractAnimation *snap = getDefaultAnimation();
+        QObject::disconnect(snap, 0, 0, 0);
+    }
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    if (listItem->attachedProperties) {
+        // restore flickable's interactive and cleanup
+        listItem->attachedProperties->disableInteractive(item, false);
+        // no need to listen flickables any longer
+        listItem->attachedProperties->listenToRebind(item, false);
+    }
+    // disconnect actions - FIXME this will be used later
+//    listItem->grabPanel(listItem->leadingActions, false);
+//    listItem->grabPanel(listItem->trailingActions, false);
+    // set contentMoving to false - FIXME used later
+//    listItem->setContentMoving(false);
+}
+
+/*
+ * Snap in only resets the ListItem.contentMoving property, but will keep leading/trailing
+ * actions connected as well as all ascendant Flickables locked (interactive = false).
+ */
+void UCListItemSnapAnimator::snapIn()
+{
+    if (senderSignalIndex() >= 0) {
+        // disconnect animation
+        QQuickAbstractAnimation *snap = getDefaultAnimation();
+        QObject::disconnect(snap, 0, 0, 0);
+    }
+    // turn content moving off - FIXME used later
+//    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+//    listItem->setContentMoving(false);
+}
+
+/*
+ * Returns the animation specified by the style.
+ */
+QQuickPropertyAnimation *UCListItemSnapAnimator::getDefaultAnimation()
+{
+    // FIXME - return the animation from the style
+    return 0;
+}
+
 /******************************************************************************
  * Divider
  */
@@ -202,6 +326,7 @@ UCListItemPrivate::UCListItemPrivate()
     , divider(new UCListItemDivider)
     , leadingActions(0)
     , trailingActions(0)
+    , animator(0)
 {
 }
 UCListItemPrivate::~UCListItemPrivate()

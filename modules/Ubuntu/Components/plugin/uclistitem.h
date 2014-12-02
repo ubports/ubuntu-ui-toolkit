@@ -24,6 +24,7 @@ class UCListItemContent;
 class UCListItemDivider;
 class UCListItemActions;
 class UCListItemAttached;
+class QQuickPropertyAnimation;
 class UCListItemPrivate;
 class UCListItem : public UCStyledItemBase
 {
