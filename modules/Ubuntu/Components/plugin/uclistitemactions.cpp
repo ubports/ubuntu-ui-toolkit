@@ -22,12 +22,14 @@
 #include "plugin.h"
 #include <QtQml/QQmlInfo>
 #include "ucaction.h"
+#include "ucunits.h"
 #include "uclistitemstyle.h"
 
 UCListItemActionsPrivate::UCListItemActionsPrivate()
     : QObjectPrivate()
     , status(UCListItemActions::Disconnected)
     , offsetDragged(0)
+    , optionSlotWidth(0.0)
     , delegate(0)
     , panelDelegate(0)
     , panelItem(0)
@@ -89,10 +91,8 @@ bool UCListItemActionsPrivate::connectToListItem(UCListItemActions *actions, UCL
     }
     // no parent set or panelItem yet, proceed with panel creation
     UCListItemPrivate *pItem = UCListItemPrivate::get(listItem);
-    if (!pItem->styleItem && pItem->loadStyle()) {
-        pItem->initStyleItem();
-    }
-    if (pItem->styleItem && !_this->createPanelItem(pItem->styleItem->m_actionsDelegate)) {
+    pItem->initStyleItem();
+    if (!pItem->styleItem || (pItem->styleItem && !_this->createPanelItem(pItem->styleItem->m_actionsDelegate))) {
         return false;
     }
 
@@ -398,7 +398,7 @@ UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *own
  * {ListItemStyle::actionsDelegate}{actionsDelegate} will be used.
  *
  * ListItemActions provides the \c action context property which contains the
- * Action instance visualized. Using this property delegates can access
+ * Action instance currently visualized. Using this property delegates can access
  * the information to be visualized. The action is triggered by the panel item
  * holding the visualized action, therefore only visualization is needed by the
  * custom delegate. The other context property exposed to delegates is the \c

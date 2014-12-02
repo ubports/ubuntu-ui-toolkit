@@ -152,6 +152,7 @@ Item {
             movingSpy.clear();
             pressedSpy.clear();
             clickSpy.clear();
+            interactiveSpy.clear();
             listView.interactive = true;
             // make sure we collapse
             mouseClick(defaults, 0, 0)
@@ -160,6 +161,7 @@ Item {
             interactiveSpy.target = null;
             interactiveSpy.clear();
             trailing.delegate = null;
+            listView.positionViewAtBeginning();
         }
 
         function test_0_defaults() {
@@ -167,6 +169,7 @@ Item {
             compare(defaults.color, "#000000", "Transparent by default");
             compare(defaults.highlightColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
             compare(defaults.pressed, false, "Not pressed buy default");
+            compare(defaults.swipeOvershoot, 0.0, "No overshoot till the style is loaded!");
             compare(defaults.divider.visible, true, "divider is visible by default");
             compare(defaults.divider.leftMargin, units.dp(2), "divider's left margin is 2GU");
             compare(defaults.divider.rightMargin, units.dp(2), "divider's right margin is 2GU");
@@ -317,12 +320,13 @@ Item {
         }
         function test_listview_not_interactive_while_tugged(data) {
             listView.positionViewAtBeginning();
+            compare(listView.interactive, true, "ListView is not interactive");
             movingSpy.target = data.item;
             interactiveSpy.target = listView;
             if (data.mouse) {
-                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+                flick(data.item, data.pos.x, data.pos.y, data.dx, data.dy);
             } else {
-                TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
+                TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, data.dy));
             }
             movingSpy.wait();
             // animation should no longer be running!
@@ -399,13 +403,124 @@ Item {
             trailing.delegate = customDelegate;
             listView.positionViewAtBeginning();
             var item = findChild(listView, "listItem0");
+            movingSpy.target = item;
             flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
             var panel = panelItem(item, false);
             verify(panel, "Panel is not visible");
             var custom = findChild(panel, "custom_delegate");
             verify(custom, "Custom delegate not in use");
+            movingSpy.wait();
             // cleanup
             rebound(item);
+        }
+
+        // execute as last so we make sure we have the panel created
+        function test_snap_data() {
+            var listItem = findChild(listView, "listItem0");
+            verify(listItem, "ListItem cannot be found");
+
+            return [
+                // the list snaps out if the panel is dragged in > overshoot GU (hardcoded for now)
+                {tag: "Snap out leading", item: listItem, dx: units.gu(2), snapIn: false},
+                {tag: "Snap in leading", item: listItem, dx: units.gu(4), snapIn: true},
+                {tag: "Snap out trailing", item: listItem, dx: -units.gu(2), snapIn: false},
+                {tag: "Snap in trailing", item: listItem, dx: -units.gu(4), snapIn: true},
+            ];
+        }
+        function test_snap(data) {
+            movingSpy.target = data.item;
+            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+            movingSpy.wait();
+            waitForRendering(data.item, 400);
+            movingSpy.clear();
+            if (data.snapIn) {
+                verify(data.item.contentItem.x != 0.0, "Not snapped to be visible");
+                // cleanup
+                rebound(data.item);
+            } else {
+                tryCompareFunction(function() { return data.item.contentItem.x; }, 0.0, 1000, "Not snapped back");
+            }
+        }
+
+        function test_snap_gesture_data() {
+            var listItem = findChild(listView, "listItem0");
+            var front = Qt.point(units.gu(1), listItem.height / 2);
+            var rear = Qt.point(listItem.width - units.gu(1), listItem.height / 2);
+            return [
+                // the first dx must be big enough to drag the panel in, it is always the last dx value
+                // which decides the snap direction
+                {tag: "Snap out, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(2)], snapIn: false},
+                {tag: "Snap in, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(1), units.gu(1)], snapIn: true},
+                // have less first dx as the trailing panel is shorter
+                {tag: "Snap out, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(2)], snapIn: false},
+                {tag: "Snap in, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(1), -units.gu(1)], snapIn: true},
+            ];
+        }
+        function test_snap_gesture(data) {
+            // performe the moves
+            movingSpy.target = data.item;
+            var pos = data.grabPos;
+            mousePress(data.item.contentItem, pos.x, pos.y);
+            for (var i in data.dx) {
+                var dx = data.dx[i];
+                mouseMoveSlowly(data.item.contentItem, pos.x, pos.y, dx, 0, 5, 100);
+                pos.x += dx;
+            }
+            mouseRelease(data.item.contentItem, pos.x, pos.y);
+            movingSpy.wait();
+
+            if (data.snapIn) {
+                // the contenTitem must be dragged in (snapIn)
+                verify(data.item.contentItem.x != 0.0, "Not snapped in!");
+                // dismiss
+                rebound(data.item);
+            } else {
+                fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Not snapped out!");
+            }
+        }
+
+        function test_overshoot_from_style() {
+            // scroll to the last ListView element and test on that, to make sure we don't have the style loaded for that component
+            listView.positionViewAtEnd();
+            var listItem = findChild(listView, "listItem" + (listView.count - 1));
+            verify(listItem, "Cannot get list item for testing");
+
+            compare(listItem.swipeOvershoot, 0.0, "No overshoot should be set yet!");
+            // now swipe
+            movingSpy.target = listItem;
+            flick(listItem.contentItem, centerOf(listItem).x, centerOf(listItem).y, units.gu(5), 0);
+            movingSpy.wait();
+            compare(listItem.swipeOvershoot, listItem.__styleInstance.swipeOvershoot, "Overshoot not taken from style");
+
+            // cleanup
+            rebound(listItem);
+        }
+
+        function test_custom_overshoot_data() {
+            // use different items to make sure the style doesn't update the overshoot values during the test
+            return [
+                {tag: "Positive value", index: listView.count - 1, value: units.gu(10), expected: units.gu(10)},
+                {tag: "Zero value", index: listView.count - 2, value: 0, expected: 0},
+                // synchronize the expected value with the one from Ambiance theme!
+                {tag: "Negative value", index: listView.count - 3, value: -1, expected: units.gu(2)},
+            ];
+        }
+        function test_custom_overshoot(data) {
+            // scroll to the last ListView element and test on that, to make sure we don't have the style loaded for that component
+            listView.positionViewAtEnd();
+            var listItem = findChild(listView, "listItem" + data.index);
+            verify(listItem, "Cannot get list item for testing");
+
+            compare(listItem.swipeOvershoot, 0.0, "No overshoot should be set yet!");
+            listItem.swipeOvershoot = data.value;
+            // now swipe
+            movingSpy.target = listItem;
+            flick(listItem.contentItem, centerOf(listItem).x, centerOf(listItem).y, units.gu(5), 0);
+            movingSpy.wait();
+            compare(listItem.swipeOvershoot, data.expected, "Overshoot differs from one set!");
+
+            // cleanup
+            rebound(listItem);
         }
     }
 }
