@@ -91,11 +91,9 @@ MainView {
             id: testItem
             objectName: "single"
             color: "lime"
-            opacity: enabled ? 1.0 : 0.2
             onClicked: {
                 print("click")
                 main.override = !main.override
-                enabled = !enabled
             }
             Label {
                 anchors.fill: parent

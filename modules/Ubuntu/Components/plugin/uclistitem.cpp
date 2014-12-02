@@ -32,8 +32,6 @@
 #include <QtQuick/private/qquickmousearea_p.h>
 #include "uclistitemstyle.h"
 
-#include <QtQml/private/qqmlproperty_p.h>
-
 #define MIN(x, y)           ((x < y) ? x : y)
 #define MAX(x, y)           ((x > y) ? x : y)
 #define CLAMP(v, min, max)  (min <= max) ? MAX(min, MIN(v, max)) : MAX(max, MIN(v, min))
