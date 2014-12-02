@@ -4,6 +4,7 @@ TEMPLATE = subdirs
 SUBDIRS += modules/ubuntu-ui-toolkit.pro tests examples po
 
 tests.depends = sub-modules-ubuntu-ui-toolkit-pro
+examples.depends = sub-modules-ubuntu-ui-toolkit-pro
 
 # additional 'make test' target required by continuous integration system
 test.target = test
@@ -13,7 +14,7 @@ QMAKE_EXTRA_TARGETS += test
 
 test_performance.target = test-performance
 test_performance.commands = cd $$shadowed($$_PRO_FILE_PWD_)/tests/unit/tst_performance; make check
-test_performance.depends = sub-modules-ubuntu-ui-toolkit-pro
+test_performance.depends = sub-modules-ubuntu-ui-toolkit-pro sub-tests
 QMAKE_EXTRA_TARGETS += test_performance
 
 test_api.target = test-api
@@ -37,7 +38,7 @@ QMAKE_EXTRA_TARGETS += test_components2
 
 qmluitests.target = qmluitests
 qmluitests.commands = cd $$shadowed($$_PRO_FILE_PWD_)/tests/unit_x11; make check
-qmluitests.depends = sub-modules-ubuntu-ui-toolkit-pro
+qmluitests.depends = sub-modules-ubuntu-ui-toolkit-pro sub-tests
 QMAKE_EXTRA_TARGETS += qmluitests
 
 license.target = license

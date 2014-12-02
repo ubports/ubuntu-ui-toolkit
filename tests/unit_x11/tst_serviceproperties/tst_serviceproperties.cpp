@@ -31,7 +31,7 @@ public:
 
 private:
 
-    // FIXME use UbuntuTestCase::ignoreWaring in Vivid
+    // FIXME use UbuntuTestCase::ignoreWarning in Vivid
     void ignoreWarning(const QString& fileName, uint line, uint column, const QString& message, uint occurences=1)
     {
         for (uint i = 0; i < occurences; i++) {
@@ -78,7 +78,7 @@ private Q_SLOTS:
             wait.wait();
         }
         // error should not be set
-        QVERIFY(watcher->property("error").toString().isEmpty());
+        QVERIFY2(watcher->property("error").toString().isEmpty(),qPrintable(QStringLiteral("Error: ")+watcher->property("error").toString()));
     }
 
     void test_one_valid_one_invalid_property()
@@ -92,7 +92,7 @@ private Q_SLOTS:
             wait.wait();
         }
         // error should not be set
-        QVERIFY(watcher->property("error").toString().isEmpty());
+        QVERIFY2(watcher->property("error").toString().isEmpty(),qPrintable(QStringLiteral("Error: ")+watcher->property("error").toString()));
     }
 
     void test_change_connection_props_data()
