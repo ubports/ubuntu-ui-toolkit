@@ -381,7 +381,7 @@ void UCListItemPrivate::init()
     _q_updateSize();
 
     // watch enabledChanged()
-    QObject::connect(q, SIGNAL(enabledChanged()), q, SLOT(_q_dimmDisabled()), Qt::DirectConnection);
+    QObject::connect(q, SIGNAL(enabledChanged()), q, SLOT(_q_dimDisabled()), Qt::DirectConnection);
 }
 
 void UCListItemPrivate::_q_updateThemedData()
@@ -395,7 +395,7 @@ void UCListItemPrivate::_q_updateThemedData()
     loadStyle(true);
 }
 
-void UCListItemPrivate::_q_dimmDisabled()
+void UCListItemPrivate::_q_dimDisabled()
 {
     Q_Q(UCListItem);
     if (q->isEnabled()) {

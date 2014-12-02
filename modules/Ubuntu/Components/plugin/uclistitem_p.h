@@ -49,7 +49,7 @@ public:
     void promptRebound();
     void _q_updateSize();
     void _q_updateIndex();
-    void _q_dimmDisabled();
+    void _q_dimDisabled();
     int index();
     bool canHighlight(QMouseEvent *event);
     void setPressed(bool pressed);
