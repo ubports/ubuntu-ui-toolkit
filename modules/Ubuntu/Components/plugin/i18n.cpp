@@ -21,6 +21,8 @@
 
 namespace C {
 #include <libintl.h>
+#include <glib.h>
+#include <glib/gi18n.h>
 }
 
 #include <stdlib.h>
@@ -185,5 +187,29 @@ QString UbuntuI18n::dtr(const QString& domain, const QString& singular, const QS
         return QString::fromUtf8(C::dngettext(NULL, singular.toUtf8(), plural.toUtf8(), n));
     } else {
         return QString::fromUtf8(C::dngettext(domain.toUtf8(), singular.toUtf8(), plural.toUtf8(), n));
+    }
+}
+
+/*!
+ * \qmlmethod string i18n::ctr(string context, string text)
+ * Translate \a text using gettext and return the translation.
+ * \a context is only visible to the translator and helps disambiguating for very short texts
+ */
+QString UbuntuI18n::ctr(const QString& context, const QString& text)
+{
+    return dctr(QString(), context, text);
+}
+
+/*!
+ * \qmlmethod string i18n::dctr(string domain, string context, string text)
+ * Translate \a text using gettext. Uses the specified domain \a domain instead of i18n.domain.
+ * \a context is only visible to the translator and helps disambiguating for very short texts
+ */
+QString UbuntuI18n::dctr(const QString& domain, const QString& context, const QString& text)
+{
+    if (domain.isNull()) {
+        return QString::fromUtf8(C::g_dpgettext2(NULL, context.toUtf8(), text.toUtf8()));
+    } else {
+        return QString::fromUtf8(C::g_dpgettext2(domain.toUtf8(), context.toUtf8(), text.toUtf8()));
     }
 }

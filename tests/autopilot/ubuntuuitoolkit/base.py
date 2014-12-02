@@ -21,6 +21,9 @@ import logging
 import os
 import subprocess
 import ubuntuuitoolkit
+from autopilot.introspection import dbus
+from autopilot.matchers import Eventually
+from testtools.matchers import Equals
 
 from autopilot import (
     input,
@@ -80,3 +83,16 @@ class UbuntuUIToolkitAppTestCase(testcase.AutopilotTestCase):
             return input.Mouse
         else:
             return input.Touch
+
+    def _assert_not_visible(self, type_name='*', **kwargs):
+        """Confirm that an object is hidden.
+
+        Internally this means asserting that selecting the object fails.
+        """
+        try:
+            object = self.main_view.select_single(type_name, **kwargs)
+            # object.visible is always True if the select succeeds
+            self.assertThat(object.visible, Eventually(Equals(False)))
+        except dbus.StateNotFoundError:
+            # Caret can't be selected because it's hidden
+            pass
