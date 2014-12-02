@@ -1,5 +1,4 @@
 TEMPLATE = aux
-TARGET = muha
 
 PROJECTNAME = ubuntu-ui-toolkit
 
