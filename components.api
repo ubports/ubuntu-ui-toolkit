@@ -867,12 +867,20 @@ plugins.qmltypes
     prototype: "UCStyledItemBase"
     exports: ["ListItem 1.2"]
     Property { name: "contentItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
+    Property { name: "divider"; type: "UCListItemDivider"; isReadonly: true; isPointer: true }
     Property { name: "pressed"; type: "bool"; isReadonly: true }
     Property { name: "color"; type: "QColor" }
     Property { name: "highlightColor"; type: "QColor" }
     Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "children"; type: "QQuickItem"; isList: true; isReadonly: true }
     Signal { name: "clicked" }
+    name: "UCListItemDivider"
+    prototype: "QObject"
+    Property { name: "visible"; type: "bool" }
+    Property { name: "leftMargin"; type: "double" }
+    Property { name: "rightMargin"; type: "double" }
+    Property { name: "colorFrom"; type: "QColor" }
+    Property { name: "colorTo"; type: "QColor" }
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1", "Mouse 1.0"]

@@ -21,11 +21,13 @@
 #include "ucstyleditembase.h"
 
 class UCListItemContent;
+class UCListItemDivider;
 class UCListItemPrivate;
 class UCListItem : public UCStyledItemBase
 {
     Q_OBJECT
     Q_PROPERTY(QQuickItem *contentItem READ contentItem CONSTANT)
+    Q_PROPERTY(UCListItemDivider *divider READ divider CONSTANT)
     Q_PROPERTY(bool pressed READ pressed NOTIFY pressedChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor NOTIFY highlightColorChanged)
@@ -37,6 +39,7 @@ public:
     ~UCListItem();
 
     QQuickItem *contentItem() const;
+    UCListItemDivider *divider() const;
     bool pressed() const;
     QColor color() const;
     void setColor(const QColor &color);
@@ -44,6 +47,7 @@ public:
     void setHighlightColor(const QColor &color);
 
 protected:
+    void componentComplete();
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
     void itemChange(ItemChange change, const ItemChangeData &data);
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);

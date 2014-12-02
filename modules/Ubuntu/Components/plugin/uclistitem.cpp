@@ -35,8 +35,159 @@ QColor getPaletteColor(const char *profile, const char *color)
     }
     return result;
 }
+/******************************************************************************
+ * Divider
+ */
+UCListItemDivider::UCListItemDivider(QObject *parent)
+    : QObject(parent)
+    , m_visible(true)
+    , m_leftMarginChanged(false)
+    , m_rightMarginChanged(false)
+    , m_colorFromChanged(false)
+    , m_colorToChanged(false)
+    , m_thickness(0)
+    , m_leftMargin(0)
+    , m_rightMargin(0)
+    , m_listItem(0)
+{
+    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCListItemDivider::unitsChanged);
+    connect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemDivider::paletteChanged);
+    unitsChanged();
+    paletteChanged();
+}
+UCListItemDivider::~UCListItemDivider()
+{
+}
 
+void UCListItemDivider::init(UCListItem *listItem)
+{
+    QQml_setParent_noEvent(this, listItem);
+    m_listItem = UCListItemPrivate::get(listItem);
+}
 
+void UCListItemDivider::unitsChanged()
+{
+    m_thickness = UCUnits::instance().dp(2);
+    if (!m_leftMarginChanged) {
+        m_leftMargin = UCUnits::instance().dp(2);
+    }
+    if (!m_rightMarginChanged) {
+        m_rightMargin = UCUnits::instance().dp(2);
+    }
+    if (m_listItem) {
+        m_listItem->update();
+    }
+}
+
+void UCListItemDivider::paletteChanged()
+{
+    QColor background = getPaletteColor("normal", "background");
+    if (!background.isValid()) {
+        return;
+    }
+    // FIXME: we need a palette value for divider colors, till then base on the background
+    // luminance
+    if (!m_colorFromChanged || !m_colorToChanged) {
+        qreal luminance = (background.red()*212 + background.green()*715 + background.blue()*73)/1000.0/255.0;
+        bool lightBackground = (luminance > 0.85);
+        if (!m_colorFromChanged) {
+            m_colorFrom = lightBackground ? QColor("#26000000") : QColor("#26FFFFFF");
+        }
+        if (!m_colorToChanged) {
+            m_colorTo = lightBackground ? QColor("#14FFFFFF") : QColor("#14000000");
+        }
+        updateGradient();
+    }
+}
+
+void UCListItemDivider::updateGradient()
+{
+    m_gradient.clear();
+    m_gradient.append(QGradientStop(0.0, m_colorFrom));
+    m_gradient.append(QGradientStop(0.49, m_colorFrom));
+    m_gradient.append(QGradientStop(0.5, m_colorTo));
+    m_gradient.append(QGradientStop(1.0, m_colorTo));
+    if (m_listItem) {
+        m_listItem->update();
+    }
+}
+
+QSGNode *UCListItemDivider::paint(const QRectF &rect)
+{
+    if (m_visible && (m_gradient.size() > 0)) {
+        // the parent always recreates the node, so no worries for the existing child node
+        QSGRectangleNode *rectNode = m_listItem->sceneGraphContext()->createRectangleNode();
+        // margins are only applied when the ListItem is in normal state, when pressed,
+        // the divider is painted from edge to edge
+        qreal left = (m_listItem && m_listItem->pressed) ? 0 : m_leftMargin;
+        qreal right = (m_listItem && m_listItem->pressed) ? rect.width() : rect.width() - m_leftMargin - m_rightMargin;
+        rectNode->setRect(QRectF(left, rect.height() - m_thickness, right, m_thickness));
+        rectNode->setGradientStops(m_gradient);
+        rectNode->update();
+        return rectNode;
+    } else {
+        return 0;
+    }
+}
+
+void UCListItemDivider::setVisible(bool visible)
+{
+    if (m_visible == visible) {
+        return;
+    }
+    m_visible = visible;
+    m_listItem->resize();
+    m_listItem->update();
+    Q_EMIT visibleChanged();
+}
+
+void UCListItemDivider::setLeftMargin(qreal leftMargin)
+{
+    if (m_leftMargin == leftMargin) {
+        return;
+    }
+    m_leftMargin = leftMargin;
+    m_leftMarginChanged = true;
+    m_listItem->update();
+    Q_EMIT leftMarginChanged();
+}
+
+void UCListItemDivider::setRightMargin(qreal rightMargin)
+{
+    if (m_rightMargin == rightMargin) {
+        return;
+    }
+    m_rightMargin = rightMargin;
+    m_rightMarginChanged = true;
+    m_listItem->update();
+    Q_EMIT rightMarginChanged();
+}
+
+void UCListItemDivider::setColorFrom(const QColor &color)
+{
+    if (m_colorFrom == color) {
+        return;
+    }
+    m_colorFrom = color;
+    m_colorFromChanged = true;
+    updateGradient();
+    Q_EMIT colorFromChanged();
+}
+
+void UCListItemDivider::setColorTo(const QColor &color)
+{
+    if (m_colorTo == color) {
+        return;
+    }
+    m_colorTo = color;
+    m_colorToChanged = true;
+    updateGradient();
+    Q_EMIT colorToChanged();
+}
+
+/******************************************************************************
+ * ListItemPrivate
+ */
 UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
     , pressed(false)
@@ -44,6 +195,7 @@ UCListItemPrivate::UCListItemPrivate()
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
     , contentItem(new QQuickItem)
+    , divider(new UCListItemDivider)
 {
 }
 UCListItemPrivate::~UCListItemPrivate()
@@ -56,6 +208,7 @@ void UCListItemPrivate::init()
     contentItem->setObjectName("ListItemHolder");
     QQml_setParent_noEvent(contentItem, q);
     contentItem->setParentItem(q);
+    divider->init(q);
     // content will be redirected to the contentItem, therefore we must report
     // children changes as it would come from the main component
     QObject::connect(contentItem, &QQuickItem::childrenChanged,
@@ -113,11 +266,31 @@ void UCListItemPrivate::listenToRebind(bool listen)
     if (flickable.isNull()) {
         return;
     }
+    Q_Q(UCListItem);
     if (listen) {
-        QObject::connect(flickable.data(), SIGNAL(movementStarted()), q_ptr, SLOT(_q_rebound()));
+        QObject::connect(flickable.data(), SIGNAL(movementStarted()), q, SLOT(_q_rebound()));
     } else {
-        QObject::disconnect(flickable.data(), SIGNAL(movementStarted()), q_ptr, SLOT(_q_rebound()));
+        QObject::disconnect(flickable.data(), SIGNAL(movementStarted()), q, SLOT(_q_rebound()));
     }
+}
+
+void UCListItemPrivate::resize()
+{
+    Q_Q(UCListItem);
+    QRectF rect(q->boundingRect());
+    if (divider && divider->m_visible) {
+        rect.setHeight(rect.height() - divider->m_thickness);
+    }
+    contentItem->setSize(rect.size());
+}
+
+void UCListItemPrivate::update()
+{
+    if (!ready) {
+        return;
+    }
+    Q_Q(UCListItem);
+    q->update();
 }
 
 /*!
@@ -149,6 +322,10 @@ void UCListItemPrivate::listenToRebind(bool listen)
  *      revealed and thus will destroy your logic
  * \li never anchor left or right anchor lines as it will block revealing the options.
  * \endlist
+ *
+ * Each ListItem has a thin divider shown on the bottom of the component. This
+ * divider can be configured through the \l divider grouped property, which can
+ * configure its margins from the edges of the ListItem as well as its visibility.
  */
 
 /*!
@@ -169,23 +346,10 @@ UCListItem::~UCListItem()
 {
 }
 
-QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
+void UCListItem::componentComplete()
 {
-    Q_UNUSED(data);
-
-    Q_D(UCListItem);
-    QColor color = d->pressed ? d->highlightColor : d->color;
-
-    delete oldNode;
-    if (width() <= 0 || height() <= 0 || (color.alpha() == 0)) {
-        return 0;
-    }
-
-    QSGRectangleNode *rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
-    rectNode->setColor(color);
-    rectNode->setRect(boundingRect());
-    rectNode->update();
-    return rectNode;
+    UCStyledItemBase::componentComplete();
+    d_func()->ready = true;
 }
 
 void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
@@ -219,11 +383,43 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
 void UCListItem::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
 {
     UCStyledItemBase::geometryChanged(newGeometry, oldGeometry);
-    // resize contentItem item
+    // resize background item
     Q_D(UCListItem);
-    QRectF rect(boundingRect());
-    d->contentItem->setSize(rect.size());
+    d->resize();
 }
+
+QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
+{
+    Q_UNUSED(data);
+
+    Q_D(UCListItem);
+    QColor color = d->pressed ? d->highlightColor : d->color;
+
+    delete oldNode;
+    if (width() <= 0 || height() <= 0) {
+        return 0;
+    }
+
+    QSGRectangleNode *rectNode = 0;
+    if (color.alpha() > 0) {
+        rectNode = QQuickItemPrivate::get(this)->sceneGraphContext()->createRectangleNode();
+        rectNode->setColor(color);
+        // cover only the area of the contentItem
+        rectNode->setRect(d->contentItem->boundingRect());
+        rectNode->update();
+    }
+    oldNode = rectNode;
+    if (d->divider && d->divider->m_visible) {
+        QSGNode * dividerNode = d->divider->paint(boundingRect());
+        if (dividerNode && oldNode) {
+            oldNode->appendChildNode(dividerNode);
+        } else if (dividerNode) {
+            oldNode = dividerNode;
+        }
+    }
+    return oldNode;
+}
+
 void UCListItem::mousePressEvent(QMouseEvent *event)
 {
     UCStyledItemBase::mousePressEvent(event);
@@ -264,6 +460,36 @@ QQuickItem* UCListItem::contentItem() const
 {
     Q_D(const UCListItem);
     return d->contentItem;
+}
+
+/*!
+ * \qmlpropertygroup ::ListItem::divider
+ * \qmlproperty bool ListItem::divider.visible
+ * \qmlproperty real ListItem::divider.leftMargin
+ * \qmlproperty real ListItem::divider.rightMargin
+ * \qmlproperty real ListItem::divider.colorFrom
+ * \qmlproperty real ListItem::divider.colorTo
+ *
+ * This grouped property configures the thin divider shown in the bottom of the
+ * component. Configures the visibility and the margins from the left and right
+ * of the ListItem. When tugged (swiped left or right to reveal the options),
+ * it is not moved together with the content. \c colorFrom and \c colorTo configure
+ * the starting and ending colors of the divider.
+ *
+ * When \c visible is true, the ListItem's content size gets thinner with the
+ * divider's \c thickness.
+ *
+ * The default values for the properties are:
+ * \list
+ * \li \c visible: true
+ * \li \c leftMargin: 2 GU
+ * \li \c rightMargin: 2 GU
+ * \endlist
+ */
+UCListItemDivider* UCListItem::divider() const
+{
+    Q_D(const UCListItem);
+    return d->divider;
 }
 
 /*!

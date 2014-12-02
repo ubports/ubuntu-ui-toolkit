@@ -20,9 +20,11 @@
 #include "uclistitem.h"
 #include "ucstyleditembase_p.h"
 #include <QtCore/QPointer>
+#include <QtQuick/private/qquickrectangle_p.h>
 
 class QQuickFlickable;
 class UCListItemContent;
+class UCListItemDivider;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -42,15 +44,72 @@ public:
     void _q_updateSize();
     void setPressed(bool pressed);
     void listenToRebind(bool listen);
+    void resize();
+    void update();
 
     bool pressed:1;
     bool highlightColorChanged:1;
+    bool ready:1;
     QColor color;
     QColor highlightColor;
     QPointer<QQuickFlickable> flickable;
     QQuickItem *contentItem;
+    UCListItemDivider *divider;
+};
+
+class UCListItemDivider : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(bool visible MEMBER m_visible WRITE setVisible NOTIFY visibleChanged)
+    Q_PROPERTY(qreal leftMargin MEMBER m_leftMargin WRITE setLeftMargin NOTIFY leftMarginChanged)
+    Q_PROPERTY(qreal rightMargin MEMBER m_rightMargin WRITE setRightMargin NOTIFY rightMarginChanged)
+    Q_PROPERTY(QColor colorFrom MEMBER m_colorFrom WRITE setColorFrom NOTIFY colorFromChanged)
+    Q_PROPERTY(QColor colorTo MEMBER m_colorTo WRITE setColorTo NOTIFY colorToChanged)
+public:
+    explicit UCListItemDivider(QObject *parent = 0);
+    ~UCListItemDivider();
+    void init(UCListItem *listItem);
+
+Q_SIGNALS:
+    void visibleChanged();
+    void leftMarginChanged();
+    void rightMarginChanged();
+    void colorFromChanged();
+    void colorToChanged();
+
+protected:
+    QSGNode *paint(const QRectF &rect);
+
+private Q_SLOTS:
+    void unitsChanged();
+    void paletteChanged();
+
+private:
+    void updateGradient();
+    void setVisible(bool visible);
+    void setLeftMargin(qreal leftMargin);
+    void setRightMargin(qreal rightMargin);
+    void setColorFrom(const QColor &color);
+    void setColorTo(const QColor &color);
+
+    bool m_visible:1;
+    bool m_leftMarginChanged:1;
+    bool m_rightMarginChanged:1;
+    bool m_colorFromChanged:1;
+    bool m_colorToChanged:1;
+    qreal m_thickness;
+    qreal m_leftMargin;
+    qreal m_rightMargin;
+    QColor m_colorFrom;
+    QColor m_colorTo;
+    QGradientStops m_gradient;
+    UCListItemPrivate *m_listItem;
+    friend class UCListItem;
+    friend class UCListItemPrivate;
 };
 
 QColor getPaletteColor(const char *profile, const char *color);
+
+QML_DECLARE_TYPE(UCListItemDivider)
 
 #endif // UCVIEWITEM_P_H

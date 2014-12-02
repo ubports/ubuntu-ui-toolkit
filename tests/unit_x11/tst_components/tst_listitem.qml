@@ -87,6 +87,13 @@ Item {
             compare(defaults.color, "#000000", "Transparent by default");
             compare(defaults.highlightColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
             compare(defaults.pressed, false, "Not pressed buy default");
+            compare(defaults.divider.visible, true, "divider is visible by default");
+            compare(defaults.divider.leftMargin, units.dp(2), "divider's left margin is 2GU");
+            compare(defaults.divider.rightMargin, units.dp(2), "divider's right margin is 2GU");
+            compare(defaults.divider.colorFrom, "#000000", "colorFrom differs.");
+            fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
+            compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
+            fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
         }
 
         function test_children_in_content_item() {
@@ -144,6 +151,15 @@ Item {
             }
             compare(listItem.pressed, false, "Item is pressed still!");
             TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
+        }
+
+        function test_background_height_change_on_divider_visible() {
+            // make sure the testItem's divider is shown
+            testItem.divider.visible = true;
+            verify(testItem.contentItem.height < testItem.height, "ListItem's background height must be less than the item itself.");
+            testItem.divider.visible = false;
+            compare(testItem.contentItem.height, testItem.height, "ListItem's background height must be the same as the item itself.");
+            testItem.divider.visible = true;
         }
     }
 }

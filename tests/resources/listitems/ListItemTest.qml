@@ -37,18 +37,23 @@ MainView {
                 print("click")
                 main.override = !main.override
             }
+            Label {
+                anchors.fill: parent
+                text: units.gridUnit + "PX/unit"
+            }
         }
 
         ListView {
             id: view
             clip: true
             width: parent.width
-            height: units.gu(40)
+            height: units.gu(20)
             model: 100
             pressDelay: 0
             delegate: ListItem {
                 id: listItem
                 onClicked: print(" clicked")
+
                 Label {
                     text: modelData + " item"
                 }
@@ -65,7 +70,7 @@ MainView {
         Flickable {
             id: flicker
             width: parent.width
-            height: units.gu(40)
+            height: units.gu(20)
             clip: true
             contentHeight: column.childrenRect.height
             Column {
@@ -76,6 +81,12 @@ MainView {
                     ListItem {
                         color: "red"
                         highlightColor: "lime"
+                        divider.colorFrom: UbuntuColors.green
+
+                        Label {
+                            text: modelData + " Flickable item"
+                        }
+                        onClicked: divider.visible = !divider.visible
                     }
                 }
             }
