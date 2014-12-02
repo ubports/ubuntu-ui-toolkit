@@ -345,7 +345,6 @@ UCListItemPrivate::UCListItemPrivate()
     , highlightColor(Qt::transparent)
     , attachedProperties(0)
     , contentItem(new QQuickItem)
-    , disabledOpacity(0)
     , divider(new UCListItemDivider)
     , leadingActions(0)
     , trailingActions(0)
@@ -357,7 +356,6 @@ UCListItemPrivate::UCListItemPrivate()
 }
 UCListItemPrivate::~UCListItemPrivate()
 {
-    delete disabledOpacity;
 }
 
 void UCListItemPrivate::init()
@@ -383,9 +381,6 @@ void UCListItemPrivate::init()
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
 
-    // watch enabledChanged()
-    QObject::connect(q, SIGNAL(enabledChanged()), q, SLOT(_q_dimmDisabled()), Qt::DirectConnection);
-
     // create the animator
     animator = new UCListItemSnapAnimator(q);
 }
@@ -399,20 +394,6 @@ void UCListItemPrivate::_q_updateThemedData()
         q->update();
     }
     loadStyle(true);
-}
-
-void UCListItemPrivate::_q_dimmDisabled()
-{
-    Q_Q(UCListItem);
-    if (q->isEnabled()) {
-        PropertyChange::restore(disabledOpacity);
-    } else if (opacity() != 0.5) {
-        // this is the first time we need to create the property change
-        if (!disabledOpacity) {
-            disabledOpacity = new PropertyChange(q, "opacity");
-        }
-        PropertyChange::setValue(disabledOpacity, 0.5);
-    }
 }
 
 void UCListItemPrivate::_q_rebound()
