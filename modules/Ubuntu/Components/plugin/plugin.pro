@@ -69,7 +69,13 @@ HEADERS += plugin.h \
     adapters/actionsproxy_p.h \
     adapters/dbuspropertywatcher_p.h \
     ucserviceproperties.h \
-    ucserviceproperties_p.h
+    ucserviceproperties_p.h \
+    uclistitem.h \
+    uclistitem_p.h \
+    uclistitemactions.h \
+    uclistitemactions_p.h \
+    propertychange_p.h \
+    uclistitemstyle.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -107,7 +113,13 @@ SOURCES += plugin.cpp \
     ucactionmanager.cpp \
     adapters/actionsproxy_p.cpp \
     adapters/dbuspropertywatcher_p.cpp \
-    ucserviceproperties.cpp
+    ucserviceproperties.cpp \
+    uclistitem.cpp \
+    uclistitemactions.cpp \
+    uclistitemactionsattached.cpp \
+    uclistitemattached.cpp \
+    propertychange_p.cpp \
+    uclistitemstyle.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp

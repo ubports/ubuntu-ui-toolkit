@@ -53,6 +53,10 @@
 #include "ucactioncontext.h"
 #include "ucactionmanager.h"
 #include "ucserviceproperties.h"
+#include "uclistitem.h"
+#include "uclistitem_p.h"
+#include "uclistitemactions.h"
+#include "uclistitemstyle.h"
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -164,12 +168,21 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
     qmlRegisterType<UCServiceProperties, 1>(uri, 1, 1, "ServiceProperties");
+
+    // ListItem and related types, released to 1.2
+    qmlRegisterType<UCListItem, 2>(uri, 1, 2, "ListItem");
+    qmlRegisterType<UCListItemDivider>();
+    qmlRegisterType<UCListItemActions, 2>(uri, 1, 2, "ListItemActions");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     // initialize baseURL
     m_baseUrl = QUrl(baseUrl().toString() + '/');
+
+    // register internal styles
+    const char *styleUri = "Ubuntu.Components.Styles";
+    qmlRegisterType<UCListItemStyle, 2>(styleUri, 1, 2, "ListItemStyle");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();
