@@ -902,6 +902,7 @@ plugins.qmltypes
     Method {
     name: "snapToPosition"
     Parameter { name: "position"; type: "double" }
+    Component { name: "UCListItemAttached"; prototype: "QObject" }
     name: "UCListItemDivider"
     prototype: "QObject"
     Property { name: "visible"; type: "bool" }

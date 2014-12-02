@@ -42,6 +42,7 @@ public:
 
     void _q_updateColors();
     void _q_rebound();
+    void promptRebound();
     void _q_updateSize();
     int index();
     void setPressed(bool pressed);
@@ -57,6 +58,7 @@ public:
     QColor color;
     QColor highlightColor;
     QPointer<QQuickFlickable> flickable;
+    UCListItemAttached *attachedProperties;
     QQuickItem *contentItem;
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
@@ -65,6 +67,27 @@ public:
     // getter/setters
     bool contentMoving() const;
     void setContentMoving(bool moved);
+};
+
+class PropertyChange;
+class UCListItemAttachedPrivate
+{
+    Q_DECLARE_PUBLIC(UCListItemAttached)
+public:
+    UCListItemAttachedPrivate(UCListItemAttached *qq);
+    ~UCListItemAttachedPrivate();
+
+    void clearFlickablesList();
+    void buildFlickablesList();
+    void clearChangesList();
+    void buildChangesList(const QVariant &newValue);
+
+    UCListItemAttached *q_ptr;
+    bool globalDisabled;
+    QList< QPointer<QQuickFlickable> > flickables;
+    QList< PropertyChange* > changes;
+    QPointer<UCListItem> boundItem;
+    QPointer<UCListItem> disablerItem;
 };
 
 class UCListItemDivider : public QObject
