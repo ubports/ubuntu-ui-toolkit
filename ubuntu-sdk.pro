@@ -19,7 +19,7 @@ QMAKE_EXTRA_TARGETS += test_performance
 
 test_api.target = test-api
 test_api.commands = cd $$shadowed($$_PRO_FILE_PWD_)/tests/unit/tst_components; make check
-test_api.depends = sub-modules-ubuntu-ui-toolkit-pro
+test_api.depends = sub-modules-ubuntu-ui-toolkit-pro sub-tests
 QMAKE_EXTRA_TARGETS += test_api
 
 test_components.target = test-components
