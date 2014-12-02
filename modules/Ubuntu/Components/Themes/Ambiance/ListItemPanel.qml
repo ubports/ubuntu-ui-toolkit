@@ -18,7 +18,7 @@ import QtQuick 2.2
 import Ubuntu.Components 1.2
 
 /*
-  This component is the holder of the ListItem options.
+  This component is the holder of the ListItem actions.
   */
 Item {
 
@@ -43,8 +43,8 @@ Item {
     // panel implementation
     id: panel
     width: Math.max(
-               optionsRow.childrenRect.width,
-               ListItemActions.visibleActions.length * MathUtils.clamp(visualizedActionWidth, height, optionsRow.maxItemWidth))
+               actionsRow.childrenRect.width,
+               ListItemActions.visibleActions.length * MathUtils.clamp(visualizedActionWidth, height, actionsRow.maxItemWidth))
 
     // used for module/autopilot testing
     objectName: "ListItemPanel" + (leading ? "Leading" : "Trailing")
@@ -54,7 +54,7 @@ Item {
       */
     readonly property Item contentItem: parent ? parent.contentItem : null
     /*
-      Specifies whether the panel is used to visualize leading or trailing options.
+      Specifies whether the panel is used to visualize leading or trailing actions.
       */
     readonly property bool leading: panel.ListItemActions.status == panel.ListItemActions.Leading
 
@@ -76,8 +76,16 @@ Item {
         color: panel.backgroundColor
     }
 
+    // handle action triggering
+    ListItemActions.onStatusChanged: {
+        if (ListItemActions.status === ListItemActions.Disconnected && actionsRow.selectedAction) {
+            actionsRow.selectedAction.trigger(actionsRow.listItemIndex >= 0 ? actionsRow.listItemIndex : null);
+            actionsRow.selectedAction = null;
+        }
+    }
+
     Row {
-        id: optionsRow
+        id: actionsRow
         anchors {
             left: parent.left
             top: parent.top
@@ -87,16 +95,24 @@ Item {
 
         property real maxItemWidth: panel.parent ? (panel.parent.width / panel.ListItemActions.visibleActions.length) : 0
 
+        property Action selectedAction
+        property int listItemIndex
+
         Repeater {
             model: panel.ListItemActions.visibleActions
             AbstractButton {
                 action: modelData
                 enabled: action.enabled
                 opacity: action.enabled ? 1.0 : 0.5
-                width: MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
+                width: MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, actionsRow.maxItemWidth)
                 anchors {
                     top: parent.top
                     bottom: parent.bottom
+                }
+                function trigger() {
+                    actionsRow.selectedAction = modelData;
+                    actionsRow.listItemIndex = panel.ListItemActions.listItemIndex;
+                    panel.ListItemActions.snapToPosition(0.0);
                 }
 
                 Rectangle {

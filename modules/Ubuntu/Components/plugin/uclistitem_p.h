@@ -83,13 +83,11 @@ public:
     QQmlComponent *styleComponent;
     UCListItemStyle *styleItem;
 
-    // getter/setters
+    // getters/setters
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
     bool contentMoving() const;
     void setContentMoving(bool moved);
-    QQuickPropertyAnimation *snapAnimation() const;
-    void setSnapAnimation(QQuickPropertyAnimation *animation);
     QQmlComponent *style() const;
     void setStyle(QQmlComponent *delegate);
     bool loadStyle();

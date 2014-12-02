@@ -50,7 +50,6 @@ Item {
         id: trailing
         actions: [
             stockAction,
-            stockAction,
         ]
     }
     ListItemActions {
@@ -170,7 +169,7 @@ Item {
             compare(defaults.__styleInstance, null, "__styleInstance must be null.");
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
-            compare(actionsDefault.actions.length, 0, "ListItemActions has no options set.");
+            compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
         }
 
         function test_children_in_content_item() {
@@ -244,7 +243,7 @@ Item {
             testItem.divider.visible = true;
         }
 
-        function test_touch_tug_options_data() {
+        function test_tug_actions_data() {
             var item = findChild(listView, "listItem0");
             return [
                 {tag: "Trailing, mouse", item: item, pos: centerOf(item), dx: -units.gu(20), positiveDirection: false, mouse: true},
@@ -253,7 +252,7 @@ Item {
                 {tag: "Leading, touch", item: item, pos: centerOf(item), dx: units.gu(20), positiveDirection: true, mouse: false},
             ];
         }
-        function test_touch_tug_options(data) {
+        function test_tug_actions(data) {
             listView.positionViewAtBeginning();
             movingSpy.target = data.item;
             if (data.mouse) {
@@ -263,9 +262,9 @@ Item {
             }
             movingSpy.wait();
             if (data.positiveDirection) {
-                verify(data.item.contentItem.x > 0, data.tag + " options did not show up");
+                verify(data.item.contentItem.x > 0, data.tag + " actions did not show up");
             } else {
-                verify(data.item.contentItem.x < 0, data.tag + " options did not show up");
+                verify(data.item.contentItem.x < 0, data.tag + " actions did not show up");
             }
 
             // dismiss
@@ -277,9 +276,9 @@ Item {
             var item1 = findChild(listView, "listItem1");
             return [
                 {tag: "Click on an other Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
-                {tag: "Click on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.contentItem, mouse: true},
+                {tag: "Click on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0, mouse: true},
                 {tag: "Tap on an other Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
-                {tag: "Tap on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.contentItem, mouse: false},
+                {tag: "Tap on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0, mouse: false},
             ];
         }
         function test_rebound_when_pressed_outside_or_clicked(data) {
@@ -351,6 +350,39 @@ Item {
             }
             // dismiss
             rebound(data.item);
+        }
+
+        function test_selecting_action_rebounds_data() {
+            var item0 = findChild(listView, "listItem0");
+            return [
+                {tag: "With mouse", item: item0, pos: centerOf(item0), dx: units.gu(20), leading: true, select: "leading_1", mouse: true},
+                {tag: "With touch", item: item0, pos: centerOf(item0), dx: units.gu(20), leading: true, select: "leading_1", mouse: false},
+            ]
+        }
+        function test_selecting_action_rebounds(data) {
+            listView.positionViewAtBeginning();
+            movingSpy.target = data.item;
+            if (data.mouse) {
+                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+            } else {
+                TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
+            }
+            movingSpy.wait();
+            verify(data.item.contentItem.x > 0, "Not snapped in!");
+            var panel = panelItem(data.item, data.leading);
+            verify(panel, "panelItem not found");
+            var selectedAction = findChild(panel, data.select);
+            verify(selectedAction, "Cannot select action " + data.select);
+
+            // dismiss
+            movingSpy.clear();
+            if (data.mouse) {
+                mouseClick(selectedAction, centerOf(selectedAction).x, centerOf(selectedAction).y);
+            } else {
+                TestExtras.touchClick(0, selectedAction, centerOf(selectedAction));
+            }
+            movingSpy.wait();
+            fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Content not snapped out");
         }
     }
 }
