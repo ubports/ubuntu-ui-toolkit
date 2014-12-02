@@ -47,6 +47,7 @@ public:
     void _q_rebound();
     void promptRebound();
     void _q_updateSize();
+    void _q_updateIndex();
     int index();
     bool canHighlight(QMouseEvent *event);
     void setPressed(bool pressed);
@@ -73,6 +74,7 @@ public:
     QPointF pressedPos;
     QColor color;
     QColor highlightColor;
+    QPointer<QQuickItem> countOwner;
     QPointer<QQuickFlickable> flickable;
     QPointer<UCListItemAttached> attachedProperties;
     QQuickItem *contentItem;

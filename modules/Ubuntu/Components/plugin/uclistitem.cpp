@@ -23,6 +23,7 @@
 #include "ucubuntuanimation.h"
 #include "propertychange_p.h"
 #include "i18n.h"
+#include "quickutils.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -249,7 +250,8 @@ void UCListItemDivider::updateGradient()
 QSGNode *UCListItemDivider::paint(QSGNode *node, const QRectF &rect)
 {
     QSGRectangleNode *dividerNode = static_cast<QSGRectangleNode*>(node);
-    if (m_visible && (m_gradient.size() > 0) && ((m_colorFrom.alphaF() >= (1.0f / 255.0f)) || (m_colorTo.alphaF() >= (1.0f / 255.0f)))) {
+    bool lastItem = m_listItem->countOwner ? (m_listItem->index() == (m_listItem->countOwner->property("count").toInt() - 1)): false;
+    if (m_visible && !lastItem && (m_gradient.size() > 0) && ((m_colorFrom.alphaF() >= (1.0f / 255.0f)) || (m_colorTo.alphaF() >= (1.0f / 255.0f)))) {
         if (!dividerNode) {
             dividerNode = m_listItem->sceneGraphContext()->createRectangleNode();
         }
@@ -400,6 +402,12 @@ void UCListItemPrivate::_q_rebound()
     setSwiped(false);
     // rebound to zero
     animator->snap(0);
+}
+
+void UCListItemPrivate::_q_updateIndex()
+{
+    Q_Q(UCListItem);
+    q->update();
 }
 
 /*!
@@ -647,6 +655,8 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * Each ListItem has a thin divider shown on the bottom of the component. This
  * divider can be configured through the \c divider grouped property, which can
  * configure its margins from the edges of the ListItem as well as its visibility.
+ * When used in \c ListView or \l UbuntuListView, the last list item will not
+ * show the divider no matter of the visible property value set.
  *
  * ListItem can handle actions that can get tugged from front to back of the item.
  * These actions are Action elements visualized in panels attached to the front
@@ -733,6 +743,19 @@ void UCListItem::componentComplete()
     UCStyledItemBase::componentComplete();
     Q_D(UCListItem);
     d->ready = true;
+    /* We only deal with ListView, as for other cases we would need to check the children
+     * changes, which would have an enormous impact on performance in case of huge amount
+     * of items. However, if the parent item, or Flickable declares a "count" property,
+     * the ListItem will take use of it!
+     */
+    d->countOwner = (d->flickable && d->flickable->property("count").isValid()) ?
+                d->flickable :
+                (d->parentItem && d->parentItem->property("count").isValid()) ? d->parentItem : 0;
+    if (d->countOwner) {
+        QObject::connect(d->countOwner.data(), SIGNAL(countChanged()),
+                         this, SLOT(_q_updateIndex()), Qt::DirectConnection);
+        update();
+    }
 }
 
 void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
@@ -758,6 +781,8 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         } else if (data.item) {
             d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(data.item));
         } else {
+            // mark as not ready, so no action should be performed which depends on readyness
+            d->ready = false;
             // about to be deleted or reparented, disable attached
             d->attachedProperties = 0;
         }
