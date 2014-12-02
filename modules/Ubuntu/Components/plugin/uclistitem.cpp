@@ -1087,7 +1087,7 @@ bool UCListItem::pressed() const
  */
 
 /*!
- * \qmlsignal UCListItemPrivate::contentMovementEnded
+ * \qmlsignal ListItem::contentMovementEnded()
  * The signal is emitted when the content movement has ended.
  */
 bool UCListItemPrivate::contentMoving() const

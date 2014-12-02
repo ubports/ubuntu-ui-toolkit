@@ -260,8 +260,8 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *panel)
  * ListItemActions instances can be shared between ListItem instances within the
  * same view. When shared, the memory footprint of the view will be lot smaller,
  * as there will be no individual panel created for each list's actions visualization.
- * Depending on how long the initialization of the component used in \c ListItem::actionsDelegate
- * takes, creation time will be also reduced to one time per view.
+ * Depending on how long the initialization of the component used in \l {ListItemStyle::actionsDelegate}
+ * {actionsDelegate} takes, creation time will be also reduced to one time per view.
  * However, this implies that swiping a new ListItem content while another one is
  * swiped will result in showing the newly swiped item's panel delayed, as the
  * panel can be shown only after the previous item's snapping is completed. Depending
@@ -393,8 +393,67 @@ UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *own
 
 /*!
  * \qmlproperty Component ListItemActions::delegate
- * Custom delegate which overrides the default one used by the ListItem. If the
- * value is null, the default delegate will be used.
+ * The property holds the custom delegate to visualize the actions listed in the
+ * ListItemActions. When set to null, the default delegate specified by the \l
+ * {ListItemStyle::actionsDelegate}{actionsDelegate} will be used.
+ *
+ * ListItemActions provides the \c action context property which contains the
+ * Action instance visualized. Using this property delegates can access
+ * the information to be visualized. The action is triggered by the panel item
+ * holding the visualized action, therefore only visualization is needed by the
+ * custom delegate. The other context property exposed to delegates is the \c
+ * index, which specifies the index of the action visualized.
+ *
+ * Specifying a custom delegate will not override the triggering logic of the
+ * action, that will be still handled by the panel itself. However custom delegates
+ * may still need to distinguish the pressed/released state visually. This can
+ * be achieved using the \c pressed context property, which informs the delegate
+ * about the pressed state of the action.
+ *
+ * The delegate height is set automatically by the panel item, only the width must
+ * be specified which will be clamped between height and the maximum width of the
+ * list item divided by the number of actions in the list.
+ * \qml
+ * import QtQuick 2.2
+ * import Ubuntu.Components 1.2
+ *
+ * MainView {
+ *     width: units.gu(40)
+ *     height: units.gu(71)
+ *
+ *     UbuntuListView {
+ *         anchors.fill: parent
+ *         model: 50
+ *         delegate: ListItem {
+ *             trailingActions: actionsList
+ *         }
+ *         ListItemActions {
+ *             id: actionsList
+ *             delegate: Column {
+ *                 width: height + units.gu(2)
+ *                 Icon {
+ *                     name: action.iconName
+ *                     width: units.gu(3)
+ *                     height: width
+ *                     color: pressed ? "blue" : "lightblue"
+ *                     anchors.horizontalCenter: parent.horizontalCenter
+ *                 }
+ *                 Label {
+ *                     text: action.text + "#" + index
+ *                     width: parent.width
+ *                     horizontalAlignment: Text.AlignHCenter
+ *                 }
+ *             }
+ *             actions: Action {
+ *                 iconName: "starred"
+ *                 text: "Star"
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
+ * \note Putting a Rectangle in the delegate can be used to override the color
+ * of the panel.
  *
  * Defaults to null.
  */

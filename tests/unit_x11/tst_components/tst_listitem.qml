@@ -56,6 +56,15 @@ Item {
         id: actionsDefault
     }
 
+    Component {
+        id: customDelegate
+        Rectangle {
+            width: units.gu(10)
+            color: "green"
+            objectName: "custom_delegate"
+        }
+    }
+
     Column {
         width: parent.width
         ListItem {
@@ -150,6 +159,7 @@ Item {
             movingSpy.clear();
             interactiveSpy.target = null;
             interactiveSpy.clear();
+            trailing.delegate = null;
         }
 
         function test_0_defaults() {
@@ -383,6 +393,19 @@ Item {
             }
             movingSpy.wait();
             fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Content not snapped out");
+        }
+
+        function test_custom_trailing_delegate() {
+            trailing.delegate = customDelegate;
+            listView.positionViewAtBeginning();
+            var item = findChild(listView, "listItem0");
+            flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
+            var panel = panelItem(item, false);
+            verify(panel, "Panel is not visible");
+            var custom = findChild(panel, "custom_delegate");
+            verify(custom, "Custom delegate not in use");
+            // cleanup
+            rebound(item);
         }
     }
 }
