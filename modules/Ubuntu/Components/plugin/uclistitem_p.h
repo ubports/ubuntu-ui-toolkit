@@ -29,7 +29,6 @@ class UCListItemDivider;
 class UCListItemActions;
 class UCListItemSnapAnimator;
 class UCListItemStyle;
-class PropertyChange;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -49,7 +48,6 @@ public:
     void promptRebound();
     void _q_updateSize();
     void _q_updateIndex();
-    void _q_dimDisabled();
     int index();
     bool canHighlight(QMouseEvent *event);
     void setPressed(bool pressed);
@@ -80,7 +78,6 @@ public:
     QPointer<QQuickFlickable> flickable;
     QPointer<UCListItemAttached> attachedProperties;
     QQuickItem *contentItem;
-    PropertyChange *disabledOpacity;
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;

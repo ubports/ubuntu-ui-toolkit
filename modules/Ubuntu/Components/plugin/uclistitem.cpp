@@ -32,6 +32,8 @@
 #include <QtQuick/private/qquickmousearea_p.h>
 #include "uclistitemstyle.h"
 
+#include <QtQml/private/qqmlproperty_p.h>
+
 #define MIN(x, y)           ((x < y) ? x : y)
 #define MAX(x, y)           ((x > y) ? x : y)
 #define CLAMP(v, min, max)  (min <= max) ? MAX(min, MIN(v, max)) : MAX(max, MIN(v, min))
@@ -343,7 +345,6 @@ UCListItemPrivate::UCListItemPrivate()
     , highlightColor(Qt::transparent)
     , attachedProperties(0)
     , contentItem(new QQuickItem)
-    , disabledOpacity(0)
     , divider(new UCListItemDivider)
     , leadingActions(0)
     , trailingActions(0)
@@ -354,7 +355,6 @@ UCListItemPrivate::UCListItemPrivate()
 }
 UCListItemPrivate::~UCListItemPrivate()
 {
-    delete disabledOpacity;
 }
 
 void UCListItemPrivate::init()
@@ -379,9 +379,6 @@ void UCListItemPrivate::init()
     // watch size change and set implicit size;
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
-
-    // watch enabledChanged()
-    QObject::connect(q, SIGNAL(enabledChanged()), q, SLOT(_q_dimDisabled()), Qt::DirectConnection);
 }
 
 void UCListItemPrivate::_q_updateThemedData()
@@ -393,20 +390,6 @@ void UCListItemPrivate::_q_updateThemedData()
         q->update();
     }
     loadStyle(true);
-}
-
-void UCListItemPrivate::_q_dimDisabled()
-{
-    Q_Q(UCListItem);
-    if (q->isEnabled()) {
-        PropertyChange::restore(disabledOpacity);
-    } else if (opacity() != 0.5) {
-        // this is the first time we need to create the property change
-        if (!disabledOpacity) {
-            disabledOpacity = new PropertyChange(q, "opacity");
-        }
-        PropertyChange::setValue(disabledOpacity, 0.5);
-    }
 }
 
 void UCListItemPrivate::_q_rebound()
