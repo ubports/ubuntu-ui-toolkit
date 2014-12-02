@@ -27,6 +27,8 @@ MainView {
     Action {
         objectName: "stock"
         id: stock
+        iconName: "starred"
+        onTriggered: print(iconName, "triggered")
     }
 
     ListItemActions {
@@ -34,10 +36,29 @@ MainView {
         objectName: "StockLeading"
         actions: [
             Action {
+                iconName: "delete"
+                onTriggered: print(iconName, "triggered")
             },
             Action {
+                iconName: "alarm-clock"
+                enabled: false
+                onTriggered: print(iconName, "triggered")
             },
             Action {
+                iconName: "camcorder"
+                onTriggered: print(iconName, "triggered")
+            },
+            Action {
+                iconName: "stock_website"
+                onTriggered: print(iconName, "triggered")
+            },
+            Action {
+                iconName: "starred"
+                onTriggered: print(iconName, "triggered")
+            },
+            Action {
+                iconName: "go-home"
+                onTriggered: print(iconName, "triggered")
             }
         ]
     }
@@ -55,7 +76,7 @@ MainView {
             iconName: "edit"
         },
         Action {
-            iconName: "copy"
+            iconName: "email"
         }
     ]
 
@@ -82,6 +103,16 @@ MainView {
                 actions: [stock]
             }
             trailingActions: leading
+        }
+        ListItem {
+            Label {
+                anchors.fill: parent
+                text: "Another standalone ListItem"
+            }
+            leadingActions: testItem.leadingActions
+            trailingActions: ListItemActions {
+                actions: leading.actions
+            }
         }
 
         ListView {
@@ -115,6 +146,11 @@ MainView {
             height: units.gu(20)
             clip: true
             contentHeight: column.childrenRect.height
+            ListItemActions {
+                id: trailing
+                actions: leading.actions
+            }
+
             Column {
                 id: column
                 width: view.width

@@ -26,21 +26,30 @@ Item {
 
     Action {
         id: stockAction
+        iconName: "starred"
+        objectName: "stockAction"
     }
     ListItemActions {
         id: leading
         actions: [
             Action {
+                iconName: "starred"
+                objectName: "leading_1"
             },
             Action {
+                iconName: "starred"
+                objectName: "leading_2"
             },
             Action {
+                iconName: "starred"
+                objectName: "leading_3"
             }
         ]
     }
     ListItemActions {
         id: trailing
         actions: [
+            stockAction,
             stockAction,
         ]
     }
@@ -105,6 +114,10 @@ Item {
         SignalSpy {
             id: interactiveSpy
             signalName: "interactiveChanged"
+        }
+
+        function panelItem(item, leading) {
+            return findInvisibleChild(item, (leading ? "ListItemPanelLeading" : "ListItemPanelTrailing"));
         }
 
         function rebound(item, watchTarget) {
@@ -200,6 +213,8 @@ Item {
             }
             compare(listItem.pressed, false, "Item is pressed still!");
             mouseRelease(listItem, listItem.width / 2, dy);
+            // dismiss
+            rebound(listItem);
         }
         function test_touch_click_on_listitem() {
             var listItem = findChild(listView, "listItem0");
@@ -216,6 +231,8 @@ Item {
             compare(listItem.pressed, false, "Item is pressed still!");
             // cleanup, wait few milliseconds to avoid dbl-click collision
             TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
+            // dismiss
+            rebound(listItem);
         }
 
         function test_background_height_change_on_divider_visible() {
@@ -310,6 +327,30 @@ Item {
             // animation should no longer be running!
             verify(!data.item.__styleInstance.snapAnimation.running, "Animation is still running!");
             fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Not snapped out!!");
+        }
+
+        function test_visualized_actions_data() {
+            var listItem0 = findChild(listView, "listItem0");
+            var listItem1 = findChild(listView, "listItem1");
+            return [
+                {tag: "Leading actions", item: listItem0, leading: true, expected: ["leading_1", "leading_2", "leading_3"]},
+                {tag: "Trailing actions", item: listItem0, leading: false, expected: ["stockAction"]},
+            ];
+        }
+        function test_visualized_actions(data) {
+            movingSpy.target = data.item;
+            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.leading ? units.gu(20) : -units.gu(20), 0);
+            movingSpy.wait();
+
+            // check if the action is visible
+            var panel = panelItem(data.item, data.leading);
+            verify(panel, "Panel not visible");
+            for (var i in data.expected) {
+                var actionItem = findChild(panel, data.expected[i]);
+                verify(actionItem, data.expected[i] + " action not found");
+            }
+            // dismiss
+            rebound(data.item);
         }
     }
 }

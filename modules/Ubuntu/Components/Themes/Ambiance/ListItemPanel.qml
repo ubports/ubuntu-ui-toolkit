@@ -21,16 +21,30 @@ import Ubuntu.Components 1.2
   This component is the holder of the ListItem options.
   */
 Item {
-    id: panel
 
     // styling properties
     /*
-      Color of teh background.
+      Color of the background.
       */
     // FIXME: use Palette colors instead when available
     property color backgroundColor: (leading ? UbuntuColors.red : "white")
 
-    width: units.gu(20)
+    /*
+      Color used in coloring the icons.
+      */
+    // FIXME: use Palette colors instead when available
+    property color foregroundColor: leading ? "white" : UbuntuColors.darkGrey
+
+    /*
+      Specifies the width of the component visualizing the action.
+      */
+    property real visualizedActionWidth: units.gu(2.5)
+
+    // panel implementation
+    id: panel
+    width: Math.max(
+               optionsRow.childrenRect.width,
+               ListItemActions.visibleActions.length * MathUtils.clamp(visualizedActionWidth, height, optionsRow.maxItemWidth))
 
     // used for module/autopilot testing
     objectName: "ListItemPanel" + (leading ? "Leading" : "Trailing")
@@ -60,5 +74,65 @@ Item {
             rightMargin: leading ? 0 : -units.gu(4 * panel.ListItemActions.overshoot)
         }
         color: panel.backgroundColor
+    }
+
+    Row {
+        id: optionsRow
+        anchors {
+            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
+            leftMargin: spacing
+        }
+
+        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.ListItemActions.visibleActions.length) : 0
+
+        Repeater {
+            model: panel.ListItemActions.visibleActions
+            AbstractButton {
+                action: modelData
+                enabled: action.enabled
+                opacity: action.enabled ? 1.0 : 0.5
+                width: MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, optionsRow.maxItemWidth)
+                anchors {
+                    top: parent.top
+                    bottom: parent.bottom
+                }
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: Theme.palette.selected.background
+                    visible: pressed
+                }
+
+                Loader {
+                    id: delegateLoader
+                    height: parent.height
+                    sourceComponent: panel.ListItemActions.delegate ? panel.ListItemActions.delegate : defaultDelegate
+                    property Action action: modelData
+                    property int index: index
+                    onItemChanged: {
+                        // use action's objectName to identify the visualized action
+                        if (item && item.objectName === "") {
+                            item.objectName = modelData.objectName;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Component {
+        id: defaultDelegate
+        Item {
+            width: height
+            Icon {
+                width: panel.visualizedActionWidth
+                height: width
+                name: action.iconName
+                color: panel.foregroundColor
+                anchors.centerIn: parent
+            }
+        }
     }
 }

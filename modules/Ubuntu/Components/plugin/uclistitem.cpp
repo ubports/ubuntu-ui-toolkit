@@ -27,6 +27,7 @@
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
 #include <QtQuick/private/qquickanimation_p.h>
+#include <QtQuick/private/qquickmousearea_p.h>
 #include "uclistitemstyle.h"
 
 #define MIN(x, y)           ((x < y) ? x : y)
@@ -361,7 +362,7 @@ void UCListItemPrivate::init()
     // content will be redirected to the contentItem, therefore we must report
     // children changes as it would come from the main component
     QObject::connect(contentItem, &QQuickItem::childrenChanged,
-                     q, &UCListItem::childrenChanged);
+                     q, &UCListItem::listItemChildrenChanged);
     q->setFlag(QQuickItem::ItemHasContents);
     // turn activeFocusOnPress on
     q->setActiveFocusOnPress(true);
@@ -506,6 +507,22 @@ int UCListItemPrivate::index()
     return index.isValid() ?
                 index.toInt() :
                 (parentItem ? QQuickItemPrivate::get(parentItem)->childItems.indexOf(q) : -1);
+}
+
+// returns true if the highlight is possible
+bool UCListItemPrivate::canHighlight(QMouseEvent *event)
+{
+    // localPos is a position relative to ListItem which will give us a child from
+    // from the original coordinates; therefore we must map the position to the contentItem
+   Q_Q(UCListItem);
+   QPointF myPos = q->mapToItem(contentItem, event->localPos());
+   QQuickItem *child = contentItem->childAt(myPos.x(), myPos.y());
+   bool activeComponent = child && (child->acceptedMouseButtons() & event->button()) && !qobject_cast<QQuickText*>(child);
+   // do highlight if not pressed above the active component, and the component has either
+   // action, leading or trailing actions list or at least an active child component declared
+   QQuickMouseArea *ma = q->findChild<QQuickMouseArea*>();
+   bool activeMouseArea = ma && ma->isEnabled();
+   return !activeComponent && (leadingActions || trailingActions || activeMouseArea);
 }
 
 // set pressed flag and update contentItem
@@ -813,7 +830,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         // while moving, we cannot select any items
         return;
     }
-    if (event->button() == Qt::LeftButton) {
+    if (event->button() == Qt::LeftButton && d->canHighlight(event)) {
         d->setPressed(true);
         d->lastPos = d->pressedPos = event->localPos();
         // connect the Flickable to know when to rebound
@@ -914,6 +931,24 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             }
         }
     }
+}
+
+bool UCListItem::childMouseEventFilter(QQuickItem *child, QEvent *event)
+{
+    QEvent::Type type = event->type();
+    if (type == QEvent::MouseButtonPress) {
+        // suppress click event if pressed over an active area, except Text, which can also handle
+        // mouse clicks when content is an URL
+        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
+        if (child->isEnabled() && (child->acceptedMouseButtons() & mouse->button()) && !qobject_cast<QQuickText*>(child)) {
+            Q_D(UCListItem);
+            d->suppressClick = true;
+        }
+    } else if (type == QEvent::MouseButtonRelease) {
+        Q_D(UCListItem);
+        d->suppressClick = false;
+    }
+    return UCStyledItemBase::childMouseEventFilter(child, event);
 }
 
 bool UCListItem::eventFilter(QObject *target, QEvent *event)
@@ -1118,25 +1153,24 @@ void UCListItem::setHighlightColor(const QColor &color)
 }
 
 /*!
- * \qmlproperty list<Object> ListItem::data
+ * \qmlproperty list<Object> ListItem::listItemData
  * \default
+ * \internal
  * Overloaded default property containing all the children and resources.
  */
-QQmlListProperty<QObject> UCListItem::data()
+QQmlListProperty<QObject> UCListItemPrivate::data()
 {
-    Q_D(UCListItem);
-    return QQuickItemPrivate::get(d->contentItem)->data();
+    return QQuickItemPrivate::get(contentItem)->data();
 }
 
 /*!
- * \qmlproperty list<Item> ListItem::children
+ * \qmlproperty list<Item> ListItem::listItemChildren
  * \internal
  * Overloaded default property containing all the visible children of the item.
  */
-QQmlListProperty<QQuickItem> UCListItem::children()
+QQmlListProperty<QQuickItem> UCListItemPrivate::children()
 {
-    Q_D(UCListItem);
-    return QQuickItemPrivate::get(d->contentItem)->children();
+    return QQuickItemPrivate::get(contentItem)->children();
 }
 
 #include "moc_uclistitem.cpp"

@@ -48,6 +48,7 @@ public:
     void promptRebound();
     void _q_updateSize();
     int index();
+    bool canHighlight(QMouseEvent *event);
     void setPressed(bool pressed);
     void setSwiped(bool tugged);
     bool grabPanel(UCListItemActions *optionList, bool isTugged);
@@ -83,6 +84,8 @@ public:
     UCListItemStyle *styleItem;
 
     // getter/setters
+    QQmlListProperty<QObject> data();
+    QQmlListProperty<QQuickItem> children();
     bool contentMoving() const;
     void setContentMoving(bool moved);
     QQuickPropertyAnimation *snapAnimation() const;
