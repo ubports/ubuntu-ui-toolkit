@@ -20,6 +20,7 @@
 #include "uclistitemactions.h"
 #include "QtCore/private/qobject_p.h"
 
+class UCListItem;
 class UCListItemActionsPrivate : public QObjectPrivate {
     Q_DECLARE_PUBLIC(UCListItemActions)
 public:
@@ -27,16 +28,27 @@ public:
     ~UCListItemActionsPrivate();
     static UCListItemActionsPrivate* get(UCListItemActions *actions)
     {
-        Q_ASSERT(actions);
-        return actions->d_func();
+        return actions ? actions->d_func() : 0;
     }
 
     UCListItemActions::Status status;
     qreal offsetDragged;
+
     QQmlComponent *delegate;
+    QQmlComponent *panelDelegate;
     QQuickItem *panelItem;
     QList<UCAction*> actions;
     QList<QObject*> data;
+    QPointer<UCListItem> queuedItem;
+
+    void _q_updateDraggedOffset();
+    UCListItemActionsAttached *attachedObject();
+
+    static bool connectToListItem(UCListItemActions *options, UCListItem *listItem, bool leading);
+    static void disconnectFromListItem(UCListItemActions *options);
+    static bool isConnectedTo(UCListItemActions *options, UCListItem *listItem);
+
+    QQuickItem *createPanelItem(QQmlComponent *delegate);
 };
 
 #endif // UCLISTITEMACTIONS_P_H

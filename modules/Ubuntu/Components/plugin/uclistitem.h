@@ -39,6 +39,9 @@ class UCListItem : public UCStyledItemBase
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor NOTIFY highlightColorChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data DESIGNABLE false)
     Q_PROPERTY(QQmlListProperty<QQuickItem> children READ children NOTIFY childrenChanged DESIGNABLE false)
+    // FIXME move these to StyledItemBase with subtheming
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlComponent *style READ style WRITE setStyle NOTIFY styleChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQuickItem *__styleInstance READ styleInstance NOTIFY __styleInstanceChanged)
     Q_CLASSINFO("DefaultProperty", "data")
 public:
     explicit UCListItem(QQuickItem *parent = 0);
@@ -65,6 +68,8 @@ protected:
     void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    bool eventFilter(QObject *, QEvent *);
 
 Q_SIGNALS:
     void leadingActionsChanged();
@@ -77,6 +82,9 @@ Q_SIGNALS:
 
     void clicked();
 
+    void styleChanged();
+    void __styleInstanceChanged();
+
     void contentMovementStarted();
     void contentMovementEnded();
 
@@ -86,7 +94,7 @@ private:
     Q_DECLARE_PRIVATE(UCListItem)
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
-    Q_PRIVATE_SLOT(d_func(), void _q_updateColors())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateThemedData())
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
 };

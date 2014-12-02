@@ -23,10 +23,12 @@
 #include <QtQuick/private/qquickrectangle_p.h>
 
 class QQuickFlickable;
+class QQuickPropertyAnimation;
 class UCListItemContent;
 class UCListItemDivider;
 class UCListItemActions;
 class UCListItemSnapAnimator;
+class UCListItemStyle;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -41,36 +43,55 @@ public:
         return that->d_func();
     }
 
-    void _q_updateColors();
+    void _q_updateThemedData();
     void _q_rebound();
     void promptRebound();
     void _q_updateSize();
     int index();
     void setPressed(bool pressed);
+    void setSwiped(bool tugged);
+    bool grabPanel(UCListItemActions *optionList, bool isTugged);
     void listenToRebind(bool listen);
     void resize();
     void update();
+    void clampAndMoveX(qreal &x, qreal dx);
 
     bool pressed:1;
     bool contentMoved:1;
     bool highlightColorChanged:1;
+    bool swiped:1;
+    bool suppressClick:1;
     bool ready:1;
+    bool customStyle:1;
+    bool customColor:1;
+    qreal xAxisMoveThresholdGU;
     qreal overshoot;
+    QPointF lastPos;
+    QPointF pressedPos;
     QColor color;
     QColor highlightColor;
     QPointer<QQuickFlickable> flickable;
-    UCListItemAttached *attachedProperties;
+    QPointer<UCListItemAttached> attachedProperties;
     QQuickItem *contentItem;
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
     UCListItemSnapAnimator *animator;
 
+    // FIXME move these to StyledItemBase togehther with subtheming.
+    QQmlComponent *styleComponent;
+    UCListItemStyle *styleItem;
+
     // getter/setters
     bool contentMoving() const;
     void setContentMoving(bool moved);
     QQuickPropertyAnimation *snapAnimation() const;
     void setSnapAnimation(QQuickPropertyAnimation *animation);
+    QQmlComponent *style() const;
+    void setStyle(QQmlComponent *delegate);
+    bool loadStyle();
+    void initStyleItem();
+    QQuickItem *styleInstance() const;
 };
 
 class PropertyChange;
@@ -115,7 +136,7 @@ Q_SIGNALS:
     void colorToChanged();
 
 protected:
-    QSGNode *paint(const QRectF &rect);
+    QSGNode *paint(QSGNode *node, const QRectF &rect);
 
 private Q_SLOTS:
     void unitsChanged();

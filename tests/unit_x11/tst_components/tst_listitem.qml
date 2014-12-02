@@ -58,6 +58,8 @@ Item {
             id: testItem
             width: parent.width
             color: "blue"
+            leadingActions: leading
+            trailingActions: trailing
             Item {
                 id: bodyItem
                 anchors.fill: parent
@@ -71,7 +73,10 @@ Item {
             model: 10
             delegate: ListItem {
                 objectName: "listItem" + index
+                color: "lightgray"
                 width: parent.width
+                leadingActions: leading
+                trailingActions: trailing
             }
         }
     }
@@ -79,6 +84,11 @@ Item {
     UbuntuTestCase {
         name: "ListItemAPI"
         when: windowShown
+
+        SignalSpy {
+            id: movingSpy
+            signalName: "contentMovementEnded"
+        }
 
         SignalSpy {
             id: pressedSpy
@@ -92,8 +102,24 @@ Item {
             target: testItem;
         }
 
-        function centerOf(item) {
-            return Qt.point(item.width / 2, item.height / 2);
+        SignalSpy {
+            id: interactiveSpy
+            signalName: "interactiveChanged"
+        }
+
+        function rebound(item, watchTarget) {
+            if (watchTarget === undefined) {
+                watchTarget = item;
+            }
+
+            movingSpy.target = null;
+            movingSpy.target = watchTarget;
+            movingSpy.clear();
+            mouseClick(item, centerOf(item).x, centerOf(item).y);
+            if (watchTarget.contentMoving) {
+                movingSpy.wait();
+            }
+            movingSpy.target = null;
         }
 
         function initTestCase() {
@@ -102,10 +128,16 @@ Item {
         }
 
         function cleanup() {
+            movingSpy.clear();
             pressedSpy.clear();
             clickSpy.clear();
-            // make sure all events are processed
-            wait(200);
+            listView.interactive = true;
+            // make sure we collapse
+            mouseClick(defaults, 0, 0)
+            movingSpy.target = null;
+            movingSpy.clear();
+            interactiveSpy.target = null;
+            interactiveSpy.clear();
         }
 
         function test_0_defaults() {
@@ -120,6 +152,9 @@ Item {
             fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
+            compare(defaults.contentMoving, false, "default is not moving");
+            compare(defaults.style, null, "Style is loaded upon first use.");
+            compare(defaults.__styleInstance, null, "__styleInstance must be null.");
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no options set.");
@@ -179,6 +214,7 @@ Item {
                 TestExtras.touchMove(0, listItem, Qt.point(listItem.width / 2, dy));
             }
             compare(listItem.pressed, false, "Item is pressed still!");
+            // cleanup, wait few milliseconds to avoid dbl-click collision
             TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
         }
 
@@ -189,6 +225,91 @@ Item {
             testItem.divider.visible = false;
             compare(testItem.contentItem.height, testItem.height, "ListItem's background height must be the same as the item itself.");
             testItem.divider.visible = true;
+        }
+
+        function test_touch_tug_options_data() {
+            var item = findChild(listView, "listItem0");
+            return [
+                {tag: "Trailing, mouse", item: item, pos: centerOf(item), dx: -units.gu(20), positiveDirection: false, mouse: true},
+                {tag: "Leading, mouse", item: item, pos: centerOf(item), dx: units.gu(20), positiveDirection: true, mouse: true},
+                {tag: "Trailing, touch", item: item, pos: centerOf(item), dx: -units.gu(20), positiveDirection: false, mouse: false},
+                {tag: "Leading, touch", item: item, pos: centerOf(item), dx: units.gu(20), positiveDirection: true, mouse: false},
+            ];
+        }
+        function test_touch_tug_options(data) {
+            listView.positionViewAtBeginning();
+            movingSpy.target = data.item;
+            if (data.mouse) {
+                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+            } else {
+                TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
+            }
+            movingSpy.wait();
+            if (data.positiveDirection) {
+                verify(data.item.contentItem.x > 0, data.tag + " options did not show up");
+            } else {
+                verify(data.item.contentItem.x < 0, data.tag + " options did not show up");
+            }
+
+            // dismiss
+            rebound(data.item);
+        }
+
+        function test_rebound_when_pressed_outside_or_clicked_data() {
+            var item0 = findChild(listView, "listItem0");
+            var item1 = findChild(listView, "listItem1");
+            return [
+                {tag: "Click on an other Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
+                {tag: "Click on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.contentItem, mouse: true},
+                {tag: "Tap on an other Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
+                {tag: "Tap on the same Item", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item0.contentItem, mouse: false},
+            ];
+        }
+        function test_rebound_when_pressed_outside_or_clicked(data) {
+            listView.positionViewAtBeginning();
+            movingSpy.target = data.item;
+            if (data.mouse) {
+                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+            } else {
+                TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
+            }
+            movingSpy.wait();
+            verify(data.item.contentItem.x != 0, "The component wasn't tugged!");
+            // dismiss
+            rebound(data.clickOn, data.item)
+        }
+
+        function test_listview_not_interactive_while_tugged_data() {
+            var item0 = findChild(listView, "listItem0");
+            var item1 = findChild(listView, "listItem1");
+            return [
+                {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: true},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: true},
+                {tag: "Trailing", item: item0, pos: centerOf(item0), dx: -units.gu(20), clickOn: item1, mouse: false},
+                {tag: "Leading", item: item0, pos: centerOf(item0), dx: units.gu(20), clickOn: item0.contentItem, mouse: false},
+            ];
+        }
+        function test_listview_not_interactive_while_tugged(data) {
+            listView.positionViewAtBeginning();
+            movingSpy.target = data.item;
+            interactiveSpy.target = listView;
+            if (data.mouse) {
+                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+            } else {
+                TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
+            }
+            movingSpy.wait();
+            // animation should no longer be running!
+            verify(!data.item.__styleInstance.snapAnimation.running, "Animation is still running!");
+            compare(listView.interactive, true, "The ListView is still non-interactive!");
+            compare(interactiveSpy.count, 2, "Less/more times changed!");
+            // check if it snapped in
+            verify(data.item.contentItem.x != 0.0, "Not snapped in!!");
+            // dismiss
+            rebound(data.clickOn, data.item);
+            // animation should no longer be running!
+            verify(!data.item.__styleInstance.snapAnimation.running, "Animation is still running!");
+            fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Not snapped out!!");
         }
     }
 }
