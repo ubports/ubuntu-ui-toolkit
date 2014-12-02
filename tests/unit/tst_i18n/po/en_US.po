@@ -15,3 +15,11 @@ msgstr "Greets"
 
 msgid "Count the kilometres"
 msgstr "Count the clicks"
+
+msgctxt "All Contacts"
+msgid "All"
+msgstr "Todos"
+
+msgctxt "All Calls"
+msgid "All"
+msgstr "Todas"

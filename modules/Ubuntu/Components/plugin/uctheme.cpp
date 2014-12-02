@@ -99,6 +99,8 @@ QStringList themeSearchPath() {
     }
     pathList << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath).split(':', QString::SkipEmptyParts);
 
+    // prepend current folder
+    pathList.prepend(QDir::currentPath()); 
     // fix folders
     QStringList result;
     Q_FOREACH(const QString &path, pathList) {
@@ -139,7 +141,7 @@ void UCTheme::updateEnginePaths()
 
     QStringList paths = themeSearchPath();
     Q_FOREACH(const QString &path, paths) {
-        if (QDir(path).exists()) {
+        if (QDir(path).exists() && !m_engine->importPathList().contains(path)) {
             m_engine->addImportPath(path);
         }
     }
