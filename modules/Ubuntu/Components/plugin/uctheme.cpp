@@ -94,11 +94,13 @@ QStringList themeSearchPath() {
 
     // append QML import path(s); we must explicitly support env override here
     QString qml2ImportPath(getenv("QML2_IMPORT_PATH"));
-    if (qml2ImportPath.isEmpty())
-        pathList << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath);
-    else
+    if (!qml2ImportPath.isEmpty()) {
         pathList << qml2ImportPath.split(':', QString::SkipEmptyParts);
+    }
+    pathList << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath).split(':', QString::SkipEmptyParts);
 
+    // prepend current folder
+    pathList.prepend(QDir::currentPath()); 
     // fix folders
     QStringList result;
     Q_FOREACH(const QString &path, pathList) {
@@ -139,7 +141,7 @@ void UCTheme::updateEnginePaths()
 
     QStringList paths = themeSearchPath();
     Q_FOREACH(const QString &path, paths) {
-        if (QDir(path).exists()) {
+        if (QDir(path).exists() && !m_engine->importPathList().contains(path)) {
             m_engine->addImportPath(path);
         }
     }

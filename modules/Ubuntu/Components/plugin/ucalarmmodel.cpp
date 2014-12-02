@@ -124,36 +124,35 @@
 
 UCAlarmModel::UCAlarmModel(QObject *parent)
     : QAbstractListModel(parent)
-    , m_ready(false)
 {
-    m_roles = AlarmData::roles();
-    m_roles.insert(m_roles.count(), "model");
     // keep in sync with alarms collection changes
-    // make sure the connection is asynchronous, as changes made in in-place in
-    // the delegates may cause the model data to be invalid (released) as some
-    // backends may do the refresh/element removals synchronously
-    connect(&AlarmManager::instance(), SIGNAL(alarmsChanged()), this, SLOT(refresh()), Qt::QueuedConnection);
+    // some of the connections can be asynchronous, others synchronous
+    connect(&AlarmManager::instance(), SIGNAL(alarmsRefreshStarted()), this, SLOT(refreshStart()), Qt::DirectConnection);
+    connect(&AlarmManager::instance(), SIGNAL(alarmsRefreshed()), this, SLOT(refreshEnd()), Qt::DirectConnection);
     // get individual alarm data updates
-    connect(&AlarmManager::instance(), SIGNAL(alarmsUpdated(QList<QVariant>)), this, SLOT(update(QList<QVariant>)), Qt::QueuedConnection);
-    // fetch alarms
-    refresh();
-    m_ready = true;
+    connect(&AlarmManager::instance(), SIGNAL(alarmUpdated(int)), this, SLOT(update(int)), Qt::DirectConnection);
+    // get individual alarm insertion
+    connect(&AlarmManager::instance(), SIGNAL(alarmInsertStarted(int)), this, SLOT(insertStarted(int)), Qt::DirectConnection);
+    connect(&AlarmManager::instance(), SIGNAL(alarmInsertFinished()), this, SLOT(insertFinished()), Qt::DirectConnection);
+    // get individual alarm removal, must be direct
+    connect(&AlarmManager::instance(), SIGNAL(alarmRemoveStarted(int)), this, SLOT(removeStarted(int)), Qt::DirectConnection);
+    connect(&AlarmManager::instance(), SIGNAL(alarmRemoveFinished()), this, SLOT(removeFinished()), Qt::DirectConnection);
+    // get individual alamr move, must be direct
+    connect(&AlarmManager::instance(), SIGNAL(alarmMoveStarted(int,int)), this, SLOT(moveStarted(int,int)), Qt::DirectConnection);
+    connect(&AlarmManager::instance(), SIGNAL(alarmMoveFinished()), this, SLOT(moveFinished()), Qt::DirectConnection);
 }
 UCAlarmModel::~UCAlarmModel()
 {
-    clear();
 }
 
-void UCAlarmModel::clear()
+void UCAlarmModel::classBegin()
 {
-    if (m_alarms.count()) {
-        Q_FOREACH(UCAlarm *alarm, m_alarms) {
-            delete alarm;
-        }
-        m_alarms.clear();
-    }
 }
-
+void UCAlarmModel::componentComplete()
+{
+    // fetch alarms
+    refresh();
+}
 
 int UCAlarmModel::rowCount(const QModelIndex &parent) const
 {
@@ -167,29 +166,22 @@ QVariant UCAlarmModel::data(const QModelIndex &index, int role) const
     }
 
     int idx = index.row();
-    if ((idx >= m_alarms.count()) || (idx < 0)) {
+    if ((idx >= AlarmManager::instance().alarmCount()) || (idx < 0)) {
         return QVariant();
     }
 
-    const QString roleName = m_roles.value(role);
-    if (roleName == "model") {
-        const UCAlarm *alarm = m_alarms[idx];
-        return QVariant::fromValue(const_cast<UCAlarm*>(alarm));
-    } else if (!roleName.isEmpty()){
-        return m_alarms[idx]->property(roleName.toLocal8Bit());
-    }
-
-    return QVariant();
+    UCAlarm *alarm = AlarmManager::instance().alarmAt(idx);
+    return AlarmUtils::roleData(role, alarm);
 }
 
 QHash<int, QByteArray> UCAlarmModel::roleNames() const
 {
-    return m_roles;
+    return AlarmUtils::roles();
 }
 
 /*!
  * \qmlmethod Alarm AlarmModel::get(int index)
- * Returns the copy of the alarm event at \a index in the model. This allows the
+ * Returns the reference of the alarm event at \a index in the model. This allows the
  * alarm data to be modified and updated either through normal component binding
  * or in Javascript functions.
  *
@@ -220,10 +212,7 @@ QHash<int, QByteArray> UCAlarmModel::roleNames() const
  */
 UCAlarm* UCAlarmModel::get(int index)
 {
-    if ((index >= 0) && (index < m_alarms.count())) {
-        return m_alarms[index];
-    }
-    return 0;
+    return AlarmManager::instance().alarmAt(index);
 }
 
 /*!
@@ -232,55 +221,102 @@ UCAlarm* UCAlarmModel::get(int index)
  */
 int UCAlarmModel::count() const
 {
-    return m_alarms.count();
+    return AlarmManager::instance().alarmCount();
 }
 
 /*!
- * \internal
- * The slot prepares the views for the dataChanged() signal.
+ * \qmlmethod AlarmModel::refresh()
+ * The function refreshes the model by invalidating the alarm cache. Use this
+ * function only if the refresh is absolutely required, otherwise it will cause
+ * performance problems.
  */
 void UCAlarmModel::refresh()
 {
-    if (m_ready) {
-        beginResetModel();
-    }
-
-    clear();
-    AlarmList alarms = AlarmManager::instance().alarms();
-    Q_FOREACH(const AlarmData &data, alarms) {
-        UCAlarm *alarm = new UCAlarm(this);
-        UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(alarm);
-        pAlarm->rawData = data;
-        m_alarms << alarm;
-    }
-    Q_EMIT countChanged();
-
-    if (m_ready) {
-        endResetModel();
-    }
+    AlarmManager::instance().fetchAlarms();
 }
 
 /*!
  * \internal
- * Slot updating individual alarms' data.
+ * The slot prepares the model reset.
  */
-void UCAlarmModel::update(const QList<QVariant> cookies)
+void UCAlarmModel::refreshStart()
 {
-    AlarmList alarms = AlarmManager::instance().alarms();
-    Q_FOREACH(const QVariant &cookie, cookies) {
-        int alarmIndex = alarms.indexOfAlarm(cookie);
-        AlarmData data = alarms[alarmIndex];
+    beginResetModel();
+}
 
-        // the index of the m_alarm must be in sync with teh index of the alarms
-        UCAlarmPrivate *pAlarm = UCAlarmPrivate::get(m_alarms[alarmIndex]);
-        if (pAlarm->rawData.cookie != cookie) {
-            qmlInfo(this) << "Updated alarm cookies differ!" << cookie.toString() << pAlarm->rawData.cookie.toString();
-        } else {
-            pAlarm->rawData = data;
+/*!
+ * \internal
+ * The slot finalizes the model reset.
+ */
+void UCAlarmModel::refreshEnd()
+{
+    endResetModel();
+    Q_EMIT countChanged();
+}
 
-            // create index and emit dataUpdate()
-            QModelIndex modelIndex = createIndex(alarmIndex, 0);
-            Q_EMIT dataChanged(modelIndex, modelIndex);
-        }
-    }
+/*!
+ * \internal
+ * Slot updating individual alarm's data.
+ */
+void UCAlarmModel::update(int index)
+{
+    // create index and emit dataUpdate()
+    QModelIndex modelIndex = createIndex(index, 0);
+    Q_EMIT dataChanged(modelIndex, modelIndex);
+}
+
+/*!
+ * \internal
+ * Slot starting removing individual alarm.
+ */
+void UCAlarmModel::removeStarted(int index)
+{
+    beginRemoveRows(QModelIndex(), index, index);
+}
+
+/*!
+ * \internal
+ * Slot finalizing removing individual alarm.
+ */
+void UCAlarmModel::removeFinished()
+{
+    endRemoveRows();
+    Q_EMIT countChanged();
+}
+
+/*!
+ * \internal
+ * Slot starting inserting an individual alarm.
+ */
+void UCAlarmModel::insertStarted(int index)
+{
+    beginInsertRows(QModelIndex(), index, index);
+}
+
+/*!
+ * \internal
+ * Slot finalizing inserting an individual alarm.
+ */
+void UCAlarmModel::insertFinished()
+{
+    endInsertRows();
+    Q_EMIT countChanged();
+}
+
+/*!
+ * \internal
+ * Slot starting moving an individual alarm.
+ */
+void UCAlarmModel::moveStarted(int from, int to)
+{
+    beginMoveRows(QModelIndex(), from, from, QModelIndex(), to);
+}
+
+/*!
+ * \internal
+ * Slot finalizing moving an individual alarm.
+ */
+void UCAlarmModel::moveFinished()
+{
+    endMoveRows();
 }

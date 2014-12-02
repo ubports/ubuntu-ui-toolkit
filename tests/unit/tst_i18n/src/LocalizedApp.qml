@@ -26,10 +26,25 @@ MainView {
         objectName: 'page'
         title: i18n.dtr('localizedApp', "Welcome")
         Button {
+            id: button
             objectName: 'button'
             anchors.centerIn: parent
             text: i18n.tr('Count the kilometres')
             width: units.gu(15)
+        }
+        Label {
+            id: all1
+            objectName: 'all1'
+            anchors.top: button.bottom
+            anchors.horizontalCenter: button.horizontalCenter
+            text: i18n.ctr('All Contacts', 'All')
+        }
+        Label {
+            id: all2
+            objectName: 'all2'
+            anchors.top: all1.bottom
+            anchors.horizontalCenter: all1.horizontalCenter
+            text: i18n.ctr('All Calls', 'All')
         }
     }
 }

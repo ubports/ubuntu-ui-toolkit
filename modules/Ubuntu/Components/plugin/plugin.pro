@@ -50,8 +50,6 @@ HEADERS += plugin.h \
     alarmmanager_p.h \
     ucalarmmodel.h \
     unitythemeiconprovider.h \
-    alarmrequest_p.h \
-    alarmrequest_p_p.h \
     adapters/alarmsadapter_p.h \
     ucstatesaver.h \
     sortbehavior.h \
@@ -69,6 +67,9 @@ HEADERS += plugin.h \
     ucactioncontext.h \
     ucactionmanager.h \
     adapters/actionsproxy_p.h \
+    adapters/dbuspropertywatcher_p.h \
+    ucserviceproperties.h \
+    ucserviceproperties_p.h \
     uclistitem.h \
     uclistitem_p.h \
     uclistitemactions.h \
@@ -98,7 +99,6 @@ SOURCES += plugin.cpp \
     alarmmanager_p.cpp \
     ucalarmmodel.cpp \
     unitythemeiconprovider.cpp \
-    alarmrequest_p.cpp \
     ucstatesaver.cpp \
     sortbehavior.cpp \
     filterbehavior.cpp \
@@ -112,6 +112,8 @@ SOURCES += plugin.cpp \
     ucactioncontext.cpp \
     ucactionmanager.cpp \
     adapters/actionsproxy_p.cpp \
+    adapters/dbuspropertywatcher_p.cpp \
+    ucserviceproperties.cpp \
     uclistitem.cpp \
     uclistitemactions.cpp \
     uclistitemactionsattached.cpp \

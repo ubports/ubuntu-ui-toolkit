@@ -19,17 +19,15 @@
 #include "ucalarm.h"
 #include "ucalarm_p.h"
 #include "alarmmanager_p.h"
-#include "alarmrequest_p.h"
 #include "i18n.h"
 #include <QtQml/QQmlInfo>
 
 UCAlarmPrivate::UCAlarmPrivate(UCAlarm *qq)
     : q_ptr(qq)
-    , request(0)
+    , changes(0)
     , error(UCAlarm::NoError)
     , status(UCAlarm::Ready)
 {
-    setDefaults();
 }
 
 UCAlarmPrivate::~UCAlarmPrivate()
@@ -38,23 +36,11 @@ UCAlarmPrivate::~UCAlarmPrivate()
 
 void UCAlarmPrivate::setDefaults()
 {
-    rawData.date = QDateTime::currentDateTime();
-    rawData.message = UbuntuI18n::instance().tr("Alarm");
-    rawData.days = dayOfWeek(rawData.date);
-}
-
-bool UCAlarmPrivate::createRequest()
-{
-    if (request) {
-        return true;
-    }
-    request = new AlarmRequest(q_ptr);
-    if (!request) {
-        return false;
-    }
-    QObject::connect(request, SIGNAL(statusChanged(int,int,int)),
-                     q_ptr, SLOT(_q_syncStatus(int,int,int)));
-    return true;
+    QDateTime date = AlarmUtils::normalizeDate(QDateTime::currentDateTime());
+    setDate(date);
+    setMessage(UbuntuI18n::instance().tr("Alarm"));
+    setType(UCAlarm::OneTime);
+    setDaysOfWeek(UCAlarm::AutoDetect);
 }
 
 void UCAlarmPrivate::_q_syncStatus(int operation, int status, int error) {
@@ -63,25 +49,26 @@ void UCAlarmPrivate::_q_syncStatus(int operation, int status, int error) {
         this->status = alarmStatus;
         this->error = error;
 
+        Q_Q(UCAlarm);
         if (this->status == UCAlarm::Ready) {
             // sync field changes occured during operation
-            if (rawData.changes & AlarmData::Enabled)
-                Q_EMIT q_ptr->enabledChanged();
-            if (rawData.changes & AlarmData::Date)
-                Q_EMIT q_ptr->dateChanged();
-            if (rawData.changes & AlarmData::Message)
-                Q_EMIT q_ptr->messageChanged();
-            if (rawData.changes & AlarmData::Sound)
-                Q_EMIT q_ptr->soundChanged();
-            if (rawData.changes & AlarmData::Type)
-                Q_EMIT q_ptr->typeChanged();
-            if (rawData.changes & AlarmData::Days)
-                Q_EMIT q_ptr->daysOfWeekChanged();
-            rawData.changes = 0;
+            if (changes & AlarmManager::Enabled)
+                Q_EMIT q->enabledChanged();
+            if (changes & AlarmManager::Date)
+                Q_EMIT q->dateChanged();
+            if (changes & AlarmManager::Message)
+                Q_EMIT q->messageChanged();
+            if (changes & AlarmManager::Sound)
+                Q_EMIT q->soundChanged();
+            if (changes & AlarmManager::Type)
+                Q_EMIT q->typeChanged();
+            if (changes & AlarmManager::Days)
+                Q_EMIT q->daysOfWeekChanged();
+            changes = 0;
         }
 
-        Q_EMIT q_func()->statusChanged(static_cast<UCAlarm::Operation>(operation));
-        Q_EMIT q_func()->errorChanged();
+        Q_EMIT q->statusChanged(static_cast<UCAlarm::Operation>(operation));
+        Q_EMIT q->errorChanged();
     }
 }
 
@@ -130,37 +117,15 @@ bool UCAlarmPrivate::multipleDaysSet(UCAlarm::DaysOfWeek days)
     return (bits > 1);
 }
 
-UCAlarm::Error UCAlarmPrivate::checkAlarm()
-{
-    if (rawData.message.isEmpty()) {
-        rawData.message = UbuntuI18n::instance().tr("Alarm");
-        rawData.changes |= AlarmData::Message;
-    }
-
-    if (!rawData.date.isValid()) {
-        return UCAlarm::InvalidDate;
-    }
-
-    rawData.date = rawData.normalizeDate(rawData.date);
-
-    // check type first as it may alter start day
-    if (rawData.type == UCAlarm::OneTime) {
-       return checkOneTime();
-    } else if (rawData.type == UCAlarm::Repeating) {
-        return checkRepeatingWeekly();
-    }
-
-    return UCAlarm::NoError;
-}
-
 // adjust dayOfWeek
 UCAlarm::Error UCAlarmPrivate::adjustDow()
 {
-    if (!rawData.days) {
+    UCAlarm::DaysOfWeek dow = daysOfWeek();
+    if (!dow) {
         return UCAlarm::NoDaysOfWeek;
-    } else if (rawData.days == UCAlarm::AutoDetect) {
-        rawData.days = dayOfWeek(rawData.date);
-        rawData.changes |= AlarmData::Days;
+    } else if (dow == UCAlarm::AutoDetect) {
+        setDaysOfWeek(dayOfWeek(date()));
+        changes |= AlarmManager::Days;
     }
     return UCAlarm::NoError;
 }
@@ -168,7 +133,8 @@ UCAlarm::Error UCAlarmPrivate::adjustDow()
 UCAlarm::Error UCAlarmPrivate::checkOneTime()
 {
     // check days, days can be set for only one day in this case
-    if (multipleDaysSet(rawData.days)) {
+    UCAlarm::DaysOfWeek dow = daysOfWeek();
+    if (multipleDaysSet(dow)) {
         return UCAlarm::OneTimeOnMoreDays;
     }
 
@@ -176,24 +142,28 @@ UCAlarm::Error UCAlarmPrivate::checkOneTime()
     if (result != UCAlarm::NoError) {
         return result;
     }
+    // fetch the dow again as adjustment may alter it!
+    dow = daysOfWeek();
 
     // fix lp:1319401 - dayOfWeek omitted if set to other than AutoDetect
-    int dayOfWeek = rawData.date.date().dayOfWeek();
-    if (!isDaySet(dayOfWeek, rawData.days)) {
+    QDateTime alarmDate = date();
+    int dayOfWeek = alarmDate.date().dayOfWeek();
+    if (!isDaySet(dayOfWeek, dow)) {
         // dayOfWeek has been set by the user, adjust the date to it
-        int nextOccurrence = nextDayOfWeek(rawData.days, dayOfWeek);
+        int nextOccurrence = nextDayOfWeek(dow, dayOfWeek);
         if (nextOccurrence < dayOfWeek) {
              // the starting date should be moved to the next week's occurrence
-            rawData.date = rawData.date.addDays(7 - dayOfWeek + nextOccurrence);
+            alarmDate = alarmDate.addDays(7 - dayOfWeek + nextOccurrence);
         } else {
             // the starting date is still this week
-            rawData.date = rawData.date.addDays(nextOccurrence - dayOfWeek);
+            alarmDate = alarmDate.addDays(nextOccurrence - dayOfWeek);
         }
-        rawData.changes |= AlarmData::Date;
+        setDate(alarmDate);
+        changes |= AlarmManager::Date;
     }
 
     // start date should be later then the current date/time
-    if (rawData.date <= AlarmData::normalizeDate(QDateTime::currentDateTime())) {
+    if (alarmDate <= AlarmUtils::normalizeDate(QDateTime::currentDateTime())) {
         return UCAlarm::EarlyDate;
     }
     return UCAlarm::NoError;
@@ -210,21 +180,24 @@ UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly()
     }
 
     // move start time of the first occurence if needed
-    int dayOfWeek = rawData.date.date().dayOfWeek();
-    if (!isDaySet(dayOfWeek, rawData.days) || (rawData.date <= QDateTime::currentDateTime())) {
+    QDateTime alarmDate = date();
+    UCAlarm::DaysOfWeek dow = daysOfWeek();
+    int dayOfWeek = alarmDate.date().dayOfWeek();
+    if (!isDaySet(dayOfWeek, dow) || (alarmDate <= QDateTime::currentDateTime())) {
         // check the next occurence of the alarm
-        int nextOccurrence = nextDayOfWeek(rawData.days, dayOfWeek);
+        int nextOccurrence = nextDayOfWeek(dow, dayOfWeek);
         if (nextOccurrence == dayOfWeek) {
             // move the date to the same day next week
-            rawData.date = rawData.date.addDays(7);
+            alarmDate = alarmDate.addDays(7);
         } else if (nextOccurrence < dayOfWeek) {
              // the starting date should be moved to the next week's occurrence
-            rawData.date = rawData.date.addDays(7 - dayOfWeek + nextOccurrence);
+            alarmDate = alarmDate.addDays(7 - dayOfWeek + nextOccurrence);
         } else {
             // the starting date is still this week
-            rawData.date = rawData.date.addDays(nextOccurrence - dayOfWeek);
+            alarmDate = alarmDate.addDays(nextOccurrence - dayOfWeek);
         }
-        rawData.changes |= AlarmData::Date;
+        setDate(alarmDate);
+        changes |= AlarmManager::Date;
     }
 
     return UCAlarm::NoError;
@@ -309,33 +282,35 @@ UCAlarm::Error UCAlarmPrivate::checkRepeatingWeekly()
 
 UCAlarm::UCAlarm(QObject *parent)
     : QObject(parent)
-    , d_ptr(new UCAlarmPrivate(this))
+    , d_ptr(AlarmManager::createAlarmData(this))
 {
+    d_ptr->setDefaults();
 }
 
 UCAlarm::UCAlarm(const QDateTime &dt, const QString &message, QObject *parent)
     : QObject(parent)
-    , d_ptr(new UCAlarmPrivate(this))
+    , d_ptr(AlarmManager::createAlarmData(this))
 {
-    d_ptr->rawData.date = AlarmData::normalizeDate(dt);
+    d_ptr->setDate(AlarmUtils::normalizeDate(dt));
     if (!message.isEmpty()) {
-        d_ptr->rawData.message = message;
+        d_ptr->setMessage(message);
     }
-    d_ptr->rawData.days = UCAlarmPrivate::dayOfWeek(d_ptr->rawData.date);
+    d_ptr->setDaysOfWeek(UCAlarmPrivate::dayOfWeek(AlarmUtils::normalizeDate(dt)));
 }
 
 UCAlarm::UCAlarm(const QDateTime &dt, DaysOfWeek days, const QString &message, QObject *parent)
     : QObject(parent)
-    , d_ptr(new UCAlarmPrivate(this))
+    , d_ptr(AlarmManager::createAlarmData(this))
 {
-    d_ptr->rawData.date = AlarmData::normalizeDate(dt);
-    d_ptr->rawData.type = Repeating;
-    d_ptr->rawData.days = days;
-    if (!message.isEmpty()) {
-        d_ptr->rawData.message = message;
+    d_ptr->setDate(AlarmUtils::normalizeDate(dt));
+    d_ptr->setType(Repeating);
+    if (days == AutoDetect) {
+        d_ptr->setDaysOfWeek(UCAlarmPrivate::dayOfWeek(dt));
+    } else {
+        d_ptr->setDaysOfWeek(days);
     }
-    if (d_ptr->rawData.days == AutoDetect) {
-        d_ptr->rawData.days = UCAlarmPrivate::dayOfWeek(d_ptr->rawData.date);
+    if (!message.isEmpty()) {
+        d_ptr->setMessage(message);
     }
 }
 
@@ -345,9 +320,10 @@ UCAlarm::~UCAlarm()
 
 bool UCAlarm::operator==(const UCAlarm &that) const
 {
-    Q_D(const UCAlarm);
-    AlarmData const dataThat = UCAlarmPrivate::get(&that)->rawData;
-    return d->rawData == dataThat;
+    return date() == that.date() &&
+            message() == that.message() &&
+            type() == that.type() &&
+            daysOfWeek() == that.daysOfWeek();
 }
 
 /*!
@@ -358,18 +334,14 @@ bool UCAlarm::operator==(const UCAlarm &that) const
  */
 bool UCAlarm::enabled() const
 {
-    Q_D(const UCAlarm);
-    return d->rawData.enabled;
+    return d_ptr->enabled();
 }
 void UCAlarm::setEnabled(bool enabled)
 {
-    Q_D(UCAlarm);
-    if (d->rawData.enabled == enabled) {
-        return;
+    if (d_ptr->setEnabled(enabled)) {
+        d_ptr->changes |= AlarmManager::Enabled;
+        Q_EMIT enabledChanged();
     }
-    d->rawData.enabled = enabled;
-    d->rawData.changes |= AlarmData::Enabled;
-    Q_EMIT enabledChanged();
 }
 
 /*!
@@ -380,18 +352,15 @@ void UCAlarm::setEnabled(bool enabled)
  */
 QDateTime UCAlarm::date() const
 {
-    Q_D(const UCAlarm);
-    return d->rawData.date;
+    return d_ptr->date();
 }
 void UCAlarm::setDate(const QDateTime &date)
 {
-    Q_D(UCAlarm);
-    if (d->rawData.date == AlarmData::normalizeDate(date)) {
+    if (d_ptr->setDate(AlarmUtils::normalizeDate(date))) {
+        d_ptr->changes |= AlarmManager::Date;
+        Q_EMIT dateChanged();
         return;
     }
-    d->rawData.date = AlarmData::normalizeDate(date);
-    d->rawData.changes |= AlarmData::Date;
-    Q_EMIT dateChanged();
 }
 
 /*!
@@ -401,18 +370,14 @@ void UCAlarm::setDate(const QDateTime &date)
  */
 QString UCAlarm::message() const
 {
-    Q_D(const UCAlarm);
-    return d->rawData.message;
+    return d_ptr->message();
 }
 void UCAlarm::setMessage(const QString &message)
 {
-    Q_D(UCAlarm);
-    if (d->rawData.message == message) {
-        return;
+    if (d_ptr->setMessage(message)) {
+        d_ptr->changes |= AlarmManager::Message;
+        Q_EMIT messageChanged();
     }
-    d->rawData.message = message;
-    d->rawData.changes |= AlarmData::Message;
-    Q_EMIT messageChanged();
 }
 
 /*!
@@ -438,18 +403,14 @@ void UCAlarm::setMessage(const QString &message)
  */
 UCAlarm::AlarmType UCAlarm::type() const
 {
-    Q_D(const UCAlarm);
-    return d->rawData.type;
+    return d_ptr->type();
 }
 void UCAlarm::setType(UCAlarm::AlarmType type)
 {
-    Q_D(UCAlarm);
-    if (d->rawData.type == type) {
-        return;
+    if (d_ptr->setType(type)) {
+        d_ptr->changes |= AlarmManager::Type;
+        Q_EMIT typeChanged();
     }
-    d->rawData.type = type;
-    d->rawData.changes |= AlarmData::Type;
-    Q_EMIT typeChanged();
 }
 
 /*!
@@ -496,25 +457,22 @@ void UCAlarm::setType(UCAlarm::AlarmType type)
  * \row
  *  \li Alarm.AutoDetect
  *  \li 0x80
- *  \li The alarm day will be detected from the alarm date.
+ *  \li The alarm day will be detected from the alarm date at the time the alarm
+ *      is saved.
  * \endtable
  *
  * The default value is Alarm.AutoDetect.
  */
 UCAlarm::DaysOfWeek UCAlarm::daysOfWeek() const
 {
-    Q_D(const UCAlarm);
-    return d->rawData.days;
+    return d_ptr->daysOfWeek();
 }
 void UCAlarm::setDaysOfWeek(UCAlarm::DaysOfWeek days)
 {
-    Q_D(UCAlarm);
-    if (d->rawData.days == days) {
-        return;
+    if (d_ptr->setDaysOfWeek(days)) {
+        d_ptr->changes |= AlarmManager::Days;
+        Q_EMIT daysOfWeekChanged();
     }
-    d->rawData.days = days;
-    d->rawData.changes |= AlarmData::Days;
-    Q_EMIT daysOfWeekChanged();
 }
 
 /*!
@@ -526,21 +484,15 @@ void UCAlarm::setDaysOfWeek(UCAlarm::DaysOfWeek days)
  */
 QUrl UCAlarm::sound() const
 {
-    Q_D(const UCAlarm);
-    return d->rawData.sound;
+    return d_ptr->sound();
 }
 void UCAlarm::setSound(const QUrl &sound)
 {
-    Q_D(UCAlarm);
-    if (d->rawData.sound == sound) {
-        return;
+    if (d_ptr->setSound(sound)) {
+        d_ptr->changes |= AlarmManager::Sound;
+        Q_EMIT soundChanged();
     }
-    d->rawData.sound = sound;
-    d->rawData.changes |= AlarmData::Sound;
-    Q_EMIT soundChanged();
 }
-
-
 
 /*!
  * \qmlproperty Error Alarm::error
@@ -584,8 +536,7 @@ void UCAlarm::setSound(const QUrl &sound)
  */
 int UCAlarm::error() const
 {
-    Q_D(const UCAlarm);
-    return d->error;
+    return d_ptr->error;
 }
 
 /*!
@@ -651,8 +602,7 @@ int UCAlarm::error() const
  */
 UCAlarm::Status UCAlarm::status() const
 {
-    Q_D(const UCAlarm);
-    return d->status;
+    return d_ptr->status;
 }
 
 /*!
@@ -679,24 +629,24 @@ UCAlarm::Status UCAlarm::status() const
  */
 void UCAlarm::save()
 {
-    Q_D(UCAlarm);
-    if (d->status == InProgress) {
+    if (d_ptr->status == InProgress) {
         qmlInfo(this) << UbuntuI18n::instance().tr("Alarm has a pending operation.");
         return;
     }
 
-    d->error = NoError;
-    d->status = Ready;
+    d_ptr->error = NoError;
+    d_ptr->status = Ready;
 
-    UCAlarm::Error result = d->checkAlarm();
+    if (d_ptr->message().isEmpty()) {
+        d_ptr->setMessage(UbuntuI18n::instance().tr("Alarm"));
+        d_ptr->changes |= AlarmManager::Message;
+    }
+
+    UCAlarm::Error result = d_ptr->checkAlarm();
     if (result != UCAlarm::NoError) {
-        d->_q_syncStatus(Saving, Fail, result);
+        d_ptr->_q_syncStatus(Saving, Fail, result);
     } else {
-        // the alarm has been modified, therefore update the original date as well
-        d->rawData.originalDate = d->rawData.date;
-        if (d->createRequest()) {
-            d->request->save(d->rawData);
-        }
+        d_ptr->save();
     }
 }
 
@@ -711,17 +661,14 @@ void UCAlarm::save()
  */
 void UCAlarm::cancel()
 {
-    Q_D(UCAlarm);
-    if (d->status == InProgress) {
+    if (d_ptr->status == InProgress) {
         qmlInfo(this) << UbuntuI18n::instance().tr("Alarm has a pending operation.");
         return;
     }
 
-    d->error = NoError;
-    d->status = Ready;
-    if (d->createRequest()) {
-        d->request->remove(d->rawData);
-    }
+    d_ptr->error = NoError;
+    d_ptr->status = Ready;
+    d_ptr->cancel();
 }
 
 /*!
@@ -734,13 +681,21 @@ void UCAlarm::cancel()
  */
 void UCAlarm::reset()
 {
-    Q_D(UCAlarm);
-    d->_q_syncStatus(Reseting, InProgress, NoError);
+    d_ptr->_q_syncStatus(Reseting, InProgress, NoError);
 
-    d->rawData = AlarmData();
-    d->setDefaults();
-    d->rawData.changes = AlarmData::AllFields;
-    d->_q_syncStatus(Reseting, Ready, NoError);
+    d_ptr->reset();
+    d_ptr->setDefaults();
+    d_ptr->changes = AlarmManager::AllFields;
+    d_ptr->_q_syncStatus(Reseting, Ready, NoError);
+}
+
+/*!
+ * \internal
+ * The method returns the alarm cookie.
+ */
+QVariant UCAlarm::cookie() const
+{
+    return d_ptr->cookie();
 }
 
 #include "moc_ucalarm.cpp"

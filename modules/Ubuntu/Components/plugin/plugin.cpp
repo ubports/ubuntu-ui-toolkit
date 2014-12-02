@@ -52,6 +52,7 @@
 #include "ucaction.h"
 #include "ucactioncontext.h"
 #include "ucactionmanager.h"
+#include "ucserviceproperties.h"
 #include "uclistitem.h"
 #include "uclistitem_p.h"
 #include "uclistitemactions.h"
@@ -166,6 +167,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<QSortFilterProxyModelQML>(uri, 1, 1, "SortFilterModel");
     qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
+    qmlRegisterType<UCServiceProperties, 1>(uri, 1, 1, "ServiceProperties");
+
     // ListItem and related types, released to 1.2
     qmlRegisterType<UCListItem, 2>(uri, 1, 2, "ListItem");
     qmlRegisterType<UCListItemDivider>();
