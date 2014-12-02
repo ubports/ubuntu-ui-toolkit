@@ -496,6 +496,7 @@ void UCListItemPrivate::promptRebound()
     }
 }
 
+// set pressed flag and update background
 // called when units size changes
 void UCListItemPrivate::_q_updateSize()
 {
@@ -730,9 +731,8 @@ UCListItemAttached *UCListItem::qmlAttachedProperties(QObject *owner)
 void UCListItem::componentComplete()
 {
     UCStyledItemBase::componentComplete();
-    // must load the theme!
     Q_D(UCListItem);
-    d_func()->ready = true;
+    d->ready = true;
 }
 
 void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)

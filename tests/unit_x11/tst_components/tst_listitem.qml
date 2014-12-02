@@ -37,11 +37,11 @@ Item {
                 objectName: "leading_1"
             },
             Action {
-                iconName: "starred"
+                iconName: "edit"
                 objectName: "leading_2"
             },
             Action {
-                iconName: "starred"
+                iconName: "camcorder"
                 objectName: "leading_3"
             }
         ]
@@ -85,7 +85,7 @@ Item {
         ListView {
             id: listView
             width: parent.width
-            height: units.gu(24)
+            height: units.gu(28)
             clip: true
             model: 10
             delegate: ListItem {
@@ -120,6 +120,10 @@ Item {
         }
 
         SignalSpy {
+            id: actionSpy
+            signalName: "onTriggered"
+        }
+        SignalSpy {
             id: interactiveSpy
             signalName: "interactiveChanged"
         }
@@ -152,6 +156,7 @@ Item {
             movingSpy.clear();
             pressedSpy.clear();
             clickSpy.clear();
+            actionSpy.clear();
             interactiveSpy.clear();
             listView.interactive = true;
             // make sure we collapse
@@ -521,6 +526,45 @@ Item {
 
             // cleanup
             rebound(listItem);
+        }
+
+        function test_verify_action_value_data() {
+            var item0 = findChild(listView, "listItem0");
+            var item1 = findChild(listView, "listItem1");
+            var item2 = findChild(listView, "listItem2");
+            var item3 = findChild(listView, "listItem3");
+            return [
+                // testItem is the child item @index 1 in the topmost Column.
+                {tag: "Standalone item, child index 1", item: testItem, result: 1},
+                {tag: "ListView, item index 0", item: item0, result: 0},
+                {tag: "ListView, item index 1", item: item1, result: 1},
+                {tag: "ListView, item index 2", item: item2, result: 2},
+                {tag: "ListView, item index 3", item: item3, result: 3},
+            ];
+        }
+        function test_verify_action_value(data) {
+            // tug actions in
+            movingSpy.target = data.item;
+            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, units.gu(20), 0, 100, 10);
+            movingSpy.wait();
+            verify(data.item.contentItem.x != 0.0, "Not snapped in");
+
+            var panel = panelItem(data.item, "Leading");
+            var action = findChild(panel, "leading_2");
+            verify(action, "actions panel cannot be reached");
+            // we test the action closest to the list item's contentItem
+            actionSpy.target = data.item.leadingActions.actions[1];
+
+            // select the action
+            movingSpy.clear();
+            mouseClick(action, centerOf(action).x, centerOf(action).y);
+            movingSpy.wait();
+
+            // check the action param
+            actionSpy.wait();
+            // SignalSpy.signalArguments[0] is an array of arguments, where the index is set as index 0
+            var param = actionSpy.signalArguments[0];
+            compare(param[0], data.result, "Action parameter differs");
         }
     }
 }

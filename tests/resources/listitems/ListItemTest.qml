@@ -29,7 +29,7 @@ MainView {
         id: stock
         iconName: "starred"
         text: "Staaaar"
-        onTriggered: print(iconName, "triggered")
+        onTriggered: print(iconName, "triggered", value)
     }
 
     ListItemActions {
@@ -38,28 +38,28 @@ MainView {
         actions: [
             Action {
                 iconName: "delete"
-                onTriggered: print(iconName, "triggered")
+                onTriggered: print(iconName, "triggered", value)
             },
             Action {
                 iconName: "alarm-clock"
                 enabled: false
-                onTriggered: print(iconName, "triggered")
+                onTriggered: print(iconName, "triggered", value)
             },
             Action {
                 iconName: "camcorder"
-                onTriggered: print(iconName, "triggered")
+                onTriggered: print(iconName, "triggered", value)
             },
             Action {
                 iconName: "stock_website"
-                onTriggered: print(iconName, "triggered")
+                onTriggered: print(iconName, "triggered", value)
             },
             Action {
                 iconName: "starred"
-                onTriggered: print(iconName, "triggered")
+                onTriggered: print(iconName, "triggered", value)
             },
             Action {
                 iconName: "go-home"
-                onTriggered: print(iconName, "triggered")
+                onTriggered: print(iconName, "triggered", value)
             }
         ]
     }
@@ -104,6 +104,7 @@ MainView {
                 actions: [stock]
                 delegate: Column {
                     width: height + units.gu(2)
+                    anchors.verticalCenter: parent.verticalCenter
                     Icon {
                         width: units.gu(3)
                         height: width
@@ -177,6 +178,7 @@ MainView {
                         color: "red"
                         highlightColor: "lime"
                         divider.colorFrom: UbuntuColors.green
+                        swipeOvershoot: units.gu(10)
 
                         leadingActions: ListItemActions {
                             actions: leadingArray
