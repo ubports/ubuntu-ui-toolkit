@@ -20,8 +20,33 @@ import Ubuntu.Test 1.0
 import Ubuntu.Components 1.2
 
 Item {
+    id: main
     width: units.gu(40)
     height: units.gu(71)
+
+    Action {
+        id: stockAction
+    }
+    ListItemActions {
+        id: leading
+        actions: [
+            Action {
+            },
+            Action {
+            },
+            Action {
+            }
+        ]
+    }
+    ListItemActions {
+        id: trailing
+        actions: [
+            stockAction,
+        ]
+    }
+    ListItemActions {
+        id: actionsDefault
+    }
 
     Column {
         width: parent.width
@@ -73,6 +98,7 @@ Item {
 
         function initTestCase() {
             TestExtras.registerTouchDevice();
+            waitForRendering(main);
         }
 
         function cleanup() {
@@ -94,6 +120,9 @@ Item {
             fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
+
+            compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
+            compare(actionsDefault.actions.length, 0, "ListItemActions has no options set.");
         }
 
         function test_children_in_content_item() {

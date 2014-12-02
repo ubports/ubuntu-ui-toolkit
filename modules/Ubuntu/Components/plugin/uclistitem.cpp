@@ -196,6 +196,8 @@ UCListItemPrivate::UCListItemPrivate()
     , highlightColor(Qt::transparent)
     , contentItem(new QQuickItem)
     , divider(new UCListItemDivider)
+    , leadingActions(0)
+    , trailingActions(0)
 {
 }
 UCListItemPrivate::~UCListItemPrivate()
@@ -318,9 +320,9 @@ void UCListItemPrivate::update()
  * of some:
  * \list A
  * \li do not alter \c x, \c y, \c width or \c height properties as those are
- *      controlled by the ListItem itself when leading or trailing options are
+ *      controlled by the ListItem itself when leading or trailing actions are
  *      revealed and thus will destroy your logic
- * \li never anchor left or right anchor lines as it will block revealing the options.
+ * \li never anchor left or right anchor lines as it will block revealing the actions.
  * \endlist
  *
  * Each ListItem has a thin divider shown on the bottom of the component. This
@@ -452,6 +454,48 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 }
 
 /*!
+ * \qmlproperty ListItemActions ListItem::leadingActions
+ *
+ * The property holds the actions and its configuration to be revealed when swiped
+ * from left to right.
+ */
+UCListItemActions *UCListItem::leadingActions() const
+{
+    Q_D(const UCListItem);
+    return d->leadingActions;
+}
+void UCListItem::setLeadingActions(UCListItemActions *actions)
+{
+    Q_D(UCListItem);
+    if (d->leadingActions == actions) {
+        return;
+    }
+    d->leadingActions = actions;
+    Q_EMIT leadingActionsChanged();
+}
+
+/*!
+ * \qmlproperty ListItemActions ListItem::trailingActions
+ *
+ * The property holds the actions and its configuration to be revealed when swiped
+ * from right to left.
+ */
+UCListItemActions *UCListItem::trailingActions() const
+{
+    Q_D(const UCListItem);
+    return d->trailingActions;
+}
+void UCListItem::setTrailingActions(UCListItemActions *actions)
+{
+    Q_D(UCListItem);
+    if (d->trailingActions == actions) {
+        return;
+    }
+    d->trailingActions = actions;
+    Q_EMIT trailingActionsChanged();
+}
+
+/*!
  * \qmlproperty Item ListItem::contentItem
  *
  * contentItem holds the components placed on a ListItem.
@@ -472,7 +516,7 @@ QQuickItem* UCListItem::contentItem() const
  *
  * This grouped property configures the thin divider shown in the bottom of the
  * component. Configures the visibility and the margins from the left and right
- * of the ListItem. When tugged (swiped left or right to reveal the options),
+ * of the ListItem. When tugged (swiped left or right to reveal the actions),
  * it is not moved together with the content. \c colorFrom and \c colorTo configure
  * the starting and ending colors of the divider.
  *
