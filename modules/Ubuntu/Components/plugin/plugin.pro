@@ -111,7 +111,8 @@ SOURCES += plugin.cpp \
     ucactionmanager.cpp \
     adapters/actionsproxy_p.cpp \
     uclistitem.cpp \
-    uclistitemactions.cpp
+    uclistitemactions.cpp \
+    uclistitemactionsattached.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp

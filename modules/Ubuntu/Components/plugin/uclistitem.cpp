@@ -191,7 +191,10 @@ void UCListItemDivider::setColorTo(const QColor &color)
 UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
     , pressed(false)
+    , contentMoved(false)
     , highlightColorChanged(false)
+    , ready(false)
+    , overshoot(UCUnits::instance().gu(2))
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
     , contentItem(new QQuickItem)
@@ -249,6 +252,21 @@ void UCListItemPrivate::_q_updateSize()
     QQuickItem *owner = flickable ? flickable : parentItem;
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
     q->setImplicitHeight(UCUnits::instance().gu(7));
+    // update overshoot value
+    overshoot = UCUnits::instance().gu(2);
+}
+
+// returns the index of the list item when used in model driven views,
+// and the child index in other cases
+int UCListItemPrivate::index()
+{
+    Q_Q(UCListItem);
+    // is there an index context property?
+    QQmlContext *context = qmlContext(q);
+    QVariant index = context->contextProperty("index");
+    return index.isValid() ?
+                index.toInt() :
+                (parentItem ? QQuickItemPrivate::get(parentItem)->childItems.indexOf(q) : -1);
 }
 
 // set pressed flag and update contentItem
@@ -303,30 +321,23 @@ void UCListItemPrivate::update()
  * \since Ubuntu.Components 1.2
  * \brief The ListItem element provides Ubuntu design standards for list or grid
  * views.
- *
- * The component is dedicated to be used in designs with static or dynamic lists
- * (i.e. list views where each item's layout differs or in lists where the content
- * is determined by a given model, thus each element has the same layout). The
- * element does not define any specific layout, components can be placed in any
- * ways on it. However, when used in list views, the content must be carefully
- * chosen to in order to keep the kinetic behavior and the highest FPS possible.
+ * The ListItem component was designed to be used in a list view. It does not
+ * define any specific layout, but while its contents can be freely chosen by
+ * the developer, care must be taken to keep the contents light in order to ensure
+ * good performance when used in long list views.
  *
  * The component provides two color properties which configures the item's background
- * when normal or pressed. This can be configures through \l color and \l highlightColor
+ * when normal or pressed. This can be configured through \l color and \l highlightColor
  * properties.
  *
  * \c contentItem holds all components and resources declared as child to ListItem.
- * Being an Item, all other properties can be accessed or altered, with the exception
- * of some:
- * \list A
- * \li do not alter \c x, \c y, \c width or \c height properties as those are
- *      controlled by the ListItem itself when leading or trailing actions are
- *      revealed and thus will destroy your logic
- * \li never anchor left or right anchor lines as it will block revealing the actions.
- * \endlist
+ * Being an Item, all properties can be accessed or altered. However, make sure you
+ * never change \c x, \c y, \c width, \c height or \c anchors properties as those are
+ * controlled by the ListItem itself when leading or trailing actions are revealed
+ * and thus might cause the component to misbehave.
  *
  * Each ListItem has a thin divider shown on the bottom of the component. This
- * divider can be configured through the \l divider grouped property, which can
+ * divider can be configured through the \c divider grouped property, which can
  * configure its margins from the edges of the ListItem as well as its visibility.
  */
 
@@ -334,7 +345,7 @@ void UCListItemPrivate::update()
  * \qmlsignal ListItem::clicked()
  *
  * The signal is emitted when the component gets released while the \l pressed property
- * is set. The signal is not emitted if the ListItem content is tugged or when used in
+ * is set. The signal is not emitted if the ListItem content is swiped or when used in
  * Flickable (or ListView, GridView) and the Flickable gets moved.
  */
 UCListItem::UCListItem(QQuickItem *parent)
@@ -516,8 +527,8 @@ QQuickItem* UCListItem::contentItem() const
  *
  * This grouped property configures the thin divider shown in the bottom of the
  * component. Configures the visibility and the margins from the left and right
- * of the ListItem. When tugged (swiped left or right to reveal the actions),
- * it is not moved together with the content. \c colorFrom and \c colorTo configure
+ * of the ListItem. When swiped left or right to reveal the actions, it is not
+ * moved together with the content. \c colorFrom and \c colorTo configure
  * the starting and ending colors of the divider.
  *
  * When \c visible is true, the ListItem's content size gets thinner with the
@@ -547,6 +558,43 @@ bool UCListItem::pressed() const
 {
     Q_D(const UCListItem);
     return d->pressed;
+}
+
+/*!
+ * \qmlproperty bool ListItem::contentMoving
+ * \readonly
+ * The property describes whether the content is moving or not. The content is
+ * moved when swiped or when snapping in or out, and lasts till the snapping
+ * animation completes.
+ */
+
+/*!
+ * \qmlsignal ListItem::contentMovementStarted()
+ * The signal is emitted when the content movement has started.
+ */
+
+/*!
+ * \qmlsignal UCListItemPrivate::contentMovementEnded
+ * The signal is emitted when the content movement has ended.
+ */
+bool UCListItemPrivate::contentMoving() const
+{
+    return contentMoved;
+}
+void UCListItemPrivate::setContentMoving(bool moved)
+{
+    if (contentMoved == moved) {
+        return;
+    }
+    contentMoved = moved;
+    Q_Q(UCListItem);
+    if (contentMoved) {
+        Q_EMIT q->contentMovementStarted();
+    } else {
+        Q_EMIT q->contentMovementEnded();
+    }
+    Q_EMIT q->contentMovingChanged();
+
 }
 
 /*!

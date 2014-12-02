@@ -31,16 +31,12 @@ public:
         return actions->d_func();
     }
 
+    UCListItemActions::Status status;
+    qreal offsetDragged;
     QQmlComponent *delegate;
     QQuickItem *panelItem;
     QList<UCAction*> actions;
     QList<QObject*> data;
-
-    // options list property functions
-    static void funcAppend(QQmlListProperty<UCAction>*, UCAction*);
-    static int funcCount(QQmlListProperty<UCAction>*);
-    static QObject *funcAt(QQmlListProperty<UCAction>*, int);
-    static void funcClear(QQmlListProperty<UCAction>*);
 };
 
 #endif // UCLISTITEMACTIONS_P_H

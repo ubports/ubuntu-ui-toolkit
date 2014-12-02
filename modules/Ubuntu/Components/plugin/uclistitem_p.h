@@ -43,14 +43,17 @@ public:
     void _q_updateColors();
     void _q_rebound();
     void _q_updateSize();
+    int index();
     void setPressed(bool pressed);
     void listenToRebind(bool listen);
     void resize();
     void update();
 
     bool pressed:1;
+    bool contentMoved:1;
     bool highlightColorChanged:1;
     bool ready:1;
+    qreal overshoot;
     QColor color;
     QColor highlightColor;
     QPointer<QQuickFlickable> flickable;
@@ -58,6 +61,10 @@ public:
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
+
+    // getter/setters
+    bool contentMoving() const;
+    void setContentMoving(bool moved);
 };
 
 class UCListItemDivider : public QObject
