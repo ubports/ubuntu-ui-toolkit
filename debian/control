@@ -43,7 +43,6 @@ Build-Depends: debhelper (>= 9.0.0),
                locales,
                suru-icon-theme,
                uuid-runtime,
-               accountsservice,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 # If you aren't a member of ~ubuntu-sdk-team but need to upload packaging
