@@ -822,13 +822,14 @@ void UCListItem::componentComplete()
         update();
     }
 
-    // toggle selection mode if has been set by a binding
-    if (d->selectable) {
-        d->setupSelectionMode();
-    }
     // get the selected state from the attached object
     if (d->attachedProperties) {
         setSelected(UCListItemAttachedPrivate::get(d->attachedProperties)->isItemSelected(this));
+    }
+    // toggle selection mode if has been set by a binding
+    if (d->selectable) {
+        d->setupSelectionMode();
+        update();
     }
 }
 
@@ -1316,6 +1317,8 @@ void UCListItem::setSelectable(bool selectable)
     d->selectable = selectable;
     // disable contentIten from handling events
     d->contentItem->setEnabled(!d->selectable);
+    // and finaly update visuals
+    update();
     Q_EMIT selectableChanged();
 }
 
@@ -1343,6 +1346,9 @@ void UCListItem::setSelected(bool selected)
         } else {
             UCListItemAttachedPrivate::get(d->attachedProperties)->removeSelectedItem(this);
         }
+    }
+    if (d->selectable) {
+        update();
     }
     Q_EMIT selectedChanged();
 }
