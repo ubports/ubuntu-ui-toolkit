@@ -245,7 +245,7 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
     def setUp(self):
         super(ListItemTestCase, self).setUp()
         self.test_listitem = self.main_view.select_single(
-            listitems.ListItem, objectName='listitem0')
+            'ListItem', objectName='listitem0')
         #self.test_listitem = self.main_view.select_single(
         #    'UCListItem', objectName='listitem0')
 
