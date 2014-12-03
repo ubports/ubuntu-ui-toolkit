@@ -1,3 +1,106 @@
+ubuntu-ui-toolkit (1.1.1347+15.04.20141126-0ubuntu1) vivid; urgency=medium
+
+  [ Zsombor Egri ]
+  * Expose refresh() function in revision 1 (Ubuntu.Components 1.1). 
+    Fixes LP: #1380559
+  * Alarm adaptation refactored to support change granular model 
+    updates. Fixes LP: #1322558, LP: #1360359, LP: #1370649, 
+    LP: #1380553
+  * Fix Header thin divider margins, restored to original no-margins. 
+    Fixes LP: #1380766.
+
+  [ Tim Peeters ]
+  * Add ensure_visible() function to header AP helper. 
+    Fixes LP: #1363591
+
+  [ Albert Astals Cid ] 
+  * Add context support for i18n.tr calls. This allows to have strings 
+    like "All" translated to two different strings in the translated 
+    language if different contexts are given. Fixes LP: #1394904
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 26 Nov 2014 08:33:25 +0000
+
+ubuntu-ui-toolkit (1.1.1341+15.04.20141124-0ubuntu1) vivid; urgency=medium
+
+  [ Christian Dywan ]
+  * Re-introduce NOTIFY to Image under a different name.
+   Fixes LP: #1395690 LP: #1395793
+
+  [ Florian Boucault ] 
+  * TextArea/TextField: make sure that the copy/paste popup is far
+    enough from the finger for it to be visible and legible. 
+    Fixes LP: #1384422
+
+  [ Zoltán Balogh ]
+  * Updated test plan executer script
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 24 Nov 2014 22:14:25 +0000
+
+ubuntu-ui-toolkit (1.1.1338+15.04.20141121-0ubuntu1) vivid; urgency=medium
+
+  [ Loïc Molinari ]
+  * [UbuntuShape] Added detailed doc for borderSource. Fixes LP: #1354753
+  * [Gallery] Fixed bad object naming. Fixes LP: #1240555
+  
+  [ Chris Gagnoni ]
+  * fix compare string in
+    ubuntuuitoolkit.tests.gallery.test_textinput.DisabledTextInputTestCase.
+    Fixes LP: #1388896
+
+  [ Christian Dywan ]
+  * autopilot package needs to depend on python-autopilot-trace.
+    Fixes LP: #1385326
+  * Check if pressed is a property before using its value.
+    Fixes LP: #1384376
+  * Fix toolkit gallery translation template.
+    Ignore expected warnings in unit tests. Fixes LP: #1272431
+  * Make it clear that ToolbarItems is deprecated.
+  * Always append QML2 import path regardless of QML2_IMPORT_PATH
+  * Depend on dbus to ensure /etc/machine-id exists.
+  * Allow manual execution of unit tests using Qt.Test.
+  * Autopilot package needs to depend on QtTest
+
+  [ Tim Peeters]
+  * Add color properties to PageHeadStyle.
+  * Fix the ItemSelector style for SuruDark and SuruGradient themes.
+    Fixes LP: #1389112
+  * Fix the panel colors for the tabs and actions overflow in the
+    header. Fixes LP: #1386208
+  * Fix the size of the highlight when clicking a section in the header
+    divider. Fixes LP: #1372932.
+  * Fix untranslated "In Progress" label. Fixes LP: #1391617
+  * Remove \preliminary tags and "under heavy development" text in
+    docs. Fixes LP: #1389119.
+  * Small fix in documentation for PageHeadConfiguration.
+  * Update the CheckBox style:
+      - Expose color and padding properties
+      - Make icon themable
+      - use theme icon by default
+      - Update default size.
+    Fixes LP: #1372582, LP: #1390440.
+  * Various tweaks to SwitchStyle:
+      - Scaling of icons when changing the size of the Switch,
+      - Smaller default Switch size, Use icons from theme,
+      - Make check/uncheck animation faster, Prevent animations on
+        width change (during initialization),
+      - Expose SwitchStyle in Themes.Ambience, Add all visualization
+        parameters as properties to SwitchStyle.
+    Fixes LP: #1211483, LP: #1332092, LP: #1368711, LP: #1372582,
+    LP: #1381008
+
+  [ Zoltán Balogh ]
+  * Use absolute path for the UITK Gallery icon. Fixes LP: #1304874
+
+  [ Zsombor Egri ]
+  * Fixing typo in the Label test case. Refactoring tests to use data
+    driven test. Fixes LP: #1076771.
+  * Ignore QT_IM_MODULE values like ibus, none or compose.
+    Fixes LP: #1382121.
+  * Remove overloaded signal, we should use the default signals
+    whenever we override a property. Fixes LP: #1194778.
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 21 Nov 2014 13:13:53 +0000
+
 ubuntu-ui-toolkit (1.1.1311+15.04.20141111-0ubuntu1) vivid; urgency=low
 
   [ Zsombor Egri ]
@@ -42,6 +145,32 @@ ubuntu-ui-toolkit (1.1.1311+15.04.20141102-0ubuntu1) vivid; urgency=medium
  
 
  -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sun, 02 Nov 2014 13:01:56 +0000
+
+ubuntu-ui-toolkit (1.1.1298+15.04.20141111.2~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+  [ Florian Boucault ]
+  * Many TextField/TextArea fixes improving user experience greatly and
+    making it more in line with the design:
+
+  [ Christian Dywan ]
+  * Update po/ubuntu-ui-toolkit.pot
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 11 Nov 2014 11:25:44 +0000
+
+ubuntu-ui-toolkit (1.1.1298+15.04.20141107.2~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ Florian Boucault ]
+  * TextField: make sure that a long press always works even when the
+    field is empty by ensuring the TextInput's size is set properly.
+    (LP: #1384403)
+
+  [ Christian Dywan ]
+  * Update po/ubuntu-ui-toolkit.pot
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 07 Nov 2014 12:35:11 +0000
 
 ubuntu-ui-toolkit (1.1.1298+14.10.20141030~rtm-0ubuntu1) 14.09; urgency=low
 

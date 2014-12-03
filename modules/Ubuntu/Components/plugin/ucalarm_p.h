@@ -22,6 +22,7 @@
 #include "ucalarm.h"
 #include "alarmmanager_p.h"
 #include <QtCore/QDateTime>
+#include <QtCore/QPointer>
 #include <QtQml/QQmlListProperty>
 
 class UCAlarmPrivate
@@ -29,17 +30,39 @@ class UCAlarmPrivate
     Q_DECLARE_PUBLIC(UCAlarm)
 public:
     UCAlarmPrivate(UCAlarm *qq);
-    ~UCAlarmPrivate();
+    virtual ~UCAlarmPrivate();
 
     static UCAlarmPrivate *get(const UCAlarm *alarm) {
-        return const_cast<UCAlarm*>(alarm)->d_func();
+        return const_cast<UCAlarm*>(alarm)->d_ptr.data();
     }
 
     void setDefaults();
 
-    UCAlarm* q_ptr;
-    AlarmRequest *request;
-    AlarmData rawData;
+    // adaptation API
+    virtual bool enabled() const = 0;
+    virtual bool setEnabled(bool enabled) = 0;
+    virtual QDateTime date() const = 0;
+    virtual bool setDate(const QDateTime &date) = 0;
+    virtual QString message() const = 0;
+    virtual bool setMessage(const QString &message) = 0;
+    virtual UCAlarm::AlarmType type() const = 0;
+    virtual bool setType(UCAlarm::AlarmType type) = 0;
+    virtual UCAlarm::DaysOfWeek daysOfWeek() const = 0;
+    virtual bool setDaysOfWeek(UCAlarm::DaysOfWeek days) = 0;
+    virtual QUrl sound() const = 0;
+    virtual bool setSound(const QUrl &sound) = 0;
+    virtual QVariant cookie() const = 0;
+    virtual UCAlarm::Error checkAlarm() = 0;
+
+    virtual void save() = 0;
+    virtual void cancel() = 0;
+    virtual void reset() = 0;
+    virtual void completeSave() = 0;
+    virtual void completeCancel() = 0;
+
+    // common privates
+    UCAlarm *q_ptr;
+    unsigned int changes;
     int error;
     UCAlarm::Status status;
 
@@ -49,12 +72,9 @@ public:
     static int firstDayOfWeek(UCAlarm::DaysOfWeek days);
     static int nextDayOfWeek(UCAlarm::DaysOfWeek days, int fromDay);
     static bool multipleDaysSet(UCAlarm::DaysOfWeek days);
-    UCAlarm::Error checkAlarm();
     UCAlarm::Error adjustDow();
     UCAlarm::Error checkOneTime();
     UCAlarm::Error checkRepeatingWeekly();
-
-    bool createRequest();
 
     // private slots
     void _q_syncStatus(int operation, int status, int error);

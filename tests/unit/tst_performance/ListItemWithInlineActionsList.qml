@@ -13,24 +13,29 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import QtQuick 2.2
 
-// This is the old DEPRECATED header separator, which is here for backwards compatibility.
-// The new header divider is in HeadDividerStyle.qml.
-Item {
-    id: separatorStyle
-    BorderImage {
-        id: separatorImage
-        anchors.fill: parent
-        source: styledItem.separatorSource
-    }
-    Image {
-        id: separatorBottom
-        anchors {
-            top: separatorImage.bottom
-            left: parent.left
-            right: parent.right
+import QtQuick 2.0
+import Ubuntu.Components 1.2
+
+Column {
+    width: 800
+    height: 600
+
+    Repeater {
+        model: 5000
+        ListItem {
+            trailingActions: ListItemActions {
+                actions: [
+                    Action {}
+                ]
+            }
+            leadingActions: ListItemActions {
+                actions: [
+                    Action {},
+                    Action {},
+                    Action {}
+                ]
+            }
         }
-        source: styledItem.separatorBottomSource
     }
 }
