@@ -26,7 +26,7 @@ _ARGS="-p -o -p $_XML,xunitxml -p -o -p -,txt"
 set +e
 
 function create_test_cmd {
-  _CMD="dbus-test-runner --task ./$_TARGET -n $_TESTFILE -m 30"
+  _CMD="dbus-test-runner --task ./$_TARGET -n $_TESTFILE -m 300"
   if [ "$_MINIMAL" = "minimal" ]; then
       _CMD="$_CMD -p -platform -p minimal"
   fi
