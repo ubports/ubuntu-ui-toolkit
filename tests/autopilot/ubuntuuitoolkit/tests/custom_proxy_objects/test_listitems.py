@@ -245,9 +245,7 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
     def setUp(self):
         super(ListItemTestCase, self).setUp()
         self.test_listitem = self.main_view.select_single(
-            'ListItem', objectName='listitem0')
-        #self.test_listitem = self.main_view.select_single(
-        #    'UCListItem', objectName='listitem0')
+            listitems.ListItem, objectName='listitem0')
 
     def test_trigger_delete(self):
         self.test_listitem.swipe_leading()
