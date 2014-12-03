@@ -1,3 +1,26 @@
+ubuntu-ui-toolkit (1.1.1298+15.04.20141203.1~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ Zoltán Balogh ]
+  * Many TextField/TextArea fixes improving user experience greatly and
+    making it more in line with the design: handle much easier to drag
+    by making its touch area 4 grid units wide and centered around the
+    cursor; double tapping anywhere (even around the handle) selects the
+    word and opens the contextual menu; long pressing anywhere (even
+    around the handle) selects the word and opens the contextual menu;
+    make sure that when there is a selection the contextual menu is
+    shown and shown above the cursor at the beginning of the selection;
+    do not prevent other UI elements from receiving mouse/touch events
+    when the contextual menu is shown
+  * Revert to 1124
+  * Fixed unit test
+    tst_components::tst_textinput_touch::test_longtap_when_empty: do not
+    cause a double tap before the long press.
+
+  [ Christian Dywan ]
+  * Don't subtract itemSpacing from column width (LP: #1387806)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 03 Dec 2014 13:12:49 +0000
+
 ubuntu-ui-toolkit (1.1.1298+15.04.20141111.2~rtm-0ubuntu1) 14.09; urgency=low
 
   [ Ubuntu daily release ]
