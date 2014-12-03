@@ -32,7 +32,7 @@
 
 const QString SETTINGS_FILE_FORMAT("%1/ubuntu-ui-toolkit/theme.ini");
 const QString THEME_KEY("theme");
-#define DEFAULT_THEME "Ubuntu.Components.Themes.Ambiance"
+const QString DEFAULT_THEME("Ubuntu.Components.Themes.Ambiance");
 
 UCThemeSettings::UCThemeSettings(QObject *parent) :
     QObject(parent),
@@ -40,7 +40,7 @@ UCThemeSettings::UCThemeSettings(QObject *parent) :
 {
     // fundamental features rely on the default theme, so bail out if it's absent
     if (UCTheme::pathFromThemeName(DEFAULT_THEME).isEmpty()) {
-        qFatal("Mandatory default theme \"" DEFAULT_THEME "\" missing!");
+        qWarning() << "Mandatory default theme" << DEFAULT_THEME << "missing!";
     }
 
     // check if there is a theme settings file, if not, create one
