@@ -22,18 +22,18 @@ _TARGET=$1
 _TESTFILE=$2
 _MINIMAL=$3
 _XML="../../test_$_TARGET_$_TESTFILE.xml"
-_ARGS="-o $_XML,xunitxml -o -,txt"
+_ARGS="-p -o -p $_XML,xunitxml -p -o -p -,txt"
 set +e
 
 function create_test_cmd {
-  _CMD="./$_TARGET"
+  _CMD="dbus-test-runner --task ./$_TARGET -n $_TESTFILE -m 300"
   if [ "$_MINIMAL" = "minimal" ]; then
-      _CMD="$_CMD -platform minimal"
+      _CMD="$_CMD -p -platform -p minimal"
   fi
   if [ $_TARGET != $_TESTFILE ]; then
-      _CMD="$_CMD -input $_TESTFILE"
+      _CMD="$_CMD -p -input -p $_TESTFILE"
   fi
-  _CMD="$_CMD -maxwarnings 40"
+  _CMD="$_CMD -p -maxwarnings -p 40"
 }
 
 function execute_test_cmd {
