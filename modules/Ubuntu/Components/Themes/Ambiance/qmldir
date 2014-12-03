@@ -54,3 +54,7 @@ internal TextSelectionStartCursorStyle TextSelectionStartCursorStyle.qml
 internal TextSelectionEndCursorStyle TextSelectionEndCursorStyle.qml
 internal OverflowPanel OverflowPanel.qml
 internal HeadDividerStyle HeadDividerStyle.qml
+
+#version 1.2
+ListItemPanel 1.2 ListItemPanel.qml
+ListItemStyle 1.2 ListItemStyle.qml
