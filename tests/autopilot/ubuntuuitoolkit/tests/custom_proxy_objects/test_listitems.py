@@ -234,3 +234,20 @@ class ExpandableTestCase(tests.QMLFileAppTestCase):
         # Replace the pointer with None, so we make sure it's not being called.
         with mock.patch.object(self.test_expandable, 'pointing_device', None):
             self.test_expandable.collapse()
+
+
+class ListItemTestCase(tests.QMLFileAppTestCase):
+    path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(path)
+    test_qml_file_path = os.path.join(
+        dir_path, 'test_listitems.ListItemTestCase.qml')
+
+    def setUp(self):
+        super(ListItemTestCase, self).setUp()
+        self.test_listitem = self.main_view.select_single(
+            listitems.ListItem, objectName='listitem0')
+        #self.test_listitem = self.main_view.select_single(
+        #    'UCListItem', objectName='listitem0')
+
+    def test_trigger_delete(self):
+        self.test_listitem.swipe_leading()

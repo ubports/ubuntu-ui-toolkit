@@ -37,6 +37,7 @@ __all__ = [
     'CheckBox',
     'ComposerSheet',
     'Empty',
+    'ListItem',
     'Header',
     'ItemSelector',
     'MainView',
@@ -82,7 +83,8 @@ from ubuntuuitoolkit._custom_proxy_objects.listitems import (
     SingleControl,
     SingleValue,
     Standard,
-    Subtitled
+    Subtitled,
+    ListItem
 )
 from ubuntuuitoolkit._custom_proxy_objects.popups import (
     TextInputPopover,
