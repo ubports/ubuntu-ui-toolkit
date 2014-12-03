@@ -102,7 +102,7 @@ ActionItem {
 
         onClicked: {
             if (button.__acceptEvents) {
-                pressEffect.start()
+                pressEffect.start();
                 button.clicked()
             }
         }
