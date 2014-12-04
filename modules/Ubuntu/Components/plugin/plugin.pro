@@ -67,9 +67,6 @@ HEADERS += plugin.h \
     ucactioncontext.h \
     ucactionmanager.h \
     adapters/actionsproxy_p.h \
-    adapters/dbuspropertywatcher_p.h \
-    ucserviceproperties.h \
-    ucserviceproperties_p.h \
     uclistitem.h \
     uclistitem_p.h \
     uclistitemactions.h \
@@ -112,8 +109,6 @@ SOURCES += plugin.cpp \
     ucactioncontext.cpp \
     ucactionmanager.cpp \
     adapters/actionsproxy_p.cpp \
-    adapters/dbuspropertywatcher_p.cpp \
-    ucserviceproperties.cpp \
     uclistitem.cpp \
     uclistitemactions.cpp \
     uclistitemactionsattached.cpp \

@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=customtheme
-Exec=qmlscene $@ main.qml
-Icon=customtheme.png
-Terminal=false
-Type=Application
-X-Ubuntu-Touch=true
-

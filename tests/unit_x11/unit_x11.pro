@@ -11,5 +11,4 @@ SUBDIRS += tst_components \
     tst_orientation \
     tst_layouts \
     tst_mousefilters \
-    tst_animator \
-    tst_serviceproperties
+    tst_animator
