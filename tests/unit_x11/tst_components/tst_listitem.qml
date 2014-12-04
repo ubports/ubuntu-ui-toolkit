@@ -72,6 +72,13 @@ Item {
             width: parent.width
         }
         ListItem {
+            id: highlightTest
+        }
+        ListItem {
+            id: clickedConnected
+            onClicked: {}
+        }
+        ListItem {
             id: testItem
             width: parent.width
             color: "blue"
@@ -210,11 +217,13 @@ Item {
         }
 
         function test_pressedChanged_on_click() {
+            pressedSpy.target = testItem;
             mousePress(testItem, testItem.width / 2, testItem.height / 2);
             pressedSpy.wait();
             mouseRelease(testItem, testItem.width / 2, testItem.height / 2);
         }
         function test_pressedChanged_on_tap() {
+            pressedSpy.target = testItem;
             TestExtras.touchPress(0, testItem, centerOf(testItem));
             pressedSpy.wait();
             TestExtras.touchRelease(0, testItem, centerOf(testItem));
@@ -571,8 +580,8 @@ Item {
             var item2 = findChild(listView, "listItem2");
             var item3 = findChild(listView, "listItem3");
             return [
-                // testItem is the child item @index 1 in the topmost Column.
-                {tag: "Standalone item, child index 1", item: testItem, result: 1},
+                // testItem is the child item @index 3 in the topmost Column.
+                {tag: "Standalone item, child index 3", item: testItem, result: 3},
                 {tag: "ListView, item index 0", item: item0, result: 0},
                 {tag: "ListView, item index 1", item: item1, result: 1},
                 {tag: "ListView, item index 2", item: item2, result: 2},
@@ -604,6 +613,25 @@ Item {
             compare(param[0], data.result, "Action parameter differs");
         }
 
+        function test_highlight_data() {
+            return [
+                {tag: "No actions", item: highlightTest, x: centerOf(highlightTest).x, y: centerOf(highlightTest).y, pressed: false},
+                {tag: "Leading/trailing actions", item: testItem, x: centerOf(testItem).x, y: centerOf(testItem).y, pressed: true},
+                {tag: "Active component content", item: controlItem, x: units.gu(1), y: units.gu(1), pressed: true},
+                {tag: "Center of active component content", item: controlItem, x: centerOf(controlItem).x, y: centerOf(controlItem).y, pressed: false},
+                {tag: "clicked() connected", item: clickedConnected, x: centerOf(clickedConnected).x, y: centerOf(clickedConnected).y, pressed: true},
+            ];
+        }
+        function test_highlight(data) {
+            pressedSpy.target = data.item;
+            mouseClick(data.item, data.x, data.y);
+            if (data.pressed) {
+                pressedSpy.wait();
+            } else {
+                compare(pressedSpy.count, 0, "Should not be pressed!");
+            }
+        }
+
         function test_toggle_selectable_data() {
             return [
                 {tag: "When not selected", selected: false},
@@ -630,7 +658,7 @@ Item {
                 {tag: "Click over contentItem", item: controlItem, clickOn: "ListItemHolder", offsetX: units.gu(0.5), offsetY: units.gu(0.5)},
                 {tag: "Click over control", item: controlItem, clickOn: "button_in_list", offsetX: units.gu(0.5), offsetY: units.gu(0.5)},
             ];
-        }
+         }
         function test_toggle_selected(data) {
             // make test item selectable first, so the panel is created
             data.item.selectable = true;

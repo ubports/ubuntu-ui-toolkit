@@ -28,8 +28,8 @@
  *
  * Actions can be used to define a specific task to be executed in different
  * contexts using different components. The same action can be assigned to
- * a \l Button, a \l Checkbox or even a \l TextField. The \l triggered signal
- * is emitted depending on the component. \l Button and \l CheckBox for instance
+ * a \l Button, a \b Checkbox or even a \l TextField. The \l triggered signal
+ * is emitted depending on the component. \l Button and \b CheckBox for instance
  * emits the signal when clicked, whereas \l TextField emits the signal when
  * its accepted signal is triggered.
  *

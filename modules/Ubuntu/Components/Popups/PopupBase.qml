@@ -66,11 +66,22 @@ OrientationHelper {
       PopupUtils.open() to do it automatically.
     */
     function show() {
-        if (!dismissArea)
-            dismissArea = stateWrapper.rootItem
+
+        if ((typeof popupBase["reparentToRootItem"]) === "boolean") {
+            // So the property exists. Let's use it then.
+            if (reparentToRootItem) {
+                parent = stateWrapper.rootItem;
+            }
+        } else {
+            // The property does not exist. Default is to reparent
+            parent = stateWrapper.rootItem;
+        }
+
+        if (!dismissArea) {
+            dismissArea = parent
+        }
 
         // Without setting the parent, mapFromItem() breaks in internalPopupUtils.
-        parent = stateWrapper.rootItem;
         stateWrapper.state = 'opened';
     }
 
@@ -238,7 +249,9 @@ OrientationHelper {
                     ScriptAction {
                         script: {
                             popupBase.visible = false;
-                            stateWrapper.restoreActiveFocus();
+                            if (eventGrabber.enabled) {
+                                stateWrapper.restoreActiveFocus();
+                            }
                         }
                     }
                 }

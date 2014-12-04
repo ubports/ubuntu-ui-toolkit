@@ -43,6 +43,7 @@ public:
         return that->d_func();
     }
 
+    bool isClickedConnected();
     void _q_updateThemedData();
     void _q_rebound();
     void promptRebound();
