@@ -18,7 +18,9 @@
  */
 
 #include "ucthemesettings.h"
+#include "uctheme.h"
 
+#include <QDebug>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QStandardPaths>
@@ -36,8 +38,10 @@ UCThemeSettings::UCThemeSettings(QObject *parent) :
     QObject(parent),
     m_settings(SETTINGS_FILE_FORMAT.arg(QStandardPaths::writableLocation(QStandardPaths::ConfigLocation)), QSettings::IniFormat)
 {
-    // fundamental features rely on the default theme, so abort if it's absent
-    Q_ASSERT (QFile(pathFromThemeName(DEFAULT_THEME)).exists());
+    // fundamental features rely on the default theme, so bail out if it's absent
+    if (UCTheme::pathFromThemeName(DEFAULT_THEME).isEmpty()) {
+        qWarning() << "Mandatory default theme" << DEFAULT_THEME << "missing!";
+    }
 
     // check if there is a theme settings file, if not, create one
     if (!QFile::exists(m_settings.fileName())) {
