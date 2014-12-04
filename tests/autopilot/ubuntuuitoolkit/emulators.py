@@ -37,7 +37,7 @@ __all__ = [
     'CheckBox',
     'ComposerSheet',
     'Empty',
-    'ListItem',
+    'UCListItem',
     'Header',
     'ItemSelector',
     'MainView',
@@ -64,6 +64,7 @@ from ubuntuuitoolkit._custom_proxy_objects import (
     get_pointing_device,
     CheckBox,
     Header,
+    UCListItem,
     MainView,
     OptionSelector,
     QQuickFlickable,
@@ -83,8 +84,7 @@ from ubuntuuitoolkit._custom_proxy_objects.listitems import (
     SingleControl,
     SingleValue,
     Standard,
-    Subtitled,
-    ListItem
+    Subtitled
 )
 from ubuntuuitoolkit._custom_proxy_objects.popups import (
     TextInputPopover,

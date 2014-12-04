@@ -25,6 +25,7 @@ __all__ = [
     'get_pointing_device',
     'Header',
     'listitems',
+    'UCListItem',
     'MainView',
     'OptionSelector',
     'pickers',
@@ -56,6 +57,9 @@ from ubuntuuitoolkit._custom_proxy_objects._header import (
     Header,
 )
 from ubuntuuitoolkit._custom_proxy_objects import listitems
+from ubuntuuitoolkit._custom_proxy_objects._uclistitem import (
+    UCListItem
+)
 from ubuntuuitoolkit._custom_proxy_objects._mainview import MainView
 from ubuntuuitoolkit._custom_proxy_objects._optionselector import (
     OptionSelector

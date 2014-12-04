@@ -24,11 +24,18 @@ MainView {
     // make sure we're not messed up by the deprecated toolbar
     useDeprecatedToolbar: false
 
-    property string triggeredAction
+    Label {
+        id: triggeredAction
+        height: paintedHeight
+        objectName: "triggeredAction"
+    }
 
     ListView {
         id: listView
-        anchors.fill: parent
+        anchors {
+            fill: parent
+            topMargin: triggeredAction.height
+        }
         model: 25
         delegate: ListItem {
             objectName: "listitem" + index
@@ -36,7 +43,8 @@ MainView {
                 actions: [
                     Action {
                         iconName: "delete"
-                        onTriggered: triggeredAction = iconName;
+                        objectName: 'delete_action'
+                        onTriggered: triggeredAction.text = objectName;
                     }
                 ]
             }
@@ -44,15 +52,18 @@ MainView {
                 actions: [
                     Action {
                         iconName: "search"
-                        onTriggered: triggeredAction = iconName;
+                        objectName: 'search_action'
+                        onTriggered: triggeredAction.text = objectName;
                     },
                     Action {
                         iconName: "edit"
-                        onTriggered: triggeredAction = iconName;
+                        objectName: 'edit_action'
+                        onTriggered: triggeredAction.text = objectName;
                     },
                     Action {
                         iconName: "email"
-                        onTriggered: triggeredAction = iconName;
+                        objectName: 'email_action'
+                        onTriggered: triggeredAction.text = objectName;
                     }
                 ]
             }
