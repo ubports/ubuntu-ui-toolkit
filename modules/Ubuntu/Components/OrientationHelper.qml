@@ -120,8 +120,14 @@ Item {
     Item {
         id: d
 
-        property real fullHeight: d.flipDimensions ? orientationHelper.parent.width
-                                                   : orientationHelper.parent.height
+        property real fullHeight: {
+            if (orientationHelper.parent) {
+                return d.flipDimensions ? orientationHelper.parent.width
+                                        : orientationHelper.parent.height;
+            } else {
+                return 0;
+            }
+        }
 
         /*!
           'window' is defined by QML between startup and showing on the screen.
