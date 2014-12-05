@@ -28,25 +28,30 @@ class UCListItem(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """Base class to emulate swipe for leading and trailing actions."""
 
     @autopilot_logging.log_action(logger.info)
-    def _swipe_content(self, direction):
+    def _swipe_in_panel(self, panel_item):
+        """ Swipe in panel (leading/trailing)"""
         x, y, width, height = self.globalRect
-        if direction == 'right':
+        if panel_item == 'leading':
             start_x = x + (width * 0.2)
             stop_x = x + (width * 0.8)
-        else:
+        elif panel_item == 'trailing':
             start_x = x + (width * 0.8)
             stop_x = x + (width * 0.2)
+        else:
+            raise _common.ToolkitException(
+                'No {0} panel found in a ListItem'.format(panel_item))
         start_y = stop_y = y + (height // 2)
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
 
-    def _click_on_panel_action(self, swipe_direction, action_object):
-        self._swipe_content(swipe_direction)
+    def _click_on_panel_action(self, panel_item, action_object):
+        self._swipe_in_panel(panel_item)
         try:
             button_name = 'actionbutton_' + action_object
             action_button = self.select_single(objectName=button_name)
         except dbus.StateNotFound:
             raise _common.ToolkitException(
-                'The requested action not found on leading side')
+                'The requested action not found on {0} side'.
+                format(panel_item))
 
         self.pointing_device.click_object(action_button)
         # wait for the animation to finish, contentItem must be 0
@@ -54,11 +59,21 @@ class UCListItem(_common.UbuntuUIToolkitCustomProxyObjectBase):
         contentItem.x.wait_for(0)
 
     @autopilot_logging.log_action(logger.info)
-    def click_leading_action(self, action_objectName):
-        """Swipe the item in from left to right to open leading actions."""
-        self._click_on_panel_action('right', action_objectName)
+    def trigger_leading_action(self, action_objectName):
+        """Swipe the item in from left to right to open leading actions
+           and click on the button representing the requested action.
+
+           parameters: action_objectName - object name of the action to be
+                       triggered.
+        """
+        self._click_on_panel_action('leading', action_objectName)
 
     @autopilot_logging.log_action(logger.info)
-    def click_trailing_action(self, action_objectName):
-        """Swipe the item in from right to left to open trailing actions."""
-        self._click_on_panel_action('left', action_objectName)
+    def trigger_trailing_action(self, action_objectName):
+        """Swipe the item in from right to left to open trailing actions
+           and click on the button representing the requested action.
+
+           parameters: action_objectName - object name of the action to be
+                       triggered.
+        """
+        self._click_on_panel_action('trailing', action_objectName)
