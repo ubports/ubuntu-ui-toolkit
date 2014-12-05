@@ -581,7 +581,7 @@ void UCListItemPrivate::setPressed(bool pressed)
         suppressClick = false;
         Q_Q(UCListItem);
         q->update();
-        if (pressed) {
+        if (pressed && !selectable) {
             // start pressandhold timer
             pressAndHoldTimer.start(QGuiApplication::styleHints()->mousePressAndHoldInterval(), q);
         } else {

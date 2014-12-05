@@ -744,5 +744,27 @@ Item {
             flick(testItem, centerOf(testItem).x, centerOf(testItem).y, units.gu(10), 0);
             compare(movingSpy.count, 0, "No tug allowed when in selection mode");
         }
+
+        function test_no_click_when_selectable() {
+            testItem.selectable = true;
+            // wait till animation to selection mode ends
+            waitForRendering(testItem.contentItem);
+
+            clickSpy.target = testItem;
+            mouseClick(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            compare(clickSpy.count, 0);
+        }
+
+        function test_no_pressandhold_when_selectable() {
+            testItem.selectable = true;
+            // wait till animation to selection mode ends
+            waitForRendering(testItem.contentItem);
+
+            pressAndHoldSpy.target = testItem;
+            mouseLongPress(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            compare(pressAndHoldSpy.count, 0);
+
+            mouseRelease(testItem, centerOf(testItem).x, centerOf(testItem).y);
+        }
     }
 }
