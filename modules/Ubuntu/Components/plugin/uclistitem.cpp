@@ -28,6 +28,9 @@
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
+#include <QtQuick/private/qquickmousearea_p.h>
+#include <QtGui/QGuiApplication>
+#include <QtGui/QStyleHints>
 #include <QtQuick/private/qquickanimation_p.h>
 #include <QtQuick/private/qquickmousearea_p.h>
 #include "uclistitemstyle.h"
@@ -389,6 +392,14 @@ bool UCListItemPrivate::isClickedConnected()
     return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
 }
 
+bool UCListItemPrivate::isPressAndHoldConnected()
+{
+    Q_Q(UCListItem);
+    static QMetaMethod method = QMetaMethod::fromSignal(&UCListItem::pressAndHold);
+    static int signalIdx = QMetaObjectPrivate::signalIndex(method);
+    return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
+}
+
 void UCListItemPrivate::_q_updateThemedData()
 {
     // update colors, panels
@@ -550,7 +561,8 @@ bool UCListItemPrivate::canHighlight(QMouseEvent *event)
    // action, leading or trailing actions list or at least an active child component declared
    QQuickMouseArea *ma = q->findChild<QQuickMouseArea*>();
    bool activeMouseArea = ma && ma->isEnabled();
-   return !activeComponent && (isClickedConnected() || leadingActions || trailingActions || activeMouseArea);
+   return !activeComponent && (isClickedConnected() || isPressAndHoldConnected() ||
+                               leadingActions || trailingActions || activeMouseArea);
 }
 
 // set pressed flag and update contentItem
@@ -561,6 +573,12 @@ void UCListItemPrivate::setPressed(bool pressed)
         suppressClick = false;
         Q_Q(UCListItem);
         q->update();
+        if (pressed) {
+            // start pressandhold timer
+            pressAndHoldTimer.start(QGuiApplication::styleHints()->mousePressAndHoldInterval(), q);
+        } else {
+            pressAndHoldTimer.stop();
+        }
         Q_EMIT q->pressedChanged();
     }
 }
@@ -782,11 +800,23 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
 
 /*!
  * \qmlsignal ListItem::clicked()
- *
  * The signal is emitted when the component gets released while the \l pressed property
  * is set. The signal is not emitted if the ListItem content is swiped or when used in
  * Flickable (or ListView, GridView) and the Flickable gets moved.
+ *
+ * If the ListItem contains a component which contains a MouseArea, the clicked
+ * signal will be supressed.
  */
+
+/*!
+ * \qmlsignal ListItem::pressAndHold()
+ * The signal is emitted when the list item is long pressed. When a slot is connected,
+ * no \l clicked signal will be emitted, similarly to MouseArea's pressAndHold.
+ *
+ * If the ListItem contains a component which contains a MouseArea, the pressAndHold
+ * signal will be supressed.
+ */
+
 UCListItem::UCListItem(QQuickItem *parent)
     : UCStyledItemBase(*(new UCListItemPrivate), parent)
 {
@@ -1000,6 +1030,8 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         d->lastPos = event->localPos();
 
         if (dx) {
+            // stop pressAndHold timer as we started to drag
+            d->pressAndHoldTimer.stop();
             d->setContentMoving(true);
             // clamp X into allowed dragging area
             d->clampAndMoveX(x, dx);
@@ -1071,6 +1103,20 @@ bool UCListItem::eventFilter(QObject *target, QEvent *event)
         event->accept();
     }
     return UCStyledItemBase::eventFilter(target, event);
+}
+
+void UCListItem::timerEvent(QTimerEvent *event)
+{
+    Q_D(UCListItem);
+    if (event->timerId() == d->pressAndHoldTimer.timerId()) {
+        d->pressAndHoldTimer.stop();
+        if (isEnabled() && d->isPressAndHoldConnected()) {
+            d->suppressClick = true;
+            Q_EMIT pressAndHold();
+        }
+    } else {
+        QQuickItem::timerEvent(event);
+    }
 }
 
 /*!
