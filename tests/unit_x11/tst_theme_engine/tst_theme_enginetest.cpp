@@ -21,6 +21,7 @@
 #include <QtQml/QQmlComponent>
 #include "uctheme.h"
 #include "uctestcase.h"
+#include <private/qquicktext_p.h>
 
 Q_DECLARE_METATYPE(QList<QQmlError>)
 
@@ -43,6 +44,7 @@ private Q_SLOTS:
     void testThemesRelativePathWithParentXDGDATA();
     void testThemesRelativePathWithParentNoVariablesSet();
     void testThemesRelativePathWithParentOneXDGPathSet();
+    void testAppTheme();
     void testNoImportPathSet();
     void testBogusImportPathSet();
     void testMultipleImportPathsSet();
@@ -193,7 +195,18 @@ void tst_UCTheme::testThemesRelativePathWithParentOneXDGPathSet()
     QQmlComponent* component = theme.createStyleComponent("TestStyle.qml", parent);
 
     QCOMPARE(component != NULL, true);
-    QCOMPARE(component->status(), QQmlComponent::Ready);}
+    QCOMPARE(component->status(), QQmlComponent::Ready);
+}
+
+void tst_UCTheme::testAppTheme()
+{
+    QScopedPointer<UbuntuTestCase> test(new UbuntuTestCase("TestApp.qml"));
+    QColor backgroundColor = test->rootObject()->property("backgroundColor").value<QColor>();
+    QCOMPARE(backgroundColor, QColor("#A21E1C"));
+    QQuickText *label = test->findItem<QQuickText*>("test_label");
+    QVERIFY(label);
+    QCOMPARE(label->color(), QColor("lightblue"));
+}
 
 void tst_UCTheme::testNoImportPathSet()
 {
