@@ -21,6 +21,7 @@ except ImportError:
 
 import logging
 import os
+from time import sleep
 
 import fixtures
 import testtools
@@ -91,3 +92,16 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
                 'this_action_does_not_exist action triggered')
         except:
             pass
+
+    def test_select_items(self):
+        # Long press to select a word
+        # FIXME: input.Mouse doesn't support long press
+        # press_duration doesn't work here
+        # self.pointing_device.click(press_duration=2.0)
+        self.pointing_device.click_object(self.test_listitem)
+        self.pointing_device.press()
+        sleep(2)
+        self.pointing_device.release()
+        self.assertTrue(self.test_listitem.selectable)
+        self.test_listitem.toggle_selected()
+        self.assertTrue(self.test_listitem.selected)
