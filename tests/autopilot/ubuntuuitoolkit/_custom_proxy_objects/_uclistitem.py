@@ -43,40 +43,47 @@ class UCListItem(_common.UbuntuUIToolkitCustomProxyObjectBase):
         start_y = stop_y = y + (height // 2)
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
 
-    def _click_on_panel_action(self, panel_item, action_object):
+    def _click_on_panel_action(self, panel_item, action_object, wait_function):
         self._swipe_in_panel(panel_item)
         try:
             button_name = 'actionbutton_' + action_object
             action_button = self.select_single(objectName=button_name)
-        except dbus.StateNotFound:
+        except:
             raise _common.ToolkitException(
                 'The requested action not found on {0} side'.
                 format(panel_item))
 
         self.pointing_device.click_object(action_button)
-        # wait for the animation to finish, contentItem must be 0
-        contentItem = self.select_single(objectName='ListItemHolder')
-        contentItem.x.wait_for(0)
+        if wait_function is None:
+            # wait for the animation to finish
+            contentItem = self.select_single(objectName='ListItemHolder')
+            contentItem.x.wait_for(0)
+        else:
+            wait_function()
 
     @autopilot_logging.log_action(logger.info)
-    def trigger_leading_action(self, action_objectName):
+    def trigger_leading_action(self, action_objectName, wait_function=None):
         """Swipe the item in from left to right to open leading actions
            and click on the button representing the requested action.
 
            parameters: action_objectName - object name of the action to be
                        triggered.
+                       wait_function - a custom wait function to wait till the
+                       action is triggered
         """
-        self._click_on_panel_action('leading', action_objectName)
+        self._click_on_panel_action('leading', action_objectName, wait_function)
 
     @autopilot_logging.log_action(logger.info)
-    def trigger_trailing_action(self, action_objectName):
+    def trigger_trailing_action(self, action_objectName, wait_function=None):
         """Swipe the item in from right to left to open trailing actions
            and click on the button representing the requested action.
 
            parameters: action_objectName - object name of the action to be
                        triggered.
+                       wait_function - a custom wait function to wait till the
+                       action is triggered
         """
-        self._click_on_panel_action('trailing', action_objectName)
+        self._click_on_panel_action('trailing', action_objectName, wait_function)
 
     @autopilot_logging.log_action(logger.info)
     def toggle_selected(self):

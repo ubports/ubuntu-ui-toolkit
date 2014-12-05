@@ -28,7 +28,7 @@ import testtools
 from testtools.matchers import Contains
 
 import ubuntuuitoolkit
-from ubuntuuitoolkit import listitems, tests
+from ubuntuuitoolkit import tests
 
 
 class ListItemTestCase(tests.QMLFileAppTestCase):
@@ -74,24 +74,23 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
         self.test_listitem.trigger_trailing_action('email_action')
         self.assertEqual(self.test_page.title, 'email_action action triggered')
 
-
     def test_trigger_nonexistent_leading_action(self):
-        try:
-            self.test_listitem.trigger_leading_action(
-                'this_action_does_not_exist')
-            self.assertEqual(self.test_page.title,
-                'this_action_does_not_exist action triggered')
-        except:
-            pass
+        error = self.assertRaises(
+           ubuntuuitoolkit.ToolkitException,
+           self.test_listitem.trigger_leading_action,
+           ('this_action_does_not_exist'))
+        self.assertEqual(
+            str(error),
+           'The requested action not found on leading side')
 
     def test_trigger_nonexistent_trailing_action(self):
-        try:
-            self.test_listitem.trigger_trailing_action(
-                'this_action_does_not_exist')
-            self.assertEqual(self.test_page.title,
-                'this_action_does_not_exist action triggered')
-        except:
-            pass
+        error = self.assertRaises(
+           ubuntuuitoolkit.ToolkitException,
+           self.test_listitem.trigger_trailing_action,
+           'this_action_does_not_exist')
+        self.assertEqual(
+            str(error),
+           'The requested action not found on trailing side')
 
     def test_select_items(self):
         # Long press to select a word
