@@ -34,32 +34,60 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
     path = os.path.abspath(__file__)
     dir_path = os.path.dirname(path)
     test_qml_file_path = os.path.join(
-        dir_path, 'test_listitems.ListItemTestCase.qml')
+        dir_path, 'test_listitem.ListItemTestCase.qml')
 
     def setUp(self):
         super(ListItemTestCase, self).setUp()
         self.test_listitem = self.main_view.select_single(
             'UCListItem', objectName='listitem0')
-        self.test_label = self.main_view.select_single(
-            'Label', objectName='triggeredAction')
-        self.assertEqual(self.test_label.text, '')
+        self.test_page = self.main_view.select_single(
+            objectName='test_page')
+        self.assertEqual(self.test_page.title, 'No action triggered')
 
     def test_trigger_delete(self):
-        self.test_listitem.click_leading_action('delete_action')
-        # check whether action is reported in the triggeredAction
-        self.assertEqual(self.test_label.text, 'delete_action')
+        self.test_listitem.trigger_leading_action('delete_action')
+        self.assertEqual(self.test_page.title, 'delete_action action triggered')
 
     def test_trigger_search(self):
-        self.test_listitem.click_trailing_action('search_action')
-        # check whether action is reported in the triggeredAction
-        self.assertEqual(self.test_label.text, 'search_action')
+        self.test_listitem.trigger_trailing_action('search_action')
+        self.assertEqual(self.test_page.title, 'search_action action triggered')
 
     def test_trigger_edit(self):
-        self.test_listitem.click_trailing_action('edit_action')
-        # check whether action is reported in the triggeredAction
-        self.assertEqual(self.test_label.text, 'edit_action')
+        self.test_listitem.trigger_trailing_action('edit_action')
+        self.assertEqual(self.test_page.title, 'edit_action action triggered')
 
     def test_trigger_email(self):
-        self.test_listitem.click_trailing_action('email_action')
-        # check whether action is reported in the triggeredAction
-        self.assertEqual(self.test_label.text, 'email_action')
+        self.test_listitem.trigger_trailing_action('email_action')
+        self.assertEqual(self.test_page.title, 'email_action action triggered')
+
+    def test_trigger_all_actions(self):
+        self.test_listitem.trigger_leading_action('delete_action')
+        self.assertEqual(self.test_page.title, 'delete_action action triggered')
+
+        self.test_listitem.trigger_trailing_action('search_action')
+        self.assertEqual(self.test_page.title, 'search_action action triggered')
+
+        self.test_listitem.trigger_trailing_action('edit_action')
+        self.assertEqual(self.test_page.title, 'edit_action action triggered')
+
+        self.test_listitem.trigger_trailing_action('email_action')
+        self.assertEqual(self.test_page.title, 'email_action action triggered')
+
+
+    def test_trigger_nonexistent_leading_action(self):
+        try:
+            self.test_listitem.trigger_leading_action(
+                'this_action_does_not_exist')
+            self.assertEqual(self.test_page.title,
+                'this_action_does_not_exist action triggered')
+        except:
+            pass
+
+    def test_trigger_nonexistent_trailing_action(self):
+        try:
+            self.test_listitem.trigger_trailing_action(
+                'this_action_does_not_exist')
+            self.assertEqual(self.test_page.title,
+                'this_action_does_not_exist action triggered')
+        except:
+            pass
