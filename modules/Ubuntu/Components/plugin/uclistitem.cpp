@@ -675,9 +675,9 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * properties. The list item is highlighted if there is an action attached to it.
  * This means that the list item must have an active component declared as child,
  * at least leading- or trailing actions specified, or to have a slot connected to
- * \l clicked signal. In any other case the component will not be highlighted, and
- * \l pressed property will not be toggled either. Also, there will be no highlight
- * happening if the click happens on the active component.
+ * \l clicked or \l pressAndHold signal. In any other case the component will not
+ * be highlighted, and \l pressed property will not be toggled either. Also, there
+ * will be no highlight happening if the click happens on the active component.
  * \qml
  * import QtQuick 2.3
  * import Ubuntu.Components 1.2
@@ -719,6 +719,12 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  *                text: "onClicked implemented"
  *            }
  *            onClicked: console.log("clicked on ListItem with onClicked implemented")
+ *        }
+ *        ListItem {
+ *            Label {
+ *                text: "onPressAndHold implemented"
+ *            }
+ *            onPressAndHold: console.log("clicked on ListItem with onPressAndHold implemented")
  *        }
  *        ListItem {
  *            Label {
