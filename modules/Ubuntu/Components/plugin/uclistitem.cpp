@@ -28,7 +28,6 @@
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
-#include <QtQuick/private/qquickmousearea_p.h>
 #include <QtGui/QGuiApplication>
 #include <QtGui/QStyleHints>
 #include <QtQuick/private/qquickanimation_p.h>
