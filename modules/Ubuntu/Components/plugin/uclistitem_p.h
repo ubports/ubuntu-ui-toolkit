@@ -20,6 +20,7 @@
 #include "uclistitem.h"
 #include "ucstyleditembase_p.h"
 #include <QtCore/QPointer>
+#include <QtCore/QBasicTimer>
 #include <QtQuick/private/qquickrectangle_p.h>
 
 class QQuickFlickable;
@@ -44,6 +45,7 @@ public:
     }
 
     bool isClickedConnected();
+    bool isPressAndHoldConnected();
     void _q_updateThemedData();
     void _q_rebound();
     void promptRebound();
@@ -75,6 +77,7 @@ public:
     bool customOvershoot:1;
     qreal xAxisMoveThresholdGU;
     qreal overshoot;
+    QBasicTimer pressAndHoldTimer;
     QPointF lastPos;
     QPointF pressedPos;
     QColor color;
