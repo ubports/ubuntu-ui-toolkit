@@ -157,6 +157,7 @@ Item {
                         // use action's objectName to identify the visualized action
                         if (item && item.objectName === "") {
                             item.objectName = modelData.objectName;
+                            actionButton.objectName = "actionbutton_" + modelData.objectName
                         }
                     }
                 }

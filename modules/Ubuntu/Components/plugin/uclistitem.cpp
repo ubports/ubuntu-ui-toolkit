@@ -379,6 +379,16 @@ void UCListItemPrivate::init()
     _q_updateSize();
 }
 
+// inspired from IS_SIGNAL_CONNECTED(q, UCListItem, pressAndHold, ())
+// the macro cannot be used due to Arguments cannot be an empty ()
+bool UCListItemPrivate::isClickedConnected()
+{
+    Q_Q(UCListItem);
+    static QMetaMethod method = QMetaMethod::fromSignal(&UCListItem::clicked);
+    static int signalIdx = QMetaObjectPrivate::signalIndex(method);
+    return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
+}
+
 void UCListItemPrivate::_q_updateThemedData()
 {
     // update colors, panels
@@ -540,7 +550,7 @@ bool UCListItemPrivate::canHighlight(QMouseEvent *event)
    // action, leading or trailing actions list or at least an active child component declared
    QQuickMouseArea *ma = q->findChild<QQuickMouseArea*>();
    bool activeMouseArea = ma && ma->isEnabled();
-   return !activeComponent && (leadingActions || trailingActions || activeMouseArea);
+   return !activeComponent && (isClickedConnected() || leadingActions || trailingActions || activeMouseArea);
 }
 
 // set pressed flag and update contentItem
@@ -644,7 +654,62 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  *
  * The component provides two color properties which configures the item's background
  * when normal or pressed. This can be configured through \l color and \l highlightColor
- * properties.
+ * properties. The list item is highlighted if there is an action attached to it.
+ * This means that the list item must have an active component declared as child,
+ * at least leading- or trailing actions specified, or to have a slot connected to
+ * \l clicked signal. In any other case the component will not be highlighted, and
+ * \l pressed property will not be toggled either. Also, there will be no highlight
+ * happening if the click happens on the active component.
+ * \qml
+ * import QtQuick 2.3
+ * import Ubuntu.Components 1.2
+ *
+ * MainView {
+ *    width: units.gu(40)
+ *    height: units.gu(71)
+ *
+ *    Column {
+ *        anchors.fill: parent
+ *        ListItem {
+ *            Button {
+ *                text: "Press me"
+ *            }
+ *            onClicked: console.log("clicked on ListItem")
+ *        }
+ *        ListItem {
+ *            leadingActions: ListItemActions {
+ *                actions: [
+ *                    Action {
+ *                        iconName: "delete"
+ *                    }
+ *                ]
+ *            }
+ *            onClicked: console.log("clicked on ListItem with leadingActions set")
+ *        }
+ *        ListItem {
+ *            trailingActions: ListItemActions {
+ *                actions: [
+ *                    Action {
+ *                        iconName: "edit"
+ *                    }
+ *                ]
+ *            }
+ *            onClicked: console.log("clicked on ListItem with trailingActions set")
+ *        }
+ *        ListItem {
+ *            Label {
+ *                text: "onClicked implemented"
+ *            }
+ *            onClicked: console.log("clicked on ListItem with onClicked implemented")
+ *        }
+ *        ListItem {
+ *            Label {
+ *                text: "No highlight"
+ *            }
+ *        }
+ *    }
+ * }
+ * \endqml
  *
  * \c contentItem holds all components and resources declared as child to ListItem.
  * Being an Item, all properties can be accessed or altered. However, make sure you
