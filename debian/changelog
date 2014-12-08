@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.1.1364+15.04.20141126-0ubuntu2) vivid; urgency=medium
+ubuntu-ui-toolkit (1.1.1364+15.04.20141126-0ubuntu2) UNRELEASED; urgency=medium
 
   [ Zsombor Egri ]
   * Theming fixes: application theming, binding loop fix, auto-theming 
