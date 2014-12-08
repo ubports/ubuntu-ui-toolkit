@@ -17,12 +17,11 @@
 import logging
 
 from autopilot import logging as autopilot_logging
-from autopilot.introspection import dbus
-
 from ubuntuuitoolkit._custom_proxy_objects import _common
 
 
 logger = logging.getLogger(__name__)
+
 
 class UCListItem(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """Base class to emulate swipe for leading and trailing actions."""
@@ -71,7 +70,8 @@ class UCListItem(_common.UbuntuUIToolkitCustomProxyObjectBase):
                        wait_function - a custom wait function to wait till the
                        action is triggered
         """
-        self._click_on_panel_action('leading', action_objectName, wait_function)
+        self._click_on_panel_action('leading', action_objectName,
+                                    wait_function)
 
     @autopilot_logging.log_action(logger.info)
     def trigger_trailing_action(self, action_objectName, wait_function=None):
@@ -83,7 +83,8 @@ class UCListItem(_common.UbuntuUIToolkitCustomProxyObjectBase):
                        wait_function - a custom wait function to wait till the
                        action is triggered
         """
-        self._click_on_panel_action('trailing', action_objectName, wait_function)
+        self._click_on_panel_action('trailing', action_objectName,
+                                    wait_function)
 
     @autopilot_logging.log_action(logger.info)
     def toggle_selected(self):
