@@ -28,7 +28,7 @@ Palette {
         foregroundText: "#FFFFFF"
         overlay: "#FDFDFD"
         overlayText: UbuntuColors.lightGrey
-        field: "#1A000000"
+        field: "#FAFAFA"
         fieldText: UbuntuColors.darkGrey
     }
     selected: PaletteValues {
