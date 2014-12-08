@@ -47,6 +47,8 @@ public:
     bool isClickedConnected();
     bool isPressAndHoldConnected();
     void _q_updateThemedData();
+    bool isSelectable();
+    void _q_selectableUpdated();
     void _q_rebound();
     void promptRebound();
     void _q_updateSize();
@@ -70,7 +72,6 @@ public:
     bool swiped:1;
     bool suppressClick:1;
     bool ready:1;
-    bool selectable:1;
     bool selected:1;
     bool customStyle:1;
     bool customColor:1;
@@ -120,7 +121,7 @@ public:
 
     static UCListItemAttachedPrivate *get(UCListItemAttached *item)
     {
-        return item->d_func();
+        return item ? item->d_func() : 0;
     }
 
     void clearFlickablesList();
@@ -132,12 +133,21 @@ public:
     bool isItemSelected(UCListItem *item);
 
     UCListItemAttached *q_ptr;
-    bool globalDisabled;
-    QList<int> indexList;
+    bool globalDisabled:1;
+    bool selectable:1;
+    QList<int> selectedList;
     QList< QPointer<QQuickFlickable> > flickables;
     QList< PropertyChange* > changes;
     QPointer<UCListItem> boundItem;
     QPointer<UCListItem> disablerItem;
+
+    // getter/setter
+    bool isSelectable() const;
+    void setSelectable(bool value);
+    QList<int> selectedIndexes() const;
+    void setSelectedIndexes(const QList<int> &list);
+    bool singleSelect() const;
+    void setSingleSelect(bool value);
 };
 
 class UCListItemDivider : public QObject

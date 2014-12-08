@@ -36,11 +36,13 @@ Styles.ListItemStyle {
     // the selection/multiselection panel
     selectionDelegate: Item {
         id: selectionPanel
+        objectName: "selection_panel"
         width: checkbox.width + 2 * units.gu(2)
+
         /*
-          Set if the ListItem is in selection mode
+          Set if the ListItem is selected
           */
-        readonly property bool inSelectionMode: parent ? parent.selectable : false
+        readonly property bool selected: parent ? parent.selected : false
 
         /*
           Internally used to link to the list item's content. The parent item is the ListItem itself.
@@ -80,12 +82,14 @@ Styles.ListItemStyle {
             // for unit and autopilot tests
             objectName: "listitem_select"
             anchors.centerIn: parent
-            checked: selectionPanel.parent ? selectionPanel.parent.selected : false
+            // for the initial value
+            checked: selectionPanel.selected
             onCheckedChanged: {
                 if (selectionPanel.parent) {
                     selectionPanel.parent.selected = checked;
                 }
             }
         }
+        onSelectedChanged: checkbox.checked = selected
     }
 }

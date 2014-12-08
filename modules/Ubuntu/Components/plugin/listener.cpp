@@ -16,17 +16,40 @@
 
 #include "listener.h"
 
-#include <QQmlContext>
+#include <QtQml/QQmlContext>
+#include <QtQml>
+#include <QtQml/QQmlProperty>
 
 ContextPropertyChangeListener::ContextPropertyChangeListener(QQmlContext *context, const QString &contextProperty) :
     QObject(context),
     m_context(context),
-    m_contextProperty(contextProperty)
+    m_contextProperty(contextProperty),
+    m_sender(0),
+    m_property(0)
 {
+}
+
+ContextPropertyChangeListener::~ContextPropertyChangeListener()
+{
+    delete m_property;
+}
+
+void ContextPropertyChangeListener::setUpdaterProperty(QObject *sender, const char *property)
+{
+    m_sender = sender;
+    if (m_sender) {
+        m_property = new QQmlProperty(m_sender, property, qmlContext(m_sender));
+        m_property->connectNotifySignal(this, SLOT(updateContextPropertyFromSenderProperty()));
+    }
 }
 
 void ContextPropertyChangeListener::updateContextProperty()
 {
     QVariant value = m_context->contextProperty(m_contextProperty);
     m_context->setContextProperty(m_contextProperty, value);
+}
+
+void ContextPropertyChangeListener::updateContextPropertyFromSenderProperty()
+{
+    m_context->setContextProperty(m_contextProperty, m_property->read());
 }

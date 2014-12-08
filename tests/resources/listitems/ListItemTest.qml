@@ -99,7 +99,6 @@ MainView {
         ListItem {
             id: testItem
             objectName: "single"
-            selectable: main.selectable
             color: "lime"
             onClicked: {
                 print("click")
@@ -162,12 +161,12 @@ MainView {
             height: units.gu(20)
             model: 10
             pressDelay: 0
-            ListItem.selectedIndexes: [9,3,4]
+            ListItem.selectable: main.selectable
+            ListItem.selectedIndexes: [9,3,4,1]
             ListItem.onSelectedIndexesChanged: print("LISTVIEW INDEXES=", ListItem.selectedIndexes)
             delegate: ListItem {
                 objectName: "ListItem" + index
                 id: listItem
-                selectable: main.selectable
                 onClicked: print(" clicked")
                 leadingActions: leading
                 Label {
@@ -198,19 +197,19 @@ MainView {
                 id: trailing
                 actions: leading.actions
             }
+            ListItem.selectable: main.selectable
+            ListItem.onSelectedIndexesChanged: print("INDEXES=", ListItem.selectedIndexes)
 
             Column {
                 id: column
                 width: view.width
                 property alias count: repeater.count
-                ListItem.onSelectedIndexesChanged: print("INDEXES=", ListItem.selectedIndexes)
 
                 Repeater {
                     id: repeater
                     model: 10
                     ListItem {
                         objectName: "InFlickable"+index
-                        selectable: main.selectable
                         color: "red"
                         highlightColor: "lime"
                         divider.colorFrom: UbuntuColors.green

@@ -39,7 +39,6 @@ class UCListItem : public UCStyledItemBase
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool contentMoving READ contentMoving NOTIFY contentMovingChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor NOTIFY highlightColorChanged)
-    Q_PROPERTY(bool selectable READ selectable WRITE setSelectable NOTIFY selectableChanged)
     Q_PROPERTY(bool selected READ selected WRITE setSelected NOTIFY selectedChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QObject> listItemData READ data DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QQuickItem> listItemChildren READ children NOTIFY listItemChildrenChanged DESIGNABLE false)
@@ -89,7 +88,6 @@ Q_SIGNALS:
     void contentMovingChanged();
     void colorChanged();
     void highlightColorChanged();
-    void selectableChanged();
     void selectedChanged();
     void listItemChildrenChanged();
 
@@ -110,6 +108,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
+    Q_PRIVATE_SLOT(d_func(), void _q_selectableUpdated())
 };
 QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
 
@@ -117,7 +116,8 @@ class UCListItemAttachedPrivate;
 class UCListItemAttached : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QList<int> selectedIndexes READ selectedIndexes WRITE setSelectedIndexes NOTIFY selectedIndexesChanged)
+    Q_PRIVATE_PROPERTY(UCListItemAttached::d_func(), bool selectable READ isSelectable WRITE setSelectable NOTIFY selectableChanged)
+    Q_PRIVATE_PROPERTY(UCListItemAttached::d_func(), QList<int> selectedIndexes READ selectedIndexes WRITE setSelectedIndexes NOTIFY selectedIndexesChanged)
 public:
     explicit UCListItemAttached(QObject *parent = 0);
     ~UCListItemAttached();
@@ -127,13 +127,11 @@ public:
     bool isMoving();
     bool isBoundTo(UCListItem *item);
 
-    QList<int> selectedIndexes() const;
-    void setSelectedIndexes(const QList<int> &list);
-
 private Q_SLOTS:
     void unbindItem();
 
 Q_SIGNALS:
+    void selectableChanged();
     void selectedIndexesChanged();
 
 private:

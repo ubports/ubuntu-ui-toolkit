@@ -207,6 +207,33 @@ void UCListItemAttached::unbindItem()
 }
 
 /*!
+ * \qmlattachedproperty bool ListItem::selectable
+ * The property drives whether list items are selectable or not. The property is
+ * attached to the ListItem's parent or to the ListView/Flickable owning the
+ * ListItems.
+ *
+ *
+ * When set, the items
+ * will show a check box on the leading side hanving the content item pushed towards
+ * trailing side and dimmed. The checkbox which will reflect and drive the \l selected
+ * state.
+ * Defaults to false.
+ */
+bool UCListItemAttachedPrivate::isSelectable() const
+{
+    return selectable;
+}
+void UCListItemAttachedPrivate::setSelectable(bool value)
+{
+    if (selectable == value) {
+        return;
+    }
+    selectable = value;
+    Q_Q(UCListItemAttached);
+    Q_EMIT q->selectableChanged();
+}
+
+/*!
  * \qmlattachedproperty list<int> ListItem::selectedIndexes
  * The property is automatically attached to the ListItem's parent item, or to
  * the ListView when used with ListView. Contains the indexes of the ListItems
@@ -217,39 +244,42 @@ void UCListItemAttached::unbindItem()
  * state of the selection. Therefore it is recommended to drive the selection
  * through the attached property rather through the \l ListItem::selected property.
  * \sa ListItem::selectable, ListItem::selected
+ *
+ * By default all items are selectable. To drive single selection mode, set the
+ * \l singleSelect attached property.
+ *
+ * \sa singleSelect
  */
-QList<int> UCListItemAttached::selectedIndexes() const
+QList<int> UCListItemAttachedPrivate::selectedIndexes() const
 {
-    Q_D(const UCListItemAttached);
-    return d->indexList;
+    return selectedList;
 }
-void UCListItemAttached::setSelectedIndexes(const QList<int> &list)
+void UCListItemAttachedPrivate::setSelectedIndexes(const QList<int> &list)
 {
-    Q_D(UCListItemAttached);
-    if (d->indexList == list) {
+    if (selectedList == list) {
         return;
     }
-    d->indexList = list;
-    Q_EMIT selectedIndexesChanged();
+    selectedList = list;
+    Q_Q(UCListItemAttached);
+    Q_EMIT q->selectedIndexesChanged();
 }
 
 void UCListItemAttachedPrivate::addSelectedItem(UCListItem *item)
 {
     int index = UCListItemPrivate::get(item)->index();
-    if (!indexList.contains(index)) {
-        indexList.append(index);
+    if (!selectedList.contains(index)) {
+        selectedList.append(index);
         Q_EMIT q_ptr->selectedIndexesChanged();
     }
 }
 void UCListItemAttachedPrivate::removeSelectedItem(UCListItem *item)
 {
-    indexList.removeAll(UCListItemPrivate::get(item)->index());
-    Q_EMIT q_ptr->selectedIndexesChanged();
+    if (selectedList.removeAll(UCListItemPrivate::get(item)->index()) > 0) {
+        Q_EMIT q_ptr->selectedIndexesChanged();
+    }
 }
 
 bool UCListItemAttachedPrivate::isItemSelected(UCListItem *item)
 {
-    return indexList.contains(UCListItemPrivate::get(item)->index());
+    return selectedList.contains(UCListItemPrivate::get(item)->index());
 }
-
-
