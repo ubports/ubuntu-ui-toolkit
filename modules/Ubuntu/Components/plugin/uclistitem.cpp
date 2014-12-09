@@ -697,7 +697,7 @@ QQuickItem *UCListItemPrivate::createSelectionPanel()
             if (!styleItem->m_selectionDelegate->isError()) {
                 // create a new context so we can expose context properties
                 QQmlContext *context = new QQmlContext(qmlContext(q), q);
-                context->setContextProperty("inSelectionMode", isSelectable());
+                context->setContextProperty("inSelectionMode", QVariant(false));
                 ContextPropertyChangeListener *listener = new ContextPropertyChangeListener(
                             context, "inSelectionMode");
                 listener->setUpdaterProperty(attachedProperties, "selectable");
@@ -709,6 +709,8 @@ QQuickItem *UCListItemPrivate::createSelectionPanel()
                     selectionPanel->setParentItem(q);
                     // complete component creation
                     styleItem->m_selectionDelegate->completeCreate();
+                    // turn on selectable
+                    context->setContextProperty("inSelectionMode", isSelectable());
                 }
             } else {
                 qmlInfo(q) << styleItem->m_selectionDelegate->errorString();

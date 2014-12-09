@@ -31,6 +31,7 @@
 UCListItemAttachedPrivate::UCListItemAttachedPrivate(UCListItemAttached *qq)
     : q_ptr(qq)
     , globalDisabled(false)
+    , selectable(false)
 {
 }
 
