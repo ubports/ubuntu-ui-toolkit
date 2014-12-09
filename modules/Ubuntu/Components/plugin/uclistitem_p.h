@@ -266,7 +266,7 @@ public:
     explicit UCDragHandler(UCListItem *listItem);
     ~UCDragHandler();
 
-    void listen();
+    void getNotified();
     bool isDraggable();
     bool isDragging()
     {

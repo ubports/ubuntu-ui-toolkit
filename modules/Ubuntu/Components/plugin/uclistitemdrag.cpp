@@ -11,6 +11,7 @@ UCDragHandler::UCDragHandler(UCListItem *listItem)
     , listItem(UCListItemPrivate::get(listItem))
     , panel(0)
     , dragging(false)
+    , isConnected(false)
 {
     connect(this, &UCDragHandler::draggingChanged,
             listItem, &UCListItem::draggingChanged);
@@ -81,10 +82,16 @@ bool UCDragHandler::eventFilter(QObject *watched, QEvent *event)
 }
 
 // listen for attached property's draggable change signal to activate dragging mode on the list item
-void UCDragHandler::listen()
+void UCDragHandler::getNotified()
 {
+    if (!listItem->attachedProperties || isConnected) {
+        return;
+    }
     connect(listItem->attachedProperties, &UCListItemAttached::draggableChanged,
             this, &UCDragHandler::setupDragMode);
+    // also connect ListItem's _q_enabler() slot to control content enabled based on selectable and draggable
+    connect(listItem->attachedProperties, SIGNAL(draggableChanged()),
+            listItem->item(), SLOT(_q_enabler()));
 }
 
 bool UCDragHandler::isDraggable()

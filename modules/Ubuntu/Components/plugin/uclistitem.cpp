@@ -891,7 +891,7 @@ void UCListItem::componentComplete()
 
     // also toggle dragging mode if enabled
     if (d->dragHandler->isDraggable()) {
-        d->dragHandler->listen();
+        d->dragHandler->getNotified();
         d->dragHandler->setupDragMode();
     }
 }
@@ -927,7 +927,7 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
 
         // get notified about selectable change
         d->selection->getNotified();
-        d->dragHandler->listen();
+        d->dragHandler->getNotified();
 
         if (data.item) {
             QObject::connect(d->flickable ? d->flickable : data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
