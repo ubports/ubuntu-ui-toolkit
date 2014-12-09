@@ -95,16 +95,21 @@ MainView {
                 print("click")
                 main.override = !main.override
             }
+            onPressAndHold: print("pressAndHold", objectName)
             Label {
                 anchors.fill: parent
                 text: units.gridUnit + "PX/unit"
             }
+            Button {
+                text: "Press me"
+                anchors.centerIn: parent
+            }
+
             leadingActions: ListItemActions {
                 objectName: "InlineLeading"
                 actions: [stock]
                 delegate: Column {
                     width: height + units.gu(2)
-                    anchors.verticalCenter: parent.verticalCenter
                     Icon {
                         width: units.gu(3)
                         height: width
@@ -121,6 +126,14 @@ MainView {
             }
             trailingActions: leading
         }
+        ListItem {
+            Label {
+                id: label
+                text: "No action"
+            }
+            onClicked: print(label.text, "clicked")
+        }
+
         ListItem {
             Label {
                 anchors.fill: parent
@@ -147,6 +160,7 @@ MainView {
                 Label {
                     text: modelData + " item"
                 }
+
                 states: State {
                     name: "override"
                     when: main.override

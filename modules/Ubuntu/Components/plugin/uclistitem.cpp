@@ -28,6 +28,8 @@
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQuick/private/qquickpositioners_p.h>
+#include <QtGui/QGuiApplication>
+#include <QtGui/QStyleHints>
 #include <QtQuick/private/qquickanimation_p.h>
 #include <QtQuick/private/qquickmousearea_p.h>
 #include "uclistitemstyle.h"
@@ -379,6 +381,24 @@ void UCListItemPrivate::init()
     _q_updateSize();
 }
 
+// inspired from IS_SIGNAL_CONNECTED(q, UCListItem, pressAndHold, ())
+// the macro cannot be used due to Arguments cannot be an empty ()
+bool UCListItemPrivate::isClickedConnected()
+{
+    Q_Q(UCListItem);
+    static QMetaMethod method = QMetaMethod::fromSignal(&UCListItem::clicked);
+    static int signalIdx = QMetaObjectPrivate::signalIndex(method);
+    return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
+}
+
+bool UCListItemPrivate::isPressAndHoldConnected()
+{
+    Q_Q(UCListItem);
+    static QMetaMethod method = QMetaMethod::fromSignal(&UCListItem::pressAndHold);
+    static int signalIdx = QMetaObjectPrivate::signalIndex(method);
+    return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
+}
+
 void UCListItemPrivate::_q_updateThemedData()
 {
     // update colors, panels
@@ -540,7 +560,8 @@ bool UCListItemPrivate::canHighlight(QMouseEvent *event)
    // action, leading or trailing actions list or at least an active child component declared
    QQuickMouseArea *ma = q->findChild<QQuickMouseArea*>();
    bool activeMouseArea = ma && ma->isEnabled();
-   return !activeComponent && (leadingActions || trailingActions || activeMouseArea);
+   return !activeComponent && (isClickedConnected() || isPressAndHoldConnected() ||
+                               leadingActions || trailingActions || activeMouseArea);
 }
 
 // set pressed flag and update contentItem
@@ -551,6 +572,12 @@ void UCListItemPrivate::setPressed(bool pressed)
         suppressClick = false;
         Q_Q(UCListItem);
         q->update();
+        if (pressed) {
+            // start pressandhold timer
+            pressAndHoldTimer.start(QGuiApplication::styleHints()->mousePressAndHoldInterval(), q);
+        } else {
+            pressAndHoldTimer.stop();
+        }
         Q_EMIT q->pressedChanged();
     }
 }
@@ -644,7 +671,68 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  *
  * The component provides two color properties which configures the item's background
  * when normal or pressed. This can be configured through \l color and \l highlightColor
- * properties.
+ * properties. The list item is highlighted if there is an action attached to it.
+ * This means that the list item must have an active component declared as child,
+ * at least leading- or trailing actions specified, or to have a slot connected to
+ * \l clicked or \l pressAndHold signal. In any other case the component will not
+ * be highlighted, and \l pressed property will not be toggled either. Also, there
+ * will be no highlight happening if the click happens on the active component.
+ * \qml
+ * import QtQuick 2.3
+ * import Ubuntu.Components 1.2
+ *
+ * MainView {
+ *    width: units.gu(40)
+ *    height: units.gu(71)
+ *
+ *    Column {
+ *        anchors.fill: parent
+ *        ListItem {
+ *            Button {
+ *                text: "Press me"
+ *            }
+ *            onClicked: console.log("clicked on ListItem")
+ *        }
+ *        ListItem {
+ *            leadingActions: ListItemActions {
+ *                actions: [
+ *                    Action {
+ *                        iconName: "delete"
+ *                    }
+ *                ]
+ *            }
+ *            onClicked: console.log("clicked on ListItem with leadingActions set")
+ *        }
+ *        ListItem {
+ *            trailingActions: ListItemActions {
+ *                actions: [
+ *                    Action {
+ *                        iconName: "edit"
+ *                    }
+ *                ]
+ *            }
+ *            onClicked: console.log("clicked on ListItem with trailingActions set")
+ *        }
+ *        ListItem {
+ *            Label {
+ *                text: "onClicked implemented"
+ *            }
+ *            onClicked: console.log("clicked on ListItem with onClicked implemented")
+ *        }
+ *        ListItem {
+ *            Label {
+ *                text: "onPressAndHold implemented"
+ *            }
+ *            onPressAndHold: console.log("clicked on ListItem with onPressAndHold implemented")
+ *        }
+ *        ListItem {
+ *            Label {
+ *                text: "No highlight"
+ *            }
+ *        }
+ *    }
+ * }
+ * \endqml
  *
  * \c contentItem holds all components and resources declared as child to ListItem.
  * Being an Item, all properties can be accessed or altered. However, make sure you
@@ -717,11 +805,23 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
 
 /*!
  * \qmlsignal ListItem::clicked()
- *
  * The signal is emitted when the component gets released while the \l pressed property
  * is set. The signal is not emitted if the ListItem content is swiped or when used in
  * Flickable (or ListView, GridView) and the Flickable gets moved.
+ *
+ * If the ListItem contains a component which contains a MouseArea, the clicked
+ * signal will be supressed.
  */
+
+/*!
+ * \qmlsignal ListItem::pressAndHold()
+ * The signal is emitted when the list item is long pressed. When a slot is connected,
+ * no \l clicked signal will be emitted, similarly to MouseArea's pressAndHold.
+ *
+ * If the ListItem contains a component which contains a MouseArea, the pressAndHold
+ * signal will be supressed.
+ */
+
 UCListItem::UCListItem(QQuickItem *parent)
     : UCStyledItemBase(*(new UCListItemPrivate), parent)
 {
@@ -935,6 +1035,8 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         d->lastPos = event->localPos();
 
         if (dx) {
+            // stop pressAndHold timer as we started to drag
+            d->pressAndHoldTimer.stop();
             d->setContentMoving(true);
             // clamp X into allowed dragging area
             d->clampAndMoveX(x, dx);
@@ -1006,6 +1108,20 @@ bool UCListItem::eventFilter(QObject *target, QEvent *event)
         event->accept();
     }
     return UCStyledItemBase::eventFilter(target, event);
+}
+
+void UCListItem::timerEvent(QTimerEvent *event)
+{
+    Q_D(UCListItem);
+    if (event->timerId() == d->pressAndHoldTimer.timerId()) {
+        d->pressAndHoldTimer.stop();
+        if (isEnabled() && d->isPressAndHoldConnected()) {
+            d->suppressClick = true;
+            Q_EMIT pressAndHold();
+        }
+    } else {
+        QQuickItem::timerEvent(event);
+    }
 }
 
 /*!
