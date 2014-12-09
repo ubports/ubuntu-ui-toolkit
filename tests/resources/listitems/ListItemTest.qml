@@ -20,7 +20,8 @@ import Ubuntu.Components 1.2
 MainView {
     id: main
     width: units.gu(50)
-    height: units.gu(100)
+    height: units.gu(105)
+    useDeprecatedToolbar: false
 
     property bool override: false
 
@@ -210,6 +211,23 @@ MainView {
                     }
                 }
             }
+        }
+        ListItem {
+            Label {
+                text: "Switch makes this item to highlight"
+            }
+            Switch {
+                id: toggle
+                anchors.right: parent.right
+            }
+            Component.onCompleted: clicked.connect(toggle.clicked)
+        }
+        ListItem {
+            Label {
+                text: "No action, no trailing/leading actions, no active component"
+            }
+            onClicked: print("clicked")
+            onPressAndHold: print("longPressed")
         }
     }
 }

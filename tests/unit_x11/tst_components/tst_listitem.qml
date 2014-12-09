@@ -21,8 +21,8 @@ import Ubuntu.Components 1.2
 
 Item {
     id: main
-    width: units.gu(40)
-    height: units.gu(71)
+    width: units.gu(50)
+    height: units.gu(100)
 
     Action {
         id: stockAction
@@ -113,6 +113,22 @@ Item {
                 trailingActions: trailing
             }
         }
+        Flickable {
+            id: testFlickable
+            width: parent.width
+            height: units.gu(28)
+            ListView {
+                id: nestedListView
+                width: parent.width
+                height: units.gu(28)
+                clip: true
+                model: 10
+                delegate: ListItem {
+                    objectName: "listItem" + index
+                    leadingActions: leading
+                }
+            }
+        }
     }
 
     UbuntuTestCase {
@@ -170,6 +186,7 @@ Item {
         }
 
         function cleanup() {
+            testItem.action = null;
             movingSpy.clear();
             pressedSpy.clear();
             clickSpy.clear();
@@ -202,6 +219,7 @@ Item {
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
             compare(defaults.contentMoving, false, "default is not moving");
+            compare(defaults.action, null, "No action by default.");
             compare(defaults.style, null, "Style is loaded upon first use.");
             compare(defaults.__styleInstance, null, "__styleInstance must be null.");
 
@@ -348,6 +366,7 @@ Item {
         }
         function test_listview_not_interactive_while_tugged(data) {
             listView.positionViewAtBeginning();
+            interactiveSpy.target = listView;
             compare(listView.interactive, true, "ListView is not interactive");
             movingSpy.target = data.item;
             interactiveSpy.target = listView;
@@ -662,6 +681,49 @@ Item {
             mouseLongPress(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
             pressedSpy.wait();
             mouseRelease(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
+        }
+
+        function test_listitem_blocks_ascendant_flickables() {
+            var listItem = findChild(nestedListView, "listItem0");
+            verify(listItem, "Cannot find test item");
+            interactiveSpy.target = testFlickable;
+            movingSpy.target = listItem;
+            // tug leading
+            flick(listItem, centerOf(listItem).x, centerOf(listItem).y, listItem.width / 2, 0);
+            movingSpy.wait();
+            // check if interactive got changed
+            interactiveSpy.wait();
+
+            // cleanup!!!
+            rebound(listItem);
+        }
+
+        function test_action_type_set() {
+            stockAction.parameterType = Action.None;
+            compare(stockAction.parameterType, Action.None, "No parameter type for stockAction!");
+            testItem.action = stockAction;
+            compare(stockAction.parameterType, Action.Integer, "No parameter type for stockAction!");
+        }
+
+        function test_action_triggered_on_clicked() {
+            testItem.action = stockAction;
+            actionSpy.target = stockAction;
+            clickSpy.target = testItem;
+            mouseClick(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            clickSpy.wait();
+            actionSpy.wait();
+        }
+
+        function test_action_suppressed_on_longpress() {
+            testItem.action = stockAction;
+            actionSpy.target = stockAction;
+            clickSpy.target = testItem;
+            pressAndHoldSpy.target = testItem;
+            mouseLongPress(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            mouseRelease(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            pressAndHoldSpy.wait();
+            compare(clickSpy.count, 0, "Click must be suppressed.");
+            compare(actionSpy.count, 0, "Action triggered must be suppressed");
         }
     }
 }
