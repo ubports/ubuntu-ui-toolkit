@@ -32,6 +32,7 @@ UCListItemAttachedPrivate::UCListItemAttachedPrivate(UCListItemAttached *qq)
     : q_ptr(qq)
     , globalDisabled(false)
     , selectable(false)
+    , draggable(false)
 {
 }
 
@@ -283,4 +284,45 @@ void UCListItemAttachedPrivate::removeSelectedItem(UCListItem *item)
 bool UCListItemAttachedPrivate::isItemSelected(UCListItem *item)
 {
     return selectedList.contains(UCListItemPrivate::get(item)->index());
+}
+
+/*!
+ * \amlattachedproperty bool ListItem::draggable
+ * The property drives the dragging mode of the ListItems within a ListView. It
+ * has no effect on any other parent of the ListItem.
+ *
+ * When set, ListItem content will be disabled and a panel will be shown enabling
+ * the dragging mode. The items can be dragged by dragging this handler only.
+ * The feature can be activated same time with \l selectable.
+ *
+ * The panel is configured by the \l {ListItemStyle::dragHandlerDelegate}{dragHandlerDelegate}
+ * component.
+ *
+ * \sa ListItemStyle::dragHandlerDelegate, draggingStarted, draggingEnded
+ */
+
+/*!
+ * \qmlattachedsignal ListItem::draggingStarted(int index)
+ * The signal is emitted when a ListItem dtragging is started. The \c index specifies
+ * the index of the ListItem being dragged.
+ */
+
+/*!
+ * \qmlattachedsignal ListItem::draggingEnded(int dragIndex, int dropIndex)
+ * The signal is emitted when the dragged ListItem is dropped in the ListView. The
+ * \c dragIndex specifies the original index of the ListItem dragged, and the \c
+ * dropIndex the index where the ListItem is dropped.
+ */
+bool UCListItemAttachedPrivate::isDraggable() const
+{
+    return draggable;
+}
+void UCListItemAttachedPrivate::setDraggable(bool value)
+{
+    if (draggable == value) {
+        return;
+    }
+    draggable = value;
+    Q_Q(UCListItemAttached);
+    Q_EMIT q->draggableChanged();
 }

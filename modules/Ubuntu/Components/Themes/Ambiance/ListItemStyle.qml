@@ -92,4 +92,50 @@ Styles.ListItemStyle {
         }
         onSelectedChanged: checkbox.checked = selected
     }
+
+    dragHandlerDelegate: Rectangle {
+        id: dragHandler
+        objectName: "draghandler_panel"
+        width: height
+        /*
+          Internally used to link to the list item's content. The parent item is the ListItem itself.
+          */
+        readonly property Item contentItem: parent ? parent.contentItem : null
+
+        anchors {
+            // by default the panel stays outside of the ListItem's right side
+            left: parent ? parent.right : undefined
+            top: contentItem ? contentItem.top : undefined
+            bottom: contentItem ? contentItem.bottom : undefined
+        }
+
+        Icon {
+            id: dragIcon
+            anchors.centerIn: parent
+            width: units.gu(2.5)
+            height: units.gu(2.5)
+            name: "view-grid-symbolic"
+        }
+
+        states: State {
+            name: "enabled"
+            AnchorChanges {
+                target: dragHandler
+                anchors.right: dragHandler.parent.right
+                anchors.left: undefined
+            }
+        }
+
+        transitions: Transition {
+            from: ""
+            to: "enabled"
+            reversible: true
+            AnchorAnimation {
+                easing: UbuntuAnimation.StandardEasing
+                duration: UbuntuAnimation.FastDuration
+            }
+        }
+
+        state: inDraggingMode ? "enabled" : ""
+    }
 }

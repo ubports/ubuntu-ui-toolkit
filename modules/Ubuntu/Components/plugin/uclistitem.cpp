@@ -354,6 +354,7 @@ UCListItemPrivate::UCListItemPrivate()
     , selectionPanel(0)
     , animator(0)
     , defaultAction(0)
+    , dragHandler(0)
     , styleComponent(0)
     , styleItem(0)
 {
@@ -387,6 +388,9 @@ void UCListItemPrivate::init()
 
     // create the animator
     animator = new UCListItemSnapAnimator(q);
+
+    // create drag handler
+    dragHandler = new UCDragHandler(q);
 }
 
 // inspired from IS_SIGNAL_CONNECTED(q, UCListItem, pressAndHold, ())
@@ -943,6 +947,12 @@ void UCListItem::componentComplete()
         d->setupSelectionMode();
         update();
     }
+
+    // also toggle dragging mode if enabled
+    if (d->dragHandler->isDraggable()) {
+        d->dragHandler->listen();
+        d->dragHandler->setupDragMode();
+    }
 }
 
 void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
@@ -974,11 +984,12 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             d->attachedProperties = 0;
         }
 
-        // get notified about selectable change
+        // get notified about selectable and draggable changes
         if (d->attachedProperties) {
             QObject::connect(d->attachedProperties, SIGNAL(selectableChanged()),
                              this, SLOT(_q_selectableUpdated()));
         }
+        d->dragHandler->listen();
 
         if (data.item) {
             QObject::connect(d->flickable ? d->flickable : data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
@@ -1457,6 +1468,15 @@ void UCListItem::setHighlightColor(const QColor &color)
     d->customColor = true;
     update();
     Q_EMIT highlightColorChanged();
+}
+
+/*!
+ * \qmlproperty bool ListItem::dragging
+ * The property informs about an ongoing dragging on a ListItem.
+ */
+bool UCListItemPrivate::dragging()
+{
+    return dragHandler->isDragging();
 }
 
 /*!

@@ -30,6 +30,7 @@ class UCListItemDivider;
 class UCListItemActions;
 class UCListItemSnapAnimator;
 class UCListItemStyle;
+class UCDragHandler;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -42,6 +43,10 @@ public:
     {
         Q_ASSERT(that);
         return that->d_func();
+    }
+    inline UCListItem *item()
+    {
+        return q_func();
     }
 
     bool isClickedConnected();
@@ -92,6 +97,7 @@ public:
     QQuickItem *selectionPanel;
     UCListItemSnapAnimator *animator;
     UCAction *defaultAction;
+    UCDragHandler *dragHandler;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
     QQmlComponent *styleComponent;
@@ -109,6 +115,7 @@ public:
     bool loadStyle(bool reload);
     void initStyleItem();
     QQuickItem *styleInstance() const;
+    bool dragging();
     bool isSelected() const;
     void setSelected(bool value);
     UCAction *action() const;
@@ -139,6 +146,7 @@ public:
     UCListItemAttached *q_ptr;
     bool globalDisabled:1;
     bool selectable:1;
+    bool draggable:1;
     QList<int> selectedList;
     QList< QPointer<QQuickFlickable> > flickables;
     QList< PropertyChange* > changes;
@@ -150,8 +158,8 @@ public:
     void setSelectable(bool value);
     QList<int> selectedIndexes() const;
     void setSelectedIndexes(const QList<int> &list);
-    bool singleSelect() const;
-    void setSingleSelect(bool value);
+    bool isDraggable() const;
+    void setDraggable(bool value);
 };
 
 class UCListItemDivider : public QObject
@@ -229,6 +237,36 @@ public Q_SLOTS:
 private:
     bool active;
     UCListItem *item;
+};
+
+class UCDragHandler : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(bool dragging MEMBER dragging NOTIFY draggingChanged)
+public:
+    explicit UCDragHandler(UCListItem *listItem);
+    ~UCDragHandler();
+
+    void listen();
+    bool isDraggable();
+    bool isDragging()
+    {
+        return dragging;
+    }
+
+Q_SIGNALS:
+    void draggingChanged();
+
+public Q_SLOTS:
+    void setupDragMode();
+
+protected:
+    UCListItemPrivate *listItem;
+    QQuickItem *panel;
+    bool dragging:1;
+
+    void setupDragPanel(bool animate);
+    bool eventFilter(QObject *, QEvent *);
 };
 
 #endif // UCVIEWITEM_P_H
