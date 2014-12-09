@@ -92,6 +92,7 @@ void UCDragHandler::getNotified()
     // also connect ListItem's _q_enabler() slot to control content enabled based on selectable and draggable
     connect(listItem->attachedProperties, SIGNAL(draggableChanged()),
             listItem->item(), SLOT(_q_enabler()));
+    isConnected = true;
 }
 
 bool UCDragHandler::isDraggable()
