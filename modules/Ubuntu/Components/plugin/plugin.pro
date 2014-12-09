@@ -115,6 +115,7 @@ SOURCES += plugin.cpp \
     uclistitemattached.cpp \
     propertychange_p.cpp \
     uclistitemstyle.cpp \
+    uclistitemselect.cpp \
     uclistitemdrag.cpp
 
 # adapters
