@@ -121,8 +121,6 @@ void UCSelectionHandler::setupSelection()
         bool animate = (senderSignalIndex() >= 0);
         setupPanel(animate);
     }
-    // disable contentIten from handling events
-//    listItem->contentItem->setEnabled(!selectable);
     // and finaly update visuals
     listItem->update();
 }
