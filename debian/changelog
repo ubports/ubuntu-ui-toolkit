@@ -1,3 +1,51 @@
+ubuntu-ui-toolkit (1.1.1364+15.04.20141126-0ubuntu2) UNRELEASED; urgency=medium
+
+  [ Zsombor Egri ]
+  * Theming fixes: application theming, binding loop fix, auto-theming 
+    moved into MainView and it is applicable only on Ambiance and 
+    SuruDark, SuruGradient is no longer auto-themed. 
+    Fixes: LP: #1213043, LP: #1277647, LP: #1330510, LP: #1356779, 
+           LP: #1389792.
+  * ServiceProperties component to Ubuntu.Components 1.1. 
+    Fixes: LP: #1391877.
+  * New ListItem component base. Support for leading/trailing actions. 
+    Exported in Ubuntu.Components 1.2 UNSTABLE release. 
+    Fixes: LP: #1097728, LP: #1372592, LP: #1383870.
+  * removing failing ServiceProperties and app-theming branches
+  * Application theming ant other theming related binding loop fixes
+  * ServiceProperties DBus property watcher
+
+  [ Christian Dywan ]
+  * Do the default theme check properly: for non-debug and without 
+    build errors.
+  * Don't activate the control in ListItem.Standard implicitly. 
+    Fixes: LP: #1372563.
+  * Improve AutoPilot caret dragging test cases.
+  * Use new qt_gl_set_global_share_context setter with Qt 5.4. 
+    Fixes: LP: #1397979.
+  * Add sortCaseSensitivity to the SortFilterModel example. 
+    Fixes: LP: #1391034.
+  * Change offending links into bold font. Fixes: LP: #1395011.
+
+  
+  [ Daniel d'Andrada ]
+  * This is needed by unity8 for the "shell rotation" feature (ie 
+    shell does all the rotation work instead of apps rotating
+    themselves). unity8's dialogs (like the power dialog when you 
+    long press the power button) should follow its parent item 
+    rotation and size, as one would expect, and not be sneakily 
+    reparented to the scene root item, in which case the shell 
+    UI would be rotated but its dialog would not. 
+    Related bug LP: #1394511. Fixes: LP: #1394511.
+
+  [ Tim Peeters ]
+  * Remove the old header separator style. Fixes: LP: #1372590.
+  
+  [ Loïc Molinari ]
+  * Made the UCAlarmPrivate destructor private.
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Mon, 08 Dec 2014 11:40:31 +0200
+
 ubuntu-ui-toolkit (1.1.1347+15.04.20141126-0ubuntu1) vivid; urgency=medium
 
   [ Zsombor Egri ]
@@ -145,6 +193,32 @@ ubuntu-ui-toolkit (1.1.1311+15.04.20141102-0ubuntu1) vivid; urgency=medium
  
 
  -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sun, 02 Nov 2014 13:01:56 +0000
+
+ubuntu-ui-toolkit (1.1.1298+15.04.20141111.2~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+  [ Florian Boucault ]
+  * Many TextField/TextArea fixes improving user experience greatly and
+    making it more in line with the design:
+
+  [ Christian Dywan ]
+  * Update po/ubuntu-ui-toolkit.pot
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 11 Nov 2014 11:25:44 +0000
+
+ubuntu-ui-toolkit (1.1.1298+15.04.20141107.2~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ Florian Boucault ]
+  * TextField: make sure that a long press always works even when the
+    field is empty by ensuring the TextInput's size is set properly.
+    (LP: #1384403)
+
+  [ Christian Dywan ]
+  * Update po/ubuntu-ui-toolkit.pot
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 07 Nov 2014 12:35:11 +0000
 
 ubuntu-ui-toolkit (1.1.1298+14.10.20141030~rtm-0ubuntu1) 14.09; urgency=low
 
