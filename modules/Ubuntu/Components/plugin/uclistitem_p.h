@@ -92,6 +92,7 @@ public:
     UCListItemActions *trailingActions;
     QQuickItem *selectionPanel;
     UCListItemSnapAnimator *animator;
+    UCAction *defaultAction;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
     QQmlComponent *styleComponent;
@@ -109,6 +110,10 @@ public:
     bool loadStyle(bool reload);
     void initStyleItem();
     QQuickItem *styleInstance() const;
+    bool isSelected() const;
+    void setSelected(bool value);
+    UCAction *action() const;
+    void setAction(UCAction *action);
 };
 
 class PropertyChange;

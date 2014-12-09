@@ -87,6 +87,7 @@ private:
     Type m_parameterType;
 
     friend class UCActionContext;
+    friend class UCListItemPrivate;
     friend class UCListItemActionsAttached;
     friend class UCListItemActionsPrivate;
 

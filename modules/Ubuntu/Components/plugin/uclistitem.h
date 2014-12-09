@@ -23,8 +23,8 @@
 class UCListItemContent;
 class UCListItemDivider;
 class UCListItemActions;
+class UCAction;
 class UCListItemAttached;
-class QQuickPropertyAnimation;
 class UCListItemPrivate;
 class UCListItemAttached;
 class UCListItem : public UCStyledItemBase
@@ -39,7 +39,8 @@ class UCListItem : public UCStyledItemBase
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool contentMoving READ contentMoving NOTIFY contentMovingChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor NOTIFY highlightColorChanged)
-    Q_PROPERTY(bool selected READ selected WRITE setSelected NOTIFY selectedChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool selected READ isSelected WRITE setSelected NOTIFY selectedChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), UCAction *action READ action WRITE setAction NOTIFY actionChanged DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QObject> listItemData READ data DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QQuickItem> listItemChildren READ children NOTIFY listItemChildrenChanged DESIGNABLE false)
     // FIXME move these to StyledItemBase with subtheming
@@ -63,10 +64,6 @@ public:
     void setColor(const QColor &color);
     QColor highlightColor() const;
     void setHighlightColor(const QColor &color);
-    bool selectable() const;
-    void setSelectable(bool selectable);
-    bool selected() const;
-    void setSelected(bool selected);
 
 protected:
     void componentComplete();
@@ -89,6 +86,7 @@ Q_SIGNALS:
     void colorChanged();
     void highlightColorChanged();
     void selectedChanged();
+    void actionChanged();
     void listItemChildrenChanged();
 
     void clicked();
