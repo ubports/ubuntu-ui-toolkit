@@ -855,7 +855,6 @@ UCListItem::~UCListItem()
 
 UCListItemAttached *UCListItem::qmlAttachedProperties(QObject *owner)
 {
-    qDebug() << "ATTACHED TO LISTVIEW";
     return new UCListItemAttached(owner);
 }
 
