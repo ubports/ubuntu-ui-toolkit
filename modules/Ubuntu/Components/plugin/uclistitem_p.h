@@ -30,6 +30,7 @@ class UCListItemDivider;
 class UCListItemActions;
 class UCListItemSnapAnimator;
 class UCListItemStyle;
+class UCSelectionHandler;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -43,12 +44,15 @@ public:
         Q_ASSERT(that);
         return that->d_func();
     }
+    inline UCListItem *item()
+    {
+        return q_func();
+    }
 
     bool isClickedConnected();
     bool isPressAndHoldConnected();
+    void _q_enabler();
     void _q_updateThemedData();
-    bool isSelectable();
-    void _q_selectableUpdated();
     void _q_rebound();
     void promptRebound();
     void _q_updateSize();
@@ -62,8 +66,6 @@ public:
     void resize();
     void update();
     void clampAndMoveX(qreal &x, qreal dx);
-    QQuickItem *createSelectionPanel();
-    void setupSelectionMode();
 
     bool pressed:1;
     bool contentMoved:1;
@@ -71,7 +73,6 @@ public:
     bool swiped:1;
     bool suppressClick:1;
     bool ready:1;
-    bool selected:1;
     bool customStyle:1;
     bool customColor:1;
     bool customOvershoot:1;
@@ -89,9 +90,9 @@ public:
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
-    QQuickItem *selectionPanel;
     UCListItemSnapAnimator *animator;
     UCAction *defaultAction;
+    UCSelectionHandler *selection;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
     QQmlComponent *styleComponent;
@@ -150,8 +151,6 @@ public:
     void setSelectable(bool value);
     QList<int> selectedIndexes() const;
     void setSelectedIndexes(const QList<int> &list);
-    bool singleSelect() const;
-    void setSingleSelect(bool value);
 };
 
 class UCListItemDivider : public QObject
@@ -229,6 +228,29 @@ public Q_SLOTS:
 private:
     bool active;
     UCListItem *item;
+};
+
+class UCSelectionHandler : public QObject
+{
+    Q_OBJECT
+public:
+    explicit UCSelectionHandler(UCListItem *owner = 0);
+
+    void getNotified();
+    bool isSelectable();
+    bool isSelected();
+    void setSelected(bool value);
+
+public Q_SLOTS:
+    void setupSelection();
+
+protected:
+    UCListItemPrivate *listItem;
+    QQuickItem *panel;
+    bool selected:1;
+    bool isConnected:1;
+
+    void setupPanel(bool animate);
 };
 
 #endif // UCVIEWITEM_P_H
