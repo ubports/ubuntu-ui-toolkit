@@ -84,7 +84,6 @@ public:
     qreal offset();
     UCListItemActions::Status status();
 
-
 public Q_SLOTS:
     void snapToPosition(qreal position);
 

@@ -29,7 +29,6 @@ UCListItemActionsPrivate::UCListItemActionsPrivate()
     : QObjectPrivate()
     , status(UCListItemActions::Disconnected)
     , offsetDragged(0)
-    , optionSlotWidth(0.0)
     , delegate(0)
     , panelDelegate(0)
     , panelItem(0)
@@ -96,9 +95,6 @@ bool UCListItemActionsPrivate::connectToListItem(UCListItemActions *actions, UCL
         return false;
     }
 
-    // check if the panel is still connected to a ListItem
-    // this may happen if there is a swipe over an other item while the previous
-    // one is rebounding
     _this->panelItem->setParentItem(listItem);
     if (_this->attachedObject()) {
         _this->attachedObject()->connectListItem(listItem, true);
@@ -166,19 +162,20 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *panel)
             // create attached property!
             UCListItemActionsAttached *attached = static_cast<UCListItemActionsAttached*>(
                         qmlAttachedPropertiesObject<UCListItemActions>(panelItem));
-            if (!attached->container()) {
-                attached->setList(q);
-            } else {
-                // container is set, but we need to emit the signal again so we get the
-                // attached props updated for those cases when the attached property is
-                // created before the statement above
-                Q_EMIT attached->containerChanged();
+            if (attached) {
+                if (!attached->container()) {
+                    attached->setList(q);
+                } else {
+                    // container is set, but we need to emit the signal again so we get the
+                    // attached props updated for those cases when the attached property is
+                    // created before the statement above
+                    Q_EMIT attached->containerChanged();
+                }
             }
             panelDelegate->completeCreate();
 
             // calculate option's slot size
             offsetDragged = 0.0;
-            // connect to panel to catch dragging
             QObject::connect(panelItem, SIGNAL(xChanged()), q, SLOT(_q_updateDraggedOffset()));
         }
     } else {

@@ -876,11 +876,14 @@ plugins.qmltypes
     Property { name: "contentMoving"; type: "bool"; isReadonly: true }
     Property { name: "color"; type: "QColor" }
     Property { name: "highlightColor"; type: "QColor" }
+    Property { name: "selected"; type: "bool" }
+    Property { name: "action"; type: "UCAction"; isPointer: true }
     Property { name: "listItemData"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
     Property { name: "style"; type: "QQmlComponent"; isPointer: true }
     Property { name: "__styleInstance"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Signal { name: "clicked" }
+    Signal { name: "pressAndHold" }
     Signal { name: "contentMovementStarted" }
     Signal { name: "contentMovementEnded" }
     name: "UCListItemActions"
@@ -905,7 +908,10 @@ plugins.qmltypes
     Method {
     name: "snapToPosition"
     Parameter { name: "position"; type: "double" }
-    Component { name: "UCListItemAttached"; prototype: "QObject" }
+    name: "UCListItemAttached"
+    prototype: "QObject"
+    Property { name: "selectable"; type: "bool" }
+    Property { name: "selectedIndexes"; type: "QList<int>" }
     name: "UCListItemDivider"
     prototype: "QObject"
     Property { name: "visible"; type: "bool" }

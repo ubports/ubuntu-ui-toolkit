@@ -20,6 +20,7 @@
 #include "uclistitem.h"
 #include "ucstyleditembase_p.h"
 #include <QtCore/QPointer>
+#include <QtCore/QBasicTimer>
 #include <QtQuick/private/qquickrectangle_p.h>
 
 class QQuickFlickable;
@@ -43,7 +44,11 @@ public:
         return that->d_func();
     }
 
+    bool isClickedConnected();
+    bool isPressAndHoldConnected();
     void _q_updateThemedData();
+    bool isSelectable();
+    void _q_selectableUpdated();
     void _q_rebound();
     void promptRebound();
     void _q_updateSize();
@@ -56,7 +61,10 @@ public:
     void listenToRebind(bool listen);
     void resize();
     void update();
+    void clampX(qreal &x, qreal dx);
     void clampAndMoveX(qreal &x, qreal dx);
+    QQuickItem *createSelectionPanel();
+    void setupSelectionMode();
 
     bool pressed:1;
     bool contentMoved:1;
@@ -64,12 +72,13 @@ public:
     bool swiped:1;
     bool suppressClick:1;
     bool ready:1;
+    bool selected:1;
     bool customStyle:1;
     bool customColor:1;
     bool customOvershoot:1;
-    bool flicked:1;
     qreal xAxisMoveThresholdGU;
     qreal overshoot;
+    QBasicTimer pressAndHoldTimer;
     QPointF lastPos;
     QPointF pressedPos;
     QColor color;
@@ -81,7 +90,9 @@ public:
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
+    QQuickItem *selectionPanel;
     UCListItemSnapAnimator *animator;
+    UCAction *defaultAction;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
     QQmlComponent *styleComponent;
@@ -99,6 +110,10 @@ public:
     bool loadStyle(bool reload);
     void initStyleItem();
     QQuickItem *styleInstance() const;
+    bool isSelected() const;
+    void setSelected(bool value);
+    UCAction *action() const;
+    void setAction(UCAction *action);
 };
 
 class PropertyChange;
@@ -109,17 +124,35 @@ public:
     UCListItemAttachedPrivate(UCListItemAttached *qq);
     ~UCListItemAttachedPrivate();
 
+    static UCListItemAttachedPrivate *get(UCListItemAttached *item)
+    {
+        return item ? item->d_func() : 0;
+    }
+
     void clearFlickablesList();
     void buildFlickablesList();
     void clearChangesList();
     void buildChangesList(const QVariant &newValue);
+    void addSelectedItem(UCListItem *item);
+    void removeSelectedItem(UCListItem *item);
+    bool isItemSelected(UCListItem *item);
 
     UCListItemAttached *q_ptr;
-    bool globalDisabled;
+    bool globalDisabled:1;
+    bool selectable:1;
+    QList<int> selectedList;
     QList< QPointer<QQuickFlickable> > flickables;
     QList< PropertyChange* > changes;
     QPointer<UCListItem> boundItem;
     QPointer<UCListItem> disablerItem;
+
+    // getter/setter
+    bool isSelectable() const;
+    void setSelectable(bool value);
+    QList<int> selectedIndexes() const;
+    void setSelectedIndexes(const QList<int> &list);
+    bool singleSelect() const;
+    void setSingleSelect(bool value);
 };
 
 class UCListItemDivider : public QObject

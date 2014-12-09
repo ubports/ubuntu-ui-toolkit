@@ -51,7 +51,16 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
 
 /*!
  * \qmlproperty Component ListItemStyle::selectionDelegate
- * Holds the component handling the selection mode.
+ * Holds the component handling the selection mode. The component is responsible
+ * to handle the visualization for the selection mode, updating the visuals of
+ * the ListItem (e.g. pushing the \l {ListItem::contentItem}{contentItem},
+ * animating the changes, etc.), as well as reporting the changes to the ListItem
+ * whenever the selection is changed.
+ *
+ * ListItem will create the component when the selection mode is emntered, and will
+ * keep it fo rteh entire lifetime of the ListItem, even if the selection mode is
+ * exited. The selection mode is exposed to the component through the \c inSelectionMode
+ * context property.
  */
 
 /*!

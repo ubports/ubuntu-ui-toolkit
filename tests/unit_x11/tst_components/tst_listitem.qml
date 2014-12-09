@@ -21,8 +21,8 @@ import Ubuntu.Components 1.2
 
 Item {
     id: main
-    width: units.gu(40)
-    height: units.gu(71)
+    width: units.gu(50)
+    height: units.gu(100)
 
     Action {
         id: stockAction
@@ -66,10 +66,19 @@ Item {
     }
 
     Column {
+        id: testColumn
         width: parent.width
         ListItem {
             id: defaults
             width: parent.width
+        }
+        ListItem {
+            id: highlightTest
+        }
+        ListItem {
+            id: clickedConnected
+            onClicked: {}
+            onPressAndHold: {}
         }
         ListItem {
             id: testItem
@@ -82,18 +91,44 @@ Item {
                 anchors.fill: parent
             }
         }
+        ListItem {
+            id: controlItem
+            Button {
+                id: button
+                objectName: "button_in_list"
+                anchors.centerIn: parent
+                text: "Button"
+            }
+        }
         ListView {
             id: listView
             width: parent.width
             height: units.gu(28)
             clip: true
             model: 10
+            ListItem.selectable: false
             delegate: ListItem {
                 objectName: "listItem" + index
                 color: "lightgray"
                 width: parent.width
                 leadingActions: leading
                 trailingActions: trailing
+            }
+        }
+        Flickable {
+            id: testFlickable
+            width: parent.width
+            height: units.gu(28)
+            ListView {
+                id: nestedListView
+                width: parent.width
+                height: units.gu(28)
+                clip: true
+                model: 10
+                delegate: ListItem {
+                    objectName: "listItem" + index
+                    leadingActions: leading
+                }
             }
         }
     }
@@ -153,12 +188,21 @@ Item {
         }
 
         function cleanup() {
+            testItem.action = null;
+            testItem.selected = false;
+            testColumn.ListItem.selectable = false;
+            waitForRendering(testItem.contentItem, 400);
+            controlItem.selected = false;
+            waitForRendering(controlItem.contentItem, 400);
             movingSpy.clear();
             pressedSpy.clear();
             clickSpy.clear();
             actionSpy.clear();
+            pressAndHoldSpy.clear();
+            buttonSpy.clear();
             interactiveSpy.clear();
             listView.interactive = true;
+            listView.ListItem.selectable = false;
             // make sure we collapse
             mouseClick(defaults, 0, 0)
             movingSpy.target = null;
@@ -183,8 +227,12 @@ Item {
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
             compare(defaults.contentMoving, false, "default is not moving");
+            compare(defaults.action, null, "No action by default.");
             compare(defaults.style, null, "Style is loaded upon first use.");
             compare(defaults.__styleInstance, null, "__styleInstance must be null.");
+            compare(defaults.selected, false, "Not selected by default");
+            compare(testColumn.ListItem.selectable, false, "The parent attached property is not selectable by default");
+            compare(testColumn.ListItem.selectedIndexes.length, 0, "No item is selected by default");
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
@@ -195,11 +243,13 @@ Item {
         }
 
         function test_pressedChanged_on_click() {
+            pressedSpy.target = testItem;
             mousePress(testItem, testItem.width / 2, testItem.height / 2);
             pressedSpy.wait();
             mouseRelease(testItem, testItem.width / 2, testItem.height / 2);
         }
         function test_pressedChanged_on_tap() {
+            pressedSpy.target = testItem;
             TestExtras.touchPress(0, testItem, centerOf(testItem));
             pressedSpy.wait();
             TestExtras.touchRelease(0, testItem, centerOf(testItem));
@@ -208,10 +258,12 @@ Item {
         }
 
         function test_clicked_on_mouse() {
+            clickSpy.target = testItem;
             mouseClick(testItem, testItem.width / 2, testItem.height / 2);
             clickSpy.wait();
         }
         function test_clicked_on_tap() {
+            clickSpy.target = testItem;
             TestExtras.touchClick(0, testItem, centerOf(testItem));
             clickSpy.wait();
         }
@@ -289,6 +341,28 @@ Item {
             rebound(data.item);
         }
 
+        function test_attached_listitem_data() {
+            var item = findChild(listView, "listItem3");
+            return [
+                {tag: "Trailing", item: item, pos: centerOf(item), dx: -units.gu(20), leading: true, index: 3},
+                {tag: "Leading", item: item, pos: centerOf(item), dx: units.gu(20), leading: true, index: 3},
+            ];
+        }
+        function test_attached_listitem(data) {
+            listView.positionViewAtBeginning();
+            movingSpy.target = data.item;
+            flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+            movingSpy.wait();
+            var panel = panelItem(data.item, data.leading);
+            verify(panel, "No panel found");
+            compare(panel.ListItemActions.listItem, data.item, "The attached listItem differs from the actual item using the list.");
+            compare(panel.ListItemActions.listItemIndex, data.index, "The attached listItem index is wrong.");
+            verify(panel.ListItemActions.status != ListItemActions.Disconnected, "The attached status is wrong.");
+
+            // dismiss
+            rebound(data.item);
+        }
+
         function test_rebound_when_pressed_outside_or_clicked_data() {
             var item0 = findChild(listView, "listItem0");
             var item1 = findChild(listView, "listItem1");
@@ -325,6 +399,7 @@ Item {
         }
         function test_listview_not_interactive_while_tugged(data) {
             listView.positionViewAtBeginning();
+            interactiveSpy.target = listView;
             compare(listView.interactive, true, "ListView is not interactive");
             movingSpy.target = data.item;
             interactiveSpy.target = listView;
@@ -534,8 +609,8 @@ Item {
             var item2 = findChild(listView, "listItem2");
             var item3 = findChild(listView, "listItem3");
             return [
-                // testItem is the child item @index 1 in the topmost Column.
-                {tag: "Standalone item, child index 1", item: testItem, result: 1},
+                // testItem is the child item @index 3 in the topmost Column.
+                {tag: "Standalone item, child index 3", item: testItem, result: 3},
                 {tag: "ListView, item index 0", item: item0, result: 0},
                 {tag: "ListView, item index 1", item: item1, result: 1},
                 {tag: "ListView, item index 2", item: item2, result: 2},
@@ -565,6 +640,197 @@ Item {
             // SignalSpy.signalArguments[0] is an array of arguments, where the index is set as index 0
             var param = actionSpy.signalArguments[0];
             compare(param[0], data.result, "Action parameter differs");
+        }
+
+        function test_highlight_data() {
+            return [
+                {tag: "No actions", item: highlightTest, x: centerOf(highlightTest).x, y: centerOf(highlightTest).y, pressed: false},
+                {tag: "Leading/trailing actions", item: testItem, x: centerOf(testItem).x, y: centerOf(testItem).y, pressed: true},
+                {tag: "Active component content", item: controlItem, x: units.gu(1), y: units.gu(1), pressed: true},
+                {tag: "Center of active component content", item: controlItem, x: centerOf(controlItem).x, y: centerOf(controlItem).y, pressed: false},
+                {tag: "clicked() connected", item: clickedConnected, x: centerOf(clickedConnected).x, y: centerOf(clickedConnected).y, pressed: true},
+            ];
+        }
+        function test_highlight(data) {
+            pressedSpy.target = data.item;
+            mouseClick(data.item, data.x, data.y);
+            if (data.pressed) {
+                pressedSpy.wait();
+            } else {
+                compare(pressedSpy.count, 0, "Should not be pressed!");
+            }
+        }
+
+        SignalSpy {
+            id: pressAndHoldSpy
+            signalName: "pressAndHold"
+        }
+        SignalSpy {
+            id: buttonSpy
+            signalName: "clicked"
+            target: button
+        }
+        function test_pressandhold_suppress_click() {
+            var center = centerOf(testItem);
+            pressAndHoldSpy.target = testItem;
+            clickSpy.target = testItem;
+            clickSpy.clear();
+            mouseLongPress(testItem, center.x, center.y);
+            mouseRelease(testItem, center.x, center.y);
+            pressAndHoldSpy.wait();
+            compare(clickSpy.count, 0, "Click must be suppressed when long pressed");
+        }
+
+        function test_pressandhold_not_emitted_when_swiped() {
+            var center = centerOf(testItem);
+            pressAndHoldSpy.target = testItem;
+            // move mouse slowly from left to right, the swipe threshold is 1.5 GU!!!,
+            // so any value less than that will emit pressAndHold
+            mouseMoveSlowly(testItem, center.x, center.y, units.gu(2), 0, 10, 100);
+            mouseRelease(testItem, center.x + units.gu(1), center.y);
+            compare(pressAndHoldSpy.count, 0, "pressAndHold should not be emitted!");
+            // make sure we have collapsed item
+            rebound(testItem);
+        }
+
+        function test_pressandhold_not_emitted_when_pressed_over_active_component() {
+            var press = centerOf(button);
+            pressAndHoldSpy.target = controlItem;
+            mouseLongPress(button, press.x, press.y);
+            compare(pressAndHoldSpy.count, 0, "")
+            mouseRelease(button, press.x, press.y);
+        }
+
+        function test_click_on_button_suppresses_listitem_click() {
+            buttonSpy.target = button;
+            clickSpy.target = controlItem;
+            mouseClick(button, centerOf(button).x, centerOf(button).y);
+            buttonSpy.wait();
+            compare(clickSpy.count, 0, "ListItem clicked() must be suppressed");
+        }
+
+        function test_pressandhold_connected_causes_highlight() {
+            pressedSpy.target = clickedConnected;
+            mouseLongPress(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
+            pressedSpy.wait();
+            mouseRelease(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
+        }
+
+        function test_listitem_blocks_ascendant_flickables() {
+            var listItem = findChild(nestedListView, "listItem0");
+            verify(listItem, "Cannot find test item");
+            interactiveSpy.target = testFlickable;
+            movingSpy.target = listItem;
+            // tug leading
+            flick(listItem, centerOf(listItem).x, centerOf(listItem).y, listItem.width / 2, 0);
+            movingSpy.wait();
+            // check if interactive got changed
+            interactiveSpy.wait();
+
+            // cleanup!!!
+            rebound(listItem);
+        }
+
+        function test_action_type_set() {
+            stockAction.parameterType = Action.None;
+            compare(stockAction.parameterType, Action.None, "No parameter type for stockAction!");
+            testItem.action = stockAction;
+            compare(stockAction.parameterType, Action.Integer, "No parameter type for stockAction!");
+        }
+
+        function test_action_triggered_on_clicked() {
+            testItem.action = stockAction;
+            actionSpy.target = stockAction;
+            clickSpy.target = testItem;
+            mouseClick(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            clickSpy.wait();
+            actionSpy.wait();
+        }
+
+        function test_action_suppressed_on_longpress() {
+            testItem.action = stockAction;
+            actionSpy.target = stockAction;
+            clickSpy.target = testItem;
+            pressAndHoldSpy.target = testItem;
+            mouseLongPress(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            mouseRelease(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            pressAndHoldSpy.wait();
+            compare(clickSpy.count, 0, "Click must be suppressed.");
+            compare(actionSpy.count, 0, "Action triggered must be suppressed");
+        }
+
+        function test_toggle_selectable_data() {
+            return [
+                {tag: "When not selected", selected: false},
+                {tag: "When selected", selected: true},
+            ]
+        }
+        function test_toggle_selectable(data) {
+            testItem.selected = data.selected;
+            testColumn.ListItem.selectable = true;
+            waitForRendering(testItem.contentItem);
+            verify(findChild(testItem, "selection_panel"), "Cannot find selection panel");
+            compare(testItem.contentItem.enabled, false, "contentItem is not disabled.");
+        }
+
+        SignalSpy {
+            id: selectedSpy
+            signalName: "selectedChanged"
+        }
+
+        function test_toggle_selected_data() {
+            return [
+                // item = <test-item>, clickOk: <item-to-click-on>, offsetX|Y: <clickOn offset clicked>
+                {tag: "Click over selection", selectableHolder: testColumn, item: controlItem, clickOn: "listitem_select", offsetX: units.gu(0.5), offsetY: units.gu(0.5)},
+                {tag: "Click over contentItem", selectableHolder: testColumn, item: controlItem, clickOn: "ListItemHolder", offsetX: units.gu(0.5), offsetY: units.gu(0.5)},
+                {tag: "Click over control", selectableHolder: testColumn, item: controlItem, clickOn: "button_in_list", offsetX: units.gu(0.5), offsetY: units.gu(0.5)},
+            ];
+         }
+        function test_toggle_selected(data) {
+            // make test item selectable first, so the panel is created
+            data.selectableHolder.ListItem.selectable = true;
+            waitForRendering(data.item.contentItem);
+            // get the control to click on
+            var clickOn = findChild(data.item, data.clickOn);
+            verify(clickOn, "control to be clicked on not found");
+            // click on the selection and check selected changed
+            selectedSpy.target = data.item;
+            selectedSpy.clear();
+            mouseClick(clickOn, data.offsetX, data.offsetY);
+            selectedSpy.wait();
+        }
+
+        function test_no_tug_when_selectable() {
+            movingSpy.target = testItem;
+            testColumn.ListItem.selectable = true;
+            // wait till animation to selection mode ends
+            waitForRendering(testItem.contentItem);
+
+            // try to tug leading
+            movingSpy.clear();
+            flick(testItem, centerOf(testItem).x, centerOf(testItem).y, units.gu(10), 0);
+            compare(movingSpy.count, 0, "No tug allowed when in selection mode");
+        }
+
+        function test_no_click_when_selectable() {
+            testColumn.ListItem.selectable = true;
+            // wait till animation to selection mode ends
+            waitForRendering(testItem.contentItem);
+
+            clickSpy.target = testItem;
+            mouseClick(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            compare(clickSpy.count, 0, "No click when selectable");
+        }
+
+        function test_no_pressandhold_when_selectable() {
+            testColumn.ListItem.selectable = true;
+            // wait till animation to selection mode ends
+            waitForRendering(testItem.contentItem);
+
+            pressAndHoldSpy.target = testItem;
+            mouseLongPress(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            mouseRelease(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            compare(pressAndHoldSpy.count, 0, "No pressAndHold when selectable");
         }
     }
 }

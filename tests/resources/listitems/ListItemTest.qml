@@ -20,7 +20,8 @@ import Ubuntu.Components 1.2
 MainView {
     id: main
     width: units.gu(50)
-    height: units.gu(100)
+    height: units.gu(105)
+    useDeprecatedToolbar: false
 
     property bool override: false
 
@@ -29,7 +30,10 @@ MainView {
         id: stock
         iconName: "starred"
         text: "Staaaar"
-        onTriggered: print(iconName, "triggered", value)
+        onTriggered: {
+            print(iconName, "triggered", value)
+            view.ListItem.selectedIndexes = [1, 2, 9];
+        }
     }
 
     ListItemActions {
@@ -64,6 +68,7 @@ MainView {
         ]
     }
 
+    property bool selectable: false
     property list<Action> leadingArray: [
         Action {
             iconName: "delete"
@@ -87,6 +92,11 @@ MainView {
             right: parent.right
         }
 
+        Button {
+            text: "Selectable " + (selectable ? "OFF" : "ON")
+            onClicked: selectable = !selectable
+        }
+
         ListItem {
             id: testItem
             objectName: "single"
@@ -95,16 +105,21 @@ MainView {
                 print("click")
                 main.override = !main.override
             }
+            onPressAndHold: print("pressAndHold", objectName)
             Label {
                 anchors.fill: parent
                 text: units.gridUnit + "PX/unit"
             }
+            Button {
+                text: "Press me"
+                anchors.centerIn: parent
+            }
+
             leadingActions: ListItemActions {
                 objectName: "InlineLeading"
                 actions: [stock]
                 delegate: Column {
                     width: height + units.gu(2)
-                    anchors.verticalCenter: parent.verticalCenter
                     Icon {
                         width: units.gu(3)
                         height: width
@@ -123,6 +138,14 @@ MainView {
         }
         ListItem {
             Label {
+                id: label
+                text: "No action"
+            }
+            onClicked: print(label.text, "clicked")
+        }
+
+        ListItem {
+            Label {
                 anchors.fill: parent
                 text: "Another standalone ListItem"
             }
@@ -139,6 +162,9 @@ MainView {
             height: units.gu(20)
             model: 10
             pressDelay: 0
+            ListItem.selectable: main.selectable
+            ListItem.selectedIndexes: [9,3,4,1]
+            ListItem.onSelectedIndexesChanged: print("LISTVIEW INDEXES=", ListItem.selectedIndexes)
             delegate: ListItem {
                 objectName: "ListItem" + index
                 id: listItem
@@ -147,6 +173,11 @@ MainView {
                 Label {
                     text: modelData + " item"
                 }
+                Button {
+                    text: "Pressme..."
+                    anchors.centerIn: parent
+                }
+
                 states: State {
                     name: "override"
                     when: main.override
@@ -167,11 +198,14 @@ MainView {
                 id: trailing
                 actions: leading.actions
             }
+            ListItem.selectable: main.selectable
+            ListItem.onSelectedIndexesChanged: print("INDEXES=", ListItem.selectedIndexes)
 
             Column {
                 id: column
                 width: view.width
                 property alias count: repeater.count
+
                 Repeater {
                     id: repeater
                     model: 10
@@ -196,6 +230,23 @@ MainView {
                     }
                 }
             }
+        }
+        ListItem {
+            Label {
+                text: "Switch makes this item to highlight"
+            }
+            Switch {
+                id: toggle
+                anchors.right: parent.right
+            }
+            Component.onCompleted: clicked.connect(toggle.clicked)
+        }
+        ListItem {
+            Label {
+                text: "No action, no trailing/leading actions, no active component"
+            }
+            onClicked: print("clicked")
+            onPressAndHold: print("longPressed")
         }
     }
 }
