@@ -61,7 +61,6 @@ public:
     void listenToRebind(bool listen);
     void resize();
     void update();
-    void clampX(qreal &x, qreal dx);
     void clampAndMoveX(qreal &x, qreal dx);
     QQuickItem *createSelectionPanel();
     void setupSelectionMode();
