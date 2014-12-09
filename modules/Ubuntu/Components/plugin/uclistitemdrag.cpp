@@ -103,10 +103,13 @@ void UCDragHandler::setupDragMode()
         bool animate = (senderSignalIndex() >= 0);
         setupDragPanel(animate);
         if (panel) {
+            // install filter to catch mouse events
             panel->installEventFilter(this);
+            // stop children filtering while move mode is on
             listItem->item()->setFiltersChildMouseEvents(false);
         }
     } else if (panel) {
+        // remove filter and re-enable filtering on children events
         panel->removeEventFilter(this);
         listItem->item()->setFiltersChildMouseEvents(true);
     }
