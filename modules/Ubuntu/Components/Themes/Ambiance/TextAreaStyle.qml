@@ -26,6 +26,8 @@ Item {
     // if color type is used, alpha value gets lost
 
     property color color: (styledItem.focus || styledItem.highlighted) ? Theme.palette.selected.fieldText : Theme.palette.normal.fieldText
+    property color selectedTextColor: Theme.palette.selected.foregroundText
+    property color selectionColor: Theme.palette.selected.foreground
     /*!
       Background fill color
       */
