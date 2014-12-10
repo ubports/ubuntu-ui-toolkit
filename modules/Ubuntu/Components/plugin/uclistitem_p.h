@@ -52,6 +52,7 @@ public:
 
     bool isClickedConnected();
     bool isPressAndHoldConnected();
+    bool isSelectable();
     void _q_enabler();
     void _q_updateThemedData();
     void _q_rebound();
@@ -93,7 +94,7 @@ public:
     UCListItemActions *trailingActions;
     UCListItemSnapAnimator *animator;
     UCAction *defaultAction;
-    UCSelectionHandler *selection;
+    UCSelectionHandler *selectionHandler;
     UCDragHandler *dragHandler;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
@@ -246,27 +247,47 @@ private:
     UCListItem *item;
 };
 
-class UCSelectionHandler : public QObject
+class UCHandlerBase : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(bool selectable READ selectable NOTIFY selectableChanged)
+public:
+
+    explicit UCHandlerBase(UCListItem *owner = 0);
+    virtual void connectInterfaces();
+
+    bool selectable() const;
+
+Q_SIGNALS:
+    void draggableChanged();
+    void selectableChanged();
+
+protected:
+    UCListItemPrivate *listItem;
+    QQuickItem *panel;
+
+    void setupPanel(QQmlComponent *component, bool animate);
+
+};
+
+class UCSelectionHandler : public UCHandlerBase
 {
     Q_OBJECT
 public:
     explicit UCSelectionHandler(UCListItem *owner = 0);
 
-    void getNotified();
-    bool isSelectable();
-    bool isSelected();
+    void connectInterfaces();
+    bool isSelected()
+    {
+        return selected;
+    }
     void setSelected(bool value);
 
 public Q_SLOTS:
     void setupSelection();
 
 protected:
-    UCListItemPrivate *listItem;
-    QQuickItem *panel;
     bool selected:1;
-    bool isConnected:1;
-
-    void setupPanel(bool animate);
 };
 
 class UCDragHandler : public QObject
