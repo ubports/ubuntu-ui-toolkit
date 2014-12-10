@@ -37,17 +37,19 @@ Styles.ListItemStyle {
     selectionDelegate: Item {
         id: selectionPanel
         objectName: "selection_panel"
-        width: checkbox.width + 2 * units.gu(2)
+        width: units.gu(5)
+
+        readonly property ListItem listItem: parent
 
         /*
           Set if the ListItem is selected
           */
-        readonly property bool selected: parent ? parent.selected : false
+        readonly property bool selected: listItem ? listItem.selected : false
 
         /*
           Internally used to link to the list item's content. The parent item is the ListItem itself.
           */
-        readonly property Item contentItem: parent ? parent.contentItem : null
+        readonly property Item contentItem: listItem ? listItem.contentItem : null
 
         anchors {
             right: contentItem ? contentItem.left : undefined
@@ -58,8 +60,13 @@ Styles.ListItemStyle {
         states: State {
             name: "enabled"
             PropertyChanges {
-                target: selectionPanel.parent.contentItem
+                target: contentItem
                 x: selectionPanel.width
+                width: listItem.width - selectionPanel.width
+            }
+            PropertyChanges {
+                target: checkbox
+                opacity: 1.0
             }
         }
 
@@ -67,11 +74,25 @@ Styles.ListItemStyle {
             from: ""
             to: "enabled"
             reversible: true
-            PropertyAnimation {
-                target: selectionPanel.parent.contentItem
-                property: "x"
-                easing: UbuntuAnimation.StandardEasing
-                duration: UbuntuAnimation.FastDuration
+            ParallelAnimation {
+                PropertyAnimation {
+                    target: selectionPanel.parent.contentItem
+                    property: "x"
+                    easing: UbuntuAnimation.StandardEasing
+                    duration: UbuntuAnimation.FastDuration
+                }
+                PropertyAnimation {
+                    target: selectionPanel.parent.contentItem
+                    property: "width"
+                    easing: UbuntuAnimation.StandardEasing
+                    duration: UbuntuAnimation.FastDuration
+                }
+                PropertyAnimation {
+                    target: checkbox
+                    property: "opacity"
+                    easing: UbuntuAnimation.StandardEasing
+                    duration: UbuntuAnimation.FastDuration
+                }
             }
         }
 
@@ -82,6 +103,7 @@ Styles.ListItemStyle {
             // for unit and autopilot tests
             objectName: "listitem_select"
             anchors.centerIn: parent
+            opacity: 0.0
             // for the initial value
             checked: selectionPanel.selected
             onCheckedChanged: {
