@@ -894,6 +894,9 @@ void UCListItem::componentComplete()
         d->dragHandler->getNotified();
         d->dragHandler->setupDragMode();
     }
+
+    // finally check enabled state
+    d->_q_enabler();
 }
 
 void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)

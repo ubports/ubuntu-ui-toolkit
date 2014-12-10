@@ -95,13 +95,20 @@ Styles.ListItemStyle {
 
     dragHandlerDelegate: Rectangle {
         id: dragHandler
-        objectName: "draghandler_panel"
+        objectName: "draghandler_panel" + index
         width: height
         /*
           Internally used to link to the list item's content. The parent item is the ListItem itself.
           */
         readonly property Item contentItem: parent ? parent.contentItem : null
 
+        // use MouseArea and a filter to forward mouse events to the ListView
+        MouseArea {
+            anchors.fill: parent
+            enabled: state == "enabled"
+            // forward mouse events to the ListView to handle dragging!
+            Mouse.forwardTo: dragHandler.parent ? [dragHandler.parent.ListView.view] : []
+        }
         anchors {
             // by default the panel stays outside of the ListItem's right side
             left: parent ? parent.right : undefined
@@ -110,10 +117,11 @@ Styles.ListItemStyle {
         }
 
         Icon {
+            objectName: "icon"
             id: dragIcon
             anchors.centerIn: parent
             width: units.gu(2.5)
-            height: units.gu(2.5)
+            height: width
             name: "view-grid-symbolic"
         }
 

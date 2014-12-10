@@ -19,8 +19,8 @@ import Ubuntu.Components 1.2
 
 MainView {
     id: main
-    width: units.gu(50)
-    height: units.gu(105)
+    width: units.gu(40)
+    height: units.gu(60)
     useDeprecatedToolbar: false
 
     Page {
@@ -28,6 +28,7 @@ MainView {
         ListView {
             anchors.fill: parent
             ListItem.selectable: ListItem.draggable
+            contentItem.objectName: "ListViewContent"
 
             model: ListModel {
                 Component.onCompleted: {
@@ -38,6 +39,7 @@ MainView {
             }
 
             delegate: ListItem {
+                objectName: "ListItem-" + index
                 Label {
                     text: label
                 }

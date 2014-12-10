@@ -19,7 +19,10 @@
 #include "uclistitem.h"
 #include "uclistitem_p.h"
 #include "propertychange_p.h"
+#include "quickutils.h"
+#include "i18n.h"
 #include <QtQuick/private/qquickflickable_p.h>
+#include <QtQml/QQmlInfo>
 
 /*
  * The properties are attached to the ListItem's parent item or to its closest
@@ -30,6 +33,7 @@
  */
 UCListItemAttachedPrivate::UCListItemAttachedPrivate(UCListItemAttached *qq)
     : q_ptr(qq)
+    , listView(0)
     , globalDisabled(false)
     , selectable(false)
     , draggable(false)
@@ -110,6 +114,9 @@ UCListItemAttached::UCListItemAttached(QObject *owner)
     : QObject(owner)
     , d_ptr(new UCListItemAttachedPrivate(this))
 {
+    if (QuickUtils::inherits(owner, "QQuickListView")) {
+        d_ptr->listView = static_cast<QQuickFlickable*>(owner);
+    }
 }
 
 UCListItemAttached::~UCListItemAttached()
@@ -322,7 +329,100 @@ void UCListItemAttachedPrivate::setDraggable(bool value)
     if (draggable == value) {
         return;
     }
-    draggable = value;
     Q_Q(UCListItemAttached);
+    if (value) {
+        /*
+         * The dragging works only if the ListItem is used inside a ListView, and the
+         * model used is a list, a ListModel or a derivate of QAbstractItemModel. Do
+         * not enable dragging if these conditions are not fulfilled.
+         */
+        if (!listView) {
+            qmlInfo(q->parent()) << UbuntuI18n::instance().tr("dragging mode requires ListView");
+            return;
+        }
+        QVariant modelValue = listView->property("model");
+        if (!modelValue.isValid()) {
+            return;
+        }
+        if (modelValue.type() == QVariant::Int || modelValue.type() == QVariant::Double) {
+            qmlInfo(listView) << UbuntuI18n::instance().tr("model must be a list, ListModel or a derivate of QAbstractItemModel");
+            return;
+        }
+    }
+    draggable = value;
+    if (draggable) {
+        listView->installEventFilter(q);
+    } else {
+        listView->removeEventFilter(q);
+    }
     Q_EMIT q->draggableChanged();
+}
+
+bool UCListItemAttached::eventFilter(QObject *watched, QEvent *event)
+{
+    Q_D(UCListItemAttached);
+    switch (event->type()) {
+    case QEvent::MouseButtonPress:
+    {
+        d->mousePressed(d->listView, static_cast<QMouseEvent*>(event));
+        break;
+    }
+    case QEvent::MouseButtonRelease:
+    {
+        d->mouseReleased(d->listView, static_cast<QMouseEvent*>(event));
+        break;
+    }
+    case QEvent::MouseMove:
+    {
+        d->mouseMoved(d->listView, static_cast<QMouseEvent*>(event));
+        break;
+    }
+    default:
+        break;
+    }
+    return QObject::eventFilter(watched, event);
+}
+
+QQuickItem *UCListItemAttachedPrivate::lastChildAt(QQuickItem *parent, QPointF pos)
+{
+    QQuickItem *child = parent->childAt(pos.x(), pos.y());
+    while (child) {
+        pos = child->mapFromItem(parent, pos);
+        // find the next one
+        QQuickItem *next = child->childAt(pos.x(), pos.y());
+
+        // are we in a ListItem already?
+        UCListItem *listItem = qobject_cast<UCListItem*>(child);
+        if (listItem && UCListItemPrivate::get(listItem)->dragHandler->isPanel(next)) {
+            // we stop here and check if the press occurred over drag handler's panel
+            child = next;
+            break;
+        } else if (next) {
+            parent = child;
+            child = next;
+        } else {
+            break;
+        }
+    }
+    return child;
+}
+
+void UCListItemAttachedPrivate::mousePressed(QQuickItem *sender, QMouseEvent *event)
+{
+    QQuickItem *child = lastChildAt(sender, event->localPos());
+    qDebug() << "PRESSED OVER" << child;
+}
+
+void UCListItemAttachedPrivate::mouseReleased(QQuickItem *sender, QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    QQuickItem *child = lastChildAt(sender, event->localPos());
+    qDebug() << "RELEASED OVER" << child;
+}
+
+void UCListItemAttachedPrivate::mouseMoved(QQuickItem *sender, QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    QQuickItem *child = lastChildAt(sender, event->localPos());
+    qDebug() << "MOVED OVER" << child;
 }

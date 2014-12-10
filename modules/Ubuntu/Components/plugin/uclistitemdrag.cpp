@@ -42,8 +42,6 @@ void UCDragHandler::setupDragPanel(bool animate)
                 panel = qobject_cast<QQuickItem*>(
                             listItem->styleItem->m_dragHandlerDelegate->beginCreate(context));
                 if (panel) {
-                    // accept left mouse button to enable drag handling
-                    panel->setAcceptedMouseButtons(Qt::LeftButton);
                     QQml_setParent_noEvent(panel, item);
                     panel->setParentItem(item);
                     // complete component creation
@@ -60,6 +58,7 @@ void UCDragHandler::setupDragPanel(bool animate)
 
 bool UCDragHandler::eventFilter(QObject *watched, QEvent *event)
 {
+    // forward mouse pressed event, do not care about the rest
     qDebug() << "EVENT" << event->type() << this;
     QEvent::Type type = event->type();
     bool mouseEvent = (type == QEvent::MouseButtonPress) ||
@@ -110,19 +109,12 @@ void UCDragHandler::setupDragMode()
         // animate panel only in case is called due to a signal emit
         bool animate = (senderSignalIndex() >= 0);
         setupDragPanel(animate);
-        if (panel) {
-            // install filter to catch mouse events
-            panel->installEventFilter(this);
-            // stop children filtering while move mode is on
-            listItem->item()->setFiltersChildMouseEvents(false);
-        }
-    } else if (panel) {
-        // remove filter and re-enable filtering on children events
-        panel->removeEventFilter(this);
+        // stop children filtering while move mode is on
+        listItem->item()->setFiltersChildMouseEvents(false);
+    } else {
         listItem->item()->setFiltersChildMouseEvents(true);
     }
 
-    listItem->contentItem->setEnabled(!draggable);
     // update visuals
     listItem->update();
 }
