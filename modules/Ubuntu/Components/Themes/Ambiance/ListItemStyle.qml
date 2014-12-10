@@ -51,7 +51,6 @@ Styles.ListItemStyle {
           */
         readonly property Item contentItem: listItem ? listItem.contentItem : null
 
-
         anchors {
             right: contentItem ? contentItem.left : undefined
             top: contentItem ? contentItem.top : undefined
