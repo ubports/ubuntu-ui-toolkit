@@ -44,7 +44,7 @@ MainView {
                     text: label
                 }
                 Button {
-                    text: "Press"
+                    text: "Press button which is long enough"
                     anchors.centerIn: parent
                 }
 

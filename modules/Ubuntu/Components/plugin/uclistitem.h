@@ -139,8 +139,9 @@ Q_SIGNALS:
     void selectedIndexesChanged();
     void draggableChanged();
 
-    void draggingStarted(int index);
-    void draggingEnded(int index);
+    void draggingStarted(int from);
+    void draggingEnded(int from, int to, bool &accept);
+    void draggingUpdated(int from, int to);
 
 private:
     Q_DECLARE_PRIVATE(UCListItemAttached)

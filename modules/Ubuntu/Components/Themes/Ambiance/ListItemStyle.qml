@@ -96,15 +96,16 @@ Styles.ListItemStyle {
     dragHandlerDelegate: Rectangle {
         id: dragHandler
         objectName: "draghandler_panel" + index
-        width: height
+        width: units.gu(5)
         /*
           Internally used to link to the list item's content. The parent item is the ListItem itself.
           */
         readonly property Item contentItem: parent ? parent.contentItem : null
 
+        color: parent && parent.color != "#000000" ? parent.color : QuickUtils.rootItem(parent).backgroundColor
+
         anchors {
-            // by default the panel stays outside of the ListItem's right side
-            left: parent ? parent.right : undefined
+            right: parent ? parent.right : undefined
             top: contentItem ? contentItem.top : undefined
             bottom: contentItem ? contentItem.bottom : undefined
         }
@@ -113,18 +114,14 @@ Styles.ListItemStyle {
             objectName: "icon"
             id: dragIcon
             anchors.centerIn: parent
-            width: units.gu(2.5)
+            width: units.gu(2)
             height: width
             name: "view-grid-symbolic"
         }
 
         states: State {
             name: "enabled"
-            AnchorChanges {
-                target: dragHandler
-                anchors.right: dragHandler.parent.right
-                anchors.left: undefined
-            }
+
         }
 
         transitions: Transition {
