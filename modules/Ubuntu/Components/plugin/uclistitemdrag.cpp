@@ -5,6 +5,8 @@
 #include "listener.h"
 #include <QtQml/QQmlInfo>
 #include <QtQml/QQmlContext>
+#include <QtGui/QGuiApplication>
+#include <QtQuick/private/qquickflickable_p.h>
 
 UCDragHandler::UCDragHandler(UCListItem *listItem)
     : QObject(listItem)
@@ -23,34 +25,37 @@ UCDragHandler::~UCDragHandler()
 
 void UCDragHandler::setupDragPanel(bool animate)
 {
-    if (!panel) {
-        // get the style loaded
-        listItem->initStyleItem();
-        if (listItem->styleItem && listItem->styleItem->m_dragHandlerDelegate) {
-            if (listItem->styleItem->m_dragHandlerDelegate->isError()) {
-                qmlInfo(listItem->q_ptr) << listItem->styleItem->m_dragHandlerDelegate->errorString();
-            } else {
-                UCListItem *item = listItem->item();
-                // create a new context so we can expose context properties
-                QQmlContext *context = new QQmlContext(qmlContext(item), item);
-                context->setContextProperty("inDraggingMode",
-                                            animate ? QVariant(false) : isDraggable());
-                ContextPropertyChangeListener *listener = new ContextPropertyChangeListener(
-                            context, "inDraggingMode");
-                listener->setUpdaterProperty(listItem->attachedProperties, "draggable");
+    if (panel) {
+        return;
+    }
+    // get the style loaded
+    listItem->initStyleItem();
+    if (listItem->styleItem && listItem->styleItem->m_dragHandlerDelegate) {
+        if (listItem->styleItem->m_dragHandlerDelegate->isError()) {
+            qmlInfo(listItem->q_ptr) << listItem->styleItem->m_dragHandlerDelegate->errorString();
+        } else {
+            UCListItem *item = listItem->item();
+            // create a new context so we can expose context properties
+            QQmlContext *context = new QQmlContext(qmlContext(item), item);
+            context->setContextProperty("inDraggingMode",
+                                        animate ? QVariant(false) : isDraggable());
+            ContextPropertyChangeListener *listener = new ContextPropertyChangeListener(
+                        context, "inDraggingMode");
+            listener->setUpdaterProperty(listItem->attachedProperties, "draggable");
 
-                panel = qobject_cast<QQuickItem*>(
-                            listItem->styleItem->m_dragHandlerDelegate->beginCreate(context));
-                if (panel) {
-                    QQml_setParent_noEvent(panel, item);
-                    panel->setParentItem(item);
-                    // complete component creation
-                    listItem->styleItem->m_dragHandlerDelegate->completeCreate();
-                    if (animate) {
-                        // turn on draggable context property
-                        context->setContextProperty("inDraggingMode", isDraggable());
-                    }
+            panel = qobject_cast<QQuickItem*>(
+                        listItem->styleItem->m_dragHandlerDelegate->beginCreate(context));
+            if (panel) {
+                QQml_setParent_noEvent(panel, item);
+                panel->setParentItem(item);
+                // complete component creation
+                listItem->styleItem->m_dragHandlerDelegate->completeCreate();
+                if (animate) {
+                    // turn on draggable context property
+                    context->setContextProperty("inDraggingMode", isDraggable());
                 }
+                // set left button as accepted so we can forward pressed events to the list view
+                panel->setAcceptedMouseButtons(Qt::LeftButton);
             }
         }
     }
@@ -58,24 +63,13 @@ void UCDragHandler::setupDragPanel(bool animate)
 
 bool UCDragHandler::eventFilter(QObject *watched, QEvent *event)
 {
-    // forward mouse pressed event, do not care about the rest
-    qDebug() << "EVENT" << event->type() << this;
-    QEvent::Type type = event->type();
-    bool mouseEvent = (type == QEvent::MouseButtonPress) ||
-            (type == QEvent::MouseButtonRelease) ||
-            (type == QEvent::MouseMove);
-
-    QMouseEvent *mouse = mouseEvent ? static_cast<QMouseEvent*>(event) : 0;
-    if (mouse) {
-        if (type == QEvent::MouseButtonPress) {
-            // lock flickables!
-            listItem->attachedProperties->disableInteractive(listItem->item(), true);
-            event->accept();
-            return true;
-        } else if (type == QEvent::MouseButtonRelease) {
-            // unlock flickables!
-            listItem->attachedProperties->disableInteractive(listItem->item(), false);
-        }
+    if (event->type() == QEvent::MouseButtonPress) {
+        // forward to the ListView
+        QQuickFlickable *listView = UCListItemAttachedPrivate::get(listItem->attachedProperties)->listView;
+        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
+        QPointF pos = listView->mapFromItem(static_cast<QQuickItem*>(watched), mouse->localPos());
+        QMouseEvent mappedEvent(event->type(), pos, mouse->button(), mouse->buttons(), mouse->modifiers());
+        QGuiApplication::sendEvent(listView, &mappedEvent);
     }
     return QObject::eventFilter(watched, event);
 }
@@ -111,8 +105,16 @@ void UCDragHandler::setupDragMode()
         setupDragPanel(animate);
         // stop children filtering while move mode is on
         listItem->item()->setFiltersChildMouseEvents(false);
+        // install an event filter to catch mouse press events, as those are not
+        // intercepted by the ListView filter
+        if (panel) {
+            panel->installEventFilter(this);
+        }
     } else {
         listItem->item()->setFiltersChildMouseEvents(true);
+        if (panel) {
+            panel->removeEventFilter(this);
+        }
     }
 
     // update visuals

@@ -294,7 +294,7 @@ bool UCListItemAttachedPrivate::isItemSelected(UCListItem *item)
 }
 
 /*!
- * \amlattachedproperty bool ListItem::draggable
+ * \qmlattachedproperty bool ListItem::draggable
  * The property drives the dragging mode of the ListItems within a ListView. It
  * has no effect on any other parent of the ListItem.
  *
