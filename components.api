@@ -916,10 +916,16 @@ plugins.qmltypes
     Property { name: "draggable"; type: "bool" }
     Signal {
     name: "draggingStarted"
-    Parameter { name: "index"; type: "int" }
+    Parameter { name: "from"; type: "int" }
     Signal {
     name: "draggingEnded"
-    Parameter { name: "index"; type: "int" }
+    Parameter { name: "from"; type: "int" }
+    Parameter { name: "to"; type: "int" }
+    Parameter { name: "accept"; type: "bool&" }
+    Signal {
+    name: "draggingUpdated"
+    Parameter { name: "from"; type: "int" }
+    Parameter { name: "to"; type: "int" }
     name: "UCListItemDivider"
     prototype: "QObject"
     Property { name: "visible"; type: "bool" }
