@@ -245,11 +245,6 @@ void UCListItemAttachedPrivate::setSelectable(bool value)
  * state of the selection. Therefore it is recommended to drive the selection
  * through the attached property rather through the \l ListItem::selected property.
  * \sa ListItem::selectable, ListItem::selected
- *
- * By default all items are selectable. To drive single selection mode, set the
- * \l singleSelect attached property.
- *
- * \sa singleSelect
  */
 QList<int> UCListItemAttachedPrivate::selectedIndexes() const
 {
