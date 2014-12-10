@@ -79,6 +79,41 @@ bool UCHandlerBase::selectable() const
     return UCListItemAttachedPrivate::get(listItem->attachedProperties)->selectable;
 }
 
+void UCHandlerBase::setupPanel(QQmlComponent *component, bool animate)
+{
+    if (panel || !component) {
+        return;
+    }
+    UCListItem *item = listItem->item();
+    if (component->isError()) {
+        qmlInfo(item) << component->errorString();
+    } else {
+        // create a new context so we can expose context properties
+        QQmlContext *context = new QQmlContext(qmlContext(item), item);
+        // expose ourselves as context property so component can access the mode changes
+        // do not define the ListItemHandler if need to animate!
+        if (!animate) {
+            context->setContextProperty("ListItemHandler", this);
+        }
+        ContextPropertyChangeListener *listener = new ContextPropertyChangeListener(
+                    context, "ListItemHandler");
+        QObject::connect(listItem->attachedProperties, &UCListItemAttached::selectableChanged,
+                         listener, &ContextPropertyChangeListener::updateContextProperty);
+
+        panel = qobject_cast<QQuickItem*>(component->beginCreate(context));
+        if (panel) {
+            QQml_setParent_noEvent(panel, item);
+            panel->setParentItem(item);
+            // complete component creation
+            component->completeCreate();
+            // turn on ListItemHandler
+            if (animate) {
+                context->setContextProperty("ListItemHandler", this);
+            }
+        }
+    }
+}
+
 /******************************************************************************
  * SnapAnimator
  *

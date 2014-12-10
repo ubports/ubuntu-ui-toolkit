@@ -27,47 +27,6 @@ UCSelectionHandler::UCSelectionHandler(UCListItem *owner)
 {
 }
 
-void UCSelectionHandler::setupPanel(bool animate)
-{
-    if (panel) {
-        return;
-    }
-
-    Q_UNUSED(animate)
-    listItem->initStyleItem();
-    if (listItem->styleItem && listItem->styleItem->m_selectionDelegate) {
-        UCListItem *item = listItem->item();
-        if (listItem->styleItem->m_selectionDelegate->isError()) {
-            qmlInfo(item) << listItem->styleItem->m_selectionDelegate->errorString();
-        } else {
-            // create a new context so we can expose context properties
-            QQmlContext *context = new QQmlContext(qmlContext(item), item);
-            // expose ourselves as context property so component can access the mode changes
-            // do not define the ListItemHandler if need to animate!
-            if (!animate) {
-                context->setContextProperty("ListItemHandler", this);
-            }
-            ContextPropertyChangeListener *listener = new ContextPropertyChangeListener(
-                        context, "ListItemHandler");
-            QObject::connect(listItem->attachedProperties, &UCListItemAttached::selectableChanged,
-                             listener, &ContextPropertyChangeListener::updateContextProperty);
-
-            panel = qobject_cast<QQuickItem*>(
-                        listItem->styleItem->m_selectionDelegate->beginCreate(context));
-            if (panel) {
-                QQml_setParent_noEvent(panel, item);
-                panel->setParentItem(item);
-                // complete component creation
-                listItem->styleItem->m_selectionDelegate->completeCreate();
-                // turn on selectable
-                if (animate) {
-                    context->setContextProperty("ListItemHandler", this);
-                }
-            }
-        }
-    }
-}
-
 void UCSelectionHandler::connectInterfaces()
 {
     UCHandlerBase::connectInterfaces();
@@ -109,7 +68,10 @@ void UCSelectionHandler::setupSelection()
     if (selectable) {
         listItem->promptRebound();
         bool animate = (senderSignalIndex() >= 0);
-        setupPanel(animate);
+        listItem->initStyleItem();
+        if (listItem->styleItem && listItem->styleItem->m_selectionDelegate) {
+            setupPanel(listItem->styleItem->m_selectionDelegate, animate);
+        }
     }
     // and finaly update visuals
     listItem->update();

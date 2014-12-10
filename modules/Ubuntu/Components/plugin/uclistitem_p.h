@@ -250,6 +250,8 @@ protected:
     UCListItemPrivate *listItem;
     QQuickItem *panel;
 
+    void setupPanel(QQmlComponent *component, bool animate);
+
 };
 
 class UCSelectionHandler : public UCHandlerBase
@@ -270,8 +272,6 @@ public Q_SLOTS:
 
 protected:
     bool selected:1;
-
-    void setupPanel(bool animate);
 };
 
 #endif // UCVIEWITEM_P_H
