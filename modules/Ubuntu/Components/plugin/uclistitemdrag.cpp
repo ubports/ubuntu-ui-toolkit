@@ -37,10 +37,10 @@ void UCDragHandler::setupDragPanel(bool animate)
             UCListItem *item = listItem->item();
             // create a new context so we can expose context properties
             QQmlContext *context = new QQmlContext(qmlContext(item), item);
-            context->setContextProperty("inDraggingMode",
+            context->setContextProperty("draggingEnabled",
                                         animate ? QVariant(false) : isDraggable());
             ContextPropertyChangeListener *listener = new ContextPropertyChangeListener(
-                        context, "inDraggingMode");
+                        context, "draggingEnabled");
             listener->setUpdaterProperty(listItem->attachedProperties, "draggable");
 
             panel = qobject_cast<QQuickItem*>(
@@ -52,7 +52,7 @@ void UCDragHandler::setupDragPanel(bool animate)
                 listItem->styleItem->m_dragHandlerDelegate->completeCreate();
                 if (animate) {
                     // turn on draggable context property
-                    context->setContextProperty("inDraggingMode", isDraggable());
+                    context->setContextProperty("draggingEnabled", isDraggable());
                 }
                 // set left button as accepted so we can forward pressed events to the list view
                 panel->setAcceptedMouseButtons(Qt::LeftButton);

@@ -62,7 +62,7 @@ Styles.ListItemStyle {
             PropertyChanges {
                 target: contentItem
                 x: selectionPanel.width
-                width: listItem.width - selectionPanel.width
+                width: listItem.width - selectionPanel.width - (listItem)
             }
             PropertyChanges {
                 target: checkbox
@@ -115,19 +115,19 @@ Styles.ListItemStyle {
         onSelectedChanged: checkbox.checked = selected
     }
 
-    dragHandlerDelegate: Rectangle {
+    dragHandlerDelegate: Item {
         id: dragHandler
         objectName: "draghandler_panel" + index
         width: units.gu(5)
+
+        readonly property ListItem listItem: parent
         /*
           Internally used to link to the list item's content. The parent item is the ListItem itself.
           */
-        readonly property Item contentItem: parent ? parent.contentItem : null
-
-        color: parent && parent.color != "#000000" ? parent.color : QuickUtils.rootItem(parent).backgroundColor
+        readonly property Item contentItem: listItem ? listItem.contentItem : null
 
         anchors {
-            right: parent ? parent.right : undefined
+            right: listItem ? listItem.right : undefined
             top: contentItem ? contentItem.top : undefined
             bottom: contentItem ? contentItem.bottom : undefined
         }
@@ -136,26 +136,34 @@ Styles.ListItemStyle {
             objectName: "icon"
             id: dragIcon
             anchors.centerIn: parent
-            width: units.gu(2)
+            width: units.gu(3)
             height: width
             name: "view-grid-symbolic"
+            opacity: 0.0
+            scale: 0.5
         }
 
         states: State {
             name: "enabled"
-
+            PropertyChanges {
+                target: dragIcon
+                opacity: 1.0
+                scale: 1.0
+            }
         }
 
         transitions: Transition {
             from: ""
             to: "enabled"
             reversible: true
-            AnchorAnimation {
+            PropertyAnimation {
+                target: dragIcon
+                properties: "opacity,scale"
                 easing: UbuntuAnimation.StandardEasing
                 duration: UbuntuAnimation.FastDuration
             }
         }
 
-        state: inDraggingMode ? "enabled" : ""
+        state: draggingEnabled ? "enabled" : ""
     }
 }
