@@ -72,11 +72,18 @@ void UCHandlerBase::connectInterfaces()
     }
     connect(listItem->attachedProperties, &UCListItemAttached::selectableChanged,
             this, &UCHandlerBase::selectableChanged);
+    connect(listItem->attachedProperties, &UCListItemAttached::draggableChanged,
+            this, &UCHandlerBase::draggableChanged);
 }
 
 bool UCHandlerBase::selectable() const
 {
-    return UCListItemAttachedPrivate::get(listItem->attachedProperties)->selectable;
+    return listItem->isSelectable();
+}
+
+bool UCHandlerBase::draggable() const
+{
+    return listItem->isDraggable();
 }
 
 void UCHandlerBase::setupPanel(QQmlComponent *component, bool animate)
@@ -481,11 +488,19 @@ bool UCListItemPrivate::isSelectable()
     return attached ? attached->selectable : false;
 }
 
+// returns true if the ListItem is in drag mode, false otherwise (also if the
+// attached property is NULL)
+bool UCListItemPrivate::isDraggable()
+{
+    UCListItemAttachedPrivate *attached = UCListItemAttachedPrivate::get(attachedProperties);
+    return attached ? attached->isDraggable() : false;
+}
+
 // the slot is connected to attached property's selectable to disable the item
 void UCListItemPrivate::_q_enabler()
 {
     Q_Q(UCListItem);
-    contentItem->setEnabled(!isSelectable() && !dragHandler->isDraggable());
+    contentItem->setEnabled(!isSelectable() && !isDraggable());
 }
 
 void UCListItemPrivate::_q_updateThemedData()
@@ -964,8 +979,8 @@ void UCListItem::componentComplete()
     }
 
     // also toggle dragging mode if enabled
-    if (d->dragHandler->isDraggable()) {
-        d->dragHandler->getNotified();
+    d->dragHandler->connectInterfaces();
+    if (d->isDraggable()) {
         d->dragHandler->setupDragMode();
     }
 

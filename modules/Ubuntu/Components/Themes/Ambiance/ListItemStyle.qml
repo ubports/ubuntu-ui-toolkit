@@ -164,6 +164,6 @@ Styles.ListItemStyle {
             }
         }
 
-        state: draggingEnabled ? "enabled" : ""
+        state: ((typeof ListItemHandler != "undefined") && ListItemHandler.draggable) ? "enabled" : ""
     }
 }

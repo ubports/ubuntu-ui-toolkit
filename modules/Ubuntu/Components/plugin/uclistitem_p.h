@@ -53,6 +53,7 @@ public:
     bool isClickedConnected();
     bool isPressAndHoldConnected();
     bool isSelectable();
+    bool isDraggable();
     void _q_enabler();
     void _q_updateThemedData();
     void _q_rebound();
@@ -251,12 +252,14 @@ class UCHandlerBase : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool selectable READ selectable NOTIFY selectableChanged)
+    Q_PROPERTY(bool draggable READ draggable NOTIFY draggableChanged)
 public:
 
     explicit UCHandlerBase(UCListItem *owner = 0);
     virtual void connectInterfaces();
 
     bool selectable() const;
+    bool draggable() const;
 
 Q_SIGNALS:
     void draggableChanged();
@@ -290,15 +293,13 @@ protected:
     bool selected:1;
 };
 
-class UCDragHandler : public QObject
+class UCDragHandler : public UCHandlerBase
 {
     Q_OBJECT
 public:
     explicit UCDragHandler(UCListItem *listItem);
-    ~UCDragHandler();
 
-    void getNotified();
-    bool isDraggable();
+    void connectInterfaces();
     bool isDragging()
     {
         return dragging;
@@ -315,12 +316,8 @@ public Q_SLOTS:
     void setupDragMode();
 
 protected:
-    UCListItemPrivate *listItem;
-    QQuickItem *panel;
     bool dragging:1;
-    bool isConnected:1;
 
-    void setupDragPanel(bool animate);
     bool eventFilter(QObject *, QEvent *);
 };
 
