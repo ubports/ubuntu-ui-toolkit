@@ -22,9 +22,7 @@
 #include <QtQml/QQmlContext>
 
 UCSelectionHandler::UCSelectionHandler(UCListItem *owner)
-    : QObject(owner)
-    , listItem(UCListItemPrivate::get(owner))
-    , panel(0)
+    : UCHandlerBase(owner)
     , selected(false)
     , isConnected(false)
 {
@@ -44,7 +42,7 @@ void UCSelectionHandler::setupPanel(bool animate)
         } else {
             // create a new context so we can expose context properties
             QQmlContext *context = new QQmlContext(qmlContext(item), item);
-            context->setContextProperty("inSelectionMode", animate ? QVariant(false) : isSelectable());
+            context->setContextProperty("inSelectionMode", animate ? QVariant(false) : listItem->isSelectable());
             ContextPropertyChangeListener *listener = new ContextPropertyChangeListener(
                         context, "inSelectionMode");
             listener->setUpdaterProperty(listItem->attachedProperties, "selectable");
@@ -58,7 +56,7 @@ void UCSelectionHandler::setupPanel(bool animate)
                 listItem->styleItem->m_selectionDelegate->completeCreate();
                 // turn on selectable
                 if (animate) {
-                    context->setContextProperty("inSelectionMode", isSelectable());
+                    context->setContextProperty("inSelectionMode", listItem->isSelectable());
                 }
             }
         }
@@ -78,19 +76,6 @@ void UCSelectionHandler::getNotified()
     isConnected = true;
 }
 
-// returns true if the ListItem is in selectable mode, false otherwise (also if the
-// attached property is NULL)
-bool UCSelectionHandler::isSelectable()
-{
-    UCListItemAttachedPrivate *attached = UCListItemAttachedPrivate::get(listItem->attachedProperties);
-    return attached ? attached->isSelectable() : false;
-}
-
-bool UCSelectionHandler::isSelected()
-{
-    return selected;
-}
-
 void UCSelectionHandler::setSelected(bool value)
 {
     if (selected == value) {
@@ -106,7 +91,7 @@ void UCSelectionHandler::setSelected(bool value)
             UCListItemAttachedPrivate::get(listItem->attachedProperties)->removeSelectedItem(item);
         }
     }
-    if (isSelectable()) {
+    if (listItem->isSelectable()) {
         listItem->update();
     }
     Q_EMIT item->selectedChanged();
@@ -115,7 +100,7 @@ void UCSelectionHandler::setSelected(bool value)
 void UCSelectionHandler::setupSelection()
 {
     // make sure the selection mode panel is prepared; selection panel must take care of the visuals
-    bool selectable = isSelectable();
+    bool selectable = listItem->isSelectable();
     if (selectable) {
         listItem->promptRebound();
         bool animate = (senderSignalIndex() >= 0);

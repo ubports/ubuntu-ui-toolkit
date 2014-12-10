@@ -51,6 +51,7 @@ public:
 
     bool isClickedConnected();
     bool isPressAndHoldConnected();
+    bool isSelectable();
     void _q_enabler();
     void _q_updateThemedData();
     void _q_rebound();
@@ -230,23 +231,43 @@ private:
     UCListItem *item;
 };
 
-class UCSelectionHandler : public QObject
+class UCHandlerBase : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(bool selegtable READ selectable NOTIFY selectableChanged)
+public:
+
+    explicit UCHandlerBase(UCListItem *owner = 0);
+
+    bool selectable() const;
+
+Q_SIGNALS:
+    void draggableChanged();
+    void selectableChanged();
+
+protected:
+    UCListItemPrivate *listItem;
+    QQuickItem *panel;
+
+};
+
+class UCSelectionHandler : public UCHandlerBase
 {
     Q_OBJECT
 public:
     explicit UCSelectionHandler(UCListItem *owner = 0);
 
     void getNotified();
-    bool isSelectable();
-    bool isSelected();
+    bool isSelected()
+    {
+        return selected;
+    }
     void setSelected(bool value);
 
 public Q_SLOTS:
     void setupSelection();
 
 protected:
-    UCListItemPrivate *listItem;
-    QQuickItem *panel;
     bool selected:1;
     bool isConnected:1;
 

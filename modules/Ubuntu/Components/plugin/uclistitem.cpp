@@ -54,6 +54,25 @@ QColor getPaletteColor(const char *profile, const char *color)
     return result;
 }
 /******************************************************************************
+ * UCHandlerBase
+ * Base class for selection and drag handlers. The component is exposed as context
+ * property which can be accessed in the panel implementations.
+ */
+UCHandlerBase::UCHandlerBase(UCListItem *owner)
+    : QObject(owner)
+    , listItem(UCListItemPrivate::get(owner))
+    , panel(0)
+{
+    connect(listItem->attachedProperties, &UCListItemAttached::selectableChanged,
+            this, &UCHandlerBase::selectableChanged);
+}
+
+bool UCHandlerBase::selectable() const
+{
+    return UCListItemAttachedPrivate::get(listItem->attachedProperties)->selectable;
+}
+
+/******************************************************************************
  * SnapAnimator
  *
  * The class handles the animation executed when the ListItemAction panel is
@@ -409,11 +428,19 @@ bool UCListItemPrivate::isPressAndHoldConnected()
     return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
 }
 
+// returns true if the ListItem is in selectable mode, false otherwise (also if the
+// attached property is NULL)
+bool UCListItemPrivate::isSelectable()
+{
+    UCListItemAttachedPrivate *attached = UCListItemAttachedPrivate::get(attachedProperties);
+    return attached ? attached->selectable : false;
+}
+
 // the slot is connected to attached property's selectable to disable the item
 void UCListItemPrivate::_q_enabler()
 {
     Q_Q(UCListItem);
-    contentItem->setEnabled(!selection->isSelectable());
+    contentItem->setEnabled(!isSelectable());
 }
 
 void UCListItemPrivate::_q_updateThemedData()
@@ -594,7 +621,7 @@ void UCListItemPrivate::setPressed(bool pressed)
         this->pressed = pressed;
         Q_Q(UCListItem);
         q->update();
-        if (pressed && !selection->isSelectable()) {
+        if (pressed && !isSelectable()) {
             // start pressandhold timer
             pressAndHoldTimer.start(QGuiApplication::styleHints()->mousePressAndHoldInterval(), q);
         } else {
@@ -879,13 +906,13 @@ void UCListItem::componentComplete()
         update();
     }
 
+    if (d->isSelectable()) {
+        d->selection->getNotified();
+        d->selection->setupSelection();
+    }
     // get the selected state from the attached object
     if (d->attachedProperties) {
         d->setSelected(UCListItemAttachedPrivate::get(d->attachedProperties)->isItemSelected(this));
-    }
-    if (d->selection->isSelectable()) {
-        d->selection->getNotified();
-        d->selection->setupSelection();
     }
 }
 
@@ -943,7 +970,7 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     Q_UNUSED(data);
 
     Q_D(UCListItem);
-    QColor color = (d->pressed || (d->selection->isSelectable() && d->selection->isSelected()))? d->highlightColor : d->color;
+    QColor color = (d->pressed || (d->isSelectable() && d->selection->isSelected()))? d->highlightColor : d->color;
 
     if (width() <= 0 || height() <= 0) {
         delete oldNode;
@@ -1008,7 +1035,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         d->lastPos = d->pressedPos = event->localPos();
         // connect the Flickable to know when to rebound
         d->listenToRebind(true);
-        if (!d->selection->isSelectable()) {
+        if (!d->isSelectable()) {
             // if it was moved, grab the panels
             if (d->swiped) {
                 d->grabPanel(d->leadingActions, true);
@@ -1031,7 +1058,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             d->attachedProperties->disableInteractive(this, false);
         }
 
-        if (d->selection->isSelectable()) {
+        if (d->isSelectable()) {
             // toggle selection
             d->setSelected(!d->selection->isSelected());
         } else if (!d->suppressClick) {
@@ -1052,7 +1079,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     Q_D(UCListItem);
     UCStyledItemBase::mouseMoveEvent(event);
 
-    if (d->selection->isSelectable()) {
+    if (d->isSelectable()) {
         // no move is allowed while selectable mode is on
         return;
     }
