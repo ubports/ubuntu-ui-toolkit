@@ -54,6 +54,19 @@ UCTestExtras::UCTestExtras(QObject *parent) :
 }
 
 /*!
+ * \qmlmethod TestExtras::openGLflavor()
+ * Returns "opengl" or "opengles2".
+ */
+QString UCTestExtras::openGLflavor()
+{
+#if defined(QT_OPENGL_ES)
+    return QString("opengles2");
+#else
+    return QString("opengl");
+#endif
+}
+
+/*!
  * \qmlmethod TestExtras::touchDevicePresent()
  * Returns true if the system has a touch device registered.
  */

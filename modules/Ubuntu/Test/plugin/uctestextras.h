@@ -29,6 +29,7 @@ public:
     explicit UCTestExtras(QObject *parent = 0);
 
 public Q_SLOTS:
+    static QString openGLflavor();
     static bool touchDevicePresent();
     static void registerTouchDevice();
     static void touchPress(int touchId, QQuickItem *item, const QPoint &point);

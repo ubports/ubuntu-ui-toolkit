@@ -1096,6 +1096,7 @@ plugins.qmltypes
     prototype: "QObject"
     exports: ["TestExtras 1.0"]
     Property { name: "touchPresent"; type: "bool"; isReadonly: true }
+    Method { name: "openGLflavor"; type: "string" }
     Method { name: "touchDevicePresent"; type: "bool" }
     Method { name: "registerTouchDevice" }
     Method {
