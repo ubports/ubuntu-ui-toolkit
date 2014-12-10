@@ -504,7 +504,9 @@ void UCListItemPrivate::initStyleItem()
         return;
     }
     Q_Q(UCListItem);
-    QObject *object = styleComponent->beginCreate(qmlContext(q));
+    QQmlContext *context = new QQmlContext(qmlContext(q), q);
+    context->setContextProperty("styledItem", q);
+    QObject *object = styleComponent->beginCreate(context);
     styleItem = qobject_cast<UCListItemStyle*>(object);
     if (!styleItem) {
         delete object;
@@ -956,7 +958,11 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     if (color.alphaF() >= (1.0f / 255.0f)) {
         rectNode->setColor(color);
         // cover only the area of the contentItem
-        rectNode->setRect(d->contentItem->boundingRect());
+        QRectF rect(boundingRect());
+        if (d->divider && d->divider->m_visible) {
+            rect.setHeight(rect.height() - d->divider->m_thickness);
+        }
+        rectNode->setRect(rect);
         rectNode->setGradientStops(QGradientStops());
         rectNode->setAntialiasing(true);
         rectNode->setAntialiasing(false);
