@@ -24,7 +24,6 @@
 UCSelectionHandler::UCSelectionHandler(UCListItem *owner)
     : UCHandlerBase(owner)
     , selected(false)
-    , isConnected(false)
 {
 }
 
@@ -34,6 +33,7 @@ void UCSelectionHandler::setupPanel(bool animate)
         return;
     }
 
+    Q_UNUSED(animate)
     listItem->initStyleItem();
     if (listItem->styleItem && listItem->styleItem->m_selectionDelegate) {
         UCListItem *item = listItem->item();
@@ -42,10 +42,15 @@ void UCSelectionHandler::setupPanel(bool animate)
         } else {
             // create a new context so we can expose context properties
             QQmlContext *context = new QQmlContext(qmlContext(item), item);
-            context->setContextProperty("inSelectionMode", animate ? QVariant(false) : listItem->isSelectable());
+            // expose ourselves as context property so component can access the mode changes
+            // do not define the ListItemHandler if need to animate!
+            if (!animate) {
+                context->setContextProperty("ListItemHandler", this);
+            }
             ContextPropertyChangeListener *listener = new ContextPropertyChangeListener(
-                        context, "inSelectionMode");
-            listener->setUpdaterProperty(listItem->attachedProperties, "selectable");
+                        context, "ListItemHandler");
+            QObject::connect(listItem->attachedProperties, &UCListItemAttached::selectableChanged,
+                             listener, &ContextPropertyChangeListener::updateContextProperty);
 
             panel = qobject_cast<QQuickItem*>(
                         listItem->styleItem->m_selectionDelegate->beginCreate(context));
@@ -56,16 +61,17 @@ void UCSelectionHandler::setupPanel(bool animate)
                 listItem->styleItem->m_selectionDelegate->completeCreate();
                 // turn on selectable
                 if (animate) {
-                    context->setContextProperty("inSelectionMode", listItem->isSelectable());
+                    context->setContextProperty("ListItemHandler", this);
                 }
             }
         }
     }
 }
 
-void UCSelectionHandler::getNotified()
+void UCSelectionHandler::connectInterfaces()
 {
-    if (!listItem->attachedProperties || isConnected) {
+    UCHandlerBase::connectInterfaces();
+    if (!listItem->attachedProperties) {
         return;
     }
     connect(listItem->attachedProperties, &UCListItemAttached::selectableChanged,
@@ -73,7 +79,6 @@ void UCSelectionHandler::getNotified()
     // also connect to the ListItem's _q_enabler() slot to enable/disable item itself
     connect(listItem->attachedProperties, SIGNAL(selectableChanged()),
             listItem->item(), SLOT(_q_enabler()));
-    isConnected = true;
 }
 
 void UCSelectionHandler::setSelected(bool value)

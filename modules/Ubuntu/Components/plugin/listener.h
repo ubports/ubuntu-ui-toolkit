@@ -20,21 +20,15 @@
 #include <QObject>
 
 class QQmlContext;
-class QQmlProperty;
 
 class ContextPropertyChangeListener : public QObject
 {
     Q_OBJECT
 public:
     explicit ContextPropertyChangeListener(QQmlContext* context, const QString& contextProperty);
-    ~ContextPropertyChangeListener();
-    void setUpdaterProperty(QObject *sender, const char *property);
     Q_SLOT void updateContextProperty();
-    Q_SLOT void updateContextPropertyFromSenderProperty();
     QQmlContext* m_context;
     QString m_contextProperty;
-    QObject *m_sender;
-    QQmlProperty *m_property;
 };
 
 #endif // UBUNTU_COMPONENTS_PLUGIN_H

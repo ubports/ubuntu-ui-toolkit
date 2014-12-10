@@ -63,6 +63,13 @@ UCHandlerBase::UCHandlerBase(UCListItem *owner)
     , listItem(UCListItemPrivate::get(owner))
     , panel(0)
 {
+}
+
+void UCHandlerBase::connectInterfaces()
+{
+    if (!listItem->attachedProperties) {
+        return;
+    }
     connect(listItem->attachedProperties, &UCListItemAttached::selectableChanged,
             this, &UCHandlerBase::selectableChanged);
 }
@@ -371,7 +378,7 @@ UCListItemPrivate::UCListItemPrivate()
     , trailingActions(0)
     , animator(0)
     , defaultAction(0)
-    , selection(0)
+    , selectionHandler(0)
     , styleComponent(0)
     , styleItem(0)
 {
@@ -407,7 +414,7 @@ void UCListItemPrivate::init()
     animator = new UCListItemSnapAnimator(q);
 
     // create selection handler
-    selection = new UCSelectionHandler(q);
+    selectionHandler = new UCSelectionHandler(q);
 }
 
 // inspired from IS_SIGNAL_CONNECTED(q, UCListItem, pressAndHold, ())
@@ -680,7 +687,10 @@ void UCListItemPrivate::resize()
     if (divider && divider->m_visible) {
         rect.setHeight(rect.height() - divider->m_thickness);
     }
-    contentItem->setSize(rect.size());
+    // do not set the size, only the implicit sizes, in this way the size changes
+    // will not inetrfere with the animations
+    contentItem->setImplicitWidth(rect.width());
+    contentItem->setImplicitHeight(rect.height());
 }
 
 void UCListItemPrivate::update()
@@ -906,14 +916,17 @@ void UCListItem::componentComplete()
         update();
     }
 
+    d->selectionHandler->connectInterfaces();
     if (d->isSelectable()) {
-        d->selection->getNotified();
-        d->selection->setupSelection();
+        d->selectionHandler->setupSelection();
     }
     // get the selected state from the attached object
     if (d->attachedProperties) {
         d->setSelected(UCListItemAttachedPrivate::get(d->attachedProperties)->isItemSelected(this));
     }
+
+    // finally update enabled state
+    d->_q_enabler();
 }
 
 void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
@@ -945,9 +958,6 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             d->attachedProperties = 0;
         }
 
-        // get notified about selectable change
-        d->selection->getNotified();
-
         if (data.item) {
             QObject::connect(d->flickable ? d->flickable : data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
         }
@@ -970,7 +980,7 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     Q_UNUSED(data);
 
     Q_D(UCListItem);
-    QColor color = (d->pressed || (d->isSelectable() && d->selection->isSelected()))? d->highlightColor : d->color;
+    QColor color = (d->pressed || (d->isSelectable() && d->selectionHandler->isSelected()))? d->highlightColor : d->color;
 
     if (width() <= 0 || height() <= 0) {
         delete oldNode;
@@ -1060,7 +1070,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 
         if (d->isSelectable()) {
             // toggle selection
-            d->setSelected(!d->selection->isSelected());
+            d->setSelected(!d->isSelected());
         } else if (!d->suppressClick) {
             Q_EMIT clicked();
             if (d->defaultAction) {
@@ -1441,11 +1451,11 @@ void UCListItem::setHighlightColor(const QColor &color)
  */
 bool UCListItemPrivate::isSelected() const
 {
-    return selection->isSelected();
+    return selectionHandler->isSelected();
 }
 void UCListItemPrivate::setSelected(bool value)
 {
-    selection->setSelected(value);
+    selectionHandler->setSelected(value);
 }
 
 /*!

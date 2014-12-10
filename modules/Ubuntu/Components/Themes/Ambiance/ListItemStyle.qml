@@ -36,7 +36,7 @@ Styles.ListItemStyle {
     // the selection/multiselection panel
     selectionDelegate: Item {
         id: selectionPanel
-        objectName: "selection_panel"
+        objectName: "selection_panel" + index
         width: units.gu(5)
 
         readonly property ListItem listItem: parent
@@ -77,13 +77,13 @@ Styles.ListItemStyle {
             ParallelAnimation {
                 PropertyAnimation {
                     target: selectionPanel.parent.contentItem
-                    property: "x"
+                    property: "width"
                     easing: UbuntuAnimation.StandardEasing
                     duration: UbuntuAnimation.FastDuration
                 }
                 PropertyAnimation {
                     target: selectionPanel.parent.contentItem
-                    property: "width"
+                    property: "x"
                     easing: UbuntuAnimation.StandardEasing
                     duration: UbuntuAnimation.FastDuration
                 }
@@ -96,7 +96,7 @@ Styles.ListItemStyle {
             }
         }
 
-        state: inSelectionMode ? "enabled" : ""
+        state: ((typeof ListItemHandler !== "undefined") && ListItemHandler.selectable) ? "enabled" : ""
 
         CheckBox {
             id: checkbox

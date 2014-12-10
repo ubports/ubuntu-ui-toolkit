@@ -93,7 +93,7 @@ public:
     UCListItemActions *trailingActions;
     UCListItemSnapAnimator *animator;
     UCAction *defaultAction;
-    UCSelectionHandler *selection;
+    UCSelectionHandler *selectionHandler;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
     QQmlComponent *styleComponent;
@@ -234,10 +234,11 @@ private:
 class UCHandlerBase : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool selegtable READ selectable NOTIFY selectableChanged)
+    Q_PROPERTY(bool selectable READ selectable NOTIFY selectableChanged)
 public:
 
     explicit UCHandlerBase(UCListItem *owner = 0);
+    virtual void connectInterfaces();
 
     bool selectable() const;
 
@@ -257,7 +258,7 @@ class UCSelectionHandler : public UCHandlerBase
 public:
     explicit UCSelectionHandler(UCListItem *owner = 0);
 
-    void getNotified();
+    void connectInterfaces();
     bool isSelected()
     {
         return selected;
@@ -269,7 +270,6 @@ public Q_SLOTS:
 
 protected:
     bool selected:1;
-    bool isConnected:1;
 
     void setupPanel(bool animate);
 };
