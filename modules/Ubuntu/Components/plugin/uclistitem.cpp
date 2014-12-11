@@ -576,7 +576,7 @@ void UCListItemPrivate::promptRebound()
 void UCListItemPrivate::_q_updateSize()
 {
     Q_Q(UCListItem);
-    QQuickItem *owner = static_cast<QQuickItem*>(sender());
+    QQuickItem *owner = static_cast<QQuickItem*>(q->sender());
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
     q->setImplicitHeight(UCUnits::instance().gu(7));
 }
