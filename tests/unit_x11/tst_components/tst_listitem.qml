@@ -208,9 +208,9 @@ Item {
             testItem.action = null;
             testItem.selected = false;
             testColumn.ListItem.selectMode = false;
-            waitForRendering(testItem.contentItem, 400);
+            waitForRendering(testItem.contentItem, 200);
             controlItem.selected = false;
-            waitForRendering(controlItem.contentItem, 400);
+            waitForRendering(controlItem.contentItem, 200);
             movingSpy.clear();
             pressedSpy.clear();
             clickSpy.clear();

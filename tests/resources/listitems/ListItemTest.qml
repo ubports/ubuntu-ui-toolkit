@@ -211,7 +211,6 @@ MainView {
                     model: 10
                     ListItem {
                         objectName: "InFlickable"+index
-                        color: "red"
                         highlightColor: "lime"
                         divider.colorFrom: UbuntuColors.green
                         swipeOvershoot: units.gu(10)

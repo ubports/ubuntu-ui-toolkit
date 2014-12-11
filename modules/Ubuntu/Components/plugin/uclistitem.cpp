@@ -576,7 +576,7 @@ void UCListItemPrivate::promptRebound()
 void UCListItemPrivate::_q_updateSize()
 {
     Q_Q(UCListItem);
-    QQuickItem *owner = flickable ? flickable : parentItem;
+    QQuickItem *owner = static_cast<QQuickItem*>(sender());
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
     q->setImplicitHeight(UCUnits::instance().gu(7));
 }
@@ -858,8 +858,7 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * The selection mode of a ListItem is controlled by the ListItem::selectable
  * attached property. This property is attached to each parent item of the ListItem
  * exception being when used as delegate in ListView, where the property is attached
- * to the view itself, as well as when used with Positioner embedded in a Flickable,
- * in which case the proeprty will be attached to the Flickable itself.
+ * to the view itself.
  * \qml
  * import QtQuick 2.3
  * import Ubuntu.Components 1.2
@@ -868,11 +867,11 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  *    width: units.gu(40)
  *    height: units.gu(50)
  *
- *    // this will work
- *    ListItem.selectable: true
+ *    // this will not have any effect
+ *    ListItem.selectable: false
  *    Column {
- *        // this will not have any effect
- *        ListItem.selectable: false
+ *        // this will work
+ *        ListItem.selectable: true
  *        width: parent.width
  *        Repeater {
  *            model: 25
@@ -970,6 +969,7 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         Q_D(UCListItem);
         // make sure we are not connected to any previous Flickable
         d->listenToRebind(false);
+
         // check if we are in a positioner, and if that positioner is in a Flickable
         QQuickBasePositioner *positioner = qobject_cast<QQuickBasePositioner*>(data.item);
         if (positioner && positioner->parentItem()) {
@@ -979,21 +979,19 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             d->flickable = qobject_cast<QQuickFlickable*>(data.item->parentItem());
         }
 
-        // attach ListItem properties to the flickable or to the parent item
-        if (d->flickable) {
-            // connect to flickable to get width changes
+        // check if the flickable is actually a ListView
+        if (d->flickable && QuickUtils::inherits(d->flickable, "QQuickListView")) {
+            // the ListItem is a delegate of the ListView, so we attache the porperty to that
             d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(d->flickable));
+            QObject::connect(d->flickable, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
         } else if (data.item) {
             d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(data.item));
+            QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
         } else {
             // mark as not ready, so no action should be performed which depends on readyness
             d->ready = false;
             // about to be deleted or reparented, disable attached
             d->attachedProperties = 0;
-        }
-
-        if (data.item) {
-            QObject::connect(d->flickable ? d->flickable : data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
         }
 
         // update size
