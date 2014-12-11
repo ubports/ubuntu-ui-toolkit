@@ -40,6 +40,7 @@ class UCListItem : public UCStyledItemBase
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor NOTIFY highlightColorChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool dragging READ dragging NOTIFY draggingChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool draggable READ isDraggable NOTIFY draggableChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool selected READ isSelected WRITE setSelected NOTIFY selectedChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool selectable READ isSelectable NOTIFY selectableChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), UCAction *action READ action WRITE setAction NOTIFY actionChanged DESIGNABLE false)
@@ -88,6 +89,7 @@ Q_SIGNALS:
     void colorChanged();
     void highlightColorChanged();
     void draggingChanged();
+    void draggableChanged();
     void selectedChanged();
     void selectableChanged();
     void actionChanged();
@@ -113,13 +115,50 @@ private:
 };
 QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
 
+class UCDragEvent : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(int from READ from REVISION 2)
+    Q_PROPERTY(int to READ to REVISION 2)
+    Q_PROPERTY(bool accept MEMBER m_accept REVISION 2)
+    Q_PROPERTY(Direction direction READ direction REVISION 2)
+    Q_ENUMS(Direction)
+public:
+    enum Direction {
+        Negative = -1,
+        Positive = 1
+    };
+
+    explicit UCDragEvent(int from, int to, Direction direction)
+        : QObject(0), m_from(from), m_to(to), m_direction(direction), m_accept(true)
+    {}
+    int from() const
+    {
+        return m_from;
+    }
+    int to() const
+    {
+        return m_to;
+    }
+    Direction direction() const
+    {
+        return m_direction;
+    }
+
+private:
+    int m_from;
+    int m_to;
+    Direction m_direction;
+    bool m_accept;
+};
+
 class UCListItemAttachedPrivate;
 class UCListItemAttached : public QObject
 {
     Q_OBJECT
     Q_PRIVATE_PROPERTY(UCListItemAttached::d_func(), bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
     Q_PRIVATE_PROPERTY(UCListItemAttached::d_func(), QList<int> selectedIndexes READ selectedIndexes WRITE setSelectedIndexes NOTIFY selectedIndexesChanged)
-    Q_PRIVATE_PROPERTY(UCListItemAttached::d_func(), bool draggable READ isDraggable WRITE setDraggable NOTIFY draggableChanged)
+    Q_PRIVATE_PROPERTY(UCListItemAttached::d_func(), bool dragMode READ dragMode WRITE setDragMode NOTIFY dragModeChanged)
 public:
     explicit UCListItemAttached(QObject *parent = 0);
     ~UCListItemAttached();
@@ -138,11 +177,10 @@ private Q_SLOTS:
 Q_SIGNALS:
     void selectModeChanged();
     void selectedIndexesChanged();
-    void draggableChanged();
+    void dragModeChanged();
 
-    void draggingStarted(int from);
-    void draggingEnded(int from, int to, bool &accept);
-    void draggingUpdated(int from, int to);
+    void draggingStarted(UCDragEvent *drag);
+    void draggingUpdated(UCDragEvent *drag);
 
 private:
     Q_DECLARE_PRIVATE(UCListItemAttached)

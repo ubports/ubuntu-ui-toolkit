@@ -52,7 +52,6 @@ public:
 
     bool isClickedConnected();
     bool isPressAndHoldConnected();
-    bool isDraggable();
     void _q_updateThemedData();
     void _q_rebound();
     void promptRebound();
@@ -113,6 +112,7 @@ public:
     void initStyleItem();
     QQuickItem *styleInstance() const;
     bool dragging();
+    bool isDraggable();
     bool isSelected() const;
     void setSelected(bool value);
     bool isSelectable();
@@ -166,8 +166,8 @@ public:
     void setSelectMode(bool value);
     QList<int> selectedIndexes() const;
     void setSelectedIndexes(const QList<int> &list);
-    bool isDraggable() const;
-    void setDraggable(bool value);
+    bool dragMode() const;
+    void setDragMode(bool value);
 };
 
 class UCListItemDivider : public QObject

@@ -445,14 +445,6 @@ bool UCListItemPrivate::isPressAndHoldConnected()
     return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
 }
 
-// returns true if the ListItem is in drag mode, false otherwise (also if the
-// attached property is NULL)
-bool UCListItemPrivate::isDraggable()
-{
-    UCListItemAttachedPrivate *attached = UCListItemAttachedPrivate::get(attachedProperties);
-    return attached ? attached->isDraggable() : false;
-}
-
 void UCListItemPrivate::_q_updateThemedData()
 {
     // update colors, panels
@@ -969,6 +961,9 @@ void UCListItem::componentComplete()
         // keep selectable in sync
         connect(d->attachedProperties, &UCListItemAttached::selectModeChanged,
                 this, &UCListItem::selectableChanged);
+        // also draggable
+        connect(d->attachedProperties, &UCListItemAttached::dragModeChanged,
+                this, &UCListItem::draggableChanged);
         // get the selected state from the attached object
         d->setSelected(UCListItemAttachedPrivate::get(d->attachedProperties)->isItemSelected(this));
     }
@@ -1487,6 +1482,18 @@ void UCListItem::setHighlightColor(const QColor &color)
 bool UCListItemPrivate::dragging()
 {
     return dragHandler->isDragging();
+}
+
+/*!
+ * \qmlproperty bool ListItem::draggable
+ * \readonly
+ * The property reports whether a ListItem is draggable or not. While in drag mode,
+ * the list item content cannot be swiped. The default value is false.
+ */
+bool UCListItemPrivate::isDraggable()
+{
+    UCListItemAttachedPrivate *attached = UCListItemAttachedPrivate::get(attachedProperties);
+    return attached ? attached->dragMode() : false;
 }
 
 /*!

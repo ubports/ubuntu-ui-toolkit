@@ -35,7 +35,7 @@ void UCDragHandler::initialize()
     if (!listItem->attachedProperties) {
         return;
     }
-    connect(listItem->attachedProperties, &UCListItemAttached::draggableChanged,
+    connect(listItem->attachedProperties, &UCListItemAttached::dragModeChanged,
             this, &UCDragHandler::setupDragMode);
     if (listItem->isDraggable()) {
         setupDragMode();

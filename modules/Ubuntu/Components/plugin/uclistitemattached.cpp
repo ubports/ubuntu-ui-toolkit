@@ -289,7 +289,7 @@ bool UCListItemAttachedPrivate::isItemSelected(UCListItem *item)
 }
 
 /*!
- * \qmlattachedproperty bool ListItem::draggable
+ * \qmlattachedproperty bool ListItem::dragMode
  * The property drives the dragging mode of the ListItems within a ListView. It
  * has no effect on any other parent of the ListItem.
  *
@@ -304,22 +304,30 @@ bool UCListItemAttachedPrivate::isItemSelected(UCListItem *item)
  */
 
 /*!
- * \qmlattachedsignal ListItem::draggingStarted(int index)
- * The signal is emitted when a ListItem dtragging is started. The \c index specifies
- * the index of the ListItem being dragged.
+ * \qmlattachedsignal ListItem::draggingStarted(DragEvent drag)
+ * The signal is emitted when a ListItem dtragging is started. \c drag.from
+ * specifies the index of the ListItem being dragged. \c drag.direction specifies
+ * the direction the drag is started, which can be denied by setting \c false
+ * to \c drag.accept property. If denied, the signal will be emitted again if
+ * dragged into opposite direction.
  */
 
 /*!
- * \qmlattachedsignal ListItem::draggingEnded(int dragIndex, int dropIndex)
- * The signal is emitted when the dragged ListItem is dropped in the ListView. The
- * \c dragIndex specifies the original index of the ListItem dragged, and the \c
- * dropIndex the index where the ListItem is dropped.
+ * \qmlattachedsignal ListItem::draggingUpdated(DragEvent drag)
+ * The signal is emitted when the list item from \c drag.from index has been
+ * dragged over to \c drag.to, and a move operation is possible. Implementations
+ * must move the model data between these indexes. If the move is not acceptable,
+ * it can be dropped by setting \c drag.accept to \c false, in which case the
+ * dragged item will stay on its last moved position or will snap back to its
+ * previous place. If the direction is not suitable, it can be denied by setting
+ * \c false to \c drag.accept property.
  */
-bool UCListItemAttachedPrivate::isDraggable() const
+
+bool UCListItemAttachedPrivate::dragMode() const
 {
     return draggable;
 }
-void UCListItemAttachedPrivate::setDraggable(bool value)
+void UCListItemAttachedPrivate::setDragMode(bool value)
 {
     if (draggable == value) {
         return;
@@ -350,7 +358,7 @@ void UCListItemAttachedPrivate::setDraggable(bool value)
     } else {
         listView->removeEventFilter(q);
     }
-    Q_EMIT q->draggableChanged();
+    Q_EMIT q->dragModeChanged();
 }
 
 bool UCListItemAttached::eventFilter(QObject *watched, QEvent *event)

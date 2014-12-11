@@ -27,7 +27,7 @@ MainView {
         title: "Dragging test"
         ListView {
             anchors.fill: parent
-            ListItem.selectable: ListItem.draggable
+            ListItem.selectMode: ListItem.dragMode
             contentItem.objectName: "ListViewContent"
 
             model: ListModel {
@@ -50,7 +50,7 @@ MainView {
 
                 onPressAndHold: {
                     print("entering draggable mode")
-                    ListView.view.ListItem.draggable = true;
+                    ListView.view.ListItem.dragMode = true;
                 }
                 onDraggingChanged: print("dragging", dragging)
             }
