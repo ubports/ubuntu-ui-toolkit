@@ -911,7 +911,7 @@ plugins.qmltypes
     Parameter { name: "position"; type: "double" }
     name: "UCListItemAttached"
     prototype: "QObject"
-    Property { name: "selectable"; type: "bool" }
+    Property { name: "selectMode"; type: "bool" }
     Property { name: "selectedIndexes"; type: "QList<int>" }
     name: "UCListItemDivider"
     prototype: "QObject"

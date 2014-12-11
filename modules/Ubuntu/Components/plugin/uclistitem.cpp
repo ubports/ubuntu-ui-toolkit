@@ -442,13 +442,6 @@ bool UCListItemPrivate::isPressAndHoldConnected()
     return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
 }
 
-// the slot is connected to attached property's selectable to disable the item
-void UCListItemPrivate::_q_enabler()
-{
-    Q_Q(UCListItem);
-    contentItem->setEnabled(!isSelectable());
-}
-
 void UCListItemPrivate::_q_updateThemedData()
 {
     // update colors, panels
@@ -627,7 +620,7 @@ void UCListItemPrivate::setPressed(bool pressed)
         this->pressed = pressed;
         Q_Q(UCListItem);
         q->update();
-        if (pressed && !isSelectable()) {
+        if (pressed) {
             // start pressandhold timer
             pressAndHoldTimer.start(QGuiApplication::styleHints()->mousePressAndHoldInterval(), q);
         } else {
@@ -796,7 +789,8 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * Being an Item, all properties can be accessed or altered. However, make sure you
  * never change \c x, \c y, \c width, \c height or \c anchors properties as those are
  * controlled by the ListItem itself when leading or trailing actions are revealed
- * and thus might cause the component to misbehave.
+ * or when selectable and draggable mode is turned on, and thus might cause the
+ * component to misbehave.
  *
  * Each ListItem has a thin divider shown on the bottom of the component. This
  * divider can be configured through the \c divider grouped property, which can
@@ -804,10 +798,10 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * When used in \c ListView or \l UbuntuListView, the last list item will not
  * show the divider no matter of the visible property value set.
  *
- * ListItem can handle actions that can get tugged from front to back of the item.
+ * ListItem can handle actions that can get swiped from front or back of the item.
  * These actions are Action elements visualized in panels attached to the front
  * or to the back of the item, and are revealed by swiping the item horizontally.
- * The tug is started only after the mouse/touch move had passed a given threshold.
+ * The swipe is started only after the mouse/touch move had passed a given threshold.
  * These actions are configured through the \l leadingActions as well as \l
  * trailingActions properties.
  * \qml
@@ -833,7 +827,7 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  *     }
  * }
  * \endqml
- * \note When a list item is tugged, it automatically connects both leading and
+ * \note When a list item is swiped, it automatically connects both leading and
  * trailing actions to the list item. This implies that a ListItem cannot use
  * the same ListItemActions instance for both leading and trailing actions. If
  * it is desired to have the same action present in both leading and trailing
@@ -859,6 +853,49 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * \sa ListItemActions
  *
  * The component is styled using the \l ListItemStyle style interface.
+ *
+ * \section3 Selection mode
+ * The selection mode of a ListItem is controlled by the ListItem::selectable
+ * attached property. This property is attached to each parent item of the ListItem
+ * exception being when used as delegate in ListView, where the property is attached
+ * to the view itself, as well as when used with Positioner embedded in a Flickable,
+ * in which case the proeprty will be attached to the Flickable itself.
+ * \qml
+ * import QtQuick 2.3
+ * import Ubuntu.Components 1.2
+ *
+ * Flickable {
+ *    width: units.gu(40)
+ *    height: units.gu(50)
+ *
+ *    // this will work
+ *    ListItem.selectable: true
+ *    Column {
+ *        // this will not have any effect
+ *        ListItem.selectable: false
+ *        width: parent.width
+ *        Repeater {
+ *            model: 25
+ *            ListItem {
+ *                Label {
+ *                    text: "ListItem in Flickable #" + index
+ *                }
+ *            }
+ *        }
+ *    }
+ * }
+ * \endqml
+ * The indexes selected are stored in \l ListItem::selectedIndexes attached property,
+ * attached the same way as the \l ListItem::selectMode property is. This is a
+ * read/write property, meaning that initial selected item indexes can be set up.
+ * The list contains the indexes added in the order of selection, not sorted in
+ * any form.
+ *
+ * \note When in selectable mode, the ListItem content is not disabled and \l clicked
+ * and \l pressAndHold signals are also emitted. The only restriction the component
+ * implies is that leading and trailing actions cannot be swiped in. \ selectable
+ * property can be used to implement different behavior when \l clicked or \l
+ * pressAndHold.
  */
 
 /*!
@@ -867,8 +904,8 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * is set. The signal is not emitted if the ListItem content is swiped or when used in
  * Flickable (or ListView, GridView) and the Flickable gets moved.
  *
- * If the ListItem contains a component which contains a MouseArea, the clicked
- * signal will be supressed.
+ * If the ListItem contains a component which contains an active MouseArea, the clicked
+ * signal will be supressed when clicked over this area.
  */
 
 /*!
@@ -876,8 +913,8 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * The signal is emitted when the list item is long pressed. When a slot is connected,
  * no \l clicked signal will be emitted, similarly to MouseArea's pressAndHold.
  *
- * If the ListItem contains a component which contains a MouseArea, the pressAndHold
- * signal will be supressed.
+ * If the ListItem contains a component which contains an active MouseArea, the pressAndHold
+ * signal will be supressed when pressed over this area.
  */
 
 UCListItem::UCListItem(QQuickItem *parent)
@@ -919,14 +956,11 @@ void UCListItem::componentComplete()
 
     if (d->attachedProperties) {
         // keep selectable in sync
-        connect(d->attachedProperties, &UCListItemAttached::selectableChanged,
+        connect(d->attachedProperties, &UCListItemAttached::selectModeChanged,
                 this, &UCListItem::selectableChanged);
         // get the selected state from the attached object
         d->setSelected(UCListItemAttachedPrivate::get(d->attachedProperties)->isItemSelected(this));
     }
-
-    // finally update enabled state
-    d->_q_enabler();
 }
 
 void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
@@ -980,7 +1014,7 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     Q_UNUSED(data);
 
     Q_D(UCListItem);
-    QColor color = (d->pressed || (d->isSelectable() && d->selectionHandler->isSelected()))? d->highlightColor : d->color;
+    QColor color = d->pressed ? d->highlightColor : d->color;
 
     if (width() <= 0 || height() <= 0) {
         delete oldNode;
@@ -1045,12 +1079,10 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         d->lastPos = d->pressedPos = event->localPos();
         // connect the Flickable to know when to rebound
         d->listenToRebind(true);
-        if (!d->isSelectable()) {
+        if (!d->isSelectable() && d->swiped) {
             // if it was moved, grab the panels
-            if (d->swiped) {
-                d->grabPanel(d->leadingActions, true);
-                d->grabPanel(d->trailingActions, true);
-            }
+            d->grabPanel(d->leadingActions, true);
+            d->grabPanel(d->trailingActions, true);
         }
     }
     // accept the event so we get the rest of the events as well
@@ -1068,10 +1100,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             d->attachedProperties->disableInteractive(this, false);
         }
 
-        if (d->isSelectable()) {
-            // toggle selection
-            d->setSelected(!d->isSelected());
-        } else if (!d->suppressClick) {
+        if (!d->suppressClick) {
             Q_EMIT clicked();
             if (d->defaultAction) {
                 Q_EMIT d->defaultAction->trigger(d->index());
@@ -1445,9 +1474,9 @@ void UCListItem::setHighlightColor(const QColor &color)
  * 
  * \qmlproperty bool ListItem::selected
  * The property drives whether a list item is selected or not. While selected, the
- * ListItem is dimmed and cannot be tugged. The default value is false.
+ * ListItem cannot be swiped. The default value is false.
  *
- * \sa ListItem::selectable
+ * \sa ListItem::selectable, ListItem::selectMode
  */
 bool UCListItemPrivate::isSelected() const
 {
@@ -1461,7 +1490,8 @@ void UCListItemPrivate::setSelected(bool value)
 /*!
  * \qmlproperty bool ListItem::selectable
  * \readonly
- *
+ * The property reports whether the component and the view using the component
+ * is in selectable state.
  */
 bool UCListItemPrivate::isSelectable()
 {

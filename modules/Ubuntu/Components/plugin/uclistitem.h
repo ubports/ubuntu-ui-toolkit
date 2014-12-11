@@ -108,7 +108,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
-    Q_PRIVATE_SLOT(d_func(), void _q_enabler())
 };
 QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
 
@@ -116,7 +115,7 @@ class UCListItemAttachedPrivate;
 class UCListItemAttached : public QObject
 {
     Q_OBJECT
-    Q_PRIVATE_PROPERTY(UCListItemAttached::d_func(), bool selectable READ isSelectable WRITE setSelectable NOTIFY selectableChanged)
+    Q_PRIVATE_PROPERTY(UCListItemAttached::d_func(), bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
     Q_PRIVATE_PROPERTY(UCListItemAttached::d_func(), QList<int> selectedIndexes READ selectedIndexes WRITE setSelectedIndexes NOTIFY selectedIndexesChanged)
 public:
     explicit UCListItemAttached(QObject *parent = 0);
@@ -131,7 +130,7 @@ private Q_SLOTS:
     void unbindItem();
 
 Q_SIGNALS:
-    void selectableChanged();
+    void selectModeChanged();
     void selectedIndexesChanged();
 
 private:

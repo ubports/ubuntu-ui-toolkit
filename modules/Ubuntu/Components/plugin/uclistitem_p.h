@@ -51,7 +51,6 @@ public:
 
     bool isClickedConnected();
     bool isPressAndHoldConnected();
-    void _q_enabler();
     void _q_updateThemedData();
     void _q_rebound();
     void promptRebound();
@@ -148,8 +147,8 @@ public:
     QPointer<UCListItem> disablerItem;
 
     // getter/setter
-    bool isSelectable() const;
-    void setSelectable(bool value);
+    bool selectMode() const;
+    void setSelectMode(bool value);
     QList<int> selectedIndexes() const;
     void setSelectedIndexes(const QList<int> &list);
 };

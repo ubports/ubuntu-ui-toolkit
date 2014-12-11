@@ -95,7 +95,7 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
         self.pointing_device.press()
         sleep(2)
         self.pointing_device.release()
-        self.assertTrue(self.test_listitem.isSelectable)
+        self.assertTrue(self.test_listitem.selectable)
         self.test_listitem.toggle_selected()
         self.assertTrue(self.test_listitem.selected)
         # select an other one

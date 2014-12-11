@@ -34,8 +34,7 @@ MainView {
             model: 25
             delegate: ListItem {
                 objectName: "listitem" + index
-                property bool isSelectable: listView.ListItem.selectable
-                onPressAndHold: listView.ListItem.selectable = true
+                onPressAndHold: listView.ListItem.selectMode = true
                 leadingActions: ListItemActions {
                     actions: [
                         Action {

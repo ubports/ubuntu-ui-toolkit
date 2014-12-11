@@ -208,7 +208,7 @@ void UCListItemAttached::unbindItem()
 }
 
 /*!
- * \qmlattachedproperty bool ListItem::selectable
+ * \qmlattachedproperty bool ListItem::selectMode
  * The property drives whether list items are selectable or not. The property is
  * attached to the ListItem's parent or to the ListView/Flickable owning the
  * ListItems.
@@ -220,18 +220,18 @@ void UCListItemAttached::unbindItem()
  * state.
  * Defaults to false.
  */
-bool UCListItemAttachedPrivate::isSelectable() const
+bool UCListItemAttachedPrivate::selectMode() const
 {
     return selectable;
 }
-void UCListItemAttachedPrivate::setSelectable(bool value)
+void UCListItemAttachedPrivate::setSelectMode(bool value)
 {
     if (selectable == value) {
         return;
     }
     selectable = value;
     Q_Q(UCListItemAttached);
-    Q_EMIT q->selectableChanged();
+    Q_EMIT q->selectModeChanged();
 }
 
 /*!

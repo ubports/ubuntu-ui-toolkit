@@ -32,12 +32,8 @@ void UCSelectionHandler::initialize()
     if (!listItem->attachedProperties) {
         return;
     }
-    connect(listItem->attachedProperties, &UCListItemAttached::selectableChanged,
+    connect(listItem->attachedProperties, &UCListItemAttached::selectModeChanged,
             this, &UCSelectionHandler::setupSelection);
-
-    // also connect to the ListItem's _q_enabler() slot to enable/disable item itself
-    connect(listItem->attachedProperties, SIGNAL(selectableChanged()),
-            listItem->item(), SLOT(_q_enabler()));
 
     // set up selection panel if created with selectable enabled
     if (listItem->isSelectable()) {
@@ -59,9 +55,6 @@ void UCSelectionHandler::setSelected(bool value)
         } else {
             UCListItemAttachedPrivate::get(listItem->attachedProperties)->removeSelectedItem(item);
         }
-    }
-    if (listItem->isSelectable()) {
-        listItem->update();
     }
     Q_EMIT item->selectedChanged();
 }
