@@ -15,6 +15,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import os
+from time import sleep
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
@@ -84,3 +85,21 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
                                   'this_action_does_not_exist')
         self.assertEqual(str(error),
                          'The requested action not found on trailing side')
+
+    def test_select_items(self):
+        # Long press to select a word
+        # FIXME: input.Mouse doesn't support long press
+        # press_duration doesn't work here
+        # self.pointing_device.click(press_duration=2.0)
+        self.pointing_device.click_object(self.test_listitem)
+        self.pointing_device.press()
+        sleep(2)
+        self.pointing_device.release()
+        self.assertTrue(self.test_listitem.selectable)
+        self.test_listitem.toggle_selected()
+        self.assertTrue(self.test_listitem.selected)
+        # select an other one
+        listItem3 = self.main_view.select_single(
+            'UCListItem', objectName='listitem3')
+        listItem3.toggle_selected()
+        self.assertTrue(listItem3.selected)

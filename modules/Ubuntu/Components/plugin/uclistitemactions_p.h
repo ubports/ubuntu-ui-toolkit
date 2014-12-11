@@ -34,7 +34,6 @@ public:
 
     UCListItemActions::Status status;
     qreal offsetDragged;
-    qreal optionSlotWidth;
 
     QQmlComponent *delegate;
     QQmlComponent *panelDelegate;

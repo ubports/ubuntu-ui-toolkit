@@ -33,4 +33,84 @@ Styles.ListItemStyle {
         alwaysRunToEnd: true
     }
 
+    // the selection/multiselection panel
+    selectionDelegate: Item {
+        id: selectionPanel
+        objectName: "selection_panel"
+        width: units.gu(5)
+
+        readonly property ListItem listItem: parent
+
+        /*
+          Set if the ListItem is selected
+          */
+        readonly property bool selected: listItem ? listItem.selected : false
+
+        /*
+          Internally used to link to the list item's content. The parent item is the ListItem itself.
+          */
+        readonly property Item contentItem: listItem ? listItem.contentItem : null
+
+        anchors {
+            right: contentItem ? contentItem.left : undefined
+            top: contentItem ? contentItem.top : undefined
+            bottom: contentItem ? contentItem.bottom : undefined
+        }
+
+        states: State {
+            name: "enabled"
+            PropertyChanges {
+                target: contentItem
+                x: selectionPanel.width
+                width: listItem.width - selectionPanel.width
+            }
+            PropertyChanges {
+                target: checkbox
+                opacity: 1.0
+            }
+        }
+
+        transitions: Transition {
+            from: ""
+            to: "enabled"
+            reversible: true
+            ParallelAnimation {
+                PropertyAnimation {
+                    target: selectionPanel.parent.contentItem
+                    properties: "x,width"
+                    easing: UbuntuAnimation.StandardEasing
+                    duration: UbuntuAnimation.FastDuration
+                }
+                PropertyAnimation {
+                    target: checkbox
+                    property: "opacity"
+                    easing: UbuntuAnimation.StandardEasing
+                    duration: UbuntuAnimation.FastDuration
+                }
+            }
+        }
+
+        // make sure the state is changed only after component completion
+        Component.onCompleted: {
+            state = Qt.binding(function () {
+                return listItem && listItem.selectable ? "enabled" : "";
+            });
+        }
+
+        CheckBox {
+            id: checkbox
+            // for unit and autopilot tests
+            objectName: "listitem_select"
+            anchors.centerIn: parent
+            opacity: 0.0
+            // for the initial value
+            checked: selectionPanel.selected
+            onCheckedChanged: {
+                if (selectionPanel.parent) {
+                    selectionPanel.parent.selected = checked;
+                }
+            }
+        }
+        onSelectedChanged: checkbox.checked = selected
+    }
 }
