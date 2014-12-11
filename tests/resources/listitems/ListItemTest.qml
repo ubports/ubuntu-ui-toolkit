@@ -162,7 +162,7 @@ MainView {
             height: units.gu(20)
             model: 10
             pressDelay: 0
-            ListItem.selectable: main.selectable
+            ListItem.selectMode: main.selectable
             ListItem.selectedIndexes: [9,3,4,1]
             ListItem.onSelectedIndexesChanged: print("LISTVIEW INDEXES=", ListItem.selectedIndexes)
             delegate: ListItem {
@@ -198,20 +198,19 @@ MainView {
                 id: trailing
                 actions: leading.actions
             }
-            ListItem.selectable: main.selectable
+            ListItem.selectMode: main.selectable
             ListItem.onSelectedIndexesChanged: print("INDEXES=", ListItem.selectedIndexes)
 
             Column {
                 id: column
                 width: view.width
                 property alias count: repeater.count
-
+                ListItem.selectMode: true
                 Repeater {
                     id: repeater
                     model: 10
                     ListItem {
                         objectName: "InFlickable"+index
-                        color: "red"
                         highlightColor: "lime"
                         divider.colorFrom: UbuntuColors.green
                         swipeOvershoot: units.gu(10)

@@ -41,6 +41,7 @@ class UCListItem : public UCStyledItemBase
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor NOTIFY highlightColorChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool dragging READ dragging NOTIFY draggingChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool selected READ isSelected WRITE setSelected NOTIFY selectedChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool selectable READ isSelectable NOTIFY selectableChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), UCAction *action READ action WRITE setAction NOTIFY actionChanged DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QObject> listItemData READ data DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QQuickItem> listItemChildren READ children NOTIFY listItemChildrenChanged DESIGNABLE false)
@@ -88,6 +89,7 @@ Q_SIGNALS:
     void highlightColorChanged();
     void draggingChanged();
     void selectedChanged();
+    void selectableChanged();
     void actionChanged();
     void listItemChildrenChanged();
 
@@ -108,7 +110,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
-    Q_PRIVATE_SLOT(d_func(), void _q_enabler())
 };
 QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
 
@@ -116,7 +117,7 @@ class UCListItemAttachedPrivate;
 class UCListItemAttached : public QObject
 {
     Q_OBJECT
-    Q_PRIVATE_PROPERTY(UCListItemAttached::d_func(), bool selectable READ isSelectable WRITE setSelectable NOTIFY selectableChanged)
+    Q_PRIVATE_PROPERTY(UCListItemAttached::d_func(), bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
     Q_PRIVATE_PROPERTY(UCListItemAttached::d_func(), QList<int> selectedIndexes READ selectedIndexes WRITE setSelectedIndexes NOTIFY selectedIndexesChanged)
     Q_PRIVATE_PROPERTY(UCListItemAttached::d_func(), bool draggable READ isDraggable WRITE setDraggable NOTIFY draggableChanged)
 public:
@@ -135,7 +136,7 @@ private Q_SLOTS:
     void unbindItem();
 
 Q_SIGNALS:
-    void selectableChanged();
+    void selectModeChanged();
     void selectedIndexesChanged();
     void draggableChanged();
 

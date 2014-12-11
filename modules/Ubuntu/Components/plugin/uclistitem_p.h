@@ -52,9 +52,7 @@ public:
 
     bool isClickedConnected();
     bool isPressAndHoldConnected();
-    bool isSelectable();
     bool isDraggable();
-    void _q_enabler();
     void _q_updateThemedData();
     void _q_rebound();
     void promptRebound();
@@ -117,6 +115,7 @@ public:
     bool dragging();
     bool isSelected() const;
     void setSelected(bool value);
+    bool isSelectable();
     UCAction *action() const;
     void setAction(UCAction *action);
 };
@@ -163,8 +162,8 @@ public:
     QPointer<UCListItem> disablerItem;
 
     // getter/setter
-    bool isSelectable() const;
-    void setSelectable(bool value);
+    bool selectMode() const;
+    void setSelectMode(bool value);
     QList<int> selectedIndexes() const;
     void setSelectedIndexes(const QList<int> &list);
     bool isDraggable() const;
@@ -251,19 +250,10 @@ private:
 class UCHandlerBase : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool selectable READ selectable NOTIFY selectableChanged)
-    Q_PROPERTY(bool draggable READ draggable NOTIFY draggableChanged)
 public:
 
     explicit UCHandlerBase(UCListItem *owner = 0);
-    virtual void connectInterfaces();
-
-    bool selectable() const;
-    bool draggable() const;
-
-Q_SIGNALS:
-    void draggableChanged();
-    void selectableChanged();
+    virtual void initialize() = 0;
 
 protected:
     UCListItemPrivate *listItem;
@@ -279,7 +269,7 @@ class UCSelectionHandler : public UCHandlerBase
 public:
     explicit UCSelectionHandler(UCListItem *owner = 0);
 
-    void connectInterfaces();
+    void initialize();
     bool isSelected()
     {
         return selected;
@@ -299,7 +289,7 @@ class UCDragHandler : public UCHandlerBase
 public:
     explicit UCDragHandler(UCListItem *listItem);
 
-    void connectInterfaces();
+    void initialize();
     bool isDragging()
     {
         return dragging;

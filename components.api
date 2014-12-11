@@ -878,6 +878,7 @@ plugins.qmltypes
     Property { name: "highlightColor"; type: "QColor" }
     Property { name: "dragging"; type: "bool"; isReadonly: true }
     Property { name: "selected"; type: "bool" }
+    Property { name: "selectable"; type: "bool"; isReadonly: true }
     Property { name: "action"; type: "UCAction"; isPointer: true }
     Property { name: "listItemData"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
@@ -911,7 +912,7 @@ plugins.qmltypes
     Parameter { name: "position"; type: "double" }
     name: "UCListItemAttached"
     prototype: "QObject"
-    Property { name: "selectable"; type: "bool" }
+    Property { name: "selectMode"; type: "bool" }
     Property { name: "selectedIndexes"; type: "QList<int>" }
     Property { name: "draggable"; type: "bool" }
     Signal {

@@ -106,7 +106,6 @@ Item {
             height: units.gu(28)
             clip: true
             model: 10
-            ListItem.selectable: false
             delegate: ListItem {
                 objectName: "listItem" + index
                 color: "lightgray"
@@ -118,7 +117,7 @@ Item {
         Flickable {
             id: testFlickable
             width: parent.width
-            height: units.gu(28)
+            height: units.gu(21)
             ListView {
                 id: nestedListView
                 width: parent.width
@@ -128,6 +127,24 @@ Item {
                 delegate: ListItem {
                     objectName: "listItem" + index
                     leadingActions: leading
+                }
+            }
+        }
+        Flickable {
+            id: flickable
+            width: parent.width
+            height: units.gu(14)
+            clip: true
+            contentHeight: column.height
+            Column {
+                id: column
+                width: parent.width
+                Repeater {
+                    model: 10
+                    ListItem {
+                        objectName: "listItem" + index
+                        color: "lightgreen"
+                    }
                 }
             }
         }
@@ -190,10 +207,10 @@ Item {
         function cleanup() {
             testItem.action = null;
             testItem.selected = false;
-            testColumn.ListItem.selectable = false;
-            waitForRendering(testItem.contentItem, 400);
+            testColumn.ListItem.selectMode = false;
+            waitForRendering(testItem.contentItem, 200);
             controlItem.selected = false;
-            waitForRendering(controlItem.contentItem, 400);
+            waitForRendering(controlItem.contentItem, 200);
             movingSpy.clear();
             pressedSpy.clear();
             clickSpy.clear();
@@ -202,7 +219,7 @@ Item {
             buttonSpy.clear();
             interactiveSpy.clear();
             listView.interactive = true;
-            listView.ListItem.selectable = false;
+            listView.ListItem.selectMode = false;
             // make sure we collapse
             mouseClick(defaults, 0, 0)
             movingSpy.target = null;
@@ -231,7 +248,8 @@ Item {
             compare(defaults.style, null, "Style is loaded upon first use.");
             compare(defaults.__styleInstance, null, "__styleInstance must be null.");
             compare(defaults.selected, false, "Not selected by default");
-            compare(testColumn.ListItem.selectable, false, "The parent attached property is not selectable by default");
+            compare(defaults.selectable, false, "Not selectable by default");
+            compare(testColumn.ListItem.selectMode, false, "The parent attached property is not selectable by default");
             compare(testColumn.ListItem.selectedIndexes.length, 0, "No item is selected by default");
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
@@ -767,10 +785,10 @@ Item {
         }
         function test_toggle_selectable(data) {
             testItem.selected = data.selected;
-            testColumn.ListItem.selectable = true;
+            testColumn.ListItem.selectMode = true;
             waitForRendering(testItem.contentItem);
             verify(findChild(testItem, "selection_panel"), "Cannot find selection panel");
-            compare(testItem.contentItem.enabled, false, "contentItem is not disabled.");
+            compare(testItem.contentItem.enabled, true, "contentItem is not disabled.");
         }
 
         SignalSpy {
@@ -781,9 +799,9 @@ Item {
         function test_toggle_selected_data() {
             return [
                 // item = <test-item>, clickOk: <item-to-click-on>, offsetX|Y: <clickOn offset clicked>
-                {tag: "Click over selection", selectableHolder: testColumn, item: controlItem, clickOn: "listitem_select", offsetX: units.gu(0.5), offsetY: units.gu(0.5)},
-                {tag: "Click over contentItem", selectableHolder: testColumn, item: controlItem, clickOn: "ListItemHolder", offsetX: units.gu(0.5), offsetY: units.gu(0.5)},
-                {tag: "Click over control", selectableHolder: testColumn, item: controlItem, clickOn: "button_in_list", offsetX: units.gu(0.5), offsetY: units.gu(0.5)},
+                {tag: "Click over selection", selectableHolder: testColumn, item: controlItem, clickOn: "listitem_select", offsetX: units.gu(0.5), offsetY: units.gu(0.5), xfail: false},
+                {tag: "Click over contentItem", selectableHolder: testColumn, item: controlItem, clickOn: "ListItemHolder", offsetX: units.gu(0.5), offsetY: units.gu(0.5), xfail: true},
+                {tag: "Click over control", selectableHolder: testColumn, item: controlItem, clickOn: "button_in_list", offsetX: units.gu(0.5), offsetY: units.gu(0.5), xfail: true},
             ];
          }
         function test_toggle_selected(data) {
@@ -797,12 +815,15 @@ Item {
             selectedSpy.target = data.item;
             selectedSpy.clear();
             mouseClick(clickOn, data.offsetX, data.offsetY);
+            if (data.xfail) {
+                expectFail(data.tag, "Clicking anywhere else but selection panel should not toggle selection state!");
+            }
             selectedSpy.wait();
         }
 
         function test_no_tug_when_selectable() {
             movingSpy.target = testItem;
-            testColumn.ListItem.selectable = true;
+            testColumn.ListItem.selectMode = true;
             // wait till animation to selection mode ends
             waitForRendering(testItem.contentItem);
 
@@ -812,25 +833,44 @@ Item {
             compare(movingSpy.count, 0, "No tug allowed when in selection mode");
         }
 
-        function test_no_click_when_selectable() {
-            testColumn.ListItem.selectable = true;
+        function test_selectable_and_click() {
+            testColumn.ListItem.selectMode = true;
             // wait till animation to selection mode ends
             waitForRendering(testItem.contentItem);
 
             clickSpy.target = testItem;
             mouseClick(testItem, centerOf(testItem).x, centerOf(testItem).y);
-            compare(clickSpy.count, 0, "No click when selectable");
+            clickSpy.wait();
         }
 
-        function test_no_pressandhold_when_selectable() {
-            testColumn.ListItem.selectable = true;
+        function test_selectable_and_pressandhold() {
+            testColumn.ListItem.selectMode = true;
             // wait till animation to selection mode ends
             waitForRendering(testItem.contentItem);
 
             pressAndHoldSpy.target = testItem;
             mouseLongPress(testItem, centerOf(testItem).x, centerOf(testItem).y);
             mouseRelease(testItem, centerOf(testItem).x, centerOf(testItem).y);
-            compare(pressAndHoldSpy.count, 0, "No pressAndHold when selectable");
+            pressAndHoldSpy.wait();
+        }
+
+        function test_proper_attached_properties_data() {
+            return [
+                {tag: "Attached to ListView", item: listView},
+                {tag: "Attached to Column in Flickable", item: column},
+            ];
+        }
+        function test_proper_attached_properties(data) {
+            var listItem = findChild(data.item, "listItem0");
+            verify(listItem, "ListItem not found!");
+            data.item.ListItem.selectMode = true;
+            waitForRendering(listItem.contentItem);
+            // check if the selection mode was activated by looking after the first selection panel
+            var panel = findChild(listItem, "selection_panel");
+            data.item.ListItem.selectMode = false;
+            waitForRendering(listItem.contentItem);
+            // turn off selection mode so we have a proper cleanup
+            verify(panel, "Selection panel not found, wrong attached property target?");
         }
     }
 }

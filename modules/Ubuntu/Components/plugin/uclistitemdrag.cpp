@@ -30,9 +30,8 @@ bool UCDragHandler::eventFilter(QObject *watched, QEvent *event)
 }
 
 // listen for attached property's draggable change signal to activate dragging mode on the list item
-void UCDragHandler::connectInterfaces()
+void UCDragHandler::initialize()
 {
-    UCHandlerBase::connectInterfaces();
     if (!listItem->attachedProperties) {
         return;
     }

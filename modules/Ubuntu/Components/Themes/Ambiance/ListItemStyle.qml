@@ -36,7 +36,7 @@ Styles.ListItemStyle {
     // the selection/multiselection panel
     selectionDelegate: Item {
         id: selectionPanel
-        objectName: "selection_panel" + index
+        objectName: "selection_panel"
         width: units.gu(5)
 
         readonly property ListItem listItem: parent
@@ -77,13 +77,7 @@ Styles.ListItemStyle {
             ParallelAnimation {
                 PropertyAnimation {
                     target: selectionPanel.parent.contentItem
-                    property: "width"
-                    easing: UbuntuAnimation.StandardEasing
-                    duration: UbuntuAnimation.FastDuration
-                }
-                PropertyAnimation {
-                    target: selectionPanel.parent.contentItem
-                    property: "x"
+                    properties: "x,width"
                     easing: UbuntuAnimation.StandardEasing
                     duration: UbuntuAnimation.FastDuration
                 }
@@ -96,7 +90,12 @@ Styles.ListItemStyle {
             }
         }
 
-        state: ((typeof ListItemHandler !== "undefined") && ListItemHandler.selectable) ? "enabled" : ""
+        // make sure the state is changed only after component completion
+        Component.onCompleted: {
+            state = Qt.binding(function () {
+                return listItem && listItem.selectable ? "enabled" : "";
+            });
+        }
 
         CheckBox {
             id: checkbox
