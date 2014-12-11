@@ -40,6 +40,11 @@ MainView {
 
             delegate: ListItem {
                 objectName: "ListItem-" + index
+                Rectangle {
+                    anchors.fill: parent
+                    color: "tan"
+                }
+
                 Label {
                     text: label
                 }

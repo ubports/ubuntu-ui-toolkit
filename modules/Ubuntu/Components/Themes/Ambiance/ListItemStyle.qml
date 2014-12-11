@@ -62,7 +62,7 @@ Styles.ListItemStyle {
             PropertyChanges {
                 target: contentItem
                 x: selectionPanel.width
-                width: listItem.width - selectionPanel.width - (listItem)
+                width: listItem.width - selectionPanel.width - (listItem.draggable ? units.gu(5) : 0)
             }
             PropertyChanges {
                 target: checkbox
@@ -149,6 +149,10 @@ Styles.ListItemStyle {
                 opacity: 1.0
                 scale: 1.0
             }
+            PropertyChanges {
+                target: contentItem
+                width: listItem.width - dragHandler.width - (listItem.selectable ? units.gu(5) : 0)
+            }
         }
 
         transitions: Transition {
@@ -163,6 +167,11 @@ Styles.ListItemStyle {
             }
         }
 
-        state: ((typeof ListItemHandler != "undefined") && ListItemHandler.draggable) ? "enabled" : ""
+        // make sure the state is changed only after component completion
+        Component.onCompleted: {
+            state = Qt.binding(function () {
+                return listItem && listItem.draggable ? "enabled" : "";
+            });
+        }
     }
 }
