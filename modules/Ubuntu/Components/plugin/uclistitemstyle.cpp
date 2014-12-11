@@ -33,13 +33,6 @@
  *  \li - gets delegates and snap animation from the style properties
  *  \li - ignores any other visuals defined in the style.
  * \endlist
- *
- * To help animations driven by entering/leaving selection or dragging modes, the
- * ListItem defines two context properties, both accessible through the context
- * object \c ListItemHandler. \c ListItemHandler.selectable reports whether the
- * ListItem is in selection mode, and \c ListItemHandler.draggable reports whether
- * the ListView is in dragging mode. These properties are only accessible from
- * \l selectionDelegate and \l dragHandlerDelegate components.
  */
 UCListItemStyle::UCListItemStyle(QQuickItem *parent)
     : QQuickItem(parent)
@@ -66,7 +59,8 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
  *
  * ListItem will create the component when the selection mode is emntered, and will
  * keep it for the entire lifetime of the ListItem, even if the selection mode is
- * exited.
+ * exited. Therefore implementations must take care of removing the visuals when
+ * leaving selection mode.
  */
 
 /*!

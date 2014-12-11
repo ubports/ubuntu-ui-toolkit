@@ -51,7 +51,6 @@ public:
 
     bool isClickedConnected();
     bool isPressAndHoldConnected();
-    bool isSelectable();
     void _q_enabler();
     void _q_updateThemedData();
     void _q_rebound();
@@ -113,6 +112,7 @@ public:
     QQuickItem *styleInstance() const;
     bool isSelected() const;
     void setSelected(bool value);
+    bool isSelectable();
     UCAction *action() const;
     void setAction(UCAction *action);
 };
@@ -234,17 +234,12 @@ private:
 class UCHandlerBase : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool selectable READ selectable NOTIFY selectableChanged)
 public:
 
     explicit UCHandlerBase(UCListItem *owner = 0);
-    virtual void connectInterfaces();
+    virtual void initialize() = 0;
 
     bool selectable() const;
-
-Q_SIGNALS:
-    void draggableChanged();
-    void selectableChanged();
 
 protected:
     UCListItemPrivate *listItem;
@@ -260,7 +255,7 @@ class UCSelectionHandler : public UCHandlerBase
 public:
     explicit UCSelectionHandler(UCListItem *owner = 0);
 
-    void connectInterfaces();
+    void initialize();
     bool isSelected()
     {
         return selected;

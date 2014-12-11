@@ -55,8 +55,7 @@ QColor getPaletteColor(const char *profile, const char *color)
 }
 /******************************************************************************
  * UCHandlerBase
- * Base class for selection and drag handlers. The component is exposed as context
- * property which can be accessed in the panel implementations.
+ * Base class for selection and drag handlers.
  */
 UCHandlerBase::UCHandlerBase(UCListItem *owner)
     : QObject(owner)
@@ -65,51 +64,24 @@ UCHandlerBase::UCHandlerBase(UCListItem *owner)
 {
 }
 
-void UCHandlerBase::connectInterfaces()
-{
-    if (!listItem->attachedProperties) {
-        return;
-    }
-    connect(listItem->attachedProperties, &UCListItemAttached::selectableChanged,
-            this, &UCHandlerBase::selectableChanged);
-}
-
-bool UCHandlerBase::selectable() const
-{
-    return UCListItemAttachedPrivate::get(listItem->attachedProperties)->selectable;
-}
-
 void UCHandlerBase::setupPanel(QQmlComponent *component, bool animate)
 {
     if (panel || !component) {
         return;
     }
+    Q_UNUSED(animate)
     UCListItem *item = listItem->item();
     if (component->isError()) {
         qmlInfo(item) << component->errorString();
     } else {
         // create a new context so we can expose context properties
         QQmlContext *context = new QQmlContext(qmlContext(item), item);
-        // expose ourselves as context property so component can access the mode changes
-        // do not define the ListItemHandler if need to animate!
-        if (!animate) {
-            context->setContextProperty("ListItemHandler", this);
-        }
-        ContextPropertyChangeListener *listener = new ContextPropertyChangeListener(
-                    context, "ListItemHandler");
-        QObject::connect(listItem->attachedProperties, &UCListItemAttached::selectableChanged,
-                         listener, &ContextPropertyChangeListener::updateContextProperty);
-
         panel = qobject_cast<QQuickItem*>(component->beginCreate(context));
         if (panel) {
             QQml_setParent_noEvent(panel, item);
             panel->setParentItem(item);
             // complete component creation
             component->completeCreate();
-            // turn on ListItemHandler
-            if (animate) {
-                context->setContextProperty("ListItemHandler", this);
-            }
         }
     }
 }
@@ -468,14 +440,6 @@ bool UCListItemPrivate::isPressAndHoldConnected()
     static QMetaMethod method = QMetaMethod::fromSignal(&UCListItem::pressAndHold);
     static int signalIdx = QMetaObjectPrivate::signalIndex(method);
     return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
-}
-
-// returns true if the ListItem is in selectable mode, false otherwise (also if the
-// attached property is NULL)
-bool UCListItemPrivate::isSelectable()
-{
-    UCListItemAttachedPrivate *attached = UCListItemAttachedPrivate::get(attachedProperties);
-    return attached ? attached->selectable : false;
 }
 
 // the slot is connected to attached property's selectable to disable the item
@@ -951,12 +915,13 @@ void UCListItem::componentComplete()
         update();
     }
 
-    d->selectionHandler->connectInterfaces();
-    if (d->isSelectable()) {
-        d->selectionHandler->setupSelection();
-    }
-    // get the selected state from the attached object
+    d->selectionHandler->initialize();
+
     if (d->attachedProperties) {
+        // keep selectable in sync
+        connect(d->attachedProperties, &UCListItemAttached::selectableChanged,
+                this, &UCListItem::selectableChanged);
+        // get the selected state from the attached object
         d->setSelected(UCListItemAttachedPrivate::get(d->attachedProperties)->isItemSelected(this));
     }
 
@@ -1491,6 +1456,17 @@ bool UCListItemPrivate::isSelected() const
 void UCListItemPrivate::setSelected(bool value)
 {
     selectionHandler->setSelected(value);
+}
+
+/*!
+ * \qmlproperty bool ListItem::selectable
+ * \readonly
+ *
+ */
+bool UCListItemPrivate::isSelectable()
+{
+    UCListItemAttachedPrivate *attached = UCListItemAttachedPrivate::get(attachedProperties);
+    return attached ? attached->selectable : false;
 }
 
 /*!

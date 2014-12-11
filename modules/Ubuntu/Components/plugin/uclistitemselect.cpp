@@ -27,17 +27,22 @@ UCSelectionHandler::UCSelectionHandler(UCListItem *owner)
 {
 }
 
-void UCSelectionHandler::connectInterfaces()
+void UCSelectionHandler::initialize()
 {
-    UCHandlerBase::connectInterfaces();
     if (!listItem->attachedProperties) {
         return;
     }
     connect(listItem->attachedProperties, &UCListItemAttached::selectableChanged,
             this, &UCSelectionHandler::setupSelection);
+
     // also connect to the ListItem's _q_enabler() slot to enable/disable item itself
     connect(listItem->attachedProperties, SIGNAL(selectableChanged()),
             listItem->item(), SLOT(_q_enabler()));
+
+    // set up selection panel if created with selectable enabled
+    if (listItem->isSelectable()) {
+        setupSelection();
+    }
 }
 
 void UCSelectionHandler::setSelected(bool value)
