@@ -222,10 +222,7 @@ PageTreeNode {
             if (!headStyle.hasOwnProperty("animateOutFinished")) return false;
             return true;
         }
-
-        // FIXME: Replace false by headerCanAnimate() below to enable
-        //  header animations.
-        property bool animateHeader: false
+        property bool animateHeader: internal.headerCanAnimate()
 
         // Call this function before pushing or popping to ensure correct order
         // of pushes/pops on the stack. This terminates any currently running
