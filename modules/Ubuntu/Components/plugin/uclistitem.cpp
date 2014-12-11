@@ -587,7 +587,7 @@ void UCListItemPrivate::promptRebound()
 void UCListItemPrivate::_q_updateSize()
 {
     Q_Q(UCListItem);
-    QQuickItem *owner = static_cast<QQuickItem*>(sender());
+    QQuickItem *owner = static_cast<QQuickItem*>(q->sender());
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
     q->setImplicitHeight(UCUnits::instance().gu(7));
 }
@@ -963,6 +963,7 @@ void UCListItem::componentComplete()
     }
 
     d->selectionHandler->initialize();
+    d->dragHandler->initialize();
 
     if (d->attachedProperties) {
         // keep selectable in sync
@@ -970,12 +971,6 @@ void UCListItem::componentComplete()
                 this, &UCListItem::selectableChanged);
         // get the selected state from the attached object
         d->setSelected(UCListItemAttachedPrivate::get(d->attachedProperties)->isItemSelected(this));
-    }
-
-    // also toggle dragging mode if enabled
-    d->dragHandler->connectInterfaces();
-    if (d->isDraggable()) {
-        d->dragHandler->setupDragMode();
     }
 }
 
