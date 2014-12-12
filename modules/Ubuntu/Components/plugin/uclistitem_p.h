@@ -141,20 +141,11 @@ public:
     void removeSelectedItem(UCListItem *item);
     bool isItemSelected(UCListItem *item);
 
-    // dragging mode functions
-    QQuickItem *lastChildAt(QQuickItem *parent, QPointF pos);
-    void mousePressed(QQuickItem *sender, QMouseEvent *event);
-    void mouseReleased(QQuickItem *sender, QMouseEvent *event);
-    void mouseMoved(QQuickItem *sender, QMouseEvent *event);
-
     UCListItemAttached *q_ptr;
     QQuickFlickable *listView;
     bool globalDisabled:1;
     bool selectable:1;
     bool draggable:1;
-    int index;
-    int newIndex;
-    int currentId;
     QList<int> selectedList;
     QList< QPointer<QQuickFlickable> > flickables;
     QList< PropertyChange* > changes;
@@ -307,8 +298,6 @@ public Q_SLOTS:
 
 protected:
     bool dragging:1;
-
-    bool eventFilter(QObject *, QEvent *);
 };
 
 #endif // UCVIEWITEM_P_H

@@ -168,9 +168,6 @@ public:
     bool isMoving();
     bool isBoundTo(UCListItem *item);
 
-protected:
-    bool eventFilter(QObject *, QEvent *);
-
 private Q_SLOTS:
     void unbindItem();
 
