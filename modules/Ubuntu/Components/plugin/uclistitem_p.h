@@ -23,6 +23,13 @@
 #include <QtCore/QBasicTimer>
 #include <QtQuick/private/qquickrectangle_p.h>
 
+#define IMPLICIT_LISTITEM_WIDTH_GU      40
+#define IMPLICIT_LISTITEM_HEIGHT_GU     7
+#define DIVIDER_LEFT_MARGIN_DP          2
+#define DIVIDER_RIGHT_MARGIN_DP         2
+#define DIVIDER_THICKNESS_DP            2
+#define DEFAULT_SWIPE_THRESHOLD_GU      1.5
+
 class QQuickFlickable;
 class QQuickPropertyAnimation;
 class UCListItemContent;

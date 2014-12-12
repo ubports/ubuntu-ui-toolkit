@@ -240,12 +240,12 @@ void UCListItemDivider::init(UCListItem *listItem)
 
 void UCListItemDivider::unitsChanged()
 {
-    m_thickness = UCUnits::instance().dp(2);
+    m_thickness = UCUnits::instance().dp(DIVIDER_THICKNESS_DP);
     if (!m_leftMarginChanged) {
-        m_leftMargin = UCUnits::instance().dp(2);
+        m_leftMargin = UCUnits::instance().dp(DIVIDER_LEFT_MARGIN_DP);
     }
     if (!m_rightMarginChanged) {
-        m_rightMargin = UCUnits::instance().dp(2);
+        m_rightMargin = UCUnits::instance().dp(DIVIDER_RIGHT_MARGIN_DP);
     }
     if (m_listItem) {
         m_listItem->update();
@@ -374,7 +374,7 @@ UCListItemPrivate::UCListItemPrivate()
     , customStyle(false)
     , customColor(false)
     , customOvershoot(false)
-    , xAxisMoveThresholdGU(1.5)
+    , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
     , overshoot(0)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
@@ -414,7 +414,7 @@ void UCListItemPrivate::init()
     QObject::connect(&UCTheme::instance(), SIGNAL(nameChanged()), q, SLOT(_q_updateThemedData()));
     _q_updateThemedData();
 
-    // watch size change and set implicit size;
+    // watch grid unit size change and set implicit size
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
 
@@ -579,9 +579,15 @@ void UCListItemPrivate::promptRebound()
 void UCListItemPrivate::_q_updateSize()
 {
     Q_Q(UCListItem);
-    QQuickItem *owner = static_cast<QQuickItem*>(q->sender());
-    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
-    q->setImplicitHeight(UCUnits::instance().gu(7));
+    QQuickItem *owner = qobject_cast<QQuickItem*>(q->sender());
+    if (!owner || (q->sender() == &UCUnits::instance())) {
+        // either dirrect call or grid units changed
+        q->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_LISTITEM_HEIGHT_GU));
+    }
+    if (!owner && attachedProperties) {
+        owner = static_cast<QQuickItem*>(attachedProperties->parent());
+    }
+    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
 }
 
 // returns the index of the list item when used in model driven views,
@@ -987,18 +993,22 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         }
 
         // check if the flickable is actually a ListView
+        QQuickItem *sizer = data.item;
         if (d->flickable && QuickUtils::inherits(d->flickable, "QQuickListView")) {
             // the ListItem is a delegate of the ListView, so we attache the porperty to that
             d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(d->flickable));
-            QObject::connect(d->flickable, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
+            sizer = d->flickable;
         } else if (data.item) {
             d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(data.item));
-            QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
         } else {
             // mark as not ready, so no action should be performed which depends on readyness
             d->ready = false;
             // about to be deleted or reparented, disable attached
             d->attachedProperties = 0;
+        }
+
+        if (sizer) {
+            QObject::connect(sizer, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
         }
 
         // update size
