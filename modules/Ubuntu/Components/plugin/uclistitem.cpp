@@ -577,11 +577,14 @@ void UCListItemPrivate::_q_updateSize()
 {
     Q_Q(UCListItem);
     QQuickItem *owner = qobject_cast<QQuickItem*>(q->sender());
+    if (!owner || (q->sender() == &UCUnits::instance())) {
+        // either dirrect call or grid units changed
+        q->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_LISTITEM_HEIGHT_GU));
+    }
     if (!owner && attachedProperties) {
         owner = static_cast<QQuickItem*>(attachedProperties->parent());
     }
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
-    q->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_LISTITEM_HEIGHT_GU));
 }
 
 // returns the index of the list item when used in model driven views,
@@ -983,18 +986,22 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         }
 
         // check if the flickable is actually a ListView
+        QQuickItem *sizer = data.item;
         if (d->flickable && QuickUtils::inherits(d->flickable, "QQuickListView")) {
             // the ListItem is a delegate of the ListView, so we attache the porperty to that
             d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(d->flickable));
-            QObject::connect(d->flickable, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
+            sizer = d->flickable;
         } else if (data.item) {
             d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(data.item));
-            QObject::connect(data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
         } else {
             // mark as not ready, so no action should be performed which depends on readyness
             d->ready = false;
             // about to be deleted or reparented, disable attached
             d->attachedProperties = 0;
+        }
+
+        if (sizer) {
+            QObject::connect(sizer, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
         }
 
         // update size
