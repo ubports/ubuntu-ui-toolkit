@@ -240,12 +240,12 @@ void UCListItemDivider::init(UCListItem *listItem)
 
 void UCListItemDivider::unitsChanged()
 {
-    m_thickness = UCUnits::instance().dp(2);
+    m_thickness = UCUnits::instance().dp(DIVIDER_THICKNESS_DP);
     if (!m_leftMarginChanged) {
-        m_leftMargin = UCUnits::instance().dp(2);
+        m_leftMargin = UCUnits::instance().dp(DIVIDER_LEFT_MARGIN_DP);
     }
     if (!m_rightMarginChanged) {
-        m_rightMargin = UCUnits::instance().dp(2);
+        m_rightMargin = UCUnits::instance().dp(DIVIDER_RIGHT_MARGIN_DP);
     }
     if (m_listItem) {
         m_listItem->update();
@@ -374,7 +374,7 @@ UCListItemPrivate::UCListItemPrivate()
     , customStyle(false)
     , customColor(false)
     , customOvershoot(false)
-    , xAxisMoveThresholdGU(1.5)
+    , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
     , overshoot(0)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
@@ -413,7 +413,7 @@ void UCListItemPrivate::init()
     QObject::connect(&UCTheme::instance(), SIGNAL(nameChanged()), q, SLOT(_q_updateThemedData()));
     _q_updateThemedData();
 
-    // watch size change and set implicit size;
+    // watch grid unit size change and set implicit size
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
 
@@ -580,8 +580,8 @@ void UCListItemPrivate::_q_updateSize()
     if (!owner && attachedProperties) {
         owner = static_cast<QQuickItem*>(attachedProperties->parent());
     }
-    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
-    q->setImplicitHeight(UCUnits::instance().gu(7));
+    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
+    q->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_LISTITEM_HEIGHT_GU));
 }
 
 // returns the index of the list item when used in model driven views,
