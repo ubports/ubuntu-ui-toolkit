@@ -118,19 +118,22 @@ QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
 class UCDragEvent : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(Direction direction READ direction REVISION 2)
+    Q_PROPERTY(Directions directions MEMBER m_directions REVISION 2)
     Q_PROPERTY(int from READ from REVISION 2)
     Q_PROPERTY(int to READ to REVISION 2)
     Q_PROPERTY(bool accept MEMBER m_accept REVISION 2)
-    Q_PROPERTY(Direction direction READ direction REVISION 2)
     Q_ENUMS(Direction)
 public:
     enum Direction {
-        Negative = -1,
-        Positive = 1
+        None        = 0x00,
+        Upwards     = 0x01,
+        Downwards   = 0x02
     };
+    Q_DECLARE_FLAGS(Directions, Direction)
 
-    explicit UCDragEvent(int from, int to, Direction direction)
-        : QObject(0), m_from(from), m_to(to), m_direction(direction), m_accept(true)
+    explicit UCDragEvent(Direction direction, Directions directions, int from, int to)
+        : QObject(0), m_direction(direction), m_directions(directions), m_from(from), m_to(to), m_accept(true)
     {}
     int from() const
     {
@@ -146,11 +149,13 @@ public:
     }
 
 private:
+    Direction m_direction;
+    Directions m_directions;
     int m_from;
     int m_to;
-    Direction m_direction;
     bool m_accept;
 };
+Q_DECLARE_OPERATORS_FOR_FLAGS(UCDragEvent::Directions)
 
 class UCListItemAttachedPrivate;
 class UCListItemAttached : public QObject

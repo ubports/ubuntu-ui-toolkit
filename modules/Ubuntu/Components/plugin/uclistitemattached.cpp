@@ -300,16 +300,47 @@ bool UCListItemAttachedPrivate::isItemSelected(UCListItem *item)
  * The panel is configured by the \l {ListItemStyle::dragHandlerDelegate}{dragHandlerDelegate}
  * component.
  *
- * \sa ListItemStyle::dragHandlerDelegate, draggingStarted, draggingEnded
+ * \sa ListItemStyle::dragHandlerDelegate, draggingStarted
  */
 
 /*!
  * \qmlattachedsignal ListItem::draggingStarted(DragEvent drag)
- * The signal is emitted when a ListItem dtragging is started. \c drag.from
- * specifies the index of the ListItem being dragged. \c drag.direction specifies
- * the direction the drag is started, which can be denied by setting \c false
- * to \c drag.accept property. If denied, the signal will be emitted again if
- * dragged into opposite direction.
+ * The signal is emitted when a ListItem dragging is started. \c drag.from
+ * specifies the index of the ListItem being dragged. \c drag.directions specifies
+ * the directions the drag can be performed and by default it contains both directions.
+ * This field can be modified to reflect in which direction the dragging can be
+ * started. The \c drag.accept property, if set to false, will cancel dragging
+ * operation. The other fields of the event (i.e. \c drag.to and \c drag.direction)
+ * contain invalid data.
+ * \qml
+ * import QtQuick 2.3
+ * import Ubuntu.Components 1.2
+ *
+ * ListView {
+ *    width: units.gu(40)
+ *    height: units.gu(40)
+ *    model: ListModel {
+ *        // initiate with random data
+ *    }
+ *    delegate: ListItem {
+ *        // content
+ *    }
+ *
+ *    ListItem.dragMode: true
+ *    ListItem.onDraggingStarted: {
+ *        if (drag.from == 0) {
+ *            // do not drag upwards
+ *            drag.directions = DragEvent.Downwards;
+ *        } else if (drag.from == count) {
+ *            // do not drag downwards
+ *            drag.directions = DragEvent.Upwards;
+ *        } else if ((drag.from + 1) % 4) {
+ *            // deny dragging every 4th item
+ *            drag.accept = false;
+ *        }
+ *    }
+ * }
+ * \endqml
  */
 
 /*!
@@ -317,10 +348,50 @@ bool UCListItemAttachedPrivate::isItemSelected(UCListItem *item)
  * The signal is emitted when the list item from \c drag.from index has been
  * dragged over to \c drag.to, and a move operation is possible. Implementations
  * must move the model data between these indexes. If the move is not acceptable,
- * it can be dropped by setting \c drag.accept to \c false, in which case the
+ * it can be cancelled by setting \c drag.accept to \c false, in which case the
  * dragged item will stay on its last moved position or will snap back to its
- * previous place. If the direction is not suitable, it can be denied by setting
- * \c false to \c drag.accept property.
+ * previous place. The direction of the drag is given in the \c drag.direction
+ * proeprty, and the allowed directions can be configured through \c drag.directions
+ * property.
+ * \qml
+ * import QtQuick 2.3
+ * import Ubuntu.Components 1.2
+ *
+ * ListView {
+ *    width: units.gu(40)
+ *    height: units.gu(40)
+ *    model: ListModel {
+ *        // initiate with random data
+ *    }
+ *    delegate: ListItem {
+ *        // content
+ *    }
+ *
+ *    ListItem.dragMode: true
+ *    function validateDrag(drag) {
+ *        if (drag.from == 0) {
+ *            // do not drag upwards
+ *            drag.directions = DragEvent.Downwards;
+ *        } else if (drag.from == count) {
+ *            // do not drag downwards
+ *            drag.directions = DragEvent.Upwards;
+ *        } else if ((drag.from + 1) % 4) {
+ *            // deny dragging every 4th item
+ *            drag.accept = false;
+ *        }
+ *        return drag;
+ *    }
+ *    ListItem.onDraggingStarted: {
+ *        drag = validateDrag(drag);
+ *    }
+ *    ListItem.onDraggingUpdated: {
+ *        drag = validateDrag(drag);
+ *        if (drag.accept) {
+ *          model.move(drag.from, drag.to, 1);
+ *        }
+ *    }
+ * }
+ * \endqml
  */
 
 bool UCListItemAttachedPrivate::dragMode() const
@@ -355,4 +426,3 @@ void UCListItemAttachedPrivate::setDragMode(bool value)
     draggable = value;
     Q_EMIT q->dragModeChanged();
 }
-

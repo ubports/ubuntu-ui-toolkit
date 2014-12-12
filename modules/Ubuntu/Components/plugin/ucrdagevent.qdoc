@@ -1,0 +1,55 @@
+/*!
+ * \qmltype DragEvent
+ * \inqmlmodule Ubuntu.Components 1.2
+ * \ingroup unstable-ubuntu-listitems
+ * \since Ubuntu.Components 1.2
+ * \brief Provides information about a ListItem drag event.
+ *
+ * The object cannot be instantiated and it is passed as parameter to \l ListItem::draggingStarted
+ * and \l ListItem::draggingUpdated attached signals. Developer can decide whether
+ * to accept or restrict the dragging event based on the input provided by this
+ * event.
+ *
+ * The direction of the drag can be found via the \l direction property and the
+ * source and destination the drag can be applied via \l from and \l to properties.
+ * The allowed directions can be configured through \l directions property and
+ * the event acceptance through \l accept property. If the event is not accepted,
+ * the drag action will be considered as cancelled.
+ */
+
+/*!
+ * \qmlproperty flags DragEvent::directions
+ * The property holds the directions supported for the event itself.
+ *
+ * \sa direction
+ */
+
+/*!
+ * \qmlproperty enum DragEvent::direction
+ * \readonly
+ * The property specifies the direction of the drag. Its value depends on the
+ * signal triggered and can be one of the following:
+ * \list
+ *  \li \c DragEvent.None - no drag, value set when \l ListItem::draggingStarted signal is emitted.
+ *  \li \c DragEvent.Upwards - the drag is proceeded upwards in the ListView
+ *  \li \c DragEvent.Downwards - the drag proceeds downwards in the ListView
+ * \endlist
+ */
+
+/*!
+ * \qmlproperty int DragEvent::from
+ * \readonly
+ */
+/*!
+ * \qmlproperty int DragEvent::to
+ * \readonly
+ *
+ * Specifies the source index the ListItem is dragged from and the destination
+ * index it can be dropped.
+ */
+
+/*!
+ * \qmlproperty bool DragEvent::accept
+ * The property can be used to dismiss the event. By default its value is true,
+ * meaning the drag event is accepted.
+ */
