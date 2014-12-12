@@ -865,10 +865,11 @@ plugins.qmltypes
     prototype: "QObject"
     exports: ["DragEvent 1.2"]
     name: "Direction"
+    Property { name: "direction"; revision: 2; type: "Direction"; isReadonly: true }
+    Property { name: "directions"; revision: 2; type: "Directions" }
     Property { name: "from"; revision: 2; type: "int"; isReadonly: true }
     Property { name: "to"; revision: 2; type: "int"; isReadonly: true }
     Property { name: "accept"; revision: 2; type: "bool" }
-    Property { name: "direction"; revision: 2; type: "Direction"; isReadonly: true }
     name: "UCInverseMouse"
     prototype: "UCMouse"
     exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
