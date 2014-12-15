@@ -42,6 +42,8 @@ class UCListItem(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 'No {0} panel found in a ListItem'.format(panel_item))
         start_y = stop_y = y + (height // 2)
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
+        # wait 1 second to finish animation
+        time.sleep(1)
 
     def _click_on_panel_action(self, panel_item, action_object, wait_function):
         self._swipe_in_panel(panel_item)
