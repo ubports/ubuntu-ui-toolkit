@@ -18,6 +18,7 @@ import logging
 
 from autopilot import logging as autopilot_logging
 from ubuntuuitoolkit._custom_proxy_objects import _common
+import time
 
 
 logger = logging.getLogger(__name__)
@@ -56,7 +57,9 @@ class UCListItem(_common.UbuntuUIToolkitCustomProxyObjectBase):
         if wait_function is None:
             # wait for the animation to finish
             contentItem = self.select_single(objectName='ListItemHolder')
-            contentItem.x.wait_for(0)
+            while contentItem.x != 0.0:
+                contentItem.x.wait_for(0)
+                time.sleep(1)
         else:
             wait_function()
 
