@@ -16,8 +16,7 @@
 
 import os
 
-import ubuntuuitoolkit
-from ubuntuuitoolkit import popups,tests
+from ubuntuuitoolkit import tests
 
 
 class DialogTestCase(tests.QMLFileAppTestCase):
@@ -30,11 +29,15 @@ class DialogTestCase(tests.QMLFileAppTestCase):
         super(DialogTestCase, self).setUp()
 
     def test_dialog(self):
-       open_button = self.main_view.wait_select_single('Button', objectName='button')
-       self.pointing_device.click_object(open_button)
-       dialog = self.main_view.wait_select_single('Dialog', title="Dialog")
-       text_area = dialog.wait_select_single('TextArea', objectName='textfield_standard')
-       text_area.write('test')
-       self.assertEqual(text_area.text, 'test')
-       lower_button = dialog.wait_select_single('Button', text = 'Lower button')
-       self.pointing_device.click_object(lower_button)
+        open_button = self.main_view.wait_select_single('Button',
+                                                        objectName='button')
+        self.pointing_device.click_object(open_button)
+        dialog = self.main_view.wait_select_single('Dialog',
+                                                   title="Dialog")
+        text_area = dialog.wait_select_single('TextArea',
+                                              objectName='textfield_standard')
+        text_area.write('test')
+        self.assertEqual(text_area.text, 'test')
+        lower_button = dialog.wait_select_single('Button',
+                                                 text='Lower button')
+        self.pointing_device.click_object(lower_button)
