@@ -159,7 +159,7 @@ MainView {
             id: view
             clip: true
             width: parent.width
-            height: units.gu(60)
+            height: units.gu(20)
             model: 100
             pressDelay: 0
             ListItem.selectMode: main.selectable
@@ -188,65 +188,65 @@ MainView {
                 }
             }
         }
-//        Flickable {
-//            id: flicker
-//            width: parent.width
-//            height: units.gu(20)
-//            clip: true
-//            contentHeight: column.childrenRect.height
-//            ListItemActions {
-//                id: trailing
-//                actions: leading.actions
-//            }
-//            ListItem.selectMode: main.selectable
-//            ListItem.onSelectedIndexesChanged: print("INDEXES=", ListItem.selectedIndexes)
+        Flickable {
+            id: flicker
+            width: parent.width
+            height: units.gu(20)
+            clip: true
+            contentHeight: column.childrenRect.height
+            ListItemActions {
+                id: trailing
+                actions: leading.actions
+            }
+            ListItem.selectMode: main.selectable
+            ListItem.onSelectedIndexesChanged: print("INDEXES=", ListItem.selectedIndexes)
 
-//            Column {
-//                id: column
-//                width: view.width
-//                property alias count: repeater.count
-//                ListItem.selectMode: true
-//                Repeater {
-//                    id: repeater
-//                    model: 10
-//                    ListItem {
-//                        objectName: "InFlickable"+index
-//                        color: "red"
-//                        highlightColor: "lime"
-//                        divider.colorFrom: UbuntuColors.green
-//                        swipeOvershoot: units.gu(10)
+            Column {
+                id: column
+                width: view.width
+                property alias count: repeater.count
+                ListItem.selectMode: true
+                Repeater {
+                    id: repeater
+                    model: 10
+                    ListItem {
+                        objectName: "InFlickable"+index
+                        color: "red"
+                        highlightColor: "lime"
+                        divider.colorFrom: UbuntuColors.green
+                        swipeOvershoot: units.gu(10)
 
-//                        leadingActions: ListItemActions {
-//                            actions: leadingArray
-//                        }
-//                        trailingActions: ListItemActions {
-//                            actions: trailingArray
-//                        }
+                        leadingActions: ListItemActions {
+                            actions: leadingArray
+                        }
+                        trailingActions: ListItemActions {
+                            actions: trailingArray
+                        }
 
-//                        Label {
-//                            text: modelData + " Flickable item"
-//                        }
-//                        onClicked: divider.visible = !divider.visible
-//                    }
-//                }
-//            }
-//        }
-//        ListItem {
-//            Label {
-//                text: "Switch makes this item to highlight"
-//            }
-//            Switch {
-//                id: toggle
-//                anchors.right: parent.right
-//            }
-//            Component.onCompleted: clicked.connect(toggle.clicked)
-//        }
-//        ListItem {
-//            Label {
-//                text: "No action, no trailing/leading actions, no active component"
-//            }
-//            onClicked: print("clicked")
-//            onPressAndHold: print("longPressed")
-//        }
+                        Label {
+                            text: modelData + " Flickable item"
+                        }
+                        onClicked: divider.visible = !divider.visible
+                    }
+                }
+            }
+        }
+        ListItem {
+            Label {
+                text: "Switch makes this item to highlight"
+            }
+            Switch {
+                id: toggle
+                anchors.right: parent.right
+            }
+            Component.onCompleted: clicked.connect(toggle.clicked)
+        }
+        ListItem {
+            Label {
+                text: "No action, no trailing/leading actions, no active component"
+            }
+            onClicked: print("clicked")
+            onPressAndHold: print("longPressed")
+        }
     }
 }
