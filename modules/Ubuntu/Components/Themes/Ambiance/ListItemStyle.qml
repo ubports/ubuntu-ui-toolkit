@@ -74,6 +74,7 @@ Styles.ListItemStyle {
             from: ""
             to: "enabled"
             reversible: true
+            enabled: animatePanel
             ParallelAnimation {
                 PropertyAnimation {
                     target: selectionPanel.parent.contentItem

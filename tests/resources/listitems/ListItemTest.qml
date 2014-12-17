@@ -160,7 +160,7 @@ MainView {
             clip: true
             width: parent.width
             height: units.gu(20)
-            model: 10
+            model: 100
             pressDelay: 0
             ListItem.selectMode: main.selectable
             ListItem.selectedIndexes: [9,3,4,1]

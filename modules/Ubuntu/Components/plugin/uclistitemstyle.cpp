@@ -61,6 +61,52 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
  * keep it for the entire lifetime of the ListItem, even if the selection mode is
  * exited. Therefore implementations must take care of removing the visuals when
  * leaving selection mode.
+ *
+ * The parent of the component is the ListItem itself.
+ *
+ * The \c animatePanel context property is set if the ListItem expects to animate
+ * the panel changes, and reset if should not.
+ *
+ * \note If states are used to show/hide and animate the panel changes, these changes
+ * should be applied only after the component completion happens, otherwise animations
+ * may not be executed during the first creation time.
+ * \qml
+ * ListItemStyle {
+ *     // [...]
+ *     selectionDelegate: Item {
+ *         id: panel
+ *         width: units.gu(5)
+ *         anchors {
+ *             top: parent ? parent.top : undefined
+ *             right: parent ? parent.left : undefined
+ *             bottom: parent ? parent.bottom : undefined
+ *         }
+ *         states: State {
+ *             name: "enabled"
+ *             PropertyChanges {
+ *                 // [...]
+ *             }
+ *         }
+ *         transitions: Transitions {
+ *             from: ""
+ *             to: "enabled"
+ *             enabled: animatePanel
+ *             // [...]
+ *         }
+ *
+ *         // other content
+ *         // [...]
+ *
+ *         // do a function binding on state now
+ *         readonly property ListItem listItem: parent
+ *         Component.onCompleted: {
+ *             state = Qt.binding(function () {
+ *                 return listItem && listItem.selectable ? "enabled" : "";
+ *             });
+ *         }
+ *     }
+ * }
+ * \endqml
  */
 
 /*!
