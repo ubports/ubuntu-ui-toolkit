@@ -76,12 +76,15 @@ void UCHandlerBase::setupPanel(QQmlComponent *component, bool animate)
     } else {
         // create a new context so we can expose context properties
         QQmlContext *context = new QQmlContext(qmlContext(item), item);
+        context->setContextProperty("animatePanel", animate);
         panel = qobject_cast<QQuickItem*>(component->beginCreate(context));
         if (panel) {
             QQml_setParent_noEvent(panel, item);
             panel->setParentItem(item);
             // complete component creation
             component->completeCreate();
+            // and set the context property so we animate next time.
+            context->setContextProperty("animatePanel", true);
         }
     }
 }
