@@ -118,6 +118,9 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
  * used in a modelled view. An additional context proeprty is also declared to notify
  * when the handler can be enabled, the \c draggingEnabled context property.
  *
+ * The \c animatePanel context property is set if the ListItem expects to animate
+ * the panel changes, and reset if should not.
+ *
  * \note The drag handler is only instantiated if the dragging mode is possible,
  * meaning the ListItem is used in a ListView. Therefore entering in dragging mode
  * can also be checked by accessing the \l ListItem::draggable property through \c
@@ -128,53 +131,60 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
  * import Ubuntu.Components.Styles 1.2 as Styles
  *
  * Styles.ListItemStyle {
- *    dragHandlerDelegate: Rectangle {
- *       id: dragHandler
- *       objectName: "draghandler_panel" + index
- *       width: height
- *       // Internally used to link to the list item's content. The parent item is the ListItem itself.
- *       readonly property Item contentItem: parent ? parent.contentItem : null
+ *     // [...]
+ *     dragHandlerDelegate: Rectangle {
+ *         id: dragHandler
+ *         width: height
+ *         // Internally used to link to the list item's content. The parent item is the ListItem itself.
+ *         readonly property Item contentItem: parent ? parent.contentItem : null
  *
- *       // track drag mode status
- *       readonly property bool draggingEnabled: parent && parent.ListView.view ?
- *                                                  parent.ListView.view.ListItem.draggable : false
+ *         // track drag mode status
+ *         readonly property bool draggingEnabled: parent && parent.ListView.view ?
+ *                                                   parent.ListView.view.ListItem.draggable : false
  *
- *       anchors {
- *           // by default the panel stays outside of the ListItem's right side
- *           left: parent ? parent.right : undefined
- *           top: contentItem ? contentItem.top : undefined
- *           bottom: contentItem ? contentItem.bottom : undefined
- *       }
+ *         anchors {
+ *             // by default the panel stays outside of the ListItem's right side
+ *             left: parent ? parent.right : undefined
+ *             top: contentItem ? contentItem.top : undefined
+ *             bottom: contentItem ? contentItem.bottom : undefined
+ *         }
  *
- *       Icon {
- *           objectName: "icon"
- *           id: dragIcon
- *           anchors.centerIn: parent
- *           width: units.gu(2.5)
- *           height: width
- *           name: "view-grid-symbolic"
- *       }
+ *         Icon {
+ *             objectName: "icon"
+ *             id: dragIcon
+ *             anchors.centerIn: parent
+ *             width: units.gu(2.5)
+ *             height: width
+ *             name: "view-grid-symbolic"
+ *         }
  *
- *       states: State {
- *           name: "enabled"
- *           AnchorChanges {
- *               target: dragHandler
- *               anchors.right: dragHandler.parent.right
- *               anchors.left: undefined
- *           }
- *       }
+ *         states: State {
+ *             name: "enabled"
+ *             AnchorChanges {
+ *                 target: dragHandler
+ *                 anchors.right: dragHandler.parent.right
+ *                 anchors.left: undefined
+ *             }
+ *         }
  *
- *       transitions: Transition {
- *           from: ""
- *           to: "enabled"
- *           reversible: true
- *           AnchorAnimation {
- *               easing: UbuntuAnimation.StandardEasing
- *               duration: UbuntuAnimation.FastDuration
- *           }
- *       }
+ *         transitions: Transition {
+ *             from: ""
+ *             to: "enabled"
+ *             enabled: animatePanel
+ *             reversible: true
+ *             AnchorAnimation {
+ *                 easing: UbuntuAnimation.StandardEasing
+ *                 duration: UbuntuAnimation.FastDuration
+ *             }
+ *         }
  *
- *       state: draggingEnabled ? "enabled" : ""
+ *         // do a function binding on state now to make sure we animate when we have to
+ *         readonly property ListItem listItem: parent
+ *         Component.onCompleted: {
+ *             state = Qt.binding(function () {
+ *                 return listItem && listItem.draggable ? "enabled" : "";
+ *             });
+ *         }
  *    }
  * }
  * \endqml

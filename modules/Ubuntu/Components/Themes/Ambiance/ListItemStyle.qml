@@ -159,6 +159,7 @@ Styles.ListItemStyle {
         transitions: Transition {
             from: ""
             to: "enabled"
+            enabled: animatePanel
             reversible: true
             PropertyAnimation {
                 target: dragIcon
