@@ -304,92 +304,129 @@ bool UCListItemAttachedPrivate::isItemSelected(UCListItem *item)
  */
 
 /*!
- * \qmlattachedsignal ListItem::draggingStarted(DragEvent drag)
- * The signal is emitted when a ListItem dragging is started. \c drag.from
- * specifies the index of the ListItem being dragged. \c drag.directions specifies
- * the directions the drag can be performed and by default it contains both directions.
- * This field can be modified to reflect in which direction the dragging can be
- * started. The \c drag.accept property, if set to false, will cancel dragging
- * operation. The other fields of the event (i.e. \c drag.to and \c drag.direction)
- * contain invalid data.
+ * \qmlattachedsignal ListItem::draggingStarted(ListItemDrag event)
+ * The signal is emitted when a ListItem dragging is started. \c event.from
+ * specifies the index of the ListItem being dragged. \c event.minimumIndex and
+ * \c event.maximumIndex configures the index interval the dragging of the item
+ * is allowed. If set (meaning their value differs from -1), items cannot be
+ * dragged outside of this region. The \c event.accept property, if set to false,
+ * will cancel dragging operation. The other fields of the event (i.e. \c event.to
+ * and \c event.direction) contain invalid data.
  * \qml
  * import QtQuick 2.3
  * import Ubuntu.Components 1.2
  *
  * ListView {
- *    width: units.gu(40)
- *    height: units.gu(40)
- *    model: ListModel {
- *        // initiate with random data
- *    }
- *    delegate: ListItem {
- *        // content
- *    }
+ *     width: units.gu(40)
+ *     height: units.gu(40)
+ *     model: ListModel {
+ *         // initiate with random data
+ *     }
+ *     delegate: ListItem {
+ *         // content
+ *     }
  *
- *    ListItem.dragMode: true
- *    ListItem.onDraggingStarted: {
- *        if (drag.from == 0) {
- *            // do not drag upwards
- *            drag.directions = DragEvent.Downwards;
- *        } else if (drag.from == count) {
- *            // do not drag downwards
- *            drag.directions = DragEvent.Upwards;
- *        } else if ((drag.from + 1) % 4) {
- *            // deny dragging every 4th item
- *            drag.accept = false;
- *        }
- *    }
+ *     ListItem.dragMode: true
+ *     ListItem.onDraggingStarted: {
+ *         if (event.from < 5) {
+ *             // deny dragging on the first 5 element
+ *             event.accept = false;
+ *         } else if (event.from >= 5 && event.from <= 10) {
+ *             // specify the interval
+ *             event.minimumIndex = 5;
+ *             event.maximumIndex = 10;
+ *         }
+ *     }
  * }
  * \endqml
+ *
+ * In the example above the first 5 items are not draggable, though drag handler
+ * will still be shown for them. If the drag starts on item index 5, it will only
+ * accept drag gesture downwards, respectively starting a drag on item index 10
+ * will only allow dragging that element upwards. Every item dragged between
+ * indexes 5 and 10 will be draggable both directions, however only till 5th or
+ * 10th index. On the other hand, items dragged from index > 10 will be draggable
+ * to any index, including the first 11 items. In order to avoid dragging those
+ * items in between the first 11 items, the following change must be made:
+ * \qml
+ * import QtQuick 2.3
+ * import Ubuntu.Components 1.2
+ *
+ * ListView {
+ *     width: units.gu(40)
+ *     height: units.gu(40)
+ *     model: ListModel {
+ *         // initiate with random data
+ *     }
+ *     delegate: ListItem {
+ *         // content
+ *     }
+ *
+ *     ListItem.dragMode: true
+ *     ListItem.onDraggingStarted: {
+ *         if (event.from < 5) {
+ *             // deny dragging on the first 5 element
+ *             event.accept = false;
+ *         } else if (event.from >= 5 && event.from <= 10) {
+ *             // specify the interval
+ *             event.minimumIndex = 5;
+ *             event.maximumIndex = 10;
+ *         } else if (event.from > 10) {
+ *             // prevent dragging to the first 11 items area
+ *             event.minimumIndex = 11;
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * \note None of the above examples will move the dragged item. In order that to
+ * happen, you must implement \l draggingUpdated signal and move the model data.
+ * \note Implementing the signal handler is not mandatory and should only happen
+ * if restrictions on the drag must be applied.
  */
 
 /*!
- * \qmlattachedsignal ListItem::draggingUpdated(DragEvent drag)
- * The signal is emitted when the list item from \c drag.from index has been
- * dragged over to \c drag.to, and a move operation is possible. Implementations
- * must move the model data between these indexes. If the move is not acceptable,
- * it can be cancelled by setting \c drag.accept to \c false, in which case the
+ * \qmlattachedsignal ListItem::draggingUpdated(ListItemDrag event)
+ * The signal is emitted when the list item from \c event.from index has been
+ * dragged over to \c event.to, and a move operation is possible. Implementations
+ * \b {must move the model data} between these indexes. If the move is not acceptable,
+ * it can be cancelled by setting \c event.accept to \c false, in which case the
  * dragged item will stay on its last moved position or will snap back to its
- * previous place. The direction of the drag is given in the \c drag.direction
- * proeprty, and the allowed directions can be configured through \c drag.directions
- * property.
+ * previous or original place, depending whether the drag was sent during the
+ * drag or as a result of a drop gesture. The direction of the drag is given in the
+ * \c drag.direction property. Extending the example from \l draggingStarted, an
+ * implementation of a live dragging would look as follows
  * \qml
  * import QtQuick 2.3
  * import Ubuntu.Components 1.2
  *
  * ListView {
- *    width: units.gu(40)
- *    height: units.gu(40)
- *    model: ListModel {
- *        // initiate with random data
- *    }
- *    delegate: ListItem {
- *        // content
- *    }
+ *     width: units.gu(40)
+ *     height: units.gu(40)
+ *     model: ListModel {
+ *         // initiate with random data
+ *     }
+ *     delegate: ListItem {
+ *         // content
+ *     }
  *
- *    ListItem.dragMode: true
- *    function validateDrag(drag) {
- *        if (drag.from == 0) {
- *            // do not drag upwards
- *            drag.directions = DragEvent.Downwards;
- *        } else if (drag.from == count) {
- *            // do not drag downwards
- *            drag.directions = DragEvent.Upwards;
- *        } else if ((drag.from + 1) % 4) {
- *            // deny dragging every 4th item
- *            drag.accept = false;
- *        }
- *        return drag;
- *    }
- *    ListItem.onDraggingStarted: {
- *        drag = validateDrag(drag);
- *    }
- *    ListItem.onDraggingUpdated: {
- *        drag = validateDrag(drag);
- *        if (drag.accept) {
- *          model.move(drag.from, drag.to, 1);
- *        }
- *    }
+ *     ListItem.dragMode: true
+ *     ListItem.onDraggingStarted: {
+ *         if (event.from < 5) {
+ *             // deny dragging on the first 5 element
+ *             event.accept = false;
+ *         } else if (event.from >= 5 && event.from <= 10) {
+ *             // specify the interval
+ *             event.minimumIndex = 5;
+ *             event.maximumIndex = 10;
+ *         } else if (event.from > 10) {
+ *             // prevent dragging to the first 11 items area
+ *             event.minimumIndex = 11;
+ *         }
+ *     }
+ *     ListItem.onDraggingUpdated: {
+ *         model.move(event.from, evenbt.to, 1);
+ *     }
  * }
  * \endqml
  */

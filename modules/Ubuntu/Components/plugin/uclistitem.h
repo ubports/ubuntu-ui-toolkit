@@ -115,48 +115,7 @@ private:
 };
 QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
 
-class UCDragEvent : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(Direction direction READ direction REVISION 2)
-    Q_PROPERTY(Directions directions MEMBER m_directions REVISION 2)
-    Q_PROPERTY(int from READ from REVISION 2)
-    Q_PROPERTY(int to READ to REVISION 2)
-    Q_PROPERTY(bool accept MEMBER m_accept REVISION 2)
-    Q_ENUMS(Direction)
-public:
-    enum Direction {
-        None        = 0x00,
-        Upwards     = 0x01,
-        Downwards   = 0x02
-    };
-    Q_DECLARE_FLAGS(Directions, Direction)
-
-    explicit UCDragEvent(Direction direction, Directions directions, int from, int to)
-        : QObject(0), m_direction(direction), m_directions(directions), m_from(from), m_to(to), m_accept(true)
-    {}
-    int from() const
-    {
-        return m_from;
-    }
-    int to() const
-    {
-        return m_to;
-    }
-    Direction direction() const
-    {
-        return m_direction;
-    }
-
-private:
-    Direction m_direction;
-    Directions m_directions;
-    int m_from;
-    int m_to;
-    bool m_accept;
-};
-Q_DECLARE_OPERATORS_FOR_FLAGS(UCDragEvent::Directions)
-
+class UCDragEvent;
 class UCListItemAttachedPrivate;
 class UCListItemAttached : public QObject
 {
@@ -181,12 +140,56 @@ Q_SIGNALS:
     void selectedIndexesChanged();
     void dragModeChanged();
 
-    void draggingStarted(UCDragEvent *drag);
-    void draggingUpdated(UCDragEvent *drag);
+    void draggingStarted(UCDragEvent *event);
+    void draggingUpdated(UCDragEvent *event);
 
 private:
     Q_DECLARE_PRIVATE(UCListItemAttached)
     QScopedPointer<UCListItemAttachedPrivate> d_ptr;
 };
+
+class UCDragEvent : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(Direction direction READ direction REVISION 2)
+    Q_PROPERTY(int from READ from REVISION 2)
+    Q_PROPERTY(int to READ to REVISION 2)
+    Q_PROPERTY(int minimumIndex MEMBER m_minimum REVISION 2)
+    Q_PROPERTY(int maximumIndex MEMBER m_maximum REVISION 2)
+    Q_PROPERTY(bool accept MEMBER m_accept REVISION 2)
+    Q_ENUMS(Direction)
+public:
+    enum Direction {
+        None        = 0x00,
+        Upwards     = 0x01,
+        Downwards   = 0x02
+    };
+    Q_DECLARE_FLAGS(Directions, Direction)
+
+    explicit UCDragEvent(Direction direction, int from, int to, int min, int max)
+        : QObject(0), m_direction(direction), m_from(from), m_to(to), m_minimum(min), m_maximum(max), m_accept(true)
+    {}
+    int from() const
+    {
+        return m_from;
+    }
+    int to() const
+    {
+        return m_to;
+    }
+    Direction direction() const
+    {
+        return m_direction;
+    }
+
+private:
+    Direction m_direction;
+    int m_from;
+    int m_to;
+    int m_minimum;
+    int m_maximum;
+    bool m_accept;
+};
+Q_DECLARE_OPERATORS_FOR_FLAGS(UCDragEvent::Directions)
 
 #endif // UCLISTITEM_H

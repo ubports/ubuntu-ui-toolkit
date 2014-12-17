@@ -1,5 +1,6 @@
 /*!
- * \qmltype DragEvent
+ * \qmltype ListItemDrag
+ * \instantiates UCDragEvent
  * \inqmlmodule Ubuntu.Components 1.2
  * \ingroup unstable-ubuntu-listitems
  * \since Ubuntu.Components 1.2
@@ -12,36 +13,31 @@
  *
  * The direction of the drag can be found via the \l direction property and the
  * source and destination the drag can be applied via \l from and \l to properties.
- * The allowed directions can be configured through \l directions property and
- * the event acceptance through \l accept property. If the event is not accepted,
- * the drag action will be considered as cancelled.
+ * The allowed directions can be configured through \l minimumIndex and \l maximumIndex
+ * properties, and the event acceptance through \l accept property. If the event is not
+ * accepted, the drag action will be considered as cancelled.
  */
 
 /*!
- * \qmlproperty flags DragEvent::directions
- * The property holds the directions supported for the event itself.
- *
- * \sa direction
- */
-
-/*!
- * \qmlproperty enum DragEvent::direction
+ * \qmlproperty enum ListItemDrag::direction
  * \readonly
  * The property specifies the direction of the drag. Its value depends on the
  * signal triggered and can be one of the following:
  * \list
- *  \li \c DragEvent.None - no drag, value set when \l ListItem::draggingStarted signal is emitted.
- *  \li \c DragEvent.Upwards - the drag is proceeded upwards in the ListView
- *  \li \c DragEvent.Downwards - the drag proceeds downwards in the ListView
+ *  \li \c ListItemDrag.None - no drag, value set when \l ListItem::draggingStarted
+ *         signal is emitted or when the \l ListItem::draggingUpdated signal
+ *         identifies a drop gesture.
+ *  \li \c ListItemDrag.Upwards - the drag is proceeded upwards in the ListView
+ *  \li \c ListItemDrag.Downwards - the drag proceeds downwards in the ListView
  * \endlist
  */
 
 /*!
- * \qmlproperty int DragEvent::from
+ * \qmlproperty int ListItemDrag::from
  * \readonly
  */
 /*!
- * \qmlproperty int DragEvent::to
+ * \qmlproperty int ListItemDrag::to
  * \readonly
  *
  * Specifies the source index the ListItem is dragged from and the destination
@@ -49,7 +45,18 @@
  */
 
 /*!
- * \qmlproperty bool DragEvent::accept
+ * \qmlproperty int ListItemDrag::minimumIndex
+ */
+/*!
+ * \qmlproperty int ListItemDrag::maximumIndex
+ * These properties configure the minimum and maximum indexes the item can be
+ * dragged. The properties can be set in \l ListItem::draggingStarted signal,
+ * changing them in \l ListItem::draggingUpdated will have no effect. A value
+ * of -1 means no restriction defined on the dragging interval side.
+ */
+
+/*!
+ * \qmlproperty bool ListItemDrag::accept
  * The property can be used to dismiss the event. By default its value is true,
  * meaning the drag event is accepted.
  */

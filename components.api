@@ -863,12 +863,13 @@ plugins.qmltypes
     Method { name: "quitWithError" }
     name: "UCDragEvent"
     prototype: "QObject"
-    exports: ["DragEvent 1.2"]
+    exports: ["ListItemDrag 1.2"]
     name: "Direction"
     Property { name: "direction"; revision: 2; type: "Direction"; isReadonly: true }
-    Property { name: "directions"; revision: 2; type: "Directions" }
     Property { name: "from"; revision: 2; type: "int"; isReadonly: true }
     Property { name: "to"; revision: 2; type: "int"; isReadonly: true }
+    Property { name: "minimumIndex"; revision: 2; type: "int" }
+    Property { name: "maximumIndex"; revision: 2; type: "int" }
     Property { name: "accept"; revision: 2; type: "bool" }
     name: "UCInverseMouse"
     prototype: "UCMouse"
@@ -927,10 +928,10 @@ plugins.qmltypes
     Property { name: "dragMode"; type: "bool" }
     Signal {
     name: "draggingStarted"
-    Parameter { name: "drag"; type: "UCDragEvent"; isPointer: true }
+    Parameter { name: "event"; type: "UCDragEvent"; isPointer: true }
     Signal {
     name: "draggingUpdated"
-    Parameter { name: "drag"; type: "UCDragEvent"; isPointer: true }
+    Parameter { name: "event"; type: "UCDragEvent"; isPointer: true }
     name: "UCListItemDivider"
     prototype: "QObject"
     Property { name: "visible"; type: "bool" }
