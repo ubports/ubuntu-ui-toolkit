@@ -87,9 +87,35 @@ Item {
 
     // track drag direction, so we know in which direction we should snap
     property real prevX: 0.0
-    property bool leftToRight: false
+    property real snapChangerLimit: 0.0
+    property real threshold: units.gu(1)
+    property bool snapIn: false
     onXChanged: {
-        leftToRight = prevX < x;
+        if (leading) {
+            if (prevX < x && (snapChangerLimit <= x)) {
+                snapIn = true;
+                snapChangerLimit = x - threshold;
+            } else if (prevX >= x) {
+                if (snapIn && x < snapChangerLimit) {
+                    snapIn = false;
+                }
+                if (!snapIn) {
+                    snapChangerLimit = x + threshold;
+                }
+            }
+        } else {
+            if (prevX > x && (snapChangerLimit >= x)) {
+                snapIn = true;
+                snapChangerLimit = x + threshold;
+            } else if (prevX <= x) {
+                if (snapIn && x > snapChangerLimit) {
+                    snapIn = false;
+                }
+                if (!snapIn) {
+                    snapChangerLimit = x - threshold;
+                }
+            }
+        }
         prevX = x;
     }
     // default snapping!
@@ -103,8 +129,7 @@ Item {
             return;
         }
         // snap in if the offset is bigger than the overshoot and the direction of the drag is to reveal the panel
-        var snapPos = (ListItemActions.offset > ListItemActions.listItem.swipeOvershoot &&
-                       (leftToRight && leading || !leftToRight && !leading)) ? panel.width : 0.0;
+        var snapPos = (ListItemActions.offset > ListItemActions.listItem.swipeOvershoot && snapIn) ? panel.width : 0.0;
         ListItemActions.snapToPosition(snapPos);
     }
 
