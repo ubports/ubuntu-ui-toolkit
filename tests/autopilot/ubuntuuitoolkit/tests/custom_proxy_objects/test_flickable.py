@@ -22,6 +22,7 @@ except ImportError:
 import testtools
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
+from ubuntuuitoolkit._custom_proxy_objects import _flickable
 
 
 class FlickableTestCase(testtools.TestCase):
@@ -216,6 +217,25 @@ MainView {
 
         self.flickable.swipe_to_show_more_below()
         self.assertFalse(self.flickable.atYBeginning)
+
+    def test_swipe_to_show_more_below_with_bottom_margin(self):
+        """Calling swipe to show more below will use the margin in the drag."""
+        qquickflickable = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickFlickable, objectName='flickable')
+        qquickflickable.margin_to_swipe_from_bottom = 50
+        containers = qquickflickable._get_containers()
+        bottom = _flickable._get_visible_container_bottom(containers)
+
+        with mock.patch.object(
+                qquickflickable.pointing_device, 'drag') as mock_drag:
+            try:
+                qquickflickable.swipe_to_show_more_below()
+            except ubuntuuitoolkit.ToolkitException:
+                # An exception will be raised because the drag was faked.
+                pass
+
+        mock_drag.assert_called_with(
+            mock.ANY, bottom - 50, mock.ANY, mock.ANY, rate=mock.ANY)
 
     def test_failed_drag_must_raise_exception(self):
         dummy_coordinates = (0, 0, 10, 10)

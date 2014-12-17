@@ -94,6 +94,11 @@ class Scrollable(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
 class QQuickFlickable(Scrollable):
 
+    # Swiping from below can open the toolbar or trigger the bottom edge
+    # gesture. Use this margin to start a swipe that will not be that close to
+    # the bottom edge.
+    margin_to_swipe_from_bottom = 25
+
     @autopilot_logging.log_action(logger.info)
     def swipe_child_into_view(self, child):
         """Make the child visible.
@@ -140,20 +145,17 @@ class QQuickFlickable(Scrollable):
         if containers is None:
             containers = self._get_containers()
         start_x = stop_x = self.globalRect.x + (self.globalRect.width // 2)
-        # Start and stop just a little under the top and a little over the
-        # bottom.
-        top = _get_visible_container_top(containers) + 5
-        bottom = _get_visible_container_bottom(containers) - 5
+        top = _get_visible_container_top(containers)
+        bottom = _get_visible_container_bottom(containers)
 
+        # The swipes are not done from right at the top and bottom because
+        # they could trigger edge gestures or resize windows.
         if direction == 'below':
-            # Take into account that swiping from below can open the toolbar or
-            # trigger the bottom edge gesture.
-            # XXX Do this only if we are close to the bottom edge.
-            start_y = bottom - 20
-            stop_y = top
+            start_y = bottom - self.margin_to_swipe_from_bottom
+            stop_y = top + 5
         elif direction == 'above':
-            start_y = top
-            stop_y = bottom
+            start_y = top + 5
+            stop_y = bottom - 5
         else:
             raise _common.ToolkitException(
                 'Invalid direction {}.'.format(direction))
