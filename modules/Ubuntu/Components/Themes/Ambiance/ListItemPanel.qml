@@ -91,30 +91,12 @@ Item {
     property real threshold: units.gu(1)
     property bool snapIn: false
     onXChanged: {
-        if (leading) {
-            if (prevX < x && (snapChangerLimit <= x)) {
-                snapIn = true;
-                snapChangerLimit = x - threshold;
-            } else if (prevX >= x) {
-                if (snapIn && x < snapChangerLimit) {
-                    snapIn = false;
-                }
-                if (!snapIn) {
-                    snapChangerLimit = x + threshold;
-                }
-            }
-        } else {
-            if (prevX > x && (snapChangerLimit >= x)) {
-                snapIn = true;
-                snapChangerLimit = x + threshold;
-            } else if (prevX <= x) {
-                if (snapIn && x > snapChangerLimit) {
-                    snapIn = false;
-                }
-                if (!snapIn) {
-                    snapChangerLimit = x - threshold;
-                }
-            }
+        if (prevX < x && (snapChangerLimit <= x)) {
+            snapIn = leading;
+            snapChangerLimit = x - threshold;
+        } else if (prevX > x && (x < snapChangerLimit)) {
+            snapIn = !leading;
+            snapChangerLimit = x + threshold;
         }
         prevX = x;
     }
