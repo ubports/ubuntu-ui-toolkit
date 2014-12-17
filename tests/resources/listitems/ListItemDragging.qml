@@ -40,24 +40,20 @@ MainView {
 
             delegate: ListItem {
                 objectName: "ListItem-" + index
-                Rectangle {
-                    anchors.fill: parent
-                    color: "tan"
+                leadingActions: ListItemActions {
+                    actions: Action {
+                        iconName: "delete"
+                    }
                 }
 
                 Label {
                     text: label
                 }
-                Button {
-                    text: "Press button which is long enough"
-                    anchors.centerIn: parent
-                }
 
                 onPressAndHold: {
-                    print("entering draggable mode")
-                    ListView.view.ListItem.dragMode = true;
+                    print("entering/leaving draggable mode")
+                    ListView.view.ListItem.dragMode = !ListView.view.ListItem.dragMode;
                 }
-                onDraggingChanged: print("dragging", dragging)
             }
         }
     }

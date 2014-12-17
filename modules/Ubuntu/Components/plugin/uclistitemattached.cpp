@@ -371,7 +371,7 @@ bool UCListItemAttachedPrivate::isItemSelected(UCListItem *item)
  *             // specify the interval
  *             event.minimumIndex = 5;
  *             event.maximumIndex = 10;
- *         } else if (event.from > 10) {
+ *         } else {
  *             // prevent dragging to the first 11 items area
  *             event.minimumIndex = 11;
  *         }
@@ -394,7 +394,7 @@ bool UCListItemAttachedPrivate::isItemSelected(UCListItem *item)
  * dragged item will stay on its last moved position or will snap back to its
  * previous or original place, depending whether the drag was sent during the
  * drag or as a result of a drop gesture. The direction of the drag is given in the
- * \c drag.direction property. Extending the example from \l draggingStarted, an
+ * \c event.direction property. Extending the example from \l draggingStarted, an
  * implementation of a live dragging would look as follows
  * \qml
  * import QtQuick 2.3
@@ -425,7 +425,7 @@ bool UCListItemAttachedPrivate::isItemSelected(UCListItem *item)
  *         }
  *     }
  *     ListItem.onDraggingUpdated: {
- *         model.move(event.from, evenbt.to, 1);
+ *         model.move(event.from, event.to, 1);
  *     }
  * }
  * \endqml

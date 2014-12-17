@@ -12,8 +12,6 @@ UCDragHandler::UCDragHandler(UCListItem *listItem)
     : UCHandlerBase(listItem)
     , dragging(false)
 {
-    connect(this, &UCDragHandler::draggingChanged,
-            listItem, &UCListItem::draggingChanged);
 }
 
 // listen for attached property's draggable change signal to activate dragging mode on the list item
@@ -41,17 +39,6 @@ void UCDragHandler::setupDragMode()
             bool animate = (senderSignalIndex() >= 0);
             setupPanel(listItem->styleItem->m_dragHandlerDelegate, animate);
         }
-        // install an event filter to catch mouse press events, as those are not
-        // intercepted by the ListView filter
-        if (panel) {
-            // make panel to accept mouse buttons so we get mouse events over it
-            panel->setAcceptedMouseButtons(Qt::LeftButton);
-            panel->installEventFilter(this);
-        }
-    } else if (panel) {
-        // disable mouse buttons from panel while not in drag mode
-        panel->setAcceptedMouseButtons(Qt::NoButton);
-        panel->removeEventFilter(this);
     }
 
     // update visuals
