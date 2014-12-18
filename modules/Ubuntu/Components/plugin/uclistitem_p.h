@@ -59,7 +59,7 @@ public:
     void update();
     void clampAndMoveX(qreal &x, qreal dx);
 
-    bool pressed:1;
+    bool highlighted:1;
     bool contentMoved:1;
     bool highlightColorChanged:1;
     bool swiped:1;
