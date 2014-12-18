@@ -658,9 +658,9 @@ Item {
         }
 
         function test_pressandhold_connected_causes_highlight() {
-            pressedSpy.target = clickedConnected;
+            highlightedSpy.target = clickedConnected;
             mouseLongPress(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
-            pressedSpy.wait();
+            highlightedSpy.wait();
             mouseRelease(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
         }
     }
