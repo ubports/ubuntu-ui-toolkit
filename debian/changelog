@@ -1,3 +1,33 @@
+ubuntu-ui-toolkit (1.1.1370+15.04.20141217-0ubuntu1) vivid; urgency=medium
+
+  [ Zoltán Balogh ]
+  * fixing gles dependency for ubuntu-ui-toolkit-autopilot, so we can
+     have functional tests on x86 emulator
+
+  [ Christian Dywan ]
+  * Asterisk are needed for cp -R.
+  * Use correct unfocussed text field color. Fixes LP: #1396062
+
+  [ Zsombor Egri ]
+  * CPOs
+
+  [ Daniel d'Andrada ]
+  * Refactor OrientationHelper
+    Simplify animation code and make it more robust. It now survives 
+    changes in Screen.primaryOrientation and Screen.orientation 
+    happening one right after the other.
+
+  [ CI Train Bot ]
+  * Resync trunk
+  * Resync trunk
+  * Resync trunk
+  * Resync trunk
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 17 Dec 2014 09:52:55 +0000
+
 ubuntu-ui-toolkit (1.1.1364+15.04.20141209-0ubuntu1) vivid; urgency=medium
 
   [ Zsombor Egri ]
