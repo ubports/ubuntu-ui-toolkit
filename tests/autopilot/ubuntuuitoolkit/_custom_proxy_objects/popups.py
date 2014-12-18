@@ -24,6 +24,7 @@ from ubuntuuitoolkit._custom_proxy_objects import _common
 
 logger = logging.getLogger(__name__)
 
+
 class Dialog(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """Autopilot helper for the Dialog component."""
 
