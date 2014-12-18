@@ -368,7 +368,7 @@ void UCListItemDivider::setColorTo(const QColor &color)
  */
 UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
-    , pressed(false)
+    , highlighted(false)
     , contentMoved(false)
     , highlightColorChanged(false)
     , swiped(false)
@@ -577,7 +577,6 @@ void UCListItemPrivate::promptRebound()
     }
 }
 
-// set pressed flag and update background
 // called when units size changes
 void UCListItemPrivate::_q_updateSize()
 {
@@ -625,20 +624,21 @@ bool UCListItemPrivate::canHighlight(QMouseEvent *event)
                                defaultAction || leadingActions || trailingActions || activeMouseArea);
 }
 
-// set pressed flag and update contentItem
-void UCListItemPrivate::setPressed(bool pressed)
+// set highlighted flag and update contentItem
+void UCListItemPrivate::setPressed(bool highlighted)
 {
-    if (this->pressed != pressed) {
-        this->pressed = pressed;
+    if (this->highlighted != highlighted) {
+        this->highlighted = highlighted;
+        suppressClick = false;
         Q_Q(UCListItem);
         q->update();
-        if (pressed) {
+        if (highlighted) {
             // start pressandhold timer
             pressAndHoldTimer.start(QGuiApplication::styleHints()->mousePressAndHoldInterval(), q);
         } else {
             pressAndHoldTimer.stop();
         }
-        Q_EMIT q->pressedChanged();
+        Q_EMIT q->highlightedChanged();
     }
 }
 // toggles the tugged flag and installs/removes event filter
@@ -733,13 +733,13 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * good performance when used in long list views.
  *
  * The component provides two color properties which configures the item's background
- * when normal or pressed. This can be configured through \l color and \l highlightColor
+ * when normal or highlighted. This can be configured through \l color and \l highlightColor
  * properties. The list item is highlighted if there is an action attached to it.
  * This means that the list item must have an active component declared as child,
  * at least leading- or trailing actions specified, or to have a slot connected to
  * \l clicked or \l pressAndHold signal. In any other case the component will not
- * be highlighted, and \l pressed property will not be toggled either. Also, there
- * will be no highlight happening if the click happens on the active component.
+ * be highlighted, and \l highlighted property will not be toggled either. Also,
+ * there will be no highlight happening if the click happens on the active component.
  * \qml
  * import QtQuick 2.3
  * import Ubuntu.Components 1.2
@@ -911,7 +911,7 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
 
 /*!
  * \qmlsignal ListItem::clicked()
- * The signal is emitted when the component gets released while the \l pressed property
+ * The signal is emitted when the component gets released while the \l highlighted property
  * is set. The signal is not emitted if the ListItem content is swiped or when used in
  * Flickable (or ListView, GridView) and the Flickable gets moved.
  *
@@ -1032,7 +1032,7 @@ QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data
     Q_UNUSED(data);
 
     Q_D(UCListItem);
-    QColor color = d->pressed ? d->highlightColor : d->color;
+    QColor color = d->highlighted ? d->highlightColor : d->color;
 
     if (width() <= 0 || height() <= 0) {
         delete oldNode;
@@ -1092,7 +1092,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         return;
     }
     if (d->canHighlight(event) && !d->suppressClick
-            && !d->pressed && event->button() == Qt::LeftButton) {
+            && !d->highlighted && event->button() == Qt::LeftButton) {
         d->setPressed(true);
         d->lastPos = d->pressedPos = event->localPos();
         // connect the Flickable to know when to rebound
@@ -1112,7 +1112,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
     UCStyledItemBase::mouseReleaseEvent(event);
     Q_D(UCListItem);
     // set released
-    if (d->pressed) {
+    if (d->highlighted) {
         d->listenToRebind(false);
         if (d->attachedProperties) {
             d->attachedProperties->disableInteractive(this, false);
@@ -1144,7 +1144,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     // accept the tugging only if the move is within the threshold
     bool leadingAttached = UCListItemActionsPrivate::isConnectedTo(d->leadingActions, this);
     bool trailingAttached = UCListItemActionsPrivate::isConnectedTo(d->trailingActions, this);
-    if (d->pressed && !(leadingAttached || trailingAttached)) {
+    if (d->highlighted && !(leadingAttached || trailingAttached)) {
         // check if we can initiate the drag at all
         // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
         qreal threshold = UCUnits::instance().gu(d->xAxisMoveThresholdGU);
@@ -1369,16 +1369,55 @@ UCListItemDivider* UCListItem::divider() const
 }
 
 /*!
- * \qmlproperty bool ListItem::pressed
- * True when the item is pressed. The items stays pressed when the mouse or touch
- * is moved horizontally. When in Flickable (or ListView), the item gets un-pressed
+ * \qmlproperty bool ListItem::highlighted
+ * True when the item is pressed. The items stays highlighted when the mouse or touch
+ * is moved horizontally. When in Flickable (or ListView), the item gets un-highlighted
  * (false) when the mouse or touch is moved towards the vertical direction causing
  * the flickable to move.
+ *
+ * Configures the color when highlighted. Defaults to the theme palette's background
+ * color.
+ *
+ * An item is highlighted, thus highlight state toggled, when pressed and it has
+ * one of the following conditions fulfilled:
+ * \list
+ *  \li * \l leadingActions or \l trailingActions set,
+ *  \li * it has an \l action attached
+ *  \li * if the ListItem has an active child component, such as a \l Button, a
+ *      \l Switch, etc.
+ *  \li * in general, if an active (enabled and visible) \c MouseArea is added
+ *      as a child component
+ *  \li * \l clicked signal handler is implemented or there is a slot or function
+ *      connected to it
+ *  \li * \l pressAndHold signal handler is implemented or there is a slot or
+ *      function connected to it.
+ * \endlist
+ *
+ * \note Adding an active component does not mean the component will be activated
+ * when the ListItem will be tapped/clicked outside of the component area. If
+ * such a behavior is needed, that must be done explicitly.
+ * \qml
+ * import QtQiock 2.3
+ * import Ubuntu.Components 1.2
+ *
+ * ListItem {
+ *     Label {
+ *         text: "This is a label"
+ *     }
+ *     Switch {
+ *         id: toggle
+ *         anchors.right: parent.right
+ *     }
+ *     Component.onCompleted: clicked.connect(toggle.clicked)
+ * }
+ * \endqml
+ *
+ * \sa action, leadingActions, trailingActions
  */
-bool UCListItem::pressed() const
+bool UCListItem::highlighted() const
 {
     Q_D(const UCListItem);
-    return d->pressed;
+    return d->highlighted;
 }
 
 /*!
@@ -1439,36 +1478,7 @@ void UCListItem::setColor(const QColor &color)
 
 /*!
  * \qmlproperty color ListItem::highlightColor
- * Configures the color when highlighted. Defaults to the theme palette's background
- * color.
- *
- * An item is highlighted when selected, or when pressed and it has \l leadingActions
- * or \l trailingActions set, when there is a valid default \l action attached
- * to it or if the ListItem has an active component child, such as a \l Button,
- * a \l Switch, or in general, if an active (enabled and visible) \c MouseArea
- * is added as a child component. Connecting a slot to \l clicked or \l pressAndHold
- * also makes highlight active.
- *
- * \note Adding an active component does not mean the component will be activated
- * when the ListItem will be tapped/clicked outside of the component area. If
- * such a behavior is needed, this must be done explicitly.
- * \qml
- * import QtQiock 2.3
- * import Ubuntu.Components 1.2
- *
- * ListItem {
- *     Label {
- *         text: "This is a label"
- *     }
- *     Switch {
- *         id: toggle
- *         anchors.right: parent.right
- *     }
- *     Component.onCompleted: clicked.connect(toggle.clicked)
- * }
- * \endqml
- *
- * \sa action, leadingActions, trailingActions
+ * Configures the color when highlighted. Defaults to the theme palette's background color.
  */
 QColor UCListItem::highlightColor() const
 {

@@ -881,7 +881,7 @@ plugins.qmltypes
     Property { name: "divider"; type: "UCListItemDivider"; isReadonly: true; isPointer: true }
     Property { name: "leadingActions"; type: "UCListItemActions"; isPointer: true }
     Property { name: "trailingActions"; type: "UCListItemActions"; isPointer: true }
-    Property { name: "pressed"; type: "bool"; isReadonly: true }
+    Property { name: "highlighted"; type: "bool"; isReadonly: true }
     Property { name: "swipeOvershoot"; type: "double" }
     Property { name: "contentMoving"; type: "bool"; isReadonly: true }
     Property { name: "color"; type: "QColor" }
