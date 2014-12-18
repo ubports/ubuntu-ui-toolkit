@@ -160,8 +160,8 @@ Item {
         }
 
         SignalSpy {
-            id: pressedSpy
-            signalName: "pressedChanged"
+            id: highlightedSpy
+            signalName: "highlightedChanged"
             target: testItem
         }
 
@@ -212,7 +212,7 @@ Item {
             controlItem.selected = false;
             waitForRendering(controlItem.contentItem, 200);
             movingSpy.clear();
-            pressedSpy.clear();
+            highlightedSpy.clear();
             clickSpy.clear();
             actionSpy.clear();
             pressAndHoldSpy.clear();
@@ -234,7 +234,7 @@ Item {
             verify(defaults.contentItem !== null, "Defaults is null");
             compare(defaults.color, "#000000", "Transparent by default");
             compare(defaults.highlightColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
-            compare(defaults.pressed, false, "Not pressed buy default");
+            compare(defaults.highlighted, false, "Not highlighted by default");
             compare(defaults.swipeOvershoot, 0.0, "No overshoot till the style is loaded!");
             compare(defaults.divider.visible, true, "divider is visible by default");
             compare(defaults.divider.leftMargin, units.dp(2), "divider's left margin is 2GU");
@@ -260,16 +260,16 @@ Item {
             compare(bodyItem.parent, testItem.contentItem, "Content is not in the right holder!");
         }
 
-        function test_pressedChanged_on_click() {
-            pressedSpy.target = testItem;
+        function test_highlightedChanged_on_click() {
+            highlightedSpy.target = testItem;
             mousePress(testItem, testItem.width / 2, testItem.height / 2);
-            pressedSpy.wait();
+            highlightedSpy.wait();
             mouseRelease(testItem, testItem.width / 2, testItem.height / 2);
         }
-        function test_pressedChanged_on_tap() {
-            pressedSpy.target = testItem;
+        function test_highlightedChanged_on_tap() {
+            highlightedSpy.target = testItem;
             TestExtras.touchPress(0, testItem, centerOf(testItem));
-            pressedSpy.wait();
+            highlightedSpy.wait();
             TestExtras.touchRelease(0, testItem, centerOf(testItem));
             // local cleanup, wait few msecs to suppress double tap
             wait(400);
@@ -291,14 +291,14 @@ Item {
             verify(listItem, "Cannot find listItem0");
 
             mousePress(listItem, listItem.width / 2, 0);
-            compare(listItem.pressed, true, "Item is not pressed?");
+            compare(listItem.highlighted, true, "Item is not highlighted?");
             // do 5 moves to be able to sense it
             var dy = 0;
             for (var i = 1; i <= 5; i++) {
                 dy += i * 10;
                 mouseMove(listItem, listItem.width / 2, dy);
             }
-            compare(listItem.pressed, false, "Item is pressed still!");
+            compare(listItem.highlighted, false, "Item is highlighted still!");
             mouseRelease(listItem, listItem.width / 2, dy);
             // dismiss
             rebound(listItem);
@@ -308,14 +308,14 @@ Item {
             verify(listItem, "Cannot find listItem0");
 
             TestExtras.touchPress(0, listItem, Qt.point(listItem.width / 2, 5));
-            compare(listItem.pressed, true, "Item is not pressed?");
+            compare(listItem.highlighted, true, "Item is not highlighted?");
             // do 5 moves to be able to sense it
             var dy = 0;
             for (var i = 1; i <= 5; i++) {
                 dy += i * 10;
                 TestExtras.touchMove(0, listItem, Qt.point(listItem.width / 2, dy));
             }
-            compare(listItem.pressed, false, "Item is pressed still!");
+            compare(listItem.highlighted, false, "Item is highlighted still!");
             // cleanup, wait few milliseconds to avoid dbl-click collision
             TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
             // dismiss
@@ -670,12 +670,12 @@ Item {
             ];
         }
         function test_highlight(data) {
-            pressedSpy.target = data.item;
+            highlightedSpy.target = data.item;
             mouseClick(data.item, data.x, data.y);
             if (data.pressed) {
-                pressedSpy.wait();
+                highlightedSpy.wait();
             } else {
-                compare(pressedSpy.count, 0, "Should not be pressed!");
+                compare(highlightedSpy.count, 0, "Should not be highlighted!");
             }
         }
 
@@ -728,9 +728,9 @@ Item {
         }
 
         function test_pressandhold_connected_causes_highlight() {
-            pressedSpy.target = clickedConnected;
+            highlightedSpy.target = clickedConnected;
             mouseLongPress(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
-            pressedSpy.wait();
+            highlightedSpy.wait();
             mouseRelease(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
         }
 
