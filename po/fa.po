@@ -1,4 +1,4 @@
-# Indonesian translation for ubuntu-ui-toolkit
+# Persian translation for ubuntu-ui-toolkit
 # Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
 # This file is distributed under the same license as the ubuntu-ui-toolkit package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
@@ -8,18 +8,18 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2014-11-05 14:29+0100\n"
-"PO-Revision-Date: 2014-08-31 05:21+0000\n"
+"PO-Revision-Date: 2014-12-10 13:41+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Indonesian <id@li.org>\n"
+"Language-Team: Persian <fa@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-11-29 06:46+0000\n"
-"X-Generator: Launchpad (build 17267)\n"
+"X-Launchpad-Export-Date: 2014-12-12 06:33+0000\n"
+"X-Generator: Launchpad (build 17286)\n"
 
 #: Ubuntu/Components/ListItems/Empty.qml:413
 msgid "Delete"
-msgstr "Hapus"
+msgstr "حذف"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:176
 #, qt-format
@@ -27,61 +27,60 @@ msgid ""
 "property \"%1\" of object %2 has type %3 and cannot be set to value \"%4\" "
 "of type %5"
 msgstr ""
-"properti \"%1\" dari objek %2 bertipe %3 dan tak dapat diatur ke nilai "
-"\"%4\" dengan tipe %5"
+"ویژگی «%1» شی %2 دارای نوع %3 است و نمی‌تواند به مقدار «%4» از نوع %5 تنظیم "
+"شود"
 
 #: Ubuntu/Components/plugin/statesaverbackend_p.cpp:185
 #, qt-format
 msgid "property \"%1\" does not exist or is not writable for object %2"
-msgstr "properti \"%1\" tak ada atau tak dapat ditulisi untuk objek %2"
+msgstr "ویژگی «%1» وجود نداشته یا برای شی %2 قابل نوشتن نیست"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:42
 #: Ubuntu/Components/plugin/ucalarm.cpp:136
 msgid "Alarm"
-msgstr "Alarm"
+msgstr "هشدار"
 
 #: Ubuntu/Components/plugin/ucalarm.cpp:684
 #: Ubuntu/Components/plugin/ucalarm.cpp:716
 msgid "Alarm has a pending operation."
-msgstr "Alarm memiliki operasi yang tertunda"
+msgstr "هشدار یک عملیات معوّق دارد"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:188
 msgid "Usage: "
-msgstr "Cara pakai: "
+msgstr "استفاده: "
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:209
 msgid "Options:"
-msgstr "Opsi:"
+msgstr "گزینه‌ها:"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:498
 #, qt-format
 msgid "%1 is expecting an additional argument: %2"
-msgstr "%1 mengharapkan sebuah argumen tambahan: %2"
+msgstr "‫%1 یک آرگومان اضافی می‌پذیرد: %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:503
 #, qt-format
 msgid "%1 is expecting a value for argument: %2"
-msgstr "%1 mengharapkan suatu nilai bagi argumen: %2"
+msgstr "‫%1 یک مقدار برای آرگومان می‌پذیرد: %2"
 
 #: Ubuntu/Components/plugin/ucarguments.cpp:520
 #, qt-format
 msgid "%1 is expecting additional arguments: %2"
-msgstr "%1 mengharapkan argumen-argumen tambahan: %2"
+msgstr "‫%1 آرگومان‌های اضافی می‌پذیرد: %2"
 
 #: Ubuntu/Components/plugin/ucmousefilters.cpp:1064
 msgid "Ignoring AfterItem priority for InverseMouse filters."
-msgstr "Mengabaikan prioritas AfterItem untuk penyaring InverseMouse."
+msgstr "چشم پوشی از مشخّصه‌ی AfterItem برای پالایه‌های InverseMouse."
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:46
 msgid "Warning: attachee must have an ID. State will not be saved."
-msgstr "Peringatan: lampiran mesti punya ID. Keadaan tak akan disimpan."
+msgstr "هشدار: آتاچی باید یک UUID داشته باشد.  حالت ذخیره نخواهد شد: %1"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:56
 #, qt-format
 msgid ""
 "Warning: attachee's UUID is already registered, state won't be saved: %1"
-msgstr ""
-"Peringatan: UUID lampiran telah terdaftar, keadaan tak akan disimpan: %1"
+msgstr "هشدار: UUID آتاجی همین الآن هم ثبت شده است، حالت ذخیره نخواهد شد: %1"
 
 #: Ubuntu/Components/plugin/ucstatesaver.cpp:102
 #, qt-format
@@ -89,57 +88,57 @@ msgid ""
 "All the parents must have an id.\n"
 "State saving disabled for %1, class %2"
 msgstr ""
-"Semua induk mesti memiliki id.\n"
-"Penyimpanan keadaan dimatikan bagi %1, kelas %2"
+"همه‌ی والدین باید یک شنایه داشته باشند.\n"
+"ذخیره‌ی حالت برای %1 از کلاس %2 غیرفعّال شد"
 
 #: Ubuntu/Components/plugin/uctheme.cpp:233
 msgid "Theme not found: "
-msgstr "Tema tak ditemukan: "
+msgstr "زمینه یافت نشد: "
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:80
 msgid "Cancel"
-msgstr "Batal"
+msgstr "لغو"
 
 #: Ubuntu/Components/Popups/ComposerSheet.qml:90
 msgid "Confirm"
-msgstr "Konfirmasi"
+msgstr "تأیید"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:89
 msgid "Close"
-msgstr "Tutup"
+msgstr "بستن"
 
 #: Ubuntu/Components/Popups/DefaultSheet.qml:99
 msgid "Done"
-msgstr "Selesai"
+msgstr "انجام شد"
 
 #: Ubuntu/Components/TextInputPopover.qml:27
 msgid "Select All"
-msgstr "Pilih Semua"
+msgstr "گزینش همه"
 
 #: Ubuntu/Components/TextInputPopover.qml:33
 msgid "Cut"
-msgstr "Potong"
+msgstr "برش"
 
 #: Ubuntu/Components/TextInputPopover.qml:42
 msgid "Copy"
-msgstr "Salin"
+msgstr "رونوشت"
 
 #: Ubuntu/Components/TextInputPopover.qml:49
 msgid "Paste"
-msgstr "Tempel"
+msgstr "جاگذاری"
 
 #: Ubuntu/Components/Themes/Ambiance/ProgressBarStyle.qml:57
 msgid "In Progress"
-msgstr "Tengah Berlangsung"
+msgstr "در حال پیشرفت"
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Release to refresh..."
-msgstr "Lepaskan untuk menyegarkan..."
+msgstr "برای تازه‌سازی رها کنید…"
 
 #: Ubuntu/Components/Themes/Ambiance/PullToRefreshStyle.qml:28
 msgid "Pull to refresh..."
-msgstr "Tarik untuk menyegarkan..."
+msgstr "برای تازه‌سازی بکشید…"
 
 #: Ubuntu/Components/ToolbarItems.qml:142
 msgid "Back"
-msgstr "Mundur"
+msgstr "بازگشت"
