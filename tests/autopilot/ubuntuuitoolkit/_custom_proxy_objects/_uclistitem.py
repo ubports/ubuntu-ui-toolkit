@@ -18,6 +18,7 @@ import logging
 
 from autopilot import logging as autopilot_logging
 from ubuntuuitoolkit._custom_proxy_objects import _common
+import time
 
 
 logger = logging.getLogger(__name__)
