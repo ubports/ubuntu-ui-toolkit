@@ -24,47 +24,36 @@ Template {
         className: "ListItem"
         spacing: 0
         Item {
-            // compensate for the spacing of 0
+            // compensate for the spacing of 0 by adding this
+            // Item inbetween the title and the list items.
             height: units.gu(3)
             width: parent.width
         }
 
-        ListItem {
-            Label {
-                text: i18n.tr("Basic")
-            }
+        // clip the action delegates while swiping left/right
+        clip: true
+
+        ListItemWithLabel {
+            text: i18n.tr("Basic")
         }
-        ListItem {
+        ListItemWithLabel {
             color: UbuntuColors.blue
-            Label {
-                //                            anchors {
-                //                                left: parent.left
-                //                                leftMargin: units.gu(2)
-                //                                verticalCenter: parent.verticalCenter
-                //                            }
-                text: i18n.tr("Colored")
-            }
+            text: i18n.tr("Colored")
         }
-        ListItem {
-            Label {
-                text: i18n.tr("No divider")
-            }
+        ListItemWithLabel {
+            text: i18n.tr("No divider")
             divider.visible: false
         }
-        ListItem {
-            Label {
-                text: i18n.tr("Colored divider")
-            }
+        ListItemWithLabel {
+            text: i18n.tr("Colored divider")
             divider {
                 colorFrom: UbuntuColors.red
                 colorTo: UbuntuColors.green
             }
         }
         // FIXME: Highlight doesn't work until we merge branch 75
-        ListItem {
-            Label {
-                text: i18n.tr("Highlight color")
-            }
+        ListItemWithLabel {
+            text: i18n.tr("Highlight color")
             highlightColor: UbuntuColors.purple
             // no highlight without clicked() or leading/trailing actions
             // no highlight without clicked() or leading/trailing actions
@@ -94,29 +83,21 @@ Template {
             ]
         }
 
-        ListItem {
-            Label {
-                text: i18n.tr("Leading actions")
-            }
+        ListItemWithLabel {
+            text: i18n.tr("Leading actions")
             leadingActions: exampleLeadingActions
         }
-        ListItem {
-            Label {
-                text: i18n.tr("Trailing actions")
-            }
+        ListItemWithLabel {
+            text: i18n.tr("Trailing actions")
             trailingActions: exampleTrailingActions
         }
-        ListItem {
-            Label {
-                text: i18n.tr("Leading and trailing actions")
-            }
+        ListItemWithLabel {
+            text: i18n.tr("Leading and trailing actions")
             leadingActions: exampleLeadingActions
             trailingActions: exampleTrailingActions
         }
-        ListItem {
-            Label {
-                text: i18n.tr("Custom action delegates")
-            }
+        ListItemWithLabel {
+            text: i18n.tr("Custom action delegates")
             swipeOvershoot: 0
             leadingActions: ListItemActions {
                 actions: [
