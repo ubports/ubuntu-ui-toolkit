@@ -67,9 +67,9 @@ ListModel {
 
     // Not in design guidelines yet
     ListElement {
-        objectName: "newListItemElement"
-        label: "New list item (preview)"
-        source: "NewListItem.qml"
+        objectName: "newListItemsElement"
+        label: "New list items (preview)"
+        source: "NewListItems.qml"
     }
     ListElement {
         objectName: "pickersElement"
