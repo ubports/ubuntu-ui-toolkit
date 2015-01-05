@@ -37,25 +37,23 @@ Template {
             text: i18n.tr("Basic")
         }
         ListItemWithLabel {
-            color: UbuntuColors.blue
-            text: i18n.tr("Colored")
-        }
-        ListItemWithLabel {
-            text: i18n.tr("No divider")
-            divider.visible: false
-        }
-        ListItemWithLabel {
             text: i18n.tr("Colored divider")
             divider {
                 colorFrom: UbuntuColors.red
                 colorTo: UbuntuColors.green
             }
         }
-        // FIXME: Highlight doesn't work until we merge branch 75
+        ListItemWithLabel {
+            text: i18n.tr("No divider")
+            divider.visible: false
+        }
+        ListItemWithLabel {
+            color: UbuntuColors.blue
+            text: i18n.tr("Colored")
+        }
         ListItemWithLabel {
             text: i18n.tr("Highlight color")
-            highlightColor: UbuntuColors.purple
-            // no highlight without clicked() or leading/trailing actions
+            highlightColor: UbuntuColors.orange
             // no highlight without clicked() or leading/trailing actions
             onClicked: print(i18n.tr("Highlighting list item"))
         }
@@ -131,7 +129,7 @@ Template {
                         text: i18n.tr("Edit")
                     },
                     Action {
-                        text: "Move"
+                        text: i18n.tr("Move")
                     }
                 ]
                 delegate: Rectangle {
