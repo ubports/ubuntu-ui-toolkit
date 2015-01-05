@@ -22,6 +22,7 @@ Template {
 
     TemplateSection {
         className: "ListItem"
+        // no spacing between the list items in the Column
         spacing: 0
         Item {
             // compensate for the spacing of 0 by adding this
