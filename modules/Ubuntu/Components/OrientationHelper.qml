@@ -98,17 +98,9 @@ Item {
     property bool anchorToKeyboard: false
 
     x: parent ? (parent.width - width) / 2 : 0
-    y: parent ? (parent.height - d.fullHeight) / 2 : 0
-    width: parent ? (d.flipDimensions ? parent.height : parent.width) : 0
-    height: {
-        if (!parent) {
-            return 0;
-        }
-
-        return d.fullHeight -
-            (d.stateAngle === 0 && Qt.inputMethod.visible && anchorToKeyboard
-             ? Qt.inputMethod.keyboardRectangle.height : 0);
-    }
+    y: parent ? (d.availableParentHeight - height) / 2 : 0
+    width: parent ? (d.flipDimensions ? d.availableParentHeight : parent.width) : 0
+    height: parent ? (d.flipDimensions ? parent.width : d.availableParentHeight) : 0
 
     /*
       The attached property Screen.orientation is only valid inside Item or
@@ -120,12 +112,14 @@ Item {
     Item {
         id: d
 
-        property real fullHeight: {
-            if (orientationHelper.parent) {
-                return d.flipDimensions ? orientationHelper.parent.width
-                                        : orientationHelper.parent.height;
-            } else {
+        property real availableParentHeight: {
+            if (!orientationHelper.parent)
                 return 0;
+
+            if (d.stateAngle === 0 && Qt.inputMethod.visible && anchorToKeyboard) {
+                return orientationHelper.parent.height - Qt.inputMethod.keyboardRectangle.height;
+            } else {
+                return orientationHelper.parent.height;
             }
         }
 
