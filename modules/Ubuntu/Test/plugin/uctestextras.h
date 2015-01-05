@@ -30,6 +30,7 @@ public:
 
 public Q_SLOTS:
     static QString openGLflavor();
+    static QString cpuArchitecture();
     static bool touchDevicePresent();
     static void registerTouchDevice();
     static void touchPress(int touchId, QQuickItem *item, const QPoint &point);

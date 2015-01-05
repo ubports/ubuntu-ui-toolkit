@@ -177,8 +177,9 @@ Item {
             ];
         }
         function test_select_text_longtap_when_active(data) {
-            if(TestExtras.openGLflavor() == "opengles2")
-                expectFail(data.tag, "This test doesn't pass on 'OpenGLES'");
+            if(TestExtras.openGLflavor() == "opengles2" &&
+               TestExtras.cpuArchitecture() == "x86_64")
+                expectFail(data.tag, "This test doesn't pass with OpenGLES on AMD64");
             data.input.focus = true;
             popupSpy.target = findChild(data.input, "input_handler");
 

@@ -18,6 +18,7 @@
 #include "uctestcase.h"
 
 #include <qpa/qwindowsysteminterface.h>
+#include <QSysInfo>
 
 const char *DEVICE_MISSING_MSG = "No touch device registered. Register one using registerTouchDevice() before using %1";
 
@@ -63,6 +64,28 @@ QString UCTestExtras::openGLflavor()
     return QString("opengles2");
 #else
     return QString("opengl");
+#endif
+}
+
+/*!
+ * \qmlmethod TestExtras::cpuArchitecture()
+ * Returns the build architecure, including but not limited to
+ * "arm", "arm64", "i386" and "x86_64".
+ */
+QString UCTestExtras::cpuArchitecture()
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+    return QSysInfo::buildCpuArchitecture();
+#elif defined(Q_PROCESSOR_X86_64)
+    return "x86_x64";
+#elif defined(Q_PROCESSOR_X86_32)
+    return "i386";
+#elif defined(Q_PROCESSOR_ARM_64)
+    return "arm64";
+#elif defined(Q_PROCESSOR_ARM)
+    return "arm";
+#else
+    return "unknown";
 #endif
 }
 
