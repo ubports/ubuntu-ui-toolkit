@@ -108,12 +108,9 @@ Template {
                         property color color: UbuntuColors.red
                     }
                 ]
-                delegate: Item {
+                delegate: Rectangle {
                     width: height
-                    Rectangle {
-                        anchors.fill: parent
-                        color: pressed ? Qt.darker(action.color, 1.2) : action.color
-                    }
+                    color: pressed ? Qt.darker(action.color, 1.2) : action.color
                     Icon {
                         width: units.gu(3)
                         height: width
