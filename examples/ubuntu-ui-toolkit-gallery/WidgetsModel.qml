@@ -67,11 +67,6 @@ ListModel {
 
     // Not in design guidelines yet
     ListElement {
-        objectName: "newListItemsElement"
-        label: "New list items (preview)"
-        source: "NewListItems.qml"
-    }
-    ListElement {
         objectName: "pickersElement"
         label: "Pickers"
         source: "Pickers.qml"
@@ -107,6 +102,11 @@ ListModel {
         objectName: "listItemsElement"
         label: "List Items"
         source: "ListItems.qml"
+    }
+    ListElement {
+        objectName: "newListItemsElement"
+        label: "New list items (preview)"
+        source: "NewListItems.qml"
     }
     ListElement {
         objectName: "ubuntuListViewElement"
