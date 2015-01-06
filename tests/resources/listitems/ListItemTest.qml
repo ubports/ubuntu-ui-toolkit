@@ -179,7 +179,7 @@ MainView {
 
             Column {
                 id: column
-                width: view.width
+                width: flicker.width
                 property alias count: repeater.count
                 Repeater {
                     id: repeater
