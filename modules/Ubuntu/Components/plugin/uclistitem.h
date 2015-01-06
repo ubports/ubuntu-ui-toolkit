@@ -44,11 +44,17 @@ class UCListItem : public UCStyledItemBase
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlComponent *style READ style WRITE setStyle NOTIFY styleChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQuickItem *__styleInstance READ styleInstance NOTIFY __styleInstanceChanged)
     Q_CLASSINFO("DefaultProperty", "listItemData")
+    Q_ENUMS(Status)
 public:
+    enum Status {
+        Disconnected,
+        Leading,
+        Trailing
+    };
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
 
-//    static UCListItemAttached *qmlAttachedProperties(QObject *owner);
+    static UCListItemAttached *qmlAttachedProperties(QObject *owner);
 
     QQuickItem *contentItem() const;
     UCListItemDivider *divider() const;
@@ -101,7 +107,61 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
 };
 
-//QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
+QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
+
+class UCAction;
+class UCListItemActions;
+class UCListItemAttached : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(UCListItemActions *container READ container NOTIFY containerChanged)
+    Q_PROPERTY(QQmlListProperty<UCAction> visibleActions READ visibleActions NOTIFY visibleActionsChanged)
+    Q_PROPERTY(UCListItem *listItem READ listItem NOTIFY listItemChanged)
+    Q_PROPERTY(int listItemIndex READ listItemIndex NOTIFY listItemIndexChanged)
+    Q_PROPERTY(qreal offset READ offset NOTIFY offsetChanged)
+    Q_PROPERTY(UCListItem::Status status READ status NOTIFY statusChanged)
+    Q_PROPERTY(bool swiping READ swiping NOTIFY swipingChanged)
+public:
+    UCListItemAttached(QObject *parent = 0);
+    ~UCListItemAttached();
+    void setList(UCListItemActions *list);
+    void connectListItem(UCListItem *item, bool connect);
+
+    UCListItemActions *container() const
+    {
+        return m_container;
+    }
+    QQmlListProperty<UCAction> visibleActions();
+    UCListItem *listItem();
+    int listItemIndex();
+    bool swiping();
+    qreal offset();
+    UCListItem::Status status();
+
+
+public Q_SLOTS:
+    void snapToPosition(qreal position);
+
+Q_SIGNALS:
+    void containerChanged();
+    void visibleActionsChanged();
+    void listItemChanged();
+    void listItemIndexChanged();
+    void offsetChanged();
+    void statusChanged();
+    void swipingChanged();
+
+private:
+    UCListItemActions *m_container;
+    QList<UCAction*> m_visibleActions;
+    bool m_swiping;
+    friend class UCListItemAction;
+
+private Q_SLOTS:
+    void updateVisibleActions();
+    void updateSwipeState();
+};
+
 
 class UCViewItemsAttachedPrivate;
 class UCViewItemsAttached : public QObject

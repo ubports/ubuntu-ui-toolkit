@@ -111,10 +111,10 @@ SOURCES += plugin.cpp \
     adapters/actionsproxy_p.cpp \
     uclistitem.cpp \
     uclistitemactions.cpp \
-    uclistitemactionsattached.cpp \
     propertychange_p.cpp \
     uclistitemstyle.cpp \
-    ucviewitemsattached.cpp
+    ucviewitemsattached.cpp \
+    uclistitemattached.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp

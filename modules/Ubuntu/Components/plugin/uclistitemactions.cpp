@@ -27,7 +27,7 @@
 
 UCListItemActionsPrivate::UCListItemActionsPrivate()
     : QObjectPrivate()
-    , status(UCListItemActions::Disconnected)
+    , status(UCListItem::Disconnected)
     , offsetDragged(0)
     , optionSlotWidth(0.0)
     , delegate(0)
@@ -47,20 +47,20 @@ void UCListItemActionsPrivate::_q_updateDraggedOffset()
     }
 
     Q_Q(UCListItemActions);
-    offsetDragged = (status == UCListItemActions::Leading) ? panelItem->width() + panelItem->x() :
+    offsetDragged = (status == UCListItem::Leading) ? panelItem->width() + panelItem->x() :
                          listItem->width() - panelItem->x();
     if (offsetDragged < 0.0) {
         offsetDragged = 0.0;
     }
 }
 
-UCListItemActionsAttached *UCListItemActionsPrivate::attachedObject()
+UCListItemAttached *UCListItemActionsPrivate::attachedObject()
 {
     if (!panelItem) {
         return 0;
     }
-    return static_cast<UCListItemActionsAttached*>(
-                qmlAttachedPropertiesObject<UCListItemActions>(panelItem, false));
+    return static_cast<UCListItemAttached*>(
+                qmlAttachedPropertiesObject<UCListItem>(panelItem, false));
 }
 
 /*
@@ -104,7 +104,7 @@ bool UCListItemActionsPrivate::connectToListItem(UCListItemActions *actions, UCL
         _this->attachedObject()->connectListItem(listItem, true);
     }
     _this->offsetDragged = 0.0;
-    _this->status = leading ? UCListItemActions::Leading : UCListItemActions::Trailing;
+    _this->status = leading ? UCListItem::Leading : UCListItem::Trailing;
     Q_EMIT actions->statusChanged(_this->status);
     return true;
 }
@@ -120,7 +120,7 @@ void UCListItemActionsPrivate::disconnectFromListItem(UCListItemActions *actions
         _this->attachedObject()->connectListItem(static_cast<UCListItem*>(_this->panelItem->parentItem()), false);
     }
     _this->panelItem->setParentItem(0);
-    _this->status = UCListItemActions::Disconnected;
+    _this->status = UCListItem::Disconnected;
     Q_EMIT actions->statusChanged(_this->status);
     // if there was a queuedItem, make it grab the actions list
     if (_this->queuedItem) {
@@ -134,7 +134,7 @@ bool UCListItemActionsPrivate::isConnectedTo(UCListItemActions *actions, UCListI
 {
     UCListItemActionsPrivate *_this = get(actions);
     return _this && _this->panelItem &&
-            (_this->status != UCListItemActions::Disconnected) &&
+            (_this->status != UCListItem::Disconnected) &&
             (_this->panelItem->parentItem() == listItem);
 }
 
@@ -164,8 +164,8 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *panel)
             // add panelItem to data so we can access it in case is needed (i.e. tests)
             data.append(panelItem);
             // create attached property!
-            UCListItemActionsAttached *attached = static_cast<UCListItemActionsAttached*>(
-                        qmlAttachedPropertiesObject<UCListItemActions>(panelItem));
+            UCListItemAttached *attached = static_cast<UCListItemAttached*>(
+                        qmlAttachedPropertiesObject<UCListItem>(panelItem));
             if (!attached->container()) {
                 attached->setList(q);
             } else {
@@ -375,28 +375,6 @@ UCListItemActions::UCListItemActions(QObject *parent)
 }
 UCListItemActions::~UCListItemActions()
 {
-}
-
-UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *owner)
-{
-    /*
-     * Detect the attachee, whether is it a child item of the panelItem. The panelItem
-     * itself cannot be detected, as the object can be attached during the call of
-     * component.beginCreate().
-     */
-    UCListItemActionsAttached *attached = new UCListItemActionsAttached(owner);
-    QQuickItem *item = qobject_cast<QQuickItem*>(owner);
-    while (item) {
-        // has item our attached property?
-        UCListItemActionsAttached *itemAttached = static_cast<UCListItemActionsAttached*>(
-                    qmlAttachedPropertiesObject<UCListItemActions>(item, false));
-        if (itemAttached) {
-            attached->setList(itemAttached->container());
-            break;
-        }
-        item = item->parentItem();
-    }
-    return attached;
 }
 
 /*!

@@ -21,76 +21,77 @@
 #include "ucunits.h"
 #include "ucaction.h"
 
-UCListItemActionsAttached::UCListItemActionsAttached(QObject *parent)
+UCListItemAttached::UCListItemAttached(QObject *parent)
     : QObject(parent)
+    , m_container(0)
     , m_swiping(false)
 {
 }
 
-UCListItemActionsAttached::~UCListItemActionsAttached()
+UCListItemAttached::~UCListItemAttached()
 {
 }
 
 /*!
- * \qmlattachedproperty ListItemActions ListItemActions::container
+ * \qmlattachedproperty ListItemActions ListItem::container
  * \readonly
  * The property holds the instance of the \l ListItemActions the ListItem's actions
  * panel is visualizing.
  */
-void UCListItemActionsAttached::setList(UCListItemActions *list)
+void UCListItemAttached::setList(UCListItemActions *list)
 {
     if (list == m_container) {
         return;
     }
     m_container = list;
-    if (!m_container.isNull()) {
+    if (m_container) {
         // connect statusChanged() to update status, listItem, listItemIndex and overshoot values
-        QObject::connect(m_container.data(), &UCListItemActions::statusChanged,
-                         this, &UCListItemActionsAttached::statusChanged);
-        QObject::connect(m_container.data(), &UCListItemActions::statusChanged,
-                         this, &UCListItemActionsAttached::listItemChanged);
-        QObject::connect(m_container.data(), &UCListItemActions::statusChanged,
-                         this, &UCListItemActionsAttached::listItemIndexChanged);
+        QObject::connect(m_container, &UCListItemActions::statusChanged,
+                         this, &UCListItemAttached::statusChanged);
+        QObject::connect(m_container, &UCListItemActions::statusChanged,
+                         this, &UCListItemAttached::listItemChanged);
+        QObject::connect(m_container, &UCListItemActions::statusChanged,
+                         this, &UCListItemAttached::listItemIndexChanged);
 
-        UCListItemActionsPrivate *actions = UCListItemActionsPrivate::get(m_container.data());
+        UCListItemActionsPrivate *actions = UCListItemActionsPrivate::get(m_container);
         // connect panel's xChanged to update the dragged offset
         QObject::connect(actions->panelItem, &QQuickItem::xChanged,
-                         this, &UCListItemActionsAttached::offsetChanged);
+                         this, &UCListItemAttached::offsetChanged);
 
         // connect actions to get updates about visible changes
         Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(m_container)->actions) {
             QObject::connect(action, &UCAction::visibleChanged,
-                             this, &UCListItemActionsAttached::updateVisibleActions);
+                             this, &UCListItemAttached::updateVisibleActions);
         }
         updateVisibleActions();
+        Q_EMIT containerChanged();
+        Q_EMIT visibleActionsChanged();
     }
-    Q_EMIT containerChanged();
-    Q_EMIT visibleActionsChanged();
 }
 
-void UCListItemActionsAttached::connectListItem(UCListItem *item, bool connect)
+void UCListItemAttached::connectListItem(UCListItem *item, bool connect)
 {
     if (!item) {
         return;
     }
     if (connect) {
         QObject::connect(item, &UCListItem::highlightedChanged,
-                         this, &UCListItemActionsAttached::updateSwipeState);
+                         this, &UCListItemAttached::updateSwipeState);
         QObject::connect(item, &UCListItem::contentMovingChanged,
-                         this, &UCListItemActionsAttached::updateSwipeState);
+                         this, &UCListItemAttached::updateSwipeState);
     } else {
         QObject::disconnect(item, &UCListItem::highlightedChanged,
-                            this, &UCListItemActionsAttached::updateSwipeState);
+                            this, &UCListItemAttached::updateSwipeState);
         QObject::disconnect(item, &UCListItem::contentMovingChanged,
-                            this, &UCListItemActionsAttached::updateSwipeState);
+                            this, &UCListItemAttached::updateSwipeState);
     }
 }
 
 // private slot to update visible actions
-void UCListItemActionsAttached::updateVisibleActions()
+void UCListItemAttached::updateVisibleActions()
 {
     m_visibleActions.clear();
-    if (!m_container.isNull()) {
+    if (m_container) {
         Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(m_container)->actions) {
             if (action->m_visible) {
                 m_visibleActions << action;
@@ -101,9 +102,9 @@ void UCListItemActionsAttached::updateVisibleActions()
 }
 
 // private slot updating swipe state
-void UCListItemActionsAttached::updateSwipeState()
+void UCListItemAttached::updateSwipeState()
 {
-    if (m_container.isNull()) {
+    if (!m_container) {
         return;
     }
     QQuickItem *panelItem = UCListItemActionsPrivate::get(m_container)->panelItem;
@@ -120,23 +121,23 @@ void UCListItemActionsAttached::updateSwipeState()
 }
 
 /*!
- * \qmlattachedproperty list<Action> ListItemActions::visibleActions
+ * \qmlattachedproperty list<Action> ListItem::visibleActions
  * Holds the list of visible actions. This is a convenience property to help action
  * visualization panel implementations to consider only visible actions.
  */
-QQmlListProperty<UCAction> UCListItemActionsAttached::visibleActions()
+QQmlListProperty<UCAction> UCListItemAttached::visibleActions()
 {
     return QQmlListProperty<UCAction>(this, m_visibleActions);
 }
 
 /*!
- * \qmlattachedproperty ListItem ListItemActions::listItem
+ * \qmlattachedproperty ListItem ListItem::listItem
  * \readonly
  * The property reports the connected \l ListItem to the list of actions.
  */
-UCListItem *UCListItemActionsAttached::listItem()
+UCListItem *UCListItemAttached::listItem()
 {
-    if (m_container.isNull()) {
+    if (!m_container) {
         return NULL;
     }
     QQuickItem *panelItem = UCListItemActionsPrivate::get(m_container)->panelItem;
@@ -148,13 +149,13 @@ UCListItem *UCListItemActionsAttached::listItem()
 }
 
 /*!
- * \qmlattachedproperty int ListItemActions::listItemIndex
+ * \qmlattachedproperty int ListItem::listItemIndex
  * \readonly
  * Holds the index of the \l ListItem within a view, if the \l ListItem is used
  * in a model driven view. Otherwise it is set to -1.
  */
-int UCListItemActionsAttached::listItemIndex() {
-    if (m_container.isNull()) {
+int UCListItemAttached::listItemIndex() {
+    if (!m_container) {
         return -1;
     }
     QQuickItem *panelItem = UCListItemActionsPrivate::get(m_container)->panelItem;
@@ -166,32 +167,32 @@ int UCListItemActionsAttached::listItemIndex() {
 }
 
 /*!
- * \qmlattachedproperty bool ListItemActions::swiping
+ * \qmlattachedproperty bool ListItem::swiping
  * \readonly
  * The property notifies whether the panel is swiped or not. The property does
  * not notify the rebounding.
  */
-bool UCListItemActionsAttached::swiping()
+bool UCListItemAttached::swiping()
 {
     return m_swiping;
 }
 
 /*!
- * \qmlattachedproperty real ListItemActions::offset
+ * \qmlattachedproperty real ListItem::offset
  * The property returns the offset the panel item holding the visualized actions
  * is visible. This can be used to do different animations on the panel and on
  * the action visualizations.
  */
-qreal UCListItemActionsAttached::offset()
+qreal UCListItemAttached::offset()
 {
-    if (m_container.isNull()) {
+    if (!m_container) {
         return 0.0;
     }
     return UCListItemActionsPrivate::get(m_container)->offsetDragged;
 }
 
 /*!
- * \qmlattachedproperty enum ListItemActions::status
+ * \qmlattachedproperty enum ListItem::status
  * \readonly
  * The property holds the status of the ListItemActions, whether is connected
  * as leading or as trailing action list to a \l ListItem. Possible valueas are:
@@ -201,24 +202,24 @@ qreal UCListItemActionsAttached::offset()
  *  \li \b Trailing - the actions list is connected as trailing list
  * \endlist
  */
-UCListItemActions::Status UCListItemActionsAttached::status()
+UCListItem::Status UCListItemAttached::status()
 {
-    if (m_container.isNull()) {
-        return UCListItemActions::Disconnected;
+    if (!m_container) {
+        return UCListItem::Disconnected;
     }
     return UCListItemActionsPrivate::get(m_container)->status;
 }
 
 /*!
- * \qmlattachedmethod void ListItemActions::snapToPosition(real position)
+ * \qmlattachedmethod void ListItem::snapToPosition(real position)
  * The function can be used to perform custom snapping, or to execute rebounding
  * and also disconnecting from the connected \l ListItem. This can be achieved by
  * calling the function with 0.0 value.
  */
-void UCListItemActionsAttached::snapToPosition(qreal position)
+void UCListItemAttached::snapToPosition(qreal position)
 {
     //if it is disconnected, leave (this also includes the case when m_container is null)
-    if (status() == UCListItemActions::Disconnected) {
+    if (status() == UCListItem::Disconnected) {
         return;
     }
     QQuickItem *panelItem = UCListItemActionsPrivate::get(m_container)->panelItem;
@@ -232,7 +233,7 @@ void UCListItemActionsAttached::snapToPosition(qreal position)
         return;
     }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    position *= (status() == UCListItemActions::Leading) ? 1 : -1;
+    position *= (status() == UCListItem::Leading) ? 1 : -1;
     if (position == 0.0) {
         listItem->_q_rebound();
     } else {
@@ -243,5 +244,3 @@ void UCListItemActionsAttached::snapToPosition(qreal position)
         }
     }
 }
-
-

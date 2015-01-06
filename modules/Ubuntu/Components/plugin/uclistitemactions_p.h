@@ -32,7 +32,7 @@ public:
         return actions ? actions->d_func() : 0;
     }
 
-    UCListItemActions::Status status;
+    UCListItem::Status status;
     qreal offsetDragged;
     qreal optionSlotWidth;
 
@@ -44,7 +44,7 @@ public:
     QPointer<UCListItem> queuedItem;
 
     void _q_updateDraggedOffset();
-    UCListItemActionsAttached *attachedObject();
+    UCListItemAttached *attachedObject();
 
     static bool connectToListItem(UCListItemActions *options, UCListItem *listItem, bool leading);
     static void disconnectFromListItem(UCListItemActions *options);
