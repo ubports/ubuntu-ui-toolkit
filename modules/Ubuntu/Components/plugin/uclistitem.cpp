@@ -797,10 +797,10 @@ UCListItem::~UCListItem()
 {
 }
 
-UCListItemAttached *UCListItem::qmlAttachedProperties(QObject *owner)
-{
-    return new UCListItemAttached(owner);
-}
+//UCListItemAttached *UCListItem::qmlAttachedProperties(QObject *owner)
+//{
+//    return new UCListItemAttached(owner);
+//}
 
 void UCListItem::componentComplete()
 {
@@ -841,9 +841,9 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         // attach ListItem properties to the flickable or to the parent item
         if (d->flickable) {
             // connect to flickable to get width changes
-            d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(d->flickable));
+            d->attachedProperties = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(d->flickable));
         } else if (data.item) {
-            d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(data.item));
+            d->attachedProperties = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(data.item));
         } else {
             // mark as not ready, so no action should be performed which depends on readyness
             d->ready = false;

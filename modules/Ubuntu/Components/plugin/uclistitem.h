@@ -48,7 +48,7 @@ public:
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
 
-    static UCListItemAttached *qmlAttachedProperties(QObject *owner);
+//    static UCListItemAttached *qmlAttachedProperties(QObject *owner);
 
     QQuickItem *contentItem() const;
     UCListItemDivider *divider() const;
@@ -101,15 +101,17 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
 };
 
-QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
+//QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
 
-class UCListItemAttachedPrivate;
-class UCListItemAttached : public QObject
+class UCViewItemsAttachedPrivate;
+class UCViewItemsAttached : public QObject
 {
     Q_OBJECT
 public:
-    explicit UCListItemAttached(QObject *owner);
-    ~UCListItemAttached();
+    explicit UCViewItemsAttached(QObject *owner);
+    ~UCViewItemsAttached();
+
+    static UCViewItemsAttached *qmlAttachedProperties(QObject *owner);
 
     bool listenToRebind(UCListItem *item, bool listen);
     void disableInteractive(UCListItem *item, bool disable);
@@ -119,8 +121,9 @@ public:
 private Q_SLOTS:
     void unbindItem();
 private:
-    Q_DECLARE_PRIVATE(UCListItemAttached)
-    QScopedPointer<UCListItemAttachedPrivate> d_ptr;
+    Q_DECLARE_PRIVATE(UCViewItemsAttached)
+    QScopedPointer<UCViewItemsAttachedPrivate> d_ptr;
 };
+QML_DECLARE_TYPEINFO(UCViewItemsAttached, QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // UCLISTITEM_H

@@ -77,7 +77,7 @@ public:
     QColor highlightColor;
     QPointer<QQuickItem> countOwner;
     QPointer<QQuickFlickable> flickable;
-    QPointer<UCListItemAttached> attachedProperties;
+    QPointer<UCViewItemsAttached> attachedProperties;
     QQuickItem *contentItem;
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
@@ -103,19 +103,19 @@ public:
 };
 
 class PropertyChange;
-class UCListItemAttachedPrivate
+class UCViewItemsAttachedPrivate
 {
-    Q_DECLARE_PUBLIC(UCListItemAttached)
+    Q_DECLARE_PUBLIC(UCViewItemsAttached)
 public:
-    UCListItemAttachedPrivate(UCListItemAttached *qq);
-    ~UCListItemAttachedPrivate();
+    UCViewItemsAttachedPrivate(UCViewItemsAttached *qq);
+    ~UCViewItemsAttachedPrivate();
 
     void clearFlickablesList();
     void buildFlickablesList();
     void clearChangesList();
     void buildChangesList(const QVariant &newValue);
 
-    UCListItemAttached *q_ptr;
+    UCViewItemsAttached *q_ptr;
     bool globalDisabled;
     QList< QPointer<QQuickFlickable> > flickables;
     QList< PropertyChange* > changes;
