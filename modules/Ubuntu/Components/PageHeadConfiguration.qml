@@ -96,6 +96,21 @@ Object {
      */
     property Item contents: null
 
+    QtObject {
+        id: internal
+        property Item oldContents: null
+    }
+
+    onContentsChanged: {
+        if (internal.oldContents) {
+            // FIX: bug #1341814 and #1400297
+            // We have to force the removal of the previous head.contents
+            // in order to show the new contents
+            internal.oldContents.parent = null;
+        }
+        internal.oldContents = contents;
+    }
+
     // FIXME: The example below can be much simplified using PageHeadState
     //  when bug #1345775 has been fixed.
     /*!
