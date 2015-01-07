@@ -46,7 +46,7 @@ private:
     qreal m_swipeOvershoot;
 
     friend class UCListItemPrivate;
-    friend class UCListItemActionsPrivate;
+    friend class UCActionPanel;
     friend class UCListItemSnapAnimator;
 };
 
