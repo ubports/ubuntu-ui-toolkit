@@ -307,11 +307,7 @@ AbstractButton {
 
     ThinDivider {
         id: bottomDividerLine
-        anchors {
-            bottom: parent.bottom
-            leftMargin: units.gu(2)
-            rightMargin: units.gu(2)
-        }
+        anchors.bottom: parent.bottom
         visible: showDivider && !priv.removed
     }
 
