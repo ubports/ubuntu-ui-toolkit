@@ -75,15 +75,23 @@ void UCHandlerBase::setupPanel(QQmlComponent *component, bool animate)
     } else {
         // create a new context so we can expose context properties
         QQmlContext *context = new QQmlContext(qmlContext(item), item);
-        context->setContextProperty("animatePanel", animate);
         panel = qobject_cast<QQuickItem*>(component->beginCreate(context));
         if (panel) {
             QQml_setParent_noEvent(panel, item);
             panel->setParentItem(item);
+            // attach ListItem attached properties
+            UCListItemAttached *attached = static_cast<UCListItemAttached*>(
+                        qmlAttachedPropertiesObject<UCListItem>(panel));
+            if (attached) {
+                attached->setList(item, false, false);
+                UCListItemAttachedPrivate::get(attached)->setAnimate(animate);
+            }
             // complete component creation
             component->completeCreate();
             // and set the context property so we animate next time.
-            context->setContextProperty("animatePanel", true);
+            if (attached) {
+                UCListItemAttachedPrivate::get(attached)->setAnimate(true);
+            }
         }
     }
 }
@@ -845,7 +853,7 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * The component is styled using the \l ListItemStyle style interface.
  *
  * \section3 Selection mode
- * The selection mode of a ListItem is controlled by the ListItem::selectable
+ * The selection mode of a ListItem is controlled by the ViewItems::selectable
  * attached property. This property is attached to each parent item of the ListItem
  * exception being when used as delegate in ListView, where the property is attached
  * to the view itself, as well as when used with Positioner embedded in a Flickable,
@@ -875,8 +883,8 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  *    }
  * }
  * \endqml
- * The indexes selected are stored in \l ListItem::selectedIndexes attached property,
- * attached the same way as the \l ListItem::selectMode property is. This is a
+ * The indexes selected are stored in \l ViewItems::selectedIndexes attached property,
+ * attached the same way as the \l ViewItems::selectMode property is. This is a
  * read/write property, meaning that initial selected item indexes can be set up.
  * The list contains the indexes added in the order of selection, not sorted in
  * any form.
@@ -1487,7 +1495,7 @@ void UCListItem::setHighlightColor(const QColor &color)
  * The property drives whether a list item is selected or not. While selected, the
  * ListItem cannot be swiped. The default value is false.
  *
- * \sa ListItem::selectable, ListItem::selectMode
+ * \sa ListItem::selectable, ViewItems::selectMode
  */
 bool UCListItemPrivate::isSelected() const
 {

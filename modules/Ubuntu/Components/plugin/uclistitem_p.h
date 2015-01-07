@@ -122,16 +122,18 @@ class UCListItemAttachedPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(UCListItemAttached)
 public:
-    UCListItemAttachedPrivate() : QObjectPrivate(), panel(0), listItem(0) {}
+    UCListItemAttachedPrivate() : QObjectPrivate(), panel(0), listItem(0), animate(true) {}
 
     static UCListItemAttachedPrivate* get(UCListItemAttached *that)
     {
         return that->d_func();
     }
+    void setAnimate(bool value);
 
     UCActionPanel *panel;
     UCListItem *listItem;
     QList<UCAction*> visibleActions;
+    bool animate:1;
 };
 
 class PropertyChange;

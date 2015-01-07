@@ -128,6 +128,7 @@ class UCListItemAttached : public QObject
     Q_PROPERTY(UCListItem *item READ item NOTIFY itemChanged)
     Q_PROPERTY(int index READ index NOTIFY indexChanged)
     Q_PROPERTY(UCListItem::PanelStatus panelStatus READ panelStatus NOTIFY panelStatusChanged)
+    Q_PROPERTY(bool animate READ animate NOTIFY animateChanged)
 public:
     explicit UCListItemAttached(QObject *parent = 0);
     ~UCListItemAttached();
@@ -139,6 +140,7 @@ public:
     UCListItem *item();
     int index();
     UCListItem::PanelStatus panelStatus();
+    bool animate() const;
 
 public Q_SLOTS:
     void snapToPosition(qreal position);
@@ -149,6 +151,7 @@ Q_SIGNALS:
     void itemChanged();
     void indexChanged();
     void panelStatusChanged();
+    void animateChanged();
 
 private:
     Q_DECLARE_PRIVATE(UCListItemAttached)

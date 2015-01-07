@@ -105,6 +105,14 @@ void UCViewItemsAttachedPrivate::buildChangesList(const QVariant &newValue)
     }
 }
 
+/*!
+ * \qmltype ViewItems
+ * \instantiates UCViewItemsAttached
+ * \inqmlmodule Ubuntu.Components 1.2
+ * \ingroup unstable-ubuntu-listitems
+ * \since Ubuntu.Components 1.2
+ * \brief A set of properties attached to the ListItem's parent item or ListView.
+ */
 UCViewItemsAttached::UCViewItemsAttached(QObject *owner)
     : QObject(owner)
     , d_ptr(new UCViewItemsAttachedPrivate(this))
@@ -218,11 +226,9 @@ void UCViewItemsAttached::unbindItem()
  * attached to the ListItem's parent or to the ListView/Flickable owning the
  * ListItems.
  *
- *
- * When set, the items
- * will show a check box on the leading side hanving the content item pushed towards
- * trailing side and dimmed. The checkbox which will reflect and drive the \l selected
- * state.
+ * When set, the default style implementation will show a check box on the leading
+ * side hanving the content item pushed towards trailing side and dimmed. The checkbox
+ * which will reflect and drive the \l {ListItem::selected}{selected} state.
  * Defaults to false.
  */
 bool UCViewItemsAttachedPrivate::selectMode() const
@@ -245,11 +251,11 @@ void UCViewItemsAttachedPrivate::setSelectMode(bool value)
  * the ListView when used with ListView. Contains the indexes of the ListItems
  * marked as selected. The indexes are model indexes when used in ListView, and
  * child indexes in other contexts.
- * \note Setting the ListItem's \l selected property to \c true will add the
- * item index to the selection list automatically, and may destroy the initial
- * state of the selection. Therefore it is recommended to drive the selection
- * through the attached property rather through the \l ListItem::selected property.
- * \sa ListItem::selectable, ListItem::selected
+ * \note Setting the ListItem's \l {ListItem::selected}{selected} property to \c
+ * true will add the item index to the selection list automatically, and may
+ * destroy the initial state of the selection. Therefore it is recommended to
+ * drive the selection through the attached property rather through the \l
+ * ListItem::selected property. \sa ListItem::selectable, ListItem::selected
  */
 QList<int> UCViewItemsAttachedPrivate::selectedIndexes() const
 {

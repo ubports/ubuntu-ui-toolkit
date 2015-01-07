@@ -57,14 +57,15 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
  * animating the changes, resizing the contentItem, etc.), as well as reporting
  * the changes to the ListItem whenever the selection is changed.
  *
- * ListItem will create the component when the selection mode is emntered, and will
+ * ListItem will create the component when the selection mode is entered, and will
  * keep it for the entire lifetime of the ListItem, even if the selection mode is
- * exited. Therefore implementations must take care of removing the visuals when
+ * exited. Therefore implementations must take care of hiding the visuals when
  * leaving selection mode.
  *
- * The parent of the component is the ListItem itself.
+ * The parent of the component is the ListItem itself, and the ListItem attached
+ * object will be also attached to it.
  *
- * The \c animatePanel context property is set if the ListItem expects to animate
+ * The \l ListItem::animate attached property is set if the ListItem expects to animate
  * the panel changes, and reset if should not.
  *
  * \note If states are used to show/hide and animate the panel changes, these changes
@@ -90,7 +91,7 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
  *         transitions: Transitions {
  *             from: ""
  *             to: "enabled"
- *             enabled: animatePanel
+ *             enabled: panel.ListItem.animate
  *             // [...]
  *         }
  *

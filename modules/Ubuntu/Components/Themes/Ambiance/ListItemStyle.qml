@@ -39,17 +39,15 @@ Styles.ListItemStyle {
         objectName: "selection_panel"
         width: units.gu(5)
 
-        readonly property ListItem listItem: parent
-
         /*
           Set if the ListItem is selected
           */
-        readonly property bool selected: listItem ? listItem.selected : false
+        readonly property bool selected: ListItem.item.selected
 
         /*
           Internally used to link to the list item's content. The parent item is the ListItem itself.
           */
-        readonly property Item contentItem: listItem ? listItem.contentItem : null
+        readonly property Item contentItem: ListItem.item ? ListItem.item.contentItem : null
 
         anchors {
             right: contentItem ? contentItem.left : undefined
@@ -62,7 +60,7 @@ Styles.ListItemStyle {
             PropertyChanges {
                 target: contentItem
                 x: selectionPanel.width
-                width: listItem.width - selectionPanel.width
+                width: selectionPanel.ListItem.item.width - selectionPanel.width
             }
             PropertyChanges {
                 target: checkbox
@@ -74,7 +72,7 @@ Styles.ListItemStyle {
             from: ""
             to: "enabled"
             reversible: true
-            enabled: animatePanel
+            enabled: selectionPanel.ListItem.animate
             ParallelAnimation {
                 PropertyAnimation {
                     target: selectionPanel.parent.contentItem
@@ -94,7 +92,7 @@ Styles.ListItemStyle {
         // make sure the state is changed only after component completion
         Component.onCompleted: {
             state = Qt.binding(function () {
-                return listItem && listItem.selectable ? "enabled" : "";
+                return ListItem.item.selectable ? "enabled" : "";
             });
         }
 
