@@ -32,7 +32,7 @@ MainView {
         text: "Staaaar"
         onTriggered: {
             print(iconName, "triggered", value)
-            view.ListItem.selectedIndexes = [1, 2, 9];
+            view.ViewItems.selectedIndexes = [1, 2, 9];
         }
     }
 
@@ -124,7 +124,7 @@ MainView {
                         width: units.gu(3)
                         height: width
                         name: action.iconName
-                        color: "blue"
+                        color: pressed ? "blue" : "pink"
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     Label {
@@ -162,14 +162,15 @@ MainView {
             height: units.gu(20)
             model: 100
             pressDelay: 0
-            ListItem.selectMode: main.selectable
-            ListItem.selectedIndexes: [9,3,4,1]
-            ListItem.onSelectedIndexesChanged: print("LISTVIEW INDEXES=", ListItem.selectedIndexes)
+            ViewItems.selectMode: main.selectable
+            ViewItems.selectedIndexes: [9,3,4,1]
+            ViewItems.onSelectedIndexesChanged: print("LISTVIEW INDEXES=", ViewItems.selectedIndexes)
             delegate: ListItem {
                 objectName: "ListItem" + index
                 id: listItem
                 onClicked: print(" clicked")
                 leadingActions: leading
+                trailingActions: leadingActions
                 Label {
                     text: modelData + " item"
                 }
@@ -198,14 +199,14 @@ MainView {
                 id: trailing
                 actions: leading.actions
             }
-            ListItem.selectMode: main.selectable
-            ListItem.onSelectedIndexesChanged: print("INDEXES=", ListItem.selectedIndexes)
+            ViewItems.selectMode: main.selectable
+            ViewItems.onSelectedIndexesChanged: print("INDEXES=", ViewItems.selectedIndexes)
 
             Column {
                 id: column
-                width: view.width
+                width: flicker.width
                 property alias count: repeater.count
-                ListItem.selectMode: true
+                ViewItems.selectMode: true
                 Repeater {
                     id: repeater
                     model: 10

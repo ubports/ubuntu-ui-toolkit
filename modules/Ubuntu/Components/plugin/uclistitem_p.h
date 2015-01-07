@@ -31,6 +31,7 @@ class UCListItemActions;
 class UCListItemSnapAnimator;
 class UCListItemStyle;
 class UCSelectionHandler;
+class UCActionPanel;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -58,9 +59,8 @@ public:
     void _q_updateIndex();
     int index();
     bool canHighlight(QMouseEvent *event);
-    void setPressed(bool pressed);
+    void setHighlighted(bool pressed);
     void setSwiped(bool tugged);
-    bool grabPanel(UCListItemActions *optionList, bool isTugged);
     void listenToRebind(bool listen);
     void resize();
     void update();
@@ -84,11 +84,13 @@ public:
     QColor highlightColor;
     QPointer<QQuickItem> countOwner;
     QPointer<QQuickFlickable> flickable;
-    QPointer<UCListItemAttached> attachedProperties;
+    QPointer<UCViewItemsAttached> attachedProperties;
     QQuickItem *contentItem;
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
+    UCActionPanel *leadingPanel;
+    UCActionPanel *trailingPanel;
     UCListItemSnapAnimator *animator;
     UCAction *defaultAction;
     UCSelectionHandler *selectionHandler;
@@ -116,15 +118,31 @@ public:
     void setAction(UCAction *action);
 };
 
-class PropertyChange;
-class UCListItemAttachedPrivate
+class UCListItemAttachedPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(UCListItemAttached)
 public:
-    UCListItemAttachedPrivate(UCListItemAttached *qq);
-    ~UCListItemAttachedPrivate();
+    UCListItemAttachedPrivate() : QObjectPrivate(), panel(0), listItem(0) {}
 
-    static UCListItemAttachedPrivate *get(UCListItemAttached *item)
+    static UCListItemAttachedPrivate* get(UCListItemAttached *that)
+    {
+        return that->d_func();
+    }
+
+    UCActionPanel *panel;
+    UCListItem *listItem;
+    QList<UCAction*> visibleActions;
+};
+
+class PropertyChange;
+class UCViewItemsAttachedPrivate
+{
+    Q_DECLARE_PUBLIC(UCViewItemsAttached)
+public:
+    UCViewItemsAttachedPrivate(UCViewItemsAttached *qq);
+    ~UCViewItemsAttachedPrivate();
+
+    static UCViewItemsAttachedPrivate *get(UCViewItemsAttached *item)
     {
         return item ? item->d_func() : 0;
     }
@@ -137,7 +155,7 @@ public:
     void removeSelectedItem(UCListItem *item);
     bool isItemSelected(UCListItem *item);
 
-    UCListItemAttached *q_ptr;
+    UCViewItemsAttached *q_ptr;
     bool globalDisabled:1;
     bool selectable:1;
     QList<int> selectedList;
@@ -151,6 +169,40 @@ public:
     void setSelectMode(bool value);
     QList<int> selectedIndexes() const;
     void setSelectedIndexes(const QList<int> &list);
+};
+
+class UCActionPanel : public QObject
+{
+    Q_OBJECT
+public:
+    ~UCActionPanel();
+    static bool grabPanel(UCActionPanel **panel, UCListItem *item, bool leading);
+    static void ungrabPanel(UCActionPanel *panel);
+    static bool isConnected(UCActionPanel *panel);
+
+    UCListItemActions *actions();
+    QQuickItem *panel() const;
+    UCListItem::PanelStatus panelStatus()
+    {
+        return status;
+    }
+    bool isLeading() const
+    {
+        return leading;
+    }
+
+Q_SIGNALS:
+    void statusChanged();
+
+private:
+    UCActionPanel(UCListItem *item, bool leading);
+    void createPanel(QQmlComponent *panelDelegate);
+    UCListItemAttached *attachedObject();
+
+    UCListItem *listItem;
+    QQuickItem *panelItem;
+    UCListItem::PanelStatus status;
+    bool leading:1;
 };
 
 class UCListItemDivider : public QObject
