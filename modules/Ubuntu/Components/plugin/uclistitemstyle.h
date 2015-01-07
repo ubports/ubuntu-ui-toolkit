@@ -47,7 +47,7 @@ private:
 
     friend class UCListItemPrivate;
     friend class UCSelectionHandler;
-    friend class UCListItemActionsPrivate;
+    friend class UCActionPanel;
     friend class UCListItemSnapAnimator;
 };
 
