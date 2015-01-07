@@ -32,10 +32,12 @@ UCListItemAttached::~UCListItemAttached()
 
 void UCListItemAttached::connectToAttached(UCListItemAttached *parentAttached)
 {
-    setList(parentAttached->item(), UCListItemAttachedPrivate::get(parentAttached)->panel->isLeading());
+    bool visualizeActions = UCListItemAttachedPrivate::get(parentAttached)->panel;
+    bool isLeading = visualizeActions ? UCListItemAttachedPrivate::get(parentAttached)->panel->isLeading() : false;
+    setList(parentAttached->item(), isLeading, visualizeActions);
 }
 
-void UCListItemAttached::setList(UCListItem *list, bool leading)
+void UCListItemAttached::setList(UCListItem *list, bool leading, bool visualizeActions)
 {
     Q_D(UCListItemAttached);
     if (d->listItem == list) {
@@ -44,8 +46,12 @@ void UCListItemAttached::setList(UCListItem *list, bool leading)
     d->listItem = list;
     Q_EMIT itemChanged();
 
-    d->panel = leading ? UCListItemPrivate::get(d->listItem)->leadingPanel : UCListItemPrivate::get(d->listItem)->trailingPanel;
-    if (d->listItem) {
+    if (visualizeActions) {
+        d->panel = leading ? UCListItemPrivate::get(d->listItem)->leadingPanel : UCListItemPrivate::get(d->listItem)->trailingPanel;
+    } else {
+        d->panel = 0;
+    }
+    if (d->panel) {
         // connect statusChanged() to update status, listItem, listItemIndex and overshoot values
         QObject::connect(d->panel, &UCActionPanel::statusChanged,
                          this, &UCListItemAttached::panelStatusChanged);
@@ -65,22 +71,24 @@ void UCListItemAttached::setList(UCListItem *list, bool leading)
 void UCListItemAttached::updateVisibleActions()
 {
     Q_D(UCListItemAttached);
-    d->visibleActions.clear();
     if (d->panel) {
+        d->visibleActions.clear();
         Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(d->panel->actions())->actions) {
             if (action->m_visible) {
                 d->visibleActions << action;
             }
         }
+        Q_EMIT visibleActionsChanged();
     }
-    Q_EMIT visibleActionsChanged();
 }
 
 /*!
  * \qmlattachedproperty ListItemActions ListItem::actions
  * \readonly
  * The property holds the instance of the \l ListItemActions the ListItem's actions
- * panel is visualizing.
+ * panel is visualizing. The property holds a valid value only when attached to
+ * the action visualizing panel defined in \l ListItemStyle::actionsDelegate style
+ * property.
  */
 UCListItemActions *UCListItemAttached::actions() const
 {
@@ -91,7 +99,9 @@ UCListItemActions *UCListItemAttached::actions() const
 /*!
  * \qmlattachedproperty list<Action> ListItem::visibleActions
  * Holds the list of visible actions. This is a convenience property to help action
- * visualization panel implementations to consider only visible actions.
+ * visualization panel implementations to consider only visible actions. Similar to
+ * \l actions attached property, it is only valid when attached to \l ListItemStyle::actionsDelegate
+ * component.
  */
 QQmlListProperty<UCAction> UCListItemAttached::visibleActions()
 {
@@ -102,7 +112,7 @@ QQmlListProperty<UCAction> UCListItemAttached::visibleActions()
 /*!
  * \qmlattachedproperty ListItem ListItem::item
  * \readonly
- * The property reports the connected \l ListItem to the panel.
+ * The property reports the connected \l ListItem to the panel. Valid in every attachee.
  */
 UCListItem *UCListItemAttached::item()
 {
@@ -114,7 +124,7 @@ UCListItem *UCListItemAttached::item()
  * \qmlattachedproperty int ListItem::index
  * \readonly
  * Holds the index of the \l ListItem within a view, if the \l ListItem is used
- * in a model driven view, or the child index otherwise.
+ * in a model driven view, or the child index otherwise. Valid in every attachee.
  */
 int UCListItemAttached::index() {
     Q_D(UCListItemAttached);
@@ -131,6 +141,7 @@ int UCListItemAttached::index() {
  *  \li \b Leading - the actions list is connected as leading list
  *  \li \b Trailing - the actions list is connected as trailing list
  * \endlist
+ * The property is valid only when attached to \l ListItemStyle::actionsDelegate component.
  */
 UCListItem::PanelStatus UCListItemAttached::panelStatus()
 {
@@ -145,7 +156,8 @@ UCListItem::PanelStatus UCListItemAttached::panelStatus()
  * \qmlattachedmethod void ListItem::snapToPosition(real position)
  * The function can be used to perform custom snapping, or to execute rebounding
  * and also disconnecting from the connected \l ListItem. This can be achieved by
- * calling the function with 0.0 value.
+ * calling the function with 0.0 value. The slot has effect only when used from
+ * \l ListItemStyle::actionsDelegate component.
  */
 void UCListItemAttached::snapToPosition(qreal position)
 {

@@ -108,7 +108,7 @@ class UCListItemAttachedPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(UCListItemAttached)
 public:
-    UCListItemAttachedPrivate() : QObjectPrivate(), panel(0), listItem(0){}
+    UCListItemAttachedPrivate() : QObjectPrivate(), panel(0), listItem(0) {}
 
     static UCListItemAttachedPrivate* get(UCListItemAttached *that)
     {

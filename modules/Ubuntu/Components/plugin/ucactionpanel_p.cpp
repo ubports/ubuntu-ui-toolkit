@@ -65,7 +65,7 @@ void UCActionPanel::createPanel(QQmlComponent *panelDelegate)
             UCListItemAttached *attached = static_cast<UCListItemAttached*>(
                         qmlAttachedPropertiesObject<UCListItem>(panelItem));
             if (!attached->actions()) {
-                attached->setList(listItem, leading);
+                attached->setList(listItem, leading, true);
             } else {
                 // container is set, but we need to emit the signal again so we get the
                 // attached props updated for those cases when the attached property is

@@ -45,86 +45,22 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
  *
  * ListItem accepts actions that can be configured to appear when swiped to left
  * or right. The API does not limit the number of actions to be assigned for leading
- * or trailing actions, however the design constrains are allowing a maximum of
+ * or trailing actions, however the design constraints are allowing a maximum of
  * 1 action on leading- and a maximum of 3 actions on trailing side of the ListItem.
  *
  * The \l actions are Action instances or elements derived from Action. The default
  * visualization of the actions can be overridden using the \l delegate property,
  * and the default implementation uses the \c name property of the Action.
  *
- * The leading and trailing actions are placed on a panel item, which is created
- * the first time the actions are accessed. The colors of the panel is taken from
- * the theme's palette.
- *
- * When swiped, panels reveal the actions one by one. In case an action is revealed
- * more than 50%, the action will be snapped and revealed completely. This is also
- * valid for the case when the action is visible less than 50%, in which case the
- * action is hidden. Actions can be triggered by tapping.
- *
- * \note You can use the same ListItemActions for leading and for trailing actions
- * the same time only if the instance is used by different groups of list items,
- * where one group uses it as leading and other group as trailing. In any other
- * circumstances use separate ListItemActions for leading and trailing actions.
- * \qml
- * import QtQuick 2.2
- * import Ubuntu.Components 1.2
- * MainView {
- *     width: units.gu(40)
- *     height: units.gu(71)
- *
- *     ListItemActions {
- *         id: sharedActions
- *         actions: [
- *             Action {
- *                 iconName: "search"
- *             },
- *             Action {
- *                 iconName: "edit"
- *             },
- *             Action {
- *                 iconName: "copy"
- *             }
- *         ]
- *     }
- *
- *     Column {
- *         ListItem {
- *             leadingActions: sharedActions
- *         }
- *         UbuntuListView {
- *             anchors.fill: parent
- *             model: 10000
- *             delegate: ListItem {
- *                 trailingActions: sharedActions
- *             }
- *         }
- *     }
- * }
- * \endqml
- *
  * \section3 Using with ListViews
  * ListItemActions instances can be shared between ListItem instances within the
  * same view. When shared, the memory footprint of the view will be lot smaller,
- * as there will be no individual panel created for each list's actions visualization.
- * Depending on how long the initialization of the component used in \l {ListItemStyle::actionsDelegate}
- * {actionsDelegate} takes, creation time will be also reduced to one time per view.
- * However, this implies that swiping a new ListItem content while another one is
- * swiped will result in showing the newly swiped item's panel delayed, as the
- * panel can be shown only after the previous item's snapping is completed. Depending
- * on the \l {ListItemStyle::snapAnimation}{snapAnimation} duration, this may take some time, and the
- * response time of the UI can become unacceptable.
- *
+ * as there will be no individual action container created for each list's actions.
  * Having individual ListItemActions instances increases the memory footprint,
- * however the UI will be more responsive as swiping individual ListItems will
- * not have to wait till the previous ListItem's panel is snapped out (rebound).
- * On the other hand, memory consumption will increase significantly due to
- * separate panel creation, and performance may decrease with up to 40%, depending
- * on what way are the actions declared, within the ListItemActions or as shared
- * actions.
+ * and also has performance impact on kinetic scrolling.
  *
- * The example above illustrates how to share ListItemActions between ListItem
- * delegates, which can be the worst-performant but most lightwaight memory consumer
- * setup. The following example illustrates the worst case:
+ * The examples below illustrate the worst and best practice when used in a ListView.
+ * The worst case:
  * \qml
  * import QtQuick 2.2
  * import Ubuntu.Components 1.2
@@ -169,33 +105,33 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
  *     width: units.gu(40)
  *     height: units.gu(71)
  *
- *     property list<Action> leading: [
- *         Action {
+ *     ListItemActions {
+ *         id: leading
+ *         actions: Action {
  *             iconName: "delete"
  *         }
- *     ]
- *     property list<Action> trailing: [
- *         Action {
- *             iconName: "search"
- *         },
- *         Action {
- *             iconName: "edit"
- *         },
- *         Action {
- *             iconName: "copy"
- *         }
- *     ]
+ *     }
+ *     ListItemActions {
+ *         id: trailing
+ *         actions: [
+ *             Action {
+ *                 iconName: "search"
+ *             },
+ *             Action {
+ *                 iconName: "edit"
+ *             },
+ *             Action {
+ *                 iconName: "copy"
+ *             }
+ *         ]
+ *     }
  *
  *     UbuntuListView {
  *         anchors.fill: parent
  *         model: 10000
  *         delegate: ListItem {
- *             leadingActions: ListItemActions {
- *                 actions: leading
- *             }
- *             trailingActions: ListItemActions {
- *                 actions: trailing
- *             }
+ *             leadingActions: leading
+ *             trailingActions: trailing
  *         }
  *     }
  * }
@@ -208,11 +144,6 @@ UCListItemActionsPrivate::~UCListItemActionsPrivate()
  * parameter to identify the instance of the ListItem on which it was executed,
  * in which case ListItem will change the type from \c Actions.None to \c Actions.Integer
  * when it is triggered.
- *
- * \section3 Attached properties
- * ListItemActions provides a set of attached properties to the panels visualizing
- * the actions. These properties can be used by implementations visualizing the
- * actions.
  */
 
 UCListItemActions::UCListItemActions(QObject *parent)
@@ -285,7 +216,7 @@ UCListItemActions::~UCListItemActions()
  * }
  * \endqml
  * \note Putting a Rectangle in the delegate can be used to override the color
- * of the panel.
+ * of the panel. Also all ListItem attached properties can be used in the delegates.
  *
  * Defaults to null.
  */

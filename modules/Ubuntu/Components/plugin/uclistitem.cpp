@@ -705,11 +705,14 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * When used in \c ListView or \l UbuntuListView, the last list item will not
  * show the divider no matter of the visible property value set.
  *
- * ListItem can handle actions that can get tugged from front to back of the item.
+ * ListItem can handle actions that can get swiped from front to back of the item.
  * These actions are Action elements visualized in panels attached to the front
  * or to the back of the item, and are revealed by swiping the item horizontally.
- * The tug is started only after the mouse/touch move had passed a given threshold.
- * These actions are configured through the \l leadingActions as well as \l
+ * The swipe is started only after the mouse/touch move had passed a given threshold.
+ * The actions are visualized by a panel, which is configurable through the \l
+ * ListItemStyle::actionsDelegate style property.
+ *
+ * The actions are configured through the \l leadingActions as well as \l
  * trailingActions properties.
  * \qml
  * ListItem {
@@ -734,13 +737,11 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  *     }
  * }
  * \endqml
- * \note When a list item is tugged, it automatically connects both leading and
- * trailing actions to the list item. This implies that a ListItem cannot use
- * the same ListItemActions instance for both leading and trailing actions. If
- * it is desired to have the same action present in both leading and trailing
- * actions, one of the ListItemActions actions list can use the other's list. In
- * the following example the list item can be deleted through both leading and
- * trailing actions:
+ * \note When a list item is swiped, it automatically connects both leading and
+ * trailing actions to the list item. If needed, the same ListItemActions instance
+ * can be used in both leading and trailing side. In the following example the
+ * list item can be deleted through both leading and trailing actions using the
+ * same container:
  * \qml
  * ListItem {
  *     id: listItem
@@ -752,12 +753,14 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  *             }
  *         ]
  *     }
- *     trailingActions: ListItemActions {
- *         actions: leadingActions.actions
- *     }
+ *     trailingActions: leadingActions
  * }
  * \endqml
+ * The action is triggered only after all the animations are completed.
  * \sa ListItemActions
+ *
+ * ListItem provides a set of attached properties which are attached to each panel
+ * of the ListItem. However not all properties are valid in all the circumstances.
  *
  * The component is styled using the \l ListItemStyle style interface.
  */

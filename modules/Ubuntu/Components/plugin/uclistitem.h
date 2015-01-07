@@ -123,7 +123,7 @@ class UCListItemAttached : public QObject
 public:
     UCListItemAttached(QObject *parent = 0);
     ~UCListItemAttached();
-    void setList(UCListItem *list, bool leading);
+    void setList(UCListItem *list, bool leading, bool visualizeActions);
     void connectToAttached(UCListItemAttached *parentAttached);
 
     UCListItemActions *actions() const;
