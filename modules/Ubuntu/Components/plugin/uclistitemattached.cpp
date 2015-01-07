@@ -57,10 +57,6 @@ void UCListItemAttached::setList(UCListItem *list, bool leading)
         QObject::connect(d->panel->actions(), &UCListItemActions::statusChanged,
                          this, &UCListItemAttached::listItemIndexChanged);
 
-        // connect ListItem's xChanged to update the dragged offset
-        QObject::connect(d->panel->panel(), &QQuickItem::xChanged,
-                         this, &UCListItemAttached::offsetChanged);
-
         // connect actions to get updates about visible changes
         Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(d->panel->actions())->actions) {
             QObject::connect(action, &UCAction::visibleChanged,
@@ -157,21 +153,6 @@ bool UCListItemAttached::swiping()
 {
     Q_D(UCListItemAttached);
     return d->m_swiping;
-}
-
-/*!
- * \qmlattachedproperty real ListItem::offset
- * The property returns the offset the panel item holding the visualized actions
- * is visible. This can be used to do different animations on the panel and on
- * the action visualizations.
- */
-qreal UCListItemAttached::offset()
-{
-    Q_D(UCListItemAttached);
-    if (!d->panel) {
-        return 0.0;
-    }
-    return d->panel->offset();
 }
 
 /*!

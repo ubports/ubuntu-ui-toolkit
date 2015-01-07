@@ -59,6 +59,11 @@ Item {
       */
     readonly property bool leading: panel.ListItem.status == panel.ListItem.Leading
 
+    /*
+      Swiped offset.
+      */
+    readonly property real swipedOffset: leading ? width + x : ListItem.listItem.width - x;
+
     anchors {
         left: contentItem ? (leading ? undefined : contentItem.right) : undefined
         right: contentItem ? (leading ? contentItem.left : undefined) : undefined
@@ -111,7 +116,7 @@ Item {
             return;
         }
         // snap in if the offset is bigger than the overshoot and the direction of the drag is to reveal the panel
-        var snapPos = (ListItem.offset > ListItem.listItem.swipeOvershoot && snapIn) ? panel.width : 0.0;
+        var snapPos = (swipedOffset > units.gu(2) && snapIn) ? panel.width : 0.0;
         ListItem.snapToPosition(snapPos);
     }
 

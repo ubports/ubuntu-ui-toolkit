@@ -153,10 +153,6 @@ public:
 
     UCListItemActions *actions();
     QQuickItem *panel() const;
-    qreal offset()
-    {
-        return offsetDragged;
-    }
     UCListItem::Status panelStatus()
     {
         return status;
@@ -166,8 +162,6 @@ public:
         return leading;
     }
 
-private Q_SLOTS:
-    void updateDraggedOffset();
 private:
     UCActionPanel(UCListItem *item, bool leading);
     void createPanel(QQmlComponent *panelDelegate);
@@ -176,7 +170,6 @@ private:
     UCListItem *listItem;
     QQuickItem *panelItem;
     UCListItem::Status status;
-    qreal offsetDragged;
     bool leading:1;
 };
 

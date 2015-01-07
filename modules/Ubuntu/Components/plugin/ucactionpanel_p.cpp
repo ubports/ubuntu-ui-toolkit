@@ -30,7 +30,6 @@ UCActionPanel::UCActionPanel(UCListItem *item, bool leading)
     , listItem(item)
     , panelItem(0)
     , status(UCListItem::Disconnected)
-    , offsetDragged(0.0)
     , leading(leading)
 {
 
@@ -74,8 +73,6 @@ void UCActionPanel::createPanel(QQmlComponent *panelDelegate)
                 Q_EMIT attached->containerChanged();
             }
             panelDelegate->completeCreate();
-            // connect to panel to catch dragging
-            QObject::connect(panelItem, SIGNAL(xChanged()), this, SLOT(updateDraggedOffset()));
         }
     } else {
         qmlInfo(listItem) << panelDelegate->errorString();
@@ -91,15 +88,6 @@ UCListItemActions *UCActionPanel::actions()
 QQuickItem *UCActionPanel::panel() const
 {
     return panelItem;
-}
-
-void UCActionPanel::updateDraggedOffset()
-{
-    offsetDragged = (status == UCListItem::Leading) ? panelItem->width() + panelItem->x() :
-                         listItem->width() - panelItem->x();
-    if (offsetDragged < 0.0) {
-        offsetDragged = 0.0;
-    }
 }
 
 bool UCActionPanel::grabPanel(UCActionPanel **panel, UCListItem *item, bool leading)
@@ -122,7 +110,6 @@ bool UCActionPanel::grabPanel(UCActionPanel **panel, UCListItem *item, bool lead
         }
     }
     if (*panel) {
-        (*panel)->offsetDragged = 0.0;
         (*panel)->panelItem->setParentItem((*panel)->listItem);
         (*panel)->status = leading ? UCListItem::Leading : UCListItem::Trailing;
         Q_EMIT (*panel)->actions()->statusChanged((*panel)->status);

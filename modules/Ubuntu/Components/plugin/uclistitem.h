@@ -119,7 +119,6 @@ class UCListItemAttached : public QObject
     Q_PROPERTY(QQmlListProperty<UCAction> visibleActions READ visibleActions NOTIFY visibleActionsChanged)
     Q_PROPERTY(UCListItem *listItem READ listItem NOTIFY listItemChanged)
     Q_PROPERTY(int listItemIndex READ listItemIndex NOTIFY listItemIndexChanged)
-    Q_PROPERTY(qreal offset READ offset NOTIFY offsetChanged)
     Q_PROPERTY(UCListItem::Status status READ status NOTIFY statusChanged)
     Q_PROPERTY(bool swiping READ swiping NOTIFY swipingChanged)
 public:
@@ -133,7 +132,6 @@ public:
     UCListItem *listItem();
     int listItemIndex();
     bool swiping();
-    qreal offset();
     UCListItem::Status status();
 
 public Q_SLOTS:
