@@ -44,9 +44,9 @@ class UCListItem : public UCStyledItemBase
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlComponent *style READ style WRITE setStyle NOTIFY styleChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQuickItem *__styleInstance READ styleInstance NOTIFY __styleInstanceChanged)
     Q_CLASSINFO("DefaultProperty", "listItemData")
-    Q_ENUMS(Status)
+    Q_ENUMS(PanelStatus)
 public:
-    enum Status {
+    enum PanelStatus {
         Disconnected,
         Leading,
         Trailing
@@ -119,7 +119,7 @@ class UCListItemAttached : public QObject
     Q_PROPERTY(QQmlListProperty<UCAction> visibleActions READ visibleActions NOTIFY visibleActionsChanged)
     Q_PROPERTY(UCListItem *listItem READ listItem NOTIFY listItemChanged)
     Q_PROPERTY(int listItemIndex READ listItemIndex NOTIFY listItemIndexChanged)
-    Q_PROPERTY(UCListItem::Status status READ status NOTIFY statusChanged)
+    Q_PROPERTY(UCListItem::PanelStatus panelStatus READ panelStatus NOTIFY panelStatusChanged)
 public:
     UCListItemAttached(QObject *parent = 0);
     ~UCListItemAttached();
@@ -130,7 +130,7 @@ public:
     QQmlListProperty<UCAction> visibleActions();
     UCListItem *listItem();
     int listItemIndex();
-    UCListItem::Status status();
+    UCListItem::PanelStatus panelStatus();
 
 public Q_SLOTS:
     void snapToPosition(qreal position);
@@ -140,7 +140,7 @@ Q_SIGNALS:
     void visibleActionsChanged();
     void listItemChanged();
     void listItemIndexChanged();
-    void statusChanged();
+    void panelStatusChanged();
 
 private:
     Q_DECLARE_PRIVATE(UCListItemAttached)

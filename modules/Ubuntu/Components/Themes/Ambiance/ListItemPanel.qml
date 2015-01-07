@@ -57,7 +57,7 @@ Item {
     /*
       Specifies whether the panel is used to visualize leading or trailing actions.
       */
-    readonly property bool leading: panel.ListItem.status == panel.ListItem.Leading
+    readonly property bool leading: panel.ListItem.panelStatus == panel.ListItem.Leading
 
     /*
       Swiped offset.
@@ -88,8 +88,8 @@ Item {
     }
 
     // handle action triggering
-    ListItem.onStatusChanged: {
-        if (ListItem.status === ListItem.Disconnected && actionsRow.selectedAction) {
+    ListItem.onPanelStatusChanged: {
+        if (ListItem.panelStatus === ListItem.Disconnected && actionsRow.selectedAction) {
             actionsRow.selectedAction.trigger(actionsRow.listItemIndex >= 0 ? actionsRow.listItemIndex : null);
             actionsRow.selectedAction = null;
         }

@@ -112,7 +112,7 @@ bool UCActionPanel::grabPanel(UCActionPanel **panel, UCListItem *item, bool lead
     if (*panel) {
         (*panel)->panelItem->setParentItem((*panel)->listItem);
         (*panel)->status = leading ? UCListItem::Leading : UCListItem::Trailing;
-        Q_EMIT (*panel)->actions()->statusChanged((*panel)->status);
+        Q_EMIT (*panel)->statusChanged();
     }
     return (*panel) != 0;
 }
@@ -124,7 +124,7 @@ void UCActionPanel::ungrabPanel(UCActionPanel *panel)
     }
     panel->panelItem->setParentItem(0);
     panel->status = UCListItem::Disconnected;
-    Q_EMIT panel->actions()->statusChanged(panel->status);
+    Q_EMIT panel->statusChanged();
 }
 
 bool UCActionPanel::isConnected(UCActionPanel *panel)

@@ -152,7 +152,7 @@ public:
 
     UCListItemActions *actions();
     QQuickItem *panel() const;
-    UCListItem::Status panelStatus()
+    UCListItem::PanelStatus panelStatus()
     {
         return status;
     }
@@ -161,6 +161,9 @@ public:
         return leading;
     }
 
+Q_SIGNALS:
+    void statusChanged();
+
 private:
     UCActionPanel(UCListItem *item, bool leading);
     void createPanel(QQmlComponent *panelDelegate);
@@ -168,7 +171,7 @@ private:
 
     UCListItem *listItem;
     QQuickItem *panelItem;
-    UCListItem::Status status;
+    UCListItem::PanelStatus status;
     bool leading:1;
 };
 

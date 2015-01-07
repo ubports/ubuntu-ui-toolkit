@@ -42,15 +42,13 @@ void UCListItemAttached::setList(UCListItem *list, bool leading)
         return;
     }
     d->m_listItem = list;
+    Q_EMIT listItemChanged();
+
     d->panel = leading ? UCListItemPrivate::get(d->m_listItem)->leadingPanel : UCListItemPrivate::get(d->m_listItem)->trailingPanel;
     if (d->m_listItem) {
         // connect statusChanged() to update status, listItem, listItemIndex and overshoot values
-        QObject::connect(d->panel->actions(), &UCListItemActions::statusChanged,
-                         this, &UCListItemAttached::statusChanged);
-        QObject::connect(d->panel->actions(), &UCListItemActions::statusChanged,
-                         this, &UCListItemAttached::listItemChanged);
-        QObject::connect(d->panel->actions(), &UCListItemActions::statusChanged,
-                         this, &UCListItemAttached::listItemIndexChanged);
+        QObject::connect(d->panel, &UCActionPanel::statusChanged,
+                         this, &UCListItemAttached::panelStatusChanged);
 
         // connect actions to get updates about visible changes
         Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(d->panel->actions())->actions) {
@@ -134,7 +132,7 @@ int UCListItemAttached::listItemIndex() {
  *  \li \b Trailing - the actions list is connected as trailing list
  * \endlist
  */
-UCListItem::Status UCListItemAttached::status()
+UCListItem::PanelStatus UCListItemAttached::panelStatus()
 {
     Q_D(UCListItemAttached);
     if (!d->panel) {
@@ -151,7 +149,7 @@ UCListItem::Status UCListItemAttached::status()
  */
 void UCListItemAttached::snapToPosition(qreal position)
 {
-    UCListItem::Status itemStatus = status();
+    UCListItem::PanelStatus itemStatus = panelStatus();
     Q_D(UCListItemAttached);
     //if it is disconnected, leave (this also includes the case when m_container is null)
     if (!d->m_listItem || !d->panel || itemStatus == UCListItem::Disconnected) {
