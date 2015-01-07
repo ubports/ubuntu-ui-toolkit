@@ -140,8 +140,8 @@ void UCListItemSnapAnimator::snapOut()
         listItem->listenToRebind(false);
     }
     // disconnect actions
-    listItem->grabPanel(listItem->leadingActions, false);
-    listItem->grabPanel(listItem->trailingActions, false);
+    UCActionPanel::ungrabPanel(listItem->leadingPanel);
+    UCActionPanel::ungrabPanel(listItem->trailingPanel);
     // set contentMoved to false
     listItem->setContentMoving(false);
 }
@@ -348,6 +348,8 @@ UCListItemPrivate::UCListItemPrivate()
     , divider(new UCListItemDivider)
     , leadingActions(0)
     , trailingActions(0)
+    , leadingPanel(0)
+    , trailingPanel(0)
     , animator(0)
     , styleComponent(0)
     , styleItem(0)
@@ -412,11 +414,11 @@ void UCListItemPrivate::_q_updateThemedData()
 
 void UCListItemPrivate::_q_rebound()
 {
-    setPressed(false);
+    setHighlighted(false);
     // initiate rebinding only if there were actions tugged
     Q_Q(UCListItem);
-    if (!UCListItemActionsPrivate::isConnectedTo(leadingActions, q) &&
-        !UCListItemActionsPrivate::isConnectedTo(trailingActions, q)) {
+    if (!UCActionPanel::isConnected(leadingPanel) &&
+        !UCActionPanel::isConnected(trailingPanel)) {
         return;
     }
     setSwiped(false);
@@ -517,7 +519,7 @@ QQuickItem *UCListItemPrivate::styleInstance() const
 // rebound without animation
 void UCListItemPrivate::promptRebound()
 {
-    setPressed(false);
+    setHighlighted(false);
     setSwiped(false);
     if (animator) {
         animator->snapOut();
@@ -564,7 +566,7 @@ bool UCListItemPrivate::canHighlight(QMouseEvent *event)
 }
 
 // set highlighted flag and update contentItem
-void UCListItemPrivate::setPressed(bool highlighted)
+void UCListItemPrivate::setHighlighted(bool highlighted)
 {
     if (this->highlighted != highlighted) {
         this->highlighted = highlighted;
@@ -597,23 +599,6 @@ void UCListItemPrivate::setSwiped(bool swiped)
     }
 }
 
-// grabs the panels from the leading/trailing actions and disables all ascending flickables
-bool UCListItemPrivate::grabPanel(UCListItemActions *actionsList, bool isTugged)
-{
-    Q_Q(UCListItem);
-    if (isTugged) {
-        bool grab = UCListItemActionsPrivate::connectToListItem(actionsList, q, (actionsList == leadingActions));
-        if (attachedProperties) {
-            attachedProperties->disableInteractive(q, true);
-        }
-        return grab;
-    } else {
-        UCListItemActionsPrivate::disconnectFromListItem(actionsList);
-        return false;
-    }
-}
-
-
 // connects/disconnects from the Flickable anchestor to get notified when to do rebound
 void UCListItemPrivate::listenToRebind(bool listen)
 {
@@ -645,13 +630,11 @@ void UCListItemPrivate::update()
 // clamps the X value and moves the contentItem to the new X value
 void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
 {
-    UCListItemActionsPrivate *leading = UCListItemActionsPrivate::get(leadingActions);
-    UCListItemActionsPrivate *trailing = UCListItemActionsPrivate::get(trailingActions);
     x += dx;
     // min cannot be less than the trailing's panel width
-    qreal min = (trailing && trailing->panelItem) ? -trailing->panelItem->width() - overshoot: 0;
+    qreal min = (trailingPanel) ? -trailingPanel->panel()->width() - overshoot: 0;
     // max cannot be bigger than 0 or the leading's width in case we have leading panel
-    qreal max = (leading && leading->panelItem) ? leading->panelItem->width() + overshoot: 0;
+    qreal max = (leadingPanel) ? leadingPanel->panel()->width() + overshoot: 0;
     x = CLAMP(x, min, max);
 }
 
@@ -745,11 +728,14 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * When used in \c ListView or \l UbuntuListView, the last list item will not
  * show the divider no matter of the visible property value set.
  *
- * ListItem can handle actions that can get tugged from front to back of the item.
+ * ListItem can handle actions that can get swiped from front to back of the item.
  * These actions are Action elements visualized in panels attached to the front
  * or to the back of the item, and are revealed by swiping the item horizontally.
- * The tug is started only after the mouse/touch move had passed a given threshold.
- * These actions are configured through the \l leadingActions as well as \l
+ * The swipe is started only after the mouse/touch move had passed a given threshold.
+ * The actions are visualized by a panel, which is configurable through the \l
+ * ListItemStyle::actionsDelegate style property.
+ *
+ * The actions are configured through the \l leadingActions as well as \l
  * trailingActions properties.
  * \qml
  * ListItem {
@@ -774,13 +760,11 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  *     }
  * }
  * \endqml
- * \note When a list item is tugged, it automatically connects both leading and
- * trailing actions to the list item. This implies that a ListItem cannot use
- * the same ListItemActions instance for both leading and trailing actions. If
- * it is desired to have the same action present in both leading and trailing
- * actions, one of the ListItemActions actions list can use the other's list. In
- * the following example the list item can be deleted through both leading and
- * trailing actions:
+ * \note When a list item is swiped, it automatically connects both leading and
+ * trailing actions to the list item. If needed, the same ListItemActions instance
+ * can be used in both leading and trailing side. In the following example the
+ * list item can be deleted through both leading and trailing actions using the
+ * same container:
  * \qml
  * ListItem {
  *     id: listItem
@@ -792,12 +776,14 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  *             }
  *         ]
  *     }
- *     trailingActions: ListItemActions {
- *         actions: leadingActions.actions
- *     }
+ *     trailingActions: leadingActions
  * }
  * \endqml
+ * The action is triggered only after all the animations are completed.
  * \sa ListItemActions
+ *
+ * ListItem provides a set of attached properties which are attached to each panel
+ * of the ListItem. However not all properties are valid in all the circumstances.
  *
  * The component is styled using the \l ListItemStyle style interface.
  */
@@ -834,7 +820,24 @@ UCListItem::~UCListItem()
 
 UCListItemAttached *UCListItem::qmlAttachedProperties(QObject *owner)
 {
-    return new UCListItemAttached(owner);
+    /*
+     * Detect the attachee, whether is it a child item of the panelItem. The panelItem
+     * itself cannot be detected, as the object can be attached during the call of
+     * component.beginCreate().
+     */
+    UCListItemAttached *attached = new UCListItemAttached(owner);
+    QQuickItem *item = qobject_cast<QQuickItem*>(owner);
+    while (item) {
+        // has item our attached property?
+        UCListItemAttached *itemAttached = static_cast<UCListItemAttached*>(
+                    qmlAttachedPropertiesObject<UCListItem>(item, false));
+        if (itemAttached) {
+            attached->connectToAttached(itemAttached);
+            break;
+        }
+        item = item->parentItem();
+    }
+    return attached;
 }
 
 void UCListItem::componentComplete()
@@ -876,9 +879,9 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         // attach ListItem properties to the flickable or to the parent item
         if (d->flickable) {
             // connect to flickable to get width changes
-            d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(d->flickable));
+            d->attachedProperties = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(d->flickable));
         } else if (data.item) {
-            d->attachedProperties = static_cast<UCListItemAttached*>(qmlAttachedPropertiesObject<UCListItem>(data.item));
+            d->attachedProperties = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(data.item));
         } else {
             // mark as not ready, so no action should be performed which depends on readyness
             d->ready = false;
@@ -964,14 +967,17 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         return;
     }
     if (event->button() == Qt::LeftButton && d->canHighlight(event)) {
-        d->setPressed(true);
+        d->setHighlighted(true);
         d->lastPos = d->pressedPos = event->localPos();
         // connect the Flickable to know when to rebound
         d->listenToRebind(true);
         // if it was moved, grab the panels
         if (d->swiped) {
-            d->grabPanel(d->leadingActions, true);
-            d->grabPanel(d->trailingActions, true);
+            UCActionPanel::grabPanel(&d->leadingPanel, this, true);
+            UCActionPanel::grabPanel(&d->trailingPanel, this, false);
+            if (d->attachedProperties) {
+                d->attachedProperties->disableInteractive(this, true);
+            }
         }
     }
     // accept the event so we get the rest of the events as well
@@ -994,7 +1000,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             d->_q_rebound();
         }
     }
-    d->setPressed(false);
+    d->setHighlighted(false);
 }
 
 void UCListItem::mouseMoveEvent(QMouseEvent *event)
@@ -1003,8 +1009,8 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     UCStyledItemBase::mouseMoveEvent(event);
 
     // accept the tugging only if the move is within the threshold
-    bool leadingAttached = UCListItemActionsPrivate::isConnectedTo(d->leadingActions, this);
-    bool trailingAttached = UCListItemActionsPrivate::isConnectedTo(d->trailingActions, this);
+    bool leadingAttached = UCActionPanel::isConnected(d->leadingPanel);
+    bool trailingAttached = UCActionPanel::isConnected(d->trailingPanel);
     if (d->highlighted && !(leadingAttached || trailingAttached)) {
         // check if we can initiate the drag at all
         // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
@@ -1019,8 +1025,11 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             // got connected ad which not; this may fail in case of shared ListItemActions,
             // as then the panel is shared between the list items, and the panel might be
             // still in use in other panels. See UCListItemActionsPrivate::connectToListItem
-            leadingAttached = d->grabPanel(d->leadingActions, true);
-            trailingAttached = d->grabPanel(d->trailingActions, true);
+            leadingAttached = UCActionPanel::grabPanel(&d->leadingPanel, this, true);
+            trailingAttached = UCActionPanel::grabPanel(&d->trailingPanel, this, false);
+            if (d->attachedProperties) {
+                d->attachedProperties->disableInteractive(this, true);
+            }
             // create animator if not created yet
             if (!d->animator) {
                 d->animator = new UCListItemSnapAnimator(this);
@@ -1044,19 +1053,19 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             d->contentItem->setX(x);
             // decide which panel is visible by checking the contentItem's X coordinates
             if (d->contentItem->x() > 0) {
-                if (leadingAttached) {
-                    UCListItemActionsPrivate::get(d->leadingActions)->panelItem->setVisible(true);
+                if (d->leadingPanel) {
+                    d->leadingPanel->panel()->setVisible(true);
                 }
-                if (trailingAttached) {
-                    UCListItemActionsPrivate::get(d->trailingActions)->panelItem->setVisible(false);
+                if (d->trailingPanel) {
+                    d->trailingPanel->panel()->setVisible(false);
                 }
             } else if (d->contentItem->x() < 0) {
                 // trailing revealed
-                if (leadingAttached) {
-                    UCListItemActionsPrivate::get(d->leadingActions)->panelItem->setVisible(false);
+                if (d->leadingPanel) {
+                    d->leadingPanel->panel()->setVisible(false);
                 }
-                if (trailingAttached) {
-                    UCListItemActionsPrivate::get(d->trailingActions)->panelItem->setVisible(true);
+                if (d->trailingPanel) {
+                    d->trailingPanel->panel()->setVisible(true);
                 }
             }
         }
@@ -1144,16 +1153,10 @@ void UCListItem::setLeadingActions(UCListItemActions *actions)
     }
     // snap out before we change the actions
     d->promptRebound();
-    // then delete panelItem
-    if (d->leadingActions) {
-        UCListItemActionsPrivate *list = UCListItemActionsPrivate::get(d->leadingActions);
-        delete list->panelItem;
-        list->panelItem = 0;
-    }
+    // then delete panel
+    delete d->leadingPanel;
+    d->leadingPanel = 0;
     d->leadingActions = actions;
-    if (d->leadingActions == d->trailingActions && d->leadingActions) {
-        qmlInfo(this) << UbuntuI18n::tr("leadingActions and trailingActions cannot share the same object!");
-    }
     Q_EMIT leadingActionsChanged();
 }
 
@@ -1178,16 +1181,10 @@ void UCListItem::setTrailingActions(UCListItemActions *actions)
     }
     // snap out before we change the actions
     d->promptRebound();
-    // then delete panelItem
-    if (d->trailingActions) {
-        UCListItemActionsPrivate *list = UCListItemActionsPrivate::get(d->trailingActions);
-        delete list->panelItem;
-        list->panelItem = 0;
-    }
+    // then delete panel
+    delete d->trailingPanel;
+    d->trailingPanel = 0;
     d->trailingActions = actions;
-    if (d->leadingActions == d->trailingActions && d->trailingActions) {
-        qmlInfo(this) << UbuntuI18n::tr("leadingActions and trailingActions cannot share the same object!");
-    }
     Q_EMIT trailingActionsChanged();
 }
 

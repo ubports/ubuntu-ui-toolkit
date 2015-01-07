@@ -114,7 +114,7 @@ MainView {
                         width: units.gu(3)
                         height: width
                         name: action.iconName
-                        color: "blue"
+                        color: pressed ? "blue" : "pink"
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     Label {
@@ -157,6 +157,7 @@ MainView {
                 id: listItem
                 onClicked: print(" clicked")
                 leadingActions: leading
+                trailingActions: leadingActions
                 Label {
                     text: modelData + " item"
                 }
@@ -184,7 +185,7 @@ MainView {
 
             Column {
                 id: column
-                width: view.width
+                width: flicker.width
                 property alias count: repeater.count
                 Repeater {
                     id: repeater

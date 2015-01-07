@@ -44,7 +44,7 @@ Item {
     id: panel
     width: Math.max(
                actionsRow.childrenRect.width,
-               ListItemActions.visibleActions.length * MathUtils.clamp(visualizedActionWidth, height, actionsRow.maxItemWidth))
+               ListItem.visibleActions.length * MathUtils.clamp(visualizedActionWidth, height, actionsRow.maxItemWidth))
 
     // used for module/autopilot testing
     objectName: "ListItemPanel" + (leading ? "Leading" : "Trailing")
@@ -57,7 +57,17 @@ Item {
     /*
       Specifies whether the panel is used to visualize leading or trailing actions.
       */
-    readonly property bool leading: panel.ListItemActions.status == panel.ListItemActions.Leading
+    readonly property bool leading: panel.ListItem.panelStatus == panel.ListItem.Leading
+
+    /*
+      Swiped offset.
+      */
+    readonly property real swipedOffset: leading ? width + x : ListItem.item.width - x;
+
+    /*
+      Swiping
+      */
+    readonly property bool swiping: ListItem.item.highlighted && ListItem.item.contentMoving
 
     anchors {
         left: contentItem ? (leading ? undefined : contentItem.right) : undefined
@@ -71,15 +81,15 @@ Item {
         anchors {
             fill: parent
             // add 4 times the overshoot margins to cover the background when tugged
-            leftMargin: (leading && panel.ListItemActions.listItem) ? -units.gu(4 * panel.ListItemActions.listItem.swipeOvershoot) : 0
-            rightMargin: (!leading && panel.ListItemActions.listItem) ? -units.gu(4 * panel.ListItemActions.listItem.swipeOvershoot) : 0
+            leftMargin: (leading && panel.ListItem.item) ? -units.gu(4 * panel.ListItem.item.swipeOvershoot) : 0
+            rightMargin: (!leading && panel.ListItem.item) ? -units.gu(4 * panel.ListItem.item.swipeOvershoot) : 0
         }
         color: panel.backgroundColor
     }
 
     // handle action triggering
-    ListItemActions.onStatusChanged: {
-        if (ListItemActions.status === ListItemActions.Disconnected && actionsRow.selectedAction) {
+    ListItem.onPanelStatusChanged: {
+        if (ListItem.panelStatus === ListItem.Disconnected && actionsRow.selectedAction) {
             actionsRow.selectedAction.trigger(actionsRow.listItemIndex >= 0 ? actionsRow.listItemIndex : null);
             actionsRow.selectedAction = null;
         }
@@ -101,8 +111,8 @@ Item {
         prevX = x;
     }
     // default snapping!
-    ListItemActions.onSwipingChanged: {
-        if (ListItemActions.swiping) {
+    onSwipingChanged: {
+        if (swiping) {
             // the dragging got started, set prevX
             prevX = panel.x;
             return;
@@ -111,8 +121,8 @@ Item {
             return;
         }
         // snap in if the offset is bigger than the overshoot and the direction of the drag is to reveal the panel
-        var snapPos = (ListItemActions.offset > ListItemActions.listItem.swipeOvershoot && snapIn) ? panel.width : 0.0;
-        ListItemActions.snapToPosition(snapPos);
+        var snapPos = (swipedOffset > units.gu(2) && snapIn) ? panel.width : 0.0;
+        ListItem.snapToPosition(snapPos);
     }
 
     Row {
@@ -124,13 +134,13 @@ Item {
             leftMargin: spacing
         }
 
-        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.ListItemActions.visibleActions.length) : 0
+        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.ListItem.visibleActions.length) : 0
 
         property Action selectedAction
-        property int listItemIndex
+        property int listItemIndex: -1
 
         Repeater {
-            model: panel.ListItemActions.visibleActions
+            model: panel.ListItem.visibleActions
             AbstractButton {
                 id: actionButton
                 action: modelData
@@ -143,8 +153,8 @@ Item {
                 }
                 function trigger() {
                     actionsRow.selectedAction = modelData;
-                    actionsRow.listItemIndex = panel.ListItemActions.listItemIndex;
-                    panel.ListItemActions.snapToPosition(0.0);
+                    actionsRow.listItemIndex = panel.ListItem.index;
+                    panel.ListItem.snapToPosition(0.0);
                 }
 
                 Rectangle {
@@ -156,7 +166,7 @@ Item {
                 Loader {
                     id: delegateLoader
                     height: parent.height
-                    sourceComponent: panel.ListItemActions.container.delegate ? panel.ListItemActions.container.delegate : defaultDelegate
+                    sourceComponent: panel.ListItem.actions.delegate ? panel.ListItem.actions.delegate : defaultDelegate
                     property Action action: modelData
                     property int index: index
                     property bool pressed: actionButton.pressed
