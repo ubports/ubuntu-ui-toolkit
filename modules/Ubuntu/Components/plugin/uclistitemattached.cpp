@@ -32,7 +32,7 @@ UCListItemAttached::~UCListItemAttached()
 
 void UCListItemAttached::connectToAttached(UCListItemAttached *parentAttached)
 {
-    setList(parentAttached->listItem(), UCListItemAttachedPrivate::get(parentAttached)->panel->isLeading());
+    setList(parentAttached->item(), UCListItemAttachedPrivate::get(parentAttached)->panel->isLeading());
 }
 
 void UCListItemAttached::setList(UCListItem *list, bool leading)
@@ -42,7 +42,7 @@ void UCListItemAttached::setList(UCListItem *list, bool leading)
         return;
     }
     d->listItem = list;
-    Q_EMIT listItemChanged();
+    Q_EMIT itemChanged();
 
     d->panel = leading ? UCListItemPrivate::get(d->listItem)->leadingPanel : UCListItemPrivate::get(d->listItem)->trailingPanel;
     if (d->listItem) {
@@ -100,23 +100,23 @@ QQmlListProperty<UCAction> UCListItemAttached::visibleActions()
 }
 
 /*!
- * \qmlattachedproperty ListItem ListItem::listItem
+ * \qmlattachedproperty ListItem ListItem::item
  * \readonly
- * The property reports the connected \l ListItem to the list of actions.
+ * The property reports the connected \l ListItem to the panel.
  */
-UCListItem *UCListItemAttached::listItem()
+UCListItem *UCListItemAttached::item()
 {
     Q_D(UCListItemAttached);
     return d->listItem;
 }
 
 /*!
- * \qmlattachedproperty int ListItem::listItemIndex
+ * \qmlattachedproperty int ListItem::index
  * \readonly
  * Holds the index of the \l ListItem within a view, if the \l ListItem is used
- * in a model driven view. Otherwise it is set to -1.
+ * in a model driven view, or the child index otherwise.
  */
-int UCListItemAttached::listItemIndex() {
+int UCListItemAttached::index() {
     Q_D(UCListItemAttached);
     return d->listItem ? UCListItemPrivate::get(d->listItem)->index() : -1;
 }

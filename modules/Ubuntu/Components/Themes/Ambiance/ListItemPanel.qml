@@ -62,12 +62,12 @@ Item {
     /*
       Swiped offset.
       */
-    readonly property real swipedOffset: leading ? width + x : ListItem.listItem.width - x;
+    readonly property real swipedOffset: leading ? width + x : ListItem.item.width - x;
 
     /*
       Swiping
       */
-    readonly property bool swiping: ListItem.listItem.highlighted && ListItem.listItem.contentMoving
+    readonly property bool swiping: ListItem.item.highlighted && ListItem.item.contentMoving
 
     anchors {
         left: contentItem ? (leading ? undefined : contentItem.right) : undefined
@@ -81,8 +81,8 @@ Item {
         anchors {
             fill: parent
             // add 4 times the overshoot margins to cover the background when tugged
-            leftMargin: (leading && panel.ListItem.listItem) ? -units.gu(4 * panel.ListItem.listItem.swipeOvershoot) : 0
-            rightMargin: (!leading && panel.ListItem.listItem) ? -units.gu(4 * panel.ListItem.listItem.swipeOvershoot) : 0
+            leftMargin: (leading && panel.ListItem.item) ? -units.gu(4 * panel.ListItem.item.swipeOvershoot) : 0
+            rightMargin: (!leading && panel.ListItem.item) ? -units.gu(4 * panel.ListItem.item.swipeOvershoot) : 0
         }
         color: panel.backgroundColor
     }
@@ -137,7 +137,7 @@ Item {
         property real maxItemWidth: panel.parent ? (panel.parent.width / panel.ListItem.visibleActions.length) : 0
 
         property Action selectedAction
-        property int listItemIndex
+        property int listItemIndex: -1
 
         Repeater {
             model: panel.ListItem.visibleActions
@@ -153,7 +153,7 @@ Item {
                 }
                 function trigger() {
                     actionsRow.selectedAction = modelData;
-                    actionsRow.listItemIndex = panel.ListItem.listItemIndex;
+                    actionsRow.listItemIndex = panel.ListItem.index;
                     panel.ListItem.snapToPosition(0.0);
                 }
 

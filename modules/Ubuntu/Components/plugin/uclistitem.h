@@ -117,8 +117,8 @@ class UCListItemAttached : public QObject
     Q_OBJECT
     Q_PROPERTY(UCListItemActions *actions READ actions NOTIFY actionsChanged)
     Q_PROPERTY(QQmlListProperty<UCAction> visibleActions READ visibleActions NOTIFY visibleActionsChanged)
-    Q_PROPERTY(UCListItem *listItem READ listItem NOTIFY listItemChanged)
-    Q_PROPERTY(int listItemIndex READ listItemIndex NOTIFY listItemIndexChanged)
+    Q_PROPERTY(UCListItem *item READ item NOTIFY itemChanged)
+    Q_PROPERTY(int index READ index NOTIFY indexChanged)
     Q_PROPERTY(UCListItem::PanelStatus panelStatus READ panelStatus NOTIFY panelStatusChanged)
 public:
     UCListItemAttached(QObject *parent = 0);
@@ -128,8 +128,8 @@ public:
 
     UCListItemActions *actions() const;
     QQmlListProperty<UCAction> visibleActions();
-    UCListItem *listItem();
-    int listItemIndex();
+    UCListItem *item();
+    int index();
     UCListItem::PanelStatus panelStatus();
 
 public Q_SLOTS:
@@ -138,8 +138,8 @@ public Q_SLOTS:
 Q_SIGNALS:
     void actionsChanged();
     void visibleActionsChanged();
-    void listItemChanged();
-    void listItemIndexChanged();
+    void itemChanged();
+    void indexChanged();
     void panelStatusChanged();
 
 private:
