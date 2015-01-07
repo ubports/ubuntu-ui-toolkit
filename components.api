@@ -877,6 +877,7 @@ plugins.qmltypes
     name: "UCListItem"
     prototype: "UCStyledItemBase"
     exports: ["ListItem 1.2"]
+    name: "PanelStatus"
     Property { name: "contentItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Property { name: "divider"; type: "UCListItemDivider"; isReadonly: true; isPointer: true }
     Property { name: "leadingActions"; type: "UCListItemActions"; isPointer: true }
@@ -902,36 +903,20 @@ plugins.qmltypes
     name: "UCListItemActions"
     prototype: "QObject"
     exports: ["ListItemActions 1.2"]
-    name: "Status"
     Property { name: "delegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "actions"; type: "UCAction"; isList: true; isReadonly: true }
     Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
-    Signal {
-    name: "statusChanged"
-    Parameter { name: "status"; type: "Status" }
-    name: "UCListItemActionsAttached"
+    name: "UCListItemAttached"
     prototype: "QObject"
-    Property { name: "container"; type: "UCListItemActions"; isReadonly: true; isPointer: true }
+    Property { name: "actions"; type: "UCListItemActions"; isReadonly: true; isPointer: true }
     Property { name: "visibleActions"; type: "UCAction"; isList: true; isReadonly: true }
-    Property { name: "listItem"; type: "UCListItem"; isReadonly: true; isPointer: true }
-    Property { name: "listItemIndex"; type: "int"; isReadonly: true }
-    Property { name: "offset"; type: "double"; isReadonly: true }
-    Property { name: "status"; type: "UCListItemActions::Status"; isReadonly: true }
-    Property { name: "swiping"; type: "bool"; isReadonly: true }
+    Property { name: "item"; type: "UCListItem"; isReadonly: true; isPointer: true }
+    Property { name: "index"; type: "int"; isReadonly: true }
+    Property { name: "panelStatus"; type: "UCListItem::PanelStatus"; isReadonly: true }
+    Property { name: "animate"; type: "bool"; isReadonly: true }
     Method {
     name: "snapToPosition"
     Parameter { name: "position"; type: "double" }
-    name: "UCListItemAttached"
-    prototype: "QObject"
-    Property { name: "selectMode"; type: "bool" }
-    Property { name: "selectedIndexes"; type: "QList<int>" }
-    Property { name: "dragMode"; type: "bool" }
-    Signal {
-    name: "draggingStarted"
-    Parameter { name: "event"; type: "UCDragEvent"; isPointer: true }
-    Signal {
-    name: "draggingUpdated"
-    Parameter { name: "event"; type: "UCDragEvent"; isPointer: true }
     name: "UCListItemDivider"
     prototype: "QObject"
     Property { name: "visible"; type: "bool" }
@@ -1036,6 +1021,20 @@ plugins.qmltypes
     Signal {
     name: "opened"
     Parameter { name: "uris"; type: "QStringList" }
+    name: "UCViewItemsAttached"
+    prototype: "QObject"
+    exports: ["ViewItems 1.2"]
+    Property { name: "selectMode"; type: "bool" }
+    Property { name: "selectedIndexes"; type: "QList<int>" }
+    Property { name: "selectMode"; type: "bool" }
+    Property { name: "selectedIndexes"; type: "QList<int>" }
+    Property { name: "dragMode"; type: "bool" }
+    Signal {
+    name: "draggingStarted"
+    Parameter { name: "event"; type: "UCDragEvent"; isPointer: true }
+    Signal {
+    name: "draggingUpdated"
+    Parameter { name: "event"; type: "UCDragEvent"; isPointer: true }
     name: "UbuntuI18n"
     prototype: "QObject"
     exports: ["i18n 0.1", "i18n 1.0"]

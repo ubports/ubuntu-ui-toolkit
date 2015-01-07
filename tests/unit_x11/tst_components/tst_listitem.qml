@@ -106,6 +106,7 @@ Item {
             height: units.gu(28)
             clip: true
             model: 10
+            ViewItems.selectMode: false
             delegate: ListItem {
                 objectName: "listItem" + index
                 color: "lightgray"
@@ -207,7 +208,7 @@ Item {
         function cleanup() {
             testItem.action = null;
             testItem.selected = false;
-            testColumn.ListItem.selectMode = false;
+            testColumn.ViewItems.selectMode = false;
             waitForRendering(testItem.contentItem, 200);
             controlItem.selected = false;
             waitForRendering(controlItem.contentItem, 200);
@@ -219,7 +220,7 @@ Item {
             buttonSpy.clear();
             interactiveSpy.clear();
             listView.interactive = true;
-            listView.ListItem.selectMode = false;
+            listView.ViewItems.selectMode = false;
             // make sure we collapse
             mouseClick(defaults, 0, 0)
             movingSpy.target = null;
@@ -249,8 +250,8 @@ Item {
             compare(defaults.__styleInstance, null, "__styleInstance must be null.");
             compare(defaults.selected, false, "Not selected by default");
             compare(defaults.selectable, false, "Not selectable by default");
-            compare(testColumn.ListItem.selectMode, false, "The parent attached property is not selectable by default");
-            compare(testColumn.ListItem.selectedIndexes.length, 0, "No item is selected by default");
+            compare(testColumn.ViewItems.selectMode, false, "The parent attached property is not selectable by default");
+            compare(testColumn.ViewItems.selectedIndexes.length, 0, "No item is selected by default");
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
@@ -373,9 +374,9 @@ Item {
             movingSpy.wait();
             var panel = panelItem(data.item, data.leading);
             verify(panel, "No panel found");
-            compare(panel.ListItemActions.listItem, data.item, "The attached listItem differs from the actual item using the list.");
-            compare(panel.ListItemActions.listItemIndex, data.index, "The attached listItem index is wrong.");
-            verify(panel.ListItemActions.status != ListItemActions.Disconnected, "The attached status is wrong.");
+            compare(panel.ListItem.item, data.item, "The attached listItem differs from the actual item using the list.");
+            compare(panel.ListItem.index, data.index, "The attached listItem index is wrong.");
+            verify(panel.ListItem.panelStatus != ListItem.Disconnected, "The attached status is wrong.");
 
             // dismiss
             rebound(data.item);
@@ -785,7 +786,7 @@ Item {
         }
         function test_toggle_selectable(data) {
             testItem.selected = data.selected;
-            testColumn.ListItem.selectMode = true;
+            testColumn.ViewItems.selectMode = true;
             waitForRendering(testItem.contentItem);
             verify(findChild(testItem, "selection_panel"), "Cannot find selection panel");
             compare(testItem.contentItem.enabled, true, "contentItem is not disabled.");
@@ -806,7 +807,7 @@ Item {
          }
         function test_toggle_selected(data) {
             // make test item selectable first, so the panel is created
-            data.selectableHolder.ListItem.selectable = true;
+            data.selectableHolder.ViewItems.selectable = true;
             waitForRendering(data.item.contentItem);
             // get the control to click on
             var clickOn = findChild(data.item, data.clickOn);
@@ -823,7 +824,7 @@ Item {
 
         function test_no_tug_when_selectable() {
             movingSpy.target = testItem;
-            testColumn.ListItem.selectMode = true;
+            testColumn.ViewItems.selectMode = true;
             // wait till animation to selection mode ends
             waitForRendering(testItem.contentItem);
 
@@ -834,7 +835,7 @@ Item {
         }
 
         function test_selectable_and_click() {
-            testColumn.ListItem.selectMode = true;
+            testColumn.ViewItems.selectMode = true;
             // wait till animation to selection mode ends
             waitForRendering(testItem.contentItem);
 
@@ -844,7 +845,7 @@ Item {
         }
 
         function test_selectable_and_pressandhold() {
-            testColumn.ListItem.selectMode = true;
+            testColumn.ViewItems.selectMode = true;
             // wait till animation to selection mode ends
             waitForRendering(testItem.contentItem);
 
@@ -863,11 +864,11 @@ Item {
         function test_proper_attached_properties(data) {
             var listItem = findChild(data.item, "listItem0");
             verify(listItem, "ListItem not found!");
-            data.item.ListItem.selectMode = true;
+            data.item.ViewItems.selectMode = true;
             waitForRendering(listItem.contentItem);
             // check if the selection mode was activated by looking after the first selection panel
             var panel = findChild(listItem, "selection_panel");
-            data.item.ListItem.selectMode = false;
+            data.item.ViewItems.selectMode = false;
             waitForRendering(listItem.contentItem);
             // turn off selection mode so we have a proper cleanup
             verify(panel, "Selection panel not found, wrong attached property target?");

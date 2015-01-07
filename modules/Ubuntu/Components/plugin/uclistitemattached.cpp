@@ -14,452 +14,189 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ucunits.h"
-#include "uctheme.h"
 #include "uclistitem.h"
 #include "uclistitem_p.h"
-#include "propertychange_p.h"
-#include "quickutils.h"
-#include "i18n.h"
-#include <QtQuick/private/qquickflickable_p.h>
-#include <QtQml/QQmlInfo>
+#include "uclistitemactions.h"
+#include "uclistitemactions_p.h"
+#include "ucunits.h"
+#include "ucaction.h"
 
-/*
- * The properties are attached to the ListItem's parent item or to its closest
- * Flickable parent, when embedded in ListView or Flickable. There will be only
- * one attached property per Flickable for all embedded child ListItems, enabling
- * in this way the controlling of the interactive flag of the Flickable and all
- * its ascendant Flickables.
- */
-UCListItemAttachedPrivate::UCListItemAttachedPrivate(UCListItemAttached *qq)
-    : q_ptr(qq)
-    , listView(0)
-    , globalDisabled(false)
-    , selectable(false)
-    , draggable(false)
+void UCListItemAttachedPrivate::setAnimate(bool value)
 {
-}
-
-UCListItemAttachedPrivate::~UCListItemAttachedPrivate()
-{
-    clearChangesList();
-    clearFlickablesList();
-}
-
-// disconnect all flickables
-void UCListItemAttachedPrivate::clearFlickablesList()
-{
-    Q_Q(UCListItemAttached);
-    Q_FOREACH(const QPointer<QQuickFlickable> &flickable, flickables) {
-        if (flickable.data())
-        QObject::disconnect(flickable.data(), &QQuickFlickable::movementStarted,
-                            q, &UCListItemAttached::unbindItem);
-    }
-    flickables.clear();
-}
-
-// connect all flickables
-void UCListItemAttachedPrivate::buildFlickablesList()
-{
-    Q_Q(UCListItemAttached);
-    QQuickItem *item = qobject_cast<QQuickItem*>(q->parent());
-    if (!item) {
+    if (animate == value) {
         return;
     }
-    clearFlickablesList();
-    while (item) {
-        QQuickFlickable *flickable = qobject_cast<QQuickFlickable*>(item);
-        if (flickable) {
-            QObject::connect(flickable, &QQuickFlickable::movementStarted,
-                             q, &UCListItemAttached::unbindItem);
-            flickables << flickable;
-        }
-        item = item->parentItem();
-    }
-}
-
-void UCListItemAttachedPrivate::clearChangesList()
-{
-    // clear property change objects
+    animate = value;
     Q_Q(UCListItemAttached);
-    Q_FOREACH(PropertyChange *change, changes) {
-        // deleting PropertyChange will restore the saved property
-        // to its original binding/value
-        delete change;
-    }
-    changes.clear();
+    Q_EMIT q->animateChanged();
 }
 
-void UCListItemAttachedPrivate::buildChangesList(const QVariant &newValue)
+UCListItemAttached::UCListItemAttached(QObject *parent)
+    : QObject(*(new UCListItemAttachedPrivate()), parent)
 {
-    // collect all ascendant flickables
-    Q_Q(UCListItemAttached);
-    QQuickItem *item = qobject_cast<QQuickItem*>(q->parent());
-    if (!item) {
-        return;
-    }
-    clearChangesList();
-    while (item) {
-        QQuickFlickable *flickable = qobject_cast<QQuickFlickable*>(item);
-        if (flickable) {
-            PropertyChange *change = new PropertyChange(item, "interactive");
-            PropertyChange::setValue(change, newValue);
-            changes << change;
-        }
-        item = item->parentItem();
-    }
-}
-
-UCListItemAttached::UCListItemAttached(QObject *owner)
-    : QObject(owner)
-    , d_ptr(new UCListItemAttachedPrivate(this))
-{
-    if (QuickUtils::inherits(owner, "QQuickListView")) {
-        d_ptr->listView = static_cast<QQuickFlickable*>(owner);
-    }
 }
 
 UCListItemAttached::~UCListItemAttached()
 {
 }
 
-// register item to be rebound
-bool UCListItemAttached::listenToRebind(UCListItem *item, bool listen)
+void UCListItemAttached::connectToAttached(UCListItemAttached *parentAttached)
 {
-    // we cannot bind the item until we have an other one bound
-    bool result = false;
+    bool visualizeActions = UCListItemAttachedPrivate::get(parentAttached)->panel;
+    bool isLeading = visualizeActions ? UCListItemAttachedPrivate::get(parentAttached)->panel->isLeading() : false;
+    setList(parentAttached->item(), isLeading, visualizeActions);
+}
+
+void UCListItemAttached::setList(UCListItem *list, bool leading, bool visualizeActions)
+{
     Q_D(UCListItemAttached);
-    if (listen) {
-        if (d->boundItem.isNull() || (d->boundItem == item)) {
-            d->boundItem = item;
-            // rebuild flickable list
-            d->buildFlickablesList();
-            result = true;
-        }
-    } else if (d->boundItem == item) {
-        d->boundItem.clear();
-        result = true;
+    if (d->listItem == list) {
+        return;
     }
-    return result;
-}
+    d->listItem = list;
+    Q_EMIT itemChanged();
 
-// reports true if any of the ascendant flickables is moving
-bool UCListItemAttached::isMoving()
-{
-    Q_D(UCListItemAttached);
-    Q_FOREACH(const QPointer<QQuickFlickable> &flickable, d->flickables) {
-        if (flickable && flickable->isMoving()) {
-            return true;
-        }
-    }
-    return false;
-}
-
-// returns true if the given ListItem is bound to listen on moving changes
-bool UCListItemAttached::isBoundTo(UCListItem *item)
-{
-    Q_D(UCListItemAttached);
-    return d->boundItem == item;
-}
-
-/*
- * Disable/enable interactive flag for the ascendant flickables. The item is used
- * to detect whether the same item is trying to enable the flickables which disabled
- * it before. The enabled/disabled states are not equivalent to the enabled/disabled
- * state of the interactive flag.
- * When disabled, always the last item disabling will be kept as active disabler,
- * and only the active disabler can enable (restore) the interactive flag state.
- */
-void UCListItemAttached::disableInteractive(UCListItem *item, bool disable)
-{
-    Q_D(UCListItemAttached);
-    if (disable) {
-        // disabling or re-disabling
-        d->disablerItem = item;
-        if (d->globalDisabled == disable) {
-            // was already disabled, leave
-            return;
-        }
-        d->globalDisabled = true;
-    } else if (d->globalDisabled && d->disablerItem == item) {
-        // the one disabled it will enable
-        d->globalDisabled = false;
-        d->disablerItem.clear();
+    if (visualizeActions) {
+        d->panel = leading ? UCListItemPrivate::get(d->listItem)->leadingPanel : UCListItemPrivate::get(d->listItem)->trailingPanel;
     } else {
-        // !disabled && (!globalDisabled || item != d->disablerItem)
-        return;
+        d->panel = 0;
     }
-    if (disable) {
-        // (re)build changes list with disabling the interactive value
-        d->buildChangesList(false);
-    } else {
-        d->clearChangesList();
+    if (d->panel) {
+        // connect statusChanged() to update status, listItem, listItemIndex and overshoot values
+        QObject::connect(d->panel, &UCActionPanel::statusChanged,
+                         this, &UCListItemAttached::panelStatusChanged);
+
+        // connect actions to get updates about visible changes
+        Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(d->panel->actions())->actions) {
+            QObject::connect(action, &UCAction::visibleChanged,
+                             this, &UCListItemAttached::updateVisibleActions);
+        }
+        updateVisibleActions();
+        Q_EMIT actionsChanged();
+        Q_EMIT visibleActionsChanged();
     }
 }
 
-void UCListItemAttached::unbindItem()
+// private slot to update visible actions
+void UCListItemAttached::updateVisibleActions()
 {
     Q_D(UCListItemAttached);
-    if (d->boundItem) {
-        // depending on content item's X coordinate, we either do animated or prompt rebind
-        if (d->boundItem->contentItem()->x() != 0.0) {
-            // content is not in origin, rebind
-            UCListItemPrivate::get(d->boundItem.data())->_q_rebound();
-        } else {
-            // do some cleanup
-            UCListItemPrivate::get(d->boundItem.data())->promptRebound();
+    if (d->panel) {
+        d->visibleActions.clear();
+        Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(d->panel->actions())->actions) {
+            if (action->m_visible) {
+                d->visibleActions << action;
+            }
         }
-        d->boundItem.clear();
+        Q_EMIT visibleActionsChanged();
     }
-    // clear binding list
-    d->clearFlickablesList();
 }
 
 /*!
- * \qmlattachedproperty bool ListItem::selectMode
- * The property drives whether list items are selectable or not. The property is
- * attached to the ListItem's parent or to the ListView/Flickable owning the
- * ListItems.
- *
- *
- * When set, the items
- * will show a check box on the leading side hanving the content item pushed towards
- * trailing side and dimmed. The checkbox which will reflect and drive the \l selected
- * state.
- * Defaults to false.
+ * \qmlattachedproperty ListItemActions ListItem::actions
+ * \readonly
+ * The property holds the instance of the \l ListItemActions the ListItem's actions
+ * panel is visualizing. The property holds a valid value only when attached to
+ * the action visualizing panel defined in \l ListItemStyle::actionsDelegate style
+ * property.
  */
-bool UCListItemAttachedPrivate::selectMode() const
+UCListItemActions *UCListItemAttached::actions() const
 {
-    return selectable;
-}
-void UCListItemAttachedPrivate::setSelectMode(bool value)
-{
-    if (selectable == value) {
-        return;
-    }
-    selectable = value;
-    Q_Q(UCListItemAttached);
-    Q_EMIT q->selectModeChanged();
+    Q_D(const UCListItemAttached);
+    return d->panel ? d->panel->actions() : 0;
 }
 
 /*!
- * \qmlattachedproperty list<int> ListItem::selectedIndexes
- * The property is automatically attached to the ListItem's parent item, or to
- * the ListView when used with ListView. Contains the indexes of the ListItems
- * marked as selected. The indexes are model indexes when used in ListView, and
- * child indexes in other contexts.
- * \note Setting the ListItem's \l selected property to \c true will add the
- * item index to the selection list automatically, and may destroy the initial
- * state of the selection. Therefore it is recommended to drive the selection
- * through the attached property rather through the \l ListItem::selected property.
- * \sa ListItem::selectable, ListItem::selected
- */
-QList<int> UCListItemAttachedPrivate::selectedIndexes() const
-{
-    return selectedList;
-}
-void UCListItemAttachedPrivate::setSelectedIndexes(const QList<int> &list)
-{
-    if (selectedList == list) {
-        return;
-    }
-    selectedList = list;
-    Q_Q(UCListItemAttached);
-    Q_EMIT q->selectedIndexesChanged();
-}
-
-void UCListItemAttachedPrivate::addSelectedItem(UCListItem *item)
-{
-    int index = UCListItemPrivate::get(item)->index();
-    if (!selectedList.contains(index)) {
-        selectedList.append(index);
-        Q_EMIT q_ptr->selectedIndexesChanged();
-    }
-}
-void UCListItemAttachedPrivate::removeSelectedItem(UCListItem *item)
-{
-    if (selectedList.removeAll(UCListItemPrivate::get(item)->index()) > 0) {
-        Q_EMIT q_ptr->selectedIndexesChanged();
-    }
-}
-
-bool UCListItemAttachedPrivate::isItemSelected(UCListItem *item)
-{
-    return selectedList.contains(UCListItemPrivate::get(item)->index());
-}
-
-/*!
- * \qmlattachedproperty bool ListItem::dragMode
- * The property drives the dragging mode of the ListItems within a ListView. It
- * has no effect on any other parent of the ListItem.
- *
- * When set, ListItem content will be disabled and a panel will be shown enabling
- * the dragging mode. The items can be dragged by dragging this handler only.
- * The feature can be activated same time with \l selectable.
- *
- * The panel is configured by the \l {ListItemStyle::dragHandlerDelegate}{dragHandlerDelegate}
+ * \qmlattachedproperty list<Action> ListItem::visibleActions
+ * Holds the list of visible actions. This is a convenience property to help action
+ * visualization panel implementations to consider only visible actions. Similar to
+ * \l actions attached property, it is only valid when attached to \l ListItemStyle::actionsDelegate
  * component.
- *
- * \sa ListItemStyle::dragHandlerDelegate, draggingStarted
  */
-
-/*!
- * \qmlattachedsignal ListItem::draggingStarted(ListItemDrag event)
- * The signal is emitted when a ListItem dragging is started. \c event.from
- * specifies the index of the ListItem being dragged. \c event.minimumIndex and
- * \c event.maximumIndex configures the index interval the dragging of the item
- * is allowed. If set (meaning their value differs from -1), items cannot be
- * dragged outside of this region. The \c event.accept property, if set to false,
- * will cancel dragging operation. The other fields of the event (i.e. \c event.to
- * and \c event.direction) contain invalid data.
- * \qml
- * import QtQuick 2.3
- * import Ubuntu.Components 1.2
- *
- * ListView {
- *     width: units.gu(40)
- *     height: units.gu(40)
- *     model: ListModel {
- *         // initiate with random data
- *     }
- *     delegate: ListItem {
- *         // content
- *     }
- *
- *     ListItem.dragMode: true
- *     ListItem.onDraggingStarted: {
- *         if (event.from < 5) {
- *             // deny dragging on the first 5 element
- *             event.accept = false;
- *         } else if (event.from >= 5 && event.from <= 10) {
- *             // specify the interval
- *             event.minimumIndex = 5;
- *             event.maximumIndex = 10;
- *         }
- *     }
- * }
- * \endqml
- *
- * In the example above the first 5 items are not draggable, though drag handler
- * will still be shown for them. If the drag starts on item index 5, it will only
- * accept drag gesture downwards, respectively starting a drag on item index 10
- * will only allow dragging that element upwards. Every item dragged between
- * indexes 5 and 10 will be draggable both directions, however only till 5th or
- * 10th index. On the other hand, items dragged from index > 10 will be draggable
- * to any index, including the first 11 items. In order to avoid dragging those
- * items in between the first 11 items, the following change must be made:
- * \qml
- * import QtQuick 2.3
- * import Ubuntu.Components 1.2
- *
- * ListView {
- *     width: units.gu(40)
- *     height: units.gu(40)
- *     model: ListModel {
- *         // initiate with random data
- *     }
- *     delegate: ListItem {
- *         // content
- *     }
- *
- *     ListItem.dragMode: true
- *     ListItem.onDraggingStarted: {
- *         if (event.from < 5) {
- *             // deny dragging on the first 5 element
- *             event.accept = false;
- *         } else if (event.from >= 5 && event.from <= 10) {
- *             // specify the interval
- *             event.minimumIndex = 5;
- *             event.maximumIndex = 10;
- *         } else {
- *             // prevent dragging to the first 11 items area
- *             event.minimumIndex = 11;
- *         }
- *     }
- * }
- * \endqml
- *
- * \note None of the above examples will move the dragged item. In order that to
- * happen, you must implement \l draggingUpdated signal and move the model data.
- * \note Implementing the signal handler is not mandatory and should only happen
- * if restrictions on the drag must be applied.
- */
-
-/*!
- * \qmlattachedsignal ListItem::draggingUpdated(ListItemDrag event)
- * The signal is emitted when the list item from \c event.from index has been
- * dragged over to \c event.to, and a move operation is possible. Implementations
- * \b {must move the model data} between these indexes. If the move is not acceptable,
- * it can be cancelled by setting \c event.accept to \c false, in which case the
- * dragged item will stay on its last moved position or will snap back to its
- * previous or original place, depending whether the drag was sent during the
- * drag or as a result of a drop gesture. The direction of the drag is given in the
- * \c event.direction property. Extending the example from \l draggingStarted, an
- * implementation of a live dragging would look as follows
- * \qml
- * import QtQuick 2.3
- * import Ubuntu.Components 1.2
- *
- * ListView {
- *     width: units.gu(40)
- *     height: units.gu(40)
- *     model: ListModel {
- *         // initiate with random data
- *     }
- *     delegate: ListItem {
- *         // content
- *     }
- *
- *     ListItem.dragMode: true
- *     ListItem.onDraggingStarted: {
- *         if (event.from < 5) {
- *             // deny dragging on the first 5 element
- *             event.accept = false;
- *         } else if (event.from >= 5 && event.from <= 10) {
- *             // specify the interval
- *             event.minimumIndex = 5;
- *             event.maximumIndex = 10;
- *         } else if (event.from > 10) {
- *             // prevent dragging to the first 11 items area
- *             event.minimumIndex = 11;
- *         }
- *     }
- *     ListItem.onDraggingUpdated: {
- *         model.move(event.from, event.to, 1);
- *     }
- * }
- * \endqml
- */
-
-bool UCListItemAttachedPrivate::dragMode() const
+QQmlListProperty<UCAction> UCListItemAttached::visibleActions()
 {
-    return draggable;
+    Q_D(UCListItemAttached);
+    return QQmlListProperty<UCAction>(this, d->visibleActions);
 }
-void UCListItemAttachedPrivate::setDragMode(bool value)
+
+/*!
+ * \qmlattachedproperty ListItem ListItem::item
+ * \readonly
+ * The property reports the connected \l ListItem to the panel. Valid in every attachee.
+ */
+UCListItem *UCListItemAttached::item()
 {
-    if (draggable == value) {
+    Q_D(UCListItemAttached);
+    return d->listItem;
+}
+
+/*!
+ * \qmlattachedproperty int ListItem::index
+ * \readonly
+ * Holds the index of the \l ListItem within a view, if the \l ListItem is used
+ * in a model driven view, or the child index otherwise. Valid in every attachee.
+ */
+int UCListItemAttached::index() {
+    Q_D(UCListItemAttached);
+    return d->listItem ? UCListItemPrivate::get(d->listItem)->index() : -1;
+}
+
+/*!
+ * \qmlattachedproperty enum ListItem::panelStatus
+ * \readonly
+ * The property holds the status of the ListItemActions, whether is connected
+ * as leading or as trailing action list to a \l ListItem. Possible valueas are:
+ * \list A
+ *  \li \b Disconnected - default, the actions list is not connected to any \l ListItem
+ *  \li \b Leading - the actions list is connected as leading list
+ *  \li \b Trailing - the actions list is connected as trailing list
+ * \endlist
+ * The property is valid only when attached to \l ListItemStyle::actionsDelegate component.
+ */
+UCListItem::PanelStatus UCListItemAttached::panelStatus()
+{
+    Q_D(UCListItemAttached);
+    if (!d->panel) {
+        return UCListItem::Disconnected;
+    }
+    return d->panel->panelStatus();
+}
+
+/*!
+ * \qmlattachedmethod void ListItem::snapToPosition(real position)
+ * The function can be used to perform custom snapping, or to execute rebounding
+ * and also disconnecting from the connected \l ListItem. This can be achieved by
+ * calling the function with 0.0 value. The slot has effect only when used from
+ * \l ListItemStyle::actionsDelegate component.
+ */
+void UCListItemAttached::snapToPosition(qreal position)
+{
+    UCListItem::PanelStatus itemStatus = panelStatus();
+    Q_D(UCListItemAttached);
+    //if it is disconnected, leave (this also includes the case when m_container is null)
+    if (!d->listItem || !d->panel || itemStatus == UCListItem::Disconnected) {
         return;
     }
-    Q_Q(UCListItemAttached);
-    if (value) {
-        /*
-         * The dragging works only if the ListItem is used inside a ListView, and the
-         * model used is a list, a ListModel or a derivate of QAbstractItemModel. Do
-         * not enable dragging if these conditions are not fulfilled.
-         */
-        if (!listView) {
-            qmlInfo(q->parent()) << UbuntuI18n::instance().tr("dragging mode requires ListView");
-            return;
-        }
-        QVariant modelValue = listView->property("model");
-        if (!modelValue.isValid()) {
-            return;
-        }
-        if (modelValue.type() == QVariant::Int || modelValue.type() == QVariant::Double) {
-            qmlInfo(listView) << UbuntuI18n::instance().tr("model must be a list, ListModel or a derivate of QAbstractItemModel");
-            return;
+    UCListItemPrivate *listItem = UCListItemPrivate::get(d->listItem);
+    position *= (itemStatus == UCListItem::Leading) ? 1 : -1;
+    if (position == 0.0) {
+        listItem->_q_rebound();
+    } else {
+        if (listItem->animator) {
+            listItem->animator->snap(position);
+        } else {
+            listItem->contentItem->setX(position);
         }
     }
-    draggable = value;
-    Q_EMIT q->dragModeChanged();
+}
+
+/*!
+ * \qmlattachedproperty bool ListItem::animate
+ * The property specifies whether the ListItem expects to animate the transitions within
+ * the panel or not. Valid for selection and drag mode handlers.
+ */
+bool UCListItemAttached::animate() const
+{
+    Q_D(const UCListItemAttached);
+    return d->animate;
 }

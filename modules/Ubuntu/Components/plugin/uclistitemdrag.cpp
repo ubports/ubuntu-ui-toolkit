@@ -20,7 +20,7 @@ void UCDragHandler::initialize()
     if (!listItem->attachedProperties) {
         return;
     }
-    connect(listItem->attachedProperties, &UCListItemAttached::dragModeChanged,
+    connect(listItem->attachedProperties, &UCViewItemsAttached::dragModeChanged,
             this, &UCDragHandler::setupDragMode);
     if (listItem->isDraggable()) {
         setupDragMode();

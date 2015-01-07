@@ -172,6 +172,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCListItemDivider>();
     qmlRegisterUncreatableType<UCDragEvent, 2>(uri, 1, 2, "ListItemDrag", "Not instantiable");
     qmlRegisterType<UCListItemActions, 2>(uri, 1, 2, "ListItemActions");
+    qmlRegisterUncreatableType<UCViewItemsAttached, 2>(uri, 1, 2, "ViewItems", "Not instantiable");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

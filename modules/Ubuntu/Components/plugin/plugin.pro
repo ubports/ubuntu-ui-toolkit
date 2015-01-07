@@ -111,10 +111,11 @@ SOURCES += plugin.cpp \
     adapters/actionsproxy_p.cpp \
     uclistitem.cpp \
     uclistitemactions.cpp \
-    uclistitemactionsattached.cpp \
-    uclistitemattached.cpp \
     propertychange_p.cpp \
     uclistitemstyle.cpp \
+    ucviewitemsattached.cpp \
+    uclistitemattached.cpp \
+    ucactionpanel_p.cpp \
     uclistitemselect.cpp \
     uclistitemdrag.cpp
 
