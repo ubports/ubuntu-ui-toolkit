@@ -1396,7 +1396,7 @@ void UCListItem::setHighlightColor(const QColor &color)
  *         emitActionTriggered = true;
  *     }
  *     onHighlightedChanged: {
- *         if (!pressed && emitActionTriggered) {
+ *         if (!highlighted && emitActionTriggered) {
  *             emitActionTriggered = false;
  *             action.trigger(index);
  *         }
