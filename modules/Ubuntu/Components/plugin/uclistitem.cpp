@@ -1382,7 +1382,7 @@ void UCListItem::setHighlightColor(const QColor &color)
  *
  * \note Handling pressAndHold will suppress the action triggering as the clicked
  * signal is also suppressed. If the action triggering is still needed, it must be
- * triggered manually on \l pressed changed.
+ * triggered manually on \l highlighted changed.
  * \qml
  * import Ubuntu.Components 1.2
  *
@@ -1395,7 +1395,7 @@ void UCListItem::setHighlightColor(const QColor &color)
  *         console.log("suppresses clicked() signal, also action triggered");
  *         emitActionTriggered = true;
  *     }
- *     onPressedChanged: {
+ *     onHighlightedChanged: {
  *         if (!pressed && emitActionTriggered) {
  *             emitActionTriggered = false;
  *             action.trigger(index);
