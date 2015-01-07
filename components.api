@@ -901,6 +901,7 @@ plugins.qmltypes
     Property { name: "item"; type: "UCListItem"; isReadonly: true; isPointer: true }
     Property { name: "index"; type: "int"; isReadonly: true }
     Property { name: "panelStatus"; type: "UCListItem::PanelStatus"; isReadonly: true }
+    Property { name: "animate"; type: "bool"; isReadonly: true }
     Method {
     name: "snapToPosition"
     Parameter { name: "position"; type: "double" }
