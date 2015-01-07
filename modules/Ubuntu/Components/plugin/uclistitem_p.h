@@ -52,7 +52,7 @@ public:
     void _q_updateIndex();
     int index();
     bool canHighlight(QMouseEvent *event);
-    void setPressed(bool pressed);
+    void setHighlighted(bool pressed);
     void setSwiped(bool tugged);
     void listenToRebind(bool listen);
     void resize();
