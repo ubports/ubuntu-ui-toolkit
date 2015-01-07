@@ -111,6 +111,7 @@ QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
 
 class UCAction;
 class UCListItemActions;
+class UCListItemAttachedPrivate;
 class UCListItemAttached : public QObject
 {
     Q_OBJECT
@@ -124,20 +125,16 @@ class UCListItemAttached : public QObject
 public:
     UCListItemAttached(QObject *parent = 0);
     ~UCListItemAttached();
-    void setList(UCListItemActions *list);
-    void connectListItem(UCListItem *item, bool connect);
+    void setList(UCListItem *list, bool leading);
+    void connectToAttached(UCListItemAttached *parentAttached);
 
-    UCListItemActions *container() const
-    {
-        return m_container;
-    }
+    UCListItemActions *container() const;
     QQmlListProperty<UCAction> visibleActions();
     UCListItem *listItem();
     int listItemIndex();
     bool swiping();
     qreal offset();
     UCListItem::Status status();
-
 
 public Q_SLOTS:
     void snapToPosition(qreal position);
@@ -152,9 +149,7 @@ Q_SIGNALS:
     void swipingChanged();
 
 private:
-    UCListItemActions *m_container;
-    QList<UCAction*> m_visibleActions;
-    bool m_swiping;
+    Q_DECLARE_PRIVATE(UCListItemAttached)
     friend class UCListItemAction;
 
 private Q_SLOTS:

@@ -114,7 +114,8 @@ SOURCES += plugin.cpp \
     propertychange_p.cpp \
     uclistitemstyle.cpp \
     ucviewitemsattached.cpp \
-    uclistitemattached.cpp
+    uclistitemattached.cpp \
+    ucactionpanel_p.cpp
 
 # adapters
 SOURCES += adapters/alarmsadapter_organizer.cpp

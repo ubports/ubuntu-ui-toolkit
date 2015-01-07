@@ -29,6 +29,7 @@ class UCListItemDivider;
 class UCListItemActions;
 class UCListItemSnapAnimator;
 class UCListItemStyle;
+class UCActionPanel;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -53,7 +54,6 @@ public:
     bool canHighlight(QMouseEvent *event);
     void setPressed(bool pressed);
     void setSwiped(bool tugged);
-    bool grabPanel(UCListItemActions *optionList, bool isTugged);
     void listenToRebind(bool listen);
     void resize();
     void update();
@@ -82,6 +82,8 @@ public:
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
+    UCActionPanel *leadingPanel;
+    UCActionPanel *trailingPanel;
     UCListItemSnapAnimator *animator;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
@@ -100,6 +102,23 @@ public:
     bool loadStyle(bool reload);
     void initStyleItem();
     QQuickItem *styleInstance() const;
+};
+
+class UCListItemAttachedPrivate : public QObjectPrivate
+{
+    Q_DECLARE_PUBLIC(UCListItemAttached)
+public:
+    UCListItemAttachedPrivate() : QObjectPrivate(), panel(0), m_listItem(0), m_swiping(false) {}
+
+    static UCListItemAttachedPrivate* get(UCListItemAttached *that)
+    {
+        return that->d_func();
+    }
+
+    UCActionPanel *panel;
+    UCListItem *m_listItem;
+    QList<UCAction*> m_visibleActions;
+    bool m_swiping;
 };
 
 class PropertyChange;
@@ -121,6 +140,44 @@ public:
     QList< PropertyChange* > changes;
     QPointer<UCListItem> boundItem;
     QPointer<UCListItem> disablerItem;
+};
+
+class UCActionPanel : public QObject
+{
+    Q_OBJECT
+public:
+    ~UCActionPanel();
+    static bool grabPanel(UCActionPanel **panel, UCListItem *item, bool leading);
+    static void ungrabPanel(UCActionPanel *panel);
+    static bool isConnected(UCActionPanel *panel);
+
+    UCListItemActions *actions();
+    QQuickItem *panel() const;
+    qreal offset()
+    {
+        return offsetDragged;
+    }
+    UCListItem::Status panelStatus()
+    {
+        return status;
+    }
+    bool isLeading() const
+    {
+        return leading;
+    }
+
+private Q_SLOTS:
+    void updateDraggedOffset();
+private:
+    UCActionPanel(UCListItem *item, bool leading);
+    void createPanel(QQmlComponent *panelDelegate);
+    UCListItemAttached *attachedObject();
+
+    UCListItem *listItem;
+    QQuickItem *panelItem;
+    UCListItem::Status status;
+    qreal offsetDragged;
+    bool leading:1;
 };
 
 class UCListItemDivider : public QObject

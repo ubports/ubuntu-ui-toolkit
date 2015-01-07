@@ -45,7 +45,6 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(UCListItemActions)
-    Q_PRIVATE_SLOT(d_func(), void _q_updateDraggedOffset())
 };
 
 #endif // UCLISTITEMACTIONS_H
