@@ -18,7 +18,6 @@ import logging
 
 from autopilot import logging as autopilot_logging
 from ubuntuuitoolkit._custom_proxy_objects import _common
-import time
 
 
 logger = logging.getLogger(__name__)
@@ -42,8 +41,8 @@ class UCListItem(_common.UbuntuUIToolkitCustomProxyObjectBase):
                 'No {0} panel found in a ListItem'.format(panel_item))
         start_y = stop_y = y + (height // 2)
         self.pointing_device.drag(start_x, start_y, stop_x, stop_y)
-        # wait 1 second to finish animation
-        time.sleep(1)
+        # wait till animation finishes
+        self.contentMoving.wait_for(False)
 
     def _click_on_panel_action(self, panel_item, action_object, wait_function):
         self._swipe_in_panel(panel_item)
@@ -57,11 +56,8 @@ class UCListItem(_common.UbuntuUIToolkitCustomProxyObjectBase):
 
         self.pointing_device.click_object(action_button)
         if wait_function is None:
-            # wait for the animation to finish
-            contentItem = self.select_single(objectName='ListItemHolder')
-            while contentItem.x != 0.0:
-                contentItem.x.wait_for(0)
-                time.sleep(1)
+            # wait till animation finishes
+            self.contentMoving.wait_for(False)
         else:
             wait_function()
 
