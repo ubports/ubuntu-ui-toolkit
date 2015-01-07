@@ -1531,7 +1531,7 @@ bool UCListItemPrivate::isSelectable()
  *
  * \note Handling pressAndHold will suppress the action triggering as the clicked
  * signal is also suppressed. If the action triggering is still needed, it must be
- * triggered manually on \l pressed changed.
+ * triggered manually on \l highlighted changed.
  * \qml
  * import Ubuntu.Components 1.2
  *
@@ -1544,8 +1544,8 @@ bool UCListItemPrivate::isSelectable()
  *         console.log("suppresses clicked() signal, also action triggered");
  *         emitActionTriggered = true;
  *     }
- *     onPressedChanged: {
- *         if (!pressed && emitActionTriggered) {
+ *     onHighlightedChanged: {
+ *         if (!highlighted && emitActionTriggered) {
  *             emitActionTriggered = false;
  *             action.trigger(index);
  *         }
