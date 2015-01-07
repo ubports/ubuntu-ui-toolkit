@@ -402,7 +402,7 @@ void UCListItemPrivate::_q_updateThemedData()
 
 void UCListItemPrivate::_q_rebound()
 {
-    setPressed(false);
+    setHighlighted(false);
     // initiate rebinding only if there were actions tugged
     Q_Q(UCListItem);
     if (!UCListItemActionsPrivate::isConnectedTo(leadingActions, q) &&
@@ -507,7 +507,7 @@ QQuickItem *UCListItemPrivate::styleInstance() const
 // rebound without animation
 void UCListItemPrivate::promptRebound()
 {
-    setPressed(false);
+    setHighlighted(false);
     setSwiped(false);
     if (animator) {
         animator->snapOut();
@@ -553,7 +553,7 @@ bool UCListItemPrivate::canHighlight(QMouseEvent *event)
 }
 
 // set highlighted flag and update contentItem
-void UCListItemPrivate::setPressed(bool highlighted)
+void UCListItemPrivate::setHighlighted(bool highlighted)
 {
     if (this->highlighted != highlighted) {
         this->highlighted = highlighted;
@@ -929,7 +929,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         return;
     }
     if (event->button() == Qt::LeftButton && d->canHighlight(event)) {
-        d->setPressed(true);
+        d->setHighlighted(true);
         d->lastPos = d->pressedPos = event->localPos();
         // connect the Flickable to know when to rebound
         d->listenToRebind(true);
@@ -959,7 +959,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             d->_q_rebound();
         }
     }
-    d->setPressed(false);
+    d->setHighlighted(false);
 }
 
 void UCListItem::mouseMoveEvent(QMouseEvent *event)
