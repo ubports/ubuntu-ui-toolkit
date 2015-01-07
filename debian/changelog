@@ -1,3 +1,11 @@
+ubuntu-ui-toolkit (1.1.1298+15.04.20150107~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ Zsombor Egri ]
+  * Rolling back ListItem dividers from 2GU left&right margins to no
+    margins. (LP: #1380766)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 07 Jan 2015 18:47:29 +0000
+
 ubuntu-ui-toolkit (1.1.1298+15.04.20141203.1~rtm-0ubuntu1) 14.09; urgency=low
 
   [ Zoltán Balogh ]
