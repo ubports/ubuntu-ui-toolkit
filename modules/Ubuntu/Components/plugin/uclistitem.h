@@ -120,7 +120,6 @@ class UCListItemAttached : public QObject
     Q_PROPERTY(UCListItem *listItem READ listItem NOTIFY listItemChanged)
     Q_PROPERTY(int listItemIndex READ listItemIndex NOTIFY listItemIndexChanged)
     Q_PROPERTY(UCListItem::Status status READ status NOTIFY statusChanged)
-    Q_PROPERTY(bool swiping READ swiping NOTIFY swipingChanged)
 public:
     UCListItemAttached(QObject *parent = 0);
     ~UCListItemAttached();
@@ -131,7 +130,6 @@ public:
     QQmlListProperty<UCAction> visibleActions();
     UCListItem *listItem();
     int listItemIndex();
-    bool swiping();
     UCListItem::Status status();
 
 public Q_SLOTS:
@@ -142,9 +140,7 @@ Q_SIGNALS:
     void visibleActionsChanged();
     void listItemChanged();
     void listItemIndexChanged();
-    void offsetChanged();
     void statusChanged();
-    void swipingChanged();
 
 private:
     Q_DECLARE_PRIVATE(UCListItemAttached)
@@ -152,7 +148,6 @@ private:
 
 private Q_SLOTS:
     void updateVisibleActions();
-    void updateSwipeState();
 };
 
 

@@ -44,11 +44,6 @@ void UCListItemAttached::setList(UCListItem *list, bool leading)
     d->m_listItem = list;
     d->panel = leading ? UCListItemPrivate::get(d->m_listItem)->leadingPanel : UCListItemPrivate::get(d->m_listItem)->trailingPanel;
     if (d->m_listItem) {
-        QObject::connect(d->m_listItem, &UCListItem::highlightedChanged,
-                         this, &UCListItemAttached::updateSwipeState);
-        QObject::connect(d->m_listItem, &UCListItem::contentMovingChanged,
-                         this, &UCListItemAttached::updateSwipeState);
-
         // connect statusChanged() to update status, listItem, listItemIndex and overshoot values
         QObject::connect(d->panel->actions(), &UCListItemActions::statusChanged,
                          this, &UCListItemAttached::statusChanged);
@@ -81,21 +76,6 @@ void UCListItemAttached::updateVisibleActions()
         }
     }
     Q_EMIT visibleActionsChanged();
-}
-
-// private slot updating swipe state
-void UCListItemAttached::updateSwipeState()
-{
-    Q_D(UCListItemAttached);
-    if (!d->m_listItem || status() == UCListItem::Disconnected) {
-        return;
-    }
-    UCListItemPrivate *listItem = UCListItemPrivate::get(d->m_listItem);
-    bool swiped = listItem->highlighted && listItem->contentMoved;
-    if (swiped != d->m_swiping) {
-        d->m_swiping = swiped;
-        Q_EMIT swipingChanged();
-    }
 }
 
 /*!
@@ -141,18 +121,6 @@ UCListItem *UCListItemAttached::listItem()
 int UCListItemAttached::listItemIndex() {
     Q_D(UCListItemAttached);
     return d->m_listItem ? UCListItemPrivate::get(d->m_listItem)->index() : -1;
-}
-
-/*!
- * \qmlattachedproperty bool ListItem::swiping
- * \readonly
- * The property notifies whether the panel is swiped or not. The property does
- * not notify the rebounding.
- */
-bool UCListItemAttached::swiping()
-{
-    Q_D(UCListItemAttached);
-    return d->m_swiping;
 }
 
 /*!

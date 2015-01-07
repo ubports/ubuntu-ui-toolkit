@@ -64,6 +64,11 @@ Item {
       */
     readonly property real swipedOffset: leading ? width + x : ListItem.listItem.width - x;
 
+    /*
+      Swiping
+      */
+    readonly property bool swiping: ListItem.listItem.highlighted && ListItem.listItem.contentMoving
+
     anchors {
         left: contentItem ? (leading ? undefined : contentItem.right) : undefined
         right: contentItem ? (leading ? contentItem.left : undefined) : undefined
@@ -106,8 +111,8 @@ Item {
         prevX = x;
     }
     // default snapping!
-    ListItem.onSwipingChanged: {
-        if (ListItem.swiping) {
+    onSwipingChanged: {
+        if (swiping) {
             // the dragging got started, set prevX
             prevX = panel.x;
             return;

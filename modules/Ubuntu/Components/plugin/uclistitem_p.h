@@ -108,7 +108,7 @@ class UCListItemAttachedPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(UCListItemAttached)
 public:
-    UCListItemAttachedPrivate() : QObjectPrivate(), panel(0), m_listItem(0), m_swiping(false) {}
+    UCListItemAttachedPrivate() : QObjectPrivate(), panel(0), m_listItem(0){}
 
     static UCListItemAttachedPrivate* get(UCListItemAttached *that)
     {
@@ -118,7 +118,6 @@ public:
     UCActionPanel *panel;
     UCListItem *m_listItem;
     QList<UCAction*> m_visibleActions;
-    bool m_swiping;
 };
 
 class PropertyChange;
