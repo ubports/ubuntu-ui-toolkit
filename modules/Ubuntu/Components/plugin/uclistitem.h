@@ -115,7 +115,7 @@ class UCListItemAttachedPrivate;
 class UCListItemAttached : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(UCListItemActions *container READ container NOTIFY containerChanged)
+    Q_PROPERTY(UCListItemActions *actions READ actions NOTIFY actionsChanged)
     Q_PROPERTY(QQmlListProperty<UCAction> visibleActions READ visibleActions NOTIFY visibleActionsChanged)
     Q_PROPERTY(UCListItem *listItem READ listItem NOTIFY listItemChanged)
     Q_PROPERTY(int listItemIndex READ listItemIndex NOTIFY listItemIndexChanged)
@@ -126,7 +126,7 @@ public:
     void setList(UCListItem *list, bool leading);
     void connectToAttached(UCListItemAttached *parentAttached);
 
-    UCListItemActions *container() const;
+    UCListItemActions *actions() const;
     QQmlListProperty<UCAction> visibleActions();
     UCListItem *listItem();
     int listItemIndex();
@@ -136,7 +136,7 @@ public Q_SLOTS:
     void snapToPosition(qreal position);
 
 Q_SIGNALS:
-    void containerChanged();
+    void actionsChanged();
     void visibleActionsChanged();
     void listItemChanged();
     void listItemIndexChanged();

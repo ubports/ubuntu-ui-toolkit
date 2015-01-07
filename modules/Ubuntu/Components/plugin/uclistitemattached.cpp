@@ -38,14 +38,14 @@ void UCListItemAttached::connectToAttached(UCListItemAttached *parentAttached)
 void UCListItemAttached::setList(UCListItem *list, bool leading)
 {
     Q_D(UCListItemAttached);
-    if (d->m_listItem == list) {
+    if (d->listItem == list) {
         return;
     }
-    d->m_listItem = list;
+    d->listItem = list;
     Q_EMIT listItemChanged();
 
-    d->panel = leading ? UCListItemPrivate::get(d->m_listItem)->leadingPanel : UCListItemPrivate::get(d->m_listItem)->trailingPanel;
-    if (d->m_listItem) {
+    d->panel = leading ? UCListItemPrivate::get(d->listItem)->leadingPanel : UCListItemPrivate::get(d->listItem)->trailingPanel;
+    if (d->listItem) {
         // connect statusChanged() to update status, listItem, listItemIndex and overshoot values
         QObject::connect(d->panel, &UCActionPanel::statusChanged,
                          this, &UCListItemAttached::panelStatusChanged);
@@ -56,7 +56,7 @@ void UCListItemAttached::setList(UCListItem *list, bool leading)
                              this, &UCListItemAttached::updateVisibleActions);
         }
         updateVisibleActions();
-        Q_EMIT containerChanged();
+        Q_EMIT actionsChanged();
         Q_EMIT visibleActionsChanged();
     }
 }
@@ -65,11 +65,11 @@ void UCListItemAttached::setList(UCListItem *list, bool leading)
 void UCListItemAttached::updateVisibleActions()
 {
     Q_D(UCListItemAttached);
-    d->m_visibleActions.clear();
+    d->visibleActions.clear();
     if (d->panel) {
         Q_FOREACH(UCAction *action, UCListItemActionsPrivate::get(d->panel->actions())->actions) {
             if (action->m_visible) {
-                d->m_visibleActions << action;
+                d->visibleActions << action;
             }
         }
     }
@@ -77,12 +77,12 @@ void UCListItemAttached::updateVisibleActions()
 }
 
 /*!
- * \qmlattachedproperty ListItemActions ListItem::container
+ * \qmlattachedproperty ListItemActions ListItem::actions
  * \readonly
  * The property holds the instance of the \l ListItemActions the ListItem's actions
  * panel is visualizing.
  */
-UCListItemActions *UCListItemAttached::container() const
+UCListItemActions *UCListItemAttached::actions() const
 {
     Q_D(const UCListItemAttached);
     return d->panel ? d->panel->actions() : 0;
@@ -96,7 +96,7 @@ UCListItemActions *UCListItemAttached::container() const
 QQmlListProperty<UCAction> UCListItemAttached::visibleActions()
 {
     Q_D(UCListItemAttached);
-    return QQmlListProperty<UCAction>(this, d->m_visibleActions);
+    return QQmlListProperty<UCAction>(this, d->visibleActions);
 }
 
 /*!
@@ -107,7 +107,7 @@ QQmlListProperty<UCAction> UCListItemAttached::visibleActions()
 UCListItem *UCListItemAttached::listItem()
 {
     Q_D(UCListItemAttached);
-    return d->m_listItem;
+    return d->listItem;
 }
 
 /*!
@@ -118,11 +118,11 @@ UCListItem *UCListItemAttached::listItem()
  */
 int UCListItemAttached::listItemIndex() {
     Q_D(UCListItemAttached);
-    return d->m_listItem ? UCListItemPrivate::get(d->m_listItem)->index() : -1;
+    return d->listItem ? UCListItemPrivate::get(d->listItem)->index() : -1;
 }
 
 /*!
- * \qmlattachedproperty enum ListItem::status
+ * \qmlattachedproperty enum ListItem::panelStatus
  * \readonly
  * The property holds the status of the ListItemActions, whether is connected
  * as leading or as trailing action list to a \l ListItem. Possible valueas are:
@@ -152,10 +152,10 @@ void UCListItemAttached::snapToPosition(qreal position)
     UCListItem::PanelStatus itemStatus = panelStatus();
     Q_D(UCListItemAttached);
     //if it is disconnected, leave (this also includes the case when m_container is null)
-    if (!d->m_listItem || !d->panel || itemStatus == UCListItem::Disconnected) {
+    if (!d->listItem || !d->panel || itemStatus == UCListItem::Disconnected) {
         return;
     }
-    UCListItemPrivate *listItem = UCListItemPrivate::get(d->m_listItem);
+    UCListItemPrivate *listItem = UCListItemPrivate::get(d->listItem);
     position *= (itemStatus == UCListItem::Leading) ? 1 : -1;
     if (position == 0.0) {
         listItem->_q_rebound();

@@ -1103,9 +1103,6 @@ void UCListItem::setLeadingActions(UCListItemActions *actions)
     delete d->leadingPanel;
     d->leadingPanel = 0;
     d->leadingActions = actions;
-//    if (d->leadingActions == d->trailingActions && d->leadingActions) {
-//        qmlInfo(this) << UbuntuI18n::tr("leadingActions and trailingActions cannot share the same object!");
-//    }
     Q_EMIT leadingActionsChanged();
 }
 
@@ -1134,9 +1131,6 @@ void UCListItem::setTrailingActions(UCListItemActions *actions)
     delete d->trailingPanel;
     d->trailingPanel = 0;
     d->trailingActions = actions;
-//    if (d->leadingActions == d->trailingActions && d->trailingActions) {
-//        qmlInfo(this) << UbuntuI18n::tr("leadingActions and trailingActions cannot share the same object!");
-//    }
     Q_EMIT trailingActionsChanged();
 }
 

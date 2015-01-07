@@ -166,7 +166,7 @@ Item {
                 Loader {
                     id: delegateLoader
                     height: parent.height
-                    sourceComponent: panel.ListItem.container.delegate ? panel.ListItem.container.delegate : defaultDelegate
+                    sourceComponent: panel.ListItem.actions.delegate ? panel.ListItem.actions.delegate : defaultDelegate
                     property Action action: modelData
                     property int index: index
                     property bool pressed: actionButton.pressed
