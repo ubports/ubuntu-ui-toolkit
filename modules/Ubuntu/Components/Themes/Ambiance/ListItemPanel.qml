@@ -50,14 +50,9 @@ Item {
     objectName: "ListItemPanel" + (leading ? "Leading" : "Trailing")
 
     /*
-      Property holding the ListItem's contentItem instance
-      */
-    readonly property Item contentItem: parent ? parent.contentItem : null
-
-    /*
       Specifies whether the panel is used to visualize leading or trailing actions.
       */
-    readonly property bool leading: panel.ListItem.panelStatus == panel.ListItem.Leading
+    readonly property bool leading: ListItem.panelStatus == ListItem.Leading
 
     /*
       Swiped offset.
@@ -70,10 +65,10 @@ Item {
     readonly property bool swiping: ListItem.item.highlighted && ListItem.item.contentMoving
 
     anchors {
-        left: contentItem ? (leading ? undefined : contentItem.right) : undefined
-        right: contentItem ? (leading ? contentItem.left : undefined) : undefined
-        top: contentItem ? contentItem.top : undefined
-        bottom: contentItem ? contentItem.bottom : undefined
+        left: (leading ? undefined : ListItem.item.contentItem.right)
+        right: (leading ? ListItem.item.contentItem.left : undefined)
+        top: ListItem.item.contentItem.top
+        bottom: ListItem.item.contentItem.bottom
     }
 
     Rectangle {
@@ -88,10 +83,13 @@ Item {
     }
 
     // handle action triggering
-    ListItem.onPanelStatusChanged: {
-        if (ListItem.panelStatus === ListItem.Disconnected && actionsRow.selectedAction) {
-            actionsRow.selectedAction.trigger(actionsRow.listItemIndex >= 0 ? actionsRow.listItemIndex : null);
-            actionsRow.selectedAction = null;
+    Connections {
+        target: panel.ListItem.item
+        onContentMovementEnded: {
+            if (actionsRow.selectedAction) {
+                actionsRow.selectedAction.trigger(actionsRow.listItemIndex >= 0 ? actionsRow.listItemIndex : null);
+                actionsRow.selectedAction = null;
+            }
         }
     }
 
@@ -134,7 +132,7 @@ Item {
             leftMargin: spacing
         }
 
-        property real maxItemWidth: panel.parent ? (panel.parent.width / panel.ListItem.visibleActions.length) : 0
+        property real maxItemWidth: panel.ListItem.item.width / panel.ListItem.visibleActions.length
 
         property Action selectedAction
         property int listItemIndex: -1
