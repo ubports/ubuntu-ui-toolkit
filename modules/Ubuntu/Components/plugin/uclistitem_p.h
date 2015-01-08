@@ -56,6 +56,7 @@ public:
     void setSwiped(bool tugged);
     void listenToRebind(bool listen);
     void lockContentItem(bool lock);
+    void adjustContentItemHeight();
     void update();
     void clampAndMoveX(qreal &x, qreal dx);
 
@@ -173,6 +174,7 @@ private:
     QQuickItem *panelItem;
     UCListItem::PanelStatus status;
     bool leading:1;
+    bool connected:1;
 };
 
 class UCListItemDivider : public QObject

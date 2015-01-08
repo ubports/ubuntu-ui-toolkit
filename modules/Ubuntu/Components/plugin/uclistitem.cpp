@@ -214,6 +214,7 @@ void UCListItemDivider::unitsChanged()
         m_rightMargin = UCUnits::instance().dp(2);
     }
     if (m_listItem) {
+        m_listItem->adjustContentItemHeight();
         m_listItem->update();
     }
 }
@@ -277,14 +278,9 @@ void UCListItemDivider::setVisible(bool visible)
         return;
     }
     m_visible = visible;
-    // set/reset contentItem's bottomMargin
-    QQuickAnchors *contentAnchors = QQuickItemPrivate::get(m_listItem->contentItem)->anchors();
-    if (m_visible) {
-        contentAnchors->setBottomMargin(m_thickness);
-    } else {
-        contentAnchors->resetBottomMargin();
-    }
     Q_EMIT visibleChanged();
+    // set/reset contentItem's bottomMargin
+    m_listItem->adjustContentItemHeight();
 }
 
 void UCListItemDivider::setLeftMargin(qreal leftMargin)
@@ -613,6 +609,17 @@ void UCListItemPrivate::lockContentItem(bool lock)
     }
 }
 
+// adjust contentItem height depending on teh divider's visibility
+void UCListItemPrivate::adjustContentItemHeight()
+{
+    QQuickAnchors *contentAnchors = QQuickItemPrivate::get(contentItem)->anchors();
+    if (divider->m_visible) {
+        contentAnchors->setBottomMargin(divider->m_thickness);
+    } else {
+        contentAnchors->resetBottomMargin();
+    }
+}
+
 void UCListItemPrivate::update()
 {
     if (!ready) {
@@ -825,6 +832,7 @@ void UCListItem::componentComplete()
     QQuickAnchors *contentAnchors = QQuickItemPrivate::get(d->contentItem)->anchors();
     contentAnchors->setTop(d->top());
     contentAnchors->setBottom(d->bottom());
+    d->adjustContentItemHeight();
     d->lockContentItem(true);
 
     d->ready = true;
