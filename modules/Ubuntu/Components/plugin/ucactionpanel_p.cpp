@@ -31,6 +31,7 @@ UCActionPanel::UCActionPanel(UCListItem *item, bool leading)
     , panelItem(0)
     , status(UCListItem::Disconnected)
     , leading(leading)
+    , connected(false)
 {
 
 }
@@ -61,6 +62,7 @@ void UCActionPanel::createPanel(QQmlComponent *panelDelegate)
         } else {
             context->setParent(panelItem);
             QQml_setParent_noEvent(panelItem, listItem);
+            panelItem->setParentItem(listItem);
             // create attached property!
             UCListItemAttached *attached = static_cast<UCListItemAttached*>(
                         qmlAttachedPropertiesObject<UCListItem>(panelItem));
@@ -110,7 +112,7 @@ bool UCActionPanel::grabPanel(UCActionPanel **panel, UCListItem *item, bool lead
         }
     }
     if (*panel) {
-        (*panel)->panelItem->setParentItem((*panel)->listItem);
+        (*panel)->connected = true;
         (*panel)->status = leading ? UCListItem::Leading : UCListItem::Trailing;
         Q_EMIT (*panel)->statusChanged();
     }
@@ -119,15 +121,14 @@ bool UCActionPanel::grabPanel(UCActionPanel **panel, UCListItem *item, bool lead
 
 void UCActionPanel::ungrabPanel(UCActionPanel *panel)
 {
-    if (!panel || !panel->panelItem || panel->status == UCListItem::Disconnected) {
+    if (!panel || !panel->connected) {
         return;
     }
-    panel->panelItem->setParentItem(0);
-    panel->status = UCListItem::Disconnected;
-    Q_EMIT panel->statusChanged();
+    panel->connected = false;
+    panel->panelItem->setVisible(false);
 }
 
 bool UCActionPanel::isConnected(UCActionPanel *panel)
 {
-    return panel && panel->status != UCListItem::Disconnected;
+    return panel && panel->connected;
 }
