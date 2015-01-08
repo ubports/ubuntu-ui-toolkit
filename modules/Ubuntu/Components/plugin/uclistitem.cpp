@@ -85,6 +85,8 @@ bool UCListItemSnapAnimator::snap(qreal to)
     if (!snap) {
         // no animation, so we simply position the component
         listItem->contentItem->setX(to);
+        // lock contentItem left/right edges
+        listItem->lockContentItem(true);
         return false;
     }
     snap->setTargetObject(listItem->contentItem);
@@ -142,6 +144,8 @@ void UCListItemSnapAnimator::snapOut()
     UCActionPanel::ungrabPanel(listItem->trailingPanel);
     // set contentMoved to false
     listItem->setContentMoving(false);
+    // lock contentItem left/right edges
+    listItem->lockContentItem(true);
 }
 
 /*
@@ -273,8 +277,13 @@ void UCListItemDivider::setVisible(bool visible)
         return;
     }
     m_visible = visible;
-    m_listItem->resize();
-    m_listItem->update();
+    // set/reset contentItem's bottomMargin
+    QQuickAnchors *contentAnchors = QQuickItemPrivate::get(m_listItem->contentItem)->anchors();
+    if (m_visible) {
+        contentAnchors->setBottomMargin(m_thickness);
+    } else {
+        contentAnchors->resetBottomMargin();
+    }
     Q_EMIT visibleChanged();
 }
 
@@ -591,14 +600,17 @@ void UCListItemPrivate::listenToRebind(bool listen)
     }
 }
 
-void UCListItemPrivate::resize()
+// lock/unlock contentItem's left and right anchors to the ListItem's left and right
+void UCListItemPrivate::lockContentItem(bool lock)
 {
-    Q_Q(UCListItem);
-    QRectF rect(q->boundingRect());
-    if (divider && divider->m_visible) {
-        rect.setHeight(rect.height() - divider->m_thickness);
+    QQuickAnchors *contentAnchors = QQuickItemPrivate::get(contentItem)->anchors();
+    if (lock) {
+        contentAnchors->setLeft(left());
+        contentAnchors->setRight(right());
+    } else {
+        contentAnchors->resetLeft();
+        contentAnchors->resetRight();
     }
-    contentItem->setSize(rect.size());
 }
 
 void UCListItemPrivate::update()
@@ -809,6 +821,12 @@ void UCListItem::componentComplete()
 {
     UCStyledItemBase::componentComplete();
     Q_D(UCListItem);
+    // anchor contentItem prior doing anything else
+    QQuickAnchors *contentAnchors = QQuickItemPrivate::get(d->contentItem)->anchors();
+    contentAnchors->setTop(d->top());
+    contentAnchors->setBottom(d->bottom());
+    d->lockContentItem(true);
+
     d->ready = true;
     /* We only deal with ListView, as for other cases we would need to check the children
      * changes, which would have an enormous impact on performance in case of huge amount
@@ -861,14 +879,6 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         // update size
         d->_q_updateSize();
     }
-}
-
-void UCListItem::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
-{
-    UCStyledItemBase::geometryChanged(newGeometry, oldGeometry);
-    // resize contentItem item
-    Q_D(UCListItem);
-    d->resize();
 }
 
 QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
@@ -992,6 +1002,8 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             // still in use in other panels. See UCListItemActionsPrivate::connectToListItem
             leadingAttached = UCActionPanel::grabPanel(&d->leadingPanel, this, true);
             trailingAttached = UCActionPanel::grabPanel(&d->trailingPanel, this, false);
+            // unlock contentItem's left/right edges
+            d->lockContentItem(false);
             if (d->parentAttached) {
                 d->parentAttached->disableInteractive(this, true);
             }

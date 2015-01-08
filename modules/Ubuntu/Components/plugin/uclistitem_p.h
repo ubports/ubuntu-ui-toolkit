@@ -55,7 +55,7 @@ public:
     void setHighlighted(bool pressed);
     void setSwiped(bool tugged);
     void listenToRebind(bool listen);
-    void resize();
+    void lockContentItem(bool lock);
     void update();
     void clampAndMoveX(qreal &x, qreal dx);
 
