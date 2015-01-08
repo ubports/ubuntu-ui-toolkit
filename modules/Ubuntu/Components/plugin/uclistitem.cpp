@@ -131,9 +131,9 @@ void UCListItemSnapAnimator::snapOut()
         QObject::disconnect(snap, 0, 0, 0);
     }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    if (listItem->attachedProperties) {
+    if (listItem->parentAttached) {
         // restore flickable's interactive and cleanup
-        listItem->attachedProperties->disableInteractive(item, false);
+        listItem->parentAttached->disableInteractive(item, false);
         // no need to listen flickables any longer
         listItem->listenToRebind(false);
     }
@@ -341,7 +341,7 @@ UCListItemPrivate::UCListItemPrivate()
     , overshoot(0)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
-    , attachedProperties(0)
+    , parentAttached(0)
     , contentItem(new QQuickItem)
     , divider(new UCListItemDivider)
     , leadingActions(0)
@@ -585,9 +585,9 @@ void UCListItemPrivate::setSwiped(bool swiped)
 // connects/disconnects from the Flickable anchestor to get notified when to do rebound
 void UCListItemPrivate::listenToRebind(bool listen)
 {
-    if (attachedProperties) {
+    if (parentAttached) {
         Q_Q(UCListItem);
-        attachedProperties->listenToRebind(q, listen);
+        parentAttached->listenToRebind(q, listen);
     }
 }
 
@@ -844,14 +844,14 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         // attach ListItem properties to the flickable or to the parent item
         if (d->flickable) {
             // connect to flickable to get width changes
-            d->attachedProperties = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(d->flickable));
+            d->parentAttached = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(d->flickable));
         } else if (data.item) {
-            d->attachedProperties = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(data.item));
+            d->parentAttached = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(data.item));
         } else {
             // mark as not ready, so no action should be performed which depends on readyness
             d->ready = false;
             // about to be deleted or reparented, disable attached
-            d->attachedProperties = 0;
+            d->parentAttached = 0;
         }
 
         if (data.item) {
@@ -927,7 +927,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
 {
     UCStyledItemBase::mousePressEvent(event);
     Q_D(UCListItem);
-    if (d->attachedProperties && d->attachedProperties->isMoving()) {
+    if (d->parentAttached && d->parentAttached->isMoving()) {
         // while moving, we cannot select any items
         return;
     }
@@ -940,8 +940,8 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         if (d->swiped) {
             UCActionPanel::grabPanel(&d->leadingPanel, this, true);
             UCActionPanel::grabPanel(&d->trailingPanel, this, false);
-            if (d->attachedProperties) {
-                d->attachedProperties->disableInteractive(this, true);
+            if (d->parentAttached) {
+                d->parentAttached->disableInteractive(this, true);
             }
         }
     }
@@ -956,8 +956,8 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
     // set released
     if (d->highlighted) {
         d->listenToRebind(false);
-        if (d->attachedProperties) {
-            d->attachedProperties->disableInteractive(this, false);
+        if (d->parentAttached) {
+            d->parentAttached->disableInteractive(this, false);
         }
 
         if (!d->suppressClick) {
@@ -992,8 +992,8 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             // still in use in other panels. See UCListItemActionsPrivate::connectToListItem
             leadingAttached = UCActionPanel::grabPanel(&d->leadingPanel, this, true);
             trailingAttached = UCActionPanel::grabPanel(&d->trailingPanel, this, false);
-            if (d->attachedProperties) {
-                d->attachedProperties->disableInteractive(this, true);
+            if (d->parentAttached) {
+                d->parentAttached->disableInteractive(this, true);
             }
             // create animator if not created yet
             if (!d->animator) {

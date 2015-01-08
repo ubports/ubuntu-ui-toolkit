@@ -77,7 +77,7 @@ public:
     QColor highlightColor;
     QPointer<QQuickItem> countOwner;
     QPointer<QQuickFlickable> flickable;
-    QPointer<UCViewItemsAttached> attachedProperties;
+    QPointer<UCViewItemsAttached> parentAttached;
     QQuickItem *contentItem;
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
