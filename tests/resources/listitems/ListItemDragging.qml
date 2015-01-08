@@ -27,7 +27,7 @@ MainView {
         title: "Dragging test"
         ListView {
             anchors.fill: parent
-            ListItem.selectMode: ListItem.dragMode
+//            ViewItems.selectMode: ViewItems.dragMode
             contentItem.objectName: "ListViewContent"
 
             model: ListModel {
@@ -39,6 +39,7 @@ MainView {
             }
 
             delegate: ListItem {
+                id: item
                 objectName: "ListItem-" + index
                 leadingActions: ListItemActions {
                     actions: Action {
@@ -46,13 +47,17 @@ MainView {
                     }
                 }
 
+                Rectangle {
+                    anchors.fill: parent
+                    color: "#69aa69"
+                }
                 Label {
                     text: label
                 }
 
                 onPressAndHold: {
                     print("entering/leaving draggable mode")
-                    ListView.view.ListItem.dragMode = !ListView.view.ListItem.dragMode;
+                    ListView.view.ViewItems.dragMode = !ListView.view.ViewItems.dragMode;
                 }
             }
         }

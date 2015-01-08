@@ -34,67 +34,6 @@ Styles.ListItemStyle {
     }
 
     // the selection/multiselection panel
+    dragHandlerDelegate: ListItemDragHandler {}
     selectionDelegate: ListItemSelect{}
-
-    dragHandlerDelegate: Item {
-        id: dragHandler
-        objectName: "draghandler_panel" + index
-        width: units.gu(5)
-
-        readonly property ListItem listItem: parent
-        /*
-          Internally used to link to the list item's content. The parent item is the ListItem itself.
-          */
-        readonly property Item contentItem: listItem ? listItem.contentItem : null
-
-        anchors {
-            right: listItem ? listItem.right : undefined
-            top: contentItem ? contentItem.top : undefined
-            bottom: contentItem ? contentItem.bottom : undefined
-        }
-
-        Icon {
-            objectName: "icon"
-            id: dragIcon
-            anchors.centerIn: parent
-            width: units.gu(3)
-            height: width
-            name: "view-grid-symbolic"
-            opacity: 0.0
-            scale: 0.5
-        }
-
-        states: State {
-            name: "enabled"
-            PropertyChanges {
-                target: dragIcon
-                opacity: 1.0
-                scale: 1.0
-            }
-            PropertyChanges {
-                target: contentItem
-                width: listItem.width - dragHandler.width - (listItem.selectable ? units.gu(5) : 0)
-            }
-        }
-
-        transitions: Transition {
-            from: ""
-            to: "enabled"
-            enabled: dragHandler.ListItem.animate
-            reversible: true
-            PropertyAnimation {
-                target: dragIcon
-                properties: "opacity,scale"
-                easing: UbuntuAnimation.StandardEasing
-                duration: UbuntuAnimation.FastDuration
-            }
-        }
-
-        // make sure the state is changed only after component completion
-        Component.onCompleted: {
-            state = Qt.binding(function () {
-                return ListItem.item.draggable ? "enabled" : "";
-            });
-        }
-    }
 }
