@@ -69,7 +69,8 @@ public:
     void setHighlighted(bool pressed);
     void setSwiped(bool tugged);
     void listenToRebind(bool listen);
-    void resize();
+    void lockContentItem(bool lock);
+    void adjustContentItemHeight();
     void update();
     void clampAndMoveX(qreal &x, qreal dx);
 
@@ -91,7 +92,7 @@ public:
     QColor highlightColor;
     QPointer<QQuickItem> countOwner;
     QPointer<QQuickFlickable> flickable;
-    QPointer<UCViewItemsAttached> attachedProperties;
+    QPointer<UCViewItemsAttached> parentAttached;
     QQuickItem *contentItem;
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
@@ -212,6 +213,7 @@ private:
     QQuickItem *panelItem;
     UCListItem::PanelStatus status;
     bool leading:1;
+    bool connected:1;
 };
 
 class UCListItemDivider : public QObject
