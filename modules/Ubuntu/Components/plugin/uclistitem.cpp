@@ -88,6 +88,8 @@ bool UCListItemSnapAnimator::snap(qreal to)
     if (!snap) {
         // no animation, so we simply position the component
         listItem->contentItem->setX(to);
+        // lock contentItem left/right edges
+        listItem->lockContentItem(true);
         return false;
     }
     snap->setTargetObject(listItem->contentItem);
@@ -134,9 +136,9 @@ void UCListItemSnapAnimator::snapOut()
         QObject::disconnect(snap, 0, 0, 0);
     }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    if (listItem->attachedProperties) {
+    if (listItem->parentAttached) {
         // restore flickable's interactive and cleanup
-        listItem->attachedProperties->disableInteractive(item, false);
+        listItem->parentAttached->disableInteractive(item, false);
         // no need to listen flickables any longer
         listItem->listenToRebind(false);
     }
@@ -145,6 +147,8 @@ void UCListItemSnapAnimator::snapOut()
     UCActionPanel::ungrabPanel(listItem->trailingPanel);
     // set contentMoved to false
     listItem->setContentMoving(false);
+    // lock contentItem left/right edges
+    listItem->lockContentItem(true);
 }
 
 /*
@@ -213,6 +217,7 @@ void UCListItemDivider::unitsChanged()
         m_rightMargin = UCUnits::instance().dp(2);
     }
     if (m_listItem) {
+        m_listItem->adjustContentItemHeight();
         m_listItem->update();
     }
 }
@@ -276,9 +281,9 @@ void UCListItemDivider::setVisible(bool visible)
         return;
     }
     m_visible = visible;
-    m_listItem->resize();
-    m_listItem->update();
     Q_EMIT visibleChanged();
+    // set/reset contentItem's bottomMargin
+    m_listItem->adjustContentItemHeight();
 }
 
 void UCListItemDivider::setLeftMargin(qreal leftMargin)
@@ -344,7 +349,7 @@ UCListItemPrivate::UCListItemPrivate()
     , overshoot(0)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
-    , attachedProperties(0)
+    , parentAttached(0)
     , contentItem(new QQuickItem)
     , divider(new UCListItemDivider)
     , leadingActions(0)
@@ -605,20 +610,34 @@ void UCListItemPrivate::setSwiped(bool swiped)
 // connects/disconnects from the Flickable anchestor to get notified when to do rebound
 void UCListItemPrivate::listenToRebind(bool listen)
 {
-    if (attachedProperties) {
+    if (parentAttached) {
         Q_Q(UCListItem);
-        attachedProperties->listenToRebind(q, listen);
+        parentAttached->listenToRebind(q, listen);
     }
 }
 
-void UCListItemPrivate::resize()
+// lock/unlock contentItem's left and right anchors to the ListItem's left and right
+void UCListItemPrivate::lockContentItem(bool lock)
 {
-    Q_Q(UCListItem);
-    QRectF rect(q->boundingRect());
-    if (divider && divider->m_visible) {
-        rect.setHeight(rect.height() - divider->m_thickness);
+    QQuickAnchors *contentAnchors = QQuickItemPrivate::get(contentItem)->anchors();
+    if (lock) {
+        contentAnchors->setLeft(left());
+        contentAnchors->setRight(right());
+    } else {
+        contentAnchors->resetLeft();
+        contentAnchors->resetRight();
     }
-    contentItem->setSize(rect.size());
+}
+
+// adjust contentItem height depending on teh divider's visibility
+void UCListItemPrivate::adjustContentItemHeight()
+{
+    QQuickAnchors *contentAnchors = QQuickItemPrivate::get(contentItem)->anchors();
+    if (divider->m_visible) {
+        contentAnchors->setBottomMargin(divider->m_thickness);
+    } else {
+        contentAnchors->resetBottomMargin();
+    }
 }
 
 void UCListItemPrivate::update()
@@ -847,6 +866,13 @@ void UCListItem::componentComplete()
 {
     UCStyledItemBase::componentComplete();
     Q_D(UCListItem);
+    // anchor contentItem prior doing anything else
+    QQuickAnchors *contentAnchors = QQuickItemPrivate::get(d->contentItem)->anchors();
+    contentAnchors->setTop(d->top());
+    contentAnchors->setBottom(d->bottom());
+    d->adjustContentItemHeight();
+    d->lockContentItem(true);
+
     d->ready = true;
     /* We only deal with ListView, as for other cases we would need to check the children
      * changes, which would have an enormous impact on performance in case of huge amount
@@ -882,14 +908,14 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         // attach ListItem properties to the flickable or to the parent item
         if (d->flickable) {
             // connect to flickable to get width changes
-            d->attachedProperties = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(d->flickable));
+            d->parentAttached = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(d->flickable));
         } else if (data.item) {
-            d->attachedProperties = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(data.item));
+            d->parentAttached = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(data.item));
         } else {
             // mark as not ready, so no action should be performed which depends on readyness
             d->ready = false;
             // about to be deleted or reparented, disable attached
-            d->attachedProperties = 0;
+            d->parentAttached = 0;
         }
 
         if (data.item) {
@@ -899,14 +925,6 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
         // update size
         d->_q_updateSize();
     }
-}
-
-void UCListItem::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
-{
-    UCStyledItemBase::geometryChanged(newGeometry, oldGeometry);
-    // resize contentItem item
-    Q_D(UCListItem);
-    d->resize();
 }
 
 QSGNode *UCListItem::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data)
@@ -965,7 +983,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
 {
     UCStyledItemBase::mousePressEvent(event);
     Q_D(UCListItem);
-    if (d->attachedProperties && d->attachedProperties->isMoving()) {
+    if (d->parentAttached && d->parentAttached->isMoving()) {
         // while moving, we cannot select any items
         return;
     }
@@ -979,8 +997,8 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         if (d->swiped) {
             UCActionPanel::grabPanel(&d->leadingPanel, this, true);
             UCActionPanel::grabPanel(&d->trailingPanel, this, false);
-            if (d->attachedProperties) {
-                d->attachedProperties->disableInteractive(this, true);
+            if (d->parentAttached) {
+                d->parentAttached->disableInteractive(this, true);
             }
         }
     }
@@ -995,8 +1013,8 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
     // set released
     if (d->highlighted) {
         d->listenToRebind(false);
-        if (d->attachedProperties) {
-            d->attachedProperties->disableInteractive(this, false);
+        if (d->parentAttached) {
+            d->parentAttached->disableInteractive(this, false);
         }
 
         if (!d->suppressClick) {
@@ -1036,8 +1054,10 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             // still in use in other panels. See UCListItemActionsPrivate::connectToListItem
             leadingAttached = UCActionPanel::grabPanel(&d->leadingPanel, this, true);
             trailingAttached = UCActionPanel::grabPanel(&d->trailingPanel, this, false);
-            if (d->attachedProperties) {
-                d->attachedProperties->disableInteractive(this, true);
+            // unlock contentItem's left/right edges
+            d->lockContentItem(false);
+            if (d->parentAttached) {
+                d->parentAttached->disableInteractive(this, true);
             }
             // create animator if not created yet
             if (!d->animator) {
