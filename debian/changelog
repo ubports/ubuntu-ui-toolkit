@@ -1,3 +1,10 @@
+ubuntu-ui-toolkit (1.1.1298+15.04.20150109~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ Christian Dywan ]
+  * Take frameSpacing into account when location cursor (LP: #1384749)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 09 Jan 2015 17:38:20 +0000
+
 ubuntu-ui-toolkit (1.1.1298+15.04.20150107~rtm-0ubuntu1) 14.09; urgency=low
 
   [ Zsombor Egri ]
