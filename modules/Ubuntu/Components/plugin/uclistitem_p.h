@@ -22,6 +22,15 @@
 #include <QtCore/QPointer>
 #include <QtQuick/private/qquickrectangle_p.h>
 
+#define MIN(x, y)           ((x < y) ? x : y)
+#define MAX(x, y)           ((x > y) ? x : y)
+#define CLAMP(v, min, max)  (min <= max) ? MAX(min, MIN(v, max)) : MAX(max, MIN(v, min))
+
+#define IMPLICIT_LISTITEM_WIDTH_GU      40
+#define IMPLICIT_LISTITEM_HEIGHT_GU     7
+#define DIVIDER_THICKNESS_DP            2
+#define DEFAULT_SWIPE_THRESHOLD_GU      1.5
+
 class QQuickFlickable;
 class QQuickPropertyAnimation;
 class UCListItemContent;
@@ -213,8 +222,6 @@ private:
     void setColorTo(const QColor &color);
 
     bool m_visible:1;
-    bool m_leftMarginChanged:1;
-    bool m_rightMarginChanged:1;
     bool m_colorFromChanged:1;
     bool m_colorToChanged:1;
     qreal m_thickness;

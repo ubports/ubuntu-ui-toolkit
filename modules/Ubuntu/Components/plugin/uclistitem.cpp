@@ -32,10 +32,6 @@
 #include <QtQuick/private/qquickmousearea_p.h>
 #include "uclistitemstyle.h"
 
-#define MIN(x, y)           ((x < y) ? x : y)
-#define MAX(x, y)           ((x > y) ? x : y)
-#define CLAMP(v, min, max)  (min <= max) ? MAX(min, MIN(v, max)) : MAX(max, MIN(v, min))
-
 QColor getPaletteColor(const char *profile, const char *color)
 {
     QColor result;
@@ -180,8 +176,6 @@ QQuickPropertyAnimation *UCListItemSnapAnimator::getDefaultAnimation()
 UCListItemDivider::UCListItemDivider(QObject *parent)
     : QObject(parent)
     , m_visible(true)
-    , m_leftMarginChanged(false)
-    , m_rightMarginChanged(false)
     , m_colorFromChanged(false)
     , m_colorToChanged(false)
     , m_thickness(0)
@@ -206,13 +200,7 @@ void UCListItemDivider::init(UCListItem *listItem)
 
 void UCListItemDivider::unitsChanged()
 {
-    m_thickness = UCUnits::instance().dp(2);
-    if (!m_leftMarginChanged) {
-        m_leftMargin = UCUnits::instance().dp(2);
-    }
-    if (!m_rightMarginChanged) {
-        m_rightMargin = UCUnits::instance().dp(2);
-    }
+    m_thickness = UCUnits::instance().dp(DIVIDER_THICKNESS_DP);
     if (m_listItem) {
         m_listItem->adjustContentItemHeight();
         m_listItem->update();
@@ -289,7 +277,6 @@ void UCListItemDivider::setLeftMargin(qreal leftMargin)
         return;
     }
     m_leftMargin = leftMargin;
-    m_leftMarginChanged = true;
     m_listItem->update();
     Q_EMIT leftMarginChanged();
 }
@@ -300,7 +287,6 @@ void UCListItemDivider::setRightMargin(qreal rightMargin)
         return;
     }
     m_rightMargin = rightMargin;
-    m_rightMarginChanged = true;
     m_listItem->update();
     Q_EMIT rightMarginChanged();
 }
@@ -342,7 +328,7 @@ UCListItemPrivate::UCListItemPrivate()
     , customColor(false)
     , customOvershoot(false)
     , flicked(false)
-    , xAxisMoveThresholdGU(1.5)
+    , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
     , overshoot(0)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
@@ -526,8 +512,8 @@ void UCListItemPrivate::_q_updateSize()
 {
     Q_Q(UCListItem);
     QQuickItem *owner = flickable ? flickable : parentItem;
-    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(40));
-    q->setImplicitHeight(UCUnits::instance().gu(7));
+    q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
+    q->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_LISTITEM_HEIGHT_GU));
 }
 
 // returns the index of the list item when used in model driven views,
@@ -867,10 +853,12 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             d->flickable = qobject_cast<QQuickFlickable*>(data.item->parentItem());
         }
 
-        // attach ListItem properties to the flickable or to the parent item
-        if (d->flickable) {
-            // connect to flickable to get width changes
+        // attach ViewItems to parent item or to ListView
+        QQuickItem *parentAttachee = data.item;
+        if (d->flickable && d->flickable->inherits("QQuickListView")) {
+            // attach to ListView
             d->parentAttached = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(d->flickable));
+            parentAttachee = d->flickable;
         } else if (data.item) {
             d->parentAttached = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(data.item));
         } else {
@@ -880,8 +868,8 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             d->parentAttached = 0;
         }
 
-        if (data.item) {
-            QObject::connect(d->flickable ? d->flickable : data.item, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()));
+        if (parentAttachee) {
+            QObject::connect(parentAttachee, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
         }
 
         // update size
@@ -1188,8 +1176,8 @@ QQuickItem* UCListItem::contentItem() const
  * The default values for the properties are:
  * \list
  * \li \c visible: true
- * \li \c leftMargin: 2 GU
- * \li \c rightMargin: 2 GU
+ * \li \c leftMargin: 0
+ * \li \c rightMargin: 0
  * \endlist
  */
 UCListItemDivider* UCListItem::divider() const
