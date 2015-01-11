@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.1.1370+15.04.20141217-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.1.1376+15.04.20141217-0ubuntu2) UNRELEASED; urgency=medium
 
   [ Tim Peeters ]
   * Add a preview of the new list items to the UITK component gallery.
