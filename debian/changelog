@@ -1,3 +1,24 @@
+ubuntu-ui-toolkit (1.1.1376+15.04.20141217-0ubuntu2) UNRELEASED; urgency=medium
+
+  [ Tim Peeters ]
+  * Add a preview of the new list items to the UITK component gallery.
+
+  [ Zoltan Balogh ]
+  * Update the test plan and fix the PPA string in case it contains backslash.
+  * Added Dialog CPO to test if OSK pushes up the the dialog.
+
+  [ Zsombor Egri ]
+  * ListItem highlight is driven also by the connection of a slot to 
+    the clicked() signal. This will also be applied when pressAndHold 
+    signal will be introduced. Fixes LP: #1399025
+
+  [ Giulio Collura ]
+  * Force the removal of the previous 'contents' item by removing its parent. 
+    This way we ensure that the contents are correctly hidden, focused and 
+    removed, without destroying them. Fixes LP: #1341814 LP: #1400297
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Sun, 11 Jan 2015 19:25:07 +0200
+
 ubuntu-ui-toolkit (1.1.1370+15.04.20141217-0ubuntu1) vivid; urgency=medium
 
   [ Zoltán Balogh ]
