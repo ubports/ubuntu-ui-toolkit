@@ -1,4 +1,4 @@
-ubuntu-ui-toolkit (1.1.1376+15.04.20141217-0ubuntu2) UNRELEASED; urgency=medium
+ubuntu-ui-toolkit (1.1.1376+15.04.20150111-0ubuntu1) vivid; urgency=medium
 
   [ Tim Peeters ]
   * Add a preview of the new list items to the UITK component gallery.
@@ -17,7 +17,7 @@ ubuntu-ui-toolkit (1.1.1376+15.04.20141217-0ubuntu2) UNRELEASED; urgency=medium
     This way we ensure that the contents are correctly hidden, focused and 
     removed, without destroying them. Fixes LP: #1341814 LP: #1400297
 
- -- Zoltán Balogh <zoltan@bakter.hu>  Sun, 11 Jan 2015 19:25:07 +0200
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sun, 11 Jan 2015 18:57:02 +0000
 
 ubuntu-ui-toolkit (1.1.1370+15.04.20141217-0ubuntu1) vivid; urgency=medium
 
