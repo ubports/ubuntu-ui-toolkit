@@ -117,6 +117,9 @@ void UCViewItemsAttachedPrivate::buildChangesList(const QVariant &newValue)
  * \ingroup unstable-ubuntu-listitems
  * \since Ubuntu.Components 1.2
  * \brief A set of properties attached to the ListItem's parent item or ListView.
+ *
+ * These properties are attached to the parent item of the ListItem, or to
+ * ListView, when the component is used as delegate.
  */
 UCViewItemsAttached::UCViewItemsAttached(QObject *owner)
     : QObject(owner)
@@ -230,14 +233,11 @@ void UCViewItemsAttached::unbindItem()
 
 /*!
  * \qmlattachedproperty bool ViewItems::selectMode
- * The property drives whether list items are selectable or not. The property is
- * attached to the ListItem's parent or to the ListView/Flickable owning the
- * ListItems.
+ * The property drives whether list items are selectable or not.
  *
  * When set, the default style implementation will show a check box on the leading
  * side hanving the content item pushed towards trailing side and dimmed. The checkbox
- * which will reflect and drive the \l {ListItem::selected}{selected} state.
- * Defaults to false.
+ * will reflect and drive the \l ListItem::selected state. Defaults to \c false.
  */
 bool UCViewItemsAttachedPrivate::selectMode() const
 {
@@ -255,26 +255,21 @@ void UCViewItemsAttachedPrivate::setSelectMode(bool value)
 
 /*!
  * \qmlattachedproperty list<int> ViewItems::selectedIndexes
- * The property is automatically attached to the ListItem's parent item, or to
- * the ListView when used with ListView. Contains the indexes of the ListItems
- * marked as selected. The indexes are model indexes when used in ListView, and
- * child indexes in other contexts.
- * \note Setting the ListItem's \l {ListItem::selected}{selected} property to \c
- * true will add the item index to the selection list automatically, and may
- * destroy the initial state of the selection. Therefore it is recommended to
- * drive the selection through the attached property rather through the \l
- * ListItem::selected property. \sa ListItem::selectable, ListItem::selected
+ * The property contains the indexes of the ListItems marked as selected. The
+ * indexes are model indexes when used in ListView, and child indexes in other
+ * components. The property being writable, initial selection configuration
+ * can be provided for a view, and provides ability to save the selection state.
  */
 QList<int> UCViewItemsAttachedPrivate::selectedIndexes() const
 {
-    return selectedList;
+    return selectedList.toList();
 }
 void UCViewItemsAttachedPrivate::setSelectedIndexes(const QList<int> &list)
 {
-    if (selectedList == list) {
+    if (selectedList.toList() == list) {
         return;
     }
-    selectedList = list;
+    selectedList = QSet<int>::fromList(list);
     Q_Q(UCViewItemsAttached);
     Q_EMIT q->selectedIndexesChanged();
 }
@@ -283,13 +278,13 @@ void UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
 {
     int index = UCListItemPrivate::get(item)->index();
     if (!selectedList.contains(index)) {
-        selectedList.append(index);
+        selectedList.insert(index);
         Q_EMIT q_ptr->selectedIndexesChanged();
     }
 }
 void UCViewItemsAttachedPrivate::removeSelectedItem(UCListItem *item)
 {
-    if (selectedList.removeAll(UCListItemPrivate::get(item)->index()) > 0) {
+    if (selectedList.remove(UCListItemPrivate::get(item)->index()) > 0) {
         Q_EMIT q_ptr->selectedIndexesChanged();
     }
 }

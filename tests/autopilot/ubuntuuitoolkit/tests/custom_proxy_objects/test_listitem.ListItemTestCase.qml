@@ -27,14 +27,14 @@ MainView {
     Page {
         id: testPage
         objectName: "test_page"
-        title: listView.ListItem.selectable ? "In selection mode" : "No action triggered"
+        title: listView.ViewItems.selectMode ? "In selection mode" : "No action triggered"
         ListView {
             id: listView
             anchors.fill: parent
             model: 25
             delegate: ListItem {
                 objectName: "listitem" + index
-                onPressAndHold: listView.ListItem.selectMode = true
+                onPressAndHold: listView.ViewItems.selectMode = true
                 leadingActions: ListItemActions {
                     actions: [
                         Action {

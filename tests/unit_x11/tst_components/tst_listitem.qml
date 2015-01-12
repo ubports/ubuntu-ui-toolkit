@@ -18,6 +18,7 @@ import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.2
+import Ubuntu.Components.Styles 1.2
 
 Item {
     id: main
@@ -113,6 +114,7 @@ Item {
                 width: parent.width
                 leadingActions: leading
                 trailingActions: trailing
+                Label { text: modelData }
             }
         }
         Flickable {
@@ -238,8 +240,8 @@ Item {
             compare(defaults.highlighted, false, "Not highlighted by default");
             compare(defaults.swipeOvershoot, 0.0, "No overshoot till the style is loaded!");
             compare(defaults.divider.visible, true, "divider is visible by default");
-            compare(defaults.divider.leftMargin, units.dp(2), "divider's left margin is 2GU");
-            compare(defaults.divider.rightMargin, units.dp(2), "divider's right margin is 2GU");
+            compare(defaults.divider.leftMargin, 0, "divider's left margin is 0");
+            compare(defaults.divider.rightMargin, 0, "divider's right margin is 0");
             compare(defaults.divider.colorFrom, "#000000", "colorFrom differs.");
             fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
@@ -255,6 +257,14 @@ Item {
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
+        }
+
+        Component { id: customStyle; ListItemStyle {} }
+
+        function test_style_reset() {
+            testItem.style = customStyle;
+            testItem.style = undefined;
+            verify(testItem.style != 0, "Style set back to theme")
         }
 
         function test_children_in_content_item() {
@@ -807,7 +817,7 @@ Item {
          }
         function test_toggle_selected(data) {
             // make test item selectable first, so the panel is created
-            data.selectableHolder.ViewItems.selectable = true;
+            data.selectableHolder.ViewItems.selectMode = true;
             waitForRendering(data.item.contentItem);
             // get the control to click on
             var clickOn = findChild(data.item, data.clickOn);
@@ -820,6 +830,27 @@ Item {
                 expectFail(data.tag, "Clicking anywhere else but selection panel should not toggle selection state!");
             }
             selectedSpy.wait();
+        }
+
+        SignalSpy {
+            id: selectedIndexesSpy
+            signalName: "selectedIndexesChanged"
+            target: listView.ViewItems
+        }
+
+        function test_selectedIndexes_change() {
+            // move to the end of the view
+            listView.positionViewAtEnd();
+            var listItem = findChild(listView, "listItem" + (listView.count - 1));
+            verify(listItem, "Cannot get tested list item");
+            listView.ViewItems.selectMode = true;
+            waitForRendering(listItem);
+            selectedSpy.target = listItem;
+            selectedSpy.clear();
+
+            listItem.selected = true;
+            selectedSpy.wait();
+            selectedIndexesSpy.wait();
         }
 
         function test_no_tug_when_selectable() {

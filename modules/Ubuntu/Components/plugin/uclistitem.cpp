@@ -36,10 +36,6 @@
 #include "uclistitemstyle.h"
 #include "listener.h"
 
-#define MIN(x, y)           ((x < y) ? x : y)
-#define MAX(x, y)           ((x > y) ? x : y)
-#define CLAMP(v, min, max)  (min <= max) ? MAX(min, MIN(v, max)) : MAX(max, MIN(v, min))
-
 QColor getPaletteColor(const char *profile, const char *color)
 {
     QColor result;
@@ -133,8 +129,12 @@ bool UCListItemSnapAnimator::snap(qreal to)
     if (!snap) {
         // no animation, so we simply position the component
         listItem->contentItem->setX(to);
-        // lock contentItem left/right edges
-        listItem->lockContentItem(true);
+        // and complete snap logic
+        if (to == 0.0) {
+            snapOut();
+        } else {
+            snapIn();
+        }
         return false;
     }
     snap->setTargetObject(listItem->contentItem);
@@ -228,8 +228,6 @@ QQuickPropertyAnimation *UCListItemSnapAnimator::getDefaultAnimation()
 UCListItemDivider::UCListItemDivider(QObject *parent)
     : QObject(parent)
     , m_visible(true)
-    , m_leftMarginChanged(false)
-    , m_rightMarginChanged(false)
     , m_colorFromChanged(false)
     , m_colorToChanged(false)
     , m_thickness(0)
@@ -255,12 +253,6 @@ void UCListItemDivider::init(UCListItem *listItem)
 void UCListItemDivider::unitsChanged()
 {
     m_thickness = UCUnits::instance().dp(DIVIDER_THICKNESS_DP);
-    if (!m_leftMarginChanged) {
-        m_leftMargin = UCUnits::instance().dp(DIVIDER_LEFT_MARGIN_DP);
-    }
-    if (!m_rightMarginChanged) {
-        m_rightMargin = UCUnits::instance().dp(DIVIDER_RIGHT_MARGIN_DP);
-    }
     if (m_listItem) {
         m_listItem->adjustContentItemHeight();
         m_listItem->update();
@@ -337,7 +329,6 @@ void UCListItemDivider::setLeftMargin(qreal leftMargin)
         return;
     }
     m_leftMargin = leftMargin;
-    m_leftMarginChanged = true;
     m_listItem->update();
     Q_EMIT leftMarginChanged();
 }
@@ -348,7 +339,6 @@ void UCListItemDivider::setRightMargin(qreal rightMargin)
         return;
     }
     m_rightMargin = rightMargin;
-    m_rightMarginChanged = true;
     m_listItem->update();
     Q_EMIT rightMarginChanged();
 }
@@ -382,11 +372,9 @@ UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
     , highlighted(false)
     , contentMoved(false)
-    , highlightColorChanged(false)
     , swiped(false)
     , suppressClick(false)
     , ready(false)
-    , customStyle(false)
     , customColor(false)
     , customOvershoot(false)
     , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
@@ -405,6 +393,7 @@ UCListItemPrivate::UCListItemPrivate()
     , selectionHandler(0)
     , dragHandler(0)
     , styleComponent(0)
+    , implicitStyleComponent(0)
     , styleItem(0)
 {
 }
@@ -464,13 +453,17 @@ bool UCListItemPrivate::isPressAndHoldConnected()
 
 void UCListItemPrivate::_q_updateThemedData()
 {
+    Q_Q(UCListItem);
+    // we reload the implicit style only if the custom style is not set, and
+    // the component is ready
+    if (!styleComponent && ready) {
+        resetStyle();
+    }
+
     // update colors, panels
     if (!customColor) {
-        Q_Q(UCListItem);
-        highlightColor = getPaletteColor("selected", "background");
-        q->update();
+        q->resetHighlightColor();
     }
-    loadStyle(true);
 }
 
 void UCListItemPrivate::_q_rebound()
@@ -503,7 +496,7 @@ void UCListItemPrivate::_q_updateIndex()
  */
 QQmlComponent *UCListItemPrivate::style() const
 {
-    return styleComponent;
+    return styleComponent ? styleComponent : implicitStyleComponent;
 }
 void UCListItemPrivate::setStyle(QQmlComponent *delegate)
 {
@@ -511,56 +504,88 @@ void UCListItemPrivate::setStyle(QQmlComponent *delegate)
         return;
     }
     Q_Q(UCListItem);
+    if (!delegate) {
+        // undefined or null delegate resets the style to theme
+        resetStyle();
+        return;
+    }
     // make sure we're rebound before we change the panel component
     promptRebound();
+    bool reloadStyle = styleItem != 0;
     if (styleItem) {
-        delete styleItem;
+        styleItem->deleteLater();
         styleItem = 0;
         Q_EMIT q->__styleInstanceChanged();
     }
-    delete styleComponent;
-    customStyle = (delegate == 0);
     styleComponent = delegate;
-    loadStyle(false);
+    // delete theme style for now
+    if (implicitStyleComponent) {
+        implicitStyleComponent->deleteLater();
+        implicitStyleComponent = 0;
+    }
+    if (reloadStyle) {
+        initStyleItem();
+    }
     Q_EMIT q->styleChanged();
 }
-
-// update themed components
-bool UCListItemPrivate::loadStyle(bool reload)
+void UCListItemPrivate::resetStyle()
 {
-    if (!ready) {
-        return false;
-    }
-    if (!customStyle) {
-        Q_Q(UCListItem);
-        if (reload && styleItem) {
-            delete styleItem;
-            styleItem = 0;
-            Q_EMIT q->__styleInstanceChanged();
+    if (styleComponent || !implicitStyleComponent) {
+        styleComponent = 0;
+        // rebound as the current panels are not gonna be valid anymore
+        if (swiped) {
+            promptRebound();
         }
-        delete styleComponent;
-        styleComponent = UCTheme::instance().createStyleComponent("ListItemStyle.qml", q);
+        bool reloadStyle = styleItem != 0;
+        if (styleItem) {
+            styleItem->deleteLater();
+            styleItem = 0;
+        }
+        delete implicitStyleComponent;
+        Q_Q(UCListItem);
+        implicitStyleComponent = UCTheme::instance().createStyleComponent("ListItemStyle.qml", q);
+        // re-create style instance if it was created using the implicit style
+        if (reloadStyle) {
+            initStyleItem();
+        }
+        Q_EMIT q->styleChanged();
     }
-    return (styleComponent != NULL);
 }
+
 // creates the style item
 void UCListItemPrivate::initStyleItem()
 {
-    if (!styleItem && !loadStyle(false)) {
+    if (!ready || styleItem) {
         return;
     }
+    // get the component the style instance is created from
     Q_Q(UCListItem);
-    QQmlContext *context = new QQmlContext(qmlContext(q), q);
+    QQmlComponent *delegate = style();
+    if (!delegate) {
+        // the style is not loaded from the theme yet
+        _q_updateThemedData();
+        delegate = style();
+    }
+    if (!delegate) {
+        return;
+    }
+    if (delegate->isError()) {
+        qmlInfo(q) << delegate->errorString();
+        return;
+    }
+    QQmlContext *context = new QQmlContext(qmlContext(q));
     context->setContextProperty("styledItem", q);
-    QObject *object = styleComponent->beginCreate(context);
+    QObject *object = delegate->beginCreate(context);
     styleItem = qobject_cast<UCListItemStyle*>(object);
     if (!styleItem) {
         delete object;
-        styleComponent->completeCreate();
+        delegate->completeCreate();
+        delete context;
         return;
     }
+    context->setParent(styleItem);
     QQml_setParent_noEvent(styleItem, q);
-    styleComponent->completeCreate();
+    delegate->completeCreate();
     Q_EMIT q->__styleInstanceChanged();
 
     // get the overshoot value from the style!
@@ -721,9 +746,11 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
 {
     x += dx;
     // min cannot be less than the trailing's panel width
-    qreal min = (trailingPanel) ? -trailingPanel->panel()->width() - overshoot: 0;
+    QQuickItem *leadingPanelItem = leadingPanel ? leadingPanel->panel() : 0;
+    QQuickItem *trailingPanelItem = trailingPanel ? trailingPanel->panel() : 0;
+    qreal min = (trailingPanelItem) ? -trailingPanelItem->width() - overshoot: 0;
     // max cannot be bigger than 0 or the leading's width in case we have leading panel
-    qreal max = (leadingPanel) ? leadingPanel->panel()->width() + overshoot: 0;
+    qreal max = (leadingPanelItem) ? leadingPanelItem->width() + overshoot: 0;
     x = CLAMP(x, min, max);
 }
 
@@ -878,7 +905,7 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * The component is styled using the \l ListItemStyle style interface.
  *
  * \section3 Selection mode
- * The selection mode of a ListItem is controlled by the ViewItems::selectable
+ * The selection mode of a ListItem is controlled by the \l ViewItems::selectMode
  * attached property. This property is attached to each parent item of the ListItem
  * exception being when used as delegate in ListView, where the property is attached
  * to the view itself.
@@ -1030,12 +1057,12 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             d->flickable = qobject_cast<QQuickFlickable*>(data.item->parentItem());
         }
 
-        // check if the flickable is actually a ListView
-        QQuickItem *sizer = data.item;
+        // attach ViewItems to parent item or to ListView
+        QQuickItem *parentAttachee = data.item;
         if (d->flickable && d->flickable->inherits("QQuickListView")) {
             // the ListItem is a delegate of the ListView, so we attache the porperty to that
             d->parentAttached = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(d->flickable));
-            sizer = d->flickable;
+            parentAttachee = d->flickable;
         } else if (data.item) {
             d->parentAttached = static_cast<UCViewItemsAttached*>(qmlAttachedPropertiesObject<UCViewItemsAttached>(data.item));
         } else {
@@ -1045,8 +1072,8 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
             d->parentAttached = 0;
         }
 
-        if (sizer) {
-            QObject::connect(sizer, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
+        if (parentAttachee) {
+            QObject::connect(parentAttachee, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
         }
 
         // update size
@@ -1381,8 +1408,8 @@ QQuickItem* UCListItem::contentItem() const
  * The default values for the properties are:
  * \list
  * \li \c visible: true
- * \li \c leftMargin: 2 GU
- * \li \c rightMargin: 2 GU
+ * \li \c leftMargin: 0
+ * \li \c rightMargin: 0
  * \endlist
  */
 UCListItemDivider* UCListItem::divider() const
@@ -1501,7 +1528,8 @@ void UCListItem::setColor(const QColor &color)
 
 /*!
  * \qmlproperty color ListItem::highlightColor
- * Configures the color when highlighted. Defaults to the theme palette's background color.
+ * Configures the color when highlighted. Defaults to the theme palette's background
+ * color. If changed, it can be reset by assigning undefined as value.
  */
 QColor UCListItem::highlightColor() const
 {
@@ -1517,6 +1545,14 @@ void UCListItem::setHighlightColor(const QColor &color)
     d->highlightColor = color;
     // no more theme change watch
     d->customColor = true;
+    update();
+    Q_EMIT highlightColorChanged();
+}
+void UCListItem::resetHighlightColor()
+{
+    Q_D(UCListItem);
+    d->customColor = false;
+    d->highlightColor = getPaletteColor("selected", "background");
     update();
     Q_EMIT highlightColorChanged();
 }
@@ -1630,7 +1666,7 @@ void UCListItemPrivate::setAction(UCAction *action)
  * \qmlproperty real ListItem::swipeOvershoot
  * The property configures the overshoot value on swiping. Its default value is
  * configured by the \l {ListItemStyle}{style}. Any positive value overrides the
- * default value, and any negative value resets it back to the default.
+ * default value, and any negative or undefined value resets it back to the default.
  */
 qreal UCListItemPrivate::swipeOvershoot() const
 {
@@ -1644,10 +1680,19 @@ void UCListItemPrivate::setSwipeOvershoot(qreal overshoot)
         return;
     }
     customOvershoot = (overshoot >= 0.0);
-    this->overshoot = (overshoot < 0.0) ?
-                // reset, use style to get the overshoot value
-                (styleItem ? styleItem->m_swipeOvershoot : 0.0) :
-                overshoot;
+    if (!customOvershoot) {
+        resetSwipeOvershoot();
+        return;
+    }
+    this->overshoot = overshoot;
+    update();
+    Q_Q(UCListItem);
+    Q_EMIT q->swipeOvershootChanged();
+}
+void UCListItemPrivate::resetSwipeOvershoot()
+{
+    customOvershoot = false;
+    overshoot = styleItem ? styleItem->m_swipeOvershoot : 0.0;
     update();
     Q_Q(UCListItem);
     Q_EMIT q->swipeOvershootChanged();

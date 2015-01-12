@@ -16,6 +16,7 @@
 
 import QtQuick 2.2
 import Ubuntu.Components 1.2
+import Ubuntu.Components.Styles 1.2
 
 MainView {
     id: main
@@ -146,13 +147,16 @@ MainView {
 
         ListItem {
             Label {
+                id: label2
                 anchors.fill: parent
-                text: "Another standalone ListItem"
+                text: "Another standalone ListItem\nStarted with custom style, reset to theme style on first click"
             }
             leadingActions: testItem.leadingActions
             trailingActions: ListItemActions {
                 actions: leading.actions
             }
+            style: ListItemStyle {}
+            onClicked: { style = undefined; label2.text = "Another standalone ListItem" }
         }
 
         ListView {
