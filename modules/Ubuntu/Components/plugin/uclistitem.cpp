@@ -869,11 +869,10 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * The component is styled using the \l ListItemStyle style interface.
  *
  * \section3 Selection mode
- * The selection mode of a ListItem is controlled by the ViewItems::selectable
+ * The selection mode of a ListItem is controlled by the \l ViewItems::selectMode
  * attached property. This property is attached to each parent item of the ListItem
  * exception being when used as delegate in ListView, where the property is attached
- * to the view itself, as well as when used with Positioner embedded in a Flickable,
- * in which case the proeprty will be attached to the Flickable itself.
+ * to the view itself.
  * \qml
  * import QtQuick 2.3
  * import Ubuntu.Components 1.2
