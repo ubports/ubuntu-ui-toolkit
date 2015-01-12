@@ -23,6 +23,15 @@
 #include <QtCore/QBasicTimer>
 #include <QtQuick/private/qquickrectangle_p.h>
 
+#define MIN(x, y)           ((x < y) ? x : y)
+#define MAX(x, y)           ((x > y) ? x : y)
+#define CLAMP(v, min, max)  (min <= max) ? MAX(min, MIN(v, max)) : MAX(max, MIN(v, min))
+
+#define IMPLICIT_LISTITEM_WIDTH_GU      40
+#define IMPLICIT_LISTITEM_HEIGHT_GU     7
+#define DIVIDER_THICKNESS_DP            2
+#define DEFAULT_SWIPE_THRESHOLD_GU      1.5
+
 class QQuickFlickable;
 class QQuickPropertyAnimation;
 class UCListItemContent;
@@ -69,11 +78,9 @@ public:
 
     bool highlighted:1;
     bool contentMoved:1;
-    bool highlightColorChanged:1;
     bool swiped:1;
     bool suppressClick:1;
     bool ready:1;
-    bool customStyle:1;
     bool customColor:1;
     bool customOvershoot:1;
     qreal xAxisMoveThresholdGU;
@@ -98,18 +105,20 @@ public:
 
     // FIXME move these to StyledItemBase togehther with subtheming.
     QQmlComponent *styleComponent;
+    QQmlComponent *implicitStyleComponent;
     UCListItemStyle *styleItem;
 
     // getters/setters
     qreal swipeOvershoot() const;
     void setSwipeOvershoot(qreal overshoot);
+    void resetSwipeOvershoot();
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
     bool contentMoving() const;
     void setContentMoving(bool moved);
     QQmlComponent *style() const;
     void setStyle(QQmlComponent *delegate);
-    bool loadStyle(bool reload);
+    void resetStyle();
     void initStyleItem();
     QQuickItem *styleInstance() const;
     bool isSelected() const;
@@ -199,7 +208,7 @@ Q_SIGNALS:
 
 private:
     UCActionPanel(UCListItem *item, bool leading);
-    void createPanel(QQmlComponent *panelDelegate);
+    bool createPanel(QQmlComponent *panelDelegate);
     UCListItemAttached *attachedObject();
 
     UCListItem *listItem;
@@ -245,8 +254,6 @@ private:
     void setColorTo(const QColor &color);
 
     bool m_visible:1;
-    bool m_leftMarginChanged:1;
-    bool m_rightMarginChanged:1;
     bool m_colorFromChanged:1;
     bool m_colorToChanged:1;
     qreal m_thickness;
