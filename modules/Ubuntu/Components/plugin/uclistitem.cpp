@@ -1333,7 +1333,7 @@ void UCListItem::resetHighlightColor()
  * \qmlproperty real ListItem::swipeOvershoot
  * The property configures the overshoot value on swiping. Its default value is
  * configured by the \l {ListItemStyle}{style}. Any positive value overrides the
- * default value, and any negative value resets it back to the default.
+ * default value, and any negative or undefined value resets it back to the default.
  */
 qreal UCListItemPrivate::swipeOvershoot() const
 {
@@ -1347,10 +1347,19 @@ void UCListItemPrivate::setSwipeOvershoot(qreal overshoot)
         return;
     }
     customOvershoot = (overshoot >= 0.0);
-    this->overshoot = (overshoot < 0.0) ?
-                // reset, use style to get the overshoot value
-                (styleItem ? styleItem->m_swipeOvershoot : 0.0) :
-                overshoot;
+    if (!customOvershoot) {
+        resetSwipeOvershoot();
+        return;
+    }
+    this->overshoot = overshoot;
+    update();
+    Q_Q(UCListItem);
+    Q_EMIT q->swipeOvershootChanged();
+}
+void UCListItemPrivate::resetSwipeOvershoot()
+{
+    customOvershoot = false;
+    overshoot = styleItem ? styleItem->m_swipeOvershoot : 0.0;
     update();
     Q_Q(UCListItem);
     Q_EMIT q->swipeOvershootChanged();
