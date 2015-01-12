@@ -170,7 +170,7 @@ public:
     UCViewItemsAttached *q_ptr;
     bool globalDisabled:1;
     bool selectable:1;
-    QList<int> selectedList;
+    QSet<int> selectedList;
     QList< QPointer<QQuickFlickable> > flickables;
     QList< PropertyChange* > changes;
     QPointer<UCListItem> boundItem;

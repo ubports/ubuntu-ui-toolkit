@@ -254,14 +254,14 @@ void UCViewItemsAttachedPrivate::setSelectMode(bool value)
  */
 QList<int> UCViewItemsAttachedPrivate::selectedIndexes() const
 {
-    return selectedList;
+    return selectedList.toList();
 }
 void UCViewItemsAttachedPrivate::setSelectedIndexes(const QList<int> &list)
 {
-    if (selectedList == list) {
+    if (selectedList.toList() == list) {
         return;
     }
-    selectedList = list;
+    selectedList = QSet<int>::fromList(list);
     Q_Q(UCViewItemsAttached);
     Q_EMIT q->selectedIndexesChanged();
 }
@@ -270,13 +270,13 @@ void UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
 {
     int index = UCListItemPrivate::get(item)->index();
     if (!selectedList.contains(index)) {
-        selectedList.append(index);
+        selectedList.insert(index);
         Q_EMIT q_ptr->selectedIndexesChanged();
     }
 }
 void UCViewItemsAttachedPrivate::removeSelectedItem(UCListItem *item)
 {
-    if (selectedList.removeAll(UCListItemPrivate::get(item)->index()) > 0) {
+    if (selectedList.remove(UCListItemPrivate::get(item)->index()) > 0) {
         Q_EMIT q_ptr->selectedIndexesChanged();
     }
 }

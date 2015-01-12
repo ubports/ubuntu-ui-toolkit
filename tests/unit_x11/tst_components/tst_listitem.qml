@@ -114,6 +114,7 @@ Item {
                 width: parent.width
                 leadingActions: leading
                 trailingActions: trailing
+                Label { text: modelData }
             }
         }
         Flickable {
@@ -816,7 +817,7 @@ Item {
          }
         function test_toggle_selected(data) {
             // make test item selectable first, so the panel is created
-            data.selectableHolder.ViewItems.selectable = true;
+            data.selectableHolder.ViewItems.selectMode = true;
             waitForRendering(data.item.contentItem);
             // get the control to click on
             var clickOn = findChild(data.item, data.clickOn);
@@ -829,6 +830,27 @@ Item {
                 expectFail(data.tag, "Clicking anywhere else but selection panel should not toggle selection state!");
             }
             selectedSpy.wait();
+        }
+
+        SignalSpy {
+            id: selectedIndexesSpy
+            signalName: "selectedIndexesChanged"
+            target: listView.ViewItems
+        }
+
+        function test_selectedIndexes_change() {
+            // move to the end of the view
+            listView.positionViewAtEnd();
+            var listItem = findChild(listView, "listItem" + (listView.count - 1));
+            verify(listItem, "Cannot get tested list item");
+            listView.ViewItems.selectMode = true;
+            waitForRendering(listItem);
+            selectedSpy.target = listItem;
+            selectedSpy.clear();
+
+            listItem.selected = true;
+            selectedSpy.wait();
+            selectedIndexesSpy.wait();
         }
 
         function test_no_tug_when_selectable() {
