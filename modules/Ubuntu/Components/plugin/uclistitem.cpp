@@ -324,7 +324,6 @@ UCListItemPrivate::UCListItemPrivate()
     , swiped(false)
     , suppressClick(false)
     , ready(false)
-    , customStyle(false)
     , customColor(false)
     , customOvershoot(false)
     , flicked(false)
@@ -341,6 +340,7 @@ UCListItemPrivate::UCListItemPrivate()
     , trailingPanel(0)
     , animator(0)
     , styleComponent(0)
+    , implicitStyleComponent(0)
     , styleItem(0)
 {
 }
@@ -384,13 +384,27 @@ bool UCListItemPrivate::isClickedConnected()
 
 void UCListItemPrivate::_q_updateThemedData()
 {
+    Q_Q(UCListItem);
+    // we reload the implicit style only if the custom style is not set, and
+    // the component is ready
+    if (!styleComponent && ready) {
+        // rebound as the current panels are not gonna be valid anymore
+        promptRebound();
+        delete implicitStyleComponent;
+        implicitStyleComponent = UCTheme::instance().createStyleComponent("ListItemStyle.qml", q);
+        // re-create style instance if it was created using the implicit style
+        if (styleItem) {
+            delete styleItem;
+            styleItem = 0;
+            initStyleItem();
+        }
+    }
+
     // update colors, panels
     if (!customColor) {
-        Q_Q(UCListItem);
         highlightColor = getPaletteColor("selected", "background");
         q->update();
     }
-    loadStyle(true);
 }
 
 void UCListItemPrivate::_q_rebound()
@@ -423,7 +437,7 @@ void UCListItemPrivate::_q_updateIndex()
  */
 QQmlComponent *UCListItemPrivate::style() const
 {
-    return styleComponent;
+    return styleComponent ? styleComponent : implicitStyleComponent;
 }
 void UCListItemPrivate::setStyle(QQmlComponent *delegate)
 {
@@ -431,54 +445,81 @@ void UCListItemPrivate::setStyle(QQmlComponent *delegate)
         return;
     }
     Q_Q(UCListItem);
+    if (!delegate) {
+        // undefined or null delegate resets the style to theme
+        resetStyle();
+        return;
+    }
     // make sure we're rebound before we change the panel component
     promptRebound();
+    bool reloadStyle = styleItem != 0;
     if (styleItem) {
-        delete styleItem;
+        styleItem->deleteLater();
         styleItem = 0;
         Q_EMIT q->__styleInstanceChanged();
     }
-    delete styleComponent;
-    customStyle = (delegate == 0);
     styleComponent = delegate;
-    loadStyle(false);
+    // delete theme style for now
+    if (implicitStyleComponent) {
+        implicitStyleComponent->deleteLater();
+        implicitStyleComponent = 0;
+    }
+    if (reloadStyle) {
+        initStyleItem();
+    }
     Q_EMIT q->styleChanged();
 }
-
-// update themed components
-bool UCListItemPrivate::loadStyle(bool reload)
+void UCListItemPrivate::resetStyle()
 {
-    if (!ready) {
-        return false;
-    }
-    if (!customStyle) {
-        Q_Q(UCListItem);
-        if (reload && styleItem) {
-            delete styleItem;
-            styleItem = 0;
-            Q_EMIT q->__styleInstanceChanged();
+    if (styleComponent) {
+        promptRebound();
+        bool reloadStyle = styleItem != 0;
+        styleItem->deleteLater();
+        styleItem = 0;
+        styleComponent = 0;
+        // reset style to load from theme
+        _q_updateThemedData();
+        if (reloadStyle) {
+            initStyleItem();
         }
-        delete styleComponent;
-        styleComponent = UCTheme::instance().createStyleComponent("ListItemStyle.qml", q);
+        Q_Q(UCListItem);
+        Q_EMIT q->styleChanged();
     }
-    return (styleComponent != NULL);
 }
+
 // creates the style item
 void UCListItemPrivate::initStyleItem()
 {
-    if (!styleItem && !loadStyle(false)) {
+    if (!ready || styleItem) {
         return;
     }
+    // get the component the style instance is created from
     Q_Q(UCListItem);
-    QObject *object = styleComponent->beginCreate(qmlContext(q));
+    QQmlComponent *delegate = style();
+    if (!delegate) {
+        // the style is not loaded from the theme yet
+        _q_updateThemedData();
+        delegate = style();
+    }
+    if (!delegate) {
+        return;
+    }
+    if (delegate->isError()) {
+        qmlInfo(q) << delegate->errorString();
+        return;
+    }
+    QQmlContext *context = new QQmlContext(qmlContext(q));
+    QObject *object = delegate->beginCreate(context);
     styleItem = qobject_cast<UCListItemStyle*>(object);
     if (!styleItem) {
         delete object;
-        styleComponent->completeCreate();
+        delegate->completeCreate();
+        delete context;
         return;
     }
+    context->setParent(styleItem);
     QQml_setParent_noEvent(styleItem, q);
-    styleComponent->completeCreate();
+    delegate->completeCreate();
     Q_EMIT q->__styleInstanceChanged();
 
     // get the overshoot value from the style!
@@ -822,6 +863,7 @@ void UCListItem::componentComplete()
     d->lockContentItem(true);
 
     d->ready = true;
+    d->_q_updateThemedData();
     /* We only deal with ListView, as for other cases we would need to check the children
      * changes, which would have an enormous impact on performance in case of huge amount
      * of items. However, if the parent item, or Flickable declares a "count" property,

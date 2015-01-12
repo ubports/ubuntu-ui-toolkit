@@ -75,7 +75,6 @@ public:
     bool swiped:1;
     bool suppressClick:1;
     bool ready:1;
-    bool customStyle:1;
     bool customColor:1;
     bool customOvershoot:1;
     bool flicked:1;
@@ -98,6 +97,7 @@ public:
 
     // FIXME move these to StyledItemBase togehther with subtheming.
     QQmlComponent *styleComponent;
+    QQmlComponent *implicitStyleComponent;
     UCListItemStyle *styleItem;
 
     // getters/setters
@@ -109,7 +109,7 @@ public:
     void setContentMoving(bool moved);
     QQmlComponent *style() const;
     void setStyle(QQmlComponent *delegate);
-    bool loadStyle(bool reload);
+    void resetStyle();
     void initStyleItem();
     QQuickItem *styleInstance() const;
 };
