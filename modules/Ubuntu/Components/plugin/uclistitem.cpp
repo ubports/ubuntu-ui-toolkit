@@ -391,18 +391,7 @@ void UCListItemPrivate::_q_updateThemedData()
     // we reload the implicit style only if the custom style is not set, and
     // the component is ready
     if (!styleComponent && ready) {
-        // rebound as the current panels are not gonna be valid anymore
-        if (swiped) {
-            promptRebound();
-        }
-        delete implicitStyleComponent;
-        implicitStyleComponent = UCTheme::instance().createStyleComponent("ListItemStyle.qml", q);
-        // re-create style instance if it was created using the implicit style
-        if (styleItem) {
-            styleItem->deleteLater();
-            styleItem = 0;
-            initStyleItem();
-        }
+        resetStyle();
     }
 
     // update colors, panels
@@ -475,20 +464,24 @@ void UCListItemPrivate::setStyle(QQmlComponent *delegate)
 }
 void UCListItemPrivate::resetStyle()
 {
-    if (styleComponent) {
-        promptRebound();
+    if (styleComponent || !implicitStyleComponent) {
+        styleComponent = 0;
+        // rebound as the current panels are not gonna be valid anymore
+        if (swiped) {
+            promptRebound();
+        }
         bool reloadStyle = styleItem != 0;
         if (styleItem) {
             styleItem->deleteLater();
             styleItem = 0;
         }
-        styleComponent = 0;
-        // reset style to load from theme
-        _q_updateThemedData();
+        delete implicitStyleComponent;
+        Q_Q(UCListItem);
+        implicitStyleComponent = UCTheme::instance().createStyleComponent("ListItemStyle.qml", q);
+        // re-create style instance if it was created using the implicit style
         if (reloadStyle) {
             initStyleItem();
         }
-        Q_Q(UCListItem);
         Q_EMIT q->styleChanged();
     }
 }
