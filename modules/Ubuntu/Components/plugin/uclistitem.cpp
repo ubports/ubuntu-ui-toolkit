@@ -324,7 +324,6 @@ UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
     , highlighted(false)
     , contentMoved(false)
-    , highlightColorChanged(false)
     , swiped(false)
     , suppressClick(false)
     , ready(false)
@@ -408,8 +407,7 @@ void UCListItemPrivate::_q_updateThemedData()
 
     // update colors, panels
     if (!customColor) {
-        highlightColor = getPaletteColor("selected", "background");
-        q->update();
+        q->resetHighlightColor();
     }
 }
 
@@ -1309,7 +1307,8 @@ void UCListItem::setColor(const QColor &color)
 
 /*!
  * \qmlproperty color ListItem::highlightColor
- * Configures the color when highlighted. Defaults to the theme palette's background color.
+ * Configures the color when highlighted. Defaults to the theme palette's background
+ * color. If changed, it can be reset by assigning undefined as value.
  */
 QColor UCListItem::highlightColor() const
 {
@@ -1325,6 +1324,14 @@ void UCListItem::setHighlightColor(const QColor &color)
     d->highlightColor = color;
     // no more theme change watch
     d->customColor = true;
+    update();
+    Q_EMIT highlightColorChanged();
+}
+void UCListItem::resetHighlightColor()
+{
+    Q_D(UCListItem);
+    d->customColor = false;
+    d->highlightColor = getPaletteColor("selected", "background");
     update();
     Q_EMIT highlightColorChanged();
 }

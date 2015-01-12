@@ -142,6 +142,7 @@ MainView {
             }
             style: ListItemStyle {}
             onClicked: { style = undefined; label2.text = "Another standalone ListItem" }
+            highlightColor: undefined
         }
 
         ListView {
