@@ -176,7 +176,7 @@ Q_SIGNALS:
 
 private:
     UCActionPanel(UCListItem *item, bool leading);
-    void createPanel(QQmlComponent *panelDelegate);
+    bool createPanel(QQmlComponent *panelDelegate);
     UCListItemAttached *attachedObject();
 
     UCListItem *listItem;

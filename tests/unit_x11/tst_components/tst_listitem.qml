@@ -18,11 +18,12 @@ import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.2
+import Ubuntu.Components.Styles 1.2
 
 Item {
     id: main
-    width: units.gu(40)
-    height: units.gu(71)
+    width: units.gu(50)
+    height: units.gu(100)
 
     Action {
         id: stockAction
@@ -101,7 +102,7 @@ Item {
         ListView {
             id: listView
             width: parent.width
-            height: units.gu(21)
+            height: units.gu(28)
             clip: true
             model: 10
             delegate: ListItem {
@@ -204,6 +205,14 @@ Item {
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
+        }
+
+        Component { id: customStyle; ListItemStyle {} }
+
+        function test_style_reset() {
+            testItem.style = customStyle;
+            testItem.style = undefined;
+            verify(testItem.style != 0, "Style set back to theme")
         }
 
         function test_children_in_content_item() {

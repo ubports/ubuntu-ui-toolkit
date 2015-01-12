@@ -81,8 +81,12 @@ bool UCListItemSnapAnimator::snap(qreal to)
     if (!snap) {
         // no animation, so we simply position the component
         listItem->contentItem->setX(to);
-        // lock contentItem left/right edges
-        listItem->lockContentItem(true);
+        // and complete snap logic
+        if (to == 0.0) {
+            snapOut();
+        } else {
+            snapIn();
+        }
         return false;
     }
     snap->setTargetObject(listItem->contentItem);
@@ -389,12 +393,14 @@ void UCListItemPrivate::_q_updateThemedData()
     // the component is ready
     if (!styleComponent && ready) {
         // rebound as the current panels are not gonna be valid anymore
-        promptRebound();
+        if (swiped) {
+            promptRebound();
+        }
         delete implicitStyleComponent;
         implicitStyleComponent = UCTheme::instance().createStyleComponent("ListItemStyle.qml", q);
         // re-create style instance if it was created using the implicit style
         if (styleItem) {
-            delete styleItem;
+            styleItem->deleteLater();
             styleItem = 0;
             initStyleItem();
         }
@@ -474,8 +480,10 @@ void UCListItemPrivate::resetStyle()
     if (styleComponent) {
         promptRebound();
         bool reloadStyle = styleItem != 0;
-        styleItem->deleteLater();
-        styleItem = 0;
+        if (styleItem) {
+            styleItem->deleteLater();
+            styleItem = 0;
+        }
         styleComponent = 0;
         // reset style to load from theme
         _q_updateThemedData();
@@ -661,9 +669,11 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
 {
     x += dx;
     // min cannot be less than the trailing's panel width
-    qreal min = (trailingPanel) ? -trailingPanel->panel()->width() - overshoot: 0;
+    QQuickItem *leadingPanelItem = leadingPanel ? leadingPanel->panel() : 0;
+    QQuickItem *trailingPanelItem = trailingPanel ? trailingPanel->panel() : 0;
+    qreal min = (trailingPanelItem) ? -trailingPanelItem->width() - overshoot: 0;
     // max cannot be bigger than 0 or the leading's width in case we have leading panel
-    qreal max = (leadingPanel) ? leadingPanel->panel()->width() + overshoot: 0;
+    qreal max = (leadingPanelItem) ? leadingPanelItem->width() + overshoot: 0;
     x = CLAMP(x, min, max);
 }
 
@@ -863,7 +873,6 @@ void UCListItem::componentComplete()
     d->lockContentItem(true);
 
     d->ready = true;
-    d->_q_updateThemedData();
     /* We only deal with ListView, as for other cases we would need to check the children
      * changes, which would have an enormous impact on performance in case of huge amount
      * of items. However, if the parent item, or Flickable declares a "count" property,
