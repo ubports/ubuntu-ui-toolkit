@@ -132,6 +132,24 @@ Item {
                 }
             }
         }
+        Flickable {
+            id: flickable
+            width: parent.width
+            height: units.gu(14)
+            clip: true
+            contentHeight: column.height
+            Column {
+                id: column
+                width: parent.width
+                Repeater {
+                    model: 10
+                    ListItem {
+                        objectName: "listItem" + index
+                        color: "lightgreen"
+                    }
+                }
+            }
+        }
     }
 
     UbuntuTestCase {
@@ -192,9 +210,9 @@ Item {
             testItem.action = null;
             testItem.selected = false;
             testColumn.ViewItems.selectMode = false;
-            waitForRendering(testItem.contentItem, 400);
+            waitForRendering(testItem.contentItem, 200);
             controlItem.selected = false;
-            waitForRendering(controlItem.contentItem, 400);
+            waitForRendering(controlItem.contentItem, 200);
             movingSpy.clear();
             highlightedSpy.clear();
             clickSpy.clear();
@@ -844,6 +862,25 @@ Item {
             mouseLongPress(testItem, centerOf(testItem).x, centerOf(testItem).y);
             mouseRelease(testItem, centerOf(testItem).x, centerOf(testItem).y);
             pressAndHoldSpy.wait();
+        }
+
+        function test_proper_attached_properties_data() {
+            return [
+                {tag: "Attached to ListView", item: listView},
+                {tag: "Attached to Column in Flickable", item: column},
+            ];
+        }
+        function test_proper_attached_properties(data) {
+            var listItem = findChild(data.item, "listItem0");
+            verify(listItem, "ListItem not found!");
+            data.item.ViewItems.selectMode = true;
+            waitForRendering(listItem.contentItem);
+            // check if the selection mode was activated by looking after the first selection panel
+            var panel = findChild(listItem, "selection_panel");
+            data.item.ViewItems.selectMode = false;
+            waitForRendering(listItem.contentItem);
+            // turn off selection mode so we have a proper cleanup
+            verify(panel, "Selection panel not found, wrong attached property target?");
         }
     }
 }
