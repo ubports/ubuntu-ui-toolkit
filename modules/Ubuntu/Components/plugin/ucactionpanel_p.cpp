@@ -49,10 +49,10 @@ UCListItemAttached *UCActionPanel::attachedObject()
                 qmlAttachedPropertiesObject<UCListItem>(panelItem, false));
 }
 
-void UCActionPanel::createPanel(QQmlComponent *panelDelegate)
+bool UCActionPanel::createPanel(QQmlComponent *panelDelegate)
 {
     if (panelItem || !panelDelegate) {
-        return;
+        return false;
     }
     if (!panelDelegate->isError()) {
         QQmlContext *context = new QQmlContext(qmlContext(listItem));
@@ -79,6 +79,7 @@ void UCActionPanel::createPanel(QQmlComponent *panelDelegate)
     } else {
         qmlInfo(listItem) << panelDelegate->errorString();
     }
+    return panelItem != 0;
 }
 
 UCListItemActions *UCActionPanel::actions()
@@ -101,11 +102,8 @@ bool UCActionPanel::grabPanel(UCActionPanel **panel, UCListItem *item, bool lead
             (*panel) = new UCActionPanel(item, leading);
             UCListItemPrivate *pItem = UCListItemPrivate::get((*panel)->listItem);
             pItem->initStyleItem();
-            if (!pItem->styleItem || (pItem->styleItem && !pItem->styleItem->m_actionsDelegate)) {
-                return false;
-            }
-            (*panel)->createPanel(pItem->styleItem->m_actionsDelegate);
-            if (!(*panel)->panelItem) {
+            if (!pItem->styleItem ||
+                    (pItem->styleItem && !(*panel)->createPanel(pItem->styleItem->m_actionsDelegate))) {
                 delete (*panel);
                 (*panel) = 0;
             }
