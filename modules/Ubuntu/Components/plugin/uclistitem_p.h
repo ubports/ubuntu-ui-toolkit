@@ -102,6 +102,7 @@ public:
     // getters/setters
     qreal swipeOvershoot() const;
     void setSwipeOvershoot(qreal overshoot);
+    void resetSwipeOvershoot();
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
     bool contentMoving() const;
