@@ -29,7 +29,7 @@ UCActionPanel::UCActionPanel(UCListItem *item, bool leading)
     : QObject(item)
     , listItem(item)
     , panelItem(0)
-    , status(UCListItem::Disconnected)
+    , status(UCListItem::None)
     , leading(leading)
     , connected(false)
 {

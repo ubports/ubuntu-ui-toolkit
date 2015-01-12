@@ -100,12 +100,22 @@ bool UCListItemSnapAnimator::snap(qreal to)
     if (snap->properties().isEmpty() && snap->property().isEmpty()) {
         snap->setProperty("x");
     }
+    // make sure teh animation is not running
+    snap->stop();
     snap->setFrom(listItem->contentItem->property(snap->property().toLocal8Bit().constData()));
     snap->setTo(to);
-    snap->setAlwaysRunToEnd(true);
+    snap->setAlwaysRunToEnd(false);
     listItem->setContentMoving(true);
     snap->start();
     return true;
+}
+
+void UCListItemSnapAnimator::stop()
+{
+    QQuickPropertyAnimation *snap = getDefaultAnimation();
+    if (snap && snap->isRunning()) {
+        snap->stop();
+    }
 }
 
 /*
@@ -980,6 +990,10 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         return;
     }
     if (event->button() == Qt::LeftButton && d->canHighlight(event)) {
+        // stop any ongoing animation!
+        if (d->animator) {
+            d->animator->stop();
+        }
         d->setHighlighted(true);
         d->lastPos = d->pressedPos = event->localPos();
         // connect the Flickable to know when to rebound
