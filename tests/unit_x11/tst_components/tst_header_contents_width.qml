@@ -34,7 +34,6 @@ Item {
                 page: Page {
                     head.contents: TextField {
                         id: searchField
-                        onWidthChanged: print("searchField.width = "+width)
                         anchors {
                             left: parent ? parent.left : undefined
                             right: parent ? parent.right : undefined
@@ -80,7 +79,6 @@ Item {
 
         function test_header_contents_width_bug1408481() {
             var initialWidth = searchField.width;
-            print("init width = "+initialWidth); wait(1000);
             testCase.verify(initialWidth > 0, "Initial width has a positive value.");
             // Select the tab that has more actions.
             tabs.selectedTabIndex = 1;

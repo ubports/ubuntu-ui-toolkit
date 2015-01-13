@@ -512,6 +512,9 @@ Style.PageHeadStyle {
                 id: actionsOverflowButton
                 objectName: "actions_overflow_button"
                 visible: numberOfSlots.requested > numberOfSlots.right
+                // Ensure resetting of X when this button is not visible to avoid
+                // miscalculation of actionsContainer.width. Fixes bug #1408481.
+                onVisibleChanged: if (!visible) x = 0
                 iconName: "contextual-menu"
                 color: headerStyle.buttonColor
                 height: actionsContainer.height
