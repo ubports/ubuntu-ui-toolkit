@@ -53,15 +53,7 @@ Item {
       Specifies whether the panel is used to visualize leading or trailing actions.
       */
     readonly property bool leading: ListItem.panelStatus == ListItem.Leading
-
-    /*
-      Swiped offset.
-      */
     readonly property real swipedOffset: leading ? width + x : ListItem.item.width - x;
-
-    /*
-      Swiping
-      */
     readonly property bool swiping: ListItem.item.highlighted && ListItem.item.contentMoving
 
     anchors {
