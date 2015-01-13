@@ -38,13 +38,13 @@ Item {
     /*
       Specifies the width of the component visualizing the action.
       */
-    property real visualizedActionWidth: units.gu(2.5)
+    property real paintedActionWidth: units.gu(2.5)
 
     // panel implementation
     id: panel
     width: Math.max(
                actionsRow.childrenRect.width,
-               ListItem.visibleActions.length * MathUtils.clamp(visualizedActionWidth, height, actionsRow.maxItemWidth))
+               ListItem.visibleActions.length * MathUtils.clamp(paintedActionWidth, height, actionsRow.maxItemWidth))
 
     // used for module/autopilot testing
     objectName: "ListItemPanel" + (leading ? "Leading" : "Trailing")
@@ -185,7 +185,7 @@ Item {
         Item {
             width: height
             Icon {
-                width: panel.visualizedActionWidth
+                width: panel.paintedActionWidth
                 height: width
                 name: action.iconName
                 color: panel.foregroundColor
