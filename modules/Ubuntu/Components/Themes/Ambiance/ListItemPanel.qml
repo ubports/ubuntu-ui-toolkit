@@ -79,7 +79,8 @@ Item {
         target: panel.ListItem.item
         onContentMovementEnded: {
             if (actionsRow.selectedAction) {
-                actionsRow.selectedAction.trigger(actionsRow.listItemIndex >= 0 ? actionsRow.listItemIndex : null);
+                actionsRow.selectedAction.trigger(actionsRow.listItemIndex);
+                actionsRow.listItemIndex = -1;
                 actionsRow.selectedAction = null;
             }
         }
