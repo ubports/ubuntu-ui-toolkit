@@ -57,8 +57,8 @@ Item {
     readonly property bool swiping: ListItem.item.highlighted && ListItem.item.contentMoving
 
     anchors {
-        left: (leading ? undefined : ListItem.item.contentItem.right)
-        right: (leading ? ListItem.item.contentItem.left : undefined)
+        left: leading ? undefined : ListItem.item.contentItem.right
+        right: leading ? ListItem.item.contentItem.left : undefined
         top: ListItem.item.contentItem.top
         bottom: ListItem.item.contentItem.bottom
     }
