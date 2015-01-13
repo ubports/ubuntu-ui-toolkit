@@ -100,7 +100,7 @@ bool UCListItemSnapAnimator::snap(qreal to)
     if (snap->properties().isEmpty() && snap->property().isEmpty()) {
         snap->setProperty("x");
     }
-    // make sure teh animation is not running
+    // make sure the animation is not running
     snap->stop();
     snap->setFrom(listItem->contentItem->property(snap->property().toLocal8Bit().constData()));
     snap->setTo(to);
@@ -488,6 +488,7 @@ void UCListItemPrivate::resetStyle()
         delete implicitStyleComponent;
         Q_Q(UCListItem);
         implicitStyleComponent = UCTheme::instance().createStyleComponent("ListItemStyle.qml", q);
+        implicitStyleComponent->setObjectName("ThemeStyle");
         // re-create style instance if it was created using the implicit style
         if (reloadStyle) {
             initStyleItem();
