@@ -132,6 +132,7 @@ Description: Qt Components for Ubuntu - demos and examples
 
 Package: ubuntu-ui-toolkit-autopilot
 Architecture: any
+Build-Depends: python3-sphinx
 Depends: ${misc:Depends},
          ${shlibs:Depends},
          autopilot-qt5,
@@ -151,7 +152,6 @@ Depends: ${misc:Depends},
          python3-testtools,
          python3-autopilot (>= 1.4),
          python3-autopilot-trace,
-         python3-sphinx,
          qttestability-autopilot,
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
          qtdeclarative5-ubuntu-ui-toolkit-plugin (>= ${source:Version}) | qtdeclarative5-ubuntu-ui-toolkit-plugin-gles,
