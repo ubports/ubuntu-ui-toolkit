@@ -43,6 +43,7 @@ public:
         return that->d_func();
     }
 
+    bool isClickedConnected();
     void _q_updateThemedData();
     void _q_rebound();
     void promptRebound();
@@ -50,7 +51,7 @@ public:
     void _q_updateIndex();
     int index();
     bool canHighlight(QMouseEvent *event);
-    void setPressed(bool pressed);
+    void setHighlighted(bool pressed);
     void setSwiped(bool tugged);
     bool grabPanel(UCListItemActions *optionList, bool isTugged);
     void listenToRebind(bool listen);
@@ -58,7 +59,7 @@ public:
     void update();
     void clampAndMoveX(qreal &x, qreal dx);
 
-    bool pressed:1;
+    bool highlighted:1;
     bool contentMoved:1;
     bool highlightColorChanged:1;
     bool swiped:1;
