@@ -26,6 +26,8 @@ override_dh_build:
 	dh_auto_build --parallel -- docs
 
 override_dh_install:
+        dh_auto_build -- docs
+        sphinx-build -b singlehtml documentation/autopilot-helpers documentation/autopilot-helpers/_build/html
 	mkdir -p debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
 	mkdir -p debian/tmp/usr/share/ubuntu-ui-toolkit/doc
 	cp -r $(CURDIR)/documentation/*qch debian/tmp/`qmake -query QT_INSTALL_DOCS`/qch
