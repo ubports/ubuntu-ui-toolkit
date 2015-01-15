@@ -264,7 +264,7 @@ Item {
         function test_style_reset() {
             testItem.style = customStyle;
             testItem.style = undefined;
-            verify(testItem.style != 0, "Style set back to theme")
+            verify(testItem.style != 0 && testItem.style.objectName == "ThemeStyle", "Style set back to theme");
         }
 
         function test_children_in_content_item() {

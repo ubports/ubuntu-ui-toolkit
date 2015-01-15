@@ -173,6 +173,7 @@ MainView {
                 objectName: "ListItem" + index
                 id: listItem
                 onClicked: print(" clicked")
+                onPressAndHold: print("pressAndHold")
                 leadingActions: leading
                 trailingActions: leadingActions
                 Label {
