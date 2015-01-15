@@ -148,12 +148,22 @@ bool UCListItemSnapAnimator::snap(qreal to)
     if (snap->properties().isEmpty() && snap->property().isEmpty()) {
         snap->setProperty("x");
     }
+    // make sure the animation is not running
+    snap->stop();
     snap->setFrom(listItem->contentItem->property(snap->property().toLocal8Bit().constData()));
     snap->setTo(to);
-    snap->setAlwaysRunToEnd(true);
+    snap->setAlwaysRunToEnd(false);
     listItem->setContentMoving(true);
     snap->start();
     return true;
+}
+
+void UCListItemSnapAnimator::stop()
+{
+    QQuickPropertyAnimation *snap = getDefaultAnimation();
+    if (snap && snap->isRunning()) {
+        snap->stop();
+    }
 }
 
 /*
@@ -544,6 +554,7 @@ void UCListItemPrivate::resetStyle()
         delete implicitStyleComponent;
         Q_Q(UCListItem);
         implicitStyleComponent = UCTheme::instance().createStyleComponent("ListItemStyle.qml", q);
+        implicitStyleComponent->setObjectName("ThemeStyle");
         // re-create style instance if it was created using the implicit style
         if (reloadStyle) {
             initStyleItem();
@@ -1147,6 +1158,10 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
     }
     if (d->canHighlight(event) && !d->suppressClick
             && !d->highlighted && event->button() == Qt::LeftButton) {
+        // stop any ongoing animation!
+        if (d->animator) {
+            d->animator->stop();
+        }
         d->setHighlighted(true);
         d->lastPos = d->pressedPos = event->localPos();
         // connect the Flickable to know when to rebound
@@ -1310,7 +1325,7 @@ bool UCListItem::eventFilter(QObject *target, QEvent *event)
 void UCListItem::timerEvent(QTimerEvent *event)
 {
     Q_D(UCListItem);
-    if (event->timerId() == d->pressAndHoldTimer.timerId()) {
+    if (event->timerId() == d->pressAndHoldTimer.timerId() && d->highlighted) {
         d->pressAndHoldTimer.stop();
         if (isEnabled() && d->isPressAndHoldConnected()) {
             d->suppressClick = true;

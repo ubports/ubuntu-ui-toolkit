@@ -19,7 +19,7 @@ import Ubuntu.Components 1.2
 
 Item {
     id: selectionPanel
-    objectName: "selection_panel"
+    objectName: "selection_panel" + ListItem.index
     width: units.gu(5)
 
     anchors {

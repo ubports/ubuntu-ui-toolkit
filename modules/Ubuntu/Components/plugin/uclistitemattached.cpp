@@ -147,7 +147,7 @@ int UCListItemAttached::index() {
  * The property holds the status of the ListItemActions, whether is connected
  * as leading or as trailing action list to a \l ListItem. Possible valueas are:
  * \list A
- *  \li \b Disconnected - default, the actions list is not connected to any \l ListItem
+ *  \li \b None - default, the actions list is not connected to any \l ListItem
  *  \li \b Leading - the actions list is connected as leading list
  *  \li \b Trailing - the actions list is connected as trailing list
  * \endlist
@@ -157,7 +157,7 @@ UCListItem::PanelStatus UCListItemAttached::panelStatus()
 {
     Q_D(UCListItemAttached);
     if (!d->panel) {
-        return UCListItem::Disconnected;
+        return UCListItem::None;
     }
     return d->panel->panelStatus();
 }
@@ -174,7 +174,7 @@ void UCListItemAttached::snapToPosition(qreal position)
     UCListItem::PanelStatus itemStatus = panelStatus();
     Q_D(UCListItemAttached);
     //if it is disconnected, leave (this also includes the case when m_container is null)
-    if (!d->listItem || !d->panel || itemStatus == UCListItem::Disconnected) {
+    if (!d->listItem || !d->panel || itemStatus == UCListItem::None) {
         return;
     }
     UCListItemPrivate *listItem = UCListItemPrivate::get(d->listItem);

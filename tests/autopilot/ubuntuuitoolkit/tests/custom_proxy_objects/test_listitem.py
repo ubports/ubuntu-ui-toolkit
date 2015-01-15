@@ -15,7 +15,6 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import os
-from time import sleep
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
@@ -29,6 +28,8 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
 
     def setUp(self):
         super(ListItemTestCase, self).setUp()
+        self.list_view = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickListView, objectName='test_view')
         self.test_listitem = self.main_view.select_single(
             'UCListItem', objectName='listitem0')
         self.test_page = self.main_view.select_single(
@@ -87,15 +88,7 @@ class ListItemTestCase(tests.QMLFileAppTestCase):
                          'The requested action not found on trailing side')
 
     def test_select_items(self):
-        # Long press to select a word
-        # FIXME: input.Mouse doesn't support long press
-        # press_duration doesn't work here
-        # self.pointing_device.click(press_duration=2.0)
-        self.pointing_device.click_object(self.test_listitem)
-        self.pointing_device.press()
-        sleep(2)
-        self.pointing_device.release()
-        self.assertTrue(self.test_listitem.selectable)
+        self.list_view.enable_select_mode()
         self.test_listitem.toggle_selected()
         self.assertTrue(self.test_listitem.selected)
         # select an other one

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -14,25 +14,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.3
-import Ubuntu.Components.Styles 1.2 as Styles
+import QtQuick 2.2
 import Ubuntu.Components 1.2
 
-Styles.ListItemStyle {
-
-    swipeOvershoot: units.gu(2)
-    actionsDelegate: ListItemPanel{}
-
-    snapAnimation: PropertyAnimation {
-        property: "x"
-        easing {
-            type: Easing.OutElastic
-            period: 0.5
+ListItem {
+    property alias text: label.text
+    Label {
+        id: label
+        anchors {
+            left: parent.left
+            leftMargin: units.gu(2)
+            verticalCenter: parent.verticalCenter
         }
-        duration: UbuntuAnimation.BriskDuration
     }
-
-    // the selection/multiselection panel
-    dragHandlerDelegate: ListItemDragHandler {}
-    selectionDelegate: ListItemSelect{}
 }

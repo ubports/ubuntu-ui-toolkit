@@ -264,7 +264,7 @@ Item {
         function test_style_reset() {
             testItem.style = customStyle;
             testItem.style = undefined;
-            verify(testItem.style != 0, "Style set back to theme")
+            verify(testItem.style != 0 && testItem.style.objectName == "ThemeStyle", "Style set back to theme");
         }
 
         function test_children_in_content_item() {
@@ -790,16 +790,19 @@ Item {
 
         function test_toggle_selectable_data() {
             return [
-                {tag: "When not selected", selected: false},
-                {tag: "When selected", selected: true},
+                {tag: "When not selected", index: 0, selected: false},
+                {tag: "When selected", index: 0, selected: true},
             ]
         }
         function test_toggle_selectable(data) {
-            testItem.selected = data.selected;
-            testColumn.ViewItems.selectMode = true;
-            waitForRendering(testItem.contentItem);
-            verify(findChild(testItem, "selection_panel"), "Cannot find selection panel");
-            compare(testItem.contentItem.enabled, true, "contentItem is not disabled.");
+            var listItem = findChild(listView, "listItem" + data.index)
+            verify(listItem, "Cannot get test item");
+            listItem.selected = data.selected;
+            listView.ViewItems.selectMode = true;
+            waitForRendering(listItem.contentItem);
+            // testItem is the 4th child, so index is 3
+            verify(findChild(listItem, "selection_panel" + data.index), "Cannot find selection panel");
+            compare(listItem.contentItem.enabled, true, "contentItem is not disabled.");
         }
 
         SignalSpy {
@@ -898,7 +901,7 @@ Item {
             data.item.ViewItems.selectMode = true;
             waitForRendering(listItem.contentItem);
             // check if the selection mode was activated by looking after the first selection panel
-            var panel = findChild(listItem, "selection_panel");
+            var panel = findChild(listItem, "selection_panel0");
             data.item.ViewItems.selectMode = false;
             waitForRendering(listItem.contentItem);
             // turn off selection mode so we have a proper cleanup

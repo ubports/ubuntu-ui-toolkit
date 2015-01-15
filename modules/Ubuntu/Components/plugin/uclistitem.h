@@ -53,7 +53,7 @@ class UCListItem : public UCStyledItemBase
     Q_ENUMS(PanelStatus)
 public:
     enum PanelStatus {
-        Disconnected,
+        None,
         Leading,
         Trailing
     };
