@@ -1186,7 +1186,7 @@ bool UCListItem::eventFilter(QObject *target, QEvent *event)
 void UCListItem::timerEvent(QTimerEvent *event)
 {
     Q_D(UCListItem);
-    if (event->timerId() == d->pressAndHoldTimer.timerId()) {
+    if (event->timerId() == d->pressAndHoldTimer.timerId() && d->highlighted) {
         d->pressAndHoldTimer.stop();
         if (isEnabled() && d->isPressAndHoldConnected()) {
             d->suppressClick = true;
