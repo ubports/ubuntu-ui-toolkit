@@ -87,7 +87,7 @@ Item {
     // Screen.primaryOrientation and Screen.orientation can change one right after the other,
     // causing orientationAngle to momentarily change. To avoid responding to such
     // intermediate states, wait for its value to stabilize before rotating to it.
-    onOrientationAngleChanged: { stableOrientationAngleTimer.restart(); }
+    onOrientationAngleChanged: { automaticOrientation ? stableOrientationAngleTimer.restart() : d.tryUpdateState(); }
 
     /*!
       The property holds if the OrientationHelper should automatically resize the
