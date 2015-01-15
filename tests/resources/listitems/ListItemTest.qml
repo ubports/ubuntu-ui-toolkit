@@ -155,12 +155,13 @@ MainView {
             clip: true
             width: parent.width
             height: units.gu(20)
-            model: 10
+            model: 25
             pressDelay: 0
             delegate: ListItem {
                 objectName: "ListItem" + index
                 id: listItem
                 onClicked: print(" clicked")
+                onPressAndHold: print("pressAndHold")
                 leadingActions: leading
                 trailingActions: leadingActions
                 Label {
