@@ -84,7 +84,6 @@ UCUriHandler::UCUriHandler()
 
     QDBusConnection::sessionBus().registerObject(
         objectPath, &m_uriHandlerObject, QDBusConnection::ExportAllSlots);
-    QDBusConnection::sessionBus().registerService("org.freedesktop.Application");
 }
 
 /*!
