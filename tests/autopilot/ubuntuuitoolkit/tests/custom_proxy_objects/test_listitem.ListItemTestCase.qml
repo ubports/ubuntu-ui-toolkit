@@ -30,6 +30,7 @@ MainView {
         title: listView.ViewItems.selectMode ? "In selection mode" : "No action triggered"
         ListView {
             id: listView
+            objectName: "test_view"
             anchors.fill: parent
             model: 25
             delegate: ListItem {
