@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -29,7 +29,7 @@ UCActionPanel::UCActionPanel(UCListItem *item, bool leading)
     : QObject(item)
     , listItem(item)
     , panelItem(0)
-    , status(UCListItem::Disconnected)
+    , status(UCListItem::None)
     , leading(leading)
     , connected(false)
 {
