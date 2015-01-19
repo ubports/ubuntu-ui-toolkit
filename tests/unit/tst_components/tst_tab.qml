@@ -23,9 +23,9 @@ TestCase {
 
      function test_iconSource() {
         compare(tab.iconSource,"","iconSource is not set by default")
-        var newIcon = "../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png"
+        var newIcon = Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png")
         tab.iconSource = newIcon
-        compare(tab.iconSource,Qt.resolvedUrl(newIcon),"Can set/get iconSource")
+        compare(tab.iconSource,newIcon,"Can set/get iconSource")
      }
 
      function test_page() {

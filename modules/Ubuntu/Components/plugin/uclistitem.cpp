@@ -498,7 +498,8 @@ void UCListItemPrivate::resetStyle()
         delete implicitStyleComponent;
         Q_Q(UCListItem);
         implicitStyleComponent = UCTheme::instance().createStyleComponent("ListItemStyle.qml", q);
-        implicitStyleComponent->setObjectName("ThemeStyle");
+        // set the objectnane for testing in tst_listitems.qml
+        implicitStyleComponent->setObjectName("ListItemThemeStyle");
         // re-create style instance if it was created using the implicit style
         if (reloadStyle) {
             initStyleItem();
@@ -1377,12 +1378,12 @@ QColor UCListItem::highlightColor() const
 void UCListItem::setHighlightColor(const QColor &color)
 {
     Q_D(UCListItem);
+    // mark it as custom even if the value is the same as the previous one
+    d->customColor = true;
     if (d->highlightColor == color) {
         return;
     }
     d->highlightColor = color;
-    // no more theme change watch
-    d->customColor = true;
     update();
     Q_EMIT highlightColorChanged();
 }
@@ -1407,12 +1408,13 @@ qreal UCListItemPrivate::swipeOvershoot() const
 }
 void UCListItemPrivate::setSwipeOvershoot(qreal overshoot)
 {
+    // mark any positive value as custom even if it is the same as the previous one
+    customOvershoot = (overshoot >= 0.0);
     // same value should be guarded only if the style hasn't been loaded yet
     // swipeOvershoot can be set to 0 prior the style is loaded.
     if (this->overshoot == overshoot && styleItem) {
         return;
     }
-    customOvershoot = (overshoot >= 0.0);
     if (!customOvershoot) {
         resetSwipeOvershoot();
         return;

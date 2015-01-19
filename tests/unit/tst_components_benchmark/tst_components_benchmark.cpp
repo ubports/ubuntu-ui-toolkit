@@ -32,7 +32,7 @@ private Q_SLOTS:
         QTest::addColumn<QString>("fileName");
 
         QDir dir;
-        dir.setPath("../../../modules/Ubuntu/Components");
+        dir.setPath(UBUNTU_COMPONENT_PATH);
         QStringList nameFilters;
         nameFilters << "*.qml";
         dir.setNameFilters(nameFilters);
@@ -67,7 +67,7 @@ private Q_SLOTS:
         QTest::addColumn<QString>("fileName");
 
         QDir dir;
-        dir.setPath("../../../modules/Ubuntu/Components/ListItems");
+        dir.setPath(QString(UBUNTU_COMPONENT_PATH)+"/ListItems");
         QStringList nameFilters;
         nameFilters << "*.qml";
         dir.setNameFilters(nameFilters);
