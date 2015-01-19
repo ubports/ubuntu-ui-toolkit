@@ -56,10 +56,22 @@ def get_local_desktop_file_directory():
 
 
 def _get_module_include_path():
-    return os.path.join(get_path_to_source_root(), 'modules')
+    return os.path.join(get_path_to_build_root(), 'modules')
+
+
+def get_path_to_build_root():
+    if "UITK_BUILD_ROOT" in os.environ:
+        return os.environ["UITK_BUILD_ROOT"]
+    return _guess_root_path()
 
 
 def get_path_to_source_root():
+    if "UITK_SOURCE_ROOT" in os.environ:
+        return os.environ["UITK_SOURCE_ROOT"]
+    return _guess_root_path()
+
+
+def _guess_root_path():
     return os.path.abspath(
         os.path.join(
             os.path.dirname(__file__), '..', '..', '..', '..'))

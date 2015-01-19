@@ -37,7 +37,7 @@ private Q_SLOTS:
 
         // add modules folder so we have access to the plugin from QML
         QQmlEngine *engine = m_quickView->engine();
-        QString modules("../../../modules");
+        QString modules(UBUNTU_QML_IMPORT_PATH);
         QStringList imports = engine->importPathList();
         imports.prepend(QDir(modules).absolutePath());
         engine->setImportPathList(imports);

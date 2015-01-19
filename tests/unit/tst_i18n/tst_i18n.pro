@@ -5,7 +5,7 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 system(msgfmt po/en_US.po -o localizedApp/share/locale/en/LC_MESSAGES/localizedApp.mo)
 
 SOURCES += \
-    src\/tst_i18n.cpp
+    src/tst_i18n.cpp
 
 OTHER_FILES += \
-    src\/LocalizedApp.qml
+    src/LocalizedApp.qml

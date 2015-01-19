@@ -31,7 +31,7 @@ TestCase {
          compare(listItemBase.icon,undefined,"icon is not set by default")
 
          // test with url
-         var newIcon = "../../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png"
+         var newIcon = Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png")
          listItemBase.icon = newIcon
          compare(listItemBase.icon,newIcon,"set/get from url")
      }

@@ -5,5 +5,7 @@
 check.target = check
 check.commands = "set -e;"
 for(TEST, TESTS) {
-  check.commands += ../../unit/runtest.sh $${TARGET} $${TEST} minimal;
+  check.commands += cd $$_PRO_FILE_PWD_;
+  check.commands += env LD_LIBRARY_PATH=$${ROOT_BUILD_DIR}/modules/Ubuntu/Components:$${ROOT_BUILD_DIR}/modules/Ubuntu/Layouts:$${ROOT_BUILD_DIR}/modules/Ubuntu/PerformanceMetrics:$${ROOT_BUILD_DIR}/modules/Ubuntu/Test
+  check.commands += '$${ROOT_SOURCE_DIR}/tests/unit/runtest.sh "$$shadowed($$_PRO_FILE_PWD_)/$${TARGET}" "$${TEST}" minimal "$${ROOT_BUILD_DIR}"';
 }
