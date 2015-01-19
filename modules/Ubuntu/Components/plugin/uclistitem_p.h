@@ -22,6 +22,15 @@
 #include <QtCore/QPointer>
 #include <QtQuick/private/qquickrectangle_p.h>
 
+#define MIN(x, y)           ((x < y) ? x : y)
+#define MAX(x, y)           ((x > y) ? x : y)
+#define CLAMP(v, min, max)  (min <= max) ? MAX(min, MIN(v, max)) : MAX(max, MIN(v, min))
+
+#define IMPLICIT_LISTITEM_WIDTH_GU      40
+#define IMPLICIT_LISTITEM_HEIGHT_GU     7
+#define DIVIDER_THICKNESS_DP            2
+#define DEFAULT_SWIPE_THRESHOLD_GU      1.5
+
 class QQuickFlickable;
 class QQuickPropertyAnimation;
 class UCListItemContent;
@@ -29,6 +38,7 @@ class UCListItemDivider;
 class UCListItemActions;
 class UCListItemSnapAnimator;
 class UCListItemStyle;
+class UCActionPanel;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -53,19 +63,17 @@ public:
     bool canHighlight(QMouseEvent *event);
     void setHighlighted(bool pressed);
     void setSwiped(bool tugged);
-    bool grabPanel(UCListItemActions *optionList, bool isTugged);
     void listenToRebind(bool listen);
-    void resize();
+    void lockContentItem(bool lock);
+    void adjustContentItemHeight();
     void update();
     void clampAndMoveX(qreal &x, qreal dx);
 
     bool highlighted:1;
     bool contentMoved:1;
-    bool highlightColorChanged:1;
     bool swiped:1;
     bool suppressClick:1;
     bool ready:1;
-    bool customStyle:1;
     bool customColor:1;
     bool customOvershoot:1;
     bool flicked:1;
@@ -77,50 +85,105 @@ public:
     QColor highlightColor;
     QPointer<QQuickItem> countOwner;
     QPointer<QQuickFlickable> flickable;
-    QPointer<UCListItemAttached> attachedProperties;
+    QPointer<UCViewItemsAttached> parentAttached;
     QQuickItem *contentItem;
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
+    UCActionPanel *leadingPanel;
+    UCActionPanel *trailingPanel;
     UCListItemSnapAnimator *animator;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
     QQmlComponent *styleComponent;
+    QQmlComponent *implicitStyleComponent;
     UCListItemStyle *styleItem;
 
     // getters/setters
     qreal swipeOvershoot() const;
     void setSwipeOvershoot(qreal overshoot);
+    void resetSwipeOvershoot();
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
     bool contentMoving() const;
     void setContentMoving(bool moved);
     QQmlComponent *style() const;
     void setStyle(QQmlComponent *delegate);
-    bool loadStyle(bool reload);
+    void resetStyle();
     void initStyleItem();
     QQuickItem *styleInstance() const;
 };
 
-class PropertyChange;
-class UCListItemAttachedPrivate
+class UCListItemAttachedPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(UCListItemAttached)
 public:
-    UCListItemAttachedPrivate(UCListItemAttached *qq);
-    ~UCListItemAttachedPrivate();
+    UCListItemAttachedPrivate() : QObjectPrivate(), panel(0), listItem(0) {}
+
+    static UCListItemAttachedPrivate* get(UCListItemAttached *that)
+    {
+        return that->d_func();
+    }
+
+    UCActionPanel *panel;
+    UCListItem *listItem;
+    QList<UCAction*> visibleActions;
+};
+
+class PropertyChange;
+class UCViewItemsAttachedPrivate
+{
+    Q_DECLARE_PUBLIC(UCViewItemsAttached)
+public:
+    UCViewItemsAttachedPrivate(UCViewItemsAttached *qq);
+    ~UCViewItemsAttachedPrivate();
 
     void clearFlickablesList();
     void buildFlickablesList();
     void clearChangesList();
     void buildChangesList(const QVariant &newValue);
 
-    UCListItemAttached *q_ptr;
+    UCViewItemsAttached *q_ptr;
     bool globalDisabled;
     QList< QPointer<QQuickFlickable> > flickables;
     QList< PropertyChange* > changes;
     QPointer<UCListItem> boundItem;
     QPointer<UCListItem> disablerItem;
+};
+
+class UCActionPanel : public QObject
+{
+    Q_OBJECT
+public:
+    ~UCActionPanel();
+    static bool grabPanel(UCActionPanel **panel, UCListItem *item, bool leading);
+    static void ungrabPanel(UCActionPanel *panel);
+    static bool isConnected(UCActionPanel *panel);
+
+    UCListItemActions *actions();
+    QQuickItem *panel() const;
+    UCListItem::PanelStatus panelStatus()
+    {
+        return status;
+    }
+    bool isLeading() const
+    {
+        return leading;
+    }
+
+Q_SIGNALS:
+    void statusChanged();
+
+private:
+    UCActionPanel(UCListItem *item, bool leading);
+    bool createPanel(QQmlComponent *panelDelegate);
+    UCListItemAttached *attachedObject();
+
+    UCListItem *listItem;
+    QQuickItem *panelItem;
+    UCListItem::PanelStatus status;
+    bool leading:1;
+    bool connected:1;
 };
 
 class UCListItemDivider : public QObject
@@ -159,8 +222,6 @@ private:
     void setColorTo(const QColor &color);
 
     bool m_visible:1;
-    bool m_leftMarginChanged:1;
-    bool m_rightMarginChanged:1;
     bool m_colorFromChanged:1;
     bool m_colorToChanged:1;
     qreal m_thickness;
@@ -187,6 +248,7 @@ public:
     ~UCListItemSnapAnimator();
 
     bool snap(qreal to);
+    void stop();
     void complete();
 
 public Q_SLOTS:

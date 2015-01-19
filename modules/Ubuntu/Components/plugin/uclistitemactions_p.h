@@ -32,30 +32,14 @@ public:
         return actions ? actions->d_func() : 0;
     }
 
-    UCListItemActions::Status status;
-    qreal offsetDragged;
-    qreal optionSlotWidth;
-
     QQmlComponent *delegate;
-    QQmlComponent *panelDelegate;
-    QQuickItem *panelItem;
     QList<UCAction*> actions;
     QList<QObject*> data;
-    QPointer<UCListItem> queuedItem;
-
-    void _q_updateDraggedOffset();
-    UCListItemActionsAttached *attachedObject();
-
-    static bool connectToListItem(UCListItemActions *options, UCListItem *listItem, bool leading);
-    static void disconnectFromListItem(UCListItemActions *options);
-    static bool isConnectedTo(UCListItemActions *options, UCListItem *listItem);
 
     static int actions_count(QQmlListProperty<UCAction> *p);
     static void actions_append(QQmlListProperty<UCAction> *p, UCAction *v);
     static UCAction *actions_at(QQmlListProperty<UCAction>*, int);
     static void actions_clear(QQmlListProperty<UCAction>*);
-
-    QQuickItem *createPanelItem(QQmlComponent *delegate);
 };
 
 #endif // UCLISTITEMACTIONS_P_H

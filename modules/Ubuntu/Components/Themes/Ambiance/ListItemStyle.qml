@@ -30,7 +30,6 @@ Styles.ListItemStyle {
             period: 0.5
         }
         duration: UbuntuAnimation.BriskDuration
-        alwaysRunToEnd: true
     }
 
 }

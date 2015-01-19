@@ -34,17 +34,23 @@ class UCListItem : public UCStyledItemBase
     Q_PROPERTY(UCListItemActions *leadingActions READ leadingActions WRITE setLeadingActions NOTIFY leadingActionsChanged DESIGNABLE false)
     Q_PROPERTY(UCListItemActions *trailingActions READ trailingActions WRITE setTrailingActions NOTIFY trailingActionsChanged DESIGNABLE false)
     Q_PROPERTY(bool highlighted READ highlighted NOTIFY highlightedChanged)
-    Q_PRIVATE_PROPERTY(UCListItem::d_func(), qreal swipeOvershoot READ swipeOvershoot WRITE setSwipeOvershoot NOTIFY swipeOvershootChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), qreal swipeOvershoot READ swipeOvershoot WRITE setSwipeOvershoot RESET resetSwipeOvershoot NOTIFY swipeOvershootChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool contentMoving READ contentMoving NOTIFY contentMovingChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
-    Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor NOTIFY highlightColorChanged)
+    Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor RESET resetHighlightColor NOTIFY highlightColorChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QObject> listItemData READ data DESIGNABLE false)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlListProperty<QQuickItem> listItemChildren READ children NOTIFY listItemChildrenChanged DESIGNABLE false)
     // FIXME move these to StyledItemBase with subtheming
-    Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlComponent *style READ style WRITE setStyle NOTIFY styleChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlComponent *style READ style WRITE setStyle RESET resetStyle NOTIFY styleChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQuickItem *__styleInstance READ styleInstance NOTIFY __styleInstanceChanged)
     Q_CLASSINFO("DefaultProperty", "listItemData")
+    Q_ENUMS(PanelStatus)
 public:
+    enum PanelStatus {
+        None,
+        Leading,
+        Trailing
+    };
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
 
@@ -61,12 +67,12 @@ public:
     void setColor(const QColor &color);
     QColor highlightColor() const;
     void setHighlightColor(const QColor &color);
+    void resetHighlightColor();
 
 protected:
     void componentComplete();
     QSGNode *updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *data);
     void itemChange(ItemChange change, const ItemChangeData &data);
-    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
@@ -103,13 +109,57 @@ private:
 
 QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
 
+class UCAction;
+class UCListItemActions;
 class UCListItemAttachedPrivate;
 class UCListItemAttached : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(UCListItemActions *actions READ actions NOTIFY actionsChanged)
+    Q_PROPERTY(QQmlListProperty<UCAction> visibleActions READ visibleActions NOTIFY visibleActionsChanged)
+    Q_PROPERTY(UCListItem *item READ item NOTIFY itemChanged)
+    Q_PROPERTY(int index READ index NOTIFY indexChanged)
+    Q_PROPERTY(UCListItem::PanelStatus panelStatus READ panelStatus NOTIFY panelStatusChanged)
 public:
-    explicit UCListItemAttached(QObject *owner);
+    UCListItemAttached(QObject *parent = 0);
     ~UCListItemAttached();
+    void setList(UCListItem *list, bool leading, bool visualizeActions);
+    void connectToAttached(UCListItemAttached *parentAttached);
+
+    UCListItemActions *actions() const;
+    QQmlListProperty<UCAction> visibleActions();
+    UCListItem *item();
+    int index();
+    UCListItem::PanelStatus panelStatus();
+
+public Q_SLOTS:
+    void snapToPosition(qreal position);
+
+Q_SIGNALS:
+    void actionsChanged();
+    void visibleActionsChanged();
+    void itemChanged();
+    void indexChanged();
+    void panelStatusChanged();
+
+private:
+    Q_DECLARE_PRIVATE(UCListItemAttached)
+    friend class UCListItemAction;
+
+private Q_SLOTS:
+    void updateVisibleActions();
+};
+
+
+class UCViewItemsAttachedPrivate;
+class UCViewItemsAttached : public QObject
+{
+    Q_OBJECT
+public:
+    explicit UCViewItemsAttached(QObject *owner);
+    ~UCViewItemsAttached();
+
+    static UCViewItemsAttached *qmlAttachedProperties(QObject *owner);
 
     bool listenToRebind(UCListItem *item, bool listen);
     void disableInteractive(UCListItem *item, bool disable);
@@ -119,8 +169,9 @@ public:
 private Q_SLOTS:
     void unbindItem();
 private:
-    Q_DECLARE_PRIVATE(UCListItemAttached)
-    QScopedPointer<UCListItemAttachedPrivate> d_ptr;
+    Q_DECLARE_PRIVATE(UCViewItemsAttached)
+    QScopedPointer<UCViewItemsAttachedPrivate> d_ptr;
 };
+QML_DECLARE_TYPEINFO(UCViewItemsAttached, QML_HAS_ATTACHED_PROPERTIES)
 
 #endif // UCLISTITEM_H

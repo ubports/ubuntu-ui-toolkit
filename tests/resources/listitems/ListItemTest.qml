@@ -16,6 +16,7 @@
 
 import QtQuick 2.2
 import Ubuntu.Components 1.2
+import Ubuntu.Components.Styles 1.2
 
 MainView {
     id: main
@@ -109,7 +110,7 @@ MainView {
                         width: units.gu(3)
                         height: width
                         name: action.iconName
-                        color: "blue"
+                        color: pressed ? "blue" : "pink"
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     Label {
@@ -131,13 +132,16 @@ MainView {
 
         ListItem {
             Label {
+                id: label2
                 anchors.fill: parent
-                text: "Another standalone ListItem"
+                text: "Another standalone ListItem\nStarted with custom style, reset to theme style on first click"
             }
             leadingActions: testItem.leadingActions
             trailingActions: ListItemActions {
                 actions: leading.actions
             }
+            style: ListItemStyle {}
+            onClicked: { style = undefined; label2.text = "Another standalone ListItem" }
         }
 
         ListView {
@@ -152,6 +156,7 @@ MainView {
                 id: listItem
                 onClicked: print(" clicked")
                 leadingActions: leading
+                trailingActions: leadingActions
                 Label {
                     text: modelData + " item"
                 }
@@ -179,7 +184,7 @@ MainView {
 
             Column {
                 id: column
-                width: view.width
+                width: flicker.width
                 property alias count: repeater.count
                 Repeater {
                     id: repeater
