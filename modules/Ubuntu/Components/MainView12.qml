@@ -21,48 +21,13 @@ import QtQuick.Window 2.2
 
 /*! \internal */
 // Documentation is in MainView.qdoc
-PageTreeNode {
+MainViewBase {
     id: mainView
-
-    property string applicationName: ""
-    property bool anchorToKeyboard: false
-    property alias headerColor: background.headerColor
-    property alias backgroundColor: background.backgroundColor
-    property alias footerColor: background.footerColor
-
-    // FIXME: Make sure that the theming is only in the background, and the style
-    //  should not occlude contents of the MainView. When making changes here, make
-    //  sure that bug https://bugs.launchpad.net/manhattan/+bug/1124076 does not come back.
-    StyledItem {
-        id: background
-        anchors.fill: parent
-        style: Theme.createStyleComponent("MainViewStyle.qml", background)
-
-        property color headerColor: backgroundColor
-        property color backgroundColor: Theme.palette.normal.background
-        property color footerColor: backgroundColor
-
-        /*
-          As we don't know the order the property bindings and onXXXChanged signals are evaluated
-          we should rely only on one property when changing the theme to avoid intermediate
-          theme changes due to properties being evaluated separately.
-
-          Qt bug: https://bugreports.qt-project.org/browse/QTBUG-11712
-          */
-        property string theme: (ColorUtils.luminance(backgroundColor) >= 0.85) ?
-                                   "Ambiance" : "SuruDark"
-        onThemeChanged: {
-            // only change the theme if the current one is a system one.
-            if (theme !== "" && (Theme.name.search("Ubuntu.Components.Themes") >= 0)) {
-                Theme.name = "Ubuntu.Components.Themes.%1".arg(theme);
-            }
-        }
-    }
 
     active: true
 
     property alias automaticOrientation: canvas.automaticOrientation
-    property bool useDeprecatedToolbar: false
+    useDeprecatedToolbar: false
 
     /*!
       \internal
@@ -117,8 +82,8 @@ PageTreeNode {
             id: headerItem
             property real bottomY: headerItem.y + headerItem.height
             animate: canvas.animate
-            dividerColor: Qt.darker(background.headerColor, 1.1)
-            panelColor: Qt.lighter(background.headerColor, 1.1)
+            dividerColor: Qt.darker(mainView.headerColor, 1.1)
+            panelColor: Qt.lighter(mainView.headerColor, 1.1)
 
             title: internal.activePage ? internal.activePage.title : ""
             flickable: internal.activePage ? internal.activePage.flickable : null
@@ -164,9 +129,6 @@ PageTreeNode {
         }
     }
 
-    property alias actions: unityActionManager.actions
-    property alias actionManager: unityActionManager
-
     Object {
         id: internal
 
@@ -178,14 +140,6 @@ PageTreeNode {
         function isPage(item) {
             return item && item.hasOwnProperty("__isPageTreeNode") && item.__isPageTreeNode &&
                     item.hasOwnProperty("title") && item.hasOwnProperty("tools");
-        }
-
-        Toolkit.ActionManager {
-            id: unityActionManager
-            onQuit: {
-                // FIXME Wire this up to the application lifecycle management API instead of quit().
-                Qt.quit()
-            }
         }
     }
 
@@ -217,18 +171,6 @@ PageTreeNode {
           The action manager that has the global context for the MainView's actions,
           and to which a local context can be added for each Page that has actions.actions.
          */
-        property var actionManager: unityActionManager
-    }
-
-    onApplicationNameChanged: {
-        if (applicationName !== "") {
-            i18n.domain = applicationName;
-            UbuntuApplication.applicationName = applicationName
-        }
-    }
-
-    PerformanceOverlay {
-        id: performanceOverlay
-        active: false
+        property var actionManager: mainView.actionManager
     }
 }
