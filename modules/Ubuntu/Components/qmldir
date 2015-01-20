@@ -4,7 +4,7 @@ ActionItem 0.1 ActionItem.qml
 ActionList 0.1 ActionList.qml
 ToolbarItems 0.1 ToolbarItems.qml
 ToolbarButton 0.1 ToolbarButton.qml
-MainView 0.1 MainView.qml
+MainView 0.1 MainView10.qml
 Button 0.1 10/Button.qml
 Panel 0.1 Panel.qml
 internal DraggingArea DraggingArea.qml
@@ -54,7 +54,7 @@ ActionItem 1.0 ActionItem.qml
 ActionList 1.0 ActionList.qml
 ToolbarItems 1.0 ToolbarItems.qml
 ToolbarButton 1.0 ToolbarButton.qml
-MainView 1.0 MainView.qml
+MainView 1.0 MainView10.qml
 Button 1.0 10/Button.qml
 Panel 1.0 Panel.qml
 Tab 1.0 Tab.qml
@@ -104,3 +104,6 @@ PageHeadState 1.1 PageHeadState.qml
 Icon 1.1 Icon11.qml
 StyledItem 1.1 StyledItem.qml
 singleton UbuntuColors 1.1 11/UbuntuColors.qml
+
+#version 1.2
+MainView 1.2 MainView12.qml
