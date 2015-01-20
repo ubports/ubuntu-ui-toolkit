@@ -22,7 +22,7 @@ void UCDragHandler::initialize(bool animated)
         return;
     }
     connect(pListItem->parentAttached, SIGNAL(dragModeChanged()),
-            this, SLOT(setupDragMode(bool)));
+            this, SLOT(setupDragMode()));
     if (pListItem->isDraggable()) {
         setupDragMode(animated);
     }
