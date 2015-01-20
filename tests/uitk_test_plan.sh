@@ -33,7 +33,7 @@ CHANNEL="ubuntu-touch/${DISTRO}/${SERIES}-proposed"
 PASSWORD="0000"
 BOOTTIME=500
 ONLYCOMPARE=false
-    
+
 declare -a TEST_SUITE=(
     " -p ubuntu-ui-toolkit-autopilot ubuntuuitoolkit"
     " -p webbrowser-app-autopilot webbrowser_app"
@@ -41,11 +41,11 @@ declare -a TEST_SUITE=(
     " sudoku_app"
     " online_accounts_ui"
     " ubuntu_calculator_app"
-    " -p messaging-app-autopilot messaging_app"
+#    " -p messaging-app-autopilot messaging_app"
     " -p mediaplayer-app-autopilot mediaplayer_app"
     " dropping_letters_app"
     " -p dialer-app-autopilot dialer_app"
-# hangs    " -p reminders-app-autopilot reminders"
+    " -p reminders-app-autopilot reminders"
     " shorts_app"
     " ubuntu_weather_app"
     " -p ubuntu-system-settings-autopilot ubuntu_system_settings"
@@ -71,16 +71,17 @@ AP_PACKAGES="address-book-service-dummy \
              gallery-app-autopilot \
              reminders-app-autopilot \
              address-book-app-autopilot \
-             messaging-app-autopilot \
+#             messaging-app-autopilot \
+             unity8-autopilot \
              dialer-app-autopilot \
              camera-app-autopilot \
              webbrowser-app-autopilot \
              mediaplayer-app-autopilot \
-             unity8-autopilot \
              unity-webapps-qml-autopilot \
              ubuntu-system-settings-autopilot\
              ubuntu-html5-ui-toolkit-autopilot \
              ubuntu-system-settings-online-accounts-autopilot"
+#             messaging-app-autopilot \
 
 sleep_indicator () {
     if [ -z "$1" ]; then
@@ -148,8 +149,8 @@ function device_comission {
     # flash the latest image
     echo -e "Flashing \e[31m${CHANNEL}\e[0m"
 
-#    ubuntu-device-flash --serial=${SERIALNUMBER} --channel=${CHANNEL} --revision=${REVISION} --wipe --developer-mode --password=${PASSWORD} 
-    ubuntu-device-flash --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --developer-mode --password=${PASSWORD} 
+#    ubuntu-device-flash --serial=${SERIALNUMBER} --channel=${CHANNEL} --revision=${REVISION} --wipe --bootstrap --developer-mode --password=${PASSWORD} 
+    ubuntu-device-flash touch --serial=${SERIALNUMBER} --channel=${CHANNEL} --wipe --developer-mode --password=${PASSWORD} 
 
     sleep_indicator ${BOOTTIME}
     echo -e "Disable the intro wizard"
@@ -337,6 +338,9 @@ fi
 if [ ${COMISSION} == true ]; then
     device_comission
 fi
+
+# Fix the PPA string as it is used in log file names
+PPA=${PPA/\//_}
 
 # Check if the job is only comissioning the device
 if [ ${DONOTRUNTESTS} != true ]; then

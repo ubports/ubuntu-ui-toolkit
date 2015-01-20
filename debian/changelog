@@ -1,3 +1,84 @@
+ubuntu-ui-toolkit (1.1.1370+15.04.20141217-0ubuntu1) vivid; urgency=medium
+
+  [ Zoltán Balogh ]
+  * fixing gles dependency for ubuntu-ui-toolkit-autopilot, so we can
+     have functional tests on x86 emulator
+
+  [ Christian Dywan ]
+  * Asterisk are needed for cp -R.
+  * Use correct unfocussed text field color. Fixes LP: #1396062
+
+  [ Zsombor Egri ]
+  * CPOs
+
+  [ Daniel d'Andrada ]
+  * Refactor OrientationHelper
+    Simplify animation code and make it more robust. It now survives 
+    changes in Screen.primaryOrientation and Screen.orientation 
+    happening one right after the other.
+
+  [ CI Train Bot ]
+  * Resync trunk
+  * Resync trunk
+  * Resync trunk
+  * Resync trunk
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 17 Dec 2014 09:52:55 +0000
+
+ubuntu-ui-toolkit (1.1.1364+15.04.20141209-0ubuntu1) vivid; urgency=medium
+
+  [ Zsombor Egri ]
+  * Theming fixes: application theming, binding loop fix, auto-theming 
+    moved into MainView and it is applicable only on Ambiance and 
+    SuruDark, SuruGradient is no longer auto-themed. 
+    Fixes: LP: #1213043, LP: #1277647, LP: #1330510, LP: #1356779, 
+           LP: #1389792.
+  * ServiceProperties component to Ubuntu.Components 1.1. 
+    Fixes: LP: #1391877.
+  * New ListItem component base. Support for leading/trailing actions. 
+    Exported in Ubuntu.Components 1.2 UNSTABLE release. 
+    Fixes: LP: #1097728, LP: #1372592, LP: #1383870.
+  * removing failing ServiceProperties and app-theming branches
+  * Application theming ant other theming related binding loop fixes
+  * ServiceProperties DBus property watcher
+
+  [ Christian Dywan ]
+  * Do the default theme check properly: for non-debug and without 
+    build errors.
+  * Don't activate the control in ListItem.Standard implicitly. 
+    Fixes: LP: #1372563.
+  * Improve AutoPilot caret dragging test cases.
+  * Use new qt_gl_set_global_share_context setter with Qt 5.4. 
+    Fixes: LP: #1397979.
+  * Add sortCaseSensitivity to the SortFilterModel example. 
+    Fixes: LP: #1391034.
+  * Change offending links into bold font. Fixes: LP: #1395011.
+
+  
+  [ Daniel d'Andrada ]
+  * This is needed by unity8 for the "shell rotation" feature (ie 
+    shell does all the rotation work instead of apps rotating
+    themselves). unity8's dialogs (like the power dialog when you 
+    long press the power button) should follow its parent item 
+    rotation and size, as one would expect, and not be sneakily 
+    reparented to the scene root item, in which case the shell 
+    UI would be rotated but its dialog would not. 
+    Related bug LP: #1394511. Fixes: LP: #1394511.
+
+  [ Tim Peeters ]
+  * Remove the old header separator style. Fixes: LP: #1372590.
+  
+  [ Loïc Molinari ]
+  * Made the UCAlarmPrivate destructor private.
+
+  [ Ubuntu daily release ]
+  * New rebuild forced
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 09 Dec 2014 11:47:33 +0000
+
 ubuntu-ui-toolkit (1.1.1347+15.04.20141126-0ubuntu1) vivid; urgency=medium
 
   [ Zsombor Egri ]

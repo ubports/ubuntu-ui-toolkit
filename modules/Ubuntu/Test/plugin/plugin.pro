@@ -6,7 +6,8 @@ equals(QT_MAJOR_VERSION, 5):lessThan(QT_MINOR_VERSION, 2) {
     QT += v8-private
 }
 
-CONFIG += qt plugin no_keywords
+CONFIG  += qt plugin no_keywords
+DEFINES += UBUNTU_QML_IMPORT_PATH='\\"$${ROOT_BUILD_DIR}/modules\\"'
 
 QMAKE_CXXFLAGS += -Werror
 

@@ -1,4 +1,4 @@
-TEMPLATE = subdirs
+TEMPLATE = aux
 
 MO_FILES = $$system(ls *.po)
 
@@ -11,7 +11,7 @@ for(po_file, MO_FILES) {
   mo_target = $${mo_targetpath}/ubuntu-ui-toolkit-gallery.mo
   !isEmpty(install_mo_commands): install_mo_commands += &&
   install_mo_commands += test -d $$mo_targetpath || mkdir -p $$mo_targetpath
-  install_mo_commands += && cp $$mo_file $$mo_target
+  install_mo_commands += && cp $$PWD/$$mo_file $$mo_target
 }
 
 install.commands = $$install_mo_commands

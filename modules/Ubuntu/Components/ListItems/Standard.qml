@@ -272,22 +272,8 @@ Empty {
 
         Connections {
             target: listItem.__mouseArea
-
-            onClicked: {
-                if (control && __mouseArea.mouseX < progressionHelper.x) {
-                    if (control.enabled && control.hasOwnProperty("clicked")) control.clicked();
-                } else {
-                    listItem.clicked();
-                }
-            }
-
-            onPressAndHold: {
-                if (control && control.enabled && __mouseArea.mouseX < progressionHelper.x && control.hasOwnProperty("pressAndHold")) {
-                    control.pressAndHold();
-                } else {
-                    listItem.pressAndHold();
-                }
-            }
+            onClicked: listItem.clicked()
+            onPressAndHold: listItem.pressAndHold()
         }
     }
 

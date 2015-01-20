@@ -99,8 +99,6 @@ QStringList themeSearchPath() {
     }
     pathList << QLibraryInfo::location(QLibraryInfo::Qml2ImportsPath).split(':', QString::SkipEmptyParts);
 
-    // prepend current folder
-    pathList.prepend(QDir::currentPath()); 
     // fix folders
     QStringList result;
     Q_FOREACH(const QString &path, pathList) {
@@ -108,6 +106,8 @@ QStringList themeSearchPath() {
             result << path + '/';
         }
     }
+    // prepend current folder
+    result.prepend(QDir::currentPath());
     return result;
 }
 
