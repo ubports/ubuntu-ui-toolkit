@@ -116,7 +116,7 @@ private Q_SLOTS:
 
     void initTestCase()
     {
-        QString modules("../../../modules");
+        QString modules(UBUNTU_QML_IMPORT_PATH);
         QVERIFY(QDir(modules).exists());
 
         m_modulePath = QDir(modules).absolutePath();
