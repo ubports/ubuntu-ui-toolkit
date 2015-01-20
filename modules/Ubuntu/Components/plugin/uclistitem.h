@@ -166,8 +166,8 @@ class UCViewItemsAttachedPrivate;
 class UCViewItemsAttached : public QObject
 {
     Q_OBJECT
-    Q_PRIVATE_PROPERTY(UCViewItemsAttached::d_func(), bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
-    Q_PRIVATE_PROPERTY(UCViewItemsAttached::d_func(), QList<int> selectedIndexes READ selectedIndexes WRITE setSelectedIndexes NOTIFY selectedIndexesChanged)
+    Q_PROPERTY(bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
+    Q_PROPERTY(QList<int> selectedIndices READ selectedIndices WRITE setSelectedIndices NOTIFY selectedIndicesChanged)
 public:
     explicit UCViewItemsAttached(QObject *owner);
     ~UCViewItemsAttached();
@@ -179,12 +179,17 @@ public:
     bool isMoving();
     bool isBoundTo(UCListItem *item);
 
+    // getter/setter
+    bool selectMode() const;
+    void setSelectMode(bool value);
+    QList<int> selectedIndices() const;
+    void setSelectedIndices(const QList<int> &list);
 private Q_SLOTS:
     void unbindItem();
 
 Q_SIGNALS:
     void selectModeChanged();
-    void selectedIndexesChanged();
+    void selectedIndicesChanged();
 
 private:
     Q_DECLARE_PRIVATE(UCViewItemsAttached)

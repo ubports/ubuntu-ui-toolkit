@@ -175,12 +175,6 @@ public:
     QList< PropertyChange* > changes;
     QPointer<UCListItem> boundItem;
     QPointer<UCListItem> disablerItem;
-
-    // getter/setter
-    bool selectMode() const;
-    void setSelectMode(bool value);
-    QList<int> selectedIndexes() const;
-    void setSelectedIndexes(const QList<int> &list);
 };
 
 class UCActionPanel : public QObject

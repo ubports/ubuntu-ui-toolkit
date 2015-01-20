@@ -33,7 +33,7 @@ MainView {
         text: "Staaaar"
         onTriggered: {
             print(iconName, "triggered", value)
-            view.ViewItems.selectedIndexes = [1, 2, 9];
+            view.ViewItems.selectedIndices = [0, 2, 9];
         }
     }
 
@@ -167,8 +167,8 @@ MainView {
             model: 100
             pressDelay: 0
             ViewItems.selectMode: main.selectable
-            ViewItems.selectedIndexes: [9,3,4,1]
-            ViewItems.onSelectedIndexesChanged: print("LISTVIEW INDEXES=", ViewItems.selectedIndexes)
+            ViewItems.selectedIndices: [9,3,4,1]
+            ViewItems.onSelectedIndicesChanged: print("LISTVIEW INDEXES=", ViewItems.selectedIndices)
             delegate: ListItem {
                 objectName: "ListItem" + index
                 id: listItem
@@ -205,7 +205,7 @@ MainView {
                 actions: leading.actions
             }
             ViewItems.selectMode: main.selectable
-            ViewItems.onSelectedIndexesChanged: print("INDEXES=", ViewItems.selectedIndexes)
+            ViewItems.onSelectedIndicesChanged: print("INDEXES=", ViewItems.selectedIndices)
 
             Column {
                 id: column

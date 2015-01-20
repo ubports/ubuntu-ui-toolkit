@@ -231,39 +231,41 @@ void UCViewItemsAttached::unbindItem()
  * side hanving the content item pushed towards trailing side and dimmed. The checkbox
  * will reflect and drive the \l ListItem::selected state. Defaults to \c false.
  */
-bool UCViewItemsAttachedPrivate::selectMode() const
+bool UCViewItemsAttached::selectMode() const
 {
-    return selectable;
+    Q_D(const UCViewItemsAttached);
+    return d->selectable;
 }
-void UCViewItemsAttachedPrivate::setSelectMode(bool value)
+void UCViewItemsAttached::setSelectMode(bool value)
 {
-    if (selectable == value) {
+    Q_D(UCViewItemsAttached);
+    if (d->selectable == value) {
         return;
     }
-    selectable = value;
-    Q_Q(UCViewItemsAttached);
-    Q_EMIT q->selectModeChanged();
+    d->selectable = value;
+    Q_EMIT selectModeChanged();
 }
 
 /*!
- * \qmlattachedproperty list<int> ViewItems::selectedIndexes
+ * \qmlattachedproperty list<int> ViewItems::selectedIndices
  * The property contains the indexes of the ListItems marked as selected. The
  * indexes are model indexes when used in ListView, and child indexes in other
  * components. The property being writable, initial selection configuration
  * can be provided for a view, and provides ability to save the selection state.
  */
-QList<int> UCViewItemsAttachedPrivate::selectedIndexes() const
+QList<int> UCViewItemsAttached::selectedIndices() const
 {
-    return selectedList.toList();
+    Q_D(const UCViewItemsAttached);
+    return d->selectedList.toList();
 }
-void UCViewItemsAttachedPrivate::setSelectedIndexes(const QList<int> &list)
+void UCViewItemsAttached::setSelectedIndices(const QList<int> &list)
 {
-    if (selectedList.toList() == list) {
+    Q_D(UCViewItemsAttached);
+    if (d->selectedList.toList() == list) {
         return;
     }
-    selectedList = QSet<int>::fromList(list);
-    Q_Q(UCViewItemsAttached);
-    Q_EMIT q->selectedIndexesChanged();
+    d->selectedList = QSet<int>::fromList(list);
+    Q_EMIT selectedIndicesChanged();
 }
 
 void UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
@@ -271,13 +273,13 @@ void UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
     int index = UCListItemPrivate::get(item)->index();
     if (!selectedList.contains(index)) {
         selectedList.insert(index);
-        Q_EMIT q_ptr->selectedIndexesChanged();
+        Q_EMIT q_ptr->selectedIndicesChanged();
     }
 }
 void UCViewItemsAttachedPrivate::removeSelectedItem(UCListItem *item)
 {
     if (selectedList.remove(UCListItemPrivate::get(item)->index()) > 0) {
-        Q_EMIT q_ptr->selectedIndexesChanged();
+        Q_EMIT q_ptr->selectedIndicesChanged();
     }
 }
 
