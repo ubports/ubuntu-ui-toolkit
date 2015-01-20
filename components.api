@@ -227,7 +227,7 @@ OrientationHelper 0.1 1.0
 Item
     property bool automaticOrientation
     property bool transitionEnabled
-    property alias rotating
+    readonly property bool rotating
     property int __orientationAngle
     property int orientationAngle
     property bool anchorToKeyboard
@@ -864,6 +864,57 @@ plugins.qmltypes
     name: "UCInverseMouse"
     prototype: "UCMouse"
     exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
+    name: "UCListItem"
+    prototype: "UCStyledItemBase"
+    exports: ["ListItem 1.2"]
+    name: "PanelStatus"
+    Property { name: "contentItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
+    Property { name: "divider"; type: "UCListItemDivider"; isReadonly: true; isPointer: true }
+    Property { name: "leadingActions"; type: "UCListItemActions"; isPointer: true }
+    Property { name: "trailingActions"; type: "UCListItemActions"; isPointer: true }
+    Property { name: "highlighted"; type: "bool"; isReadonly: true }
+    Property { name: "swipeOvershoot"; type: "double" }
+    Property { name: "contentMoving"; type: "bool"; isReadonly: true }
+    Property { name: "color"; type: "QColor" }
+    Property { name: "highlightColor"; type: "QColor" }
+    Property { name: "listItemData"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
+    Property { name: "style"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "__styleInstance"; type: "QQuickItem"; isReadonly: true; isPointer: true }
+    Signal { name: "clicked" }
+    Signal { name: "contentMovementStarted" }
+    Signal { name: "contentMovementEnded" }
+    name: "UCListItemActions"
+    prototype: "QObject"
+    exports: ["ListItemActions 1.2"]
+    Property { name: "delegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "actions"; type: "UCAction"; isList: true; isReadonly: true }
+    Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
+    name: "UCListItemAttached"
+    prototype: "QObject"
+    Property { name: "actions"; type: "UCListItemActions"; isReadonly: true; isPointer: true }
+    Property { name: "visibleActions"; type: "UCAction"; isList: true; isReadonly: true }
+    Property { name: "item"; type: "UCListItem"; isReadonly: true; isPointer: true }
+    Property { name: "index"; type: "int"; isReadonly: true }
+    Property { name: "panelStatus"; type: "UCListItem::PanelStatus"; isReadonly: true }
+    Method {
+    name: "snapToPosition"
+    Parameter { name: "position"; type: "double" }
+    name: "UCListItemDivider"
+    prototype: "QObject"
+    Property { name: "visible"; type: "bool" }
+    Property { name: "leftMargin"; type: "double" }
+    Property { name: "rightMargin"; type: "double" }
+    Property { name: "colorFrom"; type: "QColor" }
+    Property { name: "colorTo"; type: "QColor" }
+    name: "UCListItemStyle"
+    prototype: "QQuickItem"
+    exports: ["Ubuntu.Components.Styles/ListItemStyle 1.2"]
+    Property { name: "actionsDelegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "selectionDelegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "dragHandlerDelegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "snapAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
+    Property { name: "swipeOvershoot"; type: "double" }
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1", "Mouse 1.0"]
@@ -953,6 +1004,9 @@ plugins.qmltypes
     Signal {
     name: "opened"
     Parameter { name: "uris"; type: "QStringList" }
+    name: "UCViewItemsAttached"
+    prototype: "QObject"
+    exports: ["ViewItems 1.2"]
     name: "UbuntuI18n"
     prototype: "QObject"
     exports: ["i18n 0.1", "i18n 1.0"]

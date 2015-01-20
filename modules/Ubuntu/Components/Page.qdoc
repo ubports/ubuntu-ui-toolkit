@@ -71,7 +71,7 @@
     \qmlproperty Item Page::tools
     \deprecated
     The toolbar items associated with this Page.
-    DEPRECATED. Use \l head.actions instead.
+    DEPRECATED. Use \b head.actions instead.
  */
 
 /*!

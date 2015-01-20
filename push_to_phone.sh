@@ -43,22 +43,22 @@ for i in $(ls Ubuntu/Components/*.qml Ubuntu/Components/*.js Ubuntu/Components/q
     adb push $i $STONE/c/$i || exit 1
 done
 cd ..
-echo cp -R c/Ubuntu/Components/* "\$DEST" '|| exit 1' >> $RUN/copy.sh
+echo cp -R c/Ubuntu/Components/* "\$DEST" >> $RUN/copy.sh
 
 for i in 10 11 ListItems Pickers Popups Styles Themes artwork; do
     adb push modules/Ubuntu/Components/$i/ $STONE/$i || exit 1
-    echo cp -R $i/ "\$DEST"/$i >> $RUN/copy.sh '|| exit 1' || exit 1
+    echo cp -R $i/* "\$DEST"/$i >> $RUN/copy.sh || exit 1
 done
 
 # Autopilot tests should always match the Toolkit
 adb push tests/autopilot/ubuntuuitoolkit/ $STONE/ap || exit 1
-echo cp -R ap/ /usr/lib/python2.7/dist-packages/ubuntuuitoolkit '|| exit 1' >> $RUN/copy.sh || exit 1
-echo cp -R ap/ /usr/lib/python3/dist-packages/ubuntuuitoolkit '|| exit 1' >> $RUN/copy.sh || exit 1
+echo cp -R ap/* /usr/lib/python2.7/dist-packages/ubuntuuitoolkit >> $RUN/copy.sh || exit 1
+echo cp -R ap/* /usr/lib/python3/dist-packages/ubuntuuitoolkit >> $RUN/copy.sh || exit 1
 adb push examples/ubuntu-ui-toolkit-gallery/ $STONE/ex >> $RUN/copy.sh || exit 1
-echo cp -R ex/ /usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery '|| exit 1'
+echo cp -R ex/* /usr/lib/ubuntu-ui-toolkit/examples/ubuntu-ui-toolkit-gallery
 
 # For launching the gallery easily
-echo cp ex/*.desktop /usr/share/applications/ '|| exit 1' >> $RUN/copy.sh || exit 1
+echo cp ex/*.desktop /usr/share/applications/ >> $RUN/copy.sh || exit 1
 
 echo echo ...OK >> $RUN/copy.sh
 chmod +x $RUN/copy.sh

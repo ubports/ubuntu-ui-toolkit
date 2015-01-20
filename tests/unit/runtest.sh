@@ -17,40 +17,38 @@
 # Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
 ################################################################################
 
+. `dirname $0`/../../build_paths.inc
+
 _CMD=""
 _TARGETPATH=$1
 _TESTFILEPATH=$2
 _MINIMAL=$3
-_BUILD_DIR=$4
 
 _TARGET=$(basename $1)
 _TESTFILE=$(basename $2)
+_IMPORT_PATH="${BUILD_DIR}/modules:$QML2_IMPORT_PATH"
+_THEMES_PATH="${BUILD_DIR}/modules"
+_XML="${BUILD_DIR}/tests/test_$_TARGET_$_TESTFILE.xml"
 
-#support for shadow build
-if [ -z ${_BUILD_DIR} ]; then
-  _BUILD_DIR=../../..
-fi
-_IMPORT_PATH="${_BUILD_DIR}/modules:$QML2_IMPORT_PATH"
-_THEMES_PATH="${_BUILD_DIR}/modules"
-_XML="${_BUILD_DIR}/tests/test_$_TARGET_$_TESTFILE.xml"
-
-_ARGS="-o $_XML,xunitxml -o -,txt"
+_ARGS="-p -o -p $_XML,xunitxml -p -o -p -,txt"
 
 set +e
 
 function create_test_cmd {
 	if [[ "$_TARGETPATH" = /* ]]; then
-		  _CMD="$_TARGETPATH"
+      _CMD="dbus-test-runner --task $_TARGETPATH -n $_TESTFILE -m 300"	
 	else
-		  _CMD="./$_TARGETPATH"
+      _CMD="dbus-test-runner --task ./$_TARGETPATH -n $_TESTFILE -m 300"
 	fi
+
   if [ "$_MINIMAL" = "minimal" ]; then
-      _CMD="$_CMD -platform minimal"
+      _CMD="$_CMD -p -platform -p minimal"
   fi
+
   if [ $_TARGETPATH != $_TESTFILEPATH ]; then
-      _CMD="$_CMD -input $_TESTFILEPATH"
+      _CMD="$_CMD -p -input -p $_TESTFILEPATH"
   fi
-  _CMD="$_CMD -maxwarnings 40"
+  _CMD="$_CMD -p -maxwarnings -p 40"
 }
 
 function execute_test_cmd {

@@ -66,20 +66,18 @@ Item {
             mouseMove(listItemStandard, 10, 10)
             mouseClick(listItemStandard, 10, 10, Qt.LeftButton)
             compare(listItemStandard.control, testControl, "control can be set")
-            controlClickedCount++;
+            listItemClickedCount++;
             compare(controlClickedSpy.count, controlClickedCount, "Control clicked triggered")
             compare(listItemClickedSpy.count, listItemClickedCount, "List item clicked not triggered when there is a control")
             listItemStandard.control = null;
         }
 
         function test_bug1166982_disabled_control_clicked() {
-            var listItemClickedCount = listItemClickedSpy.count
             var controlClickedCount = controlClickedSpy.count
             listItemStandard.control = testControl
             testControl.enabled = false
             mouseMove(listItemStandard, 10, 10)
             mouseClick(listItemStandard, 10, 10, Qt.LeftButton)
-            compare(listItemClickedSpy.count, listItemClickedCount, "List item clicked not triggered with disabled control")
             compare(controlClickedSpy.count, controlClickedCount, "Control clicked not triggered with disabled control")
             testControl.enabled = true
             listItemStandard.control = null

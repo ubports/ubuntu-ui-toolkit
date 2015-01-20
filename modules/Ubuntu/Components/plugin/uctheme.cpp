@@ -106,6 +106,8 @@ QStringList themeSearchPath() {
             result << path + '/';
         }
     }
+    // prepend current folder
+    result.prepend(QDir::currentPath());
     return result;
 }
 
@@ -139,7 +141,7 @@ void UCTheme::updateEnginePaths()
 
     QStringList paths = themeSearchPath();
     Q_FOREACH(const QString &path, paths) {
-        if (QDir(path).exists()) {
+        if (QDir(path).exists() && !m_engine->importPathList().contains(path)) {
             m_engine->addImportPath(path);
         }
     }
