@@ -121,9 +121,10 @@ public:
     void resetStyle();
     void initStyleItem();
     QQuickItem *styleInstance() const;
-    bool isSelected() const;
+    bool isSelected();
     void setSelected(bool value);
     bool isSelectable();
+    void _q_initializeSelectionHandler();
     UCAction *action() const;
     void setAction(UCAction *action);
 };
@@ -163,8 +164,8 @@ public:
     void buildFlickablesList();
     void clearChangesList();
     void buildChangesList(const QVariant &newValue);
-    void addSelectedItem(UCListItem *item);
-    void removeSelectedItem(UCListItem *item);
+    bool addSelectedItem(UCListItem *item);
+    bool removeSelectedItem(UCListItem *item);
     bool isItemSelected(UCListItem *item);
 
     UCViewItemsAttached *q_ptr;
@@ -294,7 +295,7 @@ class UCHandlerBase : public QObject
 public:
 
     explicit UCHandlerBase(UCListItem *owner = 0);
-    virtual void initialize() = 0;
+    virtual void initialize(bool animated) = 0;
 
     bool selectable() const;
 
@@ -312,18 +313,10 @@ class UCSelectionHandler : public UCHandlerBase
 public:
     explicit UCSelectionHandler(UCListItem *owner = 0);
 
-    void initialize();
-    bool isSelected()
-    {
-        return selected;
-    }
-    void setSelected(bool value);
+    void initialize(bool animated);
 
 public Q_SLOTS:
-    void setupSelection();
-
-protected:
-    bool selected:1;
+    void setupSelection(bool animated = true);
 };
 
 #endif // UCVIEWITEM_P_H

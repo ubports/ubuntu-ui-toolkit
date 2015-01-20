@@ -64,7 +64,6 @@ void UCHandlerBase::setupPanel(QQmlComponent *component, bool animate)
     if (panel || !component) {
         return;
     }
-    Q_UNUSED(animate)
     UCListItem *item = listItem->item();
     if (component->isError()) {
         qmlInfo(item) << component->errorString();
@@ -437,7 +436,7 @@ void UCListItemPrivate::init()
     animator = new UCListItemSnapAnimator(q);
 
     // create selection handler
-    selectionHandler = new UCSelectionHandler(q);
+//    selectionHandler = new UCSelectionHandler(q);
 }
 
 // inspired from IS_SIGNAL_CONNECTED(q, UCListItem, pressAndHold, ())
@@ -1028,14 +1027,13 @@ void UCListItem::componentComplete()
         update();
     }
 
-    d->selectionHandler->initialize();
-
     if (d->parentAttached) {
         // keep selectable in sync
-        connect(d->parentAttached, &UCViewItemsAttached::selectModeChanged,
-                this, &UCListItem::selectableChanged);
-        // get the selected state from the attached object
-        d->setSelected(UCViewItemsAttachedPrivate::get(d->parentAttached)->isItemSelected(this));
+        connect(d->parentAttached, SIGNAL(selectModeChanged()),
+                this, SLOT(_q_initializeSelectionHandler()));
+        if (d->parentAttached->selectMode()) {
+           d->_q_initializeSelectionHandler();
+        }
     }
 }
 
@@ -1567,13 +1565,23 @@ void UCListItem::resetHighlightColor()
  *
  * \sa ListItem::selectable, ViewItems::selectMode
  */
-bool UCListItemPrivate::isSelected() const
+bool UCListItemPrivate::isSelected()
 {
-    return selectionHandler->isSelected();
+    Q_Q(UCListItem);
+    return UCViewItemsAttachedPrivate::get(parentAttached)->isItemSelected(q);
 }
 void UCListItemPrivate::setSelected(bool value)
 {
-    selectionHandler->setSelected(value);
+    bool update = false;
+    Q_Q(UCListItem);
+    if (value) {
+        update = UCViewItemsAttachedPrivate::get(parentAttached)->addSelectedItem(q);
+    } else {
+        update = UCViewItemsAttachedPrivate::get(parentAttached)->removeSelectedItem(q);
+    }
+    if (update) {
+        Q_EMIT q->selectedChanged();
+    }
 }
 
 /*!
@@ -1586,6 +1594,15 @@ bool UCListItemPrivate::isSelectable()
 {
     UCViewItemsAttachedPrivate *attached = UCViewItemsAttachedPrivate::get(parentAttached);
     return attached ? attached->selectable : false;
+}
+void UCListItemPrivate::_q_initializeSelectionHandler()
+{
+    Q_Q(UCListItem);
+    if (!selectionHandler) {
+        selectionHandler = new UCSelectionHandler(q);
+        selectionHandler->initialize(q->senderSignalIndex() >= 0);
+    }
+    Q_EMIT q->selectableChanged();
 }
 
 /*!

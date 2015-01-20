@@ -268,19 +268,23 @@ void UCViewItemsAttached::setSelectedIndices(const QList<int> &list)
     Q_EMIT selectedIndicesChanged();
 }
 
-void UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
+bool UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
 {
     int index = UCListItemPrivate::get(item)->index();
     if (!selectedList.contains(index)) {
         selectedList.insert(index);
         Q_EMIT q_ptr->selectedIndicesChanged();
+        return true;
     }
+    return false;
 }
-void UCViewItemsAttachedPrivate::removeSelectedItem(UCListItem *item)
+bool UCViewItemsAttachedPrivate::removeSelectedItem(UCListItem *item)
 {
     if (selectedList.remove(UCListItemPrivate::get(item)->index()) > 0) {
         Q_EMIT q_ptr->selectedIndicesChanged();
+        return true;
     }
+    return false;
 }
 
 bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
