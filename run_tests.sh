@@ -20,6 +20,8 @@ source $PWD/export_modules_dir.sh
 cd tests/autopilot
 
 export UBUNTU_UI_TOOLKIT_AUTOPILOT_FROM_SOURCE=1
+export UITK_BUILD_ROOT="$BUILD_DIR"
+export UITK_SOURCE_ROOT="$SRC_DIR"
 SUITE=ubuntuuitoolkit
 if [ "$1" != "" ]; then
     SUITE="$1"
