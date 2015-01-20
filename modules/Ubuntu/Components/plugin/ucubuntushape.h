@@ -274,11 +274,11 @@ protected:
         const quint32 backgroundColor[4]);
 
 private Q_SLOTS:
-    void imagePropertiesChanged();
-    void openglContextDestroyed();
-    void gridUnitChanged();
-    void providerDestroyed(QObject* object=0);
-    void textureChanged();
+    void _q_imagePropertiesChanged();
+    void _q_openglContextDestroyed();
+    void _q_gridUnitChanged();
+    void _q_providerDestroyed(QObject* object=0);
+    void _q_textureChanged();
 
 private:
     void updateFromImageProperties(QQuickItem* image);

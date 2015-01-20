@@ -264,7 +264,7 @@ UCUbuntuShape::UCUbuntuShape(QQuickItem* parent)
 {
     setFlag(ItemHasContents);
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), this,
-                     SLOT(gridUnitChanged()));
+                     SLOT(_q_gridUnitChanged()));
     const float gridUnit = UCUnits::instance().gridUnit();
     setImplicitWidth(implicitGridUnitWidth * gridUnit);
     setImplicitHeight(implicitGridUnitHeight * gridUnit);
@@ -858,25 +858,19 @@ void UCUbuntuShape::connectToPropertyChange(
 // Deprecation layer.
 void UCUbuntuShape::connectToImageProperties(QQuickItem* image)
 {
-    connectToPropertyChange(image, "fillMode", this, "imagePropertiesChanged()");
-    connectToPropertyChange(image, "horizontalAlignment", this, "imagePropertiesChanged()");
-    connectToPropertyChange(image, "verticalAlignment", this, "imagePropertiesChanged()");
+    connectToPropertyChange(image, "fillMode", this, "_q_imagePropertiesChanged()");
+    connectToPropertyChange(image, "horizontalAlignment", this, "_q_imagePropertiesChanged()");
+    connectToPropertyChange(image, "verticalAlignment", this, "_q_imagePropertiesChanged()");
 }
 
 // Deprecation layer.
-void UCUbuntuShape::imagePropertiesChanged()
+void UCUbuntuShape::_q_imagePropertiesChanged()
 {
     QQuickItem* image = qobject_cast<QQuickItem*>(sender());
     updateFromImageProperties(image);
 }
 
-void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
-{
-    QQuickItem::geometryChanged(newGeometry, oldGeometry);
-    flags_ |= DirtySourceTransform;
-}
-
-void UCUbuntuShape::openglContextDestroyed()
+void UCUbuntuShape::_q_openglContextDestroyed()
 {
     QOpenGLContext* context = qobject_cast<QOpenGLContext*>(sender());
     if (context) {
@@ -890,7 +884,7 @@ void UCUbuntuShape::openglContextDestroyed()
     }
 }
 
-void UCUbuntuShape::gridUnitChanged()
+void UCUbuntuShape::_q_gridUnitChanged()
 {
     const float gridUnit = UCUnits::instance().gridUnit();
     setImplicitWidth(implicitGridUnitWidth * gridUnit);
@@ -898,16 +892,22 @@ void UCUbuntuShape::gridUnitChanged()
     update();
 }
 
-void UCUbuntuShape::providerDestroyed(QObject* object)
+void UCUbuntuShape::_q_providerDestroyed(QObject* object)
 {
     Q_UNUSED(object);
     sourceTextureProvider_ = NULL;
 }
 
-void UCUbuntuShape::textureChanged()
+void UCUbuntuShape::_q_textureChanged()
 {
     flags_ |= DirtySourceTransform;
     update();
+}
+
+void UCUbuntuShape::geometryChanged(const QRectF& newGeometry, const QRectF& oldGeometry)
+{
+    QQuickItem::geometryChanged(newGeometry, oldGeometry);
+    flags_ |= DirtySourceTransform;
 }
 
 // Gets the nearest boundary to coord in the texel grid of the given size.
@@ -1005,7 +1005,7 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
             QImage(shapeTextureLow.data, shapeTextureLow.width, shapeTextureLow.height,
                    QImage::Format_ARGB32_Premultiplied));
         QObject::connect(openglContext, SIGNAL(aboutToBeDestroyed()),
-                         this, SLOT(openglContextDestroyed()), Qt::DirectConnection);
+                         this, SLOT(_q_openglContextDestroyed()), Qt::DirectConnection);
     }
 
     // Get the texture info and update the source transform if needed.
@@ -1035,13 +1035,13 @@ QSGNode* UCUbuntuShape::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData* d
     if (provider != sourceTextureProvider_) {
         if (sourceTextureProvider_) {
             QObject::disconnect(sourceTextureProvider_, SIGNAL(textureChanged()),
-                                this, SLOT(textureChanged()));
+                                this, SLOT(_q_textureChanged()));
             QObject::disconnect(sourceTextureProvider_, SIGNAL(destroyed()),
-                                this, SLOT(providerDestroyed()));
+                                this, SLOT(_q_providerDestroyed()));
         }
         if (provider) {
-            QObject::connect(provider, SIGNAL(textureChanged()), this, SLOT(textureChanged()));
-            QObject::connect(provider, SIGNAL(destroyed()), this, SLOT(providerDestroyed()));
+            QObject::connect(provider, SIGNAL(textureChanged()), this, SLOT(_q_textureChanged()));
+            QObject::connect(provider, SIGNAL(destroyed()), this, SLOT(_q_providerDestroyed()));
         }
         sourceTextureProvider_ = provider;
     }
