@@ -430,13 +430,6 @@ void UCListItemPrivate::init()
 
     // watch size change and set implicit size;
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
-    _q_updateSize();
-
-    // create the animator
-    animator = new UCListItemSnapAnimator(q);
-
-    // create selection handler
-//    selectionHandler = new UCSelectionHandler(q);
 }
 
 // inspired from IS_SIGNAL_CONNECTED(q, UCListItem, pressAndHold, ())
@@ -483,7 +476,9 @@ void UCListItemPrivate::_q_rebound()
     }
     setSwiped(false);
     // rebound to zero
-    animator->snap(0);
+    if (animator) {
+        animator->snap(0);
+    }
 }
 
 void UCListItemPrivate::_q_updateIndex()
@@ -1070,10 +1065,9 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
 
         if (parentAttachee) {
             QObject::connect(parentAttachee, SIGNAL(widthChanged()), this, SLOT(_q_updateSize()), Qt::DirectConnection);
+            // update size
+            d->_q_updateSize();
         }
-
-        // update size
-        d->_q_updateSize();
     }
 }
 
@@ -1211,6 +1205,10 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         if ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold))) {
             // the press went out of the threshold area, enable move, if the direction allows it
             d->lastPos = event->localPos();
+            // create the animator
+            if (!d->animator) {
+                d->animator = new UCListItemSnapAnimator(this);
+            }
             // tries to connect both panels so we do no longer need to take care which
             // got connected ad which not; this may fail in case of shared ListItemActions,
             // as then the panel is shared between the list items, and the panel might be
