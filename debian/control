@@ -44,6 +44,7 @@ Build-Depends: debhelper (>= 9.0.0),
                libgl1-mesa-dri,
                locales,
                suru-icon-theme,
+               uuid-runtime,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 # If you aren't a member of ~ubuntu-sdk-team but need to upload packaging
