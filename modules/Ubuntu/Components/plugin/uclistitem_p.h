@@ -300,11 +300,10 @@ public:
     bool selectable() const;
 
 protected:
-    UCListItemPrivate *listItem;
+    UCListItem *listItem;
     QQuickItem *panel;
 
     void setupPanel(QQmlComponent *component, bool animate);
-
 };
 
 class UCSelectionHandler : public UCHandlerBase

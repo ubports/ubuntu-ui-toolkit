@@ -28,14 +28,15 @@ UCSelectionHandler::UCSelectionHandler(UCListItem *owner)
 
 void UCSelectionHandler::initialize(bool animated)
 {
-    if (!listItem->parentAttached) {
+    UCListItemPrivate *pListItem = UCListItemPrivate::get(listItem);
+    if (!pListItem->parentAttached) {
         return;
     }
-    connect(listItem->parentAttached, SIGNAL(selectModeChanged()),
+    connect(pListItem->parentAttached, SIGNAL(selectModeChanged()),
             this, SLOT(setupSelection()));
 
     // set up selection panel if created with selectable enabled
-    if (listItem->isSelectable()) {
+    if (pListItem->isSelectable()) {
         setupSelection(animated);
     }
 }
@@ -43,15 +44,16 @@ void UCSelectionHandler::initialize(bool animated)
 void UCSelectionHandler::setupSelection(bool animated)
 {
     // make sure the selection mode panel is prepared; selection panel must take care of the visuals
-    bool selectable = listItem->isSelectable();
+    UCListItemPrivate *pListItem = UCListItemPrivate::get(listItem);
+    bool selectable = pListItem->isSelectable();
     if (selectable) {
-        listItem->promptRebound();
+        pListItem->promptRebound();
         bool animate = animated || (senderSignalIndex() >= 0);
-        listItem->initStyleItem();
-        if (listItem->styleItem && listItem->styleItem->m_selectionDelegate) {
-            setupPanel(listItem->styleItem->m_selectionDelegate, animate);
+        pListItem->initStyleItem();
+        if (pListItem->styleItem && pListItem->styleItem->m_selectionDelegate) {
+            setupPanel(pListItem->styleItem->m_selectionDelegate, animate);
         }
     }
     // and finaly update visuals
-    listItem->update();
+    pListItem->update();
 }

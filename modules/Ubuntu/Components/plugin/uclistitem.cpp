@@ -54,7 +54,7 @@ QColor getPaletteColor(const char *profile, const char *color)
  */
 UCHandlerBase::UCHandlerBase(UCListItem *owner)
     : QObject(owner)
-    , listItem(UCListItemPrivate::get(owner))
+    , listItem(owner)
     , panel(0)
 {
 }
@@ -64,21 +64,20 @@ void UCHandlerBase::setupPanel(QQmlComponent *component, bool animate)
     if (panel || !component) {
         return;
     }
-    UCListItem *item = listItem->item();
     if (component->isError()) {
-        qmlInfo(item) << component->errorString();
+        qmlInfo(listItem) << component->errorString();
     } else {
         // create a new context so we can expose context properties
-        QQmlContext *context = new QQmlContext(qmlContext(item), item);
+        QQmlContext *context = new QQmlContext(qmlContext(listItem), listItem);
         panel = qobject_cast<QQuickItem*>(component->beginCreate(context));
         if (panel) {
-            QQml_setParent_noEvent(panel, item);
-            panel->setParentItem(item);
+            QQml_setParent_noEvent(panel, listItem);
+            panel->setParentItem(listItem);
             // attach ListItem attached properties
             UCListItemAttached *attached = static_cast<UCListItemAttached*>(
                         qmlAttachedPropertiesObject<UCListItem>(panel));
             if (attached) {
-                attached->setList(item, false, false);
+                attached->setList(listItem, false, false);
                 UCListItemAttachedPrivate::get(attached)->setAnimate(animate);
             }
             // complete component creation
