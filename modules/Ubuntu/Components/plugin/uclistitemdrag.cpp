@@ -15,33 +15,34 @@ UCDragHandler::UCDragHandler(UCListItem *listItem)
 }
 
 // listen for attached property's draggable change signal to activate dragging mode on the list item
-void UCDragHandler::initialize()
+void UCDragHandler::initialize(bool animated)
 {
-    if (!listItem->parentAttached) {
+    UCListItemPrivate *pListItem = UCListItemPrivate::get(listItem);
+    if (!pListItem->parentAttached) {
         return;
     }
-    connect(listItem->parentAttached, &UCViewItemsAttached::dragModeChanged,
-            this, &UCDragHandler::setupDragMode);
-    if (listItem->isDraggable()) {
-        setupDragMode();
+    connect(pListItem->parentAttached, SIGNAL(dragModeChanged()),
+            this, SLOT(setupDragMode(bool)));
+    if (pListItem->isDraggable()) {
+        setupDragMode(animated);
     }
 }
 
-void UCDragHandler::setupDragMode()
+void UCDragHandler::setupDragMode(bool animated)
 {
+    UCListItemPrivate *pListItem = UCListItemPrivate::get(listItem);
     // make sure the ListItem is snapped out
-    bool draggable = listItem->isDraggable();
+    bool draggable = pListItem->isDraggable();
     if (draggable) {
-        listItem->promptRebound();
+        pListItem->promptRebound();
         // animate panel only in case is called due to a signal emit
-        listItem->initStyleItem();
-        if (!panel && listItem->styleItem && listItem->styleItem->m_dragHandlerDelegate) {
-            bool animate = (senderSignalIndex() >= 0);
-            setupPanel(listItem->styleItem->m_dragHandlerDelegate, animate);
+        pListItem->initStyleItem();
+        if (!panel && pListItem->styleItem && pListItem->styleItem->m_dragHandlerDelegate) {
+            bool animate = animated || (senderSignalIndex() >= 0);
+            setupPanel(pListItem->styleItem->m_dragHandlerDelegate, animate);
         }
     }
 
     // update visuals
-    listItem->update();
+    pListItem->update();
 }
-

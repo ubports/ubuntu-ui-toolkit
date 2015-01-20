@@ -118,6 +118,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_rebound())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
+    Q_PRIVATE_SLOT(d_func(), void _q_initializeSelectionHandler())
 };
 QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
 
@@ -170,11 +171,9 @@ class UCViewItemsAttachedPrivate;
 class UCViewItemsAttached : public QObject
 {
     Q_OBJECT
-    Q_PRIVATE_PROPERTY(UCViewItemsAttached::d_func(), bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
-    Q_PRIVATE_PROPERTY(UCViewItemsAttached::d_func(), QList<int> selectedIndexes READ selectedIndexes WRITE setSelectedIndexes NOTIFY selectedIndexesChanged)
-    Q_PRIVATE_PROPERTY(UCViewItemsAttached::d_func(), bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
-    Q_PRIVATE_PROPERTY(UCViewItemsAttached::d_func(), QList<int> selectedIndexes READ selectedIndexes WRITE setSelectedIndexes NOTIFY selectedIndexesChanged)
-    Q_PRIVATE_PROPERTY(UCViewItemsAttached::d_func(), bool dragMode READ dragMode WRITE setDragMode NOTIFY dragModeChanged)
+    Q_PROPERTY(bool selectMode READ selectMode WRITE setSelectMode NOTIFY selectModeChanged)
+    Q_PROPERTY(QList<int> selectedIndices READ selectedIndices WRITE setSelectedIndices NOTIFY selectedIndicesChanged)
+    Q_PROPERTY(bool dragMode READ dragMode WRITE setDragMode NOTIFY dragModeChanged)
 public:
     explicit UCViewItemsAttached(QObject *owner);
     ~UCViewItemsAttached();
@@ -186,12 +185,19 @@ public:
     bool isMoving();
     bool isBoundTo(UCListItem *item);
 
+    // getter/setter
+    bool selectMode() const;
+    void setSelectMode(bool value);
+    QList<int> selectedIndices() const;
+    void setSelectedIndices(const QList<int> &list);
+    bool dragMode() const;
+    void setDragMode(bool value);
 private Q_SLOTS:
     void unbindItem();
 
 Q_SIGNALS:
     void selectModeChanged();
-    void selectedIndexesChanged();
+    void selectedIndicesChanged();
     void dragModeChanged();
 
     void draggingStarted(UCDragEvent *event);

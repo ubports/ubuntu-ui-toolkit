@@ -253,7 +253,7 @@ Item {
             compare(defaults.selected, false, "Not selected by default");
             compare(defaults.selectable, false, "Not selectable by default");
             compare(testColumn.ViewItems.selectMode, false, "The parent attached property is not selectable by default");
-            compare(testColumn.ViewItems.selectedIndexes.length, 0, "No item is selected by default");
+            compare(testColumn.ViewItems.selectedIndices.length, 0, "No item is selected by default");
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
@@ -264,7 +264,7 @@ Item {
         function test_style_reset() {
             testItem.style = customStyle;
             testItem.style = undefined;
-            verify(testItem.style != 0 && testItem.style.objectName == "ThemeStyle", "Style set back to theme");
+            verify(testItem.style != 0 && testItem.style.objectName == "ListItemThemeStyle", "Style set back to theme");
         }
 
         function test_children_in_content_item() {
@@ -788,6 +788,20 @@ Item {
             compare(actionSpy.count, 0, "Action triggered must be suppressed");
         }
 
+        function test_select_indices_updates_selected_items() {
+            listView.ViewItems.selectedIndices = [0,1,2];
+            listView.ViewItems.selectMode = true;
+            waitForRendering(listView, 500);
+            for (var i in listView.ViewItems.selectedIndices) {
+                var index = listView.ViewItems.selectedIndices[i];
+                var listItem = findChild(listView, "listItem" + index);
+                compare(listItem.selected, true, "ListItem at index " + index + " is not selected!");
+            }
+            listView.ViewItems.selectMode = false;
+            listView.ViewItems.selectedIndices = [];
+            waitForRendering(listView, 500);
+        }
+
         function test_toggle_selectable_data() {
             return [
                 {tag: "When not selected", index: 0, selected: false},
@@ -836,12 +850,12 @@ Item {
         }
 
         SignalSpy {
-            id: selectedIndexesSpy
-            signalName: "selectedIndexesChanged"
+            id: selectedIndicesSpy
+            signalName: "selectedIndicesChanged"
             target: listView.ViewItems
         }
 
-        function test_selectedIndexes_change() {
+        function test_selectedIndices_change() {
             // move to the end of the view
             listView.positionViewAtEnd();
             var listItem = findChild(listView, "listItem" + (listView.count - 1));
@@ -853,7 +867,7 @@ Item {
 
             listItem.selected = true;
             selectedSpy.wait();
-            selectedIndexesSpy.wait();
+            selectedIndicesSpy.wait();
         }
 
         function test_no_tug_when_selectable() {

@@ -239,54 +239,60 @@ void UCViewItemsAttached::unbindItem()
  * side hanving the content item pushed towards trailing side and dimmed. The checkbox
  * will reflect and drive the \l ListItem::selected state. Defaults to \c false.
  */
-bool UCViewItemsAttachedPrivate::selectMode() const
+bool UCViewItemsAttached::selectMode() const
 {
-    return selectable;
+    Q_D(const UCViewItemsAttached);
+    return d->selectable;
 }
-void UCViewItemsAttachedPrivate::setSelectMode(bool value)
+void UCViewItemsAttached::setSelectMode(bool value)
 {
-    if (selectable == value) {
+    Q_D(UCViewItemsAttached);
+    if (d->selectable == value) {
         return;
     }
-    selectable = value;
-    Q_Q(UCViewItemsAttached);
-    Q_EMIT q->selectModeChanged();
+    d->selectable = value;
+    Q_EMIT selectModeChanged();
 }
 
 /*!
- * \qmlattachedproperty list<int> ViewItems::selectedIndexes
+ * \qmlattachedproperty list<int> ViewItems::selectedIndices
  * The property contains the indexes of the ListItems marked as selected. The
  * indexes are model indexes when used in ListView, and child indexes in other
  * components. The property being writable, initial selection configuration
  * can be provided for a view, and provides ability to save the selection state.
  */
-QList<int> UCViewItemsAttachedPrivate::selectedIndexes() const
+QList<int> UCViewItemsAttached::selectedIndices() const
 {
-    return selectedList.toList();
+    Q_D(const UCViewItemsAttached);
+    return d->selectedList.toList();
 }
-void UCViewItemsAttachedPrivate::setSelectedIndexes(const QList<int> &list)
+void UCViewItemsAttached::setSelectedIndices(const QList<int> &list)
 {
-    if (selectedList.toList() == list) {
+    Q_D(UCViewItemsAttached);
+    if (d->selectedList.toList() == list) {
         return;
     }
-    selectedList = QSet<int>::fromList(list);
-    Q_Q(UCViewItemsAttached);
-    Q_EMIT q->selectedIndexesChanged();
+    d->selectedList = QSet<int>::fromList(list);
+    Q_EMIT selectedIndicesChanged();
 }
 
-void UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
+bool UCViewItemsAttachedPrivate::addSelectedItem(UCListItem *item)
 {
     int index = UCListItemPrivate::get(item)->index();
     if (!selectedList.contains(index)) {
         selectedList.insert(index);
-        Q_EMIT q_ptr->selectedIndexesChanged();
+        Q_EMIT q_ptr->selectedIndicesChanged();
+        return true;
     }
+    return false;
 }
-void UCViewItemsAttachedPrivate::removeSelectedItem(UCListItem *item)
+bool UCViewItemsAttachedPrivate::removeSelectedItem(UCListItem *item)
 {
     if (selectedList.remove(UCListItemPrivate::get(item)->index()) > 0) {
-        Q_EMIT q_ptr->selectedIndexesChanged();
+        Q_EMIT q_ptr->selectedIndicesChanged();
+        return true;
     }
+    return false;
 }
 
 bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
@@ -436,35 +442,32 @@ bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
  * }
  * \endqml
  */
-bool UCViewItemsAttachedPrivate::dragMode() const
+bool UCViewItemsAttached::dragMode() const
 {
-    return draggable;
+    Q_D(const UCViewItemsAttached);
+    return d->draggable;
 }
-void UCViewItemsAttachedPrivate::setDragMode(bool value)
+void UCViewItemsAttached::setDragMode(bool value)
 {
-    if (draggable == value) {
+    Q_D(UCViewItemsAttached);
+    if (d->draggable == value) {
         return;
     }
-    Q_Q(UCViewItemsAttached);
     if (value) {
         /*
          * The dragging works only if the ListItem is used inside a ListView, and the
          * model used is a list, a ListModel or a derivate of QAbstractItemModel. Do
          * not enable dragging if these conditions are not fulfilled.
          */
-        if (!listView) {
-            qmlInfo(q->parent()) << UbuntuI18n::instance().tr("dragging mode requires ListView");
+        if (!d->listView) {
+            qmlInfo(parent()) << UbuntuI18n::instance().tr("dragging mode requires ListView");
             return;
         }
-        QVariant modelValue = listView->property("model");
+        QVariant modelValue = d->listView->property("model");
         if (!modelValue.isValid()) {
             return;
         }
-        if (modelValue.type() == QVariant::Int || modelValue.type() == QVariant::Double) {
-            qmlInfo(listView) << UbuntuI18n::instance().tr("model must be a list, ListModel or a derivate of QAbstractItemModel");
-            return;
-        }
     }
-    draggable = value;
-    Q_EMIT q->dragModeChanged();
+    d->draggable = value;
+    Q_EMIT dragModeChanged();
 }

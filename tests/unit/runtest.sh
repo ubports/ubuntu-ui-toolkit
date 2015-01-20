@@ -18,33 +18,54 @@
 ################################################################################
 
 _CMD=""
-_TARGET=$1
-_TESTFILE=$2
+_TARGETPATH=$1
+_TESTFILEPATH=$2
 _MINIMAL=$3
-_XML="../../test_$_TARGET_$_TESTFILE.xml"
+_BUILD_DIR=$4
+
+_TARGET=$(basename $1)
+_TESTFILE=$(basename $2)
+
+#support for shadow build
+if [ -z ${_BUILD_DIR} ]; then
+  _BUILD_DIR=../../..
+fi
+_IMPORT_PATH="${_BUILD_DIR}/modules:$QML2_IMPORT_PATH"
+_THEMES_PATH="${_BUILD_DIR}/modules"
+_XML="${_BUILD_DIR}/tests/test_$_TARGET_$_TESTFILE.xml"
+
 _ARGS="-p -o -p $_XML,xunitxml -p -o -p -,txt"
+
 set +e
 
 function create_test_cmd {
-  _CMD="dbus-test-runner --task ./$_TARGET -n $_TESTFILE -m 300"
+	if [[ "$_TARGETPATH" = /* ]]; then
+      _CMD="dbus-test-runner --task $_TARGETPATH -n $_TESTFILE -m 300"	
+	else
+      _CMD="dbus-test-runner --task ./$_TARGETPATH -n $_TESTFILE -m 300"
+	fi
+
   if [ "$_MINIMAL" = "minimal" ]; then
       _CMD="$_CMD -p -platform -p minimal"
   fi
-  if [ $_TARGET != $_TESTFILE ]; then
-      _CMD="$_CMD -p -input -p $_TESTFILE"
+
+  if [ $_TARGETPATH != $_TESTFILEPATH ]; then
+      _CMD="$_CMD -p -input -p $_TESTFILEPATH"
   fi
   _CMD="$_CMD -p -maxwarnings -p 40"
 }
 
 function execute_test_cmd {
   echo "Executing $_CMD $_ARGS"
-  if [ ! -x $_TARGET ]; then
+  echo "Working directory: $PWD"
+  if [ ! -x $_TARGETPATH ]; then
     echo "Error: $_TARGET wasn't built!"
     RESULT=2
   elif [ $DISPLAY ]; then
     # https://bugs.launchpad.net/ubuntu-ui-toolkit/+bug/1256999
     # https://bugreports.qt-project.org/browse/QTBUG-36243
-    QML2_IMPORT_PATH=../../../modules:$QML2_IMPORT_PATH UBUNTU_UI_TOOLKIT_THEMES_PATH=../../../modules \
+	
+    QML2_IMPORT_PATH=${_IMPORT_PATH} UBUNTU_UI_TOOLKIT_THEMES_PATH=${_THEMES_PATH} \
     ALARM_BACKEND=memory \
     $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
     # Note: Get first command before the pipe, $? would be ambiguous
