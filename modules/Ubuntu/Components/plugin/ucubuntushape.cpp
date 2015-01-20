@@ -211,7 +211,7 @@ const float lowHighTextureThreshold = 11.0f;
 
 /*! \qmltype UbuntuShape
     \instantiates UCUbuntuShape
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components 1.2
     \ingroup ubuntu
     \brief Rounded rectangle containing a source image blended over a background color.
 
@@ -223,7 +223,7 @@ const float lowHighTextureThreshold = 11.0f;
     Examples:
 
     \qml
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
 
         UbuntuShape {
             backgroundColor: "green"
@@ -231,7 +231,7 @@ const float lowHighTextureThreshold = 11.0f;
     \endqml
 
     \qml
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
 
         UbuntuShape {
             source: Image {
@@ -325,6 +325,7 @@ void UCUbuntuShape::dropImageSupport()
 }
 
 /*! \qmlproperty variant UbuntuShape::source
+    \since Ubuntu.Components 1.2
 
     This property sets the source provider of a texture rendered in the UbuntuShape. Supported types
     are \c Image, \c AnimatedImage (to render a GIF image for instance) and \c ShaderEffectSource
@@ -390,6 +391,7 @@ void UCUbuntuShape::setSource(const QVariant& source)
 }
 
 /*! \qmlproperty real UbuntuShape::sourceOpacity
+    \since Ubuntu.Components 1.2
 
     This property holds the opacity of the \l source texture. Opacity is specified as a number
     between 0.0 (fully transparent) and 1.0 (fully opaque). The default value is 1.0.
@@ -410,6 +412,7 @@ void UCUbuntuShape::setSourceOpacity(float sourceOpacity)
 }
 
 /*! \qmlproperty enumeration UbuntuShape::sourceFillMode
+    \since Ubuntu.Components 1.2
 
     This properties defines how the \l source texture fills the UbuntuShape. The modes are the same
     as the ones used by \c Image, minus the tiling which is exposed through wrapping properties (\l
@@ -439,6 +442,7 @@ void UCUbuntuShape::setSourceFillMode(UCUbuntuShape::FillMode sourceFillMode)
 
 /*! \qmlproperty enumeration UbuntuShape::sourceHorizontalWrapMode
     \qmlproperty enumeration UbuntuShape::sourceVerticalWrapMode
+    \since Ubuntu.Components 1.2
 
     When the \l sourceFillMode is set to \c UbuntuShape.Pad or \c UbuntuShape.PreserveAspectFit or
     when the \l sourceScale and/or \l sourceTranslation properties are changed, the \l source
@@ -482,6 +486,7 @@ void UCUbuntuShape::setSourceVerticalWrapMode(UCUbuntuShape::WrapMode sourceVert
 }
 
 /*! \qmlproperty enumeration UbuntuShape::sourceHorizontalAlignment
+    \since Ubuntu.Components 1.2
 
     This property defines how the \l source texture is horizontally aligned inside the UbuntuShape
     area. The default value is \c UbuntuShape.AlignLeft.
@@ -508,6 +513,7 @@ void UCUbuntuShape::setSourceHorizontalAlignment(
 }
 
 /*! \qmlproperty enumeration UbuntuShape::sourceVerticalAlignment
+    \since Ubuntu.Components 1.2
 
     This property defines how the \l source texture is vertically aligned inside the UbuntuShape
     area. The default value is \c UbuntuShape.AlignTop.
@@ -533,6 +539,7 @@ void UCUbuntuShape::setSourceVerticalAlignment(UCUbuntuShape::VAlignment sourceV
 }
 
 /*! \qmlproperty vector2d UbuntuShape::sourceTranslation
+    \since Ubuntu.Components 1.2
 
     This property defines the two-component vector in normalized item coordinates used to translate
     the \l source texture. The default value is \c {Qt.vector2d(0.0,0.0)}.
@@ -555,6 +562,7 @@ void UCUbuntuShape::setSourceTranslation(const QVector2D& sourceTranslation)
 }
 
 /*! \qmlproperty vector2d UbuntuShape::sourceScale
+    \since Ubuntu.Components 1.2
 
     This property defines the two-component vector used to scale the \l source texture. The texture
     is scaled at the alignment point defined by \l sourceHorizontalAlignment and \l
@@ -603,6 +611,7 @@ void UCUbuntuShape::dropColorSupport()
 }
 
 /*! \qmlproperty color UbuntuShape::backgroundColor
+    \since Ubuntu.Components 1.2
 
     This property defines the background color. The default value is transparent black.
 
@@ -623,6 +632,7 @@ void UCUbuntuShape::setBackgroundColor(const QColor& backgroundColor)
 }
 
 /*! \qmlproperty color UbuntuShape::secondaryBackgroundColor
+    \since Ubuntu.Components 1.2
 
     This property defines the secondary background color. It is used when \l backgroundMode is set
     to \c UbuntuShape.VerticalGradient. The default value is transparent black.
@@ -644,6 +654,7 @@ void UCUbuntuShape::setSecondaryBackgroundColor(const QColor& secondaryBackgroun
 }
 
 /*! \qmlproperty enumeration UbuntuShape::backgroundMode
+    \since Ubuntu.Components 1.2
 
     This property defines the background rendering mode. The default value is \c
     UbuntuShape.SolidColor.

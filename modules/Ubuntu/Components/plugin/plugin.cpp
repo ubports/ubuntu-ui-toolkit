@@ -129,7 +129,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "UbuntuShape");
-    // FIXME/DEPRECATED: Shape is exported for backwards compatibity only
+    // FIXME/DEPRECATED: Shape is exported for backwards compatibility only
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "Shape");
     qmlRegisterType<InverseMouseAreaType>(uri, major, minor, "InverseMouseArea");
     qmlRegisterType<QQuickMimeData>(uri, major, minor, "MimeData");
@@ -167,11 +167,12 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
 
-    // ListItem and related types, released to 1.2
+    // register 1.2 only API
     qmlRegisterType<UCListItem, 2>(uri, 1, 2, "ListItem");
     qmlRegisterType<UCListItemDivider>();
     qmlRegisterType<UCListItemActions, 2>(uri, 1, 2, "ListItemActions");
     qmlRegisterUncreatableType<UCViewItemsAttached, 2>(uri, 1, 2, "ViewItems", "Not instantiable");
+    qmlRegisterType<UCUbuntuShape, 1>(uri, 1, 2, "UbuntuShape");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

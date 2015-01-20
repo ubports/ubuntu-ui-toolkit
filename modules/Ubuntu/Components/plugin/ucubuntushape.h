@@ -124,32 +124,33 @@ class UCUbuntuShape : public QQuickItem
     Q_ENUMS(WrapMode)
     Q_ENUMS(HAlignment)
     Q_ENUMS(VAlignment)
-    Q_PROPERTY(QVariant source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QVariant source READ source WRITE setSource NOTIFY sourceChanged REVISION 1)
     Q_PROPERTY(float sourceOpacity READ sourceOpacity WRITE setSourceOpacity
-               NOTIFY sourceOpacityChanged)
+               NOTIFY sourceOpacityChanged REVISION 1)
     Q_PROPERTY(FillMode sourceFillMode READ sourceFillMode WRITE setSourceFillMode
-               NOTIFY sourceFillModeChanged)
+               NOTIFY sourceFillModeChanged REVISION 1)
     Q_PROPERTY(WrapMode sourceHorizontalWrapMode READ sourceHorizontalWrapMode
-               WRITE setSourceHorizontalWrapMode NOTIFY sourceHorizontalWrapModeChanged)
+               WRITE setSourceHorizontalWrapMode NOTIFY sourceHorizontalWrapModeChanged REVISION 1)
     Q_PROPERTY(WrapMode sourceVerticalWrapMode READ sourceVerticalWrapMode
-               WRITE setSourceVerticalWrapMode NOTIFY sourceVerticalWrapModeChanged)
+               WRITE setSourceVerticalWrapMode NOTIFY sourceVerticalWrapModeChanged REVISION 1)
     Q_PROPERTY(HAlignment sourceHorizontalAlignment READ sourceHorizontalAlignment
-               WRITE setSourceHorizontalAlignment NOTIFY sourceHorizontalAlignmentChanged)
+               WRITE setSourceHorizontalAlignment NOTIFY sourceHorizontalAlignmentChanged
+               REVISION 1)
     Q_PROPERTY(VAlignment sourceVerticalAlignment READ sourceVerticalAlignment
-               WRITE setSourceVerticalAlignment NOTIFY sourceVerticalAlignmentChanged)
+               WRITE setSourceVerticalAlignment NOTIFY sourceVerticalAlignmentChanged REVISION 1)
     Q_PROPERTY(QVector2D sourceTranslation READ sourceTranslation WRITE setSourceTranslation
-               NOTIFY sourceTranslationChanged)
+               NOTIFY sourceTranslationChanged REVISION 1)
     Q_PROPERTY(QVector2D sourceScale READ sourceScale WRITE setSourceScale
-               NOTIFY sourceScaleChanged)
+               NOTIFY sourceScaleChanged REVISION 1)
 
     // Background properties.
     Q_ENUMS(BackgroundMode)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor
-               NOTIFY backgroundColorChanged)
+               NOTIFY backgroundColorChanged REVISION 1)
     Q_PROPERTY(QColor secondaryBackgroundColor READ secondaryBackgroundColor
-               WRITE setSecondaryBackgroundColor NOTIFY secondaryBackgroundColorChanged)
+               WRITE setSecondaryBackgroundColor NOTIFY secondaryBackgroundColorChanged REVISION 1)
     Q_PROPERTY(BackgroundMode backgroundMode READ backgroundMode WRITE setBackgroundMode
-               NOTIFY backgroundModeChanged)
+               NOTIFY backgroundModeChanged REVISION 1)
 
     // Deprecated properties.
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
@@ -237,19 +238,19 @@ Q_SIGNALS:
     void radiusChanged();
     void borderSourceChanged();
 
-    void sourceChanged();
-    void sourceOpacityChanged();
-    void sourceFillModeChanged();
-    void sourceHorizontalWrapModeChanged();
-    void sourceVerticalWrapModeChanged();
-    void sourceHorizontalAlignmentChanged();
-    void sourceVerticalAlignmentChanged();
-    void sourceTranslationChanged();
-    void sourceScaleChanged();
+    Q_REVISION(1) void sourceChanged();
+    Q_REVISION(1) void sourceOpacityChanged();
+    Q_REVISION(1) void sourceFillModeChanged();
+    Q_REVISION(1) void sourceHorizontalWrapModeChanged();
+    Q_REVISION(1) void sourceVerticalWrapModeChanged();
+    Q_REVISION(1) void sourceHorizontalAlignmentChanged();
+    Q_REVISION(1) void sourceVerticalAlignmentChanged();
+    Q_REVISION(1) void sourceTranslationChanged();
+    Q_REVISION(1) void sourceScaleChanged();
 
-    void backgroundColorChanged();
-    void secondaryBackgroundColorChanged();
-    void backgroundModeChanged();
+    Q_REVISION(1) void backgroundColorChanged();
+    Q_REVISION(1) void secondaryBackgroundColorChanged();
+    Q_REVISION(1) void backgroundModeChanged();
 
     void colorChanged();
     void gradientColorChanged();
