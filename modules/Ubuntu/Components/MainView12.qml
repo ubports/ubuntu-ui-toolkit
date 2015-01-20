@@ -19,179 +19,15 @@ import Ubuntu.Components 1.2 as Toolkit
 import Ubuntu.PerformanceMetrics 1.0
 import QtQuick.Window 2.2
 
-/*!
-    \qmltype MainView
-    \inqmlmodule Ubuntu.Components 1.1
-    \ingroup ubuntu
-    \brief MainView is the root Item that should be used for all applications.
-        It automatically adds a header and toolbar for its contents and can
-        rotate its content based on the device orientation.
-
-    The simplest way to use a MainView is to include a single \l Page object
-    inside the MainView:
-    \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
-
-        MainView {
-            width: units.gu(48)
-            height: units.gu(60)
-
-            Page {
-                title: "Simple page"
-                Button {
-                    anchors.centerIn: parent
-                    text: "Push me"
-                    width: units.gu(15)
-                    onClicked: print("Click!")
-                }
-            }
-        }
-    \endqml
-    It is not required to set the anchors of the \l Page as it will automatically fill its parent.
-    The MainView has a header that automatically shows the title of the \l Page.
-
-    Do not include multiple Pages directly inside the MainView, but use \l Tabs
-    or \l PageStack inside MainView to navigate between several Pages.
-
-    For the MainView to automatically rotate its content following the orientation
-    of the device, set the \l automaticOrientation property to true.
-
-    If the \l Page inside the MainView includes a Flickable with enough contents for scrolling, the header
-    will automatically hide and show when the user scrolls up or down:
-    \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
-
-        MainView {
-            width: units.gu(48)
-            height: units.gu(60)
-
-            Page {
-                title: "Page with Flickable"
-
-                Flickable {
-                    anchors.fill: parent
-                    contentHeight: column.height
-
-                    Column {
-                        id: column
-                        Repeater {
-                            model: 100
-                            Label {
-                                text: "line "+index
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    \endqml
-    The same header behavior is automatic when using a ListView instead of a Flickable in the above
-    example.
-
-    A toolbar can be added to the application by setting the tools property of the \l Page:
-    \qml
-        import QtQuick 2.0
-        import Ubuntu.Components 1.1
-
-        MainView {
-            width: units.gu(48)
-            height: units.gu(60)
-
-            Page {
-                title: "Page title"
-                Rectangle {
-                    id: rectangle
-                    anchors.centerIn: parent
-                    width: units.gu(20)
-                    height: units.gu(20)
-                    color: UbuntuColors.coolGrey
-                }
-
-                tools: ToolbarItems {
-                    ToolbarButton {
-                        action: Action {
-                            text: "orange"
-                            onTriggered: rectangle.color = UbuntuColors.orange
-                        }
-                    }
-                    ToolbarButton {
-                        action: Action {
-                            text: "purple"
-                            onTriggered: rectangle.color = UbuntuColors.lightAubergine
-                        }
-                    }
-                }
-            }
-        }
-    \endqml
-    The toolbar is hidden by default, but will be made visible when the user performs a bottom-edge-swipe gesture, and
-    hidden when the user swipes it out, or when the active \l Page inside the MainView is changed.
-    The examples above show how to include a single \l Page inside a MainView, but more advanced application
-    structures are possible using \l PageStack and \l Tabs.
-    See \l ToolbarItems for details on how to to control the behavior and contents of the toolbar.
-*/
+/*! \internal */
+// Documentation is in MainView.qdoc
 PageTreeNode {
     id: mainView
 
-    /*!
-      The property holds the application's name, which must be the same as the
-      desktop file's name.
-      The name also sets the name of the QCoreApplication and defaults for data
-      and cache folders that work on the desktop and under confinement.
-      C++ code that writes files may use QStandardPaths::writableLocation with
-      QStandardPaths::DataLocation or QStandardPaths::CacheLocation.
-      */
     property string applicationName: ""
-
-    /*!
-      The property holds if the application should automatically resize the
-      contents when the input method appears
-
-      The default value is false.
-      */
     property bool anchorToKeyboard: false
-
-    /*!
-      \qmlproperty color headerColor
-      Color of the header's background.
-
-      \sa backgroundColor, footerColor
-     */
     property alias headerColor: background.headerColor
-    /*!
-      \qmlproperty color backgroundColor
-      Color of the background.
-
-      The background is usually a single color. However if \l headerColor
-      or \l footerColor are set then a gradient of colors will be drawn.
-
-      For example, in order for the MainView to draw a color gradient beneath
-      the content:
-      \qml
-          import QtQuick 2.0
-          import Ubuntu.Components 1.1
-
-          MainView {
-              width: units.gu(40)
-              height: units.gu(60)
-
-              headerColor: "#343C60"
-              backgroundColor: "#6A69A2"
-              footerColor: "#8896D5"
-          }
-      \endqml
-
-      \sa footerColor, headerColor
-     */
     property alias backgroundColor: background.backgroundColor
-    /*!
-      \qmlproperty color footerColor
-      Color of the footer's background.
-
-      \sa backgroundColor, headerColor
-     */
     property alias footerColor: background.footerColor
 
     // FIXME: Make sure that the theming is only in the background, and the style
@@ -223,30 +59,9 @@ PageTreeNode {
         }
     }
 
-    /*!
-      MainView is active by default.
-     */
     active: true
 
-    /*!
-      Sets whether the application will be automatically rotating when the
-      device is.
-
-      The default value is false.
-
-      \qmlproperty bool automaticOrientation
-     */
     property alias automaticOrientation: canvas.automaticOrientation
-
-    /*!
-      Setting this option will enable the old toolbar, and disable the new features
-      that are being added to the new header. Unsetting it removes the toolbar and
-      enables developers to have a sneak peek at the new features that are coming to
-      the header, even before all the required functionality is implemented.
-      This property will be deprecated after the new header implementation is done and
-      all apps transitioned to using it. Default value: true.
-      FIXME TIM: From 1.2, useDeprecatedToolbar is deprecated and always assumed to be false
-     */
     property bool useDeprecatedToolbar: false
 
     /*!
@@ -349,25 +164,7 @@ PageTreeNode {
         }
     }
 
-    /*!
-      A global list of actions that will be available to the system (including HUD)
-      as long as the application is running. For actions that are not always available to the
-      system, but only when a certain \l Page is active, see the actions property of \l Page.
-
-      \qmlproperty list<Action> actions
-     */
     property alias actions: unityActionManager.actions
-
-    /*!
-      The ActionManager that supervises the global and local ActionContexts.
-      The \l actions property should be used preferably since it covers most
-      use cases. The ActionManager is accessible to have a more refined control
-      over the actions, e.g. if one wants to add/remove actions dynamically, create
-      specific action contexts, etc.
-
-      \qmlproperty ActionManager actionManager
-      \readonly
-     */
     property alias actionManager: unityActionManager
 
     Object {
@@ -423,7 +220,6 @@ PageTreeNode {
         property var actionManager: unityActionManager
     }
 
-    /*! \internal */
     onApplicationNameChanged: {
         if (applicationName !== "") {
             i18n.domain = applicationName;
