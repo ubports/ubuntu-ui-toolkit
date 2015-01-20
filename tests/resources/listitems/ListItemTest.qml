@@ -107,11 +107,6 @@ MainView {
                 main.override = !main.override
             }
             onPressAndHold: print("pressAndHold", objectName)
-            Rectangle {
-                anchors.fill: parent
-                color: "lightblue"
-            }
-
             Label {
                 anchors.fill: parent
                 text: units.gridUnit + "PX/unit"

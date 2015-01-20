@@ -1028,6 +1028,9 @@ void UCListItem::componentComplete()
         if (d->parentAttached->selectMode()) {
            d->_q_initializeSelectionHandler();
         }
+        // connect selectedIndicesChanged
+        connect(d->parentAttached, SIGNAL(selectedIndicesChanged()),
+                this, SIGNAL(selectedChanged()));
     }
 }
 
@@ -1569,15 +1572,11 @@ bool UCListItemPrivate::isSelected()
 }
 void UCListItemPrivate::setSelected(bool value)
 {
-    bool update = false;
     Q_Q(UCListItem);
     if (value) {
-        update = UCViewItemsAttachedPrivate::get(parentAttached)->addSelectedItem(q);
+        UCViewItemsAttachedPrivate::get(parentAttached)->addSelectedItem(q);
     } else {
-        update = UCViewItemsAttachedPrivate::get(parentAttached)->removeSelectedItem(q);
-    }
-    if (update) {
-        Q_EMIT q->selectedChanged();
+        UCViewItemsAttachedPrivate::get(parentAttached)->removeSelectedItem(q);
     }
 }
 
@@ -1592,6 +1591,7 @@ bool UCListItemPrivate::isSelectable()
     UCViewItemsAttachedPrivate *attached = UCViewItemsAttachedPrivate::get(parentAttached);
     return attached ? attached->selectable : false;
 }
+
 void UCListItemPrivate::_q_initializeSelectionHandler()
 {
     Q_Q(UCListItem);

@@ -78,9 +78,14 @@ Item {
         // for the initial value
         checked: selectionPanel.ListItem.item.selected
         onCheckedChanged: {
-            if (selectionPanel.parent) {
+            if (selectionPanel.ListItem.item) {
                 selectionPanel.ListItem.item.selected = checked;
             }
         }
+    }
+    // update checkbox when ViewItems.selectionIndices changes
+    Connections {
+        target: selectionPanel.ListItem.item
+        onSelectedChanged: checkbox.checked = selectionPanel.ListItem.item.selected
     }
 }

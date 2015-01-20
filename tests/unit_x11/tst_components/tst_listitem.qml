@@ -792,10 +792,10 @@ Item {
             listView.ViewItems.selectedIndices = [0,1,2];
             listView.ViewItems.selectMode = true;
             waitForRendering(listView, 500);
-
             for (var i in listView.ViewItems.selectedIndices) {
                 var index = listView.ViewItems.selectedIndices[i];
-                compare(findChild(listView, "listItem" + i).index, true, "ListItem at index " + index + " is not selected!");
+                var listItem = findChild(listView, "listItem" + index);
+                compare(listItem.selected, true, "ListItem at index " + index + " is not selected!");
             }
             listView.ViewItems.selectMode = false;
             listView.ViewItems.selectedIndices = [];

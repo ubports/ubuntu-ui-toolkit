@@ -297,8 +297,6 @@ public:
     explicit UCHandlerBase(UCListItem *owner = 0);
     virtual void initialize(bool animated) = 0;
 
-    bool selectable() const;
-
 protected:
     UCListItem *listItem;
     QQuickItem *panel;
