@@ -115,7 +115,8 @@ MainView {
                 page: Page {
                     Label {
                         anchors.centerIn: parent
-                        text: "Second tab"
+                        text: "Tools no longer supported in\nUbuntu.Components 1.2." +
+                              "\nUse Page.head.actions instead."
                     }
 
                     tools: ToolbarItems {
