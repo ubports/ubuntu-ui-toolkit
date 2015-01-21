@@ -5,4 +5,4 @@
 check.target = check
 check.commands += cd $$_PRO_FILE_PWD_;
 check.commands += env LD_LIBRARY_PATH=$${ROOT_BUILD_DIR}/modules/Ubuntu/Components:$${ROOT_BUILD_DIR}/modules/Ubuntu/Layouts:$${ROOT_BUILD_DIR}/modules/Ubuntu/PerformanceMetrics:$${ROOT_BUILD_DIR}/modules/Ubuntu/Test
-check.commands += '$${ROOT_SOURCE_DIR}/tests/unit/runtest.sh "$$shadowed($$_PRO_FILE_PWD_)/$${TARGET}" "$$shadowed($$_PRO_FILE_PWD_)/$${TARGET}" minimal "$${ROOT_BUILD_DIR}"';
+check.commands += '$${ROOT_SOURCE_DIR}/tests/unit/runtest.sh "$$shadowed($$_PRO_FILE_PWD_)/$${TARGET}" "$$shadowed($$_PRO_FILE_PWD_)/$${TARGET}" minimal';

@@ -17,22 +17,18 @@
 # Author: Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>
 ################################################################################
 
+. `dirname $0`/../../build_paths.inc
+
 _CMD=""
 _TARGETPATH=$1
 _TESTFILEPATH=$2
 _MINIMAL=$3
-_BUILD_DIR=$4
 
 _TARGET=$(basename $1)
 _TESTFILE=$(basename $2)
-
-#support for shadow build
-if [ -z ${_BUILD_DIR} ]; then
-  _BUILD_DIR=../../..
-fi
-_IMPORT_PATH="${_BUILD_DIR}/modules:$QML2_IMPORT_PATH"
-_THEMES_PATH="${_BUILD_DIR}/modules"
-_XML="${_BUILD_DIR}/tests/test_$_TARGET_$_TESTFILE.xml"
+_IMPORT_PATH="${BUILD_DIR}/modules:$QML2_IMPORT_PATH"
+_THEMES_PATH="${BUILD_DIR}/modules"
+_XML="${BUILD_DIR}/tests/test_$_TARGET_$_TESTFILE.xml"
 
 _ARGS="-p -o -p $_XML,xunitxml -p -o -p -,txt"
 
