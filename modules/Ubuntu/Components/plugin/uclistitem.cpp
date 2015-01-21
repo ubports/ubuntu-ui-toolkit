@@ -426,7 +426,6 @@ void UCListItemPrivate::_q_rebound()
 {
     setHighlighted(false);
     // initiate rebinding only if there were actions tugged
-    Q_Q(UCListItem);
     if (!UCActionPanel::isConnected(leadingPanel) &&
         !UCActionPanel::isConnected(trailingPanel)) {
         return;
