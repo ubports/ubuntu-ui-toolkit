@@ -42,10 +42,10 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
     @classmethod
     def validate_dbus_object(cls, path, state):
         name = introspection.get_classname_from_path(path)
-        print(name)
-        if name == b'MainView':
-            if state['objectName'][1] == 'test_ding':
-                return True
+        print("======================" +str(name))
+#        if name == b'MainView10':
+        if state['objectName'][1] == 'test_ding':
+            return True
         return False
 
     def get_header(self):
