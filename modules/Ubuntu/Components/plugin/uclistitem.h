@@ -213,12 +213,12 @@ QML_DECLARE_TYPEINFO(UCViewItemsAttached, QML_HAS_ATTACHED_PROPERTIES)
 class UCDragEvent : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(Direction direction READ direction REVISION 2)
-    Q_PROPERTY(int from READ from REVISION 2)
-    Q_PROPERTY(int to READ to REVISION 2)
-    Q_PROPERTY(int minimumIndex MEMBER m_minimum REVISION 2)
-    Q_PROPERTY(int maximumIndex MEMBER m_maximum REVISION 2)
-    Q_PROPERTY(bool accept MEMBER m_accept REVISION 2)
+    Q_PROPERTY(Direction direction READ direction)
+    Q_PROPERTY(int from READ from)
+    Q_PROPERTY(int to READ to)
+    Q_PROPERTY(int minimumIndex MEMBER m_minimum)
+    Q_PROPERTY(int maximumIndex MEMBER m_maximum)
+    Q_PROPERTY(bool accept MEMBER m_accept)
     Q_ENUMS(Direction)
 public:
     enum Direction {

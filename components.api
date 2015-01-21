@@ -1025,7 +1025,9 @@ plugins.qmltypes
     prototype: "QObject"
     exports: ["ViewItems 1.2"]
     Property { name: "selectMode"; type: "bool" }
-    Property { name: "selectedIndices"; type: "QList<int>" }
+    Property { name: "selectedIndexes"; type: "QList<int>" }
+    Property { name: "selectMode"; type: "bool" }
+    Property { name: "selectedIndexes"; type: "QList<int>" }
     Property { name: "dragMode"; type: "bool" }
     Signal {
     name: "draggingStarted"
