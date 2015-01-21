@@ -23,7 +23,7 @@ import QtQuick.Window 2.0
 // Documentation is in MainView.qdoc
 PageTreeNode {
     id: mainView
-    objectName: "MainView"  // used in @property main_view (twice) in
+//    objectName: "MainView"  // used in @property main_view (twice) in
                             // tests/autopilot/ubuntuuitoolkit/tests/__init.py__
 
     property string applicationName: ""
