@@ -472,7 +472,6 @@ void UCListItemPrivate::_q_rebound()
 {
     setHighlighted(false);
     // initiate rebinding only if there were actions tugged
-    Q_Q(UCListItem);
     if (!UCActionPanel::isConnected(leadingPanel) &&
         !UCActionPanel::isConnected(trailingPanel)) {
         return;
@@ -940,7 +939,7 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  *    }
  * }
  * \endqml
- * The indexes selected are stored in \l ViewItems::selectedIndexes attached property,
+ * The indexes selected are stored in \l ViewItems::selectedIndices attached property,
  * attached the same way as the \l ViewItems::selectMode property is. This is a
  * read/write property, meaning that initial selected item indexes can be set up.
  * The list contains the indexes added in the order of selection, not sorted in
