@@ -865,12 +865,12 @@ plugins.qmltypes
     prototype: "QObject"
     exports: ["ListItemDrag 1.2"]
     name: "Direction"
-    Property { name: "direction"; revision: 2; type: "Direction"; isReadonly: true }
-    Property { name: "from"; revision: 2; type: "int"; isReadonly: true }
-    Property { name: "to"; revision: 2; type: "int"; isReadonly: true }
-    Property { name: "minimumIndex"; revision: 2; type: "int" }
-    Property { name: "maximumIndex"; revision: 2; type: "int" }
-    Property { name: "accept"; revision: 2; type: "bool" }
+    Property { name: "direction"; type: "Direction"; isReadonly: true }
+    Property { name: "from"; type: "int"; isReadonly: true }
+    Property { name: "to"; type: "int"; isReadonly: true }
+    Property { name: "minimumIndex"; type: "int" }
+    Property { name: "maximumIndex"; type: "int" }
+    Property { name: "accept"; type: "bool" }
     name: "UCInverseMouse"
     prototype: "UCMouse"
     exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
@@ -1025,9 +1025,7 @@ plugins.qmltypes
     prototype: "QObject"
     exports: ["ViewItems 1.2"]
     Property { name: "selectMode"; type: "bool" }
-    Property { name: "selectedIndexes"; type: "QList<int>" }
-    Property { name: "selectMode"; type: "bool" }
-    Property { name: "selectedIndexes"; type: "QList<int>" }
+    Property { name: "selectedIndices"; type: "QList<int>" }
     Property { name: "dragMode"; type: "bool" }
     Signal {
     name: "draggingStarted"
