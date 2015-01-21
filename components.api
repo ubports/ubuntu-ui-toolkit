@@ -1013,7 +1013,7 @@ plugins.qmltypes
     prototype: "QObject"
     exports: ["ViewItems 1.2"]
     Property { name: "selectMode"; type: "bool" }
-    Property { name: "selectedIndexes"; type: "QList<int>" }
+    Property { name: "selectedIndices"; type: "QList<int>" }
     name: "UbuntuI18n"
     prototype: "QObject"
     exports: ["i18n 0.1", "i18n 1.0"]

@@ -76,11 +76,9 @@ void UCViewItemsAttachedPrivate::buildFlickablesList()
 void UCViewItemsAttachedPrivate::clearChangesList()
 {
     // clear property change objects
-    Q_FOREACH(PropertyChange *change, changes) {
-        // deleting PropertyChange will restore the saved property
-        // to its original binding/value
-        delete change;
-    }
+    // deleting PropertyChange will restore the saved property
+    // to its original binding/value
+    qDeleteAll(changes);
     changes.clear();
 }
 
