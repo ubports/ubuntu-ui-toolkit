@@ -438,6 +438,42 @@ bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
  *     }
  * }
  * \endqml
+ *
+ * \c event.direction set to \e ListItemDrag.None means the signal is sent as a
+ * result of a drop operation, and this was the last update signal emitted. The
+ * following sample shows how to implement list reordering when dropping the item
+ * (non-live update).
+ * \qml
+ * import QtQuick 2.3
+ * import Ubuntu.Components 1.2
+ *
+ * ListView {
+ *    width: units.gu(40)
+ *    height: units.gu(40)
+ *    model: ListModel {
+ *        // initiate with random data
+ *    }
+ *    delegate: ListItem {
+ *        // content
+ *    }
+ *
+ *    ViewItems.dragMode: true
+ *    ViewItems.onDraggingUpdated: {
+ *        if (event.direction == ListItemDrag.None) {
+ *            // this is the last event, so drop the item
+ *            model.move(event.from, event.to, 1);
+ *        } else {
+ *            // do not accept the other events so drag.from will
+ *            // always contain the original drag index
+ *            event.accept = false;
+ *        }
+ *    }
+ * }
+ * \endqml
+ *
+ * \note Do not forget to set \b{event.attached} to false in \c draggingUpdated,
+ * otherwise the system will not know whether the move has been performed or not,
+ * and selected indexes will not be synchronized properly.
  */
 bool UCViewItemsAttached::dragMode() const
 {
