@@ -23,6 +23,7 @@ import QtQuick.Window 2.0
 // Documentation is in MainView.qdoc
 PageTreeNode {
     id: mainView
+    objectName: "test_ding"
 
     property string applicationName: ""
     property bool anchorToKeyboard: false

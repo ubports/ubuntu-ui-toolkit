@@ -20,6 +20,7 @@ import logging
 
 from autopilot import logging as autopilot_logging
 from autopilot.introspection import dbus
+from autopilot import introspection
 
 from ubuntuuitoolkit._custom_proxy_objects import (
     _common,
@@ -37,6 +38,15 @@ logger = logging.getLogger(__name__)
 
 class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
     """MainView Autopilot custom proxy object."""
+
+    @classmethod
+    def validate_dbus_object(cls, path, state):
+        name = introspection.get_classname_from_path(path)
+        print(name)
+        if name == b'MainView':
+            if state['objectName'][1] == 'test_ding':
+                return True
+        return False
 
     def get_header(self):
         """Return the AppHeader custom proxy object of the MainView."""
