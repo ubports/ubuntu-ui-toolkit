@@ -42,9 +42,7 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
     @classmethod
     def validate_dbus_object(cls, path, state):
         name = introspection.get_classname_from_path(path)
-        print("======================" +str(name))
-#        if name == b'MainView10':
-        if state['objectName'][1] == 'test_ding':
+        if name == b'MainView10' or name == b'MainView12':
             return True
         return False
 

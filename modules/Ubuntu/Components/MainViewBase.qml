@@ -1,5 +1,5 @@
 /*
- * Copyright 2012-2014 Canonical Ltd.
+ * Copyright 2012-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -23,7 +23,8 @@ import QtQuick.Window 2.0
 // Documentation is in MainView.qdoc
 PageTreeNode {
     id: mainView
-    objectName: "test_ding"
+    objectName: "MainView"  // used in @property main_view (twice) in
+                            // tests/autopilot/ubuntuuitoolkit/tests/__init.py__
 
     property string applicationName: ""
     property bool anchorToKeyboard: false
