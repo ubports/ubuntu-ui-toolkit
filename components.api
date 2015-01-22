@@ -980,6 +980,18 @@ plugins.qmltypes
     Property { name: "source"; type: "QUrl" }
     Signal { name: "extendedSourceChanged" }
     Signal { name: "extendedSourceChanged" }
+    name: "UCServiceProperties"
+    prototype: "QObject"
+    exports: ["ServiceProperties 1.1"]
+    name: "ServiceType"
+    name: "Status"
+    Property { name: "type"; revision: 1; type: "ServiceType" }
+    Property { name: "service"; revision: 1; type: "string" }
+    Property { name: "path"; revision: 1; type: "string" }
+    Property { name: "serviceInterface"; revision: 1; type: "string" }
+    Property { name: "adaptorInterface"; revision: 1; type: "string" }
+    Property { name: "error"; revision: 1; type: "string"; isReadonly: true }
+    Property { name: "status"; revision: 1; type: "Status"; isReadonly: true }
     name: "UCStateSaver"
     prototype: "QObject"
     exports: ["StateSaver 0.1", "StateSaver 1.0"]

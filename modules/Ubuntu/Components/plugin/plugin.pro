@@ -72,7 +72,10 @@ HEADERS += plugin.h \
     uclistitemactions.h \
     uclistitemactions_p.h \
     propertychange_p.h \
-    uclistitemstyle.h
+    uclistitemstyle.h \
+    adapters\dbuspropertywatcher_p.h \
+    ucserviceproperties.h \
+    ucserviceproperties_p.h
 
 SOURCES += plugin.cpp \
     uctheme.cpp \
@@ -116,6 +119,8 @@ SOURCES += plugin.cpp \
     ucviewitemsattached.cpp \
     uclistitemattached.cpp \
     ucactionpanel_p.cpp \
+    adapters\dbuspropertywatcher_p.cpp \
+    ucserviceproperties.cpp \
     uclistitemselect.cpp \
     uclistitemdrag.cpp
 
