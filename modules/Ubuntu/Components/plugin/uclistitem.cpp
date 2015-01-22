@@ -766,7 +766,7 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  *            Label {
  *                text: "onPressAndHold implemented"
  *            }
- *            onPressAndHold: console.log("clicked on ListItem with onPressAndHold implemented")
+ *            onPressAndHold: console.log("long-pressed on ListItem with onPressAndHold implemented")
  *        }
  *        ListItem {
  *            Label {
@@ -861,8 +861,7 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
 
 /*!
  * \qmlsignal ListItem::pressAndHold()
- * The signal is emitted when the list item is long pressed. When a slot is connected,
- * no \l clicked signal will be emitted, similarly to MouseArea's pressAndHold.
+ * The signal is emitted when the list item is long pressed.
  *
  * If the ListItem contains a component which contains a MouseArea, the pressAndHold
  * signal will be supressed.
