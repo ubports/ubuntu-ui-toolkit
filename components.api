@@ -975,7 +975,7 @@ plugins.qmltypes
     Property { name: "StandardEasingReverse"; type: "QEasingCurve"; isReadonly: true }
     name: "UCUbuntuShape"
     prototype: "QQuickItem"
-    exports: ["UbuntuShape 1.2"]
+    exports: [
     name: "BackgroundMode"
     name: "HAlignment"
     name: "VAlignment"
