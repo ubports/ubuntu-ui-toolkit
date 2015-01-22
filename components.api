@@ -882,6 +882,7 @@ plugins.qmltypes
     Property { name: "style"; type: "QQmlComponent"; isPointer: true }
     Property { name: "__styleInstance"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Signal { name: "clicked" }
+    Signal { name: "pressAndHold" }
     Signal { name: "contentMovementStarted" }
     Signal { name: "contentMovementEnded" }
     name: "UCListItemActions"
