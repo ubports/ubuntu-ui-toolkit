@@ -18,4 +18,5 @@ import QtQuick 2.0
 
 TextAreaStyle {
     objectName: "textfield_style"
+    frameSpacing: units.gu(0.5)
 }

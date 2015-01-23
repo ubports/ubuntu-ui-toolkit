@@ -59,20 +59,21 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
             objectName=self.objectName)
         self.assertFalse(self.textfield.focus)
 
+    def select_cursor(self, positionProperty):
+        return self.main_view.select_single(
+            objectName=positionProperty + '_draggeditem')
+
     def test_caret_visible_on_focus(self):
         cursorName = 'text_cursor_style_caret_cursorPosition'
         self._assert_not_visible(objectName=cursorName)
         self.pointing_device.click_object(self.textfield)
         self.assertTrue(self.textfield.focus)
-        cursor = self.main_view.select_single(objectName=cursorName)
-        self.assertTrue(cursor.visible)
+        self.main_view.select_single(objectName=cursorName)
 
     def test_caret_hide_while_typing(self):
         self.pointing_device.click_object(self.textfield)
         self.assertTrue(self.textfield.focus)
-        cursor = self.main_view.select_single(
-            objectName='text_cursor_style_caret_cursorPosition')
-        self.assertTrue(cursor.visible)
+        cursor = self.select_cursor('cursorPosition')
 
         self.textfield.keyboard.type('Lorem ipsum')
         self.assertFalse(cursor.visible)
@@ -80,17 +81,13 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
     def test_caret_visible_after_tapping(self):
         self.test_caret_hide_while_typing()
         self.pointing_device.click_object(self.textfield)
-        cursor = self.main_view.select_single(
-            objectName='text_cursor_style_caret_cursorPosition')
-        self.assertTrue(cursor.visible)
+        self.select_cursor('cursorPosition')
 
     def test_caret_visible_after_selecting(self):
         self.test_caret_hide_while_typing()
         # Select a character
         self.keyboard.press_and_release('Shift+Left')
-        cursor = self.main_view.select_single(
-            objectName='text_cursor_style_caret_selectionEnd')
-        self.assertTrue(cursor.visible)
+        self.select_cursor('selectionEnd')
 
 
 class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
@@ -142,13 +139,16 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
 
         self._assert_not_visible(objectName='text_input_contextmenu')
 
+    def select_cursor(self, positionProperty):
+        return self.main_view.select_single(
+            objectName=positionProperty + '_draggeditem')
+
     @testtools.skipIf(platform.model() == 'Desktop', 'Touch only')
     def test_popover_visible_after_tapping_caret(self):
         # Insert Mode
         self.pointing_device.click_object(self.textfield)
         sleep(1)
-        cursor = self.main_view.select_single(
-            objectName='text_cursor_style_cursorPosition')
+        cursor = self.select_cursor('cursorPosition')
         self.pointing_device.click_object(cursor)
         self.assert_buttons(['Select All', 'Paste'])
         self.assert_discard_popover()
@@ -158,8 +158,7 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         # Insert Mode
         self.pointing_device.click_object(self.textfield)
         self.textfield.keyboard.type('Lorem ipsum')
-        cursor = self.main_view.select_single(
-            objectName='text_cursor_style_cursorPosition')
+        cursor = self.select_cursor('cursorPosition')
         x, y = get_center_point(cursor)
         self.pointing_device.drag(x, y, 0, y)
         self.assert_buttons(['Select All', 'Paste'])

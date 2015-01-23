@@ -10,7 +10,6 @@ ListItemOptionSelector 0.1 ListItemOptionSelector.qml
 OptionSelectorStyle 0.1 OptionSelectorStyle.qml
 PopoverForegroundStyle 0.1 PopoverForegroundStyle.qml
 internal ScrollbarStyle ScrollbarStyle.qml
-internal SelectionCursorStyle SelectionCursorStyle.qml
 internal SheetForegroundStyle SheetForegroundStyle.qml
 internal SliderStyle SliderStyle.qml
 internal SwitchStyle SwitchStyle.qml
@@ -48,6 +47,4 @@ PullToRefreshStyle 1.1 PullToRefreshStyle.qml
 PageHeadStyle 1.1 PageHeadStyle.qml
 Palette 1.1 Palette.qml
 
-internal TextSelectionStartCursorStyle TextSelectionStartCursorStyle.qml
-internal TextSelectionEndCursorStyle TextSelectionEndCursorStyle.qml
 internal OverflowPanel OverflowPanel.qml

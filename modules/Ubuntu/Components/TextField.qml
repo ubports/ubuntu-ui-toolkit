@@ -846,9 +846,7 @@ ActionItem {
     QtObject {
         id: internal
         // array of borders in left, top, right, bottom order
-        property real spacing: control.__styleInstance.overlaySpacing
-        property real lineSpacing: units.dp(3)
-        property real lineSize: editor.font.pixelSize + lineSpacing
+        property real spacing: control.__styleInstance.frameSpacing
 
         property int type: action ? action.parameterType : Ubuntu.Action.None
         onTypeChanged: {
@@ -1010,12 +1008,6 @@ ActionItem {
                 main: control
                 input: editor
                 flickable: flicker
-                /*
-                  In x direction we use the Flickable x position as we can have overlays
-                  which can shift the cursor caret. On y direction we only use the topMargin
-                  spacing.
-                  */
-                frameDistance: Qt.point(flicker.x, flicker.topMargin)
             }
         }
     }

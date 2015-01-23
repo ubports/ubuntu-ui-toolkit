@@ -21,10 +21,10 @@ import Ubuntu.Components.Popups 1.0
 Ubuntu.StyledItem {
     id: cursorItem
 
-    width: units.dp(1)
+    height: cursorRectangle.height
 
     /*
-      Property holding the text input's custor position property. Can be one of
+      Property holding the text input's cursor position property. Can be one of
       the following ones: cursorPosition, selectionStart and selectionEnd.
       */
     property string positionProperty: "cursorPosition"
@@ -41,20 +41,17 @@ Ubuntu.StyledItem {
                                            handler.main.cursorDelegate :
                                            __styleInstance.cursorDelegate
 
-    // depending on the positionProperty, we chose different styles
-    style: Theme.createStyleComponent(handler.textCursorStyle(positionProperty), cursorItem);
+    style: Theme.createStyleComponent("TextCursorStyle.qml", cursorItem);
 
     objectName: "textCursor"
     //Caret instance from the style.
     property Item caret: __styleInstance.caret
-    property real caretX: caret ? caret.x : 0
-    property real caretY: caret ? caret.y : 0
 
-    // returns the mapped cursor position to a position relative to the main component
-    function mappedCursorPosition(pos) {
-        var cpos = cursorItem[pos];
+    // returns the mapped "x" or "y" relative to the main component
+    function mappedCursorPosition(coordinate) {
+        var cpos = cursorItem[coordinate];
         if (handler) {
-            cpos += handler.frameDistance[pos] - handler.flickable["content"+pos.toUpperCase()];
+            cpos += handler.frameDistance[coordinate] - handler.flickable["content"+coordinate.toUpperCase()];
         }
         return cpos;
     }
@@ -80,11 +77,9 @@ Ubuntu.StyledItem {
     }
 
     function openPopover() {
-        if (!visible || opacity === 0.0 || dragger.dragActive) {
-            return;
-        }
-
-        if (contextMenuVisible) {
+        if (!visible
+         || opacity === 0.0
+         || dragger.dragActive) {
             return;
         }
 
@@ -96,19 +91,13 @@ Ubuntu.StyledItem {
         if (component === undefined)
             component = Qt.resolvedUrl("TextInputPopover.qml");
 
-        var popup;
-        if (fakeCursor.visible) {
-            popup = PopupUtils.open(component, cursorItem, {
-                "target": handler.main,
-            });
-        } else {
-            // if the cursor is out of the visible viewport, anchor the
-            // contextual menu to the input field
-            popup = PopupUtils.open(component, handler.main, {
-                "target": handler.main,
-            });
-            cursorItem.Component.onDestruction.connect(popup.__closePopup);
-        }
+        // if the cursor is out of the visible viewport, anchor the
+        // contextual menu to the input field
+        var anchor = fakeCursor.visible ? cursorItem : handler.main
+        var popup = PopupUtils.open(component, anchor, {
+            "target": handler.main,
+        });
+        cursorItem.Component.onDestruction.connect(popup.__closePopup);
         contextMenuVisible = true;
         popup.onVisibleChanged.connect(contextMenuHidden.bind(undefined, popup));
         // do not grab focus!
@@ -116,28 +105,14 @@ Ubuntu.StyledItem {
         handler.popover = popup;
     }
 
-    visible: handler.main.cursorVisible
-    // change opacity to 0 if text is selected and the positionProperty is cursorPosition
-    // note: we should not touch visibility as cursorVisible alters that!
-    opacity: (positionProperty === "cursorPosition") && (handler.main.selectedText !== "") ? 0.0 : 1.0
+    visible: handler.main.cursorVisible &&
+     !(positionProperty === "cursorPosition" && handler.main.selectedText !== "")
 
     // cursor visual loader
     Loader {
         id: cursorLoader
         sourceComponent: cursorDelegate
         height: parent.height
-        onItemChanged: {
-            if (item) {
-                cursorItem.width = item.width;
-            }
-        }
-        // bind the cursor height as it may change depending on the text size
-        Binding {
-            target: cursorLoader.item
-            property: "height"
-            value: cursorLoader.height
-            when: cursorLoader.item
-        }
     }
 
     /*
@@ -159,18 +134,17 @@ Ubuntu.StyledItem {
         contextMenuVisible = false
     }
 
-    onXChanged: if (!draggedItemMouseArea.pressed) draggedItem.moveToCaret()
-    onYChanged: if (!draggedItemMouseArea.pressed) draggedItem.moveToCaret()
-    Component.onCompleted: draggedItem.moveToCaret()
+    onXChanged: draggedItem.moveToCaret()
+    onYChanged: draggedItem.moveToCaret()
 
     //dragged item
     Item {
         id: draggedItem
         objectName: cursorItem.positionProperty + "_draggeditem"
-        width: caret ? units.gu(4) : 0
-        height: caret ? cursorItem.height : 0
+        width: units.gu(4)
+        height: units.gu(4)
         parent: handler.main
-        visible: cursorItem.visible && (cursorItem.opacity > 0.0) && QuickUtils.touchScreenAvailable
+        visible: caret.visible
 
         /*
           Mouse area to turn on dragging or selection mode when pressed
@@ -197,23 +171,25 @@ Ubuntu.StyledItem {
                 handler.pressAndHold(-1);
             }
             Ubuntu.Mouse.onDoubleClicked: handler.main.selectWord()
-            Ubuntu.Mouse.clickAndHoldThreshold: units.gu(2)
             Ubuntu.Mouse.enabled: enabled
         }
 
         // aligns the draggedItem to the caret and resets the dragger
         function moveToCaret() {
+            if (!caret) {
+                return;
+            }
             draggedItem.x = mappedCursorPosition("x") - draggedItem.width / 2;
-            draggedItem.y = mappedCursorPosition("y");
+            draggedItem.y = mappedCursorPosition("y") + caret.y - caret.height / 2;
         }
-        // positions caret to the dragged posinotion
+        // positions caret to the dragged position
         function positionCaret() {
             if (dragger.dragActive) {
                 var dx = dragger.dragStartX + dragger.dragAmountX + handler.flickable.contentX;
                 var dy = dragger.dragStartY + dragger.dragAmountY + handler.flickable.contentY;
-                // consider only the x-distance because of the overlays
                 dx -= handler.frameDistance.x;
                 dy -= handler.frameDistance.y;
+                dy += (positionProperty == "selectionStart" ? 1 : -1) * caret.height / 2;
                 handler.positionCaret(positionProperty, dx, dy);
             }
         }
@@ -292,11 +268,11 @@ Ubuntu.StyledItem {
     // fake cursor, caret is reparented to it to avoid caret clipping
     Item {
         id: fakeCursor
+        objectName: positionProperty + "FakeCursor"
         parent: handler.main
         width: cursorItem.width
         height: cursorItem.height
-        //reparent caret to it
-        Component.onCompleted: if (caret) caret.parent = fakeCursor
+        Component.onCompleted: caret.parent = fakeCursor
 
         x: mappedCursorPosition("x")
         y: mappedCursorPosition("y")
