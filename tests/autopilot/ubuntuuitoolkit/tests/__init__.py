@@ -183,7 +183,6 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
     @property
     def main_view(self):
         return self.app.select_single(ubuntuuitoolkit.MainView)
-#        return self.app.select_single(objectName='MainView')
 
     def getOrientationHelper(self):
         orientationHelper = self.main_view.select_many(
