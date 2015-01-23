@@ -65,7 +65,9 @@ class TextInputPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
             if button.text == text:
                 return button
             texts.append(button.text)
-        raise _common.ToolkitException('Could not find a button with the text %s (Available buttons are %s)' % (text, ','.join(texts)))
+        raise _common.ToolkitException(
+            'Could not find a button with text %s (Available buttons are %s)'
+            % (text, ','.join(texts)))
 
 
 class ActionSelectionPopover(_common.UbuntuUIToolkitCustomProxyObjectBase):
