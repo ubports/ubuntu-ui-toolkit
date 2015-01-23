@@ -18,7 +18,6 @@
 
 import os
 import testtools
-from time import sleep
 
 from autopilot.input._common import get_center_point
 from autopilot import platform
