@@ -18,11 +18,12 @@ import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.2
+import Ubuntu.Components.Styles 1.2
 
 Item {
     id: main
-    width: units.gu(40)
-    height: units.gu(71)
+    width: units.gu(50)
+    height: units.gu(100)
 
     Action {
         id: stockAction
@@ -77,6 +78,7 @@ Item {
         ListItem {
             id: clickedConnected
             onClicked: {}
+            onPressAndHold: {}
         }
         ListItem {
             id: testItem
@@ -173,6 +175,8 @@ Item {
             highlightedSpy.clear();
             clickSpy.clear();
             actionSpy.clear();
+            pressAndHoldSpy.clear();
+            buttonSpy.clear();
             interactiveSpy.clear();
             listView.interactive = true;
             // make sure we collapse
@@ -192,8 +196,8 @@ Item {
             compare(defaults.highlighted, false, "Not highlighted by default");
             compare(defaults.swipeOvershoot, 0.0, "No overshoot till the style is loaded!");
             compare(defaults.divider.visible, true, "divider is visible by default");
-            compare(defaults.divider.leftMargin, units.dp(2), "divider's left margin is 2GU");
-            compare(defaults.divider.rightMargin, units.dp(2), "divider's right margin is 2GU");
+            compare(defaults.divider.leftMargin, 0, "divider's left margin is 0");
+            compare(defaults.divider.rightMargin, 0, "divider's right margin is 0");
             compare(defaults.divider.colorFrom, "#000000", "colorFrom differs.");
             fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
@@ -204,6 +208,14 @@ Item {
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
+        }
+
+        Component { id: customStyle; ListItemStyle {} }
+
+        function test_style_reset() {
+            testItem.style = customStyle;
+            testItem.style = undefined;
+            verify(testItem.style != 0 && testItem.style.objectName == "ListItemThemeStyle", "Style set back to theme");
         }
 
         function test_children_in_content_item() {
@@ -226,10 +238,12 @@ Item {
         }
 
         function test_clicked_on_mouse() {
+            clickSpy.target = testItem;
             mouseClick(testItem, testItem.width / 2, testItem.height / 2);
             clickSpy.wait();
         }
         function test_clicked_on_tap() {
+            clickSpy.target = testItem;
             TestExtras.touchClick(0, testItem, centerOf(testItem));
             clickSpy.wait();
         }
@@ -602,6 +616,61 @@ Item {
             } else {
                 compare(highlightedSpy.count, 0, "Should not be highlighted!");
             }
+        }
+
+        SignalSpy {
+            id: pressAndHoldSpy
+            signalName: "pressAndHold"
+        }
+        SignalSpy {
+            id: buttonSpy
+            signalName: "clicked"
+            target: button
+        }
+        function test_pressandhold_suppress_click() {
+            var center = centerOf(testItem);
+            pressAndHoldSpy.target = testItem;
+            clickSpy.target = testItem;
+            clickSpy.clear();
+            mouseLongPress(testItem, center.x, center.y);
+            mouseRelease(testItem, center.x, center.y);
+            pressAndHoldSpy.wait();
+            compare(clickSpy.count, 0, "Click must be suppressed when long pressed");
+        }
+
+        function test_pressandhold_not_emitted_when_swiped() {
+            var center = centerOf(testItem);
+            pressAndHoldSpy.target = testItem;
+            // move mouse slowly from left to right, the swipe threshold is 1.5 GU!!!,
+            // so any value less than that will emit pressAndHold
+            mouseMoveSlowly(testItem, center.x, center.y, units.gu(2), 0, 10, 100);
+            mouseRelease(testItem, center.x + units.gu(1), center.y);
+            compare(pressAndHoldSpy.count, 0, "pressAndHold should not be emitted!");
+            // make sure we have collapsed item
+            rebound(testItem);
+        }
+
+        function test_pressandhold_not_emitted_when_pressed_over_active_component() {
+            var press = centerOf(button);
+            pressAndHoldSpy.target = controlItem;
+            mouseLongPress(button, press.x, press.y);
+            compare(pressAndHoldSpy.count, 0, "")
+            mouseRelease(button, press.x, press.y);
+        }
+
+        function test_click_on_button_suppresses_listitem_click() {
+            buttonSpy.target = button;
+            clickSpy.target = controlItem;
+            mouseClick(button, centerOf(button).x, centerOf(button).y);
+            buttonSpy.wait();
+            compare(clickSpy.count, 0, "ListItem clicked() must be suppressed");
+        }
+
+        function test_pressandhold_connected_causes_highlight() {
+            highlightedSpy.target = clickedConnected;
+            mouseLongPress(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
+            highlightedSpy.wait();
+            mouseRelease(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
         }
     }
 }

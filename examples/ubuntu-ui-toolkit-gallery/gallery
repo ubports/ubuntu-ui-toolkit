@@ -1,3 +1,6 @@
 #!/bin/bash
+
+. `dirname $0`/../../build_paths.inc
+
 SCRIPT_DIRECTORY=`dirname $0`
-$SCRIPT_DIRECTORY/../../tests/launcher/launcher $@ $SCRIPT_DIRECTORY/ubuntu-ui-toolkit-gallery.qml
+$BUILD_DIR/tests/launcher/launcher $@ $SCRIPT_DIRECTORY/ubuntu-ui-toolkit-gallery.qml

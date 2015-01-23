@@ -35,9 +35,9 @@ TestCase {
         var newText = "Hello action!"
         action1.text = newText
         compare(actionButton.text, newText, "action can be used to define text")
-        var newIcon = "../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png"
+        var newIcon = Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png")
         action1.iconSource = newIcon
-        compare(actionButton.iconSource, Qt.resolvedUrl(newIcon), "action can be used to define iconSource")
+        compare(actionButton.iconSource, newIcon, "action can be used to define iconSource")
     }
 
     function test_iconPosition() {
@@ -63,9 +63,9 @@ TestCase {
 
     function test_iconSource() {
         compare(button.iconSource,"","iconSource is not set by default")
-        var newIcon = "../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png"
+        var newIcon = Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png")
         button.iconSource = newIcon
-        compare(button.iconSource,Qt.resolvedUrl(newIcon),"Can set/get iconSource")
+        compare(button.iconSource,newIcon,"Can set/get iconSource")
     }
 
     function test_pressed() {
