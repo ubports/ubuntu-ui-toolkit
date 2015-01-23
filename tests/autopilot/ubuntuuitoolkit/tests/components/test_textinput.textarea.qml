@@ -27,7 +27,6 @@ MainView {
         Column {
             TextArea {
                 objectName: "textarea"
-                text: "Lorem ipsum dolor sit amet."
                 width: units.gu(25)
                 height: units.gu(25)
             }

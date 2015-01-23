@@ -147,7 +147,6 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
     def test_popover_visible_after_tapping_caret(self):
         # Insert Mode
         self.pointing_device.click_object(self.textfield)
-        sleep(1)
         cursor = self.select_cursor('cursorPosition')
         self.pointing_device.click_object(cursor)
         self.assert_buttons(['Select All', 'Paste'])
@@ -158,6 +157,7 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         # Insert Mode
         self.pointing_device.click_object(self.textfield)
         self.textfield.keyboard.type('Lorem ipsum')
+        self.pointing_device.click_object(self.textfield)
         cursor = self.select_cursor('cursorPosition')
         x, y = get_center_point(cursor)
         self.pointing_device.drag(x, y, 0, y)
