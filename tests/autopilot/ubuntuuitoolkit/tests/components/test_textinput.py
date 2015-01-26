@@ -60,6 +60,8 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
         self.assertFalse(self.textfield.focus)
 
     def select_cursor(self, positionProperty):
+        # The cursor may not received events right away
+        sleep(1)
         return self.main_view.select_single(
             objectName=positionProperty + '_draggeditem')
 
