@@ -18,6 +18,7 @@
 
 import os
 import testtools
+from time import sleep
 
 from autopilot.input._common import get_center_point
 from autopilot import platform
@@ -139,10 +140,11 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         self._assert_not_visible(objectName='text_input_contextmenu')
 
     def select_cursor(self, positionProperty):
+        # The cursor may not received events right away
+        sleep(1)
         return self.main_view.select_single(
             objectName=positionProperty + '_draggeditem')
 
-    @testtools.skipIf(platform.model() == 'Desktop', 'Touch only')
     def test_popover_visible_after_tapping_caret(self):
         # Insert Mode
         self.pointing_device.click_object(self.textfield)
@@ -163,15 +165,19 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         self.assert_discard_popover()
 
     @testtools.skipIf(platform.model() == 'Desktop', 'Touch only')
-    def test_popover_visible_after_selecting(self):
+    def test_popover_visible_after_long_press(self):
         # Select Mode
         self.pointing_device.click_object(self.textfield)
         self.textfield.keyboard.type('Lorem ipsum')
         self.pointing_device.move(
-            self.textfield.globalRect.x + self.textfield.width / 8,
-            self.textfield.globalRect.y + self.textfield.height / 2)
+            self.textfield.globalRect.x + self.textfield.width // 8,
+            self.textfield.globalRect.y + self.textfield.height // 2)
         # Long press to select a word
-        self.pointing_device.click()
-        self.pointing_device.click()
+        # FIXME: input.Mouse doesn't support long press
+        # press_duration doesn't work here
+        # self.pointing_device.click(press_duration=2.0)
+        self.pointing_device.press()
+        sleep(2)
+        self.pointing_device.release()
         self.assert_buttons(['Cut', 'Copy', 'Paste'])
         self.assert_discard_popover()
