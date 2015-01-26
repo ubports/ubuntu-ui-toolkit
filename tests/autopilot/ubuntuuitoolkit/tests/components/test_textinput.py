@@ -151,7 +151,6 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         self.assert_buttons(['Select All', 'Paste'])
         self.assert_discard_popover()
 
-    @testtools.skipIf(platform.model() == 'Desktop', 'Touch only')
     def test_popover_visible_after_dragging_caret(self):
         # Insert Mode
         self.pointing_device.click_object(self.textfield)
