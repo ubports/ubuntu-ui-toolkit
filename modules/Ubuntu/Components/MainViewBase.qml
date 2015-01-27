@@ -47,7 +47,7 @@ PageTreeNode {
           theme changes due to properties being evaluated separately.
 
           Qt bug: https://bugreports.qt-project.org/browse/QTBUG-11712
-          */
+         */
         property string theme: (ColorUtils.luminance(backgroundColor) >= 0.85) ?
                                    "Ambiance" : "SuruDark"
         onThemeChanged: {
