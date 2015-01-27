@@ -17,17 +17,6 @@
 import QtQuick 2.2
 import Ubuntu.Components 1.1
 
-Row {
-    id: root
-    width: 800
-    height: 600
-    Repeater {
-        id: repeater
-        model: 100
-        MainView {
-            height: parent.height
-            width: root.width / repeater.count
-            useDeprecatedToolbar: false
-        }
-    }
+MainView {
+    useDeprecatedToolbar: false
 }
