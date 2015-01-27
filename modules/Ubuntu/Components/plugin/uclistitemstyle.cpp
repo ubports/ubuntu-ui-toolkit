@@ -39,7 +39,7 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
     , m_actionsDelegate(0)
     , m_selectionDelegate(0)
     , m_dragHandlerDelegate(0)
-    , m_snapAnimation(0)
+    , m_snapBehavior(0)
     , m_swipeOvershoot(0)
 {
 }
@@ -60,8 +60,10 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
  */
 
 /*!
- * \qmlproperty PropertyAnimation ListItemStyle::snapAnimation
- * Holds the animation used in animating when snapped in or out.
+ * \qmlproperty PropertyAnimation ListItemStyle::snapBehavior
+ * Holds the behavior used in animating when snapped in or out. It can hold many
+ * animations, and will be used in a Behavior on the \l ListItem::contentItem
+ * \c x property.
  */
 
 /*!

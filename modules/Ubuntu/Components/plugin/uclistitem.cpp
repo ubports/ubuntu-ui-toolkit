@@ -24,6 +24,7 @@
 #include "propertychange_p.h"
 #include "i18n.h"
 #include "quickutils.h"
+#include "ucaction.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -33,6 +34,8 @@
 #include <QtQuick/private/qquickanimation_p.h>
 #include <QtQuick/private/qquickmousearea_p.h>
 #include "uclistitemstyle.h"
+#include <QtQuick/private/qquickbehavior_p.h>
+#include <QtQml/QQmlEngine>
 
 QColor getPaletteColor(const char *profile, const char *color)
 {
@@ -60,7 +63,15 @@ QColor getPaletteColor(const char *profile, const char *color)
 UCListItemSnapAnimator::UCListItemSnapAnimator(UCListItem *item)
     : QObject(item)
     , item(item)
+    , behavior(new QQuickBehavior(item))
 {
+    // the animator is created when the component is complete
+    QQmlContext *context = qmlContext(item->contentItem());
+    QQmlEngine::setContextForObject(behavior, context);
+    QQmlProperty snapProperty(item->contentItem(), "x", context);
+    behavior->setTarget(snapProperty);
+    behavior->setEnabled(false);
+
 }
 UCListItemSnapAnimator::~UCListItemSnapAnimator()
 {
@@ -79,42 +90,36 @@ bool UCListItemSnapAnimator::snap(qreal to)
         return false;
     }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    QQuickPropertyAnimation *snap = getDefaultAnimation();
+    QQuickAbstractAnimation *snap = getDefaultAnimation();
+    if (snap) {
+        if (to == 0.0) {
+            QObject::connect(snap, &QQuickAbstractAnimation::stopped,
+                             this, &UCListItemSnapAnimator::snapOut);
+        } else {
+            QObject::connect(snap, &QQuickAbstractAnimation::stopped,
+                             this, &UCListItemSnapAnimator::snapIn);
+        }
+        // make sure the animation is not running
+        snap->stop();
+    }
+    listItem->setContentMoving(true);
+    behavior->setEnabled(true);
+    behavior->write(to);
+    qDebug() << to;
     if (!snap) {
-        // no animation, so we simply position the component
-        listItem->contentItem->setX(to);
-        // and complete snap logic
+        // complete, as we don't have animation
         if (to == 0.0) {
             snapOut();
         } else {
             snapIn();
         }
-        return false;
     }
-    snap->setTargetObject(listItem->contentItem);
-    if (to == 0.0) {
-        QObject::connect(snap, &QQuickAbstractAnimation::stopped,
-                         this, &UCListItemSnapAnimator::snapOut);
-    } else {
-        QObject::connect(snap, &QQuickAbstractAnimation::stopped,
-                         this, &UCListItemSnapAnimator::snapIn);
-    }
-    if (snap->properties().isEmpty() && snap->property().isEmpty()) {
-        snap->setProperty("x");
-    }
-    // make sure the animation is not running
-    snap->stop();
-    snap->setFrom(listItem->contentItem->property(snap->property().toLocal8Bit().constData()));
-    snap->setTo(to);
-    snap->setAlwaysRunToEnd(false);
-    listItem->setContentMoving(true);
-    snap->start();
     return true;
 }
 
 void UCListItemSnapAnimator::stop()
 {
-    QQuickPropertyAnimation *snap = getDefaultAnimation();
+    QQuickAbstractAnimation *snap = getDefaultAnimation();
     if (snap && snap->isRunning()) {
         snap->stop();
     }
@@ -125,7 +130,7 @@ void UCListItemSnapAnimator::stop()
  */
 void UCListItemSnapAnimator::complete()
 {
-    QQuickPropertyAnimation *snap = getDefaultAnimation();
+    QQuickAbstractAnimation *snap = getDefaultAnimation();
     if (snap && snap->isRunning()) {
         snap->complete();
     }
@@ -139,6 +144,7 @@ void UCListItemSnapAnimator::complete()
  */
 void UCListItemSnapAnimator::snapOut()
 {
+    behavior->setEnabled(false);
     if (senderSignalIndex() >= 0) {
         // disconnect animation, otherwise snapping will disconnect the panel
         QQuickAbstractAnimation *snap = getDefaultAnimation();
@@ -166,6 +172,7 @@ void UCListItemSnapAnimator::snapOut()
  */
 void UCListItemSnapAnimator::snapIn()
 {
+    behavior->setEnabled(false);
     if (senderSignalIndex() >= 0) {
         // disconnect animation
         QQuickAbstractAnimation *snap = getDefaultAnimation();
@@ -179,11 +186,15 @@ void UCListItemSnapAnimator::snapIn()
 /*
  * Returns the animation specified by the style.
  */
-QQuickPropertyAnimation *UCListItemSnapAnimator::getDefaultAnimation()
+QQuickAbstractAnimation *UCListItemSnapAnimator::getDefaultAnimation()
 {
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
     listItem->initStyleItem();
-    return listItem->styleItem ? listItem->styleItem->m_snapAnimation : 0;
+    // patch behavior
+    if (!behavior->animation() && listItem->styleItem && listItem->styleItem->m_snapBehavior) {
+        behavior->setAnimation(listItem->styleItem->m_snapBehavior);
+    }
+    return behavior->animation();
 }
 
 /******************************************************************************
@@ -354,6 +365,7 @@ UCListItemPrivate::UCListItemPrivate()
     , leadingPanel(0)
     , trailingPanel(0)
     , animator(0)
+    , defaultAction(0)
     , styleComponent(0)
     , implicitStyleComponent(0)
     , styleItem(0)
@@ -529,6 +541,7 @@ void UCListItemPrivate::initStyleItem()
         return;
     }
     QQmlContext *context = new QQmlContext(qmlContext(q));
+    context->setContextProperty("styledItem", q);
     QObject *object = delegate->beginCreate(context);
     styleItem = qobject_cast<UCListItemStyle*>(object);
     if (!styleItem) {
@@ -593,6 +606,7 @@ int UCListItemPrivate::index()
 // returns true if the highlight is possible
 bool UCListItemPrivate::canHighlight(QMouseEvent *event)
 {
+    // if automatic, the highlight should not happen if we clicked on an active component;
     // localPos is a position relative to ListItem which will give us a child from
     // from the original coordinates; therefore we must map the position to the contentItem
    Q_Q(UCListItem);
@@ -604,7 +618,7 @@ bool UCListItemPrivate::canHighlight(QMouseEvent *event)
    QQuickMouseArea *ma = q->findChild<QQuickMouseArea*>();
    bool activeMouseArea = ma && ma->isEnabled();
    return !activeComponent && (isClickedConnected() || isPressAndHoldConnected() ||
-                               leadingActions || trailingActions || activeMouseArea);
+                               defaultAction || leadingActions || trailingActions || activeMouseArea);
 }
 
 // set highlighted flag and update contentItem
@@ -901,6 +915,8 @@ void UCListItem::componentComplete()
 {
     UCStyledItemBase::componentComplete();
     Q_D(UCListItem);
+    // set contentItem's context
+    QQmlEngine::setContextForObject(d->contentItem, qmlContext(this));
     // anchor contentItem prior doing anything else
     QQuickAnchors *contentAnchors = QQuickItemPrivate::get(d->contentItem)->anchors();
     contentAnchors->setTop(d->top());
@@ -929,7 +945,7 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
     UCStyledItemBase::itemChange(change, data);
     if (change == ItemParentHasChanged) {
         Q_D(UCListItem);
-        // make sure we are not connected to the previous Flickable
+        // make sure we are not connected to any previous Flickable
         d->listenToRebind(false);
         // check if we are in a positioner, and if that positioner is in a Flickable
         QQuickBasePositioner *positioner = qobject_cast<QQuickBasePositioner*>(data.item);
@@ -1024,7 +1040,8 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         // while moving, we cannot select any items
         return;
     }
-    if (event->button() == Qt::LeftButton && d->canHighlight(event)) {
+    if (d->canHighlight(event) && !d->suppressClick
+            && !d->highlighted && event->button() == Qt::LeftButton) {
         // stop any ongoing animation!
         if (d->animator) {
             d->animator->stop();
@@ -1059,7 +1076,12 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 
         if (!d->suppressClick) {
             Q_EMIT clicked();
+            if (d->defaultAction) {
+                Q_EMIT d->defaultAction->trigger(d->index());
+            }
             d->_q_rebound();
+        } else {
+            d->suppressClick = false;
         }
     }
     d->setHighlighted(false);
@@ -1145,6 +1167,7 @@ bool UCListItem::childMouseEventFilter(QQuickItem *child, QEvent *event)
         QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
         if (child->isEnabled() && (child->acceptedMouseButtons() & mouse->button()) && !qobject_cast<QQuickText*>(child)) {
             Q_D(UCListItem);
+            // suppress click
             d->suppressClick = true;
             // listen for flickable to be able to rebind if movement started there!
             d->listenToRebind(true);
@@ -1299,6 +1322,45 @@ UCListItemDivider* UCListItem::divider() const
  * is moved horizontally. When in Flickable (or ListView), the item gets un-highlighted
  * (false) when the mouse or touch is moved towards the vertical direction causing
  * the flickable to move.
+ *
+ * Configures the color when highlighted. Defaults to the theme palette's background
+ * color.
+ *
+ * An item is highlighted, thus highlight state toggled, when pressed and it has
+ * one of the following conditions fulfilled:
+ * \list
+ *  \li * \l leadingActions or \l trailingActions set,
+ *  \li * it has an \l action attached
+ *  \li * if the ListItem has an active child component, such as a \l Button, a
+ *      \l Switch, etc.
+ *  \li * in general, if an active (enabled and visible) \c MouseArea is added
+ *      as a child component
+ *  \li * \l clicked signal handler is implemented or there is a slot or function
+ *      connected to it
+ *  \li * \l pressAndHold signal handler is implemented or there is a slot or
+ *      function connected to it.
+ * \endlist
+ *
+ * \note Adding an active component does not mean the component will be activated
+ * when the ListItem will be tapped/clicked outside of the component area. If
+ * such a behavior is needed, that must be done explicitly.
+ * \qml
+ * import QtQiock 2.3
+ * import Ubuntu.Components 1.2
+ *
+ * ListItem {
+ *     Label {
+ *         text: "This is a label"
+ *     }
+ *     Switch {
+ *         id: toggle
+ *         anchors.right: parent.right
+ *     }
+ *     Component.onCompleted: clicked.connect(toggle.clicked)
+ * }
+ * \endqml
+ *
+ * \sa action, leadingActions, trailingActions
  */
 bool UCListItem::highlighted() const
 {
@@ -1340,7 +1402,6 @@ void UCListItemPrivate::setContentMoving(bool moved)
         Q_EMIT q->contentMovementEnded();
     }
     Q_EMIT q->contentMovingChanged();
-
 }
 
 /*!
@@ -1392,6 +1453,61 @@ void UCListItem::resetHighlightColor()
     d->highlightColor = getPaletteColor("selected", "background");
     update();
     Q_EMIT highlightColorChanged();
+}
+
+/*!
+ * \qmlproperty Action ListItem::action
+ * The property holds the default action attached to the list item which will be
+ * triggered when the ListItem is clicked. ListItem will not visualize the action,
+ * that is the responsibility of the components placed inside the list item.
+ * However, when set, the ListItem will be highlighted on press.
+ *
+ * If the action set has no value type set, ListItem will set its type to \c
+ * Action.Integer and the \l {Action::triggered}{triggered} signal will be getting
+ * the ListItem index as \e value parameter.
+ *
+ * \note Handling pressAndHold will suppress the action triggering as the clicked
+ * signal is also suppressed. If the action triggering is still needed, it must be
+ * triggered manually on \l highlighted changed.
+ * \qml
+ * import Ubuntu.Components 1.2
+ *
+ * ListItem {
+ *     property bool emitActionTriggered: false
+ *     action: Action {
+ *         onTriggered: console.log("action triggered", value)
+ *     }
+ *     onPresseAndHold: {
+ *         console.log("suppresses clicked() signal, also action triggered");
+ *         emitActionTriggered = true;
+ *     }
+ *     onHighlightedChanged: {
+ *         if (!highlighted && emitActionTriggered) {
+ *             emitActionTriggered = false;
+ *             action.trigger(index);
+ *         }
+ *     }
+ * }
+ * \endqml
+ *
+ * Defaults no null.
+ */
+UCAction *UCListItemPrivate::action() const
+{
+    return defaultAction;
+}
+void UCListItemPrivate::setAction(UCAction *action)
+{
+    Q_Q(UCListItem);
+    if (defaultAction == action) {
+        return;
+    }
+    defaultAction = action;
+    if (defaultAction && (defaultAction->m_parameterType == UCAction::None)) {
+        // call setProperty to invoke notify signal
+        defaultAction->setProperty("parameterType", UCAction::Integer);
+    }
+    Q_EMIT q->actionChanged();
 }
 
 /*!

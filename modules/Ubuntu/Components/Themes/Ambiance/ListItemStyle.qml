@@ -23,8 +23,7 @@ Styles.ListItemStyle {
     swipeOvershoot: units.gu(2)
     actionsDelegate: ListItemPanel{}
 
-    snapAnimation: PropertyAnimation {
-        property: "x"
+    snapBehavior: NumberAnimation {
         easing {
             type: Easing.OutElastic
             period: 0.5

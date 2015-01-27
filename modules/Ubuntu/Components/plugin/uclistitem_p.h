@@ -40,6 +40,7 @@ class UCListItemActions;
 class UCListItemSnapAnimator;
 class UCListItemStyle;
 class UCActionPanel;
+class QQuickBehavior;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -96,6 +97,7 @@ public:
     UCActionPanel *leadingPanel;
     UCActionPanel *trailingPanel;
     UCListItemSnapAnimator *animator;
+    UCAction *defaultAction;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
     QQmlComponent *styleComponent;
@@ -115,6 +117,8 @@ public:
     void resetStyle();
     void initStyleItem();
     QQuickItem *styleInstance() const;
+    UCAction *action() const;
+    void setAction(UCAction *action);
 };
 
 class UCListItemAttachedPrivate : public QObjectPrivate
@@ -242,7 +246,7 @@ QColor getPaletteColor(const char *profile, const char *color);
 
 QML_DECLARE_TYPE(UCListItemDivider)
 
-class QQuickPropertyAnimation;
+class QQuickAbstractAnimation;
 class UCListItemSnapAnimator : public QObject
 {
     Q_OBJECT
@@ -258,11 +262,12 @@ public Q_SLOTS:
     void snapOut();
     void snapIn();
 
-    QQuickPropertyAnimation *getDefaultAnimation();
+    QQuickAbstractAnimation *getDefaultAnimation();
 
 private:
     bool active;
     UCListItem *item;
+    QQuickBehavior *behavior;
 };
 
 #endif // UCVIEWITEM_P_H
