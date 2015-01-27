@@ -258,8 +258,8 @@ Item {
             return [
                 {tag: "TextField", input: textField, initialCursorPosition: 0, cursorName: "selectionEnd", delta: guPoint(10, 0)},
                 {tag: "TextArea", input: textArea, initialCursorPosition: 0, cursorName: "selectionEnd", delta: guPoint(10, 5)},
-                {tag: "TextField", input: textField, initialCursorPosition: 48, cursorName: "selectionStart", delta: guPoint(-10, 0)},
-                {tag: "TextArea", input: textArea, initialCursorPosition: 50, cursorName: "selectionStart", delta: guPoint(-20, -5)},
+                {tag: "TextField(end)", input: textField, initialCursorPosition: 48, cursorName: "selectionStart", delta: guPoint(-10, 0)},
+                {tag: "TextArea(end)", input: textArea, initialCursorPosition: 50, cursorName: "selectionStart", delta: guPoint(-20, -5)},
             ];
         }
         function test_select_text_by_dragging_cursor_handler(data) {
@@ -271,6 +271,8 @@ Item {
             var caret = findChild(data.input, data.cursorName + "_draggeditem");
             verify(caret, "Caret \"" + data.cursorName + "\" cannot be found!");
 
+            // The caret may not receive events right away
+            sleep(500)
             TestExtras.touchDrag(0, caret, centerOf(caret), data.delta);
             verify(data.input.selectedText !== "", "Selection cleared!");
             verify(data.input.selectedText != selectedText, "Selection did not change");
@@ -280,8 +282,8 @@ Item {
             return [
                 {tag: "TextField", input: textField, withSelectedText: false, from: guPoint(2, 2), delta: guPoint(10, 0)},
                 {tag: "TextArea", input: textArea, withSelectedText: false, from: guPoint(2, 2), delta: guPoint(10, 4)},
-                {tag: "TextField", input: textField, withSelectedText: true, from: guPoint(2, 2), delta: guPoint(10, 0)},
-                {tag: "TextArea", input: textArea, withSelectedText: true, from: guPoint(2, 2), delta: guPoint(10, 4)},
+                {tag: "TextField(selected)", input: textField, withSelectedText: true, from: guPoint(2, 2), delta: guPoint(10, 0)},
+                {tag: "TextArea(selected)", input: textArea, withSelectedText: true, from: guPoint(2, 2), delta: guPoint(10, 4)},
             ];
         }
         function test_z_scroll_when_tap_dragged(data) {

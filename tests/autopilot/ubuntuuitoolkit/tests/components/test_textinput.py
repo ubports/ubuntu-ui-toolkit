@@ -60,7 +60,7 @@ class CaretTextInputTestCase(tests.QMLFileAppTestCase):
         self.assertFalse(self.textfield.focus)
 
     def select_cursor(self, positionProperty):
-        # The cursor may not received events right away
+        # The cursor may not receive events right away
         sleep(1)
         return self.main_view.select_single(
             objectName=positionProperty + '_draggeditem')
@@ -142,7 +142,7 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         self._assert_not_visible(objectName='text_input_contextmenu')
 
     def select_cursor(self, positionProperty):
-        # The cursor may not received events right away
+        # The cursor may not receive events right away
         sleep(1)
         return self.main_view.select_single(
             objectName=positionProperty + '_draggeditem')
