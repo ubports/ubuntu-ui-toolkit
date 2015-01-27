@@ -83,7 +83,7 @@ private Q_SLOTS:
         QTest::newRow("list with ListItems.Empty (equivalent to the new ListItem") << "ListItemsEmptyList.qml" << QUrl();
         // disable this test as it takes >20 seconds. Kept still for measurements to be done during development
 //        QTest::newRow("list with ListItems.Base (one icon, one label and one chevron)") << "ListItemsBaseList.qml" << QUrl();
-        QTest::newRow("row with MainViews") << "MainView.qml" << QUrl();
+        QTest::newRow("single MainView") << "MainView.qml" << QUrl();
     }
 
     void benchmark_GridOfComponents()
