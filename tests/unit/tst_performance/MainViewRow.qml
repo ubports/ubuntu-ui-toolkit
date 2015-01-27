@@ -23,7 +23,7 @@ Row {
     height: 600
     Repeater {
         id: repeater
-        model: 10
+        model: 100
         MainView {
             height: parent.height
             width: root.width / repeater.count
