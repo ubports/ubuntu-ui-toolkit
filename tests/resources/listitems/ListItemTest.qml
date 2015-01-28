@@ -95,7 +95,7 @@ MainView {
             color: "lime"
             onClicked: {
                 print("click")
-                main.override = !main.override
+                units.gridUnit += 2;
             }
             onPressAndHold: print("pressAndHold", objectName)
             Label {
@@ -198,7 +198,6 @@ MainView {
                     model: 10
                     ListItem {
                         objectName: "InFlickable"+index
-                        color: "red"
                         highlightColor: "lime"
                         divider.colorFrom: UbuntuColors.green
                         swipeOvershoot: units.gu(10)
@@ -208,6 +207,11 @@ MainView {
                         }
                         trailingActions: ListItemActions {
                             actions: trailingArray
+                        }
+
+                        Rectangle {
+                            anchors.fill: parent
+                            color: UbuntuColors.red
                         }
 
                         Label {

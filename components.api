@@ -903,19 +903,18 @@ plugins.qmltypes
     name: "snapToPosition"
     Parameter { name: "position"; type: "double" }
     name: "UCListItemDivider"
-    prototype: "QObject"
-    Property { name: "visible"; type: "bool" }
-    Property { name: "leftMargin"; type: "double" }
-    Property { name: "rightMargin"; type: "double" }
+    prototype: "QQuickItem"
     Property { name: "colorFrom"; type: "QColor" }
     Property { name: "colorTo"; type: "QColor" }
+    Signal { name: "leftMarginChanged" }
+    Signal { name: "rightMarginChanged" }
     name: "UCListItemStyle"
     prototype: "QQuickItem"
     exports: ["Ubuntu.Components.Styles/ListItemStyle 1.2"]
     Property { name: "actionsDelegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "selectionDelegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "dragHandlerDelegate"; type: "QQmlComponent"; isPointer: true }
-    Property { name: "snapBehavior"; type: "QQuickAbstractAnimation"; isPointer: true }
+    Property { name: "snapAnimation"; type: "QQuickAbstractAnimation"; isPointer: true }
     Property { name: "swipeOvershoot"; type: "double" }
     name: "UCMouse"
     prototype: "QObject"

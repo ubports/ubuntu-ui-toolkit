@@ -15,6 +15,8 @@
  */
 
 #include "uclistitemstyle.h"
+#include <QtQml/QQmlEngine>
+#include <QtQuick/private/qquickbehavior_p.h>
 
 /*!
  * \qmltype ListItemStyle
@@ -39,9 +41,17 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
     , m_actionsDelegate(0)
     , m_selectionDelegate(0)
     , m_dragHandlerDelegate(0)
-    , m_snapBehavior(0)
+    , m_snapAnimation(0)
+    , m_snapBehavior(new QQuickBehavior)
     , m_swipeOvershoot(0)
 {
+}
+
+void UCListItemStyle::classBegin()
+{
+    // own behaviors
+    m_snapBehavior->setParent(this);
+    QQmlEngine::setContextForObject(m_snapBehavior, qmlContext(this));
 }
 
 /*!
@@ -60,11 +70,21 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
  */
 
 /*!
- * \qmlproperty PropertyAnimation ListItemStyle::snapBehavior
+ * \qmlproperty Animation ListItemStyle::snapAnimation
  * Holds the behavior used in animating when snapped in or out. It can hold many
  * animations, and will be used in a Behavior on the \l ListItem::contentItem
  * \c x property.
  */
+void UCListItemStyle::setSnapAnimation(QQuickAbstractAnimation *animation)
+{
+    if (m_snapAnimation == animation || m_snapBehavior->animation()) {
+        return;
+    }
+
+    m_snapAnimation = animation;
+    m_snapBehavior->setAnimation(animation);
+    Q_EMIT snapAnimationChanged();
+}
 
 /*!
  * \qmlproperty real ListItemStyle::swipeOvershoot

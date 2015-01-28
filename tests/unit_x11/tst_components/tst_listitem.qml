@@ -213,8 +213,8 @@ Item {
             compare(defaults.highlighted, false, "Not highlighted by default");
             compare(defaults.swipeOvershoot, 0.0, "No overshoot till the style is loaded!");
             compare(defaults.divider.visible, true, "divider is visible by default");
-            compare(defaults.divider.leftMargin, 0, "divider's left margin is 0");
-            compare(defaults.divider.rightMargin, 0, "divider's right margin is 0");
+            compare(defaults.divider.anchors.leftMargin, 0, "divider's left margin is 0");
+            compare(defaults.divider.anchors.rightMargin, 0, "divider's right margin is 0");
             compare(defaults.divider.colorFrom, "#000000", "colorFrom differs.");
             fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");

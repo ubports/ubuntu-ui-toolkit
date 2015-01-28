@@ -68,7 +68,6 @@ public:
     void setSwiped(bool tugged);
     void listenToRebind(bool listen);
     void lockContentItem(bool lock);
-    void adjustContentItemHeight();
     void update();
     void clampAndMoveX(qreal &x, qreal dx);
 
@@ -193,28 +192,25 @@ private:
     bool connected:1;
 };
 
-class UCListItemDivider : public QObject
+class UCListItemDividerPrivate;
+class UCListItemDivider : public QQuickItem
 {
     Q_OBJECT
-    Q_PROPERTY(bool visible MEMBER m_visible WRITE setVisible NOTIFY visibleChanged)
-    Q_PROPERTY(qreal leftMargin MEMBER m_leftMargin WRITE setLeftMargin NOTIFY leftMarginChanged)
-    Q_PROPERTY(qreal rightMargin MEMBER m_rightMargin WRITE setRightMargin NOTIFY rightMarginChanged)
-    Q_PROPERTY(QColor colorFrom MEMBER m_colorFrom WRITE setColorFrom NOTIFY colorFromChanged)
-    Q_PROPERTY(QColor colorTo MEMBER m_colorTo WRITE setColorTo NOTIFY colorToChanged)
+    Q_PROPERTY(QColor colorFrom READ colorFrom WRITE setColorFrom NOTIFY colorFromChanged)
+    Q_PROPERTY(QColor colorTo READ colorTo WRITE setColorTo NOTIFY colorToChanged)
 public:
-    explicit UCListItemDivider(QObject *parent = 0);
+    explicit UCListItemDivider(QQuickItem *parent = 0);
     ~UCListItemDivider();
     void init(UCListItem *listItem);
 
 Q_SIGNALS:
-    void visibleChanged();
     void leftMarginChanged();
     void rightMarginChanged();
     void colorFromChanged();
     void colorToChanged();
 
 protected:
-    QSGNode *paint(QSGNode *node, const QRectF &rect);
+    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *data);
 
 private Q_SLOTS:
     void unitsChanged();
@@ -222,24 +218,15 @@ private Q_SLOTS:
 
 private:
     void updateGradient();
-    void setVisible(bool visible);
+    qreal leftMargin() const;
     void setLeftMargin(qreal leftMargin);
+    qreal rightMargin() const;
     void setRightMargin(qreal rightMargin);
+    QColor colorFrom() const;
     void setColorFrom(const QColor &color);
+    QColor colorTo() const;
     void setColorTo(const QColor &color);
-
-    bool m_visible:1;
-    bool m_colorFromChanged:1;
-    bool m_colorToChanged:1;
-    qreal m_thickness;
-    qreal m_leftMargin;
-    qreal m_rightMargin;
-    QColor m_colorFrom;
-    QColor m_colorTo;
-    QGradientStops m_gradient;
-    UCListItemPrivate *m_listItem;
-    friend class UCListItem;
-    friend class UCListItemPrivate;
+    Q_DECLARE_PRIVATE(UCListItemDivider)
 };
 
 QColor getPaletteColor(const char *profile, const char *color);
@@ -256,18 +243,17 @@ public:
 
     bool snap(qreal to);
     void stop();
-    void complete();
 
 public Q_SLOTS:
     void snapOut();
     void snapIn();
 
-    QQuickAbstractAnimation *getDefaultAnimation();
+    QQuickAbstractAnimation *getSnapBehavior();
 
 private:
     bool active;
     UCListItem *item;
-    QQuickBehavior *behavior;
+    QPointer<QQuickBehavior> behavior;
 };
 
 #endif // UCVIEWITEM_P_H
