@@ -915,7 +915,7 @@ plugins.qmltypes
     Property { name: "actionsDelegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "selectionDelegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "dragHandlerDelegate"; type: "QQmlComponent"; isPointer: true }
-    Property { name: "snapAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
+    Property { name: "snapBehavior"; type: "QQuickAbstractAnimation"; isPointer: true }
     Property { name: "swipeOvershoot"; type: "double" }
     name: "UCMouse"
     prototype: "QObject"
