@@ -16,10 +16,16 @@
 #
 # Author: Christian Dywan <christian.dywan@canonical.com>
 
-ARCH=arm-linux-gnueabihf
 DEST=/usr/lib/$ARCH/qt5/qml/Ubuntu/Components
 RUN=$XDG_RUNTIME_DIR/$(basename $0)
 STONE=/tmp/$(basename $0)
+
+# Determine device architecture
+ARCH=$(adb shell "dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null")
+if [ -z "$ARCH" ]; then
+    echo Developer mode enabled? Screen unlocked?
+    exit 1
+fi
 
 # Ask early so the script can run through smoothly
 echo Type your phone\'s PIN or password to continue:
