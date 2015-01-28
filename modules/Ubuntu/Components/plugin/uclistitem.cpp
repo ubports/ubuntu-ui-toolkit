@@ -105,7 +105,6 @@ bool UCListItemSnapAnimator::snap(qreal to)
     listItem->setContentMoving(true);
     behavior->setEnabled(true);
     behavior->write(to);
-    qDebug() << to;
     if (!snap) {
         // complete, as we don't have animation
         if (to == 0.0) {
