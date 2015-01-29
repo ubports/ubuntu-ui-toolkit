@@ -42,16 +42,8 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
     , m_selectionDelegate(0)
     , m_dragHandlerDelegate(0)
     , m_snapAnimation(0)
-    , m_snapBehavior(new QQuickBehavior)
     , m_swipeOvershoot(0)
 {
-}
-
-void UCListItemStyle::classBegin()
-{
-    // own behaviors
-    m_snapBehavior->setParent(this);
-    QQmlEngine::setContextForObject(m_snapBehavior, qmlContext(this));
 }
 
 /*!
@@ -75,16 +67,6 @@ void UCListItemStyle::classBegin()
  * animations, and will be used in a Behavior on the \l ListItem::contentItem
  * \c x property.
  */
-void UCListItemStyle::setSnapAnimation(QQuickAbstractAnimation *animation)
-{
-    if (m_snapAnimation == animation || m_snapBehavior->animation()) {
-        return;
-    }
-
-    m_snapAnimation = animation;
-    m_snapBehavior->setAnimation(animation);
-    Q_EMIT snapAnimationChanged();
-}
 
 /*!
  * \qmlproperty real ListItemStyle::swipeOvershoot

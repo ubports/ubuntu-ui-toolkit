@@ -906,8 +906,6 @@ plugins.qmltypes
     prototype: "QQuickItem"
     Property { name: "colorFrom"; type: "QColor" }
     Property { name: "colorTo"; type: "QColor" }
-    Signal { name: "leftMarginChanged" }
-    Signal { name: "rightMarginChanged" }
     name: "UCListItemStyle"
     prototype: "QQuickItem"
     exports: ["Ubuntu.Components.Styles/ListItemStyle 1.2"]

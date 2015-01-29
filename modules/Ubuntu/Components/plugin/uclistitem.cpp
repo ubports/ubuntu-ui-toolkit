@@ -117,7 +117,10 @@ bool UCListItemSnapAnimator::snap(qreal to)
  */
 void UCListItemSnapAnimator::stop()
 {
-    if (behavior) {
+    if (behavior && behavior->enabled()) {
+        if (behavior->animation()) {
+            behavior->animation()->stop();
+        }
         behavior->setEnabled(false);
     }
 }
@@ -138,7 +141,9 @@ void UCListItemSnapAnimator::snapOut()
         }
         QObject::disconnect(snap, 0, 0, 0);
     }
-    behavior->setEnabled(false);
+    if (behavior) {
+        behavior->setEnabled(false);
+    }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
     if (listItem->parentAttached) {
         // restore flickable's interactive and cleanup
@@ -169,14 +174,17 @@ void UCListItemSnapAnimator::snapIn()
         }
         QObject::disconnect(snap, 0, 0, 0);
     }
-    behavior->setEnabled(false);
+    if (behavior) {
+        behavior->setEnabled(false);
+    }
     // turn content moving off
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
     listItem->setContentMoving(false);
 }
 
 /*
- * Returns the animation specified by the style.
+ * Returns the animation specified by the style, and configures the behavior
+ * controlling the animation.
  */
 QQuickAbstractAnimation *UCListItemSnapAnimator::getSnapBehavior()
 {
@@ -186,17 +194,24 @@ QQuickAbstractAnimation *UCListItemSnapAnimator::getSnapBehavior()
 
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
     listItem->initStyleItem();
-    // patch behavior
-    behavior = listItem->styleItem ?
-                listItem->styleItem->m_snapBehavior : 0;
-    if (behavior) {
+    // parent animator to the component whos property we animate
+    behavior = new QQuickBehavior(listItem->contentItem);
+    QQuickAbstractAnimation *animation = listItem->styleItem ?
+                listItem->styleItem->m_snapAnimation : 0;
+    if (animation) {
+        // patch behavior, use the same context as the animation
+        QQmlEngine::setContextForObject(behavior.data(), qmlContext(animation));
+        behavior->setAnimation(animation);
+
         QQmlProperty property(listItem->contentItem, "x", qmlContext(listItem->contentItem));
-        // transfer behavior and animation to the animator
+        // transfer animation to the contentItem
         behavior->setParent(listItem->contentItem);
         if (behavior->animation()) {
             behavior->animation()->setParent(listItem->contentItem);
         }
         behavior->setTarget(property);
+        // set animation to be user controlled so we can invoke stop()
+        animation->setEnableUserControl();
     }
     return behavior->animation();
 }
@@ -223,7 +238,7 @@ public:
     UCListItemPrivate *listItem;
 };
 
-UCListItemDivider::UCListItemDivider(QQuickItem *parent)
+UCListItemDivider::UCListItemDivider(UCListItem *parent)
     : QQuickItem(*(new UCListItemDividerPrivate), parent)
 {
     connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCListItemDivider::unitsChanged);

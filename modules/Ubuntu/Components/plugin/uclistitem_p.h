@@ -192,43 +192,6 @@ private:
     bool connected:1;
 };
 
-class UCListItemDividerPrivate;
-class UCListItemDivider : public QQuickItem
-{
-    Q_OBJECT
-    Q_PROPERTY(QColor colorFrom READ colorFrom WRITE setColorFrom NOTIFY colorFromChanged)
-    Q_PROPERTY(QColor colorTo READ colorTo WRITE setColorTo NOTIFY colorToChanged)
-public:
-    explicit UCListItemDivider(QQuickItem *parent = 0);
-    ~UCListItemDivider();
-    void init(UCListItem *listItem);
-
-Q_SIGNALS:
-    void leftMarginChanged();
-    void rightMarginChanged();
-    void colorFromChanged();
-    void colorToChanged();
-
-protected:
-    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *data);
-
-private Q_SLOTS:
-    void unitsChanged();
-    void paletteChanged();
-
-private:
-    void updateGradient();
-    qreal leftMargin() const;
-    void setLeftMargin(qreal leftMargin);
-    qreal rightMargin() const;
-    void setRightMargin(qreal rightMargin);
-    QColor colorFrom() const;
-    void setColorFrom(const QColor &color);
-    QColor colorTo() const;
-    void setColorTo(const QColor &color);
-    Q_DECLARE_PRIVATE(UCListItemDivider)
-};
-
 QColor getPaletteColor(const char *profile, const char *color);
 
 QML_DECLARE_TYPE(UCListItemDivider)
