@@ -56,16 +56,16 @@ QSGMaterialShader* ShapeOverlayMaterial::createShader() const
 
 ShapeOverlayNode::ShapeOverlayNode()
     : QSGGeometryNode()
-    , geometry_(attributeSet(), ShapeNode::vertexCount, ShapeNode::indexCount, ShapeNode::indexType)
     , material_()
+    , geometry_(attributeSet(), ShapeNode::vertexCount, ShapeNode::indexCount, ShapeNode::indexType)
 {
     memcpy(geometry_.indexData(), ShapeNode::indices(),
            ShapeNode::indexCount * ShapeNode::indexTypeSize);
     geometry_.setDrawingMode(ShapeNode::drawingMode);
     geometry_.setIndexDataPattern(ShapeNode::indexDataPattern);
     geometry_.setVertexDataPattern(ShapeNode::vertexDataPattern);
-    setGeometry(&geometry_);
     setMaterial(&material_);
+    setGeometry(&geometry_);
 }
 
 // static

@@ -59,8 +59,8 @@ public:
     QSGGeometry* geometry() { return &geometry_; }
 
 private:
-    QSGGeometry geometry_;
     ShapeOverlayMaterial material_;
+    QSGGeometry geometry_;
 };
 
 // --- QtQuick item ---
