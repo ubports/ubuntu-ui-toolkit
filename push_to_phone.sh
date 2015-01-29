@@ -16,7 +16,13 @@
 #
 # Author: Christian Dywan <christian.dywan@canonical.com>
 
-ARCH=arm-linux-gnueabihf
+# Determine device architecture
+ARCH=$(adb shell "dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null" | tr -d \\r)
+if [ -z "$ARCH" ]; then
+    echo Developer mode enabled? Screen unlocked?
+    exit 1
+fi
+
 DEST=/usr/lib/$ARCH/qt5/qml/Ubuntu/Components
 RUN=$XDG_RUNTIME_DIR/$(basename $0)
 STONE=/tmp/$(basename $0)
@@ -43,7 +49,7 @@ for i in $(ls Ubuntu/Components/*.qml Ubuntu/Components/*.js Ubuntu/Components/q
     adb push $i $STONE/c/$i || exit 1
 done
 cd ..
-echo cp -R c/Ubuntu/Components/* "\$DEST" >> $RUN/copy.sh
+echo cp -R c/Ubuntu/Components/* "\$DEST || exit 1" >> $RUN/copy.sh
 
 for i in 10 11 ListItems Pickers Popups Styles Themes artwork; do
     adb push modules/Ubuntu/Components/$i/ $STONE/$i || exit 1
