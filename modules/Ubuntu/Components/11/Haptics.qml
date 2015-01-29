@@ -106,7 +106,7 @@ Object {
       The function will exit unconditionaly if playing the effects is blocked by
       system settings.
 
-      The function will not stop any ongoing haptics effect oplayed, if that one
+      The function will not stop any ongoing haptics effect played, if that one
       was a default haptics effect. In case of custom effects, the previous effect
       will be stopped, and settings will be restored before the new haptics will
       be played. The custom settings properties (the ones which are required to
