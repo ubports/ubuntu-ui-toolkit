@@ -186,17 +186,9 @@ Empty
     property int selectedIndex
     property bool expanded
 MainView 0.1 1.0
-PageTreeNode
-    property string applicationName
-    property bool anchorToKeyboard
-    property color headerColor
-    property color backgroundColor
-    property color footerColor
+MainViewBase
     property bool automaticOrientation
-    property bool useDeprecatedToolbar
     default property internal contentsItem
-    property list<Action> actions
-    property ActionManager actionManager
 Object 0.1 1.0
 QtObject
     default property internal children
@@ -867,6 +859,7 @@ plugins.qmltypes
     Property { name: "style"; type: "QQmlComponent"; isPointer: true }
     Property { name: "__styleInstance"; type: "QQuickItem"; isReadonly: true; isPointer: true }
     Signal { name: "clicked" }
+    Signal { name: "pressAndHold" }
     Signal { name: "contentMovementStarted" }
     Signal { name: "contentMovementEnded" }
     name: "UCListItemActions"
@@ -948,6 +941,18 @@ plugins.qmltypes
     Property { name: "source"; type: "QUrl" }
     Signal { name: "extendedSourceChanged" }
     Signal { name: "extendedSourceChanged" }
+    name: "UCServiceProperties"
+    prototype: "QObject"
+    exports: ["ServiceProperties 1.1"]
+    name: "ServiceType"
+    name: "Status"
+    Property { name: "type"; revision: 1; type: "ServiceType" }
+    Property { name: "service"; revision: 1; type: "string" }
+    Property { name: "path"; revision: 1; type: "string" }
+    Property { name: "serviceInterface"; revision: 1; type: "string" }
+    Property { name: "adaptorInterface"; revision: 1; type: "string" }
+    Property { name: "error"; revision: 1; type: "string"; isReadonly: true }
+    Property { name: "status"; revision: 1; type: "Status"; isReadonly: true }
     name: "UCStateSaver"
     prototype: "QObject"
     exports: ["StateSaver 0.1", "StateSaver 1.0"]

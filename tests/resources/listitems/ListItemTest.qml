@@ -96,16 +96,21 @@ MainView {
                 print("click")
                 main.override = !main.override
             }
+            onPressAndHold: print("pressAndHold", objectName)
             Label {
                 anchors.fill: parent
                 text: units.gridUnit + "PX/unit"
             }
+            Button {
+                text: "Press me"
+                anchors.centerIn: parent
+            }
+
             leadingActions: ListItemActions {
                 objectName: "InlineLeading"
                 actions: [stock]
                 delegate: Column {
                     width: height + units.gu(2)
-                    anchors.verticalCenter: parent.verticalCenter
                     Icon {
                         width: units.gu(3)
                         height: width
@@ -149,12 +154,13 @@ MainView {
             clip: true
             width: parent.width
             height: units.gu(20)
-            model: 10
+            model: 25
             pressDelay: 0
             delegate: ListItem {
                 objectName: "ListItem" + index
                 id: listItem
                 onClicked: print(" clicked")
+                onPressAndHold: print("pressAndHold")
                 leadingActions: leading
                 trailingActions: leadingActions
                 Label {
