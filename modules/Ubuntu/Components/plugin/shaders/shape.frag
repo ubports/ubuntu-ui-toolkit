@@ -24,7 +24,7 @@ uniform sampler2D shapeTexture;
 uniform sampler2D sourceTexture;
 uniform lowp float sourceOpacity;
 uniform lowp float opacity;
-uniform lowp bool textured;
+uniform bool textured;
 
 varying mediump vec2 shapeCoord;
 varying mediump vec4 sourceCoord;
