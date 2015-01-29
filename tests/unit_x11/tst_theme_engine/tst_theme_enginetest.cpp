@@ -44,10 +44,10 @@ private Q_SLOTS:
     void testThemesRelativePathWithParentXDGDATA();
     void testThemesRelativePathWithParentNoVariablesSet();
     void testThemesRelativePathWithParentOneXDGPathSet();
+    void testAppTheme();
     void testNoImportPathSet();
     void testBogusImportPathSet();
     void testMultipleImportPathsSet();
-    void testAppTheme();
 };
 
 void tst_UCTheme::initTestCase()

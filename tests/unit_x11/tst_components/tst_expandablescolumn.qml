@@ -91,7 +91,12 @@ Item {
             collapse();
 
             // expandedItem must be unset after collapsing
-            compare(expandablesColumn.expandedItem, undefined);
+            // TODO Once we depend in Qt 5.4 change to
+            // compare(expandablesColumn.expandedItem, null);
+            // We need it this way to have compatibility with Qt 5.3
+            // and 5.4 since for some reason an alias to a null in Qt 5.3
+            // has undefined value instead of null
+            verify(expandablesColumn.expandedItem == null);
         }
 
         function test_noScrollingNeeded() {

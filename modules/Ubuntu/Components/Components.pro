@@ -1,5 +1,11 @@
 TEMPLATE = subdirs
 
-SUBDIRS += plugin Themes 10 11
-
-include(deployment.pri)
+SUBDIRS += ListItems \
+           ComponentModule.pro \
+           Pickers   \
+           Popups    \
+           Styles    \
+           plugin    \
+           Themes    \
+           10        \
+           11

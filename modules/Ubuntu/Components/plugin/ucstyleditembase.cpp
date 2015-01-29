@@ -186,13 +186,11 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
         // therefore must check containment
         QPointF point = mapFromItem(child, mouse->localPos());
         if (contains(point)) {
-            QMouseEvent press(event->type(), point, mouse->windowPos(), mouse->screenPos(),
-                              mouse->button(), mouse->buttons(), mouse->modifiers());
-            mousePressEvent(&press);
+            requestFocus(Qt::MouseFocusReason);
         }
     }
     // let the event be passed to children
-    return false;
+    return QQuickItem::childMouseEventFilter(child, event);
 }
 
 #include "moc_ucstyleditembase.cpp"

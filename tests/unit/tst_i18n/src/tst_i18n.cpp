@@ -76,13 +76,13 @@ private Q_SLOTS:
     {
         // Set test locale folder in the environment
         // Using setenv because QProcessEnvironment ignores changes
-        QString testAppDir(QCoreApplication::applicationDirPath() + "/localizedApp");
+        QString testAppDir(QDir::currentPath() + "/localizedApp");
         setenv("APP_DIR", testAppDir.toUtf8(), 1);
 
         // Verify that we set it correctly
         QVERIFY(QFileInfo(testAppDir + "/share/locale/en/LC_MESSAGES/localizedApp.mo").exists());
 
-        QString modules("../../../modules");
+        QString modules(UBUNTU_QML_IMPORT_PATH);
         QVERIFY(QDir(modules).exists());
 
         view = new QQuickView;
@@ -140,7 +140,7 @@ private Q_SLOTS:
 
         // Was the locale folder detected and set?
         QString boundDomain(C::bindtextdomain(i18n->domain().toUtf8(), ((const char*)0)));
-        QString testAppDir(QCoreApplication::applicationDirPath() + "/localizedApp");
+        QString testAppDir(QDir::currentPath() + "/localizedApp");
         QString expectedLocalePath(QDir(testAppDir).filePath("share/locale"));
         QCOMPARE(boundDomain, expectedLocalePath);
         // Is the domain gettext uses correct?

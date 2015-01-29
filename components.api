@@ -186,17 +186,9 @@ Empty
     property int selectedIndex
     property bool expanded
 MainView 0.1 1.0
-PageTreeNode
-    property string applicationName
-    property bool anchorToKeyboard
-    property color headerColor
-    property color backgroundColor
-    property color footerColor
+MainViewBase
     property bool automaticOrientation
-    property bool useDeprecatedToolbar
     default property internal contentsItem
-    property list<Action> actions
-    property ActionManager actionManager
 Object 0.1 1.0
 QtObject
     default property internal children
@@ -227,7 +219,7 @@ OrientationHelper 0.1 1.0
 Item
     property bool automaticOrientation
     property bool transitionEnabled
-    property alias rotating
+    readonly property bool rotating
     property int __orientationAngle
     property int orientationAngle
     property bool anchorToKeyboard
@@ -733,34 +725,6 @@ plugins.qmltypes
     name: "get"
     Parameter { name: "row"; type: "int" }
     Method { name: "count"; type: "int" }
-    name: "UCUbuntuShape"
-    prototype: "QQuickItem"
-    exports: [
-    name: "BackgroundMode"
-    name: "HAlignment"
-    name: "VAlignment"
-    name: "FillMode"
-    name: "WrapMode"
-    Property { name: "radius"; type: "string" }
-    Property { name: "borderSource"; type: "string" }
-    Property { name: "source"; type: "QVariant" }
-    Property { name: "sourceOpacity"; type: "float" }
-    Property { name: "sourceFillMode"; type: "FillMode" }
-    Property { name: "sourceHorizontalWrapMode"; type: "WrapMode" }
-    Property { name: "sourceVerticalWrapMode"; type: "WrapMode" }
-    Property { name: "sourceHorizontalAlignment"; type: "HAlignment" }
-    Property { name: "sourceVerticalAlignment"; type: "VAlignment" }
-    Property { name: "sourceTranslation"; type: "QVector2D" }
-    Property { name: "sourceScale"; type: "QVector2D" }
-    Property { name: "backgroundColor"; type: "QColor" }
-    Property { name: "secondaryBackgroundColor"; type: "QColor" }
-    Property { name: "backgroundMode"; type: "BackgroundMode" }
-    Property { name: "color"; type: "QColor" }
-    Property { name: "gradientColor"; type: "QColor" }
-    Property { name: "image"; type: "QVariant" }
-    Property { name: "stretched"; type: "bool" }
-    Property { name: "horizontalAlignment"; type: "HAlignment" }
-    Property { name: "verticalAlignment"; type: "VAlignment" }
     name: "SortBehavior"
     prototype: "QObject"
     exports: ["SortBehavior 1.1"]
@@ -877,6 +841,58 @@ plugins.qmltypes
     name: "UCInverseMouse"
     prototype: "UCMouse"
     exports: ["InverseMouse 0.1", "InverseMouse 1.0"]
+    name: "UCListItem"
+    prototype: "UCStyledItemBase"
+    exports: ["ListItem 1.2"]
+    name: "PanelStatus"
+    Property { name: "contentItem"; type: "QQuickItem"; isReadonly: true; isPointer: true }
+    Property { name: "divider"; type: "UCListItemDivider"; isReadonly: true; isPointer: true }
+    Property { name: "leadingActions"; type: "UCListItemActions"; isPointer: true }
+    Property { name: "trailingActions"; type: "UCListItemActions"; isPointer: true }
+    Property { name: "highlighted"; type: "bool"; isReadonly: true }
+    Property { name: "swipeOvershoot"; type: "double" }
+    Property { name: "contentMoving"; type: "bool"; isReadonly: true }
+    Property { name: "color"; type: "QColor" }
+    Property { name: "highlightColor"; type: "QColor" }
+    Property { name: "listItemData"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
+    Property { name: "style"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "__styleInstance"; type: "QQuickItem"; isReadonly: true; isPointer: true }
+    Signal { name: "clicked" }
+    Signal { name: "pressAndHold" }
+    Signal { name: "contentMovementStarted" }
+    Signal { name: "contentMovementEnded" }
+    name: "UCListItemActions"
+    prototype: "QObject"
+    exports: ["ListItemActions 1.2"]
+    Property { name: "delegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "actions"; type: "UCAction"; isList: true; isReadonly: true }
+    Property { name: "data"; type: "QObject"; isList: true; isReadonly: true }
+    name: "UCListItemAttached"
+    prototype: "QObject"
+    Property { name: "actions"; type: "UCListItemActions"; isReadonly: true; isPointer: true }
+    Property { name: "visibleActions"; type: "UCAction"; isList: true; isReadonly: true }
+    Property { name: "item"; type: "UCListItem"; isReadonly: true; isPointer: true }
+    Property { name: "index"; type: "int"; isReadonly: true }
+    Property { name: "panelStatus"; type: "UCListItem::PanelStatus"; isReadonly: true }
+    Method {
+    name: "snapToPosition"
+    Parameter { name: "position"; type: "double" }
+    name: "UCListItemDivider"
+    prototype: "QObject"
+    Property { name: "visible"; type: "bool" }
+    Property { name: "leftMargin"; type: "double" }
+    Property { name: "rightMargin"; type: "double" }
+    Property { name: "colorFrom"; type: "QColor" }
+    Property { name: "colorTo"; type: "QColor" }
+    name: "UCListItemStyle"
+    prototype: "QQuickItem"
+    exports: ["Ubuntu.Components.Styles/ListItemStyle 1.2"]
+    Property { name: "actionsDelegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "selectionDelegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "dragHandlerDelegate"; type: "QQmlComponent"; isPointer: true }
+    Property { name: "snapAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
+    Property { name: "swipeOvershoot"; type: "double" }
     name: "UCMouse"
     prototype: "QObject"
     exports: ["Mouse 0.1", "Mouse 1.0"]
@@ -962,6 +978,46 @@ plugins.qmltypes
     Property { name: "SleepyDuration"; type: "int"; isReadonly: true }
     Property { name: "StandardEasing"; type: "QEasingCurve"; isReadonly: true }
     Property { name: "StandardEasingReverse"; type: "QEasingCurve"; isReadonly: true }
+    name: "UCUbuntuShape"
+    prototype: "QQuickItem"
+    exports: [
+    name: "BackgroundMode"
+    name: "HAlignment"
+    name: "VAlignment"
+    name: "FillMode"
+    name: "WrapMode"
+    Property { name: "radius"; type: "string" }
+    Property { name: "borderSource"; type: "string" }
+    Property { name: "source"; revision: 1; type: "QVariant" }
+    Property { name: "sourceOpacity"; revision: 1; type: "float" }
+    Property { name: "sourceFillMode"; revision: 1; type: "FillMode" }
+    Property { name: "sourceHorizontalWrapMode"; revision: 1; type: "WrapMode" }
+    Property { name: "sourceVerticalWrapMode"; revision: 1; type: "WrapMode" }
+    Property { name: "sourceHorizontalAlignment"; revision: 1; type: "HAlignment" }
+    Property { name: "sourceVerticalAlignment"; revision: 1; type: "VAlignment" }
+    Property { name: "sourceTranslation"; revision: 1; type: "QVector2D" }
+    Property { name: "sourceScale"; revision: 1; type: "QVector2D" }
+    Property { name: "backgroundColor"; revision: 1; type: "QColor" }
+    Property { name: "secondaryBackgroundColor"; revision: 1; type: "QColor" }
+    Property { name: "backgroundMode"; revision: 1; type: "BackgroundMode" }
+    Property { name: "color"; type: "QColor" }
+    Property { name: "gradientColor"; type: "QColor" }
+    Property { name: "image"; type: "QVariant" }
+    Property { name: "stretched"; type: "bool" }
+    Property { name: "horizontalAlignment"; type: "HAlignment" }
+    Property { name: "verticalAlignment"; type: "VAlignment" }
+    Signal { name: "sourceChanged"; revision: 1 }
+    Signal { name: "sourceOpacityChanged"; revision: 1 }
+    Signal { name: "sourceFillModeChanged"; revision: 1 }
+    Signal { name: "sourceHorizontalWrapModeChanged"; revision: 1 }
+    Signal { name: "sourceVerticalWrapModeChanged"; revision: 1 }
+    Signal { name: "sourceHorizontalAlignmentChanged"; revision: 1 }
+    Signal { name: "sourceVerticalAlignmentChanged"; revision: 1 }
+    Signal { name: "sourceTranslationChanged"; revision: 1 }
+    Signal { name: "sourceScaleChanged"; revision: 1 }
+    Signal { name: "backgroundColorChanged"; revision: 1 }
+    Signal { name: "secondaryBackgroundColorChanged"; revision: 1 }
+    Signal { name: "backgroundModeChanged"; revision: 1 }
     name: "UCUnits"
     prototype: "QObject"
     exports: ["UCUnits 0.1", "UCUnits 1.0"]
@@ -978,6 +1034,9 @@ plugins.qmltypes
     Signal {
     name: "opened"
     Parameter { name: "uris"; type: "QStringList" }
+    name: "UCViewItemsAttached"
+    prototype: "QObject"
+    exports: ["ViewItems 1.2"]
     name: "UbuntuI18n"
     prototype: "QObject"
     exports: ["i18n 0.1", "i18n 1.0"]

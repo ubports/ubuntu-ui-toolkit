@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -56,11 +56,11 @@ public:
     static const QSGGeometry::AttributeSet& attributeSet();
 
     ShapeOverlayNode();
-    QSGGeometry* geometry() { return &geometry_; }
+    QSGGeometry* geometry() { return &m_geometry; }
 
 private:
-    QSGGeometry geometry_;
-    ShapeOverlayMaterial material_;
+    ShapeOverlayMaterial m_material;
+    QSGGeometry m_geometry;
 };
 
 // --- QtQuick item ---
@@ -80,10 +80,10 @@ public:
 
     QRectF overlayGeometry() const {
         const float u16ToF32 = 1.0f / static_cast<float>(0xffff);
-        return QRectF(overlayX_ * u16ToF32, overlayY_ * u16ToF32, overlayWidth_ * u16ToF32,
-                      overlayHeight_ * u16ToF32); }
+        return QRectF(m_overlayX * u16ToF32, m_overlayY * u16ToF32, m_overlayWidth * u16ToF32,
+                      m_overlayHeight * u16ToF32); }
     void setOverlayGeometry(const QRectF& overlayGeometry);
-    QColor overlayColor() const { return overlayColor_; }
+    QColor overlayColor() const { return m_overlayColor; }
     void setOverlayColor(const QColor& overlayColor);
 
 Q_SIGNALS:
@@ -98,11 +98,11 @@ protected:
         const quint32 backgroundColor[4]);
 
 private:
-    quint16 overlayX_;
-    quint16 overlayY_;
-    quint16 overlayWidth_;
-    quint16 overlayHeight_;
-    QRgb overlayColor_;
+    quint16 m_overlayX;
+    quint16 m_overlayY;
+    quint16 m_overlayWidth;
+    quint16 m_overlayHeight;
+    QRgb m_overlayColor;
 
     Q_DISABLE_COPY(UCUbuntuShapeOverlay)
 };

@@ -64,6 +64,8 @@
  *         model: movies
  *         sort.property: "title"
  *         sort.order: Qt.DescendingOrder
+ *         // case insensitive sorting
+ *         sortCaseSensitivity: Qt.CaseInsensitive
  *
  *         filter.property: "producer"
  *         filter.pattern: /blender/

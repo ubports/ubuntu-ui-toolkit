@@ -34,7 +34,7 @@ Q_DECLARE_METATYPE(QList<QQmlError>)
  */
 UbuntuTestCase::UbuntuTestCase(const QString& file, QWindow* parent) : QQuickView(parent)
 {
-    QString modules("../../../modules");
+    QString modules(UBUNTU_QML_IMPORT_PATH);
     Q_ASSERT(QDir(modules).exists());
     QString modulePath(QDir(modules).absolutePath());
     engine()->addImportPath(modulePath);
