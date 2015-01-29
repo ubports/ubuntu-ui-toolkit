@@ -15,7 +15,7 @@
 // Author: Loïc Molinari <loic.molinari@canonical.com>
 
 uniform mediump mat4 matrix;
-uniform lowp bool textured;
+uniform bool textured;
 
 attribute mediump vec4 positionAttrib;
 attribute mediump vec2 shapeCoordAttrib;
