@@ -59,8 +59,13 @@ Item {
     anchors {
         left: leading ? undefined : ListItem.item.contentItem.right
         right: leading ? ListItem.item.contentItem.left : undefined
-        top: ListItem.item.contentItem.top
+        // anchor to the top of the item but to the bottom of the contentItem, so we do not draw over the divider
+        top: ListItem.item.top
         bottom: ListItem.item.contentItem.bottom
+        bottomMargin: -ListItem.item.contentItem.anchors.bottomMargin
+        // adjust margins
+        leftMargin: leading ? 0 : ListItem.item.contentItem.anchors.rightMargin
+        rightMargin: leading ? ListItem.item.contentItem.anchors.leftMargin : 0
     }
 
     Rectangle {

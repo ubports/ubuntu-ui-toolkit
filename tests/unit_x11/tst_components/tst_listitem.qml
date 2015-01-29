@@ -305,9 +305,11 @@ Item {
         function test_background_height_change_on_divider_visible() {
             // make sure the testItem's divider is shown
             testItem.divider.visible = true;
-            verify(testItem.contentItem.height < testItem.height, "ListItem's background height must be less than the item itself.");
+            var margins = testItem.contentItem.anchors.topMargin + testItem.contentItem.anchors.bottomMargin;
+            compare(testItem.contentItem.height, testItem.height - margins - testItem.divider.height, "ListItem's background height must be less than the item itself.");
             testItem.divider.visible = false;
-            compare(testItem.contentItem.height, testItem.height, "ListItem's background height must be the same as the item itself.");
+            waitForRendering(testItem.contentItem);
+            compare(testItem.contentItem.height, testItem.height - margins, "ListItem's background height must be the same as the item itself.");
             testItem.divider.visible = true;
         }
 
@@ -395,7 +397,7 @@ Item {
             rebound(data.clickOn, data.item);
             // animation should no longer be running!
             verify(!data.item.__styleInstance.snapAnimation.running, "Animation is still running!");
-            fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Not snapped out!!");
+            fuzzyCompare(data.item.contentItem.x, data.item.contentItem.anchors.leftMargin, 0.1, "Not snapped out!!");
         }
 
         function test_visualized_actions_data() {
@@ -452,7 +454,7 @@ Item {
                 TestExtras.touchClick(0, selectedAction, centerOf(selectedAction));
             }
             movingSpy.wait();
-            fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Content not snapped out");
+            fuzzyCompare(data.item.contentItem.x, data.item.contentItem.anchors.leftMargin, 0.1, "Content not snapped out");
         }
 
         function test_custom_trailing_delegate() {
@@ -494,22 +496,22 @@ Item {
                 // cleanup
                 rebound(data.item);
             } else {
-                tryCompareFunction(function() { return data.item.contentItem.x; }, 0.0, 1000, "Not snapped back");
+                tryCompareFunction(function() { return data.item.contentItem.x; }, data.item.contentItem.anchors.leftMargin, 1000, "Not snapped back");
             }
         }
 
         function test_snap_gesture_data() {
             var listItem = findChild(listView, "listItem0");
-            var front = Qt.point(units.gu(1), listItem.height / 2);
-            var rear = Qt.point(listItem.width - units.gu(1), listItem.height / 2);
+            var front = Qt.point(listItem.contentItem.anchors.leftMargin, listItem.height / 2);
+            var rear = Qt.point(listItem.width - listItem.contentItem.anchors.rightMargin, listItem.height / 2);
             return [
                 // the first dx must be big enough to drag the panel in, it is always the last dx value
                 // which decides the snap direction
                 {tag: "Snap out, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(2)], snapIn: false},
                 {tag: "Snap in, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(1), units.gu(1.5)], snapIn: true},
                 // have less first dx as the trailing panel is shorter
-                {tag: "Snap out, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(2)], snapIn: false},
-                {tag: "Snap in, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(1), -units.gu(1.5)], snapIn: true},
+                {tag: "Snap out, trailing", item: listItem, grabPos: rear, dx: [-units.gu(10), units.gu(2)], snapIn: false},
+                {tag: "Snap in, trailing", item: listItem, grabPos: rear, dx: [-units.gu(10), units.gu(1), -units.gu(1.5)], snapIn: true},
             ];
         }
         function test_snap_gesture(data) {
@@ -531,7 +533,7 @@ Item {
                 // dismiss
                 rebound(data.item);
             } else {
-                fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Not snapped out!");
+                fuzzyCompare(data.item.contentItem.x, data.item.contentItem.anchors.leftMargin, 0.1, "Not snapped out!");
             }
         }
 

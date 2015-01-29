@@ -83,10 +83,13 @@ bool UCListItemSnapAnimator::snap(qreal to)
         return false;
     }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    // fix snap position, take leftMargin into account!
+    bool doSnapOut = (to == 0.0);
+    to += QQuickItemPrivate::get(listItem->contentItem)->anchors()->leftMargin();
     QQuickAbstractAnimation *snap = getSnapBehavior();
     if (snap) {
         snap->setAlwaysRunToEnd(false);
-        if (to == 0.0) {
+        if (doSnapOut) {
             QObject::connect(snap, &QQuickAbstractAnimation::runningChanged,
                              this, &UCListItemSnapAnimator::snapOut,
                              Qt::DirectConnection);
@@ -103,7 +106,7 @@ bool UCListItemSnapAnimator::snap(qreal to)
     }
     if (!snap) {
         // complete, as we don't have animation
-        if (to == 0.0) {
+        if (doSnapOut) {
             snapOut();
         } else {
             snapIn();
@@ -404,6 +407,7 @@ void UCListItemPrivate::init()
     contentItem->setObjectName("ListItemHolder");
     QQml_setParent_noEvent(contentItem, q);
     contentItem->setParentItem(q);
+    contentItem->setClip(true);
     divider->init(q);
     // content will be redirected to the contentItem, therefore we must report
     // children changes as it would come from the main component
@@ -416,6 +420,15 @@ void UCListItemPrivate::init()
     // catch theme changes
     QObject::connect(&UCTheme::instance(), SIGNAL(nameChanged()), q, SLOT(_q_updateThemedData()));
     _q_updateThemedData();
+
+    // prepare layoutMargin set and connect change signals
+    layoutMargins << "leftMargin" << "topMargin" << "rightMargin" << "bottomMargin" << "margins";
+    QQuickAnchors *layoutAnchors = QQuickItemPrivate::get(contentItem)->anchors();
+    QObject::connect(layoutAnchors, SIGNAL(leftMarginChanged()), q, SLOT(_q_removeLayoutMargin()));
+    QObject::connect(layoutAnchors, SIGNAL(topMarginChanged()), q, SLOT(_q_removeLayoutMargin()));
+    QObject::connect(layoutAnchors, SIGNAL(rightMarginChanged()), q, SLOT(_q_removeLayoutMargin()));
+    QObject::connect(layoutAnchors, SIGNAL(bottomMarginChanged()), q, SLOT(_q_removeLayoutMargin()));
+    QObject::connect(layoutAnchors, SIGNAL(marginsChanged()), q, SLOT(_q_removeLayoutMargin()));
 
     // watch size change and set implicit size;
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
@@ -468,7 +481,7 @@ void UCListItemPrivate::_q_rebound()
     animator->snap(0);
 }
 
-// re-layouting of teh ListItem's contentItem
+// re-layouting the ListItem's contentItem
 void UCListItemPrivate::_q_relayout()
 {
     QQuickAnchors *contentAnchors = QQuickItemPrivate::get(contentItem)->anchors();
@@ -479,6 +492,21 @@ void UCListItemPrivate::_q_relayout()
         anchorLine = bottom();
     }
     contentAnchors->setBottom(anchorLine);
+}
+
+// invalidates layout margin updates when gridUnit size changes
+void UCListItemPrivate::_q_removeLayoutMargin()
+{
+    Q_Q(UCListItem);
+    int sigIndex = q->senderSignalIndex();
+    const QMetaObject *mo = q->sender()->metaObject();
+    QByteArray propertyName = mo->method(sigIndex).name();
+    propertyName = propertyName.left(propertyName.indexOf("Change"));
+
+    // remove property and disconnect from watching
+    layoutMargins.remove(propertyName);
+    const QMetaMethod signal = mo->method(sigIndex);
+    QObject::disconnect(q->sender(), signal, 0, QMetaMethod());
 }
 
 void UCListItemPrivate::_q_updateIndex()
@@ -624,6 +652,27 @@ void UCListItemPrivate::_q_updateSize()
     QQuickItem *owner = flickable ? flickable : parentItem;
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
     q->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_LISTITEM_HEIGHT_GU));
+
+    // update content layout margins
+    QQuickAnchors *contentAnchors = QQuickItemPrivate::get(contentItem)->anchors();
+    // block signals from the anchors until we synchronize
+    contentAnchors->blockSignals(true);
+    if (layoutMargins.contains("margins")) {
+        contentAnchors->setMargins(UCUnits::instance().gu(LAYOUT_VMARGIN_GU));
+    }
+    if (layoutMargins.contains("topMargin")) {
+        contentAnchors->setMargins(UCUnits::instance().gu(LAYOUT_VMARGIN_GU));
+    }
+    if (layoutMargins.contains("bottomMargin")) {
+        contentAnchors->setMargins(UCUnits::instance().gu(LAYOUT_VMARGIN_GU));
+    }
+    if (layoutMargins.contains("leftMargin")) {
+        contentAnchors->setLeftMargin(UCUnits::instance().gu(LAYOUT_HMARGIN_GU));
+    }
+    if (layoutMargins.contains("rightMargin")) {
+        contentAnchors->setRightMargin(UCUnits::instance().gu(LAYOUT_HMARGIN_GU));
+    }
+    contentAnchors->blockSignals(false);
 }
 
 // returns the index of the list item when used in model driven views,
@@ -817,7 +866,7 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * Being an Item, all properties can be accessed or altered. However, make sure you
  * never change \c x, \c y, \c width, \c height or \c anchors properties as those are
  * controlled by the ListItem itself when leading or trailing actions are revealed
- * and thus might cause the component to misbehave.
+ * and thus might cause the component to misbehave. Anchors margins are free to alter.
  *
  * Each ListItem has a thin divider shown on the bottom of the component. This
  * divider can be configured through the \c divider grouped property, which can
@@ -1148,14 +1197,15 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             d->setSwiped(true);
             d->contentItem->setX(x);
             // decide which panel is visible by checking the contentItem's X coordinates
-            if (d->contentItem->x() > 0) {
+            qreal margin = QQuickItemPrivate::get(d->contentItem)->anchors()->leftMargin();
+            if (d->contentItem->x() > margin) {
                 if (d->leadingPanel) {
                     d->leadingPanel->panel()->setVisible(true);
                 }
                 if (d->trailingPanel) {
                     d->trailingPanel->panel()->setVisible(false);
                 }
-            } else if (d->contentItem->x() < 0) {
+            } else if (d->contentItem->x() < margin) {
                 // trailing revealed
                 if (d->leadingPanel) {
                     d->leadingPanel->panel()->setVisible(false);
@@ -1288,7 +1338,35 @@ void UCListItem::setTrailingActions(UCListItemActions *actions)
 /*!
  * \qmlproperty Item ListItem::contentItem
  *
- * contentItem holds the components placed on a ListItem.
+ * contentItem holds the components placed on a ListItem. It is anchored to the
+ * ListItem on left, top and right, and to the divider on the bottom, with 0.5
+ * grid unit margins on top and bottom, as well as 2 grid units margins on the
+ * left and right. The content is clipped into this area. It is not recommended
+ * to change the anchors as the ListItem controls them, however margin values
+ * as well as clipping behavior are free to change. ListItem controls each margin
+ * separately, and not through the \c margin anchor property. Therefore this
+ * must be considered when changing \l contentItem anchors.
+ * An example where no margin of the contentItem is required:
+ * \qml
+ * ListItem {
+ *     contentItem.anchors {
+ *         leftMargin: 0
+ *         topMargin 0
+ *         rightMargin: 0
+ *         bottomMargin: 0
+ *     }
+ * }
+ * \endqml
+ * Another way is to reset left- and rightMargin, and set the \c margins property:
+ * \qml
+ * ListItem {
+ *     contentItem.anchors {
+ *         leftMmargin: undefined
+ *         rightMargin: undefined
+ *         margins: 0
+ *     }
+ * }
+ * \endqml
  */
 QQuickItem* UCListItem::contentItem() const
 {

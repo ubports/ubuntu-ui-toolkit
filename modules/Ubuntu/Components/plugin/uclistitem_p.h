@@ -31,6 +31,8 @@
 #define IMPLICIT_LISTITEM_HEIGHT_GU     7
 #define DIVIDER_THICKNESS_DP            2
 #define DEFAULT_SWIPE_THRESHOLD_GU      1.5
+#define LAYOUT_HMARGIN_GU               2
+#define LAYOUT_VMARGIN_GU               0.5
 
 class QQuickFlickable;
 class QQuickPropertyAnimation;
@@ -60,6 +62,7 @@ public:
     void _q_updateThemedData();
     void _q_rebound();
     void _q_relayout();
+    void _q_removeLayoutMargin();
     void promptRebound();
     void _q_updateSize();
     void _q_updateIndex();
@@ -80,6 +83,7 @@ public:
     bool customColor:1;
     bool customOvershoot:1;
     bool flicked:1;
+    QSet<QString> layoutMargins; // list of properties
     qreal xAxisMoveThresholdGU;
     qreal overshoot;
     QBasicTimer pressAndHoldTimer;

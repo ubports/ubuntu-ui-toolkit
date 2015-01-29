@@ -154,7 +154,7 @@ MainView {
             id: view
             clip: true
             width: parent.width
-            height: units.gu(20)
+            height: units.gu(28)
             model: 25
             pressDelay: 0
             delegate: ListItem {
@@ -164,8 +164,12 @@ MainView {
                 onPressAndHold: print("pressAndHold")
                 leadingActions: leading
                 trailingActions: leadingActions
+
                 Label {
-                    text: modelData + " item"
+                    anchors.fill: parent
+                    verticalAlignment: Text.AlignVCenter
+                    text: "This is one Label split in two lines.\n" +
+                          "The second line - item #" + modelData
                 }
 
                 states: State {
@@ -181,7 +185,7 @@ MainView {
         Flickable {
             id: flicker
             width: parent.width
-            height: units.gu(20)
+            height: units.gu(28)
             clip: true
             contentHeight: column.childrenRect.height
             ListItemActions {
@@ -198,6 +202,7 @@ MainView {
                     model: 10
                     ListItem {
                         objectName: "InFlickable"+index
+                        color: UbuntuColors.red
                         highlightColor: "lime"
                         divider.colorFrom: UbuntuColors.green
                         swipeOvershoot: units.gu(10)
@@ -208,11 +213,9 @@ MainView {
                         trailingActions: ListItemActions {
                             actions: trailingArray
                         }
-
-                        Rectangle {
-                            anchors.fill: parent
-                            color: UbuntuColors.red
-                        }
+                        contentItem.anchors.margins: 0
+                        contentItem.anchors.leftMargin: undefined
+                        contentItem.anchors.rightMargin: undefined
 
                         Label {
                             text: modelData + " Flickable item"
