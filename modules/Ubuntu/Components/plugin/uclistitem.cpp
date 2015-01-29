@@ -118,8 +118,12 @@ bool UCListItemSnapAnimator::snap(qreal to)
 void UCListItemSnapAnimator::stop()
 {
     if (behavior && behavior->enabled()) {
-        if (behavior->animation()) {
-            behavior->animation()->stop();
+        QQuickAbstractAnimation *animation = behavior->animation();
+        if (animation) {
+            // set animation to be user controlled temporarily so we can invoke stop()
+            animation->setEnableUserControl();
+            animation->stop();
+            animation->setDisableUserControl();
         }
         behavior->setEnabled(false);
     }
@@ -210,8 +214,6 @@ QQuickAbstractAnimation *UCListItemSnapAnimator::getSnapBehavior()
             behavior->animation()->setParent(listItem->contentItem);
         }
         behavior->setTarget(property);
-        // set animation to be user controlled so we can invoke stop()
-        animation->setEnableUserControl();
     }
     return behavior->animation();
 }
@@ -261,6 +263,8 @@ void UCListItemDivider::init(UCListItem *listItem)
     anchors->setLeft(d->listItem->left());
     anchors->setRight(d->listItem->right());
     anchors->setBottom(d->listItem->bottom());
+    // connect visible change so we relayout contentItem
+    connect(this, SIGNAL(visibleChanged()), listItem, SLOT(_q_relayout()));
 }
 
 void UCListItemDivider::unitsChanged()
@@ -462,6 +466,19 @@ void UCListItemPrivate::_q_rebound()
     setSwiped(false);
     // rebound to zero
     animator->snap(0);
+}
+
+// re-layouting of teh ListItem's contentItem
+void UCListItemPrivate::_q_relayout()
+{
+    QQuickAnchors *contentAnchors = QQuickItemPrivate::get(contentItem)->anchors();
+    QQuickAnchorLine anchorLine;
+    if (divider->isVisible()) {
+        anchorLine = QQuickItemPrivate::get(divider)->top();
+    } else {
+        anchorLine = bottom();
+    }
+    contentAnchors->setBottom(anchorLine);
 }
 
 void UCListItemPrivate::_q_updateIndex()
@@ -928,7 +945,7 @@ void UCListItem::componentComplete()
     // anchor contentItem prior doing anything else
     QQuickAnchors *contentAnchors = QQuickItemPrivate::get(d->contentItem)->anchors();
     contentAnchors->setTop(d->top());
-    contentAnchors->setBottom(QQuickItemPrivate::get(d->divider)->top());
+    d->_q_relayout();
     d->lockContentItem(true);
 
     d->ready = true;
