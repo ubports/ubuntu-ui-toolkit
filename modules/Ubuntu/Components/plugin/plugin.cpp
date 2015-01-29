@@ -133,7 +133,6 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "UbuntuShape");
     // FIXME/DEPRECATED: Shape is exported for backwards compatibility only
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "Shape");
-    qmlRegisterType<UCUbuntuShapeOverlay>(uri, major, minor, "UbuntuShapeOverlay");
     qmlRegisterType<InverseMouseAreaType>(uri, major, minor, "InverseMouseArea");
     qmlRegisterType<QQuickMimeData>(uri, major, minor, "MimeData");
     qmlRegisterSingletonType<QQuickClipboard>(uri, major, minor, "Clipboard", registerClipboard);
@@ -177,6 +176,7 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterType<UCListItemActions, 2>(uri, 1, 2, "ListItemActions");
     qmlRegisterUncreatableType<UCViewItemsAttached, 2>(uri, 1, 2, "ViewItems", "Not instantiable");
     qmlRegisterType<UCUbuntuShape, 1>(uri, 1, 2, "UbuntuShape");
+    qmlRegisterType<UCUbuntuShapeOverlay>(uri, 1, 2, "UbuntuShapeOverlay");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)

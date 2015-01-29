@@ -89,7 +89,7 @@ const QSGGeometry::AttributeSet& ShapeOverlayNode::attributeSet()
 
 /*! \qmltype UbuntuShapeOverlay
     \instantiates UCUbuntuShapeOverlay
-    \inqmlmodule Ubuntu.Components 1.1
+    \inqmlmodule Ubuntu.Components 1.2
     \ingroup ubuntu
     \brief Extended UbuntuShape adding a colored overlay layer.
 
@@ -101,7 +101,7 @@ const QSGGeometry::AttributeSet& ShapeOverlayNode::attributeSet()
     Example:
 
     \qml
-        import Ubuntu.Components 1.1
+        import Ubuntu.Components 1.2
 
         UbuntuShapeOverlay {
             backgroundColor: "white"
@@ -121,6 +121,7 @@ UCUbuntuShapeOverlay::UCUbuntuShapeOverlay(QQuickItem* parent)
 }
 
 /*! \qmlproperty rect UbuntuShapeOverlay::overlayGeometry
+    \since Ubuntu.Components 1.2
 
     This property sets the overlay rectangle. The default value is the empty rectangle.
 
@@ -180,6 +181,7 @@ void UCUbuntuShapeOverlay::setOverlayGeometry(const QRectF& overlayGeometry)
 }
 
 /*! \qmlproperty color UbuntuShapeOverlay::overlayColor
+    \since Ubuntu.Components 1.2
 
     This property sets the color of the overlay rectangle defined by \l overlayGeometry. The default
     value is transparent black.
