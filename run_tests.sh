@@ -17,6 +17,11 @@
 
 source $PWD/export_modules_dir.sh
 
+if [ ! -e $QML2_IMPORT_PATH/Ubuntu/Layouts/libUbuntuLayouts.so ]; then
+    echo You need to build UITK before you can run Autopilot test cases!
+    exit 1
+fi
+
 cd tests/autopilot
 
 export UBUNTU_UI_TOOLKIT_AUTOPILOT_FROM_SOURCE=1

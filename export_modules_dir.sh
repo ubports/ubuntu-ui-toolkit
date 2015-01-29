@@ -16,11 +16,6 @@
 #
 
 . `dirname $0`/build_paths.inc
-if [ ! -e $BUILD_DIR/modules/Ubuntu/Layouts/libUbuntuLayouts.so ]; then
-    echo You need to build UITK before you can run Autopilot test cases!
-    exit 1
-fi
-
 export QML_IMPORT_PATH=$BUILD_DIR/modules
 export QML2_IMPORT_PATH=$BUILD_DIR/modules
 export UBUNTU_UI_TOOLKIT_THEMES_PATH=$BUILD_DIR/modules
