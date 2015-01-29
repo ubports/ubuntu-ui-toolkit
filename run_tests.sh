@@ -27,12 +27,21 @@ cd tests/autopilot
 export UBUNTU_UI_TOOLKIT_AUTOPILOT_FROM_SOURCE=1
 export UITK_BUILD_ROOT="$BUILD_DIR"
 export UITK_SOURCE_ROOT="$SRC_DIR"
+MODE="run"
 SUITE=ubuntuuitoolkit
+if [ "$1" != "" ]; then
+    MODE="$1"
+    shift 1
+fi
 if [ "$1" != "" ]; then
     SUITE="$1"
     shift 1
 fi
-autopilot3 run -o ../../$SUITE -f xml -r -rd ../../ $SUITE $*
-
-exit 0
-
+autopilot3 $MODE -o ../../$SUITE -f xml -r -rd ../../ $SUITE $*
+RESULT=$?
+if [ "$RESULT" == "2" ]; then
+    echo Usage:
+    echo "  " $(basename $0) "run|list|vis|launch suite [-v]"
+    echo "See also 'autopilot -h'"
+fi
+exit $RESULT
