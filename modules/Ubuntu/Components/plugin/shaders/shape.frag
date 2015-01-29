@@ -1,4 +1,4 @@
-// Copyright © 2014 Canonical Ltd.
+// Copyright © 2015 Canonical Ltd.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -24,7 +24,7 @@ uniform sampler2D shapeTexture;
 uniform sampler2D sourceTexture;
 uniform lowp float sourceOpacity;
 uniform lowp float opacity;
-uniform lowp bool textured;
+uniform bool textured;
 
 varying mediump vec2 shapeCoord;
 varying mediump vec4 sourceCoord;

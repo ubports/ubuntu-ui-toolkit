@@ -1,5 +1,5 @@
 /*
- * Copyright 2013-2014 Canonical Ltd.
+ * Copyright 2013-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -39,12 +39,11 @@ public:
         const RenderState& state, QSGMaterial* newEffect, QSGMaterial* oldEffect);
 
 private:
-    QOpenGLFunctions* functions_;
-    int matrixId_;
-    int opacityId_;
-    int sourceOpacityId_;
-    int secondaryBackgroundColorId_;
-    int texturedId_;
+    QOpenGLFunctions* m_functions;
+    int m_matrixId;
+    int m_opacityId;
+    int m_sourceOpacityId;
+    int m_texturedId;
 };
 
 // --- Scene graph material ---
@@ -70,11 +69,11 @@ public:
     virtual QSGMaterialType* type() const;
     virtual QSGMaterialShader* createShader() const;
     virtual int compare(const QSGMaterial* other) const;
-    const Data* constData() const { return &data_; }
-    Data* data() { return &data_; }
+    const Data* constData() const { return &m_data; }
+    Data* data() { return &m_data; }
 
 private:
-    Data data_;
+    Data m_data;
 };
 
 // --- Scene graph node ---
@@ -100,12 +99,12 @@ public:
     static const QSGGeometry::AttributeSet& attributeSet();
 
     ShapeNode();
-    ShapeMaterial* material() { return &material_; }
-    QSGGeometry* geometry() { return &geometry_; }
+    ShapeMaterial* material() { return &m_material; }
+    QSGGeometry* geometry() { return &m_geometry; }
 
 private:
-    QSGGeometry geometry_;
-    ShapeMaterial material_;
+    ShapeMaterial m_material;
+    QSGGeometry m_geometry;
 };
 
 // --- QtQuick item ---
@@ -124,32 +123,33 @@ class UCUbuntuShape : public QQuickItem
     Q_ENUMS(WrapMode)
     Q_ENUMS(HAlignment)
     Q_ENUMS(VAlignment)
-    Q_PROPERTY(QVariant source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(QVariant source READ source WRITE setSource NOTIFY sourceChanged REVISION 1)
     Q_PROPERTY(float sourceOpacity READ sourceOpacity WRITE setSourceOpacity
-               NOTIFY sourceOpacityChanged)
+               NOTIFY sourceOpacityChanged REVISION 1)
     Q_PROPERTY(FillMode sourceFillMode READ sourceFillMode WRITE setSourceFillMode
-               NOTIFY sourceFillModeChanged)
+               NOTIFY sourceFillModeChanged REVISION 1)
     Q_PROPERTY(WrapMode sourceHorizontalWrapMode READ sourceHorizontalWrapMode
-               WRITE setSourceHorizontalWrapMode NOTIFY sourceHorizontalWrapModeChanged)
+               WRITE setSourceHorizontalWrapMode NOTIFY sourceHorizontalWrapModeChanged REVISION 1)
     Q_PROPERTY(WrapMode sourceVerticalWrapMode READ sourceVerticalWrapMode
-               WRITE setSourceVerticalWrapMode NOTIFY sourceVerticalWrapModeChanged)
+               WRITE setSourceVerticalWrapMode NOTIFY sourceVerticalWrapModeChanged REVISION 1)
     Q_PROPERTY(HAlignment sourceHorizontalAlignment READ sourceHorizontalAlignment
-               WRITE setSourceHorizontalAlignment NOTIFY sourceHorizontalAlignmentChanged)
+               WRITE setSourceHorizontalAlignment NOTIFY sourceHorizontalAlignmentChanged
+               REVISION 1)
     Q_PROPERTY(VAlignment sourceVerticalAlignment READ sourceVerticalAlignment
-               WRITE setSourceVerticalAlignment NOTIFY sourceVerticalAlignmentChanged)
+               WRITE setSourceVerticalAlignment NOTIFY sourceVerticalAlignmentChanged REVISION 1)
     Q_PROPERTY(QVector2D sourceTranslation READ sourceTranslation WRITE setSourceTranslation
-               NOTIFY sourceTranslationChanged)
+               NOTIFY sourceTranslationChanged REVISION 1)
     Q_PROPERTY(QVector2D sourceScale READ sourceScale WRITE setSourceScale
-               NOTIFY sourceScaleChanged)
+               NOTIFY sourceScaleChanged REVISION 1)
 
     // Background properties.
     Q_ENUMS(BackgroundMode)
     Q_PROPERTY(QColor backgroundColor READ backgroundColor WRITE setBackgroundColor
-               NOTIFY backgroundColorChanged)
+               NOTIFY backgroundColorChanged REVISION 1)
     Q_PROPERTY(QColor secondaryBackgroundColor READ secondaryBackgroundColor
-               WRITE setSecondaryBackgroundColor NOTIFY secondaryBackgroundColorChanged)
+               WRITE setSecondaryBackgroundColor NOTIFY secondaryBackgroundColorChanged REVISION 1)
     Q_PROPERTY(BackgroundMode backgroundMode READ backgroundMode WRITE setBackgroundMode
-               NOTIFY backgroundModeChanged)
+               NOTIFY backgroundModeChanged REVISION 1)
 
     // Deprecated properties.
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
@@ -171,85 +171,86 @@ public:
     enum FillMode { Stretch = 0, PreserveAspectFit = 1, PreserveAspectCrop = 2, Pad = 3 };
     enum WrapMode { Transparent = 0, Repeat = 1 };
 
-    QString radius() const { return (radius_ == SmallRadius) ? "small" : "medium"; }
+    QString radius() const { return (m_radius == SmallRadius) ? "small" : "medium"; }
     void setRadius(const QString& radius);
     QString borderSource() const {
-        return (border_ == IdleBorder) ? "radius_idle.sci" :
-                ((border_ == PressedBorder) ? "radius_pressed.sci" : ""); }
+        return (m_border == IdleBorder) ? "radius_idle.sci" :
+                ((m_border == PressedBorder) ? "radius_pressed.sci" : ""); }
     void setBorderSource(const QString& borderSource);
 
     QVariant source() const {
-        return QVariant::fromValue((flags_ & SourceApiSet) ? source_ : NULL); }
+        return QVariant::fromValue((m_flags & SourceApiSet) ? m_source : NULL); }
     void setSource(const QVariant& source);
-    float sourceOpacity() const { return sourceOpacity_ / static_cast<float>(0xff); }
+    float sourceOpacity() const { return m_sourceOpacity / static_cast<float>(0xff); }
     void setSourceOpacity(float sourceOpacity);
-    FillMode sourceFillMode() const { return sourceFillMode_; }
+    FillMode sourceFillMode() const { return m_sourceFillMode; }
     void setSourceFillMode(FillMode sourceFillMode);
-    WrapMode sourceHorizontalWrapMode() const { return sourceHorizontalWrapMode_; }
+    WrapMode sourceHorizontalWrapMode() const { return m_sourceHorizontalWrapMode; }
     void setSourceHorizontalWrapMode(WrapMode sourceHorizontalWrapMode);
-    WrapMode sourceVerticalWrapMode() const { return sourceVerticalWrapMode_; }
+    WrapMode sourceVerticalWrapMode() const { return m_sourceVerticalWrapMode; }
     void setSourceVerticalWrapMode(WrapMode sourceVerticalWrapMode);
-    HAlignment sourceHorizontalAlignment() const { return sourceHorizontalAlignment_; }
+    HAlignment sourceHorizontalAlignment() const { return m_sourceHorizontalAlignment; }
     void setSourceHorizontalAlignment(HAlignment sourceHorizontalAlignment);
-    VAlignment sourceVerticalAlignment() const { return sourceVerticalAlignment_; }
+    VAlignment sourceVerticalAlignment() const { return m_sourceVerticalAlignment; }
     void setSourceVerticalAlignment(VAlignment sourceVerticalAlignment);
-    QVector2D sourceTranslation() const { return sourceTranslation_; }
+    QVector2D sourceTranslation() const { return m_sourceTranslation; }
     void setSourceTranslation(const QVector2D& sourceTranslation);
-    QVector2D sourceScale() const { return sourceScale_; }
+    QVector2D sourceScale() const { return m_sourceScale; }
     void setSourceScale(const QVector2D& sourceScale);
     QColor backgroundColor() const {
-        return (flags_ & BackgroundApiSet) ?
-            QColor(qRed(backgroundColor_), qGreen(backgroundColor_), qBlue(backgroundColor_),
-                   qAlpha(backgroundColor_)) :
+        return (m_flags & BackgroundApiSet) ?
+            QColor(qRed(m_backgroundColor), qGreen(m_backgroundColor), qBlue(m_backgroundColor),
+                   qAlpha(m_backgroundColor)) :
             QColor(0, 0, 0, 0); }
     void setBackgroundColor(const QColor& backgroundColor);
     QColor secondaryBackgroundColor() const {
-        return (flags_ & BackgroundApiSet) ?
-            QColor(qRed(secondaryBackgroundColor_), qGreen(secondaryBackgroundColor_),
-                   qBlue(secondaryBackgroundColor_), qAlpha(secondaryBackgroundColor_)) :
+        return (m_flags & BackgroundApiSet) ?
+            QColor(qRed(m_secondaryBackgroundColor), qGreen(m_secondaryBackgroundColor),
+                   qBlue(m_secondaryBackgroundColor), qAlpha(m_secondaryBackgroundColor)) :
             QColor(0, 0, 0, 0); }
     void setSecondaryBackgroundColor(const QColor& secondaryBackgroundColor);
-    BackgroundMode backgroundMode() const { return backgroundMode_; }
+    BackgroundMode backgroundMode() const { return m_backgroundMode; }
     void setBackgroundMode(BackgroundMode backgroundMode);
 
     QColor color() const {
-        return (flags_ & BackgroundApiSet) ?
+        return (m_flags & BackgroundApiSet) ?
             QColor(0, 0, 0, 0) :
-            QColor(qRed(backgroundColor_), qGreen(backgroundColor_), qBlue(backgroundColor_),
-                   qAlpha(backgroundColor_)); }
+            QColor(qRed(m_backgroundColor), qGreen(m_backgroundColor), qBlue(m_backgroundColor),
+                   qAlpha(m_backgroundColor)); }
     void setColor(const QColor& color);
     QColor gradientColor() const {
-        return (flags_ & BackgroundApiSet) ?
+        return (m_flags & BackgroundApiSet) ?
             QColor(0, 0, 0, 0) :
-            QColor(qRed(secondaryBackgroundColor_), qGreen(secondaryBackgroundColor_),
-                   qBlue(secondaryBackgroundColor_), qAlpha(secondaryBackgroundColor_)); }
+            QColor(qRed(m_secondaryBackgroundColor), qGreen(m_secondaryBackgroundColor),
+                   qBlue(m_secondaryBackgroundColor), qAlpha(m_secondaryBackgroundColor)); }
     void setGradientColor(const QColor& gradientColor);
-    QVariant image() const { return QVariant::fromValue((flags_ & SourceApiSet) ? NULL : source_); }
+    QVariant image() const {
+        return QVariant::fromValue((m_flags & SourceApiSet) ? NULL : m_source); }
     void setImage(const QVariant& image);
-    bool stretched() const { return !!(flags_ & Stretched); }
+    bool stretched() const { return !!(m_flags & Stretched); }
     void setStretched(bool stretched);
-    HAlignment horizontalAlignment() const { return imageHorizontalAlignment_; }
+    HAlignment horizontalAlignment() const { return m_imageHorizontalAlignment; }
     void setHorizontalAlignment(HAlignment horizontalAlignment);
-    VAlignment verticalAlignment() const { return imageVerticalAlignment_; }
+    VAlignment verticalAlignment() const { return m_imageVerticalAlignment; }
     void setVerticalAlignment(VAlignment verticalAlignment);
 
 Q_SIGNALS:
     void radiusChanged();
     void borderSourceChanged();
 
-    void sourceChanged();
-    void sourceOpacityChanged();
-    void sourceFillModeChanged();
-    void sourceHorizontalWrapModeChanged();
-    void sourceVerticalWrapModeChanged();
-    void sourceHorizontalAlignmentChanged();
-    void sourceVerticalAlignmentChanged();
-    void sourceTranslationChanged();
-    void sourceScaleChanged();
+    Q_REVISION(1) void sourceChanged();
+    Q_REVISION(1) void sourceOpacityChanged();
+    Q_REVISION(1) void sourceFillModeChanged();
+    Q_REVISION(1) void sourceHorizontalWrapModeChanged();
+    Q_REVISION(1) void sourceVerticalWrapModeChanged();
+    Q_REVISION(1) void sourceHorizontalAlignmentChanged();
+    Q_REVISION(1) void sourceVerticalAlignmentChanged();
+    Q_REVISION(1) void sourceTranslationChanged();
+    Q_REVISION(1) void sourceScaleChanged();
 
-    void backgroundColorChanged();
-    void secondaryBackgroundColorChanged();
-    void backgroundModeChanged();
+    Q_REVISION(1) void backgroundColorChanged();
+    Q_REVISION(1) void secondaryBackgroundColorChanged();
+    Q_REVISION(1) void backgroundModeChanged();
 
     void colorChanged();
     void gradientColorChanged();
@@ -273,11 +274,11 @@ protected:
         const quint32 backgroundColor[4]);
 
 private Q_SLOTS:
-    void imagePropertiesChanged();
-    void openglContextDestroyed();
-    void gridUnitChanged();
-    void providerDestroyed(QObject* object=0);
-    void textureChanged();
+    void _q_imagePropertiesChanged();
+    void _q_openglContextDestroyed();
+    void _q_gridUnitChanged();
+    void _q_providerDestroyed(QObject* object=0);
+    void _q_textureChanged();
 
 private:
     void updateFromImageProperties(QQuickItem* image);
@@ -300,25 +301,25 @@ private:
         DirtySourceTransform = (1 << 4)
     };
 
-    QQuickItem* source_;
-    QSGTextureProvider* sourceTextureProvider_;
-    QRgb backgroundColor_;
-    QRgb secondaryBackgroundColor_;
-    QVector2D sourceScale_;
-    QVector2D sourceTranslation_;
-    QVector4D sourceTransform_;
-    Radius radius_ : 1;
-    Border border_ : 2;
-    HAlignment imageHorizontalAlignment_ : 2;
-    VAlignment imageVerticalAlignment_ : 2;
-    BackgroundMode backgroundMode_ : 1;
-    HAlignment sourceHorizontalAlignment_ : 2;
-    VAlignment sourceVerticalAlignment_ : 2;
-    FillMode sourceFillMode_ : 2;
-    WrapMode sourceHorizontalWrapMode_ : 1;
-    WrapMode sourceVerticalWrapMode_ : 1;
-    quint8 sourceOpacity_;
-    quint8 flags_;
+    QQuickItem* m_source;
+    QSGTextureProvider* m_sourceTextureProvider;
+    QRgb m_backgroundColor;
+    QRgb m_secondaryBackgroundColor;
+    QVector2D m_sourceScale;
+    QVector2D m_sourceTranslation;
+    QVector4D m_sourceTransform;
+    Radius m_radius : 1;
+    Border m_border : 2;
+    HAlignment m_imageHorizontalAlignment : 2;
+    VAlignment m_imageVerticalAlignment : 2;
+    BackgroundMode m_backgroundMode : 1;
+    HAlignment m_sourceHorizontalAlignment : 2;
+    VAlignment m_sourceVerticalAlignment : 2;
+    FillMode m_sourceFillMode : 2;
+    WrapMode m_sourceHorizontalWrapMode : 1;
+    WrapMode m_sourceVerticalWrapMode : 1;
+    quint8 m_sourceOpacity;
+    quint8 m_flags;
 
     Q_DISABLE_COPY(UCUbuntuShape)
 };

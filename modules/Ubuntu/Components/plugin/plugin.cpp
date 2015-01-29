@@ -53,6 +53,10 @@
 #include "ucaction.h"
 #include "ucactioncontext.h"
 #include "ucactionmanager.h"
+#include "uclistitem.h"
+#include "uclistitem_p.h"
+#include "uclistitemactions.h"
+#include "uclistitemstyle.h"
 #include "ucserviceproperties.h"
 
 #include <sys/types.h>
@@ -127,7 +131,7 @@ void UbuntuComponentsPlugin::registerTypesToVersion(const char *uri, int major, 
     qmlRegisterExtendedType<QQuickImageBase, UCQQuickImageExtension>(uri, major, minor, "QQuickImageBase");
     qmlRegisterUncreatableType<UCUnits>(uri, major, minor, "UCUnits", "Not instantiable");
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "UbuntuShape");
-    // FIXME/DEPRECATED: Shape is exported for backwards compatibity only
+    // FIXME/DEPRECATED: Shape is exported for backwards compatibility only
     qmlRegisterType<UCUbuntuShape>(uri, major, minor, "Shape");
     qmlRegisterType<UCUbuntuShapeOverlay>(uri, major, minor, "UbuntuShapeOverlay");
     qmlRegisterType<InverseMouseAreaType>(uri, major, minor, "InverseMouseArea");
@@ -166,12 +170,23 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<FilterBehavior>(uri, 1, 1, "FilterBehavior", "Not instantiable");
     qmlRegisterUncreatableType<SortBehavior>(uri, 1, 1, "SortBehavior", "Not instantiable");
     qmlRegisterType<UCServiceProperties, 1>(uri, 1, 1, "ServiceProperties");
+
+    // register 1.2 only API
+    qmlRegisterType<UCListItem, 2>(uri, 1, 2, "ListItem");
+    qmlRegisterType<UCListItemDivider>();
+    qmlRegisterType<UCListItemActions, 2>(uri, 1, 2, "ListItemActions");
+    qmlRegisterUncreatableType<UCViewItemsAttached, 2>(uri, 1, 2, "ViewItems", "Not instantiable");
+    qmlRegisterType<UCUbuntuShape, 1>(uri, 1, 2, "UbuntuShape");
 }
 
 void UbuntuComponentsPlugin::initializeEngine(QQmlEngine *engine, const char *uri)
 {
     // initialize baseURL
     m_baseUrl = QUrl(baseUrl().toString() + '/');
+
+    // register internal styles
+    const char *styleUri = "Ubuntu.Components.Styles";
+    qmlRegisterType<UCListItemStyle, 2>(styleUri, 1, 2, "ListItemStyle");
 
     QQmlExtensionPlugin::initializeEngine(engine, uri);
     QQmlContext* context = engine->rootContext();

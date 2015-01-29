@@ -30,7 +30,7 @@ class UCAlarmPrivate
     Q_DECLARE_PUBLIC(UCAlarm)
 public:
     UCAlarmPrivate(UCAlarm *qq);
-    ~UCAlarmPrivate();
+    virtual ~UCAlarmPrivate();
 
     static UCAlarmPrivate *get(const UCAlarm *alarm) {
         return const_cast<UCAlarm*>(alarm)->d_ptr.data();

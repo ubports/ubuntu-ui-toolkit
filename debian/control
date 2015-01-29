@@ -38,10 +38,13 @@ Build-Depends: debhelper (>= 9.0.0),
                libdbus-1-dev,
                libnih-dbus-dev,
                dbus,
+               dbus-test-runner,
+               accountsservice,
                xvfb,
                libgl1-mesa-dri,
                locales,
                suru-icon-theme,
+               uuid-runtime,
 Standards-Version: 3.9.4
 Homepage: https://launchpad.net/ubuntu-ui-toolkit
 # If you aren't a member of ~ubuntu-sdk-team but need to upload packaging
@@ -151,7 +154,7 @@ Depends: ${misc:Depends},
          python3-autopilot-trace,
          qttestability-autopilot,
          ubuntu-ui-toolkit-examples (>= ${source:Version}),
-         qtdeclarative5-ubuntu-ui-toolkit-plugin (>= ${source:Version}),
+         qtdeclarative5-ubuntu-ui-toolkit-plugin (>= ${source:Version}) | qtdeclarative5-ubuntu-ui-toolkit-plugin-gles,
          qml-module-qttest | qtdeclarative5-test-plugin,
 Description: Test package for Ubuntu UI Toolkit
  Autopilot tests for the ubuntu-ui-toolkit package

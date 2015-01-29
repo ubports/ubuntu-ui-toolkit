@@ -1,4 +1,4 @@
-// Copyright © 2014 Canonical Ltd.
+// Copyright © 2015 Canonical Ltd.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
 // Author: Loïc Molinari <loic.molinari@canonical.com>
 
 uniform mediump mat4 matrix;
-uniform lowp bool textured;
+uniform bool textured;
 
 attribute mediump vec4 positionAttrib;
 attribute mediump vec2 shapeCoordAttrib;

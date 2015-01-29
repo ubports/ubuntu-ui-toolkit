@@ -1,5 +1,4 @@
 TEMPLATE = subdirs
 
-SUBDIRS += plugin
-
-include(deployment.pri)
+SUBDIRS += LayoutsModule.pro \
+           plugin
