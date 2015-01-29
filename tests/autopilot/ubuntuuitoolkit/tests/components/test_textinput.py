@@ -103,16 +103,12 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_textinput.textarea.qml')
     customfield_qml_file_path = os.path.join(
         dir_path, 'test_textinput.textfield_custom.qml')
+    header_qml_file_path = os.path.join(
+        dir_path, 'test_textinput.header.qml')
 
     scenarios = [
-        ('textfield',
-            dict(test_qml_file_path=textfield_qml_file_path,
-                 objectName='textfield')),
-        ('textarea',
-            dict(test_qml_file_path=textarea_qml_file_path,
-                 objectName='textarea')),
-        ('customfield',
-            dict(test_qml_file_path=customfield_qml_file_path,
+        ('header',
+            dict(test_qml_file_path=header_qml_file_path,
                  objectName='textfield')),
     ]
 
