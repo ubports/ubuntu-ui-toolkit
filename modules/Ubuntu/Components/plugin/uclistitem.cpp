@@ -60,9 +60,9 @@ QColor getPaletteColor(const char *profile, const char *color)
  * x coordinate.
  * The animation is defined by the style.
  */
-UCListItemSnapAnimator::UCListItemSnapAnimator(UCListItem *item)
-    : QObject(item)
-    , item(item)
+UCListItemSnapAnimator::UCListItemSnapAnimator(QObject *parent)
+    : QObject(parent)
+    , item(0)
 {
 }
 UCListItemSnapAnimator::~UCListItemSnapAnimator()
@@ -382,7 +382,6 @@ UCListItemPrivate::UCListItemPrivate()
     , trailingActions(0)
     , leadingPanel(0)
     , trailingPanel(0)
-    , animator(0)
     , defaultAction(0)
     , styleComponent(0)
     , implicitStyleComponent(0)
@@ -396,6 +395,7 @@ UCListItemPrivate::~UCListItemPrivate()
 void UCListItemPrivate::init()
 {
     Q_Q(UCListItem);
+    animator.init(q);
     contentItem->setObjectName("ListItemHolder");
     QQml_setParent_noEvent(contentItem, q);
     contentItem->setParentItem(q);
@@ -472,7 +472,7 @@ void UCListItemPrivate::_q_rebound()
     }
     setSwiped(false);
     // rebound to zero
-    animator->snap(0);
+    animator.snap(0);
 }
 
 // re-layouting the ListItem's contentItem
@@ -634,9 +634,7 @@ void UCListItemPrivate::promptRebound()
 {
     setHighlighted(false);
     setSwiped(false);
-    if (animator) {
-        animator->snapOut();
-    }
+    animator.snapOut();
 }
 
 // called when units size changes
@@ -1099,9 +1097,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
     if (d->canHighlight(event) && !d->suppressClick
             && !d->highlighted && event->button() == Qt::LeftButton) {
         // stop any ongoing animation!
-        if (d->animator) {
-            d->animator->stop();
-        }
+        d->animator.stop();
         d->setHighlighted(true);
         d->lastPos = d->pressedPos = event->localPos();
         // connect the Flickable to know when to rebound
@@ -1171,10 +1167,6 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             d->lockContentItem(false);
             if (d->parentAttached) {
                 d->parentAttached->disableInteractive(this, true);
-            }
-            // create animator if not created yet
-            if (!d->animator) {
-                d->animator = new UCListItemSnapAnimator(this);
             }
         }
     }

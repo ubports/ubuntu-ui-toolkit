@@ -34,6 +34,34 @@
 #define LAYOUT_HMARGIN_GU               2
 #define LAYOUT_VMARGIN_GU               0.5
 
+class QQuickAbstractAnimation;
+class QQuickBehavior;
+class UCListItemSnapAnimator : public QObject
+{
+    Q_OBJECT
+public:
+    UCListItemSnapAnimator(QObject *parent = 0);
+    ~UCListItemSnapAnimator();
+    void init(UCListItem *listItem)
+    {
+        item = listItem;
+    }
+
+    bool snap(qreal to);
+    void stop();
+
+public Q_SLOTS:
+    void snapOut();
+    void snapIn();
+
+    QQuickAbstractAnimation *getSnapBehavior();
+
+private:
+    bool active;
+    UCListItem *item;
+    QPointer<QQuickBehavior> behavior;
+};
+
 class QQuickFlickable;
 class QQuickPropertyAnimation;
 class UCListItemContent;
@@ -100,7 +128,7 @@ public:
     UCListItemActions *trailingActions;
     UCActionPanel *leadingPanel;
     UCActionPanel *trailingPanel;
-    UCListItemSnapAnimator *animator;
+    UCListItemSnapAnimator animator;
     UCAction *defaultAction;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
@@ -200,28 +228,5 @@ private:
 QColor getPaletteColor(const char *profile, const char *color);
 
 QML_DECLARE_TYPE(UCListItemDivider)
-
-class QQuickAbstractAnimation;
-class UCListItemSnapAnimator : public QObject
-{
-    Q_OBJECT
-public:
-    UCListItemSnapAnimator(UCListItem *item);
-    ~UCListItemSnapAnimator();
-
-    bool snap(qreal to);
-    void stop();
-
-public Q_SLOTS:
-    void snapOut();
-    void snapIn();
-
-    QQuickAbstractAnimation *getSnapBehavior();
-
-private:
-    bool active;
-    UCListItem *item;
-    QPointer<QQuickBehavior> behavior;
-};
 
 #endif // UCVIEWITEM_P_H

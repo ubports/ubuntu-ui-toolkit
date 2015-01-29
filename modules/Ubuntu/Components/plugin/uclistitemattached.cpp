@@ -172,10 +172,6 @@ void UCListItemAttached::snapToPosition(qreal position)
     if (position == 0.0) {
         listItem->_q_rebound();
     } else {
-        if (listItem->animator) {
-            listItem->animator->snap(position);
-        } else {
-            listItem->contentItem->setX(position);
-        }
+        listItem->animator.snap(position);
     }
 }
