@@ -246,10 +246,6 @@ public:
 UCListItemDivider::UCListItemDivider(UCListItem *parent)
     : QQuickItem(*(new UCListItemDividerPrivate), parent)
 {
-    connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &UCListItemDivider::unitsChanged);
-    connect(&UCTheme::instance(), &UCTheme::paletteChanged, this, &UCListItemDivider::paletteChanged);
-    unitsChanged();
-    paletteChanged();
     setFlag(ItemHasContents);
 }
 UCListItemDivider::~UCListItemDivider()
@@ -259,6 +255,7 @@ UCListItemDivider::~UCListItemDivider()
 void UCListItemDivider::init(UCListItem *listItem)
 {
     Q_D(UCListItemDivider);
+    QQml_setParent_noEvent(this, listItem);
     d->listItem = UCListItemPrivate::get(listItem);
     setParentItem(listItem);
     // anchor to left/right/bottom of the ListItem
@@ -268,11 +265,6 @@ void UCListItemDivider::init(UCListItem *listItem)
     anchors->setBottom(d->listItem->bottom());
     // connect visible change so we relayout contentItem
     connect(this, SIGNAL(visibleChanged()), listItem, SLOT(_q_relayout()));
-}
-
-void UCListItemDivider::unitsChanged()
-{
-    setImplicitHeight(UCUnits::instance().dp(DIVIDER_THICKNESS_DP));
 }
 
 void UCListItemDivider::paletteChanged()
@@ -456,6 +448,8 @@ bool UCListItemPrivate::isPressAndHoldConnected()
 void UCListItemPrivate::_q_updateThemedData()
 {
     Q_Q(UCListItem);
+    // update the divider colors
+    divider->paletteChanged();
     // we reload the implicit style only if the custom style is not set, and
     // the component is ready
     if (!styleComponent && ready) {
@@ -649,6 +643,9 @@ void UCListItemPrivate::promptRebound()
 void UCListItemPrivate::_q_updateSize()
 {
     Q_Q(UCListItem);
+
+    // udpate divider
+    divider->setImplicitHeight(UCUnits::instance().dp(DIVIDER_THICKNESS_DP));
     QQuickItem *owner = flickable ? flickable : parentItem;
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
     q->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_LISTITEM_HEIGHT_GU));

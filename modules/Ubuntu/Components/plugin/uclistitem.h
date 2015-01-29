@@ -124,6 +124,7 @@ public:
     explicit UCListItemDivider(UCListItem *parent = 0);
     ~UCListItemDivider();
     void init(UCListItem *listItem);
+    void paletteChanged();
 
 Q_SIGNALS:
     void colorFromChanged();
@@ -131,10 +132,6 @@ Q_SIGNALS:
 
 protected:
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *data);
-
-private Q_SLOTS:
-    void unitsChanged();
-    void paletteChanged();
 
 private:
     void updateGradient();
