@@ -56,16 +56,17 @@ QSGMaterialShader* ShapeOverlayMaterial::createShader() const
 
 ShapeOverlayNode::ShapeOverlayNode()
     : QSGGeometryNode()
-    , material_()
-    , geometry_(attributeSet(), ShapeNode::vertexCount, ShapeNode::indexCount, ShapeNode::indexType)
+    , m_material()
+    , m_geometry(attributeSet(), ShapeNode::vertexCount, ShapeNode::indexCount,
+                 ShapeNode::indexType)
 {
-    memcpy(geometry_.indexData(), ShapeNode::indices(),
+    memcpy(m_geometry.indexData(), ShapeNode::indices(),
            ShapeNode::indexCount * ShapeNode::indexTypeSize);
-    geometry_.setDrawingMode(ShapeNode::drawingMode);
-    geometry_.setIndexDataPattern(ShapeNode::indexDataPattern);
-    geometry_.setVertexDataPattern(ShapeNode::vertexDataPattern);
-    setMaterial(&material_);
-    setGeometry(&geometry_);
+    m_geometry.setDrawingMode(ShapeNode::drawingMode);
+    m_geometry.setIndexDataPattern(ShapeNode::indexDataPattern);
+    m_geometry.setVertexDataPattern(ShapeNode::vertexDataPattern);
+    setMaterial(&m_material);
+    setGeometry(&m_geometry);
 }
 
 // static
@@ -112,11 +113,11 @@ const QSGGeometry::AttributeSet& ShapeOverlayNode::attributeSet()
 */
 UCUbuntuShapeOverlay::UCUbuntuShapeOverlay(QQuickItem* parent)
     : UCUbuntuShape(parent)
-    , overlayX_(0)
-    , overlayY_(0)
-    , overlayWidth_(0)
-    , overlayHeight_(0)
-    , overlayColor_(qRgba(0, 0, 0, 0))
+    , m_overlayX(0)
+    , m_overlayY(0)
+    , m_overlayWidth(0)
+    , m_overlayHeight(0)
+    , m_overlayColor(qRgba(0, 0, 0, 0))
 {
 }
 
@@ -169,12 +170,12 @@ void UCUbuntuShapeOverlay::setOverlayGeometry(const QRectF& overlayGeometry)
     const quint16 overlayWidth = static_cast<quint16>(width * f32toU16);
     const quint16 overlayHeight = static_cast<quint16>(height * f32toU16);
 
-    if ((overlayX_ != overlayX) || (overlayY_ != overlayY) ||
-        (overlayWidth_ != overlayWidth) || (overlayHeight_ != overlayHeight)) {
-        overlayX_ = overlayX;
-        overlayY_ = overlayY;
-        overlayWidth_ = overlayWidth;
-        overlayHeight_ = overlayHeight;
+    if ((m_overlayX != overlayX) || (m_overlayY != overlayY) ||
+        (m_overlayWidth != overlayWidth) || (m_overlayHeight != overlayHeight)) {
+        m_overlayX = overlayX;
+        m_overlayY = overlayY;
+        m_overlayWidth = overlayWidth;
+        m_overlayHeight = overlayHeight;
         update();
         Q_EMIT overlayGeometryChanged();
     }
@@ -190,8 +191,8 @@ void UCUbuntuShapeOverlay::setOverlayColor(const QColor& overlayColor)
 {
     const QRgb overlayColorRgb = qRgba(
         overlayColor.red(), overlayColor.green(), overlayColor.blue(), overlayColor.alpha());
-    if (overlayColor_ != overlayColorRgb) {
-        overlayColor_ = overlayColorRgb;
+    if (m_overlayColor != overlayColorRgb) {
+        m_overlayColor = overlayColorRgb;
         update();
         Q_EMIT overlayColorChanged();
     }
@@ -228,17 +229,17 @@ void UCUbuntuShapeOverlay::updateGeometry(
     // Get the affine transformation for the overlay coordinates, pixels lying inside the mask
     // (values in the range [-1, 1]) will be considered overlaid in the fragment shader.
     const float u16toF32 = 1.0f / static_cast<float>(0xffff);
-    const float invOverlayWidth = 1.0f / (overlayWidth_ * u16toF32);
-    const float invOverlayHeight = 1.0f / (overlayHeight_ * u16toF32);
+    const float invOverlayWidth = 1.0f / (m_overlayWidth * u16toF32);
+    const float invOverlayHeight = 1.0f / (m_overlayHeight * u16toF32);
     const float overlaySx = invOverlayWidth * 2.0f;
     const float overlaySy = invOverlayHeight * 2.0f;
-    const float overlayTx = -((overlayX_ * u16toF32) * invOverlayWidth) * 2.0f - 1.0f;
-    const float overlayTy = -((overlayY_ * u16toF32) * invOverlayHeight) * 2.0f - 1.0f;
+    const float overlayTx = -((m_overlayX * u16toF32) * invOverlayWidth) * 2.0f - 1.0f;
+    const float overlayTy = -((m_overlayY * u16toF32) * invOverlayHeight) * 2.0f - 1.0f;
 
     // The overlay affine transformation doesn't exist when width or height is null, whenever that
     // is the case we simply set the color to transparent. GPUs handle NaN/Inf values flowlessly.
     const quint32 overlayColor = qIsFinite(invOverlayHeight + invOverlayWidth) ?
-        packColor(overlayColor_) : 0x00000000;
+        packColor(m_overlayColor) : 0x00000000;
 
     // Set top row of 4 vertices.
     v[0].position[0] = 0.0f;
