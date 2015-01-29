@@ -29,19 +29,25 @@ export UITK_BUILD_ROOT="$BUILD_DIR"
 export UITK_SOURCE_ROOT="$SRC_DIR"
 MODE="run"
 SUITE=ubuntuuitoolkit
-if [ "$1" != "" ]; then
+if [ "$1" != "" -a "$2" != "" ]; then
+    MODE="$1"
+    SUITE="$2"
+    shift 2
+elif [ "$1" != "" ]; then
     MODE="$1"
     shift 1
 fi
-if [ "$1" != "" ]; then
-    SUITE="$1"
-    shift 1
+
+if [ "$MODE" = "run" ]; then
+    autopilot3 $MODE -o ../../$SUITE -f xml -r -rd ../../ $SUITE $*
+else
+    autopilot3 $MODE $SUITE $*
 fi
-autopilot3 $MODE -o ../../$SUITE -f xml -r -rd ../../ $SUITE $*
+
 RESULT=$?
 if [ "$RESULT" == "2" ]; then
     echo Usage:
-    echo "  " $(basename $0) "run|list|vis|launch suite [-v]"
+    echo "  " $(basename $0) "run|list|vis|launch [suite] [-v]"
     echo "See also 'autopilot -h'"
 fi
 exit $RESULT
