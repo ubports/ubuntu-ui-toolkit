@@ -186,17 +186,9 @@ Empty
     property int selectedIndex
     property bool expanded
 MainView 0.1 1.0
-PageTreeNode
-    property string applicationName
-    property bool anchorToKeyboard
-    property color headerColor
-    property color backgroundColor
-    property color footerColor
+MainViewBase
     property bool automaticOrientation
-    property bool useDeprecatedToolbar
     default property internal contentsItem
-    property list<Action> actions
-    property ActionManager actionManager
 Object 0.1 1.0
 QtObject
     default property internal children
