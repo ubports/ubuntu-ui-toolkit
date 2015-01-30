@@ -60,12 +60,12 @@ QColor getPaletteColor(const char *profile, const char *color)
  * x coordinate.
  * The animation is defined by the style.
  */
-UCListItemSnapAnimator::UCListItemSnapAnimator(QObject *parent)
+ListItemAnimator::ListItemAnimator(QObject *parent)
     : QObject(parent)
     , item(0)
 {
 }
-UCListItemSnapAnimator::~UCListItemSnapAnimator()
+ListItemAnimator::~ListItemAnimator()
 {
     stop();
     // make sure we cannot animate anymore, for safety
@@ -77,7 +77,7 @@ UCListItemSnapAnimator::~UCListItemSnapAnimator()
  * in "to" parameter. If the position is 0, a snap out will be executed - see
  * snapOut(). In any other cases a snap in action will be performed - see snapIn().
  */
-bool UCListItemSnapAnimator::snap(qreal to)
+bool ListItemAnimator::snap(qreal to)
 {
     if (!item) {
         return false;
@@ -91,11 +91,11 @@ bool UCListItemSnapAnimator::snap(qreal to)
         snap->setAlwaysRunToEnd(false);
         if (doSnapOut) {
             QObject::connect(snap, &QQuickAbstractAnimation::runningChanged,
-                             this, &UCListItemSnapAnimator::snapOut,
+                             this, &ListItemAnimator::snapOut,
                              Qt::DirectConnection);
         } else {
             QObject::connect(snap, &QQuickAbstractAnimation::runningChanged,
-                             this, &UCListItemSnapAnimator::snapIn,
+                             this, &ListItemAnimator::snapIn,
                              Qt::DirectConnection);
         }
     }
@@ -118,7 +118,7 @@ bool UCListItemSnapAnimator::snap(qreal to)
 /*
  * The function completes a running snap animation.
  */
-void UCListItemSnapAnimator::stop()
+void ListItemAnimator::stop()
 {
     if (behavior && behavior->enabled()) {
         QQuickAbstractAnimation *animation = behavior->animation();
@@ -138,7 +138,7 @@ void UCListItemSnapAnimator::stop()
  * be disconnected, ascending Flickables will get unlocked (interactive value restored
  * to the state before they were locked) and ListItem.contentMoving will be reset.
  */
-void UCListItemSnapAnimator::snapOut()
+void ListItemAnimator::snapOut()
 {
     if (senderSignalIndex() >= 0) {
         // disconnect animation, otherwise snapping will disconnect the panel
@@ -171,7 +171,7 @@ void UCListItemSnapAnimator::snapOut()
  * Snap in only resets the ListItem.contentMoving property, but will keep leading/trailing
  * actions connected as well as all ascendant Flickables locked (interactive = false).
  */
-void UCListItemSnapAnimator::snapIn()
+void ListItemAnimator::snapIn()
 {
     if (senderSignalIndex() >= 0) {
         // disconnect animation
@@ -193,7 +193,7 @@ void UCListItemSnapAnimator::snapIn()
  * Returns the animation specified by the style, and configures the behavior
  * controlling the animation.
  */
-QQuickAbstractAnimation *UCListItemSnapAnimator::getSnapBehavior()
+QQuickAbstractAnimation *ListItemAnimator::getSnapBehavior()
 {
     if (behavior) {
         return behavior->animation();

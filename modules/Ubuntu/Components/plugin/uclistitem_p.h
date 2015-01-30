@@ -36,12 +36,12 @@
 
 class QQuickAbstractAnimation;
 class QQuickBehavior;
-class UCListItemSnapAnimator : public QObject
+class ListItemAnimator : public QObject
 {
     Q_OBJECT
 public:
-    UCListItemSnapAnimator(QObject *parent = 0);
-    ~UCListItemSnapAnimator();
+    ListItemAnimator(QObject *parent = 0);
+    ~ListItemAnimator();
     void init(UCListItem *listItem)
     {
         item = listItem;
@@ -67,7 +67,7 @@ class QQuickPropertyAnimation;
 class UCListItemContent;
 class UCListItemDivider;
 class UCListItemActions;
-class UCListItemSnapAnimator;
+class ListItemAnimator;
 class UCListItemStyle;
 class UCActionPanel;
 class QQuickBehavior;
@@ -127,7 +127,7 @@ public:
     UCListItemActions *trailingActions;
     UCActionPanel *leadingPanel;
     UCActionPanel *trailingPanel;
-    UCListItemSnapAnimator animator;
+    ListItemAnimator animator;
     UCAction *defaultAction;
 
     // FIXME move these to StyledItemBase togehther with subtheming.

@@ -48,7 +48,7 @@ private:
 
     friend class UCListItemPrivate;
     friend class UCActionPanel;
-    friend class UCListItemSnapAnimator;
+    friend class ListItemAnimator;
 };
 
 #endif // UCLISTITEMSTYLE_H
