@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright 2012 Canonical Ltd.
+# Copyright 2012 - 2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -16,7 +16,6 @@
 #
 
 . `dirname $0`/build_paths.inc
-
 export QML_IMPORT_PATH=$BUILD_DIR/modules
 export QML2_IMPORT_PATH=$BUILD_DIR/modules
 export UBUNTU_UI_TOOLKIT_THEMES_PATH=$BUILD_DIR/modules
