@@ -111,7 +111,6 @@ public:
     bool customColor:1;
     bool customOvershoot:1;
     bool flicked:1;
-    QSet<QString> layoutMargins; // list of properties
     qreal xAxisMoveThresholdGU;
     qreal overshoot;
     QBasicTimer pressAndHoldTimer;

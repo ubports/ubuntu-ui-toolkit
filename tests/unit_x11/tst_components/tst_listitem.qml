@@ -502,16 +502,16 @@ Item {
 
         function test_snap_gesture_data() {
             var listItem = findChild(listView, "listItem0");
-            var front = Qt.point(listItem.contentItem.anchors.leftMargin, listItem.height / 2);
-            var rear = Qt.point(listItem.width - listItem.contentItem.anchors.rightMargin, listItem.height / 2);
+            var front = Qt.point(listItem.contentItem.anchors.leftMargin + units.gu(1), listItem.height / 2);
+            var rear = Qt.point(listItem.width - (listItem.contentItem.anchors.rightMargin + units.gu(1)), listItem.height / 2);
             return [
                 // the first dx must be big enough to drag the panel in, it is always the last dx value
                 // which decides the snap direction
                 {tag: "Snap out, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(2)], snapIn: false},
                 {tag: "Snap in, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(1), units.gu(1.5)], snapIn: true},
                 // have less first dx as the trailing panel is shorter
-                {tag: "Snap out, trailing", item: listItem, grabPos: rear, dx: [-units.gu(10), units.gu(2)], snapIn: false},
-                {tag: "Snap in, trailing", item: listItem, grabPos: rear, dx: [-units.gu(10), units.gu(1), -units.gu(1.5)], snapIn: true},
+                {tag: "Snap out, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(2)], snapIn: false},
+                {tag: "Snap in, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(1), -units.gu(1.5)], snapIn: true},
             ];
         }
         function test_snap_gesture(data) {

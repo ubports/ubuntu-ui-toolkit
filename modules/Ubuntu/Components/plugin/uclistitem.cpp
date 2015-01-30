@@ -413,15 +413,6 @@ void UCListItemPrivate::init()
     QObject::connect(&UCTheme::instance(), SIGNAL(nameChanged()), q, SLOT(_q_updateThemedData()));
     _q_updateThemedData();
 
-    // prepare layoutMargin set and connect change signals
-    layoutMargins << "leftMargin" << "topMargin" << "rightMargin" << "bottomMargin" << "margins";
-    QQuickAnchors *layoutAnchors = QQuickItemPrivate::get(contentItem)->anchors();
-    QObject::connect(layoutAnchors, SIGNAL(leftMarginChanged()), q, SLOT(_q_removeLayoutMargin()));
-    QObject::connect(layoutAnchors, SIGNAL(topMarginChanged()), q, SLOT(_q_removeLayoutMargin()));
-    QObject::connect(layoutAnchors, SIGNAL(rightMarginChanged()), q, SLOT(_q_removeLayoutMargin()));
-    QObject::connect(layoutAnchors, SIGNAL(bottomMarginChanged()), q, SLOT(_q_removeLayoutMargin()));
-    QObject::connect(layoutAnchors, SIGNAL(marginsChanged()), q, SLOT(_q_removeLayoutMargin()));
-
     // watch size change and set implicit size;
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
     _q_updateSize();
@@ -486,21 +477,6 @@ void UCListItemPrivate::_q_relayout()
         anchorLine = bottom();
     }
     contentAnchors->setBottom(anchorLine);
-}
-
-// invalidates layout margin updates when gridUnit size changes
-void UCListItemPrivate::_q_removeLayoutMargin()
-{
-    Q_Q(UCListItem);
-    int sigIndex = q->senderSignalIndex();
-    const QMetaObject *mo = q->sender()->metaObject();
-    QByteArray propertyName = mo->method(sigIndex).name();
-    propertyName = propertyName.left(propertyName.indexOf("Change"));
-
-    // remove property and disconnect from watching
-    layoutMargins.remove(propertyName);
-    const QMetaMethod signal = mo->method(sigIndex);
-    QObject::disconnect(q->sender(), signal, 0, QMetaMethod());
 }
 
 void UCListItemPrivate::_q_updateIndex()
@@ -647,27 +623,6 @@ void UCListItemPrivate::_q_updateSize()
     QQuickItem *owner = flickable ? flickable : parentItem;
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
     q->setImplicitHeight(UCUnits::instance().gu(IMPLICIT_LISTITEM_HEIGHT_GU));
-
-    // update content layout margins
-    QQuickAnchors *contentAnchors = QQuickItemPrivate::get(contentItem)->anchors();
-    // block signals from the anchors until we synchronize
-    contentAnchors->blockSignals(true);
-    if (layoutMargins.contains("margins")) {
-        contentAnchors->setMargins(UCUnits::instance().gu(LAYOUT_VMARGIN_GU));
-    }
-    if (layoutMargins.contains("topMargin")) {
-        contentAnchors->setMargins(UCUnits::instance().gu(LAYOUT_VMARGIN_GU));
-    }
-    if (layoutMargins.contains("bottomMargin")) {
-        contentAnchors->setMargins(UCUnits::instance().gu(LAYOUT_VMARGIN_GU));
-    }
-    if (layoutMargins.contains("leftMargin")) {
-        contentAnchors->setLeftMargin(UCUnits::instance().gu(LAYOUT_HMARGIN_GU));
-    }
-    if (layoutMargins.contains("rightMargin")) {
-        contentAnchors->setRightMargin(UCUnits::instance().gu(LAYOUT_HMARGIN_GU));
-    }
-    contentAnchors->blockSignals(false);
 }
 
 // returns the index of the list item when used in model driven views,
@@ -1328,31 +1283,22 @@ void UCListItem::setTrailingActions(UCListItemActions *actions)
  * \qmlproperty Item ListItem::contentItem
  *
  * contentItem holds the components placed on a ListItem. It is anchored to the
- * ListItem on left, top and right, and to the divider on the bottom, with 0.5
- * grid unit margins on top and bottom, as well as 2 grid units margins on the
- * left and right. The content is clipped into this area. It is not recommended
- * to change the anchors as the ListItem controls them, however margin values
- * as well as clipping behavior are free to change. ListItem controls each margin
- * separately, and not through the \c margin anchor property. Therefore this
- * must be considered when changing \l contentItem anchors.
- * An example where no margin of the contentItem is required:
+ * ListItem on left, top and right, and to the divider on the bottom, or to the
+ * ListItem's bottom in case teh divider is not visible. The content is clipped
+ * by default. It is not recommended to change the anchors as the ListItem controls
+ * them, however any other property value is free to change.
+ * An example where 2 grid units on left and right, as well as 0.5 grid units
+ * top and bottom margins are required:
  * \qml
+ * import QtQuick 2.3
+ * import Ubuntu.Components 1.2
+ *
  * ListItem {
  *     contentItem.anchors {
- *         leftMargin: 0
- *         topMargin 0
- *         rightMargin: 0
- *         bottomMargin: 0
- *     }
- * }
- * \endqml
- * Another way is to reset left- and rightMargin, and set the \c margins property:
- * \qml
- * ListItem {
- *     contentItem.anchors {
- *         leftMmargin: undefined
- *         rightMargin: undefined
- *         margins: 0
+ *         leftMargin: units.gu(2)
+ *         rightMargin: units.gu(2)
+ *         topMargin: units.gu(0.5)
+ *         bottomMargin: units.gu(0.5)
  *     }
  * }
  * \endqml
