@@ -64,7 +64,7 @@ private:
 private:
     int activeAnimations;
     UCListItem *item;
-    QPointer<QQuickBehavior> behavior;
+    QPointer<QQuickBehavior> snapBehavior;
 };
 
 class QQuickFlickable;

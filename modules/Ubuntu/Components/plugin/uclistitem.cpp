@@ -102,9 +102,9 @@ bool ListItemAnimator::snap(qreal to)
                 Qt::DirectConnection);
     }
     listItem->setContentMoving(true);
-    if (behavior) {
-        behavior->setEnabled(true);
-        behavior->write(to);
+    if (snapBehavior) {
+        snapBehavior->setEnabled(true);
+        snapBehavior->write(to);
     }
     if (!snap) {
         // complete, as we don't have animation
@@ -118,15 +118,15 @@ bool ListItemAnimator::snap(qreal to)
  */
 void ListItemAnimator::stop()
 {
-    if (behavior && behavior->enabled()) {
-        QQuickAbstractAnimation *animation = behavior->animation();
+    if (snapBehavior && snapBehavior->enabled()) {
+        QQuickAbstractAnimation *animation = snapBehavior->animation();
         if (animation) {
             // set animation to be user controlled temporarily so we can invoke stop()
             animation->setEnableUserControl();
             animation->stop();
             animation->setDisableUserControl();
         }
-        behavior->setEnabled(false);
+        snapBehavior->setEnabled(false);
     }
 }
 
@@ -153,8 +153,8 @@ void ListItemAnimator::completeAnimation()
         disconnect(animation, &QQuickAbstractAnimation::runningChanged,
                    this, &ListItemAnimator::completeAnimation);
     }
-    if (behavior && behavior->enabled()) {
-        behavior->setEnabled(false);
+    if (snapBehavior && snapBehavior->enabled()) {
+        snapBehavior->setEnabled(false);
     }
 }
 
@@ -195,35 +195,36 @@ void UCListItemPrivate::snapIn()
 }
 
 /*
- * Returns the animation specified by the style, and configures the behavior
+ * Returns the animation specified by the style, and configures the snapBehavior
  * controlling the animation.
  */
 QQuickAbstractAnimation *ListItemAnimator::getSnapBehavior()
 {
-    if (behavior) {
-        return behavior->animation();
+    if (snapBehavior) {
+        return snapBehavior->animation();
     }
 
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
+    // in order to get Behavior working properly, it must be created to have
+    // ListItem.contentItem as parent, and must be in the same context as its
+    // parent item
+    snapBehavior = new QQuickBehavior(listItem->contentItem);
+    snapBehavior->setParent(listItem->contentItem);
+    QQmlContext *context = qmlContext(listItem->contentItem);
+    QQmlEngine::setContextForObject(snapBehavior.data(), context);
+
     listItem->initStyleItem();
-    // parent animator to the component whos property we animate
-    behavior = new QQuickBehavior(listItem->contentItem);
-    QQuickAbstractAnimation *animation = listItem->styleItem ?
-                listItem->styleItem->m_snapAnimation : 0;
+    QQuickAbstractAnimation *animation = listItem->styleItem ? listItem->styleItem->m_snapAnimation : 0;
     if (animation) {
         // patch behavior, use the same context as the animation
-        QQmlEngine::setContextForObject(behavior.data(), qmlContext(animation));
-        behavior->setAnimation(animation);
+        snapBehavior->setAnimation(animation);
 
-        QQmlProperty property(listItem->contentItem, "x", qmlContext(listItem->contentItem));
         // transfer animation to the contentItem
-        behavior->setParent(listItem->contentItem);
-        if (behavior->animation()) {
-            behavior->animation()->setParent(listItem->contentItem);
-        }
-        behavior->setTarget(property);
+        animation->setParent(listItem->contentItem);
     }
-    return behavior->animation();
+    QQmlProperty property(listItem->contentItem, "x", context);
+    snapBehavior->setTarget(property);
+    return animation;
 }
 
 /******************************************************************************
