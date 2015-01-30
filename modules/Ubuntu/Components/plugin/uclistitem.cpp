@@ -62,6 +62,7 @@ QColor getPaletteColor(const char *profile, const char *color)
  */
 ListItemAnimator::ListItemAnimator(QObject *parent)
     : QObject(parent)
+    , activeAnimations(0)
     , item(0)
 {
 }
@@ -87,17 +88,12 @@ bool ListItemAnimator::snap(qreal to)
     bool doSnapOut = (to == 0.0);
     to += QQuickItemPrivate::get(listItem->contentItem)->anchors()->leftMargin();
     QQuickAbstractAnimation *snap = getSnapBehavior();
+    activeAnimations |= (doSnapOut ? SnapOutAnimation : SnapInAnimation);
     if (snap) {
         snap->setAlwaysRunToEnd(false);
-        if (doSnapOut) {
-            QObject::connect(snap, &QQuickAbstractAnimation::runningChanged,
-                             this, &ListItemAnimator::snapOut,
-                             Qt::DirectConnection);
-        } else {
-            QObject::connect(snap, &QQuickAbstractAnimation::runningChanged,
-                             this, &ListItemAnimator::snapIn,
-                             Qt::DirectConnection);
-        }
+        QObject::connect(snap, &QQuickAbstractAnimation::runningChanged,
+                         this, &ListItemAnimator::completeAnimation,
+                         Qt::DirectConnection);
     }
     listItem->setContentMoving(true);
     if (behavior) {
@@ -106,11 +102,7 @@ bool ListItemAnimator::snap(qreal to)
     }
     if (!snap) {
         // complete, as we don't have animation
-        if (doSnapOut) {
-            snapOut();
-        } else {
-            snapIn();
-        }
+        completeAnimation();
     }
     return true;
 }
@@ -132,6 +124,32 @@ void ListItemAnimator::stop()
     }
 }
 
+// handles animation completion
+void ListItemAnimator::completeAnimation()
+{
+    QQuickAbstractAnimation *animation = static_cast<QQuickAbstractAnimation*>(sender());
+    if (animation && animation->isRunning()) {
+        return;
+    }
+
+    // complete animations
+    if (activeAnimations & SnapInAnimation) {
+        snapIn();
+        activeAnimations &= ~SnapInAnimation;
+    } else if (activeAnimations & SnapOutAnimation) {
+        snapOut();
+        activeAnimations &= ~SnapOutAnimation;
+    }
+
+    // clean animations
+    if (animation) {
+        disconnect(animation, 0, 0, 0);
+    }
+    if (behavior->enabled()) {
+        behavior->setEnabled(false);
+    }
+}
+
 /*
  * Snap out is performed when the ListItem.contentItem returns back to its original
  * X coordinates (0). At this point both leading and trailing action panels will
@@ -140,17 +158,6 @@ void ListItemAnimator::stop()
  */
 void ListItemAnimator::snapOut()
 {
-    if (senderSignalIndex() >= 0) {
-        // disconnect animation, otherwise snapping will disconnect the panel
-        QQuickAbstractAnimation *snap = behavior->animation();
-        if (snap->isRunning()) {
-            return;
-        }
-        QObject::disconnect(snap, 0, 0, 0);
-    }
-    if (behavior) {
-        behavior->setEnabled(false);
-    }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
     if (listItem->parentAttached) {
         // restore flickable's interactive and cleanup
@@ -173,17 +180,6 @@ void ListItemAnimator::snapOut()
  */
 void ListItemAnimator::snapIn()
 {
-    if (senderSignalIndex() >= 0) {
-        // disconnect animation
-        QQuickAbstractAnimation *snap = behavior->animation();
-        if (snap->isRunning()) {
-            return;
-        }
-        QObject::disconnect(snap, 0, 0, 0);
-    }
-    if (behavior) {
-        behavior->setEnabled(false);
-    }
     // turn content moving off
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
     listItem->setContentMoving(false);

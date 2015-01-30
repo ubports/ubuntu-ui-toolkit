@@ -40,6 +40,11 @@ class ListItemAnimator : public QObject
 {
     Q_OBJECT
 public:
+    enum Animation {
+        SnapInAnimation     = 0x01,
+        SnapOutAnimation    = 0x02
+    };
+
     ListItemAnimator(QObject *parent = 0);
     ~ListItemAnimator();
     void init(UCListItem *listItem)
@@ -51,26 +56,25 @@ public:
     void stop();
 
 public Q_SLOTS:
+    void completeAnimation();
+
     void snapOut();
     void snapIn();
 
+private:
     QQuickAbstractAnimation *getSnapBehavior();
 
 private:
-    bool active;
+    int activeAnimations;
     UCListItem *item;
     QPointer<QQuickBehavior> behavior;
 };
 
 class QQuickFlickable;
-class QQuickPropertyAnimation;
-class UCListItemContent;
 class UCListItemDivider;
 class UCListItemActions;
-class ListItemAnimator;
 class UCListItemStyle;
 class UCActionPanel;
-class QQuickBehavior;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
