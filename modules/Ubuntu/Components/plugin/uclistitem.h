@@ -106,10 +106,9 @@ public Q_SLOTS:
 private:
     Q_DECLARE_PRIVATE(UCListItem)
     Q_PRIVATE_SLOT(d_func(), void _q_updateThemedData())
-    Q_PRIVATE_SLOT(d_func(), void _q_rebound())
+    Q_PRIVATE_SLOT(d_func(), void _q_relayout())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
-    Q_PRIVATE_SLOT(d_func(), void _q_relayout())
 };
 QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
 

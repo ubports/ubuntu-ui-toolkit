@@ -89,9 +89,7 @@ public:
     bool isClickedConnected();
     bool isPressAndHoldConnected();
     void _q_updateThemedData();
-    void _q_rebound();
     void _q_relayout();
-    void _q_removeLayoutMargin();
     void _q_updateSize();
     void _q_updateIndex();
     int index();

@@ -180,6 +180,8 @@ MainView {
                         highlightColor: "brown"
                     }
                 }
+                onContentMovementStarted: print("start moving")
+                onContentMovementEnded: print("stop moving")
             }
         }
         Flickable {
@@ -213,9 +215,6 @@ MainView {
                         trailingActions: ListItemActions {
                             actions: trailingArray
                         }
-                        contentItem.anchors.margins: 0
-                        contentItem.anchors.leftMargin: undefined
-                        contentItem.anchors.rightMargin: undefined
 
                         Label {
                             text: modelData + " Flickable item"

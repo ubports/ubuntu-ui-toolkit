@@ -97,9 +97,9 @@ bool ListItemAnimator::snap(qreal to)
     QQuickAbstractAnimation *snap = getSnapBehavior();
     if (snap) {
         snap->setAlwaysRunToEnd(false);
-        QObject::connect(snap, &QQuickAbstractAnimation::runningChanged,
-                         this, &ListItemAnimator::completeAnimation,
-                         Qt::DirectConnection);
+        connect(snap, &QQuickAbstractAnimation::runningChanged,
+                this, &ListItemAnimator::completeAnimation,
+                Qt::DirectConnection);
     }
     listItem->setContentMoving(true);
     if (behavior) {
@@ -149,8 +149,9 @@ void ListItemAnimator::completeAnimation()
     }
 
     // clean animations
-    if (animation) {
-        disconnect(animation, 0, 0, 0);
+    if (animation && !activeAnimations) {
+        disconnect(animation, &QQuickAbstractAnimation::runningChanged,
+                   this, &ListItemAnimator::completeAnimation);
     }
     if (behavior && behavior->enabled()) {
         behavior->setEnabled(false);
@@ -455,19 +456,6 @@ void UCListItemPrivate::_q_updateThemedData()
     if (!customColor) {
         q->resetHighlightColor();
     }
-}
-
-void UCListItemPrivate::_q_rebound()
-{
-    setHighlighted(false);
-    // initiate rebinding only if there were actions tugged
-    if (!UCActionPanel::isConnected(leadingPanel) &&
-        !UCActionPanel::isConnected(trailingPanel)) {
-        return;
-    }
-    setSwiped(false);
-    // rebound to zero
-    animator.snap(0);
 }
 
 // re-layouting the ListItem's contentItem
@@ -1082,7 +1070,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             if (d->defaultAction) {
                 Q_EMIT d->defaultAction->trigger(d->index());
             }
-            d->_q_rebound();
+            d->animator.snap(0);
         } else {
             d->suppressClick = false;
         }
@@ -1198,7 +1186,7 @@ bool UCListItem::eventFilter(QObject *target, QEvent *event)
     }
     if (!myPos.isNull() && !contains(myPos)) {
         Q_D(UCListItem);
-        d->_q_rebound();
+        d->animator.snap(0);
         // only accept event, but let it be handled by the underlying or surrounding Flickables
         event->accept();
     }

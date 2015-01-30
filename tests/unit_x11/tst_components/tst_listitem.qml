@@ -298,6 +298,7 @@ Item {
             compare(listItem.highlighted, false, "Item is highlighted still!");
             // cleanup, wait few milliseconds to avoid dbl-click collision
             TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
+            wait(400);
             // dismiss
             rebound(listItem);
         }
@@ -388,15 +389,12 @@ Item {
             }
             movingSpy.wait();
             // animation should no longer be running!
-            verify(!data.item.__styleInstance.snapAnimation.running, "Animation is still running!");
             compare(listView.interactive, true, "The ListView is still non-interactive!");
             compare(interactiveSpy.count, 2, "Less/more times changed!");
             // check if it snapped in
             verify(data.item.contentItem.x != 0.0, "Not snapped in!!");
             // dismiss
             rebound(data.clickOn, data.item);
-            // animation should no longer be running!
-            verify(!data.item.__styleInstance.snapAnimation.running, "Animation is still running!");
             fuzzyCompare(data.item.contentItem.x, data.item.contentItem.anchors.leftMargin, 0.1, "Not snapped out!!");
         }
 
