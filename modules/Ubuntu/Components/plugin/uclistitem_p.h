@@ -58,9 +58,6 @@ public:
 public Q_SLOTS:
     void completeAnimation();
 
-    void snapOut();
-    void snapIn();
-
 private:
     QQuickAbstractAnimation *getSnapBehavior();
 
@@ -95,7 +92,6 @@ public:
     void _q_rebound();
     void _q_relayout();
     void _q_removeLayoutMargin();
-    void promptRebound();
     void _q_updateSize();
     void _q_updateIndex();
     int index();
@@ -106,6 +102,8 @@ public:
     void lockContentItem(bool lock);
     void update();
     void clampAndMoveX(qreal &x, qreal dx);
+    void snapOut();
+    void snapIn();
 
     bool highlighted:1;
     bool contentMoved:1;

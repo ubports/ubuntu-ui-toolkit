@@ -84,11 +84,17 @@ bool ListItemAnimator::snap(qreal to)
         return false;
     }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    // fix snap position, take leftMargin into account!
     bool doSnapOut = (to == 0.0);
-    to += QQuickItemPrivate::get(listItem->contentItem)->anchors()->leftMargin();
-    QQuickAbstractAnimation *snap = getSnapBehavior();
     activeAnimations |= (doSnapOut ? SnapOutAnimation : SnapInAnimation);
+    // fix snap position, take leftMargin into account!
+    to += QQuickItemPrivate::get(listItem->contentItem)->anchors()->leftMargin();
+    if (to == listItem->contentItem->x()) {
+        // there was no move, so we only do some cleanup
+        completeAnimation();
+        return true;
+    }
+
+    QQuickAbstractAnimation *snap = getSnapBehavior();
     if (snap) {
         snap->setAlwaysRunToEnd(false);
         QObject::connect(snap, &QQuickAbstractAnimation::runningChanged,
@@ -133,11 +139,12 @@ void ListItemAnimator::completeAnimation()
     }
 
     // complete animations
+    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
     if (activeAnimations & SnapInAnimation) {
-        snapIn();
+        listItem->snapIn();
         activeAnimations &= ~SnapInAnimation;
     } else if (activeAnimations & SnapOutAnimation) {
-        snapOut();
+        listItem->snapOut();
         activeAnimations &= ~SnapOutAnimation;
     }
 
@@ -145,7 +152,7 @@ void ListItemAnimator::completeAnimation()
     if (animation) {
         disconnect(animation, 0, 0, 0);
     }
-    if (behavior->enabled()) {
+    if (behavior && behavior->enabled()) {
         behavior->setEnabled(false);
     }
 }
@@ -156,33 +163,34 @@ void ListItemAnimator::completeAnimation()
  * be disconnected, ascending Flickables will get unlocked (interactive value restored
  * to the state before they were locked) and ListItem.contentMoving will be reset.
  */
-void ListItemAnimator::snapOut()
+void UCListItemPrivate::snapOut()
 {
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    if (listItem->parentAttached) {
+    setHighlighted(false);
+    setSwiped(false);
+    if (parentAttached) {
+        Q_Q(UCListItem);
         // restore flickable's interactive and cleanup
-        listItem->parentAttached->disableInteractive(item, false);
+        parentAttached->disableInteractive(q, false);
         // no need to listen flickables any longer
-        listItem->listenToRebind(false);
+        listenToRebind(false);
     }
     // disconnect actions
-    UCActionPanel::ungrabPanel(listItem->leadingPanel);
-    UCActionPanel::ungrabPanel(listItem->trailingPanel);
+    UCActionPanel::ungrabPanel(leadingPanel);
+    UCActionPanel::ungrabPanel(trailingPanel);
     // set contentMoved to false
-    listItem->setContentMoving(false);
+    setContentMoving(false);
     // lock contentItem left/right edges
-    listItem->lockContentItem(true);
+    lockContentItem(true);
 }
 
 /*
  * Snap in only resets the ListItem.contentMoving property, but will keep leading/trailing
  * actions connected as well as all ascendant Flickables locked (interactive = false).
  */
-void ListItemAnimator::snapIn()
+void UCListItemPrivate::snapIn()
 {
     // turn content moving off
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    listItem->setContentMoving(false);
+    setContentMoving(false);
 }
 
 /*
@@ -505,7 +513,7 @@ void UCListItemPrivate::setStyle(QQmlComponent *delegate)
         return;
     }
     // make sure we're rebound before we change the panel component
-    promptRebound();
+    snapOut();
     bool reloadStyle = styleItem != 0;
     if (styleItem) {
         styleItem->deleteLater();
@@ -529,7 +537,7 @@ void UCListItemPrivate::resetStyle()
         styleComponent = 0;
         // rebound as the current panels are not gonna be valid anymore
         if (swiped) {
-            promptRebound();
+            snapOut();
         }
         bool reloadStyle = styleItem != 0;
         if (styleItem) {
@@ -599,14 +607,6 @@ void UCListItemPrivate::initStyleItem()
 QQuickItem *UCListItemPrivate::styleInstance() const
 {
     return styleItem;
-}
-
-// rebound without animation
-void UCListItemPrivate::promptRebound()
-{
-    setHighlighted(false);
-    setSwiped(false);
-    animator.snapOut();
 }
 
 // called when units size changes
@@ -1239,7 +1239,7 @@ void UCListItem::setLeadingActions(UCListItemActions *actions)
         return;
     }
     // snap out before we change the actions
-    d->promptRebound();
+    d->snapOut();
     // then delete panel
     delete d->leadingPanel;
     d->leadingPanel = 0;
@@ -1267,7 +1267,7 @@ void UCListItem::setTrailingActions(UCListItemActions *actions)
         return;
     }
     // snap out before we change the actions
-    d->promptRebound();
+    d->snapOut();
     // then delete panel
     delete d->trailingPanel;
     d->trailingPanel = 0;

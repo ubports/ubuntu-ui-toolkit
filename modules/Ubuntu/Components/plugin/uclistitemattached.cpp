@@ -169,9 +169,5 @@ void UCListItemAttached::snapToPosition(qreal position)
     }
     UCListItemPrivate *listItem = UCListItemPrivate::get(d->listItem);
     position *= (itemStatus == UCListItem::Leading) ? 1 : -1;
-    if (position == 0.0) {
-        listItem->_q_rebound();
-    } else {
-        listItem->animator.snap(position);
-    }
+    listItem->animator.snap(position);
 }
