@@ -1048,6 +1048,13 @@ plugins.qmltypes
     Parameter { name: "domain"; type: "string" }
     Parameter { name: "context"; type: "string" }
     Parameter { name: "text"; type: "string" }
+    Method {
+    name: "tag"
+    Parameter { name: "text"; type: "string" }
+    Method {
+    name: "ctag"
+    Parameter { name: "context"; type: "string" }
+    Parameter { name: "text"; type: "string" }
     name: "ULConditionalLayout"
     prototype: "QObject"
     exports: ["ConditionalLayout 0.1", "ConditionalLayout 1.0"]
