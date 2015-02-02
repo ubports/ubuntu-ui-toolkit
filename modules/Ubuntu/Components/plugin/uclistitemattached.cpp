@@ -30,13 +30,6 @@ UCListItemAttached::~UCListItemAttached()
 {
 }
 
-void UCListItemAttached::connectToAttached(UCListItemAttached *parentAttached)
-{
-    bool visualizeActions = UCListItemAttachedPrivate::get(parentAttached)->panel;
-    bool isLeading = visualizeActions ? UCListItemAttachedPrivate::get(parentAttached)->panel->isLeading() : false;
-    setList(parentAttached->item(), isLeading, visualizeActions);
-}
-
 void UCListItemAttached::setList(UCListItem *list, bool leading, bool visualizeActions)
 {
     Q_D(UCListItemAttached);

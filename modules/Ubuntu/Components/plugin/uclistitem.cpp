@@ -900,24 +900,7 @@ UCListItem::~UCListItem()
 
 UCListItemAttached *UCListItem::qmlAttachedProperties(QObject *owner)
 {
-    /*
-     * Detect the attachee, whether is it a child item of the panelItem. The panelItem
-     * itself cannot be detected, as the object can be attached during the call of
-     * component.beginCreate().
-     */
-    UCListItemAttached *attached = new UCListItemAttached(owner);
-    QQuickItem *item = qobject_cast<QQuickItem*>(owner);
-    while (item) {
-        // has item our attached property?
-        UCListItemAttached *itemAttached = static_cast<UCListItemAttached*>(
-                    qmlAttachedPropertiesObject<UCListItem>(item, false));
-        if (itemAttached) {
-            attached->connectToAttached(itemAttached);
-            break;
-        }
-        item = item->parentItem();
-    }
-    return attached;
+    return new UCListItemAttached(owner);
 }
 
 void UCListItem::componentComplete()
