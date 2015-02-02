@@ -44,7 +44,6 @@ void UCListItemAttached::setList(UCListItem *list, bool leading, bool visualizeA
         return;
     }
     d->listItem = list;
-    Q_EMIT itemChanged();
 
     if (visualizeActions) {
         d->panel = leading ? UCListItemPrivate::get(d->listItem)->leadingPanel : UCListItemPrivate::get(d->listItem)->trailingPanel;
