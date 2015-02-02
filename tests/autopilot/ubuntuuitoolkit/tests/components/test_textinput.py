@@ -147,6 +147,9 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         self.pointing_device.click_object(self.textfield)
         cursor = self.main_view.select_single(
             objectName='text_cursor_style_cursorPosition')
+        if (self.textfield.text):
+            # Let the cursor stabilize
+            sleep(1)
         self.pointing_device.click_object(cursor)
         self.assert_buttons(['Select All', 'Paste'])
         self.assert_discard_popover()
