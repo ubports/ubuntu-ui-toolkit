@@ -1,3 +1,11 @@
+ubuntu-ui-toolkit (1.1.1298+15.04.20150202~rtm-0ubuntu1) 14.09; urgency=medium
+
+  [ Tim Peeters ]
+  * Port "In Progress" translation fix from staging to rtm. (LP:
+    #1391617, #1081607)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 02 Feb 2015 09:11:21 +0000
+
 ubuntu-ui-toolkit (1.1.1298+15.04.20150116~rtm-0ubuntu1) 14.09; urgency=low
 
   [ Florian Boucault ]
