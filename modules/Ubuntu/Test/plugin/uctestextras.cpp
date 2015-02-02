@@ -77,7 +77,7 @@ QString UCTestExtras::cpuArchitecture()
 #if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
     return QSysInfo::buildCpuArchitecture();
 #elif defined(Q_PROCESSOR_X86_64)
-    return "x86_x64";
+    return "x86_64";
 #elif defined(Q_PROCESSOR_X86_32)
     return "i386";
 #elif defined(Q_PROCESSOR_ARM_64)
