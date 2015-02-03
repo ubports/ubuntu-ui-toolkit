@@ -678,6 +678,7 @@ void UCListItemPrivate::setSwiped(bool swiped)
 // connects/disconnects from the Flickable anchestor to get notified when to do rebound
 void UCListItemPrivate::listenToRebind(bool listen)
 {
+    Q_UNUSED(listen);
     if (parentAttached) {
         Q_Q(UCListItem);
         parentAttached->listenToRebind(q, listen);

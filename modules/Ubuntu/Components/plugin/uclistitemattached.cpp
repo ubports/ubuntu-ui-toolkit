@@ -20,6 +20,7 @@
 #include "uclistitemactions_p.h"
 #include "ucunits.h"
 #include "ucaction.h"
+#include <QtQuick/private/qquickflickable_p.h>
 
 UCListItemAttached::UCListItemAttached(QObject *parent)
     : QObject(*(new UCListItemAttachedPrivate()), parent)
@@ -54,6 +55,7 @@ void UCListItemAttached::setList(UCListItem *list, bool leading, bool visualizeA
                              this, &UCListItemAttached::updateVisibleActions);
         }
         updateVisibleActions();
+        Q_EMIT flickableChanged();
         Q_EMIT actionsChanged();
         Q_EMIT visibleActionsChanged();
     }
@@ -143,6 +145,39 @@ UCListItem::PanelStatus UCListItemAttached::panelStatus()
     }
     return d->panel->panelStatus();
 }
+
+/*!
+ * \qmlattachedproperty Flickable ListItem::flickable
+ * The property holds the Flickable owning the ListItem. The property contains a
+ * valid Flickable if the ListItem is the delegate of a ListView or if its parent
+ * Positioner (Column, Row, etc) is declared as content for a Flickable:
+ * \qml
+ * import QtQuick 2.3
+ * import Ubuntu.Components 1.2
+ *
+ * Flickable {
+ *     width: units.gu(20)
+ *     height: units.gu(50)
+ *     contentHeight: column.height
+ *
+ *     Column {
+ *         width: parent.width
+ *         Repeater {
+ *             model: 25
+ *             ListItem {
+ *                 // [...]
+ *             }
+ *         }
+ *     }
+ * }
+ * \endqml
+ */
+QQuickFlickable *UCListItemAttached::flickable() const
+{
+    Q_D(const UCListItemAttached);
+    return d->listItem ? UCListItemPrivate::get(d->listItem)->flickable : NULL;
+}
+
 
 /*!
  * \qmlattachedmethod void ListItem::snapToPosition(real position)
