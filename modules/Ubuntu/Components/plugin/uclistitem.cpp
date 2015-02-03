@@ -62,7 +62,6 @@ QColor getPaletteColor(const char *profile, const char *color)
  */
 ListItemAnimator::ListItemAnimator(QObject *parent)
     : QObject(parent)
-    , activeAnimations(0)
     , item(0)
 {
 }
@@ -84,8 +83,6 @@ bool ListItemAnimator::snap(qreal to)
         return false;
     }
     UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    bool doSnapOut = (to == 0.0);
-    activeAnimations |= (doSnapOut ? SnapOutAnimation : SnapInAnimation);
     // fix snap position, take leftMargin into account!
     to += QQuickItemPrivate::get(listItem->contentItem)->anchors()->leftMargin();
     if (to == listItem->contentItem->x()) {
@@ -137,18 +134,8 @@ void ListItemAnimator::completeAnimation()
         return;
     }
 
-    // complete animations
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    if (activeAnimations & SnapInAnimation) {
-        listItem->snapIn();
-        activeAnimations &= ~SnapInAnimation;
-    } else if (activeAnimations & SnapOutAnimation) {
-        listItem->snapOut();
-        activeAnimations &= ~SnapOutAnimation;
-    }
-
     // clean animations
-    if (animation && !activeAnimations) {
+    if (animation) {
         disconnect(animation, &QQuickAbstractAnimation::runningChanged,
                    this, &ListItemAnimator::completeAnimation);
     }
@@ -166,7 +153,6 @@ void ListItemAnimator::completeAnimation()
 void UCListItemPrivate::snapOut()
 {
     setHighlighted(false);
-    setSwiped(false);
     if (parentAttached) {
         Q_Q(UCListItem);
         // restore flickable's interactive and cleanup
@@ -179,14 +165,6 @@ void UCListItemPrivate::snapOut()
     UCActionPanel::ungrabPanel(trailingPanel);
     // lock contentItem left/right edges
     lockContentItem(true);
-}
-
-/*
- * Snap in only resets the ListItem.contentMoving property, but will keep leading/trailing
- * actions connected as well as all ascendant Flickables locked (interactive = false).
- */
-void UCListItemPrivate::snapIn()
-{
 }
 
 /*
@@ -669,6 +647,8 @@ void UCListItemPrivate::setSwiped(bool swiped)
         window->installEventFilter(q);
     } else {
         window->removeEventFilter(q);
+        // perform snapOut cleanup
+        snapOut();
     }
 }
 
@@ -1015,7 +995,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         // while moving, we cannot select any items
         return;
     }
-    if (d->canHighlight(event) && !d->suppressClick
+    if (d->canHighlight(event)
             && !d->highlighted && event->button() == Qt::LeftButton) {
         // stop any ongoing animation!
         d->animator.stop();
@@ -1105,8 +1085,6 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
             d->pressAndHoldTimer.stop();
             // clamp X into allowed dragging area
             d->clampAndMoveX(x, dx);
-            // block flickable
-            d->setSwiped(true);
             d->contentItem->setX(x);
             // decide which panel is visible by checking the contentItem's X coordinates
             qreal margin = QQuickItemPrivate::get(d->contentItem)->anchors()->leftMargin();
@@ -1398,6 +1376,10 @@ void UCListItemPrivate::_q_contentMoving()
     Q_Q(UCListItem);
     contentMovingTimer.stop();
     contentMovingTimer.start(100, q);
+
+    // update swiping state
+    setSwiped(contentItem->x() !=
+            QQuickItemPrivate::get(contentItem)->anchors()->leftMargin());
 }
 
 /*!

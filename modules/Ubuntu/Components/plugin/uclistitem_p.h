@@ -40,11 +40,6 @@ class ListItemAnimator : public QObject
 {
     Q_OBJECT
 public:
-    enum Animation {
-        SnapInAnimation     = 0x01,
-        SnapOutAnimation    = 0x02
-    };
-
     ListItemAnimator(QObject *parent = 0);
     ~ListItemAnimator();
     void init(UCListItem *listItem)
@@ -62,7 +57,6 @@ private:
     QQuickAbstractAnimation *getSnapBehavior();
 
 private:
-    int activeAnimations;
     UCListItem *item;
     QPointer<QQuickBehavior> snapBehavior;
 };
@@ -96,13 +90,10 @@ public:
     int index();
     bool canHighlight(QMouseEvent *event);
     void setHighlighted(bool pressed);
-    void setSwiped(bool tugged);
     void listenToRebind(bool listen);
     void lockContentItem(bool lock);
     void update();
     void clampAndMoveX(qreal &x, qreal dx);
-    void snapOut();
-    void snapIn();
 
     bool highlighted:1;
     bool contentMoved:1;
@@ -144,7 +135,6 @@ public:
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
     bool contentMoving() const;
-    void setContentMoving(bool moved);
     QQmlComponent *style() const;
     void setStyle(QQmlComponent *delegate);
     void resetStyle();
@@ -152,6 +142,12 @@ public:
     QQuickItem *styleInstance() const;
     UCAction *action() const;
     void setAction(UCAction *action);
+
+private:
+    // local functions
+    void setSwiped(bool tugged);
+    void setContentMoving(bool moved);
+    void snapOut();
 };
 
 class UCListItemAttachedPrivate : public QObjectPrivate
