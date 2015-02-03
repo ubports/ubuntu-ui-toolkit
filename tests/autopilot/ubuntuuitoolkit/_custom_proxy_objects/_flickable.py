@@ -162,7 +162,7 @@ class QQuickFlickable(Scrollable):
             stop_y = start_y + (top - start_y) // rate * rate
         elif direction == 'above':
             start_y = top
-            stop_y = start_y + (start_y - bottom) // rate * rate
+            stop_y = start_y + (bottom - start_y) // rate * rate
         else:
             raise _common.ToolkitException(
                 'Invalid direction {}.'.format(direction))
