@@ -133,7 +133,7 @@ class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
 
     @property
     def main_view(self):
-        return self.app.select_single(objectName="mainView")
+        return self.app.select_single(objectName="wut")
 #        return self.app.select_single(ubuntuuitoolkit.MainView)
 
 
