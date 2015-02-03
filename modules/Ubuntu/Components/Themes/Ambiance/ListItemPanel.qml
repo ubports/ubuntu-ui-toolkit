@@ -118,9 +118,32 @@ Item {
         }
         // snap in if the offset is bigger than the overshoot and the direction of the drag is to reveal the panel
         var snapPos = (swipedOffset > units.gu(2) && snapIn) ? panel.width : 0.0;
-        ListItem.snapToPosition(snapPos);
+        snapAnimation.snapToPosition(snapPos);
     }
 
+    // animation
+    NumberAnimation {
+        id: snapAnimation
+        easing {
+            type: Easing.OutElastic
+            period: 0.5
+        }
+        duration: UbuntuAnimation.BriskDuration
+        target: styledItem.contentItem
+        property: "x"
+
+        function snapToPosition(position) {
+            if (!panel.visible) {
+                return;
+            }
+            from = styledItem.contentItem.x;
+            to = position * (panel.leading ? 1 : -1);
+            start();
+        }
+    }
+    ListItem.onRebound: snapAnimation.snapToPosition(styledItem.contentItem.anchors.leftMargin)
+
+    // Action list visualized
     Row {
         id: actionsRow
         anchors {
@@ -150,7 +173,7 @@ Item {
                 function trigger() {
                     actionsRow.selectedAction = modelData;
                     actionsRow.listItemIndex = panel.ListItem.index;
-                    panel.ListItem.snapToPosition(0.0);
+                    snapAnimation.snapToPosition(0.0);
                 }
 
                 Rectangle {

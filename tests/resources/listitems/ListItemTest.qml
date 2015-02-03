@@ -165,6 +165,10 @@ MainView {
                 leadingActions: leading
                 trailingActions: leadingActions
 
+                contentItem.anchors {
+                    margins: units.gu(1)
+                }
+
                 Label {
                     anchors.fill: parent
                     verticalAlignment: Text.AlignVCenter

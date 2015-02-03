@@ -49,156 +49,6 @@ QColor getPaletteColor(const char *profile, const char *color)
     }
     return result;
 }
-/******************************************************************************
- * SnapAnimator
- *
- * The class handles the animation executed when the ListItemAction panel is
- * swiped. The animation is executed from the swipe position the mouse/touch is
- * released to the desired position given in snap(). The action panel is assumed
- * to be anchored to the ListItem.contentItem left or right, depending on which
- * action list is swiped in. Therefore the animator only changes the ListItem.contentItem
- * x coordinate.
- * The animation is defined by the style.
- */
-ListItemAnimator::ListItemAnimator(QObject *parent)
-    : QObject(parent)
-    , item(0)
-{
-}
-ListItemAnimator::~ListItemAnimator()
-{
-    stop();
-    // make sure we cannot animate anymore, for safety
-    item = 0;
-}
-
-/*
- * Snap the ListItem.contentItem in or out, depending on the position specified
- * in "to" parameter. If the position is 0, a snap out will be executed - see
- * snapOut(). In any other cases a snap in action will be performed - see snapIn().
- */
-bool ListItemAnimator::snap(qreal to)
-{
-    if (!item) {
-        return false;
-    }
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    // fix snap position, take leftMargin into account!
-    to += QQuickItemPrivate::get(listItem->contentItem)->anchors()->leftMargin();
-    if (to == listItem->contentItem->x()) {
-        // there was no move, so we only do some cleanup
-        completeAnimation();
-        return true;
-    }
-
-    QQuickAbstractAnimation *snap = getSnapBehavior();
-    if (snap) {
-        snap->setAlwaysRunToEnd(false);
-        connect(snap, &QQuickAbstractAnimation::runningChanged,
-                this, &ListItemAnimator::completeAnimation,
-                Qt::DirectConnection);
-    }
-    if (snapBehavior) {
-        snapBehavior->setEnabled(true);
-        snapBehavior->write(to);
-    }
-    if (!snap) {
-        // complete, as we don't have animation
-        completeAnimation();
-    }
-    return true;
-}
-
-/*
- * The function completes a running snap animation.
- */
-void ListItemAnimator::stop()
-{
-    if (snapBehavior && snapBehavior->enabled()) {
-        QQuickAbstractAnimation *animation = snapBehavior->animation();
-        if (animation) {
-            // set animation to be user controlled temporarily so we can invoke stop()
-            animation->setEnableUserControl();
-            animation->stop();
-            animation->setDisableUserControl();
-        }
-        snapBehavior->setEnabled(false);
-    }
-}
-
-// handles animation completion
-void ListItemAnimator::completeAnimation()
-{
-    QQuickAbstractAnimation *animation = static_cast<QQuickAbstractAnimation*>(sender());
-    if (animation && animation->isRunning()) {
-        return;
-    }
-
-    // clean animations
-    if (animation) {
-        disconnect(animation, &QQuickAbstractAnimation::runningChanged,
-                   this, &ListItemAnimator::completeAnimation);
-    }
-    if (snapBehavior && snapBehavior->enabled()) {
-        snapBehavior->setEnabled(false);
-    }
-}
-
-/*
- * Snap out is performed when the ListItem.contentItem returns back to its original
- * X coordinates (0). At this point both leading and trailing action panels will
- * be disconnected, ascending Flickables will get unlocked (interactive value restored
- * to the state before they were locked) and ListItem.contentMoving will be reset.
- */
-void UCListItemPrivate::snapOut()
-{
-    setHighlighted(false);
-    if (parentAttached) {
-        Q_Q(UCListItem);
-        // restore flickable's interactive and cleanup
-        parentAttached->disableInteractive(q, false);
-        // no need to listen flickables any longer
-        listenToRebind(false);
-    }
-    // disconnect actions
-    UCActionPanel::ungrabPanel(leadingPanel);
-    UCActionPanel::ungrabPanel(trailingPanel);
-    // lock contentItem left/right edges
-    lockContentItem(true);
-}
-
-/*
- * Returns the animation specified by the style, and configures the snapBehavior
- * controlling the animation.
- */
-QQuickAbstractAnimation *ListItemAnimator::getSnapBehavior()
-{
-    if (snapBehavior) {
-        return snapBehavior->animation();
-    }
-
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    // in order to get Behavior working properly, it must be created to have
-    // ListItem.contentItem as parent, and must be in the same context as its
-    // parent item
-    snapBehavior = new QQuickBehavior(listItem->contentItem);
-    snapBehavior->setParent(listItem->contentItem);
-    QQmlContext *context = qmlContext(listItem->contentItem);
-    QQmlEngine::setContextForObject(snapBehavior.data(), context);
-
-    listItem->initStyleItem();
-    QQuickAbstractAnimation *animation = listItem->styleItem ? listItem->styleItem->m_snapAnimation : 0;
-    if (animation) {
-        // patch behavior, use the same context as the animation
-        snapBehavior->setAnimation(animation);
-
-        // transfer animation to the contentItem
-        animation->setParent(listItem->contentItem);
-    }
-    QQmlProperty property(listItem->contentItem, "x", context);
-    snapBehavior->setTarget(property);
-    return animation;
-}
 
 /******************************************************************************
  * Divider
@@ -374,7 +224,6 @@ UCListItemPrivate::~UCListItemPrivate()
 void UCListItemPrivate::init()
 {
     Q_Q(UCListItem);
-    animator.init(q);
     contentItem->setObjectName("ListItemHolder");
     QQml_setParent_noEvent(contentItem, q);
     contentItem->setParentItem(q);
@@ -650,6 +499,29 @@ void UCListItemPrivate::setSwiped(bool swiped)
         // perform snapOut cleanup
         snapOut();
     }
+}
+
+/*
+ * Snap out is performed when the ListItem.contentItem returns back to its original
+ * X coordinates. At this point both leading and trailing action panels will
+ * be disconnected, ascending Flickables will get unlocked (interactive value restored
+ * to the state before they were locked).
+ */
+void UCListItemPrivate::snapOut()
+{
+    setHighlighted(false);
+    if (parentAttached) {
+        Q_Q(UCListItem);
+        // restore flickable's interactive and cleanup
+        parentAttached->disableInteractive(q, false);
+        // no need to listen flickables any longer
+        listenToRebind(false);
+    }
+    // disconnect actions
+    UCActionPanel::ungrabPanel(leadingPanel);
+    UCActionPanel::ungrabPanel(trailingPanel);
+    // lock contentItem left/right edges
+    lockContentItem(true);
 }
 
 // connects/disconnects from the Flickable anchestor to get notified when to do rebound
@@ -997,8 +869,6 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
     }
     if (d->canHighlight(event)
             && !d->highlighted && event->button() == Qt::LeftButton) {
-        // stop any ongoing animation!
-        d->animator.stop();
         d->setHighlighted(true);
         d->lastPos = d->pressedPos = event->localPos();
         // connect the Flickable to know when to rebound
@@ -1035,7 +905,8 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
                     Q_EMIT d->defaultAction->trigger(d->index());
                 }
             }
-            d->animator.snap(0);
+            UCActionPanel::snapOut(d->leadingPanel);
+            UCActionPanel::snapOut(d->trailingPanel);
         } else {
             d->suppressClick = false;
         }
@@ -1150,7 +1021,8 @@ bool UCListItem::eventFilter(QObject *target, QEvent *event)
     }
     if (!myPos.isNull() && !contains(myPos)) {
         Q_D(UCListItem);
-        d->animator.snap(0);
+        UCActionPanel::snapOut(d->leadingPanel);
+        UCActionPanel::snapOut(d->trailingPanel);
         // only accept event, but let it be handled by the underlying or surrounding Flickables
         event->accept();
     }

@@ -22,6 +22,14 @@
 #include "ucaction.h"
 #include <QtQuick/private/qquickflickable_p.h>
 
+/*!
+ * \qmlattachedsignal ListItem::rebound()
+ * The signal is emitted when the ListItem detects a mouse press or tap occurred
+ * outside of the ListItem while its content is swiped (leading or trailing action
+ * panel is shown). Style implementations can handle this signal to snap out the
+ * panel.
+ */
+
 UCListItemAttached::UCListItemAttached(QObject *parent)
     : QObject(*(new UCListItemAttachedPrivate()), parent)
 {
@@ -176,25 +184,4 @@ QQuickFlickable *UCListItemAttached::flickable() const
 {
     Q_D(const UCListItemAttached);
     return d->listItem ? UCListItemPrivate::get(d->listItem)->flickable : NULL;
-}
-
-
-/*!
- * \qmlattachedmethod void ListItem::snapToPosition(real position)
- * The function can be used to perform custom snapping, or to execute rebounding
- * and also disconnecting from the connected \l ListItem. This can be achieved by
- * calling the function with 0.0 value. The slot has effect only when used from
- * \l ListItemStyle::actionsDelegate component.
- */
-void UCListItemAttached::snapToPosition(qreal position)
-{
-    UCListItem::PanelStatus itemStatus = panelStatus();
-    Q_D(UCListItemAttached);
-    //if it is disconnected, leave (this also includes the case when m_container is null)
-    if (!d->listItem || !d->panel || itemStatus == UCListItem::None) {
-        return;
-    }
-    UCListItemPrivate *listItem = UCListItemPrivate::get(d->listItem);
-    position *= (itemStatus == UCListItem::Leading) ? 1 : -1;
-    listItem->animator.snap(position);
 }

@@ -34,33 +34,6 @@
 #define LAYOUT_HMARGIN_GU               2
 #define LAYOUT_VMARGIN_GU               0.5
 
-class QQuickAbstractAnimation;
-class QQuickBehavior;
-class ListItemAnimator : public QObject
-{
-    Q_OBJECT
-public:
-    ListItemAnimator(QObject *parent = 0);
-    ~ListItemAnimator();
-    void init(UCListItem *listItem)
-    {
-        item = listItem;
-    }
-
-    bool snap(qreal to);
-    void stop();
-
-public Q_SLOTS:
-    void completeAnimation();
-
-private:
-    QQuickAbstractAnimation *getSnapBehavior();
-
-private:
-    UCListItem *item;
-    QPointer<QQuickBehavior> snapBehavior;
-};
-
 class QQuickFlickable;
 class UCListItemDivider;
 class UCListItemActions;
@@ -120,7 +93,6 @@ public:
     UCListItemActions *trailingActions;
     UCActionPanel *leadingPanel;
     UCActionPanel *trailingPanel;
-    ListItemAnimator animator;
     UCAction *defaultAction;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
@@ -146,8 +118,8 @@ public:
 private:
     // local functions
     void setSwiped(bool tugged);
-    void setContentMoving(bool moved);
     void snapOut();
+    void setContentMoving(bool moved);
 };
 
 class UCListItemAttachedPrivate : public QObjectPrivate
@@ -195,6 +167,7 @@ public:
     static bool grabPanel(UCActionPanel **panel, UCListItem *item, bool leading);
     static void ungrabPanel(UCActionPanel *panel);
     static bool isConnected(UCActionPanel *panel);
+    static void snapOut(UCActionPanel *panel);
 
     UCListItemActions *actions();
     QQuickItem *panel() const;

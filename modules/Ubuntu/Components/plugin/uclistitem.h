@@ -165,15 +165,14 @@ public:
     UCListItem::PanelStatus panelStatus();
     QQuickFlickable *flickable() const;
 
-public Q_SLOTS:
-    void snapToPosition(qreal position);
-
 Q_SIGNALS:
     void actionsChanged();
     void visibleActionsChanged();
     void indexChanged();
     void panelStatusChanged();
     void flickableChanged();
+
+    void rebound();
 
 private:
     Q_DECLARE_PRIVATE(UCListItemAttached)

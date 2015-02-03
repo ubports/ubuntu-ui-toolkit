@@ -22,12 +22,4 @@ Styles.ListItemStyle {
 
     swipeOvershoot: units.gu(2)
     actionsDelegate: ListItemPanel{}
-
-    snapAnimation: NumberAnimation {
-        easing {
-            type: Easing.OutElastic
-            period: 0.5
-        }
-        duration: UbuntuAnimation.BriskDuration
-    }
 }

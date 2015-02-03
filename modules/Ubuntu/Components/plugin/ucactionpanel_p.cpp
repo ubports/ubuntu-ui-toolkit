@@ -132,3 +132,15 @@ bool UCActionPanel::isConnected(UCActionPanel *panel)
 {
     return panel && panel->connected;
 }
+
+void UCActionPanel::snapOut(UCActionPanel *panel)
+{
+    if (!panel || !panel->panelItem->isVisible()) {
+       return;
+    }
+    UCListItemAttached *attached = static_cast<UCListItemAttached*>(
+                qmlAttachedPropertiesObject<UCListItem>(panel->panelItem, false));
+    if (attached) {
+        Q_EMIT attached->rebound();
+    }
+}
