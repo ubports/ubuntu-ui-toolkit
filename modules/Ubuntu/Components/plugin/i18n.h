@@ -49,7 +49,7 @@ public:
     Q_INVOKABLE QString ctr(const QString& context, const QString& text);
     Q_INVOKABLE QString dctr(const QString& domain, const QString& context, const QString& text);
     Q_INVOKABLE QString tag(const QString& text);
-    Q_INVOKABLE QString ctag(const QString& context, const QString& text);
+    Q_INVOKABLE QString tag(const QString& context, const QString& text);
 
     // getter
     QString domain() const;

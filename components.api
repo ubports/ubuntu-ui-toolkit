@@ -1052,7 +1052,7 @@ plugins.qmltypes
     name: "tag"
     Parameter { name: "text"; type: "string" }
     Method {
-    name: "ctag"
+    name: "tag"
     Parameter { name: "context"; type: "string" }
     Parameter { name: "text"; type: "string" }
     name: "ULConditionalLayout"

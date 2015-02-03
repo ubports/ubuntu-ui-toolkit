@@ -184,7 +184,7 @@ private Q_SLOTS:
         QCOMPARE(i18n->ctr(QString("All Calls"), QString("All")), QString("Todas"));
         // Only tagged, not actually translated
         QCOMPARE(i18n->tag(QString("All kittens")), QString("All kittens"));
-        QCOMPARE(i18n->ctag(QString("All Cats"), QString("All")), QString("All"));
+        QCOMPARE(i18n->tag(QString("All Cats"), QString("All")), QString("All"));
         // Sanity-check that the test strings would otherwise work and not no-op by accident
         QCOMPARE(i18n->tr(QString("Count the kittens")), QString("Contar los gatitos"));
         QCOMPARE(i18n->ctr(QString("All Cats"), QString("All")), QString("Cada"));

@@ -58,7 +58,7 @@ MainView {
             objectName: 'all3'
             anchors.top: all2.bottom
             anchors.horizontalCenter: all2.horizontalCenter
-            text: i18n.ctag('All Cats', 'All')
+            text: i18n.tag('All Cats', 'All')
         }
     }
 }

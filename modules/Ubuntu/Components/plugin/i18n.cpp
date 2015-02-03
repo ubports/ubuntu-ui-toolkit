@@ -242,12 +242,12 @@ QString UbuntuI18n::tag(const QString& text)
 }
 
 /*!
- * \qmlmethod string i18n::ctag(string context, string text)
+ * \qmlmethod string i18n::tag(string context, string text)
  * Mark \a text for translation at a later point. Typically this allows an API
  * to take the original string and pass it to dctr (or g_dpgettext2).
  * \a context is only visible to the translator and helps disambiguating for very short texts
  */
-QString UbuntuI18n::ctag(const QString& context, const QString& text)
+QString UbuntuI18n::tag(const QString& context, const QString& text)
 {
     Q_UNUSED(context);
     return text;
