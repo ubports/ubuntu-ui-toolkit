@@ -524,10 +524,9 @@ void UCListItemPrivate::snapOut()
     lockContentItem(true);
 }
 
-// connects/disconnects from the Flickable anchestor to get notified when to do rebound
+// connects/disconnects from the Flickable anchestor to get notified when to clear highlights
 void UCListItemPrivate::listenToRebind(bool listen)
 {
-    Q_UNUSED(listen);
     if (parentAttached) {
         Q_Q(UCListItem);
         parentAttached->listenToRebind(q, listen);
@@ -1247,11 +1246,11 @@ void UCListItemPrivate::_q_contentMoving()
     // restart timer
     Q_Q(UCListItem);
     contentMovingTimer.stop();
-    contentMovingTimer.start(100, q);
+    contentMovingTimer.start(10, q);
 
     // update swiping state
-    setSwiped(contentItem->x() !=
-            QQuickItemPrivate::get(contentItem)->anchors()->leftMargin());
+    QQuickAnchors *contentAnchors = QQuickItemPrivate::get(contentItem)->anchors();
+    setSwiped(contentItem->x() != contentAnchors->leftMargin());
 }
 
 /*!

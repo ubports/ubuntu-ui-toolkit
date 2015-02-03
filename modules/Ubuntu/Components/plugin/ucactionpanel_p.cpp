@@ -133,6 +133,7 @@ bool UCActionPanel::isConnected(UCActionPanel *panel)
     return panel && panel->connected;
 }
 
+// emits a rebound() attached signal for the panel which is visible
 void UCActionPanel::snapOut(UCActionPanel *panel)
 {
     if (!panel || !panel->panelItem->isVisible()) {

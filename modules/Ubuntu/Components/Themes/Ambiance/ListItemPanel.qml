@@ -122,13 +122,9 @@ Item {
     }
 
     // animation
-    NumberAnimation {
+    UbuntuNumberAnimation {
         id: snapAnimation
-        easing {
-            type: Easing.OutElastic
-            period: 0.5
-        }
-        duration: UbuntuAnimation.BriskDuration
+        duration: UbuntuAnimation.SnapDuration
         target: styledItem.contentItem
         property: "x"
 
@@ -138,10 +134,14 @@ Item {
             }
             from = styledItem.contentItem.x;
             to = position * (panel.leading ? 1 : -1);
+            if (to == 0.0) {
+                // correct the target value to be the margin
+                to = styledItem.contentItem.anchors.leftMargin;
+            }
             start();
         }
     }
-    ListItem.onRebound: snapAnimation.snapToPosition(styledItem.contentItem.anchors.leftMargin)
+    ListItem.onRebound: snapAnimation.snapToPosition(0)
 
     // Action list visualized
     Row {
