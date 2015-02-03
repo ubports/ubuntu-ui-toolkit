@@ -92,6 +92,7 @@ public:
     void _q_relayout();
     void _q_updateSize();
     void _q_updateIndex();
+    void _q_contentMoving();
     int index();
     bool canHighlight(QMouseEvent *event);
     void setHighlighted(bool pressed);
@@ -114,6 +115,7 @@ public:
     qreal xAxisMoveThresholdGU;
     qreal overshoot;
     QBasicTimer pressAndHoldTimer;
+    QBasicTimer contentMovingTimer;
     QPointF lastPos;
     QPointF pressedPos;
     QColor color;

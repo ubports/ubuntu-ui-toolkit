@@ -101,7 +101,6 @@ bool ListItemAnimator::snap(qreal to)
                 this, &ListItemAnimator::completeAnimation,
                 Qt::DirectConnection);
     }
-    listItem->setContentMoving(true);
     if (snapBehavior) {
         snapBehavior->setEnabled(true);
         snapBehavior->write(to);
@@ -178,8 +177,6 @@ void UCListItemPrivate::snapOut()
     // disconnect actions
     UCActionPanel::ungrabPanel(leadingPanel);
     UCActionPanel::ungrabPanel(trailingPanel);
-    // set contentMoved to false
-    setContentMoving(false);
     // lock contentItem left/right edges
     lockContentItem(true);
 }
@@ -190,8 +187,6 @@ void UCListItemPrivate::snapOut()
  */
 void UCListItemPrivate::snapIn()
 {
-    // turn content moving off
-    setContentMoving(false);
 }
 
 /*
@@ -406,6 +401,8 @@ void UCListItemPrivate::init()
     QQml_setParent_noEvent(contentItem, q);
     contentItem->setParentItem(q);
     contentItem->setClip(true);
+    // connect content X changes to update contentMoving
+    QObject::connect(contentItem, SIGNAL(xChanged()), q, SLOT(_q_contentMoving()));
     divider->init(q);
     // content will be redirected to the contentItem, therefore we must report
     // children changes as it would come from the main component
@@ -1103,7 +1100,6 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         if (dx) {
             // stop pressAndHold timer as we started to drag
             d->pressAndHoldTimer.stop();
-            d->setContentMoving(true);
             // clamp X into allowed dragging area
             d->clampAndMoveX(x, dx);
             // block flickable
@@ -1131,6 +1127,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
+// filter mouse events over ListItem children to capture active mouse handling areas
 bool UCListItem::childMouseEventFilter(QQuickItem *child, QEvent *event)
 {
     QEvent::Type type = event->type();
@@ -1152,6 +1149,7 @@ bool UCListItem::childMouseEventFilter(QQuickItem *child, QEvent *event)
     return UCStyledItemBase::childMouseEventFilter(child, event);
 }
 
+// filter mouse events occurred outside of ListItem area when the content is swiped
 bool UCListItem::eventFilter(QObject *target, QEvent *event)
 {
     QPointF myPos;
@@ -1178,6 +1176,7 @@ bool UCListItem::eventFilter(QObject *target, QEvent *event)
     return UCStyledItemBase::eventFilter(target, event);
 }
 
+// handle pressAndHold() and contentMoving update
 void UCListItem::timerEvent(QTimerEvent *event)
 {
     Q_D(UCListItem);
@@ -1187,6 +1186,8 @@ void UCListItem::timerEvent(QTimerEvent *event)
             d->suppressClick = true;
             Q_EMIT pressAndHold();
         }
+    } else if (event->timerId() == d->contentMovingTimer.timerId() && !d->highlighted) {
+        d->setContentMoving(false);
     } else {
         QQuickItem::timerEvent(event);
     }
@@ -1385,6 +1386,15 @@ void UCListItemPrivate::setContentMoving(bool moved)
         Q_EMIT q->contentMovementEnded();
     }
     Q_EMIT q->contentMovingChanged();
+}
+// updates contentMoving property
+void UCListItemPrivate::_q_contentMoving()
+{
+    setContentMoving(true);
+    // restart timer
+    Q_Q(UCListItem);
+    contentMovingTimer.stop();
+    contentMovingTimer.start(100, q);
 }
 
 /*!

@@ -140,6 +140,10 @@ Item {
             id: movingSpy
             signalName: "contentMovementEnded"
         }
+        SignalSpy {
+            id: movingStartedSpy
+            signalName: "contentMovementStarted"
+        }
 
         SignalSpy {
             id: highlightedSpy
@@ -171,11 +175,14 @@ Item {
                 watchTarget = item;
             }
 
-            movingSpy.target = null;
-            movingSpy.target = watchTarget;
-            movingSpy.clear();
-            mouseClick(item, centerOf(item).x, centerOf(item).y);
-            if (watchTarget.contentMoving) {
+            if (watchTarget.contentItem.x != watchTarget.contentItem.anchors.leftMargin) {
+                movingSpy.target = null;
+                movingSpy.target = watchTarget;
+                movingSpy.clear();
+                movingStartedSpy.target = watchTarget;
+                movingStartedSpy.clear();
+                mouseClick(item, centerOf(item).x, centerOf(item).y);
+                movingStartedSpy.wait();
                 movingSpy.wait();
             }
             movingSpy.target = null;
