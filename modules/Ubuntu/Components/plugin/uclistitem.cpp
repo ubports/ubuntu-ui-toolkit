@@ -1048,9 +1048,12 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
         }
 
         if (!d->suppressClick) {
-            Q_EMIT clicked();
-            if (d->defaultAction) {
-                Q_EMIT d->defaultAction->trigger(d->index());
+            // emit clicked() only if not swiped
+            if (!d->swiped) {
+                Q_EMIT clicked();
+                if (d->defaultAction) {
+                    Q_EMIT d->defaultAction->trigger(d->index());
+                }
             }
             d->animator.snap(0);
         } else {
@@ -1180,7 +1183,7 @@ bool UCListItem::eventFilter(QObject *target, QEvent *event)
 void UCListItem::timerEvent(QTimerEvent *event)
 {
     Q_D(UCListItem);
-    if (event->timerId() == d->pressAndHoldTimer.timerId() && d->highlighted) {
+    if (event->timerId() == d->pressAndHoldTimer.timerId() && d->highlighted && !d->swiped) {
         d->pressAndHoldTimer.stop();
         if (isEnabled() && d->isPressAndHoldConnected()) {
             d->suppressClick = true;

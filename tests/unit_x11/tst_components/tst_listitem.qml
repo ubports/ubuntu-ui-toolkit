@@ -273,6 +273,36 @@ Item {
             clickSpy.wait();
         }
 
+        function test_verify_no_click_when_swiped() {
+            clickSpy.target = testItem;
+            clickSpy.clear();
+            movingSpy.target = testItem;
+            flick(testItem, centerOf(testItem).x, centerOf(testItem).y, units.gu(20), 0);
+            movingSpy.wait();
+
+            // click over the contentItem
+            movingSpy.clear();
+            mouseClick(testItem.contentItem, 1, 1);
+            compare(clickSpy.count, 0, "No click() should be emitted on a swiped in ListItem.");
+            movingSpy.wait();
+        }
+
+        function test_verify_no_pressAndHold_when_swiped() {
+            pressAndHoldSpy.target = testItem;
+            pressAndHoldSpy.clear();
+            movingSpy.target = testItem;
+            flick(testItem, centerOf(testItem).x, centerOf(testItem).y, units.gu(20), 0);
+            movingSpy.wait();
+
+            // press and hold
+            movingSpy.clear();
+            mouseLongPress(testItem.contentItem, 1, 1);
+            mouseRelease(testItem.contentItem, 1, 1);
+            mouseRelease(testItem.contentItem, 1, 1);
+            compare(pressAndHoldSpy.count, 0, "No pressAndHold() should be emitted on a swiped in ListItem.");
+            movingSpy.wait();
+        }
+
         function test_mouse_click_on_listitem() {
             var listItem = findChild(listView, "listItem0");
             verify(listItem, "Cannot find listItem0");
@@ -603,9 +633,9 @@ Item {
         function test_verify_action_value(data) {
             // tug actions in
             movingSpy.target = data.item;
-            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, units.gu(20), 0, 100, 10);
+            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, units.gu(20), 0);
             movingSpy.wait();
-            verify(data.item.contentItem.x != 0.0, "Not snapped in");
+            verify(data.item.contentItem.x != data.item.contentItem.anchors.leftMargin, "Not snapped in");
 
             var panel = panelItem(data.item, "Leading");
             var action = findChild(panel, "leading_2");
@@ -614,9 +644,7 @@ Item {
             actionSpy.target = data.item.leadingActions.actions[1];
 
             // select the action
-            movingSpy.clear();
             mouseClick(action, centerOf(action).x, centerOf(action).y);
-            movingSpy.wait();
 
             // check the action param
             actionSpy.wait();
@@ -660,6 +688,8 @@ Item {
             clickSpy.clear();
             mouseLongPress(testItem, center.x, center.y);
             mouseRelease(testItem, center.x, center.y);
+            // need two releases!
+            mouseRelease(testItem, center.x, center.y);
             pressAndHoldSpy.wait();
             compare(clickSpy.count, 0, "Click must be suppressed when long pressed");
         }
@@ -671,6 +701,7 @@ Item {
             // so any value less than that will emit pressAndHold
             mouseMoveSlowly(testItem, center.x, center.y, units.gu(2), 0, 10, 100);
             mouseRelease(testItem, center.x + units.gu(1), center.y);
+            mouseRelease(testItem, center.x + units.gu(1), center.y);
             compare(pressAndHoldSpy.count, 0, "pressAndHold should not be emitted!");
             // make sure we have collapsed item
             rebound(testItem);
@@ -681,6 +712,7 @@ Item {
             pressAndHoldSpy.target = controlItem;
             mouseLongPress(button, press.x, press.y);
             compare(pressAndHoldSpy.count, 0, "")
+            mouseRelease(button, press.x, press.y);
             mouseRelease(button, press.x, press.y);
         }
 
@@ -696,6 +728,7 @@ Item {
             highlightedSpy.target = clickedConnected;
             mouseLongPress(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
             highlightedSpy.wait();
+            mouseRelease(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
             mouseRelease(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
         }
 
@@ -736,6 +769,7 @@ Item {
             clickSpy.target = testItem;
             pressAndHoldSpy.target = testItem;
             mouseLongPress(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            mouseRelease(testItem, centerOf(testItem).x, centerOf(testItem).y);
             mouseRelease(testItem, centerOf(testItem).x, centerOf(testItem).y);
             pressAndHoldSpy.wait();
             compare(clickSpy.count, 0, "Click must be suppressed.");
