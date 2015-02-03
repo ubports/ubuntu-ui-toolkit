@@ -899,9 +899,7 @@ plugins.qmltypes
     Property { name: "index"; type: "int"; isReadonly: true }
     Property { name: "panelStatus"; type: "UCListItem::PanelStatus"; isReadonly: true }
     Property { name: "flickable"; type: "QQuickFlickable"; isReadonly: true; isPointer: true }
-    Method {
-    name: "snapToPosition"
-    Parameter { name: "position"; type: "double" }
+    Signal { name: "rebound" }
     name: "UCListItemDivider"
     prototype: "QQuickItem"
     Property { name: "colorFrom"; type: "QColor" }
@@ -912,7 +910,6 @@ plugins.qmltypes
     Property { name: "actionsDelegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "selectionDelegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "dragHandlerDelegate"; type: "QQmlComponent"; isPointer: true }
-    Property { name: "snapAnimation"; type: "QQuickAbstractAnimation"; isPointer: true }
     Property { name: "swipeOvershoot"; type: "double" }
     name: "UCMouse"
     prototype: "QObject"
