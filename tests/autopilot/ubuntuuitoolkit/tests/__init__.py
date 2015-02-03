@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2012, 2013, 2014 Canonical Ltd.
+# Copyright (C) 2012-2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -133,7 +133,8 @@ class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
 
     @property
     def main_view(self):
-        return self.app.select_single(ubuntuuitoolkit.MainView)
+        return self.app.select_single(objectName="mainView")
+#        return self.app.select_single(ubuntuuitoolkit.MainView)
 
 
 class FlickDirection:
@@ -182,7 +183,8 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
 
     @property
     def main_view(self):
-        return self.app.select_single(ubuntuuitoolkit.MainView)
+        return self.app.select_single(objectName="mainView")
+#        return self.app.select_single(ubuntuuitoolkit.MainView)
 
     def getOrientationHelper(self):
         orientationHelper = self.main_view.select_many(
