@@ -141,8 +141,8 @@ Ubuntu.StyledItem {
     Item {
         id: draggedItem
         objectName: cursorItem.positionProperty + "_draggeditem"
-        width: units.gu(4)
-        height: units.gu(4)
+        width: caret.width + units.gu(4)
+        height: caret.height + units.gu(4)
         parent: handler.main
         visible: caret.visible
 
