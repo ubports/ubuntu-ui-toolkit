@@ -133,7 +133,9 @@ class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
 
     @property
     def main_view(self):
-        return self.app.select_single(objectName="wut")
+        """QML code used for testing must define the objectName
+        of the MainView to be 'mainView'"""
+        return self.app.select_single(objectName="mainView")
 #        return self.app.select_single(ubuntuuitoolkit.MainView)
 
 
@@ -183,6 +185,8 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
 
     @property
     def main_view(self):
+        """QML code used for testing must define the objectName
+        of the MainView to be 'mainView'"""
         return self.app.select_single(objectName="mainView")
 #        return self.app.select_single(ubuntuuitoolkit.MainView)
 
