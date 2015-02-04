@@ -87,6 +87,7 @@ import Ubuntu.Components 1.1
 MainView {
     width: units.gu(48)
     height: units.gu(80)
+    objectName: "mainView"
 }
 """)
 
