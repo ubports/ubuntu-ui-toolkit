@@ -105,6 +105,7 @@ MainView {
             Button {
                 text: "Press me"
                 anchors.centerIn: parent
+                onClicked: units.gridUnit -=2
             }
 
             leadingActions: ListItemActions {
@@ -162,12 +163,15 @@ MainView {
                 id: listItem
                 onClicked: print(" clicked")
                 onPressAndHold: print("pressAndHold")
-                leadingActions: leading
-                trailingActions: leadingActions
+//                leadingActions: leading
+                trailingActions: leading
 
                 contentItem.anchors {
                     margins: units.gu(1)
                 }
+
+                onContentMovementStarted: print("move started")
+                onContentMovementEnded: print("move ended")
 
                 Label {
                     anchors.fill: parent

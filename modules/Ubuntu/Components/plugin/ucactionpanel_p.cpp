@@ -145,3 +145,12 @@ void UCActionPanel::snapOut(UCActionPanel *panel)
         Q_EMIT attached->rebound();
     }
 }
+
+// set visible flag of the panel
+void UCActionPanel::setVisible(UCActionPanel *panel, bool visible)
+{
+    if (!panel || !panel->connected) {
+        return;
+    }
+    panel->panel()->setVisible(visible);
+}

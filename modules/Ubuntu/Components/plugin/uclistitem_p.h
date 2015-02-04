@@ -66,6 +66,7 @@ public:
     void listenToRebind(bool listen);
     void lockContentItem(bool lock);
     void update();
+    void snapOut();
     void clampAndMoveX(qreal &x, qreal dx);
 
     bool highlighted:1;
@@ -82,6 +83,8 @@ public:
     QBasicTimer contentMovingTimer;
     QPointF lastPos;
     QPointF pressedPos;
+    QPointF swipedDistance;
+    QPointF zeroPos;
     QColor color;
     QColor highlightColor;
     QPointer<QQuickItem> countOwner;
@@ -118,7 +121,6 @@ public:
 private:
     // local functions
     void setSwiped(bool tugged);
-    void snapOut();
     void setContentMoving(bool moved);
 };
 
@@ -168,6 +170,7 @@ public:
     static void ungrabPanel(UCActionPanel *panel);
     static bool isConnected(UCActionPanel *panel);
     static void snapOut(UCActionPanel *panel);
+    static void setVisible(UCActionPanel *panel, bool visible);
 
     UCListItemActions *actions();
     QQuickItem *panel() const;

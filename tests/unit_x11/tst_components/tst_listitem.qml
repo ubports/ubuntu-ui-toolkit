@@ -542,10 +542,10 @@ Item {
             return [
                 // the first dx must be big enough to drag the panel in, it is always the last dx value
                 // which decides the snap direction
-                {tag: "Snap out, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(2)], snapIn: false},
+                {tag: "Snap out, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(5)], snapIn: false},
                 {tag: "Snap in, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(1), units.gu(1.5)], snapIn: true},
                 // have less first dx as the trailing panel is shorter
-                {tag: "Snap out, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(2)], snapIn: false},
+                {tag: "Snap out, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(5)], snapIn: false},
                 {tag: "Snap in, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(1), -units.gu(1.5)], snapIn: true},
             ];
         }
@@ -568,7 +568,7 @@ Item {
                 // dismiss
                 rebound(data.item);
             } else {
-                fuzzyCompare(data.item.contentItem.x, data.item.contentItem.anchors.leftMargin, 0.1, "Not snapped out!");
+                tryCompareFunction(function() { return data.item.contentItem.x}, data.item.contentItem.anchors.leftMargin, 1000);
             }
         }
 

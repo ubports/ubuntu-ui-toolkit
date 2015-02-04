@@ -70,13 +70,13 @@ Item {
 
     Rectangle {
         objectName: "panel_background"
-        anchors {
-            fill: parent
-            // add 4 times the overshoot margins to cover the background when tugged
-            leftMargin: (leading && styledItem) ? -units.gu(4 * styledItem.swipeOvershoot) : 0
-            rightMargin: (!leading && styledItem) ? -units.gu(4 * styledItem.swipeOvershoot) : 0
-        }
         color: panel.backgroundColor
+        height: parent.height
+        width: styledItem.width
+        anchors {
+            left: leading ? undefined: parent.left
+            right: leading ? parent.right : undefined
+        }
     }
 
     // handle action triggering

@@ -42,6 +42,7 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
     , m_selectionDelegate(0)
     , m_dragHandlerDelegate(0)
     , m_swipeOvershoot(0)
+    , m_attachActionPanelByDirection(true)
 {
 }
 
