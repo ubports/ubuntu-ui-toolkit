@@ -1,3 +1,58 @@
+ubuntu-ui-toolkit (1.1.1298+15.04.20150202~rtm-0ubuntu1) 14.09; urgency=medium
+
+  [ Tim Peeters ]
+  * Port "In Progress" translation fix from staging to rtm. (LP:
+    #1391617, #1081607)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 02 Feb 2015 09:11:21 +0000
+
+ubuntu-ui-toolkit (1.1.1298+15.04.20150116~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ Florian Boucault ]
+  * ActivityIndicator: make its animation rely solely on the rendering
+    thread so that it does not stop spinning if the main thread is
+    blocked. (LP: #1411376)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 16 Jan 2015 10:17:50 +0000
+
+ubuntu-ui-toolkit (1.1.1298+15.04.20150109~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ Christian Dywan ]
+  * Take frameSpacing into account when location cursor (LP: #1384749)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 09 Jan 2015 17:38:20 +0000
+
+ubuntu-ui-toolkit (1.1.1298+15.04.20150107~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ Zsombor Egri ]
+  * Rolling back ListItem dividers from 2GU left&right margins to no
+    margins. (LP: #1380766)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 07 Jan 2015 18:47:29 +0000
+
+ubuntu-ui-toolkit (1.1.1298+15.04.20141203.1~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ Zoltán Balogh ]
+  * Many TextField/TextArea fixes improving user experience greatly and
+    making it more in line with the design: handle much easier to drag
+    by making its touch area 4 grid units wide and centered around the
+    cursor; double tapping anywhere (even around the handle) selects the
+    word and opens the contextual menu; long pressing anywhere (even
+    around the handle) selects the word and opens the contextual menu;
+    make sure that when there is a selection the contextual menu is
+    shown and shown above the cursor at the beginning of the selection;
+    do not prevent other UI elements from receiving mouse/touch events
+    when the contextual menu is shown
+  * Revert to 1124
+  * Fixed unit test
+    tst_components::tst_textinput_touch::test_longtap_when_empty: do not
+    cause a double tap before the long press.
+
+  [ Christian Dywan ]
+  * Don't subtract itemSpacing from column width (LP: #1387806)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Wed, 03 Dec 2014 13:12:49 +0000
+
 ubuntu-ui-toolkit (1.1.1298+15.04.20141111.2~rtm-0ubuntu1) 14.09; urgency=low
 
   [ Ubuntu daily release ]

@@ -112,8 +112,18 @@ MultiPointTouchArea {
             flickable.contentY = rect.y + rect.height - flickable.height;
     }
     // returns the cursor position from x,y pair
-    function cursorPosition(x, y) {
+    function unadulteratedCursorPosition(x, y) {
         return singleLine ? input.positionAt(x, TextInput.CursorOnCharacter) : input.positionAt(x, y, TextInput.CursorOnCharacter);
+    }
+    // returns the cursor position taking frame into account
+    function cursorPosition(x, y) {
+        var frameSpacing = main.__styleInstance.frameSpacing;
+        var cursorPosition = unadulteratedCursorPosition(x, y);
+        if (cursorPosition == 0)
+            cursorPosition = unadulteratedCursorPosition(x + frameSpacing, y + frameSpacing);
+        if (cursorPosition == text.length)
+            cursorPosition = unadulteratedCursorPosition(x - frameSpacing, y - frameSpacing);
+        return cursorPosition
     }
 
     // returns the mouse position
