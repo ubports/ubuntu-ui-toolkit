@@ -172,6 +172,14 @@ Ubuntu.StyledItem {
             }
             Ubuntu.Mouse.onDoubleClicked: handler.main.selectWord()
             Ubuntu.Mouse.enabled: enabled
+
+            // Visible touch target area for debugging purposes
+            Rectangle {
+                anchors.fill: parent
+                color: 'red'
+                opacity: 0.1
+                visible: draggedItem.visible
+            }
         }
 
         // aligns the draggedItem to the caret and resets the dragger
