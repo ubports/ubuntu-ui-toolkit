@@ -27,10 +27,18 @@ UbuntuTestCase {
         tryCompareFunction(function() { return Haptics.effect.state; }, HapticsEffect.Stopped, 1000);
     }
 
+    // wait for the service to be available
+    function waitForServiceReady() {
+        try {
+            tryCompareFunction(function() { return settings.status === ServiceProperties.Active; }, true, 1000);
+        } catch (e) {
+        }
+    }
+
     function initTestCase() {
         var settings = findChild(Haptics, "system_effect_settings");
         verify(settings, "system settings watcher not found");
-        tryCompareFunction(function() { return settings.status === ServiceProperties.Active; }, true, 1000);
+        waitForServiceReady();
     }
 
     function test_0_defaults() {
