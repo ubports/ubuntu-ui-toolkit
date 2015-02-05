@@ -138,7 +138,7 @@ class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
         Return the MainView of the app, selected by objectName.
 
         QML code used for testing must define the objectName
-        of the MainView to be 'mainView'
+        of the MainView to be 'mainView'.
         """
         return self.app.select_single(objectName='mainView')
 
@@ -193,7 +193,7 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         Return the MainView of the app, selected by objectName.
 
         QML code used for testing must define the objectName
-        of the MainView to be 'mainView'
+        of the MainView to be 'mainView'.
         """
 
         return self.app.select_single(objectName='mainView')
