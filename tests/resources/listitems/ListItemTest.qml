@@ -230,10 +230,11 @@ MainView {
         }
         ListItem {
             Label {
-                text: "No action, no trailing/leading actions, no active component"
+                text: "With action assigned"
             }
             onClicked: print("clicked")
             onPressAndHold: print("longPressed")
+            action: stock
         }
     }
 }

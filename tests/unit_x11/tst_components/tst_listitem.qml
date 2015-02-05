@@ -717,9 +717,7 @@ Item {
         function test_action_triggered_on_clicked() {
             testItem.action = stockAction;
             actionSpy.target = stockAction;
-            clickSpy.target = testItem;
             mouseClick(testItem, centerOf(testItem).x, centerOf(testItem).y);
-            clickSpy.wait();
             actionSpy.wait();
         }
 

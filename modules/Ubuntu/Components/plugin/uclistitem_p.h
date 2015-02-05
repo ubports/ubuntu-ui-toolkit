@@ -96,7 +96,7 @@ public:
     UCActionPanel *leadingPanel;
     UCActionPanel *trailingPanel;
     UCListItemSnapAnimator *animator;
-    UCAction *defaultAction;
+    UCAction *mainAction;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
     QQmlComponent *styleComponent;
