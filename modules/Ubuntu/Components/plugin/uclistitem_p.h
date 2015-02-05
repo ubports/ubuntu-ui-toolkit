@@ -26,6 +26,10 @@
 #define MIN(x, y)           ((x < y) ? x : y)
 #define MAX(x, y)           ((x > y) ? x : y)
 #define CLAMP(v, min, max)  (min <= max) ? MAX(min, MIN(v, max)) : MAX(max, MIN(v, min))
+// Linearly project a value v from [min, max] into [pmin, pmax]
+#define PROJECT(v, min, max, pmin, pmax) \
+    (((v) - (min)) * (pmax) - ((v) - (max)) * (pmin)) / ((max) - (min))
+
 
 #define IMPLICIT_LISTITEM_WIDTH_GU      40
 #define IMPLICIT_LISTITEM_HEIGHT_GU     7
@@ -67,7 +71,8 @@ public:
     void lockContentItem(bool lock);
     void update();
     void snapOut();
-    void clampAndMoveX(qreal &x, qreal dx);
+    bool clampAndMoveContent(const QPointF &localPos);
+    bool attachActionPanels(const QPointF &localPos);
 
     bool highlighted:1;
     bool contentMoved:1;
@@ -76,15 +81,15 @@ public:
     bool ready:1;
     bool customColor:1;
     bool customOvershoot:1;
-    bool flicked:1;
     qreal xAxisMoveThresholdGU;
     qreal overshoot;
     QBasicTimer pressAndHoldTimer;
     QBasicTimer contentMovingTimer;
     QPointF lastPos;
     QPointF pressedPos;
-    QPointF swipedDistance;
     QPointF zeroPos;
+
+    qreal swipeRangeFrom, swipeRangeTo;
     QColor color;
     QColor highlightColor;
     QPointer<QQuickItem> countOwner;

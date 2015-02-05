@@ -199,7 +199,6 @@ UCListItemPrivate::UCListItemPrivate()
     , ready(false)
     , customColor(false)
     , customOvershoot(false)
-    , flicked(false)
     , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
     , overshoot(0)
     , color(Qt::transparent)
@@ -538,6 +537,8 @@ void UCListItemPrivate::lockContentItem(bool lock)
     if (lock) {
         contentAnchors->setLeft(left());
         contentAnchors->setRight(right());
+        // set the "zero" position
+        zeroPos = contentItem->position();
     } else {
         contentAnchors->resetLeft();
         contentAnchors->resetRight();
@@ -554,21 +555,74 @@ void UCListItemPrivate::update()
 }
 
 // clamps the X value and moves the contentItem to the new X value
-void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
+bool UCListItemPrivate::clampAndMoveContent(const QPointF &localPos)
 {
-    x += dx;
-    // min cannot be less than the trailing's panel width
-    QQuickItem *leadingPanelItem = leadingPanel ? leadingPanel->panel() : 0;
-    QQuickItem *trailingPanelItem = trailingPanel ? trailingPanel->panel() : 0;
-    qreal min = (trailingPanelItem) ? -trailingPanelItem->width(): 0;
-    // max cannot be bigger than 0 or the leading's width in case we have leading panel
-    qreal max = (leadingPanelItem) ? leadingPanelItem->width(): 0;
-    x = CLAMP(x, min, max);
-    if (x == min || x == max) {
-        // clamped, calculate overshoot based on the clamped and the swiped distance
-        dx = swipedDistance.x() - x;
-        x += dx / 3;
+    qreal dx = localPos.x() - lastPos.x();
+    lastPos = localPos;
+    if (!dx) {
+        return false;
     }
+    qreal x = contentItem->x() + dx;
+    x = CLAMP(x, swipeRangeFrom, swipeRangeTo);
+    if (x == swipeRangeFrom || x == swipeRangeTo) {
+        // overshoot calculation
+        if ((dx < 0 && !UCActionPanel::isConnected(trailingPanel) && contentItem->x() <= zeroPos.x()) ||
+            (dx > 0 && !UCActionPanel::isConnected(leadingPanel) && contentItem->x() >= zeroPos.x())) {
+        } else {
+            // the distance between the clamped position and the current one
+            qDebug() << zeroPos << contentItem->position() << x << dx;
+            dx = localPos.x() - x;
+            x += dx / 3;
+        }
+    }
+    bool moved = contentItem->x() != x;
+    contentItem->setX(x);
+    return moved;
+}
+
+bool UCListItemPrivate::attachActionPanels(const QPointF &localPos)
+{
+    // accept the tugging only if the move is within the threshold
+    bool leadingAttached = UCActionPanel::isConnected(leadingPanel);
+    bool trailingAttached = UCActionPanel::isConnected(trailingPanel);
+    if (highlighted && !(leadingAttached || trailingAttached)) {
+        Q_Q(UCListItem);
+        // check if we can initiate the drag at all
+        // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
+        qreal threshold = UCUnits::instance().gu(xAxisMoveThresholdGU);
+        qreal mouseX = localPos.x();
+        qreal pressedX = pressedPos.x();
+        qreal dx = mouseX - pressedX;
+
+        if ((abs(dx) - threshold) > 0) {
+            // the press went out of the threshold area, enable move, if the direction allows it
+            // update pressed pos as we might not be able to grab either of the pannels
+//            pressedPos.setX(pressedX + dx);
+            // connect both panels so we do no longer need to take care which
+            // got connected ad which not
+            leadingAttached = UCActionPanel::grabPanel(&leadingPanel, q, true);
+            trailingAttached = UCActionPanel::grabPanel(&trailingPanel, q, false);
+            // unlock contentItem's left/right edges
+            lockContentItem(false);
+            if (parentAttached) {
+                parentAttached->disableInteractive(q, true);
+            }
+            if (leadingAttached || trailingAttached) {
+                lastPos = localPos;
+                // setup contentItem.x allowed swipe range
+                swipeRangeFrom = swipeRangeTo = contentItem->position().x();
+                if (UCActionPanel::isConnected(leadingPanel)) {
+                    // extend to-side
+                    swipeRangeTo += leadingPanel->panel()->width();
+                }
+                if (UCActionPanel::isConnected(trailingPanel)) {
+                    // extend from-side
+                    swipeRangeFrom -= trailingPanel->panel()->width();
+                }
+            }
+        }
+    }
+    return leadingAttached || trailingAttached;
 }
 
 /*!
@@ -877,7 +931,6 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
             && !d->highlighted && event->button() == Qt::LeftButton) {
         d->setHighlighted(true);
         d->lastPos = d->pressedPos = event->localPos();
-        d->swipedDistance = d->zeroPos = d->contentItem->position();
         // connect the Flickable to know when to rebound
         d->listenToRebind(true);
         // if it was moved, grab the panels
@@ -931,61 +984,11 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     Q_D(UCListItem);
     UCStyledItemBase::mouseMoveEvent(event);
 
-    // accept the tugging only if the move is within the threshold
-    bool leadingAttached = UCActionPanel::isConnected(d->leadingPanel);
-    bool trailingAttached = UCActionPanel::isConnected(d->trailingPanel);
-    if (d->highlighted && !(leadingAttached || trailingAttached)) {
-        // check if we can initiate the drag at all
-        // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
-        qreal threshold = UCUnits::instance().gu(d->xAxisMoveThresholdGU);
-        qreal mouseX = event->localPos().x();
-        qreal pressedX = d->pressedPos.x();
-        qreal dx = mouseX - pressedX;
-
-        if ((abs(dx) - threshold) > 0) {
-            // the press went out of the threshold area, enable move, if the direction allows it
-            // update pressed pos as we might not be able to grab either of the pannels
-            d->pressedPos.setX(pressedX + dx);
-            if (d->styleItem->m_attachActionPanelByDirection) {
-                // connect only the panel the gesture swipes in
-                if (dx > 0) {
-                    leadingAttached = UCActionPanel::grabPanel(&d->leadingPanel, this, true);
-                } else {
-                    trailingAttached = UCActionPanel::grabPanel(&d->trailingPanel, this, false);
-                }
-            } else {
-                // tries to connect both panels so we do no longer need to take care which
-                // got connected ad which not; this may fail in case of shared ListItemActions,
-                // as then the panel is shared between the list items, and the panel might be
-                // still in use in other panels. See UCListItemActionsPrivate::connectToListItem
-                leadingAttached = UCActionPanel::grabPanel(&d->leadingPanel, this, true);
-                trailingAttached = UCActionPanel::grabPanel(&d->trailingPanel, this, false);
-            }
-            // unlock contentItem's left/right edges
-            d->lockContentItem(false);
-            if (d->parentAttached) {
-                d->parentAttached->disableInteractive(this, true);
-            }
-            if (leadingAttached || trailingAttached) {
-                d->lastPos = event->localPos();
-                d->swipedDistance = d->contentItem->position();
-            }
-        }
-    }
-
-    if (leadingAttached || trailingAttached) {
-        qreal x = d->contentItem->x();
-        QPointF dPos = (event->localPos() - d->lastPos);
-        qreal dx = dPos.x();
-        d->swipedDistance += dPos;
-        d->lastPos = event->localPos();
-
-        if (dx) {
+    if (d->attachActionPanels(event->localPos())) {
+        // clamp and move contentItem
+        if (d->clampAndMoveContent(event->localPos())) {
             // stop pressAndHold timer as we started to drag
             d->pressAndHoldTimer.stop();
-            // clamp X into allowed dragging area
-            d->clampAndMoveX(x, dx);
-            d->contentItem->setX(x);
             // decide which panel is visible by checking the contentItem's X coordinates
             qreal margin = QQuickItemPrivate::get(d->contentItem)->anchors()->leftMargin();
             if (d->contentItem->x() > margin) {
