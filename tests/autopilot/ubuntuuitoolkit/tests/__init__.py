@@ -137,7 +137,6 @@ class QMLStringAppTestCase(UbuntuUIToolkitWithFakeAppRunningTestCase):
         """QML code used for testing must define the objectName
         of the MainView to be 'mainView'"""
         return self.app.select_single(objectName="mainView")
-#        return self.app.select_single(ubuntuuitoolkit.MainView)
 
 
 class FlickDirection:
@@ -189,7 +188,6 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         """QML code used for testing must define the objectName
         of the MainView to be 'mainView'"""
         return self.app.select_single(objectName="mainView")
-#        return self.app.select_single(ubuntuuitoolkit.MainView)
 
     def getOrientationHelper(self):
         orientationHelper = self.main_view.select_many(
