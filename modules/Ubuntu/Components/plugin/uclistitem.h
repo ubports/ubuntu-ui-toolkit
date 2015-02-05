@@ -78,6 +78,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
     bool childMouseEventFilter(QQuickItem *child, QEvent *event);
     bool eventFilter(QObject *, QEvent *);
+    void timerEvent(QTimerEvent *event);
 
 Q_SIGNALS:
     void leadingActionsChanged();
@@ -90,6 +91,7 @@ Q_SIGNALS:
     void listItemChildrenChanged();
 
     void clicked();
+    void pressAndHold();
 
     void styleChanged();
     void __styleInstanceChanged();

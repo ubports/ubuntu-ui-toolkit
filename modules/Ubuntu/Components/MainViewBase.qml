@@ -23,9 +23,6 @@ import QtQuick.Window 2.0
 // Documentation is in MainView.qdoc
 PageTreeNode {
     id: mainView
-//    objectName: "MainView"  // used in @property main_view (twice) in
-                            // tests/autopilot/ubuntuuitoolkit/tests/__init.py__
-
     property string applicationName: ""
     property bool anchorToKeyboard: false
     property alias headerColor: background.headerColor
@@ -50,7 +47,7 @@ PageTreeNode {
           theme changes due to properties being evaluated separately.
 
           Qt bug: https://bugreports.qt-project.org/browse/QTBUG-11712
-          */
+         */
         property string theme: (ColorUtils.luminance(backgroundColor) >= 0.85) ?
                                    "Ambiance" : "SuruDark"
         onThemeChanged: {
@@ -62,14 +59,7 @@ PageTreeNode {
     }
 
     active: true
-
-    // automaticOrientation is defined in MainView10 and MainView12 as an alias.
-
-    // value of useDeprecatedToolbar is set in MainView10 and MainView12
     property bool useDeprecatedToolbar
-
-    // default property is set in MainView10 and MainView12
-
     property alias actions: unityActionManager.actions
     property alias actionManager: unityActionManager
     Toolkit.ActionManager {

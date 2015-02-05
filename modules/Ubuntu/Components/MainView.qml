@@ -26,6 +26,9 @@ MainViewBase {
 
     active: true
 
+    /*!
+      \qmlproperty bool automaticOrientation
+     */
     property alias automaticOrientation: canvas.automaticOrientation
     useDeprecatedToolbar: true
 

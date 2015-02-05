@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2013, 2014 Canonical Ltd.
+# Copyright (C) 2013-2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -24,12 +24,13 @@ class ActionSelectionPopoverTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.Popups 0.1
+import Ubuntu.Components 1.0
+import Ubuntu.Components.Popups 1.0
 
 MainView {
     width: units.gu(48)
     height: units.gu(60)
+    objectName: "mainView"
 
     Button {
         objectName: "open_popover"
@@ -100,12 +101,13 @@ class ComposerSheetTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.Popups 0.1
+import Ubuntu.Components 1.0
+import Ubuntu.Components.Popups 1.0
 
 MainView {
     width: units.gu(48)
     height: units.gu(60)
+    objectName: "mainView"
 
     Button {
         objectName: "openComposerSheetButton"

@@ -90,8 +90,6 @@
         import QtQuick 2.0
         import Ubuntu.Components 1.1
 
-        //FIXME TIM: Don't use tools in the docs. It is deprecated
-
         MainView {
             width: units.gu(48)
             height: units.gu(60)
@@ -123,10 +121,11 @@
             }
         }
     \endqml
-    The toolbar is hidden by default, but will be made visible when the user performs a bottom-edge-swipe gesture, and
-    hidden when the user swipes it out, or when the active \l Page inside the MainView is changed.
-    The examples above show how to include a single \l Page inside a MainView, but more advanced application
-    structures are possible using \l PageStack and \l Tabs.
+    The toolbar is hidden by default, but will be made visible when the user performs a
+    bottom-edge-swipe gesture, and hidden when the user swipes it out, or when the active
+    \l Page inside the MainView is changed.
+    The examples above show how to include a single \l Page inside a MainView, but more
+    advanced application structures are possible using \l PageStack and \l Tabs.
     See \l ToolbarItems for details on how to to control the behavior and contents of the toolbar.
 */
 
@@ -211,7 +210,6 @@
   the header, even before all the required functionality is implemented.
   This property will be deprecated after the new header implementation is done and
   all apps transitioned to using it. Default value: true.
-  FIXME TIM: From 1.2, useDeprecatedToolbar is deprecated and always assumed to be false
 */
 
 /*!

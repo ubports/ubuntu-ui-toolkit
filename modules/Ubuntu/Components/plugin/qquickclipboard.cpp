@@ -177,7 +177,11 @@ void QQuickClipboard::push(const QVariant& data)
         d->clipboard->setMimeData(mimeData->toMimeData(), d->mode);
     else {
         QQuickMimeData newData(new QMimeData, false);
-        newData.setMimeData(data);
+        if (data.userType() == qMetaTypeId<QJSValue>()) {
+            newData.setMimeData(data.value<QJSValue>().toVariant());
+        } else {
+            newData.setMimeData(data);
+        }
         d->clipboard->setMimeData(newData.m_mimeData, d->mode);
     }
 }
