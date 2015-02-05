@@ -97,6 +97,8 @@ Ubuntu.StyledItem {
         var popup = PopupUtils.open(component, anchor, {
             "target": handler.main,
         });
+        // hide the arrow
+        popup.__foreground.direction = "none";
         cursorItem.Component.onDestruction.connect(popup.__closePopup);
         contextMenuVisible = true;
         popup.onVisibleChanged.connect(contextMenuHidden.bind(undefined, popup));
