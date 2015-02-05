@@ -57,12 +57,12 @@ bool UCActionPanel::createPanel(QQmlComponent *panelDelegate)
     if (!panelDelegate->isError()) {
         // use ListItem's style context to be able to access ther styledItem context property
         UCListItemPrivate *pListItem = UCListItemPrivate::get(listItem);
-        QQmlContext *context = new QQmlContext(qmlContext(pListItem->styleItem));
+        QQmlContext *parentContext = qmlContext(pListItem->styleItem);
+        QQmlContext *context = new QQmlContext(parentContext, parentContext);
         panelItem = qobject_cast<QQuickItem*>(panelDelegate->beginCreate(context));
         if (!panelItem) {
             qmlInfo(listItem) << UbuntuI18n::tr("Error creating ListItem actions panel");
         } else {
-            context->setParent(panelItem);
             QQml_setParent_noEvent(panelItem, listItem);
             panelItem->setParentItem(listItem);
             // create attached property!

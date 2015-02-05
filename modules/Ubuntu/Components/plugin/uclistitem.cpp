@@ -571,8 +571,8 @@ bool UCListItemPrivate::clampAndMoveContent(const QPointF &localPos)
         } else {
             // the distance between the clamped position and the current one
             qDebug() << zeroPos << contentItem->position() << x << dx;
-            dx = localPos.x() - x;
-            x += dx / 3;
+//            dx = localPos.x() - x;
+//            x += dx / 3;
         }
     }
     bool moved = contentItem->x() != x;
@@ -596,8 +596,6 @@ bool UCListItemPrivate::attachActionPanels(const QPointF &localPos)
 
         if ((abs(dx) - threshold) > 0) {
             // the press went out of the threshold area, enable move, if the direction allows it
-            // update pressed pos as we might not be able to grab either of the pannels
-//            pressedPos.setX(pressedX + dx);
             // connect both panels so we do no longer need to take care which
             // got connected ad which not
             leadingAttached = UCActionPanel::grabPanel(&leadingPanel, q, true);
