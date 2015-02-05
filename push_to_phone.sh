@@ -16,12 +16,16 @@
 #
 # Author: Christian Dywan <christian.dywan@canonical.com>
 
+# Ensure adb is running to prevent errors in output
+adb start-server
+
 # Determine device architecture
-ARCH=$(adb shell "dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null" | tr -d \\r)
+ARCH=$(adb shell "dpkg-architecture -qDEB_HOST_MULTIARCH 2>/dev/null || echo arm-linux-gnueabihf" | tr -d \\r)
 if [ -z "$ARCH" ]; then
     echo Developer mode enabled? Screen unlocked?
     exit 1
 fi
+echo Ready to push Ubuntu.Components for $ARCH to device
 
 DEST=/usr/lib/$ARCH/qt5/qml/Ubuntu/Components
 RUN=$XDG_RUNTIME_DIR/$(basename $0)
