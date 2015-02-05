@@ -195,7 +195,6 @@ class QMLFileAppTestCase(base.UbuntuUIToolkitAppTestCase):
         QML code used for testing must define the objectName
         of the MainView to be 'mainView'.
         """
-
         return self.app.select_single(objectName='mainView')
 
     def getOrientationHelper(self):
