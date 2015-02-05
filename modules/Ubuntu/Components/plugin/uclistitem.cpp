@@ -24,6 +24,7 @@
 #include "propertychange_p.h"
 #include "i18n.h"
 #include "quickutils.h"
+#include "ucaction.h"
 #include <QtQml/QQmlInfo>
 #include <QtQuick/private/qquickitem_p.h>
 #include <QtQuick/private/qquickflickable_p.h>
@@ -354,6 +355,7 @@ UCListItemPrivate::UCListItemPrivate()
     , leadingPanel(0)
     , trailingPanel(0)
     , animator(0)
+    , mainAction(0)
     , styleComponent(0)
     , implicitStyleComponent(0)
     , styleItem(0)
@@ -593,6 +595,7 @@ int UCListItemPrivate::index()
 // returns true if the highlight is possible
 bool UCListItemPrivate::canHighlight(QMouseEvent *event)
 {
+    // if automatic, the highlight should not happen if we clicked on an active component;
     // localPos is a position relative to ListItem which will give us a child from
     // from the original coordinates; therefore we must map the position to the contentItem
    Q_Q(UCListItem);
@@ -604,7 +607,7 @@ bool UCListItemPrivate::canHighlight(QMouseEvent *event)
    QQuickMouseArea *ma = q->findChild<QQuickMouseArea*>();
    bool activeMouseArea = ma && ma->isEnabled();
    return !activeComponent && (isClickedConnected() || isPressAndHoldConnected() ||
-                               leadingActions || trailingActions || activeMouseArea);
+                               mainAction || leadingActions || trailingActions || activeMouseArea);
 }
 
 // set highlighted flag and update contentItem
@@ -929,7 +932,7 @@ void UCListItem::itemChange(ItemChange change, const ItemChangeData &data)
     UCStyledItemBase::itemChange(change, data);
     if (change == ItemParentHasChanged) {
         Q_D(UCListItem);
-        // make sure we are not connected to the previous Flickable
+        // make sure we are not connected to any previous Flickable
         d->listenToRebind(false);
         // check if we are in a positioner, and if that positioner is in a Flickable
         QQuickBasePositioner *positioner = qobject_cast<QQuickBasePositioner*>(data.item);
@@ -1024,7 +1027,8 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         // while moving, we cannot select any items
         return;
     }
-    if (event->button() == Qt::LeftButton && d->canHighlight(event)) {
+    if (d->canHighlight(event) && !d->suppressClick
+            && !d->highlighted && event->button() == Qt::LeftButton) {
         // stop any ongoing animation!
         if (d->animator) {
             d->animator->stop();
@@ -1059,7 +1063,12 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
 
         if (!d->suppressClick) {
             Q_EMIT clicked();
+            if (d->mainAction) {
+                Q_EMIT d->mainAction->trigger(d->index());
+            }
             d->_q_rebound();
+        } else {
+            d->suppressClick = false;
         }
     }
     d->setHighlighted(false);
@@ -1145,6 +1154,7 @@ bool UCListItem::childMouseEventFilter(QQuickItem *child, QEvent *event)
         QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
         if (child->isEnabled() && (child->acceptedMouseButtons() & mouse->button()) && !qobject_cast<QQuickText*>(child)) {
             Q_D(UCListItem);
+            // suppress click
             d->suppressClick = true;
             // listen for flickable to be able to rebind if movement started there!
             d->listenToRebind(true);
@@ -1299,6 +1309,42 @@ UCListItemDivider* UCListItem::divider() const
  * is moved horizontally. When in Flickable (or ListView), the item gets un-highlighted
  * (false) when the mouse or touch is moved towards the vertical direction causing
  * the flickable to move.
+ *
+ * Configures the color when highlighted. Defaults to the theme palette's background
+ * color.
+ *
+ * An item is highlighted, thus highlight state toggled, when pressed and it has
+ * one of the following conditions fulfilled:
+ * \list
+ *  \li * \l leadingActions or \l trailingActions set,
+ *  \li * it has an \l action attached
+ *  \li * if the ListItem has an active child component, such as a \l Button, a
+ *      \l Switch, etc.
+ *  \li * in general, if an active (enabled and visible) \c MouseArea is added
+ *      as a child component
+ *  \li * \l clicked signal handler is implemented or there is a slot or function
+ *      connected to it
+ *  \li * \l pressAndHold signal handler is implemented or there is a slot or
+ *      function connected to it.
+ * \endlist
+ *
+ * \note Adding an active component does not mean the component will be activated
+ * when the ListItem will be tapped/clicked outside of the component area. If
+ * such a behavior is needed, that must be done explicitly.
+ * \qml
+ * ListItem {
+ *     Label {
+ *         text: "This is a label"
+ *     }
+ *     Switch {
+ *         id: toggle
+ *         anchors.right: parent.right
+ *     }
+ *     Component.onCompleted: clicked.connect(toggle.clicked)
+ * }
+ * \endqml
+ *
+ * \sa action, leadingActions, trailingActions
  */
 bool UCListItem::highlighted() const
 {
@@ -1340,7 +1386,6 @@ void UCListItemPrivate::setContentMoving(bool moved)
         Q_EMIT q->contentMovementEnded();
     }
     Q_EMIT q->contentMovingChanged();
-
 }
 
 /*!
@@ -1392,6 +1437,37 @@ void UCListItem::resetHighlightColor()
     d->highlightColor = getPaletteColor("selected", "background");
     update();
     Q_EMIT highlightColorChanged();
+}
+
+/*!
+ * \qmlproperty Action ListItem::action
+ * The property holds the action which will be triggered when the ListItem is
+ * clicked. ListItem will not visualize the action, that is the responsibility
+ * of the components placed inside the list item. However, when set, the ListItem
+ * will be highlighted on press.
+ *
+ * If the action set has no value type set, ListItem will set its type to \c
+ * Action.Integer and the \l {Action::triggered}{triggered} signal will be getting
+ * the ListItem index as \e value parameter.
+ *
+ * Defaults no null.
+ */
+UCAction *UCListItemPrivate::action() const
+{
+    return mainAction;
+}
+void UCListItemPrivate::setAction(UCAction *action)
+{
+    Q_Q(UCListItem);
+    if (mainAction == action) {
+        return;
+    }
+    mainAction = action;
+    if (mainAction && (mainAction->m_parameterType == UCAction::None)) {
+        // call setProperty to invoke notify signal
+        mainAction->setProperty("parameterType", UCAction::Integer);
+    }
+    Q_EMIT q->actionChanged();
 }
 
 /*!

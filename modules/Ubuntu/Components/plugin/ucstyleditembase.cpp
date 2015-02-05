@@ -181,6 +181,7 @@ bool UCStyledItemBase::childMouseEventFilter(QQuickItem *child, QEvent *event)
 {
     // only filter pressed events
     if (event->type() == QEvent::MouseButtonPress) {
+        // send mouse event
         QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
         // the event may occur outside of the parent's boundaries if not clipped
         // therefore must check containment

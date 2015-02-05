@@ -869,6 +869,7 @@ plugins.qmltypes
     Property { name: "contentMoving"; type: "bool"; isReadonly: true }
     Property { name: "color"; type: "QColor" }
     Property { name: "highlightColor"; type: "QColor" }
+    Property { name: "action"; type: "UCAction"; isPointer: true }
     Property { name: "listItemData"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
     Property { name: "style"; type: "QQmlComponent"; isPointer: true }
