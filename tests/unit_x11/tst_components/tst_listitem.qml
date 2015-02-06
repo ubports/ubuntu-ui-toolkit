@@ -140,6 +140,10 @@ Item {
             id: movingSpy
             signalName: "contentMovementEnded"
         }
+        SignalSpy {
+            id: movingStartedSpy
+            signalName: "contentMovementStarted"
+        }
 
         SignalSpy {
             id: highlightedSpy
@@ -171,14 +175,15 @@ Item {
                 watchTarget = item;
             }
 
-            movingSpy.target = null;
-            movingSpy.target = watchTarget;
-            movingSpy.clear();
-            mouseClick(item, centerOf(item).x, centerOf(item).y);
-            if (watchTarget.contentMoving) {
+            if (watchTarget.contentItem.x != watchTarget.contentItem.anchors.leftMargin) {
+                movingSpy.target = watchTarget;
+                movingSpy.clear();
+                movingStartedSpy.target = watchTarget;
+                movingStartedSpy.clear();
+                mouseClick(item, centerOf(item).x, centerOf(item).y);
+                movingStartedSpy.wait();
                 movingSpy.wait();
             }
-            movingSpy.target = null;
         }
 
         function initTestCase() {
@@ -309,9 +314,9 @@ Item {
                 mouseMove(listItem, listItem.width / 2, dy);
             }
             compare(listItem.highlighted, false, "Item is highlighted still!");
+            // cleanup, simulate drop event
             mouseRelease(listItem, listItem.width / 2, dy);
-            // dismiss
-            rebound(listItem);
+            mouseRelease(listItem, listItem.width / 2, dy);
         }
         function test_touch_click_on_listitem() {
             var listItem = findChild(listView, "listItem0");
@@ -328,9 +333,8 @@ Item {
             compare(listItem.highlighted, false, "Item is highlighted still!");
             // cleanup, wait few milliseconds to avoid dbl-click collision
             TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
+            TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
             wait(400);
-            // dismiss
-            rebound(listItem);
         }
 
         function test_background_height_change_on_divider_visible() {
@@ -692,6 +696,7 @@ Item {
             // so any value less than that will emit pressAndHold
             mouseMoveSlowly(testItem, center.x, center.y, units.gu(2), 0, 10, 100);
             mouseRelease(testItem, center.x + units.gu(1), center.y);
+            wait(200)
             compare(pressAndHoldSpy.count, 0, "pressAndHold should not be emitted!");
             // make sure we have collapsed item
             rebound(testItem);
