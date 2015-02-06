@@ -20,15 +20,6 @@
 #include "uclistitemactions_p.h"
 #include "ucunits.h"
 #include "ucaction.h"
-#include <QtQuick/private/qquickflickable_p.h>
-
-/*!
- * \qmlattachedsignal ListItem::rebound()
- * The signal is emitted when the ListItem detects a mouse press or tap occurred
- * outside of the ListItem while its content is swiped (leading or trailing action
- * panel is shown). Style implementations can handle this signal to snap out the
- * panel.
- */
 
 UCListItemAttached::UCListItemAttached(QObject *parent)
     : QObject(*(new UCListItemAttachedPrivate()), parent)
@@ -63,7 +54,6 @@ void UCListItemAttached::setList(UCListItem *list, bool leading, bool visualizeA
                              this, &UCListItemAttached::updateVisibleActions);
         }
         updateVisibleActions();
-        Q_EMIT flickableChanged();
         Q_EMIT actionsChanged();
         Q_EMIT visibleActionsChanged();
     }
@@ -155,33 +145,21 @@ UCListItem::PanelStatus UCListItemAttached::panelStatus()
 }
 
 /*!
- * \qmlattachedproperty Flickable ListItem::flickable
- * The property holds the Flickable owning the ListItem. The property contains a
- * valid Flickable if the ListItem is the delegate of a ListView or if its parent
- * Positioner (Column, Row, etc) is declared as content for a Flickable:
- * \qml
- * import QtQuick 2.3
- * import Ubuntu.Components 1.2
- *
- * Flickable {
- *     width: units.gu(20)
- *     height: units.gu(50)
- *     contentHeight: column.height
- *
- *     Column {
- *         width: parent.width
- *         Repeater {
- *             model: 25
- *             ListItem {
- *                 // [...]
- *             }
- *         }
- *     }
- * }
- * \endqml
+ * \qmlattachedmethod void ListItem::snapToPosition(real position)
+ * The function can be used to perform custom snapping, or to execute rebounding
+ * and also disconnecting from the connected \l ListItem. This can be achieved by
+ * calling the function with 0.0 value. The slot has effect only when used from
+ * \l ListItemStyle::actionsDelegate component.
  */
-QQuickFlickable *UCListItemAttached::flickable() const
+void UCListItemAttached::snapToPosition(qreal position)
 {
-    Q_D(const UCListItemAttached);
-    return d->listItem ? UCListItemPrivate::get(d->listItem)->flickable : NULL;
+    UCListItem::PanelStatus itemStatus = panelStatus();
+    Q_D(UCListItemAttached);
+    //if it is disconnected, leave (this also includes the case when m_container is null)
+    if (!d->listItem || !d->panel || itemStatus == UCListItem::None) {
+        return;
+    }
+    UCListItemPrivate *listItem = UCListItemPrivate::get(d->listItem);
+    position *= (itemStatus == UCListItem::Leading) ? 1 : -1;
+    listItem->animator.snap(position);
 }

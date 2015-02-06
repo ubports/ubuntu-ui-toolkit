@@ -140,10 +140,6 @@ Item {
             id: movingSpy
             signalName: "contentMovementEnded"
         }
-        SignalSpy {
-            id: movingStartedSpy
-            signalName: "contentMovementStarted"
-        }
 
         SignalSpy {
             id: highlightedSpy
@@ -175,14 +171,11 @@ Item {
                 watchTarget = item;
             }
 
-            if (watchTarget.contentItem.x != watchTarget.contentItem.anchors.leftMargin) {
-                movingSpy.target = null;
-                movingSpy.target = watchTarget;
-                movingSpy.clear();
-                movingStartedSpy.target = watchTarget;
-                movingStartedSpy.clear();
-                mouseClick(item, centerOf(item).x, centerOf(item).y);
-                movingStartedSpy.wait();
+            movingSpy.target = null;
+            movingSpy.target = watchTarget;
+            movingSpy.clear();
+            mouseClick(item, centerOf(item).x, centerOf(item).y);
+            if (watchTarget.contentMoving) {
                 movingSpy.wait();
             }
             movingSpy.target = null;
@@ -542,10 +535,10 @@ Item {
             return [
                 // the first dx must be big enough to drag the panel in, it is always the last dx value
                 // which decides the snap direction
-                {tag: "Snap out, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(5)], snapIn: false},
+                {tag: "Snap out, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(2)], snapIn: false},
                 {tag: "Snap in, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(1), units.gu(1.5)], snapIn: true},
                 // have less first dx as the trailing panel is shorter
-                {tag: "Snap out, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(5)], snapIn: false},
+                {tag: "Snap out, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(2)], snapIn: false},
                 {tag: "Snap in, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(1), -units.gu(1.5)], snapIn: true},
             ];
         }
@@ -568,7 +561,7 @@ Item {
                 // dismiss
                 rebound(data.item);
             } else {
-                tryCompareFunction(function() { return data.item.contentItem.x}, data.item.contentItem.anchors.leftMargin, 1000);
+                fuzzyCompare(data.item.contentItem.x, data.item.contentItem.anchors.leftMargin, 0.1, "Not snapped out!");
             }
         }
 
@@ -688,8 +681,6 @@ Item {
             clickSpy.clear();
             mouseLongPress(testItem, center.x, center.y);
             mouseRelease(testItem, center.x, center.y);
-            // need two releases!
-            mouseRelease(testItem, center.x, center.y);
             pressAndHoldSpy.wait();
             compare(clickSpy.count, 0, "Click must be suppressed when long pressed");
         }
@@ -701,7 +692,6 @@ Item {
             // so any value less than that will emit pressAndHold
             mouseMoveSlowly(testItem, center.x, center.y, units.gu(2), 0, 10, 100);
             mouseRelease(testItem, center.x + units.gu(1), center.y);
-            mouseRelease(testItem, center.x + units.gu(1), center.y);
             compare(pressAndHoldSpy.count, 0, "pressAndHold should not be emitted!");
             // make sure we have collapsed item
             rebound(testItem);
@@ -712,7 +702,6 @@ Item {
             pressAndHoldSpy.target = controlItem;
             mouseLongPress(button, press.x, press.y);
             compare(pressAndHoldSpy.count, 0, "")
-            mouseRelease(button, press.x, press.y);
             mouseRelease(button, press.x, press.y);
         }
 
@@ -728,7 +717,6 @@ Item {
             highlightedSpy.target = clickedConnected;
             mouseLongPress(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
             highlightedSpy.wait();
-            mouseRelease(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
             mouseRelease(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
         }
 
@@ -769,7 +757,6 @@ Item {
             clickSpy.target = testItem;
             pressAndHoldSpy.target = testItem;
             mouseLongPress(testItem, centerOf(testItem).x, centerOf(testItem).y);
-            mouseRelease(testItem, centerOf(testItem).x, centerOf(testItem).y);
             mouseRelease(testItem, centerOf(testItem).x, centerOf(testItem).y);
             pressAndHoldSpy.wait();
             compare(clickSpy.count, 0, "Click must be suppressed.");

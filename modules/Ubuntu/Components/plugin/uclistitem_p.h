@@ -26,10 +26,6 @@
 #define MIN(x, y)           ((x < y) ? x : y)
 #define MAX(x, y)           ((x > y) ? x : y)
 #define CLAMP(v, min, max)  (min <= max) ? MAX(min, MIN(v, max)) : MAX(max, MIN(v, min))
-// Linearly project a value v from [min, max] into [pmin, pmax]
-#define PROJECT(v, min, max, pmin, pmax) \
-    (((v) - (min)) * (pmax) - ((v) - (max)) * (pmin)) / ((max) - (min))
-
 
 #define IMPLICIT_LISTITEM_WIDTH_GU      40
 #define IMPLICIT_LISTITEM_HEIGHT_GU     7
@@ -37,6 +33,39 @@
 #define DEFAULT_SWIPE_THRESHOLD_GU      1.5
 #define LAYOUT_HMARGIN_GU               2
 #define LAYOUT_VMARGIN_GU               0.5
+
+class QQuickAbstractAnimation;
+class QQuickBehavior;
+class ListItemAnimator : public QObject
+{
+    Q_OBJECT
+public:
+    enum Animation {
+        SnapInAnimation     = 0x01,
+        SnapOutAnimation    = 0x02
+    };
+
+    ListItemAnimator(QObject *parent = 0);
+    ~ListItemAnimator();
+    void init(UCListItem *listItem)
+    {
+        item = listItem;
+    }
+
+    bool snap(qreal to);
+    void stop();
+
+public Q_SLOTS:
+    void completeAnimation();
+
+private:
+    QQuickAbstractAnimation *getSnapBehavior();
+
+private:
+    int activeAnimations;
+    UCListItem *item;
+    QPointer<QQuickBehavior> snapBehavior;
+};
 
 class QQuickFlickable;
 class UCListItemDivider;
@@ -63,16 +92,16 @@ public:
     void _q_relayout();
     void _q_updateSize();
     void _q_updateIndex();
-    void _q_contentMoving();
     int index();
     bool canHighlight(QMouseEvent *event);
     void setHighlighted(bool pressed);
+    void setSwiped(bool tugged);
     void listenToRebind(bool listen);
     void lockContentItem(bool lock);
     void update();
+    void clampAndMoveX(qreal &x, qreal dx);
     void snapOut();
-    bool clampAndMoveContent(const QPointF &localPos);
-    bool attachActionPanels(const QPointF &localPos);
+    void snapIn();
 
     bool highlighted:1;
     bool contentMoved:1;
@@ -81,15 +110,12 @@ public:
     bool ready:1;
     bool customColor:1;
     bool customOvershoot:1;
+    bool flicked:1;
     qreal xAxisMoveThresholdGU;
     qreal overshoot;
     QBasicTimer pressAndHoldTimer;
-    QBasicTimer contentMovingTimer;
     QPointF lastPos;
     QPointF pressedPos;
-    QPointF zeroPos;
-
-    qreal swipeRangeFrom, swipeRangeTo;
     QColor color;
     QColor highlightColor;
     QPointer<QQuickItem> countOwner;
@@ -101,6 +127,7 @@ public:
     UCListItemActions *trailingActions;
     UCActionPanel *leadingPanel;
     UCActionPanel *trailingPanel;
+    ListItemAnimator animator;
     UCAction *defaultAction;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
@@ -115,6 +142,7 @@ public:
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
     bool contentMoving() const;
+    void setContentMoving(bool moved);
     QQmlComponent *style() const;
     void setStyle(QQmlComponent *delegate);
     void resetStyle();
@@ -122,11 +150,6 @@ public:
     QQuickItem *styleInstance() const;
     UCAction *action() const;
     void setAction(UCAction *action);
-
-private:
-    // local functions
-    void setSwiped(bool tugged);
-    void setContentMoving(bool moved);
 };
 
 class UCListItemAttachedPrivate : public QObjectPrivate
@@ -174,8 +197,6 @@ public:
     static bool grabPanel(UCActionPanel **panel, UCListItem *item, bool leading);
     static void ungrabPanel(UCActionPanel *panel);
     static bool isConnected(UCActionPanel *panel);
-    static void snapOut(UCActionPanel *panel);
-    static void setVisible(UCActionPanel *panel, bool visible);
 
     UCListItemActions *actions();
     QQuickItem *panel() const;

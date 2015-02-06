@@ -41,8 +41,8 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
     , m_actionsDelegate(0)
     , m_selectionDelegate(0)
     , m_dragHandlerDelegate(0)
+    , m_snapAnimation(0)
     , m_swipeOvershoot(0)
-    , m_attachActionPanelByDirection(true)
 {
 }
 
@@ -59,6 +59,13 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
 /*!
  * \qmlproperty Component ListItemStyle::dragHandlerDelegate
  * Holds the component shown when dragging mode is enabled.
+ */
+
+/*!
+ * \qmlproperty Animation ListItemStyle::snapAnimation
+ * Holds the behavior used in animating when snapped in or out. It can hold many
+ * animations, and will be used in a Behavior on the \l ListItem::contentItem
+ * \c x property.
  */
 
 /*!

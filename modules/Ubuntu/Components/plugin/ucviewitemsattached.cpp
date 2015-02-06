@@ -196,8 +196,8 @@ void UCViewItemsAttached::unbindItem()
 {
     Q_D(UCViewItemsAttached);
     if (d->boundItem) {
-        // clean highlighted state
-        UCListItemPrivate::get(d->boundItem)->snapOut();
+        // snap out before we unbind
+        UCListItemPrivate::get(d->boundItem)->animator.snap(0);
         d->boundItem.clear();
     }
     // clear binding list

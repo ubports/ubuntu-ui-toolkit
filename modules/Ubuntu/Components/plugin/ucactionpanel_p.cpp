@@ -132,25 +132,3 @@ bool UCActionPanel::isConnected(UCActionPanel *panel)
 {
     return panel && panel->connected;
 }
-
-// emits a rebound() attached signal for the panel which is visible
-void UCActionPanel::snapOut(UCActionPanel *panel)
-{
-    if (!panel || !panel->panelItem->isVisible()) {
-       return;
-    }
-    UCListItemAttached *attached = static_cast<UCListItemAttached*>(
-                qmlAttachedPropertiesObject<UCListItem>(panel->panelItem, false));
-    if (attached) {
-        Q_EMIT attached->rebound();
-    }
-}
-
-// set visible flag of the panel
-void UCActionPanel::setVisible(UCActionPanel *panel, bool visible)
-{
-    if (!panel || !panel->connected) {
-        return;
-    }
-    panel->panel()->setVisible(visible);
-}

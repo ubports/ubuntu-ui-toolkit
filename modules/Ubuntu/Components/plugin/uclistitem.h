@@ -109,7 +109,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
-    Q_PRIVATE_SLOT(d_func(), void _q_contentMoving())
 };
 QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
 
@@ -144,7 +143,6 @@ private:
 class UCAction;
 class UCListItemActions;
 class UCListItemAttachedPrivate;
-class QQuickFlickable;
 class UCListItemAttached : public QObject
 {
     Q_OBJECT
@@ -152,7 +150,6 @@ class UCListItemAttached : public QObject
     Q_PROPERTY(QQmlListProperty<UCAction> visibleActions READ visibleActions NOTIFY visibleActionsChanged)
     Q_PROPERTY(int index READ index NOTIFY indexChanged)
     Q_PROPERTY(UCListItem::PanelStatus panelStatus READ panelStatus NOTIFY panelStatusChanged)
-    Q_PROPERTY(QQuickFlickable *flickable READ flickable NOTIFY flickableChanged)
 public:
     UCListItemAttached(QObject *parent = 0);
     ~UCListItemAttached();
@@ -163,16 +160,15 @@ public:
     UCListItem *item();
     int index();
     UCListItem::PanelStatus panelStatus();
-    QQuickFlickable *flickable() const;
+
+public Q_SLOTS:
+    void snapToPosition(qreal position);
 
 Q_SIGNALS:
     void actionsChanged();
     void visibleActionsChanged();
     void indexChanged();
     void panelStatusChanged();
-    void flickableChanged();
-
-    void rebound();
 
 private:
     Q_DECLARE_PRIVATE(UCListItemAttached)

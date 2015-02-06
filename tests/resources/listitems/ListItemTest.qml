@@ -52,6 +52,14 @@ MainView {
                 onTriggered: print(iconName, "triggered", value)
             },
             Action {
+                iconName: "stock_website"
+                onTriggered: print(iconName, "triggered", value)
+            },
+            Action {
+                iconName: "starred"
+                onTriggered: print(iconName, "triggered", value)
+            },
+            Action {
                 iconName: "go-home"
                 onTriggered: print(iconName, "triggered", value)
             }
@@ -97,7 +105,6 @@ MainView {
             Button {
                 text: "Press me"
                 anchors.centerIn: parent
-                onClicked: units.gridUnit -=2
             }
 
             leadingActions: ListItemActions {
@@ -155,15 +162,8 @@ MainView {
                 id: listItem
                 onClicked: print(" clicked")
                 onPressAndHold: print("pressAndHold")
-//                leadingActions: leading
-                trailingActions: leading
-
-                contentItem.anchors {
-                    margins: units.gu(1)
-                }
-
-                onContentMovementStarted: print("move started")
-                onContentMovementEnded: print("move ended")
+                leadingActions: leading
+                trailingActions: leadingActions
 
                 Label {
                     anchors.fill: parent

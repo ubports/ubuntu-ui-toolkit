@@ -70,13 +70,13 @@ Item {
 
     Rectangle {
         objectName: "panel_background"
-        color: panel.backgroundColor
-        height: parent.height
-        width: styledItem.width
         anchors {
-            left: leading ? undefined: parent.left
-            right: leading ? parent.right : undefined
+            fill: parent
+            // add 4 times the overshoot margins to cover the background when tugged
+            leftMargin: (leading && styledItem) ? -units.gu(4 * styledItem.swipeOvershoot) : 0
+            rightMargin: (!leading && styledItem) ? -units.gu(4 * styledItem.swipeOvershoot) : 0
         }
+        color: panel.backgroundColor
     }
 
     // handle action triggering
@@ -118,32 +118,9 @@ Item {
         }
         // snap in if the offset is bigger than the overshoot and the direction of the drag is to reveal the panel
         var snapPos = (swipedOffset > units.gu(2) && snapIn) ? panel.width : 0.0;
-        snapAnimation.snapToPosition(snapPos);
+        ListItem.snapToPosition(snapPos);
     }
 
-    // animation
-    UbuntuNumberAnimation {
-        id: snapAnimation
-        duration: UbuntuAnimation.SnapDuration
-        target: styledItem.contentItem
-        property: "x"
-
-        function snapToPosition(position) {
-            if (!panel.visible) {
-                return;
-            }
-            from = styledItem.contentItem.x;
-            to = position * (panel.leading ? 1 : -1);
-            if (to == 0.0) {
-                // correct the target value to be the margin
-                to = styledItem.contentItem.anchors.leftMargin;
-            }
-            start();
-        }
-    }
-    ListItem.onRebound: snapAnimation.snapToPosition(0)
-
-    // Action list visualized
     Row {
         id: actionsRow
         anchors {
@@ -173,7 +150,7 @@ Item {
                 function trigger() {
                     actionsRow.selectedAction = modelData;
                     actionsRow.listItemIndex = panel.ListItem.index;
-                    snapAnimation.snapToPosition(0.0);
+                    panel.ListItem.snapToPosition(0.0);
                 }
 
                 Rectangle {
