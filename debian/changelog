@@ -1,3 +1,105 @@
+ubuntu-ui-toolkit (1.1.1403+15.04.20141217-0ubuntu2) UNRELEASED; urgency=medium
+
+  [ Albert Astals Cid ]  
+  * Adapt to behaviour change in handling of QVariants from QML to 
+    C++ in Qt 5.4    
+  * Don't use Qt::PopupFocusReason to change the focus Even if it
+    is the correct reason QtQuick is since 5.4 ignoring  focus changes
+    due to PopupFocusReason. Fixes LP: #1395014.    
+  * Fix test failure with Qt 5.4 ExpandablesColumn::test_expandedItem()
+    In Qt 5.4 an alias to a null variable is correctly null instead of 
+    undefined like it was in 5.3, since we still want 5.3 support i'm 
+    conveting it to a verify with ==  that uses JS loose comparison to
+    accept both null and undefined. Fixes LP: #1395012.    
+
+  [ Alexandre Abreu ]  
+  * Remove the unecessary DBUS bindingi to global address 
+    org.freedesktop.Application by the UriHAndler. It actually fails 
+    for confined apps and the uri-dispatcher anyway does not work by 
+    directly calling into the exposed "well known names" exposed on 
+    the bus as TEd explains here LP: #1342129  but by directly calling
+     into the process dbus connection. Fixes LP: #1378823.    
+
+  [ Benjamin Zeller ]  
+  * Fix scripts to work in shadowbuild mode.    
+  * Shadowbuild support for ubuntu-ui-toolkit.    
+
+  [ Christian Dywan ]  
+  * Abort export_modules_dir.sh and ergo run_tests.sh if binaries are
+    absent. Fixes LP: #1415973.    
+  * Asterisk are needed for cp -R.    
+  * Ensure adb is running (and fallback arch if dpkg-dev is missing). 
+    Fixes LP: #1417997.    
+  * Get arch for push_to_phone.sh from device and handle adb refusal.    
+  * Implement and unit-test i18n.(c)tag. Fixes LP: #1417031.    
+  * Print component creation errors in popupUtils.open. 
+    Fixes LP: #1418507.    
+  * Use correct unfocussed text field color. Fixes LP: #1396062.    
+
+  [ Daniel d'Andrada ]
+  * Refactor OrientationHelper Simplify animation code and make it 
+    more robust. It now survives changes in Screen.primaryOrientation
+    and Screen.orientation happening one right after the other.  
+
+  [ Daniel Holbach ]
+  * Fix broken link to developer site.    
+
+  [ Giulio Collura ]
+  * This is a bugfix for bug LP: #1341814 and bug LP: #1400297. 
+    Essentially we have to force the removal of the previous 
+    'contents' item by removing its parent. This way we ensure that 
+    the contents are correctly hidden, focused and removed, without 
+    destroying them.    
+
+  [ Loïc Molinari ]  
+  * Removed unused variables breaking debug builds.    
+
+  [ Michael Sheldon ]
+  * Only use stableOrientationAngleTimer in the OrientationHelper when
+    the orientationAngle has been set automatically. 
+    Fixes LP: #1409027. 
+
+  [ Niklas Wenzel ]
+  *  Fixes LP: #1395118 
+
+  [ nskaggs ]
+  * Re-add autopilot helper documentation and update. Fixes 
+    LP: #1409778, LP: #1410477.    
+
+  [ Tim Peeters ] 
+  * Add a preview of the new list items to the UITK component gallery.  
+  * Add performance test for MainView.    
+  * Clean python code to follow pep257 standards.    
+  * Fix incorrect header contents width when navigating back from a 
+    page with a lot of actions. Fixes LP: #1408481.    
+  * Split up MainView in MainView and MainViewBase. Move docs to 
+    MainView.qdoc.    
+  * Use objectName for the MainViews in our autopilot tests.    
+
+  [ Zoltán Balogh ] 
+  * Added Dialog CPO to test if OSK pushes up the the dialog.    
+  * Update the test plan and fix the PPA string in case it contains
+    backslash.    
+
+  [ Zsombor Egri ]  
+  * CPOs
+  * Include ServiceProperties component into the module and the 
+    missing test case - inclusion messed up due to broken mainline in 
+    the previous branch. Fixes LP: #1391877.    
+  * Introducing action property in ListItem. 
+    Fixes LP: #1362305, LP: #1369935.    
+  * Introducing pressAndHold signal into ListItem.    
+  * ListItem highlight is driven also by the connection of a slot to 
+    the clicked() signal. This will also be applied when pressAndHold
+    signal will be introduced. Fixes LP: #1399025.    
+  * Small refactoring to follow upstream concept on naming attached 
+    properties. Panels visualising ListItemActions are owned by 
+    ListItem and not being shared by the ListItemActiomns. In this way
+    the same ListItemActions instance can be used on both leading and 
+    trailing side. Fixes LP: #1403005.    
+
+ -- Zoltán Balogh <zoltan@bakter.hu>  Fri, 06 Feb 2015 11:36:02 +0200
+
 ubuntu-ui-toolkit (1.1.1370+15.04.20141217-0ubuntu1) vivid; urgency=medium
 
   [ Zoltán Balogh ]
