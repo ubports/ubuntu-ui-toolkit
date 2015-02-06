@@ -869,6 +869,7 @@ plugins.qmltypes
     Property { name: "contentMoving"; type: "bool"; isReadonly: true }
     Property { name: "color"; type: "QColor" }
     Property { name: "highlightColor"; type: "QColor" }
+    Property { name: "action"; type: "UCAction"; isPointer: true }
     Property { name: "listItemData"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
     Property { name: "style"; type: "QQmlComponent"; isPointer: true }
@@ -1048,6 +1049,13 @@ plugins.qmltypes
     Parameter { name: "domain"; type: "string" }
     Parameter { name: "context"; type: "string" }
     Parameter { name: "text"; type: "string" }
+    Method {
+    name: "tag"
+    Parameter { name: "text"; type: "string" }
+    Method {
+    name: "tag"
+    Parameter { name: "context"; type: "string" }
+    Parameter { name: "text"; type: "string" }
     name: "ULConditionalLayout"
     prototype: "QObject"
     exports: ["ConditionalLayout 0.1", "ConditionalLayout 1.0"]
@@ -1098,6 +1106,8 @@ plugins.qmltypes
     prototype: "QObject"
     exports: ["TestExtras 1.0"]
     Property { name: "touchPresent"; type: "bool"; isReadonly: true }
+    Method { name: "openGLflavor"; type: "string" }
+    Method { name: "cpuArchitecture"; type: "string" }
     Method { name: "touchDevicePresent"; type: "bool" }
     Method { name: "registerTouchDevice" }
     Method {

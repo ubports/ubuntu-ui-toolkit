@@ -47,6 +47,7 @@ function open(popup, caller, params) {
         popupObject = popupComponent.createObject(rootObject);
     }
     if (!popupObject) {
+        print(popupComponent.errorString().slice(0, -1));
         print("PopupUtils.open(): Failed to create the popup object.");
         return;
     } else if (popupObject.hasOwnProperty("caller") && caller)
