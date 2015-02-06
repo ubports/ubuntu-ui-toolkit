@@ -54,9 +54,9 @@ TestCase {
      // will not update the iconSource
      function test_iconSource() {
          compare(item1.iconSource, "", "iconSource is empty string by default")
-         var newIconSource = "../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png"
+         var newIconSource = Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png")
          item1.iconSource = newIconSource
-         compare(item1.iconSource, Qt.resolvedUrl(newIconSource), "iconSource can be set")
+         compare(item1.iconSource, newIconSource, "iconSource can be set")
          item1.iconSource = ""
          compare(item1.iconSource, "", "iconSource can be unset")
      }

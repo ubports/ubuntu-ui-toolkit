@@ -2,10 +2,16 @@ include(../test-include.pri)
 QT += gui
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
-system(msgfmt po/en_US.po -o localizedApp/share/locale/en/LC_MESSAGES/localizedApp.mo)
+DOMAIN = localizedApp
+mo.target = mo
+mo.commands = set -e;
+mo.commands += echo Generating localization for $$DOMAIN;
+mo.commands += msgfmt po/en_US.po -o $${DOMAIN}/share/locale/en/LC_MESSAGES/$${DOMAIN}.mo;
+QMAKE_EXTRA_TARGETS += mo
+PRE_TARGETDEPS += mo
 
 SOURCES += \
-    src\/tst_i18n.cpp
+    src/tst_i18n.cpp
 
 OTHER_FILES += \
-    src\/LocalizedApp.qml
+    src/LocalizedApp.qml

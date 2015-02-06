@@ -88,7 +88,7 @@ Item {
             compare(listItemStandard.icon,undefined,"icon is not set by default")
 
             // test with url
-            var newIcon = "../../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png"
+            var newIcon = Qt.resolvedUrl("../../../examples/ubuntu-ui-toolkit-gallery/small_avatar.png")
             listItemStandard.icon = newIcon
             compare(listItemStandard.icon,newIcon,"set/get from url")
         }

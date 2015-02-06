@@ -27,165 +27,11 @@
 
 UCListItemActionsPrivate::UCListItemActionsPrivate()
     : QObjectPrivate()
-    , status(UCListItemActions::Disconnected)
-    , offsetDragged(0)
-    , optionSlotWidth(0.0)
     , delegate(0)
-    , panelDelegate(0)
-    , panelItem(0)
 {
 }
 UCListItemActionsPrivate::~UCListItemActionsPrivate()
 {
-}
-
-void UCListItemActionsPrivate::_q_updateDraggedOffset()
-{
-    UCListItem *listItem = qobject_cast<UCListItem*>(panelItem->parentItem());
-    if (!listItem) {
-        return;
-    }
-
-    Q_Q(UCListItemActions);
-    offsetDragged = (status == UCListItemActions::Leading) ? panelItem->width() + panelItem->x() :
-                         listItem->width() - panelItem->x();
-    if (offsetDragged < 0.0) {
-        offsetDragged = 0.0;
-    }
-}
-
-UCListItemActionsAttached *UCListItemActionsPrivate::attachedObject()
-{
-    if (!panelItem) {
-        return 0;
-    }
-    return static_cast<UCListItemActionsAttached*>(
-                qmlAttachedPropertiesObject<UCListItemActions>(panelItem, false));
-}
-
-/*
- * Connects a ListItem to the ListItemActions' panel and returns true upon successful connection.
- * Connection may fail if there is a different ListItem connected. In this case the new ListItem
- * will be queued and automatically connected when the previous ListItem disconnects.
- * The panel is only re-created when a different Component is used to create it.
- * FIXME - despite each ListItem uses the same document to create the panel, theming engine
- * provides different Component objects for each, due to not caching the components created.
- * This must be fixed to optimize memory usage.
- */
-bool UCListItemActionsPrivate::connectToListItem(UCListItemActions *actions, UCListItem *listItem, bool leading)
-{
-    UCListItemActionsPrivate *_this = get(actions);
-    if (!_this) {
-        return false;
-    }
-    // do we have a panel created already?
-    if (_this->panelItem) {
-        if (isConnectedTo(actions, listItem)) {
-            return true;
-        }
-        if (_this->panelItem->parentItem() && _this->panelItem->parentItem() != listItem) {
-            // set the requesting listItem as queuedItem
-            _this->queuedItem = listItem;
-            return false;
-        }
-    }
-    // no parent set or panelItem yet, proceed with panel creation
-    UCListItemPrivate *pItem = UCListItemPrivate::get(listItem);
-    pItem->initStyleItem();
-    if (!pItem->styleItem || (pItem->styleItem && !_this->createPanelItem(pItem->styleItem->m_actionsDelegate))) {
-        return false;
-    }
-
-    // check if the panel is still connected to a ListItem
-    // this may happen if there is a swipe over an other item while the previous
-    // one is rebounding
-    _this->panelItem->setParentItem(listItem);
-    if (_this->attachedObject()) {
-        _this->attachedObject()->connectListItem(listItem, true);
-    }
-    _this->offsetDragged = 0.0;
-    _this->status = leading ? UCListItemActions::Leading : UCListItemActions::Trailing;
-    Q_EMIT actions->statusChanged(_this->status);
-    return true;
-}
-
-void UCListItemActionsPrivate::disconnectFromListItem(UCListItemActions *actions)
-{
-    UCListItemActionsPrivate *_this = get(actions);
-    if (!_this || !_this->panelItem || !_this->panelItem->parentItem()) {
-        return;
-    }
-
-    if (_this->attachedObject()) {
-        _this->attachedObject()->connectListItem(static_cast<UCListItem*>(_this->panelItem->parentItem()), false);
-    }
-    _this->panelItem->setParentItem(0);
-    _this->status = UCListItemActions::Disconnected;
-    Q_EMIT actions->statusChanged(_this->status);
-    // if there was a queuedItem, make it grab the actions list
-    if (_this->queuedItem) {
-        UCListItemPrivate::get(_this->queuedItem.data())->grabPanel(actions, true);
-        // remove item from queue
-        _this->queuedItem.clear();
-    }
-}
-
-bool UCListItemActionsPrivate::isConnectedTo(UCListItemActions *actions, UCListItem *listItem)
-{
-    UCListItemActionsPrivate *_this = get(actions);
-    return _this && _this->panelItem &&
-            (_this->status != UCListItemActions::Disconnected) &&
-            (_this->panelItem->parentItem() == listItem);
-}
-
-QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *panel)
-{
-    if (panelItem && panelDelegate == panel) {
-        return panelItem;
-    }
-    // delete the panel if the next item's actionsDelegate differs from the
-    // one this panel was created from
-    if (panelDelegate != panel) {
-        delete panelItem;
-        panelItem = 0;
-    }
-
-    Q_Q(UCListItemActions);
-    if (!panel) {
-        qmlInfo(q) << UbuntuI18n::instance().tr("actionsDelegate not set!");
-        return 0;
-    }
-
-    panelDelegate = panel;
-    if (!panelDelegate->isError()) {
-        panelItem = qobject_cast<QQuickItem*>(panelDelegate->beginCreate(qmlContext(q)));
-        if (panelItem) {
-            QQml_setParent_noEvent(panelItem, q);
-            // add panelItem to data so we can access it in case is needed (i.e. tests)
-            data.append(panelItem);
-            // create attached property!
-            UCListItemActionsAttached *attached = static_cast<UCListItemActionsAttached*>(
-                        qmlAttachedPropertiesObject<UCListItemActions>(panelItem));
-            if (!attached->container()) {
-                attached->setList(q);
-            } else {
-                // container is set, but we need to emit the signal again so we get the
-                // attached props updated for those cases when the attached property is
-                // created before the statement above
-                Q_EMIT attached->containerChanged();
-            }
-            panelDelegate->completeCreate();
-
-            // calculate option's slot size
-            offsetDragged = 0.0;
-            // connect to panel to catch dragging
-            QObject::connect(panelItem, SIGNAL(xChanged()), q, SLOT(_q_updateDraggedOffset()));
-        }
-    } else {
-        qmlInfo(q) << panelDelegate->errorString();
-    }
-
-    return panelItem;
 }
 
 /*!
@@ -199,86 +45,22 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *panel)
  *
  * ListItem accepts actions that can be configured to appear when swiped to left
  * or right. The API does not limit the number of actions to be assigned for leading
- * or trailing actions, however the design constrains are allowing a maximum of
+ * or trailing actions, however the design constraints are allowing a maximum of
  * 1 action on leading- and a maximum of 3 actions on trailing side of the ListItem.
  *
  * The \l actions are Action instances or elements derived from Action. The default
  * visualization of the actions can be overridden using the \l delegate property,
  * and the default implementation uses the \c name property of the Action.
  *
- * The leading and trailing actions are placed on a panel item, which is created
- * the first time the actions are accessed. The colors of the panel is taken from
- * the theme's palette.
- *
- * When swiped, panels reveal the actions one by one. In case an action is revealed
- * more than 50%, the action will be snapped and revealed completely. This is also
- * valid for the case when the action is visible less than 50%, in which case the
- * action is hidden. Actions can be triggered by tapping.
- *
- * \note You can use the same ListItemActions for leading and for trailing actions
- * the same time only if the instance is used by different groups of list items,
- * where one group uses it as leading and other group as trailing. In any other
- * circumstances use separate ListItemActions for leading and trailing actions.
- * \qml
- * import QtQuick 2.2
- * import Ubuntu.Components 1.2
- * MainView {
- *     width: units.gu(40)
- *     height: units.gu(71)
- *
- *     ListItemActions {
- *         id: sharedActions
- *         actions: [
- *             Action {
- *                 iconName: "search"
- *             },
- *             Action {
- *                 iconName: "edit"
- *             },
- *             Action {
- *                 iconName: "copy"
- *             }
- *         ]
- *     }
- *
- *     Column {
- *         ListItem {
- *             leadingActions: sharedActions
- *         }
- *         UbuntuListView {
- *             anchors.fill: parent
- *             model: 10000
- *             delegate: ListItem {
- *                 trailingActions: sharedActions
- *             }
- *         }
- *     }
- * }
- * \endqml
- *
  * \section3 Using with ListViews
  * ListItemActions instances can be shared between ListItem instances within the
  * same view. When shared, the memory footprint of the view will be lot smaller,
- * as there will be no individual panel created for each list's actions visualization.
- * Depending on how long the initialization of the component used in \l {ListItemStyle::actionsDelegate}
- * {actionsDelegate} takes, creation time will be also reduced to one time per view.
- * However, this implies that swiping a new ListItem content while another one is
- * swiped will result in showing the newly swiped item's panel delayed, as the
- * panel can be shown only after the previous item's snapping is completed. Depending
- * on the \l {ListItemStyle::snapAnimation}{snapAnimation} duration, this may take some time, and the
- * response time of the UI can become unacceptable.
- *
+ * as there will be no individual action container created for each list's actions.
  * Having individual ListItemActions instances increases the memory footprint,
- * however the UI will be more responsive as swiping individual ListItems will
- * not have to wait till the previous ListItem's panel is snapped out (rebound).
- * On the other hand, memory consumption will increase significantly due to
- * separate panel creation, and performance may decrease with up to 40%, depending
- * on what way are the actions declared, within the ListItemActions or as shared
- * actions.
+ * and also has performance impact on kinetic scrolling.
  *
- * The example above illustrates how to share ListItemActions between ListItem
- * delegates, which can be the worst-performant but most lightwaight memory consumer
- * setup. The following example illustrates the worst case:
+ * The examples below illustrate the worst and best practice when used in a ListView.
+ * The worst case:
  * \qml
  * import QtQuick 2.2
  * import Ubuntu.Components 1.2
@@ -323,33 +105,33 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *panel)
  *     width: units.gu(40)
  *     height: units.gu(71)
  *
- *     property list<Action> leading: [
- *         Action {
+ *     ListItemActions {
+ *         id: leading
+ *         actions: Action {
  *             iconName: "delete"
  *         }
- *     ]
- *     property list<Action> trailing: [
- *         Action {
- *             iconName: "search"
- *         },
- *         Action {
- *             iconName: "edit"
- *         },
- *         Action {
- *             iconName: "copy"
- *         }
- *     ]
+ *     }
+ *     ListItemActions {
+ *         id: trailing
+ *         actions: [
+ *             Action {
+ *                 iconName: "search"
+ *             },
+ *             Action {
+ *                 iconName: "edit"
+ *             },
+ *             Action {
+ *                 iconName: "copy"
+ *             }
+ *         ]
+ *     }
  *
  *     UbuntuListView {
  *         anchors.fill: parent
  *         model: 10000
  *         delegate: ListItem {
- *             leadingActions: ListItemActions {
- *                 actions: leading
- *             }
- *             trailingActions: ListItemActions {
- *                 actions: trailing
- *             }
+ *             leadingActions: leading
+ *             trailingActions: trailing
  *         }
  *     }
  * }
@@ -362,11 +144,6 @@ QQuickItem *UCListItemActionsPrivate::createPanelItem(QQmlComponent *panel)
  * parameter to identify the instance of the ListItem on which it was executed,
  * in which case ListItem will change the type from \c Actions.None to \c Actions.Integer
  * when it is triggered.
- *
- * \section3 Attached properties
- * ListItemActions provides a set of attached properties to the panels visualizing
- * the actions. These properties can be used by implementations visualizing the
- * actions.
  */
 
 UCListItemActions::UCListItemActions(QObject *parent)
@@ -375,28 +152,6 @@ UCListItemActions::UCListItemActions(QObject *parent)
 }
 UCListItemActions::~UCListItemActions()
 {
-}
-
-UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *owner)
-{
-    /*
-     * Detect the attachee, whether is it a child item of the panelItem. The panelItem
-     * itself cannot be detected, as the object can be attached during the call of
-     * component.beginCreate().
-     */
-    UCListItemActionsAttached *attached = new UCListItemActionsAttached(owner);
-    QQuickItem *item = qobject_cast<QQuickItem*>(owner);
-    while (item) {
-        // has item our attached property?
-        UCListItemActionsAttached *itemAttached = static_cast<UCListItemActionsAttached*>(
-                    qmlAttachedPropertiesObject<UCListItemActions>(item, false));
-        if (itemAttached) {
-            attached->setList(itemAttached->container());
-            break;
-        }
-        item = item->parentItem();
-    }
-    return attached;
 }
 
 /*!
@@ -461,7 +216,7 @@ UCListItemActionsAttached *UCListItemActions::qmlAttachedProperties(QObject *own
  * }
  * \endqml
  * \note Putting a Rectangle in the delegate can be used to override the color
- * of the panel.
+ * of the panel. Also all ListItem attached properties can be used in the delegates.
  *
  * Defaults to null.
  */

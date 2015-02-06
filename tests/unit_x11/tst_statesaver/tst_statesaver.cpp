@@ -88,7 +88,7 @@ private Q_SLOTS:
     {
         QCoreApplication::setApplicationName("savedstate");
         QCoreApplication::setOrganizationName("");
-        QDir modules ("../../../modules");
+        QDir modules (UBUNTU_QML_IMPORT_PATH);
         QVERIFY(modules.exists());
         m_modulePath = modules.absolutePath();
         // XDG_RUNTIME_DIR may not be set in a test environment
@@ -132,10 +132,10 @@ private Q_SLOTS:
         QVERIFY(view);
         testItem = view->rootObject();
         QVERIFY(testItem);
-        QVERIFY(testItem->property("boolArray") == boolValues);
-        QVERIFY(testItem->property("intArray") == intValues);
-        QVERIFY(testItem->property("realArray") == realValues);
-        QVERIFY(testItem->property("stringArray") == stringValues);
+        QCOMPARE(testItem->property("boolArray").value<QVariantList>(), boolValues);
+        QCOMPARE(testItem->property("intArray").value<QVariantList>(), intValues);
+        QCOMPARE(testItem->property("realArray").value<QVariantList>(), realValues);
+        QCOMPARE(testItem->property("stringArray").value<QVariantList>(), stringValues);
     }
 
     void test_SaveStructures()
@@ -558,7 +558,7 @@ private Q_SLOTS:
     void test_normalAppClose()
     {
         QProcess testApp;
-        testApp.start("qmlscene", QStringList() << "-I" <<  "../../../modules" << "NormalAppClose.qml");
+        testApp.start("qmlscene", QStringList() << "-I" <<  UBUNTU_QML_IMPORT_PATH << "NormalAppClose.qml");
         testApp.waitForFinished();
 
         QString fileName = stateFile("NormalAppClose");
@@ -568,7 +568,7 @@ private Q_SLOTS:
     void test_SigTerm()
     {
         QProcess testApp;
-        testApp.start("qmlscene -I ../../../modules SimpleApp.qml");
+        testApp.start("qmlscene",QStringList() << "-I" << UBUNTU_QML_IMPORT_PATH << "SimpleApp.qml");
         testApp.waitForStarted();
 
         // send SIGTERM signal to the process, use terminate() to do that.
@@ -582,7 +582,7 @@ private Q_SLOTS:
     void test_SigInt()
     {
         QProcess testApp;
-        testApp.start("qmlscene -I ../../../modules SimpleApp.qml");
+        testApp.start("qmlscene",QStringList() << "-I" << UBUNTU_QML_IMPORT_PATH << "SimpleApp.qml");
         testApp.waitForStarted();
 
         QTest::qWait(1000);

@@ -16,11 +16,13 @@
 
 import QtQuick 2.2
 import Ubuntu.Components 1.2
+import Ubuntu.Components.Styles 1.2
 
 MainView {
     id: main
     width: units.gu(50)
-    height: units.gu(100)
+    height: units.gu(105)
+    useDeprecatedToolbar: false
 
     property bool override: false
 
@@ -95,21 +97,26 @@ MainView {
                 print("click")
                 main.override = !main.override
             }
+            onPressAndHold: print("pressAndHold", objectName)
             Label {
                 anchors.fill: parent
                 text: units.gridUnit + "PX/unit"
             }
+            Button {
+                text: "Press me"
+                anchors.centerIn: parent
+            }
+
             leadingActions: ListItemActions {
                 objectName: "InlineLeading"
                 actions: [stock]
                 delegate: Column {
                     width: height + units.gu(2)
-                    anchors.verticalCenter: parent.verticalCenter
                     Icon {
                         width: units.gu(3)
                         height: width
                         name: action.iconName
-                        color: "blue"
+                        color: pressed ? "blue" : "pink"
                         anchors.horizontalCenter: parent.horizontalCenter
                     }
                     Label {
@@ -131,13 +138,16 @@ MainView {
 
         ListItem {
             Label {
+                id: label2
                 anchors.fill: parent
-                text: "Another standalone ListItem"
+                text: "Another standalone ListItem\nStarted with custom style, reset to theme style on first click"
             }
             leadingActions: testItem.leadingActions
             trailingActions: ListItemActions {
                 actions: leading.actions
             }
+            style: ListItemStyle {}
+            onClicked: { style = undefined; label2.text = "Another standalone ListItem" }
         }
 
         ListView {
@@ -145,13 +155,15 @@ MainView {
             clip: true
             width: parent.width
             height: units.gu(20)
-            model: 10
+            model: 25
             pressDelay: 0
             delegate: ListItem {
                 objectName: "ListItem" + index
                 id: listItem
                 onClicked: print(" clicked")
+                onPressAndHold: print("pressAndHold")
                 leadingActions: leading
+                trailingActions: leadingActions
                 Label {
                     text: modelData + " item"
                 }
@@ -179,7 +191,7 @@ MainView {
 
             Column {
                 id: column
-                width: view.width
+                width: flicker.width
                 property alias count: repeater.count
                 Repeater {
                     id: repeater
@@ -205,6 +217,24 @@ MainView {
                     }
                 }
             }
+        }
+        ListItem {
+            Label {
+                text: "Switch makes this item to highlight"
+            }
+            Switch {
+                id: toggle
+                anchors.right: parent.right
+            }
+            Component.onCompleted: clicked.connect(toggle.clicked)
+        }
+        ListItem {
+            Label {
+                text: "With action assigned"
+            }
+            onClicked: print("clicked")
+            onPressAndHold: print("longPressed")
+            action: stock
         }
     }
 }
