@@ -86,9 +86,10 @@ Item {
             color: "blue"
             leadingActions: leading
             trailingActions: trailing
-            Item {
+            Label {
                 id: bodyItem
                 anchors.fill: parent
+                text: "Data"
             }
         }
         ListItem {
@@ -112,6 +113,9 @@ Item {
                 width: parent.width
                 leadingActions: leading
                 trailingActions: trailing
+                Label {
+                    text: "Data " + index
+                }
             }
         }
         Flickable {
@@ -140,11 +144,6 @@ Item {
             id: movingSpy
             signalName: "contentMovementEnded"
         }
-        SignalSpy {
-            id: movingStartedSpy
-            signalName: "contentMovementStarted"
-        }
-
         SignalSpy {
             id: highlightedSpy
             signalName: "highlightedChanged"
@@ -178,11 +177,11 @@ Item {
             if (watchTarget.contentItem.x != watchTarget.contentItem.anchors.leftMargin) {
                 movingSpy.target = watchTarget;
                 movingSpy.clear();
-                movingStartedSpy.target = watchTarget;
-                movingStartedSpy.clear();
                 mouseClick(item, centerOf(item).x, centerOf(item).y);
-                movingStartedSpy.wait();
                 movingSpy.wait();
+                tryCompareFunction(function() {
+                    return watchTarget.contentItem.x == watchTarget.contentItem.anchors.leftMargin;
+                }, true, 500);
             }
         }
 
@@ -193,6 +192,7 @@ Item {
 
         function cleanup() {
             testItem.action = null;
+            testItem.contentItem.anchors.margins = 0;
             movingSpy.clear();
             highlightedSpy.clear();
             clickSpy.clear();
@@ -454,6 +454,26 @@ Item {
             }
             // dismiss
             rebound(data.item);
+        }
+
+        function test_listitem_margins_data() {
+            var item = findChild(listView, "listItem1");
+            return [
+                {tag: "leading", item: item, dx: units.gu(10), leading: true},
+                {tag: "trailing", item: item, dx: -units.gu(10), leading: false}
+            ];
+        }
+        function test_listitem_margins(data) {
+            data.item.contentItem.anchors.margins = units.gu(1);
+            movingSpy.target = data.item;
+            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+            movingSpy.wait();
+            var panel = panelItem(data.item, data.leading);
+            verify(panel && panel.visible, "Panel not visible.");
+            // cleanup
+            rebound(data.item);
+            compare(data.item.contentItem.x, units.gu(1), "contentItem.x differs from margin");
+            data.item.contentItem.anchors.margins = 0;
         }
 
         function test_selecting_action_rebounds_data() {

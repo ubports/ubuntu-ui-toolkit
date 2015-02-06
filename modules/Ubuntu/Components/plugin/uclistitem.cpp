@@ -178,10 +178,10 @@ void UCListItemPrivate::snapOut()
     // disconnect actions
     UCActionPanel::ungrabPanel(leadingPanel);
     UCActionPanel::ungrabPanel(trailingPanel);
-    // set contentMoved to false
-    setContentMoving(false);
     // lock contentItem left/right edges
     lockContentItem(true);
+    // set contentMoved to false
+    setContentMoving(false);
 }
 
 /*

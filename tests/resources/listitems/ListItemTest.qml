@@ -172,6 +172,8 @@ MainView {
                           "The second line - item #" + modelData
                 }
 
+                onContentMovementEnded: print('end')
+
                 states: State {
                     name: "override"
                     when: main.override
