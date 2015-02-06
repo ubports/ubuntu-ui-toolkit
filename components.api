@@ -186,17 +186,9 @@ Empty
     property int selectedIndex
     property bool expanded
 MainView 0.1 1.0
-PageTreeNode
-    property string applicationName
-    property bool anchorToKeyboard
-    property color headerColor
-    property color backgroundColor
-    property color footerColor
+MainViewBase
     property bool automaticOrientation
-    property bool useDeprecatedToolbar
     default property internal contentsItem
-    property list<Action> actions
-    property ActionManager actionManager
 Object 0.1 1.0
 QtObject
     default property internal children
@@ -1051,6 +1043,13 @@ plugins.qmltypes
     Method {
     name: "dctr"
     Parameter { name: "domain"; type: "string" }
+    Parameter { name: "context"; type: "string" }
+    Parameter { name: "text"; type: "string" }
+    Method {
+    name: "tag"
+    Parameter { name: "text"; type: "string" }
+    Method {
+    name: "tag"
     Parameter { name: "context"; type: "string" }
     Parameter { name: "text"; type: "string" }
     name: "ULConditionalLayout"

@@ -22,11 +22,13 @@ class OptionSelectorCustomDelegateTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(48)
     height: units.gu(60)
+    objectName: "mainView"
+
     Page{
 
         Column {
@@ -121,11 +123,13 @@ class OptionSelectorTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(48)
     height: units.gu(120)
+    objectName: "mainView"
+
         Column {
            anchors.fill: parent
            anchors.left: parent.left

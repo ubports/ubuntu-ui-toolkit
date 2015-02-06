@@ -30,6 +30,7 @@ import Ubuntu.Components.Pickers 1.0
 MainView {
     width: units.gu(48)
     height: units.gu(60)
+    objectName: "mainView"
 
     Column {
         DatePicker {

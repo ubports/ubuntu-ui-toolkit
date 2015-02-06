@@ -128,7 +128,7 @@ public:
     UCActionPanel *leadingPanel;
     UCActionPanel *trailingPanel;
     ListItemAnimator animator;
-    UCAction *defaultAction;
+    UCAction *mainAction;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
     QQmlComponent *styleComponent;
