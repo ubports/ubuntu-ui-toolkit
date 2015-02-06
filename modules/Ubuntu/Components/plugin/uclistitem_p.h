@@ -31,13 +31,45 @@
 #define IMPLICIT_LISTITEM_HEIGHT_GU     7
 #define DIVIDER_THICKNESS_DP            2
 #define DEFAULT_SWIPE_THRESHOLD_GU      1.5
+#define LAYOUT_HMARGIN_GU               2
+#define LAYOUT_VMARGIN_GU               0.5
+
+class QQuickAbstractAnimation;
+class QQuickBehavior;
+class ListItemAnimator : public QObject
+{
+    Q_OBJECT
+public:
+    enum Animation {
+        SnapInAnimation     = 0x01,
+        SnapOutAnimation    = 0x02
+    };
+
+    ListItemAnimator(QObject *parent = 0);
+    ~ListItemAnimator();
+    void init(UCListItem *listItem)
+    {
+        item = listItem;
+    }
+
+    bool snap(qreal to);
+    void stop();
+
+public Q_SLOTS:
+    void completeAnimation();
+
+private:
+    QQuickAbstractAnimation *getSnapBehavior();
+
+private:
+    int activeAnimations;
+    UCListItem *item;
+    QPointer<QQuickBehavior> snapBehavior;
+};
 
 class QQuickFlickable;
-class QQuickPropertyAnimation;
-class UCListItemContent;
 class UCListItemDivider;
 class UCListItemActions;
-class UCListItemSnapAnimator;
 class UCListItemStyle;
 class UCActionPanel;
 class UCListItemPrivate : public UCStyledItemBasePrivate
@@ -57,8 +89,7 @@ public:
     bool isClickedConnected();
     bool isPressAndHoldConnected();
     void _q_updateThemedData();
-    void _q_rebound();
-    void promptRebound();
+    void _q_relayout();
     void _q_updateSize();
     void _q_updateIndex();
     int index();
@@ -67,9 +98,10 @@ public:
     void setSwiped(bool tugged);
     void listenToRebind(bool listen);
     void lockContentItem(bool lock);
-    void adjustContentItemHeight();
     void update();
     void clampAndMoveX(qreal &x, qreal dx);
+    void snapOut();
+    void snapIn();
 
     bool highlighted:1;
     bool contentMoved:1;
@@ -95,7 +127,7 @@ public:
     UCListItemActions *trailingActions;
     UCActionPanel *leadingPanel;
     UCActionPanel *trailingPanel;
-    UCListItemSnapAnimator *animator;
+    ListItemAnimator animator;
     UCAction *mainAction;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
@@ -192,80 +224,8 @@ private:
     bool connected:1;
 };
 
-class UCListItemDivider : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(bool visible MEMBER m_visible WRITE setVisible NOTIFY visibleChanged)
-    Q_PROPERTY(qreal leftMargin MEMBER m_leftMargin WRITE setLeftMargin NOTIFY leftMarginChanged)
-    Q_PROPERTY(qreal rightMargin MEMBER m_rightMargin WRITE setRightMargin NOTIFY rightMarginChanged)
-    Q_PROPERTY(QColor colorFrom MEMBER m_colorFrom WRITE setColorFrom NOTIFY colorFromChanged)
-    Q_PROPERTY(QColor colorTo MEMBER m_colorTo WRITE setColorTo NOTIFY colorToChanged)
-public:
-    explicit UCListItemDivider(QObject *parent = 0);
-    ~UCListItemDivider();
-    void init(UCListItem *listItem);
-
-Q_SIGNALS:
-    void visibleChanged();
-    void leftMarginChanged();
-    void rightMarginChanged();
-    void colorFromChanged();
-    void colorToChanged();
-
-protected:
-    QSGNode *paint(QSGNode *node, const QRectF &rect);
-
-private Q_SLOTS:
-    void unitsChanged();
-    void paletteChanged();
-
-private:
-    void updateGradient();
-    void setVisible(bool visible);
-    void setLeftMargin(qreal leftMargin);
-    void setRightMargin(qreal rightMargin);
-    void setColorFrom(const QColor &color);
-    void setColorTo(const QColor &color);
-
-    bool m_visible:1;
-    bool m_colorFromChanged:1;
-    bool m_colorToChanged:1;
-    qreal m_thickness;
-    qreal m_leftMargin;
-    qreal m_rightMargin;
-    QColor m_colorFrom;
-    QColor m_colorTo;
-    QGradientStops m_gradient;
-    UCListItemPrivate *m_listItem;
-    friend class UCListItem;
-    friend class UCListItemPrivate;
-};
-
 QColor getPaletteColor(const char *profile, const char *color);
 
 QML_DECLARE_TYPE(UCListItemDivider)
-
-class QQuickPropertyAnimation;
-class UCListItemSnapAnimator : public QObject
-{
-    Q_OBJECT
-public:
-    UCListItemSnapAnimator(UCListItem *item);
-    ~UCListItemSnapAnimator();
-
-    bool snap(qreal to);
-    void stop();
-    void complete();
-
-public Q_SLOTS:
-    void snapOut();
-    void snapIn();
-
-    QQuickPropertyAnimation *getDefaultAnimation();
-
-private:
-    bool active;
-    UCListItem *item;
-};
 
 #endif // UCVIEWITEM_P_H

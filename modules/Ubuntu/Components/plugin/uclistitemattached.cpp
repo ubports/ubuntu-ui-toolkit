@@ -30,13 +30,6 @@ UCListItemAttached::~UCListItemAttached()
 {
 }
 
-void UCListItemAttached::connectToAttached(UCListItemAttached *parentAttached)
-{
-    bool visualizeActions = UCListItemAttachedPrivate::get(parentAttached)->panel;
-    bool isLeading = visualizeActions ? UCListItemAttachedPrivate::get(parentAttached)->panel->isLeading() : false;
-    setList(parentAttached->item(), isLeading, visualizeActions);
-}
-
 void UCListItemAttached::setList(UCListItem *list, bool leading, bool visualizeActions)
 {
     Q_D(UCListItemAttached);
@@ -44,7 +37,6 @@ void UCListItemAttached::setList(UCListItem *list, bool leading, bool visualizeA
         return;
     }
     d->listItem = list;
-    Q_EMIT itemChanged();
 
     if (visualizeActions) {
         d->panel = leading ? UCListItemPrivate::get(d->listItem)->leadingPanel : UCListItemPrivate::get(d->listItem)->trailingPanel;
@@ -169,13 +161,5 @@ void UCListItemAttached::snapToPosition(qreal position)
     }
     UCListItemPrivate *listItem = UCListItemPrivate::get(d->listItem);
     position *= (itemStatus == UCListItem::Leading) ? 1 : -1;
-    if (position == 0.0) {
-        listItem->_q_rebound();
-    } else {
-        if (listItem->animator) {
-            listItem->animator->snap(position);
-        } else {
-            listItem->contentItem->setX(position);
-        }
-    }
+    listItem->animator.snap(position);
 }
