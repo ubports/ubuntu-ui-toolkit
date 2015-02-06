@@ -40,11 +40,13 @@ Item {
       */
     property real paintedActionWidth: units.gu(2.5)
 
+    property ListItemActions actions: ListItemActions{}
+
     // panel implementation
     id: panel
     width: Math.max(
                actionsRow.childrenRect.width,
-               ListItem.visibleActions.length * MathUtils.clamp(paintedActionWidth, height, actionsRow.maxItemWidth))
+               actions.actions.length * MathUtils.clamp(paintedActionWidth, height, actionsRow.maxItemWidth))
 
     // used for module/autopilot testing
     objectName: "ListItemPanel" + (leading ? "Leading" : "Trailing")
@@ -52,20 +54,16 @@ Item {
     /*
       Specifies whether the panel is used to visualize leading or trailing actions.
       */
-    readonly property bool leading: ListItem.panelStatus == ListItem.Leading
+    property bool leading: true
     readonly property real swipedOffset: leading ? width + x : styledItem.width - x;
     readonly property bool swiping: styledItem.highlighted && styledItem.contentMoving
 
     anchors {
-        left: leading ? undefined : styledItem.contentItem.right
-        right: leading ? styledItem.contentItem.left : undefined
+        left: leading ? undefined : parent.right
+        right: leading ? parent.left : undefined
         // anchor to the top of the item but to the bottom of the contentItem, so we do not draw over the divider
-        top: styledItem.top
-        bottom: styledItem.contentItem.bottom
-        bottomMargin: -styledItem.contentItem.anchors.bottomMargin
-        // adjust margins
-        leftMargin: leading ? 0 : styledItem.contentItem.anchors.rightMargin
-        rightMargin: leading ? styledItem.contentItem.anchors.leftMargin : 0
+        top: parent.top
+        bottom: parent.bottom
     }
 
     Rectangle {
@@ -118,7 +116,20 @@ Item {
         }
         // snap in if the offset is bigger than the overshoot and the direction of the drag is to reveal the panel
         var snapPos = (swipedOffset > units.gu(2) && snapIn) ? panel.width : 0.0;
-        ListItem.snapToPosition(snapPos);
+        snapAnimation.snapToPosition(snapPos);
+    }
+    NumberAnimation {
+        id: snapAnimation
+        target: styledItem.contentItem
+        property: "x"
+
+        function snapToPosition(pos) {
+            stop();
+            from = styledItem.contentItem.x;
+            to = pos;
+
+            start();
+        }
     }
 
     Row {
@@ -130,13 +141,13 @@ Item {
             leftMargin: spacing
         }
 
-        property real maxItemWidth: styledItem.width / panel.ListItem.visibleActions.length
+        property real maxItemWidth: styledItem.width / actions.actions.length
 
         property Action selectedAction
         property int listItemIndex: -1
 
         Repeater {
-            model: panel.ListItem.visibleActions
+            model: actions.actions
             AbstractButton {
                 id: actionButton
                 action: modelData
@@ -149,8 +160,8 @@ Item {
                 }
                 function trigger() {
                     actionsRow.selectedAction = modelData;
-                    actionsRow.listItemIndex = panel.ListItem.index;
-                    panel.ListItem.snapToPosition(0.0);
+                    actionsRow.listItemIndex = styledItem.index;
+                    snapAnimation.snapToPosition(0.0);
                 }
 
                 Rectangle {
@@ -162,7 +173,7 @@ Item {
                 Loader {
                     id: delegateLoader
                     height: parent.height
-                    sourceComponent: panel.ListItem.actions.delegate ? panel.ListItem.actions.delegate : defaultDelegate
+                    sourceComponent: actions.delegate ? actions.delegate : defaultDelegate
                     property Action action: modelData
                     property int index: index
                     property bool pressed: actionButton.pressed

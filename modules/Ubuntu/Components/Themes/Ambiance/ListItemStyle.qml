@@ -21,9 +21,57 @@ import Ubuntu.Components 1.2
 Styles.ListItemStyle {
 
     swipeOvershoot: units.gu(2)
-    actionsDelegate: ListItemPanel{}
 
     snapAnimation: UbuntuNumberAnimation {
         duration: UbuntuAnimation.SnapDuration
+    }
+
+
+    onParentChanged: print(parent, styledItem.divider.parent)
+    // anchoring
+    anchors {
+        top: parent ? parent.top : undefined
+        bottom: parent ? parent.bottom : undefined
+        bottomMargin: styledItem.divider.visible ? styledItem.divider.height : 0
+    }
+    width: parent ? parent.width : 0
+
+    // leading/trailing panels
+    Component {
+        id: panel
+        ListItemPanel {}
+    }
+
+    Loader {
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            right: parent.left
+        }
+        width: parent.width
+        sourceComponent: styledItem.leadingActions && styledItem.leadingActions.actions.length > 0 ?
+                             panel : null
+        onItemChanged: {
+            if (item) {
+                item.actions = styledItem.leadingActions;
+                item.leading = true;
+            }
+        }
+    }
+    Loader {
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: parent.right
+        }
+        width: parent.width
+        sourceComponent: styledItem.trailingActions && styledItem.trailingActions.actions.length > 0 ?
+                             panel : null
+        onItemChanged: {
+            if (item) {
+                item.actions = styledItem.trailingActions;
+                item.leading = false;
+            }
+        }
     }
 }

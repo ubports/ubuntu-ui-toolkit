@@ -1017,8 +1017,10 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         // while moving, we cannot select any items
         return;
     }
-    if (d->canHighlight(event) && !d->suppressClick
+    if (d->canHighlight(event)
             && !d->highlighted && event->button() == Qt::LeftButton) {
+        // create style instance
+        d->initStyleItem();
         // stop any ongoing animation!
         d->animator.stop();
         d->setHighlighted(true);
@@ -1027,8 +1029,6 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         d->listenToRebind(true);
         // if it was moved, grab the panels
         if (d->swiped) {
-            UCActionPanel::grabPanel(&d->leadingPanel, this, true);
-            UCActionPanel::grabPanel(&d->trailingPanel, this, false);
             if (d->parentAttached) {
                 d->parentAttached->disableInteractive(this, true);
             }
@@ -1071,9 +1071,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     UCStyledItemBase::mouseMoveEvent(event);
 
     // accept the tugging only if the move is within the threshold
-    bool leadingAttached = UCActionPanel::isConnected(d->leadingPanel);
-    bool trailingAttached = UCActionPanel::isConnected(d->trailingPanel);
-    if (d->highlighted && !(leadingAttached || trailingAttached)) {
+    if (d->highlighted && !d->swiped) {
         // check if we can initiate the drag at all
         // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
         qreal threshold = UCUnits::instance().gu(d->xAxisMoveThresholdGU);
@@ -1083,53 +1081,27 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         if ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold))) {
             // the press went out of the threshold area, enable move, if the direction allows it
             d->lastPos = event->localPos();
-            // tries to connect both panels so we do no longer need to take care which
-            // got connected ad which not; this may fail in case of shared ListItemActions,
-            // as then the panel is shared between the list items, and the panel might be
-            // still in use in other panels. See UCListItemActionsPrivate::connectToListItem
-            leadingAttached = UCActionPanel::grabPanel(&d->leadingPanel, this, true);
-            trailingAttached = UCActionPanel::grabPanel(&d->trailingPanel, this, false);
             // unlock contentItem's left/right edges
             d->lockContentItem(false);
             if (d->parentAttached) {
                 d->parentAttached->disableInteractive(this, true);
             }
+            d->setSwiped(true);
         }
     }
 
-    if (leadingAttached || trailingAttached) {
-        qreal x = d->contentItem->x();
-        qreal dx = event->localPos().x() - d->lastPos.x();
-        d->lastPos = event->localPos();
+    if (d->swiped) {
+        d->pressAndHoldTimer.stop();
+        d->setContentMoving(true);
 
-        if (dx) {
-            // stop pressAndHold timer as we started to drag
-            d->pressAndHoldTimer.stop();
-            d->setContentMoving(true);
-            // clamp X into allowed dragging area
-            d->clampAndMoveX(x, dx);
-            // block flickable
-            d->setSwiped(true);
-            d->contentItem->setX(x);
-            // decide which panel is visible by checking the contentItem's X coordinates
-            qreal margin = QQuickItemPrivate::get(d->contentItem)->anchors()->leftMargin();
-            if (d->contentItem->x() > margin) {
-                if (d->leadingPanel) {
-                    d->leadingPanel->panel()->setVisible(true);
-                }
-                if (d->trailingPanel) {
-                    d->trailingPanel->panel()->setVisible(false);
-                }
-            } else if (d->contentItem->x() < margin) {
-                // trailing revealed
-                if (d->leadingPanel) {
-                    d->leadingPanel->panel()->setVisible(false);
-                }
-                if (d->trailingPanel) {
-                    d->trailingPanel->panel()->setVisible(true);
-                }
-            }
+        // send swipe event
+        QPointF delta = event->localPos() - d->lastPos;
+        UCSwipeEvent swipe(event->localPos(), d->lastPos, d->contentItem->position() + delta, false);
+        d->styleItem->contentSwiped(&swipe);
+        if (d->contentItem->position() != swipe.m_contentPos) {
+            d->lastPos = swipe.m_mousePos;
         }
+        d->contentItem->setPosition(swipe.m_contentPos);
     }
 }
 

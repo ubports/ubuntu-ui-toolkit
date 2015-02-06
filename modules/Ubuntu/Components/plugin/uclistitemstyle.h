@@ -18,6 +18,37 @@
 
 #include <QtQuick/QQuickItem>
 
+class UCSwipeEvent : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QPointF mouse READ mousePos)
+    Q_PROPERTY(QPointF last READ lastPos)
+    Q_PROPERTY(QPointF content MEMBER m_contentPos)
+    Q_PROPERTY(bool finished READ finished)
+public:
+    UCSwipeEvent(const QPointF &mousePos, const QPointF &lastPos, const QPointF &contentPos, bool finished)
+        : QObject(), m_mousePos(mousePos), m_lastPos(lastPos), m_contentPos(contentPos), m_finished(finished)
+    {}
+
+    QPointF mousePos() const
+    {
+        return m_mousePos;
+    }
+    QPointF lastPos() const
+    {
+        return m_lastPos;
+    }
+    bool finished() const
+    {
+        return m_finished;
+    }
+
+    QPointF m_mousePos;
+    QPointF m_lastPos;
+    QPointF m_contentPos;
+    bool m_finished;
+};
+
 class QQmlComponent;
 class QQuickAbstractAnimation;
 class QQuickBehavior;
@@ -38,6 +69,9 @@ Q_SIGNALS:
     void dragHandlerDelegateChanged();
     void snapAnimationChanged();
     void swipeOvershootChanged();
+
+    void contentSwiped(UCSwipeEvent *event);
+    void rebound();
 
 private:
     QQmlComponent *m_actionsDelegate;
