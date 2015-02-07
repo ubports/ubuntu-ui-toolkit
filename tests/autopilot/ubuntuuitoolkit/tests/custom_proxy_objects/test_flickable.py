@@ -241,7 +241,7 @@ MainView {
         mock_drag.assert_called_with(
             mock.ANY, bottom - units.gu(6), mock.ANY, mock.ANY, rate=mock.ANY)
 
-    def test_swipe_to_show_more_above_with_bottom_margin(self):
+    def test_swipe_to_show_more_above_with_top_margin(self):
         """Calling swipe to show more above will use the margin in the drag."""
         qquickflickable = self.main_view.select_single(
             ubuntuuitoolkit.QQuickFlickable, objectName='flickable')
