@@ -21,6 +21,7 @@ import os
 import fixtures
 
 from ubuntuuitoolkit import (
+    fixture_setup,
     tests,
     units
 )
@@ -36,14 +37,15 @@ class UnitsTestCase(tests.QMLFileAppTestCase):
         dir_path, 'test_units.UnitsTestCase.qml')
 
     scenarios = [
-        ('with default GRID_UNIT_PX', {'grid_unit_px': None}),
+        ('with default GRID_UNIT_PX', {'grid_unit_px': ''}),
         ('with GRID_UNIT_PX environment variable set', {'grid_unit_px': '10'})
     ]
 
     def setUp(self):
-        if self.grid_unit_px:
-            self.useFixture(fixtures.EnvironmentVariable(
-                'GRID_UNIT_PX', self.grid_unit_px))
+        self.useFixture(fixtures.EnvironmentVariable(
+            'GRID_UNIT_PX', self.grid_unit_px))
+        self.useFixture(fixture_setup.InitctlEnvironmentVariable(
+            GRID_UNIT_PX=self.grid_unit_px))
         super(UnitsTestCase, self).setUp()
         self.button = self.main_view.select_single(objectName='button')
         self.label = self.main_view.select_single(objectName='clicked_label')
