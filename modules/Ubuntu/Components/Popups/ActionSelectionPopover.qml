@@ -120,7 +120,7 @@ Popover {
         }
         /*! \internal */
         onTriggered: popover.hide()
-        visible: enabled
+        visible: enabled && ((action === undefined) || action.visible)
         height: visible ? implicitHeight : 0
     }
 

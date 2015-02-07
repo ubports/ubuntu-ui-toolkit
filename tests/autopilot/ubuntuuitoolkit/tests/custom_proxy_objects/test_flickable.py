@@ -1,6 +1,6 @@
 # -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
 #
-# Copyright (C) 2014 Canonical Ltd.
+# Copyright (C) 2014-2015 Canonical Ltd.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -21,7 +21,10 @@ except ImportError:
 
 import testtools
 import ubuntuuitoolkit
-from ubuntuuitoolkit import tests
+from ubuntuuitoolkit import (
+    tests,
+    units,
+)
 from ubuntuuitoolkit._custom_proxy_objects import _flickable
 
 
@@ -59,8 +62,8 @@ class IsFlickableTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
-import Ubuntu.Components.ListItems 0.1 as ListItem
+import Ubuntu.Components 1.0
+import Ubuntu.Components.ListItems 1.0 as ListItem
 
 MainView {
     objectName: 'mainView'
@@ -96,11 +99,12 @@ class SwipeFlickableTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(48)
     height: units.gu(60)
+    objectName: "mainView"
 
     Label {
         id: clickedLabel
@@ -222,7 +226,7 @@ MainView {
         """Calling swipe to show more below will use the margin in the drag."""
         qquickflickable = self.main_view.select_single(
             ubuntuuitoolkit.QQuickFlickable, objectName='flickable')
-        qquickflickable.margin_to_swipe_from_bottom = 50
+        qquickflickable.margin_to_swipe_from_bottom = units.gu(6)
         containers = qquickflickable._get_containers()
         bottom = _flickable._get_visible_container_bottom(containers)
 
@@ -235,7 +239,26 @@ MainView {
                 pass
 
         mock_drag.assert_called_with(
-            mock.ANY, bottom - 50, mock.ANY, mock.ANY, rate=mock.ANY)
+            mock.ANY, bottom - units.gu(6), mock.ANY, mock.ANY, rate=mock.ANY)
+
+    def test_swipe_to_show_more_above_with_bottom_margin(self):
+        """Calling swipe to show more above will use the margin in the drag."""
+        qquickflickable = self.main_view.select_single(
+            ubuntuuitoolkit.QQuickFlickable, objectName='flickable')
+        qquickflickable.margin_to_swipe_from_top = units.gu(6)
+        containers = qquickflickable._get_containers()
+        bottom = _flickable._get_visible_container_bottom(containers)
+
+        with mock.patch.object(
+                qquickflickable.pointing_device, 'drag') as mock_drag:
+            try:
+                qquickflickable.swipe_to_show_more_above()
+            except ubuntuuitoolkit.ToolkitException:
+                # An exception will be raised because the drag was faked.
+                pass
+
+        mock_drag.assert_called_with(
+            mock.ANY, bottom - units.gu(6), mock.ANY, mock.ANY, rate=mock.ANY)
 
     def test_failed_drag_must_raise_exception(self):
         dummy_coordinates = (0, 0, 10, 10)
@@ -254,11 +277,12 @@ class UnityFlickableTestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
 import QtQuick 2.0
-import Ubuntu.Components 0.1
+import Ubuntu.Components 1.0
 
 MainView {
     width: units.gu(48)
     height: units.gu(60)
+    objectName: 'mainView'
 
     Flickable {
         objectName: 'testFlickable'

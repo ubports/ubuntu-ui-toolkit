@@ -1,9 +1,7 @@
-COMPONENTS_PATH = ../../../modules/Ubuntu/Layouts
-INCLUDEPATH += $$COMPONENTS_PATH/plugin
-PRE_TARGETDEPS = $$COMPONENTS_PATH/libUbuntuLayouts.so
-LIBS += $$COMPONENTS_PATH/libUbuntuLayouts.so
-DEFINES += QUICK_TEST_SOURCE_DIR=\"\\\"$$_PRO_FILE_PWD_\\\"\"
+LAYOUT_SRC = $$PWD/../../modules/Ubuntu/Layouts
+LAYOUT_BLD = $$shadowed($$PWD)/../../modules/Ubuntu/Layouts
 
-components.target = $$PRE_TARGETDEPS
-components.commands = cd $$COMPONENTS_PATH/plugin && $(QMAKE) && make
-QMAKE_EXTRA_TARGETS += components
+INCLUDEPATH += $$LAYOUT_SRC/plugin
+PRE_TARGETDEPS = $$LAYOUT_BLD/libUbuntuLayouts.so
+LIBS += -L$$LAYOUT_BLD -lUbuntuLayouts
+DEFINES += QUICK_TEST_SOURCE_DIR=\"\\\"$$_PRO_FILE_PWD_\\\"\"

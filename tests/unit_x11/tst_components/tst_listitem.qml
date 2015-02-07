@@ -18,11 +18,12 @@ import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Test 1.0
 import Ubuntu.Components 1.2
+import Ubuntu.Components.Styles 1.2
 
 Item {
     id: main
-    width: units.gu(40)
-    height: units.gu(71)
+    width: units.gu(50)
+    height: units.gu(100)
 
     Action {
         id: stockAction
@@ -77,6 +78,7 @@ Item {
         ListItem {
             id: clickedConnected
             onClicked: {}
+            onPressAndHold: {}
         }
         ListItem {
             id: testItem
@@ -110,6 +112,22 @@ Item {
                 width: parent.width
                 leadingActions: leading
                 trailingActions: trailing
+            }
+        }
+        Flickable {
+            id: testFlickable
+            width: parent.width
+            height: units.gu(28)
+            ListView {
+                id: nestedListView
+                width: parent.width
+                height: units.gu(28)
+                clip: true
+                model: 10
+                delegate: ListItem {
+                    objectName: "listItem" + index
+                    leadingActions: leading
+                }
             }
         }
     }
@@ -169,10 +187,13 @@ Item {
         }
 
         function cleanup() {
+            testItem.action = null;
             movingSpy.clear();
             highlightedSpy.clear();
             clickSpy.clear();
             actionSpy.clear();
+            pressAndHoldSpy.clear();
+            buttonSpy.clear();
             interactiveSpy.clear();
             listView.interactive = true;
             // make sure we collapse
@@ -192,18 +213,27 @@ Item {
             compare(defaults.highlighted, false, "Not highlighted by default");
             compare(defaults.swipeOvershoot, 0.0, "No overshoot till the style is loaded!");
             compare(defaults.divider.visible, true, "divider is visible by default");
-            compare(defaults.divider.leftMargin, units.dp(2), "divider's left margin is 2GU");
-            compare(defaults.divider.rightMargin, units.dp(2), "divider's right margin is 2GU");
+            compare(defaults.divider.leftMargin, 0, "divider's left margin is 0");
+            compare(defaults.divider.rightMargin, 0, "divider's right margin is 0");
             compare(defaults.divider.colorFrom, "#000000", "colorFrom differs.");
             fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
             compare(defaults.contentMoving, false, "default is not moving");
+            compare(defaults.action, null, "No action by default.");
             compare(defaults.style, null, "Style is loaded upon first use.");
             compare(defaults.__styleInstance, null, "__styleInstance must be null.");
 
             compare(actionsDefault.delegate, null, "ListItemActions has no delegate set by default.");
             compare(actionsDefault.actions.length, 0, "ListItemActions has no actions set.");
+        }
+
+        Component { id: customStyle; ListItemStyle {} }
+
+        function test_style_reset() {
+            testItem.style = customStyle;
+            testItem.style = undefined;
+            verify(testItem.style != 0 && testItem.style.objectName == "ListItemThemeStyle", "Style set back to theme");
         }
 
         function test_children_in_content_item() {
@@ -226,10 +256,12 @@ Item {
         }
 
         function test_clicked_on_mouse() {
+            clickSpy.target = testItem;
             mouseClick(testItem, testItem.width / 2, testItem.height / 2);
             clickSpy.wait();
         }
         function test_clicked_on_tap() {
+            clickSpy.target = testItem;
             TestExtras.touchClick(0, testItem, centerOf(testItem));
             clickSpy.wait();
         }
@@ -343,6 +375,7 @@ Item {
         }
         function test_listview_not_interactive_while_tugged(data) {
             listView.positionViewAtBeginning();
+            interactiveSpy.target = listView;
             compare(listView.interactive, true, "ListView is not interactive");
             movingSpy.target = data.item;
             interactiveSpy.target = listView;
@@ -602,6 +635,102 @@ Item {
             } else {
                 compare(highlightedSpy.count, 0, "Should not be highlighted!");
             }
+        }
+
+        SignalSpy {
+            id: pressAndHoldSpy
+            signalName: "pressAndHold"
+        }
+        SignalSpy {
+            id: buttonSpy
+            signalName: "clicked"
+            target: button
+        }
+        function test_pressandhold_suppress_click() {
+            var center = centerOf(testItem);
+            pressAndHoldSpy.target = testItem;
+            clickSpy.target = testItem;
+            clickSpy.clear();
+            mouseLongPress(testItem, center.x, center.y);
+            mouseRelease(testItem, center.x, center.y);
+            pressAndHoldSpy.wait();
+            compare(clickSpy.count, 0, "Click must be suppressed when long pressed");
+        }
+
+        function test_pressandhold_not_emitted_when_swiped() {
+            var center = centerOf(testItem);
+            pressAndHoldSpy.target = testItem;
+            // move mouse slowly from left to right, the swipe threshold is 1.5 GU!!!,
+            // so any value less than that will emit pressAndHold
+            mouseMoveSlowly(testItem, center.x, center.y, units.gu(2), 0, 10, 100);
+            mouseRelease(testItem, center.x + units.gu(1), center.y);
+            compare(pressAndHoldSpy.count, 0, "pressAndHold should not be emitted!");
+            // make sure we have collapsed item
+            rebound(testItem);
+        }
+
+        function test_pressandhold_not_emitted_when_pressed_over_active_component() {
+            var press = centerOf(button);
+            pressAndHoldSpy.target = controlItem;
+            mouseLongPress(button, press.x, press.y);
+            compare(pressAndHoldSpy.count, 0, "")
+            mouseRelease(button, press.x, press.y);
+        }
+
+        function test_click_on_button_suppresses_listitem_click() {
+            buttonSpy.target = button;
+            clickSpy.target = controlItem;
+            mouseClick(button, centerOf(button).x, centerOf(button).y);
+            buttonSpy.wait();
+            compare(clickSpy.count, 0, "ListItem clicked() must be suppressed");
+        }
+
+        function test_pressandhold_connected_causes_highlight() {
+            highlightedSpy.target = clickedConnected;
+            mouseLongPress(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
+            highlightedSpy.wait();
+            mouseRelease(clickedConnected, centerOf(clickedConnected).x, centerOf(clickedConnected).y);
+        }
+
+        function test_listitem_blocks_ascendant_flickables() {
+            var listItem = findChild(nestedListView, "listItem0");
+            verify(listItem, "Cannot find test item");
+            interactiveSpy.target = testFlickable;
+            movingSpy.target = listItem;
+            // tug leading
+            flick(listItem, centerOf(listItem).x, centerOf(listItem).y, listItem.width / 2, 0);
+            movingSpy.wait();
+            // check if interactive got changed
+            interactiveSpy.wait();
+
+            // cleanup!!!
+            rebound(listItem);
+        }
+
+        function test_action_type_set() {
+            stockAction.parameterType = Action.None;
+            compare(stockAction.parameterType, Action.None, "No parameter type for stockAction!");
+            testItem.action = stockAction;
+            compare(stockAction.parameterType, Action.Integer, "No parameter type for stockAction!");
+        }
+
+        function test_action_triggered_on_clicked() {
+            testItem.action = stockAction;
+            actionSpy.target = stockAction;
+            mouseClick(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            actionSpy.wait();
+        }
+
+        function test_action_suppressed_on_longpress() {
+            testItem.action = stockAction;
+            actionSpy.target = stockAction;
+            clickSpy.target = testItem;
+            pressAndHoldSpy.target = testItem;
+            mouseLongPress(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            mouseRelease(testItem, centerOf(testItem).x, centerOf(testItem).y);
+            pressAndHoldSpy.wait();
+            compare(clickSpy.count, 0, "Click must be suppressed.");
+            compare(actionSpy.count, 0, "Action triggered must be suppressed");
         }
     }
 }

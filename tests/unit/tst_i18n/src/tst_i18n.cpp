@@ -76,13 +76,13 @@ private Q_SLOTS:
     {
         // Set test locale folder in the environment
         // Using setenv because QProcessEnvironment ignores changes
-        QString testAppDir(QCoreApplication::applicationDirPath() + "/localizedApp");
+        QString testAppDir(QDir::currentPath() + "/localizedApp");
         setenv("APP_DIR", testAppDir.toUtf8(), 1);
 
         // Verify that we set it correctly
         QVERIFY(QFileInfo(testAppDir + "/share/locale/en/LC_MESSAGES/localizedApp.mo").exists());
 
-        QString modules("../../../modules");
+        QString modules(UBUNTU_QML_IMPORT_PATH);
         QVERIFY(QDir(modules).exists());
 
         view = new QQuickView;
@@ -140,7 +140,7 @@ private Q_SLOTS:
 
         // Was the locale folder detected and set?
         QString boundDomain(C::bindtextdomain(i18n->domain().toUtf8(), ((const char*)0)));
-        QString testAppDir(QCoreApplication::applicationDirPath() + "/localizedApp");
+        QString testAppDir(QDir::currentPath() + "/localizedApp");
         QString expectedLocalePath(QDir(testAppDir).filePath("share/locale"));
         QCOMPARE(boundDomain, expectedLocalePath);
         // Is the domain gettext uses correct?
@@ -169,12 +169,25 @@ private Q_SLOTS:
         QCOMPARE(button->property("text").toString(), QString("Count the clicks"));
         QCOMPARE(all1->property("text").toString(), QString("Todos"));
         QCOMPARE(all2->property("text").toString(), QString("Todas"));
+        // Only tagged, not actually translated
+        QQuickItem* button2(testItem(page, "button2"));
+        QVERIFY(button2);
+        QCOMPARE(button2->property("text").toString(), QString("Count the kittens"));
+        QQuickItem* all3(testItem(page, "all3"));
+        QVERIFY(all3);
+        QCOMPARE(all3->property("text").toString(), QString("All"));
 
         // Translate in C++
         QCOMPARE(i18n->dtr(i18n->domain(), QString("Welcome")), QString("Greets"));
         QCOMPARE(i18n->tr(QString("Count the kilometres")), QString("Count the clicks"));
         QCOMPARE(i18n->ctr(QString("All Contacts"), QString("All")), QString("Todos"));
         QCOMPARE(i18n->ctr(QString("All Calls"), QString("All")), QString("Todas"));
+        // Only tagged, not actually translated
+        QCOMPARE(i18n->tag(QString("All kittens")), QString("All kittens"));
+        QCOMPARE(i18n->tag(QString("All Cats"), QString("All")), QString("All"));
+        // Sanity-check that the test strings would otherwise work and not no-op by accident
+        QCOMPARE(i18n->tr(QString("Count the kittens")), QString("Contar los gatitos"));
+        QCOMPARE(i18n->ctr(QString("All Cats"), QString("All")), QString("Cada"));
     }
 };
 
