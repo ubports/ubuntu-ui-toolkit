@@ -37,12 +37,13 @@ class UnitsTestCase(tests.QMLFileAppTestCase):
 
     scenarios = [
         ('with default GRID_UNIT_PX', {'grid_unit_px': None}),
-        ('with GRID_UNIT_PX environment variable set', {'grid_unit_px': '13'})
+        ('with GRID_UNIT_PX environment variable set', {'grid_unit_px': '10'})
     ]
 
     def setUp(self):
-        self.useFixture(fixtures.EnvironmentVariable(
-            'GRID_UNIT_PX', self.grid_unit_px))
+        if self.grid_unit_px:
+            self.useFixture(fixtures.EnvironmentVariable(
+                'GRID_UNIT_PX', self.grid_unit_px))
         super(UnitsTestCase, self).setUp()
         self.button = self.main_view.select_single(objectName='button')
         self.label = self.main_view.select_single(objectName='clicked_label')
