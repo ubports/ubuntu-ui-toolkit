@@ -247,8 +247,9 @@ MainView {
             ubuntuuitoolkit.QQuickFlickable, objectName='flickable')
         qquickflickable.margin_to_swipe_from_top = units.gu(6)
         containers = qquickflickable._get_containers()
-        bottom = _flickable._get_visible_container_bottom(containers)
+        top = _flickable._get_visible_container_top(containers)
 
+        qquickflickable.swipe_to_bottom()
         with mock.patch.object(
                 qquickflickable.pointing_device, 'drag') as mock_drag:
             try:
@@ -258,7 +259,7 @@ MainView {
                 pass
 
         mock_drag.assert_called_with(
-            mock.ANY, bottom - units.gu(6), mock.ANY, mock.ANY, rate=mock.ANY)
+            mock.ANY, top + units.gu(6), mock.ANY, mock.ANY, rate=mock.ANY)
 
     def test_failed_drag_must_raise_exception(self):
         dummy_coordinates = (0, 0, 10, 10)
