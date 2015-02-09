@@ -18,7 +18,6 @@ import QtQuick 2.0
 import Ubuntu.Components 1.1
 
 MainView {
-    objectName: "MainView"
     width: units.gu(48)
     height: units.gu(60)
     objectName: "mainView"

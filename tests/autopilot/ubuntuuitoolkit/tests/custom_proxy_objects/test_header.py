@@ -22,7 +22,6 @@ from testtools.matchers import Contains
 
 import ubuntuuitoolkit
 from ubuntuuitoolkit import tests
-from autopilot import introspection
 
 
 class HideShowTestCase(tests.QMLFileAppTestCase):
@@ -195,6 +194,7 @@ class DeprecatedHeaderSectionsTestCase(tests.QMLFileAppTestCase):
 
 class CustomMainView(ubuntuuitoolkit.MainView):
     """Autopilot helper for a custom main view."""
+
 
 class HeaderInCustomMainViewTestCase(tests.QMLFileAppTestCase):
 
