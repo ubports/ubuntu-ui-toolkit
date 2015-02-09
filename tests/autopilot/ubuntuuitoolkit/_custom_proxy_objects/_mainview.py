@@ -44,9 +44,8 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
         if super(MainView, cls).validate_dbus_object(path, state):
             # This covers MainView 0.1/1.0/1.1 and possible components
             # derived from MainView (e.g. "CustomMainView") that have
-            # their own CPO. select_single()/select_multi() may be used
-            # there, but using objectName is recommended.
-            return True
+            # their own CPO.
+            # Using objectName for selecting a MainView is recommneded.
         name = introspection.get_classname_from_path(path)
         if name == b'MainView12':
             # MainView 1.2. Must be selected using objectName.
