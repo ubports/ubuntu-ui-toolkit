@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,7 +15,7 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 import Ubuntu.Components.ListItems 1.0 as ListItem
 
 Rectangle {
@@ -49,6 +49,11 @@ MainView {
                 ListItem.Standard {
                     text: i18n.tr("External page")
                     onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
+                    progression: true
+                }
+                ListItem.Standard {
+                    text: i18n.tr("External 1.0 page")
+                    onClicked: pageStack.push(Qt.resolvedUrl("MyDeprecatedPage.qml"))
                     progression: true
                 }
             }

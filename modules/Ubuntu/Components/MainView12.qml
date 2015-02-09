@@ -31,7 +31,7 @@ MainViewBase {
 
     /*!
       \internal
-      Use default property to ensure children added do not draw over the toolbar.
+      Use default property to ensure children added do not draw over the header.
      */
     default property alias contentsItem: contents.data
     OrientationHelper {
@@ -92,11 +92,13 @@ MainViewBase {
             contents: internal.activePage ?
                           internal.activePage.__customHeaderContents : null
 
-            // FIXME TIM: if the Page is 1.1+, there is always a head property
-            // FIXME TIM2: Test that null works.
-            //  Basically test with a Page 1.0 here to see what happens
+            PageHeadConfiguration {
+                id: defaultConfig
+                // Used when there is no active Page, or a Page 1.0 is used which
+                // does not have a PageHeadConfiguration.
+            }
             config: internal.activePage && internal.activePage.hasOwnProperty("head") ?
-                        internal.activePage.head : null
+                        internal.activePage.head : defaultConfig
 
             // 'window' is defined by QML between startup and showing on the screen.
             // There is no signal for when it becomes available and re-declaring it is not safe.
