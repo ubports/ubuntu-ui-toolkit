@@ -45,7 +45,7 @@ class UnitsTestCase(tests.QMLFileAppTestCase):
         self.useFixture(fixtures.EnvironmentVariable(
             'GRID_UNIT_PX', self.grid_unit_px))
         self.useFixture(fixture_setup.InitctlEnvironmentVariable(
-            GRID_UNIT_PX=self.grid_unit_px))
+            global_=True, GRID_UNIT_PX=self.grid_unit_px))
         super(UnitsTestCase, self).setUp()
         self.button = self.main_view.select_single(objectName='button')
         self.label = self.main_view.select_single(objectName='clicked_label')
