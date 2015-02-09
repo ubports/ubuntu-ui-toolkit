@@ -28,7 +28,6 @@ MainView {
     width: units.gu(38)
     height: units.gu(50)
     anchors.centerIn: parent
-    useDeprecatedToolbar: false
 
     PageStack {
         id: pageStack
@@ -78,10 +77,8 @@ MainView {
                 }
             }
 
-            tools: ToolbarItems {
-                ToolbarButton {
-                    text: "oh"
-                }
+            head.actions: Action {
+                iconName: "share"
             }
         }
 

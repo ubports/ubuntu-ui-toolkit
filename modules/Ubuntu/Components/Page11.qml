@@ -28,6 +28,10 @@ Page10 {
         id: headerConfig
     }
 
+    onToolsChanged: {
+        print("Page.tools is a deprecated property. Please use Page.head instead.");
+    }
+
     Object {
         id: internal
 
