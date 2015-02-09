@@ -91,6 +91,10 @@ ActionItem {
         // as it might occlude the newly assigned mouse area.
         hoverEnabled: true
 
+        // invoke Haptics singleton earlier than we press the button,
+        // so we give some time for the singleton to sync settings with the service
+        property bool hapticsEnabled: Haptics.enabled
+
         onClicked: {
             if (button.__acceptEvents) {
                 // FIXME (Vivid) call this in the style rather than from AbstractButton
