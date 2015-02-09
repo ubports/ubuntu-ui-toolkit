@@ -15,7 +15,6 @@
  */
 
 import QtQuick 2.0
-import QtFeedback 5.0
 import Ubuntu.Components 1.1
 
 /*!
@@ -85,16 +84,6 @@ ActionItem {
 
     activeFocusOnPress: true
 
-    HapticsEffect {
-        id: pressEffect
-        attackIntensity: 0.0
-        attackTime: 50
-        intensity: 1.0
-        duration: 10
-        fadeTime: 50
-        fadeIntensity: 0.0
-    }
-
     MouseArea {
         id: mouseArea
         anchors.fill: parent
@@ -102,9 +91,14 @@ ActionItem {
         // as it might occlude the newly assigned mouse area.
         hoverEnabled: true
 
+        // invoke Haptics singleton earlier than we press the button,
+        // so we give some time for the singleton to sync settings with the service
+        property bool hapticsEnabled: Haptics.enabled
+
         onClicked: {
             if (button.__acceptEvents) {
-                pressEffect.start();
+                // FIXME (Vivid) call this in the style rather than from AbstractButton
+                Haptics.play();
                 button.clicked()
             }
         }

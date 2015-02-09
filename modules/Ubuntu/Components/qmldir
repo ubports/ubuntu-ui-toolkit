@@ -104,3 +104,6 @@ PageHeadState 1.1 PageHeadState.qml
 Icon 1.1 Icon11.qml
 StyledItem 1.1 StyledItem.qml
 singleton UbuntuColors 1.1 11/UbuntuColors.qml
+
+singleton Haptics 0.1 11/Haptics.qml
+singleton Haptics 1.0 11/Haptics.qml

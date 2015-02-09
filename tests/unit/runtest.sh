@@ -46,6 +46,7 @@ function execute_test_cmd {
     # https://bugreports.qt-project.org/browse/QTBUG-36243
     QML2_IMPORT_PATH=../../../modules:$QML2_IMPORT_PATH UBUNTU_UI_TOOLKIT_THEMES_PATH=../../../modules \
     ALARM_BACKEND=memory \
+    SUPPRESS_SERVICEPROPERTIES_WARNINGS=yes \
     $_CMD $_ARGS 2>&1 | grep -v 'QFontDatabase: Cannot find font directory'
     # Note: Get first command before the pipe, $? would be ambiguous
     RESULT=${PIPESTATUS[0]}
