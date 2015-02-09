@@ -1,3 +1,14 @@
+ubuntu-ui-toolkit (1.1.1298+15.04.20150209~rtm-0ubuntu1) 14.09; urgency=medium
+
+  [ Zsombor Egri ]
+  * isHapticsFeedbackEnabled context property exposed to drive
+    HapticsFeedback in AbstractButton. (LP: #1391877)
+  * Haptics singleton component to provide toolkit wide default and
+    custom feedback functionaity controlled by system settings. (LP:
+    #1391877)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 09 Feb 2015 13:10:45 +0000
+
 ubuntu-ui-toolkit (1.1.1298+15.04.20150202~rtm-0ubuntu1) 14.09; urgency=medium
 
   [ Tim Peeters ]
