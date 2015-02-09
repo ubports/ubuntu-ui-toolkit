@@ -23,78 +23,78 @@ Rectangle {
     width: units.gu(50)
     height: units.gu(70)
 
-MainView {
-    id: mainView
-    width: units.gu(38)
-    height: units.gu(50)
-    anchors.centerIn: parent
+    MainView {
+        id: mainView
+        width: units.gu(38)
+        height: units.gu(50)
+        anchors.centerIn: parent
 
-    PageStack {
-        id: pageStack
-        Component.onCompleted: push(page0)
+        PageStack {
+            id: pageStack
+            Component.onCompleted: push(page0)
 
-        Page {
-            id: page0
-            title: i18n.tr("Root page")
-            visible: false
+            Page {
+                id: page0
+                title: i18n.tr("Root page")
+                visible: false
 
-            Column {
-                anchors.fill: parent
-                ListItem.Standard {
-                    text: i18n.tr("Page one")
-                    onClicked: pageStack.push(page1)
-                    progression: true
-                }
-                ListItem.Standard {
-                    text: i18n.tr("External page")
-                    onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
-                    progression: true
-                }
-                ListItem.Standard {
-                    text: i18n.tr("External 1.0 page")
-                    onClicked: pageStack.push(Qt.resolvedUrl("MyDeprecatedPage.qml"))
-                    progression: true
-                }
-            }
-        }
-
-        Page {
-            id: page1
-            title: i18n.tr("First page")
-            visible: false
-
-            Column {
-                anchors.fill: parent
-                ListItem.Standard {
-                    text: i18n.tr("Root page (again)")
-                    onClicked: pageStack.push(page0)
-                    progression: true
-                }
-                ListItem.Standard {
-                    text: i18n.tr("Red rectangle")
-                    onClicked: pageStack.push(page2, {color: "red"})
-                    progression: true
+                Column {
+                    anchors.fill: parent
+                    ListItem.Standard {
+                        text: i18n.tr("Page one")
+                        onClicked: pageStack.push(page1)
+                        progression: true
+                    }
+                    ListItem.Standard {
+                        text: i18n.tr("External page")
+                        onClicked: pageStack.push(Qt.resolvedUrl("MyCustomPage.qml"))
+                        progression: true
+                    }
+                    ListItem.Standard {
+                        text: i18n.tr("External 1.0 page")
+                        onClicked: pageStack.push(Qt.resolvedUrl("MyDeprecatedPage.qml"))
+                        progression: true
+                    }
                 }
             }
 
-            head.actions: Action {
-                iconName: "share"
-            }
-        }
+            Page {
+                id: page1
+                title: i18n.tr("First page")
+                visible: false
 
-        Page {
-            title: "Rectangle"
-            id: page2
-            visible: false
-            property alias color: rectangle.color
-            Rectangle {
-                id: rectangle
-                anchors {
-                    fill: parent
-                    margins: units.gu(5)
+                Column {
+                    anchors.fill: parent
+                    ListItem.Standard {
+                        text: i18n.tr("Root page (again)")
+                        onClicked: pageStack.push(page0)
+                        progression: true
+                    }
+                    ListItem.Standard {
+                        text: i18n.tr("Red rectangle")
+                        onClicked: pageStack.push(page2, {color: "red"})
+                        progression: true
+                    }
+                }
+
+                head.actions: Action {
+                    iconName: "share"
+                }
+            }
+
+            Page {
+                title: "Rectangle"
+                id: page2
+                visible: false
+                property alias color: rectangle.color
+                Rectangle {
+                    id: rectangle
+                    anchors {
+                        fill: parent
+                        margins: units.gu(5)
+                    }
                 }
             }
         }
     }
-}
 }
