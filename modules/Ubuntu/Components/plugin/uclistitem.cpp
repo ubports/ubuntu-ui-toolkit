@@ -394,6 +394,10 @@ void UCListItemPrivate::initStyleItem()
     }
     QQmlContext *context = new QQmlContext(qmlContext(q), qmlContext(q));
     context->setContextProperty("styledItem", q);
+    // also declare index property in case not defined
+    if (!context->contextProperty("index").isValid()) {
+        context->setContextProperty("index", index());
+    }
     QObject *object = delegate->beginCreate(context);
     styleItem = qobject_cast<UCListItemStyle*>(object);
     if (!styleItem) {

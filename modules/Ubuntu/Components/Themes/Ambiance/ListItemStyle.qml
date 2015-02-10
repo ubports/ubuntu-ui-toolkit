@@ -74,8 +74,8 @@ Styles.ListItemStyle {
                         opacity: action.enabled ? 1.0 : 0.5
                         width: MathUtils.clamp(delegateLoader.item ? delegateLoader.item.width : 0, height, actionsRow.maxItemWidth)
                         anchors {
-                            top: parent.top
-                            bottom: parent.bottom
+                            top: parent ? parent.top : undefined
+                            bottom: parent ? parent.bottom : undefined
                         }
                         function trigger() {
                             internals.selectedAction = modelData;
