@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -121,14 +121,13 @@ Object {
 
       Example:
       \qml
-        import QtQuick 2.2
-        import Ubuntu.Components 1.1
+        import QtQuick 2.3
+        import Ubuntu.Components 1.2
 
         MainView {
             id: mainView
             width: units.gu(40)
             height: units.gu(50)
-            useDeprecatedToolbar: false
 
             Page {
                 id: page
