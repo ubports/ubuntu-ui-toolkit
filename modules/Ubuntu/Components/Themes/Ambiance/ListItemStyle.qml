@@ -44,10 +44,9 @@ Styles.ListItemStyle {
         Rectangle {
             id: panel
             property bool leading: false
-            property real paintedActionWidth: units.gu(2.5)
-            property color foregroundColor: leading ? "white" : UbuntuColors.darkGrey
             readonly property real panelWidth: actionsRow.width
 
+            // FIXME use theme palette colors once stabilized
             color: leading ? UbuntuColors.red : "white"
             anchors.fill: parent
             width: parent.width
@@ -113,10 +112,11 @@ Styles.ListItemStyle {
                 Item {
                     width: height
                     Icon {
-                        width: panel.paintedActionWidth
+                        width: units.gu(2.5)
                         height: width
                         name: action.iconName
-                        color: panel.foregroundColor
+                        // FIXME use theme palette colors once stabilized
+                        color: leading ? "white" : UbuntuColors.darkGrey
                         anchors.centerIn: parent
                     }
                 }
