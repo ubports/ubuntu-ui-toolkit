@@ -558,7 +558,6 @@ void UCListItemPrivate::snapOut()
     if (!ready) {
         return;
     }
-    qDebug() << "SNAPOUT";
     setHighlighted(false);
     if (parentAttached) {
         Q_Q(UCListItem);
@@ -576,6 +575,11 @@ void UCListItemPrivate::snapOut()
 void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status status)
 {
     UCSwipeEvent event(localPos, lastPos, contentItem->position() + (localPos - lastPos), status);
+    // clamp to the edges if the edge (leading/trailing) doesn't have actions defined
+    if ((event.m_contentPos.x() < zeroPos.x() && !trailingActions) ||
+        (event.m_contentPos.x() > zeroPos.x() && !leadingActions)) {
+        event.m_contentPos = zeroPos;
+    }
     if (styleItem) {
         Q_EMIT styleItem->swipeEvent(&event);
     }

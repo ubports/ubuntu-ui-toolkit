@@ -182,6 +182,7 @@ Styles.ListItemStyle {
         }
         function snap() {
             var snapPos = (swipedOffset > units.gu(2) && snapIn) ? panelWidth : 0.0;
+            print(swipedOffset, panelWidth, snapPos, snapIn);
             snapAnimation.snapTo(snapPos);
         }
     }
