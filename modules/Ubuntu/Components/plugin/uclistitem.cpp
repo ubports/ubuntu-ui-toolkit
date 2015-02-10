@@ -359,8 +359,10 @@ void UCListItemPrivate::resetStyle()
         delete implicitStyleComponent;
         Q_Q(UCListItem);
         implicitStyleComponent = UCTheme::instance().createStyleComponent("ListItemStyle.qml", q);
-        // set the objectnane for testing in tst_listitems.qml
-        implicitStyleComponent->setObjectName("ListItemThemeStyle");
+        if (implicitStyleComponent) {
+            // set the objectnane for testing in tst_listitems.qml
+            implicitStyleComponent->setObjectName("ListItemThemeStyle");
+        }
         // re-create style instance if it was created using the implicit style
         if (reloadStyle) {
             initStyleItem();

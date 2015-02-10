@@ -20,8 +20,10 @@ import Ubuntu.Components 1.2
 
 Styles.ListItemStyle {
 
-    id: style
+    id: listItemStyle
     swipeOvershoot: units.gu(2)
+
+    readonly property int listItemIndex: index
 
     // anchoring
     anchors {
@@ -63,9 +65,6 @@ Styles.ListItemStyle {
 
                 property real maxItemWidth: parent.width / itemActions.actions.length
 
-                property Action selectedAction
-                property int listItemIndex: -1
-
                 Repeater {
                     model: itemActions.actions
                     AbstractButton {
@@ -79,9 +78,8 @@ Styles.ListItemStyle {
                             bottom: parent.bottom
                         }
                         function trigger() {
-                            actionsRow.selectedAction = modelData;
-                            actionsRow.listItemIndex = styledItem.index;
-                            snapAnimation.snapToPosition(0.0);
+                            internals.selectedAction = modelData;
+                            listItemStyle.rebound();
                         }
 
                         Rectangle {
@@ -158,21 +156,48 @@ Styles.ListItemStyle {
         }
     }
 
-    // swipe handling
-    readonly property Item swipedPanel: x > 0 ? leadingLoader.item : trailingLoader.item
-    readonly property bool leadingPanel: x > 0
-    property real prevX: 0.0
-    property real snapChangerLimit: 0.0
-    property real threshold: units.gu(1)
-    property bool snapIn: false
+    Object {
+        id: internals
+        // action triggered
+        property Action selectedAction
+        // swipe handling
+        readonly property Item swipedPanel: listItemStyle.x > 0 ? leadingLoader.item : trailingLoader.item
+        readonly property bool leadingPanel: listItemStyle.x > 0
+        readonly property real swipedOffset: swipedPanel ? swipedPanel.swipedOffset : 0
+        readonly property real panelWidth: swipedPanel ? swipedPanel.panelWidth : 0
+        property real prevX: 0.0
+        property real snapChangerLimit: 0.0
+        property real threshold: units.gu(1)
+        property bool snapIn: false
+
+        function updateSwipe() {
+            if (prevX < listItemStyle.x && (snapChangerLimit <= listItemStyle.x)) {
+                snapIn = leadingPanel;
+                snapChangerLimit = listItemStyle.x - threshold;
+            } else if (prevX > listItemStyle.x && (listItemStyle.x < snapChangerLimit)) {
+                snapIn = !leadingPanel;
+                snapChangerLimit = listItemStyle.x + threshold;
+            }
+            prevX = listItemStyle.x;
+        }
+        function snap() {
+            var snapPos = (swipedOffset > units.gu(2) && snapIn) ? panelWidth : 0.0;
+            snapAnimation.snapTo(snapPos);
+        }
+    }
     UbuntuNumberAnimation {
         id: snapAnimation
         target: styledItem.contentItem
         property: "x"
         duration: UbuntuAnimation.SnapDuration
-
-        function snapToPosition(pos) {
-            if (pos == to) {
+        onStopped: {
+            if (to == styledItem.contentItem.anchors.leftMargin && internals.selectedAction) {
+                internals.selectedAction.trigger(listItemIndex);
+                internals.selectedAction = null;
+            }
+        }
+        function snapTo(pos) {
+            if (pos == to && from == to) {
                 return;
             }
 
@@ -186,25 +211,15 @@ Styles.ListItemStyle {
             print("snapTo", to)
         }
     }
-    onXChanged: {
-        if (prevX < x && (snapChangerLimit <= x)) {
-            snapIn = leading;
-            snapChangerLimit = x - threshold;
-        } else if (prevX > x && (x < snapChangerLimit)) {
-            snapIn = !leading;
-            snapChangerLimit = x + threshold;
-        }
-        prevX = x;
-    }
+
+    onXChanged: internals.updateSwipe()
     onSwipeEvent: {
         if (event.status == SwipeEvent.Start) {
+            internals.prevX = x;
             snapAnimation.stop();
         } else if (event.status == SwipeEvent.Stop) {
-            var swipedOffset = swipedPanel ? swipedPanel.swipedOffset : 0
-            var panelWidth = swipedPanel ? swipedPanel.panelWidth : 0
-            var snapPos = (swipedOffset > units.gu(2) && snapIn) ? panelWidth : 0.0;
-            snapAnimation.snapToPosition(snapPos);
+            internals.snap();
         }
     }
-    onRebound: snapAnimation.snapToPosition(0)
+    onRebound: snapAnimation.snapTo(0)
 }

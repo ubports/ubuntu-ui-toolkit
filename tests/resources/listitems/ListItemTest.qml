@@ -69,17 +69,21 @@ MainView {
     property list<Action> leadingArray: [
         Action {
             iconName: "delete"
+            onTriggered: print(iconName, "triggered", value)
         }
     ]
     property list<Action> trailingArray: [
         Action {
             iconName: "search"
+            onTriggered: print(iconName, "triggered", value)
         },
         Action {
             iconName: "edit"
+            onTriggered: print(iconName, "triggered", value)
         },
         Action {
             iconName: "email"
+            onTriggered: print(iconName, "triggered", value)
         }
     ]
 
@@ -110,21 +114,21 @@ MainView {
             leadingActions: ListItemActions {
                 objectName: "InlineLeading"
                 actions: [stock]
-//                delegate: Column {
-//                    width: height + units.gu(2)
-//                    Icon {
-//                        width: units.gu(3)
-//                        height: width
-//                        name: action.iconName
-//                        color: pressed ? "blue" : "pink"
-//                        anchors.horizontalCenter: parent.horizontalCenter
-//                    }
-//                    Label {
-//                        text: action.text + index
-//                        width: parent.width
-//                        horizontalAlignment: Text.AlignHCenter
-//                    }
-//                }
+                delegate: Column {
+                    width: height + units.gu(2)
+                    Icon {
+                        width: units.gu(3)
+                        height: width
+                        name: action.iconName
+                        color: pressed ? "blue" : "pink"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                    Label {
+                        text: action.text + index
+                        width: parent.width
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+                }
             }
             trailingActions: leading
         }
@@ -166,7 +170,7 @@ MainView {
                     actions: trailingArray
                 }
 
-                trailingActions: trailing
+//                trailingActions: trailing
                 contentItem.anchors.margins: units.gu(1)
 
                 Label {
