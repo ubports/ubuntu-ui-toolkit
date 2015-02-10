@@ -43,13 +43,7 @@ class UCListItem : public UCStyledItemBase
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQmlComponent *style READ style WRITE setStyle RESET resetStyle NOTIFY styleChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), QQuickItem *__styleInstance READ styleInstance NOTIFY __styleInstanceChanged)
     Q_CLASSINFO("DefaultProperty", "listItemData")
-    Q_ENUMS(PanelStatus)
 public:
-    enum PanelStatus {
-        None,
-        Leading,
-        Trailing
-    };
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
 

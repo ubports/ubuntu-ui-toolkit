@@ -198,7 +198,6 @@ UCListItemPrivate::UCListItemPrivate()
     , ready(false)
     , customColor(false)
     , customOvershoot(false)
-    , flicked(false)
     , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
     , overshoot(0)
     , color(Qt::transparent)
@@ -915,9 +914,6 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             d->parentAttached->disableInteractive(this, false);
         }
 
-        // inform style about mouse/touch release
-        d->swipeEvent(event->localPos(), UCSwipeEvent::Stop);
-
         if (!d->suppressClick) {
             // emit clicked only if not swiped
             if (!d->swiped) {
@@ -926,7 +922,10 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
                     Q_EMIT d->mainAction->trigger(d->index());
                 }
             }
+            d->snapOut();
         } else {
+            // inform style about mouse/touch release
+            d->swipeEvent(event->localPos(), UCSwipeEvent::Stop);
             d->suppressClick = false;
         }
     }
@@ -939,7 +938,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     UCStyledItemBase::mouseMoveEvent(event);
 
     // accept the tugging only if the move is within the threshold
-    if (d->highlighted && !d->swiped) {
+    if (d->highlighted && !d->swiped && (d->leadingActions || d->trailingActions)) {
         // check if we can initiate the drag at all
         // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
         qreal threshold = UCUnits::instance().gu(d->xAxisMoveThresholdGU);

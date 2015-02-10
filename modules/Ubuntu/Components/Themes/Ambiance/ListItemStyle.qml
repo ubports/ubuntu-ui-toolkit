@@ -45,7 +45,6 @@ Styles.ListItemStyle {
             property real paintedActionWidth: units.gu(2.5)
             property color foregroundColor: leading ? "white" : UbuntuColors.darkGrey
             readonly property real panelWidth: actionsRow.width
-            readonly property real swipedOffset: leading ? panelWidth + x : styledItem.width - x;
 
             color: leading ? UbuntuColors.red : "white"
             anchors.fill: parent
@@ -163,7 +162,7 @@ Styles.ListItemStyle {
         // swipe handling
         readonly property Item swipedPanel: listItemStyle.x > 0 ? leadingLoader.item : trailingLoader.item
         readonly property bool leadingPanel: listItemStyle.x > 0
-        readonly property real swipedOffset: swipedPanel ? swipedPanel.swipedOffset : 0
+        readonly property real swipedOffset: leadingPanel ? listItemStyle.x : listItemStyle.width + listItemStyle.x
         readonly property real panelWidth: swipedPanel ? swipedPanel.panelWidth : 0
         property real prevX: 0.0
         property real snapChangerLimit: 0.0
@@ -182,12 +181,14 @@ Styles.ListItemStyle {
         }
         function snap() {
             var snapPos = (swipedOffset > units.gu(2) && snapIn) ? panelWidth : 0.0;
-            print(swipedOffset, panelWidth, snapPos, snapIn);
+            snapPos *= leadingPanel ? 1 : -1;
+            print("snapPos", snapPos)
             snapAnimation.snapTo(snapPos);
         }
     }
     UbuntuNumberAnimation {
         id: snapAnimation
+        objectName: "snap_animation"
         target: styledItem.contentItem
         property: "x"
         duration: UbuntuAnimation.SnapDuration
@@ -198,7 +199,8 @@ Styles.ListItemStyle {
             }
         }
         function snapTo(pos) {
-            if (pos == to && from == to) {
+            if (pos == to && styledItem.contentItem.x == to) {
+                print("exit", pos, to, styledItem.contentItem.x);
                 return;
             }
 
