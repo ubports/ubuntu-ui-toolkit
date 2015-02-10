@@ -156,13 +156,6 @@ MainViewBase {
 
         /*!
           \internal
-          Tabs needs to know whether to use a TabBar or the new header.
-         */
-        // FIXME TIM: Update Tabs and remove this?
-//        property bool useDeprecatedToolbar: false
-
-        /*!
-          \internal
           The action manager that has the global context for the MainView's actions,
           and to which a local context can be added for each Page that has actions.actions.
          */
