@@ -117,8 +117,6 @@ SOURCES += plugin.cpp \
     propertychange_p.cpp \
     uclistitemstyle.cpp \
     ucviewitemsattached.cpp \
-    uclistitemattached.cpp \
-    ucactionpanel_p.cpp \
     adapters\dbuspropertywatcher_p.cpp \
     ucserviceproperties.cpp
 

@@ -19,6 +19,7 @@
 #include "uclistitem.h"
 #include "uclistitem_p.h"
 #include "propertychange_p.h"
+#include "uclistitemstyle.h"
 #include <QtQuick/private/qquickflickable_p.h>
 
 /*
@@ -197,7 +198,8 @@ void UCViewItemsAttached::unbindItem()
     Q_D(UCViewItemsAttached);
     if (d->boundItem) {
         // snap out before we unbind
-        UCListItemPrivate::get(d->boundItem)->animator.snap(0);
+
+        UCListItemPrivate::get(d->boundItem)->snapOut();
         d->boundItem.clear();
     }
     // clear binding list

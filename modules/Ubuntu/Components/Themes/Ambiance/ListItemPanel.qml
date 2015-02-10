@@ -24,6 +24,11 @@ Item {
 
     // styling properties
     /*
+      Specifies whether the panel is used to visualize leading or trailing actions.
+      */
+    property bool leading: true
+
+    /*
       Color of the background.
       */
     // FIXME: use Palette colors instead when available
@@ -40,7 +45,7 @@ Item {
       */
     property real paintedActionWidth: units.gu(2.5)
 
-    property ListItemActions actions: ListItemActions{}
+    readonly property ListItemActions actions: leading ? styledItem.leadingActions : styledItem.trailingActions
 
     // panel implementation
     id: panel
@@ -51,10 +56,6 @@ Item {
     // used for module/autopilot testing
     objectName: "ListItemPanel" + (leading ? "Leading" : "Trailing")
 
-    /*
-      Specifies whether the panel is used to visualize leading or trailing actions.
-      */
-    property bool leading: true
     readonly property real swipedOffset: leading ? width + x : styledItem.width - x;
     readonly property bool swiping: styledItem.highlighted && styledItem.contentMoving
 
@@ -95,6 +96,7 @@ Item {
     property real threshold: units.gu(1)
     property bool snapIn: false
     onXChanged: {
+        print(objectName, x)
         if (prevX < x && (snapChangerLimit <= x)) {
             snapIn = leading;
             snapChangerLimit = x - threshold;
@@ -118,10 +120,11 @@ Item {
         var snapPos = (swipedOffset > units.gu(2) && snapIn) ? panel.width : 0.0;
         snapAnimation.snapToPosition(snapPos);
     }
-    NumberAnimation {
+    UbuntuNumberAnimation {
         id: snapAnimation
         target: styledItem.contentItem
         property: "x"
+        duration: UbuntuAnimation.SnapDuration
 
         function snapToPosition(pos) {
             stop();
@@ -129,6 +132,7 @@ Item {
             to = pos;
 
             start();
+            print("snapTo", to)
         }
     }
 

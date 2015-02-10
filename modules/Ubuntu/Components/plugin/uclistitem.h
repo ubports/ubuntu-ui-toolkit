@@ -24,7 +24,6 @@ class UCListItemContent;
 class UCListItemDivider;
 class UCListItemActions;
 class UCAction;
-class UCListItemAttached;
 class UCListItemPrivate;
 class UCListItem : public UCStyledItemBase
 {
@@ -35,7 +34,6 @@ class UCListItem : public UCStyledItemBase
     Q_PROPERTY(UCListItemActions *trailingActions READ trailingActions WRITE setTrailingActions NOTIFY trailingActionsChanged DESIGNABLE false)
     Q_PROPERTY(bool highlighted READ highlighted NOTIFY highlightedChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), qreal swipeOvershoot READ swipeOvershoot WRITE setSwipeOvershoot RESET resetSwipeOvershoot NOTIFY swipeOvershootChanged)
-    Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool contentMoving READ contentMoving NOTIFY contentMovingChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor RESET resetHighlightColor NOTIFY highlightColorChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), UCAction *action READ action WRITE setAction NOTIFY actionChanged DESIGNABLE false)
@@ -54,8 +52,6 @@ public:
     };
     explicit UCListItem(QQuickItem *parent = 0);
     ~UCListItem();
-
-    static UCListItemAttached *qmlAttachedProperties(QObject *owner);
 
     QQuickItem *contentItem() const;
     UCListItemDivider *divider() const;
@@ -86,7 +82,6 @@ Q_SIGNALS:
     void trailingActionsChanged();
     void highlightedChanged();
     void swipeOvershootChanged();
-    void contentMovingChanged();
     void colorChanged();
     void highlightColorChanged();
     void actionChanged();
@@ -98,19 +93,16 @@ Q_SIGNALS:
     void styleChanged();
     void __styleInstanceChanged();
 
-    void contentMovementStarted();
-    void contentMovementEnded();
-
 public Q_SLOTS:
 
 private:
     Q_DECLARE_PRIVATE(UCListItem)
     Q_PRIVATE_SLOT(d_func(), void _q_updateThemedData())
     Q_PRIVATE_SLOT(d_func(), void _q_relayout())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateSwiping())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
 };
-QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
 
 class UCListItemDividerPrivate;
 class UCListItemDivider : public QQuickItem
@@ -139,45 +131,6 @@ private:
     void setColorTo(const QColor &color);
     Q_DECLARE_PRIVATE(UCListItemDivider)
 };
-
-class UCAction;
-class UCListItemActions;
-class UCListItemAttachedPrivate;
-class UCListItemAttached : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(UCListItemActions *actions READ actions NOTIFY actionsChanged)
-    Q_PROPERTY(QQmlListProperty<UCAction> visibleActions READ visibleActions NOTIFY visibleActionsChanged)
-    Q_PROPERTY(int index READ index NOTIFY indexChanged)
-    Q_PROPERTY(UCListItem::PanelStatus panelStatus READ panelStatus NOTIFY panelStatusChanged)
-public:
-    UCListItemAttached(QObject *parent = 0);
-    ~UCListItemAttached();
-    void setList(UCListItem *list, bool leading, bool visualizeActions);
-
-    UCListItemActions *actions() const;
-    QQmlListProperty<UCAction> visibleActions();
-    UCListItem *item();
-    int index();
-    UCListItem::PanelStatus panelStatus();
-
-public Q_SLOTS:
-    void snapToPosition(qreal position);
-
-Q_SIGNALS:
-    void actionsChanged();
-    void visibleActionsChanged();
-    void indexChanged();
-    void panelStatusChanged();
-
-private:
-    Q_DECLARE_PRIVATE(UCListItemAttached)
-    friend class UCListItemAction;
-
-private Q_SLOTS:
-    void updateVisibleActions();
-};
-
 
 class UCViewItemsAttachedPrivate;
 class UCViewItemsAttached : public QObject

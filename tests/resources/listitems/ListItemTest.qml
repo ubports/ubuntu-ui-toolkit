@@ -110,21 +110,21 @@ MainView {
             leadingActions: ListItemActions {
                 objectName: "InlineLeading"
                 actions: [stock]
-                delegate: Column {
-                    width: height + units.gu(2)
-                    Icon {
-                        width: units.gu(3)
-                        height: width
-                        name: action.iconName
-                        color: pressed ? "blue" : "pink"
-                        anchors.horizontalCenter: parent.horizontalCenter
-                    }
-                    Label {
-                        text: action.text + index
-                        width: parent.width
-                        horizontalAlignment: Text.AlignHCenter
-                    }
-                }
+//                delegate: Column {
+//                    width: height + units.gu(2)
+//                    Icon {
+//                        width: units.gu(3)
+//                        height: width
+//                        name: action.iconName
+//                        color: pressed ? "blue" : "pink"
+//                        anchors.horizontalCenter: parent.horizontalCenter
+//                    }
+//                    Label {
+//                        text: action.text + index
+//                        width: parent.width
+//                        horizontalAlignment: Text.AlignHCenter
+//                    }
+//                }
             }
             trailingActions: leading
         }
@@ -162,8 +162,12 @@ MainView {
                 id: listItem
                 onClicked: print(" clicked")
                 onPressAndHold: print("pressAndHold")
-                leadingActions: leading
-                trailingActions: leadingActions
+                leadingActions: ListItemActions {
+                    actions: trailingArray
+                }
+
+                trailingActions: trailing
+                contentItem.anchors.margins: units.gu(1)
 
                 Label {
                     anchors.fill: parent
@@ -171,8 +175,6 @@ MainView {
                     text: "This is one Label split in two lines.\n" +
                           "The second line - item #" + modelData
                 }
-
-                onContentMovementEnded: print('end')
 
                 states: State {
                     name: "override"

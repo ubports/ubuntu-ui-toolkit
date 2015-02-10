@@ -24,11 +24,19 @@ class UCSwipeEvent : public QObject
     Q_PROPERTY(QPointF mouse READ mousePos)
     Q_PROPERTY(QPointF last READ lastPos)
     Q_PROPERTY(QPointF content MEMBER m_contentPos)
-    Q_PROPERTY(bool finished READ finished)
+    Q_PROPERTY(Status status READ status)
+    Q_ENUMS(Status)
 public:
-    UCSwipeEvent(const QPointF &mousePos, const QPointF &lastPos, const QPointF &contentPos, bool finished)
-        : QObject(), m_mousePos(mousePos), m_lastPos(lastPos), m_contentPos(contentPos), m_finished(finished)
-    {}
+    enum Status {
+        Start,
+        Update,
+        Stop
+    };
+
+    UCSwipeEvent(const QPointF &mousePos, const QPointF &lastPos, const QPointF &contentPos, Status status)
+        : QObject(), m_mousePos(mousePos), m_lastPos(lastPos), m_contentPos(contentPos), m_status(status)
+    {
+    }
 
     QPointF mousePos() const
     {
@@ -38,15 +46,15 @@ public:
     {
         return m_lastPos;
     }
-    bool finished() const
+    Status status() const
     {
-        return m_finished;
+        return m_status;
     }
 
     QPointF m_mousePos;
     QPointF m_lastPos;
     QPointF m_contentPos;
-    bool m_finished;
+    Status m_status;
 };
 
 class QQmlComponent;
@@ -70,7 +78,7 @@ Q_SIGNALS:
     void snapAnimationChanged();
     void swipeOvershootChanged();
 
-    void contentSwiped(UCSwipeEvent *event);
+    void swipeEvent(UCSwipeEvent *event);
     void rebound();
 
 private:
