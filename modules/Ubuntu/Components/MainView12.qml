@@ -24,8 +24,6 @@ import QtQuick.Window 2.2
 MainViewBase {
     id: mainView
 
-    active: true
-
     property alias automaticOrientation: canvas.automaticOrientation
     useDeprecatedToolbar: false
     onUseDeprecatedToolbarChanged: {
@@ -140,7 +138,6 @@ MainViewBase {
 
         // Even when using MainView 1.1, we still support Page 1.0.
         // PageBase (=Page 1.0) is the superclass of Page 1.1.
-        // FIXME TIM: We might want to consider forcing all pages to be version 1.2??
         property PageBase activePage: isPage(mainView.activeLeafNode) ? mainView.activeLeafNode : null
 
         function isPage(item) {
@@ -159,18 +156,10 @@ MainViewBase {
 
         /*!
           \internal
-          \deprecated
-          The toolbar that will be propagated to the children in the page tree node.
-         */
-        // FIXME TIM: We need to get rid of this
-        property Toolbar toolbar: null //toolbarLoader.item
-
-        /*!
-          \internal
           Tabs needs to know whether to use a TabBar or the new header.
          */
         // FIXME TIM: Update Tabs and remove this?
-        property bool useDeprecatedToolbar: false
+//        property bool useDeprecatedToolbar: false
 
         /*!
           \internal

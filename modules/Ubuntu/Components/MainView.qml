@@ -24,8 +24,6 @@ import QtQuick.Window 2.0
 MainViewBase {
     id: mainView
 
-    active: true
-
     /*!
       \qmlproperty bool automaticOrientation
      */
