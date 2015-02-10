@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -16,7 +16,6 @@
 
 #include "uclistitemstyle.h"
 #include <QtQml/QQmlEngine>
-#include <QtQuick/private/qquickbehavior_p.h>
 
 /*!
  * \qmltype ListItemStyle
@@ -29,46 +28,37 @@
  * Style API for the ListItem component which provides actions, select and
  * drag handler delegates, and snap animation via its properties.
  * ListItem treats the style differently compared to the other components,
- * as it:
- * \list
- *  \li - loads the style only when needed
- *  \li - gets delegates and snap animation from the style properties
- *  \li - ignores any other visuals defined in the style.
- * \endlist
+ * as it loads the style only when needed and not upon component creation.
  */
 UCListItemStyle::UCListItemStyle(QQuickItem *parent)
     : QQuickItem(parent)
-    , m_actionsDelegate(0)
-    , m_selectionDelegate(0)
-    , m_dragHandlerDelegate(0)
-    , m_snapAnimation(0)
-    , m_swipeOvershoot(0)
 {
 }
 
 /*!
- * \qmlproperty Component ListItemStyle::actionsDelegate
- * Specifies the component visualizing the leading/trailing actions.
+ * \qmlsignal ListItemStyle::swipeEvent(SwipeEvent event)
+ * The signal is emitted when the ListItem performs swipe related actions, i.e.
+ * when the swipe is started, the position is updated and the swipe ends. The
+ * \b event object provides information about the swipe status, positions and
+ * the updated \l {ListItem::contentItem}{ListItem.contentItem} position. The
+ * style implementation can override the contentItem position by setting the
+ * \c event.content.x or \c event.content.y properties to the desired value.
+ *
+ * The \c event object properties are:
+ * \list
+ * \li * \c status - enumeration of \c {Start, Update, Stop} values representing the
+ *                  swipe event status
+ * \li * \c mouse - (x, y) coordinates of the current mouse/touch point - read-only
+ * \li * \c last - (x, y) coordinates of the previous mouse/touch point - read-only
+ * \li * \c content - (x, y) updated coordinates of the \l {ListItem::contentItem}
+ *                  {ListItem.contentItem}, read-write
+ * \endlist
  */
 
 /*!
- * \qmlproperty Component ListItemStyle::selectionDelegate
- * Holds the component handling the selection mode.
- */
-
-/*!
- * \qmlproperty Component ListItemStyle::dragHandlerDelegate
- * Holds the component shown when dragging mode is enabled.
- */
-
-/*!
- * \qmlproperty Animation ListItemStyle::snapAnimation
- * Holds the behavior used in animating when snapped in or out. It can hold many
- * animations, and will be used in a Behavior on the \l ListItem::contentItem
- * \c x property.
- */
-
-/*!
- * \qmlproperty real ListItemStyle::swipeOvershoot
- * The property specifies the overshoot value of the ListItem.
+ * \qmlsignal ListItemStyle::rebound()
+ * Signal emitted by the ListItem when a rebounding action is requested from the
+ * style. This usually happens when the list item's content is swiped and there is
+ * a press event happening outside of the ListItem's boundary or when the view
+ * embedding the ListItem starts scrolling.
  */

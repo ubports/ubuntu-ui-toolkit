@@ -70,9 +70,7 @@ public:
     bool suppressClick:1;
     bool ready:1;
     bool customColor:1;
-    bool customOvershoot:1;
     qreal xAxisMoveThresholdGU;
-    qreal overshoot;
     QBasicTimer pressAndHoldTimer;
     QPointF lastPos;
     QPointF pressedPos;
@@ -94,9 +92,6 @@ public:
     UCListItemStyle *styleItem;
 
     // getters/setters
-    qreal swipeOvershoot() const;
-    void setSwipeOvershoot(qreal overshoot);
-    void resetSwipeOvershoot();
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
     QQmlComponent *style() const;

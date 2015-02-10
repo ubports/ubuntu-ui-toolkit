@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -197,9 +197,7 @@ UCListItemPrivate::UCListItemPrivate()
     , suppressClick(false)
     , ready(false)
     , customColor(false)
-    , customOvershoot(false)
     , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
-    , overshoot(0)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
     , parentAttached(0)
@@ -409,12 +407,6 @@ void UCListItemPrivate::initStyleItem()
     styleItem->setParentItem(q);
     delegate->completeCreate();
     Q_EMIT q->__styleInstanceChanged();
-
-    // get the overshoot value from the style!
-    if (!customOvershoot) {
-        overshoot = styleItem->m_swipeOvershoot;
-        Q_EMIT q->swipeOvershootChanged();
-    }
 }
 
 /*!
@@ -686,7 +678,7 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  * or to the back of the item, and are revealed by swiping the item horizontally.
  * The swipe is started only after the mouse/touch move had passed a given threshold.
  * The actions are visualized by a panel, which is configurable through the \l
- * ListItemStyle::actionsDelegate style property.
+ * ListItemStyle.
  *
  * The actions are configured through the \l leadingActions as well as \l
  * trailingActions properties.
@@ -1256,43 +1248,6 @@ void UCListItemPrivate::setAction(UCAction *action)
         mainAction->setProperty("parameterType", UCAction::Integer);
     }
     Q_EMIT q->actionChanged();
-}
-
-/*!
- * \qmlproperty real ListItem::swipeOvershoot
- * The property configures the overshoot value on swiping. Its default value is
- * configured by the \l {ListItemStyle}{style}. Any positive value overrides the
- * default value, and any negative or undefined value resets it back to the default.
- */
-qreal UCListItemPrivate::swipeOvershoot() const
-{
-    return overshoot;
-}
-void UCListItemPrivate::setSwipeOvershoot(qreal overshoot)
-{
-    // mark any positive value as custom even if it is the same as the previous one
-    customOvershoot = (overshoot >= 0.0);
-    // same value should be guarded only if the style hasn't been loaded yet
-    // swipeOvershoot can be set to 0 prior the style is loaded.
-    if (this->overshoot == overshoot && styleItem) {
-        return;
-    }
-    if (!customOvershoot) {
-        resetSwipeOvershoot();
-        return;
-    }
-    this->overshoot = overshoot;
-    update();
-    Q_Q(UCListItem);
-    Q_EMIT q->swipeOvershootChanged();
-}
-void UCListItemPrivate::resetSwipeOvershoot()
-{
-    customOvershoot = false;
-    overshoot = styleItem ? styleItem->m_swipeOvershoot : 0.0;
-    update();
-    Q_Q(UCListItem);
-    Q_EMIT q->swipeOvershootChanged();
 }
 
 /*!

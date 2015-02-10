@@ -170,7 +170,7 @@ MainView {
                     actions: trailingArray
                 }
 
-//                trailingActions: trailing
+                trailingActions: trailing
                 contentItem.anchors.margins: units.gu(1)
 
                 Label {
@@ -213,7 +213,6 @@ MainView {
                         color: UbuntuColors.red
                         highlightColor: "lime"
                         divider.colorFrom: UbuntuColors.green
-                        swipeOvershoot: units.gu(10)
 
                         leadingActions: ListItemActions {
                             actions: leadingArray

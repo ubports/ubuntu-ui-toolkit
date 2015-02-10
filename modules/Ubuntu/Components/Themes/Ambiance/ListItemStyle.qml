@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,8 +21,10 @@ import Ubuntu.Components 1.2
 Styles.ListItemStyle {
 
     id: listItemStyle
-    swipeOvershoot: units.gu(2)
-
+    /*
+     * Take over the ListItem's index context property as repeater used in panel
+     * overrides the property.
+     */
     readonly property int listItemIndex: index
 
     // anchoring
@@ -122,6 +124,7 @@ Styles.ListItemStyle {
         }
     }
 
+    // leading panel loader
     Loader {
         id: leadingLoader
         anchors {
@@ -138,6 +141,7 @@ Styles.ListItemStyle {
             }
         }
     }
+    // trailing panel loader
     Loader {
         id: trailingLoader
         anchors {
@@ -155,6 +159,7 @@ Styles.ListItemStyle {
         }
     }
 
+    // internals
     Object {
         id: internals
         // action triggered
@@ -162,14 +167,15 @@ Styles.ListItemStyle {
         // swipe handling
         readonly property Item swipedPanel: listItemStyle.x > 0 ? leadingLoader.item : trailingLoader.item
         readonly property bool leadingPanel: listItemStyle.x > 0
-        readonly property real swipedOffset: leadingPanel ? listItemStyle.x : listItemStyle.width + listItemStyle.x
+        readonly property real swipedOffset: leadingPanel ? listItemStyle.x : -listItemStyle.x
         readonly property real panelWidth: swipedPanel ? swipedPanel.panelWidth : 0
         property real prevX: 0.0
         property real snapChangerLimit: 0.0
         property real threshold: units.gu(1)
         property bool snapIn: false
 
-        function updateSwipe() {
+        // update snap direction
+        function updateSnapDirection() {
             if (prevX < listItemStyle.x && (snapChangerLimit <= listItemStyle.x)) {
                 snapIn = leadingPanel;
                 snapChangerLimit = listItemStyle.x - threshold;
@@ -179,11 +185,21 @@ Styles.ListItemStyle {
             }
             prevX = listItemStyle.x;
         }
+        // perform snapIn/Out
         function snap() {
             var snapPos = (swipedOffset > units.gu(2) && snapIn) ? panelWidth : 0.0;
             snapPos *= leadingPanel ? 1 : -1;
             print("snapPos", snapPos)
             snapAnimation.snapTo(snapPos);
+        }
+        // handle ex=lasticity on overshoot
+        function overshoot(event) {
+            var offset = event.content.x - styledItem.contentItem.anchors.leftMargin;
+            offset *= leadingPanel ? 1 : -1;
+            if (offset > panelWidth) {
+                // do elastic move
+                event.content.x = styledItem.contentItem.x + (event.mouse.x - event.last.x) / 2;
+            }
         }
     }
     UbuntuNumberAnimation {
@@ -193,14 +209,15 @@ Styles.ListItemStyle {
         property: "x"
         duration: UbuntuAnimation.SnapDuration
         onStopped: {
+            // trigger action
             if (to == styledItem.contentItem.anchors.leftMargin && internals.selectedAction) {
                 internals.selectedAction.trigger(listItemIndex);
                 internals.selectedAction = null;
             }
         }
+        // animated snapping
         function snapTo(pos) {
             if (pos == to && styledItem.contentItem.x == to) {
-                print("exit", pos, to, styledItem.contentItem.x);
                 return;
             }
 
@@ -211,17 +228,19 @@ Styles.ListItemStyle {
             }
             to = pos;
             start();
-            print("snapTo", to)
         }
     }
 
-    onXChanged: internals.updateSwipe()
+    onXChanged: internals.updateSnapDirection()
     onSwipeEvent: {
         if (event.status == SwipeEvent.Start) {
             internals.prevX = x;
             snapAnimation.stop();
         } else if (event.status == SwipeEvent.Stop) {
             internals.snap();
+        } else if (event.status == SwipeEvent.Update) {
+            // handle elasticity when overshooting
+            internals.overshoot(event)
         }
     }
     onRebound: snapAnimation.snapTo(0)

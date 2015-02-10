@@ -864,7 +864,6 @@ plugins.qmltypes
     Property { name: "leadingActions"; type: "UCListItemActions"; isPointer: true }
     Property { name: "trailingActions"; type: "UCListItemActions"; isPointer: true }
     Property { name: "highlighted"; type: "bool"; isReadonly: true }
-    Property { name: "swipeOvershoot"; type: "double" }
     Property { name: "color"; type: "QColor" }
     Property { name: "highlightColor"; type: "QColor" }
     Property { name: "action"; type: "UCAction"; isPointer: true }
@@ -887,11 +886,6 @@ plugins.qmltypes
     name: "UCListItemStyle"
     prototype: "QQuickItem"
     exports: ["Ubuntu.Components.Styles/ListItemStyle 1.2"]
-    Property { name: "actionsDelegate"; type: "QQmlComponent"; isPointer: true }
-    Property { name: "selectionDelegate"; type: "QQmlComponent"; isPointer: true }
-    Property { name: "dragHandlerDelegate"; type: "QQmlComponent"; isPointer: true }
-    Property { name: "snapAnimation"; type: "QQuickAbstractAnimation"; isPointer: true }
-    Property { name: "swipeOvershoot"; type: "double" }
     Signal {
     name: "swipeEvent"
     Parameter { name: "event"; type: "UCSwipeEvent"; isPointer: true }
