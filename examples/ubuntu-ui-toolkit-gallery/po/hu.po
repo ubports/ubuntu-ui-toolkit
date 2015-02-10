@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: ubuntu-ui-toolkit\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2014-11-11 11:21+0100\n"
-"PO-Revision-Date: 2015-02-05 07:42+0000\n"
+"PO-Revision-Date: 2015-02-09 08:21+0000\n"
 "Last-Translator: Richard Somlói <ricsipontaz@gmail.com>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-02-07 07:28+0000\n"
+"X-Launchpad-Export-Date: 2015-02-10 07:04+0000\n"
 "X-Generator: Launchpad (build 17331)\n"
 
 #: Animations.qml:24
@@ -58,7 +58,7 @@ msgstr ""
 
 #: Buttons.qml:47 UbuntuShape.qml:28
 msgid "Color"
-msgstr "Szín"
+msgstr "Színes"
 
 #: Buttons.qml:57 Buttons.qml:114 ListItems.qml:43
 msgid "Icon"
@@ -70,15 +70,15 @@ msgstr "Ikon + szöveg"
 
 #: Buttons.qml:85 TextInputs.qml:88 Toggles.qml:45 Toggles.qml:83
 msgid "Disabled"
-msgstr "Letiltva"
+msgstr "Letiltott"
 
 #: Buttons.qml:99 OptionSelectors.qml:34
 msgid "Collapsed"
-msgstr ""
+msgstr "Összecsukott"
 
 #: Buttons.qml:142 ListItems.qml:120 OptionSelectors.qml:43
 msgid "Expanded"
-msgstr ""
+msgstr "Lenyitott"
 
 #: Colors.qml:30
 msgid "Orange"
@@ -192,7 +192,7 @@ msgstr "Elemválasztó"
 
 #: ListItems.qml:112 TextInputs.qml:114
 msgid "Expanding"
-msgstr ""
+msgstr "Növekvő"
 
 #: ListItems.qml:129 OptionSelectors.qml:53
 msgid "Multiple Selection"
@@ -353,7 +353,7 @@ msgstr "Témák közötti váltás"
 
 #: TextInputs.qml:49
 msgid "Type me in..."
-msgstr "Írjon ide…"
+msgstr "Ide írhat…"
 
 #: TextInputs.qml:55
 msgid "Password"
