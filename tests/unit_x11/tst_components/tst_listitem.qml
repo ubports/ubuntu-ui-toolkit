@@ -269,32 +269,34 @@ Item {
             clickSpy.wait();
         }
 
-        function test_verify_no_click_when_swiped() {
-            clickSpy.target = testItem;
+        function test_no_click_when_swiped() {
+            var item = findChild(listView, "listItem0");
+            clickSpy.target = item;
             clickSpy.clear();
-            movingSpy.target = testItem;
-            flick(testItem, centerOf(testItem).x, centerOf(testItem).y, units.gu(20), 0);
+            movingSpy.target = item;
+            flick(item, centerOf(item).x, centerOf(item).y, units.gu(20), 0);
             movingSpy.wait();
 
             // click over the contentItem
             movingSpy.clear();
-            mouseClick(testItem.contentItem, 1, 1);
+            mouseClick(item.contentItem, 1, 1);
             compare(clickSpy.count, 0, "No click() should be emitted on a swiped in ListItem.");
             movingSpy.wait();
         }
 
-        function test_verify_no_pressAndHold_when_swiped() {
-            pressAndHoldSpy.target = testItem;
+        function test_no_pressAndHold_when_swiped() {
+            var item = findChild(listView, "listItem0");
+            pressAndHoldSpy.target = item;
             pressAndHoldSpy.clear();
-            movingSpy.target = testItem;
-            flick(testItem, centerOf(testItem).x, centerOf(testItem).y, units.gu(20), 0);
+            movingSpy.target = item;
+            flick(item, centerOf(item).x, centerOf(item).y, units.gu(20), 0);
             movingSpy.wait();
 
             // press and hold
             movingSpy.clear();
-            mouseLongPress(testItem.contentItem, 1, 1);
-            mouseRelease(testItem.contentItem, 1, 1);
-            mouseRelease(testItem.contentItem, 1, 1);
+            mouseLongPress(item.contentItem, 1, 1);
+            mouseRelease(item.contentItem, 1, 1);
+            mouseRelease(item.contentItem, 1, 1);
             compare(pressAndHoldSpy.count, 0, "No pressAndHold() should be emitted on a swiped in ListItem.");
             movingSpy.wait();
         }
@@ -671,7 +673,6 @@ Item {
             // so any value less than that will emit pressAndHold
             mouseMoveSlowly(testItem, center.x, center.y, units.gu(2), 0, 10, 100);
             mouseRelease(testItem, center.x + units.gu(1), center.y);
-            wait(200)
             compare(pressAndHoldSpy.count, 0, "pressAndHold should not be emitted!");
             // make sure we have collapsed item
             rebound(testItem);

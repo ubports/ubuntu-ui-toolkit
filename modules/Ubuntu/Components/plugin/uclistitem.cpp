@@ -430,7 +430,7 @@ void UCListItemPrivate::_q_updateSize()
 {
     Q_Q(UCListItem);
 
-    // udpate divider
+    // update divider thickness
     divider->setImplicitHeight(UCUnits::instance().dp(DIVIDER_THICKNESS_DP));
     QQuickItem *owner = flickable ? flickable : parentItem;
     q->setImplicitWidth(owner ? owner->width() : UCUnits::instance().gu(IMPLICIT_LISTITEM_WIDTH_GU));
@@ -1080,15 +1080,11 @@ void UCListItem::setTrailingActions(UCListItemActions *actions)
  *
  * contentItem holds the components placed on a ListItem. It is anchored to the
  * ListItem on left, top and right, and to the divider on the bottom, or to the
- * ListItem's bottom in case teh divider is not visible. The content is clipped
+ * ListItem's bottom in case the divider is not visible. The content is clipped
  * by default. It is not recommended to change the anchors as the ListItem controls
  * them, however any other property value is free to change.
- * An example where 2 grid units on left and right, as well as 0.5 grid units
- * top and bottom margins are required:
+ * Example:
  * \qml
- * import QtQuick 2.3
- * import Ubuntu.Components 1.2
- *
  * ListItem {
  *     contentItem.anchors {
  *         leftMargin: units.gu(2)
@@ -1113,7 +1109,7 @@ QQuickItem* UCListItem::contentItem() const
  * This grouped property configures the thin divider shown in the bottom of the
  * component. The divider is not moved together with the content when swiped left
  * or right to reveal the actions. \c colorFrom and \c colorTo configure
- * the starting and ending colors of the divider. Beside thes properties all Item
+ * the starting and ending colors of the divider. Beside these properties all Item
  * specific properties can be accessed.
  *
  * When \c visible is true, the ListItem's content size gets thinner with the
