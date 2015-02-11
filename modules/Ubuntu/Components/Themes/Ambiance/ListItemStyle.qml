@@ -23,13 +23,7 @@ Styles.ListItemStyle {
     swipeOvershoot: units.gu(2)
     actionsDelegate: ListItemPanel{}
 
-    snapAnimation: PropertyAnimation {
-        property: "x"
-        easing {
-            type: Easing.OutElastic
-            period: 0.5
-        }
-        duration: UbuntuAnimation.BriskDuration
+    snapAnimation: UbuntuNumberAnimation {
+        duration: UbuntuAnimation.SnapDuration
     }
-
 }

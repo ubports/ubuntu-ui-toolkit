@@ -53,14 +53,19 @@ Item {
       Specifies whether the panel is used to visualize leading or trailing actions.
       */
     readonly property bool leading: ListItem.panelStatus == ListItem.Leading
-    readonly property real swipedOffset: leading ? width + x : ListItem.item.width - x;
-    readonly property bool swiping: ListItem.item.highlighted && ListItem.item.contentMoving
+    readonly property real swipedOffset: leading ? width + x : styledItem.width - x;
+    readonly property bool swiping: styledItem.highlighted && styledItem.contentMoving
 
     anchors {
-        left: leading ? undefined : ListItem.item.contentItem.right
-        right: leading ? ListItem.item.contentItem.left : undefined
-        top: ListItem.item.contentItem.top
-        bottom: ListItem.item.contentItem.bottom
+        left: leading ? undefined : styledItem.contentItem.right
+        right: leading ? styledItem.contentItem.left : undefined
+        // anchor to the top of the item but to the bottom of the contentItem, so we do not draw over the divider
+        top: styledItem.top
+        bottom: styledItem.contentItem.bottom
+        bottomMargin: -styledItem.contentItem.anchors.bottomMargin
+        // adjust margins
+        leftMargin: leading ? 0 : styledItem.contentItem.anchors.rightMargin
+        rightMargin: leading ? styledItem.contentItem.anchors.leftMargin : 0
     }
 
     Rectangle {
@@ -68,15 +73,15 @@ Item {
         anchors {
             fill: parent
             // add 4 times the overshoot margins to cover the background when tugged
-            leftMargin: (leading && panel.ListItem.item) ? -units.gu(4 * panel.ListItem.item.swipeOvershoot) : 0
-            rightMargin: (!leading && panel.ListItem.item) ? -units.gu(4 * panel.ListItem.item.swipeOvershoot) : 0
+            leftMargin: (leading && styledItem) ? -units.gu(4 * styledItem.swipeOvershoot) : 0
+            rightMargin: (!leading && styledItem) ? -units.gu(4 * styledItem.swipeOvershoot) : 0
         }
         color: panel.backgroundColor
     }
 
     // handle action triggering
     Connections {
-        target: panel.ListItem.item
+        target: styledItem
         onContentMovementEnded: {
             if (actionsRow.selectedAction) {
                 actionsRow.selectedAction.trigger(actionsRow.listItemIndex);
@@ -125,7 +130,7 @@ Item {
             leftMargin: spacing
         }
 
-        property real maxItemWidth: panel.ListItem.item.width / panel.ListItem.visibleActions.length
+        property real maxItemWidth: styledItem.width / panel.ListItem.visibleActions.length
 
         property Action selectedAction
         property int listItemIndex: -1

@@ -106,12 +106,39 @@ public Q_SLOTS:
 private:
     Q_DECLARE_PRIVATE(UCListItem)
     Q_PRIVATE_SLOT(d_func(), void _q_updateThemedData())
-    Q_PRIVATE_SLOT(d_func(), void _q_rebound())
+    Q_PRIVATE_SLOT(d_func(), void _q_relayout())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
 };
-
 QML_DECLARE_TYPEINFO(UCListItem, QML_HAS_ATTACHED_PROPERTIES)
+
+class UCListItemDividerPrivate;
+class UCListItemDivider : public QQuickItem
+{
+    Q_OBJECT
+    Q_PROPERTY(QColor colorFrom READ colorFrom WRITE setColorFrom NOTIFY colorFromChanged)
+    Q_PROPERTY(QColor colorTo READ colorTo WRITE setColorTo NOTIFY colorToChanged)
+public:
+    explicit UCListItemDivider(UCListItem *parent = 0);
+    ~UCListItemDivider();
+    void init(UCListItem *listItem);
+    void paletteChanged();
+
+Q_SIGNALS:
+    void colorFromChanged();
+    void colorToChanged();
+
+protected:
+    QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *data);
+
+private:
+    void updateGradient();
+    QColor colorFrom() const;
+    void setColorFrom(const QColor &color);
+    QColor colorTo() const;
+    void setColorTo(const QColor &color);
+    Q_DECLARE_PRIVATE(UCListItemDivider)
+};
 
 class UCAction;
 class UCListItemActions;
@@ -121,14 +148,12 @@ class UCListItemAttached : public QObject
     Q_OBJECT
     Q_PROPERTY(UCListItemActions *actions READ actions NOTIFY actionsChanged)
     Q_PROPERTY(QQmlListProperty<UCAction> visibleActions READ visibleActions NOTIFY visibleActionsChanged)
-    Q_PROPERTY(UCListItem *item READ item NOTIFY itemChanged)
     Q_PROPERTY(int index READ index NOTIFY indexChanged)
     Q_PROPERTY(UCListItem::PanelStatus panelStatus READ panelStatus NOTIFY panelStatusChanged)
 public:
     UCListItemAttached(QObject *parent = 0);
     ~UCListItemAttached();
     void setList(UCListItem *list, bool leading, bool visualizeActions);
-    void connectToAttached(UCListItemAttached *parentAttached);
 
     UCListItemActions *actions() const;
     QQmlListProperty<UCAction> visibleActions();
@@ -142,7 +167,6 @@ public Q_SLOTS:
 Q_SIGNALS:
     void actionsChanged();
     void visibleActionsChanged();
-    void itemChanged();
     void indexChanged();
     void panelStatusChanged();
 

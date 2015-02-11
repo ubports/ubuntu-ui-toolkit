@@ -196,14 +196,8 @@ void UCViewItemsAttached::unbindItem()
 {
     Q_D(UCViewItemsAttached);
     if (d->boundItem) {
-        // depending on content item's X coordinate, we either do animated or prompt rebind
-        if (d->boundItem->contentItem()->x() != 0.0) {
-            // content is not in origin, rebind
-            UCListItemPrivate::get(d->boundItem.data())->_q_rebound();
-        } else {
-            // do some cleanup
-            UCListItemPrivate::get(d->boundItem.data())->promptRebound();
-        }
+        // snap out before we unbind
+        UCListItemPrivate::get(d->boundItem)->animator.snap(0);
         d->boundItem.clear();
     }
     // clear binding list

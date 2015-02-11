@@ -15,6 +15,8 @@
  */
 
 #include "uclistitemstyle.h"
+#include <QtQml/QQmlEngine>
+#include <QtQuick/private/qquickbehavior_p.h>
 
 /*!
  * \qmltype ListItemStyle
@@ -60,8 +62,10 @@ UCListItemStyle::UCListItemStyle(QQuickItem *parent)
  */
 
 /*!
- * \qmlproperty PropertyAnimation ListItemStyle::snapAnimation
- * Holds the animation used in animating when snapped in or out.
+ * \qmlproperty Animation ListItemStyle::snapAnimation
+ * Holds the behavior used in animating when snapped in or out. It can hold many
+ * animations, and will be used in a Behavior on the \l ListItem::contentItem
+ * \c x property.
  */
 
 /*!
