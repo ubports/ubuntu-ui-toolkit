@@ -19,14 +19,15 @@
 #include <QtQuick/QQuickItem>
 
 class QQmlComponent;
-class QQuickPropertyAnimation;
+class QQuickAbstractAnimation;
+class QQuickBehavior;
 class UCListItemStyle : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(QQmlComponent *actionsDelegate MEMBER m_actionsDelegate NOTIFY actionsDelegateChanged)
     Q_PROPERTY(QQmlComponent *selectionDelegate MEMBER m_selectionDelegate NOTIFY selectionDelegateChanged)
     Q_PROPERTY(QQmlComponent *dragHandlerDelegate MEMBER m_dragHandlerDelegate NOTIFY dragHandlerDelegateChanged)
-    Q_PROPERTY(QQuickPropertyAnimation *snapAnimation MEMBER m_snapAnimation NOTIFY snapAnimationChanged)
+    Q_PROPERTY(QQuickAbstractAnimation *snapAnimation MEMBER m_snapAnimation NOTIFY snapAnimationChanged)
     Q_PROPERTY(qreal swipeOvershoot MEMBER m_swipeOvershoot NOTIFY swipeOvershootChanged)
 public:
     explicit UCListItemStyle(QQuickItem *parent = 0);
@@ -42,12 +43,12 @@ private:
     QQmlComponent *m_actionsDelegate;
     QQmlComponent *m_selectionDelegate;
     QQmlComponent *m_dragHandlerDelegate;
-    QQuickPropertyAnimation *m_snapAnimation;
+    QQuickAbstractAnimation *m_snapAnimation;
     qreal m_swipeOvershoot;
 
     friend class UCListItemPrivate;
     friend class UCActionPanel;
-    friend class UCListItemSnapAnimator;
+    friend class ListItemAnimator;
 };
 
 #endif // UCLISTITEMSTYLE_H

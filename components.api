@@ -62,6 +62,11 @@ Item
     property string fadeStyle
     readonly property bool running
     readonly property int status
+Haptics 0.1 1.0
+Object
+    readonly property bool enabled
+    property HapticsEffect effect
+    function play(customEffect)
 Header 0.1 1.0
 AppHeader
     property string _for_autopilot
@@ -693,6 +698,64 @@ plugins.qmltypes
     name: "QAbstractProxyModel"
     prototype: "QAbstractItemModel"
     Property { name: "sourceModel"; type: "QAbstractItemModel"; isPointer: true }
+    name: "QDeclarativeFeedbackActuator"
+    prototype: "QObject"
+    exports: ["QtFeedback/Actuator 5.0"]
+    name: "Capability"
+    name: "State"
+    Property { name: "actuatorId"; type: "int"; isReadonly: true }
+    Property { name: "name"; type: "string"; isReadonly: true }
+    Property { name: "state"; type: "State"; isReadonly: true }
+    Property { name: "valid"; type: "bool"; isReadonly: true }
+    Property { name: "enabled"; type: "bool" }
+    Method {
+    name: "isCapabilitySupported"
+    Parameter { name: "capability"; type: "Capability" }
+    name: "QDeclarativeFeedbackEffect"
+    prototype: "QObject"
+    exports: ["QtFeedback/Feedback 5.0", "QtFeedback/FeedbackEffect 5.0"]
+    name: "Duration"
+    name: "State"
+    name: "ErrorType"
+    Property { name: "running"; type: "bool" }
+    Property { name: "paused"; type: "bool" }
+    Property { name: "duration"; type: "int" }
+    Property { name: "state"; type: "State" }
+    Property { name: "error"; type: "ErrorType"; isReadonly: true }
+    Method { name: "updateState" }
+    Method { name: "start" }
+    Method { name: "stop" }
+    Method { name: "pause" }
+    name: "QDeclarativeFileEffect"
+    prototype: "QDeclarativeFeedbackEffect"
+    exports: ["QtFeedback/FileEffect 5.0"]
+    Property { name: "loaded"; type: "bool" }
+    Property { name: "source"; type: "QUrl" }
+    Property { name: "supportedMimeTypes"; type: "QStringList"; isReadonly: true }
+    Method { name: "load" }
+    Method { name: "unload" }
+    name: "QDeclarativeHapticsEffect"
+    prototype: "QDeclarativeFeedbackEffect"
+    exports: ["QtFeedback/HapticsEffect 5.0"]
+    Property {
+    name: "availableActuators"
+    Property { name: "intensity"; type: "double" }
+    Property { name: "attackTime"; type: "int" }
+    Property { name: "attackIntensity"; type: "double" }
+    Property { name: "fadeTime"; type: "int" }
+    Property { name: "fadeIntensity"; type: "double" }
+    Property { name: "period"; type: "int" }
+    Property { name: "actuator"; type: "QDeclarativeFeedbackActuator"; isPointer: true }
+    name: "QDeclarativeThemeEffect"
+    prototype: "QObject"
+    exports: ["QtFeedback/EffectPlayer 5.0", "QtFeedback/ThemeEffect 5.0"]
+    name: "Effect"
+    Property { name: "supported"; type: "bool"; isReadonly: true }
+    Property { name: "effect"; type: "Effect" }
+    Method { name: "play" }
+    Method {
+    name: "play"
+    Parameter { name: "effect"; type: "Effect" }
     name: "QSortFilterProxyModel"
     prototype: "QAbstractProxyModel"
     Property { name: "filterRegExp"; type: "QRegExp" }
@@ -888,17 +951,13 @@ plugins.qmltypes
     prototype: "QObject"
     Property { name: "actions"; type: "UCListItemActions"; isReadonly: true; isPointer: true }
     Property { name: "visibleActions"; type: "UCAction"; isList: true; isReadonly: true }
-    Property { name: "item"; type: "UCListItem"; isReadonly: true; isPointer: true }
     Property { name: "index"; type: "int"; isReadonly: true }
     Property { name: "panelStatus"; type: "UCListItem::PanelStatus"; isReadonly: true }
     Method {
     name: "snapToPosition"
     Parameter { name: "position"; type: "double" }
     name: "UCListItemDivider"
-    prototype: "QObject"
-    Property { name: "visible"; type: "bool" }
-    Property { name: "leftMargin"; type: "double" }
-    Property { name: "rightMargin"; type: "double" }
+    prototype: "QQuickItem"
     Property { name: "colorFrom"; type: "QColor" }
     Property { name: "colorTo"; type: "QColor" }
     name: "UCListItemStyle"
@@ -907,7 +966,7 @@ plugins.qmltypes
     Property { name: "actionsDelegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "selectionDelegate"; type: "QQmlComponent"; isPointer: true }
     Property { name: "dragHandlerDelegate"; type: "QQmlComponent"; isPointer: true }
-    Property { name: "snapAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
+    Property { name: "snapAnimation"; type: "QQuickAbstractAnimation"; isPointer: true }
     Property { name: "swipeOvershoot"; type: "double" }
     name: "UCMouse"
     prototype: "QObject"
@@ -1056,6 +1115,21 @@ plugins.qmltypes
     name: "tag"
     Parameter { name: "context"; type: "string" }
     Parameter { name: "text"; type: "string" }
+    prototype: "QObject"
+    name: "Haptics"
+    exports: ["Haptics -1.-1"]
+    Property { name: "enabled"; type: "bool"; isReadonly: true }
+    Property { name: "effect"; type: "QDeclarativeHapticsEffect"; isReadonly: true; isPointer: true }
+    Method {
+    name: "play"
+    Parameter { name: "customEffect"; type: "QVariant" }
+    Property { name: "__defaultPropertyFix"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "children"; type: "QObject"; isList: true; isReadonly: true }
+    prototype: "QObject"
+    name: "Object"
+    exports: ["Object -1.-1"]
+    Property { name: "__defaultPropertyFix"; type: "QObject"; isList: true; isReadonly: true }
+    Property { name: "children"; type: "QObject"; isList: true; isReadonly: true }
     name: "ULConditionalLayout"
     prototype: "QObject"
     exports: ["ConditionalLayout 0.1", "ConditionalLayout 1.0"]
