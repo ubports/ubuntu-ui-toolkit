@@ -56,6 +56,7 @@ public:
     void setSwiped(bool isSwiped);
     void _q_updateSize();
     void _q_updateIndex();
+    void _q_contentMoving();
     int index();
     bool canHighlight(QMouseEvent *event);
     void setHighlighted(bool pressed);
@@ -66,6 +67,7 @@ public:
     void swipeEvent(const QPointF &localPos, UCSwipeEvent::Status status);
 
     bool highlighted:1;
+    bool contentMoved:1;
     bool swiped:1;
     bool suppressClick:1;
     bool ready:1;
@@ -94,6 +96,8 @@ public:
     // getters/setters
     QQmlListProperty<QObject> data();
     QQmlListProperty<QQuickItem> children();
+    bool contentMoving() const;
+    void setContentMoving(bool moved);
     QQmlComponent *style() const;
     void setStyle(QQmlComponent *delegate);
     void resetStyle();

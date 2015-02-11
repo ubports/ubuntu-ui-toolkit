@@ -137,6 +137,7 @@ Item {
     }
 
     UbuntuTestCase {
+        id: testCase
         name: "ListItemAPI"
         when: windowShown
 
@@ -175,10 +176,7 @@ Item {
             }
 
             if (watchTarget.contentItem.x != watchTarget.contentItem.anchors.leftMargin) {
-                movingSpy.target = watchTarget;
-                movingSpy.clear();
                 mouseClick(item, centerOf(item).x, centerOf(item).y);
-                movingSpy.wait();
                 tryCompareFunction(function() {
                     return watchTarget.contentItem.x == watchTarget.contentItem.anchors.leftMargin;
                 }, true, 500);
@@ -209,6 +207,8 @@ Item {
             interactiveSpy.clear();
             trailing.delegate = null;
             listView.positionViewAtBeginning();
+            // keep additional timeout for proper cleanup
+            wait(200);
         }
 
         function test_0_defaults() {
@@ -216,7 +216,6 @@ Item {
             compare(defaults.color, "#000000", "Transparent by default");
             compare(defaults.highlightColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
             compare(defaults.highlighted, false, "Not highlighted by default");
-            compare(defaults.swipeOvershoot, 0.0, "No overshoot till the style is loaded!");
             compare(defaults.divider.visible, true, "divider is visible by default");
             compare(defaults.divider.anchors.leftMargin, 0, "divider's left margin is 0");
             compare(defaults.divider.anchors.rightMargin, 0, "divider's right margin is 0");
@@ -224,7 +223,6 @@ Item {
             fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
-            compare(defaults.contentMoving, false, "default is not moving");
             compare(defaults.action, null, "No action by default.");
             compare(defaults.style, null, "Style is loaded upon first use.");
             compare(defaults.__styleInstance, null, "__styleInstance must be null.");
@@ -559,7 +557,7 @@ Item {
             return [
                 // the first dx must be big enough to drag the panel in, it is always the last dx value
                 // which decides the snap direction
-                {tag: "Snap out, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(2)], snapIn: false},
+                {tag: "Snap out, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(3)], snapIn: false},
                 {tag: "Snap in, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(1), units.gu(1.5)], snapIn: true},
                 // have less first dx as the trailing panel is shorter
                 {tag: "Snap out, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(2)], snapIn: false},
@@ -570,13 +568,13 @@ Item {
             // performe the moves
             movingSpy.target = data.item;
             var pos = data.grabPos;
-            mousePress(data.item.contentItem, pos.x, pos.y);
+            mousePress(data.item, pos.x, pos.y);
             for (var i in data.dx) {
                 var dx = data.dx[i];
-                mouseMoveSlowly(data.item.contentItem, pos.x, pos.y, dx, 0, 5, 100);
-                pos.x += dx;
+                mouseMoveSlowly(data.item, pos.x, pos.y, data.dx[i], 0, 5, 100);
+                pos.x += data.dx[i];
             }
-            mouseRelease(data.item.contentItem, pos.x, pos.y);
+            mouseRelease(data.item, pos.x, pos.y);
             movingSpy.wait();
 
             if (data.snapIn) {
@@ -589,51 +587,8 @@ Item {
             }
         }
 
-        function test_overshoot_from_style() {
-            // scroll to the last ListView element and test on that, to make sure we don't have the style loaded for that component
-            listView.positionViewAtEnd();
-            var listItem = findChild(listView, "listItem" + (listView.count - 1));
-            verify(listItem, "Cannot get list item for testing");
-
-            compare(listItem.swipeOvershoot, 0.0, "No overshoot should be set yet!");
-            // now swipe
-            movingSpy.target = listItem;
-            flick(listItem.contentItem, centerOf(listItem).x, centerOf(listItem).y, units.gu(5), 0);
-            movingSpy.wait();
-            compare(listItem.swipeOvershoot, listItem.__styleInstance.swipeOvershoot, "Overshoot not taken from style");
-
-            // cleanup
-            rebound(listItem);
-        }
-
-        function test_custom_overshoot_data() {
-            // use different items to make sure the style doesn't update the overshoot values during the test
-            return [
-                {tag: "Positive value", index: listView.count - 1, value: units.gu(10), expected: units.gu(10)},
-                {tag: "Zero value", index: listView.count - 2, value: 0, expected: 0},
-                // synchronize the expected value with the one from Ambiance theme!
-                {tag: "Negative value", index: listView.count - 3, value: -1, expected: units.gu(2)},
-            ];
-        }
-        function test_custom_overshoot(data) {
-            // scroll to the last ListView element and test on that, to make sure we don't have the style loaded for that component
-            listView.positionViewAtEnd();
-            var listItem = findChild(listView, "listItem" + data.index);
-            verify(listItem, "Cannot get list item for testing");
-
-            compare(listItem.swipeOvershoot, 0.0, "No overshoot should be set yet!");
-            listItem.swipeOvershoot = data.value;
-            // now swipe
-            movingSpy.target = listItem;
-            flick(listItem.contentItem, centerOf(listItem).x, centerOf(listItem).y, units.gu(5), 0);
-            movingSpy.wait();
-            compare(listItem.swipeOvershoot, data.expected, "Overshoot differs from one set!");
-
-            // cleanup
-            rebound(listItem);
-        }
-
         function test_verify_action_value_data() {
+            listView.positionViewAtBeginning();
             var item0 = findChild(listView, "listItem0");
             var item1 = findChild(listView, "listItem1");
             var item2 = findChild(listView, "listItem2");
@@ -643,8 +598,6 @@ Item {
                 {tag: "Standalone item, child index 3", item: testItem, result: 3},
                 {tag: "ListView, item index 0", item: item0, result: 0},
                 {tag: "ListView, item index 1", item: item1, result: 1},
-                {tag: "ListView, item index 2", item: item2, result: 2},
-                {tag: "ListView, item index 3", item: item3, result: 3},
             ];
         }
         function test_verify_action_value(data) {
@@ -661,7 +614,9 @@ Item {
             actionSpy.target = data.item.leadingActions.actions[1];
 
             // select the action
+            movingSpy.clear();
             mouseClick(action, centerOf(action).x, centerOf(action).y);
+            movingSpy.wait();
 
             // check the action param
             actionSpy.wait();

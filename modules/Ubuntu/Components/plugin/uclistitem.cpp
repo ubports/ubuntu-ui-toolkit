@@ -193,6 +193,7 @@ void UCListItemDivider::setColorTo(const QColor &color)
 UCListItemPrivate::UCListItemPrivate()
     : UCStyledItemBasePrivate()
     , highlighted(false)
+    , contentMoved(false)
     , swiped(false)
     , suppressClick(false)
     , ready(false)
@@ -296,6 +297,12 @@ void UCListItemPrivate::_q_updateIndex()
 {
     Q_Q(UCListItem);
     q->update();
+}
+
+// update contentMoving property when ListItemStyle.snapAnimation stopped() signal is emitted
+void UCListItemPrivate::_q_contentMoving()
+{
+    setContentMoving(styleItem->m_snapAnimation->isRunning());
 }
 
 /*!
@@ -494,7 +501,6 @@ void UCListItemPrivate::setSwiped(bool isSwiped)
         return;
     }
     swiped = isSwiped;
-    qDebug() << "swiped" << swiped;
     Q_Q(UCListItem);
     QQuickWindow *window = q->window();
     if (swiped) {
@@ -558,7 +564,7 @@ void UCListItemPrivate::snapOut()
         listenToRebind(false);
     }
     if (styleItem) {
-        Q_EMIT styleItem->rebound();
+        styleItem->invokeRebound();
     }
 }
 
@@ -572,12 +578,13 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
         event.m_contentPos = zeroPos;
     }
     if (styleItem) {
-        Q_EMIT styleItem->swipeEvent(&event);
+        styleItem->invokeSwipeEvent(&event);
     }
     if (event.m_contentPos != contentItem->position()) {
         contentItem->setPosition(event.m_contentPos);
         lastPos = localPos;
-        if (status == UCSwipeEvent::Update) {
+        if (status == UCSwipeEvent::Updated) {
+            setContentMoving(true);
             setSwiped(true);
         }
     }
@@ -888,7 +895,7 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
             d->parentAttached->disableInteractive(this, true);
         }
         // stop any ongoing animation!
-        d->swipeEvent(event->localPos(), UCSwipeEvent::Start);
+        d->swipeEvent(event->localPos(), UCSwipeEvent::Started);
     }
     // accept the event so we get the rest of the events as well
     event->setAccepted(true);
@@ -917,7 +924,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
             d->snapOut();
         } else {
             // inform style about mouse/touch release
-            d->swipeEvent(event->localPos(), UCSwipeEvent::Stop);
+            d->swipeEvent(event->localPos(), UCSwipeEvent::Finished);
             d->suppressClick = false;
         }
     }
@@ -953,7 +960,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         d->pressAndHoldTimer.stop();
 
         // send swipe event to style and update contentItem position
-        d->swipeEvent(event->localPos(), UCSwipeEvent::Update);
+        d->swipeEvent(event->localPos(), UCSwipeEvent::Updated);
     }
 }
 
@@ -1166,6 +1173,42 @@ bool UCListItem::highlighted() const
 {
     Q_D(const UCListItem);
     return d->highlighted;
+}
+
+/*!
+ * \qmlproperty bool ListItem::contentMoving
+ * \readonly
+ * The property describes whether the content is moving or not. The content is
+ * moved when swiped or when snapping in or out, and lasts till the snapping
+ * animation completes.
+ */
+
+/*!
+ * \qmlsignal ListItem::contentMovementStarted()
+ * The signal is emitted when the content movement has started.
+ */
+
+/*!
+ * \qmlsignal ListItem::contentMovementEnded()
+ * The signal is emitted when the content movement has ended.
+ */
+bool UCListItemPrivate::contentMoving() const
+{
+    return contentMoved;
+}
+void UCListItemPrivate::setContentMoving(bool moved)
+{
+    if (contentMoved == moved) {
+        return;
+    }
+    contentMoved = moved;
+    Q_Q(UCListItem);
+    if (contentMoved) {
+        Q_EMIT q->contentMovementStarted();
+    } else {
+        Q_EMIT q->contentMovementEnded();
+    }
+    Q_EMIT q->contentMovingChanged();
 }
 
 /*!

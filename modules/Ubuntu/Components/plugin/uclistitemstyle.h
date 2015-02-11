@@ -28,9 +28,9 @@ class UCSwipeEvent : public QObject
     Q_ENUMS(Status)
 public:
     enum Status {
-        Start,
-        Update,
-        Stop
+        Started,
+        Updated,
+        Finished
     };
 
     UCSwipeEvent(const QPointF &mousePos, const QPointF &lastPos, const QPointF &contentPos, Status status)
@@ -63,16 +63,28 @@ class QQuickBehavior;
 class UCListItemStyle : public QQuickItem
 {
     Q_OBJECT
+    Q_PROPERTY(QQuickAbstractAnimation *snapAnimation MEMBER m_snapAnimation NOTIFY snapAnimationChanged)
 public:
     explicit UCListItemStyle(QQuickItem *parent = 0);
 
-Q_SIGNALS:
+    void invokeSwipeEvent(UCSwipeEvent *event);
+    void invokeRebound();
 
+Q_SIGNALS:
+    void snapAnimationChanged();
+
+public Q_SLOTS:
     void swipeEvent(UCSwipeEvent *event);
     void rebound();
 
+protected:
+    void componentComplete();
+
 private:
 
+    QMetaMethod m_swipeEvent;
+    QMetaMethod m_rebound;
+    QQuickAbstractAnimation *m_snapAnimation;
     friend class UCListItemPrivate;
     friend class UCActionPanel;
     friend class ListItemAnimator;

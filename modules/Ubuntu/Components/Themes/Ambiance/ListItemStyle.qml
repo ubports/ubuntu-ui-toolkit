@@ -43,6 +43,7 @@ Styles.ListItemStyle {
         id: panelComponent
         Rectangle {
             id: panel
+            objectName: "ListItemPanel" + (leading ? "Leading" : "Trailing")
             property bool leading: false
             readonly property real panelWidth: actionsRow.width
 
@@ -127,6 +128,7 @@ Styles.ListItemStyle {
     // leading panel loader
     Loader {
         id: leadingLoader
+        objectName: "leading_loader"
         anchors {
             top: parent.top
             bottom: parent.bottom
@@ -144,6 +146,7 @@ Styles.ListItemStyle {
     // trailing panel loader
     Loader {
         id: trailingLoader
+        objectName: "trailing_loader"
         anchors {
             top: parent.top
             bottom: parent.bottom
@@ -171,7 +174,7 @@ Styles.ListItemStyle {
         readonly property real panelWidth: swipedPanel ? swipedPanel.panelWidth : 0
         property real prevX: 0.0
         property real snapChangerLimit: 0.0
-        property real threshold: units.gu(1)
+        readonly property real threshold: units.gu(1.5)
         property bool snapIn: false
 
         // update snap direction
@@ -189,10 +192,9 @@ Styles.ListItemStyle {
         function snap() {
             var snapPos = (swipedOffset > units.gu(2) && snapIn) ? panelWidth : 0.0;
             snapPos *= leadingPanel ? 1 : -1;
-            print("snapPos", snapPos)
             snapAnimation.snapTo(snapPos);
         }
-        // handle ex=lasticity on overshoot
+        // handle elasticity on overshoot
         function overshoot(event) {
             var offset = event.content.x - styledItem.contentItem.anchors.leftMargin;
             offset *= leadingPanel ? 1 : -1;
@@ -202,12 +204,12 @@ Styles.ListItemStyle {
             }
         }
     }
-    UbuntuNumberAnimation {
-        id: snapAnimation
+    snapAnimation: SmoothedAnimation {
         objectName: "snap_animation"
         target: styledItem.contentItem
         property: "x"
-        duration: UbuntuAnimation.SnapDuration
+        // use 50GU/second velocity
+        velocity: units.gu(60)
         onStopped: {
             // trigger action
             if (to == styledItem.contentItem.anchors.leftMargin && internals.selectedAction) {
@@ -232,16 +234,19 @@ Styles.ListItemStyle {
     }
 
     onXChanged: internals.updateSnapDirection()
-    onSwipeEvent: {
-        if (event.status == SwipeEvent.Start) {
+    // overriding default functions
+    function swipeEvent(event) {
+        if (event.status == SwipeEvent.Started) {
             internals.prevX = x;
             snapAnimation.stop();
-        } else if (event.status == SwipeEvent.Stop) {
+        } else if (event.status == SwipeEvent.Finished) {
             internals.snap();
-        } else if (event.status == SwipeEvent.Update) {
+        } else if (event.status == SwipeEvent.Updated) {
             // handle elasticity when overshooting
             internals.overshoot(event)
         }
     }
-    onRebound: snapAnimation.snapTo(0)
+    function rebound() {
+        snapAnimation.snapTo(0);
+    }
 }

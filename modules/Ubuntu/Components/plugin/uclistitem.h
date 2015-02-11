@@ -33,6 +33,7 @@ class UCListItem : public UCStyledItemBase
     Q_PROPERTY(UCListItemActions *leadingActions READ leadingActions WRITE setLeadingActions NOTIFY leadingActionsChanged DESIGNABLE false)
     Q_PROPERTY(UCListItemActions *trailingActions READ trailingActions WRITE setTrailingActions NOTIFY trailingActionsChanged DESIGNABLE false)
     Q_PROPERTY(bool highlighted READ highlighted NOTIFY highlightedChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool contentMoving READ contentMoving NOTIFY contentMovingChanged)
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor RESET resetHighlightColor NOTIFY highlightColorChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), UCAction *action READ action WRITE setAction NOTIFY actionChanged DESIGNABLE false)
@@ -74,6 +75,7 @@ Q_SIGNALS:
     void leadingActionsChanged();
     void trailingActionsChanged();
     void highlightedChanged();
+    void contentMovingChanged();
     void colorChanged();
     void highlightColorChanged();
     void actionChanged();
@@ -81,6 +83,9 @@ Q_SIGNALS:
 
     void clicked();
     void pressAndHold();
+
+    void contentMovementStarted();
+    void contentMovementEnded();
 
     void styleChanged();
     void __styleInstanceChanged();
@@ -94,6 +99,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateSwiping())
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
+    Q_PRIVATE_SLOT(d_func(), void _q_contentMoving())
 };
 
 class UCListItemDividerPrivate;

@@ -188,6 +188,9 @@ MainView {
                         highlightColor: "brown"
                     }
                 }
+
+                onContentMovementStarted: print("moving started")
+                onContentMovementEnded: print("moving ended")
             }
         }
         Flickable {
