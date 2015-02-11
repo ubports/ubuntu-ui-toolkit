@@ -81,8 +81,8 @@ MainView {
 class MainView12TestCase(tests.QMLStringAppTestCase):
 
     test_qml = ("""
-import QtQuick 2.0
-import Ubuntu.Components 1.0
+import QtQuick 2.3
+import Ubuntu.Components 1.2
 
 MainView {
     width: units.gu(48)
@@ -98,26 +98,6 @@ MainView {
         header = self.main_view.get_header()
         self.assertFalse(header.visible)
 
-    def test_toolbar_custom_proxy_object(self):
-        toolbar = self.main_view.get_toolbar()
-        self.assertIsInstance(toolbar, ubuntuuitoolkit.Toolbar)
-
-    def test_open_toolbar(self):
-        with mock.patch.object(ubuntuuitoolkit.Toolbar, 'open') as mock_open:
-            self.main_view.open_toolbar()
-
-        mock_open.assert_called_once_with()
-
-    def test_close_toolbar(self):
-        with mock.patch.object(ubuntuuitoolkit.Toolbar, 'close') as mock_close:
-            self.main_view.close_toolbar()
-
-        mock_close.assert_called_once_with()
-
-    def test_open_toolbar_returns_the_toolbar(self):
-        toolbar = self.main_view.open_toolbar()
-        self.assertIsInstance(toolbar, ubuntuuitoolkit.Toolbar)
-
     def test_get_tabs_without_tabs(self):
         error = self.assertRaises(
             ubuntuuitoolkit.ToolkitException, self.main_view.get_tabs)
@@ -132,6 +112,23 @@ MainView {
         self.assertEqual(
             str(error), 'The MainView has no Tabs.')
 
+    def test_get_toolbar_without_toolbar(self):
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException, self.main_view.get_toolbar)
+        self.assertEqual(
+            str(error), 'The MainView has no Toolbar.')
+
+    def test_open_toolbar_without_toolbar(self):
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException, self.main_view.open_toolbar)
+        self.assertEqual(
+            str(error), 'The MainView has no Toolbar.')
+
+    def test_close_toolbar_without_toolbar(self):
+        error = self.assertRaises(
+            ubuntuuitoolkit.ToolkitException, self.main_view.close_toolbar)
+        self.assertEqual(
+            str(error), 'The MainView has no Toolbar.')
 
 
 TEST_GO_BACK_QML_FORMAT = ("""

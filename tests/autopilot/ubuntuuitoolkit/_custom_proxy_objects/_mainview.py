@@ -31,6 +31,7 @@ from ubuntuuitoolkit._custom_proxy_objects import (
 
 
 _NO_TABS_ERROR = 'The MainView has no Tabs.'
+_NO_TOOLBAR_ERROR = 'The MainView has no Toolbar.'
 
 
 logger = logging.getLogger(__name__)
@@ -63,21 +64,33 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
             raise _common.ToolkitException('The main view has no header.')
 
     def get_toolbar(self):
-        """Return the Toolbar custom proxy object of the MainView."""
-        return self.select_single(_toolbar.Toolbar)
+        """Return the Toolbar custom proxy object of the MainView.
+
+        :raise ToolkitException: If the main view has no toolbar.
+
+        """
+        try:
+            return self.select_single(_toolbar.Toolbar)
+        except dbus.StateNotFoundError:
+            raise _common.ToolkitException(_NO_TOOLBAR_ERROR)
 
     @autopilot_logging.log_action(logger.info)
     def open_toolbar(self):
-        """Open the toolbar if it's not already opened.
+        """Open the toolbar if it is not already opened.
 
         :return: The toolbar.
+        :raise ToolkitException: If the main view has no toolbar.
 
         """
         return self.get_toolbar().open()
 
     @autopilot_logging.log_action(logger.info)
     def close_toolbar(self):
-        """Close the toolbar if it's opened."""
+        """Close the toolbar if it is opened.
+
+        :raise ToolkitException: If the main view has no toolbar.
+
+        """
         self.get_toolbar().close()
 
     def get_tabs(self):
