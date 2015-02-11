@@ -46,10 +46,13 @@ class MainView(_common.UbuntuUIToolkitCustomProxyObjectBase):
             # derived from MainView (e.g. "CustomMainView") that have
             # their own CPO.
             # Using objectName for selecting a MainView is recommneded.
+            return True
+
         name = introspection.get_classname_from_path(path)
         if name == b'MainView12':
             # MainView 1.2. Must be selected using objectName.
             return True
+
         return False
 
     def get_header(self):
