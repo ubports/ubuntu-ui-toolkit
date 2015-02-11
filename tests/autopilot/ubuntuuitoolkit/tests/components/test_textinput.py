@@ -108,22 +108,22 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
 
     scenarios = [
         ('textfield',
-             dict(test_qml_file_path=textfield_qml_file_path,
-                  objectName='textfield')),
+         dict(test_qml_file_path=textfield_qml_file_path,
+              objectName='textfield')),
         ('textarea',
-             dict(test_qml_file_path=textarea_qml_file_path,
-                  objectName='textarea')),
+         dict(test_qml_file_path=textarea_qml_file_path,
+              objectName='textarea')),
         ('customfield',
-             dict(test_qml_file_path=customfield_qml_file_path,
-                  objectName='textfield')),
+         dict(test_qml_file_path=customfield_qml_file_path,
+              objectName='textfield')),
         ('header',
-            dict(test_qml_file_path=header_qml_file_path,
-                 objectName='textfield')),
+         dict(test_qml_file_path=header_qml_file_path,
+              objectName='textfield')),
     ]
     scenarios = [
         ('header',
-            dict(test_qml_file_path=header_qml_file_path,
-                 objectName='textfield')),
+         dict(test_qml_file_path=header_qml_file_path,
+              objectName='textfield')),
     ]
 
     def get_command_line(self, command_line):
@@ -160,7 +160,8 @@ class InsertModeTextInputTestCase(tests.QMLFileAppTestCase):
         self.pointing_device.click_object(cursor)
         popover = self.main_view.get_text_input_context_menu(
             'text_input_contextmenu')
-        self.assertTrue(popover.globalRect.y > 0, '%s <= 0' % popover.globalRect.y)
+        self.assertTrue(popover.globalRect.y > 0,
+                        '%s <= 0' % popover.globalRect.y)
 
     def test_popover_visible_after_tapping_caret(self):
         # Insert Mode
