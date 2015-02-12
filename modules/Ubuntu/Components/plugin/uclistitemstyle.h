@@ -21,8 +21,8 @@
 class UCSwipeEvent : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QPointF mouse READ mousePos)
-    Q_PROPERTY(QPointF last READ lastPos)
+    Q_PROPERTY(QPointF to READ to)
+    Q_PROPERTY(QPointF from READ from)
     Q_PROPERTY(QPointF content MEMBER m_contentPos)
     Q_PROPERTY(Status status READ status)
     Q_ENUMS(Status)
@@ -38,11 +38,11 @@ public:
     {
     }
 
-    QPointF mousePos() const
+    QPointF to() const
     {
         return m_mousePos;
     }
-    QPointF lastPos() const
+    QPointF from() const
     {
         return m_lastPos;
     }

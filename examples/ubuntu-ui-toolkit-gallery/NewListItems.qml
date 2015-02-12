@@ -97,7 +97,6 @@ Template {
         }
         ListItemWithLabel {
             text: i18n.tr("Custom action delegates")
-            swipeOvershoot: 0
             leadingActions: ListItemActions {
                 actions: [
                     Action {
