@@ -193,6 +193,7 @@ Empty
 MainView 0.1 1.0
 MainViewBase
     property bool automaticOrientation
+    property bool useDeprecatedToolbar
     default property internal contentsItem
 MainView 1.2
 MainViewBase
