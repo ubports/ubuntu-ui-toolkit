@@ -219,14 +219,11 @@ MainView {
                 id: trailing
                 actions: leading.actions
             }
-            ViewItems.selectMode: main.selectable
-            ViewItems.onSelectedIndicesChanged: print("INDEXES=", ViewItems.selectedIndices)
-
             Column {
                 id: column
                 width: flicker.width
                 property alias count: repeater.count
-                ViewItems.selectMode: true
+                ViewItems.selectMode: main.selectable
                 Repeater {
                     id: repeater
                     model: 10

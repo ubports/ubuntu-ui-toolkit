@@ -62,6 +62,7 @@ public:
     void _q_updateSize();
     void _q_updateIndex();
     void _q_contentMoving();
+    void _q_syncSelectMode();
     int index();
     bool canHighlight(QMouseEvent *event);
     void setHighlighted(bool pressed);
@@ -91,7 +92,6 @@ public:
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
     UCListItemActions *trailingActions;
-    UCSelectionHandler *selectionHandler;
     UCAction *mainAction;
 
     // FIXME move these to StyledItemBase togehther with subtheming.
@@ -112,7 +112,6 @@ public:
     bool isSelected();
     void setSelected(bool value);
     bool isSelectable();
-    void _q_initializeSelectionHandler();
     UCAction *action() const;
     void setAction(UCAction *action);
 };
@@ -149,32 +148,5 @@ public:
 };
 
 QColor getPaletteColor(const char *profile, const char *color);
-
-class UCHandlerBase : public QObject
-{
-    Q_OBJECT
-public:
-
-    explicit UCHandlerBase(UCListItem *owner = 0);
-    virtual void initialize(bool animated) = 0;
-
-protected:
-    UCListItem *listItem;
-    QQuickItem *panel;
-
-    void setupPanel(QQmlComponent *component, bool animate);
-};
-
-class UCSelectionHandler : public UCHandlerBase
-{
-    Q_OBJECT
-public:
-    explicit UCSelectionHandler(UCListItem *owner = 0);
-
-    void initialize(bool animated);
-
-public Q_SLOTS:
-    void setupSelection(bool animated = true);
-};
 
 #endif // UCVIEWITEM_P_H

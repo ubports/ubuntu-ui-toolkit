@@ -51,48 +51,6 @@ QColor getPaletteColor(const char *profile, const char *color)
 }
 
 /******************************************************************************
- * UCHandlerBase
- * Base class for selection and drag handlers.
- */
-UCHandlerBase::UCHandlerBase(UCListItem *owner)
-    : QObject(owner)
-    , listItem(owner)
-    , panel(0)
-{
-}
-
-void UCHandlerBase::setupPanel(QQmlComponent *component, bool animate)
-{
-    if (panel || !component) {
-        return;
-    }
-    if (component->isError()) {
-        qmlInfo(listItem) << component->errorString();
-    } else {
-        // create a new context so we can expose context properties
-        QQmlContext *context = new QQmlContext(qmlContext(listItem), listItem);
-        panel = qobject_cast<QQuickItem*>(component->beginCreate(context));
-        if (panel) {
-            QQml_setParent_noEvent(panel, listItem);
-            panel->setParentItem(listItem);
-            // attach ListItem attached properties
-            UCListItemAttached *attached = static_cast<UCListItemAttached*>(
-                        qmlAttachedPropertiesObject<UCListItem>(panel));
-            if (attached) {
-                attached->setList(listItem, false, false);
-                UCListItemAttachedPrivate::get(attached)->setAnimate(animate);
-            }
-            // complete component creation
-            component->completeCreate();
-            // and set the context property so we animate next time.
-            if (attached) {
-                UCListItemAttachedPrivate::get(attached)->setAnimate(true);
-            }
-        }
-    }
-}
-
-/******************************************************************************
  * Divider
  */
 class UCListItemDividerPrivate : public QQuickItemPrivate
@@ -248,7 +206,6 @@ UCListItemPrivate::UCListItemPrivate()
     , divider(new UCListItemDivider)
     , leadingActions(0)
     , trailingActions(0)
-    , selectionHandler(0)
     , mainAction(0)
     , styleComponent(0)
     , implicitStyleComponent(0)
@@ -345,6 +302,14 @@ void UCListItemPrivate::_q_updateIndex()
 void UCListItemPrivate::_q_contentMoving()
 {
     setContentMoving(styleItem->m_snapAnimation->isRunning());
+}
+
+// synchronizes selection mode, initializes the style if has not been done yet
+void UCListItemPrivate::_q_syncSelectMode()
+{
+    initStyleItem();
+    Q_Q(UCListItem);
+    Q_EMIT q->selectableChanged();
 }
 
 /*!
@@ -883,15 +848,21 @@ void UCListItem::componentComplete()
     }
 
     if (d->parentAttached) {
-        // keep selectable in sync
-        connect(d->parentAttached, SIGNAL(selectModeChanged()),
-                this, SLOT(_q_initializeSelectionHandler()));
-        if (d->parentAttached->selectMode()) {
-           d->_q_initializeSelectionHandler();
-        }
         // connect selectedIndicesChanged
-        connect(d->parentAttached, SIGNAL(selectedIndicesChanged()),
-                this, SIGNAL(selectedChanged()));
+        connect(d->parentAttached, &UCViewItemsAttached::selectedIndicesChanged,
+                this, &UCListItem::selectedChanged);
+        // sync selectModeChanged()
+        connect(d->parentAttached, SIGNAL(selectModeChanged()),
+                this, SLOT(_q_syncSelectMode()));
+
+        // if selection mode is on, initialize style
+        if (d->parentAttached->selectMode()) {
+            d->initStyleItem();
+        }
+    }
+    // turn on style animation
+    if (d->styleItem) {
+        d->styleItem->m_animatePanels = true;
     }
 }
 
@@ -1393,16 +1364,6 @@ bool UCListItemPrivate::isSelectable()
 {
     UCViewItemsAttachedPrivate *attached = UCViewItemsAttachedPrivate::get(parentAttached);
     return attached ? attached->selectable : false;
-}
-
-void UCListItemPrivate::_q_initializeSelectionHandler()
-{
-    Q_Q(UCListItem);
-    if (!selectionHandler) {
-        selectionHandler = new UCSelectionHandler(q);
-        selectionHandler->initialize(q->senderSignalIndex() >= 0);
-    }
-    Q_EMIT q->selectableChanged();
 }
 
 /*!

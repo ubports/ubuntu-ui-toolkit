@@ -50,7 +50,7 @@ Styles.ListItemStyle {
             // FIXME use theme palette colors once stabilized
             color: leading ? UbuntuColors.red : "white"
             anchors.fill: parent
-            width: parent.width
+            width: parent ? parent.width : 0
 
             readonly property ListItemActions itemActions: leading ? styledItem.leadingActions : styledItem.trailingActions
 
@@ -135,10 +135,10 @@ Styles.ListItemStyle {
             right: parent.left
         }
         width: parent.width
-        sourceComponent: styledItem.leadingActions && styledItem.leadingActions.actions.length > 0 ?
+        sourceComponent: internals.swiped && styledItem.leadingActions && styledItem.leadingActions.actions.length > 0 ?
                              panelComponent : null
         onItemChanged: {
-            if (item) {
+            if (item && item.hasOwnProperty("leading")) {
                 item.leading = true;
             }
         }
@@ -153,10 +153,10 @@ Styles.ListItemStyle {
             left: parent.right
         }
         width: parent.width
-        sourceComponent: styledItem.trailingActions && styledItem.trailingActions.actions.length > 0 ?
+        sourceComponent: internals.swiped && styledItem.trailingActions && styledItem.trailingActions.actions.length > 0 ?
                              panelComponent : null
         onItemChanged: {
-            if (item) {
+            if (item && item.hasOwnProperty("leading")) {
                 item.leading = false;
             }
         }
@@ -168,10 +168,11 @@ Styles.ListItemStyle {
         // action triggered
         property Action selectedAction
         // swipe handling
+        readonly property bool swiped: listItemStyle.x != styledItem.x && !styledItem.selectable
         readonly property Item swipedPanel: listItemStyle.x > 0 ? leadingLoader.item : trailingLoader.item
         readonly property bool leadingPanel: listItemStyle.x > 0
         readonly property real swipedOffset: leadingPanel ? listItemStyle.x : -listItemStyle.x
-        readonly property real panelWidth: swipedPanel ? swipedPanel.panelWidth : 0
+        readonly property real panelWidth: swipedPanel && swipedPanel.hasOwnProperty("panelWidth") ? swipedPanel.panelWidth : 0
         property real prevX: 0.0
         property real snapChangerLimit: 0.0
         readonly property real threshold: units.gu(1.5)
@@ -251,5 +252,65 @@ Styles.ListItemStyle {
     }
 
     // the selection/multiselection panel
-    selectionDelegate: ListItemSelect{}
+    Component {
+        id: selectionDelegate
+        Item {
+            objectName: "selection_panel" + listItemIndex
+            anchors.fill: parent ? parent : undefined
+
+            CheckBox {
+                id: checkbox
+                // for unit and autopilot tests
+                objectName: "listitem_select"
+                anchors.centerIn: parent
+                // for the initial value
+                checked: styledItem.selected
+                onCheckedChanged: styledItem.selected = checked;
+            }
+            // update checkbox when ViewItems.selectionIndices changes
+            Connections {
+                target: styledItem
+                onSelectedChanged: checkbox.checked = styledItem.selected
+            }
+        }
+    }
+
+    // make sure the state is changed only after component completion
+    Component.onCompleted: {
+        state = Qt.binding(function () {
+            return styledItem.selectable ? "selected" : "";
+        });
+    }
+    states: [
+        State {
+            name: "selected"
+            PropertyChanges {
+                target: leadingLoader
+                sourceComponent: selectionDelegate
+                width: units.gu(5)
+            }
+            PropertyChanges {
+                target: listItemStyle
+                anchors.leftMargin: 0
+            }
+            PropertyChanges {
+                target: styledItem.contentItem
+                anchors.leftMargin: units.gu(5)
+            }
+        }
+    ]
+    transitions: [
+        Transition {
+            from: ""
+            to: "selected"
+            reversible: true
+            enabled: animatePanels
+            PropertyAnimation {
+                target: styledItem.contentItem
+                properties: "anchors.leftMargin"
+                easing: UbuntuAnimation.StandardEasing
+                duration: UbuntuAnimation.FastDuration
+            }
+        }
+    ]
 }

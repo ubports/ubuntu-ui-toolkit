@@ -19,19 +19,19 @@ import Ubuntu.Components 1.2
 
 Item {
     id: selectionPanel
-    objectName: "selection_panel" + ListItem.index
+    objectName: "selection_panel" + listItemIndex
     width: units.gu(5)
 
     anchors {
-        right: ListItem.item.contentItem.left
-        top: ListItem.item.contentItem.top
-        bottom: ListItem.item.contentItem.bottom
+        right: styledItem.contentItem.left
+        top: styledItem.contentItem.top
+        bottom: styledItem.contentItem.bottom
     }
 
     states: State {
         name: "enabled"
         PropertyChanges {
-            target: selectionPanel.ListItem.item.contentItem
+            target: styledItem.contentItem
             x: selectionPanel.width
             anchors.leftMargin: selectionPanel.width
         }
@@ -45,10 +45,10 @@ Item {
         from: ""
         to: "enabled"
         reversible: true
-        enabled: selectionPanel.ListItem.animate
+//        enabled: animatePanels
         ParallelAnimation {
             PropertyAnimation {
-                target: selectionPanel.ListItem.item.contentItem
+                target: styledItem.contentItem
                 properties: "x,anchors.leftMargin"
                 easing: UbuntuAnimation.StandardEasing
                 duration: UbuntuAnimation.FastDuration
@@ -62,13 +62,6 @@ Item {
         }
     }
 
-    // make sure the state is changed only after component completion
-    Component.onCompleted: {
-        state = Qt.binding(function () {
-            return ListItem.item.selectable ? "enabled" : "";
-        });
-    }
-
     CheckBox {
         id: checkbox
         // for unit and autopilot tests
@@ -76,16 +69,12 @@ Item {
         anchors.centerIn: parent
         opacity: 0.0
         // for the initial value
-        checked: selectionPanel.ListItem.item.selected
-        onCheckedChanged: {
-            if (selectionPanel.ListItem.item) {
-                selectionPanel.ListItem.item.selected = checked;
-            }
-        }
+        checked: styledItem.selected
+        onCheckedChanged: styledItem.selected = checked;
     }
     // update checkbox when ViewItems.selectionIndices changes
     Connections {
-        target: selectionPanel.ListItem.item
-        onSelectedChanged: checkbox.checked = selectionPanel.ListItem.item.selected
+        target: styledItem
+        onSelectedChanged: checkbox.checked = styledItem.selected
     }
 }

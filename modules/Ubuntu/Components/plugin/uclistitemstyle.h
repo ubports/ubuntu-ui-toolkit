@@ -63,7 +63,6 @@ class QQuickBehavior;
 class UCListItemStyle : public QQuickItem
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlComponent *selectionDelegate MEMBER m_selectionDelegate NOTIFY selectionDelegateChanged)
     Q_PROPERTY(QQuickAbstractAnimation *snapAnimation MEMBER m_snapAnimation NOTIFY snapAnimationChanged)
     Q_PROPERTY(bool animatePanels MEMBER m_animatePanels NOTIFY animatePanelsChanged)
 public:
@@ -73,7 +72,6 @@ public:
     void invokeRebound();
 
 Q_SIGNALS:
-    void selectionDelegateChanged();
     void snapAnimationChanged();
     void animatePanelsChanged();
 
@@ -89,11 +87,9 @@ private:
     QMetaMethod m_swipeEvent;
     QMetaMethod m_rebound;
     QQuickAbstractAnimation *m_snapAnimation;
-    QQmlComponent *m_selectionDelegate;
     bool m_animatePanels:1;
 
     friend class UCListItemPrivate;
-    friend class UCSelectionHandler;
     friend class UCActionPanel;
     friend class ListItemAnimator;
 };

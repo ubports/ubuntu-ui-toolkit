@@ -38,7 +38,6 @@
 UCListItemStyle::UCListItemStyle(QQuickItem *parent)
     : QQuickItem(parent)
     , m_snapAnimation(0)
-    , m_selectionDelegate(0)
     , m_animatePanels(true)
 {
 }
@@ -124,7 +123,8 @@ void UCListItemStyle::invokeRebound()
  */
 
 /*!
- * \qmlproperty Component ListItemStyle::selectionDelegate
+ * \section3 Styling selections
+ * TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
  * Holds the component handling the selection mode. The component is responsible
  * to handle the visualization for the selection mode, updating the visuals of
  * the ListItem (e.g. pushing the \l {ListItem::contentItem}{contentItem},

@@ -105,7 +105,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_updateSize())
     Q_PRIVATE_SLOT(d_func(), void _q_updateIndex())
     Q_PRIVATE_SLOT(d_func(), void _q_contentMoving())
-    Q_PRIVATE_SLOT(d_func(), void _q_initializeSelectionHandler())
+    Q_PRIVATE_SLOT(d_func(), void _q_syncSelectMode())
 };
 
 class UCListItemDividerPrivate;
