@@ -69,11 +69,14 @@ Popover {
     }
 
     autoClose: false
-    contentHeight: row.childrenRect.height
-    contentWidth: row.childrenRect.width
+    contentHeight: row.childrenRect.height + padding * 2
+    contentWidth: row.childrenRect.width + padding * 2
+    property int padding: units.gu(1)
     Row {
         id: row
         height: units.gu(6)
+        x: popover.padding
+        y: popover.padding
 
         Repeater {
             model: actions.length
