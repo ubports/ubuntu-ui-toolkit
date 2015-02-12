@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -18,37 +18,84 @@
 
 #include <QtQuick/QQuickItem>
 
+class UCSwipeEvent : public QObject
+{
+    Q_OBJECT
+    Q_PROPERTY(QPointF mouse READ mousePos)
+    Q_PROPERTY(QPointF last READ lastPos)
+    Q_PROPERTY(QPointF content MEMBER m_contentPos)
+    Q_PROPERTY(Status status READ status)
+    Q_ENUMS(Status)
+public:
+    enum Status {
+        Started,
+        Updated,
+        Finished
+    };
+
+    UCSwipeEvent(const QPointF &mousePos, const QPointF &lastPos, const QPointF &contentPos, Status status)
+        : QObject(), m_mousePos(mousePos), m_lastPos(lastPos), m_contentPos(contentPos), m_status(status)
+    {
+    }
+
+    QPointF mousePos() const
+    {
+        return m_mousePos;
+    }
+    QPointF lastPos() const
+    {
+        return m_lastPos;
+    }
+    Status status() const
+    {
+        return m_status;
+    }
+
+    QPointF m_mousePos;
+    QPointF m_lastPos;
+    QPointF m_contentPos;
+    Status m_status;
+};
+
 class QQmlComponent;
-class QQuickPropertyAnimation;
+class QQuickAbstractAnimation;
+class QQuickBehavior;
 class UCListItemStyle : public QQuickItem
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlComponent *actionsDelegate MEMBER m_actionsDelegate NOTIFY actionsDelegateChanged)
     Q_PROPERTY(QQmlComponent *selectionDelegate MEMBER m_selectionDelegate NOTIFY selectionDelegateChanged)
-    Q_PROPERTY(QQmlComponent *dragHandlerDelegate MEMBER m_dragHandlerDelegate NOTIFY dragHandlerDelegateChanged)
-    Q_PROPERTY(QQuickPropertyAnimation *snapAnimation MEMBER m_snapAnimation NOTIFY snapAnimationChanged)
-    Q_PROPERTY(qreal swipeOvershoot MEMBER m_swipeOvershoot NOTIFY swipeOvershootChanged)
+    Q_PROPERTY(QQuickAbstractAnimation *snapAnimation MEMBER m_snapAnimation NOTIFY snapAnimationChanged)
+    Q_PROPERTY(bool animatePanels MEMBER m_animatePanels NOTIFY animatePanelsChanged)
 public:
     explicit UCListItemStyle(QQuickItem *parent = 0);
 
+    void invokeSwipeEvent(UCSwipeEvent *event);
+    void invokeRebound();
+
 Q_SIGNALS:
-    void actionsDelegateChanged();
     void selectionDelegateChanged();
-    void dragHandlerDelegateChanged();
     void snapAnimationChanged();
-    void swipeOvershootChanged();
+    void animatePanelsChanged();
+
+public Q_SLOTS:
+    void swipeEvent(UCSwipeEvent *event);
+    void rebound();
+
+protected:
+    void componentComplete();
 
 private:
-    QQmlComponent *m_actionsDelegate;
+
+    QMetaMethod m_swipeEvent;
+    QMetaMethod m_rebound;
+    QQuickAbstractAnimation *m_snapAnimation;
     QQmlComponent *m_selectionDelegate;
-    QQmlComponent *m_dragHandlerDelegate;
-    QQuickPropertyAnimation *m_snapAnimation;
-    qreal m_swipeOvershoot;
+    bool m_animatePanels:1;
 
     friend class UCListItemPrivate;
     friend class UCSelectionHandler;
     friend class UCActionPanel;
-    friend class UCListItemSnapAnimator;
+    friend class ListItemAnimator;
 };
 
 #endif // UCLISTITEMSTYLE_H

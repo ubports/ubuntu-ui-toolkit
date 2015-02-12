@@ -227,6 +227,34 @@ ubuntu-ui-toolkit (1.1.1311+15.04.20141102-0ubuntu1) vivid; urgency=medium
 
  -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Sun, 02 Nov 2014 13:01:56 +0000
 
+ubuntu-ui-toolkit (1.1.1298+15.04.20150209~rtm-0ubuntu1) 14.09; urgency=medium
+
+  [ Zsombor Egri ]
+  * isHapticsFeedbackEnabled context property exposed to drive
+    HapticsFeedback in AbstractButton. (LP: #1391877)
+  * Haptics singleton component to provide toolkit wide default and
+    custom feedback functionaity controlled by system settings. (LP:
+    #1391877)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 09 Feb 2015 13:10:45 +0000
+
+ubuntu-ui-toolkit (1.1.1298+15.04.20150202~rtm-0ubuntu1) 14.09; urgency=medium
+
+  [ Tim Peeters ]
+  * Port "In Progress" translation fix from staging to rtm. (LP:
+    #1391617, #1081607)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Mon, 02 Feb 2015 09:11:21 +0000
+
+ubuntu-ui-toolkit (1.1.1298+15.04.20150116~rtm-0ubuntu1) 14.09; urgency=low
+
+  [ Florian Boucault ]
+  * ActivityIndicator: make its animation rely solely on the rendering
+    thread so that it does not stop spinning if the main thread is
+    blocked. (LP: #1411376)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 16 Jan 2015 10:17:50 +0000
+
 ubuntu-ui-toolkit (1.1.1298+15.04.20141111.2~rtm-0ubuntu1) 14.09; urgency=low
 
   [ Ubuntu daily release ]

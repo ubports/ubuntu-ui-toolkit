@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -19,6 +19,7 @@
 #include "uclistitem.h"
 #include "uclistitem_p.h"
 #include "propertychange_p.h"
+#include "uclistitemstyle.h"
 #include <QtQuick/private/qquickflickable_p.h>
 
 /*
@@ -206,14 +207,9 @@ void UCViewItemsAttached::unbindItem()
 {
     Q_D(UCViewItemsAttached);
     if (d->boundItem) {
-        // depending on content item's X coordinate, we either do animated or prompt rebind
-        if (d->boundItem->contentItem()->x() != 0.0) {
-            // content is not in origin, rebind
-            UCListItemPrivate::get(d->boundItem.data())->_q_rebound();
-        } else {
-            // do some cleanup
-            UCListItemPrivate::get(d->boundItem.data())->promptRebound();
-        }
+        // snap out before we unbind
+
+        UCListItemPrivate::get(d->boundItem)->snapOut();
         d->boundItem.clear();
     }
     // clear binding list

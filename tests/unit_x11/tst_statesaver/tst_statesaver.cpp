@@ -132,10 +132,10 @@ private Q_SLOTS:
         QVERIFY(view);
         testItem = view->rootObject();
         QVERIFY(testItem);
-        QVERIFY(testItem->property("boolArray") == boolValues);
-        QVERIFY(testItem->property("intArray") == intValues);
-        QVERIFY(testItem->property("realArray") == realValues);
-        QVERIFY(testItem->property("stringArray") == stringValues);
+        QCOMPARE(testItem->property("boolArray").value<QVariantList>(), boolValues);
+        QCOMPARE(testItem->property("intArray").value<QVariantList>(), intValues);
+        QCOMPARE(testItem->property("realArray").value<QVariantList>(), realValues);
+        QCOMPARE(testItem->property("stringArray").value<QVariantList>(), stringValues);
     }
 
     void test_SaveStructures()

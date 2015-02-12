@@ -50,3 +50,19 @@ Documentation
 Once built, you may view the documentation by opening  
   documentation/html/overview-ubuntu-sdk.html
 in your favorite web browser.
+
+Autopilot SDK Helpers Documentation (Sphinx docs):
+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+To build the Autopilot SDK Helpers documentation, you need to install sphinx.
+After installation, change directory to documentation/autopilot-helpers
+and executing make.
+
+ * $ sudo apt-get install python3-sphinx
+
+ * $ cd documentation/autopilot-helpers
+
+ * $ make singlehtml
+
+ * Once built, you may view the documentation by opening
+ `_build/singlehtml/index.html` in your favorite web browser.

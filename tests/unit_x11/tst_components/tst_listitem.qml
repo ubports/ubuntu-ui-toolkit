@@ -87,9 +87,10 @@ Item {
             color: "blue"
             leadingActions: leading
             trailingActions: trailing
-            Item {
+            Label {
                 id: bodyItem
                 anchors.fill: parent
+                text: "Data"
             }
         }
         ListItem {
@@ -114,7 +115,9 @@ Item {
                 width: parent.width
                 leadingActions: leading
                 trailingActions: trailing
-                Label { text: modelData }
+                Label {
+                    text: "Data " + index
+                }
             }
         }
         Flickable {
@@ -154,6 +157,7 @@ Item {
     }
 
     UbuntuTestCase {
+        id: testCase
         name: "ListItemAPI"
         when: windowShown
 
@@ -161,7 +165,6 @@ Item {
             id: movingSpy
             signalName: "contentMovementEnded"
         }
-
         SignalSpy {
             id: highlightedSpy
             signalName: "highlightedChanged"
@@ -192,14 +195,12 @@ Item {
                 watchTarget = item;
             }
 
-            movingSpy.target = null;
-            movingSpy.target = watchTarget;
-            movingSpy.clear();
-            mouseClick(item, centerOf(item).x, centerOf(item).y);
-            if (watchTarget.contentMoving) {
-                movingSpy.wait();
+            if (watchTarget.contentItem.x != watchTarget.contentItem.anchors.leftMargin) {
+                mouseClick(item, centerOf(item).x, centerOf(item).y);
+                tryCompareFunction(function() {
+                    return watchTarget.contentItem.x == watchTarget.contentItem.anchors.leftMargin;
+                }, true, 500);
             }
-            movingSpy.target = null;
         }
 
         function initTestCase() {
@@ -209,6 +210,7 @@ Item {
 
         function cleanup() {
             testItem.action = null;
+            testItem.contentItem.anchors.margins = 0;
             testItem.selected = false;
             testColumn.ViewItems.selectMode = false;
             waitForRendering(testItem.contentItem, 200);
@@ -231,6 +233,8 @@ Item {
             interactiveSpy.clear();
             trailing.delegate = null;
             listView.positionViewAtBeginning();
+            // keep additional timeout for proper cleanup
+            wait(200);
         }
 
         function test_0_defaults() {
@@ -238,15 +242,13 @@ Item {
             compare(defaults.color, "#000000", "Transparent by default");
             compare(defaults.highlightColor, Theme.palette.selected.background, "Theme.palette.selected.background color by default")
             compare(defaults.highlighted, false, "Not highlighted by default");
-            compare(defaults.swipeOvershoot, 0.0, "No overshoot till the style is loaded!");
             compare(defaults.divider.visible, true, "divider is visible by default");
-            compare(defaults.divider.leftMargin, 0, "divider's left margin is 0");
-            compare(defaults.divider.rightMargin, 0, "divider's right margin is 0");
+            compare(defaults.divider.anchors.leftMargin, 0, "divider's left margin is 0");
+            compare(defaults.divider.anchors.rightMargin, 0, "divider's right margin is 0");
             compare(defaults.divider.colorFrom, "#000000", "colorFrom differs.");
             fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
             fuzzyCompare(defaults.divider.colorTo.a, 0.07, 0.01, "colorTo alpha differs");
-            compare(defaults.contentMoving, false, "default is not moving");
             compare(defaults.action, null, "No action by default.");
             compare(defaults.style, null, "Style is loaded upon first use.");
             compare(defaults.__styleInstance, null, "__styleInstance must be null.");
@@ -297,6 +299,38 @@ Item {
             clickSpy.wait();
         }
 
+        function test_no_click_when_swiped() {
+            var item = findChild(listView, "listItem0");
+            clickSpy.target = item;
+            clickSpy.clear();
+            movingSpy.target = item;
+            flick(item, centerOf(item).x, centerOf(item).y, units.gu(20), 0);
+            movingSpy.wait();
+
+            // click over the contentItem
+            movingSpy.clear();
+            mouseClick(item.contentItem, 1, 1);
+            compare(clickSpy.count, 0, "No click() should be emitted on a swiped in ListItem.");
+            movingSpy.wait();
+        }
+
+        function test_no_pressAndHold_when_swiped() {
+            var item = findChild(listView, "listItem0");
+            pressAndHoldSpy.target = item;
+            pressAndHoldSpy.clear();
+            movingSpy.target = item;
+            flick(item, centerOf(item).x, centerOf(item).y, units.gu(20), 0);
+            movingSpy.wait();
+
+            // press and hold
+            movingSpy.clear();
+            mouseLongPress(item.contentItem, 1, 1);
+            mouseRelease(item.contentItem, 1, 1);
+            mouseRelease(item.contentItem, 1, 1);
+            compare(pressAndHoldSpy.count, 0, "No pressAndHold() should be emitted on a swiped in ListItem.");
+            movingSpy.wait();
+        }
+
         function test_mouse_click_on_listitem() {
             var listItem = findChild(listView, "listItem0");
             verify(listItem, "Cannot find listItem0");
@@ -310,9 +344,9 @@ Item {
                 mouseMove(listItem, listItem.width / 2, dy);
             }
             compare(listItem.highlighted, false, "Item is highlighted still!");
+            // cleanup, simulate drop event
             mouseRelease(listItem, listItem.width / 2, dy);
-            // dismiss
-            rebound(listItem);
+            mouseRelease(listItem, listItem.width / 2, dy);
         }
         function test_touch_click_on_listitem() {
             var listItem = findChild(listView, "listItem0");
@@ -329,16 +363,18 @@ Item {
             compare(listItem.highlighted, false, "Item is highlighted still!");
             // cleanup, wait few milliseconds to avoid dbl-click collision
             TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
-            // dismiss
-            rebound(listItem);
+            TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
+            wait(400);
         }
 
         function test_background_height_change_on_divider_visible() {
             // make sure the testItem's divider is shown
             testItem.divider.visible = true;
-            verify(testItem.contentItem.height < testItem.height, "ListItem's background height must be less than the item itself.");
+            var margins = testItem.contentItem.anchors.topMargin + testItem.contentItem.anchors.bottomMargin;
+            compare(testItem.contentItem.height, testItem.height - margins - testItem.divider.height, "ListItem's background height must be less than the item itself.");
             testItem.divider.visible = false;
-            compare(testItem.contentItem.height, testItem.height, "ListItem's background height must be the same as the item itself.");
+            waitForRendering(testItem.contentItem);
+            compare(testItem.contentItem.height, testItem.height - margins, "ListItem's background height must be the same as the item itself.");
             testItem.divider.visible = true;
         }
 
@@ -439,16 +475,13 @@ Item {
             }
             movingSpy.wait();
             // animation should no longer be running!
-            verify(!data.item.__styleInstance.snapAnimation.running, "Animation is still running!");
             compare(listView.interactive, true, "The ListView is still non-interactive!");
             compare(interactiveSpy.count, 2, "Less/more times changed!");
             // check if it snapped in
             verify(data.item.contentItem.x != 0.0, "Not snapped in!!");
             // dismiss
             rebound(data.clickOn, data.item);
-            // animation should no longer be running!
-            verify(!data.item.__styleInstance.snapAnimation.running, "Animation is still running!");
-            fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Not snapped out!!");
+            fuzzyCompare(data.item.contentItem.x, data.item.contentItem.anchors.leftMargin, 0.1, "Not snapped out!!");
         }
 
         function test_visualized_actions_data() {
@@ -473,6 +506,26 @@ Item {
             }
             // dismiss
             rebound(data.item);
+        }
+
+        function test_listitem_margins_data() {
+            var item = findChild(listView, "listItem1");
+            return [
+                {tag: "leading", item: item, dx: units.gu(10), leading: true},
+                {tag: "trailing", item: item, dx: -units.gu(10), leading: false}
+            ];
+        }
+        function test_listitem_margins(data) {
+            data.item.contentItem.anchors.margins = units.gu(1);
+            movingSpy.target = data.item;
+            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+            movingSpy.wait();
+            var panel = panelItem(data.item, data.leading);
+            verify(panel && panel.visible, "Panel not visible.");
+            // cleanup
+            rebound(data.item);
+            compare(data.item.contentItem.x, units.gu(1), "contentItem.x differs from margin");
+            data.item.contentItem.anchors.margins = 0;
         }
 
         function test_selecting_action_rebounds_data() {
@@ -505,7 +558,7 @@ Item {
                 TestExtras.touchClick(0, selectedAction, centerOf(selectedAction));
             }
             movingSpy.wait();
-            fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Content not snapped out");
+            fuzzyCompare(data.item.contentItem.x, data.item.contentItem.anchors.leftMargin, 0.1, "Content not snapped out");
         }
 
         function test_custom_trailing_delegate() {
@@ -547,18 +600,18 @@ Item {
                 // cleanup
                 rebound(data.item);
             } else {
-                tryCompareFunction(function() { return data.item.contentItem.x; }, 0.0, 1000, "Not snapped back");
+                tryCompareFunction(function() { return data.item.contentItem.x; }, data.item.contentItem.anchors.leftMargin, 1000, "Not snapped back");
             }
         }
 
         function test_snap_gesture_data() {
             var listItem = findChild(listView, "listItem0");
-            var front = Qt.point(units.gu(1), listItem.height / 2);
-            var rear = Qt.point(listItem.width - units.gu(1), listItem.height / 2);
+            var front = Qt.point(listItem.contentItem.anchors.leftMargin + units.gu(1), listItem.height / 2);
+            var rear = Qt.point(listItem.width - (listItem.contentItem.anchors.rightMargin + units.gu(1)), listItem.height / 2);
             return [
                 // the first dx must be big enough to drag the panel in, it is always the last dx value
                 // which decides the snap direction
-                {tag: "Snap out, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(2)], snapIn: false},
+                {tag: "Snap out, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(3)], snapIn: false},
                 {tag: "Snap in, leading", item: listItem, grabPos: front, dx: [units.gu(10), -units.gu(1), units.gu(1.5)], snapIn: true},
                 // have less first dx as the trailing panel is shorter
                 {tag: "Snap out, trailing", item: listItem, grabPos: rear, dx: [-units.gu(5), units.gu(2)], snapIn: false},
@@ -569,13 +622,13 @@ Item {
             // performe the moves
             movingSpy.target = data.item;
             var pos = data.grabPos;
-            mousePress(data.item.contentItem, pos.x, pos.y);
+            mousePress(data.item, pos.x, pos.y);
             for (var i in data.dx) {
                 var dx = data.dx[i];
-                mouseMoveSlowly(data.item.contentItem, pos.x, pos.y, dx, 0, 5, 100);
-                pos.x += dx;
+                mouseMoveSlowly(data.item, pos.x, pos.y, data.dx[i], 0, 5, 100);
+                pos.x += data.dx[i];
             }
-            mouseRelease(data.item.contentItem, pos.x, pos.y);
+            mouseRelease(data.item, pos.x, pos.y);
             movingSpy.wait();
 
             if (data.snapIn) {
@@ -584,55 +637,12 @@ Item {
                 // dismiss
                 rebound(data.item);
             } else {
-                fuzzyCompare(data.item.contentItem.x, 0.0, 0.1, "Not snapped out!");
+                fuzzyCompare(data.item.contentItem.x, data.item.contentItem.anchors.leftMargin, 0.1, "Not snapped out!");
             }
         }
 
-        function test_overshoot_from_style() {
-            // scroll to the last ListView element and test on that, to make sure we don't have the style loaded for that component
-            listView.positionViewAtEnd();
-            var listItem = findChild(listView, "listItem" + (listView.count - 1));
-            verify(listItem, "Cannot get list item for testing");
-
-            compare(listItem.swipeOvershoot, 0.0, "No overshoot should be set yet!");
-            // now swipe
-            movingSpy.target = listItem;
-            flick(listItem.contentItem, centerOf(listItem).x, centerOf(listItem).y, units.gu(5), 0);
-            movingSpy.wait();
-            compare(listItem.swipeOvershoot, listItem.__styleInstance.swipeOvershoot, "Overshoot not taken from style");
-
-            // cleanup
-            rebound(listItem);
-        }
-
-        function test_custom_overshoot_data() {
-            // use different items to make sure the style doesn't update the overshoot values during the test
-            return [
-                {tag: "Positive value", index: listView.count - 1, value: units.gu(10), expected: units.gu(10)},
-                {tag: "Zero value", index: listView.count - 2, value: 0, expected: 0},
-                // synchronize the expected value with the one from Ambiance theme!
-                {tag: "Negative value", index: listView.count - 3, value: -1, expected: units.gu(2)},
-            ];
-        }
-        function test_custom_overshoot(data) {
-            // scroll to the last ListView element and test on that, to make sure we don't have the style loaded for that component
-            listView.positionViewAtEnd();
-            var listItem = findChild(listView, "listItem" + data.index);
-            verify(listItem, "Cannot get list item for testing");
-
-            compare(listItem.swipeOvershoot, 0.0, "No overshoot should be set yet!");
-            listItem.swipeOvershoot = data.value;
-            // now swipe
-            movingSpy.target = listItem;
-            flick(listItem.contentItem, centerOf(listItem).x, centerOf(listItem).y, units.gu(5), 0);
-            movingSpy.wait();
-            compare(listItem.swipeOvershoot, data.expected, "Overshoot differs from one set!");
-
-            // cleanup
-            rebound(listItem);
-        }
-
         function test_verify_action_value_data() {
+            listView.positionViewAtBeginning();
             var item0 = findChild(listView, "listItem0");
             var item1 = findChild(listView, "listItem1");
             var item2 = findChild(listView, "listItem2");
@@ -642,16 +652,14 @@ Item {
                 {tag: "Standalone item, child index 3", item: testItem, result: 3},
                 {tag: "ListView, item index 0", item: item0, result: 0},
                 {tag: "ListView, item index 1", item: item1, result: 1},
-                {tag: "ListView, item index 2", item: item2, result: 2},
-                {tag: "ListView, item index 3", item: item3, result: 3},
             ];
         }
         function test_verify_action_value(data) {
             // tug actions in
             movingSpy.target = data.item;
-            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, units.gu(20), 0, 100, 10);
+            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, units.gu(20), 0);
             movingSpy.wait();
-            verify(data.item.contentItem.x != 0.0, "Not snapped in");
+            verify(data.item.contentItem.x != data.item.contentItem.anchors.leftMargin, "Not snapped in");
 
             var panel = panelItem(data.item, "Leading");
             var action = findChild(panel, "leading_2");
@@ -770,9 +778,7 @@ Item {
         function test_action_triggered_on_clicked() {
             testItem.action = stockAction;
             actionSpy.target = stockAction;
-            clickSpy.target = testItem;
             mouseClick(testItem, centerOf(testItem).x, centerOf(testItem).y);
-            clickSpy.wait();
             actionSpy.wait();
         }
 
