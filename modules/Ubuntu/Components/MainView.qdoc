@@ -163,14 +163,14 @@
 */
 
 /*!
+  \deprecated
   \qmlproperty bool MainView::useDeprecatedToolbar
   Setting this option will enable the old toolbar, and disable the new features
   that are being added to the new header. Unsetting it removes the toolbar and
   enables developers to have a sneak peek at the new features that are coming to
   the header, even before all the required functionality is implemented.
   Default value up to version 1.1: true.
-  In version 1.2, the default value is false, and overriding that value will
-  have no effect. The deprecated toolbar no longer works in 1.2.
+  NOT AVAILABLE in version 1.2 where the deprecated toolbar is not supported.
 */
 
 /*!

@@ -25,11 +25,6 @@ MainViewBase {
     id: mainView
 
     property alias automaticOrientation: canvas.automaticOrientation
-    useDeprecatedToolbar: false
-    onUseDeprecatedToolbarChanged: {
-        print("MainView.useDeprecatedToolbar is a deprecated property. " +
-              "Setting its value has no effect with MainView version 1.2.");
-    }
 
     /*!
       \internal

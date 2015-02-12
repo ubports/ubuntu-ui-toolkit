@@ -21,7 +21,6 @@ MainView {
     id: mainView
     width: units.gu(50)
     height: units.gu(70)
-    useDeprecatedToolbar: false
 
     PageStack {
         id: stack
