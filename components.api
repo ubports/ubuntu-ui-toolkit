@@ -194,6 +194,10 @@ MainView 0.1 1.0
 MainViewBase
     property bool automaticOrientation
     default property internal contentsItem
+MainView 1.2
+MainViewBase
+    property internal automaticOrientation
+    default property internal contentsItem
 Object 0.1 1.0
 QtObject
     default property internal children
