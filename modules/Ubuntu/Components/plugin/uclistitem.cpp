@@ -502,13 +502,13 @@ void UCListItemPrivate::_q_updateSwiping()
     }
 }
 
-void UCListItemPrivate::setSwiped(bool isSwiped)
+void UCListItemPrivate::setSwiped(bool swiped)
 {
-    suppressClick = isSwiped;
-    if (swiped == isSwiped) {
+    suppressClick = swiped;
+    if (this->swiped == swiped) {
         return;
     }
-    swiped = isSwiped;
+    this->swiped = swiped;
     Q_Q(UCListItem);
     QQuickWindow *window = q->window();
     if (swiped) {

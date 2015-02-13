@@ -77,8 +77,8 @@ void UCListItemStyle::componentComplete()
  * \list
  * \li * \c status - enumeration of \c {Started, Updated, Finished} values representing
  *                  the swipe event status
- * \li * \c mouse - (x, y) coordinates of the current mouse/touch point - read-only
- * \li * \c last - (x, y) coordinates of the previous mouse/touch point - read-only
+ * \li * \c to - (x, y) coordinates of the current mouse/touch point - read-only
+ * \li * \c from - (x, y) coordinates of the previous mouse/touch point - read-only
  * \li * \c content - (x, y) updated coordinates of the \l {ListItem::contentItem}
  *                  {ListItem.contentItem}, read-write
  * \endlist

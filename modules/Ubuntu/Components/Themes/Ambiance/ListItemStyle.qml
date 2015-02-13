@@ -163,7 +163,7 @@ Styles.ListItemStyle {
     }
 
     // internals
-    Object {
+    QtObject {
         id: internals
         // action triggered
         property Action selectedAction
@@ -201,7 +201,7 @@ Styles.ListItemStyle {
             offset *= leadingPanel ? 1 : -1;
             if (offset > panelWidth) {
                 // do elastic move
-                event.content.x = styledItem.contentItem.x + (event.mouse.x - event.last.x) / 2;
+                event.content.x = styledItem.contentItem.x + (event.to.x - event.from.x) / 2;
             }
         }
     }
