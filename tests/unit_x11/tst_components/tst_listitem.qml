@@ -36,17 +36,14 @@ Item {
             Action {
                 iconName: "starred"
                 objectName: "leading_1"
-                onTriggered: print(iconName, value)
             },
             Action {
                 iconName: "edit"
                 objectName: "leading_2"
-                onTriggered: print(iconName, value)
             },
             Action {
                 iconName: "camcorder"
                 objectName: "leading_3"
-                onTriggered: print(iconName, value)
             }
         ]
     }
@@ -206,6 +203,12 @@ Item {
             }
         }
 
+        // delayed swipe, gives few millisecond timeout between each move
+        // so Repeater has time to create the panel actions in style
+        function swipe(item, x, y, dx, dy) {
+            flick(item, x, y, dx, dy, 0, 0, undefined, undefined, 100);
+        }
+
         function initTestCase() {
             TestExtras.registerTouchDevice();
             waitForRendering(main);
@@ -307,7 +310,7 @@ Item {
             clickSpy.target = item;
             clickSpy.clear();
             movingSpy.target = item;
-            flick(item, centerOf(item).x, centerOf(item).y, units.gu(20), 0);
+            swipe(item, centerOf(item).x, centerOf(item).y, units.gu(20), 0);
             movingSpy.wait();
 
             // click over the contentItem
@@ -322,7 +325,7 @@ Item {
             pressAndHoldSpy.target = item;
             pressAndHoldSpy.clear();
             movingSpy.target = item;
-            flick(item, centerOf(item).x, centerOf(item).y, units.gu(20), 0);
+            swipe(item, centerOf(item).x, centerOf(item).y, units.gu(20), 0);
             movingSpy.wait();
 
             // press and hold
@@ -394,7 +397,7 @@ Item {
             listView.positionViewAtBeginning();
             movingSpy.target = data.item;
             if (data.mouse) {
-                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+                swipe(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
@@ -423,7 +426,7 @@ Item {
             listView.positionViewAtBeginning();
             movingSpy.target = data.item;
             if (data.mouse) {
-                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+                swipe(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
@@ -450,7 +453,7 @@ Item {
             movingSpy.target = data.item;
             interactiveSpy.target = listView;
             if (data.mouse) {
-                flick(data.item, data.pos.x, data.pos.y, data.dx, data.dy);
+                swipe(data.item, data.pos.x, data.pos.y, data.dx, data.dy);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, data.dy));
             }
@@ -475,7 +478,7 @@ Item {
         }
         function test_visualized_actions(data) {
             movingSpy.target = data.item;
-            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.leading ? units.gu(20) : -units.gu(20), 0);
+            swipe(data.item, centerOf(data.item).x, centerOf(data.item).y, data.leading ? units.gu(20) : -units.gu(20), 0);
             movingSpy.wait();
 
             // check if the action is visible
@@ -499,7 +502,7 @@ Item {
         function test_listitem_margins(data) {
             data.item.contentItem.anchors.margins = units.gu(1);
             movingSpy.target = data.item;
-            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+            swipe(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
             movingSpy.wait();
             var panel = panelItem(data.item, data.leading);
             verify(panel && panel.visible, "Panel not visible.");
@@ -520,7 +523,7 @@ Item {
             listView.positionViewAtBeginning();
             movingSpy.target = data.item;
             if (data.mouse) {
-                flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
+                swipe(data.item, data.pos.x, data.pos.y, data.dx, 0);
             } else {
                 TestExtras.touchDrag(0, data.item, data.pos, Qt.point(data.dx, 0));
             }
@@ -547,7 +550,7 @@ Item {
             listView.positionViewAtBeginning();
             var item = findChild(listView, "listItem0");
             movingSpy.target = item;
-            flick(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
+            swipe(item, centerOf(item).x, centerOf(item).y, -units.gu(20), 0);
             var panel = panelItem(item, false);
             verify(panel, "Panel is not visible");
             var custom = findChild(panel, "custom_delegate");
@@ -572,7 +575,7 @@ Item {
         }
         function test_snap(data) {
             movingSpy.target = data.item;
-            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
+            swipe(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
             movingSpy.wait();
             waitForRendering(data.item.contentItem, 400);
             movingSpy.clear();
@@ -628,7 +631,7 @@ Item {
             var item1 = findChild(listView, "listItem1");
             return [
                 // testItem is the child item @index 3 in the topmost Column.
-//                {tag: "Standalone item, child index 3", item: testItem, result: 3},
+                {tag: "Standalone item, child index 3", item: testItem, result: 3},
                 {tag: "ListView, item index 0", item: item0, result: 0},
                 {tag: "ListView, item index 1", item: item1, result: 1},
             ];
@@ -636,7 +639,7 @@ Item {
         function test_action_value(data) {
             // tug actions in
             movingSpy.target = data.item;
-            flick(data.item, 1, centerOf(data.item).y, units.gu(40), 0);
+            swipe(data.item, 1, centerOf(data.item).y, units.gu(40), 0);
             movingSpy.wait();
             wait(2000);
             verify(data.item.contentItem.x != data.item.contentItem.anchors.leftMargin, "Not snapped in");
@@ -739,7 +742,7 @@ Item {
             interactiveSpy.target = testFlickable;
             movingSpy.target = listItem;
             // tug leading
-            flick(listItem, centerOf(listItem).x, centerOf(listItem).y, listItem.width / 2, 0);
+            swipe(listItem, centerOf(listItem).x, centerOf(listItem).y, listItem.width / 2, 0);
             movingSpy.wait();
             // check if interactive got changed
             interactiveSpy.wait();
@@ -865,7 +868,7 @@ Item {
 
             // try to tug leading
             movingSpy.clear();
-            flick(testItem, centerOf(testItem).x, centerOf(testItem).y, units.gu(10), 0);
+            swipe(testItem, centerOf(testItem).x, centerOf(testItem).y, units.gu(10), 0);
             compare(movingSpy.count, 0, "No tug allowed when in selection mode");
         }
 

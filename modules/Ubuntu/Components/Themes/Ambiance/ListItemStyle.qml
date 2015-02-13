@@ -64,7 +64,7 @@ Styles.ListItemStyle {
                     leftMargin: spacing
                 }
 
-                property real maxItemWidth: parent.width / itemActions.actions.length
+                readonly property real maxItemWidth: parent.width / itemActions.actions.length
 
                 Repeater {
                     model: itemActions.actions
