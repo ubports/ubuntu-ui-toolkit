@@ -267,11 +267,6 @@ Styles.ListItemStyle {
                 checked: styledItem.selected
                 onCheckedChanged: styledItem.selected = checked;
             }
-            // update checkbox when ViewItems.selectionIndices changes
-//            Connections {
-//                target: styledItem
-//                onSelectedChanged: checkbox.checked = styledItem.selected
-//            }
         }
     }
 
