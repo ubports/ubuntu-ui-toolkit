@@ -77,8 +77,6 @@ void UCViewItemsAttachedPrivate::buildFlickablesList()
 void UCViewItemsAttachedPrivate::clearChangesList()
 {
     // clear property change objects
-    // deleting PropertyChange will restore the saved property
-    // to its original binding/value
     qDeleteAll(changes);
     changes.clear();
 }
@@ -220,9 +218,10 @@ void UCViewItemsAttached::unbindItem()
  * \qmlattachedproperty bool ViewItems::selectMode
  * The property drives whether list items are selectable or not.
  *
- * When set, the default style implementation will show a check box on the leading
- * side hanving the content item pushed towards trailing side and dimmed. The checkbox
- * will reflect and drive the \l ListItem::selected state. Defaults to \c false.
+ * When set, the ListItems of the Item the property is attached to will enter into
+ * selection state. ListItems provide a visual clue which can be used to toggle
+ * the selection state of each, which in order will be reflected in the
+ * \l {ViewItems::selectedIndices}{ViewItems.selectedIndices} list.
  */
 bool UCViewItemsAttached::selectMode() const
 {

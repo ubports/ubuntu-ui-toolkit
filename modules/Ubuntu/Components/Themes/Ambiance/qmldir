@@ -56,5 +56,4 @@ internal OverflowPanel OverflowPanel.qml
 internal HeadDividerStyle HeadDividerStyle.qml
 
 #version 1.2
-ListItemSelect 1.2 ListItemSelect.qml
 ListItemStyle 1.2 ListItemStyle.qml

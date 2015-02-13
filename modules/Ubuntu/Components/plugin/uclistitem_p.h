@@ -33,7 +33,6 @@ class QQuickFlickable;
 class UCListItemDivider;
 class UCListItemActions;
 class UCListItemStyle;
-class UCSelectionHandler;
 class UCActionPanel;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
@@ -48,10 +47,10 @@ public:
         Q_ASSERT(that);
         return that->d_func();
     }
-    inline UCListItem *item()
-    {
-        return q_func();
-    }
+//    inline UCListItem *item()
+//    {
+//        return q_func();
+//    }
 
     bool isClickedConnected();
     bool isPressAndHoldConnected();

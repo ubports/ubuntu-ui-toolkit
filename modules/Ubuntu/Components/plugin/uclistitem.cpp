@@ -242,6 +242,7 @@ void UCListItemPrivate::init()
 
     // watch size change and set implicit size;
     QObject::connect(&UCUnits::instance(), SIGNAL(gridUnitChanged()), q, SLOT(_q_updateSize()));
+    _q_updateSize();
 }
 
 // inspired from IS_SIGNAL_CONNECTED(q, UCListItem, pressAndHold, ())
@@ -304,7 +305,8 @@ void UCListItemPrivate::_q_contentMoving()
     setContentMoving(styleItem->m_snapAnimation->isRunning());
 }
 
-// synchronizes selection mode, initializes the style if has not been done yet
+// synchronizes selection mode, initializes the style if has not been done yet,
+// which in turn reveals the selection panels
 void UCListItemPrivate::_q_syncSelectMode()
 {
     initStyleItem();
@@ -382,7 +384,8 @@ void UCListItemPrivate::resetStyle()
     }
 }
 
-// creates the style item
+// creates the style item, with altered default value of the animatePanels style property
+// the property is turned on after the panel initialization.
 void UCListItemPrivate::initStyleItem(bool withAnimatedPanels)
 {
     if (!ready || styleItem) {
@@ -781,10 +784,10 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *    }
  * }
  * \endqml
- * The indexes selected are stored in \l ViewItems::selectedIndices attached property,
+ * The indices selected are stored in \l ViewItems::selectedIndices attached property,
  * attached the same way as the \l ViewItems::selectMode property is. This is a
- * read/write property, meaning that initial selected item indexes can be set up.
- * The list contains the indexes added in the order of selection, not sorted in
+ * read/write property, meaning that initial selected item indices can be set up.
+ * The list contains the indices added in the order of selection, not sorted in
  * any form.
  *
  * \note When in selectable mode, the ListItem content is not disabled and \l clicked
@@ -1333,8 +1336,7 @@ void UCListItem::resetHighlightColor()
 /*!
  * 
  * \qmlproperty bool ListItem::selected
- * The property drives whether a list item is selected or not. While selected, the
- * ListItem cannot be swiped. The default value is false.
+ * The property drives whether a list item is selected or not. Defaults to false.
  *
  * \sa ListItem::selectable, ViewItems::selectMode
  */
@@ -1357,7 +1359,9 @@ void UCListItemPrivate::setSelected(bool value)
  * \qmlproperty bool ListItem::selectable
  * \readonly
  * The property reports whether the component and the view using the component
- * is in selectable state.
+ * is in selectable state. While selectable, the ListItem's leading- and trailing
+ * panels cannot be swiped in. \l clicked and \l pressAndHold signals are also
+ * triggered.
  */
 bool UCListItemPrivate::isSelectable()
 {

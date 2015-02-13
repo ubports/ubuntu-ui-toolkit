@@ -25,7 +25,6 @@ class UCListItemDivider;
 class UCListItemActions;
 class UCAction;
 class UCListItemPrivate;
-class UCListItemAttached;
 class UCListItem : public UCStyledItemBase
 {
     Q_OBJECT

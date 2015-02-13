@@ -64,7 +64,7 @@ class UCListItemStyle : public QQuickItem
 {
     Q_OBJECT
     Q_PROPERTY(QQuickAbstractAnimation *snapAnimation MEMBER m_snapAnimation NOTIFY snapAnimationChanged)
-    Q_PROPERTY(bool animatePanels READ animatePanels() NOTIFY animatePanelsChanged)
+    Q_PROPERTY(bool animatePanels READ animatePanels NOTIFY animatePanelsChanged)
 public:
     explicit UCListItemStyle(QQuickItem *parent = 0);
 
