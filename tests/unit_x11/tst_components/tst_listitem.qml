@@ -36,14 +36,17 @@ Item {
             Action {
                 iconName: "starred"
                 objectName: "leading_1"
+                onTriggered: print(iconName, value)
             },
             Action {
                 iconName: "edit"
                 objectName: "leading_2"
+                onTriggered: print(iconName, value)
             },
             Action {
                 iconName: "camcorder"
                 objectName: "leading_3"
+                onTriggered: print(iconName, value)
             }
         ]
     }
@@ -406,28 +409,6 @@ Item {
             rebound(data.item);
         }
 
-        function test_attached_listitem_data() {
-            var item = findChild(listView, "listItem3");
-            return [
-                {tag: "Trailing", item: item, pos: centerOf(item), dx: -units.gu(20), leading: true, index: 3},
-                {tag: "Leading", item: item, pos: centerOf(item), dx: units.gu(20), leading: true, index: 3},
-            ];
-        }
-        function test_attached_listitem(data) {
-            listView.positionViewAtBeginning();
-            movingSpy.target = data.item;
-            flick(data.item, data.pos.x, data.pos.y, data.dx, 0);
-            movingSpy.wait();
-            var panel = panelItem(data.item, data.leading);
-            verify(panel, "No panel found");
-            compare(panel.ListItem.item, data.item, "The attached listItem differs from the actual item using the list.");
-            compare(panel.ListItem.index, data.index, "The attached listItem index is wrong.");
-            verify(panel.ListItem.panelStatus != ListItem.Disconnected, "The attached status is wrong.");
-
-            // dismiss
-            rebound(data.item);
-        }
-
         function test_rebound_when_pressed_outside_or_clicked_data() {
             var item0 = findChild(listView, "listItem0");
             var item1 = findChild(listView, "listItem1");
@@ -584,16 +565,16 @@ Item {
             return [
                 // the list snaps out if the panel is dragged in > overshoot GU (hardcoded for now)
                 {tag: "Snap out leading", item: listItem, dx: units.gu(2), snapIn: false},
-                {tag: "Snap in leading", item: listItem, dx: units.gu(4), snapIn: true},
+                {tag: "Snap in leading", item: listItem, dx: units.gu(6), snapIn: true},
                 {tag: "Snap out trailing", item: listItem, dx: -units.gu(2), snapIn: false},
-                {tag: "Snap in trailing", item: listItem, dx: -units.gu(4), snapIn: true},
+                {tag: "Snap in trailing", item: listItem, dx: -units.gu(6), snapIn: true},
             ];
         }
         function test_snap(data) {
             movingSpy.target = data.item;
             flick(data.item, centerOf(data.item).x, centerOf(data.item).y, data.dx, 0);
             movingSpy.wait();
-            waitForRendering(data.item, 400);
+            waitForRendering(data.item.contentItem, 400);
             movingSpy.clear();
             if (data.snapIn) {
                 verify(data.item.contentItem.x != 0.0, "Not snapped to be visible");
@@ -641,24 +622,23 @@ Item {
             }
         }
 
-        function test_verify_action_value_data() {
+        function test_action_value_data() {
             listView.positionViewAtBeginning();
             var item0 = findChild(listView, "listItem0");
             var item1 = findChild(listView, "listItem1");
-            var item2 = findChild(listView, "listItem2");
-            var item3 = findChild(listView, "listItem3");
             return [
                 // testItem is the child item @index 3 in the topmost Column.
-                {tag: "Standalone item, child index 3", item: testItem, result: 3},
+//                {tag: "Standalone item, child index 3", item: testItem, result: 3},
                 {tag: "ListView, item index 0", item: item0, result: 0},
                 {tag: "ListView, item index 1", item: item1, result: 1},
             ];
         }
-        function test_verify_action_value(data) {
+        function test_action_value(data) {
             // tug actions in
             movingSpy.target = data.item;
-            flick(data.item, centerOf(data.item).x, centerOf(data.item).y, units.gu(20), 0);
+            flick(data.item, 1, centerOf(data.item).y, units.gu(40), 0);
             movingSpy.wait();
+            wait(2000);
             verify(data.item.contentItem.x != data.item.contentItem.anchors.leftMargin, "Not snapped in");
 
             var panel = panelItem(data.item, "Leading");
@@ -819,7 +799,8 @@ Item {
             verify(listItem, "Cannot get test item");
             listItem.selected = data.selected;
             listView.ViewItems.selectMode = true;
-            waitForRendering(listItem.contentItem);
+            // wait few milliseconds
+            wait(400);
             // testItem is the 4th child, so index is 3
             verify(findChild(listItem, "selection_panel" + data.index), "Cannot find selection panel");
             compare(listItem.contentItem.enabled, true, "contentItem is not disabled.");
@@ -841,7 +822,7 @@ Item {
         function test_toggle_selected(data) {
             // make test item selectable first, so the panel is created
             data.selectableHolder.ViewItems.selectMode = true;
-            waitForRendering(data.item.contentItem);
+            wait(400);
             // get the control to click on
             var clickOn = findChild(data.item, data.clickOn);
             verify(clickOn, "control to be clicked on not found");
@@ -919,12 +900,13 @@ Item {
             var listItem = findChild(data.item, "listItem0");
             verify(listItem, "ListItem not found!");
             data.item.ViewItems.selectMode = true;
-            waitForRendering(listItem.contentItem);
+            // wait few milliseconds to get the selection panel opened
+            wait(400);
             // check if the selection mode was activated by looking after the first selection panel
             var panel = findChild(listItem, "selection_panel0");
-            data.item.ViewItems.selectMode = false;
-            waitForRendering(listItem.contentItem);
             // turn off selection mode so we have a proper cleanup
+            data.item.ViewItems.selectMode = false;
+            wait(400);
             verify(panel, "Selection panel not found, wrong attached property target?");
         }
     }
