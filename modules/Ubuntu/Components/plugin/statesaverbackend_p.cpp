@@ -206,6 +206,9 @@ int StateSaverBackend::save(const QString &id, QObject *item, const QStringList 
         if (qmlProperty.isValid()) {
             QVariant value = qmlProperty.read();
             if (static_cast<QMetaType::Type>(value.type()) != QMetaType::QObjectStar) {
+                if (value.userType() == qMetaTypeId<QJSValue>()) {
+                    value = value.value<QJSValue>().toVariant();
+                }
                 m_archive.data()->setValue(propertyName, value);
                 /* Save the type of the property along with its value.
                  * This is important because QSettings deserializes values as QString.

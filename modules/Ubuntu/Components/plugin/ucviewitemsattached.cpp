@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,6 +21,7 @@
 #include "propertychange_p.h"
 #include "quickutils.h"
 #include "i18n.h"
+#include "uclistitemstyle.h"
 #include <QtQuick/private/qquickflickable_p.h>
 #include <QtQml/QQmlInfo>
 
@@ -81,8 +82,6 @@ void UCViewItemsAttachedPrivate::buildFlickablesList()
 void UCViewItemsAttachedPrivate::clearChangesList()
 {
     // clear property change objects
-    // deleting PropertyChange will restore the saved property
-    // to its original binding/value
     qDeleteAll(changes);
     changes.clear();
 }
@@ -214,14 +213,9 @@ void UCViewItemsAttached::unbindItem()
 {
     Q_D(UCViewItemsAttached);
     if (d->boundItem) {
-        // depending on content item's X coordinate, we either do animated or prompt rebind
-        if (d->boundItem->contentItem()->x() != 0.0) {
-            // content is not in origin, rebind
-            UCListItemPrivate::get(d->boundItem.data())->_q_rebound();
-        } else {
-            // do some cleanup
-            UCListItemPrivate::get(d->boundItem.data())->promptRebound();
-        }
+        // snap out before we unbind
+
+        UCListItemPrivate::get(d->boundItem)->snapOut();
         d->boundItem.clear();
     }
     // clear binding list
@@ -232,9 +226,10 @@ void UCViewItemsAttached::unbindItem()
  * \qmlattachedproperty bool ViewItems::selectMode
  * The property drives whether list items are selectable or not.
  *
- * When set, the default style implementation will show a check box on the leading
- * side hanving the content item pushed towards trailing side and dimmed. The checkbox
- * will reflect and drive the \l ListItem::selected state. Defaults to \c false.
+ * When set, the ListItems of the Item the property is attached to will enter into
+ * selection state. ListItems provide a visual clue which can be used to toggle
+ * the selection state of each, which in order will be reflected in the
+ * \l {ViewItems::selectedIndices}{ViewItems.selectedIndices} list.
  */
 bool UCViewItemsAttached::selectMode() const
 {

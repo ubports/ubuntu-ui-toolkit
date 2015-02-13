@@ -172,7 +172,8 @@ void UbuntuComponentsPlugin::registerTypes(const char *uri)
     // ListItem and related types, released to 1.2
     qmlRegisterType<UCListItem>(uri, 1, 2, "ListItem");
     qmlRegisterType<UCListItemDivider>();
-    qmlRegisterUncreatableType<UCDragEvent>(uri, 1, 2, "ListItemDrag", "Not instantiable");
+    qmlRegisterUncreatableType<UCSwipeEvent>(uri, 1, 2, "SwipeEvent", "This is an event object.");
+    qmlRegisterUncreatableType<UCDragEvent>(uri, 1, 2, "ListItemDrag", "This is an event object");
     qmlRegisterType<UCListItemActions>(uri, 1, 2, "ListItemActions");
     qmlRegisterUncreatableType<UCViewItemsAttached>(uri, 1, 2, "ViewItems", "Not instantiable");
 }

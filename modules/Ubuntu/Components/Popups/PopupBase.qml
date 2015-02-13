@@ -200,9 +200,9 @@ OrientationHelper {
         function restoreActiveFocus() {
             if (prevFocus) {
                 if (prevFocus.hasOwnProperty("requestFocus")) {
-                    prevFocus.requestFocus(Qt.PopupFocusReason);
+                    prevFocus.requestFocus(Qt.OtherFocusReason);
                 } else {
-                    prevFocus.forceActiveFocus(Qt.PopupFocusReason);
+                    prevFocus.forceActiveFocus(Qt.OtherFocusReason);
                 }
             }
         }
