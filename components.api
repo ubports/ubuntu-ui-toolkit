@@ -955,6 +955,7 @@ plugins.qmltypes
     prototype: "QQuickItem"
     exports: ["Ubuntu.Components.Styles/ListItemStyle 1.2"]
     Property { name: "snapAnimation"; type: "QQuickAbstractAnimation"; isPointer: true }
+    Property { name: "animatePanels"; type: "bool"; isReadonly: true }
     Method {
     name: "swipeEvent"
     Parameter { name: "event"; type: "UCSwipeEvent"; isPointer: true }
