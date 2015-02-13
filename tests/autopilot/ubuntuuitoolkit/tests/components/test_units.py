@@ -16,6 +16,7 @@
 
 """Tests for the Ubuntu UI Toolkit units helpers."""
 
+import logging
 import os
 
 import fixtures
@@ -25,6 +26,9 @@ from ubuntuuitoolkit import (
     tests,
     units
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 class UnitsTestCase(tests.QMLFileAppTestCase):
@@ -52,12 +56,13 @@ class UnitsTestCase(tests.QMLFileAppTestCase):
 
     def test_click_inside_button_using_grid_units(self):
         x, y, width, height = self.button.globalRect
-        print('globalRect: {}, {}, {}, {}'.format(*self.button.globalRect))
+        logger.info(
+            'globalRect: {}, {}, {}, {}'.format(*self.button.globalRect))
         from autopilot import input
-        print('button center: {}, {}'.format(
+        logger.info('button center: {}, {}'.format(
             *input.get_center_point(self.button)))
-        print('button right border: ' + str(x + width))
-        print('move: {}, {}'.format(
+        logger.info('button right border: ' + str(x + width))
+        logger.info('move: {}, {}'.format(
             x + units.gu(self.BUTTON_WIDTH_IN_GU - 1), y + height // 2))
 
         self.pointing_device.move(
