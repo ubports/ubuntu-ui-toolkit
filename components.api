@@ -1036,8 +1036,8 @@ plugins.qmltypes
     prototype: "QObject"
     exports: ["SwipeEvent 1.2"]
     name: "Status"
-    Property { name: "mouse"; type: "QPointF"; isReadonly: true }
-    Property { name: "last"; type: "QPointF"; isReadonly: true }
+    Property { name: "to"; type: "QPointF"; isReadonly: true }
+    Property { name: "from"; type: "QPointF"; isReadonly: true }
     Property { name: "content"; type: "QPointF" }
     Property { name: "status"; type: "Status"; isReadonly: true }
     name: "UCUbuntuAnimation"
