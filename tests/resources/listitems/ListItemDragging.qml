@@ -14,7 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
+import QtQuick 2.3
 import Ubuntu.Components 1.2
 
 MainView {
@@ -27,8 +27,7 @@ MainView {
         title: "Dragging test"
         ListView {
             anchors.fill: parent
-//            ViewItems.selectMode: ViewItems.dragMode
-            contentItem.objectName: "ListViewContent"
+            ViewItems.selectMode: ViewItems.dragMode
 
             model: ListModel {
                 Component.onCompleted: {
@@ -52,7 +51,7 @@ MainView {
                     color: "#69aa69"
                 }
                 Label {
-                    text: label
+                    text: modelData
                 }
 
                 onPressAndHold: {

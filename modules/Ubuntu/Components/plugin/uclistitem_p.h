@@ -33,7 +33,6 @@ class QQuickFlickable;
 class UCListItemDivider;
 class UCListItemActions;
 class UCListItemStyle;
-class UCDragHandler;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -107,7 +106,6 @@ public:
     QQuickItem *styleInstance() const;
     bool dragging();
     bool isDraggable();
-    void _q_initializeDragHandler();
     bool isSelected();
     void setSelected(bool value);
     bool isSelectable();

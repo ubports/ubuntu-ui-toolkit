@@ -269,11 +269,37 @@ Styles.ListItemStyle {
             }
         }
     }
+    // drag panel
+    Component {
+        id: dragDelegate
+        Item {
+            objectName: "draghandler_panel" + index
+            anchors.fill: parent ? parent : undefined
+
+            Icon {
+                objectName: "icon"
+                id: dragIcon
+                anchors.centerIn: parent
+                width: units.gu(3)
+                height: width
+                name: "view-grid-symbolic"
+            }
+        }
+    }
 
     // make sure the state is changed only after component completion
     Component.onCompleted: {
         state = Qt.binding(function () {
-            return styledItem.selectable ? "selected" : "";
+            if (styledItem.selectable && styledItem.draggable) {
+                return "select-drag";
+            }
+            if (styledItem.selectable) {
+                return "selected";
+            }
+            if (styledItem.draggable) {
+                return "drag";
+            }
+            return "";
         });
     }
     states: [
@@ -292,7 +318,50 @@ Styles.ListItemStyle {
                 target: styledItem.contentItem
                 anchors.leftMargin: units.gu(5)
             }
+        },
+        State {
+            name: "drag"
+            PropertyChanges {
+                target: trailingLoader
+                sourceComponent: dragDelegate
+                width: units.gu(5)
+            }
+            PropertyChanges {
+                target: listItemStyle
+            }
+            PropertyChanges {
+                target: styledItem.contentItem
+                anchors.rightMargin: units.gu(5)
+            }
+        },
+        State {
+            name: "select-drag"
+            PropertyChanges {
+                target: leadingLoader
+                sourceComponent: selectionDelegate
+                width: units.gu(5)
+            }
+            PropertyChanges {
+                target: trailingLoader
+                sourceComponent: dragDelegate
+                width: units.gu(5)
+            }
+            PropertyChanges {
+                target: listItemStyle
+                anchors {
+                    leftMargin: 0
+                    rightMargin: 0
+                }
+            }
+            PropertyChanges {
+                target: styledItem.contentItem
+                anchors {
+                    leftMargin: units.gu(5)
+                    rightMargin: units.gu(5)
+                }
+            }
         }
+
     ]
     transitions: [
         Transition {
@@ -302,7 +371,7 @@ Styles.ListItemStyle {
             enabled: animatePanels
             PropertyAnimation {
                 target: styledItem.contentItem
-                properties: "anchors.leftMargin"
+                properties: "anchors.leftMargin,anchors.rightMargin"
                 easing: UbuntuAnimation.StandardEasing
                 duration: UbuntuAnimation.FastDuration
             }
