@@ -51,12 +51,22 @@ class UnitsTestCase(tests.QMLFileAppTestCase):
         self.label = self.main_view.select_single(objectName='clicked_label')
 
     def test_click_inside_button_using_grid_units(self):
-        x, y, _, height = self.button.globalRect
+        x, y, width, height = self.button.globalRect
+        print('globalRect: {}, {}, {}, {}'.format(*self.button.globalRect))
+        from autopilot import input
+        print('button center: {}, {}'.format(
+            *input.get_center_point(self.button)))
+        print('button right border: ' + str(x + width))
+        print('move: {}, {}'.format(
+            x + units.gu(self.BUTTON_WIDTH_IN_GU - 1), y + height // 2))
+
         self.pointing_device.move(
             x + units.gu(self.BUTTON_WIDTH_IN_GU - 1), y + height // 2)
         self.pointing_device.click()
 
-        self.assertEqual('Clicked.', self.label.text)
+        from autopilot.matchers import Eventually
+        from testtools.matchers import Equals
+        self.assertThat(self.label.text, Eventually(Equals('Clicked')))
 
     def test_click_outside_button_using_grid_units(self):
         x, y, _, height = self.button.globalRect
