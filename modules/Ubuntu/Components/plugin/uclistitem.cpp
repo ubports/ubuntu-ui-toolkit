@@ -383,7 +383,7 @@ void UCListItemPrivate::resetStyle()
 }
 
 // creates the style item
-void UCListItemPrivate::initStyleItem()
+void UCListItemPrivate::initStyleItem(bool withAnimatedPanels)
 {
     if (!ready || styleItem) {
         return;
@@ -418,8 +418,11 @@ void UCListItemPrivate::initStyleItem()
         return;
     }
     QQml_setParent_noEvent(styleItem, q);
+    styleItem->setAnimatePanels(withAnimatedPanels);
     styleItem->setParentItem(q);
     delegate->completeCreate();
+    // turn animations on
+    styleItem->setAnimatePanels(true);
     Q_EMIT q->__styleInstanceChanged();
 }
 
@@ -857,12 +860,8 @@ void UCListItem::componentComplete()
 
         // if selection mode is on, initialize style
         if (d->parentAttached->selectMode()) {
-            d->initStyleItem();
+            d->initStyleItem(false);
         }
-    }
-    // turn on style animation
-    if (d->styleItem) {
-        d->styleItem->m_animatePanels = true;
     }
 }
 

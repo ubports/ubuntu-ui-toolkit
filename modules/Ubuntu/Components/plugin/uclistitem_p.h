@@ -107,7 +107,7 @@ public:
     QQmlComponent *style() const;
     void setStyle(QQmlComponent *delegate);
     void resetStyle();
-    void initStyleItem();
+    void initStyleItem(bool withAnimatedPanels = true);
     QQuickItem *styleInstance() const;
     bool isSelected();
     void setSelected(bool value);

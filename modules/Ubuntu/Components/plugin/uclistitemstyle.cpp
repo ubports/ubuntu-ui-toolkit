@@ -123,6 +123,25 @@ void UCListItemStyle::invokeRebound()
  */
 
 /*!
+ * \qmlproperty bool ListItemStyle::animatePanels
+ * The property drives the different panel animations in the style. Panels should
+ * not be animated when created upon scrolling a view.
+ */
+bool UCListItemStyle::animatePanels() const
+{
+    return m_animatePanels;
+}
+// the setter is used by the ListItem to drive animation state
+void UCListItemStyle::setAnimatePanels(bool animate)
+{
+    if (m_animatePanels == animate) {
+        return;
+    }
+    m_animatePanels = animate;
+    Q_EMIT animatePanelsChanged();
+}
+
+/*!
  * \section3 Styling selections
  * TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
  * Holds the component handling the selection mode. The component is responsible
