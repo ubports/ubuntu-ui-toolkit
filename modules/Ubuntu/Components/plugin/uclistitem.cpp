@@ -37,6 +37,19 @@
 #include <QtQuick/private/qquickbehavior_p.h>
 #include <QtQml/QQmlEngine>
 
+QColor getPaletteColor(const char *profile, const char *color)
+{
+    QColor result;
+    QObject *palette = UCTheme::instance().palette();
+    if (palette) {
+        QObject *paletteProfile = palette->property(profile).value<QObject*>();
+        if (paletteProfile) {
+            result = paletteProfile->property(color).value<QColor>();
+        }
+    }
+    return result;
+}
+
 /******************************************************************************
  * Divider
  */

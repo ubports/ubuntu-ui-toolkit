@@ -87,19 +87,6 @@
  * meaning the drag event is accepted.
  */
 
-QColor getPaletteColor(const char *profile, const char *color)
-{
-    QColor result;
-    QObject *palette = UCTheme::instance().palette();
-    if (palette) {
-        QObject *paletteProfile = palette->property(profile).value<QObject*>();
-        if (paletteProfile) {
-            result = paletteProfile->property(color).value<QColor>();
-        }
-    }
-    return result;
-}
-
 /*
  * The properties are attached to the ListItem's parent item or to its closest
  * Flickable parent, when embedded in ListView or Flickable. There will be only
