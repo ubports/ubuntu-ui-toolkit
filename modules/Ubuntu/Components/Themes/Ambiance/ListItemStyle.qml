@@ -144,7 +144,6 @@ Styles.ListItemStyle {
 
             states: State {
                 name: "animate-opacity"
-                when: loaded
                 PropertyChanges {
                     target: selectPanel
                     opacity: 1.0
@@ -158,6 +157,48 @@ Styles.ListItemStyle {
                 OpacityAnimator {
                     easing: UbuntuAnimation.StandardEasing
                     duration: UbuntuAnimation.FastDuration
+                }
+            }
+        }
+    }
+    // drag panel
+    Component {
+        id: dragDelegate
+        Item {
+            objectName: "draghandler_panel" + index
+            anchors.fill: parent ? parent : undefined
+
+            Icon {
+                objectName: "icon"
+                id: dragIcon
+                anchors.centerIn: parent
+                width: units.gu(3)
+                height: width
+                name: "view-grid-symbolic"
+                opacity: 0.0
+                scale: 0.5
+
+                states: State {
+                    name: "enabled"
+                    when: loaded
+                    PropertyChanges {
+                        target: dragIcon
+                        opacity: 1.0
+                        scale: 1.0
+                    }
+                }
+                transitions: Transition {
+                    from: ""
+                    to: "*"
+                    reversible: true
+                    OpacityAnimator {
+                        easing: UbuntuAnimation.StandardEasing
+                        duration: UbuntuAnimation.FastDuration
+                    }
+                    ScaleAnimator {
+                        easing: UbuntuAnimation.StandardEasing
+                        duration: UbuntuAnimation.FastDuration
+                    }
                 }
             }
         }
@@ -200,20 +241,18 @@ Styles.ListItemStyle {
                 }
             }
         ]
-        transitions: [
-            Transition {
-                from: ""
-                to: "selectable"
-                reversible: true
-                enabled: listItemStyle.animatePanels
-                PropertyAnimation {
-                    target: styledItem.contentItem
-                    properties: "anchors.leftMargin"
-                    easing: UbuntuAnimation.StandardEasing
-                    duration: UbuntuAnimation.FastDuration
-                }
+        transitions: Transition {
+            from: ""
+            to: "selectable"
+            reversible: true
+            enabled: listItemStyle.animatePanels
+            PropertyAnimation {
+                target: styledItem.contentItem
+                properties: "anchors.leftMargin"
+                easing: UbuntuAnimation.StandardEasing
+                duration: UbuntuAnimation.FastDuration
             }
-        ]
+        }
     }
     // trailing panel loader
     Loader {
@@ -229,6 +268,38 @@ Styles.ListItemStyle {
                              panelComponent : null
         // context properties used in delegates
         readonly property bool leading: false
+        readonly property bool loaded: status == Loader.Ready
+
+        // panel states
+        states: State {
+            name: "draggable"
+            when: styledItem.draggable
+            PropertyChanges {
+                target: trailingLoader
+                sourceComponent: dragDelegate
+                width: units.gu(5)
+            }
+            PropertyChanges {
+                target: listItemStyle
+                anchors.rightMargin: 0
+            }
+            PropertyChanges {
+                target: styledItem.contentItem
+                anchors.rightMargin: units.gu(5)
+            }
+        }
+        transitions: Transition {
+            from: ""
+            to: "*"
+            reversible: true
+            enabled: listItemStyle.animatePanels
+            PropertyAnimation {
+                target: styledItem.contentItem
+                properties: "anchors.rightMargin"
+                easing: UbuntuAnimation.StandardEasing
+                duration: UbuntuAnimation.FastDuration
+            }
+        }
     }
 
     // internals
@@ -319,129 +390,4 @@ Styles.ListItemStyle {
     function rebound() {
         snapAnimation.snapTo(0);
     }
-
-    // drag panel
-    Component {
-        id: dragDelegate
-        Item {
-            objectName: "draghandler_panel" + index
-            anchors.fill: parent ? parent : undefined
-            opacity: itemOpacity
-            scale: itemScale
-
-            Icon {
-                objectName: "icon"
-                id: dragIcon
-                anchors.centerIn: parent
-                width: units.gu(3)
-                height: width
-                name: "view-grid-symbolic"
-            }
-        }
-    }
-
-    // make sure the state is changed only after component completion
-    Component.onCompleted: {
-        state = Qt.binding(function () {
-            if (styledItem.selectable && styledItem.draggable) {
-                return "select-drag";
-            }
-            if (styledItem.selectable) {
-                return "selected";
-            }
-            if (styledItem.draggable) {
-                return "drag";
-            }
-            return "";
-        });
-    }
-    states: [
-        State {
-            name: "selected"
-            PropertyChanges {
-                target: leadingLoader
-                sourceComponent: selectionDelegate
-                width: units.gu(5)
-                itemOpacity: 1.0
-            }
-            PropertyChanges {
-                target: listItemStyle
-                anchors.leftMargin: 0
-            }
-            PropertyChanges {
-                target: styledItem.contentItem
-                anchors.leftMargin: units.gu(5)
-            }
-        },
-        State {
-            name: "drag"
-            PropertyChanges {
-                target: trailingLoader
-                sourceComponent: dragDelegate
-                width: units.gu(5)
-                itemOpacity: 1.0
-                itemScale: 1.0
-            }
-            PropertyChanges {
-                target: listItemStyle
-                anchors.rightMargin: 0
-            }
-            PropertyChanges {
-                target: styledItem.contentItem
-                anchors.rightMargin: units.gu(5)
-            }
-        },
-        State {
-            name: "select-drag"
-            PropertyChanges {
-                target: leadingLoader
-                sourceComponent: selectionDelegate
-                width: units.gu(5)
-                itemOpacity: 1.0
-            }
-            PropertyChanges {
-                target: trailingLoader
-                sourceComponent: dragDelegate
-                width: units.gu(5)
-                itemOpacity: 1.0
-                itemScale: 1.0
-            }
-            PropertyChanges {
-                target: listItemStyle
-                anchors {
-                    leftMargin: 0
-                    rightMargin: 0
-                }
-            }
-            PropertyChanges {
-                target: styledItem.contentItem
-                anchors {
-                    leftMargin: units.gu(5)
-                    rightMargin: units.gu(5)
-                }
-            }
-        }
-
-    ]
-    transitions: [
-        Transition {
-            from: ""
-            to: "*"
-            reversible: true
-            enabled: animatePanels
-            ParallelAnimation {
-                PropertyAnimation {
-                    target: styledItem.contentItem
-                    properties: "anchors.leftMargin,anchors.rightMargin"
-                    easing: UbuntuAnimation.StandardEasing
-                    duration: UbuntuAnimation.FastDuration
-                }
-                NumberAnimation {
-                    targets: [leadingLoader, trailingLoader];
-                    properties: "itemOpacity";
-                    duration: 1200
-                }
-            }
-        }
-    ]
 }
