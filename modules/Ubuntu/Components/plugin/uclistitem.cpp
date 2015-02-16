@@ -767,11 +767,11 @@ void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status
  *    width: units.gu(40)
  *    height: units.gu(50)
  *
- *    // this will work
- *    ListItem.selectable: true
+ *    // this will not have any effect
+ *    ViewItems.selectMode: true
  *    Column {
- *        // this will not have any effect
- *        ListItem.selectable: false
+ *        // this will work
+ *        ViewItems.selectMode: false
  *        width: parent.width
  *        Repeater {
  *            model: 25
