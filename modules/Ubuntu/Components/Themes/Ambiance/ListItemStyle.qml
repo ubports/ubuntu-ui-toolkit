@@ -143,7 +143,7 @@ Styles.ListItemStyle {
             }
 
             states: State {
-                name: "animate"
+                name: "animate-opacity"
                 when: loaded
                 PropertyChanges {
                     target: selectPanel
@@ -156,7 +156,6 @@ Styles.ListItemStyle {
                 reversible: true
                 enabled: listItemStyle.animatePanels
                 OpacityAnimator {
-                    target: selectPanel
                     easing: UbuntuAnimation.StandardEasing
                     duration: UbuntuAnimation.FastDuration
                 }
