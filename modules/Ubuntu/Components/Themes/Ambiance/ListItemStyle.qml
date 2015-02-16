@@ -130,10 +130,10 @@ Styles.ListItemStyle {
             id: selectPanel
             objectName: "selection_panel" + listItemIndex
             anchors.fill: parent ? parent : undefined
-            opacity: 0
 
             CheckBox {
                 id: checkbox
+                opacity: 0
                 // for unit and autopilot tests
                 objectName: "listitem_select"
                 anchors.centerIn: parent
@@ -143,10 +143,10 @@ Styles.ListItemStyle {
             }
 
             states: State {
-                name: "animate-opacity"
+                name: "enabled"
                 when: loaded
                 PropertyChanges {
-                    target: selectPanel
+                    target: checkbox
                     opacity: 1.0
                 }
             }
