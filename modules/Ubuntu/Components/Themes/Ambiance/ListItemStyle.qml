@@ -44,7 +44,6 @@ Styles.ListItemStyle {
         Rectangle {
             id: panel
             objectName: "ListItemPanel" + (leading ? "Leading" : "Trailing")
-            property bool leading: false
             readonly property real panelWidth: actionsRow.width
 
             // FIXME use theme palette colors once stabilized
@@ -124,6 +123,46 @@ Styles.ListItemStyle {
             }
         }
     }
+    // the selection/multiselection panel
+    Component {
+        id: selectionDelegate
+        Item {
+            id: selectPanel
+            objectName: "selection_panel" + listItemIndex
+            anchors.fill: parent ? parent : undefined
+            opacity: 0
+
+            CheckBox {
+                id: checkbox
+                // for unit and autopilot tests
+                objectName: "listitem_select"
+                anchors.centerIn: parent
+                // for the initial value
+                checked: styledItem.selected
+                onCheckedChanged: styledItem.selected = checked;
+            }
+
+            states: State {
+                name: "animate-opacity"
+                when: loaded
+                PropertyChanges {
+                    target: selectPanel
+                    opacity: 1.0
+                }
+            }
+            transitions: Transition {
+                from: ""
+                to: "*"
+                reversible: true
+                enabled: listItemStyle.animatePanels
+                OpacityAnimator {
+                    easing: UbuntuAnimation.StandardEasing
+                    duration: UbuntuAnimation.FastDuration
+                }
+            }
+        }
+    }
+
 
     // leading panel loader
     Loader {
@@ -137,14 +176,44 @@ Styles.ListItemStyle {
         width: parent.width
         sourceComponent: internals.swiped && styledItem.leadingActions && styledItem.leadingActions.actions.length > 0 ?
                              panelComponent : null
-        onItemChanged: {
-            if (item && item.hasOwnProperty("leading")) {
-                item.leading = true;
-            }
-        }
+        // context properties used in delegates
+        readonly property bool leading: true
+        readonly property bool loaded: status == Loader.Ready
 
-        // properties serving as proxy between the transition and the loaded item
-        property real itemOpacity: 0.0
+        // panel states
+        states: [
+            State {
+                name: "selectable"
+                when: styledItem.selectable
+                PropertyChanges {
+                    target: leadingLoader
+                    sourceComponent: selectionDelegate
+                    width: units.gu(5)
+                }
+                PropertyChanges {
+                    target: listItemStyle
+                    anchors.leftMargin: 0
+                }
+                PropertyChanges {
+                    target: styledItem.contentItem
+                    anchors.leftMargin: units.gu(5)
+                }
+            }
+        ]
+        transitions: [
+            Transition {
+                from: ""
+                to: "selectable"
+                reversible: true
+                enabled: listItemStyle.animatePanels
+                PropertyAnimation {
+                    target: styledItem.contentItem
+                    properties: "anchors.leftMargin"
+                    easing: UbuntuAnimation.StandardEasing
+                    duration: UbuntuAnimation.FastDuration
+                }
+            }
+        ]
     }
     // trailing panel loader
     Loader {
@@ -158,15 +227,8 @@ Styles.ListItemStyle {
         width: parent.width
         sourceComponent: internals.swiped && styledItem.trailingActions && styledItem.trailingActions.actions.length > 0 ?
                              panelComponent : null
-        onItemChanged: {
-            if (item && item.hasOwnProperty("leading")) {
-                item.leading = false;
-            }
-        }
-
-        // properties serving as proxy between the transition and the loaded item
-        property real itemOpacity: 0.0
-        property real itemScale: 0.5
+        // context properties used in delegates
+        readonly property bool leading: false
     }
 
     // internals
@@ -258,26 +320,6 @@ Styles.ListItemStyle {
         snapAnimation.snapTo(0);
     }
 
-    // the selection/multiselection panel
-    Component {
-        id: selectionDelegate
-        Item {
-            objectName: "selection_panel" + listItemIndex
-            anchors.fill: parent ? parent : undefined
-            opacity: itemOpacity
-            onOpacityChanged: print(opacity)
-
-            CheckBox {
-                id: checkbox
-                // for unit and autopilot tests
-                objectName: "listitem_select"
-                anchors.centerIn: parent
-                // for the initial value
-                checked: styledItem.selected
-                onCheckedChanged: styledItem.selected = checked;
-            }
-        }
-    }
     // drag panel
     Component {
         id: dragDelegate
