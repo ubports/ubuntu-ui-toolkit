@@ -142,6 +142,9 @@ Styles.ListItemStyle {
                 item.leading = true;
             }
         }
+
+        // properties serving as proxy between the transition and the loaded item
+        property real itemOpacity: 0.0
     }
     // trailing panel loader
     Loader {
@@ -160,6 +163,10 @@ Styles.ListItemStyle {
                 item.leading = false;
             }
         }
+
+        // properties serving as proxy between the transition and the loaded item
+        property real itemOpacity: 0.0
+        property real itemScale: 0.5
     }
 
     // internals
@@ -257,6 +264,8 @@ Styles.ListItemStyle {
         Item {
             objectName: "selection_panel" + listItemIndex
             anchors.fill: parent ? parent : undefined
+            opacity: itemOpacity
+            onOpacityChanged: print(opacity)
 
             CheckBox {
                 id: checkbox
@@ -275,6 +284,8 @@ Styles.ListItemStyle {
         Item {
             objectName: "draghandler_panel" + index
             anchors.fill: parent ? parent : undefined
+            opacity: itemOpacity
+            scale: itemScale
 
             Icon {
                 objectName: "icon"
@@ -309,6 +320,7 @@ Styles.ListItemStyle {
                 target: leadingLoader
                 sourceComponent: selectionDelegate
                 width: units.gu(5)
+                itemOpacity: 1.0
             }
             PropertyChanges {
                 target: listItemStyle
@@ -325,9 +337,12 @@ Styles.ListItemStyle {
                 target: trailingLoader
                 sourceComponent: dragDelegate
                 width: units.gu(5)
+                itemOpacity: 1.0
+                itemScale: 1.0
             }
             PropertyChanges {
                 target: listItemStyle
+                anchors.rightMargin: 0
             }
             PropertyChanges {
                 target: styledItem.contentItem
@@ -340,11 +355,14 @@ Styles.ListItemStyle {
                 target: leadingLoader
                 sourceComponent: selectionDelegate
                 width: units.gu(5)
+                itemOpacity: 1.0
             }
             PropertyChanges {
                 target: trailingLoader
                 sourceComponent: dragDelegate
                 width: units.gu(5)
+                itemOpacity: 1.0
+                itemScale: 1.0
             }
             PropertyChanges {
                 target: listItemStyle
@@ -366,14 +384,21 @@ Styles.ListItemStyle {
     transitions: [
         Transition {
             from: ""
-            to: "selected"
+            to: "*"
             reversible: true
             enabled: animatePanels
-            PropertyAnimation {
-                target: styledItem.contentItem
-                properties: "anchors.leftMargin,anchors.rightMargin"
-                easing: UbuntuAnimation.StandardEasing
-                duration: UbuntuAnimation.FastDuration
+            ParallelAnimation {
+                PropertyAnimation {
+                    target: styledItem.contentItem
+                    properties: "anchors.leftMargin,anchors.rightMargin"
+                    easing: UbuntuAnimation.StandardEasing
+                    duration: UbuntuAnimation.FastDuration
+                }
+                NumberAnimation {
+                    targets: [leadingLoader, trailingLoader];
+                    properties: "itemOpacity";
+                    duration: 1200
+                }
             }
         }
     ]
