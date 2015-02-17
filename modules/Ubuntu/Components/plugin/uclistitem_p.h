@@ -47,10 +47,6 @@ public:
         Q_ASSERT(that);
         return that->d_func();
     }
-//    inline UCListItem *item()
-//    {
-//        return q_func();
-//    }
 
     bool isClickedConnected();
     bool isPressAndHoldConnected();
@@ -111,6 +107,7 @@ public:
     bool isSelected();
     void setSelected(bool value);
     bool isSelectable();
+    void setSelectable(bool selectable);
     UCAction *action() const;
     void setAction(UCAction *action);
 };

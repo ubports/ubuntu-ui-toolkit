@@ -931,7 +931,7 @@ plugins.qmltypes
     Property { name: "color"; type: "QColor" }
     Property { name: "highlightColor"; type: "QColor" }
     Property { name: "selected"; type: "bool" }
-    Property { name: "selectable"; type: "bool"; isReadonly: true }
+    Property { name: "selectable"; type: "bool" }
     Property { name: "action"; type: "UCAction"; isPointer: true }
     Property { name: "listItemData"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }

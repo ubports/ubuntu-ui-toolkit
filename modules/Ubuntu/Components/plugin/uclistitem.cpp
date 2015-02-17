@@ -1357,16 +1357,22 @@ void UCListItemPrivate::setSelected(bool value)
 
 /*!
  * \qmlproperty bool ListItem::selectable
- * \readonly
  * The property reports whether the component and the view using the component
  * is in selectable state. While selectable, the ListItem's leading- and trailing
  * panels cannot be swiped in. \l clicked and \l pressAndHold signals are also
- * triggered.
+ * triggered. Selectable mode can be set either through this property or through
+ * the parent attached \l ViewItems::selectMode property.
  */
 bool UCListItemPrivate::isSelectable()
 {
     UCViewItemsAttachedPrivate *attached = UCViewItemsAttachedPrivate::get(parentAttached);
     return attached ? attached->selectable : false;
+}
+void UCListItemPrivate::setSelectable(bool selectable)
+{
+    if (parentAttached) {
+        parentAttached->setSelectMode(selectable);
+    }
 }
 
 /*!
