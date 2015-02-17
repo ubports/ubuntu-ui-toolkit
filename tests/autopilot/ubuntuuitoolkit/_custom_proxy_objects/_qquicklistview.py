@@ -101,4 +101,9 @@ class QQuickListView(_flickable.QQuickFlickable):
         self.swipe_to_top()
         first_item = self._get_first_item()
         self.pointing_device.click_object(first_item, press_duration=2)
-        self.wait_select_single('QQuickItem', objectName='selection_panel0')
+        try:
+            self.wait_select_single('QQuickItem',
+                                    objectName='selection_panel0')
+        except dbus.StateNotFoundError:
+            raise _common.ToolkitException(
+                'ListView delegate is not a ListItem or not in selectMode')
