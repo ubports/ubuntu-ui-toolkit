@@ -112,6 +112,7 @@ public:
     bool isSelected();
     void setSelected(bool value);
     bool isSelectable();
+    void setSelectable(bool selectable);
     UCAction *action() const;
     void setAction(UCAction *action);
 };
