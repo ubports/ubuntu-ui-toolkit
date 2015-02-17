@@ -143,8 +143,8 @@ Styles.ListItemStyle {
             }
 
             states: State {
-                name: "animate-opacity"
-                when: styledItem.selectable
+                name: "enabled"
+                when: loaded
                 PropertyChanges {
                     target: selectPanel
                     opacity: 1.0
