@@ -1402,8 +1402,7 @@ void UCListItem::resetHighlightColor()
  */
 bool UCListItemPrivate::dragging()
 {
-    // TODO: reports the dragging state from the drag handler
-    return false;
+    return !dragHandler.isNull();
 }
 
 /*!

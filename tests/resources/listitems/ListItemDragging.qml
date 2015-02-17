@@ -28,12 +28,26 @@ MainView {
         ListView {
             anchors.fill: parent
             ViewItems.selectMode: ViewItems.dragMode
+            ViewItems.onDraggingUpdated: {
+                if (event.direction == ListItemDrag.None) {
+                    model.move(event.from, event.to, 1);
+                    print("move", event.from, event.to)
+                } else {
+                    event.accept = false;
+                }
+            }
 
             model: ListModel {
                 Component.onCompleted: {
                     for (var i = 0; i < 25; i++) {
                         append({label: "List item #"+i})
                     }
+                }
+            }
+
+            moveDisplaced: Transition {
+                UbuntuNumberAnimation {
+                    properties: "x,y"
                 }
             }
 
@@ -48,10 +62,10 @@ MainView {
 
                 Rectangle {
                     anchors.fill: parent
-                    color: "#69aa69"
+                    color: item.dragging ? UbuntuColors.blue : "#69aa69"
                 }
                 Label {
-                    text: modelData
+                    text: label + " from index #" + index
                 }
 
                 onPressAndHold: {

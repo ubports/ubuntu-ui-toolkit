@@ -168,6 +168,7 @@ public:
     void setDragMode(bool value);
 private Q_SLOTS:
     void unbindItem();
+    void completed();
 
 Q_SIGNALS:
     void selectModeChanged();
@@ -224,6 +225,8 @@ private:
     int m_minimum;
     int m_maximum;
     bool m_accept;
+
+    friend class ListItemDragArea;
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(UCDragEvent::Directions)
 

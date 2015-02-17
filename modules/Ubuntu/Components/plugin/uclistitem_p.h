@@ -33,6 +33,7 @@ class QQuickFlickable;
 class UCListItemDivider;
 class UCListItemActions;
 class UCListItemStyle;
+class ListItemDragHandler;
 class UCListItemPrivate : public UCStyledItemBasePrivate
 {
     Q_DECLARE_PUBLIC(UCListItem)
@@ -83,6 +84,7 @@ public:
     QPointer<QQuickItem> countOwner;
     QPointer<QQuickFlickable> flickable;
     QPointer<UCViewItemsAttached> parentAttached;
+    QPointer<ListItemDragHandler> dragHandler;
     QQuickItem *contentItem;
     UCListItemDivider *divider;
     UCListItemActions *leadingActions;
@@ -114,6 +116,7 @@ public:
 };
 
 class PropertyChange;
+class ListItemDragArea;
 class UCViewItemsAttachedPrivate
 {
     Q_DECLARE_PUBLIC(UCViewItemsAttached)
@@ -133,12 +136,19 @@ public:
     bool addSelectedItem(UCListItem *item);
     bool removeSelectedItem(UCListItem *item);
     bool isItemSelected(UCListItem *item);
+    void enterDragMode();
+    void leaveDragMode();
+    bool isDraggingStartedConnected();
+    bool isDraggingUpdatedConnected();
+    void updateSelectedIndices(int fromIndex, int toIndex);
 
     UCViewItemsAttached *q_ptr;
     QQuickFlickable *listView;
+    ListItemDragArea *dragArea;
     bool globalDisabled:1;
     bool selectable:1;
     bool draggable:1;
+    bool ready:1;
     QSet<int> selectedList;
     QList< QPointer<QQuickFlickable> > flickables;
     QList< PropertyChange* > changes;

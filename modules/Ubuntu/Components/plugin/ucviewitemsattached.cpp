@@ -22,7 +22,9 @@
 #include "quickutils.h"
 #include "i18n.h"
 #include "uclistitemstyle.h"
+#include "privates/listitemdragarea.h"
 #include <QtQuick/private/qquickflickable_p.h>
+#include <QtQml/private/qqmlcomponentattached_p.h>
 #include <QtQml/QQmlInfo>
 
 /*!
@@ -97,9 +99,11 @@
 UCViewItemsAttachedPrivate::UCViewItemsAttachedPrivate(UCViewItemsAttached *qq)
     : q_ptr(qq)
     , listView(0)
+    , dragArea(0)
     , globalDisabled(false)
     , selectable(false)
     , draggable(false)
+    , ready(false)
 {
 }
 
@@ -114,9 +118,12 @@ void UCViewItemsAttachedPrivate::clearFlickablesList()
 {
     Q_Q(UCViewItemsAttached);
     Q_FOREACH(const QPointer<QQuickFlickable> &flickable, flickables) {
-        if (flickable.data())
-        QObject::disconnect(flickable.data(), &QQuickFlickable::movementStarted,
-                            q, &UCViewItemsAttached::unbindItem);
+        if (flickable.data()) {
+            QObject::disconnect(flickable.data(), &QQuickFlickable::movementStarted,
+                                q, &UCViewItemsAttached::unbindItem);
+            QObject::disconnect(flickable.data(), &QQuickFlickable::flickStarted,
+                                q, &UCViewItemsAttached::unbindItem);
+        }
     }
     flickables.clear();
 }
@@ -134,6 +141,8 @@ void UCViewItemsAttachedPrivate::buildFlickablesList()
         QQuickFlickable *flickable = qobject_cast<QQuickFlickable*>(item);
         if (flickable) {
             QObject::connect(flickable, &QQuickFlickable::movementStarted,
+                             q, &UCViewItemsAttached::unbindItem);
+            QObject::connect(flickable, &QQuickFlickable::flickStarted,
                              q, &UCViewItemsAttached::unbindItem);
             flickables << flickable;
         }
@@ -186,6 +195,9 @@ UCViewItemsAttached::UCViewItemsAttached(QObject *owner)
     if (owner->inherits("QQuickListView")) {
         d_ptr->listView = static_cast<QQuickFlickable*>(owner);
     }
+    // listen readyness
+    QQmlComponentAttached *attached = QQmlComponent::qmlAttachedProperties(owner);
+    connect(attached, &QQmlComponentAttached::completed, this, &UCViewItemsAttached::completed);
 }
 
 UCViewItemsAttached::~UCViewItemsAttached()
@@ -282,6 +294,18 @@ void UCViewItemsAttached::unbindItem()
     }
     // clear binding list
     d->clearFlickablesList();
+}
+
+// reports completion, and in case the dragMode is turned on, enters drag mode
+void UCViewItemsAttached::completed()
+{
+    Q_D(UCViewItemsAttached);
+    d->ready = true;
+    if (d->draggable) {
+        d->enterDragMode();
+    } else {
+        d->leaveDragMode();
+    }
 }
 
 /*!
@@ -558,5 +582,82 @@ void UCViewItemsAttached::setDragMode(bool value)
         }
     }
     d->draggable = value;
+    if (d->draggable) {
+        d->enterDragMode();
+    } else {
+        d->leaveDragMode();
+    }
     Q_EMIT dragModeChanged();
+}
+
+void UCViewItemsAttachedPrivate::enterDragMode()
+{
+    if (dragArea) {
+        dragArea->reset();
+        return;
+    }
+    dragArea = new ListItemDragArea(listView);
+    dragArea->init();
+}
+
+void UCViewItemsAttachedPrivate::leaveDragMode()
+{
+    if (dragArea) {
+        dragArea->setEnabled(false);
+    }
+}
+
+// returns true when the draggingStarted signal handler is implemented or a function is connected to it
+bool UCViewItemsAttachedPrivate::isDraggingStartedConnected()
+{
+    Q_Q(UCViewItemsAttached);
+    static QMetaMethod method = QMetaMethod::fromSignal(&UCViewItemsAttached::draggingStarted);
+    static int signalIdx = QMetaObjectPrivate::signalIndex(method);
+    return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
+}
+
+// returns true when the draggingUpdated signal handler is implemented or a function is connected to it
+bool UCViewItemsAttachedPrivate::isDraggingUpdatedConnected()
+{
+    Q_Q(UCViewItemsAttached);
+    static QMetaMethod method = QMetaMethod::fromSignal(&UCViewItemsAttached::draggingUpdated);
+    static int signalIdx = QMetaObjectPrivate::signalIndex(method);
+    return QObjectPrivate::get(q)->isSignalConnected(signalIdx);
+}
+
+// updates the selected indices list in ViewAttached which is changed due to dragging
+void UCViewItemsAttachedPrivate::updateSelectedIndices(int fromIndex, int toIndex)
+{
+    if (selectedList.count() == listView->property("count").toInt()) {
+        // all indices selected, no need to reorder
+        return;
+    }
+
+    Q_Q(UCViewItemsAttached);
+    bool isFromSelected = selectedList.contains(fromIndex);
+    if (isFromSelected) {
+        selectedList.remove(fromIndex);
+        Q_EMIT q->selectedIndicesChanged();
+    }
+    // direction is -1 (forwards) or 1 (backwards)
+    int direction = (fromIndex < toIndex) ? -1 : 1;
+    int i = (direction < 0) ? fromIndex + 1 : fromIndex - 1;
+    // loop thru the selectedIndices and fix all indices
+    while (1) {
+        if (((direction < 0) && (i > toIndex)) ||
+            ((direction > 0) && (i < toIndex))) {
+            break;
+        }
+
+        if (selectedList.contains(i)) {
+            selectedList.remove(i);
+            selectedList.insert(i + direction);
+            Q_EMIT q->selectedIndicesChanged();
+        }
+        i -= direction;
+    }
+    if (isFromSelected) {
+        selectedList.insert(toIndex);
+        Q_EMIT q->selectedIndicesChanged();
+    }
 }

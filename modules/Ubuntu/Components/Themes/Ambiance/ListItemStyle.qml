@@ -144,6 +144,7 @@ Styles.ListItemStyle {
 
             states: State {
                 name: "animate-opacity"
+                when: styledItem.selectable
                 PropertyChanges {
                     target: selectPanel
                     opacity: 1.0
@@ -372,6 +373,10 @@ Styles.ListItemStyle {
             to = pos;
             start();
         }
+    }
+
+    dropAnimation: UbuntuNumberAnimation {
+        properties: "y"
     }
 
     onXChanged: internals.updateSnapDirection()

@@ -38,6 +38,7 @@
 UCListItemStyle::UCListItemStyle(QQuickItem *parent)
     : QQuickItem(parent)
     , m_snapAnimation(0)
+    , m_dropAnimation(0)
     , m_animatePanels(true)
 {
 }
@@ -140,3 +141,8 @@ void UCListItemStyle::setAnimatePanels(bool animate)
     m_animatePanels = animate;
     Q_EMIT animatePanelsChanged();
 }
+
+/*!
+ * \qmlproperty PropertyAnimation ListItemStyle::dropAnimation
+ * The property holds the animation executed on ListItem dropping.
+ */
