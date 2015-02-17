@@ -941,7 +941,7 @@ plugins.qmltypes
     Property { name: "color"; type: "QColor" }
     Property { name: "highlightColor"; type: "QColor" }
     Property { name: "dragging"; type: "bool"; isReadonly: true }
-    Property { name: "draggable"; type: "bool"; isReadonly: true }
+    Property { name: "draggable"; type: "bool" }
     Property { name: "selected"; type: "bool" }
     Property { name: "selectable"; type: "bool"; isReadonly: true }
     Property { name: "action"; type: "UCAction"; isPointer: true }
@@ -967,6 +967,7 @@ plugins.qmltypes
     prototype: "QQuickItem"
     exports: ["Ubuntu.Components.Styles/ListItemStyle 1.2"]
     Property { name: "snapAnimation"; type: "QQuickAbstractAnimation"; isPointer: true }
+    Property { name: "dropAnimation"; type: "QQuickPropertyAnimation"; isPointer: true }
     Property { name: "animatePanels"; type: "bool"; isReadonly: true }
     Method {
     name: "swipeEvent"

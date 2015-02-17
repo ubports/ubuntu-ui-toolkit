@@ -37,7 +37,7 @@ class UCListItem : public UCStyledItemBase
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(QColor highlightColor READ highlightColor WRITE setHighlightColor RESET resetHighlightColor NOTIFY highlightColorChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool dragging READ dragging NOTIFY draggingChanged)
-    Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool draggable READ isDraggable NOTIFY draggableChanged)
+    Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool draggable READ isDraggable WRITE setDraggable NOTIFY draggableChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool selected READ isSelected WRITE setSelected NOTIFY selectedChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), bool selectable READ isSelectable NOTIFY selectableChanged)
     Q_PRIVATE_PROPERTY(UCListItem::d_func(), UCAction *action READ action WRITE setAction NOTIFY actionChanged DESIGNABLE false)

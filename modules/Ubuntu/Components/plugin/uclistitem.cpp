@@ -1407,7 +1407,6 @@ bool UCListItemPrivate::dragging()
 
 /*!
  * \qmlproperty bool ListItem::draggable
- * \readonly
  * The property reports whether a ListItem is draggable or not. While in drag mode,
  * the list item content cannot be swiped. The default value is false.
  */
@@ -1415,6 +1414,12 @@ bool UCListItemPrivate::isDraggable()
 {
     UCViewItemsAttachedPrivate *attached = UCViewItemsAttachedPrivate::get(parentAttached);
     return attached ? attached->draggable : false;
+}
+void UCListItemPrivate::setDraggable(bool draggable)
+{
+    if (parentAttached) {
+        parentAttached->setDragMode(draggable);
+    }
 }
 
 /*!
