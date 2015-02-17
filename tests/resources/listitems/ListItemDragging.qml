@@ -29,7 +29,7 @@ MainView {
             anchors.fill: parent
             ViewItems.selectMode: ViewItems.dragMode
             ViewItems.onDraggingUpdated: {
-                if (event.direction == ListItemDrag.None) {
+                if (event.direction == ListItemDrag.Steady) {
                     model.move(event.from, event.to, 1);
                     print("move", event.from, event.to)
                 } else {

@@ -47,6 +47,7 @@ private:
     UCViewItemsAttached *viewAttached;
     QPointF lastPos;
     UCDragEvent::Direction direction;
+    UCDragEvent::Direction scrollDirection;
     int fromIndex, toIndex, min, max;
 
     QPointF mapDragAreaPos();

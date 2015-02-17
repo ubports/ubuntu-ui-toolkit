@@ -34,6 +34,7 @@ ListItemDragHandler::ListItemDragHandler(UCListItem *baseItem, UCListItem *listI
 
 ListItemDragHandler::~ListItemDragHandler()
 {
+    // make sure the property change object is deleted
     delete baseVisible;
 }
 
@@ -49,6 +50,7 @@ void ListItemDragHandler::init()
     Q_EMIT listItem->draggingChanged();
 }
 
+// handles drop gesture animated if the style has animation defined for it
 void ListItemDragHandler::drop()
 {
     QQuickPropertyAnimation *animation = UCListItemPrivate::get(listItem)->styleItem->m_dropAnimation;
@@ -56,7 +58,7 @@ void ListItemDragHandler::drop()
         // complete any previous animation
         animation->complete();
 
-        connect(animation, &QQuickAbstractAnimation::stop,
+        connect(animation, &QQuickAbstractAnimation::stopped,
                 this, &ListItemDragHandler::dropItem, Qt::DirectConnection);
         // force properties to contain only the 'y' coordinate
         animation->setProperties("y");
@@ -73,9 +75,9 @@ void ListItemDragHandler::drop()
 void ListItemDragHandler::dropItem()
 {
     listItem->setVisible(false);
+    listItem->deleteLater();
     delete baseVisible;
     baseVisible = 0;
-    listItem->deleteLater();
 }
 
 // update dragged item with the new target item the dragging is hovered over

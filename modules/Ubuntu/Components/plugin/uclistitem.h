@@ -196,7 +196,7 @@ class UCDragEvent : public QObject
     Q_ENUMS(Direction)
 public:
     enum Direction {
-        None        = 0x00,
+        Steady      = 0x00,
         Upwards     = 0x01,
         Downwards   = 0x02
     };

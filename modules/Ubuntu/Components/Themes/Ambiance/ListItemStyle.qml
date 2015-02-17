@@ -375,9 +375,7 @@ Styles.ListItemStyle {
         }
     }
 
-    dropAnimation: UbuntuNumberAnimation {
-        properties: "y"
-    }
+    dropAnimation: UbuntuNumberAnimation { properties: "y" }
 
     onXChanged: internals.updateSnapDirection()
     // overriding default functions

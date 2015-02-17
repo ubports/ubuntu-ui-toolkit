@@ -52,7 +52,7 @@
  * The property specifies the direction of the drag. Its value depends on the
  * signal triggered and can be one of the following:
  * \list
- *  \li \c ListItemDrag.None - no drag, value set when \l ViewItems::draggingStarted
+ *  \li \c ListItemDrag.Steady - no drag, value set when \l ViewItems::draggingStarted
  *         signal is emitted or when the \l ViewItems::draggingUpdated signal
  *         identifies a drop gesture.
  *  \li \c ListItemDrag.Upwards - the drag is proceeded upwards in the ListView
@@ -519,7 +519,7 @@ bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
  * }
  * \endqml
  *
- * \c event.direction set to \e ListItemDrag.None means the signal is sent as a
+ * \c event.direction set to \e ListItemDrag.Steady means the signal is sent as a
  * result of a drop operation, and this was the last update signal emitted. The
  * following sample shows how to implement list reordering when dropping the item
  * (non-live update).
@@ -539,7 +539,7 @@ bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
  *
  *    ViewItems.dragMode: true
  *    ViewItems.onDraggingUpdated: {
- *        if (event.direction == ListItemDrag.None) {
+ *        if (event.direction == ListItemDrag.Steady) {
  *            // this is the last event, so drop the item
  *            model.move(event.from, event.to, 1);
  *        } else {

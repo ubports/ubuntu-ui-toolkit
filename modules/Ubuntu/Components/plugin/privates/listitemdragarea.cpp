@@ -35,14 +35,14 @@ ListItemDragArea::ListItemDragArea(QQuickItem *parent)
     : QQuickMouseArea(parent)
     , listView(static_cast<QQuickFlickable*>(parent))
     , viewAttached(0)
-    , direction(UCDragEvent::None)
+    , direction(UCDragEvent::Steady)
+    , scrollDirection(UCDragEvent::Steady)
     , fromIndex(-1)
     , toIndex(-1)
     , min(-1)
     , max(-1)
 {
     connect(this, SIGNAL(pressed(QQuickMouseEvent*)), this, SLOT(startDragging(QQuickMouseEvent*)), Qt::DirectConnection);
-//    connect(this, SIGNAL(pressAndHold(QQuickMouseEvent*)), this, SLOT(startDragging(QQuickMouseEvent*)), Qt::DirectConnection);
     connect(this, SIGNAL(released(QQuickMouseEvent*)), this, SLOT(stopDragging(QQuickMouseEvent*)), Qt::DirectConnection);
     connect(this, SIGNAL(positionChanged(QQuickMouseEvent*)), this, SLOT(updateDragging(QQuickMouseEvent*)), Qt::DirectConnection);
 }
@@ -82,14 +82,16 @@ void ListItemDragArea::timerEvent(QTimerEvent *event)
 {
     QQuickMouseArea::timerEvent(event);
     if (event->timerId() == scrollTimer.timerId()) {
-        qreal scrollAmount = UCUnits::instance().gu(0.5) * (direction == UCDragEvent::Upwards ? -1 : 1);
+        qreal scrollAmount = UCUnits::instance().gu(0.5) * (scrollDirection == UCDragEvent::Upwards ? -1 : 1);
         qreal contentHeight = listView->contentHeight();
         qreal height = listView->height();
         if ((contentHeight - height) > 0) {
-            qreal contentY = CLAMP(listView->contentY() + scrollAmount, 0, contentHeight - height + listView->originY());
+            // take topMargin into account when clamping
+            qreal contentY = CLAMP(listView->contentY() + scrollAmount,
+                                   -listView->topMargin(),
+                                   contentHeight - height + listView->originY());
             listView->setContentY(contentY);
             // update
-            scrollTimer.stop();
             updateDragging(0);
         }
     }
@@ -117,7 +119,7 @@ void ListItemDragArea::startDragging(QQuickMouseEvent *event)
     // call start handler if implemented
     UCViewItemsAttachedPrivate *pViewAttached = UCViewItemsAttachedPrivate::get(viewAttached);
     if (pViewAttached->isDraggingStartedConnected()) {
-        UCDragEvent drag(UCDragEvent::None, index, -1, -1, -1);
+        UCDragEvent drag(UCDragEvent::Steady, index, -1, -1, -1);
         Q_EMIT viewAttached->draggingStarted(&drag);
         start = drag.m_accept;
         min = drag.m_minimum;
@@ -132,7 +134,7 @@ void ListItemDragArea::startDragging(QQuickMouseEvent *event)
     }
 }
 
-// stops dragging, performs drop event (event.direction = ListItemDrag.None)
+// stops dragging, performs drop event (event.direction = ListItemDrag.Steady)
 // and clears temporary item
 void ListItemDragArea::stopDragging(QQuickMouseEvent *event)
 {
@@ -144,7 +146,7 @@ void ListItemDragArea::stopDragging(QQuickMouseEvent *event)
     scrollTimer.stop();
     UCViewItemsAttachedPrivate *pViewAttached = UCViewItemsAttachedPrivate::get(viewAttached);
     if (pViewAttached->isDraggingUpdatedConnected() && (fromIndex != toIndex)) {
-        UCDragEvent drag(UCDragEvent::None, fromIndex, toIndex, min, max);
+        UCDragEvent drag(UCDragEvent::Steady, fromIndex, toIndex, min, max);
         Q_EMIT viewAttached->draggingUpdated(&drag);
         updateDraggedItem();
         if (drag.m_accept) {
@@ -186,28 +188,25 @@ void ListItemDragArea::updateDragging(QQuickMouseEvent *event)
         return;
     }
 
-    // should we scroll the view? use a margin of 20% of teh dragger item's height from top and bottom of the item
+    // should we scroll the view? use a margin of 20% of the dragged item's height from top and bottom of the item
     qreal scrollMargin = item->height() * 0.2;
     qreal topHotspot = item->y() + scrollMargin - listView->contentY();
     qreal bottomHotspot = item->y() + item->height() - scrollMargin - listView->contentY();
     // use MouseArea's top/bottom as limits
     qreal topViewMargin = y() + listView->topMargin();
     qreal bottomViewMargin = y() + height() - listView->bottomMargin();
+    scrollDirection = UCDragEvent::Steady;
     if (topHotspot < topViewMargin) {
         // scroll upwards
-        direction = UCDragEvent::Upwards;
-        if (!scrollTimer.isActive()) {
-            scrollTimer.start(DRAG_SCROLL_TIMEOUT, this);
-        }
+        scrollDirection = UCDragEvent::Upwards;
     } else if (bottomHotspot > bottomViewMargin) {
         // scroll downwards
-        direction = UCDragEvent::Downwards;
-        if (!scrollTimer.isActive()) {
-            scrollTimer.start(DRAG_SCROLL_TIMEOUT, this);
-        }
-    } else if (scrollTimer.isActive()){
-        // stop drag timer
+        scrollDirection = UCDragEvent::Downwards;
+    }
+    if (scrollDirection == UCDragEvent::Steady) {
         scrollTimer.stop();
+    } else if (!scrollTimer.isActive()){
+        scrollTimer.start(DRAG_SCROLL_TIMEOUT, this);
     }
 
     // do we have index change?
