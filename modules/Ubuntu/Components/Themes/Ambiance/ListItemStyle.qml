@@ -192,6 +192,7 @@ Styles.ListItemStyle {
                     from: ""
                     to: "*"
                     reversible: true
+                    enabled: listItemStyle.animatePanels
                     OpacityAnimator {
                         easing: UbuntuAnimation.StandardEasing
                         duration: UbuntuAnimation.FastDuration

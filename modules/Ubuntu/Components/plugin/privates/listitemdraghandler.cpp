@@ -44,7 +44,6 @@ void ListItemDragHandler::init()
     // position the item and show it
     listItem->setPosition(baseItem->position());
     listItem->setZ(2);
-    listItem->setOpacity(0.5);
     listItem->setVisible(true);
     // emit draggingChanged() signal
     Q_EMIT listItem->draggingChanged();
