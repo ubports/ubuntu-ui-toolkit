@@ -199,7 +199,7 @@ Ubuntu.StyledItem {
                 var dy = dragger.dragStartY + dragger.dragAmountY + handler.flickable.contentY;
                 dx -= handler.frameDistance.x;
                 dy -= handler.frameDistance.y;
-                dy += (positionProperty == "selectionStart" ? 1 : -1) * caret.height / 2;
+                dy -= draggedItem.height / 2;
                 handler.positionCaret(positionProperty, dx, dy);
             }
         }
