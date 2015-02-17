@@ -26,9 +26,21 @@ Item {
 
     Column {
         spacing: units.gu(1)
+        Label {
+            text: "Text fields are awesome"
+            width: parent.width
+            height: units.gu(10)
+            verticalAlignment: Text.AlignVCenter
+        }
         TextField {
             id: textField
             text: "This is a single line text input called TextField."
+        }
+        Label {
+            text: "Text areas are even more amazing"
+            width: parent.width
+            height: units.gu(5)
+            verticalAlignment: Text.AlignVCenter
         }
         TextArea {
             id: textArea
