@@ -80,6 +80,8 @@ Q_SIGNALS:
     void dropAnimationChanged();
     void animatePanelsChanged();
 
+    void dragAreaUpdated(QQuickItem *panel);
+
 public Q_SLOTS:
     void swipeEvent(UCSwipeEvent *event);
     void rebound();

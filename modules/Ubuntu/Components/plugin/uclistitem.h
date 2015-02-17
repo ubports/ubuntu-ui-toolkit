@@ -166,6 +166,7 @@ public:
     void setSelectedIndices(const QList<int> &list);
     bool dragMode() const;
     void setDragMode(bool value);
+
 private Q_SLOTS:
     void unbindItem();
     void completed();
@@ -180,6 +181,7 @@ Q_SIGNALS:
 
 private:
     Q_DECLARE_PRIVATE(UCViewItemsAttached)
+    Q_PRIVATE_SLOT(d_func(), void _q_setDragAreaPosition(QQuickItem *panel))
     QScopedPointer<UCViewItemsAttachedPrivate> d_ptr;
 };
 QML_DECLARE_TYPEINFO(UCViewItemsAttached, QML_HAS_ATTACHED_PROPERTIES)

@@ -194,6 +194,7 @@ UCViewItemsAttached::UCViewItemsAttached(QObject *owner)
 {
     if (owner->inherits("QQuickListView")) {
         d_ptr->listView = static_cast<QQuickFlickable*>(owner);
+//        d_ptr->dragAreaRect = QRectF(d_ptr->listView->position(), QSizeF(d_ptr->listView->width(), d_ptr->listView->height()));
     }
     // listen readyness
     QQmlComponentAttached *attached = QQmlComponent::qmlAttachedProperties(owner);
@@ -305,6 +306,34 @@ void UCViewItemsAttached::completed()
         d->enterDragMode();
     } else {
         d->leaveDragMode();
+    }
+}
+
+// set the drag area so we can position the handler accordingly
+void UCViewItemsAttachedPrivate::watchDragAreaPosition(UCListItemStyle *styleItem)
+{
+    Q_Q(UCViewItemsAttached);
+    QObject::connect(styleItem, SIGNAL(dragAreaUpdated(QQuickItem*)),
+            q, SLOT(_q_setDragAreaPosition(QQuickItem*)));
+}
+
+void UCViewItemsAttachedPrivate::_q_setDragAreaPosition(QQuickItem *panel)
+{
+    if (listView) {
+        QPointF mappedPos = listView->mapFromItem(panel, panel->position());
+        bool updated = false;
+        if (mappedPos.x() != dragAreaRect.x()) {
+            dragAreaRect.setX(mappedPos.x());
+            updated = true;
+        }
+        if (panel->width() != dragAreaRect.width()) {
+            dragAreaRect.setWidth(panel->width());
+            updated = true;
+        }
+        if (dragArea && updated) {
+            // update anchors
+            dragArea->updateArea(dragAreaRect);
+        }
     }
 }
 
@@ -597,7 +626,7 @@ void UCViewItemsAttachedPrivate::enterDragMode()
         return;
     }
     dragArea = new ListItemDragArea(listView);
-    dragArea->init();
+    dragArea->init(dragAreaRect);
 }
 
 void UCViewItemsAttachedPrivate::leaveDragMode()

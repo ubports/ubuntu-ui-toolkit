@@ -146,3 +146,11 @@ void UCListItemStyle::setAnimatePanels(bool animate)
  * \qmlproperty PropertyAnimation ListItemStyle::dropAnimation
  * The property holds the animation executed on ListItem dropping.
  */
+
+/*!
+ * \qmlsignal ListItemStyle::dragAreaUpdated(Item panel)
+ * The signal is expected to be emitted by the styles whenever the drag panel is
+ * created, informing the dragging mechanism about the area the dragging is expected
+ * to be sensed. The area can be a portion of the ListItem or the entire area.
+ * The default is the entire ListItem area.
+ */

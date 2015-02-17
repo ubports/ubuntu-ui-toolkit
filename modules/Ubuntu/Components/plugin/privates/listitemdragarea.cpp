@@ -47,14 +47,10 @@ ListItemDragArea::ListItemDragArea(QQuickItem *parent)
     connect(this, SIGNAL(positionChanged(QQuickMouseEvent*)), this, SLOT(updateDragging(QQuickMouseEvent*)), Qt::DirectConnection);
 }
 
-void ListItemDragArea::init()
+void ListItemDragArea::init(const QRectF &area)
 {
     setParentItem(static_cast<QQuickItem*>(parent()));
-    QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
-    QQuickItemPrivate *view = QQuickItemPrivate::get(parentItem());
-    anchors->setTop(view->top());
-    anchors->setBottom(view->bottom());
-    anchors->setRight(view->right());
+    updateArea(area);
 
     // handle default width
     connect(&UCUnits::instance(), &UCUnits::gridUnitChanged, this, &ListItemDragArea::updateWidth);
@@ -67,6 +63,17 @@ void ListItemDragArea::init()
         qmlInfo(parentItem()) << UbuntuI18n::instance().tr(
                                      "ListView has no ViewItems.draggingUpdated() signal handler implemented. "\
                                      "No dragging will be possible");
+    }
+}
+
+void ListItemDragArea::updateArea(const QRectF &area)
+{
+    QQuickAnchors *anchors = QQuickItemPrivate::get(this)->anchors();
+    anchors->setFill(listView);
+    // set the margins based on the area
+    anchors->setLeftMargin(area.left());
+    if (area.right() != 0.0) {
+        anchors->setRightMargin(listView->width() - area.right());
     }
 }
 

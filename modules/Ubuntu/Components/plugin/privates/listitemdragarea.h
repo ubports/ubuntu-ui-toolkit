@@ -28,7 +28,8 @@ class ListItemDragArea : public QQuickMouseArea
     Q_OBJECT
 public:
     explicit ListItemDragArea(QQuickItem *parent = 0);
-    void init();
+    void init(const QRectF &area);
+    void updateArea(const QRectF &area);
     void reset();
 
 protected:

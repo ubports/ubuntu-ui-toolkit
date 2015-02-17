@@ -166,9 +166,9 @@ Styles.ListItemStyle {
     Component {
         id: dragDelegate
         Item {
+            id: dragPanel
             objectName: "draghandler_panel" + index
             anchors.fill: parent ? parent : undefined
-
             Icon {
                 objectName: "icon"
                 id: dragIcon
@@ -178,34 +178,38 @@ Styles.ListItemStyle {
                 name: "view-grid-symbolic"
                 opacity: 0.0
                 scale: 0.5
-
-                states: State {
-                    name: "enabled"
-                    when: loaded
-                    PropertyChanges {
-                        target: dragIcon
-                        opacity: 1.0
-                        scale: 1.0
-                    }
+            }
+            states: State {
+                name: "enabled"
+                when: loaded
+                // inform ViewItems about the drag area position in a ListItem
+                StateChangeScript {
+                    script: listItemStyle.dragAreaUpdated(dragPanel)
                 }
-                transitions: Transition {
-                    from: ""
-                    to: "*"
-                    reversible: true
-                    enabled: listItemStyle.animatePanels
-                    OpacityAnimator {
-                        easing: UbuntuAnimation.StandardEasing
-                        duration: UbuntuAnimation.FastDuration
-                    }
-                    ScaleAnimator {
-                        easing: UbuntuAnimation.StandardEasing
-                        duration: UbuntuAnimation.FastDuration
-                    }
+                PropertyChanges {
+                    target: dragIcon
+                    opacity: 1.0
+                    scale: 1.0
+                }
+            }
+            transitions: Transition {
+                from: ""
+                to: "*"
+                reversible: true
+                enabled: listItemStyle.animatePanels
+                ParallelAnimation {
+                OpacityAnimator {
+                    easing: UbuntuAnimation.StandardEasing
+                    duration: UbuntuAnimation.FastDuration
+                }
+                ScaleAnimator {
+                    easing: UbuntuAnimation.StandardEasing
+                    duration: UbuntuAnimation.FastDuration
+                }
                 }
             }
         }
     }
-
 
     // leading panel loader
     Loader {
@@ -376,6 +380,7 @@ Styles.ListItemStyle {
         }
     }
 
+    // simple drop animation
     dropAnimation: UbuntuNumberAnimation { properties: "y" }
 
     onXChanged: internals.updateSnapDirection()

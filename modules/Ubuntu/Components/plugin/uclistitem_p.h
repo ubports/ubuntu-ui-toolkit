@@ -131,6 +131,9 @@ public:
         return item ? item->d_func() : 0;
     }
 
+    void watchDragAreaPosition(UCListItemStyle *styleItem);
+    void _q_setDragAreaPosition(QQuickItem *panel);
+
     void clearFlickablesList();
     void buildFlickablesList();
     void clearChangesList();
@@ -147,6 +150,7 @@ public:
     UCViewItemsAttached *q_ptr;
     QQuickFlickable *listView;
     ListItemDragArea *dragArea;
+    QRectF dragAreaRect;
     bool globalDisabled:1;
     bool selectable:1;
     bool draggable:1;
