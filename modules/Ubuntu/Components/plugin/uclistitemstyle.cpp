@@ -148,9 +148,9 @@ void UCListItemStyle::setAnimatePanels(bool animate)
  */
 
 /*!
- * \qmlsignal ListItemStyle::dragAreaUpdated(Item panel)
- * The signal is expected to be emitted by the styles whenever the drag panel is
- * created, informing the dragging mechanism about the area the dragging is expected
- * to be sensed. The area can be a portion of the ListItem or the entire area.
- * The default is the entire ListItem area.
+ * \qmlproperty Item ListItemStyle::dragPanel
+ * The property informs the ListItem about the area the drag handler panel is
+ * placed. The ListItem will use this item to detect where the dragging is initiated.
+ * If not set, the ListItem will assume the dragging can be initiated from the
+ * entire area of the ListItem.
  */

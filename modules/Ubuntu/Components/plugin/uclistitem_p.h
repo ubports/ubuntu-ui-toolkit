@@ -107,8 +107,8 @@ public:
     void initStyleItem(bool withAnimatedPanels = true);
     QQuickItem *styleInstance() const;
     bool dragging();
-    bool isDraggable();
-    void setDraggable(bool draggable);
+    bool dragMode();
+    void setDragMode(bool draggable);
     bool isSelected();
     void setSelected(bool value);
     bool isSelectable();
@@ -132,7 +132,7 @@ public:
     }
 
     void watchDragAreaPosition(UCListItemStyle *styleItem);
-    void _q_setDragAreaPosition(QQuickItem *panel);
+    void _q_setDragAreaPosition(QQuickItem *panel = 0);
 
     void clearFlickablesList();
     void buildFlickablesList();

@@ -181,11 +181,7 @@ Styles.ListItemStyle {
             }
             states: State {
                 name: "enabled"
-                when: loaded
-                // inform ViewItems about the drag area position in a ListItem
-                StateChangeScript {
-                    script: listItemStyle.dragAreaUpdated(dragPanel)
-                }
+                when: loaded && styledItem.dragMode
                 PropertyChanges {
                     target: dragIcon
                     opacity: 1.0
@@ -279,7 +275,7 @@ Styles.ListItemStyle {
         // panel states
         states: State {
             name: "draggable"
-            when: styledItem.draggable
+            when: styledItem.dragMode
             PropertyChanges {
                 target: trailingLoader
                 sourceComponent: dragDelegate
@@ -307,6 +303,7 @@ Styles.ListItemStyle {
             }
         }
     }
+    dragPanel: trailingLoader.item
 
     // internals
     QtObject {

@@ -314,11 +314,12 @@ void UCListItemPrivate::_q_syncSelectMode()
     Q_EMIT q->selectableChanged();
 }
 
+// same for the dragMode
 void UCListItemPrivate::_q_syncDragMode()
 {
     initStyleItem();
     Q_Q(UCListItem);
-    Q_EMIT q->draggableChanged();
+    Q_EMIT q->dragModeChanged();
 }
 
 /*!
@@ -1410,16 +1411,16 @@ bool UCListItemPrivate::dragging()
 }
 
 /*!
- * \qmlproperty bool ListItem::draggable
+ * \qmlproperty bool ListItem::dragMode
  * The property reports whether a ListItem is draggable or not. While in drag mode,
  * the list item content cannot be swiped. The default value is false.
  */
-bool UCListItemPrivate::isDraggable()
+bool UCListItemPrivate::dragMode()
 {
     UCViewItemsAttachedPrivate *attached = UCViewItemsAttachedPrivate::get(parentAttached);
     return attached ? attached->draggable : false;
 }
-void UCListItemPrivate::setDraggable(bool draggable)
+void UCListItemPrivate::setDragMode(bool draggable)
 {
     if (parentAttached) {
         parentAttached->setDragMode(draggable);
