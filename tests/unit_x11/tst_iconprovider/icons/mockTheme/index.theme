@@ -1,6 +1,5 @@
 [Icon Theme]
 Name=MockTheme
-Inherits=hicolor
 
 Directories=actions/scalable,apps/512
 
