@@ -164,26 +164,16 @@ private:
 
     QPixmap lookupIcon(const QString &iconName, const QSize &size)
     {
-        QString bestFilename;
-        QSize sizeToLoad;
-
         const int iconSize = qMax(size.width(), size.height());
-        if (iconSize > 0) {
-            bestFilename = lookupBestMatchingIcon(iconName, size);
-            sizeToLoad = size;
-        } else {
-            int maxSize;
-            bestFilename = lookupLargestIcon(iconName, &maxSize);
-            sizeToLoad = QSize(maxSize, maxSize);
-        }
-
-        if (!bestFilename.isNull())
-            return loadIcon(bestFilename, sizeToLoad);
+        if (iconSize > 0)
+            return lookupBestMatchingIcon(iconName, size);
+        else
+            return lookupLargestIcon(iconName);
 
         return QPixmap();
     }
 
-    QString lookupBestMatchingIcon(const QString &iconName, const QSize &size)
+    QPixmap lookupBestMatchingIcon(const QString &iconName, const QSize &size)
     {
         int minDistance = 10000;
         QString bestFilename;
@@ -204,27 +194,33 @@ private:
             }
         }
 
-        return bestFilename;
+        if (!bestFilename.isNull())
+            return loadIcon(bestFilename, size);
+
+        return QPixmap();
     }
 
-    QString lookupLargestIcon(const QString &iconName, int *maxSize)
+    QPixmap lookupLargestIcon(const QString &iconName)
     {
-        *maxSize = 0;
+        int maxSize = 0;
         QString bestFilename;
 
         Q_FOREACH(const Directory &dir, directories) {
             int size = dir.sizeType == Scalable ? dir.maxSize : dir.size;
-            if (size < *maxSize)
+            if (size < maxSize)
                 continue;
 
             QString filename = lookupIconFile(dir.path, iconName);
             if (!filename.isNull()) {
-                *maxSize = size;
+                maxSize = size;
                 bestFilename = filename;
             }
         }
 
-        return bestFilename;
+        if (!bestFilename.isNull())
+            return loadIcon(bestFilename, QSize(maxSize, maxSize));
+
+        return QPixmap();
     }
 
     int directorySizeDistance(const Directory &dir, const QSize &size)

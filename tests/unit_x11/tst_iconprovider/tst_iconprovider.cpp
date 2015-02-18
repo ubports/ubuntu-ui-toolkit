@@ -31,7 +31,6 @@ private Q_SLOTS:
     void initTestCase()
     {
         qputenv("XDG_DATA_DIRS", SRCDIR);
-        qDebug() << QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
     }
 
     void test_loadIcon_data()
