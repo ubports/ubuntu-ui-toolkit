@@ -169,8 +169,6 @@ private:
             return lookupBestMatchingIcon(iconName, size);
         else
             return lookupLargestIcon(iconName);
-
-        return QPixmap();
     }
 
     QPixmap lookupBestMatchingIcon(const QString &iconName, const QSize &size)
