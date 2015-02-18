@@ -311,7 +311,7 @@ void UCListItemPrivate::_q_syncSelectMode()
 {
     initStyleItem();
     Q_Q(UCListItem);
-    Q_EMIT q->selectableChanged();
+    Q_EMIT q->selectModeChanged();
 }
 
 // same for the dragMode
@@ -1074,7 +1074,7 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     Q_D(UCListItem);
     UCStyledItemBase::mouseMoveEvent(event);
 
-    if (d->isSelectable()) {
+    if (d->selectMode()) {
         // no move is allowed while selectable mode is on
         return;
     }
@@ -1450,19 +1450,19 @@ void UCListItemPrivate::setSelected(bool value)
 }
 
 /*!
- * \qmlproperty bool ListItem::selectable
+ * \qmlproperty bool ListItem::selectMode
  * The property reports whether the component and the view using the component
  * is in selectable state. While selectable, the ListItem's leading- and trailing
  * panels cannot be swiped in. \l clicked and \l pressAndHold signals are also
  * triggered. Selectable mode can be set either through this property or through
  * the parent attached \l ViewItems::selectMode property.
  */
-bool UCListItemPrivate::isSelectable()
+bool UCListItemPrivate::selectMode()
 {
     UCViewItemsAttachedPrivate *attached = UCViewItemsAttachedPrivate::get(parentAttached);
     return attached ? attached->selectable : false;
 }
-void UCListItemPrivate::setSelectable(bool selectable)
+void UCListItemPrivate::setSelectMode(bool selectable)
 {
     if (parentAttached) {
         parentAttached->setSelectMode(selectable);

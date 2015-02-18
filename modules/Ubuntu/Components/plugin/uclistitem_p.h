@@ -111,8 +111,8 @@ public:
     void setDragMode(bool draggable);
     bool isSelected();
     void setSelected(bool value);
-    bool isSelectable();
-    void setSelectable(bool selectable);
+    bool selectMode();
+    void setSelectMode(bool selectable);
     UCAction *action() const;
     void setAction(UCAction *action);
 };

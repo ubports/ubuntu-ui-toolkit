@@ -144,7 +144,7 @@ Styles.ListItemStyle {
 
             states: State {
                 name: "enabled"
-                when: loaded
+                when: loaded && styledItem.selectMode
                 PropertyChanges {
                     target: checkbox
                     opacity: 1.0
@@ -227,7 +227,7 @@ Styles.ListItemStyle {
         states: [
             State {
                 name: "selectable"
-                when: styledItem.selectable
+                when: styledItem.selectMode
                 PropertyChanges {
                     target: leadingLoader
                     sourceComponent: selectionDelegate
@@ -311,7 +311,7 @@ Styles.ListItemStyle {
         // action triggered
         property Action selectedAction
         // swipe handling
-        readonly property bool swiped: listItemStyle.x != styledItem.x && !styledItem.selectable
+        readonly property bool swiped: listItemStyle.x != styledItem.x && !styledItem.selectMode
         readonly property Item swipedPanel: listItemStyle.x > 0 ? leadingLoader.item : trailingLoader.item
         readonly property bool leadingPanel: listItemStyle.x > 0
         readonly property real swipedOffset: leadingPanel ? listItemStyle.x : -listItemStyle.x

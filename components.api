@@ -943,7 +943,7 @@ plugins.qmltypes
     Property { name: "dragging"; type: "bool"; isReadonly: true }
     Property { name: "dragMode"; type: "bool" }
     Property { name: "selected"; type: "bool" }
-    Property { name: "selectable"; type: "bool" }
+    Property { name: "selectMode"; type: "bool" }
     Property { name: "action"; type: "UCAction"; isPointer: true }
     Property { name: "listItemData"; type: "QObject"; isList: true; isReadonly: true }
     Property { name: "listItemChildren"; type: "QQuickItem"; isList: true; isReadonly: true }
