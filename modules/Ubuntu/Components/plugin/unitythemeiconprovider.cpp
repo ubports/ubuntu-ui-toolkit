@@ -48,7 +48,7 @@ public:
     // Does a breadth-first search for an icon with any name in @names. Parent
     // themes are only looked at if the current theme doesn't contain any icon
     // in @names.
-    QPixmap findBestIcon(const QStringList &names, int size)
+    QPixmap findBestIcon(const QStringList &names, const QSize &size)
     {
         Q_FOREACH(const QString &name, names) {
             QPixmap pixmap = lookupIcon(name, size);
@@ -121,18 +121,18 @@ private:
         return Fixed;
     }
 
-    static QPixmap loadIcon(const QString &filename, int size)
+    static QPixmap loadIcon(const QString &filename, const QSize &size)
     {
         QPixmap pixmap;
 
         if (filename.endsWith(".png")) {
             pixmap = QPixmap(filename);
-            if (!pixmap.isNull() && size > 0 && (pixmap.width() != size || pixmap.height() != size))
-                pixmap = pixmap.scaled(size, size, Qt::KeepAspectRatioByExpanding);
+            if (!pixmap.isNull() && !size.isNull() && (pixmap.width() != size.width() || pixmap.height() != size.height()))
+                pixmap = pixmap.scaled(size.width(), size.height(), Qt::KeepAspectRatioByExpanding);
         }
         else if (filename.endsWith(".svg")) {
             QSvgRenderer renderer(filename);
-            pixmap = QPixmap(renderer.defaultSize().scaled(size, size, Qt::KeepAspectRatioByExpanding));
+            pixmap = QPixmap(renderer.defaultSize().scaled(size.width(), size.height(), Qt::KeepAspectRatioByExpanding));
             pixmap.fill(Qt::transparent);
             QPainter painter(&pixmap);
             renderer.render(&painter);
@@ -160,15 +160,16 @@ private:
         return QString();
     }
 
-    QPixmap lookupIcon(const QString &iconName, int size)
+    QPixmap lookupIcon(const QString &iconName, const QSize &size)
     {
-        if (size > 0)
+        const int iconSize = qMax(size.width(), size.height());
+        if (iconSize > 0)
             return lookupBestMatchingIcon(iconName, size);
         else
             return lookupLargestIcon(iconName);
     }
 
-    QPixmap lookupBestMatchingIcon(const QString &iconName, int size)
+    QPixmap lookupBestMatchingIcon(const QString &iconName, const QSize &size)
     {
         int minDistance = 10000;
         QString bestFilename;
@@ -213,22 +214,23 @@ private:
         }
 
         if (!bestFilename.isNull())
-            return loadIcon(bestFilename, maxSize);
+            return loadIcon(bestFilename, QSize(maxSize, maxSize));
 
         return QPixmap();
     }
 
-    int directorySizeDistance(const Directory &dir, int size)
+    int directorySizeDistance(const Directory &dir, const QSize &size)
     {
+        const int iconSize = qMax(size.width(), size.height());
         switch (dir.sizeType) {
             case Fixed:
-                return qAbs(size - dir.size);
+                return qAbs(iconSize - dir.size);
 
             case Scalable:
-                return qAbs(size - qBound(dir.minSize, size, dir.maxSize));
+                return qAbs(iconSize - qBound(dir.minSize, iconSize, dir.maxSize));
 
             case Threshold:
-                return qAbs(size - qBound(dir.size - dir.threshold, size, dir.size + dir.threshold));
+                return qAbs(iconSize - qBound(dir.size - dir.threshold, iconSize, dir.size + dir.threshold));
 
             default:
                 return 10000;
@@ -249,8 +251,7 @@ UnityThemeIconProvider::UnityThemeIconProvider():
 
 QPixmap UnityThemeIconProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
 {
-    int iconSize = qMax(requestedSize.width(), requestedSize.height());
-    QPixmap pixmap = theme->findBestIcon(id.split(",", QString::SkipEmptyParts), iconSize);
+    QPixmap pixmap = theme->findBestIcon(id.split(",", QString::SkipEmptyParts), requestedSize);
     *size = pixmap.size();
     return pixmap;
 }
