@@ -303,12 +303,6 @@ Item {
             movingSpy.wait();
         }
 
-        SignalSpy {
-            id: listViewSpy
-            signalName: "movementStarted"
-            target: listView
-        }
-
         function test_vertical_listview_move_cancels_highlight_mouse() {
             var listItem = findChild(listView, "listItem0");
             verify(listItem, "Cannot find listItem0");
