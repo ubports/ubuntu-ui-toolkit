@@ -871,6 +871,8 @@ ActionItem {
         // the left pane width depends on its children width
         height: parent.height
         width: childrenRect.width
+        // Overlay needs to have priority
+        z: 1
         onChildrenChanged: {
             // reparenting
             for (var i = 0; i < children.length; i++) {
@@ -891,6 +893,8 @@ ActionItem {
         // the right pane width depends on its children width
         height: parent.height
         width: childrenRect.width
+        // Overlay needs to have priority
+        z: 1
         onChildrenChanged: {
             // reparenting
             for (var i = 0; i < children.length; i++) {
