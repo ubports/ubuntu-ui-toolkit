@@ -221,18 +221,18 @@ private:
         return QPixmap();
     }
 
-    int directorySizeDistance(const Directory &dir, const QSize &size)
+    int directorySizeDistance(const Directory &dir, const QSize &iconSize)
     {
-        const int iconSize = qMax(size.width(), size.height());
+        const int size = qMax(iconSize.width(), iconSize.height());
         switch (dir.sizeType) {
             case Fixed:
-                return qAbs(iconSize - dir.size);
+                return qAbs(size - dir.size);
 
             case Scalable:
-                return qAbs(iconSize - qBound(dir.minSize, iconSize, dir.maxSize));
+                return qAbs(size - qBound(dir.minSize, size, dir.maxSize));
 
             case Threshold:
-                return qAbs(iconSize - qBound(dir.size - dir.threshold, iconSize, dir.size + dir.threshold));
+                return qAbs(size - qBound(dir.size - dir.threshold, size, dir.size + dir.threshold));
 
             default:
                 return 10000;
