@@ -259,7 +259,7 @@ Item {
             compare(defaults.style, null, "Style is loaded upon first use.");
             compare(defaults.__styleInstance, null, "__styleInstance must be null.");
             compare(defaults.selected, false, "Not selected by default");
-            compare(defaults.selectable, false, "Not selectable by default");
+            compare(defaults.selectMode, false, "Not selectable by default");
             compare(testColumn.ViewItems.selectMode, false, "The parent attached property is not selectable by default");
             compare(testColumn.ViewItems.selectedIndices.length, 0, "No item is selected by default");
 
@@ -791,13 +791,13 @@ Item {
             waitForRendering(listView, 500);
         }
 
-        function test_toggle_selectable_data() {
+        function test_toggle_selectMode_data() {
             return [
                 {tag: "When not selected", index: 0, selected: false},
                 {tag: "When selected", index: 0, selected: true},
             ]
         }
-        function test_toggle_selectable(data) {
+        function test_toggle_selectMode(data) {
             var listItem = findChild(listView, "listItem" + data.index)
             verify(listItem, "Cannot get test item");
             listItem.selected = data.selected;
