@@ -28,6 +28,12 @@ public:
 
 private Q_SLOTS:
 
+    void initTestCase()
+    {
+        qputenv("XDG_DATA_DIRS", SRCDIR);
+        qDebug() << QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
+    }
+
     void test_loadIcon_data()
     {
         QTest::addColumn<QString>("icon");
@@ -58,35 +64,12 @@ private Q_SLOTS:
         QFETCH(QSize, requestSize);
         QFETCH(QSize, resultSize);
 
-        UnityThemeIconProvider provider;
+        UnityThemeIconProvider provider("mockTheme");
         QSize returnedSize;
         const QPixmap p = provider.requestPixmap(icon, &returnedSize, requestSize);
         QCOMPARE(p.size(), resultSize);
         QCOMPARE(returnedSize, resultSize);
     }
-
-    void test_iconType_data()
-    {
-        QTest::addColumn<QString>("icon");
-        QTest::addColumn<QString>("type");
-
-        QTest::newRow("battery") << "battery-100-charging" << ".svg";
-        QTest::newRow("gallery") << "gallery-app" << ".png";
-    }
-
-    // This is here because we want to be sure that in test_loadIcon we
-    // are testing a svg file and a png file
-    void test_iconType()
-    {
-        QFETCH(QString, icon);
-        QFETCH(QString, type);
-
-        UnityThemeIconProvider provider;
-        int dummy;
-        const QString file = provider.theme->lookupLargestIcon(icon, &dummy);
-        QVERIFY(file.endsWith(type));
-    }
-
 };
 
 QTEST_MAIN(tst_IconProvider)

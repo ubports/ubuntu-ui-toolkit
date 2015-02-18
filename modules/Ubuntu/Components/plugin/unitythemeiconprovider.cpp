@@ -26,214 +26,235 @@
 #include <QStandardPaths>
 #include <QtDebug>
 
-
-IconTheme::IconThemePointer IconTheme::get(const QString &name)
+class IconTheme
 {
-    static QHash<QString, IconThemePointer> themes;
+public:
+    typedef QSharedPointer<class IconTheme> IconThemePointer;
 
-    IconThemePointer theme = themes[name];
-    if (theme.isNull()) {
-        theme = IconThemePointer(new IconTheme(name));
-        themes[name] = theme;
-    }
+    // Returns the icon theme named @name, creating it if it didn't exist yet.
+    static IconThemePointer get(const QString &name)
+    {
+        static QHash<QString, IconThemePointer> themes;
 
-    return theme;
-}
-
-QPixmap IconTheme::findBestIcon(const QStringList &names, const QSize &size)
-{
-    Q_FOREACH(const QString &name, names) {
-        QPixmap pixmap = lookupIcon(name, size);
-        if (!pixmap.isNull())
-            return pixmap;
-    }
-
-    Q_FOREACH(IconThemePointer theme, parents) {
-        QPixmap pixmap = theme->findBestIcon(names, size);
-        if (!pixmap.isNull())
-            return pixmap;
-    }
-
-    return QPixmap();
-}
-
-IconTheme::IconTheme(const QString &name): name(name)
-{
-    QStringList paths = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
-
-    Q_FOREACH(const QString &path, paths) {
-        QDir dir(path + "/icons/" + name);
-        if (dir.exists())
-            baseDirs.append(dir.absolutePath());
-    }
-
-    Q_FOREACH(const QString &baseDir, baseDirs) {
-        QString filename = baseDir + "/index.theme";
-        if (QFileInfo::exists(filename)) {
-            QSettings settings(filename, QSettings::IniFormat);
-
-            Q_FOREACH(const QString &path, settings.value("Icon Theme/Directories").toStringList()) {
-                Directory dir;
-                dir.path = path;
-                dir.sizeType = sizeTypeFromString(settings.value(path + "/Type", "Fixed").toString());
-                dir.size = settings.value(path + "/Size", 32).toInt();
-                dir.minSize = settings.value(path + "/MinSize", 0).toInt();
-                dir.maxSize = settings.value(path + "/MaxSize", 0).toInt();
-                dir.threshold = settings.value(path + "/Threshold", 0).toInt();
-                directories.append(dir);
-            }
-
-            Q_FOREACH(const QString &name, settings.value("Icon Theme/Inherits").toStringList())
-                parents.append(IconTheme::get(name));
-
-            // there can only be one index.theme
-            break;
+        IconThemePointer theme = themes[name];
+        if (theme.isNull()) {
+            theme = IconThemePointer(new IconTheme(name));
+            themes[name] = theme;
         }
+
+        return theme;
     }
-}
 
-IconTheme::SizeType IconTheme::sizeTypeFromString(const QString &string)
-{
-    if (string == "Fixed")
-        return Fixed;
-    if (string == "Scalable")
-        return Scalable;
-    if (string == "Threshold")
-        return Threshold;
-    qWarning() << "IconTheme: unknown size type '" << string << "'. Assuming 'Fixed'.";
-    return Fixed;
-}
-
-QPixmap IconTheme::loadIcon(const QString &filename, const QSize &size)
-{
-    QPixmap pixmap;
-
-    if (filename.endsWith(".png")) {
-        pixmap = QPixmap(filename);
-        if (!pixmap.isNull() && !size.isNull() && (pixmap.width() != size.width() || pixmap.height() != size.height())) {
-            const QSize newSize = pixmap.size().scaled(size.width(), size.height(), Qt::KeepAspectRatioByExpanding);
-            pixmap = pixmap.scaled(newSize);
+    // Does a breadth-first search for an icon with any name in @names. Parent
+    // themes are only looked at if the current theme doesn't contain any icon
+    // in @names.
+    QPixmap findBestIcon(const QStringList &names, const QSize &size)
+    {
+        Q_FOREACH(const QString &name, names) {
+            QPixmap pixmap = lookupIcon(name, size);
+            if (!pixmap.isNull())
+                return pixmap;
         }
-    }
-    else if (filename.endsWith(".svg")) {
-        QSvgRenderer renderer(filename);
-        pixmap = QPixmap(renderer.defaultSize().scaled(size.width(), size.height(), Qt::KeepAspectRatioByExpanding));
-        pixmap.fill(Qt::transparent);
-        QPainter painter(&pixmap);
-        renderer.render(&painter);
-        painter.end();
-    }
 
-    return pixmap;
-}
+        Q_FOREACH(IconThemePointer theme, parents) {
+            QPixmap pixmap = theme->findBestIcon(names, size);
+            if (!pixmap.isNull())
+                return pixmap;
+        }
 
-QString IconTheme::lookupIconFile(const QString &dir, const QString &name)
-{
-    QString png = QString("%1/%2.png").arg(dir).arg(name);
-    QString svg = QString("%1/%2.svg").arg(dir).arg(name);
-
-    Q_FOREACH(const QString &baseDir, baseDirs) {
-        QString filename = baseDir + "/" + png;
-        if (QFileInfo::exists(filename))
-            return filename;
-
-        filename = baseDir + "/" + svg;
-        if (QFileInfo::exists(filename))
-            return filename;
+        return QPixmap();
     }
 
-    return QString();
-}
+private:
+    enum SizeType { Fixed, Scalable, Threshold };
 
-QPixmap IconTheme::lookupIcon(const QString &iconName, const QSize &size)
-{
-    QString bestFilename;
-    QSize sizeToLoad;
+    struct Directory {
+        QString path;
+        SizeType sizeType;
+        int size, minSize, maxSize, threshold;
+    };
 
-    const int iconSize = qMax(size.width(), size.height());
-    if (iconSize > 0) {
-        bestFilename = lookupBestMatchingIcon(iconName, size);
-        sizeToLoad = size;
-    } else {
-        int maxSize;
-        bestFilename = lookupLargestIcon(iconName, &maxSize);
-        sizeToLoad = QSize(maxSize, maxSize);
-    }
+    IconTheme(const QString &name): name(name)
+    {
+        QStringList paths = QStandardPaths::standardLocations(QStandardPaths::GenericDataLocation);
 
-    if (!bestFilename.isNull())
-        return loadIcon(bestFilename, sizeToLoad);
+        Q_FOREACH(const QString &path, paths) {
+            QDir dir(path + "/icons/" + name);
+            if (dir.exists())
+                baseDirs.append(dir.absolutePath());
+        }
 
-    return QPixmap();
-}
+        Q_FOREACH(const QString &baseDir, baseDirs) {
+            QString filename = baseDir + "/index.theme";
+            if (QFileInfo::exists(filename)) {
+                QSettings settings(filename, QSettings::IniFormat);
 
-QString IconTheme::lookupBestMatchingIcon(const QString &iconName, const QSize &size)
-{
-    int minDistance = 10000;
-    QString bestFilename;
+                Q_FOREACH(const QString &path, settings.value("Icon Theme/Directories").toStringList()) {
+                    Directory dir;
+                    dir.path = path;
+                    dir.sizeType = sizeTypeFromString(settings.value(path + "/Type", "Fixed").toString());
+                    dir.size = settings.value(path + "/Size", 32).toInt();
+                    dir.minSize = settings.value(path + "/MinSize", 0).toInt();
+                    dir.maxSize = settings.value(path + "/MaxSize", 0).toInt();
+                    dir.threshold = settings.value(path + "/Threshold", 0).toInt();
+                    directories.append(dir);
+                }
 
-    Q_FOREACH(const Directory &dir, directories) {
-        int dist = directorySizeDistance(dir, size);
-        if (dist >= minDistance)
-            continue;
+                Q_FOREACH(const QString &name, settings.value("Icon Theme/Inherits").toStringList())
+                    parents.append(IconTheme::get(name));
 
-        QString filename = lookupIconFile(dir.path, iconName);
-        if (!filename.isNull()) {
-            minDistance = dist;
-            bestFilename = filename;
-
-            // bail out early if we can't get a better size match
-            if (minDistance == 0)
+                // there can only be one index.theme
                 break;
+            }
         }
     }
 
-    return bestFilename;
-}
+    SizeType sizeTypeFromString(const QString &string)
+    {
+        if (string == "Fixed")
+            return Fixed;
+        if (string == "Scalable")
+            return Scalable;
+        if (string == "Threshold")
+            return Threshold;
+        qWarning() << "IconTheme: unknown size type '" << string << "'. Assuming 'Fixed'.";
+        return Fixed;
+    }
 
-QString IconTheme::lookupLargestIcon(const QString &iconName, int *maxSize)
-{
-    *maxSize = 0;
-    QString bestFilename;
+    static QPixmap loadIcon(const QString &filename, const QSize &size)
+    {
+        QPixmap pixmap;
 
-    Q_FOREACH(const Directory &dir, directories) {
-        int size = dir.sizeType == Scalable ? dir.maxSize : dir.size;
-        if (size < *maxSize)
-            continue;
+        if (filename.endsWith(".png")) {
+            pixmap = QPixmap(filename);
+            if (!pixmap.isNull() && !size.isNull() && (pixmap.width() != size.width() || pixmap.height() != size.height())) {
+                const QSize newSize = pixmap.size().scaled(size.width(), size.height(), Qt::KeepAspectRatioByExpanding);
+                pixmap = pixmap.scaled(newSize);
+            }
+        }
+        else if (filename.endsWith(".svg")) {
+            QSvgRenderer renderer(filename);
+            pixmap = QPixmap(renderer.defaultSize().scaled(size.width(), size.height(), Qt::KeepAspectRatioByExpanding));
+            pixmap.fill(Qt::transparent);
+            QPainter painter(&pixmap);
+            renderer.render(&painter);
+            painter.end();
+        }
 
-        QString filename = lookupIconFile(dir.path, iconName);
-        if (!filename.isNull()) {
-            *maxSize = size;
-            bestFilename = filename;
+        return pixmap;
+    }
+
+    QString lookupIconFile(const QString &dir, const QString &name)
+    {
+        QString png = QString("%1/%2.png").arg(dir).arg(name);
+        QString svg = QString("%1/%2.svg").arg(dir).arg(name);
+
+        Q_FOREACH(const QString &baseDir, baseDirs) {
+            QString filename = baseDir + "/" + png;
+            if (QFileInfo::exists(filename))
+                return filename;
+
+            filename = baseDir + "/" + svg;
+            if (QFileInfo::exists(filename))
+                return filename;
+        }
+
+        return QString();
+    }
+
+    QPixmap lookupIcon(const QString &iconName, const QSize &size)
+    {
+        QString bestFilename;
+        QSize sizeToLoad;
+
+        const int iconSize = qMax(size.width(), size.height());
+        if (iconSize > 0) {
+            bestFilename = lookupBestMatchingIcon(iconName, size);
+            sizeToLoad = size;
+        } else {
+            int maxSize;
+            bestFilename = lookupLargestIcon(iconName, &maxSize);
+            sizeToLoad = QSize(maxSize, maxSize);
+        }
+
+        if (!bestFilename.isNull())
+            return loadIcon(bestFilename, sizeToLoad);
+
+        return QPixmap();
+    }
+
+    QString lookupBestMatchingIcon(const QString &iconName, const QSize &size)
+    {
+        int minDistance = 10000;
+        QString bestFilename;
+
+        Q_FOREACH(const Directory &dir, directories) {
+            int dist = directorySizeDistance(dir, size);
+            if (dist >= minDistance)
+                continue;
+
+            QString filename = lookupIconFile(dir.path, iconName);
+            if (!filename.isNull()) {
+                minDistance = dist;
+                bestFilename = filename;
+
+                // bail out early if we can't get a better size match
+                if (minDistance == 0)
+                    break;
+            }
+        }
+
+        return bestFilename;
+    }
+
+    QString lookupLargestIcon(const QString &iconName, int *maxSize)
+    {
+        *maxSize = 0;
+        QString bestFilename;
+
+        Q_FOREACH(const Directory &dir, directories) {
+            int size = dir.sizeType == Scalable ? dir.maxSize : dir.size;
+            if (size < *maxSize)
+                continue;
+
+            QString filename = lookupIconFile(dir.path, iconName);
+            if (!filename.isNull()) {
+                *maxSize = size;
+                bestFilename = filename;
+            }
+        }
+
+        return bestFilename;
+    }
+
+    int directorySizeDistance(const Directory &dir, const QSize &size)
+    {
+        const int iconSize = qMax(size.width(), size.height());
+        switch (dir.sizeType) {
+            case Fixed:
+                return qAbs(iconSize - dir.size);
+
+            case Scalable:
+                return qAbs(iconSize - qBound(dir.minSize, iconSize, dir.maxSize));
+
+            case Threshold:
+                return qAbs(iconSize - qBound(dir.size - dir.threshold, iconSize, dir.size + dir.threshold));
+
+            default:
+                return 10000;
         }
     }
 
-    return bestFilename;
-}
+    QString name;
+    QStringList baseDirs;
+    QList<Directory> directories;
+    QList<IconThemePointer> parents;
+};
 
-int IconTheme::directorySizeDistance(const Directory &dir, const QSize &size)
-{
-    const int iconSize = qMax(size.width(), size.height());
-    switch (dir.sizeType) {
-        case Fixed:
-            return qAbs(iconSize - dir.size);
-
-        case Scalable:
-            return qAbs(iconSize - qBound(dir.minSize, iconSize, dir.maxSize));
-
-        case Threshold:
-            return qAbs(iconSize - qBound(dir.size - dir.threshold, iconSize, dir.size + dir.threshold));
-
-        default:
-            return 10000;
-    }
-}
-
-
-
-UnityThemeIconProvider::UnityThemeIconProvider():
+UnityThemeIconProvider::UnityThemeIconProvider(const QString &themeName):
   QQuickImageProvider(QQuickImageProvider::Pixmap)
 {
-    theme = IconTheme::get("suru");
+    theme = IconTheme::get(themeName);
 }
 
 QPixmap UnityThemeIconProvider::requestPixmap(const QString &id, QSize *size, const QSize &requestedSize)
