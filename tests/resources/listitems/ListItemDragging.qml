@@ -23,17 +23,45 @@ MainView {
     height: units.gu(60)
     useDeprecatedToolbar: false
 
+    property bool restrictDragging: true
+
     Page {
         title: "Dragging test"
         ListView {
             anchors.fill: parent
             ViewItems.selectMode: ViewItems.dragMode
-            ViewItems.onDraggingUpdated: {
-                if (event.direction == ListItemDrag.Steady) {
-                    model.move(event.from, event.to, 1);
-                    print("move", event.from, event.to)
-                } else {
+            ViewItems.onDraggingStarted: {
+                if (!restrictDragging) {
+                    return;
+                }
+
+                if (event.from < 3) {
+                    // the first 3 items are not draggable
                     event.accept = false;
+                } else if (event.from >=3 && event.from <= 10) {
+                    // dragging is limited between index 3 and 10
+                    event.minimumIndex = 3;
+                    event.maximumIndex = 10;
+                } else {
+                    // prevent dragging above index 10
+                    event.minimumIndex = 11;
+                }
+            }
+
+            ViewItems.onDraggingUpdated: {
+                if (restrictDragging) {
+                    // deal only with indexes >= 3
+                    if (event.to >= 3 && event.to <= 10 && event.from >= 3 && event.from <= 10) {
+                        // live update
+                        model.move(event.from, event.to, 1);
+                    } else if (event.direction == ListItemDrag.Steady) {
+                        model.move(event.from, event.to, 1);
+                    } else {
+                        event.accept = false;
+                    }
+                } else {
+                    // no restrictions, perform live update
+                    model.move(event.from, event.to, 1);
                 }
             }
 
