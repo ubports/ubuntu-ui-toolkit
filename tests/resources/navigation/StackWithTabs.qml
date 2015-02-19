@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Canonical Ltd.
+ * Copyright 2012-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -15,13 +15,12 @@
  */
 
 import QtQuick 2.0
-import Ubuntu.Components 1.1
+import Ubuntu.Components 1.2
 
 MainView {
     id: mainView
     width: units.gu(38)
     height: units.gu(50)
-    useDeprecatedToolbar: false
 
     PageStack {
         id: pageStack
@@ -32,37 +31,11 @@ MainView {
             Tab {
                 title: "Tab 1"
                 page: Page {
-                    Column {
+                    Label {
                         anchors {
                             centerIn: parent
                         }
-                        width: childrenRect.width
-                        height: childrenRect.height
-                        spacing: units.gu(1)
-
-                        Label {
-                            text: "Tab bar always in selection mode?"
-                        }
-                        Switch {
-                            id: alwaysSelectionModeSwitch
-                            Binding {
-                                target: tabs.tabBar
-                                property: "alwaysSelectionMode"
-                                value: alwaysSelectionModeSwitch.checked
-                            }
-                        }
-                        Label {
-                            text: "Animate tab bar."
-                        }
-                        Switch {
-                            id: animateSwitch
-                            checked: true
-                            Binding {
-                                target: tabs.tabBar
-                                property: "animate"
-                                value: animateSwitch.checked
-                            }
-                        }
+                        text: "First tab"
                     }
                 }
             }

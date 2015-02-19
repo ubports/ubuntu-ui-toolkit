@@ -34,21 +34,37 @@ Template {
         // clip the action delegates while swiping left/right
         clip: true
 
-        ListItemWithLabel {
-            text: i18n.tr("Basic")
-        }
-        ListItemWithLabel {
-            text: i18n.tr("Colored divider")
-            divider {
-                colorFrom: UbuntuColors.red
-                colorTo: UbuntuColors.green
+        ListView {
+            height: units.gu(20)
+            width: parent.width
+
+            model: [ i18n.tr("Basic"), i18n.tr("Colored divider"), i18n.tr("No divider") ]
+            delegate: ListItemWithLabel {
+                text: modelData
+                divider {
+                    colorFrom: modelData == i18n.tr("Colored divider") ? UbuntuColors.red : Qt.rgba(0.0, 0.0, 0.0, 0.0)
+                    colorTo: modelData == i18n.tr("Colored divider") ? UbuntuColors.green : Qt.rgba(0.0, 0.0, 0.0, 0.0)
+                    visible: modelData != i18n.tr("No divider")
+                }
             }
         }
-        ListItemWithLabel {
-            text: i18n.tr("No divider")
-            divider.visible: false
+     }
+
+    TemplateSection {
+        className: "ListItem"
+        // no spacing between the list items in the Column
+        spacing: 0
+        Item {
+            // compensate for the spacing of 0 by adding this
+            // Item inbetween the title and the list items.
+            height: units.gu(3)
+            width: parent.width
         }
-        ListItemWithLabel {
+
+        // clip the action delegates while swiping left/right
+        clip: true
+
+       ListItemWithLabel {
             color: UbuntuColors.blue
             text: i18n.tr("Colored")
         }
@@ -56,7 +72,6 @@ Template {
             text: i18n.tr("Highlight color")
             highlightColor: UbuntuColors.orange
             // no highlight without clicked() or leading/trailing actions
-            onClicked: print(i18n.tr("Highlighting list item"))
         }
 
         ListItemActions {
@@ -97,7 +112,6 @@ Template {
         }
         ListItemWithLabel {
             text: i18n.tr("Custom action delegates")
-            swipeOvershoot: 0
             leadingActions: ListItemActions {
                 actions: [
                     Action {

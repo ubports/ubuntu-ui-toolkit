@@ -74,6 +74,9 @@ function execute_test_cmd {
                 tst_page.qml \
                 tst_toolbar.qml \
                 tst_tabs.qml \
+                tst_focus.qml \
+                tst_pickerpanel.qml \
+                tst_picker.qml \
                 '
     if [ $WARNINGS -ne 0 ]; then
       if [[ $EXCEPTIONS == *$_TARGET_$_TESTFILE* ]]; then

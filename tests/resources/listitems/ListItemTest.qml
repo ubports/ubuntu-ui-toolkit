@@ -31,7 +31,10 @@ MainView {
         id: stock
         iconName: "starred"
         text: "Staaaar"
-        onTriggered: print(iconName, "triggered", value)
+        onTriggered: {
+            print(iconName, "triggered", value)
+            view.ViewItems.selectedIndices = [0, 2, 9];
+        }
     }
 
     ListItemActions {
@@ -66,20 +69,25 @@ MainView {
         ]
     }
 
+    property bool selectable: false
     property list<Action> leadingArray: [
         Action {
             iconName: "delete"
+            onTriggered: print(iconName, "triggered", value)
         }
     ]
     property list<Action> trailingArray: [
         Action {
             iconName: "search"
+            onTriggered: print(iconName, "triggered", value)
         },
         Action {
             iconName: "edit"
+            onTriggered: print(iconName, "triggered", value)
         },
         Action {
             iconName: "email"
+            onTriggered: print(iconName, "triggered", value)
         }
     ]
 
@@ -89,13 +97,18 @@ MainView {
             right: parent.right
         }
 
+        Button {
+            text: "Selectable " + (selectable ? "OFF" : "ON")
+            onClicked: selectable = !selectable
+        }
+
         ListItem {
             id: testItem
             objectName: "single"
             color: "lime"
             onClicked: {
                 print("click")
-                main.override = !main.override
+                units.gridUnit += 2;
             }
             onPressAndHold: print("pressAndHold", objectName)
             Label {
@@ -154,18 +167,33 @@ MainView {
             id: view
             clip: true
             width: parent.width
-            height: units.gu(20)
+            height: units.gu(28)
             model: 25
             pressDelay: 0
+            ViewItems.selectMode: main.selectable
+            ViewItems.selectedIndices: [9,3,4,1]
+            ViewItems.onSelectedIndicesChanged: print("LISTVIEW INDEXES=", ViewItems.selectedIndices)
             delegate: ListItem {
                 objectName: "ListItem" + index
                 id: listItem
                 onClicked: print(" clicked")
                 onPressAndHold: print("pressAndHold")
-                leadingActions: leading
-                trailingActions: leadingActions
+                leadingActions: ListItemActions {
+                    actions: trailingArray
+                }
+
+                trailingActions: trailing
+                contentItem.anchors.margins: units.gu(1)
+
                 Label {
-                    text: modelData + " item"
+                    anchors.fill: parent
+                    verticalAlignment: Text.AlignVCenter
+                    text: "This is one Label split in two lines.\n" +
+                          "The second line - item #" + modelData
+                }
+                Button {
+                    text: "Pressme..."
+                    anchors.centerIn: parent
                 }
 
                 states: State {
@@ -176,32 +204,34 @@ MainView {
                         highlightColor: "brown"
                     }
                 }
+
+                onContentMovementStarted: print("moving started")
+                onContentMovementEnded: print("moving ended")
             }
         }
         Flickable {
             id: flicker
             width: parent.width
-            height: units.gu(20)
+            height: units.gu(28)
             clip: true
             contentHeight: column.childrenRect.height
             ListItemActions {
                 id: trailing
                 actions: leading.actions
             }
-
             Column {
                 id: column
                 width: flicker.width
                 property alias count: repeater.count
+                ViewItems.selectMode: main.selectable
                 Repeater {
                     id: repeater
                     model: 10
                     ListItem {
                         objectName: "InFlickable"+index
-                        color: "red"
+                        color: UbuntuColors.red
                         highlightColor: "lime"
                         divider.colorFrom: UbuntuColors.green
-                        swipeOvershoot: units.gu(10)
 
                         leadingActions: ListItemActions {
                             actions: leadingArray

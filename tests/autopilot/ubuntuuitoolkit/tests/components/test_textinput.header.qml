@@ -14,18 +14,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.2
-import Ubuntu.Components 1.2
+import QtQuick 2.0
+import Ubuntu.Components 1.1
 
-ListItem {
-    property alias text: label.text
-    Label {
-        id: label
-        anchors {
-            left: parent.left
-            leftMargin: units.gu(2)
-            verticalCenter: parent.verticalCenter
+MainView {
+    width: units.gu(48)
+    height: units.gu(60)
+    useDeprecatedToolbar: false
+
+    Page {
+        title: "Header"
+        head.contents: TextField {
+            objectName: "textfield"
+            placeholderText: "Header"
+            width: parent ? parent.width : 0
         }
     }
-    onPressAndHold: selectMode = !selectMode
 }
