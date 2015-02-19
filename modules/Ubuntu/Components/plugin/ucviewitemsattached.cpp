@@ -437,7 +437,7 @@ bool UCViewItemsAttachedPrivate::isItemSelected(UCListItem *item)
  *
  * When set, ListItem content will be disabled and a panel will be shown enabling
  * the dragging mode. The items can be dragged by dragging this handler only.
- * The feature can be activated same time with \l ListItem::selectable.
+ * The feature can be activated same time with \l ListItem::selectMode.
  *
  * The panel is configured by the style.
  *
