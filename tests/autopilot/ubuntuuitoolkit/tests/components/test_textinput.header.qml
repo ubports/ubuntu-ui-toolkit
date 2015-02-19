@@ -37,9 +37,9 @@ MainView {
             anchors {
                 fill: parent
                 leftMargin: units.gu(1)
-                topMargin: units.gu(1)
-                bottomMargin: units.gu(1)
-                rightMargin: root.width > units.gu(60) ? root.width - units.gu(40) : units.gu(1)
+                topMargin: units.gu(0.5)
+                bottomMargin: units.gu(0.5)
+                rightMargin: units.gu(1)
             }
 
             secondaryItem: AbstractButton {

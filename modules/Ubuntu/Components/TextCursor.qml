@@ -51,6 +51,7 @@ Ubuntu.StyledItem {
     function mappedCursorPosition(coordinate) {
         var cpos = fakeCursor.parent.mapFromItem(handler.main, cursorItem.x, cursorItem.y)[coordinate];
         cpos += handler.frameDistance[coordinate];
+        cpos += handler.input[coordinate];
         cpos -= handler.flickable["content" + coordinate.toUpperCase()];
         return cpos;
     }
