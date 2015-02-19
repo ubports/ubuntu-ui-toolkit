@@ -251,6 +251,9 @@ Item {
             compare(defaults.divider.visible, true, "divider is visible by default");
             compare(defaults.divider.anchors.leftMargin, 0, "divider's left margin is 0");
             compare(defaults.divider.anchors.rightMargin, 0, "divider's right margin is 0");
+            compare(defaults.divider.anchors.left, defaults.left, "divider's left anchor is wrong");
+            compare(defaults.divider.anchors.right, defaults.right, "divider's right anchor is wrong");
+            compare(defaults.divider.height, units.dp(2), "divider's thickness is wrong");
             compare(defaults.divider.colorFrom, "#000000", "colorFrom differs.");
             fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
@@ -337,40 +340,39 @@ Item {
             movingSpy.wait();
         }
 
-        function test_mouse_click_on_listitem() {
-            var listItem = findChild(listView, "listItem0");
-            verify(listItem, "Cannot find listItem0");
-
-            mousePress(listItem, listItem.width / 2, 0);
-            compare(listItem.highlighted, true, "Item is not highlighted?");
-            // do 5 moves to be able to sense it
-            var dy = 0;
-            for (var i = 1; i <= 5; i++) {
-                dy += i * 10;
-                mouseMove(listItem, listItem.width / 2, dy);
-            }
-            compare(listItem.highlighted, false, "Item is highlighted still!");
-            // cleanup, simulate drop event
-            mouseRelease(listItem, listItem.width / 2, dy);
-            mouseRelease(listItem, listItem.width / 2, dy);
+        function test_vertical_listview_move_cancels_highlight_data() {
+            return [
+                {tag: "With touch", mouse: false},
+                {tag: "With mouse", mouse: true},
+            ];
         }
-        function test_touch_click_on_listitem() {
+        function test_vertical_listview_move_cancels_highlight(data) {
             var listItem = findChild(listView, "listItem0");
             verify(listItem, "Cannot find listItem0");
 
-            TestExtras.touchPress(0, listItem, Qt.point(listItem.width / 2, 5));
-            compare(listItem.highlighted, true, "Item is not highlighted?");
-            // do 5 moves to be able to sense it
-            var dy = 0;
-            for (var i = 1; i <= 5; i++) {
-                dy += i * 10;
-                TestExtras.touchMove(0, listItem, Qt.point(listItem.width / 2, dy));
+            // convert positions and use the listView to move
+            var pos = listView.mapFromItem(listItem, listItem.width / 2, 0);
+            if (data.mouse) {
+                // provide slow move
+                mousePress(listView, pos.x, pos.y);
+                for (var i = 1; i < 4; i++) {
+                    pos.y += i * units.gu(0.5);
+                    mouseMove(listView, pos.x, pos.y, 100);
+                }
+                compare(listItem.highlighted, false, "highlighted still!");
+                mouseRelease(listView, pos.x, pos.y, undefined, undefined, 100);
+            } else {
+                // convert pos to point otherwise touch functions will get (0,0) points!!!
+                var pt = Qt.point(pos.x, pos.y);
+                TestExtras.touchPress(0, listView, pt);
+                for (i = 1; i < 4; i++) {
+                    pt.y += i * units.gu(0.5);
+                    TestExtras.touchMove(0, listView, pt);
+                    wait(100);
+                }
+                compare(listItem.highlighted, false, "highlighted still!");
+                TestExtras.touchRelease(0, listView, pt);
             }
-            compare(listItem.highlighted, false, "Item is highlighted still!");
-            // cleanup, wait few milliseconds to avoid dbl-click collision
-            TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
-            TestExtras.touchRelease(0, listItem, Qt.point(listItem.width / 2, dy));
-            wait(400);
         }
 
         function test_background_height_change_on_divider_visible() {
@@ -625,7 +627,7 @@ Item {
             }
         }
 
-        function test_action_value_data() {
+        function test_verify_action_value_data() {
             listView.positionViewAtBeginning();
             var item0 = findChild(listView, "listItem0");
             var item1 = findChild(listView, "listItem1");
@@ -636,7 +638,7 @@ Item {
                 {tag: "ListView, item index 1", item: item1, result: 1},
             ];
         }
-        function test_action_value(data) {
+        function test_verify_action_value(data) {
             // tug actions in
             movingSpy.target = data.item;
             swipe(data.item, 1, centerOf(data.item).y, units.gu(40), 0);
