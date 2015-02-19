@@ -1338,7 +1338,7 @@ void UCListItem::resetHighlightColor()
  * \qmlproperty bool ListItem::selected
  * The property drives whether a list item is selected or not. Defaults to false.
  *
- * \sa ListItem::selectable, ViewItems::selectMode
+ * \sa ListItem::selectMode, ViewItems::selectMode
  */
 bool UCListItemPrivate::isSelected()
 {
