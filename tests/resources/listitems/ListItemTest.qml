@@ -69,17 +69,21 @@ MainView {
     property list<Action> leadingArray: [
         Action {
             iconName: "delete"
+            onTriggered: print(iconName, "triggered", value)
         }
     ]
     property list<Action> trailingArray: [
         Action {
             iconName: "search"
+            onTriggered: print(iconName, "triggered", value)
         },
         Action {
             iconName: "edit"
+            onTriggered: print(iconName, "triggered", value)
         },
         Action {
             iconName: "email"
+            onTriggered: print(iconName, "triggered", value)
         }
     ]
 
@@ -162,8 +166,12 @@ MainView {
                 id: listItem
                 onClicked: print(" clicked")
                 onPressAndHold: print("pressAndHold")
-                leadingActions: leading
-                trailingActions: leadingActions
+                leadingActions: ListItemActions {
+                    actions: trailingArray
+                }
+
+                trailingActions: trailing
+                contentItem.anchors.margins: units.gu(1)
 
                 Label {
                     anchors.fill: parent
@@ -171,8 +179,6 @@ MainView {
                     text: "This is one Label split in two lines.\n" +
                           "The second line - item #" + modelData
                 }
-
-                onContentMovementEnded: print('end')
 
                 states: State {
                     name: "override"
@@ -182,6 +188,9 @@ MainView {
                         highlightColor: "brown"
                     }
                 }
+
+                onContentMovementStarted: print("moving started")
+                onContentMovementEnded: print("moving ended")
             }
         }
         Flickable {
@@ -207,7 +216,6 @@ MainView {
                         color: UbuntuColors.red
                         highlightColor: "lime"
                         divider.colorFrom: UbuntuColors.green
-                        swipeOvershoot: units.gu(10)
 
                         leadingActions: ListItemActions {
                             actions: leadingArray

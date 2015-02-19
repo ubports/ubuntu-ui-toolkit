@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Canonical Ltd.
+ * Copyright 2014-2015 Canonical Ltd.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -48,183 +48,6 @@ QColor getPaletteColor(const char *profile, const char *color)
         }
     }
     return result;
-}
-/******************************************************************************
- * SnapAnimator
- *
- * The class handles the animation executed when the ListItemAction panel is
- * swiped. The animation is executed from the swipe position the mouse/touch is
- * released to the desired position given in snap(). The action panel is assumed
- * to be anchored to the ListItem.contentItem left or right, depending on which
- * action list is swiped in. Therefore the animator only changes the ListItem.contentItem
- * x coordinate.
- * The animation is defined by the style.
- */
-ListItemAnimator::ListItemAnimator(QObject *parent)
-    : QObject(parent)
-    , activeAnimations(0)
-    , item(0)
-{
-}
-ListItemAnimator::~ListItemAnimator()
-{
-    stop();
-    // make sure we cannot animate anymore, for safety
-    item = 0;
-}
-
-/*
- * Snap the ListItem.contentItem in or out, depending on the position specified
- * in "to" parameter. If the position is 0, a snap out will be executed - see
- * snapOut(). In any other cases a snap in action will be performed - see snapIn().
- */
-bool ListItemAnimator::snap(qreal to)
-{
-    if (!item) {
-        return false;
-    }
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    bool doSnapOut = (to == 0.0);
-    activeAnimations |= (doSnapOut ? SnapOutAnimation : SnapInAnimation);
-    // fix snap position, take leftMargin into account!
-    to += QQuickItemPrivate::get(listItem->contentItem)->anchors()->leftMargin();
-    if (to == listItem->contentItem->x()) {
-        // there was no move, so we only do some cleanup
-        completeAnimation();
-        return true;
-    }
-
-    QQuickAbstractAnimation *snap = getSnapBehavior();
-    if (snap) {
-        snap->setAlwaysRunToEnd(false);
-        connect(snap, &QQuickAbstractAnimation::runningChanged,
-                this, &ListItemAnimator::completeAnimation,
-                Qt::DirectConnection);
-    }
-    listItem->setContentMoving(true);
-    if (snapBehavior) {
-        snapBehavior->setEnabled(true);
-        snapBehavior->write(to);
-    }
-    if (!snap) {
-        // complete, as we don't have animation
-        completeAnimation();
-    }
-    return true;
-}
-
-/*
- * The function completes a running snap animation.
- */
-void ListItemAnimator::stop()
-{
-    if (snapBehavior && snapBehavior->enabled()) {
-        QQuickAbstractAnimation *animation = snapBehavior->animation();
-        if (animation) {
-            // set animation to be user controlled temporarily so we can invoke stop()
-            animation->setEnableUserControl();
-            animation->stop();
-            animation->setDisableUserControl();
-        }
-        snapBehavior->setEnabled(false);
-    }
-}
-
-// handles animation completion
-void ListItemAnimator::completeAnimation()
-{
-    QQuickAbstractAnimation *animation = static_cast<QQuickAbstractAnimation*>(sender());
-    if (animation && animation->isRunning()) {
-        return;
-    }
-
-    // complete animations
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    if (activeAnimations & SnapInAnimation) {
-        listItem->snapIn();
-        activeAnimations &= ~SnapInAnimation;
-    } else if (activeAnimations & SnapOutAnimation) {
-        listItem->snapOut();
-        activeAnimations &= ~SnapOutAnimation;
-    }
-
-    // clean animations
-    if (animation && !activeAnimations) {
-        disconnect(animation, &QQuickAbstractAnimation::runningChanged,
-                   this, &ListItemAnimator::completeAnimation);
-    }
-    if (snapBehavior && snapBehavior->enabled()) {
-        snapBehavior->setEnabled(false);
-    }
-}
-
-/*
- * Snap out is performed when the ListItem.contentItem returns back to its original
- * X coordinates (0). At this point both leading and trailing action panels will
- * be disconnected, ascending Flickables will get unlocked (interactive value restored
- * to the state before they were locked) and ListItem.contentMoving will be reset.
- */
-void UCListItemPrivate::snapOut()
-{
-    setHighlighted(false);
-    setSwiped(false);
-    if (parentAttached) {
-        Q_Q(UCListItem);
-        // restore flickable's interactive and cleanup
-        parentAttached->disableInteractive(q, false);
-        // no need to listen flickables any longer
-        listenToRebind(false);
-    }
-    // disconnect actions
-    UCActionPanel::ungrabPanel(leadingPanel);
-    UCActionPanel::ungrabPanel(trailingPanel);
-    // lock contentItem left/right edges
-    lockContentItem(true);
-    // set contentMoved to false
-    setContentMoving(false);
-}
-
-/*
- * Snap in only resets the ListItem.contentMoving property, but will keep leading/trailing
- * actions connected as well as all ascendant Flickables locked (interactive = false).
- */
-void UCListItemPrivate::snapIn()
-{
-    // turn content moving off
-    setContentMoving(false);
-}
-
-/*
- * Returns the animation specified by the style, and configures the snapBehavior
- * controlling the animation.
- */
-QQuickAbstractAnimation *ListItemAnimator::getSnapBehavior()
-{
-    if (snapBehavior) {
-        return snapBehavior->animation();
-    }
-
-    UCListItemPrivate *listItem = UCListItemPrivate::get(item);
-    // in order to get Behavior working properly, it must be created to have
-    // ListItem.contentItem as parent, and must be in the same context as its
-    // parent item
-    snapBehavior = new QQuickBehavior(listItem->contentItem);
-    snapBehavior->setParent(listItem->contentItem);
-    QQmlContext *context = qmlContext(listItem->contentItem);
-    QQmlEngine::setContextForObject(snapBehavior.data(), context);
-
-    listItem->initStyleItem();
-    QQuickAbstractAnimation *animation = listItem->styleItem ? listItem->styleItem->m_snapAnimation : 0;
-    if (animation) {
-        // patch behavior, use the same context as the animation
-        snapBehavior->setAnimation(animation);
-
-        // transfer animation to the contentItem
-        animation->setParent(listItem->contentItem);
-    }
-    QQmlProperty property(listItem->contentItem, "x", context);
-    snapBehavior->setTarget(property);
-    return animation;
 }
 
 /******************************************************************************
@@ -375,10 +198,7 @@ UCListItemPrivate::UCListItemPrivate()
     , suppressClick(false)
     , ready(false)
     , customColor(false)
-    , customOvershoot(false)
-    , flicked(false)
     , xAxisMoveThresholdGU(DEFAULT_SWIPE_THRESHOLD_GU)
-    , overshoot(0)
     , color(Qt::transparent)
     , highlightColor(Qt::transparent)
     , parentAttached(0)
@@ -386,8 +206,6 @@ UCListItemPrivate::UCListItemPrivate()
     , divider(new UCListItemDivider)
     , leadingActions(0)
     , trailingActions(0)
-    , leadingPanel(0)
-    , trailingPanel(0)
     , mainAction(0)
     , styleComponent(0)
     , implicitStyleComponent(0)
@@ -401,7 +219,6 @@ UCListItemPrivate::~UCListItemPrivate()
 void UCListItemPrivate::init()
 {
     Q_Q(UCListItem);
-    animator.init(q);
     contentItem->setObjectName("ListItemHolder");
     QQml_setParent_noEvent(contentItem, q);
     contentItem->setParentItem(q);
@@ -414,6 +231,10 @@ void UCListItemPrivate::init()
     q->setFlag(QQuickItem::ItemHasContents);
     // turn activeFocusOnPress on
     q->setActiveFocusOnPress(true);
+
+    // update swiped state
+    QObject::connect(contentItem, SIGNAL(xChanged()),
+                     q, SLOT(_q_updateSwiping()), Qt::DirectConnection);
 
     // catch theme changes
     QObject::connect(&UCTheme::instance(), SIGNAL(nameChanged()), q, SLOT(_q_updateThemedData()));
@@ -478,6 +299,12 @@ void UCListItemPrivate::_q_updateIndex()
     q->update();
 }
 
+// update contentMoving property when ListItemStyle.snapAnimation stopped() signal is emitted
+void UCListItemPrivate::_q_contentMoving()
+{
+    setContentMoving(styleItem->m_snapAnimation->isRunning());
+}
+
 /*!
  * \qmlproperty Component ListItem::style
  * Holds the style of the component defining the components visualizing the leading/
@@ -536,8 +363,10 @@ void UCListItemPrivate::resetStyle()
         delete implicitStyleComponent;
         Q_Q(UCListItem);
         implicitStyleComponent = UCTheme::instance().createStyleComponent("ListItemStyle.qml", q);
-        // set the objectnane for testing in tst_listitems.qml
-        implicitStyleComponent->setObjectName("ListItemThemeStyle");
+        if (implicitStyleComponent) {
+            // set the objectnane for testing in tst_listitems.qml
+            implicitStyleComponent->setObjectName("ListItemThemeStyle");
+        }
         // re-create style instance if it was created using the implicit style
         if (reloadStyle) {
             initStyleItem();
@@ -567,8 +396,12 @@ void UCListItemPrivate::initStyleItem()
         qmlInfo(q) << delegate->errorString();
         return;
     }
-    QQmlContext *context = new QQmlContext(qmlContext(q));
+    QQmlContext *context = new QQmlContext(qmlContext(q), qmlContext(q));
     context->setContextProperty("styledItem", q);
+    // also declare index property in case not defined
+    if (!context->contextProperty("index").isValid()) {
+        context->setContextProperty("index", index());
+    }
     QObject *object = delegate->beginCreate(context);
     styleItem = qobject_cast<UCListItemStyle*>(object);
     if (!styleItem) {
@@ -577,16 +410,10 @@ void UCListItemPrivate::initStyleItem()
         delete context;
         return;
     }
-    context->setParent(styleItem);
     QQml_setParent_noEvent(styleItem, q);
+    styleItem->setParentItem(q);
     delegate->completeCreate();
     Q_EMIT q->__styleInstanceChanged();
-
-    // get the overshoot value from the style!
-    if (!customOvershoot) {
-        overshoot = styleItem->m_swipeOvershoot;
-        Q_EMIT q->swipeOvershootChanged();
-    }
 }
 
 /*!
@@ -658,7 +485,15 @@ void UCListItemPrivate::setHighlighted(bool highlighted)
         Q_EMIT q->highlightedChanged();
     }
 }
-// toggles the tugged flag and installs/removes event filter
+// toggles the swiped flag and installs/removes event filter to capture pointer events outside
+// of list item area
+void UCListItemPrivate::_q_updateSwiping()
+{
+    if (swiped) {
+        setSwiped((contentItem->position() != zeroPos) || highlighted);
+    }
+}
+
 void UCListItemPrivate::setSwiped(bool swiped)
 {
     suppressClick = swiped;
@@ -672,6 +507,8 @@ void UCListItemPrivate::setSwiped(bool swiped)
         window->installEventFilter(q);
     } else {
         window->removeEventFilter(q);
+        // lock contentItem left/right edges
+        lockContentItem(true);
     }
 }
 
@@ -691,6 +528,7 @@ void UCListItemPrivate::lockContentItem(bool lock)
     if (lock) {
         contentAnchors->setLeft(left());
         contentAnchors->setRight(right());
+        zeroPos = contentItem->position();
     } else {
         contentAnchors->resetLeft();
         contentAnchors->resetRight();
@@ -706,17 +544,50 @@ void UCListItemPrivate::update()
     q->update();
 }
 
-// clamps the X value and moves the contentItem to the new X value
-void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
+/*
+ * Snap out is performed when the ListItem.contentItem returns back to its original
+ * X coordinates (0). At this point both leading and trailing action panels will
+ * be disconnected, ascending Flickables will get unlocked (interactive value restored
+ * to the state before they were locked) and ListItem.contentMoving will be reset.
+ */
+void UCListItemPrivate::snapOut()
 {
-    x += dx;
-    // min cannot be less than the trailing's panel width
-    QQuickItem *leadingPanelItem = leadingPanel ? leadingPanel->panel() : 0;
-    QQuickItem *trailingPanelItem = trailingPanel ? trailingPanel->panel() : 0;
-    qreal min = (trailingPanelItem) ? -trailingPanelItem->width() - overshoot: 0;
-    // max cannot be bigger than 0 or the leading's width in case we have leading panel
-    qreal max = (leadingPanelItem) ? leadingPanelItem->width() + overshoot: 0;
-    x = CLAMP(x, min, max);
+    if (!ready) {
+        return;
+    }
+    setHighlighted(false);
+    if (parentAttached) {
+        Q_Q(UCListItem);
+        // restore flickable's interactive and cleanup
+        parentAttached->disableInteractive(q, false);
+        // no need to listen flickables any longer
+        listenToRebind(false);
+    }
+    if (styleItem) {
+        styleItem->invokeRebound();
+    }
+}
+
+// emits the style signal swipeEvent()
+void UCListItemPrivate::swipeEvent(const QPointF &localPos, UCSwipeEvent::Status status)
+{
+    UCSwipeEvent event(localPos, lastPos, contentItem->position() + (localPos - lastPos), status);
+    // clamp to the edges if the edge (leading/trailing) doesn't have actions defined
+    if ((event.m_contentPos.x() < zeroPos.x() && !trailingActions) ||
+        (event.m_contentPos.x() > zeroPos.x() && !leadingActions)) {
+        event.m_contentPos = zeroPos;
+    }
+    if (styleItem) {
+        styleItem->invokeSwipeEvent(&event);
+    }
+    if (event.m_contentPos != contentItem->position()) {
+        contentItem->setPosition(event.m_contentPos);
+        lastPos = localPos;
+        if (status == UCSwipeEvent::Updated) {
+            setContentMoving(true);
+            setSwiped(true);
+        }
+    }
 }
 
 /*!
@@ -814,7 +685,7 @@ void UCListItemPrivate::clampAndMoveX(qreal &x, qreal dx)
  * or to the back of the item, and are revealed by swiping the item horizontally.
  * The swipe is started only after the mouse/touch move had passed a given threshold.
  * The actions are visualized by a panel, which is configurable through the \l
- * ListItemStyle::actionsDelegate style property.
+ * ListItemStyle.
  *
  * The actions are configured through the \l leadingActions as well as \l
  * trailingActions properties.
@@ -896,11 +767,6 @@ UCListItem::UCListItem(QQuickItem *parent)
 
 UCListItem::~UCListItem()
 {
-}
-
-UCListItemAttached *UCListItem::qmlAttachedProperties(QObject *owner)
-{
-    return new UCListItemAttached(owner);
 }
 
 void UCListItem::componentComplete()
@@ -1017,22 +883,19 @@ void UCListItem::mousePressEvent(QMouseEvent *event)
         // while moving, we cannot select any items
         return;
     }
-    if (d->canHighlight(event) && !d->suppressClick
+    if (d->canHighlight(event)
             && !d->highlighted && event->button() == Qt::LeftButton) {
-        // stop any ongoing animation!
-        d->animator.stop();
+        // create style instance
+        d->initStyleItem();
         d->setHighlighted(true);
         d->lastPos = d->pressedPos = event->localPos();
         // connect the Flickable to know when to rebound
         d->listenToRebind(true);
-        // if it was moved, grab the panels
-        if (d->swiped) {
-            UCActionPanel::grabPanel(&d->leadingPanel, this, true);
-            UCActionPanel::grabPanel(&d->trailingPanel, this, false);
-            if (d->parentAttached) {
-                d->parentAttached->disableInteractive(this, true);
-            }
+        if (d->swiped && d->parentAttached) {
+            d->parentAttached->disableInteractive(this, true);
         }
+        // stop any ongoing animation!
+        d->swipeEvent(event->localPos(), UCSwipeEvent::Started);
     }
     // accept the event so we get the rest of the events as well
     event->setAccepted(true);
@@ -1044,6 +907,7 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
     Q_D(UCListItem);
     // set released
     if (d->highlighted) {
+        // unblock ascending Flickables
         d->listenToRebind(false);
         if (d->parentAttached) {
             d->parentAttached->disableInteractive(this, false);
@@ -1057,8 +921,10 @@ void UCListItem::mouseReleaseEvent(QMouseEvent *event)
                     Q_EMIT d->mainAction->trigger(d->index());
                 }
             }
-            d->animator.snap(0);
+            d->snapOut();
         } else {
+            // inform style about mouse/touch release
+            d->swipeEvent(event->localPos(), UCSwipeEvent::Finished);
             d->suppressClick = false;
         }
     }
@@ -1070,10 +936,10 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     Q_D(UCListItem);
     UCStyledItemBase::mouseMoveEvent(event);
 
+//    qDebug() << "MOVE" << event->localPos();
+
     // accept the tugging only if the move is within the threshold
-    bool leadingAttached = UCActionPanel::isConnected(d->leadingPanel);
-    bool trailingAttached = UCActionPanel::isConnected(d->trailingPanel);
-    if (d->highlighted && !(leadingAttached || trailingAttached)) {
+    if (d->highlighted && !d->swiped && (d->leadingActions || d->trailingActions)) {
         // check if we can initiate the drag at all
         // only X direction matters, if Y-direction leaves the threshold, but X not, the tug is not valid
         qreal threshold = UCUnits::instance().gu(d->xAxisMoveThresholdGU);
@@ -1083,53 +949,20 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
         if ((mouseX < (pressedX - threshold)) || (mouseX > (pressedX + threshold))) {
             // the press went out of the threshold area, enable move, if the direction allows it
             d->lastPos = event->localPos();
-            // tries to connect both panels so we do no longer need to take care which
-            // got connected ad which not; this may fail in case of shared ListItemActions,
-            // as then the panel is shared between the list items, and the panel might be
-            // still in use in other panels. See UCListItemActionsPrivate::connectToListItem
-            leadingAttached = UCActionPanel::grabPanel(&d->leadingPanel, this, true);
-            trailingAttached = UCActionPanel::grabPanel(&d->trailingPanel, this, false);
             // unlock contentItem's left/right edges
             d->lockContentItem(false);
             if (d->parentAttached) {
                 d->parentAttached->disableInteractive(this, true);
             }
+            d->setSwiped(true);
         }
     }
 
-    if (leadingAttached || trailingAttached) {
-        qreal x = d->contentItem->x();
-        qreal dx = event->localPos().x() - d->lastPos.x();
-        d->lastPos = event->localPos();
+    if (d->swiped) {
+        d->pressAndHoldTimer.stop();
 
-        if (dx) {
-            // stop pressAndHold timer as we started to drag
-            d->pressAndHoldTimer.stop();
-            d->setContentMoving(true);
-            // clamp X into allowed dragging area
-            d->clampAndMoveX(x, dx);
-            // block flickable
-            d->setSwiped(true);
-            d->contentItem->setX(x);
-            // decide which panel is visible by checking the contentItem's X coordinates
-            qreal margin = QQuickItemPrivate::get(d->contentItem)->anchors()->leftMargin();
-            if (d->contentItem->x() > margin) {
-                if (d->leadingPanel) {
-                    d->leadingPanel->panel()->setVisible(true);
-                }
-                if (d->trailingPanel) {
-                    d->trailingPanel->panel()->setVisible(false);
-                }
-            } else if (d->contentItem->x() < margin) {
-                // trailing revealed
-                if (d->leadingPanel) {
-                    d->leadingPanel->panel()->setVisible(false);
-                }
-                if (d->trailingPanel) {
-                    d->trailingPanel->panel()->setVisible(true);
-                }
-            }
-        }
+        // send swipe event to style and update contentItem position
+        d->swipeEvent(event->localPos(), UCSwipeEvent::Updated);
     }
 }
 
@@ -1173,7 +1006,7 @@ bool UCListItem::eventFilter(QObject *target, QEvent *event)
     }
     if (!myPos.isNull() && !contains(myPos)) {
         Q_D(UCListItem);
-        d->animator.snap(0);
+        d->snapOut();
         // only accept event, but let it be handled by the underlying or surrounding Flickables
         event->accept();
     }
@@ -1215,9 +1048,6 @@ void UCListItem::setLeadingActions(UCListItemActions *actions)
     }
     // snap out before we change the actions
     d->snapOut();
-    // then delete panel
-    delete d->leadingPanel;
-    d->leadingPanel = 0;
     d->leadingActions = actions;
     Q_EMIT leadingActionsChanged();
 }
@@ -1243,9 +1073,6 @@ void UCListItem::setTrailingActions(UCListItemActions *actions)
     }
     // snap out before we change the actions
     d->snapOut();
-    // then delete panel
-    delete d->trailingPanel;
-    d->trailingPanel = 0;
     d->trailingActions = actions;
     Q_EMIT trailingActionsChanged();
 }
@@ -1462,43 +1289,6 @@ void UCListItemPrivate::setAction(UCAction *action)
         mainAction->setProperty("parameterType", UCAction::Integer);
     }
     Q_EMIT q->actionChanged();
-}
-
-/*!
- * \qmlproperty real ListItem::swipeOvershoot
- * The property configures the overshoot value on swiping. Its default value is
- * configured by the \l {ListItemStyle}{style}. Any positive value overrides the
- * default value, and any negative or undefined value resets it back to the default.
- */
-qreal UCListItemPrivate::swipeOvershoot() const
-{
-    return overshoot;
-}
-void UCListItemPrivate::setSwipeOvershoot(qreal overshoot)
-{
-    // mark any positive value as custom even if it is the same as the previous one
-    customOvershoot = (overshoot >= 0.0);
-    // same value should be guarded only if the style hasn't been loaded yet
-    // swipeOvershoot can be set to 0 prior the style is loaded.
-    if (this->overshoot == overshoot && styleItem) {
-        return;
-    }
-    if (!customOvershoot) {
-        resetSwipeOvershoot();
-        return;
-    }
-    this->overshoot = overshoot;
-    update();
-    Q_Q(UCListItem);
-    Q_EMIT q->swipeOvershootChanged();
-}
-void UCListItemPrivate::resetSwipeOvershoot()
-{
-    customOvershoot = false;
-    overshoot = styleItem ? styleItem->m_swipeOvershoot : 0.0;
-    update();
-    Q_Q(UCListItem);
-    Q_EMIT q->swipeOvershootChanged();
 }
 
 /*!

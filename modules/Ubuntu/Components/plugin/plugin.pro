@@ -118,8 +118,6 @@ SOURCES += plugin.cpp \
     propertychange_p.cpp \
     uclistitemstyle.cpp \
     ucviewitemsattached.cpp \
-    uclistitemattached.cpp \
-    ucactionpanel_p.cpp \
     ucserviceproperties.cpp
 
 # adapters
