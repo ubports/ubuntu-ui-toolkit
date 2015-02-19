@@ -686,6 +686,7 @@ TestCase
     function mouseLongPress(item, x, y, button, modifiers, delay)
     function tryCompareFunction(func, expectedResult, timeout)
     function typeString(string)
+    function warningFormat(line, column, message)
 plugins.qmltypes
     name: "FilterBehavior"
     prototype: "QObject"
