@@ -186,7 +186,7 @@ void ListItemDragArea::updateDragging(QQuickMouseEvent *event)
     if (index < 0) {
         return;
     }
-    if ((min >= 0) && (max > index)) {
+    if ((min >= 0) && (min > index)) {
         // about to drag beyond the minimum, leave
         return;
     }

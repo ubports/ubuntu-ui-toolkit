@@ -355,7 +355,6 @@ void UCViewItemsAttachedPrivate::_q_setDragAreaPosition(QQuickItem *panel)
         }
         if (dragArea && updated) {
             // update anchors
-            qDebug() << dragAreaRect;
             dragArea->updateArea(dragAreaRect);
         }
     }
