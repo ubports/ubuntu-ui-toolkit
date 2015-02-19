@@ -41,11 +41,16 @@ UCServicePropertiesPrivate *UCServicePropertiesPrivate::get(UCServiceProperties 
 
 void UCServicePropertiesPrivate::warning(const QString &message)
 {
-    QByteArray suppressWarnings = qgetenv("SUPPRESS_SERVICEPROPERTIES_WARNINGS");
-    if ((suppressWarnings == "yes") || (suppressWarnings == "1")) {
-        return;
+    // append warning messages to the error string
+    if (error.isEmpty()) {
+        setError(message);
+    } else {
+        setError(QString("%1\n%2").arg(error).arg(message));
     }
-    qmlInfo(q_ptr) << message;
+    QString env = qgetenv("SHOW_SERVICEPROPERTIES_WARNINGS");
+    if (!env.isEmpty() && (env == "1" || env.toLower() == "true")) {
+        qmlInfo(q_ptr) << message;
+    }
 }
 
 void UCServicePropertiesPrivate::setError(const QString &msg)
