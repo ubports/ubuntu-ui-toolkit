@@ -219,6 +219,9 @@ Item {
             compare(defaults.divider.visible, true, "divider is visible by default");
             compare(defaults.divider.anchors.leftMargin, 0, "divider's left margin is 0");
             compare(defaults.divider.anchors.rightMargin, 0, "divider's right margin is 0");
+            compare(defaults.divider.anchors.left, defaults.left, "divider's left anchor is wrong");
+            compare(defaults.divider.anchors.right, defaults.right, "divider's right anchor is wrong");
+            compare(defaults.divider.height, units.dp(2), "divider's thickness is wrong");
             compare(defaults.divider.colorFrom, "#000000", "colorFrom differs.");
             fuzzyCompare(defaults.divider.colorFrom.a, 0.14, 0.01, "colorFrom alpha differs");
             compare(defaults.divider.colorTo, "#ffffff", "colorTo differs.");
@@ -301,38 +304,39 @@ Item {
             movingSpy.wait();
         }
 
-        function test_vertical_listview_move_cancels_highlight_mouse() {
-            var listItem = findChild(listView, "listItem0");
-            verify(listItem, "Cannot find listItem0");
-
-            // convert positions and use the listView to move
-            var pos = listView.mapFromItem(listItem, listItem.width / 2, 0);
-            highlightedSpy.target = listItem;
-            flick(listView, pos.x, pos.y, 0, units.gu(10), -1, undefined, undefined, undefined, 100);
-            highlightedSpy.wait();
-            // the highglighted should have been changed twice
-            compare(highlightedSpy.count, 2, "highlighted did not change twice");
-            compare(listItem.highlighted, false, "Itemshoudl not be highlighted");
+        function test_vertical_listview_move_cancels_highlight_data() {
+            return [
+                {tag: "With touch", mouse: false},
+                {tag: "With mouse", mouse: true},
+            ];
         }
-        function test_vertical_listview_move_cancels_highlight_touch() {
+        function test_vertical_listview_move_cancels_highlight(data) {
             var listItem = findChild(listView, "listItem0");
             verify(listItem, "Cannot find listItem0");
 
             // convert positions and use the listView to move
             var pos = listView.mapFromItem(listItem, listItem.width / 2, 0);
-            highlightedSpy.target = listItem;
-            TestExtras.touchPress(0, listView, pos);
-            for (var i = 1; i <= 5; i++) {
-                pos.y += i * units.gu(2);
-                TestExtras.touchMove(0, listView, pos);
-                // wait few milliseconds between moves
-                wait(100);
+            if (data.mouse) {
+                // provide slow move
+                mousePress(listView, pos.x, pos.y);
+                for (var i = 1; i < 4; i++) {
+                    pos.y += i * units.gu(0.5);
+                    mouseMove(listView, pos.x, pos.y, 100);
+                }
+                compare(listItem.highlighted, false, "highlighted still!");
+                mouseRelease(listView, pos.x, pos.y, undefined, undefined, 100);
+            } else {
+                // convert pos to point otherwise touch functions will get (0,0) points!!!
+                var pt = Qt.point(pos.x, pos.y);
+                TestExtras.touchPress(0, listView, pt);
+                for (i = 1; i < 4; i++) {
+                    pt.y += i * units.gu(0.5);
+                    TestExtras.touchMove(0, listView, pt);
+                    wait(100);
+                }
+                compare(listItem.highlighted, false, "highlighted still!");
+                TestExtras.touchRelease(0, listView, pt);
             }
-            TestExtras.touchRelease(0, listView, pos);
-            highlightedSpy.wait();
-            // the highglighted should have been changed twice
-            compare(highlightedSpy.count, 2, "highlighted did not change twice");
-            compare(listItem.highlighted, false, "Itemshoudl not be highlighted");
         }
 
         function test_background_height_change_on_divider_visible() {

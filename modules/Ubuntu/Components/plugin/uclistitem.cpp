@@ -936,6 +936,8 @@ void UCListItem::mouseMoveEvent(QMouseEvent *event)
     Q_D(UCListItem);
     UCStyledItemBase::mouseMoveEvent(event);
 
+//    qDebug() << "MOVE" << event->localPos();
+
     // accept the tugging only if the move is within the threshold
     if (d->highlighted && !d->swiped && (d->leadingActions || d->trailingActions)) {
         // check if we can initiate the drag at all
