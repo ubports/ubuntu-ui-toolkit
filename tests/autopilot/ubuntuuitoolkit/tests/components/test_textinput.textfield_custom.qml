@@ -26,17 +26,32 @@ MainView {
         title: "Textfield"
 
         Column {
-            TextField {
-                objectName: "textfield"
-                placeholderText: "Type here"
-                width: units.gu(15)
+            Label {
+                text: "Below is a customized text field with clipping"
+            }
 
-                style: TextFieldStyle {
-                    overlaySpacing: 0
-                    frameSpacing: 0
-                    background: Item {}
-                    color: UbuntuColors.lightAubergine
+            Item {
+                clip: true // Mustn't affect handler visibility
+                width: childrenRect.width
+                height: childrenRect.height
+
+                TextField {
+                    objectName: "textfield"
+                    placeholderText: "Type here"
+                    width: units.gu(15)
+                    height: units.gu(2)
+
+                    style: TextFieldStyle {
+                        overlaySpacing: 0
+                        frameSpacing: 0
+                        background: Item {}
+                        color: UbuntuColors.lightAubergine
+                    }
                 }
+            }
+
+            Label {
+                text: "Below is a customized text field with clipping"
             }
         }
     }

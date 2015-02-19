@@ -47,12 +47,11 @@ Ubuntu.StyledItem {
     //Caret instance from the style.
     property Item caret: __styleInstance.caret
 
-    // returns the mapped "x" or "y" relative to the main component
+    // Returns "x" or "y" relative to the item handlers are a child of
     function mappedCursorPosition(coordinate) {
-        var cpos = cursorItem[coordinate];
-        if (handler) {
-            cpos += handler.frameDistance[coordinate] - handler.flickable["content"+coordinate.toUpperCase()];
-        }
+        var cpos = fakeCursor.parent.mapFromItem(handler.main, cursorItem.x, cursorItem.y)[coordinate];
+        cpos += handler.frameDistance[coordinate];
+        cpos -= handler.flickable["content" + coordinate.toUpperCase()];
         return cpos;
     }
     /*
@@ -136,16 +135,13 @@ Ubuntu.StyledItem {
         contextMenuVisible = false
     }
 
-    onXChanged: draggedItem.moveToCaret()
-    onYChanged: draggedItem.moveToCaret()
-
     //dragged item
     Item {
         id: draggedItem
         objectName: cursorItem.positionProperty + "_draggeditem"
         width: caret.width + units.gu(4)
         height: caret.height + units.gu(4)
-        parent: handler.main
+        parent: fakeCursor.parent
         visible: caret.visible
 
         /*
@@ -189,8 +185,8 @@ Ubuntu.StyledItem {
             if (!caret) {
                 return;
             }
-            draggedItem.x = mappedCursorPosition("x") - draggedItem.width / 2;
-            draggedItem.y = mappedCursorPosition("y") + caret.y - caret.height / 2;
+            draggedItem.x = fakeCursor.x - draggedItem.width / 2;
+            draggedItem.y = fakeCursor.y + caret.y - caret.height / 2;
         }
         // positions caret to the dragged position
         function positionCaret() {
@@ -279,13 +275,15 @@ Ubuntu.StyledItem {
     Item {
         id: fakeCursor
         objectName: positionProperty + "FakeCursor"
-        parent: handler.main
+        parent: QuickUtils.rootItem(handler.main)
         width: cursorItem.width
         height: cursorItem.height
         Component.onCompleted: caret.parent = fakeCursor
 
         x: mappedCursorPosition("x")
         y: mappedCursorPosition("y")
+        onXChanged: draggedItem.moveToCaret()
+        onYChanged: draggedItem.moveToCaret()
 
         // manual clipping: the caret should be visible only while the cursor's
         // top/bottom falls into the text area
@@ -293,8 +291,9 @@ Ubuntu.StyledItem {
             if (!caret || !cursorItem.visible || cursorItem.opacity < 1.0)
                 return false;
 
-            var leftTop = Qt.point(x - handler.frameDistance.x, y + handler.frameDistance.y + handler.lineSpacing);
-            var rightBottom = Qt.point(x - handler.frameDistance.x, y + height - handler.frameDistance.y - handler.lineSpacing);
+            var pos = handler.main.mapFromItem(fakeCursor.parent, fakeCursor.x, fakeCursor.y);
+            var leftTop = Qt.point(pos.x - handler.frameDistance.x, pos.y + handler.frameDistance.y + handler.lineSpacing);
+            var rightBottom = Qt.point(pos.x - handler.frameDistance.x, pos.y + height - handler.frameDistance.y - handler.lineSpacing);
             return (handler.visibleArea.contains(leftTop) || handler.visibleArea.contains(rightBottom));
         }
     }
